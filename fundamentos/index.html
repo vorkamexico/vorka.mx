@@ -1,0 +1,234 @@
+
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.section { margin-bottom: 2.5rem; }
+.section-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: .75rem; }
+
+.hero { padding: 2rem 0 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 2rem; }
+.hero h1 { font-size: 28px; font-weight: 500; color: var(--color-text-primary); line-height: 1.2; }
+.hero p { font-size: 15px; color: var(--color-text-secondary); margin-top: .5rem; line-height: 1.6; }
+
+.gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--color-border-tertiary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 2rem; }
+.gap-cell { background: var(--color-background-primary); padding: 1.25rem; }
+.gap-cell.left { border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg); }
+.gap-cell.right { border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0; }
+.gap-cell h3 { font-size: 13px; font-weight: 500; margin-bottom: .75rem; }
+.gap-cell h3.has { color: #2f855a; }
+.gap-cell h3.missing { color: #c05621; }
+.gap-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-text-secondary); margin-bottom: .5rem; }
+.dot-green { width: 6px; height: 6px; border-radius: 50%; background: #48bb78; flex-shrink: 0; }
+.dot-red { width: 6px; height: 6px; border-radius: 50%; background: #fc8181; flex-shrink: 0; }
+
+.theories { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+.theory-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; cursor: pointer; transition: background .15s; border: 0.5px solid var(--color-border-tertiary); }
+.theory-card:hover { background: var(--color-background-primary); border-color: var(--color-border-secondary); }
+.theory-num { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); margin-bottom: .25rem; }
+.theory-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: .4rem; }
+.theory-sub { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--color-border-tertiary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 2rem; }
+.pillar { background: var(--color-background-primary); padding: 1rem 1rem 1.25rem; position: relative; cursor: pointer; transition: background .15s; }
+.pillar:hover { background: var(--color-background-secondary); }
+.pillar-n { font-size: 11px; color: var(--color-text-tertiary); font-weight: 500; margin-bottom: .35rem; }
+.pillar-icon { font-size: 20px; margin-bottom: .5rem; color: var(--color-text-secondary); }
+.pillar h4 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: .35rem; }
+.pillar p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+
+.equation { display: flex; align-items: center; gap: 0; margin-bottom: 2rem; background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem; flex-wrap: wrap; gap: 8px; }
+.eq-term { text-align: center; }
+.eq-term .top { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2px; }
+.eq-term .word { font-size: 15px; font-weight: 500; color: var(--color-text-primary); padding: 6px 14px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); }
+.eq-op { font-size: 18px; color: var(--color-text-tertiary); padding: 0 4px; margin-top: 14px; }
+
+.beliefs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 2rem; }
+.belief { display: flex; align-items: flex-start; gap: 12px; padding: .75rem 1rem; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border-left: 2px solid transparent; transition: border-color .15s, background .15s; cursor: pointer; }
+.belief:hover { background: var(--color-background-primary); border-left-color: var(--color-border-info); }
+.belief-n { font-size: 12px; font-weight: 500; color: var(--color-text-tertiary); min-width: 20px; margin-top: 1px; }
+.belief-body h4 { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.belief-body p { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.5; }
+
+.metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .75rem 1rem; }
+.metric .label { font-size: 11px; color: var(--color-text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .35rem; }
+.metric .val { font-size: 14px; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; }
+
+.origin { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem; }
+.origin-pill { padding: 6px 14px; border-radius: 999px; border: 0.5px solid var(--color-border-secondary); font-size: 13px; font-weight: 500; color: var(--color-text-secondary); background: var(--color-background-primary); }
+
+.footnote { font-size: 12px; color: var(--color-text-tertiary); padding-top: 1rem; border-top: 0.5px solid var(--color-border-tertiary); line-height: 1.6; }
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Fundamentos teóricos de Vorka México: observación, teorías, pilares y creencias centrales</h2>
+
+<div class="hero">
+  <div class="section-label">Fundamentos teóricos</div>
+  <h1>Vorka México</h1>
+  <p>Convierte poder en influencia. Abundancia en impacto medible.<br>Una consultoría construida desde la observación, no desde la teoría abstracta.</p>
+</div>
+
+<div class="section">
+  <div class="section-label">La brecha que genera Vorka</div>
+  <div class="gap-grid">
+    <div class="gap-cell left">
+      <h3 class="has">✓ Lo que tienen</h3>
+      <div class="gap-item"><div class="dot-green"></div>Autoridad formal</div>
+      <div class="gap-item"><div class="dot-green"></div>Recursos y dinero</div>
+      <div class="gap-item"><div class="dot-green"></div>Talento disponible</div>
+      <div class="gap-item"><div class="dot-green"></div>Intención genuina</div>
+    </div>
+    <div class="gap-cell right">
+      <h3 class="missing">✗ Lo que les falta</h3>
+      <div class="gap-item"><div class="dot-red"></div>Coherencia interna</div>
+      <div class="gap-item"><div class="dot-red"></div>Claridad de propósito</div>
+      <div class="gap-item"><div class="dot-red"></div>Acción medible</div>
+      <div class="gap-item"><div class="dot-red"></div>Conexión real con audiencias</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">La ecuación central</div>
+  <div class="equation">
+    <div class="eq-term"><div class="top">dinero</div><div class="word">Poder</div></div>
+    <div class="eq-op">→</div>
+    <div class="eq-term"><div class="top">estructura</div><div class="word">Dirección</div></div>
+    <div class="eq-op">+</div>
+    <div class="eq-term"><div class="top">propósito</div><div class="word">Claridad</div></div>
+    <div class="eq-op">=</div>
+    <div class="eq-term"><div class="top">lo que hace Vorka</div><div class="word" style="border-color: var(--color-border-info); color: var(--color-text-info);">Influencia real</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">6 teorías fundacionales</div>
+  <div class="theories">
+    <div class="theory-card" onclick="sendPrompt('Explícame más la Teoría 1 de Vorka: el abismo entre ser y parecer')">
+      <div class="theory-num">Teoría 1</div>
+      <div class="theory-title">Ser antes de parecer</div>
+      <div class="theory-sub">La comunicación es inevitable cuando la coherencia interna ya existe.</div>
+    </div>
+    <div class="theory-card" onclick="sendPrompt('Explícame más la Teoría 2 de Vorka: la coherencia como ventaja competitiva')">
+      <div class="theory-num">Teoría 2</div>
+      <div class="theory-title">Coherencia como ventaja</div>
+      <div class="theory-sub">No el precio ni el producto. La organización más clara es invencible.</div>
+    </div>
+    <div class="theory-card" onclick="sendPrompt('Explícame más la Teoría 3 de Vorka: influencia mayor que poder')">
+      <div class="theory-num">Teoría 3</div>
+      <div class="theory-title">Influencia &gt; Poder</div>
+      <div class="theory-sub">Poder se hereda. Influencia se construye. Requiere autenticidad y acción consistente.</div>
+    </div>
+    <div class="theory-card" onclick="sendPrompt('Explícame más la Teoría 4 de Vorka: acción medible')">
+      <div class="theory-num">Teoría 4</div>
+      <div class="theory-title">Acción medible</div>
+      <div class="theory-sub">Acción sin medición es justificación. Todo lo de Vorka tiene indicadores desde el inicio.</div>
+    </div>
+    <div class="theory-card" onclick="sendPrompt('Explícame más la Teoría 5 de Vorka: transformación sistémica')">
+      <div class="theory-num">Teoría 5</div>
+      <div class="theory-title">Transformación sistémica</div>
+      <div class="theory-sub">Cambiar una sola cosa no funciona. Se necesitan múltiples palancas simultáneas.</div>
+    </div>
+    <div class="theory-card" onclick="sendPrompt('Explícame más la Teoría 6 de Vorka: política y empresa son el mismo juego')">
+      <div class="theory-num">Teoría 6</div>
+      <div class="theory-title">Política = Empresa</div>
+      <div class="theory-sub">Un voto es una compra. Ambas son decisiones basadas en coherencia y confianza.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Los 6 pilares integrados</div>
+  <div class="pillars">
+    <div class="pillar" onclick="sendPrompt('Háblame del Pilar 1 de Vorka: Consultoría Estratégica')">
+      <div class="pillar-n">Pilar 01</div>
+      <div class="pillar-icon"><i class="ti ti-compass" aria-hidden="true"></i></div>
+      <h4>Consultoría estratégica</h4>
+      <p>De "sé qué quiero" a "sé exactamente qué construyo y por qué es diferente."</p>
+    </div>
+    <div class="pillar" onclick="sendPrompt('Háblame del Pilar 2 de Vorka: Programas de Transformación')">
+      <div class="pillar-n">Pilar 02</div>
+      <div class="pillar-icon"><i class="ti ti-bolt" aria-hidden="true"></i></div>
+      <h4>Transformación</h4>
+      <p>Experiencias que activan cambio real. No seminarios — evolución de comportamiento.</p>
+    </div>
+    <div class="pillar" onclick="sendPrompt('Háblame del Pilar 3 de Vorka: Cultura Organizacional')">
+      <div class="pillar-n">Pilar 03</div>
+      <div class="pillar-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
+      <h4>Cultura organizacional</h4>
+      <p>El sistema operativo de una organización. Donde el talento quiere estar y construir.</p>
+    </div>
+    <div class="pillar" onclick="sendPrompt('Háblame del Pilar 4 de Vorka: Aprendizaje Aplicado')">
+      <div class="pillar-n">Pilar 04</div>
+      <div class="pillar-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <h4>Aprendizaje aplicado</h4>
+      <p>No información genérica. Diagnóstico → habilidades → aplicación real → cambio medible.</p>
+    </div>
+    <div class="pillar" onclick="sendPrompt('Háblame del Pilar 5 de Vorka: Desarrollo de Liderazgo')">
+      <div class="pillar-n">Pilar 05</div>
+      <div class="pillar-icon"><i class="ti ti-award" aria-hidden="true"></i></div>
+      <h4>Liderazgo</h4>
+      <p>Habilidad construible, no don. Visión, criterio, acción, autoridad real.</p>
+    </div>
+    <div class="pillar" onclick="sendPrompt('Háblame del Pilar 6 de Vorka: Comunicación Estratégica')">
+      <div class="pillar-n">Pilar 06</div>
+      <div class="pillar-icon"><i class="ti ti-speakerphone" aria-hidden="true"></i></div>
+      <h4>Comunicación estratégica</h4>
+      <p>Traducir complejidad en claridad. Narrativas que mueven, no solo que informan.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Creencias centrales</div>
+  <div class="beliefs">
+    <div class="belief" onclick="sendPrompt('¿Por qué Vorka cree que la coherencia es poder?')">
+      <div class="belief-n">01</div>
+      <div class="belief-body"><h4>La coherencia es poder</h4><p>No el dinero, no el tamaño. Cuando dices = cuando haces.</p></div>
+    </div>
+    <div class="belief" onclick="sendPrompt('¿Por qué Vorka dice que la influencia se construye, no se hereda?')">
+      <div class="belief-n">02</div>
+      <div class="belief-body"><h4>La influencia se construye, no se hereda</h4><p>Requiere acción consistente. No hay atajo.</p></div>
+    </div>
+    <div class="belief" onclick="sendPrompt('¿Por qué Vorka mide todo desde el inicio?')">
+      <div class="belief-n">03</div>
+      <div class="belief-body"><h4>Acción sin medición es justificación</h4><p>Todo tiene indicadores desde el principio, no al final.</p></div>
+    </div>
+    <div class="belief" onclick="sendPrompt('¿Cómo enseña Vorka el liderazgo como habilidad?')">
+      <div class="belief-n">04</div>
+      <div class="belief-body"><h4>Liderazgo es habilidad, no don</h4><p>Se enseña, se construye, se practica. Cualquiera puede desarrollarlo.</p></div>
+    </div>
+    <div class="belief" onclick="sendPrompt('¿Por qué dice Vorka que política y empresa son el mismo juego?')">
+      <div class="belief-n">05</div>
+      <div class="belief-body"><h4>Política y empresa son el mismo juego</h4><p>Un voto = una compra. Mismas dinámicas, distintos stakeholders.</p></div>
+    </div>
+    <div class="belief" onclick="sendPrompt('¿Qué significa que la transformación real requiere múltiples palancas?')">
+      <div class="belief-n">06</div>
+      <div class="belief-body"><h4>No hay silver bullet</h4><p>Cambio real: estrategia + liderazgo + cultura + aprendizaje + narrativa. Simultáneo.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Métrica real de Vorka</div>
+  <div class="metric-row">
+    <div class="metric"><div class="label">¿Cambió el comportamiento?</div><div class="val">Interno y observable</div></div>
+    <div class="metric"><div class="label">¿Hay coherencia?</div><div class="val">Donde antes había confusión</div></div>
+    <div class="metric"><div class="label">¿El equipo ejecuta?</div><div class="val">Con claridad, no con duda</div></div>
+    <div class="metric"><div class="label">¿La audiencia responde?</div><div class="val">Diferente, medible</div></div>
+    <div class="metric"><div class="label">¿El impacto es sostenible?</div><div class="val">No un pico. Un sistema.</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Origen institucional</div>
+  <div class="origin">
+    <div class="origin-pill">Harvard Business School</div>
+    <div class="origin-pill">Tecnológico de Monterrey</div>
+    <div class="origin-pill">Silicon Valley</div>
+  </div>
+  <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.6">Rigurosidad de Harvard · Innovación de Silicon Valley · Pragmatismo del Tec. Aplicados a México.</p>
+</div>
+
+<p class="footnote">Toca cualquier tarjeta para explorar ese tema en profundidad ↗</p>
