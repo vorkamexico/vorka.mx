@@ -1,0 +1,800 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banco de Plantillas · Vorka México</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fcfaf8;
+  --black:#141413;
+  --yellow:#f7b33e;
+  --green:#4ca037;
+  --blue:#387ec2;
+  --purple:#81179c;
+  --red:#df423a;
+  --orange:#ff751f;
+  --pink:#ff66c4;
+  --gray-100:#f0ede9;
+  --gray-200:#e2ddd8;
+  --gray-400:#a09890;
+  --gray-600:#6a6460;
+  --font-serif:'Libre Baskerville',Georgia,serif;
+}
+
+@font-face{
+  font-family:'ObjectSans';
+  src:local('Object Sans'),local('ObjectSans');
+  font-weight:400;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'ObjectSans','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--black);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── HERO ── */
+.hero{background:var(--black);position:relative;overflow:hidden}
+.hero-stripe{position:absolute;bottom:0;left:0;right:0;height:5px;display:flex}
+.hero-stripe span{flex:1}
+.hero-inner{max-width:1120px;margin:0 auto;padding:4.5rem 2rem 4rem;position:relative;z-index:2}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem}
+.hero-dot{width:8px;height:8px;border-radius:50%}
+.hero-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+.hero-title{font-family:var(--font-serif);font-size:clamp(48px,8vw,100px);line-height:.95;margin-bottom:1.75rem;color:#fff;letter-spacing:-.01em}
+.hero-title em{font-style:italic;color:var(--yellow)}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.45);max-width:500px;line-height:1.75;margin-bottom:3rem}
+.hero-stats{display:flex;gap:3rem;flex-wrap:wrap}
+.stat-num{font-family:var(--font-serif);font-size:42px;line-height:1;margin-bottom:3px}
+.stat-label{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+
+/* ── MAIN ── */
+.main{max-width:1120px;margin:0 auto;padding:3rem 2rem 6rem}
+
+/* ── TABS ── */
+.tabs-wrap{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--gray-200);margin:0 -2rem 3rem;padding:0 2rem}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:.9rem 1.1rem;font-size:13px;font-weight:700;color:var(--gray-600);cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;font-family:inherit;white-space:nowrap;transition:color .15s,border-color .15s;letter-spacing:.01em}
+.tab:hover{color:var(--black)}
+.tab.active{color:var(--black);border-bottom-color:var(--black)}
+
+/* ── SECTION HEADER ── */
+.sh{margin-bottom:2rem}
+.sh-title{font-family:var(--font-serif);font-size:clamp(40px,6vw,72px);line-height:.95;letter-spacing:-.01em;margin-bottom:.5rem}
+.sh-title em{font-style:italic}
+.sh-desc{font-size:13px;color:var(--gray-600);font-weight:400}
+
+/* ── GUIDE BLOCKS ── */
+.gblock{background:#fff;border:1.5px solid var(--gray-200);border-radius:18px;overflow:hidden;margin-bottom:1.25rem}
+.gblock-h{background:var(--black);padding:1.25rem 1.75rem}
+.gblock-h h2{font-family:var(--font-serif);font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-.01em}
+.gblock-h p{font-size:12px;color:rgba(255,255,255,0.38);font-weight:400}
+.steps{padding:0 1.75rem}
+.step{display:flex;gap:18px;padding:1.25rem 0;border-bottom:1px solid var(--gray-100)}
+.step:last-child{border-bottom:none}
+.snum{width:34px;height:34px;border-radius:50%;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:var(--font-serif)}
+.step-c h3{font-size:14px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em}
+.step-c p{font-size:13px;color:var(--gray-600);line-height:1.65;margin-bottom:6px}
+.step-time{display:inline-block;font-size:11px;background:var(--gray-100);color:var(--gray-600);padding:3px 10px;border-radius:20px;border:1px solid var(--gray-200);font-weight:700;letter-spacing:.02em}
+.step-warn{font-size:12px;color:var(--red);margin-top:6px;font-weight:700}
+.fmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:1.25rem 1.75rem}
+.fmt-c{background:var(--gray-100);border-radius:12px;padding:1rem;text-align:center}
+.fmt-ico{font-size:24px;margin-bottom:8px}
+.fmt-label{font-size:10px;color:var(--gray-600);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-weight:700}
+.fmt-val{font-size:13px;font-weight:700}
+.tomas{padding:0 1.75rem 1.5rem}
+
+/* ── CARD GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:14px}
+
+/* ── VIDEO CARD ── */
+.vc{background:#fff;border:1.5px solid var(--gray-200);border-radius:18px;overflow:hidden;transition:transform .18s,box-shadow .18s;position:relative}
+.vc:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(20,20,19,.10)}
+.vc-accent{height:4px;width:100%}
+.vc-top{padding:1.125rem 1.25rem .875rem;display:flex;align-items:flex-start;gap:13px}
+.vc-num{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:17px;font-weight:700;flex-shrink:0;letter-spacing:0}
+.vc-meta h3{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:3px;letter-spacing:-.01em}
+.vc-meta span{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.vdiv{height:1px;background:var(--gray-100);margin:0 1.25rem}
+.vc-body{padding:1rem 1.25rem 1.375rem}
+.pregunta{background:var(--bg);border-radius:10px;padding:.75rem 1rem;font-size:14px;font-weight:700;line-height:1.45;margin-bottom:.875rem;border-left:3.5px solid currentColor;font-family:var(--font-serif);font-style:italic}
+.rlabel{font-size:10px;color:var(--gray-400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;font-weight:700}
+.rlist{display:flex;flex-direction:column;gap:5px;margin-bottom:.875rem}
+.ritem{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--black);line-height:1.45}
+.rdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.cierre{font-size:12px;color:var(--gray-600);border-top:1px solid var(--gray-100);padding-top:.75rem;line-height:1.55}
+.cierre strong{color:var(--black);font-weight:700}
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:.75rem}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;border:1.5px solid currentColor;font-weight:700;letter-spacing:.02em}
+
+/* ── PANEL ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── FOOTER ── */
+footer{background:var(--black);color:rgba(255,255,255,0.28);text-align:center;padding:2.5rem 2rem;font-size:12px;font-weight:700;letter-spacing:.04em}
+footer strong{color:rgba(255,255,255,0.5)}
+.footer-dots{display:flex;justify-content:center;gap:8px;margin-bottom:1.25rem}
+.footer-dots span{width:10px;height:10px;border-radius:50%}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .hero-inner,.main{padding-left:1.25rem;padding-right:1.25rem}
+  .tabs-wrap{margin:0 -1.25rem 2rem;padding:0 1.25rem}
+  .gblock-h,.steps,.tomas{padding-left:1.25rem;padding-right:1.25rem}
+  .fmt-grid{padding:1rem 1.25rem}
+  .hero-stats{gap:2rem}
+}
+
+/* ── ANIMATE ── */
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.vc{animation:fu .28s ease both}
+.vc:nth-child(1){animation-delay:.03s}
+.vc:nth-child(2){animation-delay:.07s}
+.vc:nth-child(3){animation-delay:.11s}
+.vc:nth-child(4){animation-delay:.15s}
+.vc:nth-child(5){animation-delay:.19s}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <div class="hero-dot" style="background:var(--yellow)"></div>
+      <div class="hero-dot" style="background:var(--green)"></div>
+      <div class="hero-dot" style="background:var(--blue)"></div>
+      <div class="hero-dot" style="background:var(--pink)"></div>
+      <span class="hero-label">Vorka México &nbsp;·&nbsp; Sparks &nbsp;·&nbsp; San Miguel de Allende, Gto.</span>
+    </div>
+    <h1 class="hero-title">BANCO DE<br><em>PLANTILLAS</em><br>DE VIDEO</h1>
+    <p class="hero-sub">Guías listas para grabar con jóvenes en escuelas y comunidades. Adapta cada plantilla a tu municipio, plantel y situación real.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num" style="color:var(--yellow)">21</div>
+        <div class="stat-label">Plantillas</div>
+      </div>
+      <div>
+        <div class="stat-num" style="color:var(--green)">5</div>
+        <div class="stat-label">Categorías</div>
+      </div>
+      <div>
+        <div class="stat-num" style="color:var(--blue)">60s</div>
+        <div class="stat-label">Duración máx.</div>
+      </div>
+      <div>
+        <div class="stat-num" style="color:var(--pink)">9:16</div>
+        <div class="stat-label">Formato</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stripe">
+    <span style="background:var(--yellow)"></span>
+    <span style="background:var(--green)"></span>
+    <span style="background:var(--blue)"></span>
+    <span style="background:var(--purple)"></span>
+    <span style="background:var(--red)"></span>
+    <span style="background:var(--orange)"></span>
+    <span style="background:var(--pink)"></span>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="tabs-wrap">
+    <nav class="tabs">
+      <button class="tab active" onclick="setTab('guia',this)">📋 Guía de grabación</button>
+      <button class="tab" onclick="setTab('identidad',this)">📍 Identidad local</button>
+      <button class="tab" onclick="setTab('participacion',this)">🗣 Participación</button>
+      <button class="tab" onclick="setTab('suenos',this)">✨ Sueños y futuro</button>
+      <button class="tab" onclick="setTab('talento',this)">🎯 Talento joven</button>
+      <button class="tab" onclick="setTab('comunidad',this)">🤝 Comunidad</button>
+    </nav>
+  </div>
+
+  <!-- ══ GUÍA ══ -->
+  <div id="panel-guia" class="panel active">
+    <div class="sh">
+      <div class="sh-title">Guía de<br><em>grabación</em></div>
+      <div class="sh-desc">Todo lo que necesitas saber antes de encender la cámara.</div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Estructura oficial de cada video</h2>
+        <p>Duración total: 45–60 segundos &nbsp;·&nbsp; Vertical 9:16 &nbsp;·&nbsp; Resolución mínima 1080p</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="snum" style="background:var(--yellow);color:var(--black)">1</div>
+          <div class="step-c">
+            <h3>Intro oficial</h3>
+            <p>"Estamos en <strong>[nombre de la escuela]</strong>, escuchando la voz de las y los jóvenes de <strong>[municipio]</strong>."</p>
+            <p>Un estudiante diferente en cada video. Natural, sin leer, mirando directo a cámara.</p>
+            <span class="step-time">10–15 segundos</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--blue)">2</div>
+          <div class="step-c">
+            <h3>Desarrollo: 3 jóvenes responden</h3>
+            <p>Una pregunta breve. Tres personas distintas. Una frase corta y natural cada una.</p>
+            <div class="step-warn">⚠ Sin discursos largos &nbsp;·&nbsp; Sin respuestas preparadas &nbsp;·&nbsp; Máx. una frase por persona</div>
+            <br><span class="step-time">20–35 segundos</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--green)">3</div>
+          <div class="step-c">
+            <h3>Cierre oficial</h3>
+            <p>"Soy <strong>[nombre]</strong> y esto es Vorka México."</p>
+            <span class="step-time">5–7 segundos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Formato técnico</h2>
+        <p>Para que el video se vea y suene profesional desde el cel</p>
+      </div>
+      <div class="fmt-grid">
+        <div class="fmt-c"><div class="fmt-ico">📱</div><div class="fmt-label">Orientación</div><div class="fmt-val">Vertical 9:16</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🎥</div><div class="fmt-label">Resolución</div><div class="fmt-val">Mín. 1080p</div></div>
+        <div class="fmt-c"><div class="fmt-ico">☀️</div><div class="fmt-label">Iluminación</div><div class="fmt-val">Natural y pareja</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🔇</div><div class="fmt-label">Audio</div><div class="fmt-val">Sin ruido fuerte</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🧍</div><div class="fmt-label">Plano</div><div class="fmt-val">Medio (pecho arriba)</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🏫</div><div class="fmt-label">Fondo</div><div class="fmt-val">Institucional o limpio</div></div>
+      </div>
+      <div class="tomas">
+        <div class="rlabel">Tomas de apoyo que también debes grabar</div>
+        <div class="rlist">
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Jóvenes caminando por la escuela</div>
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Jóvenes platicando entre sí</div>
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Ambiente escolar general</div>
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Fachada o logo del plantel</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Antes de grabar</h2>
+        <p>Queremos autenticidad, no actuación</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="snum" style="background:var(--pink)">💬</div>
+          <div class="step-c">
+            <h3>Platica primero</h3>
+            <p>Conversa brevemente con cada joven antes de encender la cámara. Que se sientan cómodos y sin presión.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--purple)">💡</div>
+          <div class="step-c">
+            <h3>Explica la idea</h3>
+            <p>Cuéntales de qué trata el video. No es una entrevista formal, es su voz real.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--green)">❤️</div>
+          <div class="step-c">
+            <h3>Genera confianza</h3>
+            <p>Que respondan lo primero que se les venga a la mente. Sin filtros, sin ensayar. Eso es lo que hace el video poderoso.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ IDENTIDAD LOCAL ══ -->
+  <div id="panel-identidad" class="panel">
+    <div class="sh">
+      <div class="sh-title">Identidad<br><em>local</em></div>
+      <div class="sh-desc">5 plantillas &nbsp;·&nbsp; Pertenencia, arraigo y vínculo con el municipio.</div>
+    </div>
+    <div class="grid">
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--yellow)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff8ec;color:#b8821f;">01</div>
+          <div class="vc-meta"><h3>Mi lugar favorito</h3><span>Sentido de pertenencia</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--yellow);border-left-color:var(--yellow)">¿Cuál es tu lugar favorito en [municipio] y por qué?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"El jardín, porque ahí crecí."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"La cancha del barrio."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"Mi escuela, aquí encontré mis amigos."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "[Municipio] se construye desde quienes la viven."</div>
+          <div class="pills"><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Identidad</span><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Emocional</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--green)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eef7ec;color:#316b23;">02</div>
+          <div class="vc-meta"><h3>Si [municipio] fuera una persona…</h3><span>Identidad sin discurso</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--green);border-left-color:var(--green)">Si [municipio] fuera una persona, ¿cómo sería?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"Trabajadora."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"En crecimiento."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"Con mucho potencial."</div>
+          </div>
+          <div class="cierre">Genera identidad sin discurso político.</div>
+          <div class="pills"><span class="pill" style="color:var(--green);border-color:var(--green)">Identidad</span><span class="pill" style="color:var(--green);border-color:var(--green)">Dinámico</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--blue)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eaf2fb;color:#235a8a;">03</div>
+          <div class="vc-meta"><h3>[Municipio] en una frase</h3><span>Formato rápido y dinámico</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--blue);border-left-color:var(--blue)">[Municipio] es…</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Oportunidad."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Mi casa."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Futuro."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Retos."</div>
+          </div>
+          <div class="cierre">Edición rápida con música dinámica.</div>
+          <div class="pills"><span class="pill" style="color:var(--blue);border-color:var(--blue)">Rápido</span><span class="pill" style="color:var(--blue);border-color:var(--blue)">Shareable</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--orange)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0e8;color:#b8521a;">04</div>
+          <div class="vc-meta"><h3>Yo me quedo en [municipio] porque…</h3><span>Arraigo local</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--orange);border-left-color:var(--orange)">¿Por qué te quedas en [municipio]?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>"Porque aquí está mi familia."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>"Porque quiero aportar algo."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>"Porque aquí puedo crecer."</div>
+          </div>
+          <div class="cierre">Mensaje fuerte de pertenencia y arraigo.</div>
+          <div class="pills"><span class="pill" style="color:var(--orange);border-color:var(--orange)">Emocional</span><span class="pill" style="color:var(--orange);border-color:var(--orange)">Arraigo</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--pink)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0f9;color:#b8408a;">05</div>
+          <div class="vc-meta"><h3>Lo que sí me gusta de aquí</h3><span>Enfoque positivo</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--pink);border-left-color:var(--pink)">¿Qué es algo que sí te gusta de [municipio]?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--pink)"></div>"La gente."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--pink)"></div>"Que aquí está mi familia."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--pink)"></div>"Que está creciendo."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Reconocer lo bueno también es avanzar."</div>
+          <div class="pills"><span class="pill" style="color:var(--pink);border-color:var(--pink)">Positivo</span><span class="pill" style="color:var(--pink);border-color:var(--pink)">Real</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ PARTICIPACIÓN ══ -->
+  <div id="panel-participacion" class="panel">
+    <div class="sh">
+      <div class="sh-title">Partici-<br><em>pación</em></div>
+      <div class="sh-desc">5 plantillas &nbsp;·&nbsp; Voz ciudadana, cambio y cercanía con el gobierno.</div>
+    </div>
+    <div class="grid">
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--red)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fdecea;color:#9e2e27;">06</div>
+          <div class="vc-meta"><h3>Tu voz cuenta</h3><span>Participación ciudadana</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--red);border-left-color:var(--red)">¿Qué necesita [municipio] para mejorar?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Más oportunidades para jóvenes."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Que nos escuchen más."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Espacios para emprender."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Escuchar es avanzar."</div>
+          <div class="pills"><span class="pill" style="color:var(--red);border-color:var(--red)">Participación</span><span class="pill" style="color:var(--red);border-color:var(--red)">Impactante</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--purple)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#f5eaf9;color:#5c1070;">07</div>
+          <div class="vc-meta"><h3>Lo que quiero cambiar</h3><span>Voz directa, sin debate</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--purple);border-left-color:var(--purple)">¿Qué te gustaría cambiar en [municipio]?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"La inseguridad."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Que haya más trabajo aquí."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Más apoyo para estudiar."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Escuchar es el primer paso."</div>
+          <div class="pills"><span class="pill" style="color:var(--purple);border-color:var(--purple)">Participación</span><span class="pill" style="color:var(--purple);border-color:var(--purple)">Cercanía</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--orange)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0e8;color:#b8521a;">08</div>
+          <div class="vc-meta"><h3>Mensaje al gobierno</h3><span>Poderoso y honesto</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--orange);border-left-color:var(--orange)">Si pudieras darle un mensaje al gobierno, ¿qué dirías?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>"Que no nos olviden."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>"Que sí estamos aquí."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>"Que apuesten por nosotros."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Escuchar es construir."</div>
+          <div class="pills"><span class="pill" style="color:var(--orange);border-color:var(--orange)">Apertura real</span><span class="pill" style="color:var(--orange);border-color:var(--orange)">Impactante</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--green)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eef7ec;color:#316b23;">09</div>
+          <div class="vc-meta"><h3>Lo que sí estamos haciendo</h3><span>Agencia juvenil</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--green);border-left-color:var(--green)">¿Qué estás haciendo hoy para mejorar tu futuro?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"Estudiando."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"Aprendiendo algo nuevo cada día."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"Emprendiendo con lo que tengo."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "El cambio también empieza contigo."</div>
+          <div class="pills"><span class="pill" style="color:var(--green);border-color:var(--green)">Agencia</span><span class="pill" style="color:var(--green);border-color:var(--green)">Positivo</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--blue)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eaf2fb;color:#235a8a;">10</div>
+          <div class="vc-meta"><h3>Un mito sobre los jóvenes</h3><span>Rompe estereotipos</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--blue);border-left-color:var(--blue)">¿Cuál es un mito sobre los jóvenes que no es cierto?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Que no queremos trabajar."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Que no nos importa nada."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Que no participamos."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "La juventud está construyendo."</div>
+          <div class="pills"><span class="pill" style="color:var(--blue);border-color:var(--blue)">Estereotipos</span><span class="pill" style="color:var(--blue);border-color:var(--blue)">Poderoso</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ SUEÑOS Y FUTURO ══ -->
+  <div id="panel-suenos" class="panel">
+    <div class="sh">
+      <div class="sh-title">Sueños<br><em>y futuro</em></div>
+      <div class="sh-desc">5 plantillas &nbsp;·&nbsp; Proyección, motivación y aspiraciones reales.</div>
+    </div>
+    <div class="grid">
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--purple)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#f5eaf9;color:#5c1070;">11</div>
+          <div class="vc-meta"><h3>En 5 años me veo…</h3><span>Proyección de futuro</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--purple);border-left-color:var(--purple)">En 5 años, ¿cómo te gustarías verte?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Con mi negocio propio."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Graduado y trabajando."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Ayudando a otros jóvenes."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "El futuro se construye desde hoy."</div>
+          <div class="pills"><span class="pill" style="color:var(--purple);border-color:var(--purple)">Futuro</span><span class="pill" style="color:var(--purple);border-color:var(--purple)">Inspirador</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--pink)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0f9;color:#b8408a;">12</div>
+          <div class="vc-meta"><h3>Un sueño que aún no cuento</h3><span>Formato íntimo</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--pink);border-left-color:var(--pink)">¿Cuál es un sueño que aún no le has contado a nadie?</div>
+          <div class="rlabel">Notas para el camarógrafo</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--pink)"></div>Darles espacio, no apurarlos.</div>
+            <div class="ritem"><div class="rdot" style="background:var(--pink)"></div>Editar con música suave de fondo.</div>
+            <div class="ritem"><div class="rdot" style="background:var(--pink)"></div>Muy poderoso si se edita bien.</div>
+          </div>
+          <div class="cierre">Genera profundidad emocional real.</div>
+          <div class="pills"><span class="pill" style="color:var(--pink);border-color:var(--pink)">Íntimo</span><span class="pill" style="color:var(--pink);border-color:var(--pink)">Emocional</span><span class="pill" style="color:var(--pink);border-color:var(--pink)">Profundo</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--yellow)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff8ec;color:#b8821f;">13</div>
+          <div class="vc-meta"><h3>Lo que me motiva</h3><span>Autenticidad total</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--yellow);border-left-color:var(--yellow)">¿Qué te motiva a levantarte cada día?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"Mi familia."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"Demostrar que sí puedo."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"Salir adelante."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "El impulso empieza dentro."</div>
+          <div class="pills"><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Motivación</span><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Real</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--red)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fdecea;color:#9e2e27;">14</div>
+          <div class="vc-meta"><h3>Lo que nadie te dice de ser joven aquí</h3><span>Confesión rápida</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--red);border-left-color:var(--red)">¿Qué es algo que nadie te dice de ser joven en [municipio]?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Que sí hay oportunidades, pero hay que buscarlas."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Que podemos hacer más de lo que creemos."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Que no todo está perdido."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Tu voz importa. [Municipio] te escucha."</div>
+          <div class="pills"><span class="pill" style="color:var(--red);border-color:var(--red)">Confesión</span><span class="pill" style="color:var(--red);border-color:var(--red)">Poderoso</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--green)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eef7ec;color:#316b23;">15</div>
+          <div class="vc-meta"><h3>Lo que aprendí fuera del salón</h3><span>Aprendizaje real</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--green);border-left-color:var(--green)">¿Qué has aprendido fuera del salón que te ha marcado?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"A trabajar en equipo."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"A escuchar a los demás."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--green)"></div>"A ser responsable."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Aprender también es participar."</div>
+          <div class="pills"><span class="pill" style="color:var(--green);border-color:var(--green)">Aprendizaje</span><span class="pill" style="color:var(--green);border-color:var(--green)">Escolar</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ TALENTO JOVEN ══ -->
+  <div id="panel-talento" class="panel">
+    <div class="sh">
+      <div class="sh-title">Talento<br><em>joven</em></div>
+      <div class="sh-desc">4 plantillas &nbsp;·&nbsp; Habilidades, inspiración y comunidad entre pares.</div>
+    </div>
+    <div class="grid">
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--orange)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0e8;color:#b8521a;">16</div>
+          <div class="vc-meta"><h3>Mi talento en 10 segundos</h3><span>Reto dinámico y shareable</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--orange);border-left-color:var(--orange)">Muestra tu talento en 10 segundos.</div>
+          <div class="rlabel">Ejemplos de talento</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Dibujar / Pintar</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Cantar / Bailar</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Programar / Crear</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Liderar un proyecto</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "[Municipio] tiene talento joven."</div>
+          <div class="pills"><span class="pill" style="color:var(--orange);border-color:var(--orange)">Talento</span><span class="pill" style="color:var(--orange);border-color:var(--orange)">Muy shareable</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--blue)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eaf2fb;color:#235a8a;">17</div>
+          <div class="vc-meta"><h3>Una palabra para describir a la juventud</h3><span>Formato rapidísimo</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--blue);border-left-color:var(--blue)">Una palabra para describir a la juventud de [municipio].</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Fuerte."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Creativa."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Resiliente."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--blue)"></div>"Valiente."</div>
+          </div>
+          <div class="cierre">Edición rápida con música dinámica.</div>
+          <div class="pills"><span class="pill" style="color:var(--blue);border-color:var(--blue)">Rápido</span><span class="pill" style="color:var(--blue);border-color:var(--blue)">Energético</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--red)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fdecea;color:#9e2e27;">18</div>
+          <div class="vc-meta"><h3>Un consejo para otros jóvenes</h3><span>Humaniza la narrativa</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--red);border-left-color:var(--red)">¿Qué consejo le darías a otro joven de tu edad?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"No te compares."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"Empieza con lo que tienes."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--red)"></div>"No te rindas."</div>
+          </div>
+          <div class="cierre">Genera comunidad entre jóvenes.</div>
+          <div class="pills"><span class="pill" style="color:var(--red);border-color:var(--red)">Consejos</span><span class="pill" style="color:var(--red);border-color:var(--red)">Humano</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--purple)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#f5eaf9;color:#5c1070;">19</div>
+          <div class="vc-meta"><h3>Lo que me inspira de otros jóvenes</h3><span>Comunidad, no competencia</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--purple);border-left-color:var(--purple)">¿Qué te inspira de otros jóvenes en [municipio]?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Su esfuerzo."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Que no se rinden."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--purple)"></div>"Que sí emprenden."</div>
+          </div>
+          <div class="cierre">Refuerza comunidad y unión.</div>
+          <div class="pills"><span class="pill" style="color:var(--purple);border-color:var(--purple)">Comunidad</span><span class="pill" style="color:var(--purple);border-color:var(--purple)">Inspirador</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ COMUNIDAD ══ -->
+  <div id="panel-comunidad" class="panel">
+    <div class="sh">
+      <div class="sh-title">Comu-<br><em>nidad</em></div>
+      <div class="sh-desc">2 plantillas &nbsp;·&nbsp; Lo positivo que no se ve y la realidad que merece voz.</div>
+    </div>
+    <div class="grid">
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--yellow)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff8ec;color:#b8821f;">20</div>
+          <div class="vc-meta"><h3>Aquí también pasan cosas chidas</h3><span>Contra narrativa negativa</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--yellow);border-left-color:var(--yellow)">¿Qué cosa buena está pasando en [municipio] que no se habla?</div>
+          <div class="rlabel">Ejemplos de respuesta</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"Hay jóvenes emprendiendo."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"La comunidad se está organizando."</div>
+            <div class="ritem"><div class="rdot" style="background:var(--yellow)"></div>"Hay más espacios culturales."</div>
+          </div>
+          <div class="cierre"><strong>Cierre:</strong> "Lo bueno también merece voz."</div>
+          <div class="pills"><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Positivo</span><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Comunidad</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--orange)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0e8;color:#b8521a;">21</div>
+          <div class="vc-meta"><h3>Lo que nadie ve de ser joven aquí</h3><span>Visibilizar la realidad</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="pregunta" style="color:var(--orange);border-left-color:var(--orange)">¿Qué es algo difícil de ser joven en [municipio] que poca gente ve?</div>
+          <div class="rlabel">Notas para el camarógrafo</div>
+          <div class="rlist">
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Sin filtros, dejar que hablen.</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Validar lo que sienten.</div>
+            <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Editar con cuidado y respeto.</div>
+          </div>
+          <div class="cierre">Genera empatía y comprensión social.</div>
+          <div class="pills"><span class="pill" style="color:var(--orange);border-color:var(--orange)">Honesto</span><span class="pill" style="color:var(--orange);border-color:var(--orange)">Empático</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-dots">
+    <span style="background:var(--yellow)"></span>
+    <span style="background:var(--green)"></span>
+    <span style="background:var(--blue)"></span>
+    <span style="background:var(--purple)"></span>
+    <span style="background:var(--red)"></span>
+    <span style="background:var(--orange)"></span>
+    <span style="background:var(--pink)"></span>
+  </div>
+  <strong>Vorka México</strong> &nbsp;·&nbsp; vorka.mx &nbsp;·&nbsp; Sparks &nbsp;·&nbsp; Activaciones Juveniles &nbsp;·&nbsp; San Miguel de Allende, Gto.
+</footer>
+
+<script>
+function setTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
