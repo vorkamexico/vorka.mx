@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conferencia IMPACTO en tu institución</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #e9e4db;
+  color: #1a1a1a;
+  padding: 40px 20px;
+}
+
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+}
+
+/* ── HERO ── */
+.hero {
+  background: #0a1820;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.hero-c1 { position:absolute; top:-80px; right:-80px; width:380px; height:380px; border-radius:50%; border:1px solid rgba(218,165,32,0.18); }
+.hero-c2 { position:absolute; top:20px; right:20px; width:220px; height:220px; border-radius:50%; border:1px solid rgba(218,165,32,0.10); }
+.hero-c3 { position:absolute; bottom:-60px; left:-60px; width:220px; height:220px; border-radius:50%; border:1px solid rgba(218,165,32,0.08); }
+
+.hero-inner { position:relative; z-index:2; padding:52px 60px 50px; }
+
+.hero-eyebrow {
+  font-size:10.5px; font-weight:600; letter-spacing:4px; text-transform:uppercase;
+  color:#daa520; margin-bottom:14px;
+}
+.hero-logo {
+  font-family:'Bebas Neue',sans-serif; font-size:110px; color:#fff;
+  line-height:0.85; letter-spacing:4px;
+}
+.hero-logo span { color:#daa520; }
+.hero-tagline {
+  font-size:14px; font-weight:300; color:rgba(255,255,255,0.5);
+  letter-spacing:2.5px; text-transform:uppercase; margin:10px 0 28px;
+}
+.hero-desc {
+  font-size:15px; color:rgba(255,255,255,0.80); line-height:1.8;
+  max-width:560px; font-weight:300; border-left:3px solid #daa520; padding-left:20px;
+}
+
+/* ── STATS ── */
+.stats-bar { background:#daa520; display:grid; grid-template-columns:repeat(4,1fr); }
+.stat-item { padding:20px 16px; text-align:center; border-right:1px solid rgba(0,0,0,0.12); }
+.stat-item:last-child { border-right:none; }
+.stat-n { font-family:'Bebas Neue',sans-serif; font-size:36px; color:#0a1820; display:block; line-height:1; margin-bottom:3px; }
+.stat-l { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:rgba(10,24,32,0.7); }
+
+/* ── SHARED ── */
+.gold-line { height:4px; background:#daa520; }
+.dark-line { height:4px; background:#0a1820; }
+
+.sec-label {
+  font-size:9.5px; font-weight:700; letter-spacing:3.5px; text-transform:uppercase;
+  color:#daa520; margin-bottom:20px; display:flex; align-items:center; gap:12px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:#e8e2d8; }
+
+.sec-dark .sec-label { color:#daa520; }
+.sec-dark .sec-label::after { background:rgba(218,165,32,0.2); }
+
+.lead { font-size:15px; color:#333; line-height:1.8; font-weight:300; margin-bottom:28px; }
+
+/* ── QUIENES SOMOS ── */
+.section-full { padding:52px 60px; border-bottom:1px solid #e8e2d8; }
+
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px; }
+.about-card { background:#f5f0e8; padding:18px 20px; border-top:3px solid #daa520; }
+.about-card h4 { font-size:13px; font-weight:600; color:#0a1820; margin-bottom:6px; }
+.about-card p { font-size:12.5px; color:#666; line-height:1.65; font-weight:300; }
+
+/* ── PROGRAMAS + ALIANZAS ── */
+.section-half { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid #e8e2d8; }
+.col { padding:48px 44px 48px 60px; }
+.col+.col { padding:48px 60px 48px 44px; border-left:1px solid #e8e2d8; }
+
+.eje-item { display:flex; align-items:flex-start; gap:14px; padding:13px 0; border-bottom:1px solid #f0ece5; }
+.eje-item:last-child { border-bottom:none; }
+.eje-ico { width:32px; height:32px; background:#0a1820; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.eje-ico span { font-family:'Bebas Neue',sans-serif; font-size:14px; color:#daa520; }
+.eje-text h4 { font-size:13px; font-weight:600; color:#0a1820; margin-bottom:2px; }
+.eje-text p { font-size:11.5px; color:#777; font-weight:300; line-height:1.5; }
+
+.conv-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+.conv-tag { font-size:12px; color:#0a1820; background:#f5f0e8; border:1px solid #daa52040; padding:6px 14px; font-weight:500; }
+
+.tema-item { background:#fff; border:1px solid #e8e2d8; border-left:4px solid #daa520; padding:13px 15px; margin-bottom:10px; }
+.tema-item h4 { font-size:13px; font-weight:600; color:#0a1820; margin-bottom:3px; }
+.tema-item p { font-size:11.5px; color:#888; font-weight:300; line-height:1.55; }
+
+/* ── POST-CONFERENCIA ── */
+.post-box { background:#0a1820; padding:48px 60px; border-bottom:1px solid #0a1820; }
+.post-lead { font-size:15px; color:rgba(255,255,255,0.80); font-weight:300; line-height:1.8; margin-bottom:28px; }
+.post-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.post-step { border:1px solid rgba(218,165,32,0.25); padding:20px 18px; }
+.post-num { font-family:'Bebas Neue',sans-serif; font-size:38px; color:rgba(218,165,32,0.22); line-height:1; margin-bottom:8px; }
+.post-step h4 { font-size:13px; font-weight:600; color:#daa520; margin-bottom:6px; }
+.post-step p { font-size:12px; color:rgba(255,255,255,0.55); font-weight:300; line-height:1.6; }
+
+/* ── CONFERENCISTA ── */
+.speaker-band { padding:52px 60px; border-bottom:1px solid #e8e2d8; }
+.speaker-intro { font-size:14.5px; color:#666; font-weight:300; line-height:1.7; margin-bottom:36px; padding-bottom:24px; border-bottom:1px solid #f0ece5; }
+.speaker-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+.speaker-name { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#0a1820; margin-bottom:4px; }
+.speaker-role { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#daa520; margin-bottom:18px; }
+.speaker-bio { font-size:13px; color:#555; line-height:1.8; font-weight:300; }
+.award-list { list-style:none; display:flex; flex-direction:column; gap:9px; }
+.award-list li { font-size:12.5px; color:#444; padding-left:18px; position:relative; line-height:1.4; }
+.award-list li::before { content:'▸'; position:absolute; left:0; color:#daa520; font-size:11px; top:1px; }
+
+/* ── REQUERIMIENTOS ── */
+.req-section { padding:48px 60px; border-bottom:1px solid #e8e2d8; }
+.req-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+.req-card { border:1px solid #e8e2d8; padding:18px 16px; text-align:center; }
+.req-icon { font-size:28px; margin-bottom:10px; display:block; }
+.req-card h4 { font-size:12.5px; font-weight:600; color:#0a1820; margin-bottom:4px; }
+.req-card p { font-size:11.5px; color:#888; font-weight:300; line-height:1.5; }
+.req-note { background:#fff8e8; border-left:3px solid #daa520; padding:14px 18px; font-size:12.5px; color:#555; font-weight:300; line-height:1.65; }
+.req-note strong { color:#0a1820; font-weight:600; }
+
+/* ── INVERSIÓN ── */
+.inv-section { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid #e8e2d8; }
+.inv-left { background:#daa520; padding:44px 44px 44px 60px; }
+.inv-left .sec-label { color:#0a1820; }
+.inv-left .sec-label::after { background:rgba(10,24,32,0.2); }
+.inv-amount { font-family:'Bebas Neue',sans-serif; font-size:80px; color:#0a1820; line-height:0.9; letter-spacing:2px; margin-bottom:4px; }
+.inv-unit { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:rgba(10,24,32,0.65); margin-bottom:16px; }
+.inv-detail { font-size:13.5px; color:rgba(10,24,32,0.8); font-weight:300; line-height:1.7; }
+.inv-reinv { margin-top:20px; padding-top:18px; border-top:1px solid rgba(10,24,32,0.15); font-size:12px; color:rgba(10,24,32,0.7); font-style:italic; line-height:1.6; }
+
+.inv-right { padding:44px 60px 44px 44px; background:#f9f7f4; }
+.dur-block { margin-bottom:24px; }
+.dur-block h4 { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#bbb; margin-bottom:8px; }
+.dur-block p { font-size:13.5px; color:#333; font-weight:300; line-height:1.65; }
+.pub-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.pub-list li { font-size:13px; color:#444; padding:8px 12px; background:#fff; border:1px solid #e8e2d8; display:flex; align-items:center; gap:10px; }
+.pub-list li::before { content:''; width:6px; height:6px; border-radius:50%; background:#daa520; flex-shrink:0; }
+
+/* ── FOOTER ── */
+.footer { background:#0a1820; padding:32px 60px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+.footer-brand { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:4px; color:#fff; }
+.footer-brand span { color:#daa520; }
+.footer-brand small { display:block; font-family:'DM Sans',sans-serif; font-size:10px; font-weight:400; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-top:2px; }
+.footer-contacts { display:flex; gap:28px; flex-wrap:wrap; }
+.fc { display:flex; flex-direction:column; gap:3px; }
+.fc-l { font-size:9px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,0.3); }
+.fc-v { font-size:13px; color:rgba(255,255,255,0.85); }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="gold-line"></div>
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<div class="hero">
+  <div class="hero-c1"></div><div class="hero-c2"></div><div class="hero-c3"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Juventudes Impactando México A.C. — Conferencia para Instituciones Educativas</div>
+    <div class="hero-logo">IM<span>PAC</span>TO</div>
+    <div class="hero-tagline">Jóvenes que transforman México</div>
+    <p class="hero-desc">
+      Llevamos una experiencia de alto impacto directamente a tu institución: una conferencia que activa, inspira y moviliza a estudiantes para convertirse en agentes reales de cambio en sus comunidades.
+    </p>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-n">+20</span><span class="stat-l">Estados activos</span></div>
+  <div class="stat-item"><span class="stat-n">+1,500</span><span class="stat-l">Voluntarios</span></div>
+  <div class="stat-item"><span class="stat-n">7</span><span class="stat-l">Programas sociales</span></div>
+  <div class="stat-item"><span class="stat-n">2021</span><span class="stat-l">Fundación, Celaya Gto.</span></div>
+</div>
+
+<!-- ══════════════════════ QUIÉNES SOMOS ══════════════════════ -->
+<div class="section-full">
+  <div class="sec-label">Quiénes somos</div>
+  <p class="lead">
+    IMPACTO es una organización juvenil fundada en Celaya, Guanajuato, con la misión de ayudar a jóvenes a mejorar su entorno mediante la participación social, el liderazgo y la acción colectiva. Hoy somos una de las redes juveniles más grandes y activas del país, con convenios firmados con gobiernos estatales y municipales, organismos empresariales e instituciones de juventud en toda la república.
+  </p>
+  <div class="about-grid">
+    <div class="about-card">
+      <h4>Misión</h4>
+      <p>Ayudar a personas en situación de vulnerabilidad social, económica, educativa o cultural a conseguir su plena inclusión y lograr una sociedad más justa, solidaria y respetuosa.</p>
+    </div>
+    <div class="about-card">
+      <h4>Visión</h4>
+      <p>Ser el referente nacional en inclusión social, educación, cultura y medio ambiente, desarrollando proyectos innovadores con jóvenes de todo México.</p>
+    </div>
+    <div class="about-card">
+      <h4>Modelo de acción</h4>
+      <p>Proceso colaborativo, resiliente y proactivo donde los jóvenes identifican las necesidades de su entorno y se convierten en sujetos de acción, no solo de atención.</p>
+    </div>
+    <div class="about-card">
+      <h4>Alcance nacional</h4>
+      <p>Operamos en más de 20 estados: Guanajuato, Querétaro, Nuevo León, Jalisco, CDMX, Estado de México, Puebla, Oaxaca, Chiapas, Yucatán, Veracruz y más.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PROGRAMAS + ALIANZAS ══════════════════════ -->
+<div class="section-half">
+  <div class="col">
+    <div class="sec-label">Programas activos</div>
+    <div style="display:flex;flex-direction:column;">
+      <div class="eje-item">
+        <div class="eje-ico"><span>M</span></div>
+        <div class="eje-text"><h4>MERCURIO — Comunicaciones Sociales</h4><p>Medios, narrativas y campañas de consciencia ciudadana</p></div>
+      </div>
+      <div class="eje-item">
+        <div class="eje-ico"><span>V</span></div>
+        <div class="eje-text"><h4>VENUS — Equidad de Género</h4><p>Perspectiva de género, prevención y derechos</p></div>
+      </div>
+      <div class="eje-item">
+        <div class="eje-ico"><span>T</span></div>
+        <div class="eje-text"><h4>TIERRA — Cuidado Ambiental</h4><p>Proyectos de economía circular y medio ambiente</p></div>
+      </div>
+      <div class="eje-item">
+        <div class="eje-ico"><span>A</span></div>
+        <div class="eje-text"><h4>ARTEMIS — Cuidado Animal</h4><p>Bienestar y protección de animales vulnerables</p></div>
+      </div>
+      <div class="eje-item">
+        <div class="eje-ico"><span>J</span></div>
+        <div class="eje-text"><h4>JÚPITER — Emprendimiento Juvenil</h4><p>Formación, mentoría y lanzamiento de proyectos</p></div>
+      </div>
+      <div class="eje-item">
+        <div class="eje-ico"><span>U</span></div>
+        <div class="eje-text"><h4>URANO — Educación de Calidad</h4><p>Acceso, permanencia y excelencia educativa</p></div>
+      </div>
+      <div class="eje-item">
+        <div class="eje-ico"><span>N</span></div>
+        <div class="eje-text"><h4>NEPTUNO — Arte y Cultura</h4><p>Expresión, identidad y patrimonio cultural juvenil</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sec-label">Alianzas y convenios</div>
+    <p style="font-size:13px;color:#777;font-weight:300;line-height:1.7;margin-bottom:18px;">
+      IMPACTO opera con el respaldo formal de instituciones públicas y privadas comprometidas con el desarrollo juvenil en México.
+    </p>
+    <div class="conv-tags">
+      <span class="conv-tag">Gobierno del Estado de Guanajuato</span>
+      <span class="conv-tag">Gobierno Municipal de Celaya</span>
+      <span class="conv-tag">Consejo Coordinador Empresarial de Celaya</span>
+      <span class="conv-tag">Instituto Estatal de la Juventud de Nuevo León</span>
+      <span class="conv-tag">Instituto Municipal de la Juventud de Celaya</span>
+      <span class="conv-tag">Y más en todo el país…</span>
+    </div>
+
+    <div style="margin-top:32px;">
+      <div class="sec-label">Temas de la conferencia</div>
+      <div class="tema-item"><h4>Liderazgo juvenil en contextos reales</h4><p>Cómo construir iniciativas de impacto sin esperar condiciones ideales</p></div>
+      <div class="tema-item"><h4>Participación social y ciudadanía activa</h4><p>El estudiante como agente de cambio en su comunidad</p></div>
+      <div class="tema-item"><h4>Emprendimiento social y los ODS</h4><p>De idea a sistema: cómo escalar proyectos con propósito</p></div>
+      <div class="tema-item"><h4>Mentalidad estratégica ante la adversidad</h4><p>Transformar el caos en dirección y ventaja competitiva</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ POST-CONFERENCIA ══════════════════════ -->
+<div class="post-box sec-dark">
+  <div class="sec-label">Lo que pasa después de la conferencia</div>
+  <p class="post-lead">
+    La conferencia no termina al bajar del escenario. IMPACTO acompaña a los estudiantes en un proceso de activación real donde la inspiración se convierte en proyectos concretos que benefician a sus propias comunidades.
+  </p>
+  <div class="post-steps">
+    <div class="post-step">
+      <div class="post-num">01</div>
+      <h4>Diagnóstico comunitario</h4>
+      <p>Los jóvenes identifican y mapean necesidades reales de su entorno escolar y comunidad local, guiados por la metodología de IMPACTO.</p>
+    </div>
+    <div class="post-step">
+      <div class="post-num">02</div>
+      <h4>Diseño de proyectos sociales</h4>
+      <p>En equipos, formulan propuestas de intervención alineadas con los ODS: ambiental, educativa, cultural o de inclusión social.</p>
+    </div>
+    <div class="post-step">
+      <div class="post-num">03</div>
+      <h4>Integración a la red nacional</h4>
+      <p>Los participantes pueden sumarse como voluntarios activos de IMPACTO y dar continuidad a sus proyectos con acompañamiento de la organización en todo el país.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ CONFERENCISTA ══════════════════════ -->
+<div class="speaker-band">
+  <div class="sec-label">El conferencista</div>
+  <p class="speaker-intro">
+    La conferencia es presentada por el fundador y presidente nacional de IMPACTO, quien comparte desde su propia historia la experiencia de construir una de las organizaciones juveniles más grandes del país, comenzando desde cero, en medio de la pandemia y sin más recursos que la convicción de que los jóvenes pueden cambiar México.
+  </p>
+  <div class="speaker-grid">
+    <div>
+      <div class="speaker-name">Brandon Oleynick</div>
+      <div class="speaker-role">Fundador y Presidente Nacional — IMPACTO</div>
+      <p class="speaker-bio">
+        Activista social, emprendedor y licenciado en Relaciones Internacionales por el Tecnológico de Monterrey con beca Líderes del Mañana al 100%. Fundó IMPACTO en 2021 como un movimiento estudiantil que hoy opera en más de 20 estados con más de 1,500 voluntarios activos. Certificado por Harvard Business School en liderazgo y por UCSC Silicon Valley en creación de startups. Su conferencia parte de su historia personal y de los aprendizajes construidos liderando IMPACTO desde cero.
+      </p>
+    </div>
+    <div>
+      <div class="sec-label">Reconocimientos</div>
+      <ul class="award-list">
+        <li>Premio Bright Journey – Tec de Monterrey (2025)</li>
+        <li>Pasillo de la Fama – ENMS Celaya, el más joven en recibirlo (2025)</li>
+        <li>Premio FRISA al Emprendedor – Tec de Monterrey (2024)</li>
+        <li>Embajador 2030 – INJUVE Nuevo León (2024)</li>
+        <li>Premio Estatal de la Juventud: Juventudes con Grandeza – Gob. Gto. (2023)</li>
+        <li>Distinción Honorífica – Premio Inspiras, Querétaro (2022)</li>
+        <li>Premio Nacional de Juventudes por la Pacificación – Gob. México (2022)</li>
+        <li>Certificación en Liderazgo – Harvard Business School</li>
+        <li>Certificación en Creación de Startups – UCSC Silicon Valley</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ REQUERIMIENTOS ══════════════════════ -->
+<div class="req-section">
+  <div class="sec-label">Requerimientos técnicos</div>
+  <div class="req-grid">
+    <div class="req-card">
+      <span class="req-icon">🎤</span>
+      <h4>Micrófono</h4>
+      <p>De solapa o inalámbrico de mano. Indispensable para grupos mayores de 30 personas.</p>
+    </div>
+    <div class="req-card">
+      <span class="req-icon">📽️</span>
+      <h4>Proyector o pantalla</h4>
+      <p>Resolución mínima HD (1280×720). Cañón o pantalla LED de al menos 80", visible desde todo el espacio.</p>
+    </div>
+    <div class="req-card">
+      <span class="req-icon">🔌</span>
+      <h4>Conexión HDMI</h4>
+      <p>Cable HDMI o adaptador USB-C/HDMI para conectar la laptop del conferencista.</p>
+    </div>
+    <div class="req-card">
+      <span class="req-icon">🔊</span>
+      <h4>Sistema de audio</h4>
+      <p>Bocinas conectadas al sistema de proyección para reproducción de video y audio durante la conferencia.</p>
+    </div>
+    <div class="req-card">
+      <span class="req-icon">📶</span>
+      <h4>Internet / WiFi</h4>
+      <p>Conexión estable para recursos digitales en tiempo real. En caso de no contar, se puede operar con hotspot.</p>
+    </div>
+    <div class="req-card">
+      <span class="req-icon">🏛️</span>
+      <h4>Espacio adecuado</h4>
+      <p>Auditorio, salón o aula magna con sillas orientadas al frente. Capacidad mínima sugerida: 30 personas.</p>
+    </div>
+  </div>
+  <div class="req-note">
+    <strong>Nota logística:</strong> Se solicita confirmar disponibilidad del equipo técnico con al menos 72 horas de anticipación. Si la institución no cuenta con alguno de estos elementos, favor de notificarlo al momento de agendar para buscar una solución conjunta. La institución es responsable de la disponibilidad del espacio y el equipo el día del evento.
+  </div>
+</div>
+
+<!-- ══════════════════════ INVERSIÓN ══════════════════════ -->
+<div class="inv-section">
+  <div class="inv-left">
+    <div class="sec-label">Inversión</div>
+    <div class="inv-amount">$2,500</div>
+    <div class="inv-unit">MXN por conferencia</div>
+    <p class="inv-detail">
+      Más viáticos de traslado y hospedaje según la ubicación de la institución. El costo de viáticos se cotiza de forma personalizada dependiendo de la distancia y las condiciones del evento.
+    </p>
+    <p class="inv-reinv">
+      Cada peso recaudado se reinvierte íntegramente en nuevas conferencias, proyectos sociales en comunidades vulnerables y la formación de voluntarios a lo largo del país.
+    </p>
+  </div>
+  <div class="inv-right">
+    <div class="dur-block">
+      <h4>Duración y formato</h4>
+      <p>Conferencia de <strong style="color:#0a1820;font-weight:600;">60 a 90 minutos</strong>, seguida de sesión de preguntas y dinámica de activación. Adaptable a media jornada o formato taller si la institución lo requiere.</p>
+    </div>
+    <div class="sec-label" style="margin-bottom:14px;">Público objetivo</div>
+    <ul class="pub-list">
+      <li>Estudiantes de nivel medio superior</li>
+      <li>Estudiantes de nivel superior / universitario</li>
+      <li>Consejos y grupos de liderazgo estudiantil</li>
+      <li>Semanas de orientación o bienvenida</li>
+      <li>Festivales cívicos y jornadas de valores</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<div class="footer">
+  <div class="footer-brand">
+    <span>IMPACTO</span>
+    <small>Juventudes Impactando México A.C.</small>
+  </div>
+  <div class="footer-contacts">
+    <div class="fc">
+      <span class="fc-l">Instagram / Facebook</span>
+      <span class="fc-v">@impacto.mex · @impacto.org</span>
+    </div>
+    <div class="fc">
+      <span class="fc-l">Correo</span>
+      <span class="fc-v">impactoo.mex@gmail.com</span>
+    </div>
+    <div class="fc">
+      <span class="fc-l">Conferencista</span>
+      <span class="fc-v">@oleeynick</span>
+    </div>
+  </div>
+</div>
+
+<div class="dark-line"></div>
+
+</div>
+</body>
+</html>
