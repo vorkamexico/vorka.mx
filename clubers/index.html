@@ -1,0 +1,866 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clubers × Comunidades — Kit de Activación Social</title>
+<style>
+:root {
+  --pink: #E8175D;
+  --pink-light: #FF4D8D;
+  --pink-pale: #FFF0F5;
+  --pink-mid: #FFAECF;
+  --dark: #111116;
+  --dark2: #f8f8fc;
+  --dark3: #f2f2f8;
+  --dark4: #eaeaf2;
+  --gray: #6b6b80;
+  --gray-light: #9090a8;
+  --white: #ffffff;
+  --teal: #00a887;
+  --amber: #d4900a;
+  --blue: #2a7fd4;
+  --green: #16a34a;
+  --line: #e2e2ec;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--white);
+  color: var(--dark);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* NAV */
+.top-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  padding: 0 1.5rem;
+  display: flex; align-items: center; gap: 0;
+}
+.nav-logo {
+  font-size: 15px; font-weight: 700;
+  color: var(--dark); padding: 1rem 1.5rem 1rem 0;
+  border-right: 1px solid var(--line); margin-right: 1.5rem;
+  white-space: nowrap;
+}
+.nav-logo span { color: var(--pink); }
+.nav-tabs { display: flex; gap: 0; overflow-x: auto; flex: 1; }
+.nav-tab {
+  font-family: var(--font); font-size: 13px; font-weight: 400;
+  color: var(--gray); padding: 1rem 1rem; cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; background: none;
+  border-left: none; border-right: none; border-top: none;
+  transition: color .2s, border-color .2s;
+}
+.nav-tab:hover { color: var(--dark); }
+.nav-tab.active { color: var(--dark); border-bottom-color: var(--pink); font-weight: 500; }
+.nav-wa {
+  margin-left: auto; padding-left: 1rem; flex-shrink: 0;
+  display: flex; align-items: center;
+}
+.wa-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--pink); color: #fff;
+  font-size: 12px; font-weight: 600;
+  padding: 7px 14px; border-radius: var(--radius-pill);
+  text-decoration: none; white-space: nowrap;
+  transition: opacity .15s;
+}
+.wa-btn:hover { opacity: 0.85; }
+.wa-btn svg { width: 15px; height: 15px; fill: #fff; flex-shrink: 0; }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* HERO */
+.hero { padding: 4.5rem 2rem 3.5rem; max-width: 960px; margin: 0 auto; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--pink-pale); border: 1px solid rgba(232,23,93,0.2);
+  color: var(--pink); font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 6px 14px; border-radius: var(--radius-pill);
+  margin-bottom: 2rem;
+}
+.hero-eyebrow::before { content: '●'; font-size: 8px; }
+.hero h1 {
+  font-size: clamp(34px, 6vw, 64px);
+  font-weight: 800; line-height: 1.06; letter-spacing: -1.2px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 em { color: var(--pink); font-style: normal; }
+.hero-sub {
+  font-size: 17px; color: var(--gray); max-width: 560px;
+  line-height: 1.7; margin-bottom: 3rem;
+}
+.hero-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.hero-card {
+  background: var(--dark3); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.25rem 1.5rem;
+}
+.hero-card-val {
+  font-size: 26px; font-weight: 800;
+  color: var(--pink); margin-bottom: 4px; letter-spacing: -0.5px;
+}
+.hero-card-lbl { font-size: 12px; color: var(--gray); }
+
+/* LAYOUT */
+.page { max-width: 960px; margin: 0 auto; padding: 0 2rem 5rem; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.full { grid-column: 1 / -1; }
+
+/* CARDS */
+.card {
+  background: var(--dark3); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.5rem;
+}
+.card-dark { background: var(--dark2); }
+.card h3 { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+.card-sub { font-size: 12px; color: var(--gray); margin-bottom: 1.25rem; }
+.section-label {
+  font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--pink); margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+/* ROADMAP */
+.roadmap { position: relative; }
+.roadmap-line {
+  position: absolute; left: 20px; top: 0; bottom: 0;
+  width: 1px; background: var(--line);
+}
+.step {
+  display: flex; gap: 1.25rem; margin-bottom: 0; padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line); position: relative;
+}
+.step:last-child { border-bottom: none; }
+.step-icon {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; z-index: 1; position: relative;
+  border: 2px solid rgba(232,23,93,0.25);
+  background: var(--pink-pale); color: var(--pink);
+  transition: all .2s;
+}
+.step:hover .step-icon { background: var(--pink); color: #fff; border-color: var(--pink); }
+.step-body { flex: 1; padding-top: 8px; }
+.step-title { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+.step-desc { font-size: 13px; color: var(--gray); line-height: 1.6; }
+.step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.step-time {
+  font-size: 11px; color: var(--gray); background: var(--dark3);
+  border: 1px solid var(--line); padding: 4px 10px;
+  border-radius: var(--radius-pill); white-space: nowrap; align-self: flex-start; margin-top: 8px;
+}
+
+/* TAGS */
+.tag { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-pill); }
+.tag-pink { background: var(--pink-pale); color: var(--pink); border: 1px solid rgba(232,23,93,0.2); }
+.tag-teal { background: rgba(0,168,135,0.08); color: var(--teal); border: 1px solid rgba(0,168,135,0.2); }
+.tag-amber { background: rgba(212,144,10,0.08); color: var(--amber); border: 1px solid rgba(212,144,10,0.2); }
+.tag-blue { background: rgba(42,127,212,0.08); color: var(--blue); border: 1px solid rgba(42,127,212,0.2); }
+.tag-green { background: rgba(22,163,74,0.08); color: var(--green); border: 1px solid rgba(22,163,74,0.2); }
+
+/* CHECKLIST */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+  font-size: 13px; color: var(--dark);
+}
+.checklist li:last-child { border-bottom: none; }
+.check-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(0,168,135,0.1); border: 1px solid rgba(0,168,135,0.25);
+  color: var(--teal); font-size: 10px; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; margin-top: 2px;
+}
+.check-sub { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+/* FLOW */
+.flow { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 1rem 0; flex-wrap: nowrap; }
+.flow-node {
+  background: var(--dark4); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: .6rem .9rem;
+  text-align: center; min-width: 90px; flex-shrink: 0;
+}
+.flow-node.highlight { background: var(--pink-pale); border-color: rgba(232,23,93,0.25); }
+.flow-label { font-size: 12px; font-weight: 500; color: var(--dark); }
+.flow-sub { font-size: 10px; color: var(--gray); margin-top: 2px; }
+.flow-arrow { color: var(--pink); font-size: 18px; padding: 0 8px; flex-shrink: 0; }
+
+/* BAR CHART */
+.bar-row { margin-bottom: 12px; }
+.bar-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); margin-bottom: 5px; }
+.bar-header span:last-child { color: var(--pink); font-weight: 500; }
+.bar-track { height: 5px; background: var(--line); border-radius: 3px; }
+.bar-fill { height: 100%; border-radius: 3px; background: var(--pink); transition: width .8s cubic-bezier(.4,0,.2,1); }
+
+/* METRIC CELLS */
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+.metric-cell {
+  background: var(--dark4); border-radius: var(--radius-sm); padding: .9rem 1rem;
+  text-align: center; border: 1px solid var(--line);
+}
+.metric-val { font-size: 22px; font-weight: 800; color: var(--pink); line-height: 1.1; }
+.metric-lbl { font-size: 10px; color: var(--gray); margin-top: 4px; }
+
+/* IMPACT BANNER */
+.impact-banner {
+  background: var(--pink-pale); border: 1px solid rgba(232,23,93,0.18);
+  border-radius: var(--radius); padding: 2rem; margin-bottom: 16px; text-align: center;
+}
+.impact-banner .big {
+  font-size: clamp(36px, 6vw, 64px); font-weight: 800;
+  color: var(--pink); line-height: 1; margin-bottom: .5rem;
+}
+.impact-banner p { font-size: 14px; color: var(--gray); }
+
+/* POST CARD */
+.post-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.25rem; margin-bottom: 10px;
+  background: var(--dark4);
+}
+.bubble-platform { font-size: 10px; letter-spacing: 1px; font-weight: 500; margin-bottom: 6px; opacity: .6; text-transform: uppercase; color: var(--dark); }
+.post-card em { color: var(--pink); font-style: normal; font-weight: 500; }
+.post-cta { font-size: 11px; color: var(--pink); margin-top: 8px; font-weight: 500; cursor: pointer; }
+
+/* CALC */
+.calc-wrap { padding: .5rem 0 1rem; }
+.calc-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.calc-label { font-size: 12px; color: var(--gray); min-width: 160px; }
+input[type=range] { flex: 1; min-width: 120px; accent-color: var(--pink); height: 4px; cursor: pointer; }
+
+/* WEEK GRID */
+.week-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.week-cell {
+  background: var(--dark4); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 1rem;
+}
+.week-label { font-size: 10px; font-weight: 500; letter-spacing: 1px; color: var(--pink); text-transform: uppercase; margin-bottom: 8px; }
+.week-item { font-size: 12px; color: var(--gray); padding: 3px 0; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--line); margin: 1.25rem 0; }
+
+/* PILL ROW */
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* SIGNAL */
+.signal { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+.signal:last-child { border-bottom: none; }
+.signal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.dot-green { background: var(--green); }
+.dot-red { background: #dc2626; }
+.signal-text { font-size: 13px; color: var(--dark); }
+.signal-sub { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+/* CAUSE CARDS */
+.cause-card {
+  background: var(--dark3); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.25rem;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.cause-icon { font-size: 22px; margin-bottom: 4px; }
+.cause-title { font-size: 14px; font-weight: 600; color: var(--dark); }
+.cause-desc { font-size: 12px; color: var(--gray); line-height: 1.5; }
+.cause-val { font-size: 18px; font-weight: 700; color: var(--teal); }
+.cause-val-label { font-size: 10px; color: var(--gray); margin-left: 4px; }
+
+/* FOOTER CTA */
+.footer-cta {
+  background: var(--dark); padding: 4rem 2rem; text-align: center;
+}
+.footer-cta h2 { font-size: clamp(24px,4vw,40px); font-weight: 800; color: #fff; margin-bottom: .75rem; letter-spacing: -0.5px; }
+.footer-cta p { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+.footer-cta .wa-btn-lg {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--pink); color: #fff;
+  font-size: 16px; font-weight: 700;
+  padding: 14px 28px; border-radius: var(--radius-pill);
+  text-decoration: none; transition: opacity .15s, transform .15s;
+}
+.footer-cta .wa-btn-lg:hover { opacity: 0.9; transform: translateY(-2px); }
+.footer-cta .wa-btn-lg svg { width: 20px; height: 20px; fill: #fff; }
+.footer-tel { font-size: 13px; color: rgba(255,255,255,0.35); margin-top: 1rem; }
+.footer-tel strong { color: rgba(255,255,255,0.6); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.section.active .card, .section.active .hero-card { animation: fadeUp .35s ease both; }
+.section.active .card:nth-child(2) { animation-delay: .06s; }
+.section.active .card:nth-child(3) { animation-delay: .12s; }
+.section.active .card:nth-child(4) { animation-delay: .18s; }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+  .hero-cards { grid-template-columns: 1fr; }
+  .metric-grid { grid-template-columns: repeat(2, 1fr); }
+  .week-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { padding: 3rem 1.25rem 2.5rem; }
+  .page { padding: 0 1.25rem 4rem; }
+  .top-nav { padding: 0 1rem; }
+  .nav-wa .wa-btn span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <div class="nav-logo">Clubers <span>×</span> Comunidades</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="show('inicio')">Inicio</button>
+    <button class="nav-tab" onclick="show('roadmap')">Cómo participar</button>
+    <button class="nav-tab" onclick="show('impacto')">Impacto social</button>
+    <button class="nav-tab" onclick="show('comunicacion')">Comunicación</button>
+    <button class="nav-tab" onclick="show('metricas')">Métricas</button>
+  </div>
+  <div class="nav-wa">
+    <a class="wa-btn" href="https://wa.me/524613445141?text=Hola,%20me%20interesa%20activar%20Clubers%20en%20mi%20comunidad" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <span>Quiero participar</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ======== INICIO ======== -->
+<div id="s-inicio" class="section active">
+  <div class="hero">
+    <div class="hero-eyebrow">Programa de Impacto Social · Monterrey</div>
+    <h1>Tu causa genera<br><em>ingresos reales.</em><br>Sin pedir donaciones.</h1>
+    <p class="hero-sub">Clubers conecta a comunidades con propósito social con cientos de lugares de consumo en Monterrey. Cada vez que alguien de tu comunidad sale a comer o tomar usando tu código, tú recibes una comisión directa para financiar tu proyecto.</p>
+    <div class="hero-cards">
+      <div class="hero-card">
+        <div class="hero-card-val">$100 MXN</div>
+        <div class="hero-card-lbl">Crédito de bienvenida para cada nuevo usuario</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-val">30–70%</div>
+        <div class="hero-card-lbl">Descuento mínimo garantizado en cada consumo</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-val">$50 MXN</div>
+        <div class="hero-card-lbl">Ingreso para tu causa por cada activación</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="section-label">Cómo funciona el sistema</div>
+    <div class="card" style="margin-bottom:16px">
+      <h3>El flujo completo</h3>
+      <div class="card-sub">De la comunidad al impacto social, paso a paso</div>
+      <div class="flow">
+        <div class="flow-node"><div class="flow-label">Tu comunidad</div><div class="flow-sub">Recibe código único</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><div class="flow-label">Difunden</div><div class="flow-sub">El código a su red</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><div class="flow-label">Usuarios se registran</div><div class="flow-sub">+$100 de bienvenida</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><div class="flow-label">Consumen</div><div class="flow-sub">30–70% de descuento</div></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node highlight"><div class="flow-label" style="color:var(--pink)">Tu causa</div><div class="flow-sub">Recibe $50 por c/u</div></div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <h3>El usuario gana</h3>
+        <div class="card-sub">Beneficios inmediatos al registrarse</div>
+        <ul class="checklist">
+          <li><span class="check-dot">✓</span><span><div>$100 MXN crédito de bienvenida</div><div class="check-sub">Al crear su cuenta con el código de tu comunidad</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Mínimo 30% de descuento</div><div class="check-sub">En su primera visita a cada lugar afiliado</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Hasta 70% acumulando consumos</div><div class="check-sub">Súper Bienvenida al acumular $600 en consumos</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Impacto social real</div><div class="check-sub">Su consumo financia directamente tu causa</div></span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Tu comunidad gana</h3>
+        <div class="card-sub">Ingresos y visibilidad para tu causa</div>
+        <ul class="checklist">
+          <li><span class="check-dot">✓</span><span><div>$50 MXN por cada activación</div><div class="check-sub">Por cada persona que usa el código y realiza un consumo</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Hasta $25,000 MXN meta piloto</div><div class="check-sub">Referencial: 500 consumos de $200 o más</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Sin costo ni intermediarios</div><div class="check-sub">Solo difundir el código entre tu comunidad</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Crecimiento orgánico de la causa</div><div class="check-sub">Más visibilidad conforme crece el uso</div></span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>¿Quién puede participar?</h3>
+        <div class="card-sub">Tipos de comunidades elegibles</div>
+        <ul class="checklist">
+          <li><span class="check-dot">🎓</span><span><div>Comunidades universitarias</div><div class="check-sub">Sociedades estudiantiles, clubs de campus</div></span></li>
+          <li><span class="check-dot">🤝</span><span><div>Organizaciones civiles (A.C.)</div><div class="check-sub">Fundaciones, colectivos con proyecto documentado</div></span></li>
+          <li><span class="check-dot">⚽</span><span><div>Grupos deportivos y juveniles</div><div class="check-sub">Equipos, ligas, programas de formación</div></span></li>
+          <li><span class="check-dot">💡</span><span><div>Iniciativas sociales independientes</div><div class="check-sub">Con base activa de al menos 50 personas</div></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== ROADMAP ======== -->
+<div id="s-roadmap" class="section">
+  <div style="padding:3rem 2rem 0;max-width:960px;margin:0 auto">
+    <div class="section-label">Para activadores externos</div>
+    <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:.5rem">Cómo tu comunidad<br>empieza a generar ingresos</h2>
+    <p style="font-size:14px;color:var(--gray);margin-bottom:2.5rem;max-width:480px">Seis pasos claros, sin costo, sin complicaciones. Solo llevas el proceso a tu comunidad y ellos ahorran mientras tú acumulas para tu causa.</p>
+  </div>
+  <div class="page" style="padding-top:0">
+    <div class="grid2">
+      <div class="card">
+        <div class="roadmap" style="padding-left:2rem">
+          <div class="roadmap-line"></div>
+          <div class="step">
+            <div class="step-icon">1</div>
+            <div class="step-body">
+              <div class="step-title">Postúlate como comunidad activadora</div>
+              <div class="step-desc">Llena el formulario de incorporación con los datos de tu organización y describe el proyecto social que será beneficiado.</div>
+              <div class="step-tags"><span class="tag tag-pink">Formulario en línea</span><span class="tag tag-amber">Respuesta en 48 hrs</span></div>
+            </div>
+            <span class="step-time">Día 1</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">2</div>
+            <div class="step-body">
+              <div class="step-title">Recibe tu código único de comunidad</div>
+              <div class="step-desc">Una vez aprobada tu postulación, Clubers te asigna un código personalizado. Todo consumo rastreado con ese código genera comisión directa para tu causa. Es tuyo, único y rastreable.</div>
+              <div class="step-tags"><span class="tag tag-teal">Código exclusivo</span><span class="tag tag-blue">100% rastreable</span></div>
+            </div>
+            <span class="step-time">Día 2–3</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">3</div>
+            <div class="step-body">
+              <div class="step-title">Capacitación con el equipo</div>
+              <div class="step-desc">Sesión en vivo de 60–90 minutos donde aprendes cómo explicar el beneficio, cómo difundir el código, cómo acompañar a nuevos usuarios y cómo dar seguimiento a tus resultados.</div>
+              <div class="step-tags"><span class="tag tag-pink">Sesión en vivo</span><span class="tag tag-amber">Kit completo incluido</span></div>
+            </div>
+            <span class="step-time">Semana 1</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">4</div>
+            <div class="step-body">
+              <div class="step-title">Difunde el código en tu comunidad</div>
+              <div class="step-desc">Comparte el código por WhatsApp, Instagram, TikTok y en persona en tus eventos y reuniones. Usas los materiales ya listos del kit de activación. La app es gratuita, el registro tarda 2 minutos.</div>
+              <div class="step-tags"><span class="tag tag-teal">Materiales listos</span><span class="tag tag-blue">Posts, guiones, stories</span></div>
+            </div>
+            <span class="step-time">Semana 1–2</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">5</div>
+            <div class="step-body">
+              <div class="step-title">Activa el código en tus espacios</div>
+              <div class="step-desc">Lleva Clubers a tus reuniones, eventos y salidas grupales. Cuando alguien sale a comer o tomar, recuérdale que use la app. El uso en contexto real es lo que convierte el registro en comisión efectiva.</div>
+              <div class="step-tags"><span class="tag tag-pink">Uso en persona</span><span class="tag tag-amber">$50 por consumo</span></div>
+            </div>
+            <span class="step-time">Mes 1–6</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">6</div>
+            <div class="step-body">
+              <div class="step-title">Recibe el reporte mensual y tus ingresos</div>
+              <div class="step-desc">Cada mes recibes un reporte detallado de consumos activados, ingresos generados para tu causa y recomendaciones para el siguiente mes. El ingreso va directo a financiar tu proyecto social.</div>
+              <div class="step-tags"><span class="tag tag-teal">Reporte mensual</span><span class="tag tag-green">Ingreso directo</span></div>
+            </div>
+            <span class="step-time">Mensual</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <h3>Kit del activador incluido</h3>
+          <div class="card-sub">Lo que recibe tu comunidad al incorporarse</div>
+          <ul class="checklist">
+            <li><span class="check-dot">✓</span><span><div>Código único rastreable</div><div class="check-sub">Exclusivo para tu comunidad</div></span></li>
+            <li><span class="check-dot">✓</span><span><div>Guión de pitch de 60 segundos</div><div class="check-sub">Para explicar el beneficio en persona</div></span></li>
+            <li><span class="check-dot">✓</span><span><div>Pack de contenido digital</div><div class="check-sub">Stories, posts, mensajes para WhatsApp e Instagram</div></span></li>
+            <li><span class="check-dot">✓</span><span><div>Dashboard de seguimiento</div><div class="check-sub">Consumos y comisiones en tiempo real</div></span></li>
+            <li><span class="check-dot">✓</span><span><div>Capacitación en vivo</div><div class="check-sub">Sesión con el equipo de activación</div></span></li>
+            <li><span class="check-dot">✓</span><span><div>Acompañamiento mensual</div><div class="check-sub">Reporte + recomendaciones cada 30 días</div></span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Estima el ingreso de tu causa</h3>
+          <div class="card-sub">Mueve los controles para calcular</div>
+          <div class="calc-wrap">
+            <div class="calc-row">
+              <span class="calc-label">Miembros activos</span>
+              <input type="range" min="20" max="1000" value="200" step="10" id="sl-m" oninput="calcImpact()">
+              <span id="out-m" style="font-size:13px;font-weight:600;color:var(--dark);min-width:36px">200</span>
+            </div>
+            <div class="calc-row">
+              <span class="calc-label">% que activan el código</span>
+              <input type="range" min="10" max="80" value="40" step="5" id="sl-p" oninput="calcImpact()">
+              <span id="out-p" style="font-size:13px;font-weight:600;color:var(--dark);min-width:36px">40%</span>
+            </div>
+          </div>
+          <div class="metric-grid" style="grid-template-columns:repeat(2,1fr)">
+            <div class="metric-cell"><div class="metric-val" id="res-act">80</div><div class="metric-lbl">Activaciones esperadas</div></div>
+            <div class="metric-cell"><div class="metric-val" id="res-ing">$4,000</div><div class="metric-lbl">Ingresos para tu causa</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--gray)">*Basado en $50 MXN por activación con consumo mínimo de $200 MXN.</div>
+        </div>
+        <div class="card" style="background:var(--pink-pale);border-color:rgba(232,23,93,0.18)">
+          <h3 style="color:var(--pink)">Costo para tu comunidad</h3>
+          <div class="card-sub">Sin trampa, sin letra chica</div>
+          <div style="font-size:52px;font-weight:800;color:var(--dark);margin:.5rem 0;letter-spacing:-2px">$0</div>
+          <div style="font-size:13px;color:var(--gray);line-height:1.6">No hay costo de registro. No hay cuota mensual. No tienes que vender nada. Solo difundir el código y acompañar el uso real dentro de tu comunidad.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:2rem">Primeros 30 días</div>
+    <div class="card">
+      <h3>Plan semana a semana para el activador</h3>
+      <div class="card-sub">Lo que haces tú como responsable de comunidad</div>
+      <div class="week-grid">
+        <div class="week-cell">
+          <div class="week-label">Semana 1</div>
+          <div class="week-item">Postúlate y recibe tu código</div>
+          <div class="week-item">Asiste a la capacitación</div>
+          <div class="week-item">Descarga el kit de materiales</div>
+        </div>
+        <div class="week-cell">
+          <div class="week-label">Semana 2</div>
+          <div class="week-item">Primer anuncio al grupo principal</div>
+          <div class="week-item">Post de lanzamiento en redes</div>
+          <div class="week-item">Invita a 10 personas clave a registrarse</div>
+        </div>
+        <div class="week-cell">
+          <div class="week-label">Semana 3</div>
+          <div class="week-item">Story con primer testimonio real</div>
+          <div class="week-item">Recordatorio a quienes no han usado la app</div>
+          <div class="week-item">Revisa tu dashboard de consumos</div>
+        </div>
+        <div class="week-cell">
+          <div class="week-label">Semana 4</div>
+          <div class="week-item">Comparte el primer resultado con tu comunidad</div>
+          <div class="week-item">Incorpora más personas al grupo</div>
+          <div class="week-item">Recibe recomendaciones del equipo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== IMPACTO SOCIAL ======== -->
+<div id="s-impacto" class="section">
+  <div style="padding:3rem 2rem 0;max-width:960px;margin:0 auto">
+    <div class="section-label">Lo que hace Clubers por tu causa</div>
+    <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:.5rem">El consumo inteligente<br><em style="color:var(--teal);font-style:normal">financia el cambio social</em></h2>
+    <p style="font-size:14px;color:var(--gray);margin-bottom:2.5rem;max-width:520px">Clubers no es solo una app de descuentos. Es la infraestructura que convierte cada salida a cenar en un acto de impacto. Esto es lo que puede significar para tu comunidad en 6 meses.</p>
+  </div>
+  <div class="page" style="padding-top:0">
+    <div class="impact-banner">
+      <div class="big">$25,000 MXN</div>
+      <p>Potencial de ingreso para una sola comunidad activa en 6 meses — sin eventos de recaudación, sin pedir donaciones.</p>
+    </div>
+
+    <div class="section-label">Qué puede financiar tu comunidad</div>
+    <div class="grid3" style="margin-bottom:16px">
+      <div class="cause-card">
+        <div class="cause-icon">📚</div>
+        <div class="cause-title">Becas y materiales educativos</div>
+        <div class="cause-desc">500 consumos pueden cubrir útiles escolares, libros o inscripciones para jóvenes de escasos recursos durante un semestre completo.</div>
+        <div style="margin-top:auto;padding-top:12px"><span class="cause-val">500</span><span class="cause-val-label">consumos = 1 semestre de materiales</span></div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-icon">🌱</div>
+        <div class="cause-title">Proyectos ambientales comunitarios</div>
+        <div class="cause-desc">Reforestación, huertos urbanos, limpieza de espacios públicos o talleres de educación ambiental para colonias de Nuevo León.</div>
+        <div style="margin-top:auto;padding-top:12px"><span class="cause-val">$25K</span><span class="cause-val-label">financia campañas completas</span></div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-icon">🏃</div>
+        <div class="cause-title">Deporte y formación juvenil</div>
+        <div class="cause-desc">Uniformes, transporte, inscripciones a torneos, entrenadores. Todo lo que una liga o equipo comunitario necesita para operar un ciclo completo.</div>
+        <div style="margin-top:auto;padding-top:12px"><span class="cause-val">300</span><span class="cause-val-label">consumos = temporada deportiva</span></div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-icon">💻</div>
+        <div class="cause-title">Capacitación y talleres</div>
+        <div class="cause-desc">Talleres de habilidades digitales, emprendimiento, liderazgo o salud mental para comunidades juveniles sin acceso a formación privada.</div>
+        <div style="margin-top:auto;padding-top:12px"><span class="cause-val">200</span><span class="cause-val-label">consumos = 4 talleres comunitarios</span></div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-icon">❤️</div>
+        <div class="cause-title">Apoyo a familias vulnerables</div>
+        <div class="cause-desc">Despensas, medicamentos, apoyos de emergencia o proyectos de vivienda digna para familias identificadas por la organización social.</div>
+        <div style="margin-top:auto;padding-top:12px"><span class="cause-val">150</span><span class="cause-val-label">consumos = 30 despensas mensuales</span></div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-icon">🎨</div>
+        <div class="cause-title">Arte, cultura y expresión</div>
+        <div class="cause-desc">Materiales para murales, equipos de música, teatro comunitario, festivales culturales barriales. La cultura también es impacto social.</div>
+        <div style="margin-top:auto;padding-top:12px"><span class="cause-val">$10K</span><span class="cause-val-label">= festival cultural independiente</span></div>
+      </div>
+    </div>
+
+    <div class="section-label">Proyección de alcance — Piloto 6 meses</div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Alcance de personas impactadas por mes</h3>
+        <div class="card-sub">Rango estimado acumulando comunidades activas en NL</div>
+        <div style="padding:.5rem 0">
+          <div class="bar-row"><div class="bar-header"><span>Mes 1</span><span>1,000 – 3,000</span></div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span>Mes 2</span><span>1,500 – 3,500</span></div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span>Mes 3</span><span>2,000 – 4,500</span></div><div class="bar-track"><div class="bar-fill" style="width:56%"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span>Mes 4</span><span>2,500 – 5,500</span></div><div class="bar-track"><div class="bar-fill" style="width:69%"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span>Mes 5</span><span>3,000 – 6,500</span></div><div class="bar-track"><div class="bar-fill" style="width:81%"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span>Mes 6</span><span>3,500 – 8,000</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Impacto acumulado al final del piloto</h3>
+        <div class="card-sub">Escenario conservador · 5–10 comunidades activas</div>
+        <div class="metric-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:1rem">
+          <div class="metric-cell"><div class="metric-val">8,000+</div><div class="metric-lbl">Personas alcanzadas</div></div>
+          <div class="metric-cell"><div class="metric-val" style="color:var(--teal)">$125K+</div><div class="metric-lbl">Generados para causas sociales</div></div>
+          <div class="metric-cell"><div class="metric-val" style="color:var(--amber)">10</div><div class="metric-lbl">Causas beneficiadas</div></div>
+          <div class="metric-cell"><div class="metric-val" style="color:var(--blue)">2,500+</div><div class="metric-lbl">Activaciones directas</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--gray);line-height:1.6">Cada peso generado va directo a financiar proyectos sociales reales en Nuevo León, sin intermediarios ni costos ocultos para las comunidades.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:0">
+      <h3>El efecto multiplicador del consumo social</h3>
+      <div class="card-sub">Por qué el modelo escala de forma orgánica</div>
+      <div class="grid3" style="margin-bottom:0">
+        <div style="padding:1rem;border:1px solid var(--line);border-radius:var(--radius-sm)">
+          <div style="font-size:11px;font-weight:500;color:var(--pink);margin-bottom:8px;letter-spacing:.5px">EFECTO RED</div>
+          <div style="font-size:13px;color:var(--gray);line-height:1.6">Cuando un miembro recomienda Clubers a 3 amigos fuera de la comunidad usando el mismo código, el impacto se triplica sin que el activador haga nada extra.</div>
+        </div>
+        <div style="padding:1rem;border:1px solid var(--line);border-radius:var(--radius-sm)">
+          <div style="font-size:11px;font-weight:500;color:var(--teal);margin-bottom:8px;letter-spacing:.5px">RECURRENCIA</div>
+          <div style="font-size:13px;color:var(--gray);line-height:1.6">Un usuario activo sale a comer en promedio 2–4 veces por mes. Cada visita a un lugar nuevo genera otra comisión. La causa genera ingresos continuos, no solo al momento del registro.</div>
+        </div>
+        <div style="padding:1rem;border:1px solid var(--line);border-radius:var(--radius-sm)">
+          <div style="font-size:11px;font-weight:500;color:var(--amber);margin-bottom:8px;letter-spacing:.5px">ESCALA</div>
+          <div style="font-size:13px;color:var(--gray);line-height:1.6">Lo que funciona en Monterrey es replicable en cualquier ciudad donde Clubers opera. El modelo no depende de eventos o temporadas — es permanente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== COMUNICACIÓN ======== -->
+<div id="s-comunicacion" class="section">
+  <div style="padding:3rem 2rem 0;max-width:960px;margin:0 auto">
+    <div class="section-label">Kit de comunicación</div>
+    <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:.5rem">Mensajes listos.<br>Solo pon tu código.</h2>
+    <p style="font-size:14px;color:var(--gray);margin-bottom:2.5rem;max-width:480px">Reemplaza <em style="color:var(--pink);font-style:normal">[CÓDIGO]</em> y <em style="color:var(--pink);font-style:normal">[CAUSA]</em> con los datos de tu comunidad. Todo lo demás ya está listo.</p>
+  </div>
+  <div class="page" style="padding-top:0">
+    <div class="grid2">
+      <div class="card">
+        <h3>Mensajes para compartir</h3>
+        <div class="card-sub">Copia, personaliza y difunde</div>
+        <div class="post-card">
+          <div class="bubble-platform">Instagram / TikTok — Post de lanzamiento</div>
+          <div style="font-size:13px;color:var(--dark);line-height:1.65">🎉 ¡Tenemos código Clubers!<br><br>Descarga la app y regístrate con el código <em>[CÓDIGO]</em> y obtén:<br>✅ $100 de crédito de bienvenida<br>✅ Mínimo 30% de descuento donde salgas a comer<br>✅ Tu consumo apoya directamente <em>[CAUSA]</em><br><br>Es gratis, es ya y es real 👊</div>
+          <div class="post-cta">→ Copiar texto</div>
+        </div>
+        <div class="post-card">
+          <div class="bubble-platform">WhatsApp — Mensaje de grupo</div>
+          <div style="font-size:13px;color:var(--dark);line-height:1.65">Hola a todos 👋<br><br>Ya tenemos nuestro código Clubers: <em>[CÓDIGO]</em><br><br>Úsalo al registrarte en la app y te dan $100 de crédito + hasta 40% de descuento en cientos de lugares de Monterrey. Cada vez que consumes con ese código, va dinero directo a <em>[CAUSA]</em>. Tarda 2 minutos ☝️</div>
+          <div class="post-cta">→ Copiar texto</div>
+        </div>
+        <div class="post-card">
+          <div class="bubble-platform">Pitch en persona — 60 segundos</div>
+          <div style="font-size:13px;color:var(--dark);line-height:1.65">"¿Ya tienes Clubers? Es una app gratis donde te dan hasta 40% de descuento cada que sales a comer en Monterrey. Si te registras con mi código <em>[CÓDIGO]</em>, además de los $100 de bienvenida, una parte de lo que consumes va directo a <em>[CAUSA]</em>. No te cuesta nada extra."</div>
+          <div class="post-cta">→ Copiar guión</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <h3>Calendario de contenido mensual</h3>
+          <div class="card-sub">Ritmo sugerido para mantener la activación viva</div>
+          <div class="week-grid" style="grid-template-columns:1fr 1fr">
+            <div class="week-cell">
+              <div class="week-label">Semana 1</div>
+              <div class="week-item">Post de presentación del código</div>
+              <div class="week-item">Video del activador explicando el beneficio</div>
+              <div class="week-item">Mensaje al grupo de WhatsApp</div>
+            </div>
+            <div class="week-cell">
+              <div class="week-label">Semana 2</div>
+              <div class="week-item">Story mostrando descuento en uso real</div>
+              <div class="week-item">Testimonio del primer usuario activado</div>
+              <div class="week-item">Recordatorio suave por WhatsApp</div>
+            </div>
+            <div class="week-cell">
+              <div class="week-label">Semana 3</div>
+              <div class="week-item">Contador de consumos activados</div>
+              <div class="week-item">Destacar el proyecto que se beneficia</div>
+              <div class="week-item">Invitar a nuevos miembros</div>
+            </div>
+            <div class="week-cell">
+              <div class="week-label">Semana 4</div>
+              <div class="week-item">Reporte del mes: $X generados</div>
+              <div class="week-item">Reconocer usuarios más activos</div>
+              <div class="week-item">Teaser de la siguiente meta</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Hashtags recomendados</h3>
+          <div class="card-sub">Para amplificar el alcance en redes</div>
+          <div class="pill-row">
+            <span class="tag tag-pink">#ClubersImpacto</span>
+            <span class="tag tag-pink">#ConsumeConPropósito</span>
+            <span class="tag tag-teal">#ClubersMTY</span>
+            <span class="tag tag-teal">#AhorraYApoya</span>
+            <span class="tag tag-blue">#NuevoLeónImpacta</span>
+            <span class="tag tag-amber">#JuventudesImpactando</span>
+            <span class="tag tag-green">#ImpactoSocial</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>El mensaje que más convierte</h3>
+          <div class="card-sub">Lo que más motiva al usuario a registrarse</div>
+          <ul class="checklist">
+            <li><span class="check-dot">1</span><span><div>El beneficio personal primero</div><div class="check-sub">"Tú ahorras" antes que "apoya una causa"</div></span></li>
+            <li><span class="check-dot">2</span><span><div>Mostrar el ahorro concreto en MXN</div><div class="check-sub">$100 de bienvenida + 30% es tangible</div></span></li>
+            <li><span class="check-dot">3</span><span><div>El impacto social como bonus emocional</div><div class="check-sub">Cierra con "y además apoyas X"</div></span></li>
+            <li><span class="check-dot">4</span><span><div>Prueba social de alguien cercano</div><div class="check-sub">Un testimonio real vale más que 10 posts</div></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== MÉTRICAS ======== -->
+<div id="s-metricas" class="section">
+  <div style="padding:3rem 2rem 0;max-width:960px;margin:0 auto">
+    <div class="section-label">Seguimiento y resultados</div>
+    <h2 style="font-size:clamp(24px,4vw,40px);font-weight:800;margin-bottom:.5rem">Lo que Clubers mide<br>para que tu causa crezca</h2>
+    <p style="font-size:14px;color:var(--gray);margin-bottom:2.5rem;max-width:520px">Cada mes recibes un reporte transparente. No solo de cuánto generaste, sino del alcance real que tu causa está teniendo gracias al modelo Clubers.</p>
+  </div>
+  <div class="page" style="padding-top:0">
+    <div class="grid2">
+      <div class="card">
+        <h3>Qué mide el reporte mensual</h3>
+        <div class="card-sub">Entregables que recibe cada comunidad activadora</div>
+        <ul class="checklist">
+          <li><span class="check-dot">✓</span><span><div>Consumos activados en el mes</div><div class="check-sub">Número exacto de personas que usaron el código y consumieron</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Ingresos generados para la causa</div><div class="check-sub">Monto en MXN destinado directamente a tu proyecto social</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Alcance de personas impactadas</div><div class="check-sub">Cuántas personas conocieron tu causa a través de Clubers</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Recurrencia del uso</div><div class="check-sub">Usuarios que consumieron más de una vez — indicador clave de adopción</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Ahorro generado a tu comunidad</div><div class="check-sub">Total acumulado en descuentos que recibieron tus miembros</div></span></li>
+          <li><span class="check-dot">✓</span><span><div>Recomendaciones estratégicas</div><div class="check-sub">Ajuste de mensaje, dinámica o canal para el siguiente mes</div></span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>KPIs de éxito por comunidad</h3>
+        <div class="card-sub">Indicadores para evaluar la salud de cada activación</div>
+        <div class="metric-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:1rem">
+          <div class="metric-cell"><div class="metric-val">≥10</div><div class="metric-lbl">Activaciones nuevas por semana</div></div>
+          <div class="metric-cell"><div class="metric-val" style="color:var(--teal)">≥60%</div><div class="metric-lbl">Tasa de uso efectivo</div></div>
+          <div class="metric-cell"><div class="metric-val" style="color:var(--amber)">≥2x</div><div class="metric-lbl">Consumos promedio por usuario</div></div>
+          <div class="metric-cell"><div class="metric-val" style="color:var(--blue)">$500+</div><div class="metric-lbl">Ahorro mensual para la comunidad</div></div>
+        </div>
+        <div class="divider"></div>
+        <h3 style="margin-bottom:8px;font-size:14px">Señales de una activación sana</h3>
+        <div class="signal"><span class="signal-dot dot-green"></span><div><div class="signal-text">Usuarios usan la app sin que se les recuerde</div><div class="signal-sub">El uso ocurre de forma natural en la decisión de salida del grupo</div></div></div>
+        <div class="signal"><span class="signal-dot dot-green"></span><div><div class="signal-text">Recomendación a personas fuera de la comunidad</div><div class="signal-sub">El código se difunde solo, el alcance crece sin esfuerzo extra</div></div></div>
+        <div class="signal"><span class="signal-dot dot-green"></span><div><div class="signal-text">La comunidad pide ampliar su meta</div><div class="signal-sub">Cuando el equipo ve los resultados y quiere más — modelo validado</div></div></div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">Señales de alerta</div>
+    <div class="card">
+      <h3>Qué observar y cómo actuar</h3>
+      <div class="card-sub">Indicadores que requieren ajuste en la estrategia</div>
+      <div class="grid3" style="margin-bottom:0">
+        <div style="padding:1rem;border:1px solid rgba(220,38,38,0.15);border-radius:var(--radius-sm);background:rgba(220,38,38,0.03)">
+          <div style="font-size:11px;font-weight:500;color:#dc2626;margin-bottom:8px;letter-spacing:.5px">ALTA DESCARGA, BAJO CONSUMO</div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.6">El usuario se registró pero no ha consumido. Hay fricción entre la descarga y el primer uso. Acción: revisar el mensaje y activar el código en un contexto presencial concreto.</div>
+        </div>
+        <div style="padding:1rem;border:1px solid rgba(220,38,38,0.15);border-radius:var(--radius-sm);background:rgba(220,38,38,0.03)">
+          <div style="font-size:11px;font-weight:500;color:#dc2626;margin-bottom:8px;letter-spacing:.5px">ACTIVADOR INACTIVO DESPUÉS DEL MES 1</div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.6">Sin seguimiento activo, el sistema se congela. Acción: check-in semanal de 10 minutos con el activador responsable.</div>
+        </div>
+        <div style="padding:1rem;border:1px solid rgba(220,38,38,0.15);border-radius:var(--radius-sm);background:rgba(220,38,38,0.03)">
+          <div style="font-size:11px;font-weight:500;color:#dc2626;margin-bottom:8px;letter-spacing:.5px">BAJO USO EN GRUPO</div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.6">El código no se ha integrado en las salidas grupales reales. Acción: en la siguiente reunión, proponer ir a un lugar Clubers y usar la app en ese momento.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1rem">Potencial a escala</div>
+    <div class="card" style="background:rgba(0,168,135,0.05);border-color:rgba(0,168,135,0.18)">
+      <h3 style="color:var(--teal)">Si el modelo se replica en 10 comunidades activas</h3>
+      <div class="card-sub">Escenario de 6 meses con adopción sostenida</div>
+      <div class="metric-grid">
+        <div class="metric-cell"><div class="metric-val" style="color:var(--teal)">50,000+</div><div class="metric-lbl">Personas que conocen una causa social</div></div>
+        <div class="metric-cell"><div class="metric-val" style="color:var(--teal)">$250K MXN</div><div class="metric-lbl">Generados para causas sociales en NL</div></div>
+        <div class="metric-cell"><div class="metric-val" style="color:var(--teal)">25,000+</div><div class="metric-lbl">Consumos con impacto social registrado</div></div>
+        <div class="metric-cell"><div class="metric-val" style="color:var(--teal)">10</div><div class="metric-lbl">Proyectos sociales con financiamiento estable</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--gray);line-height:1.7;margin-top:.5rem">
+        Este es el potencial de un modelo donde el consumo cotidiano — salir a comer, tomar un café, ir de cumpleaños — se convierte en el motor permanente de financiamiento para el cambio social en Nuevo León.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER CTA -->
+<div class="footer-cta">
+  <h2>¿Tu comunidad quiere participar?</h2>
+  <p>Escríbenos por WhatsApp. Te explicamos cómo activar el código de tu comunidad y empezar a generar ingresos para tus proyectos desde el primer mes.</p>
+  <a class="wa-btn-lg" href="https://wa.me/524613445141?text=Hola,%20me%20interesa%20activar%20Clubers%20en%20mi%20comunidad" target="_blank">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Escríbenos por WhatsApp
+  </a>
+  <p class="footer-tel">Juventudes Impactando México A.C. — <strong>461 344 5141</strong></p>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function calcImpact() {
+  const m = parseInt(document.getElementById('sl-m').value);
+  const p = parseInt(document.getElementById('sl-p').value);
+  const act = Math.round(m * p / 100);
+  const ing = act * 50;
+  document.getElementById('out-m').textContent = m;
+  document.getElementById('out-p').textContent = p + '%';
+  document.getElementById('res-act').textContent = act;
+  document.getElementById('res-ing').textContent = '$' + ing.toLocaleString('es-MX');
+}
+
+document.querySelectorAll('.post-cta').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const text = this.closest('.post-card').querySelector('div:nth-child(2)').innerText;
+    navigator.clipboard.writeText(text).catch(() => {});
+    const orig = this.textContent;
+    this.textContent = '✓ Copiado';
+    setTimeout(() => this.textContent = orig, 1800);
+  });
+});
+</script>
+</body>
+</html>
