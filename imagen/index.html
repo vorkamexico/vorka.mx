@@ -1,0 +1,605 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guanajuato Élite Woman — Menú Ejecutivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose:    #b5666a;
+    --rose-lt: #f5eeee;
+    --gold:    #9a7e50;
+    --gold-lt: #f5f0e8;
+    --ink:     #1c1916;
+    --muted:   #7a726b;
+    --border:  #e4ddd6;
+    --bg:      #faf9f7;
+    --white:   #ffffff;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 64px 24px 48px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 480px; height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, #e8d9d020 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 5vw, 52px);
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .tagline {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 200;
+  }
+
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 28px auto 0;
+  }
+
+  .divider-ornament span {
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .divider-ornament svg {
+    width: 12px; height: 12px;
+    fill: var(--gold);
+    opacity: 0.7;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 300;
+    margin: 48px 0 20px;
+  }
+
+  /* ── AGENDA ── */
+  .agenda {
+    border-top: 1px solid var(--border);
+  }
+
+  .agenda-row {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    align-items: start;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .agenda-row:hover {
+    background: var(--white);
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 4px;
+  }
+
+  .agenda-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--rose);
+    padding-top: 1px;
+    white-space: nowrap;
+  }
+
+  .agenda-content {}
+
+  .agenda-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+
+  .agenda-detail {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 200;
+    line-height: 1.5;
+  }
+
+  .agenda-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  .tag-rose   { background: var(--rose-lt); color: var(--rose); }
+  .tag-gold   { background: var(--gold-lt); color: var(--gold); }
+  .tag-ink    { background: #eeeae5;        color: #5a524a; }
+
+  /* ── MENU GRID ── */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .menu-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .menu-card:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(181,102,106,0.08);
+  }
+
+  .card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--rose);
+    opacity: 0.7;
+    min-width: 20px;
+    padding-top: 2px;
+  }
+
+  .card-body {}
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 5px;
+    line-height: 1.35;
+  }
+
+  .card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 200;
+    line-height: 1.5;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .footer-info {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 200;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-badge {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 300;
+  }
+
+  /* ── STAT ROW ── */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  .stat {
+    background: var(--white);
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 200;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  header       { animation: fadeUp 0.6s ease both; }
+  .stat-row    { animation: fadeUp 0.6s 0.1s ease both; }
+  .agenda-row  { animation: fadeUp 0.4s ease both; }
+  .menu-card   { animation: fadeUp 0.4s ease both; }
+
+  .agenda-row:nth-child(1) { animation-delay: 0.05s; }
+  .agenda-row:nth-child(2) { animation-delay: 0.10s; }
+  .agenda-row:nth-child(3) { animation-delay: 0.15s; }
+  .agenda-row:nth-child(4) { animation-delay: 0.20s; }
+  .agenda-row:nth-child(5) { animation-delay: 0.25s; }
+  .agenda-row:nth-child(6) { animation-delay: 0.30s; }
+  .agenda-row:nth-child(7) { animation-delay: 0.35s; }
+  .agenda-row:nth-child(8) { animation-delay: 0.40s; }
+  .agenda-row:nth-child(9) { animation-delay: 0.45s; }
+
+  .menu-card:nth-child(1)  { animation-delay: 0.05s; }
+  .menu-card:nth-child(2)  { animation-delay: 0.08s; }
+  .menu-card:nth-child(3)  { animation-delay: 0.11s; }
+  .menu-card:nth-child(4)  { animation-delay: 0.14s; }
+  .menu-card:nth-child(5)  { animation-delay: 0.17s; }
+  .menu-card:nth-child(6)  { animation-delay: 0.20s; }
+  .menu-card:nth-child(7)  { animation-delay: 0.23s; }
+  .menu-card:nth-child(8)  { animation-delay: 0.26s; }
+  .menu-card:nth-child(9)  { animation-delay: 0.29s; }
+  .menu-card:nth-child(10) { animation-delay: 0.32s; }
+  .menu-card:nth-child(11) { animation-delay: 0.35s; }
+  .menu-card:nth-child(12) { animation-delay: 0.38s; }
+  .menu-card:nth-child(13) { animation-delay: 0.41s; }
+  .menu-card:nth-child(14) { animation-delay: 0.44s; }
+  .menu-card:nth-child(15) { animation-delay: 0.47s; }
+
+  @media (max-width: 600px) {
+    header { padding: 48px 20px 36px; }
+    .agenda-row { grid-template-columns: 90px 1fr; }
+    .agenda-tag { display: none; }
+    .stat-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <p class="eyebrow">Celaya, Guanajuato · Evento de un día</p>
+  <h1>Guanajuato <em>Élite</em> Woman</h1>
+  <p class="tagline">Moda &nbsp;·&nbsp; Imagen &nbsp;·&nbsp; Liderazgo &nbsp;·&nbsp; Empoderamiento</p>
+  <div class="divider-ornament">
+    <span></span>
+    <svg viewBox="0 0 16 16"><path d="M8 0 L9.5 6 L16 8 L9.5 10 L8 16 L6.5 10 L0 8 L6.5 6 Z"/></svg>
+    <span></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── STATS ── -->
+  <p class="section-label" style="margin-top:40px;">Datos generales</p>
+  <div class="stat-row">
+    <div class="stat">
+      <p class="stat-value">3 h</p>
+      <p class="stat-label">Duración total</p>
+    </div>
+    <div class="stat">
+      <p class="stat-value">9</p>
+      <p class="stat-label">Bloques del programa</p>
+    </div>
+    <div class="stat">
+      <p class="stat-value">15</p>
+      <p class="stat-label">Secciones del proyecto</p>
+    </div>
+  </div>
+
+  <!-- ── AGENDA ── -->
+  <p class="section-label">Programa del día — 3 horas</p>
+  <div class="agenda">
+
+    <div class="agenda-row">
+      <p class="agenda-time">09:00 – 09:15</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Alfombra rosa &amp; registro glam</p>
+        <p class="agenda-detail">Bienvenida fotográfica, photocall, welcome kit y activación sensorial de entrada</p>
+      </div>
+      <span class="agenda-tag tag-rose">Experiencia</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">09:15 – 09:30</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Inauguración oficial</p>
+        <p class="agenda-detail">Speech de bienvenida, declaratoria del evento y presentación de autoridades y patrocinadores</p>
+      </div>
+      <span class="agenda-tag tag-ink">Protocolo</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">09:30 – 10:00</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Conferencia magistral</p>
+        <p class="agenda-detail">Speaker principal — liderazgo, imagen y poder femenino</p>
+      </div>
+      <span class="agenda-tag tag-gold">Conferencia</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">10:00 – 10:30</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Panel: mujeres que transforman Guanajuato</p>
+        <p class="agenda-detail">3 empresarias / líderes locales — economía, moda e impacto social</p>
+      </div>
+      <span class="agenda-tag tag-gold">Panel</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">10:30 – 10:50</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Pasarela de moda &amp; talento local</p>
+        <p class="agenda-detail">Diseñadoras guanajuatenses, artesanas y colecciones emergentes</p>
+      </div>
+      <span class="agenda-tag tag-rose">Pasarela</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">10:50 – 11:20</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Expo &amp; zona de emprendimiento</p>
+        <p class="agenda-detail">Recorrido libre por stands, marcas patrocinadoras y emprendedoras expositoras</p>
+      </div>
+      <span class="agenda-tag tag-ink">Expo</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">11:20 – 11:40</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Premiación &amp; reconocimientos</p>
+        <p class="agenda-detail">Mujeres destacadas del estado — liderazgo, innovación y emprendimiento</p>
+      </div>
+      <span class="agenda-tag tag-rose">Premiación</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">11:40 – 11:55</p>
+      <div class="agenda-content">
+        <p class="agenda-name">Performance artístico &amp; cierre emocional</p>
+        <p class="agenda-detail">Actuación musical o artística, palabras de cierre y fotografía grupal</p>
+      </div>
+      <span class="agenda-tag tag-gold">Arte</span>
+    </div>
+
+    <div class="agenda-row">
+      <p class="agenda-time">11:55 – 12:00</p>
+      <div class="agenda-content">
+        <p class="agenda-name">After networking &amp; brindis</p>
+        <p class="agenda-detail">Coctelería sin alcohol, intercambio de contactos y cobertura final de medios</p>
+      </div>
+      <span class="agenda-tag tag-ink">Networking</span>
+    </div>
+
+  </div>
+
+  <!-- ── SECCIONES DEL PROYECTO ── -->
+  <p class="section-label" style="margin-top:52px;">Secciones del proyecto completo</p>
+  <div class="menu-grid">
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 01">
+      <span class="card-num">01</span>
+      <div class="card-body">
+        <p class="card-title">Concepto general</p>
+        <p class="card-desc">Nombre, slogan, storytelling e identidad visual</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 02">
+      <span class="card-num">02</span>
+      <div class="card-body">
+        <p class="card-title">Perfil del evento</p>
+        <p class="card-desc">Público objetivo, buyer persona y segmentación</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 03">
+      <span class="card-num">03</span>
+      <div class="card-body">
+        <p class="card-title">Estructura del evento</p>
+        <p class="card-desc">Pasarela, conferencias, expo y activaciones</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 04">
+      <span class="card-num">04</span>
+      <div class="card-body">
+        <p class="card-title">Logística completa</p>
+        <p class="card-desc">Staff, proveedores, checklist y diseño del venue</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 05">
+      <span class="card-num">05</span>
+      <div class="card-body">
+        <p class="card-title">Venues en Celaya</p>
+        <p class="card-desc">Hoteles, haciendas, centros de convenciones y rooftops</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 06">
+      <span class="card-num">06</span>
+      <div class="card-body">
+        <p class="card-title">Estrategia de marketing</p>
+        <p class="card-desc">Redes, influencers, prensa y campañas digitales</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 07">
+      <span class="card-num">07</span>
+      <div class="card-body">
+        <p class="card-title">Patrocinios y alianzas</p>
+        <p class="card-desc">Niveles, beneficios y pitch para marcas</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 08">
+      <span class="card-num">08</span>
+      <div class="card-body">
+        <p class="card-title">Modelo de negocio</p>
+        <p class="card-desc">Fuentes de ingreso, ticketing y proyección financiera</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 09">
+      <span class="card-num">09</span>
+      <div class="card-body">
+        <p class="card-title">Experiencia premium</p>
+        <p class="card-desc">VIP, welcome kit, gift bags y activaciones sensoriales</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 10">
+      <span class="card-num">10</span>
+      <div class="card-body">
+        <p class="card-title">Impacto social</p>
+        <p class="card-desc">Emprendedoras, artesanas, becas y desarrollo de liderazgo</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 11">
+      <span class="card-num">11</span>
+      <div class="card-body">
+        <p class="card-title">Invitadas y speakers</p>
+        <p class="card-desc">Empresarias, influencers, diseñadoras y líderes</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 12">
+      <span class="card-num">12</span>
+      <div class="card-body">
+        <p class="card-title">Identidad mediática</p>
+        <p class="card-desc">Posicionamiento estatal, expansión nacional e iconicidad</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 13">
+      <span class="card-num">13</span>
+      <div class="card-body">
+        <p class="card-title">Documentos y materiales</p>
+        <p class="card-desc">Dossier, pitch deck, invitación VIP y guion del conductor</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 14">
+      <span class="card-num">14</span>
+      <div class="card-body">
+        <p class="card-title">Estrategia digital y visual</p>
+        <p class="card-desc">Reels, streaming, cobertura en vivo y mini documental</p>
+      </div>
+    </a>
+
+    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 15">
+      <span class="card-num">15</span>
+      <div class="card-body">
+        <p class="card-title">Plan de acción 90 días</p>
+        <p class="card-desc">Fases, ruta crítica, KPIs e indicadores de éxito</p>
+      </div>
+    </a>
+
+  </div>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p class="footer-info">Celaya, Guanajuato &nbsp;·&nbsp; Evento único · 3 horas de programa</p>
+  <p class="footer-badge">Guanajuato Élite Woman</p>
+</footer>
+
+</body>
+</html>
