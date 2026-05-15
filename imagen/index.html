@@ -5,268 +5,134 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Guanajuato Élite Woman — Menú Ejecutivo</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --rose:    #b5666a;
-    --rose-lt: #f5eeee;
-    --gold:    #9a7e50;
-    --gold-lt: #f5f0e8;
-    --ink:     #1c1916;
-    --muted:   #7a726b;
-    --border:  #e4ddd6;
-    --bg:      #faf9f7;
+    --rose:    #9b3a3d;
+    --rose-lt: #fce8e8;
+    --gold:    #6b4e1e;
+    --gold-lt: #f5eedb;
+    --ink:     #0f0d0b;
+    --body:    #1e1a16;
+    --muted:   #4a4138;
+    --border:  #c8c0b8;
+    --bg:      #f8f6f3;
     --white:   #ffffff;
   }
 
-  html { font-size: 16px; }
-
   body {
     background: var(--bg);
-    color: var(--ink);
+    color: var(--body);
     font-family: 'Jost', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.6;
     min-height: 100vh;
-    padding: 0;
   }
 
-  /* ── HEADER ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .nav-brand em { font-style: italic; color: var(--rose); }
+
+  .nav-back {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--body);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .nav-back:hover { background: var(--bg); border-color: var(--rose); color: var(--rose); }
+  .nav-back.visible { display: flex; }
+
+  /* HEADER */
   header {
     text-align: center;
-    padding: 64px 24px 48px;
+    padding: 56px 24px 44px;
     border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  header::before {
-    content: '';
-    position: absolute;
-    top: -80px; left: 50%;
-    transform: translateX(-50%);
-    width: 480px; height: 480px;
-    border-radius: 50%;
-    background: radial-gradient(ellipse at center, #e8d9d020 0%, transparent 70%);
-    pointer-events: none;
   }
 
   .eyebrow {
-    font-family: 'Jost', sans-serif;
-    font-weight: 200;
-    font-size: 10px;
-    letter-spacing: 0.22em;
+    font-size: 12px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 20px;
+    font-weight: 400;
+    margin-bottom: 18px;
   }
 
   h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(36px, 5vw, 52px);
     color: var(--ink);
     line-height: 1.1;
-    margin-bottom: 10px;
-    letter-spacing: 0.02em;
+    margin-bottom: 12px;
   }
 
-  h1 em {
-    font-style: italic;
-    color: var(--rose);
-  }
+  h1 em { font-style: italic; color: var(--rose); }
 
   .tagline {
-    font-size: 12px;
-    letter-spacing: 0.18em;
+    font-size: 14px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
-    font-weight: 200;
   }
 
-  .divider-ornament {
+  .ornament {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    margin: 28px auto 0;
+    gap: 14px;
+    margin: 26px auto 0;
   }
 
-  .divider-ornament span {
-    display: block;
-    width: 60px;
-    height: 1px;
-    background: var(--border);
-  }
+  .ornament span { display: block; width: 56px; height: 1px; background: var(--border); }
+  .ornament svg { width: 11px; height: 11px; fill: var(--gold); }
 
-  .divider-ornament svg {
-    width: 12px; height: 12px;
-    fill: var(--gold);
-    opacity: 0.7;
-  }
+  /* MAIN */
+  main { max-width: 900px; margin: 0 auto; padding: 0 28px 72px; }
 
-  /* ── MAIN ── */
-  main {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 24px 80px;
-  }
-
-  /* ── SECTION LABEL ── */
-  .section-label {
-    font-size: 10px;
+  .sec-label {
+    font-size: 11px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--muted);
-    font-weight: 300;
-    margin: 48px 0 20px;
+    margin: 44px 0 18px;
+    display: block;
   }
 
-  /* ── AGENDA ── */
-  .agenda {
-    border-top: 1px solid var(--border);
-  }
-
-  .agenda-row {
-    display: grid;
-    grid-template-columns: 110px 1fr auto;
-    align-items: start;
-    gap: 20px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.2s;
-  }
-
-  .agenda-row:hover {
-    background: var(--white);
-    margin: 0 -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-    border-radius: 4px;
-  }
-
-  .agenda-time {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 15px;
-    font-weight: 300;
-    color: var(--rose);
-    padding-top: 1px;
-    white-space: nowrap;
-  }
-
-  .agenda-content {}
-
-  .agenda-name {
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.4;
-    margin-bottom: 4px;
-  }
-
-  .agenda-detail {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 200;
-    line-height: 1.5;
-  }
-
-  .agenda-tag {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-    margin-top: 2px;
-  }
-
-  .tag-rose   { background: var(--rose-lt); color: var(--rose); }
-  .tag-gold   { background: var(--gold-lt); color: var(--gold); }
-  .tag-ink    { background: #eeeae5;        color: #5a524a; }
-
-  /* ── MENU GRID ── */
-  .menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 12px;
-  }
-
-  .menu-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 20px 22px;
-    cursor: pointer;
-    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .menu-card:hover {
-    border-color: var(--rose);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(181,102,106,0.08);
-  }
-
-  .card-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--rose);
-    opacity: 0.7;
-    min-width: 20px;
-    padding-top: 2px;
-  }
-
-  .card-body {}
-
-  .card-title {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--ink);
-    margin-bottom: 5px;
-    line-height: 1.35;
-  }
-
-  .card-desc {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 200;
-    line-height: 1.5;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 860px;
-    margin: 0 auto;
-  }
-
-  .footer-info {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 200;
-    letter-spacing: 0.05em;
-  }
-
-  .footer-badge {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 300;
-  }
-
-  /* ── STAT ROW ── */
+  /* STATS */
   .stat-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -275,331 +141,688 @@
     border: 1px solid var(--border);
     border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 48px;
   }
 
   .stat {
     background: var(--white);
-    padding: 20px 24px;
+    padding: 22px 20px;
     text-align: center;
   }
 
   .stat-value {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
+    font-size: 34px;
     color: var(--ink);
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .stat-label {
-    font-size: 10px;
-    letter-spacing: 0.16em;
+    font-size: 12px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--muted);
-    font-weight: 200;
   }
 
-  /* ── ANIMATIONS ── */
+  /* AGENDA */
+  .agenda { border-top: 1px solid var(--border); }
+
+  .agenda-row {
+    display: grid;
+    grid-template-columns: 128px 1fr auto;
+    align-items: start;
+    gap: 20px;
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--border);
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .agenda-row:hover { background: var(--white); }
+
+  .agenda-time {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--rose);
+    padding-top: 1px;
+    white-space: nowrap;
+  }
+
+  .agenda-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 5px;
+    line-height: 1.4;
+  }
+
+  .agenda-detail {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .agenda-tag {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .tag-rose { background: var(--rose-lt); color: var(--rose); }
+  .tag-gold { background: var(--gold-lt); color: var(--gold); }
+  .tag-ink  { background: #eae5de; color: var(--muted); }
+
+  /* MENU GRID */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+  }
+
+  .menu-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+    cursor: pointer;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    font-family: 'Jost', sans-serif;
+    transition: border-color 0.2s, transform 0.18s, box-shadow 0.18s;
+  }
+
+  .menu-card:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(155,58,61,0.1);
+  }
+
+  .card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--rose);
+    min-width: 22px;
+    padding-top: 1px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* DETAIL */
+  .detail-header {
+    padding: 40px 0 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 36px;
+  }
+
+  .detail-num {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+  }
+
+  .detail-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+
+  .detail-subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .detail-body { font-size: 15px; color: var(--body); line-height: 1.75; }
+
+  .detail-body h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 32px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-body p { margin-bottom: 14px; color: var(--body); }
+
+  .detail-body ul {
+    list-style: none;
+    margin-bottom: 16px;
+  }
+
+  .detail-body ul li {
+    padding: 8px 0 8px 20px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--body);
+  }
+
+  .detail-body ul li:last-child { border-bottom: none; }
+
+  .detail-body ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--rose);
+    font-size: 13px;
+  }
+
+  .detail-body strong { color: var(--ink); font-weight: 500; }
+
+  .detail-body em { font-style: italic; color: var(--rose); font-size: 18px; font-family: 'Cormorant Garamond', serif; }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+  }
+
+  .dtag {
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--body);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .footer-info { font-size: 13px; color: var(--muted); }
+  .footer-badge { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  header       { animation: fadeUp 0.6s ease both; }
-  .stat-row    { animation: fadeUp 0.6s 0.1s ease both; }
-  .agenda-row  { animation: fadeUp 0.4s ease both; }
-  .menu-card   { animation: fadeUp 0.4s ease both; }
+  .anim { animation: fadeUp 0.4s ease both; }
 
-  .agenda-row:nth-child(1) { animation-delay: 0.05s; }
-  .agenda-row:nth-child(2) { animation-delay: 0.10s; }
-  .agenda-row:nth-child(3) { animation-delay: 0.15s; }
-  .agenda-row:nth-child(4) { animation-delay: 0.20s; }
-  .agenda-row:nth-child(5) { animation-delay: 0.25s; }
-  .agenda-row:nth-child(6) { animation-delay: 0.30s; }
-  .agenda-row:nth-child(7) { animation-delay: 0.35s; }
-  .agenda-row:nth-child(8) { animation-delay: 0.40s; }
-  .agenda-row:nth-child(9) { animation-delay: 0.45s; }
-
-  .menu-card:nth-child(1)  { animation-delay: 0.05s; }
-  .menu-card:nth-child(2)  { animation-delay: 0.08s; }
-  .menu-card:nth-child(3)  { animation-delay: 0.11s; }
-  .menu-card:nth-child(4)  { animation-delay: 0.14s; }
-  .menu-card:nth-child(5)  { animation-delay: 0.17s; }
-  .menu-card:nth-child(6)  { animation-delay: 0.20s; }
-  .menu-card:nth-child(7)  { animation-delay: 0.23s; }
-  .menu-card:nth-child(8)  { animation-delay: 0.26s; }
-  .menu-card:nth-child(9)  { animation-delay: 0.29s; }
-  .menu-card:nth-child(10) { animation-delay: 0.32s; }
-  .menu-card:nth-child(11) { animation-delay: 0.35s; }
-  .menu-card:nth-child(12) { animation-delay: 0.38s; }
-  .menu-card:nth-child(13) { animation-delay: 0.41s; }
-  .menu-card:nth-child(14) { animation-delay: 0.44s; }
-  .menu-card:nth-child(15) { animation-delay: 0.47s; }
-
-  @media (max-width: 600px) {
-    header { padding: 48px 20px 36px; }
+  @media (max-width: 620px) {
+    nav { padding: 12px 16px; }
+    main { padding: 0 16px 60px; }
     .agenda-row { grid-template-columns: 90px 1fr; }
     .agenda-tag { display: none; }
     .stat-row { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 8px; text-align: center; }
+    footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 16px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
-<header>
-  <p class="eyebrow">Celaya, Guanajuato · Evento de un día</p>
-  <h1>Guanajuato <em>Élite</em> Woman</h1>
-  <p class="tagline">Moda &nbsp;·&nbsp; Imagen &nbsp;·&nbsp; Liderazgo &nbsp;·&nbsp; Empoderamiento</p>
-  <div class="divider-ornament">
-    <span></span>
-    <svg viewBox="0 0 16 16"><path d="M8 0 L9.5 6 L16 8 L9.5 10 L8 16 L6.5 10 L0 8 L6.5 6 Z"/></svg>
-    <span></span>
-  </div>
-</header>
+<nav>
+  <span class="nav-brand">Guanajuato <em>Élite</em> Woman</span>
+  <button class="nav-back" id="backBtn" onclick="showHome()">← Volver al menú</button>
+</nav>
 
-<main>
-
-  <!-- ── STATS ── -->
-  <p class="section-label" style="margin-top:40px;">Datos generales</p>
-  <div class="stat-row">
-    <div class="stat">
-      <p class="stat-value">3 h</p>
-      <p class="stat-label">Duración total</p>
+<!-- HOME -->
+<div class="view active" id="view-home">
+  <header class="anim">
+    <p class="eyebrow">Celaya, Guanajuato · Evento de un día</p>
+    <h1>Guanajuato <em>Élite</em> Woman</h1>
+    <p class="tagline">Moda &nbsp;·&nbsp; Imagen &nbsp;·&nbsp; Liderazgo &nbsp;·&nbsp; Empoderamiento</p>
+    <div class="ornament">
+      <span></span>
+      <svg viewBox="0 0 16 16"><path d="M8 0 L9.5 6 L16 8 L9.5 10 L8 16 L6.5 10 L0 8 L6.5 6 Z"/></svg>
+      <span></span>
     </div>
-    <div class="stat">
-      <p class="stat-value">9</p>
-      <p class="stat-label">Bloques del programa</p>
-    </div>
-    <div class="stat">
-      <p class="stat-value">15</p>
-      <p class="stat-label">Secciones del proyecto</p>
-    </div>
-  </div>
+  </header>
 
-  <!-- ── AGENDA ── -->
-  <p class="section-label">Programa del día — 3 horas</p>
-  <div class="agenda">
-
-    <div class="agenda-row">
-      <p class="agenda-time">09:00 – 09:15</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Alfombra rosa &amp; registro glam</p>
-        <p class="agenda-detail">Bienvenida fotográfica, photocall, welcome kit y activación sensorial de entrada</p>
+  <main>
+    <span class="sec-label">Datos generales</span>
+    <div class="stat-row">
+      <div class="stat">
+        <p class="stat-value">3 h</p>
+        <p class="stat-label">Duración total</p>
       </div>
-      <span class="agenda-tag tag-rose">Experiencia</span>
+      <div class="stat">
+        <p class="stat-value">9</p>
+        <p class="stat-label">Bloques del programa</p>
+      </div>
+      <div class="stat">
+        <p class="stat-value">15</p>
+        <p class="stat-label">Secciones del proyecto</p>
+      </div>
     </div>
 
-    <div class="agenda-row">
-      <p class="agenda-time">09:15 – 09:30</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Inauguración oficial</p>
-        <p class="agenda-detail">Speech de bienvenida, declaratoria del evento y presentación de autoridades y patrocinadores</p>
-      </div>
-      <span class="agenda-tag tag-ink">Protocolo</span>
+    <span class="sec-label">Programa del día — 09:00 a 12:00 hrs</span>
+    <div class="agenda">
+      <div class="agenda-row anim"><p class="agenda-time">09:00 – 09:15</p><div><p class="agenda-name">Alfombra rosa &amp; registro glam</p><p class="agenda-detail">Bienvenida fotográfica, photocall, welcome kit y activación sensorial de entrada</p></div><span class="agenda-tag tag-rose">Experiencia</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">09:15 – 09:30</p><div><p class="agenda-name">Inauguración oficial</p><p class="agenda-detail">Speech de bienvenida, declaratoria del evento y presentación de autoridades y patrocinadores</p></div><span class="agenda-tag tag-ink">Protocolo</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">09:30 – 10:00</p><div><p class="agenda-name">Conferencia magistral</p><p class="agenda-detail">Speaker principal — liderazgo, imagen y poder femenino</p></div><span class="agenda-tag tag-gold">Conferencia</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">10:00 – 10:30</p><div><p class="agenda-name">Panel: mujeres que transforman Guanajuato</p><p class="agenda-detail">3 empresarias y líderes locales — economía, moda e impacto social</p></div><span class="agenda-tag tag-gold">Panel</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">10:30 – 10:50</p><div><p class="agenda-name">Pasarela de moda &amp; talento local</p><p class="agenda-detail">Diseñadoras guanajuatenses, artesanas y colecciones emergentes</p></div><span class="agenda-tag tag-rose">Pasarela</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">10:50 – 11:20</p><div><p class="agenda-name">Expo &amp; zona de emprendimiento</p><p class="agenda-detail">Recorrido libre, stands, marcas patrocinadoras y emprendedoras expositoras</p></div><span class="agenda-tag tag-ink">Expo</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">11:20 – 11:40</p><div><p class="agenda-name">Premiación &amp; reconocimientos</p><p class="agenda-detail">Mujeres destacadas del estado — liderazgo, innovación y emprendimiento</p></div><span class="agenda-tag tag-rose">Premiación</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">11:40 – 11:55</p><div><p class="agenda-name">Performance artístico &amp; cierre emocional</p><p class="agenda-detail">Actuación musical, palabras de cierre y fotografía grupal</p></div><span class="agenda-tag tag-gold">Arte</span></div>
+      <div class="agenda-row anim"><p class="agenda-time">11:55 – 12:00</p><div><p class="agenda-name">After networking &amp; brindis</p><p class="agenda-detail">Coctelería sin alcohol, intercambio de contactos y cobertura final de medios</p></div><span class="agenda-tag tag-ink">Networking</span></div>
     </div>
 
-    <div class="agenda-row">
-      <p class="agenda-time">09:30 – 10:00</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Conferencia magistral</p>
-        <p class="agenda-detail">Speaker principal — liderazgo, imagen y poder femenino</p>
-      </div>
-      <span class="agenda-tag tag-gold">Conferencia</span>
+    <span class="sec-label">Secciones del proyecto — haz clic para ver el detalle completo</span>
+    <div class="menu-grid" id="menuGrid"></div>
+  </main>
+
+  <footer>
+    <p class="footer-info">Celaya, Guanajuato &nbsp;·&nbsp; Evento único · 3 horas de programa</p>
+    <p class="footer-badge">Guanajuato Élite Woman</p>
+  </footer>
+</div>
+
+<!-- DETAIL -->
+<div class="view" id="view-detail">
+  <main>
+    <div class="detail-header anim" id="detailHeader"></div>
+    <div class="detail-body anim" id="detailBody"></div>
+    <div style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 28px;">
+      <button class="menu-card" style="max-width: 220px; border-color: var(--rose);" onclick="showHome()">
+        <span style="color: var(--rose); font-size: 18px;">←</span>
+        <div><p class="card-title" style="color: var(--rose);">Volver al menú</p><p class="card-desc">Ver todas las secciones</p></div>
+      </button>
     </div>
+  </main>
+  <footer>
+    <p class="footer-info">Guanajuato Élite Woman &nbsp;·&nbsp; Celaya, Guanajuato</p>
+    <p class="footer-badge">Proyecto completo</p>
+  </footer>
+</div>
 
-    <div class="agenda-row">
-      <p class="agenda-time">10:00 – 10:30</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Panel: mujeres que transforman Guanajuato</p>
-        <p class="agenda-detail">3 empresarias / líderes locales — economía, moda e impacto social</p>
-      </div>
-      <span class="agenda-tag tag-gold">Panel</span>
-    </div>
+<script>
+const sections = [
+  { num:"01", title:"Concepto general", desc:"Nombre, slogan, storytelling e identidad visual", subtitle:"La esencia creativa, emocional y visual del evento.", content:`
+    <h3>Nombres propuestos</h3>
+    <ul>
+      <li><strong>Guanajuato Élite Woman</strong> — poder, elegancia y pertenencia estatal</li>
+      <li><strong>Mujer GTO Fest</strong> — accesible, moderno y de apropiación rápida</li>
+      <li><strong>Señoras de la Luz</strong> — evocador, cultural y aspiracional</li>
+      <li><strong>Woman Forward Guanajuato</strong> — bilingüe, con visión de expansión</li>
+      <li><strong>Cima Woman Summit</strong> — liderazgo, crecimiento y posicionamiento</li>
+    </ul>
+    <h3>Slogan</h3>
+    <p><em>"Aquí nacen las que mueven al estado."</em></p>
+    <h3>Concepto creativo</h3>
+    <p>Un espacio donde la moda es lenguaje de poder, la imagen es herramienta de liderazgo y el networking genera economía real. No es un evento de mujeres: es el evento que Guanajuato estaba esperando.</p>
+    <h3>Identidad visual sugerida</h3>
+    <div class="tag-row"><span class="dtag">Rosa polvoso</span><span class="dtag">Dorado antiguo</span><span class="dtag">Blanco hueso</span><span class="dtag">Negro elegante</span></div>
+    <p>Tipografía serif clásica para el nombre + sans-serif limpia para cuerpo de texto. Estética editorial de revista de lujo. Moodboard: mármol blanco, flores secas, seda natural, detalles dorados.</p>
+  `},
+  { num:"02", title:"Perfil del evento", desc:"Público objetivo, buyer persona y segmentación", subtitle:"¿Para quién es este evento y cómo se segmenta la experiencia?", content:`
+    <h3>Tipo de evento</h3>
+    <p>Evento experiencial de moda, liderazgo y networking femenino. Formato híbrido: conferencia + expo + pasarela + networking. Un solo día, máximo impacto.</p>
+    <h3>Tamaño ideal</h3>
+    <ul>
+      <li>Primera edición: 300 a 500 asistentes</li>
+      <li>Segunda edición en adelante: 800 a 1,200 asistentes</li>
+      <li>Aforo VIP independiente: 50 a 80 personas</li>
+    </ul>
+    <h3>Públicos objetivo</h3>
+    <ul>
+      <li>Empresarias y directivas de Celaya y Guanajuato (30–55 años)</li>
+      <li>Emprendedoras en etapa de crecimiento (25–40 años)</li>
+      <li>Estudiantes de moda, negocios y diseño</li>
+      <li>Influencers y creadoras de contenido del estado</li>
+      <li>Artesanas y diseñadoras locales con proyección</li>
+    </ul>
+    <h3>Buyer persona principal</h3>
+    <p><strong>Valentina, 38 años.</strong> Directora de su propia empresa en Celaya. Busca comunidad, inspiración y contactos de alto valor. Consume contenido de liderazgo, viaja a CDMX para eventos de networking. Nunca encontró su evento en Guanajuato — hasta ahora.</p>
+  `},
+  { num:"03", title:"Estructura del evento", desc:"Pasarela, conferencias, expo y activaciones", subtitle:"La arquitectura completa de la experiencia en 3 horas.", content:`
+    <h3>Bloques del programa</h3>
+    <ul>
+      <li><strong>09:00–09:15</strong> — Alfombra rosa, photocall y registro glam</li>
+      <li><strong>09:15–09:30</strong> — Inauguración oficial y bienvenida</li>
+      <li><strong>09:30–10:00</strong> — Conferencia magistral</li>
+      <li><strong>10:00–10:30</strong> — Panel de empresarias guanajuatenses</li>
+      <li><strong>10:30–10:50</strong> — Pasarela de moda y talento local</li>
+      <li><strong>10:50–11:20</strong> — Expo comercial y zona de emprendimiento</li>
+      <li><strong>11:20–11:40</strong> — Premiación y reconocimientos</li>
+      <li><strong>11:40–11:55</strong> — Performance artístico y cierre</li>
+      <li><strong>11:55–12:00</strong> — After networking y brindis</li>
+    </ul>
+    <h3>Zonas especiales</h3>
+    <ul>
+      <li>Zona Glam: maquillaje, peinado y fotografía profesional</li>
+      <li>Zona Emprendedoras: stands de productos y servicios locales</li>
+      <li>Sala VIP: acceso exclusivo con catering y networking privado</li>
+      <li>Escenario principal: pasarela, conferencias y premiación</li>
+    </ul>
+  `},
+  { num:"04", title:"Logística completa", desc:"Staff, proveedores, checklist y diseño del venue", subtitle:"Todo lo necesario para que el evento funcione impecablemente.", content:`
+    <h3>Staff requerido</h3>
+    <ul>
+      <li>Directora de producción (1)</li>
+      <li>Coordinadoras de área (4): registro, VIP, expo, backstage</li>
+      <li>Hostesses y azafatas (6–10)</li>
+      <li>Equipo de seguridad (4–6 personas)</li>
+      <li>Técnicos de audio e iluminación (3)</li>
+      <li>Fotógrafo y videógrafo (2)</li>
+      <li>Community manager en vivo (1)</li>
+    </ul>
+    <h3>Proveedores esenciales</h3>
+    <ul>
+      <li>Audio y sonido profesional de evento</li>
+      <li>Iluminación escénica y ambiental</li>
+      <li>Pantallas LED y producción visual</li>
+      <li>Catering y coctelería sin alcohol</li>
+      <li>Decoración, mobiliario y escenografía</li>
+      <li>Imprenta: credenciales, banners, señalética</li>
+      <li>Protección civil certificada</li>
+    </ul>
+    <h3>Checklist operativo</h3>
+    <ul>
+      <li>Confirmación de venue con 60 días de anticipación</li>
+      <li>Contratos de speakers y panelistas firmados</li>
+      <li>Sistema de registro y acreditación digital</li>
+      <li>Plan de evacuación aprobado por protección civil</li>
+      <li>Prueba de sonido 3 horas antes del evento</li>
+      <li>Kit de bienvenida listo 24 horas antes</li>
+    </ul>
+  `},
+  { num:"05", title:"Venues en Celaya", desc:"Hoteles, haciendas, centros de convenciones y rooftops", subtitle:"Los mejores espacios disponibles en Celaya, Guanajuato.", content:`
+    <h3>Opciones recomendadas</h3>
+    <ul>
+      <li><strong>Hotel Ibis Styles Celaya</strong> — moderno, céntrico, con salón adaptable</li>
+      <li><strong>Hacienda San José del Carmen</strong> — atmósfera colonial, instagrameable, ideal para primera edición</li>
+      <li><strong>Centro de Convenciones de Celaya</strong> — mayor capacidad, acceso amplio, estacionamiento propio</li>
+      <li><strong>Salón Jardín Las Palmas</strong> — área exterior, opciones de iluminación creativa</li>
+      <li><strong>Rooftop Hotel Misión Celaya</strong> — vista de ciudad, ambiente premium para eventos VIP</li>
+    </ul>
+    <h3>Criterios de selección</h3>
+    <ul>
+      <li>Capacidad mínima: 350 personas en salón principal</li>
+      <li>Área separada disponible para zona VIP</li>
+      <li>Espacio exterior o doble altura para pasarela</li>
+      <li>Estacionamiento suficiente o valet incluido</li>
+      <li>Climatización para evento en interiores</li>
+    </ul>
+  `},
+  { num:"06", title:"Estrategia de marketing", desc:"Redes, influencers, prensa y campañas digitales", subtitle:"Cómo llenar el evento y posicionarlo en el estado.", content:`
+    <h3>Fases de campaña</h3>
+    <ul>
+      <li><strong>Semanas 1–4:</strong> Expectativa — identidad visual, cuenta de Instagram, teasers sin revelar nombre completo</li>
+      <li><strong>Semanas 5–8:</strong> Lanzamiento — reveal del evento, primeras entradas, alianzas con medios locales</li>
+      <li><strong>Semanas 9–12:</strong> Posicionamiento — speakers confirmados, countdown, contenido viral</li>
+      <li><strong>Semana del evento:</strong> Cobertura en vivo, stories, reels, transmisión parcial</li>
+    </ul>
+    <h3>Estrategia de influencers</h3>
+    <ul>
+      <li>3–5 microinfluencers de Guanajuato (10K–80K seguidores)</li>
+      <li>1–2 macroinfluyentes nacionales con audiencia femenina</li>
+      <li>Canje de entradas VIP por cobertura orgánica</li>
+      <li>Reel oficial del evento producido profesionalmente</li>
+    </ul>
+    <h3>Canales prioritarios</h3>
+    <div class="tag-row"><span class="dtag">Instagram</span><span class="dtag">TikTok</span><span class="dtag">Facebook</span><span class="dtag">LinkedIn</span><span class="dtag">WhatsApp grupos</span></div>
+  `},
+  { num:"07", title:"Patrocinios y alianzas", desc:"Niveles, beneficios y pitch para marcas", subtitle:"Cómo financiar el evento a través de alianzas estratégicas.", content:`
+    <h3>Niveles de patrocinio</h3>
+    <ul>
+      <li><strong>Diamante ($80,000–$120,000 MXN)</strong> — nombre en el evento, stand premium, branding total, 20 entradas VIP</li>
+      <li><strong>Platino ($40,000–$60,000 MXN)</strong> — stand mediano, mención en materiales, 10 entradas VIP</li>
+      <li><strong>Oro ($20,000–$35,000 MXN)</strong> — stand básico, logo en pantallas, 5 entradas generales</li>
+      <li><strong>Aliado ($5,000–$15,000 MXN)</strong> — mención en redes, logo en programa, 2 entradas</li>
+    </ul>
+    <h3>Marcas ideales para invitar</h3>
+    <ul>
+      <li>Belleza y cuidado personal (L'Oréal, Unique, Yanbal)</li>
+      <li>Moda y accesorios locales y nacionales</li>
+      <li>Universidades y centros de formación</li>
+      <li>Gobierno municipal y estatal (Instituto de la Mujer)</li>
+      <li>Cámaras empresariales: COPARMEX, CANACINTRA Celaya</li>
+      <li>Bancos y financieras con productos para mujeres</li>
+    </ul>
+  `},
+  { num:"08", title:"Modelo de negocio", desc:"Fuentes de ingreso, ticketing y proyección financiera", subtitle:"Cómo hacer que el evento sea rentable desde la primera edición.", content:`
+    <h3>Fuentes de ingreso</h3>
+    <ul>
+      <li><strong>Ticketing general:</strong> $350–$600 MXN por entrada</li>
+      <li><strong>Entradas VIP:</strong> $1,200–$2,500 MXN (zona exclusiva + kit incluido)</li>
+      <li><strong>Venta de stands:</strong> $5,000–$15,000 MXN por espacio</li>
+      <li><strong>Patrocinios:</strong> $5,000–$120,000 MXN según nivel</li>
+      <li><strong>Merchandising oficial:</strong> tote bags, pins y edición limitada</li>
+      <li><strong>Streaming premium:</strong> acceso digital al evento por $150 MXN</li>
+    </ul>
+    <h3>Proyección financiera — primera edición</h3>
+    <ul>
+      <li>Ingresos estimados: $350,000–$600,000 MXN</li>
+      <li>Costo de producción estimado: $200,000–$320,000 MXN</li>
+      <li>Margen objetivo: 30–40%</li>
+      <li>Punto de equilibrio: 200 boletos + 2 patrocinadores Platino</li>
+    </ul>
+  `},
+  { num:"09", title:"Experiencia premium", desc:"VIP, welcome kit, gift bags y activaciones sensoriales", subtitle:"Lo que hace memorable al evento para cada tipo de asistente.", content:`
+    <h3>Zona VIP</h3>
+    <ul>
+      <li>Acceso exclusivo con anfitriona personal</li>
+      <li>Catering premium: bocadillos gourmet y bebidas de autor</li>
+      <li>Sesión de fotos individual con fondo de marca</li>
+      <li>Mesa de trabajo y networking privado</li>
+      <li>Acceso a speakers en espacio cerrado</li>
+    </ul>
+    <h3>Welcome kit — general</h3>
+    <ul>
+      <li>Tote bag de tela con identidad del evento</li>
+      <li>Programa impreso edición especial</li>
+      <li>Muestra de productos de patrocinadores de belleza</li>
+      <li>Credencial personalizada laminada</li>
+    </ul>
+    <h3>Gift bag VIP</h3>
+    <ul>
+      <li>Caja rígida con identidad del evento</li>
+      <li>Productos de belleza de marca patrocinadora</li>
+      <li>Libro o agenda de liderazgo</li>
+      <li>Descuentos y membresías exclusivas</li>
+      <li>Carta personalizada de la organizadora</li>
+    </ul>
+  `},
+  { num:"10", title:"Impacto social", desc:"Emprendedoras, artesanas, becas y liderazgo", subtitle:"El propósito que va más allá del evento.", content:`
+    <h3>Ejes de impacto</h3>
+    <ul>
+      <li><strong>Economía femenina:</strong> 20+ stands de emprendedoras locales sin costo o con subsidio</li>
+      <li><strong>Talento artesanal:</strong> vitrina especial para artesanas de Guanajuato en la pasarela</li>
+      <li><strong>Formación:</strong> masterclass gratuita post-evento para mujeres en situación vulnerable</li>
+      <li><strong>Becas:</strong> alianza con universidades para otorgar 3–5 becas parciales</li>
+      <li><strong>Reconocimiento:</strong> categoría especial "Mujer GTO que inspira" en la premiación</li>
+    </ul>
+    <h3>Alianzas para el impacto</h3>
+    <ul>
+      <li>Instituto de la Mujer Guanajuatense</li>
+      <li>DIF Municipal Celaya</li>
+      <li>Cámaras empresariales femeninas</li>
+      <li>Asociaciones de artesanas de Guanajuato</li>
+      <li>Incubadoras de empresas locales</li>
+    </ul>
+  `},
+  { num:"11", title:"Invitadas y speakers", desc:"Empresarias, influencers, diseñadoras y líderes", subtitle:"El talento humano que da vida y peso al evento.", content:`
+    <h3>Perfil de speaker magistral</h3>
+    <ul>
+      <li>Mujer empresaria o directiva de reconocimiento nacional</li>
+      <li>Experta en liderazgo, imagen pública o emprendimiento</li>
+      <li>Con presencia activa en medios y redes sociales</li>
+      <li>Referente aspiracional para el público objetivo</li>
+    </ul>
+    <h3>Panelistas locales</h3>
+    <ul>
+      <li>Directoras de empresas establecidas en Celaya o Guanajuato</li>
+      <li>Emprendedoras exitosas con historia de impacto local</li>
+      <li>Funcionarias del gobierno estatal o municipal</li>
+      <li>Académicas con enfoque en género y economía</li>
+    </ul>
+    <h3>Invitadas especiales</h3>
+    <ul>
+      <li>Diseñadoras de moda del estado</li>
+      <li>Influencers guanajuatenses: moda, lifestyle, negocios</li>
+      <li>Artistas locales para el performance de cierre</li>
+      <li>Embajadoras de marcas patrocinadoras</li>
+    </ul>
+  `},
+  { num:"12", title:"Identidad mediática", desc:"Posicionamiento estatal, expansión nacional e iconicidad", subtitle:"Cómo convertir este evento en referente y tradición.", content:`
+    <h3>Estrategia de posicionamiento</h3>
+    <ul>
+      <li>Registrar nombre y marca del evento desde la primera edición</li>
+      <li>Generar hashtag oficial único: #GEWoman o #GuanajuatoEliteWoman</li>
+      <li>Emitir comunicado de prensa a medios estatales y nacionales</li>
+      <li>Documentar el evento con mini documental de 5–8 minutos</li>
+    </ul>
+    <h3>Para hacerlo anual</h3>
+    <ul>
+      <li>Establecer fecha fija: primer sábado de marzo de cada año</li>
+      <li>Crear comité organizador permanente</li>
+      <li>Publicar memorias del evento en cada edición</li>
+      <li>Premiar la fidelidad con beneficios para asistentes recurrentes</li>
+    </ul>
+    <h3>Expansión nacional</h3>
+    <ul>
+      <li>Segunda edición en León o Querétaro</li>
+      <li>Alianza con eventos similares en CDMX y Monterrey</li>
+      <li>Formato itinerante por ciudades del Bajío</li>
+      <li>Participación en ferias y convenciones nacionales de moda</li>
+    </ul>
+  `},
+  { num:"13", title:"Documentos y materiales", desc:"Dossier, pitch deck, invitación VIP y guion", subtitle:"Los documentos que dan profesionalismo y credibilidad al proyecto.", content:`
+    <h3>Materiales esenciales</h3>
+    <ul>
+      <li><strong>Dossier comercial:</strong> 12–16 páginas con concepto, perfil, patrocinios y beneficios</li>
+      <li><strong>Pitch deck:</strong> presentación de 10 diapositivas para captar patrocinadores</li>
+      <li><strong>Invitación VIP:</strong> sobre impreso en papel especial con tarjeta numerada</li>
+      <li><strong>Comunicado de prensa:</strong> 1 página para medios locales y estatales</li>
+      <li><strong>Guion del conductor:</strong> script completo minuto a minuto con cues técnicos</li>
+    </ul>
+    <h3>Estructura del speech de bienvenida</h3>
+    <ul>
+      <li>Apertura emocional — historia de una mujer guanajuatense inspiradora</li>
+      <li>Presentación del propósito del evento</li>
+      <li>Agradecimiento a patrocinadores e instituciones</li>
+      <li>Llamada a la acción: "este es tu espacio, úsalo"</li>
+      <li>Bienvenida formal e inicio del programa</li>
+    </ul>
+    <h3>Manual operativo — contenidos</h3>
+    <ul>
+      <li>Roles y responsabilidades por área</li>
+      <li>Protocolo de emergencias</li>
+      <li>Comunicación interna: radio y WhatsApp</li>
+      <li>Checklist de apertura y cierre del evento</li>
+    </ul>
+  `},
+  { num:"14", title:"Estrategia digital y visual", desc:"Reels, streaming, cobertura en vivo y mini documental", subtitle:"Cómo amplificar el evento más allá del día.", content:`
+    <h3>Antes del evento</h3>
+    <ul>
+      <li>3 reels de expectativa con identidad visual del evento</li>
+      <li>Countdown diario en stories los últimos 7 días</li>
+      <li>Entrevistas cortas a speakers en formato vertical</li>
+      <li>Behind the scenes de producción y montaje</li>
+    </ul>
+    <h3>Durante el evento</h3>
+    <ul>
+      <li>Transmisión en vivo de la conferencia principal (Instagram/YouTube)</li>
+      <li>Stories en tiempo real desde cada zona del evento</li>
+      <li>Fotógrafo dedicado a contenido de redes (horizontal y vertical)</li>
+      <li>Booth de selfies con identidad del evento para asistentes</li>
+    </ul>
+    <h3>Después del evento</h3>
+    <ul>
+      <li>Mini documental de 5–8 minutos (YouTube y LinkedIn)</li>
+      <li>Galería oficial en alta resolución para prensa y medios</li>
+      <li>Reel resumen del evento para Instagram y TikTok</li>
+      <li>Testimoniales en video de asistentes y speakers</li>
+      <li>Email de agradecimiento con galería y anuncio de próxima edición</li>
+    </ul>
+  `},
+  { num:"15", title:"Plan de acción 90 días", desc:"Fases, ruta crítica, KPIs e indicadores de éxito", subtitle:"La hoja de ruta para ejecutar el evento de principio a fin.", content:`
+    <h3>Fase 1 — Días 1 a 30: Cimentación</h3>
+    <ul>
+      <li>Definir nombre oficial y registrar marca</li>
+      <li>Seleccionar y contratar el venue</li>
+      <li>Crear identidad visual y perfiles en redes</li>
+      <li>Contactar primeros patrocinadores y speakers</li>
+      <li>Abrir registro y venta de boletos</li>
+    </ul>
+    <h3>Fase 2 — Días 31 a 60: Construcción</h3>
+    <ul>
+      <li>Lanzamiento oficial de campaña de marketing</li>
+      <li>Confirmar agenda, speakers y panelistas</li>
+      <li>Contratar proveedores de audio, iluminación y catering</li>
+      <li>Alcanzar el 50% de boletos vendidos</li>
+      <li>Publicar dossier y pitch deck para patrocinadores</li>
+    </ul>
+    <h3>Fase 3 — Días 61 a 90: Ejecución</h3>
+    <ul>
+      <li>Producir todos los materiales impresos y digitales</li>
+      <li>Ensayo general de producción y guion</li>
+      <li>Confirmar el 100% de los boletos VIP</li>
+      <li>Ejecutar el evento</li>
+      <li>Publicar contenido post-evento y evaluar KPIs</li>
+    </ul>
+    <h3>KPIs de éxito</h3>
+    <div class="tag-row"><span class="dtag">+300 asistentes</span><span class="dtag">4 patrocinadores</span><span class="dtag">+80% satisfacción</span><span class="dtag">+10K impresiones</span><span class="dtag">ROI positivo</span></div>
+  `}
+];
 
-    <div class="agenda-row">
-      <p class="agenda-time">10:30 – 10:50</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Pasarela de moda &amp; talento local</p>
-        <p class="agenda-detail">Diseñadoras guanajuatenses, artesanas y colecciones emergentes</p>
-      </div>
-      <span class="agenda-tag tag-rose">Pasarela</span>
-    </div>
+function buildMenu() {
+  const grid = document.getElementById('menuGrid');
+  sections.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'menu-card';
+    btn.innerHTML = `<span class="card-num">${s.num}</span><div><p class="card-title">${s.title}</p><p class="card-desc">${s.desc}</p></div>`;
+    btn.addEventListener('click', () => showDetail(i));
+    grid.appendChild(btn);
+  });
+}
 
-    <div class="agenda-row">
-      <p class="agenda-time">10:50 – 11:20</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Expo &amp; zona de emprendimiento</p>
-        <p class="agenda-detail">Recorrido libre por stands, marcas patrocinadoras y emprendedoras expositoras</p>
-      </div>
-      <span class="agenda-tag tag-ink">Expo</span>
-    </div>
+function showDetail(i) {
+  const s = sections[i];
+  document.getElementById('detailHeader').innerHTML = `<span class="detail-num">Sección ${s.num} de 15</span><h2 class="detail-title">${s.title}</h2><p class="detail-subtitle">${s.subtitle}</p>`;
+  document.getElementById('detailBody').innerHTML = s.content;
+  document.getElementById('view-home').classList.remove('active');
+  document.getElementById('view-detail').classList.add('active');
+  document.getElementById('backBtn').classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    <div class="agenda-row">
-      <p class="agenda-time">11:20 – 11:40</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Premiación &amp; reconocimientos</p>
-        <p class="agenda-detail">Mujeres destacadas del estado — liderazgo, innovación y emprendimiento</p>
-      </div>
-      <span class="agenda-tag tag-rose">Premiación</span>
-    </div>
+function showHome() {
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('view-home').classList.add('active');
+  document.getElementById('backBtn').classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    <div class="agenda-row">
-      <p class="agenda-time">11:40 – 11:55</p>
-      <div class="agenda-content">
-        <p class="agenda-name">Performance artístico &amp; cierre emocional</p>
-        <p class="agenda-detail">Actuación musical o artística, palabras de cierre y fotografía grupal</p>
-      </div>
-      <span class="agenda-tag tag-gold">Arte</span>
-    </div>
-
-    <div class="agenda-row">
-      <p class="agenda-time">11:55 – 12:00</p>
-      <div class="agenda-content">
-        <p class="agenda-name">After networking &amp; brindis</p>
-        <p class="agenda-detail">Coctelería sin alcohol, intercambio de contactos y cobertura final de medios</p>
-      </div>
-      <span class="agenda-tag tag-ink">Networking</span>
-    </div>
-
-  </div>
-
-  <!-- ── SECCIONES DEL PROYECTO ── -->
-  <p class="section-label" style="margin-top:52px;">Secciones del proyecto completo</p>
-  <div class="menu-grid">
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 01">
-      <span class="card-num">01</span>
-      <div class="card-body">
-        <p class="card-title">Concepto general</p>
-        <p class="card-desc">Nombre, slogan, storytelling e identidad visual</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 02">
-      <span class="card-num">02</span>
-      <div class="card-body">
-        <p class="card-title">Perfil del evento</p>
-        <p class="card-desc">Público objetivo, buyer persona y segmentación</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 03">
-      <span class="card-num">03</span>
-      <div class="card-body">
-        <p class="card-title">Estructura del evento</p>
-        <p class="card-desc">Pasarela, conferencias, expo y activaciones</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 04">
-      <span class="card-num">04</span>
-      <div class="card-body">
-        <p class="card-title">Logística completa</p>
-        <p class="card-desc">Staff, proveedores, checklist y diseño del venue</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 05">
-      <span class="card-num">05</span>
-      <div class="card-body">
-        <p class="card-title">Venues en Celaya</p>
-        <p class="card-desc">Hoteles, haciendas, centros de convenciones y rooftops</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 06">
-      <span class="card-num">06</span>
-      <div class="card-body">
-        <p class="card-title">Estrategia de marketing</p>
-        <p class="card-desc">Redes, influencers, prensa y campañas digitales</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 07">
-      <span class="card-num">07</span>
-      <div class="card-body">
-        <p class="card-title">Patrocinios y alianzas</p>
-        <p class="card-desc">Niveles, beneficios y pitch para marcas</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 08">
-      <span class="card-num">08</span>
-      <div class="card-body">
-        <p class="card-title">Modelo de negocio</p>
-        <p class="card-desc">Fuentes de ingreso, ticketing y proyección financiera</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 09">
-      <span class="card-num">09</span>
-      <div class="card-body">
-        <p class="card-title">Experiencia premium</p>
-        <p class="card-desc">VIP, welcome kit, gift bags y activaciones sensoriales</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 10">
-      <span class="card-num">10</span>
-      <div class="card-body">
-        <p class="card-title">Impacto social</p>
-        <p class="card-desc">Emprendedoras, artesanas, becas y desarrollo de liderazgo</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 11">
-      <span class="card-num">11</span>
-      <div class="card-body">
-        <p class="card-title">Invitadas y speakers</p>
-        <p class="card-desc">Empresarias, influencers, diseñadoras y líderes</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 12">
-      <span class="card-num">12</span>
-      <div class="card-body">
-        <p class="card-title">Identidad mediática</p>
-        <p class="card-desc">Posicionamiento estatal, expansión nacional e iconicidad</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 13">
-      <span class="card-num">13</span>
-      <div class="card-body">
-        <p class="card-title">Documentos y materiales</p>
-        <p class="card-desc">Dossier, pitch deck, invitación VIP y guion del conductor</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 14">
-      <span class="card-num">14</span>
-      <div class="card-body">
-        <p class="card-title">Estrategia digital y visual</p>
-        <p class="card-desc">Reels, streaming, cobertura en vivo y mini documental</p>
-      </div>
-    </a>
-
-    <a class="menu-card" href="#" onclick="return false;" title="Ver sección 15">
-      <span class="card-num">15</span>
-      <div class="card-body">
-        <p class="card-title">Plan de acción 90 días</p>
-        <p class="card-desc">Fases, ruta crítica, KPIs e indicadores de éxito</p>
-      </div>
-    </a>
-
-  </div>
-
-</main>
-
-<!-- ── FOOTER ── -->
-<footer>
-  <p class="footer-info">Celaya, Guanajuato &nbsp;·&nbsp; Evento único · 3 horas de programa</p>
-  <p class="footer-badge">Guanajuato Élite Woman</p>
-</footer>
-
+buildMenu();
+</script>
 </body>
 </html>
