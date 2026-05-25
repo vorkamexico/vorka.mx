@@ -1,0 +1,1453 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alianza Estratégica · VORKA × IMPACTO</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #C9952A;
+    --gold-light: #F0B429;
+    --gold-pale: #FDF6E7;
+    --black: #111111;
+    --gray: #6B6B6B;
+    --gray-light: #F4F4F2;
+    --border: #E8E4DC;
+    --white: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── NAV ── */
+  nav {
+    padding: 2rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .nav-brand span { color: var(--gold); }
+  .nav-right {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 7rem 6vw 6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2.5rem;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+
+  .hero-h1 {
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 1.5rem;
+  }
+  .hero-h1 .accent { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--gray);
+    max-width: 560px;
+    margin-bottom: 3.5rem;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2.2rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-fill {
+    background: var(--gold);
+    color: var(--white);
+  }
+  .btn-fill:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--black);
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--black); }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    background: var(--gold-pale);
+    border-top: 1px solid #EDD9A3;
+    border-bottom: 1px solid #EDD9A3;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat {
+    padding: 2.5rem 6vw;
+    border-right: 1px solid #EDD9A3;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-n {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+    letter-spacing: -0.03em;
+  }
+  .stat-l {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 0.4rem;
+    display: block;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 7rem 6vw;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-full {
+    padding: 7rem 6vw;
+    background: var(--gray-light);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .section-full-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+
+  .h2 {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin-bottom: 1rem;
+  }
+  .h2 .accent { color: var(--gold); }
+
+  .lead {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--gray);
+    max-width: 520px;
+    margin-bottom: 3.5rem;
+  }
+
+  /* ── WHAT YOU GET ── */
+  .deliverables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .deliverable-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .deliverable-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 12px 12px 0 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .deliverable-card:hover { border-color: var(--gold); box-shadow: 0 8px 32px rgba(201,149,42,0.1); }
+  .deliverable-card:hover::before { transform: scaleX(1); }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--gold-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+  }
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .card-desc {
+    font-size: 0.78rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--gray);
+  }
+
+  /* BADGE CARD — highlight */
+  .deliverable-card.highlight {
+    background: var(--gold);
+    border-color: var(--gold);
+    grid-column: span 2;
+  }
+  .deliverable-card.highlight .card-icon { background: rgba(255,255,255,0.25); }
+  .deliverable-card.highlight .card-title { color: var(--white); font-size: 1.1rem; }
+  .deliverable-card.highlight .card-desc { color: rgba(255,255,255,0.85); }
+  .deliverable-card.highlight::before { background: var(--white); }
+
+  /* ── METRICS ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 3rem;
+  }
+  .metric-card {
+    background: var(--white);
+    padding: 2.5rem;
+  }
+  .metric-platform {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.8rem;
+  }
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-k { font-size: 0.65rem; font-weight: 500; color: var(--gray); }
+  .metric-v {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: -0.02em;
+  }
+  .metric-up { font-size: 0.6rem; color: #2e9e58; font-weight: 600; margin-left: 0.3rem; }
+
+  /* ── NETWORK ── */
+  .tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    color: var(--black);
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+  .tag:hover { border-color: var(--gold); color: var(--gold); }
+
+  .network-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+  .network-group-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── PRICING ── */
+  .pricing-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+  .price-card {
+    background: var(--black);
+    border-radius: 16px;
+    padding: 3.5rem;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(201,149,42,0.15);
+  }
+  .price-eyebrow {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+  .price-amount {
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+  .price-period {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 2rem;
+  }
+  .price-note {
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.6);
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .price-reasons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .reason {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+  .reason-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+  }
+  .reason-text {
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--gray);
+  }
+  .reason-text strong { color: var(--black); font-weight: 700; }
+
+  /* ── CLOSING ── */
+  .closing {
+    background: var(--gold-pale);
+    border-top: 1px solid #EDD9A3;
+    padding: 7rem 6vw;
+    text-align: center;
+  }
+  .closing-h {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 1.2rem;
+  }
+  .closing-h .accent { color: var(--gold); }
+  .closing-sub {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.8;
+    max-width: 440px;
+    margin: 0 auto 3rem;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 6vw;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-brand {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .footer-brand span { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.58rem;
+    color: var(--gray);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── MOCKUPS ── */
+  .mockups-section {
+    padding: 7rem 6vw;
+    background: var(--white);
+  }
+  .mockups-section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .mockups-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .mockups-grid-row2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  /* ── MOCKUP: PORTADA VORKA ── */
+  .vorka-cover-mock {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    background: #0f0e0b;
+    display: flex;
+    flex-direction: column;
+  }
+  .vorka-cover-inner {
+    padding: 2rem 2rem 1.5rem;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .vorka-cover-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 80%, rgba(201,149,42,0.22) 0%, transparent 60%);
+  }
+  .vorka-cover-wordmark {
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: #fff;
+    line-height: 0.85;
+    position: relative; z-index: 2;
+  }
+  .vorka-cover-wordmark span {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.2rem;
+  }
+  .vorka-cover-silhouette {
+    position: absolute;
+    bottom: 0; right: 10%;
+    width: 110px; height: 200px;
+    background: linear-gradient(to top, rgba(201,149,42,0.55), rgba(201,149,42,0.2));
+    clip-path: polygon(30% 0%, 55% 0%, 70% 8%, 80% 20%, 85% 35%, 75% 50%, 65% 55%, 80% 65%, 90% 75%, 95% 90%, 100% 100%, 0% 100%, 5% 90%, 10% 75%, 20% 65%, 35% 55%, 25% 50%, 15% 35%, 20% 20%, 30% 8%);
+    border-radius: 4px 4px 0 0;
+    z-index: 1;
+  }
+  .vorka-cover-headline {
+    position: relative; z-index: 2;
+  }
+  .vorka-cover-label {
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .vorka-cover-name {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .vorka-cover-tagline {
+    font-size: 0.62rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    margin-top: 0.4rem;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .vorka-cover-footer {
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(201,149,42,0.2);
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .vorka-cover-footer-l {
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+  .vorka-cover-footer-r {
+    font-size: 0.55rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── MOCKUP: POST SERVICIOS ── */
+  .services-mock {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    background: var(--white);
+  }
+  .services-mock-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .services-mock-image {
+    background: linear-gradient(135deg, #f9f5ee 0%, #fdf0d5 50%, #f5edd8 100%);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .services-mock-image::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(201,149,42,0.12);
+  }
+  .svc-eyebrow {
+    font-size: 0.5rem;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    position: relative; z-index: 1;
+  }
+  .svc-headline {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    position: relative; z-index: 1;
+    max-width: 240px;
+  }
+  .svc-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative; z-index: 1;
+  }
+  .svc-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(201,149,42,0.2);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+  }
+  .svc-item-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .svc-item-text {
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--black);
+  }
+  .svc-cta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gold);
+    border-radius: 100px;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.05em;
+    align-self: flex-start;
+    position: relative; z-index: 1;
+  }
+  .services-mock-footer {
+    padding: 0.9rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+  }
+  .services-mock-caption {
+    font-size: 0.58rem;
+    color: var(--gray);
+    padding: 0 1rem 1rem;
+    line-height: 1.6;
+  }
+  .services-mock-caption strong { color: var(--black); }
+
+  /* ── MOCKUP: POST DE INSTAGRAM ── */
+  .post-mock {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    background: var(--white);
+  }
+  .post-mock-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 800; color: white;
+    flex-shrink: 0;
+  }
+  .post-handle {
+    font-size: 0.65rem; font-weight: 700; color: var(--black);
+    display: block;
+  }
+  .post-handle-sub {
+    font-size: 0.55rem; color: var(--gray); display: block;
+  }
+  .post-image {
+    background: linear-gradient(145deg, #1a1a1a 0%, #2d2208 50%, #1a1a1a 100%);
+    padding: 2rem 1.5rem;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 20%, rgba(201,149,42,0.25), transparent 60%);
+  }
+  .post-image-tag {
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold-light);
+    position: relative; z-index: 1;
+  }
+  .post-image-headline {
+    font-size: 1rem; font-weight: 800; color: #fff;
+    line-height: 1.25; position: relative; z-index: 1;
+    margin: 0.8rem 0;
+  }
+  .post-sponsor-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 100px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.55rem; font-weight: 600; color: rgba(255,255,255,0.85);
+    position: relative; z-index: 1;
+    backdrop-filter: blur(4px);
+  }
+  .post-sponsor-logo-placeholder {
+    width: 18px; height: 18px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.45rem; font-weight: 900; color: white;
+  }
+  .post-footer {
+    padding: 0.9rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .post-likes { font-size: 0.62rem; font-weight: 600; color: var(--black); }
+  .post-caption { font-size: 0.58rem; color: var(--gray); padding: 0 1rem 1rem; line-height: 1.6; }
+  .post-caption strong { color: var(--black); }
+
+  /* ── MOCKUP: BANNER DE EVENTO ── */
+  .event-mock {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+  .event-mock-stage {
+    background: linear-gradient(160deg, #0f0d06 0%, #1e1608 60%, #0f0d06 100%);
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .event-mock-stage::before {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 100px;
+    border-radius: 50%;
+    background: rgba(201,149,42,0.18);
+    filter: blur(20px);
+  }
+  .event-title-block { position: relative; z-index: 1; }
+  .event-mock-title {
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem;
+  }
+  .event-mock-name {
+    font-size: 1.3rem; font-weight: 900; color: #fff;
+    line-height: 1.1; letter-spacing: -0.02em;
+  }
+  .event-mock-name span { color: var(--gold-light); }
+  .event-sponsors-row {
+    position: relative; z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .event-sponsors-label {
+    font-size: 0.5rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(255,255,255,0.35);
+  }
+  .event-logos-row {
+    display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;
+  }
+  .event-logo-pill {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.58rem; font-weight: 700; color: rgba(255,255,255,0.7);
+  }
+  .event-logo-pill.highlight-pill {
+    background: rgba(201,149,42,0.2);
+    border-color: rgba(201,149,42,0.5);
+    color: var(--gold-light);
+  }
+  .logo-dot {
+    width: 14px; height: 14px; border-radius: 3px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    flex-shrink: 0;
+  }
+  .event-mock-footer {
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    font-size: 0.6rem; color: var(--gray);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── MOCKUP: BADGE / DISTINTIVO ── */
+  .badge-mock {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    background: var(--gold-pale);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  .badge-seal {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.2rem;
+    box-shadow: 0 0 0 8px rgba(201,149,42,0.15), 0 0 0 16px rgba(201,149,42,0.07);
+    position: relative;
+  }
+  .badge-seal::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(255,255,255,0.4);
+  }
+  .badge-star { font-size: 1.6rem; }
+  .badge-seal-text {
+    font-size: 0.42rem; font-weight: 800; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(255,255,255,0.9);
+    line-height: 1.3; text-align: center; padding: 0 0.5rem;
+  }
+  .badge-company-slot {
+    width: 100%;
+    border: 2px dashed #EDD9A3;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  }
+  .badge-company-label {
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-dim, #8a6418);
+  }
+  .badge-company-placeholder {
+    font-size: 0.72rem; font-weight: 800; color: #c9952a88;
+    letter-spacing: 0.05em;
+  }
+  .badge-footnote {
+    font-size: 0.58rem; font-weight: 500; color: var(--gray);
+    line-height: 1.6; max-width: 180px;
+  }
+
+  .mockup-label {
+    font-size: 0.58rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gray);
+    text-align: center; margin-top: 1rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  }
+  .mockup-label::before { content: '↑'; color: var(--gold); }
+
+  @media (max-width: 900px) {
+    .mockups-grid { grid-template-columns: 1fr; max-width: 420px; }
+    .mockups-grid-row2 { grid-template-columns: 1fr; max-width: 420px; }
+  }
+
+  @media (max-width: 800px) {
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .deliverables-grid { grid-template-columns: 1fr; }
+    .deliverable-card.highlight { grid-column: span 1; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .network-cols { grid-template-columns: 1fr; gap: 2.5rem; }
+    .pricing-wrap { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid #EDD9A3; }
+    .stat:last-child { border-bottom: none; }
+    .mockups-grid { grid-template-columns: 1fr; max-width: 400px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">VORKA<span> × </span>IMPACTO</div>
+  <div class="nav-right">Propuesta de alianza · 2025–2026</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero reveal">
+  <div class="hero-tag">Alianza estratégica con propósito</div>
+  <h1 class="hero-h1">
+    Invierte donde<br>
+    <span class="accent">el futuro</span><br>
+    ya está pasando.
+  </h1>
+  <p class="hero-sub">
+    Posiciona tu marca dentro de un ecosistema que conecta jóvenes líderes, universidades y gobiernos en todo México. No es publicidad. Es pertenencia.
+  </p>
+  <div class="hero-cta-row">
+    <a href="#oferta" class="btn btn-fill">Ver la propuesta ↓</a>
+    <a href="#metricas" class="btn btn-outline">Explorar alcance</a>
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat reveal">
+    <span class="stat-n">1,600+</span>
+    <span class="stat-l">Líderes juveniles activos</span>
+  </div>
+  <div class="stat reveal" style="transition-delay:0.1s">
+    <span class="stat-n">26</span>
+    <span class="stat-l">Estados de México</span>
+  </div>
+  <div class="stat reveal" style="transition-delay:0.2s">
+    <span class="stat-n">176K+</span>
+    <span class="stat-l">Visualizaciones / mes</span>
+  </div>
+  <div class="stat reveal" style="transition-delay:0.3s">
+    <span class="stat-n">2021</span>
+    <span class="stat-l">Fundación · Celaya, Gto</span>
+  </div>
+</div>
+
+<!-- DELIVERABLES -->
+<div class="section" id="oferta">
+  <div class="eyebrow reveal">Lo que obtienes</div>
+  <h2 class="h2 reveal">Cuatro beneficios.<br><span class="accent">Concretos.</span></h2>
+  <p class="lead reveal">Todo lo que incluye tu alianza de $15,000 MXN al mes.</p>
+
+  <div class="deliverables-grid reveal">
+
+    <div class="deliverable-card">
+      <div class="card-icon">📣</div>
+      <div class="card-title">2 publicaciones mensuales</div>
+      <div class="card-desc">Tu marca integrada en dos piezas de contenido al mes en las redes de VORKA e IMPACTO — Instagram, Facebook y TikTok. Contenido con narrativa, no solo un banner.</div>
+    </div>
+
+    <div class="deliverable-card">
+      <div class="card-icon">🎤</div>
+      <div class="card-title">Logo en eventos y actividades</div>
+      <div class="card-desc">Presencia visual como patrocinador en todos los eventos, foros y activaciones del ecosistema IMPACTO: frente a jóvenes líderes, instituciones educativas y gobiernos.</div>
+    </div>
+
+    <div class="deliverable-card">
+      <div class="card-icon">🤝</div>
+      <div class="card-title">Patrocinador oficial de IMPACTO</div>
+      <div class="card-desc">Tu empresa figura como patrocinador activo de una organización juvenil presente en 26 estados. Visibilidad en sus canales, materiales y comunicaciones institucionales.</div>
+    </div>
+
+    <div class="deliverable-card highlight">
+      <div class="card-icon">⭐</div>
+      <div class="card-title">Distintivo "Socio de Impacto"</div>
+      <div class="card-desc">Un sello oficial que acredita a tu empresa como aliada del desarrollo juvenil en México. Úsalo en tu comunicación, sitio web y materiales. Diferénciate de la competencia con un posicionamiento que pocas marcas tienen.</div>
+    </div><!-- /mockups-grid -->
+
+    <!-- ROW 2: VORKA EDITORIAL + SERVICIOS -->
+    <div class="mockups-grid-row2 reveal">
+
+      <!-- MOCKUP 4: PORTADA VORKA SVG fiel al original -->
+      <div style="display:flex;flex-direction:column;align-items:stretch;">
+        <div style="border-radius:16px;overflow:hidden;border:1.5px solid #333;box-shadow:0 8px 40px rgba(0,0,0,0.25);">
+          <svg viewBox="0 0 420 560" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;" font-family="'Montserrat',sans-serif">
+            <defs>
+              <radialGradient id="bgGrad" cx="50%" cy="70%" r="65%">
+                <stop offset="0%" stop-color="#2a1f08"/>
+                <stop offset="100%" stop-color="#0a0a09"/>
+              </radialGradient>
+              <linearGradient id="silhGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C9952A" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#C9952A" stop-opacity="0.25"/>
+              </linearGradient>
+              <linearGradient id="borderGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#555"/>
+                <stop offset="100%" stop-color="#222"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Background -->
+            <rect width="420" height="560" fill="url(#bgGrad)"/>
+            <rect width="420" height="560" fill="#0d0c0a" opacity="0.5"/>
+
+            <!-- Border frame -->
+            <rect x="8" y="8" width="404" height="544" rx="2" fill="none" stroke="url(#borderGrad)" stroke-width="1.2"/>
+
+            <!-- SILHOUETTE — person with raised hand, golden gradient -->
+            <!-- Body -->
+            <ellipse cx="255" cy="390" rx="72" ry="100" fill="url(#silhGrad)" opacity="0.7"/>
+            <!-- Head -->
+            <ellipse cx="252" cy="248" rx="42" ry="48" fill="url(#silhGrad)" opacity="0.75"/>
+            <!-- Neck -->
+            <rect x="238" y="288" width="28" height="30" fill="url(#silhGrad)" opacity="0.7"/>
+            <!-- Raised arm -->
+            <path d="M220,300 Q195,270 175,220 Q168,200 172,185 Q178,172 188,178 Q196,183 200,200 Q215,240 228,275 Z" fill="url(#silhGrad)" opacity="0.75"/>
+            <!-- Hand fingers (raised) -->
+            <path d="M172,185 Q165,170 160,158 Q157,150 162,146 Q167,143 171,152 L178,172 Z" fill="url(#silhGrad)" opacity="0.7"/>
+            <path d="M167,158 Q162,143 158,132 Q155,124 160,121 Q165,119 169,128 L175,152 Z" fill="url(#silhGrad)" opacity="0.65"/>
+            <path d="M164,132 Q160,118 158,108 Q156,100 161,98 Q166,97 170,107 L173,128 Z" fill="url(#silhGrad)" opacity="0.6"/>
+            <path d="M162,108 Q160,95 161,86 Q162,79 167,79 Q172,80 172,88 L171,107 Z" fill="url(#silhGrad)" opacity="0.55"/>
+            <path d="M176,100 Q178,87 181,79 Q184,72 189,73 Q194,75 192,83 L185,100 Z" fill="url(#silhGrad)" opacity="0.55"/>
+
+            <!-- VORKA wordmark -->
+            <text x="24" y="82" font-size="88" font-weight="900" fill="white" letter-spacing="-4" opacity="0.97">VORKA</text>
+            <!-- Slash accent on V -->
+            <line x1="38" y1="30" x2="52" y2="88" stroke="url(#silhGrad)" stroke-width="3" opacity="0.8"/>
+
+            <!-- MÉXICO -->
+            <text x="266" y="105" font-size="17" font-weight="600" fill="white" letter-spacing="6" opacity="0.75">MÉXICO</text>
+
+            <!-- Left column text -->
+            <text x="24" y="210" font-size="18" font-weight="900" fill="white">DESCUBRE</text>
+            <text x="24" y="228" font-size="10" font-weight="400" fill="rgba(255,255,255,0.65)">visibilidad con sentido,</text>
+            <text x="24" y="242" font-size="10" font-weight="400" fill="rgba(255,255,255,0.65)">narrativa, posicionamiento.</text>
+
+            <!-- Right column text -->
+            <text x="240" y="310" font-size="15" font-weight="700" fill="white" text-anchor="end" x="396">TU HISTORIA</text>
+            <text x="396" y="310" font-size="15" font-weight="700" fill="white" text-anchor="end">TU HISTORIA</text>
+            <text x="396" y="330" font-size="17" font-weight="900" fill="white" text-anchor="end">NOS IMPORTA</text>
+            <text x="396" y="358" font-size="13" font-weight="700" fill="white" text-anchor="end">Y MERECE</text>
+            <text x="396" y="374" font-size="9.5" font-weight="400" fill="rgba(255,255,255,0.65)" text-anchor="end">ser contada con claridad,</text>
+            <text x="396" y="387" font-size="9.5" font-weight="400" fill="rgba(255,255,255,0.65)" text-anchor="end">enfoque y dirección</text>
+
+            <!-- Bottom: TU NOMBRE / TU FILOSOFÍA -->
+            <text x="210" y="465" font-size="36" font-weight="900" fill="white" text-anchor="middle" letter-spacing="-1">TU NOMBRE</text>
+            <text x="210" y="483" font-size="11" font-weight="500" fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="3">TU FILOSOFÍA</text>
+
+            <!-- Divider line -->
+            <line x1="24" y1="497" x2="396" y2="497" stroke="rgba(255,255,255,0.12)" stroke-width="0.8"/>
+
+            <!-- Footer text -->
+            <text x="24" y="515" font-size="7.5" font-weight="400" fill="rgba(255,255,255,0.35)" width="200">Esta propuesta detalla el proceso, alcance y</text>
+            <text x="24" y="525" font-size="7.5" font-weight="400" fill="rgba(255,255,255,0.35)">condiciones para formar parte de nuestra publicación</text>
+            <text x="24" y="535" font-size="7.5" font-weight="400" fill="rgba(255,255,255,0.35)">estratégica. Vorka México | Enero 2026</text>
+
+            <!-- Sparks badge -->
+            <rect x="340" y="504" width="62" height="24" rx="4" fill="#F0B429"/>
+            <text x="371" y="521" font-size="11" font-weight="900" fill="#111" text-anchor="middle" letter-spacing="0.5">sparks</text>
+          </svg>
+        </div>
+        <div class="mockup-label">Perfil editorial como líder influyente en VORKA</div>
+      </div>
+
+      <!-- MOCKUP 5: PUBLICACIÓN DE SERVICIOS -->
+      <div>
+        <div class="services-mock">
+          <div class="services-mock-header">
+            <div class="post-avatar" style="background:linear-gradient(135deg,#1a1a1a,#3a3020);">VK</div>
+            <div>
+              <span class="post-handle">vorka.mx</span>
+              <span class="post-handle-sub">Plataforma · Ecosistema de liderazgo</span>
+            </div>
+          </div>
+          <div class="services-mock-image">
+            <div class="svc-eyebrow">Aliado estratégico · VORKA × IMPACTO</div>
+            <div class="svc-headline">Conoce lo que<br>[Tu Empresa]<br>puede hacer por ti.</div>
+            <div class="svc-items">
+              <div class="svc-item">
+                <div class="svc-item-dot"></div>
+                <div class="svc-item-text">Servicio o producto clave #1</div>
+              </div>
+              <div class="svc-item">
+                <div class="svc-item-dot"></div>
+                <div class="svc-item-text">Servicio o producto clave #2</div>
+              </div>
+              <div class="svc-item">
+                <div class="svc-item-dot"></div>
+                <div class="svc-item-text">Servicio o producto clave #3</div>
+              </div>
+            </div>
+            <div class="svc-cta-badge">Conoce más →</div>
+          </div>
+          <div class="services-mock-footer">
+            <span class="post-likes">❤️ 1,204 me gusta</span>
+            <span style="font-size:0.6rem;color:var(--gray);">···</span>
+          </div>
+          <div class="services-mock-caption">
+            <strong>vorka.mx</strong> Empresas que entienden el futuro. Descubre cómo <strong>[Tu Empresa]</strong> está generando valor real en su industria. <span style="color:var(--gold);">#VORKA</span> <span style="color:var(--gold);">#SocioDeImpacto</span>
+          </div>
+        </div>
+        <div class="mockup-label">Publicación estratégica de servicios en VORKA</div>
+      </div>
+
+    </div><!-- /mockups-grid-row2 -->
+
+  </div>
+</div>
+
+<!-- MOCKUPS / ASÍ SE VE -->
+<div class="mockups-section">
+  <div class="mockups-section-inner">
+    <div class="eyebrow reveal">Así se ve en la práctica</div>
+    <h2 class="h2 reveal">Tu marca,<br><span class="accent">visible donde importa.</span></h2>
+    <p class="lead reveal">Tres formatos reales de cómo aparece tu empresa dentro del ecosistema.</p>
+
+    <div class="mockups-grid reveal">
+
+      <!-- MOCKUP 1: POST INSTAGRAM -->
+      <div>
+        <div class="post-mock">
+          <div class="post-mock-header">
+            <div class="post-avatar">IM</div>
+            <div>
+              <span class="post-handle">impacto.mx</span>
+              <span class="post-handle-sub">Organización · Celaya, Gto</span>
+            </div>
+          </div>
+          <div class="post-image">
+            <div class="post-image-tag">Foro de Liderazgo Juvenil 2025</div>
+            <div>
+              <div class="post-image-headline">El futuro<br>se construye<br>desde hoy.</div>
+              <div class="post-sponsor-badge">
+                <div class="post-sponsor-logo-placeholder">TU</div>
+                Con el apoyo de <strong style="color:var(--gold-light);margin-left:0.2rem;">Tu Empresa</strong>
+              </div>
+            </div>
+          </div>
+          <div class="post-footer">
+            <span class="post-likes">❤️ 847 me gusta</span>
+            <span style="font-size:0.6rem;color:var(--gray);">···</span>
+          </div>
+          <div class="post-caption">
+            <strong>impacto.mx</strong> Gracias a nuestros aliados estratégicos que hacen posible estos espacios. <span style="color:var(--gold);">#SocioDeImpacto</span> <span style="color:var(--gold);">#TuEmpresa</span>
+          </div>
+        </div>
+        <div class="mockup-label">Publicación mensual en redes sociales</div>
+      </div>
+
+      <!-- MOCKUP 2: BANNER EVENTO -->
+      <div>
+        <div class="event-mock">
+          <div class="event-mock-stage">
+            <div class="event-title-block">
+              <div class="event-mock-title">IMPACTO presenta</div>
+              <div class="event-mock-name">Cumbre<br><span>Joven</span> 2025</div>
+            </div>
+            <div class="event-sponsors-row">
+              <div class="event-sponsors-label">Patrocinadores oficiales</div>
+              <div class="event-logos-row">
+                <div class="event-logo-pill highlight-pill">
+                  <div class="logo-dot"></div>
+                  Tu Empresa
+                </div>
+                <div class="event-logo-pill">
+                  <div class="logo-dot" style="background:#666;"></div>
+                  Aliado B
+                </div>
+                <div class="event-logo-pill">
+                  <div class="logo-dot" style="background:#888;"></div>
+                  Aliado C
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="event-mock-footer">
+            <span>Celaya, Gto · Junio 2025</span>
+            <span style="color:var(--gold);font-weight:700;">+300 asistentes</span>
+          </div>
+        </div>
+        <div class="mockup-label">Logo en materiales y eventos</div>
+      </div>
+
+      <!-- MOCKUP 3: BADGE SOCIO DE IMPACTO -->
+      <div>
+        <div class="badge-mock">
+          <div class="badge-seal">
+            <span class="badge-star">⭐</span>
+            <div class="badge-seal-text">Socio de<br>Impacto</div>
+          </div>
+          <div class="badge-company-slot">
+            <div class="badge-company-label">Empresa aliada</div>
+            <div class="badge-company-placeholder">[ Tu Logo Aquí ]</div>
+          </div>
+          <div class="badge-footnote">
+            Acreditado por IMPACTO · Red Juvenil Nacional · México 2025
+          </div>
+        </div>
+        <div class="mockup-label">Distintivo "Socio de Impacto"</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- METRICS -->
+<div class="section-full" id="metricas">
+  <div class="section-full-inner">
+    <div class="eyebrow reveal">Alcance real</div>
+    <h2 class="h2 reveal">Números que<br><span class="accent">respaldan.</span></h2>
+    <p class="lead reveal">Métricas del período feb–may 2025. Crecimiento orgánico, sin inflación.</p>
+
+    <div class="metrics-grid reveal">
+      <div class="metric-card">
+        <div class="metric-platform">Instagram · IMPACTO</div>
+        <div class="metric-row">
+          <span class="metric-k">Visualizaciones</span>
+          <span class="metric-v">166.7K <span class="metric-up">↑41%</span></span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-k">Alcance</span>
+          <span class="metric-v">14.1K <span class="metric-up">↑39%</span></span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-k">Interacciones</span>
+          <span class="metric-v">3,500 <span class="metric-up">↑151%</span></span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-platform">Facebook · VORKA</div>
+        <div class="metric-row">
+          <span class="metric-k">Visualizaciones</span>
+          <span class="metric-v">97.1K <span class="metric-up">↑14%</span></span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-k">Espectadores únicos</span>
+          <span class="metric-v">49.1K <span class="metric-up">↑65%</span></span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-k">Interacciones</span>
+          <span class="metric-v">1,100 <span class="metric-up">↑84%</span></span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-platform">TikTok · VORKA</div>
+        <div class="metric-row">
+          <span class="metric-k">Vistas de video</span>
+          <span class="metric-v">31.9K</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-k">Compartidos</span>
+          <span class="metric-v">318</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-k">Vistas de perfil</span>
+          <span class="metric-v">1,300 <span class="metric-up">↑63%</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NETWORK -->
+<div class="section">
+  <div class="eyebrow reveal">Red de alianzas</div>
+  <h2 class="h2 reveal">Ya confían en<br><span class="accent">este ecosistema.</span></h2>
+
+  <div class="network-cols reveal">
+    <div>
+      <div class="network-group-label">Gobiernos municipales y estatales</div>
+      <div class="tags-row">
+        <span class="tag">Celaya, Gto</span>
+        <span class="tag">Cortazar, Gto</span>
+        <span class="tag">Villagrán, Gto</span>
+        <span class="tag">Los Cabos, BCS</span>
+        <span class="tag">Tlajomulco, Jal</span>
+        <span class="tag">Guanajuato Capital</span>
+        <span class="tag">Nuevo León</span>
+        <span class="tag">Monterrey, NL</span>
+        <span class="tag">Xalapa, Ver</span>
+        <span class="tag">La Paz, BCS</span>
+      </div>
+
+      <div class="network-group-label" style="margin-top:2rem;">Convenios institucionales</div>
+      <div class="tags-row">
+        <span class="tag">Consejo Coordinador Empresarial de Celaya</span>
+        <span class="tag">Inst. Municipal de la Juventud · Celaya</span>
+        <span class="tag">Inst. Estatal de la Juventud · NL</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="network-group-label">Instituciones educativas</div>
+      <div class="tags-row">
+        <span class="tag">Tec de Monterrey · Querétaro</span>
+        <span class="tag">Tec de Monterrey · Guadalajara</span>
+        <span class="tag">Tec de Monterrey · Monterrey</span>
+        <span class="tag">Tec de Monterrey · CDMX</span>
+        <span class="tag">Tec de Monterrey · Morelia</span>
+        <span class="tag">Universidad de Guanajuato</span>
+        <span class="tag">TECNM Celaya</span>
+        <span class="tag">CECyTEG</span>
+        <span class="tag">UPG</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section-full">
+  <div class="section-full-inner">
+    <div class="eyebrow reveal">La inversión</div>
+    <h2 class="h2 reveal">Simple y directo.</h2>
+
+    <div class="pricing-wrap reveal">
+      <div class="price-card">
+        <div class="price-eyebrow">Alianza mensual</div>
+        <div class="price-amount">$15,000</div>
+        <div class="price-period">pesos mexicanos · por mes</div>
+        <div class="price-note">
+          Sin contratos de permanencia.<br>
+          Primeros resultados desde el primer mes.<br>
+          Facturación disponible.
+        </div>
+      </div>
+
+      <div class="price-reasons">
+        <div class="reason">
+          <div class="reason-dot"></div>
+          <div class="reason-text"><strong>Audiencia de alto valor.</strong> Jóvenes líderes de 18 a 30 años, con formación universitaria, presentes en 26 estados. La generación que decide qué marcas merecen existir.</div>
+        </div>
+        <div class="reason">
+          <div class="reason-dot"></div>
+          <div class="reason-text"><strong>Validación institucional inmediata.</strong> Al sumarte, tu marca aparece junto a gobiernos municipales, universidades y a Consejos Empresariales.</div>
+        </div>
+        <div class="reason">
+          <div class="reason-dot"></div>
+          <div class="reason-text"><strong>Diferenciación real.</strong> El distintivo "Socio de Impacto" te posiciona como empresa comprometida con el desarrollo de México, algo que pocas marcas pueden mostrar.</div>
+        </div>
+        <div class="reason">
+          <div class="reason-dot"></div>
+          <div class="reason-text"><strong>Crecimiento sostenido.</strong> Las métricas de la plataforma llevan meses en ascenso. Entrar ahora es entrar antes que tu competencia.</div>
+        </div>
+        <a href="#contacto" class="btn btn-fill" style="margin-top:1rem;align-self:flex-start;">Quiero ser aliado →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSING -->
+<div class="closing" id="contacto">
+  <div class="eyebrow" style="justify-content:center;margin-bottom:1.2rem;">El momento es ahora</div>
+  <h2 class="closing-h reveal">
+    Los espacios<br>
+    son <span class="accent">limitados.</span>
+  </h2>
+  <p class="closing-sub reveal">
+    Mantenemos un número reducido de aliados para garantizar presencia y enfoque real para cada empresa.
+  </p>
+  <div class="reveal" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="mailto:contacto@vorka.mx" class="btn btn-fill" style="font-size:0.75rem;padding:1.1rem 2.5rem;">Solicitar información →</a>
+    <a href="tel:+524611234567" class="btn btn-outline">Hablar con el equipo</a>
+  </div>
+  <p style="margin-top:2.5rem;font-size:0.62rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:#9a9080;">
+    contacto@vorka.mx &nbsp;·&nbsp; VORKA × IMPACTO · Celaya, Guanajuato · México
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">VORKA<span> × </span>IMPACTO</div>
+  <div class="footer-copy">Propuesta confidencial · 2025–2026</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
