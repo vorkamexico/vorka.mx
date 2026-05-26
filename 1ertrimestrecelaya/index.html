@@ -1,0 +1,509 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VORKA México - Reporte Trimestral Celaya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f5f5;
+            color: #2c2c2c;
+            overflow-x: hidden;
+        }
+        
+        .slides-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Slide Base */
+        .slide {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Variantes de Slide */
+        .slide.title-slide {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide.light-bg {
+            background-color: #fafafa;
+        }
+        
+        .slide.accent-left {
+            border-left: 8px solid #e91e63;
+        }
+        
+        /* Decoración */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(233, 30, 99, 0.05);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+        
+        /* Título Principal (Slide 1) */
+        .slide.title-slide h1 {
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+        
+        .slide.title-slide .subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 40px;
+        }
+        
+        .slide.title-slide .period {
+            font-size: 16px;
+            color: #999;
+            letter-spacing: 1px;
+        }
+        
+        /* Títulos de Slide */
+        .slide-title {
+            font-size: 44px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .slide-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #e91e63, #ff6b6b);
+        }
+        
+        /* Contenido */
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* KPI Cards en Slide */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .kpi-block {
+            background: white;
+            padding: 35px;
+            border-radius: 6px;
+            border-left: 5px solid #e91e63;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .kpi-number {
+            font-size: 52px;
+            font-weight: 700;
+            color: #e91e63;
+            margin-bottom: 12px;
+        }
+        
+        .kpi-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Métricas en Grid */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .metric-item {
+            text-align: center;
+            padding: 25px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .metric-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            line-height: 1.4;
+        }
+        
+        /* Texto Largo */
+        .text-block {
+            background: white;
+            padding: 35px;
+            border-radius: 6px;
+            border-left: 5px solid #ff6b6b;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .text-block h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+        
+        .text-block p {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        /* Lista de Pilares */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .pillar-box {
+            background: white;
+            padding: 30px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid #e91e63;
+        }
+        
+        .pillar-box h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        
+        .pillar-box p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Footer Slide */
+        .slide-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .slide-footer .logo {
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 5px;
+        }
+        
+        /* Conclusión */
+        .conclusion-box {
+            background: linear-gradient(135deg, #e91e63 0%, #ff6b6b 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .conclusion-box h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .conclusion-box p {
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Página de Números */
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .number-big {
+            background: white;
+            padding: 40px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .number-big .value {
+            font-size: 64px;
+            font-weight: 700;
+            color: #e91e63;
+        }
+        
+        .number-big .description {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: 40px;
+            }
+            
+            .slide-title {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+        }
+        
+        /* Print */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .slides-container {
+                gap: 0;
+                padding: 0;
+            }
+            
+            .slide {
+                page-break-after: always;
+                box-shadow: none;
+                border: 1px solid #e8e8e8;
+                margin-bottom: 0;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+        
+        <!-- SLIDE 1: PORTADA -->
+        <div class="slide title-slide">
+            <div>
+                <h1>VORKA MÉXICO</h1>
+                <div class="subtitle">Reporte Trimestral de Resultados</div>
+                <div class="period">Municipio de Celaya | Q1 2026</div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 2: RESULTADOS CLAVE -->
+        <div class="slide light-bg accent-left">
+            <div class="slide-title">Resultados Clave</div>
+            <div class="slide-content">
+                <div class="kpi-row">
+                    <div class="kpi-block">
+                        <div class="kpi-number">300+</div>
+                        <div class="kpi-label">Beneficiarios Directos</div>
+                    </div>
+                    <div class="kpi-block">
+                        <div class="kpi-number">6</div>
+                        <div class="kpi-label">Activaciones Realizadas</div>
+                    </div>
+                    <div class="kpi-block">
+                        <div class="kpi-number">12</div>
+                        <div class="kpi-label">Videos de Impacto</div>
+                    </div>
+                    <div class="kpi-block">
+                        <div class="kpi-number">24</div>
+                        <div class="kpi-label">Consultorías Ejecutadas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 3: ALCANCE Y COBERTURA -->
+        <div class="slide light-bg accent-left">
+            <div class="slide-title">Alcance y Cobertura</div>
+            <div class="slide-content">
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">6</div>
+                        <div class="metric-label">Historias de Talento Juvenil</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">2</div>
+                        <div class="metric-label">Escuelas Involucradas</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">4</div>
+                        <div class="metric-label">Personas de Servicio Social</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">1M+</div>
+                        <div class="metric-label">Alcance Digital Acumulado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 4: TRANSFORMACIÓN DE NARRATIVA -->
+        <div class="slide accent-left">
+            <div class="slide-title">Transformación de Narrativa Urbana</div>
+            <div class="slide-content">
+                <div class="text-block">
+                    <h3>12 Videos Documentando Historias Positivas</h3>
+                    <p>Se han capturado y difundido 12 historias de Celaya que mejoran significativamente la percepción pública y la comunicación municipal. Cada pieza de contenido refuerza la identidad de ciudad con oportunidades reales para sus jóvenes. Narrativa estratégica que empodera a la comunidad.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 5: CONSULTORÍA INTEGRAL -->
+        <div class="slide accent-left">
+            <div class="slide-title">Consultoría Integral y Capacitación</div>
+            <div class="slide-content">
+                <div class="text-block">
+                    <h3>24 Consultorías = 24 Puntos de Contacto Estratégico</h3>
+                    <p>Cada consultoría representa un punto de conexión directo con actores clave del municipio: líderes comunitarios, emprendedores y gestores. Generamos capital social real, estructuramos participación juvenil y abrimos oportunidades de crecimiento económico y personal.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 6: AMPLIFICACIÓN INSTITUCIONAL -->
+        <div class="slide accent-left">
+            <div class="slide-title">Amplificación Institucional</div>
+            <div class="slide-content">
+                <div class="text-block">
+                    <h3>2 Escuelas + 4 Personas en Servicio Social</h3>
+                    <p>La internalización del modelo VORKA es evidente. La participación de instituciones educativas e integración de talento joven documentado no solo visibiliza oportunidades: genera puentes reales hacia empleo, mentoría y desarrollo comunitario sostenible.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 7: PILARES VORKA -->
+        <div class="slide light-bg accent-left">
+            <div class="slide-title">Alineación con Pilares VORKA</div>
+            <div class="slide-content">
+                <div class="pillars-grid">
+                    <div class="pillar-box">
+                        <h4>1. Propósito</h4>
+                        <p>300+ jóvenes reconocidos como agentes de cambio real en Villagrán.</p>
+                    </div>
+                    <div class="pillar-box">
+                        <h4>2. Enfoque Humano</h4>
+                        <p>6 historias que conectan estratégicamente gobierno y comunidad con confianza.</p>
+                    </div>
+                    <div class="pillar-box">
+                        <h4>3. Eje de Acción</h4>
+                        <p>12 videos + contenido digital visible generó participación comunitaria auténtica.</p>
+                    </div>
+                    <div class="pillar-box">
+                        <h4>4. Plan de Crecimiento</h4>
+                        <p>24 consultorías son base escalable para expansión trimestral.</p>
+                    </div>
+                    <div class="pillar-box">
+                        <h4>5. Entregables</h4>
+                        <p>Resultados medibles: videos, historias, consultorías registradas y documentadas.</p>
+                    </div>
+                    <div class="pillar-box">
+                        <h4>6. Valor para Celaya</h4>
+                        <p>Imagen municipal positiva + jóvenes empoderados = comunidad cohesionada.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 8: NÚMEROS DE IMPACTO -->
+        <div class="slide light-bg accent-left">
+            <div class="slide-title">Resonancia Digital</div>
+            <div class="slide-content">
+                <div class="numbers-grid">
+                    <div class="number-big">
+                        <div class="value">1M+</div>
+                        <div class="description">Visualizaciones acumuladas en redes sociales</div>
+                    </div>
+                    <div class="number-big">
+                        <div class="value">67K+</div>
+                        <div class="description">Alcance potencial en audiencia digital</div>
+                    </div>
+                    <div class="number-big">
+                        <div class="value">3.6K+</div>
+                        <div class="description">Interacciones orgánicas registradas</div>
+                    </div>
+                    <div class="number-big">
+                        <div class="value">95%+</div>
+                        <div class="description">Crecimiento en engagement trimestral</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 9: CONCLUSIÓN -->
+        <div class="slide">
+            <div class="slide-content" style="justify-content: center; align-items: center;">
+                <div class="conclusion-box">
+                    <h2>El Proyecto VORKA es Estrategia en Acción</h2>
+                    <p>300+ beneficiarios, 6 activaciones, 1M+ impresiones digitales. Celaya no mejora solo su imagen: genera oportunidades reales para su juventud.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SLIDE 10: CIERRE -->
+        <div class="slide title-slide">
+            <div>
+                <div style="font-size: 36px; font-weight: 600; margin-bottom: 30px;">VORKA MÉXICO</div>
+                <div class="subtitle" style="font-size: 20px; margin-bottom: 30px;">Municipio de Celaya</div>
+                <div class="period" style="font-size: 14px;">Primer Trimestre 2026</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
