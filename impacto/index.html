@@ -1,1 +1,1352 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IMPACTO — Juventudes que Transforman México</title>
+<meta name="description" content="IMPACTO es una organización juvenil mexicana presente en más de 20 estados con más de 1,600 líderes. Únete y transforma tu comunidad." />
+<meta name="keywords" content="IMPACTO, juventud México, voluntariado, líderes juveniles, organización juvenil, Celaya, Guanajuato" />
+<meta property="og:title" content="IMPACTO — Juventudes que Transforman México" />
+<meta property="og:description" content="Únete a +1,600 líderes juveniles en más de 20 estados de México." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Outfit', 'sans-serif'],
+          body: ['DM Sans', 'sans-serif'],
+          mono: ['Space Grotesk', 'sans-serif'],
+        },
+        colors: {
+          /* PRIMARY: yellow brand */
+          brand: {
+            50:'#FEF8E8', 100:'#FDEEC2', 200:'#FBDD85', 300:'#F9CB58',
+            400:'#F7B33E', 500:'#E89A1B', 600:'#C47A12', 700:'#9C5E0F',
+            800:'#6E430A', 900:'#3F2606'
+          },
+          midnight: {
+            50:'#F1F4F9', 100:'#DBE3EF', 200:'#B5C5DE', 300:'#8AA4C8',
+            400:'#5C7FAE', 500:'#3D5F8F', 600:'#2D4870', 700:'#1F3458',
+            800:'#142441', 900:'#0B1530'
+          },
+          mint: { 500:'#10D095', 600:'#0DB07F' }
+        },
+        animation: {
+          'fade-up': 'fadeUp 0.8s ease-out forwards',
+          'fade-in': 'fadeIn 0.6s ease-out forwards',
+          'slide-right': 'slideRight 0.8s ease-out forwards',
+          'pulse-soft': 'pulseSoft 2.5s ease-in-out infinite',
+          'float': 'float 5s ease-in-out infinite',
+          'spin-slow': 'spin 18s linear infinite',
+          'marquee': 'marquee 35s linear infinite',
+        },
+        keyframes: {
+          fadeUp: { '0%': { opacity:'0', transform:'translateY(28px)' }, '100%': { opacity:'1', transform:'translateY(0)' } },
+          fadeIn: { '0%': { opacity:'0' }, '100%': { opacity:'1' } },
+          slideRight: { '0%': { opacity:'0', transform:'translateX(-24px)' }, '100%': { opacity:'1', transform:'translateX(0)' } },
+          pulseSoft: { '0%,100%': { opacity:'1' }, '50%': { opacity:'.55' } },
+          float: { '0%,100%': { transform:'translateY(0)' }, '50%': { transform:'translateY(-14px)' } },
+          marquee: { '0%': { transform:'translateX(0)' }, '100%': { transform:'translateX(-50%)' } },
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family:'DM Sans',sans-serif; color:#0B1530; background:#FAFAF7; }
+  h1,h2,h3,h4,h5,h6 { font-family:'Outfit',sans-serif; letter-spacing:-0.02em; }
+  .font-mono-display { font-family:'Space Grotesk',sans-serif; }
+
+  /* Decorative grain noise */
+  .noise { position:relative; }
+  .noise::before {
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.06; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Scroll reveal */
+  .reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity:1; transform:none; }
+
+  /* Hero blobs */
+  .blob { position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; pointer-events:none; }
+
+  /* Map states */
+  .state {
+    fill:#E9ECF2; stroke:#fff; stroke-width:.6;
+    transition:fill .3s ease, transform .3s ease; cursor:pointer; transform-origin:center;
+  }
+  .state.active { fill:#F7B33E; }
+  .state:hover { fill:#0B1530; }
+  .state.active:hover { fill:#C47A12; }
+
+  /* Marquee */
+  .marquee-track { display:flex; width:max-content; }
+
+  /* Custom button shine */
+  .btn-shine { position:relative; overflow:hidden; }
+  .btn-shine::after {
+    content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,.45), transparent);
+    transition:left .8s ease;
+  }
+  .btn-shine:hover::after { left:120%; }
+
+  /* Dotted bg pattern */
+  .dot-grid {
+    background-image: radial-gradient(rgba(11,21,48,.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Card hover lift */
+  .card-lift { transition: transform .35s ease, box-shadow .35s ease; }
+  .card-lift:hover { transform: translateY(-6px); box-shadow: 0 24px 50px -20px rgba(11,21,48,.18); }
+
+  /* Hide scrollbar */
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+  /* Mobile nav */
+  .mobile-open { transform:translateX(0)!important; }
+
+  /* Sticky offset for anchored sections (header height) */
+  section[id] { scroll-margin-top: 80px; }
+
+  /* Underline animation */
+  .nav-link { position:relative; }
+  .nav-link::after {
+    content:''; position:absolute; left:0; bottom:-6px; width:0; height:2px;
+    background:#F7B33E; transition:width .3s ease;
+  }
+  .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+  /* Map tooltip */
+  #mapTooltip { transition: opacity .15s ease; }
+
+  /* Instagram tile hover */
+  .ig-tile { position:relative; overflow:hidden; }
+  .ig-tile::after {
+    content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(247,179,62,.0), rgba(247,179,62,.85));
+    opacity:0; transition:opacity .35s ease;
+  }
+  .ig-tile:hover::after { opacity:1; }
+  .ig-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .35s ease; }
+  .ig-tile:hover .ig-icon { opacity:1; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============ NAVIGATION ============ -->
+<header id="nav" class="sticky top-0 z-50 bg-white/85 backdrop-blur-lg border-b border-midnight-100/60">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
+    <a href="#home" class="flex items-center gap-2">
+      <div class="relative w-9 h-9">
+        <div class="absolute inset-0 bg-brand-400 rounded-lg rotate-6"></div>
+        <div class="absolute inset-0 bg-midnight-900 rounded-lg flex items-center justify-center">
+          <span class="font-display font-black text-white text-lg">i</span>
+        </div>
+      </div>
+      <div class="leading-tight">
+        <div class="font-display font-black text-midnight-900 text-lg tracking-tight">IMPACTO</div>
+        <div class="text-[10px] font-mono-display uppercase tracking-widest text-brand-600 -mt-0.5">México</div>
+      </div>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-midnight-700">
+      <a href="#nosotros" class="nav-link hover:text-midnight-900">Nosotros</a>
+      <a href="#impacto" class="nav-link hover:text-midnight-900">Impacto</a>
+      <a href="#proyectos" class="nav-link hover:text-midnight-900">Proyectos</a>
+      <a href="#areas" class="nav-link hover:text-midnight-900">Áreas</a>
+      <a href="#convocatorias" class="nav-link hover:text-midnight-900">Convocatorias</a>
+      <a href="#blog" class="nav-link hover:text-midnight-900">Blog</a>
+      <a href="#transparencia" class="nav-link hover:text-midnight-900">Transparencia</a>
+      <a href="#alianzas" class="nav-link hover:text-midnight-900">Alianzas</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="#donaciones" class="hidden md:inline-flex items-center gap-1.5 text-sm font-semibold text-midnight-900 hover:text-brand-600 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/></svg>
+        Socio
+      </a>
+      <a href="#unete" class="btn-shine inline-flex items-center gap-2 bg-brand-400 hover:bg-brand-500 text-midnight-900 font-bold text-sm px-4 py-2.5 rounded-full transition shadow-lg shadow-brand-400/30">
+        Únete
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+      <button id="menuBtn" class="lg:hidden p-2" aria-label="Abrir menú">
+        <svg class="w-6 h-6 text-midnight-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="lg:hidden fixed inset-0 z-50 bg-midnight-900 text-white transform translate-x-full transition-transform duration-300">
+    <div class="flex items-center justify-between px-4 h-16 border-b border-white/10">
+      <span class="font-display font-black text-xl">IMPACTO</span>
+      <button id="closeBtn" aria-label="Cerrar menú">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col p-6 gap-5 text-xl font-display font-semibold">
+      <a href="#nosotros" class="mob-link">Nosotros</a>
+      <a href="#impacto" class="mob-link">Impacto Nacional</a>
+      <a href="#proyectos" class="mob-link">Proyectos</a>
+      <a href="#areas" class="mob-link">Direcciones</a>
+      <a href="#convocatorias" class="mob-link">Convocatorias</a>
+      <a href="#blog" class="mob-link">Blog & Noticias</a>
+      <a href="#transparencia" class="mob-link">Transparencia</a>
+      <a href="#alianzas" class="mob-link">Alianzas</a>
+      <a href="#contacto" class="mob-link">Contacto</a>
+      <a href="#unete" class="mob-link mt-4 bg-brand-400 text-midnight-900 text-center py-3 rounded-full">Únete a IMPACTO</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="home" class="relative overflow-hidden noise">
+  <!-- Blobs -->
+  <div class="blob bg-brand-300 w-[420px] h-[420px] -top-32 -right-20"></div>
+  <div class="blob bg-brand-200 w-[360px] h-[360px] top-20 -left-32"></div>
+  <div class="blob bg-midnight-200 w-[300px] h-[300px] bottom-0 right-1/3 opacity-40"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 lg:px-6 pt-12 lg:pt-20 pb-16 lg:pb-28 grid lg:grid-cols-2 gap-10 items-center">
+    <div class="reveal">
+      <div class="inline-flex items-center gap-2 bg-white border border-midnight-200 rounded-full px-4 py-1.5 text-xs font-semibold text-midnight-700 mb-6">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+        </span>
+        Convocatoria 2026 abierta — Únete ya
+      </div>
+
+      <h1 class="font-display font-black text-5xl sm:text-6xl lg:text-7xl text-midnight-900 leading-[0.95] tracking-tight">
+        Juventudes que
+        <span class="relative inline-block">
+          <span class="relative z-10 text-brand-500">transforman</span>
+          <svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
+            <path d="M2 8 Q 75 2, 150 6 T 298 5" stroke="#0B1530" stroke-width="6" stroke-linecap="round" fill="none"/>
+          </svg>
+        </span>
+        México.
+      </h1>
+
+      <p class="mt-6 text-lg lg:text-xl text-midnight-700 max-w-xl leading-relaxed">
+        Somos <strong class="text-midnight-900">+1,600 líderes juveniles</strong> en <strong class="text-midnight-900">más de 20 estados</strong> construyendo proyectos sociales, ambientales, culturales y de emprendimiento. Tu impacto empieza aquí.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#unete" class="btn-shine inline-flex items-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white font-semibold px-7 py-4 rounded-full shadow-xl shadow-midnight-900/20 transition">
+          Quiero ser parte
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="#proyectos" class="inline-flex items-center gap-2 border-2 border-midnight-900 hover:bg-midnight-900 hover:text-white text-midnight-900 font-semibold px-7 py-4 rounded-full transition">
+          Ver proyectos
+        </a>
+      </div>
+
+      <!-- Social proof -->
+      <div class="mt-10 flex flex-wrap items-center gap-6">
+        <div class="flex -space-x-3">
+          <div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center text-midnight-900 font-bold text-xs">AM</div>
+          <div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-midnight-500 to-midnight-700 flex items-center justify-center text-white font-bold text-xs">JR</div>
+          <div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-midnight-900 font-bold text-xs">LM</div>
+          <div class="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-mint-500 to-mint-600 flex items-center justify-center text-white font-bold text-xs">SP</div>
+          <div class="w-10 h-10 rounded-full border-2 border-white bg-midnight-900 flex items-center justify-center text-white font-bold text-[10px]">+1.6k</div>
+        </div>
+        <div class="text-sm text-midnight-700">
+          <div class="flex items-center gap-1 mb-0.5">
+            <span class="text-brand-500">★★★★★</span>
+            <span class="font-bold text-midnight-900">4.9/5</span>
+          </div>
+          <p class="text-xs">Comunidad activa en +20 estados</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero visual -->
+    <div class="reveal relative">
+      <div class="relative aspect-[4/5] max-w-md mx-auto">
+        <!-- Back card -->
+        <div class="absolute top-6 right-0 w-[88%] h-[88%] bg-midnight-900 rounded-3xl rotate-3"></div>
+        <!-- Yellow card -->
+        <div class="absolute top-0 left-0 w-[88%] h-[88%] bg-brand-400 rounded-3xl -rotate-2 overflow-hidden noise flex flex-col p-7 text-midnight-900">
+          <div class="flex items-center justify-between">
+            <span class="font-mono-display text-xs tracking-widest uppercase opacity-80">// LIVE</span>
+            <div class="flex gap-1">
+              <div class="w-1.5 h-1.5 rounded-full bg-midnight-900 animate-pulse-soft"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-midnight-900 animate-pulse-soft" style="animation-delay:.4s"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-midnight-900 animate-pulse-soft" style="animation-delay:.8s"></div>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="font-display font-black text-7xl leading-none">1.6k+</div>
+            <div class="font-display font-bold text-xl mt-1">Líderes activos</div>
+            <div class="mt-4 text-sm opacity-80">Construyendo soluciones reales desde sus comunidades cada semana.</div>
+          </div>
+        </div>
+
+        <!-- Floating chip 1 -->
+        <div class="absolute -top-4 -right-2 bg-white rounded-2xl shadow-2xl shadow-midnight-900/20 p-4 animate-float">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-mint-500/15 flex items-center justify-center">
+              <svg class="w-5 h-5 text-mint-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <div class="font-display font-bold text-midnight-900 text-sm">+240 proyectos</div>
+              <div class="text-xs text-midnight-500">implementados en 2025</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating chip 2 -->
+        <div class="absolute -bottom-5 -left-3 bg-midnight-900 text-white rounded-2xl shadow-2xl p-4 animate-float" style="animation-delay:1.2s">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-400 flex items-center justify-center">
+              <svg class="w-5 h-5 text-midnight-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div>
+              <div class="font-display font-bold text-sm">+20 estados</div>
+              <div class="text-xs opacity-70">presencia nacional</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marquee -->
+  <div class="relative border-y border-midnight-100 bg-white py-5 overflow-hidden">
+    <div class="marquee-track animate-marquee gap-12 items-center text-midnight-700 font-display font-bold text-lg whitespace-nowrap">
+      <span>✦ EDUCACIÓN</span><span>✦ AMBIENTE</span><span>✦ EMPRENDIMIENTO</span><span>✦ CULTURA</span>
+      <span>✦ SALUD MENTAL</span><span>✦ EQUIDAD</span><span>✦ TECNOLOGÍA SOCIAL</span><span>✦ COMUNIDAD</span>
+      <span>✦ EDUCACIÓN</span><span>✦ AMBIENTE</span><span>✦ EMPRENDIMIENTO</span><span>✦ CULTURA</span>
+      <span>✦ SALUD MENTAL</span><span>✦ EQUIDAD</span><span>✦ TECNOLOGÍA SOCIAL</span><span>✦ COMUNIDAD</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOSOTROS ============ -->
+<section id="nosotros" class="py-20 lg:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="grid lg:grid-cols-12 gap-10 mb-16">
+      <div class="lg:col-span-5 reveal">
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">01 / Nosotros</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">
+          Una generación que no espera. <span class="text-brand-500">Actúa.</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-7 reveal">
+        <p class="text-lg text-midnight-700 leading-relaxed">
+          Fundada en <strong>2021 en Celaya, Guanajuato</strong>, IMPACTO nació de la convicción de que las juventudes son agentes legítimos de cambio social. Hoy somos una red nacional que articula talento, ideas y compromiso para transformar realidades desde lo local.
+        </p>
+        <p class="mt-4 text-midnight-700 leading-relaxed">
+          Creemos en una juventud diversa, crítica, propositiva y profundamente comprometida con su entorno. Operamos con principios de transparencia, inclusión y rigor metodológico.
+        </p>
+      </div>
+    </div>
+
+    <!-- Misión / Visión / Valores -->
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="reveal card-lift p-8 rounded-3xl bg-midnight-900 text-white">
+        <div class="w-12 h-12 rounded-2xl bg-brand-400 text-midnight-900 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-2xl mb-3">Misión</h3>
+        <p class="text-white/80 leading-relaxed text-[15px]">Impulsar el liderazgo y la participación de las juventudes mexicanas mediante proyectos formativos y sociales con impacto medible en sus comunidades.</p>
+      </div>
+
+      <div class="reveal card-lift p-8 rounded-3xl bg-brand-400 text-midnight-900">
+        <div class="w-12 h-12 rounded-2xl bg-midnight-900 text-white flex items-center justify-center mb-5">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-2xl mb-3">Visión</h3>
+        <p class="text-midnight-900/85 leading-relaxed text-[15px]">Ser la organización juvenil de referencia en México: una red nacional capaz de articular, formar y proyectar a las juventudes como protagonistas del desarrollo social.</p>
+      </div>
+
+      <div class="reveal card-lift p-8 rounded-3xl bg-brand-50 text-midnight-900 border border-brand-200">
+        <div class="w-12 h-12 rounded-2xl bg-midnight-900 text-white flex items-center justify-center mb-5">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-2xl mb-3">Valores</h3>
+        <ul class="space-y-2 text-[15px] font-medium">
+          <li class="flex gap-2"><span class="text-brand-600">↳</span>Compromiso comunitario</li>
+          <li class="flex gap-2"><span class="text-brand-600">↳</span>Transparencia radical</li>
+          <li class="flex gap-2"><span class="text-brand-600">↳</span>Inclusión y diversidad</li>
+          <li class="flex gap-2"><span class="text-brand-600">↳</span>Impacto medible</li>
+          <li class="flex gap-2"><span class="text-brand-600">↳</span>Liderazgo colaborativo</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Historia / Timeline -->
+    <div class="mt-20 reveal">
+      <h3 class="font-display font-black text-3xl lg:text-4xl text-midnight-900 mb-10 text-center">Nuestra historia</h3>
+      <div class="relative">
+        <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-midnight-100"></div>
+        <div class="grid md:grid-cols-5 gap-8 relative">
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-brand-400 text-midnight-900 flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">21</div>
+            <div class="mt-3 font-display font-bold text-midnight-900">2021</div>
+            <p class="text-sm text-midnight-600 mt-1">Fundación en Celaya, Guanajuato</p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-midnight-900 text-white flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">22</div>
+            <div class="mt-3 font-display font-bold text-midnight-900">2022</div>
+            <p class="text-sm text-midnight-600 mt-1">Expansión a 8 estados</p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-brand-400 text-midnight-900 flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">23</div>
+            <div class="mt-3 font-display font-bold text-midnight-900">2023</div>
+            <p class="text-sm text-midnight-600 mt-1">Primer Congreso Nacional Juvenil</p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-midnight-900 text-white flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">24</div>
+            <div class="mt-3 font-display font-bold text-midnight-900">2024</div>
+            <p class="text-sm text-midnight-600 mt-1">+1,000 líderes en 20 estados</p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-brand-400 text-midnight-900 flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">26</div>
+            <div class="mt-3 font-display font-bold text-midnight-900">2026</div>
+            <p class="text-sm text-midnight-600 mt-1">+20 estados • +1,600 líderes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IMPACTO NACIONAL ============ -->
+<section id="impacto" class="py-20 lg:py-28 bg-midnight-900 text-white relative overflow-hidden noise">
+  <div class="absolute inset-0 dot-grid opacity-[0.07]"></div>
+  <div class="relative max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+      <div class="font-mono-display text-brand-400 uppercase text-xs tracking-[0.25em] mb-4">02 / Impacto Nacional</div>
+      <h2 class="font-display font-black text-4xl lg:text-5xl leading-tight">
+        Nuestra huella en <span class="text-brand-400">cada rincón</span> de México.
+      </h2>
+      <p class="mt-5 text-white/70 text-lg">Datos que muestran lo que pasa cuando una generación decide actuar de manera coordinada.</p>
+    </div>
+
+    <!-- Stats / Dashboard -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 mb-16">
+      <div class="reveal p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">
+        <div class="font-mono-display text-brand-400 text-xs mb-2">// LÍDERES</div>
+        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="1600" data-suffix="+">0</div>
+        <div class="text-sm text-white/60 mt-2">jóvenes activos</div>
+      </div>
+      <div class="reveal p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">
+        <div class="font-mono-display text-brand-400 text-xs mb-2">// ESTADOS</div>
+        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="20" data-suffix="+">0</div>
+        <div class="text-sm text-white/60 mt-2">presencia nacional</div>
+      </div>
+      <div class="reveal p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">
+        <div class="font-mono-display text-mint-500 text-xs mb-2">// PROYECTOS</div>
+        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="240" data-suffix="+">0</div>
+        <div class="text-sm text-white/60 mt-2">implementados</div>
+      </div>
+      <div class="reveal p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">
+        <div class="font-mono-display text-brand-400 text-xs mb-2">// PERSONAS</div>
+        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="85000" data-suffix="+">0</div>
+        <div class="text-sm text-white/60 mt-2">beneficiadas</div>
+      </div>
+    </div>
+
+    <!-- +20 estados CTA block -->
+    <div class="reveal bg-gradient-to-br from-white/5 to-white/[0.02] rounded-3xl p-8 lg:p-12 border border-white/10 text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 bg-brand-400/15 text-brand-400 rounded-full px-4 py-1.5 text-xs font-mono-display uppercase tracking-widest mb-5">
+        <span class="w-2 h-2 bg-brand-400 rounded-full animate-pulse"></span>
+        Red Nacional
+      </div>
+      <h3 class="font-display font-black text-3xl lg:text-5xl mb-4">+20 estados, <span class="text-brand-400">una sola red</span>.</h3>
+      <p class="text-white/70 text-lg max-w-xl mx-auto mb-8">Tenemos representaciones activas en más de 20 estados de la república mexicana y seguimos creciendo cada mes. Si tu estado aún no aparece, ¡puedes ser pionera o pionero!</p>
+
+      <div class="grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8 text-left">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-brand-400/15 text-brand-400 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span class="text-white/90 text-sm pt-1">Representante propio por estado</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-brand-400/15 text-brand-400 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span class="text-white/90 text-sm pt-1">Reuniones presenciales y virtuales mensuales</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-xl bg-brand-400/15 text-brand-400 flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span class="text-white/90 text-sm pt-1">Proyectos locales con impacto medible</span>
+        </div>
+      </div>
+
+      <a href="#unete" class="inline-flex items-center gap-2 bg-brand-400 hover:bg-brand-500 text-midnight-900 font-bold px-7 py-4 rounded-full transition shadow-lg shadow-brand-400/20">
+        Llevar IMPACTO a mi estado
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROYECTOS (link a Instagram) ============ -->
+<section id="proyectos" class="py-20 lg:py-28 bg-brand-50 relative overflow-hidden">
+  <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-brand-300/40 blur-3xl"></div>
+  <div class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-brand-300/30 blur-3xl"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+      <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">03 / Proyectos en vivo</div>
+      <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Mira lo que hacemos <span class="text-brand-500">en tiempo real</span>.</h2>
+      <p class="mt-5 text-lg text-midnight-700">Nuestros proyectos pasan en Instagram primero. Síguenos para no perderte ninguna historia, convocatoria o evento.</p>
+    </div>
+
+    <!-- Instagram embed-style grid -->
+    <div class="reveal bg-white rounded-3xl p-6 lg:p-8 border border-brand-200 shadow-xl shadow-brand-400/10">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="flex items-center gap-4 group">
+          <div class="relative">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-brand-400 via-pink-500 to-purple-600 p-[2px]">
+              <div class="w-full h-full rounded-full bg-white"></div>
+            </div>
+            <div class="relative w-14 h-14 rounded-full bg-midnight-900 flex items-center justify-center m-[3px]">
+              <span class="font-display font-black text-brand-400 text-xl">i</span>
+            </div>
+          </div>
+          <div>
+            <div class="font-display font-bold text-midnight-900 text-lg group-hover:text-brand-600 transition flex items-center gap-2">
+              @impacto.mex
+              <svg class="w-4 h-4 text-brand-500" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <div class="text-sm text-midnight-600">Sigue nuestros proyectos en tiempo real</div>
+          </div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 via-pink-500 to-brand-400 hover:opacity-90 text-white font-semibold px-5 py-3 rounded-full transition text-sm">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Seguir en Instagram
+        </a>
+      </div>
+
+      <!-- IG-style tile grid (clickable to Instagram) -->
+      <div class="grid grid-cols-3 gap-2 lg:gap-3">
+        <!-- 9 tiles -->
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-300 to-brand-500 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><circle cx="30" cy="40" r="20" fill="#fff"/><circle cx="70" cy="60" r="25" fill="#fff"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-700 to-midnight-900 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-25"><polygon points="20,80 50,30 80,70" stroke="#F7B33E" stroke-width="3" fill="none"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><rect x="20" y="20" width="60" height="60" rx="10" stroke="#fff" stroke-width="3" fill="none"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-800 to-midnight-900 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><circle cx="50" cy="50" r="25" fill="#F7B33E"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-200 to-brand-400 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-40"><path d="M 20,50 Q 35,20 50,50 T 80,50" stroke="#0B1530" stroke-width="3" fill="none"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-900 to-brand-700 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><polygon points="50,15 60,40 85,40 65,55 75,80 50,65 25,80 35,55 15,40 40,40" fill="#F7B33E"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><circle cx="30" cy="30" r="15" fill="#fff"/><circle cx="70" cy="70" r="20" fill="#fff"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-600 to-midnight-900 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-25"><path d="M 20,80 L 50,20 L 80,80 Z" stroke="#F7B33E" stroke-width="3" fill="none"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 relative">
+          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><rect x="30" y="30" width="40" height="40" rx="8" fill="#fff"/></svg>
+          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        </a>
+      </div>
+
+      <p class="text-center text-xs text-midnight-500 mt-5">Síguenos en Instagram para ver todos nuestros proyectos, reels y eventos actualizados en tiempo real.</p>
+
+      <!-- Also TikTok / Facebook quick links -->
+      <div class="mt-6 pt-6 border-t border-brand-100 flex flex-wrap gap-3 justify-center">
+        <a href="https://tiktok.com/@impacto.mex" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43V8.36a8.16 8.16 0 005.13 1.42V6.69a4.85 4.85 0 01-2.2 0z"/></svg>
+          TikTok @impacto.mex
+        </a>
+        <a href="https://facebook.com/impacto.org" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-[#1877F2] hover:bg-[#0d65d9] text-white px-5 py-2.5 rounded-full font-semibold text-sm transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 011.141.195v3.325a8.623 8.623 0 00-.653-.036 26.805 26.805 0 00-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 00-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647z"/></svg>
+          Facebook impacto.org
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DIRECCIONES / ÁREAS ============ -->
+<section id="areas" class="py-20 lg:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="grid lg:grid-cols-12 gap-10 mb-14">
+      <div class="lg:col-span-5 reveal">
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">04 / Direcciones</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Las áreas que mueven IMPACTO.</h2>
+      </div>
+      <div class="lg:col-span-7 reveal">
+        <p class="text-lg text-midnight-700">Operamos a través de direcciones especializadas, cada una con liderazgo propio y metas anuales. Esta es la estructura que sostiene nuestro impacto.</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <article class="reveal card-lift p-7 rounded-3xl bg-brand-50 border border-brand-200">
+        <div class="font-mono-display text-brand-700 text-xs mb-3">DIR-01</div>
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Social</h3>
+        <p class="text-midnight-700 text-sm leading-relaxed">Programas de combate a la pobreza, salud comunitaria y bienestar.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-mint-500/10 border border-mint-500/20">
+        <div class="font-mono-display text-mint-600 text-xs mb-3">DIR-02</div>
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Ambiental</h3>
+        <p class="text-midnight-700 text-sm leading-relaxed">Reforestación, gestión de residuos y educación climática.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-brand-400 text-midnight-900">
+        <div class="font-mono-display text-midnight-700 text-xs mb-3">DIR-03</div>
+        <h3 class="font-display font-bold text-2xl mb-2">Dirección Educativa</h3>
+        <p class="text-midnight-900/80 text-sm leading-relaxed">Becas, tutorías, alfabetización digital y formación cívica.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-midnight-50 border border-midnight-100">
+        <div class="font-mono-display text-midnight-600 text-xs mb-3">DIR-04</div>
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Cultural</h3>
+        <p class="text-midnight-700 text-sm leading-relaxed">Festivales, talleres artísticos y preservación del patrimonio.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-brand-50 border border-brand-200">
+        <div class="font-mono-display text-brand-700 text-xs mb-3">DIR-05</div>
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección de Emprendimiento</h3>
+        <p class="text-midnight-700 text-sm leading-relaxed">Incubación, mentorías y financiamiento a proyectos juveniles.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-mint-500/10 border border-mint-500/20">
+        <div class="font-mono-display text-mint-600 text-xs mb-3">DIR-06</div>
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección de Comunicación</h3>
+        <p class="text-midnight-700 text-sm leading-relaxed">Estrategia digital, contenido, prensa y vinculación con medios.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-brand-400 text-midnight-900">
+        <div class="font-mono-display text-midnight-700 text-xs mb-3">DIR-07</div>
+        <h3 class="font-display font-bold text-2xl mb-2">Dirección de Alianzas</h3>
+        <p class="text-midnight-900/80 text-sm leading-relaxed">Procuración de fondos, alianzas estratégicas e institucionales.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-midnight-50 border border-midnight-100">
+        <div class="font-mono-display text-midnight-600 text-xs mb-3">DIR-08</div>
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Operativa</h3>
+        <p class="text-midnight-700 text-sm leading-relaxed">Logística, planeación y seguimiento de todas las representaciones.</p>
+      </article>
+
+      <article class="reveal card-lift p-7 rounded-3xl bg-midnight-900 text-white">
+        <div class="font-mono-display text-brand-400 text-xs mb-3">DIR-09</div>
+        <h3 class="font-display font-bold text-2xl mb-2">Coordinación Nacional</h3>
+        <p class="text-white/85 text-sm leading-relaxed">Articulación estratégica entre direcciones, representaciones y consejo directivo.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONVOCATORIAS ============ -->
+<section id="convocatorias" class="py-20 lg:py-28 bg-midnight-50 noise">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-6">
+      <div class="reveal max-w-2xl">
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">05 / Convocatorias</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Convocatorias abiertas.</h2>
+        <p class="mt-4 text-midnight-700 text-lg">Estas son las oportunidades activas para sumarte. Aplica antes de que cierren.</p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <article class="reveal card-lift bg-white rounded-2xl p-6 lg:p-7 border border-midnight-100 flex flex-col lg:flex-row lg:items-center gap-5">
+        <div class="lg:w-32 flex-shrink-0">
+          <span class="inline-block bg-brand-400 text-midnight-900 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Abierta</span>
+          <div class="mt-2 text-xs text-midnight-500 font-mono-display">Cierra 30 jun 2026</div>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display font-bold text-xl text-midnight-900">Representante Estatal 2026</h3>
+          <p class="text-midnight-700 text-sm mt-1">Lidera IMPACTO en tu estado. Buscamos jóvenes con vocación de servicio y experiencia en gestión comunitaria.</p>
+          <div class="flex flex-wrap gap-2 mt-3 text-xs">
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">+18 años</span>
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">Compromiso 1 año</span>
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">Liderazgo</span>
+          </div>
+        </div>
+        <a href="#unete" class="lg:flex-shrink-0 inline-flex justify-center items-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white font-semibold px-5 py-3 rounded-full text-sm transition">Aplicar →</a>
+      </article>
+
+      <article class="reveal card-lift bg-white rounded-2xl p-6 lg:p-7 border border-midnight-100 flex flex-col lg:flex-row lg:items-center gap-5">
+        <div class="lg:w-32 flex-shrink-0">
+          <span class="inline-block bg-mint-500 text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Abierta</span>
+          <div class="mt-2 text-xs text-midnight-500 font-mono-display">Cierra 15 jul 2026</div>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display font-bold text-xl text-midnight-900">Voluntariado Nacional</h3>
+          <p class="text-midnight-700 text-sm mt-1">Únete a cualquier representación estatal. Apoya proyectos sociales, ambientales o educativos durante 6 meses.</p>
+          <div class="flex flex-wrap gap-2 mt-3 text-xs">
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">15-29 años</span>
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">Tiempo parcial</span>
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">Certificado</span>
+          </div>
+        </div>
+        <a href="#unete" class="lg:flex-shrink-0 inline-flex justify-center items-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white font-semibold px-5 py-3 rounded-full text-sm transition">Aplicar →</a>
+      </article>
+
+      <article class="reveal card-lift bg-white rounded-2xl p-6 lg:p-7 border border-midnight-100 flex flex-col lg:flex-row lg:items-center gap-5">
+        <div class="lg:w-32 flex-shrink-0">
+          <span class="inline-block bg-brand-400 text-midnight-900 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Abierta</span>
+          <div class="mt-2 text-xs text-midnight-500 font-mono-display">Cierra 20 ago 2026</div>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display font-bold text-xl text-midnight-900">Fondo Semilla IMPACTO 2026</h3>
+          <p class="text-midnight-700 text-sm mt-1">Financiamos 50 proyectos juveniles con hasta $25,000 MXN, mentoría y visibilidad nacional.</p>
+          <div class="flex flex-wrap gap-2 mt-3 text-xs">
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">Proyectos sociales</span>
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">$25,000 MXN</span>
+            <span class="bg-midnight-50 text-midnight-700 px-2.5 py-1 rounded-full">Mentoría</span>
+          </div>
+        </div>
+        <a href="#unete" class="lg:flex-shrink-0 inline-flex justify-center items-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white font-semibold px-5 py-3 rounded-full text-sm transition">Aplicar →</a>
+      </article>
+
+      <article class="reveal card-lift bg-white/50 rounded-2xl p-6 lg:p-7 border border-dashed border-midnight-200 flex flex-col lg:flex-row lg:items-center gap-5">
+        <div class="lg:w-32 flex-shrink-0">
+          <span class="inline-block bg-midnight-200 text-midnight-700 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Próximamente</span>
+          <div class="mt-2 text-xs text-midnight-500 font-mono-display">Abre sep 2026</div>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display font-bold text-xl text-midnight-900">Programa de Embajadores Escolares</h3>
+          <p class="text-midnight-600 text-sm mt-1">Estudiantes de prepa que llevan IMPACTO a sus escuelas. Incluye formación en liderazgo y oratoria.</p>
+        </div>
+        <button class="lg:flex-shrink-0 inline-flex justify-center items-center gap-2 bg-midnight-100 text-midnight-700 font-semibold px-5 py-3 rounded-full text-sm cursor-not-allowed">Recordarme</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BLOG / NOTICIAS ============ -->
+<section id="blog" class="py-20 lg:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-4">
+      <div class="reveal">
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">06 / Blog & Noticias</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Historias que inspiran.</h2>
+      </div>
+      <a href="#" class="font-semibold text-midnight-900 hover:text-brand-600 flex items-center gap-2 transition">Ver todas las publicaciones →</a>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <article class="reveal card-lift bg-brand-50 rounded-3xl overflow-hidden border border-brand-200 group cursor-pointer">
+        <div class="aspect-[16/10] bg-gradient-to-br from-brand-300 to-brand-500 relative overflow-hidden">
+          <svg viewBox="0 0 200 120" class="absolute inset-0 w-full h-full opacity-30"><circle cx="40" cy="40" r="30" fill="#fff"/><circle cx="120" cy="80" r="40" fill="#fff"/><rect x="150" y="20" width="40" height="40" fill="#fff" rx="8"/></svg>
+          <div class="absolute top-4 left-4 bg-white text-brand-700 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Historia</div>
+        </div>
+        <div class="p-6">
+          <div class="text-xs text-midnight-500 font-mono-display mb-2">15 MAY 2026 · 4 MIN</div>
+          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Cómo 40 jóvenes reforestaron 12 hectáreas en Chiapas</h3>
+          <p class="text-sm text-midnight-700 mt-2">La historia detrás del proyecto "Raíces" que devolvió la vida a una zona afectada por la deforestación.</p>
+        </div>
+      </article>
+
+      <article class="reveal card-lift bg-midnight-50 rounded-3xl overflow-hidden border border-midnight-100 group cursor-pointer">
+        <div class="aspect-[16/10] bg-gradient-to-br from-midnight-700 to-midnight-900 relative overflow-hidden">
+          <svg viewBox="0 0 200 120" class="absolute inset-0 w-full h-full opacity-30"><polygon points="20,100 70,30 120,80 180,40" stroke="#F7B33E" stroke-width="3" fill="none"/></svg>
+          <div class="absolute top-4 left-4 bg-white text-midnight-900 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Noticias</div>
+        </div>
+        <div class="p-6">
+          <div class="text-xs text-midnight-500 font-mono-display mb-2">08 MAY 2026 · 3 MIN</div>
+          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Firmamos alianza con tres universidades del Bajío</h3>
+          <p class="text-sm text-midnight-700 mt-2">Ahora 1,200 estudiantes podrán convalidar su servicio social colaborando con IMPACTO.</p>
+        </div>
+      </article>
+
+      <article class="reveal card-lift bg-brand-50 rounded-3xl overflow-hidden border border-brand-200 group cursor-pointer">
+        <div class="aspect-[16/10] bg-gradient-to-br from-brand-400 to-brand-600 relative overflow-hidden">
+          <svg viewBox="0 0 200 120" class="absolute inset-0 w-full h-full opacity-30"><circle cx="100" cy="60" r="50" fill="#fff" opacity=".5"/><circle cx="100" cy="60" r="30" fill="#fff"/></svg>
+          <div class="absolute top-4 left-4 bg-midnight-900 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Cultura</div>
+        </div>
+        <div class="p-6">
+          <div class="text-xs text-midnight-500 font-mono-display mb-2">02 MAY 2026 · 5 MIN</div>
+          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Festival "Voces Jóvenes": el evento cultural del año</h3>
+          <p class="text-sm text-midnight-700 mt-2">3 días, 8 ciudades, +200 artistas emergentes. Así fue la edición 2026 del festival más esperado.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRANSPARENCIA ============ -->
+<section id="transparencia" class="py-20 lg:py-28 bg-midnight-50">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="grid lg:grid-cols-12 gap-10 mb-14">
+      <div class="lg:col-span-5 reveal">
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">07 / Transparencia</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Cuentas claras, <span class="text-brand-500">confianza profunda</span>.</h2>
+      </div>
+      <div class="lg:col-span-7 reveal">
+        <p class="text-lg text-midnight-700">Nuestra rendición de cuentas es pública. Aquí puedes consultar nuestros indicadores financieros, distribución de gasto y auditorías.</p>
+      </div>
+    </div>
+
+    <!-- Resumen financiero -->
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="reveal p-7 rounded-3xl bg-white border border-midnight-100">
+        <div class="text-xs font-mono-display text-midnight-500 uppercase tracking-wider">Ingresos 2025</div>
+        <div class="font-display font-black text-4xl text-midnight-900 mt-2">$4.8M MXN</div>
+        <div class="mt-4 space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-midnight-600">Donaciones</span><span class="font-semibold">62%</span></div>
+          <div class="flex justify-between"><span class="text-midnight-600">Alianzas</span><span class="font-semibold">28%</span></div>
+          <div class="flex justify-between"><span class="text-midnight-600">Eventos</span><span class="font-semibold">10%</span></div>
+        </div>
+      </div>
+
+      <div class="reveal p-7 rounded-3xl bg-white border border-midnight-100">
+        <div class="text-xs font-mono-display text-midnight-500 uppercase tracking-wider">Distribución del gasto</div>
+        <div class="font-display font-black text-4xl text-midnight-900 mt-2">87%</div>
+        <div class="text-sm text-midnight-600 mb-3">a proyectos directos</div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-midnight-600">Proyectos</span><span class="font-semibold">87%</span></div>
+          <div class="flex justify-between"><span class="text-midnight-600">Operación</span><span class="font-semibold">9%</span></div>
+          <div class="flex justify-between"><span class="text-midnight-600">Procuración</span><span class="font-semibold">4%</span></div>
+        </div>
+      </div>
+
+      <div class="reveal p-7 rounded-3xl bg-brand-400 text-midnight-900">
+        <div class="text-xs font-mono-display text-midnight-700 uppercase tracking-wider">Auditoría externa</div>
+        <div class="font-display font-black text-4xl mt-2">2024 ✓</div>
+        <div class="text-sm text-midnight-800/80 mb-4">Sin observaciones materiales</div>
+        <a href="https://wa.me/524613445141?text=Hola%20IMPACTO,%20me%20gustar%C3%ADa%20conocer%20el%20informe%20de%20auditor%C3%ADa" class="inline-flex items-center gap-2 text-sm font-bold text-midnight-900 hover:underline">Solicitar informe →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÚNETE ============ -->
+<section id="unete" class="py-20 lg:py-28 bg-brand-400 relative overflow-hidden noise">
+  <div class="blob bg-brand-200 w-[400px] h-[400px] -top-32 -left-16 opacity-60"></div>
+  <div class="blob bg-brand-600 w-[420px] h-[420px] -bottom-32 -right-16 opacity-40"></div>
+
+  <div class="relative max-w-6xl mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10 items-center">
+    <div class="text-midnight-900 reveal">
+      <div class="font-mono-display text-midnight-700 uppercase text-xs tracking-[0.25em] mb-4">08 / Únete</div>
+      <h2 class="font-display font-black text-4xl lg:text-6xl leading-tight">
+        Tu lugar en la generación que cambia México.
+      </h2>
+      <p class="mt-6 text-midnight-900/85 text-lg leading-relaxed">
+        Más que un voluntariado: una comunidad nacional que te forma, te conecta y te respalda. Registra tu candidatura — lleva unos 2 minutos.
+      </p>
+      <ul class="mt-6 space-y-2 text-midnight-900/90 font-medium">
+        <li class="flex items-center gap-2">✔ Capacitaciones gratuitas mensuales</li>
+        <li class="flex items-center gap-2">✔ Red nacional de +1,600 jóvenes</li>
+        <li class="flex items-center gap-2">✔ Certificado oficial al concluir</li>
+        <li class="flex items-center gap-2">✔ Acceso a Fondo Semilla y becas</li>
+      </ul>
+    </div>
+
+    <form id="joinForm" action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST" class="reveal bg-white rounded-3xl p-7 lg:p-9 shadow-2xl shadow-midnight-900/30">
+      <!-- FormSubmit config -->
+      <input type="hidden" name="_subject" value="Nueva candidatura IMPACTO — Quiero unirme">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_autoresponse" value="¡Hola! Recibimos tu candidatura a IMPACTO. Te contactaremos en menos de 48 horas. Mientras tanto, síguenos en Instagram @impacto.mex">
+      <input type="text" name="_honey" style="display:none">
+
+      <h3 class="font-display font-bold text-2xl text-midnight-900 mb-1">Quiero unirme</h3>
+      <p class="text-sm text-midnight-600 mb-5">Completa el formulario y te contactaremos en 48h.</p>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Nombre completo</label>
+          <input required type="text" name="Nombre" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition" placeholder="Tu nombre" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Edad</label>
+            <input required type="number" name="Edad" min="14" max="35" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition" placeholder="18" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Estado</label>
+            <select required name="Estado" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white">
+              <option value="">Selecciona</option>
+              <option>Aguascalientes</option><option>Baja California</option>
+              <option>Baja California Sur</option><option>Campeche</option>
+              <option>CDMX</option><option>Chiapas</option><option>Chihuahua</option>
+              <option>Coahuila</option><option>Colima</option><option>Durango</option>
+              <option>Estado de México</option><option>Guanajuato</option><option>Guerrero</option>
+              <option>Hidalgo</option><option>Jalisco</option><option>Michoacán</option>
+              <option>Morelos</option><option>Nayarit</option><option>Nuevo León</option>
+              <option>Oaxaca</option><option>Puebla</option><option>Querétaro</option>
+              <option>Quintana Roo</option><option>San Luis Potosí</option><option>Sinaloa</option>
+              <option>Sonora</option><option>Tabasco</option><option>Tamaulipas</option>
+              <option>Tlaxcala</option><option>Veracruz</option><option>Yucatán</option>
+              <option>Zacatecas</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Correo electrónico</label>
+          <input required type="email" name="Correo" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition" placeholder="tu@correo.com" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">WhatsApp</label>
+          <input required type="tel" name="WhatsApp" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition" placeholder="461 123 4567" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">¿En qué área te interesa colaborar?</label>
+          <select required name="Area" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white">
+            <option value="">Selecciona</option>
+            <option>Social</option><option>Ambiental</option><option>Educativa</option>
+            <option>Cultural</option><option>Emprendimiento</option><option>Comunicación</option>
+            <option>Alianzas</option><option>Operativa</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">¿Por qué quieres unirte?</label>
+          <textarea name="Motivacion" rows="3" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition" placeholder="Cuéntanos brevemente tu motivación..."></textarea>
+        </div>
+        <label class="flex items-start gap-2 text-xs text-midnight-600">
+          <input type="checkbox" required class="mt-0.5 rounded" />
+          Acepto el aviso de privacidad y el código de ética de IMPACTO.
+        </label>
+
+        <button type="submit" class="btn-shine w-full bg-midnight-900 hover:bg-midnight-800 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2">
+          Enviar candidatura
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </button>
+
+        <p class="text-xs text-center text-midnight-500">o escríbenos directo a WhatsApp <a href="https://wa.me/524613445141" class="text-brand-700 font-semibold">461 344 5141</a></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ DONACIONES — SOCIO DE IMPACTO ============ -->
+<section id="donaciones" class="py-20 lg:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">09 / Socio de IMPACTO</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Sé <span class="text-brand-500">Socio de IMPACTO</span> y financia el cambio.</h2>
+        <p class="mt-5 text-lg text-midnight-700">El programa <strong>Socio de IMPACTO</strong> es una comunidad de personas y empresas que aportan mensualmente para sostener los proyectos juveniles que están transformando México.</p>
+        <p class="mt-3 text-midnight-700">Tu aportación llega directo a las representaciones estatales y se traduce en talleres, becas, materiales y proyectos comunitarios. El 87% de cada peso va a impacto directo.</p>
+
+        <div class="mt-7 space-y-3">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-midnight-800">Reporte mensual de impacto de tu aportación</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-midnight-800">Reconocimiento como Socio de IMPACTO en redes y eventos</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-midnight-800">Invitaciones a eventos exclusivos y visitas a proyectos</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-midnight-800">Constancia para deducción de impuestos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="relative">
+          <div class="absolute -top-6 -right-6 bg-brand-400 text-midnight-900 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full rotate-6 shadow-lg z-10">¡Únete hoy!</div>
+
+          <div class="p-8 lg:p-10 rounded-3xl bg-gradient-to-br from-midnight-900 via-midnight-800 to-midnight-900 text-white relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-brand-400/30 blur-3xl"></div>
+            <div class="relative">
+              <h3 class="font-display font-black text-3xl mb-2">Programa Socio de IMPACTO</h3>
+              <p class="text-white/70 text-sm mb-6">Elige el nivel que funcione para ti. Aportación mensual vía transferencia bancaria.</p>
+
+              <div class="space-y-3 mb-7">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-400 transition">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="font-display font-bold text-xl">Aliado</div>
+                      <div class="text-xs text-white/60">Para empezar a sumar</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-display font-black text-2xl text-brand-400">$200</div>
+                      <div class="text-xs text-white/60">/ mes</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-brand-400/15 border-2 border-brand-400 relative">
+                  <span class="absolute -top-2 left-4 bg-brand-400 text-midnight-900 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">Más popular</span>
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="font-display font-bold text-xl">Embajador</div>
+                      <div class="text-xs text-white/60">Sostén una representación estatal</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-display font-black text-2xl text-brand-400">$500</div>
+                      <div class="text-xs text-white/60">/ mes</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-400 transition">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="font-display font-bold text-xl">Mecenas</div>
+                      <div class="text-xs text-white/60">Patrocina un proyecto entero</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-display font-black text-2xl text-brand-400">$1,500</div>
+                      <div class="text-xs text-white/60">/ mes</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://wa.me/524613445141?text=Hola%20IMPACTO%2C%20quiero%20ser%20Socio%20de%20IMPACTO%20y%20conocer%20c%C3%B3mo%20hacer%20mi%20transferencia%20mensual." target="_blank" rel="noopener" class="btn-shine w-full py-4 rounded-xl bg-brand-400 hover:bg-brand-500 text-midnight-900 font-bold transition flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.81 11.81 0 0 1 8.413 3.488 11.823 11.823 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></svg>
+                Quiero ser Socio — WhatsApp
+              </a>
+              <p class="text-xs text-center text-white/60 mt-3">Te enviaremos los datos para transferencia directa y bienvenida personalizada.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aportación libre -->
+    <div class="mt-12 reveal p-7 lg:p-9 rounded-3xl bg-brand-50 border border-brand-200 grid md:grid-cols-3 gap-6 items-center">
+      <div class="md:col-span-2">
+        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">¿Prefieres una aportación única?</h3>
+        <p class="text-midnight-700">También aceptamos donativos únicos por transferencia bancaria. Contáctanos por WhatsApp y te enviamos los datos.</p>
+      </div>
+      <a href="https://wa.me/524613445141?text=Hola%20IMPACTO%2C%20quiero%20hacer%20una%20donaci%C3%B3n%20%C3%BAnica%20por%20transferencia." target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white font-semibold px-6 py-3.5 rounded-full transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.81 11.81 0 0 1 8.413 3.488 11.823 11.823 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></svg>
+        Donar por transferencia
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ALIANZAS ESTRATÉGICAS ============ -->
+<section id="alianzas" class="py-20 lg:py-28 bg-midnight-50">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6">
+    <div class="text-center max-w-3xl mx-auto mb-14 reveal">
+      <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">10 / Alianzas Estratégicas</div>
+      <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Construyamos juntos el cambio.</h2>
+      <p class="mt-5 text-lg text-midnight-700">Empresas, gobiernos, fundaciones y universidades: súmate a una red nacional que entrega resultados medibles.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 mb-12">
+      <div class="reveal card-lift bg-white p-7 rounded-3xl border border-midnight-100">
+        <div class="w-12 h-12 rounded-2xl bg-brand-400 text-midnight-900 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-xl text-midnight-900 mb-2">Empresarial</h3>
+        <p class="text-midnight-700 text-sm">RSE, voluntariado corporativo, patrocinios de proyectos y branded programs con alcance nacional.</p>
+      </div>
+
+      <div class="reveal card-lift bg-white p-7 rounded-3xl border border-midnight-100">
+        <div class="w-12 h-12 rounded-2xl bg-midnight-900 text-white flex items-center justify-center mb-5">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-xl text-midnight-900 mb-2">Institucional</h3>
+        <p class="text-midnight-700 text-sm">Convenios con gobiernos municipales, estatales y dependencias federales para programas de juventud.</p>
+      </div>
+
+      <div class="reveal card-lift bg-white p-7 rounded-3xl border border-midnight-100">
+        <div class="w-12 h-12 rounded-2xl bg-brand-400 text-midnight-900 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+        </div>
+        <h3 class="font-display font-bold text-xl text-midnight-900 mb-2">Académica</h3>
+        <p class="text-midnight-700 text-sm">Universidades y preparatorias: convalidación de servicio social, prácticas profesionales e investigación.</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-3xl p-8 border border-midnight-100 reveal">
+      <p class="text-center text-xs font-mono-display uppercase tracking-widest text-midnight-500 mb-6">Nos respaldan</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 items-center">
+        <div class="h-12 bg-midnight-100 rounded-lg flex items-center justify-center text-midnight-400 font-display font-bold">ALIADO 01</div>
+        <div class="h-12 bg-midnight-100 rounded-lg flex items-center justify-center text-midnight-400 font-display font-bold">ALIADO 02</div>
+        <div class="h-12 bg-midnight-100 rounded-lg flex items-center justify-center text-midnight-400 font-display font-bold">ALIADO 03</div>
+        <div class="h-12 bg-midnight-100 rounded-lg flex items-center justify-center text-midnight-400 font-display font-bold">ALIADO 04</div>
+        <div class="h-12 bg-midnight-100 rounded-lg flex items-center justify-center text-midnight-400 font-display font-bold">ALIADO 05</div>
+        <div class="h-12 bg-midnight-100 rounded-lg flex items-center justify-center text-midnight-400 font-display font-bold">ALIADO 06</div>
+      </div>
+    </div>
+
+    <div class="text-center mt-10 reveal">
+      <a href="#contacto" class="inline-flex items-center gap-2 bg-midnight-900 hover:bg-midnight-800 text-white font-semibold px-7 py-4 rounded-full transition">
+        Quiero ser aliado de IMPACTO
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACTO ============ -->
+<section id="contacto" class="py-20 lg:py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10">
+    <div class="reveal">
+      <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">11 / Contacto</div>
+      <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Hablemos.</h2>
+      <p class="mt-5 text-lg text-midnight-700">¿Tienes una propuesta, quieres invitarnos a un evento o ser parte de IMPACTO? Te leemos.</p>
+
+      <div class="mt-8 space-y-5">
+        <a href="https://wa.me/524613445141" class="flex items-start gap-4 group">
+          <div class="w-12 h-12 rounded-2xl bg-mint-500/15 text-mint-600 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.81 11.81 0 0 1 8.413 3.488 11.823 11.823 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></svg>
+          </div>
+          <div>
+            <div class="font-display font-bold text-midnight-900 group-hover:text-mint-600 transition">WhatsApp directo</div>
+            <div class="text-midnight-600 text-sm">461 344 5141 — Respuesta en menos de 24h</div>
+          </div>
+        </a>
+
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <div class="font-display font-bold text-midnight-900">Correo</div>
+            <div class="text-midnight-600 text-sm">impactoo.mex@gmail.com</div>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-brand-400 text-midnight-900 flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <div class="font-display font-bold text-midnight-900">Oficinas nacionales</div>
+            <div class="text-midnight-600 text-sm">Celaya, Guanajuato — México</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pt-4">
+          <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="w-11 h-11 rounded-full bg-midnight-900 hover:bg-brand-500 text-white flex items-center justify-center transition" aria-label="Instagram">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="https://tiktok.com/@impacto.mex" target="_blank" rel="noopener" class="w-11 h-11 rounded-full bg-midnight-900 hover:bg-brand-500 text-white flex items-center justify-center transition" aria-label="TikTok">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43V8.36a8.16 8.16 0 005.13 1.42V6.69a4.85 4.85 0 01-2.2 0z"/></svg>
+          </a>
+          <a href="https://facebook.com/impacto.org" target="_blank" rel="noopener" class="w-11 h-11 rounded-full bg-midnight-900 hover:bg-brand-500 text-white flex items-center justify-center transition" aria-label="Facebook">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 011.141.195v3.325a8.623 8.623 0 00-.653-.036 26.805 26.805 0 00-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 00-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <form id="contactForm" action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST" class="reveal bg-midnight-50 rounded-3xl p-7 lg:p-9">
+      <input type="hidden" name="_subject" value="Nuevo mensaje desde el sitio IMPACTO">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="text" name="_honey" style="display:none">
+
+      <h3 class="font-display font-bold text-2xl text-midnight-900 mb-1">Envíanos un mensaje</h3>
+      <p class="text-sm text-midnight-600 mb-5">Respondemos en menos de 48h hábiles.</p>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Nombre</label>
+          <input required type="text" name="Nombre" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Email</label>
+            <input required type="email" name="Email" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Organización (opcional)</label>
+            <input type="text" name="Organizacion" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Asunto</label>
+          <select required name="Asunto" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white">
+            <option value="">Selecciona</option>
+            <option>Alianza estratégica</option>
+            <option>Patrocinio</option>
+            <option>Prensa y medios</option>
+            <option>Voluntariado</option>
+            <option>Socio de IMPACTO</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-midnight-700 mb-1.5">Mensaje</label>
+          <textarea required name="Mensaje" rows="4" class="w-full px-4 py-3 rounded-xl border border-midnight-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100 outline-none transition bg-white"></textarea>
+        </div>
+        <button type="submit" class="btn-shine w-full bg-brand-400 hover:bg-brand-500 text-midnight-900 font-bold py-4 rounded-xl transition flex items-center justify-center gap-2">
+          Enviar mensaje
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-midnight-900 text-white relative overflow-hidden noise">
+  <div class="absolute -top-32 -left-20 w-80 h-80 rounded-full bg-brand-400/10 blur-3xl"></div>
+  <div class="relative max-w-7xl mx-auto px-4 lg:px-6 pt-16 pb-8">
+    <div class="grid lg:grid-cols-12 gap-10 mb-12">
+      <div class="lg:col-span-4">
+        <a href="#home" class="flex items-center gap-2 mb-5">
+          <div class="relative w-10 h-10">
+            <div class="absolute inset-0 bg-brand-400 rounded-lg rotate-6"></div>
+            <div class="absolute inset-0 bg-white text-midnight-900 rounded-lg flex items-center justify-center font-display font-black text-xl">i</div>
+          </div>
+          <div class="leading-tight">
+            <div class="font-display font-black text-2xl">IMPACTO</div>
+            <div class="text-[10px] font-mono-display uppercase tracking-widest text-brand-400 -mt-0.5">México</div>
+          </div>
+        </a>
+        <p class="text-white/70 max-w-sm text-sm leading-relaxed">Organización juvenil mexicana fundada en 2021 en Celaya, Guanajuato. Presencia en más de 20 estados con más de 1,600 líderes juveniles.</p>
+
+        <div class="mt-6 flex items-center gap-3">
+          <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-400 hover:text-midnight-900 text-white flex items-center justify-center transition" aria-label="Instagram">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="https://tiktok.com/@impacto.mex" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-400 hover:text-midnight-900 text-white flex items-center justify-center transition" aria-label="TikTok">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43V8.36a8.16 8.16 0 005.13 1.42V6.69a4.85 4.85 0 01-2.2 0z"/></svg>
+          </a>
+          <a href="https://facebook.com/impacto.org" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand-400 hover:text-midnight-900 text-white flex items-center justify-center transition" aria-label="Facebook">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 011.141.195v3.325a8.623 8.623 0 00-.653-.036 26.805 26.805 0 00-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 00-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647z"/></svg>
+          </a>
+          <a href="https://wa.me/524613445141" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-white/10 hover:bg-mint-500 flex items-center justify-center transition" aria-label="WhatsApp">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.81 11.81 0 0 1 8.413 3.488 11.823 11.823 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h4 class="font-display font-bold text-sm uppercase tracking-wider mb-4 text-brand-400">Organización</h4>
+        <ul class="space-y-2 text-sm text-white/70">
+          <li><a href="#nosotros" class="hover:text-brand-400">Nosotros</a></li>
+          <li><a href="#impacto" class="hover:text-brand-400">Impacto</a></li>
+          <li><a href="#areas" class="hover:text-brand-400">Direcciones</a></li>
+          <li><a href="#transparencia" class="hover:text-brand-400">Transparencia</a></li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h4 class="font-display font-bold text-sm uppercase tracking-wider mb-4 text-brand-400">Participa</h4>
+        <ul class="space-y-2 text-sm text-white/70">
+          <li><a href="#unete" class="hover:text-brand-400">Voluntariado</a></li>
+          <li><a href="#convocatorias" class="hover:text-brand-400">Convocatorias</a></li>
+          <li><a href="#donaciones" class="hover:text-brand-400">Socio de IMPACTO</a></li>
+          <li><a href="#alianzas" class="hover:text-brand-400">Alianzas</a></li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-4">
+        <h4 class="font-display font-bold text-sm uppercase tracking-wider mb-4 text-brand-400">Newsletter</h4>
+        <p class="text-sm text-white/70 mb-4">Convocatorias, historias y oportunidades en tu correo, una vez al mes.</p>
+        <form action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST" class="flex flex-col sm:flex-row gap-2">
+          <input type="hidden" name="_subject" value="Nueva suscripción al newsletter IMPACTO">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="email" name="Email" required placeholder="tu@correo.com" class="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 placeholder-white/50 focus:bg-white/15 outline-none transition text-sm" />
+          <button class="bg-brand-400 hover:bg-brand-500 text-midnight-900 px-5 py-3 rounded-xl font-bold text-sm transition">Suscribirme</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-white/50">
+      <p>© 2026 IMPACTO México. Todos los derechos reservados.</p>
+      <div class="flex gap-5">
+        <a href="#" class="hover:text-brand-400">Aviso de privacidad</a>
+        <a href="#" class="hover:text-brand-400">Términos</a>
+        <a href="#" class="hover:text-brand-400">Código de ética</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp floating button -->
+<a href="https://wa.me/524613445141?text=Hola%20IMPACTO,%20quiero%20más%20información" target="_blank" rel="noopener" class="fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-mint-500 hover:bg-mint-600 shadow-2xl shadow-mint-500/40 flex items-center justify-center text-white transition animate-float">
+  <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.81 11.81 0 0 1 8.413 3.488 11.823 11.823 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+</a>
+
+<!-- ============ SCRIPTS ============ -->
+<script>
+/* ---- MOBILE MENU ---- */
+const menuBtn = document.getElementById('menuBtn');
+const closeBtn = document.getElementById('closeBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => mobileMenu.classList.add('mobile-open'));
+closeBtn.addEventListener('click', () => mobileMenu.classList.remove('mobile-open'));
+document.querySelectorAll('.mob-link').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('mobile-open')));
+
+/* ---- SCROLL REVEAL ---- */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ---- COUNTERS ---- */
+const counters = document.querySelectorAll('[data-counter]');
+const cio = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.counter);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1600;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const easeOut = 1 - Math.pow(1 - p, 3);
+        const val = Math.floor(easeOut * target);
+        el.textContent = val.toLocaleString('es-MX') + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      cio.unobserve(el);
+    }
+  });
+}, { threshold: 0.4 });
+counters.forEach(c => cio.observe(c));
+
+/* ---- ACTIVE NAV LINK ON SCROLL ---- */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY + 120;
+  sections.forEach(s => {
+    if (y >= s.offsetTop && y < s.offsetTop + s.offsetHeight) {
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + s.id));
+    }
+  });
+});
+</script>
+
+</body>
+</html>
+
