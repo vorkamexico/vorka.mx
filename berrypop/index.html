@@ -1,0 +1,870 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BerryPop - Pitch Deck Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #ffffff;
+            --accent: #FF6B5B;
+            --accent-light: #FFB3AD;
+            --accent-dark: #CC5147;
+            --gray-100: #f8f8f8;
+            --gray-300: #e0e0e0;
+            --gray-600: #666666;
+            --gray-800: #333333;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            z-index: 1;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* ===== SLIDE 1: HERO ===== */
+        .slide-1 {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            color: white;
+        }
+
+        .hero-content {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: 120px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -3px;
+        }
+
+        .hero-content .tagline {
+            font-size: 32px;
+            color: var(--accent-light);
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 20px 40px rgba(255, 107, 91, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            background: var(--accent-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+        }
+
+        /* ===== SLIDE 2: CONTENIDO GENERAL ===== */
+        .slide-content {
+            width: 100%;
+            height: 100%;
+            padding: 80px 120px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .slide-content.center {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            text-align: center;
+        }
+
+        .slide-2 { background: white; color: var(--gray-800); }
+        .slide-3 { background: white; color: var(--gray-800); }
+        .slide-4 { background: var(--primary); color: white; }
+        .slide-5 { background: white; color: var(--gray-800); }
+        .slide-6 { background: var(--primary); color: white; }
+        .slide-7 { background: white; color: var(--gray-800); }
+        .slide-8 { background: var(--primary); color: white; }
+        .slide-9 { background: white; color: var(--gray-800); }
+        .slide-10 { background: var(--primary); color: white; }
+        .slide-11 { background: var(--primary); color: white; }
+        .slide-12 { background: var(--primary); color: white; }
+        .slide-13 { background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); color: white; }
+
+        .slide-title {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .slide-title-accent {
+            color: var(--accent);
+        }
+
+        .slide-text {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .slide-2 .slide-text,
+        .slide-3 .slide-text,
+        .slide-5 .slide-text,
+        .slide-7 .slide-text,
+        .slide-9 .slide-text {
+            color: var(--gray-600);
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 40px 0;
+        }
+
+        .feature-list li {
+            font-size: 18px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--gray-100) 0%, #f0f0f0 100%);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--gray-300);
+        }
+
+        .slide-4 .stat-card,
+        .slide-6 .stat-card,
+        .slide-8 .stat-card,
+        .slide-10 .stat-card {
+            background: rgba(255, 107, 91, 0.1);
+            border: 2px solid var(--accent);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slide-4 .stat-label,
+        .slide-6 .stat-label,
+        .slide-8 .stat-label,
+        .slide-10 .stat-label {
+            color: var(--accent-light);
+        }
+
+        .visual-box {
+            width: 400px;
+            height: 400px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            font-weight: 700;
+            box-shadow: 0 40px 80px rgba(255, 107, 91, 0.25);
+        }
+
+        .visual-box-1 {
+            background: linear-gradient(135deg, var(--accent-light) 0%, #FFD6D1 100%);
+            color: white;
+        }
+
+        .visual-box-2 {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .member-avatar {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 20px 40px rgba(255, 107, 91, 0.2);
+        }
+
+        .member-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .member-role {
+            font-size: 14px;
+            color: var(--accent-light);
+        }
+
+        .growth-chart {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(180deg, rgba(255, 107, 91, 0.1) 0%, transparent 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 40px 20px;
+            gap: 15px;
+        }
+
+        .bar {
+            background: linear-gradient(180deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(255, 107, 91, 0.15);
+        }
+
+        .bar-1 { width: 60px; height: 40%; }
+        .bar-2 { width: 60px; height: 65%; }
+        .bar-3 { width: 60px; height: 85%; }
+        .bar-4 { width: 60px; height: 100%; }
+        .bar-5 { width: 60px; height: 110%; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 107, 91, 0.2);
+        }
+
+        .comparison-table th {
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-light);
+        }
+
+        .comparison-table td {
+            color: #ccc;
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check-mark {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-dots {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 6px;
+        }
+
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-arrows {
+            position: fixed;
+            bottom: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 100;
+        }
+
+        .arrow-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 107, 91, 0.2);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .arrow-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 100;
+            color: white;
+        }
+
+        .slide-2 .slide-counter,
+        .slide-3 .slide-counter,
+        .slide-5 .slide-counter,
+        .slide-7 .slide-counter,
+        .slide-9 .slide-counter {
+            color: var(--gray-800);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-content {
+                grid-template-columns: 1fr;
+                padding: 60px 60px;
+                gap: 60px;
+            }
+
+            .slide-title {
+                font-size: 48px;
+            }
+
+            .hero-content h1 {
+                font-size: 80px;
+            }
+
+            .visual-box {
+                width: 300px;
+                height: 300px;
+                font-size: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- SLIDE 1: HERO -->
+        <div class="slide slide-1 active">
+            <div class="hero-content">
+                <h1>BerryPop</h1>
+                <p class="tagline">Refresca tu momento</p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary" onclick="nextSlide()">Explorar Deck</button>
+                </div>
+            </div>
+            <div class="slide-counter">01 / 12</div>
+        </div>
+
+        <!-- SLIDE 2: EL PROBLEMA -->
+        <div class="slide slide-2">
+            <div class="slide-content">
+                <div>
+                    <h2 class="slide-title">El Problema</h2>
+                    <p class="slide-text">Los estudiantes de nivel medio superior buscan opciones de snacks que sean:</p>
+                    <ul class="feature-list">
+                        <li>Rápidas y accesibles</li>
+                        <li>Refrescantes en climas cálidos</li>
+                        <li>Únicas y atractivas visualmente</li>
+                        <li>Que combinen sabor natural con diversión</li>
+                    </ul>
+                    <p class="slide-text" style="margin-top: 40px; font-weight: 600; color: var(--accent);">Mercado fragmentado sin ofertas diferenciadas</p>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div class="visual-box visual-box-1">❌</div>
+                </div>
+            </div>
+            <div class="slide-counter">02 / 12</div>
+        </div>
+
+        <!-- SLIDE 3: LA SOLUCIÓN -->
+        <div class="slide slide-3">
+            <div class="slide-content">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div class="visual-box visual-box-2">🍓</div>
+                </div>
+                <div>
+                    <h2 class="slide-title"><span class="slide-title-accent">Fresas Congeladas</span> Premium</h2>
+                    <p class="slide-text">Un snack único que mezcla lo natural con sabores dulces y picositos, diseñado específicamente para estudiantes.</p>
+                    <ul class="feature-list">
+                        <li>Presentación práctica y atractiva</li>
+                        <li>Múltiples opciones (chamoy, chantilly, lechitas)</li>
+                        <li>Disponible durante recesos</li>
+                        <li>Posicionamiento aspiracional y premium</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-counter">03 / 12</div>
+        </div>
+
+        <!-- SLIDE 4: PRODUCTO -->
+        <div class="slide slide-4">
+            <div class="slide-content">
+                <div>
+                    <h2 class="slide-title">Nuestro Producto</h2>
+                    <p class="slide-text">Dos líneas principales que capturan diferentes segmentos:</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🍓</div>
+                            <div class="stat-label">Fresas Congeladas</div>
+                            <div style="color: white; font-size: 24px; margin-top: 10px; font-weight: 700;">$35 MXN</div>
+                        </div>
+                        <div class="stat-card">
+                            <div style="font-size: 40px; margin-bottom: 10px;">🥛</div>
+                            <div class="stat-label">Lechitas Congeladas</div>
+                            <div style="color: white; font-size: 24px; margin-top: 10px; font-weight: 700;">$25 MXN</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 100px; margin-bottom: 20px;">✨</div>
+                        <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 20px; color: var(--accent-light);">Diferenciadores</h3>
+                        <ul style="list-style: none; text-align: left; display: inline-block; color: white;">
+                            <li style="margin: 12px 0; font-size: 16px;">✓ Presentación premium</li>
+                            <li style="margin: 12px 0; font-size: 16px;">✓ Opciones de toppings</li>
+                            <li style="margin: 12px 0; font-size: 16px;">✓ Marca reconocible</li>
+                            <li style="margin: 12px 0; font-size: 16px;">✓ Social media presence</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">04 / 12</div>
+        </div>
+
+        <!-- SLIDE 5: MERCADO -->
+        <div class="slide slide-5">
+            <div class="slide-content">
+                <div>
+                    <h2 class="slide-title">Tamaño de Mercado</h2>
+                    <p class="slide-text">Mercado cautivo con potencial de crecimiento exponencial</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">~500</div>
+                            <div class="stat-label">Estudiantes Instituto</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">75%</div>
+                            <div class="stat-label">Target Market</div>
+                        </div>
+                    </div>
+                    <p class="slide-text" style="margin-top: 40px;">TAM: Industria de snacks en México</p>
+                    <p style="font-size: 16px; color: var(--accent); font-weight: 600;">Expansión: Otros institutos educativos, eventos escolares, ferias.</p>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div class="growth-chart">
+                        <div class="bar bar-1"></div>
+                        <div class="bar bar-2"></div>
+                        <div class="bar bar-3"></div>
+                        <div class="bar bar-4"></div>
+                        <div class="bar bar-5"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">05 / 12</div>
+        </div>
+
+        <!-- SLIDE 6: MODELO DE NEGOCIO -->
+        <div class="slide slide-6">
+            <div class="slide-content">
+                <div>
+                    <h2 class="slide-title">Modelo de Negocio</h2>
+                    <p class="slide-text">Estructura de márgenes y rentabilidad optimizada</p>
+                    <div style="margin-top: 50px;">
+                        <div style="background: rgba(255, 107, 91, 0.15); padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--accent);">
+                            <div style="color: var(--accent-light); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Fresas</div>
+                            <div style="color: white; font-size: 22px; font-weight: 700;">Costo: $14 → Venta: $35</div>
+                            <div style="color: var(--accent-light); font-size: 14px; margin-top: 8px;">Ganancia: $21 por unidad (60%)</div>
+                        </div>
+                        <div style="background: rgba(255, 107, 91, 0.15); padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent);">
+                            <div style="color: var(--accent-light); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Lechitas</div>
+                            <div style="color: white; font-size: 22px; font-weight: 700;">Costo: $10 → Venta: $25</div>
+                            <div style="color: var(--accent-light); font-size: 14px; margin-top: 8px;">Ganancia: $15 por unidad (60%)</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 80px; margin-bottom: 30px;">💰</div>
+                        <h3 style="font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 30px;">Proyección</h3>
+                        <div style="background: rgba(255, 107, 91, 0.15); padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; text-transform: uppercase; color: var(--accent-light); margin-bottom: 8px;">Inversión inicial</div>
+                            <div style="font-size: 32px; font-weight: 700; color: white;">$250</div>
+                        </div>
+                        <div style="background: rgba(255, 107, 91, 0.15); padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 12px; text-transform: uppercase; color: var(--accent-light); margin-bottom: 8px;">Break-even</div>
+                            <div style="font-size: 28px; font-weight: 700; color: white;">2-3 semanas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">06 / 12</div>
+        </div>
+
+        <!-- SLIDE 7: TRACCIÓN -->
+        <div class="slide slide-7">
+            <div class="slide-content">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 80px; margin-bottom: 20px;">📈</div>
+                        <div style="font-size: 48px; font-weight: 800; color: var(--accent); margin: 20px 0;">+138</div>
+                        <div style="font-size: 18px; color: var(--gray-600); font-weight: 600;">Seguidores en Instagram</div>
+                        <div style="font-size: 14px; color: var(--gray-600); margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;">En 5 semanas de operación</div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="slide-title">Tracción Real</h2>
+                    <ul class="feature-list">
+                        <li><strong>Producto agotado</strong> en múltiples ocasiones</li>
+                        <li><strong>Recompra constante</strong> de clientes</li>
+                        <li><strong>Crecimiento viral</strong> boca en boca</li>
+                        <li><strong>Recuperación financiera</strong> completa</li>
+                        <li><strong>Validación de mercado</strong> confirmada</li>
+                    </ul>
+                    <p class="slide-text" style="margin-top: 40px; color: var(--accent); font-weight: 600;">Las lechitas se convirtieron en bestseller</p>
+                </div>
+            </div>
+            <div class="slide-counter">07 / 12</div>
+        </div>
+
+        <!-- SLIDE 8: COMPETENCIA -->
+        <div class="slide slide-8">
+            <div class="slide-content center">
+                <div style="width: 100%;">
+                    <h2 class="slide-title">Ventaja Competitiva</h2>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Aspecto</th>
+                                <th>Competencia</th>
+                                <th style="color: var(--accent);">BerryPop</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Diferenciación</td>
+                                <td>Snacks genéricos</td>
+                                <td><span class="check-mark">✓ Premium & Único</span></td>
+                            </tr>
+                            <tr>
+                                <td>Presentación</td>
+                                <td>Básica</td>
+                                <td><span class="check-mark">✓ Instagram-worthy</span></td>
+                            </tr>
+                            <tr>
+                                <td>Variedad</td>
+                                <td>Limitada</td>
+                                <td><span class="check-mark">✓ Múltiples opciones</span></td>
+                            </tr>
+                            <tr>
+                                <td>Conexión con mercado</td>
+                                <td>Desconectada</td>
+                                <td><span class="check-mark">✓ Nativa del público</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="slide-counter">08 / 12</div>
+        </div>
+
+        <!-- SLIDE 9: ESTRATEGIA DE CRECIMIENTO -->
+        <div class="slide slide-9">
+            <div class="slide-content">
+                <div>
+                    <h2 class="slide-title">Expansión <span class="slide-title-accent">2024-2026</span></h2>
+                    <p class="slide-text">Hoja de ruta para transformar un proyecto escolar en marca regional</p>
+                    <div style="margin-top: 40px;">
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: var(--accent); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">→ Fase 1: Consolidación</h4>
+                            <p style="font-size: 16px; color: var(--gray-600);">Optimizar operaciones, aumentar SKUs, 3-4 días de venta semanal</p>
+                        </div>
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: var(--accent); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">→ Fase 2: Expansión Regional</h4>
+                            <p style="font-size: 16px; color: var(--gray-600);">Replicar modelo en 2-3 institutos adicionales</p>
+                        </div>
+                        <div style="margin-bottom: 25px;">
+                            <h4 style="color: var(--accent); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">→ Fase 3: Comercialización</h4>
+                            <p style="font-size: 16px; color: var(--gray-600);">Tiendas, eventos, plataformas de delivery</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center; color: white;">
+                        <div style="font-size: 80px; margin-bottom: 30px;">🚀</div>
+                        <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 30px;">Canales de Crecimiento</h3>
+                        <ul style="list-style: none;">
+                            <li style="margin: 15px 0; font-size: 14px;">📱 Social Media Viral</li>
+                            <li style="margin: 15px 0; font-size: 14px;">🤝 Partnerships Educativos</li>
+                            <li style="margin: 15px 0; font-size: 14px;">⭐ Influencer Estudiantil</li>
+                            <li style="margin: 15px 0; font-size: 14px;">🎉 Eventos & Ferias</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">09 / 12</div>
+        </div>
+
+        <!-- SLIDE 10: EQUIPO -->
+        <div class="slide slide-10">
+            <div class="slide-content center">
+                <div style="width: 100%;">
+                    <h2 class="slide-title">El Equipo</h2>
+                    <p class="slide-text" style="color: #ccc; margin-bottom: 50px;">Grupo 6B-CNE: Liderazgo, innovación y ejecución</p>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-avatar">Y</div>
+                            <div class="member-name">Yaretzi Santana</div>
+                            <div class="member-role">COO - Operaciones</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">M</div>
+                            <div class="member-name">Montserrat Andrade</div>
+                            <div class="member-role">CPO - Producto</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">F</div>
+                            <div class="member-name">Fatima García</div>
+                            <div class="member-role">CMO - Marketing</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">S</div>
+                            <div class="member-name">Sarahí Elizalde</div>
+                            <div class="member-role">CFO - Finanzas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">10 / 12</div>
+        </div>
+
+        <!-- SLIDE 11: VISIÓN -->
+        <div class="slide slide-11">
+            <div class="slide-content">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 100px; margin-bottom: 30px;">✨</div>
+                        <h3 style="font-size: 32px; font-weight: 800; color: white; line-height: 1.4; margin-bottom: 20px;">Ser la marca de snacks favorita de América Latina</h3>
+                        <p style="color: var(--accent-light); font-size: 16px; line-height: 1.6;">Desde un proyecto escolar a un movimiento global.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">11 / 12</div>
+        </div>
+
+        <!-- SLIDE 12: CIERRE -->
+        <div class="slide slide-13">
+            <div class="slide-content center">
+                <div style="text-align: center;">
+                    <h1 style="font-size: 96px; font-weight: 800; margin-bottom: 30px; letter-spacing: -2px;">¡Gracias!</h1>
+                    <p style="font-size: 24px; color: var(--accent); margin-bottom: 50px; font-weight: 300;">Refresca tu momento con nosotros</p>
+                    <div style="font-size: 80px; margin-bottom: 50px;">🍓</div>
+                    <p style="color: #999; font-size: 16px; text-transform: uppercase; letter-spacing: 2px;">BerryPop 2024 | Universidad de Guanajuato</p>
+                    <p style="color: #666; font-size: 14px; margin-top: 30px;">@berry_pop_ en Instagram</p>
+                </div>
+            </div>
+            <div class="slide-counter">12 / 12</div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-dots" id="navDots"></div>
+    <div class="nav-arrows">
+        <button class="arrow-btn" onclick="prevSlide()">←</button>
+        <button class="arrow-btn" onclick="nextSlide()">→</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function initDots() {
+            const dotsContainer = document.getElementById('navDots');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i === 0) dot.classList.add('active');
+                dot.onclick = () => jumpToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlide();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlide();
+        }
+
+        function jumpToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Initialize
+        initDots();
+        updateSlide();
+    </script>
+</body>
+</html>
