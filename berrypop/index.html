@@ -142,14 +142,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1A08
 .prob-desc{font-size:13.5px;color:var(--muted);line-height:1.65}
 
 /* Product */
-.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:880px;width:100%}
-.prod-card{background:white;border:1px solid var(--border);border-radius:22px;padding:38px 30px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.prod-emoji{font-size:50px;margin-bottom:18px;display:block}
-.prod-name{font-size:24px;font-weight:800;margin-bottom:8px;color:var(--text)}
-.prod-price{font-size:52px;font-weight:900;letter-spacing:-0.03em;line-height:1}
-.prod-margin{font-size:13px;color:var(--green);font-weight:600;margin-top:8px}
-.prod-desc{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.6}
-.prod-toppings{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:880px;width:100%}
+.prod-card{background:white;border:1px solid var(--border);border-radius:22px;padding:22px 22px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.prod-emoji{font-size:36px;margin-bottom:10px;display:block}
+.prod-name{font-size:18px;font-weight:800;margin-bottom:5px;color:var(--text)}
+.prod-price{font-size:40px;font-weight:900;letter-spacing:-0.03em;line-height:1}
+.prod-margin{font-size:12px;color:var(--green);font-weight:600;margin-top:5px}
+.prod-desc{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.prod-toppings{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:9px}
 
 /* Market */
 .mkt-wrap{display:flex;align-items:center;gap:68px;justify-content:center}
@@ -271,7 +271,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1A08
   </div>
 
   <!-- Bottom stat row -->
-  <div class="a5" style="position:absolute;bottom:64px;left:50%;transform:translateX(-50%);z-index:1;width:100%;max-width:680px;padding:0 20px">
+  <div class="a5" style="position:absolute;bottom:64px;left:0;right:0;z-index:1;display:flex;justify-content:center;padding:0 40px">
+  <div style="width:100%;max-width:680px">
     <div class="stat-row">
       <div class="stat-item">
         <div class="stat-v gtext">$250</div>
@@ -290,6 +291,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1A08
         <div class="stat-l">Días de venta</div>
       </div>
     </div>
+  </div>
   </div>
 </div>
 
@@ -396,7 +398,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1A08
     <div class="dots-bg"></div>
   </div>
 
-  <div style="text-align:center;margin-bottom:38px;z-index:1;width:100%">
+  <div style="text-align:center;margin-bottom:20px;z-index:1;width:100%">
     <div class="label a1">Producto</div>
     <h2 class="h2 a2">Dos productos.<br><span class="gtext">Un mismo antojo satisfecho.</span></h2>
   </div>
@@ -435,11 +437,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1A08
 
   </div>
 
-  <div class="a4" style="z-index:1;margin-top:20px;display:flex;gap:0;overflow:hidden;background:white;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-sm);max-width:880px;width:100%">
-    <div style="flex:1;text-align:center;padding:16px;border-right:1px solid var(--border)"><div style="font-size:22px;font-weight:900;color:var(--accent)">$35</div><div style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px">Precio fresa</div></div>
-    <div style="flex:1;text-align:center;padding:16px;border-right:1px solid var(--border)"><div style="font-size:22px;font-weight:900;color:var(--coral)">$25</div><div style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px">Precio lechita</div></div>
-    <div style="flex:1;text-align:center;padding:16px;border-right:1px solid var(--border)"><div style="font-size:22px;font-weight:900;color:var(--green)">51–60%</div><div style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px">Margen de ganancia</div></div>
-    <div style="flex:1;text-align:center;padding:16px"><div style="font-size:22px;font-weight:900;color:var(--text)">$250</div><div style="font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px">Inversión inicial</div></div>
+  <div class="a4" style="z-index:1;margin-top:14px;display:flex;gap:0;overflow:hidden;background:white;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-sm);max-width:880px;width:100%">
+    <div style="flex:1;text-align:center;padding:12px;border-right:1px solid var(--border)"><div style="font-size:20px;font-weight:900;color:var(--accent)">$35</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px">Precio fresa</div></div>
+    <div style="flex:1;text-align:center;padding:12px;border-right:1px solid var(--border)"><div style="font-size:20px;font-weight:900;color:var(--coral)">$25</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px">Precio lechita</div></div>
+    <div style="flex:1;text-align:center;padding:12px;border-right:1px solid var(--border)"><div style="font-size:20px;font-weight:900;color:var(--green)">51–60%</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px">Margen de ganancia</div></div>
+    <div style="flex:1;text-align:center;padding:12px"><div style="font-size:20px;font-weight:900;color:var(--text)">$250</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px">Inversión inicial</div></div>
   </div>
 </div>
 
@@ -470,34 +472,34 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#1A08
       <circle cx="150" cy="150" r="93" fill="rgba(198,40,40,0.06)" stroke="rgba(198,40,40,0.35)" stroke-width="1.5"/>
       <circle cx="150" cy="150" r="52" fill="rgba(233,30,140,0.1)" stroke="rgba(233,30,140,0.55)" stroke-width="2"/>
       <text x="150" y="143" text-anchor="middle" fill="#1A0810" font-size="12" font-weight="bold">SOM</text>
-      <text x="150" y="160" text-anchor="middle" fill="#9A6878" font-size="10">ENMS Celaya</text>
+      <text x="150" y="160" text-anchor="middle" fill="#9A6878" font-size="10">Maestros ENMS</text>
       <text x="150" y="95" text-anchor="middle" fill="#9A6878" font-size="10">SAM · Celaya</text>
-      <text x="150" y="42" text-anchor="middle" fill="#C0A0B0" font-size="10">TAM · México</text>
+      <text x="150" y="42" text-anchor="middle" fill="#C0A0B0" font-size="10">TAM · Estudiantes</text>
     </svg>
 
     <div class="mkt-data">
       <div class="mkt-row">
         <div class="mkt-dot" style="background:var(--accent)"></div>
         <div>
-          <div class="mkt-val gtext">6.5M</div>
+          <div class="mkt-val gtext">Estudiantes</div>
           <div class="mkt-name">TAM — Total Addressable Market</div>
-          <div class="mkt-sub">Estudiantes de bachillerato en México con gasto en snacks</div>
+          <div class="mkt-sub">6.5M estudiantes de bachillerato en México con gasto semanal en snacks</div>
         </div>
       </div>
       <div class="mkt-row">
         <div class="mkt-dot" style="background:var(--coral)"></div>
         <div>
-          <div class="mkt-val" style="color:var(--coral)">~28K</div>
+          <div class="mkt-val" style="color:var(--coral)">Celaya</div>
           <div class="mkt-name">SAM — Serviceable Addressable Market</div>
-          <div class="mkt-sub">Estudiantes de preparatoria en Celaya y municipios cercanos</div>
+          <div class="mkt-sub">~28K estudiantes de preparatoria en Celaya y municipios cercanos</div>
         </div>
       </div>
       <div class="mkt-row">
         <div class="mkt-dot" style="background:#F48FB1"></div>
         <div>
-          <div class="mkt-val" style="color:#C62828">~900</div>
+          <div class="mkt-val" style="color:#C62828">Maestros</div>
           <div class="mkt-name">SOM — Serviceable Obtainable Market</div>
-          <div class="mkt-sub">Comunidad ENMS Celaya: estudiantes y maestros</div>
+          <div class="mkt-sub">~80 docentes y personal ENMS Celaya · mercado inmediato y fidelizado</div>
         </div>
       </div>
     </div>
