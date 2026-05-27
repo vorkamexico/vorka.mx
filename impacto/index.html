@@ -401,12 +401,12 @@
           <div class="text-center">
             <div class="w-12 h-12 mx-auto rounded-full bg-midnight-900 text-white flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">22</div>
             <div class="mt-3 font-display font-bold text-midnight-900">2022</div>
-            <p class="text-sm text-midnight-600 mt-1">Expansión a 4 estados</p>
+            <p class="text-sm text-midnight-600 mt-1">Expansión a 8 estados</p>
           </div>
           <div class="text-center">
             <div class="w-12 h-12 mx-auto rounded-full bg-brand-400 text-midnight-900 flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">23</div>
             <div class="mt-3 font-display font-bold text-midnight-900">2024</div>
-            <p class="text-sm text-midnight-600 mt-1">Constituidos como Asociación Civil</p>
+            <p class="text-sm text-midnight-600 mt-1">Constitución Oficial</p>
           </div>
           <div class="text-center">
             <div class="w-12 h-12 mx-auto rounded-full bg-midnight-900 text-white flex items-center justify-center font-display font-bold relative z-10 border-4 border-white">24</div>
@@ -455,7 +455,7 @@
       </div>
       <div class="reveal p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">
         <div class="font-mono-display text-brand-400 text-xs mb-2">// PERSONAS</div>
-        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="200k" data-suffix="+">0</div>
+        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="85000" data-suffix="+">0</div>
         <div class="text-sm text-white/60 mt-2">beneficiadas</div>
       </div>
     </div>
@@ -862,8 +862,7 @@
       </ul>
     </div>
 
-    <form id="joinForm" action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST" class="reveal bg-white rounded-3xl p-7 lg:p-9 shadow-2xl shadow-midnight-900/30">
-      <!-- FormSubmit config -->
+    <form id="joinForm" data-fs-endpoint="https://formsubmit.co/ajax/impactoo.mex@gmail.com" class="reveal bg-white rounded-3xl p-7 lg:p-9 shadow-2xl shadow-midnight-900/30">
       <input type="hidden" name="_subject" value="Nueva candidatura IMPACTO — Quiero unirme">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
@@ -1163,7 +1162,7 @@
       </div>
     </div>
 
-    <form id="contactForm" action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST" class="reveal bg-midnight-50 rounded-3xl p-7 lg:p-9">
+    <form id="contactForm" data-fs-endpoint="https://formsubmit.co/ajax/impactoo.mex@gmail.com" class="reveal bg-midnight-50 rounded-3xl p-7 lg:p-9">
       <input type="hidden" name="_subject" value="Nuevo mensaje desde el sitio IMPACTO">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
@@ -1269,7 +1268,7 @@
       <div class="lg:col-span-4">
         <h4 class="font-display font-bold text-sm uppercase tracking-wider mb-4 text-brand-400">Newsletter</h4>
         <p class="text-sm text-white/70 mb-4">Convocatorias, historias y oportunidades en tu correo, una vez al mes.</p>
-        <form action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST" class="flex flex-col sm:flex-row gap-2">
+        <form id="newsletterForm" data-fs-endpoint="https://formsubmit.co/ajax/impactoo.mex@gmail.com" class="flex flex-col sm:flex-row gap-2">
           <input type="hidden" name="_subject" value="Nueva suscripción al newsletter IMPACTO">
           <input type="hidden" name="_captcha" value="false">
           <input type="email" name="Email" required placeholder="tu@correo.com" class="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 placeholder-white/50 focus:bg-white/15 outline-none transition text-sm" />
@@ -1288,6 +1287,17 @@
     </div>
   </div>
 </footer>
+
+<!-- Toast notification -->
+<div id="toast" class="fixed bottom-24 right-5 z-50 max-w-sm bg-midnight-900 text-white px-5 py-4 rounded-2xl shadow-2xl opacity-0 translate-y-3 pointer-events-none transition-all duration-300 flex items-start gap-3">
+  <div class="w-8 h-8 rounded-full bg-mint-500 flex items-center justify-center flex-shrink-0">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <div>
+    <div id="toastTitle" class="font-display font-bold text-sm">¡Mensaje enviado!</div>
+    <div id="toastMsg" class="text-xs text-white/70 mt-0.5">Te contactaremos pronto.</div>
+  </div>
+</div>
 
 <!-- WhatsApp floating button -->
 <a href="https://wa.me/524613445141?text=Hola%20IMPACTO,%20quiero%20más%20información" target="_blank" rel="noopener" class="fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-mint-500 hover:bg-mint-600 shadow-2xl shadow-mint-500/40 flex items-center justify-center text-white transition animate-float">
@@ -1334,6 +1344,65 @@ const cio = new IntersectionObserver((entries) => {
 }, { threshold: 0.4 });
 counters.forEach(c => cio.observe(c));
 
+/* ---- AJAX FORM SUBMISSIONS (FormSubmit) ---- */
+function showToast(title, msg, isError) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  const icon = t.querySelector('div div svg').parentElement;
+  icon.className = 'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ' + (isError ? 'bg-red-500' : 'bg-mint-500');
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  t.style.pointerEvents = 'auto';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateY(12px)';
+    t.style.pointerEvents = 'none';
+  }, 4500);
+}
+
+document.querySelectorAll('form[data-fs-endpoint]').forEach(form => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const endpoint = form.dataset.fsEndpoint;
+    const submitBtn = form.querySelector('button[type="submit"], button:not([type])');
+    const originalText = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 60" stroke-linecap="round"/></svg> Enviando...';
+      submitBtn.classList.add('opacity-70');
+    }
+
+    const formData = new FormData(form);
+    const payload = {};
+    formData.forEach((v, k) => { payload[k] = v; });
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.success === 'true' || data.success === true) {
+        showToast('¡Mensaje enviado!', 'Recibimos tu información. Te contactaremos pronto.');
+        form.reset();
+      } else {
+        showToast('Recibido', 'Tu mensaje está en camino. Si es la primera vez, revisaremos la activación.', false);
+        form.reset();
+      }
+    } catch (err) {
+      showToast('Algo falló', 'Inténtalo de nuevo o escríbenos por WhatsApp.', true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        submitBtn.classList.remove('opacity-70');
+      }
+    }
+  });
+});
+
 /* ---- ACTIVE NAV LINK ON SCROLL ---- */
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-link');
@@ -1349,4 +1418,3 @@ window.addEventListener('scroll', () => {
 
 </body>
 </html>
-
