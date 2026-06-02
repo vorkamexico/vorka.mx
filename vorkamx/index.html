@@ -1,0 +1,1392 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Vorka México — Estrategia, liderazgo e influencia</title>
+<meta name="description" content="Vorka asesora a quienes toman las decisiones en México. 150 proyectos en 26 estados. Estrategia, liderazgo, transformación, cultura, aprendizaje y comunicación." />
+<meta name="theme-color" content="#F2EFE8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#15140F" media="(prefers-color-scheme: dark)" />
+<link rel="icon" type="image/png" href="./LOGO.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,500;0,700;0,800;0,900;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================== Tokens ============================== */
+  :root{
+    --paper:#F2EFE8;
+    --paper-2:#EBE7DE;
+    --ink:#141414;
+    --ink-2:rgba(20,20,20,0.66);
+    --ink-3:rgba(20,20,20,0.40);
+    --ink-4:rgba(20,20,20,0.18);
+    --line:rgba(20,20,20,0.12);
+    --line-strong:rgba(20,20,20,0.30);
+    --accent:#1E4438;
+    --accent-soft:#2C5849;
+    --accent-hover:#163328;
+    --on-accent:#F2EFE8;
+    --field:rgba(20,20,20,0.04);
+    --field-focus:rgba(30,68,56,0.07);
+    --logo-filter:none;
+    --invert-section:#15140F;
+    --invert-ink:#E8E4D8;
+    --invert-ink-2:rgba(232,228,216,0.66);
+    --invert-line:rgba(232,228,216,0.16);
+    --invert-accent:#7DB39C;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#15140F;
+      --paper-2:#1B1A14;
+      --ink:#E8E4D8;
+      --ink-2:rgba(232,228,216,0.66);
+      --ink-3:rgba(232,228,216,0.40);
+      --ink-4:rgba(232,228,216,0.18);
+      --line:rgba(232,228,216,0.14);
+      --line-strong:rgba(232,228,216,0.30);
+      --accent:#7DB39C;
+      --accent-soft:#9BC8B3;
+      --accent-hover:#9BC8B3;
+      --on-accent:#15140F;
+      --field:rgba(232,228,216,0.05);
+      --field-focus:rgba(125,179,156,0.08);
+      --logo-filter:invert(0.92) brightness(1.06);
+    }
+  }
+
+  /* ============================== Reset ============================== */
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+  html{-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+  body{
+    font-family:'IBM Plex Sans',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-size:16px;line-height:1.6;font-weight:400;
+    overflow-x:hidden;
+  }
+  img,svg{max-width:100%;display:block}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:var(--on-accent)}
+
+  /* ============================== Type ============================== */
+  .display{
+    font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;
+    font-weight:800;letter-spacing:-0.025em;line-height:0.96;
+    color:var(--ink);
+  }
+  .display-md{
+    font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;
+    font-weight:800;letter-spacing:-0.02em;line-height:1.04;
+    color:var(--ink);
+  }
+  .display-serif{
+    font-family:'Cormorant Garamond','EB Garamond',Georgia,serif;
+    font-weight:500;letter-spacing:-0.01em;line-height:1.04;
+    color:var(--ink);
+  }
+  .display-serif em{font-style:italic;color:var(--accent);font-weight:500}
+  .ital{font-style:italic;color:var(--accent);font-weight:800}
+  .smallcaps{
+    text-transform:uppercase;letter-spacing:0.16em;font-size:12px;font-weight:500;color:var(--ink-2);
+  }
+  .smallcaps-accent{
+    text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:600;color:var(--accent);
+    display:inline-flex;align-items:center;gap:14px;
+  }
+  .smallcaps-accent::before{
+    content:"";display:inline-block;width:24px;height:1px;background:var(--accent);
+  }
+  .lead{
+    font-size:clamp(18px,1.5vw,22px);line-height:1.55;color:var(--ink-2);
+    max-width:60ch;
+  }
+
+  /* ============================== Shell ============================== */
+  .shell{
+    width:100%;
+    padding-left:clamp(24px,5vw,80px);
+    padding-right:clamp(24px,7vw,128px);
+    max-width:1520px;
+    margin-inline:auto;
+  }
+
+  /* ============================== Topbar ============================== */
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:color-mix(in srgb,var(--paper) 92%,transparent);
+    backdrop-filter:saturate(140%) blur(8px);
+    -webkit-backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-block:16px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand-mark{height:38px;width:auto;filter:var(--logo-filter)}
+  .brand-name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;letter-spacing:-0.01em;
+    font-size:18px;color:var(--ink);
+  }
+  .brand-name span{color:var(--ink-3);font-weight:500}
+  .topbar nav{display:flex;gap:28px;align-items:center}
+  .topbar nav a{
+    font-size:14px;color:var(--ink-2);font-weight:500;
+    padding:8px 0;border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
+  }
+  .topbar nav a:hover{color:var(--ink);border-color:var(--ink)}
+  .topbar nav .pill{
+    background:var(--ink);color:var(--paper);
+    padding:11px 20px;font-size:14px;font-weight:500;
+  }
+  .topbar nav .pill:hover{background:var(--accent);color:var(--on-accent)}
+  @media (max-width:900px){.topbar nav a:not(.pill){display:none}}
+
+  /* ============================== Hero ============================== */
+  .hero{
+    padding-top:clamp(80px,12vh,160px);
+    padding-bottom:clamp(120px,18vh,220px);
+    position:relative;border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.42fr);
+    gap:clamp(40px,5vw,96px);align-items:end;
+  }
+  .hero-title{
+    font-size:clamp(48px,7.8vw,136px);
+    max-width:14ch;
+  }
+  .hero-sub{
+    margin-top:clamp(28px,3.5vh,48px);
+    font-size:clamp(18px,1.4vw,21px);
+    line-height:1.55;color:var(--ink-2);
+    max-width:54ch;
+  }
+  .hero-meta{
+    margin-top:clamp(40px,5vh,64px);
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  }
+  .btn-primary{
+    background:var(--ink);color:var(--paper);
+    padding:18px 32px;font-size:15px;font-weight:500;letter-spacing:0.01em;
+    border-radius:0;transition:background .15s,color .15s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn-primary:hover{background:var(--accent);color:var(--on-accent)}
+  .btn-primary[disabled]{opacity:0.6;cursor:wait}
+  .btn-ghost{
+    color:var(--ink);padding:18px 10px;font-size:15px;font-weight:500;
+    border-bottom:1px solid var(--ink);transition:color .15s,border-color .15s;
+  }
+  .btn-ghost:hover{color:var(--accent);border-color:var(--accent)}
+  .hero-mark{
+    justify-self:end;align-self:end;
+    width:100%;max-width:300px;filter:var(--logo-filter);
+  }
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .hero-mark{justify-self:start;max-width:140px;order:-1}
+  }
+
+  /* ============================== Section base ============================== */
+  section{padding-block:clamp(112px,16vh,200px);border-bottom:1px solid var(--line)}
+  .section-head{
+    display:grid;
+    grid-template-columns:minmax(0,0.36fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+    margin-bottom:clamp(56px,9vh,112px);
+  }
+  .section-head .head-rail{padding-top:8px}
+  .section-head h2{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(40px,5.4vw,82px);letter-spacing:-0.02em;line-height:1.02;
+    margin:0 0 28px;max-width:18ch;
+  }
+  .section-head .lead{margin-top:0}
+  @media (max-width:900px){.section-head{grid-template-columns:1fr;gap:24px}}
+
+  /* ============================== Lo que hacemos ============================== */
+  .practice-grid{
+    display:grid;
+    grid-template-columns:minmax(0,0.36fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);
+  }
+  .practice-grid .rail{padding-top:8px}
+  .practice-list{border-top:1px solid var(--line-strong)}
+  .practice{
+    display:grid;
+    grid-template-columns:minmax(0,0.30fr) minmax(0,1fr);
+    gap:clamp(28px,4vw,64px);
+    padding-block:clamp(36px,5vh,56px);
+    border-bottom:1px solid var(--line);
+    align-items:baseline;
+  }
+  .practice:last-child{border-bottom:0}
+  .practice .name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(24px,2.2vw,34px);letter-spacing:-0.015em;line-height:1;
+  }
+  .practice .desc{
+    font-size:clamp(16px,1.15vw,18px);color:var(--ink-2);line-height:1.6;max-width:58ch;
+  }
+  .practice .verb{color:var(--accent);font-weight:500}
+  @media (max-width:780px){
+    .practice-grid{grid-template-columns:1fr;gap:32px}
+    .practice{grid-template-columns:1fr;gap:10px}
+  }
+
+  /* ============================== Cómo trabajamos (dark callout) ============================== */
+  .invert{
+    background:var(--invert-section);color:var(--invert-ink);
+    border-color:transparent;
+  }
+  .invert .section-head h2{color:var(--invert-ink)}
+  .invert .lead{color:var(--invert-ink-2)}
+  .invert .smallcaps-accent{color:var(--invert-accent)}
+  .invert .smallcaps-accent::before{background:var(--invert-accent)}
+  .invert .smallcaps{color:var(--invert-ink-2)}
+  .phases{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:clamp(24px,3vw,56px);
+    padding-top:clamp(40px,6vh,72px);
+    border-top:1px solid var(--invert-line);
+  }
+  .phase{
+    display:flex;flex-direction:column;gap:24px;
+    padding-right:clamp(0px,1.5vw,32px);
+  }
+  .phase + .phase{
+    border-left:1px solid var(--invert-line);
+    padding-left:clamp(20px,2vw,40px);
+  }
+  .phase .num{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(40px,4vw,64px);color:var(--invert-line);
+    letter-spacing:-0.03em;line-height:1;
+  }
+  .phase .pname{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(20px,1.6vw,26px);letter-spacing:-0.01em;line-height:1.1;color:var(--invert-ink);
+  }
+  .phase .pdesc{
+    font-size:15px;line-height:1.55;color:var(--invert-ink-2);
+  }
+  .phase .pline{
+    width:32px;height:2px;background:var(--invert-accent);margin-top:8px;
+  }
+  @media (max-width:1000px){
+    .phases{grid-template-columns:repeat(2,1fr);gap:48px}
+    .phase + .phase{border-left:0;padding-left:0}
+    .phase:nth-child(2n)+.phase{border-top:1px solid var(--invert-line);padding-top:48px}
+  }
+  @media (max-width:600px){
+    .phases{grid-template-columns:1fr}
+    .phase + .phase{border-top:1px solid var(--invert-line);padding-top:40px}
+  }
+
+  /* ============================== Para quién ============================== */
+  .audience-grid{
+    display:grid;
+    grid-template-columns:minmax(0,0.46fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+  }
+  .quote{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(24px,2.2vw,32px);line-height:1.25;letter-spacing:-0.01em;
+    color:var(--ink);max-width:24ch;
+  }
+  .quote + p{
+    font-size:16px;color:var(--ink-2);line-height:1.6;margin-top:24px;max-width:36ch;
+  }
+  .audience-actions{margin-top:40px;display:flex;gap:16px;flex-wrap:wrap}
+  .audience-list{
+    list-style:none;margin:0;padding:0;
+    border-top:1px solid var(--line-strong);
+  }
+  .audience-list li{
+    border-bottom:1px solid var(--line);
+    padding:clamp(24px,3vh,32px) 0;
+    display:grid;grid-template-columns:14px minmax(0,1fr);gap:24px;align-items:start;
+  }
+  .audience-list .dot{
+    width:8px;height:8px;border-radius:50%;background:var(--accent);
+    margin-top:14px;justify-self:start;
+  }
+  .audience-list .a-name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(20px,1.8vw,26px);letter-spacing:-0.01em;line-height:1.15;
+    color:var(--ink);display:block;
+  }
+  .audience-list .a-desc{
+    display:block;margin-top:8px;
+    font-size:15px;color:var(--ink-2);line-height:1.55;max-width:54ch;
+  }
+  @media (max-width:900px){.audience-grid{grid-template-columns:1fr;gap:40px}}
+
+  /* ============================== Respaldo ============================== */
+  .standing{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.6fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+  }
+  .indicators{
+    display:grid;grid-template-columns:repeat(2,1fr);
+    column-gap:clamp(24px,4vw,72px);row-gap:clamp(24px,3vh,40px);
+    border-top:1px solid var(--line-strong);padding-top:clamp(32px,4vh,48px);
+  }
+  .ind-num{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(72px,11vw,192px);letter-spacing:-0.04em;line-height:0.9;
+    color:var(--ink);
+  }
+  .ind-num sup{
+    font-size:0.5em;vertical-align:0.55em;color:var(--accent);font-weight:700;
+  }
+  .ind-label{
+    margin-top:8px;font-size:14px;color:var(--ink-2);
+    letter-spacing:0.04em;text-transform:lowercase;
+  }
+  .standing-body{font-size:clamp(16px,1.2vw,19px);line-height:1.6;color:var(--ink-2)}
+  .standing-body p{margin:0 0 20px;max-width:42ch}
+  .standing-list{
+    list-style:none;padding:0;margin:24px 0 0;
+    border-top:1px solid var(--line);
+  }
+  .standing-list li{
+    padding-block:16px;border-bottom:1px solid var(--line);
+    font-size:15px;color:var(--ink);font-weight:500;
+    display:flex;justify-content:space-between;gap:16px;
+  }
+  .standing-list li span{color:var(--ink-2);font-weight:400;font-size:14px}
+  @media (max-width:900px){.standing{grid-template-columns:1fr;gap:56px}}
+
+  /* ============================== Sparks (Newsletter + IG) ============================== */
+  .sparks-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+  }
+  .sparks-lead h3{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(40px,5vw,72px);letter-spacing:-0.02em;line-height:1.02;
+    margin:0;
+  }
+  .sparks-lead h3 .ital{margin-left:6px}
+  .sparks-lead p{
+    margin:32px 0 0;font-size:clamp(16px,1.2vw,19px);line-height:1.6;color:var(--ink-2);max-width:46ch;
+  }
+  .sparks-meta{margin-top:48px;display:flex;flex-direction:column;gap:16px}
+  .sparks-meta .handle{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-size:32px;
+    letter-spacing:-0.015em;color:var(--ink);
+  }
+  .sparks-meta .handle:hover{color:var(--accent)}
+  .sparks-meta .handle-desc{font-size:14px;color:var(--ink-2);max-width:36ch;line-height:1.55}
+
+  .news-card{
+    background:var(--paper-2);
+    padding:clamp(32px,4vw,56px);
+    border-top:3px solid var(--accent);
+  }
+  .news-card h4{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(22px,1.8vw,28px);margin:0 0 8px;letter-spacing:-0.01em;
+  }
+  .news-card .news-sub{font-size:14px;color:var(--ink-2);margin:0 0 32px;max-width:42ch;line-height:1.55}
+  @media (max-width:900px){.sparks-grid{grid-template-columns:1fr;gap:40px}}
+
+  /* ============================== Hablemos ============================== */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(0,0.8fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+  }
+  .form-shell{
+    border-top:1px solid var(--line-strong);
+    padding-top:clamp(28px,4vh,48px);
+  }
+  .field{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+  .field label{
+    font-size:13px;color:var(--ink-2);font-weight:500;
+    letter-spacing:0.06em;text-transform:uppercase;
+  }
+  .field input, .field textarea{
+    font:inherit;color:var(--ink);
+    background:var(--field);
+    border:0;border-bottom:1px solid var(--line-strong);
+    padding:16px 14px;border-radius:0;
+    transition:border-color .15s,background .15s;
+    outline:none;width:100%;font-size:16px;
+  }
+  .field input::placeholder, .field textarea::placeholder{color:var(--ink-3)}
+  .field input:focus, .field textarea:focus{
+    border-color:var(--accent);background:var(--field-focus);
+  }
+  .field textarea{min-height:112px;resize:vertical}
+  .field-error{color:#A33B2A;font-size:13px;margin-top:6px;display:none}
+  @media (prefers-color-scheme:dark){.field-error{color:#E59A8E}}
+  .field.has-error input, .field.has-error textarea{border-color:#A33B2A}
+  .field.has-error .field-error{display:block}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media (max-width:600px){.form-row{grid-template-columns:1fr;gap:0}}
+  .form-actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:12px}
+  .form-note{font-size:13px;color:var(--ink-3);max-width:32ch;line-height:1.5}
+  .consent{
+    display:flex;gap:12px;align-items:flex-start;margin:8px 0 16px;
+    font-size:13px;color:var(--ink-2);line-height:1.5;
+  }
+  .consent input{
+    appearance:none;-webkit-appearance:none;
+    width:18px;height:18px;border:1px solid var(--line-strong);background:var(--paper);
+    margin:1px 0 0;flex-shrink:0;cursor:pointer;
+    display:inline-grid;place-content:center;
+  }
+  .consent input:checked{background:var(--accent);border-color:var(--accent)}
+  .consent input:checked::after{
+    content:"";width:10px;height:6px;border-left:2px solid var(--paper);border-bottom:2px solid var(--paper);
+    transform:rotate(-45deg);margin-top:-2px;
+  }
+
+  .contact-aside{
+    border-top:1px solid var(--line-strong);
+    padding-top:clamp(28px,4vh,48px);
+  }
+  .contact-aside h3{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(24px,2vw,30px);letter-spacing:-0.01em;
+    margin:0 0 16px;
+  }
+  .contact-aside p{
+    font-size:15px;color:var(--ink-2);line-height:1.6;margin:0 0 32px;max-width:38ch;
+  }
+  .direct-row{display:flex;flex-direction:column;gap:14px}
+  .direct{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:22px 24px;background:var(--field);
+    transition:background .15s;
+  }
+  .direct:hover{background:var(--field-focus)}
+  .direct strong{font-weight:500;font-size:16px}
+  .direct span{color:var(--ink-2);font-size:13px}
+  .response-note{
+    margin-top:32px;padding-top:24px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--ink-3);line-height:1.5;
+  }
+  @media (max-width:900px){.contact-grid{grid-template-columns:1fr;gap:56px}}
+
+  .success{
+    background:var(--paper-2);
+    padding:clamp(36px,5vw,64px);
+    border-top:3px solid var(--accent);
+  }
+  .success h3{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(28px,3vw,42px);margin:0 0 16px;letter-spacing:-0.015em;
+  }
+  .success p{color:var(--ink-2);font-size:16px;margin:0 0 28px;max-width:48ch;line-height:1.6}
+  .hide{display:none !important}
+
+  /* ============================== Final CTA ============================== */
+  .cta-block{
+    padding-block:clamp(120px,18vh,200px);
+    background:var(--paper);border-bottom:1px solid var(--line);
+  }
+  .cta-center{
+    max-width:1000px;margin-inline:auto;text-align:center;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .cta-center .smallcaps-accent{margin-bottom:clamp(40px,5vh,72px)}
+  .cta-title{
+    margin:0;
+    font-size:clamp(48px,8vw,128px);
+    max-width:16ch;
+  }
+  .cta-sub{
+    margin:clamp(28px,3.5vh,48px) 0 0;
+    font-size:clamp(17px,1.3vw,21px);color:var(--ink-2);line-height:1.5;
+    max-width:54ch;
+  }
+  .cta-actions{
+    display:flex;gap:18px;flex-wrap:wrap;justify-content:center;
+    margin-top:clamp(40px,5vh,72px);
+  }
+  .btn-cta{
+    display:inline-flex;align-items:center;justify-content:center;
+    text-transform:uppercase;letter-spacing:0.14em;
+    font-size:13px;font-weight:600;
+    padding:22px 36px;min-width:240px;
+    border:1px solid transparent;border-radius:0;
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .btn-cta.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn-cta.solid:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .btn-cta.outline{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+  .btn-cta.outline:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+  @media (max-width:560px){.btn-cta{min-width:0;width:100%}}
+
+  /* ============================== Manifesto (tree image) ============================== */
+  .manifesto{
+    padding-block:clamp(96px,14vh,180px);
+    background:var(--paper);border-bottom:1px solid var(--line);
+  }
+  .manifesto-head{
+    text-align:center;margin-bottom:clamp(40px,6vh,80px);
+    display:flex;flex-direction:column;align-items:center;gap:24px;
+  }
+  .manifesto-head h3{
+    font-family:'Cormorant Garamond',serif;font-weight:500;
+    font-size:clamp(28px,3vw,44px);letter-spacing:-0.005em;line-height:1.15;
+    margin:0;max-width:22ch;color:var(--ink);
+  }
+  .manifesto-head h3 em{font-style:italic;color:var(--accent);font-weight:500}
+  .manifesto-fig{margin:0;display:flex;flex-direction:column;align-items:center}
+  .manifesto-frame{
+    background:#F4F1EA;
+    padding:clamp(16px,2vw,32px);
+    width:100%;max-width:1080px;
+  }
+  .manifesto-frame img{width:100%;height:auto;display:block}
+  @media (prefers-color-scheme:dark){
+    .manifesto-frame{background:#F4F1EA}
+  }
+
+  /* ============================== Footer ============================== */
+  footer{padding-block:clamp(80px,10vh,128px);background:var(--paper)}
+  .foot-cols{
+    display:grid;
+    grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(32px,4vw,72px);
+    border-top:1px solid var(--line-strong);padding-top:clamp(48px,6vh,80px);
+  }
+  .foot-col h5{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:14px;letter-spacing:0.12em;text-transform:uppercase;
+    margin:0 0 24px;color:var(--ink);
+  }
+  .foot-brand .desc{
+    font-size:15px;color:var(--ink-2);line-height:1.6;margin:0 0 32px;max-width:36ch;
+  }
+  .foot-brand .desc b{color:var(--ink);font-weight:500}
+  .foot-mark{height:64px;width:auto;filter:var(--logo-filter)}
+  .foot-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+  .foot-col a{font-size:15px;color:var(--ink-2);transition:color .15s}
+  .foot-col a:hover{color:var(--accent)}
+
+  .foot-tagline{
+    margin-top:clamp(40px,5vh,72px);padding-top:32px;
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;
+  }
+  .foot-tagline .left{font-size:13px;color:var(--ink-3);max-width:48ch;line-height:1.5}
+  .foot-tagline .right{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(20px,1.6vw,26px);color:var(--accent);letter-spacing:-0.01em;
+  }
+
+  .foot-bottom{
+    margin-top:clamp(56px,7vh,96px);padding-top:32px;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;align-items:center;
+  }
+  .foot-social{display:flex;gap:18px;align-items:center}
+  .foot-social a{
+    width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--field);transition:background .15s,color .15s;color:var(--ink);
+  }
+  .foot-social a:hover{background:var(--accent);color:var(--on-accent)}
+  .foot-social svg{width:18px;height:18px}
+  .foot-name{
+    text-align:center;font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:18px;letter-spacing:-0.01em;color:var(--ink);
+  }
+  .foot-name small{font-weight:500;color:var(--ink-3);font-size:14px;display:block;margin-top:4px}
+  .foot-copy{text-align:right;font-size:13px;color:var(--ink-3);line-height:1.5}
+  @media (max-width:900px){
+    .foot-cols{grid-template-columns:1fr 1fr;gap:48px}
+    .foot-bottom{grid-template-columns:1fr;gap:24px;text-align:center}
+    .foot-social{justify-content:center}
+    .foot-copy{text-align:center}
+  }
+  @media (max-width:560px){.foot-cols{grid-template-columns:1fr}}
+
+  /* ============================== Modal ============================== */
+  .modal-backdrop{
+    position:fixed;inset:0;z-index:50;
+    background:color-mix(in srgb,var(--ink) 60%,transparent);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    opacity:0;pointer-events:none;transition:opacity .18s;
+  }
+  .modal-backdrop.open{opacity:1;pointer-events:auto}
+  .modal{
+    background:var(--paper);color:var(--ink);
+    width:min(560px,100%);
+    padding:clamp(36px,4vw,64px);
+    border-top:3px solid var(--accent);
+    position:relative;
+    transform:translateY(8px);transition:transform .18s;
+  }
+  .modal-backdrop.open .modal{transform:translateY(0)}
+  .modal-close{
+    position:absolute;top:18px;right:18px;
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-2);font-size:22px;line-height:1;
+  }
+  .modal-close:hover{color:var(--ink)}
+  .modal h3{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(28px,3vw,40px);margin:0 0 16px;letter-spacing:-0.015em;line-height:1.05;
+  }
+  .modal p{color:var(--ink-2);margin:0 0 28px;line-height:1.6;font-size:15px;max-width:42ch}
+  .modal-options{display:flex;flex-direction:column;gap:12px}
+  .modal-options a{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 22px;background:var(--field);
+    transition:background .15s,color .15s;
+  }
+  .modal-options a:hover{background:var(--accent);color:var(--on-accent)}
+  .modal-options a strong{font-weight:500;font-size:16px}
+  .modal-options a span{font-size:13px;color:var(--ink-2)}
+  .modal-options a:hover span{color:var(--on-accent);opacity:0.85}
+  .modal-foot{
+    margin-top:28px;padding-top:24px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--ink-3);
+  }
+
+  /* ============================== A11y ============================== */
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important}
+  }
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a href="#" class="brand" aria-label="Vorka México — inicio">
+      <img class="brand-mark" src="./LOGO.png" alt="Vorka" />
+      <span class="brand-name">Vorka <span>México</span></span>
+    </a>
+    <nav aria-label="Principal">
+      <a href="#hacemos">Lo que hacemos</a>
+      <a href="#metodo">Cómo trabajamos</a>
+      <a href="#paraquien">Para quién</a>
+      <a href="#sparks">Sparks</a>
+      <button class="pill" type="button" data-open-modal>Hablemos</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="shell">
+      <div class="hero-grid">
+        <div>
+          <h1 id="hero-title" class="display hero-title">
+            Asesoramos a quienes toman las decisiones en <span class="ital">México</span>.
+          </h1>
+          <p class="hero-sub">
+            Ecosistema de estrategia, liderazgo e influencia para líderes, empresas, instituciones financieras, gobiernos, partidos y organizaciones civiles. Conectamos visión estratégica con ejecución real.
+          </p>
+          <div class="hero-meta">
+            <button class="btn-primary" type="button" data-open-modal>Hablemos</button>
+            <a class="btn-ghost" href="#hacemos">Ver lo que hacemos</a>
+          </div>
+        </div>
+        <img class="hero-mark" src="./LOGO.png" alt="" aria-hidden="true" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== LO QUE HACEMOS ============================== -->
+  <section id="hacemos" aria-labelledby="hacemos-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail">
+          <div class="smallcaps-accent">Lo que hacemos</div>
+        </div>
+        <div>
+          <h2 id="hacemos-title">Una sola lógica: decisiones difíciles, ejecutadas bien.</h2>
+          <p class="lead">Trabajamos seis prácticas con la misma cabeza —entender el contexto, definir lo que cuenta, ejecutar hasta que opera. Cada práctica es una capacidad concreta que aportamos a la organización, no un servicio empaquetado.</p>
+        </div>
+      </div>
+      <div class="practice-grid">
+        <div class="rail smallcaps">Prácticas</div>
+        <div class="practice-list">
+          <div class="practice">
+            <div class="name">Estrategia</div>
+            <div class="desc"><span class="verb">Diseñamos</span> la ruta para que una organización avance con foco. Definimos prioridades, criterio de decisión y el marco que permite distinguir lo urgente de lo importante en cada momento.</div>
+          </div>
+          <div class="practice">
+            <div class="name">Transformación</div>
+            <div class="desc"><span class="verb">Acompañamos</span> cambios estructurales de fondo —rediseño organizacional, procesos y modelo operativo. Nos quedamos hasta que el nuevo arreglo opera con autonomía, no hasta que el reporte está entregado.</div>
+          </div>
+          <div class="practice">
+            <div class="name">Cultura</div>
+            <div class="desc"><span class="verb">Intervenimos</span> los códigos internos —los implícitos, no solo los declarados— que determinan cómo se decide, cómo se trabaja en equipo y cómo se reacciona bajo presión.</div>
+          </div>
+          <div class="practice">
+            <div class="name">Aprendizaje</div>
+            <div class="desc"><span class="verb">Formamos</span> a equipos directivos en las capacidades que el momento exige. Programas hechos a la medida, con casos reales de la organización, no talleres genéricos de catálogo.</div>
+          </div>
+          <div class="practice">
+            <div class="name">Liderazgo</div>
+            <div class="desc"><span class="verb">Entrenamos</span> a líderes para sostener juicio, dirección y presencia bajo presión real. Acompañamiento individual o de equipo, según el caso lo requiera.</div>
+          </div>
+          <div class="practice">
+            <div class="name">Comunicación</div>
+            <div class="desc"><span class="verb">Articulamos</span> el discurso, la posición pública y la narrativa con la que la organización es leída por fuera —y por dentro. Mensaje, vocería y plan de incidencia.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CÓMO TRABAJAMOS (dark) ============================== -->
+  <section id="metodo" class="invert" aria-labelledby="metodo-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail">
+          <div class="smallcaps-accent">Cómo trabajamos</div>
+        </div>
+        <div>
+          <h2 id="metodo-title">Del diagnóstico al impacto.</h2>
+          <p class="lead">Cada relación con un cliente atraviesa cuatro fases. No las saltamos. Diagnóstico antes de proponer, diseño antes de ejecutar, ejecución antes de medir, medición antes de cerrar. Es el orden que hace que el cambio se sostenga.</p>
+        </div>
+      </div>
+      <div class="phases">
+        <div class="phase">
+          <div class="num">01</div>
+          <div class="pname">Diagnóstico</div>
+          <div class="pdesc">Escuchamos primero. Mapeamos contexto, objetivos reales y brechas entre lo que la organización dice y lo que efectivamente pasa adentro.</div>
+          <div class="pline"></div>
+        </div>
+        <div class="phase">
+          <div class="num">02</div>
+          <div class="pname">Diseño</div>
+          <div class="pdesc">Construimos la intervención a la medida. Combinamos las prácticas necesarias según lo que el contexto exige, no según un paquete fijo.</div>
+          <div class="pline"></div>
+        </div>
+        <div class="phase">
+          <div class="num">03</div>
+          <div class="pname">Activación</div>
+          <div class="pdesc">Acompañamos la ejecución de principio a fin. Entregamos resultado, no plan. Operamos dentro del cliente, no desde el cubículo.</div>
+          <div class="pline"></div>
+        </div>
+        <div class="phase">
+          <div class="num">04</div>
+          <div class="pname">Medición</div>
+          <div class="pdesc">Indicadores acordados desde el inicio del proyecto. El impacto real —no las horas facturadas— es la única métrica de éxito que reconocemos.</div>
+          <div class="pline"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== PARA QUIÉN ============================== -->
+  <section id="paraquien" aria-labelledby="paraquien-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail">
+          <div class="smallcaps-accent">Para quién trabajamos</div>
+        </div>
+        <div>
+          <h2 id="paraquien-title">Trabajamos con quien decide, no con quien observa.</h2>
+        </div>
+      </div>
+      <div class="audience-grid">
+        <div>
+          <p class="quote">"Organizaciones que necesitan influir, no solo existir."</p>
+          <p>Nuestros clientes están en momentos donde la decisión correcta —o la equivocada— marca lo que viene después: una sucesión, una elección, una crisis, una apuesta de crecimiento.</p>
+          <div class="audience-actions">
+            <button class="btn-primary" type="button" data-open-modal>Empecemos</button>
+          </div>
+        </div>
+        <ul class="audience-list">
+          <li>
+            <span class="dot" aria-hidden="true"></span>
+            <span>
+              <span class="a-name">Líderes políticos</span>
+              <span class="a-desc">Candidatos, funcionarios y dirigentes en momentos de definición pública.</span>
+            </span>
+          </li>
+          <li>
+            <span class="dot" aria-hidden="true"></span>
+            <span>
+              <span class="a-name">Equipos directivos</span>
+              <span class="a-desc">CEOs, consejos y comités ejecutivos en procesos de cambio, sucesión o reposicionamiento.</span>
+            </span>
+          </li>
+          <li>
+            <span class="dot" aria-hidden="true"></span>
+            <span>
+              <span class="a-name">Empresas e instituciones financieras</span>
+              <span class="a-desc">Grupos industriales, banca, gestoras y vehículos de inversión en momentos de definición estratégica.</span>
+            </span>
+          </li>
+          <li>
+            <span class="dot" aria-hidden="true"></span>
+            <span>
+              <span class="a-name">Gobiernos</span>
+              <span class="a-desc">Federal, estatal y municipal. Gabinete, secretarías técnicas y oficinas de gestión.</span>
+            </span>
+          </li>
+          <li>
+            <span class="dot" aria-hidden="true"></span>
+            <span>
+              <span class="a-name">Partidos y movimientos</span>
+              <span class="a-desc">Estructuras políticas que requieren visión, narrativa y método para gobernar antes de gobernar.</span>
+            </span>
+          </li>
+          <li>
+            <span class="dot" aria-hidden="true"></span>
+            <span>
+              <span class="a-name">Organizaciones civiles</span>
+              <span class="a-desc">Fundaciones, asociaciones y think tanks con vocación de incidencia pública medible.</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== RESPALDO ============================== -->
+  <section id="respaldo" aria-labelledby="respaldo-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail">
+          <div class="smallcaps-accent">Respaldo</div>
+        </div>
+        <div>
+          <h2 id="respaldo-title">El peso detrás del trabajo.</h2>
+          <p class="lead">150 proyectos. 26 estados. Un equipo con formación cruzada entre programas ejecutivos de las instituciones que han formado a quienes deciden en este país y al norte de la frontera.</p>
+        </div>
+      </div>
+      <div class="standing">
+        <div>
+          <div class="indicators">
+            <div>
+              <div class="ind-num">150<sup>+</sup></div>
+              <div class="ind-label">proyectos entregados</div>
+            </div>
+            <div>
+              <div class="ind-num">26</div>
+              <div class="ind-label">estados de la república</div>
+            </div>
+          </div>
+        </div>
+        <div class="standing-body">
+          <p>El equipo combina experiencia operativa en el sector privado, público y de incidencia, con formación en programas ejecutivos de instituciones de referencia.</p>
+          <ul class="standing-list">
+            <li>Harvard Business School<span>Programas ejecutivos</span></li>
+            <li>Tec de Monterrey<span>Formación e investigación</span></li>
+            <li>Silicon Valley<span>Innovación y liderazgo</span></li>
+            <li>Red nacional de egresados<span>Presencia en 26 estados</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== SPARKS ============================== -->
+  <section id="sparks" aria-labelledby="sparks-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail">
+          <div class="smallcaps-accent">Vorka Sparks</div>
+        </div>
+        <div>
+          <h2 id="sparks-title" class="sr-only">Vorka Sparks</h2>
+        </div>
+      </div>
+      <div class="sparks-grid">
+        <div class="sparks-lead">
+          <h3>Vorka <span class="ital">Sparks</span>.</h3>
+          <p>El medio propio de Vorka. Análisis breve, semanal, sobre decisiones, poder y liderazgo en México. Cero marketing de consultora; solo lo que estamos viendo en el campo y pensando puertas adentro.</p>
+          <div class="sparks-meta">
+            <a class="handle" href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">@vorka.mx</a>
+            <p class="handle-desc">El feed editorial se publica en Instagram. Cada edición es enfocada, sin relleno.</p>
+            <div>
+              <a class="btn-primary" href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Ver en Instagram</a>
+            </div>
+          </div>
+        </div>
+
+        <aside class="news-card" aria-labelledby="news-title">
+          <h4 id="news-title">Suscribirse al boletín.</h4>
+          <p class="news-sub">Una edición a la semana. Lectura corta, postura clara. Sin spam.</p>
+          <form id="news-form" novalidate>
+            <div class="form-row">
+              <div class="field">
+                <label for="n-nombre">Nombre</label>
+                <input id="n-nombre" name="nombre" type="text" autocomplete="given-name" required />
+                <div class="field-error">Necesitamos tu nombre.</div>
+              </div>
+              <div class="field">
+                <label for="n-apellido">Apellido</label>
+                <input id="n-apellido" name="apellido" type="text" autocomplete="family-name" />
+                <div class="field-error">Indica tu apellido.</div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="n-correo">Correo electrónico</label>
+              <input id="n-correo" name="correo" type="email" autocomplete="email" required />
+              <div class="field-error">Necesitamos un correo válido.</div>
+            </div>
+            <div class="field">
+              <label for="n-org">Organización <span style="text-transform:none;letter-spacing:0;color:var(--ink-3)">(opcional)</span></label>
+              <input id="n-org" name="organizacion" type="text" autocomplete="organization" />
+            </div>
+            <label class="consent">
+              <input type="checkbox" id="n-consent" required />
+              <span>Acepto recibir comunicaciones de Vorka México. Puedo darme de baja cuando quiera.</span>
+            </label>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">Suscribirme a Sparks</button>
+            </div>
+            <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+          </form>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CTA FINAL (placeholder pre-inspo) ============================== -->
+  <section class="cta-block" aria-labelledby="cta-title">
+    <div class="shell">
+      <div class="cta-inner">
+        <h2 id="cta-title" class="cta-title">Si llegaste hasta aquí, <span class="ital">hablemos</span>.</h2>
+        <div class="cta-side">
+          <p>Cuéntanos qué necesitas resolver. Respondemos el mismo día hábil con propuesta de siguiente paso —llamada, reunión o documento de trabajo, según pida el caso.</p>
+          <button class="btn-primary" type="button" data-open-modal>Agendar primera conversación</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== HABLEMOS ============================== -->
+  <section id="hablemos" aria-labelledby="hablemos-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail">
+          <div class="smallcaps-accent">Hablemos</div>
+        </div>
+        <div>
+          <h2 id="hablemos-title">Tres formas de empezar una conversación.</h2>
+          <p class="lead">Elige el canal según el caso. WhatsApp para velocidad. Correo para precisión. El formulario si prefieres estructurar la consulta. En cualquiera de las tres respondemos el mismo día hábil.</p>
+        </div>
+      </div>
+      <div class="contact-grid">
+        <form id="lead-form" class="form-shell" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="f-nombre">Nombre</label>
+              <input id="f-nombre" name="nombre" type="text" autocomplete="name" required />
+              <div class="field-error">Necesitamos tu nombre.</div>
+            </div>
+            <div class="field">
+              <label for="f-org">Organización</label>
+              <input id="f-org" name="organizacion" type="text" autocomplete="organization" />
+              <div class="field-error">Indica tu organización.</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="f-correo">Correo</label>
+              <input id="f-correo" name="correo" type="email" autocomplete="email" required />
+              <div class="field-error">Necesitamos un correo válido para responder.</div>
+            </div>
+            <div class="field">
+              <label for="f-tel">Teléfono <span style="text-transform:none;letter-spacing:0;color:var(--ink-3)">(opcional)</span></label>
+              <input id="f-tel" name="telefono" type="tel" autocomplete="tel" inputmode="tel" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-objetivo">¿Qué necesitas resolver?</label>
+            <textarea id="f-objetivo" name="objetivo" required placeholder="Cuéntanos contexto, momento y qué decisión está sobre la mesa."></textarea>
+            <div class="field-error">Cuéntanos brevemente qué buscas.</div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="lead-submit">Enviar mensaje</button>
+            <span class="form-note">Tu mensaje llega directo a vorkamexico@gmail.com. Respondemos el mismo día hábil.</span>
+          </div>
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+        </form>
+
+        <aside class="contact-aside" id="contact-aside">
+          <h3>O directo a un canal.</h3>
+          <p>Si prefieres saltarte el formulario, escríbenos por WhatsApp para velocidad o por correo si quieres adjuntar contexto.</p>
+          <div class="direct-row">
+            <a class="direct" id="wa-direct" href="#" target="_blank" rel="noopener">
+              <strong>WhatsApp</strong>
+              <span>+52 81 1780 4869</span>
+            </a>
+            <a class="direct" id="mail-direct" href="#">
+              <strong>Correo</strong>
+              <span>vorkamexico@gmail.com</span>
+            </a>
+          </div>
+          <div class="response-note">
+            Atención de lunes a viernes, 9:00–19:00 (hora del centro de México). Fines de semana: respondemos por WhatsApp en casos urgentes.
+          </div>
+        </aside>
+
+        <div class="success hide" id="lead-success" role="status" aria-live="polite">
+          <h3>Recibido. Estamos contigo.</h3>
+          <p>Tu mensaje llegó directo a Vorka México. Te respondemos el mismo día hábil al correo que dejaste. Si necesitas avanzar más rápido, escríbenos por WhatsApp.</p>
+          <div class="form-actions">
+            <a class="btn-primary" id="success-wa" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+            <button class="btn-ghost" type="button" id="success-reset">Enviar otro mensaje</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer>
+  <div class="shell">
+    <div class="foot-cols">
+      <div class="foot-col foot-brand">
+        <h5>Vorka México</h5>
+        <p class="desc">Estrategia, liderazgo e influencia para organizaciones que necesitan <b>impacto real</b> en México.</p>
+        <img class="foot-mark" src="./LOGO.png" alt="Vorka" />
+      </div>
+      <div class="foot-col">
+        <h5>Prácticas</h5>
+        <ul>
+          <li><a href="#hacemos">Estrategia</a></li>
+          <li><a href="#hacemos">Transformación</a></li>
+          <li><a href="#hacemos">Cultura</a></li>
+          <li><a href="#hacemos">Aprendizaje</a></li>
+          <li><a href="#hacemos">Liderazgo</a></li>
+          <li><a href="#hacemos">Comunicación</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Empresa</h5>
+        <ul>
+          <li><a href="#metodo">Cómo trabajamos</a></li>
+          <li><a href="#paraquien">Para quién</a></li>
+          <li><a href="#respaldo">Respaldo</a></li>
+          <li><a href="#sparks">Vorka Sparks</a></li>
+          <li><a href="#hablemos">Hablemos</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contacto</h5>
+        <ul>
+          <li><a id="foot-mail" href="#">vorkamexico@gmail.com</a></li>
+          <li><a id="foot-wa" href="#" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">@vorka.mx</a></li>
+          <li><a href="#" data-open-modal>Agendar reunión</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-tagline">
+      <div class="left">Ecosistema de estrategia, liderazgo e influencia. 150 proyectos, 26 estados, una sola lógica.</div>
+      <div class="right">definiendo el juego</div>
+    </div>
+
+    <div class="foot-bottom">
+      <div class="foot-social">
+        <a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        </a>
+      </div>
+      <div class="foot-name">Vorka México<small>vorka.mx</small></div>
+      <div class="foot-copy">© 2026 Vorka México.<br/>Todos los derechos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================== MODAL ============================== -->
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <button class="modal-close" aria-label="Cerrar" data-close-modal>×</button>
+    <h3 id="modal-title">Hablemos.</h3>
+    <p>Elige el canal según el caso. WhatsApp para velocidad. Correo para precisión. El formulario si prefieres estructurar la conversación.</p>
+    <div class="modal-options">
+      <a id="modal-wa" href="#" target="_blank" rel="noopener">
+        <strong>WhatsApp</strong>
+        <span>+52 81 1780 4869</span>
+      </a>
+      <a id="modal-mail" href="#">
+        <strong>Correo</strong>
+        <span>vorkamexico@gmail.com</span>
+      </a>
+      <a href="#hablemos" data-close-modal>
+        <strong>Formulario</strong>
+        <span>Ir a la sección</span>
+      </a>
+    </div>
+    <div class="modal-foot">Respondemos el mismo día hábil.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ============================== Config ==============================
+  var PHONE = '528117804869';
+  var WA_MSG = 'Hola VORKA, me interesa conocer más sobre sus servicios y agendar una reunión.';
+  var EMAIL = 'vorkamexico@gmail.com';
+  var MAIL_SUBJECT = 'Consulta desde sitio web VORKA';
+  // Formsubmit AJAX endpoint — first submission triggers an activation email to EMAIL.
+  // Once Vorka confirms via that activation email, real submissions are delivered.
+  var FORMSUBMIT = 'https://formsubmit.co/ajax/' + EMAIL;
+
+  function waURL(msg){
+    return 'https://wa.me/' + PHONE + '?text=' + encodeURIComponent(msg || WA_MSG);
+  }
+  function mailURL(subject, body){
+    var s = encodeURIComponent(subject || MAIL_SUBJECT);
+    var qs = '?subject=' + s;
+    if(body){ qs += '&body=' + encodeURIComponent(body); }
+    return 'mailto:' + EMAIL + qs;
+  }
+
+  // Wire static links
+  var baseWA = waURL();
+  var baseMail = mailURL();
+  ['wa-direct','modal-wa','foot-wa','success-wa'].forEach(function(id){
+    var el = document.getElementById(id); if(el){ el.href = baseWA; }
+  });
+  ['mail-direct','modal-mail','foot-mail'].forEach(function(id){
+    var el = document.getElementById(id); if(el){ el.href = baseMail; }
+  });
+
+  // ============================== Modal ==============================
+  var modal = document.getElementById('modal');
+  var lastFocus = null;
+
+  function openModal(){
+    lastFocus = document.activeElement;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    var closeBtn = modal.querySelector('[data-close-modal]');
+    if(closeBtn){ closeBtn.focus(); }
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    if(lastFocus && lastFocus.focus){ lastFocus.focus(); }
+  }
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){
+    b.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  });
+  document.querySelectorAll('[data-close-modal]').forEach(function(b){
+    b.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
+  });
+  modal.addEventListener('click', function(e){ if(e.target === modal){ closeModal(); } });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.classList.contains('open')){ closeModal(); }
+  });
+
+  // ============================== Helpers ==============================
+  function setError(field, on){
+    if(!field) return;
+    var wrap = field.closest('.field');
+    if(!wrap) return;
+    wrap.classList.toggle('has-error', !!on);
+  }
+  function validEmail(s){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
+  }
+  function saveLocal(key, data){
+    try{
+      var arr = JSON.parse(localStorage.getItem(key) || '[]');
+      arr.push(data);
+      localStorage.setItem(key, JSON.stringify(arr));
+    }catch(e){}
+  }
+
+  function sendFormsubmit(payload){
+    return fetch(FORMSUBMIT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      if(!r.ok) throw new Error('http-' + r.status);
+      return r.json();
+    });
+  }
+
+  // ============================== Lead form ==============================
+  var form = document.getElementById('lead-form');
+  var success = document.getElementById('lead-success');
+  var aside = document.getElementById('contact-aside');
+  var submitBtn = document.getElementById('lead-submit');
+
+  function readLead(){
+    return {
+      nombre: form.elements['nombre'].value.trim(),
+      organizacion: form.elements['organizacion'].value.trim(),
+      correo: form.elements['correo'].value.trim(),
+      telefono: form.elements['telefono'].value.trim(),
+      objetivo: form.elements['objetivo'].value.trim(),
+      enviadoEn: new Date().toISOString(),
+      origen: 'sitio-web-vorka'
+    };
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var d = readLead();
+
+    var errs = 0;
+    if(!d.nombre){ setError(form.elements['nombre'], true); errs++; } else setError(form.elements['nombre'], false);
+    if(!d.correo || !validEmail(d.correo)){ setError(form.elements['correo'], true); errs++; } else setError(form.elements['correo'], false);
+    if(!d.objetivo){ setError(form.elements['objetivo'], true); errs++; } else setError(form.elements['objetivo'], false);
+    setError(form.elements['organizacion'], false);
+
+    if(errs > 0){
+      var firstErr = form.querySelector('.field.has-error input, .field.has-error textarea');
+      if(firstErr) firstErr.focus();
+      return;
+    }
+
+    // Backup in localStorage regardless
+    saveLocal('vorka.leads', d);
+
+    submitBtn.setAttribute('disabled', 'true');
+    var originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Enviando…';
+
+    var payload = {
+      Nombre: d.nombre,
+      'Organización': d.organizacion || '—',
+      Correo: d.correo,
+      'Teléfono': d.telefono || '—',
+      Objetivo: d.objetivo,
+      _subject: MAIL_SUBJECT + ' — ' + d.nombre,
+      _template: 'table',
+      _captcha: 'false'
+    };
+
+    sendFormsubmit(payload)
+      .then(function(){
+        form.classList.add('hide');
+        if(aside) aside.classList.add('hide');
+        success.classList.remove('hide');
+        success.scrollIntoView({behavior:'smooth', block:'center'});
+      })
+      .catch(function(){
+        // Fallback: open mailto so the message is not lost
+        var body = 'Nombre: ' + d.nombre + '\n'
+                 + 'Organización: ' + (d.organizacion || '—') + '\n'
+                 + 'Correo: ' + d.correo + '\n'
+                 + 'Teléfono: ' + (d.telefono || '—') + '\n\n'
+                 + 'Objetivo:\n' + d.objetivo;
+        window.location.href = mailURL(MAIL_SUBJECT + ' — ' + d.nombre, body);
+      })
+      .then(function(){
+        submitBtn.removeAttribute('disabled');
+        submitBtn.textContent = originalLabel;
+      });
+  });
+
+  var resetBtn = document.getElementById('success-reset');
+  if(resetBtn){
+    resetBtn.addEventListener('click', function(){
+      form.reset();
+      form.querySelectorAll('.field.has-error').forEach(function(f){ f.classList.remove('has-error'); });
+      form.classList.remove('hide');
+      if(aside) aside.classList.remove('hide');
+      success.classList.add('hide');
+      form.elements['nombre'].focus();
+    });
+  }
+
+  // ============================== Newsletter form ==============================
+  var nForm = document.getElementById('news-form');
+  if(nForm){
+    nForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var nombre = nForm.elements['nombre'].value.trim();
+      var apellido = nForm.elements['apellido'].value.trim();
+      var correo = nForm.elements['correo'].value.trim();
+      var organizacion = nForm.elements['organizacion'].value.trim();
+      var consent = document.getElementById('n-consent').checked;
+
+      var errs = 0;
+      if(!nombre){ setError(nForm.elements['nombre'], true); errs++; } else setError(nForm.elements['nombre'], false);
+      if(!correo || !validEmail(correo)){ setError(nForm.elements['correo'], true); errs++; } else setError(nForm.elements['correo'], false);
+      if(!consent){
+        var c = document.getElementById('n-consent');
+        c.focus();
+        return;
+      }
+      if(errs > 0){
+        var firstErr = nForm.querySelector('.field.has-error input');
+        if(firstErr) firstErr.focus();
+        return;
+      }
+
+      var record = { nombre:nombre, apellido:apellido, correo:correo, organizacion:organizacion, enviadoEn:new Date().toISOString() };
+      saveLocal('vorka.newsletter', record);
+
+      var nBtn = nForm.querySelector('button[type=submit]');
+      var nOriginal = nBtn.textContent;
+      nBtn.setAttribute('disabled', 'true');
+      nBtn.textContent = 'Enviando…';
+
+      sendFormsubmit({
+        Tipo: 'Suscripción a Vorka Sparks',
+        Nombre: nombre,
+        Apellido: apellido || '—',
+        Correo: correo,
+        'Organización': organizacion || '—',
+        _subject: 'Sparks — nueva suscripción: ' + nombre + (apellido ? ' ' + apellido : ''),
+        _template: 'table',
+        _captcha: 'false'
+      })
+      .then(function(){
+        nForm.innerHTML = '<h4 style="font-family:Mona Sans,sans-serif;font-weight:800;font-size:24px;letter-spacing:-0.01em;margin:0 0 12px">Listo. Te sumamos.</h4><p style="font-size:15px;color:var(--ink-2);line-height:1.6;margin:0">Recibirás la próxima edición de Sparks en <strong>' + correo + '</strong>.</p>';
+      })
+      .catch(function(){
+        nBtn.removeAttribute('disabled');
+        nBtn.textContent = nOriginal;
+        alert('No pudimos completar la suscripción ahora. Escríbenos por WhatsApp y te sumamos manualmente.');
+      });
+    });
+  }
+
+  // ============================== Smooth anchor ==============================
+  document.querySelectorAll('a[href^="#"]:not([data-close-modal]):not([data-open-modal])').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href').slice(1);
+      if(!id) return;
+      var target = document.getElementById(id);
+      if(!target) return;
+      e.preventDefault();
+      var y = target.getBoundingClientRect().top + window.pageYOffset - 24;
+      window.scrollTo({top:y, behavior:'smooth'});
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
