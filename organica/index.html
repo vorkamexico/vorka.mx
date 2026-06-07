@@ -4,492 +4,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Química Orgánica — Sitio de Estudio</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<title>OrGánica — Estudia de Verdad</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f5f2eb;
-  --surface: #fffef9;
-  --surface2: #f0ede4;
-  --ink: #1a1814;
-  --ink2: #4a4740;
-  --ink3: #8a8680;
-  --accent: #2d5a3d;
-  --accent2: #4a7c5e;
-  --accent-light: #e8f2eb;
-  --red: #c0392b;
-  --red-light: #fdf0ee;
-  --green: #27613a;
-  --green-light: #eaf5ed;
-  --gold: #8a6a2a;
-  --gold-light: #fdf6e3;
-  --border: #d8d4c8;
-  --radius: 12px;
-  --radius-sm: 8px;
-}
+:root{
+  --white:#ffffff;
+  --bg:#f7f7fb;
+  --ink:#1c1c2e;
+  --ink2:#4a4a6a;
+  --ink3:#9090b0;
+  --border:#e0e0f0;
+  --card:#ffffff;
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Per-section accent colors */
+  --flash-main:#5b8dee;
+  --flash-light:#eef3fd;
+  --flash-dark:#3a6bcc;
+  --match-main:#20c997;
+  --match-light:#e6faf4;
+  --match-dark:#14967a;
+  --battle-main:#ff6b6b;
+  --battle-light:#fff0f0;
+  --battle-dark:#d94f4f;
+  --quiz-main:#f7a400;
+  --quiz-light:#fff8e6;
+  --quiz-dark:#c47f00;
+  --home-main:#a855f7;
+  --home-light:#f5eeff;
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  min-height: 100vh;
-  font-size: 15px;
-  line-height: 1.65;
-}
+  --green:#20c997;
+  --green-light:#e6faf4;
+  --red:#ff6b6b;
+  --red-light:#fff0f0;
+  --gold:#f7a400;
 
-/* NAV */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  height: 60px;
+  --r:16px;
+  --r-sm:10px;
+  --r-pill:99px;
+  --shadow:0 2px 12px rgba(0,0,0,0.08);
+  --shadow-md:0 4px 24px rgba(0,0,0,0.11);
 }
-.nav-brand {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 17px;
-  color: var(--accent);
-  letter-spacing: -0.02em;
-}
-.nav-brand span { color: var(--ink3); font-weight: 400; }
-.nav-tabs { display: flex; gap: 4px; }
-.nav-tab {
-  padding: 7px 18px;
-  border-radius: var(--radius-sm);
-  border: none;
-  background: transparent;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink2);
-  cursor: pointer;
-  transition: all 0.18s;
-}
-.nav-tab:hover { background: var(--surface2); }
-.nav-tab.active { background: var(--accent); color: #fff; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
-/* MAIN */
-main { padding-top: 60px; }
-.section { display: none; }
-.section.active { display: block; }
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;height:62px;background:#fff;border-bottom:2px solid var(--border);z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;box-shadow:var(--shadow);}
+.brand{font-size:22px;font-weight:900;letter-spacing:-0.5px;color:var(--home-main);}
+.brand span{color:var(--ink);}
+.nav-pills{display:flex;gap:4px;}
+.nav-pill{padding:7px 15px;border-radius:var(--r-pill);border:2px solid transparent;background:transparent;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;transition:all 0.18s;}
+.nav-pill:hover{background:var(--bg);}
+.nav-pill.p-home.active{background:var(--home-light);color:var(--home-main);border-color:var(--home-main);}
+.nav-pill.p-flash.active{background:var(--flash-light);color:var(--flash-main);border-color:var(--flash-main);}
+.nav-pill.p-match.active{background:var(--match-light);color:var(--match-main);border-color:var(--match-main);}
+.nav-pill.p-battle.active{background:var(--battle-light);color:var(--battle-main);border-color:var(--battle-main);}
+.nav-pill.p-quiz.active{background:var(--quiz-light);color:var(--quiz-main);border-color:var(--quiz-main);}
+.xp-pill{font-size:13px;font-weight:800;color:var(--gold);background:var(--quiz-light);border:2px solid #fcd97a;padding:5px 12px;border-radius:var(--r-pill);}
 
-/* TEMARIO */
-.temario-header {
-  background: var(--accent);
-  color: #fff;
-  padding: 3rem 2rem 2.5rem;
-  text-align: center;
-}
-.temario-header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(26px, 5vw, 42px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.5rem;
-}
-.temario-header p { opacity: 0.8; font-size: 15px; }
+main{padding-top:62px;}
+.section{display:none;}
+.section.active{display:block;}
 
-.progress-bar-wrap {
-  background: rgba(255,255,255,0.2);
-  border-radius: 99px;
-  height: 6px;
-  margin: 1.25rem auto 0;
-  max-width: 400px;
-  overflow: hidden;
-}
-.progress-bar-fill {
-  height: 100%;
-  background: #a8d5b8;
-  border-radius: 99px;
-  transition: width 0.4s ease;
-  width: 0%;
-}
-.progress-label {
-  font-size: 13px;
-  opacity: 0.75;
-  margin-top: 6px;
-  text-align: center;
-}
+/* ── TOAST ── */
+.xp-toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--gold);color:#fff;border-radius:var(--r-pill);padding:10px 18px;font-size:14px;font-weight:800;opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none;z-index:999;box-shadow:var(--shadow-md);}
+.xp-toast.show{opacity:1;transform:translateY(0);}
 
-.temario-content {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
-}
+/* ══════════════════════════════
+   HOME
+══════════════════════════════ */
+.home-hero{background:linear-gradient(135deg,#a855f7 0%,#6366f1 100%);color:#fff;padding:3rem 1.5rem 2.5rem;text-align:center;}
+.home-tag{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);border-radius:var(--r-pill);padding:4px 14px;font-size:12px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1rem;}
+.home-title{font-size:clamp(36px,7vw,64px);font-weight:900;line-height:1;letter-spacing:-1px;margin-bottom:0.75rem;}
+.home-sub{font-size:15px;opacity:0.85;max-width:480px;margin:0 auto;}
+.stats-row{display:flex;gap:12px;max-width:860px;margin:1.5rem auto;padding:0 1.5rem;flex-wrap:wrap;}
+.stat-card{flex:1;min-width:110px;background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:14px 16px;text-align:center;box-shadow:var(--shadow);}
+.stat-num{font-size:28px;font-weight:900;color:var(--home-main);}
+.stat-lbl{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;}
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;max-width:860px;margin:0 auto 3rem;padding:0 1.5rem;}
+.mode-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:1.5rem 1.25rem;cursor:pointer;transition:all 0.2s;text-align:left;box-shadow:var(--shadow);}
+.mode-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+.mode-card.c-flash{border-top:4px solid var(--flash-main);}
+.mode-card.c-match{border-top:4px solid var(--match-main);}
+.mode-card.c-battle{border-top:4px solid var(--battle-main);}
+.mode-card.c-quiz{border-top:4px solid var(--quiz-main);}
+.mode-icon{font-size:34px;margin-bottom:10px;display:block;}
+.mode-title{font-size:17px;font-weight:900;margin-bottom:4px;color:var(--ink);}
+.mode-desc{font-size:13px;color:var(--ink2);line-height:1.5;font-weight:600;}
+.mode-badge{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:var(--r-pill);margin-top:10px;}
+.mb-flash{background:var(--flash-light);color:var(--flash-main);}
+.mb-match{background:var(--match-light);color:var(--match-main);}
+.mb-battle{background:var(--battle-light);color:var(--battle-main);}
+.mb-quiz{background:var(--quiz-light);color:var(--quiz-main);}
 
-/* ACCORDION */
-.topic-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 10px;
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-.topic-card.seen { border-left: 3px solid var(--accent2); }
-.topic-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  border: none;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14.5px;
-  font-weight: 500;
-  color: var(--ink);
-  transition: background 0.15s;
-}
-.topic-btn:hover { background: var(--surface2); }
-.topic-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent);
-  background: var(--accent-light);
-  padding: 2px 7px;
-  border-radius: 5px;
-  min-width: 30px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.topic-seen-dot {
-  width: 8px; height: 8px;
-  background: var(--accent2);
-  border-radius: 50%;
-  flex-shrink: 0;
-  opacity: 0;
-  margin-left: auto;
-  transition: opacity 0.2s;
-}
-.topic-card.seen .topic-seen-dot { opacity: 1; }
-.topic-arrow {
-  margin-left: 8px;
-  flex-shrink: 0;
-  color: var(--ink3);
-  transition: transform 0.25s;
-  font-size: 18px;
-}
-.topic-btn.open .topic-arrow { transform: rotate(180deg); }
+/* ══════════════════════════════
+   SECTION HEADERS
+══════════════════════════════ */
+.sec-header{padding:2.5rem 1.5rem 1.5rem;text-align:center;}
+.sec-header h2{font-size:32px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px;}
+.sec-header p{font-size:14px;font-weight:600;color:var(--ink2);}
+.sec-header.flash-hdr{background:linear-gradient(135deg,var(--flash-light),#fff);}
+.sec-header.flash-hdr h2{color:var(--flash-main);}
+.sec-header.match-hdr{background:linear-gradient(135deg,var(--match-light),#fff);}
+.sec-header.match-hdr h2{color:var(--match-main);}
+.sec-header.battle-hdr{background:linear-gradient(135deg,var(--battle-light),#fff);}
+.sec-header.battle-hdr h2{color:var(--battle-main);}
+.sec-header.quiz-hdr{background:linear-gradient(135deg,var(--quiz-light),#fff);}
+.sec-header.quiz-hdr h2{color:var(--quiz-main);}
 
-.topic-body {
-  display: none;
-  padding: 0 18px 18px 18px;
-  border-top: 1px solid var(--surface2);
-}
-.topic-body.open { display: block; }
-.topic-body h3 {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--accent);
-  margin: 16px 0 6px;
-}
-.topic-body p { color: var(--ink2); margin-bottom: 8px; font-size: 14px; }
-.topic-body ul { padding-left: 18px; color: var(--ink2); font-size: 14px; }
-.topic-body li { margin-bottom: 4px; }
-.formula-box {
-  background: var(--gold-light);
-  border: 1px solid #e8d8a0;
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  color: var(--gold);
-  margin: 10px 0;
-}
-.formula-box strong { font-weight: 600; }
-.tabla {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  margin: 10px 0;
-}
-.tabla th {
-  background: var(--accent-light);
-  color: var(--accent);
-  font-weight: 600;
-  padding: 7px 10px;
-  text-align: left;
-  border: 1px solid #c8ddd0;
-}
-.tabla td {
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  color: var(--ink2);
-}
-.tabla tr:nth-child(even) td { background: var(--surface2); }
-.tip {
-  background: var(--accent-light);
-  border-left: 3px solid var(--accent2);
-  padding: 8px 12px;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  font-size: 13px;
-  color: var(--accent);
-  margin: 10px 0;
-}
+/* ══════════════════════════════
+   FLASHCARDS
+══════════════════════════════ */
+.topic-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:0 1rem 1.5rem;max-width:860px;margin:0 auto;}
+.t-chip{padding:7px 16px;border-radius:var(--r-pill);border:2px solid var(--border);background:var(--card);font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;transition:all 0.15s;}
+.t-chip:hover,.t-chip.active{border-color:var(--flash-main);color:var(--flash-main);background:var(--flash-light);}
+.fc-arena{display:flex;flex-direction:column;align-items:center;padding:0 1rem 2.5rem;}
+.fc-prog-wrap{width:100%;max-width:560px;margin-bottom:1.25rem;}
+.fc-prog-bar{height:10px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;}
+.fc-prog-fill{height:100%;background:linear-gradient(90deg,var(--flash-main),#7eb8f7);border-radius:var(--r-pill);transition:width 0.4s ease;}
+.fc-prog-txt{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--ink3);margin-top:6px;}
+.fc-prog-txt span:last-child{color:var(--flash-main);}
 
-/* QUIZ */
-.quiz-header {
-  background: var(--ink);
-  color: #fff;
-  padding: 3rem 2rem 2.5rem;
-  text-align: center;
-}
-.quiz-header h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(26px, 5vw, 42px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin-bottom: 0.5rem;
-}
-.quiz-header p { opacity: 0.65; font-size: 15px; }
+.flashcard-wrap{perspective:1000px;width:100%;max-width:560px;height:280px;cursor:pointer;margin-bottom:1.5rem;user-select:none;}
+.flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.45s cubic-bezier(.4,0,.2,1);}
+.flashcard.flipped{transform:rotateY(180deg);}
+.fc-face{position:absolute;inset:0;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--shadow-md);}
+.fc-front{background:#fff;border:2px solid var(--border);}
+.fc-back{background:linear-gradient(135deg,var(--flash-light),#dbeeff);border:2px solid var(--flash-main);transform:rotateY(180deg);}
+.fc-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink3);margin-bottom:1rem;}
+.fc-back .fc-label{color:var(--flash-dark);}
+.fc-question{font-size:18px;font-weight:800;line-height:1.4;color:var(--ink);}
+.fc-answer{font-size:16px;font-weight:700;line-height:1.5;color:var(--flash-dark);}
+.fc-hint{font-size:12px;font-weight:600;color:var(--flash-main);margin-top:10px;background:rgba(91,141,238,0.1);padding:5px 12px;border-radius:var(--r-pill);}
+.fc-tap-hint{font-size:12px;font-weight:600;color:var(--ink3);margin-top:12px;}
 
-.quiz-content {
-  max-width: 820px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
-}
+.fc-actions{display:flex;gap:10px;width:100%;max-width:560px;}
+.fc-btn{flex:1;padding:13px;border-radius:var(--r);border:2px solid;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.18s;}
+.fc-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.fc-btn.fail{border-color:var(--red);color:var(--red);background:var(--red-light);}
+.fc-btn.fail:hover{background:#ffe0e0;}
+.fc-btn.skip{border-color:var(--border);color:var(--ink2);background:#fff;}
+.fc-btn.ok{border-color:var(--green);color:var(--green);background:var(--green-light);}
+.fc-btn.ok:hover{background:#cdf5ea;}
 
-.quiz-intro {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.quiz-intro p { color: var(--ink2); font-size: 14px; }
-.quiz-counter {
-  font-family: 'Syne', sans-serif;
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--accent);
-}
-.quiz-counter span { font-size: 14px; font-weight: 400; color: var(--ink3); }
+/* ══════════════════════════════
+   MATCH
+══════════════════════════════ */
+.match-arena{max-width:780px;margin:0 auto;padding:0 1rem 3rem;}
+.match-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px;}
+.match-score-lbl{font-size:14px;font-weight:700;color:var(--ink2);}
+.match-score-num{font-size:26px;font-weight:900;color:var(--match-main);}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
+.match-col{display:flex;flex-direction:column;gap:8px;}
+.match-item{padding:13px 16px;border-radius:var(--r-sm);border:2px solid var(--border);background:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.18s;color:var(--ink);line-height:1.4;box-shadow:var(--shadow);}
+.match-item:hover{border-color:var(--match-main);background:var(--match-light);}
+.match-item.selected{border-color:var(--match-main);background:var(--match-light);color:var(--match-dark);}
+.match-item.matched-ok{border-color:var(--match-main);background:var(--match-light);color:var(--match-dark);cursor:default;pointer-events:none;opacity:0.7;}
+.match-item.matched-fail{border-color:var(--red);background:var(--red-light);color:var(--red);animation:shake 0.35s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.match-done{text-align:center;background:#fff;border:2px solid var(--match-main);border-radius:var(--r);padding:2.5rem;display:none;box-shadow:var(--shadow-md);}
+.match-done.show{display:block;}
+.match-done-icon{font-size:56px;margin-bottom:8px;}
+.match-done-title{font-size:24px;font-weight:900;color:var(--match-main);margin-bottom:4px;}
+.match-done-sub{font-size:14px;font-weight:600;color:var(--ink2);margin-bottom:1.5rem;}
 
-.q-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  margin-bottom: 12px;
-}
-.q-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink3);
-  margin-bottom: 8px;
-}
-.q-text {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink);
-  margin-bottom: 14px;
-  line-height: 1.55;
-}
-.q-options { display: flex; flex-direction: column; gap: 7px; }
-.q-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 9px 13px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.15s;
-  font-size: 14px;
-  color: var(--ink2);
-  position: relative;
-}
-.q-option:hover { background: var(--surface2); border-color: var(--accent2); }
-.q-option input[type="radio"] { accent-color: var(--accent); flex-shrink: 0; margin-top: 2px; }
-.q-option.correct { background: var(--green-light); border-color: var(--green); color: var(--green); }
-.q-option.wrong { background: var(--red-light); border-color: var(--red); color: var(--red); }
-.q-option.correct-answer { background: var(--green-light); border-color: var(--green); color: var(--green); }
+/* ══════════════════════════════
+   BATTLE
+══════════════════════════════ */
+.battle-arena{max-width:660px;margin:0 auto;padding:0 1rem 3rem;}
+.start-box{background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:2.5rem;text-align:center;box-shadow:var(--shadow-md);}
+.start-box p{font-size:14px;font-weight:600;color:var(--ink2);margin-bottom:1.5rem;}
+.rules-list{text-align:left;background:var(--battle-light);border:2px solid #ffc5c5;border-radius:var(--r-sm);padding:1rem 1.25rem;margin:0 auto 1.5rem;max-width:400px;font-size:14px;font-weight:700;color:var(--battle-dark);}
+.rules-list li{margin-bottom:7px;}
 
-.q-feedback {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  display: none;
-}
-.q-feedback.show { display: block; }
-.q-feedback.ok { background: var(--green-light); color: var(--green); }
-.q-feedback.fail { background: var(--red-light); color: var(--red); }
+.battle-hud{display:flex;justify-content:space-between;align-items:center;background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:14px;box-shadow:var(--shadow);}
+.hud-block{text-align:center;}
+.hud-num{font-size:28px;font-weight:900;}
+.hud-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);}
+.hud-streak .hud-num{color:var(--battle-main);}
+.hud-pts .hud-num{color:var(--quiz-main);}
 
-/* SUBMIT */
-.submit-area {
-  text-align: center;
-  padding: 2rem 0;
-  position: sticky;
-  bottom: 0;
-  background: linear-gradient(transparent, var(--bg) 40%);
-}
-.btn-submit {
-  padding: 14px 40px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius);
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: 0.01em;
-  transition: all 0.18s;
-  box-shadow: 0 4px 20px rgba(45,90,61,0.25);
-}
-.btn-submit:hover { background: #234830; transform: translateY(-1px); }
-.btn-retry {
-  padding: 12px 32px;
-  background: var(--surface);
-  color: var(--ink);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.18s;
-  margin-top: 12px;
-}
-.btn-retry:hover { background: var(--surface2); }
+.timer-wrap{position:relative;width:60px;height:60px;}
+.timer-wrap svg{transform:rotate(-90deg);}
+.timer-wrap circle{fill:none;stroke:var(--border);stroke-width:5;}
+.timer-wrap .t-prog{stroke:var(--battle-main);stroke-linecap:round;transition:stroke-dashoffset 0.1s linear;stroke-dasharray:160;stroke-dashoffset:0;}
+.timer-wrap.warn .t-prog{stroke:var(--gold);}
+.timer-wrap.danger .t-prog{stroke:var(--red);}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--ink);}
 
-/* RESULTS */
-.result-card {
-  background: var(--surface);
-  border: 2px solid var(--accent);
-  border-radius: var(--radius);
-  padding: 2.5rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  display: none;
-}
-.result-card.show { display: block; }
-.result-score {
-  font-family: 'Syne', sans-serif;
-  font-size: 72px;
-  font-weight: 800;
-  color: var(--accent);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.result-label { font-size: 16px; color: var(--ink2); margin-bottom: 1.5rem; }
-.result-stats { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
-.result-stat { text-align: center; }
-.result-stat-num {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--ink);
-}
-.result-stat-label { font-size: 12px; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.06em; }
+.battle-q-card{background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:12px;box-shadow:var(--shadow);}
+.b-qnum{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:8px;}
+.b-qtext{font-size:16px;font-weight:800;line-height:1.4;color:var(--ink);}
+.battle-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.b-opt{padding:13px 14px;border-radius:var(--r-sm);border:2px solid var(--border);background:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;text-align:left;color:var(--ink);box-shadow:var(--shadow);}
+.b-opt:hover:not(:disabled){border-color:var(--battle-main);background:var(--battle-light);}
+.b-opt.correct{border-color:var(--green);background:var(--green-light);color:var(--match-dark);}
+.b-opt.wrong{border-color:var(--red);background:var(--red-light);color:var(--battle-dark);}
+.b-opt:disabled{cursor:default;}
+.b-feedback{text-align:center;font-size:15px;font-weight:800;min-height:26px;}
+.b-feedback.ok{color:var(--match-dark);}
+.b-feedback.fail{color:var(--battle-dark);}
 
-.answered-count {
-  font-size: 13px;
-  color: var(--ink3);
-  margin-top: 6px;
-}
+.battle-result-box{background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:2.5rem;text-align:center;display:none;box-shadow:var(--shadow-md);}
+.battle-result-box.show{display:block;}
+.br-score{font-size:72px;font-weight:900;color:var(--battle-main);line-height:1;}
+.br-lbl{font-size:15px;font-weight:700;color:var(--ink2);margin:6px 0 1.5rem;}
+.br-stats{display:flex;justify-content:center;gap:2.5rem;margin-bottom:1.5rem;}
+.br-stat-n{font-size:30px;font-weight:900;}
+.br-stat-l{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);}
 
-@media (max-width: 600px) {
-  nav { padding: 0 1rem; }
-  .nav-brand span { display: none; }
-  .temario-header, .quiz-header { padding: 2rem 1rem 1.5rem; }
-  .temario-content, .quiz-content { padding: 1.25rem 1rem 3rem; }
+/* ══════════════════════════════
+   QUIZ × 30
+══════════════════════════════ */
+.quiz-content{max-width:700px;margin:0 auto;padding:0 1rem 4rem;}
+.quiz-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
+.quiz-prog-txt{font-size:14px;font-weight:700;color:var(--ink2);}
+.quiz-prog-num{font-size:15px;font-weight:900;color:var(--quiz-main);}
+.q-card{background:#fff;border:2px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:10px;box-shadow:var(--shadow);transition:border-color 0.2s;}
+.q-card.ok{border-color:var(--green);}
+.q-card.fail{border-color:var(--red);}
+.q-num{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:7px;}
+.q-text{font-size:15px;font-weight:800;line-height:1.4;margin-bottom:12px;color:var(--ink);}
+.q-opts{display:flex;flex-direction:column;gap:7px;}
+.q-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--r-sm);border:2px solid var(--border);cursor:pointer;transition:all 0.15s;font-size:14px;font-weight:700;color:var(--ink2);}
+.q-opt:hover{background:var(--quiz-light);border-color:var(--quiz-main);}
+.q-opt input{accent-color:var(--quiz-main);}
+.q-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--match-dark);}
+.q-opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--battle-dark);}
+.q-opt.correct-ans{background:var(--green-light);border-color:var(--green);color:var(--match-dark);}
+.q-feedback{font-size:13px;font-weight:700;margin-top:8px;padding:6px 12px;border-radius:var(--r-sm);display:none;}
+.q-feedback.show.ok{display:block;background:var(--green-light);color:var(--match-dark);}
+.q-feedback.show.fail{display:block;background:var(--red-light);color:var(--battle-dark);}
+
+.quiz-sticky{position:sticky;bottom:0;padding:1rem 0;background:linear-gradient(transparent,var(--bg) 55%);}
+
+.quiz-result{background:#fff;border:2px solid var(--quiz-main);border-radius:var(--r);padding:2.5rem;text-align:center;margin-bottom:2rem;display:none;box-shadow:var(--shadow-md);}
+.quiz-result.show{display:block;}
+.qr-score{font-size:80px;font-weight:900;color:var(--quiz-main);line-height:1;}
+.qr-lbl{font-size:15px;font-weight:700;color:var(--ink2);margin:6px 0 1.5rem;}
+.qr-stats{display:flex;justify-content:center;gap:2.5rem;}
+.qr-stat-n{font-size:30px;font-weight:900;}
+.qr-stat-l{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:12px 26px;border-radius:var(--r-pill);border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.18s;}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.btn-flash{background:var(--flash-main);color:#fff;}
+.btn-match{background:var(--match-main);color:#fff;}
+.btn-battle{background:var(--battle-main);color:#fff;}
+.btn-quiz{background:var(--quiz-main);color:#fff;}
+.btn-ghost{background:#fff;color:var(--ink2);border:2px solid var(--border);}
+
+@media(max-width:600px){
+  nav{padding:0 .75rem;}
+  .nav-pill{padding:6px 9px;font-size:12px;}
+  .mode-grid{grid-template-columns:1fr 1fr;}
+  .battle-opts{grid-template-columns:1fr;}
+  .match-grid{grid-template-columns:1fr;}
+  .brand{font-size:18px;}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-brand">OrGánica <span>6B · CNE</span></div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('temario')">Temario</button>
-    <button class="nav-tab" onclick="switchTab('quiz')">Quiz ×30</button>
+  <div class="brand">Or<span>Gánica</span></div>
+  <div class="nav-pills">
+    <button class="nav-pill p-home active" onclick="goTo('home',this)">🏠 Inicio</button>
+    <button class="nav-pill p-flash" onclick="goTo('flash',this)">🃏 Cartas</button>
+    <button class="nav-pill p-match" onclick="goTo('match',this)">🔗 Relaciona</button>
+    <button class="nav-pill p-battle" onclick="goTo('battle',this)">⚡ Batalla</button>
+    <button class="nav-pill p-quiz" onclick="goTo('quiz',this)">📋 Quiz</button>
   </div>
+  <div class="xp-pill" id="xpBadge">⭐ 0 XP</div>
 </nav>
+
+<div class="xp-toast" id="xpToast"></div>
 
 <main>
 
-<!-- ══════════════════ TEMARIO ══════════════════ -->
-<section id="temario" class="section active">
-  <div class="temario-header">
-    <h1>Temario de Orgánica</h1>
-    <p>Haz clic en cada tema para estudiar su contenido</p>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progressBar"></div>
-    </div>
-    <p class="progress-label" id="progressLabel">0 de 33 temas revisados</p>
+<!-- ══ HOME ══ -->
+<section id="home" class="section active">
+  <div class="home-hero">
+    <div class="home-tag">Química Orgánica · 6B CNE</div>
+    <h1 class="home-title">Aprende.<br>No memorices. 🧪</h1>
+    <p class="home-sub">4 modos de estudio activo para que el conocimiento se quede de verdad.</p>
   </div>
-
-  <div class="temario-content" id="topicList"></div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="s-xp">0</div><div class="stat-lbl">⭐ XP Total</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-fc">0</div><div class="stat-lbl">🃏 Cartas ✓</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-str">0</div><div class="stat-lbl">🔥 Racha</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-q">—</div><div class="stat-lbl">📋 Mejor quiz</div></div>
+  </div>
+  <div class="mode-grid">
+    <div class="mode-card c-flash" onclick="goTo('flash',null)">
+      <span class="mode-icon">🃏</span>
+      <div class="mode-title">Flashcards</div>
+      <div class="mode-desc">Voltea tarjetas y marca las que dominas. Las difíciles vuelven a aparecer.</div>
+      <span class="mode-badge mb-flash">70 tarjetas · por tema</span>
+    </div>
+    <div class="mode-card c-match" onclick="goTo('match',null)">
+      <span class="mode-icon">🔗</span>
+      <div class="mode-title">Relaciona</div>
+      <div class="mode-desc">Conecta conceptos con su definición o fórmula. Rápido y visual.</div>
+      <span class="mode-badge mb-match">8 pares · sets aleatorios</span>
+    </div>
+    <div class="mode-card c-battle" onclick="goTo('battle',null)">
+      <span class="mode-icon">⚡</span>
+      <div class="mode-title">Batalla Rápida</div>
+      <div class="mode-desc">20 preguntas con cronómetro. Construye rachas y gana XP extra.</div>
+      <span class="mode-badge mb-battle">20 seg/pregunta</span>
+    </div>
+    <div class="mode-card c-quiz" onclick="goTo('quiz',null)">
+      <span class="mode-icon">📋</span>
+      <div class="mode-title">Quiz × 30</div>
+      <div class="mode-desc">El examen completo. Envía al final y obtén tu calificación sobre 10.</div>
+      <span class="mode-badge mb-quiz">Calificación /10</span>
+    </div>
+  </div>
 </section>
 
-<!-- ══════════════════ QUIZ ══════════════════ -->
-<section id="quiz" class="section">
-  <div class="quiz-header">
-    <h1>Quiz · 30 Preguntas</h1>
-    <p>Responde todas y luego envía para ver tu calificación</p>
+<!-- ══ FLASHCARDS ══ -->
+<section id="flash" class="section">
+  <div class="sec-header flash-hdr">
+    <h2>🃏 Flashcards</h2>
+    <p>Haz clic en la tarjeta para ver la respuesta</p>
   </div>
+  <div style="height:1rem"></div>
+  <div class="topic-chips" id="topicChips"></div>
+  <div class="fc-arena">
+    <div class="fc-prog-wrap">
+      <div class="fc-prog-bar"><div class="fc-prog-fill" id="fcFill"></div></div>
+      <div class="fc-prog-txt"><span id="fcCurrent">1 / 70</span><span id="fcDom">0 dominadas ✓</span></div>
+    </div>
+    <div class="flashcard-wrap" onclick="flipCard()">
+      <div class="flashcard" id="theCard">
+        <div class="fc-face fc-front">
+          <div class="fc-label">Pregunta</div>
+          <div class="fc-question" id="fcQ">Cargando...</div>
+          <div class="fc-tap-hint">👆 Toca para ver la respuesta</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-label">Respuesta ✓</div>
+          <div class="fc-answer" id="fcA">—</div>
+          <div class="fc-hint" id="fcHint"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-actions">
+      <button class="fc-btn fail" onclick="fcRate(false)">✗ No la sé</button>
+      <button class="fc-btn skip" onclick="fcSkip()">→ Saltar</button>
+      <button class="fc-btn ok" onclick="fcRate(true)">✓ ¡La sé!</button>
+    </div>
+  </div>
+</section>
 
+<!-- ══ MATCH ══ -->
+<section id="match" class="section">
+  <div class="sec-header match-hdr">
+    <h2>🔗 Relaciona Conceptos</h2>
+    <p>Selecciona un concepto de la izquierda y su par de la derecha</p>
+  </div>
+  <div style="height:1rem"></div>
+  <div class="match-arena">
+    <div class="match-topbar">
+      <div><div class="match-score-lbl">Pares encontrados</div><div class="match-score-num" id="matchScore">0 / 8</div></div>
+      <button class="btn btn-ghost" onclick="buildMatch()" style="padding:8px 16px;font-size:13px">↺ Nuevo set</button>
+    </div>
+    <div class="match-grid">
+      <div class="match-col" id="matchLeft"></div>
+      <div class="match-col" id="matchRight"></div>
+    </div>
+    <div class="match-done" id="matchDone">
+      <div class="match-done-icon">🎉</div>
+      <div class="match-done-title">¡Completado!</div>
+      <div class="match-done-sub" id="matchDoneTime"></div>
+      <button class="btn btn-match" onclick="buildMatch()">Siguiente set →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BATTLE ══ -->
+<section id="battle" class="section">
+  <div class="sec-header battle-hdr">
+    <h2>⚡ Batalla Rápida</h2>
+    <p>20 preguntas · 20 segundos cada una · máxima concentración</p>
+  </div>
+  <div style="height:1rem"></div>
+  <div class="battle-arena">
+    <div class="start-box" id="battleStart">
+      <p>Pon a prueba todo lo que sabes bajo presión. 🔥</p>
+      <ul class="rules-list">
+        <li>⏱ 20 segundos por pregunta</li>
+        <li>🔥 Racha de 3+ aciertos = XP extra</li>
+        <li>✗ Si se acaba el tiempo = error automático</li>
+        <li>⭐ +10 XP por acierto</li>
+      </ul>
+      <button class="btn btn-battle" onclick="startBattle()">¡Empezar batalla! ⚡</button>
+    </div>
+    <div id="battleGame" style="display:none">
+      <div class="battle-hud">
+        <div class="hud-block hud-streak"><div class="hud-num" id="bStreak">0</div><div class="hud-lbl">🔥 Racha</div></div>
+        <div class="hud-block">
+          <div class="timer-wrap" id="timerWrap">
+            <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25"/><circle cx="30" cy="30" r="25" class="t-prog" id="timerCircle"/></svg>
+            <div class="timer-num" id="timerNum">20</div>
+          </div>
+        </div>
+        <div class="hud-block hud-pts"><div class="hud-num" id="bScore">0</div><div class="hud-lbl">⭐ Puntos</div></div>
+      </div>
+      <div class="battle-q-card">
+        <div class="b-qnum" id="bQNum">Pregunta 1 de 20</div>
+        <div class="b-qtext" id="bQText">—</div>
+      </div>
+      <div class="battle-opts" id="bOpts"></div>
+      <div class="b-feedback" id="bFeedback"></div>
+    </div>
+    <div class="battle-result-box" id="battleResult">
+      <div class="br-score" id="brScore">0</div>
+      <div class="br-lbl" id="brLbl"></div>
+      <div class="br-stats">
+        <div><div class="br-stat-n" style="color:var(--green)" id="brOk">0</div><div class="br-stat-l">Aciertos</div></div>
+        <div><div class="br-stat-n" style="color:var(--red)" id="brFail">0</div><div class="br-stat-l">Errores</div></div>
+        <div><div class="br-stat-n" style="color:var(--gold)" id="brStreak">0</div><div class="br-stat-l">Racha máx.</div></div>
+      </div>
+      <button class="btn btn-battle" onclick="resetBattle()">↺ Jugar de nuevo</button>
+      <button class="btn btn-ghost" onclick="goTo('home',null)" style="margin-left:8px">Volver</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ QUIZ ══ -->
+<section id="quiz" class="section">
+  <div class="sec-header quiz-hdr">
+    <h2>📋 Quiz × 30</h2>
+    <p>Responde todo y envía al final · sin pistas hasta que termines</p>
+  </div>
+  <div style="height:1rem"></div>
   <div class="quiz-content">
-    <div class="result-card" id="resultCard">
-      <div class="result-score" id="resultScore">—</div>
-      <div class="result-label" id="resultLabel"></div>
-      <div class="result-stats">
-        <div class="result-stat">
-          <div class="result-stat-num" id="statAciertos">—</div>
-          <div class="result-stat-label">Aciertos</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-stat-num" id="statErrores">—</div>
-          <div class="result-stat-label">Errores</div>
-        </div>
-        <div class="result-stat">
-          <div class="result-stat-num" id="statPct">—</div>
-          <div class="result-stat-label">Porcentaje</div>
-        </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="qr-score" id="qrScore">—</div>
+      <div class="qr-lbl" id="qrLbl"></div>
+      <div class="qr-stats">
+        <div><div class="qr-stat-n" style="color:var(--green)" id="qrOk">—</div><div class="qr-stat-l">Aciertos</div></div>
+        <div><div class="qr-stat-n" style="color:var(--red)" id="qrFail">—</div><div class="qr-stat-l">Errores</div></div>
+        <div><div class="qr-stat-n" style="color:var(--gold)" id="qrPct">—</div><div class="qr-stat-l">Porcentaje</div></div>
       </div>
-      <button class="btn-retry" onclick="retryQuiz()" style="margin-top:1.5rem">↺ Intentar de nuevo</button>
+      <div style="margin-top:1.5rem"><button class="btn btn-quiz" onclick="buildQuiz()">↺ Intentar de nuevo</button></div>
     </div>
-
-    <div class="quiz-intro">
-      <div>
-        <p style="font-weight:500;color:var(--ink);margin-bottom:3px">Instrucciones</p>
-        <p>Responde las 30 preguntas y presiona <strong>Enviar y calificar</strong>. Mientras no envíes, no se marcará ninguna respuesta.</p>
-      </div>
-      <div>
-        <div class="quiz-counter"><span id="answeredCount">0</span> <span>/ 30</span></div>
-        <div class="answered-count">respondidas</div>
-      </div>
+    <div class="quiz-topbar">
+      <span class="quiz-prog-txt" id="qCounterTxt">0 de 30 respondidas</span>
+      <span class="quiz-prog-num" id="qCounterNum">0/30</span>
     </div>
-
     <div id="quizContainer"></div>
-
-    <div class="submit-area">
-      <button class="btn-submit" id="submitBtn" onclick="submitQuiz()">Enviar y calificar →</button>
+    <div class="quiz-sticky">
+      <button class="btn btn-quiz" style="width:100%;padding:14px;font-size:16px;border-radius:var(--r);" id="qSubmit" onclick="submitQuiz()">Enviar y calificar →</button>
     </div>
   </div>
 </section>
@@ -497,657 +468,473 @@ main { padding-top: 60px; }
 </main>
 
 <script>
-// ═══════════════════════════════════════════════
-//  TEMARIO DATA
-// ═══════════════════════════════════════════════
-const topics = [
-{n:1, title:"Compuestos orgánicos e inorgánicos", content:`
-<h3>Definición</h3>
-<p>Los <strong>compuestos orgánicos</strong> son moléculas que contienen carbono como elemento central, generalmente combinado con hidrógeno, oxígeno, nitrógeno, azufre y halógenos. Los <strong>compuestos inorgánicos</strong> son el resto de sustancias que no cumplen este criterio (aunque hay excepciones como CO₂ y CO que se consideran inorgánicos).</p>
-<h3>Diferencias clave</h3>
-<table class="tabla">
-<tr><th>Característica</th><th>Orgánicos</th><th>Inorgánicos</th></tr>
-<tr><td>Elemento base</td><td>Carbono (C)</td><td>Cualquier otro</td></tr>
-<tr><td>Enlace</td><td>Covalente</td><td>Iónico o covalente</td></tr>
-<tr><td>Solubilidad</td><td>En solventes orgánicos</td><td>En agua (generalmente)</td></tr>
-<tr><td>Punto de fusión</td><td>Bajo</td><td>Alto (generalmente)</td></tr>
-<tr><td>Ejemplo</td><td>CH₄, C₂H₅OH</td><td>NaCl, H₂O, CO₂</td></tr>
-</table>
-<div class="tip">💡 Excepción: CO, CO₂, H₂CO₃ y los carbonatos se clasifican como inorgánicos aunque contienen carbono.</div>
-`},
-{n:2, title:"Isómeros e isomería", content:`
-<h3>¿Qué es la isomería?</h3>
-<p>Compuestos con la <strong>misma fórmula molecular</strong> pero diferente disposición de sus átomos en el espacio o en la cadena, por lo que tienen propiedades distintas.</p>
-<h3>Tipos de isomería</h3>
-<ul>
-<li><strong>Isomería constitucional (estructural):</strong> Misma fórmula, diferente conectividad. Incluye isómeros de cadena, de posición y de función.</li>
-<li><strong>Isomería de cadena:</strong> La cadena de carbonos tiene diferente ramificación. Ej: butano vs. isobutano (2-metilpropano).</li>
-<li><strong>Isomería de posición:</strong> El grupo funcional está en diferente posición. Ej: 1-butanol vs. 2-butanol.</li>
-<li><strong>Isomería de función:</strong> Diferentes grupos funcionales. Ej: etanol vs. dimetiléter.</li>
-<li><strong>Estereoisomería (cis-trans):</strong> Misma conectividad, diferente disposición espacial alrededor de un doble enlace.</li>
-</ul>
-<div class="formula-box"><strong>Ejemplo:</strong> C₄H₁₀ → butano (cadena recta) / 2-metilpropano (ramificado)</div>
-`},
-{n:3, title:"Fórmulas: molecular, semidesarrollada, desarrollada y esqueleto", content:`
-<h3>Tipos de fórmulas</h3>
-<table class="tabla">
-<tr><th>Tipo</th><th>Descripción</th><th>Ejemplo (propano)</th></tr>
-<tr><td>Molecular</td><td>Número total de cada átomo</td><td>C₃H₈</td></tr>
-<tr><td>Desarrollada</td><td>Todos los enlaces dibujados explícitamente</td><td>H-C-C-C-H con todos los H</td></tr>
-<tr><td>Semidesarrollada</td><td>Los H se escriben junto al C pero no se dibuja cada enlace</td><td>CH₃-CH₂-CH₃</td></tr>
-<tr><td>Esqueleto (línea-ángulo)</td><td>Solo se dibujan los enlaces C-C como líneas. Los H están implícitos.</td><td>∧ (zig-zag de 2 segmentos)</td></tr>
-</table>
-<div class="tip">💡 En la fórmula esqueleto cada vértice y extremo de línea representa un carbono. Los hidrógenos se completan mentalmente para llegar a valencia 4.</div>
-`},
-{n:4, title:"Hibridación sp³, sp² y sp", content:`
-<h3>Concepto</h3>
-<p>La hibridación describe la mezcla de orbitales atómicos del carbono para formar orbitales equivalentes de enlace.</p>
-<table class="tabla">
-<tr><th>Hibridación</th><th>Orbitales híbridos</th><th>Ángulo de enlace</th><th>Geometría</th><th>Orbitales p libres</th></tr>
-<tr><td><strong>sp³</strong></td><td>4 sp³</td><td>109.5°</td><td>Tetraédrica</td><td>0</td></tr>
-<tr><td><strong>sp²</strong></td><td>3 sp²</td><td>120°</td><td>Trigonal plana</td><td>1</td></tr>
-<tr><td><strong>sp</strong></td><td>2 sp</td><td>180°</td><td>Lineal</td><td>2</td></tr>
-</table>
-<h3>Estabilidad</h3>
-<p>A mayor carácter s del orbital híbrido, mayor es la estabilidad del enlace (más cercano al núcleo). El orden de estabilidad del enlace C-H es: sp > sp² > sp³. Sin embargo, los compuestos sp³ (alcanos) son los menos reactivos en general.</p>
-`},
-{n:5, title:"Uniones π (pi) y σ (sigma)", content:`
-<h3>Enlace sigma (σ)</h3>
-<p>Formado por solapamiento frontal de orbitales. Es el enlace más fuerte. <strong>Siempre hay un enlace σ en todo enlace covalente.</strong></p>
-<h3>Enlace pi (π)</h3>
-<p>Formado por solapamiento lateral de orbitales p. Es más débil que el σ. Aparece en dobles y triples enlaces.</p>
-<table class="tabla">
-<tr><th>Tipo de enlace</th><th>σ</th><th>π</th></tr>
-<tr><td>Simple (alcano)</td><td>1</td><td>0</td></tr>
-<tr><td>Doble (alqueno)</td><td>1</td><td>1</td></tr>
-<tr><td>Triple (alquino)</td><td>1</td><td>2</td></tr>
-</table>
-<div class="formula-box"><strong>Total de enlaces:</strong> enlace simple = 1σ | doble = 1σ + 1π | triple = 1σ + 2π</div>
-`},
-{n:6, title:"Alcanos, alquenos y alquinos en hibridación", content:`
-<h3>Relación entre tipo de hidrocarburo e hibridación</h3>
-<table class="tabla">
-<tr><th>Hidrocarburo</th><th>Enlace C-C</th><th>Hibridación del C</th><th>Ángulo</th><th>Geometría</th></tr>
-<tr><td>Alcano</td><td>Simple (C—C)</td><td>sp³</td><td>109.5°</td><td>Tetraédrica</td></tr>
-<tr><td>Alqueno</td><td>Doble (C═C)</td><td>sp²</td><td>120°</td><td>Trigonal plana</td></tr>
-<tr><td>Alquino</td><td>Triple (C≡C)</td><td>sp</td><td>180°</td><td>Lineal</td></tr>
-</table>
-<div class="tip">💡 Los carbonos de un doble enlace y sus 4 sustituyentes son coplanares. Los carbonos de un triple enlace y sus sustituyentes son lineales.</div>
-`},
-{n:7, title:"Grupos funcionales", content:`
-<h3>Definición</h3>
-<p>Un grupo funcional es un grupo de átomos dentro de una molécula orgánica que le confiere propiedades físicas y químicas características.</p>
-<table class="tabla">
-<tr><th>Grupo funcional</th><th>Fórmula general</th></tr>
-<tr><td>Ácido carboxílico</td><td>R-COOH</td></tr>
-<tr><td>Éster</td><td>R-COO-R'</td></tr>
-<tr><td>Amida</td><td>R-CO-NH₂</td></tr>
-<tr><td>Nitrilo</td><td>R-C≡N</td></tr>
-<tr><td>Aldehído</td><td>R-CHO</td></tr>
-<tr><td>Cetona</td><td>R-CO-R'</td></tr>
-<tr><td>Alcohol</td><td>R-OH</td></tr>
-<tr><td>Amina</td><td>R-NH₂</td></tr>
-<tr><td>Éter</td><td>R-O-R'</td></tr>
-<tr><td>Alqueno</td><td>&gt;C=C&lt;</td></tr>
-<tr><td>Alquino</td><td>-C≡C-</td></tr>
-<tr><td>Haluro (halo)</td><td>R-X (X= F, Cl, Br, I)</td></tr>
-<tr><td>Nitro</td><td>R-NO₂</td></tr>
-</table>
-<div class="tip">💡 R = grupo alquilo (cadena hidrocarbonada); X = halógeno</div>
-`},
-{n:8, title:"Hidrocarburos", content:`
-<h3>Definición</h3>
-<p>Compuestos orgánicos formados únicamente por carbono e hidrógeno.</p>
-<h3>Clasificación</h3>
-<ul>
-<li><strong>Alifáticos:</strong> Cadena abierta o cíclica sin benceno.
-  <ul>
-    <li>Saturados: Alcanos (solo enlaces simples)</li>
-    <li>Insaturados: Alquenos (doble enlace), Alquinos (triple enlace)</li>
-  </ul>
-</li>
-<li><strong>Aromáticos:</strong> Contienen el anillo de benceno (C₆H₆)</li>
-<li><strong>Alicíclicos:</strong> Cíclicos pero no aromáticos. Ej: cicloalcanos.</li>
-</ul>
-`},
-{n:9, title:"Terminación de alcanos", content:`
-<h3>Sufijos según número de carbonos</h3>
-<table class="tabla">
-<tr><th>n° C</th><th>Prefijo</th><th>Alcano</th></tr>
-<tr><td>1</td><td>met-</td><td>metano</td></tr>
-<tr><td>2</td><td>et-</td><td>etano</td></tr>
-<tr><td>3</td><td>prop-</td><td>propano</td></tr>
-<tr><td>4</td><td>but-</td><td>butano</td></tr>
-<tr><td>5</td><td>pent-</td><td>pentano</td></tr>
-<tr><td>6</td><td>hex-</td><td>hexano</td></tr>
-<tr><td>7</td><td>hept-</td><td>heptano</td></tr>
-<tr><td>8</td><td>oct-</td><td>octano</td></tr>
-<tr><td>9</td><td>non-</td><td>nonano</td></tr>
-<tr><td>10</td><td>dec-</td><td>decano</td></tr>
-</table>
-<div class="tip">💡 La terminación -ano es siempre la misma para todos los alcanos. Los alquenos terminan en -eno y los alquinos en -ino.</div>
-`},
-{n:10, title:"Grupo alquilo", content:`
-<h3>Definición</h3>
-<p>Un grupo alquilo es un alcano al que le falta un hidrógeno, convirtiéndolo en sustituyente. Se representan con R- o con su nombre cambiando -ano por -ilo.</p>
-<table class="tabla">
-<tr><th>Alcano base</th><th>Grupo alquilo</th><th>Abrev.</th></tr>
-<tr><td>Metano</td><td>Metilo</td><td>-CH₃</td></tr>
-<tr><td>Etano</td><td>Etilo</td><td>-C₂H₅</td></tr>
-<tr><td>Propano</td><td>Propilo / Isopropilo</td><td>-C₃H₇</td></tr>
-<tr><td>Butano</td><td>Butilo / sec-butilo / isobutilo / tert-butilo</td><td>-C₄H₉</td></tr>
-</table>
-`},
-{n:11, title:"Nomenclatura de alcanos: IUPAC y trivial", content:`
-<h3>Reglas IUPAC</h3>
-<ul>
-<li>1. Identificar la cadena principal más larga.</li>
-<li>2. Numerar desde el extremo más cercano al primer sustituyente.</li>
-<li>3. Nombrar sustituyentes como alquilos con su número de posición.</li>
-<li>4. Orden alfabético de sustituyentes (ignorar di-, tri-, etc.).</li>
-<li>5. Terminación: <strong>-ano</strong>.</li>
-</ul>
-<div class="formula-box"><strong>Ejemplo:</strong> CH₃-CH(CH₃)-CH₂-CH₃ → 2-metilbutano</div>
-<h3>Nomenclatura trivial</h3>
-<p>Nombres históricos: isobutano, neopentano, isopentano. Usados en contextos informales.</p>
-<div class="tip">💡 Prefijos multiplicadores: di=2, tri=3, tetra=4, penta=5 para indicar repetición de sustituyentes.</div>
-`},
-{n:12, title:"Cicloalcanos", content:`
-<h3>Definición</h3>
-<p>Alcanos en forma de anillo cerrado. Fórmula general: <strong>CₙH₂ₙ</strong> (misma que alquenos).</p>
-<h3>Nomenclatura</h3>
-<p>Se añade el prefijo <strong>ciclo-</strong> antes del nombre del alcano. Ej: ciclopropano (C₃H₆), ciclohexano (C₆H₁₂).</p>
-<table class="tabla">
-<tr><th>Nombre</th><th>Carbonos</th><th>Fórmula</th></tr>
-<tr><td>Ciclopropano</td><td>3</td><td>C₃H₆</td></tr>
-<tr><td>Ciclobutano</td><td>4</td><td>C₄H₈</td></tr>
-<tr><td>Ciclopentano</td><td>5</td><td>C₅H₁₀</td></tr>
-<tr><td>Ciclohexano</td><td>6</td><td>C₆H₁₂</td></tr>
-</table>
-<div class="tip">💡 El ciclopropano es muy inestable por la tensión angular (ángulos de 60° vs. 109.5° ideales para sp³).</div>
-`},
-{n:13, title:"Saturación de alcanos, alquenos y alquinos", content:`
-<h3>Conceptos</h3>
-<p><strong>Saturado:</strong> Solo tiene enlaces simples (C—C). No puede incorporar más hidrógenos. Ej: alcanos.</p>
-<p><strong>Insaturado:</strong> Tiene dobles o triples enlaces. Puede reaccionar con H₂ (hidrogenación). Ej: alquenos y alquinos.</p>
-<table class="tabla">
-<tr><th>Hidrocarburo</th><th>Saturado/Insaturado</th><th>Fórmula general</th><th>Grado de insaturación</th></tr>
-<tr><td>Alcano</td><td>Saturado</td><td>CₙH₂ₙ₊₂</td><td>0</td></tr>
-<tr><td>Alqueno</td><td>Insaturado (1°)</td><td>CₙH₂ₙ</td><td>1</td></tr>
-<tr><td>Alquino</td><td>Insaturado (2°)</td><td>CₙH₂ₙ₋₂</td><td>2</td></tr>
-</table>
-<div class="formula-box"><strong>Grado de insaturación (GI) = (2C + 2 - H) / 2</strong></div>
-`},
-{n:14, title:"Nomenclatura de alquenos: IUPAC y trivial", content:`
-<h3>Reglas IUPAC</h3>
-<ul>
-<li>1. Cadena principal: la más larga que contenga el doble enlace.</li>
-<li>2. Numerar desde el extremo más cercano al doble enlace.</li>
-<li>3. Indicar posición del doble enlace con el número del C de inicio.</li>
-<li>4. Terminación: <strong>-eno</strong>.</li>
-</ul>
-<div class="formula-box"><strong>Ejemplo:</strong> CH₂=CH-CH₂-CH₃ → but-1-eno (o 1-buteno)</div>
-<h3>Nombres triviales comunes</h3>
-<ul>
-<li>CH₂=CH₂ → etileno</li>
-<li>CH₂=CH-CH₃ → propileno</li>
-<li>CH₂=C(CH₃)₂ → isobutileno</li>
-</ul>
-`},
-{n:15, title:"Nomenclatura de alquinos: IUPAC y trivial", content:`
-<h3>Reglas IUPAC</h3>
-<ul>
-<li>1. Cadena principal: la más larga que contenga el triple enlace.</li>
-<li>2. Numerar desde el extremo más cercano al triple enlace.</li>
-<li>3. Indicar posición del triple enlace.</li>
-<li>4. Terminación: <strong>-ino</strong>.</li>
-</ul>
-<div class="formula-box"><strong>Ejemplo:</strong> CH≡C-CH₂-CH₃ → but-1-ino (o 1-butino)</div>
-<h3>Nombres triviales</h3>
-<ul>
-<li>CH≡CH → acetileno</li>
-<li>CH≡C-CH₃ → metilacetileno (prop-1-ino)</li>
-</ul>
-`},
-{n:16, title:"Eninos", content:`
-<h3>Definición</h3>
-<p>Compuestos que tienen <strong>tanto un doble enlace (eno) como un triple enlace (ino)</strong> en la misma molécula. Se nombran con los sufijos <strong>-en-ino</strong>.</p>
-<h3>Reglas de nomenclatura</h3>
-<ul>
-<li>La cadena principal debe contener ambos insaturaciones.</li>
-<li>Se numera para dar el número más bajo al doble enlace cuando hay ambigüedad.</li>
-<li>El doble enlace recibe prioridad en la numeración.</li>
-</ul>
-<div class="formula-box"><strong>Ejemplo:</strong> CH₂=CH-C≡CH → but-1-en-3-ino</div>
-`},
-{n:17, title:"Nomenclatura según acetileno", content:`
-<h3>Sistema de nomenclatura derivado del acetileno</h3>
-<p>En este sistema, los alquinos se nombran como derivados del <strong>acetileno (HC≡CH)</strong>, sustituyendo los hidrógenos por grupos alquilo.</p>
-<div class="formula-box">
-<strong>Ejemplo:</strong><br>
-CH₃-C≡CH → metilacetileno<br>
-CH₃-C≡C-CH₃ → dimetilacetileno<br>
-C₂H₅-C≡CH → etilacetileno
-</div>
-<div class="tip">💡 Este sistema es más antiguo que el IUPAC y aún aparece en textos clásicos de química orgánica.</div>
-`},
-{n:18, title:"Geometría cis-trans", content:`
-<h3>Isomería geométrica</h3>
-<p>Ocurre en alquenos cuando <strong>cada carbono del doble enlace tiene dos sustituyentes diferentes</strong>. La rotación alrededor del doble enlace está impedida.</p>
-<ul>
-<li><strong>cis-:</strong> Los grupos prioritarios (o los grupos iguales) están del mismo lado del doble enlace.</li>
-<li><strong>trans-:</strong> Los grupos prioritarios están en lados opuestos.</li>
-</ul>
-<div class="formula-box">
-<strong>Ejemplo:</strong> 2-buteno<br>
-cis-2-buteno: los dos CH₃ están del mismo lado.<br>
-trans-2-buteno: los dos CH₃ están en lados opuestos.
-</div>
-<div class="tip">💡 El sistema E/Z (del alemán Entgegen/Zusammen) es más preciso y es el sistema IUPAC actual para nombrar esta isomería.</div>
-`},
-{n:19, title:"Propiedades físicas de hidrocarburos alifáticos", content:`
-<h3>Tendencias generales</h3>
-<ul>
-<li><strong>Punto de ebullición:</strong> Aumenta con la masa molar (más carbonos). Las ramificaciones lo disminuyen.</li>
-<li><strong>Punto de fusión:</strong> Aumenta con la cadena. Las cadenas lineales se empaquetan mejor → mayor P.F.</li>
-<li><strong>Solubilidad:</strong> Insolubles en agua (no polares). Solubles en solventes orgánicos (like dissolves like).</li>
-<li><strong>Densidad:</strong> Menor que la del agua (flotan). Los alcanos son líquidos o gases a T.A.</li>
-<li><strong>Estado a T.A.:</strong> C₁-C₄ = gases; C₅-C₁₇ = líquidos; C₁₈+ = sólidos.</li>
-</ul>
-<div class="tip">💡 Los alquenos y alquinos tienen propiedades similares a los alcanos del mismo número de carbonos, pero sus Pb son ligeramente más altos.</div>
-`},
-{n:20, title:"Ruptura homolítica y heterolítica", content:`
-<h3>Ruptura homolítica</h3>
-<p>Cada átomo se lleva <strong>un electrón</strong> del par enlazante. Produce <strong>radicales libres</strong> (especies con electrón desapareado). Común en reacciones de sustitución de alcanos con luz (halogenación radical).</p>
-<div class="formula-box">A:B → A• + B•</div>
-<h3>Ruptura heterolítica</h3>
-<p>Un átomo se lleva <strong>ambos electrones</strong>. Produce <strong>iones</strong> (catión = carbocatión, anión = carbanión o nucleófilo). Común en reacciones polares de alquenos.</p>
-<div class="formula-box">A:B → A⁺ + :B⁻</div>
-<table class="tabla">
-<tr><th></th><th>Homolítica</th><th>Heterolítica</th></tr>
-<tr><td>Electrones</td><td>1 cada átomo</td><td>2 para un átomo</td></tr>
-<tr><td>Especies</td><td>Radicales</td><td>Iones</td></tr>
-<tr><td>Condición</td><td>Calor/luz</td><td>Disolvente polar</td></tr>
-</table>
-`},
-{n:21, title:"Ácidos y bases de Lewis", content:`
-<h3>Teoría de Lewis</h3>
-<p>Amplía el concepto de ácido-base más allá de los protones.</p>
-<ul>
-<li><strong>Ácido de Lewis:</strong> Acepta un par de electrones (electrófilo). Tiene orbital vacío. Ej: BF₃, AlCl₃, H⁺, carbocationes.</li>
-<li><strong>Base de Lewis:</strong> Dona un par de electrones (nucleófilo). Tiene par solitario. Ej: NH₃, H₂O, aminas, haluros.</li>
-</ul>
-<div class="formula-box">BF₃ (ácido) + :NH₃ (base) → F₃B←NH₃ (adducto)</div>
-<div class="tip">💡 En mecanismos de reacción orgánica, los nucleófilos actúan como bases de Lewis y los electrófilos como ácidos de Lewis.</div>
-`},
-{n:22, title:"Reacciones de sustitución, eliminación y adición", content:`
-<h3>Sustitución</h3>
-<p>Un átomo o grupo es reemplazado por otro. Típica de alcanos (con radicales) y compuestos aromáticos.</p>
-<div class="formula-box">R-X + Y → R-Y + X</div>
-<h3>Eliminación</h3>
-<p>Se pierden átomos o grupos de carbonos adyacentes para formar un doble enlace. Inversa de la adición. Ej: deshidrohalogenación.</p>
-<div class="formula-box">R-CH₂-CH₂-X + base → R-CH=CH₂ + HX</div>
-<h3>Adición</h3>
-<p>Dos reactivos se combinan para dar un solo producto. Típica de alquenos y alquinos (rompen el doble/triple enlace).</p>
-<div class="formula-box">CH₂=CH₂ + HBr → CH₃-CH₂Br</div>
-`},
-{n:23, title:"Mecanismo de reacción", content:`
-<h3>¿Qué es?</h3>
-<p>El mecanismo de reacción es la descripción paso a paso de cómo se rompen y forman los enlaces durante una reacción química, mostrando los intermediarios y el estado de transición.</p>
-<h3>Elementos de un mecanismo</h3>
-<ul>
-<li><strong>Reactivos y productos:</strong> Inicio y fin.</li>
-<li><strong>Intermediarios:</strong> Especies de vida corta (carbocationes, carbaniones, radicales).</li>
-<li><strong>Flechas curvas:</strong> Indican el movimiento de pares de electrones (heterolítico) o de un electrón (homolítico).</li>
-<li><strong>Etapa limitante:</strong> El paso más lento que determina la velocidad total.</li>
-</ul>
-<div class="tip">💡 La flecha curva de dos puntas (→) muestra movimiento de par de electrones. La flecha de medio gancho (⇀) muestra movimiento de un solo electrón.</div>
-`},
-{n:24, title:"Reacciones de alquenos y alquinos", content:`
-<h3>Reacciones principales de alquenos</h3>
-<ul>
-<li><strong>Hidrogenación:</strong> + H₂ / Pd → alcano</li>
-<li><strong>Halogenación:</strong> + X₂ → dihaluro vecinal</li>
-<li><strong>Hidrohalogenación:</strong> + HX → haluro de alquilo (Markovnikov)</li>
-<li><strong>Hidratación:</strong> + H₂O / H⁺ → alcohol</li>
-<li><strong>Oxidación (KMnO₄):</strong> según condiciones → diol o ruptura</li>
-</ul>
-<h3>Reacciones de alquinos</h3>
-<ul>
-<li>Similares a las de alquenos, pero pueden ocurrir dos veces (2 mol de reactivo por mol de alquino).</li>
-<li><strong>Hidratación:</strong> produce cetonas (Markovnikov) vía enol.</li>
-<li><strong>Hidrohalogenación:</strong> produce haluros vinílicos y gem-dihaluros.</li>
-</ul>
-<div class="tip">💡 Regla de Markovnikov: el H se une al carbono más hidrogenado del doble/triple enlace.</div>
-`},
-{n:25, title:"Reacciones de cicloalcanos", content:`
-<h3>Reactividad</h3>
-<p>Los cicloalcanos de 3 y 4 carbonos son más reactivos que los de 5-6 debido a la <strong>tensión angular</strong>.</p>
-<h3>Reacciones del ciclopropano y ciclobutano</h3>
-<ul>
-<li><strong>Apertura de anillo:</strong> Reaccionan con H₂ / Pt (hidrogenólisis), HX y Br₂ para abrir el anillo y dar productos de cadena abierta.</li>
-</ul>
-<h3>Ciclopentano y ciclohexano</h3>
-<ul>
-<li>Relativamente estables. Reaccionan principalmente por sustitución (similar a alcanos).</li>
-<li>El ciclohexano adopta conformaciones silla y bote; la <strong>conformación silla</strong> es la más estable.</li>
-</ul>
-`},
-{n:26, title:"Benceno", content:`
-<h3>Estructura del benceno</h3>
-<p>El benceno (C₆H₆) es el hidrocarburo aromático prototipo. Tiene 6 carbonos en anillo hexagonal con hibridación <strong>sp²</strong>. Sus electrones π están <strong>deslocalizados</strong> en todo el anillo (resonancia).</p>
-<h3>Propiedades especiales</h3>
-<ul>
-<li>Todos los enlaces C-C del benceno son equivalentes (1.5 de orden de enlace).</li>
-<li>No reacciona por adición (destruiría la aromaticidad); reacciona por <strong>sustitución electrofílica aromática (SEA)</strong>.</li>
-<li>La deslocalización lo hace excepcionalmente estable (energía de resonancia ≈ 150 kJ/mol).</li>
-</ul>
-<div class="formula-box">Regla de Hückel: Un compuesto es aromático si es plano, cíclico, conjugado y tiene 4n+2 electrones π (n=0,1,2…). El benceno tiene 6π electrones (n=1). ✓</div>
-`},
-{n:27, title:"Nomenclatura del benceno", content:`
-<h3>Monosustituido</h3>
-<p>Se usa benceno como nombre base o el nombre trivial del compuesto. Ej: clorobenceno, nitrobenceno, tolueno (metilbenceno).</p>
-<h3>Disustituido</h3>
-<ul>
-<li><strong>orto- (o-):</strong> sustituyentes en posiciones 1,2</li>
-<li><strong>meta- (m-):</strong> sustituyentes en posiciones 1,3</li>
-<li><strong>para- (p-):</strong> sustituyentes en posiciones 1,4</li>
-</ul>
-<h3>Varios sustituyentes</h3>
-<p>Se numeran las posiciones para dar el menor conjunto de locantes. El grupo principal o de mayor prioridad recibe la posición 1.</p>
-<div class="formula-box"><strong>Nombres triviales comunes:</strong> tolueno, xileno, estireno, anilina, fenol, anisol, cimeno</div>
-`},
-{n:28, title:"Halogenación del benceno", content:`
-<h3>Mecanismo de Sustitución Electrofílica Aromática (SEA)</h3>
-<p>El benceno reacciona con X₂ solo en presencia de un <strong>ácido de Lewis (catalizador)</strong> que activa el halógeno.</p>
-<h3>Con cloruro de aluminio (AlCl₃)</h3>
-<div class="formula-box">C₆H₆ + Cl₂ + AlCl₃ → C₆H₅Cl + HCl + AlCl₃</div>
-<p>AlCl₃ actúa como ácido de Lewis, polarizando el Cl-Cl para generar Cl⁺ (electrófilo).</p>
-<h3>Con bromuro de hierro (FeBr₃)</h3>
-<div class="formula-box">C₆H₆ + Br₂ + FeBr₃ → C₆H₅Br + HBr + FeBr₃</div>
-<p>FeBr₃ cumple la misma función que AlCl₃ para el bromo.</p>
-<div class="tip">💡 En ambos casos el catalizador se regenera al final, y el H del benceno es el que sale (sustitución, no adición).</div>
-`},
-{n:29, title:"Alcoholes", content:`
-<h3>Definición</h3>
-<p>Los alcoholes son compuestos orgánicos con el grupo <strong>hidroxilo (-OH)</strong> unido a un carbono sp³. Fórmula general: <strong>R-OH</strong>.</p>
-<h3>Clasificación según el carbono que lleva el -OH</h3>
-<table class="tabla">
-<tr><th>Tipo</th><th>C con -OH unido a</th><th>Ejemplo</th></tr>
-<tr><td>Primario (1°)</td><td>1 carbono</td><td>CH₃CH₂OH (etanol)</td></tr>
-<tr><td>Secundario (2°)</td><td>2 carbonos</td><td>CH₃CHOHCH₃ (2-propanol)</td></tr>
-<tr><td>Terciario (3°)</td><td>3 carbonos</td><td>(CH₃)₃COH (tert-butanol)</td></tr>
-</table>
-`},
-{n:30, title:"Nomenclatura IUPAC y trivial de alcoholes", content:`
-<h3>IUPAC</h3>
-<ul>
-<li>Cadena principal más larga que contenga el -OH.</li>
-<li>Termina en <strong>-ol</strong> (o -diol, -triol si hay más).</li>
-<li>Numerar desde el extremo más cercano al -OH.</li>
-</ul>
-<div class="formula-box">
-CH₃CH₂OH → etanol<br>
-CH₃CH(OH)CH₃ → propan-2-ol<br>
-HOCH₂CH₂OH → etano-1,2-diol (etilenglicol)
-</div>
-<h3>Nomenclatura trivial</h3>
-<p>Se nombra el grupo alquilo + alcohol. Ej: alcohol metílico, alcohol etílico, alcohol isopropílico.</p>
-<h3>Nomenclatura carbinol</h3>
-<p>El metanol es el "carbinol". Los demás alcoholes se nombran como derivados de él. Ej: (CH₃)₃COH → trimetilcarbinol.</p>
-`},
-{n:31, title:"Propiedades físicas de alcoholes", content:`
-<h3>Punto de ebullición</h3>
-<p>Muy alto para su masa molar gracias a los <strong>puentes de hidrógeno</strong> entre moléculas de alcohol. Mayor que el alcano equivalente.</p>
-<h3>Solubilidad en agua</h3>
-<p>Los alcoholes de cadena corta (C₁-C₄) son completamente miscibles con agua (por puentes de H con agua). A mayor cadena, mayor carácter hidrofóbico y menor solubilidad.</p>
-<h3>Densidad</h3>
-<p>Menor que el agua. Los alcoholes simples son líquidos incoloros con olor característico.</p>
-<table class="tabla">
-<tr><th>Propiedad</th><th>Aumenta con...</th></tr>
-<tr><td>Punto de ebullición</td><td>Cadena más larga, más -OH</td></tr>
-<tr><td>Solubilidad en agua</td><td>Cadena más corta, más -OH</td></tr>
-</table>
-`},
-{n:32, title:"Nomenclatura grupo carbinol", content:`
-<h3>Sistema carbinol</h3>
-<p>Toma al metanol (CH₃OH) como compuesto madre llamado <strong>carbinol</strong>. Los demás alcoholes se nombran según los grupos alquilo que reemplazan los H del carbinol.</p>
-<div class="formula-box">
-CH₃OH → carbinol<br>
-CH₃CH₂OH → metilcarbinol<br>
-(CH₃)₂CHOH → dimetilcarbinol<br>
-(CH₃)₃COH → trimetilcarbinol<br>
-C₆H₅CH₂OH → fenilcarbinol (bencil alcohol)
-</div>
-<div class="tip">💡 Este sistema es más antiguo y se usa poco hoy en día, pero puede aparecer en bibliografía clásica.</div>
-`},
-{n:33, title:"Propiedades químicas de alcoholes", content:`
-<h3>Reacciones principales</h3>
-<ul>
-<li><strong>Deshidratación (eliminación):</strong> Con H₂SO₄ concentrado y calor → alqueno. La facilidad disminuye: 3° > 2° > 1°.</li>
-<li><strong>Oxidación:</strong>
-  <ul>
-    <li>Alcohol 1° + KMnO₄ o CrO₃ → aldehído → ácido carboxílico</li>
-    <li>Alcohol 2° → cetona</li>
-    <li>Alcohol 3° → no se oxida fácilmente</li>
-  </ul>
-</li>
-<li><strong>Reacción con HX:</strong> Sustituye -OH por halógeno → haluro de alquilo.</li>
-<li><strong>Esterificación:</strong> Alcohol + ácido carboxílico → éster + H₂O</li>
-<li><strong>Acidez:</strong> Los alcoholes son ácidos débiles (pKa ≈ 16-18). Los 1° son ligeramente más ácidos que los 3°.</li>
-</ul>
-`}
+// ═══════════════════════════════════════
+// DATA — 70 FLASHCARDS
+// ═══════════════════════════════════════
+const allCards=[
+{topic:"Orgánicos",q:"¿Cuál es el elemento central de los compuestos orgánicos?",a:"El carbono (C), generalmente combinado con H, O, N, S o halógenos.",hint:"💡 Piensa: ¿qué elemento hace posible la vida?"},
+{topic:"Orgánicos",q:"¿Son orgánicos el CO₂ y el CO?",a:"No. Aunque contienen C, se clasifican como inorgánicos. ¡Son excepciones clásicas!",hint:"💡 CO, CO₂, H₂CO₃ y carbonatos → inorgánicos"},
+{topic:"Orgánicos",q:"¿Qué tipo de enlace predomina en compuestos orgánicos?",a:"El enlace covalente (comparte electrones, no los transfiere).",hint:""},
+{topic:"Isomería",q:"¿Qué son los isómeros?",a:"Compuestos con la misma fórmula molecular pero diferente estructura o disposición de átomos, con propiedades distintas.",hint:"💡 Mismos ingredientes, diferente receta."},
+{topic:"Isomería",q:"Diferencia entre isomería de cadena y de posición",a:"Cadena: diferente ramificación. Posición: el grupo funcional está en diferente carbono.",hint:"💡 El QUÉ vs. el DÓNDE."},
+{topic:"Isomería",q:"¿Qué condición es necesaria para isomería cis-trans?",a:"Doble enlace C=C + cada C del doble enlace debe tener dos sustituyentes DIFERENTES.",hint:"💡 Sin doble enlace no hay cis-trans."},
+{topic:"Fórmulas",q:"¿Qué muestra la fórmula molecular?",a:"Solo el número total de cada tipo de átomo. No muestra conectividad.",hint:"💡 Ej: C₃H₈ (propano)"},
+{topic:"Fórmulas",q:"¿Qué es la fórmula semidesarrollada?",a:"Grupos como CH₃, CH₂ unidos con guiones. Ej: CH₃-CH₂-CH₃",hint:""},
+{topic:"Fórmulas",q:"En la fórmula esqueleto, ¿qué es cada vértice o extremo?",a:"Un carbono. Los H están implícitos (cada C necesita 4 enlaces en total).",hint:"💡 Los H se completan automáticamente."},
+{topic:"Hibridación",q:"¿Qué ángulo de enlace tiene el carbono sp³?",a:"109.5° — geometría tetraédrica",hint:"💡 Alcanos. Piensa: metano CH₄"},
+{topic:"Hibridación",q:"¿Qué ángulo de enlace tiene el carbono sp²?",a:"120° — geometría trigonal plana",hint:"💡 Alquenos. Piensa: etileno CH₂=CH₂"},
+{topic:"Hibridación",q:"¿Qué ángulo de enlace tiene el carbono sp?",a:"180° — geometría lineal",hint:"💡 Alquinos. Piensa: acetileno HC≡CH"},
+{topic:"Hibridación",q:"¿Cuántos orbitales p sin hibridar tiene un carbono sp²?",a:"1 orbital p sin hibridar (perpendicular al plano). Forma el enlace π.",hint:""},
+{topic:"Hibridación",q:"¿Cuántos orbitales p sin hibridar tiene un carbono sp?",a:"2 orbitales p sin hibridar. Forman los 2 enlaces π del triple enlace.",hint:""},
+{topic:"π y σ",q:"¿Cómo se forma un enlace sigma (σ)?",a:"Por solapamiento FRONTAL de orbitales. Es el enlace más fuerte. Todo enlace covalente tiene al menos uno.",hint:""},
+{topic:"π y σ",q:"¿Cómo se forma un enlace pi (π)?",a:"Por solapamiento LATERAL de orbitales p. Aparece solo en dobles y triples enlaces.",hint:"💡 Es más débil que σ y da reactividad."},
+{topic:"π y σ",q:"¿Cuántos σ y π tiene un doble enlace C=C?",a:"1 enlace σ + 1 enlace π",hint:""},
+{topic:"π y σ",q:"¿Cuántos σ y π tiene un triple enlace C≡C?",a:"1 enlace σ + 2 enlaces π",hint:""},
+{topic:"Hidrocarburos",q:"¿Cuál es la hibridación y fórmula general de los alcanos?",a:"sp³ — Fórmula: CₙH₂ₙ₊₂",hint:"💡 Saturados, solo enlaces simples."},
+{topic:"Hidrocarburos",q:"¿Cuál es la hibridación y fórmula general de los alquenos?",a:"sp² — Fórmula: CₙH₂ₙ",hint:"💡 Un doble enlace C=C."},
+{topic:"Hidrocarburos",q:"¿Cuál es la hibridación y fórmula general de los alquinos?",a:"sp — Fórmula: CₙH₂ₙ₋₂",hint:"💡 Un triple enlace C≡C."},
+{topic:"Grupos funcionales",q:"¿Cuál es el grupo funcional de los alcoholes?",a:"R-OH (grupo hidroxilo)",hint:"💡 Ej: etanol CH₃CH₂OH"},
+{topic:"Grupos funcionales",q:"¿Cuál es el grupo funcional de los aldehídos?",a:"R-CHO (carbonilo con H en el extremo de cadena)",hint:""},
+{topic:"Grupos funcionales",q:"¿Cuál es el grupo funcional de las cetonas?",a:"R-CO-R' (carbonilo interno, NO en extremo)",hint:""},
+{topic:"Grupos funcionales",q:"¿Cuál es el grupo funcional de los ácidos carboxílicos?",a:"R-COOH (tiene C=O y -OH)",hint:""},
+{topic:"Grupos funcionales",q:"¿Cuál es el grupo funcional de las aminas?",a:"R-NH₂ (derivados del amoníaco)",hint:""},
+{topic:"Grupos funcionales",q:"¿Cuál es el grupo funcional de los éteres?",a:"R-O-R' (un O entre dos grupos alquilo)",hint:"💡 Ej: dimetiléter CH₃-O-CH₃"},
+{topic:"Grupos funcionales",q:"¿Qué es un grupo alquilo?",a:"Un alcano al que le falta un H. Termina en -ilo. Ej: metilo -CH₃, etilo -C₂H₅",hint:""},
+{topic:"Nomenclatura",q:"Alcano de 1C / 2C / 3C / 4C",a:"Metano / Etano / Propano / Butano",hint:"💡 Met- Et- Prop- But-"},
+{topic:"Nomenclatura",q:"Alcano de 5C / 6C / 7C / 8C",a:"Pentano / Hexano / Heptano / Octano",hint:"💡 Pent- Hex- Hept- Oct-"},
+{topic:"Nomenclatura",q:"Regla #1 para nombrar un alcano por IUPAC",a:"Identificar la cadena continua más larga (cadena principal).",hint:""},
+{topic:"Nomenclatura",q:"¿Desde qué extremo se numera la cadena principal?",a:"Desde el extremo más cercano al primer sustituyente (locantes más bajos).",hint:""},
+{topic:"Nomenclatura",q:"Nombra: CH₃-CH(CH₃)-CH₂-CH₃",a:"2-metilbutano (cadena de 4C, metilo en C2)",hint:"💡 Primero identifica la cadena más larga: 4 carbonos."},
+{topic:"Nomenclatura",q:"Terminación IUPAC de los alquenos",a:"-eno. El doble enlace toma el número más bajo posible.",hint:"💡 Ej: but-1-eno, but-2-eno"},
+{topic:"Nomenclatura",q:"Terminación IUPAC de los alquinos",a:"-ino. El triple enlace toma el número más bajo posible.",hint:"💡 Ej: but-1-ino"},
+{topic:"Nomenclatura",q:"Nombre trivial del eteno (CH₂=CH₂)",a:"Etileno",hint:""},
+{topic:"Nomenclatura",q:"Nombre trivial del etino (HC≡CH)",a:"Acetileno",hint:"💡 Usado en sopletes de soldadura."},
+{topic:"Nomenclatura",q:"¿Qué son los eninos?",a:"Compuestos con un doble enlace Y un triple enlace. Terminación: -en-ino. Ej: but-1-en-3-ino",hint:""},
+{topic:"Nomenclatura",q:"¿Qué prefijo se usa para cicloalcanos?",a:"ciclo- antes del nombre del alcano. Ej: ciclopropano, ciclohexano",hint:""},
+{topic:"Nomenclatura",q:"Significado de orto-, meta-, para- en benceno",a:"orto (1,2) · meta (1,3) · para (1,4) — posición relativa de sustituyentes en el anillo",hint:""},
+{topic:"Isomería",q:"En cis-2-buteno, ¿dónde están los CH₃?",a:"Del mismo lado del doble enlace. cis = mismo lado.",hint:""},
+{topic:"Isomería",q:"En trans-2-buteno, ¿dónde están los CH₃?",a:"En lados OPUESTOS del doble enlace. trans = lados opuestos.",hint:""},
+{topic:"Propiedades",q:"¿En qué estado están los alcanos C₁-C₄ a temperatura ambiente?",a:"Gaseosos (metano, etano, propano, butano).",hint:"💡 El gas LP es propano/butano."},
+{topic:"Propiedades",q:"¿Son solubles los hidrocarburos en agua?",a:"No. Son no polares. Solo se disuelven en solventes orgánicos.",hint:"💡 'Like dissolves like'"},
+{topic:"Propiedades",q:"¿Qué le pasa al punto de ebullición al aumentar la cadena?",a:"Aumenta (más fuerzas de dispersión de London por mayor superficie).",hint:""},
+{topic:"Rupturas",q:"¿Qué produce la ruptura homolítica?",a:"Radicales libres: cada átomo se lleva 1 electrón.\nA:B → A• + •B",hint:"💡 Ocurre con luz UV o calor."},
+{topic:"Rupturas",q:"¿Qué produce la ruptura heterolítica?",a:"Iones: un átomo se lleva AMBOS electrones.\nA:B → A⁺ + :B⁻",hint:"💡 Ocurre en solventes polares."},
+{topic:"Lewis",q:"¿Qué es un ácido de Lewis?",a:"Especie que ACEPTA un par de electrones. Electrófilo. Ej: BF₃, AlCl₃, H⁺",hint:""},
+{topic:"Lewis",q:"¿Qué es una base de Lewis?",a:"Especie que DONA un par de electrones. Nucleófilo. Ej: NH₃, H₂O, aminas",hint:""},
+{topic:"Reacciones",q:"¿Qué tipo de reacción es característica de los alcanos?",a:"Sustitución radical (con halógenos bajo luz UV).\nEj: CH₄ + Cl₂ → CH₃Cl + HCl",hint:""},
+{topic:"Reacciones",q:"¿Qué tipo de reacción es característica de los alquenos?",a:"Adición electrofílica (al doble enlace).\nEj: CH₂=CH₂ + HBr → CH₃CH₂Br",hint:""},
+{topic:"Reacciones",q:"Regla de Markovnikov",a:"En la adición de HX a un alqueno, el H va al carbono con MÁS hidrógenos.",hint:"💡 El rico se hace más rico."},
+{topic:"Reacciones",q:"¿Qué es la reacción de eliminación?",a:"Se pierden átomos de carbonos adyacentes formando un doble enlace.\nEj: alcohol + H₂SO₄/calor → alqueno + H₂O",hint:""},
+{topic:"Benceno",q:"¿Por qué el benceno no reacciona por adición?",a:"Destruiría su aromaticidad (electrones π deslocalizados). Prefiere sustitución electrofílica aromática (SEA).",hint:""},
+{topic:"Benceno",q:"¿Qué catalizador se usa en la BROMACIÓN del benceno?",a:"FeBr₃ (bromuro de hierro III) — actúa como ácido de Lewis.",hint:""},
+{topic:"Benceno",q:"¿Qué catalizador se usa en la CLORACIÓN del benceno?",a:"AlCl₃ (cloruro de aluminio) — actúa como ácido de Lewis.",hint:""},
+{topic:"Benceno",q:"¿Qué tipo de hibridación tienen los carbonos del benceno?",a:"sp² — todos los C del anillo son equivalentes.",hint:"💡 El anillo es plano."},
+{topic:"Alcoholes",q:"¿Por qué los alcoholes tienen punto de ebullición alto?",a:"Por los puentes de hidrógeno entre moléculas (por el grupo -OH).",hint:"💡 Igual que el agua."},
+{topic:"Alcoholes",q:"Oxidación de alcohol primario (1°)",a:"1° → aldehído → ácido carboxílico (con KMnO₄ o CrO₃)",hint:""},
+{topic:"Alcoholes",q:"Oxidación de alcohol secundario (2°)",a:"2° → cetona (no se oxida más fácilmente en condiciones normales)",hint:""},
+{topic:"Alcoholes",q:"Oxidación de alcohol terciario (3°)",a:"3° → NO se oxida fácilmente. No hay H en el C con -OH.",hint:""},
+{topic:"Alcoholes",q:"Nombre IUPAC de CH₃CH₂OH",a:"Etanol (etan-1-ol)",hint:"💡 2 carbonos + -ol"},
+{topic:"Alcoholes",q:"¿Qué es el sistema carbinol?",a:"Nomenclatura antigua: metanol = 'carbinol'. Ej: (CH₃)₃COH = trimetilcarbinol",hint:""},
+{topic:"Alcoholes",q:"¿Cómo se llama la reacción de alcohol + ácido carboxílico?",a:"Esterificación. Produce un éster + agua.\nR-OH + R'COOH → éster + H₂O",hint:""},
+{topic:"Alcoholes",q:"¿Qué produce la deshidratación de un alcohol?",a:"Un alqueno (con H₂SO₄ concentrado y calor).",hint:"💡 3° > 2° > 1° en facilidad."},
+{topic:"Cicloalcanos",q:"Fórmula general de los cicloalcanos",a:"CₙH₂ₙ (igual que alquenos, pero son saturados)",hint:""},
+{topic:"Cicloalcanos",q:"¿Por qué el ciclopropano es muy reactivo?",a:"Tensión angular: ángulos de ~60° en lugar de los 109.5° ideales para sp³.",hint:"💡 El anillo quiere abrirse."},
+{topic:"Cicloalcanos",q:"¿Cuál es la conformación más estable del ciclohexano?",a:"Conformación silla — minimiza tensión angular y de torsión.",hint:""},
 ];
 
-// ═══════════════════════════════════════════════
-//  QUIZ DATA — 30 preguntas
-// ═══════════════════════════════════════════════
-const questions = [
-{q:"¿Cuál de las siguientes sustancias es un compuesto ORGÁNICO?", opts:["NaCl","CO₂","CH₄","CaCO₃"], ans:2},
-{q:"¿Qué es la isomería?", opts:["Compuestos con igual fórmula y mismas propiedades","Compuestos con diferente fórmula pero igual nombre","Compuestos con la misma fórmula molecular pero diferente estructura o disposición","Compuestos con distinto número de carbonos"], ans:2},
-{q:"¿Qué tipo de fórmula es CH₃-CH₂-CH₃?", opts:["Molecular","Desarrollada","Semidesarrollada","Esqueleto"], ans:2},
-{q:"¿Qué ángulo de enlace corresponde a la hibridación sp³?", opts:["120°","180°","90°","109.5°"], ans:3},
-{q:"¿Cuántos enlaces π tiene un triple enlace carbono-carbono?", opts:["0","1","2","3"], ans:2},
-{q:"Los alcanos tienen hibridación...", opts:["sp","sp²","sp³","sp³d"], ans:2},
-{q:"¿Cuál es el grupo funcional de un aldehído?", opts:["R-OH","R-CHO","R-COOH","R-NH₂"], ans:1},
-{q:"Los hidrocarburos están formados únicamente por...", opts:["C, H y O","C y H","C, H y N","C, H y S"], ans:1},
-{q:"¿Cómo se llama el alcano de 5 carbonos?", opts:["Butano","Hexano","Pentano","Propano"], ans:2},
-{q:"Un grupo alquilo se forma cuando a un alcano se le quita...", opts:["Un carbono","Un hidrógeno","Un oxígeno","Una molécula de agua"], ans:1},
-{q:"Según IUPAC, ¿cuál es el nombre de CH₃-CH(CH₃)-CH₂-CH₃?", opts:["2-metilbutano","3-metilbutano","2-metilpropano","Isobutano"], ans:0},
-{q:"¿Qué prefijo se usa para nombrar un cicloalcano?", opts:["iso-","neo-","ciclo-","di-"], ans:2},
-{q:"¿Cuál es la fórmula general de los alquinos de cadena abierta?", opts:["CₙH₂ₙ₊₂","CₙH₂ₙ","CₙH₂ₙ₋₂","CₙHₙ"], ans:2},
-{q:"¿Qué terminación IUPAC usan los alquenos?", opts:["-ano","-ino","-eno","-ilo"], ans:2},
-{q:"El acetileno es el nombre trivial de...", opts:["Eteno","Etino","Propino","Metano"], ans:1},
-{q:"Un enino es un compuesto que tiene...", opts:["Dos dobles enlaces","Un doble y un triple enlace","Dos triples enlaces","Solo un doble enlace"], ans:1},
-{q:"En la isomería geométrica cis-, los grupos prioritarios están...", opts:["En lados opuestos","Del mismo lado del doble enlace","En posiciones alternas del anillo","Sin relación espacial definida"], ans:1},
-{q:"¿Cuál es la propiedad que aumenta al aumentar la cadena en alcanos?", opts:["Solubilidad en agua","Volatilidad","Punto de ebullición","Reactividad"], ans:2},
-{q:"¿Qué tipo de ruptura produce radicales libres?", opts:["Heterolítica","Homolítica","Nucleofílica","Electrofílica"], ans:1},
-{q:"Un ácido de Lewis es una especie que...", opts:["Dona protones","Acepta protones","Acepta pares de electrones","Dona pares de electrones"], ans:2},
-{q:"¿Qué tipo de reacción es típica de los alcanos con halógenos bajo luz UV?", opts:["Adición","Eliminación","Sustitución radical","Sustitución nucleofílica"], ans:2},
-{q:"El benceno reacciona preferentemente por...", opts:["Adición electrofílica","Sustitución electrofílica aromática","Eliminación","Adición radical"], ans:1},
-{q:"¿Qué catalizador se usa en la cloración del benceno?", opts:["FeBr₃","Pd/H₂","H₂SO₄","AlCl₃"], ans:3},
-{q:"¿Cuál es la fórmula general de los alcoholes?", opts:["R-CHO","R-COOH","R-OH","R-NH₂"], ans:2},
-{q:"Un alcohol secundario tiene el -OH unido a un carbono que está unido a...", opts:["0 carbonos","1 carbono","2 carbonos","3 carbonos"], ans:2},
-{q:"Según IUPAC, CH₃CH₂CH₂OH se llama...", opts:["Propan-1-ol","Propan-2-ol","Butan-1-ol","Etanol"], ans:0},
-{q:"¿Qué productos da la oxidación de un alcohol primario con KMnO₄?", opts:["Cetona y agua","Aldehído → ácido carboxílico","Éter","Alqueno"], ans:1},
-{q:"¿Cuál es la hibridación de los carbonos del benceno?", opts:["sp³","sp","sp²","sp³d²"], ans:2},
-{q:"La geometría del carbono con hibridación sp es...", opts:["Tetraédrica","Trigonal plana","Lineal","Piramidal"], ans:2},
-{q:"¿Cuántos enlaces sigma tiene un enlace doble C=C?", opts:["0","1","2","3"], ans:1}
+// ═══════════════════════════════════════
+// QUIZ DATA (30 preguntas)
+// ═══════════════════════════════════════
+const quizData=[
+{q:"¿Cuál de los siguientes es un compuesto ORGÁNICO?",opts:["NaCl","CO₂","CH₄","CaCO₃"],ans:2},
+{q:"¿Qué son los isómeros?",opts:["Mismo nombre, diferente fórmula","Misma fórmula molecular, diferente estructura","Diferente número de carbonos","Misma estructura, diferente fórmula"],ans:1},
+{q:"¿Qué tipo de fórmula es CH₃-CH₂-CH₃?",opts:["Molecular","Desarrollada","Semidesarrollada","Esqueleto"],ans:2},
+{q:"¿Qué ángulo de enlace corresponde a sp³?",opts:["120°","180°","90°","109.5°"],ans:3},
+{q:"¿Cuántos enlaces π tiene un triple enlace C≡C?",opts:["0","1","2","3"],ans:2},
+{q:"Los alcanos tienen hibridación...",opts:["sp","sp²","sp³","sp³d"],ans:2},
+{q:"¿Cuál es el grupo funcional de un aldehído?",opts:["R-OH","R-CHO","R-COOH","R-NH₂"],ans:1},
+{q:"¿Cómo se llama el alcano de 5 carbonos?",opts:["Butano","Hexano","Pentano","Propano"],ans:2},
+{q:"¿Cuál es la fórmula general de los alquinos?",opts:["CₙH₂ₙ₊₂","CₙH₂ₙ","CₙH₂ₙ₋₂","CₙHₙ"],ans:2},
+{q:"¿Qué terminación IUPAC usan los alquenos?",opts:["-ano","-ino","-eno","-ilo"],ans:2},
+{q:"El nombre trivial del etino (HC≡CH) es...",opts:["Etileno","Propileno","Acetileno","Metileno"],ans:2},
+{q:"¿Qué prefijo se usa para cicloalcanos?",opts:["iso-","neo-","ciclo-","di-"],ans:2},
+{q:"Un enino es un compuesto que tiene...",opts:["Dos dobles enlaces","Un doble y un triple enlace","Dos triples enlaces","Solo dobles enlaces"],ans:1},
+{q:"En isomería cis-, los grupos prioritarios están...",opts:["En lados opuestos","Del mismo lado del doble enlace","En posiciones 1,3","Sin relación definida"],ans:1},
+{q:"¿Qué produce la ruptura homolítica?",opts:["Cationes","Radicales libres","Aniones","Pares iónicos"],ans:1},
+{q:"Un ácido de Lewis es una especie que...",opts:["Dona protones","Acepta protones","Acepta pares de electrones","Dona pares de electrones"],ans:2},
+{q:"¿Qué tipo de reacción caracteriza a los alcanos con halógenos y luz UV?",opts:["Adición","Eliminación","Sustitución radical","Sustitución nucleofílica"],ans:2},
+{q:"El benceno reacciona preferentemente por...",opts:["Adición electrofílica","Sustitución electrofílica aromática","Eliminación","Adición radical"],ans:1},
+{q:"¿Qué catalizador se usa en la cloración del benceno?",opts:["FeBr₃","Pd/H₂","H₂SO₄","AlCl₃"],ans:3},
+{q:"¿Cuál es la fórmula general de los alcoholes?",opts:["R-CHO","R-COOH","R-OH","R-NH₂"],ans:2},
+{q:"Un alcohol secundario tiene el -OH unido a un C unido a...",opts:["0 carbonos","1 carbono","2 carbonos","3 carbonos"],ans:2},
+{q:"Según IUPAC, CH₃CH₂CH₂OH se llama...",opts:["Propan-1-ol","Propan-2-ol","Butan-1-ol","Etanol"],ans:0},
+{q:"¿Qué produce la oxidación de un alcohol secundario?",opts:["Ácido carboxílico","Cetona","Aldehído","Éter"],ans:1},
+{q:"¿Cuál es la hibridación de los carbonos del benceno?",opts:["sp³","sp","sp²","sp³d²"],ans:2},
+{q:"La geometría del carbono con hibridación sp es...",opts:["Tetraédrica","Trigonal plana","Lineal","Piramidal"],ans:2},
+{q:"¿Cuántos enlaces sigma tiene un doble enlace C=C?",opts:["0","1","2","3"],ans:1},
+{q:"La regla de Markovnikov dice que en la adición de HX a un alqueno...",opts:["El X va al C más hidrogenado","El H va al C menos hidrogenado","El H va al C más hidrogenado","Ambos van al mismo C"],ans:2},
+{q:"¿Cuál es la fórmula general de los cicloalcanos?",opts:["CₙH₂ₙ₊₂","CₙH₂ₙ","CₙH₂ₙ₋₂","C₂ₙHₙ"],ans:1},
+{q:"¿Qué produce la deshidratación de un alcohol?",opts:["Ácido carboxílico","Aldehído","Alqueno","Éter"],ans:2},
+{q:"El grupo funcional R-NH₂ corresponde a...",opts:["Ácido carboxílico","Amina","Alcohol","Amida"],ans:1},
 ];
 
-// ═══════════════════════════════════════════════
-//  NAVIGATION
-// ═══════════════════════════════════════════════
-function switchTab(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+// ═══════════════════════════════════════
+// MATCH PAIRS (24 pares, sets de 8)
+// ═══════════════════════════════════════
+const matchPairs=[
+["sp³","Geometría tetraédrica · 109.5°"],
+["sp²","Geometría trigonal plana · 120°"],
+["sp","Geometría lineal · 180°"],
+["Alcano","Solo enlaces simples C—C · CₙH₂ₙ₊₂"],
+["Alqueno","Contiene doble enlace C=C · CₙH₂ₙ"],
+["Alquino","Contiene triple enlace C≡C · CₙH₂ₙ₋₂"],
+["R-OH","Grupo funcional: alcohol"],
+["R-CHO","Grupo funcional: aldehído"],
+["Ruptura homolítica","Produce radicales libres"],
+["Ruptura heterolítica","Produce iones (catión + anión)"],
+["Ácido de Lewis","Acepta par de electrones"],
+["Base de Lewis","Dona par de electrones"],
+["cis-","Grupos del mismo lado del doble enlace"],
+["trans-","Grupos en lados opuestos del doble enlace"],
+["AlCl₃","Catalizador cloración del benceno"],
+["FeBr₃","Catalizador bromación del benceno"],
+["Alcohol 1°","Oxidación → aldehído → ác. carboxílico"],
+["Alcohol 2°","Oxidación → cetona"],
+["Enlace σ","Solapamiento frontal de orbitales"],
+["Enlace π","Solapamiento lateral de orbitales p"],
+["Markovnikov","H va al carbono con más hidrógenos"],
+["Esterificación","Alcohol + ác. carboxílico → éster + H₂O"],
+["Cicloalcano","Fórmula CₙH₂ₙ · anillo saturado"],
+["Enino","Molécula con doble Y triple enlace C"],
+];
+
+// ═══════════════════════════════════════
+// GLOBAL STATE
+// ═══════════════════════════════════════
+let xp=0,fcDone=0,maxStreak=0,bestQuiz=null;
+let fcPool=[],fcIndex=0,fcDominated=new Set(),selTopic='Todas';
+let matchSel=null,matchCount=0,matchStart=0;
+let bTimer=null,bTimeLeft=20,bQ=0,bScore2=0,bStreak=0,bMaxStreak=0,bOk=0,bFail=0,bPool=[],bAnswered=false;
+let q2Opts=[];
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function goTo(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else{const m={home:0,flash:1,match:2,battle:3,quiz:4};document.querySelectorAll('.nav-pill')[m[id]]?.classList.add('active');}
+  if(id==='flash') initFlash();
+  if(id==='match') buildMatch();
+  if(id==='quiz') buildQuiz();
+  window.scrollTo(0,0);
 }
 
-// ═══════════════════════════════════════════════
-//  BUILD TEMARIO
-// ═══════════════════════════════════════════════
-let seenTopics = new Set();
+// ═══════════════════════════════════════
+// XP
+// ═══════════════════════════════════════
+function addXP(n,lbl){
+  xp+=n;
+  document.getElementById('xpBadge').textContent='⭐ '+xp+' XP';
+  document.getElementById('s-xp').textContent=xp;
+  const t=document.getElementById('xpToast');
+  t.textContent='+'+n+' XP — '+lbl;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
 
-function buildTemario() {
-  const list = document.getElementById('topicList');
-  list.innerHTML = '';
-  topics.forEach((t, i) => {
-    const card = document.createElement('div');
-    card.className = 'topic-card';
-    card.id = 'topic-card-' + i;
-    card.innerHTML = `
-      <button class="topic-btn" onclick="toggleTopic(${i}, this)">
-        <span class="topic-num">${String(t.n).padStart(2,'0')}</span>
-        <span style="flex:1">${t.title}</span>
-        <span class="topic-seen-dot" aria-hidden="true"></span>
-        <span class="topic-arrow" aria-hidden="true">▾</span>
-      </button>
-      <div class="topic-body" id="topic-body-${i}">${t.content}</div>`;
-    list.appendChild(card);
+// ═══════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════
+const topics=['Todas',...new Set(allCards.map(c=>c.topic))];
+
+function initFlash(){
+  const chips=document.getElementById('topicChips');
+  if(!chips.children.length){
+    topics.forEach(t=>{
+      const b=document.createElement('button');
+      b.className='t-chip'+(t==='Todas'?' active':'');
+      b.textContent=t;
+      b.onclick=()=>selectTopic(t,b);
+      chips.appendChild(b);
+    });
+  }
+  loadFcPool();
+}
+
+function selectTopic(t,el){
+  selTopic=t;
+  document.querySelectorAll('.t-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  fcDominated=new Set();
+  loadFcPool();
+}
+
+function loadFcPool(){
+  fcPool=selTopic==='Todas'?[...allCards]:[...allCards.filter(c=>c.topic===selTopic)];
+  shuffle(fcPool); fcIndex=0;
+  document.getElementById('theCard').classList.remove('flipped');
+  showCard();
+}
+
+function showCard(){
+  if(!fcPool.length) return;
+  const c=fcPool[fcIndex%fcPool.length];
+  document.getElementById('fcQ').textContent=c.q;
+  document.getElementById('fcA').textContent=c.a;
+  document.getElementById('fcHint').textContent=c.hint||'';
+  document.getElementById('fcHint').style.display=c.hint?'block':'none';
+  const tot=fcPool.length, cur=(fcIndex%tot)+1;
+  document.getElementById('fcCurrent').textContent=cur+' / '+tot;
+  document.getElementById('fcDom').textContent=fcDominated.size+' dominadas ✓';
+  document.getElementById('fcFill').style.width=(fcDominated.size/tot*100)+'%';
+  document.getElementById('theCard').classList.remove('flipped');
+}
+
+function flipCard(){ document.getElementById('theCard').classList.toggle('flipped'); }
+
+function fcRate(known){
+  const c=fcPool[fcIndex%fcPool.length];
+  if(known){
+    fcDominated.add(c.q); addXP(5,'Tarjeta dominada ✓');
+    fcDone++; document.getElementById('s-fc').textContent=fcDone;
+  }
+  fcIndex++;
+  if(known && fcDominated.size===fcPool.length){
+    addXP(20,'¡Set completado!');
+    setTimeout(()=>alert('🎉 ¡Dominaste todas las tarjetas!\n+20 XP bonus'),100);
+    fcDominated=new Set(); shuffle(fcPool); fcIndex=0;
+  }
+  showCard();
+}
+
+function fcSkip(){ fcIndex++; showCard(); }
+
+// ═══════════════════════════════════════
+// MATCH
+// ═══════════════════════════════════════
+function buildMatch(){
+  matchSel=null; matchCount=0; matchStart=Date.now();
+  document.getElementById('matchDone').classList.remove('show');
+  document.getElementById('matchScore').textContent='0 / 8';
+  const pairs=shuffle([...matchPairs]).slice(0,8);
+  const lefts=shuffle(pairs.map((p,i)=>({id:i,text:p[0]})));
+  const rights=shuffle(pairs.map((p,i)=>({id:i,text:p[1]})));
+  const lc=document.getElementById('matchLeft');
+  const rc=document.getElementById('matchRight');
+  lc.innerHTML=''; rc.innerHTML='';
+  lefts.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='match-item'; d.textContent=item.text;
+    d.dataset.id=item.id; d.dataset.side='L';
+    d.onclick=()=>matchClick(d);
+    lc.appendChild(d);
+  });
+  rights.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='match-item'; d.textContent=item.text;
+    d.dataset.id=item.id; d.dataset.side='R';
+    d.onclick=()=>matchClick(d);
+    rc.appendChild(d);
   });
 }
 
-function toggleTopic(i, btn) {
-  const body = document.getElementById('topic-body-' + i);
-  const card = document.getElementById('topic-card-' + i);
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  btn.classList.toggle('open', !isOpen);
-  if (!isOpen) {
-    seenTopics.add(i);
-    card.classList.add('seen');
-    updateProgress();
+function matchClick(el){
+  if(el.classList.contains('matched-ok')) return;
+  if(!matchSel){
+    matchSel=el; el.classList.add('selected');
+  } else {
+    if(matchSel===el){ el.classList.remove('selected'); matchSel=null; return; }
+    if(matchSel.dataset.side===el.dataset.side){
+      matchSel.classList.remove('selected'); matchSel=el;
+      el.classList.add('selected'); return;
+    }
+    const ok=matchSel.dataset.id===el.dataset.id;
+    if(ok){
+      matchSel.classList.remove('selected'); el.classList.remove('selected');
+      matchSel.classList.add('matched-ok'); el.classList.add('matched-ok');
+      matchCount++; document.getElementById('matchScore').textContent=matchCount+' / 8';
+      addXP(8,'¡Par correcto! 🔗');
+      matchSel=null;
+      if(matchCount===8){
+        const s=((Date.now()-matchStart)/1000).toFixed(1);
+        addXP(25,'¡Set completo! 🎉');
+        document.getElementById('matchDoneTime').textContent='Completado en '+s+' segundos';
+        document.getElementById('matchDone').classList.add('show');
+      }
+    } else {
+      const prev=matchSel;
+      prev.classList.add('matched-fail'); el.classList.add('matched-fail');
+      setTimeout(()=>{prev.classList.remove('matched-fail','selected'); el.classList.remove('matched-fail','selected');},400);
+      matchSel=null;
+    }
   }
 }
 
-function updateProgress() {
-  const pct = Math.round((seenTopics.size / topics.length) * 100);
-  document.getElementById('progressBar').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = seenTopics.size + ' de ' + topics.length + ' temas revisados';
+// ═══════════════════════════════════════
+// BATTLE
+// ═══════════════════════════════════════
+function startBattle(){
+  bPool=shuffle([...quizData]).slice(0,20);
+  bQ=0; bScore2=0; bStreak=0; bMaxStreak=0; bOk=0; bFail=0;
+  document.getElementById('battleStart').style.display='none';
+  document.getElementById('battleResult').classList.remove('show');
+  document.getElementById('battleGame').style.display='block';
+  loadBQ();
 }
 
-// ═══════════════════════════════════════════════
-//  BUILD QUIZ
-// ═══════════════════════════════════════════════
-let shuffledOpts = [];
+function loadBQ(){
+  if(bQ>=20){ endBattle(); return; }
+  clearInterval(bTimer); bAnswered=false; bTimeLeft=20;
+  document.getElementById('bFeedback').className='b-feedback';
+  document.getElementById('bFeedback').textContent='';
+  document.getElementById('bQNum').textContent='Pregunta '+(bQ+1)+' de 20';
+  const q=bPool[bQ];
+  document.getElementById('bQText').textContent=q.q;
+  const opts=q.opts.map((o,i)=>({t:o,i})); shuffle(opts);
+  const oc=document.getElementById('bOpts'); oc.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='b-opt'; b.textContent=o.t;
+    b.onclick=()=>battleAns(o.i,b,opts);
+    oc.appendChild(b);
+  });
+  updateTimer();
+  bTimer=setInterval(()=>{ bTimeLeft--; updateTimer(); if(bTimeLeft<=0){clearInterval(bTimer);if(!bAnswered) timeOut();}},1000);
+}
 
-function buildQuiz() {
-  const container = document.getElementById('quizContainer');
-  container.innerHTML = '';
-  shuffledOpts = [];
-  document.getElementById('resultCard').classList.remove('show');
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('submitBtn').textContent = 'Enviar y calificar →';
-  document.getElementById('answeredCount').textContent = '0';
+function updateTimer(){
+  const pct=bTimeLeft/20;
+  document.getElementById('timerCircle').style.strokeDashoffset=160*(1-pct);
+  document.getElementById('timerNum').textContent=bTimeLeft;
+  const w=document.getElementById('timerWrap');
+  w.className='timer-wrap'+(bTimeLeft<=5?' danger':bTimeLeft<=10?' warn':'');
+}
 
-  questions.forEach((q, qi) => {
-    const opts = q.opts.map((o, oi) => ({text: o, origIdx: oi}));
-    for (let i = opts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [opts[i], opts[j]] = [opts[j], opts[i]];
-    }
-    shuffledOpts.push(opts);
+function battleAns(chosen,btn,opts){
+  if(bAnswered) return;
+  bAnswered=true; clearInterval(bTimer);
+  const correct=bPool[bQ].ans;
+  document.querySelectorAll('.b-opt').forEach(b=>b.disabled=true);
+  const isOk=chosen===correct;
+  btn.classList.add(isOk?'correct':'wrong');
+  if(!isOk) opts.forEach((o,idx)=>{ if(o.i===correct) document.querySelectorAll('.b-opt')[idx].classList.add('correct'); });
+  const fb=document.getElementById('bFeedback');
+  if(isOk){
+    bOk++; bStreak++;
+    if(bStreak>bMaxStreak){bMaxStreak=bStreak; maxStreak=Math.max(maxStreak,bStreak); document.getElementById('s-str').textContent=maxStreak;}
+    const pts=10+(bStreak>=3?5:0); bScore2+=pts;
+    document.getElementById('bScore').textContent=bScore2;
+    document.getElementById('bStreak').textContent=bStreak;
+    fb.className='b-feedback ok';
+    fb.textContent='✓ ¡Correcto!'+(bStreak>=3?' 🔥 Racha ×'+bStreak:'');
+    addXP(pts,'Batalla: acierto');
+  } else {
+    bFail++; bStreak=0; document.getElementById('bStreak').textContent=0;
+    fb.className='b-feedback fail'; fb.textContent='✗ Incorrecto';
+  }
+  setTimeout(()=>{bQ++; loadBQ();},1100);
+}
 
-    const card = document.createElement('div');
-    card.className = 'q-card';
-    card.id = 'q-' + qi;
+function timeOut(){
+  bAnswered=true; bFail++; bStreak=0;
+  document.getElementById('bStreak').textContent=0;
+  document.querySelectorAll('.b-opt').forEach(b=>b.disabled=true);
+  document.getElementById('bFeedback').className='b-feedback fail';
+  document.getElementById('bFeedback').textContent='⏱ Tiempo agotado';
+  setTimeout(()=>{bQ++; loadBQ();},900);
+}
 
-    let optsHTML = opts.map((o, si) => `
-      <label class="q-option" id="opt-${qi}-${si}">
-        <input type="radio" name="q${qi}" value="${o.origIdx}" onchange="countAnswered()">
-        <span>${o.text}</span>
-      </label>`).join('');
+function endBattle(){
+  clearInterval(bTimer);
+  document.getElementById('battleGame').style.display='none';
+  const pct=Math.round(bOk/20*100);
+  const res=document.getElementById('battleResult'); res.classList.add('show');
+  document.getElementById('brScore').textContent=bScore2+' pts';
+  let msg=pct>=85?'¡Eres una máquina! 🔥':pct>=65?'¡Muy bien! Sigue practicando 💪':'Repasa y vuelve a intentarlo 📚';
+  document.getElementById('brLbl').textContent=msg;
+  document.getElementById('brOk').textContent=bOk;
+  document.getElementById('brFail').textContent=bFail;
+  document.getElementById('brStreak').textContent=bMaxStreak;
+  const g=(bOk/20*10).toFixed(1);
+  if(!bestQuiz||parseFloat(g)>parseFloat(bestQuiz)){bestQuiz=g; document.getElementById('s-q').textContent=g+'/10';}
+}
 
-    card.innerHTML = `
-      <div class="q-num">Pregunta ${qi + 1} de 30</div>
+function resetBattle(){
+  document.getElementById('battleResult').classList.remove('show');
+  document.getElementById('battleStart').style.display='block';
+}
+
+// ═══════════════════════════════════════
+// QUIZ × 30
+// ═══════════════════════════════════════
+function buildQuiz(){
+  document.getElementById('quizResult').classList.remove('show');
+  q2Opts=[]; document.getElementById('quizContainer').innerHTML='';
+  updateQCounter();
+  quizData.forEach((q,qi)=>{
+    const opts=q.opts.map((o,i)=>({t:o,orig:i})); shuffle(opts); q2Opts.push(opts);
+    const card=document.createElement('div');
+    card.className='q-card'; card.id='qc-'+qi;
+    card.innerHTML=`<div class="q-num">Pregunta ${qi+1} de 30</div>
       <div class="q-text">${q.q}</div>
-      <div class="q-options">${optsHTML}</div>
-      <div class="q-feedback" id="fb-${qi}"></div>`;
-    container.appendChild(card);
+      <div class="q-opts">${opts.map((o,si)=>`
+        <label class="q-opt" id="qo-${qi}-${si}">
+          <input type="radio" name="q${qi}" value="${o.orig}" onchange="updateQCounter()">
+          <span>${o.t}</span>
+        </label>`).join('')}</div>
+      <div class="q-feedback" id="qfb-${qi}"></div>`;
+    document.getElementById('quizContainer').appendChild(card);
   });
 }
 
-function countAnswered() {
-  const answered = questions.filter((_, i) => {
-    const r = document.querySelector(`input[name="q${i}"]:checked`);
-    return r !== null;
-  }).length;
-  document.getElementById('answeredCount').textContent = answered;
+function updateQCounter(){
+  const done=quizData.filter((_,i)=>document.querySelector(`input[name="q${i}"]:checked`)).length;
+  document.getElementById('qCounterTxt').textContent=done+' de 30 respondidas';
+  document.getElementById('qCounterNum').textContent=done+'/30';
 }
 
-function submitQuiz() {
-  let score = 0;
-  const unanswered = [];
-
-  questions.forEach((q, qi) => {
-    const selected = document.querySelector(`input[name="q${qi}"]:checked`);
-    const fb = document.getElementById('fb-' + qi);
-
-    shuffledOpts[qi].forEach((o, si) => {
-      const lbl = document.getElementById('opt-' + qi + '-' + si);
-      lbl.style.cursor = 'default';
+function submitQuiz(){
+  let score=0;
+  quizData.forEach((q,qi)=>{
+    const sel=document.querySelector(`input[name="q${qi}"]:checked`);
+    const fb=document.getElementById('qfb-'+qi);
+    const card=document.getElementById('qc-'+qi);
+    document.querySelectorAll(`input[name="q${qi}"]`).forEach(inp=>inp.disabled=true);
+    if(!sel){fb.className='q-feedback show fail'; fb.textContent='✗ Sin respuesta · Correcta: '+q.opts[q.ans]; return;}
+    const ok=parseInt(sel.value)===q.ans;
+    if(ok) score++;
+    q2Opts[qi].forEach((o,si)=>{
+      const l=document.getElementById('qo-'+qi+'-'+si);
+      if(o.orig===q.ans) l.classList.add('correct-ans');
+      if(o.orig===parseInt(sel.value)&&!ok) l.classList.add('wrong');
     });
-
-    if (!selected) {
-      unanswered.push(qi + 1);
-      fb.className = 'q-feedback show fail';
-      fb.textContent = '✗ Sin respuesta. Correcta: ' + q.opts[q.ans];
-      return;
-    }
-
-    const chosenOrig = parseInt(selected.value);
-    const isCorrect = chosenOrig === q.ans;
-    if (isCorrect) score++;
-
-    shuffledOpts[qi].forEach((o, si) => {
-      const lbl = document.getElementById('opt-' + qi + '-' + si);
-      if (o.origIdx === q.ans) lbl.classList.add('correct-answer');
-      if (o.origIdx === chosenOrig && !isCorrect) lbl.classList.add('wrong');
-    });
-
-    fb.className = 'q-feedback show ' + (isCorrect ? 'ok' : 'fail');
-    fb.textContent = isCorrect
-      ? '✓ ¡Correcto!'
-      : '✗ Incorrecto. Respuesta correcta: ' + q.opts[q.ans];
+    card.classList.add(ok?'ok':'fail');
+    fb.className='q-feedback show '+(ok?'ok':'fail');
+    fb.textContent=ok?'✓ ¡Correcto!':'✗ Incorrecto · Correcta: '+q.opts[q.ans];
   });
-
-  if (unanswered.length > 0 && unanswered.length === questions.length) {
-    alert('Por favor responde al menos una pregunta antes de enviar.');
-    return;
-  }
-
-  const pct = Math.round((score / questions.length) * 100);
-  const grade = (score / questions.length * 10).toFixed(1);
-
-  const rc = document.getElementById('resultCard');
-  rc.classList.add('show');
-  document.getElementById('resultScore').textContent = grade + '/10';
-  document.getElementById('statAciertos').textContent = score;
-  document.getElementById('statErrores').textContent = questions.length - score;
-  document.getElementById('statPct').textContent = pct + '%';
-
-  let msg = '';
-  if (pct >= 90) msg = '🎉 ¡Excelente! Dominas los temas de Orgánica.';
-  else if (pct >= 70) msg = '👍 Bien hecho. Repasa los temas donde fallaste.';
-  else if (pct >= 50) msg = '📚 Vas por buen camino, pero necesitas estudiar más.';
-  else msg = '💪 No te rindas. Revisa el temario y vuelve a intentarlo.';
-  document.getElementById('resultLabel').textContent = msg;
-
-  document.getElementById('submitBtn').disabled = true;
-  rc.scrollIntoView({behavior:'smooth', block:'start'});
+  const pct=Math.round(score/30*100);
+  const grade=(score/30*10).toFixed(1);
+  const rc=document.getElementById('quizResult'); rc.classList.add('show');
+  document.getElementById('qrScore').textContent=grade+'/10';
+  let msg=pct>=90?'🎉 ¡Excelente! Dominas Orgánica.':pct>=70?'👍 Bien. Repasa lo que fallaste.':pct>=50?'📚 Vas bien, sigue estudiando.':'💪 Repasa y vuelve a intentarlo.';
+  document.getElementById('qrLbl').textContent=msg;
+  document.getElementById('qrOk').textContent=score;
+  document.getElementById('qrFail').textContent=30-score;
+  document.getElementById('qrPct').textContent=pct+'%';
+  if(!bestQuiz||parseFloat(grade)>parseFloat(bestQuiz)){bestQuiz=grade; document.getElementById('s-q').textContent=grade+'/10';}
+  addXP(score*3,'Quiz completado 🎉');
+  rc.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function retryQuiz() {
-  buildQuiz();
-  window.scrollTo({top: document.getElementById('quiz').offsetTop, behavior:'smooth'});
-}
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-// ═══════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════
-buildTemario();
+// INIT
 buildQuiz();
 </script>
 </body>
