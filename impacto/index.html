@@ -1,15 +1,89 @@
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>IMPACTO — Juventudes que Transforman México</title>
-<meta name="description" content="IMPACTO es una organización juvenil mexicana presente en más de 20 estados con más de 1,600 líderes. Únete y transforma tu comunidad." />
-<meta name="keywords" content="IMPACTO, juventud México, voluntariado, líderes juveniles, organización juvenil, Celaya, Guanajuato" />
-<meta property="og:title" content="IMPACTO — Juventudes que Transforman México" />
-<meta property="og:description" content="Únete a +1,600 líderes juveniles en más de 20 estados de México." />
+<title>Juventudes Impactando México A.C.</title>
+<meta name="description" content="Juventudes Impactando México A.C. (IMPACTO) es una asociación civil sin fines de lucro que forma líderes juveniles, impulsa el voluntariado y desarrolla proyectos sociales, ambientales y de emprendimiento en más de 20 estados de México. +1,600 jóvenes transformando comunidades." />
+<meta name="keywords" content="Juventudes Impactando México, IMPACTO, asociación civil, A.C., ONG México, organización juvenil, liderazgo juvenil, jóvenes líderes, voluntariado México, asociaciones juveniles, desarrollo comunitario, proyectos sociales, emprendimiento juvenil, participación ciudadana, juventud, líderes sociales, asociaciones sin fines de lucro, ONG juvenil, transformación social, Celaya, Guanajuato, México" />
+<meta name="author" content="Juventudes Impactando México A.C." />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow" />
+<meta name="language" content="Spanish" />
+<meta name="geo.region" content="MX" />
+<meta name="geo.placename" content="Celaya, Guanajuato, México" />
+<meta name="theme-color" content="#0B1530" />
+<link rel="canonical" href="https://juventudesimpactandomexico.org/" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Juventudes Impactando México A.C." />
+<meta property="og:description" content="Asociación civil que forma líderes juveniles e impulsa proyectos sociales, ambientales y de emprendimiento en +20 estados de México. Únete a +1,600 jóvenes transformando comunidades." />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="Juventudes Impactando México A.C." />
+<meta property="og:locale" content="es_MX" />
+<meta property="og:image" content="LOGOS/11.png" />
+<meta property="og:image:alt" content="Logo de Juventudes Impactando México A.C. (IMPACTO)" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Juventudes Impactando México A.C." />
+<meta name="twitter:description" content="Asociación civil que forma líderes juveniles e impulsa proyectos sociales en +20 estados de México. Únete a +1,600 jóvenes." />
+<meta name="twitter:image" content="LOGOS/11.png" />
+
+<link rel="icon" type="image/png" href="LOGOS/13.png" />
+<link rel="apple-touch-icon" href="LOGOS/13.png" />
+
+<!-- Structured Data (Schema.org) — NGO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  "name": "Juventudes Impactando México A.C.",
+  "alternateName": ["IMPACTO", "Juventudes Impactando México"],
+  "url": "https://juventudesimpactandomexico.org/",
+  "logo": "LOGOS/11.png",
+  "image": "LOGOS/11.png",
+  "description": "Asociación civil mexicana sin fines de lucro que forma líderes juveniles, impulsa el voluntariado y desarrolla proyectos sociales, ambientales, culturales y de emprendimiento en más de 20 estados de México.",
+  "foundingDate": "2021",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Celaya, Guanajuato, México"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "México"
+  },
+  "knowsAbout": [
+    "Liderazgo juvenil",
+    "Voluntariado",
+    "Desarrollo comunitario",
+    "Participación ciudadana",
+    "Emprendimiento social",
+    "Proyectos sociales",
+    "Educación cívica",
+    "Juventudes"
+  ],
+  "sameAs": [
+    "https://instagram.com/impacto.mex",
+    "https://tiktok.com/@impacto.mex",
+    "https://facebook.com/impacto.org"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Celaya",
+    "addressRegion": "Guanajuato",
+    "addressCountry": "MX"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+52-461-344-5141",
+    "contactType": "customer service",
+    "availableLanguage": ["Spanish"]
+  }
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,12 +209,14 @@
 
   /* Instagram tile hover */
   .ig-tile { position:relative; overflow:hidden; }
+  .ig-tile img { transition: transform .5s ease; }
+  .ig-tile:hover img { transform: scale(1.06); }
   .ig-tile::after {
-    content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(247,179,62,.0), rgba(247,179,62,.85));
-    opacity:0; transition:opacity .35s ease;
+    content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(11,21,48,.55), rgba(247,179,62,.7));
+    opacity:0; transition:opacity .35s ease; z-index:1;
   }
   .ig-tile:hover::after { opacity:1; }
-  .ig-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .35s ease; }
+  .ig-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .35s ease; z-index:2; }
   .ig-tile:hover .ig-icon { opacity:1; }
 </style>
 </head>
@@ -148,21 +224,12 @@
 
 <!-- ============ NAVIGATION ============ -->
 <header id="nav" class="sticky top-0 z-50 bg-white/85 backdrop-blur-lg border-b border-midnight-100/60">
-  <div class="max-w-7xl mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
-    <a href="#home" class="flex items-center gap-2">
-      <div class="relative w-9 h-9">
-        <div class="absolute inset-0 bg-brand-400 rounded-lg rotate-6"></div>
-        <div class="absolute inset-0 bg-midnight-900 rounded-lg flex items-center justify-center">
-          <span class="font-display font-black text-white text-lg">i</span>
-        </div>
-      </div>
-      <div class="leading-tight">
-        <div class="font-display font-black text-midnight-900 text-lg tracking-tight">IMPACTO</div>
-        <div class="text-[10px] font-mono-display uppercase tracking-widest text-brand-600 -mt-0.5">México</div>
-      </div>
+  <div class="max-w-7xl mx-auto px-4 lg:px-6 h-20 lg:h-24 flex items-center justify-between gap-4">
+    <a href="#home" class="flex items-center shrink-0" aria-label="IMPACTO — Inicio">
+      <img src="LOGOS/impacto-horizontal.png" alt="IMPACTO — Juventudes Impactando México A.C." class="h-9 sm:h-11 lg:h-14 w-auto" />
     </a>
 
-    <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-midnight-700">
+    <nav class="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-midnight-700">
       <a href="#nosotros" class="nav-link hover:text-midnight-900">Nosotros</a>
       <a href="#impacto" class="nav-link hover:text-midnight-900">Impacto</a>
       <a href="#proyectos" class="nav-link hover:text-midnight-900">Proyectos</a>
@@ -190,8 +257,8 @@
 
   <!-- Mobile menu -->
   <div id="mobileMenu" class="lg:hidden fixed inset-0 z-50 bg-midnight-900 text-white transform translate-x-full transition-transform duration-300">
-    <div class="flex items-center justify-between px-4 h-16 border-b border-white/10">
-      <span class="font-display font-black text-xl">IMPACTO</span>
+    <div class="flex items-center justify-between px-4 h-20 border-b border-white/10">
+      <span class="font-display font-black text-2xl tracking-tight">IMPACTO</span>
       <button id="closeBtn" aria-label="Cerrar menú">
         <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
@@ -455,7 +522,7 @@
       </div>
       <div class="reveal p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur">
         <div class="font-mono-display text-brand-400 text-xs mb-2">// PERSONAS</div>
-        <div class="font-display font-black text-5xl lg:text-6xl" data-counter="85000" data-suffix="+">0</div>
+        <div class="font-display font-black text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl tracking-tight leading-none whitespace-nowrap" data-counter="250000" data-suffix="+">0</div>
         <div class="text-sm text-white/60 mt-2">beneficiadas</div>
       </div>
     </div>
@@ -514,13 +581,8 @@
     <div class="reveal bg-white rounded-3xl p-6 lg:p-8 border border-brand-200 shadow-xl shadow-brand-400/10">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="flex items-center gap-4 group">
-          <div class="relative">
-            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-brand-400 via-pink-500 to-purple-600 p-[2px]">
-              <div class="w-full h-full rounded-full bg-white"></div>
-            </div>
-            <div class="relative w-14 h-14 rounded-full bg-midnight-900 flex items-center justify-center m-[3px]">
-              <span class="font-display font-black text-brand-400 text-xl">i</span>
-            </div>
+          <div class="relative w-16 h-16 rounded-full bg-gradient-to-tr from-brand-400 via-pink-500 to-purple-600 p-[3px] flex-shrink-0">
+            <img src="PERFILINSTAGRAM.png" alt="Foto de perfil de @impacto.mex en Instagram" class="w-full h-full rounded-full object-cover bg-white border-[2px] border-white" />
           </div>
           <div>
             <div class="font-display font-bold text-midnight-900 text-lg group-hover:text-brand-600 transition flex items-center gap-2">
@@ -536,44 +598,43 @@
         </a>
       </div>
 
-      <!-- IG-style tile grid (clickable to Instagram) -->
+      <!-- IG-style tile grid: 9 real posts from @impacto.mex -->
       <div class="grid grid-cols-3 gap-2 lg:gap-3">
-        <!-- 9 tiles -->
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-300 to-brand-500 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><circle cx="30" cy="40" r="20" fill="#fff"/><circle cx="70" cy="60" r="25" fill="#fff"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DXjwvlykVtm/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/reconocimiento-am.jpg" alt="Reconocimiento de AM y Al Día a IMPACTO" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-700 to-midnight-900 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-25"><polygon points="20,80 50,30 80,70" stroke="#F7B33E" stroke-width="3" fill="none"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DWFZ7zhEfbx/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/convenio-gto.jpg" alt="Convenio con Gobierno Municipal de Guanajuato" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><rect x="20" y="20" width="60" height="60" rx="10" stroke="#fff" stroke-width="3" fill="none"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DTtD3v5kut0/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/casa-valentina-bcs.jpg" alt="IMPACTO BCS renovó Casa Valentina con Corazón de León" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-800 to-midnight-900 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><circle cx="50" cy="50" r="25" fill="#F7B33E"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DRSk4eVkQ-R/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/convenio-nl.jpg" alt="Convenio con Instituto Estatal de la Juventud de Nuevo León" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-200 to-brand-400 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-40"><path d="M 20,50 Q 35,20 50,50 T 80,50" stroke="#0B1530" stroke-width="3" fill="none"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DPhAhdgDtWS/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/taller-expresarte.jpg" alt="Taller ExpresArte Ecatepec" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-900 to-brand-700 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><polygon points="50,15 60,40 85,40 65,55 75,80 50,65 25,80 35,55 15,40 40,40" fill="#F7B33E"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DOWVSvHkZXL/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/paseos-adopcion.jpg" alt="Paseos por la adopción animal en Michoacán y Jalisco" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><circle cx="30" cy="30" r="15" fill="#fff"/><circle cx="70" cy="70" r="20" fill="#fff"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DU6GItajnVe/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/regio-pet-run.jpg" alt="Regio Pet Run 2026 en Parque España" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-midnight-600 to-midnight-900 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-25"><path d="M 20,80 L 50,20 L 80,80 Z" stroke="#F7B33E" stroke-width="3" fill="none"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DWCkRMSDiDY/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/limpieza-presa.jpg" alt="Jornada de limpieza en Paseo de la Presa, Guanajuato" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
-        <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 relative">
-          <svg viewBox="0 0 100 100" class="absolute inset-0 w-full h-full opacity-30"><rect x="30" y="30" width="40" height="40" rx="8" fill="#fff"/></svg>
-          <div class="ig-icon"><svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
+        <a href="https://www.instagram.com/p/DW5IAUZDjfS/" target="_blank" rel="noopener" class="ig-tile aspect-square rounded-xl relative overflow-hidden bg-midnight-900">
+          <img src="posts/slp-juventud.jpg" alt="Juventud líder en San Luis de la Paz, Guanajuato" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <div class="ig-icon"><svg class="w-10 h-10 text-white drop-shadow-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></div>
         </a>
       </div>
 
@@ -594,73 +655,282 @@
   </div>
 </section>
 
-<!-- ============ DIRECCIONES / ÁREAS ============ -->
+<!-- ============ DIRECCIONES / ESTRUCTURA ============ -->
 <section id="areas" class="py-20 lg:py-28 bg-white">
   <div class="max-w-7xl mx-auto px-4 lg:px-6">
     <div class="grid lg:grid-cols-12 gap-10 mb-14">
       <div class="lg:col-span-5 reveal">
-        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">04 / Direcciones</div>
-        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Las áreas que mueven IMPACTO.</h2>
+        <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">04 / Estructura</div>
+        <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Cómo nos <span class="text-brand-500">organizamos</span>.</h2>
       </div>
       <div class="lg:col-span-7 reveal">
-        <p class="text-lg text-midnight-700">Operamos a través de direcciones especializadas, cada una con liderazgo propio y metas anuales. Esta es la estructura que sostiene nuestro impacto.</p>
+        <p class="text-lg text-midnight-700">IMPACTO se sostiene en una <strong>estructura territorial</strong> que conecta cada municipio con la coordinación nacional, dos <strong>direcciones transversales</strong> que tejen alianzas, y <strong>siete direcciones temáticas</strong> que profesionalizan cada causa que impulsamos.</p>
       </div>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <article class="reveal card-lift p-7 rounded-3xl bg-brand-50 border border-brand-200">
-        <div class="font-mono-display text-brand-700 text-xs mb-3">DIR-01</div>
-        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Social</h3>
-        <p class="text-midnight-700 text-sm leading-relaxed">Programas de combate a la pobreza, salud comunitaria y bienestar.</p>
-      </article>
+    <!-- ===== A) ESTRUCTURA TERRITORIAL ===== -->
+    <div class="reveal mb-16">
+      <div class="flex items-center gap-3 mb-7">
+        <div class="w-10 h-10 rounded-xl bg-brand-400 text-midnight-900 flex items-center justify-center font-display font-black text-lg">A</div>
+        <div>
+          <h3 class="font-display font-black text-2xl lg:text-3xl text-midnight-900 leading-none">Estructura territorial</h3>
+          <p class="text-sm text-midnight-600 mt-1">Cuatro niveles que conectan lo local con lo nacional.</p>
+        </div>
+      </div>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-mint-500/10 border border-mint-500/20">
-        <div class="font-mono-display text-mint-600 text-xs mb-3">DIR-02</div>
-        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Ambiental</h3>
-        <p class="text-midnight-700 text-sm leading-relaxed">Reforestación, gestión de residuos y educación climática.</p>
-      </article>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Municipal -->
+        <article class="card-lift relative z-10 p-6 rounded-3xl bg-brand-50 border border-brand-200">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono-display text-brand-700 text-[11px] uppercase tracking-widest">Nivel 1 · Local</span>
+            <div class="w-9 h-9 rounded-full bg-white border-2 border-brand-400 flex items-center justify-center">
+              <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            </div>
+          </div>
+          <h4 class="font-display font-black text-xl text-midnight-900">Representaciones Municipales</h4>
+          <p class="text-sm text-midnight-700 mt-2 leading-relaxed">El motor del movimiento. Actúan en lo local: gestionan, representan y mueven los proyectos día a día en sus comunidades.</p>
+          <div class="mt-4 text-[11px] font-mono-display text-brand-700 uppercase tracking-wider">Alcance: municipio</div>
+        </article>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-brand-400 text-midnight-900">
-        <div class="font-mono-display text-midnight-700 text-xs mb-3">DIR-03</div>
-        <h3 class="font-display font-bold text-2xl mb-2">Dirección Educativa</h3>
-        <p class="text-midnight-900/80 text-sm leading-relaxed">Becas, tutorías, alfabetización digital y formación cívica.</p>
-      </article>
+        <!-- Estatal -->
+        <article class="card-lift relative z-10 p-6 rounded-3xl bg-mint-500/10 border border-mint-500/30">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono-display text-mint-600 text-[11px] uppercase tracking-widest">Nivel 2 · Estado</span>
+            <div class="w-9 h-9 rounded-full bg-white border-2 border-mint-500 flex items-center justify-center">
+              <svg class="w-4 h-4 text-mint-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+            </div>
+          </div>
+          <h4 class="font-display font-black text-xl text-midnight-900">Representaciones Estatales</h4>
+          <p class="text-sm text-midnight-700 mt-2 leading-relaxed">Lideran la operación y los objetivos del estado. Coordinan a las representaciones municipales y aterrizan la estrategia.</p>
+          <div class="mt-4 text-[11px] font-mono-display text-mint-600 uppercase tracking-wider">Alcance: estado</div>
+        </article>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-midnight-50 border border-midnight-100">
-        <div class="font-mono-display text-midnight-600 text-xs mb-3">DIR-04</div>
-        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Cultural</h3>
-        <p class="text-midnight-700 text-sm leading-relaxed">Festivales, talleres artísticos y preservación del patrimonio.</p>
-      </article>
+        <!-- Regional / Vicepresidencias -->
+        <article class="card-lift relative z-10 p-6 rounded-3xl bg-brand-400 text-midnight-900">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono-display text-midnight-800 text-[11px] uppercase tracking-widest">Nivel 3 · Región</span>
+            <div class="w-9 h-9 rounded-full bg-midnight-900 flex items-center justify-center">
+              <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+            </div>
+          </div>
+          <h4 class="font-display font-black text-xl">Vicepresidencias Regionales</h4>
+          <p class="text-sm text-midnight-900/85 mt-2 leading-relaxed">Unifican las acciones de varios estados, articulan la línea estratégica del país y aseguran que todos remen en la misma dirección.</p>
+          <div class="mt-4 text-[11px] font-mono-display text-midnight-800 uppercase tracking-wider">Alcance: región</div>
+        </article>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-brand-50 border border-brand-200">
-        <div class="font-mono-display text-brand-700 text-xs mb-3">DIR-05</div>
-        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección de Emprendimiento</h3>
-        <p class="text-midnight-700 text-sm leading-relaxed">Incubación, mentorías y financiamiento a proyectos juveniles.</p>
-      </article>
+        <!-- Nacional -->
+        <article class="card-lift relative z-10 p-6 rounded-3xl bg-midnight-900 text-white">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono-display text-brand-400 text-[11px] uppercase tracking-widest">Nivel 4 · País</span>
+            <div class="w-9 h-9 rounded-full bg-brand-400 flex items-center justify-center">
+              <svg class="w-4 h-4 text-midnight-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+            </div>
+          </div>
+          <h4 class="font-display font-black text-xl">Representación Nacional</h4>
+          <p class="text-sm text-white/85 mt-2 leading-relaxed">Está para acompañar y respaldar a todas las representaciones. Su trabajo es facilitar: desatorar lo que se atora, conectar lo que hace falta y asegurarse de que nadie camine solo.</p>
+          <div class="mt-4 text-[11px] font-mono-display text-brand-400 uppercase tracking-wider">Alcance: nacional</div>
+        </article>
+      </div>
+    </div>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-mint-500/10 border border-mint-500/20">
-        <div class="font-mono-display text-mint-600 text-xs mb-3">DIR-06</div>
-        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección de Comunicación</h3>
-        <p class="text-midnight-700 text-sm leading-relaxed">Estrategia digital, contenido, prensa y vinculación con medios.</p>
-      </article>
+    <!-- ===== B) DIRECCIONES TRANSVERSALES ===== -->
+    <div class="reveal mb-16">
+      <div class="flex items-center gap-3 mb-7">
+        <div class="w-10 h-10 rounded-xl bg-midnight-900 text-brand-400 flex items-center justify-center font-display font-black text-lg">B</div>
+        <div>
+          <h3 class="font-display font-black text-2xl lg:text-3xl text-midnight-900 leading-none">Direcciones transversales</h3>
+          <p class="text-sm text-midnight-600 mt-1">Dos direcciones que acompañan a toda la estructura en paralelo.</p>
+        </div>
+      </div>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-brand-400 text-midnight-900">
-        <div class="font-mono-display text-midnight-700 text-xs mb-3">DIR-07</div>
-        <h3 class="font-display font-bold text-2xl mb-2">Dirección de Alianzas</h3>
-        <p class="text-midnight-900/80 text-sm leading-relaxed">Procuración de fondos, alianzas estratégicas e institucionales.</p>
-      </article>
+      <div class="grid md:grid-cols-2 gap-5">
+        <article class="card-lift p-7 rounded-3xl bg-gradient-to-br from-midnight-50 to-white border border-midnight-100">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-brand-400/15 text-brand-700 flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            </div>
+            <div>
+              <div class="font-mono-display text-brand-700 text-[11px] uppercase tracking-widest mb-1">Transversal · 01</div>
+              <h4 class="font-display font-black text-2xl text-midnight-900 leading-tight">Dirección de Vinculación</h4>
+              <p class="text-midnight-700 mt-3 leading-relaxed">Construye y mantiene los puentes con gobiernos, instituciones, empresas y aliados estratégicos. Es la dirección que abre las puertas para que cada nivel de la estructura tenga con quién sumar fuerzas.</p>
+            </div>
+          </div>
+        </article>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-midnight-50 border border-midnight-100">
-        <div class="font-mono-display text-midnight-600 text-xs mb-3">DIR-08</div>
-        <h3 class="font-display font-bold text-2xl text-midnight-900 mb-2">Dirección Operativa</h3>
-        <p class="text-midnight-700 text-sm leading-relaxed">Logística, planeación y seguimiento de todas las representaciones.</p>
-      </article>
+        <article class="card-lift p-7 rounded-3xl bg-gradient-to-br from-mint-500/10 to-white border border-mint-500/20">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-mint-500/20 text-mint-600 flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+            </div>
+            <div>
+              <div class="font-mono-display text-mint-600 text-[11px] uppercase tracking-widest mb-1">Transversal · 02</div>
+              <h4 class="font-display font-black text-2xl text-midnight-900 leading-tight">Dirección de Servicio Social</h4>
+              <p class="text-midnight-700 mt-3 leading-relaxed">Articula con universidades y prepas para que estudiantes puedan convalidar su servicio social colaborando con IMPACTO. Forma el puente entre la academia y la transformación comunitaria.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
 
-      <article class="reveal card-lift p-7 rounded-3xl bg-midnight-900 text-white">
-        <div class="font-mono-display text-brand-400 text-xs mb-3">DIR-09</div>
-        <h3 class="font-display font-bold text-2xl mb-2">Coordinación Nacional</h3>
-        <p class="text-white/85 text-sm leading-relaxed">Articulación estratégica entre direcciones, representaciones y consejo directivo.</p>
-      </article>
+    <!-- ===== C) 7 MARAVILLAS (PLANETAS) ===== -->
+    <div class="reveal relative rounded-[2rem] overflow-hidden bg-midnight-900 text-white p-8 lg:p-12 isolate">
+      <!-- starfield background -->
+      <svg aria-hidden="true" class="absolute inset-0 w-full h-full opacity-60 -z-10" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="bgglow" cx="50%" cy="0%" r="80%">
+            <stop offset="0%" stop-color="#1F3458" stop-opacity=".9"/>
+            <stop offset="100%" stop-color="#0B1530" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="800" height="500" fill="url(#bgglow)"/>
+        <g fill="#fff">
+          <circle cx="40" cy="60" r="1"/><circle cx="120" cy="30" r="1.5"/><circle cx="200" cy="80" r="1"/>
+          <circle cx="320" cy="40" r="1.2"/><circle cx="450" cy="70" r="1"/><circle cx="580" cy="35" r="1.5"/>
+          <circle cx="700" cy="60" r="1"/><circle cx="760" cy="100" r="1.2"/><circle cx="60" cy="180" r="1"/>
+          <circle cx="180" cy="200" r="1.5"/><circle cx="380" cy="220" r="1"/><circle cx="520" cy="180" r="1.2"/>
+          <circle cx="650" cy="240" r="1"/><circle cx="100" cy="320" r="1.5"/><circle cx="280" cy="340" r="1"/>
+          <circle cx="450" cy="370" r="1"/><circle cx="600" cy="320" r="1.2"/><circle cx="750" cy="380" r="1.5"/>
+          <circle cx="30" cy="450" r="1"/><circle cx="220" cy="460" r="1.2"/><circle cx="400" cy="440" r="1"/>
+          <circle cx="560" cy="470" r="1"/><circle cx="720" cy="430" r="1.5"/>
+        </g>
+      </svg>
+
+      <div class="text-center mb-10 lg:mb-12">
+        <div class="font-mono-display text-brand-400 uppercase text-xs tracking-[0.25em] mb-3">// Direcciones temáticas</div>
+        <h3 class="font-display font-black text-3xl lg:text-5xl leading-tight">¡Nuestras <span class="text-brand-400">7 Maravillas</span>! <span class="inline-block animate-pulse">🪐</span></h3>
+        <p class="text-white/70 mt-4 max-w-2xl mx-auto">Siete direcciones que profesionalizan cada causa que impulsamos. Cada una es un planeta con su propia órbita, pero todas giran alrededor del mismo sol: <strong class="text-brand-400">las juventudes mexicanas</strong>.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
+
+        <!-- Mercurio -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-mercurio" cx="35%" cy="35%"><stop offset="0%" stop-color="#c8c2bb"/><stop offset="100%" stop-color="#6b6661"/></radialGradient></defs>
+            <circle cx="50" cy="50" r="36" fill="url(#planet-mercurio)"/>
+            <circle cx="40" cy="42" r="6" fill="#4d4a45" opacity=".5"/>
+            <circle cx="60" cy="55" r="4" fill="#4d4a45" opacity=".5"/>
+            <circle cx="48" cy="66" r="3" fill="#4d4a45" opacity=".5"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Planeta 01</div>
+          <h4 class="font-display font-black text-xl mt-1">Mercurio</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Comunicación, medios y difusión social.</p>
+        </article>
+
+        <!-- Venus -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-venus" cx="35%" cy="35%"><stop offset="0%" stop-color="#fad7a8"/><stop offset="100%" stop-color="#d68a3a"/></radialGradient></defs>
+            <circle cx="50" cy="50" r="36" fill="url(#planet-venus)"/>
+            <path d="M 16,46 Q 50,42 84,48" stroke="#fff" stroke-width="2.5" fill="none" opacity=".4"/>
+            <path d="M 20,58 Q 50,53 80,60" stroke="#fff" stroke-width="2" fill="none" opacity=".35"/>
+            <path d="M 24,68 Q 50,64 76,70" stroke="#fff" stroke-width="1.5" fill="none" opacity=".3"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Planeta 02</div>
+          <h4 class="font-display font-black text-xl mt-1">Venus</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Igualdad, inclusión y perspectiva de género.</p>
+        </article>
+
+        <!-- Tierra -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-tierra" cx="35%" cy="35%"><stop offset="0%" stop-color="#5a98d4"/><stop offset="100%" stop-color="#1f4a7a"/></radialGradient></defs>
+            <circle cx="50" cy="50" r="36" fill="url(#planet-tierra)"/>
+            <path d="M 22,38 Q 30,30 42,38 Q 38,46 30,44 Z" fill="#3a8a55"/>
+            <path d="M 56,52 Q 72,46 78,58 Q 68,64 60,62 Z" fill="#3a8a55"/>
+            <path d="M 30,66 Q 48,62 60,70 Q 50,76 38,72 Z" fill="#3a8a55"/>
+            <ellipse cx="50" cy="50" rx="36" ry="36" fill="none" stroke="#fff" stroke-width=".5" opacity=".2"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Planeta 03</div>
+          <h4 class="font-display font-black text-xl mt-1">Tierra</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Sostenibilidad y protección ambiental.</p>
+        </article>
+
+        <!-- Artemis (meteorito) -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-artemis" cx="35%" cy="35%"><stop offset="0%" stop-color="#b89169"/><stop offset="100%" stop-color="#5d3f25"/></radialGradient></defs>
+            <!-- comet trail -->
+            <line x1="8" y1="20" x2="38" y2="46" stroke="#F7B33E" stroke-width="3" opacity=".6" stroke-linecap="round"/>
+            <line x1="14" y1="14" x2="34" y2="40" stroke="#F7B33E" stroke-width="2" opacity=".4" stroke-linecap="round"/>
+            <line x1="6" y1="34" x2="32" y2="52" stroke="#F7B33E" stroke-width="2" opacity=".35" stroke-linecap="round"/>
+            <!-- meteorite -->
+            <path d="M 44,42 L 72,52 L 68,76 L 44,72 L 38,56 Z" fill="url(#planet-artemis)"/>
+            <circle cx="55" cy="55" r="3" fill="#3d2818" opacity=".7"/>
+            <circle cx="62" cy="65" r="2.5" fill="#3d2818" opacity=".6"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Meteorito 04</div>
+          <h4 class="font-display font-black text-xl mt-1">Artemis</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Bienestar y protección animal.</p>
+        </article>
+
+        <!-- Júpiter -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-jupiter" cx="35%" cy="35%"><stop offset="0%" stop-color="#e8c89a"/><stop offset="100%" stop-color="#8b5d36"/></radialGradient></defs>
+            <circle cx="50" cy="50" r="38" fill="url(#planet-jupiter)"/>
+            <ellipse cx="50" cy="38" rx="38" ry="3" fill="#a37548" opacity=".7"/>
+            <ellipse cx="50" cy="48" rx="38" ry="3.5" fill="#7a4f2c" opacity=".5"/>
+            <ellipse cx="50" cy="58" rx="38" ry="3" fill="#a37548" opacity=".7"/>
+            <ellipse cx="50" cy="66" rx="36" ry="2" fill="#7a4f2c" opacity=".4"/>
+            <ellipse cx="58" cy="52" rx="7" ry="4" fill="#c44a2a" opacity=".85"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Planeta 05</div>
+          <h4 class="font-display font-black text-xl mt-1">Júpiter</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Innovación, emprendimiento y desarrollo económico juvenil.</p>
+        </article>
+
+        <!-- Urano -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-urano" cx="35%" cy="35%"><stop offset="0%" stop-color="#b8e5e8"/><stop offset="100%" stop-color="#4a8a99"/></radialGradient></defs>
+            <ellipse cx="50" cy="55" rx="42" ry="6" fill="none" stroke="#7fc3d4" stroke-width="1.5" opacity=".55"/>
+            <ellipse cx="50" cy="55" rx="42" ry="6" fill="none" stroke="#fff" stroke-width=".5" opacity=".3"/>
+            <circle cx="50" cy="50" r="32" fill="url(#planet-urano)"/>
+            <ellipse cx="50" cy="55" rx="42" ry="6" fill="none" stroke="#7fc3d4" stroke-width="1" opacity=".25"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Planeta 06</div>
+          <h4 class="font-display font-black text-xl mt-1">Urano</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Educación, formación y desarrollo de habilidades.</p>
+        </article>
+
+        <!-- Neptuno -->
+        <article class="card-lift relative p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:bg-white/[0.08] transition">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs><radialGradient id="planet-neptuno" cx="35%" cy="35%"><stop offset="0%" stop-color="#6789c8"/><stop offset="100%" stop-color="#1d3a78"/></radialGradient></defs>
+            <circle cx="50" cy="50" r="36" fill="url(#planet-neptuno)"/>
+            <ellipse cx="50" cy="42" rx="26" ry="2.5" fill="#13265a" opacity=".6"/>
+            <ellipse cx="50" cy="55" rx="30" ry="3" fill="#13265a" opacity=".55"/>
+            <ellipse cx="50" cy="68" rx="22" ry="2" fill="#13265a" opacity=".5"/>
+          </svg>
+          <div class="font-mono-display text-white/50 text-[10px] uppercase tracking-widest">Planeta 07</div>
+          <h4 class="font-display font-black text-xl mt-1">Neptuno</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">Expresión artística, identidad y cultura.</p>
+        </article>
+
+        <!-- Sol / IMPACTO (8th decorative card) -->
+        <article class="relative p-5 rounded-2xl bg-gradient-to-br from-brand-400/20 to-brand-600/10 border border-brand-400/30 backdrop-blur flex flex-col justify-center">
+          <svg viewBox="0 0 100 100" class="w-16 h-16 mb-3">
+            <defs>
+              <radialGradient id="sun-glow" cx="50%" cy="50%"><stop offset="0%" stop-color="#FDEEC2"/><stop offset="60%" stop-color="#F7B33E"/><stop offset="100%" stop-color="#C47A12"/></radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="40" fill="url(#sun-glow)" class="animate-pulse"/>
+            <g stroke="#F7B33E" stroke-width="2" stroke-linecap="round" opacity=".8">
+              <line x1="50" y1="6" x2="50" y2="14"/>
+              <line x1="50" y1="86" x2="50" y2="94"/>
+              <line x1="6" y1="50" x2="14" y2="50"/>
+              <line x1="86" y1="50" x2="94" y2="50"/>
+              <line x1="18" y1="18" x2="24" y2="24"/>
+              <line x1="76" y1="76" x2="82" y2="82"/>
+              <line x1="18" y1="82" x2="24" y2="76"/>
+              <line x1="76" y1="24" x2="82" y2="18"/>
+            </g>
+          </svg>
+          <div class="font-mono-display text-brand-400 text-[10px] uppercase tracking-widest">El Sol</div>
+          <h4 class="font-display font-black text-xl mt-1">Juventudes</h4>
+          <p class="text-sm text-white/75 mt-2 leading-relaxed">El centro de todo. Cada planeta orbita alrededor de ellas.</p>
+        </article>
+      </div>
     </div>
   </div>
 </section>
@@ -750,46 +1020,159 @@
       <div class="reveal">
         <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">06 / Blog & Noticias</div>
         <h2 class="font-display font-black text-4xl lg:text-5xl text-midnight-900 leading-tight">Historias que inspiran.</h2>
+        <p class="text-midnight-600 mt-3 text-base max-w-xl">Proyectos reales de nuestras representaciones estatales. Toca cualquier historia para verla en Instagram.</p>
       </div>
-      <a href="#" class="font-semibold text-midnight-900 hover:text-brand-600 flex items-center gap-2 transition">Ver todas las publicaciones →</a>
+      <a href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" class="font-semibold text-midnight-900 hover:text-brand-600 flex items-center gap-2 transition">Ver todas en @impacto.mex →</a>
     </div>
 
     <div class="grid lg:grid-cols-3 gap-6">
-      <article class="reveal card-lift bg-brand-50 rounded-3xl overflow-hidden border border-brand-200 group cursor-pointer">
-        <div class="aspect-[16/10] bg-gradient-to-br from-brand-300 to-brand-500 relative overflow-hidden">
-          <svg viewBox="0 0 200 120" class="absolute inset-0 w-full h-full opacity-30"><circle cx="40" cy="40" r="30" fill="#fff"/><circle cx="120" cy="80" r="40" fill="#fff"/><rect x="150" y="20" width="40" height="40" fill="#fff" rx="8"/></svg>
-          <div class="absolute top-4 left-4 bg-white text-brand-700 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Historia</div>
-        </div>
-        <div class="p-6">
-          <div class="text-xs text-midnight-500 font-mono-display mb-2">15 MAY 2026 · 4 MIN</div>
-          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Cómo 40 jóvenes reforestaron 12 hectáreas en Chiapas</h3>
-          <p class="text-sm text-midnight-700 mt-2">La historia detrás del proyecto "Raíces" que devolvió la vida a una zona afectada por la deforestación.</p>
-        </div>
-      </article>
 
-      <article class="reveal card-lift bg-midnight-50 rounded-3xl overflow-hidden border border-midnight-100 group cursor-pointer">
-        <div class="aspect-[16/10] bg-gradient-to-br from-midnight-700 to-midnight-900 relative overflow-hidden">
-          <svg viewBox="0 0 200 120" class="absolute inset-0 w-full h-full opacity-30"><polygon points="20,100 70,30 120,80 180,40" stroke="#F7B33E" stroke-width="3" fill="none"/></svg>
-          <div class="absolute top-4 left-4 bg-white text-midnight-900 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Noticias</div>
+      <!-- Historia 1: Taller ExpresArte Ecatepec -->
+      <a href="https://www.instagram.com/p/DPhAhdgDtWS/" target="_blank" rel="noopener" class="reveal card-lift bg-brand-50 rounded-3xl overflow-hidden border border-brand-200 group block">
+        <div class="aspect-[16/10] relative overflow-hidden bg-midnight-900">
+          <img src="posts/taller-expresarte.jpg" alt="Taller ExpresArte: niñas y niños pintando en Ecatepec" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-midnight-900/40 via-transparent to-transparent"></div>
+          <div class="absolute top-4 left-4 bg-white text-brand-700 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">Arte & Educación</div>
+          <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+            <svg class="w-5 h-5 text-midnight-900" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
         </div>
         <div class="p-6">
-          <div class="text-xs text-midnight-500 font-mono-display mb-2">08 MAY 2026 · 3 MIN</div>
-          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Firmamos alianza con tres universidades del Bajío</h3>
-          <p class="text-sm text-midnight-700 mt-2">Ahora 1,200 estudiantes podrán convalidar su servicio social colaborando con IMPACTO.</p>
+          <div class="text-xs text-midnight-500 font-mono-display mb-2 flex items-center gap-2">
+            <span>7 OCT 2025</span>
+            <span class="w-1 h-1 rounded-full bg-midnight-300"></span>
+            <span>Ecatepec, EDOMEX</span>
+          </div>
+          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Taller ExpresArte: niñas y niños pintando sus sueños</h3>
+          <p class="text-sm text-midnight-700 mt-2">Un día lleno de creatividad y emociones en Ecatepec. Promovimos el uso de materiales reciclados para fomentar una cultura más sostenible.</p>
+          <div class="mt-4 text-xs font-semibold text-brand-700 flex items-center gap-1.5">Ver post en Instagram <span aria-hidden="true">→</span></div>
         </div>
-      </article>
+      </a>
 
-      <article class="reveal card-lift bg-brand-50 rounded-3xl overflow-hidden border border-brand-200 group cursor-pointer">
-        <div class="aspect-[16/10] bg-gradient-to-br from-brand-400 to-brand-600 relative overflow-hidden">
-          <svg viewBox="0 0 200 120" class="absolute inset-0 w-full h-full opacity-30"><circle cx="100" cy="60" r="50" fill="#fff" opacity=".5"/><circle cx="100" cy="60" r="30" fill="#fff"/></svg>
-          <div class="absolute top-4 left-4 bg-midnight-900 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">Cultura</div>
+      <!-- Historia 2: Paseos de adopción Michoacán & Jalisco -->
+      <a href="https://www.instagram.com/p/DOWVSvHkZXL/" target="_blank" rel="noopener" class="reveal card-lift bg-midnight-50 rounded-3xl overflow-hidden border border-midnight-100 group block">
+        <div class="aspect-[16/10] relative overflow-hidden bg-midnight-900">
+          <img src="posts/paseos-adopcion.jpg" alt="Paseos por una causa: adopción animal en Michoacán y Jalisco" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-midnight-900/40 via-transparent to-transparent"></div>
+          <div class="absolute top-4 left-4 bg-brand-400 text-midnight-900 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">Bienestar Animal</div>
+          <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+            <svg class="w-5 h-5 text-midnight-900" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
         </div>
         <div class="p-6">
-          <div class="text-xs text-midnight-500 font-mono-display mb-2">02 MAY 2026 · 5 MIN</div>
-          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Festival "Voces Jóvenes": el evento cultural del año</h3>
-          <p class="text-sm text-midnight-700 mt-2">3 días, 8 ciudades, +200 artistas emergentes. Así fue la edición 2026 del festival más esperado.</p>
+          <div class="text-xs text-midnight-500 font-mono-display mb-2 flex items-center gap-2">
+            <span>8 SEP 2025</span>
+            <span class="w-1 h-1 rounded-full bg-midnight-300"></span>
+            <span>Michoacán & Jalisco</span>
+          </div>
+          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Paseos por una causa: promoviendo la adopción animal</h3>
+          <p class="text-sm text-midnight-700 mt-2">Miembros de IMPACTO en Michoacán y Jalisco se sumaron a refugios locales para sacar a pasear lomitos, promover su adopción y darles un respiro de esperanza.</p>
+          <div class="mt-4 text-xs font-semibold text-brand-700 flex items-center gap-1.5">Ver post en Instagram <span aria-hidden="true">→</span></div>
         </div>
-      </article>
+      </a>
+
+      <!-- Historia 3: Jornada de limpieza Paseo de la Presa, Guanajuato -->
+      <a href="https://www.instagram.com/p/DWCkRMSDiDY/" target="_blank" rel="noopener" class="reveal card-lift bg-brand-50 rounded-3xl overflow-hidden border border-brand-200 group block">
+        <div class="aspect-[16/10] relative overflow-hidden bg-midnight-900">
+          <img src="posts/limpieza-presa.jpg" alt="Jornada de limpieza en Paseo de la Presa, Guanajuato" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-midnight-900/40 via-transparent to-transparent"></div>
+          <div class="absolute top-4 left-4 bg-white text-mint-600 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">Medio Ambiente</div>
+          <div class="absolute bottom-4 right-4 bg-white/95 backdrop-blur w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
+            <svg class="w-5 h-5 text-midnight-900" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="text-xs text-midnight-500 font-mono-display mb-2 flex items-center gap-2">
+            <span>18 MAR 2025</span>
+            <span class="w-1 h-1 rounded-full bg-midnight-300"></span>
+            <span>Paseo de la Presa, Gto.</span>
+          </div>
+          <h3 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Menos basura, más vida: jornada de limpieza en Guanajuato</h3>
+          <p class="text-sm text-midnight-700 mt-2">El equipo de IMPACTO Guanajuato se puso la camiseta por el medio ambiente con una jornada de recolección de residuos en el Paseo de la Presa.</p>
+          <div class="mt-4 text-xs font-semibold text-brand-700 flex items-center gap-1.5">Ver post en Instagram <span aria-hidden="true">→</span></div>
+        </div>
+      </a>
+    </div>
+
+    <!-- ===== Convenios y Alianzas ===== -->
+    <div class="mt-20 lg:mt-24">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
+        <div class="reveal">
+          <div class="font-mono-display text-brand-600 uppercase text-xs tracking-[0.25em] mb-4">// Convenios y Alianzas</div>
+          <h3 class="font-display font-black text-3xl lg:text-4xl text-midnight-900 leading-tight">Acuerdos que <span class="text-brand-500">multiplican</span> el impacto.</h3>
+          <p class="text-midnight-600 mt-3 text-base max-w-2xl">Cada firma es una puerta más abierta para que las juventudes mexicanas construyan los proyectos que están transformando sus comunidades.</p>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-6">
+
+        <!-- Convenio 1: Gobierno Municipal de Guanajuato -->
+        <a href="https://www.instagram.com/p/DWFZ7zhEfbx/" target="_blank" rel="noopener" class="reveal card-lift bg-white rounded-3xl overflow-hidden border border-midnight-100 group block">
+          <div class="aspect-[16/10] relative overflow-hidden bg-midnight-900">
+            <img src="posts/convenio-gto.jpg" alt="Firma de convenio entre IMPACTO y el Gobierno Municipal de Guanajuato" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-midnight-900/70 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 bg-brand-400 text-midnight-900 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">Convenio Municipal</div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="text-white text-xs font-mono-display uppercase tracking-widest opacity-90">Guanajuato Capital</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Convenio con el Gobierno Municipal de Guanajuato</h4>
+            <p class="text-sm text-midnight-700 mt-2">Firma con la presidenta municipal <strong>Samantha Smith</strong> para impulsar el talento joven, la innovación social y el desarrollo comunitario desde la sociedad civil organizada.</p>
+            <div class="mt-4 text-xs font-semibold text-brand-700 flex items-center gap-1.5">Ver en Instagram <span aria-hidden="true">→</span></div>
+          </div>
+        </a>
+
+        <!-- Convenio 2: Instituto Estatal de la Juventud de Nuevo León -->
+        <a href="https://www.instagram.com/p/DRSk4eVkQ-R/" target="_blank" rel="noopener" class="reveal card-lift bg-white rounded-3xl overflow-hidden border border-midnight-100 group block">
+          <div class="aspect-[16/10] relative overflow-hidden bg-midnight-900">
+            <img src="posts/convenio-nl.jpg" alt="Firma de convenio entre IMPACTO y el Instituto Estatal de la Juventud de Nuevo León" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-midnight-900/70 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 bg-brand-400 text-midnight-900 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">Convenio Estatal</div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="text-white text-xs font-mono-display uppercase tracking-widest opacity-90">Nuevo León</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Alianza con el Instituto Estatal de la Juventud NL</h4>
+            <p class="text-sm text-midnight-700 mt-2">Acuerdo para crear espacios seguros, colaborativos y transformadores que promueven la participación social, el liderazgo juvenil y el desarrollo de proyectos con enfoque en derechos, inclusión y sostenibilidad.</p>
+            <div class="mt-4 text-xs font-semibold text-brand-700 flex items-center gap-1.5">Ver en Instagram <span aria-hidden="true">→</span></div>
+          </div>
+        </a>
+
+        <!-- Convenio 3: Casa Valentina con Corazón de León (BCS) -->
+        <a href="https://www.instagram.com/p/DTtD3v5kut0/" target="_blank" rel="noopener" class="reveal card-lift bg-white rounded-3xl overflow-hidden border border-midnight-100 group block">
+          <div class="aspect-[16/10] relative overflow-hidden bg-midnight-900">
+            <img src="posts/casa-valentina-bcs.jpg" alt="IMPACTO BCS y colectivo Corazón de León renovando Casa Valentina" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-midnight-900/70 via-transparent to-transparent"></div>
+            <div class="absolute top-4 left-4 bg-mint-500 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">Alianza Colectivo</div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="text-white text-xs font-mono-display uppercase tracking-widest opacity-90">Baja California Sur</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h4 class="font-display font-bold text-xl text-midnight-900 group-hover:text-brand-700 transition leading-snug">Renovación de Casa Valentina con Corazón de León</h4>
+            <p class="text-sm text-midnight-700 mt-2">IMPACTO BCS se sumó al colectivo <strong>Corazón de León</strong> para renovar las instalaciones de Casa Valentina. Una jornada que recordó lo que se logra cuando se suman manos, corazones y esfuerzo.</p>
+            <div class="mt-4 text-xs font-semibold text-brand-700 flex items-center gap-1.5">Ver en Instagram <span aria-hidden="true">→</span></div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Reconocimiento de medios -->
+      <a href="https://www.instagram.com/p/DXjwvlykVtm/" target="_blank" rel="noopener" class="reveal card-lift mt-6 grid md:grid-cols-5 gap-0 bg-gradient-to-br from-midnight-900 to-midnight-800 rounded-3xl overflow-hidden group">
+        <div class="md:col-span-2 aspect-[16/10] md:aspect-auto relative overflow-hidden">
+          <img src="posts/reconocimiento-am.jpg" alt="Reconocimiento de AM y Al Día a IMPACTO" class="absolute inset-0 w-full h-full object-cover transition group-hover:scale-105 duration-500" loading="lazy" />
+        </div>
+        <div class="md:col-span-3 p-7 lg:p-9 text-white flex flex-col justify-center">
+          <div class="inline-flex items-center gap-2 self-start bg-brand-400/20 text-brand-400 rounded-full px-3 py-1 text-[11px] font-mono-display uppercase tracking-widest mb-4">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+            Reconocimiento en medios
+          </div>
+          <h4 class="font-display font-black text-2xl lg:text-3xl leading-tight">Cobertura de <span class="text-brand-400">AM</span> y <span class="text-brand-400">Al Día</span></h4>
+          <p class="text-white/80 text-sm mt-3 leading-relaxed">Los medios locales de Celaya y Guanajuato reconocieron el trabajo de las juventudes de IMPACTO transformando su entorno con acciones reales. Cuando las juventudes se organizan, el impacto es imparable.</p>
+          <div class="mt-5 text-xs font-semibold text-brand-400 flex items-center gap-1.5">Ver post y nota completa <span aria-hidden="true">→</span></div>
+        </div>
+      </a>
     </div>
   </div>
 </section>
