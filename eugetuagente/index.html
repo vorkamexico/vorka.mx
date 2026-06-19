@@ -1,0 +1,1146 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Euge Tu Agente · Estrategia de Contenidos · VORKA MX</title>
+<meta name="description" content="Estrategia de contenidos para convertir la cuenta de Euge Tu Agente en un canal de prospección orgánica: objetivos, calendario mensual, ofertas de entrada, tono y 100 frases clave." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#0e0e10;
+    --ink-soft:#3a3a40;
+    --muted:#6b6b73;
+    --line:#ececee;
+    --line-strong:#1c1c1f;
+    --tint:#f7f6f3;
+    --tint-2:#f1efe9;
+    --accent:#1d4ed8;
+    --accent-soft:#dbe6ff;
+    --max:1180px;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+  }
+
+  .container{max-width:var(--max);margin:0 auto;padding:0 32px}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:saturate(180%) blur(14px);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:'Fraunces',serif;font-weight:600;font-size:18px;letter-spacing:-.01em;
+  }
+  .brand-dot{
+    width:10px;height:10px;border-radius:50%;background:var(--ink);
+  }
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;
+    transition:color .2s ease;
+  }
+  .nav-links a:hover{color:var(--ink)}
+  .nav-tag{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+  }
+  @media (max-width:760px){
+    .nav-links{display:none}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:96px 0 80px;border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin-bottom:24px;
+  }
+  .hero h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(40px,6vw,76px);
+    line-height:1.02;
+    letter-spacing:-.025em;
+    margin-bottom:28px;
+    max-width:900px;
+  }
+  .hero h1 em{font-style:italic;font-weight:400;color:var(--accent)}
+  .hero-lede{
+    font-size:clamp(17px,1.7vw,21px);
+    color:var(--ink-soft);
+    max-width:720px;
+    line-height:1.55;
+  }
+  .hero-meta{
+    display:flex;gap:48px;margin-top:64px;flex-wrap:wrap;
+    padding-top:32px;border-top:1px solid var(--line);
+  }
+  .meta-item .label{
+    font-size:11px;text-transform:uppercase;letter-spacing:.18em;
+    color:var(--muted);font-weight:600;margin-bottom:8px;
+  }
+  .meta-item .value{
+    font-family:'Fraunces',serif;font-size:22px;font-weight:500;letter-spacing:-.01em;
+  }
+
+  /* ---------- SECTION ---------- */
+  section{padding:96px 0;border-bottom:1px solid var(--line)}
+  .section-head{
+    display:grid;grid-template-columns:200px 1fr;gap:64px;margin-bottom:56px;
+  }
+  .section-num{
+    font-family:'Fraunces',serif;font-size:14px;font-weight:500;
+    color:var(--accent);letter-spacing:.05em;
+    padding-top:12px;
+  }
+  .section-num span{
+    display:block;color:var(--muted);font-size:11px;
+    text-transform:uppercase;letter-spacing:.22em;margin-top:6px;
+    font-family:'Inter',sans-serif;
+  }
+  .section-title{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(30px,3.6vw,46px);
+    line-height:1.1;letter-spacing:-.02em;
+    max-width:760px;
+  }
+  .section-sub{
+    margin-top:18px;color:var(--ink-soft);
+    font-size:17px;max-width:680px;
+  }
+  @media (max-width:760px){
+    .section-head{grid-template-columns:1fr;gap:16px;margin-bottom:40px}
+  }
+
+  /* ---------- OBJETIVOS ---------- */
+  .obj-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .obj-card{
+    background:var(--bg);padding:40px 32px;
+  }
+  .obj-num{
+    font-family:'Fraunces',serif;font-size:48px;font-weight:500;
+    color:var(--accent);line-height:1;margin-bottom:20px;letter-spacing:-.03em;
+  }
+  .obj-card h3{
+    font-family:'Fraunces',serif;font-size:22px;font-weight:500;
+    margin-bottom:14px;letter-spacing:-.01em;line-height:1.25;
+  }
+  .obj-card p{color:var(--ink-soft);font-size:15px}
+  .cta-list{
+    margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;
+  }
+  .cta-chip{
+    font-size:12px;font-weight:600;letter-spacing:.06em;
+    background:var(--ink);color:#fff;padding:6px 12px;border-radius:999px;
+  }
+  @media (max-width:860px){.obj-grid{grid-template-columns:1fr}}
+
+  /* ---------- ESTRATEGIA ---------- */
+  .strategy{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:start}
+  .strategy-list{list-style:none}
+  .strategy-list li{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:18px 0;border-bottom:1px solid var(--line);
+  }
+  .strategy-list li:last-child{border-bottom:none}
+  .strategy-list .name{font-size:16px;color:var(--ink);font-weight:500}
+  .strategy-list .num{
+    font-family:'Fraunces',serif;font-size:28px;font-weight:500;
+    color:var(--accent);letter-spacing:-.02em;
+  }
+  .weeks-card{
+    background:var(--tint);border-radius:var(--radius);padding:36px;
+  }
+  .weeks-card h4{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;margin-bottom:24px;
+  }
+  .week-row{
+    display:flex;gap:16px;align-items:center;padding:14px 0;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .week-row:last-child{border-bottom:none}
+  .week-tag{
+    font-family:'Fraunces',serif;font-size:14px;font-weight:500;
+    color:var(--accent);min-width:88px;
+  }
+  .week-name{font-size:15px;color:var(--ink-soft)}
+  @media (max-width:860px){.strategy{grid-template-columns:1fr}}
+
+  /* ---------- TONO ---------- */
+  .tone-intro{
+    font-size:20px;color:var(--ink-soft);max-width:760px;margin-bottom:48px;
+    line-height:1.55;
+  }
+  .tone-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .tone-item{
+    background:var(--bg);padding:28px 24px;text-align:left;
+  }
+  .tone-item .tone-mark{
+    font-family:'Fraunces',serif;color:var(--accent);
+    font-size:14px;font-weight:600;margin-bottom:10px;display:block;
+  }
+  .tone-item .tone-word{
+    font-family:'Fraunces',serif;font-size:24px;font-weight:500;
+    letter-spacing:-.01em;
+  }
+  .tone-item .tone-note{
+    font-size:13px;color:var(--muted);margin-top:6px;
+  }
+  .tone-item.neg .tone-mark{color:#b85040}
+  .tone-item.neg .tone-word{text-decoration:line-through;text-decoration-color:#b8504040;text-decoration-thickness:2px}
+  @media (max-width:860px){.tone-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:480px){.tone-grid{grid-template-columns:1fr}}
+
+  /* ---------- OFERTAS ---------- */
+  .offers{display:grid;grid-template-columns:1fr;gap:24px}
+  .offer{
+    display:grid;grid-template-columns:80px 1fr 1.4fr;gap:32px;
+    padding:32px;border:1px solid var(--line);border-radius:var(--radius);
+    transition:border-color .25s ease, transform .25s ease;
+    align-items:start;
+  }
+  .offer:hover{border-color:var(--ink);transform:translateY(-2px)}
+  .offer-num{
+    font-family:'Fraunces',serif;font-size:42px;font-weight:500;
+    color:var(--accent);letter-spacing:-.03em;line-height:1;
+  }
+  .offer-title{
+    font-family:'Fraunces',serif;font-size:22px;font-weight:500;
+    margin-bottom:10px;letter-spacing:-.01em;line-height:1.2;
+  }
+  .offer-target{
+    font-size:13px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.1em;font-weight:600;margin-bottom:4px;
+  }
+  .offer-desc{font-size:15px;color:var(--ink-soft)}
+  .offer-quote{
+    background:var(--tint);padding:24px;border-radius:10px;
+    font-family:'Fraunces',serif;font-style:italic;font-size:18px;
+    line-height:1.45;color:var(--ink);position:relative;
+  }
+  .offer-quote::before{
+    content:"“";position:absolute;left:14px;top:-10px;
+    font-size:64px;color:var(--accent);font-family:'Fraunces',serif;
+    line-height:1;
+  }
+  .offer-quote p{padding-left:24px}
+  @media (max-width:860px){
+    .offer{grid-template-columns:1fr;gap:20px;padding:28px}
+    .offer-num{font-size:36px}
+  }
+
+  /* ---------- CALENDARIO ---------- */
+  .weeks-grid{display:grid;grid-template-columns:1fr;gap:32px}
+  .week-block{
+    border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .week-head{
+    background:var(--ink);color:#fff;padding:28px 36px;
+    display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+  }
+  .week-label{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(255,255,255,.65);font-weight:600;
+  }
+  .week-title{
+    font-family:'Fraunces',serif;font-size:24px;font-weight:500;
+    letter-spacing:-.01em;margin-top:4px;
+  }
+  .week-keyword{
+    background:var(--accent);color:#fff;padding:8px 16px;border-radius:999px;
+    font-size:12px;font-weight:600;letter-spacing:.08em;
+  }
+  .piece{
+    display:grid;grid-template-columns:120px 180px 1fr 1fr 140px;gap:24px;
+    padding:24px 36px;border-top:1px solid var(--line);align-items:start;
+  }
+  .piece:first-of-type{border-top:none}
+  .piece-format{
+    font-family:'Fraunces',serif;font-size:18px;font-weight:500;
+    color:var(--accent);letter-spacing:-.01em;
+  }
+  .piece-objective{
+    font-size:12px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.08em;font-weight:600;line-height:1.4;
+  }
+  .piece-hook{
+    font-family:'Fraunces',serif;font-style:italic;font-size:15px;
+    color:var(--ink);line-height:1.5;
+  }
+  .piece-idea{
+    font-size:14px;color:var(--ink-soft);line-height:1.5;
+  }
+  .piece-cta{
+    align-self:center;
+    background:var(--accent-soft);color:#7a5a1e;
+    padding:8px 14px;border-radius:8px;
+    font-size:11px;font-weight:700;letter-spacing:.1em;
+    text-align:center;
+  }
+  @media (max-width:1000px){
+    .piece{grid-template-columns:1fr;gap:12px}
+    .week-head{grid-template-columns:1fr;gap:12px}
+    .week-keyword{justify-self:start}
+  }
+
+  /* ---------- ROL EUGE ---------- */
+  .euge-card{
+    background:linear-gradient(135deg,var(--tint) 0%,var(--tint-2) 100%);
+    border-radius:var(--radius);padding:64px 48px;
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+  }
+  .euge-card h3{
+    font-family:'Fraunces',serif;font-size:34px;font-weight:500;
+    letter-spacing:-.02em;line-height:1.15;margin-bottom:20px;
+  }
+  .euge-card p{font-size:16px;color:var(--ink-soft);margin-bottom:14px}
+  .euge-pillars{display:flex;flex-direction:column;gap:18px}
+  .euge-pillar{
+    background:var(--bg);border-radius:10px;padding:20px 24px;
+    border:1px solid rgba(0,0,0,.04);
+  }
+  .euge-pillar h4{
+    font-family:'Fraunces',serif;font-size:17px;font-weight:500;margin-bottom:4px;
+  }
+  .euge-pillar p{font-size:14px;color:var(--muted);margin:0}
+  @media (max-width:860px){
+    .euge-card{grid-template-columns:1fr;padding:40px 28px}
+  }
+
+  /* ---------- FRASES ---------- */
+  .phrases-intro{
+    color:var(--ink-soft);font-size:17px;max-width:680px;margin-bottom:40px;
+  }
+  .phrases-tabs{
+    display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;
+    padding-bottom:24px;border-bottom:1px solid var(--line);
+  }
+  .tab{
+    background:transparent;border:1px solid var(--line);
+    padding:8px 16px;border-radius:999px;font-size:13px;font-weight:500;
+    color:var(--ink-soft);cursor:pointer;font-family:inherit;
+    transition:all .2s ease;
+  }
+  .tab:hover{border-color:var(--ink-soft)}
+  .tab.active{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  .phrases-block{margin-bottom:48px;scroll-margin-top:96px}
+  .phrases-block h3{
+    font-family:'Fraunces',serif;font-size:28px;font-weight:500;
+    letter-spacing:-.02em;margin-bottom:8px;
+  }
+  .phrases-block .sub{
+    color:var(--muted);font-size:14px;margin-bottom:28px;
+  }
+  .phrase-grid{
+    columns:2;column-gap:32px;
+  }
+  .phrase{
+    break-inside:avoid;
+    padding:16px 0;border-bottom:1px solid var(--line);
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .phrase-num{
+    font-family:'Fraunces',serif;font-size:13px;font-weight:500;
+    color:var(--accent);min-width:24px;padding-top:2px;
+  }
+  .phrase-text{
+    font-family:'Fraunces',serif;font-size:16px;line-height:1.45;
+    color:var(--ink);font-weight:400;
+  }
+  @media (max-width:760px){.phrase-grid{columns:1}}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:64px 0 48px;text-align:center;background:var(--ink);color:#fff;
+    border-bottom:none;
+  }
+  footer .brand{justify-content:center;color:#fff}
+  footer .brand-dot{background:var(--accent)}
+  footer p{
+    color:rgba(255,255,255,.55);font-size:13px;margin-top:16px;
+    letter-spacing:.02em;
+  }
+  footer .footer-meta{
+    margin-top:24px;font-size:11px;text-transform:uppercase;
+    letter-spacing:.22em;color:rgba(255,255,255,.4);
+  }
+
+  /* ---------- HELPERS ---------- */
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      Euge Tu Agente
+    </div>
+    <div class="nav-links">
+      <a href="#objetivos">Objetivos</a>
+      <a href="#estrategia">Estrategia</a>
+      <a href="#tono">Tono</a>
+      <a href="#ofertas">Ofertas</a>
+      <a href="#calendario">Calendario</a>
+      <a href="#frases">Frases</a>
+      <span class="nav-tag">VORKA MX</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">Estrategia de Contenidos · VORKA MX</div>
+    <h1>Convertir cada publicación en una <em>conversación comercial</em>.</h1>
+    <p class="hero-lede">Transformar la cuenta de Euge Tu Agente en un canal de prospección orgánica, mediante una estrategia de contenido orientada a generar conversaciones comerciales, identificar prospectos calificados y motivar a la audiencia a solicitar asesoría, diagnóstico o revisión personalizada.</p>
+
+    <div class="hero-meta">
+      <div class="meta-item">
+        <div class="label">Reels mensuales</div>
+        <div class="value">10</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Carruseles</div>
+        <div class="value">4</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Semanas temáticas</div>
+        <div class="value">4</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Frases activas</div>
+        <div class="value">100</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- OBJETIVOS -->
+<section id="objetivos">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">01 <span>Objetivos</span></div>
+      <div>
+        <h2 class="section-title">Tres objetivos que ordenan la conversación con la audiencia.</h2>
+        <p class="section-sub">La estrategia no busca solo más alcance. Busca conversaciones reales, prospectos cualificados y decisiones informadas.</p>
+      </div>
+    </div>
+
+    <div class="obj-grid">
+      <article class="obj-card">
+        <div class="obj-num">01</div>
+        <h3>Generar leads orgánicos</h3>
+        <p>Crear contenido que motive a las personas a enviar mensaje directo, responder historias o solicitar información sobre un seguro o plan específico.</p>
+      </article>
+
+      <article class="obj-card">
+        <div class="obj-num">02</div>
+        <h3>Aumentar la intención de contacto</h3>
+        <p>Dejar de utilizar llamados a la acción genéricos y comenzar a usar CTAs específicos por producto o necesidad.</p>
+        <div class="cta-list">
+          <span class="cta-chip">VIDA</span>
+          <span class="cta-chip">GMM</span>
+          <span class="cta-chip">RETIRO</span>
+          <span class="cta-chip">PÓLIZA</span>
+          <span class="cta-chip">PLAN</span>
+        </div>
+      </article>
+
+      <article class="obj-card">
+        <div class="obj-num">03</div>
+        <h3>Filtrar prospectos</h3>
+        <p>No se buscará únicamente atraer más personas, sino identificar quiénes tienen una necesidad real, en qué etapa se encuentran y qué tipo de solución puede interesarles.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ESTRATEGIA -->
+<section id="estrategia">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">02 <span>Estrategia</span></div>
+      <div>
+        <h2 class="section-title">Una estructura mensual con ritmo semanal.</h2>
+        <p class="section-sub">Cada semana tendrá un tema principal, una intención comercial y una palabra clave específica. La audiencia recibe varios impactos sobre una misma necesidad, aumentando la probabilidad de respuesta.</p>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <ul class="strategy-list">
+        <li><span class="name">Reels al mes</span><span class="num">10</span></li>
+        <li><span class="name">Posts o carruseles al mes</span><span class="num">4</span></li>
+        <li><span class="name">Historias estratégicas</span><span class="num">Semanal</span></li>
+        <li><span class="name">CTAs con palabras clave</span><span class="num">5+</span></li>
+        <li><span class="name">Campañas por tema</span><span class="num">Semanal</span></li>
+        <li><span class="name">Medición de leads e intención</span><span class="num">Continua</span></li>
+      </ul>
+
+      <aside class="weeks-card">
+        <h4>Rotación temática mensual</h4>
+        <div class="week-row">
+          <span class="week-tag">Semana 1</span>
+          <span class="week-name">Seguro de vida</span>
+        </div>
+        <div class="week-row">
+          <span class="week-tag">Semana 2</span>
+          <span class="week-name">Gastos médicos mayores</span>
+        </div>
+        <div class="week-row">
+          <span class="week-tag">Semana 3</span>
+          <span class="week-name">Retiro, ahorro e inversión</span>
+        </div>
+        <div class="week-row">
+          <span class="week-tag">Semana 4</span>
+          <span class="week-name">Diagnósticos y revisión</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- TONO -->
+<section id="tono">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">03 <span>Tono</span></div>
+      <div>
+        <h2 class="section-title">Claro, cercano, honesto.</h2>
+        <p class="section-sub">Euge no debe sonar como alguien que presiona para vender, sino como alguien que ayuda a tomar una decisión informada.</p>
+      </div>
+    </div>
+
+    <p class="tone-intro">La comunicación debe sentirse auténtica y directa. Estas son las cualidades a sostener — y las que se deben evitar.</p>
+
+    <div class="tone-grid">
+      <div class="tone-item">
+        <span class="tone-mark">SÍ</span>
+        <div class="tone-word">Directa</div>
+      </div>
+      <div class="tone-item">
+        <span class="tone-mark">SÍ</span>
+        <div class="tone-word">Humana</div>
+      </div>
+      <div class="tone-item">
+        <span class="tone-mark">SÍ</span>
+        <div class="tone-word">Clara</div>
+      </div>
+      <div class="tone-item">
+        <span class="tone-mark">SÍ</span>
+        <div class="tone-word">Consultiva</div>
+      </div>
+      <div class="tone-item">
+        <span class="tone-mark">SÍ</span>
+        <div class="tone-word">Accionable</div>
+      </div>
+      <div class="tone-item neg">
+        <span class="tone-mark">NO</span>
+        <div class="tone-word">Tecnicismos</div>
+        <div class="tone-note">innecesarios</div>
+      </div>
+      <div class="tone-item neg">
+        <span class="tone-mark">NO</span>
+        <div class="tone-word">Miedo</div>
+        <div class="tone-note">excesivo</div>
+      </div>
+      <div class="tone-item neg">
+        <span class="tone-mark">NO</span>
+        <div class="tone-word">Promesas</div>
+        <div class="tone-note">exageradas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFERTAS -->
+<section id="ofertas">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">04 <span>Ofertas de entrada</span></div>
+      <div>
+        <h2 class="section-title">No vender desde el primer contacto. Abrir conversación.</h2>
+        <p class="section-sub">Para generar leads, se utilizan ofertas de entrada: acciones simples, de bajo riesgo y fáciles de solicitar.</p>
+      </div>
+    </div>
+
+    <div class="offers">
+      <article class="offer">
+        <div class="offer-num">01</div>
+        <div>
+          <div class="offer-target">Para quien ya tiene seguro</div>
+          <h3 class="offer-title">Revisión de póliza</h3>
+          <p class="offer-desc">Para personas que ya tienen seguro, pero no entienden completamente su cobertura.</p>
+        </div>
+        <div class="offer-quote"><p>¿Ya tienes seguro pero no sabes si está bien contratado? Te ayudo a revisar los puntos clave de tu póliza.</p></div>
+      </article>
+
+      <article class="offer">
+        <div class="offer-num">02</div>
+        <div>
+          <div class="offer-target">Interés en seguro de vida</div>
+          <h3 class="offer-title">Diagnóstico de protección familiar</h3>
+          <p class="offer-desc">Para personas interesadas en seguro de vida.</p>
+        </div>
+        <div class="offer-quote"><p>En una revisión inicial podemos saber si tu familia estaría protegida o si hay algo importante que ajustar.</p></div>
+      </article>
+
+      <article class="offer">
+        <div class="offer-num">03</div>
+        <div>
+          <div class="offer-target">Considerando GMM</div>
+          <h3 class="offer-title">Comparativa de gastos médicos mayores</h3>
+          <p class="offer-desc">Para personas que están considerando contratar o cambiar su seguro.</p>
+        </div>
+        <div class="offer-quote"><p>Antes de contratar, revisa más que el precio. Te ayudo a comparar cobertura, deducible, coaseguro y hospitales.</p></div>
+      </article>
+
+      <article class="offer">
+        <div class="offer-num">04</div>
+        <div>
+          <div class="offer-target">Planeación financiera</div>
+          <h3 class="offer-title">Ruta inicial de retiro</h3>
+          <p class="offer-desc">Para personas que quieren empezar a planear su futuro financiero.</p>
+        </div>
+        <div class="offer-quote"><p>Te ayudo a identificar si vas tarde, a tiempo o si necesitas una estrategia más clara.</p></div>
+      </article>
+
+      <article class="offer">
+        <div class="offer-num">05</div>
+        <div>
+          <div class="offer-target">Revisión general</div>
+          <h3 class="offer-title">Diagnóstico express</h3>
+          <p class="offer-desc">Para personas que quieren una revisión general de su situación.</p>
+        </div>
+        <div class="offer-quote"><p>Te ayudo a revisar qué área necesitas atender primero: vida, gastos médicos, retiro, ahorro o inversión.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDARIO -->
+<section id="calendario">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">05 <span>Calendario</span></div>
+      <div>
+        <h2 class="section-title">Calendario mensual de campañas.</h2>
+        <p class="section-sub">Cuatro semanas, cuatro intenciones comerciales. Cada pieza con un objetivo claro, un hook y un CTA específico.</p>
+      </div>
+    </div>
+
+    <div class="weeks-grid">
+
+      <!-- SEMANA 1 -->
+      <div class="week-block">
+        <div class="week-head">
+          <div>
+            <div class="week-label">Semana 01</div>
+            <div class="week-title">¿Tu familia estaría protegida?</div>
+          </div>
+          <div></div>
+          <div class="week-keyword">SEGURO DE VIDA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 1</div>
+          <div class="piece-objective">Generar leads · seguro de vida</div>
+          <div class="piece-hook">“Si alguien depende económicamente de ti, este video no es informativo: es una señal.”</div>
+          <div class="piece-idea">Personas con dependientes económicos.</div>
+          <div class="piece-cta">ESCRÍBEME VIDA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 2</div>
+          <div class="piece-objective">Explicar cálculo de protección familiar</div>
+          <div class="piece-hook">“No se trata de contratar cualquier seguro de vida, sino de saber cuánto respaldo necesitaría tu familia.”</div>
+          <div class="piece-idea">¿Cuánto seguro de vida necesito?</div>
+          <div class="piece-cta">ESCRÍBEME VIDA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Carrusel 1</div>
+          <div class="piece-objective">Activar identificación y guardados</div>
+          <div class="piece-hook">5 señales de que ya necesitas revisar un seguro de vida.</div>
+          <div class="piece-idea">Dependientes económicos, hijos, deudas, pareja, familia, ingresos principales.</div>
+          <div class="piece-cta">ESCRÍBEME VIDA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Historias</div>
+          <div class="piece-objective">Abrir conversaciones desde stories</div>
+          <div class="piece-hook">“¿Alguien depende económicamente de ti?” / “Si respondiste que sí, revisemos tu protección.”</div>
+          <div class="piece-idea">Encuesta + filtro de necesidad.</div>
+          <div class="piece-cta">RESPONDE VIDA</div>
+        </div>
+      </div>
+
+      <!-- SEMANA 2 -->
+      <div class="week-block">
+        <div class="week-head">
+          <div>
+            <div class="week-label">Semana 02</div>
+            <div class="week-title">No contrates gastos médicos solo por precio</div>
+          </div>
+          <div></div>
+          <div class="week-keyword">GASTOS MÉDICOS MAYORES</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 3</div>
+          <div class="piece-objective">Generar leads · GMM</div>
+          <div class="piece-hook">“Si estás cotizando gastos médicos y solo estás viendo el precio, te falta revisar lo más importante.”</div>
+          <div class="piece-idea">Error de cotizar solo por precio.</div>
+          <div class="piece-cta">ESCRÍBEME GMM</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 4</div>
+          <div class="piece-objective">Educar hacia decisión de compra</div>
+          <div class="piece-hook">“Antes de decirle sí a una póliza de gastos médicos, revisa esto.”</div>
+          <div class="piece-idea">Qué revisar antes de contratar GMM.</div>
+          <div class="piece-cta">ESCRÍBEME GMM</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 5</div>
+          <div class="piece-objective">Familias interesadas en protección médica</div>
+          <div class="piece-hook">“Si estás buscando proteger a tu familia con gastos médicos, no elijas la primera opción que te manden.”</div>
+          <div class="piece-idea">GMM familiar.</div>
+          <div class="piece-cta">ESCRÍBEME GMM</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Carrusel 2</div>
+          <div class="piece-objective">Generar guardados y solicitudes de revisión</div>
+          <div class="piece-hook">Antes de contratar gastos médicos, responde esto.</div>
+          <div class="piece-idea">Hospitales, deducible, coaseguro, cobertura, exclusiones y tiempos de espera.</div>
+          <div class="piece-cta">ESCRÍBEME GMM</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Historias</div>
+          <div class="piece-objective">Detectar quién tiene o quiere contratar GMM</div>
+          <div class="piece-hook">“¿Tienes seguro de gastos médicos?” / “¿Sabes cuánto pagarías de deducible y coaseguro?”</div>
+          <div class="piece-idea">Encuesta + pregunta de conocimiento.</div>
+          <div class="piece-cta">RESPONDE GMM</div>
+        </div>
+      </div>
+
+      <!-- SEMANA 3 -->
+      <div class="week-block">
+        <div class="week-head">
+          <div>
+            <div class="week-label">Semana 03</div>
+            <div class="week-title">Tu futuro no se improvisa</div>
+          </div>
+          <div></div>
+          <div class="week-keyword">RETIRO · AHORRO · INVERSIÓN</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 6</div>
+          <div class="piece-objective">Generar leads · retiro</div>
+          <div class="piece-hook">“Si tienes más de 30 y no tienes plan de retiro, no estás tarde, pero ya no deberías seguirlo dejando.”</div>
+          <div class="piece-idea">Plan de retiro después de los 30.</div>
+          <div class="piece-cta">ESCRÍBEME RETIRO</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 7</div>
+          <div class="piece-objective">Atraer interés en ahorro e inversión</div>
+          <div class="piece-hook">“Si ahorras, pero no sabes para qué, probablemente tu dinero no tiene estrategia.”</div>
+          <div class="piece-idea">Ahorrar sin estrategia.</div>
+          <div class="piece-cta">ESCRÍBEME PLAN</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Carrusel 3</div>
+          <div class="piece-objective">Activar reflexión sobre retiro</div>
+          <div class="piece-hook">¿Qué tipo de persona debería revisar su retiro este año?</div>
+          <div class="piece-idea">Mayores de 30, independientes, emprendedores, personas sin ahorro constante o sin claridad de Afore.</div>
+          <div class="piece-cta">ESCRÍBEME RETIRO</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Historias</div>
+          <div class="piece-objective">Segmentar intereses financieros</div>
+          <div class="piece-hook">“¿Ya tienes un plan de retiro?” / “¿Qué te preocupa más: retiro, salud, familia o ahorro?”</div>
+          <div class="piece-idea">Encuestas de retiro y futuro financiero.</div>
+          <div class="piece-cta">RESPONDE RETIRO / PLAN</div>
+        </div>
+      </div>
+
+      <!-- SEMANA 4 -->
+      <div class="week-block">
+        <div class="week-head">
+          <div>
+            <div class="week-label">Semana 04</div>
+            <div class="week-title">¿Estás seguro de que estás bien protegido?</div>
+          </div>
+          <div></div>
+          <div class="week-keyword">DIAGNÓSTICOS · REVISIÓN</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 8</div>
+          <div class="piece-objective">Generar leads de alta intención</div>
+          <div class="piece-hook">“Muchas personas tienen seguro, pero no saben realmente qué contrataron.”</div>
+          <div class="piece-idea">Ya tienes seguro, pero no sabes qué cubre.</div>
+          <div class="piece-cta">ESCRÍBEME PÓLIZA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 9</div>
+          <div class="piece-objective">Motivar revisión de seguros actuales</div>
+          <div class="piece-hook">“Si contrataste tu seguro hace años y nunca lo has revisado, este video es para ti.”</div>
+          <div class="piece-idea">Cuándo revisar tu seguro.</div>
+          <div class="piece-cta">ESCRÍBEME PÓLIZA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Reel 10</div>
+          <div class="piece-objective">Abrir espacios de prospección directa</div>
+          <div class="piece-hook">“Esta semana voy a hacer diagnósticos express para revisar si estás protegido correctamente.”</div>
+          <div class="piece-idea">Diagnóstico express.</div>
+          <div class="piece-cta">ESCRÍBEME DIAGNÓSTICO</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Carrusel 4</div>
+          <div class="piece-objective">Generar solicitudes de revisión</div>
+          <div class="piece-hook">Checklist para revisar tu póliza actual.</div>
+          <div class="piece-idea">Suma asegurada, beneficiarios, deducible, coaseguro, exclusiones y etapa actual.</div>
+          <div class="piece-cta">ESCRÍBEME PÓLIZA</div>
+        </div>
+
+        <div class="piece">
+          <div class="piece-format">Historias</div>
+          <div class="piece-objective">Detectar leads con seguro actual</div>
+          <div class="piece-hook">“¿Ya tienes algún seguro contratado?” / “¿Entiendes completamente qué cubre tu póliza?”</div>
+          <div class="piece-idea">Encuesta + filtro de póliza.</div>
+          <div class="piece-cta">RESPONDE PÓLIZA</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ROL DE EUGE -->
+<section id="rol">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">06 <span>Rol de Euge</span></div>
+      <div>
+        <h2 class="section-title">El contenido se sostiene con su voz.</h2>
+        <p class="section-sub">La participación de Euge será clave para el éxito del plan. Su voz, su rostro y su criterio definen la confianza del canal.</p>
+      </div>
+    </div>
+
+    <div class="euge-card">
+      <div>
+        <h3>Auténtico, directo y confiable — frente a cámara.</h3>
+        <p>El contenido debe sentirse auténtico, directo y confiable. Los reels deberán ser grabados por él, hablando a cámara, usando un lenguaje natural y cercano.</p>
+        <p>Esto permitirá que la estrategia se optimice con base en información real del proceso comercial.</p>
+      </div>
+      <div class="euge-pillars">
+        <div class="euge-pillar">
+          <h4>Grabación a cámara</h4>
+          <p>Lenguaje natural, sin guion forzado, mirada directa.</p>
+        </div>
+        <div class="euge-pillar">
+          <h4>Lenguaje cercano</h4>
+          <p>Cero tecnicismos innecesarios. Habla como en una asesoría real.</p>
+        </div>
+        <div class="euge-pillar">
+          <h4>Optimización con datos reales</h4>
+          <p>Lo que funciona en DMs alimenta los próximos reels.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRASES -->
+<section id="frases">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-num">07 <span>Frases</span></div>
+      <div>
+        <h2 class="section-title">100 frases para sostener el tono y el objetivo de comunicación.</h2>
+        <p class="section-sub">Lista de frases que pueden ayudar a lograr el tono y objetivo de comunicación que se busca — organizadas por categoría e intención.</p>
+      </div>
+    </div>
+
+    <div class="phrases-tabs">
+      <button class="tab active" data-target="all">Todas</button>
+      <button class="tab" data-target="diag">Diagnóstico</button>
+      <button class="tab" data-target="vida">Seguro de vida</button>
+      <button class="tab" data-target="gmm">Gastos médicos</button>
+      <button class="tab" data-target="retiro">Retiro</button>
+      <button class="tab" data-target="ahorro">Ahorro e inversión</button>
+      <button class="tab" data-target="poliza">Revisión de póliza</button>
+      <button class="tab" data-target="confianza">Confianza</button>
+      <button class="tab" data-target="cta">Cierre con CTA</button>
+      <button class="tab" data-target="historias">Historias</button>
+      <button class="tab" data-target="fuertes">Prospección fuerte</button>
+    </div>
+
+    <!-- DIAGNÓSTICO -->
+    <div class="phrases-block" data-cat="diag" id="diag">
+      <h3>Frases de diagnóstico</h3>
+      <p class="sub">1 — 10 · Para abrir reflexión sobre la situación actual del prospecto.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">1</span><span class="phrase-text">“Si alguien depende económicamente de ti, no necesitas esperar a que pase algo para empezar a protegerlo.”</span></div>
+        <div class="phrase"><span class="phrase-num">2</span><span class="phrase-text">“Tal vez no necesitas contratar hoy, pero sí necesitas saber si estás protegido correctamente.”</span></div>
+        <div class="phrase"><span class="phrase-num">3</span><span class="phrase-text">“Antes de pensar en cuánto cuesta un seguro, primero hay que entender cuánto necesitas proteger.”</span></div>
+        <div class="phrase"><span class="phrase-num">4</span><span class="phrase-text">“No todos necesitan el mismo seguro. Primero hay que entender tu etapa, tus ingresos y tus responsabilidades.”</span></div>
+        <div class="phrase"><span class="phrase-num">5</span><span class="phrase-text">“La pregunta no es si necesitas un seguro. La pregunta es qué pasaría financieramente si mañana algo cambia.”</span></div>
+        <div class="phrase"><span class="phrase-num">6</span><span class="phrase-text">“Si tienes hijos, pareja, deudas o personas que dependen de ti, tu protección ya no es solo un tema personal.”</span></div>
+        <div class="phrase"><span class="phrase-num">7</span><span class="phrase-text">“Si no sabes qué cubre tu póliza, no estás completamente protegido; solo estás pagando algo que no entiendes.”</span></div>
+        <div class="phrase"><span class="phrase-num">8</span><span class="phrase-text">“Un seguro mal contratado puede darte una falsa sensación de tranquilidad.”</span></div>
+        <div class="phrase"><span class="phrase-num">9</span><span class="phrase-text">“Antes de contratar, revisemos si esa opción realmente hace sentido para ti.”</span></div>
+        <div class="phrase"><span class="phrase-num">10</span><span class="phrase-text">“Tu situación financiera cambia. Tu protección también debería revisarse.”</span></div>
+      </div>
+    </div>
+
+    <!-- VIDA -->
+    <div class="phrases-block" data-cat="vida" id="vida">
+      <h3>Frases para seguro de vida</h3>
+      <p class="sub">11 — 20 · Reposicionan el seguro de vida como un acto de cuidado.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">11</span><span class="phrase-text">“Un seguro de vida no se contrata pensando en morir; se contrata pensando en cuidar a quienes amas.”</span></div>
+        <div class="phrase"><span class="phrase-num">12</span><span class="phrase-text">“Si tu ingreso sostiene a alguien más, tu protección también debería sostenerlo si tú no estás.”</span></div>
+        <div class="phrase"><span class="phrase-num">13</span><span class="phrase-text">“El seguro de vida no es para ti. Es para las personas que tendrían que seguir adelante sin tu ingreso.”</span></div>
+        <div class="phrase"><span class="phrase-num">14</span><span class="phrase-text">“No se trata de dejar dinero. Se trata de dejar tranquilidad.”</span></div>
+        <div class="phrase"><span class="phrase-num">15</span><span class="phrase-text">“Si hoy faltaras, ¿tu familia tendría respaldo o tendría problemas financieros?”</span></div>
+        <div class="phrase"><span class="phrase-num">16</span><span class="phrase-text">“La protección familiar no se improvisa cuando ya es urgente.”</span></div>
+        <div class="phrase"><span class="phrase-num">17</span><span class="phrase-text">“Si tienes una deuda importante, un crédito o hijos pequeños, necesitas revisar tu protección.”</span></div>
+        <div class="phrase"><span class="phrase-num">18</span><span class="phrase-text">“La suma asegurada no debe elegirse al azar; debe calcularse según tu realidad.”</span></div>
+        <div class="phrase"><span class="phrase-num">19</span><span class="phrase-text">“Un buen seguro de vida debe responder a una pregunta: ¿qué necesitaría mi familia si yo no estoy?”</span></div>
+        <div class="phrase"><span class="phrase-num">20</span><span class="phrase-text">“No es miedo. Es responsabilidad financiera.”</span></div>
+      </div>
+    </div>
+
+    <!-- GMM -->
+    <div class="phrases-block" data-cat="gmm" id="gmm">
+      <h3>Frases para gastos médicos mayores</h3>
+      <p class="sub">21 — 30 · Mueven la conversación más allá del precio.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">21</span><span class="phrase-text">“El seguro de gastos médicos no se elige solo por precio.”</span></div>
+        <div class="phrase"><span class="phrase-num">22</span><span class="phrase-text">“La póliza más barata no siempre es la que mejor te protege.”</span></div>
+        <div class="phrase"><span class="phrase-num">23</span><span class="phrase-text">“Antes de contratar gastos médicos, revisa deducible, coaseguro, hospitales y exclusiones.”</span></div>
+        <div class="phrase"><span class="phrase-num">24</span><span class="phrase-text">“No esperes a estar en un hospital para descubrir qué no cubre tu seguro.”</span></div>
+        <div class="phrase"><span class="phrase-num">25</span><span class="phrase-text">“Tener gastos médicos mayores no significa entender tu póliza.”</span></div>
+        <div class="phrase"><span class="phrase-num">26</span><span class="phrase-text">“Si ya tienes seguro médico, deberías saber cuánto pagarías si mañana lo usaras.”</span></div>
+        <div class="phrase"><span class="phrase-num">27</span><span class="phrase-text">“Una buena decisión en gastos médicos se toma antes de necesitarlo.”</span></div>
+        <div class="phrase"><span class="phrase-num">28</span><span class="phrase-text">“El mejor momento para revisar tu cobertura médica es cuando todavía estás sano.”</span></div>
+        <div class="phrase"><span class="phrase-num">29</span><span class="phrase-text">“Cotizar no es comparar precios; es comparar condiciones.”</span></div>
+        <div class="phrase"><span class="phrase-num">30</span><span class="phrase-text">“Tu salud necesita una estrategia, no solo una mensualidad.”</span></div>
+      </div>
+    </div>
+
+    <!-- RETIRO -->
+    <div class="phrases-block" data-cat="retiro" id="retiro">
+      <h3>Frases para retiro</h3>
+      <p class="sub">31 — 40 · Convierten el retiro en una decisión presente.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">31</span><span class="phrase-text">“Tu retiro no empieza a los 60. Empieza cuando decides planearlo.”</span></div>
+        <div class="phrase"><span class="phrase-num">32</span><span class="phrase-text">“No estás tarde, pero sí necesitas dejar de posponerlo.”</span></div>
+        <div class="phrase"><span class="phrase-num">33</span><span class="phrase-text">“El retiro no se improvisa; se construye con tiempo y constancia.”</span></div>
+        <div class="phrase"><span class="phrase-num">34</span><span class="phrase-text">“No se trata de dejar de trabajar mañana, se trata de tener opciones en el futuro.”</span></div>
+        <div class="phrase"><span class="phrase-num">35</span><span class="phrase-text">“Si hoy no sabes cuánto necesitas para retirarte, ese es el primer dato que debemos encontrar.”</span></div>
+        <div class="phrase"><span class="phrase-num">36</span><span class="phrase-text">“Mientras más tiempo dejas pasar, más esfuerzo puede requerir construir tu retiro.”</span></div>
+        <div class="phrase"><span class="phrase-num">37</span><span class="phrase-text">“Tu yo del futuro va a vivir con las decisiones financieras que tomes hoy.”</span></div>
+        <div class="phrase"><span class="phrase-num">38</span><span class="phrase-text">“Ahorrar para el retiro no es un lujo; es una decisión de planeación.”</span></div>
+        <div class="phrase"><span class="phrase-num">39</span><span class="phrase-text">“No necesitas empezar con mucho. Necesitas empezar con estrategia.”</span></div>
+        <div class="phrase"><span class="phrase-num">40</span><span class="phrase-text">“El problema no es no tener todo resuelto; el problema es no empezar.”</span></div>
+      </div>
+    </div>
+
+    <!-- AHORRO -->
+    <div class="phrases-block" data-cat="ahorro" id="ahorro">
+      <h3>Frases para ahorro e inversión</h3>
+      <p class="sub">41 — 50 · Dirigen al prospecto hacia una estrategia con propósito.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">41</span><span class="phrase-text">“Ahorrar sin objetivo es guardar dinero sin dirección.”</span></div>
+        <div class="phrase"><span class="phrase-num">42</span><span class="phrase-text">“Antes de invertir, hay que saber para qué quieres ese dinero.”</span></div>
+        <div class="phrase"><span class="phrase-num">43</span><span class="phrase-text">“No todo tu dinero debe estar en el mismo lugar ni tener el mismo propósito.”</span></div>
+        <div class="phrase"><span class="phrase-num">44</span><span class="phrase-text">“Primero ordenamos tus metas; después vemos qué estrategia tiene sentido.”</span></div>
+        <div class="phrase"><span class="phrase-num">45</span><span class="phrase-text">“Invertir no se trata de copiar lo que hace alguien más, sino de entender tu perfil y tus objetivos.”</span></div>
+        <div class="phrase"><span class="phrase-num">46</span><span class="phrase-text">“Tu dinero necesita una ruta: emergencia, protección, crecimiento y futuro.”</span></div>
+        <div class="phrase"><span class="phrase-num">47</span><span class="phrase-text">“No se trata de ganar más por ganar más; se trata de construir estabilidad.”</span></div>
+        <div class="phrase"><span class="phrase-num">48</span><span class="phrase-text">“Una buena estrategia financiera empieza con claridad.”</span></div>
+        <div class="phrase"><span class="phrase-num">49</span><span class="phrase-text">“Si no sabes qué hacer con tu ahorro, empecemos por ponerle nombre a tus metas.”</span></div>
+        <div class="phrase"><span class="phrase-num">50</span><span class="phrase-text">“El dinero sin plan se va más fácil.”</span></div>
+      </div>
+    </div>
+
+    <!-- POLIZA -->
+    <div class="phrases-block" data-cat="poliza" id="poliza">
+      <h3>Frases para revisión de póliza</h3>
+      <p class="sub">51 — 60 · Para abrir la conversación con quien ya tiene seguro.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">51</span><span class="phrase-text">“Si contrataste tu seguro hace años y nunca lo has revisado, probablemente ya no está alineado a tu vida actual.”</span></div>
+        <div class="phrase"><span class="phrase-num">52</span><span class="phrase-text">“Tu póliza debería cambiar cuando cambia tu vida.”</span></div>
+        <div class="phrase"><span class="phrase-num">53</span><span class="phrase-text">“Tener una póliza no significa estar bien protegido.”</span></div>
+        <div class="phrase"><span class="phrase-num">54</span><span class="phrase-text">“Una revisión puede ayudarte a saber si estás pagando por algo que realmente necesitas.”</span></div>
+        <div class="phrase"><span class="phrase-num">55</span><span class="phrase-text">“Antes de cancelar o cambiar tu seguro, revisemos qué tienes y qué te falta.”</span></div>
+        <div class="phrase"><span class="phrase-num">56</span><span class="phrase-text">“Muchas personas tienen seguro, pero no saben qué pasaría si mañana tuvieran que usarlo.”</span></div>
+        <div class="phrase"><span class="phrase-num">57</span><span class="phrase-text">“Si no entiendes tus exclusiones, deducibles o beneficiarios, es momento de revisar tu póliza.”</span></div>
+        <div class="phrase"><span class="phrase-num">58</span><span class="phrase-text">“No esperes a usar tu seguro para entender cómo funciona.”</span></div>
+        <div class="phrase"><span class="phrase-num">59</span><span class="phrase-text">“Revisar tu póliza no te obliga a contratar algo nuevo; te ayuda a tomar mejores decisiones.”</span></div>
+        <div class="phrase"><span class="phrase-num">60</span><span class="phrase-text">“A veces no necesitas otro seguro, necesitas entender mejor el que ya tienes.”</span></div>
+      </div>
+    </div>
+
+    <!-- CONFIANZA -->
+    <div class="phrases-block" data-cat="confianza" id="confianza">
+      <h3>Frases para generar confianza</h3>
+      <p class="sub">61 — 70 · Para posicionar a Euge como asesor, no como vendedor.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">61</span><span class="phrase-text">“Mi trabajo no es venderte cualquier póliza; es ayudarte a elegir bien.”</span></div>
+        <div class="phrase"><span class="phrase-num">62</span><span class="phrase-text">“Prefiero decirte que algo no te conviene, antes que venderte algo que no necesitas.”</span></div>
+        <div class="phrase"><span class="phrase-num">63</span><span class="phrase-text">“Un buen asesor no empieza vendiendo, empieza preguntando.”</span></div>
+        <div class="phrase"><span class="phrase-num">64</span><span class="phrase-text">“Antes de recomendarte algo, necesito entender tu etapa, tus metas y tus responsabilidades.”</span></div>
+        <div class="phrase"><span class="phrase-num">65</span><span class="phrase-text">“No existe una solución igual para todos.”</span></div>
+        <div class="phrase"><span class="phrase-num">66</span><span class="phrase-text">“Lo importante no es contratar rápido, sino contratar con claridad.”</span></div>
+        <div class="phrase"><span class="phrase-num">67</span><span class="phrase-text">“Si algo no hace sentido para ti, mi responsabilidad es explicártelo.”</span></div>
+        <div class="phrase"><span class="phrase-num">68</span><span class="phrase-text">“No quiero que tengas un seguro que no entiendes.”</span></div>
+        <div class="phrase"><span class="phrase-num">69</span><span class="phrase-text">“Te explico claro, sin presión y sin letras chiquitas.”</span></div>
+        <div class="phrase"><span class="phrase-num">70</span><span class="phrase-text">“Una buena asesoría debe darte tranquilidad, no más dudas.”</span></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="phrases-block" data-cat="cta" id="cta">
+      <h3>Frases para cerrar reels con CTA</h3>
+      <p class="sub">71 — 80 · Cierres específicos por palabra clave.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">71</span><span class="phrase-text">“Escríbeme VIDA y revisamos si hoy necesitas proteger a tu familia.”</span></div>
+        <div class="phrase"><span class="phrase-num">72</span><span class="phrase-text">“Escríbeme GMM y te digo qué puntos debes revisar antes de contratar gastos médicos.”</span></div>
+        <div class="phrase"><span class="phrase-num">73</span><span class="phrase-text">“Escríbeme RETIRO y vemos por dónde empezar a construir tu estrategia.”</span></div>
+        <div class="phrase"><span class="phrase-num">74</span><span class="phrase-text">“Escríbeme PLAN y te ayudo a ordenar tus objetivos financieros.”</span></div>
+        <div class="phrase"><span class="phrase-num">75</span><span class="phrase-text">“Escríbeme PÓLIZA y revisamos si tu seguro actual sigue haciendo sentido para ti.”</span></div>
+        <div class="phrase"><span class="phrase-num">76</span><span class="phrase-text">“Escríbeme DIAGNÓSTICO y te ayudo a identificar qué área deberías atender primero.”</span></div>
+        <div class="phrase"><span class="phrase-num">77</span><span class="phrase-text">“Si esto te hizo pensar, mándame mensaje y lo revisamos con calma.”</span></div>
+        <div class="phrase"><span class="phrase-num">78</span><span class="phrase-text">“No tienes que saber todo de seguros. Para eso estoy yo.”</span></div>
+        <div class="phrase"><span class="phrase-num">79</span><span class="phrase-text">“Si tienes duda, mejor revisémoslo antes de que sea urgente.”</span></div>
+        <div class="phrase"><span class="phrase-num">80</span><span class="phrase-text">“Mándame mensaje y te ayudo a tomar una decisión más clara.”</span></div>
+      </div>
+    </div>
+
+    <!-- HISTORIAS -->
+    <div class="phrases-block" data-cat="historias" id="historias">
+      <h3>Frases para historias</h3>
+      <p class="sub">81 — 90 · Preguntas y filtros conversacionales para stories.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">81</span><span class="phrase-text">“Pregunta rápida: ¿alguien depende económicamente de ti?”</span></div>
+        <div class="phrase"><span class="phrase-num">82</span><span class="phrase-text">“¿Tienes seguro, pero no sabes exactamente qué cubre?”</span></div>
+        <div class="phrase"><span class="phrase-num">83</span><span class="phrase-text">“¿Ya pensaste cuánto necesitarías para retirarte?”</span></div>
+        <div class="phrase"><span class="phrase-num">84</span><span class="phrase-text">“¿Estás cotizando gastos médicos o apenas estás empezando a investigar?”</span></div>
+        <div class="phrase"><span class="phrase-num">85</span><span class="phrase-text">“¿Te gustaría que revisemos si tu póliza sigue haciendo sentido?”</span></div>
+        <div class="phrase"><span class="phrase-num">86</span><span class="phrase-text">“Responde VIDA si quieres saber si necesitas seguro de vida.”</span></div>
+        <div class="phrase"><span class="phrase-num">87</span><span class="phrase-text">“Responde GMM si quieres saber qué revisar antes de contratar gastos médicos.”</span></div>
+        <div class="phrase"><span class="phrase-num">88</span><span class="phrase-text">“Responde RETIRO si quieres empezar a planear tu futuro.”</span></div>
+        <div class="phrase"><span class="phrase-num">89</span><span class="phrase-text">“Responde PÓLIZA si ya tienes seguro y quieres entenderlo mejor.”</span></div>
+        <div class="phrase"><span class="phrase-num">90</span><span class="phrase-text">“Esta semana estaré revisando casos por mensaje. Escríbeme la palabra que más se acerque a lo que necesitas.”</span></div>
+      </div>
+    </div>
+
+    <!-- FUERTES -->
+    <div class="phrases-block" data-cat="fuertes" id="fuertes">
+      <h3>Frases más fuertes para prospección</h3>
+      <p class="sub">91 — 100 · Para reels de alto impacto cuando se busca decisión.</p>
+      <div class="phrase-grid">
+        <div class="phrase"><span class="phrase-num">91</span><span class="phrase-text">“El peor momento para entender tu seguro es cuando ya lo necesitas.”</span></div>
+        <div class="phrase"><span class="phrase-num">92</span><span class="phrase-text">“No tener seguro también es una decisión financiera.”</span></div>
+        <div class="phrase"><span class="phrase-num">93</span><span class="phrase-text">“La tranquilidad no aparece sola; se planea.”</span></div>
+        <div class="phrase"><span class="phrase-num">94</span><span class="phrase-text">“Si tu familia depende de ti, tu ingreso necesita respaldo.”</span></div>
+        <div class="phrase"><span class="phrase-num">95</span><span class="phrase-text">“No esperes a que tu vida cambie para revisar tu protección.”</span></div>
+        <div class="phrase"><span class="phrase-num">96</span><span class="phrase-text">“Una póliza que no entiendes puede no darte la tranquilidad que crees.”</span></div>
+        <div class="phrase"><span class="phrase-num">97</span><span class="phrase-text">“Si no sabes si estás bien protegido, esa duda ya merece una revisión.”</span></div>
+        <div class="phrase"><span class="phrase-num">98</span><span class="phrase-text">“Contratar sin entender puede salir más caro que no contratar.”</span></div>
+        <div class="phrase"><span class="phrase-num">99</span><span class="phrase-text">“Tu futuro financiero no debería depender de la improvisación.”</span></div>
+        <div class="phrase"><span class="phrase-num">100</span><span class="phrase-text">“La mejor decisión es la que tomas con información clara.”</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      Euge Tu Agente
+    </div>
+    <p>Estrategia de contenidos · Documento operativo interno.</p>
+    <div class="footer-meta">VORKA MX · Prospección orgánica</div>
+  </div>
+</footer>
+
+<script>
+  // Filtro de frases por categoría
+  const tabs = document.querySelectorAll('.tab');
+  const blocks = document.querySelectorAll('.phrases-block');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.target;
+      blocks.forEach(b => {
+        if (target === 'all' || b.dataset.cat === target) {
+          b.classList.remove('hidden');
+        } else {
+          b.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
