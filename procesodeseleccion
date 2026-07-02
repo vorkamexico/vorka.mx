@@ -1,0 +1,736 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual del Presi Estatal — Convocatoria IMPACTO</title>
+<meta name="description" content="Guía oficial para entrevistar y seleccionar a los nuevos integrantes de IMPACTO en tu estado.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#1a5f6f;
+    --teal-dark:#124651;
+    --teal-light:#2b8397;
+    --coral:#f7b33e;
+    --coral-dark:#dc9a26;
+    --bg:#ffffff;
+    --bg-soft:#f5f7f8;
+    --bg-card:#ffffff;
+    --text:#1f2b30;
+    --text-soft:#4a5a60;
+    --border:#e3e8ea;
+    --shadow:0 6px 24px rgba(26,95,111,0.08);
+    --shadow-lg:0 14px 40px rgba(26,95,111,0.14);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:var(--text);
+    background:var(--bg);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:'Montserrat',sans-serif;color:var(--teal);line-height:1.2;font-weight:800}
+  h1{font-size:clamp(2rem,4.5vw,3.4rem)}
+  h2{font-size:clamp(1.6rem,3vw,2.3rem);margin-bottom:1rem}
+  h3{font-size:1.25rem;margin-bottom:.6rem;color:var(--teal-dark)}
+  h4{font-size:1.05rem;color:var(--teal-dark);margin-bottom:.4rem}
+  p{margin-bottom:1rem;color:var(--text-soft)}
+  a{color:var(--coral);text-decoration:none}
+  a:hover{color:var(--coral-dark)}
+  ul,ol{padding-left:1.3rem;margin-bottom:1rem;color:var(--text-soft)}
+  li{margin-bottom:.4rem}
+  strong{color:var(--text)}
+
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  }
+  .nav{
+    max-width:1200px;margin:0 auto;padding:1rem 1.5rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  }
+  .logo{
+    font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.35rem;color:var(--coral);
+    letter-spacing:-0.5px;
+  }
+  .nav-links{display:flex;gap:1.5rem;list-style:none;padding:0;margin:0}
+  .nav-links a{color:var(--text);font-weight:500;font-size:.92rem;transition:color .2s}
+  .nav-links a:hover{color:var(--coral)}
+  .menu-btn{display:none;background:none;border:none;font-size:1.6rem;color:var(--teal);cursor:pointer}
+  @media(max-width:860px){
+    .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;padding:1rem 1.5rem;border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
+    .nav-links.open{display:flex}
+    .menu-btn{display:block}
+  }
+
+  /* Hero */
+  .hero{
+    background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);
+    color:#fff;padding:5rem 1.5rem 6rem;text-align:center;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;top:-100px;right:-100px;width:400px;height:400px;
+    background:var(--coral);opacity:.12;border-radius:50%;
+  }
+  .hero::after{
+    content:"";position:absolute;bottom:-150px;left:-80px;width:350px;height:350px;
+    background:var(--teal-light);opacity:.2;border-radius:50%;
+  }
+  .hero-content{max-width:900px;margin:0 auto;position:relative;z-index:1}
+  .hero .badge{
+    display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+    padding:.4rem 1rem;border-radius:999px;font-size:.85rem;font-weight:600;
+    letter-spacing:.5px;text-transform:uppercase;margin-bottom:1.5rem;
+  }
+  .hero h1{color:#fff;margin-bottom:1rem}
+  .hero p.lead{color:rgba(255,255,255,.9);font-size:1.15rem;max-width:680px;margin:0 auto 2rem}
+  .hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.85rem 1.7rem;border-radius:999px;font-weight:700;font-size:.95rem;
+    border:none;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease;
+    text-decoration:none;font-family:'Inter',sans-serif;
+  }
+  .btn-primary{background:var(--coral);color:#fff}
+  .btn-primary:hover{background:var(--coral-dark);color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(247,179,62,.35)}
+  .btn-secondary{background:#fff;color:var(--teal)}
+  .btn-secondary:hover{color:var(--teal-dark);transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,255,255,.25)}
+  .btn-ghost{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+  .btn-ghost:hover{background:var(--teal);color:#fff}
+
+  /* Sections */
+  section.block{padding:4.5rem 1.5rem;max-width:1100px;margin:0 auto}
+  section.block.alt{background:var(--bg-soft);max-width:none;padding-left:0;padding-right:0}
+  section.block.alt > .inner{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+  .section-head{margin-bottom:2.5rem;text-align:center}
+  .section-head .kicker{
+    display:inline-block;color:var(--coral);font-weight:700;font-size:.85rem;
+    letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.6rem;
+  }
+  .section-head p{max-width:720px;margin:0 auto;font-size:1.05rem}
+
+  /* Step cards */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2rem}
+  .step-card{
+    background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:1.6rem;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;
+  }
+  .step-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .step-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:12px;background:var(--coral);color:#fff;
+    font-weight:800;font-size:1.15rem;font-family:'Montserrat',sans-serif;margin-bottom:1rem;
+  }
+
+  /* Content boxes */
+  .box{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius);
+    padding:1.8rem;margin:1.5rem 0;box-shadow:var(--shadow);
+  }
+  .box.warning{border-left:5px solid var(--coral);background:#fff8f6}
+  .box.info{border-left:5px solid var(--teal-light);background:#f0fafc}
+  .box.golden{
+    background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff;
+    border:none;text-align:center;
+  }
+  .box.golden h3{color:#fff}
+  .box.golden p{color:rgba(255,255,255,.92)}
+
+  /* WhatsApp message block */
+  .msg-wrap{position:relative;margin:1.5rem 0}
+  .msg-block{
+    background:#dcf8c6;color:#1f2b30;border-radius:14px;padding:1.4rem 1.6rem;
+    font-family:'Inter',sans-serif;font-size:.98rem;line-height:1.65;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);white-space:pre-wrap;
+  }
+  .copy-btn{
+    position:absolute;top:.9rem;right:.9rem;background:var(--teal);color:#fff;
+    border:none;border-radius:8px;padding:.5rem .9rem;font-weight:600;font-size:.85rem;
+    cursor:pointer;transition:background .2s;
+  }
+  .copy-btn:hover{background:var(--teal-dark)}
+  .copy-btn.ok{background:#2c8f5c}
+
+  /* Question groups */
+  .q-group{margin:1.5rem 0;padding:1.2rem 1.4rem;background:#fff;border:1px solid var(--border);border-radius:12px}
+  .q-group h4{margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+  .q-group h4::before{
+    content:"";width:8px;height:8px;background:var(--coral);border-radius:50%;
+  }
+  .q-group ol{padding-left:1.5rem}
+  .q-group li{color:var(--text);margin-bottom:.5rem}
+
+  /* Evaluation table */
+  .eval-table{width:100%;border-collapse:collapse;margin:1.5rem 0;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .eval-table th,.eval-table td{padding:.9rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+  .eval-table th{background:var(--teal);color:#fff;font-weight:600;font-size:.9rem;text-transform:uppercase;letter-spacing:.5px}
+  .eval-table tr:last-child td{border-bottom:none}
+  .eval-table tr:nth-child(even) td{background:var(--bg-soft)}
+  .scale-cell{text-align:center;color:var(--text-soft);font-weight:600}
+
+  /* Dynamics card */
+  .dynamic{
+    background:linear-gradient(135deg,#fff 0%,#f0fafc 100%);
+    border:2px solid var(--teal-light);border-radius:var(--radius);
+    padding:1.8rem;margin:1.2rem 0;
+  }
+  .dynamic .tag{
+    display:inline-block;background:var(--teal);color:#fff;padding:.3rem .8rem;
+    border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;
+    letter-spacing:.5px;margin-bottom:.8rem;
+  }
+
+  /* FAQ */
+  .faq details{
+    background:#fff;border:1px solid var(--border);border-radius:12px;
+    margin-bottom:.8rem;overflow:hidden;transition:box-shadow .2s;
+  }
+  .faq details[open]{box-shadow:var(--shadow)}
+  .faq summary{
+    padding:1.1rem 1.4rem;font-weight:600;color:var(--teal-dark);cursor:pointer;
+    list-style:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-size:1.6rem;color:var(--coral);font-weight:400;transition:transform .2s}
+  .faq details[open] summary::after{content:"−"}
+  .faq details > div{padding:0 1.4rem 1.2rem;color:var(--text-soft)}
+
+  /* Timeline */
+  .dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.5rem}
+  .date-card{
+    background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.4rem;
+    border-top:4px solid var(--coral);
+  }
+  .date-card .date{font-family:'Montserrat',sans-serif;font-weight:800;color:var(--coral);font-size:1.1rem;margin-bottom:.3rem}
+  .date-card .label{color:var(--text);font-weight:600;margin-bottom:.3rem}
+  .date-card .desc{color:var(--text-soft);font-size:.9rem}
+
+  /* Perfil / red flags */
+  .two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:2rem}
+  .col-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;box-shadow:var(--shadow)}
+  .col-card.green{border-top:5px solid #2c8f5c}
+  .col-card.red{border-top:5px solid var(--coral)}
+  .col-card ul{padding-left:1.2rem}
+  .col-card ul li{margin-bottom:.6rem;color:var(--text)}
+
+  /* Footer */
+  footer{
+    background:var(--teal-dark);color:#fff;padding:3rem 1.5rem 2rem;margin-top:4rem;
+  }
+  .foot{max-width:1100px;margin:0 auto;text-align:center}
+  .foot p{color:rgba(255,255,255,.75);margin-bottom:.5rem}
+  .foot .brand{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.4rem;color:#fff;margin-bottom:1rem}
+  .foot-small{font-size:.85rem;color:rgba(255,255,255,.5);margin-top:1.5rem}
+
+  /* Print (PDF) */
+  @media print{
+    header,.menu-btn,.copy-btn,.hero-cta,.btn{display:none!important}
+    .hero{background:#fff;color:var(--teal);padding:2rem 0}
+    .hero h1,.hero p.lead,.hero .badge{color:var(--teal)}
+    section.block{padding:1.5rem 0;page-break-inside:avoid}
+    .box,.step-card,.q-group,.col-card,.dynamic,.date-card{box-shadow:none;page-break-inside:avoid}
+    body{font-size:11pt}
+    .faq details{box-shadow:none}
+    .faq details > div{display:block!important}
+    .faq summary::after{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="logo">IMPACTO</div>
+    <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#pasos">Pasos</a></li>
+      <li><a href="#entrevista">Entrevista</a></li>
+      <li><a href="#grupal">Grupal</a></li>
+      <li><a href="#evaluacion">Evaluación</a></li>
+      <li><a href="#fechas">Fechas</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#" onclick="window.print();return false;" style="color:var(--coral);font-weight:700;">↓ PDF</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-content">
+    <span class="badge">Convocatoria 2026 · Uso interno</span>
+    <h1>Manual del Presi Estatal</h1>
+    <p class="lead">Guía oficial para entrevistar y seleccionar a las personas correctas para abrir nuevos municipios e integrarse a la representación estatal de IMPACTO.</p>
+    <div class="hero-cta">
+      <a href="#pasos" class="btn btn-primary">Comenzar el proceso →</a>
+      <a href="#" onclick="window.print();return false;" class="btn btn-secondary">↓ Descargar PDF</a>
+    </div>
+  </div>
+</section>
+
+<!-- REGLA DE ORO -->
+<section class="block">
+  <div class="box golden">
+    <h3>Regla de oro</h3>
+    <p style="font-size:1.15rem;margin:0;">Es muy importante <strong style="color:#fff;">con quién trabajamos</strong>. Si no te late la persona, <strong style="color:#fff;">no la aceptes</strong>. Es preferible dejar un municipio sin abrir que abrirlo con la persona equivocada.</p>
+  </div>
+</section>
+
+<!-- PASOS -->
+<section class="block alt" id="pasos">
+  <div class="inner">
+    <div class="section-head">
+      <span class="kicker">Proceso completo</span>
+      <h2>Los 5 pasos del presi estatal</h2>
+      <p>Sigue este orden para asegurar que cada candidato viva un proceso claro, cálido y profesional.</p>
+    </div>
+    <div class="steps">
+      <div class="step-card"><div class="step-num">1</div><h3>Contacto por WhatsApp</h3><p>Avisar al candidato que pasó al segundo filtro y ofrecerle horarios cerrados para la entrevista.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Agendar</h3><p>Confirmar día, hora, modalidad (Zoom, Meet o presencial) y enviar recordatorio 24 h antes.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Entrevistar</h3><p>Individual (1 a 4 candidatos) o grupal con dinámicas (5 o más).</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Evaluar</h3><p>Llenar la hoja de evaluación y decidir: Aceptado, En duda o No aceptado.</p></div>
+      <div class="step-card"><div class="step-num">5</div><h3>Reportar</h3><p>Enviar resultados al Sr. IMPACTO máximo el <strong>9 de julio</strong> para notificación oficial.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PASO 1: WHATSAPP -->
+<section class="block">
+  <div class="section-head">
+    <span class="kicker">Paso 1</span>
+    <h2>Contacto inicial por WhatsApp</h2>
+    <p>Este es el primer punto de contacto formal después del filtro. El tono debe ser cálido pero profesional.</p>
+  </div>
+
+  <div class="box info">
+    <h3>Antes de escribir</h3>
+    <ul>
+      <li>Revisa la info previa del candidato (nombre, municipio, edad, ocupación).</li>
+      <li>Define <strong>2 o 3 horarios disponibles</strong> reales tuyos para ofrecerlos.</li>
+      <li>Ten listo el link de la videollamada o la dirección del lugar.</li>
+    </ul>
+  </div>
+
+  <h3 style="margin-top:2rem;">Plantilla de mensaje (lista para copiar)</h3>
+  <div class="msg-wrap">
+    <button class="copy-btn" onclick="copyMsg(this)">Copiar mensaje</button>
+    <div class="msg-block" id="wa-msg">Hola [Nombre], te saluda [Nombre del presi], Representante Estatal de IMPACTO en [Estado].
+
+Te escribo con muy buena noticia: pasaste al segundo filtro de nuestra convocatoria. 🎉
+
+El siguiente paso es una entrevista personal conmigo para conocernos mejor y platicar sobre el proyecto.
+
+Tengo estos horarios disponibles, ¿cuál te acomoda?
+• [Opción 1: día y hora]
+• [Opción 2: día y hora]
+• [Opción 3: día y hora]
+
+Quedo atento/a a tu respuesta. ¡Bienvenido/a al proceso!</div>
+  </div>
+
+  <div class="box warning">
+    <h4>Reglas del contacto por WhatsApp</h4>
+    <ul>
+      <li>Solo ofrecer horarios que <strong>tú</strong> tengas disponibles. No dejar la agenda abierta.</li>
+      <li>Confirmar día, hora y modalidad (Zoom / Meet / presencial).</li>
+      <li>Si no responde: 2 intentos con 48 h de diferencia. Si sigue sin responder, se descarta.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PASO 3: ENTREVISTA INDIVIDUAL -->
+<section class="block alt" id="entrevista">
+  <div class="inner">
+    <div class="section-head">
+      <span class="kicker">Paso 3 · Modalidad individual</span>
+      <h2>Guía de entrevista 1 a 1</h2>
+      <p>Duración total: 30 a 45 minutos. Espacio tranquilo, sin interrupciones.</p>
+    </div>
+
+    <div class="q-group">
+      <h4>A) Rompehielo (5 min)</h4>
+      <p style="margin:0;">Preséntate, agradece su interés, explica brevemente qué es IMPACTO y por qué estamos armando equipos en este estado.</p>
+    </div>
+
+    <div class="q-group">
+      <h4>B) Conocer a la persona (10 min)</h4>
+      <ol>
+        <li>Cuéntame de ti: ¿a qué te dedicas, qué estudias o trabajas?</li>
+        <li>¿Cómo te enteraste de IMPACTO y qué te llamó la atención?</li>
+        <li>¿Qué haces en tu tiempo libre? ¿Participas en algo comunitario, deportivo o social?</li>
+        <li>¿Cómo describirías tu municipio? ¿Qué te gusta y qué te gustaría cambiar?</li>
+      </ol>
+    </div>
+
+    <div class="q-group">
+      <h4>C) Motivación y compromiso (10 min)</h4>
+      <ol start="5">
+        <li>¿Por qué quieres ser parte de IMPACTO?</li>
+        <li>¿Qué esperas obtener y qué estás dispuesto/a a dar?</li>
+        <li>¿Cuánto tiempo real a la semana puedes dedicarle?</li>
+        <li>¿Has liderado algún proyecto o equipo antes? Cuéntame.</li>
+        <li>¿Cómo reaccionas cuando algo no sale como esperabas?</li>
+      </ol>
+    </div>
+
+    <div class="q-group">
+      <h4>D) Valores y forma de trabajar (10 min)</h4>
+      <ol start="10">
+        <li>¿Qué es lo más importante para ti al trabajar en equipo?</li>
+        <li>Si un compañero no cumple, ¿cómo lo manejarías?</li>
+        <li>¿Tienes alguna militancia o afiliación política/religiosa que quieras compartir?</li>
+        <li>¿Hay algo de tu vida personal o laboral que pudiera limitar tu participación?</li>
+      </ol>
+    </div>
+
+    <div class="q-group">
+      <h4>E) Visión de rol (5 min)</h4>
+      <ol start="14">
+        <li>Si te tocara <strong>abrir tu municipio</strong>, ¿por dónde empezarías?</li>
+        <li>¿A quién invitarías primero a tu equipo y por qué?</li>
+        <li>¿Estás dispuesto/a a recibir capacitación y seguir lineamientos del equipo estatal?</li>
+      </ol>
+    </div>
+
+    <div class="q-group">
+      <h4>F) Cierre (5 min)</h4>
+      <ul>
+        <li>Espacio para que el candidato pregunte lo que quiera.</li>
+        <li>Explicar los siguientes pasos y cuándo sabrá el resultado.</li>
+        <li><strong>NO comprometer una respuesta en el momento.</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ENTREVISTA GRUPAL -->
+<section class="block" id="grupal">
+  <div class="section-head">
+    <span class="kicker">Modalidad grupal</span>
+    <h2>Entrevista grupal (5 o más candidatos)</h2>
+    <p>Cuando tengas 5 o más candidatos en el estado, la primera ronda puede hacerse en grupo. Te ayuda a ver liderazgo, comunicación y cómo se relacionan entre ellos.</p>
+  </div>
+
+  <div class="box info">
+    <h3>Estructura sugerida (90–120 min)</h3>
+    <ul>
+      <li><strong>Bienvenida y presentaciones</strong> (15 min): cada uno se presenta en 60 segundos.</li>
+      <li><strong>Explicación de IMPACTO</strong> (10 min): tú explicas el proyecto y por qué están hoy ahí.</li>
+      <li><strong>Dinámica 1 — Isla</strong> (25 min).</li>
+      <li><strong>Dinámica 2 — Mi municipio en 3 problemas</strong> (20 min).</li>
+      <li><strong>Preguntas abiertas al grupo</strong> (20 min).</li>
+      <li><strong>Cierre y siguientes pasos</strong> (10 min).</li>
+    </ul>
+  </div>
+
+  <!-- Dinámica de la isla -->
+  <div class="dynamic">
+    <span class="tag">Dinámica 1</span>
+    <h3>La Isla — El avión se cae</h3>
+    <p><strong>Planteamiento:</strong> "El avión en el que viajan se cae en una isla desierta. Solo pueden rescatar <strong>5 objetos</strong> del avión para sobrevivir. Tienen 15 minutos para ponerse de acuerdo como grupo. Al final, uno explica por qué eligieron esos 5."</p>
+    <h4 style="margin-top:1rem;">Qué observar (mientras discuten):</h4>
+    <ul>
+      <li>¿Quién <strong>lidera</strong> la conversación sin imponerse?</li>
+      <li>¿Quién <strong>escucha</strong> y suma ideas ajenas?</li>
+      <li>¿Quién <strong>convence</strong> con argumentos y no con volumen?</li>
+      <li>¿Quién se <strong>queda callado</strong> todo el tiempo?</li>
+      <li>¿Quién <strong>cede</strong> con facilidad? ¿Quién no cede nunca?</li>
+      <li>¿Cómo <strong>resuelven diferencias</strong>? ¿Se enojan, negocian, votan?</li>
+      <li>¿Piensan en el <strong>bien del grupo</strong> o solo en sí mismos?</li>
+      <li>¿Quién tiene <strong>pensamiento estratégico</strong> (piensa 2 pasos adelante)?</li>
+    </ul>
+    <h4 style="margin-top:1rem;">Preguntas de cierre para el grupo:</h4>
+    <ol>
+      <li>¿Quién sienten que los guió más? ¿Por qué?</li>
+      <li>¿Qué objeto propuesto por alguien más los convenció?</li>
+      <li>Si tuvieran que dejar un integrante del grupo fuera, ¿cómo lo decidirían? (esta no la respondan, es para reflexión).</li>
+    </ol>
+  </div>
+
+  <!-- Dinámica adicional 1 -->
+  <div class="dynamic">
+    <span class="tag">Dinámica 2</span>
+    <h3>Mi municipio en 3 problemas</h3>
+    <p><strong>Planteamiento:</strong> Cada candidato tiene 3 minutos para exponer los 3 principales problemas de su municipio y proponer una acción concreta que IMPACTO podría hacer para resolverlos.</p>
+    <h4 style="margin-top:1rem;">Qué observar:</h4>
+    <ul>
+      <li>Conocimiento real y arraigo en su comunidad.</li>
+      <li>Capacidad para pasar del diagnóstico a la propuesta.</li>
+      <li>Claridad al hablar en público.</li>
+      <li>Si copia ideas de otros o realmente aporta algo suyo.</li>
+    </ul>
+  </div>
+
+  <!-- Dinámica adicional 2 -->
+  <div class="dynamic">
+    <span class="tag">Dinámica 3 · opcional</span>
+    <h3>El presi imaginario</h3>
+    <p><strong>Planteamiento:</strong> Divide al grupo en equipos de 3. Cada equipo tiene 10 minutos para diseñar el <strong>"presi municipal ideal de IMPACTO"</strong>: valores, actitudes, forma de trabajar, qué NO debe tener. Cada equipo lo expone en 2 minutos.</p>
+    <h4 style="margin-top:1rem;">Qué observar:</h4>
+    <ul>
+      <li>Qué valores destacan (te dice qué valoran ellos mismos).</li>
+      <li>Cómo trabajan en equipo bajo presión de tiempo.</li>
+      <li>Quién se apropia del rol de portavoz.</li>
+    </ul>
+  </div>
+
+  <div class="box warning">
+    <h4>Después de la dinámica grupal</h4>
+    <p>Si detectas 1 o 2 candidatos muy fuertes, agenda con ellos una <strong>entrevista individual corta (20 min)</strong> con las preguntas del apartado anterior antes de decidir. La grupal sirve para filtrar; la individual, para confirmar.</p>
+  </div>
+</section>
+
+<!-- EVALUACIÓN -->
+<section class="block alt" id="evaluacion">
+  <div class="inner">
+    <div class="section-head">
+      <span class="kicker">Paso 4</span>
+      <h2>Hoja de evaluación</h2>
+      <p>Llena esta tabla inmediatamente después de la entrevista (individual o grupal), mientras tengas la impresión fresca.</p>
+    </div>
+
+    <table class="eval-table">
+      <thead>
+        <tr><th>Criterio</th><th class="scale-cell">1–5</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Compromiso y disponibilidad real de tiempo</td><td class="scale-cell">___</td></tr>
+        <tr><td>Liderazgo y capacidad para convocar a otros</td><td class="scale-cell">___</td></tr>
+        <tr><td>Comunicación y claridad al expresarse</td><td class="scale-cell">___</td></tr>
+        <tr><td>Congruencia entre lo que dice y lo que ha hecho</td><td class="scale-cell">___</td></tr>
+        <tr><td>Valores alineados con IMPACTO</td><td class="scale-cell">___</td></tr>
+        <tr><td>Estabilidad emocional y madurez</td><td class="scale-cell">___</td></tr>
+        <tr><td>Iniciativa / proactividad</td><td class="scale-cell">___</td></tr>
+        <tr><td>Conocimiento y arraigo en su municipio</td><td class="scale-cell">___</td></tr>
+        <tr><td>Química personal (¿te late trabajar con esta persona?)</td><td class="scale-cell">___</td></tr>
+      </tbody>
+    </table>
+
+    <div class="box">
+      <h4>Decisión final</h4>
+      <p style="margin-bottom:.5rem;">✅ <strong>Aceptado</strong> &nbsp;·&nbsp; ⚠️ <strong>En duda</strong> &nbsp;·&nbsp; ❌ <strong>No aceptado</strong></p>
+      <p style="margin:0;"><strong>Rol propuesto:</strong> Presi Municipal · Compañero/a de Representación Estatal · Voluntario/a · Otro</p>
+    </div>
+
+    <div class="two-col">
+      <div class="col-card green">
+        <h3 style="color:#2c8f5c;">✓ Perfil ideal</h3>
+        <ul>
+          <li>Comprometido, con tiempo real disponible.</li>
+          <li>Con arraigo en su municipio y ganas de transformarlo.</li>
+          <li>Sabe escuchar y sabe convocar.</li>
+          <li>Congruente, honesto, con valores.</li>
+          <li>Proactivo, no espera instrucciones para todo.</li>
+          <li>Se lleva bien contigo y con el resto del equipo.</li>
+          <li>Está abierto a aprender y recibir retroalimentación.</li>
+        </ul>
+      </div>
+      <div class="col-card red">
+        <h3 style="color:var(--coral-dark);">⚠ Banderas rojas</h3>
+        <ul>
+          <li>Solo busca beneficio personal o político inmediato.</li>
+          <li>Habla mal de otros grupos, personas o del propio IMPACTO.</li>
+          <li>No tiene tiempo real, promete lo que no puede cumplir.</li>
+          <li>Incongruencias graves en su historia.</li>
+          <li>Interrumpe, no escucha, quiere protagonismo.</li>
+          <li>Te genera desconfianza aunque "en el papel" se vea bien → <strong>hazle caso a tu instinto</strong>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPORTE -->
+<section class="block">
+  <div class="section-head">
+    <span class="kicker">Paso 5</span>
+    <h2>Envío de resultados al Sr. IMPACTO</h2>
+  </div>
+
+  <div class="box warning">
+    <h3 style="color:var(--coral-dark);">Fecha límite: jueves 9 de julio de 2026</h3>
+    <p>Después de esta fecha ya no se procesan candidatos en esta ronda.</p>
+  </div>
+
+  <div class="box">
+    <h4>Envía por el canal oficial la siguiente info por cada candidato:</h4>
+    <ul>
+      <li>Nombre completo</li>
+      <li>Municipio</li>
+      <li>WhatsApp</li>
+      <li>Modalidad de entrevista (individual o grupal)</li>
+      <li>Evaluación (tabla de criterios)</li>
+      <li>Decisión final y rol propuesto</li>
+      <li>Comentarios adicionales del presi</li>
+    </ul>
+    <p style="margin-top:1rem;"><strong>Con esta info, el Sr. IMPACTO enviará el mensaje oficial con el resultado a cada candidato.</strong></p>
+  </div>
+</section>
+
+<!-- FECHAS -->
+<section class="block alt" id="fechas">
+  <div class="inner">
+    <div class="section-head">
+      <span class="kicker">Calendario</span>
+      <h2>Fechas clave</h2>
+    </div>
+    <div class="dates">
+      <div class="date-card">
+        <div class="date">Hasta 8 de julio 2026</div>
+        <div class="label">Entrevistas</div>
+        <div class="desc">Ventana para agendar y realizar las entrevistas individuales o grupales.</div>
+      </div>
+      <div class="date-card">
+        <div class="date">9 de julio 2026</div>
+        <div class="label">Envío de resultados</div>
+        <div class="desc">Fecha máxima para mandar tu reporte al Sr. IMPACTO. Sin excepciones.</div>
+      </div>
+      <div class="date-card">
+        <div class="date">Posterior al 9 de julio</div>
+        <div class="label">Notificación a candidatos</div>
+        <div class="desc">El Sr. IMPACTO manda el mensaje oficial de resultado a cada candidato.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="block" id="faq">
+  <div class="section-head">
+    <span class="kicker">Preguntas frecuentes</span>
+    <h2>FAQ para el presi estatal</h2>
+    <p>Si tu pregunta no está aquí, contacta al Sr. IMPACTO antes de tomar la decisión.</p>
+  </div>
+
+  <div class="faq">
+
+    <details>
+      <summary>¿Puedo hacer la entrevista en modalidad grupal?</summary>
+      <div>Sí, cuando tengas <strong>5 o más candidatos</strong> en el estado. Aplica las dinámicas descritas en la sección "Entrevista grupal". Si detectas 1 o 2 candidatos muy fuertes, agenda con ellos una segunda ronda individual corta para confirmar antes de decidir.</div>
+    </details>
+
+    <details>
+      <summary>¿Puedo delegar la entrevista a alguien más?</summary>
+      <div>
+        <p><strong>Depende del rol para el que se está entrevistando:</strong></p>
+        <ul>
+          <li><strong>Para ABRIR un municipio nuevo:</strong> NO puedes delegar. La entrevista la haces tú, el presi estatal, obligatoriamente. Estás eligiendo a la persona que representará a IMPACTO en un territorio nuevo, y esa decisión es tuya.</li>
+          <li><strong>Para compañero/a de la Representación Estatal:</strong> NO puedes delegar. Va a trabajar contigo directo, tú decides.</li>
+          <li><strong>Para voluntario/a "de a pie":</strong> SÍ puedes delegar al presi municipal del municipio del candidato (si ese municipio ya está abierto).</li>
+          <li><strong>Si el municipio ya existe y el candidato es de ahí:</strong> puedes canalizarlo al presi municipal para que él/ella lo entreviste y te reporte.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>¿Por qué las entrevistas para abrir municipio NO se pueden delegar?</summary>
+      <div>Porque la persona que abre un municipio se convierte en la <strong>cara de IMPACTO</strong> en ese territorio. Si esa persona falla, arrastra al proyecto entero en esa zona. La decisión de con quién abrir es tan importante que solo el presi estatal, con visión completa del estado, puede tomarla. Un presi municipal puede tener buena intención pero no tiene el contexto ni la responsabilidad del estado completo.</div>
+    </details>
+
+    <details>
+      <summary>¿Y si el candidato no responde en WhatsApp?</summary>
+      <div>Haz <strong>2 intentos con 48 horas de diferencia</strong>. Si al segundo intento no responde, se descarta y se reporta como "sin respuesta" al Sr. IMPACTO.</div>
+    </details>
+
+    <details>
+      <summary>¿Y si me late a medias el candidato?</summary>
+      <div>Márcalo como <strong>"En duda"</strong> en la hoja de evaluación y coméntalo con el Sr. IMPACTO antes del 9 de julio. Nunca aceptes por compromiso o por llenar cupo.</div>
+    </details>
+
+    <details>
+      <summary>¿Qué hago si el candidato es familiar o amigo cercano mío?</summary>
+      <div>Puedes entrevistarlo, pero solicita al Sr. IMPACTO o a otro presi estatal una <strong>segunda opinión</strong> antes de tomar la decisión final, para evitar sesgo.</div>
+    </details>
+
+    <details>
+      <summary>¿Y si el candidato tiene militancia política activa?</summary>
+      <div>Se lo tiene que comentar abiertamente en la entrevista. IMPACTO es apartidista. Si su militancia va a interferir con el trabajo o con la imagen del movimiento, se descarta. Si es solo simpatía personal sin activismo público, se puede considerar. En duda, consultar al Sr. IMPACTO.</div>
+    </details>
+
+    <details>
+      <summary>¿Puedo aceptar a alguien "en prueba"?</summary>
+      <div>Sí, existe la figura de <strong>periodo de prueba de 30 días</strong>. Se reporta como "Aceptado en prueba" y si en ese mes no da los resultados esperados, se le comunica de forma respetuosa que no continúa.</div>
+    </details>
+
+    <details>
+      <summary>¿Qué pasa si en un municipio nuevo tengo 2 candidatos igualmente buenos?</summary>
+      <div>Se reporta a ambos al Sr. IMPACTO y se define entre los tres si uno abre y el otro es su segundo, o si uno abre ese municipio y el otro se le asigna otro municipio cercano.</div>
+    </details>
+
+    <details>
+      <summary>¿Qué pasa si no encuentro a nadie ideal en el estado?</summary>
+      <div>Es preferible <strong>no abrir un municipio</strong> a abrirlo mal. Reporta "sin candidato viable" y se retoma en la siguiente ronda de convocatoria.</div>
+    </details>
+
+    <details>
+      <summary>¿Cuánto debe durar la entrevista individual?</summary>
+      <div>Entre <strong>30 y 45 minutos</strong>. Si dura menos de 20, probablemente no exploraste bien. Si dura más de 60, te dispersaste.</div>
+    </details>
+
+    <details>
+      <summary>¿Puedo grabar la entrevista?</summary>
+      <div>Solo con el <strong>consentimiento verbal</strong> del candidato al inicio, para uso interno del equipo estatal. Nunca compartir la grabación fuera.</div>
+    </details>
+
+    <details>
+      <summary>¿Y si el candidato empieza a llorar o se pone muy emocional?</summary>
+      <div>Con calma. Ofrécele agua, un momento para respirar. La emocionalidad no es mala en sí, pero observa si tiene <strong>estabilidad para retomar</strong> y seguir. Si detectas fragilidad excesiva o crisis, sugiere pausar y retomar otro día.</div>
+    </details>
+
+    <details>
+      <summary>¿Qué hago si un candidato me pide dinero, apoyo económico o "puesto"?</summary>
+      <div>Descarte inmediato. IMPACTO no es una fuente de empleo ni una plataforma para escalar cargos. Se agradece su interés y se termina la entrevista con respeto.</div>
+    </details>
+
+    <details>
+      <summary>¿Puedo compartir este manual con mis presis municipales?</summary>
+      <div>Sí, cuando ellos ya estén activos y en la siguiente ronda vayan a entrevistar voluntarios de sus municipios. Este manual es <strong>uso interno de IMPACTO</strong>, no se difunde a candidatos ni externos.</div>
+    </details>
+
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="block">
+  <div class="box golden">
+    <h3>Estás eligiendo con quién construimos IMPACTO</h3>
+    <p style="max-width:640px;margin:0 auto;">Cada persona que entra al equipo cambia la energía y los resultados. Tómate el tiempo, confía en tu instinto y no bajes el estándar. Gracias por hacerlo bien.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <div class="brand">IMPACTO</div>
+    <p>Manual del Presi Estatal · Convocatoria 2026</p>
+    <p>Documento de uso interno · No difundir</p>
+    <p class="foot-small">© IMPACTO · Juventudes Impactando México</p>
+  </div>
+</footer>
+
+<script>
+  function copyMsg(btn){
+    const text = document.getElementById('wa-msg').innerText;
+    navigator.clipboard.writeText(text).then(()=>{
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copiado';
+      btn.classList.add('ok');
+      setTimeout(()=>{ btn.textContent = orig; btn.classList.remove('ok'); }, 2000);
+    }).catch(()=>{
+      alert('No se pudo copiar. Selecciona el texto manualmente.');
+    });
+  }
+  // Cierra el menú al hacer clic en un link
+  document.querySelectorAll('#navLinks a').forEach(a=>{
+    a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
+  });
+</script>
+
+</body>
+</html>
