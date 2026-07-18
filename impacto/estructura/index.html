@@ -69,9 +69,100 @@
     text-rendering: optimizeLegibility;
     letter-spacing: -0.005em;
   }
-  .wrap{max-width:960px;margin:0 auto;padding:32px 24px 96px;}
+  a{color: inherit;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px 96px;}
 
-  .hero{padding: 40px 0 56px; border-bottom: 1px solid var(--rule); margin-bottom: 40px;}
+  /* SITE HEADER */
+  .site-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .logo-bars{
+    display:inline-flex;
+    gap: 2px;
+  }
+  .logo-bars span{
+    width: 6px;
+    height: 26px;
+    display:inline-block;
+    border-radius: 1px;
+  }
+  .logo-bars span:nth-child(1){background:var(--noroeste);}
+  .logo-bars span:nth-child(2){background:var(--noreste);}
+  .logo-bars span:nth-child(3){background:var(--occidente);}
+  .logo-bars span:nth-child(4){background:var(--centro);}
+  .logo-bars span:nth-child(5){background:var(--sureste);}
+  .logo-text{
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .logo-sub{
+    display:block;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: 3px;
+  }
+  .site-nav{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .nav-link{
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 100px;
+    display:inline-flex;
+    align-items:center;
+    gap: 6px;
+    transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover{opacity: 0.85;}
+  .nav-link svg{width: 11px; height: 11px;}
+
+  .theme-toggle{
+    background: transparent;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 100px;
+    padding: 9px 14px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover{color:var(--ink); border-color: var(--ink);}
+
+  /* HERO */
+  .hero{padding: 32px 0 56px; border-bottom: 1px solid var(--rule); margin-bottom: 40px;}
   .brand{
     display:inline-flex; align-items:center; gap: 10px;
     font-size: 11px; font-weight: 800; letter-spacing: .32em; text-transform: uppercase;
@@ -91,6 +182,7 @@
   .hero-signoff{
     display:inline-block; font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
     font-weight: 700; color: var(--ink); border-top: 2px solid var(--ink); padding-top: 10px; margin-top: 8px;
+    line-height: 1.6;
   }
 
   .filters{position: sticky; top: 0; z-index: 10; background: var(--paper); padding: 14px 0;
@@ -178,15 +270,50 @@
   .empty-title{font-family: var(--sans); font-size: 22px; font-weight: 800;
     letter-spacing: -0.02em; margin-bottom: 8px; color: var(--ink);}
 
-  .theme-toggle{position:fixed; top: 16px; right: 16px; background: var(--paper);
-    border: 1.5px solid var(--rule-strong); border-radius: 100px; padding: 8px 14px;
-    font-size: 10.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--ink-2); cursor: pointer; font-family: var(--sans); z-index: 20;}
-  .theme-toggle:hover{color:var(--ink); border-color: var(--ink);}
+  /* SITE FOOTER */
+  .site-footer{
+    margin-top: 96px;
+    padding: 40px 0 24px;
+    border-top: 2px solid var(--ink);
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+  }
+  .footer-brand-block{display:flex; flex-direction:column; gap: 8px;}
+  .footer-brand{
+    display:flex; align-items:center; gap: 10px;
+    font-size: 15px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .footer-brand .logo-bars span{width: 4px; height: 16px;}
+  .footer-tagline{
+    font-size: 12.5px; color: var(--ink-2); max-width: 46ch; line-height: 1.5;
+  }
+  .footer-meta{
+    font-size: 11px; color: var(--ink-3); letter-spacing: .06em; margin-top: 12px;
+  }
+  .footer-links{
+    display:flex; flex-direction:column; gap: 8px; text-align: right;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .footer-links a{
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    display: inline-block;
+  }
+  .footer-links a:hover{color: var(--ink-2); border-color: var(--ink-2);}
 
   @media (max-width: 720px){
-    .wrap{padding: 24px 16px 60px;}
-    .hero{padding: 24px 0 40px;}
+    .wrap{padding: 0 16px 60px;}
+    .site-header{flex-wrap: wrap; padding: 16px 0;}
+    .site-nav{gap: 8px;}
+    .nav-link{padding: 9px 12px; font-size: 10px;}
+    .theme-toggle{padding: 8px 12px; font-size: 10px;}
+    .logo-text{font-size: 18px;}
+    .logo-sub{display:none;}
+    .hero{padding: 16px 0 40px;}
     .group-title{font-size: 22px;}
     .row{grid-template-columns: 4px 1fr; gap: 8px 14px;}
     .row-stripe{grid-row: 1 / span 2; height: 100%; min-height: 60px;}
@@ -196,7 +323,8 @@
     select.native{flex: 1 1 auto; min-width: 0;}
     .view-toggle{width: 100%;}
     .view-toggle button{flex: 1;}
-    .theme-toggle{top: 12px; right: 12px; padding: 6px 12px;}
+    .site-footer{grid-template-columns: 1fr; gap: 20px;}
+    .footer-links{text-align: left;}
   }
 
   :focus-visible{outline: 2px solid var(--focus); outline-offset: 2px;}
@@ -205,9 +333,27 @@
 </head>
 <body>
 
-<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">Modo oscuro</button>
-
 <div class="wrap">
+
+  <header class="site-header">
+    <a class="logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO — sitio oficial">
+      <span class="logo-bars" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </span>
+      <span>
+        <span class="logo-text">IMPACTO</span>
+        <span class="logo-sub">Directorio Nacional</span>
+      </span>
+    </a>
+    <nav class="site-nav">
+      <a class="nav-link" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">
+        Sitio oficial
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg>
+      </a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">Modo oscuro</button>
+    </nav>
+  </header>
+
   <header class="hero">
     <div class="brand">
       <span class="brand-dots">
@@ -265,6 +411,23 @@
   </div>
 
   <div class="directory" id="directory"></div>
+
+  <footer class="site-footer">
+    <div class="footer-brand-block">
+      <div class="footer-brand">
+        <span class="logo-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        IMPACTO Nacional
+      </div>
+      <div class="footer-tagline">La juventud organizada que está impulsando a México desde cada estado, cada región y cada comunidad.</div>
+      <div class="footer-meta">© 2026 IMPACTO · Directorio actualizado</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">vorka.mx/impacto ↗</a>
+    </div>
+  </footer>
+
 </div>
 
 <script>
@@ -272,7 +435,7 @@
     {cargo:"presidente",estructura:"municipal",resultado:"Turicato",nombre:"Rubén Barrón Rodríguez",estado:"Michoacán"},
     {cargo:"vicepresidente",estructura:"estatal",resultado:"Chihuahua",nombre:"Carolina Neftali Balderas del Rio",estado:"Chihuahua"},
     {cargo:"presidente",estructura:"municipal",resultado:"Irapuato",nombre:"Karla Lesly Volantín Martínez",estado:"Guanajuato"},
-    {cargo:"presidente",estructura:"municipal",resultado:"Puebla",nombre:"Alejandra Hernández Pérez",estado:"Puebla"},
+    {cargo:"vicepresidente",estructura:"municipal",resultado:"Puebla",nombre:"Alejandra Hernández Pérez",estado:"Puebla"},
     {cargo:"presidente",estructura:"estatal",resultado:"Coahuila",nombre:"Joshua Gabriel Navarro Candido",estado:"Coahuila"},
     {cargo:"vicepresidente",estructura:"municipal",resultado:"León",nombre:"Fernanda Yamileth Díaz García",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"Atizapan",nombre:"Alejandro Orlando Eliosa García",estado:"Estado de México"},
@@ -298,7 +461,7 @@
     {cargo:"presidente",estructura:"municipal",resultado:"Moroleón",nombre:"Vianney Guzmán Mascot",estado:"Guanajuato"},
     {cargo:"vicepresidente",estructura:"municipal",resultado:"Mérida",nombre:"Daniela Vidaña Chay",estado:"Yucatán"},
     {cargo:"vicepresidente",estructura:"estatal",resultado:"Guanajuato",nombre:"Alessandra Torres Gutierrez",estado:"Guanajuato"},
-    {cargo:"presidente",estructura:"estatal",resultado:"Baja California Sur",nombre:"Jesús Emiliano Cortez Luna",estado:"Baja California Sur"},
+    {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Noroeste",nombre:"Jesús Emiliano Cortez Luna",estado:"Baja California Sur"},
     {cargo:"secretaría",estructura:"estatal",resultado:"Tabasco",nombre:"César Alfonso Trejo Solórzano",estado:"Tabasco"},
     {cargo:"presidente",estructura:"estatal",resultado:"Querétaro",nombre:"Juan Pablo Mata Pacheco",estado:"Querétaro"},
     {cargo:"vicepresidente",estructura:"municipal",resultado:"Salvatierra",nombre:"Eduardo Zepeda Salinas",estado:"Guanajuato"},
@@ -336,14 +499,14 @@
     {cargo:"presidente",estructura:"municipal",resultado:"Iztacalco",nombre:"Angélica Navarro Avilés",estado:"Ciudad de México"},
     {cargo:"presidente",estructura:"municipal",resultado:"Centro",nombre:"Yamileth Adlai Colin Hernandez",estado:"Tabasco"},
     {cargo:"presidente",estructura:"estatal",resultado:"Guerrero",nombre:"Angélica Ibárez Suárez",estado:"Guerrero"},
-    {cargo:"vicepresidente",estructura:"estatal",resultado:"Puebla",nombre:"María José González Baltazar",estado:"Puebla"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Puebla",nombre:"María José González Baltazar",estado:"Puebla"},
     {cargo:"vicepresidente",estructura:"municipal",resultado:"Iztapalapa",nombre:"Pérez Hernández José Santiago",estado:"Ciudad de México"},
     {cargo:"presidente",estructura:"municipal",resultado:"San Diego de la Unión",nombre:"Barbara Valdez Sanchez",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"Chihuahua",nombre:"Silvana Medina Rodriguez",estado:"Chihuahua"},
     {cargo:"presidente",estructura:"municipal",resultado:"Salvatierra",nombre:"Aurelio Eduardo García Morales",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"Acapulco",nombre:"Kendra Paola Ibarra Mendoza",estado:"Guerrero"},
     {cargo:"vicepresidente",estructura:"municipal",resultado:"Iztacalco",nombre:"Joshua Eduardo Rangel Arellano",estado:"Ciudad de México"},
-    {cargo:"presidente",estructura:"distrital",resultado:"Juchitán",nombre:"Lizeth Méndez López",estado:"Oaxaca"},
+    {cargo:"vicepresidente",estructura:"distrital",resultado:"Juchitán",nombre:"Lizeth Méndez López",estado:"Oaxaca"},
     {cargo:"presidente",estructura:"estatal",resultado:"San Luis Potosí",nombre:"Liliana Sarahí Lara Larraga",estado:"San Luis Potosí"},
     {cargo:"presidente",estructura:"municipal",resultado:"Apaseo el Alto",nombre:"Samantha Alicia Rodríguez Rodríguez",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"Heroica Nogales",nombre:"Jennifer Natalia Vazquez Miranda",estado:"Sonora"},
@@ -369,7 +532,7 @@
     {cargo:"vicepresidente",estructura:"municipal",resultado:"Ciudad del Carmen",nombre:"Belen Guadalupe Hernández Morales",estado:"Campeche"},
     {cargo:"presidente",estructura:"estatal",resultado:"Tabasco",nombre:"José Ángel Huerta",estado:"Tabasco"},
     {cargo:"presidente",estructura:"municipal",resultado:"Torreón",nombre:"Luis Manuel Contreras Ríos",estado:"Coahuila"},
-    {cargo:"representante",estructura:"estatal",resultado:"Ciudad de México",nombre:"Ivanna Paola Hernández Becerra",estado:"Ciudad de México"},
+    {cargo:"presidente",estructura:"estatal",resultado:"Ciudad de México",nombre:"Ivanna Paola Hernández Becerra",estado:"Ciudad de México"},
     {cargo:"presidente",estructura:"municipal",resultado:"Gustavo A. Madero",nombre:"Alexa Victoria Aguilar González Camarena",estado:"Ciudad de México"},
     {cargo:"presidente",estructura:"estatal",resultado:"Guanajuato",nombre:"Javier Suarez de la Vega",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"Guanajuato Capital",nombre:"Lesly Espinosa Amador",estado:"Guanajuato"},
@@ -377,7 +540,6 @@
     {cargo:"secretaría",estructura:"municipal",resultado:"Guanajuato Capital",nombre:"Camila Anda Rodríguez",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"León",nombre:"Brenda Alondra Luna Hernández",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"municipal",resultado:"Comonfort",nombre:"Martín Eduardo Áviles Gámez",estado:"Guanajuato"},
-    {cargo:"secretaría",estructura:"municipal",resultado:"Celaya",nombre:"Noemí Díaz García",estado:"Guanajuato"},
     {cargo:"director",estructura:"estatal",resultado:"Mercurio Guanajuato",nombre:"Carlos Santiago Noria Chimal",estado:"Guanajuato"},
     {cargo:"presidente",estructura:"distrital",resultado:"Nochixtlán",nombre:"Citlali Lázaro Velasco",estado:"Oaxaca"},
     {cargo:"presidente",estructura:"distrital",resultado:"Tuxtepec",nombre:"Natasha Eppifany Lascarez Pérez",estado:"Oaxaca"},
@@ -423,20 +585,30 @@
     {cargo:"presidente",estructura:"municipal",resultado:"Guadalajara",nombre:"Yunuen Monzzerrat Calderón Carretero",estado:"Jalisco"},
     {cargo:"presidente",estructura:"estatal",resultado:"Estado de México",nombre:"Jennifer Muro",estado:"Estado de México"},
     {cargo:"vicepresidente",estructura:"estatal",resultado:"Estado de México",nombre:"Andrea Mondragón",estado:"Estado de México"},
-    {cargo:"representante",estructura:"municipal",resultado:"Chimalhuacán",nombre:"Itzel Nava",estado:"Estado de México"},
-    {cargo:"representante",estructura:"municipal",resultado:"Tlalnepantla",nombre:"Elisa Muro",estado:"Estado de México"},
-    {cargo:"representante",estructura:"municipal",resultado:"Tecámac",nombre:"Jair Cruz",estado:"Estado de México"},
-    {cargo:"representante",estructura:"municipal",resultado:"Cuautitlán Izcalli",nombre:"Noemi Franco",estado:"Estado de México"},
-    {cargo:"representante",estructura:"municipal",resultado:"Valle de Chalco",nombre:"Rodrigo Alvarado",estado:"Estado de México"},
-    {cargo:"representante",estructura:"municipal",resultado:"Huixquilucan",nombre:"Ximena Beltrán",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Chimalhuacán",nombre:"Itzel Nava",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Tlalnepantla",nombre:"Elisa Muro",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Tecámac",nombre:"Jair Cruz",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Cuautitlán Izcalli",nombre:"Noemi Franco",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Valle de Chalco",nombre:"Rodrigo Alvarado",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Huixquilucan",nombre:"Ximena Beltrán",estado:"Estado de México"},
     {cargo:"director",estructura:"estatal",resultado:"Mercurio Estado de México",nombre:"Lia Yamilet Baez",estado:"Estado de México"},
     {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Occidente",nombre:"Flor de María López Juárez",estado:"Guanajuato"},
-    {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Norte",nombre:"Yamileth Ibarra Cabrera",estado:"Baja California Sur"},
+    {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Noreste",nombre:"Yamileth Ibarra Cabrera",estado:"Baja California Sur"},
     {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Sureste",nombre:"Lina María Serra Dominguez",estado:"Chiapas"},
     {cargo:"presidente",estructura:"nacional",resultado:"México",nombre:"Brandon Oleynick Hernández",estado:"Guanajuato"},
     {cargo:"consejero",estructura:"nacional",resultado:"México",nombre:"Ana Laura Hernández García",estado:"Jalisco"},
     {cargo:"consejero",estructura:"estatal",resultado:"Guerrero",nombre:"Karla Ivonne Flores",estado:"Guerrero"},
-    {cargo:"director",estructura:"nacional",resultado:"Mercurio México",nombre:"Frida Ramírez Nolasco",estado:"Ciudad de México"}
+    {cargo:"director",estructura:"nacional",resultado:"Mercurio México",nombre:"Frida Ramírez Nolasco",estado:"Ciudad de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Tapachula",nombre:"Diana Laura Pérez Arévalo",estado:"Chiapas"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Cintalapa",nombre:"Anya Ximena Sánchez Ángel",estado:"Chiapas"},
+    {cargo:"secretaría",estructura:"estatal",resultado:"Yucatán",nombre:"Dasha Fernanda Vales Mena",estado:"Yucatán"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Ecatepec",nombre:"Sofía Serafín González",estado:"Estado de México"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Pedro Escobedo",nombre:"Luis Eduardo Rodríguez Grande",estado:"Querétaro"},
+    {cargo:"presidente",estructura:"municipal",resultado:"Querétaro",nombre:"Danna María Tolentino Prieto",estado:"Querétaro"},
+    {cargo:"director",estructura:"estatal",resultado:"Mercurio Puebla",nombre:"Jesús Alejandro Gómez Bautista",estado:"Puebla"},
+    {cargo:"presidente",estructura:"estatal",resultado:"Baja California Sur",nombre:"Jesús Emiliano Cortez Luna",estado:"Baja California Sur"},
+    {cargo:"vicepresidente",estructura:"estatal",resultado:"Puebla",nombre:"Emmanuel Hernandez Morales",estado:"Puebla"},
+    {cargo:"vicepresidente",estructura:"estatal",resultado:"Puebla",nombre:"Jesús Ronaldo Santiago Zaragoza",estado:"Puebla"}
   ];
 
   const REGION_STATES = {
@@ -451,7 +623,7 @@
   const STATE_TO_REGION = {};
   Object.entries(REGION_STATES).forEach(([r, states]) => states.forEach(s => STATE_TO_REGION[s] = r));
 
-  const VPR_MAP = {"Occidente":["occidente"],"Sureste":["sureste"],"Norte":["noroeste","noreste"]};
+  const VPR_MAP = {"Noroeste":["noroeste"],"Noreste":["noreste"],"Occidente":["occidente"],"Sureste":["sureste"],"Centro":["centro"]};
 
   const STRUCT_ORDER = ["nacional","estatal","distrital","municipal"];
   const STRUCT_LABELS = {nacional:"Nacional",estatal:"Estatal",distrital:"Distrital",municipal:"Municipal"};
