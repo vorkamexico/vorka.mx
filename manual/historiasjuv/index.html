@@ -1,0 +1,851 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual · Historias con sentido · Vorka México</title>
+<meta name="description" content="Manual general para publicar historias juveniles en el ecosistema Vorka Sparks. Formato, guía de grabación, enfoque narrativo y checklist. Vorka México.">
+<link rel="icon" type="image/png" href="LOGO.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fcfaf8;
+  --black:#141413;
+  --yellow:#f7b33e;
+  --green:#4ca037;
+  --blue:#387ec2;
+  --purple:#81179c;
+  --red:#df423a;
+  --orange:#ff751f;
+  --pink:#ff66c4;
+  --gray-100:#f0ede9;
+  --gray-200:#e2ddd8;
+  --gray-400:#a09890;
+  --gray-600:#6a6460;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Mona Sans','Helvetica Neue',Arial,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--black);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:2px solid var(--black);outline-offset:3px}
+img,svg{display:block;max-width:100%}
+
+/* ── HERO ── */
+.hero{background:var(--black);position:relative;overflow:hidden}
+.hero-stripe{position:absolute;bottom:0;left:0;right:0;height:5px;display:flex}
+.hero-stripe span{flex:1}
+.hero-inner{max-width:1120px;margin:0 auto;padding:2.25rem 2rem 4rem;position:relative;z-index:2}
+
+.hero-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:2.5rem;margin-bottom:2.5rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.brand-link{display:inline-flex;align-items:center;gap:12px}
+.brand-mark{
+  display:inline-block;width:26px;height:32px;
+  background:url("LOGO.png") center/contain no-repeat;
+  filter:invert(1) brightness(1.1);
+}
+.brand-txt{
+  font-family:var(--font-sans);font-weight:800;letter-spacing:-0.01em;
+  font-size:16px;color:#fff;
+}
+.brand-txt em{font-style:italic;color:var(--yellow);font-weight:800}
+.hero-back{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,0.4);display:inline-flex;align-items:center;gap:8px;
+  transition:color .15s;
+}
+.hero-back:hover{color:#fff}
+.hero-back svg{width:14px;height:14px}
+
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem;flex-wrap:wrap}
+.hero-dot{width:8px;height:8px;border-radius:50%}
+.hero-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+.hero-title{
+  font-family:var(--font-sans);font-weight:800;
+  font-size:clamp(46px,7.5vw,96px);line-height:.96;letter-spacing:-.025em;
+  margin-bottom:1.75rem;color:#fff;
+}
+.hero-title em{
+  font-family:var(--font-serif);font-style:italic;font-weight:600;
+  color:var(--yellow);letter-spacing:-.01em;
+}
+.hero-sub{
+  font-size:15px;color:rgba(255,255,255,0.55);max-width:560px;
+  line-height:1.75;margin-bottom:3rem;font-weight:400;
+}
+.hero-stats{display:flex;gap:3rem;flex-wrap:wrap}
+.stat-num{
+  font-family:var(--font-serif);font-weight:600;font-style:italic;
+  font-size:44px;line-height:1;margin-bottom:4px;
+}
+.stat-label{
+  font-size:10px;color:rgba(255,255,255,0.32);letter-spacing:.1em;
+  text-transform:uppercase;font-weight:700;
+}
+
+/* ── MAIN ── */
+.main{max-width:1120px;margin:0 auto;padding:3rem 2rem 6rem}
+
+/* ── TABS ── */
+.tabs-wrap{
+  position:sticky;top:0;z-index:100;background:var(--bg);
+  border-bottom:1.5px solid var(--gray-200);
+  margin:0 -2rem 3rem;padding:0 2rem;
+}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex-shrink:0;padding:.95rem 1.15rem;font-size:13px;font-weight:700;
+  color:var(--gray-600);cursor:pointer;border:none;
+  border-bottom:2.5px solid transparent;background:none;
+  font-family:inherit;white-space:nowrap;
+  transition:color .15s,border-color .15s;letter-spacing:.01em;
+}
+.tab:hover{color:var(--black)}
+.tab.active{color:var(--black);border-bottom-color:var(--black)}
+
+/* ── SECTION HEADER ── */
+.sh{margin-bottom:2rem}
+.sh-title{
+  font-family:var(--font-sans);font-weight:800;
+  font-size:clamp(38px,5.5vw,68px);line-height:.98;letter-spacing:-.025em;
+  margin-bottom:.5rem;
+}
+.sh-title em{
+  font-family:var(--font-serif);font-style:italic;font-weight:600;
+  letter-spacing:-.005em;
+}
+.sh-desc{font-size:13px;color:var(--gray-600);font-weight:400}
+
+/* ── GUIDE BLOCKS ── */
+.gblock{
+  background:#fff;border:1.5px solid var(--gray-200);border-radius:18px;
+  overflow:hidden;margin-bottom:1.25rem;
+}
+.gblock-h{background:var(--black);padding:1.25rem 1.75rem}
+.gblock-h h2{
+  font-family:var(--font-sans);font-weight:800;font-size:20px;
+  color:#fff;margin-bottom:4px;letter-spacing:-.015em;line-height:1.15;
+}
+.gblock-h p{font-size:12px;color:rgba(255,255,255,0.42);font-weight:400}
+
+.steps{padding:0 1.75rem}
+.step{
+  display:flex;gap:18px;padding:1.25rem 0;
+  border-bottom:1px solid var(--gray-100);
+}
+.step:last-child{border-bottom:none}
+.snum{
+  width:34px;height:34px;border-radius:50%;color:#fff;
+  font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;font-family:var(--font-serif);font-style:italic;
+}
+.step-c h3{font-size:15px;font-weight:700;margin-bottom:5px;letter-spacing:-.01em}
+.step-c p{font-size:13.5px;color:var(--gray-600);line-height:1.65;margin-bottom:6px}
+.step-c p strong{color:var(--black);font-weight:700}
+.step-time{
+  display:inline-block;font-size:11px;background:var(--gray-100);
+  color:var(--gray-600);padding:3px 10px;border-radius:20px;
+  border:1px solid var(--gray-200);font-weight:700;letter-spacing:.02em;
+}
+.step-warn{font-size:12px;color:var(--red);margin-top:6px;font-weight:700}
+
+/* ── FORMAT GRID ── */
+.fmt-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;padding:1.25rem 1.75rem;
+}
+.fmt-c{background:var(--gray-100);border-radius:12px;padding:1rem;text-align:center}
+.fmt-ico{font-size:26px;margin-bottom:8px;line-height:1}
+.fmt-label{
+  font-size:10px;color:var(--gray-600);text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:4px;font-weight:700;
+}
+.fmt-val{font-size:13px;font-weight:700;line-height:1.3}
+
+.tomas{padding:0 1.75rem 1.5rem}
+.rlabel{
+  font-size:10px;color:var(--gray-400);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:9px;font-weight:700;
+}
+.rlist{display:flex;flex-direction:column;gap:6px;margin-bottom:.875rem}
+.ritem{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;color:var(--black);line-height:1.5}
+.rdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+
+/* ── CARD GRID ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(305px,1fr));gap:14px}
+
+.vc{
+  background:#fff;border:1.5px solid var(--gray-200);border-radius:18px;
+  overflow:hidden;transition:transform .18s,box-shadow .18s;position:relative;
+}
+.vc:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(20,20,19,.10)}
+.vc-accent{height:4px;width:100%}
+.vc-top{padding:1.125rem 1.25rem .875rem;display:flex;align-items:flex-start;gap:13px}
+.vc-num{
+  width:38px;height:38px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--font-serif);font-style:italic;
+  font-size:18px;font-weight:600;flex-shrink:0;letter-spacing:0;
+}
+.vc-meta h3{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:3px;letter-spacing:-.01em}
+.vc-meta span{
+  font-size:11px;color:var(--gray-400);text-transform:uppercase;
+  letter-spacing:.06em;font-weight:700;
+}
+.vdiv{height:1px;background:var(--gray-100);margin:0 1.25rem}
+.vc-body{padding:1rem 1.25rem 1.375rem}
+.frase{
+  background:var(--bg);border-radius:10px;padding:.85rem 1rem;font-size:15px;
+  font-weight:500;line-height:1.45;margin-bottom:.875rem;
+  border-left:3.5px solid currentColor;font-family:var(--font-serif);
+  font-style:italic;color:currentColor;
+}
+.cierre{
+  font-size:12.5px;color:var(--gray-600);border-top:1px solid var(--gray-100);
+  padding-top:.75rem;line-height:1.55;
+}
+.cierre strong{color:var(--black);font-weight:700}
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:.75rem}
+.pill{
+  font-size:11px;padding:3px 9px;border-radius:20px;
+  border:1.5px solid currentColor;font-weight:700;letter-spacing:.02em;
+}
+
+/* ── CHECK CARDS ── */
+.check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:1.25rem}
+.check-c{background:#fff;border:1.5px solid var(--gray-200);border-radius:18px;overflow:hidden}
+.check-h{padding:1.25rem 1.5rem;color:#fff;display:flex;align-items:center;gap:12px}
+.check-h.ok{background:var(--green)}
+.check-h.no{background:var(--red)}
+.check-h .badge{
+  width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.22);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;flex-shrink:0;
+}
+.check-h h3{
+  font-family:var(--font-sans);font-weight:800;font-size:18px;
+  letter-spacing:-.015em;line-height:1.15;
+}
+.check-h small{
+  display:block;font-family:var(--font-sans);font-weight:700;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-top:2px;
+}
+.check-list{list-style:none;padding:1.25rem 1.5rem}
+.check-list li{
+  display:flex;gap:10px;padding:.55rem 0;font-size:13.5px;
+  color:var(--black);line-height:1.55;border-bottom:1px solid var(--gray-100);
+}
+.check-list li:last-child{border-bottom:none}
+.check-list li strong{color:var(--black);font-weight:700}
+.check-list li::before{
+  content:"";flex-shrink:0;width:8px;height:8px;border-radius:50%;margin-top:8px;
+}
+.check-c .ok + .check-list li::before,
+.check-list.list-ok li::before{background:var(--green)}
+.check-list.list-no li::before{background:var(--red)}
+
+/* ── SEND / PUBLISH BLOCK ── */
+.send-block{padding:1.25rem 1.75rem 1.75rem}
+.send-block p{font-size:14px;color:var(--gray-600);line-height:1.65;margin-bottom:1rem;max-width:60ch}
+.send-block.centered{text-align:center;padding:2rem 1.75rem 2.25rem}
+.send-block.centered p{margin-left:auto;margin-right:auto;max-width:56ch}
+.send-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem}
+.send-block.centered .send-actions{justify-content:center;margin-top:1.5rem}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:.75rem 1.25rem;font-size:13px;font-weight:700;letter-spacing:.02em;
+  border-radius:24px;text-transform:uppercase;transition:transform .12s,background .15s,color .15s;
+  cursor:pointer;border:1.5px solid transparent;font-family:inherit;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.solid{background:var(--black);color:#fff;border-color:var(--black)}
+.btn.solid:hover{background:var(--green);border-color:var(--green)}
+.btn.outline{background:transparent;color:var(--black);border-color:var(--gray-400)}
+.btn.outline:hover{background:var(--black);color:#fff;border-color:var(--black)}
+.btn svg{width:14px;height:14px}
+
+/* ── QUOTE / SPARKS ── */
+.quote-c{
+  background:linear-gradient(135deg,#fff 0%,#f7f4f0 100%);
+  border:1.5px solid var(--gray-200);border-radius:18px;
+  padding:2.25rem 2rem;text-align:center;margin-bottom:1.25rem;
+}
+.quote-c q{
+  quotes:"“" "”" "‘" "’";
+  font-family:var(--font-serif);font-style:italic;font-weight:500;
+  font-size:clamp(20px,2.4vw,28px);line-height:1.4;color:var(--black);
+  display:block;max-width:44ch;margin:0 auto;
+}
+.quote-c cite{
+  display:block;margin-top:1rem;font-family:var(--font-sans);
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray-400);font-style:normal;
+}
+
+/* ── PANEL ── */
+.panel{display:none}
+.panel.active{display:block}
+
+/* ── FOOTER ── */
+footer{background:var(--black);color:rgba(255,255,255,0.42);padding:3rem 2rem 2.25rem}
+.foot-inner{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center}
+.foot-mark{
+  display:inline-block;width:44px;height:54px;
+  background:url("LOGO.png") center/contain no-repeat;
+  filter:invert(1) brightness(1.1);
+  margin-bottom:.25rem;
+}
+.foot-name{
+  font-family:var(--font-sans);font-weight:800;font-size:20px;color:#fff;
+  letter-spacing:-.015em;
+}
+.foot-name em{
+  font-family:var(--font-serif);font-style:italic;font-weight:600;
+  color:var(--yellow);
+}
+.footer-dots{display:flex;justify-content:center;gap:8px;margin:.25rem 0}
+.footer-dots span{width:10px;height:10px;border-radius:50%}
+.foot-line{
+  font-size:12px;font-weight:700;letter-spacing:.06em;
+  color:rgba(255,255,255,0.5);
+}
+.foot-line a{color:#fff;border-bottom:1px solid rgba(255,255,255,0.3);transition:border-color .15s}
+.foot-line a:hover{border-color:var(--yellow);color:var(--yellow)}
+.foot-copy{
+  font-size:11px;color:rgba(255,255,255,0.28);letter-spacing:.05em;
+  margin-top:.5rem;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .hero-inner,.main{padding-left:1.25rem;padding-right:1.25rem}
+  .tabs-wrap{margin:0 -1.25rem 2rem;padding:0 1.25rem}
+  .gblock-h,.steps,.tomas,.send-block{padding-left:1.25rem;padding-right:1.25rem}
+  .fmt-grid{padding:1rem 1.25rem}
+  .hero-stats{gap:2rem}
+  .hero-topbar{padding-bottom:1.75rem;margin-bottom:1.75rem}
+}
+
+/* ── ANIMATE ── */
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.vc,.gblock,.check-c,.quote-c{animation:fu .28s ease both}
+.vc:nth-child(1){animation-delay:.03s}
+.vc:nth-child(2){animation-delay:.07s}
+.vc:nth-child(3){animation-delay:.11s}
+.vc:nth-child(4){animation-delay:.15s}
+.vc:nth-child(5){animation-delay:.19s}
+.vc:nth-child(6){animation-delay:.23s}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-topbar">
+      <a class="brand-link" href="https://www.vorka.mx/" target="_blank" rel="noopener" aria-label="Vorka México — sitio principal">
+        <span class="brand-mark" role="img" aria-hidden="true"></span>
+        <span class="brand-txt">Vorka <em>México</em></span>
+      </a>
+      <a class="hero-back" href="https://www.vorka.mx/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12" style="display:none"/><path d="M7 17L17 7M7 7h10v10"/></svg>
+        vorka.mx
+      </a>
+    </div>
+
+    <div class="hero-eyebrow">
+      <span class="hero-dot" style="background:var(--yellow)"></span>
+      <span class="hero-dot" style="background:var(--green)"></span>
+      <span class="hero-dot" style="background:var(--blue)"></span>
+      <span class="hero-dot" style="background:var(--pink)"></span>
+      <span class="hero-label">Vorka Sparks &nbsp;·&nbsp; Manual · Historias con sentido</span>
+    </div>
+    <h1 class="hero-title">MANUAL PARA<br>PUBLICAR<br><em>historias</em> juveniles</h1>
+    <p class="hero-sub">Bienvenida al manual del ecosistema Vorka Sparks. Aquí encontrarás el formato, el tono y el método de grabación que trabajamos con quienes cuentan su historia, para que cada pieza se sostenga por sí sola y forme parte de una narrativa mayor de talento joven.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num" style="color:var(--yellow)">1:30</div>
+        <div class="stat-label">Duración máx.</div>
+      </div>
+      <div>
+        <div class="stat-num" style="color:var(--green)">9:16</div>
+        <div class="stat-label">Formato</div>
+      </div>
+      <div>
+        <div class="stat-num" style="color:var(--blue)">1080p</div>
+        <div class="stat-label">Resolución mín.</div>
+      </div>
+      <div>
+        <div class="stat-num" style="color:var(--pink)">Vivo</div>
+        <div class="stat-label">Fondo</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stripe">
+    <span style="background:var(--yellow)"></span>
+    <span style="background:var(--green)"></span>
+    <span style="background:var(--blue)"></span>
+    <span style="background:var(--purple)"></span>
+    <span style="background:var(--red)"></span>
+    <span style="background:var(--orange)"></span>
+    <span style="background:var(--pink)"></span>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="tabs-wrap">
+    <nav class="tabs" role="tablist">
+      <button class="tab active" onclick="setTab('guia',this)" role="tab">📋 Guía de grabación</button>
+      <button class="tab" onclick="setTab('formato',this)" role="tab">🎬 Formato técnico</button>
+      <button class="tab" onclick="setTab('sparks',this)" role="tab">✨ Enfoque Sparks</button>
+      <button class="tab" onclick="setTab('checklist',this)" role="tab">✅ Antes de publicar</button>
+      <button class="tab" onclick="setTab('publicar',this)" role="tab">📤 Cómo enviar</button>
+    </nav>
+  </div>
+
+  <!-- ══ GUÍA DE GRABACIÓN ══ -->
+  <div id="panel-guia" class="panel active" role="tabpanel">
+    <div class="sh">
+      <div class="sh-title">Guía de<br><em>grabación</em></div>
+      <div class="sh-desc">Así trabajamos juntos cada historia, desde que llega el guion hasta que la compartes con nosotros.</div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Flujo de trabajo</h2>
+        <p>Cinco momentos que hemos afinado con cada historia. Confiar en el proceso hace toda la diferencia en el resultado final.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="snum" style="background:var(--yellow);color:var(--black)">1</div>
+          <div class="step-c">
+            <h3>Recibe tu guion personalizado</h3>
+            <p>El equipo de Vorka México prepara y comparte contigo un guion diseñado especialmente para tu historia. Respetar cada palabra tal como llega nos permite armar el resultado final con precisión. Si alguna línea no te suena natural, escríbenos antes de grabar — ajustamos juntos lo que haga falta.</p>
+            <span class="step-time">Antes de grabar</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--blue)">2</div>
+          <div class="step-c">
+            <h3>Lee, ensaya y cronometra</h3>
+            <p>Te sugerimos leer el guion en voz alta un par de veces y cronometrar la lectura para confirmar que entra en la duración prevista. Encuentra un tono cercano y natural: la naturalidad es lo que hace que la historia conecte.</p>
+            <span class="step-time">10–15 minutos</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--green)">3</div>
+          <div class="step-c">
+            <h3>Prepara el entorno y la cámara</h3>
+            <p>Elige un fondo <strong>vivo, natural o al aire libre</strong> que aporte contexto a tu historia. Coloca el celular en <strong>vertical</strong>, cuida la luz natural evitando contraluz, y verifica que el audio ambiente se escuche limpio.</p>
+            <span class="step-time">5–10 minutos</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--purple)">4</div>
+          <div class="step-c">
+            <h3>Graba (por partes si te ayuda)</h3>
+            <p>Puedes grabar tu historia <strong>en una sola toma o dividida en fragmentos</strong>. Trabajar por partes es una excelente opción: te permite <strong>cambiar de lugar</strong> entre frases, <strong>variar el plano</strong> (medio, cerrado, en movimiento) y <strong>facilitar la memoria</strong>, para que hables con naturalidad frase por frase sin necesidad de leer.</p>
+            <p>Procura mantener el <strong>mismo ritmo, tono y velocidad</strong> que ensayaste en cada fragmento. El equipo montará el voice-over final sobre tus tomas, y esa consistencia es lo que permite que todo encaje.</p>
+            <div class="step-warn">Recomendaciones: mantén el guion tal cual, graba siempre en vertical y evita leer directamente a cámara.</div>
+            <br><span class="step-time">Máx. 1:30 min en total</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--orange)">5</div>
+          <div class="step-c">
+            <h3>Revisa y comparte</h3>
+            <p>Mira tu material completo con audio: confirma que se escucha claro, que el labial coincide con el guion y que nada distrae del centro de la historia. Si algo no te convence, tómate un momento para regrabar — la calidad del envío ahorra mucho tiempo en la edición. Cuando esté listo, súbelo a la carpeta.</p>
+            <span class="step-time">Antes de compartir</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Antes de encender la cámara</h2>
+        <p>Algunos gestos sencillos que hacen que la historia se sienta genuina, no ensayada.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="snum" style="background:var(--pink)">💬</div>
+          <div class="step-c">
+            <h3>Conversa primero</h3>
+            <p>Dedica unos minutos a platicar con la persona antes de encender la cámara. Ese momento previo relaja el ambiente y transforma por completo lo que se registra después.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--purple)">💡</div>
+          <div class="step-c">
+            <h3>Explica el propósito</h3>
+            <p>Comparte de qué trata la historia y por qué su voz aporta dentro de Vorka Sparks. No es una entrevista formal: es documentar un proceso real, con calma y con contexto.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--green)">❤️</div>
+          <div class="step-c">
+            <h3>Genera confianza</h3>
+            <p>La meta es que el guion se sienta natural, no recitado. Si alguna parte no fluye, cuéntanoslo antes de grabar — preferimos ajustar juntos que descubrir la incomodidad en la edición.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FORMATO TÉCNICO ══ -->
+  <div id="panel-formato" class="panel" role="tabpanel">
+    <div class="sh">
+      <div class="sh-title">Formato<br><em>técnico</em></div>
+      <div class="sh-desc">Los parámetros que trabajamos en cada historia. Nos permiten que todas las piezas convivan dentro del ecosistema Sparks con la misma calidad y coherencia.</div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Especificaciones del formato</h2>
+        <p>Cuidar estos detalles hace que tu historia se vea y suene profesional desde el celular.</p>
+      </div>
+      <div class="fmt-grid">
+        <div class="fmt-c"><div class="fmt-ico">📱</div><div class="fmt-label">Orientación</div><div class="fmt-val">Vertical 9:16</div></div>
+        <div class="fmt-c"><div class="fmt-ico">⏱️</div><div class="fmt-label">Duración</div><div class="fmt-val">Máx. 1:30 min</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🎥</div><div class="fmt-label">Resolución</div><div class="fmt-val">Mín. 1080p</div></div>
+        <div class="fmt-c"><div class="fmt-ico">☀️</div><div class="fmt-label">Iluminación</div><div class="fmt-val">Natural, sin contraluz</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🎙️</div><div class="fmt-label">Audio</div><div class="fmt-val">Limpio, sin ruido</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🧍</div><div class="fmt-label">Plano</div><div class="fmt-val">Medio (pecho arriba)</div></div>
+        <div class="fmt-c"><div class="fmt-ico">🌳</div><div class="fmt-label">Fondo</div><div class="fmt-val">Vivo, al aire libre</div></div>
+        <div class="fmt-c"><div class="fmt-ico">📝</div><div class="fmt-label">Guion</div><div class="fmt-val">No se modifica</div></div>
+      </div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Cuidado con el audio</h2>
+        <p>El audio grabado en cámara se sustituye por el voice-over que prepara nuestro equipo. Por eso el labial es lo que más importa.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="snum" style="background:var(--yellow);color:var(--black)">A</div>
+          <div class="step-c">
+            <h3>Palabra por palabra</h3>
+            <p>Cuidar que cada palabra coincida con el guion permite que el montaje del voice-over quede perfectamente sincronizado. Es un detalle técnico que hace toda la diferencia en el resultado final.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--blue)">B</div>
+          <div class="step-c">
+            <h3>Mismo tono y velocidad</h3>
+            <p>Mantén el <strong>mismo ritmo</strong> que ensayaste en cada fragmento. Una cadencia pareja de principio a fin es lo que nos permite montar la locución sobre tu labial sin que se note.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--green)">C</div>
+          <div class="step-c">
+            <h3>Sincronía natural</h3>
+            <p>Ensayar con cronómetro un par de veces basta para que el ritmo quede consistente. Ese pequeño cuidado se traduce en una pieza limpia y profesional cuando llega el momento del montaje.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Tomas de apoyo</h2>
+        <p>Opcionales, pero muy bienvenidas. Enriquecen la edición y añaden capas visuales a la historia.</p>
+      </div>
+      <div class="tomas">
+        <div class="rlabel">Si el contexto lo permite, considera grabar también</div>
+        <div class="rlist">
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>La persona en acción — trabajando, creando o moviéndose en su entorno.</div>
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Detalles de manos, herramientas, materiales o del proyecto que se construye.</div>
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Planos abiertos del lugar — taller, calle, patio, comunidad, espacio de trabajo.</div>
+          <div class="ritem"><div class="rdot" style="background:var(--orange)"></div>Momentos naturales sin cámara notada — conversación, risa, pausa.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ENFOQUE SPARKS ══ -->
+  <div id="panel-sparks" class="panel" role="tabpanel">
+    <div class="sh">
+      <div class="sh-title">Enfoque<br><em>Sparks</em></div>
+      <div class="sh-desc">Los principios narrativos que guían cada historia dentro del ecosistema Sparks. No trabajamos publicaciones sueltas: documentamos proceso, intención y dirección.</div>
+    </div>
+
+    <div class="quote-c">
+      <q>Entender los procesos también es una forma de avanzar.</q>
+      <cite>Vorka Sparks</cite>
+    </div>
+
+    <div class="grid">
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--yellow)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff8ec;color:#b8821f;">01</div>
+          <div class="vc-meta"><h3>Proceso, no pose</h3><span>Documentar el recorrido</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="frase" style="color:var(--yellow);border-left-color:var(--yellow)">¿Qué está construyendo esta persona hoy?</div>
+          <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">Cada historia documenta un recorrido en marcha: el proceso real de alguien que está trabajando en algo con constancia. Es más valioso mostrar el camino que solo el resultado final.</p>
+          <div class="pills"><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Proceso</span><span class="pill" style="color:var(--yellow);border-color:var(--yellow)">Autenticidad</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--blue)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eaf2fb;color:#235a8a;">02</div>
+          <div class="vc-meta"><h3>Intención</h3><span>Por qué importa</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="frase" style="color:var(--blue);border-left-color:var(--blue)">¿Por qué esta historia merece contarse?</div>
+          <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">Cada pieza deja claro por qué esa historia importa — para la persona, para su entorno o para quien la vea. La intención es lo que convierte una publicación en un aporte real dentro de Sparks.</p>
+          <div class="pills"><span class="pill" style="color:var(--blue);border-color:var(--blue)">Intención</span><span class="pill" style="color:var(--blue);border-color:var(--blue)">Valor</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--green)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#eef7ec;color:#316b23;">03</div>
+          <div class="vc-meta"><h3>Dirección</h3><span>Hacia dónde va</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="frase" style="color:var(--green);border-left-color:var(--green)">¿Hacia dónde se dirige lo que está haciendo?</div>
+          <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">La historia no se cierra en el presente: apunta a algo — un proyecto que crece, una idea que evoluciona, un aprendizaje que se sostiene en el tiempo. El futuro también forma parte del relato.</p>
+          <div class="pills"><span class="pill" style="color:var(--green);border-color:var(--green)">Dirección</span><span class="pill" style="color:var(--green);border-color:var(--green)">Evolución</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--pink)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0f9;color:#b8408a;">04</div>
+          <div class="vc-meta"><h3>Autenticidad</h3><span>Sin actuación</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="frase" style="color:var(--pink);border-left-color:var(--pink)">Si estuviera actuando, ¿se notaría?</div>
+          <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">La cámara documenta a la persona real, no a una versión ensayada de sí misma. Que se vea como habla y se escuche como piensa: la autenticidad es lo que da fuerza a cada pieza.</p>
+          <div class="pills"><span class="pill" style="color:var(--pink);border-color:var(--pink)">Real</span><span class="pill" style="color:var(--pink);border-color:var(--pink)">Humano</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--purple)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#f5eaf9;color:#5c1070;">05</div>
+          <div class="vc-meta"><h3>Contexto</h3><span>El entorno cuenta</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="frase" style="color:var(--purple);border-left-color:var(--purple)">¿El fondo aporta algo a la historia?</div>
+          <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">El entorno donde grabamos también cuenta: el taller, la calle, el patio, el espacio donde el proyecto sucede. Un contexto vivo suma capas al relato y ayuda a que la historia se sienta situada en un lugar real.</p>
+          <div class="pills"><span class="pill" style="color:var(--purple);border-color:var(--purple)">Contexto</span><span class="pill" style="color:var(--purple);border-color:var(--purple)">Lugar</span></div>
+        </div>
+      </div>
+
+      <div class="vc">
+        <div class="vc-accent" style="background:var(--orange)"></div>
+        <div class="vc-top">
+          <div class="vc-num" style="background:#fff0e8;color:#b8521a;">06</div>
+          <div class="vc-meta"><h3>Valor colectivo</h3><span>Cada pieza suma</span></div>
+        </div>
+        <div class="vdiv"></div>
+        <div class="vc-body">
+          <div class="frase" style="color:var(--orange);border-left-color:var(--orange)">¿Qué aporta esta historia al conjunto Sparks?</div>
+          <p style="font-size:13.5px;color:var(--gray-600);line-height:1.55">Ninguna pieza vive sola. Cada historia forma parte de un archivo mayor sobre talento joven en movimiento, y su valor crece cuando dialoga con las demás dentro del ecosistema.</p>
+          <div class="pills"><span class="pill" style="color:var(--orange);border-color:var(--orange)">Colectivo</span><span class="pill" style="color:var(--orange);border-color:var(--orange)">Archivo</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ CHECKLIST ══ -->
+  <div id="panel-checklist" class="panel" role="tabpanel">
+    <div class="sh">
+      <div class="sh-title">Antes de<br><em>publicar</em></div>
+      <div class="sh-desc">Dos listas breves para acompañarte antes de compartir tu historia con nosotros. Repasarlas toma un minuto y ayuda a que la pieza llegue lista para el montaje.</div>
+    </div>
+
+    <div class="check-grid">
+
+      <div class="check-c">
+        <div class="check-h ok">
+          <div class="badge">✓</div>
+          <div>
+            <h3>Lo esencial antes de enviar</h3>
+            <small>Confirma estos puntos y estás lista para compartir</small>
+          </div>
+        </div>
+        <ul class="check-list list-ok">
+          <li>Grabada en <strong>vertical (9:16)</strong>.</li>
+          <li>Duración de <strong>90 segundos o menos</strong>.</li>
+          <li>El texto <strong>coincide palabra por palabra</strong> con el guion que compartimos.</li>
+          <li><strong>Tono, ritmo y velocidad</strong> consistentes en todos los fragmentos.</li>
+          <li>Fondo <strong>vivo, natural o al aire libre</strong>.</li>
+          <li>Imagen <strong>enfocada, estable y bien iluminada</strong>.</li>
+          <li>Audio propio limpio, aunque después se sustituya.</li>
+          <li>La persona que aparece <strong>autorizó</strong> compartir su historia.</li>
+        </ul>
+      </div>
+
+      <div class="check-c">
+        <div class="check-h no">
+          <div class="badge">✕</div>
+          <div>
+            <h3>Detalles que conviene evitar</h3>
+            <small>Si aparecen, tómate un momento para regrabar</small>
+          </div>
+        </div>
+        <ul class="check-list list-no">
+          <li>Grabaciones en <strong>horizontal, cuadrado o con marcos ajenos</strong>.</li>
+          <li>Cambios de palabras o <strong>improvisación</strong> sobre el guion.</li>
+          <li>Cambios bruscos de <strong>ritmo</strong> entre frases o fragmentos.</li>
+          <li>Fondos planos: pared vacía, interior cerrado o entorno sin contexto.</li>
+          <li>Contraluz, cámara movida, foco perdido o ruido que tape la voz.</li>
+          <li>Ropa con <strong>logos comerciales</strong> que compitan con el mensaje.</li>
+          <li>Cortes internos, transiciones o efectos añadidos antes del envío.</li>
+          <li>Publicar la pieza antes de recibir el corte final que preparamos.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="quote-c">
+      <q>Cada guion está diseñado especialmente para tu historia. Interpretarlo tal como llega, con el ritmo trabajado en el ensayo, es lo que permite que el resultado final se sienta natural y bien montado.</q>
+      <cite>Vorka Sparks &nbsp;·&nbsp; Sobre el guion</cite>
+    </div>
+  </div>
+
+  <!-- ══ CÓMO ENVIAR ══ -->
+  <div id="panel-publicar" class="panel" role="tabpanel">
+    <div class="sh">
+      <div class="sh-title">Cómo<br><em>enviar</em></div>
+      <div class="sh-desc">Cuando tu historia esté grabada y revisada, la compartes con nosotros para el montaje del audio y la publicación en Sparks. Así llega a más personas y toma vida dentro del ecosistema.</div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>El envío paso a paso</h2>
+        <p>Cinco momentos entre grabar y ver tu historia publicada. Confía en el proceso: cada pieza pasa por manos expertas antes de salir.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="snum" style="background:var(--yellow);color:var(--black)">1</div>
+          <div class="step-c">
+            <h3>Repasa el checklist</h3>
+            <p>Antes de subir tu material, tómate un momento para revisarlo con las dos listas de la sección anterior. Ese repaso ahorra idas y venidas: el objetivo es que la pieza llegue lista para el montaje.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--blue)">2</div>
+          <div class="step-c">
+            <h3>Sube a la carpeta de Drive</h3>
+            <p>Sube tus videos a la <strong>carpeta de Google Drive</strong> que compartimos contigo por <strong>WhatsApp</strong>. Coloca ahí todos los fragmentos en calidad <strong>original</strong> — sin compresión y sin filtros — para que el equipo de edición cuente con el mejor material posible.</p>
+            <p>Nómbralos con claridad — por ejemplo <em>historia-01_parte1.mp4</em>, <em>historia-01_parte2.mp4</em>. Ese pequeño orden acelera muchísimo el trabajo posterior.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--purple)">3</div>
+          <div class="step-c">
+            <h3>Avísanos por WhatsApp</h3>
+            <p>Cuando termines de subir, mándanos un mensaje breve por WhatsApp para avisarnos que ya está listo. Ese aviso nos permite comenzar el montaje enseguida y coordinar la publicación dentro del calendario.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--green)">4</div>
+          <div class="step-c">
+            <h3>Nuestro equipo se encarga del montaje</h3>
+            <p>Sincronizamos el voice-over sobre tu labial, unimos los fragmentos, ajustamos color y publicamos en el momento óptimo dentro del calendario editorial de Sparks. Cada pieza pasa por manos expertas antes de llegar al público.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="snum" style="background:var(--orange)">5</div>
+          <div class="step-c">
+            <h3>Perfil público, listo para la colaboración</h3>
+            <p>Una vez publicada, enviamos una <strong>invitación de colaboración</strong> al perfil de la persona protagonista. Para poder aceptarla y multiplicar el alcance, ayuda tener el perfil configurado como <strong>público</strong>.</p>
+            <p>La colaboración hace que la pieza aparezca en ambos perfiles al mismo tiempo: duplica el alcance orgánico y facilita que la historia llegue a comunidades nuevas dentro y fuera del ecosistema Sparks.</p>
+            <div class="step-warn">Un pequeño ajuste en la configuración marca una gran diferencia en la difusión.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gblock">
+      <div class="gblock-h">
+        <h2>Canales de contacto</h2>
+        <p>Estamos disponibles para acompañarte en cada paso.</p>
+      </div>
+      <div class="send-block centered">
+        <p>Compartimos contigo la <strong>carpeta de Google Drive</strong> por <strong>WhatsApp</strong>, donde subes todos los videos y fragmentos en calidad original. Si te surge cualquier duda sobre el manual, escríbenos antes de grabar — resolvemos rápido y ajustamos lo que haga falta para que tu historia salga como imaginas.</p>
+        <div class="send-actions">
+          <a class="btn solid" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20necesito%20el%20enlace%20de%20la%20carpeta%20de%20Drive%20para%20subir%20mi%20historia%20juvenil." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l5.05-1.34A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.05 14.11c-.21.6-1.24 1.14-1.74 1.19-.47.06-1.07.08-1.72-.11-.4-.12-.9-.29-1.55-.57-2.72-1.18-4.5-3.93-4.64-4.11-.13-.19-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.28.25-.28.55-.35.73-.35.19 0 .37 0 .53.01.17.01.4-.06.62.47.23.55.79 1.9.86 2.03.07.13.11.28.02.46-.08.19-.13.3-.25.46-.13.15-.27.34-.38.46-.13.13-.26.27-.11.53.15.26.65 1.07 1.4 1.74.96.86 1.77 1.13 2.02 1.26.25.13.4.11.55-.07.15-.18.63-.74.8-.99.16-.25.33-.21.55-.13.23.08 1.44.68 1.69.8.25.13.41.19.47.29.06.11.06.63-.15 1.23z"/></svg>
+            Pedir carpeta de Drive
+          </a>
+          <a class="btn outline" href="mailto:vorkamexico@gmail.com?subject=Historia%20juvenil%20—%20Vorka%20Sparks">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Escribir por correo
+          </a>
+          <a class="btn outline" href="https://www.vorka.mx/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            Ir a vorka.mx
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-c">
+      <q>Cada publicación ofrece una mirada clara al recorrido que da forma a las ideas, las decisiones y las formas de construir.</q>
+      <cite>Vorka Sparks &nbsp;·&nbsp; Ecosistema Vorka México</cite>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <span class="foot-mark" role="img" aria-label="Vorka México"></span>
+    <div class="foot-name">Vorka <em>México</em></div>
+    <div class="footer-dots">
+      <span style="background:var(--yellow)"></span>
+      <span style="background:var(--green)"></span>
+      <span style="background:var(--blue)"></span>
+      <span style="background:var(--purple)"></span>
+      <span style="background:var(--red)"></span>
+      <span style="background:var(--orange)"></span>
+      <span style="background:var(--pink)"></span>
+    </div>
+    <div class="foot-line">
+      <a href="https://www.vorka.mx/" target="_blank" rel="noopener">vorka.mx</a>
+      &nbsp;·&nbsp; Sparks &nbsp;·&nbsp; Historias con sentido
+    </div>
+    <div class="foot-copy">© Vorka México. Manual interno del ecosistema Sparks.</div>
+  </div>
+</footer>
+
+<script>
+function setTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
