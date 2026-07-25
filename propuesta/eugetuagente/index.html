@@ -1,0 +1,691 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cotización — Euge Tu Agente · Vorka México</title>
+<meta name="description" content="Cotización con tres paquetes de contenido para Euge Tu Agente. Vorka México." />
+<meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#15140F" media="(prefers-color-scheme: dark)" />
+<link rel="icon" type="image/png" href="LOGO.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --logo-data: url("../LOGO.png");
+    --logo-filter: none;
+    --paper:#FBFAF8;
+    --paper-2:#F4F1EA;
+    --ink:#141414;
+    --ink-2:rgba(20,20,20,0.66);
+    --ink-3:rgba(20,20,20,0.40);
+    --ink-4:rgba(20,20,20,0.18);
+    --line:rgba(20,20,20,0.12);
+    --line-strong:rgba(20,20,20,0.30);
+    --accent:#1E4438;
+    --accent-hover:#163328;
+    --accent-mc:#1d4ed8;
+    --on-accent:#FBFAF8;
+    --field:rgba(20,20,20,0.04);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#15140F;
+      --paper-2:#1B1A14;
+      --ink:#E8E4D8;
+      --ink-2:rgba(232,228,216,0.66);
+      --ink-3:rgba(232,228,216,0.40);
+      --ink-4:rgba(232,228,216,0.18);
+      --line:rgba(232,228,216,0.14);
+      --line-strong:rgba(232,228,216,0.30);
+      --accent:#7DB39C;
+      --accent-hover:#9BC8B3;
+      --accent-mc:#6791ff;
+      --on-accent:#15140F;
+      --field:rgba(232,228,216,0.05);
+      --logo-filter:invert(0.92) brightness(1.06);
+    }
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+  html{-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility;font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;scroll-behavior:smooth;scroll-padding-top:88px}
+  body{
+    font-family:'Mona Sans',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-size:16px;line-height:1.6;font-weight:400;overflow-x:hidden;
+  }
+  img,svg{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  button{background:none;border:0;cursor:pointer;padding:0;font:inherit;color:inherit}
+  ::selection{background:var(--accent);color:var(--on-accent)}
+
+  .display{
+    font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;
+    font-weight:800;letter-spacing:-0.025em;line-height:0.96;color:var(--ink);
+  }
+  .display-serif{
+    font-family:'Cormorant Garamond','EB Garamond',Georgia,serif;
+    font-weight:500;letter-spacing:-0.01em;line-height:1.04;color:var(--ink);
+  }
+  .display-serif em{font-style:italic;color:var(--accent);font-weight:500}
+  .ital-mc{font-style:italic;color:var(--accent-mc);font-weight:800}
+  .smallcaps{text-transform:uppercase;letter-spacing:0.16em;font-size:12px;font-weight:500;color:var(--ink-2)}
+  .smallcaps-accent{
+    text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:600;color:var(--accent);
+    display:inline-flex;align-items:center;gap:14px;
+  }
+  .smallcaps-accent::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent)}
+  .smallcaps-mc{
+    text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:600;color:var(--accent-mc);
+    display:inline-flex;align-items:center;gap:14px;
+  }
+  .smallcaps-mc::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent-mc)}
+  .lead{font-size:clamp(18px,1.5vw,22px);line-height:1.55;color:var(--ink-2);max-width:60ch}
+
+  .shell{
+    width:100%;
+    padding-left:clamp(24px,5vw,80px);
+    padding-right:clamp(24px,7vw,128px);
+    max-width:1520px;
+    margin-inline:auto;
+  }
+
+  .brand-mark{
+    display:inline-block;height:38px;width:30px;
+    background:var(--logo-data) center/contain no-repeat;
+    filter:var(--logo-filter);
+  }
+  .hero-mark{
+    display:block;justify-self:end;align-self:end;
+    width:100%;max-width:260px;aspect-ratio:1/1;
+    background:var(--logo-data) center/contain no-repeat;
+    filter:var(--logo-filter);
+  }
+  .foot-mark{
+    display:inline-block;height:96px;width:76px;
+    background:var(--logo-data) center/contain no-repeat;
+    filter:var(--logo-filter);
+  }
+
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:color-mix(in srgb,var(--paper) 92%,transparent);
+    backdrop-filter:saturate(140%) blur(8px);
+    -webkit-backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-block:16px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand-name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;letter-spacing:-0.01em;
+    font-size:18px;color:var(--ink);
+  }
+  .brand-name span{color:var(--ink-3);font-weight:500}
+  .topbar nav{display:flex;gap:28px;align-items:center}
+  .topbar nav a{
+    font-size:14px;color:var(--ink-2);font-weight:500;
+    padding:8px 0;border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
+  }
+  .topbar nav a:hover{color:var(--ink);border-color:var(--ink)}
+  .topbar nav .pill{
+    background:var(--ink);color:var(--paper);
+    padding:11px 20px;font-size:14px;font-weight:500;
+  }
+  .topbar nav .pill:hover{background:var(--accent);color:var(--on-accent)}
+  @media (max-width:900px){.topbar nav a:not(.pill){display:none}}
+
+  .hero{
+    padding-top:clamp(80px,12vh,160px);
+    padding-bottom:clamp(96px,14vh,160px);
+    border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.42fr);
+    gap:clamp(40px,5vw,96px);align-items:end;
+  }
+  .hero-eyebrow{margin-bottom:32px}
+  .hero-title{
+    font-size:clamp(44px,6.4vw,104px);
+    max-width:18ch;
+  }
+  .hero-sub{
+    margin-top:clamp(28px,3.5vh,48px);
+    font-size:clamp(18px,1.4vw,21px);
+    line-height:1.55;color:var(--ink-2);
+    max-width:58ch;
+  }
+  .hero-meta{
+    margin-top:clamp(40px,5vh,64px);
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  }
+  .btn-primary{
+    background:var(--ink);color:var(--paper);
+    padding:18px 32px;font-size:15px;font-weight:500;letter-spacing:0.01em;
+    transition:background .15s,color .15s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn-primary:hover{background:var(--accent);color:var(--on-accent)}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .hero-mark{justify-self:start;max-width:120px;order:-1}
+  }
+
+  .cover-meta{
+    margin-top:clamp(64px,8vh,96px);
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:clamp(24px,3vw,56px);
+    padding-top:clamp(32px,4vh,48px);
+    border-top:1px solid var(--line-strong);
+  }
+  .cover-meta dt{
+    font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:8px;
+  }
+  .cover-meta dd{
+    margin:0;font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(15px,1.05vw,17px);letter-spacing:-0.005em;line-height:1.3;color:var(--ink);
+  }
+  .cover-meta dd em{font-style:italic;color:var(--accent-mc);font-weight:800}
+  @media (max-width:780px){.cover-meta{grid-template-columns:repeat(2,1fr);gap:32px 24px}}
+
+  section{padding-block:clamp(96px,14vh,168px);border-bottom:1px solid var(--line)}
+  .section-head{
+    display:grid;
+    grid-template-columns:minmax(0,0.36fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+    margin-bottom:clamp(56px,9vh,112px);
+  }
+  .section-head .head-rail{padding-top:8px}
+  .section-head h2{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(38px,5vw,74px);letter-spacing:-0.02em;line-height:1.02;
+    margin:0 0 28px;max-width:20ch;text-wrap:balance;
+  }
+  .section-head .lead{margin-top:0}
+  @media (max-width:900px){.section-head{grid-template-columns:1fr;gap:24px}}
+
+  /* ============================== PAQUETES ============================== */
+  .pack-grid{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(16px,2vw,28px);
+    margin-bottom:clamp(48px,6vh,72px);
+  }
+  .pack{
+    background:var(--paper-2);padding:clamp(28px,3vw,40px);
+    display:flex;flex-direction:column;gap:20px;
+    border-top:3px solid var(--accent);position:relative;
+  }
+  .pack.featured{border-top-color:var(--accent-mc)}
+  .pack .p-label{
+    font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--accent);
+  }
+  .pack.featured .p-label{color:var(--accent-mc)}
+  .pack .p-name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(22px,1.8vw,28px);letter-spacing:-0.015em;line-height:1.1;
+  }
+  .pack .p-sub{font-size:13px;color:var(--ink-3);margin-top:4px}
+  .pack .p-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--accent-mc);color:var(--paper);
+    padding:6px 12px;font-size:11px;font-weight:700;
+    letter-spacing:0.14em;text-transform:uppercase;
+    align-self:flex-start;width:fit-content;
+  }
+  .pack .p-badge.gray{background:var(--ink-3)}
+  .pack .p-price{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(30px,3vw,44px);letter-spacing:-0.02em;line-height:0.95;
+    color:var(--ink);font-variant-numeric:tabular-nums;
+  }
+  .pack .p-price sup{font-size:0.4em;vertical-align:0.7em;color:var(--accent-mc);font-weight:700}
+  .pack .p-price small{
+    display:block;font-size:13px;font-weight:500;color:var(--ink-2);
+    letter-spacing:0.01em;margin-top:8px;line-height:1.4;
+  }
+  .pack .p-quincenal{
+    font-size:13px;color:var(--ink-2);font-weight:500;letter-spacing:0.01em;
+    padding:12px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);
+  }
+  .pack .p-quincenal strong{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+  .pack .p-list{
+    margin:0;padding:0;list-style:none;
+    display:flex;flex-direction:column;gap:10px;
+    font-size:14px;color:var(--ink-2);line-height:1.5;
+  }
+  .pack .p-list li{padding-left:22px;position:relative}
+  .pack .p-list li::before{
+    content:"";position:absolute;left:0;top:8px;
+    width:12px;height:2px;background:var(--accent);
+  }
+  .pack.featured .p-list li::before{background:var(--accent-mc)}
+  .pack .p-list li.excluded{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-4)}
+  .pack .p-list li.excluded::before{background:var(--ink-4)}
+  .pack .p-list li strong{color:var(--ink);font-weight:700}
+  @media (max-width:900px){.pack-grid{grid-template-columns:1fr;gap:20px}}
+
+  .terms{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(20px,2.5vw,40px) clamp(32px,4vw,72px);
+  }
+  .term{padding-top:20px;border-top:1px solid var(--line)}
+  .term dt{
+    font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:8px;
+  }
+  .term dd{margin:0;font-size:15px;color:var(--ink);line-height:1.55}
+  @media (max-width:600px){.terms{grid-template-columns:1fr}}
+
+  /* ============================== CTA ============================== */
+  .cta-block{
+    padding-block:clamp(96px,14vh,160px);
+    background:var(--paper);border-bottom:1px solid var(--line);
+  }
+  .cta-center{max-width:960px;margin-inline:auto;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .cta-center .smallcaps-accent{margin-bottom:clamp(32px,5vh,64px)}
+  .cta-title{margin:0;font-size:clamp(38px,6vw,88px);max-width:20ch}
+  .cta-sub{
+    margin:clamp(28px,3.5vh,48px) 0 0;
+    font-size:clamp(17px,1.3vw,20px);color:var(--ink-2);line-height:1.55;max-width:56ch;
+  }
+  .cta-actions{
+    display:flex;gap:18px;flex-wrap:wrap;justify-content:center;
+    margin-top:clamp(40px,5vh,64px);
+  }
+  .btn-cta{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    text-transform:uppercase;letter-spacing:0.14em;
+    font-size:13px;font-weight:600;
+    padding:22px 36px;min-width:240px;
+    border:1px solid transparent;
+    transition:background .15s,color .15s,border-color .15s;cursor:pointer;
+  }
+  .btn-cta.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn-cta.solid:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .btn-cta.outline{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+  .btn-cta.outline:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+  .btn-cta svg{width:16px;height:16px}
+  @media (max-width:560px){.btn-cta{min-width:0;width:100%}}
+
+  /* ============================== Footer ============================== */
+  footer{padding-block:clamp(80px,10vh,128px);background:var(--paper)}
+  .foot-cols{
+    display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(32px,4vw,72px);
+    border-top:1px solid var(--line-strong);padding-top:clamp(48px,6vh,80px);
+  }
+  .foot-col h5{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:14px;letter-spacing:0.12em;text-transform:uppercase;
+    margin:0 0 24px;color:var(--ink);
+  }
+  .foot-brand .desc{font-size:15px;color:var(--ink-2);line-height:1.6;margin:0 0 32px;max-width:36ch}
+  .foot-brand .desc b{color:var(--ink);font-weight:500}
+  .foot-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+  .foot-col a{font-size:15px;color:var(--ink-2);transition:color .15s}
+  .foot-col a:hover{color:var(--accent)}
+
+  .foot-tagline{
+    margin-top:clamp(40px,5vh,72px);padding-top:32px;
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;
+  }
+  .foot-tagline .left{font-size:13px;color:var(--ink-3);max-width:48ch;line-height:1.5}
+  .foot-tagline .right{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(20px,1.6vw,26px);color:var(--accent);letter-spacing:-0.01em;
+  }
+
+  .foot-bottom{
+    margin-top:clamp(56px,7vh,96px);padding-top:32px;
+    border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:center;
+  }
+  .foot-social{display:flex;gap:18px;align-items:center}
+  .foot-social a{
+    width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--field);transition:background .15s,color .15s;color:var(--ink);
+  }
+  .foot-social a:hover{background:var(--accent);color:var(--on-accent)}
+  .foot-social svg{width:18px;height:18px}
+  .foot-name{
+    text-align:center;font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:18px;letter-spacing:-0.01em;color:var(--ink);
+  }
+  .foot-name small{font-weight:500;color:var(--ink-3);font-size:14px;display:block;margin-top:4px}
+  .foot-copy{text-align:right;font-size:13px;color:var(--ink-3);line-height:1.5}
+  @media (max-width:980px){
+    .foot-cols{grid-template-columns:1fr 1fr;gap:48px 40px}
+    .foot-brand{grid-column:1 / -1;display:grid;grid-template-columns:1fr auto;align-items:start;gap:32px}
+    .foot-brand .foot-mark{height:80px;width:64px;justify-self:end}
+    .foot-tagline{flex-direction:column;align-items:flex-start;gap:16px}
+    .foot-bottom{grid-template-columns:1fr;gap:28px;text-align:center;justify-items:center}
+    .foot-social{justify-content:center;gap:14px}
+    .foot-copy{text-align:center}
+    .foot-name{order:-1}
+  }
+  @media (max-width:640px){
+    footer{padding-block:clamp(56px,8vh,80px)}
+    .foot-cols{grid-template-columns:1fr;gap:40px;padding-top:40px}
+    .foot-brand{grid-template-columns:1fr;gap:24px}
+    .foot-brand .foot-mark{justify-self:start;height:64px;width:51px}
+    .foot-brand .desc{max-width:none}
+  }
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+
+  @page{size:A4 portrait;margin:16mm 14mm 18mm 14mm}
+  @media print{
+    :root{
+      --paper:#FFFFFF; --paper-2:#F5F2EB;
+      --ink:#141414; --ink-2:rgba(20,20,20,0.72); --ink-3:rgba(20,20,20,0.5);
+      --line:rgba(20,20,20,0.15); --line-strong:rgba(20,20,20,0.35);
+      --logo-filter:none;
+    }
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;transition:none !important;animation:none !important}
+    html,body{background:#FFFFFF !important;color:#141414 !important;font-size:10pt;line-height:1.5}
+    .topbar nav, .hero-meta, .cta-actions, .btn-cta, .foot-social, .foot-bottom, .hero-mark{display:none !important}
+    .shell{padding:0 !important;max-width:none}
+    .topbar{position:static !important;padding:0 0 5mm 0 !important;background:transparent !important;backdrop-filter:none !important}
+    section, .cta-block{padding:6mm 0 !important}
+    footer{padding:6mm 0 4mm 0 !important}
+    .pack{page-break-inside:avoid;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a href="https://www.vorka.mx/" class="brand" target="_blank" rel="noopener" aria-label="Vorka México — abrir sitio">
+      <span class="brand-mark" role="img" aria-label="Vorka"></span>
+      <span class="brand-name">Vorka <span>México</span></span>
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#paquetes">Paquetes</a>
+      <a href="#condiciones">Condiciones</a>
+      <a class="pill" href="#cierre">Confirmar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="shell">
+      <div class="hero-eyebrow">
+        <span class="smallcaps-mc">Cotización · Vorka MX</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <h1 id="hero-title" class="display hero-title">
+            Tres paquetes de contenido para <span class="ital-mc">Euge Tu Agente</span>.
+          </h1>
+          <p class="hero-sub">
+            Esto es solo la propuesta de precios. Cuando confirmes cuál te acomoda, arrancamos con estrategia, calendario y guiones a la medida.
+          </p>
+          <div class="hero-meta">
+            <a class="btn-primary" href="#paquetes">Ver paquetes</a>
+          </div>
+        </div>
+        <a class="hero-mark" href="https://www.vorka.mx/" target="_blank" rel="noopener" role="img" aria-label="Vorka México — abrir sitio"></a>
+      </div>
+
+      <dl class="cover-meta">
+        <div>
+          <dt>Dirigida a</dt>
+          <dd>Euge <em>Tu Agente</em></dd>
+        </div>
+        <div>
+          <dt>Frecuencia</dt>
+          <dd>Mensual · pagos quincenales</dd>
+        </div>
+        <div>
+          <dt>Elaborada por</dt>
+          <dd>Vorka México</dd>
+        </div>
+        <div>
+          <dt>Objetivo</dt>
+          <dd>Comparar y elegir paquete</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- PAQUETES -->
+  <section id="paquetes" aria-labelledby="pk-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Paquetes</div></div>
+        <div>
+          <h2 id="pk-title">Tres opciones. Escoge según cuánto quieras dejar de tu lado.</h2>
+          <p class="lead">La diferencia entre paquetes no es solo cantidad de reels. Es cuánta operación asumimos nosotros para que tú solo grabes.</p>
+        </div>
+      </div>
+
+      <div class="pack-grid">
+
+        <!-- ACTUAL -->
+        <div class="pack">
+          <div class="p-label">Paquete Vigente</div>
+          <div>
+            <div class="p-name">Actual</div>
+            <div class="p-sub">Solo edición de contenido</div>
+          </div>
+          <div class="p-badge gray">Actual</div>
+          <div class="p-price">
+            $5,928<sup>MXN</sup>
+            <small>mensual</small>
+          </div>
+          <div class="p-quincenal">2 pagos quincenales de <strong>$2,964 MXN</strong></div>
+          <ul class="p-list">
+            <li><strong>10 reels</strong> editados al mes</li>
+            <li><strong>4 posts</strong> al mes</li>
+            <li>Estrategia y seguimiento</li>
+            <li class="excluded">Redacción de guiones</li>
+            <li class="excluded">Piezas de interacción</li>
+            <li class="excluded">Publicación desde nuestro lado</li>
+          </ul>
+        </div>
+
+        <!-- INTERMEDIO -->
+        <div class="pack">
+          <div class="p-label">Paquete Intermedio</div>
+          <div>
+            <div class="p-name">Guion + envío por WhatsApp</div>
+            <div class="p-sub">Tú publicas, nosotros armamos todo lo demás</div>
+          </div>
+          <div class="p-price">
+            $6,400<sup>MXN</sup>
+            <small>mensual</small>
+          </div>
+          <div class="p-quincenal">2 pagos quincenales de <strong>$3,200 MXN</strong></div>
+          <ul class="p-list">
+            <li><strong>8 reels</strong> editados al mes</li>
+            <li><strong>2 posts</strong> al mes</li>
+            <li><strong>2 piezas de interacción</strong> al mes</li>
+            <li>Estrategia y seguimiento</li>
+            <li><strong>Redacción de guiones</strong> para los reels</li>
+            <li>Te enviamos por WhatsApp el contenido + descripción lista</li>
+            <li class="excluded">Publicación desde nuestro lado</li>
+          </ul>
+        </div>
+
+        <!-- COMPLETO -->
+        <div class="pack featured">
+          <div class="p-label">Paquete Completo</div>
+          <div>
+            <div class="p-name">Gestión completa</div>
+            <div class="p-sub">Nosotros publicamos, tú solo grabas</div>
+          </div>
+          <div class="p-badge">Recomendado</div>
+          <div class="p-price">
+            $6,800<sup>MXN</sup>
+            <small>mensual</small>
+          </div>
+          <div class="p-quincenal">2 pagos quincenales de <strong>$3,400 MXN</strong></div>
+          <ul class="p-list">
+            <li><strong>6 reels</strong> editados al mes</li>
+            <li><strong>2 posts</strong> al mes</li>
+            <li><strong>2 piezas de interacción</strong> al mes</li>
+            <li>Estrategia y seguimiento</li>
+            <li><strong>Redacción de guiones</strong> para los reels</li>
+            <li><strong>Publicación y gestión</strong> del contenido en tu cuenta</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONDICIONES -->
+  <section id="condiciones" aria-labelledby="cond-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Condiciones</div></div>
+        <div>
+          <h2 id="cond-title">Términos generales de los tres paquetes.</h2>
+          <p class="lead">Aplican a cualquiera de las tres opciones. Los detalles finales se cierran cuando confirmes el paquete.</p>
+        </div>
+      </div>
+
+      <dl class="terms">
+        <div class="term">
+          <dt>Facturación</dt>
+          <dd>Mensual, en dos pagos quincenales.</dd>
+        </div>
+        <div class="term">
+          <dt>Forma de pago</dt>
+          <dd>Transferencia electrónica a cuenta Vorka México.</dd>
+        </div>
+        <div class="term">
+          <dt>Vigencia</dt>
+          <dd>Contrato mensual renovable. Sin permanencia forzada.</dd>
+        </div>
+        <div class="term">
+          <dt>Cambio de paquete</dt>
+          <dd>Puedes escalar o bajar de paquete al cierre de cada mes.</dd>
+        </div>
+        <div class="term">
+          <dt>Material grabado</dt>
+          <dd>Todo el contenido publicable queda en propiedad de Euge Tu Agente.</dd>
+        </div>
+        <div class="term">
+          <dt>Arranque</dt>
+          <dd>Al confirmar paquete, definimos estrategia y calendario del primer mes.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section id="cierre" class="cta-block" aria-labelledby="cierre-title">
+    <div class="shell">
+      <div class="cta-center">
+        <div class="smallcaps-accent">Siguiente paso</div>
+        <h2 id="cierre-title" class="display-serif cta-title">Confírmanos el paquete y <em>seguimos</em>.</h2>
+        <p class="cta-sub">En cuanto elijas paquete, cerramos por WhatsApp y agendamos la primera reunión para definir estrategia y calendario del mes.</p>
+        <div class="cta-actions">
+          <a class="btn-cta solid" href="https://wa.me/528117804869?text=Hola%20VORKA%2C%20ya%20vi%20la%20cotizaci%C3%B3n%20de%20Euge%20Tu%20Agente%20y%20quiero%20confirmar%20paquete." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l5.05-1.34A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.05 14.11c-.21.6-1.24 1.14-1.74 1.19-.47.06-1.07.08-1.72-.11-.4-.12-.9-.29-1.55-.57-2.72-1.18-4.5-3.93-4.64-4.11-.13-.19-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.28.25-.28.55-.35.73-.35.19 0 .37 0 .53.01.17.01.4-.06.62.47.23.55.79 1.9.86 2.03.07.13.11.28.02.46-.08.19-.13.3-.25.46-.13.15-.27.34-.38.46-.13.13-.26.27-.11.53.15.26.65 1.07 1.4 1.74.96.86 1.77 1.13 2.02 1.26.25.13.4.11.55-.07.15-.18.63-.74.8-.99.16-.25.33-.21.55-.13.23.08 1.44.68 1.69.8.25.13.41.19.47.29.06.11.06.63-.15 1.23z"/></svg>
+            Confirmar por WhatsApp
+          </a>
+          <button class="btn-cta outline" type="button" id="btn-pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar en PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="shell">
+    <div class="foot-cols">
+      <div class="foot-col foot-brand">
+        <h5>Vorka México</h5>
+        <p class="desc">Estrategia, liderazgo e influencia para organizaciones que necesitan <b>impacto real</b> en México.</p>
+        <a class="foot-mark" href="https://www.vorka.mx/" target="_blank" rel="noopener" role="img" aria-label="Vorka México — abrir sitio"></a>
+      </div>
+      <div class="foot-col">
+        <h5>Cotización</h5>
+        <ul>
+          <li><a href="#paquetes">Paquetes</a></li>
+          <li><a href="#condiciones">Condiciones</a></li>
+          <li><a href="#cierre">Confirmar</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Vorka</h5>
+        <ul>
+          <li><a href="https://www.vorka.mx/" target="_blank" rel="noopener">Sitio Vorka México</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Vorka Sparks</a></li>
+          <li><a href="mailto:vorkamexico@gmail.com">Hablemos</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contacto</h5>
+        <ul>
+          <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
+          <li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">@vorka.mx</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-tagline">
+      <div class="left">Ecosistema de estrategia, liderazgo e influencia. 150 proyectos, 26 estados, una sola lógica.</div>
+      <div class="right">definiendo el juego</div>
+    </div>
+
+    <div class="foot-bottom">
+      <div class="foot-social">
+        <a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram — @vorka.mx">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok — @vorka.mx">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3.5h-2.7v12.1a2.6 2.6 0 1 1-2.6-2.6c.27 0 .53.04.77.12V10.4a5.4 5.4 0 1 0 4.53 5.32V8.62a6.6 6.6 0 0 0 3.9 1.26V7.2a3.9 3.9 0 0 1-3.9-3.7Z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook — vorka.mx">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.95v-8.05h2.7l.4-3.13H13.5V8.78c0-.9.25-1.52 1.55-1.52h1.66V4.46a22 22 0 0 0-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15v2.32H7.55v3.13h2.7v8.02h3.25Z"/></svg>
+        </a>
+      </div>
+      <div class="foot-name">Vorka México<small>vorka.mx</small></div>
+      <div class="foot-copy">© 2026 Vorka México.<br/>Todos los derechos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href').slice(1);
+      if(!id) return;
+      var t = document.getElementById(id);
+      if(!t) return;
+      e.preventDefault();
+      var y = t.getBoundingClientRect().top + window.pageYOffset - 24;
+      window.scrollTo({top:y, behavior:'smooth'});
+    });
+  });
+  var pdfBtn = document.getElementById('btn-pdf');
+  if(pdfBtn) pdfBtn.addEventListener('click', function(){window.print();});
+})();
+</script>
+</body>
+</html>
