@@ -1,0 +1,846 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMPACTO — Manual del Presi Municipal 2026</title>
+<meta name="description" content="Guía oficial para entrevistar y admitir a nuevos Líderes de Impacto en tu municipio.">
+<style>
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  :root{
+    --paper:#ffffff;
+    --paper-sunk:#f4f4f4;
+    --ink:#000000;
+    --ink-2:#555555;
+    --ink-3:#a0a0a0;
+    --rule:#e8e8e8;
+    --rule-strong:#cfcfcf;
+
+    --noroeste:#3b7bc0;
+    --noreste:#d94a3d;
+    --occidente:#dcb03d;
+    --centro:#6d3a8a;
+    --sureste:#6ba838;
+    --nacional:#111111;
+
+    --focus:#3b7bc0;
+    --sans: 'Mont', 'Montserrat', 'Poppins', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#000000;
+      --paper-sunk:#0d0d0d;
+      --ink:#ffffff;
+      --ink-2:#b8b8b8;
+      --ink-3:#6a6a6a;
+      --rule:#1a1a1a;
+      --rule-strong:#2a2a2a;
+      --noroeste:#5b9be0;
+      --noreste:#f16b5e;
+      --occidente:#f0c860;
+      --centro:#a570c4;
+      --sureste:#8bcc58;
+      --nacional:#ffffff;
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#ffffff; --paper-sunk:#f4f4f4;
+    --ink:#000000; --ink-2:#555555; --ink-3:#a0a0a0;
+    --rule:#e8e8e8; --rule-strong:#cfcfcf;
+    --noroeste:#3b7bc0; --noreste:#d94a3d; --occidente:#dcb03d;
+    --centro:#6d3a8a; --sureste:#6ba838; --nacional:#111111;
+  }
+  :root[data-theme="dark"]{
+    --paper:#000000; --paper-sunk:#0d0d0d;
+    --ink:#ffffff; --ink-2:#b8b8b8; --ink-3:#6a6a6a;
+    --rule:#1a1a1a; --rule-strong:#2a2a2a;
+    --noroeste:#5b9be0; --noreste:#f16b5e; --occidente:#f0c860;
+    --centro:#a570c4; --sureste:#8bcc58; --nacional:#ffffff;
+  }
+
+  html,body{background:var(--paper);color:var(--ink);}
+  body{
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+  }
+  a{color: inherit;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px 96px;}
+
+  /* SITE HEADER */
+  .site-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .logo-img{
+    height: 48px;
+    width: auto;
+    display: block;
+  }
+  .logo-img.dark-only{display: none;}
+  @media (prefers-color-scheme: dark){
+    .logo-img.light-only{display: none;}
+    .logo-img.dark-only{display: block;}
+  }
+  :root[data-theme="light"] .logo-img.light-only{display: block;}
+  :root[data-theme="light"] .logo-img.dark-only{display: none;}
+  :root[data-theme="dark"] .logo-img.light-only{display: none;}
+  :root[data-theme="dark"] .logo-img.dark-only{display: block;}
+  .site-nav{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .nav-link{
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 100px;
+    display:inline-flex;
+    align-items:center;
+    gap: 6px;
+    transition: opacity .15s;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+  }
+  .nav-link:hover{opacity: 0.85;}
+  .nav-link svg{width: 11px; height: 11px;}
+
+  .theme-toggle{
+    background: transparent;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 100px;
+    padding: 9px 14px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover{color:var(--ink); border-color: var(--ink);}
+
+  /* HERO */
+  .hero{padding: 32px 0 56px; border-bottom: 1px solid var(--rule); margin-bottom: 40px;}
+  .brand{
+    display:inline-flex; align-items:center; gap: 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--ink-2); margin-bottom: 28px;
+  }
+  .brand-dots{display:inline-flex;gap:3px;}
+  .brand-dots span{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  h1{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(38px, 6.2vw, 68px);
+    line-height: 0.98; letter-spacing: -0.035em; text-wrap: balance;
+    margin: 0 0 24px; color: var(--ink);
+  }
+  h1 span{color: var(--ink-3); display: block; font-weight: 500; letter-spacing: -0.02em;}
+  .hero-copy{max-width: 56ch; font-size: 19px; line-height: 1.6; color: var(--ink-2); margin: 0 0 22px;}
+  .hero-copy strong{color: var(--ink); font-weight: 700;}
+  .hero-signoff{
+    display:inline-block; font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+    font-weight: 700; color: var(--ink); border-top: 2px solid var(--ink); padding-top: 10px; margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* SECTIONS */
+  .section{margin-bottom: 72px;}
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap: 16px;
+    padding: 0 0 18px; border-bottom: 2px solid var(--ink); margin-bottom: 28px;
+  }
+  .section-title{
+    font-family: var(--sans); font-size: 34px; font-weight: 800; color: var(--ink);
+    letter-spacing: -0.025em; line-height: 1; display:flex; align-items:center; gap: 14px; margin: 0;
+  }
+  .section-title .swatch{width: 16px; height: 16px; background: var(--tone, var(--ink));
+    display:inline-block; border-radius: 3px;}
+  .section-kicker{font-size: 12px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--tone, var(--ink-2)); margin-left: 6px;}
+  .section-index{font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap;}
+  .section-intro{font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 60ch; margin: 0 0 32px;}
+  .section-intro strong{color: var(--ink);}
+
+  /* HERO BLOCK (welcome / cta) */
+  .block{
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 40px;
+    border-radius: 8px;
+    margin: 32px 0;
+  }
+  .block h2{
+    font-family: var(--sans); font-weight: 800; font-size: 32px; letter-spacing: -0.025em;
+    margin: 0 0 16px; color: var(--paper); line-height: 1.15;
+  }
+  .block p{font-size: 18px; line-height: 1.55; color: var(--paper); opacity: .88; margin: 0; max-width: 58ch;}
+  .block p strong{color: var(--paper); opacity: 1; font-weight: 700;}
+
+  /* FORMS GRID */
+  .forms-grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 8px;}
+  .form-card{
+    background: var(--paper); border: 1.5px solid var(--rule); border-radius: 6px;
+    padding: 32px 28px; display:flex; flex-direction:column;
+    border-top: 4px solid var(--tone, var(--ink));
+  }
+  .form-card .form-tag{
+    display:inline-block; font-size: 11px; font-weight: 800; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--tone, var(--ink-2)); margin-bottom: 14px;
+  }
+  .form-card h3{
+    font-family: var(--sans); font-size: 24px; font-weight: 800; letter-spacing: -0.02em;
+    margin: 0 0 14px; color: var(--ink); line-height: 1.15;
+  }
+  .form-card p{font-size: 16px; line-height: 1.55; color: var(--ink-2); margin: 0 0 18px;}
+  .form-card ul{margin: 0 0 26px; padding-left: 20px; color: var(--ink-2); font-size: 16px; line-height: 1.55;}
+  .form-card ul li{margin-bottom: 10px;}
+  .form-card ul li strong{color: var(--ink);}
+  .form-card .nav-link{align-self: flex-start; margin-top: auto;}
+
+  /* NOTE */
+  .note{
+    background: var(--paper-sunk); border-left: 4px solid var(--tone, var(--ink));
+    padding: 18px 22px; border-radius: 4px; margin: 22px 0;
+    font-size: 15.5px; line-height: 1.55; color: var(--ink-2);
+  }
+  .note strong{color: var(--ink); display:block; margin-bottom: 6px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase;}
+
+  /* STEP ROWS */
+  .step{
+    display:grid; grid-template-columns: 4px 72px 1fr; align-items:flex-start;
+    padding: 34px 0; border-bottom: 1px solid var(--rule); gap: 28px;
+    --stripe: var(--ink);
+  }
+  .step:last-child{border-bottom: none;}
+  .step:nth-child(1){--stripe: var(--noroeste);}
+  .step:nth-child(2){--stripe: var(--noreste);}
+  .step:nth-child(3){--stripe: var(--occidente);}
+  .step:nth-child(4){--stripe: var(--centro);}
+  .step:nth-child(5){--stripe: var(--sureste);}
+  .step:nth-child(6){--stripe: var(--noroeste);}
+  .step:nth-child(7){--stripe: var(--noreste);}
+  .step-stripe{width: 4px; min-height: 80px; background: var(--stripe); border-radius: 2px; align-self: stretch;}
+  .step-num{
+    font-family: var(--sans); font-weight: 800; font-size: 56px; letter-spacing: -0.04em;
+    color: var(--stripe); line-height: 0.95; font-variant-numeric: tabular-nums;
+  }
+  .step-body h3{
+    font-family: var(--sans); font-size: 24px; font-weight: 800; letter-spacing: -0.02em;
+    margin: 6px 0 14px; color: var(--ink); line-height: 1.2;
+  }
+  .step-body p{font-size: 16.5px; line-height: 1.6; color: var(--ink-2); margin: 0 0 14px;}
+  .step-body ul{margin: 0 0 14px; padding-left: 22px; color: var(--ink-2); font-size: 16.5px; line-height: 1.6;}
+  .step-body ul li{margin-bottom: 10px;}
+  .step-body ul li strong{color: var(--ink);}
+  .step-body a{color: var(--ink); border-bottom: 1px solid var(--rule-strong); font-weight: 600;}
+  .step-body a:hover{border-color: var(--ink);}
+
+  /* QUESTION BLOCKS */
+  .q-block{
+    padding: 28px 0; border-bottom: 1px solid var(--rule);
+  }
+  .q-block:last-child{border-bottom: none;}
+  .q-block h4{
+    font-family: var(--sans); font-size: 13px; font-weight: 800; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--ink); margin: 0 0 18px;
+    display:flex; align-items:center; gap: 12px;
+  }
+  .q-block h4::before{
+    content:""; width: 8px; height: 8px; background: var(--ink); border-radius: 50%;
+  }
+  .q-block p{font-size: 17px; line-height: 1.6; color: var(--ink-2); margin: 0;}
+  .q-block ul{margin: 0; padding-left: 24px; color: var(--ink); font-size: 17px; line-height: 1.6;}
+  .q-block ul li{margin-bottom: 14px;}
+  .q-block ul li strong{font-weight: 700;}
+
+  /* TABLE */
+  .eval-table{
+    width: 100%; border-collapse: collapse; margin: 24px 0;
+    font-size: 16.5px;
+  }
+  .eval-table th,.eval-table td{
+    padding: 20px 20px; text-align: left; border-bottom: 1px solid var(--rule);
+  }
+  .eval-table th{
+    background: var(--ink); color: var(--paper);
+    font-size: 11.5px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+  }
+  .eval-table td{color: var(--ink); line-height: 1.4;}
+  .eval-table .scale-cell{
+    text-align: center; color: var(--ink-3); font-weight: 700; font-variant-numeric: tabular-nums;
+    width: 110px; font-size: 15px;
+  }
+  .eval-table tr:last-child td{border-bottom: 2px solid var(--ink);}
+
+  /* CHECKLIST */
+  .checklist{list-style: none; padding: 0; margin: 8px 0 0;}
+  .checklist li{
+    display:flex; gap: 18px; align-items:flex-start;
+    padding: 20px 0; border-bottom: 1px solid var(--rule);
+    color: var(--ink); font-size: 17px; line-height: 1.55;
+  }
+  .checklist li:last-child{border-bottom: none;}
+  .checklist li::before{
+    content: ""; flex-shrink: 0; width: 26px; height: 26px; margin-top: 2px;
+    background: var(--sureste); border-radius: 50%;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='2,6 5,9 10,3'/></svg>");
+    background-repeat: no-repeat; background-position: center;
+  }
+
+  /* FAQ */
+  .faq details{
+    border-bottom: 1px solid var(--rule);
+    padding: 0;
+  }
+  .faq details[open]{background: var(--paper-sunk);}
+  .faq summary{
+    padding: 24px 0; font-weight: 700; color: var(--ink); cursor: pointer;
+    list-style: none; display:flex; align-items:center; justify-content:space-between; gap: 20px;
+    font-size: 17.5px; letter-spacing: -0.01em; line-height: 1.4;
+  }
+  .faq details[open] summary{padding-left: 20px; padding-right: 20px;}
+  .faq summary::-webkit-details-marker{display: none;}
+  .faq summary::after{
+    content: "+"; font-size: 26px; color: var(--ink-2); font-weight: 400;
+    transition: transform .2s; flex-shrink: 0; line-height: 1;
+  }
+  .faq details[open] summary::after{content: "−"; color: var(--ink);}
+  .faq details > div{
+    padding: 4px 20px 26px; color: var(--ink-2); font-size: 16.5px; line-height: 1.65;
+    max-width: 68ch;
+  }
+  .faq details > div strong{color: var(--ink);}
+
+  /* SITE FOOTER */
+  .site-footer{
+    margin-top: 96px;
+    padding: 40px 0 24px;
+    border-top: 2px solid var(--ink);
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+  }
+  .footer-brand-block{display:flex; flex-direction:column; gap: 8px;}
+  .footer-brand{
+    display:flex; align-items:center; gap: 10px;
+    font-size: 15px; font-weight: 900; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .footer-brand .logo-img{height: 34px;}
+  .footer-tagline{
+    font-size: 12.5px; color: var(--ink-2); max-width: 46ch; line-height: 1.5;
+  }
+  .footer-meta{
+    font-size: 11px; color: var(--ink-3); letter-spacing: .06em; margin-top: 12px;
+  }
+  .footer-links{
+    display:flex; flex-direction:column; gap: 8px; text-align: right;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .footer-links a{
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    display: inline-block;
+  }
+  .footer-links a:hover{color: var(--ink-2); border-color: var(--ink-2);}
+
+  /* PRINT */
+  @media print{
+    .site-header .site-nav,.theme-toggle{display: none !important;}
+    .block{background: var(--paper) !important; color: var(--ink) !important; border: 2px solid var(--ink);}
+    .block h2,.block p,.block p strong{color: var(--ink) !important;}
+    .step,.q-block,.faq details,.form-card{page-break-inside: avoid;}
+    .faq details > div{display: block !important;}
+    .faq summary::after{display: none;}
+    body{font-size: 11pt;}
+  }
+
+  @media (max-width: 720px){
+    body{font-size: 16px;}
+    .wrap{padding: 0 16px 60px;}
+    .site-header{flex-wrap: wrap; padding: 16px 0;}
+    .site-nav{gap: 8px; flex-wrap: wrap;}
+    .nav-link{padding: 9px 12px; font-size: 10px;}
+    .theme-toggle{padding: 8px 12px; font-size: 10px;}
+    .logo-img{height: 36px;}
+    .footer-brand .logo-img{height: 28px;}
+    .hero{padding: 16px 0 40px;}
+    .hero-copy{font-size: 17px;}
+    .section-title{font-size: 24px;}
+    .section-intro{font-size: 16.5px;}
+    .step{grid-template-columns: 4px 52px 1fr; gap: 18px; padding: 26px 0;}
+    .step-num{font-size: 40px;}
+    .step-body h3{font-size: 20px;}
+    .step-body p,.step-body ul{font-size: 15.5px;}
+    .block{padding: 32px 24px;}
+    .block h2{font-size: 24px;}
+    .block p{font-size: 16px;}
+    .form-card{padding: 26px 22px;}
+    .form-card h3{font-size: 20px;}
+    .q-block p,.q-block ul{font-size: 16px;}
+    .checklist li{font-size: 15.5px;}
+    .faq summary{font-size: 16px;}
+    .faq details > div{font-size: 15.5px;}
+    .site-footer{grid-template-columns: 1fr; gap: 20px;}
+    .footer-links{text-align: left;}
+    .eval-table{font-size: 15px;}
+    .eval-table th,.eval-table td{padding: 14px 12px;}
+  }
+
+  :focus-visible{outline: 2px solid var(--focus); outline-offset: 2px;}
+  @media (prefers-reduced-motion: reduce){*{transition: none !important;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="site-header">
+    <a class="logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO — sitio oficial">
+      <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO — Juventudes Impactando México A.C.">
+      <img class="logo-img dark-only" src="logos/impacto-horizontal-white.png" alt="IMPACTO — Juventudes Impactando México A.C.">
+    </a>
+    <nav class="site-nav">
+      <a class="nav-link" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">
+        Sitio oficial
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg>
+      </a>
+      <button class="nav-link" onclick="window.print();return false;">
+        Descargar PDF
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2v6M3 6l3 3 3-3M2 10h8"/></svg>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">Modo oscuro</button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <header class="hero" id="inicio">
+    <div class="brand">
+      <span class="brand-dots">
+        <span style="background:var(--noroeste)"></span>
+        <span style="background:var(--noreste)"></span>
+        <span style="background:var(--occidente)"></span>
+        <span style="background:var(--centro)"></span>
+        <span style="background:var(--sureste)"></span>
+      </span>
+      Manual del Presi Municipal &middot; 2026
+    </div>
+
+    <h1>Recibe bien. <span>Lidera con calidez y responsabilidad.</span></h1>
+
+    <p class="hero-copy">
+      Esta es la guía oficial para <strong>entrevistar y dar de alta</strong> a las personas que se convertirán en <strong>Líderes de Impacto</strong> dentro de tu municipio. Cada persona que se integra fortalece a la comunidad en tu municipio, en tu estado y en tus redes.
+    </p>
+    <p class="hero-copy">
+      Hazlo con calidez y con responsabilidad. La forma en que recibes a alguien el día 0 define si se queda o si se va. <strong>Gracias por hacerlo bien.</strong>
+    </p>
+
+    <div class="hero-signoff">Atentamente,<br>Sr. IMPACTO</div>
+  </header>
+
+  <!-- BIENVENIDA -->
+  <section class="section">
+    <div class="block">
+      <h2>Hola, crezcamos juntos</h2>
+      <p>Es muy importante hacer sentir bienvenida a la persona desde el <strong>día 0</strong>. Cada Líder de Impacto que se integra fortalece a la comunidad en tu municipio, en tu estado y en redes sociales. Hagamos una comunidad fuerte.</p>
+    </div>
+  </section>
+
+  <!-- FORMULARIOS -->
+  <section class="section" id="formularios">
+    <div class="section-head" style="--tone: var(--noroeste);">
+      <h2 class="section-title">
+        <span class="swatch"></span>Formularios
+        <span class="section-kicker">Puertas de entrada</span>
+      </h2>
+      <div class="section-index">Paso 0</div>
+    </div>
+    <p class="section-intro">Toda persona que quiera integrarse como Líder de Impacto entra por uno de estos dos caminos. Elige el correcto.</p>
+
+    <div class="forms-grid">
+      <div class="form-card" style="--tone: var(--noroeste);">
+        <span class="form-tag">Desconocidos · Público general</span>
+        <h3>Formulario general de admisión</h3>
+        <p>Para toda persona interesada en formar parte de IMPACTO que <strong>no cuenta con un pase directo</strong> de un presi.</p>
+        <ul>
+          <li>La persona completa el formulario oficial de admisión.</li>
+          <li>Proporciona información verídica sobre su perfil, intereses y motivaciones.</li>
+          <li>Genera la primera base de datos para evaluación del Comité de Admisiones.</li>
+        </ul>
+        <a class="nav-link" href="https://forms.gle/LcX8zzaUgSSPmcgg7" target="_blank" rel="noopener">
+          Ir al formulario general
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg>
+        </a>
+      </div>
+
+      <div class="form-card" style="--tone: var(--noreste);">
+        <span class="form-tag">Exclusivo Presis</span>
+        <h3>Formulario de pase directo</h3>
+        <p>Solo los <strong>Presis</strong> (municipales y estatales) tienen la facultad de dar pase directo a una persona que ya conocen y en quien confían.</p>
+        <ul>
+          <li>No hace falta avisar a nadie.</li>
+          <li>Solo agrega a la persona con el formulario y listo.</li>
+          <li>Salta el Comité de Admisiones porque el aval lo da el presi.</li>
+        </ul>
+        <a class="nav-link" href="https://forms.gle/GhRgtpUkphR88dhTA" target="_blank" rel="noopener">
+          Formulario de pase directo
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="note" style="--tone: var(--noreste);">
+      <strong>Sobre el pase directo</strong>
+      Es una facultad exclusiva de los presis. Úsala con responsabilidad: representa la confianza directa que pones en esa persona frente al resto del equipo.
+    </div>
+  </section>
+
+  <!-- LOS 7 PASOS -->
+  <section class="section" id="proceso">
+    <div class="section-head" style="--tone: var(--occidente);">
+      <h2 class="section-title">
+        <span class="swatch"></span>El proceso completo
+        <span class="section-kicker">Del formulario a la membresía</span>
+      </h2>
+      <div class="section-index">7 pasos</div>
+    </div>
+    <p class="section-intro">Así es el camino que sigue una persona desde que muestra interés hasta que se convierte en <strong>Líder de Impacto</strong>. El objetivo es un proceso ordenado, humano y alineado con los valores de la organización.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h3>La persona interesada</h3>
+          <ul>
+            <li>Completa el formulario oficial de admisión (desconocidos / general): <a href="https://forms.gle/LcX8zzaUgSSPmcgg7" target="_blank" rel="noopener">forms.gle/LcX8zzaUgSSPmcgg7</a></li>
+            <li>Proporciona información verídica sobre su perfil, intereses y motivaciones.</li>
+          </ul>
+          <div class="note">Este paso permite generar una primera base de datos para evaluación.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h3>El Comité de Admisiones</h3>
+          <ul>
+            <li>Analiza la información proporcionada.</li>
+            <li>Valora aspectos como: interés social, afinidad con los valores de IMPACTO y disposición de participación.</li>
+          </ul>
+          <p>Una vez revisado el perfil, el Comité emite un:</p>
+          <ul>
+            <li><strong>Visto bueno.</strong> Continúa el proceso.</li>
+            <li><strong>No aprobación.</strong> Se puede dar retro si se considera pertinente.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h3>Canalización territorial</h3>
+          <ul>
+            <li>El área de admisiones (Sr. IMPACTO) comparte los datos en el grupo de Representantes Estatales (RP's EDO).</li>
+            <li>El/la RP estatal canaliza la información a las representaciones municipales correspondientes.</li>
+          </ul>
+          <div class="note">Este paso asegura una correcta descentralización y atención territorial.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h3>Primer contacto municipal</h3>
+          <p>La representación municipal:</p>
+          <ul>
+            <li>Se pone en contacto directo con la persona interesada.</li>
+            <li>Brinda información inicial sobre la estructura local, proyectos activos y formas de participación.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h3>Entrevista</h3>
+          <p>Se agenda una entrevista que puede ser <strong>individual o grupal</strong>. Durante esta etapa se busca:</p>
+          <ul>
+            <li>Conocer a la persona de manera más cercana.</li>
+            <li>Identificar intereses, habilidades y disponibilidad.</li>
+          </ul>
+          <div class="note">También funciona como espacio para resolver dudas y generar sentido de pertenencia. Consulta la guía de entrevista más abajo.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <h3>Decisión municipal</h3>
+          <p>Posterior a la entrevista, la representación municipal evalúa el perfil de la persona y toma una decisión:</p>
+          <ul>
+            <li><strong>Aprobada.</strong></li>
+            <li><strong>No aprobada.</strong></li>
+          </ul>
+          <div class="note">La decisión debe estar alineada con los principios, objetivos y necesidades del equipo local.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-stripe"></div>
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <h3>Integración oficial</h3>
+          <p>En caso de aprobación, la persona es agregada a:</p>
+          <ul>
+            <li>Grupo oficial municipal.</li>
+            <li>Grupo estatal.</li>
+          </ul>
+          <div class="note">A partir de este momento, se reconoce como <strong>integrante activo de IMPACTO</strong>: un Líder de Impacto.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GUÍA DE ENTREVISTA -->
+  <section class="section" id="entrevista">
+    <div class="section-head" style="--tone: var(--centro);">
+      <h2 class="section-title">
+        <span class="swatch"></span>Guía breve de entrevista
+        <span class="section-kicker">Paso 5 en detalle</span>
+      </h2>
+      <div class="section-index">4 bloques</div>
+    </div>
+    <p class="section-intro">No necesita ser larga ni formal: el objetivo es <strong>conocer a la persona</strong> y que se vaya sintiendo parte del equipo. Puede aplicarse individual o en grupo.</p>
+
+    <div class="q-block">
+      <h4>A · Rompehielo</h4>
+      <p>Preséntate, agradece su interés y explica brevemente qué es IMPACTO y qué se hace en tu municipio.</p>
+    </div>
+
+    <div class="q-block">
+      <h4>B · Conocer a la persona</h4>
+      <ul>
+        <li>Cuéntame de ti: ¿a qué te dedicas, qué estudias o trabajas?</li>
+        <li>¿Cómo te enteraste de IMPACTO y qué te llamó la atención?</li>
+        <li>¿Qué haces en tu tiempo libre? ¿Participas en algo comunitario, deportivo o social?</li>
+        <li>¿Cómo describirías tu municipio? ¿Qué te gustaría ayudar a cambiar?</li>
+      </ul>
+    </div>
+
+    <div class="q-block">
+      <h4>C · Intereses, habilidades y disponibilidad</h4>
+      <ul>
+        <li>¿Qué te motiva a sumarte a IMPACTO?</li>
+        <li>¿En qué áreas o proyectos te gustaría participar?</li>
+        <li>¿Cuánto tiempo real a la semana puedes dedicarle?</li>
+        <li>¿Tienes alguna habilidad que creas que le puede servir al equipo (diseño, redes, oratoria, organización, etc.)?</li>
+      </ul>
+    </div>
+
+    <div class="q-block">
+      <h4>D · Cierre</h4>
+      <ul>
+        <li>Espacio para que la persona pregunte lo que quiera.</li>
+        <li>Explica los siguientes pasos y cuándo sabrá el resultado.</li>
+        <li><strong>No comprometas una respuesta en el momento.</strong></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- EVALUACIÓN -->
+  <section class="section" id="evaluacion">
+    <div class="section-head" style="--tone: var(--sureste);">
+      <h2 class="section-title">
+        <span class="swatch"></span>Criterios para decidir
+        <span class="section-kicker">Paso 6</span>
+      </h2>
+      <div class="section-index">Escala 1–5</div>
+    </div>
+    <p class="section-intro">Usa estos criterios como referencia, tanto el Comité de Admisiones como tú al cerrar la entrevista.</p>
+
+    <table class="eval-table">
+      <thead>
+        <tr>
+          <th>Criterio</th>
+          <th class="scale-cell">1–5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Interés social y afinidad con los valores de IMPACTO</td><td class="scale-cell">___</td></tr>
+        <tr><td>Disposición real de participación (tiempo disponible)</td><td class="scale-cell">___</td></tr>
+        <tr><td>Congruencia entre lo que dice y lo que ha hecho</td><td class="scale-cell">___</td></tr>
+        <tr><td>Habilidades o intereses que puede aportar al equipo</td><td class="scale-cell">___</td></tr>
+        <tr><td>Química personal / facilidad para integrarse al equipo</td><td class="scale-cell">___</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note" style="--tone: var(--sureste);">
+      <strong>Decisión final</strong>
+      Aprobada &nbsp;·&nbsp; No aprobada — la decisión debe estar alineada con los principios, objetivos y necesidades del equipo local.
+    </div>
+  </section>
+
+  <!-- BUENAS PRÁCTICAS -->
+  <section class="section" id="practicas">
+    <div class="section-head" style="--tone: var(--noreste);">
+      <h2 class="section-title">
+        <span class="swatch"></span>Buenas prácticas
+        <span class="section-kicker">Después del sí</span>
+      </h2>
+      <div class="section-index">10 acuerdos</div>
+    </div>
+    <p class="section-intro">Admitir a alguien <strong>no termina cuando se le agrega al grupo. Empieza ahí.</strong></p>
+
+    <ul class="checklist">
+      <li>Avisar previamente a la persona que será agregada a los grupos oficiales y solicitar que se presente (nombre, intereses, motivación); dar seguimiento hasta que lo haga.</li>
+      <li>Dar bienvenida activa dentro del grupo al momento de integrarse.</li>
+      <li>No dejar a la persona sin orientación: acompañarla en sus primeros días dentro del equipo.</li>
+      <li>Asignar a alguien responsable de darle seguimiento inicial (referente o contacto directo).</li>
+      <li>No tardar más de 48 horas en responder en ninguna etapa del proceso.</li>
+      <li>Mantener comunicación clara, cercana y constante.</li>
+      <li>Realizar reuniones periódicas (virtuales o presenciales) para fortalecer la integración.</li>
+      <li>Involucrar a la persona en actividades desde el inicio para generar sentido de pertenencia.</li>
+      <li>Dar seguimiento activo durante las primeras semanas para evitar deserción.</li>
+      <li>Resolver dudas de forma oportuna y generar confianza desde el primer contacto.</li>
+    </ul>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="section-head" style="--tone: var(--nacional);">
+      <h2 class="section-title">
+        <span class="swatch"></span>Preguntas frecuentes
+        <span class="section-kicker">FAQ para el presi municipal</span>
+      </h2>
+      <div class="section-index">8 preguntas</div>
+    </div>
+    <p class="section-intro">Si tu pregunta no está aquí, contacta al <strong>Sr. IMPACTO</strong> antes de tomar la decisión.</p>
+
+    <div class="faq">
+      <details>
+        <summary>¿Qué diferencia hay entre el formulario general y el de pase directo?</summary>
+        <div>El formulario general es para cualquier persona desconocida o del público general; su información pasa primero por el Comité de Admisiones. El pase directo es exclusivo de los presis para personas que ya conocen y en quienes confían, y <strong>no pasa por el Comité</strong>: solo se agrega directamente.</div>
+      </details>
+
+      <details>
+        <summary>¿Quién puede usar el pase directo?</summary>
+        <div>Únicamente los <strong>Presis, municipales y estatales</strong>. No aplica para ningún otro rol dentro de la estructura.</div>
+      </details>
+
+      <details>
+        <summary>¿Tengo que avisarle a alguien si uso el pase directo?</summary>
+        <div>No. No hace falta avisar a nadie: solo agrega a la persona con el formulario correspondiente y listo.</div>
+      </details>
+
+      <details>
+        <summary>¿Qué pasa si el Comité de Admisiones no da el visto bueno?</summary>
+        <div>El proceso no continúa. Se puede dar retroalimentación a la persona si se considera pertinente, pero no se canaliza a ninguna representación municipal.</div>
+      </details>
+
+      <details>
+        <summary>¿Cuánto tiempo tengo para responder en cada etapa?</summary>
+        <div>No más de <strong>48 horas</strong> en ninguna etapa del proceso: desde el primer contacto hasta la respuesta final de la entrevista.</div>
+      </details>
+
+      <details>
+        <summary>¿La entrevista debe ser individual o puede ser grupal?</summary>
+        <div>Puede ser cualquiera de las dos modalidades, según convenga a la representación municipal y al número de personas por entrevistar.</div>
+      </details>
+
+      <details>
+        <summary>¿Qué hago si la persona no se presenta en el grupo después de ser agregada?</summary>
+        <div>No la dejes sin orientación. Solicítale que se presente (nombre, intereses, motivación) y da seguimiento hasta que lo haga. Asigna a alguien como referente si es necesario.</div>
+      </details>
+
+      <details>
+        <summary>¿Qué pasa si en la entrevista detecto que la persona no encaja con el equipo local?</summary>
+        <div>La decisión de aprobar o no debe estar alineada con los principios, objetivos y necesidades del equipo local. Si no encaja, se marca como <strong>No aprobada</strong>; puedes dar retroalimentación si lo consideras pertinente.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section class="section">
+    <div class="block">
+      <h2>Cada Líder de Impacto es una historia que empieza</h2>
+      <p>Hazlo con calidez y con responsabilidad. La forma en que recibes a alguien el día 0 define si se queda o si se va. <strong>Gracias por hacerlo bien.</strong></p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-brand-block">
+      <div class="footer-brand">
+        <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO">
+        <img class="logo-img dark-only" src="logos/impacto-horizontal-white.png" alt="IMPACTO">
+      </div>
+      <div class="footer-tagline">Manual del Presi Municipal · Admisión de Líderes de Impacto. Documento de uso interno.</div>
+      <div class="footer-meta">© 2026 IMPACTO · Juventudes Impactando México A.C.</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">vorka.mx/impacto ↗</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const themeBtn = document.getElementById("themeToggle");
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme", t);
+    themeBtn.textContent = t === "dark" ? "Modo claro" : "Modo oscuro";
+    try { localStorage.setItem("impacto-theme", t); } catch(e){}
+  }
+  themeBtn.addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const next = cur === "dark" ? "light" : (cur === "light" ? "dark" : (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark"));
+    applyTheme(next);
+  });
+  try {
+    const saved = localStorage.getItem("impacto-theme");
+    if (saved) applyTheme(saved);
+    else themeBtn.textContent = matchMedia("(prefers-color-scheme: dark)").matches ? "Modo claro" : "Modo oscuro";
+  } catch(e){}
+</script>
+
+</body>
+</html>
