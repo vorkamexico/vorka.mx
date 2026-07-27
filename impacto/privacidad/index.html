@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviso de Privacidad — IMPACTO</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  :root{
+    --paper:#ffffff;
+    --paper-sunk:#f4f4f4;
+    --ink:#000000;
+    --ink-2:#555555;
+    --ink-3:#a0a0a0;
+    --rule:#e8e8e8;
+    --rule-strong:#cfcfcf;
+
+    --noroeste:#3b7bc0;
+    --noreste:#d94a3d;
+    --occidente:#dcb03d;
+    --centro:#6d3a8a;
+    --sureste:#6ba838;
+    --nacional:#111111;
+
+    --focus:#3b7bc0;
+    --sans: 'Mont', 'Montserrat', 'Poppins', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#000000;
+      --paper-sunk:#0d0d0d;
+      --ink:#ffffff;
+      --ink-2:#b8b8b8;
+      --ink-3:#6a6a6a;
+      --rule:#1a1a1a;
+      --rule-strong:#2a2a2a;
+      --noroeste:#5b9be0;
+      --noreste:#f16b5e;
+      --occidente:#f0c860;
+      --centro:#a570c4;
+      --sureste:#8bcc58;
+      --nacional:#ffffff;
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#ffffff; --paper-sunk:#f4f4f4;
+    --ink:#000000; --ink-2:#555555; --ink-3:#a0a0a0;
+    --rule:#e8e8e8; --rule-strong:#cfcfcf;
+    --noroeste:#3b7bc0; --noreste:#d94a3d; --occidente:#dcb03d;
+    --centro:#6d3a8a; --sureste:#6ba838; --nacional:#111111;
+  }
+  :root[data-theme="dark"]{
+    --paper:#000000; --paper-sunk:#0d0d0d;
+    --ink:#ffffff; --ink-2:#b8b8b8; --ink-3:#6a6a6a;
+    --rule:#1a1a1a; --rule-strong:#2a2a2a;
+    --noroeste:#5b9be0; --noreste:#f16b5e; --occidente:#f0c860;
+    --centro:#a570c4; --sureste:#8bcc58; --nacional:#ffffff;
+  }
+
+  html,body{background:var(--paper);color:var(--ink);}
+  body{
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+  }
+  a{color: inherit;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px 96px;}
+
+  /* SITE HEADER */
+  .site-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .logo-img{
+    height: 48px;
+    width: auto;
+    display: block;
+  }
+  .logo-img.dark-only{display: none;}
+  @media (prefers-color-scheme: dark){
+    .logo-img.light-only{display: none;}
+    .logo-img.dark-only{display: block;}
+  }
+  :root[data-theme="light"] .logo-img.light-only{display: block;}
+  :root[data-theme="light"] .logo-img.dark-only{display: none;}
+  :root[data-theme="dark"] .logo-img.light-only{display: none;}
+  :root[data-theme="dark"] .logo-img.dark-only{display: block;}
+  .site-nav{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .nav-link{
+    text-decoration: none;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 100px;
+    display:inline-flex;
+    align-items:center;
+    gap: 6px;
+    transition: opacity .15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover{opacity: 0.85;}
+  .nav-link svg{width: 11px; height: 11px;}
+
+  .theme-toggle{
+    background: transparent;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 100px;
+    padding: 9px 14px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover{color:var(--ink); border-color: var(--ink);}
+
+  /* HERO */
+  .hero{padding: 32px 0 56px; border-bottom: 1px solid var(--rule); margin-bottom: 40px;}
+  .brand{
+    display:inline-flex; align-items:center; gap: 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--ink-2); margin-bottom: 28px;
+  }
+  .brand-dots{display:inline-flex;gap:3px;}
+  .brand-dots span{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  h1{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(38px, 6.2vw, 68px);
+    line-height: 0.98; letter-spacing: -0.035em; text-wrap: balance;
+    margin: 0 0 24px; color: var(--ink);
+  }
+  h1 span{color: var(--ink-3); display: block; font-weight: 500; letter-spacing: -0.02em;}
+  .hero-copy{max-width: 62ch; font-size: 16.5px; line-height: 1.6; color: var(--ink-2); margin: 0 0 20px;}
+  .hero-copy strong{color: var(--ink); font-weight: 700;}
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap: 28px; margin-top: 32px;
+    padding-top: 24px; border-top: 1px solid var(--rule);
+  }
+  .hero-meta-item{}
+  .hero-meta-label{font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px;}
+  .hero-meta-value{font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em;}
+
+  /* TOC */
+  .toc{
+    background: var(--paper-sunk);
+    border-radius: 8px;
+    padding: 24px 28px;
+    margin-bottom: 48px;
+  }
+  .toc-label{font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px;}
+  .toc ol{
+    list-style: none; padding: 0; margin: 0;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px;
+    counter-reset: toc;
+  }
+  .toc li{counter-increment: toc; font-size: 13.5px; line-height: 1.4;}
+  .toc a{
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 6px 0;
+    color: var(--ink);
+    border-bottom: 1px solid transparent;
+    transition: border-color .12s, color .12s;
+  }
+  .toc a::before{
+    content: counter(toc, decimal-leading-zero);
+    font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .toc a:hover{color: var(--ink); border-bottom-color: var(--ink);}
+
+  /* SECTIONS */
+  .doc{}
+  .section{
+    padding: 32px 0 40px;
+    border-bottom: 1px solid var(--rule);
+    scroll-margin-top: 24px;
+  }
+  .section:last-of-type{border-bottom: none;}
+  .section-head{
+    display:flex; align-items:baseline; gap: 16px; margin-bottom: 20px;
+  }
+  .section-num{
+    font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--ink-3); font-variant-numeric: tabular-nums;
+    padding: 4px 10px; border: 1.5px solid var(--rule-strong); border-radius: 100px;
+    white-space: nowrap;
+  }
+  h2.section-title{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(24px, 3.5vw, 34px);
+    line-height: 1.1; letter-spacing: -0.025em;
+    margin: 0; color: var(--ink);
+  }
+  .section p{margin: 0 0 14px; color: var(--ink-2); font-size: 15px; max-width: 72ch;}
+  .section p strong{color: var(--ink); font-weight: 700;}
+  .section ul{margin: 0 0 18px; padding-left: 0; list-style: none; max-width: 72ch;}
+  .section ul li{
+    padding: 8px 0 8px 24px;
+    color: var(--ink-2);
+    position: relative;
+    font-size: 14.5px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section ul li:last-child{border-bottom: none;}
+  .section ul li::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 17px;
+    width: 10px; height: 2px;
+    background: var(--ink);
+  }
+  .section ul li strong{color: var(--ink); font-weight: 700;}
+
+  .callout{
+    background: var(--paper-sunk);
+    border-left: 4px solid var(--centro);
+    padding: 20px 24px;
+    margin: 24px 0;
+    border-radius: 4px;
+  }
+  .callout-label{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--centro); margin-bottom: 8px;
+  }
+  .callout p{margin: 0; color: var(--ink); font-size: 14.5px;}
+
+  .contact-card{
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px;
+    border-radius: 8px;
+    margin: 32px 0 8px;
+  }
+  .contact-card .contact-label{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: rgba(255,255,255,.55); margin-bottom: 10px;
+  }
+  :root[data-theme="dark"] .contact-card .contact-label{color: rgba(0,0,0,.55);}
+  .contact-card .contact-title{
+    font-size: 20px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;
+  }
+  .contact-card .contact-email{
+    font-size: 15px; font-weight: 500; opacity: .85;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  .arco-grid{
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin: 20px 0 24px;
+  }
+  .arco-card{
+    background: var(--paper-sunk);
+    padding: 18px;
+    border-radius: 6px;
+    border-top: 3px solid var(--tone, var(--ink));
+  }
+  .arco-letter{
+    font-family: var(--sans); font-size: 28px; font-weight: 800;
+    color: var(--tone, var(--ink)); letter-spacing: -0.03em; line-height: 1;
+    margin-bottom: 8px;
+  }
+  .arco-name{font-size: 12.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--ink); margin-bottom: 6px;}
+  .arco-desc{font-size: 12.5px; color: var(--ink-2); line-height: 1.4;}
+  @media (max-width: 720px){
+    .arco-grid{grid-template-columns: repeat(2, 1fr);}
+  }
+
+  /* SITE FOOTER */
+  .site-footer{
+    margin-top: 96px;
+    padding: 40px 0 24px;
+    border-top: 2px solid var(--ink);
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+  }
+  .footer-brand-block{display:flex; flex-direction:column; gap: 8px;}
+  .footer-brand{
+    display:flex; align-items:center; gap: 10px;
+  }
+  .footer-brand .logo-img{height: 34px;}
+  .footer-tagline{
+    font-size: 12.5px; color: var(--ink-2); max-width: 46ch; line-height: 1.5;
+  }
+  .footer-meta{
+    font-size: 11px; color: var(--ink-3); letter-spacing: .06em; margin-top: 12px;
+  }
+  .footer-links{
+    display:flex; flex-direction:column; gap: 8px; text-align: right;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .footer-links a{
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+    display: inline-block;
+  }
+  .footer-links a:hover{color: var(--ink-2); border-color: var(--ink-2);}
+
+  @media (max-width: 720px){
+    .wrap{padding: 0 16px 60px;}
+    .site-header{flex-wrap: wrap; padding: 16px 0;}
+    .site-nav{gap: 8px;}
+    .nav-link{padding: 9px 12px; font-size: 10px;}
+    .theme-toggle{padding: 8px 12px; font-size: 10px;}
+    .logo-img{height: 36px;}
+    .footer-brand .logo-img{height: 28px;}
+    .hero{padding: 16px 0 40px;}
+    .toc ol{grid-template-columns: 1fr;}
+    .toc{padding: 20px;}
+    .section-head{flex-direction: column; gap: 10px;}
+    .section-num{align-self: flex-start;}
+    .contact-card{padding: 24px;}
+    .site-footer{grid-template-columns: 1fr; gap: 20px;}
+    .footer-links{text-align: left;}
+  }
+
+  :focus-visible{outline: 2px solid var(--focus); outline-offset: 2px;}
+  @media (prefers-reduced-motion: reduce){*{transition: none !important;}}
+  html{scroll-behavior: smooth;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="site-header">
+    <a class="logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO — sitio oficial">
+      <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO — Juventudes Impactando México A.C.">
+      <img class="logo-img dark-only" src="logos/impacto-horizontal-white.png" alt="IMPACTO — Juventudes Impactando México A.C.">
+    </a>
+    <nav class="site-nav">
+      <a class="nav-link" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">
+        Sitio oficial
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg>
+      </a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">Modo oscuro</button>
+    </nav>
+  </header>
+
+  <header class="hero">
+    <div class="brand">
+      <span class="brand-dots">
+        <span style="background:var(--noroeste)"></span>
+        <span style="background:var(--noreste)"></span>
+        <span style="background:var(--occidente)"></span>
+        <span style="background:var(--centro)"></span>
+        <span style="background:var(--sureste)"></span>
+      </span>
+      Aviso de Privacidad &middot; IMPACTO
+    </div>
+
+    <h1>Tu información es tuya. <span>Aquí te contamos qué hacemos con ella.</span></h1>
+
+    <p class="hero-copy">
+      En <strong>Juventudes Impactando México A.C.</strong> (IMPACTO) sabemos que la confianza no se pide, se construye. Este documento explica, de forma clara y sin rodeos, qué datos recabamos de ti, para qué los usamos y cómo puedes ejercer tus derechos en cualquier momento.
+    </p>
+    <p class="hero-copy">
+      Este Aviso se emite conforme a la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares</strong> (LFPDPPP), su Reglamento y los Lineamientos aplicables en México.
+    </p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Responsable</div>
+        <div class="hero-meta-value">Juventudes Impactando México A.C.</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Última actualización</div>
+        <div class="hero-meta-value">27 de julio de 2026</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hero-meta-label">Versión</div>
+        <div class="hero-meta-value">2026.1</div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Contenido">
+    <div class="toc-label">Contenido</div>
+    <ol>
+      <li><a href="#responsable">Identidad y domicilio del responsable</a></li>
+      <li><a href="#datos">Datos personales que recabamos</a></li>
+      <li><a href="#finalidades">Finalidades del tratamiento</a></li>
+      <li><a href="#sensibles">Datos sensibles</a></li>
+      <li><a href="#transferencias">Transferencias de datos</a></li>
+      <li><a href="#arco">Ejercicio de derechos ARCO</a></li>
+      <li><a href="#revocacion">Revocación del consentimiento</a></li>
+      <li><a href="#cookies">Cookies y tecnologías de rastreo</a></li>
+      <li><a href="#menores">Personas menores de edad</a></li>
+      <li><a href="#cambios">Cambios al Aviso de Privacidad</a></li>
+    </ol>
+  </nav>
+
+  <main class="doc">
+
+    <section class="section" id="responsable">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2 class="section-title">Identidad y domicilio del responsable</h2>
+      </div>
+      <p><strong>Juventudes Impactando México A.C.</strong> (en adelante, <strong>&laquo;IMPACTO&raquo;</strong>), asociación civil sin fines de lucro constituida conforme a las leyes mexicanas, es responsable del tratamiento de tus datos personales.</p>
+      <p>Para efectos del presente Aviso, señalamos como medios de contacto los canales oficiales publicados en <strong>vorka.mx/impacto</strong> y el correo institucional que se detalla en el apartado de derechos ARCO.</p>
+    </section>
+
+    <section class="section" id="datos">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2 class="section-title">Datos personales que recabamos</h2>
+      </div>
+      <p>Para las finalidades descritas más adelante, podremos recabar y tratar las siguientes categorías de datos personales:</p>
+      <ul>
+        <li><strong>Datos de identificación:</strong> nombre completo, fecha de nacimiento, edad, género, fotografía y, en su caso, CURP.</li>
+        <li><strong>Datos de contacto:</strong> correo electrónico, número telefónico, redes sociales y domicilio (ciudad, municipio, estado).</li>
+        <li><strong>Datos académicos y de trayectoria:</strong> institución educativa, nivel de estudios, experiencia en liderazgo, participación ciudadana o comunitaria.</li>
+        <li><strong>Datos de estructura:</strong> cargo, estructura (nacional, estatal, distrital, municipal), región y municipio donde ejerces tu liderazgo dentro de IMPACTO.</li>
+        <li><strong>Datos de participación:</strong> asistencia a eventos, capacitaciones, cumbres, resultados de convocatorias y evaluaciones internas.</li>
+      </ul>
+    </section>
+
+    <section class="section" id="finalidades">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <h2 class="section-title">Finalidades del tratamiento</h2>
+      </div>
+      <p><strong>Finalidades primarias</strong> (necesarias para la relación con IMPACTO):</p>
+      <ul>
+        <li>Registrarte como integrante de la estructura nacional, estatal, distrital o municipal de IMPACTO.</li>
+        <li>Integrar y publicar el <strong>Directorio Nacional</strong> con el nombre, cargo, estructura y territorio de las y los líderes activos.</li>
+        <li>Coordinar convocatorias, capacitaciones, cumbres, reuniones de trabajo y proyectos de impacto social.</li>
+        <li>Emitir constancias, reconocimientos y credenciales que acrediten tu participación.</li>
+        <li>Comunicarte información institucional, logística y de seguimiento sobre tus actividades.</li>
+      </ul>
+      <p><strong>Finalidades secundarias</strong> (no necesarias, requieren tu consentimiento):</p>
+      <ul>
+        <li>Envío de comunicaciones sobre nuevas iniciativas, alianzas o campañas afines a los objetivos de IMPACTO.</li>
+        <li>Difusión de historias, testimonios y logros en medios institucionales y redes sociales.</li>
+        <li>Análisis estadísticos y demográficos para la mejora continua de la organización.</li>
+      </ul>
+      <div class="callout">
+        <div class="callout-label">Tu decisión cuenta</div>
+        <p>Si no deseas que tus datos se traten para las finalidades secundarias, puedes manifestarlo enviando un correo a la dirección señalada en el apartado 06. Tu negativa no será motivo para negarte los servicios o beneficios asociados a las finalidades primarias.</p>
+      </div>
+    </section>
+
+    <section class="section" id="sensibles">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2 class="section-title">Datos sensibles</h2>
+      </div>
+      <p>IMPACTO <strong>no recaba de manera regular datos personales sensibles</strong> (origen racial o étnico, estado de salud, información genética, creencias religiosas, afiliación sindical, opiniones políticas o preferencia sexual).</p>
+      <p>Cuando por la naturaleza de un proyecto específico resulte indispensable tratarlos, se te informará de forma expresa y se recabará tu consentimiento por escrito, aplicando medidas reforzadas de seguridad y confidencialidad.</p>
+    </section>
+
+    <section class="section" id="transferencias">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <h2 class="section-title">Transferencias de datos</h2>
+      </div>
+      <p>Como regla general, IMPACTO <strong>no transfiere tus datos personales a terceros</strong> sin tu consentimiento. Podrán realizarse transferencias únicamente en los siguientes supuestos, sin requerir consentimiento adicional conforme al artículo 37 de la LFPDPPP:</p>
+      <ul>
+        <li>A <strong>autoridades competentes</strong> cuando exista requerimiento fundado y motivado.</li>
+        <li>A <strong>aliados institucionales</strong> con quienes IMPACTO desarrolle proyectos conjuntos, siempre bajo cláusulas contractuales de confidencialidad y con las mismas finalidades aquí descritas.</li>
+        <li>Entre las <strong>estructuras internas</strong> de la asociación (nacional, regional, estatal y municipal) para efectos organizativos.</li>
+      </ul>
+    </section>
+
+    <section class="section" id="arco">
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <h2 class="section-title">Ejercicio de derechos ARCO</h2>
+      </div>
+      <p>En cualquier momento tienes derecho a:</p>
+
+      <div class="arco-grid">
+        <div class="arco-card" style="--tone: var(--noroeste);">
+          <div class="arco-letter">A</div>
+          <div class="arco-name">Acceso</div>
+          <div class="arco-desc">Conocer qué datos tuyos tenemos y para qué los usamos.</div>
+        </div>
+        <div class="arco-card" style="--tone: var(--noreste);">
+          <div class="arco-letter">R</div>
+          <div class="arco-name">Rectificación</div>
+          <div class="arco-desc">Corregir información inexacta o incompleta.</div>
+        </div>
+        <div class="arco-card" style="--tone: var(--occidente);">
+          <div class="arco-letter">C</div>
+          <div class="arco-name">Cancelación</div>
+          <div class="arco-desc">Solicitar la eliminación de tus datos de nuestros registros.</div>
+        </div>
+        <div class="arco-card" style="--tone: var(--sureste);">
+          <div class="arco-letter">O</div>
+          <div class="arco-name">Oposición</div>
+          <div class="arco-desc">Oponerte al uso de tus datos para fines específicos.</div>
+        </div>
+      </div>
+
+      <p>Para ejercer cualquiera de estos derechos, envía tu solicitud por escrito al correo institucional indicando: (i) nombre completo y medio para recibir respuesta; (ii) copia de una identificación oficial; (iii) descripción clara del derecho que deseas ejercer, y (iv) cualquier documento que sustente tu petición.</p>
+      <p>IMPACTO dará respuesta en un plazo máximo de <strong>20 días hábiles</strong>, prorrogable por un plazo igual cuando las circunstancias lo justifiquen.</p>
+
+      <div class="contact-card">
+        <div class="contact-label">Contacto ARCO</div>
+        <div class="contact-title">Coordinación de Datos Personales — IMPACTO</div>
+        <a class="contact-email" href="mailto:privacidad@vorka.mx">privacidad@vorka.mx</a>
+      </div>
+    </section>
+
+    <section class="section" id="revocacion">
+      <div class="section-head">
+        <span class="section-num">07</span>
+        <h2 class="section-title">Revocación del consentimiento</h2>
+      </div>
+      <p>Puedes <strong>revocar el consentimiento</strong> que en su momento otorgaste para el tratamiento de tus datos personales, siguiendo el mismo procedimiento descrito para el ejercicio de los derechos ARCO.</p>
+      <p>Es importante que consideres que, por disposición legal o por la naturaleza de nuestra relación, en algunos casos no será posible atender de inmediato tu solicitud, o bien, la revocación podría implicar la conclusión de tu participación en la estructura de IMPACTO.</p>
+    </section>
+
+    <section class="section" id="cookies">
+      <div class="section-head">
+        <span class="section-num">08</span>
+        <h2 class="section-title">Cookies y tecnologías de rastreo</h2>
+      </div>
+      <p>Los sitios web operados por IMPACTO pueden utilizar <strong>cookies y tecnologías similares</strong> con el fin de mejorar tu experiencia de navegación, recordar tus preferencias (como el modo claro u oscuro del directorio) y generar métricas agregadas de uso.</p>
+      <p>Estas tecnologías <strong>no se utilizan para identificarte personalmente</strong> ni para acceder a información almacenada en tu dispositivo distinta de la estrictamente necesaria. Puedes deshabilitarlas en cualquier momento desde la configuración de tu navegador.</p>
+    </section>
+
+    <section class="section" id="menores">
+      <div class="section-head">
+        <span class="section-num">09</span>
+        <h2 class="section-title">Personas menores de edad</h2>
+      </div>
+      <p>IMPACTO trabaja con juventudes, por lo que cuando una persona <strong>menor de 18 años</strong> se incorpora a nuestras actividades, se requerirá el consentimiento expreso de quien ejerza la patria potestad, tutela o representación legal.</p>
+      <p>Aplicamos medidas reforzadas de protección al tratamiento de datos de personas menores de edad, en línea con lo previsto por la LFPDPPP y la Ley General de los Derechos de Niñas, Niños y Adolescentes.</p>
+    </section>
+
+    <section class="section" id="cambios">
+      <div class="section-head">
+        <span class="section-num">10</span>
+        <h2 class="section-title">Cambios al Aviso de Privacidad</h2>
+      </div>
+      <p>Este Aviso puede sufrir modificaciones, cambios o actualizaciones derivadas de nuevos requerimientos legales, de nuestras propias necesidades por los servicios que ofrecemos, de nuestras prácticas de privacidad o por otras causas.</p>
+      <p>Cualquier modificación se hará del conocimiento de las personas titulares mediante <strong>publicación en el sitio institucional</strong> vorka.mx/impacto, señalando la fecha de la última actualización en la parte superior de este documento.</p>
+      <div class="callout">
+        <div class="callout-label">Aceptación</div>
+        <p>Se entenderá que otorgas tu consentimiento tácito para el tratamiento de tus datos personales conforme al presente Aviso, si una vez puesto a tu disposición no manifiestas oposición.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand-block">
+      <div class="footer-brand">
+        <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO">
+        <img class="logo-img dark-only" src="logos/impacto-horizontal-white.png" alt="IMPACTO">
+      </div>
+      <div class="footer-tagline">La juventud organizada que está impulsando a México desde cada estado, cada región y cada comunidad.</div>
+      <div class="footer-meta">© 2026 Juventudes Impactando México A.C. · Todos los derechos reservados</div>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">vorka.mx/impacto ↗</a>
+      <a href="directorio.html">Directorio Nacional</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const themeBtn = document.getElementById("themeToggle");
+  function applyTheme(t){
+    document.documentElement.setAttribute("data-theme", t);
+    themeBtn.textContent = t === "dark" ? "Modo claro" : "Modo oscuro";
+    try {localStorage.setItem("dir-theme", t);} catch(e){}
+  }
+  themeBtn.addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const next = cur === "dark" ? "light" : (cur === "light" ? "dark" : (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark"));
+    applyTheme(next);
+  });
+  try {
+    const saved = localStorage.getItem("dir-theme");
+    if (saved) applyTheme(saved);
+    else themeBtn.textContent = matchMedia("(prefers-color-scheme: dark)").matches ? "Modo claro" : "Modo oscuro";
+  } catch(e){}
+</script>
+
+</body>
+</html>
