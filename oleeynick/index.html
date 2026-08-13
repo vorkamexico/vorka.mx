@@ -1,0 +1,1080 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Brandon Oleynick — Consultoría, Mentoría y Asesoría</title>
+<meta name="description" content="Brandon Oleynick. Consultoría, mentoría mensual y asesoría 1 a 1 para jóvenes, líderes, emprendedores y organizaciones que quieren convertir ideas en resultados.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23151412'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='58' text-anchor='middle' fill='%23F7B33E'%3EB%3C/text%3E%3C/svg%3E">
+
+<style>
+  /* ============================================================
+     Brandon Oleynick — landing minimalista con acento amarillo
+     Light + Dark theme (automático + toggle manual)
+     ============================================================ */
+  :root {
+    --bg:          #FAF9F5;
+    --paper:       #F3F1E9;
+    --ink:         #151412;
+    --ink-soft:    #3D3D38;
+    --stone:       #8A8880;
+    --hairline:    #E4E1D6;
+    --accent:      #F7B33E;
+    --accent-deep: #D89523;
+
+    --tint-butter: #F5ECD1;   /* Asesoría */
+    --tint-sage:   #DFE7D3;   /* Mentoría */
+    --tint-blush:  #EED8CA;   /* Consultoría */
+
+    --tag-butter:  #8A6E1F;
+    --tag-sage:    #4C5D3B;
+    --tag-blush:   #8A4B34;
+
+    --shadow-soft: 0 1px 2px rgba(21,20,18,.04), 0 8px 32px -12px rgba(21,20,18,.08);
+    --shadow-lift: 0 2px 4px rgba(21,20,18,.06), 0 20px 48px -18px rgba(21,20,18,.16);
+  }
+
+  /* Dark theme — via OS preference (only when no explicit choice) */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:          #14130F;
+      --paper:       #1B1A15;
+      --ink:         #F4F1E4;
+      --ink-soft:    #C2BDA9;
+      --stone:       #7A7768;
+      --hairline:    #2A2822;
+      --accent:      #F7B33E;
+      --accent-deep: #FFC65C;
+
+      --tint-butter: #23201A;
+      --tint-sage:   #1B211A;
+      --tint-blush:  #23191A;
+
+      --tag-butter:  #F7B33E;
+      --tag-sage:    #B7C8A0;
+      --tag-blush:   #E7A38A;
+
+      --shadow-soft: 0 1px 2px rgba(0,0,0,.4), 0 8px 32px -12px rgba(0,0,0,.6);
+      --shadow-lift: 0 2px 4px rgba(0,0,0,.5), 0 20px 48px -18px rgba(0,0,0,.7);
+    }
+  }
+  /* Dark theme — via explicit toggle (wins in both directions) */
+  :root[data-theme="dark"] {
+    --bg:          #14130F;
+    --paper:       #1B1A15;
+    --ink:         #F4F1E4;
+    --ink-soft:    #C2BDA9;
+    --stone:       #7A7768;
+    --hairline:    #2A2822;
+    --accent:      #F7B33E;
+    --accent-deep: #FFC65C;
+
+    --tint-butter: #23201A;
+    --tint-sage:   #1B211A;
+    --tint-blush:  #23191A;
+
+    --tag-butter:  #F7B33E;
+    --tag-sage:    #B7C8A0;
+    --tag-blush:   #E7A38A;
+
+    --shadow-soft: 0 1px 2px rgba(0,0,0,.4), 0 8px 32px -12px rgba(0,0,0,.6);
+    --shadow-lift: 0 2px 4px rgba(0,0,0,.5), 0 20px 48px -18px rgba(0,0,0,.7);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition: none !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    transition: background-color .35s ease, color .35s ease;
+  }
+
+  .serif {
+    font-family: "Times New Roman", "New York", ui-serif, Georgia, serif;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--stone);
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent-deep);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 22px; } }
+
+  /* ============================================================
+     Nav
+     ============================================================ */
+  nav.top {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    background: color-mix(in oklab, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s, background .35s;
+  }
+  nav.top.scrolled { border-bottom-color: var(--hairline); }
+  nav.top .inner {
+    max-width: 1140px; margin: 0 auto;
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px;
+  }
+  @media (max-width: 640px) { nav.top .inner { padding: 12px 22px; } }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--ink);
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: 19px; letter-spacing: -0.01em;
+  }
+  .brand .mark {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--ink); color: var(--accent);
+    display: grid; place-items: center;
+    font-family: "Times New Roman", serif;
+    font-size: 14px; font-weight: 400; line-height: 1;
+  }
+  .menu {
+    display: flex; gap: 26px; align-items: center;
+    list-style: none; margin: 0; padding: 0;
+    font-size: 14px;
+  }
+  .menu a { text-decoration: none; color: var(--ink-soft); transition: color .2s; }
+  .menu a:hover { color: var(--ink); }
+
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+  .theme-btn {
+    background: transparent; border: 1px solid var(--hairline);
+    width: 36px; height: 36px; border-radius: 50%;
+    color: var(--ink); cursor: pointer;
+    display: grid; place-items: center;
+    transition: border-color .2s, transform .2s, background .2s;
+  }
+  .theme-btn:hover { border-color: var(--ink); transform: rotate(-15deg); }
+  .theme-btn svg { width: 16px; height: 16px; }
+  .theme-btn .icon-moon { display: none; }
+  .theme-btn .icon-sun  { display: block; }
+  :root[data-theme="dark"] .theme-btn .icon-sun { display: none; }
+  :root[data-theme="dark"] .theme-btn .icon-moon { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-btn .icon-sun { display: none; }
+    :root:not([data-theme="light"]) .theme-btn .icon-moon { display: block; }
+  }
+
+  .nav-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    background: var(--ink); color: var(--bg);
+    text-decoration: none; font-size: 14px; font-weight: 500;
+    border-radius: 999px;
+    transition: background .2s, color .2s;
+  }
+  .nav-cta:hover { background: var(--accent); color: var(--ink); }
+  .menu-btn {
+    display: none; background: none; border: 0; cursor: pointer; padding: 8px; margin: -8px; color: var(--ink);
+  }
+  .menu-btn svg { width: 22px; height: 22px; stroke: currentColor; }
+  @media (max-width: 820px) {
+    .menu { display: none; }
+    .menu-btn { display: block; }
+    .menu.open {
+      display: flex; flex-direction: column; align-items: stretch;
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: var(--bg); border-bottom: 1px solid var(--hairline);
+      padding: 20px 24px 28px; gap: 18px; font-size: 17px;
+    }
+    .nav-actions .nav-cta { display: none; }
+  }
+
+  /* ============================================================
+     Buttons
+     ============================================================ */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 15px 26px;
+    border-radius: 999px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform .2s, background .2s, color .2s, border-color .2s;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.primary { background: var(--accent); color: #151412; }
+  .btn.primary:hover { background: var(--accent-deep); }
+  .btn.dark { background: var(--ink); color: var(--bg); }
+  .btn.dark:hover { background: var(--accent); color: #151412; }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: var(--bg); }
+  .btn .arrow { transition: transform .2s; }
+  .btn:hover .arrow { transform: translate(3px, -3px); }
+
+  /* ============================================================
+     Hero
+     ============================================================ */
+  header.hero { padding: 160px 0 100px; position: relative; overflow: hidden; }
+  @media (max-width: 640px) { header.hero { padding: 130px 0 70px; } }
+
+  .hero-blob {
+    position: absolute; top: 80px; right: -120px;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent), transparent 65%);
+    opacity: .35;
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  header.hero > .wrap { position: relative; z-index: 1; }
+  @media (max-width: 800px) { .hero-blob { width: 340px; height: 340px; right: -100px; opacity: .45; } }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-bottom: 40px;
+  }
+  .hero-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: .5; transform: scale(1.35); }
+  }
+  h1.hero-title {
+    font-size: clamp(48px, 8vw, 108px);
+    margin: 0 0 32px;
+    max-width: 900px;
+    text-wrap: balance;
+    line-height: 0.98;
+  }
+  h1.hero-title .u {
+    display: inline;
+    background-image: linear-gradient(transparent 62%, var(--accent) 62%, var(--accent) 92%, transparent 92%);
+    background-repeat: no-repeat;
+    padding: 0 2px;
+  }
+  .hero-sub {
+    font-size: clamp(17px, 1.8vw, 20px);
+    color: var(--ink-soft);
+    max-width: 620px;
+    line-height: 1.5;
+    margin: 0 0 48px;
+  }
+  .hero-ctas {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 64px;
+  }
+  .trust {
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    padding-top: 28px;
+    border-top: 1px solid var(--hairline);
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--stone);
+  }
+  .trust span + span::before {
+    content: "·"; margin-right: 22px; color: var(--hairline);
+  }
+
+  /* ============================================================
+     Section base
+     ============================================================ */
+  section { padding: 100px 0; }
+  @media (max-width: 640px) { section { padding: 72px 0; } }
+
+  .section-head { margin-bottom: 56px; max-width: 780px; }
+  .section-head .label { display: block; margin-bottom: 18px; }
+  .section-head h2 {
+    font-size: clamp(34px, 5vw, 58px);
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .section-head p {
+    font-size: clamp(16px, 1.4vw, 18px);
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 640px;
+  }
+
+  /* ============================================================
+     Servicios — tarjetas con tintes suaves por servicio
+     ============================================================ */
+  #servicios {
+    background: var(--paper);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .services {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 900px) { .services { grid-template-columns: 1fr; } }
+
+  .svc {
+    padding: 36px 32px 32px;
+    display: flex; flex-direction: column;
+    min-height: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-soft);
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .svc:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+  @media (max-width: 640px) { .svc { padding: 30px 26px 28px; } }
+
+  .svc.t-butter { background: var(--tint-butter); }
+  .svc.t-sage   { background: var(--tint-sage); }
+  .svc.t-blush  { background: var(--tint-blush); }
+
+  .svc-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 24px;
+  }
+  .svc-num {
+    font-family: "Times New Roman", serif;
+    font-size: 14px; color: var(--ink-soft); opacity: .7;
+  }
+  .svc-tag {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: color-mix(in oklab, currentColor 10%, transparent);
+  }
+  .svc.t-butter .svc-tag { color: var(--tag-butter); }
+  .svc.t-sage   .svc-tag { color: var(--tag-sage); }
+  .svc.t-blush  .svc-tag { color: var(--tag-blush); }
+
+  .svc-name {
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: 30px; letter-spacing: -0.02em; line-height: 1.05;
+    margin: 0 0 4px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .svc-cadence {
+    font-size: 13px; color: var(--ink-soft); opacity: .8;
+    margin-bottom: 28px;
+  }
+  .svc-price-row {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 20px 0;
+    border-top: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+    margin-bottom: 24px;
+  }
+  .svc-price {
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: 42px; letter-spacing: -0.03em; line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .svc-price .cur { font-size: 20px; color: var(--ink-soft); vertical-align: 4px; margin-right: 2px; }
+  .svc-unit {
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft); opacity: .8;
+    margin-left: 4px;
+  }
+  .svc-lead {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0 0 20px;
+  }
+  .svc-list {
+    list-style: none; padding: 0; margin: 0 0 32px;
+    display: grid; gap: 10px;
+  }
+  .svc-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .svc-list li::before {
+    content: "";
+    flex: 0 0 6px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+    margin-top: 7px;
+    opacity: .55;
+  }
+  .svc.t-butter .svc-list li::before { background: var(--tag-butter); opacity: 1; }
+  .svc.t-sage   .svc-list li::before { background: var(--tag-sage);   opacity: 1; }
+  .svc.t-blush  .svc-list li::before { background: var(--tag-blush);  opacity: 1; }
+
+  .svc-cta {
+    margin-top: auto;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 14px 18px;
+    background: #151412; color: #FAF9F5;
+    text-decoration: none; border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    transition: background .2s, color .2s;
+  }
+  :root[data-theme="dark"] .svc-cta { background: var(--accent); color: #151412; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .svc-cta { background: var(--accent); color: #151412; }
+  }
+  .svc-cta:hover { background: var(--accent); color: #151412; }
+  .svc-note {
+    font-size: 12px; color: var(--ink-soft); opacity: .8;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* ============================================================
+     Sobre mí
+     ============================================================ */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  @media (max-width: 800px) { .about-grid { grid-template-columns: 1fr; gap: 40px; } }
+  .about-lead {
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0 0 24px;
+  }
+  .about-lead .u {
+    background-image: linear-gradient(transparent 62%, var(--accent) 62%, var(--accent) 92%, transparent 92%);
+    background-repeat: no-repeat;
+    padding: 0 2px;
+  }
+  .about-body p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16px; }
+  .principles { display: grid; gap: 28px; }
+  .principle {
+    padding-top: 20px;
+    border-top: 1px solid var(--hairline);
+  }
+  .principle .p-num {
+    font-family: "Times New Roman", serif;
+    font-size: 13px; color: var(--accent-deep);
+    margin-bottom: 6px;
+  }
+  .principle h3 {
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: 22px; letter-spacing: -0.015em;
+    font-weight: 400;
+    margin: 0 0 8px;
+  }
+  .principle p { color: var(--ink-soft); margin: 0; font-size: 15px; }
+
+  /* ============================================================
+     Proceso
+     ============================================================ */
+  #proceso {
+    background: var(--paper);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  }
+  @media (max-width: 800px) { .steps { grid-template-columns: 1fr; gap: 24px; } }
+  .step {
+    padding-top: 24px;
+    border-top: 2px solid var(--ink);
+    position: relative;
+  }
+  .step::before {
+    content: "";
+    position: absolute; top: -2px; left: 0;
+    width: 40px; height: 2px;
+    background: var(--accent);
+  }
+  .step-num {
+    font-family: "Times New Roman", serif;
+    font-size: 13px; color: var(--stone);
+    margin-bottom: 20px;
+  }
+  .step h3 {
+    font-family: "Times New Roman", serif;
+    font-size: 24px; font-weight: 400; letter-spacing: -0.015em;
+    margin: 0 0 10px;
+  }
+  .step p { color: var(--ink-soft); font-size: 15px; margin: 0; }
+
+  /* ============================================================
+     FAQ
+     ============================================================ */
+  .faq {
+    display: grid; grid-template-columns: 1fr; gap: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  details.q {
+    border-bottom: 1px solid var(--hairline);
+    padding: 22px 0;
+  }
+  details.q summary {
+    cursor: pointer; list-style: none;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px;
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: clamp(18px, 2vw, 22px);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  details.q summary::-webkit-details-marker { display: none; }
+  details.q summary::after {
+    content: "+";
+    font-family: "Times New Roman", serif;
+    font-size: 24px; color: var(--accent-deep);
+    line-height: 1; transition: transform .3s;
+  }
+  details.q[open] summary::after { transform: rotate(45deg); }
+  details.q .a {
+    color: var(--ink-soft);
+    max-width: 780px;
+    padding-top: 14px;
+    font-size: 15px;
+  }
+  details.q .a a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  /* ============================================================
+     CTA final
+     ============================================================ */
+  #contacto {
+    background: #151412;
+    color: #FAF9F5;
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  #contacto::before {
+    content: "";
+    position: absolute; top: -160px; left: -140px;
+    width: 460px; height: 460px; border-radius: 50%;
+    background: radial-gradient(circle, var(--accent), transparent 65%);
+    opacity: .18; filter: blur(70px); pointer-events: none;
+  }
+  #contacto .wrap { position: relative; z-index: 1; }
+  @media (max-width: 640px) { #contacto { padding: 90px 0; } }
+  .cta-title {
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: clamp(40px, 6vw, 80px);
+    line-height: 1; letter-spacing: -0.03em;
+    text-wrap: balance;
+    margin: 0 0 24px;
+    font-weight: 400;
+    max-width: 900px;
+  }
+  .cta-title .u {
+    background-image: linear-gradient(transparent 62%, var(--accent) 62%, var(--accent) 92%, transparent 92%);
+    background-repeat: no-repeat;
+    padding: 0 2px;
+    color: #FAF9F5;
+  }
+  #contacto p.lead {
+    font-family: "Times New Roman", serif;
+    font-size: clamp(18px, 2vw, 22px);
+    color: rgba(250, 249, 245, 0.72);
+    max-width: 620px;
+    margin: 0 0 40px;
+  }
+  .cta-buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+  #contacto .btn.ghost { color: #FAF9F5; border-color: rgba(250,249,245,0.4); }
+  #contacto .btn.ghost:hover { background: #FAF9F5; color: #151412; border-color: #FAF9F5; }
+
+  /* ============================================================
+     Footer
+     ============================================================ */
+  footer {
+    background: var(--bg);
+    padding: 72px 0 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  .foot {
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 700px) { .foot { grid-template-columns: 1fr; gap: 32px; } }
+  .foot-brand {
+    font-family: "Times New Roman", serif;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1; letter-spacing: -0.03em;
+    margin: 0 0 10px;
+  }
+  .foot-brand em { font-style: italic; color: var(--accent-deep); }
+  .foot-tag { color: var(--stone); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 24px; }
+
+  .socials { display: flex; gap: 10px; margin-top: 8px; }
+  .social {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: inline-grid; place-items: center;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    transition: background .2s, color .2s, transform .2s, border-color .2s;
+    text-decoration: none;
+  }
+  .social:hover {
+    background: var(--accent); color: #151412; border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .social svg { width: 17px; height: 17px; fill: currentColor; }
+
+  .foot h4 {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--stone); font-weight: 500;
+    margin: 0 0 16px;
+  }
+  .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .foot a { color: var(--ink); text-decoration: none; font-size: 14px; }
+  .foot a:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  .foot-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 24px; border-top: 1px solid var(--hairline);
+    color: var(--stone); font-size: 12px; gap: 16px; flex-wrap: wrap;
+  }
+
+  /* ============================================================
+     Reveal on scroll
+     ============================================================ */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease-out, transform .7s ease-out; }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .08s; }
+  .reveal.d2 { transition-delay: .16s; }
+</style>
+</head>
+<body>
+
+<nav class="top" id="topnav">
+  <div class="inner">
+    <a href="#top" class="brand" aria-label="Inicio">
+      <span class="mark">B</span>
+      <span>Brandon Oleynick</span>
+    </a>
+    <ul class="menu" id="menu">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema">
+        <svg class="icon-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a href="#servicios" class="nav-cta">Trabajemos</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+<a id="top"></a>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <div class="hero-blob" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero-eyebrow reveal">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="label">Consultoría · Mentoría · Asesoría</span>
+    </div>
+    <h1 class="serif hero-title reveal d1">
+      Convertimos tus ideas en <span class="u">impacto.</span>
+    </h1>
+    <p class="hero-sub reveal d1">
+      Soy Brandon Oleynick. Trabajo junto a jóvenes, líderes, emprendedores
+      y organizaciones para tomar mejores decisiones, fortalecer ideas
+      y convertirlas en resultados.
+    </p>
+    <div class="hero-ctas reveal d2">
+      <a href="#servicios" class="btn primary">
+        Trabajemos juntos
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <a href="#contacto" class="btn ghost">Contactar</a>
+    </div>
+    <div class="trust reveal d2">
+      <span>Liderazgo</span>
+      <span>Proyectos</span>
+      <span>Becas</span>
+      <span>Incidencia</span>
+      <span>Desarrollo personal</span>
+      <span>Emprendimiento</span>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== SERVICIOS ==================== -->
+<section id="servicios">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="label">Servicios</span>
+      <h2 class="serif">Tres formas de trabajar juntos.</h2>
+      <p>Elige el formato según lo que necesitas. En cualquiera de los tres,
+        trabajamos como equipo hasta que tu idea avance.</p>
+    </div>
+
+    <div class="services">
+
+      <!-- 01 ASESORÍA EXPRESS -->
+      <article class="svc t-butter reveal">
+        <div class="svc-head">
+          <span class="svc-num">01</span>
+          <span class="svc-tag">Puntual</span>
+        </div>
+        <h3 class="svc-name">Asesoría Express</h3>
+        <div class="svc-cadence">Sesión única · 20 minutos</div>
+        <div class="svc-price-row">
+          <span class="svc-price"><span class="cur">$</span>300</span>
+          <span class="svc-unit">MXN</span>
+        </div>
+        <p class="svc-lead">
+          Para resolver una duda concreta juntos y salir con claridad
+          sobre tu siguiente paso.
+        </p>
+        <ul class="svc-list">
+          <li>Segunda opinión sobre una decisión</li>
+          <li>Feedback rápido a una idea</li>
+          <li>Dudas sobre becas, convocatorias o proyectos</li>
+          <li>Orientación puntual</li>
+        </ul>
+        <a class="svc-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20quiero%20agendar%20una%20Asesor%C3%ADa%20Express%20de%2020%20min%20%28%24300%20MXN%29." target="_blank" rel="noopener noreferrer">
+          Agendar asesoría
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </a>
+      </article>
+
+      <!-- 02 MENTORÍA MENSUAL -->
+      <article class="svc t-sage reveal d1">
+        <div class="svc-head">
+          <span class="svc-num">02</span>
+          <span class="svc-tag">Mensual</span>
+        </div>
+        <h3 class="svc-name">Mentoría Mensual</h3>
+        <div class="svc-cadence">Proceso continuo · Sesiones de 45 minutos</div>
+        <div class="svc-price-row">
+          <span class="svc-price"><span class="cur">$</span>800</span>
+          <span class="svc-unit">MXN / mes</span>
+        </div>
+        <p class="svc-lead">
+          Un proceso mensual para trabajar tus objetivos en equipo, con
+          continuidad, estrategia y seguimiento real.
+        </p>
+        <ul class="svc-list">
+          <li>Desarrollo personal y de liderazgo</li>
+          <li>Becas, convocatorias, CV y marca personal</li>
+          <li>Proyectos, emprendimiento y toma de decisiones</li>
+          <li>Detalles completos en la página de mentoría</li>
+        </ul>
+        <a class="svc-cta" href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener noreferrer">
+          Ver mentoría
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </a>
+        <div class="svc-note">Página externa · vorka.mx</div>
+      </article>
+
+      <!-- 03 CONSULTORÍA -->
+      <article class="svc t-blush reveal d2">
+        <div class="svc-head">
+          <span class="svc-num">03</span>
+          <span class="svc-tag">Estratégica</span>
+        </div>
+        <h3 class="svc-name">Consultoría</h3>
+        <div class="svc-cadence">Sesión estratégica · Según necesidad</div>
+        <div class="svc-price-row">
+          <span class="svc-price"><span class="cur">$</span>720</span>
+          <span class="svc-unit">MXN</span>
+        </div>
+        <p class="svc-lead">
+          Para proyectos, iniciativas y organizaciones que necesitan
+          estructura, estrategia y una visión externa. Trabajamos codo a codo.
+        </p>
+        <ul class="svc-list">
+          <li>Diagnóstico y ruta de acción</li>
+          <li>Revisión de propuestas y proyectos</li>
+          <li>Presentación ante instituciones y aliados</li>
+          <li>Comunicación e impacto</li>
+        </ul>
+        <a class="svc-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20quiero%20agendar%20una%20consultor%C3%ADa%20%28%24720%20MXN%29." target="_blank" rel="noopener noreferrer">
+          Solicitar consultoría
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SOBRE MÍ ==================== -->
+<section id="sobre-mi">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="label">Sobre mí</span>
+      <h2 class="serif">No solo consejos. Resultados en equipo.</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-body reveal">
+        <p class="about-lead">
+          Convertimos ideas en <span class="u">resultados concretos</span>,
+          con una metodología basada en experiencia real construyendo proyectos.
+        </p>
+        <p>
+          Trabajo directamente con jóvenes, líderes, emprendedores y organizaciones
+          que quieren fortalecer sus ideas, prepararse para oportunidades
+          y avanzar con claridad estratégica.
+        </p>
+        <p>
+          Cada sesión es un espacio de trabajo compartido. El objetivo no es cerrar
+          con "qué buena idea": es que salgamos sabiendo exactamente qué sigue.
+        </p>
+      </div>
+
+      <div class="principles reveal d1">
+        <div class="principle">
+          <div class="p-num">— 01</div>
+          <h3>Experiencia práctica</h3>
+          <p>Metodología basada en construir proyectos, participar en convocatorias
+            y liderar iniciativas reales.</p>
+        </div>
+        <div class="principle">
+          <div class="p-num">— 02</div>
+          <h3>Visión estratégica</h3>
+          <p>Identificamos juntos qué priorizar y cómo convertir una idea
+            en un plan concreto.</p>
+        </div>
+        <div class="principle">
+          <div class="p-num">— 03</div>
+          <h3>Enfoque en resultados</h3>
+          <p>Salimos de cada sesión con decisiones, recomendaciones
+            y próximos pasos claros.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROCESO ==================== -->
+<section id="proceso">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="label">Proceso</span>
+      <h2 class="serif">Así trabajamos en equipo.</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">Paso 01</div>
+        <h3>Cuéntame dónde estás</h3>
+        <p>Identificamos juntos tu situación, problema, proyecto o duda.</p>
+      </div>
+      <div class="step reveal d1">
+        <div class="step-num">Paso 02</div>
+        <h3>Trabajamos la estrategia</h3>
+        <p>Analizamos opciones y construimos soluciones como equipo.</p>
+      </div>
+      <div class="step reveal d2">
+        <div class="step-num">Paso 03</div>
+        <h3>Sales con claridad</h3>
+        <p>Te llevas decisiones, recomendaciones y próximos pasos concretos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FAQ ==================== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="label">Preguntas frecuentes</span>
+      <h2 class="serif">Antes de agendar.</h2>
+    </div>
+
+    <div class="faq reveal">
+      <details class="q">
+        <summary>¿Cuál es la diferencia entre asesoría, mentoría y consultoría?</summary>
+        <div class="a">
+          La <strong>Asesoría Express</strong> es una sesión única de 20 min para resolver
+          una duda puntual. La <strong>Mentoría Mensual</strong> es un proceso continuo
+          para trabajar tus objetivos con seguimiento mes a mes. La <strong>Consultoría</strong>
+          está pensada para proyectos e iniciativas que necesitan estrategia y visión externa.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿La mentoría es mensual?</summary>
+        <div class="a">
+          Sí. La mentoría funciona como un proceso mensual de acompañamiento continuo.
+          Todos los detalles del esquema mensual están en la
+          <a href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener noreferrer">página de mentoría</a>.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿Necesito tener un proyecto para trabajar juntos?</summary>
+        <div class="a">
+          No. También puedes acudir si estás comenzando, tienes una idea
+          o simplemente necesitas orientación para tomar una decisión.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿La consultoría es únicamente para organizaciones?</summary>
+        <div class="a">
+          No. También aplica para personas, equipos, colectivos, proyectos sociales
+          o iniciativas que necesiten una visión estratégica.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿Puedo llevar mi CV, proyecto o propuesta a la sesión?</summary>
+        <div class="a">
+          Sí. Cuando sea pertinente, trabajamos directamente sobre documentos,
+          propuestas o materiales específicos.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CONTACTO / CTA FINAL ==================== -->
+<section id="contacto">
+  <div class="wrap">
+    <h2 class="cta-title reveal">
+      Tu idea ya existe.<br>
+      Ahora hay que <span class="u">hacerla avanzar.</span>
+    </h2>
+    <p class="lead reveal d1">
+      Si estás buscando claridad, estrategia o una segunda opinión,
+      trabajemos juntos.
+    </p>
+    <div class="cta-buttons reveal d1">
+      <a class="btn primary" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20quiero%20trabajar%20contigo." target="_blank" rel="noopener noreferrer">
+        Escríbeme por WhatsApp
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <a class="btn ghost" href="#servicios">Ver servicios</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="foot-brand">Brandon <em>Oleynick.</em></div>
+        <div class="foot-tag">Consultoría · Mentoría · Asesoría</div>
+        <div class="socials" aria-label="Redes sociales">
+          <a class="social" href="https://instagram.com/oleeynick" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.25.07 1.63.07 4.8s0 3.55-.07 4.8c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.25.06-1.63.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.42a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.17-.42-.37-1.06-.42-2.23C2.2 15.55 2.2 15.17 2.2 12s0-3.55.07-4.8c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.17 1.06-.37 2.23-.42C8.45 2.2 8.83 2.2 12 2.2zm0 1.8c-3.15 0-3.5 0-4.73.07-1.07.05-1.65.23-2.03.38-.51.2-.87.44-1.25.82-.38.38-.62.74-.82 1.25-.15.38-.33.96-.38 2.03C2.72 8.6 2.72 8.95 2.72 12s0 3.4.07 4.63c.05 1.07.23 1.65.38 2.03.2.51.44.87.82 1.25.38.38.74.62 1.25.82.38.15.96.33 2.03.38 1.23.07 1.58.07 4.73.07s3.5 0 4.73-.07c1.07-.05 1.65-.23 2.03-.38.51-.2.87-.44 1.25-.82.38-.38.62-.74.82-1.25.15-.38.33-.96.38-2.03.07-1.23.07-1.58.07-4.63s0-3.4-.07-4.63c-.05-1.07-.23-1.65-.38-2.03a3.4 3.4 0 0 0-.82-1.25 3.4 3.4 0 0 0-1.25-.82c-.38-.15-.96-.33-2.03-.38C15.5 4 15.15 4 12 4zm0 3.05a4.95 4.95 0 1 1 0 9.9 4.95 4.95 0 0 1 0-9.9zm0 8.16a3.21 3.21 0 1 0 0-6.42 3.21 3.21 0 0 0 0 6.42zm5.16-8.36a1.16 1.16 0 1 1 0-2.32 1.16 1.16 0 0 1 0 2.32z"/></svg>
+          </a>
+          <a class="social" href="https://tiktok.com/@oleeynick" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 2h-2.9v13.15a2.55 2.55 0 1 1-1.8-2.44V9.72a5.6 5.6 0 1 0 4.7 5.53V8.72a6.4 6.4 0 0 0 3.9 1.32V7.14a3.8 3.8 0 0 1-2.3-.9 3.9 3.9 0 0 1-1.6-3v-.6-.64z"/></svg>
+          </a>
+          <a class="social" href="https://facebook.com/oleeynick" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8.5h2.85l.42-3.3H13.5V8.1c0-.95.27-1.6 1.64-1.6h1.75V3.55A23.4 23.4 0 0 0 14.34 3.4c-2.53 0-4.27 1.55-4.27 4.4v2.4H7.2v3.3h2.87V22h3.43z"/></svg>
+          </a>
+          <a class="social" href="https://x.com/oleeynick" target="_blank" rel="noopener noreferrer" aria-label="X">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.24 2.25h3.3l-7.2 8.24 8.47 11.26h-6.63l-5.2-6.79-5.94 6.79H1.74l7.7-8.81L1.32 2.25h6.8l4.7 6.22 5.42-6.22zm-1.16 17.6h1.83L6.99 4.06H5.03l12.05 15.79z"/></svg>
+          </a>
+          <a class="social" href="https://linkedin.com/in/oleeynick" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.35V9h3.4v1.56h.05a3.73 3.73 0 0 1 3.36-1.84c3.6 0 4.27 2.37 4.27 5.45v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.11 2.06 2.06 0 0 1 0 4.11zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .78 0 1.73v20.53C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .78 23.2 0 22.22 0z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/524612242547" target="_blank" rel="noopener noreferrer">WhatsApp · 461 224 2547</a></li>
+          <li><a href="tel:+524612242547">Llamar · 461 224 2547</a></li>
+          <li><a href="mailto:oleynickhdz@gmail.com">oleynickhdz@gmail.com</a></li>
+          <li><a href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener noreferrer">vorka.mx/mentoriaoleynick</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#sobre-mi">Sobre mí</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> Brandon Oleynick.</span>
+      <span>Diseño enfocado en resultados.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav border
+  const nav = document.getElementById('topnav');
+  const onScroll = () => {
+    if (window.scrollY > 8) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Mobile menu
+  const btn = document.getElementById('menuBtn');
+  const menu = document.getElementById('menu');
+  btn?.addEventListener('click', () => menu.classList.toggle('open'));
+  menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+
+  // Theme toggle
+  const themeBtn = document.getElementById('themeBtn');
+  const root = document.documentElement;
+  const stored = localStorage.getItem('brandon-theme');
+  if (stored === 'dark' || stored === 'light') root.setAttribute('data-theme', stored);
+  themeBtn?.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let next;
+    if (current === 'dark') next = 'light';
+    else if (current === 'light') next = 'dark';
+    else next = systemDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('brandon-theme', next);
+  });
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
