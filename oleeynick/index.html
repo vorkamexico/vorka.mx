@@ -472,23 +472,86 @@
     padding: 0 2px;
   }
   .about-body p { color: var(--ink-soft); margin: 0 0 16px; font-size: 16px; }
-  .principles { display: grid; gap: 28px; }
-  .principle {
-    padding-top: 20px;
+  .about-body strong { color: var(--ink); font-weight: 600; }
+  .about-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 32px 0 28px;
+    padding: 24px 0;
     border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
   }
-  .principle .p-num {
-    font-family: "Times New Roman", serif;
-    font-size: 13px; color: var(--accent-deep);
-    margin-bottom: 6px;
-  }
-  .principle h3 {
+  @media (max-width: 500px) { .about-stats { grid-template-columns: 1fr; gap: 20px; padding: 22px 0; } }
+  .about-stats .stat-num {
     font-family: "Times New Roman", ui-serif, Georgia, serif;
-    font-size: 22px; letter-spacing: -0.015em;
-    font-weight: 400;
-    margin: 0 0 8px;
+    font-size: clamp(32px, 4vw, 42px); line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--accent-deep);
+    margin-bottom: 4px;
   }
-  .principle p { color: var(--ink-soft); margin: 0; font-size: 15px; }
+  .about-stats .stat-label {
+    font-size: 12px; color: var(--ink-soft);
+    line-height: 1.35;
+  }
+  .about-cta { margin-top: 24px; }
+
+  /* Credentials */
+  .creds { display: grid; gap: 36px; }
+  .cred-group { display: grid; gap: 0; }
+  .cred-label {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-deep); font-weight: 600;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cred-label::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+  .cred {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--hairline);
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px;
+  }
+  .cred:last-child { border-bottom: 0; }
+  .cred-title {
+    font-family: "Times New Roman", ui-serif, Georgia, serif;
+    font-size: 18px; letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .cred-org {
+    font-size: 12px; color: var(--ink-soft);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  @media (max-width: 500px) {
+    .cred { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .cred-org { white-space: normal; }
+  }
+
+  /* Áreas de trabajo (chips) */
+  .areas {
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--hairline);
+    text-align: center;
+  }
+  .areas .label { display: block; margin-bottom: 20px; }
+  .area-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .area-chips span {
+    padding: 8px 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color .2s, background .2s;
+  }
+  .area-chips span:hover { border-color: var(--accent); background: color-mix(in oklab, var(--accent) 10%, var(--bg)); }
 
   /* ============================================================
      Proceso
@@ -736,8 +799,9 @@
     <div class="section-head reveal">
       <span class="label">Servicios</span>
       <h2 class="serif">Tres formas de trabajar juntos.</h2>
-      <p>Elige el formato según lo que necesitas. En cualquiera de los tres,
-        trabajamos como equipo hasta que tu idea avance.</p>
+      <p>Liderazgo, desarrollo personal, CV, becas, proyectos, emprendimiento
+        o crecimiento profesional. Elige el formato según lo que necesitas —
+        en cualquiera de los tres, trabajamos como equipo hasta que tu idea avance.</p>
     </div>
 
     <div class="services">
@@ -827,6 +891,22 @@
         </a>
       </article>
     </div>
+
+    <div class="areas reveal">
+      <span class="label">Áreas donde trabajamos juntos</span>
+      <div class="area-chips">
+        <span>Liderazgo</span>
+        <span>Desarrollo personal</span>
+        <span>CV y perfil</span>
+        <span>Becas y convocatorias</span>
+        <span>Proyectos sociales</span>
+        <span>Emprendimiento</span>
+        <span>Marca personal</span>
+        <span>Toma de decisiones</span>
+        <span>Crecimiento profesional</span>
+        <span>Presentación ante instituciones</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -835,44 +915,74 @@
   <div class="wrap">
     <div class="section-head reveal">
       <span class="label">Sobre mí</span>
-      <h2 class="serif">No solo consejos. Resultados en equipo.</h2>
+      <h2 class="serif">Impacto real, respaldado por experiencia.</h2>
     </div>
 
     <div class="about-grid">
       <div class="about-body reveal">
         <p class="about-lead">
-          Convertimos ideas en <span class="u">resultados concretos</span>,
-          con una metodología basada en experiencia real construyendo proyectos.
+          Soy <span class="u">Presidente Nacional</span> de una organización juvenil
+          con presencia en <strong>27 estados de México</strong>. Todos los días
+          evalúo, impulso y acompaño proyectos sociales.
         </p>
         <p>
-          Trabajo directamente con jóvenes, líderes, emprendedores y organizaciones
-          que quieren fortalecer sus ideas, prepararse para oportunidades
-          y avanzar con claridad estratégica.
+          En paralelo dirijo mis propias empresas, por lo que estrategia,
+          operación y desarrollo de proyectos no son teoría — son mi trabajo diario.
         </p>
         <p>
-          Cada sesión es un espacio de trabajo compartido. El objetivo no es cerrar
-          con "qué buena idea": es que salgamos sabiendo exactamente qué sigue.
+          Esa experiencia es la que traigo a cada sesión: metodología probada,
+          visión estratégica y foco en resultados concretos, para que cada persona
+          o equipo con quien trabajo salga sabiendo exactamente qué sigue.
         </p>
+
+        <div class="about-stats">
+          <div>
+            <div class="stat-num">27</div>
+            <div class="stat-label">Estados de México con presencia activa</div>
+          </div>
+          <div>
+            <div class="stat-num">+100</div>
+            <div class="stat-label">Proyectos sociales evaluados e impulsados</div>
+          </div>
+          <div>
+            <div class="stat-num">2</div>
+            <div class="stat-label">Premios estatal y municipal de la juventud</div>
+          </div>
+        </div>
+
+        <a class="btn primary about-cta" href="https://vorka.mx/oleynick" target="_blank" rel="noopener noreferrer">
+          Conocer más de Brandon
+          <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </a>
       </div>
 
-      <div class="principles reveal d1">
-        <div class="principle">
-          <div class="p-num">— 01</div>
-          <h3>Experiencia práctica</h3>
-          <p>Metodología basada en construir proyectos, participar en convocatorias
-            y liderar iniciativas reales.</p>
+      <div class="creds reveal d1">
+        <div class="cred-group">
+          <div class="cred-label">Formación</div>
+          <div class="cred">
+            <div class="cred-title">Lic. en Relaciones Internacionales</div>
+            <div class="cred-org">Tec de Monterrey · Líderes del Mañana</div>
+          </div>
+          <div class="cred">
+            <div class="cred-title">Diplomados en liderazgo y estrategia</div>
+            <div class="cred-org">Harvard Business School</div>
+          </div>
+          <div class="cred">
+            <div class="cred-title">Diplomado para Líderes de Alto Desempeño</div>
+            <div class="cred-org">Tecnológico de Monterrey</div>
+          </div>
         </div>
-        <div class="principle">
-          <div class="p-num">— 02</div>
-          <h3>Visión estratégica</h3>
-          <p>Identificamos juntos qué priorizar y cómo convertir una idea
-            en un plan concreto.</p>
-        </div>
-        <div class="principle">
-          <div class="p-num">— 03</div>
-          <h3>Enfoque en resultados</h3>
-          <p>Salimos de cada sesión con decisiones, recomendaciones
-            y próximos pasos claros.</p>
+
+        <div class="cred-group">
+          <div class="cred-label">Reconocimientos</div>
+          <div class="cred">
+            <div class="cred-title">Premio Estatal de la Juventud</div>
+            <div class="cred-org">Gobierno del Estado</div>
+          </div>
+          <div class="cred">
+            <div class="cred-title">Premio Municipal de la Juventud</div>
+            <div class="cred-org">Distinción local</div>
+          </div>
         </div>
       </div>
     </div>
@@ -954,6 +1064,43 @@
           propuestas o materiales específicos.
         </div>
       </details>
+      <details class="q">
+        <summary>¿Las sesiones son en línea o presenciales?</summary>
+        <div class="a">
+          Trabajamos principalmente por videollamada, lo que permite agendar con
+          flexibilidad desde cualquier ciudad. Las sesiones presenciales se pueden
+          coordinar bajo demanda.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿Puedo empezar con una asesoría y después pasar a mentoría?</summary>
+        <div class="a">
+          Sí. Muchas personas comienzan con una <strong>Asesoría Express</strong> para
+          probar el formato y, cuando ven claro el camino, continúan en el proceso
+          <strong>Mensual</strong> para trabajar con seguimiento.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿Puedo trabajar contigo si vivo fuera de México?</summary>
+        <div class="a">
+          Sí. Las sesiones en línea funcionan en cualquier zona horaria y los pagos
+          se pueden coordinar por WhatsApp.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿Qué pasa si necesito reagendar?</summary>
+        <div class="a">
+          Con al menos 24 horas de anticipación se reagenda sin costo. Solo escríbeme
+          por WhatsApp y coordinamos un nuevo horario.
+        </div>
+      </details>
+      <details class="q">
+        <summary>¿Cómo funcionan los pagos?</summary>
+        <div class="a">
+          Los detalles de pago se coordinan por WhatsApp una vez confirmada la sesión.
+          Se acepta transferencia y otros medios electrónicos.
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -1008,8 +1155,8 @@
         <h4>Contacto</h4>
         <ul>
           <li><a href="https://wa.me/524612242547" target="_blank" rel="noopener noreferrer">WhatsApp · 461 224 2547</a></li>
-          <li><a href="tel:+524612242547">Llamar · 461 224 2547</a></li>
           <li><a href="mailto:oleynickhdz@gmail.com">oleynickhdz@gmail.com</a></li>
+          <li><a href="https://vorka.mx/oleynick" target="_blank" rel="noopener noreferrer">Perfil completo · vorka.mx/oleynick</a></li>
           <li><a href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener noreferrer">vorka.mx/mentoriaoleynick</a></li>
         </ul>
       </div>
