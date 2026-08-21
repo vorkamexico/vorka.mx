@@ -1,0 +1,1398 @@
+
+<title>A su Ritmo con Amor — Mapa de ruta 6 meses</title>
+<style>
+  :root{
+    --ground:#FAF6EF;
+    --ground-2:#F3EDDF;
+    --card:#FFFDF8;
+    --ink:#1E2230;
+    --ink-soft:#3B3F4B;
+    --muted:#7A7364;
+    --rule:#E5DCCA;
+    --rule-strong:#CFC4AE;
+    --brand-blue:#80CADF;
+    --brand-blue-ink:#1E3A5F;
+    --brand-green:#BCD09F;
+    --brand-pink:#FCBBC9;
+    --accent-deep:#1E3A5F;
+    --risk:#B85C4A;
+    --risk-soft:#F3D6CC;
+    --ok:#4E7A46;
+    --ok-soft:#DCE8CD;
+    --hyp:#8B5A6B;
+    --hyp-soft:#FADEE5;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){}
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#161821;
+      --ground-2:#1D2030;
+      --card:#20233A;
+      --ink:#F2ECDF;
+      --ink-soft:#D6CFC2;
+      --muted:#948E82;
+      --rule:#2F3247;
+      --rule-strong:#454866;
+      --brand-blue:#7ECBE0;
+      --brand-blue-ink:#B9DDF0;
+      --brand-green:#B8CE9F;
+      --brand-pink:#F7B9C7;
+      --accent-deep:#B9DDF0;
+      --risk:#E2907B;
+      --risk-soft:#3E2721;
+      --ok:#9BC08E;
+      --ok-soft:#243024;
+      --hyp:#E2A9BA;
+      --hyp-soft:#332028;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#161821;
+    --ground-2:#1D2030;
+    --card:#20233A;
+    --ink:#F2ECDF;
+    --ink-soft:#D6CFC2;
+    --muted:#948E82;
+    --rule:#2F3247;
+    --rule-strong:#454866;
+    --brand-blue:#7ECBE0;
+    --brand-blue-ink:#B9DDF0;
+    --brand-green:#B8CE9F;
+    --brand-pink:#F7B9C7;
+    --accent-deep:#B9DDF0;
+    --risk:#E2907B;
+    --risk-soft:#3E2721;
+    --ok:#9BC08E;
+    --ok-soft:#243024;
+    --hyp:#E2A9BA;
+    --hyp-soft:#332028;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:-apple-system,"SF Pro Text","Inter","Segoe UI",Roboto,sans-serif;
+    font-size:16.5px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* ---------- Frame ---------- */
+  .frame{
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 clamp(20px,4vw,56px);
+  }
+  .doc{
+    display:grid;
+    grid-template-columns:220px minmax(0,1fr);
+    gap:56px;
+    padding:56px 0 96px;
+  }
+  @media (max-width: 960px){
+    .doc{grid-template-columns:1fr; gap:24px; padding-top:32px}
+    .toc{position:static !important; max-height:none !important}
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:80px 0 56px;
+    border-bottom:1px solid var(--rule);
+  }
+  .hero .kicker{
+    font-size:11.5px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+  }
+  .hero .kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--brand-blue)}
+  .hero h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400;
+    font-size:clamp(44px,7vw,88px);
+    line-height:.98;
+    letter-spacing:-.02em;
+    margin:26px 0 18px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--brand-blue-ink);
+  }
+  .hero .lede{
+    max-width:640px;
+    font-size:19px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin-top:8px;
+  }
+  .hero .meta{
+    margin-top:44px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:20px 40px;
+    padding-top:24px;
+    border-top:1px solid var(--rule);
+  }
+  .hero .meta dt{
+    font-size:10.5px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .hero .meta dd{margin:0;font-size:14.5px;color:var(--ink)}
+  .hero .stamp{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--card); border:1px solid var(--rule);
+    padding:6px 12px; border-radius:999px;
+    font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .hero .stamp::before{content:""; width:6px;height:6px;border-radius:50%;background:var(--brand-pink)}
+
+  /* ---------- TOC ---------- */
+  .toc{
+    position:sticky;
+    top:24px;
+    align-self:start;
+    max-height:calc(100vh - 48px);
+    overflow:auto;
+    font-size:13px;
+    line-height:1.45;
+    padding-right:8px;
+  }
+  .toc .label{
+    font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:14px;
+  }
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:toc}
+  .toc li{counter-increment:toc; margin:0}
+  .toc a{
+    display:grid; grid-template-columns:26px 1fr; gap:6px;
+    padding:6px 0; color:var(--ink-soft); text-decoration:none;
+    border-top:1px solid var(--rule);
+  }
+  .toc a::before{content:counter(toc,decimal-leading-zero); color:var(--muted); font-variant-numeric:tabular-nums; font-size:11px}
+  .toc a:hover{color:var(--accent-deep)}
+
+  /* ---------- Sections ---------- */
+  main section{
+    padding:56px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  main section:last-child{border-bottom:none}
+  .eyebrow{
+    display:flex; align-items:baseline; gap:14px;
+    font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:14px;
+  }
+  .eyebrow .num-tag{
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;
+    color:var(--brand-blue-ink);
+    letter-spacing:.05em;
+  }
+  h2{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400;
+    font-size:clamp(30px,3.6vw,44px);
+    line-height:1.08;
+    letter-spacing:-.015em;
+    margin:0 0 22px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  h2 em{font-style:italic; color:var(--brand-blue-ink)}
+  h3{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-weight:400;
+    font-size:22px;
+    letter-spacing:-.005em;
+    margin:34px 0 10px;
+    color:var(--ink);
+  }
+  h4{
+    font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+    margin:28px 0 10px; font-weight:600;
+  }
+  p{margin:0 0 14px; max-width:66ch}
+  p.wide{max-width:none}
+  ul, ol{margin:0 0 16px; padding-left:20px; max-width:66ch}
+  ul li, ol li{margin:6px 0}
+  strong{color:var(--ink); font-weight:600}
+  em{color:var(--ink-soft)}
+  a{color:var(--accent-deep)}
+
+  .lede-sec{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:20px; line-height:1.55; color:var(--ink-soft);
+    max-width:60ch;
+    border-left:2px solid var(--brand-blue);
+    padding-left:18px;
+    margin:0 0 30px;
+  }
+
+  /* ---------- Tags ---------- */
+  .tag{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    padding:3px 9px; border-radius:3px;
+    font-weight:600;
+    vertical-align:middle;
+  }
+  .tag.hecho{background:var(--ok-soft); color:var(--ok)}
+  .tag.evidencia{background:var(--ok-soft); color:var(--ok)}
+  .tag.hipotesis{background:var(--hyp-soft); color:var(--hyp)}
+  .tag.supuesto{background:var(--risk-soft); color:var(--risk)}
+  .tag.riesgo{background:var(--risk-soft); color:var(--risk)}
+  .tag.prio{background:var(--brand-blue); color:var(--brand-blue-ink)}
+
+  /* ---------- Cards & grids ---------- */
+  .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:22px}
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
+  .grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+  @media (max-width: 780px){
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:6px;
+    padding:22px 22px 20px;
+  }
+  .card h3{margin-top:0}
+  .card .card-label{
+    font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:6px;
+  }
+  .card.blue{border-top:3px solid var(--brand-blue)}
+  .card.green{border-top:3px solid var(--brand-green)}
+  .card.pink{border-top:3px solid var(--brand-pink)}
+  .card.risk{border-top:3px solid var(--risk)}
+
+  .diag-grid{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-radius:6px; overflow:hidden}
+  .diag-grid > div{padding:22px 24px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule)}
+  .diag-grid > div:nth-child(2n){border-right:none}
+  .diag-grid > div:nth-last-child(-n+2){border-bottom:none}
+  .diag-grid h4{margin-top:0}
+  @media (max-width:700px){
+    .diag-grid{grid-template-columns:1fr}
+    .diag-grid > div{border-right:none}
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--rule);
+    border-radius:6px;
+    background:var(--card);
+    margin:8px 0 8px;
+  }
+  table{
+    width:100%; border-collapse:collapse;
+    font-size:14px; line-height:1.5;
+    min-width:760px;
+  }
+  th, td{
+    text-align:left; vertical-align:top;
+    padding:14px 16px;
+    border-bottom:1px solid var(--rule);
+  }
+  th{
+    background:var(--ground-2);
+    font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted); font-weight:600;
+    border-bottom:1px solid var(--rule-strong);
+  }
+  tr:last-child td{border-bottom:none}
+  td .m{color:var(--muted); font-size:12.5px; display:block; margin-top:4px}
+  td ul{padding-left:16px; margin:0; max-width:none}
+  td ul li{margin:3px 0}
+
+  /* Roadmap table */
+  .roadmap th:nth-child(1), .roadmap td:nth-child(1){width:60px; color:var(--brand-blue-ink); font-family:"Iowan Old Style",Georgia,serif; font-size:22px; font-style:italic}
+  .roadmap td:nth-child(1) small{display:block; font-family:-apple-system,sans-serif; font-style:normal; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-top:4px; font-weight:600}
+  .roadmap td:nth-child(2){font-weight:600; color:var(--ink)}
+
+  /* Comparison scenarios table */
+  .scen th:first-child, .scen td:first-child{width:150px; font-weight:600}
+  .scen td:first-child small{display:block; font-weight:400; color:var(--muted); font-size:12px; margin-top:2px}
+
+  /* Interview table */
+  .qi th:first-child, .qi td:first-child{width:200px; color:var(--muted); font-size:12.5px; letter-spacing:.05em; text-transform:uppercase; font-weight:600}
+
+  /* ---------- Pull quote ---------- */
+  .pull{
+    margin:34px 0 30px;
+    padding:26px 30px;
+    background:var(--ground-2);
+    border-left:3px solid var(--brand-pink);
+    border-radius:2px;
+    font-family:"Iowan Old Style",Georgia,serif;
+    font-size:22px;
+    line-height:1.4;
+    font-style:italic;
+    color:var(--ink);
+    text-wrap:balance;
+  }
+  .pull cite{
+    display:block; margin-top:14px;
+    font-family:-apple-system,sans-serif;
+    font-style:normal;
+    font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---------- Staircase ---------- */
+  .stair{
+    display:grid; grid-template-columns:repeat(6,1fr); gap:8px;
+    margin:24px 0 12px;
+    counter-reset:step;
+  }
+  .stair .step{
+    counter-increment:step;
+    background:var(--card); border:1px solid var(--rule); border-radius:5px;
+    padding:16px 14px 14px;
+    position:relative;
+  }
+  .stair .step::before{
+    content:"0" counter(step);
+    font-family:ui-monospace,Menlo,monospace;
+    font-size:10.5px; letter-spacing:.05em; color:var(--brand-blue-ink);
+    display:block; margin-bottom:6px;
+  }
+  .stair .step .t{font-weight:600; font-size:13px; margin-bottom:4px; color:var(--ink)}
+  .stair .step .d{font-size:12px; color:var(--muted); line-height:1.4}
+  @media (max-width:880px){.stair{grid-template-columns:repeat(2,1fr)}}
+
+  /* ---------- Funnel ---------- */
+  .funnel{
+    display:grid; grid-template-columns:1fr; gap:6px;
+    max-width:640px;
+    margin:20px auto 8px;
+  }
+  .funnel .fs{
+    display:grid; grid-template-columns:80px 1fr 80px;
+    align-items:center;
+    padding:14px 18px;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    font-size:14px;
+  }
+  .funnel .fs .step-num{color:var(--brand-blue-ink); font-family:ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:.05em}
+  .funnel .fs .step-t{font-weight:600; color:var(--ink)}
+  .funnel .fs .step-t small{display:block; font-weight:400; color:var(--muted); font-size:12px; margin-top:2px}
+  .funnel .fs .step-m{text-align:right; color:var(--muted); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:600}
+  .funnel .fs:nth-child(1){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-blue) 22%, var(--card)))}
+  .funnel .fs:nth-child(2){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-blue) 28%, var(--card)))}
+  .funnel .fs:nth-child(3){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-green) 30%, var(--card)))}
+  .funnel .fs:nth-child(4){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-green) 40%, var(--card)))}
+  .funnel .fs:nth-child(5){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-pink) 40%, var(--card)))}
+  .funnel .fs:nth-child(6){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-pink) 55%, var(--card)))}
+  .funnel .fs:nth-child(7){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-pink) 30%, var(--card)))}
+  .funnel .fs:nth-child(8){background:linear-gradient(90deg, var(--card), color-mix(in srgb, var(--brand-blue-ink) 25%, var(--card))); color:var(--ink)}
+
+  /* ---------- Dashboard ---------- */
+  .kpi{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding:16px 18px;
+  }
+  .kpi .k{
+    font-family:"Iowan Old Style",Georgia,serif;
+    font-size:30px; letter-spacing:-.01em; color:var(--ink);
+  }
+  .kpi .n{
+    font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted);
+    margin-bottom:4px;
+  }
+  .kpi .d{font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.4}
+
+  /* ---------- Priorities list ---------- */
+  .prio-list{list-style:none; padding:0; margin:0; counter-reset:pr}
+  .prio-list li{
+    counter-increment:pr;
+    display:grid; grid-template-columns:60px 1fr; gap:20px;
+    padding:20px 0;
+    border-top:1px solid var(--rule);
+  }
+  .prio-list li::before{
+    content:counter(pr,decimal-leading-zero);
+    font-family:"Iowan Old Style",Georgia,serif;
+    font-size:44px; line-height:1;
+    color:var(--brand-blue-ink); font-style:italic;
+  }
+  .prio-list li h3{margin:0 0 6px}
+  .prio-list li p{margin:0; color:var(--ink-soft)}
+
+  /* ---------- Final block ---------- */
+  .final{
+    margin-top:20px;
+    padding:44px 40px;
+    background:var(--accent-deep);
+    color:#F7EFE3;
+    border-radius:8px;
+  }
+  :root[data-theme="dark"] .final,
+  :root:not([data-theme="light"]) .final{}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .final{background:#0F1B2D; color:#EFE7D8}
+  }
+  .final .eyebrow{color:rgba(247,239,227,.65)}
+  .final .eyebrow .num-tag{color:var(--brand-pink)}
+  .final h2{color:#F7EFE3}
+  .final h2 em{color:var(--brand-pink)}
+  .final .fp{max-width:64ch; color:#E9DFCB; font-size:17px}
+  .final ol.actions{
+    list-style:none; padding:0; margin:24px 0 0; counter-reset:act;
+  }
+  .final ol.actions li{
+    counter-increment:act;
+    display:grid; grid-template-columns:56px 1fr; gap:22px;
+    padding:22px 0;
+    border-top:1px solid rgba(247,239,227,.18);
+  }
+  .final ol.actions li::before{
+    content:counter(act);
+    font-family:"Iowan Old Style",Georgia,serif;
+    font-size:48px; line-height:.9;
+    color:var(--brand-pink); font-style:italic;
+  }
+  .final ol.actions strong{color:#F7EFE3; display:block; font-size:18px; margin-bottom:4px; font-weight:600}
+  .final ol.actions p{color:#D6CCB6; max-width:none; margin:0}
+
+  /* ---------- Callouts ---------- */
+  .callout{
+    background:var(--ground-2);
+    border:1px solid var(--rule);
+    border-radius:6px;
+    padding:18px 20px;
+    margin:20px 0;
+    display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start;
+  }
+  .callout .badge{
+    font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+    font-weight:700; padding:4px 10px; border-radius:3px;
+    background:var(--risk-soft); color:var(--risk);
+    white-space:nowrap;
+  }
+  .callout.ok .badge{background:var(--ok-soft); color:var(--ok)}
+  .callout.blue .badge{background:color-mix(in srgb, var(--brand-blue) 40%, transparent); color:var(--brand-blue-ink)}
+  .callout p{margin:0}
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:44px 0 32px;
+    border-top:1px solid var(--rule);
+    font-size:13px; color:var(--muted);
+  }
+  footer .row{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap}
+  footer strong{color:var(--ink-soft); font-weight:600}
+</style>
+
+<div class="frame">
+
+  <header class="hero">
+    <div class="kicker">
+      <span class="dot"></span>
+      <span>Consultoría estratégica</span>
+      <span>·</span>
+      <span>Vorka México · Brandon Oleynick</span>
+      <span>·</span>
+      <span>Preparado para Fanny</span>
+    </div>
+    <h1>Un mapa de ruta de <em>seis meses</em> para pasar de la idea a un modelo validado.</h1>
+    <p class="lede">Un análisis crítico —no motivacional— del proyecto <em>A su Ritmo con Amor</em>. Diagnostica lo que hoy está comprobado y lo que aún es hipótesis, diseña la validación con familias reales, propone un piloto pequeño y define la ruta para que la metodología pueda replicarse sin depender de Fanny.</p>
+    <dl class="meta">
+      <div><dt>Proyecto</dt><dd>A su Ritmo con Amor</dd></div>
+      <div><dt>Etapa actual</dt><dd>Validación de idea</dd></div>
+      <div><dt>Horizonte</dt><dd>6 meses · 4 fases</dd></div>
+      <div><dt>Documento</dt><dd class="num">v.1 · 2026-08</dd></div>
+      <div><dt>Regla</dt><dd>Pequeño, comprobable, responsable</dd></div>
+    </dl>
+    <p style="margin-top:32px"><span class="stamp">Lee esto como un plan, no como una promesa</span></p>
+  </header>
+
+  <div class="doc">
+
+    <aside class="toc" aria-label="Contenidos">
+      <div class="label">Contenidos</div>
+      <ol>
+        <li><a href="#s1">Diagnóstico ejecutivo</a></li>
+        <li><a href="#s2">Hipótesis crítica</a></li>
+        <li><a href="#s3">Beneficiario y cliente</a></li>
+        <li><a href="#s4">Modelo de intervención</a></li>
+        <li><a href="#s5">Diseño del piloto</a></li>
+        <li><a href="#s6">Metodología preliminar</a></li>
+        <li><a href="#s7">Modelo sostenible</a></li>
+        <li><a href="#s8">Estrategia de alianzas</a></li>
+        <li><a href="#s9">Roadmap 6 meses</a></li>
+        <li><a href="#s10">Estrategia de contenido</a></li>
+        <li><a href="#s11">Calendario 4 semanas</a></li>
+        <li><a href="#s12">Funnel de conversión</a></li>
+        <li><a href="#s13">Dashboard</a></li>
+        <li><a href="#s14">Riesgos y ética</a></li>
+        <li><a href="#s15">Prioridades</a></li>
+        <li><a href="#final">Los 5 movimientos</a></li>
+      </ol>
+    </aside>
+
+    <main>
+
+    <!-- =================================================== -->
+    <section id="s1">
+      <div class="eyebrow"><span class="num-tag">01</span><span>Diagnóstico ejecutivo</span></div>
+      <h2>¿Dónde está <em>realmente</em> el proyecto hoy?</h2>
+      <p class="lede-sec">A su Ritmo con Amor no es todavía un servicio: es una <strong>experiencia personal comprobada en un caso</strong> (el hijo de Fanny) más una <strong>promesa emocional coherente</strong> que ha resonado en entrevistas informales. Confundir esas dos cosas con un modelo es el mayor riesgo del proyecto.</p>
+
+      <div class="diag-grid">
+        <div>
+          <h4><span class="tag hecho">Hecho</span> Lo que sí está comprobado</h4>
+          <ul>
+            <li>Existe un problema real: familias de niñas y niños neurodivergentes viven aislamiento, desgaste emocional y juicio (evidenciado en entrevistas de Sesión 1).</li>
+            <li>Fanny tiene experiencia práctica acompañando a su hijo, con mejoras observadas en confianza, integración escolar y socialización.</li>
+            <li>Existe una marca preliminar: naming, valores, paleta (#80CADF · #BCD09F · #FCBBC9) y tipografías.</li>
+            <li>Hay una red inicial de apoyo (Sofi, Maestra Ana, Carmen, Caro, Claudia) que ya opera de forma no formal.</li>
+          </ul>
+        </div>
+        <div>
+          <h4><span class="tag hipotesis">Hipótesis</span> Lo que la gente ha dicho, pero falta convertir en compromiso</h4>
+          <ul>
+            <li>Las familias pagarían entre <strong>$50 y $100 por sesión</strong> (dicho en entrevistas, no probado con transacción).</li>
+            <li>La modalidad preferida sería <strong>híbrida</strong> (presencial + virtual).</li>
+            <li>Los resultados observados con el hijo de Fanny se pueden reproducir en otros perfiles.</li>
+            <li>Hay disponibilidad de al menos 3–5 familias listas para participar en un piloto.</li>
+          </ul>
+        </div>
+        <div>
+          <h4><span class="tag supuesto">Supuesto</span> Lo que aún no tenemos evidencia</h4>
+          <ul>
+            <li>Qué tanto del cambio se debe a la metodología y qué tanto al vínculo con la madre.</li>
+            <li>Qué perfiles neurodivergentes son responsablemente atendibles y cuáles requieren canalización.</li>
+            <li>Cuál es el costo real por familia atendida (materiales, tiempo, espacio).</li>
+            <li>Que las escuelas quieran integrar la metodología (ni un solo contacto formal reportado).</li>
+          </ul>
+        </div>
+        <div>
+          <h4><span class="tag riesgo">Riesgo</span> Vacíos que pueden hundir el proyecto</h4>
+          <ul>
+            <li><strong>Confundir el rol.</strong> Fanny no es psicóloga ni terapeuta. Prometer resultados clínicos es un riesgo ético y reputacional.</li>
+            <li><strong>Dependencia de Fanny.</strong> Toda la operación pasa por ella; no hay metodología documentada replicable.</li>
+            <li><strong>Sesgo del caso único.</strong> El “funcionó con mi hijo” no valida el servicio: hay confusión entre madre-guía y educadora-guía.</li>
+            <li><strong>Presentar anécdota como evidencia.</strong> Testimonios sí; afirmaciones de eficacia general, no.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="margin-top:36px">Qué debe comprobarse <em>antes</em> de cada avance</h3>
+      <div class="grid-3">
+        <div class="card blue">
+          <div class="card-label">Antes de cobrar</div>
+          <p>Cerrar al menos <strong>1 piloto completo</strong> con 3–5 familias, con evaluación inicial y final, y con al menos 3 familias que <strong>expresen intención genuina de pagar</strong> por continuar.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Antes de trabajar con escuelas</div>
+          <p>Tener <strong>metodología documentada</strong> (aunque sea v.0.5), evidencia cuantitativa mínima de 2 cohortes, <strong>protocolos de canalización</strong> con al menos 1 profesional aliado, y consentimientos informados.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Antes de replicar</div>
+          <p>Al menos <strong>una persona externa</strong> (docente o facilitador) capaz de aplicar la metodología con supervisión de Fanny, y con resultados comparables en al menos 3 casos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s2">
+      <div class="eyebrow"><span class="num-tag">02</span><span>La hipótesis crítica</span></div>
+      <h2>Si en los próximos 6 meses solo se valida <em>una cosa</em>, que sea esta.</h2>
+      <div class="pull">
+        “Existen al menos 20 familias en la ciudad de operación que están dispuestas a comprometerse con un acompañamiento de 6–8 semanas para su hijo neurodivergente, y a pagar entre $250 y $600 MXN por sesión, si al final observan mejoras concretas en confianza y participación escolar.”
+        <cite>Hipótesis crítica de A su Ritmo con Amor</cite>
+      </div>
+      <p>Todo lo demás (modalidad, formato, materiales, aliados) es secundario respecto a esta pregunta. Si esta hipótesis falla, el proyecto necesita rediseñarse como iniciativa <em>no</em> comercial y buscar financiamiento alternativo. Si se valida —aunque sea parcialmente— hay base real para construir el modelo.</p>
+      <p><strong>Nota crítica:</strong> el rango “$50 a $100 por sesión” que aparece en las entrevistas iniciales es muy probablemente <strong>demasiado bajo para ser sostenible</strong>. Cubre costos directos, pero no el tiempo de Fanny ni la formación continua. Parte del experimento es validar un rango <em>viable</em>, no uno complaciente.</p>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s3">
+      <div class="eyebrow"><span class="num-tag">03</span><span>Beneficiario y cliente</span></div>
+      <h2>Dos personas distintas: la que recibe el impacto y la que <em>decide y paga</em>.</h2>
+      <p class="lede-sec">Una de las omisiones más frecuentes en proyectos sociales es tratar al beneficiario y al cliente como si fueran la misma persona. Aquí no lo son.</p>
+
+      <div class="grid-2">
+        <div class="card green">
+          <div class="card-label">Beneficiario</div>
+          <h3>Niña o niño neurodivergente</h3>
+          <ul>
+            <li><strong>Edad:</strong> 6 a 11 años (primaria). Es el rango donde lectoescritura es central y donde el rezago aún es reversible con acompañamiento sostenido.</li>
+            <li><strong>Perfil probable:</strong> TDAH, TEA nivel 1 (autismo con lenguaje funcional), dificultades de aprendizaje leves-moderadas.</li>
+            <li><strong>No es candidato:</strong> autismo nivel 2/3, discapacidad intelectual significativa, casos que requieran terapia de lenguaje o intervención psicológica activa.</li>
+            <li><strong>Situación:</strong> asiste a escuela regular, sufre señalamiento, ha perdido confianza, tiene rezago en lectoescritura respecto a su grado.</li>
+          </ul>
+        </div>
+        <div class="card pink">
+          <div class="card-label">Cliente</div>
+          <h3>Madre (o cuidadora principal)</h3>
+          <ul>
+            <li>Es quien busca activamente ayuda, quien vive el desgaste y quien toma la decisión de compra.</li>
+            <li>Ha intentado apoyar desde casa y ha sentido juicio de la escuela.</li>
+            <li>Puede o no tener pareja involucrada; frecuentemente carga la responsabilidad principal.</li>
+            <li>Ingreso familiar variable: hay que validar si el segmento inicial es clase media-baja (busca accesibilidad) o clase media (busca resultados y paga más).</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Perfil de familia ideal <span class="tag hipotesis" style="vertical-align:middle;margin-left:8px">Por validar</span></h3>
+      <div class="callout">
+        <span class="badge">Advertencia</span>
+        <p>Este buyer persona es un <strong>punto de partida</strong>, no una conclusión. Debe corregirse tras las 10 entrevistas de la Etapa 3. Si detectamos que quienes realmente pagarían son escuelas o padres de clase media alta (no clase media-baja como se asume), el modelo cambia por completo.</p>
+      </div>
+      <div class="card">
+        <p><strong>Ana, 34 años.</strong> Madre de Diego (8), diagnosticado con TDAH hace 1 año. Trabaja medio tiempo. Ingreso familiar: $18,000–$28,000 MXN/mes. Vive en zona urbana o conurbada. Diego repite tareas simples, se frustra al leer, la maestra “no sabe qué hacer con él”. Ana ya gastó en 2 terapias privadas sin ver cambios claros. Sigue cuentas de crianza respetuosa en Instagram. <strong>Lo que busca:</strong> alguien que “entienda” a Diego, no que lo corrija. <strong>Lo que teme:</strong> que sea otro gasto sin resultados; ser juzgada como “mala madre”. <strong>Pagaría:</strong> hipotéticamente $400–$600 por sesión si ve avance en 4–6 semanas.</p>
+      </div>
+
+      <h3>Actores adicionales (por validar como clientes secundarios)</h3>
+      <div class="grid-3">
+        <div class="card"><div class="card-label">Escuela pequeña</div><p>Podría contratar el acompañamiento para 3–5 alumnos como servicio complementario. Ciclo de venta largo (3–6 meses).</p></div>
+        <div class="card"><div class="card-label">Psicólogo/psicopedagogo</div><p>Puede derivar familias que necesitan apoyo académico complementario a su terapia. Requiere ganarse su confianza primero.</p></div>
+        <div class="card"><div class="card-label">DIF o instituciones</div><p>Podrían becar familias de bajos recursos. Requiere formalización jurídica; explorar recién al mes 5–6.</p></div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s4">
+      <div class="eyebrow"><span class="num-tag">04</span><span>Modelo de intervención</span></div>
+      <h2>De “talleres de lectoescritura” a un <em>acompañamiento con propósito claro</em>.</h2>
+      <p class="lede-sec">El objetivo principal declarado por Fanny es <strong>fortalecer la autoconfianza</strong>. La lectoescritura es el vehículo, no el fin. Esto debe reflejarse en el diseño del servicio, en los indicadores y en la comunicación.</p>
+
+      <div class="grid-2">
+        <div>
+          <h4>Núcleo del servicio</h4>
+          <p>Un acompañamiento estructurado de <strong>6 a 8 semanas</strong> (alineado con la duración del material actual y con el tiempo en que empezaron a observarse mejoras en el caso original), con <strong>2 sesiones semanales</strong> con el niño más <strong>1 sesión quincenal</strong> con la madre.</p>
+          <h4>Qué se ofrece</h4>
+          <ul>
+            <li>Diagnóstico inicial cualitativo del niño (no clínico).</li>
+            <li>Plan de trabajo adaptado al ritmo del niño.</li>
+            <li>Sesiones de lectoescritura + juego + regulación emocional.</li>
+            <li>Orientación práctica a la madre entre sesiones (WhatsApp acotado).</li>
+            <li>Sesión de cierre con evaluación conjunta y ruta a seguir.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color:var(--risk)">Qué explícitamente NO se ofrece</h4>
+          <ul>
+            <li>Diagnóstico clínico o etiquetas neurológicas.</li>
+            <li>Terapia psicológica, del lenguaje, ocupacional o conductual.</li>
+            <li>Promesas de “curar” o “normalizar” al niño.</li>
+            <li>Sustitución del acompañamiento escolar o médico.</li>
+            <li>Atención a casos que requieran especialista sin canalización previa.</li>
+          </ul>
+          <div class="callout ok" style="margin-top:24px">
+            <span class="badge">Regla</span>
+            <p>En toda comunicación externa: <strong>“Acompañamiento educativo y emocional. No sustituye terapia especializada.”</strong> Debe aparecer en la página, en cada publicación relevante y en el contrato con la familia.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s5">
+      <div class="eyebrow"><span class="num-tag">05</span><span>Diseño del piloto</span></div>
+      <h2>Un piloto pequeño, medible y honesto con <em>3 a 5 familias</em>.</h2>
+      <p>El piloto es el activo estratégico más importante de los próximos 6 meses. Su función no es generar ingresos ni crecer: es <strong>producir evidencia</strong> y depurar la metodología.</p>
+
+      <div class="grid-2">
+        <div>
+          <h4>Estructura</h4>
+          <ul>
+            <li><strong>Familias:</strong> 3–5, seleccionadas de las entrevistas de validación.</li>
+            <li><strong>Duración:</strong> 8 semanas.</li>
+            <li><strong>Sesiones:</strong> 16 con el niño (2/semana) + 4 con la madre (cada 15 días) + 1 sesión inicial y 1 de cierre.</li>
+            <li><strong>Modalidad:</strong> presencial preferente si hay espacio; en caso contrario, virtual con paquete de materiales enviado.</li>
+            <li><strong>Costo simbólico:</strong> $50–$100 por sesión (validar rango bajo) para <strong>1 grupo</strong>; grupo B con <strong>$300</strong> para probar disposición de pago real.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Qué documenta Fanny en cada sesión</h4>
+          <ul>
+            <li>Duración real, materiales usados, actividad realizada.</li>
+            <li>Nivel de participación del niño (escala 1–5).</li>
+            <li>Frustración observada / momentos de logro.</li>
+            <li>Tarea sugerida a la madre y su cumplimiento.</li>
+            <li>Nota breve para el próximo día.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Evaluación inicial y final</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dimensión</th><th>Instrumento</th><th>Cómo se mide</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Autoconfianza</strong><span class="m">Objetivo principal</span></td>
+              <td>Escala corta autoreportada + observación</td>
+              <td>3 preguntas ilustradas al niño (“qué tan capaz me siento de…”, 1–5). Cuestionario a la madre sobre 5 conductas concretas (levanta la mano, intenta antes de rendirse, habla de la escuela sin llorar, etc.).</td>
+            </tr>
+            <tr>
+              <td><strong>Lectoescritura</strong></td>
+              <td>Prueba corta pre/post</td>
+              <td>Lectura de un texto graduado, 10 palabras de dictado, 3 oraciones de comprensión. Se registra tiempo, errores y autocorrecciones.</td>
+            </tr>
+            <tr>
+              <td><strong>Convivencia y participación</strong></td>
+              <td>Reporte semanal de la madre</td>
+              <td>Formato breve de WhatsApp: 3 preguntas sí/no + un comentario. Genera datos y mantiene el vínculo.</td>
+            </tr>
+            <tr>
+              <td><strong>Bienestar de la madre</strong></td>
+              <td>Escala corta pre/post</td>
+              <td>4 ítems: sensación de acompañamiento, claridad, culpa, esperanza (1–5). Es un indicador secundario pero clave.</td>
+            </tr>
+            <tr>
+              <td><strong>Adherencia al programa</strong></td>
+              <td>Asistencia y tareas</td>
+              <td>% de sesiones asistidas, % de tareas familiares completadas. Predice retención futura.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Testimonios y evidencia visual con ética</h3>
+      <ul>
+        <li><strong>Consentimiento informado firmado</strong> por madre/padre/tutor antes de cualquier registro. Documento simple, en lenguaje llano.</li>
+        <li>Consentimiento separado para: (a) uso interno, (b) uso en redes con rostro cubierto, (c) uso en redes con rostro visible. Nunca se asume el nivel superior.</li>
+        <li>Prohibido usar imagen del niño para vender un servicio pagado sin autorización específica para ese fin.</li>
+        <li>Testimonios: recogidos por escrito o audio, editados solo por gramática, con revisión final de la familia antes de publicar.</li>
+      </ul>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s6">
+      <div class="eyebrow"><span class="num-tag">06</span><span>Metodología preliminar</span></div>
+      <h2>Convertir el conocimiento empírico de Fanny en algo <em>enseñable</em>.</h2>
+      <p class="lede-sec">La estructura “Diagnóstico → Adaptación → Intervención → Acompañamiento familiar → Evaluación → Seguimiento” es correcta como orden general, pero es demasiado abstracta para replicarse. Necesita capas.</p>
+
+      <div class="grid-3">
+        <div class="card blue">
+          <div class="card-label">Fase 1 · Encuadre</div>
+          <p>Entrevista con la madre (60 min) + observación del niño (30 min) + revisión de material escolar. Se firma consentimiento y se acuerda plan. <strong>Sale con:</strong> ficha del niño, objetivos concretos, criterio de canalización si aplica.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Fase 2 · Adaptación</div>
+          <p>Diseño del plan de 8 semanas: selección de materiales, secuencia de temas, actividades. <strong>Aquí es donde Fanny debe hacer explícito cómo elige</strong> —qué considera, qué descarta— para que otro pueda aprenderlo.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Fase 3 · Intervención</div>
+          <p>16 sesiones con estructura común: <strong>3 min de reencuentro · 20 min actividad núcleo · 10 min juego regulador · 5 min cierre con logro</strong>. Cada sesión tiene una tarjeta guía y un espacio para bitácora.</p>
+        </div>
+        <div class="card green">
+          <div class="card-label">Fase 4 · Acompañamiento familiar</div>
+          <p>Sesión con la madre cada 15 días. Tarea concreta entre sesiones (no consejo genérico). Canal de WhatsApp con reglas claras de horario y tipo de mensaje.</p>
+        </div>
+        <div class="card green">
+          <div class="card-label">Fase 5 · Evaluación</div>
+          <p>Aplicación de los mismos instrumentos de inicio. Sesión de cierre conjunta niño-madre-Fanny. Devolución escrita con logros, retos pendientes y sugerencias.</p>
+        </div>
+        <div class="card green">
+          <div class="card-label">Fase 6 · Seguimiento</div>
+          <p>Check-in a las 4 y 12 semanas post-cierre. Sostiene el vínculo, mide durabilidad de los cambios y abre puerta a recompra o referido.</p>
+        </div>
+      </div>
+
+      <h3>Lo que hay que empezar a documentar <em>desde el mes 1</em></h3>
+      <div class="callout blue">
+        <span class="badge">Regla de replicabilidad</span>
+        <p>Si Fanny no puede tomarse 2 meses de descanso sin que el proyecto colapse, no hay metodología: hay una persona con talento. La documentación empieza ahora, no cuando “ya haya tiempo”.</p>
+      </div>
+      <ul>
+        <li>Bitácora de sesiones (formato fijo, 5 min al terminar cada sesión).</li>
+        <li>Tarjetas de actividad: qué se hace, con qué material, cómo se adapta si el niño se frustra.</li>
+        <li>Criterios de diagnóstico simple (qué observar en primeras 2 sesiones).</li>
+        <li>Guiones de conversación con la madre para momentos difíciles.</li>
+        <li>Video corto (con consentimiento) de al menos una sesión por familia, para uso formativo interno.</li>
+      </ul>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s7">
+      <div class="eyebrow"><span class="num-tag">07</span><span>Modelo sostenible</span></div>
+      <h2>Cuatro escenarios posibles y por qué el <em>C</em> es el más razonable.</h2>
+
+      <div class="table-wrap scen">
+        <table>
+          <thead><tr><th>Escenario</th><th>Idea</th><th>Ventajas</th><th>Desventajas / riesgos</th><th>Recursos</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>A<small>Proyecto social bajo costo</small></td>
+              <td>Cuotas simbólicas ($50–$100). Se cubren costos directos.</td>
+              <td>Máxima accesibilidad; alineación total con valores; poca fricción para arrancar.</td>
+              <td>No paga el tiempo de Fanny; imposible escalar; agota a la fundadora.</td>
+              <td>Bajo. Solo materiales.</td>
+            </tr>
+            <tr>
+              <td>B<small>Emprendimiento social</small></td>
+              <td>Precio de mercado ($400–$700/sesión). Fanny profesionaliza.</td>
+              <td>Sostenible económicamente; permite reinvertir; forzosamente exige metodología documentada.</td>
+              <td>Deja fuera al segmento que originalmente motivó el proyecto; alto costo de venta al inicio.</td>
+              <td>Medio. Requiere marca fuerte, contenido, funnel.</td>
+            </tr>
+            <tr style="background:color-mix(in srgb, var(--brand-green) 15%, transparent)">
+              <td>C<small>Híbrido con becas</small><br><span class="tag prio" style="margin-top:6px">Recomendado</span></td>
+              <td>60–70% familias pagan precio pleno. 30–40% con beca cruzada / patrocinio de aliados.</td>
+              <td>Sostenible + coherente con propósito; genera historia comunicable; abre puerta a fundaciones y CSR.</td>
+              <td>Operativamente más complejo; requiere claridad de criterios de beca desde el inicio.</td>
+              <td>Medio. Alianzas + admin básico.</td>
+            </tr>
+            <tr>
+              <td>D<small>Institucional</small></td>
+              <td>Escuelas contratan el servicio para varios alumnos.</td>
+              <td>Un contrato = varios beneficiarios; potencia el impacto rápidamente.</td>
+              <td>Ciclos de venta muy largos; escuelas exigen certificaciones y estructura formal que aún no existen.</td>
+              <td>Alto. Personalidad jurídica, propuesta institucional, protocolos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Por qué C, y en qué orden</h3>
+      <p>El proyecto empieza en <strong>A</strong> durante el piloto (para reducir fricción y obtener evidencia), transita a <strong>B</strong> en el mes 4–5 (empezar a cobrar precio sostenible a familias que sí pueden pagar), y en el mes 6 empieza a operar <strong>C</strong> introduciendo becas cruzadas o mini-patrocinios. <strong>D</strong> queda como exploración futura, no como objetivo del primer semestre.</p>
+      <div class="callout">
+        <span class="badge">Decisión honesta</span>
+        <p>Si al mes 4 no hay al menos 3 familias dispuestas a pagar $300+ por sesión, el escenario B no está listo y hay que quedarse en A más tiempo o buscar financiamiento externo. No forzar la venta.</p>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s8">
+      <div class="eyebrow"><span class="num-tag">08</span><span>Modelo de servicios y experimento de precios</span></div>
+      <h2>Empezar con <em>un</em> servicio bien hecho, no con cinco a medias.</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-label">Servicio ancla (único al inicio)</div>
+          <h3>Acompañamiento “A su Ritmo · 8 semanas”</h3>
+          <ul>
+            <li><strong>Duración:</strong> 8 semanas.</li>
+            <li><strong>Modalidad:</strong> híbrida — 12 sesiones presenciales + 4 virtuales, o 100% virtual con paquete físico.</li>
+            <li><strong>Participantes:</strong> 1 niño + 1 madre/cuidador.</li>
+            <li><strong>Incluye:</strong> diagnóstico inicial, plan personalizado, 16 sesiones, 4 sesiones familiares, evaluación final, WhatsApp acotado, 1 seguimiento post-cierre.</li>
+            <li><strong>No incluye:</strong> diagnóstico clínico, terapias, materiales premium, sesiones extra fuera de horario.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Experimento de precios (mes 2–3)</h4>
+          <p>Tres cohortes paralelas del mismo servicio con precios distintos, para <strong>medir disposición real de pago</strong> y no de intención:</p>
+          <div class="table-wrap" style="margin-top:8px">
+            <table>
+              <thead><tr><th>Cohorte</th><th>Precio total</th><th>Objetivo</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Simbólico</strong></td><td class="num">$800 · $50/ses</td><td>Baseline. Prueba adherencia.</td></tr>
+                <tr><td><strong>Accesible</strong></td><td class="num">$2,400 · $150/ses</td><td>¿Cuántas se comprometen a este precio?</td></tr>
+                <tr><td><strong>Objetivo</strong></td><td class="num">$4,800 · $300/ses</td><td>¿Existe segmento premium? ¿Cuántos?</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px"><strong>Indicador clave:</strong> % de familias que <em>completan el pago</em> del piloto, no % que dicen “sí me interesa”. Un “sí me interesa” gratuito no vale.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s9">
+      <div class="eyebrow"><span class="num-tag">09</span><span>Estrategia de alianzas</span></div>
+      <h2>Una escalera, no un salto: del primer café al convenio.</h2>
+      <p class="lede-sec">Un error típico es intentar “firmar convenio con escuelas” en el mes 1. Nadie firma con quien no conoce. La estrategia es <em>una serie ordenada de pasos</em> donde en cada nivel se entrega valor pequeño y se pide compromiso pequeño.</p>
+
+      <div class="stair" role="list">
+        <div class="step" role="listitem"><div class="t">Primer contacto</div><div class="d">Café informal. Compartir el proyecto. Preguntar más de lo que se propone.</div></div>
+        <div class="step" role="listitem"><div class="t">Colaboración pequeña</div><div class="d">Compartir un recurso útil, invitar a un taller gratuito, mencionar en redes.</div></div>
+        <div class="step" role="listitem"><div class="t">Evidencia</div><div class="d">Enviar resultados del piloto. Datos + testimonio + qué no funcionó.</div></div>
+        <div class="step" role="listitem"><div class="t">Piloto institucional</div><div class="d">Ofrecer atender 2–3 casos dentro de la institución sin costo o a precio simbólico.</div></div>
+        <div class="step" role="listitem"><div class="t">Convenio</div><div class="d">Formalizar términos, precios, protocolo de canalización y confidencialidad.</div></div>
+        <div class="step" role="listitem"><div class="t">Replicación</div><div class="d">Formar a un docente o profesional interno; supervisión de Fanny.</div></div>
+      </div>
+
+      <h3>Qué puede ofrecer A su Ritmo con Amor a cada aliado</h3>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Psicólogos, psicopedagogos, terapeutas de lenguaje</h3>
+          <p><strong>Ofrecer:</strong> apoyo académico complementario que libera a sus pacientes de sesiones de tareas. Referido de familias con necesidades específicas que el proyecto no puede atender. Un espacio para presentar casos y aprender de ellos.</p>
+          <p><strong>Pedir:</strong> canalización de familias, revisión ética del contenido educativo, criterios de derivación.</p>
+        </div>
+        <div class="card">
+          <h3>Escuelas pequeñas (privadas o comunitarias)</h3>
+          <p><strong>Ofrecer:</strong> acompañamiento externo para alumnos que la escuela no puede atender individualmente. Formación breve a docentes. Materiales adaptados.</p>
+          <p><strong>Pedir:</strong> derivar familias, permitir un taller informativo, eventualmente contratar el servicio para 2–3 alumnos.</p>
+        </div>
+        <div class="card">
+          <h3>DIF y centros comunitarios</h3>
+          <p><strong>Ofrecer:</strong> talleres gratuitos para familias, atención becada a casos referidos, aportación de contenido educativo.</p>
+          <p><strong>Pedir:</strong> espacio físico, difusión, canalización de familias, posible cofinanciamiento futuro.</p>
+        </div>
+        <div class="card">
+          <h3>Organizaciones de la sociedad civil</h3>
+          <p><strong>Ofrecer:</strong> ampliación de su oferta con un servicio educativo específico. Historia comunicable para sus propios reportes.</p>
+          <p><strong>Pedir:</strong> paraguas jurídico, acompañamiento en procuración de fondos, aprendizaje operativo.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s9val">
+      <div class="eyebrow"><span class="num-tag">10</span><span>Guía de validación · Entrevistas</span></div>
+      <h2>Preguntas que descubren la verdad, no que confirman la <em>ilusión</em>.</h2>
+      <p>Un error común es preguntar “¿te gustaría un servicio así?”. Todos dicen que sí. Lo que hay que descubrir es qué hacen hoy, cuánto gastan y qué dolor real están dispuestos a resolver <em>ya</em>.</p>
+
+      <h3>10 madres/padres · 3 docentes · 3 profesionales</h3>
+      <div class="table-wrap qi">
+        <table>
+          <thead><tr><th>Área</th><th>Pregunta abierta</th><th>Qué buscas descubrir</th></tr></thead>
+          <tbody>
+            <tr><td>Problema real</td><td>“Cuéntame la última vez que sentiste que no sabías cómo apoyar a tu hijo con la escuela.”</td><td>Que describa un evento concreto, no una opinión.</td></tr>
+            <tr><td>Frecuencia · Intensidad</td><td>“¿Cada cuánto pasa esto? ¿Cuánto tiempo le dedicas mentalmente a la semana?”</td><td>Si es esporádico, no es cliente. Si es diario, sí lo es.</td></tr>
+            <tr><td>Soluciones actuales</td><td>“¿Qué has intentado en los últimos 6 meses?”</td><td>Terapias, tutorías, apps, familiares, nada. Aparecen competidores reales.</td></tr>
+            <tr><td>Qué no funcionó</td><td>“¿Qué fue lo que menos te ayudó y por qué?”</td><td>Detalle de qué evitar en el diseño del servicio.</td></tr>
+            <tr><td>Costo actual</td><td>“¿Cuánto has gastado en total en estos intentos? ¿Cuánto gastas al mes hoy?”</td><td>Ancla real de precio. Si gasta $2,000/mes, un servicio de $400 es plausible.</td></tr>
+            <tr><td>Resultado esperado</td><td>“Si el próximo mes vieras un cambio en tu hijo, ¿qué sería lo primero que notarías?”</td><td>Define el indicador de éxito desde la perspectiva del cliente.</td></tr>
+            <tr><td>Desconfianza</td><td>“¿Qué te haría dudar de un programa como el que te describo?”</td><td>Objeciones reales que hay que responder en la comunicación.</td></tr>
+            <tr><td>Prueba mínima</td><td>“¿Qué necesitarías ver o vivir para inscribir a tu hijo dos semanas?”</td><td>Diseña el gancho de entrada (sesión de prueba, garantía, etc.).</td></tr>
+            <tr><td>Precio</td><td>“Si te dijera $X por sesión, ¿qué pensarías?” <em>(probar 3 rangos)</em></td><td>Rango realista. No preguntar “cuánto pagarías”: mienten.</td></tr>
+            <tr><td>Modalidad</td><td>“Si tuvieras que elegir hoy: virtual, presencial o mixto, y por qué.”</td><td>Preferencia contra restricción real (traslado, tiempo).</td></tr>
+            <tr><td>Compromiso</td><td>“Si abriera un piloto la próxima semana, ¿te sumarías?”</td><td>Prueba de intención. Los “sí” condicionales son un no.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Cómo analizar las respuestas</h4>
+      <ul>
+        <li>Registra cada entrevista en una plantilla igual. No confíes en la memoria.</li>
+        <li>Marca cada respuesta como <span class="tag hecho">Dato</span> (concreto y verificable), <span class="tag hipotesis">Opinión</span> o <span class="tag riesgo">Contradicción</span>.</li>
+        <li>Después de 10 entrevistas, saca <strong>3 patrones más repetidos</strong> y <strong>2 contradicciones</strong> con la hipótesis inicial. Son oro.</li>
+        <li>Si al menos 6 de 10 madres describen el mismo dolor con el mismo lenguaje, ese lenguaje es tu copy.</li>
+      </ul>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s9">
+      <div class="eyebrow"><span class="num-tag">11</span><span>Roadmap 6 meses</span></div>
+      <h2>Cuatro fases, seis meses, tres objetivos por mes.</h2>
+      <p class="lede-sec">Este roadmap asume: una persona (Fanny) con recursos financieros limitados, apoyo puntual de 2–3 personas cercanas y ~10 horas/semana disponibles. Si esos supuestos cambian, la ruta se acelera.</p>
+
+      <div class="table-wrap">
+        <table class="roadmap">
+          <thead><tr><th>Mes</th><th>Objetivo principal</th><th>Acciones</th><th>Entregables</th><th>Indicadores</th><th>Criterio para avanzar</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1<small>Preparar</small></td>
+              <td>Encuadre, evidencia y consentimientos</td>
+              <td>
+                <ul>
+                  <li>10 entrevistas de validación</li>
+                  <li>Redactar consentimiento informado</li>
+                  <li>Plantillas de bitácora, evaluación pre/post</li>
+                  <li>Página de aterrizaje mínima (1 sección + WhatsApp)</li>
+                </ul>
+              </td>
+              <td>Documento de hallazgos · Kit de consentimientos · Plantillas</td>
+              <td>≥10 entrevistas · patrones identificados · hipótesis crítica confirmada o corregida</td>
+              <td>≥6 familias describen el mismo dolor y ≥3 dicen “me sumo al piloto”</td>
+            </tr>
+            <tr>
+              <td>2<small>Piloto A</small></td>
+              <td>Arrancar piloto con 3–5 familias</td>
+              <td>
+                <ul>
+                  <li>Selección de familias</li>
+                  <li>Diagnóstico inicial cada niño</li>
+                  <li>Iniciar sesiones (2/semana)</li>
+                  <li>Empezar bitácora diaria</li>
+                </ul>
+              </td>
+              <td>Fichas de niños · Plan de 8 semanas por familia · Sesiones 1–8</td>
+              <td>% asistencia ≥85% · tareas familia ≥60% · 1 avance concreto reportado por familia</td>
+              <td>Ninguna familia abandona antes de la sesión 4</td>
+            </tr>
+            <tr>
+              <td>3<small>Piloto B</small></td>
+              <td>Cerrar piloto y sistematizar</td>
+              <td>
+                <ul>
+                  <li>Sesiones 9–16 + cierre</li>
+                  <li>Evaluación final</li>
+                  <li>Sesión de devolución a cada familia</li>
+                  <li>Redactar metodología v.0.5</li>
+                </ul>
+              </td>
+              <td>Reporte por familia · Metodología v.0.5 · 3 testimonios con consentimiento</td>
+              <td>Mejoras medibles en 4 de 5 familias en al menos 2 dimensiones</td>
+              <td>Existe evidencia mínima para comunicar y para cobrar en cohorte siguiente</td>
+            </tr>
+            <tr>
+              <td>4<small>Cobrar</small></td>
+              <td>Experimento de precios y 2ª cohorte</td>
+              <td>
+                <ul>
+                  <li>Publicar oferta (3 cohortes de precio)</li>
+                  <li>Contactar leads del mes 1</li>
+                  <li>Reuniones con 3 profesionales aliados</li>
+                  <li>Formalizar 1 canal de canalización</li>
+                </ul>
+              </td>
+              <td>2ª cohorte inscrita · convenio informal con 1 profesional · propuesta institucional v.1</td>
+              <td>≥3 familias pagando ≥$150/ses · ≥1 pagando $300/ses · 3 reuniones con aliados</td>
+              <td>Al menos 1 modelo de precio queda validado con transacción real</td>
+            </tr>
+            <tr>
+              <td>5<small>Sistematizar</small></td>
+              <td>Documentar y preparar becas</td>
+              <td>
+                <ul>
+                  <li>Cerrar 2ª cohorte</li>
+                  <li>Redactar metodología v.1</li>
+                  <li>Diseñar mecanismo de becas cruzadas</li>
+                  <li>Empezar formación de 1 aliada (Maestra Ana u otra)</li>
+                </ul>
+              </td>
+              <td>Metodología v.1 · Manual operativo · Plan de becas</td>
+              <td>1 persona externa aplicando 30% del método con supervisión</td>
+              <td>La 3ª cohorte puede ejecutarse con carga menor para Fanny</td>
+            </tr>
+            <tr>
+              <td>6<small>Consolidar</small></td>
+              <td>3ª cohorte + primera alianza institucional</td>
+              <td>
+                <ul>
+                  <li>3ª cohorte con modelo híbrido (pago + 1 beca)</li>
+                  <li>Piloto institucional en escuela o centro (2–3 casos)</li>
+                  <li>Revisión estratégica de 6 meses</li>
+                </ul>
+              </td>
+              <td>Reporte de 6 meses · plan de meses 7–12 · piloto institucional en curso</td>
+              <td>15 familias atendidas en total · 3 aliados activos · 1 institución en piloto</td>
+              <td>Existe modelo replicable v.1 y decisión clara sobre siguiente etapa</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="badge">Regla operativa</span>
+        <p>Cada mes tiene <strong>máximo 3 objetivos</strong>. Si aparece algo urgente que no cabe, se posterga —no se apila—. La sobrecarga es la principal causa de que un proyecto de una sola persona muera en el mes 4.</p>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s10">
+      <div class="eyebrow"><span class="num-tag">12</span><span>Estrategia de contenido</span></div>
+      <h2>Cinco pilares, un mismo tono: cálido, honesto, útil, <em>sin promesas mágicas</em>.</h2>
+
+      <div class="grid-3">
+        <div class="card blue">
+          <div class="card-label">Pilar 1 · Historia</div>
+          <h3>El origen del proyecto</h3>
+          <p>La experiencia de Fanny y su hijo. Se cuenta con cuidado: no es contenido “de vender”; es el ancla emocional. Presencia moderada (~15%).</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Pilar 2 · Educación</div>
+          <h3>Recursos prácticos</h3>
+          <p>Tips, actividades simples, cómo apoyar la lectoescritura en casa. El pilar más útil para atraer. (~30%)</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Pilar 3 · Evidencia</div>
+          <h3>Proceso y resultados</h3>
+          <p>Antes/después con consentimiento, avances concretos, aprendizajes del piloto. Genera confianza. (~20%)</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Pilar 4 · Comunidad</div>
+          <h3>Voces de madres y niños</h3>
+          <p>Testimonios, preguntas de la audiencia respondidas, historias breves de familias. Crea sentido de pertenencia. (~15%)</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Pilar 5 · Solución</div>
+          <h3>Qué ofrece el proyecto</h3>
+          <p>Explicación clara del servicio, precios, cohortes abiertas, cómo aplicar. Bajo pero constante. (~10%)</p>
+        </div>
+        <div class="card blue">
+          <div class="card-label">Pilar 6 · Marco y límites</div>
+          <h3>Qué no somos</h3>
+          <p>Educar sobre neurodivergencia, canalización, diferencia con terapia. Baja frecuencia pero <strong>obligatoria</strong>. (~10%)</p>
+        </div>
+      </div>
+
+      <h3>Formatos por plataforma</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Producción con celular · alcance</h4>
+          <ul>
+            <li><strong>TikTok / Reels:</strong> 20–40 seg. Un tip, una escena real, una pregunta. Sin música invasiva.</li>
+            <li><strong>Historias IG:</strong> encuestas, cajas de preguntas, mini-diario del piloto (con permisos).</li>
+            <li><strong>Carrusel IG:</strong> guía de 6–8 slides. El formato que más guarda y comparte se hace un carrusel.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Producción con celular · comunidad</h4>
+          <ul>
+            <li><strong>Facebook:</strong> post largo + comunidad de madres. Aquí conversar, no promocionar.</li>
+            <li><strong>WhatsApp difusión:</strong> canal para familias interesadas. 2 mensajes/semana máximo.</li>
+            <li><strong>Audio:</strong> notas de voz breves (1–2 min) para mensajes personales y para responder dudas.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s11">
+      <div class="eyebrow"><span class="num-tag">13</span><span>Calendario 4 semanas</span></div>
+      <h2>Cuatro semanas para <em>arrancar</em>, no para lucirse.</h2>
+      <div class="table-wrap">
+        <table class="roadmap">
+          <thead><tr><th>Sem</th><th>Tema</th><th>Formato / Pilar</th><th>Objetivo</th><th>Idea de contenido</th><th>CTA</th></tr></thead>
+          <tbody>
+            <tr><td>1<small>Lun</small></td><td>“No estás sola”</td><td>Reel · Historia</td><td>Presentar el proyecto</td><td>Fanny cuenta en 40 seg por qué existe A su Ritmo con Amor. Sin música dramática.</td><td>“Escríbeme por DM”</td></tr>
+            <tr><td>1<small>Jue</small></td><td>3 señales de rezago que no son “flojera”</td><td>Carrusel · Educación</td><td>Aportar valor</td><td>3 conductas concretas + 1 sugerencia práctica por cada una.</td><td>“Guarda para después”</td></tr>
+            <tr><td>2<small>Lun</small></td><td>Encuesta: ¿qué te frustra más?</td><td>Historia · Comunidad</td><td>Escuchar</td><td>4 opciones: escuela / lectura / tarea / berrinche. Los resultados se comparten al día siguiente.</td><td>“Vota”</td></tr>
+            <tr><td>2<small>Jue</small></td><td>Actividad de 10 minutos</td><td>Reel · Educación</td><td>Enseñar algo hacer-hoy</td><td>Un juego breve de lectoescritura filmado en casa con un niño (con permisos) o con materiales.</td><td>“Cuéntame cómo te fue”</td></tr>
+            <tr><td>3<small>Lun</small></td><td>Lo que <em>no</em> somos</td><td>Carrusel · Límites</td><td>Marco ético</td><td>“A su Ritmo con Amor NO es terapia. Es… No sustituye… Sí acompaña…” Sencillo y directo.</td><td>“¿Dudas? Pregunta”</td></tr>
+            <tr><td>3<small>Jue</small></td><td>Detrás de una sesión</td><td>Reel · Evidencia</td><td>Mostrar el trabajo</td><td>Fanny prepara materiales, explica cómo elige, muestra la bitácora. Sin niño identificable.</td><td>“¿Quieres saber más?”</td></tr>
+            <tr><td>4<small>Lun</small></td><td>Testimonio real</td><td>Reel + carrusel · Comunidad</td><td>Prueba social</td><td>Una madre del piloto comparte 3 cambios que notó. Editado con revisión de la familia.</td><td>“Aplica al próximo piloto”</td></tr>
+            <tr><td>4<small>Jue</small></td><td>Abre la próxima cohorte</td><td>Post + Reel · Solución</td><td>Convertir</td><td>Explicación clara: qué es, qué incluye, precio piloto, cuántos lugares, cómo aplicar.</td><td>“Aparta tu lugar por WhatsApp”</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout blue">
+        <span class="badge">Regla de oro</span>
+        <p><strong>Cada publicación debe generar conversación o aprendizaje</strong>. Si es solo una frase bonita sobre neurodivergencia, no se publica. Menos frecuencia y más calidad es mejor que llenar el feed.</p>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s12">
+      <div class="eyebrow"><span class="num-tag">14</span><span>Funnel</span></div>
+      <h2>De un extraño en TikTok a una familia que recomienda.</h2>
+      <div class="funnel">
+        <div class="fs"><span class="step-num">01</span><span class="step-t">Contenido<small>Reels, carruseles, historias, publicaciones útiles.</small></span><span class="step-m">Descubrir</span></div>
+        <div class="fs"><span class="step-num">02</span><span class="step-t">Conversación<small>DM, comentario, caja de preguntas, voz nota.</small></span><span class="step-m">Confiar</span></div>
+        <div class="fs"><span class="step-num">03</span><span class="step-t">Comunidad<small>WhatsApp de difusión, grupo cerrado, newsletter simple.</small></span><span class="step-m">Pertenecer</span></div>
+        <div class="fs"><span class="step-num">04</span><span class="step-t">Entrevista corta<small>15 min con Fanny para conocer al niño y ver si es candidato.</small></span><span class="step-m">Calificar</span></div>
+        <div class="fs"><span class="step-num">05</span><span class="step-t">Piloto / cohorte<small>Inscripción a las 8 semanas del programa con precio del experimento.</small></span><span class="step-m">Probar</span></div>
+        <div class="fs"><span class="step-num">06</span><span class="step-t">Servicio pleno<small>Familia paga precio sostenible, con métricas y evidencia real.</small></span><span class="step-m">Comprar</span></div>
+        <div class="fs"><span class="step-num">07</span><span class="step-t">Seguimiento<small>Check-in a 4 y 12 semanas post-cierre. Devolución + siguiente paso.</small></span><span class="step-m">Retener</span></div>
+        <div class="fs"><span class="step-num">08</span><span class="step-t">Recomendación / alianza<small>Familia recomienda; profesional canaliza; escuela invita a piloto.</small></span><span class="step-m">Expandir</span></div>
+      </div>
+      <p style="margin-top:22px"><strong>Métrica clave del funnel:</strong> tasa de paso entre <em>Conversación</em> y <em>Entrevista corta</em>. Si menos del 20% de las conversaciones llegan a entrevista, el contenido está atrayendo a la audiencia equivocada.</p>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s13">
+      <div class="eyebrow"><span class="num-tag">15</span><span>Dashboard</span></div>
+      <h2>Cuatro cuadrantes. Se revisa una vez al mes, en una hoja.</h2>
+
+      <h4>Impacto</h4>
+      <div class="grid-4">
+        <div class="kpi"><div class="n">Niños atendidos</div><div class="k num">15</div><div class="d">Meta 6M · pilotos + cohortes</div></div>
+        <div class="kpi"><div class="n">Avance en autoconfianza</div><div class="k num">+1.5</div><div class="d">Puntos en escala 1–5, pre vs post</div></div>
+        <div class="kpi"><div class="n">Avance en lectoescritura</div><div class="k num">70%</div><div class="d">% de niños con mejora medible</div></div>
+        <div class="kpi"><div class="n">Adherencia</div><div class="k num">≥85%</div><div class="d">Asistencia a sesiones</div></div>
+      </div>
+
+      <h4>Comunidad</h4>
+      <div class="grid-4">
+        <div class="kpi"><div class="n">Seguidores</div><div class="k num">2,000</div><div class="d">Meta 6M · sumando IG + FB + TT</div></div>
+        <div class="kpi"><div class="n">Interacciones/semana</div><div class="k num">120</div><div class="d">Guardados + comentarios + DM</div></div>
+        <div class="kpi"><div class="n">Mensajes directos</div><div class="k num">40/mes</div><div class="d">Conversaciones iniciadas</div></div>
+        <div class="kpi"><div class="n">Familias en lista</div><div class="k num">60</div><div class="d">WhatsApp / newsletter</div></div>
+      </div>
+
+      <h4>Sostenibilidad</h4>
+      <div class="grid-4">
+        <div class="kpi"><div class="n">Familias pagando</div><div class="k num">8</div><div class="d">Meta mes 6</div></div>
+        <div class="kpi"><div class="n">Precio promedio</div><div class="k num">$210</div><div class="d">MXN por sesión</div></div>
+        <div class="kpi"><div class="n">Retención</div><div class="k num">70%</div><div class="d">Completan el programa</div></div>
+        <div class="kpi"><div class="n">Horas Fanny/familia</div><div class="k num">18h</div><div class="d">Suma total 8 sem — tope crítico</div></div>
+      </div>
+
+      <h4>Alianzas</h4>
+      <div class="grid-4">
+        <div class="kpi"><div class="n">Contactos profesionales</div><div class="k num">15</div><div class="d">Total acumulado</div></div>
+        <div class="kpi"><div class="n">Reuniones</div><div class="k num">8</div><div class="d">Con seguimiento activo</div></div>
+        <div class="kpi"><div class="n">Aliados activos</div><div class="k num">3</div><div class="d">Canalizan o colaboran</div></div>
+        <div class="kpi"><div class="n">Piloto institucional</div><div class="k num">1</div><div class="d">En curso al mes 6</div></div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s14">
+      <div class="eyebrow"><span class="num-tag">16</span><span>Riesgos y ética</span></div>
+      <h2>Lo que puede dañar a un niño, a una familia o al proyecto <em>si no se cuida</em>.</h2>
+      <p class="lede-sec">Este apartado no es opcional. Un proyecto que trabaja con menores neurodivergentes se juega su legitimidad —y potencialmente su viabilidad legal— en cómo maneja imagen, datos, promesas y límites.</p>
+
+      <div class="grid-2">
+        <div class="card risk">
+          <h3>Protección de menores</h3>
+          <ul>
+            <li>Prohibición absoluta de sesiones a puerta cerrada sin registro visible. Siempre con madre presente o con ventana/puerta abierta.</li>
+            <li>En modalidad virtual, la madre siempre está en la sesión o supervisando. Nunca solo niño y facilitadora.</li>
+            <li>Protocolo escrito de qué hacer si el niño reporta algo grave (canalización a autoridad correspondiente).</li>
+          </ul>
+        </div>
+        <div class="card risk">
+          <h3>Imagen y datos</h3>
+          <ul>
+            <li>3 niveles de consentimiento (interno · rostro cubierto · rostro visible), firmados por separado.</li>
+            <li>Nada de fotografías identificables de menores en contenido de venta.</li>
+            <li>Datos de las familias en un solo lugar con acceso solo de Fanny; nada en grupos de WhatsApp con otras personas.</li>
+            <li>Los materiales del niño (dibujos, cuadernos) son suyos; no se publican sin permiso explícito para ese fin.</li>
+          </ul>
+        </div>
+        <div class="card risk">
+          <h3>Lenguaje sobre neurodivergencia</h3>
+          <ul>
+            <li>Nunca hablar de “curar”, “normalizar”, “superar”, “vencer”.</li>
+            <li>Nunca implicar que el niño “se ve normal ahora” como logro. Es una trampa fácil dada la experiencia con el hijo de Fanny.</li>
+            <li>Usar lenguaje aceptado por comunidades (autismo/persona autista según preferencia individual; “condición del desarrollo” en contextos amplios).</li>
+            <li>Consultar contenido delicado con al menos un profesional aliado antes de publicar.</li>
+          </ul>
+        </div>
+        <div class="card risk">
+          <h3>Afirmaciones y evidencia</h3>
+          <ul>
+            <li>Distinguir siempre en la comunicación: <span class="tag hecho">Evidencia</span> vs. <span class="tag hipotesis">Aprendizaje</span> vs. <span class="tag supuesto">Testimonio</span>.</li>
+            <li>Nunca presentar el caso del hijo de Fanny como “resultado del programa”. Es el origen, no la evidencia.</li>
+            <li>Prohibido usar lenguaje clínico (“mejora del 30%”, “disminuyó su TDAH”). Está fuera del rol.</li>
+            <li>Al hablar de resultados: “observamos”, “las familias reportan”, “en el piloto de 5 familias vimos”… siempre con la muestra.</li>
+          </ul>
+        </div>
+        <div class="card risk">
+          <h3>Límites del rol</h3>
+          <ul>
+            <li>Criterios claros de canalización: qué señales (autoagresión, mutismo, sospecha de abuso, regresión súbita) obligan a derivar de inmediato.</li>
+            <li>Directorio de al menos 3 profesionales a quienes derivar.</li>
+            <li>Fanny <strong>no</strong> hace evaluaciones diagnósticas ni recomendaciones médicas, nunca. Aunque se lo pidan.</li>
+          </ul>
+        </div>
+        <div class="card risk">
+          <h3>Riesgo financiero personal</h3>
+          <ul>
+            <li>Separar cuenta y contabilidad personal de la del proyecto desde el mes 1.</li>
+            <li>No invertir ahorros familiares en el proyecto antes de que la 2ª cohorte demuestre viabilidad.</li>
+            <li>Registro de horas de Fanny para calcular costo real por familia. Si supera 25h/familia sostenidamente, el modelo no es viable como está.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="s15">
+      <div class="eyebrow"><span class="num-tag">17</span><span>Lista de prioridades</span></div>
+      <h2>El orden importa. Estas son las decisiones en <em>cascada</em>.</h2>
+      <ol class="prio-list">
+        <li>
+          <div>
+            <h3>Validar la hipótesis crítica con evidencia real</h3>
+            <p>10 entrevistas más 3 “sí me sumo al piloto” con nombre y fecha. Sin esto, todo lo demás es diseño en el aire.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Cerrar el piloto con 3–5 familias y datos pre/post</h3>
+            <p>La única forma legítima de decir “funciona” es haberlo medido en más de un niño y con instrumentos aunque sean simples.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Empezar a documentar la metodología desde el mes 1</h3>
+            <p>Bitácora, tarjetas de actividad, criterios de decisión. El proyecto que no se documenta muere con su fundadora o con su cansancio.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Probar precios reales, no intenciones</h3>
+            <p>Experimento de precios en la 2ª cohorte con transacción, no encuesta. Determina si el modelo B es viable o si hay que quedarse en A + becas.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Formalizar límites, consentimientos y protocolos de canalización</h3>
+            <p>No es burocracia: es lo que separa un proyecto responsable de uno que puede hacer daño. Debe estar listo antes de la primera sesión con familia externa.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Construir la lista de contactos aliados profesionales</h3>
+            <p>3 relaciones profundas valen más que 30 tarjetas. Son la primera línea de canalización y la fuente principal de referidos serios.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Establecer un ritmo de contenido sostenible</h3>
+            <p>2 publicaciones útiles por semana + 1 historia diaria durante 4 semanas seguidas es más valioso que 20 publicaciones en un mes y silencio después.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- =================================================== -->
+    <section id="final">
+      <div class="final">
+        <div class="eyebrow"><span class="num-tag">18</span><span>Los cinco movimientos de los próximos 30 días</span></div>
+        <h2>Si yo fuera Fanny y solo pudiera hacer <em>cinco cosas</em>, haría esto.</h2>
+        <p class="fp">En orden de prioridad. Un movimiento por semana, con margen. No se salta ninguno para llegar al siguiente.</p>
+
+        <ol class="actions">
+          <li>
+            <div>
+              <strong>Hacer 10 entrevistas con guion, no con esperanza.</strong>
+              <p>Usar exactamente las 11 preguntas de la sección 10. Registrar en una hoja común. Al terminar, extraer los 3 patrones más repetidos y las 2 contradicciones con tu hipótesis inicial. Sin esto no hay proyecto: hay ilusión.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Cerrar el piloto en firme con 3 familias.</strong>
+              <p>No 5 “posibles”. 3 confirmadas con nombre, teléfono, fecha de inicio y consentimiento firmado. Un compromiso escrito vale más que veinte “sí me interesa”.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Redactar los tres documentos que no se pueden posponer.</strong>
+              <p>(a) Consentimiento informado en lenguaje llano; (b) protocolo de canalización con al menos 3 profesionales; (c) plantilla de bitácora de sesión. Máximo dos páginas cada uno. La operación descansa sobre estos tres papeles.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Publicar cuatro semanas de contenido con foco, no con volumen.</strong>
+              <p>Seguir el calendario de 4 semanas de la sección 13. Ocho publicaciones. Objetivo real: 40 conversaciones nuevas y 3 candidatas al segundo piloto. Si funciona, se sostiene el ritmo.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Tener café con 3 profesionales aliados potenciales.</strong>
+              <p>Una psicóloga, una psicopedagoga, una directora de escuela pequeña. Preguntar más que ofrecer. Salir con un compromiso concreto pequeño: recibir un recurso, revisar el contenido educativo, o derivar el próximo caso que no encaje con su servicio.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <footer>
+      <div class="row">
+        <div><strong>A su Ritmo con Amor</strong> · Documento de estrategia v.1 · Preparado por Brandon Oleynick para Fanny · Vorka México · Agosto 2026</div>
+        <div>Este mapa es un documento vivo. Se revisa al final de cada fase y se ajusta con evidencia, no con opinión.</div>
+      </div>
+    </footer>
+
+    </main>
+  </div>
+
+</div>
