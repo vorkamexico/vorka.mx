@@ -1,0 +1,2069 @@
+
+<title>Diagnóstico · Dafne Odette</title>
+<style>
+  :root {
+    --paper: #EFEBE1;
+    --paper-2: #E7E2D5;
+    --ink: #13181B;
+    --ink-2: #2A2F32;
+    --muted: #6B675E;
+    --rule: #C7C1B4;
+    --accent: #0E3B45;
+    --accent-soft: #185764;
+    --signal: #B4451D;
+    --signal-soft: #E67449;
+    --good: #2F5D3B;
+
+    --serif: ui-serif, "New York", "Charter", "Iowan Old Style", Cambria, Georgia, serif;
+    --sans: ui-sans-serif, -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Roboto Mono", monospace;
+
+    --measure: 66ch;
+    --gutter: clamp(1.25rem, 3vw, 2.25rem);
+    --step-6: clamp(2.6rem, 6vw, 4.4rem);
+    --step-5: clamp(2rem, 4vw, 2.8rem);
+    --step-4: clamp(1.5rem, 2.6vw, 1.9rem);
+    --step-3: 1.25rem;
+    --step-2: 1.0625rem;
+    --step-1: 0.9375rem;
+    --step-0: 0.8125rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10141A;
+      --paper-2: #171C22;
+      --ink: #EAE4D6;
+      --ink-2: #C7C1B2;
+      --muted: #8B857A;
+      --rule: #2A2F35;
+      --accent: #58B0BD;
+      --accent-soft: #3B8B96;
+      --signal: #E67449;
+      --signal-soft: #F0946A;
+      --good: #6AAF7A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10141A;
+    --paper-2: #171C22;
+    --ink: #EAE4D6;
+    --ink-2: #C7C1B2;
+    --muted: #8B857A;
+    --rule: #2A2F35;
+    --accent: #58B0BD;
+    --accent-soft: #3B8B96;
+    --signal: #E67449;
+    --signal-soft: #F0946A;
+    --good: #6AAF7A;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ── Header ─────────────────────────────────────────── */
+  .site-header {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in oklab, var(--paper) 88%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .site-header__inner {
+    max-width: 1240px; margin: 0 auto;
+    padding: 0.9rem var(--gutter);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .brand {
+    font-family: var(--sans);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-size: var(--step-2);
+    color: var(--ink);
+    text-decoration: none;
+    display: inline-flex; align-items: baseline; gap: 0.35rem;
+  }
+  .brand__dot { color: var(--accent); }
+  nav.primary {
+    display: none;
+    gap: 1.6rem;
+    font-family: var(--sans);
+    font-size: var(--step-1);
+  }
+  nav.primary a {
+    color: var(--ink-2);
+    text-decoration: none;
+    letter-spacing: -0.005em;
+  }
+  nav.primary a:hover { color: var(--accent); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--sans);
+    font-size: var(--step-1);
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn--solid {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn--solid:hover { transform: translateY(-1px); }
+  .btn--ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+  .btn--ghost:hover { border-color: var(--ink); }
+  .btn--accent {
+    background: var(--accent);
+    color: var(--paper);
+  }
+  .btn--accent:hover { background: var(--accent-soft); transform: translateY(-1px); }
+  @media (min-width: 900px) {
+    nav.primary { display: inline-flex; }
+  }
+
+  /* ── Layout ─────────────────────────────────────────── */
+  main {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 var(--gutter) 5rem;
+  }
+  .hero {
+    padding: clamp(3rem, 8vw, 6rem) 0 clamp(2rem, 4vw, 3rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1.25rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: var(--step-6);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 0 0 1.5rem;
+    max-width: 18ch;
+  }
+  .hero__lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--step-4);
+    line-height: 1.35;
+    color: var(--ink-2);
+    max-width: 32ch;
+    margin: 0 0 2rem;
+    text-wrap: balance;
+  }
+  .hero__meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .hero__meta dt {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+    color: var(--muted);
+  }
+  .hero__meta dd {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-2);
+  }
+
+  /* ── Body Layout ────────────────────────────────────── */
+  .content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding-top: 3rem;
+  }
+  @media (min-width: 1080px) {
+    .content {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 4rem;
+    }
+  }
+  aside.toc {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.01em;
+  }
+  aside.toc__inner {
+    position: sticky; top: 4.5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  aside.toc .toc-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  aside.toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+  aside.toc a {
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    gap: 0.5rem;
+    line-height: 1.35;
+    padding: 0.15rem 0;
+  }
+  aside.toc a:hover { color: var(--ink); }
+  aside.toc a .n {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    min-width: 2ch;
+    font-variant-numeric: tabular-nums;
+  }
+  aside.toc { display: none; }
+  @media (min-width: 1080px) {
+    aside.toc { display: block; }
+  }
+
+  .doc { min-width: 0; }
+
+  section.chapter {
+    padding: 3rem 0;
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 4.5rem;
+  }
+  section.chapter:first-of-type { border-top: none; padding-top: 0; }
+
+  .chapter__head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .chapter__num {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .chapter__title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: var(--step-5);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .prose { max-width: var(--measure); }
+  .prose h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: var(--step-3);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 2rem 0 0.6rem;
+  }
+  .prose h4 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 1.75rem 0 0.5rem;
+  }
+  .prose p { margin: 0 0 1rem; }
+  .prose p + h3 { margin-top: 2.5rem; }
+  .prose ul, .prose ol { margin: 0 0 1rem; padding-left: 1.25rem; }
+  .prose li { margin-bottom: 0.35rem; }
+  .prose li::marker { color: var(--muted); }
+  .prose strong { font-weight: 600; color: var(--ink); }
+  .prose em { color: var(--ink-2); }
+
+  /* Tags for HECHO / INFERENCIA / VACÍO */
+  .tag {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 0.35rem;
+  }
+  .tag--hecho { background: color-mix(in oklab, var(--good) 18%, transparent); color: var(--good); }
+  .tag--inf { background: color-mix(in oklab, var(--accent) 15%, transparent); color: var(--accent); }
+  .tag--vacio { background: color-mix(in oklab, var(--signal) 15%, transparent); color: var(--signal); }
+  .tag--warn { background: color-mix(in oklab, var(--signal) 22%, transparent); color: var(--signal); }
+
+  /* Callouts */
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 0.9rem 1.15rem;
+    background: color-mix(in oklab, var(--accent) 5%, transparent);
+    font-family: var(--serif);
+    margin: 1.25rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout--warn {
+    border-color: var(--signal);
+    background: color-mix(in oklab, var(--signal) 6%, transparent);
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .callout__label {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+
+  /* Thesis */
+  .thesis {
+    margin: 2rem 0;
+    padding: 1.5rem 1.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--paper-2);
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .thesis__label {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: var(--measure);
+    margin: 1.5rem 0;
+  }
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .timeline__stage {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .timeline__stage small {
+    display: block;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    text-transform: none;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+  }
+  .timeline__body { font-family: var(--serif); }
+  .timeline__body p { margin: 0 0 0.4rem; }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1.25rem 0 1.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--paper-2);
+  }
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  table.matrix th, table.matrix td {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    text-align: left;
+  }
+  table.matrix th {
+    background: color-mix(in oklab, var(--ink) 4%, transparent);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  table.matrix tr:last-child td { border-bottom: none; }
+  table.matrix td.num, table.matrix th.num {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  /* Score bars */
+  .scores {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    margin: 1.25rem 0 1.75rem;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+  }
+  .score {
+    display: grid;
+    grid-template-columns: 200px 1fr 3ch;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  @media (max-width: 640px) {
+    .score { grid-template-columns: 130px 1fr 3ch; font-size: 0.78rem; }
+  }
+  .score__bar {
+    height: 6px;
+    background: var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .score__fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+  }
+  .score__fill--warn { background: var(--signal); }
+  .score__fill--good { background: var(--good); }
+  .score__val {
+    font-variant-numeric: tabular-nums;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* Story bank cards */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  @media (min-width: 720px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+  }
+  .card {
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--paper-2);
+  }
+  .card h5 {
+    font-family: var(--serif);
+    font-size: 1.02rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin: 0 0 0.35rem;
+  }
+  .card__meta {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .card p {
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 0.4rem;
+    color: var(--ink-2);
+  }
+
+  /* Top-10 grids */
+  .top-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem 2rem;
+    margin: 1rem 0 1.5rem;
+  }
+  @media (min-width: 780px) {
+    .top-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .top-grid > div h4 { margin-top: 0; }
+  .top-grid ol {
+    padding-left: 1.25rem;
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  /* CTA */
+  .cta {
+    margin: 4rem 0 0;
+    padding: 3rem clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 8px;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .cta h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0;
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+  .cta p {
+    color: color-mix(in oklab, var(--paper) 78%, var(--ink) 22%);
+    max-width: 55ch;
+    font-family: var(--serif);
+    margin: 0;
+  }
+  .cta__row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .cta .btn--accent {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .cta .btn--accent:hover { background: #fff; }
+  .cta .btn--ghost {
+    border-color: color-mix(in oklab, var(--paper) 40%, transparent);
+    color: var(--paper);
+  }
+  .cta .btn--ghost:hover { border-color: var(--paper); }
+  .cta__contact {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    color: color-mix(in oklab, var(--paper) 65%, var(--ink) 35%);
+    display: flex; gap: 1.25rem; flex-wrap: wrap;
+  }
+  .cta__contact a { color: var(--paper); text-decoration: none; border-bottom: 1px solid color-mix(in oklab, var(--paper) 40%, transparent); }
+  .cta__contact a:hover { border-color: var(--paper); }
+
+  /* Footer */
+  footer.site-footer {
+    margin-top: 5rem;
+    border-top: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .site-footer__inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 3.5rem var(--gutter) 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 720px) {
+    .site-footer__inner { grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 3rem; }
+  }
+  .site-footer h5 {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+    font-weight: 600;
+  }
+  .site-footer p, .site-footer li, .site-footer a {
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .site-footer a { text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  .site-footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+  .site-footer .brand-block p { max-width: 30ch; color: var(--muted); }
+  .site-footer .brand-block strong { color: var(--ink); font-weight: 600; }
+  .socials { display: flex; gap: 0.75rem; margin-top: 0.75rem; }
+  .socials a {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-2);
+    transition: border-color 0.15s;
+  }
+  .socials a:hover { border-color: var(--ink); color: var(--ink); }
+  .site-footer__legal {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1rem var(--gutter) 2.5rem;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  ::selection { background: color-mix(in oklab, var(--accent) 30%, transparent); }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto; }
+  }
+</style>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="https://www.vorka.mx/" target="_blank" rel="noopener">Vorka <span class="brand__dot">México</span></a>
+    <nav class="primary" aria-label="Principal">
+      <a href="https://www.vorka.mx/#servicios" target="_blank" rel="noopener">Servicios</a>
+      <a href="https://www.vorka.mx/#metodo" target="_blank" rel="noopener">Método</a>
+      <a href="https://www.vorka.mx/#para-quien" target="_blank" rel="noopener">Para quién</a>
+      <a href="https://www.vorka.mx/#huella" target="_blank" rel="noopener">Huella</a>
+      <a href="https://www.vorka.mx/#sparks" target="_blank" rel="noopener">Sparks</a>
+    </nav>
+    <a class="btn btn--solid" href="https://wa.me/528117804869" target="_blank" rel="noopener">Hablemos →</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="doc-title">
+    <p class="eyebrow">Diagnóstico estratégico de candidatura</p>
+    <h1 id="doc-title">Dafne Odette</h1>
+    <p class="hero__lede">Aprendió en su propio cuerpo cómo un espacio puede sostener o abandonar a una persona, y quiere hacer de la arquitectura la herramienta con la que nadie vuelva a ser abandonado.</p>
+    <dl class="hero__meta">
+      <div><dt>Programa objetivo</dt><dd>Líderes del Mañana · Tec de Monterrey</dd></div>
+      <div><dt>Carrera</dt><dd>Arquitectura · Campus CDMX</dd></div>
+      <div><dt>Edad</dt><dd>16 (17 en enero)</dd></div>
+      <div><dt>Documento base</dt><dd>100 preguntas · Nov 2025</dd></div>
+    </dl>
+  </section>
+
+  <div class="content">
+    <aside class="toc" aria-label="Índice">
+      <div class="toc__inner">
+        <div class="toc-label">Índice</div>
+        <ol>
+          <li><a href="#s01"><span class="n">01</span><span>Perfil ejecutivo</span></a></li>
+          <li><a href="#s02"><span class="n">02</span><span>Mapa de trayectoria</span></a></li>
+          <li><a href="#s03"><span class="n">03</span><span>Historia central</span></a></li>
+          <li><a href="#s04"><span class="n">04</span><span>Why / What / How / Future</span></a></li>
+          <li><a href="#s05"><span class="n">05</span><span>Resiliencia</span></a></li>
+          <li><a href="#s06"><span class="n">06</span><span>Liderazgo</span></a></li>
+          <li><a href="#s07"><span class="n">07</span><span>Impacto social</span></a></li>
+          <li><a href="#s08"><span class="n">08</span><span>Proyecto adultos mayores</span></a></li>
+          <li><a href="#s09"><span class="n">09</span><span>Proyecto útiles escolares</span></a></li>
+          <li><a href="#s10"><span class="n">10</span><span>Arquitectura como propósito</span></a></li>
+          <li><a href="#s11"><span class="n">11</span><span>Diferenciadores</span></a></li>
+          <li><a href="#s12"><span class="n">12</span><span>Matriz de competencias</span></a></li>
+          <li><a href="#s13"><span class="n">13</span><span>Matriz de evidencia</span></a></li>
+          <li><a href="#s14"><span class="n">14</span><span>Logros</span></a></li>
+          <li><a href="#s15"><span class="n">15</span><span>Debilidades</span></a></li>
+          <li><a href="#s16"><span class="n">16</span><span>Vacíos de información</span></a></li>
+          <li><a href="#s17"><span class="n">17</span><span>Frente a Líderes del Mañana</span></a></li>
+          <li><a href="#s18"><span class="n">18</span><span>Comparación estratégica</span></a></li>
+          <li><a href="#s19"><span class="n">19</span><span>Narrativas posibles</span></a></li>
+          <li><a href="#s20"><span class="n">20</span><span>Story bank</span></a></li>
+          <li><a href="#s21"><span class="n">21</span><span>Frases con potencial</span></a></li>
+          <li><a href="#s22"><span class="n">22</span><span>Riesgos de storytelling</span></a></li>
+          <li><a href="#s23"><span class="n">23</span><span>Propuesta de valor</span></a></li>
+          <li><a href="#s24"><span class="n">24</span><span>Visión a 10 años</span></a></li>
+          <li><a href="#s25"><span class="n">25</span><span>Plan de fortalecimiento</span></a></li>
+          <li><a href="#s26"><span class="n">26</span><span>Proyecto prioritario</span></a></li>
+          <li><a href="#s27"><span class="n">27</span><span>Arquitectura + impacto</span></a></li>
+          <li><a href="#s28"><span class="n">28</span><span>Diagnóstico final</span></a></li>
+          <li><a href="#s29"><span class="n">29</span><span>Score estratégico</span></a></li>
+          <li><a href="#s30"><span class="n">30</span><span>Conclusión ejecutiva</span></a></li>
+          <li><a href="#s31"><span class="n">31</span><span>La candidatura en una frase</span></a></li>
+        </ol>
+      </div>
+    </aside>
+
+    <div class="doc">
+
+      <!-- 01 -->
+      <section class="chapter" id="s01">
+        <div class="chapter__head">
+          <span class="chapter__num">I.</span>
+          <h2 class="chapter__title">Perfil ejecutivo</h2>
+        </div>
+        <div class="prose">
+          <p>Dafne es una adolescente de dieciséis años del oriente de la Ciudad de México, formada entre dos hogares — Magdalena Contreras hasta los diez, una casa multigeneracional en Iztapalapa desde entonces — que ha construido su identidad alrededor de dos ejes recurrentes: la fragilidad del cuerpo propio y la capacidad de crear espacios. Nació prematura, con problemas respiratorios crónicos y alergias severas diagnosticadas apenas hace un año, y atravesó una operación de rodilla en septiembre de 2024 que la obligó a abandonar la gimnasia rítmica — donde había obtenido el primer lugar CDMX en composiciones — y a caminar con muletas en un plantel que no ofreció adaptaciones. En ese contexto adverso mantuvo un promedio de 9.2 y obtuvo tres reconocimientos por aprovechamiento académico.</p>
+
+          <p>Su formación en la carrera técnica de arquitectura del Colegio de Bachilleres despertó una vocación específica: diseñar espacios inclusivos, particularmente hospitales y escuelas, para que el entorno físico deje de ser un obstáculo adicional para quienes ya cargan con uno. La conexión entre su experiencia personal — muletas sin rampas, hospitales grises — y su interés profesional es genuina y coherente, aunque todavía se expresa en un lenguaje general.</p>
+
+          <p>Lo que la mueve no es la ambición individual sino un deseo temprano de utilidad: colecta de víveres para damnificados del sismo de 2017 organizada con cuatro amigos en primaria, ventas para reparar la iglesia de su barrio a los siete años, insistencia con la dirección de la secundaria para mejorar salones y baños. Ha superado carencias económicas en la infancia, la pérdida de una tía cercana durante la pandemia, un episodio respiratorio que describe como cercano a la muerte, y la falta de apoyo institucional durante su recuperación de la operación de rodilla. Ha construido: hábitos de disciplina, tres reconocimientos académicos, un primer lugar deportivo estatal, competencia técnica temprana en AutoCAD, aprendizaje autodidacta de tres idiomas (inglés A2, alemán y francés en curso), y una red pequeña pero leal de amistades sostenidas desde la primaria.</p>
+
+          <p>Los problemas que le importan explícitamente son dos: la desigualdad de género — que atiende hoy por vía de la conversación con su círculo — y la falta de espacios dignos y accesibles, que es su visión profesional. Quiere estudiar arquitectura en el Campus CDMX del Tec y, a diez años, dirigir su propia firma con vertiente social, colaborando con fundaciones para llevar diseño digno a hospitales, escuelas y comunidades.</p>
+
+          <p>El tipo de líder que está desarrollando es un líder de servicio silencioso: más cercano al ejemplo cotidiano y al apoyo individual que a la movilización pública. Su potencial está en la profundidad de su historia personal y en la coherencia natural entre su vida y su vocación. Su límite actual está en la brecha entre lo que ha sentido y lo que ha ejecutado. Su diferencia frente a otros candidatos no es la excepcionalidad de sus logros — no lo son — sino la autenticidad del arco: dolor propio → observación de un problema → elección de una profesión para resolverlo.</p>
+
+          <div class="thesis">
+            <div class="thesis__label">Frase estratégica</div>
+            <p style="margin:0;">Dafne es una joven que aprendió en su propio cuerpo cómo un espacio puede sostener o abandonar a una persona, y quiere hacer de la arquitectura la herramienta con la que ningún hospital, escuela u hogar vuelva a abandonar a nadie.</p>
+          </div>
+
+          <div class="callout callout--warn">
+            <div class="callout__label">Nota metodológica</div>
+            <p>Este diagnóstico distingue entre <span class="tag tag--hecho">Hecho</span> (declarado en el documento base o por el asesor), <span class="tag tag--inf">Inferencia</span> (conclusión razonable a partir de varios hechos) y <span class="tag tag--vacio">Vacío</span> (información que hoy no tenemos). El score final es una herramienta interna, no una probabilidad de admisión.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 -->
+      <section class="chapter" id="s02">
+        <div class="chapter__head">
+          <span class="chapter__num">II.</span>
+          <h2 class="chapter__title">Mapa completo de la trayectoria</h2>
+        </div>
+        <div class="prose">
+          <p>La trayectoria de Dafne no es lineal: se organiza en dos casas, dos códigos postales, dos formas de sostener el cuerpo. Cada etapa importa por lo que dejó en la siguiente, no por sí sola.</p>
+
+          <div class="timeline">
+            <div class="timeline__item">
+              <div class="timeline__stage">Infancia<small>0 – 10 años · Magdalena Contreras</small></div>
+              <div class="timeline__body">
+                <p>Nace prematura (ocho meses, incubadora) el 19/01/2009 en Nezahualcóyotl. Vive con la madre, dos hermanos mayores, la abuela y dos sobrinas; su cuidador principal es el hermano. Problemas respiratorios desde el nacimiento. Al mismo tiempo se describe como una niña <em>muy feliz, creativa, alegre</em>, bailarina, responsable. A los siete años vende galletas en las kermeses de la iglesia para reparar salones de catecismo — primer indicio de agencia comunitaria. Vive carencias económicas.</p>
+                <p><strong>Semilla:</strong> el cuerpo frágil convive con una vida familiar densa y una capacidad temprana de aportar.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Primaria<small>Contreras + Iztapalapa</small></div>
+              <div class="timeline__body">
+                <p>Representante de grupo los primeros cuatro años. Primer contacto simbólico con el Tec: pasa por Periférico, pregunta a su mamá qué es ese edificio y declara <em>“algún día voy a estudiar ahí”</em>. Voluntariado de limpieza en los Dinamos, recolecta ropa para personas de escasos recursos. A los diez años se muda a Iztapalapa con el padre, casa de los abuelos paternos. Cambio de escuela, dificultad para insertarse en un grupo ya formado. Organiza la colecta de víveres por el sismo de 2017 con cuatro amigos.</p>
+                <p><strong>Aprendizaje clave:</strong> lo que se organiza en pequeño ayuda; puede pertenecer a lugares donde nadie la esperaba.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Pandemia<small>2020 – 2021 · 11 – 12 años</small></div>
+              <div class="timeline__body">
+                <p>Depresión leve por aislamiento. Descubre la lectura (primer libro a los 11), la pintura, las manualidades, la escritura de diario, los idiomas. Fallece una tía muy cercana con la que había planeado celebrar su cumpleaños; no pudo despedirse. Aprende, con el tiempo, a aceptarlo.</p>
+                <p><strong>Efecto duradero:</strong> se le forma el hábito de la vida interior — leer, dibujar, escribir — que hoy sostiene su curiosidad intelectual.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Secundaria<small>2021 – 2024</small></div>
+              <div class="timeline__body">
+                <p>Etapa que ella misma define como la mejor de su vida. Encuentra a sus mejores amigos (Natalia, Ameyalli, Zury, Ian). Descubre su pasión por los idiomas — francés en 1° y 3°. Representante los primeros dos años. Promueve ante la dirección una petición para mejorar salones y baños. Practica gimnasia rítmica un año (seis horas de lunes a sábado, primer lugar CDMX en composiciones, 2° de secundaria). También atletismo, 2° lugar Iztapalapa 400 m. Rodilla empieza a doler. Promedio final: 9.6.</p>
+                <p><strong>Consolidación:</strong> aparece el liderazgo público (petición institucional), la disciplina deportiva y la vida grupal.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Transición<small>2024 · COMIPEMS</small></div>
+              <div class="timeline__body">
+                <p>Ingresa al Colegio de Bachilleres, plantel con “mala fama” que al principio no le gusta. Elige carrera técnica en arquitectura. Descubre en primer semestre la pasión por el dibujo, plano y diseño arquitectónico — pivote vocacional decisivo. Primer semestre complicado: diagnóstico de alergias a árboles, enfermedades prolongadas, caída del rendimiento.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Bachillerato<small>2024 – 2026</small></div>
+              <div class="timeline__body">
+                <p>Segundo semestre: recuperación académica. <strong>Septiembre 2024:</strong> operación de rodilla (ruptura del ligamento patelofemoral y del menisco). Tercer semestre: regresa en muletas sin apoyo institucional; consigue apuntes y tareas por su cuenta y obtiene reconocimiento. Cuarto semestre: consolidación afectiva con la escuela, mejores amigos de prepa, disfrute de historia, matemáticas y de la técnica. Aprende AutoCAD (~10 planos, cortes y fachadas). Estudia inglés (A2), inicia alemán y francés. Diagnóstico ampliado de alergias hace un año, vacunas mensuales. Promedio actual: 9.2. Tres reconocimientos académicos.</p>
+                <p><strong>Síntesis:</strong> la etapa donde la vocación se materializa en técnica y la resiliencia se prueba sin red institucional.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Hoy<small>Nov 2025 · 16 años</small></div>
+              <div class="timeline__body">
+                <p>Prepara su postulación a Líderes del Mañana. Aún no tiene proyectos sociales formales activos, aunque ha declarado interés en desarrollarlos. No pertenece a clubs, no ha trabajado formalmente, no ha organizado eventos institucionales fuera de la petición de secundaria.</p>
+              </div>
+            </div>
+            <div class="timeline__item">
+              <div class="timeline__stage">Futuro<small>Aspiraciones</small></div>
+              <div class="timeline__body">
+                <p>Estudiar arquitectura en Tec CDMX. En diez años: titulada, propia firma, especialización en diseño para hospitales y escuelas con vertiente social, colaboración con fundaciones, viaje, políglota, casa en Coyoacán, un pug. Ejercer una arquitectura “humana y sostenible”.</p>
+              </div>
+            </div>
+          </div>
+
+          <h4>Cómo cada etapa influye en la siguiente</h4>
+          <p>La enfermedad temprana la deposita en un cuerpo consciente de su vulnerabilidad; la infancia comunitaria (kermeses, colectas) la inclina al servicio antes de que sea estrategia. La pandemia arma la vida interior; la secundaria le da grupo y agencia pública. La lesión es el punto de bisagra: destruye una identidad (gimnasta) y libera espacio para otra (arquitecta). El bachillerato técnico convierte una experiencia difusa — <em>quiero ayudar</em> — en un lenguaje técnico — <em>quiero diseñar</em>.</p>
+        </div>
+      </section>
+
+      <!-- 03 -->
+      <section class="chapter" id="s03">
+        <div class="chapter__head">
+          <span class="chapter__num">III.</span>
+          <h2 class="chapter__title">Historia central</h2>
+        </div>
+        <div class="prose">
+          <p>La historia central que emerge del documento — no la única posible, pero la más sostenida por la evidencia — no es la del talento precoz ni la de la superación de la pobreza. Es la de <strong>un cuerpo aprendiendo lo que un espacio hace o deja de hacer por él</strong>.</p>
+
+          <p>Los datos que se alinean con esa lectura:</p>
+          <ul>
+            <li>Nacimiento prematuro, incubadora, problemas respiratorios crónicos ligados al aire de un lugar específico (Ajusco).</li>
+            <li>Un episodio de crisis en el que sintió que se moría <em>por no poder respirar</em>.</li>
+            <li>Piel atópica que sangra si el ambiente se reseca.</li>
+            <li>Vacunas mensuales para poder habitar la misma ciudad que todos los demás.</li>
+            <li>Ruptura de ligamento y menisco tras años forzando la rodilla.</li>
+            <li>Muletas en un plantel sin adaptaciones — el espacio no la sostuvo.</li>
+            <li>Vínculo cotidiano con la abuela y observación de los cuerpos que envejecen.</li>
+            <li>Elección de arquitectura desde la técnica, con foco en hospitales, escuelas y accesibilidad.</li>
+            <li>Referentes que trabajan sensorialidad, luz, color y naturaleza (Barragán, Senosian, Doménech i Montaner).</li>
+          </ul>
+
+          <p>La pregunta que ha vuelto una y otra vez a lo largo de su vida — de forma implícita, no articulada como tal — es: <em>¿por qué hay espacios que curan y espacios que expulsan?</em> Su respuesta hasta ahora ha sido pequeña y personal: adaptarse. Su respuesta futura, en su propio lenguaje, es diseñar para que otros no tengan que hacerlo.</p>
+
+          <div class="callout">
+            <div class="callout__label">Otra lectura posible</div>
+            <p>Existe una segunda historia latente — <em>la niña que aprendió a hacer con lo que había</em> — sostenida en las kermeses, la colecta del sismo, los útiles que se resolvían con lo que se conseguía, la petición a la dirección. Es potente, pero más difusa. Recomiendo mantenerla como sustrato de la principal, no como narrativa competidora.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 -->
+      <section class="chapter" id="s04">
+        <div class="chapter__head">
+          <span class="chapter__num">IV.</span>
+          <h2 class="chapter__title">Why / What / How / Future</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th style="width:15%;">Eje</th><th style="width:55%;">Contenido</th><th style="width:30%;">Sustento</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>WHY</strong></td>
+                  <td>Que ningún cuerpo — el suyo, el de un enfermo, el de un niño con discapacidad, el de un adulto mayor — vuelva a sentirse abandonado por el lugar donde está.</td>
+                  <td><span class="tag tag--inf">Inferencia</span> derivada de historia de salud, muletas, hospitales sin color y visión profesional declarada.</td>
+                </tr>
+                <tr>
+                  <td><strong>WHAT</strong></td>
+                  <td>Formación en carrera técnica de arquitectura; ~10 planos, cortes y fachadas en AutoCAD; concientización sobre violencia de género en su círculo; lectura y estudio autodidacta de idiomas.</td>
+                  <td><span class="tag tag--hecho">Hecho</span> documental.</td>
+                </tr>
+                <tr>
+                  <td><strong>HOW</strong></td>
+                  <td>Trabajo silencioso y sostenido: disciplina académica, conversaciones uno a uno, ayuda a compañeros, dibujo diario, adaptación a la adversidad sin queja pública.</td>
+                  <td><span class="tag tag--inf">Inferencia</span> con base en descripción de amigos, hábitos, respuesta al postoperatorio.</td>
+                </tr>
+                <tr>
+                  <td><strong>FUTURE</strong></td>
+                  <td>Arquitecta titulada, firma propia, especialización en espacios sociales (hospitales, escuelas, comunidad), colaboración con fundaciones, políglota, viaje, casa en Coyoacán.</td>
+                  <td><span class="tag tag--hecho">Hecho</span> declarado.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Alineación</h4>
+          <p>Los cuatro ejes están alineados en dirección. Lo que <strong>falta ajustar</strong> es la especificidad del <em>HOW</em>: hoy es más un rasgo de carácter que un mecanismo. Para que la candidatura tenga músculo, el HOW debe volverse verificable — un método, una manera de organizar personas y proyectos, no solo una manera de ser.</p>
+        </div>
+      </section>
+
+      <!-- 05 -->
+      <section class="chapter" id="s05">
+        <div class="chapter__head">
+          <span class="chapter__num">V.</span>
+          <h2 class="chapter__title">Resiliencia</h2>
+        </div>
+        <div class="prose">
+          <p>Dafne tiene un banco de adversidades poco común para su edad. El riesgo es tratarlas como un catálogo de sufrimientos; el trabajo estratégico es leerlas como <strong>ciclos de agencia</strong>.</p>
+
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr>
+                  <th>Adversidad</th><th>Respuesta / Decisión</th><th>Acción</th><th>Resultado</th><th>Aprendizaje</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Problemas respiratorios crónicos + alergias severas</td>
+                  <td>Vivir con el diagnóstico, no ocultarlo; adherirse al tratamiento (vacuna mensual, dermatólogo, inhaladores)</td>
+                  <td>Autocuidado sostenido, ajuste de rutina en meses críticos (oct–ene)</td>
+                  <td>Vida funcional; independencia médica</td>
+                  <td>El cuerpo es negociable si uno lo escucha</td>
+                </tr>
+                <tr>
+                  <td>Crisis respiratoria cercana a la muerte</td>
+                  <td>Redefinir el marco existencial</td>
+                  <td>Vivir “como si fuera el último día”, priorizar hacer felices a otros</td>
+                  <td>Cambio de mentalidad estable</td>
+                  <td>La utilidad hacia los demás es lo que da sentido</td>
+                </tr>
+                <tr>
+                  <td>Ruptura de ligamento patelofemoral y menisco (sept. 2024)</td>
+                  <td>Aceptar la operación, aceptar dejar el deporte de alto impacto</td>
+                  <td>Rehabilitación; una semana de duelo, luego reincorporación</td>
+                  <td>Vuelve a caminar; asume identidad post-deportiva</td>
+                  <td>La salud no es negociable</td>
+                </tr>
+                <tr>
+                  <td>Falta de apoyo institucional al regresar en muletas</td>
+                  <td>No renunciar al semestre</td>
+                  <td>Consigue apuntes y tareas por su cuenta, con compañeros</td>
+                  <td>Reconocimiento académico ese semestre</td>
+                  <td>Se puede exigir excelencia sin que el sistema la facilite</td>
+                </tr>
+                <tr>
+                  <td>Pérdida de una tía cercana en pandemia sin despedida</td>
+                  <td>Duelo prolongado, sin evitación</td>
+                  <td>Aceptación gradual</td>
+                  <td>Cierre emocional en el tiempo</td>
+                  <td>Lo importante es lo presente, no lo agendado</td>
+                </tr>
+                <tr>
+                  <td>Cambio de casa y ciudad a los 10 años</td>
+                  <td>Aceptar el nuevo entorno</td>
+                  <td>Buscar activamente amistades en grupos ya formados</td>
+                  <td>Amistad que aún conserva</td>
+                  <td>Se puede llegar tarde y quedarse</td>
+                </tr>
+                <tr>
+                  <td>Carencias económicas en la infancia</td>
+                  <td>No dramatizadas; hoy familia estable</td>
+                  <td>Vende dulces, pulseras, maquillaje y trabajos escolares (primaria–2° sec)</td>
+                  <td>Aporte propio, hábitos de emprendimiento temprano</td>
+                  <td>El ingreso puede fabricarse a pequeña escala</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Cuáles usar y cuáles administrar con cuidado</h4>
+          <ul>
+            <li><strong>Núcleo narrativo primario:</strong> la operación de rodilla + las muletas sin apoyo institucional. Es reciente, verificable, con resultado (reconocimiento) y con conexión directa al propósito profesional (accesibilidad).</li>
+            <li><strong>Núcleo narrativo secundario:</strong> la crisis respiratoria como momento de reencuadre existencial. Muy potente si se cuenta una sola vez, en un solo lugar.</li>
+            <li><strong>Uso puntual:</strong> pérdida de la tía y carencias económicas — mencionar sin habitar. Cargar todo en ellas convierte la candidatura en historia de dolor.</li>
+            <li><strong>Riesgo de sobreexposición:</strong> el asma / alergias como leitmotiv. Si aparecen en cada ensayo, la lectora se cansa.</li>
+          </ul>
+          <p>La forma correcta del arco es siempre <em>adversidad → agencia → crecimiento → propósito</em>. No <em>adversidad → adversidad → adversidad</em>.</p>
+        </div>
+      </section>
+
+      <!-- 06 -->
+      <section class="chapter" id="s06">
+        <div class="chapter__head">
+          <span class="chapter__num">VI.</span>
+          <h2 class="chapter__title">Liderazgo</h2>
+        </div>
+        <div class="prose">
+          <p>El liderazgo de Dafne existe, pero no es el que primero se ve. Es doméstico, cotidiano, sin escenario. Hay que separar con cuidado lo que es liderazgo real de lo que es responsabilidad, popularidad o participación.</p>
+
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th>Tipo</th><th>Evidencia</th><th>Fuerza</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Formal</td><td>Representante de grupo primaria 1°–4° y secundaria 1°–2°</td><td>Media — es delegación institucional, no elección competitiva; útil como continuidad</td></tr>
+                <tr><td>De iniciativa</td><td>Petición ante la dirección de secundaria para mejorar salones y baños; colecta de víveres 2017 con cuatro amigos</td><td>Alta — hay diagnóstico de problema + acción + convocatoria</td></tr>
+                <tr><td>De servicio</td><td>Voluntariado en Dinamos; ventas para reparar la iglesia; hoy: “brinda ayuda sin esperar nada a cambio”</td><td>Alta — consistente en el tiempo</td></tr>
+                <tr><td>De movilización</td><td>Consigue apuntes y tareas de compañeros durante rehabilitación; concientiza a su círculo sobre violencia de género</td><td>Media — es red pequeña, no comunidad amplia</td></tr>
+                <tr><td>Intelectual</td><td>Autodidacta de idiomas; podcasts de arquitectura, política, historia, ciencia; lectura estable desde los 11</td><td>Media-alta — curiosidad estructurada, no todavía producto público</td></tr>
+                <tr><td>Resiliente</td><td>Sacar reconocimiento académico en muletas y sin apoyo</td><td>Muy alta</td></tr>
+                <tr><td>De equipo (informal)</td><td>Lidera exposiciones, trabajos en equipo y feria de ciencias “desde la primaria”</td><td>Media — repetido pero sin resultado cuantificable</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Experiencia de liderazgo más potente</h4>
+          <p><strong>La petición a la dirección de la secundaria.</strong> Es el episodio donde la agencia se dirige contra una institución para el bien colectivo, no contra una persona ni por interés propio. Vale más que el primer lugar deportivo desde el punto de vista de una beca de liderazgo, aunque el trofeo suene más impresionante.</p>
+
+          <div class="callout callout--warn">
+            <div class="callout__label">Vacío que hay que llenar</div>
+            <p>No sabemos el detalle: ¿cuántas personas firmaron?, ¿qué se logró exactamente?, ¿en qué grado?, ¿cuánto tardó?, ¿qué obstáculos hubo?, ¿cómo se comunicó? Sin esa carne, la anécdota se queda en enunciado.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 -->
+      <section class="chapter" id="s07">
+        <div class="chapter__head">
+          <span class="chapter__num">VII.</span>
+          <h2 class="chapter__title">Impacto social</h2>
+        </div>
+        <div class="prose">
+          <p>Aquí es donde el diagnóstico tiene que ser más honesto: <strong>hoy Dafne tiene una biografía de servicio, no un portafolio de impacto</strong>. La diferencia importa.</p>
+
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th>Experiencia</th><th>Clase</th><th>Impacto verificable</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Kermés en iglesia, 7 años (venta de galletas y guisos)</td><td>Participación / servicio</td><td>No cuantificable</td></tr>
+                <tr><td>Voluntariado limpieza Dinamos</td><td>Participación</td><td>No cuantificable</td></tr>
+                <tr><td>Recolecta de ropa para personas de bajos recursos (primaria)</td><td>Servicio</td><td>No cuantificable — entregada a un profesor</td></tr>
+                <tr><td>Colecta de víveres tras sismo 2017 con 4 amigos</td><td>Iniciativa</td><td>No cuantificable — no sabemos cuántos víveres, cuántos beneficiarios</td></tr>
+                <tr><td>Petición para salones y baños en secundaria</td><td>Liderazgo</td><td>Vacío — no sabemos el resultado</td></tr>
+                <tr><td>Concientización sobre violencia de género con amigos, primos, sobrinos</td><td>Servicio / conversación</td><td>No cuantificable, no formalizado</td></tr>
+                <tr><td>Ayuda académica a compañeros (implícito por descripción de amigos)</td><td>Servicio</td><td>Vacío — no documentado</td></tr>
+                <tr><td>Proyecto adultos mayores <span class="tag tag--vacio">Vacío</span></td><td>Intención declarada por el asesor; sin evidencia documental</td><td>Aún no ejecutado</td></tr>
+                <tr><td>Proyecto útiles escolares <span class="tag tag--vacio">Vacío</span></td><td>Intención declarada por el asesor; sin evidencia documental</td><td>Aún no ejecutado</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout--warn">
+            <div class="callout__label">Punto crítico</div>
+            <p>La regla del diagnóstico prohíbe presentar proyectos futuros como logros. Ninguna de las dos iniciativas anunciadas (adultos mayores, útiles) puede aparecer en la candidatura como <em>proyecto en marcha</em> hasta que exista al menos un piloto documentado. Antes de eso, sólo son <em>intenciones estratégicas</em>.</p>
+          </div>
+
+          <p>Lo que sí puede sostener hoy es un patrón: <em>ha convertido pequeñas necesidades en pequeñas acciones desde los siete años</em>. Eso es honesto y demostrable. El salto que falta es de escala y de resultado medible.</p>
+        </div>
+      </section>
+
+      <!-- 08 -->
+      <section class="chapter" id="s08">
+        <div class="chapter__head">
+          <span class="chapter__num">VIII.</span>
+          <h2 class="chapter__title">Proyecto de adultos mayores</h2>
+        </div>
+        <div class="prose">
+          <div class="callout callout--warn">
+            <div class="callout__label">Origen del dato</div>
+            <p>Este proyecto <strong>no aparece en el documento base</strong>. Fue mencionado en el briefing del asesor, junto con la referencia a una abuela llamada María del Carmen de 74 años. En el PDF, Dafne cita a los adultos mayores <em>sólo como ejemplo hipotético</em> al hablar de la red de Líderes del Mañana (<em>“si yo trabajo con adultos mayores”</em>). Su preocupación social declarada es la <strong>desigualdad de género</strong>.</p>
+          </div>
+
+          <p>Bajo ese caveat, y tratando la intención como una hipótesis a validar con Dafne, este es el análisis del proyecto tal como podría diseñarse:</p>
+
+          <h4>Diagnóstico del problema</h4>
+          <ul>
+            <li><strong>Problema:</strong> los adultos mayores viven una combinación de soledad, brecha digital, vulnerabilidad ante fraudes, pérdida de utilidad social y dificultades para trámites cotidianos.</li>
+            <li><strong>Causas:</strong> ausencia de acompañamiento intergeneracional; digitalización sin pedagogía; jubilación como corte identitario; arquitectura urbana no diseñada para ellos.</li>
+            <li><strong>Consecuencias si no se interviene:</strong> aislamiento crónico, deterioro cognitivo acelerado, pérdida de patrimonio por fraude, muerte social antes que biológica.</li>
+            <li><strong>Población objetivo:</strong> definir. Podría ser el círculo cercano (abuelos y sus vecinos en Iztapalapa) como piloto, luego un centro comunitario.</li>
+          </ul>
+
+          <h4>Evaluación</h4>
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead><tr><th>Criterio</th><th>Nota</th><th>Comentario</th></tr></thead>
+              <tbody>
+                <tr><td>Viabilidad para 17 años</td><td class="num">7 / 10</td><td>Alta si se acota a alfabetización digital + prevención de fraudes con material propio y sesiones semanales</td></tr>
+                <tr><td>Autenticidad</td><td class="num">6 / 10</td><td>Necesita conectarse con vivencia real, no solo con la abuela como referencia</td></tr>
+                <tr><td>Escalabilidad</td><td class="num">6 / 10</td><td>Posible con manual replicable y voluntarios</td></tr>
+                <tr><td>Sostenibilidad</td><td class="num">4 / 10</td><td>Riesgo alto sin alianza institucional (DIF, casas de día, INAPAM)</td></tr>
+                <tr><td>Medición</td><td class="num">6 / 10</td><td>Indicadores claros: personas atendidas, fraudes evitados reportados, autonomía digital adquirida</td></tr>
+                <tr><td>Conexión con arquitectura</td><td class="num">3 / 10</td><td>Débil — no lo articula con su vocación profesional</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Enfoque recomendado</h4>
+          <p>Si se decide impulsarlo, la recomendación es una <strong>combinación estratégica acotada</strong>: <em>alfabetización digital orientada a prevención de fraudes + un componente de acompañamiento intergeneracional</em>. Es decir, no “ayudar a los abuelos con todo” sino <em>enseñar a usar el celular de forma segura + hacerlo en un formato que combata la soledad</em>. Piloto: 6 – 10 adultos mayores, 8 sesiones, en una parroquia o centro comunitario de Iztapalapa. Alianza natural: la iglesia donde vendía galletas de niña.</p>
+
+          <h4>Riesgo estratégico principal</h4>
+          <p>Que este proyecto no conecte con su vocación arquitectónica. Si se queda como un “brazo social” separado, la candidatura pierde coherencia. Ver §XXVI para la decisión de prioridad frente al proyecto de útiles.</p>
+        </div>
+      </section>
+
+      <!-- 09 -->
+      <section class="chapter" id="s09">
+        <div class="chapter__head">
+          <span class="chapter__num">IX.</span>
+          <h2 class="chapter__title">Proyecto de útiles escolares</h2>
+        </div>
+        <div class="prose">
+          <div class="callout callout--warn">
+            <div class="callout__label">Origen del dato</div>
+            <p>Este proyecto <strong>tampoco aparece en el documento base</strong>. Es una intención mencionada por el asesor. Antes de invertir tiempo estratégico en él conviene validar con Dafne si le importa genuinamente o si sonó bien en conversación.</p>
+          </div>
+
+          <p>La idea — recuperar útiles escolares en buen estado para redistribuirlos — es correcta pero <strong>no tiene raíz personal visible en el documento</strong>. No hay un episodio en el que Dafne haya carecido de útiles, ni una historia donde eso se le haya vuelto tema. Es una buena causa; no es <em>su</em> causa.</p>
+
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead><tr><th>Criterio</th><th>Nota</th><th>Comentario</th></tr></thead>
+              <tbody>
+                <tr><td>Viabilidad</td><td class="num">8 / 10</td><td>Logística sencilla; una escuela como piloto</td></tr>
+                <tr><td>Autenticidad</td><td class="num">3 / 10</td><td>Sin anclaje biográfico documentado</td></tr>
+                <tr><td>Diferenciación</td><td class="num">3 / 10</td><td>Iniciativa muy replicada; difícil destacar</td></tr>
+                <tr><td>Conexión con arquitectura</td><td class="num">1 / 10</td><td>Nula</td></tr>
+                <tr><td>Potencial narrativo</td><td class="num">3 / 10</td><td>Bajo</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Recomendación</h4>
+          <p>No priorizar. Si Dafne siente cariño por la idea puede mantenerse como <em>micro-iniciativa complementaria</em> (una campaña anual con sus mejores amigas), pero no debe convertirse en pilar de la candidatura. Concentrar recursos aquí <strong>dispersa</strong> la narrativa — que es exactamente lo que un buen diagnóstico debe evitar.</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="chapter" id="s10">
+        <div class="chapter__head">
+          <span class="chapter__num">X.</span>
+          <h2 class="chapter__title">Arquitectura como propósito</h2>
+        </div>
+        <div class="prose">
+          <p>Este es el nudo estratégico de toda la candidatura. La pregunta que hay que responder — con Dafne, no por ella — es <strong>por qué ella y no cualquier otra persona quiere estudiar arquitectura</strong>.</p>
+
+          <h4>Materia prima disponible</h4>
+          <ul>
+            <li>Un cuerpo que ha sido territorio hostil (asma, alergias, piel atópica, rodilla rota).</li>
+            <li>Un semestre en muletas donde la escuela no la sostuvo — <strong>experiencia directa de un espacio no diseñado para todos</strong>.</li>
+            <li>Hospitalización propia — vivencia de cuartos “grises” que ella misma menciona querer transformar.</li>
+            <li>Convivencia diaria con los abuelos paternos — observación cotidiana de cómo el cuerpo mayor negocia el espacio doméstico.</li>
+            <li>Descubrimiento vocacional específico en primer semestre de la técnica: dibujar, mezclar texturas, colores, plantas, materiales.</li>
+            <li>Referentes que <em>no son casuales</em>: Barragán (luz, color, emoción), Senosian (formas orgánicas, naturaleza), Zaha Hadid (audacia formal), Antonio Farré, y Doménech i Montaner (Hospital de Sant Pau).</li>
+            <li>~10 planos, cortes y fachadas ejecutados; AutoCAD como primera herramienta.</li>
+          </ul>
+
+          <h4>Visión profesional declarada</h4>
+          <p>Diseñar hospitales con color, formas distintas y vegetación; escuelas donde niños y docentes con discapacidad puedan desplazarse con comodidad; espacios inclusivos, humanos y sostenibles; adaptación al ecosistema.</p>
+
+          <h4>Diagnóstico</h4>
+          <p>La coherencia está. Lo que falta es <strong>especificidad</strong>. Hoy la visión suena a manifiesto amable — <em>espacios dignos, humanos, sostenibles</em>. Podría ser dicho por cualquier estudiante de arquitectura del país. Para que sea suya tiene que precisarse:</p>
+          <ul>
+            <li>¿Qué tipo de hospital? ¿Oncológico infantil? ¿Rehabilitación? ¿Salud mental?</li>
+            <li>¿Qué tipo de escuela? ¿Primaria pública en zona de bajo IDH? ¿Escuela para niños con discapacidad motriz — la que ella no tuvo?</li>
+            <li>¿Qué elemento de Barragán, qué elemento de Senosian? La combinación <em>Barragán + accesibilidad + hospital</em> es una tesis, no un cliché.</li>
+          </ul>
+
+          <div class="callout">
+            <div class="callout__label">Núcleo diferenciador latente</div>
+            <p>Arquitectura sensorial + accesibilidad + salud, con Barragán como maestro emocional y la experiencia propia como material. Si esa tríada se articula bien, Dafne deja de competir con “otro chico que quiere ser arquitecto” y empieza a competir con muy pocos.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="chapter" id="s11">
+        <div class="chapter__head">
+          <span class="chapter__num">XI.</span>
+          <h2 class="chapter__title">Diferenciadores</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th>#</th><th>Diferenciador</th><th>Evidencia</th><th>Fuerza</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">1</td><td>Coherencia biografía → vocación (cuerpo vulnerable → arquitectura para cuerpos vulnerables)</td><td>Salud + operación + visión profesional</td><td><strong>Muy fuerte</strong></td></tr>
+                <tr><td class="num">2</td><td>Vivencia directa de accesibilidad negada (muletas sin adaptación institucional)</td><td>Tercer semestre bachillerato</td><td><strong>Muy fuerte</strong></td></tr>
+                <tr><td class="num">3</td><td>Excelencia académica sostenida en contexto adverso (9.6 sec, 9.2 prepa; 3 reconocimientos; uno en muletas)</td><td>Documental</td><td><strong>Fuerte</strong></td></tr>
+                <tr><td class="num">4</td><td>Curiosidad intelectual atípica para su edad (WWII, filosofía, ciencia, arquitectura vía podcasts, 3 idiomas)</td><td>Actividades extracurriculares</td><td><strong>Fuerte</strong></td></tr>
+                <tr><td class="num">5</td><td>Referentes arquitectónicos maduros (Barragán, Senosian, Doménech i Montaner)</td><td>Sección arquitectura</td><td><strong>Fuerte</strong></td></tr>
+                <tr><td class="num">6</td><td>Historia de servicio consistente desde los 7 años (kermeses, colectas, ropa, sismo, hoy concientización)</td><td>Documental</td><td><strong>Fuerte</strong></td></tr>
+                <tr><td class="num">7</td><td>Habilidad técnica temprana (AutoCAD, ~10 planos)</td><td>Carrera técnica en curso</td><td>Moderada</td></tr>
+                <tr><td class="num">8</td><td>Primer lugar CDMX en composiciones gimnásticas</td><td>Segundo de sec</td><td>Moderada</td></tr>
+                <tr><td class="num">9</td><td>Postura frente a violencia de género que incluye a hombres — no dogmática</td><td>Sección impacto social</td><td>Moderada</td></tr>
+                <tr><td class="num">10</td><td>Continuidad afectiva (amistades desde primaria, secundaria y prepa; capaz de retener vínculos)</td><td>Sección personalidad y trayectoria</td><td>Moderada</td></tr>
+                <tr><td class="num">11</td><td>Emprendimiento infantil (vendía dulces, pulseras, maquillaje, trabajos)</td><td>Primaria – 2° sec</td><td>Moderada</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Los diferenciadores 1 y 2 son la <strong>columna vertebral</strong>. Todo lo demás juega en función de ellos.</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="chapter" id="s12">
+        <div class="chapter__head">
+          <span class="chapter__num">XII.</span>
+          <h2 class="chapter__title">Matriz de competencias</h2>
+        </div>
+        <div class="prose">
+          <p>Escala 1–10. Cada calificación se sostiene en evidencia específica, no en impresión general.</p>
+
+          <div class="scores" role="list">
+            <div class="score"><span>Resiliencia</span><div class="score__bar"><div class="score__fill" style="width:90%"></div></div><span class="score__val">9</span></div>
+            <div class="score"><span>Autoconocimiento</span><div class="score__bar"><div class="score__fill" style="width:80%"></div></div><span class="score__val">8</span></div>
+            <div class="score"><span>Servicio</span><div class="score__bar"><div class="score__fill" style="width:80%"></div></div><span class="score__val">8</span></div>
+            <div class="score"><span>Disciplina</span><div class="score__bar"><div class="score__fill" style="width:80%"></div></div><span class="score__val">8</span></div>
+            <div class="score"><span>Empatía</span><div class="score__bar"><div class="score__fill" style="width:80%"></div></div><span class="score__val">8</span></div>
+            <div class="score"><span>Conciencia social</span><div class="score__bar"><div class="score__fill" style="width:75%"></div></div><span class="score__val">7.5</span></div>
+            <div class="score"><span>Iniciativa</span><div class="score__bar"><div class="score__fill" style="width:70%"></div></div><span class="score__val">7</span></div>
+            <div class="score"><span>Excelencia académica</span><div class="score__bar"><div class="score__fill" style="width:75%"></div></div><span class="score__val">7.5</span></div>
+            <div class="score"><span>Trabajo en equipo</span><div class="score__bar"><div class="score__fill" style="width:70%"></div></div><span class="score__val">7</span></div>
+            <div class="score"><span>Creatividad</span><div class="score__bar"><div class="score__fill" style="width:75%"></div></div><span class="score__val">7.5</span></div>
+            <div class="score"><span>Madurez</span><div class="score__bar"><div class="score__fill" style="width:70%"></div></div><span class="score__val">7</span></div>
+            <div class="score"><span>Pensamiento crítico</span><div class="score__bar"><div class="score__fill" style="width:65%"></div></div><span class="score__val">6.5</span></div>
+            <div class="score"><span>Claridad de propósito</span><div class="score__bar"><div class="score__fill" style="width:65%"></div></div><span class="score__val">6.5</span></div>
+            <div class="score"><span>Visión</span><div class="score__bar"><div class="score__fill" style="width:60%"></div></div><span class="score__val">6</span></div>
+            <div class="score"><span>Liderazgo</span><div class="score__bar"><div class="score__fill" style="width:60%"></div></div><span class="score__val">6</span></div>
+            <div class="score"><span>Comunicación</span><div class="score__bar"><div class="score__fill" style="width:60%"></div></div><span class="score__val">6</span></div>
+            <div class="score"><span>Capacidad de ejecución</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:55%"></div></div><span class="score__val">5.5</span></div>
+            <div class="score"><span>Innovación</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:50%"></div></div><span class="score__val">5</span></div>
+            <div class="score"><span>Capacidad de movilización</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:50%"></div></div><span class="score__val">5</span></div>
+            <div class="score"><span>Potencial internacional</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:55%"></div></div><span class="score__val">5.5</span></div>
+          </div>
+
+          <p>Las cuatro más bajas — ejecución, innovación, movilización, potencial internacional — coinciden con lo que la candidatura tiene que <strong>construir en los próximos 12 meses</strong>. Ninguna es intrínseca; todas se levantan con acciones concretas.</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="chapter" id="s13">
+        <div class="chapter__head">
+          <span class="chapter__num">XIII.</span>
+          <h2 class="chapter__title">Matriz de evidencia</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th>Competencia</th><th>Evidencia</th><th>Resultado</th><th>Cuantificable</th><th>Fuerza</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Excelencia académica</td><td>Promedio 9.6 sec / 9.2 prepa</td><td>3 reconocimientos</td><td>Sí</td><td>Alta</td></tr>
+                <tr><td>Resiliencia física</td><td>Post-operatorio con muletas</td><td>Reconocimiento ese semestre</td><td>Parcial</td><td>Muy alta</td></tr>
+                <tr><td>Disciplina deportiva</td><td>6 h/día × 6 días × 1 año (gimnasia)</td><td>1° CDMX composiciones</td><td>Sí</td><td>Alta</td></tr>
+                <tr><td>Iniciativa</td><td>Colecta víveres 2017 con 4 amigos</td><td>Entrega efectuada</td><td>No documentado</td><td>Media</td></tr>
+                <tr><td>Iniciativa institucional</td><td>Petición dirección secundaria</td><td>Vacío</td><td>No</td><td>Media (por falta de resultado)</td></tr>
+                <tr><td>Servicio</td><td>Kermés, Dinamos, ropa, sismo</td><td>Actividad sostenida</td><td>No</td><td>Alta como patrón</td></tr>
+                <tr><td>Habilidad técnica</td><td>~10 planos, cortes, fachadas en AutoCAD</td><td>Portafolio inicial</td><td>Parcial</td><td>Media</td></tr>
+                <tr><td>Curiosidad intelectual</td><td>Lectura desde 11; podcasts filosofía/arquitectura/política; 3 idiomas</td><td>Práctica sostenida</td><td>Parcial (A2 inglés)</td><td>Alta</td></tr>
+                <tr><td>Empatía / servicio hoy</td><td>Concientización violencia de género en círculo</td><td>Conversaciones</td><td>No</td><td>Media</td></tr>
+                <tr><td>Emprendimiento temprano</td><td>Venta de dulces, pulseras, maquillaje (primaria – 2° sec)</td><td>Ingreso propio</td><td>No documentado</td><td>Media</td></tr>
+                <tr><td>Liderazgo formal</td><td>Rep. de grupo 6 años</td><td>Continuidad</td><td>No</td><td>Media</td></tr>
+                <tr><td>Vínculo humano</td><td>Amistades sostenidas desde primaria</td><td>Redes durables</td><td>No</td><td>Media-alta</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Regla operativa que se deriva: cualquier afirmación fuerte que se haga en un ensayo debe poder anclarse en una de estas filas. Si no ancla, se reemplaza o se elimina.</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="chapter" id="s14">
+        <div class="chapter__head">
+          <span class="chapter__num">XIV.</span>
+          <h2 class="chapter__title">Logros</h2>
+        </div>
+        <div class="prose">
+          <h4>Académicos</h4>
+          <ul>
+            <li>2° lugar aprovechamiento académico al concluir primaria</li>
+            <li>Reconocimiento por aprovechamiento en 2° semestre de bachillerato</li>
+            <li>Reconocimiento por aprovechamiento (3° semestre, en muletas)</li>
+            <li>Promedio secundaria 9.6 / prepa 9.2</li>
+          </ul>
+          <h4>Deportivos</h4>
+          <ul>
+            <li>1° lugar en composiciones gimnásticas nivel CDMX (2° sec)</li>
+            <li>1° lugar atletismo nivel Iztapalapa</li>
+            <li>2° lugar atletismo nivel Iztapalapa (400 m planos, 6 participantes)</li>
+          </ul>
+          <h4>Liderazgo / servicio</h4>
+          <ul>
+            <li>Colecta de víveres sismo 2017 (con 4 amigos)</li>
+            <li>Petición ante dirección de secundaria</li>
+            <li>Representante de grupo primaria 1°–4° y secundaria 1°–2°</li>
+          </ul>
+          <h4>Creativos / técnicos</h4>
+          <ul>
+            <li>~10 planos, cortes y fachadas en AutoCAD</li>
+            <li>Aprendizaje autodidacta de alemán y francés en curso</li>
+            <li>Inglés A2</li>
+          </ul>
+          <h4>Personales</h4>
+          <ul>
+            <li>Aceptación de duelo por tía; aceptación de retiro deportivo</li>
+            <li>Sostenimiento de amistades desde la primaria hasta hoy</li>
+          </ul>
+
+          <h4>Top 10 estratégicos (los que <em>explican</em> a Dafne)</h4>
+          <ol>
+            <li>Reconocimiento académico en muletas — evidencia de resiliencia + excelencia + falta de apoyo institucional</li>
+            <li>Descubrimiento de la arquitectura en 1° semestre y elección de la técnica — pivote vocacional consciente</li>
+            <li>Colecta 2017 — iniciativa comunitaria a edad muy temprana</li>
+            <li>Petición a dirección de secundaria — agencia frente a institución</li>
+            <li>Primer lugar CDMX en composiciones — disciplina traducible</li>
+            <li>Promedio 9.6 sec / 9.2 prepa — consistencia</li>
+            <li>Kermés a los 7 años — servicio antes de que sea estrategia</li>
+            <li>Aprendizaje autodidacta de tres idiomas — mente en expansión</li>
+            <li>~10 planos ejecutados — vocación materializada</li>
+            <li>Ventas de dulces / pulseras / trabajos escolares — agencia económica temprana</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 15 -->
+      <section class="chapter" id="s15">
+        <div class="chapter__head">
+          <span class="chapter__num">XV.</span>
+          <h2 class="chapter__title">Debilidades</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th>Debilidad</th><th>Riesgo para la candidatura</th><th>Cómo fortalecerlo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Ausencia de proyecto social propio, medible y actual</td><td>Alto — el comité busca <em>hacer</em>, no <em>querer hacer</em></td><td>Diseñar y correr un piloto pequeño (6–10 personas, 6–8 sesiones) en 90 días</td></tr>
+                <tr><td>Todos los logros de servicio son de primaria o secundaria</td><td>Alto — parece que la agencia comunitaria se detuvo hace años</td><td>Retomar una acción de servicio hoy, con foto y testimonio</td></tr>
+                <tr><td>Inglés A2</td><td>Medio — Líderes del Mañana valora potencial internacional</td><td>Meta declarada: certificación B1 en 6 meses</td></tr>
+                <tr><td>Sin certificaciones</td><td>Medio</td><td>Mínimo dos en 6 meses: una técnica (SketchUp o Revit) y una de habilidades transversales</td></tr>
+                <tr><td>Cero pertenencia a clubes o colectivos hoy</td><td>Medio-alto — señal de baja actividad extracurricular actual</td><td>Sumarse ya a un colectivo (arquitectura, accesibilidad, mujeres jóvenes)</td></tr>
+                <tr><td>Petición institucional sin resultado documentado</td><td>Medio — historia sin cierre</td><td>Reconstruir con detalle la historia; si logró algo, cuantificarlo</td></tr>
+                <tr><td>Preocupación social (violencia de género) sin proyecto</td><td>Medio — se queda en declaración</td><td>Alinear con arquitectura (espacios seguros) o diseñar micro-acción medible</td></tr>
+                <tr><td>Solo AutoCAD como software</td><td>Medio — el estándar académico es SketchUp + Revit + Photoshop</td><td>Curso auto-dirigido de SketchUp en 60 días; portafolio de 3 piezas</td></tr>
+                <tr><td>Redacción con giros repetitivos y frases hechas (“humanos y sostenibles”, “dar lo mejor de mí”)</td><td>Alto en ensayo — suena a plantilla</td><td>Reescribir con lenguaje sensorial y biografía específica</td></tr>
+                <tr><td>Visión profesional aún genérica</td><td>Alto — no diferencia frente a otros aspirantes a arquitectura</td><td>Elegir una sub-especialidad (p. ej. espacios para rehabilitación) y estudiar 3 casos concretos</td></tr>
+                <tr><td>Sin apariciones en medios, sin pláticas, sin menciones honoríficas</td><td>Bajo — es normal a su edad — pero eleva el techo si aparecen</td><td>Buscar una entrevista escolar / una participación en foro local</td></tr>
+                <tr><td>Sin viajes / exposición internacional</td><td>Bajo</td><td>No prioridad; sustituible con contenido / cursos online</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="chapter" id="s16">
+        <div class="chapter__head">
+          <span class="chapter__num">XVI.</span>
+          <h2 class="chapter__title">Vacíos de información</h2>
+        </div>
+        <div class="prose">
+          <h4>Críticos</h4>
+          <ol>
+            <li>Ingreso familiar mensual, número de dependientes, gastos fijos y estatus de vivienda (base de la beca socioeconómica).</li>
+            <li>¿Qué logró concretamente la petición a la dirección de la secundaria?</li>
+            <li>¿Cuántos víveres se recolectaron en 2017, a qué zona llegaron, con quién se coordinaron?</li>
+            <li>¿La lesión y operación de rodilla dejaron secuelas actuales? ¿Requiere rehabilitación continua?</li>
+            <li>¿Cuál es el estatus real del proyecto de adultos mayores? ¿Existe algún avance?</li>
+            <li>¿La abuela María del Carmen — mencionada por el asesor pero no en el documento — es la abuela materna (de Contreras) o paterna (con la que vive)?</li>
+            <li>¿Cuenta con carta de recomendación institucional? De quién.</li>
+            <li>¿Ha visitado el Campus CDMX presencialmente? ¿Con quién? ¿Cuál fue la impresión?</li>
+          </ol>
+          <h4>Importantes</h4>
+          <ol>
+            <li>Historia detallada de la muerte de la tía (edad, causa, tipo de vínculo).</li>
+            <li>Ejemplo concreto de una conversación reciente sobre violencia de género que haya movido a alguien.</li>
+            <li>Portafolio arquitectónico: fotos de los ~10 planos, cortes, fachadas.</li>
+            <li>Nombre / propósito de los ~10 proyectos técnicos realizados.</li>
+            <li>Actividad extracurricular hoy (no primaria/secundaria) que la comprometa fuera del aula.</li>
+            <li>Rutina semanal: cuántas horas dedica a idiomas, dibujo, lectura, deporte adaptado.</li>
+            <li>¿Cómo lleva económicamente el bachillerato? ¿Contribuye? ¿Sus padres cubren transporte, materiales?</li>
+            <li>Relación actual con el hermano (cuidador principal en la infancia).</li>
+          </ol>
+          <h4>Complementarios</h4>
+          <ol>
+            <li>Preferencias estéticas específicas: paletas, materiales, obras que ha visitado.</li>
+            <li>Redes sociales: ¿tiene presencia? ¿publica algo del proceso arquitectónico?</li>
+            <li>Referentes femeninos más allá de Zaha Hadid.</li>
+            <li>Autoras mexicanas / latinoamericanas que lee.</li>
+            <li>Anécdota de alguna decisión difícil tomada en las últimas 8 semanas.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 17 -->
+      <section class="chapter" id="s17">
+        <div class="chapter__head">
+          <span class="chapter__num">XVII.</span>
+          <h2 class="chapter__title">Perfil frente a Líderes del Mañana</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead><tr><th>Criterio LDM</th><th>Tiene</th><th>Debe fortalecer</th><th>Falta demostrar</th></tr></thead>
+              <tbody>
+                <tr><td>Excelencia académica</td><td>Promedio consistente y reconocimientos</td><td>Certificaciones y B1 inglés</td><td>Excelencia sostenida en el nuevo entorno Tec</td></tr>
+                <tr><td>Liderazgo</td><td>Rep. de grupo, petición institucional, colecta 2017</td><td>Un liderazgo actual con equipo (no solo iniciativa individual)</td><td>Capacidad de convocar a 5+ personas hoy</td></tr>
+                <tr><td>Impacto social</td><td>Historia de servicio; visión de arquitectura social</td><td>Un proyecto con impacto medible en curso</td><td>Resultados concretos, no intenciones</td></tr>
+                <tr><td>Potencial</td><td>Curiosidad intelectual, disciplina, coherencia biografía-vocación</td><td>Exposición internacional (idiomas, contenido)</td><td>Capacidad de aprovechar red / recursos</td></tr>
+                <tr><td>Iniciativa</td><td>Emprendimiento infantil, colecta, petición</td><td>Reactivarla hoy — iniciativa <em>actual</em></td><td>Que arranque algo antes de la entrevista</td></tr>
+                <tr><td>Contexto socioeconómico</td><td>Carencias en infancia, familia estable hoy</td><td>Documentación económica clara</td><td>Que la beca sea genuinamente <em>necesaria</em>, no solo <em>deseada</em></td></tr>
+                <tr><td>Propósito</td><td>Vocación clara: arquitectura para cuerpos vulnerables</td><td>Especificidad de la sub-vocación</td><td>Tesis profesional en una frase</td></tr>
+                <tr><td>Coherencia</td><td>Muy alta — biografía y aspiración se hablan</td><td>—</td><td>—</td></tr>
+                <tr><td>Potencial de transformación</td><td>Alto en potencia</td><td>Ejemplos de personas ya transformadas por ella</td><td>Testimonios</td></tr>
+                <tr><td>Devolver valor a la comunidad</td><td>Historia de servicio + intención de mentorear futuros LDM</td><td>Definir a qué comunidad exactamente</td><td>Plan operativo</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>Mayor ventaja competitiva:</strong> la <em>coherencia</em>. Muy pocos candidatos pueden armar el arco biografía → observación → vocación con la limpieza con la que Dafne puede armarlo si se articula bien.</p>
+        </div>
+      </section>
+
+      <!-- 18 -->
+      <section class="chapter" id="s18">
+        <div class="chapter__head">
+          <span class="chapter__num">XVIII.</span>
+          <h2 class="chapter__title">Comparación estratégica</h2>
+        </div>
+        <div class="prose">
+          <p>Los candidatos altamente competitivos a Líderes del Mañana tienden a llegar con al menos <strong>una</strong> de estas tres cosas: (a) un proyecto propio con impacto medible, (b) un reconocimiento nacional o internacional, o (c) una historia personal tan singular que se recuerda al cerrar la carpeta. Muchos llegan con dos.</p>
+
+          <h4>Dónde Dafne puede destacar</h4>
+          <ul>
+            <li>Historia personal con densidad emocional real y anclaje profesional preciso — pocos candidatos tienen ese arco tan limpio a los 16.</li>
+            <li>Autenticidad en el tono — no hay actuación en su narración; se nota.</li>
+            <li>Curiosidad intelectual madura (WWII, filosofía, tres idiomas) — se lee como potencial.</li>
+          </ul>
+
+          <h4>Dónde Dafne pierde hoy</h4>
+          <ul>
+            <li>Ninguna de las tres cartas fuertes (a, b, c) está completa. La (c) — historia — es la más cercana pero necesita ser contada.</li>
+            <li>Sin resultados cuantificables en impacto social.</li>
+            <li>Sin certificaciones ni reconocimientos externos al Bachilleres/Iztapalapa (los deportivos son locales).</li>
+            <li>Actividad extracurricular actual limitada.</li>
+          </ul>
+
+          <h4>Lo que tendría que demostrar para entrar al grupo más competitivo</h4>
+          <ol>
+            <li>Un piloto ejecutado del proyecto social — con foto, número de beneficiarios y aprendizaje.</li>
+            <li>Un portafolio arquitectónico visible (mínimo 3 piezas presentables).</li>
+            <li>Un ejemplo actual — no de primaria — de haber movido a otras personas hacia una acción.</li>
+            <li>Una frase-tesis para su vocación tan precisa que la distinga de todo aspirante a arquitectura.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="chapter" id="s19">
+        <div class="chapter__head">
+          <span class="chapter__num">XIX.</span>
+          <h2 class="chapter__title">Narrativas posibles</h2>
+        </div>
+        <div class="prose">
+          <div class="cards">
+            <div class="card">
+              <div class="card__meta">Narrativa 1 · Recomendada como principal</div>
+              <h5>El cuerpo que aprendió a leer los espacios</h5>
+              <p><em>De la incubadora a las muletas, de las muletas al plano.</em> Cada etapa de su vida física le enseñó una lección que hoy quiere convertir en arquitectura.</p>
+              <p><strong>Sostiene:</strong> nacimiento prematuro, asma, alergias, hospital, operación de rodilla, muletas sin apoyo, elección de arquitectura, foco en hospitales y escuelas accesibles, referentes sensoriales (Barragán, Senosian, Doménech i Montaner).</p>
+              <p><strong>Fortalezas:</strong> coherencia total, alto contenido emocional, diferenciación clara. <strong>Riesgo:</strong> caer en victimización si no se administra bien el volumen de la enfermedad.</p>
+            </div>
+            <div class="card">
+              <div class="card__meta">Narrativa 2 · Recomendada como secundaria</div>
+              <h5>La niña que aprendió a hacer con lo que había</h5>
+              <p>Kermeses a los 7, colectas a los 8, petición a los 13, planos a los 15. Agencia que no espera permiso.</p>
+              <p><strong>Sostiene:</strong> venta en la iglesia, Dinamos, ropa, sismo 2017, petición a la dirección, emprendimiento infantil, reconocimiento en muletas.</p>
+              <p><strong>Fortalezas:</strong> continuidad de servicio, madurez temprana. <strong>Riesgo:</strong> puede sonar difusa sin la Narrativa 1 detrás.</p>
+            </div>
+            <div class="card">
+              <div class="card__meta">Narrativa 3 · Complementaria</div>
+              <h5>La disciplina como forma de sostener el propio cuerpo</h5>
+              <p>La gimnasia, el atletismo, los idiomas, el promedio en muletas — todos son formas de la misma disciplina.</p>
+              <p><strong>Fortalezas:</strong> conecta salud con logro; útil para la sección de excelencia académica. <strong>Riesgo:</strong> como narrativa central es demasiado deportiva y no cierra en arquitectura.</p>
+            </div>
+            <div class="card">
+              <div class="card__meta">Narrativa 4 · Descartar</div>
+              <h5>La chica que quiere ayudar a todos</h5>
+              <p>Adultos mayores + útiles + violencia de género + accesibilidad + inclusión general.</p>
+              <p><strong>Riesgo:</strong> dispersa, genérica, indistinguible de miles de otras candidatas. No usarla.</p>
+            </div>
+          </div>
+
+          <h4>Por qué la 1 como principal y la 2 como secundaria</h4>
+          <p>La Narrativa 1 es la única que <em>solo Dafne puede contar</em>: incorpora datos irrepetibles (su cuerpo específico, sus muletas específicas, su vocación específica). La 2 es potente, pero la podrían contar decenas de estudiantes con historia similar. La 2 se usa como <em>evidencia de carácter</em> dentro del marco emocional de la 1.</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="chapter" id="s20">
+        <div class="chapter__head">
+          <span class="chapter__num">XX.</span>
+          <h2 class="chapter__title">Story bank</h2>
+        </div>
+        <div class="prose">
+          <p>Quince episodios reales del documento base que, con desarrollo, pueden alimentar ensayos, entrevistas y presentaciones. No inventar nada; profundizar lo existente.</p>
+
+          <div class="cards">
+            <div class="card">
+              <h5>1 · La primera vez que vi el Tec</h5>
+              <div class="card__meta">Propósito · Sueño-hilo</div>
+              <p><strong>Qué ocurrió:</strong> niña de pocos años pasa por Periférico, ve el edificio, le pregunta a su mamá qué es, declara que estudiará ahí. <strong>Aprendió:</strong> algunas decisiones se toman antes de saber por qué. <strong>Pregunta que responde:</strong> ¿por qué el Tec, por qué este campus?</p>
+            </div>
+            <div class="card">
+              <h5>2 · No podía respirar y le pedí a Dios que me dejara vivir</h5>
+              <div class="card__meta">Resiliencia · Reencuadre existencial</div>
+              <p><strong>Qué ocurrió:</strong> crisis respiratoria, sensación de no poder responder a su mamá que la llamaba. <strong>Aprendió:</strong> vivir el día sin esperar a merecerlo. <strong>Pregunta:</strong> ¿qué cambió tu forma de ver la vida?</p>
+            </div>
+            <div class="card">
+              <h5>3 · El semestre en muletas</h5>
+              <div class="card__meta">Resiliencia + liderazgo silencioso</div>
+              <p><strong>Qué ocurrió:</strong> operación en septiembre 2024, regreso a clases sin adaptaciones; consigue apuntes por su cuenta; reconocimiento académico al final. <strong>Aprendió:</strong> se puede exigir excelencia sin que el sistema la facilite. <strong>Pregunta:</strong> tu mayor reto.</p>
+            </div>
+            <div class="card">
+              <h5>4 · Kermés a los 7 años</h5>
+              <div class="card__meta">Servicio temprano</div>
+              <p><strong>Qué ocurrió:</strong> vende galletas y guisos en la iglesia para reparar salones. <strong>Aprendió:</strong> se puede aportar antes de creerse capaz. <strong>Pregunta:</strong> ¿cuándo empezó tu vocación de servicio?</p>
+            </div>
+            <div class="card">
+              <h5>5 · La colecta del sismo</h5>
+              <div class="card__meta">Iniciativa · 2017</div>
+              <p><strong>Qué ocurrió:</strong> organiza colecta de víveres con cuatro amigos para damnificados. <strong>Aprendió:</strong> se puede movilizar a pares desde niña. <strong>Pregunta:</strong> primer proyecto propio.</p>
+            </div>
+            <div class="card">
+              <h5>6 · La petición a la dirección</h5>
+              <div class="card__meta">Liderazgo institucional</div>
+              <p><strong>Qué ocurrió:</strong> promueve una petición para mejorar salones y baños en secundaria. <strong>Aprendió:</strong> las instituciones responden si se les pide. <strong>Pregunta:</strong> ¿cuándo te enfrentaste a una autoridad?</p>
+            </div>
+            <div class="card">
+              <h5>7 · El día que me despedí de la gimnasia</h5>
+              <div class="card__meta">Duelo · Identidad</div>
+              <p><strong>Qué ocurrió:</strong> una semana de depresión tras el veredicto médico. Fue feliz un año, aprendió disciplina, resiliencia, equipo. <strong>Aprendió:</strong> lo que uno es no depende de lo que uno hace. <strong>Pregunta:</strong> pérdida.</p>
+            </div>
+            <div class="card">
+              <h5>8 · La tía que no llegó a mi cumpleaños</h5>
+              <div class="card__meta">Duelo · Presencia</div>
+              <p><strong>Qué ocurrió:</strong> planeaban festejar juntas; muere una semana antes en pandemia. <strong>Aprendió:</strong> lo importante es lo presente, no lo agendado. <strong>Uso:</strong> mencionar una vez, no habitar.</p>
+            </div>
+            <div class="card">
+              <h5>9 · El primer libro a los 11</h5>
+              <div class="card__meta">Vida interior</div>
+              <p><strong>Qué ocurrió:</strong> en pandemia, sin poder ver a su familia, abre un libro por primera vez. <strong>Aprendió:</strong> la mente puede ser casa. <strong>Pregunta:</strong> ¿qué te formó intelectualmente?</p>
+            </div>
+            <div class="card">
+              <h5>10 · Primer plano terminado</h5>
+              <div class="card__meta">Vocación · Descubrimiento</div>
+              <p><strong>Qué ocurrió:</strong> primer semestre de la técnica, primera vez que se pierde en mezclar texturas, colores, formas. <strong>Aprendió:</strong> las horas se le van sin querer. <strong>Pregunta:</strong> ¿cómo supiste?</p>
+            </div>
+            <div class="card">
+              <h5>11 · Cambio de casa a los 10</h5>
+              <div class="card__meta">Adaptación</div>
+              <p><strong>Qué ocurrió:</strong> se muda a Iztapalapa, entra a un grupo ya formado, encuentra una amiga que aún conserva. <strong>Aprendió:</strong> pertenecer se construye. <strong>Pregunta:</strong> mudanza / cambio.</p>
+            </div>
+            <div class="card">
+              <h5>12 · Primer lugar CDMX en composiciones</h5>
+              <div class="card__meta">Disciplina</div>
+              <p><strong>Qué ocurrió:</strong> 6 h × 6 días × 1 año; primer lugar en 2° de sec. <strong>Aprendió:</strong> el resultado es proporcional al ensayo. <strong>Pregunta:</strong> logro que te enseñó algo.</p>
+            </div>
+            <div class="card">
+              <h5>13 · Vendiendo dulces en el recreo</h5>
+              <div class="card__meta">Emprendimiento infantil</div>
+              <p><strong>Qué ocurrió:</strong> dulces, pulseras, maquillaje, trabajos escolares durante primaria y 2° sec. <strong>Aprendió:</strong> el ingreso puede fabricarse. <strong>Pregunta:</strong> creatividad económica.</p>
+            </div>
+            <div class="card">
+              <h5>14 · Hospitales pintados de blanco</h5>
+              <div class="card__meta">Observación · Semilla profesional</div>
+              <p><strong>Qué ocurrió:</strong> hospitalizada por crisis alérgica confundida con asma; nota que las paredes blancas no ayudan. <strong>Aprendió:</strong> el diseño es medicina. <strong>Pregunta:</strong> tu tesis profesional.</p>
+            </div>
+            <div class="card">
+              <h5>15 · La conversación con un primo</h5>
+              <div class="card__meta">Violencia de género · Servicio actual</div>
+              <p><strong>Qué ocurrió:</strong> conversaciones sostenidas con hombres de su familia sobre violencia y estereotipos. <strong>Aprendió:</strong> la prevención empieza en la mesa. <strong>Pregunta:</strong> ¿qué problema social te preocupa?</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="chapter" id="s21">
+        <div class="chapter__head">
+          <span class="chapter__num">XXI.</span>
+          <h2 class="chapter__title">Frases con potencial narrativo</h2>
+        </div>
+        <div class="prose">
+          <p>Todas son literales de Dafne. Sirven como semillas para titulares, cierres o ganchos.</p>
+          <ul>
+            <li><strong>«Algún día voy a estudiar ahí.»</strong> — Su promesa de infancia. Perfecta para abrir un ensayo circular que cierre en “ya estoy aquí”.</li>
+            <li><strong>«Aunque mi mamá me llamaba, yo no podía responderle.»</strong> — Imagen sensorial fuerte del episodio respiratorio. Núcleo emocional real.</li>
+            <li><strong>«A pesar de los maestros pude sacar un reconocimiento académico.»</strong> — Frase inusualmente dura sobre la falta de apoyo. Cuidar el tono: usarla como diagnóstico, no como reproche.</li>
+            <li><strong>«Que no sean solo paredes blancas.»</strong> — Tesis mínima de su arquitectura. Puede convertirse en línea de cierre.</li>
+            <li><strong>«Los comentarios negativos hablan de sus límites, no de los míos.»</strong> — Autoconocimiento maduro. Útil para pregunta de mayor error.</li>
+            <li><strong>«Aprendí que cada día es una oportunidad… también para hacer felices a los demás.»</strong> — Puente entre historia personal y vocación de servicio.</li>
+            <li><strong>«Diseñar espacios inclusivos.»</strong> — Su propia formulación de propósito. Hay que precisarla, pero es el núcleo.</li>
+            <li><strong>«No espero que me elijan porque crea que soy mejor.»</strong> — Frase que, bien administrada, transmite madurez sin falsa modestia.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="chapter" id="s22">
+        <div class="chapter__head">
+          <span class="chapter__num">XXII.</span>
+          <h2 class="chapter__title">Riesgos de storytelling</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead><tr><th>Riesgo</th><th>Cómo evitarlo</th></tr></thead>
+              <tbody>
+                <tr><td>Victimización — hospital + tía + rodilla + muletas + carencias todo en un solo ensayo</td><td>Elegir un solo episodio de cuerpo por ensayo; el resto en notas breves. Regla: máximo una lágrima por texto.</td></tr>
+                <tr><td>Cliché de la arquitectura “humana, inclusiva y sostenible”</td><td>Cambiar adjetivos por acciones y objetos concretos: una rampa, un tragaluz, un color, un umbral.</td></tr>
+                <tr><td>“Quiero ayudar a todos”</td><td>Elegir una población, una necesidad, un mecanismo — y decirlo así.</td></tr>
+                <tr><td>Presentar proyecto de adultos mayores o útiles como si ya existiera</td><td>Hablarlos en futuro condicional hasta que haya piloto real.</td></tr>
+                <tr><td>Convertir la falta de apoyo institucional en queja</td><td>Contar el hecho sin juicio; que el juicio lo haga el lector.</td></tr>
+                <tr><td>Sobre-usar el asma como leitmotiv</td><td>El asma aparece una vez, en un texto. En los demás, se traduce a otros idiomas (vulnerabilidad, adaptación, escucha del cuerpo).</td></tr>
+                <tr><td>Lista de premios como estrategia</td><td>Los premios se mencionan en el CV. En los ensayos importa la historia detrás de uno.</td></tr>
+                <tr><td>Exageración de impacto (“cambié la vida de mi comunidad”)</td><td>Ser tímida en la afirmación, generosa en el detalle. Un cambio verificado vale más que diez sugeridos.</td></tr>
+                <tr><td>Cerrar con lugar común (“me esforzaré por ser la mejor versión de mí misma”)</td><td>Cerrar con imagen, no con manifiesto.</td></tr>
+                <tr><td>Emocionalidad sin capacidad</td><td>Cada emoción va acompañada de una decisión y una acción.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="chapter" id="s23">
+        <div class="chapter__head">
+          <span class="chapter__num">XXIII.</span>
+          <h2 class="chapter__title">Propuesta de valor personal</h2>
+        </div>
+        <div class="prose">
+          <ul>
+            <li><strong>Quién es:</strong> una joven de 16 años del oriente de la CDMX, con carrera técnica en arquitectura en curso, promedio consistente, historia de servicio desde los 7 años y experiencia directa de un espacio que no la sostuvo.</li>
+            <li><strong>Qué sabe hacer:</strong> diseñar planos y fachadas en AutoCAD, aprender idiomas por cuenta propia, sostener disciplina bajo dolor, convocar a un pequeño grupo para una causa concreta, mantener vínculos humanos durables.</li>
+            <li><strong>Qué problema le importa:</strong> que los espacios — hospitales, escuelas, la calle — sigan expulsando a los cuerpos que ya cargan una dificultad.</li>
+            <li><strong>Qué experiencia tiene:</strong> una biografía corta pero densa, atravesada por salud, servicio, disciplina y vocación técnica temprana.</li>
+            <li><strong>Qué quiere construir:</strong> una firma de arquitectura mexicana con vertiente social especializada en espacios de salud y educación.</li>
+            <li><strong>Qué impacto puede generar:</strong> primero en su cuadra — un centro comunitario, una escuela pública — luego a escala institucional en alianza con fundaciones.</li>
+            <li><strong>Por qué ahora:</strong> porque está en el punto exacto entre haber vivido lo suficiente para saber por qué elige la arquitectura y ser lo bastante joven para dejar que el Tec la forme antes de que otro camino la absorba.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="chapter" id="s24">
+        <div class="chapter__head">
+          <span class="chapter__num">XXIV.</span>
+          <h2 class="chapter__title">Visión a 10 años</h2>
+        </div>
+        <div class="prose">
+          <p>La visión de Dafne a diez años combina lo profesional (firma propia, colaboración con fundaciones, especialización en espacios sensibles al ecosistema), lo formativo (viajes, culturas, referentes internacionales) y lo personal (casa en Coyoacán, políglota, un pug).</p>
+
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead><tr><th>Criterio</th><th>Evaluación</th></tr></thead>
+              <tbody>
+                <tr><td>Claridad</td><td>Media-alta — sabe la profesión, sabe el tipo de proyecto, sabe la ciudad</td></tr>
+                <tr><td>Realismo</td><td>Alto — nada es imposible para alguien que se titula hoy en el Tec</td></tr>
+                <tr><td>Ambición</td><td>Media — le falta el techo alto: reconocimiento nacional / internacional, docencia, publicación</td></tr>
+                <tr><td>Coherencia con pasado</td><td>Muy alta</td></tr>
+                <tr><td>Diferenciación</td><td>Media — la sub-especialización aún no está afilada</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><strong>Recomendación estratégica:</strong> subir el techo. Añadir un elemento improbable — “diseñar el primer hospital pediátrico con estándar de accesibilidad universal en el sureste de México”, o algo por el estilo — que la fuerce a pensar a escala. No para escribirlo tal cual en el ensayo, sino para saber, ella, hacia dónde estira su vocación.</p>
+        </div>
+      </section>
+
+      <!-- 25 -->
+      <section class="chapter" id="s25">
+        <div class="chapter__head">
+          <span class="chapter__num">XXV.</span>
+          <h2 class="chapter__title">Plan de fortalecimiento</h2>
+        </div>
+        <div class="prose">
+          <p>Cada acción tiene razón estratégica declarada. Nada aquí es “para llenar CV”.</p>
+
+          <h4>Próximos 30 días</h4>
+          <ol>
+            <li><strong>Definir la tesis profesional en una frase</strong> — sesión con asesor. Sale de §III + §X. Sirve para todo ensayo.</li>
+            <li><strong>Escoger UN proyecto social prioritario</strong> — decisión binaria: adultos mayores acotado (alfabetización + prevención de fraudes) o iniciativa de accesibilidad en un espacio real. Ver §XXVI.</li>
+            <li><strong>Reconstruir el episodio de la petición de secundaria</strong> con detalle verificable (personas, tiempo, resultado). Añade músculo a la matriz de evidencia.</li>
+            <li><strong>Documentar el portafolio arquitectónico existente</strong>: fotografiar los ~10 planos, cortes y fachadas; ordenar por semestre; escribir una línea por pieza.</li>
+            <li><strong>Diagnóstico económico familiar</strong>: recopilar cifras reales de ingreso, dependientes y gastos para el paquete de LDM.</li>
+          </ol>
+
+          <h4>Próximos 90 días</h4>
+          <ol>
+            <li><strong>Ejecutar un piloto social</strong> — 6 a 10 personas, 6 a 8 sesiones, con foto, testimonio, número. Convertir intención en evidencia.</li>
+            <li><strong>Certificación SketchUp / Revit básico</strong> — cerrar la brecha técnica declarada.</li>
+            <li><strong>Sumarse a un colectivo</strong> — arquitectura estudiantil, accesibilidad, mujeres jóvenes. Uno, no tres.</li>
+            <li><strong>Producir tres piezas cortas</strong> (ensayo breve, video, tarjeta) sobre arquitectura + accesibilidad. Publicables en redes o entregables al proceso.</li>
+            <li><strong>Preparar entrevistas simuladas</strong> con 20 preguntas de LDM. Grabar, ver, corregir. Repetir tres veces.</li>
+          </ol>
+
+          <h4>Próximos 6 meses</h4>
+          <ol>
+            <li><strong>Ampliar el piloto</strong> a segunda cohorte o segunda ubicación. Volver replicable.</li>
+            <li><strong>Alianza institucional</strong> para el proyecto (parroquia, DIF, casa de día, fundación, escuela pública). Firmar convenio simple.</li>
+            <li><strong>Inglés al B1</strong> con certificación programada.</li>
+            <li><strong>Participar en al menos un foro / concurso</strong> (arquitectura estudiantil, hackatón social, feria de emprendimiento). Objetivo: exposición externa.</li>
+            <li><strong>Mentoría cruzada</strong>: acompañar a una compañera del Bachilleres en su propia postulación a alguna beca. Servir mientras aprende a servir.</li>
+          </ol>
+
+          <h4>Próximos 12 meses</h4>
+          <ol>
+            <li><strong>Portafolio arquitectónico consolidado</strong>: 5–8 piezas presentables, con memoria descriptiva.</li>
+            <li><strong>Impacto del proyecto documentado</strong>: 25+ personas atendidas, 3 testimonios en video, un aprendizaje sistematizado.</li>
+            <li><strong>Red de aliados personales</strong>: dos arquitectos que le den carta o mentoría, un mentor del sector social.</li>
+            <li><strong>Presencia digital modesta pero cuidada</strong>: portafolio online (o carpeta pública) del proceso arquitectónico y social.</li>
+            <li><strong>Cierre narrativo</strong>: dos ensayos maestros probados con audiencia externa. Elevator pitch de 90 segundos memorizado y creíble.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 26 -->
+      <section class="chapter" id="s26">
+        <div class="chapter__head">
+          <span class="chapter__num">XXVI.</span>
+          <h2 class="chapter__title">Proyecto prioritario</h2>
+        </div>
+        <div class="prose">
+          <div class="table-wrap">
+            <table class="matrix">
+              <thead>
+                <tr><th>Criterio</th><th>Adultos mayores</th><th>Útiles escolares</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Relevancia</td><td class="num">8</td><td class="num">6</td></tr>
+                <tr><td>Autenticidad</td><td class="num">6</td><td class="num">3</td></tr>
+                <tr><td>Viabilidad</td><td class="num">7</td><td class="num">8</td></tr>
+                <tr><td>Potencial de impacto</td><td class="num">7</td><td class="num">5</td></tr>
+                <tr><td>Escalabilidad</td><td class="num">6</td><td class="num">6</td></tr>
+                <tr><td>Diferenciación</td><td class="num">7</td><td class="num">3</td></tr>
+                <tr><td>Conexión con historia personal</td><td class="num">6</td><td class="num">3</td></tr>
+                <tr><td>Conexión con arquitectura</td><td class="num">3</td><td class="num">1</td></tr>
+                <tr><td>Potencial de liderazgo</td><td class="num">7</td><td class="num">5</td></tr>
+                <tr><td>Potencial para LDM</td><td class="num">7</td><td class="num">4</td></tr>
+                <tr><td><strong>Total</strong></td><td class="num"><strong>64 / 100</strong></td><td class="num"><strong>44 / 100</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout">
+            <div class="callout__label">Recomendación</div>
+            <p>Priorizar <strong>adultos mayores</strong>, pero con dos condiciones: <em>(1)</em> validar con Dafne que le importa realmente (el documento no lo confirma), y <em>(2)</em> reformularlo para que conecte con arquitectura — no un proyecto <em>al lado</em> de su vocación, sino uno que la anticipe. Ejemplo de reformulación: <strong>“Cómo los abuelos habitan su casa”</strong> — un pequeño estudio con 6–10 adultos mayores donde ella los acompaña a identificar barreras en su vivienda y propone adaptaciones sencillas. Cruza alfabetización digital (para reportar) con arquitectura (para intervenir).</p>
+          </div>
+
+          <p>Alternativa más ambiciosa: <strong>proyecto de accesibilidad en su propio Bachilleres</strong>. Diagnóstico de barreras físicas + propuesta gráfica de mejora + entrega formal a la dirección. Es autobiográficamente lógico (ella estuvo en muletas ahí) y arquitectónicamente lógico. Puede correr en paralelo o sustituir al de adultos mayores.</p>
+        </div>
+      </section>
+
+      <!-- 27 -->
+      <section class="chapter" id="s27">
+        <div class="chapter__head">
+          <span class="chapter__num">XXVII.</span>
+          <h2 class="chapter__title">Arquitectura + impacto social</h2>
+        </div>
+        <div class="prose">
+          <p>Teoría de evolución profesional propuesta para servir como columna vertebral de toda su trayectoria pública:</p>
+
+          <div class="timeline">
+            <div class="timeline__item"><div class="timeline__stage">Vivencia<small>Ya sucedió</small></div><div class="timeline__body"><p>Cuerpo prematuro, respiratorio, hospitalizado. Rodilla rota, muletas, escuela sin adaptaciones. Casa multigeneracional con abuelos.</p></div></div>
+            <div class="timeline__item"><div class="timeline__stage">Observación<small>Ya sucedió</small></div><div class="timeline__body"><p>Los hospitales son blancos. Las escuelas no tienen rampas. Los adultos mayores negocian el espacio doméstico solos. Los espacios expulsan.</p></div></div>
+            <div class="timeline__item"><div class="timeline__stage">Proyecto piloto<small>Próximos 12 meses</small></div><div class="timeline__body"><p>Piloto documentado de intervención — accesibilidad en el Bachilleres o barreras en casas de adultos mayores. Con foto, número y aprendizaje.</p></div></div>
+            <div class="timeline__item"><div class="timeline__stage">Formación<small>Años 1–5 Tec</small></div><div class="timeline__body"><p>Arquitectura en Tec CDMX, con foco extracurricular en accesibilidad, arquitectura hospitalaria, diseño para envejecimiento. Cursos internacionales cortos si aparecen.</p></div></div>
+            <div class="timeline__item"><div class="timeline__stage">Especialización<small>Años 5–8</small></div><div class="timeline__body"><p>Postgrado o especialidad en arquitectura hospitalaria / diseño universal / arquitectura sensorial. Colaboración con Fundación Casita, Salud, o similares.</p></div></div>
+            <div class="timeline__item"><div class="timeline__stage">Ejercicio<small>Años 8–15</small></div><div class="timeline__body"><p>Firma propia + alianza estable con fundaciones. Portafolio de escuelas y espacios de salud rediseñados. Docencia adjunta.</p></div></div>
+            <div class="timeline__item"><div class="timeline__stage">Transformación<small>Años 15+</small></div><div class="timeline__body"><p>Referente mexicana en diseño para vulnerabilidad. Publicación, docencia, política pública para lineamientos de accesibilidad en obra pública.</p></div></div>
+          </div>
+
+          <p>Este arco tiene la propiedad de ser <em>defendible</em>: en cada etapa hay una pregunta clara, un resultado esperado y un vínculo con la anterior.</p>
+        </div>
+      </section>
+
+      <!-- 28 -->
+      <section class="chapter" id="s28">
+        <div class="chapter__head">
+          <span class="chapter__num">XXVIII.</span>
+          <h2 class="chapter__title">Diagnóstico final</h2>
+        </div>
+        <div class="prose">
+          <div class="top-grid">
+            <div>
+              <h4>Fortalezas · Top 10</h4>
+              <ol>
+                <li>Coherencia biografía → vocación</li>
+                <li>Resiliencia física verificable y reciente</li>
+                <li>Consistencia académica bajo adversidad</li>
+                <li>Servicio comunitario desde los 7 años</li>
+                <li>Curiosidad intelectual madura</li>
+                <li>Autoconocimiento poco común a su edad</li>
+                <li>Disciplina traducible entre dominios</li>
+                <li>Referentes arquitectónicos maduros</li>
+                <li>Capacidad de sostener vínculos humanos</li>
+                <li>Autenticidad de tono al narrar</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Debilidades · Top 10</h4>
+              <ol>
+                <li>Ausencia de proyecto social actual con impacto medido</li>
+                <li>Impacto de servicio concentrado en primaria y secundaria</li>
+                <li>Visión profesional genérica en su formulación</li>
+                <li>Ejecución no verificable (todo son intenciones)</li>
+                <li>Solo AutoCAD; sin SketchUp/Revit</li>
+                <li>Inglés A2, sin certificación</li>
+                <li>Sin pertenencia actual a colectivo o club</li>
+                <li>Petición institucional sin resultado documentado</li>
+                <li>Movilización limitada a círculo cercano</li>
+                <li>Cero exposición externa (medios, foros, pláticas)</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Oportunidades · Top 10</h4>
+              <ol>
+                <li>Piloto de accesibilidad en su Bachilleres</li>
+                <li>Estudio con adultos mayores de su cuadra</li>
+                <li>Alianza con parroquia donde vendía galletas</li>
+                <li>Portafolio digital cuidado</li>
+                <li>Certificación SketchUp/Revit + B1 inglés</li>
+                <li>Mentoría con arquitecta mexicana consolidada</li>
+                <li>Participación en foro estudiantil / hackatón social</li>
+                <li>Reconstrucción documentada de la petición escolar</li>
+                <li>Publicación de proceso en redes</li>
+                <li>Vinculación con red LDM antes del proceso (evento abierto)</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Riesgos · Top 10</h4>
+              <ol>
+                <li>Presentar proyectos futuros como logros</li>
+                <li>Sobre-usar la enfermedad como leitmotiv</li>
+                <li>Caer en tono de queja hacia maestros del Bachilleres</li>
+                <li>Dispersión narrativa por añadir todos los proyectos</li>
+                <li>Suavizar la petición y perder su fuerza</li>
+                <li>Escribir con clichés (“humano, inclusivo, sostenible”)</li>
+                <li>Que la entrevista pida cifras que no existen</li>
+                <li>Que la comparen con candidatos con impacto real</li>
+                <li>Que el ensayo suene a plantilla motivacional</li>
+                <li>Que la ansiedad de escribir “bien” apague su voz</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Diferenciadores · Top 10</h4>
+              <ol>
+                <li>Cuerpo propio como territorio de aprendizaje arquitectónico</li>
+                <li>Semestre en muletas + reconocimiento académico</li>
+                <li>Crisis respiratoria como marco existencial</li>
+                <li>Kermés a los 7 → colecta 2017 → petición 2022</li>
+                <li>Barragán + accesibilidad como tríada latente</li>
+                <li>Tres idiomas en curso a los 16</li>
+                <li>Postura no dogmática sobre violencia de género</li>
+                <li>Continuidad afectiva desde primaria</li>
+                <li>Emprendimiento infantil</li>
+                <li>Autoconciencia sobre sus propios límites</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Historias más poderosas · Top 10</h4>
+              <ol>
+                <li>El semestre en muletas</li>
+                <li>La crisis respiratoria</li>
+                <li>“Algún día voy a estudiar ahí”</li>
+                <li>Kermés a los 7 años</li>
+                <li>Colecta del sismo 2017</li>
+                <li>Petición a la dirección</li>
+                <li>El primer plano terminado</li>
+                <li>La tía que no llegó al cumpleaños (uso puntual)</li>
+                <li>Primer libro a los 11 en pandemia</li>
+                <li>El día que dejó la gimnasia</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Evidencias más fuertes · Top 10</h4>
+              <ol>
+                <li>Promedio 9.6 sec / 9.2 prepa</li>
+                <li>3 reconocimientos académicos</li>
+                <li>Reconocimiento en semestre postoperatorio</li>
+                <li>1° CDMX composiciones gimnásticas</li>
+                <li>Carrera técnica en arquitectura en curso</li>
+                <li>~10 planos, cortes y fachadas en AutoCAD</li>
+                <li>Inglés A2 + alemán + francés en aprendizaje</li>
+                <li>Rep. de grupo 6 años acumulados</li>
+                <li>Colecta 2017 con 4 amigos</li>
+                <li>Descripción coherente de amigos (empática, dedicada, leal)</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Vacíos críticos · Top 10</h4>
+              <ol>
+                <li>Resultado real de la petición escolar</li>
+                <li>Cifras económicas familiares</li>
+                <li>Estatus real de los proyectos anunciados por el asesor</li>
+                <li>Portafolio visual de la carrera técnica</li>
+                <li>Estado postoperatorio hoy</li>
+                <li>Historia de la abuela María del Carmen (asesor vs. documento)</li>
+                <li>Actividades extracurriculares actuales</li>
+                <li>Testimonios de terceros (compañeros, maestros)</li>
+                <li>Redes / presencia pública</li>
+                <li>Un ejemplo de decisión difícil reciente</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 29 -->
+      <section class="chapter" id="s29">
+        <div class="chapter__head">
+          <span class="chapter__num">XXIX.</span>
+          <h2 class="chapter__title">Score estratégico</h2>
+        </div>
+        <div class="prose">
+          <div class="callout callout--warn">
+            <div class="callout__label">Cómo leer este score</div>
+            <p>Herramienta interna. <strong>No</strong> es una probabilidad de admisión. Sirve para identificar dónde invertir energía en los próximos 12 meses.</p>
+          </div>
+
+          <div class="scores">
+            <div class="score"><span>Coherencia narrativa</span><div class="score__bar"><div class="score__fill score__fill--good" style="width:84%"></div></div><span class="score__val">84</span></div>
+            <div class="score"><span>Historia personal</span><div class="score__bar"><div class="score__fill score__fill--good" style="width:82%"></div></div><span class="score__val">82</span></div>
+            <div class="score"><span>Resiliencia</span><div class="score__bar"><div class="score__fill score__fill--good" style="width:88%"></div></div><span class="score__val">88</span></div>
+            <div class="score"><span>Servicio</span><div class="score__bar"><div class="score__fill" style="width:70%"></div></div><span class="score__val">70</span></div>
+            <div class="score"><span>Propósito</span><div class="score__bar"><div class="score__fill" style="width:72%"></div></div><span class="score__val">72</span></div>
+            <div class="score"><span>Académico</span><div class="score__bar"><div class="score__fill" style="width:74%"></div></div><span class="score__val">74</span></div>
+            <div class="score"><span>Arquitectura</span><div class="score__bar"><div class="score__fill" style="width:66%"></div></div><span class="score__val">66</span></div>
+            <div class="score"><span>Potencial</span><div class="score__bar"><div class="score__fill" style="width:72%"></div></div><span class="score__val">72</span></div>
+            <div class="score"><span>Diferenciación</span><div class="score__bar"><div class="score__fill" style="width:68%"></div></div><span class="score__val">68</span></div>
+            <div class="score"><span>Liderazgo</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:58%"></div></div><span class="score__val">58</span></div>
+            <div class="score"><span>Impacto</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:48%"></div></div><span class="score__val">48</span></div>
+            <div class="score"><span>Evidencia</span><div class="score__bar"><div class="score__fill score__fill--warn" style="width:56%"></div></div><span class="score__val">56</span></div>
+          </div>
+
+          <div class="thesis" style="margin-top:2rem;">
+            <div class="thesis__label">Score global actual</div>
+            <p style="margin:0; font-size:2.2rem; font-family: var(--serif); letter-spacing:-0.02em;"><strong>69 / 100</strong></p>
+            <p style="margin: 0.6rem 0 0; font-family: var(--serif); font-size:0.98rem; color: var(--ink-2);">Candidatura <strong>sólidamente competitiva</strong> por historia y coherencia, con techo alto si se cierra la brecha entre <em>quién es</em> y <em>qué ha ejecutado</em>. Los 12 meses de ejecución que siguen mueven el score con facilidad al rango 82–86.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 30 -->
+      <section class="chapter" id="s30">
+        <div class="chapter__head">
+          <span class="chapter__num">XXX.</span>
+          <h2 class="chapter__title">Conclusión ejecutiva</h2>
+        </div>
+        <div class="prose">
+          <ol>
+            <li><strong>¿Quién es realmente?</strong> Una joven cuyo cuerpo le enseñó, sin que ella lo eligiera, qué hace un espacio bien pensado y qué hace uno que no lo es. Está usando esa lección para elegir profesión.</li>
+            <li><strong>Historia más poderosa:</strong> el semestre en muletas — reconocimiento académico en un plantel que no adaptó nada.</li>
+            <li><strong>Mayor fortaleza:</strong> la coherencia interna entre vida, aprendizaje y vocación.</li>
+            <li><strong>Mayor debilidad:</strong> no tiene un proyecto propio en marcha; todo es intención.</li>
+            <li><strong>Mayor diferenciador:</strong> el arco cuerpo → espacio → arquitectura, contado con anclaje personal irrepetible.</li>
+            <li><strong>Proyecto social prioritario:</strong> uno solo, reformulado para conectar con arquitectura — accesibilidad en el Bachilleres o estudio de barreras en casa de adultos mayores.</li>
+            <li><strong>Eje narrativo:</strong> “el cuerpo que aprendió a leer los espacios”.</li>
+            <li><strong>Qué demostrar en 12 meses:</strong> ejecución (piloto), profundidad técnica (SketchUp/Revit + inglés B1), especificidad de tesis profesional y evidencia externa (foro, publicación, mentoría).</li>
+            <li><strong>Qué evitar:</strong> victimización, cliché arquitectónico, presentar futuro como pasado, dispersión narrativa por añadir proyectos que no son suyos.</li>
+            <li><strong>Para pasar de buena a extraordinariamente competitiva:</strong> que el piloto social exista, que el portafolio arquitectónico se vea, que la tesis se afile a una sola frase, y que — sobre todo — la voz personal de Dafne no se pierda debajo del acompañamiento estratégico. Su mejor recurso es ella misma diciendo la verdad con sus palabras.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 31 -->
+      <section class="chapter" id="s31">
+        <div class="chapter__head">
+          <span class="chapter__num">XXXI.</span>
+          <h2 class="chapter__title">La candidatura en una sola frase</h2>
+        </div>
+        <div class="prose">
+          <div class="thesis" style="font-size: clamp(1.25rem, 2.4vw, 1.6rem); line-height:1.35;">
+            <p style="margin:0;">Dafne creció con un cuerpo que no cabía en los espacios que le tocaban, aprendió — en muletas, en camillas, en escuelas grises — que la arquitectura puede sostener o abandonar a una persona, y llega al Tec para convertir esa lección en una profesión al servicio de los cuerpos que hoy siguen siendo abandonados por los edificios que los reciben.</p>
+          </div>
+
+          <p style="margin-top:2rem; color: var(--muted); font-size: 0.9rem;">Este diagnóstico es la base sobre la cual construir ensayos, biografía, CV, cartas y entrevistas de la candidatura de Dafne Odette a Líderes del Mañana — y, con ajustes, a otros programas competitivos. No sustituye la voz de la candidata; la ordena.</p>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <div class="cta" role="complementary" aria-label="Contacto Vorka">
+        <div>
+          <p class="eyebrow" style="color: color-mix(in oklab, var(--paper) 65%, var(--ink) 35%); margin-bottom: 0.75rem;">Siguiente paso</p>
+          <h2>¿Dudas sobre este diagnóstico o siguiente sesión de trabajo?</h2>
+          <p style="margin-top:1rem;">Este documento es el punto de partida. Los ensayos, la biografía, el CV y la preparación de entrevista se construyen sobre estas 31 secciones — no antes. Cualquier duda, ajuste o siguiente paso, por aquí.</p>
+        </div>
+        <div class="cta__row">
+          <a class="btn btn--accent" href="https://www.vorka.mx/" target="_blank" rel="noopener">Ir a vorka.mx →</a>
+          <a class="btn btn--ghost" href="https://wa.me/528117804869" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="btn btn--ghost" href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Instagram @vorka.mx</a>
+        </div>
+        <div class="cta__contact">
+          <span>Escribe a <a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></span>
+          <span>o llama al <a href="tel:+528117804869">+52 81 1780 4869</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="brand-block">
+      <a class="brand" href="https://www.vorka.mx/" target="_blank" rel="noopener" style="font-size:1.1rem;">Vorka <span class="brand__dot">México</span></a>
+      <p style="margin-top:1rem;">Estrategia, liderazgo e influencia para organizaciones que necesitan <strong>impacto real</strong> en México.</p>
+      <div class="socials" aria-label="Redes sociales">
+        <a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 6.32a5.61 5.61 0 0 1-3.42-1.16 5.68 5.68 0 0 1-2.24-4.11h-3.5v14.03a2.83 2.83 0 1 1-2.02-2.71v-3.55a6.31 6.31 0 1 0 5.52 6.26V8.9a9.08 9.08 0 0 0 5.66 1.96V7.36a5.6 5.6 0 0 1 0-1.04Z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/vorkamexico" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12Z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h5>Servicios</h5>
+      <ul>
+        <li><a href="https://www.vorka.mx/#servicios" target="_blank" rel="noopener">Estrategia</a></li>
+        <li><a href="https://www.vorka.mx/#servicios" target="_blank" rel="noopener">Liderazgo</a></li>
+        <li><a href="https://www.vorka.mx/#servicios" target="_blank" rel="noopener">Comunicación</a></li>
+        <li><a href="https://www.vorka.mx/#sparks" target="_blank" rel="noopener">Vorka Sparks</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Empresa</h5>
+      <ul>
+        <li><a href="https://www.vorka.mx/#metodo" target="_blank" rel="noopener">Método</a></li>
+        <li><a href="https://www.vorka.mx/#para-quien" target="_blank" rel="noopener">Para quién</a></li>
+        <li><a href="https://www.vorka.mx/#huella" target="_blank" rel="noopener">Huella</a></li>
+        <li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Contacto</h5>
+      <ul>
+        <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
+        <li><a href="tel:+528117804869">+52 81 1780 4869</a></li>
+        <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">@vorka.mx</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer__legal">
+    <span>© 2026 Vorka México. Todos los derechos reservados.</span>
+    <span>Diagnóstico estratégico · Dafne Odette · Documento interno</span>
+  </div>
+</footer>
