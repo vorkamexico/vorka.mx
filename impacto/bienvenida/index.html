@@ -343,6 +343,53 @@
   }
   .faq details > div strong{color: var(--ink);}
 
+  /* INVITE CTA */
+  .invite-cta{
+    background: var(--ink); color: var(--paper);
+    border-radius: 10px; padding: 44px 40px;
+    margin: 40px 0 8px;
+    display:grid; grid-template-columns: 1fr auto; gap: 32px;
+    align-items: center;
+  }
+  .invite-cta-copy h3{
+    font-family: var(--sans); font-size: 26px; font-weight: 800;
+    letter-spacing: -0.025em; line-height: 1.15;
+    margin: 0 0 10px; color: var(--paper);
+  }
+  .invite-cta-copy p{
+    font-size: 15.5px; line-height: 1.55; color: var(--paper);
+    opacity: .8; margin: 0; max-width: 52ch;
+  }
+  .invite-cta-copy p strong{color: var(--paper); opacity: 1; font-weight: 700;}
+  .invite-btn{
+    background: var(--paper); color: var(--ink);
+    border: none; cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 18px 26px; border-radius: 100px;
+    display:inline-flex; align-items:center; gap: 10px;
+    transition: transform .15s, background .2s, color .2s;
+    white-space: nowrap;
+    min-width: 220px; justify-content: center;
+  }
+  .invite-btn:hover{transform: translateY(-2px);}
+  .invite-btn svg{width: 14px; height: 14px; flex-shrink: 0;}
+  .invite-btn[data-state="copied"]{background: var(--sureste); color: var(--paper);}
+  .invite-btn[data-state="error"]{background: var(--noreste); color: var(--paper);}
+  .invite-hint{
+    grid-column: 1 / -1;
+    font-size: 11.5px; letter-spacing: .04em;
+    color: var(--paper); opacity: .55; margin: 4px 0 0;
+    padding-top: 20px; border-top: 1px solid rgba(255,255,255,.15);
+  }
+  .invite-hint a{color: var(--paper); text-decoration: underline;}
+  @media (max-width: 720px){
+    .invite-cta{grid-template-columns: 1fr; padding: 32px 24px; gap: 22px;}
+    .invite-cta-copy h3{font-size: 22px;}
+    .invite-btn{width: 100%; min-width: 0;}
+  }
+
   /* SITE FOOTER */
   .site-footer{
     margin-top: 120px;
@@ -1096,27 +1143,6 @@
     </div>
 
     <div class="q-block">
-      <h4>Cómo se organiza</h4>
-      <ul>
-        <li><strong>Nacional:</strong> Presidencia, Vicepresidencias, Consejerías, Coordinaciones.</li>
-        <li><strong>Estatal:</strong> Liderazgos y coordinaciones estatales.</li>
-        <li><strong>Municipal:</strong> Representaciones municipales y equipos locales.</li>
-        <li><strong>Proyectos:</strong> Equipos por iniciativa o área.</li>
-        <li><strong>Voluntariado:</strong> Personas que suman desde donde están.</li>
-      </ul>
-    </div>
-
-    <div class="q-block">
-      <h4>Cómo se toman las decisiones</h4>
-      <ul>
-        <li><strong>Locales:</strong> las toma cada equipo con su liderazgo.</li>
-        <li><strong>Estatales:</strong> se articulan entre liderazgo estatal y municipios.</li>
-        <li><strong>Nacionales:</strong> Presidencia, VP e instancias colegiadas.</li>
-        <li><strong>Regla:</strong> a más personas afectadas, más gente en la conversación.</li>
-      </ul>
-    </div>
-
-    <div class="q-block">
       <h4>Puedes actuar directamente cuando…</h4>
       <ul>
         <li>Está dentro de tus responsabilidades.</li>
@@ -1433,6 +1459,18 @@
       </div>
     </div>
 
+    <div class="invite-cta">
+      <div class="invite-cta-copy">
+        <h3>Invita a más personas a IMPACTO.</h3>
+        <p>Con un click copias un mensaje listo para compartir por WhatsApp, redes o donde quieras. Incluye <strong>una breve presentación de IMPACTO y el enlace oficial de admisión</strong>.</p>
+      </div>
+      <button type="button" class="invite-btn" id="inviteBtn" data-state="idle" aria-live="polite">
+        <span class="invite-btn-label">Copiar mensaje</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 10V3.5A1.5 1.5 0 0 1 4.5 2H10"/></svg>
+      </button>
+      <p class="invite-hint">Enlace incluido en el mensaje: <a href="https://forms.gle/LcX8zzaUgSSPmcgg7" target="_blank" rel="noopener">forms.gle/LcX8zzaUgSSPmcgg7</a></p>
+    </div>
+
     <div class="block">
       <h2>Ya conoces IMPACTO. Ahora te toca hacerlo tuyo.</h2>
       <p>Sé qué es IMPACTO. Sé cuál puede ser mi lugar. Sé qué puedo hacer. Sé a quién acercarme. <strong>Sé cómo empezar a generar impacto.</strong> Con eso, ya empezaste.</p>
@@ -1525,6 +1563,66 @@
     if (saved) applyTheme(saved);
     else themeBtn.textContent = matchMedia("(prefers-color-scheme: dark)").matches ? "Modo claro" : "Modo oscuro";
   } catch(e){}
+
+  // Invite CTA — copy diffusion message to clipboard
+  const inviteBtn = document.getElementById("inviteBtn");
+  if (inviteBtn) {
+    const inviteMessage =
+      "¡Hola! Te invito a conocer IMPACTO.\n\n" +
+      "👉 Somos una organización nacional de juventudes mexicanas que impulsa el liderazgo, la participación y la creación de proyectos con impacto social positivo en México, actualmente estamos en 30 estados del país y somos más de 3,000 líderes de acción.\n\n" +
+      "En IMPACTO puedes:\n" +
+      "— Aprender y desarrollar habilidades reales\n" +
+      "— Sumarte a proyectos activos o crear los tuyos\n" +
+      "— Conectar con personas de todo el país\n" +
+      "— Generar cambios reales en tu comunidad\n\n" +
+      "No necesitas experiencia previa. Solo ganas de aportar. Regístrate aquí:\n" +
+      "—  https://forms.gle/LcX8zzaUgSSPmcgg7\n\n" +
+      "Juventudes Impactando México A.C. — Impulsando la creación de nuevos liderazgos. (impacto.mex en Instagram) 🤠";
+
+    const inviteLabel = inviteBtn.querySelector(".invite-btn-label");
+    const defaultLabel = inviteLabel.textContent;
+    let resetTimer = null;
+
+    function flashState(state, label) {
+      inviteBtn.setAttribute("data-state", state);
+      inviteLabel.textContent = label;
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        inviteBtn.setAttribute("data-state", "idle");
+        inviteLabel.textContent = defaultLabel;
+      }, 2400);
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    inviteBtn.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(inviteMessage);
+          flashState("copied", "¡Mensaje copiado!");
+        } else if (fallbackCopy(inviteMessage)) {
+          flashState("copied", "¡Mensaje copiado!");
+        } else {
+          flashState("error", "Cópialo manualmente");
+        }
+      } catch (err) {
+        if (fallbackCopy(inviteMessage)) flashState("copied", "¡Mensaje copiado!");
+        else flashState("error", "Cópialo manualmente");
+      }
+    });
+  }
 </script>
 
 </body>
