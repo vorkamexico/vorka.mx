@@ -150,6 +150,71 @@
   }
   .theme-toggle:hover{color:var(--ink); border-color: var(--ink);}
 
+  /* TOC BAR (sticky) */
+  .toc-bar{
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    margin: 0 -24px 28px;
+    padding: 10px 24px;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--rule);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  .toc-bar::-webkit-scrollbar{display: none;}
+  .toc-inner{
+    display:flex; gap: 4px;
+    white-space: nowrap;
+    min-width: max-content;
+    padding: 2px 0;
+  }
+  .toc-chip{
+    display:inline-flex; align-items:center; gap: 8px;
+    padding: 8px 14px;
+    border-radius: 100px;
+    background: transparent;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 12.5px; font-weight: 600;
+    letter-spacing: -0.005em;
+    border: 1px solid transparent;
+    transition: color .15s, background .15s, border-color .15s;
+    flex-shrink: 0;
+  }
+  .toc-chip:hover{color: var(--ink); background: var(--paper-sunk);}
+  .toc-chip .toc-num{
+    font-size: 10px; font-weight: 800;
+    color: var(--ink-3);
+    letter-spacing: .1em;
+    font-variant-numeric: tabular-nums;
+    transition: color .15s, opacity .15s;
+  }
+  .toc-chip.active{
+    background: var(--ink); color: var(--paper);
+  }
+  .toc-chip.active .toc-num{color: var(--paper); opacity: .55;}
+  .toc-fade{
+    position: sticky; top: 0; z-index: 39;
+    pointer-events: none;
+    height: 0;
+  }
+
+  /* Ensure sections don't hide under the sticky bar when scrolling */
+  .section, .hero{scroll-margin-top: 72px;}
+
+  @media (max-width: 720px){
+    .toc-bar{margin: 0 -16px 20px; padding: 8px 16px;}
+    .toc-chip{font-size: 12px; padding: 7px 12px;}
+    .section, .hero{scroll-margin-top: 64px;}
+  }
+
   /* HERO */
   .hero{padding: 32px 0 56px; border-bottom: 1px solid var(--rule); margin-bottom: 40px;}
   .brand{
@@ -503,7 +568,7 @@
 
   /* PRINT */
   @media print{
-    .site-header .site-nav,.theme-toggle{display: none !important;}
+    .site-header .site-nav,.theme-toggle,.toc-bar{display: none !important;}
     .block{background: var(--paper) !important; color: var(--ink) !important; border: 2px solid var(--ink);}
     .block h2,.block p,.block p strong{color: var(--ink) !important;}
     .step,.q-block,.faq details,.form-card{page-break-inside: avoid;}
@@ -577,6 +642,28 @@
       <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">Modo oscuro</button>
     </nav>
   </header>
+
+  <!-- TOC BAR -->
+  <nav class="toc-bar" id="tocBar" aria-label="Índice de la guía">
+    <div class="toc-inner">
+      <a class="toc-chip" href="#inicio"><span class="toc-num">00</span>Inicio</a>
+      <a class="toc-chip" href="#bienvenida"><span class="toc-num">01</span>Bienvenida</a>
+      <a class="toc-chip" href="#que-es-impacto"><span class="toc-num">02</span>¿Qué es IMPACTO?</a>
+      <a class="toc-chip" href="#maravillas"><span class="toc-num">03</span>7 Maravillas</a>
+      <a class="toc-chip" href="#quien-soy"><span class="toc-num">04</span>¿Quién soy?</a>
+      <a class="toc-chip" href="#que-podemos-hacer"><span class="toc-num">05</span>¿Qué puedo hacer?</a>
+      <a class="toc-chip" href="#tienes-una-idea"><span class="toc-num">06</span>Tengo una idea</a>
+      <a class="toc-chip" href="#mapa-de-apoyo"><span class="toc-num">07</span>A quién acudir</a>
+      <a class="toc-chip" href="#asi-funcionamos"><span class="toc-num">08</span>Cómo funcionamos</a>
+      <a class="toc-chip" href="#esperamos-de-ti"><span class="toc-num">09</span>Compromisos</a>
+      <a class="toc-chip" href="#esperamos-de-impacto"><span class="toc-num">10</span>Qué esperar</a>
+      <a class="toc-chip" href="#crecemos"><span class="toc-num">11</span>Cómo crecer</a>
+      <a class="toc-chip" href="#representamos"><span class="toc-num">12</span>Cómo representar</a>
+      <a class="toc-chip" href="#no-solos"><span class="toc-num">13</span>No estamos solos</a>
+      <a class="toc-chip" href="#faq"><span class="toc-num">14</span>FAQ</a>
+      <a class="toc-chip" href="#que-sigue"><span class="toc-num">15</span>¿Qué sigue?</a>
+    </div>
+  </nav>
 
   <!-- HERO -->
   <header class="hero" id="inicio">
@@ -1563,6 +1650,58 @@
     if (saved) applyTheme(saved);
     else themeBtn.textContent = matchMedia("(prefers-color-scheme: dark)").matches ? "Modo claro" : "Modo oscuro";
   } catch(e){}
+
+  // TOC — highlight active section on scroll + keep active chip in view
+  const tocBar = document.getElementById("tocBar");
+  if (tocBar && "IntersectionObserver" in window) {
+    const chips = Array.from(tocBar.querySelectorAll(".toc-chip"));
+    const chipById = new Map();
+    const targets = [];
+    chips.forEach(chip => {
+      const id = chip.getAttribute("href").slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        chipById.set(id, chip);
+        targets.push(el);
+      }
+    });
+
+    let currentId = null;
+    function setActive(id) {
+      if (id === currentId) return;
+      currentId = id;
+      chips.forEach(c => c.classList.remove("active"));
+      const chip = chipById.get(id);
+      if (!chip) return;
+      chip.classList.add("active");
+      // Auto-scroll the toc bar to keep the active chip visible
+      const barRect = tocBar.getBoundingClientRect();
+      const chipRect = chip.getBoundingClientRect();
+      const offset = chipRect.left - barRect.left - (barRect.width / 2) + (chipRect.width / 2);
+      tocBar.scrollBy({ left: offset, behavior: "smooth" });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      // Pick the topmost visible section
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length) setActive(visible[0].target.id);
+    }, {
+      // Consider a section "active" once its top crosses just below the sticky bar
+      rootMargin: "-80px 0px -60% 0px",
+      threshold: 0
+    });
+    targets.forEach(t => observer.observe(t));
+
+    // On click, mark active immediately for snappy feedback
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        const id = chip.getAttribute("href").slice(1);
+        setActive(id);
+      });
+    });
+  }
 
   // Invite CTA — copy diffusion message to clipboard
   const inviteBtn = document.getElementById("inviteBtn");
