@@ -1,0 +1,569 @@
+
+<title>Cómo ganar la beca · Julián</title>
+<style>
+  :root {
+    --paper: #EFEBE1;
+    --paper-2: #E7E2D5;
+    --ink: #13181B;
+    --ink-2: #2A2F32;
+    --muted: #6B675E;
+    --rule: #C7C1B4;
+    --accent: #0E3B45;
+    --accent-soft: #185764;
+    --signal: #B4451D;
+    --good: #2F5D3B;
+
+    --serif: ui-serif, "New York", "Charter", "Iowan Old Style", Cambria, Georgia, serif;
+    --sans: ui-sans-serif, -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Menlo", "Roboto Mono", monospace;
+
+    --measure: 62ch;
+    --gutter: clamp(1rem, 3vw, 2rem);
+    --step-6: clamp(2rem, 5.5vw, 3.6rem);
+    --step-5: clamp(1.4rem, 3.4vw, 2rem);
+    --step-4: clamp(1.2rem, 2.4vw, 1.5rem);
+    --step-3: 1.1rem;
+    --step-2: 1rem;
+    --step-1: 0.9rem;
+    --step-0: 0.78rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10141A;
+      --paper-2: #171C22;
+      --ink: #EAE4D6;
+      --ink-2: #C7C1B2;
+      --muted: #8B857A;
+      --rule: #2A2F35;
+      --accent: #58B0BD;
+      --accent-soft: #3B8B96;
+      --signal: #E67449;
+      --good: #6AAF7A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10141A;
+    --paper-2: #171C22;
+    --ink: #EAE4D6;
+    --ink-2: #C7C1B2;
+    --muted: #8B857A;
+    --rule: #2A2F35;
+    --accent: #58B0BD;
+    --accent-soft: #3B8B96;
+    --signal: #E67449;
+    --good: #6AAF7A;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .site-header {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in oklab, var(--paper) 88%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .site-header__inner {
+    max-width: 780px; margin: 0 auto;
+    padding: 0.7rem var(--gutter);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .brand {
+    font-family: var(--sans);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    font-size: var(--step-2);
+    color: var(--ink);
+    text-decoration: none;
+    display: inline-flex; align-items: baseline; gap: 0.35rem;
+  }
+  .brand__dot { color: var(--accent); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn--solid { background: var(--ink); color: var(--paper); }
+  .btn--solid:hover { transform: translateY(-1px); }
+  .btn--accent { background: var(--accent); color: var(--paper); }
+  .btn--accent:hover { background: var(--accent-soft); transform: translateY(-1px); }
+  .btn--ghost { background: transparent; color: var(--paper); border-color: color-mix(in oklab, var(--paper) 40%, transparent); }
+  .btn--ghost:hover { border-color: var(--paper); }
+
+  main { max-width: 780px; margin: 0 auto; padding: 0 var(--gutter) 2.5rem; }
+
+  .hero {
+    padding: clamp(2rem, 6vw, 4.5rem) 0 clamp(1.25rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.85rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: var(--step-6);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+    max-width: 18ch;
+  }
+  .hero__lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--step-4);
+    line-height: 1.35;
+    color: var(--ink-2);
+    max-width: 42ch;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  section.chapter {
+    padding: clamp(1.5rem, 3.5vw, 2.25rem) 0;
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 4.5rem;
+  }
+  section.chapter:first-of-type { border-top: none; padding-top: clamp(1.75rem, 4vw, 2.5rem); }
+
+  .chapter__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .chapter__num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .chapter__title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: var(--step-5);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .prose { max-width: var(--measure); }
+  .prose h4 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 1.25rem 0 0.5rem;
+  }
+  .prose p { margin: 0 0 0.85rem; }
+  .prose ul, .prose ol { margin: 0 0 0.85rem; padding-left: 1.15rem; }
+  .prose li { margin-bottom: 0.4rem; }
+  .prose li::marker { color: var(--muted); }
+  .prose strong { font-weight: 600; color: var(--ink); }
+  .prose em { color: var(--ink-2); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 0.85rem 1.05rem;
+    background: color-mix(in oklab, var(--accent) 5%, transparent);
+    font-family: var(--serif);
+    margin: 1.15rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout--warn { border-color: var(--signal); background: color-mix(in oklab, var(--signal) 6%, transparent); }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .callout__label {
+    font-family: var(--sans);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+  }
+
+  .swap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    margin: 1rem 0;
+  }
+  @media (min-width: 560px) { .swap { grid-template-columns: 1fr 1fr; gap: 0.85rem; } }
+  .swap__box {
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .swap__box--out { background: color-mix(in oklab, var(--signal) 5%, transparent); border-color: color-mix(in oklab, var(--signal) 30%, var(--rule)); }
+  .swap__box--in { background: color-mix(in oklab, var(--good) 6%, transparent); border-color: color-mix(in oklab, var(--good) 30%, var(--rule)); }
+  .swap__label {
+    font-family: var(--sans);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+  }
+  .swap__label--out { color: var(--signal); }
+  .swap__label--in { color: var(--good); }
+
+  .keywords {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0 1.25rem;
+  }
+  .kw {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--paper-2);
+  }
+  .kw__word {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 0.35rem;
+  }
+  .kw__word em {
+    color: var(--accent);
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+  }
+  .kw p { margin: 0; font-family: var(--serif); font-size: 0.88rem; line-height: 1.5; color: var(--ink-2); }
+
+  .cta {
+    margin: 2rem 0 0;
+    padding: 1.75rem clamp(1.15rem, 4vw, 2rem);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 8px;
+    display: grid;
+    gap: 1rem;
+  }
+  .cta .eyebrow { color: color-mix(in oklab, var(--paper) 65%, var(--ink) 35%); margin: 0; }
+  .cta h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  .cta p {
+    color: color-mix(in oklab, var(--paper) 78%, var(--ink) 22%);
+    max-width: 52ch;
+    font-family: var(--serif);
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+  .cta__row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 0.25rem; }
+  .cta .btn--accent { background: var(--paper); color: var(--ink); }
+  .cta .btn--accent:hover { background: #fff; }
+
+  footer.site-footer {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .site-footer__inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 1.5rem var(--gutter);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .site-footer__inner a { color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  .site-footer__inner a:hover { color: var(--ink); border-color: var(--ink); }
+
+  ::selection { background: color-mix(in oklab, var(--accent) 30%, transparent); }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto; }
+  }
+</style>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="https://www.vorka.mx/" target="_blank" rel="noopener">Vorka <span class="brand__dot">México</span></a>
+    <a class="btn btn--solid" href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener">Mentoría →</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="doc-title">
+    <p class="eyebrow">Cómo posicionar tu candidatura · Líderes del Mañana</p>
+    <h1 id="doc-title">Cómo ganar la beca con lo que ya tienes</h1>
+    <p class="hero__lede">No te falta proyecto. Te falta traducirlo al idioma que el comité busca escuchar.</p>
+  </section>
+
+  <!-- 01 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">01</span>
+      <h2 class="chapter__title">Qué está buscando LDM realmente</h2>
+    </div>
+    <div class="prose">
+      <p>Antes de pensar en palabras, entiende qué está detrás de la beca. El comité no está buscando <em>al mejor emprendedor</em>. Está buscando <strong>al joven que va a devolverle valor a México</strong> desde una posición de liderazgo. La beca es una apuesta a largo plazo, no un premio a lo que ya hiciste.</p>
+      <p>Cuatro cosas pesan más que las demás:</p>
+      <ol>
+        <li><strong>Historia de superación</strong> con agencia propia (no víctima, sino alguien que hizo algo con lo que tenía).</li>
+        <li><strong>Liderazgo con impacto en tu comunidad</strong>, no solo logros individuales.</li>
+        <li><strong>Coherencia</strong> entre tu historia, la carrera que eliges y cómo vas a devolver.</li>
+        <li><strong>Proyección</strong>: qué vas a construir con la beca que sin ella sería mucho más difícil.</li>
+      </ol>
+      <p>Tu proyecto de Casimiro Castillo cumple los cuatro. Solo hay que decirlo bien.</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">02</span>
+      <h2 class="chapter__title">Cómo ven tu proyecto desde arriba</h2>
+    </div>
+    <div class="prose">
+      <p>La diferencia entre que te den la beca o no está en <em>cómo lo enmarques</em>. Mismo proyecto, dos lecturas posibles:</p>
+
+      <div class="swap">
+        <div class="swap__box swap__box--out">
+          <span class="swap__label swap__label--out">Cómo NO decirlo</span>
+          Un joven que ayuda a promocionar negocios locales en redes sociales.
+        </div>
+        <div class="swap__box swap__box--in">
+          <span class="swap__label swap__label--in">Cómo SÍ decirlo</span>
+          Un joven que construye <strong>infraestructura de comunicación local</strong> para conectar a los pequeños negocios de su municipio con la audiencia que ya vive junto a ellos.
+        </div>
+      </div>
+
+      <div class="swap">
+        <div class="swap__box swap__box--out">
+          <span class="swap__label swap__label--out">Cómo NO decirlo</span>
+          Trabajamos con más de 50 negocios haciendo contenido.
+        </div>
+        <div class="swap__box swap__box--in">
+          <span class="swap__label swap__label--in">Cómo SÍ decirlo</span>
+          En 8 meses hemos acompañado a más de 50 emprendedores del municipio, articulando <strong>campañas colectivas</strong> como la Ruta del Sabor, donde los negocios dejan de competir sueltos y empiezan a moverse como <strong>ecosistema</strong>.
+        </div>
+      </div>
+
+      <div class="swap">
+        <div class="swap__box swap__box--out">
+          <span class="swap__label swap__label--out">Cómo NO decirlo</span>
+          Quiero tener mi propia agencia de redes sociales.
+        </div>
+        <div class="swap__box swap__box--in">
+          <span class="swap__label swap__label--in">Cómo SÍ decirlo</span>
+          Quiero <strong>profesionalizar este modelo</strong> para <strong>fortalecer y hacer crecer el ecosistema de mi propio municipio</strong> — que Casimiro Castillo tenga a sus emprendedores conectados, capacitados y visibles con estándar profesional.
+        </div>
+      </div>
+
+      <p>La agencia comercial no desaparece — se subordina al proyecto de impacto. Es el instrumento, no el objetivo.</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">03</span>
+      <h2 class="chapter__title">Palabras clave que sí funcionan</h2>
+    </div>
+    <div class="prose">
+      <p>No son fórmulas mágicas. Son conceptos que <em>señalan</em> madurez y visión al comité — pero solo si los usas con contenido real detrás.</p>
+
+      <div class="keywords">
+        <div class="kw">
+          <p class="kw__word">Ecosistema local <em>uso 2 – 3 veces</em></p>
+          <p>Convierte tu proyecto en algo más grande que reels. Ejemplo: <em>“La Ruta del Sabor no es promoción, es articulación de un ecosistema local que no existía como tal.”</em></p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Desarrollo económico local <em>uso 2 veces</em></p>
+          <p>Coloca tu trabajo en la categoría correcta. No eres <em>marketing</em>, eres una palanca de desarrollo. Ejemplo: <em>“La comunicación digital puede volverse una herramienta de desarrollo económico local.”</em></p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Profundizar / consolidar <em>uso 1 – 2 veces</em></p>
+          <p>Marca que tu ambición es hacer <em>mejor</em> lo que ya haces, no expandirte por expandirte. Ejemplo: <em>“No busco crecer hacia afuera; busco profundizar en Casimiro Castillo hasta que el modelo esté consolidado.”</em></p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Transferencia de capacidades <em>uso 1 vez</em></p>
+          <p>Muestra que entiendes la diferencia entre asistencialismo y desarrollo. Ejemplo: <em>“Empezamos haciendo por los emprendedores de mi pueblo; el siguiente paso es transferirles la capacidad para que ellos sostengan su propia presencia.”</em></p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Agencia comunitaria <em>uso 1 vez</em></p>
+          <p>Reemplaza al débil <em>“ayudar a la comunidad”</em>. Habla de personas que actúan, no que reciben.</p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Desde adentro <em>uso 1 – 2 veces</em></p>
+          <p>Te distingue de proyectos externos. Ejemplo: <em>“No llegué a Casimiro Castillo a ayudar; nací aquí y estoy construyendo desde adentro.”</em></p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Modelo, no iniciativa <em>uso 1 vez</em></p>
+          <p>Habla de sistemas, no de esfuerzos aislados. Ejemplo: <em>“No es una iniciativa, es un modelo con ciclo, indicadores y aprendizajes.”</em></p>
+        </div>
+        <div class="kw">
+          <p class="kw__word">Devolver valor <em>uso 1 vez</em></p>
+          <p>Es literalmente el lenguaje de LDM. Ejemplo: <em>“Estudiar Comunicación y Producción Digital me permite devolverle valor a mi comunidad con herramientas profesionales.”</em></p>
+        </div>
+      </div>
+
+      <div class="callout callout--warn">
+        <div class="callout__label">Regla</div>
+        <p>Cada palabra clave <strong>debe ir acompañada de un ejemplo concreto</strong>. Sin ejemplo, sonarán a plantilla. Y no las uses todas — elige 4 o 5 que se cuelen naturalmente en tu ensayo y respuestas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">04</span>
+      <h2 class="chapter__title">Palabras que debes evitar</h2>
+    </div>
+    <div class="prose">
+      <p>Suenan bonito. Al comité le suenan a candidato genérico.</p>
+      <ul>
+        <li><strong>“Ayudar a los que menos tienen.”</strong> Coloca a los negocios como víctimas y a ti como salvador.</li>
+        <li><strong>“Transformar vidas.”</strong> Es la frase más repetida en cartas de motivación en México. No dice nada.</li>
+        <li><strong>“Dar lo mejor de mí.”</strong> Se espera de cualquier persona. No es diferenciador.</li>
+        <li><strong>“Cumplir mi sueño.”</strong> La beca no es para tu sueño, es para lo que vas a devolver.</li>
+        <li><strong>“Los emprendedores no sabían usar redes.”</strong> Condescendiente. Cambia por <em>“no tenían quien articulara su presencia digital dentro del contexto local.”</em></li>
+        <li><strong>“Aprovechar la oportunidad.”</strong> Vago. Cambia por qué vas a hacer específicamente.</li>
+        <li><strong>“Marca personal.”</strong> Suena a agencia comercial, aleja del ángulo comunitario.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">05</span>
+      <h2 class="chapter__title">Los tres ángulos que ganan tu ensayo</h2>
+    </div>
+    <div class="prose">
+      <p>Un ensayo bien estructurado se cuenta en tres actos. El tuyo se escribe solo si sigues este orden:</p>
+
+      <h4>Acto 1 · Origen</h4>
+      <p>Empieza a los 13, vendiendo dulces enchilados casa por casa. Ese detalle es <strong>oro</strong> — es concreto, sensorial, poco común. No lo cambies por algo más elegante. Ahí aprendiste que <em>ningún producto camina solo</em>, y esa frase puede ser la tesis de tu ensayo.</p>
+
+      <h4>Acto 2 · Lo que estás construyendo</h4>
+      <p>Aquí es donde metes el ecosistema, la Ruta del Sabor, los más de 50 negocios, los talleres y la revista. Pero <strong>no como catálogo de logros</strong>, sino como <em>respuesta a un problema real</em>: la brecha de visibilidad entre negocios y vecinos que viven a metros unos de otros.</p>
+
+      <h4>Acto 3 · Por qué la carrera y por qué el Tec</h4>
+      <p>Cierra explicando por qué Comunicación y Producción Digital es la herramienta exacta para fortalecer lo que ya empezaste. Y por qué el Tec Campus Guadalajara — <strong>proximidad geográfica a Casimiro Castillo</strong>, red de emprendedores, formación específica. Termina con el compromiso concreto: <em>“con esta formación quiero profundizar el trabajo en mi municipio, capacitar a los propios emprendedores y a jóvenes de Casimiro Castillo, y dejar consolidado un ecosistema local que hoy apenas está empezando.”</em></p>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">06</span>
+      <h2 class="chapter__title">Cómo posicionarte en la entrevista</h2>
+    </div>
+    <div class="prose">
+      <p>La entrevista se gana con <strong>ejemplos concretos, no con teoría</strong>. Prepara tres bloques:</p>
+      <ol>
+        <li><strong>Tres momentos que te definan.</strong> Uno de tu infancia (los dulces), uno del proyecto (la Ruta del Sabor), uno reciente (una decisión difícil de las últimas semanas). Cada uno con 60 segundos ensayados.</li>
+        <li><strong>Tres cifras y tres historias del proyecto.</strong> Que puedas soltar con naturalidad. Ejemplo: <em>“Hemos acompañado a 50+ negocios; te cuento uno que me marcó — [nombre] vendía comida y…”</em></li>
+        <li><strong>Una respuesta clara a “¿por qué tú?”.</strong> No es porque seas el mejor. Es porque tienes <em>una hipótesis específica sobre cómo la comunicación puede desarrollar económicamente a tu municipio</em>, y ya estás probándola en Casimiro Castillo.</li>
+      </ol>
+
+      <div class="callout">
+        <div class="callout__label">Frase que abre puertas</div>
+        <p><em>“Sin la beca voy a seguir con esto — más lento y más solo. Con la beca puedo profesionalizarlo, medirlo bien y dejar consolidado en Casimiro Castillo un ecosistema que hoy apenas está empezando a existir.”</em> Es honesta, no ruega y muestra proyección clara sobre tu comunidad.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">07</span>
+      <h2 class="chapter__title">Tu diferenciador que casi nadie más tiene</h2>
+    </div>
+    <div class="prose">
+      <p>De todos los que aspiran a LDM desde Comunicación, muy pocos pueden decir esto: <strong>ya estás haciendo lo que dices que quieres estudiar, y en tu propio pueblo, con impacto en tu propia comunidad</strong>. Ese es tu ángulo. No lo diluyas.</p>
+      <p>La mayoría de los candidatos habla de <em>lo que quiere ser</em>. Tú puedes hablar de <em>lo que ya estás construyendo</em>. Esa diferencia — hecha explícita en el ensayo y en la entrevista — pesa mucho.</p>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="chapter">
+    <div class="chapter__head">
+      <span class="chapter__num">08</span>
+      <h2 class="chapter__title">Recomendaciones para que valga la pena</h2>
+    </div>
+    <div class="prose">
+      <ol>
+        <li><strong>Reencuadra el proyecto</strong> del lenguaje de <em>marketing</em> al lenguaje de <em>desarrollo local</em>. Es la misma cosa; el segundo abre becas.</li>
+        <li><strong>Pon la carrera al servicio del proyecto</strong>, no al revés. El Tec es la herramienta para consolidar en Casimiro Castillo algo que hoy está empezando.</li>
+        <li><strong>Trabaja tu perfil de líder</strong>. Hoy la historia suena a <em>proyecto</em>; falta que suene a <em>persona que lidera</em>. Cuenta decisiones, conflictos, aprendizajes, cómo coordinas con Verónica.</li>
+        <li><strong>Cifras y ejemplos, siempre juntos.</strong> Sin ejemplo, la cifra es cascarón. Sin cifra, el ejemplo es anécdota.</li>
+        <li><strong>La visión a largo plazo va en términos de tu propia comunidad</strong>, no de expansión ni de negocio propio. Profundizar en Casimiro Castillo es más creíble y más poderoso que prometer estar en muchos pueblos.</li>
+        <li><strong>Practica en voz alta con alguien que no te conozca.</strong> Si en 60 segundos no entiende qué haces y por qué importa, hay que reescribir.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta" role="complementary" aria-label="Siguiente paso">
+    <p class="eyebrow">Vale la pena hacerlo bien</p>
+    <h2>Trabajemos tu candidatura juntos.</h2>
+    <p>Lo que hay aquí es el mapa. Lo que se necesita es acompañamiento uno a uno: perfil de líder, rebranding del proyecto, narrativa, estructura del ensayo, entrevista simulada, seguimiento. Es lo que hago en mentoría.</p>
+    <div class="cta__row">
+      <a class="btn btn--accent" href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener">Agendar mentoría →</a>
+      <a class="btn btn--ghost" href="https://wa.me/528117804869" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>© 2026 Vorka México · Notas de sesión</span>
+    <span><a href="https://www.vorka.mx/" target="_blank" rel="noopener">vorka.mx</a></span>
+  </div>
+</footer>
