@@ -1,0 +1,1368 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Propuesta — Altamesa · Vorka México</title>
+<meta name="description" content="Propuesta de gestión digital para Altamesa — línea de guisos esterilizados de Corporativo Susazón. Zona Guadalajara · Vorka México · 6 meses." />
+<meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1A1210" media="(prefers-color-scheme: dark)" />
+<link rel="icon" type="image/png" href="LOGO.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================== Logo asset ============================== */
+  :root{
+    --logo-data: url("LOGO.png");
+    --logo-filter: none;
+  }
+
+  /* ============================== Tokens ============================== */
+  :root{
+    --paper:#FBFAF8;
+    --paper-2:#F1EBE2;
+    --ink:#1A1210;
+    --ink-2:rgba(26,18,16,0.66);
+    --ink-3:rgba(26,18,16,0.40);
+    --ink-4:rgba(26,18,16,0.18);
+    --line:rgba(26,18,16,0.12);
+    --line-strong:rgba(26,18,16,0.30);
+    --accent:#6B1F2E;              /* bordeaux / vino */
+    --accent-soft:#8B2F42;
+    --accent-hover:#4E1520;
+    --accent-mc:#B4842B;            /* cobre / dorado cálido */
+    --accent-mc-soft:#8F6820;
+    --on-accent:#FBFAF8;
+    --field:rgba(26,18,16,0.04);
+    --field-focus:rgba(107,31,46,0.07);
+    --invert-section:#1A1210;
+    --invert-ink:#EFE7DA;
+    --invert-ink-2:rgba(239,231,218,0.66);
+    --invert-line:rgba(239,231,218,0.16);
+    --invert-accent:#D89AA6;
+    --invert-accent-mc:#E5B94A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#1A1210;
+      --paper-2:#251815;
+      --ink:#EFE7DA;
+      --ink-2:rgba(239,231,218,0.66);
+      --ink-3:rgba(239,231,218,0.40);
+      --ink-4:rgba(239,231,218,0.18);
+      --line:rgba(239,231,218,0.14);
+      --line-strong:rgba(239,231,218,0.30);
+      --accent:#D89AA6;
+      --accent-soft:#E4B4BE;
+      --accent-hover:#E4B4BE;
+      --accent-mc:#E5B94A;
+      --accent-mc-soft:#F0CB6E;
+      --on-accent:#1A1210;
+      --field:rgba(239,231,218,0.05);
+      --field-focus:rgba(216,154,166,0.08);
+      --logo-filter:invert(0.92) brightness(1.06);
+    }
+  }
+
+  /* ============================== Reset ============================== */
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+  html{-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility;font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif}
+  body{
+    font-family:'Mona Sans',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-size:16px;line-height:1.6;font-weight:400;overflow-x:hidden;
+  }
+  img,svg{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  button{background:none;border:0;cursor:pointer;padding:0;font:inherit;color:inherit}
+  ::selection{background:var(--accent);color:var(--on-accent)}
+
+  /* ============================== Type ============================== */
+  .display{
+    font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;
+    font-weight:800;letter-spacing:-0.025em;line-height:0.96;color:var(--ink);
+  }
+  .display-serif{
+    font-family:'Cormorant Garamond','EB Garamond',Georgia,serif;
+    font-weight:500;letter-spacing:-0.01em;line-height:1.04;color:var(--ink);
+  }
+  .display-serif em{font-style:italic;color:var(--accent);font-weight:500}
+  .ital{font-style:italic;color:var(--accent);font-weight:800}
+  .ital-mc{font-style:italic;color:var(--accent-mc);font-weight:800}
+  .smallcaps{
+    text-transform:uppercase;letter-spacing:0.16em;font-size:12px;font-weight:500;color:var(--ink-2);
+  }
+  .smallcaps-accent{
+    text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:600;color:var(--accent);
+    display:inline-flex;align-items:center;gap:14px;
+  }
+  .smallcaps-accent::before{
+    content:"";display:inline-block;width:24px;height:1px;background:var(--accent);
+  }
+  .smallcaps-mc{
+    text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:600;color:var(--accent-mc);
+    display:inline-flex;align-items:center;gap:14px;
+  }
+  .smallcaps-mc::before{
+    content:"";display:inline-block;width:24px;height:1px;background:var(--accent-mc);
+  }
+  .lead{font-size:clamp(18px,1.5vw,22px);line-height:1.55;color:var(--ink-2);max-width:60ch}
+
+  /* ============================== Shell ============================== */
+  .shell{
+    width:100%;
+    padding-left:clamp(24px,5vw,80px);
+    padding-right:clamp(24px,7vw,128px);
+    max-width:1520px;
+    margin-inline:auto;
+  }
+
+  /* ============================== Logo marks ============================== */
+  .brand-mark{
+    display:inline-block;height:38px;width:30px;
+    background:var(--logo-data) center/contain no-repeat;
+    filter:var(--logo-filter);
+  }
+  .hero-mark{
+    display:block;justify-self:end;align-self:end;
+    width:100%;max-width:260px;aspect-ratio:1080/1350;
+    background:var(--logo-data) center/contain no-repeat;
+    filter:var(--logo-filter);
+  }
+  .foot-mark{
+    display:inline-block;height:96px;width:76px;
+    background:var(--logo-data) center/contain no-repeat;
+    filter:var(--logo-filter);
+  }
+
+  /* ============================== Topbar ============================== */
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:color-mix(in srgb,var(--paper) 92%,transparent);
+    backdrop-filter:saturate(140%) blur(8px);
+    -webkit-backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-block:16px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand-name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;letter-spacing:-0.01em;
+    font-size:18px;color:var(--ink);
+  }
+  .brand-name span{color:var(--ink-3);font-weight:500}
+  .topbar nav{display:flex;gap:28px;align-items:center}
+  .topbar nav a{
+    font-size:14px;color:var(--ink-2);font-weight:500;
+    padding:8px 0;border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
+  }
+  .topbar nav a:hover{color:var(--ink);border-color:var(--ink)}
+  .topbar nav .pill{
+    background:var(--ink);color:var(--paper);
+    padding:11px 20px;font-size:14px;font-weight:500;
+  }
+  .topbar nav .pill:hover{background:var(--accent);color:var(--on-accent)}
+  @media (max-width:900px){.topbar nav a:not(.pill){display:none}}
+
+  /* ============================== Cover (hero) ============================== */
+  .hero{
+    padding-top:clamp(80px,12vh,160px);
+    padding-bottom:clamp(120px,18vh,220px);
+    position:relative;border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.42fr);
+    gap:clamp(40px,5vw,96px);align-items:end;
+  }
+  .hero-eyebrow{margin-bottom:32px}
+  .hero-title{
+    font-size:clamp(44px,6.8vw,116px);
+    max-width:16ch;
+  }
+  .hero-sub{
+    margin-top:clamp(28px,3.5vh,48px);
+    font-size:clamp(18px,1.4vw,21px);
+    line-height:1.55;color:var(--ink-2);
+    max-width:58ch;
+  }
+  .hero-meta{
+    margin-top:clamp(40px,5vh,64px);
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  }
+  .btn-primary{
+    background:var(--ink);color:var(--paper);
+    padding:18px 32px;font-size:15px;font-weight:500;letter-spacing:0.01em;
+    border-radius:0;transition:background .15s,color .15s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn-primary:hover{background:var(--accent);color:var(--on-accent)}
+  .btn-ghost{
+    color:var(--ink);padding:18px 10px;font-size:15px;font-weight:500;
+    border-bottom:1px solid var(--ink);transition:color .15s,border-color .15s;
+  }
+  .btn-ghost:hover{color:var(--accent);border-color:var(--accent)}
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .hero-mark{justify-self:start;max-width:120px;order:-1}
+  }
+
+  /* ============================== Meta card (portada) ============================== */
+  .cover-meta{
+    margin-top:clamp(64px,8vh,96px);
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:clamp(24px,3vw,56px);
+    padding-top:clamp(32px,4vh,48px);
+    border-top:1px solid var(--line-strong);
+  }
+  .cover-meta dt{
+    font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:8px;
+  }
+  .cover-meta dd{
+    margin:0;font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(15px,1.05vw,17px);letter-spacing:-0.005em;line-height:1.3;color:var(--ink);
+  }
+  .cover-meta dd em{font-style:italic;color:var(--accent-mc);font-weight:800}
+  @media (max-width:780px){.cover-meta{grid-template-columns:repeat(2,1fr);gap:32px 24px}}
+
+  /* ============================== Section base ============================== */
+  section{padding-block:clamp(96px,14vh,168px);border-bottom:1px solid var(--line)}
+  .section-head{
+    display:grid;
+    grid-template-columns:minmax(0,0.36fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);align-items:start;
+    margin-bottom:clamp(56px,9vh,112px);
+  }
+  .section-head .head-rail{padding-top:8px}
+  .section-head h2{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(38px,5vw,74px);letter-spacing:-0.02em;line-height:1.02;
+    margin:0 0 28px;max-width:20ch;text-wrap:balance;
+  }
+  .section-head .lead{margin-top:0}
+  @media (max-width:900px){.section-head{grid-template-columns:1fr;gap:24px}}
+
+  /* ============================== Sobre esta propuesta ============================== */
+  .about-quote{
+    padding-block:clamp(96px,14vh,180px);
+    background:var(--paper);border-bottom:1px solid var(--line);
+  }
+  .about-head{
+    text-align:center;margin-bottom:clamp(32px,5vh,64px);
+    display:flex;flex-direction:column;align-items:center;gap:24px;
+  }
+  .about-head h3{
+    font-family:'Cormorant Garamond',serif;font-weight:500;
+    font-size:clamp(30px,3.6vw,52px);letter-spacing:-0.005em;line-height:1.18;
+    margin:0;max-width:44ch;color:var(--ink);text-wrap:balance;
+  }
+  .about-head h3 em{font-style:italic;color:var(--accent);font-weight:500}
+  .about-head h3 .mc{font-style:italic;color:var(--accent-mc);font-weight:500}
+
+  /* ============================== Perfil ============================== */
+  .profile-grid{
+    display:grid;
+    grid-template-columns:minmax(0,0.42fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,88px);align-items:start;
+  }
+  .profile-card{
+    margin:0;position:relative;overflow:hidden;
+    aspect-ratio:1080/1350;background:var(--paper-2);
+    border-top:3px solid var(--accent-mc);
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:clamp(28px,3vw,44px);
+  }
+  .profile-card .p-mark{
+    font-family:'Cormorant Garamond',serif;font-weight:500;
+    font-size:clamp(44px,4.5vw,64px);letter-spacing:-0.02em;line-height:1;
+    color:var(--accent);font-style:italic;
+  }
+  .profile-card .p-tag{
+    font-size:11px;letter-spacing:0.16em;text-transform:uppercase;
+    color:var(--ink-2);font-weight:600;
+  }
+  .profile-card .p-body{
+    font-family:'Cormorant Garamond',serif;font-weight:500;font-style:italic;
+    font-size:clamp(20px,1.7vw,26px);line-height:1.3;color:var(--ink);
+    margin:24px 0;
+  }
+  .profile-card .p-foot{
+    font-size:12px;color:var(--ink-3);letter-spacing:0.02em;line-height:1.5;
+  }
+  .profile-body p{
+    font-size:clamp(16px,1.2vw,19px);
+    line-height:1.6;color:var(--ink);
+    margin:0 0 20px;max-width:52ch;
+  }
+  .profile-body p + p{color:var(--ink-2)}
+  .profile-social-head{
+    margin-top:clamp(36px,5vh,56px);
+    padding-top:clamp(24px,3vh,32px);
+    border-top:1px solid var(--line);
+    margin-bottom:20px;
+    display:flex;justify-content:space-between;align-items:baseline;
+    gap:16px;flex-wrap:wrap;
+  }
+  .profile-social-head .smallcaps{color:var(--ink-2)}
+  .profile-social-head .baseline-note{
+    font-size:12px;color:var(--ink-3);letter-spacing:0.02em;
+  }
+  .social-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:clamp(10px,1.2vw,16px);
+  }
+  @media (max-width:1100px){
+    .social-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  }
+  .social-card{
+    display:flex;flex-direction:column;gap:14px;
+    padding:22px 20px;
+    background:var(--field);
+    transition:background .15s;
+    border-top:2px solid transparent;
+  }
+  .social-card:hover{background:var(--field-focus);border-top-color:var(--accent-mc)}
+  .social-card.new{border-top-color:var(--accent-mc);background:color-mix(in srgb,var(--accent-mc) 8%,var(--field))}
+  .social-card .s-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .social-card .s-icon{
+    width:18px;height:18px;color:var(--ink);flex-shrink:0;
+  }
+  .social-card .s-net{
+    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--ink-2);font-weight:600;
+  }
+  .social-card .s-flag{
+    font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+    background:var(--accent-mc);color:var(--on-accent);
+    padding:3px 8px;font-weight:700;margin-left:auto;
+  }
+  .social-card .s-handle{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(15px,1.15vw,18px);letter-spacing:-0.01em;line-height:1.1;
+    color:var(--ink);word-break:break-word;
+  }
+  .social-card .s-note{
+    font-size:12px;line-height:1.4;color:var(--accent-mc);
+    font-weight:600;letter-spacing:0.01em;
+    padding-top:12px;border-top:1px solid var(--line);
+  }
+  @media (max-width:900px){
+    .profile-grid{grid-template-columns:1fr;gap:36px}
+    .profile-card{max-width:360px}
+  }
+  @media (max-width:640px){
+    .social-grid{grid-template-columns:1fr;gap:10px}
+  }
+
+  /* ============================== Contexto ============================== */
+  .contexto-body{
+    display:grid;
+    grid-template-columns:minmax(0,0.36fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);
+  }
+  .contexto-body .rail{padding-top:8px}
+  .contexto-body p{
+    font-size:clamp(17px,1.25vw,20px);line-height:1.6;color:var(--ink);
+    margin:0 0 24px;max-width:60ch;
+  }
+  .contexto-body p:last-of-type{color:var(--ink-2)}
+  .contexto-body .pull{
+    margin-top:32px;padding:24px 0;border-top:1px solid var(--line);
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    font-size:clamp(22px,2vw,28px);line-height:1.35;color:var(--accent);
+    max-width:38ch;
+  }
+  @media (max-width:900px){.contexto-body{grid-template-columns:1fr;gap:32px}}
+
+  /* ============================== Alcance ============================== */
+  .practice-grid{
+    display:grid;
+    grid-template-columns:minmax(0,0.36fr) minmax(0,1fr);
+    gap:clamp(40px,5vw,96px);
+  }
+  .practice-grid .rail{padding-top:8px}
+  .practice-list{border-top:1px solid var(--line-strong)}
+  .practice{
+    display:grid;
+    grid-template-columns:60px minmax(0,0.38fr) minmax(0,1fr);
+    gap:clamp(20px,2.4vw,44px);
+    padding-block:clamp(36px,5vh,52px);
+    border-bottom:1px solid var(--line);
+    align-items:baseline;
+  }
+  .practice:last-child{border-bottom:0}
+  .practice .num{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(22px,1.6vw,26px);color:var(--accent-mc);
+    letter-spacing:-0.02em;line-height:1;
+  }
+  .practice .name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(20px,1.7vw,26px);letter-spacing:-0.015em;line-height:1.15;
+    overflow-wrap:break-word;word-break:normal;hyphens:auto;min-width:0;
+  }
+  .practice .desc{
+    font-size:clamp(15px,1.1vw,17px);color:var(--ink-2);line-height:1.6;max-width:58ch;
+  }
+  .practice .verb{color:var(--accent);font-weight:500}
+  @media (max-width:780px){
+    .practice-grid{grid-template-columns:1fr;gap:32px}
+    .practice{grid-template-columns:40px 1fr;gap:12px 20px}
+    .practice .desc{grid-column:1 / -1;padding-left:60px}
+  }
+
+  /* ============================== Entregables mensuales ============================== */
+  .deliver-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(16px,2vw,32px);
+    margin-top:clamp(24px,4vh,48px);
+  }
+  .deliver-card{
+    background:var(--paper-2);
+    padding:clamp(24px,2.5vw,36px);
+    display:flex;flex-direction:column;gap:14px;
+    border-top:3px solid var(--accent);
+  }
+  .deliver-card.gold{border-top-color:var(--accent-mc)}
+  .deliver-card .d-label{
+    font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--accent);
+  }
+  .deliver-card.gold .d-label{color:var(--accent-mc)}
+  .deliver-card .d-num{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(38px,3.6vw,54px);letter-spacing:-0.025em;line-height:0.95;
+    color:var(--ink);font-variant-numeric:tabular-nums;
+  }
+  .deliver-card .d-num small{
+    font-size:14px;font-weight:500;color:var(--ink-2);letter-spacing:0.02em;
+    display:block;margin-top:4px;
+  }
+  .deliver-card .d-title{
+    font-family:'Mona Sans',sans-serif;font-weight:700;
+    font-size:clamp(17px,1.2vw,20px);letter-spacing:-0.005em;line-height:1.15;
+  }
+  .deliver-card ul{
+    margin:0;padding:0;list-style:none;
+    display:flex;flex-direction:column;gap:8px;
+    font-size:14px;color:var(--ink-2);line-height:1.5;
+    border-top:1px solid var(--line);padding-top:16px;
+  }
+  .deliver-card li{padding-left:18px;position:relative}
+  .deliver-card li::before{
+    content:"";position:absolute;left:0;top:9px;
+    width:6px;height:1px;background:var(--accent);
+  }
+  .deliver-card.gold li::before{background:var(--accent-mc)}
+  @media (max-width:900px){.deliver-grid{grid-template-columns:1fr;gap:20px}}
+
+  /* ============================== Cómo trabajamos (dark) ============================== */
+  .invert{
+    background:var(--invert-section);color:var(--invert-ink);border-color:transparent;
+  }
+  .invert .section-head h2{color:var(--invert-ink)}
+  .invert .lead{color:var(--invert-ink-2)}
+  .invert .smallcaps-accent{color:var(--invert-accent)}
+  .invert .smallcaps-accent::before{background:var(--invert-accent)}
+  .invert .smallcaps{color:var(--invert-ink-2)}
+  .phases{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:clamp(24px,3vw,56px);
+    padding-top:clamp(40px,6vh,72px);
+    border-top:1px solid var(--invert-line);
+  }
+  .phase{
+    display:flex;flex-direction:column;gap:20px;padding-right:clamp(0px,1.5vw,32px);
+  }
+  .phase + .phase{
+    border-left:1px solid var(--invert-line);
+    padding-left:clamp(20px,2vw,40px);
+  }
+  .phase .num{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(36px,3.6vw,56px);color:var(--invert-line);
+    letter-spacing:-0.03em;line-height:1;
+  }
+  .phase .pname{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(19px,1.5vw,24px);letter-spacing:-0.01em;line-height:1.15;color:var(--invert-ink);
+  }
+  .phase .pmonths{
+    font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--invert-accent);font-weight:600;
+  }
+  .phase .pdesc{
+    font-size:14.5px;line-height:1.55;color:var(--invert-ink-2);
+  }
+  .phase .pline{width:28px;height:2px;background:var(--invert-accent);margin-top:4px}
+  @media (max-width:1000px){
+    .phases{grid-template-columns:repeat(2,1fr);gap:48px}
+    .phase + .phase{border-left:0;padding-left:0}
+    .phase:nth-child(2n)+.phase{border-top:1px solid var(--invert-line);padding-top:40px}
+  }
+  @media (max-width:600px){
+    .phases{grid-template-columns:1fr}
+    .phase + .phase{border-top:1px solid var(--invert-line);padding-top:32px}
+  }
+
+  /* ============================== Cronograma ============================== */
+  .tramos{border-top:1px solid var(--line-strong)}
+  .tramo{
+    display:grid;
+    grid-template-columns:minmax(0,0.28fr) minmax(0,0.3fr) minmax(0,1fr);
+    gap:clamp(24px,3vw,56px);
+    padding-block:clamp(36px,5vh,52px);
+    border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  .tramo:last-child{border-bottom:0}
+  .tramo .tramo-label{
+    font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
+    font-weight:600;color:var(--accent-mc);
+  }
+  .tramo .tramo-months{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(24px,2.2vw,32px);letter-spacing:-0.015em;line-height:1.1;
+    color:var(--ink);margin-top:6px;
+  }
+  .tramo .tramo-name{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(22px,1.8vw,28px);letter-spacing:-0.015em;line-height:1.15;
+    color:var(--ink);
+  }
+  .tramo .tramo-window{
+    font-size:13px;color:var(--ink-3);margin-top:6px;letter-spacing:0.02em;
+  }
+  .tramo .tramo-body{color:var(--ink-2);font-size:15px;line-height:1.6;max-width:56ch}
+  .tramo .tramo-body ul{margin:0;padding-left:20px}
+  .tramo .tramo-body li{margin-bottom:6px}
+  .tramo .tramo-body li strong{color:var(--ink);font-weight:600}
+  @media (max-width:900px){.tramo{grid-template-columns:1fr;gap:16px}}
+
+  /* ============================== Inversión ============================== */
+  .money-hero{
+    background:var(--paper-2);
+    padding:clamp(40px,5vw,72px);
+    border-top:3px solid var(--accent-mc);
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.9fr);
+    gap:clamp(32px,4vw,80px);
+    align-items:center;
+    margin-bottom:clamp(56px,7vh,88px);
+  }
+  .money-hero .mh-label{
+    font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--accent-mc);margin-bottom:16px;
+  }
+  .money-hero .mh-title{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(24px,2vw,32px);letter-spacing:-0.015em;line-height:1.15;
+    margin-bottom:12px;
+  }
+  .money-hero .mh-sub{
+    font-size:15px;color:var(--ink-2);line-height:1.55;max-width:44ch;
+  }
+  .money-hero .mh-price{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(56px,7vw,110px);letter-spacing:-0.03em;line-height:0.9;
+    color:var(--ink);font-variant-numeric:tabular-nums;
+    text-align:right;
+  }
+  .money-hero .mh-price sup{font-size:0.32em;vertical-align:0.95em;color:var(--accent-mc);font-weight:700}
+  .money-hero .mh-price small{
+    display:block;font-size:14px;font-weight:500;color:var(--ink-2);
+    letter-spacing:0.02em;margin-top:14px;line-height:1.4;text-align:right;
+  }
+  @media (max-width:780px){
+    .money-hero{grid-template-columns:1fr;gap:32px;text-align:left}
+    .money-hero .mh-price,
+    .money-hero .mh-price small{text-align:left}
+  }
+
+  /* ============================== Valor de mercado / justificación ============================== */
+  .value-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:clamp(12px,1.5vw,24px);
+    margin-bottom:clamp(48px,6vh,72px);
+  }
+  .value-card{
+    padding:clamp(20px,2vw,28px);
+    background:var(--field);
+    display:flex;flex-direction:column;gap:8px;
+    border-left:2px solid var(--accent);
+  }
+  .value-card .v-label{
+    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--ink-3);font-weight:600;
+  }
+  .value-card .v-num{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:clamp(20px,1.4vw,24px);letter-spacing:-0.01em;color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .value-card .v-desc{
+    font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:4px;
+  }
+  .value-total{
+    grid-column:span 2;background:var(--paper-2);
+    border-left:2px solid var(--accent-mc);
+  }
+  .value-total .v-num{color:var(--accent-mc);font-size:clamp(24px,1.8vw,30px)}
+  @media (max-width:900px){
+    .value-grid{grid-template-columns:repeat(2,1fr)}
+    .value-total{grid-column:span 2}
+  }
+  @media (max-width:520px){
+    .value-grid{grid-template-columns:1fr}
+    .value-total{grid-column:span 1}
+  }
+
+  .terms{
+    margin-top:clamp(40px,5vh,64px);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(20px,2.5vw,40px) clamp(32px,4vw,72px);
+  }
+  .term{padding-top:20px;border-top:1px solid var(--line)}
+  .term dt{
+    font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:8px;
+  }
+  .term dd{margin:0;font-size:15px;color:var(--ink);line-height:1.55}
+  @media (max-width:600px){.terms{grid-template-columns:1fr}}
+
+  /* ============================== Cierre (CTA) ============================== */
+  .cta-block{
+    padding-block:clamp(112px,16vh,180px);
+    background:var(--paper);border-bottom:1px solid var(--line);
+  }
+  .cta-center{
+    max-width:960px;margin-inline:auto;text-align:center;
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .cta-center .smallcaps-accent{margin-bottom:clamp(32px,5vh,64px)}
+  .cta-title{
+    margin:0;
+    font-size:clamp(44px,7vw,112px);
+    max-width:18ch;
+  }
+  .cta-sub{
+    margin:clamp(28px,3.5vh,48px) 0 0;
+    font-size:clamp(17px,1.3vw,20px);color:var(--ink-2);line-height:1.55;
+    max-width:56ch;
+  }
+  .cta-actions{
+    display:flex;gap:18px;flex-wrap:wrap;justify-content:center;
+    margin-top:clamp(40px,5vh,64px);
+  }
+  .btn-cta{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    text-transform:uppercase;letter-spacing:0.14em;
+    font-size:13px;font-weight:600;
+    padding:22px 36px;min-width:240px;
+    border:1px solid transparent;border-radius:0;
+    transition:background .15s,color .15s,border-color .15s;
+    cursor:pointer;
+  }
+  .btn-cta.solid{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn-cta.solid:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .btn-cta.outline{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+  .btn-cta.outline:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+  .btn-cta svg{width:16px;height:16px}
+  @media (max-width:560px){.btn-cta{min-width:0;width:100%}}
+
+  /* ============================== Footer ============================== */
+  footer{padding-block:clamp(80px,10vh,128px);background:var(--paper)}
+  .foot-cols{
+    display:grid;
+    grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+    gap:clamp(32px,4vw,72px);
+    border-top:1px solid var(--line-strong);padding-top:clamp(48px,6vh,80px);
+  }
+  .foot-col h5{
+    font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:14px;letter-spacing:0.12em;text-transform:uppercase;
+    margin:0 0 24px;color:var(--ink);
+  }
+  .foot-brand .desc{
+    font-size:15px;color:var(--ink-2);line-height:1.6;margin:0 0 32px;max-width:36ch;
+  }
+  .foot-brand .desc b{color:var(--ink);font-weight:500}
+  .foot-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+  .foot-col a{font-size:15px;color:var(--ink-2);transition:color .15s}
+  .foot-col a:hover{color:var(--accent)}
+
+  .foot-tagline{
+    margin-top:clamp(40px,5vh,72px);padding-top:32px;
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;
+  }
+  .foot-tagline .left{font-size:13px;color:var(--ink-3);max-width:48ch;line-height:1.5}
+  .foot-tagline .right{
+    font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+    font-size:clamp(20px,1.6vw,26px);color:var(--accent);letter-spacing:-0.01em;
+  }
+
+  .foot-bottom{
+    margin-top:clamp(56px,7vh,96px);padding-top:32px;
+    border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:center;
+  }
+  .foot-social{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .foot-social a{
+    width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+    background:var(--field);transition:background .15s,color .15s;color:var(--ink);
+  }
+  .foot-social a:hover{background:var(--accent);color:var(--on-accent)}
+  .foot-social svg{width:18px;height:18px}
+  .foot-name{
+    text-align:center;font-family:'Mona Sans',sans-serif;font-weight:800;
+    font-size:18px;letter-spacing:-0.01em;color:var(--ink);
+  }
+  .foot-name small{font-weight:500;color:var(--ink-3);font-size:14px;display:block;margin-top:4px}
+  .foot-copy{text-align:right;font-size:13px;color:var(--ink-3);line-height:1.5}
+  @media (max-width:980px){
+    .foot-cols{grid-template-columns:1fr 1fr;gap:48px 40px}
+    .foot-brand{grid-column:1 / -1;display:grid;grid-template-columns:1fr auto;align-items:start;gap:32px}
+    .foot-brand .foot-mark{height:80px;width:64px;justify-self:end}
+    .foot-tagline{flex-direction:column;align-items:flex-start;gap:16px}
+    .foot-bottom{grid-template-columns:1fr;gap:28px;text-align:center;justify-items:center}
+    .foot-social{justify-content:center;gap:14px}
+    .foot-copy{text-align:center}
+    .foot-name{order:-1}
+  }
+  @media (max-width:640px){
+    footer{padding-block:clamp(56px,8vh,80px)}
+    .foot-cols{grid-template-columns:1fr;gap:40px;padding-top:40px}
+    .foot-brand{grid-template-columns:1fr;gap:24px}
+    .foot-brand .foot-mark{justify-self:start;height:64px;width:51px}
+    .foot-brand .desc{max-width:none}
+    .foot-col h5{margin-bottom:18px;font-size:13px}
+    .foot-col ul{gap:12px}
+    .foot-col a{font-size:14px}
+    .foot-tagline{margin-top:32px;padding-top:24px}
+    .foot-tagline .right{font-size:22px}
+    .foot-bottom{margin-top:40px;padding-top:24px;gap:24px}
+    .foot-social a{width:44px;height:44px}
+    .foot-name{font-size:17px}
+    .foot-copy{font-size:12px}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important}
+  }
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+
+  /* ============================== Print ============================== */
+  @page{ size: A4 portrait; margin: 16mm 14mm 18mm 14mm; }
+  @media print{
+    :root{
+      --paper:#FFFFFF; --paper-2:#F1EBE2;
+      --ink:#1A1210; --ink-2:rgba(26,18,16,0.72); --ink-3:rgba(26,18,16,0.5);
+      --line:rgba(26,18,16,0.15); --line-strong:rgba(26,18,16,0.35);
+      --accent:#6B1F2E; --accent-mc:#B4842B;
+      --field:rgba(26,18,16,0.04);
+      --logo-filter:none;
+    }
+    *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; transition:none !important; animation:none !important; }
+    html,body{ background:#FFFFFF !important; color:#1A1210 !important; font-size:10pt; line-height:1.5; }
+    a{color:inherit !important;text-decoration:none !important}
+    .topbar nav, .hero-meta, .cta-actions, .btn-cta, .foot-social, .foot-bottom, .hero-mark{ display:none !important; }
+    .shell{padding:0 !important; max-width:none}
+    .topbar{position:static !important; padding:0 0 5mm 0 !important; border-bottom:1px solid var(--line) !important; backdrop-filter:none !important; background:transparent !important;}
+    .topbar-inner{padding-block:0 !important}
+    section, .about-quote, .cta-block{padding:6mm 0 !important; border-bottom:1px solid var(--line);}
+    footer{padding:6mm 0 4mm 0 !important; border-top:1px solid var(--line)}
+    #alcance, #metodo, #cronograma, #inversion, #cierre{page-break-before:always; break-before:page;}
+    .practice, .phase, .tramo, .deliver-card, .term, .social-card, .profile-card, .cover-meta > div, .about-head, .money-hero, .value-card, .foot-cols{page-break-inside:avoid; break-inside:avoid;}
+    h1, h2, h3, h4, h5, .section-head{page-break-after:avoid; break-after:avoid;}
+    p{orphans:3; widows:3}
+    .hero-title{font-size:30pt !important; line-height:1.02 !important; max-width:none}
+    .cta-title{font-size:22pt !important; line-height:1.1 !important; max-width:none}
+    .section-head h2{font-size:18pt !important; line-height:1.1 !important; margin-bottom:3mm !important; max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a href="https://www.vorka.mx/" class="brand" target="_blank" rel="noopener" aria-label="Vorka México — abrir sitio">
+      <span class="brand-mark" role="img" aria-label="Vorka"></span>
+      <span class="brand-name">Vorka <span>México</span></span>
+    </a>
+    <nav aria-label="Secciones de la propuesta">
+      <a href="#perfil">Perfil</a>
+      <a href="#contexto">Contexto</a>
+      <a href="#alcance">Alcance</a>
+      <a href="#entregables">Entregables</a>
+      <a href="#metodo">Método</a>
+      <a href="#inversion">Inversión</a>
+      <a class="pill" href="#cierre">Siguiente paso</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================== COVER ============================== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="shell">
+      <div class="hero-eyebrow">
+        <span class="smallcaps-mc">Propuesta · Zona Guadalajara · 6 meses</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <h1 id="hero-title" class="display hero-title">
+            La presencia digital de <span class="ital-mc">Altamesa</span>.
+          </h1>
+          <p class="hero-sub">
+            Operación estratégica de redes sociales para Altamesa en Zona Guadalajara. Editorial, comunidad y pauta bajo una sola lógica de marca, durante seis meses.
+          </p>
+          <div class="hero-meta">
+            <a class="btn-primary" href="#inversion">Ir a la inversión</a>
+            <a class="btn-ghost" href="#alcance">Ver alcance</a>
+          </div>
+        </div>
+        <span class="hero-mark" role="img" aria-label="Vorka México"></span>
+      </div>
+
+      <dl class="cover-meta">
+        <div>
+          <dt>Dirigida a</dt>
+          <dd>Corporativo <em>Susazón</em></dd>
+        </div>
+        <div>
+          <dt>Marca</dt>
+          <dd>Altamesa · Guisos esterilizados</dd>
+        </div>
+        <div>
+          <dt>Zona</dt>
+          <dd>Guadalajara <em>y área metropolitana</em></dd>
+        </div>
+        <div>
+          <dt>Modalidad</dt>
+          <dd>Retainer mensual · 6 meses</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============================== SOBRE ESTA PROPUESTA ============================== -->
+  <section class="about-quote" aria-labelledby="about-title">
+    <div class="shell">
+      <div class="about-head">
+        <div class="smallcaps-accent">Sobre esta propuesta</div>
+        <h3 id="about-title">Una marca con la altura de <em>Altamesa</em> merece una operación digital <span class="mc">del mismo nivel</span>.</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== PERFIL ============================== -->
+  <section id="perfil" aria-labelledby="perfil-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Perfil</div></div>
+        <div>
+          <h2 id="perfil-title"><span class="ital-mc">Altamesa</span> · la mesa lista.</h2>
+          <p class="lead">Marca de guisos esterilizados de Corporativo Susazón. Larga vida de anaquel, sin refrigeración, sabor tradicional listo para servir. Un aliado silencioso para quien cocina profesionalmente y busca margen sin renunciar a la calidad.</p>
+        </div>
+      </div>
+      <div class="profile-grid">
+        <figure class="profile-card">
+          <div>
+            <div class="p-tag">Corporativo Susazón</div>
+            <div class="p-mark">Altamesa</div>
+          </div>
+          <div class="p-body">"El sazón que cumple. Cada olla, cada porción, cada mesa."</div>
+          <div class="p-foot">31 estados · Larga vida de anaquel · Sazón tradicional, listo para servir</div>
+        </figure>
+        <div class="profile-body">
+          <p>Corporativo Susazón opera desde su sede en Celaya, Guanajuato, con centros de distribución propios en Celaya/Querétaro, León, CDMX, Morelia, San Luis Potosí y Quintana Roo — y expansión anunciada en Monterrey. Cultura declarada de calidad e inocuidad alimentaria en cada eslabón de la operación. Altamesa es su marca de guisos esterilizados: sabor tradicional resuelto con maestría, listo para servir.</p>
+          <p>Jalisco opera hoy a través de distribuidor. Por eso Guadalajara es un mercado estratégico: la construcción de marca digital antecede — y multiplica — la operación comercial. La ciudad concentra dos audiencias que Altamesa resuelve al mismo tiempo: la <b>industria HORECA</b> —hoteles, restaurantes, banquetería profesional, comedores institucionales— y el <b>consumidor final gastronómico</b> —emprendedoras al frente de catering, cocinas privadas y comidas por encargo—. Para ambos, la ecuación es la misma: sabor consistente, menos horas de operación y margen real por servicio.</p>
+
+          <div class="profile-social-head">
+            <div class="smallcaps">Presencia digital · zona Guadalajara</div>
+            <div class="baseline-note">Punto de partida al inicio del contrato</div>
+          </div>
+
+          <div class="social-grid">
+            <div class="social-card new">
+              <div class="s-head">
+                <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+                <span class="s-net">Instagram</span>
+                <span class="s-flag">Nuevo</span>
+              </div>
+              <div class="s-handle">@altamesa.gdl</div>
+              <div class="s-note">Creación de perfil incluida en el contrato.</div>
+            </div>
+
+            <div class="social-card new">
+              <div class="s-head">
+                <svg class="s-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.95v-8.05h2.7l.4-3.13H13.5V8.78c0-.9.25-1.52 1.55-1.52h1.66V4.46a22 22 0 0 0-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15v2.32H7.55v3.13h2.7v8.02h3.25Z"/></svg>
+                <span class="s-net">Facebook</span>
+                <span class="s-flag">Nuevo</span>
+              </div>
+              <div class="s-handle">Altamesa Guadalajara</div>
+              <div class="s-note">Creación de página incluida en el contrato.</div>
+            </div>
+
+            <div class="social-card new">
+              <div class="s-head">
+                <svg class="s-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3.5h-2.7v12.1a2.6 2.6 0 1 1-2.6-2.6c.27 0 .53.04.77.12V10.4a5.4 5.4 0 1 0 4.53 5.32V8.62a6.6 6.6 0 0 0 3.9 1.26V7.2a3.9 3.9 0 0 1-3.9-3.7Z"/></svg>
+                <span class="s-net">TikTok</span>
+                <span class="s-flag">Nuevo</span>
+              </div>
+              <div class="s-handle">@altamesa.gdl</div>
+              <div class="s-note">Creación de perfil incluida en el contrato.</div>
+            </div>
+
+            <div class="social-card new">
+              <div class="s-head">
+                <svg class="s-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A10 10 0 0 0 3.9 15.9L3 21l5.2-1.4A10 10 0 1 0 20.5 3.5ZM12 19.4a7.4 7.4 0 0 1-3.8-1l-.3-.2-3.1.8.8-3-.2-.3a7.4 7.4 0 1 1 6.6 3.7Zm4-5.4c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.5.1-.1.2-.6.7-.7.9-.1.1-.3.2-.5.1-.2-.1-.9-.3-1.8-1.1a6.8 6.8 0 0 1-1.3-1.6c-.1-.2 0-.3.1-.4l.4-.4c.1-.1.2-.3.3-.4 0-.2 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.7 2.6 4 3.5.6.2 1 .4 1.4.5.6.2 1.1.2 1.5.1.5-.1 1.3-.5 1.5-1.1.2-.5.2-1 .1-1.1 0-.1-.2-.2-.4-.2Z"/></svg>
+                <span class="s-net">Canal WhatsApp</span>
+                <span class="s-flag">Nuevo</span>
+              </div>
+              <div class="s-handle">Altamesa GDL</div>
+              <div class="s-note">Creación de canal broadcast incluida.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CONTEXTO ============================== -->
+  <section id="contexto" aria-labelledby="contexto-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Contexto</div></div>
+        <div>
+          <h2 id="contexto-title">En Guadalajara, Altamesa juega en dos mesas.</h2>
+          <p class="lead">De un lado, la industria HORECA: hoteles, restaurantes, banquetería profesional, comedores. Del otro, el consumidor final gastronómico: emprendedoras al frente de catering, cocinas privadas, comidas por encargo. Altamesa resuelve las dos con el mismo producto.</p>
+        </div>
+      </div>
+      <div class="contexto-body">
+        <div class="rail smallcaps">Lectura</div>
+        <div>
+          <p>Guadalajara concentra una escena gastronómica en expansión: hotelería consolidada, cadenas de restaurantes en crecimiento y banquetería profesional que abastece a corporativos y eventos de alto nivel. En paralelo, un ecosistema vivo de emprendedoras gastronómicas — catering boutique, cocinas privadas, comidas por encargo, banquetería a la medida. Ambos frentes comparten la misma exigencia: sabor consistente, menos horas de operación y margen real por servicio.</p>
+          <p>La gestión digital de Altamesa debe hablar a ambas audiencias con la altura que corresponde: aspiracional pero funcional, cálida, precisa. La red social no es un catálogo — es donde un chef ejecutivo evalúa un proveedor y una emprendedora descubre que puede vender más, operar menos horas y elevar la calidad de cada entrega.</p>
+          <p>Esta propuesta es de <b>gestión pura</b>: Altamesa aporta el contenido de marca —fotografías, videos, arte oficial, material de producto— y Vorka lo convierte en presencia digital viva, estratégica y medible.</p>
+          <div class="pull">"Menos horas de operación. Más margen. Mismo sazón, cada servicio."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ALCANCE ============================== -->
+  <section id="alcance" aria-labelledby="alcance-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Alcance del trabajo</div></div>
+        <div>
+          <h2 id="alcance-title">Seis frentes de gestión operando bajo una sola estrategia.</h2>
+          <p class="lead">Servicio de gestión de redes — no incluye producción de contenido (foto, video, arte). Altamesa entrega el material; Vorka lo convierte en operación digital estratégica.</p>
+        </div>
+      </div>
+      <div class="practice-grid">
+        <div class="rail smallcaps">Frentes incluidos</div>
+        <div class="practice-list">
+          <div class="practice">
+            <div class="num">01</div>
+            <div class="name">Estrategia editorial</div>
+            <div class="desc"><span class="verb">Diseñamos</span> el arco de comunicación por trimestre: mensajes clave por audiencia —HORECA (hoteles, restaurantes, banquetería, comedores) y consumidor final gastronómico (catering boutique, cocinas privadas, emprendedoras culinarias)—, calendario editorial mensual y momentos estratégicos para campañas de alcance.</div>
+          </div>
+          <div class="practice">
+            <div class="num">02</div>
+            <div class="name">Caption y copy estratégico</div>
+            <div class="desc"><span class="verb">Redactamos</span> cada publicación con la voz de Altamesa: caption principal, hashtags dirigidos al mercado gastronómico de Guadalajara, CTAs de contacto y adaptación del tono por red. Cada publicación tiene propósito.</div>
+          </div>
+          <div class="practice">
+            <div class="num">03</div>
+            <div class="name">Programación y publicación</div>
+            <div class="desc"><span class="verb">Publicamos</span> en los horarios óptimos de cada superficie, con la frecuencia definida en el plan editorial. Instagram, Facebook, TikTok y Canal de WhatsApp operando coordinados, con misma línea gráfica y misma narrativa.</div>
+          </div>
+          <div class="practice">
+            <div class="num">04</div>
+            <div class="name">Moderación y canal directo</div>
+            <div class="desc"><span class="verb">Respondemos</span> comentarios y menciones públicas en horario hábil, moderamos la conversación en cada publicación y operamos el <b>Canal de WhatsApp</b> como línea directa de comunicación con la comunidad: envío de novedades, promociones y contenido curado. <b>Los mensajes directos los atiende el equipo de Altamesa.</b></div>
+          </div>
+          <div class="practice">
+            <div class="num">05</div>
+            <div class="name">Gestión de pauta</div>
+            <div class="desc"><span class="verb">Administramos</span> las campañas pagadas en Meta Ads (Instagram + Facebook) y TikTok Ads: segmentación dual —compradores HORECA, chefs y gerentes de F&amp;B por un lado; emprendedoras gastronómicas por el otro—, intereses culinarios y zona geográfica en Guadalajara. Optimización semanal y reporte de rendimiento. Recomendamos un piso mínimo de <b>$1,000 MXN semanales</b> en pauta para generar alcance real.</div>
+          </div>
+          <div class="practice">
+            <div class="num">06</div>
+            <div class="name">Reportes y optimización</div>
+            <div class="desc"><span class="verb">Entregamos</span> un reporte mensual con métricas de alcance, interacción, crecimiento, rendimiento de pauta y comportamiento del cliente final. Cada mes ajustamos el plan editorial en función de lo que el mercado responde.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ENTREGABLES MENSUALES ============================== -->
+  <section id="entregables" aria-labelledby="entregables-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Entregables mensuales</div></div>
+        <div>
+          <h2 id="entregables-title">Lo que Altamesa recibe cada mes.</h2>
+          <p class="lead">Operación medible, con volúmenes definidos y responsabilidades claras entre Altamesa (contenido) y Vorka (gestión).</p>
+        </div>
+      </div>
+
+      <div class="deliver-grid">
+        <div class="deliver-card">
+          <div class="d-label">Operación editorial</div>
+          <div class="d-num">4<small>superficies gestionadas</small></div>
+          <div class="d-title">Instagram, Facebook, TikTok y Canal de WhatsApp bajo una sola voz.</div>
+          <ul>
+            <li>Calendario editorial mensual entregado con anticipación</li>
+            <li>Caption estratégico para cada publicación</li>
+            <li>Programación en horarios óptimos por superficie</li>
+            <li>Adaptación del contenido al formato de cada plataforma</li>
+          </ul>
+        </div>
+
+        <div class="deliver-card">
+          <div class="d-label">Comunidad y pauta</div>
+          <div class="d-num">100%<small>comentarios atendidos</small></div>
+          <div class="d-title">Moderación pública y campañas activas.</div>
+          <ul>
+            <li>Respuesta a comentarios y menciones en horario hábil</li>
+            <li>Moderación activa de la conversación pública</li>
+            <li>Gestión completa de Meta Ads y TikTok Ads</li>
+            <li>Optimización semanal del presupuesto de pauta</li>
+          </ul>
+        </div>
+
+        <div class="deliver-card gold">
+          <div class="d-label">Medición</div>
+          <div class="d-num">1<small>reporte mensual</small></div>
+          <div class="d-title">Reporte ejecutivo con lectura y siguiente paso.</div>
+          <ul>
+            <li>Alcance, interacción y crecimiento por red</li>
+            <li>Rendimiento de pauta y costo por resultado</li>
+            <li>Comportamiento del cliente final (guardados, compartidos, comentarios)</li>
+            <li>Recomendación de ajuste editorial para el mes siguiente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CÓMO TRABAJAMOS (dark) ============================== -->
+  <section id="metodo" class="invert" aria-labelledby="metodo-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Cómo trabajamos</div></div>
+        <div>
+          <h2 id="metodo-title">Del diagnóstico al posicionamiento.</h2>
+          <p class="lead">Cuatro fases del método Vorka adaptadas al ciclo comercial de Altamesa en Guadalajara. Sin improvisación: cada paso valida al anterior.</p>
+        </div>
+      </div>
+      <div class="phases">
+        <div class="phase">
+          <div class="num">01</div>
+          <div class="pmonths">Semanas 1 – 2</div>
+          <div class="pname">Diagnóstico</div>
+          <div class="pdesc">Sesión con el equipo Altamesa: audiencias objetivo en zona Guadalajara, portafolio destacado, competencia, activos gráficos disponibles y expectativas comerciales.</div>
+          <div class="pline"></div>
+        </div>
+        <div class="phase">
+          <div class="num">02</div>
+          <div class="pmonths">Semanas 2 – 4</div>
+          <div class="pname">Diseño</div>
+          <div class="pdesc">Creación y acomodo estético de las cuatro superficies (IG, FB, TikTok, Canal WhatsApp), definición de voz de marca, manual de tono por plataforma, calendario editorial base y protocolo de coordinación con el equipo comercial.</div>
+          <div class="pline"></div>
+        </div>
+        <div class="phase">
+          <div class="num">03</div>
+          <div class="pmonths">Mes 2 – Mes 6</div>
+          <div class="pname">Operación</div>
+          <div class="pdesc">Publicación, moderación de comentarios, pauta administrada y ajustes editoriales continuos. Vorka opera, Altamesa aprueba y aporta el contenido de marca.</div>
+          <div class="pline"></div>
+        </div>
+        <div class="phase">
+          <div class="num">04</div>
+          <div class="pmonths">Mensual · Cierre</div>
+          <div class="pname">Medición</div>
+          <div class="pdesc">Reporte mensual con lectura ejecutiva. Al cierre del mes 6, revisión conjunta de resultados y propuesta de continuidad ajustada al desempeño.</div>
+          <div class="pline"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CRONOGRAMA ============================== -->
+  <section id="cronograma" aria-labelledby="cronograma-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Cronograma</div></div>
+        <div>
+          <h2 id="cronograma-title">Seis meses en tres bimestres.</h2>
+          <p class="lead">Cada bimestre tiene una intención comercial distinta. Al cierre del piloto, revisamos resultados y definimos continuidad.</p>
+        </div>
+      </div>
+
+      <div class="tramos">
+        <div class="tramo">
+          <div>
+            <div class="tramo-label">Bimestre 1</div>
+            <div class="tramo-months">Meses 1 – 2</div>
+            <div class="tramo-window">Fundación</div>
+          </div>
+          <div>
+            <div class="tramo-name">Creación, acomodo y arranque editorial.</div>
+            <div class="tramo-window">Presencia activa en las 4 superficies</div>
+          </div>
+          <div class="tramo-body">
+            <ul>
+              <li><strong>Creación e imagen inicial</strong> de Instagram, Facebook, TikTok y Canal de WhatsApp — incluida.</li>
+              <li>Estrategia semestral, manual de voz y calendario editorial entregados.</li>
+              <li>Primeras publicaciones con contenido base de Altamesa.</li>
+              <li>Configuración de Business Manager y píxeles para pauta.</li>
+              <li>Baseline medido y primer reporte mensual.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tramo">
+          <div>
+            <div class="tramo-label">Bimestre 2</div>
+            <div class="tramo-months">Meses 3 – 4</div>
+            <div class="tramo-window">Consolidación</div>
+          </div>
+          <div>
+            <div class="tramo-name">Escalamiento y activación de pauta.</div>
+            <div class="tramo-window">Foco en captación de leads HORECA</div>
+          </div>
+          <div class="tramo-body">
+            <ul>
+              <li>Operación editorial sostenida en las cuatro superficies.</li>
+              <li>Pauta activa con segmentación al cliente final en zona Guadalajara.</li>
+              <li>Ajustes de tono y formato según lo que responde el mercado.</li>
+              <li>Consolidación de comunidad HORECA y de emprendedoras gastronómicas de Guadalajara.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tramo">
+          <div>
+            <div class="tramo-label">Bimestre 3</div>
+            <div class="tramo-months">Meses 5 – 6</div>
+            <div class="tramo-window">Posicionamiento + cierre</div>
+          </div>
+          <div>
+            <div class="tramo-name">Consolidar autoridad y evaluar continuidad.</div>
+            <div class="tramo-window">Cierre de piloto y revisión conjunta</div>
+          </div>
+          <div class="tramo-body">
+            <ul>
+              <li>Operación sostenida con optimización basada en datos.</li>
+              <li>Publicaciones de posicionamiento como referente de guisos esterilizados.</li>
+              <li>Reporte de cierre con resultados acumulados de 6 meses.</li>
+              <li>Propuesta de continuidad ajustada al desempeño real.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== INVERSIÓN ============================== -->
+  <section id="inversion" aria-labelledby="inversion-title">
+    <div class="shell">
+      <div class="section-head">
+        <div class="head-rail"><div class="smallcaps-accent">Inversión</div></div>
+        <div>
+          <h2 id="inversion-title">Un retainer mensual.</h2>
+          <p class="lead">Precio fijo mensual más IVA. Cubre la gestión completa de Instagram, Facebook, TikTok y Canal de WhatsApp en zona Guadalajara durante 6 meses. La creación de las superficies está incluida como parte del contrato.</p>
+        </div>
+      </div>
+
+      <div class="money-hero">
+        <div>
+          <div class="mh-label">Retainer mensual · Altamesa GDL</div>
+          <div class="mh-title">Gestión digital integral en 4 superficies.</div>
+          <div class="mh-sub">Cubre estrategia editorial, caption, publicación, moderación de comentarios, operación del Canal de WhatsApp, pauta administrada y reporte mensual. La creación e imagen inicial de Instagram, Facebook, TikTok y Canal de WhatsApp están <b>incluidas</b> por firmar contrato de 6 meses.</div>
+        </div>
+        <div>
+          <div class="mh-price">
+            $4,000<sup>MXN</sup>
+            <small>+ IVA · mensual<br/>Contrato mínimo · 6 meses</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="money-hero" style="border-top-color:var(--accent);margin-top:-32px;">
+        <div>
+          <div class="mh-label" style="color:var(--accent);">Recomendación de pauta</div>
+          <div class="mh-title">Presupuesto sugerido para generar alcance real.</div>
+          <div class="mh-sub">Para que la operación digital tenga impacto medible en zona Guadalajara, recomendamos un piso mínimo de pauta pagada. Este monto es <b>adicional al retainer</b> y se paga directamente a la plataforma (Meta / TikTok).</div>
+        </div>
+        <div>
+          <div class="mh-price">
+            $1,000<sup>MXN</sup>
+            <small>semanales · mínimo sugerido<br/>Aprox. $4,000 MXN mensuales en pauta</small>
+          </div>
+        </div>
+      </div>
+
+      <dl class="terms">
+        <div class="term">
+          <dt>Qué incluye</dt>
+          <dd>Estrategia editorial, caption estratégico, programación, publicación, moderación de comentarios, operación del Canal de WhatsApp, gestión de pauta Meta + TikTok, reporte mensual y creación e imagen inicial de las 4 superficies.</dd>
+        </div>
+        <div class="term">
+          <dt>Qué no incluye</dt>
+          <dd>Producción de contenido (foto, video, arte). Respuesta a mensajes directos (los atiende directamente Altamesa). Presupuesto de pauta pagada (se administra aparte).</dd>
+        </div>
+        <div class="term">
+          <dt>Responsabilidad Altamesa</dt>
+          <dd>Entrega mensual de material gráfico y audiovisual, aprobación del calendario editorial y atención directa de mensajes privados.</dd>
+        </div>
+        <div class="term">
+          <dt>Pauta recomendada</dt>
+          <dd>Piso mínimo sugerido: <b>$1,000 MXN semanales</b> (aprox. $4,000 MXN mensuales), pagados directamente a la plataforma. Este monto no forma parte del retainer.</dd>
+        </div>
+        <div class="term">
+          <dt>Vigencia</dt>
+          <dd>6 meses de piloto. Al cierre, revisión conjunta de resultados y definición de continuidad, alcance y precio para el siguiente periodo.</dd>
+        </div>
+        <div class="term">
+          <dt>Setup incluido</dt>
+          <dd>Creación e imagen inicial de Instagram, Facebook, TikTok y Canal de WhatsApp en zona Guadalajara — sin costo adicional por firmar contrato de 6 meses.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============================== CIERRE / CTA ============================== -->
+  <section id="cierre" class="cta-block" aria-labelledby="cierre-title">
+    <div class="shell">
+      <div class="cta-center">
+        <div class="smallcaps-accent">Siguiente paso</div>
+        <h2 id="cierre-title" class="display-serif cta-title">Seis meses para que <em>Altamesa</em> ocupe el lugar que le corresponde en Guadalajara.</h2>
+        <p class="cta-sub">Si esta propuesta refleja lo que Corporativo Susazón busca para Altamesa, cerramos alcance, firmamos el piloto de 6 meses y arrancamos con la creación de perfiles durante la primera semana.</p>
+        <div class="cta-actions">
+          <a class="btn-cta solid" href="https://wa.me/528117804869?text=Hola%20VORKA%2C%20me%20interesa%20avanzar%20con%20la%20propuesta%20para%20Altamesa%20zona%20Guadalajara." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l5.05-1.34A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.05 14.11c-.21.6-1.24 1.14-1.74 1.19-.47.06-1.07.08-1.72-.11-.4-.12-.9-.29-1.55-.57-2.72-1.18-4.5-3.93-4.64-4.11-.13-.19-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.28.25-.28.55-.35.73-.35.19 0 .37 0 .53.01.17.01.4-.06.62.47.23.55.79 1.9.86 2.03.07.13.11.28.02.46-.08.19-.13.3-.25.46-.13.15-.27.34-.38.46-.13.13-.26.27-.11.53.15.26.65 1.07 1.4 1.74.96.86 1.77 1.13 2.02 1.26.25.13.4.11.55-.07.15-.18.63-.74.8-.99.16-.25.33-.21.55-.13.23.08 1.44.68 1.69.8.25.13.41.19.47.29.06.11.06.63-.15 1.23z"/></svg>
+            Confirmar por WhatsApp
+          </a>
+          <button class="btn-cta outline" type="button" id="btn-pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar en PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="shell">
+    <div class="foot-cols">
+      <div class="foot-col foot-brand">
+        <h5>Vorka México</h5>
+        <p class="desc">Estrategia, liderazgo e influencia para marcas que necesitan <b>impacto real</b> en México.</p>
+        <span class="foot-mark" role="img" aria-label="Vorka México"></span>
+      </div>
+      <div class="foot-col">
+        <h5>Propuesta</h5>
+        <ul>
+          <li><a href="#perfil">Perfil</a></li>
+          <li><a href="#contexto">Contexto</a></li>
+          <li><a href="#alcance">Alcance</a></li>
+          <li><a href="#entregables">Entregables</a></li>
+          <li><a href="#metodo">Cómo trabajamos</a></li>
+          <li><a href="#cronograma">Cronograma</a></li>
+          <li><a href="#inversion">Inversión</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Vorka</h5>
+        <ul>
+          <li><a href="https://www.vorka.mx/" target="_blank" rel="noopener">Sitio Vorka México</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Vorka Sparks</a></li>
+          <li><a href="mailto:vorkamexico@gmail.com">Hablemos</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contacto</h5>
+        <ul>
+          <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
+          <li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">@vorka.mx</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-tagline">
+      <div class="left">Ecosistema de estrategia, liderazgo e influencia. 150 proyectos, 26 estados, una sola lógica.</div>
+      <div class="right">definiendo el juego</div>
+    </div>
+
+    <div class="foot-bottom">
+      <div class="foot-social">
+        <a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram — @vorka.mx">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok — @vorka.mx">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3.5h-2.7v12.1a2.6 2.6 0 1 1-2.6-2.6c.27 0 .53.04.77.12V10.4a5.4 5.4 0 1 0 4.53 5.32V8.62a6.6 6.6 0 0 0 3.9 1.26V7.2a3.9 3.9 0 0 1-3.9-3.7Z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook — vorka.mx">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.95v-8.05h2.7l.4-3.13H13.5V8.78c0-.9.25-1.52 1.55-1.52h1.66V4.46a22 22 0 0 0-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15v2.32H7.55v3.13h2.7v8.02h3.25Z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn — Vorka México">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 1 4.97 8.5 2.5 2.5 0 0 1 4.98 3.5ZM3 9.5h4v11H3v-11Zm7 0h3.83v1.5h.05c.53-.95 1.85-1.95 3.8-1.95 4.06 0 4.82 2.67 4.82 6.15V20.5h-4V16c0-1.07-.02-2.45-1.5-2.45s-1.72 1.17-1.72 2.37V20.5h-4v-11Z"/></svg>
+        </a>
+      </div>
+      <div class="foot-name">Vorka México<small>vorka.mx</small></div>
+      <div class="foot-copy">© 2026 Vorka México.<br/>Todos los derechos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href').slice(1);
+      if(!id) return;
+      var target = document.getElementById(id);
+      if(!target) return;
+      e.preventDefault();
+      var y = target.getBoundingClientRect().top + window.pageYOffset - 24;
+      window.scrollTo({top:y, behavior:'smooth'});
+    });
+  });
+  var pdfBtn = document.getElementById('btn-pdf');
+  if(pdfBtn){
+    pdfBtn.addEventListener('click', function(){
+      window.print();
+    });
+  }
+})();
+</script>
+</body>
+</html>
