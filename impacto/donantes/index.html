@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mural de Donantes 2026 — IMPACTO</title>
 
-<meta name="description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad, no un ranking. No todos podemos aportar lo mismo, pero todos podemos aportar algo.">
+<meta name="description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad que hace posible el trabajo, un país que se transforma.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="author" content="Juventudes Impactando México A.C.">
@@ -20,7 +20,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="IMPACTO · Juventudes Impactando México A.C.">
 <meta property="og:title" content="Mural de Donantes 2026 — IMPACTO">
-<meta property="og:description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad, no un ranking. Cada aportación cuenta.">
+<meta property="og:description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad que hace posible el trabajo.">
 <meta property="og:image" content="https://www.vorka.mx/impacto/assets/img/93fd1ebe4a09.png">
 <meta property="og:image:width" content="639">
 <meta property="og:image:height" content="158">
@@ -31,7 +31,7 @@
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mural de Donantes 2026 — IMPACTO">
-<meta name="twitter:description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad, no un ranking. Cada aportación cuenta.">
+<meta name="twitter:description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad que hace posible el trabajo.">
 <meta name="twitter:image" content="https://www.vorka.mx/impacto/assets/img/93fd1ebe4a09.png">
 <meta name="twitter:site" content="@impactomex">
 <style>
@@ -204,11 +204,13 @@
 
   /* STATS STRIP */
   .stats{
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 0;
     border: 1px solid var(--rule); border-radius: 12px; overflow: hidden;
-    margin: 8px 0 40px;
+    max-width: 900px;
+    margin: 8px auto 40px;
   }
-  .stat{padding: 22px 24px; border-right: 1px solid var(--rule);}
+  .stat{padding: 22px 24px; border-right: 1px solid var(--rule); text-align: center;}
+  .stat.stat-quote{text-align: center;}
   .stat:last-child{border-right: 0;}
   .stat .k{
     font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
@@ -230,10 +232,11 @@
   }
   .stat .v-quote em{color: var(--gold); font-style: italic;}
   @media (max-width: 780px){
-    .stats{grid-template-columns: repeat(2, 1fr);}
-    .stat{border-bottom: 1px solid var(--rule);}
-    .stat:nth-child(even){border-right: 0;}
-    .stat:nth-last-child(-n+2){border-bottom: 0;}
+    .stats{grid-template-columns: 1fr 1fr;}
+    .stat{border-bottom: 0;}
+    .stat:nth-child(1){grid-column: 1; grid-row: 1; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);}
+    .stat:nth-child(3){grid-column: 2; grid-row: 1; border-right: 0; border-bottom: 1px solid var(--rule);}
+    .stat.stat-quote{grid-column: 1 / -1; grid-row: 2; border-right: 0; border-bottom: 0;}
   }
 
   /* VIEW TABS */
@@ -262,14 +265,17 @@
   }
   .mural-side{
     position: absolute;
-    top: 0; bottom: 40px;
+    top: 0; bottom: 0;
     left: -6px;
-    width: 56px;
+    width: 44px;
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
     z-index: 0;
+    overflow: hidden;
   }
   .mural-side-right{
     left: auto; right: -6px;
@@ -281,18 +287,23 @@
     font-weight: 800;
     letter-spacing: .22em;
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--ink-3);
     white-space: nowrap;
   }
   .side-word.big{
-    font-size: clamp(72px, 10vw, 168px);
-    letter-spacing: -0.04em;
+    font-size: clamp(28px, 3.2vw, 44px);
+    letter-spacing: -0.02em;
     font-weight: 900;
     color: var(--ink);
     text-transform: none;
-    opacity: 0.055;
-    line-height: 0.85;
+    opacity: 0.08;
+    line-height: 0.9;
+  }
+  @media (max-width: 700px){
+    .mural-side{width: 28px;}
+    .side-word{font-size: 9px;}
+    .side-word.big{font-size: 22px;}
   }
 
   /* Intro serif del mural */
@@ -300,13 +311,15 @@
     position: relative; z-index: 1;
     text-align: center;
     padding: 20px 20px 32px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 28px;
   }
   .mural-intro-serif{
     font-family: var(--serif); font-style: italic; font-weight: 400;
     font-size: clamp(56px, 8.4vw, 120px);
-    line-height: 0.9; color: var(--ink);
+    line-height: 1; color: var(--ink);
     letter-spacing: -0.03em;
+    display: inline-block;
+    padding-bottom: 0.12em;
   }
   .mural-intro-serif .dot-mark{color: var(--gold);}
   .mural-intro-kicker{
@@ -314,7 +327,7 @@
     font-weight: 800; color: var(--ink-3);
   }
   @media (max-width: 560px){
-    .mural-intro{padding: 12px 12px 20px;}
+    .mural-intro{padding: 12px 12px 20px; gap: 20px;}
     .mural-intro-serif{font-size: 64px;}
   }
 
@@ -347,12 +360,9 @@
   }
   @media (max-width: 900px){
     .mural-community{ padding: 24px 48px 40px; }
-    .mural-side{ width: 40px; }
   }
   @media (max-width: 560px){
     .mural-community{ padding: 20px 28px 32px; line-height: 1.5; }
-    .mural-side{ width: 24px; }
-    .side-word.big{ font-size: 54px; }
   }
 
   /* Outro / cierre con CTA */
@@ -440,7 +450,7 @@
     .name-tile .name{font-size: calc(var(--fs) * 0.42px);}
   }
 
-  /* STATE VIEW — ranking */
+  /* STATE VIEW */
   .states{
     display: flex; flex-direction: column; gap: 8px;
     padding: 8px 0 40px;
@@ -688,11 +698,11 @@
 
     <h1 class="hero-title">
       Cada aportación cuenta.
-      <span class="line-2">Este mural es una comunidad, <em>no un ranking.</em></span>
+      <span class="line-2">Somos <em>comunidad.</em></span>
     </h1>
 
     <p class="hero-copy">
-      Estas son las personas que han decidido <strong>sostener</strong> el trabajo de IMPACTO en todo el país. No todos podemos aportar lo mismo — pero todos podemos aportar algo. Cada nombre en este mural pesa lo mismo en la comunidad que hace posible IMPACTO. <em>Gracias por creer.</em>
+      Estas son las personas que han decidido <strong>sostener</strong> el trabajo de IMPACTO en todo el país. Cada nombre en este mural pesa lo mismo en la comunidad que hace posible IMPACTO. <em>Gracias por creer.</em>
     </p>
 
     <div class="hero-actions">
@@ -738,7 +748,7 @@
         <em>El tamaño de cada nombre refleja únicamente el monto de la aportación.</em>
         <br>El valor de cada persona que decidió sumar a IMPACTO es el mismo.
       </p>
-      <div class="mural-community" id="mural" role="list" aria-label="Personas que han aportado a IMPACTO"></div>
+      <div class="mural-community" id="mural" role="list" aria-label="Personas que hacen posible IMPACTO"></div>
       <div class="mural-outro">
         <div class="mural-outro-line"></div>
         <div class="mural-outro-cta">
@@ -918,13 +928,11 @@
   (function(){
     const donors = DONORS.length;
     const states = new Set(DONORS.map(d=>d.state)).size;
-    const regions = new Set(DONORS.map(d=>REGION_OF[d.state] || 'nacional')).size;
     const strip = document.getElementById('statsStrip');
     strip.innerHTML = `
-      <div class="stat"><div class="k">Donantes</div><div class="v">${donors}</div></div>
       <div class="stat"><div class="k">Estados</div><div class="v">${states}</div></div>
-      <div class="stat"><div class="k">Regiones</div><div class="v">${regions} <small>de 5</small></div></div>
       <div class="stat stat-quote"><div class="k">Voz del muro</div><div class="v-quote">“Cada nombre <em>sostiene</em> un liderazgo.”</div></div>
+      <div class="stat"><div class="k">Donantes</div><div class="v">${donors}</div></div>
     `;
   })();
 
