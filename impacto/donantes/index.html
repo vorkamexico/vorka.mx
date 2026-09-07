@@ -211,25 +211,17 @@
   .tabs{
     position: sticky; top: 0; z-index: 20; background: var(--paper);
     padding: 14px 0; border-bottom: 1px solid var(--rule); margin-bottom: 32px;
-    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: center;
   }
   .tab-group{display: inline-flex; gap: 6px; padding: 4px; background: var(--paper-sunk); border-radius: 100px;}
   .tab{
     background: transparent; border: 0; cursor: pointer; font-family: var(--sans);
     font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
-    padding: 10px 16px; border-radius: 100px; color: var(--ink-2);
+    padding: 10px 18px; border-radius: 100px; color: var(--ink-2);
     transition: background .12s, color .12s;
   }
   .tab[aria-selected="true"]{background: var(--ink); color: var(--paper);}
   .tab:hover:not([aria-selected="true"]){color: var(--ink);}
-  .legend{
-    display: inline-flex; gap: 14px; flex-wrap: wrap; align-items: center;
-    font-size: 10.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
-    color: var(--ink-2);
-  }
-  .legend .item{display: inline-flex; align-items: center; gap: 6px;}
-  .legend .swatch{width: 10px; height: 10px; border-radius: 50%; display: inline-block;}
 
   /* MURAL — flujo tipo padlet: nombres horizontales y palabras verticales de acento */
   .view{display: none;}
@@ -677,23 +669,16 @@
   <!-- STATS -->
   <div class="stats" id="statsStrip"></div>
 
-  <!-- TABS + LEGEND -->
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab-group" role="tablist" aria-label="Vistas del mural">
-      <button class="tab" role="tab" aria-selected="true"  data-view="mural">Personas</button>
-      <button class="tab" role="tab" aria-selected="false" data-view="states">Estados</button>
-    </div>
-    <div class="legend" aria-hidden="true">
-      <span class="item"><span class="swatch" style="background:var(--noroeste)"></span>Noroeste</span>
-      <span class="item"><span class="swatch" style="background:var(--noreste)"></span>Noreste</span>
-      <span class="item"><span class="swatch" style="background:var(--occidente)"></span>Occidente</span>
-      <span class="item"><span class="swatch" style="background:var(--centro)"></span>Centro</span>
-      <span class="item"><span class="swatch" style="background:var(--sureste)"></span>Sureste</span>
+      <button class="tab" role="tab" aria-selected="true"  data-view="states">Estados</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="mural">Personas</button>
     </div>
   </div>
 
   <!-- VIEW: MURAL -->
-  <section id="view-mural" class="view active" aria-labelledby="view-mural-title">
+  <section id="view-mural" class="view" aria-labelledby="view-mural-title">
     <h2 class="sr-only" id="view-mural-title" style="position:absolute;left:-9999px;">Mural de donantes</h2>
     <div class="region-tabs" id="regionTabs" role="group" aria-label="Filtrar por región"></div>
     <div class="mural-shell">
@@ -726,7 +711,7 @@
   </section>
 
   <!-- VIEW: STATES -->
-  <section id="view-states" class="view" aria-labelledby="view-states-title">
+  <section id="view-states" class="view active" aria-labelledby="view-states-title">
     <h2 class="sr-only" id="view-states-title" style="position:absolute;left:-9999px;">Aportación por estado</h2>
     <div class="states" id="states"></div>
   </section>
