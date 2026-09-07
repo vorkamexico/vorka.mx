@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mural de Donantes 2026 — IMPACTO</title>
 
-<meta name="description" content="El muro de las personas que sostienen IMPACTO en todo México. Cada nombre está escrito en proporción a su aportación — porque cada gesto construye una historia, un liderazgo, una comunidad.">
+<meta name="description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad, no un ranking. No todos podemos aportar lo mismo, pero todos podemos aportar algo.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="author" content="Juventudes Impactando México A.C.">
@@ -20,7 +20,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="IMPACTO · Juventudes Impactando México A.C.">
 <meta property="og:title" content="Mural de Donantes 2026 — IMPACTO">
-<meta property="og:description" content="El muro de las personas que sostienen IMPACTO en todo México. Cada nombre en proporción a su impacto.">
+<meta property="og:description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad, no un ranking. Cada aportación cuenta.">
 <meta property="og:image" content="https://www.vorka.mx/impacto/assets/img/93fd1ebe4a09.png">
 <meta property="og:image:width" content="639">
 <meta property="og:image:height" content="158">
@@ -31,7 +31,7 @@
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mural de Donantes 2026 — IMPACTO">
-<meta name="twitter:description" content="El muro de las personas que sostienen IMPACTO en todo México. Cada nombre en proporción a su impacto.">
+<meta name="twitter:description" content="El muro de las personas que sostienen IMPACTO en todo México. Una comunidad, no un ranking. Cada aportación cuenta.">
 <meta name="twitter:image" content="https://www.vorka.mx/impacto/assets/img/93fd1ebe4a09.png">
 <meta name="twitter:site" content="@impactomex">
 <style>
@@ -318,23 +318,39 @@
     .mural-intro-serif{font-size: 64px;}
   }
 
-  /* Mural — muro de gratitud: cada nombre una fila, sizing proporcional, centrado */
-  .mural{
+  /* Aviso conceptual bajo el intro */
+  .mural-disclaimer{
+    position: relative; z-index: 1;
+    text-align: center;
+    max-width: 62ch; margin: -8px auto 28px;
+    padding: 0 24px;
+    font-family: var(--serif); font-size: 15.5px; line-height: 1.55;
+    color: var(--ink-3);
+    font-style: normal;
+  }
+  .mural-disclaimer em{
+    color: var(--ink-2); font-style: italic; font-weight: 400;
+  }
+  @media (max-width: 560px){
+    .mural-disclaimer{font-size: 13.5px; padding: 0 16px;}
+  }
+
+  /* Mural — párrafo comunidad: nombres fluyendo juntos, todos con la misma dignidad visual */
+  .mural-community{
     position: relative;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
-    padding: 20px 68px 40px;
-    gap: 4px;
+    max-width: 1000px; margin: 0 auto;
+    padding: 32px 68px 48px;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
   }
   @media (max-width: 900px){
-    .mural{ padding: 20px 56px 40px; }
+    .mural-community{ padding: 24px 48px 40px; }
     .mural-side{ width: 40px; }
   }
   @media (max-width: 560px){
-    .mural{ padding: 20px 36px 32px; }
+    .mural-community{ padding: 20px 28px 32px; line-height: 1.5; }
     .mural-side{ width: 24px; }
     .side-word.big{ font-size: 54px; }
   }
@@ -364,57 +380,50 @@
   .cta-primary-alt{background: var(--gold); color: #1a1200; box-shadow: 0 8px 24px rgba(200,150,26,0.28);}
   .cta-primary-alt:hover{box-shadow: 0 12px 30px rgba(200,150,26,0.34);}
 
+  /* Cada nombre — dignidad visual uniforme: mismo peso, mismo color; solo varía tamaño */
   .name-tile{
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    padding: 8px 0;
-    text-decoration: none; color: var(--ink);
-    transition: transform .18s ease, opacity .18s ease;
-    max-width: 100%;
-  }
-  .name-tile:hover{transform: translateY(-3px);}
-  .mural.dimmed .name-tile{opacity: 0.18;}
-  .mural.dimmed .name-tile.match{opacity: 1;}
-
-  .name-tile .name{
-    font-family: var(--sans); font-weight: 800;
-    line-height: 0.9; letter-spacing: -0.045em;
-    color: var(--ink);
-    font-size: calc(var(--fs) * 1px);
-    display: block;
-    word-break: normal;
-    hyphens: none;
-    text-align: center;
-  }
-  .name-tile .name .first{
     display: inline;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: calc(var(--fs) * 1px);
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 0 6px;
+    margin: 0;
+    transition: color .18s ease;
+    cursor: pointer;
+    position: relative;
     background-image: linear-gradient(var(--r-color, transparent), var(--r-color, transparent));
     background-repeat: no-repeat;
     background-position: 0 100%;
-    background-size: 0 0;
-    padding-bottom: 2px;
-    transition: background-size .25s ease;
+    background-size: 0 2px;
+    transition: background-size .22s ease, color .18s ease;
   }
-  .name-tile .name .last{
-    display: inline;
-    color: var(--ink-2);
-    font-weight: 700;
-    margin-left: 0.28em;
+  .name-tile:hover{
+    color: var(--r-color, var(--ink));
+    background-size: 100% 3px;
   }
-  .name-tile:hover .name .first{background-size: 100% 5px;}
+  .mural-community.dimmed .name-tile{opacity: 0.22; transition: opacity .18s ease;}
+  .mural-community.dimmed .name-tile.match{opacity: 1;}
 
-  .name-tile .meta{
-    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--ink-3); margin-top: 10px;
-    display: inline-flex; align-items: center; gap: 8px;
+  /* Separador orgánico entre nombres */
+  .name-sep{
+    display: inline;
+    color: var(--gold);
+    font-size: 12px;
+    vertical-align: 0.25em;
+    margin: 0 4px;
+    opacity: 0.55;
+    user-select: none;
   }
-  .name-tile .meta .dot{
-    width: 8px; height: 8px; border-radius: 50%; background: var(--r-color, var(--nacional));
-    display: inline-block;
+
+  @media (max-width: 560px){
+    .name-tile{font-size: calc(var(--fs) * 0.78px); padding: 0 4px;}
+    .name-sep{font-size: 10px; margin: 0 2px;}
   }
-  .name-tile .meta .amt{color: var(--ink); font-weight: 900;}
 
   /* Escala responsive */
   @media (max-width: 1000px){
@@ -678,12 +687,12 @@
     </span>
 
     <h1 class="hero-title">
-      El tamaño de tu nombre
-      <span class="line-2">es el tamaño <em>de tu</em> impacto.</span>
+      Cada aportación cuenta.
+      <span class="line-2">Este mural es una comunidad, <em>no un ranking.</em></span>
     </h1>
 
     <p class="hero-copy">
-      Este muro reúne a las personas que han decidido <strong>sostener</strong> el trabajo de IMPACTO en todo el país. Cada nombre está escrito en proporción a lo que aportó — porque cada aportación construye una historia, un liderazgo, una comunidad. <em>Gracias por creer.</em>
+      Estas son las personas que han decidido <strong>sostener</strong> el trabajo de IMPACTO en todo el país. No todos podemos aportar lo mismo — pero todos podemos aportar algo. Cada nombre en este mural pesa lo mismo en la comunidad que hace posible IMPACTO. <em>Gracias por creer.</em>
     </p>
 
     <div class="hero-actions">
@@ -721,15 +730,19 @@
         <span class="side-word big">2026</span>
         <span class="side-word">Un país en movimiento</span>
       </div>
-      <div class="mural-intro" aria-hidden="true">
-        <span class="mural-intro-serif">gracias<span class="dot-mark">.</span></span>
-        <span class="mural-intro-kicker">— a las voces que sostienen —</span>
+      <div class="mural-intro">
+        <span class="mural-intro-serif" aria-hidden="true">gracias<span class="dot-mark">.</span></span>
+        <span class="mural-intro-kicker">— comunidad que hace posible <strong>IMPACTO</strong> —</span>
       </div>
-      <div class="mural" id="mural"></div>
+      <p class="mural-disclaimer">
+        <em>El tamaño de cada nombre refleja únicamente el monto de la aportación.</em>
+        <br>El valor de cada persona que decidió sumar a IMPACTO es el mismo.
+      </p>
+      <div class="mural-community" id="mural" role="list" aria-label="Personas que han aportado a IMPACTO"></div>
       <div class="mural-outro">
         <div class="mural-outro-line"></div>
         <div class="mural-outro-cta">
-          <p class="mural-outro-text">¿Quieres ver tu nombre aquí?<br><em>Este muro sigue creciendo.</em></p>
+          <p class="mural-outro-text"><em>Todos podemos sumar algo.</em></p>
           <a class="cta-primary cta-primary-alt" href="https://www.vorka.mx/impacto/#donaciones" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             Sumarme al mural
@@ -843,30 +856,30 @@
     });
   })();
 
-  // Datos — tamaños precomputados; el mural muestra proporción, no cantidades
+  // Datos — tamaños comprimidos (rango 28→56, ratio 2×) para dignidad visual uniforme
   const DONORS = [
-    {name:'Brandon Oleynick',  state:'Guanajuato',          fs:96},
-    {name:'Adonis Vargas',     state:'Michoacán',           fs:78},
-    {name:'César Trejo',       state:'Tabasco',             fs:69},
-    {name:'Catherine González',state:'Guanajuato',          fs:57},
-    {name:'Lizeth Rostro',     state:'EDOMEX',              fs:57},
-    {name:'María Mejía',       state:'Tamaulipas',          fs:57},
-    {name:'Lina Serra',        state:'Chiapas',             fs:57},
-    {name:'Jesús Cortez',      state:'Baja California Sur', fs:57},
-    {name:'Michell Ruiz',      state:'Durango',             fs:57},
-    {name:'Carolina Balderas', state:'Chihuahua',           fs:57},
-    {name:'Claribel Martínez', state:'Hidalgo',             fs:52},
-    {name:'Ana Salcedo',       state:'Sonora',              fs:52},
-    {name:'Wendy Sánchez',     state:'EDOMEX',              fs:42},
-    {name:'Daniela Pérez',     state:'Hidalgo',             fs:42},
-    {name:'Danna Sánchez',     state:'EDOMEX',              fs:42},
-    {name:'Silvana Medina',    state:'Chihuahua',           fs:42},
-    {name:'Ximena Beltrán',    state:'EDOMEX',              fs:42},
-    {name:'Nayeli Méndez',     state:'Guanajuato',          fs:42},
-    {name:'Alberto Mauricio',  state:'Puebla',              fs:34},
-    {name:'Isela Arenas',      state:'Baja California Sur', fs:28},
-    {name:'Andrea Mondragón',  state:'EDOMEX',              fs:28},
-    {name:'Citlali Lázaro',    state:'Oaxaca',              fs:18},
+    {name:'Brandon Oleynick',  state:'Guanajuato',          fs:56},
+    {name:'Adonis Vargas',     state:'Michoacán',           fs:51},
+    {name:'César Trejo',       state:'Tabasco',             fs:47},
+    {name:'Catherine González',state:'Guanajuato',          fs:42},
+    {name:'Lizeth Rostro',     state:'EDOMEX',              fs:42},
+    {name:'María Mejía',       state:'Tamaulipas',          fs:42},
+    {name:'Lina Serra',        state:'Chiapas',             fs:42},
+    {name:'Jesús Cortez',      state:'Baja California Sur', fs:42},
+    {name:'Michell Ruiz',      state:'Durango',             fs:42},
+    {name:'Carolina Balderas', state:'Chihuahua',           fs:42},
+    {name:'Claribel Martínez', state:'Hidalgo',             fs:40},
+    {name:'Ana Salcedo',       state:'Sonora',              fs:40},
+    {name:'Wendy Sánchez',     state:'EDOMEX',              fs:38},
+    {name:'Daniela Pérez',     state:'Hidalgo',             fs:38},
+    {name:'Danna Sánchez',     state:'EDOMEX',              fs:38},
+    {name:'Silvana Medina',    state:'Chihuahua',           fs:38},
+    {name:'Ximena Beltrán',    state:'EDOMEX',              fs:38},
+    {name:'Nayeli Méndez',     state:'Guanajuato',          fs:38},
+    {name:'Alberto Mauricio',  state:'Puebla',              fs:35},
+    {name:'Isela Arenas',      state:'Baja California Sur', fs:33},
+    {name:'Andrea Mondragón',  state:'EDOMEX',              fs:33},
+    {name:'Citlali Lázaro',    state:'Oaxaca',              fs:28},
   ];
 
   // Agregado por estado — tamaños y barra precomputados; sin cantidades
@@ -915,38 +928,39 @@
     `;
   })();
 
-  // MURAL — muro vertical, ordenado por tamaño (mayor a menor)
+  // MURAL — comunidad: orden alfabético por primer nombre, fluye como párrafo
   (function(){
     const mural = document.getElementById('mural');
-    const sorted = [...DONORS].sort((a,b)=>b.fs-a.fs);
+    const alpha = [...DONORS].sort((a,b) => a.name.localeCompare(b.name, 'es'));
 
     function makeTile(d){
       const region = REGION_OF[d.state] || 'nacional';
-      const tile = document.createElement('a');
+      const tile = document.createElement('span');
       tile.className = 'name-tile';
-      tile.href = 'https://www.vorka.mx/impacto/#donaciones';
-      tile.target = '_blank';
-      tile.rel = 'noopener';
+      tile.setAttribute('role', 'listitem');
       tile.setAttribute('data-region', region);
       tile.setAttribute('data-state', d.state);
+      tile.title = d.state;
       tile.style.setProperty('--fs', d.fs);
       tile.style.setProperty('--r-color', REGION_VAR(region));
-      tile.setAttribute('aria-label', `${d.name} — ${d.state}`);
-      const parts = d.name.split(' ');
-      const first = parts[0];
-      const last = parts.slice(1).join(' ');
-      tile.innerHTML = `
-        <span class="name">
-          <span class="first">${first}</span><span class="last">${last}</span>
-        </span>
-        <span class="meta">
-          <span class="dot"></span>
-          <span>${d.state}</span>
-        </span>`;
+      // Non-breaking space entre nombre y apellido: mantiene el nombre completo unido al hacer wrap
+      tile.innerHTML = d.name.replace(' ', '&nbsp;');
       return tile;
     }
 
-    sorted.forEach(d => mural.appendChild(makeTile(d)));
+    function makeSep(){
+      const s = document.createElement('span');
+      s.className = 'name-sep';
+      s.setAttribute('aria-hidden', 'true');
+      s.textContent = '·';
+      return s;
+    }
+
+    alpha.forEach((d, i) => {
+      mural.appendChild(makeTile(d));
+      if(i < alpha.length - 1) mural.appendChild(makeSep());
+      mural.appendChild(document.createTextNode(' '));
+    });
 
     // Región tabs (filtros del mural)
     const regionTabs = document.getElementById('regionTabs');
