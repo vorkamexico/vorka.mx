@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.vorka.mx/oleeynick/sitemap.xml
