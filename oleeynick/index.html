@@ -114,6 +114,11 @@
     --accent-2:   #FFC966;
     --accent-soft:#FDE6B0;
 
+    /* Fixed dark surface — used by footer and newsletter card (stays dark in both themes) */
+    --dark-bg: #111111;
+    --dark-bg-2: #1A1A1B;
+    --dark-fg: #F5F5F0;
+
     --c-green:    #6FAE3B;
     --c-blue:     #2E88C8;
     --c-purple:   #8446A8;
@@ -1238,8 +1243,8 @@
     padding: 48px 0;
   }
   .nl-card {
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--dark-bg);
+    color: var(--dark-fg);
     border-radius: 24px;
     padding: clamp(32px, 5vw, 52px);
     display: grid;
@@ -1274,7 +1279,7 @@
     line-height: 1.1;
     letter-spacing: -0.03em;
     margin: 0 0 12px;
-    color: var(--paper);
+    color: var(--dark-fg);
     max-width: 26ch;
     text-wrap: balance;
   }
@@ -1299,7 +1304,7 @@
     flex: 1;
     background: transparent;
     border: none;
-    color: var(--paper);
+    color: var(--dark-fg);
     font-family: inherit;
     font-size: 14.5px;
     padding: 12px 18px;
@@ -1324,7 +1329,7 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
-  .nl-form button:hover { background: #fff; transform: translateY(-1px); }
+  .nl-form button:hover { background: var(--dark-fg); transform: translateY(-1px); }
   .nl-form button svg { width: 13px; height: 13px; }
   .nl-note {
     grid-column: 1 / -1;
@@ -1341,9 +1346,9 @@
     grid-column: 1 / -1;
     margin-top: 12px;
     padding: 14px 18px;
-    background: color-mix(in srgb, var(--accent) 20%, transparent);
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
     border-radius: 12px;
-    color: var(--paper);
+    color: var(--dark-fg);
     font-weight: 600;
     font-size: 14px;
     display: none;
@@ -1737,8 +1742,8 @@
 
   /* ============ FOOTER ============ */
   footer.foot {
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--dark-bg);
+    color: var(--dark-fg);
     padding: clamp(72px, 11vh, 120px) 0 32px;
   }
   .foot-top {
@@ -1767,7 +1772,7 @@
     line-height: 1;
     letter-spacing: -0.035em;
     margin: 0 0 18px;
-    color: var(--paper);
+    color: var(--dark-fg);
   }
   .foot-brand h3 .a-y { color: var(--accent); }
   .foot-brand p {
@@ -1792,7 +1797,7 @@
     width: fit-content;
     transition: background .2s, transform .2s;
   }
-  .foot-brand .quick-cta:hover { background: #ffffff; transform: translateY(-2px); }
+  .foot-brand .quick-cta:hover { background: var(--dark-fg); transform: translateY(-2px); }
   .foot-brand .quick-cta svg { width: 14px; height: 14px; flex-shrink: 0; }
 
   .foot-col h5 {
@@ -1829,7 +1834,7 @@
   }
   .foot-col ul li.mono strong {
     display: block;
-    color: var(--paper);
+    color: var(--dark-fg);
     font-weight: 700;
     font-size: 15px;
     margin-bottom: 2px;
@@ -2689,31 +2694,43 @@
         </div>
       </aside>
 
-      <form class="habla-form" id="habla-form" novalidate>
+      <form class="habla-form" id="habla-form" action="https://formsubmit.co/oleynickhdz@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="Nuevo mensaje desde brandonoleynick.mx">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_next" value="https://www.vorka.mx/oleeynick/?enviado=1#habla">
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
         <div class="row">
           <label>
             <span>Nombre</span>
-            <input type="text" name="nombre" required autocomplete="name">
+            <input type="text" name="Nombre" required autocomplete="name">
           </label>
           <label>
             <span>Correo</span>
-            <input type="email" name="correo" required autocomplete="email">
+            <input type="email" name="Correo" required autocomplete="email">
+          </label>
+        </div>
+        <div class="row">
+          <label>
+            <span>Teléfono / WhatsApp</span>
+            <input type="tel" name="Telefono" required autocomplete="tel" placeholder="+52 461 000 0000">
+          </label>
+          <label>
+            <span>Ciudad o estado <em style="font-style: normal; opacity: 0.6; font-weight: 500;">(opcional)</em></span>
+            <input type="text" name="Ciudad" autocomplete="address-level2">
           </label>
         </div>
         <label>
-          <span>Ciudad o estado <em style="font-style: normal; opacity: 0.6; font-weight: 500;">(opcional)</em></span>
-          <input type="text" name="ciudad" autocomplete="address-level2">
-        </label>
-        <label>
           <span>Tu mensaje</span>
-          <textarea name="mensaje" rows="6" required placeholder="Escríbeme una propuesta, una duda, una alianza…"></textarea>
+          <textarea name="Mensaje" rows="6" required placeholder="Escríbeme una propuesta, una duda, una alianza…"></textarea>
         </label>
         <button type="submit">
           Enviar mensaje
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </button>
-        <p class="habla-note">Al enviar, se abrirá tu cliente de correo con el mensaje listo para Brandon.</p>
-        <div class="habla-sent" id="habla-sent">Tu cliente de correo se abrió con el mensaje listo. Solo dale enviar.</div>
+        <p class="habla-note">Respondo el mismo día en horario hábil por WhatsApp o correo. Tu información se mantiene privada.</p>
+        <div class="habla-sent" id="habla-sent">¡Mensaje enviado! Te respondo pronto por WhatsApp o correo.</div>
       </form>
     </div>
   </section>
@@ -2723,7 +2740,7 @@
 
 <!-- FOOTER -->
 <!-- NEWSLETTER VORKA -->
-<div class="newsletter-band">
+<div class="newsletter-band" id="newsletter">
   <div class="shell">
     <div class="nl-card">
       <div class="nl-body">
@@ -2731,8 +2748,13 @@
         <h3>Estrategia, cultura y proyectos que están transformando México.</h3>
         <p>Un correo cada dos semanas con casos reales, aprendizajes y oportunidades para líderes que están construyendo el país. Sin ruido.</p>
       </div>
-      <form class="nl-form" id="newsletter-form" novalidate>
-        <input type="email" placeholder="tu@correo.com" aria-label="Correo electrónico" required autocomplete="email">
+      <form class="nl-form" id="newsletter-form" action="https://formsubmit.co/vorkamexico@gmail.com" method="POST">
+        <input type="hidden" name="_subject" value="Nueva suscripción · Newsletter Vorka México">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_next" value="https://www.vorka.mx/oleeynick/?suscrito=1#newsletter">
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+        <input type="email" name="Correo" placeholder="tu@correo.com" aria-label="Correo electrónico" required autocomplete="email">
         <button type="submit">
           Suscribirme
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
@@ -2906,38 +2928,18 @@
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
 
-    // ===== HABLA CONMIGO — mailto handler =====
-    var hablaForm = document.getElementById('habla-form');
-    if (hablaForm) hablaForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var f = e.target;
-      var nombre = (f.nombre.value || '').trim();
-      var correo = (f.correo.value || '').trim();
-      var ciudad = (f.ciudad.value || '').trim();
-      var mensaje = (f.mensaje.value || '').trim();
-      if (!nombre || !correo || !mensaje) { alert('Completa nombre, correo y mensaje.'); return; }
-      var subject = 'Propuesta de ' + nombre;
-      var body = 'De: ' + nombre + ' <' + correo + '>' + (ciudad ? ' — ' + ciudad : '') + '\n\n' + mensaje + '\n\n— Enviado desde brandonoleynick.mx';
-      var url = 'mailto:oleynickhdz@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      window.location.href = url;
-      var sent = document.getElementById('habla-sent');
-      if (sent) sent.classList.add('on');
-    });
-
-    // ===== NEWSLETTER VORKA — mailto handler =====
-    var nlForm = document.getElementById('newsletter-form');
-    if (nlForm) nlForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var f = e.target;
-      var email = (f.querySelector('input[type=email]').value || '').trim();
-      if (!email) { alert('Escribe tu correo.'); return; }
-      var subject = 'Nueva suscripción · Newsletter Vorka México';
-      var body = 'Hola equipo de Vorka,\n\nQuiero suscribirme al newsletter.\n\nMi correo: ' + email + '\n\nGracias.';
-      var url = 'mailto:vorkamexico@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      window.location.href = url;
-      var sent = document.getElementById('nl-sent');
-      if (sent) sent.classList.add('on');
-    });
+    // ===== Post-submit success banners (Formsubmit redirects back with query param) =====
+    try {
+      var params = new URLSearchParams(location.search);
+      if (params.get('enviado') === '1') {
+        var s = document.getElementById('habla-sent');
+        if (s) { s.classList.add('on'); setTimeout(function(){ s.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 250); }
+      }
+      if (params.get('suscrito') === '1') {
+        var s2 = document.getElementById('nl-sent');
+        if (s2) { s2.classList.add('on'); setTimeout(function(){ s2.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 250); }
+      }
+    } catch (e) {}
   })();
 </script>
 
