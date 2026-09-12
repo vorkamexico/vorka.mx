@@ -425,7 +425,8 @@
 
   /* ============ HERO ============ */
   .hero {
-    padding: clamp(48px, 9vh, 112px) 0 clamp(56px, 10vh, 120px);
+    padding-top: clamp(48px, 9vh, 112px);
+    padding-bottom: clamp(56px, 10vh, 120px);
     position: relative;
     text-align: left;
     isolation: isolate;
@@ -474,8 +475,8 @@
   .hero h1 {
     font-family: var(--font);
     font-weight: 800;
-    font-size: clamp(2.8rem, 10.5vw, 8.6rem);
-    line-height: 0.9;
+    font-size: clamp(2.4rem, 10.5vw, 8.6rem);
+    line-height: 0.92;
     letter-spacing: -0.05em;
     margin: 0;
     color: var(--ink);
@@ -492,14 +493,15 @@
     line-height: 1;
   }
   .hero h1 .word {
-    display: inline-block;
+    display: inline;
     position: relative;
-    white-space: nowrap;
   }
   .hero h1 .word.accent {
     color: var(--accent);
     background: linear-gradient(180deg, transparent 64%, color-mix(in srgb, var(--accent) 18%, transparent) 64% 92%, transparent 92%);
     padding: 0 0.04em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
   .hero-lede {
     margin-top: 44px;
@@ -1509,7 +1511,7 @@
   @media (max-width: 960px) {
     .nav-main, .cta-mini { display: none; }
     .menu-btn { display: inline-flex; }
-    .hero { padding: 24px 0 56px; }
+    .hero { padding-top: 24px; padding-bottom: 56px; }
     .definition { grid-template-columns: 1fr; gap: 32px; }
     .impulsores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .steps { grid-template-columns: 1fr; }
@@ -1520,7 +1522,7 @@
     .foot-mid { grid-template-columns: 1fr 1fr; gap: 24px; }
   }
   @media (max-width: 560px) {
-    :root { --gutter: 20px; --header-h: 60px; }
+    :root { --gutter: 22px; --header-h: 60px; }
     .brand span:last-child { display: none; }
     .impulsores { grid-template-columns: 1fr; }
     .checklist { grid-template-columns: 1fr; }
@@ -1528,6 +1530,20 @@
     .foot-bottom { flex-direction: column; align-items: flex-start; }
     .faq-item summary { padding: 20px 22px; font-size: 15px; }
     .faq-item .answer { padding: 0 22px 22px; }
+    /* Hide most decorative dots on mobile to avoid overlapping content */
+    .hero-dots .d2, .hero-dots .d3, .hero-dots .d4, .hero-dots .d5, .hero-dots .d6 { display: none; }
+    .hero-dots .d1 { top: 4px; right: 4px; width: 18px; height: 18px; }
+    .hero::before, .hero::after { display: none; }
+    .hero { padding-top: 20px; padding-bottom: 44px; }
+    .hero h1 { font-size: clamp(2.4rem, 12vw, 3.6rem); letter-spacing: -0.04em; }
+    .hero-lede { margin-top: 26px; font-size: 1rem; }
+    .hero-actions { margin-top: 26px; flex-direction: column; align-items: stretch; }
+    .hero-actions .btn-primary, .hero-actions .btn-secondary {
+      justify-content: center;
+      width: 100%;
+    }
+    .hero-meta { margin-top: 24px; font-size: 12px; gap: 12px 18px; }
+    .breadcrumb { padding: 16px 0 0; font-size: 12px; }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -1622,7 +1638,7 @@
   <div class="hero-eyebrow">Guía para juventudes</div>
   <h1 id="hero-title">
     <span class="line1">Guía · Brandon Oleynick</span>
-    ¿Qué es un <span class="word accent">proyecto&nbsp;social?</span>
+    ¿Qué es un <span class="word accent">proyecto social?</span>
   </h1>
   <p class="hero-lede">Una iniciativa <strong>planificada y organizada</strong> para atender una necesidad real de una comunidad y generar <strong>impacto positivo</strong>. Aquí encuentras la definición, el checklist, los 10 pasos y los errores comunes al iniciar el tuyo.</p>
   <div class="hero-actions">
