@@ -1,0 +1,1483 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aranel Martínez — Sprint 90 días · Líderes del Mañana y Chispas de Curiosidad</title>
+<meta name="description" content="Plan operativo de 90 días para aplicar a Líderes del Mañana (Médico Cirujano · Campus CCM) y arrancar el piloto de Chispas de Curiosidad — con norte a 10 años desde Valle de Chalco. Construido por VORKA / Mentoría Oleynick.">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='6.4' height='32' x='0' fill='%233b7bc0'/><rect width='6.4' height='32' x='6.4' fill='%23d94a3d'/><rect width='6.4' height='32' x='12.8' fill='%23dcb03d'/><rect width='6.4' height='32' x='19.2' fill='%236d3a8a'/><rect width='6.4' height='32' x='25.6' fill='%236ba838'/></svg>">
+<style>
+:root{
+  --paper:#ffffff;
+  --paper-sunk:#f4f4f4;
+  --ink:#000000;
+  --ink-2:#555555;
+  --ink-3:#a0a0a0;
+  --rule:#e8e8e8;
+  --rule-strong:#cfcfcf;
+  --noroeste:#3b7bc0;
+  --noreste:#d94a3d;
+  --occidente:#dcb03d;
+  --centro:#6d3a8a;
+  --sureste:#6ba838;
+  --nacional:#111111;
+  --focus:#3b7bc0;
+  --sans:'Mont','Montserrat','Poppins','SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#000000; --paper-sunk:#0d0d0d;
+    --ink:#ffffff; --ink-2:#b8b8b8; --ink-3:#6a6a6a;
+    --rule:#1a1a1a; --rule-strong:#2a2a2a;
+    --noroeste:#5b9be0; --noreste:#f16b5e; --occidente:#f0c860;
+    --centro:#a570c4; --sureste:#8bcc58; --nacional:#ffffff;
+  }
+}
+:root[data-theme="light"]{
+  --paper:#ffffff; --paper-sunk:#f4f4f4;
+  --ink:#000000; --ink-2:#555555; --ink-3:#a0a0a0;
+  --rule:#e8e8e8; --rule-strong:#cfcfcf;
+  --noroeste:#3b7bc0; --noreste:#d94a3d; --occidente:#dcb03d;
+  --centro:#6d3a8a; --sureste:#6ba838; --nacional:#111111;
+}
+:root[data-theme="dark"]{
+  --paper:#000000; --paper-sunk:#0d0d0d;
+  --ink:#ffffff; --ink-2:#b8b8b8; --ink-3:#6a6a6a;
+  --rule:#1a1a1a; --rule-strong:#2a2a2a;
+  --noroeste:#5b9be0; --noreste:#f16b5e; --occidente:#f0c860;
+  --centro:#a570c4; --sureste:#8bcc58; --nacional:#ffffff;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.55;
+  letter-spacing:-0.005em;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+a{color:inherit; text-decoration:none}
+img{max-width:100%; display:block}
+button{font:inherit; color:inherit; background:none; border:none; cursor:pointer}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none !important; animation:none !important}}
+
+.wrap{max-width:960px; margin:0 auto; padding:0 24px 96px}
+@media (max-width:720px){.wrap{padding:0 16px 96px}}
+
+.site-header{border-bottom:1px solid var(--rule); padding:18px 0;}
+.site-header-inner{
+  max-width:960px; margin:0 auto; padding:0 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+@media (max-width:720px){.site-header-inner{padding:0 16px}}
+.logo{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.02em; font-size:15px;}
+.logo-text{display:inline-flex; flex-direction:column; line-height:1;}
+.logo-text small{font-size:9.5px; font-weight:800; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-3); margin-top:5px;}
+.header-right{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+.nav-link{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--ink); color:var(--paper);
+  font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  padding:10px 16px; border-radius:100px;
+  transition:opacity .12s ease;
+}
+.nav-link:hover{opacity:.85}
+.nav-link svg{width:11px; height:11px}
+.theme-toggle{
+  display:inline-flex; align-items:center; gap:8px;
+  background:transparent; color:var(--ink);
+  font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  padding:8px 14px; border-radius:100px;
+  border:1.5px solid var(--rule-strong);
+  transition:border-color .12s ease, background .12s ease;
+}
+.theme-toggle:hover{border-color:var(--ink)}
+
+.hero{padding:44px 0 56px; border-bottom:1px solid var(--rule)}
+.brand{
+  display:flex; align-items:center; gap:12px;
+  font-size:11px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink-2); margin-bottom:22px;
+}
+.brand-dots{display:inline-flex; gap:4px}
+.brand-dots i{width:8px; height:8px; border-radius:50%; display:block}
+.hero h1{
+  font-size:clamp(38px, 6.2vw, 68px); font-weight:800;
+  line-height:.98; letter-spacing:-0.035em;
+  margin:0 0 24px; text-wrap:balance;
+}
+.hero h1 span{display:block; color:var(--ink-3); font-weight:500; letter-spacing:-0.02em; margin-top:8px;}
+.hero-copy{max-width:64ch; color:var(--ink-2)}
+.hero-copy p{font-size:16.5px; margin:0 0 14px; line-height:1.5}
+.hero-copy strong{color:var(--ink); font-weight:700}
+.hero-signoff{
+  margin-top:28px; padding-top:14px;
+  border-top:2px solid var(--ink);
+  font-size:12px; font-weight:800; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--ink);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.hero-signoff span{color:var(--ink-3)}
+
+.jump{position:sticky; top:0; z-index:10; background:var(--paper); border-bottom:1px solid var(--rule); padding:12px 0; margin-bottom:40px;}
+.jump-inner{max-width:960px; margin:0 auto; padding:0 24px; display:flex; gap:8px; flex-wrap:wrap;}
+@media (max-width:720px){
+  .jump-inner{padding:0 16px; overflow-x:auto; flex-wrap:nowrap}
+  .jump{padding:10px 0}
+}
+.jump a{
+  background:var(--paper-sunk); color:var(--ink-2);
+  font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  padding:8px 12px; border-radius:100px; white-space:nowrap;
+  transition:background .12s ease, color .12s ease;
+}
+.jump a:hover{background:var(--ink); color:var(--paper)}
+
+section{margin-bottom:64px; scroll-margin-top:80px}
+.section-header{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:16px; border-bottom:2px solid var(--ink);
+  padding-bottom:14px; margin-bottom:20px; flex-wrap:wrap;
+}
+.section-title{
+  display:flex; align-items:center; gap:12px;
+  font-size:28px; font-weight:800; letter-spacing:-0.025em; line-height:1;
+  margin:0;
+}
+@media (max-width:720px){.section-title{font-size:22px}}
+.swatch{width:14px; height:14px; border-radius:3px; background:var(--tone, var(--ink)); flex-shrink:0;}
+.section-eyebrow{font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3);}
+.section-intro{font-size:15.5px; color:var(--ink-2); max-width:70ch; margin:0 0 24px;}
+.section-intro strong{color:var(--ink); font-weight:700}
+
+.card-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;}
+.card{
+  background:var(--paper-sunk);
+  border-left:3px solid var(--tone, var(--ink));
+  border-radius:6px;
+  padding:18px 20px;
+  transition:background .12s ease;
+}
+.card:hover{background:transparent}
+.card-num{font-size:10px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--tone, var(--ink)); margin-bottom:10px; font-variant-numeric:tabular-nums;}
+.card-title{font-size:16px; font-weight:700; letter-spacing:-0.01em; margin:0 0 8px; color:var(--ink);}
+.card-body{font-size:13.8px; color:var(--ink-2); line-height:1.5; margin:0}
+.card-body + .card-body{margin-top:8px}
+
+.split{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+@media (max-width:720px){.split{grid-template-columns:1fr}}
+.split-col{background:var(--paper-sunk); border-radius:8px; padding:24px; border-top:4px solid var(--tone, var(--ink));}
+.split-col h3{
+  display:flex; align-items:center; gap:10px;
+  font-size:14px; font-weight:800; letter-spacing:.02em; text-transform:uppercase;
+  margin:0 0 14px; color:var(--ink);
+}
+.split-col h3::before{content:""; width:10px; height:10px; border-radius:50%; background:var(--tone, var(--ink));}
+.item-list{list-style:none; margin:0; padding:0}
+.item-list li{position:relative; padding-left:22px; margin-bottom:10px; font-size:14px; color:var(--ink-2); line-height:1.5;}
+.item-list li::before{content:""; position:absolute; left:0; top:10px; width:12px; height:2px; background:var(--tone, var(--ink));}
+.item-list strong{color:var(--ink); font-weight:700}
+
+.nature-strip{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
+  margin:24px 0;
+}
+.nature-item{padding:18px 20px; border-right:1px solid var(--rule);}
+.nature-item:last-child{border-right:none}
+@media (max-width:720px){
+  .nature-item{border-right:none; border-bottom:1px solid var(--rule)}
+  .nature-item:last-child{border-bottom:none}
+}
+.nature-item .tag{font-size:10px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-3); margin-bottom:6px;}
+.nature-item .val{font-size:14px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums;}
+
+.pill-row{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--ink); color:var(--paper);
+  border-radius:100px; padding:10px 16px;
+  font-size:12.5px; font-weight:700; letter-spacing:-0.005em;
+}
+.pill .dot{width:6px; height:6px; border-radius:50%; background:var(--tone, var(--paper));}
+.pill.ghost{background:transparent; color:var(--ink); border:1.5px solid var(--rule-strong);}
+
+.dir{border-top:1px solid var(--rule)}
+.dir-row{
+  display:grid; grid-template-columns:4px 1fr auto;
+  align-items:center; border-bottom:1px solid var(--rule);
+  transition:background .12s ease;
+}
+.dir-row:hover{background:var(--paper-sunk)}
+.row-stripe{width:4px; height:44px; background:var(--stripe, var(--ink))}
+.dir-main{padding:12px 16px; display:flex; align-items:center; gap:12px; font-size:14px; color:var(--ink); font-weight:600;}
+.dir-tag{font-size:10px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);}
+.dir-meta{padding:12px 16px; font-size:12px; color:var(--ink-2); font-variant-numeric:tabular-nums; text-align:right;}
+@media (max-width:720px){.dir-main{font-size:13px; gap:8px} .dir-meta{font-size:11px}}
+
+.timeline{margin-top:12px}
+.tl-item{display:grid; grid-template-columns:120px 1fr; gap:24px; padding:22px 0; border-bottom:1px solid var(--rule);}
+@media (max-width:720px){.tl-item{grid-template-columns:1fr; gap:8px}}
+.tl-when{font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--tone, var(--ink));}
+.tl-when small{display:block; color:var(--ink-3); font-weight:600; letter-spacing:.12em; margin-top:4px;}
+.tl-body h3{font-size:18px; font-weight:800; letter-spacing:-0.015em; margin:0 0 8px; color:var(--ink);}
+.tl-body p{font-size:14px; color:var(--ink-2); margin:0 0 10px; line-height:1.55}
+.tl-body ul{margin:6px 0 0; padding-left:18px; font-size:13.5px; color:var(--ink-2)}
+.tl-body ul li{margin-bottom:4px}
+.tl-body ul strong{color:var(--ink); font-weight:700}
+
+.dash-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;}
+.metric{background:var(--paper-sunk); border-radius:8px; padding:18px 20px; border-left:3px solid var(--tone, var(--ink));}
+.metric-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; gap:12px;}
+.metric-label{font-size:10.5px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-2);}
+.metric-nums{font-size:12.5px; color:var(--ink-3); font-variant-numeric:tabular-nums; font-weight:700;}
+.metric-nums b{color:var(--ink); font-weight:800; font-size:16px}
+.metric-bar{height:6px; background:var(--rule); border-radius:2px; overflow:hidden; position:relative;}
+.metric-bar span{display:block; height:100%; background:var(--tone, var(--ink)); border-radius:2px; transition:width .3s ease;}
+.metric-input{margin-top:10px; display:flex; align-items:center; gap:8px; font-size:11px; color:var(--ink-3); letter-spacing:.08em;}
+.metric-input input{
+  flex:1; min-width:0; background:var(--paper); color:var(--ink);
+  border:1px solid var(--rule-strong); border-radius:4px;
+  padding:6px 8px; font:inherit; font-size:12px; font-variant-numeric:tabular-nums;
+}
+.metric-input input:focus{outline:none; border-color:var(--tone, var(--ink))}
+.dash-actions{margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; font-size:11px;}
+.dash-actions button{
+  border:1.5px solid var(--rule-strong); border-radius:100px;
+  padding:8px 14px; font-size:11px; font-weight:800;
+  letter-spacing:.14em; text-transform:uppercase;
+  transition:border-color .12s ease, background .12s ease, color .12s ease;
+}
+.dash-actions button:hover{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+
+.tabs{display:flex; gap:6px; border-bottom:1px solid var(--rule); margin-bottom:20px; flex-wrap:wrap;}
+.tab-btn{
+  padding:10px 14px; font-size:11px; font-weight:800;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); border-bottom:2px solid transparent;
+  margin-bottom:-1px; transition:color .12s ease, border-color .12s ease;
+}
+.tab-btn:hover{color:var(--ink-2)}
+.tab-btn.active{color:var(--ink); border-bottom-color:var(--ink)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.cv-block{background:var(--paper-sunk); border-radius:8px; padding:20px 22px; margin-bottom:12px; border-left:3px solid var(--tone, var(--ink));}
+.cv-block h4{font-size:12px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:0 0 10px; color:var(--tone, var(--ink));}
+.cv-block ul{margin:0; padding-left:18px; color:var(--ink-2); font-size:13.5px}
+.cv-block ul li{margin-bottom:6px}
+.cv-block ul strong{color:var(--ink); font-weight:700}
+
+.manifiesto{
+  border-left:4px solid var(--ink); padding:8px 0 8px 20px;
+  margin:20px 0; font-size:17px; color:var(--ink);
+  font-weight:600; letter-spacing:-0.01em; line-height:1.4;
+  max-width:60ch;
+}
+.manifiesto small{display:block; margin-top:10px; font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);}
+
+.pitch{background:var(--paper-sunk); border-radius:8px; padding:22px 24px; margin-bottom:14px; border-top:4px solid var(--tone, var(--ink));}
+.pitch-label{font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px;}
+.pitch p{margin:0; font-size:15px; color:var(--ink); line-height:1.55}
+.pitch p + p{margin-top:10px; color:var(--ink-2)}
+
+.callout{padding:20px 22px; border:1.5px solid var(--tone, var(--ink)); border-radius:8px; margin:18px 0; background:var(--paper);}
+.callout .callout-tag{font-size:10.5px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--tone, var(--ink)); margin-bottom:6px;}
+.callout p{margin:0; font-size:14.5px; color:var(--ink-2); line-height:1.55}
+.callout p strong{color:var(--ink); font-weight:700}
+
+footer{margin-top:96px; border-top:2px solid var(--ink); background:var(--paper);}
+.foot-wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+@media (max-width:720px){.foot-wrap{padding:0 16px}}
+
+.foot-brand{padding:48px 0 32px; border-bottom:1px solid var(--rule);}
+.foot-mark{
+  display:flex; align-items:flex-end; gap:14px;
+  margin-bottom:22px; flex-wrap:wrap;
+}
+.foot-wordmark{
+  font-size:clamp(56px, 10vw, 96px); font-weight:900;
+  letter-spacing:-0.055em; line-height:.85;
+  color:var(--ink); margin:0; text-transform:uppercase;
+}
+.foot-sub{
+  display:inline-flex; flex-direction:column; gap:2px;
+  padding-bottom:10px; border-left:2px solid var(--ink);
+  padding-left:14px; margin-left:2px;
+}
+.foot-sub b{font-size:12px; font-weight:800; letter-spacing:.22em; text-transform:uppercase; color:var(--ink);}
+.foot-sub span{font-size:10.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--ink-3);}
+.foot-bars{
+  display:flex; height:8px; width:100%; max-width:220px;
+  margin-bottom:22px; border-radius:2px; overflow:hidden;
+}
+.foot-bars i{flex:1; display:block;}
+.foot-eslogan{
+  font-size:clamp(18px, 2.4vw, 24px); font-weight:700;
+  letter-spacing:-0.02em; line-height:1.25; color:var(--ink);
+  max-width:52ch; margin:0 0 10px;
+}
+.foot-eslogan em{font-style:normal; color:var(--ink); border-bottom:2px solid var(--noreste); padding-bottom:1px;}
+.foot-tagline{font-size:13.5px; color:var(--ink-2); max-width:52ch; margin:0; line-height:1.5;}
+
+.foot-cols{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:28px;
+  padding:36px 0;
+  border-bottom:1px solid var(--rule);
+}
+@media (max-width:720px){.foot-cols{grid-template-columns:1fr; gap:24px}}
+.foot-col h4{
+  font-size:10.5px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 14px; padding-bottom:10px;
+  border-bottom:1px solid var(--rule);
+}
+.foot-col ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px;}
+.foot-col a, .foot-col span.foot-line{
+  font-size:13px; color:var(--ink-2); font-weight:600; letter-spacing:-0.005em;
+  display:inline-flex; align-items:center; gap:8px;
+  transition:color .12s ease;
+}
+.foot-col a:hover{color:var(--ink)}
+.foot-col a::before{
+  content:""; width:6px; height:1.5px; background:var(--tone, var(--ink-3));
+  display:inline-block; flex-shrink:0;
+}
+.foot-col span.foot-line{color:var(--ink)}
+.foot-col span.foot-line b{font-weight:800; color:var(--ink)}
+.foot-social{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+.foot-social a{
+  width:36px; height:36px; border-radius:50%;
+  border:1.5px solid var(--rule-strong); color:var(--ink);
+  display:inline-flex; align-items:center; justify-content:center;
+  transition:border-color .12s ease, background .12s ease, color .12s ease;
+}
+.foot-social a::before{display:none}
+.foot-social a:hover{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.foot-social a svg{width:14px; height:14px;}
+
+.foot-bottom{
+  padding:22px 0 32px; display:flex; align-items:center; justify-content:space-between;
+  gap:20px; flex-wrap:wrap;
+}
+.foot-copy{font-size:11px; color:var(--ink-3); letter-spacing:.06em; margin:0;}
+.foot-copy b{color:var(--ink); font-weight:800; letter-spacing:.14em; text-transform:uppercase; margin-right:8px;}
+.foot-up{
+  font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--ink); display:inline-flex; align-items:center; gap:8px;
+  border:1.5px solid var(--rule-strong); border-radius:100px;
+  padding:8px 14px;
+  transition:border-color .12s ease, background .12s ease, color .12s ease;
+}
+.foot-up:hover{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.foot-up svg{width:10px; height:10px;}
+
+.mt-0{margin-top:0}
+.mb-0{margin-bottom:0}
+.mono{font-family:var(--mono); font-size:12.5px; color:var(--ink-2)}
+hr.rule{border:none; border-top:1px solid var(--rule); margin:24px 0}
+.pendiente{
+  display:inline-block; font-size:10px; font-weight:800;
+  letter-spacing:.18em; text-transform:uppercase;
+  padding:2px 8px; border-radius:100px;
+  background:var(--occidente); color:#000;
+  margin-left:6px; vertical-align:middle;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="#top" aria-label="Inicio">
+      <span class="logo-text">
+        Brandon&nbsp;Oleynick
+        <small>Mentor</small>
+      </span>
+    </a>
+    <div class="header-right">
+      <a class="nav-link" href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener">
+        Mentoría VORKA
+        <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg>
+      </a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">Modo oscuro</button>
+    </div>
+  </div>
+</header>
+
+<div id="top"></div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="brand">
+      <span class="brand-dots" aria-hidden="true">
+        <i style="background:#3b7bc0"></i>
+        <i style="background:#d94a3d"></i>
+        <i style="background:#dcb03d"></i>
+        <i style="background:#6d3a8a"></i>
+        <i style="background:#6ba838"></i>
+      </span>
+      Sprint 90 días · Líderes del Mañana + Chispas de Curiosidad
+    </div>
+    <h1 id="hero-title">
+      Leslie Aranel<br>Martínez Mendoza
+      <span>Tienes 90 días para aplicar a Líderes del Mañana — y diez años para volver Chispas de Curiosidad un modelo replicable desde Valle de Chalco.</span>
+    </h1>
+    <div class="hero-copy">
+      <p><strong>Leslie Aranel Martínez Mendoza</strong> — Aranel — 17 años, nacida en Nezahualcóyotl y formada toda su vida en Valle de Chalco, Edomex. Estudiante de tercer año de bachillerato, promedio 9.1, certificada en inglés B1 por Pearson (única de primer semestre en aprobar en su generación), capitana de tocho con 1er lugar estatal, ex capitana de voleibol a nivel zona escolar. Futura Médico Cirujano por Campus CCM del Tec de Monterrey. Impulsora de dos proyectos activos: <strong>Chispas de Curiosidad</strong>, un taller para niños de 6 a 9 años que ataca causas tempranas del abandono escolar; y un <strong>filtro de agua de bajo costo</strong> para el desperdicio en los baños de su colegio.</p>
+      <p>Este documento tiene dos horizontes que no se deben confundir. <strong>Horizonte corto: 90 días</strong> para dejar la aplicación a Líderes del Mañana en pie — ensayo iterado, evidencia curada, simulacros de examen y entrevista, piloto de Chispas ejecutado. <strong>Horizonte largo: 10 años</strong> para terminar Medicina, iniciar especialidad y convertir Chispas en un programa con manual público que otros mentores de Valle puedan replicar.</p>
+      <p><strong>El sprint de 90 días es el plan operativo. Terminar Medicina y sostener Chispas es el norte estratégico.</strong> Una cosa no funciona sin la otra: sin obra concreta el sprint es puro pitch; sin norte largo, el sprint es una beca sin propósito.</p>
+    </div>
+    <div class="hero-signoff">
+      <div>Construido por VORKA · Mentoría Oleynick</div>
+      <span>v1.0 · Sprint activo</span>
+    </div>
+  </section>
+
+  <!-- JUMP NAV -->
+  <nav class="jump" aria-label="Navegación rápida">
+    <div class="jump-inner">
+      <a href="#diagnostico">01 · Diagnóstico</a>
+      <a href="#perfil">02 · Perfil</a>
+      <a href="#marca">03 · Marca personal</a>
+      <a href="#roadmap">04 · Sprint 90 días</a>
+      <a href="#ldm">05 · Líderes del Mañana</a>
+      <a href="#cv">06 · CV en construcción</a>
+      <a href="#dashboard">07 · Dashboard</a>
+      <a href="#chispas">08 · Chispas · Norte 10 años</a>
+      <a href="#oportunidades">09 · Oportunidades</a>
+      <a href="#stack">10 · Stack técnico</a>
+      <a href="#recursos">11 · Recursos</a>
+      <a href="#riesgos">12 · Riesgos</a>
+    </div>
+  </nav>
+
+  <!-- 01 DIAGNÓSTICO -->
+  <section id="diagnostico" style="--tone: var(--noreste);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>01 · Diagnóstico honesto</h2>
+      <span class="section-eyebrow">Punto de partida · Con perspectiva</span>
+    </div>
+    <p class="section-intro">Antes de diseñar el sprint, esta es una lectura honesta del terreno — reconociendo lo que ya construiste y lo que conviene fortalecer para los próximos 90 días. Léelo como hoja de ruta, no como calificación.</p>
+
+    <div class="callout">
+      <div class="callout-tag">La foto de hoy</div>
+      <p>Tienes tres cosas que la mayoría de aspirantes a Líderes del Mañana no tiene junto: <strong>promedio consistente arriba de 9 en las tres etapas escolares</strong>, <strong>certificación oficial de inglés B1 Pearson</strong> conseguida como la única de primer semestre entre cuatro aprobados en toda tu prepa, y <strong>trayectoria de liderazgo real</strong> — capitana estatal de tocho, capitana de dos equipos de voleibol a nivel zona escolar, coordinadora en FORZZA con 7 niñas de 5º de primaria a tu cargo, expositora de microempresa y representante en parlamentos infantiles desde 5º de primaria. También traes una historia personal densa: pandemia con papá enfermo de covid, mamá que vendió sus anillos de compromiso para pagar tratamientos tuyos, cambio de escuela por problemas económicos, y una crisis respiratoria que te sacó 6 meses del deporte y de la que regresaste con pulmones al 100%. El trabajo de estos 90 días no es reinventarte — es <strong>ordenar lo que ya vives, iterar el ensayo de LdM 6-8 semanas y ejecutar el primer piloto de Chispas de Curiosidad</strong>.</p>
+    </div>
+
+    <div class="split">
+      <div class="split-col">
+        <h3>Lo que ya tienes a favor</h3>
+        <ul class="item-list">
+          <li><strong>Vocación con origen verificable.</strong> Medicina no es un capricho: viene de crecer con familia con antecedentes médicos, de tu propia enfermedad respiratoria y de haber visto a tu mamá desesperada buscando tanque de oxígeno para tu papá durante la pandemia. Nadie puede refutar esa historia.</li>
+          <li><strong>Idea social con narrativa real.</strong> Chispas de Curiosidad nace de un amigo de primaria que decía "de todos modos voy a ser mecánico". Ese origen anecdótico es el activo narrativo más valioso que tienes.</li>
+          <li><strong>Trayectoria académica sostenida.</strong> 9.4 primaria · 9.3 secundaria · 9.1 preparatoria. Consistencia, no promedio inflado de último año.</li>
+          <li><strong>Certificación oficial + reto abierto.</strong> Inglés B1 Pearson aprobado siendo de las 4 únicas de tu escuela; en este ciclo vas por B2 — palanca directa para simulacros y para el ensayo.</li>
+          <li><strong>Liderazgo demostrado con métricas.</strong> Capitana estatal de tocho (1er lugar), capitana de voleibol a nivel zona escolar (2 medallas), coordinadora FORZZA/ECYD con al menos 16 personas movilizadas.</li>
+          <li><strong>Historia de resiliencia médica.</strong> Diagnóstico respiratorio que te sacó 6 meses del deporte, recuperación completa, regreso a competencias en el TID Veracruz — no teoría, evidencia.</li>
+          <li><strong>Segunda iniciativa en curso.</strong> Filtro de agua para tu colegio · muestra que no eres una idea, sino una persona que ejecuta.</li>
+        </ul>
+      </div>
+      <div class="split-col">
+        <h3>Áreas a fortalecer en 90 días</h3>
+        <ul class="item-list">
+          <li><strong>Convertir Chispas de idea en piloto ejecutado.</strong> El comité de LdM no evalúa proyectos hipotéticos; evalúa obra. Necesitas mínimo 1 sesión piloto con evidencia — no 4, pero sí 1 impecable.</li>
+          <li><strong>Ordenar tu portafolio de evidencia.</strong> Tienes muchos diplomas, medallas y participaciones dispersos en fotos y publicaciones de tu escuela. Falta consolidarlos en una carpeta pública ordenada por año.</li>
+          <li><strong>Iterar el ensayo de LdM 6-8 semanas.</strong> No es un documento de fin de semana. Necesitas 4-6 versiones con retroalimentación externa antes de enviar.</li>
+          <li><strong>Simulacros duros del examen.</strong> Debes correr al menos 3 simulacros completos del proceso de admisión Tec (PAA) cronometrado antes del examen real.</li>
+          <li><strong>Callar la voz de "quizá no soy suficiente".</strong> La reconociste tú misma: es tu freno más caro. Se ataca con evidencia acumulada, no con motivación.</li>
+          <li><strong>Diseñar el ritual de descanso.</strong> Prepa 3° + certificación B2 + piloto Chispas + filtro de agua + preparación LdM + colecta Teletón + tocho + asamblea de Independencia = riesgo real de recaída respiratoria si no hay día libre semanal.</li>
+          <li><strong>Documentar tu vida médica con precisión.</strong> El diagnóstico respiratorio necesita fecha, hospital, tratamiento y evidencia del regreso — para que el ensayo tenga columna vertebral, no solo emoción.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <div class="callout-tag">El foco de estos 90 días</div>
+      <p>Tu historia y tus logros ya están construidos. Lo que resta es <strong>ordenarlos, ejecutar el primer piloto de Chispas con 6-10 niños y presentar la aplicación a Líderes del Mañana con evidencia adjuntable</strong>: certificación B1 escaneada, cartas de directora y coordinadores, fotos de los talleres FORZZA con consentimiento, reportes del piloto de Chispas, avance del filtro de agua. Sin evidencia ordenada, un buen ensayo no basta.</p>
+    </div>
+
+    <div class="nature-strip">
+      <div class="nature-item"><div class="tag">Edad hoy</div><div class="val">17 años</div></div>
+      <div class="nature-item"><div class="tag">Duración del sprint</div><div class="val">90 días</div></div>
+      <div class="nature-item"><div class="tag">Promedio bachillerato</div><div class="val">9.1 / 10</div></div>
+      <div class="nature-item"><div class="tag">Piloto Chispas</div><div class="val">0 → 1 sesión ejecutada</div></div>
+      <div class="nature-item"><div class="tag">Versiones del ensayo</div><div class="val">0 → 6 iteraciones</div></div>
+    </div>
+  </section>
+
+  <!-- 02 PERFIL -->
+  <section id="perfil" style="--tone: var(--nacional);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>02 · Perfil</h2>
+      <span class="section-eyebrow">Ficha estratégica</span>
+    </div>
+    <p class="section-intro">Los datos duros que definen tu perfil hoy. Actualízalos cada trimestre. Cada línea aquí debería estar respaldada por evidencia verificable — un link, un certificado, un video, un testimonio, una foto fechada.</p>
+
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--noroeste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">01</span> Nombre · Leslie Aranel Martínez Mendoza (Aranel)</div>
+        <div class="dir-meta">Verificado</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--noreste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">02</span> Origen · Nezahualcóyotl (nac.) → Valle de Chalco (toda la vida)</div>
+        <div class="dir-meta">17 años</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--noreste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">02b</span> Familia · mamá · papá · hermano mayor</div>
+        <div class="dir-meta">Núcleo</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--occidente);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">03</span> Institución · Bachillerato · 3er año en curso</div>
+        <div class="dir-meta">Promedio 9.1</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--centro);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">04</span> Meta universidad · Médico Cirujano · Campus CCM Tec</div>
+        <div class="dir-meta">Definida</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--noroeste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">05</span> Idioma · Inglés B1 certificado Pearson · rumbo a B2</div>
+        <div class="dir-meta">Ciclo actual</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--sureste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">06</span> Deportes · Tocho (capitana · 1er lugar estatal) · Volley · Fútbol</div>
+        <div class="dir-meta">Historial</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--noreste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">07</span> Salud · Cuadro respiratorio 2024-25 · pulmones recuperados al 100%</div>
+        <div class="dir-meta">En seguimiento</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--sureste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">08</span> Proyecto 1 · Chispas de Curiosidad · niños 6-9 años</div>
+        <div class="dir-meta">Piloto en Sprint 3</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--sureste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">09</span> Proyecto 2 · Filtro de agua bajo costo · colegio</div>
+        <div class="dir-meta">Diseño en curso</div>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:8px 0 12px; color:var(--ink);">Trayectoria formativa y personal</h3>
+    <div class="card-grid">
+      <div class="card"><div class="card-num">Primaria</div><div class="card-title">11º Parlamento Infantil · 3er lugar</div><p class="card-body">Selección de escuela a nivel zona escolar entre 5º y 6º. Oratoria democrática. Semilla de la habilidad de pararse frente a un jurado.</p></div>
+      <div class="card"><div class="card-num">Primaria</div><div class="card-title">Club de lectura en inglés</div><p class="card-body">Taller gratuito impartido por la maestra de inglés. Primer contacto con lectura extracurricular sostenida.</p></div>
+      <div class="card"><div class="card-num">Secundaria</div><div class="card-title">Música · guitarra + bajo</div><p class="card-body">Dos diplomas por participación en eventos culturales escolares (2022-24). Disciplina de ensayo aplicada fuera del deporte.</p></div>
+      <div class="card"><div class="card-num">Secundaria</div><div class="card-title">Voleibol · zona escolar</div><p class="card-body">Capitana en dos torneos representando a la escuela contra ~11 escuelas. Dos medallas. Reconocimiento externo (2024).</p></div>
+      <div class="card"><div class="card-num">Prepa 1°</div><div class="card-title">Certificación inglés B1 Pearson</div><p class="card-body">Única de primer semestre y una de las cuatro personas de la escuela en aprobar todos los filtros. Evidencia oficial en mano.</p></div>
+      <div class="card"><div class="card-num">Prepa 2°</div><div class="card-title">Feria de microempresas</div><p class="card-body">Convenciste a la coordinación de exponer un proyecto de juguetes con impresora 3D que había sido rechazado; presentaste stand y expusiste a zona escolar (14 jul 2025).</p></div>
+      <div class="card"><div class="card-num">Prepa 2°</div><div class="card-title">Tocho · 1er y 2do lugar estatal</div><p class="card-body">Capitana en ambas competencias (2025). Regreso al deporte de alto rendimiento tras 6 meses fuera por cuadro respiratorio.</p></div>
+      <div class="card"><div class="card-num">Prepa 2°</div><div class="card-title">TID Veracruz · fútbol</div><p class="card-body">Medalla obtenida en torneo estatal realizado en Cumbres Veracruz (2026). Confirmación pública de recuperación pulmonar.</p></div>
+      <div class="card"><div class="card-num">Fe · liderazgo</div><div class="card-title">FORZZA · capitana</div><p class="card-body">Coordinación de 7 niñas de 5º de primaria en sesiones semanales — antecedente directo del piloto Chispas.</p></div>
+      <div class="card"><div class="card-num">Fe · liderazgo</div><div class="card-title">ECYD · guía</div><p class="card-body">Continuación de FORZZA con grupo de mayor edad. Manejo de imprevistos, improvisación de dinámicas cuando faltaron materiales.</p></div>
+      <div class="card"><div class="card-num">Prepa 3°</div><div class="card-title">Deletreo inglés · 3er lugar zonal (2026)</div><p class="card-body">Representación de escuela a nivel zona escolar. Sostiene la trayectoria en inglés en el año de aplicación a LdM.</p></div>
+      <div class="card"><div class="card-num">Prepa 3°</div><div class="card-title">Colecta Teletón · encargada</div><p class="card-body">Responsable de recaudación de dinero en tu generación (2026). Liderazgo operativo de captación económica.</p></div>
+    </div>
+  </section>
+
+  <!-- 03 MARCA PERSONAL -->
+  <section id="marca" style="--tone: var(--centro);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>03 · Marca personal</h2>
+      <span class="section-eyebrow">Narrativa · Pitch · Manifiesto</span>
+    </div>
+    <p class="section-intro">Sin marca personal, tu trabajo es invisible. Esto no es autopromoción — es <strong>hacer que tu obra pueda encontrarse</strong>. Un ensayo, un pitch, un manifiesto: son la misma idea repetida hasta que otros la repitan por ti.</p>
+
+    <div class="pitch" style="--tone: var(--centro);">
+      <div class="pitch-label">Propuesta de valor · Una línea</div>
+      <p>Voy a ser médica en un país donde la salud se reparte por código postal — y mientras estudio, abro espacios donde los niños de mi barrio descubran que también tienen derecho a preguntar y a fallar.</p>
+    </div>
+
+    <div class="pitch" style="--tone: var(--noroeste);">
+      <div class="pitch-label">Pitch · 30 segundos</div>
+      <p>Soy Aranel Martínez, tengo 17 años, vengo de Valle de Chalco y voy a estudiar Médico Cirujano en el Tec Campus CCM. Elegí Medicina después de ver a mi mamá buscar un tanque de oxígeno para mi papá en plena pandemia y de vivir yo misma una enfermedad respiratoria que me sacó 6 meses del deporte. En paralelo estoy fundando Chispas de Curiosidad, un taller para niños de 6 a 9 años de mi comunidad que combate una causa temprana del abandono escolar: creer, como un amigo mío en primaria, que uno ya sabe qué va a ser de grande sin haber probado nada más.</p>
+    </div>
+
+    <div class="pitch" style="--tone: var(--sureste);">
+      <div class="pitch-label">Pitch · 2 minutos</div>
+      <p>Nací en Nezahualcóyotl y crecí en Valle de Chalco, en una casa donde mi mamá tuvo que vender sus anillos de compromiso — y los de mi papá — para pagar tratamientos médicos que necesité de niña. Me enteré hace unos meses, en una plática casual con ella. Esa fue la última pieza de un rompecabezas que empezó a armarse en pandemia, cuando mi papá enfermó de covid y yo, desde otra habitación, escuchaba a mi mamá tratando de conseguir oxígeno. Ahí entendí que la salud no se reparte parejo, y que quiero ser la doctora que dé paz.</p>
+      <p>En segundo de bachillerato tuve un cuadro respiratorio que me dejó con los pulmones a la mitad de su capacidad. Seis meses fuera del deporte, del salón, de mí misma. Me despertaba en la noche sin aire. Regresé — al torneo estatal de tocho como capitana, al TID Veracruz, al equipo de voleibol de zona escolar. Y regresé también con una idea más clara de qué quería hacer con lo que aprendí.</p>
+      <p>Chispas de Curiosidad nace de un recuerdo puntual: un amigo de primaria que decía "de todos modos voy a ser mecánico, ¿para qué estudio?". Años después lo vi cerca del taller de su papá con uniforme escolar. Alguien, en algún momento, le sembró una duda productiva. Yo quiero ser esa duda para 6, luego 12, luego 60 niñas y niños de mi barrio. Talleres de cuatro sesiones donde experimenten, se equivoquen sin miedo, conozcan mujeres referentes de su comunidad, y descubran que sus ideas cuentan. No prometo evitar la deserción escolar en una tarde — prometo trabajar sobre los factores tempranos que la anticipan.</p>
+      <p>Aplico a Líderes del Mañana porque quiero estudiar Medicina en el Tec Campus CCM, y porque quiero volver a Valle de Chalco con más herramientas de las que tengo hoy. No para irme y regresar en 15 años — sino para sostener Chispas mientras estudio.</p>
+    </div>
+
+    <div class="manifiesto">
+      "No quiero ser la excepción de mi barrio. Quiero volver a mi barrio siendo médica y ayudar a que Chispas siga encendida cuando yo no esté para prender el cerillo."
+      <small>— Manifiesto Aranel</small>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:24px 0 12px; color:var(--ink);">Valores fundacionales</h3>
+    <div class="pill-row">
+      <span class="pill" style="--tone: var(--noroeste);"><span class="dot"></span>Respeto por la duda ajena</span>
+      <span class="pill" style="--tone: var(--noreste);"><span class="dot"></span>Solidaridad con evidencia</span>
+      <span class="pill" style="--tone: var(--occidente);"><span class="dot"></span>Resiliencia con método</span>
+      <span class="pill" style="--tone: var(--centro);"><span class="dot"></span>Curiosidad como oficio</span>
+      <span class="pill" style="--tone: var(--sureste);"><span class="dot"></span>Territorio como maestro</span>
+    </div>
+
+    <hr class="rule">
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:16px 0 12px; color:var(--ink);">Biografía · Versión oficial</h3>
+    <div class="pitch">
+      <p>Leslie Aranel Martínez Mendoza (Nezahualcóyotl, 2008) es estudiante de bachillerato en Valle de Chalco, Estado de México, con promedio sostenido de 9 a lo largo de las tres etapas escolares. Certificada en inglés B1 por Pearson desde primero de bachillerato — la única de su generación de ese semestre en aprobar el examen entre cuatro alumnos de toda la escuela — y en preparación para B2. Capitana estatal de tocho con primer lugar (2025) y segundo en la subsecuente edición; capitana de voleibol a nivel zona escolar en dos torneos consecutivos. Reconocida por su desempeño en el 11º Parlamento de las Niñas y los Niños de México, en participaciones deportivas a nivel estatal y en concursos escolares de ortografía, deletreo en inglés y microempresas. Coordinadora de FORZZA y ECYD entre 2023 y 2025, con experiencia directa acompañando a niñas de primaria en actividades formativas. Superó en 2024-25 un cuadro respiratorio que la mantuvo seis meses fuera del deporte de alto rendimiento; regresó a competencia en el TID Veracruz. Aspirante a Médico Cirujano por Campus Ciudad de México del Tec de Monterrey vía Líderes del Mañana. Fundadora de Chispas de Curiosidad — programa de talleres de cuatro sesiones para niñas y niños de 6 a 9 años en Valle de Chalco — y responsable del diseño de un filtro de agua de bajo costo para su institución educativa.</p>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:20px 0 12px; color:var(--ink);">Misión · Visión · Lema personal</h3>
+    <div class="split">
+      <div class="split-col" style="--tone: var(--noroeste);">
+        <h3>Misión</h3>
+        <p style="font-size:14.5px; color:var(--ink-2); margin:0;">Formarme como médica capaz de dar tratamiento con dignidad, mientras sostengo desde ya un espacio en Valle de Chalco donde niñas y niños pequeños aprendan a preguntar, equivocarse y proponer sin miedo.</p>
+      </div>
+      <div class="split-col" style="--tone: var(--centro);">
+        <h3>Visión</h3>
+        <p style="font-size:14.5px; color:var(--ink-2); margin:0;">En 2036: Médico Cirujano titulada, con especialidad en curso, y Chispas de Curiosidad operando como programa replicable — 300+ niñas y niños atendidos acumulados, manual público, 6+ facilitadoras formadas dentro del propio Valle de Chalco.</p>
+      </div>
+    </div>
+
+    <div class="manifiesto" style="margin-top:20px;">
+      "La primera chispa nunca es tuya. Es la que otro te dio y no supiste cuándo. Mi trabajo es prender la próxima."
+      <small>— Lema personal</small>
+    </div>
+  </section>
+
+  <!-- 04 SPRINT 90 DÍAS -->
+  <section id="roadmap" style="--tone: var(--noroeste);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>04 · Sprint 90 días</h2>
+      <span class="section-eyebrow">Semana por semana · Aplicación LdM + piloto Chispas</span>
+    </div>
+    <p class="section-intro">Doce semanas. Cuatro sprints de tres semanas. Cada sprint tiene <strong>una salida verificable</strong>. Si al cerrar un sprint no puedes mostrar la evidencia a un tercero, no cerraste el sprint. Esto no es calendario de "buenas intenciones" — es lista de entregables públicos. El objetivo del sprint es doble: <strong>dejar lista tu aplicación a Líderes del Mañana con evidencia adjuntable</strong> y <strong>tener el primer piloto de Chispas ejecutado con testimonios</strong>.</p>
+
+    <div class="nature-strip">
+      <div class="nature-item"><div class="tag">Arranque</div><div class="val">Semana 1</div></div>
+      <div class="nature-item"><div class="tag">Cierre</div><div class="val">Semana 12</div></div>
+      <div class="nature-item"><div class="tag">Ritmo</div><div class="val">Revisión dominical 20:00</div></div>
+      <div class="nature-item"><div class="tag">Regla de oro</div><div class="val">Ejecutar &gt; planear</div></div>
+    </div>
+
+    <div class="timeline">
+
+      <!-- SPRINT 1 -->
+      <div class="tl-item">
+        <div class="tl-when">Sprint 1<small>Semanas 1-3 · Orden y borrador cero</small></div>
+        <div class="tl-body">
+          <h3>Consolidar evidencia · Bautizar formalmente Chispas · Borrador cero del ensayo</h3>
+          <p>Antes de escribir el ensayo definitivo o correr un piloto, necesitas tener <strong>todo tu historial ordenado en una sola carpeta</strong> y <strong>bautizado el proyecto</strong>. Sin esas dos cosas, cualquier trabajo posterior se apoya en aire.</p>
+          <ul>
+            <li><strong>Carpeta pública en Drive</strong> con estructura fija: 01_academico (calificaciones + certificación B1) · 02_liderazgo (FORZZA · ECYD · capitanías) · 03_deporte (medallas · TID · tocho) · 04_reconocimientos (diplomas primaria → prepa) · 05_proyectos (Chispas + filtro de agua) · 06_evidencia_fotografica.</li>
+            <li><strong>Cronología de vida en una sola hoja</strong> · 2008 nacimiento → 2020 pandemia y covid del papá → 2024 cuadro respiratorio → 2025 regreso a tocho → 2026 aplicación LdM. Marca fechas exactas, no aproximadas.</li>
+            <li><strong>Chispas de Curiosidad · marca lista</strong>: logotipo mínimo (Canva), descripción de 200 palabras, misión, mecánica de 4 sesiones, población objetivo (6-9 años), tagline: "Pequeñas ideas. Grandes posibilidades."</li>
+            <li><strong>Filtro de agua · ficha técnica v1</strong>: problema, hipótesis, materiales, costo estimado, cronograma de pruebas — media hoja bien escrita vale más que 10 en desorden.</li>
+            <li><strong>Borrador cero del ensayo LdM</strong> · 700-900 palabras, sin editar. Solo poner por escrito el arco completo: familia → pandemia → enfermedad → deporte → medicina → Chispas → LdM.</li>
+            <li><strong>3 alianzas mapeadas</strong> para el piloto Chispas: escuela primaria dentro o cerca de tu colegio · centro comunitario · casa parroquial. Ninguna cerrada todavía — solo identificadas con contacto.</li>
+            <li><strong>Salida verificable:</strong> carpeta pública compartible + one-pager PDF de Chispas + borrador cero del ensayo (documento fechado) + ficha de filtro de agua.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SPRINT 2 -->
+      <div class="tl-item">
+        <div class="tl-when">Sprint 2<small>Semanas 4-6 · Ensayo v2 + alianza cerrada</small></div>
+        <div class="tl-body">
+          <h3>Iterar el ensayo · Cerrar sede piloto Chispas · Correr simulacro 1 PAA</h3>
+          <p>El ensayo pasa de borrador a documento defensible. Chispas pasa de idea con marca a piloto con fecha y lugar. El examen deja de ser incógnita.</p>
+          <ul>
+            <li><strong>Ensayo v2 y v3</strong> · retroalimentación de 3 personas distintas (mentor VORKA · un profesor de tu confianza · un adulto externo a tu escuela). Cada versión con cambios visibles, no cosméticos.</li>
+            <li><strong>Alianza formal con 1 sede piloto</strong>: reunión con dirección + carta de intención firmada + fecha reservada del primer taller.</li>
+            <li><strong>Convocatoria del piloto</strong> · cartel Canva + mensaje para padres/tutores · consentimiento informado firmado por al menos 6 tutores para uso de foto/video.</li>
+            <li><strong>Simulacro 1 PAA</strong> · examen completo cronometrado (matemáticas · verbal · inglés) en condiciones reales. Registra puntaje inicial — es tu línea base.</li>
+            <li><strong>Certificación B2 Pearson en calendario</strong> · fecha de examen agendada y confirmada con la coordinación de inglés.</li>
+            <li><strong>Cuidado del cuerpo:</strong> revisión médica de control (respiratorio) al iniciar el sprint · plan de sueño mínimo 7h · una tarde sin actividades a la semana.</li>
+            <li><strong>Salida verificable:</strong> ensayo v3 con historial de cambios visible + carta de intención firmada por sede piloto + puntaje del simulacro 1 registrado.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SPRINT 3 -->
+      <div class="tl-item">
+        <div class="tl-when">Sprint 3<small>Semanas 7-9 · Piloto Chispas + ensayo v5</small></div>
+        <div class="tl-body">
+          <h3>Ejecutar las 4 sesiones piloto de Chispas · Documentar todo</h3>
+          <p>Este es el sprint de mayor exposición. Vas a impartir el primer taller real de Chispas y a llevar el ensayo hasta versión defendible. La evidencia de este sprint sostiene la aplicación entera.</p>
+          <ul>
+            <li><strong>4 sesiones de 40-50 min</strong> impartidas · 1 por semana (3 semanas de sesiones + 1 de cierre) · 6-10 niñas y niños de 6-9 años.</li>
+            <li><strong>Metodología Chispa → Intento → Aprendizaje → Inspiración → Acción</strong> aplicada al pie de la letra en cada sesión, con bitácora escrita al terminar cada una.</li>
+            <li><strong>Sesión 1: reto de la torre</strong> (20 popotes + cinta + malvavisco) · Sesión 2: reto de comunidad + primera mujer referente · Sesión 3: dibujo de "el problema que veo" · Sesión 4: cierre con Kit "Para seguir encendiendo la chispa" + diploma personalizado + carta al yo del futuro.</li>
+            <li><strong>Registro fotográfico y audiovisual</strong> con consentimiento firmado · video corto (30-60s) de al menos 2 tutores hablando de un cambio observado.</li>
+            <li><strong>Comparativa de propuestas</strong> · foto de los "problemas que veo" de la sesión 1 vs. sesión 4 · métrica cualitativa de evolución.</li>
+            <li><strong>Ensayo v4 y v5</strong> · incorpora fragmentos reales del piloto Chispas · corta lo motivacional que sobre.</li>
+            <li><strong>Simulacro 2 PAA</strong> con cambios detectables desde el simulacro 1.</li>
+            <li><strong>Salida verificable:</strong> reporte piloto Chispas (PDF, 6-8 páginas) con fotos, testimonios y aprendizajes + ensayo v5 + kit del taller documentado.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SPRINT 4 -->
+      <div class="tl-item">
+        <div class="tl-when">Sprint 4<small>Semanas 10-12 · Aplicación LdM + entrega</small></div>
+        <div class="tl-body">
+          <h3>Ensayo v6 · Simulacros restantes · Aplicación enviada · Retroalimentación pública</h3>
+          <p>El sprint no cierra con "hicimos las cosas". Cierra con <strong>aplicación enviada, comprobante en mano y aprendizajes publicados</strong>.</p>
+          <ul>
+            <li><strong>Ensayo v6 final</strong> · última revisión con VORKA · lectura en voz alta cronometrada (para caber en tiempo si es entrevista).</li>
+            <li><strong>Simulacro 3 y 4 PAA</strong> · uno de ellos en horario de examen real (mañana temprano) para calibrar biorritmo.</li>
+            <li><strong>Cartas de recomendación reunidas</strong> · directora o coordinadora académica · entrenador deportivo · coordinador de FORZZA/ECYD.</li>
+            <li><strong>Simulacros de entrevista</strong> · 3 sesiones grabadas · respuesta a 10 preguntas duras: ¿por qué el Tec y no la UNAM? · ¿por qué medicina? · ¿qué pasa si Chispas fracasa? · ¿cómo te sostienes con LdM y con estudios? · ¿por qué Valle de Chalco te necesita a ti y no tú a él?</li>
+            <li><strong>Aplicación a Líderes del Mañana enviada</strong> · con toda la evidencia adjunta según la convocatoria abierta · comprobante guardado en la carpeta pública.</li>
+            <li><strong>Reporte piloto Chispas publicado</strong> en Instagram de Chispas + PDF descargable desde la carpeta pública.</li>
+            <li><strong>Descanso planificado:</strong> 3 días sin agenda de LdM ni Chispas la semana 13 · dormir · fútbol o tocho suave · sin pantalla nocturna.</li>
+            <li><strong>Salida verificable:</strong> comprobante de aplicación LdM + ensayo v6 en carpeta pública + reporte piloto Chispas publicado + CV actualizado a día de aplicación.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout" style="margin-top:20px;">
+      <div class="callout-tag">Regla operativa</div>
+      <p>Cada domingo 20:00: abres esta página, actualizas el dashboard y respondes tres preguntas en un cuaderno físico: <strong>¿qué cerré esta semana?</strong>, <strong>¿qué NO cerré y por qué?</strong>, <strong>¿qué cambia en el próximo sprint?</strong>. Sin este ritual, el plan se descompone en 3 semanas — y de esta plaza no se sale con motivación, se sale con evidencia.</p>
+    </div>
+  </section>
+
+  <!-- 05 LÍDERES DEL MAÑANA -->
+  <section id="ldm" style="--tone: var(--noreste);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>05 · Líderes del Mañana</h2>
+      <span class="section-eyebrow">Convocatoria oficial · Aplicación en semana 12</span>
+    </div>
+    <p class="section-intro">Líderes del Mañana <strong>sí es objetivo de este sprint</strong>. Los ejes que evalúa el programa son los que van dirigiendo cada acción de las 12 semanas. Esta sección desmenuza qué mira el comité, dónde estás fuerte y dónde tienes que apretar. Cuando el ensayo se atore, regresa aquí.</p>
+
+    <div class="callout" style="--tone: var(--noreste);">
+      <div class="callout-tag">Verificación oficial</div>
+      <p>Antes de invertir 90 días, verifica en la convocatoria vigente del Tec de Monterrey los <strong>requisitos exactos para tu año de ingreso</strong>: promedio mínimo, tope socioeconómico, fechas de examen PAA, documentos y ensayos requeridos. La convocatoria manda; este documento la operacionaliza. La carrera objetivo es <strong>Médico Cirujano en Campus Ciudad de México</strong>.</p>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:24px 0 12px; color:var(--ink);">Los cuatro ejes que evalúa LdM</h3>
+    <div class="card-grid">
+      <div class="card" style="--tone: var(--noroeste);">
+        <div class="card-num">Eje 01</div>
+        <div class="card-title">Excelencia académica</div>
+        <p class="card-body">Promedio sostenido, rigor curricular, evidencia de esfuerzo consistente y desempeño en el PAA.</p>
+        <p class="card-body"><strong>Tu palanca:</strong> promedio 9.1 sostenido desde primaria + certificación B1 Pearson conseguida como una de 4 en toda la prepa + ir por B2 en el mismo ciclo.</p>
+      </div>
+      <div class="card" style="--tone: var(--centro);">
+        <div class="card-num">Eje 02</div>
+        <div class="card-title">Liderazgo con impacto</div>
+        <p class="card-body">Proyectos propios, iniciativas comunitarias, personas que te siguen y cambios verificables.</p>
+        <p class="card-body"><strong>Tu palanca:</strong> capitana estatal de tocho (1er lugar) · capitana de voleibol · coordinadora FORZZA/ECYD con 16+ niñas movilizadas · encargada de colecta Teletón · fundadora de Chispas · piloto ejecutado durante el sprint.</p>
+      </div>
+      <div class="card" style="--tone: var(--sureste);">
+        <div class="card-num">Eje 03</div>
+        <div class="card-title">Vocación de servicio</div>
+        <p class="card-body">Compromiso genuino de devolver a México. Horas voluntarias documentadas + testimonios de aliados.</p>
+        <p class="card-body"><strong>Tu palanca:</strong> años acompañando niñas en FORZZA/ECYD + piloto Chispas con 6-10 niñas y niños de Valle de Chalco + filtro de agua para bien común escolar + narrativa de retornar a Valle como médica.</p>
+      </div>
+      <div class="card" style="--tone: var(--occidente);">
+        <div class="card-num">Eje 04</div>
+        <div class="card-title">Historia personal y resiliencia</div>
+        <p class="card-body">Cómo has enfrentado obstáculos, quién te formó, qué te marcó. Autenticidad radical, no fórmula.</p>
+        <p class="card-body"><strong>Tu palanca:</strong> mamá que vendió sus anillos por tus tratamientos · covid del papá en pandemia · cambio de escuela por dificultades económicas · cuadro respiratorio 2024-25 y regreso completo al deporte de alto rendimiento.</p>
+      </div>
+    </div>
+
+    <div class="split" style="margin-top:24px;">
+      <div class="split-col" style="--tone: var(--noreste);">
+        <h3>Anatomía del ensayo LdM</h3>
+        <ul class="item-list">
+          <li><strong>Apertura con imagen específica</strong> · la habitación donde tu papá pasó covid, no la palabra "pandemia".</li>
+          <li><strong>Puente hacia tu vocación</strong> · qué viste ahí que te llevó a Medicina y no a otra cosa.</li>
+          <li><strong>Evidencia de trayectoria</strong> · promedio, B1 Pearson, capitana estatal, coordinadora FORZZA — en 2 párrafos, no en 5.</li>
+          <li><strong>Chispas como iniciativa concreta</strong> · escena del amigo mecánico + metodología + primer piloto ejecutado.</li>
+          <li><strong>Por qué LdM y por qué Campus CCM</strong> · una razón académica, una comunitaria, una personal.</li>
+          <li><strong>Cierre operativo</strong> · qué harás con esta beca en los próximos 10 años, medible.</li>
+        </ul>
+      </div>
+      <div class="split-col" style="--tone: var(--noreste);">
+        <h3>Errores a evitar</h3>
+        <ul class="item-list">
+          <li><strong>Frases de folleto motivacional</strong> · "seguir mis sueños", "romper barreras", "ser la mejor versión de mí".</li>
+          <li><strong>Enumerar logros sin escena</strong> · el comité lee cientos de listas; recuerda las historias con textura.</li>
+          <li><strong>Ocultar la enfermedad respiratoria</strong> por miedo a parecer frágil. Es capital narrativo, no debilidad.</li>
+          <li><strong>Prometer que Chispas evitará la deserción escolar.</strong> Prometes trabajar sobre factores tempranos, no un milagro medible en un ciclo.</li>
+          <li><strong>Meter religión como argumento central</strong> · FORZZA / ECYD sirven como experiencia de liderazgo con niñas, no como manifiesto de fe.</li>
+          <li><strong>Escribirlo en un fin de semana.</strong> Se nota. Y descalifica.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 CV -->
+  <section id="cv" style="--tone: var(--occidente);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>06 · CV en construcción</h2>
+      <span class="section-eyebrow">3 horizontes · Foco 90 días</span>
+    </div>
+    <p class="section-intro">Este es el currículum que estás construyendo. Cada línea con evidencia adjuntable — link, PDF, video, foto o testimonio. La versión "día de aplicación" es la que vas a enviar al Tec en semana 12; las versiones a 1 y 5 años son horizonte, no plan operativo actual.</p>
+
+    <div class="tabs" role="tablist" aria-label="Versiones del CV">
+      <button class="tab-btn active" data-tab="cvapp" role="tab">Día de aplicación · Semana 12</button>
+      <button class="tab-btn" data-tab="cv1y" role="tab">1 año</button>
+      <button class="tab-btn" data-tab="cv5y" role="tab">5 años</button>
+    </div>
+
+    <div class="tab-panel active" id="cvapp">
+      <div class="cv-block" style="--tone: var(--noroeste);">
+        <h4>Educación · Al enviar la aplicación</h4>
+        <ul>
+          <li><strong>Bachillerato · 3er año en curso · Valle de Chalco, Edomex</strong> · promedio 9.1 sostenido</li>
+          <li>Certificación oficial <strong>Pearson English International Certificate · B1</strong> (única de primer semestre de la generación en aprobar entre 4 alumnos de toda la prepa)</li>
+          <li>Segundo examen Pearson para nivel B2 en calendario del ciclo</li>
+          <li>Diplomas anuales por promedio superior a 9 en primaria, secundaria y bachillerato</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--centro);">
+        <h4>Liderazgo · Proyecto 1 · Chispas de Curiosidad</h4>
+        <ul>
+          <li><strong>Fundadora y facilitadora</strong> · taller de 4 sesiones para niñas y niños de 6-9 años · Valle de Chalco</li>
+          <li><strong>Primer piloto ejecutado</strong> · 6-10 participantes · sesiones de 40-50 min · metodología Chispa → Intento → Aprendizaje → Inspiración → Acción</li>
+          <li>Consentimientos firmados por tutores · testimonios en video documentados</li>
+          <li>Reporte piloto en PDF público + Instagram del proyecto activo</li>
+          <li>Kit "Para seguir encendiendo la chispa" entregado en la sesión de cierre</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--sureste);">
+        <h4>Liderazgo · Proyecto 2 · Filtro de agua</h4>
+        <ul>
+          <li><strong>Diseñadora y responsable técnica</strong> · filtro de agua de bajo costo para consumo escolar</li>
+          <li>Ficha técnica documentada · presupuesto minimizado · pruebas de filtración registradas</li>
+          <li>Objetivo: reducir desperdicio de agua en los baños del colegio + generar precedente para su comunidad</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--noreste);">
+        <h4>Liderazgo formativo · FORZZA · ECYD</h4>
+        <ul>
+          <li>Capitana FORZZA · coordinación de 7 niñas de 5º de primaria en sesiones semanales</li>
+          <li>Guía ECYD · manejo de grupos con imprevistos y ausencia de materiales</li>
+          <li>Aprendizaje directo aplicado hoy en la metodología de Chispas</li>
+          <li>~16 personas movilizadas en conjunto entre ambos grupos</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--occidente);">
+        <h4>Trayectoria deportiva</h4>
+        <ul>
+          <li><strong>Capitana · tocho · 1er lugar torneo estatal (2025)</strong></li>
+          <li>Capitana · tocho · 2º lugar torneo estatal subsecuente (2025)</li>
+          <li>Medalla · fútbol · TID Veracruz, Colegio Cumbres (2026)</li>
+          <li>Capitana · voleibol · nivel zona escolar (2 medallas, 2024-25)</li>
+          <li>Regreso al deporte de alto rendimiento tras cuadro respiratorio de 6 meses</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--nacional);">
+        <h4>Reconocimientos académicos y culturales</h4>
+        <ul>
+          <li>11º Parlamento de las Niñas y los Niños de México · 3er lugar zona escolar (primaria)</li>
+          <li>Representante en feria de microempresas a nivel zona escolar (jul 2025)</li>
+          <li>3er lugar en concurso zonal de deletreo en inglés (2026)</li>
+          <li>Diplomas de música (guitarra + bajo), tecnología, ortografía e inglés desde secundaria</li>
+          <li>Encargada de colecta Teletón · 3er año de bachillerato (2026)</li>
+          <li>Coordinación de asamblea de Independencia de México · guion y escenografía (2026)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="cv1y">
+      <div class="cv-block" style="--tone: var(--noroeste);">
+        <h4>Educación · +1 año</h4>
+        <ul>
+          <li>Primer año de Médico Cirujano · Campus CCM del Tec de Monterrey (con Líderes del Mañana o plan B activo)</li>
+          <li>Certificación Pearson B2 en mano · avance hacia C1</li>
+          <li>Curso extracurricular en salud pública o pediatría comunitaria</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--centro);">
+        <h4>Chispas de Curiosidad · escala</h4>
+        <ul>
+          <li>2-3 ciclos de 4 sesiones completados · 30-45 niñas y niños atendidos acumulados</li>
+          <li>2 facilitadoras adicionales formadas (voluntariado de prepa)</li>
+          <li>Manual del facilitador v1 publicado en PDF público</li>
+          <li>Alianza con al menos 2 sedes en Valle de Chalco</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--sureste);">
+        <h4>Filtro de agua · escala</h4>
+        <ul>
+          <li>Prototipo v2 instalado en el colegio · datos de uso reales · comparativa antes/después de desperdicio</li>
+          <li>Extensión a un segundo espacio comunitario piloto</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="cv5y">
+      <div class="cv-block" style="--tone: var(--noroeste);">
+        <h4>Educación · +5 años</h4>
+        <ul>
+          <li>Médico Cirujano · 5º-6º semestre · Campus CCM del Tec de Monterrey</li>
+          <li>Primera rotación clínica · foco en pediatría o medicina interna</li>
+          <li>Intercambio o verano de investigación en universidad extranjera</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--centro);">
+        <h4>Chispas · consolidación</h4>
+        <ul>
+          <li>150+ niñas y niños atendidos acumulados</li>
+          <li>Equipo estable de 6-8 facilitadoras formadas en Valle de Chalco</li>
+          <li>Registro como AC en trámite o constituida</li>
+          <li>Primera aparición en foro estudiantil o convocatoria de fundación</li>
+        </ul>
+      </div>
+      <div class="cv-block" style="--tone: var(--occidente);">
+        <h4>Trayectoria y visibilidad</h4>
+        <ul>
+          <li>Publicación técnica del modelo Chispas en revista o repositorio</li>
+          <li>Ponente en foro juvenil o de salud comunitaria (Tec · IMJUVE · Ashoka)</li>
+          <li>Mentoría entrante — otras jóvenes de Valle en aplicación a becas</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 DASHBOARD -->
+  <section id="dashboard" style="--tone: var(--sureste);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>07 · Dashboard 90 días</h2>
+      <span class="section-eyebrow">Editable · Persistente · Meta = cierre del sprint</span>
+    </div>
+    <p class="section-intro">Cada meta es lo que debes tener <strong>al cerrar la semana 12</strong> — el día que envías la aplicación a LdM. Actualiza cada domingo 20:00. Se guardan en tu navegador. Sin actualizar semanalmente, este tablero se convierte en decoración. Los horizontes largos (300 niñas atendidas, Medicina terminada) viven en la sección Chispas.</p>
+
+    <div class="dash-grid" id="dashGrid"></div>
+
+    <div class="dash-actions">
+      <button id="dashReset" type="button">Restablecer valores</button>
+      <button id="dashExport" type="button">Exportar snapshot</button>
+    </div>
+  </section>
+
+  <!-- 08 CHISPAS -->
+  <section id="chispas" style="--tone: var(--centro);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>08 · Chispas de Curiosidad · Norte 10 años</h2>
+      <span class="section-eyebrow">Visión estratégica · 2026 → 2036</span>
+    </div>
+
+    <div class="callout" style="--tone: var(--centro);">
+      <div class="callout-tag">Norte estratégico</div>
+      <p>Esta sección <strong>NO es el plan operativo de los próximos 90 días</strong>. Es el norte hacia donde apunta cada decisión que tomes hoy — desde qué reto usas en la sesión piloto, hasta qué historia de mujer referente cuentas primero. Sin este horizonte, Chispas es una idea bonita; con él, cada sesión operativa se justifica.</p>
+    </div>
+
+    <p class="section-intro" style="margin-top:20px;">Hoy Chispas es un taller diseñado, con nombre, tagline, metodología y un primer piloto por ejecutar. En 10 años debe ser <strong>un programa replicable dentro y fuera de Valle de Chalco</strong>, con manual público, equipo formado localmente, figura legal y al menos un convenio institucional. Aquí está el andamio.</p>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:24px 0 12px; color:var(--ink);">Horizontes</h3>
+    <div class="timeline">
+      <div class="tl-item" style="--tone: var(--noroeste);">
+        <div class="tl-when">Año 1<small>2026-27</small></div>
+        <div class="tl-body">
+          <h3>Piloto y primera repetición</h3>
+          <p>Piloto de 4 sesiones ejecutado en 2 sedes distintas de Valle de Chalco. 20-30 niñas y niños atendidos. Reporte piloto público. Instagram con testimonios. Ingreso a Medicina Campus CCM.</p>
+        </div>
+      </div>
+      <div class="tl-item" style="--tone: var(--centro);">
+        <div class="tl-when">Año 3<small>2028-29</small></div>
+        <div class="tl-body">
+          <h3>Formación de facilitadoras</h3>
+          <p>4 facilitadoras adicionales de Valle formadas y activas. 4-5 ciclos por año. 60-80 niñas y niños atendidos acumulados. Manual del facilitador v1 publicado. Registro AC en trámite. Sostener promedio universitario en Medicina.</p>
+        </div>
+      </div>
+      <div class="tl-item" style="--tone: var(--occidente);">
+        <div class="tl-when">Año 5<small>2030-31</small></div>
+        <div class="tl-body">
+          <h3>Réplica dentro del Valle</h3>
+          <p>Chispas operando en 3 sedes distintas dentro de Valle de Chalco. 150+ niñas y niños atendidos acumulados. Primer patrocinio en especie de negocio local. Publicación técnica del modelo. Rotación clínica de Medicina en marcha.</p>
+        </div>
+      </div>
+      <div class="tl-item" style="--tone: var(--sureste);">
+        <div class="tl-when">Año 10<small>2036</small></div>
+        <div class="tl-body">
+          <h3>Modelo replicable · Aranel médica</h3>
+          <p>Médico Cirujano titulada e iniciando especialidad. Chispas con 300+ niñas y niños atendidos acumulados. Manual público descargado por comunidades en otros municipios del Edomex. Convenio con al menos 1 institución (IMSS-Bienestar / SEP-Edomex / DIF municipal). Modelo caso de estudio en programas de salud comunitaria.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="split-col" style="--tone: var(--centro);">
+        <h3>Misión</h3>
+        <p style="font-size:14px; color:var(--ink-2); margin:0;">Ofrecer a niñas y niños de 6 a 9 años de Valle de Chalco espacios donde experimenten, se equivoquen sin miedo, conozcan mujeres referentes de su propia comunidad y descubran que también pueden proponer soluciones para su entorno — trabajando así sobre factores tempranos asociados a la deserción escolar.</p>
+      </div>
+      <div class="split-col" style="--tone: var(--noroeste);">
+        <h3>Visión 2036</h3>
+        <p style="font-size:14px; color:var(--ink-2); margin:0;">Que Chispas sea un referente mexicano de programa comunitario nacido en preparatoria, sostenido durante universidad y consolidado como AC con manual público, equipo local formado y convenios con instituciones de salud y educación en el Estado de México.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:28px 0 12px; color:var(--ink);">Diferenciadores del programa</h3>
+    <div class="card-grid">
+      <div class="card" style="--tone: var(--sureste);">
+        <div class="card-num">01</div>
+        <div class="card-title">Origen local, no importado</div>
+        <p class="card-body">Nace de Valle de Chalco, de un amigo real de Aranel en primaria — no de una franquicia adaptada. La comunidad no se siente experimento.</p>
+      </div>
+      <div class="card" style="--tone: var(--noreste);">
+        <div class="card-num">02</div>
+        <div class="card-title">Trabaja sobre causas tempranas</div>
+        <p class="card-body">No promete reducir la deserción escolar en 8 horas. Trabaja sobre curiosidad, seguridad para preguntar y percepción de posibilidad — factores documentados previos al abandono.</p>
+      </div>
+      <div class="card" style="--tone: var(--noroeste);">
+        <div class="card-num">03</div>
+        <div class="card-title">Metodología con estructura</div>
+        <p class="card-body">Chispa → Intento → Aprendizaje → Inspiración → Acción. Cada sesión de 40-50 min sigue el mismo arco. Ningún facilitador tiene que improvisar.</p>
+      </div>
+      <div class="card" style="--tone: var(--occidente);">
+        <div class="card-num">04</div>
+        <div class="card-title">Mujeres referentes reales</div>
+        <p class="card-body">Sin figuras famosas ni citas motivacionales. Vecinas de Valle, madres, emprendedoras, deportistas locales, científicas mexicanas — contadas en escena, no en frase.</p>
+      </div>
+      <div class="card" style="--tone: var(--centro);">
+        <div class="card-num">05</div>
+        <div class="card-title">Evidencia por sobre relato</div>
+        <p class="card-body">Cada ciclo cierra con encuesta a tutores, video de niñas y comparativa "problema que veo · sesión 1 vs sesión 4". Sin datos, no publicamos.</p>
+      </div>
+      <div class="card" style="--tone: var(--nacional);">
+        <div class="card-num">06</div>
+        <div class="card-title">Kit "para seguir encendiendo"</div>
+        <p class="card-body">Cada niña sale con carpeta de sus dibujos, propuestas, carta a su yo del futuro y diploma personalizado. El programa continúa fuera del taller.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:28px 0 12px; color:var(--ink);">Estructura organizacional propuesta</h3>
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--nacional);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">Dirección</span> Fundadora · visión, metodología, curaduría de referentes</div>
+        <div class="dir-meta">Aranel</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--sureste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">Facilitación</span> Facilitadoras formadas · imparten sesiones · llenan bitácora</div>
+        <div class="dir-meta">2 en Año 1 · 6 en Año 5</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--noreste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">Alianzas</span> Enlace con escuelas primarias · casa parroquial · centros comunitarios</div>
+        <div class="dir-meta">Dirección</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--centro);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">Comunicación</span> Instagram · reportes ciclo · relación con tutores</div>
+        <div class="dir-meta">1 responsable</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--occidente);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">Medición</span> Encuestas · consentimientos · comparativas sesión 1 vs 4</div>
+        <div class="dir-meta">Rotativa</div>
+      </div>
+      <div class="dir-row" style="--stripe: var(--noroeste);">
+        <div class="row-stripe"></div>
+        <div class="dir-main"><span class="dir-tag">Referentes</span> Curaduría de mujeres invitadas · historias listas para contar</div>
+        <div class="dir-meta">Aranel + apoyo</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:28px 0 12px; color:var(--ink);">Modelo financiero por fases</h3>
+    <div class="card-grid">
+      <div class="card" style="--tone: var(--noroeste);"><div class="card-num">Fase 1 · 2026-27</div><div class="card-title">Bootstrapping familiar</div><p class="card-body">Costo mínimo: popotes, cinta, malvavisco, hojas, plumones — recursos aportados por Aranel y su familia. Espacios cedidos por escuela primaria aliada o casa parroquial. Meta: probar el ciclo con 2 sedes.</p></div>
+      <div class="card" style="--tone: var(--centro);"><div class="card-num">Fase 2 · 2028-29</div><div class="card-title">Alianzas locales</div><p class="card-body">Papelerías, farmacias y pequeños negocios del Valle donan materiales. Rifas o kermés escolares como fuente secundaria. Documentar cada donación.</p></div>
+      <div class="card" style="--tone: var(--occidente);"><div class="card-num">Fase 3 · 2030-32</div><div class="card-title">Financiamiento formal</div><p class="card-body">Fondo Semillas, IMJUVE, Fundación Coca-Cola, Fondo para la Paz, Ashoka Youth Venturer. AC constituida para recibir donativos deducibles.</p></div>
+      <div class="card" style="--tone: var(--sureste);"><div class="card-num">Fase 4 · 2033-36</div><div class="card-title">Sostenibilidad institucional</div><p class="card-body">Convenios con SEP-Edomex, DIF municipal Valle de Chalco, IMSS-Bienestar en el eje niñez y salud comunitaria. Modelo replicable con kit de arranque público.</p></div>
+    </div>
+
+    <div class="callout" style="--tone: var(--noreste); margin-top:24px;">
+      <div class="callout-tag">Pregunta clave para escalar</div>
+      <p>Antes de crecer a más sedes, define <strong>una métrica cualitativa central</strong> que resuma el valor de Chispas — por ejemplo: "el 80% de niñas y niños del ciclo mencionan al menos una propuesta propia para su comunidad en la sesión 4, contra 20% en la sesión 1". Esa métrica es la que va a convencer a directoras, a fondos y a instituciones de sumarse. Sin ella, replicar Chispas es replicar una intuición — con ella, es replicar un modelo.</p>
+    </div>
+  </section>
+
+  <!-- 09 OPORTUNIDADES -->
+  <section id="oportunidades" style="--tone: var(--occidente);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>09 · Oportunidades</h2>
+      <span class="section-eyebrow">Convocatorias · Becas · Programas</span>
+    </div>
+    <p class="section-intro">Un mapa curado — para que sepas qué existe, cuándo se abre y qué te va a pedir cada convocatoria. La aplicación principal del sprint es LdM; el resto son planes B, C y trayectoria a futuro.</p>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:8px 0 12px; color:var(--ink);">Becas para Medicina · Plan A + planes B</h3>
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--noreste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Plan A</span> Líderes del Mañana · Tec de Monterrey · Médico Cirujano · Campus CCM</div><div class="dir-meta">Anual · Oct-Nov</div></div>
+      <div class="dir-row" style="--stripe: var(--noreste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Plan B</span> Beca Talento Tec (Excelencia Académica)</div><div class="dir-meta">Rolling</div></div>
+      <div class="dir-row" style="--stripe: var(--centro);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Plan B</span> UNAM · Facultad de Medicina · pase reglamentado / examen</div><div class="dir-meta">Feb</div></div>
+      <div class="dir-row" style="--stripe: var(--sureste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Plan B</span> Anáhuac · Beca Excelencia Académica</div><div class="dir-meta">Rolling</div></div>
+      <div class="dir-row" style="--stripe: var(--occidente);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Plan B</span> La Salle · Programa de Becas</div><div class="dir-meta">Anual</div></div>
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Refuerzo</span> Beca Bienestar Elisa Acuña / Benito Juárez EMS</div><div class="dir-meta">Ciclo</div></div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:24px 0 12px; color:var(--ink);">Competencias nacionales de impacto social juvenil</h3>
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">IMJUVE</span> Premio Nacional de la Juventud</div><div class="dir-meta">Anual</div></div>
+      <div class="dir-row" style="--stripe: var(--centro);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">SEP</span> Concurso de Innovación Educativa Juvenil</div><div class="dir-meta">Anual</div></div>
+      <div class="dir-row" style="--stripe: var(--sureste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Coca-Cola</span> Retos Juveniles / Fundación Coca-Cola</div><div class="dir-meta">Rolling</div></div>
+      <div class="dir-row" style="--stripe: var(--occidente);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Injuve Edomex</span> Reconocimiento Juvenil Estado de México</div><div class="dir-meta">Anual</div></div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:24px 0 12px; color:var(--ink);">Competencias internacionales</h3>
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Global</span> Diana Award · Reino Unido · jóvenes 9-25</div><div class="dir-meta">Rolling</div></div>
+      <div class="dir-row" style="--stripe: var(--centro);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Latam</span> Ashoka Youth Venturer</div><div class="dir-meta">Rolling</div></div>
+      <div class="dir-row" style="--stripe: var(--sureste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Global</span> Global Student Prize · Chegg / Varkey</div><div class="dir-meta">Anual</div></div>
+      <div class="dir-row" style="--stripe: var(--occidente);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Global</span> International Young Eco-Hero (aplica el filtro de agua)</div><div class="dir-meta">Feb</div></div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:24px 0 12px; color:var(--ink);">Programas de liderazgo y verano</h3>
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">LALA</span> Latin American Leadership Academy · Kellogg</div><div class="dir-meta">Rolling</div></div>
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">YLAI</span> Young Leaders of the Americas · Depto. Estado EEUU (universidad)</div><div class="dir-meta">Anual</div></div>
+      <div class="dir-row" style="--stripe: var(--centro);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">MIT</span> Launch Summer Program (emprendimiento juvenil)</div><div class="dir-meta">Verano</div></div>
+      <div class="dir-row" style="--stripe: var(--occidente);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Impact Hub CDMX</span> Programas juveniles de emprendimiento social</div><div class="dir-meta">Trimestral</div></div>
+      <div class="dir-row" style="--stripe: var(--noreste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prepa Tec</span> Programas de verano internacional para candidatos LdM</div><div class="dir-meta">Verano</div></div>
+    </div>
+  </section>
+
+  <!-- 10 STACK -->
+  <section id="stack" style="--tone: var(--noroeste);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>10 · Stack técnico</h2>
+      <span class="section-eyebrow">Lo que dominas · lo que falta</span>
+    </div>
+    <p class="section-intro">Una médica que va a sostener un programa comunitario en 2036 no será la que más memorizó en primer año — será la que sepa medir el impacto de un taller, gestionar un equipo pequeño y traducir empatía en datos. Este es el mapa de habilidades a construir.</p>
+
+    <div class="split">
+      <div class="split-col" style="--tone: var(--sureste);">
+        <h3>Dominas hoy</h3>
+        <ul class="item-list">
+          <li><strong>Inglés B1 certificado</strong> · lectura, comprensión y examen oficial</li>
+          <li><strong>Oratoria</strong> · parlamentos, debates, moderación, exposición de microempresa</li>
+          <li><strong>Coordinación de niñas 5º-6º primaria</strong> · FORZZA + ECYD</li>
+          <li><strong>Improvisación operativa</strong> · resolver sesiones sin material, reorganizar cronograma</li>
+          <li><strong>Liderazgo deportivo</strong> · capitanías, lectura de equipo, motivación</li>
+          <li><strong>Autoconocimiento corporal</strong> · manejo respiratorio, autoregulación de carga</li>
+          <li><strong>Redacción escolar</strong> · guiones de asamblea, textos de exposición</li>
+        </ul>
+      </div>
+      <div class="split-col" style="--tone: var(--noreste);">
+        <h3>Debes dominar en 12 meses</h3>
+        <ul class="item-list">
+          <li><strong>Inglés B2 certificado</strong> · lectura de bibliografía médica y bases de entrevistas internacionales</li>
+          <li><strong>Canva profesional</strong> · carteles, one-pagers, reportes de ciclo, kit para participantes</li>
+          <li><strong>Google Workspace</strong> · Docs · Forms · Sheets · Drive con permisos</li>
+          <li><strong>Diseño de encuestas simples</strong> · Likert 1-5, tutores y participantes</li>
+          <li><strong>Fotografía documental con celular</strong> · consentimiento, encuadre, luz</li>
+          <li><strong>Estructura de reporte piloto</strong> · resumen · método · datos · aprendizajes · próximos pasos</li>
+          <li><strong>Estrategia PAA</strong> · tiempo por sección, orden de ataque, gestión del error</li>
+          <li><strong>Storytelling personal</strong> · escribir escenas, no listas de logros</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:28px 0 12px; color:var(--ink);">Herramientas para año 2-5</h3>
+    <div class="card-grid">
+      <div class="card" style="--tone: var(--noroeste);"><div class="card-num">Datos</div><div class="card-title">Sheets avanzado + Looker Studio</div><p class="card-body">Dashboards públicos de impacto de Chispas por ciclo, sede y facilitadora.</p></div>
+      <div class="card" style="--tone: var(--centro);"><div class="card-num">Gestión</div><div class="card-title">Notion / Trello / Airtable</div><p class="card-body">Base de datos de facilitadoras, tutores, asistencias, kits entregados.</p></div>
+      <div class="card" style="--tone: var(--occidente);"><div class="card-num">Legal</div><div class="card-title">Fundamentos de AC / OSC</div><p class="card-body">Constitución, actas, obligaciones fiscales, donatarias autorizadas.</p></div>
+      <div class="card" style="--tone: var(--sureste);"><div class="card-num">Salud pública</div><div class="card-title">Estadística básica + epidemiología</div><p class="card-body">Para medir impacto social y para el propio ejercicio de Medicina.</p></div>
+      <div class="card" style="--tone: var(--noreste);"><div class="card-num">Método</div><div class="card-title">Teoría del cambio + marco lógico</div><p class="card-body">Lenguaje estándar en fundaciones, IMJUVE y convocatorias internacionales.</p></div>
+      <div class="card" style="--tone: var(--nacional);"><div class="card-num">Comunicación</div><div class="card-title">Storytelling social + medios</div><p class="card-body">Curso corto de redacción para prensa comunitaria y redes.</p></div>
+    </div>
+  </section>
+
+  <!-- 11 RECURSOS -->
+  <section id="recursos" style="--tone: var(--occidente);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>11 · Recursos curados</h2>
+      <span class="section-eyebrow">Libros · Cursos · Comunidades</span>
+    </div>
+    <p class="section-intro">No leas de todo. Lee lo correcto en el momento correcto. Selección enfocada en medicina con enfoque social, pedagogía infantil, gestión de proyectos comunitarios y madurez personal.</p>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:8px 0 12px; color:var(--ink);">Libros · Próximos 12 meses</h3>
+    <div class="card-grid">
+      <div class="card" style="--tone: var(--sureste);"><div class="card-num">01 · Medicina</div><div class="card-title">Ser mortal</div><p class="card-body">Atul Gawande. Cómo pensamos la enfermedad y el cuidado. Lectura obligada antes de entrar a Medicina.</p></div>
+      <div class="card" style="--tone: var(--sureste);"><div class="card-num">02 · Medicina</div><div class="card-title">Cuando el aliento se vuelve aire</div><p class="card-body">Paul Kalanithi. Un neurocirujano frente a la enfermedad. Conecta directamente con tu historia respiratoria.</p></div>
+      <div class="card" style="--tone: var(--centro);"><div class="card-num">03 · Pedagogía</div><div class="card-title">Pedagogía del oprimido</div><p class="card-body">Paulo Freire. Educar sin imponer — fundamental para Chispas.</p></div>
+      <div class="card" style="--tone: var(--centro);"><div class="card-num">04 · Pedagogía</div><div class="card-title">La sabiduría en las neuronas</div><p class="card-body">Marta Ligioiz. Neurociencia aplicada a la infancia.</p></div>
+      <div class="card" style="--tone: var(--noroeste);"><div class="card-num">05 · Impacto</div><div class="card-title">Cómo cambiar el mundo</div><p class="card-body">David Bornstein. Retratos de emprendedores sociales · red Ashoka.</p></div>
+      <div class="card" style="--tone: var(--occidente);"><div class="card-num">06 · Método</div><div class="card-title">The Lean Startup</div><p class="card-body">Eric Ries. Iterar rápido con datos reales — aplica igual a proyectos sociales.</p></div>
+      <div class="card" style="--tone: var(--noreste);"><div class="card-num">07 · Género</div><div class="card-title">Todos deberíamos ser feministas</div><p class="card-body">Chimamanda Ngozi Adichie. Base para la perspectiva de género que atraviesa Chispas.</p></div>
+      <div class="card" style="--tone: var(--nacional);"><div class="card-num">08 · Marca</div><div class="card-title">Show Your Work!</div><p class="card-body">Austin Kleon. Cómo hacer visible lo que ya haces sin caer en autobombo.</p></div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:28px 0 12px; color:var(--ink);">Cursos y certificaciones</h3>
+    <div class="dir">
+      <div class="dir-row" style="--stripe: var(--noreste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prioridad 1</span> Certificación Pearson English · nivel B2</div><div class="dir-meta">Ciclo actual</div></div>
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prioridad 1</span> Design Thinking · Acumen Academy · gratuito</div><div class="dir-meta">Online</div></div>
+      <div class="dir-row" style="--stripe: var(--noroeste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prioridad 1</span> Diseño Social · IDEO.org · gratuito</div><div class="dir-meta">Online</div></div>
+      <div class="dir-row" style="--stripe: var(--sureste);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prioridad 2</span> Primeros auxilios · Cruz Roja Mexicana</div><div class="dir-meta">Presencial</div></div>
+      <div class="dir-row" style="--stripe: var(--centro);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prioridad 2</span> Teoría del Cambio · +Acumen · gratuito</div><div class="dir-meta">Online</div></div>
+      <div class="dir-row" style="--stripe: var(--occidente);"><div class="row-stripe"></div><div class="dir-main"><span class="dir-tag">Prioridad 3</span> Fotografía documental básica · Domestika</div><div class="dir-meta">De pago</div></div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; margin:28px 0 12px; color:var(--ink);">Conferencias · Comunidades · Espacios</h3>
+    <div class="pill-row">
+      <span class="pill" style="--tone: var(--noroeste);"><span class="dot"></span>Feria Vocacional Tec CCM</span>
+      <span class="pill" style="--tone: var(--noreste);"><span class="dot"></span>Semana de Medicina · UNAM</span>
+      <span class="pill" style="--tone: var(--occidente);"><span class="dot"></span>Impact Hub CDMX</span>
+      <span class="pill" style="--tone: var(--centro);"><span class="dot"></span>Ashoka Youth México</span>
+      <span class="pill" style="--tone: var(--sureste);"><span class="dot"></span>Red de jóvenes IMJUVE Edomex</span>
+      <span class="pill ghost">Centro Comunitario Valle de Chalco</span>
+      <span class="pill ghost">DIF municipal Valle de Chalco</span>
+      <span class="pill ghost">Prepa Tec · sesiones para candidatos LdM</span>
+    </div>
+  </section>
+
+  <!-- 12 RIESGOS -->
+  <section id="riesgos" style="--tone: var(--noreste);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>12 · Riesgos y mitigación</h2>
+      <span class="section-eyebrow">Lo que puede descarrilar el plan</span>
+    </div>
+    <p class="section-intro">Toda estrategia se beneficia de anticipar lo que puede complicarse. Estos son los factores más comunes que descarrilan un sprint como el tuyo — y qué hacer con cada uno desde hoy, con calma.</p>
+
+    <div class="split">
+      <div class="split-col" style="--tone: var(--noreste);">
+        <h3>Riesgos personales</h3>
+        <ul class="item-list">
+          <li><strong>Recaída respiratoria por sobrecarga.</strong> Prepa 3° + LdM + Chispas + filtro + Teletón + tocho. Mitigación: revisión médica de control al iniciar el sprint, día libre real por semana, plan de sueño de 7h mínimo, no ejecutar taller con síntomas activos.</li>
+          <li><strong>Voz interna de "quizá no soy suficiente".</strong> La identificaste tú misma como tu freno más caro. Mitigación: bitácora semanal donde escribas lo que sí cerraste; leerla los domingos antes del plan de la semana.</li>
+          <li><strong>Perfeccionismo paralizante.</strong> Postergar el borrador del ensayo por "que quede perfecto"; postergar el piloto por "que estén todos los materiales". Mitigación: publicar el borrador cero al día 21 aunque esté feo; ejecutar el piloto aunque falten 2 mujeres referentes.</li>
+          <li><strong>Comparación con perfiles inalcanzables.</strong> Redes sociales con adolescentes con recursos que tú no tienes. Mitigación: métricas propias, no ajenas; unfollow selectivo durante el sprint si hace falta.</li>
+          <li><strong>Comentarios desmotivantes del entorno.</strong> Ya recibiste uno ("¿apoco crees que tú podrías hacerlo?"). Mitigación: círculo cerrado de 3-4 personas con las que hablas de LdM; el resto se entera cuando ya haya obra.</li>
+          <li><strong>Absorción emocional en el piloto.</strong> Trabajar con niñas en contexto difícil puede pegar. Mitigación: bitácora personal + hablar con un adulto de confianza cada 2 semanas + tope de 1 sesión Chispas por semana durante el sprint.</li>
+        </ul>
+      </div>
+      <div class="split-col" style="--tone: var(--noreste);">
+        <h3>Riesgos estratégicos</h3>
+        <ul class="item-list">
+          <li><strong>Que la sede piloto se caiga a última hora.</strong> Mitigación: mantener una segunda sede identificada y en cordial contacto desde el Sprint 1.</li>
+          <li><strong>Consentimientos mal gestionados</strong> · foto o video de niñas sin permiso escrito. Mitigación: plantilla estándar firmada por tutores antes de cualquier captura, sin excepciones.</li>
+          <li><strong>Prometer más de lo que puede entregar Chispas.</strong> "Vamos a evitar la deserción escolar". Mitigación: la hipótesis del proyecto está redactada como "trabajamos sobre factores tempranos", no como "eliminamos el abandono".</li>
+          <li><strong>Ensayo escrito en pocos días.</strong> Se nota y descalifica. Mitigación: borrador cero en Sprint 1 (obligatorio), no antes de que termine el Sprint 2 se toca el "final".</li>
+          <li><strong>Simulacros de examen no ejecutados.</strong> Mitigación: 4 simulacros PAA calendarizados desde el Sprint 1 con fecha fija.</li>
+          <li><strong>Que la aplicación se retrase por documentos.</strong> Comprobante de ingresos, historial médico, certificado B1, cartas. Mitigación: lista de documentos requeridos con fecha límite propia una semana antes de la real.</li>
+          <li><strong>Poner religión como argumento central del ensayo.</strong> FORZZA/ECYD son experiencia de liderazgo con niñas, no manifiesto de fe. Mitigación: mentor VORKA revisa cada versión del ensayo con este filtro.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="--tone: var(--noreste); margin-top:20px;">
+      <div class="callout-tag">Regla de decisión</div>
+      <p>Cuando dudes entre dos caminos, pregunta: <strong>"¿cuál genera evidencia adjuntable para la aplicación?"</strong>. Elige ese. Una sesión Chispas con 6 niñas y foto con consentimiento vale más que un plan perfecto para 20 sin ejecutar. Un simulacro PAA con calificación mediocre vale más que "voy a estudiar más".</p>
+    </div>
+  </section>
+
+  <!-- CIERRE -->
+  <section style="--tone: var(--nacional);">
+    <div class="section-header">
+      <h2 class="section-title"><span class="swatch"></span>Cierre · Contrato conmigo misma</h2>
+      <span class="section-eyebrow">Firma imaginaria</span>
+    </div>
+    <div class="manifiesto">
+      "En los próximos 90 días envío la aplicación a Líderes del Mañana con evidencia adjuntable, ejecuto la primera sesión de Chispas de Curiosidad y avanzo el filtro de agua de mi colegio. En los próximos 10 años me convierto en Médico Cirujano por Campus CCM y dejo Chispas en manos de facilitadoras de Valle de Chalco que no me necesitan para prender el cerillo. No aplico para irme — aplico para volver mejor equipada."
+      <small>— Leslie Aranel Martínez Mendoza</small>
+    </div>
+    <div class="pill-row" style="margin-top:20px;">
+      <span class="pill" style="--tone: var(--noroeste);"><span class="dot"></span>Domingo 20:00 · Revisión semanal</span>
+      <span class="pill" style="--tone: var(--noreste);"><span class="dot"></span>Fin de cada sprint (3 sem) · Retro</span>
+      <span class="pill" style="--tone: var(--centro);"><span class="dot"></span>Semana 12 · Aplicación LdM enviada</span>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-left">
+      <div class="logo">
+        <span class="logo-text">
+          Brandon Oleynick
+          <small>Mentor · VORKA</small>
+        </span>
+      </div>
+      <p class="foot-tagline">Sprint operativo de 90 días para dejar la aplicación a Líderes del Mañana en pie y el primer piloto de Chispas de Curiosidad ejecutado — desde Valle de Chalco hacia Campus CCM. Instrumento de precisión, no motivacional. Diseñado, cuestionado y curado por el equipo VORKA — Mentoría Oleynick.</p>
+      <p class="foot-meta">v1.0 · Sprint activo</p>
+    </div>
+    <div class="foot-links">
+      <a href="https://www.vorka.mx/mentoriaoleynick/" target="_blank" rel="noopener">VORKA.MX</a>
+      <a href="https://instagram.com/oleeynick" target="_blank" rel="noopener">@oleeynick</a>
+      <a href="tel:+524612242547">461 224 2547</a>
+      <a href="#top">Volver arriba</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var STORE = 'aranel-theme';
+
+  function apply(theme){
+    if(theme === 'dark' || theme === 'light'){ root.setAttribute('data-theme', theme); }
+    else { root.removeAttribute('data-theme'); }
+    updateBtn();
+  }
+  function currentTheme(){
+    var t = root.getAttribute('data-theme');
+    if(t) return t;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function updateBtn(){
+    var isDark = currentTheme() === 'dark';
+    btn.textContent = isDark ? 'Modo claro' : 'Modo oscuro';
+  }
+
+  try {
+    var saved = localStorage.getItem(STORE);
+    if(saved === 'dark' || saved === 'light') apply(saved);
+    else updateBtn();
+  } catch(e){ updateBtn(); }
+
+  btn.addEventListener('click', function(){
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try{ localStorage.setItem(STORE, next); } catch(e){}
+  });
+
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var id = b.getAttribute('data-tab');
+      var container = b.closest('section');
+      container.querySelectorAll('.tab-btn').forEach(function(x){ x.classList.remove('active'); });
+      container.querySelectorAll('.tab-panel').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      var panel = document.getElementById(id);
+      if(panel) panel.classList.add('active');
+    });
+  });
+
+  var metrics = [
+    { key:'ensayo_ver', label:'Versiones del ensayo LdM', tone:'--noreste', current:0, goal:6, unit:'', step:1 },
+    { key:'ensayo_palabras', label:'Palabras del ensayo (última versión)', tone:'--noreste', current:0, goal:900, unit:'', step:10 },
+    { key:'ensayo_revisores', label:'Revisores externos del ensayo', tone:'--noreste', current:0, goal:3, unit:'', step:1 },
+    { key:'simulacros_paa', label:'Simulacros PAA completos', tone:'--noroeste', current:0, goal:4, unit:'', step:1 },
+    { key:'paa_puntaje', label:'Mejor puntaje simulacro PAA (0-1000)', tone:'--noroeste', current:0, goal:850, unit:'', step:10 },
+    { key:'ingles_b2', label:'Puntos práctica Pearson B2 (%)', tone:'--noroeste', current:0, goal:75, unit:'%', step:5 },
+    { key:'cartas_reco', label:'Cartas de recomendación firmadas', tone:'--noreste', current:0, goal:3, unit:'', step:1 },
+    { key:'sesiones_chispas', label:'Sesiones Chispas ejecutadas', tone:'--sureste', current:0, goal:4, unit:'', step:1 },
+    { key:'ninos_chispas', label:'Niñas y niños en el piloto Chispas', tone:'--sureste', current:0, goal:8, unit:'', step:1 },
+    { key:'consentimientos', label:'Consentimientos firmados en archivo', tone:'--sureste', current:0, goal:8, unit:'', step:1 },
+    { key:'testimonios', label:'Testimonios en video de tutores', tone:'--sureste', current:0, goal:2, unit:'', step:1 },
+    { key:'referentes', label:'Mujeres referentes con historia lista', tone:'--centro', current:0, goal:4, unit:'', step:1 },
+    { key:'filtro_prog', label:'Avance filtro de agua (%)', tone:'--noroeste', current:0, goal:100, unit:'%', step:5 },
+    { key:'evidencia', label:'Piezas de evidencia en carpeta pública', tone:'--occidente', current:0, goal:40, unit:'', step:1 },
+    { key:'entrevista', label:'Simulacros de entrevista grabados', tone:'--noreste', current:0, goal:3, unit:'', step:1 },
+    { key:'dias_libres', label:'Días libres reales tomados', tone:'--sureste', current:0, goal:12, unit:'', step:1 }
+  ];
+  var DASH_STORE = 'aranel-dashboard-v1-90d';
+  var stored = {};
+  try { stored = JSON.parse(localStorage.getItem(DASH_STORE) || '{}') || {}; } catch(e){ stored = {}; }
+
+  var grid = document.getElementById('dashGrid');
+  function pct(cur, goal){
+    if(!goal) return 0;
+    var p = (cur / goal) * 100;
+    if(p < 0) p = 0; if(p > 100) p = 100;
+    return p;
+  }
+  function fmt(n){
+    if(n === null || n === undefined || n === '' || isNaN(n)) return '0';
+    var num = Number(n);
+    if(Math.abs(num) >= 1000) return num.toLocaleString('es-MX');
+    if(Number.isInteger(num)) return String(num);
+    return num.toFixed(1);
+  }
+  function render(){
+    grid.innerHTML = '';
+    metrics.forEach(function(m){
+      var val = (stored[m.key] !== undefined && stored[m.key] !== null && stored[m.key] !== '') ? Number(stored[m.key]) : m.current;
+      if(isNaN(val)) val = m.current;
+      var p = pct(val, m.goal);
+      var wrap = document.createElement('div');
+      wrap.className = 'metric';
+      wrap.style.setProperty('--tone', 'var(' + m.tone + ')');
+      wrap.innerHTML =
+        '<div class="metric-head">' +
+          '<div class="metric-label">' + m.label + '</div>' +
+          '<div class="metric-nums"><b>' + fmt(val) + '</b> / ' + fmt(m.goal) + (m.unit? ' ' + m.unit : '') + '</div>' +
+        '</div>' +
+        '<div class="metric-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(p) + '">' +
+          '<span style="width:' + p.toFixed(1) + '%"></span>' +
+        '</div>' +
+        '<div class="metric-input">' +
+          '<label for="in-' + m.key + '">Actualizar</label>' +
+          '<input id="in-' + m.key + '" type="number" step="' + m.step + '" min="0" value="' + val + '" data-key="' + m.key + '" aria-label="Actualizar ' + m.label + '">' +
+        '</div>';
+      grid.appendChild(wrap);
+    });
+    grid.querySelectorAll('input[data-key]').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var k = inp.getAttribute('data-key');
+        var v = inp.value === '' ? '' : Number(inp.value);
+        stored[k] = v;
+        try { localStorage.setItem(DASH_STORE, JSON.stringify(stored)); } catch(e){}
+        var metric = metrics.find(function(m){ return m.key === k; });
+        var bar = inp.closest('.metric').querySelector('.metric-bar span');
+        var nums = inp.closest('.metric').querySelector('.metric-nums');
+        var p = pct(Number(v) || 0, metric.goal);
+        bar.style.width = p.toFixed(1) + '%';
+        nums.innerHTML = '<b>' + fmt(Number(v)||0) + '</b> / ' + fmt(metric.goal) + (metric.unit? ' ' + metric.unit : '');
+        inp.closest('.metric').querySelector('.metric-bar').setAttribute('aria-valuenow', Math.round(p));
+      });
+    });
+  }
+  render();
+
+  document.getElementById('dashReset').addEventListener('click', function(){
+    if(confirm('¿Restablecer todas las métricas a los valores iniciales? Esto borrará tu progreso guardado.')){
+      stored = {};
+      try { localStorage.removeItem(DASH_STORE); } catch(e){}
+      render();
+    }
+  });
+
+  document.getElementById('dashExport').addEventListener('click', function(){
+    var snap = { fecha: new Date().toISOString().slice(0,10), mentee: 'Leslie Aranel Martínez Mendoza', sprint: '90 días · Líderes del Mañana + Chispas', metricas: {} };
+    metrics.forEach(function(m){
+      var val = (stored[m.key] !== undefined && stored[m.key] !== null && stored[m.key] !== '') ? Number(stored[m.key]) : m.current;
+      snap.metricas[m.label] = { valor: val, meta: m.goal, porcentaje: Math.round(pct(val, m.goal)) };
+    });
+    var txt = JSON.stringify(snap, null, 2);
+    var blob = new Blob([txt], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'aranel-dashboard-' + snap.fecha + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 100);
+  });
+
+  document.querySelectorAll('.jump a[href^="#"], .foot-links a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href').slice(1);
+      var target = document.getElementById(id);
+      if(target){
+        e.preventDefault();
+        target.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
