@@ -1,0 +1,2473 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Manual Operativo — Vorka México</title>
+<meta name="description" content="Manual operativo interno del equipo Vorka México. Onboarding, procesos, herramientas, glosario y checklists de trabajo diario." />
+<meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#12172A" media="(prefers-color-scheme: dark)" />
+<link rel="icon" type="image/png" href="vorka-logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================== Tokens Vorka ============================== */
+:root{
+  --paper:#FBFAF8;
+  --paper-2:#F1EEE6;
+  --ink:#141414;
+  --ink-2:rgba(20,20,20,0.66);
+  --ink-3:rgba(20,20,20,0.40);
+  --ink-4:rgba(20,20,20,0.18);
+  --line:rgba(20,20,20,0.12);
+  --line-strong:rgba(20,20,20,0.30);
+
+  /* Paleta Vorka */
+  --vk-black:#292B2C;
+  --vk-white:#FFFFFF;
+  --vk-purple:#762196;
+  --vk-purple-soft:#8F30B2;
+  --vk-purple-deep:#5A1874;
+  --vk-pink:#ED70C0;
+  --vk-yellow:#EDB655;
+  --vk-red:#CE4E42;
+  --vk-green:#629E46;
+  --vk-orange:#EE7D3A;
+
+  --accent:var(--vk-purple);
+  --accent-soft:var(--vk-purple-soft);
+  --accent-hover:var(--vk-purple-deep);
+  --on-accent:#FBFAF8;
+
+  --field:rgba(20,20,20,0.04);
+  --field-focus:rgba(118,33,150,0.07);
+
+  --logo-filter:none;
+
+  --sidebar-w:280px;
+  --topbar-h:64px;
+  --max-w:1440px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#12172A;
+    --paper-2:#1A2038;
+    --ink:#E8E4D8;
+    --ink-2:rgba(232,228,216,0.66);
+    --ink-3:rgba(232,228,216,0.40);
+    --ink-4:rgba(232,228,216,0.18);
+    --line:rgba(232,228,216,0.14);
+    --line-strong:rgba(232,228,216,0.30);
+    --accent:#C880E8;
+    --accent-soft:#D69BEE;
+    --accent-hover:#DBA9F0;
+    --on-accent:#12172A;
+    --field:rgba(232,228,216,0.05);
+    --field-focus:rgba(200,128,232,0.10);
+    --logo-filter:invert(0.92) brightness(1.06);
+  }
+}
+
+/* ============================== Reset ============================== */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+html{-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility;font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;scroll-behavior:smooth;scroll-padding-top:88px}
+body{
+  font-family:'Mona Sans',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:16px;line-height:1.6;font-weight:400;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{background:none;border:0;cursor:pointer;padding:0;font:inherit;color:inherit}
+input,textarea{font:inherit;color:inherit}
+::selection{background:var(--accent);color:var(--on-accent)}
+
+/* ============================== Type utils ============================== */
+.display{
+  font-family:'Mona Sans',sans-serif;
+  font-weight:800;letter-spacing:-0.025em;line-height:0.96;color:var(--ink);
+}
+.serif{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:500;font-style:italic;letter-spacing:-0.005em;line-height:1.15;color:var(--ink);
+}
+.smallcaps{
+  text-transform:uppercase;letter-spacing:0.16em;font-size:12px;font-weight:600;color:var(--ink-2);
+}
+.smallcaps-accent{
+  text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:700;color:var(--accent);
+  display:inline-flex;align-items:center;gap:14px;
+}
+.smallcaps-accent::before{
+  content:"";display:inline-block;width:24px;height:1px;background:var(--accent);
+}
+.ital{font-style:italic;color:var(--accent);font-weight:800}
+.lead{font-size:clamp(17px,1.4vw,20px);line-height:1.55;color:var(--ink-2);max-width:60ch}
+
+/* ============================== Logo mark ============================== */
+.brand-mark{
+  display:inline-block;height:36px;width:36px;
+  background:url("vorka-logo.png") center/contain no-repeat;
+  filter:var(--logo-filter);
+  flex-shrink:0;
+}
+.foot-mark{
+  display:inline-block;height:80px;width:80px;
+  background:url("vorka-logo.png") center/contain no-repeat;
+  filter:var(--logo-filter);
+}
+
+/* ============================== Topbar ============================== */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  height:var(--topbar-h);
+  background:color-mix(in srgb,var(--paper) 92%,transparent);
+  backdrop-filter:saturate(140%) blur(10px);
+  -webkit-backdrop-filter:saturate(140%) blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  height:100%;
+  max-width:var(--max-w);
+  margin:0 auto;
+  display:flex;align-items:center;gap:20px;
+  padding:0 clamp(16px,3vw,32px);
+}
+.brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.brand-name{
+  font-family:'Mona Sans',sans-serif;font-weight:800;letter-spacing:-0.01em;
+  font-size:17px;color:var(--ink);
+}
+.brand-name span{color:var(--ink-3);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.14em;display:block;margin-top:-2px}
+
+.search-wrap{
+  flex:1;max-width:520px;position:relative;
+}
+.search-input{
+  width:100%;
+  background:var(--field);
+  border:1px solid transparent;
+  padding:10px 14px 10px 40px;
+  font-size:14px;color:var(--ink);
+  border-radius:999px;
+  transition:background .15s,border-color .15s;
+  outline:none;
+}
+.search-input::placeholder{color:var(--ink-3)}
+.search-input:focus{background:var(--field-focus);border-color:var(--accent)}
+.search-icon{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--ink-3);pointer-events:none;
+}
+.search-kbd{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:11px;color:var(--ink-3);
+  background:var(--paper);border:1px solid var(--line);
+  padding:2px 8px;border-radius:4px;
+  font-family:ui-monospace,SF Mono,monospace;
+}
+.search-results{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:var(--paper);
+  border:1px solid var(--line-strong);
+  border-radius:12px;
+  max-height:60vh;overflow-y:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,0.15);
+  display:none;
+  z-index:100;
+}
+.search-results.open{display:block}
+.search-result{
+  display:block;padding:12px 16px;
+  border-bottom:1px solid var(--line);
+  transition:background .12s;
+  cursor:pointer;
+}
+.search-result:last-child{border-bottom:0}
+.search-result:hover,.search-result.active{background:var(--field-focus)}
+.search-result .sr-kind{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;
+  color:var(--accent);margin-bottom:4px;
+}
+.search-result .sr-title{
+  font-size:14px;font-weight:600;color:var(--ink);
+}
+.search-result .sr-desc{
+  font-size:12.5px;color:var(--ink-2);margin-top:2px;
+}
+.search-empty{
+  padding:20px;text-align:center;color:var(--ink-3);font-size:14px;
+}
+
+.topbar-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.menu-toggle{
+  display:none;
+  width:40px;height:40px;
+  align-items:center;justify-content:center;
+  background:var(--field);border-radius:8px;
+}
+.menu-toggle svg{width:18px;height:18px}
+.top-help{
+  font-size:13px;color:var(--ink-2);
+  padding:8px 14px;border:1px solid var(--line-strong);border-radius:999px;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.top-help:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+
+@media (max-width:960px){
+  .menu-toggle{display:inline-flex}
+  .top-help{display:none}
+  .search-kbd{display:none}
+  .brand-name span{display:none}
+}
+
+/* ============================== Layout ============================== */
+.app{
+  max-width:var(--max-w);
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:var(--sidebar-w) minmax(0,1fr);
+  padding-top:var(--topbar-h);
+  min-height:100vh;
+  position:relative;
+}
+@media (max-width:960px){
+  .app{grid-template-columns:1fr}
+}
+
+/* ============================== Sidebar ============================== */
+.sidebar{
+  position:sticky;top:var(--topbar-h);align-self:start;
+  height:calc(100vh - var(--topbar-h));
+  overflow-y:auto;
+  border-right:1px solid var(--line);
+  background:var(--paper);
+  padding:24px 20px 40px;
+  min-width:0;
+  grid-column:1;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--ink-4);border-radius:3px}
+.sidebar h4{
+  font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--ink-3);margin:20px 12px 8px;
+}
+.sidebar h4:first-child{margin-top:4px}
+.side-nav{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:1px}
+.side-nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  font-size:13.5px;color:var(--ink-2);
+  transition:background .12s,color .12s;
+  line-height:1.35;
+  border-left:2px solid transparent;
+}
+.side-nav a:hover{background:var(--field);color:var(--ink)}
+.side-nav a.active{
+  background:var(--field-focus);color:var(--accent);
+  font-weight:600;border-left-color:var(--accent);
+}
+.side-nav .num{
+  font-family:ui-monospace,SF Mono,monospace;
+  font-size:11px;color:var(--ink-3);
+  min-width:22px;
+}
+.side-nav a.active .num{color:var(--accent)}
+
+.side-progress{
+  margin-top:24px;padding:16px;border-radius:12px;
+  background:linear-gradient(135deg,var(--vk-purple) 0%,var(--vk-purple-deep) 100%);
+  color:#fff;
+}
+.side-progress .sp-label{
+  font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  opacity:0.7;margin-bottom:6px;
+}
+.side-progress .sp-title{
+  font-size:14px;font-weight:700;margin-bottom:10px;
+}
+.side-progress .sp-bar{
+  height:6px;background:rgba(255,255,255,0.2);border-radius:999px;overflow:hidden;margin-bottom:8px;
+}
+.side-progress .sp-bar-fill{
+  height:100%;background:var(--vk-yellow);border-radius:999px;
+  width:0%;transition:width .4s ease;
+}
+.side-progress .sp-pct{
+  font-size:12px;opacity:0.85;font-variant-numeric:tabular-nums;
+}
+
+@media (max-width:960px){
+  .sidebar{
+    position:fixed;top:var(--topbar-h);left:0;bottom:0;
+    width:min(320px,85vw);
+    height:calc(100vh - var(--topbar-h));
+    z-index:40;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    box-shadow:8px 0 30px rgba(0,0,0,0.15);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop{
+    display:none;position:fixed;inset:var(--topbar-h) 0 0 0;
+    background:rgba(0,0,0,0.4);z-index:39;
+  }
+  .sidebar-backdrop.open{display:block}
+}
+
+/* ============================== Main content ============================== */
+.main{
+  padding:0 clamp(24px,4vw,56px) 80px;
+  min-width:0;
+  grid-column:2;
+  width:100%;
+}
+@media (max-width:960px){
+  .main{grid-column:1}
+}
+.main > *{max-width:900px}
+.section{
+  padding:clamp(48px,7vh,80px) 0;
+  border-bottom:1px solid var(--line);
+  scroll-margin-top:88px;
+}
+.section:last-child{border-bottom:0}
+.section-num{
+  font-family:ui-monospace,SF Mono,monospace;
+  font-size:12px;color:var(--ink-3);letter-spacing:0.1em;
+  margin-bottom:10px;
+}
+.section-title{
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:clamp(30px,4vw,48px);letter-spacing:-0.02em;line-height:1.05;
+  margin:0 0 20px;color:var(--ink);
+}
+.section-title .emoji{
+  font-style:normal;display:inline-block;margin-right:8px;
+  -webkit-text-fill-color:initial;
+}
+.section-intro{
+  font-size:clamp(16px,1.25vw,19px);color:var(--ink-2);line-height:1.6;
+  max-width:62ch;margin:0 0 32px;
+}
+
+/* Typography inside sections */
+.section h3{
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:clamp(20px,1.6vw,26px);letter-spacing:-0.01em;line-height:1.2;
+  margin:40px 0 16px;color:var(--ink);
+}
+.section h4{
+  font-family:'Mona Sans',sans-serif;font-weight:700;
+  font-size:16px;letter-spacing:-0.005em;
+  margin:24px 0 10px;color:var(--ink);
+}
+.section p{margin:0 0 16px;max-width:64ch}
+.section p b, .section p strong{color:var(--ink);font-weight:700}
+.section ul, .section ol{margin:0 0 20px;padding-left:22px;max-width:64ch}
+.section li{margin-bottom:8px;line-height:1.55}
+.section li b{color:var(--ink);font-weight:600}
+.section a.link{color:var(--accent);border-bottom:1px solid currentColor;transition:opacity .15s}
+.section a.link:hover{opacity:0.7}
+
+/* ============================== Hero (bienvenida) ============================== */
+.hero{
+  padding:clamp(48px,8vh,96px) 0 clamp(56px,9vh,112px);
+  border-bottom:1px solid var(--line);
+}
+.hero-eyebrow{margin-bottom:24px}
+.hero-title{
+  font-size:clamp(38px,5.8vw,72px);
+  max-width:16ch;
+  margin:0 0 20px;
+}
+.hero-sub{
+  font-size:clamp(17px,1.3vw,20px);color:var(--ink-2);line-height:1.55;
+  max-width:56ch;margin:0 0 32px;
+}
+.hero-cta{
+  display:flex;gap:14px;flex-wrap:wrap;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 22px;font-size:14px;font-weight:600;
+  border-radius:10px;transition:background .15s,color .15s,border-color .15s;
+  cursor:pointer;
+}
+.btn-primary{background:var(--vk-black);color:#fff;border:1px solid var(--vk-black)}
+.btn-primary:hover{background:var(--accent);border-color:var(--accent)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line-strong)}
+.btn-ghost:hover{background:var(--field);border-color:var(--ink)}
+
+/* Ruta visual */
+.roadmap-path{
+  margin-top:48px;padding:32px;
+  background:var(--paper-2);border-radius:16px;
+  border:1px solid var(--line);
+}
+.roadmap-path .rp-label{
+  font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:16px;
+}
+.rp-steps{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+}
+.rp-step{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--paper);border:1px solid var(--line);
+  padding:10px 14px;border-radius:999px;
+  font-size:13px;font-weight:600;color:var(--ink);
+  cursor:pointer;transition:background .15s,color .15s,border-color .15s;
+}
+.rp-step:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.rp-step .rp-num{
+  font-family:ui-monospace,SF Mono,monospace;font-size:11px;
+  color:var(--ink-3);
+}
+.rp-step:hover .rp-num{color:rgba(255,255,255,0.7)}
+.rp-arrow{color:var(--ink-3);font-size:14px}
+
+/* Quick access */
+.quick-title{
+  margin-top:48px;margin-bottom:16px;
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:clamp(20px,1.8vw,26px);letter-spacing:-0.01em;
+}
+.quick-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.quick-card{
+  display:flex;flex-direction:column;gap:6px;
+  padding:18px;background:var(--paper);
+  border:1px solid var(--line);border-radius:12px;
+  transition:background .15s,border-color .15s,transform .15s;
+  cursor:pointer;text-align:left;
+}
+.quick-card:hover{background:var(--field-focus);border-color:var(--accent);transform:translateY(-2px)}
+.quick-card .qc-emoji{font-size:22px;line-height:1}
+.quick-card .qc-title{font-size:14px;font-weight:700;color:var(--ink)}
+.quick-card .qc-goto{font-size:12px;color:var(--accent);font-weight:600}
+@media (max-width:700px){.quick-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.quick-grid{grid-template-columns:1fr}}
+
+/* ============================== Blocks: cards, callouts ============================== */
+.card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:22px;
+  margin:0 0 16px;
+}
+.card-title{
+  font-family:'Mona Sans',sans-serif;font-weight:700;
+  font-size:16px;color:var(--ink);margin:0 0 10px;
+}
+
+.callout{
+  position:relative;
+  padding:20px 22px 20px 26px;
+  border-radius:12px;
+  margin:20px 0;
+  background:var(--field);
+  border-left:4px solid var(--accent);
+}
+.callout .callout-title{
+  font-weight:700;color:var(--ink);
+  font-size:14.5px;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.callout p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.callout p + p{margin-top:8px}
+.callout.warn{background:rgba(206,78,66,0.06);border-left-color:var(--vk-red)}
+.callout.warn .callout-title{color:var(--vk-red)}
+.callout.tip{background:rgba(98,158,70,0.06);border-left-color:var(--vk-green)}
+.callout.tip .callout-title{color:var(--vk-green)}
+.callout.info{background:rgba(238,125,58,0.06);border-left-color:var(--vk-orange)}
+.callout.info .callout-title{color:var(--vk-orange)}
+.callout.define{background:rgba(237,182,85,0.10);border-left-color:var(--vk-yellow)}
+.callout.define .callout-title{color:#8B6A20}
+@media (prefers-color-scheme: dark){
+  .callout.define .callout-title{color:var(--vk-yellow)}
+}
+
+/* Two-column compare */
+.compare{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;
+}
+.compare > div{
+  padding:20px;border-radius:12px;border:1px solid var(--line);
+}
+.compare .yes{background:rgba(98,158,70,0.06);border-color:rgba(98,158,70,0.30)}
+.compare .no{background:rgba(206,78,66,0.06);border-color:rgba(206,78,66,0.30)}
+.compare h5{
+  margin:0 0 12px;font-size:13px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+  display:flex;align-items:center;gap:8px;
+}
+.compare .yes h5{color:var(--vk-green)}
+.compare .no h5{color:var(--vk-red)}
+.compare ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
+.compare li{margin-bottom:6px}
+@media (max-width:640px){.compare{grid-template-columns:1fr}}
+
+/* Steps / flujo */
+.steps{
+  display:flex;flex-direction:column;gap:2px;
+  margin:20px 0;
+}
+.step{
+  display:grid;grid-template-columns:60px 1fr;gap:16px;
+  padding:20px 20px 20px 0;
+  border-bottom:1px solid var(--line);
+  align-items:flex-start;
+}
+.step:last-child{border-bottom:0}
+.step-num{
+  font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+  font-size:26px;color:var(--accent);
+  line-height:1;
+}
+.step-body h4{margin:0 0 6px;font-size:17px}
+.step-body p{margin:0 0 8px;font-size:14.5px;color:var(--ink-2)}
+.step-meta{
+  display:flex;gap:14px;flex-wrap:wrap;
+  margin-top:10px;font-size:12.5px;
+}
+.step-meta span{
+  padding:4px 10px;border-radius:999px;
+  background:var(--field);color:var(--ink-2);
+}
+.step-meta .warn{background:rgba(206,78,66,0.10);color:var(--vk-red)}
+.step-meta .tip{background:rgba(98,158,70,0.10);color:var(--vk-green)}
+
+/* Grid utility */
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.grid-3{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* Area cards (¿qué hacemos?) */
+.area-card{
+  padding:22px;border-radius:12px;
+  background:var(--paper);border:1px solid var(--line);
+  border-top:3px solid var(--accent);
+  display:flex;flex-direction:column;gap:8px;
+}
+.area-card.c-pink{border-top-color:var(--vk-pink)}
+.area-card.c-yellow{border-top-color:var(--vk-yellow)}
+.area-card.c-red{border-top-color:var(--vk-red)}
+.area-card.c-green{border-top-color:var(--vk-green)}
+.area-card.c-orange{border-top-color:var(--vk-orange)}
+.area-card.c-purple{border-top-color:var(--vk-purple)}
+.area-card h4{margin:0;font-size:17px}
+.area-card p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.55}
+
+/* Tool card */
+.tool-card{
+  padding:20px;border-radius:12px;
+  background:var(--paper);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:10px;
+}
+.tool-head{display:flex;align-items:center;gap:12px}
+.tool-badge{
+  width:40px;height:40px;border-radius:8px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:800;color:#fff;
+  background:var(--accent);flex-shrink:0;
+}
+.tool-badge.b-pink{background:var(--vk-pink)}
+.tool-badge.b-yellow{background:var(--vk-yellow);color:var(--vk-black)}
+.tool-badge.b-red{background:var(--vk-red)}
+.tool-badge.b-green{background:var(--vk-green)}
+.tool-badge.b-orange{background:var(--vk-orange)}
+.tool-badge.b-black{background:var(--vk-black)}
+.tool-head h4{margin:0;font-size:16px}
+.tool-card .t-block{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.tool-card .t-block b{color:var(--ink);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px}
+
+/* Comparison table (redes sociales) */
+.table-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:12px}
+table.compare-table{
+  width:100%;border-collapse:collapse;font-size:14px;
+  min-width:640px;
+}
+.compare-table th, .compare-table td{
+  padding:14px 16px;text-align:left;
+  border-bottom:1px solid var(--line);vertical-align:top;
+}
+.compare-table th{
+  background:var(--field);font-weight:700;font-size:12px;
+  text-transform:uppercase;letter-spacing:0.06em;color:var(--ink);
+}
+.compare-table tr:last-child td{border-bottom:0}
+.compare-table td b{color:var(--ink);font-weight:700}
+.compare-table .plat{font-weight:700;color:var(--accent)}
+
+/* Interactive checklist */
+.checklist{
+  list-style:none;padding:0;margin:20px 0;
+  display:flex;flex-direction:column;gap:2px;
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;
+}
+.checklist li{
+  padding:14px 16px;border-bottom:1px solid var(--line);
+  display:flex;align-items:flex-start;gap:12px;
+  cursor:pointer;transition:background .12s;
+  user-select:none;
+  margin:0;
+}
+.checklist li:last-child{border-bottom:0}
+.checklist li:hover{background:var(--field)}
+.checklist li input[type="checkbox"]{
+  appearance:none;-webkit-appearance:none;
+  width:20px;height:20px;flex-shrink:0;
+  border:2px solid var(--ink-3);border-radius:5px;
+  background:transparent;cursor:pointer;position:relative;
+  margin-top:1px;transition:background .12s,border-color .12s;
+}
+.checklist li input[type="checkbox"]:checked{
+  background:var(--vk-green);border-color:var(--vk-green);
+}
+.checklist li input[type="checkbox"]:checked::after{
+  content:"";position:absolute;
+  left:5px;top:1px;width:6px;height:11px;
+  border:solid #fff;border-width:0 2px 2px 0;
+  transform:rotate(45deg);
+}
+.checklist li.done{background:rgba(98,158,70,0.05)}
+.checklist li.done .cl-text{color:var(--ink-3);text-decoration:line-through}
+.cl-text{font-size:14.5px;line-height:1.5;color:var(--ink)}
+
+.progress-block{
+  margin:0 0 20px;padding:18px 20px;
+  background:linear-gradient(135deg,var(--vk-purple) 0%,var(--vk-purple-deep) 100%);
+  color:#fff;border-radius:12px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.progress-block .pb-info{flex:1;min-width:200px}
+.progress-block .pb-title{
+  font-size:14px;font-weight:700;margin-bottom:4px;
+}
+.progress-block .pb-sub{font-size:12.5px;opacity:0.8}
+.progress-block .pb-bar{
+  flex:1;height:8px;min-width:150px;
+  background:rgba(255,255,255,0.2);border-radius:999px;overflow:hidden;
+}
+.progress-block .pb-bar-fill{
+  height:100%;background:var(--vk-yellow);border-radius:999px;
+  width:0%;transition:width .4s ease;
+}
+.progress-block .pb-pct{
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:22px;line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Glossary */
+.gloss-controls{
+  display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 20px;align-items:center;
+}
+.gloss-search{
+  flex:1;min-width:220px;position:relative;
+}
+.gloss-search input{
+  width:100%;padding:12px 16px 12px 42px;
+  background:var(--field);border:1px solid transparent;border-radius:999px;
+  font-size:14px;outline:none;transition:background .15s,border-color .15s;
+}
+.gloss-search input:focus{background:var(--field-focus);border-color:var(--accent)}
+.gloss-search svg{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--ink-3);
+}
+.gloss-count{
+  font-size:12px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.gloss-list{
+  display:flex;flex-direction:column;gap:10px;
+}
+.gloss-item{
+  border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;
+  background:var(--paper);
+}
+.gloss-item h4{
+  margin:0 0 6px;font-size:17px;
+  display:flex;align-items:center;gap:10px;
+}
+.gloss-item h4 .g-badge{
+  font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  background:var(--field);color:var(--ink-2);
+  padding:2px 8px;border-radius:999px;
+}
+.gloss-item .g-block{margin-top:8px;font-size:14px;line-height:1.55}
+.gloss-item .g-block b{
+  display:block;font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--accent);margin-bottom:2px;
+}
+.gloss-item .g-block p{margin:0;color:var(--ink-2);max-width:none}
+.gloss-empty{
+  padding:32px;text-align:center;color:var(--ink-3);font-size:14px;
+  border:1px dashed var(--line-strong);border-radius:12px;
+}
+
+/* Errors list */
+.err-item{
+  padding:20px;border-radius:12px;
+  background:var(--paper);border:1px solid var(--line);
+  border-left:3px solid var(--vk-orange);
+  margin-bottom:12px;
+}
+.err-title{font-weight:700;color:var(--ink);margin:0 0 10px;font-size:15.5px}
+.err-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  font-size:13.5px;
+}
+.err-grid > div b{
+  display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--vk-orange);margin-bottom:4px;
+}
+.err-grid > div p{margin:0;color:var(--ink-2);line-height:1.5}
+@media (max-width:640px){.err-grid{grid-template-columns:1fr;gap:8px}}
+
+/* Back to top */
+.to-top{
+  position:fixed;right:20px;bottom:20px;z-index:30;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--vk-black);color:#fff;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  cursor:pointer;transition:background .15s,transform .15s;
+}
+.to-top:hover{background:var(--accent);transform:translateY(-2px)}
+.to-top.visible{display:inline-flex}
+.to-top svg{width:18px;height:18px}
+
+/* Footer */
+footer{
+  background:var(--vk-black);color:#E8E4D8;
+  padding:56px clamp(20px,4vw,64px) 40px;
+  margin-top:40px;
+}
+.foot-inner{max-width:1080px;margin:0 auto}
+.foot-cols{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:40px;
+  padding-bottom:32px;border-bottom:1px solid rgba(232,228,216,0.15);
+}
+.foot-col h5{
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
+  margin:0 0 16px;color:#fff;
+}
+.foot-brand p{
+  font-size:14px;color:rgba(232,228,216,0.7);line-height:1.55;
+  margin:0 0 20px;max-width:36ch;
+}
+.foot-brand p b{color:#fff;font-weight:500}
+.foot-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.foot-col a{font-size:14px;color:rgba(232,228,216,0.7);transition:color .15s}
+.foot-col a:hover{color:var(--vk-pink)}
+.foot-bottom{
+  display:flex;justify-content:space-between;align-items:center;gap:20px;
+  padding-top:24px;flex-wrap:wrap;
+  font-size:12px;color:rgba(232,228,216,0.5);
+}
+.foot-tag{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
+  font-size:18px;color:var(--vk-pink);letter-spacing:-0.005em;
+}
+@media (max-width:820px){
+  .foot-cols{grid-template-columns:1fr 1fr;gap:32px}
+  .foot-brand{grid-column:1/-1}
+}
+@media (max-width:520px){
+  .foot-cols{grid-template-columns:1fr}
+  .foot-bottom{flex-direction:column;text-align:center}
+}
+
+/* accesibilidad */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+</style>
+</head>
+<body>
+
+<!-- ============================== TOPBAR ============================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+
+    <a href="#hero" class="brand" aria-label="Vorka México — inicio del manual">
+      <span class="brand-mark" role="img" aria-label="Vorka"></span>
+      <span class="brand-name">Vorka<span>Manual del equipo</span></span>
+    </a>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" class="search-input" id="globalSearch" placeholder="Busca una sección, un término, una duda…" aria-label="Buscar en el manual" autocomplete="off"/>
+      <span class="search-kbd">⌘K</span>
+      <div class="search-results" id="searchResults" role="listbox"></div>
+    </div>
+
+    <div class="topbar-actions">
+      <a href="#s23" class="top-help">¿No sé qué hacer?</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== APP LAYOUT ============================== -->
+<div class="app">
+
+  <!-- Sidebar backdrop (mobile) -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar" aria-label="Navegación del manual">
+    <h4>Empieza aquí</h4>
+    <ul class="side-nav" id="sideNav">
+      <li><a href="#hero" data-target="hero"><span class="num">00</span>Bienvenido</a></li>
+      <li><a href="#s1" data-target="s1"><span class="num">01</span>Bienvenido a Vorka</a></li>
+      <li><a href="#s2" data-target="s2"><span class="num">02</span>¿Qué es Vorka?</a></li>
+      <li><a href="#s3" data-target="s3"><span class="num">03</span>¿Qué hacemos?</a></li>
+      <li><a href="#s4" data-target="s4"><span class="num">04</span>¿Cómo pensamos?</a></li>
+      <li><a href="#s5" data-target="s5"><span class="num">05</span>¿Cómo trabajamos?</a></li>
+    </ul>
+
+    <h4>Identidad y voz</h4>
+    <ul class="side-nav">
+      <li><a href="#s6" data-target="s6"><span class="num">06</span>Identidad Vorka</a></li>
+      <li><a href="#s7" data-target="s7"><span class="num">07</span>Nuestro lenguaje</a></li>
+    </ul>
+
+    <h4>Herramientas y canales</h4>
+    <ul class="side-nav">
+      <li><a href="#s8" data-target="s8"><span class="num">08</span>Herramientas</a></li>
+      <li><a href="#s9" data-target="s9"><span class="num">09</span>Redes sociales</a></li>
+    </ul>
+
+    <h4>Creación</h4>
+    <ul class="side-nav">
+      <li><a href="#s10" data-target="s10"><span class="num">10</span>Creación de contenido</a></li>
+      <li><a href="#s11" data-target="s11"><span class="num">11</span>Hacer una publicación</a></li>
+      <li><a href="#s12" data-target="s12"><span class="num">12</span>Hacer un Reel</a></li>
+      <li><a href="#s13" data-target="s13"><span class="num">13</span>Hacer Stories</a></li>
+      <li><a href="#s14" data-target="s14"><span class="num">14</span>Escribir un copy</a></li>
+    </ul>
+
+    <h4>Operación</h4>
+    <ul class="side-nav">
+      <li><a href="#s15" data-target="s15"><span class="num">15</span>Flujo de trabajo</a></li>
+      <li><a href="#s16" data-target="s16"><span class="num">16</span>Revisión y aprobación</a></li>
+      <li><a href="#s17" data-target="s17"><span class="num">17</span>Checklist antes de publicar</a></li>
+      <li><a href="#s18" data-target="s18"><span class="num">18</span>Trabajo con clientes</a></li>
+      <li><a href="#s19" data-target="s19"><span class="num">19</span>Comunicación interna</a></li>
+      <li><a href="#s20" data-target="s20"><span class="num">20</span>Organización de archivos</a></li>
+    </ul>
+
+    <h4>Consulta rápida</h4>
+    <ul class="side-nav">
+      <li><a href="#s21" data-target="s21"><span class="num">21</span>Glosario de marketing</a></li>
+      <li><a href="#s22" data-target="s22"><span class="num">22</span>Errores frecuentes</a></li>
+      <li><a href="#s23" data-target="s23"><span class="num">23</span>¿Qué hago si no sé?</a></li>
+      <li><a href="#s24" data-target="s24"><span class="num">24</span>Checklist del nuevo</a></li>
+    </ul>
+
+    <div class="side-progress" aria-live="polite">
+      <div class="sp-label">Tu onboarding</div>
+      <div class="sp-title" id="onboardTitle">Vas empezando</div>
+      <div class="sp-bar"><div class="sp-bar-fill" id="onboardFill"></div></div>
+      <div class="sp-pct" id="onboardPct">0% completado</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ============================== HERO ============================== -->
+    <section class="hero" id="hero">
+      <div class="hero-eyebrow"><span class="smallcaps-accent">Manual operativo · Equipo Vorka</span></div>
+      <h1 class="display hero-title">👋 Bienvenido a <span class="ital">Vorka</span>.</h1>
+      <p class="hero-sub">Si acabas de entrar al equipo, empieza aquí. Este manual no es un documento corporativo: es una herramienta para consultar todos los días. Ábrelo cuando dudes, cuando te pierdas o cuando necesites un paso a paso rápido.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#s1">Empezar el recorrido →</a>
+        <a class="btn btn-ghost" href="#s21">Ir al glosario</a>
+      </div>
+
+      <div class="roadmap-path">
+        <div class="rp-label">Ruta sugerida</div>
+        <div class="rp-steps">
+          <a class="rp-step" href="#s2"><span class="rp-num">01</span>Conoce Vorka</a>
+          <span class="rp-arrow">→</span>
+          <a class="rp-step" href="#s5"><span class="rp-num">02</span>Cómo trabajamos</a>
+          <span class="rp-arrow">→</span>
+          <a class="rp-step" href="#s8"><span class="rp-num">03</span>Herramientas</a>
+          <span class="rp-arrow">→</span>
+          <a class="rp-step" href="#s10"><span class="rp-num">04</span>Aprende a crear</a>
+          <span class="rp-arrow">→</span>
+          <a class="rp-step" href="#s15"><span class="rp-num">05</span>Aprende a publicar</a>
+          <span class="rp-arrow">→</span>
+          <a class="rp-step" href="#s17"><span class="rp-num">06</span>Revisa tu trabajo</a>
+          <span class="rp-arrow">→</span>
+          <a class="rp-step" href="#s21"><span class="rp-num">07</span>Sigue aprendiendo</a>
+        </div>
+      </div>
+
+      <div class="quick-title">¿Qué necesitas hacer hoy?</div>
+      <div class="quick-grid">
+        <a class="quick-card" href="#s11"><span class="qc-emoji">📱</span><span class="qc-title">Quiero hacer una publicación</span><span class="qc-goto">Ir a la guía →</span></a>
+        <a class="quick-card" href="#s12"><span class="qc-emoji">🎬</span><span class="qc-title">Quiero hacer un Reel</span><span class="qc-goto">Ir a la guía →</span></a>
+        <a class="quick-card" href="#s14"><span class="qc-emoji">✍️</span><span class="qc-title">Quiero escribir un copy</span><span class="qc-goto">Ir a la guía →</span></a>
+        <a class="quick-card" href="#s13"><span class="qc-emoji">📲</span><span class="qc-title">Quiero hacer Stories</span><span class="qc-goto">Ir a la guía →</span></a>
+        <a class="quick-card" href="#s18"><span class="qc-emoji">🤝</span><span class="qc-title">Tengo que trabajar con un cliente</span><span class="qc-goto">Ir a la guía →</span></a>
+        <a class="quick-card" href="#s20"><span class="qc-emoji">📁</span><span class="qc-title">Necesito organizar archivos</span><span class="qc-goto">Ir a la guía →</span></a>
+        <a class="quick-card" href="#s21"><span class="qc-emoji">📚</span><span class="qc-title">No entiendo un término</span><span class="qc-goto">Ir al glosario →</span></a>
+        <a class="quick-card" href="#s17"><span class="qc-emoji">✅</span><span class="qc-title">Quiero revisar mi contenido</span><span class="qc-goto">Ir al checklist →</span></a>
+        <a class="quick-card" href="#s23"><span class="qc-emoji">❓</span><span class="qc-title">No sé qué hacer</span><span class="qc-goto">Ver protocolo →</span></a>
+      </div>
+    </section>
+
+    <!-- ============================== 01 · Bienvenido a Vorka ============================== -->
+    <section class="section" id="s1" data-title="Bienvenido a Vorka" data-keywords="onboarding primer día equipo bienvenida">
+      <div class="section-num">Sección 01</div>
+      <h2 class="section-title"><span class="emoji">👋</span> Bienvenido a Vorka</h2>
+      <p class="section-intro">Este es tu primer día en Vorka, explicado en una página. Léelo con calma. No tienes que memorizar nada: el manual va a seguir aquí cuando lo necesites.</p>
+
+      <h3>Cómo usar este manual</h3>
+      <p>Está pensado como una herramienta, no como una lectura. Estas son las tres formas más rápidas de aprovecharlo:</p>
+      <ul>
+        <li><b>Empezar por el principio.</b> Sigue la ruta sugerida del inicio (01 → 07). Te va a llevar de "qué es Vorka" hasta "cómo revisar tu trabajo".</li>
+        <li><b>Buscar algo específico.</b> Usa la barra de búsqueda de arriba (o <b>⌘K</b>). Te lleva a la sección o al término del glosario que estás buscando.</li>
+        <li><b>Ir directo a la tarea.</b> Si ya sabes qué necesitas hacer, entra a la sección de esa tarea (hacer un Reel, escribir un copy, revisar antes de publicar).</li>
+      </ul>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Tip para principiantes</div>
+        <p>Si algo no lo entiendes a la primera, no pasa nada. Lee la sección dos veces, revisa el ejemplo, y si sigue sin quedar claro, pregunta. Preguntar es parte del trabajo.</p>
+      </div>
+
+      <h3>Lo que sí y lo que no vas a encontrar aquí</h3>
+      <div class="compare">
+        <div class="yes">
+          <h5>✓ Sí vas a encontrar</h5>
+          <ul>
+            <li>Cómo funciona Vorka por dentro</li>
+            <li>Pasos concretos para tareas del día a día</li>
+            <li>Criterios de calidad compartidos por el equipo</li>
+            <li>Glosario de términos que se usan seguido</li>
+            <li>Checklists para no olvidar nada</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h5>✕ No vas a encontrar</h5>
+          <ul>
+            <li>Información sobre clientes específicos</li>
+            <li>Contraseñas o accesos</li>
+            <li>Reglas rígidas que no se puedan discutir</li>
+            <li>Contenido pensado para vender a clientes</li>
+            <li>Formalismos de recursos humanos</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== 02 · ¿Qué es Vorka? ============================== -->
+    <section class="section" id="s2" data-title="¿Qué es Vorka?" data-keywords="ecosistema estrategia liderazgo innovación mexicano">
+      <div class="section-num">Sección 02</div>
+      <h2 class="section-title"><span class="emoji">🧭</span> ¿Qué es Vorka?</h2>
+      <p class="section-intro">Vorka México es un <b>ecosistema mexicano</b> de estrategia, liderazgo, comunicación e innovación. Ayudamos a personas, proyectos y organizaciones a convertir ideas en cosas reales, crecer y generar influencia.</p>
+
+      <div class="callout">
+        <div class="callout-title">Importante</div>
+        <p>Vorka <b>no es una agencia de marketing</b>. Somos un ecosistema. La diferencia importa: una agencia hace campañas y se va; nosotros nos involucramos en distintas partes del crecimiento de un proyecto o de una persona.</p>
+      </div>
+
+      <h3>Lo que combinamos</h3>
+      <div class="grid-3">
+        <div class="area-card c-purple"><h4>Estrategia</h4><p>Decidir qué hacer y por qué.</p></div>
+        <div class="area-card c-pink"><h4>Comunicación</h4><p>Convertir ideas complejas en mensajes claros.</p></div>
+        <div class="area-card c-yellow"><h4>Liderazgo</h4><p>Formar a las personas que van a mover el proyecto.</p></div>
+        <div class="area-card c-red"><h4>Innovación</h4><p>Buscar nuevas formas de resolver problemas.</p></div>
+        <div class="area-card c-green"><h4>Creación de contenido</h4><p>Piezas que informan, conectan y generan acción.</p></div>
+        <div class="area-card c-orange"><h4>Redes sociales</h4><p>Planeación, diseño, redacción, publicación y análisis.</p></div>
+        <div class="area-card c-purple"><h4>Acompañamiento</h4><p>Seguimiento continuo, no solo entregables.</p></div>
+        <div class="area-card c-pink"><h4>Desarrollo de proyectos</h4><p>Convertir ideas en acciones concretas.</p></div>
+      </div>
+
+      <h3>Con quién trabajamos</h3>
+      <p>Con <b>personas</b> (líderes, emprendedores, figuras públicas), <b>proyectos</b> (iniciativas nuevas que necesitan tomar forma) y <b>organizaciones</b> (colegios, empresas, colectivos). En cada caso el punto de entrada es distinto y el trabajo se ajusta.</p>
+    </section>
+
+    <!-- ============================== 03 · ¿Qué hacemos? ============================== -->
+    <section class="section" id="s3" data-title="¿Qué hacemos?" data-keywords="áreas servicios estrategia contenido redes">
+      <div class="section-num">Sección 03</div>
+      <h2 class="section-title"><span class="emoji">🚀</span> ¿Qué hacemos?</h2>
+      <p class="section-intro">Estas son las áreas donde Vorka realmente entrega valor. No las ofrecemos todas al mismo tiempo a cada cliente: se combinan según lo que necesita el proyecto.</p>
+
+      <div class="grid-2">
+        <div class="area-card c-purple">
+          <h4>Estrategia</h4>
+          <p>Ayudamos a definir <b>qué hacer</b>, <b>por qué hacerlo</b> y <b>hacia dónde queremos llegar</b>. Sin estrategia, todo lo demás es diseño bonito sin dirección.</p>
+        </div>
+        <div class="area-card c-pink">
+          <h4>Comunicación</h4>
+          <p>Convertimos ideas complejas en mensajes claros. Traducimos lo que un experto sabe a algo que la gente entiende y le importa.</p>
+        </div>
+        <div class="area-card c-green">
+          <h4>Contenido</h4>
+          <p>Creamos piezas que <b>informan</b>, <b>conectan</b> y <b>generan acción</b>. No contenido por hacer contenido.</p>
+        </div>
+        <div class="area-card c-orange">
+          <h4>Redes sociales</h4>
+          <p>Planeamos, diseñamos, redactamos, publicamos y analizamos. La operación completa, no solo la parte visible.</p>
+        </div>
+        <div class="area-card c-yellow">
+          <h4>Acompañamiento</h4>
+          <p>Damos seguimiento a personas, proyectos y organizaciones. Es lo que nos diferencia de una agencia tradicional.</p>
+        </div>
+        <div class="area-card c-red">
+          <h4>Innovación</h4>
+          <p>Buscamos nuevas formas de crear soluciones y oportunidades. No copiamos lo que ya está.</p>
+        </div>
+        <div class="area-card c-purple">
+          <h4>Proyectos</h4>
+          <p>Ayudamos a convertir ideas en acciones concretas: alguien nos llega con una idea y salimos con un plan y un primer paso.</p>
+        </div>
+        <div class="area-card c-pink">
+          <h4>Liderazgo</h4>
+          <p>Formamos a las personas que van a sostener el proyecto: oratoria, marca personal, presencia, mentalidad.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== 04 · ¿Cómo pensamos? ============================== -->
+    <section class="section" id="s4" data-title="¿Cómo pensamos?" data-keywords="mentalidad valores criterios equipo cultura">
+      <div class="section-num">Sección 04</div>
+      <h2 class="section-title"><span class="emoji">🧠</span> ¿Cómo pensamos?</h2>
+      <p class="section-intro">Estas no son "frases motivacionales". Son criterios que usamos para tomar decisiones todos los días. Si dudas entre dos opciones, revisa esta lista.</p>
+
+      <div class="card">
+        <ul>
+          <li><b>Pensamos antes de publicar.</b> Nunca "porque toca subir algo".</li>
+          <li><b>Todo contenido debe tener una razón.</b> Si no la tiene, no se publica.</li>
+          <li><b>La estrategia importa tanto como el diseño.</b> Un post bonito sin objetivo es basura visual.</li>
+          <li><b>La creatividad debe resolver problemas.</b> No es adorno.</li>
+          <li><b>Las personas están antes que las métricas.</b> Un like no vale más que una relación real.</li>
+          <li><b>Preguntar es mejor que asumir.</b> Casi todos los errores nacen de un supuesto.</li>
+          <li><b>Equivocarse puede pasar; no revisar es evitable.</b> El error de dedo se perdona; el "no lo revisé" no.</li>
+          <li><b>El feedback sirve para mejorar.</b> No es ataque personal. Cuando lo damos, es sobre el trabajo. Cuando lo recibimos, escuchamos.</li>
+          <li><b>Debemos proponer, no solamente ejecutar.</b> Si ves algo que puede mejorar, dilo.</li>
+          <li><b>Si detectamos un problema, lo comunicamos.</b> Callar un problema lo vuelve más grande.</li>
+          <li><b>Buscamos soluciones.</b> Traer un problema con al menos una posible salida.</li>
+        </ul>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 En resumen</div>
+        <p>Trabajamos con cabeza, con cuidado y con criterio. No somos rápidos por rápidos: somos consistentes. Y cuando hay un problema, lo enfrentamos en vez de esconderlo.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 05 · ¿Cómo trabajamos? ============================== -->
+    <section class="section" id="s5" data-title="¿Cómo trabajamos?" data-keywords="proceso método rutina semanal equipo">
+      <div class="section-num">Sección 05</div>
+      <h2 class="section-title"><span class="emoji">⚙️</span> ¿Cómo trabajamos?</h2>
+      <p class="section-intro">Vorka opera en ciclos. Cada proyecto, cada semana y cada pieza siguen un mismo esqueleto: pensar → hacer → revisar → publicar → medir.</p>
+
+      <h3>El ciclo básico de cualquier tarea</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Entender qué se pide</h4><p>Leer el brief o el mensaje completo antes de abrir Canva. Si algo no está claro, se pregunta.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Planear</h4><p>Definir objetivo, audiencia, mensaje, formato y CTA. En 5 minutos, no en 5 horas.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Ejecutar</h4><p>Diseñar, escribir, editar. Con calma pero sin dormirse.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Revisar en solitario</h4><p>Uno mismo primero: ortografía, dimensiones, links, coherencia con el brief.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Pedir aprobación</h4><p>Al responsable indicado. Con contexto suficiente para que decida rápido.</p></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Publicar / entregar</h4><p>En la plataforma correcta, en la hora correcta, con las etiquetas correctas.</p></div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Revisar después</h4><p>¿Se publicó bien? ¿Los links funcionan? ¿Hay que responder comentarios?</p></div></div>
+      </div>
+
+      <h3>Roles y responsables</h3>
+      <div class="callout define">
+        <div class="callout-title">⚙️ Definir por Vorka</div>
+        <p>Falta documentar aquí el organigrama operativo: quién aprueba contenido en cada cuenta, quién es el punto de contacto con cada cliente, quién resuelve dudas técnicas de herramientas. Se completa cuando Vorka lo confirme.</p>
+      </div>
+
+      <h3>Reuniones y ritmos</h3>
+      <p>La operación se sostiene con reuniones cortas y rutinas fijas. Cuando algo se sale del ritmo, hay que avisar, no aguantar en silencio.</p>
+      <div class="callout define">
+        <div class="callout-title">⚙️ Definir por Vorka</div>
+        <p>Falta especificar el ritmo de reuniones oficial: día y hora del lunes de arranque, revisión semanal, cierre de mes, y canal donde se agendan. Se completa cuando Vorka lo confirme.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 06 · Identidad de Vorka ============================== -->
+    <section class="section" id="s6" data-title="Identidad de Vorka" data-keywords="marca personalidad tono colores paleta visual">
+      <div class="section-num">Sección 06</div>
+      <h2 class="section-title"><span class="emoji">🎨</span> Identidad de Vorka</h2>
+      <p class="section-intro">Vorka tiene una identidad clara. No es solo el logo: es cómo se ve, cómo se lee y cómo se siente todo lo que sale de nosotros.</p>
+
+      <h3>Personalidad de marca</h3>
+      <p>Vorka es <b>joven, profesional, inteligente, cercano, mexicano, creativo, estratégico, dinámico y humano</b>. No somos ni acartonados ni infantiles. No hablamos como institución vieja ni como cuenta de memes.</p>
+
+      <h3>Paleta de colores</h3>
+      <p>Estos son los colores oficiales de Vorka. <b>No se usan todos al mismo tiempo.</b> Hay jerarquía: primero los base (negro, blanco, morado), después los acentos según categoría o situación.</p>
+
+      <h4>Colores base</h4>
+      <div class="grid-3">
+        <div class="card" style="background:#292B2C;color:#fff;border-color:#292B2C">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.01em">Negro</div>
+          <div style="font-size:13px;opacity:0.7;margin-top:4px;font-family:ui-monospace,SF Mono,monospace">#292B2C</div>
+          <div style="font-size:12px;opacity:0.6;margin-top:8px">Texto principal, fondos oscuros, presencia</div>
+        </div>
+        <div class="card" style="background:#FFFFFF;color:#141414;border-color:#e5e5e5">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.01em">Blanco</div>
+          <div style="font-size:13px;opacity:0.7;margin-top:4px;font-family:ui-monospace,SF Mono,monospace">#FFFFFF</div>
+          <div style="font-size:12px;opacity:0.6;margin-top:8px">Fondos limpios, espacio, respirar</div>
+        </div>
+        <div class="card" style="background:#762196;color:#fff;border-color:#762196">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.01em">Morado</div>
+          <div style="font-size:13px;opacity:0.7;margin-top:4px;font-family:ui-monospace,SF Mono,monospace">#762196</div>
+          <div style="font-size:12px;opacity:0.6;margin-top:8px">Color firma. Acentos importantes, títulos, botones</div>
+        </div>
+      </div>
+
+      <h4>Colores secundarios</h4>
+      <div class="grid-3">
+        <div class="card" style="background:#ED70C0;color:#fff;border-color:#ED70C0">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:18px">Rosa</div>
+          <div style="font-size:12px;opacity:0.85;font-family:ui-monospace,SF Mono,monospace">#ED70C0</div>
+          <div style="font-size:11.5px;opacity:0.85;margin-top:6px">Categorías creativas, comunidad</div>
+        </div>
+        <div class="card" style="background:#EDB655;color:#292B2C;border-color:#EDB655">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:18px">Amarillo</div>
+          <div style="font-size:12px;opacity:0.8;font-family:ui-monospace,SF Mono,monospace">#EDB655</div>
+          <div style="font-size:11.5px;opacity:0.75;margin-top:6px">Destacar, "definir", energía</div>
+        </div>
+        <div class="card" style="background:#CE4E42;color:#fff;border-color:#CE4E42">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:18px">Rojo</div>
+          <div style="font-size:12px;opacity:0.85;font-family:ui-monospace,SF Mono,monospace">#CE4E42</div>
+          <div style="font-size:11.5px;opacity:0.85;margin-top:6px">Alertas, errores, atención</div>
+        </div>
+        <div class="card" style="background:#629E46;color:#fff;border-color:#629E46">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:18px">Verde</div>
+          <div style="font-size:12px;opacity:0.85;font-family:ui-monospace,SF Mono,monospace">#629E46</div>
+          <div style="font-size:11.5px;opacity:0.85;margin-top:6px">Aprobado, correcto, avance</div>
+        </div>
+        <div class="card" style="background:#EE7D3A;color:#fff;border-color:#EE7D3A">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:18px">Naranja</div>
+          <div style="font-size:12px;opacity:0.85;font-family:ui-monospace,SF Mono,monospace">#EE7D3A</div>
+          <div style="font-size:11.5px;opacity:0.85;margin-top:6px">Aviso, "importante pero no rojo"</div>
+        </div>
+        <div class="card" style="background:#F1EEE6;color:#292B2C;border-color:#e5e5e5">
+          <div style="font-family:'Mona Sans',sans-serif;font-weight:800;font-size:18px">Papel</div>
+          <div style="font-size:12px;opacity:0.7;font-family:ui-monospace,SF Mono,monospace">#F1EEE6</div>
+          <div style="font-size:11.5px;opacity:0.65;margin-top:6px">Fondos secundarios, tarjetas</div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ Reglas de color</div>
+        <p><b>No usar los 8 colores en el mismo diseño.</b> Máximo 3 en una misma pieza: uno domina, otro apoya, uno remata. Si dudas, usa negro + blanco + morado. Eso siempre funciona.</p>
+      </div>
+
+      <h3>Qué queremos transmitir</h3>
+      <div class="compare">
+        <div class="yes">
+          <h5>✓ Queremos</h5>
+          <ul>
+            <li>Claridad</li>
+            <li>Confianza</li>
+            <li>Frescura mexicana</li>
+            <li>Autoridad sin presumir</li>
+            <li>Cercanía sin infantilismo</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h5>✕ Evitamos</h5>
+          <ul>
+            <li>Verse "de agencia genérica"</li>
+            <li>Colores saturados sin razón</li>
+            <li>Frases motivacionales gastadas</li>
+            <li>Copiar plantillas de Canva sin adaptar</li>
+            <li>Diseños "de todo un poquito"</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== 07 · Nuestro lenguaje ============================== -->
+    <section class="section" id="s7" data-title="Nuestro lenguaje" data-keywords="tono voz copy escritura estilo redacción">
+      <div class="section-num">Sección 07</div>
+      <h2 class="section-title"><span class="emoji">🗣️</span> Nuestro lenguaje</h2>
+      <p class="section-intro">Vorka habla como alguien inteligente que se toma un café contigo, no como una empresa. Directo, mexicano, respetuoso y sin rodeos.</p>
+
+      <h3>Cómo escribimos</h3>
+      <ul>
+        <li>Usamos <b>tú</b>, no "usted", excepto si el cliente lo pide.</li>
+        <li>Frases cortas. Punto y seguido antes que coma tras coma.</li>
+        <li>Español mexicano natural. Nada de traducir modismos de gringos.</li>
+        <li>Explicamos lo técnico como si se lo explicáramos a alguien inteligente que nunca ha trabajado en marketing.</li>
+        <li>Cada oración carga peso. Si sobra, se corta.</li>
+      </ul>
+
+      <h3>Así hablamos vs. así no hablamos</h3>
+      <div class="compare">
+        <div class="yes">
+          <h5>✓ Así hablamos</h5>
+          <ul>
+            <li>"Antes de publicar, pensemos qué queremos que pase después."</li>
+            <li>"Este contenido busca que la gente entre a la landing."</li>
+            <li>"No estamos vendiendo un producto; estamos abriendo una conversación."</li>
+            <li>"Si el mensaje no se entiende en 3 segundos, no se entiende."</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h5>✕ Así no hablamos</h5>
+          <ul>
+            <li>"Es fundamental implementar una estrategia omnicanal orientada a maximizar la conversión."</li>
+            <li>"🚀🔥 ¡NO CREERÁS lo que pasa cuando…!"</li>
+            <li>"En Vorka creemos que cada persona es única ✨"</li>
+            <li>"Estamos súper emocionados de anunciar…"</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Lo que evitamos</h3>
+      <ul>
+        <li>Exceso de signos de exclamación (con uno basta).</li>
+        <li>Frases motivacionales genéricas ("cree en ti", "el cielo es el límite").</li>
+        <li>Clickbait absurdo.</li>
+        <li>Lenguaje exagerado ("increíble", "único", "revolucionario") si no se justifica.</li>
+        <li>Palabras rebuscadas cuando existe una más simple.</li>
+        <li>Copiar tendencias sin entenderlas (audios, formatos, jergas).</li>
+        <li>Emojis por decoración. Solo cuando aportan.</li>
+      </ul>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Prueba rápida antes de publicar cualquier copy</div>
+        <p>Léelo <b>en voz alta</b>. Si suena raro, forzado o falso, es porque lo es. Reescríbelo hasta que suene como algo que dirías tú, no una máquina.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 08 · Herramientas ============================== -->
+    <section class="section" id="s8" data-title="Herramientas del equipo" data-keywords="canva capcut meta business notion drive gmail tools">
+      <div class="section-num">Sección 08</div>
+      <h2 class="section-title"><span class="emoji">🧰</span> Tu caja de herramientas</h2>
+      <p class="section-intro">Estas son las herramientas que usamos todos los días. No necesitas dominarlas todas al 100 % el primer día. Empieza por las tres primeras.</p>
+
+      <div class="grid-2">
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-purple">C</span><h4>Canva (Pro)</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Diseño gráfico: posts, carruseles, presentaciones, portadas.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Cualquier pieza gráfica: publicaciones, historias, invitaciones, reportes visuales.</div>
+          <div class="t-block"><b>Qué NO hacer</b>No usar plantillas sin adaptarlas a la identidad de Vorka. No abusar de fuentes ni de efectos.</div>
+          <div class="t-block"><b>Tip</b>Antes de diseñar, define tamaño, plataforma y objetivo. Ahorras horas.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-black">CC</span><h4>CapCut Pro</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Edición de video: Reels, TikToks, entrevistas, cortes.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Todo lo audiovisual. Subtítulos, ritmo, transiciones, música.</div>
+          <div class="t-block"><b>Qué NO hacer</b>No abuses de efectos ni de auto-cortes. La edición debe servir a la historia, no distraer.</div>
+          <div class="t-block"><b>Tip</b>Los subtítulos son obligatorios: mucha gente ve sin audio.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-purple">MB</span><h4>Meta Business Suite</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Administrar, programar y revisar Facebook e Instagram.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Programación de posts, gestión de mensajes, revisión de métricas.</div>
+          <div class="t-block"><b>Qué NO hacer</b>No publicar sin verificar previsualización. Los recortes de imagen se ven distinto.</div>
+          <div class="t-block"><b>Tip</b>Programa siempre. Publicar en el momento es la excepción, no la regla.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-pink">IG</span><h4>Instagram</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Contenido, comunidad, Stories, Reels, publicaciones.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Todos los días. Es el canal principal de casi todos los proyectos.</div>
+          <div class="t-block"><b>Qué NO hacer</b>No responder mensajes o comentarios sin criterio previo. No borrar comentarios negativos sin consultar.</div>
+          <div class="t-block"><b>Tip</b>Reels &gt; posts. La app está premiando video.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-purple">FB</span><h4>Facebook</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Contenido y comunidad. Audiencias más maduras y locales.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Cuando el proyecto tiene alcance local, eventos, o audiencia 35+.</div>
+          <div class="t-block"><b>Qué NO hacer</b>Copiar exactamente el post de Instagram. El contexto es distinto.</div>
+          <div class="t-block"><b>Tip</b>Los eventos y grupos siguen funcionando muy bien en Facebook.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-black">TT</span><h4>TikTok</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Contenido audiovisual, descubrimiento, audiencia nueva.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Cuando el proyecto puede sostener video vertical con narrativa propia.</div>
+          <div class="t-block"><b>Qué NO hacer</b>Repostear Reels de Instagram con marca de agua. La app los penaliza.</div>
+          <div class="t-block"><b>Tip</b>Los primeros 2 segundos son todo. Sin gancho no hay retención.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-purple">LI</span><h4>LinkedIn</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Comunicación profesional, liderazgo, posicionamiento.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Contenido de autoridad, casos, aprendizajes, comunicación B2B.</div>
+          <div class="t-block"><b>Qué NO hacer</b>Usar el mismo copy que en Instagram. LinkedIn premia texto largo con estructura.</div>
+          <div class="t-block"><b>Tip</b>Un buen post en LinkedIn empieza con una frase que rompe la línea de scroll.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-black">N</span><h4>Notion</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Organización, documentación, procesos, proyectos, trabajo interno.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Todos los días. Ahí viven briefs, calendarios editoriales, tareas y decisiones.</div>
+          <div class="t-block"><b>Qué NO hacer</b>Duplicar páginas sin borrar las viejas. Se convierte en un caos.</div>
+          <div class="t-block"><b>Tip</b>Todo lo importante que se acuerda en una llamada debe terminar escrito en Notion.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-red">G</span><h4>Gmail</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Correo formal. Comunicación con clientes, proveedores, medios.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Cuando el mensaje amerita quedar registrado formalmente.</div>
+          <div class="t-block"><b>Qué NO hacer</b>Contestar sin leer todo el hilo. Perder el asunto en respuestas encadenadas.</div>
+          <div class="t-block"><b>Tip</b>Asunto claro + saludo + petición concreta + cierre. Sin rodeos.</div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-head"><span class="tool-badge b-yellow">GD</span><h4>Google Drive</h4></div>
+          <div class="t-block"><b>Para qué sirve</b>Almacenamiento y organización de archivos.</div>
+          <div class="t-block"><b>Cuándo la usamos</b>Todos los entregables, materiales originales, versiones finales.</div>
+          <div class="t-block"><b>Qué NO hacer</b>Guardar en el escritorio personal. Si no está en Drive, no existe.</div>
+          <div class="t-block"><b>Tip</b>Nombrar bien los archivos desde el inicio. (Ver sección 20.)</div>
+        </div>
+      </div>
+
+      <div class="callout define">
+        <div class="callout-title">⚙️ Definir por Vorka</div>
+        <p>Falta indicar aquí el canal oficial de comunicación interna del equipo (WhatsApp, Slack, etc.), los accesos a las cuentas y la estructura exacta de la carpeta raíz en Drive. Se completa cuando Vorka lo confirme.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 09 · Redes sociales ============================== -->
+    <section class="section" id="s9" data-title="Redes sociales" data-keywords="instagram tiktok facebook linkedin plataformas contenido">
+      <div class="section-num">Sección 09</div>
+      <h2 class="section-title"><span class="emoji">📱</span> Redes sociales</h2>
+      <p class="section-intro">Cada red social tiene su propio idioma. El mismo mensaje se dice distinto en Instagram, en TikTok y en LinkedIn. No es opcional adaptarlo: es parte del trabajo.</p>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ Regla básica</div>
+        <p>Nunca publiques el mismo contenido, con el mismo copy y el mismo formato, en todas las redes. Es la señal más rápida de que no se pensó.</p>
+      </div>
+
+      <h3>Comparación por plataforma</h3>
+      <div class="table-wrap">
+        <table class="compare-table">
+          <thead><tr><th>Plataforma</th><th>¿Qué funciona?</th><th>¿Qué debemos considerar?</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="plat">Instagram</span></td>
+              <td>Reels con gancho fuerte, carruseles útiles, Stories con encuestas, colaboraciones. Estética cuidada.</td>
+              <td>Alcance orgánico bajo si el contenido no engancha. Copy corto y directo. Usar hashtags con cabeza (no 30).</td>
+            </tr>
+            <tr>
+              <td><span class="plat">TikTok</span></td>
+              <td>Video vertical con narrativa. Autenticidad &gt; producción cara. Tendencias adaptadas, no copiadas.</td>
+              <td>Los primeros 2 segundos deciden todo. Subtítulos obligatorios. No repostees con marca de agua de otra red.</td>
+            </tr>
+            <tr>
+              <td><span class="plat">Facebook</span></td>
+              <td>Eventos, grupos, contenido local, publicaciones más "informativas". Audiencia mayor a 35 años.</td>
+              <td>Alcance orgánico muy bajo. Menos formal que LinkedIn, más contexto que Instagram.</td>
+            </tr>
+            <tr>
+              <td><span class="plat">LinkedIn</span></td>
+              <td>Texto con estructura, opiniones sustentadas, casos reales, aprendizajes. Contenido "de autoridad".</td>
+              <td>El primer renglón decide si expanden el post. Sin lenguaje de agencia. Nada de frases motivacionales vacías.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Cómo decidir dónde publicar algo</h3>
+      <ol>
+        <li>Empieza por el objetivo: ¿qué quiero que haga la persona?</li>
+        <li>Piensa a quién le va a hablar: ¿esa persona vive en Instagram, TikTok o LinkedIn?</li>
+        <li>Elige el formato que mejor lo cuente en esa plataforma.</li>
+        <li>Adapta copy, dimensiones y tono.</li>
+      </ol>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Regla del 80/20</div>
+        <p>Vale más publicar 3 piezas bien adaptadas a 3 plataformas, que 8 iguales en todas. La calidad de adaptación pesa más que el volumen.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 10 · Creación de contenido ============================== -->
+    <section class="section" id="s10" data-title="Creación de contenido" data-keywords="brief creación contenido planeación pensar antes diseñar">
+      <div class="section-num">Sección 10</div>
+      <h2 class="section-title"><span class="emoji">💡</span> Creación de contenido</h2>
+      <p class="section-intro">Antes de abrir Canva, CapCut o cualquier herramienta, respóndete estas siete preguntas. Sin ellas, cualquier pieza que hagas va a estar cojeando.</p>
+
+      <div class="card" style="border-left:4px solid var(--vk-purple)">
+        <div class="card-title">Las 7 preguntas antes de crear</div>
+        <ol>
+          <li><b>¿Qué queremos comunicar?</b> — El mensaje central, en una frase.</li>
+          <li><b>¿A quién?</b> — Nada de "público en general". Sé específico.</li>
+          <li><b>¿Por qué ahora?</b> — Qué justifica que salga esta pieza en este momento.</li>
+          <li><b>¿Qué queremos provocar?</b> — Emoción, acción, reflexión, compra.</li>
+          <li><b>¿Dónde se publicará?</b> — Instagram, TikTok, LinkedIn, correo.</li>
+          <li><b>¿Qué formato necesitamos?</b> — Reel, carrusel, story, post estático.</li>
+          <li><b>¿Qué acción queremos que haga la persona?</b> — Ver, comentar, entrar, comprar, compartir.</li>
+        </ol>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ NO DISEÑES TODAVÍA</div>
+        <p><b>Primero piensa.</b> Diseñar sin haber contestado las 7 preguntas es diseñar a ciegas. Todo el equipo pasa por aquí. No es opcional.</p>
+      </div>
+
+      <h3>El brief mínimo</h3>
+      <p>Cuando alguien te pida hacer una pieza, asegúrate de tener por escrito al menos esto. Si falta, pregunta antes de empezar:</p>
+      <ul>
+        <li><b>Cuenta</b> (¿de qué cliente / proyecto?)</li>
+        <li><b>Objetivo</b> (¿qué buscamos con esta pieza?)</li>
+        <li><b>Audiencia</b> (¿a quién le hablamos?)</li>
+        <li><b>Mensaje central</b> (¿qué idea queremos dejar?)</li>
+        <li><b>Plataforma y formato</b></li>
+        <li><b>CTA</b> (¿qué queremos que hagan?)</li>
+        <li><b>Deadline</b> (¿cuándo se publica?)</li>
+        <li><b>Referencias visuales / de tono</b> (si aplica)</li>
+      </ul>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Regla del semáforo</div>
+        <p>Si contestas las 7 preguntas y todavía no tienes claro qué diseñar, <b>el problema es el brief, no tú</b>. Regresa a pedir claridad. Se pierde menos tiempo así que rehaciendo dos veces.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 11 · Cómo hacer una publicación ============================== -->
+    <section class="section" id="s11" data-title="Cómo hacer una publicación" data-keywords="post publicación paso a paso instagram flujo">
+      <div class="section-num">Sección 11</div>
+      <h2 class="section-title"><span class="emoji">📝</span> Cómo hacer una publicación</h2>
+      <p class="section-intro">Este es el flujo completo, del "tengo una idea" al "está publicado y lo revisé". No te saltes pasos. En especial no te saltes la revisión.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Idea</h4><p>Nace del calendario editorial, del brief, de una fecha o de un insight. Se escribe en una frase.</p><div class="step-meta"><span class="tip">Tip: si no la puedes explicar en 1 frase, todavía no es idea.</span></div></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Objetivo</h4><p>Qué buscamos con esta pieza: informar, generar interacción, llevar a landing, vender.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Audiencia</h4><p>Quién debería reaccionar a esto. Sé específico: edad, contexto, momento del día.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Mensaje</h4><p>Una sola idea central. Si intentas decir tres cosas, no vas a lograr ninguna.</p><div class="step-meta"><span class="warn">Error común: querer meter todo.</span></div></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Formato</h4><p>Post estático, carrusel, Reel, Story. Elige el que mejor cuente el mensaje, no el que te sea más fácil.</p></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Diseño</h4><p>Abre Canva con las dimensiones correctas. Aplica la identidad. Deja aire. Menos elementos, no más.</p><div class="step-meta"><span class="tip">Tip: si dudas si algo estorba, quítalo. Casi siempre estorba.</span></div></div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Copy</h4><p>Escribe el pie de post. Empieza con un gancho, desarrolla, cierra con un CTA. Léelo en voz alta.</p></div></div>
+        <div class="step"><div class="step-num">8</div><div class="step-body"><h4>Revisión propia</h4><p>Ortografía, dimensiones, tipos, colores, coherencia con el brief. Cambia de vista para "ver con ojos nuevos".</p></div></div>
+        <div class="step"><div class="step-num">9</div><div class="step-body"><h4>Aprobación</h4><p>Envías al responsable indicado con todo el contexto: pieza, copy final, plataforma, hora.</p><div class="step-meta"><span class="warn">Nunca publicar sin aprobación.</span></div></div></div>
+        <div class="step"><div class="step-num">10</div><div class="step-body"><h4>Programación</h4><p>En Meta Business Suite o la herramienta que use el proyecto. Verifica hora, cuenta y previsualización.</p></div></div>
+        <div class="step"><div class="step-num">11</div><div class="step-body"><h4>Publicación</h4><p>Se publica sola si está programada. Si es manual, publica y confirma.</p></div></div>
+        <div class="step"><div class="step-num">12</div><div class="step-body"><h4>Revisión final (post publicación)</h4><p>Entra a la cuenta, mira cómo se ve publicado, verifica links, responde primeros comentarios.</p></div></div>
+        <div class="step"><div class="step-num">13</div><div class="step-body"><h4>Análisis</h4><p>A los pocos días: ¿cómo funcionó? ¿qué aprendemos? ¿qué se replica y qué no?</p></div></div>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ El error más común</div>
+        <p>Saltarse la revisión final después de publicar. Un post publicado con un link roto o una imagen recortada es peor que un post que se retrasa un día.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 12 · Cómo hacer un Reel ============================== -->
+    <section class="section" id="s12" data-title="Cómo hacer un Reel" data-keywords="reel video capcut hook guion edición vertical">
+      <div class="section-num">Sección 12</div>
+      <h2 class="section-title"><span class="emoji">🎬</span> Cómo hacer un Reel</h2>
+      <p class="section-intro">Un Reel no es "grabar algo y editarlo". Es contar una historia en menos de 60 segundos, con un enganche brutal en los primeros 2. Aquí va el paso a paso.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Idea</h4><p>Una frase que diga qué va a ver la persona y por qué le va a importar.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Hook (gancho)</h4><p>Los primeros 2 segundos. La frase o imagen que hace que no pasen de largo. Ejemplo: "Esto es lo que nadie te dice de X".</p><div class="step-meta"><span class="tip">Tip: escribe 3 hooks distintos y elige el más fuerte.</span></div></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Guion</h4><p>Escribe qué se dice en cada segundo. No improvises frente a cámara. Corto, claro, con ritmo.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Grabación</h4><p>Vertical (9:16), buena luz, audio limpio. Encuadre a la altura de los ojos. Deja aire arriba y abajo por si hay elementos de interfaz.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>B-roll</h4><p>Imágenes o clips extra que ilustran lo que dices (planos de detalle, ambiente, objetos). Rompen la monotonía del "hablando a cámara".</p></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Edición en CapCut</h4><p>Corta pausas, silencios y muletillas. El ritmo se hace en edición. Nada sobra por respeto: sobra por cariño.</p></div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Subtítulos</h4><p>Obligatorios. La mayoría ve sin audio. Legibles, sin cubrir la cara ni la interfaz de la plataforma.</p></div></div>
+        <div class="step"><div class="step-num">8</div><div class="step-body"><h4>Música / audio</h4><p>Elige música coherente con el mensaje. Usa audios en tendencia solo cuando aporten al fondo, no como muleta.</p></div></div>
+        <div class="step"><div class="step-num">9</div><div class="step-body"><h4>Portada</h4><p>La imagen que se ve en la parrilla. Debe entenderse en 1 segundo. Título corto y grande.</p></div></div>
+        <div class="step"><div class="step-num">10</div><div class="step-body"><h4>Copy del pie</h4><p>Complementa, no repite. Da el contexto que el video no puede dar.</p></div></div>
+        <div class="step"><div class="step-num">11</div><div class="step-body"><h4>CTA</h4><p>Qué queremos que haga la persona: comentar, guardar, ir al link, compartir. Uno solo, claro.</p></div></div>
+        <div class="step"><div class="step-num">12</div><div class="step-body"><h4>Revisión</h4><p>Reproduce el Reel entero antes de mandar a aprobar. Sin sonido primero, con sonido después.</p></div></div>
+        <div class="step"><div class="step-num">13</div><div class="step-body"><h4>Aprobación</h4><p>Se envía en formato final (mp4 o link). No mandes proyectos de CapCut.</p></div></div>
+        <div class="step"><div class="step-num">14</div><div class="step-body"><h4>Publicación</h4><p>Directo desde la cuenta, no reposteado. Sin marca de agua de otras plataformas.</p></div></div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Regla de oro del Reel</div>
+        <p>Si el hook no funciona, no funciona nada. Aunque el resto esté impecable, si nadie pasa del segundo 2, no hay Reel. Trabaja el hook con cariño.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 13 · Cómo hacer Stories ============================== -->
+    <section class="section" id="s13" data-title="Cómo hacer Stories" data-keywords="stories instagram encuestas stickers cta interacción">
+      <div class="section-num">Sección 13</div>
+      <h2 class="section-title"><span class="emoji">📲</span> Cómo hacer Stories</h2>
+      <p class="section-intro">Las Stories no son "post secundario". Son la conversación diaria con la comunidad. Cada Story debe tener un objetivo claro; si no, es ruido.</p>
+
+      <h3>Objetivos posibles de una Story</h3>
+      <div class="grid-3">
+        <div class="area-card c-purple"><h4>Informar</h4><p>Dar una noticia rápida, un anuncio, un recordatorio.</p></div>
+        <div class="area-card c-pink"><h4>Recordar</h4><p>Traer de vuelta algo que ya se comunicó (evento, promoción).</p></div>
+        <div class="area-card c-yellow"><h4>Generar interacción</h4><p>Encuesta, pregunta, quiz, votación.</p></div>
+        <div class="area-card c-green"><h4>Llevar tráfico</h4><p>Link a landing, a un post, a WhatsApp.</p></div>
+        <div class="area-card c-orange"><h4>Promocionar</h4><p>Empujar un producto, un servicio, una fecha.</p></div>
+        <div class="area-card c-red"><h4>Humanizar</h4><p>Detrás de cámaras, el equipo, momentos reales.</p></div>
+      </div>
+
+      <h3>Recursos que sí conviene usar</h3>
+      <ul>
+        <li><b>Encuestas:</b> preguntas binarias que suman datos rápidos ("¿te pasa a ti también?").</li>
+        <li><b>Preguntas:</b> abren conversación, dan material para próximos posts.</li>
+        <li><b>Links:</b> siempre que se pueda, llevar a algún lado.</li>
+        <li><b>Menciones:</b> etiquetar a personas o marcas involucradas (con permiso).</li>
+        <li><b>Stickers:</b> de ubicación, hora, música, GIF. Con moderación.</li>
+        <li><b>CTA claro:</b> "responde", "vota", "entra al link", "guárdalo".</li>
+      </ul>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ Evita</div>
+        <p>Repostear todo lo que te etiquetan sin filtrar. Publicar 15 Stories seguidas sin descanso visual. Textos ilegibles sobre fondo con mucho ruido. Encuestas hechas por rellenar.</p>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Tip de estructura para el día</div>
+        <p>Piensa en tus Stories como episodios cortos: 1 apertura → 1 desarrollo → 1 cierre con CTA. Máximo 5-7 Stories seguidas. Después de eso, la gente se salta.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 14 · Cómo escribir un copy ============================== -->
+    <section class="section" id="s14" data-title="Cómo escribir un copy" data-keywords="copy escritura texto caption hook cta redacción">
+      <div class="section-num">Sección 14</div>
+      <h2 class="section-title"><span class="emoji">✍️</span> Cómo escribir un copy</h2>
+      <p class="section-intro">Un buen copy no vende: hace que la persona quiera seguir leyendo. Y al final, actúa. Aquí va la fórmula que usamos en Vorka.</p>
+
+      <h3>La fórmula base: HOOK → CONTEXTO → VALOR → CTA</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>HOOK</h4><p>La primera frase. Rompe el scroll. Puede ser una pregunta incómoda, un dato, una afirmación contraintuitiva. <b>Ejemplo:</b> "El 80 % de los posts que ves hoy no tienen ningún objetivo."</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>CONTEXTO</h4><p>Da la información necesaria para entender de qué hablas. Corto. Sin rodeos. <b>Ejemplo:</b> "Se publican por costumbre, no por estrategia. Y por eso no generan nada."</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>VALOR</h4><p>Lo útil, lo interesante, la idea que se lleva la persona. Aquí está la razón por la que valió la pena leerte. <b>Ejemplo:</b> "La regla fácil: si no puedes decir qué quieres que pase después de este post, no lo publiques."</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>CTA</h4><p>Una sola acción. Clara. <b>Ejemplo:</b> "Guarda este post y aplícalo antes del próximo que vayas a publicar."</p></div></div>
+      </div>
+
+      <h3>Cuándo ser breve, cuándo desarrollar</h3>
+      <ul>
+        <li><b>Breve</b> cuando el diseño ya dice mucho. El copy solo complementa.</li>
+        <li><b>Breve</b> en Reels: máximo 2-3 líneas.</li>
+        <li><b>Breve</b> en Stories: solo el CTA y el gancho.</li>
+        <li><b>Desarrollado</b> en carruseles, LinkedIn y posts donde la gente entra a leer.</li>
+        <li><b>Desarrollado</b> cuando estás explicando una idea o un caso.</li>
+      </ul>
+
+      <h3>Cómo no sonar robótico</h3>
+      <ul>
+        <li>Léelo <b>en voz alta</b>. Si no lo dirías así, reescríbelo.</li>
+        <li>Usa contracciones naturales del habla ("no lo hagas", no "no debes hacerlo").</li>
+        <li>Evita empezar todo con "En Vorka creemos que…" o "Cada persona es única…".</li>
+        <li>Sustituye adverbios largos por palabras cortas ("realmente" → sale sobrando).</li>
+        <li>Corta la primera y la última frase. Casi siempre sobran.</li>
+      </ul>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Ortografía</div>
+        <p>Antes de mandar a aprobar, pega el copy en una herramienta de corrección o en Google Docs. Los errores de tilde son los más comunes y los más obvios cuando ya están publicados.</p>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ Nada de esto</div>
+        <p>"¡SÚPER emocionados de anunciar…!", "En esta oportunidad queremos compartir…", "No podíamos dejar pasar la oportunidad de…". Todo eso es relleno. Al bote.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 15 · Flujo de trabajo ============================== -->
+    <section class="section" id="s15" data-title="Flujo de trabajo" data-keywords="flujo proceso brief diseño copy revisión aprobación publicación análisis">
+      <div class="section-num">Sección 15</div>
+      <h2 class="section-title"><span class="emoji">📋</span> Flujo de trabajo</h2>
+      <p class="section-intro">Este es el flujo estándar de Vorka. Aplica para casi todo: un post, un carrusel, un Reel, una campaña. Cada etapa tiene una razón. No se saltan.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>🧠 Idea</h4><p>Nace del calendario, del cliente, de un insight o de una fecha. Se documenta en una frase.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>📋 Brief</h4><p>Se define objetivo, audiencia, mensaje, formato, plataforma, CTA y deadline.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>🎨 Diseño / Producción</h4><p>Se ejecuta la pieza (Canva, CapCut, fotografía, texto). Se apega al brief.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>✍️ Copy</h4><p>Se redacta el pie, el hashtag si aplica y el CTA. Se revisa ortografía.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>👀 Revisión</h4><p>Primero interna, después por el responsable del proyecto. Nada pasa sin revisión.</p><div class="step-meta"><span class="warn">Saltarse esto = error asegurado.</span></div></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>🟢 Aprobación</h4><p>Del responsable indicado (o del cliente, según el proyecto). Queda registrada por escrito.</p></div></div>
+        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>📅 Programación</h4><p>Se agenda en Meta Business Suite o en la herramienta correspondiente. Se verifica cuenta, hora, previsualización.</p></div></div>
+        <div class="step"><div class="step-num">8</div><div class="step-body"><h4>📲 Publicación</h4><p>Publica sola si está programada. Si es manual, publica y confirma que se publicó.</p></div></div>
+        <div class="step"><div class="step-num">9</div><div class="step-body"><h4>📊 Análisis</h4><p>Se revisan métricas relevantes (alcance, interacción, guardados, clics). Se aprende y se ajusta.</p></div></div>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ Regla no negociable</div>
+        <p><b>Nunca se publica sin revisión y sin aprobación.</b> No importa la urgencia. Si algo es tan urgente que "no da tiempo", eso ya es un error de planeación que debe comunicarse.</p>
+      </div>
+
+      <div class="callout define">
+        <div class="callout-title">⚙️ Definir por Vorka</div>
+        <p>Falta documentar quién es el responsable de aprobación por cliente/proyecto, cuánto tiempo estándar toma una revisión, y cuál es el canal oficial para pedir aprobaciones. Se completa cuando Vorka lo confirme.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 16 · Revisión y aprobación ============================== -->
+    <section class="section" id="s16" data-title="Revisión y aprobación" data-keywords="revisión aprobación quality control qc checklist final">
+      <div class="section-num">Sección 16</div>
+      <h2 class="section-title"><span class="emoji">👀</span> Revisión y aprobación</h2>
+      <p class="section-intro">Revisar no es "leer por encima". Es un momento distinto del proceso. Requiere atención específica. Estas son las cosas que <b>siempre</b> se revisan antes de aprobar.</p>
+
+      <h3>Qué se revisa, punto por punto</h3>
+      <div class="grid-2">
+        <div class="card"><div class="card-title">Contenido</div>Que el mensaje sea claro y responda al brief.</div>
+        <div class="card"><div class="card-title">Ortografía</div>Cero errores. Tildes, comas, dobles espacios.</div>
+        <div class="card"><div class="card-title">Diseño</div>Jerarquía visual, aire, alineación, colores de Vorka.</div>
+        <div class="card"><div class="card-title">Formato</div>Correcto para la plataforma (proporción, duración).</div>
+        <div class="card"><div class="card-title">Dimensiones</div>1080×1080 (post), 1080×1350 (vertical), 1080×1920 (story/reel).</div>
+        <div class="card"><div class="card-title">Información</div>Fechas, precios, nombres, datos. Verificar dos veces.</div>
+        <div class="card"><div class="card-title">Links</div>Que abran donde deben. Sin http roto, sin utms viejos.</div>
+        <div class="card"><div class="card-title">Fechas</div>Coherencia entre lo que dice el post y la fecha real.</div>
+        <div class="card"><div class="card-title">Nombres</div>De personas, marcas, cuentas etiquetadas.</div>
+        <div class="card"><div class="card-title">Logos</div>Uso correcto, versión correcta, con permiso si es cliente.</div>
+        <div class="card"><div class="card-title">CTA</div>Existe y es uno solo. Claro.</div>
+        <div class="card"><div class="card-title">Copy</div>Coincide con la publicación. Sin repetir lo obvio.</div>
+        <div class="card"><div class="card-title">Plataforma</div>Correcta para el tipo de contenido.</div>
+        <div class="card"><div class="card-title">Etiquetas</div>@ correctos, sin errores.</div>
+        <div class="card"><div class="card-title">Hashtags</div>Solo si aplican al proyecto. Con criterio, no 30 por default.</div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Truco de revisión</div>
+        <p>Revisa con los ojos de alguien que ve el post por primera vez. Idealmente, revisa en el celular, no en la computadora. Se ve todo distinto.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 17 · Checklist antes de publicar ============================== -->
+    <section class="section" id="s17" data-title="Checklist antes de publicar" data-keywords="checklist publicar antes revisar interactivo">
+      <div class="section-num">Sección 17</div>
+      <h2 class="section-title"><span class="emoji">✅</span> Checklist antes de publicar</h2>
+      <p class="section-intro">Este checklist es interactivo. Márcalo cada vez que vayas a publicar una pieza. El progreso se guarda solo en tu navegador; no lo compartes con nadie.</p>
+
+      <div class="progress-block">
+        <div class="pb-info">
+          <div class="pb-title">Progreso del checklist</div>
+          <div class="pb-sub">Guardado en este navegador</div>
+        </div>
+        <div class="pb-bar"><div class="pb-bar-fill" id="publishFill"></div></div>
+        <div class="pb-pct" id="publishPct">0%</div>
+      </div>
+
+      <ul class="checklist" id="publishChecklist" data-storage="vk_check_publish">
+        <li><input type="checkbox" id="p1"/><label for="p1" class="cl-text">¿Sé cuál es el objetivo de esta pieza?</label></li>
+        <li><input type="checkbox" id="p2"/><label for="p2" class="cl-text">¿El mensaje se entiende en 3 segundos?</label></li>
+        <li><input type="checkbox" id="p3"/><label for="p3" class="cl-text">¿Está dirigido a la audiencia correcta?</label></li>
+        <li><input type="checkbox" id="p4"/><label for="p4" class="cl-text">¿La información (fechas, nombres, datos) es correcta?</label></li>
+        <li><input type="checkbox" id="p5"/><label for="p5" class="cl-text">¿Revisé la ortografía?</label></li>
+        <li><input type="checkbox" id="p6"/><label for="p6" class="cl-text">¿El diseño está limpio? (aire, jerarquía)</label></li>
+        <li><input type="checkbox" id="p7"/><label for="p7" class="cl-text">¿Respeta la identidad de Vorka (colores, tipografías, tono)?</label></li>
+        <li><input type="checkbox" id="p8"/><label for="p8" class="cl-text">¿El formato es correcto para la plataforma?</label></li>
+        <li><input type="checkbox" id="p9"/><label for="p9" class="cl-text">¿El copy coincide con la publicación?</label></li>
+        <li><input type="checkbox" id="p10"/><label for="p10" class="cl-text">¿El CTA funciona y es uno solo?</label></li>
+        <li><input type="checkbox" id="p11"/><label for="p11" class="cl-text">¿Revisé los links (abren donde deben)?</label></li>
+        <li><input type="checkbox" id="p12"/><label for="p12" class="cl-text">¿Está aprobado por el responsable?</label></li>
+        <li><input type="checkbox" id="p13"/><label for="p13" class="cl-text">¿Está programado a la hora correcta en la cuenta correcta?</label></li>
+        <li><input type="checkbox" id="p14"/><label for="p14" class="cl-text">¿Revisé cómo quedó después de publicar?</label></li>
+      </ul>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn btn-ghost" data-reset="vk_check_publish">Reiniciar checklist</button>
+      </div>
+    </section>
+
+    <!-- ============================== 18 · Trabajo con clientes ============================== -->
+    <section class="section" id="s18" data-title="Trabajo con clientes" data-keywords="clientes propuestas feedback cambios tiempos entrega">
+      <div class="section-num">Sección 18</div>
+      <h2 class="section-title"><span class="emoji">🤝</span> Trabajo con clientes</h2>
+      <p class="section-intro">Trabajar con clientes es una parte importante de Vorka. No se trata de decir sí a todo: se trata de <b>entender, explicar y proponer</b>.</p>
+
+      <h3>Cómo recibir información</h3>
+      <ul>
+        <li>Escucha completo antes de responder.</li>
+        <li>Toma nota (Notion, un doc, lo que sea, pero por escrito).</li>
+        <li>Al final de la llamada / mensaje, resume: "entonces necesitas X, Y y Z, ¿correcto?".</li>
+      </ul>
+
+      <h3>Cómo pedir materiales</h3>
+      <ul>
+        <li>Pide todo lo que necesitas de una sola vez. No en 5 mensajes distintos.</li>
+        <li>Sé específico: "necesito logo en PNG con fondo transparente" es mejor que "mándame tu logo".</li>
+        <li>Da un deadline razonable para que te lo envíen.</li>
+      </ul>
+
+      <h3>Cómo hacer preguntas</h3>
+      <ul>
+        <li>Una pregunta a la vez si el cliente es de respuestas cortas.</li>
+        <li>Lista de 3-5 preguntas si el cliente prefiere responder por escrito.</li>
+        <li>Nunca preguntes lo que ya está documentado; primero revisa.</li>
+      </ul>
+
+      <h3>Cómo recibir feedback</h3>
+      <ul>
+        <li>No te lo tomes personal. Es sobre la pieza, no sobre ti.</li>
+        <li>Confirma que entendiste ("¿te refieres a que…?").</li>
+        <li>Si el feedback contradice el brief o la estrategia, dilo con respeto: "entiendo, y en el brief acordamos X — ¿quieres que ajustemos también la estrategia?".</li>
+      </ul>
+
+      <h3>Cómo documentar cambios</h3>
+      <ul>
+        <li>Todo cambio pedido queda por escrito. WhatsApp no cuenta como registro formal.</li>
+        <li>Se anota qué se cambió, cuándo y por qué.</li>
+        <li>Se guarda versión anterior por si se necesita volver a ella.</li>
+      </ul>
+
+      <h3>Cómo presentar propuestas</h3>
+      <ul>
+        <li>Empieza por el problema, no por la solución.</li>
+        <li>Muestra la idea, después el detalle.</li>
+        <li>Da opciones cuando aplique (A / B / C), no una sola.</li>
+      </ul>
+
+      <h3>Cómo manejar tiempos</h3>
+      <ul>
+        <li>Prometer menos y cumplir de más.</li>
+        <li>Si algo se va a atrasar, avisar <b>antes</b>, no después.</li>
+        <li>Nunca comprometer una fecha sin consultarla con el equipo interno primero.</li>
+      </ul>
+
+      <h3>Casos especiales</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Cuando falta información</div>
+          <p>No inventes. Pide lo que falta con claridad y bloquea la tarea hasta tenerlo. Documenta que estás esperando.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Cuando el cliente pide algo distinto a la estrategia</div>
+          <p>Escúchalo. Explica por qué la estrategia dice otra cosa. Propón un punto medio si tiene sentido. Si insiste, se hace, pero queda documentado quién decidió el cambio.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Cuando hay retrasos</div>
+          <p>Comunícalo antes de que reviente. Da nueva fecha realista, no optimista.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Cuando hay que escalar un problema</div>
+          <p>Habla con el responsable interno de Vorka. Trae contexto: qué pasó, qué intentaste, qué opciones ves.</p>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Principio</div>
+        <p>"No se trata de decir sí a todo. Se trata de entender, explicar y proponer." El cliente contrató a Vorka por criterio, no solo por manos.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 19 · Comunicación interna ============================== -->
+    <section class="section" id="s19" data-title="Comunicación interna" data-keywords="comunicación equipo interna avisos avisar canales">
+      <div class="section-num">Sección 19</div>
+      <h2 class="section-title"><span class="emoji">💬</span> Comunicación interna</h2>
+      <p class="section-intro">La forma en que hablamos entre nosotros afecta tanto el resultado como el diseño de la pieza. Estas son las buenas prácticas del equipo.</p>
+
+      <h3>Buenas prácticas</h3>
+      <ul>
+        <li>Comunicar avances, aunque nadie los pida.</li>
+        <li>Avisar problemas <b>antes</b> de que revienten.</li>
+        <li>Preguntar dudas. Preguntar temprano vale más que suponer y equivocarse.</li>
+        <li>Confirmar tareas ("entendido, empiezo hoy y entrego el jueves").</li>
+        <li>Respetar los tiempos que te comprometiste a cumplir.</li>
+        <li>No desaparecer cuando hay un problema. Silencio = pánico ajeno.</li>
+        <li>Mantener lo importante documentado (Notion, Drive, correo).</li>
+        <li>Usar el canal correcto para cada tipo de mensaje.</li>
+      </ul>
+
+      <h3>Cómo NO comunicar vs. cómo sí</h3>
+      <div class="compare">
+        <div class="no">
+          <h5>✕ Cómo NO</h5>
+          <ul>
+            <li>"No pude."</li>
+            <li>"Está complicado."</li>
+            <li>"Después te digo."</li>
+            <li>Leer y no responder.</li>
+            <li>Prometer y no confirmar.</li>
+          </ul>
+        </div>
+        <div class="yes">
+          <h5>✓ Cómo sí</h5>
+          <ul>
+            <li>"No pude terminarlo porque me falta X. Ya hice Y y puedo cerrarlo en Z horario."</li>
+            <li>"El diseño se complicó por A. Opciones que veo: 1, 2, 3."</li>
+            <li>"Ahora estoy en otra cosa. A las 6 pm te contesto con detalle."</li>
+            <li>Un "recibido, lo veo y te aviso hoy" es suficiente.</li>
+            <li>Confirmar recepción y deadline en el mismo mensaje.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout define">
+        <div class="callout-title">⚙️ Definir por Vorka</div>
+        <p>Falta documentar los canales oficiales de comunicación interna (cuál es el WhatsApp/Slack del equipo, para qué se usa cada canal, en qué horarios se espera respuesta). Se completa cuando Vorka lo confirme.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 20 · Organización de archivos ============================== -->
+    <section class="section" id="s20" data-title="Organización de archivos" data-keywords="archivos drive carpetas nombres versiones organización">
+      <div class="section-num">Sección 20</div>
+      <h2 class="section-title"><span class="emoji">📂</span> Organización de archivos</h2>
+      <p class="section-intro">Un buen sistema de archivos evita que perdamos 20 minutos buscando "el logo bueno". Estas son las reglas mínimas.</p>
+
+      <h3>Estructura de carpetas</h3>
+      <p>La carpeta raíz de cada cliente debe tener, mínimo:</p>
+      <ul>
+        <li><b>00 — Brief y estrategia</b></li>
+        <li><b>01 — Materiales del cliente</b> (logos, fotos, textos base)</li>
+        <li><b>02 — Editables</b> (Canva, CapCut, PSD)</li>
+        <li><b>03 — Entregables finales</b> (PNG, MP4, PDF ya aprobados)</li>
+        <li><b>04 — Reportes</b></li>
+        <li><b>05 — Archivo / históricos</b></li>
+      </ul>
+
+      <div class="callout define">
+        <div class="callout-title">⚙️ Definir por Vorka</div>
+        <p>Falta confirmar la estructura oficial exacta de carpetas de Vorka en Drive. La de arriba es una propuesta base; cuando Vorka la confirme se documenta la definitiva aquí.</p>
+      </div>
+
+      <h3>Cómo nombrar archivos</h3>
+      <p>Un buen nombre te dice qué es sin abrirlo. Convención sugerida:</p>
+      <div class="card">
+        <div class="card-title" style="color:var(--vk-purple);font-family:ui-monospace,SF Mono,monospace;font-weight:700">CLIENTE_TIPO_TEMA_FECHA_VERSION.ext</div>
+        <p style="margin:8px 0 0;font-size:14px;color:var(--ink-2)">Ejemplos:</p>
+        <ul style="font-family:ui-monospace,SF Mono,monospace;font-size:13px;margin-top:8px">
+          <li>VORKA_POST_lanzamiento_20260918_v01.png</li>
+          <li>WESTMINSTER_REEL_admisiones_20261005_final.mp4</li>
+          <li>CLIENTEX_COPY_navidad_20261124_v03.docx</li>
+        </ul>
+      </div>
+
+      <h3>Versiones</h3>
+      <ul>
+        <li>Usa <b>v01, v02, v03…</b> mientras trabajas.</li>
+        <li>Cuando algo queda aprobado, cámbialo a <b>_final</b>.</li>
+        <li>Si después del "final" hay otra ronda, es <b>_final-v2</b>. No "final final ahora sí".</li>
+        <li>Elimina versiones intermedias cuando ya no sirvan.</li>
+      </ul>
+
+      <h3>Editables vs. finales</h3>
+      <ul>
+        <li>Editables (Canva, CapCut, etc.) van en la carpeta 02.</li>
+        <li>Finales (PNG, MP4, PDF ya aprobados) van en la carpeta 03.</li>
+        <li>Nunca mezcles editables y finales en la misma carpeta.</li>
+      </ul>
+
+      <div class="callout warn">
+        <div class="callout-title">⚠️ Nombres prohibidos</div>
+        <p><b>finalfinal2AHORASI.png</b>, <b>Sin título (5).jpg</b>, <b>imagen.png</b>, <b>WhatsApp Image 2026-…</b>. Si le pones un nombre así, te va a perseguir por semanas.</p>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Regla del "tercer clic"</div>
+        <p>Cualquier archivo del equipo debe encontrarse en <b>máximo 3 clics</b> desde la carpeta raíz del cliente. Si te toma más, la estructura está mal armada.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 21 · Glosario ============================== -->
+    <section class="section" id="s21" data-title="Glosario de marketing" data-keywords="glosario términos marketing definiciones diccionario">
+      <div class="section-num">Sección 21</div>
+      <h2 class="section-title"><span class="emoji">📖</span> Glosario de marketing</h2>
+      <p class="section-intro">Cuando alguien use una palabra rara en una reunión, no te quedes con la duda. Búscala aquí. Cada término está explicado en simple, con ejemplo, y con cómo aparece en el día a día de Vorka.</p>
+
+      <div class="gloss-controls">
+        <div class="gloss-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="glossSearch" placeholder="Busca un término (ej. hook, CTA, funnel…)" aria-label="Buscar en el glosario"/>
+        </div>
+        <div class="gloss-count" id="glossCount"></div>
+      </div>
+
+      <div class="gloss-list" id="glossList"></div>
+    </section>
+
+    <!-- ============================== 22 · Errores frecuentes ============================== -->
+    <section class="section" id="s22" data-title="Errores frecuentes" data-keywords="errores fallos comunes cosas que pasan aprender">
+      <div class="section-num">Sección 22</div>
+      <h2 class="section-title"><span class="emoji">⚠️</span> Cosas que probablemente te van a pasar</h2>
+      <p class="section-intro">Nadie llega a un equipo sin equivocarse. Estos son los errores más comunes en Vorka. Léelos con calma: te van a ahorrar semanas.</p>
+
+      <div class="err-item">
+        <div class="err-title">1. Diseñar antes de entender el objetivo</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>Abres Canva sin brief y a las 2 horas nada convence.</p></div>
+          <div><b>Por qué</b><p>Diseñas por intuición, no por estrategia.</p></div>
+          <div><b>Cómo evitarlo</b><p>Contesta las 7 preguntas de la sección 10 antes de tocar la herramienta.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">2. Escribir demasiado</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>El copy es un ladrillo y nadie lo lee.</p></div>
+          <div><b>Por qué</b><p>Intentas decir todo en una pieza.</p></div>
+          <div><b>Cómo evitarlo</b><p>Una idea por pieza. Corta primera y última frase.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">3. No revisar ortografía</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>Se publica con error de tilde y toca borrar.</p></div>
+          <div><b>Por qué</b><p>Confías en tu lectura rápida.</p></div>
+          <div><b>Cómo evitarlo</b><p>Pega el copy en Google Docs o corrector antes de aprobar.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">4. Saturar un diseño</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>La pieza es un tianguis de elementos y no se entiende nada.</p></div>
+          <div><b>Por qué</b><p>Miedo a que "se vea vacío".</p></div>
+          <div><b>Cómo evitarlo</b><p>Menos es más. Quita lo que dudas. El aire también comunica.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">5. Usar demasiados colores</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>La pieza se ve genérica y sin marca.</p></div>
+          <div><b>Por qué</b><p>Usaste toda la paleta al mismo tiempo.</p></div>
+          <div><b>Cómo evitarlo</b><p>Máximo 3 colores por pieza. Uno domina, otro apoya, uno remata.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">6. Copiar una tendencia sin entenderla</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>El post no encaja con la cuenta y se siente forzado.</p></div>
+          <div><b>Por qué</b><p>Copiaste el formato pero no la razón por la que funciona.</p></div>
+          <div><b>Cómo evitarlo</b><p>Antes de replicar, pregunta: ¿por qué funcionó? ¿aplica a esta cuenta?</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">7. Publicar sin aprobación</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>Sale algo que el cliente no quería y toca dar explicaciones.</p></div>
+          <div><b>Por qué</b><p>Urgencia mal manejada o confianza excesiva.</p></div>
+          <div><b>Cómo evitarlo</b><p>Nada se publica sin aprobación. Ni con "urgencia".</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">8. No adaptar contenido a cada plataforma</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>El mismo post con el mismo copy en 4 redes. Se ve flojo.</p></div>
+          <div><b>Por qué</b><p>Ahorrar tiempo.</p></div>
+          <div><b>Cómo evitarlo</b><p>Adaptar copy, dimensiones y tono para cada red. Ver sección 09.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">9. No revisar el contenido después de publicado</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>El link no abre, la imagen quedó recortada y nadie se dio cuenta hasta el día siguiente.</p></div>
+          <div><b>Por qué</b><p>Consideras terminada la tarea al programar.</p></div>
+          <div><b>Cómo evitarlo</b><p>Entra a la cuenta después de publicar y verifica todo.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">10. Confundir likes con resultados</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>Te obsesionas con el like y descuidas lo que realmente importa (clics, conversaciones, ventas).</p></div>
+          <div><b>Por qué</b><p>El like es la métrica más visible.</p></div>
+          <div><b>Cómo evitarlo</b><p>Alinea con el objetivo: si es tráfico, mide clics. Si es venta, mide conversión.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">11. Asumir información</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>Diseñas basándote en lo que "seguro es así" y no era así.</p></div>
+          <div><b>Por qué</b><p>Miedo a preguntar o falta de tiempo.</p></div>
+          <div><b>Cómo evitarlo</b><p>Confirmar &gt; asumir. Siempre.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">12. No preguntar</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>Entregas algo distinto a lo que se pedía.</p></div>
+          <div><b>Por qué</b><p>Pena o miedo a "parecer que no sabes".</p></div>
+          <div><b>Cómo evitarlo</b><p>Preguntar es parte del trabajo. Vale mil veces más que rehacer.</p></div>
+        </div>
+      </div>
+
+      <div class="err-item">
+        <div class="err-title">13. No avisar cuando hay un problema</div>
+        <div class="err-grid">
+          <div><b>Qué pasa</b><p>El problema crece en silencio hasta que revienta.</p></div>
+          <div><b>Por qué</b><p>Miedo a "molestar" o pensar que se resuelve solo.</p></div>
+          <div><b>Cómo evitarlo</b><p>Avisar temprano. Un mensaje corto vale más que una crisis.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== 23 · ¿Qué hago si no sé? ============================== -->
+    <section class="section" id="s23" data-title="¿Qué hago si no sé?" data-keywords="ayuda no sé preguntar bloqueo dudas soporte">
+      <div class="section-num">Sección 23</div>
+      <h2 class="section-title"><span class="emoji">🆘</span> ¿No sabes qué hacer? Perfecto. Haz esto.</h2>
+      <p class="section-intro">Que no sepas algo no es problema. Que te quedes atorado en silencio, sí. Este es el protocolo cuando te trabas.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Lee nuevamente la tarea</h4><p>Muchas veces la respuesta está ahí y se pasó por alto.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Revisa el brief o la documentación</h4><p>Notion, Drive, correo. La información puede estar guardada.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Busca si existe un proceso en este manual</h4><p>Usa la barra de búsqueda de arriba (o ⌘K). El glosario también ayuda.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Intenta resolverlo</h4><p>Prueba una solución. Aunque no sea perfecta, te da un punto de partida.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Si sigues sin saber, pregunta</h4><p>Pero con contexto (ver el paso 6).</p></div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Cuando preguntes, explica qué intentaste</h4><p>Muestra que le echaste ganas antes de pedir ayuda. Ahorra tiempo y da mejores respuestas.</p></div></div>
+      </div>
+
+      <h3>Cómo NO preguntar vs. cómo sí</h3>
+      <div class="compare">
+        <div class="no">
+          <h5>✕ Cómo NO</h5>
+          <ul>
+            <li>"No sé cómo hacerlo."</li>
+            <li>"¿Cómo hago esto?"</li>
+            <li>"Ayuda."</li>
+            <li>"No me sale."</li>
+          </ul>
+        </div>
+        <div class="yes">
+          <h5>✓ Cómo sí</h5>
+          <ul>
+            <li>"Ya revisé X y Y del manual. Entendí que va así, pero no sé cómo resolver Z. ¿Me ayudas?"</li>
+            <li>"Intenté A y B pero no funcionaron por [razón]. ¿Vas por otro lado?"</li>
+            <li>"Estoy trabado en el paso 4 del flujo. Ya tengo el brief y el diseño; me falta claridad en el CTA."</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Recuerda</div>
+        <p>Preguntar no es señal de que no sabes. Es señal de que quieres hacerlo bien. En Vorka se prefiere una pregunta a tiempo que una entrega mal.</p>
+      </div>
+    </section>
+
+    <!-- ============================== 24 · Checklist del nuevo integrante ============================== -->
+    <section class="section" id="s24" data-title="Checklist del nuevo integrante" data-keywords="onboarding nuevo integrante checklist bienvenida ingreso">
+      <div class="section-num">Sección 24</div>
+      <h2 class="section-title"><span class="emoji">🚀</span> Checklist del nuevo integrante</h2>
+      <p class="section-intro">Este es tu onboarding. Marca cada punto conforme lo domines. Cuando llegues al 100 %, ya estás listo para operar sin acompañamiento en la mayoría de tareas.</p>
+
+      <div class="progress-block">
+        <div class="pb-info">
+          <div class="pb-title" id="onboardBlockTitle">Tu onboarding en Vorka</div>
+          <div class="pb-sub">Se guarda en tu navegador</div>
+        </div>
+        <div class="pb-bar"><div class="pb-bar-fill" id="onboardBlockFill"></div></div>
+        <div class="pb-pct" id="onboardBlockPct">0%</div>
+      </div>
+
+      <ul class="checklist" id="onboardChecklist" data-storage="vk_check_onboard">
+        <li><input type="checkbox" id="o1"/><label for="o1" class="cl-text">Entiendo qué es Vorka.</label></li>
+        <li><input type="checkbox" id="o2"/><label for="o2" class="cl-text">Entiendo qué hacemos.</label></li>
+        <li><input type="checkbox" id="o3"/><label for="o3" class="cl-text">Conozco nuestra forma de trabajar.</label></li>
+        <li><input type="checkbox" id="o4"/><label for="o4" class="cl-text">Conozco nuestra identidad de marca.</label></li>
+        <li><input type="checkbox" id="o5"/><label for="o5" class="cl-text">Tengo acceso a las herramientas que uso.</label></li>
+        <li><input type="checkbox" id="o6"/><label for="o6" class="cl-text">Sé utilizar Canva a nivel básico.</label></li>
+        <li><input type="checkbox" id="o7"/><label for="o7" class="cl-text">Sé utilizar CapCut a nivel básico.</label></li>
+        <li><input type="checkbox" id="o8"/><label for="o8" class="cl-text">Sé dónde encontrar los archivos de los proyectos.</label></li>
+        <li><input type="checkbox" id="o9"/><label for="o9" class="cl-text">Sé dónde se documentan los proyectos (Notion).</label></li>
+        <li><input type="checkbox" id="o10"/><label for="o10" class="cl-text">Entiendo el flujo de aprobación.</label></li>
+        <li><input type="checkbox" id="o11"/><label for="o11" class="cl-text">Sé cómo hacer una publicación.</label></li>
+        <li><input type="checkbox" id="o12"/><label for="o12" class="cl-text">Sé cómo hacer un Reel.</label></li>
+        <li><input type="checkbox" id="o13"/><label for="o13" class="cl-text">Sé cómo hacer Stories.</label></li>
+        <li><input type="checkbox" id="o14"/><label for="o14" class="cl-text">Entiendo los conceptos básicos de marketing.</label></li>
+        <li><input type="checkbox" id="o15"/><label for="o15" class="cl-text">Sé a quién preguntar cuando tengo dudas.</label></li>
+      </ul>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn btn-ghost" data-reset="vk_check_onboard">Reiniciar checklist</button>
+      </div>
+
+      <div class="callout tip" style="margin-top:32px">
+        <div class="callout-title">🎉 Cuando llegues al 100 %</div>
+        <p>Avísale a tu responsable interno. No es un trámite: es un momento de reconocimiento. Y probablemente el arranque de responsabilidades más grandes.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================== BACK TO TOP ============================== -->
+<button class="to-top" id="toTop" aria-label="Volver arriba">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- ============================== FOOTER ============================== -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-cols">
+      <div class="foot-col foot-brand">
+        <h5>Vorka México</h5>
+        <p>Ecosistema mexicano de <b>estrategia, liderazgo, comunicación e innovación</b>. Este manual es una herramienta interna del equipo.</p>
+        <span class="foot-mark" role="img" aria-label="Vorka México"></span>
+      </div>
+      <div class="foot-col">
+        <h5>Manual</h5>
+        <ul>
+          <li><a href="#hero">Inicio</a></li>
+          <li><a href="#s2">¿Qué es Vorka?</a></li>
+          <li><a href="#s15">Flujo de trabajo</a></li>
+          <li><a href="#s17">Checklist</a></li>
+          <li><a href="#s21">Glosario</a></li>
+          <li><a href="#s24">Onboarding</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Herramientas</h5>
+        <ul>
+          <li><a href="https://www.canva.com" target="_blank" rel="noopener">Canva</a></li>
+          <li><a href="https://www.capcut.com" target="_blank" rel="noopener">CapCut</a></li>
+          <li><a href="https://business.facebook.com" target="_blank" rel="noopener">Meta Business</a></li>
+          <li><a href="https://www.notion.so" target="_blank" rel="noopener">Notion</a></li>
+          <li><a href="https://drive.google.com" target="_blank" rel="noopener">Google Drive</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Vorka</h5>
+        <ul>
+          <li><a href="https://www.vorka.mx/" target="_blank" rel="noopener">Sitio Vorka</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 Vorka México · Manual operativo interno</div>
+      <div class="foot-tag">definiendo el juego</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================== Glosario data ==================== */
+const glossary = [
+  {t:"Marketing", d:"Todo lo que hace una organización para atraer, retener y crecer una audiencia.", e:"Diseñar contenido, correos, pauta y experiencia de cliente para vender un curso online.", v:"Es el paraguas general de casi todo lo que hacemos en Vorka."},
+  {t:"Brand", d:"La marca. No es el logo: es lo que la gente piensa cuando escucha tu nombre.", e:"'Apple' te hace pensar en diseño limpio y precio alto; eso es su brand.", v:"Cuando trabajamos identidad, estamos construyendo el brand del cliente."},
+  {t:"Branding", d:"El trabajo continuo de construir esa percepción de marca (visual, verbal y de experiencia).", e:"Rediseñar logo, tono, tipografías y forma de responder mensajes de una escuela.", v:"Muchos proyectos empiezan por un ejercicio de branding antes de tocar redes."},
+  {t:"Identidad visual", d:"El sistema de logo, colores, tipografías, íconos y estilo gráfico de una marca.", e:"El manual de marca con los HEX exactos y las tipografías oficiales.", v:"Todo lo que sale de Vorka debe respetar la identidad visual del proyecto."},
+  {t:"Copy", d:"El texto escrito para comunicar (posts, anuncios, landing, correos).", e:"El pie de una publicación de Instagram.", v:"En Vorka casi todos escribimos copy. Ver sección 14."},
+  {t:"Caption", d:"El texto que acompaña una foto o un video en redes.", e:"Los 2-3 párrafos debajo de un post de Instagram.", v:"Es un tipo específico de copy, para redes sociales."},
+  {t:"CTA", d:"Call to Action. La acción que quieres que haga la persona.", e:"'Entra al link', 'guarda este post', 'reserva tu lugar'.", v:"Cada pieza que hacemos debe tener 1 CTA claro. Si no lo tiene, algo está mal."},
+  {t:"Hook", d:"El gancho. La primera frase o imagen que hace que no pasen de largo.", e:"'Esto es lo que nadie te dice de trabajar en marketing.'", v:"Es el elemento más importante de un Reel o un post en LinkedIn."},
+  {t:"Engagement", d:"Interacción de la gente con tu contenido: likes, comentarios, guardados, compartidos.", e:"Un post tiene alto engagement cuando genera muchos comentarios y guardados.", v:"No lo confundimos con éxito real: engagement es señal, no resultado."},
+  {t:"Alcance", d:"Cuántas personas distintas vieron tu contenido.", e:"Un post puede tener 1000 alcance y solo 20 interacciones.", v:"Es la métrica base para saber si un contenido está siendo visto."},
+  {t:"Impresiones", d:"Cuántas veces se vio tu contenido, aunque una misma persona lo haya visto varias veces.", e:"Alcance 500 e impresiones 800 = la misma gente lo vio en promedio 1.6 veces.", v:"Se lee siempre en pareja con alcance."},
+  {t:"Conversión", d:"Que la persona haga la acción que buscas (comprar, registrarse, entrar al link).", e:"De 100 personas que ven un anuncio, 3 compran = 3 % de conversión.", v:"Es la métrica más importante cuando el objetivo es venta."},
+  {t:"Lead", d:"Una persona que mostró interés (dejó su correo, whatsapp, se registró).", e:"Alguien que llenó el formulario para pedir informes de una escuela.", v:"Los leads son el punto medio entre 'me vieron' y 'me compraron'."},
+  {t:"Funnel", d:"Embudo. El camino que sigue una persona: desde que te conoce hasta que compra.", e:"Ve un Reel → entra al perfil → llena formulario → agenda cita → compra.", v:"Toda estrategia bien pensada tiene un funnel claro."},
+  {t:"Awareness", d:"Que la gente sepa que existes. La primera etapa del funnel.", e:"Un anuncio de video que solo busca que te conozcan, no que compres todavía.", v:"Al inicio de un proyecto casi siempre trabajamos awareness."},
+  {t:"Target", d:"El público al que le hablas específicamente.", e:"'Mamás de niños de 3 a 6 años, en Celaya, con poder adquisitivo medio-alto.'", v:"'Todo México' no es un target. Ser específico es lo que hace que un mensaje pegue."},
+  {t:"Buyer Persona", d:"Un retrato detallado de tu cliente ideal (nombre, edad, hábitos, dolores, motivaciones).", e:"'Ana, 34 años, mamá de 2, busca colegio bilingüe, revisa Instagram por la noche.'", v:"Antes de una campaña grande definimos buyer personas."},
+  {t:"Insight", d:"Una verdad no obvia sobre tu audiencia que dispara ideas.", e:"'A las mamás no les importa el idioma; les importa que sus hijos hagan amigos.'", v:"Los mejores mensajes de Vorka nacen de un buen insight."},
+  {t:"Brief", d:"El documento base de un proyecto o pieza. Contiene objetivo, audiencia, mensaje, deadline.", e:"Un doc de 1 página con todo lo que necesitas saber para diseñar un post.", v:"Sin brief, no hay pieza. Ver sección 10."},
+  {t:"Brief creativo", d:"Brief enfocado en la parte creativa: tono, referencias, restricciones visuales.", e:"'Estilo editorial, paleta cálida, evitar el amarillo del cliente anterior.'", v:"Se usa cuando la pieza requiere mucha decisión creativa (campaña, video, editorial)."},
+  {t:"KPI", d:"Key Performance Indicator. La métrica que decides que va a decir si algo funcionó.", e:"KPI = número de reservas hechas. Todo lo demás es secundario.", v:"Cada proyecto debe tener 1-3 KPIs claros desde el arranque."},
+  {t:"Métrica", d:"Cualquier número que puedes medir (likes, clics, seguidores, ventas).", e:"'Tenemos 5000 seguidores' es una métrica.", v:"No toda métrica es KPI. El KPI es la que realmente importa."},
+  {t:"ROI", d:"Return on Investment. Cuánto ganaste por cada peso invertido.", e:"Inviertes $100 y ganas $300 = ROI de 200 %.", v:"Los clientes casi siempre quieren saber su ROI. Aprende a calcularlo."},
+  {t:"ROAS", d:"Return on Ad Spend. Cuánto vendiste por cada peso gastado en pauta.", e:"Gastas $1000 en anuncios y generas $4000 en ventas = ROAS de 4x.", v:"Es el ROI específico de pauta."},
+  {t:"Algoritmo", d:"La lógica de la plataforma que decide qué contenido mostrarle a quién.", e:"El algoritmo de TikTok premia videos con alta retención en los primeros segundos.", v:"No lo controlamos, pero conocerlo nos ayuda a crear mejor."},
+  {t:"Orgánico", d:"Contenido y alcance que consigues sin pagar pauta.", e:"Un Reel que se vuelve viral solo, sin publicidad, tiene alcance orgánico.", v:"La base de Vorka es contenido orgánico bien pensado."},
+  {t:"Paid Media", d:"Todo lo que pagas para promocionar (anuncios, colaboraciones pagadas).", e:"Un anuncio en Instagram con presupuesto de $500.", v:"Cuando aplica, complementa lo orgánico. Nunca lo sustituye."},
+  {t:"Ads", d:"Anuncios pagados en plataformas (Meta Ads, TikTok Ads, Google Ads).", e:"Un anuncio de Facebook para llevar tráfico a una landing.", v:"Los administra quien tenga formación específica en pauta."},
+  {t:"CPC", d:"Cost Per Click. Cuánto cuesta cada clic en tu anuncio.", e:"Gastas $100 y consigues 50 clics = $2 de CPC.", v:"Se usa para medir eficiencia de un anuncio de tráfico."},
+  {t:"CPM", d:"Cost Per Mille. Cuánto cuesta que tu anuncio se muestre 1000 veces.", e:"CPM de $50 = pagas $50 por 1000 impresiones.", v:"Se usa mucho en campañas de awareness."},
+  {t:"CTR", d:"Click-Through Rate. Porcentaje de personas que hicieron clic tras ver tu contenido.", e:"1000 impresiones y 20 clics = 2 % CTR.", v:"Nos dice si el contenido logra mover a la acción."},
+  {t:"SEO", d:"Search Engine Optimization. Optimizar para aparecer en Google de forma orgánica.", e:"Escribir un blog con las palabras clave que la gente busca.", v:"Aplica cuando el cliente tiene página web y quiere aparecer en Google."},
+  {t:"SEM", d:"Search Engine Marketing. Pagar para aparecer en Google (Google Ads).", e:"Un anuncio arriba de los resultados cuando alguien busca 'colegio bilingüe Celaya'.", v:"Es la versión pagada de estar arriba en Google."},
+  {t:"Hashtag", d:"Etiqueta con # que agrupa contenido por tema.", e:"#Celaya, #FamiliaWest.", v:"Se usan con criterio (5-10 relevantes), no como decoración."},
+  {t:"Community Management", d:"Gestionar la comunidad: responder comentarios, DMs, moderar.", e:"Responder los mensajes que llegan al Instagram de un cliente.", v:"Es parte del trabajo diario de casi todos los proyectos."},
+  {t:"Content Marketing", d:"Estrategia de crecer con contenido de valor (educar, entretener, inspirar) en vez de solo vender.", e:"Un canal que publica tips gratis para atraer clientes.", v:"Es la base de cómo trabajamos redes en Vorka."},
+  {t:"Storytelling", d:"Contar historias para conectar emocionalmente y transmitir un mensaje.", e:"Contar el caso de una alumna que gracias al programa cambió su vida.", v:"Un buen Reel casi siempre es storytelling bien hecho."},
+  {t:"Reel", d:"Video vertical corto en Instagram (hasta 90 segundos).", e:"Un video de 30 segundos explicando un tip.", v:"Formato prioritario en la mayoría de cuentas hoy. Ver sección 12."},
+  {t:"Carousel", d:"Publicación de varias imágenes o slides que se deslizan lateralmente.", e:"Un post de 8 slides explicando '5 errores al elegir escuela'.", v:"Excelente para contenido educativo o listas."},
+  {t:"Landing Page", d:"Página web enfocada en una sola acción (registrarse, comprar, agendar).", e:"Página para pedir informes con solo un formulario y un botón.", v:"Cuando la campaña necesita conversión, hay que tener landing."},
+  {t:"A/B Test", d:"Probar dos versiones distintas para ver cuál funciona mejor.", e:"Publicar dos anuncios con distinto hook y ver cuál tiene más clics.", v:"Se usa sobre todo en pauta y en correos."},
+  {t:"UGC", d:"User Generated Content. Contenido creado por los propios usuarios/clientes.", e:"Un video de una alumna hablando bien de la escuela, subido por ella.", v:"Es más creíble que el contenido de marca. Buscamos generarlo."},
+  {t:"B2B", d:"Business to Business. Le vendes a empresas.", e:"Vender software de gestión a hoteles.", v:"El tono y los canales cambian: más LinkedIn, menos TikTok."},
+  {t:"B2C", d:"Business to Consumer. Le vendes al consumidor final.", e:"Vender ropa directamente a personas.", v:"La mayoría de proyectos de Vorka son B2C."},
+  {t:"Benchmark", d:"Referencia o punto de comparación (con la competencia o el mercado).", e:"'El promedio del sector es 3 % de engagement; nosotros tenemos 5 %.'", v:"Sirve para saber si un resultado es bueno o no."},
+  {t:"Calendario editorial", d:"Plan que dice qué se publica, cuándo, en qué red y con qué objetivo.", e:"Un doc mensual con todos los posts programados.", v:"Es la columna vertebral de cualquier operación en redes."},
+  {t:"Parrilla de contenido", d:"La vista de los últimos 9-12 posts en el perfil (cuadrícula de Instagram).", e:"Los 9 posts recientes vistos como una sola imagen.", v:"Se cuida para que se vea coherente."},
+  {t:"B-roll", d:"Imágenes o videos secundarios que complementan al principal.", e:"Mientras alguien habla a cámara, insertar planos de detalle.", v:"En Reels bien hechos casi siempre hay B-roll."},
+  {t:"Retención", d:"Porcentaje de un video que la gente ve antes de irse.", e:"Retención del 60 % significa que en promedio ven el 60 % del video.", v:"En TikTok y Reels es la métrica más importante."},
+  {t:"Trending Topic", d:"Tema que está viral en un momento específico.", e:"Un audio que todos están usando en TikTok esta semana.", v:"Se aprovecha solo cuando encaja con la marca. Si no, se ve forzado."},
+  {t:"Call to Action", d:"Ver 'CTA'. Es el nombre completo.", e:"'Reserva tu lugar antes del viernes.'", v:"Se abrevia CTA en todas las conversaciones internas."}
+];
+
+/* ==================== Render glosario ==================== */
+const glossList = document.getElementById('glossList');
+const glossSearch = document.getElementById('glossSearch');
+const glossCount = document.getElementById('glossCount');
+
+function renderGloss(filter){
+  const q = (filter||'').trim().toLowerCase();
+  const sorted = glossary.slice().sort((a,b)=>a.t.localeCompare(b.t,'es'));
+  const filtered = q ? sorted.filter(g =>
+    g.t.toLowerCase().includes(q) ||
+    g.d.toLowerCase().includes(q) ||
+    g.e.toLowerCase().includes(q) ||
+    g.v.toLowerCase().includes(q)
+  ) : sorted;
+  glossCount.textContent = filtered.length + ' de ' + glossary.length + ' términos';
+  if(filtered.length===0){
+    glossList.innerHTML = '<div class="gloss-empty">No encontramos ese término. Prueba con otra palabra o revisa la ortografía.</div>';
+    return;
+  }
+  glossList.innerHTML = filtered.map(g => `
+    <article class="gloss-item">
+      <h4>${g.t}</h4>
+      <div class="g-block"><b>Qué significa</b><p>${g.d}</p></div>
+      <div class="g-block"><b>Ejemplo</b><p>${g.e}</p></div>
+      <div class="g-block"><b>En Vorka</b><p>${g.v}</p></div>
+    </article>
+  `).join('');
+}
+renderGloss();
+glossSearch.addEventListener('input', e => renderGloss(e.target.value));
+
+/* ==================== Búsqueda global ==================== */
+const globalSearch = document.getElementById('globalSearch');
+const searchResults = document.getElementById('searchResults');
+
+const sectionsIndex = Array.from(document.querySelectorAll('.section[data-title]')).map(s => ({
+  kind:'Sección',
+  id: s.id,
+  title: s.dataset.title || '',
+  desc: (s.querySelector('.section-intro')?.textContent||'').trim().slice(0,120),
+  keywords: (s.dataset.keywords||'').toLowerCase()
+}));
+
+function runSearch(q){
+  q = q.trim().toLowerCase();
+  if(!q){ searchResults.classList.remove('open'); searchResults.innerHTML=''; return; }
+  const secMatches = sectionsIndex.filter(s =>
+    s.title.toLowerCase().includes(q) || s.keywords.includes(q) || s.desc.toLowerCase().includes(q)
+  ).slice(0,6);
+  const glossMatches = glossary.filter(g =>
+    g.t.toLowerCase().includes(q) ||
+    g.d.toLowerCase().includes(q)
+  ).slice(0,6);
+  const items = [];
+  secMatches.forEach(s => items.push({kind:'Sección', title:s.title, desc:s.desc, href:'#'+s.id}));
+  glossMatches.forEach(g => items.push({kind:'Glosario', title:g.t, desc:g.d, href:'#s21'}));
+  if(items.length===0){
+    searchResults.innerHTML = '<div class="search-empty">Nada por aquí. Prueba otra palabra.</div>';
+    searchResults.classList.add('open');
+    return;
+  }
+  searchResults.innerHTML = items.map(it => `
+    <a class="search-result" href="${it.href}" data-close="1">
+      <div class="sr-kind">${it.kind}</div>
+      <div class="sr-title">${it.title}</div>
+      <div class="sr-desc">${it.desc}</div>
+    </a>
+  `).join('');
+  searchResults.classList.add('open');
+}
+globalSearch.addEventListener('input', e => runSearch(e.target.value));
+globalSearch.addEventListener('focus', e => { if(e.target.value) runSearch(e.target.value); });
+document.addEventListener('click', e => {
+  if(!e.target.closest('.search-wrap')) searchResults.classList.remove('open');
+  const closer = e.target.closest('[data-close="1"]');
+  if(closer){
+    setTimeout(()=>{
+      searchResults.classList.remove('open');
+      globalSearch.value = '';
+    }, 50);
+  }
+});
+document.addEventListener('keydown', e => {
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){
+    e.preventDefault();
+    globalSearch.focus();
+    globalSearch.select();
+  }
+  if(e.key==='Escape'){
+    searchResults.classList.remove('open');
+    globalSearch.blur();
+  }
+});
+
+/* ==================== Checklists con localStorage ==================== */
+function setupChecklist(listId, fillId, pctId, titleId, storageKey){
+  const list = document.getElementById(listId);
+  if(!list) return;
+  const key = list.dataset.storage || storageKey;
+  const boxes = list.querySelectorAll('input[type="checkbox"]');
+  const fill = document.getElementById(fillId);
+  const pct = document.getElementById(pctId);
+  const title = titleId ? document.getElementById(titleId) : null;
+
+  // Load state
+  let state = {};
+  try{ state = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e){ state = {}; }
+
+  function updateUI(){
+    let done = 0;
+    boxes.forEach(cb => {
+      const on = !!state[cb.id];
+      cb.checked = on;
+      cb.parentElement.classList.toggle('done', on);
+      if(on) done++;
+    });
+    const total = boxes.length;
+    const p = Math.round((done/total)*100);
+    if(fill) fill.style.width = p + '%';
+    if(pct) pct.textContent = p + '%';
+    if(title){
+      if(p===0) title.textContent = 'Vas empezando';
+      else if(p<40) title.textContent = 'Ya arrancaste';
+      else if(p<75) title.textContent = 'Vas muy bien';
+      else if(p<100) title.textContent = 'Casi listo';
+      else title.textContent = '¡Listo! 🎉';
+    }
+    updateSidebarProgress();
+  }
+
+  boxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      state[cb.id] = cb.checked;
+      try{ localStorage.setItem(key, JSON.stringify(state)); }catch(e){}
+      updateUI();
+    });
+  });
+
+  updateUI();
+}
+
+/* Reset buttons */
+document.querySelectorAll('[data-reset]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.reset;
+    try{ localStorage.removeItem(key); }catch(e){}
+    // Uncheck all in that list
+    const list = document.querySelector('[data-storage="'+key+'"]');
+    if(list){
+      list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+        cb.dispatchEvent(new Event('change'));
+      });
+    }
+  });
+});
+
+setupChecklist('publishChecklist','publishFill','publishPct',null,'vk_check_publish');
+setupChecklist('onboardChecklist','onboardBlockFill','onboardBlockPct','onboardBlockTitle','vk_check_onboard');
+
+/* Sidebar progress reflects onboarding */
+function updateSidebarProgress(){
+  const fill = document.getElementById('onboardFill');
+  const pct = document.getElementById('onboardPct');
+  const title = document.getElementById('onboardTitle');
+  if(!fill || !pct) return;
+  let state = {};
+  try{ state = JSON.parse(localStorage.getItem('vk_check_onboard') || '{}'); }catch(e){}
+  const list = document.getElementById('onboardChecklist');
+  if(!list) return;
+  const boxes = list.querySelectorAll('input[type="checkbox"]');
+  let done = 0;
+  boxes.forEach(cb => { if(state[cb.id]) done++; });
+  const p = Math.round((done/boxes.length)*100);
+  fill.style.width = p + '%';
+  pct.textContent = p + '% completado';
+  if(title){
+    if(p===0) title.textContent = 'Vas empezando';
+    else if(p<40) title.textContent = 'Ya arrancaste';
+    else if(p<75) title.textContent = 'Vas muy bien';
+    else if(p<100) title.textContent = 'Casi listo';
+    else title.textContent = '¡Listo! 🎉';
+  }
+}
+updateSidebarProgress();
+
+/* ==================== Sidebar mobile ==================== */
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+function closeSidebar(){
+  sidebar.classList.remove('open');
+  sidebarBackdrop.classList.remove('open');
+}
+menuToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  sidebarBackdrop.classList.toggle('open');
+});
+sidebarBackdrop.addEventListener('click', closeSidebar);
+document.querySelectorAll('.side-nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    if(window.matchMedia('(max-width: 960px)').matches) closeSidebar();
+  });
+});
+
+/* ==================== Active section in sidebar ==================== */
+const sideLinks = Array.from(document.querySelectorAll('.side-nav a[data-target]'));
+const targets = sideLinks.map(a => document.getElementById(a.dataset.target)).filter(Boolean);
+const linkByTarget = {};
+sideLinks.forEach(a => { linkByTarget[a.dataset.target] = a; });
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e => {
+    const link = linkByTarget[e.target.id];
+    if(!link) return;
+    if(e.isIntersecting){
+      sideLinks.forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, {rootMargin: '-40% 0px -55% 0px', threshold: 0});
+targets.forEach(t => observer.observe(t));
+
+/* ==================== Smooth scroll ==================== */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    if(!id) return;
+    const target = document.getElementById(id);
+    if(!target) return;
+    e.preventDefault();
+    const y = target.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({top:y, behavior:'smooth'});
+  });
+});
+
+/* ==================== Back to top ==================== */
+const toTop = document.getElementById('toTop');
+window.addEventListener('scroll', () => {
+  toTop.classList.toggle('visible', window.scrollY > 500);
+}, {passive:true});
+toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+})();
+</script>
+</body>
+</html>
+
+
+
+
+
+
