@@ -1,0 +1,3195 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Patrocinios — IMPACTO</title>
+
+<meta name="description" content="Herramienta interna de IMPACTO para valorar y cotizar patrocinios con base en el alcance real de sus cuentas.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="author" content="Juventudes Impactando México A.C.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" type="image/png" href="logos/impacto-horizontal.png">
+
+<style>
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  :root{
+    --paper:#ffffff;
+    --paper-sunk:#f4f4f4;
+    --paper-card:#fafafa;
+    --ink:#000000;
+    --ink-2:#555555;
+    --ink-3:#a0a0a0;
+    --rule:#e8e8e8;
+    --rule-strong:#cfcfcf;
+
+    --noroeste:#3b7bc0;
+    --noreste:#d94a3d;
+    --occidente:#dcb03d;
+    --centro:#6d3a8a;
+    --sureste:#6ba838;
+
+    --gold:#c8961a;
+    --gold-soft:#f5e9c8;
+    --focus:#3b7bc0;
+    --danger:#d94a3d;
+    --success:#6ba838;
+
+    --sans: 'Mont', 'Montserrat', 'Poppins', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, 'Times New Roman', serif;
+    --mono: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0a0a0a;
+      --paper-sunk:#161616;
+      --paper-card:#111111;
+      --ink:#ffffff;
+      --ink-2:#c8c8c8;
+      --ink-3:#7a7a7a;
+      --rule:#2a2a2a;
+      --rule-strong:#484848;
+      --gold:#e6b333;
+      --gold-soft:#3a2e15;
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#ffffff; --paper-sunk:#f4f4f4; --paper-card:#fafafa;
+    --ink:#000000; --ink-2:#555555; --ink-3:#a0a0a0;
+    --rule:#e8e8e8; --rule-strong:#cfcfcf;
+    --gold:#c8961a; --gold-soft:#f5e9c8;
+  }
+  :root[data-theme="dark"]{
+    --paper:#0a0a0a; --paper-sunk:#161616; --paper-card:#111111;
+    --ink:#ffffff; --ink-2:#c8c8c8; --ink-3:#7a7a7a;
+    --rule:#2a2a2a; --rule-strong:#484848;
+    --gold:#e6b333; --gold-soft:#3a2e15;
+  }
+
+  html,body{background:var(--paper); color:var(--ink);}
+  body{
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+  }
+  a{color: inherit;}
+  .wrap{max-width:1400px; margin:0 auto; padding:0 24px 96px;}
+  .sr-only{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+
+  /* HEADER */
+  .site-header{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 16px; padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+    position: sticky; top: 0; z-index: 40;
+    background: var(--paper);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .logo{display:flex; align-items:center; text-decoration: none; color: var(--ink);}
+  .logo-img{height: 44px; width: auto; display: block;}
+  .logo-img.dark-only{display:none;}
+  @media (prefers-color-scheme: dark){
+    .logo-img.light-only{display:none;}
+    .logo-img.dark-only{display:block;}
+  }
+  :root[data-theme="light"] .logo-img.light-only{display:block;}
+  :root[data-theme="light"] .logo-img.dark-only{display:none;}
+  :root[data-theme="dark"] .logo-img.light-only{display:none;}
+  :root[data-theme="dark"] .logo-img.dark-only{display:block;}
+
+  .site-nav{display:flex; align-items:center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;}
+  .nav-link{
+    text-decoration: none; background: transparent; color: var(--ink);
+    font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+    padding: 9px 14px; border-radius: 100px;
+    display:inline-flex; align-items:center; gap: 6px;
+    transition: all .15s; white-space: nowrap;
+    border: 1.5px solid var(--rule-strong);
+  }
+  .nav-link:hover{background: var(--ink); color: var(--paper); border-color: var(--ink);}
+  .nav-link.primary{background: var(--ink); color: var(--paper); border-color: var(--ink);}
+  .nav-link.primary:hover{opacity: 0.85;}
+  .theme-toggle{
+    background: transparent; border: 1.5px solid var(--rule-strong);
+    border-radius: 100px; padding: 9px 14px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink); cursor: pointer; font-family: var(--sans);
+    transition: all .15s; white-space: nowrap;
+  }
+  .theme-toggle:hover{background: var(--ink); color: var(--paper); border-color: var(--ink);}
+  .header-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:10.5px; font-weight:800; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold); padding: 6px 12px;
+    background: var(--gold-soft); border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* HERO */
+  .hero{padding: 24px 0 32px; border-bottom: 1px solid var(--rule); margin-bottom: 28px;}
+  .brand-mark{
+    display:inline-flex; align-items:center; gap: 10px;
+    font-size: 11px; font-weight: 800; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--ink-2); margin-bottom: 22px;
+  }
+  .brand-dots{display:inline-flex;gap:3px;}
+  .brand-dots span{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  h1.hero-title{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(36px, 5.5vw, 68px);
+    line-height: 0.98; letter-spacing: -0.04em; text-wrap: balance;
+    margin: 0 0 18px; color: var(--ink);
+    max-width: 22ch;
+  }
+  h1.hero-title em{
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    color: var(--gold); letter-spacing: -0.01em;
+  }
+  h1.hero-title .subline{
+    display:block; color: var(--ink-3); font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 32px); margin-top: 8px; letter-spacing: -0.025em;
+  }
+  .hero-copy{
+    max-width: 62ch; font-size: 16px; line-height: 1.6; color: var(--ink-2);
+    margin: 0 0 20px;
+  }
+  .hero-copy strong{color: var(--ink); font-weight: 700;}
+  .hero-copy em{font-family: var(--serif); font-style: italic; color: var(--ink); font-weight: 400; font-size: 1.05em;}
+  .hero-quote{
+    border-left: 3px solid var(--gold);
+    padding: 8px 0 8px 18px;
+    max-width: 60ch;
+    font-family: var(--serif); font-style: italic; font-size: 17px; line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0 0 24px;
+  }
+  .hero-quote strong{color: var(--ink); font-family: var(--sans); font-style: normal; font-weight: 800; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; display: block; margin-top: 8px;}
+
+  /* PRIMARY TABS (modes) */
+  .modes{
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 6px;
+    background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    width: fit-content;
+    max-width: 100%;
+  }
+  .mode-tab{
+    background: transparent; border: 0; cursor: pointer; font-family: var(--sans);
+    font-size: 11.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+    padding: 11px 20px; border-radius: 100px; color: var(--ink-2);
+    transition: background .12s, color .12s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .mode-tab .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--rule); color: var(--ink-2); font-size: 10px;
+    transition: all .12s;
+  }
+  .mode-tab[aria-selected="true"]{background: var(--ink); color: var(--paper);}
+  .mode-tab[aria-selected="true"] .num{background: var(--gold); color: #1a1200;}
+  .mode-tab:hover:not([aria-selected="true"]){color: var(--ink);}
+
+  .view{display: none;}
+  .view.active{display: block;}
+
+  /* MAIN CALCULATOR LAYOUT */
+  .calc-grid{
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 1000px){
+    .calc-grid{grid-template-columns: 1fr;}
+  }
+
+  /* FORM SECTIONS */
+  .form-col{min-width: 0;}
+  .form-section{
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 14px;
+    background: var(--paper);
+    transition: border-color .12s;
+  }
+  .form-section:hover{border-color: var(--rule-strong);}
+  .section-title{
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin: 0 0 6px;
+    cursor: default;
+    user-select: none;
+  }
+  .section-title h3{
+    font-family: var(--sans); font-weight: 800;
+    font-size: 20px; letter-spacing: -0.02em; margin: 0; color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .num{
+    font-family: var(--serif); font-style: italic;
+    color: var(--gold); font-size: 22px; letter-spacing: -0.02em; line-height: 1;
+  }
+  .form-section.collapsible .section-title{cursor: pointer;}
+  .form-section.collapsible .toggle-icon{
+    width: 28px; height: 28px; border-radius: 50%; background: var(--paper-sunk);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-2); transition: transform .18s;
+    font-size: 16px; line-height: 1;
+    border: 1px solid var(--rule);
+  }
+  .form-section.collapsible.open .toggle-icon{transform: rotate(45deg); background: var(--ink); color: var(--paper); border-color: var(--ink);}
+  .form-section.collapsible .section-body{display: none;}
+  .form-section.collapsible.open .section-body{display: block;}
+  .section-desc{
+    font-size: 13px; color: var(--ink-3); margin: 0 0 20px; line-height: 1.5;
+  }
+  .section-desc em{font-family: var(--serif); font-style: italic; color: var(--ink-2);}
+
+  /* FIELDS */
+  .field-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px 16px;
+  }
+  .field{display: flex; flex-direction: column; gap: 6px; min-width: 0;}
+  .field.full{grid-column: 1 / -1;}
+  .field label{
+    font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .field .tip{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--rule); color: var(--ink-2); font-size: 9px;
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    cursor: help; position: relative;
+    text-transform: none; letter-spacing: 0;
+  }
+  .field .tip:hover::after{
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); font-family: var(--sans); font-weight: 500;
+    font-size: 11px; letter-spacing: normal; text-transform: none;
+    padding: 8px 12px; border-radius: 6px; white-space: normal;
+    width: 240px; z-index: 100; pointer-events: none; line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .field input[type="text"],
+  .field input[type="number"],
+  .field select,
+  .field textarea{
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    padding: 10px 12px;
+    background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .12s, background .12s;
+    width: 100%;
+    min-width: 0;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color: var(--ink);
+  }
+  .field input[type="number"]{-moz-appearance:textfield;}
+  .field input[type="number"]::-webkit-inner-spin-button,
+  .field input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;}
+  .field .with-suffix{position: relative;}
+  .field .with-suffix input{padding-right: 40px;}
+  .field .with-suffix .suffix{
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .12em; text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  /* PLATFORM CARDS */
+  .platforms{display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;}
+  .plat{
+    padding: 16px 18px; border: 1px solid var(--rule); border-radius: 12px;
+    background: var(--paper-card);
+    transition: border-color .12s;
+  }
+  .plat.on{border-color: var(--ink); background: var(--paper);}
+  .plat-head{display: flex; align-items: center; gap: 10px; margin-bottom: 12px;}
+  .plat-name{font-size: 13px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink);}
+  .plat-toggle{
+    margin-left: auto;
+    width: 34px; height: 20px; border-radius: 100px; background: var(--rule-strong); position: relative;
+    cursor: pointer; transition: background .18s;
+    border: 0; padding: 0;
+  }
+  .plat-toggle::after{
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%; background: var(--paper);
+    transition: left .18s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .plat.on .plat-toggle{background: var(--ink);}
+  .plat.on .plat-toggle::after{left: 16px;}
+  .plat-fields{display: none; grid-template-columns: 1fr 1fr; gap: 8px;}
+  .plat.on .plat-fields{display: grid;}
+  .plat-fields .field label{font-size: 10px;}
+  .plat-fields .field input{padding: 8px 10px; font-size: 13px;}
+
+  /* DELIVERABLES */
+  .deliverables{display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px;}
+  .deliv{
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+    padding: 10px 14px; border: 1px solid var(--rule); border-radius: 10px;
+    background: var(--paper-card);
+    transition: all .12s;
+    cursor: pointer;
+    user-select: none;
+  }
+  .deliv:hover{border-color: var(--rule-strong);}
+  .deliv.on{border-color: var(--ink); background: var(--paper);}
+  .deliv input[type="checkbox"]{
+    appearance: none; -webkit-appearance: none;
+    width: 16px; height: 16px; border: 1.5px solid var(--rule-strong); border-radius: 4px;
+    cursor: pointer; margin: 0; position: relative;
+    transition: all .12s;
+  }
+  .deliv input[type="checkbox"]:checked{background: var(--ink); border-color: var(--ink);}
+  .deliv input[type="checkbox"]:checked::after{
+    content: ''; position: absolute; top: 2px; left: 4px;
+    width: 4px; height: 8px;
+    border: solid var(--paper); border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .deliv .label{font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em;}
+  .deliv .qty{
+    display: none; align-items: center; gap: 4px;
+  }
+  .deliv.on .qty{display: inline-flex;}
+  .deliv .qty button{
+    width: 22px; height: 22px; border: 1px solid var(--rule-strong); border-radius: 6px;
+    background: var(--paper); color: var(--ink); font-size: 13px; font-weight: 700;
+    cursor: pointer; padding: 0; font-family: var(--sans);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .deliv .qty button:hover{border-color: var(--ink); background: var(--ink); color: var(--paper);}
+  .deliv .qty input{
+    width: 32px; text-align: center; padding: 3px 4px; font-size: 13px; font-weight: 700;
+    background: transparent; border: 0; color: var(--ink);
+    -moz-appearance: textfield;
+  }
+  .deliv .qty input::-webkit-inner-spin-button,
+  .deliv .qty input::-webkit-outer-spin-button{-webkit-appearance:none;}
+
+  .subgroup-title{
+    font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--ink-3); margin: 18px 0 10px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .subgroup-title::after{content: ''; flex: 1; height: 1px; background: var(--rule);}
+  .subgroup-title:first-child{margin-top: 0;}
+
+  /* RESULT COL */
+  .result-col{
+    position: sticky; top: 96px;
+    align-self: start;
+  }
+  .result-card{
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    background: var(--paper);
+    padding: 24px 26px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    .result-card{box-shadow: 0 20px 60px rgba(0,0,0,0.5);}
+  }
+  :root[data-theme="dark"] .result-card{box-shadow: 0 20px 60px rgba(0,0,0,0.5);}
+
+  .result-head{
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 20px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+  }
+  .result-head h3{
+    font-size: 12px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    margin: 0; color: var(--ink);
+  }
+  .view-toggle{
+    display: inline-flex; padding: 3px; background: var(--paper-sunk); border-radius: 100px;
+    border: 1px solid var(--rule);
+  }
+  .view-toggle button{
+    background: transparent; border: 0; cursor: pointer; font-family: var(--sans);
+    font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    padding: 6px 12px; border-radius: 100px; color: var(--ink-2);
+    transition: all .12s;
+  }
+  .view-toggle button[aria-selected="true"]{background: var(--ink); color: var(--paper);}
+
+  .r-hero{
+    padding: 6px 0 20px; text-align: left;
+  }
+  .r-hero .label{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 6px;
+  }
+  .r-hero .big{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(36px, 5vw, 52px); line-height: 0.95;
+    letter-spacing: -0.03em; color: var(--ink);
+    display: flex; align-items: baseline; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .r-hero .big .currency{
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 0.55em; color: var(--gold); letter-spacing: 0;
+  }
+  .r-hero .rango{
+    display: inline-flex; align-items: baseline; gap: 8px;
+    margin-top: 12px;
+    font-size: 12px; font-weight: 700; letter-spacing: .06em;
+    color: var(--ink-2);
+  }
+  .r-hero .rango strong{color: var(--ink); font-weight: 800;}
+  .r-hero .rango em{font-family: var(--serif); font-style: italic; color: var(--gold);}
+
+  .r-prices{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .r-price{
+    padding: 12px 14px; border-radius: 10px; background: var(--paper-sunk);
+    border: 1px solid var(--rule);
+  }
+  .r-price.apertura{background: var(--gold-soft); border-color: var(--gold);}
+  .r-price.objetivo{background: var(--ink); color: var(--paper); border-color: var(--ink);}
+  .r-price .k{
+    font-size: 9.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+    opacity: 0.7; margin-bottom: 3px;
+  }
+  .r-price .v{font-size: 18px; font-weight: 800; letter-spacing: -0.02em;}
+  .r-price.internal-only{position: relative;}
+  .r-price.internal-only::after{
+    content: 'INTERNO'; position: absolute; top: 6px; right: 8px;
+    font-size: 7.5px; font-weight: 800; letter-spacing: .14em;
+    color: var(--danger); opacity: 0.7;
+  }
+
+  .r-badges{display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px;}
+  .r-badge{
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 10px; border-radius: 100px; background: var(--paper-sunk);
+    font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink); border: 1px solid var(--rule);
+  }
+  .r-badge .dot{width: 7px; height: 7px; border-radius: 50%; background: var(--gold);}
+  .r-badge.paquete{background: var(--ink); color: var(--paper); border-color: var(--ink);}
+  .r-badge.paquete .dot{background: var(--gold);}
+
+  .r-summary{
+    padding: 14px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  .r-summary .item .k{
+    font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 2px;
+  }
+  .r-summary .item .v{font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em;}
+
+  .r-breakdown{
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule);
+  }
+  .r-breakdown h4{
+    font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    margin: 0 0 12px; color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .r-breakdown h4 em{font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; color: var(--gold); letter-spacing: 0; font-size: 14px;}
+  .r-bd-list{
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 12.5px; font-weight: 500; color: var(--ink-2);
+    max-height: 260px; overflow-y: auto;
+    padding-right: 4px;
+  }
+  .r-bd-list .row{
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 4px 0;
+  }
+  .r-bd-list .row .k{color: var(--ink-2); flex: 1;}
+  .r-bd-list .row .k small{color: var(--ink-3); font-size: 10px; display: block; letter-spacing: 0.02em; text-transform: none; margin-top: 2px;}
+  .r-bd-list .row .v{color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;}
+  .r-bd-list .row.mult{color: var(--gold);}
+  .r-bd-list .row.mult .v{color: var(--gold);}
+  .r-bd-list .row.premium .v{color: var(--danger);}
+  .r-bd-list .row.total{
+    padding-top: 8px; margin-top: 6px; border-top: 1px dashed var(--rule);
+  }
+  .r-bd-list .row.total .k, .r-bd-list .row.total .v{color: var(--ink); font-weight: 800;}
+
+  .r-actions{
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--rule);
+  }
+  .btn{
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 16px; border-radius: 100px;
+    font-family: var(--sans); font-weight: 800; font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    text-decoration: none; cursor: pointer; border: 1.5px solid var(--ink);
+    background: transparent; color: var(--ink);
+    transition: all .12s; white-space: nowrap;
+  }
+  .btn:hover{background: var(--ink); color: var(--paper);}
+  .btn.primary{background: var(--ink); color: var(--paper);}
+  .btn.primary:hover{opacity: 0.85;}
+  .btn.gold{background: var(--gold); color: #1a1200; border-color: var(--gold);}
+  .btn.gold:hover{opacity: 0.9;}
+  .btn.ghost{border-color: var(--rule-strong); color: var(--ink);}
+  .btn.ghost:hover{border-color: var(--ink); color: var(--ink); background: transparent;}
+  .btn svg{width: 12px; height: 12px;}
+
+  /* PRESETS */
+  .presets{
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 0 0 20px;
+  }
+  .preset-btn{
+    padding: 8px 14px; border-radius: 100px;
+    font-family: var(--sans); font-size: 10.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    background: transparent; border: 1.5px solid var(--rule-strong);
+    color: var(--ink); cursor: pointer;
+    transition: all .12s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .preset-btn:hover{border-color: var(--ink); background: var(--ink); color: var(--paper);}
+  .preset-btn:hover .num{background: var(--paper); color: var(--ink);}
+  .preset-btn .num{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; border-radius: 50%; background: var(--gold); color: #1a1200;
+    font-size: 9px; font-weight: 800;
+    transition: all .12s;
+  }
+
+  /* MODE 2 (INVERSE) */
+  .inverse-shell{
+    max-width: 780px; margin: 0 auto;
+    padding: 24px 0;
+  }
+  .inverse-input{
+    text-align: center; padding: 32px;
+    border: 1px solid var(--rule-strong); border-radius: 20px;
+    background: var(--paper);
+    margin-bottom: 24px;
+  }
+  .inverse-input .k{
+    font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 12px;
+  }
+  .inverse-input .amt-input{
+    display: inline-flex; align-items: baseline; gap: 12px;
+    background: var(--paper-sunk); border: 2px solid var(--ink); border-radius: 100px;
+    padding: 14px 32px;
+  }
+  .inverse-input .amt-input .currency{
+    font-family: var(--serif); font-style: italic; color: var(--gold);
+    font-size: 32px; font-weight: 400;
+  }
+  .inverse-input .amt-input input{
+    background: transparent; border: 0; outline: none;
+    font-family: var(--sans); font-weight: 800; font-size: clamp(32px, 5.5vw, 48px);
+    letter-spacing: -0.03em; color: var(--ink);
+    width: 220px; max-width: 100%; text-align: left;
+    -moz-appearance: textfield;
+  }
+  .inverse-input .amt-input input::-webkit-inner-spin-button,
+  .inverse-input .amt-input input::-webkit-outer-spin-button{-webkit-appearance:none;}
+  .inverse-input .amt-input .mxn{font-size: 14px; font-weight: 700; color: var(--ink-3); letter-spacing: .12em; text-transform: uppercase;}
+  .inverse-output{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  @media (max-width: 700px){.inverse-output{grid-template-columns: 1fr;}}
+  .inverse-box{
+    padding: 22px 24px; border-radius: 16px;
+    border: 1px solid var(--rule-strong); background: var(--paper);
+  }
+  .inverse-box.incluye{border-color: var(--success); background: rgba(107,168,56,0.05);}
+  .inverse-box.no-incluye{border-color: var(--danger); background: rgba(217,74,61,0.05);}
+  .inverse-box h4{
+    font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .inverse-box.incluye h4{color: var(--success);}
+  .inverse-box.no-incluye h4{color: var(--danger);}
+  .inverse-box ul{margin: 0; padding-left: 20px; font-size: 14px; color: var(--ink); line-height: 1.7;}
+  .inverse-box li{margin-bottom: 4px;}
+  .inverse-warning{
+    background: var(--gold-soft); border-radius: 12px; padding: 18px 22px;
+    margin-top: 20px; font-family: var(--serif); font-style: italic;
+    font-size: 15px; color: #5a3f00; line-height: 1.5;
+    border-left: 3px solid var(--gold);
+  }
+  :root[data-theme="dark"] .inverse-warning{color: var(--gold);}
+  @media (prefers-color-scheme: dark){.inverse-warning{color: var(--gold);}}
+
+  /* MODE 3 (STRATEGY) */
+  .strategy-shell{
+    max-width: 900px; margin: 0 auto;
+    padding: 24px 0;
+  }
+  .strategy-mix{
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin: 24px 0;
+  }
+  .strat-card{
+    padding: 20px 22px; border-radius: 16px; border: 1px solid var(--rule-strong);
+    background: var(--paper);
+  }
+  .strat-card .tier{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 6px;
+  }
+  .strat-card .amt{
+    font-family: var(--sans); font-weight: 800;
+    font-size: 22px; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .strat-card .count{
+    font-size: 12px; color: var(--ink-2); margin-top: 8px;
+    display: inline-flex; align-items: baseline; gap: 4px;
+  }
+  .strat-card .count em{font-family: var(--serif); font-style: italic; color: var(--gold); font-size: 22px; font-weight: 400;}
+  .strat-card .subtotal{
+    margin-top: 8px; font-size: 11px; font-weight: 700; color: var(--ink-2); letter-spacing: .06em;
+  }
+  .strat-total{
+    padding: 24px 28px; border-radius: 16px;
+    background: var(--ink); color: var(--paper);
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .strat-total .k{font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; opacity: 0.7;}
+  .strat-total .v{font-size: 32px; font-weight: 800; letter-spacing: -0.03em;}
+  .strat-total .v .currency{font-family: var(--serif); font-style: italic; color: var(--gold); font-weight: 400; font-size: 0.55em;}
+
+  /* PROPOSAL PRINT PAGE — carta cálida */
+  #print-page{display: none;}
+
+  @media print{
+    @page{margin: 18mm 16mm; size: A4;}
+    body{background: white !important; color: black !important; font-size: 11pt;}
+    :root{
+      --paper: white; --paper-sunk: #fafafa; --paper-card: white;
+      --ink: black; --ink-2: #333; --ink-3: #888; --rule: #ddd;
+    }
+    .site-header, .hero, .modes, .form-col, .result-col,
+    .r-actions, .presets, .site-footer,
+    .btn, .theme-toggle, .site-nav, .print-hide{display: none !important;}
+    .wrap{max-width: 100%; padding: 0;}
+    #print-page{display: block !important;}
+    .view{display: none !important;}
+  }
+
+  .letter-header{
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 18px; margin-bottom: 24px;
+    border-bottom: 1.5px solid black;
+  }
+  .letter-header img{height: 36px;}
+  .letter-header .doc-meta{
+    font-size: 8.5pt; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    color: #555; text-align: right;
+  }
+  .letter-header .doc-meta strong{display: block; color: black; font-weight: 800; letter-spacing: .18em; font-size: 9pt;}
+
+  .letter-recipient{
+    font-size: 9.5pt; color: #555; margin: 0 0 6px;
+    letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+  }
+  .letter-to{
+    font-family: var(--serif); font-style: italic; font-size: 18pt;
+    color: black; margin: 0 0 24px; font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .letter-title{
+    font-family: var(--sans); font-weight: 800;
+    font-size: 32pt; letter-spacing: -0.035em; line-height: 0.98;
+    margin: 0 0 12px; color: black;
+    max-width: 22ch;
+  }
+  .letter-title em{font-family: var(--serif); font-style: italic; color: #c8961a; font-weight: 400;}
+
+  .letter-lead{
+    font-family: var(--serif); font-size: 12.5pt; line-height: 1.6;
+    color: #333; margin: 0 0 20px; max-width: 65ch;
+  }
+  .letter-lead strong{font-family: var(--sans); color: black; font-weight: 700; font-style: normal;}
+
+  .letter-numbers{
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    padding: 16px 0; margin-bottom: 22px;
+    border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;
+  }
+  .letter-numbers .n{text-align: center;}
+  .letter-numbers .n .v{
+    font-family: var(--sans); font-weight: 800;
+    font-size: 20pt; letter-spacing: -0.03em; color: black; line-height: 1;
+    display: block;
+  }
+  .letter-numbers .n .k{
+    font-size: 8pt; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+    color: #888; margin-top: 6px; display: block;
+  }
+  .letter-numbers .n .v em{font-family: var(--serif); font-style: italic; color: #c8961a; font-weight: 400; font-size: 0.7em;}
+
+  .letter-section{margin-bottom: 22px;}
+  .letter-section h2{
+    font-family: var(--sans); font-size: 10pt; font-weight: 800;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: #c8961a; margin: 0 0 12px;
+  }
+  .letter-section p{font-size: 11pt; line-height: 1.6; color: #333; margin: 0 0 10px; max-width: 65ch;}
+  .letter-section p em{font-family: var(--serif); font-style: italic;}
+
+  /* Cifras de impacto: refuerzo visual */
+  .letter-impact{
+    background: #fafafa; border: 1px solid #eee; border-radius: 10px;
+    padding: 18px 22px 14px; margin-bottom: 26px;
+  }
+  .letter-impact .letter-numbers{
+    border: 0; padding: 4px 0 0; margin: 0;
+  }
+  .letter-impact h2{color: #c8961a; margin: 0 0 10px;}
+
+  /* Socio de IMPACTO — bloque destacado con QR */
+  .letter-socio{
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 22px; align-items: center;
+    padding: 20px 24px; margin: 20px 0;
+    border: 1.5px solid #c8961a; border-radius: 10px;
+    background: rgba(200,150,26,0.06);
+    page-break-inside: avoid;
+  }
+  .socio-content h2{
+    font-family: var(--sans); font-size: 10pt; font-weight: 800;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: #c8961a; margin: 0 0 8px;
+    display: flex; align-items: baseline; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .socio-content h2 em{
+    font-family: var(--serif); font-style: italic; text-transform: none;
+    letter-spacing: -0.01em; color: black; font-weight: 400;
+    font-size: 15pt;
+  }
+  .socio-content p{
+    font-size: 10.5pt; line-height: 1.5; color: #333; margin: 0 0 10px;
+  }
+  .socio-content ul.socio-ways{
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .socio-content ul.socio-ways li{
+    font-size: 10pt; color: #333; padding-left: 18px; position: relative;
+    line-height: 1.5;
+  }
+  .socio-content ul.socio-ways li::before{
+    content: '·'; color: #c8961a;
+    font-family: var(--serif); font-style: italic;
+    font-size: 20pt; position: absolute; left: 0; top: -6px;
+  }
+  .socio-content ul.socio-ways li strong{color: black; font-weight: 700;}
+  .socio-qr{
+    display: flex; flex-direction: column; align-items: center;
+    width: 148px; flex-shrink: 0;
+  }
+  .socio-qr img{
+    width: 140px; height: 140px; display: block;
+    padding: 4px; background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 0;
+  }
+  .socio-qr .qr-caption{
+    font-size: 8pt; color: #555; margin-top: 10px;
+    letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+    line-height: 1.4; text-align: center; width: 100%;
+  }
+  .socio-qr .qr-caption small{
+    display: block; margin-top: 3px; font-size: 7.5pt;
+    letter-spacing: 0; text-transform: none; color: #888; font-weight: 400;
+    font-family: var(--mono);
+    word-break: break-all;
+  }
+  @media (max-width: 500px){
+    .letter-socio{grid-template-columns: 1fr;}
+    .socio-qr{margin: 0 auto;}
+  }
+
+  .letter-benefits{
+    list-style: none; padding: 0; margin: 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px;
+  }
+  .letter-benefits li{
+    padding: 8px 0; border-bottom: 1px dotted #ddd;
+    font-size: 10.5pt; color: #333;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .letter-benefits li::before{
+    content: '·'; color: #c8961a; font-family: var(--serif); font-style: italic; font-size: 16pt; line-height: 0;
+  }
+  .letter-benefits li .qty{color: #c8961a; font-family: var(--serif); font-style: italic; font-weight: 400; margin-left: auto;}
+
+  .letter-invest{
+    background: black; color: white;
+    padding: 24px 28px; border-radius: 8px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 20px; margin: 20px 0 22px;
+  }
+  .letter-invest .k{
+    font-size: 9pt; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .letter-invest .lbl{font-size: 9pt; opacity: 0.7; margin-top: 4px; letter-spacing: .1em;}
+  .letter-invest .v{font-size: 32pt; font-weight: 800; letter-spacing: -0.03em;}
+  .letter-invest .v .currency{font-family: var(--serif); font-style: italic; color: #c8961a; font-weight: 400; font-size: 0.55em;}
+  .letter-invest .v .mxn{font-size: 11pt; font-weight: 400; opacity: 0.7; margin-left: 4px;}
+
+  .letter-lead, .letter-section p, .letter-close, .socio-content p{
+    text-align: justify;
+    text-justify: inter-word;
+    -webkit-hyphens: none; hyphens: none;
+    word-spacing: normal;
+    orphans: 3; widows: 3;
+  }
+  .letter-section{
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  /* Bloque hero de cifras: "Personas impactadas" destacado */
+  .letter-hero-number{
+    text-align: center;
+    padding: 8px 0 14px;
+    border-bottom: 1px dotted #ddd;
+    margin-bottom: 14px;
+  }
+  .letter-hero-number .hero-v{
+    font-family: var(--sans); font-weight: 800;
+    font-size: 44pt; letter-spacing: -0.04em; color: black;
+    line-height: 1;
+  }
+  .letter-hero-number .hero-k{
+    font-size: 9pt; font-weight: 800; letter-spacing: .28em; text-transform: uppercase;
+    color: #c8961a; margin-top: 8px;
+  }
+  .letter-numbers.letter-numbers-sub{
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    padding: 6px 0 4px; margin: 0;
+    border-top: 0; border-bottom: 0;
+  }
+  .letter-numbers.letter-numbers-sub .v{font-size: 16pt;}
+  .letter-numbers.letter-numbers-sub .k{font-size: 7.5pt;}
+
+  .letter-close{
+    font-family: var(--serif); font-size: 11.5pt; line-height: 1.7;
+    color: #333; margin: 22px 0 12px; max-width: 65ch;
+  }
+  .letter-close em{color: #c8961a;}
+
+  .letter-sign{
+    margin-top: 28px; padding-top: 20px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+  }
+  .letter-sign .sign-preamble{
+    font-family: var(--serif); font-style: italic; font-size: 13pt; color: #333;
+    margin: 0 0 24px; font-weight: 400;
+    text-align: center;
+  }
+  .letter-sign .sign-fullname{
+    font-family: var(--sans); font-weight: 700;
+    font-size: 13pt; color: black;
+    margin: 0 0 3px; letter-spacing: -0.005em;
+    line-height: 1.2;
+  }
+  .letter-sign .sign-position{
+    font-family: var(--sans); font-weight: 500;
+    font-size: 11pt; color: #333;
+    margin: 0 0 10px;
+    line-height: 1.2;
+  }
+  .letter-sign .sign-representation{
+    font-family: var(--sans); font-weight: 800;
+    font-size: 10pt; color: black;
+    letter-spacing: .22em; text-transform: uppercase;
+    margin: 0;
+  }
+  .letter-sign .sign-representation .sep{
+    color: #c8961a; margin: 0 8px; font-weight: 400;
+  }
+
+  .letter-footer{
+    margin-top: 24px;
+    font-size: 8.5pt; color: #888; text-align: center; line-height: 1.6;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .letter-footer strong{color: black;}
+  /* Mantener la firma y el footer juntos, saltando a la siguiente página si no caben */
+  .letter-sign{
+    page-break-inside: avoid;
+    break-inside: avoid;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .letter-socio, .letter-invest, .letter-impact{
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* FOOTER — igual al del Mural de Donantes */
+  .site-footer{
+    margin-top: 96px; padding: 0 0 24px;
+    border-top: 2px solid var(--ink);
+  }
+  .footer-top-grid{
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 48px; padding: 44px 0 48px;
+  }
+  .footer-brand-col{min-width: 0;}
+  .footer-brand-col .footer-logo{display: inline-block; margin: 0;}
+  .footer-brand-col .footer-logo .logo-img{height: 44px;}
+  .footer-heading-big{
+    font-family: var(--sans);
+    font-size: clamp(22px, 2.4vw, 30px);
+    font-weight: 800; letter-spacing: -0.025em; line-height: 1.12;
+    margin: 28px 0 18px; color: var(--ink); max-width: 20ch;
+  }
+  .footer-desc{
+    font-size: 14px; line-height: 1.6; color: var(--ink-2);
+    max-width: 44ch; margin: 0 0 22px;
+  }
+  .footer-badge{
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-2); border: 1px solid var(--rule-strong);
+    padding: 8px 14px; border-radius: 100px;
+  }
+  .footer-badge .dot{width: 8px; height: 8px; border-radius: 50%; background: var(--success); display: inline-block;}
+  .footer-col-heading{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-2); margin: 0 0 20px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+  }
+  .footer-nav{list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px;}
+  .footer-nav a{
+    color: var(--ink); font-size: 15px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color .12s, transform .12s;
+  }
+  .footer-nav a:hover{color: var(--ink-2);}
+  .footer-nav a .arrow{font-size: 12px; color: var(--ink-3); transition: transform .12s;}
+  .footer-nav a:hover .arrow{transform: translate(2px, -2px);}
+  .newsletter-form{display: flex; gap: 8px; flex-wrap: wrap;}
+  .newsletter-form input[type="email"]{
+    flex: 1 1 160px; min-width: 0;
+    background: var(--paper-sunk); border: 1px solid var(--rule);
+    color: var(--ink); padding: 11px 14px; border-radius: 8px;
+    font-family: var(--sans); font-size: 14px; outline: none;
+    transition: border-color .12s, background .12s;
+  }
+  .newsletter-form input[type="email"]::placeholder{color: var(--ink-3);}
+  .newsletter-form input[type="email"]:focus{border-color: var(--ink); background: var(--paper);}
+  .newsletter-form button{
+    background: var(--ink); color: var(--paper); border: 0;
+    padding: 11px 18px; border-radius: 8px;
+    font-family: var(--sans); font-weight: 800; font-size: 12px; letter-spacing: .04em;
+    cursor: pointer; transition: opacity .12s;
+  }
+  .newsletter-form button:hover{opacity: 0.85;}
+  .footer-social-row{
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 20px;
+    padding: 28px 0; border-top: 1px solid var(--rule);
+  }
+  .footer-followus{display: flex; flex-direction: column; gap: 4px;}
+  .footer-followus .label{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .footer-followus .handle{
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); text-decoration: none;
+  }
+  .footer-followus .handle:hover{color: var(--ink-2);}
+  .footer-socials{display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap;}
+  .footer-social{
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid var(--rule-strong); background: transparent;
+    color: var(--ink); display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s, transform .12s, border-color .15s;
+    text-decoration: none;
+  }
+  .footer-social:hover{
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .footer-social svg{width: 16px; height: 16px;}
+  .footer-bottom{
+    border-top: 1px solid var(--rule); padding-top: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px 20px; flex-wrap: wrap; color: var(--ink-3); font-size: 11.5px;
+  }
+  .footer-bottom strong{color: var(--ink); font-weight: 900;}
+  .footer-legal{display: flex; gap: 14px; flex-wrap: wrap; align-items: center;}
+  .footer-legal a{
+    color: var(--ink-2); text-decoration: none; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase; font-size: 10.5px;
+  }
+  .footer-legal a:hover{color: var(--ink);}
+  .footer-legal .sep{color: var(--ink-3);}
+  @media (max-width: 720px){
+    .footer-top-grid{grid-template-columns: 1fr; gap: 32px; padding: 32px 0 32px;}
+    .footer-brand-col .footer-logo .logo-img{height: 36px;}
+    .footer-social-row{grid-template-columns: 1fr; padding: 24px 0;}
+    .footer-bottom{justify-content: flex-start;}
+  }
+
+  /* NOTIFICATION */
+  .toast{
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper);
+    padding: 12px 22px; border-radius: 100px;
+    font-family: var(--sans); font-weight: 700; font-size: 12px; letter-spacing: .1em;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    z-index: 200;
+  }
+  .toast.show{opacity: 1; transform: translateX(-50%) translateY(-6px);}
+
+  /* GUÍA INTERNA */
+  .guia-shell{
+    max-width: 820px; margin: 0 auto;
+    padding: 12px 0 40px;
+  }
+  .guia-intro{
+    padding: 20px 0 32px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 36px;
+  }
+  .guia-kicker{
+    display:inline-block;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--gold); padding: 6px 14px;
+    background: var(--gold-soft); border-radius: 100px;
+    margin-bottom: 20px;
+  }
+  h1.guia-title{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 0.98; letter-spacing: -0.035em; text-wrap: balance;
+    margin: 0 0 12px; color: var(--ink);
+    max-width: 20ch;
+  }
+  h1.guia-title em{font-family: var(--serif); font-style: italic; color: var(--gold); font-weight: 400;}
+  h1.guia-title .guia-title-sub{
+    display:block; color: var(--ink-3); font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 32px); margin-top: 4px; letter-spacing: -0.025em;
+  }
+  .guia-lead{
+    font-size: 16px; line-height: 1.6; color: var(--ink-2);
+    margin: 0; max-width: 62ch;
+  }
+  .guia-lead strong{color: var(--ink); font-weight: 700;}
+  .guia-lead em{font-family: var(--serif); font-style: italic; color: var(--ink);}
+
+  .guia-toc{
+    padding: 20px 22px; border-radius: 12px;
+    background: var(--paper-sunk); border: 1px solid var(--rule);
+    margin-bottom: 40px;
+  }
+  .guia-toc .toc-label{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-3); display: block; margin-bottom: 12px;
+  }
+  .guia-toc ol{
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 24px; margin: 0; padding-left: 22px;
+    color: var(--ink);
+  }
+  .guia-toc a{
+    color: var(--ink); text-decoration: none; font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid transparent;
+    transition: all .12s;
+  }
+  .guia-toc a:hover{color: var(--gold); border-color: var(--gold);}
+
+  .guia-step{
+    display: grid; grid-template-columns: 80px 1fr; gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+    scroll-margin-top: 96px;
+  }
+  .guia-step:last-of-type{border-bottom: 0;}
+  .guia-step.gold-frame{
+    background: var(--gold-soft);
+    border: 1.5px solid var(--gold);
+    border-radius: 14px;
+    padding: 28px 26px;
+    margin: 24px 0;
+  }
+  .step-num{
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 48px; letter-spacing: -0.02em; line-height: 1;
+    color: var(--gold);
+  }
+  .step-body h2{
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.025em;
+    line-height: 1.15; margin: 0 0 14px; color: var(--ink);
+  }
+  .step-body p{
+    font-size: 15px; line-height: 1.6; color: var(--ink-2); margin: 0 0 14px;
+    max-width: 62ch;
+  }
+  .step-body p strong{color: var(--ink); font-weight: 700;}
+  .step-body p em{font-family: var(--serif); font-style: italic; color: var(--ink);}
+  .step-body ul.rules,
+  .step-body ol.steps{
+    margin: 0 0 14px; padding-left: 22px;
+    color: var(--ink-2); line-height: 1.6;
+  }
+  .step-body ul.rules li,
+  .step-body ol.steps li{
+    margin-bottom: 8px; font-size: 15px;
+  }
+  .step-body ul.rules li strong,
+  .step-body ol.steps li strong{color: var(--ink); font-weight: 700;}
+  .step-body ul.rules li em,
+  .step-body ol.steps li em{font-family: var(--serif); font-style: italic; color: var(--ink);}
+  .step-body ul.rules.numbered{
+    list-style: none; padding: 0;
+    counter-reset: rule;
+  }
+  .step-body ul.rules.numbered li{
+    counter-increment: rule;
+    padding-left: 36px; position: relative;
+  }
+  .step-body ul.rules.numbered li::before{
+    content: counter(rule, decimal-leading-zero);
+    position: absolute; left: 0; top: 0;
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    color: var(--gold); font-size: 15px;
+  }
+  .step-body table.scenarios{
+    width: 100%; border-collapse: collapse; margin: 8px 0 12px;
+    font-size: 14px;
+  }
+  .step-body table.scenarios th,
+  .step-body table.scenarios td{
+    padding: 12px 14px; border-bottom: 1px solid var(--rule);
+    text-align: left; vertical-align: top;
+  }
+  .step-body table.scenarios th{
+    font-size: 10.5px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--ink-3); border-bottom: 1.5px solid var(--rule-strong);
+  }
+  .step-body table.scenarios td:first-child{
+    width: 32%; color: var(--ink); font-weight: 500;
+  }
+  .step-body table.scenarios td em{
+    font-family: var(--serif); font-style: italic; color: var(--ink);
+  }
+  .step-body table.scenarios td:last-child{color: var(--ink-2); line-height: 1.5;}
+  .step-body table.scenarios td:last-child strong{color: var(--ink); font-weight: 700;}
+  .step-body .callout{
+    border-left: 3px solid var(--gold); background: var(--paper-sunk);
+    padding: 14px 18px; margin: 14px 0;
+    font-size: 14.5px; line-height: 1.5; color: var(--ink-2);
+    border-radius: 0 8px 8px 0;
+  }
+  .step-body .callout strong{color: var(--ink); font-weight: 700;}
+  .step-body .callout.gold{
+    border-left-color: var(--gold); background: var(--gold-soft);
+  }
+  .step-body .callout.danger{
+    border-left-color: var(--danger);
+    background: rgba(217,74,61,0.08);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .step-body .callout.danger strong{color: var(--danger);}
+  .step-body code{
+    font-family: var(--mono); background: var(--paper-sunk); padding: 2px 6px;
+    border-radius: 4px; font-size: 12.5px; color: var(--ink); border: 1px solid var(--rule);
+  }
+  .step-body .faq{
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .step-body .faq-item h3{
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: 18px; color: var(--ink); margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .step-body .faq-item p{margin-bottom: 0;}
+
+  .guia-close{
+    margin-top: 32px; padding: 22px 24px;
+    border: 1px solid var(--rule-strong); border-radius: 12px;
+    background: var(--paper-sunk);
+    font-family: var(--serif); font-size: 15.5px; line-height: 1.55;
+    color: var(--ink-2); font-style: italic;
+    text-align: center;
+  }
+  .guia-close strong{
+    font-family: var(--sans); font-style: normal; font-weight: 700; color: var(--ink);
+  }
+
+  @media (max-width: 640px){
+    .guia-step{grid-template-columns: 60px 1fr; gap: 16px; padding: 24px 0;}
+    .guia-step.gold-frame{padding: 20px 18px;}
+    .step-num{font-size: 36px;}
+    .step-body table.scenarios th,
+    .step-body table.scenarios td{padding: 10px 8px; font-size: 13px;}
+  }
+
+  /* MISC */
+  .sponsor-view-only{display: none;}
+  .result-card[data-view="sponsor"] .internal-only{display: none;}
+  .result-card[data-view="sponsor"] .sponsor-view-only{display: block;}
+  .result-card[data-view="sponsor"] h4 .sponsor-view-only,
+  .result-card[data-view="sponsor"] h3 .sponsor-view-only,
+  .result-card[data-view="sponsor"] span.sponsor-view-only{display: inline;}
+  /* Vista Marca: oculta filas internas del desglose y el detalle "$X × Y" */
+  .result-card[data-view="sponsor"] .r-bd-list .row.mult,
+  .result-card[data-view="sponsor"] .r-bd-list .row.premium,
+  .result-card[data-view="sponsor"] .r-bd-list .row.total{display: none;}
+  .result-card[data-view="sponsor"] .r-bd-list .row .k small{display: none;}
+
+  .callout{
+    background: var(--paper-sunk); border-left: 3px solid var(--gold);
+    padding: 12px 16px; margin: 0 0 18px;
+    font-size: 13px; color: var(--ink-2); line-height: 1.5;
+    border-radius: 0 8px 8px 0;
+  }
+  .callout strong{color: var(--ink); font-weight: 700;}
+
+  /* Firma preview */
+  .firma-preview-box{
+    background: var(--paper-sunk); border: 1px dashed var(--rule-strong);
+    border-radius: 8px; padding: 14px 18px;
+    font-family: var(--sans); font-weight: 800;
+    font-size: 15px; color: var(--ink);
+    letter-spacing: .18em; text-transform: uppercase;
+    text-align: center;
+  }
+  .firma-preview-box .sep{color: var(--gold); margin: 0 8px; font-weight: 400;}
+  .firma-preview-box .placeholder{
+    color: var(--ink-3); font-weight: 400; letter-spacing: .1em;
+  }
+  .firma-preview-box .preview-nacional{
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    text-transform: none; letter-spacing: -0.01em;
+    font-size: 20px; color: var(--ink);
+  }
+  .letter-sign #sign_rep.is-nacional{
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    text-transform: none; letter-spacing: -0.01em;
+    font-size: 15pt; display: block; margin-top: 4px;
+  }
+
+  @media (max-width: 720px){
+    .wrap{padding: 0 16px 60px;}
+    .site-header{padding: 14px 0;}
+    .header-pill{display: none;}
+    .form-section{padding: 20px 20px;}
+    .modes{padding: 4px; gap: 4px;}
+    .mode-tab{padding: 10px 14px; font-size: 10.5px;}
+    .letter-numbers{grid-template-columns: 1fr 1fr;}
+    .letter-benefits{grid-template-columns: 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="site-header print-hide">
+    <a class="logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO">
+      <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO">
+      <img class="logo-img dark-only"  src="logos/impacto-horizontal-white.png" alt="IMPACTO">
+    </a>
+    <nav class="site-nav">
+      <span class="header-pill">Uso interno · IMPACTO</span>
+      <a class="nav-link" href="directorio.html">Directorio</a>
+      <a class="nav-link" href="mural-donantes.html">Mural</a>
+      <a class="nav-link primary" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">Sitio oficial</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">Auto</button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero print-hide">
+    <span class="brand-mark">
+      <span class="brand-dots">
+        <span style="background:var(--noroeste)"></span>
+        <span style="background:var(--noreste)"></span>
+        <span style="background:var(--occidente)"></span>
+        <span style="background:var(--centro)"></span>
+        <span style="background:var(--sureste)"></span>
+      </span>
+      Calculadora de Patrocinios · Herramienta interna
+    </span>
+
+    <h1 class="hero-title">
+      Cotiza <em>con base</em>
+      <span class="subline">en el alcance real de IMPACTO.</span>
+    </h1>
+
+    <p class="hero-copy">
+      Empieza por los datos de tus cuentas (seguidores y alcance promedio). Con eso, la calculadora usa la <strong>audiencia efectiva</strong> — pondera más al alcance real que a los seguidores totales — y calcula cuánto puede pedirse por cada entregable. <em>Sin inventar cifras.</em>
+    </p>
+
+    <blockquote class="hero-quote">
+      No estamos vendiendo publicidad. Estamos invitando a una marca a sumarse a un movimiento que crea liderazgo juvenil en México. Cada patrocinio se convierte en participación real.
+      <strong>— Principio operativo</strong>
+    </blockquote>
+
+    <div class="presets" role="group" aria-label="Casos preconfigurados">
+      <button class="preset-btn" data-preset="municipal"><span class="num">1</span>Actividad Municipal</button>
+      <button class="preset-btn" data-preset="estatal"><span class="num">2</span>Actividad Estatal</button>
+      <button class="preset-btn" data-preset="digital"><span class="num">3</span>Solo digital</button>
+      <button class="preset-btn" data-preset="nacional"><span class="num">4</span>Nacional completo</button>
+      <button class="preset-btn" data-preset="reset">↺ Limpiar</button>
+    </div>
+  </section>
+
+  <!-- MODE TABS -->
+  <div class="modes print-hide" role="tablist" aria-label="Modos de cálculo">
+    <button class="mode-tab" role="tab" aria-selected="true" data-mode="cotizar"><span class="num">1</span>Cotizar</button>
+    <button class="mode-tab" role="tab" aria-selected="false" data-mode="ofrecer"><span class="num">2</span>Ofrecer con $X</button>
+    <button class="mode-tab" role="tab" aria-selected="false" data-mode="estrategia"><span class="num">3</span>Meta de recaudación</button>
+    <button class="mode-tab" role="tab" aria-selected="false" data-mode="guia"><span class="num">G</span>Guía interna</button>
+  </div>
+
+  <!-- ================= MODE 1: COTIZAR ================= -->
+  <section id="view-cotizar" class="view active" aria-labelledby="mode1-title">
+    <h2 class="sr-only" id="mode1-title">Cotizar un patrocinio</h2>
+
+    <div class="calc-grid">
+      <!-- FORM COLUMN -->
+      <div class="form-col">
+
+        <!-- SECTION 1: CUENTAS Y ALCANCE (PRIMERO) -->
+        <section class="form-section">
+          <div class="section-title">
+            <h3><span class="num">01</span>Cuentas y alcance</h3>
+          </div>
+          <p class="section-desc">
+            De aquí sale el precio. <em>Suma todas las cuentas activas para el patrocinio</em> — nacional + estatales que vayan a publicar.
+          </p>
+          <div class="callout">
+            <strong>Audiencia efectiva</strong> = 30% de seguidores + 70% del alcance real, capado a 2× seguidores para no inflar cuando un video viraliza. Si solo tienes uno de los dos, usa ese. Métricas reales dan cotizaciones defendibles.
+          </div>
+
+          <div class="platforms">
+            <!-- IG -->
+            <div class="plat" data-plat="ig">
+              <div class="plat-head">
+                <span class="plat-name">Instagram</span>
+                <button class="plat-toggle" type="button" aria-label="Activar Instagram"></button>
+              </div>
+              <div class="plat-fields">
+                <div class="field"><label>Seguidores totales</label><input type="number" min="0" data-k="seguidores" placeholder="0"></div>
+                <div class="field"><label>Alcance prom. post</label><input type="number" min="0" data-k="alcance_post" placeholder="0"></div>
+                <div class="field"><label>Alcance prom. story</label><input type="number" min="0" data-k="alcance_story" placeholder="0"></div>
+                <div class="field"><label>Views prom. Reel</label><input type="number" min="0" data-k="views_reel" placeholder="0"></div>
+              </div>
+            </div>
+            <!-- TT -->
+            <div class="plat" data-plat="tt">
+              <div class="plat-head">
+                <span class="plat-name">TikTok</span>
+                <button class="plat-toggle" type="button" aria-label="Activar TikTok"></button>
+              </div>
+              <div class="plat-fields">
+                <div class="field"><label>Seguidores</label><input type="number" min="0" data-k="seguidores" placeholder="0"></div>
+                <div class="field"><label>Views prom. video</label><input type="number" min="0" data-k="views" placeholder="0"></div>
+              </div>
+            </div>
+            <!-- FB -->
+            <div class="plat" data-plat="fb">
+              <div class="plat-head">
+                <span class="plat-name">Facebook</span>
+                <button class="plat-toggle" type="button" aria-label="Activar Facebook"></button>
+              </div>
+              <div class="plat-fields">
+                <div class="field"><label>Seguidores</label><input type="number" min="0" data-k="seguidores" placeholder="0"></div>
+                <div class="field"><label>Alcance prom.</label><input type="number" min="0" data-k="alcance" placeholder="0"></div>
+              </div>
+            </div>
+            <!-- YT -->
+            <div class="plat" data-plat="yt">
+              <div class="plat-head">
+                <span class="plat-name">YouTube</span>
+                <button class="plat-toggle" type="button" aria-label="Activar YouTube"></button>
+              </div>
+              <div class="plat-fields">
+                <div class="field"><label>Suscriptores</label><input type="number" min="0" data-k="seguidores" placeholder="0"></div>
+                <div class="field"><label>Views prom. video</label><input type="number" min="0" data-k="views" placeholder="0"></div>
+              </div>
+            </div>
+            <!-- LI -->
+            <div class="plat" data-plat="li">
+              <div class="plat-head">
+                <span class="plat-name">LinkedIn</span>
+                <button class="plat-toggle" type="button" aria-label="Activar LinkedIn"></button>
+              </div>
+              <div class="plat-fields">
+                <div class="field"><label>Seguidores</label><input type="number" min="0" data-k="seguidores" placeholder="0"></div>
+                <div class="field"><label>Alcance prom.</label><input type="number" min="0" data-k="alcance" placeholder="0"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: INFORMACIÓN -->
+        <section class="form-section">
+          <div class="section-title">
+            <h3><span class="num">02</span>Información del patrocinio</h3>
+          </div>
+          <p class="section-desc">Contexto de la oportunidad — aparece en la propuesta impresa.</p>
+
+          <div class="field-grid">
+            <div class="field full">
+              <label>Empresa / patrocinador</label>
+              <input type="text" id="in_empresa" placeholder="Ej. Empresa XYZ">
+            </div>
+            <div class="field">
+              <label>Giro</label>
+              <input type="text" id="in_giro" placeholder="Ej. Retail, Educación…">
+            </div>
+            <div class="field">
+              <label>Alcance geográfico</label>
+              <select id="in_alcance">
+                <option value="local">Local</option>
+                <option value="estatal" selected>Estatal</option>
+                <option value="regional">Regional</option>
+                <option value="nacional">Nacional</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Nombre del proyecto</label>
+              <input type="text" id="in_proyecto" placeholder="Ej. Cumbre Estatal IMPACTO">
+            </div>
+            <div class="field">
+              <label>Duración (meses)</label>
+              <input type="number" id="in_duracion" min="0" step="0.5" value="1">
+            </div>
+            <div class="field">
+              <label>Tipo</label>
+              <select id="in_tipo">
+                <option value="economico">Económico</option>
+                <option value="especie">En especie</option>
+                <option value="mixto">Mixto</option>
+                <option value="evento">De evento</option>
+                <option value="campana">De campaña</option>
+                <option value="alianza">Alianza estratégica</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="subgroup-title">Firma — quién envía la propuesta</div>
+          <p class="section-desc" style="margin-top: -4px;">Este bloque aparece al pie de la carta impresa. <em>El sistema arma la línea de representación por ti — solo elige el nivel y el estado.</em></p>
+          <div class="field-grid">
+            <div class="field full">
+              <label>Nombre completo del representante</label>
+              <input type="text" id="in_firma_nombre" placeholder="Ej. Juan Pérez López">
+            </div>
+            <div class="field">
+              <label>Cargo</label>
+              <input type="text" id="in_firma_cargo" placeholder="Ej. Presidente Estatal">
+            </div>
+            <div class="field">
+              <label>Nivel de representación</label>
+              <select id="in_firma_nivel">
+                <option value="">— Selecciona —</option>
+                <option value="municipal">Representación Municipal</option>
+                <option value="estatal">Representación Estatal</option>
+                <option value="nacional">Representación Nacional</option>
+              </select>
+            </div>
+            <div class="field firma-estado-field" style="display:none;">
+              <label>Estado</label>
+              <select id="in_firma_estado">
+                <option value="">— Selecciona el estado —</option>
+              </select>
+            </div>
+            <div class="field firma-municipio-field" style="display:none;">
+              <label>Municipio</label>
+              <input type="text" id="in_firma_municipio" placeholder="Ej. Celaya" style="text-transform: uppercase;">
+            </div>
+            <div class="field full firma-preview-field">
+              <label>Vista previa en la carta</label>
+              <div class="firma-preview-box" id="firma_preview">IMPACTO <span class="sep">|</span> <span class="placeholder">REPRESENTACIÓN</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: COMUNIDAD Y TERRITORIO -->
+        <section class="form-section">
+          <div class="section-title">
+            <h3><span class="num">03</span>Comunidad y territorio</h3>
+          </div>
+          <p class="section-desc">Una comunidad organizada tiene un valor distinto al de una audiencia pasiva.</p>
+
+          <div class="field-grid">
+            <div class="field"><label>Líderes</label><input type="number" id="in_lideres" min="0" value="0"></div>
+            <div class="field"><label>Voluntarios activos</label><input type="number" id="in_voluntarios" min="0" value="0"></div>
+            <div class="field"><label>Miembros comunidad</label><input type="number" id="in_miembros" min="0" value="0"></div>
+            <div class="field"><label>Estados con presencia</label><input type="number" id="in_estados" min="0" max="32" value="0"></div>
+            <div class="field"><label>Municipios</label><input type="number" id="in_municipios" min="0" value="0"></div>
+            <div class="field"><label>Beneficiarios directos <span class="tip" data-tip="Personas realmente beneficiadas por programas de IMPACTO en este proyecto. Pregunta al equipo si no lo tienes exacto. Si lo dejas en 0, se estima automáticamente.">?</span></label><input type="number" id="in_beneficiarios" min="0" value="0"></div>
+            <div class="field"><label>Calidad de audiencia <span class="tip" data-tip="Qué tan alineada está la audiencia con el objetivo del patrocinador">?</span></label>
+              <select id="in_calidad">
+                <option value="baja">Baja (poco alineada)</option>
+                <option value="media" selected>Media (afinidad razonable)</option>
+                <option value="alta">Alta (altamente afín)</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: EVENTO (COLAPSABLE — solo si aplica) -->
+        <section class="form-section collapsible" data-section="evento">
+          <div class="section-title">
+            <h3><span class="num">04</span>Evento (opcional)</h3>
+            <span class="toggle-icon" aria-hidden="true">+</span>
+          </div>
+          <div class="section-body">
+            <p class="section-desc">Solo si hay evento como parte de la propuesta.</p>
+
+            <div class="field-grid">
+              <div class="field full"><label>Nombre del evento</label><input type="text" id="in_evento_nombre" placeholder="Ej. Cumbre Estatal 2026"></div>
+              <div class="field"><label>Asistentes esperados</label><input type="number" id="in_evento_asistentes" min="0" value="0"></div>
+              <div class="field"><label>Formato</label>
+                <select id="in_evento_formato">
+                  <option value="ninguno">Sin evento</option>
+                  <option value="presencial">Presencial</option>
+                  <option value="virtual">Virtual</option>
+                  <option value="hibrido">Híbrido</option>
+                </select>
+              </div>
+              <div class="field"><label>Duración (días)</label><input type="number" id="in_evento_dias" min="0" step="0.5" value="1"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: ENTREGABLES (COLAPSABLE — solo si aplica) -->
+        <section class="form-section collapsible" data-section="entregables">
+          <div class="section-title">
+            <h3><span class="num">05</span>Entregables</h3>
+            <span class="toggle-icon" aria-hidden="true">+</span>
+          </div>
+          <div class="section-body">
+          <p class="section-desc">Selecciona lo que IMPACTO va a entregar. Usa <strong>+ / −</strong> para ajustar cantidades.</p>
+
+          <div class="subgroup-title">Contenido digital · precio por audiencia efectiva</div>
+          <div class="deliverables" data-group="digital">
+            <label class="deliv" data-key="story_ig"><input type="checkbox"><span class="label">Story Instagram · $0.25</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="post_ig"><input type="checkbox"><span class="label">Post Instagram · $0.75</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="reel_ig"><input type="checkbox"><span class="label">Reel Instagram · $1</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="tiktok"><input type="checkbox"><span class="label">TikTok · $1</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="mencion_video"><input type="checkbox"><span class="label">Mención en video · $0.50</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="agradecimiento_video"><input type="checkbox"><span class="label">Agradecimiento en video · $1.25</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="video_largo"><input type="checkbox"><span class="label">Video largo YouTube · $1.50</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="cobertura_evento"><input type="checkbox"><span class="label">Cobertura completa evento · $2</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+          </div>
+
+          <div class="subgroup-title">Branding · precio fijo</div>
+          <div class="deliverables" data-group="branding">
+            <label class="deliv" data-key="logo_publicacion"><input type="checkbox"><span class="label">Logo en publicación</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_flyer"><input type="checkbox"><span class="label">Logo en flyer</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_presentacion"><input type="checkbox"><span class="label">Logo en presentación</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_escenario"><input type="checkbox"><span class="label">Logo en escenario</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_backdrop"><input type="checkbox"><span class="label">Logo en backdrop</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_gafete"><input type="checkbox"><span class="label">Logo en gafete</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_materiales"><input type="checkbox"><span class="label">Logo en materiales</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="logo_web"><input type="checkbox"><span class="label">Logo en sitio web</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+          </div>
+
+          <div class="subgroup-title">Evento — presencia física</div>
+          <div class="deliverables" data-group="evento_ent">
+            <label class="deliv" data-key="stand"><input type="checkbox"><span class="label">Stand</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="activacion_stand"><input type="checkbox"><span class="label">Stand con activación</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="mesa"><input type="checkbox"><span class="label">Mesa / módulo</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="mencion_escenario"><input type="checkbox"><span class="label">Mención desde escenario</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="conferencia"><input type="checkbox"><span class="label">Conferencia patrocinada</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="dinamica"><input type="checkbox"><span class="label">Dinámica con asistentes</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="entrega_producto"><input type="checkbox"><span class="label">Entrega de producto</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="kit_asistentes"><input type="checkbox"><span class="label">Inclusión en kit</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+          </div>
+
+          <div class="subgroup-title">Activación en comunidad</div>
+          <div class="deliverables" data-group="activacion">
+            <label class="deliv" data-key="taller"><input type="checkbox"><span class="label">Taller</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="dinamica_act"><input type="checkbox"><span class="label">Dinámica / activación</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="convocatoria"><input type="checkbox"><span class="label">Convocatoria a comunidad</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="reto_campana"><input type="checkbox"><span class="label">Reto / campaña</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="voluntariado"><input type="checkbox"><span class="label">Voluntariado corporativo</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+            <label class="deliv" data-key="programa_social"><input type="checkbox"><span class="label">Programa social conjunto</span><span class="qty"><button type="button" data-a="-">−</button><input type="number" value="1" min="1"><button type="button" data-a="+">+</button></span></label>
+          </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: PRODUCCIÓN (COLAPSABLE) -->
+        <section class="form-section collapsible" data-section="produccion">
+          <div class="section-title">
+            <h3><span class="num">06</span>Producción y logística</h3>
+            <span class="toggle-icon" aria-hidden="true">+</span>
+          </div>
+          <div class="section-body">
+            <p class="section-desc">Solo si aplica. <em>Se suma para no regalar el trabajo del equipo.</em></p>
+            <div class="field-grid">
+              <div class="field"><label>Horas de diseño</label><input type="number" id="in_p_diseno" min="0" step="0.5" value="0"></div>
+              <div class="field"><label>Horas de video</label><input type="number" id="in_p_video" min="0" step="0.5" value="0"></div>
+              <div class="field"><label>Horas de foto</label><input type="number" id="in_p_foto" min="0" step="0.5" value="0"></div>
+              <div class="field"><label>Días de staff</label><input type="number" id="in_p_staff" min="0" step="0.5" value="0"></div>
+              <div class="field"><label>Traslados</label><input type="number" id="in_p_traslados" min="0" value="0"></div>
+              <div class="field"><label>Logística (unidades)</label><input type="number" id="in_p_logistica" min="0" value="0"></div>
+              <div class="field"><label>Renta de equipo</label><input type="number" id="in_p_equipo" min="0" value="0"></div>
+              <div class="field"><label>Impresión (unidades)</label><input type="number" id="in_p_impresion" min="0" value="0"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 7: EXCLUSIVIDAD Y DERECHOS (COLAPSABLE) -->
+        <section class="form-section collapsible" data-section="extras">
+          <div class="section-title">
+            <h3><span class="num">07</span>Exclusividad y derechos de uso</h3>
+            <span class="toggle-icon" aria-hidden="true">+</span>
+          </div>
+          <div class="section-body">
+            <p class="section-desc">Solo si la marca pide algo extra: no trabajar con competidores, o reutilizar el contenido.</p>
+            <div class="field-grid">
+              <div class="field full">
+                <label>¿Solicita exclusividad?</label>
+                <select id="in_exclusividad">
+                  <option value="ninguna">No</option>
+                  <option value="evento">Sí — por evento (+10%)</option>
+                  <option value="campana">Sí — por campaña (+15%)</option>
+                  <option value="categoria">Sí — por categoría (+20%)</option>
+                  <option value="territorial">Sí — territorial (+25%)</option>
+                  <option value="nacional">Sí — nacional (+30%)</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label>¿Reutilizará el contenido?</label>
+                <select id="in_derechos_uso">
+                  <option value="ninguno">No — solo publicación acordada</option>
+                  <option value="repost">Repost orgánico (+5%)</option>
+                  <option value="redes">Uso en redes de la marca (+10%)</option>
+                  <option value="web">Uso en sitio web (+8%)</option>
+                  <option value="ads">Uso en publicidad pagada (+25%)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Vigencia de derechos</label>
+                <select id="in_derechos_vigencia">
+                  <option value="ninguna">Sin extensión</option>
+                  <option value="3m">3 meses (+8%)</option>
+                  <option value="6m">6 meses (+15%)</option>
+                  <option value="12m">12 meses (+25%)</option>
+                  <option value="indefinido">Indefinido (+40%)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Valor en especie <span class="tip" data-tip="Si la marca aporta producto/servicio, valor real de mercado (no el que dice la marca)">?</span></label>
+                <div class="with-suffix">
+                  <input type="number" id="in_especie" min="0" value="0">
+                  <span class="suffix">MXN</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RESULT COLUMN -->
+      <aside class="result-col">
+        <div class="result-card" data-view="internal" id="resultCard">
+          <div class="result-head">
+            <h3>Resultado</h3>
+            <div class="view-toggle" role="group" aria-label="Cambiar vista">
+              <button data-vv="internal" aria-selected="true">Interna</button>
+              <button data-vv="sponsor" aria-selected="false">Marca</button>
+            </div>
+          </div>
+
+          <div class="r-hero">
+            <div class="label internal-only">Precio objetivo</div>
+            <div class="label sponsor-view-only">Aportación sugerida</div>
+            <div class="big"><span class="currency">$</span><span id="r_objetivo">0</span></div>
+            <div class="rango internal-only">
+              <span>Rango</span>
+              <em>·</em>
+              <strong id="r_rango">$0 – $0</strong>
+            </div>
+          </div>
+
+          <div class="r-prices">
+            <div class="r-price apertura internal-only">
+              <div class="k">Apertura</div>
+              <div class="v">$<span id="r_apertura">0</span></div>
+            </div>
+            <div class="r-price objetivo internal-only">
+              <div class="k">Objetivo</div>
+              <div class="v">$<span id="r_objetivo_alt">0</span></div>
+            </div>
+            <div class="r-price internal-only">
+              <div class="k">Mínimo</div>
+              <div class="v">$<span id="r_minimo">0</span></div>
+            </div>
+            <div class="r-price internal-only">
+              <div class="k">Beneficios</div>
+              <div class="v">$<span id="r_beneficios">0</span></div>
+            </div>
+          </div>
+
+          <div class="r-badges">
+            <span class="r-badge paquete" id="r_paquete"><span class="dot"></span><span id="r_paquete_nombre">Simpatizante</span></span>
+            <span class="r-badge internal-only"><span class="dot"></span>Aud. efectiva <span id="r_aud_efectiva">0</span></span>
+          </div>
+
+          <div class="r-summary">
+            <div class="item"><div class="k">Seguidores totales</div><div class="v" id="r_audiencia">0</div></div>
+            <div class="item"><div class="k">Alcance estimado</div><div class="v" id="r_impresiones">0</div></div>
+            <div class="item"><div class="k">Territorio</div><div class="v" id="r_territorio">0 estados</div></div>
+            <div class="item internal-only"><div class="k">Costo interno</div><div class="v">$<span id="r_costo_int">0</span></div></div>
+          </div>
+
+          <div class="r-breakdown">
+            <h4>
+              <span class="internal-only">¿Por qué este precio? <em>desglose</em></span>
+              <span class="sponsor-view-only">Lo que incluye <em>tu aportación</em></span>
+            </h4>
+            <div class="r-bd-list" id="r_breakdown"></div>
+          </div>
+
+          <div class="r-actions">
+            <button class="btn primary" id="btnPrint"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v3H5V5c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v3h-2V5H7zm12 5H5c-1.66 0-3 1.34-3 3v6h4v3h12v-3h4v-6c0-1.66-1.34-3-3-3zm-3 10H8v-5h8v5zm3-6c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>Imprimir carta</button>
+            <button class="btn ghost" id="btnCopy"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>Copiar resumen</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= MODE 2: OFRECER ================= -->
+  <section id="view-ofrecer" class="view" aria-labelledby="mode2-title">
+    <h2 class="sr-only" id="mode2-title">¿Qué puedo ofrecer con $X?</h2>
+
+    <div class="inverse-shell">
+      <div class="inverse-input">
+        <div class="k">Una marca ofrece</div>
+        <div class="amt-input">
+          <span class="currency">$</span>
+          <input type="number" id="in_ofrecer" min="0" step="500" placeholder="5000" value="5000">
+          <span class="mxn">MXN</span>
+        </div>
+        <p style="margin-top: 20px; color: var(--ink-2); font-size: 14px; max-width: 46ch; margin-left: auto; margin-right: auto;">Este es el paquete de beneficios que IMPACTO puede ofrecer sin sobreentregarse.</p>
+      </div>
+
+      <div class="inverse-output">
+        <div class="inverse-box incluye">
+          <h4>Sí incluye</h4>
+          <ul id="ofrecer_incluye"></ul>
+        </div>
+        <div class="inverse-box no-incluye">
+          <h4>No incluye</h4>
+          <ul id="ofrecer_no_incluye"></ul>
+        </div>
+      </div>
+
+      <div class="inverse-warning">
+        <strong>Regla de oro:</strong> menor precio = menor alcance de la propuesta. Nunca dejamos el mismo paquete a un precio más bajo — para eso, se quitan beneficios.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MODE 3: ESTRATEGIA ================= -->
+  <section id="view-estrategia" class="view" aria-labelledby="mode3-title">
+    <h2 class="sr-only" id="mode3-title">Estrategia de recaudación</h2>
+
+    <div class="strategy-shell">
+      <div class="inverse-input">
+        <div class="k">Meta de recaudación</div>
+        <div class="amt-input">
+          <span class="currency">$</span>
+          <input type="number" id="in_meta" min="0" step="5000" placeholder="30000" value="30000">
+          <span class="mxn">MXN</span>
+        </div>
+        <p style="margin-top: 20px; color: var(--ink-2); font-size: 14px; max-width: 52ch; margin-left: auto; margin-right: auto;">Combinación sugerida de patrocinadores para alcanzar la meta sin depender de uno solo.</p>
+      </div>
+
+      <div class="strategy-mix" id="strategy_mix"></div>
+
+      <div class="strat-total">
+        <div>
+          <div class="k">Total proyectado</div>
+          <div class="v"><span class="currency">$</span><span id="strat_total">0</span></div>
+        </div>
+        <div style="text-align: right;">
+          <div class="k">Cobertura</div>
+          <div class="v" style="font-size: 22px;"><span id="strat_pct">0</span>%</div>
+        </div>
+      </div>
+
+      <div class="inverse-warning" style="margin-top: 24px;">
+        <strong>Diversificar es sobrevivir.</strong> Un patrocinador que aporta el 80% del proyecto es un riesgo, no una alianza. Buscar varios tiers en paralelo.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GUÍA INTERNA ================= -->
+  <section id="view-guia" class="view" aria-labelledby="guia-title">
+    <h2 class="sr-only" id="guia-title">Guía interna</h2>
+
+    <div class="guia-shell">
+      <div class="guia-intro">
+        <span class="guia-kicker">Playbook · uso interno</span>
+        <h1 class="guia-title">Cómo ofrecer <em>un patrocinio</em>
+          <span class="guia-title-sub">sin hacerte bolas.</span>
+        </h1>
+        <p class="guia-lead">
+          Esta calculadora convierte lo que <strong>IMPACTO</strong> tiene — audiencia, comunidad, territorio, eventos — en una cifra defendible. <em>No inventamos precios: los calculamos.</em> Usa esta guía antes de contactar a una marca, mientras cotizas y cuando ya aprobaron.
+        </p>
+      </div>
+
+      <div class="guia-toc">
+        <span class="toc-label">Contenido</span>
+        <ol>
+          <li><a href="#g1">Antes de cotizar — el pitch</a></li>
+          <li><a href="#g2">Cómo usar la calculadora</a></li>
+          <li><a href="#g3">Cómo presentar el precio a la marca</a></li>
+          <li><a href="#g4">Cómo negociar</a></li>
+          <li><a href="#g5">Cuando aprueban — vices y comprobante</a></li>
+          <li><a href="#g6">La regla del 10% para nacional</a></li>
+          <li><a href="#g7">Reglas de oro</a></li>
+          <li><a href="#g8">Preguntas frecuentes</a></li>
+        </ol>
+      </div>
+
+      <article class="guia-step" id="g1">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h2>Antes de cotizar — el pitch</h2>
+          <p>Investiga a la marca antes de escribirle. Entra a su página, revisa qué patrocinan, qué causas apoyan, dónde tienen presencia. <em>El pitch cambia según la marca.</em></p>
+          <ul class="rules">
+            <li><strong>No abras con "queremos patrocinio".</strong> Abre con "creemos que tenemos algo que a su marca le va a interesar". Ellos deciden si es patrocinio, donativo, alianza o intercambio.</li>
+            <li><strong>Escucha primero.</strong> Pregunta qué le interesa a la marca, dónde quiere estar, qué tipo de acciones apoya. Después cotizas.</li>
+            <li><strong>Habla en términos de impacto,</strong> no de publicidad. IMPACTO no vende likes — invita a construir liderazgo juvenil.</li>
+            <li><strong>Cita cifras de comunidad y territorio.</strong> "Jóvenes activos", "municipios impactados". Nunca digas "tenemos X seguidores" — se ve chico comparado con la escala real de la marca.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="guia-step" id="g2">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h2>Cómo usar la calculadora</h2>
+          <p>Ve al tab <strong>Cotizar</strong> y sigue el orden de las secciones. La calculadora se actualiza en vivo — cada cambio se refleja en el precio del lado derecho.</p>
+          <ol class="steps">
+            <li><strong>01 Cuentas y alcance:</strong> activa solo las plataformas que se usarán para <em>ese</em> patrocinio (nacional + estatales + municipales que vayan a publicar). Suma seguidores totales y alcance promedio.</li>
+            <li><strong>02 Información:</strong> nombre de la marca, giro, proyecto, duración, tipo. Esto aparece en la carta impresa.</li>
+            <li><strong>03 Comunidad y territorio:</strong> líderes, voluntarios, miembros, estados, municipios. Estos números salen prominentes en la carta como "El movimiento en cifras".</li>
+            <li><strong>04 Evento (opcional):</strong> solo si hay evento.</li>
+            <li><strong>05 Entregables:</strong> selecciona lo que IMPACTO va a entregar. Usa <strong>+ / −</strong> para ajustar cantidades.</li>
+            <li><strong>06 y 07 (colapsables):</strong> ábrelas solo si aplican. La mayoría de patrocinios no las necesita.</li>
+          </ol>
+          <div class="callout gold">
+            <strong>Toma el "Precio objetivo"</strong> del result card como base para hablar con la marca. El "Rango" (mínimo–apertura) es solo para ti — no lo compartas.
+          </div>
+        </div>
+      </article>
+
+      <article class="guia-step" id="g3">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h2>Cómo presentar el precio a la marca</h2>
+
+          <div class="callout gold">
+            <strong>Antes de ofrecerla — alinea a tu equipo.</strong> La marca no compra solo la propuesta; compra el compromiso del equipo detrás. Platica muy bien con tu equipo el compromiso que están por asumir: <em>compartir</em> las publicaciones cuando salgan, <em>comentar</em>, <em>agradecer públicamente</em>, dar likes, taguear a la marca. Si el equipo interno no se mueve, el patrocinio se ve tibio y la marca no vuelve.
+          </div>
+
+          <ul class="rules">
+            <li><strong>Cambia el toggle a "Marca"</strong> en el result card. Esto oculta el mínimo, apertura, costo interno, multiplicadores, exclusividad y derechos. La marca solo ve el total y los beneficios.</li>
+            <li><strong>Imprime la carta.</strong> Clic en "Imprimir carta" → guardar como PDF. La carta ya tiene el tono correcto: gratitud, impacto, invitación a formar parte del movimiento.</li>
+            <li><strong>Nunca digas "cobramos $X".</strong> Di "la aportación sugerida para este proyecto es de $X" o "esta es la inversión asociada a este paquete de beneficios".</li>
+            <li><strong>Presenta los beneficios primero, el monto al final.</strong> Que la marca vea todo lo que recibe antes de ver la cifra.</li>
+            <li><strong>Pregunta al equipo por los beneficiarios directos.</strong> Antes de imprimir la carta, llena el campo "Beneficiarios directos" en la sección 03 con el número real de personas que se benefician del proyecto. Ese número aparece en la carta y es el más poderoso frente a una marca.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="guia-step" id="g4">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h2>Cómo negociar</h2>
+          <p>Casi ninguna marca acepta la primera propuesta. Ten claros los escenarios:</p>
+          <table class="scenarios">
+            <thead><tr><th>Si te dicen…</th><th>Respondes…</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><em>"Es mucho."</em></td>
+                <td>Pregunta qué presupuesto tiene y ajusta el paquete <strong>quitando beneficios</strong>. Nunca dejes el mismo paquete a menor precio.</td>
+              </tr>
+              <tr>
+                <td><em>"No tenemos presupuesto para patrocinio."</em></td>
+                <td>Ofrece que se sumen como <strong>Socio de IMPACTO</strong> con aportación mensual (el QR de la carta). Es más ligero y construye relación de largo plazo.</td>
+              </tr>
+              <tr>
+                <td><em>"Podemos aportar producto."</em></td>
+                <td>Acepta pero <strong>valora el producto a precio de mercado real</strong>, no al precio que dice la marca. Si te sirve al proyecto, adelante.</td>
+              </tr>
+              <tr>
+                <td><em>"Queremos exclusividad."</em></td>
+                <td><strong>Sube el precio.</strong> Activa la sección 07 en la calculadora y elige el tipo de exclusividad. Que no trabajemos con competidores tiene un costo.</td>
+              </tr>
+              <tr>
+                <td><em>"Vamos a usar el contenido en anuncios pagados."</em></td>
+                <td><strong>Sube el precio.</strong> Activa "derechos de uso" en la sección 07. Deja de ser una publicación y se vuelve una licencia.</td>
+              </tr>
+              <tr>
+                <td><em>"Nos gustaría que garanticen X ventas / clics."</em></td>
+                <td><strong>No garantices nada que no controles.</strong> Ofrece métricas de alcance, engagement e impacto social. Nunca conversiones directas.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="guia-step gold-frame" id="g5">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <h2>Cuando aprueban — vices y comprobante del donativo</h2>
+          <div class="callout danger">
+            <strong>NO EMITAS EL COMPROBANTE POR TU CUENTA.</strong> Este es el error más caro que se puede cometer.
+          </div>
+          <p>Cuando una marca confirma el patrocinio, tu único paso siguiente es:</p>
+          <ol class="steps">
+            <li>Confirma con la marca por escrito (WhatsApp, correo) el monto, fechas, entregables y datos fiscales.</li>
+            <li><strong>Contacta al Vicepresidente Regional que te corresponda.</strong></li>
+            <li>El VR coordina con la Dirección Nacional para emitir el <strong>comprobante oficial del donativo</strong> — factura con IVA a nombre de IMPACTO.</li>
+            <li>Una vez emitido, lo compartes con la marca y ella hace la transferencia.</li>
+          </ol>
+          <p><strong>Nota importante:</strong> IMPACTO <em>aún no</em> emite comprobantes deducibles de impuestos. Se factura como aportación/donativo con IVA. No prometas deducibilidad — evita conflictos con la marca. Si insisten, coordinen con Dirección Nacional.</p>
+          <p>Este paso es fundamental para <strong>la transparencia de IMPACTO</strong> y para que la aportación quede correctamente documentada. Sin el comprobante oficial, IMPACTO puede tener problemas con la autoridad y la marca no tendría respaldo formal de su aportación.</p>
+        </div>
+      </article>
+
+      <article class="guia-step gold-frame" id="g6">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <h2>La regla del 10% para IMPACTO Nacional</h2>
+          <div class="callout gold">
+            De cada donativo recibido, el <strong>10% se destina a IMPACTO Nacional</strong> para operatividad, plataformas, coordinación interregional y financiar nuevas iniciativas.
+          </div>
+          <ul class="rules">
+            <li>Este split lo maneja <strong>Dirección Nacional</strong> al recibir el donativo. No tienes que calcularlo tú al cotizar.</li>
+            <li>Al planear el uso de los recursos que quedan en tu región, <strong>toma como base el 90%</strong>, no el 100%.</li>
+            <li>Ejemplo: donativo de $10,000 → $9,000 para tu región, $1,000 para nacional.</li>
+            <li>Esta regla es <strong>interna</strong> — no se comparte con la marca. La marca dona a IMPACTO como organización, y así es como IMPACTO se sostiene y crece.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="guia-step" id="g7">
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <h2>Reglas de oro</h2>
+          <ul class="rules numbered">
+            <li>No cotices al aire — usa la herramienta.</li>
+            <li>No inventes métricas — usa datos reales.</li>
+            <li>No garantices resultados que no controlas (ventas, clics, conversiones).</li>
+            <li>Todo descuento implica reducir beneficios.</li>
+            <li>La exclusividad cuesta. Los derechos de uso cuestan. La producción cuesta.</li>
+            <li>El trabajo del equipo tiene valor.</li>
+            <li>El patrocinio no es donación disfrazada — la marca recibe beneficios claros y documentados.</li>
+            <li>Los datos personales no se venden ni comparten sin base legal y consentimiento.</li>
+            <li>Cuando aprueben, hablas con tu VR antes de cualquier movimiento.</li>
+            <li>Cada donativo cerrado se documenta con evidencia — CFDI, entregables completados, reporte de resultados.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="guia-step" id="g8">
+        <div class="step-num">08</div>
+        <div class="step-body">
+          <h2>Preguntas frecuentes</h2>
+          <div class="faq">
+            <div class="faq-item">
+              <h3>¿Y si no tengo el dato de alcance real?</h3>
+              <p>Usa solo seguidores. La calculadora ajusta con un factor conservador (40% de los seguidores como proxy de alcance). Es preferible tener el alcance real de Instagram Insights o TikTok Analytics — pide capturas al equipo de redes.</p>
+            </div>
+            <div class="faq-item">
+              <h3>¿Qué pasa si acepté $X y luego la marca pide más cosas?</h3>
+              <p>Renegocia. "Con mucho gusto sumamos ese entregable adicional; la aportación asociada se ajusta a $Y". Nunca regales trabajo del equipo.</p>
+            </div>
+            <div class="faq-item">
+              <h3>¿Cómo cotizo un patrocinio en especie?</h3>
+              <p>Ingresa el valor de mercado real del producto/servicio en el campo "Valor en especie" de la sección 07. Ese valor se suma al total de beneficios entregados a la marca, pero no cuenta como ingreso en efectivo.</p>
+            </div>
+            <div class="faq-item">
+              <h3>¿Cuándo uso el modo "Ofrecer con $X"?</h3>
+              <p>Cuando una marca ya te dijo cuánto puede aportar y quieres armar rápido el paquete de beneficios que cabe en ese monto. Es útil para responder al instante en una reunión.</p>
+            </div>
+            <div class="faq-item">
+              <h3>¿Cuándo uso "Meta de recaudación"?</h3>
+              <p>Cuando estás planeando una campaña o evento y necesitas dimensionar cuántos patrocinadores de cada tipo tienes que cerrar para llegar a la meta. Te da la mezcla sugerida.</p>
+            </div>
+            <div class="faq-item">
+              <h3>¿Puedo modificar los precios base?</h3>
+              <p>Sí, pero <strong>avísale primero a Dirección Nacional</strong>. Los precios están calibrados para ser defendibles con base en el alcance real de IMPACTO — cualquier ajuste debe estar alineado a la escala de la organización para no romper la consistencia entre estados.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div class="guia-close">
+        <p>Si tienes dudas sobre esta guía o encuentras un caso que no cubre, <strong>escríbele a tu Vicepresidente Regional</strong>. Vamos afinando la herramienta con los aprendizajes de cada patrocinio cerrado.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRINT LETTER PAGE ================= -->
+  <div id="print-page">
+    <div class="letter-header">
+      <img src="logos/impacto-horizontal.png" alt="IMPACTO">
+      <div class="doc-meta">
+        <strong>Invitación a sumar</strong>
+        <span id="print_date"></span>
+      </div>
+    </div>
+
+    <p class="letter-recipient">Dirigida a</p>
+    <p class="letter-to" id="letter_to">—</p>
+
+    <h1 class="letter-title">Gracias por creer <em>en México.</em></h1>
+
+    <p class="letter-lead">
+      En <strong>IMPACTO — Juventudes Impactando México</strong> construimos liderazgos jóvenes con presencia real en el territorio. Cuando una marca se suma, no compra publicidad: se convierte en parte de una comunidad que forma, moviliza y transforma. Esta es la invitación para que <strong id="letter_empresa">tu marca</strong> sea parte de <em id="letter_proyecto">este proyecto</em>.
+    </p>
+
+    <div class="letter-section letter-impact">
+      <h2>El movimiento en cifras</h2>
+      <div class="letter-hero-number">
+        <div class="hero-v" id="letter_impactadas">0</div>
+        <div class="hero-k">Personas impactadas</div>
+      </div>
+      <div class="letter-numbers letter-numbers-sub">
+        <div class="n"><span class="v" id="letter_beneficiarios">0</span><span class="k">Beneficiarios directos</span></div>
+        <div class="n"><span class="v" id="letter_estados">0</span><span class="k">Estados con presencia</span></div>
+        <div class="n"><span class="v" id="letter_municipios">0</span><span class="k">Municipios impactados</span></div>
+      </div>
+    </div>
+
+    <div class="letter-section">
+      <h2>El impacto que tu apoyo hace posible</h2>
+      <p>Cada aportación se convierte en talleres, activaciones territoriales, contenido que llega a miles de jóvenes y una comunidad que crece en su capacidad de organizarse. <em>Esto es lo que haremos juntos:</em></p>
+      <ul class="letter-benefits" id="letter_beneficios"></ul>
+    </div>
+
+    <div class="letter-invest">
+      <div>
+        <div class="k">Aportación sugerida</div>
+        <div class="lbl" id="letter_paquete_lbl">Paquete —</div>
+      </div>
+      <div class="v"><span class="currency">$</span><span id="letter_precio">0</span><span class="mxn">MXN</span></div>
+    </div>
+
+    <div class="letter-section">
+      <h2>Por qué tu marca</h2>
+      <p>Sumarte a IMPACTO significa que <strong id="letter_empresa2">tu marca</strong> se asocia con una organización juvenil nacional que documenta cada peso invertido y lo convierte en participación medible. Vas a recibir un reporte de resultados, evidencia fotográfica y métricas reales del alcance generado.</p>
+    </div>
+
+    <div class="letter-socio">
+      <div class="socio-content">
+        <h2>También puedes <em>seguir impactando</em></h2>
+        <p>Además de este proyecto, tu marca puede sumarse como <strong>Socio de IMPACTO</strong> con una <strong>aportación mensual recurrente</strong>. Es la forma más significativa de estar cerca del movimiento y garantizar que el impacto no dependa de un solo evento.</p>
+        <ul class="socio-ways">
+          <li>Envía un <strong>WhatsApp al 461 344 5141</strong> y te acompañamos en el proceso.</li>
+          <li>O <strong>escanea el código QR</strong> para inscribirte en línea.</li>
+        </ul>
+      </div>
+      <div class="socio-qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fwww.vorka.mx%2Fimpacto%2Fdonantes%2F&margin=0&format=png&qzone=1" alt="Código QR — sumarme como Socio de IMPACTO">
+        <div class="qr-caption">Escanea con tu cámara<br><small>www.vorka.mx/impacto/donantes</small></div>
+      </div>
+    </div>
+
+    <p class="letter-close">
+      Esperamos que este proyecto también les emocione. <em>Cualquier ajuste de la propuesta lo podemos platicar</em> — lo importante es encontrar la forma en que la colaboración tenga sentido para ambos. Quedamos atentos a su respuesta.
+    </p>
+
+    <div class="letter-sign">
+      <p class="sign-preamble">Con gratitud,</p>
+      <p class="sign-fullname" id="sign_nombre">Nombre Completo</p>
+      <p class="sign-position" id="sign_cargo">Cargo</p>
+      <p class="sign-representation"><span id="sign_prefix">IMPACTO <span class="sep">|</span> </span><span id="sign_rep">REPRESENTACIÓN</span></p>
+    </div>
+
+    <div class="letter-footer">
+      <strong>IMPACTO — Juventudes Impactando México A.C.</strong><br>
+      WhatsApp 461 344 5141 · impactoo.mex@gmail.com · @impacto.mex
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer print-hide">
+    <div class="footer-top-grid">
+      <div class="footer-brand-col">
+        <a class="footer-logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO — sitio oficial">
+          <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO">
+          <img class="logo-img dark-only"  src="logos/impacto-horizontal-white.png" alt="IMPACTO">
+        </a>
+        <h3 class="footer-heading-big">Impulsando la creación de nuevos liderazgos.</h3>
+        <p class="footer-desc">Organización juvenil mexicana fundada en 2021 en Celaya, Guanajuato. Presencia en más de 20 estados con más de 3,000 líderes juveniles.</p>
+        <span class="footer-badge"><span class="dot"></span>Hecho en México</span>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-heading">Organización</h4>
+        <ul class="footer-nav">
+          <li><a href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">Sitio oficial <span class="arrow">↗</span></a></li>
+          <li><a href="https://www.vorka.mx/impacto/#nosotros" target="_blank" rel="noopener">Nosotros</a></li>
+          <li><a href="https://www.vorka.mx/impacto/#impacto" target="_blank" rel="noopener">Impacto</a></li>
+          <li><a href="https://www.vorka.mx/impacto/#areas" target="_blank" rel="noopener">Direcciones</a></li>
+          <li><a href="https://www.vorka.mx/impacto/#transparencia" target="_blank" rel="noopener">Transparencia</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-heading">Participa</h4>
+        <ul class="footer-nav">
+          <li><a href="https://www.vorka.mx/impacto/#unete" target="_blank" rel="noopener">Voluntariado</a></li>
+          <li><a href="https://www.vorka.mx/impacto/#convocatorias" target="_blank" rel="noopener">Convocatorias</a></li>
+          <li><a href="https://www.vorka.mx/impacto/#donaciones" target="_blank" rel="noopener">Socio de IMPACTO</a></li>
+          <li><a href="https://www.vorka.mx/impacto/#alianzas" target="_blank" rel="noopener">Alianzas</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-heading">Newsletter</h4>
+        <p class="footer-desc" style="margin-bottom:14px; font-size:13px;">Convocatorias, historias y oportunidades en tu correo, una vez al mes.</p>
+        <form class="newsletter-form" action="https://formsubmit.co/impactoo.mex@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="Nueva suscripción al newsletter IMPACTO">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="email" name="Email" required placeholder="tu@correo.com" aria-label="Correo electrónico">
+          <button type="submit">Suscribirme</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-social-row">
+      <div class="footer-followus">
+        <span class="label">Síguenos</span>
+        <a class="handle" href="https://instagram.com/impacto.mex" target="_blank" rel="noopener">@impacto.mex</a>
+      </div>
+      <div class="footer-socials">
+        <a class="footer-social" href="https://instagram.com/impacto.mex" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a class="footer-social" href="https://facebook.com/impacto.org" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 011.141.195v3.325a8.623 8.623 0 00-.653-.036 26.805 26.805 0 00-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 00-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647z"/></svg></a>
+        <a class="footer-social" href="https://tiktok.com/@impacto.mex" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005.8 20.1a6.34 6.34 0 0010.86-4.43V8.36a8.16 8.16 0 005.13 1.42V6.69a4.85 4.85 0 01-2.2 0z"/></svg></a>
+        <a class="footer-social" href="https://x.com/impactomex" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a class="footer-social" href="https://www.linkedin.com/company/impactomex" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <a class="footer-social" href="https://wa.me/524613445141" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.81 11.81 0 0 1 8.413 3.488 11.823 11.823 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 <strong>IMPACTO</strong> · Juventudes Impactando México A.C. · <em style="font-family:var(--serif); color:var(--gold);">Calculadora v2.0</em></p>
+      <div class="footer-legal">
+        <a href="mural-donantes.html">Mural</a>
+        <span class="sep">·</span>
+        <a href="directorio.html">Directorio</a>
+        <span class="sep">·</span>
+        <a href="https://www.vorka.mx/impacto/privacidad/" target="_blank" rel="noopener">Aviso de privacidad</a>
+        <span class="sep">·</span>
+        <a href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">vorka.mx/impacto ↗</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">Guardado</div>
+
+<script>
+/* =============================================================
+   IMPACTO — Calculadora de Patrocinios v1.1
+   ============================================================= */
+
+/* ---------- THEME ---------- */
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const stored = localStorage.getItem('impacto-patrocinios-theme');
+  if(stored === 'light' || stored === 'dark'){ root.setAttribute('data-theme', stored); }
+  function label(){
+    const t = root.getAttribute('data-theme');
+    btn.textContent = t === 'dark' ? 'Oscuro' : (t === 'light' ? 'Claro' : 'Auto');
+  }
+  label();
+  btn.addEventListener('click', ()=>{
+    const t = root.getAttribute('data-theme');
+    const next = t === 'light' ? 'dark' : (t === 'dark' ? '' : 'light');
+    if(next) root.setAttribute('data-theme', next); else root.removeAttribute('data-theme');
+    if(next) localStorage.setItem('impacto-patrocinios-theme', next); else localStorage.removeItem('impacto-patrocinios-theme');
+    label();
+  });
+})();
+
+/* ---------- TARIFAS (defaults en código, no editables desde UI) ---------- */
+// Digital: peso × audiencia efectiva
+const T_DIGITAL = {
+  story_ig:            { label:'Story Instagram',           peso: 0.25, plat:'ig', metrica:'alcance_story' },
+  post_ig:             { label:'Post Instagram',            peso: 0.75, plat:'ig', metrica:'alcance_post' },
+  reel_ig:             { label:'Reel Instagram',            peso: 1,    plat:'ig', metrica:'views_reel' },
+  tiktok:              { label:'TikTok',                    peso: 1,    plat:'tt', metrica:'views' },
+  mencion_video:       { label:'Mención en video',          peso: 0.5,  plat:'ig', metrica:'views_reel' },
+  agradecimiento_video:{ label:'Agradecimiento en video',   peso: 1.25, plat:'ig', metrica:'views_reel' },
+  video_largo:         { label:'Video largo YouTube',       peso: 1.5,  plat:'yt', metrica:'views' },
+  cobertura_evento:    { label:'Cobertura completa evento', peso: 2,    plat:'ig', metrica:'alcance_post' },
+};
+
+// Fijos
+const T_BRANDING = {
+  logo_publicacion:  { label:'Logo en publicación',   valor: 150 },
+  logo_flyer:        { label:'Logo en flyer',         valor: 150 },
+  logo_presentacion: { label:'Logo en presentación',  valor: 200 },
+  logo_escenario:    { label:'Logo en escenario',     valor: 750 },
+  logo_backdrop:     { label:'Logo en backdrop',      valor: 500 },
+  logo_gafete:       { label:'Logo en gafete',        valor: 250 },
+  logo_materiales:   { label:'Logo en materiales',    valor: 350 },
+  logo_web:          { label:'Logo en sitio web',     valor: 300 },
+};
+const T_EVENTO = {
+  stand:             { label:'Stand',                 valor: 1000 },
+  activacion_stand:  { label:'Stand con activación',  valor: 1750 },
+  mesa:              { label:'Mesa / módulo',         valor: 450 },
+  mencion_escenario: { label:'Mención escenario',     valor: 750 },
+  conferencia:       { label:'Conferencia patroc.',   valor: 2500 },
+  dinamica:          { label:'Dinámica en evento',    valor: 900 },
+  entrega_producto:  { label:'Entrega de producto',   valor: 600 },
+  kit_asistentes:    { label:'Inclusión en kit',      valor: 750 },
+};
+const T_ACTIVACION = {
+  taller:          { label:'Taller',              valor: 1500 },
+  dinamica_act:    { label:'Dinámica/activación', valor: 900 },
+  convocatoria:    { label:'Convocatoria',        valor: 750 },
+  reto_campana:    { label:'Reto/campaña',        valor: 1500 },
+  voluntariado:    { label:'Voluntariado corp.',  valor: 1250 },
+  programa_social: { label:'Programa social',     valor: 3000 },
+};
+
+// Comunidad y territorio
+const T_COMUNIDAD = { lider: 6, voluntario: 2, miembro: 0.75 };
+const T_TERRITORIAL = { base: 250, por_estado: 200, por_municipio: 25 };
+const T_EVENTO_ASISTENTE = 8;
+
+// Producción
+const T_PRODUCCION = {
+  hora_diseno:  400, hora_video: 600, hora_foto: 500,
+  dia_staff: 1500, traslado: 2500, logistica: 2000,
+  equipo_renta: 3500, impresion: 150,
+};
+
+// Premiums
+const T_PREMIUM = {
+  exclusividad_evento: 0.10, exclusividad_campana: 0.15, exclusividad_categoria: 0.20,
+  exclusividad_territorial: 0.25, exclusividad_nacional: 0.30,
+  derechos_repost: 0.05, derechos_redes: 0.10, derechos_web: 0.08, derechos_ads: 0.25,
+  derechos_3m: 0.08, derechos_6m: 0.15, derechos_12m: 0.25, derechos_indefinido: 0.40,
+};
+
+// Márgenes
+const T_MARGEN = { apertura: 1.15, minimo: 0.75 };
+
+// Estados de México con abreviación oficial
+const ESTADOS_MX = [
+  { n:'Aguascalientes',      a:'AGS'    },
+  { n:'Baja California',     a:'BC'     },
+  { n:'Baja California Sur', a:'BCS'    },
+  { n:'Campeche',            a:'CAMP'   },
+  { n:'Chiapas',             a:'CHIS'   },
+  { n:'Chihuahua',           a:'CHIH'   },
+  { n:'Ciudad de México',    a:'CDMX'   },
+  { n:'Coahuila',            a:'COAH'   },
+  { n:'Colima',              a:'COL'    },
+  { n:'Durango',             a:'DGO'    },
+  { n:'Estado de México',    a:'EDOMEX' },
+  { n:'Guanajuato',          a:'GTO'    },
+  { n:'Guerrero',            a:'GRO'    },
+  { n:'Hidalgo',             a:'HGO'    },
+  { n:'Jalisco',             a:'JAL'    },
+  { n:'Michoacán',           a:'MICH'   },
+  { n:'Morelos',             a:'MOR'    },
+  { n:'Nayarit',             a:'NAY'    },
+  { n:'Nuevo León',          a:'NL'     },
+  { n:'Oaxaca',              a:'OAX'    },
+  { n:'Puebla',              a:'PUE'    },
+  { n:'Querétaro',           a:'QRO'    },
+  { n:'Quintana Roo',        a:'QROO'   },
+  { n:'San Luis Potosí',     a:'SLP'    },
+  { n:'Sinaloa',             a:'SIN'    },
+  { n:'Sonora',              a:'SON'    },
+  { n:'Tabasco',             a:'TAB'    },
+  { n:'Tamaulipas',          a:'TAMPS'  },
+  { n:'Tlaxcala',            a:'TLAX'   },
+  { n:'Veracruz',            a:'VER'    },
+  { n:'Yucatán',             a:'YUC'    },
+  { n:'Zacatecas',           a:'ZAC'    },
+];
+
+// Paquetes ajustados a escala real IMPACTO
+const PAQUETES = [
+  { nombre:'SIMPATIZANTE', min: 0,     max: 2000  },
+  { nombre:'ALIADO',       min: 2000,  max: 5000  },
+  { nombre:'IMPULSOR',     min: 5000,  max: 10000 },
+  { nombre:'ESTRATÉGICO',  min: 10000, max: 20000 },
+  { nombre:'NACIONAL',     min: 20000, max: Infinity },
+];
+
+/* ---------- STATE ---------- */
+const state = {
+  info: {}, plats: {}, comunidad: {}, evento: {},
+  entregables: {}, produccion: {},
+  exclusividad: 'ninguna', derechos_uso: 'ninguno', derechos_vigencia: 'ninguna',
+  especie: 0,
+};
+
+/* ---------- HELPERS ---------- */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const fmt = n => Math.round(n).toLocaleString('es-MX');
+const fmtInt = n => Math.round(n).toLocaleString('es-MX');
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 1800);
+}
+function audienciaEfectiva(seguidores, alcance){
+  // Combinación conservadora entre seguidores y alcance real.
+  // Se pondera más al alcance porque refleja quien de verdad ve el contenido.
+  // Se capa el alcance a 2× seguidores para evitar cotizaciones desproporcionadas
+  // cuando un video puntual viraliza.
+  const s = +seguidores || 0;
+  const a = +alcance || 0;
+  if(s > 0 && a > 0){
+    const cap = s * 2;
+    const alcanceCap = Math.min(a, cap);
+    return Math.round(s * 0.3 + alcanceCap * 0.7);
+  }
+  if(a > 0) return a;
+  if(s > 0) return Math.round(s * 0.4); // solo seguidores → 40% como proxy conservador
+  return 0;
+}
+
+/* ---------- COLLAPSIBLE SECTIONS ---------- */
+// Al abrir/cerrar una sección colapsable, recalculamos: cerrada = datos ignorados,
+// abierta = datos vuelven a contar. Sin este calc(), el precio queda desactualizado.
+$$('.form-section.collapsible .section-title').forEach(t => {
+  t.addEventListener('click', ()=>{
+    t.parentElement.classList.toggle('open');
+    calc();
+  });
+});
+
+/* ---------- PLATFORM TOGGLES ---------- */
+$$('.plat').forEach(plat => {
+  const toggle = plat.querySelector('.plat-toggle');
+  toggle.addEventListener('click', ()=>{
+    plat.classList.toggle('on');
+    calc();
+  });
+  plat.addEventListener('input', calc);
+});
+
+/* ---------- DELIVERABLE TOGGLES ---------- */
+// Sincronizador único por deliv: refresca visual + recálculo. Se conecta por
+// change (checkbox) Y click (label fallback, en el siguiente frame para dar
+// tiempo al navegador de actualizar el checkbox nativamente).
+$$('.deliv').forEach(deliv => {
+  const cb = deliv.querySelector('input[type="checkbox"]');
+  const qtyInput = deliv.querySelector('.qty input');
+
+  const sync = () => {
+    deliv.classList.toggle('on', cb.checked);
+    calc();
+  };
+
+  cb.addEventListener('change', sync);
+  // Fallback: si por alguna razón el change no dispara (Safari/label edge cases)
+  deliv.addEventListener('click', (e) => {
+    if(e.target.closest('.qty')) return; // clicks en +/- o input de cantidad
+    requestAnimationFrame(sync);
+  });
+
+  deliv.querySelectorAll('.qty button').forEach(b => {
+    b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      let v = parseInt(qtyInput.value) || 1;
+      if(b.dataset.a === '+') v++; else v = Math.max(1, v-1);
+      qtyInput.value = v;
+      calc();
+    });
+  });
+  if(qtyInput){
+    qtyInput.addEventListener('input', (e) => { e.stopPropagation(); calc(); });
+    qtyInput.addEventListener('click', e => e.stopPropagation());
+  }
+});
+
+/* ---------- FIRMA — poblar estados y manejar visibilidad ---------- */
+(function(){
+  const sel = $('#in_firma_estado');
+  ESTADOS_MX.forEach(e => {
+    const o = document.createElement('option');
+    o.value = e.n; o.textContent = e.n;
+    sel.appendChild(o);
+  });
+})();
+
+function armarRepresentacion(){
+  const nivel = $('#in_firma_nivel').value;
+  if(nivel === 'nacional') return 'NACIONAL';
+  const estado = $('#in_firma_estado').value;
+  if(nivel === 'estatal') return estado ? estado.toUpperCase() : '';
+  if(nivel === 'municipal'){
+    const municipio = $('#in_firma_municipio').value.trim();
+    if(!municipio || !estado) return '';
+    const est = ESTADOS_MX.find(e => e.n === estado);
+    const abrev = est ? est.a : estado.toUpperCase();
+    return `${municipio.toUpperCase()} - ${abrev}`;
+  }
+  return '';
+}
+
+function updateFirmaUI(){
+  const nivel = $('#in_firma_nivel').value;
+  const showEstado = nivel === 'municipal' || nivel === 'estatal';
+  const showMuni = nivel === 'municipal';
+  $('.firma-estado-field').style.display = showEstado ? '' : 'none';
+  $('.firma-municipio-field').style.display = showMuni ? '' : 'none';
+  // Cargo sugerido si está vacío
+  const cargoInput = $('#in_firma_cargo');
+  if(!cargoInput.value.trim()){
+    if(nivel === 'municipal') cargoInput.placeholder = 'Ej. Presidente Municipal';
+    else if(nivel === 'estatal') cargoInput.placeholder = 'Ej. Presidente Estatal';
+    else if(nivel === 'nacional') cargoInput.placeholder = 'Ej. Presidente';
+    else cargoInput.placeholder = 'Ej. Presidente Estatal';
+  }
+  updateFirmaPreview();
+}
+
+function updateFirmaPreview(){
+  const nivel = $('#in_firma_nivel').value;
+  const rep = armarRepresentacion();
+  const box = $('#firma_preview');
+  if(nivel === 'nacional'){
+    box.innerHTML = '<span class="preview-nacional">Juventudes Impactando México A.C.</span>';
+  } else if(rep){
+    box.innerHTML = 'IMPACTO <span class="sep">|</span> ' + rep;
+  } else {
+    box.innerHTML = 'IMPACTO <span class="sep">|</span> <span class="placeholder">REPRESENTACIÓN</span>';
+  }
+}
+
+$('#in_firma_nivel').addEventListener('change', ()=>{ updateFirmaUI(); calc(); });
+$('#in_firma_estado').addEventListener('change', ()=>{ updateFirmaPreview(); calc(); });
+$('#in_firma_municipio').addEventListener('input', ()=>{ updateFirmaPreview(); calc(); });
+
+/* ---------- FIELD LISTENERS ---------- */
+$$('#view-cotizar input, #view-cotizar select').forEach(el => {
+  el.addEventListener('input', calc);
+  el.addEventListener('change', calc);
+});
+
+/* ---------- READ STATE ---------- */
+function readState(){
+  state.info = {
+    empresa: $('#in_empresa').value.trim(),
+    giro: $('#in_giro').value.trim(),
+    alcance: $('#in_alcance').value,
+    proyecto: $('#in_proyecto').value.trim(),
+    duracion: parseFloat($('#in_duracion').value) || 0,
+    tipo: $('#in_tipo').value,
+    firma_nombre: $('#in_firma_nombre').value.trim(),
+    firma_cargo: $('#in_firma_cargo').value.trim(),
+    firma_nivel: $('#in_firma_nivel').value,
+    firma_estado: $('#in_firma_estado').value,
+    firma_municipio: $('#in_firma_municipio').value.trim(),
+    firma_rep: armarRepresentacion(),
+  };
+  state.plats = {};
+  $$('.plat').forEach(p => {
+    if(!p.classList.contains('on')) return;
+    const data = { on: true };
+    p.querySelectorAll('input').forEach(i => data[i.dataset.k] = parseFloat(i.value) || 0);
+    state.plats[p.dataset.plat] = data;
+  });
+  state.comunidad = {
+    lideres: parseInt($('#in_lideres').value) || 0,
+    voluntarios: parseInt($('#in_voluntarios').value) || 0,
+    miembros: parseInt($('#in_miembros').value) || 0,
+    estados: parseInt($('#in_estados').value) || 0,
+    municipios: parseInt($('#in_municipios').value) || 0,
+    beneficiarios: parseInt($('#in_beneficiarios').value) || 0,
+    calidad: $('#in_calidad').value,
+  };
+  // Secciones colapsables: si están cerradas, se ignoran (todo a 0)
+  const sectionOpen = (name) => {
+    const s = document.querySelector(`.form-section[data-section="${name}"]`);
+    return s ? s.classList.contains('open') : true;
+  };
+
+  if(sectionOpen('evento')){
+    state.evento = {
+      nombre: $('#in_evento_nombre').value.trim(),
+      asistentes: parseInt($('#in_evento_asistentes').value) || 0,
+      formato: $('#in_evento_formato').value,
+      dias: parseFloat($('#in_evento_dias').value) || 1,
+    };
+  } else {
+    state.evento = { nombre:'', asistentes:0, formato:'ninguno', dias:1 };
+  }
+
+  state.entregables = {};
+  if(sectionOpen('entregables')){
+    $$('.deliv').forEach(d => {
+      const cb = d.querySelector('input[type="checkbox"]');
+      if(cb.checked){
+        const qty = parseInt(d.querySelector('.qty input').value) || 1;
+        state.entregables[d.dataset.key] = qty;
+      }
+    });
+  }
+
+  if(sectionOpen('produccion')){
+    state.produccion = {
+      diseno: parseFloat($('#in_p_diseno').value) || 0,
+      video: parseFloat($('#in_p_video').value) || 0,
+      foto: parseFloat($('#in_p_foto').value) || 0,
+      staff: parseFloat($('#in_p_staff').value) || 0,
+      traslados: parseInt($('#in_p_traslados').value) || 0,
+      logistica: parseInt($('#in_p_logistica').value) || 0,
+      equipo: parseInt($('#in_p_equipo').value) || 0,
+      impresion: parseInt($('#in_p_impresion').value) || 0,
+    };
+  } else {
+    state.produccion = { diseno:0, video:0, foto:0, staff:0, traslados:0, logistica:0, equipo:0, impresion:0 };
+  }
+
+  if(sectionOpen('extras')){
+    state.exclusividad = $('#in_exclusividad').value;
+    state.derechos_uso = $('#in_derechos_uso').value;
+    state.derechos_vigencia = $('#in_derechos_vigencia').value;
+    state.especie = parseFloat($('#in_especie').value) || 0;
+  } else {
+    state.exclusividad = 'ninguna';
+    state.derechos_uso = 'ninguno';
+    state.derechos_vigencia = 'ninguna';
+    state.especie = 0;
+  }
+}
+
+/* ---------- CALC ---------- */
+function calc(){
+  readState();
+  const bd = [];
+  const p = state.plats;
+
+  /* ----- DIGITAL (por audiencia efectiva) ----- */
+  let digital = 0;
+  let alcanceTotal = 0;
+  let seguidoresTotal = 0;
+  let audEfectivaProm = [];
+
+  Object.values(p).forEach(pd => {
+    seguidoresTotal += pd.seguidores || 0;
+    // rough alcance = mejor métrica disponible
+    alcanceTotal += pd.alcance_post || pd.alcance || pd.views || pd.views_reel || pd.alcance_story || pd.seguidores || 0;
+  });
+
+  Object.keys(state.entregables).forEach(k => {
+    const t = T_DIGITAL[k]; if(!t) return;
+    const plat = p[t.plat];
+    if(!plat){
+      // No hay plataforma activada — mostrar warning en breakdown
+      bd.push({k: `${t.label} · plataforma no activada`, v: 0, detail: `Activa ${t.plat.toUpperCase()} para cotizar`, warn: true});
+      return;
+    }
+    const audEf = audienciaEfectiva(plat.seguidores, plat[t.metrica]);
+    audEfectivaProm.push(audEf);
+    const cantidad = state.entregables[k];
+    const val = cantidad * t.peso * audEf;
+    digital += val;
+    bd.push({
+      k: `${t.label} ×${cantidad}`,
+      v: val,
+      detail: `$${t.peso}/persona × ${fmtInt(audEf)} audiencia efectiva`
+    });
+  });
+
+  /* ----- BRANDING (fijo) ----- */
+  let branding = 0;
+  Object.keys(T_BRANDING).forEach(k => {
+    if(state.entregables[k]){
+      const val = state.entregables[k] * T_BRANDING[k].valor;
+      branding += val;
+      bd.push({k: `${T_BRANDING[k].label} ×${state.entregables[k]}`, v: val});
+    }
+  });
+
+  /* ----- EVENTO (fijo + base por asistente) ----- */
+  let evento = 0;
+  if(state.evento.formato !== 'ninguno' && state.evento.asistentes > 0){
+    const base = state.evento.asistentes * T_EVENTO_ASISTENTE * (state.evento.dias || 1);
+    evento += base;
+    bd.push({k: `Base evento (${state.evento.asistentes} asist × ${state.evento.dias}d)`, v: base, detail: `$${T_EVENTO_ASISTENTE}/asistente/día`});
+  }
+  Object.keys(T_EVENTO).forEach(k => {
+    if(state.entregables[k]){
+      const val = state.entregables[k] * T_EVENTO[k].valor;
+      evento += val;
+      bd.push({k: `${T_EVENTO[k].label} ×${state.entregables[k]}`, v: val});
+    }
+  });
+
+  /* ----- COMUNIDAD ----- */
+  const comunidad = state.comunidad.lideres * T_COMUNIDAD.lider
+                  + state.comunidad.voluntarios * T_COMUNIDAD.voluntario
+                  + state.comunidad.miembros * T_COMUNIDAD.miembro;
+  if(comunidad > 0) bd.push({
+    k: `Comunidad organizada`, v: comunidad,
+    detail: `${state.comunidad.lideres} líd × $${T_COMUNIDAD.lider} + ${state.comunidad.voluntarios} vol × $${T_COMUNIDAD.voluntario} + ${fmtInt(state.comunidad.miembros)} mie × $${T_COMUNIDAD.miembro}`
+  });
+
+  /* ----- TERRITORIAL ----- */
+  let territorial = 0;
+  if(state.comunidad.estados > 0){
+    territorial = T_TERRITORIAL.base
+                + state.comunidad.estados * T_TERRITORIAL.por_estado
+                + state.comunidad.municipios * T_TERRITORIAL.por_municipio;
+    bd.push({
+      k: `Cobertura territorial`, v: territorial,
+      detail: `$${T_TERRITORIAL.base} base + ${state.comunidad.estados} est × $${T_TERRITORIAL.por_estado} + ${state.comunidad.municipios} mun × $${T_TERRITORIAL.por_municipio}`
+    });
+  }
+
+  /* ----- ACTIVACIÓN ----- */
+  let activacion = 0;
+  Object.keys(T_ACTIVACION).forEach(k => {
+    if(state.entregables[k]){
+      const val = state.entregables[k] * T_ACTIVACION[k].valor;
+      activacion += val;
+      bd.push({k: `${T_ACTIVACION[k].label} ×${state.entregables[k]}`, v: val});
+    }
+  });
+
+  /* ----- CHECK ENTREGABLES TANGIBLES -----
+     Si no hay ni un entregable seleccionado, el patrocinio no tiene forma de
+     materializarse: comunidad, territorio y base de evento son amplificadores,
+     no producto vendible por sí solos. Todo se anula.
+  */
+  const totalEntregables = Object.keys(state.entregables).length;
+  if(totalEntregables === 0){
+    digital = 0; branding = 0; evento = 0;
+    comunidad = 0; territorial = 0; activacion = 0;
+    bd.length = 0; // limpiar el desglose acumulado
+    bd.push({k:'Sin entregables · marca al menos uno para cotizar', v:0, warn:true});
+  }
+
+  /* ----- SUBTOTAL ----- */
+  const subtotal_bruto = digital + branding + evento + comunidad + territorial + activacion;
+
+  /* ----- MULTIPLICADOR CALIDAD ----- */
+  const mult_calidad = state.comunidad.calidad === 'alta' ? 1.10 :
+                       state.comunidad.calidad === 'baja' ? 0.90 : 1.00;
+  const subtotal_ajustado = subtotal_bruto * mult_calidad;
+  if(subtotal_bruto > 0 && mult_calidad !== 1){
+    const diff = subtotal_ajustado - subtotal_bruto;
+    bd.push({
+      k: `Calidad de audiencia (×${mult_calidad.toFixed(2)})`, v: diff, mult: true,
+      detail: `Ajuste por afinidad ${state.comunidad.calidad}`
+    });
+  }
+
+  /* ----- PRODUCCIÓN ----- */
+  const pr = state.produccion;
+  const produccion = pr.diseno * T_PRODUCCION.hora_diseno
+                  + pr.video * T_PRODUCCION.hora_video
+                  + pr.foto * T_PRODUCCION.hora_foto
+                  + pr.staff * T_PRODUCCION.dia_staff
+                  + pr.traslados * T_PRODUCCION.traslado
+                  + pr.logistica * T_PRODUCCION.logistica
+                  + pr.equipo * T_PRODUCCION.equipo_renta
+                  + pr.impresion * T_PRODUCCION.impresion;
+  if(produccion > 0) bd.push({k: 'Producción y logística', v: produccion});
+
+  /* ----- PREMIUMS ----- */
+  let premium = 0;
+  const exclKey = 'exclusividad_' + state.exclusividad;
+  if(state.exclusividad !== 'ninguna' && T_PREMIUM[exclKey]){
+    const add = subtotal_ajustado * T_PREMIUM[exclKey];
+    premium += add;
+    bd.push({k: `Exclusividad ${state.exclusividad} (+${(T_PREMIUM[exclKey]*100).toFixed(0)}%)`, v: add, premium: true});
+  }
+  if(state.derechos_uso !== 'ninguno'){
+    const dk = 'derechos_' + state.derechos_uso;
+    if(T_PREMIUM[dk]){
+      const add = subtotal_ajustado * T_PREMIUM[dk];
+      premium += add;
+      bd.push({k: `Derechos de uso ${state.derechos_uso} (+${(T_PREMIUM[dk]*100).toFixed(0)}%)`, v: add, premium: true});
+    }
+  }
+  if(state.derechos_vigencia !== 'ninguna'){
+    const vk = 'derechos_' + state.derechos_vigencia;
+    if(T_PREMIUM[vk]){
+      const add = subtotal_ajustado * T_PREMIUM[vk];
+      premium += add;
+      bd.push({k: `Vigencia ${state.derechos_vigencia} (+${(T_PREMIUM[vk]*100).toFixed(0)}%)`, v: add, premium: true});
+    }
+  }
+
+  /* ----- TOTALES ----- */
+  const precio_objetivo = subtotal_ajustado + produccion + premium;
+  const precio_apertura = precio_objetivo * T_MARGEN.apertura;
+  const precio_minimo   = precio_objetivo * T_MARGEN.minimo;
+  const valor_beneficios = precio_objetivo + state.especie;
+
+  bd.push({k: 'PRECIO OBJETIVO', v: precio_objetivo, total: true});
+
+  /* ----- RENDER ----- */
+  $('#r_objetivo').textContent = fmt(precio_objetivo);
+  $('#r_objetivo_alt').textContent = fmt(precio_objetivo);
+  $('#r_apertura').textContent = fmt(precio_apertura);
+  $('#r_minimo').textContent = fmt(precio_minimo);
+  $('#r_beneficios').textContent = fmt(valor_beneficios);
+  $('#r_costo_int').textContent = fmt(produccion);
+  $('#r_rango').textContent = `$${fmt(precio_minimo)} – $${fmt(precio_apertura)}`;
+  $('#r_audiencia').textContent = fmtInt(seguidoresTotal);
+  $('#r_impresiones').textContent = fmtInt(alcanceTotal);
+  $('#r_territorio').textContent = `${state.comunidad.estados} estados · ${state.comunidad.municipios} mun`;
+  const audEfProm = audEfectivaProm.length ? audEfectivaProm.reduce((s,v)=>s+v,0)/audEfectivaProm.length : 0;
+  $('#r_aud_efectiva').textContent = fmtInt(audEfProm);
+
+  const paq = PAQUETES.find(p => precio_objetivo >= p.min && precio_objetivo < p.max) || PAQUETES[0];
+  $('#r_paquete_nombre').textContent = paq.nombre;
+
+  const list = $('#r_breakdown');
+  list.innerHTML = '';
+  if(bd.length === 0 || (bd.length === 1 && bd[0].total)){
+    list.innerHTML = '<div class="row" style="color:var(--ink-3);"><span class="k"><em style="font-family:var(--serif);">Aún no hay entregables. Activa cuentas y selecciona entregables para ver el desglose.</em></span></div>';
+  } else {
+    bd.forEach(row => {
+      if(Math.abs(row.v) < 0.5 && !row.total && !row.warn) return;
+      const div = document.createElement('div');
+      div.className = 'row';
+      if(row.mult) div.classList.add('mult');
+      if(row.premium) div.classList.add('premium');
+      if(row.total) div.classList.add('total');
+      // NO mostramos row.detail — las fórmulas internas ("$X × Y personas") quedan
+      // fuera del desglose visible, para que ni el equipo ni la marca las vean.
+      const valPrefix = row.v < 0 ? '−' : '';
+      const valStr = row.warn ? '<span style="color:var(--danger); font-size:10px;">⚠</span>' : `${valPrefix}$${fmt(Math.abs(row.v))}`;
+      div.innerHTML = `<span class="k">${row.k}</span><span class="v">${valStr}</span>`;
+      list.appendChild(div);
+    });
+  }
+
+  /* ----- LETTER DATA ----- */
+  const today = new Date();
+  $('#print_date').textContent = today.toLocaleDateString('es-MX', {day:'numeric', month:'long', year:'numeric'});
+  const empresaTxt = state.info.empresa || 'tu marca';
+  $('#letter_to').textContent = state.info.empresa || '—';
+  $('#letter_empresa').textContent = empresaTxt;
+  $('#letter_empresa2').textContent = empresaTxt;
+  $('#letter_proyecto').textContent = state.info.proyecto || 'este proyecto';
+  $('#letter_estados').textContent = state.comunidad.estados;
+  $('#letter_municipios').textContent = state.comunidad.municipios;
+  // Personas impactadas = alcance en redes × 3 + comunidad activa (amplificación orgánica: reshares, comentarios, boca a boca)
+  const comunidadActiva = state.comunidad.lideres + state.comunidad.voluntarios + state.comunidad.miembros;
+  const personasImpactadas = (alcanceTotal * 3) + comunidadActiva;
+  $('#letter_impactadas').textContent = fmtInt(personasImpactadas);
+  // Beneficiarios directos: campo manual o estimación (comunidad + asistentes del evento)
+  const beneficiariosEstim = comunidadActiva + (state.evento.asistentes || 0);
+  const beneficiarios = state.comunidad.beneficiarios > 0 ? state.comunidad.beneficiarios : beneficiariosEstim;
+  $('#letter_beneficiarios').textContent = fmtInt(beneficiarios);
+  // Firma del representante
+  $('#sign_nombre').textContent = state.info.firma_nombre || 'Nombre Completo';
+  $('#sign_cargo').textContent = state.info.firma_cargo || 'Cargo';
+  // Nacional: usar el nombre legal completo sin prefijo. Otros: IMPACTO | REP
+  if(state.info.firma_nivel === 'nacional'){
+    $('#sign_prefix').style.display = 'none';
+    $('#sign_rep').textContent = 'Juventudes Impactando México A.C.';
+    $('#sign_rep').classList.add('is-nacional');
+  } else {
+    $('#sign_prefix').style.display = '';
+    $('#sign_rep').textContent = state.info.firma_rep || 'REPRESENTACIÓN';
+    $('#sign_rep').classList.remove('is-nacional');
+  }
+  $('#letter_precio').textContent = fmt(precio_objetivo);
+  $('#letter_paquete_lbl').textContent = 'Paquete ' + paq.nombre;
+
+  const bx = $('#letter_beneficios');
+  bx.innerHTML = '';
+  Object.keys(state.entregables).forEach(k => {
+    const q = state.entregables[k];
+    const label = findEntregableLabel(k);
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${label}</span><span class="qty">×${q}</span>`;
+    bx.appendChild(li);
+  });
+  if(!bx.children.length){
+    const li = document.createElement('li'); li.innerHTML = '<span>—</span>'; bx.appendChild(li);
+  }
+
+  return { precio_objetivo, precio_apertura, precio_minimo, seguidoresTotal, alcanceTotal };
+}
+
+function findEntregableLabel(key){
+  if(T_DIGITAL[key]) return T_DIGITAL[key].label;
+  if(T_BRANDING[key]) return T_BRANDING[key].label;
+  if(T_EVENTO[key]) return T_EVENTO[key].label;
+  if(T_ACTIVACION[key]) return T_ACTIVACION[key].label;
+  return key;
+}
+
+/* ---------- VIEW TOGGLE ---------- */
+$$('.view-toggle button').forEach(b => {
+  b.addEventListener('click', ()=>{
+    $$('.view-toggle button').forEach(x => x.setAttribute('aria-selected','false'));
+    b.setAttribute('aria-selected','true');
+    $('#resultCard').dataset.view = b.dataset.vv;
+  });
+});
+
+/* ---------- MODE TABS ---------- */
+const viewIds = { cotizar:'view-cotizar', ofrecer:'view-ofrecer', estrategia:'view-estrategia', guia:'view-guia' };
+$$('.mode-tab').forEach(t => {
+  t.addEventListener('click', ()=>{
+    $$('.mode-tab').forEach(x => x.setAttribute('aria-selected','false'));
+    t.setAttribute('aria-selected','true');
+    Object.values(viewIds).forEach(v => $('#'+v).classList.remove('active'));
+    $('#'+viewIds[t.dataset.mode]).classList.add('active');
+    if(t.dataset.mode === 'ofrecer') calcOfrecer();
+    if(t.dataset.mode === 'estrategia') calcEstrategia();
+    window.scrollTo({top: 0, behavior:'smooth'});
+  });
+});
+
+/* ---------- MODE 2: OFRECER (ajustado a escala real) ---------- */
+function calcOfrecer(){
+  const monto = parseFloat($('#in_ofrecer').value) || 0;
+  const paq = PAQUETES.find(p => monto >= p.min && monto < p.max) || PAQUETES[0];
+  const incluye = $('#ofrecer_incluye');
+  const noInc = $('#ofrecer_no_incluye');
+  incluye.innerHTML = ''; noInc.innerHTML = '';
+
+  const paquetes = {
+    'SIMPATIZANTE': {
+      incluye: ['1 mención en Story','Logo en publicación de agradecimiento','Nota personal de gratitud','Reporte breve final'],
+      no: ['Reel dedicado','Post en feed','Stand físico','Conferencia','Exclusividad','Activación con comunidad']
+    },
+    'ALIADO': {
+      incluye: ['1 Post en feed + 2 Stories','1 mención en video','Logo en flyer y presentación','1 mención de agradecimiento en evento (si aplica)','Reporte con métricas'],
+      no: ['Reel exclusivo','Video largo','Stand con activación','Conferencia patrocinada','Exclusividad de categoría','Programa social conjunto']
+    },
+    'IMPULSOR': {
+      incluye: ['1 Reel + 3 Stories','1 Post','1 agradecimiento en video','Logo en flyer, backdrop y presentación','1 mención desde escenario (si hay evento)','1 activación digital','Reporte completo'],
+      no: ['Stand físico grande','Conferencia patrocinada','Exclusividad de categoría','Derechos de publicidad pagada']
+    },
+    'ESTRATÉGICO': {
+      incluye: ['2 Reels + 1 TikTok','Paquete de Stories','1 agradecimiento en video','Logo en escenario, backdrop, materiales','Mención escenario','Stand simple','1 taller o activación con comunidad','Cobertura del evento','Exclusividad por evento','Reporte ejecutivo'],
+      no: ['Exclusividad por categoría o territorial','Derechos indefinidos','Publicidad pagada','Programa social largo plazo']
+    },
+    'NACIONAL': {
+      incluye: ['Cobertura completa de evento','2 Reels + 2 TikToks','Video largo','2 agradecimientos en video','Logo prioritario en todos los materiales','Stand con activación','Conferencia patrocinada','Dinámica con asistentes','Activación en varios estados','Convocatoria a comunidad','Exclusividad por campaña','Derechos de uso en redes 6 meses','Programa social conjunto','Reporte ejecutivo trimestral'],
+      no: ['Exclusividad nacional indefinida','Derechos de publicidad pagada > 12 meses']
+    }
+  };
+  const pkg = paquetes[paq.nombre];
+  pkg.incluye.forEach(x => { const li = document.createElement('li'); li.textContent = x; incluye.appendChild(li); });
+  pkg.no.forEach(x => { const li = document.createElement('li'); li.textContent = x; noInc.appendChild(li); });
+}
+$('#in_ofrecer').addEventListener('input', calcOfrecer);
+
+/* ---------- MODE 3: ESTRATEGIA (ajustada a escala real) ---------- */
+function calcEstrategia(){
+  const meta = parseFloat($('#in_meta').value) || 0;
+  const distribucion = [
+    { tier:'NACIONAL',    valor: 15000, count: 0 },
+    { tier:'ESTRATÉGICO', valor: 10000, count: 0 },
+    { tier:'IMPULSOR',    valor: 6000,  count: 0 },
+    { tier:'ALIADO',      valor: 3000,  count: 0 },
+    { tier:'SIMPATIZANTE',valor: 1000,  count: 0 },
+  ];
+  let restante = meta;
+  if(meta >= 30000){
+    distribucion[0].count = 1; restante -= distribucion[0].valor;
+    distribucion[1].count = Math.max(1, Math.floor(restante * 0.5 / distribucion[1].valor));
+    restante -= distribucion[1].count * distribucion[1].valor;
+    distribucion[2].count = Math.max(2, Math.floor(restante * 0.6 / distribucion[2].valor));
+    restante -= distribucion[2].count * distribucion[2].valor;
+    distribucion[3].count = Math.max(2, Math.ceil(restante / distribucion[3].valor));
+  } else if(meta >= 15000){
+    distribucion[1].count = 1; restante -= distribucion[1].valor;
+    distribucion[2].count = Math.max(1, Math.floor(restante * 0.6 / distribucion[2].valor));
+    restante -= distribucion[2].count * distribucion[2].valor;
+    distribucion[3].count = Math.max(1, Math.ceil(restante / distribucion[3].valor));
+  } else if(meta >= 5000){
+    distribucion[2].count = Math.floor(meta * 0.5 / distribucion[2].valor);
+    restante -= distribucion[2].count * distribucion[2].valor;
+    distribucion[3].count = Math.max(1, Math.floor(restante * 0.7 / distribucion[3].valor));
+    restante -= distribucion[3].count * distribucion[3].valor;
+    distribucion[4].count = Math.max(2, Math.ceil(restante / distribucion[4].valor));
+  } else {
+    distribucion[3].count = Math.floor(meta / distribucion[3].valor);
+    restante -= distribucion[3].count * distribucion[3].valor;
+    distribucion[4].count = Math.max(1, Math.ceil(restante / distribucion[4].valor));
+  }
+  const total = distribucion.reduce((s,d) => s + d.count * d.valor, 0);
+  const pct = meta ? Math.min(150, Math.round(total / meta * 100)) : 0;
+
+  const wrap = $('#strategy_mix');
+  wrap.innerHTML = '';
+  distribucion.forEach(d => {
+    if(d.count === 0) return;
+    const card = document.createElement('div');
+    card.className = 'strat-card';
+    card.innerHTML = `
+      <div class="tier">${d.tier}</div>
+      <div class="amt">$${fmt(d.valor)}</div>
+      <div class="count">×<em>${d.count}</em> patroc.${d.count>1?'':''}</div>
+      <div class="subtotal">Subtotal: $${fmt(d.count * d.valor)}</div>
+    `;
+    wrap.appendChild(card);
+  });
+  $('#strat_total').textContent = fmt(total);
+  $('#strat_pct').textContent = pct;
+}
+$('#in_meta').addEventListener('input', calcEstrategia);
+
+/* ---------- PRINT / COPY ---------- */
+const originalDocTitle = document.title;
+$('#btnPrint').addEventListener('click', ()=>{
+  calc(); // asegurar datos frescos en la carta
+  const nombre = $('#in_firma_nombre').value.trim();
+  const cargo  = $('#in_firma_cargo').value.trim();
+  const rep    = armarRepresentacion();
+  if(!nombre || !cargo || !rep){
+    const seguir = confirm('Faltan datos de la firma en la sección 02:\n\n' +
+      (!nombre ? '· Nombre completo\n' : '') +
+      (!cargo  ? '· Cargo\n' : '') +
+      (!rep    ? '· Nivel de representación (y estado / municipio según aplique)\n' : '') +
+      '\nLa carta saldrá con placeholders. ¿Continuar de todos modos?');
+    if(!seguir){
+      $('#in_firma_nombre').focus();
+      $('#in_firma_nombre').scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+  }
+  // Recordatorio único: cómo quitar la fecha/URL del navegador en el diálogo de impresión
+  if(!localStorage.getItem('impacto-print-tip-seen')){
+    alert('Antes de imprimir:\n\nEn el diálogo del navegador, abre "Más ajustes" y DESMARCA la opción "Encabezados y pies de página".\n\nAsí la carta sale limpia — sin fecha ni URL en las esquinas.\n\n(Este aviso solo se muestra la primera vez.)');
+    localStorage.setItem('impacto-print-tip-seen', '1');
+  }
+  // Título vacío durante impresión — algunos navegadores lo usan en el encabezado
+  document.title = ' ';
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => { document.title = originalDocTitle; }, 500);
+  }, 50);
+});
+
+$('#btnCopy').addEventListener('click', async ()=>{
+  const r = calc();
+  const txt = `PROPUESTA DE PATROCINIO — IMPACTO
+Empresa: ${state.info.empresa || '—'}
+Proyecto: ${state.info.proyecto || '—'}
+Alcance: ${state.info.alcance} · Duración: ${state.info.duracion} meses
+
+Aportación sugerida: $${fmt(r.precio_objetivo)} MXN
+Rango (interno):     $${fmt(r.precio_minimo)} – $${fmt(r.precio_apertura)} MXN
+
+Seguidores totales: ${fmtInt(r.seguidoresTotal)}
+Alcance estimado:   ${fmtInt(r.alcanceTotal)}
+Estados: ${state.comunidad.estados}
+Comunidad activa: ${fmtInt(state.comunidad.lideres + state.comunidad.voluntarios + state.comunidad.miembros)}
+
+— Generado con la Calculadora de Patrocinios IMPACTO`;
+  try {
+    await navigator.clipboard.writeText(txt);
+    toast('Resumen copiado');
+  } catch(e){
+    toast('No se pudo copiar');
+  }
+});
+
+/* ---------- PRESETS (seguidores realistas máx 2,400) ---------- */
+const PRESETS = {
+  municipal: {
+    info: { empresa:'Negocio local', giro:'Retail municipal', proyecto:'Activación en municipio', duracion:1, alcance:'local', tipo:'economico' },
+    plats: { ig: { on:true, seguidores:400, alcance_post:180, alcance_story:120, views_reel:500 } },
+    comunidad: { lideres:2, voluntarios:5, miembros:80, estados:1, municipios:1, calidad:'media' },
+    evento: { asistentes:0, formato:'ninguno', dias:1 },
+    entregables: { story_ig:2, mencion_video:1, logo_publicacion:1 },
+  },
+  estatal: {
+    info: { empresa:'Distribuidora Regional', giro:'Distribución', proyecto:'Actividad Estatal IMPACTO', duracion:2, alcance:'estatal', tipo:'economico' },
+    plats: {
+      ig: { on:true, seguidores:1500, alcance_post:600, alcance_story:400, views_reel:1800 },
+      tt: { on:true, seguidores:800, views:2000 },
+    },
+    comunidad: { lideres:8, voluntarios:20, miembros:250, estados:1, municipios:5, calidad:'media' },
+    evento: { asistentes:0, formato:'ninguno', dias:1 },
+    entregables: { story_ig:3, reel_ig:1, mencion_video:1, logo_flyer:1 },
+  },
+  digital: {
+    info: { empresa:'Marca Digital', giro:'Tecnología', proyecto:'Campaña de contenido', duracion:1, alcance:'nacional', tipo:'campana' },
+    plats: {
+      ig: { on:true, seguidores:2400, alcance_post:900, alcance_story:650, views_reel:2200 },
+      tt: { on:true, seguidores:1800, views:2800 },
+    },
+    comunidad: { lideres:0, voluntarios:0, miembros:0, estados:0, municipios:0, calidad:'alta' },
+    evento: { asistentes:0, formato:'ninguno', dias:0 },
+    entregables: { post_ig:1, story_ig:3, reel_ig:1, tiktok:1, mencion_video:1 },
+  },
+  nacional: {
+    info: { empresa:'Corporativo Nacional', giro:'Consumo', proyecto:'Cumbre Nacional IMPACTO', duracion:3, alcance:'nacional', tipo:'alianza' },
+    plats: {
+      ig: { on:true, seguidores:2400, alcance_post:900, alcance_story:650, views_reel:2200 },
+      tt: { on:true, seguidores:1800, views:2800 },
+    },
+    comunidad: { lideres:30, voluntarios:80, miembros:600, estados:6, municipios:20, calidad:'alta' },
+    evento: { asistentes:0, formato:'ninguno', dias:1 },
+    entregables: {
+      story_ig:3, reel_ig:1, tiktok:1, agradecimiento_video:1,
+      logo_escenario:1, mencion_escenario:1,
+      taller:1
+    },
+  },
+};
+
+function openSection(name){
+  const s = document.querySelector(`.form-section[data-section="${name}"]`);
+  if(s) s.classList.add('open');
+}
+function closeAllCollapsibles(){
+  $$('.form-section.collapsible').forEach(s => s.classList.remove('open'));
+}
+
+function applyPreset(name){
+  if(name === 'reset'){ resetForm(); return; }
+  const P = PRESETS[name]; if(!P) return;
+  resetForm(false);
+  closeAllCollapsibles();
+  if(P.info){
+    $('#in_empresa').value = P.info.empresa || '';
+    $('#in_giro').value = P.info.giro || '';
+    $('#in_proyecto').value = P.info.proyecto || '';
+    $('#in_duracion').value = P.info.duracion || 1;
+    $('#in_alcance').value = P.info.alcance || 'nacional';
+    $('#in_tipo').value = P.info.tipo || 'economico';
+  }
+  if(P.plats){
+    Object.keys(P.plats).forEach(k => {
+      const plat = $(`.plat[data-plat="${k}"]`);
+      if(!plat) return;
+      plat.classList.add('on');
+      Object.keys(P.plats[k]).forEach(f => {
+        if(f === 'on') return;
+        const inp = plat.querySelector(`input[data-k="${f}"]`);
+        if(inp) inp.value = P.plats[k][f];
+      });
+    });
+  }
+  if(P.comunidad){
+    $('#in_lideres').value = P.comunidad.lideres || 0;
+    $('#in_voluntarios').value = P.comunidad.voluntarios || 0;
+    $('#in_miembros').value = P.comunidad.miembros || 0;
+    $('#in_estados').value = P.comunidad.estados || 0;
+    $('#in_municipios').value = P.comunidad.municipios || 0;
+    $('#in_beneficiarios').value = P.comunidad.beneficiarios || 0;
+    $('#in_calidad').value = P.comunidad.calidad || 'media';
+  }
+  if(P.evento){
+    $('#in_evento_nombre').value = P.evento.nombre || '';
+    $('#in_evento_asistentes').value = P.evento.asistentes || 0;
+    $('#in_evento_formato').value = P.evento.formato || 'ninguno';
+    $('#in_evento_dias').value = P.evento.dias || 1;
+    if(P.evento.formato && P.evento.formato !== 'ninguno' && (P.evento.asistentes || 0) > 0) openSection('evento');
+  }
+  if(P.entregables && Object.keys(P.entregables).length){
+    Object.keys(P.entregables).forEach(k => {
+      const d = $(`.deliv[data-key="${k}"]`);
+      if(!d) return;
+      d.classList.add('on');
+      d.querySelector('input[type="checkbox"]').checked = true;
+      d.querySelector('.qty input').value = P.entregables[k];
+    });
+    openSection('entregables');
+  }
+  calc();
+  toast(`Preset "${name}" cargado`);
+  window.scrollTo({top: document.querySelector('.calc-grid').offsetTop - 80, behavior:'smooth'});
+}
+
+function resetForm(recalc=true){
+  ['#in_empresa','#in_giro','#in_proyecto','#in_evento_nombre','#in_firma_nombre','#in_firma_cargo','#in_firma_municipio'].forEach(s => $(s).value = '');
+  ['#in_firma_nivel','#in_firma_estado'].forEach(s => $(s).value = '');
+  updateFirmaUI();
+  ['#in_lideres','#in_voluntarios','#in_miembros','#in_estados','#in_municipios','#in_beneficiarios','#in_evento_asistentes','#in_p_diseno','#in_p_video','#in_p_foto','#in_p_staff','#in_p_traslados','#in_p_logistica','#in_p_equipo','#in_p_impresion','#in_especie'].forEach(s => $(s).value = 0);
+  $('#in_duracion').value = 1;
+  $('#in_evento_dias').value = 1;
+  $('#in_alcance').value = 'estatal';
+  $('#in_tipo').value = 'economico';
+  $('#in_calidad').value = 'media';
+  $('#in_evento_formato').value = 'ninguno';
+  $('#in_exclusividad').value = 'ninguna';
+  $('#in_derechos_uso').value = 'ninguno';
+  $('#in_derechos_vigencia').value = 'ninguna';
+  $$('.plat').forEach(p => {
+    p.classList.remove('on');
+    p.querySelectorAll('input').forEach(i => i.value = '');
+  });
+  $$('.deliv').forEach(d => {
+    d.classList.remove('on');
+    d.querySelector('input[type="checkbox"]').checked = false;
+    d.querySelector('.qty input').value = 1;
+  });
+  closeAllCollapsibles();
+  if(recalc) calc();
+}
+
+$$('.preset-btn').forEach(b => b.addEventListener('click', ()=> applyPreset(b.dataset.preset)));
+
+/* ---------- INIT ---------- */
+calc();
+calcEstrategia();
+</script>
+
+</body>
+</html>
