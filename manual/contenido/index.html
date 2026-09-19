@@ -204,7 +204,7 @@ input,textarea{font:inherit;color:inherit}
   padding:20px;text-align:center;color:var(--ink-3);font-size:14px;
 }
 
-.topbar-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .menu-toggle{
   display:none;
   width:40px;height:40px;
@@ -212,16 +212,31 @@ input,textarea{font:inherit;color:inherit}
   background:var(--field);border-radius:8px;
 }
 .menu-toggle svg{width:18px;height:18px}
+.top-wa{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;color:#fff;
+  background:var(--vk-green);
+  padding:8px 14px;border-radius:999px;
+  transition:background .15s,transform .15s;
+}
+.top-wa:hover{background:#528339;transform:translateY(-1px)}
+.top-wa svg{width:14px;height:14px}
 .top-help{
+  display:inline-flex;align-items:center;gap:6px;
   font-size:13px;color:var(--ink-2);
   padding:8px 14px;border:1px solid var(--line-strong);border-radius:999px;
   transition:background .15s,color .15s,border-color .15s;
 }
 .top-help:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 
+@media (max-width:1100px){
+  .top-help span{display:none}
+  .top-wa span{display:none}
+}
 @media (max-width:960px){
   .menu-toggle{display:inline-flex}
-  .top-help{display:none}
+  .top-help{padding:8px 10px}
+  .top-wa{padding:8px 10px}
   .search-kbd{display:none}
   .brand-name span{display:none}
 }
@@ -330,7 +345,7 @@ input,textarea{font:inherit;color:inherit}
 @media (max-width:960px){
   .main{grid-column:1}
 }
-.main > *{max-width:900px}
+.main > *{max-width:1100px}
 .section{
   padding:clamp(48px,7vh,80px) 0;
   border-bottom:1px solid var(--line);
@@ -370,25 +385,28 @@ input,textarea{font:inherit;color:inherit}
 .section p{margin:0 0 16px;max-width:64ch}
 .section p b, .section p strong{color:var(--ink);font-weight:700}
 .section ul, .section ol{margin:0 0 20px;padding-left:22px;max-width:64ch}
+.section ul.checklist, .section ul.checklist.two-col, .section ul.checklist.three-col{max-width:none;padding-left:0}
 .section li{margin-bottom:8px;line-height:1.55}
+.section .checklist li{margin-bottom:0}
 .section li b{color:var(--ink);font-weight:600}
 .section a.link{color:var(--accent);border-bottom:1px solid currentColor;transition:opacity .15s}
 .section a.link:hover{opacity:0.7}
 
 /* ============================== Hero (bienvenida) ============================== */
 .hero{
-  padding:clamp(48px,8vh,96px) 0 clamp(56px,9vh,112px);
+  padding:clamp(56px,10vh,120px) 0 clamp(64px,10vh,120px);
   border-bottom:1px solid var(--line);
 }
-.hero-eyebrow{margin-bottom:24px}
+.hero-eyebrow{margin-bottom:32px}
 .hero-title{
-  font-size:clamp(38px,5.8vw,72px);
-  max-width:16ch;
-  margin:0 0 20px;
+  font-size:clamp(44px,7vw,96px);
+  max-width:18ch;
+  margin:0 0 28px;
+  letter-spacing:-0.03em;
 }
 .hero-sub{
-  font-size:clamp(17px,1.3vw,20px);color:var(--ink-2);line-height:1.55;
-  max-width:56ch;margin:0 0 32px;
+  font-size:clamp(18px,1.4vw,22px);color:var(--ink-2);line-height:1.55;
+  max-width:60ch;margin:0 0 40px;
 }
 .hero-cta{
   display:flex;gap:14px;flex-wrap:wrap;
@@ -614,6 +632,7 @@ table.compare-table{
   list-style:none;padding:0;margin:20px 0;
   display:flex;flex-direction:column;gap:2px;
   border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  max-width:none;width:100%;
 }
 .checklist li{
   padding:14px 16px;border-bottom:1px solid var(--line);
@@ -794,6 +813,250 @@ footer{
   .foot-bottom{flex-direction:column;text-align:center}
 }
 
+/* ============================== Flow visual (procesos) ============================== */
+.flow{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:14px;
+  margin:24px 0;
+  counter-reset:flowstep;
+}
+.flow-node{
+  position:relative;
+  padding:22px 22px 20px;
+  border-radius:14px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:12px;
+  transition:transform .15s,border-color .15s,box-shadow .15s;
+  overflow:hidden;
+}
+.flow-node:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 6px 20px rgba(118,33,150,0.08)}
+.flow-node::before{
+  counter-increment:flowstep;
+  content:"PASO "counter(flowstep,decimal-leading-zero);
+  font-family:ui-monospace,SF Mono,monospace;
+  font-size:10px;font-weight:700;letter-spacing:0.14em;
+  color:var(--ink-3);
+  position:absolute;top:14px;right:16px;
+}
+.flow-node .fn-emoji{
+  font-size:34px;line-height:1;
+  width:56px;height:56px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:14px;background:var(--field);
+  flex-shrink:0;
+}
+.flow-node.c-purple .fn-emoji{background:color-mix(in srgb,var(--vk-purple) 12%,transparent)}
+.flow-node.c-pink .fn-emoji{background:color-mix(in srgb,var(--vk-pink) 15%,transparent)}
+.flow-node.c-yellow .fn-emoji{background:color-mix(in srgb,var(--vk-yellow) 20%,transparent)}
+.flow-node.c-red .fn-emoji{background:color-mix(in srgb,var(--vk-red) 12%,transparent)}
+.flow-node.c-green .fn-emoji{background:color-mix(in srgb,var(--vk-green) 15%,transparent)}
+.flow-node.c-orange .fn-emoji{background:color-mix(in srgb,var(--vk-orange) 15%,transparent)}
+.flow-node.c-black .fn-emoji{background:var(--field)}
+.flow-node.c-purple::after,
+.flow-node.c-pink::after,
+.flow-node.c-yellow::after,
+.flow-node.c-red::after,
+.flow-node.c-green::after,
+.flow-node.c-orange::after,
+.flow-node.c-black::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent);
+}
+.flow-node.c-purple::after{background:var(--vk-purple)}
+.flow-node.c-pink::after{background:var(--vk-pink)}
+.flow-node.c-yellow::after{background:var(--vk-yellow)}
+.flow-node.c-red::after{background:var(--vk-red)}
+.flow-node.c-green::after{background:var(--vk-green)}
+.flow-node.c-orange::after{background:var(--vk-orange)}
+.flow-node.c-black::after{background:var(--vk-black)}
+.flow-node .fn-title{
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:16px;letter-spacing:-0.01em;line-height:1.2;color:var(--ink);
+  margin-top:2px;
+}
+.flow-node .fn-desc{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.flow-node .fn-tip{
+  margin-top:auto;padding-top:10px;
+  font-size:12px;color:var(--vk-green);font-weight:600;
+  border-top:1px dashed var(--line);
+  display:flex;align-items:flex-start;gap:6px;
+}
+.flow-node .fn-tip::before{content:"💡";font-size:12px}
+.flow-node .fn-warn{
+  margin-top:auto;padding-top:10px;
+  font-size:12px;color:var(--vk-red);font-weight:600;
+  border-top:1px dashed var(--line);
+  display:flex;align-items:flex-start;gap:6px;
+}
+.flow-node .fn-warn::before{content:"⚠️";font-size:12px}
+
+/* Copy brief button */
+.brief-actions{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;
+}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 18px;border-radius:8px;
+  background:var(--vk-black);color:#fff;
+  font-size:13px;font-weight:600;
+  transition:background .15s;cursor:pointer;
+  border:0;
+}
+.copy-btn:hover{background:var(--accent)}
+.copy-btn.ok{background:var(--vk-green)}
+.copy-btn svg{width:14px;height:14px}
+
+/* ============================== Errores visuales ============================== */
+.err-grid-cards{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:14px;margin:20px 0;
+}
+.err-card{
+  padding:20px;border-radius:14px;
+  background:var(--paper);border:1px solid var(--line);
+  border-top:4px solid var(--vk-orange);
+  display:flex;flex-direction:column;gap:10px;
+  transition:transform .15s;
+}
+.err-card:hover{transform:translateY(-3px)}
+.err-card.c1{border-top-color:var(--vk-purple)}
+.err-card.c2{border-top-color:var(--vk-pink)}
+.err-card.c3{border-top-color:var(--vk-yellow)}
+.err-card.c4{border-top-color:var(--vk-red)}
+.err-card.c5{border-top-color:var(--vk-green)}
+.err-card.c6{border-top-color:var(--vk-orange)}
+.err-card .ec-head{display:flex;align-items:center;gap:10px}
+.err-card .ec-num{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--field);color:var(--ink);
+  font-family:'Mona Sans',sans-serif;font-weight:800;font-size:13px;
+  display:inline-flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.err-card .ec-title{
+  font-family:'Mona Sans',sans-serif;font-weight:700;
+  font-size:15px;letter-spacing:-0.005em;line-height:1.2;color:var(--ink);
+}
+.err-card .ec-row{
+  display:flex;gap:10px;font-size:13px;line-height:1.5;
+  padding:10px 12px;border-radius:8px;background:var(--field);
+}
+.err-card .ec-row.solve{background:rgba(98,158,70,0.08)}
+.err-card .ec-row .ec-tag{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--vk-orange);flex-shrink:0;min-width:64px;
+}
+.err-card .ec-row.solve .ec-tag{color:var(--vk-green)}
+.err-card .ec-row p{margin:0;color:var(--ink-2);font-size:13px}
+
+/* ============================== Help flow (¿qué hago si no sé?) ============================== */
+.help-flow{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;margin:24px 0;position:relative;
+}
+.help-step{
+  padding:20px 18px;border-radius:14px;
+  background:var(--paper);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:8px;position:relative;
+  min-height:160px;
+}
+.help-step .hs-num{
+  font-family:'Mona Sans',sans-serif;font-weight:800;font-style:italic;
+  font-size:32px;letter-spacing:-0.03em;line-height:1;
+  color:var(--accent);
+}
+.help-step:nth-child(1) .hs-num{color:var(--vk-purple)}
+.help-step:nth-child(2) .hs-num{color:var(--vk-pink)}
+.help-step:nth-child(3) .hs-num{color:var(--vk-yellow)}
+.help-step:nth-child(4) .hs-num{color:var(--vk-orange)}
+.help-step:nth-child(5) .hs-num{color:var(--vk-green)}
+.help-step:nth-child(6) .hs-num{color:var(--vk-red)}
+.help-step .hs-title{
+  font-family:'Mona Sans',sans-serif;font-weight:700;font-size:14.5px;color:var(--ink);
+}
+.help-step .hs-desc{font-size:13px;color:var(--ink-2);line-height:1.5}
+
+/* ============================== Glosario 2 columnas + colores ============================== */
+.gloss-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+@media (max-width:820px){.gloss-list{grid-template-columns:1fr}}
+.gloss-item{
+  border-top:3px solid var(--accent);
+  transition:transform .15s,box-shadow .15s;
+}
+.gloss-item:hover{transform:translateY(-2px)}
+.gloss-item.g1{border-top-color:var(--vk-purple)}
+.gloss-item.g2{border-top-color:var(--vk-pink)}
+.gloss-item.g3{border-top-color:var(--vk-yellow)}
+.gloss-item.g4{border-top-color:var(--vk-red)}
+.gloss-item.g5{border-top-color:var(--vk-green)}
+.gloss-item.g6{border-top-color:var(--vk-orange)}
+.gloss-item.g1 .g-block b{color:var(--vk-purple)}
+.gloss-item.g2 .g-block b{color:var(--vk-pink)}
+.gloss-item.g3 .g-block b{color:#8B6A20}
+.gloss-item.g4 .g-block b{color:var(--vk-red)}
+.gloss-item.g5 .g-block b{color:var(--vk-green)}
+.gloss-item.g6 .g-block b{color:var(--vk-orange)}
+@media (prefers-color-scheme: dark){
+  .gloss-item.g3 .g-block b{color:var(--vk-yellow)}
+}
+
+/* ============================== Checklist grid (multi columnas) ============================== */
+.checklist.two-col{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0;
+}
+.checklist.two-col li{border-right:1px solid var(--line)}
+.checklist.two-col li:nth-child(2n){border-right:0}
+.checklist.three-col{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+  width:100%;
+}
+.checklist.three-col li{border-right:1px solid var(--line)}
+.checklist.three-col li:nth-child(3n){border-right:0}
+@media (max-width:960px){
+  .checklist.three-col{grid-template-columns:repeat(2,1fr)}
+  .checklist.three-col li{border-right:1px solid var(--line)}
+  .checklist.three-col li:nth-child(3n){border-right:1px solid var(--line)}
+  .checklist.three-col li:nth-child(2n){border-right:0}
+}
+@media (max-width:640px){
+  .checklist.two-col,.checklist.three-col{grid-template-columns:1fr}
+  .checklist.two-col li,.checklist.three-col li{border-right:0}
+}
+
+/* ============================== Definir cards (para Notion/WhatsApp confirmados) ============================== */
+.channel-cards{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;margin:16px 0;
+}
+.channel-card{
+  padding:18px;border-radius:12px;
+  background:var(--paper);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:6px;
+  border-left:3px solid var(--accent);
+}
+.channel-card.wa{border-left-color:var(--vk-green)}
+.channel-card.no{border-left-color:var(--vk-black)}
+.channel-card.dr{border-left-color:var(--vk-yellow)}
+.channel-card .cc-label{
+  font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.channel-card .cc-name{
+  font-family:'Mona Sans',sans-serif;font-weight:800;font-size:16px;
+  color:var(--ink);letter-spacing:-0.01em;
+}
+.channel-card .cc-desc{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+
 /* accesibilidad */
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important;transition:none !important}
@@ -827,7 +1090,11 @@ footer{
     </div>
 
     <div class="topbar-actions">
-      <a href="#s23" class="top-help">¿No sé qué hacer?</a>
+      <a href="https://wa.me/528117804869" target="_blank" rel="noopener" class="top-wa" aria-label="Contactar al equipo por WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.06L2 22l5.05-1.34A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.05 14.11c-.21.6-1.24 1.14-1.74 1.19-.47.06-1.07.08-1.72-.11-.4-.12-.9-.29-1.55-.57-2.72-1.18-4.5-3.93-4.64-4.11-.13-.19-1.11-1.48-1.11-2.82 0-1.34.7-2 .95-2.28.25-.28.55-.35.73-.35.19 0 .37 0 .53.01.17.01.4-.06.62.47.23.55.79 1.9.86 2.03.07.13.11.28.02.46-.08.19-.13.3-.25.46-.13.15-.27.34-.38.46-.13.13-.26.27-.11.53.15.26.65 1.07 1.4 1.74.96.86 1.77 1.13 2.02 1.26.25.13.4.11.55-.07.15-.18.63-.74.8-.99.16-.25.33-.21.55-.13.23.08 1.44.68 1.69.8.25.13.41.19.47.29.06.11.06.63-.15 1.23z"/></svg>
+        <span>Contactar equipo</span>
+      </a>
+      <a href="#s23" class="top-help">🆘 <span>No sé qué hacer</span></a>
     </div>
   </div>
 </header>
@@ -1091,27 +1358,38 @@ footer{
       <p class="section-intro">Vorka opera en ciclos. Cada proyecto, cada semana y cada pieza siguen un mismo esqueleto: pensar → hacer → revisar → publicar → medir.</p>
 
       <h3>El ciclo básico de cualquier tarea</h3>
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Entender qué se pide</h4><p>Leer el brief o el mensaje completo antes de abrir Canva. Si algo no está claro, se pregunta.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Planear</h4><p>Definir objetivo, audiencia, mensaje, formato y CTA. En 5 minutos, no en 5 horas.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Ejecutar</h4><p>Diseñar, escribir, editar. Con calma pero sin dormirse.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Revisar en solitario</h4><p>Uno mismo primero: ortografía, dimensiones, links, coherencia con el brief.</p></div></div>
-        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Pedir aprobación</h4><p>Al responsable indicado. Con contexto suficiente para que decida rápido.</p></div></div>
-        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Publicar / entregar</h4><p>En la plataforma correcta, en la hora correcta, con las etiquetas correctas.</p></div></div>
-        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Revisar después</h4><p>¿Se publicó bien? ¿Los links funcionan? ¿Hay que responder comentarios?</p></div></div>
+      <div class="flow">
+        <div class="flow-node c-purple"><div class="fn-emoji">📖</div><div class="fn-title">Entender qué se pide</div><div class="fn-desc">Leer el brief completo antes de abrir Canva. Si algo no está claro, se pregunta.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">🗺️</div><div class="fn-title">Planear</div><div class="fn-desc">Objetivo, audiencia, mensaje, formato y CTA. En 5 minutos, no en 5 horas.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">⚡</div><div class="fn-title">Ejecutar</div><div class="fn-desc">Diseñar, escribir, editar. Con calma pero sin dormirse.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">👀</div><div class="fn-title">Revisar en solitario</div><div class="fn-desc">Uno mismo primero: ortografía, dimensiones, links, coherencia con brief.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">🟢</div><div class="fn-title">Pedir aprobación</div><div class="fn-desc">En Notion, con contexto suficiente para que decida rápido.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">📲</div><div class="fn-title">Publicar / entregar</div><div class="fn-desc">En la plataforma correcta, hora correcta, con etiquetas correctas.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">🔄</div><div class="fn-title">Revisar después</div><div class="fn-desc">¿Se publicó bien? ¿Los links funcionan? ¿Hay que responder comentarios?</div></div>
       </div>
 
       <h3>Roles y responsables</h3>
-      <div class="callout define">
-        <div class="callout-title">⚙️ Definir por Vorka</div>
-        <p>Falta documentar aquí el organigrama operativo: quién aprueba contenido en cada cuenta, quién es el punto de contacto con cada cliente, quién resuelve dudas técnicas de herramientas. Se completa cuando Vorka lo confirme.</p>
-      </div>
+      <p>Cada proyecto en Notion tiene su ficha con: <b>responsable interno de Vorka</b>, <b>punto de contacto del cliente</b> y <b>quién aprueba antes de publicar</b>. Si no lo encuentras, pregunta por WhatsApp al equipo antes de arrancar la tarea.</p>
 
       <h3>Reuniones y ritmos</h3>
-      <p>La operación se sostiene con reuniones cortas y rutinas fijas. Cuando algo se sale del ritmo, hay que avisar, no aguantar en silencio.</p>
-      <div class="callout define">
-        <div class="callout-title">⚙️ Definir por Vorka</div>
-        <p>Falta especificar el ritmo de reuniones oficial: día y hora del lunes de arranque, revisión semanal, cierre de mes, y canal donde se agendan. Se completa cuando Vorka lo confirme.</p>
+      <p>La operación se sostiene con reuniones cortas y rutinas fijas. Cuando algo se sale del ritmo, hay que avisar, no aguantar en silencio. Las agendas y el minuteo viven en Notion; los avisos y confirmaciones van por WhatsApp.</p>
+
+      <div class="channel-cards">
+        <div class="channel-card wa">
+          <div class="cc-label">Comunicación diaria</div>
+          <div class="cc-name">💬 WhatsApp</div>
+          <div class="cc-desc">Canal oficial del equipo. Avances, dudas, avisos, coordinación rápida.</div>
+        </div>
+        <div class="channel-card no">
+          <div class="cc-label">Revisión y proyectos</div>
+          <div class="cc-name">📋 Notion</div>
+          <div class="cc-desc">Ahí se revisan las piezas, viven las carpetas, los briefs y los links a Drive.</div>
+        </div>
+        <div class="channel-card dr">
+          <div class="cc-label">Archivos</div>
+          <div class="cc-name">📁 Google Drive</div>
+          <div class="cc-desc">Se accede desde Notion. No se buscan archivos sueltos: se abren desde el proyecto.</div>
+        </div>
       </div>
     </section>
 
@@ -1219,7 +1497,7 @@ footer{
       <h3>Cómo escribimos</h3>
       <ul>
         <li>Usamos <b>tú</b>, no "usted", excepto si el cliente lo pide.</li>
-        <li>Frases cortas. Punto y seguido antes que coma tras coma.</li>
+        <li>Preferimos <b>comas antes que puntos y frases cortas</b>: suenan más humanas, más conversacionales, más de gente que piensa mientras escribe.</li>
         <li>Español mexicano natural. Nada de traducir modismos de gringos.</li>
         <li>Explicamos lo técnico como si se lo explicáramos a alguien inteligente que nunca ha trabajado en marketing.</li>
         <li>Cada oración carga peso. Si sobra, se corta.</li>
@@ -1352,9 +1630,9 @@ footer{
         </div>
       </div>
 
-      <div class="callout define">
-        <div class="callout-title">⚙️ Definir por Vorka</div>
-        <p>Falta indicar aquí el canal oficial de comunicación interna del equipo (WhatsApp, Slack, etc.), los accesos a las cuentas y la estructura exacta de la carpeta raíz en Drive. Se completa cuando Vorka lo confirme.</p>
+      <div class="callout tip">
+        <div class="callout-title">💬 Canal oficial del equipo</div>
+        <p>La comunicación diaria del equipo Vorka va por <b>WhatsApp</b>. La revisión formal de piezas y todo lo documentado vive en <b>Notion</b>, con links directos a Drive. Los accesos a cuentas se piden por WhatsApp al responsable del proyecto.</p>
       </div>
     </section>
 
@@ -1418,17 +1696,15 @@ footer{
       <h2 class="section-title"><span class="emoji">💡</span> Creación de contenido</h2>
       <p class="section-intro">Antes de abrir Canva, CapCut o cualquier herramienta, respóndete estas siete preguntas. Sin ellas, cualquier pieza que hagas va a estar cojeando.</p>
 
-      <div class="card" style="border-left:4px solid var(--vk-purple)">
-        <div class="card-title">Las 7 preguntas antes de crear</div>
-        <ol>
-          <li><b>¿Qué queremos comunicar?</b> — El mensaje central, en una frase.</li>
-          <li><b>¿A quién?</b> — Nada de "público en general". Sé específico.</li>
-          <li><b>¿Por qué ahora?</b> — Qué justifica que salga esta pieza en este momento.</li>
-          <li><b>¿Qué queremos provocar?</b> — Emoción, acción, reflexión, compra.</li>
-          <li><b>¿Dónde se publicará?</b> — Instagram, TikTok, LinkedIn, correo.</li>
-          <li><b>¿Qué formato necesitamos?</b> — Reel, carrusel, story, post estático.</li>
-          <li><b>¿Qué acción queremos que haga la persona?</b> — Ver, comentar, entrar, comprar, compartir.</li>
-        </ol>
+      <h3>Las 7 preguntas antes de crear</h3>
+      <div class="flow">
+        <div class="flow-node c-purple"><div class="fn-emoji">💬</div><div class="fn-title">¿Qué queremos comunicar?</div><div class="fn-desc">El mensaje central, en una frase.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">👥</div><div class="fn-title">¿A quién?</div><div class="fn-desc">Nada de "público en general". Sé específico.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">⏰</div><div class="fn-title">¿Por qué ahora?</div><div class="fn-desc">Qué justifica que salga esta pieza en este momento.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">💥</div><div class="fn-title">¿Qué queremos provocar?</div><div class="fn-desc">Emoción, acción, reflexión, compra.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">📱</div><div class="fn-title">¿Dónde se publicará?</div><div class="fn-desc">Instagram, TikTok, LinkedIn, correo.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">📐</div><div class="fn-title">¿Qué formato necesitamos?</div><div class="fn-desc">Reel, carrusel, story, post estático.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">👉</div><div class="fn-title">¿Qué acción queremos?</div><div class="fn-desc">Ver, comentar, entrar, comprar, compartir.</div></div>
       </div>
 
       <div class="callout warn">
@@ -1437,17 +1713,53 @@ footer{
       </div>
 
       <h3>El brief mínimo</h3>
-      <p>Cuando alguien te pida hacer una pieza, asegúrate de tener por escrito al menos esto. Si falta, pregunta antes de empezar:</p>
-      <ul>
-        <li><b>Cuenta</b> (¿de qué cliente / proyecto?)</li>
-        <li><b>Objetivo</b> (¿qué buscamos con esta pieza?)</li>
-        <li><b>Audiencia</b> (¿a quién le hablamos?)</li>
-        <li><b>Mensaje central</b> (¿qué idea queremos dejar?)</li>
-        <li><b>Plataforma y formato</b></li>
-        <li><b>CTA</b> (¿qué queremos que hagan?)</li>
-        <li><b>Deadline</b> (¿cuándo se publica?)</li>
-        <li><b>Referencias visuales / de tono</b> (si aplica)</li>
-      </ul>
+      <p>Cuando alguien te pida hacer una pieza, asegúrate de tener por escrito al menos esto. Si falta, pregúntalo antes de empezar. Puedes copiar esta plantilla y llenarla al momento de solicitar un post:</p>
+
+      <div class="card" style="border-left:4px solid var(--vk-purple);background:var(--paper-2)">
+        <div class="card-title" style="color:var(--vk-purple)">📋 Plantilla de brief (con guías)</div>
+        <p style="margin:6px 0 12px;font-size:13.5px;color:var(--ink-2)">Cada campo tiene un <b>ejemplo</b> abajo para que sepas qué contestar. Bórralo cuando lo llenes.</p>
+        <pre id="briefTemplate" style="margin:8px 0 0;padding:16px;background:var(--paper);border-radius:8px;font-family:ui-monospace,SF Mono,monospace;font-size:13px;line-height:1.75;color:var(--ink);white-space:pre-wrap;border:1px solid var(--line)">📌 BRIEF DE CONTENIDO — VORKA
+
+• Cuenta / cliente:
+   → ¿Para qué proyecto o cliente es? (Ej: "Westminster Royal College")
+
+• Objetivo:
+   → ¿Qué quieres lograr con esta pieza? (Ej: "Aumentar registros al proceso de admisiones")
+
+• Audiencia:
+   → ¿A quién le hablas? Sé específico (Ej: "Mamás en Celaya con hijos de 3 a 6 años, clase media-alta")
+
+• Mensaje central:
+   → La idea principal en una sola frase (Ej: "Somos el único bilingüe con admisiones abiertas todo el año")
+
+• Plataforma:
+   → ¿Dónde se publica? (Instagram / TikTok / Facebook / LinkedIn / Stories)
+
+• Formato:
+   → ¿Post, reel, carrusel, story, video horizontal, cover? (Ej: "Reel vertical de 30 segundos")
+
+• CTA (acción que buscamos):
+   → ¿Qué queremos que haga la persona? (Ej: "Entrar al link y agendar cita")
+
+• Deadline:
+   → ¿Cuándo se publica? (Ej: "Viernes 3 de octubre, 6:00 pm")
+
+• Referencias visuales / de tono:
+   → Links o descripciones de piezas que sirvan de inspiración (Ej: "Como el reel del 20 de agosto pero más limpio")
+
+• Notas extra:
+   → Cualquier restricción, contexto o dato que hay que saber (Ej: "El logo del colegio va en morado, no en dorado")</pre>
+        <div class="brief-actions">
+          <button class="copy-btn" id="copyBriefBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyBriefLabel">Copiar plantilla</span>
+          </button>
+          <button class="copy-btn" id="copyBriefEmptyBtn" style="background:var(--field);color:var(--ink);border:1px solid var(--line-strong)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="copyBriefEmptyLabel">Copiar sin guías</span>
+          </button>
+        </div>
+      </div>
 
       <div class="callout tip">
         <div class="callout-title">💡 Regla del semáforo</div>
@@ -1461,25 +1773,26 @@ footer{
       <h2 class="section-title"><span class="emoji">📝</span> Cómo hacer una publicación</h2>
       <p class="section-intro">Este es el flujo completo, del "tengo una idea" al "está publicado y lo revisé". No te saltes pasos. En especial no te saltes la revisión.</p>
 
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Idea</h4><p>Nace del calendario editorial, del brief, de una fecha o de un insight. Se escribe en una frase.</p><div class="step-meta"><span class="tip">Tip: si no la puedes explicar en 1 frase, todavía no es idea.</span></div></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Objetivo</h4><p>Qué buscamos con esta pieza: informar, generar interacción, llevar a landing, vender.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Audiencia</h4><p>Quién debería reaccionar a esto. Sé específico: edad, contexto, momento del día.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Mensaje</h4><p>Una sola idea central. Si intentas decir tres cosas, no vas a lograr ninguna.</p><div class="step-meta"><span class="warn">Error común: querer meter todo.</span></div></div></div>
-        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Formato</h4><p>Post estático, carrusel, Reel, Story. Elige el que mejor cuente el mensaje, no el que te sea más fácil.</p></div></div>
-        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Diseño</h4><p>Abre Canva con las dimensiones correctas. Aplica la identidad. Deja aire. Menos elementos, no más.</p><div class="step-meta"><span class="tip">Tip: si dudas si algo estorba, quítalo. Casi siempre estorba.</span></div></div></div>
-        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Copy</h4><p>Escribe el pie de post. Empieza con un gancho, desarrolla, cierra con un CTA. Léelo en voz alta.</p></div></div>
-        <div class="step"><div class="step-num">8</div><div class="step-body"><h4>Revisión propia</h4><p>Ortografía, dimensiones, tipos, colores, coherencia con el brief. Cambia de vista para "ver con ojos nuevos".</p></div></div>
-        <div class="step"><div class="step-num">9</div><div class="step-body"><h4>Aprobación</h4><p>Envías al responsable indicado con todo el contexto: pieza, copy final, plataforma, hora.</p><div class="step-meta"><span class="warn">Nunca publicar sin aprobación.</span></div></div></div>
-        <div class="step"><div class="step-num">10</div><div class="step-body"><h4>Programación</h4><p>En Meta Business Suite o la herramienta que use el proyecto. Verifica hora, cuenta y previsualización.</p></div></div>
-        <div class="step"><div class="step-num">11</div><div class="step-body"><h4>Publicación</h4><p>Se publica sola si está programada. Si es manual, publica y confirma.</p></div></div>
-        <div class="step"><div class="step-num">12</div><div class="step-body"><h4>Revisión final (post publicación)</h4><p>Entra a la cuenta, mira cómo se ve publicado, verifica links, responde primeros comentarios.</p></div></div>
-        <div class="step"><div class="step-num">13</div><div class="step-body"><h4>Análisis</h4><p>A los pocos días: ¿cómo funcionó? ¿qué aprendemos? ¿qué se replica y qué no?</p></div></div>
+      <div class="flow">
+        <div class="flow-node c-purple"><div class="fn-emoji">💡</div><div class="fn-title">Idea</div><div class="fn-desc">Del calendario editorial, del brief, de una fecha o de un insight. En una frase.</div><div class="fn-tip">Si no lo dices en 1 frase, todavía no es idea.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">🎯</div><div class="fn-title">Objetivo</div><div class="fn-desc">Informar, interactuar, llevar a landing, vender. Uno solo.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">👥</div><div class="fn-title">Audiencia</div><div class="fn-desc">Quién debería reaccionar. Edad, contexto, momento del día.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">💬</div><div class="fn-title">Mensaje</div><div class="fn-desc">Una sola idea central. Si intentas decir tres, no logras ninguna.</div><div class="fn-warn">Error común: querer meter todo.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">📐</div><div class="fn-title">Formato</div><div class="fn-desc">Post, carrusel, Reel o Story. Elige el que mejor cuente el mensaje.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">🎨</div><div class="fn-title">Diseño</div><div class="fn-desc">Canva con dimensiones correctas. Identidad Vorka. Aire. Menos es más.</div><div class="fn-tip">Si dudas si algo estorba, quítalo.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">✍️</div><div class="fn-title">Copy</div><div class="fn-desc">Gancho + desarrollo + CTA. Léelo en voz alta antes de aprobar.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">👀</div><div class="fn-title">Revisión propia</div><div class="fn-desc">Ortografía, dimensiones, colores, coherencia con brief. Ojos nuevos.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">🟢</div><div class="fn-title">Aprobación</div><div class="fn-desc">Al responsable, en Notion. Con pieza, copy final, plataforma y hora.</div><div class="fn-warn">Nunca publicar sin aprobación.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">📅</div><div class="fn-title">Programación</div><div class="fn-desc">Meta Business Suite u otra. Verifica hora, cuenta, previsualización.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">📲</div><div class="fn-title">Publicación</div><div class="fn-desc">Si está programada, publica sola. Si es manual, publica y confirma.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">🔍</div><div class="fn-title">Revisión final</div><div class="fn-desc">Entra a la cuenta, verifica cómo se ve publicado, revisa links.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">💬</div><div class="fn-title">Difusión WhatsApp</div><div class="fn-desc">Envía el link del post publicado por WhatsApp para amplificar el alcance.</div><div class="fn-tip">Muy importante: se comparte, no solo se publica.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">📊</div><div class="fn-title">Análisis</div><div class="fn-desc">A los pocos días: ¿cómo funcionó? ¿qué se replica? ¿qué no?</div></div>
       </div>
 
       <div class="callout warn">
         <div class="callout-title">⚠️ El error más común</div>
-        <p>Saltarse la revisión final después de publicar. Un post publicado con un link roto o una imagen recortada es peor que un post que se retrasa un día.</p>
+        <p>Saltarse la revisión final después de publicar, o no difundir el link por WhatsApp. Un post publicado con un link roto —o uno perfecto que nadie compartió— son la misma pérdida de trabajo.</p>
       </div>
     </section>
 
@@ -1489,21 +1802,22 @@ footer{
       <h2 class="section-title"><span class="emoji">🎬</span> Cómo hacer un Reel</h2>
       <p class="section-intro">Un Reel no es "grabar algo y editarlo". Es contar una historia en menos de 60 segundos, con un enganche brutal en los primeros 2. Aquí va el paso a paso.</p>
 
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Idea</h4><p>Una frase que diga qué va a ver la persona y por qué le va a importar.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Hook (gancho)</h4><p>Los primeros 2 segundos. La frase o imagen que hace que no pasen de largo. Ejemplo: "Esto es lo que nadie te dice de X".</p><div class="step-meta"><span class="tip">Tip: escribe 3 hooks distintos y elige el más fuerte.</span></div></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Guion</h4><p>Escribe qué se dice en cada segundo. No improvises frente a cámara. Corto, claro, con ritmo.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Grabación</h4><p>Vertical (9:16), buena luz, audio limpio. Encuadre a la altura de los ojos. Deja aire arriba y abajo por si hay elementos de interfaz.</p></div></div>
-        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>B-roll</h4><p>Imágenes o clips extra que ilustran lo que dices (planos de detalle, ambiente, objetos). Rompen la monotonía del "hablando a cámara".</p></div></div>
-        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Edición en CapCut</h4><p>Corta pausas, silencios y muletillas. El ritmo se hace en edición. Nada sobra por respeto: sobra por cariño.</p></div></div>
-        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>Subtítulos</h4><p>Obligatorios. La mayoría ve sin audio. Legibles, sin cubrir la cara ni la interfaz de la plataforma.</p></div></div>
-        <div class="step"><div class="step-num">8</div><div class="step-body"><h4>Música / audio</h4><p>Elige música coherente con el mensaje. Usa audios en tendencia solo cuando aporten al fondo, no como muleta.</p></div></div>
-        <div class="step"><div class="step-num">9</div><div class="step-body"><h4>Portada</h4><p>La imagen que se ve en la parrilla. Debe entenderse en 1 segundo. Título corto y grande.</p></div></div>
-        <div class="step"><div class="step-num">10</div><div class="step-body"><h4>Copy del pie</h4><p>Complementa, no repite. Da el contexto que el video no puede dar.</p></div></div>
-        <div class="step"><div class="step-num">11</div><div class="step-body"><h4>CTA</h4><p>Qué queremos que haga la persona: comentar, guardar, ir al link, compartir. Uno solo, claro.</p></div></div>
-        <div class="step"><div class="step-num">12</div><div class="step-body"><h4>Revisión</h4><p>Reproduce el Reel entero antes de mandar a aprobar. Sin sonido primero, con sonido después.</p></div></div>
-        <div class="step"><div class="step-num">13</div><div class="step-body"><h4>Aprobación</h4><p>Se envía en formato final (mp4 o link). No mandes proyectos de CapCut.</p></div></div>
-        <div class="step"><div class="step-num">14</div><div class="step-body"><h4>Publicación</h4><p>Directo desde la cuenta, no reposteado. Sin marca de agua de otras plataformas.</p></div></div>
+      <div class="flow">
+        <div class="flow-node c-purple"><div class="fn-emoji">💡</div><div class="fn-title">Idea</div><div class="fn-desc">Una frase que diga qué va a ver la persona y por qué le va a importar.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">🪝</div><div class="fn-title">Hook (gancho)</div><div class="fn-desc">Los primeros 2 segundos. Rompe el scroll. "Esto es lo que nadie te dice de X".</div><div class="fn-tip">Escribe 3 hooks distintos, elige el más fuerte.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">📝</div><div class="fn-title">Guion</div><div class="fn-desc">Qué se dice en cada segundo. No improvises. Corto, claro, con ritmo.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">🎥</div><div class="fn-title">Grabación</div><div class="fn-desc">9:16, buena luz, audio limpio. Encuadre a la altura de los ojos.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">🎞️</div><div class="fn-title">B-roll</div><div class="fn-desc">Planos extra que ilustran. Rompen la monotonía del "hablando a cámara".</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">✂️</div><div class="fn-title">Edición en CapCut</div><div class="fn-desc">Corta pausas, silencios y muletillas. El ritmo se hace en edición.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">🔤</div><div class="fn-title">Subtítulos</div><div class="fn-desc">Obligatorios. La mayoría ve sin audio. Legibles, sin tapar la cara.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">🎵</div><div class="fn-title">Música / audio</div><div class="fn-desc">Coherente con el mensaje. Tendencias solo si aportan, no como muleta.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">🖼️</div><div class="fn-title">Portada</div><div class="fn-desc">Se ve en la parrilla. Debe entenderse en 1 segundo. Título grande.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">✍️</div><div class="fn-title">Copy del pie</div><div class="fn-desc">Complementa, no repite. Da el contexto que el video no da.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">👉</div><div class="fn-title">CTA</div><div class="fn-desc">Comentar, guardar, ir al link o compartir. Uno solo, claro.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">👀</div><div class="fn-title">Revisión</div><div class="fn-desc">Reproduce entero. Primero sin sonido, después con sonido.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">🟢</div><div class="fn-title">Aprobación</div><div class="fn-desc">En Notion, en formato final (mp4 o link). No mandes proyectos de CapCut.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">📲</div><div class="fn-title">Publicación</div><div class="fn-desc">Directo desde la cuenta, sin marca de agua de otras plataformas.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">💬</div><div class="fn-title">Difusión WhatsApp</div><div class="fn-desc">Comparte el link por WhatsApp del equipo para amplificar el alcance.</div><div class="fn-tip">Un Reel sin difusión pierde la mitad de su potencial.</div></div>
       </div>
 
       <div class="callout tip">
@@ -1598,16 +1912,17 @@ footer{
       <h2 class="section-title"><span class="emoji">📋</span> Flujo de trabajo</h2>
       <p class="section-intro">Este es el flujo estándar de Vorka. Aplica para casi todo: un post, un carrusel, un Reel, una campaña. Cada etapa tiene una razón. No se saltan.</p>
 
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>🧠 Idea</h4><p>Nace del calendario, del cliente, de un insight o de una fecha. Se documenta en una frase.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>📋 Brief</h4><p>Se define objetivo, audiencia, mensaje, formato, plataforma, CTA y deadline.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>🎨 Diseño / Producción</h4><p>Se ejecuta la pieza (Canva, CapCut, fotografía, texto). Se apega al brief.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>✍️ Copy</h4><p>Se redacta el pie, el hashtag si aplica y el CTA. Se revisa ortografía.</p></div></div>
-        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>👀 Revisión</h4><p>Primero interna, después por el responsable del proyecto. Nada pasa sin revisión.</p><div class="step-meta"><span class="warn">Saltarse esto = error asegurado.</span></div></div></div>
-        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>🟢 Aprobación</h4><p>Del responsable indicado (o del cliente, según el proyecto). Queda registrada por escrito.</p></div></div>
-        <div class="step"><div class="step-num">7</div><div class="step-body"><h4>📅 Programación</h4><p>Se agenda en Meta Business Suite o en la herramienta correspondiente. Se verifica cuenta, hora, previsualización.</p></div></div>
-        <div class="step"><div class="step-num">8</div><div class="step-body"><h4>📲 Publicación</h4><p>Publica sola si está programada. Si es manual, publica y confirma que se publicó.</p></div></div>
-        <div class="step"><div class="step-num">9</div><div class="step-body"><h4>📊 Análisis</h4><p>Se revisan métricas relevantes (alcance, interacción, guardados, clics). Se aprende y se ajusta.</p></div></div>
+      <div class="flow">
+        <div class="flow-node c-purple"><div class="fn-emoji">🧠</div><div class="fn-title">Idea</div><div class="fn-desc">Del calendario, del cliente, de un insight o de una fecha. Documentada en una frase.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">📋</div><div class="fn-title">Brief</div><div class="fn-desc">Objetivo, audiencia, mensaje, formato, plataforma, CTA, deadline.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">🎨</div><div class="fn-title">Diseño / Producción</div><div class="fn-desc">Se ejecuta la pieza (Canva, CapCut, foto). Se apega al brief.</div></div>
+        <div class="flow-node c-orange"><div class="fn-emoji">✍️</div><div class="fn-title">Copy</div><div class="fn-desc">Se redacta el pie, hashtags y CTA. Se revisa ortografía.</div></div>
+        <div class="flow-node c-red"><div class="fn-emoji">👀</div><div class="fn-title">Revisión</div><div class="fn-desc">Primero interna, después por el responsable. Nada pasa sin revisión.</div><div class="fn-warn">Saltarse esto = error asegurado.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">🟢</div><div class="fn-title">Aprobación</div><div class="fn-desc">Del responsable (o cliente). Queda registrada en Notion.</div></div>
+        <div class="flow-node c-purple"><div class="fn-emoji">📅</div><div class="fn-title">Programación</div><div class="fn-desc">En Meta Business Suite u otra. Verifica cuenta, hora, previsualización.</div></div>
+        <div class="flow-node c-pink"><div class="fn-emoji">📲</div><div class="fn-title">Publicación</div><div class="fn-desc">Sola si está programada. Manual: publicas y confirmas.</div></div>
+        <div class="flow-node c-yellow"><div class="fn-emoji">💬</div><div class="fn-title">Difusión WhatsApp</div><div class="fn-desc">Comparte el link del post por WhatsApp para amplificar alcance.</div></div>
+        <div class="flow-node c-green"><div class="fn-emoji">📊</div><div class="fn-title">Análisis</div><div class="fn-desc">Alcance, interacción, guardados, clics. Se aprende y se ajusta.</div></div>
       </div>
 
       <div class="callout warn">
@@ -1615,9 +1930,9 @@ footer{
         <p><b>Nunca se publica sin revisión y sin aprobación.</b> No importa la urgencia. Si algo es tan urgente que "no da tiempo", eso ya es un error de planeación que debe comunicarse.</p>
       </div>
 
-      <div class="callout define">
-        <div class="callout-title">⚙️ Definir por Vorka</div>
-        <p>Falta documentar quién es el responsable de aprobación por cliente/proyecto, cuánto tiempo estándar toma una revisión, y cuál es el canal oficial para pedir aprobaciones. Se completa cuando Vorka lo confirme.</p>
+      <div class="callout tip">
+        <div class="callout-title">💬 Cómo se pide aprobación</div>
+        <p>La aprobación se solicita en <b>Notion</b>: ahí subes o linkeas la pieza final con el contexto (plataforma, hora, copy). Después mandas por <b>WhatsApp</b> un aviso corto al responsable: "revisión lista en Notion". Nunca se aprueba solo por WhatsApp sin dejar registro en Notion.</p>
       </div>
     </section>
 
@@ -1667,7 +1982,7 @@ footer{
         <div class="pb-pct" id="publishPct">0%</div>
       </div>
 
-      <ul class="checklist" id="publishChecklist" data-storage="vk_check_publish">
+      <ul class="checklist two-col" id="publishChecklist" data-storage="vk_check_publish">
         <li><input type="checkbox" id="p1"/><label for="p1" class="cl-text">¿Sé cuál es el objetivo de esta pieza?</label></li>
         <li><input type="checkbox" id="p2"/><label for="p2" class="cl-text">¿El mensaje se entiende en 3 segundos?</label></li>
         <li><input type="checkbox" id="p3"/><label for="p3" class="cl-text">¿Está dirigido a la audiencia correcta?</label></li>
@@ -1812,9 +2127,22 @@ footer{
         </div>
       </div>
 
-      <div class="callout define">
-        <div class="callout-title">⚙️ Definir por Vorka</div>
-        <p>Falta documentar los canales oficiales de comunicación interna (cuál es el WhatsApp/Slack del equipo, para qué se usa cada canal, en qué horarios se espera respuesta). Se completa cuando Vorka lo confirme.</p>
+      <div class="channel-cards">
+        <div class="channel-card wa">
+          <div class="cc-label">Día a día</div>
+          <div class="cc-name">💬 WhatsApp</div>
+          <div class="cc-desc">Canal oficial de comunicación del equipo. Avances, dudas, coordinación, avisos y confirmaciones.</div>
+        </div>
+        <div class="channel-card no">
+          <div class="cc-label">Formal / registro</div>
+          <div class="cc-name">📋 Notion</div>
+          <div class="cc-desc">Todo lo que se acuerda queda escrito ahí. Briefs, revisiones, links a Drive, decisiones.</div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">💡 Regla simple</div>
+        <p>Si es <b>rápido y del día</b>, va por WhatsApp. Si <b>debe quedar registro</b> (acuerdos, entregas, briefs, feedback estructurado), va en Notion. Nunca ambos por separado sin conexión: en Notion se pega el link, en WhatsApp se avisa "ya está en Notion".</p>
       </div>
     </section>
 
@@ -1824,57 +2152,65 @@ footer{
       <h2 class="section-title"><span class="emoji">📂</span> Organización de archivos</h2>
       <p class="section-intro">Un buen sistema de archivos evita que perdamos 20 minutos buscando "el logo bueno". Estas son las reglas mínimas.</p>
 
-      <h3>Estructura de carpetas</h3>
-      <p>La carpeta raíz de cada cliente debe tener, mínimo:</p>
-      <ul>
-        <li><b>00 — Brief y estrategia</b></li>
-        <li><b>01 — Materiales del cliente</b> (logos, fotos, textos base)</li>
-        <li><b>02 — Editables</b> (Canva, CapCut, PSD)</li>
-        <li><b>03 — Entregables finales</b> (PNG, MP4, PDF ya aprobados)</li>
-        <li><b>04 — Reportes</b></li>
-        <li><b>05 — Archivo / históricos</b></li>
-      </ul>
-
-      <div class="callout define">
-        <div class="callout-title">⚙️ Definir por Vorka</div>
-        <p>Falta confirmar la estructura oficial exacta de carpetas de Vorka en Drive. La de arriba es una propuesta base; cuando Vorka la confirme se documenta la definitiva aquí.</p>
+      <h3>Estructura base de carpetas</h3>
+      <p>Cada proyecto tiene su carpeta raíz en Drive, accesible desde Notion. La estructura mínima es:</p>
+      <div class="grid-3">
+        <div class="area-card c-purple"><h4>00 · Brief y estrategia</h4><p>Documentos base, planeación, objetivos.</p></div>
+        <div class="area-card c-pink"><h4>01 · Materiales del cliente</h4><p>Logos, fotos, textos, referencias.</p></div>
+        <div class="area-card c-yellow"><h4>02 · Editables</h4><p>Canva, CapCut, PSD, versiones de trabajo.</p></div>
+        <div class="area-card c-green"><h4>03 · Entregables finales</h4><p>PNG, MP4, PDF ya aprobados.</p></div>
+        <div class="area-card c-orange"><h4>04 · Reportes</h4><p>Métricas, cierre de mes, aprendizajes.</p></div>
+        <div class="area-card c-red"><h4>05 · Archivo</h4><p>Históricos, entregas cerradas.</p></div>
       </div>
 
-      <h3>Cómo nombrar archivos</h3>
-      <p>Un buen nombre te dice qué es sin abrirlo. Convención sugerida:</p>
-      <div class="card">
-        <div class="card-title" style="color:var(--vk-purple);font-family:ui-monospace,SF Mono,monospace;font-weight:700">CLIENTE_TIPO_TEMA_FECHA_VERSION.ext</div>
-        <p style="margin:8px 0 0;font-size:14px;color:var(--ink-2)">Ejemplos:</p>
-        <ul style="font-family:ui-monospace,SF Mono,monospace;font-size:13px;margin-top:8px">
-          <li>VORKA_POST_lanzamiento_20260918_v01.png</li>
-          <li>WESTMINSTER_REEL_admisiones_20261005_final.mp4</li>
-          <li>CLIENTEX_COPY_navidad_20261124_v03.docx</li>
-        </ul>
+      <h3>Cómo se ordenan los archivos</h3>
+      <p>Nada de nombres largos ni con nomenclatura complicada. Los archivos se ordenan y se identifican por <b>uno de estos tres criterios</b>, el que aplique al proyecto:</p>
+
+      <div class="grid-3">
+        <div class="area-card c-purple">
+          <h4>Por orden</h4>
+          <p>01, 02, 03… en el orden en el que se van creando. Ideal para carruseles o series.</p>
+        </div>
+        <div class="area-card c-yellow">
+          <h4>Por fecha</h4>
+          <p>Con fecha de publicación al inicio (aaaa-mm-dd), útil para calendarios editoriales activos.</p>
+        </div>
+        <div class="area-card c-green">
+          <h4>Por plan de contenido</h4>
+          <p>Con el código del post según el calendario editorial en Notion (ej. P1, P2, R3…).</p>
+        </div>
       </div>
 
       <h3>Versiones</h3>
       <ul>
-        <li>Usa <b>v01, v02, v03…</b> mientras trabajas.</li>
-        <li>Cuando algo queda aprobado, cámbialo a <b>_final</b>.</li>
-        <li>Si después del "final" hay otra ronda, es <b>_final-v2</b>. No "final final ahora sí".</li>
-        <li>Elimina versiones intermedias cuando ya no sirvan.</li>
+        <li>Mientras trabajas usa <b>v01, v02, v03…</b></li>
+        <li>Cuando queda aprobado, pásalo a la carpeta <b>03 · Entregables finales</b>.</li>
+        <li>Nada de "final", "final-final", "ahora sí final". Si está en la carpeta 03, es final.</li>
       </ul>
 
       <h3>Editables vs. finales</h3>
-      <ul>
-        <li>Editables (Canva, CapCut, etc.) van en la carpeta 02.</li>
-        <li>Finales (PNG, MP4, PDF ya aprobados) van en la carpeta 03.</li>
-        <li>Nunca mezcles editables y finales en la misma carpeta.</li>
-      </ul>
-
-      <div class="callout warn">
-        <div class="callout-title">⚠️ Nombres prohibidos</div>
-        <p><b>finalfinal2AHORASI.png</b>, <b>Sin título (5).jpg</b>, <b>imagen.png</b>, <b>WhatsApp Image 2026-…</b>. Si le pones un nombre así, te va a perseguir por semanas.</p>
+      <div class="compare">
+        <div class="yes">
+          <h5>✓ Sí</h5>
+          <ul>
+            <li>Editables en carpeta <b>02</b>.</li>
+            <li>Finales en carpeta <b>03</b>.</li>
+            <li>Acceso siempre desde Notion, no buscando en Drive.</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h5>✕ No</h5>
+          <ul>
+            <li>Editables y finales en la misma carpeta.</li>
+            <li>Guardar en escritorio personal.</li>
+            <li>Duplicar carpetas sin borrar la vieja.</li>
+          </ul>
+        </div>
       </div>
 
       <div class="callout tip">
         <div class="callout-title">💡 Regla del "tercer clic"</div>
-        <p>Cualquier archivo del equipo debe encontrarse en <b>máximo 3 clics</b> desde la carpeta raíz del cliente. Si te toma más, la estructura está mal armada.</p>
+        <p>Cualquier archivo del equipo debe encontrarse en <b>máximo 3 clics</b> desde el proyecto en Notion. Si te toma más, la estructura está mal armada. Avísalo.</p>
       </div>
     </section>
 
@@ -1901,121 +2237,84 @@ footer{
       <h2 class="section-title"><span class="emoji">⚠️</span> Cosas que probablemente te van a pasar</h2>
       <p class="section-intro">Nadie llega a un equipo sin equivocarse. Estos son los errores más comunes en Vorka. Léelos con calma: te van a ahorrar semanas.</p>
 
-      <div class="err-item">
-        <div class="err-title">1. Diseñar antes de entender el objetivo</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>Abres Canva sin brief y a las 2 horas nada convence.</p></div>
-          <div><b>Por qué</b><p>Diseñas por intuición, no por estrategia.</p></div>
-          <div><b>Cómo evitarlo</b><p>Contesta las 7 preguntas de la sección 10 antes de tocar la herramienta.</p></div>
-        </div>
-      </div>
+      <div class="err-grid-cards">
+        <article class="err-card c1">
+          <div class="ec-head"><span class="ec-num">01</span><span class="ec-title">Diseñar antes de entender el objetivo</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>Abres Canva sin brief y a las 2 horas nada convence.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Contesta las 7 preguntas de la sección 10 antes de tocar la herramienta.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">2. Escribir demasiado</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>El copy es un ladrillo y nadie lo lee.</p></div>
-          <div><b>Por qué</b><p>Intentas decir todo en una pieza.</p></div>
-          <div><b>Cómo evitarlo</b><p>Una idea por pieza. Corta primera y última frase.</p></div>
-        </div>
-      </div>
+        <article class="err-card c2">
+          <div class="ec-head"><span class="ec-num">02</span><span class="ec-title">Escribir demasiado</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>El copy es un ladrillo y nadie lo lee.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Una idea por pieza. Corta la primera y la última frase.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">3. No revisar ortografía</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>Se publica con error de tilde y toca borrar.</p></div>
-          <div><b>Por qué</b><p>Confías en tu lectura rápida.</p></div>
-          <div><b>Cómo evitarlo</b><p>Pega el copy en Google Docs o corrector antes de aprobar.</p></div>
-        </div>
-      </div>
+        <article class="err-card c3">
+          <div class="ec-head"><span class="ec-num">03</span><span class="ec-title">No revisar ortografía</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>Se publica con error de tilde y toca borrar.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Pega el copy en Google Docs o un corrector antes de aprobar.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">4. Saturar un diseño</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>La pieza es un tianguis de elementos y no se entiende nada.</p></div>
-          <div><b>Por qué</b><p>Miedo a que "se vea vacío".</p></div>
-          <div><b>Cómo evitarlo</b><p>Menos es más. Quita lo que dudas. El aire también comunica.</p></div>
-        </div>
-      </div>
+        <article class="err-card c4">
+          <div class="ec-head"><span class="ec-num">04</span><span class="ec-title">Saturar un diseño</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>La pieza es un tianguis de elementos y no se entiende nada.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Menos es más. Quita lo que dudas. El aire también comunica.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">5. Usar demasiados colores</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>La pieza se ve genérica y sin marca.</p></div>
-          <div><b>Por qué</b><p>Usaste toda la paleta al mismo tiempo.</p></div>
-          <div><b>Cómo evitarlo</b><p>Máximo 3 colores por pieza. Uno domina, otro apoya, uno remata.</p></div>
-        </div>
-      </div>
+        <article class="err-card c5">
+          <div class="ec-head"><span class="ec-num">05</span><span class="ec-title">Usar demasiados colores</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>La pieza se ve genérica y sin marca.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Máximo 3 colores por pieza. Uno domina, otro apoya, uno remata.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">6. Copiar una tendencia sin entenderla</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>El post no encaja con la cuenta y se siente forzado.</p></div>
-          <div><b>Por qué</b><p>Copiaste el formato pero no la razón por la que funciona.</p></div>
-          <div><b>Cómo evitarlo</b><p>Antes de replicar, pregunta: ¿por qué funcionó? ¿aplica a esta cuenta?</p></div>
-        </div>
-      </div>
+        <article class="err-card c6">
+          <div class="ec-head"><span class="ec-num">06</span><span class="ec-title">Copiar una tendencia sin entenderla</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>El post no encaja con la cuenta y se siente forzado.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Antes de replicar, pregunta: ¿por qué funcionó? ¿aplica a esta cuenta?</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">7. Publicar sin aprobación</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>Sale algo que el cliente no quería y toca dar explicaciones.</p></div>
-          <div><b>Por qué</b><p>Urgencia mal manejada o confianza excesiva.</p></div>
-          <div><b>Cómo evitarlo</b><p>Nada se publica sin aprobación. Ni con "urgencia".</p></div>
-        </div>
-      </div>
+        <article class="err-card c1">
+          <div class="ec-head"><span class="ec-num">07</span><span class="ec-title">Publicar sin aprobación</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>Sale algo que el cliente no quería y toca dar explicaciones.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Nada se publica sin aprobación en Notion. Ni con "urgencia".</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">8. No adaptar contenido a cada plataforma</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>El mismo post con el mismo copy en 4 redes. Se ve flojo.</p></div>
-          <div><b>Por qué</b><p>Ahorrar tiempo.</p></div>
-          <div><b>Cómo evitarlo</b><p>Adaptar copy, dimensiones y tono para cada red. Ver sección 09.</p></div>
-        </div>
-      </div>
+        <article class="err-card c2">
+          <div class="ec-head"><span class="ec-num">08</span><span class="ec-title">No adaptar a cada plataforma</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>El mismo post con el mismo copy en 4 redes. Se ve flojo.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Adapta copy, dimensiones y tono para cada red. Ver sección 09.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">9. No revisar el contenido después de publicado</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>El link no abre, la imagen quedó recortada y nadie se dio cuenta hasta el día siguiente.</p></div>
-          <div><b>Por qué</b><p>Consideras terminada la tarea al programar.</p></div>
-          <div><b>Cómo evitarlo</b><p>Entra a la cuenta después de publicar y verifica todo.</p></div>
-        </div>
-      </div>
+        <article class="err-card c3">
+          <div class="ec-head"><span class="ec-num">09</span><span class="ec-title">No revisar después de publicar</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>El link no abre, la imagen se recortó y nadie se dio cuenta hasta el día siguiente.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Entra a la cuenta después de publicar y verifica todo.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">10. Confundir likes con resultados</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>Te obsesionas con el like y descuidas lo que realmente importa (clics, conversaciones, ventas).</p></div>
-          <div><b>Por qué</b><p>El like es la métrica más visible.</p></div>
-          <div><b>Cómo evitarlo</b><p>Alinea con el objetivo: si es tráfico, mide clics. Si es venta, mide conversión.</p></div>
-        </div>
-      </div>
+        <article class="err-card c4">
+          <div class="ec-head"><span class="ec-num">10</span><span class="ec-title">Confundir likes con resultados</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>Te obsesionas con el like y descuidas lo que realmente importa.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Alinea con el objetivo: si es tráfico, mide clics. Si es venta, conversión.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">11. Asumir información</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>Diseñas basándote en lo que "seguro es así" y no era así.</p></div>
-          <div><b>Por qué</b><p>Miedo a preguntar o falta de tiempo.</p></div>
-          <div><b>Cómo evitarlo</b><p>Confirmar &gt; asumir. Siempre.</p></div>
-        </div>
-      </div>
+        <article class="err-card c5">
+          <div class="ec-head"><span class="ec-num">11</span><span class="ec-title">Asumir información</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>Diseñas con lo que "seguro es así" y no era así.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Confirmar &gt; asumir. Siempre.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">12. No preguntar</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>Entregas algo distinto a lo que se pedía.</p></div>
-          <div><b>Por qué</b><p>Pena o miedo a "parecer que no sabes".</p></div>
-          <div><b>Cómo evitarlo</b><p>Preguntar es parte del trabajo. Vale mil veces más que rehacer.</p></div>
-        </div>
-      </div>
+        <article class="err-card c6">
+          <div class="ec-head"><span class="ec-num">12</span><span class="ec-title">No preguntar</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>Entregas algo distinto a lo que se pedía.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Preguntar es parte del trabajo. Vale mil veces más que rehacer.</p></div>
+        </article>
 
-      <div class="err-item">
-        <div class="err-title">13. No avisar cuando hay un problema</div>
-        <div class="err-grid">
-          <div><b>Qué pasa</b><p>El problema crece en silencio hasta que revienta.</p></div>
-          <div><b>Por qué</b><p>Miedo a "molestar" o pensar que se resuelve solo.</p></div>
-          <div><b>Cómo evitarlo</b><p>Avisar temprano. Un mensaje corto vale más que una crisis.</p></div>
-        </div>
+        <article class="err-card c1">
+          <div class="ec-head"><span class="ec-num">13</span><span class="ec-title">No avisar cuando hay un problema</span></div>
+          <div class="ec-row"><span class="ec-tag">Qué pasa</span><p>El problema crece en silencio hasta que revienta.</p></div>
+          <div class="ec-row solve"><span class="ec-tag">Solución</span><p>Avisa temprano por WhatsApp. Un mensaje corto vale más que una crisis.</p></div>
+        </article>
       </div>
     </section>
 
@@ -2025,13 +2324,37 @@ footer{
       <h2 class="section-title"><span class="emoji">🆘</span> ¿No sabes qué hacer? Perfecto. Haz esto.</h2>
       <p class="section-intro">Que no sepas algo no es problema. Que te quedes atorado en silencio, sí. Este es el protocolo cuando te trabas.</p>
 
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Lee nuevamente la tarea</h4><p>Muchas veces la respuesta está ahí y se pasó por alto.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Revisa el brief o la documentación</h4><p>Notion, Drive, correo. La información puede estar guardada.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Busca si existe un proceso en este manual</h4><p>Usa la barra de búsqueda de arriba (o ⌘K). El glosario también ayuda.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Intenta resolverlo</h4><p>Prueba una solución. Aunque no sea perfecta, te da un punto de partida.</p></div></div>
-        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Si sigues sin saber, pregunta</h4><p>Pero con contexto (ver el paso 6).</p></div></div>
-        <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Cuando preguntes, explica qué intentaste</h4><p>Muestra que le echaste ganas antes de pedir ayuda. Ahorra tiempo y da mejores respuestas.</p></div></div>
+      <div class="help-flow">
+        <div class="help-step">
+          <div class="hs-num">01</div>
+          <div class="hs-title">Relee la tarea</div>
+          <div class="hs-desc">Muchas veces la respuesta está ahí y se pasó por alto.</div>
+        </div>
+        <div class="help-step">
+          <div class="hs-num">02</div>
+          <div class="hs-title">Revisa Notion</div>
+          <div class="hs-desc">Brief, documentación, links a Drive. La información puede estar guardada.</div>
+        </div>
+        <div class="help-step">
+          <div class="hs-num">03</div>
+          <div class="hs-title">Busca en este manual</div>
+          <div class="hs-desc">Barra de búsqueda arriba (⌘K). El glosario también ayuda.</div>
+        </div>
+        <div class="help-step">
+          <div class="hs-num">04</div>
+          <div class="hs-title">Intenta resolverlo</div>
+          <div class="hs-desc">Prueba una solución. Aunque no sea perfecta, te da un punto de partida.</div>
+        </div>
+        <div class="help-step">
+          <div class="hs-num">05</div>
+          <div class="hs-title">Pregunta por WhatsApp</div>
+          <div class="hs-desc">Si sigues trabado, avisa. Pero con contexto (paso 06).</div>
+        </div>
+        <div class="help-step">
+          <div class="hs-num">06</div>
+          <div class="hs-title">Explica qué intentaste</div>
+          <div class="hs-desc">Muestra que le echaste ganas. Ahorra tiempo y da mejores respuestas.</div>
+        </div>
       </div>
 
       <h3>Cómo NO preguntar vs. cómo sí</h3>
@@ -2076,7 +2399,7 @@ footer{
         <div class="pb-pct" id="onboardBlockPct">0%</div>
       </div>
 
-      <ul class="checklist" id="onboardChecklist" data-storage="vk_check_onboard">
+      <ul class="checklist three-col" id="onboardChecklist" data-storage="vk_check_onboard">
         <li><input type="checkbox" id="o1"/><label for="o1" class="cl-text">Entiendo qué es Vorka.</label></li>
         <li><input type="checkbox" id="o2"/><label for="o2" class="cl-text">Entiendo qué hacemos.</label></li>
         <li><input type="checkbox" id="o3"/><label for="o3" class="cl-text">Conozco nuestra forma de trabajar.</label></li>
@@ -2237,8 +2560,8 @@ function renderGloss(filter){
     glossList.innerHTML = '<div class="gloss-empty">No encontramos ese término. Prueba con otra palabra o revisa la ortografía.</div>';
     return;
   }
-  glossList.innerHTML = filtered.map(g => `
-    <article class="gloss-item">
+  glossList.innerHTML = filtered.map((g, i) => `
+    <article class="gloss-item g${(i%6)+1}">
       <h4>${g.t}</h4>
       <div class="g-block"><b>Qué significa</b><p>${g.d}</p></div>
       <div class="g-block"><b>Ejemplo</b><p>${g.e}</p></div>
@@ -2453,6 +2776,51 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     window.scrollTo({top:y, behavior:'smooth'});
   });
 });
+
+/* ==================== Copiar brief ==================== */
+async function copyText(text, btn, label, original){
+  try{
+    await navigator.clipboard.writeText(text);
+    btn.classList.add('ok');
+    label.textContent = '¡Copiado!';
+    setTimeout(()=>{
+      btn.classList.remove('ok');
+      label.textContent = original;
+    }, 1800);
+  }catch(err){
+    label.textContent = 'Copia manual: Ctrl+C';
+    setTimeout(()=>{ label.textContent = original; }, 3000);
+  }
+}
+
+const copyBriefBtn = document.getElementById('copyBriefBtn');
+if(copyBriefBtn){
+  copyBriefBtn.addEventListener('click', () => {
+    const text = document.getElementById('briefTemplate').innerText;
+    const label = document.getElementById('copyBriefLabel');
+    copyText(text, copyBriefBtn, label, 'Copiar plantilla');
+  });
+}
+
+const copyBriefEmptyBtn = document.getElementById('copyBriefEmptyBtn');
+if(copyBriefEmptyBtn){
+  copyBriefEmptyBtn.addEventListener('click', () => {
+    const text = `📌 BRIEF DE CONTENIDO — VORKA
+
+• Cuenta / cliente:
+• Objetivo:
+• Audiencia:
+• Mensaje central:
+• Plataforma:
+• Formato:
+• CTA:
+• Deadline:
+• Referencias visuales / de tono:
+• Notas extra:`;
+    const label = document.getElementById('copyBriefEmptyLabel');
+    copyText(text, copyBriefEmptyBtn, label, 'Copiar sin guías');
+  });
+}
 
 /* ==================== Back to top ==================== */
 const toTop = document.getElementById('toTop');
