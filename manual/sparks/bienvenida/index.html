@@ -1,0 +1,1785 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Manual de Inducción — Vorka Sparks</title>
+<meta name="description" content="Manual de Inducción y Formación Interactivo de Vorka Sparks. Ruta de 6 niveles: del primer día como aprendiz al creador oficial que revela impulsos que transforman." />
+<meta name="theme-color" content="#FBFAF8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#12172A" media="(prefers-color-scheme: dark)" />
+<link rel="icon" type="image/png" href="../vorka-logo.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500;1,700;1,800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================== Tokens Vorka ============================== */
+:root{
+  --paper:#FBFAF8;
+  --paper-2:#F1EEE6;
+  --paper-3:#E8E3D6;
+  --ink:#141414;
+  --ink-2:rgba(20,20,20,0.66);
+  --ink-3:rgba(20,20,20,0.40);
+  --ink-4:rgba(20,20,20,0.18);
+  --line:rgba(20,20,20,0.12);
+  --line-strong:rgba(20,20,20,0.30);
+
+  --vk-black:#292B2C;
+  --vk-white:#FFFFFF;
+  --vk-purple:#762196;
+  --vk-purple-soft:#8F30B2;
+  --vk-purple-deep:#5A1874;
+  --vk-pink:#ED70C0;
+  --vk-yellow:#EDB655;
+  --vk-red:#CE4E42;
+  --vk-green:#629E46;
+  --vk-orange:#EE7D3A;
+
+  --spark:#EE7D3A;
+  --spark-soft:#F49658;
+  --spark-deep:#C25E22;
+
+  --accent:var(--vk-purple);
+  --accent-soft:var(--vk-purple-soft);
+  --accent-hover:var(--vk-purple-deep);
+  --on-accent:#FBFAF8;
+
+  --field:rgba(20,20,20,0.04);
+  --field-focus:rgba(118,33,150,0.07);
+
+  --logo-filter:none;
+
+  --sidebar-w:288px;
+  --topbar-h:72px;
+  --max-w:1360px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#12172A;
+    --paper-2:#1A2038;
+    --paper-3:#232A45;
+    --ink:#E8E4D8;
+    --ink-2:rgba(232,228,216,0.66);
+    --ink-3:rgba(232,228,216,0.40);
+    --ink-4:rgba(232,228,216,0.18);
+    --line:rgba(232,228,216,0.14);
+    --line-strong:rgba(232,228,216,0.30);
+    --accent:#C880E8;
+    --accent-soft:#D69BEE;
+    --accent-hover:#DBA9F0;
+    --on-accent:#12172A;
+    --field:rgba(232,228,216,0.05);
+    --field-focus:rgba(200,128,232,0.10);
+    --logo-filter:invert(0.92) brightness(1.06);
+    --spark:#F4A363;
+    --spark-soft:#F7B47B;
+    --spark-deep:#EE7D3A;
+  }
+}
+
+/* ============================== Reset ============================== */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink)}
+html{
+  -webkit-text-size-adjust:100%;
+  text-rendering:optimizeLegibility;
+  font-family:'Mona Sans',ui-sans-serif,system-ui,sans-serif;
+  scroll-behavior:smooth;
+  scroll-padding-top:96px;
+}
+body{
+  font-family:'Mona Sans',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:16px;line-height:1.6;font-weight:400;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{background:none;border:0;cursor:pointer;padding:0;font:inherit;color:inherit}
+input,textarea{font:inherit;color:inherit}
+::selection{background:var(--accent);color:var(--on-accent)}
+
+/* ============================== Type utils ============================== */
+.display{
+  font-family:'Mona Sans',sans-serif;
+  font-weight:800;letter-spacing:-0.025em;line-height:0.96;color:var(--ink);
+}
+.serif{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:500;font-style:italic;letter-spacing:-0.005em;line-height:1.15;color:var(--ink);
+}
+.smallcaps{
+  text-transform:uppercase;letter-spacing:0.16em;font-size:12px;font-weight:600;color:var(--ink-2);
+}
+.smallcaps-accent{
+  text-transform:uppercase;letter-spacing:0.18em;font-size:12px;font-weight:700;color:var(--spark);
+  display:inline-flex;align-items:center;gap:14px;
+}
+.smallcaps-accent::before{
+  content:"";display:inline-block;width:24px;height:1px;background:var(--spark);
+}
+.ital{font-style:italic;color:var(--spark);font-weight:800;font-family:'Cormorant Garamond',Georgia,serif}
+.lead{font-size:clamp(17px,1.4vw,20px);line-height:1.55;color:var(--ink-2);max-width:62ch}
+
+/* ============================== Brand mark ============================== */
+.brand-mark{
+  display:inline-block;height:38px;width:38px;
+  background:url("../vorka-logo.png") center/contain no-repeat;
+  filter:var(--logo-filter);
+  flex-shrink:0;
+  transition:transform .25s;
+}
+.brand:hover .brand-mark{transform:rotate(-8deg)}
+.foot-mark{
+  display:inline-block;height:80px;width:80px;
+  background:url("../vorka-logo.png") center/contain no-repeat;
+  filter:var(--logo-filter);
+}
+
+/* ============================== Topbar ============================== */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  height:var(--topbar-h);
+  background:color-mix(in srgb,var(--paper) 92%,transparent);
+  backdrop-filter:saturate(140%) blur(12px);
+  -webkit-backdrop-filter:saturate(140%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  height:100%;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:24px;
+  padding:0 clamp(16px,3vw,40px);
+  max-width:var(--max-w);
+  margin:0 auto;
+}
+.brand{display:flex;align-items:center;gap:12px;flex-shrink:0;transition:opacity .15s}
+.brand:hover{opacity:0.85}
+.brand-name{
+  font-weight:800;letter-spacing:-0.01em;font-size:16px;line-height:1;
+  display:flex;flex-direction:column;gap:3px;
+}
+.brand-name em{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;font-weight:500;font-size:13px;color:var(--spark);letter-spacing:0;
+}
+
+.progress-wrap{
+  display:flex;align-items:center;gap:14px;min-width:0;
+}
+.progress-label{
+  font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;
+}
+.progress-track{
+  position:relative;flex:1;height:6px;
+  background:var(--field);border-radius:99px;overflow:hidden;
+  border:1px solid var(--line);
+}
+.progress-fill{
+  position:absolute;left:0;top:0;bottom:0;width:0%;
+  background:linear-gradient(90deg,var(--spark) 0%,var(--vk-pink) 60%,var(--accent) 100%);
+  border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);
+}
+.progress-pct{
+  font-family:'Mona Sans',sans-serif;font-weight:800;font-size:14px;
+  min-width:44px;text-align:right;color:var(--ink);
+}
+
+.menu-btn{
+  display:none;width:42px;height:42px;border-radius:12px;
+  background:var(--field);border:1px solid var(--line);
+  align-items:center;justify-content:center;
+}
+.menu-btn svg{width:20px;height:20px;stroke:var(--ink);}
+
+/* ============================== Layout ============================== */
+.shell{
+  display:grid;
+  grid-template-columns:var(--sidebar-w) minmax(0,1fr);
+  gap:0;
+  padding-top:var(--topbar-h);
+  min-height:100vh;
+  max-width:var(--max-w);
+  margin:0 auto;
+}
+
+/* ============================== Sidebar ============================== */
+.sidebar{
+  position:sticky;top:var(--topbar-h);
+  align-self:start;
+  height:calc(100vh - var(--topbar-h));
+  overflow-y:auto;
+  padding:28px 20px 40px 24px;
+  border-right:1px solid var(--line);
+  background:var(--paper);
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.side-title{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;
+  color:var(--ink-3);margin:0 0 12px 8px;
+}
+.side-group{margin-bottom:24px}
+.side-group:last-child{margin-bottom:0}
+
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:10px;
+  color:var(--ink-2);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all .15s;
+  width:100%;text-align:left;position:relative;
+}
+.nav-item:hover{background:var(--field);color:var(--ink)}
+.nav-item.active{
+  background:color-mix(in srgb,var(--spark) 12%,transparent);
+  color:var(--ink);
+  font-weight:600;
+}
+.nav-item.active::before{
+  content:"";position:absolute;left:-24px;top:12px;bottom:12px;width:3px;
+  background:var(--spark);border-radius:99px;
+}
+.nav-num{
+  width:24px;height:24px;border-radius:6px;
+  background:var(--field);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--ink-2);
+  flex-shrink:0;
+}
+.nav-item.done .nav-num{
+  background:var(--vk-green);color:#fff;border-color:var(--vk-green);
+}
+.nav-item.active .nav-num{
+  background:var(--spark);color:#fff;border-color:var(--spark);
+}
+.nav-lock{
+  margin-left:auto;font-size:10px;color:var(--ink-3);
+}
+.nav-item.locked{opacity:0.55;cursor:not-allowed}
+.nav-item.locked:hover{background:transparent;color:var(--ink-2)}
+
+.side-cta{
+  margin-top:12px;padding:18px 16px;
+  background:transparent;
+  border:1px solid var(--line);border-radius:12px;
+}
+.side-cta strong{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+.side-cta p{margin:0;font-size:12px;color:var(--ink-2);line-height:1.45}
+.side-cta .mini-bar{
+  margin-top:14px;height:3px;background:var(--field);border-radius:99px;overflow:hidden;
+}
+.side-cta .mini-bar span{
+  display:block;height:100%;width:0%;
+  background:var(--spark);
+  transition:width .5s;
+}
+
+/* ============================== Main ============================== */
+main{padding:40px clamp(24px,5vw,80px) 120px}
+.section{display:none;animation:fadeUp .5s ease}
+.section.active{display:block}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.eyebrow-row{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin-bottom:22px;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:99px;
+  border:1px solid var(--line);background:transparent;
+  font-size:12px;font-weight:600;color:var(--ink-2);
+  letter-spacing:0.02em;
+}
+.chip.spark{border-color:var(--spark);color:var(--spark)}
+.chip .dot{width:6px;height:6px;border-radius:99px;background:var(--spark)}
+
+h1.hero{
+  font-size:clamp(40px,6.5vw,88px);
+  font-weight:800;letter-spacing:-0.035em;line-height:0.94;
+  margin:0 0 20px;
+}
+h1.hero em{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:var(--spark);
+  letter-spacing:-0.01em;
+}
+h2.sec-title{
+  font-size:clamp(28px,3.8vw,44px);
+  font-weight:800;letter-spacing:-0.025em;line-height:1.04;
+  margin:56px 0 18px;
+}
+h2.sec-title em{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:var(--accent);
+}
+h3.sub-title{
+  font-size:clamp(20px,2vw,26px);
+  font-weight:700;letter-spacing:-0.015em;line-height:1.2;
+  margin:32px 0 12px;
+}
+
+/* ============================== Hero ============================== */
+.hero-block{
+  padding-top:8px;padding-bottom:24px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:24px;
+}
+.hero-super{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:'Mona Sans',sans-serif;font-weight:700;
+  font-size:13px;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:26px;
+}
+.hero-super::before{
+  content:"";width:32px;height:1px;background:var(--spark);
+}
+.hero-super em{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
+  color:var(--spark);font-size:16px;letter-spacing:0;text-transform:none;
+}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:36px}
+.hero-meta{
+  display:flex;gap:36px;flex-wrap:wrap;margin-top:44px;
+  padding-top:24px;border-top:1px solid var(--line);
+}
+.hero-meta-item{max-width:220px}
+.hero-meta-item .k{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;
+  color:var(--ink-3);margin-bottom:6px;
+}
+.hero-meta-item .v{font-size:14.5px;color:var(--ink-2);line-height:1.5}
+.hero-meta-item .v strong{color:var(--ink);font-weight:700}
+
+/* ============================== Cards / grids ============================== */
+.grid{
+  display:grid;gap:20px;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  margin:20px 0;
+}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+
+.card{
+  background:transparent;border:1px solid var(--line);
+  border-radius:14px;padding:24px 22px;
+  transition:border-color .2s,transform .2s;
+  position:relative;
+}
+.card:hover{border-color:var(--ink);transform:translateY(-2px)}
+.card h4{margin:12px 0 8px;font-size:17px;font-weight:800;letter-spacing:-0.01em}
+.card p{margin:0;color:var(--ink-2);font-size:14.5px;line-height:1.55}
+.card .ico{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--spark);font-weight:800;
+}
+.card.tinted{border-color:color-mix(in srgb,var(--spark) 45%,var(--line))}
+.card.tinted:hover{border-color:var(--spark)}
+.card.tinted .ico{border-color:color-mix(in srgb,var(--spark) 55%,var(--line));color:var(--spark)}
+.card.negative{border-color:color-mix(in srgb,var(--vk-red) 35%,var(--line))}
+.card.negative .ico{border-color:color-mix(in srgb,var(--vk-red) 50%,var(--line));color:var(--vk-red)}
+
+/* ============================== Checklist ============================== */
+.checklist{
+  display:flex;flex-direction:column;gap:10px;
+  margin:20px 0 8px;
+}
+.check-row{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 16px;border:1px solid var(--line);border-radius:12px;
+  background:transparent;cursor:pointer;
+  transition:border-color .2s;
+}
+.check-row:hover{border-color:var(--ink)}
+.check-row input{
+  appearance:none;-webkit-appearance:none;
+  width:20px;height:20px;border-radius:6px;
+  border:1.5px solid var(--line-strong);background:transparent;
+  cursor:pointer;flex-shrink:0;margin-top:2px;
+  position:relative;transition:all .2s;
+}
+.check-row input:checked{
+  background:var(--vk-green);border-color:var(--vk-green);
+}
+.check-row input:checked::after{
+  content:"";position:absolute;left:5px;top:1px;
+  width:5px;height:11px;
+  border:solid #fff;border-width:0 2px 2px 0;
+  transform:rotate(45deg);
+}
+.check-row.done{
+  border-color:color-mix(in srgb,var(--vk-green) 45%,var(--line));
+}
+.check-row.done .check-text{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-4);text-decoration-thickness:1px}
+.check-text{flex:1;font-size:15px;line-height:1.5}
+.check-text strong{font-weight:700;letter-spacing:-0.005em}
+
+/* ============================== Levels intro strip ============================== */
+.levels-strip{
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;
+  margin:32px 0;
+}
+@media (max-width:900px){.levels-strip{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:520px){.levels-strip{grid-template-columns:repeat(2,1fr)}}
+.level-tile{
+  padding:16px;border-radius:12px;border:1px solid var(--line);
+  background:transparent;cursor:pointer;
+  transition:border-color .2s,transform .2s;text-align:left;
+}
+.level-tile:hover{transform:translateY(-2px);border-color:var(--spark)}
+.level-tile .lv-num{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:34px;font-weight:500;color:var(--spark);line-height:1;margin-bottom:10px;
+}
+.level-tile .lv-name{font-weight:800;font-size:13.5px;letter-spacing:-0.01em;line-height:1.2}
+.level-tile .lv-tag{font-size:11px;color:var(--ink-3);margin-top:4px;letter-spacing:0.03em}
+.level-tile.done{
+  border-color:var(--vk-green);
+}
+.level-tile.done .lv-num{color:var(--vk-green)}
+
+/* ============================== Buttons ============================== */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 22px;border-radius:99px;
+  font-weight:700;font-size:14px;letter-spacing:0.01em;
+  transition:all .2s;
+  border:1px solid transparent;
+}
+.btn.primary{
+  background:var(--ink);color:var(--paper);
+}
+.btn.primary:hover{background:var(--spark);color:#fff;transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(238,125,58,0.4)}
+.btn.ghost{
+  background:transparent;color:var(--ink);border-color:var(--line-strong);
+}
+.btn.ghost:hover{background:var(--field);border-color:var(--ink)}
+.btn.spark{
+  background:linear-gradient(120deg,var(--spark),var(--vk-pink));
+  color:#fff;
+}
+.btn.spark:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 12px 30px -8px rgba(237,112,192,0.4)}
+.btn.spark[disabled],.btn.spark.locked{
+  background:var(--field);color:var(--ink-3);cursor:not-allowed;filter:none;transform:none;box-shadow:none;
+}
+.btn .arr{transition:transform .2s}
+.btn:hover .arr{transform:translateX(4px)}
+
+/* ============================== Callouts & quotes ============================== */
+.callout{
+  padding:22px 24px;border-radius:14px;
+  background:transparent;
+  border:1px solid var(--line);
+  border-left:3px solid var(--spark);
+  margin:20px 0;
+}
+.callout .label{
+  display:inline-block;font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--spark);margin-bottom:8px;
+}
+.callout p{margin:0;font-size:15.5px;line-height:1.55}
+
+blockquote.pull{
+  margin:24px 0;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
+  font-size:clamp(22px,2.6vw,32px);line-height:1.25;
+  color:var(--ink);border-left:3px solid var(--spark);
+  padding:8px 0 8px 24px;
+}
+blockquote.pull cite{
+  display:block;font-family:'Mona Sans',sans-serif;font-style:normal;font-weight:600;
+  font-size:13px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-3);
+  margin-top:12px;
+}
+
+/* ============================== Tables ============================== */
+.tbl-wrap{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:14px;background:transparent}
+table.vk{
+  width:100%;border-collapse:collapse;font-size:14.5px;
+}
+table.vk th,table.vk td{
+  padding:16px 20px;text-align:left;vertical-align:top;
+  border-bottom:1px solid var(--line);
+}
+table.vk th{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:800;color:var(--ink-2);
+  background:transparent;
+  border-bottom:1px solid var(--line-strong);
+}
+table.vk tr:last-child td{border-bottom:0}
+table.vk td strong{font-weight:700}
+table.vk .neg{color:var(--vk-red);font-weight:700}
+table.vk .pos{color:var(--vk-green);font-weight:700}
+
+/* ============================== Question list (10 preguntas) ============================== */
+.q-list{
+  counter-reset:qc;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;
+  margin:20px 0;
+}
+.q-item{
+  counter-increment:qc;
+  padding:22px 22px 22px 68px;
+  border:1px solid var(--line);border-radius:12px;background:transparent;
+  position:relative;font-size:15px;line-height:1.5;
+  transition:border-color .2s;
+}
+.q-item:hover{border-color:var(--ink)}
+.q-item::before{
+  content:counter(qc,decimal-leading-zero);
+  position:absolute;left:18px;top:18px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
+  font-size:34px;color:var(--spark);line-height:1;
+}
+
+/* ============================== Steps timeline ============================== */
+.steps{
+  display:flex;flex-direction:column;gap:12px;margin:24px 0;
+  position:relative;
+}
+.step{
+  display:grid;grid-template-columns:52px minmax(0,1fr);gap:20px;
+  padding:22px;border:1px solid var(--line);border-radius:12px;background:transparent;
+  align-items:start;transition:border-color .2s;
+}
+.step:hover{border-color:var(--ink)}
+.step-num{
+  width:40px;height:40px;border-radius:99px;
+  background:transparent;color:var(--ink);
+  border:1px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;letter-spacing:-0.02em;flex-shrink:0;
+}
+.step h4{margin:0 0 6px;font-size:17px;font-weight:800;letter-spacing:-0.01em}
+.step p{margin:0;color:var(--ink-2);font-size:14.5px;line-height:1.55}
+.step.spark .step-num{border-color:var(--spark);color:var(--spark);background:transparent}
+
+/* ============================== Flow map (editorial) ============================== */
+.flow-map{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  margin:20px 0;padding:24px;
+  border:1px solid var(--line);border-radius:16px;
+  background:transparent;
+}
+.flow-node{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:99px;
+  background:transparent;border:1px solid var(--line);
+  font-size:13px;font-weight:600;
+}
+.flow-node .n{
+  width:20px;height:20px;border-radius:99px;background:transparent;color:var(--spark);
+  border:1px solid var(--spark);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;
+}
+.flow-arrow{color:var(--ink-3);font-size:14px}
+
+/* ============================== Drive tree ============================== */
+.drive-tree{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:13.5px;line-height:1.65;
+  padding:22px 24px;border-radius:12px;
+  background:transparent;border:1px solid var(--line);
+  color:var(--ink);white-space:pre;overflow-x:auto;
+}
+.drive-tree .folder{color:var(--spark);font-weight:700}
+.drive-tree .file{color:var(--ink-2)}
+
+/* ============================== Tags row ============================== */
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.tag{
+  padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;
+  background:transparent;border:1px solid var(--line);color:var(--ink-2);
+}
+.tag.good{color:var(--vk-green);border-color:color-mix(in srgb,var(--vk-green) 40%,var(--line))}
+.tag.bad{color:var(--vk-red);border-color:color-mix(in srgb,var(--vk-red) 40%,var(--line))}
+.tag.warn{color:var(--vk-yellow);border-color:color-mix(in srgb,var(--vk-yellow) 45%,var(--line))}
+
+/* ============================== Level footer / unlock ============================== */
+.level-foot{
+  margin-top:48px;padding:28px;
+  border-radius:14px;
+  background:transparent;
+  border:1px solid var(--line);
+  border-top:2px solid var(--spark);
+  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+}
+.level-foot .fl-info strong{display:block;font-size:18px;font-weight:800;letter-spacing:-0.01em}
+.level-foot .fl-info span{font-size:13px;color:var(--ink-2)}
+.level-foot .fl-info .prog{margin-top:6px;font-size:12px;font-weight:700;color:var(--spark)}
+
+/* ============================== Certification (level 5) ============================== */
+.cert{
+  padding:clamp(28px,4vw,56px);border-radius:16px;
+  background:transparent;
+  border:1px solid var(--line);
+  border-top:3px solid var(--spark);
+  text-align:center;position:relative;overflow:hidden;
+}
+.cert .fire{font-size:52px;line-height:1;margin-bottom:14px}
+.cert h3{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
+  font-size:clamp(28px,4vw,44px);letter-spacing:-0.015em;line-height:1.05;
+  margin:0 0 8px;
+}
+.cert p{max-width:56ch;margin:0 auto;color:var(--ink-2);font-size:16px}
+
+/* ============================== Footer (clone vorka.mx) ============================== */
+footer.site-foot{
+  background:var(--paper);color:var(--ink);
+  padding:56px clamp(20px,4vw,64px) 40px;
+  margin-top:0;
+  border-top:1px solid var(--line);
+}
+.foot-inner{max-width:1080px;margin:0 auto}
+.foot-cols{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:40px;
+  padding-bottom:32px;border-bottom:1px solid var(--line);
+}
+.foot-col h5{
+  font-family:'Mona Sans',sans-serif;font-weight:800;
+  font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
+  margin:0 0 16px;color:var(--ink);
+}
+.foot-brand p{
+  font-size:14px;color:var(--ink-2);line-height:1.55;
+  margin:0 0 20px;max-width:36ch;
+}
+.foot-brand p b{color:var(--ink);font-weight:600}
+.foot-col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.foot-col a{font-size:14px;color:var(--ink-2);transition:color .15s;cursor:pointer}
+.foot-col a:hover{color:var(--spark)}
+.foot-bottom{
+  display:flex;justify-content:space-between;align-items:center;gap:20px;
+  padding-top:24px;flex-wrap:wrap;
+  font-size:12px;color:var(--ink-3);
+}
+.foot-tag{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
+  font-size:18px;color:var(--accent);letter-spacing:-0.005em;
+}
+@media (max-width:820px){
+  .foot-cols{grid-template-columns:1fr 1fr;gap:32px}
+  .foot-brand{grid-column:1/-1}
+}
+@media (max-width:520px){
+  .foot-cols{grid-template-columns:1fr}
+  .foot-bottom{flex-direction:column;text-align:center}
+}
+
+/* ============================== Mobile ============================== */
+@media (max-width:960px){
+  :root{--sidebar-w:260px}
+}
+@media (max-width:820px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;top:var(--topbar-h);left:0;bottom:0;
+    width:min(300px,86vw);height:calc(100vh - var(--topbar-h));
+    z-index:55;transform:translateX(-105%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 40px 80px -20px rgba(0,0,0,0.3);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .menu-btn{display:flex}
+  .sidebar-backdrop{
+    position:fixed;inset:var(--topbar-h) 0 0 0;background:rgba(0,0,0,0.35);
+    z-index:54;opacity:0;pointer-events:none;transition:opacity .3s;
+  }
+  .sidebar-backdrop.on{opacity:1;pointer-events:auto}
+  main{padding:28px 20px 100px}
+  .progress-label{display:none}
+}
+@media (max-width:520px){
+  h1.hero{font-size:44px}
+  h2.sec-title{font-size:28px}
+  .level-foot{flex-direction:column;align-items:stretch}
+  .level-foot .btn{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================== TOPBAR ============================== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#" onclick="goSection('intro');return false;">
+      <span class="brand-mark"></span>
+      <span class="brand-name">Vorka Sparks <em>manual de inducción</em></span>
+    </a>
+
+    <div class="progress-wrap">
+      <span class="progress-label">Onboarding</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="sidebar-backdrop" id="sbBackdrop"></div>
+
+<!-- ============================== SHELL ============================== -->
+<div class="shell">
+
+  <!-- ============================== SIDEBAR ============================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="side-group">
+      <p class="side-title">Ruta de formación</p>
+      <button class="nav-item" data-target="intro"><span class="nav-num">·</span>Presentación</button>
+      <button class="nav-item" data-target="nivel-0" data-level="0"><span class="nav-num">0</span>Bienvenido</button>
+      <button class="nav-item" data-target="nivel-1" data-level="1"><span class="nav-num">1</span>Conecta</button>
+      <button class="nav-item" data-target="nivel-2" data-level="2"><span class="nav-num">2</span>Aprende</button>
+      <button class="nav-item" data-target="nivel-3" data-level="3"><span class="nav-num">3</span>Experimenta</button>
+      <button class="nav-item" data-target="nivel-4" data-level="4"><span class="nav-num">4</span>Crea</button>
+      <button class="nav-item" data-target="nivel-5" data-level="5"><span class="nav-num">5</span>Integra</button>
+    </div>
+
+    <div class="side-group">
+      <p class="side-title">Referencias</p>
+      <button class="nav-item" data-target="flujo"><span class="nav-num">→</span>Flujo editorial</button>
+      <button class="nav-item" data-target="herramientas"><span class="nav-num">✦</span>Caja de herramientas</button>
+      <button class="nav-item" data-target="entrevista"><span class="nav-num">?</span>Guía de entrevista</button>
+    </div>
+
+    <div class="side-cta">
+      <strong>Tu avance</strong>
+      <p>Cada casilla que marques suma al progreso global. Puedes cerrar y volver: tu ruta se guarda en este dispositivo.</p>
+      <div class="mini-bar"><span id="miniBar"></span></div>
+    </div>
+  </aside>
+
+  <!-- ============================== MAIN ============================== -->
+  <main>
+
+    <!-- ============================== INTRO ============================== -->
+    <section class="section active" id="intro">
+      <div class="hero-block">
+        <span class="hero-super">Manual de Inducción · v1.0 <em>Vorka Sparks</em></span>
+        <h1 class="hero">Revelar el impulso <em>que transforma</em>.</h1>
+        <p class="lead">
+          Este es tu manual de formación como <strong>Sparks Creator</strong>. Una ruta de seis niveles
+          que te lleva de tu primer día a la producción autónoma de piezas que muestran,
+          en un minuto, la <em class="ital">chispa interna</em> de una persona real.
+        </p>
+
+        <div class="hero-cta">
+          <button class="btn primary" onclick="goSection('nivel-0')">Comenzar Nivel 0 <span class="arr">→</span></button>
+          <button class="btn ghost" onclick="goSection('flujo')">Ver flujo editorial</button>
+        </div>
+
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <div class="k">Formato</div>
+            <div class="v"><strong>Video vertical 9:16</strong> · ~60 segundos · voice over + tomas a cámara.</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="k">Stack</div>
+            <div class="v"><strong>Canva + CapCut</strong> · Notion como sala editorial · Drive como repositorio.</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="k">Duración</div>
+            <div class="v"><strong>6 niveles</strong> · avance por checklist con progreso guardado en este dispositivo.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ¿Qué es Vorka? -->
+      <h2 class="sec-title">¿Qué es <em>Vorka México</em>?</h2>
+      <p class="lead">
+        Vorka es un ecosistema mexicano de <strong>estrategia, liderazgo, comunicación e innovación</strong>.
+        No somos una agencia tradicional: somos una casa que investiga, produce y activa
+        proyectos con voz propia. Publicamos contenido editorial, diseñamos activaciones,
+        acompañamos marcas y construimos productos que ayudan a mover conversaciones que
+        importan en el país.
+      </p>
+
+      <div class="grid two" style="margin-top:22px">
+        <div class="card">
+          <div class="ico">V</div>
+          <h4>Vorka México · la casa</h4>
+          <p>Estrategia, contenido editorial, activaciones y proyectos. Trabajamos con marcas,
+            instituciones y con nuestros propios canales. Tono cercano, sobrio y directo.</p>
+        </div>
+        <div class="card tinted">
+          <div class="ico">✦</div>
+          <h4>Vorka Sparks · la línea editorial</h4>
+          <p>El brazo dedicado a contar personas reales. Cada Sparks es una pieza vertical de
+            ~1 minuto que muestra cómo alguien atravesó un punto de quiebre y construyó dirección.</p>
+        </div>
+        <div class="card">
+          <div class="ico">M</div>
+          <h4>Manuales operativos</h4>
+          <p>Cuatro documentos vivos guían al equipo: Manual de Contenido, Manual Sparks Content,
+            Manual de Actividades y Manual de Historias JUV. Este es el de inducción a Sparks.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✎</div>
+          <h4>Cómo publicamos</h4>
+          <p>Mobile-first. Todo se produce con <strong>Canva</strong> y <strong>CapCut</strong>.
+            La casa editorial revisa cada pieza antes de publicar en las redes de Vorka.</p>
+        </div>
+      </div>
+
+      <h2 class="sec-title">Seis niveles, <em>un mismo oficio</em>.</h2>
+      <p class="lead">Cada tarjeta es una vista independiente. Puedes navegar entre niveles cuando quieras,
+        pero la ruta está pensada para recorrerse en orden.</p>
+
+      <div class="levels-strip">
+        <button class="level-tile" data-target="nivel-0"><span class="lv-num">00</span><div class="lv-name">Bienvenido</div><div class="lv-tag">Primer día</div></button>
+        <button class="level-tile" data-target="nivel-1"><span class="lv-num">01</span><div class="lv-name">Conecta</div><div class="lv-tag">Propósito e identidad</div></button>
+        <button class="level-tile" data-target="nivel-2"><span class="lv-num">02</span><div class="lv-name">Aprende</div><div class="lv-tag">Metodología</div></button>
+        <button class="level-tile" data-target="nivel-3"><span class="lv-num">03</span><div class="lv-name">Experimenta</div><div class="lv-tag">Reto controlado</div></button>
+        <button class="level-tile" data-target="nivel-4"><span class="lv-num">04</span><div class="lv-name">Crea</div><div class="lv-tag">Producción real</div></button>
+        <button class="level-tile" data-target="nivel-5"><span class="lv-num">05</span><div class="lv-name">Integra</div><div class="lv-tag">Creador oficial</div></button>
+      </div>
+
+      <blockquote class="pull">
+        Un Sparks no es una noticia ni un testimonio motivacional. Es un minuto que revela cómo
+        una persona atravesó un punto de quiebre y construyó dirección.
+        <cite>— Código Sparks</cite>
+      </blockquote>
+    </section>
+
+    <!-- ============================== NIVEL 0 ============================== -->
+    <section class="section" id="nivel-0" data-level="0">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Nivel 00</span>
+        <span class="smallcaps">Primer día</span>
+      </div>
+      <h1 class="hero">Bienvenido <em>a tu propia chispa</em>.</h1>
+      <p class="lead">
+        Vorka Sparks no empieza con reglas: empieza con una conversación. Este nivel es el
+        umbral. Aquí observas cómo pensamos, cómo escuchamos y por qué preferimos las
+        personas antes que las métricas.
+      </p>
+
+      <h3 class="sub-title">Actividad de arranque · <em class="ital">La historia corta</em></h3>
+      <div class="callout">
+        <span class="label">La actividad</span>
+        <p>Elige a un compañero del equipo. Habla con él o ella <strong>diez minutos</strong>. Escucha con la
+          intención de descubrir <strong>algo no obvio</strong>: una decisión que le costó, un miedo que
+          venció, una obsesión pequeña. Al terminar, redacta <strong>un párrafo de tres líneas</strong> que
+          resuma esa chispa en tus palabras.</p>
+      </div>
+
+      <p style="color:var(--ink-2);font-size:14.5px;max-width:60ch">
+        No importa la ortografía perfecta. Importa la escucha. Este ejercicio es el mismo que
+        harás con cada Sparks que entrevistes: capturar lo esencial en un párrafo antes de
+        construir cualquier guión.
+      </p>
+
+      <h3 class="sub-title">Checklist de integración</h3>
+      <div class="checklist" data-level="0">
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Preséntate</strong> con el equipo (nombre, dónde vives, qué te trajo aquí, una cosa rara que te obsesiona).</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Accede</strong> al espacio de trabajo compartido: Notion (base de conocimiento), Google Drive (repositorio de producción).</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Instala</strong> las dos herramientas oficiales de producción: <strong>Canva</strong> (portadas y plantillas) y <strong>CapCut</strong> (edición vertical y voice over).</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Realiza</strong> la actividad "La historia corta" con un compañero y sube el párrafo a Notion.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Lee</strong> las cuatro fuentes oficiales: Manual de Contenido, Manual Sparks Content, Manual de Actividades y Manual de Historias JUV.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Firma</strong> tu compromiso simbólico en el canal del equipo: “Escucho antes de hablar”.</span></label>
+      </div>
+
+      <div class="level-foot">
+        <div class="fl-info">
+          <strong>Nivel 0 · Bienvenido</strong>
+          <span>Cuando marques todo, quedará habilitado tu paso al Nivel 1.</span>
+          <div class="prog" id="lv0-prog">0 de 6 completados</div>
+        </div>
+        <button class="btn spark" data-unlock="1" onclick="unlockNext('nivel-1')">
+          Desbloquear Nivel 1 · Conecta <span class="arr">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================== NIVEL 1 ============================== -->
+    <section class="section" id="nivel-1" data-level="1">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Nivel 01</span>
+        <span class="smallcaps">Propósito · identidad · criterio</span>
+      </div>
+      <h1 class="hero">Conecta <em>con lo que hacemos</em>.</h1>
+      <p class="lead">
+        Vorka es un ecosistema editorial mexicano. Contamos historias, activamos comunidades
+        y construimos productos con voz propia. <strong>Vorka Sparks</strong> es el brazo que
+        cuenta a las personas: quiénes son, qué las movió, qué encendieron.
+      </p>
+
+      <h3 class="sub-title">Qué es <em class="ital">Vorka</em> y qué es <em class="ital">Vorka Sparks</em></h3>
+      <div class="grid two">
+        <div class="card">
+          <div class="ico">V</div>
+          <h4>Vorka México</h4>
+          <p>Casa editorial y de contenido. Publica reportajes, activaciones y series bajo distintos
+            manuales (Contenido, Actividades, Historias JUV). Voz común, formatos múltiples.</p>
+        </div>
+        <div class="card tinted">
+          <div class="ico">✦</div>
+          <h4>Vorka Sparks</h4>
+          <p>La línea editorial dedicada a personas reales. Piezas de ~1 minuto en vertical, con
+            estructura fija: guión sintetizado, tomas a cámara y voice over. Todo desde el móvil.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-title">El código interno <em class="ital">Sparks</em></h3>
+      <div class="grid three">
+        <div class="card">
+          <div class="ico">◐</div>
+          <h4>Curiosidad antes que prejuicio</h4>
+          <p>Entramos a una historia con preguntas, no con conclusiones. La chispa no se ve
+            desde la etiqueta que ya trae la persona.</p>
+        </div>
+        <div class="card">
+          <div class="ico">♥</div>
+          <h4>Personas antes que métricas</h4>
+          <p>Cada Sparks es una persona con nombre. Si la métrica pide gritar y la persona pide
+            respeto, la persona gana.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✧</div>
+          <h4>Escuchar antes de hablar</h4>
+          <p>El silencio también es material. Antes de escribir un guión, escuchamos la
+            entrevista completa dos veces.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Lo que Vorka Sparks <em class="ital">no</em> es</h3>
+      <div class="tbl-wrap">
+        <table class="vk">
+          <thead><tr><th>No es…</th><th>Porque…</th><th>Sí es…</th></tr></thead>
+          <tbody>
+            <tr><td class="neg">Boletín de prensa</td><td>No informamos hechos ni cubrimos eventos.</td><td class="pos">Retrato íntimo</td></tr>
+            <tr><td class="neg">Chisme o exposición privada</td><td>No compartimos lo que la persona no autorizó.</td><td class="pos">Testimonio con consentimiento</td></tr>
+            <tr><td class="neg">Frases motivacionales de cliché</td><td>Evitamos “sigue tus sueños”, “nunca te rindas”, etc.</td><td class="pos">Verdad concreta y en primera persona</td></tr>
+            <tr><td class="neg">Clickbait</td><td>El título no vende un giro que la pieza no cumple.</td><td class="pos">Título que sostiene la promesa</td></tr>
+            <tr><td class="neg">Discurso ajeno</td><td>No repetimos consignas que la persona no dijo.</td><td class="pos">Voz literal del protagonista</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-title">Checklist Nivel 1</h3>
+      <div class="checklist" data-level="1">
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Explica en tres frases</strong> —a un compañero— qué es Vorka Sparks y en qué se diferencia del Manual de Contenido general.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Aprende de memoria</strong> las tres reglas del código interno Sparks.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Identifica</strong>, entre tres piezas que veas en redes ajenas a Vorka, cuál <em>sí</em> se acerca al criterio Sparks y cuál <em>no</em>. Justifica en Notion.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Escribe</strong> una definición propia de “chispa” en no más de 12 palabras.</span></label>
+      </div>
+
+      <div class="level-foot">
+        <div class="fl-info">
+          <strong>Nivel 1 · Conecta</strong>
+          <span>Ya tienes el marco. Ahora aprendes el método.</span>
+          <div class="prog" id="lv1-prog">0 de 4 completados</div>
+        </div>
+        <button class="btn spark" data-unlock="2" onclick="unlockNext('nivel-2')">
+          Desbloquear Nivel 2 · Aprende <span class="arr">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================== NIVEL 2 ============================== -->
+    <section class="section" id="nivel-2" data-level="2">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Nivel 02</span>
+        <span class="smallcaps">Metodología · narrativa · lenguaje</span>
+      </div>
+      <h1 class="hero">Aprende <em>el método completo</em>.</h1>
+      <p class="lead">
+        Este nivel es el corazón técnico del manual. Dominarás tres módulos: la <strong>entrevista
+        profunda</strong>, la <strong>redacción del guión de un minuto</strong>, y el uso táctico de
+        <strong>Canva</strong> y <strong>CapCut</strong>.
+      </p>
+
+      <!-- Módulo 1: Entrevista -->
+      <h2 class="sec-title">Módulo A · <em>Entrevista profunda</em></h2>
+      <p style="color:var(--ink-2);max-width:60ch">
+        Toda pieza Sparks parte de una conversación bien hecha. El manual oficial de entrevista
+        establece <strong>ocho pasos</strong>: del criterio para definir a un Sparks hasta el cierre
+        con el entrevistado.
+      </p>
+
+      <div class="steps">
+        <div class="step spark">
+          <div class="step-num">1</div>
+          <div><h4>Definir al Sparks</h4>
+            <p>Verifica cuatro cosas antes de invitarle: existe un punto de quiebre real,
+              hubo transformación, hay coherencia entre discurso y acción, y su historia
+              deja aprendizaje para otros.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div><h4>Aplicar las 10 preguntas oficiales</h4>
+            <p>Son la columna vertebral. No las modifiques. Grabar en audio, no en video, para
+              que la persona no se autocensure. Deja silencios largos: son parte del material.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div><h4>Sintetizar el guión</h4>
+            <p>Marca las <strong>frases con carga emocional</strong> —las que reveló sin poder
+              maquillar— y arma con ellas un guión que dure aproximadamente un minuto (150–170 palabras).</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div><h4>Corroborar con la persona</h4>
+            <p>Envía el guión al entrevistado antes de grabar. Si algo no le representa, se
+              ajusta. Nunca publicamos frases que la persona no reconozca como suyas.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div><h4>Grabación a cámara</h4>
+            <p>Solo las frases marcadas en <strong>negritas</strong> del guión aprobado. Vertical
+              (9:16), mirada a cámara, luz natural, encuadre limpio. Toma cada frase dos veces.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div><h4>Voice over / audio</h4>
+            <p>La persona graba el guión completo en off, con tono pausado y natural. Este audio
+              conduce toda la pieza; las tomas a cámara aparecen sobre él en los momentos marcados.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div><h4>Estructura Drive</h4>
+            <p>Sube todo a <code>VORKA SPARKS / Nombre del Sparks</code> con las tres carpetas
+              obligatorias: <strong>Videos en cámara</strong>, <strong>Audio</strong>, <strong>Guión aprobado</strong>.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">8</div>
+          <div><h4>Cierre con el entrevistado</h4>
+            <p>Confirma recepción de todo el material, informa tiempos de publicación y
+              agradece formalmente. La relación con el Sparks no termina cuando publicas.</p></div>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Las 10 preguntas oficiales</h3>
+      <p style="color:var(--ink-2);font-size:14.5px">Se aplican en este orden. No se sustituyen ni se saltan.</p>
+      <div class="q-list">
+        <div class="q-item">¿Qué momento de tu vida te partió en dos y quién eres antes y después de él?</div>
+        <div class="q-item">Si tuvieras que nombrar tu mayor impulso interior en una sola palabra, ¿cuál sería y por qué?</div>
+        <div class="q-item">¿Qué decisión te dio más miedo y aun así te animaste?</div>
+        <div class="q-item">¿Qué recuerdo transformaste en tu mayor fuerza?</div>
+        <div class="q-item">¿Qué de tu pasado todavía te acompaña y guía tus pasos hoy?</div>
+        <div class="q-item">Si tu vida fuera un mensaje para otros, ¿cuál sería ese mensaje?</div>
+        <div class="q-item">¿Qué dejaste ir para poder avanzar?</div>
+        <div class="q-item">¿Qué momento te enseñó quién eres realmente?</div>
+        <div class="q-item">¿Qué estás construyendo ahora que tu yo de hace cinco años no habría creído posible?</div>
+        <div class="q-item">Si tuvieras diez segundos para decir tu verdad al mundo, ¿qué dirías?</div>
+      </div>
+
+      <!-- Módulo 2: Redacción -->
+      <h2 class="sec-title">Módulo B · <em>Redacción y guionismo</em></h2>
+      <div class="grid two">
+        <div class="card">
+          <div class="ico">✎</div>
+          <h4>Regla del minuto</h4>
+          <p>Un guión Sparks vive entre 150 y 170 palabras. Menos suena incompleto; más se
+            siente denso en un feed. Cronometra siempre antes de aprobar.</p>
+        </div>
+        <div class="card">
+          <div class="ico">B</div>
+          <h4>Negritas = a cámara</h4>
+          <p>Todo lo escrito en negritas se grabará mirando la lente. El resto queda en voice
+            over. Regla básica: solo van en negrita las frases que solo esa persona podría decir.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✱</div>
+          <h4>Frases-ancla</h4>
+          <p>Identifica dos: una que abre y una que cierra la pieza. Deben resonar solas, sin
+            contexto. Casi siempre salen de las preguntas 1, 6 o 10.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✂</div>
+          <h4>Cortes de aliento</h4>
+          <p>Escribe el guión con puntos, no con comas. La pausa es lectura. Es también la marca
+            para el editor: cada punto es un posible corte de plano.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Ejemplo mínimo · fragmento con marcado</span>
+        <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.5">
+          A los 24 dejé de correr detrás de la aprobación de mi papá. <strong>Dejé de escucharlo para
+          empezar a escucharme.</strong> Sonó feo, pero fue lo único honesto que hice ese año.
+          <strong>Y aquí sigo, todavía aprendiendo a hablarme en un tono que no me duela.</strong>
+        </p>
+      </div>
+
+      <!-- Módulo 3: Herramientas -->
+      <h2 class="sec-title">Módulo C · <em>Canva &amp; CapCut</em></h2>
+      <p class="lead">Vorka Sparks es <strong>mobile-first</strong>. Todo se produce con herramientas
+        que caben en el móvil. Nada de software avanzado.</p>
+
+      <div class="grid two">
+        <div class="card tinted">
+          <div class="ico">🎨</div>
+          <h4>Canva · portadas y gráficos</h4>
+          <p style="margin-bottom:10px">Úsala para:</p>
+          <ul style="margin:0;padding-left:18px;color:var(--ink-2);font-size:14.5px;line-height:1.6">
+            <li>Portada fija de cada pieza (thumbnail vertical 9:16).</li>
+            <li>Cintillos, quote cards y frases-ancla como pieza estática.</li>
+            <li>Plantillas oficiales <em>Sparks</em>: solo cambia foto y nombre.</li>
+            <li>Exportar como PNG o MP4 corto, no como PDF.</li>
+          </ul>
+        </div>
+        <div class="card tinted">
+          <div class="ico">🎬</div>
+          <h4>CapCut · edición vertical &amp; voice over</h4>
+          <p style="margin-bottom:10px">Úsalo para:</p>
+          <ul style="margin:0;padding-left:18px;color:var(--ink-2);font-size:14.5px;line-height:1.6">
+            <li>Montar el voice over como pista base de la pieza.</li>
+            <li>Encimar sobre él las tomas a cámara en los momentos de negritas.</li>
+            <li>Cortar respiraciones, ajustar ritmo, agregar B-roll y subtítulos automáticos.</li>
+            <li>Exportar 1080×1920, 30fps, sin marca de agua.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag bad">Adobe Premiere: no lo usamos</span>
+        <span class="tag bad">Final Cut: no lo usamos</span>
+        <span class="tag good">CapCut móvil: sí</span>
+        <span class="tag good">Canva móvil: sí</span>
+      </div>
+
+      <h3 class="sub-title">Checklist Nivel 2</h3>
+      <div class="checklist" data-level="2">
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Domina</strong> los 8 pasos del manual de entrevista. Explícalos de memoria a un compañero.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Aprende</strong> las 10 preguntas oficiales en su orden exacto.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Escribe</strong> un guión de práctica (150–170 palabras) marcando en negritas las frases a cámara.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Reproduce</strong> una plantilla oficial <em>Sparks</em> en Canva y expórtala en 9:16.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Edita</strong> en CapCut un ejercicio de 30 segundos con voice over + una toma superpuesta.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Sube</strong> tus dos entregas a Drive respetando la estructura oficial.</span></label>
+      </div>
+
+      <div class="level-foot">
+        <div class="fl-info">
+          <strong>Nivel 2 · Aprende</strong>
+          <span>Ya tienes el método. Ahora se prueba en un reto real, pero controlado.</span>
+          <div class="prog" id="lv2-prog">0 de 6 completados</div>
+        </div>
+        <button class="btn spark" data-unlock="3" onclick="unlockNext('nivel-3')">
+          Desbloquear Nivel 3 · Experimenta <span class="arr">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================== NIVEL 3 ============================== -->
+    <section class="section" id="nivel-3" data-level="3">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Nivel 03</span>
+        <span class="smallcaps">Reto controlado</span>
+      </div>
+      <h1 class="hero">Experimenta <em>tu primera Spark</em>.</h1>
+      <p class="lead">
+        Aquí sales del aula. Ejecutas una pieza completa —de la selección del personaje al Reel
+        final— pero en un entorno cerrado: no se publica todavía. Tu mentor te acompaña con
+        una matriz de feedback punto por punto.
+      </p>
+
+      <h3 class="sub-title">El reto · <em class="ital">Mi Primera Spark</em></h3>
+      <div class="steps">
+        <div class="step spark"><div class="step-num">1</div><div>
+          <h4>Selecciona a un personaje cercano</h4>
+          <p>Amigo, familiar, colega. Alguien que cumpla los cuatro criterios del Paso 1 del manual
+            de entrevista: quiebre real, transformación, coherencia y aprendizaje transferible.</p>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div>
+          <h4>Aplica las 10 preguntas</h4>
+          <p>Grabación de audio, sesión de una hora. Sin editar durante la charla. Al terminar,
+            transcribe frases textuales que te hayan sacudido.</p>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div>
+          <h4>Escribe el guión</h4>
+          <p>150–170 palabras. Marca negritas para lo que va a cámara. Envíalo al entrevistado
+            para corroboración. No pases de aquí sin su visto bueno.</p>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div>
+          <h4>Graba tomas a cámara + voice over</h4>
+          <p>Vertical, luz natural, mirada a lente. Las tomas: solo negritas, dos versiones cada una.
+            El voice over: guión completo, tono pausado.</p>
+        </div></div>
+        <div class="step"><div class="step-num">5</div><div>
+          <h4>Edita un Reel corto en CapCut</h4>
+          <p>Duración objetivo: 50–65 segundos. Voice over como pista base, negritas encimadas,
+            subtítulos incrustados. Portada estática en Canva.</p>
+        </div></div>
+        <div class="step"><div class="step-num">6</div><div>
+          <h4>Redacta el copy</h4>
+          <p>Un párrafo de acompañamiento para publicación (tres líneas máximo) que no repita
+            literal el guión: introduce, no explique.</p>
+        </div></div>
+      </div>
+
+      <h3 class="sub-title">Matriz de feedback 1 a 1</h3>
+      <p style="color:var(--ink-2);font-size:14.5px;max-width:60ch">
+        Tu mentor revisa la pieza usando esta rúbrica. No se publica hasta que las cinco
+        columnas sean verde.
+      </p>
+      <div class="tbl-wrap">
+        <table class="vk">
+          <thead><tr><th>Criterio</th><th>Qué observa</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Elección del Sparks</td><td>¿Existe transformación real? ¿Coherencia entre lo que dice y hace?</td><td class="pos">verde / rojo</td></tr>
+            <tr><td>Escucha</td><td>¿El guión usa frases textuales del entrevistado o parafrasea?</td><td class="pos">verde / rojo</td></tr>
+            <tr><td>Guión</td><td>Duración correcta, negritas justificadas, frase-ancla identificable.</td><td class="pos">verde / rojo</td></tr>
+            <tr><td>Producción</td><td>Vertical, luz limpia, audio sin ruido, tomas variadas.</td><td class="pos">verde / rojo</td></tr>
+            <tr><td>Cierre</td><td>Copy que introduce sin duplicar, portada Canva con plantilla oficial.</td><td class="pos">verde / rojo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="sub-title">Checklist Nivel 3</h3>
+      <div class="checklist" data-level="3">
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Selecciona</strong> a tu primer Sparks y valida los cuatro criterios con tu mentor.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Aplica</strong> las 10 preguntas oficiales en una sesión de audio.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Escribe</strong> el guión y consigue el visto bueno del entrevistado.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Graba</strong> tomas a cámara y voice over. Sube el crudo a Drive.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Edita</strong> el Reel completo en CapCut y diseña la portada en Canva.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Redacta</strong> el copy y presenta la pieza en la sesión de feedback.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Recibe</strong> retroalimentación en la matriz 1 a 1 y cierra las observaciones.</span></label>
+      </div>
+
+      <div class="level-foot">
+        <div class="fl-info">
+          <strong>Nivel 3 · Experimenta</strong>
+          <span>Con la matriz cerrada, entras a producción real.</span>
+          <div class="prog" id="lv3-prog">0 de 7 completados</div>
+        </div>
+        <button class="btn spark" data-unlock="4" onclick="unlockNext('nivel-4')">
+          Desbloquear Nivel 4 · Crea <span class="arr">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================== NIVEL 4 ============================== -->
+    <section class="section" id="nivel-4" data-level="4">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Nivel 04</span>
+        <span class="smallcaps">Producción real</span>
+      </div>
+      <h1 class="hero">Crea <em>dentro del calendario</em>.</h1>
+      <p class="lead">
+        Pasas de aprendiz a creador. El equipo editorial de Vorka Sparks te asigna una pieza
+        real, con fecha de publicación. A partir de este nivel, tu trabajo llega al público.
+      </p>
+
+      <h3 class="sub-title">De aprendiz a creador</h3>
+      <div class="grid two">
+        <div class="card">
+          <div class="ico">◈</div>
+          <h4>Asignación editorial</h4>
+          <p>La coordinación te propone dos posibles Sparks del banco activo. Eliges uno,
+            documentas la elección y arrancas la producción en el <strong>Notion del equipo</strong>.</p>
+        </div>
+        <div class="card">
+          <div class="ico">📅</div>
+          <h4>Calendario</h4>
+          <p>Cada pieza tiene tres hitos duros: <strong>entrevista</strong>, <strong>entrega de guión</strong> y
+            <strong>publicación</strong>. Los tres se acuerdan antes de contactar al Sparks.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✎</div>
+          <h4>Voz oficial</h4>
+          <p>Ya firmas tu trabajo con el crédito <em>Sparks Creator</em>. Cuidas el tono editorial
+            de Vorka Sparks —cercano, sobrio, sin adjetivos gratuitos— porque a partir de ahora
+            representas al medio, no solo a ti.</p>
+        </div>
+        <div class="card">
+          <div class="ico">☑</div>
+          <h4>Doble revisión</h4>
+          <p>Antes de publicar, la pieza pasa por <strong>edición editorial</strong> (copy y guión) y
+            <strong>edición audiovisual</strong> (formato, subtítulos, portada). Ambas aprueban.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Flujo de aprobación y subida a Drive</h3>
+      <div class="drive-tree"><span class="folder">VORKA SPARKS/</span>
+├── <span class="folder">Nombre del Sparks/</span>
+│   ├── <span class="folder">Videos en cámara/</span>
+│   │   ├── <span class="file">01_frase_ancla_A.mp4</span>
+│   │   ├── <span class="file">01_frase_ancla_B.mp4</span>
+│   │   └── <span class="file">02_...mp4</span>
+│   ├── <span class="folder">Audio/</span>
+│   │   ├── <span class="file">entrevista_completa.wav</span>
+│   │   └── <span class="file">voice_over_final.wav</span>
+│   ├── <span class="folder">Guion aprobado/</span>
+│   │   └── <span class="file">guion_v_final.pdf</span>
+│   └── <span class="folder">Entrega/</span>
+│       ├── <span class="file">reel_final_1080x1920.mp4</span>
+│       ├── <span class="file">portada_canva.png</span>
+│       └── <span class="file">copy_publicacion.txt</span></div>
+
+      <div class="callout">
+        <span class="label">Regla operativa</span>
+        <p>Todo archivo entregado <strong>vive en Drive</strong>. Nada de compartir por WhatsApp o
+          descargas locales sin respaldo. Si no está en la carpeta correcta, no existe.</p>
+      </div>
+
+      <h3 class="sub-title">Checklist Nivel 4</h3>
+      <div class="checklist" data-level="4">
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Recibe</strong> tu asignación editorial y confírmala en Notion.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Agenda</strong> los tres hitos: entrevista, entrega de guión, publicación.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Produce</strong> la pieza completa siguiendo los 8 pasos del manual de entrevista.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Sube</strong> todo a Drive con la estructura exacta: <em>Videos en cámara</em>, <em>Audio</em>, <em>Guión aprobado</em>, <em>Entrega</em>.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Aprueba</strong> la doble revisión: editorial y audiovisual.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Publica</strong> en la fecha acordada. Firma como <em>Sparks Creator</em>.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Cierra</strong> con el Sparks: agradece formalmente y comparte la pieza publicada.</span></label>
+      </div>
+
+      <div class="level-foot">
+        <div class="fl-info">
+          <strong>Nivel 4 · Crea</strong>
+          <span>Cuando publiques tu primera pieza, se abre el último paso.</span>
+          <div class="prog" id="lv4-prog">0 de 7 completados</div>
+        </div>
+        <button class="btn spark" data-unlock="5" onclick="unlockNext('nivel-5')">
+          Desbloquear Nivel 5 · Integra <span class="arr">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================== NIVEL 5 ============================== -->
+    <section class="section" id="nivel-5" data-level="5">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Nivel 05</span>
+        <span class="smallcaps">Creador oficial</span>
+      </div>
+      <h1 class="hero">Integra <em>y toma la mesa</em>.</h1>
+      <p class="lead">
+        Autonomía completa. Ya no solo ejecutas piezas: propones personajes, ajustas la línea
+        editorial y participas con voz en las decisiones de Vorka Sparks.
+      </p>
+
+      <h3 class="sub-title">Qué cambia en este nivel</h3>
+      <div class="grid three">
+        <div class="card">
+          <div class="ico">✦</div>
+          <h4>Autonomía</h4>
+          <p>Puedes iniciar producciones sin brief. Presentas propuesta, presupuesto de tiempo
+            y línea editorial en la reunión semanal.</p>
+        </div>
+        <div class="card">
+          <div class="ico">◑</div>
+          <h4>Mentoría</h4>
+          <p>Acompañas a un nuevo Sparks en formación. Firmas su matriz de feedback en Nivel 3.
+            Enseñar consolida el criterio.</p>
+        </div>
+        <div class="card">
+          <div class="ico">♫</div>
+          <h4>Voz editorial</h4>
+          <p>Participas en las mesas de curaduría: propones qué historias contar, cuáles esperar
+            y cuáles rechazar. Tu voto cuenta.</p>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Checklist final</h3>
+      <div class="checklist" data-level="5">
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Propón</strong> un Sparks al banco editorial con ficha completa (contexto, criterios y ganchos).</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Acompaña</strong> a un aprendiz en su Nivel 3.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Aporta</strong> en la mesa editorial con al menos una propuesta ganadora al trimestre.</span></label>
+        <label class="check-row"><input type="checkbox"><span class="check-text"><strong>Mantén</strong> el estándar de calidad en tus publicaciones sostenido en el tiempo.</span></label>
+      </div>
+
+      <div class="cert" style="margin-top:40px">
+        <div class="fire">🔥</div>
+        <h3>¡Enhorabuena! Ahora eres parte de quienes construyen Vorka Sparks.</h3>
+        <p style="margin-top:14px">Ya no lees este manual: lo escribes con cada pieza que publicas.</p>
+      </div>
+    </section>
+
+    <!-- ============================== FLUJO ============================== -->
+    <section class="section" id="flujo">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Referencia</span>
+        <span class="smallcaps">Mapa de proceso</span>
+      </div>
+      <h1 class="hero">Flujo editorial <em>completo</em>.</h1>
+      <p class="lead">
+        El camino de una pieza Sparks, del primer chispazo hasta el post publicado. Once
+        estaciones. Cada una tiene un dueño y una entrega concreta.
+      </p>
+
+      <div class="flow-map">
+        <span class="flow-node"><span class="n">1</span>Detección</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">2</span>Investigación</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">3</span>Propuesta</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">4</span>Aprobación</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">5</span>Contacto</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">6</span>Guión</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">7</span>Entrevista</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">8</span>Drive</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">9</span>Edición CapCut</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">10</span>Revisión</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node"><span class="n">11</span>Publicación</span>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="vk">
+          <thead><tr><th>#</th><th>Estación</th><th>Qué produce</th><th>Herramienta</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Detección</strong></td><td>Ficha inicial: nombre, contexto, chispa intuida.</td><td>Notion</td></tr>
+            <tr><td>2</td><td><strong>Investigación</strong></td><td>Notas biográficas, redes públicas, coherencia.</td><td>Notion / Drive</td></tr>
+            <tr><td>3</td><td><strong>Propuesta</strong></td><td>Documento breve para mesa editorial.</td><td>Notion</td></tr>
+            <tr><td>4</td><td><strong>Aprobación</strong></td><td>Luz verde con fecha objetivo.</td><td>Reunión semanal</td></tr>
+            <tr><td>5</td><td><strong>Contacto</strong></td><td>Invitación clara al Sparks; agenda de sesión.</td><td>Correo / DM</td></tr>
+            <tr><td>6</td><td><strong>Guión</strong></td><td>Guion de 150–170 palabras con negritas marcadas.</td><td>Google Docs</td></tr>
+            <tr><td>7</td><td><strong>Entrevista</strong></td><td>Audio + tomas a cámara + voice over.</td><td>Cámara móvil</td></tr>
+            <tr><td>8</td><td><strong>Recolección Drive</strong></td><td>Estructura oficial de carpetas por Sparks.</td><td>Google Drive</td></tr>
+            <tr><td>9</td><td><strong>Edición</strong></td><td>Reel vertical 1080×1920 + portada.</td><td>CapCut · Canva</td></tr>
+            <tr><td>10</td><td><strong>Revisión</strong></td><td>Doble revisión editorial + audiovisual.</td><td>Notion</td></tr>
+            <tr><td>11</td><td><strong>Publicación</strong></td><td>Pieza + copy + crédito Sparks Creator.</td><td>Redes Vorka</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============================== HERRAMIENTAS ============================== -->
+    <section class="section" id="herramientas">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Referencia</span>
+        <span class="smallcaps">Caja de herramientas</span>
+      </div>
+      <h1 class="hero">Cuatro herramientas <em>y ninguna más</em>.</h1>
+      <p class="lead">
+        Vorka Sparks se construye con un stack mínimo. Todo es rápido, móvil y compartido.
+        Nada de software avanzado: si no cabe en el celular o en el navegador, no lo usamos.
+      </p>
+
+      <div class="grid two">
+        <div class="card">
+          <div class="ico">N</div>
+          <h4>Notion · sala editorial</h4>
+          <p>Base de conocimiento del equipo. Aquí viven: banco de Sparks, calendario editorial,
+            plantillas de guión, matriz de feedback y este manual siempre actualizado.</p>
+          <div class="tag-row"><span class="tag">Fichas</span><span class="tag">Calendario</span><span class="tag">Plantillas</span></div>
+        </div>
+        <div class="card">
+          <div class="ico">D</div>
+          <h4>Google Drive · repositorio</h4>
+          <p>Almacén único de archivos. La carpeta madre <code>VORKA SPARKS</code> contiene una
+            subcarpeta por Sparks con la estructura fija: Videos en cámara, Audio, Guión, Entrega.</p>
+          <div class="tag-row"><span class="tag">Crudos</span><span class="tag">Entregables</span><span class="tag">Estructura fija</span></div>
+        </div>
+        <div class="card tinted">
+          <div class="ico">🎨</div>
+          <h4>Canva · diseño</h4>
+          <p>Portadas verticales, quote cards y plantillas oficiales. Trabaja con la biblioteca
+            de marca ya cargada: <em>no cambies tipografías ni paleta</em>.</p>
+          <div class="tag-row"><span class="tag good">Plantillas</span><span class="tag good">Portadas</span><span class="tag good">Quote cards</span></div>
+        </div>
+        <div class="card tinted">
+          <div class="ico">🎬</div>
+          <h4>CapCut · edición vertical</h4>
+          <p>Voice over, tomas a cámara, subtítulos automáticos, B-roll. Exportación a 1080×1920,
+            30fps. Cuidado con la marca de agua: desactívala antes de exportar.</p>
+          <div class="tag-row"><span class="tag good">Voice over</span><span class="tag good">Cortes</span><span class="tag good">Subtítulos</span></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Herramientas fuera del stack</span>
+        <p>No trabajamos con Adobe Premiere, Final Cut, After Effects ni suites profesionales. Si
+          necesitas algo que Canva o CapCut no dan, primero pregunta en la mesa editorial:
+          casi siempre se resuelve con una plantilla nueva, no con software nuevo.</p>
+      </div>
+    </section>
+
+    <!-- ============================== ENTREVISTA (guía rápida) ============================== -->
+    <section class="section" id="entrevista">
+      <div class="eyebrow-row">
+        <span class="chip spark"><span class="dot"></span>Guía rápida de campo</span>
+        <span class="smallcaps">Manual de entrevista Vorka Sparks</span>
+      </div>
+      <h1 class="hero">Guía de <em>entrevista</em>.</h1>
+      <p class="lead">
+        Todo lo que necesitas mientras entrevistas, en una sola vista: las diez preguntas
+        oficiales y los ocho pasos del manual, en orden. Ábrelo desde el móvil durante la sesión.
+      </p>
+
+      <h3 class="sub-title">Las 10 preguntas oficiales</h3>
+      <div class="q-list">
+        <div class="q-item">¿Qué momento de tu vida te partió en dos y quién eres antes y después de él?</div>
+        <div class="q-item">Si tuvieras que nombrar tu mayor impulso interior en una sola palabra, ¿cuál sería y por qué?</div>
+        <div class="q-item">¿Qué decisión te dio más miedo y aun así te animaste?</div>
+        <div class="q-item">¿Qué recuerdo transformaste en tu mayor fuerza?</div>
+        <div class="q-item">¿Qué de tu pasado todavía te acompaña y guía tus pasos hoy?</div>
+        <div class="q-item">Si tu vida fuera un mensaje para otros, ¿cuál sería ese mensaje?</div>
+        <div class="q-item">¿Qué dejaste ir para poder avanzar?</div>
+        <div class="q-item">¿Qué momento te enseñó quién eres realmente?</div>
+        <div class="q-item">¿Qué estás construyendo ahora que tu yo de hace cinco años no habría creído posible?</div>
+        <div class="q-item">Si tuvieras diez segundos para decir tu verdad al mundo, ¿qué dirías?</div>
+      </div>
+
+      <h3 class="sub-title">Los 8 pasos del manual</h3>
+      <div class="steps">
+        <div class="step spark"><div class="step-num">1</div><div><h4>Definir al Sparks</h4>
+          <p>Punto de quiebre, transformación real, coherencia entre discurso y acción, aprendizaje para otros.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div><h4>Aplicar las 10 preguntas</h4>
+          <p>En orden. Sin editar durante la charla. Deja silencios.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div><h4>Sintetizar el guión</h4>
+          <p>Marca frases con carga emocional y arma un guión de un minuto.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div><h4>Corroborar con la persona</h4>
+          <p>Validar el guión con el entrevistado antes de grabar.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div><h4>Grabación a cámara</h4>
+          <p>Vertical. Solo negritas. Mirada a cámara. Luz natural.</p></div></div>
+        <div class="step"><div class="step-num">6</div><div><h4>Voice over / audio</h4>
+          <p>Audio completo del guión en off. Tono pausado y natural.</p></div></div>
+        <div class="step"><div class="step-num">7</div><div><h4>Estructura Drive</h4>
+          <p><code>VORKA SPARKS / Nombre del Sparks</code>. Tres carpetas: video, audio, guión aprobado.</p></div></div>
+        <div class="step"><div class="step-num">8</div><div><h4>Cierre con el entrevistado</h4>
+          <p>Confirmar recepción, informar tiempos de publicación y agradecer.</p></div></div>
+      </div>
+
+      <blockquote class="pull">
+        La entrevista no es un cuestionario. Es una conversación que sigue una estructura
+        para no perder el norte, pero que respira. Escucha más de lo que preguntas.
+      </blockquote>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================== FOOTER (clone vorka.mx/manual/contenido) ============================== -->
+<footer class="site-foot">
+  <div class="foot-inner">
+    <div class="foot-cols">
+      <div class="foot-col foot-brand">
+        <h5>Vorka México</h5>
+        <p>Ecosistema mexicano de <b>estrategia, liderazgo, comunicación e innovación</b>. Este manual es una herramienta interna del equipo.</p>
+        <span class="foot-mark" role="img" aria-label="Vorka México"></span>
+      </div>
+      <div class="foot-col">
+        <h5>Manual</h5>
+        <ul>
+          <li><a onclick="goSection('intro')">Inicio</a></li>
+          <li><a onclick="goSection('intro')">¿Qué es Vorka?</a></li>
+          <li><a onclick="goSection('flujo')">Flujo de trabajo</a></li>
+          <li><a onclick="goSection('nivel-0')">Checklist</a></li>
+          <li><a onclick="goSection('entrevista')">Guía de entrevista</a></li>
+          <li><a onclick="goSection('nivel-0')">Onboarding</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Herramientas</h5>
+        <ul>
+          <li><a href="https://www.canva.com" target="_blank" rel="noopener">Canva</a></li>
+          <li><a href="https://www.capcut.com" target="_blank" rel="noopener">CapCut</a></li>
+          <li><a href="https://www.notion.so" target="_blank" rel="noopener">Notion</a></li>
+          <li><a href="https://drive.google.com" target="_blank" rel="noopener">Google Drive</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Vorka</h5>
+        <ul>
+          <li><a href="https://www.vorka.mx/" target="_blank" rel="noopener">Sitio Vorka</a></li>
+          <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener">TikTok</a></li>
+          <li><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 Vorka México · Manual operativo interno</div>
+      <div class="foot-tag">definiendo el juego</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================== State & storage ============================== */
+const STORAGE_KEY = 'vorka-sparks-onboarding-v1';
+const totalLevels = 6; // 0..5
+
+const state = load() || {
+  section: 'intro',
+  unlocked: { 0:true, 1:false, 2:false, 3:false, 4:false, 5:false },
+  checks: {}, // key: "level:index"
+};
+
+function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){ return null; } }
+
+/* ============================== Section nav ============================== */
+function goSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if(!target){ return; }
+  target.classList.add('active');
+  state.section = id;
+  save();
+  paintNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+  closeSidebar();
+}
+
+function paintNav(){
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.classList.remove('active','locked','done');
+    const t = btn.dataset.target;
+    const lv = btn.dataset.level;
+    if(t === state.section) btn.classList.add('active');
+    if(lv !== undefined){
+      if(!state.unlocked[lv]) btn.classList.add('locked');
+      if(isLevelComplete(lv)) btn.classList.add('done');
+    }
+  });
+}
+
+/* ============================== Level completion / unlock ============================== */
+function levelChecks(lv){
+  const sec = document.querySelector(`.section[data-level="${lv}"]`);
+  if(!sec) return [];
+  return Array.from(sec.querySelectorAll('.checklist input[type="checkbox"]'));
+}
+function levelProgress(lv){
+  const boxes = levelChecks(lv);
+  if(!boxes.length) return {done:0,total:0,pct:0};
+  const done = boxes.filter(b=>b.checked).length;
+  return { done, total: boxes.length, pct: Math.round((done/boxes.length)*100) };
+}
+function isLevelComplete(lv){
+  const p = levelProgress(lv);
+  return p.total>0 && p.done===p.total;
+}
+
+function unlockNext(targetId){
+  const currentLv = parseInt(document.querySelector('.section.active')?.dataset.level ?? -1, 10);
+  const nextLv = currentLv + 1;
+  if(currentLv >= 0 && !isLevelComplete(currentLv)){
+    // gentle nudge: shake the button
+    const btn = event?.currentTarget;
+    if(btn){
+      btn.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(-4px)'},{transform:'translateX(0)'}],{duration:400});
+    }
+    alert('Completa todo el checklist de este nivel para desbloquear el siguiente.');
+    return;
+  }
+  if(nextLv <= 5) state.unlocked[nextLv] = true;
+  save();
+  paintNav();
+  goSection(targetId);
+}
+
+/* ============================== Checkbox wiring ============================== */
+function wireChecks(){
+  document.querySelectorAll('.checklist').forEach(list=>{
+    const lv = list.dataset.level;
+    Array.from(list.querySelectorAll('input[type="checkbox"]')).forEach((box, idx)=>{
+      const key = `${lv}:${idx}`;
+      if(state.checks[key]){
+        box.checked = true;
+        box.closest('.check-row').classList.add('done');
+      }
+      box.addEventListener('change', ()=>{
+        state.checks[key] = box.checked;
+        box.closest('.check-row').classList.toggle('done', box.checked);
+        save();
+        refresh();
+      });
+    });
+  });
+}
+
+/* ============================== Progress ============================== */
+function refresh(){
+  // per-level counters
+  for(let i=0;i<=5;i++){
+    const p = levelProgress(i);
+    const el = document.getElementById(`lv${i}-prog`);
+    if(el) el.textContent = `${p.done} de ${p.total} completados`;
+    // update level foot button state
+    const btn = document.querySelector(`.section[data-level="${i}"] .btn.spark[data-unlock]`);
+    if(btn){
+      const ok = p.total>0 && p.done===p.total;
+      btn.classList.toggle('locked', !ok);
+      btn.disabled = !ok;
+    }
+    // level tiles
+    document.querySelectorAll(`.level-tile[data-target="nivel-${i}"]`).forEach(t=>{
+      t.classList.toggle('done', isLevelComplete(i));
+    });
+  }
+  // global progress
+  const total = Array.from(document.querySelectorAll('.checklist input[type="checkbox"]')).length;
+  const done = Array.from(document.querySelectorAll('.checklist input[type="checkbox"]:checked')).length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressPct').textContent = pct+'%';
+  document.getElementById('miniBar').style.width = pct+'%';
+  paintNav();
+}
+
+/* ============================== Sidebar (mobile) ============================== */
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sbBackdrop').classList.add('on');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbBackdrop').classList.remove('on');
+}
+
+/* ============================== Bindings ============================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  wireChecks();
+
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const lv = btn.dataset.level;
+      if(lv !== undefined && !state.unlocked[lv]){
+        alert('Este nivel está bloqueado. Completa el checklist del nivel anterior para desbloquearlo.');
+        return;
+      }
+      goSection(btn.dataset.target);
+    });
+  });
+
+  document.querySelectorAll('.level-tile').forEach(tile=>{
+    tile.addEventListener('click', ()=>{
+      const target = tile.dataset.target;
+      const lvMatch = target.match(/nivel-(\d)/);
+      const lv = lvMatch ? lvMatch[1] : null;
+      if(lv !== null && !state.unlocked[lv]){
+        alert('Este nivel está bloqueado. Completa el checklist del nivel anterior para desbloquearlo.');
+        return;
+      }
+      goSection(target);
+    });
+  });
+
+  document.getElementById('menuBtn').addEventListener('click', openSidebar);
+  document.getElementById('sbBackdrop').addEventListener('click', closeSidebar);
+
+  // restore section
+  if(state.section && document.getElementById(state.section)){
+    goSection(state.section);
+  } else {
+    goSection('intro');
+  }
+  refresh();
+});
+</script>
+
+</body>
+</html>
