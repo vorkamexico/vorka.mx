@@ -197,6 +197,66 @@
     padding: 0 var(--gutter);
   }
 
+  /* ============ INSTAGRAM BUTTON (in header) ============ */
+  .ig-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    transition: transform .2s, box-shadow .25s, filter .2s;
+    box-shadow: 0 8px 20px -8px rgba(220, 39, 67, 0.55);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .ig-btn::after {
+    content: "";
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid var(--paper);
+  }
+  .ig-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(220, 39, 67, 0.8);
+    filter: saturate(1.15);
+  }
+  .ig-btn svg { width: 18px; height: 18px; }
+  @media (max-width: 520px) {
+    .ig-btn { width: 38px; height: 38px; }
+    .ig-btn svg { width: 17px; height: 17px; }
+  }
+
+  /* ============ SESIONES CTA ============ */
+  .sesiones-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 30px;
+    background: var(--accent);
+    color: #111111;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    transition: background .2s, transform .2s, box-shadow .25s, color .2s;
+    box-shadow: 0 14px 36px -16px rgba(247, 179, 62, 0.75);
+  }
+  .sesiones-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -16px rgba(247, 179, 62, 0.9);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .sesiones-cta svg {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+  }
+
   /* ============ STICKY HEADER ============ */
   .site-header {
     position: sticky;
@@ -2048,6 +2108,7 @@
   @media (max-width: 520px) {
     :root { --gutter: 20px; --header-h: 60px; }
     .brand span:last-child { display: none; }
+    .nav-right { gap: 8px; }
     .conf-meta { grid-template-columns: 1fr; }
     .foot-bottom { flex-direction: column; align-items: flex-start; }
     .faq-item summary { padding: 20px 22px; font-size: 15px; }
@@ -2087,11 +2148,14 @@
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
       <a href="#trayectoria">Trayectoria</a>
-      <a href="#servicios">Servicios</a>
+      <a href="#sesiones">Sesiones</a>
       <a href="#conferencias">Conferencias</a>
       <a href="#faq">FAQs</a>
     </nav>
     <div class="nav-right">
+      <a href="https://instagram.com/oleeynick" target="_blank" rel="noopener" class="ig-btn" aria-label="Sígueme en Instagram · @oleeynick" title="Sígueme en Instagram · @oleeynick">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
+      </a>
       <a href="#contacto" class="cta-mini">Contactar</a>
       <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
       <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileNav">
@@ -2110,7 +2174,7 @@
     <a href="#manifiesto">Manifiesto</a>
     <a href="#vision">Mi visión para México</a>
     <a href="#trayectoria">Trayectoria</a>
-    <a href="#servicios">Servicios</a>
+    <a href="#sesiones">Sesiones</a>
     <a href="#conferencias">Conferencias</a>
     <a href="#reconocimientos">Reconocimientos</a>
     <a href="#formacion">Formación</a>
@@ -2343,152 +2407,19 @@
   </div>
 </div>
 
-<!-- SERVICIOS -->
+<!-- SESIONES -->
 <div class="shell">
-  <section class="section" id="servicios" aria-labelledby="h-serv">
+  <section class="section reveal-section" id="sesiones" aria-labelledby="h-ses">
     <div class="section-head">
-      <div class="section-eyebrow eyebrow-p">Servicios</div>
-      <h2 class="section-title" id="h-serv">Espacios de <span class="a-p">acompañamiento</span> para personas, proyectos e instituciones.</h2>
+      <div class="section-eyebrow eyebrow-y">Sesiones</div>
+      <h2 class="section-title" id="h-ses">Si quieres trabajar <span class="accent">juntos.</span></h2>
+      <p class="reveal-intro">Mentoría, asesoría, consultoría y conferencias. Escríbeme por WhatsApp con lo que traes en mente y coordinamos directamente día, hora y modalidad.</p>
     </div>
-    <p class="services-lede">
-      Tres modalidades para trabajar en distintos momentos: una decisión puntual, un proceso sostenido, o una intervención estratégica sobre un proyecto en curso.
-    </p>
-
-    <div class="how-it-works">
-      <div class="how-head">
-        <span class="h-eyebrow">Cómo funciona</span>
-        <h3>Agenda automática. <em>Cero fricción.</em></h3>
-      </div>
-      <div class="how-steps">
-        <div class="step">
-          <span class="step-num">01</span>
-          <span class="step-title">Agenda</span>
-          <span class="step-desc">Escoges un horario disponible en el calendario.</span>
-        </div>
-        <div class="step">
-          <span class="step-num">02</span>
-          <span class="step-title">Paga</span>
-          <span class="step-desc">Transferencia o tarjeta al confirmar.</span>
-        </div>
-        <div class="step">
-          <span class="step-num">03</span>
-          <span class="step-title">Sesión</span>
-          <span class="step-desc">Nos vemos en videollamada.</span>
-        </div>
-        <div class="step">
-          <span class="step-num">04</span>
-          <span class="step-title">Listo</span>
-          <span class="step-desc">Sales con próximos pasos claros.</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="services">
-      <article class="service s-1">
-        <div class="s-header">
-          <span class="s-num">01</span>
-          <span class="s-tag">Puntual</span>
-        </div>
-        <h3>Asesoría Express</h3>
-        <p class="s-sub">Sesión única · 20 minutos</p>
-        <hr class="s-sep">
-        <div class="s-price">
-          <span class="sym">$</span>
-          <span class="amt">300</span>
-          <span class="unit">MXN</span>
-        </div>
-        <hr class="s-sep">
-        <p class="s-desc">Para resolver una duda concreta juntos y salir con claridad sobre tu siguiente paso.</p>
-        <ul class="s-list">
-          <li>Segunda opinión sobre una decisión</li>
-          <li>Feedback rápido a una idea</li>
-          <li>Dudas sobre becas, convocatorias o proyectos</li>
-          <li>Orientación puntual</li>
-        </ul>
-        <a class="s-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20interesa%20agendar%20una%20Asesor%C3%ADa%20Express." target="_blank" rel="noopener">
-          Agendar asesoría
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-        </a>
-      </article>
-
-      <article class="service s-2">
-        <div class="s-flag">Más elegido · Mejor valor</div>
-        <div class="s-header">
-          <span class="s-num">02</span>
-          <span class="s-tag">Mensual</span>
-        </div>
-        <h3>Mentoría Mensual</h3>
-        <p class="s-sub">Proceso continuo · Sesiones de 45 min</p>
-        <hr class="s-sep">
-        <div class="s-price">
-          <span class="sym">$</span>
-          <span class="amt">900</span>
-          <span class="unit">MXN / mes</span>
-        </div>
-        <div class="s-alt">o <span class="hl">$450</span> cada quincena</div>
-        <hr class="s-sep">
-        <div class="s-methods">
-          <span class="m">💳 Tarjeta de crédito</span>
-          <span class="m">🏦 Transferencia</span>
-          <span class="m">🗓️ Pago quincenal</span>
-        </div>
-        <p class="s-desc"><strong>El proceso más completo:</strong> acompañamiento continuo con estrategia real, seguimiento y respuestas cuando las necesitas.</p>
-        <ul class="s-list">
-          <li><strong>Mínimo 1 sesión al mes</strong> de 45 min por videollamada (más si lo necesitas)</li>
-          <li><strong>Diagnóstico inicial</strong> y <strong>plan de acción</strong> personalizado</li>
-          <li>Seguimiento del plan <strong>mes con mes</strong></li>
-          <li>Revisión de tu <strong>CV, portafolio o proyecto</strong></li>
-          <li>Preparación para <strong>becas y convocatorias</strong></li>
-          <li>Respuestas por <strong>WhatsApp</strong> entre sesiones</li>
-        </ul>
-        <a class="s-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20interesa%20empezar%20la%20Mentor%C3%ADa%20Mensual.%20%C2%BFPodemos%20agendar%20mi%20primera%20sesi%C3%B3n%3F" target="_blank" rel="noopener">
-          Empezar mi mentoría
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-        </a>
-      </article>
-
-      <article class="service s-3">
-        <div class="s-header">
-          <span class="s-num">03</span>
-          <span class="s-tag">Estratégica</span>
-        </div>
-        <h3>Consultoría</h3>
-        <p class="s-sub">Sesión estratégica · Según necesidad</p>
-        <hr class="s-sep">
-        <div class="s-price">
-          <span class="sym">$</span>
-          <span class="amt">720</span>
-          <span class="unit">MXN</span>
-        </div>
-        <hr class="s-sep">
-        <p class="s-desc">Para proyectos, iniciativas y organizaciones que necesitan estructura, estrategia y una visión externa. Trabajamos codo a codo.</p>
-        <ul class="s-list">
-          <li>Diagnóstico y ruta de acción</li>
-          <li>Revisión de propuestas y proyectos</li>
-          <li>Presentación ante instituciones y aliados</li>
-          <li>Comunicación e impacto</li>
-        </ul>
-        <a class="s-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20interesa%20una%20Consultor%C3%ADa%20Estrat%C3%A9gica." target="_blank" rel="noopener">
-          Solicitar consultoría
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-        </a>
-      </article>
-    </div>
-
-    <div class="areas-wrap">
-      <div class="areas-label">Áreas donde trabajamos juntos</div>
-      <div class="areas-cloud">
-        <span class="chip">Liderazgo</span>
-        <span class="chip">Desarrollo personal</span>
-        <span class="chip">CV y perfil</span>
-        <span class="chip">Becas y convocatorias</span>
-        <span class="chip">Proyectos sociales</span>
-        <span class="chip">Emprendimiento</span>
-        <span class="chip">Marca personal</span>
-        <span class="chip">Toma de decisiones</span>
-        <span class="chip">Crecimiento profesional</span>
-        <span class="chip">Presentación ante instituciones</span>
-      </div>
+    <div class="reveal-summary-wrap">
+      <a class="sesiones-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20agendar%20una%20sesi%C3%B3n%20contigo." target="_blank" rel="noopener">
+        Agendar una sesión
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
     </div>
   </section>
 </div>
@@ -2690,23 +2621,9 @@
 
     <div class="faq">
       <details class="faq-item">
-        <summary>¿Cómo agendo una sesión de mentoría, asesoría o consultoría?</summary>
+        <summary>¿Cómo agendo una sesión contigo?</summary>
         <div class="answer">
-          <p>Todas las sesiones se agendan directamente por WhatsApp. En cada tarjeta de servicio hay un botón que abre una conversación con un mensaje predefinido para que solo tengas que enviarlo. Confirmo disponibilidad y coordinamos día y hora.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>¿Puedo tomar una sola sesión sin comprometerme al proceso mensual?</summary>
-        <div class="answer">
-          <p>Sí. La <strong>Asesoría Express</strong> ($300 MXN, 20 min) está pensada exactamente para eso: una duda puntual, una segunda opinión o una orientación específica sin necesidad de continuidad. Si después quieres seguir en proceso, siempre puedes pasar a la mentoría mensual.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>¿Qué métodos de pago aceptas?</summary>
-        <div class="answer">
-          <p>Transferencia bancaria, tarjeta de crédito o débito y depósito. Para la Mentoría Mensual también existe la opción de <strong>pago quincenal de $450 MXN</strong> en dos exhibiciones. En la consultoría se puede emitir factura si tu organización lo requiere.</p>
+          <p>Todo se agenda directamente por WhatsApp. Mándame un mensaje con lo que traes en mente y coordinamos día, hora y modalidad. También puedes llenar el formulario en <a href="#habla">Habla conmigo</a> si prefieres ese canal.</p>
         </div>
       </details>
 
@@ -2746,27 +2663,6 @@
       </details>
 
       <details class="faq-item">
-        <summary>¿Qué pasa si necesito reprogramar o cancelar una sesión?</summary>
-        <div class="answer">
-          <p>Reprogramar es gratis siempre que me avises con <strong>al menos 24 horas de anticipación</strong>. Si necesitas cancelar una sesión ya pagada, se puede acomodar en otro momento del mes en curso o dejar el crédito para el siguiente.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>¿Puedes emitir factura para la asesoría o consultoría?</summary>
-        <div class="answer">
-          <p>Sí. Para la <strong>Consultoría Estratégica</strong> emitimos factura desde Vorka México a nombre de tu organización. La asesoría y la mentoría también se pueden facturar a solicitud; solo compárteme tus datos fiscales al agendar.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>¿Puedo regalar una sesión a alguien más?</summary>
-        <div class="answer">
-          <p>Sí. Puedes cubrir una Asesoría Express, una Mentoría Mensual o una Consultoría en nombre de otra persona u organización. Al agendar por WhatsApp mándame los datos de quien la va a tomar y coordino directamente con esa persona.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
         <summary>¿Cuál es tu tiempo de respuesta por WhatsApp?</summary>
         <div class="answer">
           <p>Respondo mensajes normalmente el mismo día en horario hábil (Ciudad de México). Si escribes fuera de horario o en fin de semana, la respuesta suele llegar el siguiente día laboral por la mañana.</p>
@@ -2777,13 +2673,6 @@
         <summary>¿Trabajas con adolescentes o solo con mayores de edad?</summary>
         <div class="answer">
           <p>Trabajo con adolescentes a partir de los 15 años. En esos casos se coordina con madre, padre o tutor para el agendado y los pagos, y las sesiones mantienen el mismo estándar de acompañamiento.</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>¿Puedo cancelar la mentoría mensual en cualquier momento?</summary>
-        <div class="answer">
-          <p>Sí. La mentoría es un compromiso mes a mes, no un contrato. Si en algún punto quieres pausarla o cerrar el proceso, solo hay que avisarme antes del siguiente cobro y quedamos.</p>
         </div>
       </details>
 
@@ -2945,7 +2834,7 @@
           <li><a href="#manifiesto">Manifiesto</a></li>
           <li><a href="#vision">Mi visión para México</a></li>
           <li><a href="#trayectoria">Trayectoria</a></li>
-          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#sesiones">Sesiones</a></li>
           <li><a href="#conferencias">Conferencias</a></li>
           <li><a href="#reconocimientos">Reconocimientos</a></li>
           <li><a href="#formacion">Formación</a></li>
@@ -3003,20 +2892,14 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "¿Cómo agendo una sesión de mentoría, asesoría o consultoría con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "Todas las sesiones se agendan directamente por WhatsApp. En cada tarjeta de servicio hay un botón que abre una conversación con un mensaje predefinido. Brandon confirma disponibilidad y coordina día y hora." } },
-    { "@type": "Question", "name": "¿Puedo tomar una sola sesión sin comprometerme al proceso mensual?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. La Asesoría Express de 300 MXN por 20 minutos está pensada exactamente para eso: una duda puntual, una segunda opinión o una orientación específica sin necesidad de continuidad." } },
-    { "@type": "Question", "name": "¿Qué métodos de pago acepta Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "Transferencia bancaria, tarjeta de crédito o débito y depósito. Para la Mentoría Mensual también existe la opción de pago quincenal de 450 MXN. En consultoría se puede emitir factura." } },
+    { "@type": "Question", "name": "¿Cómo agendo una sesión con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "Directamente por WhatsApp o llenando el formulario de Habla conmigo. Brandon confirma disponibilidad y coordina día, hora y modalidad." } },
     { "@type": "Question", "name": "¿Cómo puedo sumarme a Juventudes Impactando México A.C.?", "acceptedAnswer": { "@type": "Answer", "text": "Puedes registrarte en el formulario de ¡Únete al cambio! en menos de tres minutos. Más información en vorka.mx/impacto." } },
     { "@type": "Question", "name": "¿Cómo se solicita una conferencia con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "Escríbele por WhatsApp desde el botón de la sección de Conferencias con el contexto: institución, público, tema y fechas tentativas. Cada intervención se prepara desde el contexto del público." } },
     { "@type": "Question", "name": "¿Brandon trabaja con empresas o solo con personas?", "acceptedAnswer": { "@type": "Answer", "text": "Con ambas. La mentoría suele ser individual, mientras que la consultoría estratégica está diseñada para proyectos, iniciativas y organizaciones incluyendo empresas, ONGs y áreas de gobierno." } },
     { "@type": "Question", "name": "¿Las sesiones son presenciales o en línea?", "acceptedAnswer": { "@type": "Answer", "text": "Por defecto son por videollamada. Para conferencias, consultorías con organizaciones o casos específicos Brandon se traslada según agenda y logística." } },
     { "@type": "Question", "name": "¿En qué idiomas ofrece Brandon Oleynick las sesiones?", "acceptedAnswer": { "@type": "Answer", "text": "Español e inglés. Las conferencias y consultorías internacionales se pueden preparar en inglés." } },
-    { "@type": "Question", "name": "¿Qué pasa si necesito reprogramar o cancelar una sesión?", "acceptedAnswer": { "@type": "Answer", "text": "Reprogramar es gratis con al menos 24 horas de anticipación. Una sesión cancelada se acomoda en otro momento del mes o queda como crédito para el siguiente." } },
-    { "@type": "Question", "name": "¿Se puede emitir factura para la asesoría o consultoría?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. La Consultoría Estratégica se factura desde Vorka México. Asesoría y mentoría también se facturan a solicitud." } },
-    { "@type": "Question", "name": "¿Puedo regalar una sesión de mentoría a alguien más?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Puedes cubrir cualquiera de los servicios en nombre de otra persona u organización." } },
     { "@type": "Question", "name": "¿Cuál es el tiempo de respuesta por WhatsApp?", "acceptedAnswer": { "@type": "Answer", "text": "Brandon responde normalmente el mismo día en horario hábil de Ciudad de México. Fuera de horario o fin de semana, la respuesta llega el siguiente día laboral." } },
     { "@type": "Question", "name": "¿Brandon trabaja con adolescentes o solo con mayores de edad?", "acceptedAnswer": { "@type": "Answer", "text": "Trabaja con adolescentes a partir de los 15 años, coordinando con madre, padre o tutor el agendado y los pagos." } },
-    { "@type": "Question", "name": "¿Puedo cancelar la mentoría mensual en cualquier momento?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. La mentoría es un compromiso mes a mes, no un contrato. Basta con avisar antes del siguiente cobro." } },
     { "@type": "Question", "name": "¿Brandon puede acompañar a una organización más allá de una sesión?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Para procesos de mayor alcance los espacios adecuados son Vorka México y Oleynick Group. Se puede iniciar con una consultoría estratégica y definir el siguiente paso." } }
   ]
 }
