@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piloto Guadalajara Altamesa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#EEF0F3; --paper:#FFFFFF; --ink:#1B1F27; --ink-2:#4B5261; --ink-3:#7B8291;
+  --line:#DDE1E7; --soft:#F5F6F8; --field:#FFFDF3; --field-line:#E6D9A8;
+  --navy:#1F3A5F; --navy-soft:#E9EEF5;
+  --green:#1E7B45; --green-soft:#E7F3EC;
+  --amber:#A15C07; --amber-soft:#FBF0DD;
+  --red:#B42318; --red-soft:#FCEAE8;
+  --font:"Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#111317; --paper:#1A1D22; --ink:#ECEEF1; --ink-2:#B8BECA; --ink-3:#8C93A1;
+    --line:#2E333B; --soft:#22262D; --field:#23231C; --field-line:#4A4530;
+    --navy:#9DB8DD; --navy-soft:#1F2A3A;
+    --green:#6CC993; --green-soft:#16301F;
+    --amber:#EDB25E; --amber-soft:#382A14;
+    --red:#F2918A; --red-soft:#3C1C1A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111317; --paper:#1A1D22; --ink:#ECEEF1; --ink-2:#B8BECA; --ink-3:#8C93A1;
+  --line:#2E333B; --soft:#22262D; --field:#23231C; --field-line:#4A4530;
+  --navy:#9DB8DD; --navy-soft:#1F2A3A;
+  --green:#6CC993; --green-soft:#16301F;
+  --amber:#EDB25E; --amber-soft:#382A14;
+  --red:#F2918A; --red-soft:#3C1C1A;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{background:var(--bg); color:var(--ink); font-family:var(--font); font-size:16.5px; line-height:1.55; margin:0; padding-inline:16px; padding-block:24px 64px}
+.doc{max-width:920px; margin:0 auto; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:clamp(22px,5vw,60px); display:flex; flex-direction:column; gap:56px}
+h1,h2,h3{margin:0; line-height:1.2; text-wrap:balance}
+h1{font-size:clamp(30px,5vw,42px); font-weight:700; letter-spacing:-.01em}
+h2{font-size:clamp(23px,3.4vw,29px); font-weight:700}
+h3{font-size:18px; font-weight:700}
+p{margin:0; max-width:72ch}
+ul{margin:0; padding-left:20px}
+li+li{margin-top:4px}
+a{color:var(--navy)}
+.muted{color:var(--ink-2)}
+.small{font-size:14.5px}
+.note{font-size:13.5px; color:var(--ink-3)}
+.kicker{font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--navy)}
+section{display:flex; flex-direction:column; gap:18px}
+.head{display:flex; flex-direction:column; gap:6px; padding-bottom:14px; border-bottom:2px solid var(--ink)}
+
+/* barra de reunión */
+.bar{max-width:920px; margin:0 auto 14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; font-size:14.5px; color:var(--ink-2)}
+.bar .actions{display:flex; flex-wrap:wrap; gap:8px}
+.btn{font:inherit; font-size:14.5px; font-weight:600; border-radius:6px; padding:8px 14px; cursor:pointer; border:1px solid var(--line); background:var(--paper); color:var(--ink)}
+.btn.primary{background:var(--navy); border-color:var(--navy); color:var(--paper)}
+.btn:hover{filter:brightness(.97)}
+.btn:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible{outline:2px solid var(--navy); outline-offset:2px}
+.saved{font-size:13.5px; color:var(--green)}
+
+/* campos */
+input.f, textarea.f, select.f{font:inherit; font-size:15px; color:var(--ink); background:var(--field); border:1px solid var(--field-line); border-radius:5px; padding:6px 9px; width:100%}
+input.f.sm{width:90px; text-align:right}
+input.f.md{width:150px}
+textarea.f{min-height:64px; resize:vertical; line-height:1.45}
+.notes{display:flex; flex-direction:column; gap:6px; border:1px dashed var(--field-line); background:var(--field); border-radius:6px; padding:12px 14px}
+.notes label{font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--amber)}
+.notes textarea.f{border:0; background:transparent; padding:0; min-height:48px}
+.notes textarea.f:focus-visible{outline:0}
+
+/* portada */
+.cover{display:flex; flex-direction:column; gap:20px}
+.lede{font-size:19px; color:var(--ink-2); max-width:62ch}
+.meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px 24px; padding-top:18px; border-top:1px solid var(--line)}
+.meta span{display:block; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.meta b{font-weight:600}
+.meeting{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; background:var(--soft); border-radius:6px; padding:14px 16px}
+.meeting label{display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3)}
+.toc{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:4px 28px; font-size:15px; counter-reset:toc; margin:0; padding:0; list-style:none}
+.toc li{counter-increment:toc; display:flex; gap:10px; margin:0}
+.toc li::before{content:counter(toc); color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:18px}
+.toc a{text-decoration:none; color:var(--ink)}
+.toc a:hover{text-decoration:underline}
+
+.callout{background:var(--navy-soft); border-radius:6px; padding:20px 22px; display:flex; flex-direction:column; gap:8px}
+.callout .q{font-size:clamp(19px,2.8vw,22px); font-weight:600; color:var(--navy); line-height:1.4}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px}
+.panel{border:1px solid var(--line); border-radius:6px; padding:16px 18px; display:flex; flex-direction:column; gap:8px}
+.panel ul{color:var(--ink-2); font-size:15.5px}
+
+/* tablas */
+.tbl{overflow-x:auto; border:1px solid var(--line); border-radius:6px}
+table{border-collapse:collapse; width:100%; font-size:15px; min-width:640px}
+th,td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+thead th{background:var(--soft); font-size:12.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-2); font-weight:700}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+td b{font-weight:600}
+.comp td:first-child{font-weight:600; width:22%}
+.comp td:nth-child(2){color:var(--ink-2)}
+.comp td:nth-child(3){background:var(--navy-soft)}
+.caption{font-size:13.5px; color:var(--ink-3)}
+td.fcell{min-width:140px}
+
+.pill{display:inline-block; font-size:12px; font-weight:700; padding:2px 9px; border-radius:4px; white-space:nowrap; letter-spacing:.02em}
+.p-red{background:var(--red-soft); color:var(--red)}
+.p-amber{background:var(--amber-soft); color:var(--amber)}
+.p-green{background:var(--green-soft); color:var(--green)}
+.p-navy{background:var(--navy-soft); color:var(--navy)}
+.mbar{display:flex; align-items:center; gap:10px; justify-content:flex-end}
+.mbar i{display:block; height:8px; border-radius:2px}
+.mbar .track{width:110px; height:8px; background:var(--soft); border-radius:2px; overflow:hidden}
+
+/* decisiones */
+.decision{border:1px solid var(--line); border-radius:6px; overflow:hidden}
+.decision header{padding:16px 20px; background:var(--soft); display:flex; flex-direction:column; gap:4px}
+.decision header .n{font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--navy)}
+.decision header p{font-size:15.5px; color:var(--ink-2)}
+.options{display:grid; grid-template-columns:repeat(3,1fr)}
+.opt{position:relative; padding:16px 18px 16px 46px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:8px; font-size:15px; cursor:pointer}
+.opt + .opt{border-left:1px solid var(--line)}
+.opt input[type=radio]{position:absolute; left:16px; top:19px; width:18px; height:18px; accent-color:var(--navy); margin:0}
+.opt h4{margin:0; font-size:16px}
+.opt .pc{display:flex; flex-direction:column; gap:4px; color:var(--ink-2)}
+.opt .pc span::before{display:inline-block; width:16px; font-weight:700}
+.opt .pro::before{content:"+"; color:var(--green)}
+.opt .con::before{content:"–"; color:var(--red)}
+.opt .badge{align-self:flex-start}
+.opt:has(input:checked){background:var(--navy-soft); box-shadow:inset 0 0 0 2px var(--navy)}
+.opt:has(input:checked) h4::after{content:"  ✓ Elegida"; color:var(--navy); font-size:13px}
+.decision footer{padding:14px 20px; border-top:1px solid var(--line); font-size:15px; display:flex; flex-direction:column; gap:10px}
+.inline{display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap}
+
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+.step{border-top:3px solid var(--navy); background:var(--soft); border-radius:0 0 6px 6px; padding:14px 16px; display:flex; flex-direction:column; gap:6px}
+.step span{font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3)}
+.step ul{font-size:14.5px; color:var(--ink-2); padding-left:18px}
+.bio{font-size:17px; color:var(--ink-2)}
+.close{background:var(--navy); color:var(--paper); border-radius:6px; padding:22px 24px; font-size:clamp(18px,2.6vw,21px); font-weight:600; line-height:1.45}
+
+/* acta */
+#acta{border:2px solid var(--ink); border-radius:6px; padding:clamp(18px,4vw,34px)}
+.acta-h{display:flex; flex-direction:column; gap:4px}
+.acta-meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px 20px; font-size:15px; padding:12px 0; border-block:1px solid var(--line)}
+.acta-meta span{display:block; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3)}
+.acta-block{display:flex; flex-direction:column; gap:8px}
+.acta-block h3{font-size:16px; text-transform:uppercase; letter-spacing:.05em; color:var(--navy)}
+.acta table{min-width:0}
+.empty{color:var(--ink-3); font-style:italic}
+.st{font-weight:700}
+.st.ok{color:var(--green)} .st.no{color:var(--red)} .st.pend{color:var(--amber)}
+.sign{display:grid; grid-template-columns:1fr 1fr; gap:40px; padding-top:40px}
+.sign div{border-top:1px solid var(--ink); padding-top:8px; font-size:14.5px; color:var(--ink-2)}
+.confirm{display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--red-soft); color:var(--red); border-radius:6px; padding:10px 14px; font-size:15px}
+
+@media (max-width:760px){
+  .options{grid-template-columns:1fr}
+  .opt + .opt{border-left:0}
+  .steps{grid-template-columns:1fr 1fr}
+}
+@media (max-width:460px){ .steps{grid-template-columns:1fr} .sign{grid-template-columns:1fr} }
+
+/* impresión */
+@media print{
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"]{
+    color-scheme:light;
+    --bg:#fff; --paper:#fff; --ink:#111; --ink-2:#333; --ink-3:#666;
+    --line:#ccc; --soft:#f3f4f6; --field:#fff; --field-line:#bbb;
+    --navy:#1F3A5F; --navy-soft:#eef2f7;
+    --green:#1E7B45; --green-soft:#eaf5ee; --amber:#8a4f06; --amber-soft:#fbf1e1; --red:#B42318; --red-soft:#fcecea;
+  }
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  body{background:#fff; padding:0; font-size:12.5pt}
+  .doc{border:0; padding:0; gap:28px; max-width:none}
+  .noprint{display:none !important}
+  .tbl{overflow:visible}
+  table{min-width:0}
+  .decision, .acta-block, tr{break-inside:avoid}
+  section{break-before:auto}
+  #acta{break-before:page; border:0; padding:0}
+  textarea.f{resize:none; border:0; background:transparent; padding:0}
+  input.f, select.f{border:0; border-bottom:1px solid #bbb; border-radius:0; background:transparent; appearance:none}
+  .notes.empty-notes{display:none}
+  body.print-acta .doc > *:not(#acta){display:none !important}
+  body.print-acta #acta{break-before:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="bar noprint">
+  <span>Modo reunión: escribe directamente en los campos amarillos. Todo se guarda solo en este navegador. <span class="saved" id="saved"></span></span>
+  <span class="actions">
+    <a class="btn" href="#acta">Ver acta de acuerdos</a>
+    <button class="btn" type="button" id="reset">Borrar anotaciones</button>
+  </span>
+</div>
+<div class="bar noprint" id="confirmbox" hidden>
+  <div class="confirm">¿Borrar todas las anotaciones de la reunión? No se puede deshacer.
+    <button class="btn" type="button" id="reset-yes">Sí, borrar</button>
+    <button class="btn" type="button" id="reset-no">Cancelar</button>
+  </div>
+</div>
+
+<article class="doc">
+
+<!-- PORTADA -->
+<header class="cover">
+  <span class="kicker">Propuesta comercial</span>
+  <h1>Guadalajara: proyecto piloto de desarrollo comercial de Altamesa</h1>
+  <p class="lede">Propuesta para ordenar la venta de Altamesa en Guadalajara durante 90 días, medir qué canales funcionan y dejar un modelo que se pueda replicar en otras ciudades.</p>
+  <div class="meta">
+    <div><span>Para</span><b>Mauricio Usabiaga · Altamesa</b></div>
+    <div><span>Presenta</span><b>Ana Laura Hernández</b></div>
+    <div><span>Fecha de propuesta</span><b>Septiembre 2026</b></div>
+    <div><span>Documento</span><b>Uso interno</b></div>
+  </div>
+  <div class="meeting">
+    <label for="m-fecha">Fecha de la reunión<input class="f" id="m-fecha" type="date"></label>
+    <label for="m-lugar">Lugar<input class="f" id="m-lugar" type="text" placeholder="Planta, oficina, videollamada…"></label>
+    <label for="m-asist">Asistentes<input class="f" id="m-asist" type="text" value="Mauricio Usabiaga, Ana Laura Hernández"></label>
+  </div>
+  <ol class="toc noprint">
+    <li><a href="#resumen">Resumen y decisiones</a></li>
+    <li><a href="#hoy">Situación actual y propuesta</a></li>
+    <li><a href="#hallazgos">Hallazgos en la información comercial</a></li>
+    <li><a href="#precios">Márgenes por producto</a></li>
+    <li><a href="#decisiones">Decisiones con opciones</a></li>
+    <li><a href="#horeca">Ejemplo de venta a Horeca</a></li>
+    <li><a href="#requisitos">Lo que necesito para operar</a></li>
+    <li><a href="#indicadores">Indicadores y plan de 90 días</a></li>
+    <li><a href="#cierre">Presentación y cierre</a></li>
+    <li><a href="#acta">Acta de acuerdos</a></li>
+  </ol>
+</header>
+
+<!-- 1 RESUMEN -->
+<section id="resumen">
+  <div class="head"><span class="kicker">1 · Resumen ejecutivo</span><h2>En una página</h2></div>
+  <div class="grid3">
+    <div class="panel"><h3>La situación</h3><ul><li>Hay interés real: cerca de 450 personas en degustaciones, más contactos Horeca, tiendas y eventos.</li><li>No hay reglas comerciales únicas: cada venta se negocia desde cero.</li></ul></div>
+    <div class="panel"><h3>La propuesta</h3><ul><li>Guadalajara como piloto de 90 días.</li><li>Precios, autoridad y recursos definidos desde el inicio.</li><li>Resultados medidos cada mes.</li></ul></div>
+    <div class="panel"><h3>El resultado</h3><ul><li>Saber qué canal vende más y a qué costo.</li><li>Cartera de clientes documentada.</li><li>Un manual para abrir la siguiente ciudad.</li></ul></div>
+  </div>
+  <h3>Decisiones que se piden en esta reunión</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Decisión</th><th>Recomendación</th><th>Por qué</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td><b>Estructura de precios por canal</b></td><td>Un margen fijo por canal</td><td>Hoy el margen del distribuidor va de 6.6% a 33.8%</td><td><a href="#d1">Decisión 1</a></td></tr>
+      <tr><td><b>Nivel de autoridad comercial</b></td><td>Autonomía dentro de reglas</td><td>Cerrar ventas sin frenar, sin comprometer a la empresa</td><td><a href="#d2">Decisión 2</a></td></tr>
+      <tr><td><b>Inversión en marketing digital</b></td><td>Altamesa la cubre durante el piloto, con tope</td><td>$6,800 al mes, sujeto a resultados</td><td><a href="#d3">Decisión 3</a></td></tr>
+      <tr><td><b>Empaque para tienda y consumidor</b></td><td>Etiqueta de marca en el piloto</td><td>Mejora la venta sin invertir aún en empaque nuevo</td><td><a href="#d4">Decisión 4</a></td></tr>
+      <tr><td><b>Aprobar el piloto de 90 días</b></td><td>Sí, con revisión mensual</td><td>Riesgo bajo y medible; permite decidir con datos</td><td><a href="#d5">Decisión 5</a></td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <span class="q">“No busco reglas que limiten mi trabajo. Busco reglas claras que me permitan moverme con autonomía.”</span>
+    <span class="muted small">Con precios y límites definidos, cada oportunidad se atiende en el momento, sin detener la venta para pedir autorización.</span>
+  </div>
+</section>
+
+<!-- 2 HOY -->
+<section id="hoy">
+  <div class="head"><span class="kicker">2 · Situación actual y propuesta</span><h2>Qué cambia con el piloto</h2></div>
+  <div class="tbl"><table class="comp">
+    <thead><tr><th>Tema</th><th>Hoy</th><th>Con el piloto</th></tr></thead>
+    <tbody>
+      <tr><td>Precios</td><td>Tres listas con márgenes distintos por producto</td><td>Una tabla autorizada por canal, con margen y precio mínimo</td></tr>
+      <tr><td>Negociación</td><td>Cada venta se consulta caso por caso</td><td>Reglas claras: qué se decide en campo y qué se escala</td></tr>
+      <tr><td>Clientes</td><td>Contactos sueltos, sin seguimiento sistemático</td><td>Registro con QR, seguimiento de recompra y cartera documentada</td></tr>
+      <tr><td>Argumentos de venta</td><td>Generales: “está rico”, “es práctico”</td><td>Por tipo de cliente y respaldados con datos técnicos</td></tr>
+      <tr><td>Horeca</td><td>Se atiende igual que al consumidor final</td><td>Propuesta propia con costo por porción y ahorro de tiempo</td></tr>
+      <tr><td>Distribuidores</td><td>Sin condiciones definidas de territorio ni exclusividad</td><td>Modelo con margen, territorio, mínimo y metas</td></tr>
+      <tr><td>Resultados</td><td>No se miden</td><td>Ocho indicadores revisados cada mes</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Competencia: hasta ahora no he identificado en Guadalajara un competidor con esta combinación (esterilizado, sin refrigeración, 12 meses de vida de anaquel, listo para servir, enfoque Horeca). Es observación de campo; se confirmará con el estudio de mercado del piloto.</p>
+</section>
+
+<!-- 3 HALLAZGOS -->
+<section id="hallazgos">
+  <div class="head"><span class="kicker">3 · Hallazgos</span><h2>Lo que encontré al revisar la información comercial</h2></div>
+  <p class="muted">Revisé la lista de precios a clientes, la de distribuidores, la de tiendas (septiembre 2026) y las fichas técnicas. Es mi lectura de los documentos; en la reunión marcamos cuáles se confirman y qué se hará con cada uno.</p>
+  <div class="tbl"><table id="t-hall">
+    <thead><tr><th>Prioridad</th><th>Hallazgo</th><th>Evidencia</th><th>Acción propuesta</th><th>En la reunión</th></tr></thead>
+    <tbody>
+      <tr data-name="Margen del distribuidor muy desigual"><td><span class="pill p-red">Alta</span></td><td><b>Margen del distribuidor muy desigual</b></td><td>De 6.6% (res) a 33.8% (cerdo) entre precio distribuidor y tienda</td><td>Definir un margen por canal (Decisión 1)</td><td class="fcell"><select class="f" id="h1"></select></td></tr>
+      <tr data-name="Sin precio sugerido al consumidor"><td><span class="pill p-red">Alta</span></td><td><b>Sin precio sugerido al consumidor</b></td><td>La lista de clientes en planta es más cara que el precio tienda</td><td>Fijar precio sugerido de venta al público</td><td class="fcell"><select class="f" id="h2"></select></td></tr>
+      <tr data-name="Unidades que no cuadran"><td><span class="pill p-red">Alta</span></td><td><b>Unidades que no cuadran</b></td><td>Cochinita 250 g: $148 por pieza al distribuidor y unos $60 por pieza a la tienda</td><td>Revisar unidades (kg o pieza) en todas las listas</td><td class="fcell"><select class="f" id="h3"></select></td></tr>
+      <tr data-name="Códigos distintos para el mismo producto"><td><span class="pill p-amber">Media</span></td><td><b>Códigos distintos para el mismo producto</b></td><td>Barbacoa 1 kg: MPPT-00126 en una lista, PTE-00974 en otra</td><td>Un solo código por producto</td><td class="fcell"><select class="f" id="h4"></select></td></tr>
+      <tr data-name="Catálogo distinto en cada lista"><td><span class="pill p-amber">Media</span></td><td><b>Catálogo distinto en cada lista</b></td><td>Birria no está en la lista de clientes; chamorro no está en la de tiendas</td><td>Catálogo único con disponibilidad por canal</td><td class="fcell"><select class="f" id="h5"></select></td></tr>
+      <tr data-name="Datos por corregir en fichas técnicas"><td><span class="pill p-amber">Media</span></td><td><b>Datos por corregir en fichas técnicas</b></td><td>Res: 12 y 18 meses de vida de anaquel en la misma ficha</td><td>Corregir antes de entregarlas a clientes</td><td class="fcell"><select class="f" id="h6"></select></td></tr>
+      <tr data-name="Relación Altamesa–Susazón sin explicar"><td><span class="pill p-navy">Baja</span></td><td><b>Relación Altamesa–Susazón sin explicar</b></td><td>Las fichas citan a Susazón (TIF 688, FSSC 22000)</td><td>Definir cómo presentarla: es un argumento de confianza</td><td class="fcell"><select class="f" id="h7"></select></td></tr>
+      <tr data-name="Producto en bolsa genérica"><td><span class="pill p-navy">Baja</span></td><td><b>Producto en bolsa genérica</b></td><td>Así lo indica la lista de precios vigente</td><td>Etiqueta de marca en el piloto (Decisión 4)</td><td class="fcell"><select class="f" id="h8"></select></td></tr>
+    </tbody>
+  </table></div>
+  <div class="notes"><label for="n-hall">Notas de la reunión</label><textarea class="f" id="n-hall" placeholder="Comentarios de Mauricio sobre los hallazgos…"></textarea></div>
+</section>
+
+<!-- 4 PRECIOS -->
+<section id="precios">
+  <div class="head"><span class="kicker">4 · Márgenes</span><h2>Cuánto le queda al distribuidor por producto</h2></div>
+  <p class="muted">Diferencia entre el precio distribuidor y el precio tienda, antes de flete. Ordenado de menor a mayor.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Producto (1 kg)</th><th class="num">Distribuidor</th><th class="num">Tienda</th><th class="num">Lista clientes</th><th class="num">Le queda al distribuidor</th><th>Lectura</th></tr></thead>
+    <tbody>
+      <tr><td>Deshebrada de res</td><td class="num">$333</td><td class="num">$355</td><td class="num">$475</td><td class="num"><div class="mbar"><b>6.6%</b><span class="track"><i style="width:20%;background:var(--red)"></i></span></div></td><td><span class="pill p-red">No sostenible</span></td></tr>
+      <tr><td>Deshebrada de pollo</td><td class="num">$112</td><td class="num">$124</td><td class="num">$200*</td><td class="num"><div class="mbar"><b>10.7%</b><span class="track"><i style="width:32%;background:var(--red)"></i></span></div></td><td><span class="pill p-red">No sostenible</span></td></tr>
+      <tr><td>Barbacoa de res</td><td class="num">$207</td><td class="num">$236</td><td class="num">$295</td><td class="num"><div class="mbar"><b>14.0%</b><span class="track"><i style="width:41%;background:var(--amber)"></i></span></div></td><td><span class="pill p-amber">Justo</span></td></tr>
+      <tr><td>Cochinita pibil</td><td class="num">$189</td><td class="num">$220</td><td class="num">$265</td><td class="num"><div class="mbar"><b>16.4%</b><span class="track"><i style="width:49%;background:var(--amber)"></i></span></div></td><td><span class="pill p-amber">Justo</span></td></tr>
+      <tr><td>Carne al pastor</td><td class="num">$179</td><td class="num">$217</td><td class="num">$260</td><td class="num"><div class="mbar"><b>21.2%</b><span class="track"><i style="width:63%;background:var(--green)"></i></span></div></td><td><span class="pill p-green">Atractivo</span></td></tr>
+      <tr><td>Birria de res</td><td class="num">$141</td><td class="num">$171</td><td class="num">—</td><td class="num"><div class="mbar"><b>21.3%</b><span class="track"><i style="width:63%;background:var(--green)"></i></span></div></td><td><span class="pill p-green">Atractivo</span></td></tr>
+      <tr><td>Deshebrada de cerdo</td><td class="num">$160</td><td class="num">$214</td><td class="num">$235</td><td class="num"><div class="mbar"><b>33.8%</b><span class="track"><i style="width:100%;background:var(--green)"></i></span></div></td><td><span class="pill p-green">Atractivo</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="caption">Precios por kg sin flete. Fuentes: LP Distribuidores, LP Tiendas sep 2026 y Lista de precios clientes. *En la lista de clientes, el pollo de 1 kg es la versión baja en sodio. Criterio de lectura: menos de 12% no sostenible, 12–20% justo, más de 20% atractivo.</p>
+  <div class="callout"><span><b>Conclusión:</b> con estos precios, un distribuidor elegiría vender solo cerdo, pastor y birria. Res y pollo, que son productos premium y bajos en sodio, quedarían fuera. Por eso la estructura de precios es la primera decisión.</span></div>
+
+  <h3>Tabla de precios por canal · para acordar</h3>
+  <div class="tbl"><table id="t-precios">
+    <thead><tr><th>Canal</th><th>Margen del canal</th><th>Precio mínimo / regla</th><th>Compra mínima</th><th>Flete</th><th>Forma de pago</th></tr></thead>
+    <tbody>
+      <tr data-name="Distribuidor"><td><b>Distribuidor</b></td><td><input class="f" id="pr-d-m" placeholder="%"></td><td><input class="f" id="pr-d-p"></td><td><input class="f" id="pr-d-c"></td><td><input class="f" id="pr-d-f"></td><td><input class="f" id="pr-d-pg"></td></tr>
+      <tr data-name="Horeca"><td><b>Horeca</b></td><td><input class="f" id="pr-h-m" placeholder="%"></td><td><input class="f" id="pr-h-p"></td><td><input class="f" id="pr-h-c"></td><td><input class="f" id="pr-h-f"></td><td><input class="f" id="pr-h-pg"></td></tr>
+      <tr data-name="Tienda"><td><b>Tienda</b></td><td><input class="f" id="pr-t-m" placeholder="%"></td><td><input class="f" id="pr-t-p"></td><td><input class="f" id="pr-t-c"></td><td><input class="f" id="pr-t-f"></td><td><input class="f" id="pr-t-pg"></td></tr>
+      <tr data-name="Consumidor final"><td><b>Consumidor final</b></td><td><input class="f" id="pr-c-m" placeholder="%"></td><td><input class="f" id="pr-c-p" placeholder="Precio sugerido"></td><td><input class="f" id="pr-c-c"></td><td><input class="f" id="pr-c-f"></td><td><input class="f" id="pr-c-pg"></td></tr>
+    </tbody>
+  </table></div>
+  <p class="caption">Referencia actual: precio puesto en planta, sin flete, actualizable cada mes; mayoreo con compra mínima de $3,000 semanales.</p>
+</section>
+
+<!-- 5 DECISIONES -->
+<section id="decisiones">
+  <div class="head"><span class="kicker">5 · Decisiones</span><h2>Opciones para cada decisión</h2></div>
+  <p class="muted">Cada decisión tiene tres opciones con sus ventajas y riesgos. La etiqueta verde marca mi recomendación. En la reunión, se hace clic en la opción acordada y se anotan las condiciones.</p>
+
+  <div class="decision" id="d1" data-title="Estructura de precios por canal">
+    <header><span class="n">Decisión 1</span><h3>¿Cómo estructuramos los precios por canal?</h3><p>Hoy el margen de cada canal depende del producto.</p></header>
+    <div class="options">
+      <label class="opt"><input type="radio" name="d1" value="A. Dejar las listas como están"><h4>A. Dejar las listas como están</h4><div class="pc"><span class="pro">Sin trabajo adicional</span><span class="con">Distribuidores sin margen en res y pollo</span><span class="con">Cada venta se negocia desde cero</span></div></label>
+      <label class="opt"><input type="radio" name="d1" value="B. Margen fijo por canal"><span class="pill p-green badge">Recomendada</span><h4>B. Margen fijo por canal</h4><div class="pc"><span class="pro">Reglas iguales para todos los productos</span><span class="pro">Cotizar en el momento</span><span class="con">Requiere revisar costos por producto</span></div></label>
+      <label class="opt"><input type="radio" name="d1" value="C. Negociar cliente por cliente"><h4>C. Negociar cliente por cliente</h4><div class="pc"><span class="pro">Flexibilidad total</span><span class="con">Precios distintos en la misma ciudad</span><span class="con">Imposible de replicar</span></div></label>
+    </div>
+    <footer><span><b>Qué se necesita:</b> costo por producto y el margen que Altamesa quiere dar a distribuidor, Horeca y tienda. La tabla por canal está en la sección 4.</span>
+      <div class="notes"><label for="n-d1">Acuerdo y condiciones</label><textarea class="f" id="n-d1"></textarea></div></footer>
+  </div>
+
+  <div class="decision" id="d2" data-title="Nivel de autoridad comercial">
+    <header><span class="n">Decisión 2</span><h3>¿Qué nivel de autoridad tengo en Guadalajara?</h3><p>Define qué puedo ofrecer, negociar y cerrar sin consultar.</p></header>
+    <div class="options">
+      <label class="opt"><input type="radio" name="d2" value="A. Consultar cada venta"><h4>A. Consultar cada venta</h4><div class="pc"><span class="pro">Control total de Mauricio</span><span class="con">Ventas detenidas esperando respuesta</span><span class="con">No escala con volumen</span></div></label>
+      <label class="opt"><input type="radio" name="d2" value="B. Autonomía dentro de reglas"><span class="pill p-green badge">Recomendada</span><h4>B. Autonomía dentro de reglas</h4><div class="pc"><span class="pro">Decido dentro de la tabla de precios</span><span class="pro">Escalo solo excepciones</span><span class="con">Requiere reglas por escrito</span></div></label>
+      <label class="opt"><input type="radio" name="d2" value="C. Autonomía total"><h4>C. Autonomía total</h4><div class="pc"><span class="pro">Máxima velocidad</span><span class="con">Riesgo de comprometer margen</span><span class="con">Poco control para la empresa</span></div></label>
+    </div>
+    <footer>
+      <div class="tbl"><table id="t-auto">
+        <thead><tr><th>Tema</th><th>Decide Ana Laura</th><th>Requiere autorización de Mauricio</th></tr></thead>
+        <tbody>
+          <tr data-name="Descuentos por volumen"><td>Descuentos por volumen</td><td><input class="f" id="au-desc-a" value="Hasta ___ %"></td><td><input class="f" id="au-desc-m" value="Más de ___ %"></td></tr>
+          <tr data-name="Precios"><td>Precios</td><td><input class="f" id="au-pre-a" value="Dentro de la tabla autorizada"></td><td><input class="f" id="au-pre-m" value="Por debajo del precio mínimo"></td></tr>
+          <tr data-name="Muestras y degustaciones"><td>Muestras y degustaciones</td><td><input class="f" id="au-mue-a" value="Hasta ___ piezas al mes"></td><td><input class="f" id="au-mue-m" value="Eventos grandes"></td></tr>
+          <tr data-name="Alianzas"><td>Alianzas</td><td><input class="f" id="au-ali-a" value="Propuestas y cartas de intención"></td><td><input class="f" id="au-ali-m" value="Convenios firmados y exclusividades"></td></tr>
+          <tr data-name="Territorio y clientes"><td>Territorio y clientes</td><td><input class="f" id="au-ter-a" value="Guadalajara y zona metropolitana"></td><td><input class="f" id="au-ter-m" value="Cuentas nacionales o de planta"></td></tr>
+          <tr data-name="Cargo ante clientes"><td>Cargo ante clientes</td><td colspan="2"><input class="f" id="au-cargo" placeholder="Ej. Responsable comercial Altamesa Guadalajara"></td></tr>
+        </tbody>
+      </table></div>
+      <div class="notes"><label for="n-d2">Acuerdo y condiciones</label><textarea class="f" id="n-d2"></textarea></div></footer>
+  </div>
+
+  <div class="decision" id="d3" data-title="Inversión en marketing digital">
+    <header><span class="n">Decisión 3</span><h3>¿Quién cubre el marketing digital de Guadalajara?</h3><p>Presupuesto identificado: $4,000 de diseño y contenido más $2,800 de publicidad, $6,800 al mes.</p></header>
+    <div class="options">
+      <label class="opt"><input type="radio" name="d3" value="A. Altamesa, con tope y revisión"><span class="pill p-green badge">Recomendada</span><h4>A. Altamesa, con tope y revisión</h4><div class="pc"><span class="pro">Contenido de marca controlado por Altamesa</span><span class="pro">Se continúa solo si los indicadores lo justifican</span><span class="con">Inversión de $20,400 en 90 días</span></div></label>
+      <label class="opt"><input type="radio" name="d3" value="B. Esquema compartido"><h4>B. Esquema compartido</h4><div class="pc"><span class="pro">Menor inversión para la empresa</span><span class="con">Responsabilidad dividida sobre la marca</span><span class="con">Hay que acordar el reparto</span></div></label>
+      <label class="opt"><input type="radio" name="d3" value="C. Sin inversión digital"><h4>C. Sin inversión digital</h4><div class="pc"><span class="pro">Sin costo</span><span class="con">Solo se vende a quien se visita</span><span class="con">No se puede medir el canal digital</span></div></label>
+    </div>
+    <footer>
+      <div class="tbl"><table id="t-rec">
+        <thead><tr><th>Recurso</th><th>Monto</th><th>Quién lo cubre</th></tr></thead>
+        <tbody>
+          <tr data-name="Diseño y contenido digital"><td>Diseño y contenido digital</td><td><input class="f" id="re-dis-m" value="$4,000 al mes"></td><td><input class="f" id="re-dis-q"></td></tr>
+          <tr data-name="Publicidad en redes"><td>Publicidad en redes</td><td><input class="f" id="re-pub-m" value="$2,800 al mes"></td><td><input class="f" id="re-pub-q"></td></tr>
+          <tr data-name="Transporte y viáticos"><td>Transporte y viáticos</td><td><input class="f" id="re-tra-m"></td><td><input class="f" id="re-tra-q"></td></tr>
+          <tr data-name="Línea telefónica"><td>Línea telefónica</td><td><input class="f" id="re-tel-m"></td><td><input class="f" id="re-tel-q"></td></tr>
+          <tr data-name="Producto para degustaciones"><td>Producto para degustaciones</td><td><input class="f" id="re-deg-m"></td><td><input class="f" id="re-deg-q"></td></tr>
+          <tr data-name="Stand: lonas, mesa, QR, uniforme"><td>Stand: lonas, mesa, QR, uniforme</td><td><input class="f" id="re-sta-m"></td><td><input class="f" id="re-sta-q"></td></tr>
+        </tbody>
+      </table></div>
+      <div class="notes"><label for="n-d3">Acuerdo y condiciones</label><textarea class="f" id="n-d3"></textarea></div></footer>
+  </div>
+
+  <div class="decision" id="d4" data-title="Empaque para tienda y consumidor">
+    <header><span class="n">Decisión 4</span><h3>¿Qué hacemos con el empaque para tienda y consumidor final?</h3><p>Hoy el producto sale en bolsa genérica. Funciona para Horeca, pero en tienda nadie está presente para explicarlo.</p></header>
+    <div class="options">
+      <label class="opt"><input type="radio" name="d4" value="A. Mantener bolsa genérica"><h4>A. Mantener bolsa genérica</h4><div class="pc"><span class="pro">Sin costo</span><span class="con">El producto no se explica solo en anaquel</span></div></label>
+      <label class="opt"><input type="radio" name="d4" value="B. Etiqueta de marca en el piloto"><span class="pill p-green badge">Recomendada</span><h4>B. Etiqueta de marca en el piloto</h4><div class="pc"><span class="pro">Inversión baja</span><span class="pro">Incluye beneficio, preparación, QR y redes</span><span class="con">Solución temporal</span></div></label>
+      <label class="opt"><input type="radio" name="d4" value="C. Empaque nuevo completo"><h4>C. Empaque nuevo completo</h4><div class="pc"><span class="pro">Mejor presencia en tienda</span><span class="con">Costo y tiempo altos antes de tener datos</span></div></label>
+    </div>
+    <footer><span><b>Después del piloto:</b> con los datos de venta en tienda se decide si vale la pena el empaque completo (frente con marca, foto y beneficio; reverso con ingredientes, preparación, conservación, nutrición, lote, código de barras y QR).</span>
+      <div class="notes"><label for="n-d4">Acuerdo y condiciones</label><textarea class="f" id="n-d4"></textarea></div></footer>
+  </div>
+
+  <div class="decision" id="d5" data-title="Aprobación del piloto de 90 días">
+    <header><span class="n">Decisión 5</span><h3>¿Aprobamos Guadalajara como piloto de 90 días?</h3><p>Con revisión mensual de indicadores y un reporte final con el modelo para replicar.</p></header>
+    <div class="options">
+      <label class="opt"><input type="radio" name="d5" value="A. Aprobar tal como se presenta"><span class="pill p-green badge">Recomendada</span><h4>A. Aprobar tal como se presenta</h4><div class="pc"><span class="pro">Arranque inmediato</span><span class="pro">Primer reporte en 30 días</span></div></label>
+      <label class="opt"><input type="radio" name="d5" value="B. Aprobar con ajustes"><h4>B. Aprobar con ajustes</h4><div class="pc"><span class="pro">Se adapta a prioridades de Altamesa</span><span class="con">Hay que anotar los ajustes</span></div></label>
+      <label class="opt"><input type="radio" name="d5" value="C. Posponer"><h4>C. Posponer</h4><div class="pc"><span class="pro">Más tiempo para analizar</span><span class="con">Se enfrían los contactos actuales</span></div></label>
+    </div>
+    <footer><div class="inline small">Fecha de inicio del piloto: <input class="f md" id="p-inicio" type="date"> · Revisión mensual el día <input class="f sm" id="p-rev" placeholder="1–31"> de cada mes</div>
+      <div class="notes"><label for="n-d5">Acuerdo y condiciones</label><textarea class="f" id="n-d5"></textarea></div></footer>
+  </div>
+</section>
+
+<!-- 6 HORECA -->
+<section id="horeca">
+  <div class="head"><span class="kicker">6 · Ejemplo de venta a Horeca</span><h2>Preparar en cocina contra usar Altamesa</h2></div>
+  <p class="muted">Así se le presentaría el valor a un restaurante: con números, no solo con “está rico”. Las cifras son <b>ilustrativas</b> y en cada visita se reemplazan con los datos reales del restaurante.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Concepto</th><th class="num">Preparado en cocina</th><th class="num">Altamesa</th></tr></thead>
+    <tbody>
+      <tr><td>Carne cruda ($180/kg, rinde 55% al cocinar)</td><td class="num">$327</td><td class="num">—</td></tr>
+      <tr><td>Mano de obra (0.6 h por kg a $75/h)</td><td class="num">$45</td><td class="num">—</td></tr>
+      <tr><td>Gas, condimentos y otros</td><td class="num">$25</td><td class="num">—</td></tr>
+      <tr><td>Precio del producto listo</td><td class="num">—</td><td class="num">$236</td></tr>
+      <tr><td><b>Costo por kg listo para servir</b></td><td class="num"><b>$397</b></td><td class="num"><b>$236</b></td></tr>
+      <tr><td><b>Costo por porción de 100 g</b></td><td class="num"><b>$39.73</b></td><td class="num"><b>$23.60</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="caption">Precio Altamesa de ejemplo: barbacoa 1 kg a precio tienda. Se sustituye por el precio Horeca autorizado. No incluye merma ni variación entre lotes, que se sumarán como argumentos cuando haya evidencia técnica.</p>
+</section>
+
+<!-- 7 REQUISITOS -->
+<section id="requisitos">
+  <div class="head"><span class="kicker">7 · Requisitos</span><h2>Lo que necesito para operar</h2></div>
+  <div class="tbl"><table id="t-req">
+    <thead><tr><th>Qué necesito</th><th>Para qué</th><th>Responsable</th><th>Fecha compromiso</th></tr></thead>
+    <tbody>
+      <tr data-name="Tabla de precios por canal"><td><b>Tabla de precios por canal</b><br><span class="muted small">Precio, margen, mínimo, compra mínima, flete, pago</span></td><td>Cotizar sin consultar cada venta</td><td class="fcell"><input class="f" id="rq1-r"></td><td class="fcell"><input class="f" id="rq1-f" type="date"></td></tr>
+      <tr data-name="Autoridad comercial por escrito"><td><b>Autoridad comercial por escrito</b><br><span class="muted small">Límites, territorio, cargo con el que me presento</span></td><td>Negociar con respaldo</td><td class="fcell"><input class="f" id="rq2-r"></td><td class="fcell"><input class="f" id="rq2-f" type="date"></td></tr>
+      <tr data-name="Información comercial"><td><b>Información comercial</b><br><span class="muted small">Costos, capacidad, inventario, entregas, devoluciones</span></td><td>Responder bien al cliente</td><td class="fcell"><input class="f" id="rq3-r"></td><td class="fcell"><input class="f" id="rq3-f" type="date"></td></tr>
+      <tr data-name="Historial de ventas"><td><b>Historial de ventas</b><br><span class="muted small">Por producto, ciudad y canal; recompra; experiencias con distribuidores</span></td><td>No repetir errores y enfocar esfuerzos</td><td class="fcell"><input class="f" id="rq4-r"></td><td class="fcell"><input class="f" id="rq4-f" type="date"></td></tr>
+      <tr data-name="Fichas técnicas corregidas"><td><b>Fichas técnicas corregidas</b><br><span class="muted small">Y evidencia de cualquier argumento de salud o seguridad</span></td><td>Proteger a la marca</td><td class="fcell"><input class="f" id="rq5-r"></td><td class="fcell"><input class="f" id="rq5-f" type="date"></td></tr>
+      <tr data-name="Material de marca"><td><b>Material de marca</b><br><span class="muted small">Logotipo, fotos, videos, catálogo, material por canal</span></td><td>Presentaciones y redes</td><td class="fcell"><input class="f" id="rq6-r"></td><td class="fcell"><input class="f" id="rq6-f" type="date"></td></tr>
+      <tr data-name="Directorio interno"><td><b>Directorio interno</b><br><span class="muted small">Precios, producción, logística, calidad, lanzamientos (birria, arroz con mole, carne seca), redes</span></td><td>Saber a quién preguntar</td><td class="fcell"><input class="f" id="rq7-r"></td><td class="fcell"><input class="f" id="rq7-f" type="date"></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Argumentos de venta y su respaldo</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Argumento</th><th>Estado</th><th>Fuente</th></tr></thead>
+    <tbody>
+      <tr><td>Certificaciones TIF 688 y FSSC 22000</td><td><span class="pill p-green">Se puede usar</span></td><td>Fichas técnicas</td></tr>
+      <tr><td>Sin conservadores, ingredientes naturales</td><td><span class="pill p-green">Se puede usar</span></td><td>Fichas técnicas</td></tr>
+      <tr><td>Proteína de 19 a 25.9 g por 100 g</td><td><span class="pill p-green">Se puede usar</span></td><td>Fichas técnicas por producto</td></tr>
+      <tr><td>12 meses sin refrigeración</td><td><span class="pill p-amber">Confirmar</span></td><td>Ficha de res dice 12 y 18 meses</td></tr>
+      <tr><td>Ahorro de tiempo y mano de obra</td><td><span class="pill p-amber">Calcular por cliente</span></td><td>Catálogo; ver ejemplo Horeca</td></tr>
+      <tr><td>“Sin merma”, “más seguro”, “saludable”</td><td><span class="pill p-red">No usar aún</span></td><td>Falta evidencia técnica</td></tr>
+    </tbody>
+  </table></div>
+  <div class="notes"><label for="n-req">Notas de la reunión</label><textarea class="f" id="n-req"></textarea></div>
+</section>
+
+<!-- 8 INDICADORES -->
+<section id="indicadores">
+  <div class="head"><span class="kicker">8 · Medición</span><h2>Indicadores y plan de 90 días</h2></div>
+  <p class="muted">Los indicadores convierten la propuesta en un compromiso: con la estructura definida, respondo por estos resultados. Las metas se fijan juntos en la reunión.</p>
+  <div class="tbl"><table id="t-kpi">
+    <thead><tr><th>Indicador</th><th>Qué mide</th><th>Meta mes 1</th><th>Meta mes 3</th></tr></thead>
+    <tbody>
+      <tr data-name="Prospectos"><td><b>Prospectos</b></td><td>Contactos nuevos registrados</td><td class="fcell"><input class="f" id="k1-1"></td><td class="fcell"><input class="f" id="k1-3"></td></tr>
+      <tr data-name="Cuentas abiertas"><td><b>Cuentas abiertas</b></td><td>Clientes con primera compra, por canal</td><td class="fcell"><input class="f" id="k2-1"></td><td class="fcell"><input class="f" id="k2-3"></td></tr>
+      <tr data-name="Kilos vendidos"><td><b>Kilos vendidos</b></td><td>Volumen total por producto</td><td class="fcell"><input class="f" id="k3-1" placeholder="kg"></td><td class="fcell"><input class="f" id="k3-3" placeholder="kg"></td></tr>
+      <tr data-name="Recompra"><td><b>Recompra</b></td><td>Clientes que vuelven a comprar en 30 días</td><td class="fcell"><input class="f" id="k4-1" placeholder="%"></td><td class="fcell"><input class="f" id="k4-3" placeholder="%"></td></tr>
+      <tr data-name="Clientes activos"><td><b>Clientes activos</b></td><td>Con compra en los últimos 30 días</td><td class="fcell"><input class="f" id="k5-1"></td><td class="fcell"><input class="f" id="k5-3"></td></tr>
+      <tr data-name="Cuentas Horeca / tiendas / distribuidores"><td><b>Cuentas por canal</b></td><td>Horeca / tiendas / distribuidores</td><td class="fcell"><input class="f" id="k6-1" placeholder="__ / __ / __"></td><td class="fcell"><input class="f" id="k6-3" placeholder="__ / __ / __"></td></tr>
+      <tr data-name="Conversión de degustación"><td><b>Conversión de degustación</b></td><td>Registros que terminan en compra</td><td class="fcell"><input class="f" id="k7-1" placeholder="%"></td><td class="fcell"><input class="f" id="k7-3" placeholder="%"></td></tr>
+      <tr data-name="Facturación mensual"><td><b>Facturación</b></td><td>Venta neta mensual de Guadalajara</td><td class="fcell"><input class="f" id="k8-1" placeholder="$"></td><td class="fcell"><input class="f" id="k8-3" placeholder="$"></td></tr>
+    </tbody>
+  </table></div>
+  <div class="steps">
+    <div class="step"><span>Semanas 1–2</span><h3>Estructura</h3><ul><li>Tabla de precios</li><li>Autoridad por escrito</li><li>Información y fichas</li></ul></div>
+    <div class="step"><span>Semanas 3–4</span><h3>Arranque</h3><ul><li>Material por canal</li><li>Registro con QR</li><li>Primeras cuentas formales</li></ul></div>
+    <div class="step"><span>Mes 2</span><h3>Operación</h3><ul><li>Degustaciones medidas</li><li>Tiendas y distribuidores piloto</li><li>Primer reporte</li></ul></div>
+    <div class="step"><span>Mes 3</span><h3>Evaluación</h3><ul><li>Canal más rentable</li><li>Decisión de empaque</li><li>Manual de réplica</li></ul></div>
+  </div>
+</section>
+
+<!-- 9 CIERRE -->
+<section id="cierre">
+  <div class="head"><span class="kicker">9 · Presentación y cierre</span><h2>Quién presenta esta propuesta</h2></div>
+  <p class="bio">Soy Ana Laura Hernández. Llevo más de 15 años desarrollando un negocio de servicios donde aprendí a atender mercados muy distintos y a entender que cada cliente necesita atención personalizada. Esa experiencia me enseñó a identificar perfiles, anticipar necesidades, formar equipos y construir relaciones de largo plazo. Sé que una venta no termina cuando alguien compra: ahí empiezan la recompra, la recomendación y el volumen. Hoy aplico esa experiencia a Altamesa, y lo que encuentro en Guadalajara me hace pensar que podemos construir algo más grande si lo estructuramos bien.</p>
+  <div class="close">Yo desarrollo mercado y genero oportunidades. Altamesa aporta estructura, producto, respaldo y reglas claras. Juntos medimos el resultado.</div>
+</section>
+
+<!-- 10 ACTA -->
+<section id="acta" class="acta">
+  <div class="acta-h">
+    <span class="kicker">10 · Acta de acuerdos</span>
+    <h2>Acuerdos de la reunión · Piloto Guadalajara</h2>
+    <p class="muted small noprint">Se arma sola con lo que se anotó arriba. Revísala al final de la reunión y agrega los próximos pasos.</p>
+  </div>
+  <div class="acta-meta" id="a-meta"></div>
+  <div id="a-body" style="display:flex;flex-direction:column;gap:24px"></div>
+  <div class="notes"><label for="n-next">Próximos pasos y compromisos adicionales</label><textarea class="f" id="n-next" placeholder="Qué sigue, quién lo hace y para cuándo…"></textarea></div>
+  <div class="noprint" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <button class="btn primary" type="button" id="print-acta">Imprimir acta de acuerdos</button>
+    <button class="btn" type="button" id="print-all">Imprimir documento completo con anotaciones</button>
+    <span class="note" id="print-hint"></span>
+  </div>
+  <div class="sign">
+    <div>Mauricio Usabiaga<br>Altamesa</div>
+    <div>Ana Laura Hernández<br>Desarrollo comercial Guadalajara</div>
+  </div>
+</section>
+
+</article>
+
+<script>
+(function(){
+  var KEY = "altamesa-gdl-reunion-v1";
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
+
+  /* opciones de hallazgos */
+  var hOpts = ["Pendiente", "Confirmado: se corrige", "Confirmado: ya tiene solución", "No aplica"];
+  $$("#t-hall select").forEach(function(s){ s.innerHTML = hOpts.map(function(o){ return "<option>"+o+"</option>"; }).join(""); });
+
+  /* guardar y cargar */
+  var fields = $$("input.f, textarea.f, select.f");
+  var radios = $$(".opt input[type=radio]");
+  var defaults = {};
+  fields.forEach(function(f){ defaults[f.id] = f.value; });
+
+  function load(){
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e) {}
+    if (!d) return;
+    fields.forEach(function(f){ if (d.f && d.f[f.id] != null) f.value = d.f[f.id]; });
+    radios.forEach(function(r){ if (d.r && d.r[r.name] === r.value) r.checked = true; });
+  }
+  var t = null;
+  function save(){
+    var d = {f:{}, r:{}};
+    fields.forEach(function(f){ d.f[f.id] = f.value; });
+    radios.forEach(function(r){ if (r.checked) d.r[r.name] = r.value; });
+    try { localStorage.setItem(KEY, JSON.stringify(d)); $("#saved").textContent = "Guardado"; } catch(e) { $("#saved").textContent = ""; }
+    clearTimeout(t); t = setTimeout(function(){ $("#saved").textContent = ""; }, 1500);
+  }
+  function grow(el){ el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+
+  /* acta */
+  function val(id){ var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+  function orEmpty(v){ return v ? esc(v) : '<span class="empty">Sin definir</span>'; }
+  function fdate(v){ if (!v) return ""; var p = v.split("-"); return p.length === 3 ? p[2]+"/"+p[1]+"/"+p[0] : v; }
+  function para(v){ return v ? esc(v).replace(/\n/g,"<br>") : ""; }
+  function rowsFrom(tableId, cols){
+    return $$("#"+tableId+" tbody tr").map(function(tr){
+      var ins = Array.prototype.slice.call(tr.querySelectorAll(".f"));
+      var vals = ins.map(function(i){ return i.type === "date" ? fdate(i.value) : i.value.trim(); });
+      return {name: tr.getAttribute("data-name"), vals: vals};
+    });
+  }
+  function table(head, rows){
+    return '<div class="tbl"><table><thead><tr>' + head.map(function(h){ return "<th>"+h+"</th>"; }).join("") + "</tr></thead><tbody>" +
+      rows.map(function(r){ return "<tr><td><b>"+esc(r.name)+"</b></td>" + r.vals.map(function(v){ return "<td>"+orEmpty(v)+"</td>"; }).join("") + "</tr>"; }).join("") +
+      "</tbody></table></div>";
+  }
+  function block(title, html){ return '<div class="acta-block"><h3>'+title+'</h3>'+html+'</div>'; }
+
+  function renderActa(){
+    $("#a-meta").innerHTML =
+      "<div><span>Fecha</span>"+orEmpty(fdate(val("m-fecha")))+"</div>" +
+      "<div><span>Lugar</span>"+orEmpty(val("m-lugar"))+"</div>" +
+      "<div><span>Asistentes</span>"+orEmpty(val("m-asist"))+"</div>";
+
+    var dec = $$(".decision").map(function(d){
+      var r = d.querySelector("input[type=radio]:checked");
+      var note = d.querySelector("textarea.f");
+      var st = r ? '<span class="st ok">'+esc(r.value)+'</span>' : '<span class="st pend">Pendiente</span>';
+      return "<tr><td><b>"+esc(d.getAttribute("data-title"))+"</b></td><td>"+st+"</td><td>"+(note && note.value.trim() ? para(note.value.trim()) : '<span class="empty">—</span>')+"</td></tr>";
+    }).join("");
+    var html = block("Decisiones", '<div class="tbl"><table><thead><tr><th>Decisión</th><th>Acuerdo</th><th>Condiciones</th></tr></thead><tbody>'+dec+"</tbody></table></div>");
+
+    var ini = fdate(val("p-inicio")), rev = val("p-rev");
+    if (ini || rev) html += block("Calendario del piloto", "<p>Inicio: "+orEmpty(ini)+" · Revisión mensual: "+(rev ? "día "+esc(rev)+" de cada mes" : '<span class="empty">Sin definir</span>')+"</p>");
+
+    var pr = rowsFrom("t-precios");
+    if (pr.some(function(r){ return r.vals.some(Boolean); }))
+      html += block("Precios por canal", table(["Canal","Margen","Precio mínimo / regla","Compra mínima","Flete","Pago"], pr));
+
+    html += block("Autoridad comercial", table(["Tema","Decide Ana Laura","Requiere autorización"], rowsFrom("t-auto").map(function(r){ if (r.vals.length === 1) r.vals.push("—"); return r; })));
+
+    var rec = rowsFrom("t-rec");
+    html += block("Recursos", table(["Recurso","Monto","Quién lo cubre"], rec));
+
+    var rq = rowsFrom("t-req");
+    html += block("Compromisos de información y material", table(["Entregable","Responsable","Fecha"], rq));
+
+    var kp = rowsFrom("t-kpi");
+    if (kp.some(function(r){ return r.vals.some(Boolean); }))
+      html += block("Metas acordadas", table(["Indicador","Mes 1","Mes 3"], kp));
+
+    var hall = $$("#t-hall tbody tr").map(function(tr){
+      var s = tr.querySelector("select").value;
+      var cls = s.indexOf("Confirmado") === 0 ? "ok" : (s === "No aplica" ? "no" : "pend");
+      return "<tr><td><b>"+esc(tr.getAttribute("data-name"))+"</b></td><td><span class=\"st "+cls+"\">"+esc(s)+"</span></td></tr>";
+    }).join("");
+    html += block("Hallazgos revisados", '<div class="tbl"><table><thead><tr><th>Hallazgo</th><th>Estado</th></tr></thead><tbody>'+hall+"</tbody></table></div>");
+
+    var notes = [["Notas sobre hallazgos","n-hall"],["Notas sobre requisitos","n-req"]].filter(function(n){ return val(n[1]); });
+    if (notes.length) html += block("Notas", notes.map(function(n){ return "<p><b>"+n[0]+":</b> "+para(val(n[1]))+"</p>"; }).join(""));
+
+    $("#a-body").innerHTML = html;
+  }
+
+  function markNotes(){
+    $$(".notes").forEach(function(n){ var ta = n.querySelector("textarea"); n.classList.toggle("empty-notes", !ta || !ta.value.trim()); });
+  }
+
+  load();
+  $$("textarea.f").forEach(grow);
+  renderActa(); markNotes();
+
+  document.addEventListener("input", function(e){
+    if (!e.target.matches(".f, .opt input")) return;
+    if (e.target.tagName === "TEXTAREA") grow(e.target);
+    save(); renderActa(); markNotes();
+  });
+  document.addEventListener("change", function(e){
+    if (!e.target.matches(".f, .opt input")) return;
+    save(); renderActa(); markNotes();
+  });
+
+  /* borrar */
+  $("#reset").onclick = function(){ $("#confirmbox").hidden = false; };
+  $("#reset-no").onclick = function(){ $("#confirmbox").hidden = true; };
+  $("#reset-yes").onclick = function(){
+    try { localStorage.removeItem(KEY); } catch(e) {}
+    fields.forEach(function(f){ f.value = defaults[f.id] || ""; });
+    $$("#t-hall select").forEach(function(s){ s.selectedIndex = 0; });
+    radios.forEach(function(r){ r.checked = false; });
+    $$("textarea.f").forEach(grow);
+    renderActa(); markNotes();
+    $("#confirmbox").hidden = true;
+  };
+
+  /* imprimir */
+  var embedded = false;
+  try { embedded = window.self !== window.top; } catch(e) { embedded = true; }
+  if (embedded) {
+    $("#print-hint").textContent = "Para imprimir, abre el archivo HTML descargado en tu navegador.";
+  }
+  function doPrint(actaOnly){
+    renderActa(); markNotes();
+    $$("textarea.f").forEach(grow);
+    document.body.classList.toggle("print-acta", actaOnly);
+    window.print();
+  }
+  window.addEventListener("afterprint", function(){ document.body.classList.remove("print-acta"); });
+  $("#print-acta").onclick = function(){ doPrint(true); };
+  $("#print-all").onclick = function(){ doPrint(false); };
+})();
+</script>
+
+</body>
+</html>
