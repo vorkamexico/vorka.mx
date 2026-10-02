@@ -100,10 +100,16 @@
     width: auto;
     display: block;
   }
+  .logo-img.dark-only{display: none;}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .logo-img{filter: invert(1);}
+    :root:not([data-theme="light"]) .logo-img.light-only{display: none;}
+    :root:not([data-theme="dark"]) .logo-img.light-only{display: block;}
+    :root:not([data-theme="light"]) .logo-img.dark-only{display: block;}
   }
-  :root[data-theme="dark"] .logo-img{filter: invert(1);}
+  :root[data-theme="light"] .logo-img.light-only{display: block;}
+  :root[data-theme="light"] .logo-img.dark-only{display: none;}
+  :root[data-theme="dark"] .logo-img.light-only{display: none;}
+  :root[data-theme="dark"] .logo-img.dark-only{display: block;}
   .site-nav{
     display:flex;
     align-items:center;
@@ -592,14 +598,10 @@
   .mx-map svg path.is-active{
     stroke: var(--ink); stroke-width: 2;
   }
-  /* Región: cada estado tintado por su color de región */
-  .mx-map svg path[data-region="noroeste"]{fill: color-mix(in srgb, var(--noroeste) 65%, var(--paper));}
-  .mx-map svg path[data-region="noreste"] {fill: color-mix(in srgb, var(--noreste) 65%, var(--paper));}
-  .mx-map svg path[data-region="occidente"]{fill: color-mix(in srgb, var(--occidente) 70%, var(--paper));}
-  .mx-map svg path[data-region="centro"]  {fill: color-mix(in srgb, var(--centro) 62%, var(--paper));}
-  .mx-map svg path[data-region="sureste"] {fill: color-mix(in srgb, var(--sureste) 65%, var(--paper));}
-  .mx-map svg path[data-region][data-count="0"]{opacity: .35;}
-  .mx-map svg path[data-region]:hover{filter: brightness(0.92);}
+  /* Fill por región + intensidad calculada en JS; estados sin líderes = blanco (paper) */
+  .mx-map svg path[data-count="0"]{fill: var(--paper); stroke: var(--rule-strong);}
+  .mx-map svg path[data-region]:not([data-count="0"]):hover{filter: brightness(0.90);}
+  .mx-map svg path[data-count="0"]:hover{fill: var(--paper-sunk);}
   /* Tooltip (via title element inside <path>) is native; we also render a floating tip */
   .mx-tooltip{
     position: fixed; z-index: 1000; pointer-events: none;
@@ -722,7 +724,7 @@
 
   <header class="site-header">
     <a class="logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO — sitio oficial">
-      <img class="logo-img" src="logos/impacto-logo.png" alt="IMPACTO — Juventudes Impactando México A.C.">
+      <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO — Juventudes Impactando México A.C."><img class="logo-img dark-only" src="logos/impacto-horizontal-white.png" alt="IMPACTO — Juventudes Impactando México A.C.">
     </a>
     <nav class="site-nav">
       <a class="nav-link" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener">
@@ -817,7 +819,7 @@
     <div class="footer-top-grid">
       <div class="footer-brand-col">
         <a class="footer-logo" href="https://www.vorka.mx/impacto/" target="_blank" rel="noopener" aria-label="IMPACTO — sitio oficial">
-          <img class="logo-img" src="logos/impacto-logo.png" alt="IMPACTO — Juventudes Impactando México A.C.">
+          <img class="logo-img light-only" src="logos/impacto-horizontal.png" alt="IMPACTO — Juventudes Impactando México A.C."><img class="logo-img dark-only" src="logos/impacto-horizontal-white.png" alt="IMPACTO — Juventudes Impactando México A.C.">
         </a>
         <h3 class="footer-heading-big">Impulsando la creación de nuevos liderazgos.</h3>
         <p class="footer-desc">Organización juvenil mexicana fundada en 2021 en Celaya, Guanajuato. Presencia en más de 20 estados con más de 3,000 líderes juveniles.</p>
@@ -1441,12 +1443,26 @@
     const paths = container.querySelectorAll("svg path[data-state]");
     const counts = {};
     DATA.filter(d => !d._isNacional).forEach(d => {counts[d.estado] = (counts[d.estado]||0) + 1;});
+    const maxCount = Math.max(1, ...Object.values(counts));
+    // Mapea count → % de intensidad del color de región (mínimo visible 35%, máximo 100%)
+    const REGION_VAR = {noroeste:"--noroeste", noreste:"--noreste", occidente:"--occidente", centro:"--centro", sureste:"--sureste"};
     paths.forEach(p => {
       const st = p.getAttribute("data-state");
       const c = counts[st] || 0;
       const r = STATE_TO_REGION[st] || "";
       p.setAttribute("data-count", c);
       if (r) p.setAttribute("data-region", r);
+      if (c > 0 && r){
+        // escala no-lineal (raíz) para que la diferencia sea más perceptible en los bajos
+        const ratio = Math.sqrt(c / maxCount);
+        const pct = Math.round(35 + ratio * 65); // 35% → 100%
+        const v = REGION_VAR[r];
+        if (v){
+          p.style.fill = `color-mix(in srgb, var(${v}) ${pct}%, var(--paper))`;
+        }
+      } else {
+        p.style.fill = ""; // deja que el CSS para data-count="0" aplique (blanco)
+      }
       // Native tooltip fallback
       let title = p.querySelector("title");
       if (!title){ title = document.createElementNS("http://www.w3.org/2000/svg","title"); p.appendChild(title); }
