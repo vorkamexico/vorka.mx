@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es-MX">
 <head>
@@ -2133,6 +2132,96 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
+  /* ============ UNIFIED NAV CURRENT INDICATOR ============ */
+  .nav-main a.is-current {
+    color: var(--ink);
+    font-weight: 700;
+    position: relative;
+  }
+  .nav-main a.is-current::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: translateX(-50%);
+  }
+  .nav-main a.is-current:hover { background: transparent; }
+
+  /* ============ UNIFIED BREADCRUMB BAR ============ */
+  .breadcrumb-bar {
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    position: sticky;
+    top: var(--header-h);
+    z-index: 55;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--paper-2) 92%, transparent);
+  }
+  .breadcrumb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+  .breadcrumb a {
+    color: var(--muted);
+    transition: color .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb a svg { width: 14px; height: 14px; }
+  .breadcrumb .sep {
+    color: var(--faint);
+    font-weight: 500;
+    user-select: none;
+  }
+  .breadcrumb .current {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .breadcrumb-aside {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .breadcrumb-aside .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: #1A1A1A;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+  }
+  @media (max-width: 520px) {
+    .breadcrumb-bar { padding: 10px 0; }
+    .breadcrumb { font-size: 12px; gap: 8px; }
+    .breadcrumb-aside { display: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -2147,8 +2236,9 @@
       <span>Brandon Oleynick</span>
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
-      <a href="#trayectoria">Trayectoria</a>
-      <a href="#sesiones">Sesiones</a>
+      <a href="./" class="is-current" aria-current="page">Perfil</a>
+      <a href="./servicios/">Servicios</a>
+      <a href="./socialproyects/">Proyecto social</a>
       <a href="#conferencias">Conferencias</a>
       <a href="#faq">FAQs</a>
     </nav>
@@ -2171,6 +2261,10 @@
   </button>
   <div class="m-inner">
     <a href="#perfil">Perfil</a>
+    <a href="./" class="is-current" aria-current="page">Perfil (estás aquí)</a>
+    <a href="./servicios/">Servicios</a>
+    <a href="./socialproyects/">Proyecto social</a>
+    <div style="height: 1px; background: var(--rule); margin: 10px 0;"></div>
     <a href="#manifiesto">Manifiesto</a>
     <a href="#vision">Mi visión para México</a>
     <a href="#trayectoria">Trayectoria</a>
@@ -2184,6 +2278,25 @@
     <a href="#contacto" class="m-cta">Contactar</a>
   </div>
 </nav>
+
+<!-- ============ BREADCRUMB BAR ============ -->
+<div class="breadcrumb-bar">
+  <div class="shell">
+    <div class="breadcrumb-row">
+      <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <a href="./">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Inicio
+        </a>
+        <span class="sep">›</span>
+        <span class="current" aria-current="page">Perfil profesional</span>
+      </nav>
+      <div class="breadcrumb-aside">
+        <span class="pill">Estás aquí</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <a id="top"></a>
 <main id="main">
@@ -2415,10 +2528,13 @@
       <h2 class="section-title" id="h-ses">Si quieres trabajar <span class="accent">juntos.</span></h2>
       <p class="reveal-intro">Mentoría, asesoría, consultoría y conferencias. Escríbeme por WhatsApp con lo que traes en mente y coordinamos directamente día, hora y modalidad.</p>
     </div>
-    <div class="reveal-summary-wrap">
+    <div class="reveal-summary-wrap" style="flex-direction: column; gap: 14px; align-items: center;">
       <a class="sesiones-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20agendar%20una%20sesi%C3%B3n%20contigo." target="_blank" rel="noopener">
         Agendar una sesión
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <a href="./servicios/" style="font-size: 13.5px; font-weight: 600; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; transition: color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">
+        o ver precios y detalles →
       </a>
     </div>
   </section>

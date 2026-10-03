@@ -37,8 +37,14 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.vorka.mx/oleeynick/proyecto-social/</loc>
+    <loc>https://www.vorka.mx/oleeynick/socialproyects/</loc>
     <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.vorka.mx/oleeynick/servicios/</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.95</priority>
   </url>

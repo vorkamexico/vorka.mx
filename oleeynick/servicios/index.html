@@ -1324,6 +1324,109 @@
   }
 
   *:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  /* ============ NAV MAIN ============ */
+  .nav-main {
+    display: flex;
+    gap: 2px;
+    margin-left: auto;
+    margin-right: 12px;
+  }
+  .nav-main a {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 999px;
+    transition: color .2s, background .2s;
+  }
+  .nav-main a:hover { color: var(--ink); background: var(--paper-2); }
+  .nav-main a.is-current {
+    color: var(--ink);
+    font-weight: 700;
+    position: relative;
+  }
+  .nav-main a.is-current::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: translateX(-50%);
+  }
+  .nav-main a.is-current:hover { background: transparent; }
+
+  /* ============ BREADCRUMB BAR ============ */
+  .breadcrumb-bar {
+    background: color-mix(in srgb, var(--paper-2) 92%, transparent);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    position: sticky;
+    top: var(--header-h);
+    z-index: 55;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .breadcrumb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .breadcrumb a {
+    color: var(--muted);
+    transition: color .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb a svg { width: 14px; height: 14px; }
+  .breadcrumb .sep { color: var(--faint); user-select: none; }
+  .breadcrumb .current { color: var(--ink); font-weight: 700; }
+  .breadcrumb-aside {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .breadcrumb-aside .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: #1A1A1A;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+  }
+  @media (max-width: 1080px) {
+    .nav-main { gap: 0; }
+    .nav-main a { padding: 8px 10px; font-size: 13px; }
+  }
+  @media (max-width: 960px) {
+    .nav-main { display: none; }
+  }
+  @media (max-width: 520px) {
+    .breadcrumb-bar { padding: 10px 0; }
+    .breadcrumb { font-size: 12px; gap: 8px; }
+    .breadcrumb-aside { display: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -1336,11 +1439,17 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header">
   <div class="shell nav-shell">
-    <a href="../" class="brand" aria-label="Volver al perfil de Brandon Oleynick">
+    <a href="../" class="brand" aria-label="Brandon Oleynick — Inicio">
       <span class="brand-mark">BO</span>
-      <span class="back">← Volver al perfil</span>
-      <span>Servicios</span>
+      <span>Brandon Oleynick</span>
     </a>
+    <nav class="nav-main" aria-label="Navegación principal">
+      <a href="../">Perfil</a>
+      <a href="./" class="is-current" aria-current="page">Servicios</a>
+      <a href="../socialproyects/">Proyecto social</a>
+      <a href="../#conferencias">Conferencias</a>
+      <a href="#faq">FAQs</a>
+    </nav>
     <div class="nav-right">
       <a href="https://instagram.com/oleeynick" target="_blank" rel="noopener" class="ig-btn" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
@@ -1350,6 +1459,25 @@
     </div>
   </div>
 </header>
+
+<!-- ============ BREADCRUMB BAR ============ -->
+<div class="breadcrumb-bar">
+  <div class="shell">
+    <div class="breadcrumb-row">
+      <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <a href="../">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Inicio
+        </a>
+        <span class="sep">›</span>
+        <span class="current" aria-current="page">Servicios · Agenda una sesión</span>
+      </nav>
+      <div class="breadcrumb-aside">
+        <span class="pill">Estás aquí</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============ HERO ============ -->
 <div class="shell">
