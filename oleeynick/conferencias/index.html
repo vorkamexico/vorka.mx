@@ -61,8 +61,7 @@
     { "@type": "Question", "name": "¿Cuánto cuesta una conferencia con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "La cotización se arma a la medida según duración, formato, público, ubicación y logística. Se envía después de una videollamada corta para entender el contexto." } },
     { "@type": "Question", "name": "¿Hasta dónde te trasladas para conferencias?", "acceptedAnswer": { "@type": "Answer", "text": "Nacional. Base de operación en Guanajuato. Presente en los últimos años en Nuevo León, Jalisco, Querétaro, CDMX y Tamaulipas. Internacional bajo logística acordada." } },
     { "@type": "Question", "name": "¿Las conferencias pueden ser virtuales?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Modalidad virtual, híbrida o presencial, según necesidad del evento." } },
-    { "@type": "Question", "name": "¿Emiten factura?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, desde Vorka México a nombre de la institución u organización que contrata." } },
-    { "@type": "Question", "name": "¿Con cuánta anticipación se agenda?", "acceptedAnswer": { "@type": "Answer", "text": "Mínimo 2 semanas para intervenciones estándar. Para fechas con alta logística o audiencias de más de 300 personas, 4 a 6 semanas." } }
+    { "@type": "Question", "name": "¿Emiten factura?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, desde Vorka México a nombre de la institución u organización que contrata." } }
   ]
 }
 </script>
@@ -127,40 +126,41 @@
   .toggle:hover{color:var(--ink);border-color:var(--ink)}
 
   /* ============ HERO ============ */
-  .hero{position:relative;isolation:isolate;padding:clamp(48px,8vh,96px) 0 clamp(56px,9vh,104px);overflow:visible}
-  .hero::before{content:"";position:absolute;top:40px;right:-80px;width:260px;height:260px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.18;pointer-events:none;z-index:-1;filter:blur(12px)}
-  .hero::after{content:"";position:absolute;bottom:40px;left:-100px;width:280px;height:280px;background:radial-gradient(circle,var(--c-blue) 0%,transparent 70%);opacity:.12;pointer-events:none;z-index:-1;filter:blur(14px)}
-  .hero-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:center}
+  .hero{position:relative;isolation:isolate;padding:clamp(72px,12vh,140px) 0 clamp(64px,10vh,120px);overflow:visible;text-align:center}
+  .hero-centered{max-width:860px;margin:0 auto}
+  .hero::before{content:"";position:absolute;top:20px;right:-120px;width:320px;height:320px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.2;pointer-events:none;z-index:-1;filter:blur(14px)}
+  .hero::after{content:"";position:absolute;bottom:20px;left:-140px;width:320px;height:320px;background:radial-gradient(circle,var(--c-blue) 0%,transparent 70%);opacity:.14;pointer-events:none;z-index:-1;filter:blur(16px)}
   .hero-dots{position:absolute;inset:0;pointer-events:none;z-index:-1}
   .hero-dots span{position:absolute;border-radius:50%;display:block}
-  .hero-dots .d1{top:8%;right:10%;width:20px;height:20px;background:var(--accent)}
-  .hero-dots .d2{top:30%;right:4%;width:14px;height:14px;background:var(--c-blue)}
-  .hero-dots .d3{bottom:25%;left:4%;width:18px;height:18px;background:var(--c-green)}
-  .hero-dots .d4{top:60%;right:8%;width:16px;height:16px;background:var(--c-purple)}
+  .hero-dots .d1{top:12%;right:8%;width:22px;height:22px;background:var(--accent)}
+  .hero-dots .d2{top:28%;right:18%;width:16px;height:16px;background:var(--c-blue)}
+  .hero-dots .d3{bottom:22%;left:6%;width:20px;height:20px;background:var(--c-green)}
+  .hero-dots .d4{top:50%;right:4%;width:18px;height:18px;background:var(--c-purple)}
+  .hero-dots .d5{bottom:14%;right:14%;width:14px;height:14px;background:var(--c-red)}
+  .hero-dots .d6{top:18%;left:10%;width:18px;height:18px;background:var(--c-orange)}
   @media (prefers-reduced-motion:no-preference){
     .hero-dots span{animation:floaty 7s ease-in-out infinite}
     .hero-dots .d2{animation-delay:-2s;animation-duration:8s}
     .hero-dots .d3{animation-delay:-4s;animation-duration:6.5s}
     .hero-dots .d4{animation-delay:-1s;animation-duration:7.5s}
+    .hero-dots .d5{animation-delay:-3s;animation-duration:8.5s}
+    .hero-dots .d6{animation-delay:-5s;animation-duration:7s}
     @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
   }
-  .hero-eyebrow{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:22px;display:inline-flex;align-items:center;gap:10px}
+  .hero-eyebrow{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:28px;display:inline-flex;align-items:center;gap:10px}
   .hero-eyebrow::before{content:"";width:22px;height:2px;background:currentColor;border-radius:2px}
-  .hero h1{font-weight:800;font-size:clamp(2.2rem,5.4vw,4.4rem);line-height:1;letter-spacing:-.045em;margin:0 0 24px;text-wrap:balance;color:var(--ink)}
-  .hero h1 .word.hl{color:var(--accent);background:linear-gradient(180deg,transparent 64%,color-mix(in srgb,var(--accent) 20%,transparent) 64% 92%,transparent 92%);padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-  .hero-sub{font-size:clamp(1.05rem,1.4vw,1.26rem);line-height:1.5;color:var(--muted);margin:0 0 32px;max-width:52ch}
+  .hero-centered .hero-eyebrow{justify-content:center}
+  .hero h1{font-weight:800;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1;letter-spacing:-.045em;margin:0 auto 28px;text-wrap:balance;color:var(--ink);max-width:16ch}
+  .hero h1 br{display:inline}
+  .hero h1 .word.hl{color:var(--accent);background:linear-gradient(180deg,transparent 64%,color-mix(in srgb,var(--accent) 22%,transparent) 64% 92%,transparent 92%);padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  .hero-sub{font-size:clamp(1.08rem,1.5vw,1.3rem);line-height:1.55;color:var(--muted);margin:0 auto 36px;max-width:58ch}
   .hero-sub strong{color:var(--ink);font-weight:600}
-  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
-  .btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 28px;background:var(--accent);color:#111;border-radius:999px;font-weight:700;font-size:14.5px;letter-spacing:-.01em;transition:background .2s,color .2s,transform .2s,box-shadow .25s;box-shadow:0 16px 36px -14px rgba(247,179,62,.7)}
+  .hero-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .btn-primary{display:inline-flex;align-items:center;gap:10px;padding:17px 30px;background:var(--accent);color:#111;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:-.01em;transition:background .2s,color .2s,transform .2s,box-shadow .25s;box-shadow:0 16px 36px -14px rgba(247,179,62,.7)}
   .btn-primary:hover{background:var(--ink);color:var(--paper);transform:translateY(-2px)}
   .btn-primary svg{width:14px;height:14px}
-  .btn-ghost{display:inline-flex;align-items:center;gap:10px;padding:16px 24px;border:1.5px solid var(--ink);color:var(--ink);border-radius:999px;font-weight:700;font-size:14px;transition:background .2s,color .2s}
+  .btn-ghost{display:inline-flex;align-items:center;gap:10px;padding:17px 26px;border:1.5px solid var(--ink);color:var(--ink);border-radius:999px;font-weight:700;font-size:14.5px;transition:background .2s,color .2s}
   .btn-ghost:hover{background:var(--ink);color:var(--paper)}
-
-  .hero-photo{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 30px 60px -24px rgba(0,0,0,.25)}
-  .hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .hero-photo .photo-caption{position:absolute;bottom:14px;left:14px;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);color:#fff;padding:8px 14px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px}
-  .hero-photo .photo-caption::before{content:"";width:7px;height:7px;background:var(--accent);border-radius:50%}
 
   /* ============ STATS STRIP ============ */
   .stats-strip{background:var(--dark-bg);color:var(--dark-fg);padding:44px 0}
@@ -239,13 +239,14 @@
   .aud p{font-size:12.5px;color:var(--muted);line-height:1.45;margin:0}
 
   /* ============ GALERÍA ============ */
-  .galeria{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:280px 280px;gap:12px}
-  .gal-item{border-radius:14px;overflow:hidden;position:relative;background:var(--paper-2);display:flex;align-items:center;justify-content:center}
-  .gal-item img{width:100%;height:100%;object-fit:cover}
-  .gal-item.hero-gal{grid-row:span 2}
-  .gal-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--faint);text-align:center;padding:20px;gap:8px}
-  .gal-placeholder svg{width:32px;height:32px}
-  .gal-placeholder span{font-size:12px;font-weight:600;letter-spacing:.02em}
+  .galeria{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:220px;gap:12px}
+  .gal-item{border-radius:16px;overflow:hidden;position:relative;background:var(--paper-2);cursor:pointer}
+  .gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .gal-item:hover img{transform:scale(1.06)}
+  .gal-item::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,0.3));opacity:0;transition:opacity .3s}
+  .gal-item:hover::after{opacity:1}
+  .gal-1{grid-column:span 2;grid-row:span 2}
+  .gal-6{grid-column:span 1;grid-row:span 1}
 
   /* ============ PROCESO (cómo agendar) ============ */
   .proceso{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -324,16 +325,15 @@
   }
   @media (max-width:960px){
     .nav-main,.cta-mini{display:none}
-    .hero-grid{grid-template-columns:1fr;gap:36px}
-    .hero-photo{aspect-ratio:16/10;order:-1}
     .stats-grid{grid-template-columns:repeat(2,1fr);gap:28px}
     .temas{grid-template-columns:1fr}
     .formatos{grid-template-columns:1fr}
     .estados-grid{grid-template-columns:repeat(2,1fr)}
     .audiencias{grid-template-columns:repeat(2,1fr)}
     .proceso{grid-template-columns:1fr}
-    .galeria{grid-template-columns:1fr 1fr;grid-template-rows:220px 220px 220px}
-    .gal-item.hero-gal{grid-column:span 2;grid-row:span 1;height:260px}
+    .galeria{grid-template-columns:1fr 1fr;grid-auto-rows:200px}
+    .gal-1{grid-column:span 2;grid-row:span 2}
+    .gal-6{grid-column:span 2}
     .foot-mid{grid-template-columns:1fr 1fr}
   }
   @media (max-width:520px){
@@ -341,8 +341,9 @@
     .brand span:last-child{display:none}
     .nav-right{gap:8px}
     .estados-grid,.audiencias{grid-template-columns:1fr}
-    .galeria{grid-template-columns:1fr;grid-template-rows:200px 200px 200px}
-    .gal-item.hero-gal{grid-column:1;height:220px}
+    .galeria{grid-template-columns:1fr;grid-auto-rows:220px}
+    .gal-1{grid-column:span 1;grid-row:span 1}
+    .gal-6{grid-column:span 1}
     .foot-mid{grid-template-columns:1fr}
     .foot-bottom{flex-direction:column;align-items:flex-start}
   }
@@ -376,32 +377,24 @@
 
 <!-- ============ HERO ============ -->
 <div class="shell">
-  <section class="hero">
+  <section class="hero hero-centered">
     <div class="hero-dots" aria-hidden="true">
       <span class="d1"></span>
       <span class="d2"></span>
       <span class="d3"></span>
       <span class="d4"></span>
+      <span class="d5"></span>
+      <span class="d6"></span>
     </div>
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <div class="hero-eyebrow">Conferencias</div>
-        <h1>+100 conferencias. 6 estados. <span class="word hl">Un mensaje que mueve.</span></h1>
-        <p class="hero-sub">Intervenciones sobre <strong>liderazgo juvenil, impacto social, emprendimiento y transformación de México</strong>. Diseñadas desde el contexto de cada público —no plantillas prefabricadas— para universidades, foros institucionales, gobiernos y empresas.</p>
-        <div class="hero-ctas">
-          <a href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia." target="_blank" rel="noopener" class="btn-primary">
-            Solicitar una conferencia
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-          </a>
-          <a href="#proceso" class="btn-ghost">Ver cómo agendar ↓</a>
-        </div>
-      </div>
-      <div class="hero-photo-wrap">
-        <figure class="hero-photo">
-          <img src="hero.jpg" alt="Brandon Oleynick impartiendo una conferencia" width="1600" height="1200" loading="eager" fetchpriority="high">
-          <figcaption class="photo-caption">En escena</figcaption>
-        </figure>
-      </div>
+    <div class="hero-eyebrow">Conferencias</div>
+    <h1>+100 conferencias. <br>6 estados. <span class="word hl">Un mensaje que mueve.</span></h1>
+    <p class="hero-sub">Intervenciones sobre <strong>liderazgo juvenil, impacto social, emprendimiento y transformación de México</strong>. Diseñadas desde el contexto de cada público —no plantillas prefabricadas— para universidades, foros institucionales, gobiernos y empresas.</p>
+    <div class="hero-ctas">
+      <a href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia." target="_blank" rel="noopener" class="btn-primary">
+        Solicitar una conferencia
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <a href="#proceso" class="btn-ghost">Ver cómo agendar ↓</a>
     </div>
   </section>
 </div>
@@ -553,17 +546,17 @@
       <article class="estado main">
         <span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Base principal</span>
         <div class="name">Guanajuato</div>
-        <p class="desc">Celaya, Guanajuato Capital, Villagrán, Cortazar. Universidades, prepas, gobiernos municipales y foros estatales.</p>
+        <p class="desc">Celaya, Guanajuato Capital, Villagrán, Cortazar. Universidades, prepas, secundarias, gobiernos municipales y foros estatales.</p>
       </article>
       <article class="estado">
         <span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Zona metropolitana</span>
         <div class="name">Nuevo León</div>
-        <p class="desc">Monterrey. Tec de Monterrey (campus Mty), programa Líderes del Mañana, foros juveniles y universidades.</p>
+        <p class="desc">Monterrey. Tec de Monterrey, Feria Internacional del Libro, Latin American School, Colegio Mirasierra by Brillamont, secundarias y Líderes del Mañana.</p>
       </article>
       <article class="estado">
         <span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Occidente</span>
         <div class="name">Jalisco</div>
-        <p class="desc">Guadalajara y zona metropolitana. Eventos sobre emprendimiento, liderazgo e impacto social.</p>
+        <p class="desc">Guadalajara, Tlajomulco y zona metropolitana. Eventos sobre emprendimiento, liderazgo e impacto social.</p>
       </article>
       <article class="estado">
         <span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Centro</span>
@@ -632,34 +625,26 @@
     <div class="section-head centered">
       <div class="section-eyebrow eyebrow-o">En escena</div>
       <h2 class="section-title">Momentos de <span class="a-o">conferencias recientes.</span></h2>
+      <p class="section-lede">Un vistazo al trabajo en escena — universidades, foros, preparatorias y espacios institucionales por los que ha pasado el mensaje.</p>
     </div>
     <div class="galeria">
-      <div class="gal-item hero-gal">
+      <div class="gal-item gal-1">
         <img src="gallery-1.jpg" alt="Brandon Oleynick en conferencia" loading="lazy">
       </div>
-      <div class="gal-item">
-        <div class="gal-placeholder" aria-label="Espacio para foto">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-          <span>Próxima conferencia</span>
-        </div>
+      <div class="gal-item gal-2">
+        <img src="gallery-2.jpg" alt="Momento de conferencia" loading="lazy">
       </div>
-      <div class="gal-item">
-        <div class="gal-placeholder" aria-label="Espacio para foto">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-          <span>Próxima conferencia</span>
-        </div>
+      <div class="gal-item gal-3">
+        <img src="gallery-3.jpg" alt="Audiencia en conferencia" loading="lazy">
       </div>
-      <div class="gal-item">
-        <div class="gal-placeholder" aria-label="Espacio para foto">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-          <span>Próxima conferencia</span>
-        </div>
+      <div class="gal-item gal-4">
+        <img src="gallery-4.jpg" alt="Intervención con jóvenes" loading="lazy">
       </div>
-      <div class="gal-item">
-        <div class="gal-placeholder" aria-label="Espacio para foto">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-          <span>Próxima conferencia</span>
-        </div>
+      <div class="gal-item gal-5">
+        <img src="gallery-5.jpg" alt="Foro institucional" loading="lazy">
+      </div>
+      <div class="gal-item gal-6">
+        <img src="gallery-6.jpg" alt="Evento con audiencia" loading="lazy">
       </div>
     </div>
   </section>
@@ -751,10 +736,6 @@
         <details class="faq-item">
           <summary>¿Emiten factura?</summary>
           <div class="answer"><p>Sí. <strong>Factura desde Vorka México</strong> a nombre de la institución, empresa, gobierno u organización que contrata. Compártemos tus datos fiscales al confirmar.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>¿Con cuánta anticipación se agenda?</summary>
-          <div class="answer"><p><strong>Mínimo 2 semanas</strong> para intervenciones estándar. Para fechas con alta logística, audiencias de más de 300 personas, o conferencias que requieren preparación profunda del material, <strong>recomendado 4 a 6 semanas</strong> de aviso.</p></div>
         </details>
         <details class="faq-item">
           <summary>¿Qué incluye la cotización?</summary>
