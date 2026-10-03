@@ -1031,10 +1031,10 @@
     {cargo:"director",estructura:"estatal",resultado:"Mercurio Estado de México",nombre:"Lia Yamilet Baez",estado:"Estado de México"},
     {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Occidente",nombre:"Flor de María López Juárez",estado:"Guanajuato"},
     {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Noroeste",nombre:"Yamileth Ibarra Cabrera",estado:"Baja California Sur"},
-    {cargo:"vicepresidente regional",estructura:"nacional",resultado:"Sureste",nombre:"Lina Maria Serra Dominguez",estado:"Chiapas"},
+    {cargo:"vicepresidente",estructura:"nacional",resultado:"México",nombre:"Lina Maria Serra Dominguez",estado:"Chiapas"},
     {cargo:"presidente",estructura:"nacional",resultado:"México",nombre:"Brandon Oleynick Hernández",estado:"Guanajuato"},
     {cargo:"consejero",estructura:"nacional",resultado:"México",nombre:"Ana Laura Hernández García",estado:"Jalisco"},
-    {cargo:"consejero",estructura:"estatal",resultado:"Guerrero",nombre:"Karla Ivonne Flores",estado:"Guerrero"},
+    {cargo:"consejero",estructura:"estatal",resultado:"Guerrero",nombre:"Karla Ivonne Flores Cisneros",estado:"Guerrero"},
     {cargo:"director",estructura:"nacional",resultado:"Mercurio Nacional",nombre:"Frida Ramírez Nolasco",estado:"Ciudad de México"},
     {cargo:"presidente",estructura:"municipal",resultado:"Tapachula",nombre:"Diana Laura Pérez Arévalo",estado:"Chiapas"},
     {cargo:"presidente",estructura:"municipal",resultado:"Cintalapa",nombre:"Anya Ximena Sánchez Ángel",estado:"Chiapas"},
@@ -1101,7 +1101,7 @@
 
   const STRUCT_ORDER = ["nacional","estatal","distrital","municipal"];
   const STRUCT_LABELS = {nacional:"Nacional",estatal:"Estatal",distrital:"Distrital",municipal:"Municipal"};
-  const CARGO_ORDER = ["presidente","vicepresidente regional","consejero","director","vicepresidente","secretaría","representante"];
+  const CARGO_ORDER = ["presidente","vicepresidente","vicepresidente regional","consejero","director","secretaría","representante"];
 
   function titleCase(str){
     const particles = new Set(["de","del","la","las","los","y","el","en","al","da","do"]);
@@ -1400,15 +1400,17 @@
     const container = $("#featured");
     if (!container) return;
     const president = DATA.find(d => d.cargo === "presidente" && d.estructura === "nacional");
+    const vicepresidente = DATA.find(d => d.cargo === "vicepresidente" && d.estructura === "nacional");
     const vprs = DATA.filter(d => d.cargo === "vicepresidente regional" && d.estructura === "nacional");
     const consejero = DATA.find(d => d.cargo === "consejero" && d.estructura === "nacional");
-    const members = [president, ...vprs.sort((a,b) => a.resultado.localeCompare(b.resultado,"es")), consejero].filter(Boolean);
+    const members = [president, vicepresidente, ...vprs.sort((a,b) => a.resultado.localeCompare(b.resultado,"es")), consejero].filter(Boolean);
     if (!members.length) { container.innerHTML = ""; return; }
     const regionMap = {Noroeste:"noroeste",Noreste:"noreste",Occidente:"occidente",Centro:"centro",Sureste:"sureste"};
     const cards = members.map(m => {
       let tone = "var(--nacional)";
       if (m.cargo === "vicepresidente regional" && regionMap[m.resultado]) tone = "var(--" + regionMap[m.resultado] + ")";
       const role = m.cargo === "presidente" ? "Presidente nacional"
+                  : (m.cargo === "vicepresidente" && m.estructura === "nacional") ? "Vicepresidente nacional"
                   : m.cargo === "vicepresidente regional" ? ("VP regional · " + m.resultado)
                   : m.cargo === "consejero" ? "Consejero nacional" : m.cargo;
       return `
