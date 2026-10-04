@@ -127,9 +127,9 @@
 
   /* ============ HERO ============ */
   .hero{position:relative;isolation:isolate;padding:clamp(72px,12vh,140px) 0 clamp(64px,10vh,120px);overflow:visible;text-align:center}
-  .hero-centered{max-width:860px;margin:0 auto}
-  .hero::before{content:"";position:absolute;top:20px;right:-120px;width:320px;height:320px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.2;pointer-events:none;z-index:-1;filter:blur(14px)}
-  .hero::after{content:"";position:absolute;bottom:20px;left:-140px;width:320px;height:320px;background:radial-gradient(circle,var(--c-blue) 0%,transparent 70%);opacity:.14;pointer-events:none;z-index:-1;filter:blur(16px)}
+  .hero-centered{max-width:860px;margin:0 auto;position:relative;z-index:1}
+  .hero::before{content:"";position:absolute;top:-5%;right:-5%;width:clamp(260px,55vw,560px);aspect-ratio:1;background:radial-gradient(circle,var(--accent) 0%,transparent 60%);opacity:.22;pointer-events:none;z-index:0;filter:blur(40px);border-radius:50%}
+  .hero::after{content:"";position:absolute;bottom:-5%;left:-5%;width:clamp(260px,55vw,560px);aspect-ratio:1;background:radial-gradient(circle,var(--c-blue) 0%,transparent 60%);opacity:.16;pointer-events:none;z-index:0;filter:blur(44px);border-radius:50%}
   .hero-dots{position:absolute;inset:0;pointer-events:none;z-index:-1}
   .hero-dots span{position:absolute;border-radius:50%;display:block}
   .hero-dots .d1{top:12%;right:8%;width:22px;height:22px;background:var(--accent)}
@@ -191,17 +191,24 @@
   .temas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .tema{padding:28px 24px;background:var(--paper);border:1px solid var(--rule);border-radius:16px;transition:transform .2s,border-color .2s;position:relative;overflow:hidden}
   .tema:hover{transform:translateY(-4px);border-color:var(--accent)}
-  .tema .icon{width:48px;height:48px;border-radius:12px;background:var(--accent-soft);color:#7a5a0a;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:24px;font-weight:800}
-  :root[data-theme="dark"] .tema .icon,
-  :root:not([data-theme="light"]) .tema .icon{color:var(--accent)}
-  .tema.c-g .icon{background:color-mix(in srgb,var(--c-green) 20%,transparent);color:var(--c-green)}
-  .tema.c-b .icon{background:color-mix(in srgb,var(--c-blue) 20%,transparent);color:var(--c-blue)}
-  .tema.c-p .icon{background:color-mix(in srgb,var(--c-purple) 20%,transparent);color:var(--c-purple)}
-  .tema.c-r .icon{background:color-mix(in srgb,var(--c-red) 20%,transparent);color:var(--c-red)}
-  .tema.c-o .icon{background:color-mix(in srgb,var(--c-orange) 20%,transparent);color:var(--c-orange)}
+  .tema .icon{width:36px;height:36px;color:var(--accent);display:flex;align-items:center;justify-content:flex-start;margin-bottom:16px}
+  .tema .icon svg{width:30px;height:30px;stroke-width:1.7}
+  .tema.c-g .icon{color:var(--c-green)}
+  .tema.c-b .icon{color:var(--c-blue)}
+  .tema.c-p .icon{color:var(--c-purple)}
+  .tema.c-r .icon{color:var(--c-red)}
+  .tema.c-o .icon{color:var(--c-orange)}
   .tema h3{font-size:1.15rem;font-weight:800;margin:0 0 10px;letter-spacing:-.02em;color:var(--ink)}
-  .tema p{font-size:14px;color:var(--muted);line-height:1.55;margin:0}
+  .tema p{font-size:14px;color:var(--muted);line-height:1.55;margin:0 0 14px}
   .tema p strong{color:var(--ink);font-weight:600}
+  .tema ul.tema-points{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+  .tema ul.tema-points li{font-size:12.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.45;font-weight:500}
+  .tema ul.tema-points li::before{content:"→";position:absolute;left:0;top:0;color:var(--accent);font-weight:800}
+  .tema.c-g ul.tema-points li::before{color:var(--c-green)}
+  .tema.c-b ul.tema-points li::before{color:var(--c-blue)}
+  .tema.c-p ul.tema-points li::before{color:var(--c-purple)}
+  .tema.c-r ul.tema-points li::before{color:var(--c-red)}
+  .tema.c-o ul.tema-points li::before{color:var(--c-orange)}
 
   /* ============ FORMATOS ============ */
   .formatos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
@@ -229,14 +236,35 @@
   .audiencias{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
   .aud{padding:24px 20px;background:var(--paper);border:1px solid var(--rule);border-radius:14px;text-align:center;transition:transform .2s,border-color .2s}
   .aud:hover{transform:translateY(-3px);border-color:var(--accent)}
-  .aud .icon{width:52px;height:52px;border-radius:50%;background:var(--paper-2);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
-  .aud .icon svg{width:24px;height:24px}
-  .aud.c-b .icon{color:var(--c-blue);background:color-mix(in srgb,var(--c-blue) 12%,var(--paper-2))}
-  .aud.c-g .icon{color:var(--c-green);background:color-mix(in srgb,var(--c-green) 12%,var(--paper-2))}
-  .aud.c-p .icon{color:var(--c-purple);background:color-mix(in srgb,var(--c-purple) 12%,var(--paper-2))}
-  .aud.c-o .icon{color:var(--c-orange);background:color-mix(in srgb,var(--c-orange) 12%,var(--paper-2))}
+  .aud .icon{width:48px;height:48px;color:var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+  .aud .icon svg{width:30px;height:30px;stroke-width:1.7}
+  .aud.c-b .icon{color:var(--c-blue)}
+  .aud.c-g .icon{color:var(--c-green)}
+  .aud.c-p .icon{color:var(--c-purple)}
+  .aud.c-o .icon{color:var(--c-orange)}
   .aud h4{font-size:1rem;font-weight:800;margin:0 0 6px;color:var(--ink);letter-spacing:-.015em}
   .aud p{font-size:12.5px;color:var(--muted);line-height:1.45;margin:0}
+
+  /* ============ VORKA CALLOUT ============ */
+  .vorka-card{
+    position:relative;
+    background:linear-gradient(135deg,var(--paper-2) 0%,color-mix(in srgb,var(--c-purple) 10%,var(--paper-2)) 100%);
+    border:1px solid var(--rule);
+    border-radius:20px;
+    padding:clamp(32px,4vw,48px);
+    overflow:hidden;
+  }
+  .vorka-card::before{content:"";position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,var(--c-purple) 0%,transparent 70%);opacity:.2;pointer-events:none}
+  .vorka-card::after{content:"";position:absolute;bottom:-80px;left:30%;width:200px;height:200px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.15;pointer-events:none}
+  .vorka-badge{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--ink);color:var(--paper);border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+  .vorka-badge .dot{width:6px;height:6px;background:var(--c-purple);border-radius:50%;box-shadow:0 0 0 2px color-mix(in srgb,var(--c-purple) 30%,transparent)}
+  .vorka-title{position:relative;z-index:1;font-family:var(--font);font-weight:800;font-size:clamp(1.6rem,3.2vw,2.4rem);line-height:1.08;letter-spacing:-.035em;margin:0 0 16px;color:var(--ink);text-wrap:balance;max-width:22ch}
+  .vorka-title .word.hl{color:var(--c-purple);background:linear-gradient(180deg,transparent 64%,color-mix(in srgb,var(--c-purple) 20%,transparent) 64% 92%,transparent 92%);padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  .vorka-desc{position:relative;z-index:1;font-size:15.5px;line-height:1.55;color:var(--muted);margin:0 0 28px;max-width:62ch}
+  .vorka-desc strong{color:var(--ink);font-weight:700}
+  .vorka-link{position:relative;z-index:1;display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:var(--ink);color:var(--paper);border-radius:999px;font-weight:700;font-size:14px;transition:background .2s,color .2s,transform .2s}
+  .vorka-link:hover{background:var(--c-purple);transform:translateY(-2px)}
+  .vorka-link svg{width:13px;height:13px}
 
   /* ============ GALERÍA ============ */
   .galeria{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:220px;gap:12px}
@@ -417,8 +445,8 @@
       <span class="d6"></span>
     </div>
     <div class="hero-eyebrow">Conferencias</div>
-    <h1>+100 conferencias. <br>6 estados. <span class="word hl">Un mensaje que mueve.</span></h1>
-    <p class="hero-sub">Intervenciones sobre <strong>liderazgo juvenil, impacto social, emprendimiento y transformación de México</strong>. Diseñadas desde el contexto de cada público —no plantillas prefabricadas— para universidades, foros institucionales, gobiernos y empresas.</p>
+    <h1>+100 conferencias. <span class="word hl">Un mensaje que mueve.</span></h1>
+    <p class="hero-sub">Intervenciones sobre <strong>liderazgo juvenil, estrategia digital, impacto social y transformación de México</strong>. Como <strong>CEO de Vorka México</strong> y Presidente de Juventudes Impactando México A.C., preparo cada conferencia desde el contexto de tu público para universidades, foros institucionales, gobiernos y empresas.</p>
     <div class="hero-ctas">
       <a href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia." target="_blank" rel="noopener" class="btn-primary">
         Solicitar una conferencia
@@ -467,42 +495,123 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <h3>Liderazgo juvenil</h3>
-        <p>Formar <strong>liderazgos reales</strong> desde el territorio. Cómo las nuevas generaciones ya están cambiando el país y qué necesitan para seguir haciéndolo.</p>
+        <p>Formar <strong>liderazgos reales</strong> desde el territorio. Lo que distingue a un líder de un influencer, y cómo construir movimiento.</p>
+        <ul class="tema-points">
+          <li>De vocación a operación: lo que no te enseñan</li>
+          <li>Construir equipos desde cero (caso IMPACTO: 3,000+ agentes)</li>
+          <li>Pasar de individuo a movimiento nacional</li>
+        </ul>
       </article>
+
       <article class="tema c-b">
         <div class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
         <h3>Impacto social y proyectos</h3>
         <p>De la idea a la acción, <strong>con método</strong>. Cómo diseñar y escalar un proyecto social que no muera a los 6 meses.</p>
+        <ul class="tema-points">
+          <li>Diagnóstico: identificar la problemática correcta</li>
+          <li>Metodología de 10 pasos para proyectos de impacto</li>
+          <li>Alianzas con sector público, privado y social</li>
+          <li>Medir y comunicar el impacto real</li>
+        </ul>
       </article>
+
       <article class="tema c-p">
         <div class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7h14v14M9 11h6M9 15h6"/></svg>
         </div>
         <h3>Emprendimiento con propósito</h3>
-        <p>Negocios que <strong>resuelven, no que solo ganan.</strong> Economía circular, sostenibilidad y modelos que escalan sin extraer.</p>
+        <p>Negocios que <strong>resuelven, no que solo ganan</strong>. Modelos sostenibles con triple impacto que escalan sin extraer.</p>
+        <ul class="tema-points">
+          <li>Economía circular aplicada a PyMEs</li>
+          <li>Validar una idea antes de invertir recursos</li>
+          <li>Modelos de triple impacto (económico, social, ambiental)</li>
+          <li>De emprender por necesidad a emprender con propósito</li>
+        </ul>
       </article>
+
       <article class="tema c-r">
         <div class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
-        <h3>Juventud y transformación de México</h3>
+        <h3>Juventud y transformación nacional</h3>
         <p>Nuevas generaciones al <strong>centro de las decisiones</strong>. Qué hace falta institucionalmente para que la juventud no sea solo discurso.</p>
+        <ul class="tema-points">
+          <li>Participación política juvenil efectiva</li>
+          <li>Agenda 2030 y los 17 ODS desde la juventud</li>
+          <li>Diálogo intergeneracional en instituciones</li>
+          <li>De representar jóvenes a representar POR y PARA ellos</li>
+        </ul>
       </article>
+
       <article class="tema c-o">
         <div class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         </div>
         <h3>Marca personal con propósito</h3>
-        <p>Construir <strong>presencia desde los valores</strong>. Cómo posicionarte sin perder tu voz ni venderte al algoritmo.</p>
+        <p>Construir <strong>presencia desde los valores</strong>, no desde la tendencia. Posicionarte sin perder tu voz ni venderte al algoritmo.</p>
+        <ul class="tema-points">
+          <li>Autoridad profesional + autenticidad</li>
+          <li>Monetización honesta vs auto-promoción vacía</li>
+          <li>Construir trayectoria juvenil a nivel nacional (caso propio)</li>
+        </ul>
       </article>
+
       <article class="tema">
         <div class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5zM6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.17L4 17.17V4z"/><circle cx="9" cy="10" r="1"/><circle cx="12" cy="10" r="1"/><circle cx="15" cy="10" r="1"/></svg>
         </div>
-        <h3>Educación y futuro de México</h3>
-        <p>El rol de las instituciones educativas en el <strong>próximo capítulo del país</strong>. Qué están haciendo bien y qué urge cambiar.</p>
+        <h3>Redes sociales y comunidades digitales</h3>
+        <p>Construir <strong>audiencias reales que generan impacto</strong>, no solo likes. La diferencia entre tener seguidores y tener comunidad.</p>
+        <ul class="tema-points">
+          <li>Contenido estratégico vs publicar por publicar</li>
+          <li>Métricas que importan vs métricas de vanidad</li>
+          <li>Casos de Vorka México: comunidades que convierten</li>
+          <li>Monetizar audiencia sin perder la voz</li>
+        </ul>
+      </article>
+
+      <article class="tema c-g">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17v-5M8 17v-3"/></svg>
+        </div>
+        <h3>Posicionamiento digital estratégico</h3>
+        <p>Más allá de postear: <strong>marca que vende</strong>. Cómo convertir presencia digital en relaciones y relaciones en resultados.</p>
+        <ul class="tema-points">
+          <li>Diferenciación en mercados saturados</li>
+          <li>SEO, autoridad de dominio y presencia orgánica</li>
+          <li>Narrativa de marca consistente en todos los canales</li>
+          <li>Casos reales de PyMEs y marcas acompañadas por Vorka</li>
+        </ul>
+      </article>
+
+      <article class="tema c-b">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        </div>
+        <h3>Comunicación institucional y PR</h3>
+        <p>Para instituciones, gobiernos y organizaciones que necesitan <strong>contar bien lo que hacen</strong>. Narrativa, vocería y crisis management.</p>
+        <ul class="tema-points">
+          <li>Vocería efectiva: comunicar sin perder credibilidad</li>
+          <li>Narrativa institucional que resuena con tus públicos</li>
+          <li>Prevención y manejo de crisis comunicacionales</li>
+          <li>Relaciones con prensa, medios y stakeholders</li>
+        </ul>
+      </article>
+
+      <article class="tema c-p">
+        <div class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7v10c0 5 10 5 10 5s10 0 10-5V7l-10-5z"/><path d="M8 12h8M8 16h5"/></svg>
+        </div>
+        <h3>Dirección y liderazgo empresarial</h3>
+        <p>Visión CEO: <strong>construir, dirigir y escalar organizaciones</strong>. Lo que no te enseñan en los libros de negocios, desde la experiencia real.</p>
+        <ul class="tema-points">
+          <li>Fundar sin capital: lo que sí funciona</li>
+          <li>Construir equipos de alto desempeño en etapas tempranas</li>
+          <li>Decisiones estratégicas bajo incertidumbre</li>
+          <li>Escalar un grupo empresarial desde cero (caso Oleynick Group)</li>
+        </ul>
       </article>
     </div>
   </section>
@@ -649,6 +758,24 @@
   </div>
 </div>
 
+<!-- ============ VORKA CALLOUT ============ -->
+<div class="shell">
+  <section class="section" id="vorka-callout" style="padding-top:clamp(32px,5vh,56px);padding-bottom:clamp(32px,5vh,56px)">
+    <div class="vorka-card">
+      <div class="vorka-badge">
+        <span class="dot"></span>
+        CEO · Vorka México
+      </div>
+      <h3 class="vorka-title">¿Tu organización necesita <span class="word hl">más que una conferencia?</span></h3>
+      <p class="vorka-desc">Soy CEO de <strong>Vorka México</strong>, consultora especializada en fortalecimiento de empresas, organizaciones y gobierno en <strong>posicionamiento digital, redes sociales, relaciones públicas y talento humano</strong>. Si lo que buscas trasciende una conferencia, podemos conversarlo.</p>
+      <a href="https://www.vorka.mx/" target="_blank" rel="noopener" class="vorka-link">
+        Conoce Vorka México
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+  </section>
+</div>
+
 <!-- ============ GALERÍA ============ -->
 <div class="shell">
   <section class="section" id="galeria">
@@ -697,8 +824,8 @@
         </article>
         <article class="paso">
           <span class="num-pill">Paso 02</span>
-          <h4>Videollamada de 20 min</h4>
-          <p>Para entender a profundidad el evento, tu público y qué buscas que la conferencia deje instalado.</p>
+          <h4>Videollamada con mi equipo</h4>
+          <p>20 min con el equipo de Vorka México para entender a profundidad el evento, tu público y qué buscas que la conferencia deje instalado.</p>
         </article>
         <article class="paso">
           <span class="num-pill">Paso 03</span>
