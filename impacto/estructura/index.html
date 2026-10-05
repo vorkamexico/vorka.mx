@@ -100,16 +100,16 @@
     width: auto;
     display: block;
   }
+  .logo-img.light-only{display: block;}
   .logo-img.dark-only{display: none;}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]) .logo-img.light-only{display: none;}
-    :root:not([data-theme="dark"]) .logo-img.light-only{display: block;}
-    :root:not([data-theme="light"]) .logo-img.dark-only{display: block;}
+    :root:not([data-theme="light"]) .logo-img.light-only{display: none !important;}
+    :root:not([data-theme="light"]) .logo-img.dark-only{display: block !important;}
   }
-  :root[data-theme="light"] .logo-img.light-only{display: block;}
-  :root[data-theme="light"] .logo-img.dark-only{display: none;}
-  :root[data-theme="dark"] .logo-img.light-only{display: none;}
-  :root[data-theme="dark"] .logo-img.dark-only{display: block;}
+  :root[data-theme="light"] .logo-img.light-only{display: block !important;}
+  :root[data-theme="light"] .logo-img.dark-only{display: none !important;}
+  :root[data-theme="dark"] .logo-img.light-only{display: none !important;}
+  :root[data-theme="dark"] .logo-img.dark-only{display: block !important;}
   .site-nav{
     display:flex;
     align-items:center;
