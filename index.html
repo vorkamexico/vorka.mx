@@ -264,6 +264,48 @@ section.block{padding-block:clamp(88px,14vh,160px);position:relative}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}.btn:hover{transform:none}.path:hover,.cross-card:hover{transform:none}}
 .fade-in{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* ===== Nav link Tú en Vorka ===== */
+.nav-primary a.nav-tv{color:var(--mustard-deep);font-weight:600;position:relative;padding-left:16px;border-bottom:0}
+.nav-primary a.nav-tv::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%;background:var(--mustard)}
+.nav-primary a.nav-tv:hover{color:var(--ink);border-color:transparent}
+@media (prefers-color-scheme: dark){.nav-primary a.nav-tv{color:var(--mustard)}}
+:root[data-theme="dark"] .nav-primary a.nav-tv{color:var(--mustard)}
+
+/* ===== Programa Tú en Vorka (banda promocional) ===== */
+#tu-en-vorka{padding-block:clamp(80px,12vh,140px);background:#161513;color:#F7F5F1;position:relative;overflow:hidden}
+#tu-en-vorka::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6B2A85 0 25%,#E5A93A 25% 50%,#C94B3A 50% 75%,#4A8A3F 75% 100%)}
+#tu-en-vorka::after{content:"";position:absolute;top:-120px;right:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,#E5A93A 22%,transparent) 0%,transparent 65%);pointer-events:none}
+.tv-promo{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(40px,6vw,88px);align-items:center;max-width:1200px;margin-inline:auto;position:relative;z-index:1}
+.tv-promo__band{display:none}
+.tv-promo__eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.18em;color:#E5A93A;background:color-mix(in srgb,#E5A93A 18%,transparent);padding:8px 18px;border-radius:999px;border:1px solid color-mix(in srgb,#E5A93A 35%,transparent);margin-bottom:28px}
+.tv-promo__eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:#E5A93A;animation:tvPulse 2.4s ease-in-out infinite}
+@keyframes tvPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.3)}}
+.tv-promo__title{font-family:inherit;font-size:clamp(2.2rem,5vw,3.75rem);font-weight:800;letter-spacing:-0.03em;line-height:1.02;margin:0 0 24px;color:#F7F5F1;text-wrap:balance;max-width:18ch}
+.tv-promo__title em{font-family:Georgia,"Iowan Old Style",serif;font-style:italic;font-weight:600;color:#E5A93A}
+.tv-promo__lead{font-size:var(--step-2);color:rgba(247,245,241,0.78);line-height:1.55;margin:0 0 32px;max-width:52ch}
+.tv-promo__lead strong{color:#F7F5F1;font-weight:600}
+.tv-promo__chips{list-style:none;padding:0;margin:0 0 36px;display:flex;flex-wrap:wrap;gap:10px 16px}
+.tv-promo__chips li{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:rgba(247,245,241,0.78);padding:9px 16px;background:rgba(247,245,241,0.06);border:1px solid rgba(247,245,241,0.1);border-radius:999px}
+.tv-promo__chips .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tv-promo__actions{display:flex;gap:12px;flex-wrap:wrap}
+#tu-en-vorka .btn-primary{background:#E5A93A;color:#161513}
+#tu-en-vorka .btn-primary:hover{background:#F0BE5A}
+#tu-en-vorka .btn-outline{border-color:rgba(247,245,241,0.3);color:#F7F5F1}
+#tu-en-vorka .btn-outline:hover{background:#F7F5F1;color:#161513;border-color:#F7F5F1}
+.tv-promo__stat{background:rgba(247,245,241,0.04);border:1px solid rgba(247,245,241,0.12);border-radius:18px;padding:36px 32px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.tv-promo__stat::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#6B2A85,#E5A93A 33%,#C94B3A 66%,#4A8A3F)}
+.tv-promo__stat-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(247,245,241,0.58);margin-bottom:8px}
+.tv-promo__stat-num{font-family:Georgia,serif;font-weight:700;font-size:clamp(3.5rem,7vw,5.5rem);line-height:1;letter-spacing:-0.03em;color:#F7F5F1;font-variant-numeric:tabular-nums}
+.tv-promo__stat-label{font-size:14px;color:rgba(247,245,241,0.6);margin-bottom:16px;letter-spacing:0.02em}
+.tv-promo__stat-list{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:12px;padding-top:20px;border-top:1px dashed rgba(247,245,241,0.14)}
+.tv-promo__stat-list li{font-size:13px;color:rgba(247,245,241,0.75);line-height:1.5;padding-left:18px;position:relative}
+.tv-promo__stat-list li::before{content:"→";position:absolute;left:0;color:#E5A93A;font-weight:700}
+.tv-promo__stat-list strong{color:#F7F5F1;font-weight:600}
+.tv-promo__link{font-size:13px;font-weight:600;letter-spacing:0.02em;color:#E5A93A;border-bottom:1px dashed rgba(229,169,58,0.4);padding-bottom:3px;align-self:flex-start;transition:color .15s,border-color .15s}
+.tv-promo__link:hover{color:#F0BE5A;border-color:#F0BE5A}
+@media (max-width:900px){.tv-promo{grid-template-columns:1fr;gap:40px}.tv-promo__stat{order:2}}
+@media (max-width:640px){#tu-en-vorka{padding-block:72px}.tv-promo__actions .btn{flex:1;min-width:160px;justify-content:center}}
 </style>
 </head>
 <body>
@@ -276,6 +318,7 @@ section.block{padding-block:clamp(88px,14vh,160px);position:relative}
 <a href="#decision">Para quién</a>
 <a href="#footprint">Huella</a>
 <a href="#sparks">Sparks</a>
+<a href="/voluntariado" class="nav-tv">Tú en Vorka</a>
 <a class="nav-cta" href="#contact">Hablemos →</a>
 </nav></div></header>
 
@@ -497,6 +540,39 @@ section.block{padding-block:clamp(88px,14vh,160px);position:relative}
     </div>
   </div></section>
 
+  <section id="tu-en-vorka" aria-labelledby="tv-promo-title">
+    <div class="shell">
+      <div class="tv-promo">
+        <div class="tv-promo__band" aria-hidden="true"></div>
+        <div class="tv-promo__copy">
+          <span class="tv-promo__eyebrow">Programa Tú en Vorka</span>
+          <h2 id="tv-promo-title" class="tv-promo__title">Juventudes que <em>mueven</em> lo que viene.</h2>
+          <p class="tv-promo__lead">Programa de voluntariado estratégico para jóvenes de 16 a 29 años. Aprenden a construir, acompañar y guiar proyectos sociales reales desde dentro. Presencial en el <strong>Bajío (Guanajuato)</strong> y remoto desde cualquier parte de México.</p>
+          <ul class="tv-promo__chips" aria-label="Características">
+            <li><span class="dot" style="background:#6B2A85"></span>9 áreas de participación</li>
+            <li><span class="dot" style="background:#E5A93A"></span>Mentoría cercana</li>
+            <li><span class="dot" style="background:#C94B3A"></span>Convocatoria abierta</li>
+            <li><span class="dot" style="background:#4A8A3F"></span>Presencial + remoto</li>
+          </ul>
+          <div class="tv-promo__actions">
+            <a class="btn btn-primary" href="/voluntariado">Conocer el programa <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+            <a class="btn btn-outline" href="https://forms.gle/VxchV4VrFw2yZGw59" target="_blank" rel="noopener">Postúlate directo</a>
+          </div>
+        </div>
+        <aside class="tv-promo__stat" aria-label="Resumen del programa">
+          <div class="tv-promo__stat-eyebrow">¿Para quién?</div>
+          <div class="tv-promo__stat-num">16–29</div>
+          <div class="tv-promo__stat-label">años</div>
+          <ul class="tv-promo__stat-list">
+            <li>Jóvenes del Bajío (Guanajuato) — vía <strong>presencial</strong></li>
+            <li>Jóvenes de cualquier parte de México — vía <strong>remota</strong></li>
+          </ul>
+          <a class="tv-promo__link" href="/voluntariado">vorka.mx/voluntariado →</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="footer-orig"><div class="shell">
@@ -517,6 +593,7 @@ section.block{padding-block:clamp(88px,14vh,160px);position:relative}
 <li><a href="#decision">Para quién</a></li>
 <li><a href="#footprint">Respaldo</a></li>
 <li><a href="#sparks">Vorka Sparks</a></li>
+<li><a href="/voluntariado">Tú en Vorka</a></li>
 <li><a href="#contact">Hablemos</a></li>
 </ul></div>
 <div class="foot-col"><h5>Contacto</h5><ul>
