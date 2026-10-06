@@ -71,7 +71,7 @@ Cloudflare detecta el commit y publica solo. Revisa **www.vorka.mx/sparks/celaya
 4. **R2 → Manage API tokens → Create API token**:
    - Permisos: **Object Read & Write**.
    - Bucket: solo **sparks-fotos**.
-   - Copia el **Access Key ID**, el **Secret Access Key** y el **Account ID**. El Account ID también aparece en la URL del panel.
+   - Copia el **Access Key ID**, el **Secret Access Key** y el **Account ID**. El Account ID son 32 letras y números; está en *R2 → Account Details*.
 5. En los secrets de GitHub (mismo lugar que en el paso 4) crea tres más:
    - `R2_ACCOUNT_ID`
    - `R2_ACCESS_KEY_ID`
