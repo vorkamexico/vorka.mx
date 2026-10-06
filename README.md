@@ -81,3 +81,7 @@ Botón "Contrátanos directo por WhatsApp" abre `wa.me/528117804869` con mensaje
 ---
 
 © 2026 Vorka México. Todos los derechos reservados.
+
+## Sparks Celaya (periódico)
+
+`/sparks/celaya` se genera solo desde un Google Form + Sheet mediante `.github/workflows/sparks-celaya.yml`. No edites `sparks/celaya/` a mano. Instalación y uso: [`_sparks/GUIA-INSTALACION.md`](_sparks/GUIA-INSTALACION.md).

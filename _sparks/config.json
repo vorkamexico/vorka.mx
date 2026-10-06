@@ -1,0 +1,22 @@
+{
+  "sitio": "https://www.vorka.mx",
+  "ruta": "/sparks/celaya",
+  "nombre": "Sparks Celaya",
+  "lema": "Las historias de la gente que está moviendo Celaya",
+  "descripcion": "Noticias, logros e historias de la comunidad de Celaya, Guanajuato. Un medio de Vorka Sparks.",
+  "ciudad": "Celaya, Guanajuato",
+  "instagram": "https://www.instagram.com/vorka.mx/",
+  "noticiasPorPagina": 12,
+
+  "fotos": {
+    "bucket": "sparks-fotos",
+    "urlPublica": "https://fotos.vorka.mx",
+    "prefijo": "celaya"
+  },
+
+  "adsense": {
+    "cliente": "",
+    "slotFeed": "",
+    "slotArticulo": ""
+  }
+}

@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.vorka.mx/oleynickhdz/sitemap.xml
+Sitemap: https://www.vorka.mx/sparks/celaya/sitemap.xml
