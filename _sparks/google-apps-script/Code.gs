@@ -18,6 +18,7 @@ var CATEGORIAS = ['Logros', 'Eventos', 'Comunidad', 'Emprendimiento', 'Educació
 // Encabezados de la hoja → claves internas. Se buscan por "contiene", sin acentos ni mayúsculas.
 var CAMPOS = [
   ['titulo',    ['titulo']],
+  ['link',      ['link corto', 'enlace corto']],
   ['persona',   ['persona', 'protagonista']],
   ['categoria', ['categoria']],
   ['fecha',     ['fecha']],
@@ -70,6 +71,8 @@ function configurar() {
     form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
     props.setProperty('FORM_ID', form.getId());
   }
+
+  agregarPreguntaLink_(form);
 
   // Trigger: al recibir una respuesta se intenta publicar de inmediato.
   var yaExiste = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'alEnviarFormulario'; });
@@ -180,8 +183,44 @@ function asegurarColumnas_(hoja) {
   }
 }
 
+/** Pregunta "Link corto" (se agrega una sola vez, debajo del título, aunque el Form ya exista). */
+function agregarPreguntaLink_(form) {
+  var existe = form.getItems().some(function (it) { return norm_(it.getTitle()).indexOf('link corto') === 0; });
+  if (existe) return;
+  var item = form.addTextItem()
+    .setTitle('Link corto (opcional)')
+    .setHelpText('Así se verá: vorka.mx/sparks/celaya/TU-LINK — como un usuario de Instagram. ' +
+                 'Solo letras, números, punto, guion o guion bajo. Ej: mariafer.lopez · robotica_tec · donjavier. ' +
+                 'Si lo dejas vacío se crea uno corto con el título.')
+    .setValidation(FormApp.createTextValidation()
+      .setHelpText('Usa solo letras, números, punto, guion o guion bajo (2 a 30 caracteres, sin espacios ni acentos).')
+      .requireTextMatchesPattern('^@?[A-Za-z0-9._-]{2,30}$')
+      .build());
+  form.moveItem(item.getIndex(), 1);
+}
+
+var RESERVADOS = { assets: 1, img: 1, fotos: 1, feed: 1, sitemap: 1, buscar: 1, categoria: 1 };
+var VACIAS = { de: 1, del: 1, la: 1, las: 1, el: 1, los: 1, en: 1, y: 1, a: 1, al: 1, para: 1, con: 1, por: 1,
+               un: 1, una: 1, que: 1, se: 1, su: 1, sus: 1, o: 1, e: 1, lo: 1 };
+
+/** Limpia lo que escriban en "Link corto" o en la columna Slug: estilo usuario de Instagram. */
+function limpiarLink_(s) {
+  var l = norm_(s).replace(/^@+/, '').replace(/ñ/g, 'n').replace(/\s+/g, '-')
+    .replace(/[^a-z0-9._-]+/g, '').replace(/^[._-]+|[._-]+$/g, '').slice(0, 30).replace(/[._-]+$/, '');
+  return (l.length >= 2 && !RESERVADOS[l]) ? l : '';
+}
+
+/** Link automático corto: hasta 4 palabras importantes del título (máx. 30 caracteres). */
 function slugify_(s) {
-  return norm_(s).replace(/ñ/g, 'n').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/, '') || 'noticia';
+  var palabras = norm_(s).replace(/ñ/g, 'n').replace(/[^a-z0-9]+/g, ' ').trim().split(' ')
+    .filter(function (p) { return p && !VACIAS[p]; });
+  var out = '';
+  for (var i = 0; i < palabras.length && i < 4; i++) {
+    var siguiente = out ? out + '-' + palabras[i] : palabras[i];
+    if (siguiente.length > 30) break;
+    out = siguiente;
+  }
+  return out || 'noticia';
 }
 
 function fechaISO_(v) {
@@ -208,7 +247,7 @@ function noticias_() {
 
   // Primero registra los slugs que ya existen para no repetirlos.
   for (var r = 1; r < datos.length; r++) {
-    var s = String(datos[r][col.slug] || '').trim();
+    var s = limpiarLink_(datos[r][col.slug]);
     if (s) usados[s] = true;
   }
 
@@ -218,9 +257,9 @@ function noticias_() {
     var titulo = String(val('titulo')).trim();
     if (!titulo) continue;
 
-    var slug = String(val('slug')).trim();
+    var slug = limpiarLink_(val('slug'));
     if (!slug) {
-      var base = slugify_(titulo), n = 2;
+      var base = limpiarLink_(val('link')) || slugify_(titulo), n = 2;
       slug = base;
       while (usados[slug]) slug = base + '-' + (n++);
       usados[slug] = true;

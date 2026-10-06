@@ -125,7 +125,8 @@ Sin esto, las noticias salen solas **cada hora de 7 am a 11 pm**. Con esto, sale
 | Corregir un error | Editar la celda en el Sheet → 📰 Sparks → Publicar ahora. |
 | Ocultar una noticia | Escribir **NO** en la columna *Publicar*. |
 | Ponerla de portada | Escribir **Sí** en *¿Destacar como noticia principal?* Gana la destacada más reciente. |
-| Cambiar el link | No lo hagas después de compartirla: la columna *Slug* es su dirección web. |
+| Elegir el link | Llenar *Link corto* en el Form (ej. `mariafer.lopez`). Vacío = se crea uno corto con el título. |
+| Cambiar el link | Editar la columna *Slug*. Ojo: el link viejo que ya se compartió deja de funcionar. |
 | Agregar categorías | Editar las opciones de "Categoría" en el Form. Salen solas como filtros. |
 
 ## Archivos
@@ -141,6 +142,14 @@ sparks/celaya/                  ← lo genera el bot. NO editar a mano.
 ```
 
 Para cambiar el diseño, edita `_sparks/assets/sparks.css` o `build.py`. Al hacer commit se regenera todo.
+
+## Actualizar el script de Google
+
+Cuando cambie `google-apps-script/Code.gs`:
+
+1. Pega el código nuevo en Apps Script y guarda.
+2. Ejecuta **`configurar`**. Si falta alguna pregunta nueva, la agrega al Form; no duplica nada.
+3. **Implementar → Administrar implementaciones → ✏️ → Versión: Nueva versión → Implementar.** La URL no cambia.
 
 ## Si algo falla
 

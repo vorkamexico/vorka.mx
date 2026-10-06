@@ -664,7 +664,17 @@ def main():
         print("Sin cambios. Nada que publicar.")
         return
 
+    usados = set()
     for n in noticias:
+        # Seguridad: el slug se vuelve carpeta. Solo a-z 0-9 . _ - y sin repetirse.
+        base = re.sub(r"[^a-z0-9._-]+", "-", (n.get("slug") or "").lower()).strip("._-")[:60] or "noticia"
+        if base in ("assets", "img"):
+            base += "-1"
+        slug, k = base, 2
+        while slug in usados:
+            slug, k = "%s-%d" % (base, k), k + 1
+        usados.add(slug)
+        n["slug"] = slug
         n["_d"] = leer_fecha(n.get("fecha") or n.get("creada"))
         n["_c"] = leer_fecha(n.get("creada"))
         n.setdefault("fotos", [])
