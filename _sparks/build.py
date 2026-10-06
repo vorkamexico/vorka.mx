@@ -161,13 +161,13 @@ class Almacen:
         self.dir_img = dir_img
         self.r2 = None
         cuenta, llave, secreto = (os.environ.get(k, "").strip() for k in ("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"))
+        # Acepta el Account ID solo o pegado dentro de una URL del panel / endpoint S3.
+        m = re.search(r"\b([0-9a-f]{32})\b", cuenta.lower())
+        if cuenta and not m:
+            print("::warning title=Sparks Celaya::R2_ACCOUNT_ID no parece un Account ID de Cloudflare "
+                  "(32 letras y números; panel de R2 → 'Account ID'). Mientras lo corriges, las fotos se guardan en el repo.")
+        cuenta = m.group(1) if m else ""
         if cuenta and llave and secreto and f.get("bucket") and f.get("urlPublica"):
-            # Acepta el Account ID solo o pegado dentro de una URL del panel / endpoint S3.
-            m = re.search(r"\b([0-9a-f]{32})\b", cuenta.lower())
-            if not m:
-                sys.exit("R2_ACCOUNT_ID no parece un Account ID de Cloudflare (32 letras y números, "
-                         "lo ves en el panel de R2 → 'Account ID'). Corrige el secret en GitHub.")
-            cuenta = m.group(1)
             import boto3
             self.r2 = boto3.client("s3", endpoint_url="https://%s.r2.cloudflarestorage.com" % cuenta,
                                    aws_access_key_id=llave, aws_secret_access_key=secreto, region_name="auto")
