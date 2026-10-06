@@ -1,0 +1,57 @@
+# Publica en automático las noticias de Sparks Celaya.
+# Lee el Google Sheet, genera /sparks/celaya y hace commit. Cloudflare publica el commit solo.
+name: Sparks Celaya — publicar noticias
+
+on:
+  schedule:
+    # Cada hora de 7:00 a 23:00 (hora del centro de México, UTC-6).
+    - cron: "0 13-23,0-5 * * *"
+  repository_dispatch:
+    types: [sparks-publicar]   # botón "📰 Sparks → Publicar ahora" del Sheet
+  workflow_dispatch:            # botón "Run workflow" en GitHub
+  push:
+    paths:
+      - "_sparks/**"            # si cambias el diseño, se regenera
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sparks-celaya
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install --quiet pillow boto3
+
+      - name: Generar periódico
+        env:
+          SPARKS_API_URL: ${{ secrets.SPARKS_API_URL }}
+          SPARKS_TOKEN: ${{ secrets.SPARKS_TOKEN }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: python3 _sparks/build.py
+
+      - name: Publicar cambios
+        run: |
+          git add -A sparks robots.txt
+          [ -f ads.txt ] && git add ads.txt
+          if git diff --cached --quiet; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name "Sparks Bot"
+          git config user.email "sparks-bot@users.noreply.github.com"
+          git commit -m "Sparks Celaya: actualizar noticias"
+          git push
