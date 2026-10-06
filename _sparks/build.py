@@ -22,6 +22,7 @@ import os
 import re
 import shutil
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -702,5 +703,28 @@ def main():
     print("✅ Listo: %d noticias en %s" % (len(noticias), destino))
 
 
+def diagnostico(e):
+    """Explica el error en español. En GitHub sale como anotación visible en el resumen del Action."""
+    nombre = type(e).__name__
+    if isinstance(e, urllib.error.HTTPError):
+        return "Apps Script respondió HTTP %s. Revisa SPARKS_API_URL (debe terminar en /exec)." % e.code
+    if isinstance(e, urllib.error.URLError):
+        return "No se pudo conectar con Apps Script (%s)." % e.reason
+    if isinstance(e, json.JSONDecodeError):
+        return ("Apps Script no devolvió datos. Revisa que la implementación sea 'Aplicación web' con acceso "
+                "'Cualquier persona' y que SPARKS_API_URL termine en /exec.")
+    if nombre in ("ClientError", "NoCredentialsError", "EndpointConnectionError", "PartialCredentialsError"):
+        return "Cloudflare R2: %s. Revisa R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY y el bucket en config.json." % e
+    return "%s: %s" % (nombre, e)
+
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        if isinstance(e.code, str):
+            print("::error title=Sparks Celaya::%s" % e.code)
+        raise
+    except Exception as e:
+        print("::error title=Sparks Celaya::%s" % diagnostico(e))
+        raise
