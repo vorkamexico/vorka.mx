@@ -366,24 +366,61 @@ class Sitio:
 <main id="contenido">
 {cuerpo}
 </main>
-<footer class="foot"><div class="shell foot-inner">
-<div class="foot-brand"><a class="foot-name" href="{base}/">{nombre}</a><p>{lema}. Un medio de <a href="/">Vorka México</a>.</p></div>
-<ul class="foot-links">
+<footer class="foot"><div class="shell">
+<div class="foot-cols">
+<div class="foot-col foot-brand">
+<h5>{nombre}</h5>
+<p class="desc">{lema}. Un medio de <b>Vorka Sparks</b> hecho en {ciudad}.</p>
+<img class="foot-mark" src="{base}/assets/logo.png" alt="Vorka" width="56" height="55" loading="lazy">
+</div>
+<div class="foot-col"><h5>Secciones</h5><ul>
 <li><a href="{base}/">Portada</a></li>
+{secciones}
+<li><a href="{base}/#buscar">Buscar noticias</a></li>
+</ul></div>
+<div class="foot-col"><h5>Vorka</h5><ul>
+<li><a href="/">Vorka México</a></li>
+<li><a href="/#sparks">Vorka Sparks</a></li>
+<li><a href="/voluntariado">Tú en Vorka</a></li>
+<li><a href="/servicios/estrategia">Servicios</a></li>
+<li><a href="/#contact">Hablemos</a></li>
+</ul></div>
+<div class="foot-col"><h5>Contacto</h5><ul>
+<li><a href="https://wa.me/528117804869?text={wa_historia}" target="_blank" rel="noopener">Comparte una historia</a></li>
+<li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
+<li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
 <li><a href="{base}/feed.xml">RSS</a></li>
-<li><a href="{ig}" target="_blank" rel="noopener">@vorka.mx</a></li>
-<li><a href="/">vorka.mx</a></li>
-</ul>
-<p class="foot-copy">© {anio} Vorka México · {ciudad}</p>
-</div></footer>
+</ul></div>
+</div>
+<div class="foot-tagline">
+<div class="left">Historias reales de la gente que está moviendo {ciudad_corta}. Si conoces una, cuéntanosla.</div>
+<div class="right">definiendo el juego</div>
+</div>
+<div class="foot-bottom">
+<div class="foot-social">
+<a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram — @vorka.mx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+<a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok — @vorka.mx"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3.5h-2.7v12.1a2.6 2.6 0 1 1-2.6-2.6c.27 0 .53.04.77.12V10.4a5.4 5.4 0 1 0 4.53 5.32V8.62a6.6 6.6 0 0 0 3.9 1.26V7.2a3.9 3.9 0 0 1-3.9-3.7Z"/></svg></a>
+<a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook — vorka.mx"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.95v-8.05h2.7l.4-3.13H13.5V8.78c0-.9.25-1.52 1.55-1.52h1.66V4.46a22 22 0 0 0-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15v2.32H7.55v3.13h2.7v8.02h3.25Z"/></svg></a>
+</div>
+<div class="foot-name">{nombre}<small>vorka.mx{base}</small></div>
+<div class="foot-copy">© {anio} Vorka México.<br>Todos los derechos reservados.</div>
+</div></div></footer>
 <dialog class="lb" id="lb" aria-label="Galería"><button class="lb-x" data-lb-close aria-label="Cerrar">×</button><button class="lb-nav lb-prev" data-lb-prev aria-label="Anterior">‹</button><img alt=""><button class="lb-nav lb-next" data-lb-next aria-label="Siguiente">›</button><p class="lb-cap"></p></dialog>
 <script src="{base}/assets/sparks.js?v={v}" defer></script>
 </body>
 </html>
 """.format(titulo=esc(titulo), desc=esc(descripcion), canon=esc(canonical), og=esc(og_img), tipo=tipo,
            nombre=esc(c["nombre"]), lema=esc(c["lema"]), base=self.base, ig=esc(c["instagram"]),
-           ciudad=esc(c["ciudad"]), anio=datetime.now().year, cuerpo=cuerpo, extra=extra_head,
+           ciudad=esc(c["ciudad"]), ciudad_corta=esc(c["ciudad"].split(",")[0]), anio=datetime.now().year,
+           secciones=self.secciones_footer(), wa_historia=urllib.parse.quote("Hola, tengo una historia para %s: " % c["nombre"]), cuerpo=cuerpo, extra=extra_head,
            ads=ads, ld=ld, v=self.version)
+
+    def secciones_footer(self):
+        conteo = {}
+        for n in self.noticias:
+            conteo[n["categoria"]] = conteo.get(n["categoria"], 0) + 1
+        top = sorted(conteo, key=lambda c: (-conteo[c], c))[:5]
+        return "\n".join('<li><a href="%s/?categoria=%s">%s</a></li>' % (self.base, esc(slug_cat(c)), esc(c)) for c in top)
 
     def og_de(self, n):
         if n and n["fotos"]:
