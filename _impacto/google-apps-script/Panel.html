@@ -127,10 +127,7 @@
     <div><label>Teléfono (WhatsApp)</label><input name="telefono" inputmode="tel" required></div>
     <div><label>Correo</label><input name="correo" type="email" required></div>
   </div>
-  <div class="row2">
-    <div><label>Escuela <span class="hint">(opcional)</span></label><input name="escuela"></div>
-    <div><label>Redes sociales <span class="hint">(opcional)</span></label><input name="rrss" placeholder="@usuario"></div>
-  </div>
+  <label>Redes sociales <span class="hint">(opcional)</span></label><input name="rrss" placeholder="@usuario">
   <label>Foto para el directorio <span class="hint">(opcional, de frente)</span></label><input name="foto" type="file" accept="image/jpeg,image/png,image/webp">
   <label class="check"><input type="checkbox" name="privacidad" required>
     <span>La persona leyó y aceptó el <a target="_blank" rel="noopener" id="lnkPriv">aviso de privacidad</a> y está de acuerdo en aparecer en el directorio público.</span></label>
@@ -302,7 +299,7 @@
       (tipo === 'baja' ? 'Solicitar baja' : 'Enviar solicitud') + '</button></div>';
 
     if (tipo === 'baja') {
-      f.innerHTML = '<label>Motivo de la baja</label><textarea name="motivo" required placeholder="Ej. renunció por escuela, inactividad de 3 meses…"></textarea>' + pie;
+      f.innerHTML = '<label>Motivo de la baja</label><textarea name="motivo" required placeholder="Ej. renuncia, inactividad de 3 meses…"></textarea>' + pie;
     } else if (tipo === 'cambio') {
       f.innerHTML = '<h2 style="font-size:15px;margin:18px 0 0">Persona que entra</h2><div id="dlgCampos"></div>' +
         '<label>Motivo del cambio <span class="hint">(opcional)</span></label><input name="motivo">' +
@@ -313,8 +310,7 @@
         '<label>Nombre completo</label><input name="nombre" value="' + esc(p.nombre) + '">' +
         '<div class="row2"><div><label>Teléfono</label><input name="telefono" value="' + esc(p.telefono) + '"></div>' +
         '<div><label>Correo</label><input name="correo" type="email" value="' + esc(p.correo) + '"></div></div>' +
-        '<div class="row2"><div><label>Escuela</label><input name="escuela" value="' + esc(p.escuela) + '"></div>' +
-        '<div><label>Redes sociales</label><input name="rrss" value="' + esc(p.rrss) + '"></div></div>' +
+        '<label>Redes sociales</label><input name="rrss" value="' + esc(p.rrss) + '">' +
         '<div class="row2"><div><label>Cargo</label><select name="cargo"></select></div>' +
         (p.estructura === 'estatal' ? '<div></div>' : '<div><label>Municipio / distrito</label><input name="resultado" value="' + esc(p.resultado) + '"></div>') + '</div>' +
         '<label>Foto nueva <span class="hint">(opcional)</span></label><input name="foto" type="file" accept="image/jpeg,image/png,image/webp">' +

@@ -15,7 +15,7 @@ GitHub Action → reescribe www.vorka.mx/impacto/estructura con la lista y las f
 **Fuente única:** la hoja `LISTA COMPLETA` del Sheet *Representaciones de Impacto*. El directorio público se genera desde ahí; ya no se edita a mano.
 
 **Qué agrega al Sheet** (no borra ni mueve nada):
-- En `LISTA COMPLETA`, columnas nuevas a la derecha: `ID`, `Estatus`, `Escuela`, `Foto`, `Fecha de alta`, `Última actualización`. A cada persona actual le asigna un ID (`IMP-0001`…).
+- En `LISTA COMPLETA`, columnas nuevas a la derecha: `ID`, `Estatus`, `Foto`, `Fecha de alta`, `Última actualización`. A cada persona actual le asigna un ID (`IMP-0001`…).
 - Hojas nuevas: `SOLICITUDES`, `HISTORICO`, `BITACORA`.
 - Las bajas **no se borran**: quedan con `Estatus = baja` (texto gris) y copiadas en `HISTORICO`. El directorio ya no las muestra. Si confirmas que ninguna otra hoja depende de la posición de las filas, puedes borrarlas con la función `limpiarBajas`.
 - Los cambios de presidente reemplazan a la persona **en el mismo renglón** (el renglón es el cargo), así que ninguna fórmula se mueve.

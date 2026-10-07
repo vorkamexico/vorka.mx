@@ -56,7 +56,6 @@ var COLUMNAS = [
   { k: 'carta', titulo: 'Carta de Representante' },
   { k: 'id', titulo: 'ID' },
   { k: 'estatus', titulo: 'Estatus' },
-  { k: 'escuela', titulo: 'Escuela' },
   { k: 'foto', titulo: 'Foto' },
   { k: 'fechaAlta', titulo: 'Fecha de alta' },
   { k: 'actualizado', titulo: 'Última actualización' }
@@ -65,7 +64,7 @@ var COLUMNAS = [
 var ENC_SOLICITUDES = ['Folio', 'Fecha', 'Tipo', 'Estatus', 'Estado', 'Resumen', 'Solicitó (correo)', 'Solicitó (nombre)',
   'Datos', 'Resolvió', 'Fecha de resolución', 'Motivo de rechazo'];
 var ENC_HISTORICO = ['Fecha de salida', 'Motivo', 'Folio', 'ID', 'Cargo', 'Estructura', 'RESULTADO', 'Nombre completo',
-  'Estado', 'TELÉFONO', 'RRSS', 'Correo', 'Escuela', 'Fecha de alta'];
+  'Estado', 'TELÉFONO', 'RRSS', 'Correo', 'Fecha de alta'];
 var ENC_BITACORA = ['Fecha', 'Quién', 'Acción', 'Detalle'];
 
 /* ================================ INSTALACIÓN ================================ */
@@ -245,7 +244,7 @@ function datosPanel(token) {
   var lideres = filas_().filter(function (f) { return f.activo && (u.esAdmin || f.estado === u.estado); })
     .map(function (f) {
       return { id: f.id, cargo: f.cargo, estructura: f.estructura, resultado: f.resultado, nombre: f.nombre,
-        estado: f.estado, telefono: f.telefono, correo: f.correo, rrss: f.rrss, escuela: f.escuela };
+        estado: f.estado, telefono: f.telefono, correo: f.correo, rrss: f.rrss };
     });
   var sol = solicitudes_().filter(function (s) { return u.esAdmin || s.solicitante === u.correo; })
     .slice(-50).reverse().map(publicaSolicitud_);
@@ -291,7 +290,7 @@ function validar_(u, tipo, d) {
     return f;
   };
   var persona = function () {
-    var p = { nombre: t('nombre'), telefono: t('telefono'), correo: t('correo').toLowerCase(), rrss: t('rrss'), escuela: t('escuela') };
+    var p = { nombre: t('nombre'), telefono: t('telefono'), correo: t('correo').toLowerCase(), rrss: t('rrss') };
     if (p.nombre.split(' ').length < 2) throw new Error('Escribe el nombre completo (nombre y apellidos).');
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.correo)) throw new Error('Escribe un correo válido.');
     if (p.telefono.replace(/\D/g, '').length < 10) throw new Error('El teléfono debe tener 10 dígitos.');
@@ -319,7 +318,7 @@ function validar_(u, tipo, d) {
       if (ocupado) throw new Error('Esa presidencia ya la tiene ' + ocupado.nombre + '. Usa "Cambio de presidente".');
     }
     return { cargo: cargo, estructura: estructura, resultado: resultado, estado: estado, nombre: p.nombre, telefono: p.telefono,
-      correo: p.correo, rrss: p.rrss, escuela: p.escuela, propone: t('propone'), motivo: motivo };
+      correo: p.correo, rrss: p.rrss, propone: t('propone'), motivo: motivo };
   }
 
   if (tipo === 'baja') {
@@ -333,13 +332,13 @@ function validar_(u, tipo, d) {
     var n = persona();
     return { id: s.id, saliente: s.nombre, salienteCorreo: s.correo, cargo: s.cargo, estructura: s.estructura,
       resultado: s.resultado, estado: s.estado, nombre: n.nombre, telefono: n.telefono, correo: n.correo, rrss: n.rrss,
-      escuela: n.escuela, agradecer: d.agradecer !== false, motivo: motivo };
+      agradecer: d.agradecer !== false, motivo: motivo };
   }
 
   // correccion
   var c = porId(t('id'));
   var cambios = {};
-  ['nombre', 'telefono', 'correo', 'rrss', 'escuela', 'resultado'].forEach(function (k) {
+  ['nombre', 'telefono', 'correo', 'rrss', 'resultado'].forEach(function (k) {
     var v = t(k);
     if (k === 'correo') v = v.toLowerCase();
     if (v && v !== String(c[k] || '').trim()) cambios[k] = v;
@@ -433,7 +432,7 @@ function aplicar_(s, quien) {
     var fila = new Array(ancho).fill('');
     var nuevoId = formatoId_(siguienteId_(lista.getRange(2, col.id + 1, Math.max(lista.getLastRow() - 1, 1), 1).getValues().map(function (r) { return r[0]; })));
     var v = { cargo: d.cargo, estructura: d.estructura, resultado: d.resultado, nombre: d.nombre, estado: d.estado,
-      telefono: d.telefono, rrss: d.rrss, correo: d.correo, id: nuevoId, estatus: 'activo', escuela: d.escuela,
+      telefono: d.telefono, rrss: d.rrss, correo: d.correo, id: nuevoId, estatus: 'activo',
       foto: d.foto || '', fechaAlta: hoy, actualizado: hoy };
     Object.keys(v).forEach(function (k) { if (col[k] !== undefined) fila[col[k]] = v[k]; });
     lista.appendRow(fila);
@@ -448,7 +447,7 @@ function aplicar_(s, quien) {
   var set = function (k, val) { if (col[k] !== undefined) lista.getRange(r, col[k] + 1).setValue(val); };
   var historico = function (motivo) {
     hojaHist_().appendRow([hoy, motivo, s.folio, get('id'), get('cargo'), get('estructura'), get('resultado'), get('nombre'),
-      get('estado'), get('telefono'), get('rrss'), get('correo'), get('escuela'), get('fechaAlta')]);
+      get('estado'), get('telefono'), get('rrss'), get('correo'), get('fechaAlta')]);
   };
 
   if (s.tipo === 'baja') {
@@ -464,7 +463,7 @@ function aplicar_(s, quien) {
     var nuevo = formatoId_(siguienteId_(ids));
     // La fila es el cargo: se queda en su lugar y cambia la persona.
     set('nombre', d.nombre); set('telefono', d.telefono); set('rrss', d.rrss); set('correo', d.correo);
-    set('escuela', d.escuela); set('foto', d.foto || ''); set('carta', ''); set('id', nuevo);
+    set('foto', d.foto || ''); set('carta', ''); set('id', nuevo);
     set('estatus', 'activo'); set('fechaAlta', hoy); set('actualizado', hoy);
     d.idAsignado = nuevo;
     return;
@@ -772,7 +771,7 @@ function boton_(url, texto, secundario) {
 }
 
 var ETIQUETAS_ = { nombre: 'Nombre', cargo: 'Cargo', estructura: 'Estructura', resultado: 'Municipio / distrito', estado: 'Estado',
-  telefono: 'Teléfono', correo: 'Correo', rrss: 'Redes', escuela: 'Escuela', propone: 'Propone', motivo: 'Motivo',
+  telefono: 'Teléfono', correo: 'Correo', rrss: 'Redes', propone: 'Propone', motivo: 'Motivo',
   personaNombre: 'Persona', saliente: 'Sale', id: 'ID', foto: 'Foto' };
 
 function tablaDatos_(tipo, d) {
@@ -784,7 +783,7 @@ function tablaDatos_(tipo, d) {
     if (d.foto) add('foto', 'nueva foto');
     add('motivo', d.motivo);
   } else {
-    ['saliente', 'personaNombre', 'nombre', 'cargo', 'estructura', 'resultado', 'estado', 'telefono', 'correo', 'rrss', 'escuela',
+    ['saliente', 'personaNombre', 'nombre', 'cargo', 'estructura', 'resultado', 'estado', 'telefono', 'correo', 'rrss',
       'propone', 'motivo', 'id'].forEach(function (k) { add(k, d[k]); });
     if (d.foto) add('foto', 'adjunta');
   }
