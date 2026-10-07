@@ -1,0 +1,55 @@
+# Actualiza el Directorio Nacional de IMPACTO (www.vorka.mx/impacto/estructura) desde el Google Sheet.
+# Lee la API del Apps Script de movimientos, reescribe la lista y las fotos, y hace commit.
+name: IMPACTO — actualizar directorio
+
+on:
+  schedule:
+    # Cada 3 horas (en punto + 20 min para no chocar con Sparks).
+    - cron: "20 */3 * * *"
+  repository_dispatch:
+    types: [impacto-directorio]   # se dispara solo al aprobar un movimiento (si hay GH_TOKEN en el script)
+  workflow_dispatch:              # botón "Run workflow" en GitHub
+  push:
+    paths:
+      - "_impacto/build_directorio.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: impacto-directorio
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install --quiet pillow
+
+      - name: Generar directorio
+        env:
+          IMPACTO_API_URL: ${{ secrets.IMPACTO_API_URL }}
+          IMPACTO_TOKEN: ${{ secrets.IMPACTO_TOKEN }}
+        run: python3 _impacto/build_directorio.py
+
+      - name: Publicar cambios
+        run: |
+          git add impacto/estructura/index.html impacto/estructura/fotos
+          [ -f _impacto/fotos.json ] && git add _impacto/fotos.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name "IMPACTO Bot"
+          git config user.email "impacto-bot@users.noreply.github.com"
+          git commit -m "IMPACTO: actualizar directorio nacional"
+          git pull --rebase
+          git push
