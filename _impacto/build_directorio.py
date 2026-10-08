@@ -69,6 +69,7 @@ def limpiar(lideres):
     for l in lideres:
         d = {k: str(l.get(k) or "").strip() for k in ("cargo", "estructura", "resultado", "nombre", "estado", "foto")}
         d["cargo"], d["estructura"] = d["cargo"].lower(), d["estructura"].lower()
+        d["sin_foto"] = bool(l.get("sin_foto"))
         if d["cargo"] == "secretaria":
             d["cargo"] = "secretaría"
         if d["nombre"] and d["estado"] and d["cargo"] in CARGOS and d["estructura"] in ESTRUCTURAS:
@@ -137,6 +138,14 @@ def fotos(args, lideres):
     cambio = False
     for l in lideres:
         fid, s = l.get("foto"), slug(l["nombre"])
+        if l.get("sin_foto") and s:  # la presidencia quitó la foto desde la Base
+            ruta = os.path.join(FOTOS, s + ".webp")
+            if os.path.exists(ruta):
+                os.remove(ruta)
+                print("  🗑️  foto quitada: %s" % s)
+            if manifest.pop(s, None) is not None:
+                cambio = True
+            continue
         if not fid or not s or manifest.get(s) == fid:
             continue
         try:
