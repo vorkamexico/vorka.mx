@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reporte Trimestral · Vorka México · Celaya Abr–Jun 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: #ffffff; color: #1a1a1a; line-height: 1.6; }
+
+    header {
+      border-bottom: 3px solid #1a1a1a;
+      padding: 48px 64px 40px;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .header-brand { display: flex; flex-direction: column; gap: 4px; }
+    .header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: #888; }
+    .header-title { font-size: 42px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+    .header-title span { color: #4CAF7D; }
+    .header-meta { text-align: right; }
+    .header-meta .periodo { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.08em; }
+    .header-meta .fecha { font-size: 22px; font-weight: 700; color: #1a1a1a; }
+    .header-meta .municipio { font-size: 13px; font-weight: 500; color: #4CAF7D; margin-top: 4px; }
+
+    section { padding: 56px 64px; border-bottom: 1px solid #ebebeb; }
+    .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #aaa; margin-bottom: 8px; }
+    .section-title { font-size: 26px; font-weight: 700; margin-bottom: 32px; letter-spacing: -0.01em; }
+
+    .resumen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .resumen-card {
+      border: 1.5px solid #ebebeb; border-radius: 12px;
+      padding: 24px 20px; display: flex; flex-direction: column; gap: 8px;
+      transition: border-color 0.2s;
+    }
+    .resumen-card:hover { border-color: #4CAF7D; }
+    .resumen-card .plataforma { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #aaa; }
+    .resumen-card .valor { font-size: 34px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: #1a1a1a; }
+    .resumen-card .etiqueta { font-size: 12px; font-weight: 500; color: #555; }
+    .resumen-card .variacion {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; color: #4CAF7D;
+      background: #f0faf5; border-radius: 20px; padding: 3px 10px;
+      margin-top: 4px; width: fit-content;
+    }
+
+    .plat-block { margin-bottom: 48px; }
+    .plat-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f0f0f0;
+    }
+    .plat-name { font-size: 20px; font-weight: 700; }
+    .plat-periodo { font-size: 12px; font-weight: 500; color: #999; margin-left: auto; }
+
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+    .metric-card { background: #fafafa; border-radius: 10px; padding: 20px 18px; }
+    .metric-card .m-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin-bottom: 8px; }
+    .metric-card .m-value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; color: #1a1a1a; }
+    .metric-card .m-change { font-size: 11px; font-weight: 700; margin-top: 6px; color: #4CAF7D; }
+
+    .alcance-banner {
+      background: #1a1a1a; border-radius: 16px; padding: 48px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; text-align: center;
+    }
+    .alcance-item .a-val { font-size: 44px; font-weight: 800; color: #4CAF7D; letter-spacing: -0.03em; line-height: 1; }
+    .alcance-item .a-label { font-size: 12px; font-weight: 500; color: #aaa; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+    .alcance-divider { width: 1px; background: #333; align-self: stretch; }
+
+    .campo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .campo-card {
+      border-radius: 12px; border: 1.5px solid #ebebeb;
+      padding: 28px 20px; text-align: center; position: relative; overflow: hidden;
+    }
+    .campo-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #4CAF7D; }
+    .campo-card .c-icon { font-size: 26px; margin-bottom: 12px; display: block; }
+    .campo-card .c-num { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: #1a1a1a; }
+    .campo-card .c-label { font-size: 12px; font-weight: 600; color: #555; margin-top: 8px; line-height: 1.4; }
+    .campo-card .c-sublabel { font-size: 10px; font-weight: 500; color: #aaa; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .conclusiones-list { display: flex; flex-direction: column; gap: 20px; }
+    .conclusion-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 22px 24px; background: #fafafa;
+      border-radius: 12px; border-left: 4px solid #4CAF7D;
+    }
+    .conclusion-num { font-size: 22px; font-weight: 800; color: #4CAF7D; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .conclusion-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .conclusion-text p { font-size: 13px; font-weight: 400; color: #555; line-height: 1.6; }
+
+    footer {
+      padding: 32px 64px; display: flex;
+      justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px; background: #fafafa;
+    }
+    footer .f-brand { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+    footer .f-brand span { color: #4CAF7D; }
+    footer .f-note { font-size: 11px; color: #aaa; font-weight: 500; }
+
+    @media (max-width: 700px) {
+      header, section, footer { padding: 32px 24px; }
+      .header-title { font-size: 28px; }
+      .alcance-banner { grid-template-columns: 1fr; }
+      .alcance-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-brand">
+    <div class="header-eyebrow">Reporte Trimestral</div>
+    <div class="header-title">Vorka <span>México</span></div>
+  </div>
+  <div class="header-meta">
+    <div class="periodo">Período evaluado</div>
+    <div class="fecha">Abr — Jun 2026</div>
+    <div class="municipio">Municipio de Celaya, Gto.</div>
+  </div>
+</header>
+
+<!-- RESUMEN EJECUTIVO -->
+<section>
+  <div class="section-label">Resumen ejecutivo</div>
+  <div class="section-title">Alcance consolidado del trimestre</div>
+  <div class="resumen-grid">
+    <div class="resumen-card">
+      <div class="plataforma">TikTok</div>
+      <div class="valor">45.6K</div>
+      <div class="etiqueta">Vistas de video</div>
+      <div class="variacion">407 compartidos</div>
+    </div>
+    <div class="resumen-card">
+      <div class="plataforma">Facebook</div>
+      <div class="valor">55.3K</div>
+      <div class="etiqueta">Visualizaciones</div>
+      <div class="variacion">31.4K espectadores</div>
+    </div>
+    <div class="resumen-card">
+      <div class="plataforma">Instagram</div>
+      <div class="valor">50.7K</div>
+      <div class="etiqueta">Visualizaciones</div>
+      <div class="variacion">13.4K alcance</div>
+    </div>
+    <div class="resumen-card">
+      <div class="plataforma">Interacciones</div>
+      <div class="valor">4.6K</div>
+      <div class="etiqueta">Total plataformas</div>
+      <div class="variacion">+2K solo en IG</div>
+    </div>
+    <div class="resumen-card">
+      <div class="plataforma">Beneficiarios campo</div>
+      <div class="valor">490</div>
+      <div class="etiqueta">Estudiantes impactados</div>
+      <div class="variacion">6 activaciones</div>
+    </div>
+    <div class="resumen-card">
+      <div class="plataforma">Consultorías</div>
+      <div class="valor">16</div>
+      <div class="etiqueta">Proyectos acompañados</div>
+      <div class="variacion">Abr: 8 · May: 8</div>
+    </div>
+  </div>
+</section>
+
+<!-- MÉTRICAS POR PLATAFORMA -->
+<section>
+  <div class="section-label">Análisis por plataforma</div>
+  <div class="section-title">Resultados detallados · Abr – Jun 2026</div>
+
+  <!-- TIKTOK -->
+  <div class="plat-block">
+    <div class="plat-header">
+      <div class="plat-name">TikTok</div>
+      <div class="plat-periodo">1 abr – 30 jun 2026</div>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="m-label">Vistas de video</div>
+        <div class="m-value">45.6K</div>
+        <div class="m-change">Alcance orgánico</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Vistas del perfil</div>
+        <div class="m-value">1.6K</div>
+        <div class="m-change">↑ +42.5%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Me gusta</div>
+        <div class="m-value">1.5K</div>
+        <div class="m-change">Comunidad activa</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Comentarios</div>
+        <div class="m-value">6</div>
+        <div class="m-change">Interacción directa</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Compartidos</div>
+        <div class="m-value">407</div>
+        <div class="m-change">↑ +4.6%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Seguidores cuenta</div>
+        <div class="m-value">684</div>
+        <div class="m-change">Comunidad consolidada</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FACEBOOK -->
+  <div class="plat-block">
+    <div class="plat-header">
+      <div class="plat-name">Facebook</div>
+      <div class="plat-periodo">1 abr – 30 jun 2026</div>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="m-label">Visualizaciones</div>
+        <div class="m-value">55.3K</div>
+        <div class="m-change">Alcance sostenido</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Espectadores</div>
+        <div class="m-value">31.4K</div>
+        <div class="m-change">↑ +31.7%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Interacciones</div>
+        <div class="m-value">610</div>
+        <div class="m-change">Comunidad comprometida</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Visitas al perfil</div>
+        <div class="m-value">346</div>
+        <div class="m-change">↑ +30.2%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Clics en enlace</div>
+        <div class="m-value">18</div>
+        <div class="m-change">↑ +500%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <div class="plat-block" style="margin-bottom:0">
+    <div class="plat-header">
+      <div class="plat-name">Instagram</div>
+      <div class="plat-periodo">1 abr – 30 jun 2026</div>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="m-label">Visualizaciones</div>
+        <div class="m-value">50.7K</div>
+        <div class="m-change">↑ +49%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Alcance</div>
+        <div class="m-value">13.4K</div>
+        <div class="m-change">↑ +95.1%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Interacciones</div>
+        <div class="m-value">2K</div>
+        <div class="m-change">↑ +69%</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Visitas al perfil</div>
+        <div class="m-value">1.9K</div>
+        <div class="m-change">↑ +193.4%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALCANCE TOTAL -->
+<section>
+  <div class="section-label">Impacto consolidado</div>
+  <div class="section-title">Total trimestre · Todas las plataformas</div>
+  <div class="alcance-banner">
+    <div class="alcance-item">
+      <div class="a-val">151.6K</div>
+      <div class="a-label">Visualizaciones totales</div>
+    </div>
+    <div class="alcance-divider"></div>
+    <div class="alcance-item">
+      <div class="a-val">44.8K</div>
+      <div class="a-label">Personas alcanzadas</div>
+    </div>
+    <div class="alcance-divider"></div>
+    <div class="alcance-item">
+      <div class="a-val">4,600+</div>
+      <div class="a-label">Interacciones activas</div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACTO EN CAMPO -->
+<section>
+  <div class="section-label">Impacto en campo · Celaya</div>
+  <div class="section-title">Activaciones, contenido y presencia comunitaria</div>
+
+  <div class="campo-grid">
+    <div class="campo-card">
+      <span class="c-icon">🎯</span>
+      <div class="c-num">6</div>
+      <div class="c-label">Activaciones realizadas</div>
+      <div class="c-sublabel">Abr: 2 · May: 2 · Jun: 2</div>
+    </div>
+    <div class="campo-card">
+      <span class="c-icon">👥</span>
+      <div class="c-num">490</div>
+      <div class="c-label">Beneficiarios directos</div>
+      <div class="c-sublabel">Estudiantes impactados</div>
+    </div>
+    <div class="campo-card">
+      <span class="c-icon">💬</span>
+      <div class="c-num">16</div>
+      <div class="c-label">Consultorías realizadas</div>
+      <div class="c-sublabel">Abr: 8 · May: 8</div>
+    </div>
+    <div class="campo-card">
+      <span class="c-icon">🎬</span>
+      <div class="c-num">12</div>
+      <div class="c-label">Videos publicados</div>
+      <div class="c-sublabel">4 por mes</div>
+    </div>
+    <div class="campo-card">
+      <span class="c-icon">⭐</span>
+      <div class="c-num">6</div>
+      <div class="c-label">Historias de talento juvenil</div>
+      <div class="c-sublabel">2 por mes</div>
+    </div>
+    <div class="campo-card">
+      <span class="c-icon">🏫</span>
+      <div class="c-num">5</div>
+      <div class="c-label">Escuelas involucradas</div>
+      <div class="c-sublabel">Rosenblueth · Westminster · ITC · UTEC · Jacob Grimm</div>
+    </div>
+  </div>
+
+  <!-- DETALLE ACTIVACIONES -->
+  <div style="margin-bottom: 32px;">
+    <p style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;margin-bottom:16px;">Detalle de activaciones</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;border-left:3px solid #4CAF7D;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Abril · Colegio Arturo Rosenblueth</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Taller: Colecta de útiles escolares</div>
+        <div style="font-size:12px;color:#666;">30 estudiantes · Solidaridad, empatía y participación ciudadana mediante la donación de materiales educativos</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;border-left:3px solid #4CAF7D;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Abril · Westminster Royal College</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Conferencia: Del desafío a la acción, construyendo un México mejor</div>
+        <div style="font-size:12px;color:#666;">46 estudiantes · Motivar a las juventudes a participar conscientemente en su entorno y generar cambios positivos</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;border-left:3px solid #4CAF7D;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Mayo · Instituto Tecnológico de Celaya Campus II</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Conferencia: Del desafío a la acción, construyendo un México mejor</div>
+        <div style="font-size:12px;color:#666;">29 estudiantes · Reflexión sobre el papel juvenil ante los retos sociales y la transformación desde el contexto propio</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;border-left:3px solid #4CAF7D;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Mayo · UTEC Celaya</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Conferencia: ¿Quién soy y quién quiero ser?</div>
+        <div style="font-size:12px;color:#666;">60 estudiantes · Reflexión sobre identidad, toma de decisiones y participación activa en la comunidad</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;border-left:3px solid #4CAF7D;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Junio · Instituto Tecnológico de Celaya Campus II</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Conferencia: Del desafío a la acción, construyendo un México mejor</div>
+        <div style="font-size:12px;color:#666;">25 estudiantes · Identificación de retos comunitarios y alternativas de participación juvenil</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;border-left:3px solid #4CAF7D;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">Junio · Instituto Jacob Karl Grimm</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Conferencia: Del desafío a la acción, construyendo un México mejor</div>
+        <div style="font-size:12px;color:#666;">300 estudiantes · Voluntariado, confianza en sus ideas y participación comunitaria desde la juventud</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETALLE CONSULTORÍAS -->
+  <div style="margin-bottom: 32px;">
+    <p style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;margin-bottom:16px;">Proyectos juveniles acompañados</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Daniela · Presidencia de mesa directiva escolar</div>
+        <div style="font-size:11px;color:#888;">Liderazgo estudiantil y representación escolar</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Valentina · Empoderamiento femenino</div>
+        <div style="font-size:11px;color:#888;">Autoestima, liderazgo y autonomía en jóvenes</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Salvador · Comunidad de difusión de oportunidades</div>
+        <div style="font-size:11px;color:#888;">Acceso a becas, convocatorias y oportunidades</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Jennifer · Bienestar emocional juvenil</div>
+        <div style="font-size:11px;color:#888;">Salud emocional y herramientas de desarrollo personal</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Leonardo · Jóvenes que superan lesiones deportivas</div>
+        <div style="font-size:11px;color:#888;">Resiliencia, motivación y acompañamiento deportivo</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Óscar · Tecnología para jóvenes</div>
+        <div style="font-size:11px;color:#888;">Innovación y habilidades digitales</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Gabriela · Educación financiera juvenil</div>
+        <div style="font-size:11px;color:#888;">Finanzas personales, ahorro y planificación</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Abril</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Karla · Voluntariado juvenil</div>
+        <div style="font-size:11px;color:#888;">Servicio y participación comunitaria</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Ximena · Campaña de donación de juguetes</div>
+        <div style="font-size:11px;color:#888;">Solidaridad e inclusión infantil</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Odette · Colecta de útiles escolares</div>
+        <div style="font-size:11px;color:#888;">Apoyo educativo y solidaridad comunitaria</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Osmar · Derecho Joven</div>
+        <div style="font-size:11px;color:#888;">Derechos y participación juvenil</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Mariana · Recuperación de espacios públicos</div>
+        <div style="font-size:11px;color:#888;">Participación comunitaria y cuidado del entorno</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Diego · Prevención del bullying escolar</div>
+        <div style="font-size:11px;color:#888;">Convivencia y prevención de violencia escolar</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Sofía · Fomento a la lectura</div>
+        <div style="font-size:11px;color:#888;">Educación y desarrollo cultural</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Meztly · Grupo de trueque</div>
+        <div style="font-size:11px;color:#888;">Consumo responsable y economía colaborativa</div>
+      </div>
+      <div style="border:1.5px solid #ebebeb;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Mayo</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px;">Fernanda · Huertos urbanos comunitarios</div>
+        <div style="font-size:11px;color:#888;">Medio ambiente y participación comunitaria</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENIDO DIGITAL -->
+  <div>
+    <p style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#aaa;margin-bottom:16px;">Contenido digital publicado</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Abril</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🎬 4 videos publicados</div>
+        <div style="font-size:12px;color:#666;margin-bottom:8px;">⭐ 2 historias de talento</div>
+        <div style="font-size:11px;color:#aaa;">Óscar Jiménez · Iris Pérez</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Mayo</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🎬 4 videos publicados</div>
+        <div style="font-size:12px;color:#666;margin-bottom:8px;">⭐ 2 historias de talento</div>
+        <div style="font-size:11px;color:#aaa;">Cassandra Orozco · Leonardo Aguilar</div>
+      </div>
+      <div style="background:#fafafa;border-radius:10px;padding:20px 22px;">
+        <div style="font-size:10px;font-weight:700;color:#4CAF7D;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Junio</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🎬 4 videos publicados</div>
+        <div style="font-size:12px;color:#666;margin-bottom:8px;">⭐ 2 historias de talento</div>
+        <div style="font-size:11px;color:#aaa;">Dina Gallardo · Jessica Núñez</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSIONES -->
+<section>
+  <div class="section-label">Análisis de resultados</div>
+  <div class="section-title">Conclusiones del trimestre</div>
+  <div class="conclusiones-list">
+    <div class="conclusion-item">
+      <div class="conclusion-num">01</div>
+      <div class="conclusion-text">
+        <strong>Instagram se consolidó como el canal de mayor crecimiento en calidad de audiencia</strong>
+        <p>Con 50,700 visualizaciones, un alcance de 13,400 personas y un incremento del +95.1% en alcance y +69% en interacciones, Instagram demuestra que la comunidad de Celaya no solo ve el contenido, sino que lo valora y responde. Las 1,900 visitas al perfil (+193.4%) confirman que cada vez más personas buscan conocer más sobre el proyecto.</p>
+      </div>
+    </div>
+    <div class="conclusion-item">
+      <div class="conclusion-num">02</div>
+      <div class="conclusion-text">
+        <strong>Facebook mantiene el mayor volumen de audiencia con crecimiento sostenido</strong>
+        <p>Con 55,300 visualizaciones y 31,400 espectadores únicos (+31.7%), Facebook sigue siendo el canal de mayor escala para llegar a la ciudadanía de Celaya. Los 18 clics en enlace representan un crecimiento del +500%, señal de que la audiencia está tomando acción a partir del contenido.</p>
+      </div>
+    </div>
+    <div class="conclusion-item">
+      <div class="conclusion-num">03</div>
+      <div class="conclusion-text">
+        <strong>490 estudiantes de Celaya impactados en 6 activaciones presenciales en 5 instituciones</strong>
+        <p>Desde colectas de útiles en el Colegio Rosenblueth hasta conferencias en el Instituto Jacob Karl Grimm con 300 jóvenes, el proyecto llegó a las aulas de Celaya con temas de liderazgo, identidad, voluntariado y participación ciudadana. Cada activación dejó en los estudiantes una perspectiva más clara de su capacidad para transformar su entorno.</p>
+      </div>
+    </div>
+    <div class="conclusion-item">
+      <div class="conclusion-num">04</div>
+      <div class="conclusion-text">
+        <strong>16 proyectos juveniles de Celaya acompañados hacia la acción concreta</strong>
+        <p>Desde empoderamiento femenino y educación financiera hasta recuperación de espacios públicos y huertos urbanos, los 16 proyectos asesorados en abril y mayo representan una generación de jóvenes celayenses que ya no solo identifican problemas: construyen soluciones. La inversión del municipio en este acompañamiento forma directamente el capital social de Celaya.</p>
+      </div>
+    </div>
+    <div class="conclusion-item">
+      <div class="conclusion-num">05</div>
+      <div class="conclusion-text">
+        <strong>La producción mensual de contenido posiciona a Celaya como municipio con juventud visible y activa</strong>
+        <p>12 videos y 6 historias de talento publicadas a lo largo del trimestre construyen una narrativa digital consistente y positiva sobre Celaya. Las historias de Óscar Jiménez, Iris Pérez, Cassandra Orozco, Leonardo Aguilar, Dina Gallardo y Jessica Núñez convierten a jóvenes celayenses reales en referentes para su generación, fortaleciendo el orgullo e identidad del municipio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-brand">Vorka <span>México</span> · Municipio de Celaya</div>
+  <div class="f-note">Reporte · Datos: Abr – Jun 2026</div>
+</footer>
+
+</body>
+</html>
