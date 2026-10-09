@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Revista Sparks — Historias con sentido · Vorka México</title>
+<meta name="description" content="La Revista Sparks de Vorka México visibiliza a las personas, proyectos y organizaciones que están moviendo su municipio. Lee sus historias o cuenta la tuya.">
+<link rel="canonical" href="https://www.vorka.mx/sparks/">
+<meta property="og:site_name" content="Revista Sparks · Vorka México">
+<meta property="og:locale" content="es_MX">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Revista Sparks — Historias con sentido">
+<meta property="og:description" content="Las historias de la gente que está moviendo su municipio. Léelas o cuenta la tuya.">
+<meta property="og:url" content="https://www.vorka.mx/sparks/">
+<meta property="og:image" content="https://www.vorka.mx/sparks/celaya/assets/og-default.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/sparks/celaya/assets/favicon.png">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F0E" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="/sparks/celaya/assets/sparks.css">
+<style>
+/* Revista Sparks · portada general: ediciones por municipio, historias recientes y "Cuenta tu historia" */
+.hero-s{padding:clamp(48px,9vw,110px) 0 clamp(28px,5vw,56px);text-align:center;border-bottom:1px solid var(--line)}
+.hero-s h1{font-family:var(--serif);font-size:clamp(52px,10vw,120px);font-weight:600;letter-spacing:-.03em;line-height:.95;margin:18px 0 18px}
+.hero-s h1 em{color:var(--purple)}
+.hero-s .lema{font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.4vw,24px);color:var(--ink-2);margin:0 auto 26px;max-width:36ch}
+.hero-s .intro{max-width:64ch;margin:0 auto 30px;color:var(--ink-2);font-size:clamp(16px,1.6vw,18px);line-height:1.7}
+.hero-s .acc{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.sec-s{padding:clamp(40px,7vw,80px) 0 0}
+.sec-s h2{font-family:var(--serif);font-size:clamp(30px,4.4vw,48px);font-weight:600;letter-spacing:-.02em;margin:12px 0 10px}
+.sec-s .sub{color:var(--ink-2);max-width:60ch;margin:0 0 28px}
+.ediciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.ed{position:relative;display:grid;gap:6px;padding:22px;border-radius:20px;border:1px solid var(--line);background:var(--paper);min-height:150px;align-content:end;transition:border-color .15s,transform .15s}
+.ed b{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.01em}
+.ed span{font-size:13px;color:var(--ink-3)}
+.ed.on{border-color:var(--ink);background:var(--paper-2)}
+.ed.on:hover{transform:translateY(-2px);border-color:var(--purple)}
+.ed.on::after{content:"Leer →";position:absolute;top:20px;right:22px;font-size:13px;font-weight:600;color:var(--purple)}
+.ed.off{opacity:.55}
+.ed.off::after{content:"Próximamente";position:absolute;top:20px;right:22px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.recientes{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:26px 22px}
+.rc a{display:grid;gap:10px}
+.rc .im{aspect-ratio:16/10;border-radius:14px;overflow:hidden;background:var(--paper-3)}
+.rc .im img{width:100%;height:100%;object-fit:cover}
+.rc .k{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--purple)}
+.rc h3{font-family:var(--serif);font-size:23px;font-weight:600;line-height:1.2;letter-spacing:-.01em}
+.rc p{margin:0;color:var(--ink-2);font-size:15px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rc small{color:var(--ink-3);font-size:13px}
+.vacio-s{padding:34px;border-radius:20px;border:1px dashed var(--line-strong);text-align:center;color:var(--ink-2)}
+.cuenta{margin:clamp(48px,8vw,90px) 0 0;padding:clamp(28px,5vw,60px);border-radius:28px;background:#0F0D10;color:#F2F0EB;display:grid;gap:34px}
+.cuenta .eyebrow{color:#C8A45C}
+.cuenta h2{color:#fff}
+.cuenta .sub{color:#B0ADA6}
+.pasos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px}
+.pasos li{display:grid;gap:8px;padding-top:16px;border-top:2px solid rgba(242,240,235,.14)}
+.pasos li:first-child{border-color:#C8A45C}
+.pasos b{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C8A45C}
+.pasos strong{font-family:var(--serif);font-size:21px;font-weight:600;color:#fff}
+.pasos span{color:#B0ADA6;font-size:14.5px;line-height:1.55}
+.cuenta .acc{display:flex;gap:12px;flex-wrap:wrap}
+.btn-oro{background:#C8A45C;color:#141114;border-color:#C8A45C}
+.btn-oro:hover{background:#fff;border-color:#fff}
+.btn-claro{color:#F2F0EB;border-color:rgba(242,240,235,.3)}
+.suma{display:grid;gap:18px;align-items:center;padding:clamp(24px,4vw,40px);border-radius:24px;border:1px solid var(--line);margin:clamp(40px,7vw,70px) 0 clamp(50px,8vw,90px)}
+.suma h3{font-family:var(--serif);font-size:clamp(24px,3vw,32px);font-weight:600}
+.suma p{margin:6px 0 0;color:var(--ink-2)}
+@media (min-width:860px){.suma{grid-template-columns:1fr auto}}
+.pie-s{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13px;color:var(--ink-3);display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between}
+.pie-s a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<header class="topbar"><div class="shell topbar-inner">
+<a href="/" class="brand" aria-label="Vorka México — inicio"><img class="brand-logo" src="/sparks/celaya/assets/logo.png" alt="" width="30" height="29"><span class="brand-name">Vorka <span>México</span></span></a>
+<nav class="nav" aria-label="Revista Sparks">
+<a href="#ediciones">Ediciones</a>
+<a href="https://os.vorka.mx/historia">Cuenta tu historia</a>
+<a class="hide-sm" href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">Instagram</a>
+</nav></div></header>
+<main id="contenido"><div class="shell">
+
+<section class="hero-s">
+  <span class="eyebrow">Vorka Sparks · Revista</span>
+  <h1>Revista <em>Sparks</em></h1>
+  <p class="lema">Historias con sentido de la gente que está moviendo su municipio.</p>
+  <p class="intro">Un espacio para la reflexión, la pausa y la claridad en un entorno que acelera sin dirección. Visibilizamos a personas, proyectos y organizaciones a través de sus historias: quiénes son, qué hacen y, sobre todo, por qué lo hacen.</p>
+  <div class="acc"><a class="btn btn-solid" href="#recientes">Leer historias</a><a class="btn" href="https://os.vorka.mx/historia">Cuenta tu historia →</a></div>
+</section>
+
+<section class="sec-s" id="ediciones">
+  <span class="eyebrow">Ediciones</span>
+  <h2>Una revista por municipio</h2>
+  <p class="sub">Cada edición cuenta las historias de su gente. Empezamos en Celaya y pronto llegamos a más municipios de Guanajuato.</p>
+  <div class="ediciones">
+    <a class="ed on" href="/sparks/celaya/"><b>Celaya</b><span id="n-celaya">Edición activa</span></a>
+    <div class="ed off"><b>León</b><span>Guanajuato</span></div>
+    <div class="ed off"><b>Irapuato</b><span>Guanajuato</span></div>
+    <div class="ed off"><b>Salamanca</b><span>Guanajuato</span></div>
+    <div class="ed off"><b>San Miguel de Allende</b><span>Guanajuato</span></div>
+    <div class="ed off"><b>Guanajuato</b><span>Capital</span></div>
+  </div>
+</section>
+
+<section class="sec-s" id="recientes">
+  <span class="eyebrow">Lo más reciente</span>
+  <h2>Historias que vale la pena leer</h2>
+  <p class="sub">Personas reales, procesos en marcha y proyectos con dirección.</p>
+  <div class="recientes" id="lista"><div class="vacio-s">Muy pronto, las primeras historias.</div></div>
+</section>
+
+<section class="cuenta" id="cuenta">
+  <div><span class="eyebrow">Cuenta tu historia</span><h2>Tu historia puede inspirar a tu municipio</h2>
+  <p class="sub">Si estás construyendo algo —un emprendimiento, una empresa, una causa o tu propio camino— queremos conocerte. Así funciona:</p></div>
+  <ol class="pasos">
+    <li><b>Paso 1 · Hoy</b><strong>Nos la cuentas</strong><span>Respondes 10 preguntas en unos 12 minutos. No hay respuestas correctas.</span></li>
+    <li><b>Paso 2 · 3 a 5 días</b><strong>Escribimos tu guion</strong><span>Nuestro equipo editorial redacta tu artículo y un guion de 90 segundos hecho a tu medida.</span></li>
+    <li><b>Paso 3 · 7 días</b><strong>Grabas tu video</strong><span>Con tu celular, en vertical, siguiendo nuestro manual de grabación.</span></li>
+    <li><b>Paso 4</b><strong>Nos mandas tu material</strong><span>Tus videos y todas las fotos y tomas que puedas. Entre más material, más padre queda.</span></li>
+    <li><b>Paso 5</b><strong>Lo publicamos</strong><span>Tu artículo en la Revista Sparks y tu video tipo campaña en Instagram, en colaboración contigo.</span></li>
+  </ol>
+  <div class="acc"><a class="btn btn-oro" href="https://os.vorka.mx/historia">Cuenta tu historia →</a><a class="btn btn-claro" href="/manual/historiasjuv/">Manual de grabación</a></div>
+</section>
+
+<section class="suma">
+  <div><h3>¿Te gusta escribir, grabar o entrevistar?</h3><p>Súmate al equipo de Vorka Sparks y ayúdanos a contar las historias de tu municipio.</p></div>
+  <a class="btn" href="/sparks/sumate/">Súmate a Sparks →</a>
+</section>
+
+<footer class="pie-s"><span>Revista Sparks · Vorka México · Guanajuato, México</span><span><a href="/">vorka.mx</a> · <a href="/privacidad/">Aviso de privacidad</a> · <a href="mailto:hola@vorka.mx">hola@vorka.mx</a></span></footer>
+</div></main>
+<script>
+// Historias recientes de las ediciones activas (cada edición publica su índice en noticias.json)
+(function () {
+  var EDICIONES = [{ slug: 'celaya', nombre: 'Celaya' }];
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  Promise.all(EDICIONES.map(function (e) {
+    return fetch('/sparks/' + e.slug + '/noticias.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+      var el = document.getElementById('n-' + e.slug);
+      if (el) el.textContent = d.n.length ? d.n.length + (d.n.length === 1 ? ' historia' : ' historias') : 'Edición activa';
+      return d.n.map(function (n) { return { e: e, n: n, img: d.img }; });
+    }).catch(function () { return []; });
+  })).then(function (listas) {
+    var todas = [].concat.apply([], listas).sort(function (a, b) { return a.n.d < b.n.d ? 1 : -1; }).slice(0, 6);
+    if (!todas.length) return;
+    document.getElementById('lista').innerHTML = todas.map(function (x) {
+      var n = x.n, url = '/sparks/' + x.e.slug + '/' + n.s + '/';
+      return '<article class="rc"><a href="' + url + '"><div class="im">' + (n.i ? '<img src="' + esc(x.img) + '/' + esc(n.i) + '-800.webp" alt="' + esc(n.p || n.t) + '" loading="lazy">' : '') + '</div>' +
+        '<span class="k">' + esc(x.e.nombre) + ' · ' + esc(n.c) + '</span><h3>' + esc(n.t) + '</h3><p>' + esc(n.r) + '</p><small>' + esc(n.p ? n.p + ' · ' : '') + esc(n.f) + '</small></a></article>';
+    }).join('');
+  });
+})();
+</script>
+</body>
+</html>

@@ -97,6 +97,8 @@ def texto_a_bloques(texto):
         cerrar_lista()
         if l.startswith("#"):
             bloques.append("<h2>%s</h2>" % inline(l.lstrip("#").strip()))
+        elif l.startswith("> "):
+            bloques.append("<blockquote>%s</blockquote>" % inline(l[2:].strip()))
         else:
             bloques.append("<p>%s</p>" % inline(l))
     cerrar_lista()
@@ -126,16 +128,39 @@ def cargar_noticias(args):
             return json.load(f)["noticias"]
     api, token = os.environ.get("SPARKS_API_URL"), os.environ.get("SPARKS_TOKEN")
     if not api or not token:
-        print("⏸  Aún no hay SPARKS_API_URL / SPARKS_TOKEN en los secrets de GitHub. Nada que publicar todavía.")
-        sys.exit(0)
+        print("⏸  Sin SPARKS_API_URL / SPARKS_TOKEN: no se leen noticias del Sheet (solo las historias de Vorka México).")
+        return []
     data = http_json(api + ("&" if "?" in api else "?") + urllib.parse.urlencode({"token": token}))
     if "error" in data:
         sys.exit("Apps Script respondió: %s" % data["error"])
     return data["noticias"]
 
 
+# Historias de la Revista Sparks que vienen de Vorka México (os.vorka.mx). Solo llegan las que el equipo marcó para publicar.
+OS_API = os.environ.get("SPARKS_OS_API", "https://os.vorka.mx/api/publico/sparks")
+
+
+def cargar_historias_os(cfg):
+    if os.environ.get("SPARKS_SIN_OS"):
+        return []
+    municipio = cfg["ruta"].rstrip("/").split("/")[-1]
+    try:
+        data = http_json("%s/noticias?%s" % (OS_API, urllib.parse.urlencode({"municipio": municipio})))
+    except Exception as e:  # si Vorka México no responde, se publica lo demás
+        print("  ⚠️  No se pudieron leer las historias de Vorka México (%s)" % e)
+        return []
+    ns = [n for n in data.get("noticias", []) if n.get("slug") and n.get("titulo")]
+    print("Historias de Vorka México: %d" % len(ns))
+    return ns
+
+
 def bajar_foto(args, foto_id):
     """Devuelve los bytes de la foto (ya reducida por Google a máx. 1600 px)."""
+    if foto_id.startswith("os:"):
+        data = http_json("%s/foto/%s" % (OS_API, urllib.parse.quote(foto_id[3:])))
+        if "data" not in data:
+            raise RuntimeError(data.get("error", "sin datos"))
+        return base64.b64decode(data["data"])
     if foto_id.startswith("file:"):
         with open(os.path.join(os.path.dirname(args.datos), foto_id[5:]), "rb") as f:
             return f.read()
@@ -367,6 +392,8 @@ class Sitio:
 <a href="/" class="brand" aria-label="Vorka México — inicio"><img class="brand-logo" src="{base}/assets/logo.png" alt="" width="30" height="29"><span class="brand-name">Vorka <span>México</span></span></a>
 <nav class="nav" aria-label="Sparks">
 <a href="{base}/">Portada</a>
+<a class="hide-sm" href="/sparks/">Revista</a>
+<a href="https://os.vorka.mx/historia">Cuenta tu historia</a>
 <a class="hide-sm" href="{ig}" target="_blank" rel="noopener">Instagram</a>
 <a class="nav-search" href="{base}/#buscar" aria-label="Buscar noticias"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
 </nav></div></header>
@@ -387,13 +414,13 @@ class Sitio:
 </ul></div>
 <div class="foot-col"><h5>Vorka</h5><ul>
 <li><a href="/">Vorka México</a></li>
-<li><a href="/#sparks">Vorka Sparks</a></li>
+<li><a href="/sparks/">Revista Sparks</a></li>
 <li><a href="/voluntariado">Tú en Vorka</a></li>
 <li><a href="/servicios/estrategia">Servicios</a></li>
 <li><a href="/#contact">Hablemos</a></li>
 </ul></div>
 <div class="foot-col"><h5>Contacto</h5><ul>
-<li><a href="https://wa.me/528117804869?text={wa_historia}" target="_blank" rel="noopener">Comparte una historia</a></li>
+<li><a href="https://os.vorka.mx/historia">Cuenta tu historia</a></li>
 <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
 <li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
 <li><a href="{base}/feed.xml">RSS</a></li>
@@ -461,8 +488,12 @@ class Sitio:
                   '<div class="chips" role="group" aria-label="Categorías"><button class="chip is-on" data-cat="">Todas</button>%s</div></div>' % "".join(
                       '<button class="chip" data-cat="%s">%s</button>' % (esc(slug_cat(x)), esc(x)) for x in categorias)]
 
+        cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una historia que contar?</h2>'
+               '<p>Si estás construyendo algo en %s —un proyecto, un emprendimiento, una causa o tu propio camino— queremos conocerte. '
+               'Cuéntanosla en 12 minutos y la convertimos en artículo y video.</p></div>'
+               '<a class="btn btn-solid" href="https://os.vorka.mx/historia">Cuenta tu historia →</a></section>') % esc(c["ciudad"].split(",")[0])
         if not ns:
-            partes.append('<p class="empty">Muy pronto, las primeras noticias.</p></div>')
+            partes.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
             return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes))
 
         lead = ('<article class="lead"><a href="%s"><div class="lead-img">%s</div>%s<h2 class="lead-title">%s</h2>'
@@ -481,8 +512,8 @@ class Sitio:
         partes.append('<div class="sec-head"><h2 id="grid-title">Lo más reciente</h2></div>'
                       '<div class="grid" id="grid" data-por-pagina="%d">%s</div>'
                       '<p class="empty" id="vacio" hidden>No encontramos noticias con esa búsqueda.</p>'
-                      '<div class="more"><button class="btn" id="mas"%s>Cargar más noticias</button></div></div>' % (
-                          por_pagina, "".join(tarjetas), "" if len(lista) > por_pagina else " hidden"))
+                      '<div class="more"><button class="btn" id="mas"%s>Cargar más noticias</button></div>%s</div>' % (
+                          por_pagina, "".join(tarjetas), "" if len(lista) > por_pagina else " hidden", cta))
 
         jsonld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": c["nombre"],
                   "description": c["descripcion"], "url": self.abs + "/", "inLanguage": "es-MX",
@@ -647,7 +678,8 @@ def main():
     destino = os.path.join(args.salida, cfg["ruta"].strip("/"))
     dir_img = os.path.join(destino, "img")
 
-    noticias = cargar_noticias(args)
+    # Primero las historias de Vorka México para que conserven el enlace que se eligió en la app
+    noticias = (cargar_historias_os(cfg) if not args.datos else []) + cargar_noticias(args)
     almacen = Almacen(cfg, dir_img, cfg["ruta"].rstrip("/"))
 
     # Huella de todo lo que afecta al resultado: si no cambió nada, no se toca el repo.
