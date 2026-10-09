@@ -490,7 +490,7 @@ class Sitio:
 
         cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una historia?</h2>'
                '<p>Si estás construyendo algo en %s —un proyecto, un emprendimiento, una causa o tu propio camino— escríbenos y platiquemos.</p></div>'
-               '<a class="btn btn-solid" href="https://wa.me/528117804869?text=Hola%2C%20me%20gustar%C3%ADa%20compartir%20mi%20historia%20con%20la%20Revista%20Sparks" target="_blank" rel="noopener">Escríbenos →</a></section>') % esc(c["ciudad"].split(",")[0])
+               '<a class="btn btn-solid" href="https://wa.me/528117804869?text=Hola%%2C%%20me%%20gustar%%C3%%ADa%%20compartir%%20mi%%20historia%%20con%%20la%%20Revista%%20Sparks" target="_blank" rel="noopener">Escríbenos →</a></section>') % esc(c["ciudad"].split(",")[0])
         if not ns:
             partes.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
             return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes))
