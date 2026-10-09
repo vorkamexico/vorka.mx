@@ -433,6 +433,7 @@ class Sitio:
 <div class="foot-bottom">
 <div class="foot-social">
 <a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram — @vorka.mx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+<a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn — Vorka México"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V16"/><path d="M8 7.5v.01"/><path d="M12 16v-3.3a2.3 2.3 0 0 1 4.6 0V16"/><path d="M12 10.5V16"/></svg></a>
 <a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok — @vorka.mx"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3.5h-2.7v12.1a2.6 2.6 0 1 1-2.6-2.6c.27 0 .53.04.77.12V10.4a5.4 5.4 0 1 0 4.53 5.32V8.62a6.6 6.6 0 0 0 3.9 1.26V7.2a3.9 3.9 0 0 1-3.9-3.7Z"/></svg></a>
 <a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook — vorka.mx"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.95v-8.05h2.7l.4-3.13H13.5V8.78c0-.9.25-1.52 1.55-1.52h1.66V4.46a22 22 0 0 0-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15v2.32H7.55v3.13h2.7v8.02h3.25Z"/></svg></a>
 </div>
@@ -488,9 +489,9 @@ class Sitio:
                   '<div class="chips" role="group" aria-label="Categorías"><button class="chip is-on" data-cat="">Todas</button>%s</div></div>' % "".join(
                       '<button class="chip" data-cat="%s">%s</button>' % (esc(slug_cat(x)), esc(x)) for x in categorias)]
 
-        cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una historia?</h2>'
-               '<p>Si estás construyendo algo en %s —un proyecto, un emprendimiento, una causa o tu propio camino— escríbenos y platiquemos.</p></div>'
-               '<a class="btn btn-solid" href="https://wa.me/528117804869?text=Hola%%2C%%20me%%20gustar%%C3%%ADa%%20compartir%%20mi%%20historia%%20con%%20la%%20Revista%%20Sparks" target="_blank" rel="noopener">Escríbenos →</a></section>') % esc(c["ciudad"].split(",")[0])
+        cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una noticia?</h2>'
+               '<p>Un logro, un evento, un proyecto o una persona de %s que merece contarse. Escríbenos y lo platicamos.</p></div>'
+               '<a class="btn btn-solid" href="https://wa.me/528117804869?text=Hola%%2C%%20tengo%%20una%%20noticia%%20para%%20la%%20Revista%%20Sparks" target="_blank" rel="noopener">Escríbenos →</a></section>') % esc(c["ciudad"].split(",")[0])
         if not ns:
             partes.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
             return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes))

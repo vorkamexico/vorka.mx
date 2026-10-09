@@ -692,6 +692,7 @@
         <ul>
           <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
           <li><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener">@vorka.mx</a></li>
+<li><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener">LinkedIn</a></li>
           <li><a href="/">www.vorka.mx</a></li>
         </ul>
       </div>
@@ -706,8 +707,9 @@
 <script>
 (function(){
   'use strict';
-  var EMAIL = 'vorkamexico@gmail.com';
-  var FORMSUBMIT = 'https://formsubmit.co/ajax/' + EMAIL;
+  var EMAIL = 'hola@vorka.mx';
+  // Las postulaciones llegan directo a Vorka México (Revista Sparks → Quieren sumarse)
+  var DESTINO = 'https://os.vorka.mx/api/publico/sparks/sumate';
   function validEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s)}
   function setErr(f, on){var w = f.closest('.field'); if(w) w.classList.toggle('has-error', !!on)}
   var form = document.getElementById('pitch-form');
@@ -731,13 +733,13 @@
     var lbl = btn.textContent; btn.disabled = true; btn.textContent = 'Enviando…';
     var payload = {};
     Array.from(form.elements).forEach(function(el){
-      if(el.name && el.type !== 'submit' && el.name !== '_honey'){
+      if(el.name && el.type !== 'submit'){
         payload[el.name] = (el.value || '').trim() || '—';
       }
     });
     payload._subject = 'Sparks — Nueva persona: ' + (payload.nombre || '') + ' (' + (payload.ciudad || '') + ')';
-    fetch(FORMSUBMIT, {
-      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+    fetch(DESTINO, {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     })
     .then(function(r){if(!r.ok) throw new Error(); return r.json();})
