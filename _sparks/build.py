@@ -393,7 +393,7 @@ class Sitio:
 <nav class="nav" aria-label="Sparks">
 <a href="{base}/">Portada</a>
 <a class="hide-sm" href="/sparks/">Revista</a>
-<a href="https://os.vorka.mx/historia">Cuenta tu historia</a>
+<a class="hide-sm" href="https://wa.me/528117804869?text=Hola%2C%20me%20gustar%C3%ADa%20compartir%20mi%20historia%20con%20la%20Revista%20Sparks" target="_blank" rel="noopener">Contacto</a>
 <a class="hide-sm" href="{ig}" target="_blank" rel="noopener">Instagram</a>
 <a class="nav-search" href="{base}/#buscar" aria-label="Buscar noticias"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
 </nav></div></header>
@@ -420,7 +420,7 @@ class Sitio:
 <li><a href="/#contact">Hablemos</a></li>
 </ul></div>
 <div class="foot-col"><h5>Contacto</h5><ul>
-<li><a href="https://os.vorka.mx/historia">Cuenta tu historia</a></li>
+<li><a href="https://wa.me/528117804869?text={wa_historia}" target="_blank" rel="noopener">Comparte una historia</a></li>
 <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
 <li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
 <li><a href="{base}/feed.xml">RSS</a></li>
@@ -488,10 +488,9 @@ class Sitio:
                   '<div class="chips" role="group" aria-label="Categorías"><button class="chip is-on" data-cat="">Todas</button>%s</div></div>' % "".join(
                       '<button class="chip" data-cat="%s">%s</button>' % (esc(slug_cat(x)), esc(x)) for x in categorias)]
 
-        cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una historia que contar?</h2>'
-               '<p>Si estás construyendo algo en %s —un proyecto, un emprendimiento, una causa o tu propio camino— queremos conocerte. '
-               'Cuéntanosla en 12 minutos y la convertimos en artículo y video.</p></div>'
-               '<a class="btn btn-solid" href="https://os.vorka.mx/historia">Cuenta tu historia →</a></section>') % esc(c["ciudad"].split(",")[0])
+        cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una historia?</h2>'
+               '<p>Si estás construyendo algo en %s —un proyecto, un emprendimiento, una causa o tu propio camino— escríbenos y platiquemos.</p></div>'
+               '<a class="btn btn-solid" href="https://wa.me/528117804869?text=Hola%2C%20me%20gustar%C3%ADa%20compartir%20mi%20historia%20con%20la%20Revista%20Sparks" target="_blank" rel="noopener">Escríbenos →</a></section>') % esc(c["ciudad"].split(",")[0])
         if not ns:
             partes.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
             return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes))
