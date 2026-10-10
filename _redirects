@@ -1,0 +1,13 @@
+# IMPACTO ya vive en soyimpacto.org: todo lo de vorka.mx/impacto lleva a su nueva dirección.
+# (impacto/estructura se queda en el repo porque el bot del directorio lo regenera ahí; se ve en soyimpacto.org/directorio)
+/impacto                     https://soyimpacto.org/                 301
+/impacto/                    https://soyimpacto.org/                 301
+/impacto/index.html          https://soyimpacto.org/                 301
+/impacto/estructura          https://soyimpacto.org/directorio/      301
+/impacto/estructura/*        https://soyimpacto.org/directorio/:splat 301
+/impacto/donantes            https://soyimpacto.org/mural            301
+/impacto/donantes/*          https://soyimpacto.org/mural            301
+/impacto/mural/*             https://soyimpacto.org/mural            301
+/impacto/*                   https://soyimpacto.org/:splat           301
+/conferenciadeimpacto        https://soyimpacto.org/conferenciadeimpacto/        301
+/conferenciadeimpacto/*      https://soyimpacto.org/conferenciadeimpacto/:splat  301

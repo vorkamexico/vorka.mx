@@ -1,4 +1,5 @@
-# Actualiza el Directorio Nacional de IMPACTO (www.vorka.mx/impacto/estructura) desde el Google Sheet.
+# Actualiza el Directorio Nacional de IMPACTO desde el Google Sheet. Se ve en soyimpacto.org/directorio
+# (que lo lee de impacto/estructura en este repo); vorka.mx/impacto solo redirige a soyimpacto.org.
 # Lee la API del Apps Script de movimientos, reescribe la lista y las fotos, y hace commit.
 name: IMPACTO — actualizar directorio
 
