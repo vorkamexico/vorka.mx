@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda tu diagnóstico · Vorka México</title>
+<meta name="description" content="Solicita una sesión de diagnóstico de 45 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.">
+<link rel="canonical" href="https://www.vorka.mx/agenda/">
+<meta name="theme-color" content="#0A0A0B">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vorka México">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Agenda tu diagnóstico · Vorka México">
+<meta property="og:description" content="Solicita una sesión de diagnóstico de 45 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.">
+<meta property="og:url" content="https://www.vorka.mx/agenda/">
+<meta property="og:image" content="https://www.vorka.mx/img/ciudades/cdmx-noche-1600.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/v2/icono.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/vorka-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/v2/vorka.css?v=1">
+<style>
+.agenda { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); min-height: 100svh; }
+.ag-lado { position: relative; isolation: isolate; padding: 130px clamp(24px, 4vw, 64px) 56px; display: flex; flex-direction: column; overflow: hidden; }
+.ag-lado .foto { position: absolute; inset: 0; z-index: -2; }
+.ag-lado::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,10,11,.7), rgba(10,10,11,.55) 40%, rgba(10,10,11,.92)); }
+.ag-pega { position: sticky; top: 130px; }
+.ag-lado .display { font-size: clamp(44px, 4.6vw, 76px); margin: 22px 0 22px; }
+.ag-lado .lead { font-size: 18px; color: rgba(247,245,240,.8); }
+.ag-incluye { margin-top: 36px; display: grid; gap: 14px; }
+.ag-incluye li { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; font-size: 15.5px; color: rgba(247,245,240,.85); }
+.ag-incluye svg { width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: rgba(201,164,94,.16); color: var(--oro-claro); }
+.ag-incluye b { color: var(--blanco); display: block; font-weight: 600; }
+.ag-nota { margin-top: 36px; padding: 18px 20px; border: 1px solid var(--linea-o2); border-radius: 14px; font-size: 14px; color: var(--gris); background: rgba(10,10,11,.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.ag-form { background: var(--hueso); color: var(--tinta); padding: 120px clamp(20px, 5vw, 80px) 72px; }
+.ag-caja { max-width: 760px; margin: 0 auto; }
+.pasos-ag { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
+.pasos-ag button { background: none; border: 0; padding: 0; text-align: left; cursor: default; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); }
+.pasos-ag button::before { content: ""; display: block; height: 3px; border-radius: 3px; background: var(--hueso-3); margin-bottom: 10px; transition: background .4s var(--ease); }
+.pasos-ag button.hecho, .pasos-ag button.activo { color: var(--tinta); }
+.pasos-ag button.hecho { cursor: pointer; }
+.pasos-ag button.hecho::before { background: var(--tinta); }
+.pasos-ag button.activo::before { background: var(--oro); }
+.estado-ag { display: flex; justify-content: space-between; font-size: 13px; color: var(--tinta-3); margin-bottom: 34px; min-height: 20px; }
+.guardado { opacity: 0; transition: opacity .3s; }
+.guardado.si { opacity: 1; }
+.retomar { display: none; gap: 14px; align-items: center; flex-wrap: wrap; padding: 16px 18px; border-radius: 14px; background: #fff; border: 1px solid var(--linea-c2); margin-bottom: 26px; font-size: 14.5px; }
+.retomar.si { display: flex; }
+.retomar b { display: block; }
+.ag-form .btn.linea { color: var(--tinta); border-color: var(--linea-c2); }
+.ag-form .btn.linea:hover { border-color: var(--tinta); background: rgba(0,0,0,.04); }
+.retomar .btn { min-height: 40px; padding: 0 16px; font-size: 14px; }
+.retomar div { flex: 1; min-width: 180px; }
+.paso-ag { display: none; }
+.paso-ag.activo { display: block; }
+@media (prefers-reduced-motion: no-preference) { .paso-ag.activo { animation: entra .45s var(--ease); } }
+@keyframes entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.paso-ag h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 54px); line-height: 1.02; letter-spacing: -.012em; }
+.paso-ag h2 em { font-style: italic; color: var(--oro-osc); }
+.paso-ag > p { color: var(--tinta-2); margin: 12px 0 30px; font-size: 16.5px; }
+.preg { font-weight: 600; font-size: 16px; margin: 28px 0 12px; }
+.preg.req::after { content: " *"; color: var(--oro-osc); }
+.preg small { display: block; font-weight: 400; font-size: 13.5px; color: var(--tinta-3); margin-top: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; cursor: pointer; }
+.chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.chip span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--linea-c2); background: #fff; font-size: 14.5px; font-weight: 500; transition: all .2s var(--ease); }
+.chip:hover span { border-color: var(--tinta); }
+.chip input:checked + span { background: var(--tinta); border-color: var(--tinta); color: var(--hueso); }
+.chip input:focus-visible + span { outline: 2px solid var(--oro); outline-offset: 2px; }
+.tarjetas-op { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.op { position: relative; cursor: pointer; }
+.op input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.op > span { display: block; height: 100%; padding: 18px 18px 18px 50px; border-radius: 14px; border: 1px solid var(--linea-c2); background: #fff; transition: all .2s var(--ease); position: relative; }
+.op > span::before { content: ""; position: absolute; left: 18px; top: 20px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--tinta-3); transition: all .2s; }
+.op.multi > span::before { border-radius: 5px; }
+.op b { display: block; font-size: 15.5px; font-weight: 600; }
+.op small { display: block; font-size: 13.5px; color: var(--tinta-3); margin-top: 3px; line-height: 1.4; }
+.op:hover > span { border-color: var(--tinta); }
+.op input:checked + span { border-color: var(--tinta); box-shadow: inset 0 0 0 1px var(--tinta); background: #FFFDF8; }
+.op input:checked + span::before { background: var(--tinta); border-color: var(--tinta); box-shadow: inset 0 0 0 4px #fff; }
+.op.multi input:checked + span::before { box-shadow: none; background: var(--tinta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M5 12.5 10 17 19 7'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.op input:focus-visible + span { outline: 2px solid var(--oro); outline-offset: 2px; }
+@media (max-width: 620px) { .tarjetas-op { grid-template-columns: 1fr; } }
+.contador { font-size: 12.5px; color: var(--tinta-3); text-align: right; margin-top: 6px; }
+.contador.ok { color: #3E7B3A; }
+.revision { background: #fff; border: 1px solid var(--linea-c2); border-radius: 16px; padding: 6px 22px; margin-bottom: 22px; }
+.revision h3 { font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); margin: 18px 0 4px; display: flex; justify-content: space-between; }
+.revision h3 button { background: none; border: 0; font: inherit; color: var(--oro-osc); cursor: pointer; letter-spacing: .06em; }
+.revision dl > div { display: grid; grid-template-columns: 180px 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--linea-c); font-size: 14.5px; }
+.revision dl > div:last-child { border-bottom: 0; }
+.revision dt { color: var(--tinta-3); }
+.revision dd { font-weight: 500; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .revision dl > div { grid-template-columns: 1fr; gap: 2px; } }
+.nav-ag { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--linea-c2); }
+.nav-ag .atras { background: none; border: 0; font-weight: 600; font-size: 15px; cursor: pointer; padding: 12px 4px; color: var(--tinta-2); }
+.nav-ag .atras:hover { color: var(--tinta); }
+.nav-ag .atras.oculto { visibility: hidden; }
+.aviso-err { display: none; margin-top: 18px; padding: 14px 16px; border-radius: 12px; background: #F8E3DE; color: #8A2E1F; font-size: 14.5px; }
+.aviso-err.si { display: block; }
+.exito { display: none; text-align: left; }
+.exito.si { display: block; }
+.exito .sello { width: 64px; height: 64px; border-radius: 50%; background: var(--tinta); color: var(--oro-claro); display: grid; place-items: center; margin-bottom: 28px; }
+.exito .sello svg { width: 30px; height: 30px; }
+.exito h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 5vw, 64px); line-height: 1; }
+.exito h2 em { font-style: italic; color: var(--oro-osc); }
+.folio { display: inline-flex; gap: 12px; align-items: center; margin: 26px 0 8px; padding: 14px 20px; border-radius: 12px; border: 1px dashed var(--oro-osc); font-family: var(--mono); font-size: 15px; letter-spacing: .08em; background: #fff; }
+.linea-t { margin-top: 34px; display: grid; gap: 0; border-left: 1px solid var(--linea-c2); padding-left: 0; }
+.linea-t li { position: relative; padding: 0 0 22px 28px; }
+.linea-t li::before { content: ""; position: absolute; left: -6px; top: 6px; width: 11px; height: 11px; border-radius: 50%; background: var(--hueso-3); border: 2px solid var(--hueso); }
+.linea-t li.ya::before { background: var(--tinta); }
+.linea-t b { display: block; font-size: 16px; }
+.linea-t span { font-size: 14.5px; color: var(--tinta-2); }
+@media (max-width: 960px) {
+  .agenda { grid-template-columns: 1fr; }
+  .ag-lado { padding: 120px var(--x) 48px; min-height: 0; }
+  .ag-pega { position: static; }
+  .ag-incluye { grid-template-columns: 1fr 1fr; }
+  .ag-nota { display: none; }
+  .ag-form { padding: 56px var(--x) 64px; }
+}
+@media (max-width: 560px) { .ag-incluye { grid-template-columns: 1fr; } .pasos-ag button { font-size: 0; } .pasos-ag button::before { margin-bottom: 0; } }
+</style>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="nav siempre">
+  <div class="marco">
+    <a class="marca" href="/" aria-label="Vorka México, inicio"><svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+    <nav class="nav-links" aria-label="Principal"><a href="/servicios/">Servicios</a><a href="/#metodo">Método</a><a href="/#momentos">Para quién</a><a href="/#huella">Huella</a><a href="/sparks/">Sparks</a><a href="/voluntariado">Tú en Vorka</a></nav>
+    <a class="btn oro escritorio" href="/agenda/">Agenda tu diagnóstico</a>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
+  </div>
+</header>
+<div class="menu-movil" id="menu-movil"><a href="/servicios/">Servicios</a><a href="/#metodo">Método</a><a href="/#momentos">Para quién</a><a href="/#huella">Huella</a><a href="/sparks/">Sparks</a><a href="/voluntariado">Tú en Vorka</a><a class="btn oro" href="/agenda/">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><div class="pie-m">ESTRATEGIA · LIDERAZGO · INFLUENCIA</div></div>
+
+<main id="contenido" class="agenda">
+  <aside class="ag-lado">
+    <div class="foto" style="--foco:50% 40%"><img src="/img/ciudades/cdmx-noche-1600.webp" srcset="/img/ciudades/cdmx-noche-960.webp 960w, /img/ciudades/cdmx-noche-1600.webp 1600w, /img/ciudades/cdmx-noche-2400.webp 2000w" sizes="(max-width: 960px) 100vw, 42vw" alt="Rascacielos de la Ciudad de México de noche" loading="eager" decoding="async" fetchpriority="high"></div>
+    <div class="ag-pega">
+      <span class="kicker">Diagnóstico sin costo</span>
+      <h1 class="display">Cuéntanos tu momento. <em>Te devolvemos un plan.</em></h1>
+      <p class="lead">Una sesión de 45 minutos con nuestro equipo para entender tu reto y decirte, con claridad, cómo lo resolveríamos.</p>
+      <ul class="ag-incluye"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Una lectura honesta</b>Qué vemos en tu caso, aunque no sea lo que esperabas oír.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Prioridades claras</b>Por dónde empezar y qué dejar para después.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Cómo lo haríamos</b>Si podemos ayudarte, el enfoque, el equipo y los tiempos.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Sin costo ni compromiso</b>45 minutos, por videollamada o en persona.</span></li></ul>
+      <p class="ag-nota">Damos un número limitado de diagnósticos al mes. Con estas preguntas llegamos preparados a tu sesión; si no somos el equipo correcto para tu caso, te lo decimos con la misma claridad. Te respondemos en máximo 2 días hábiles.</p>
+    </div>
+  </aside>
+  <section class="ag-form" aria-label="Solicitud de diagnóstico">
+    <div class="ag-caja">
+      <div class="cabeza-ag">
+        <div class="pasos-ag"><button type="button" aria-label="Paso 1: Tú">Tú</button><button type="button" aria-label="Paso 2: Organización">Organización</button><button type="button" aria-label="Paso 3: Tu reto">Tu reto</button><button type="button" aria-label="Paso 4: Decisión">Decisión</button><button type="button" aria-label="Paso 5: Revisar">Revisar</button></div>
+        <div class="estado-ag"><span id="num-paso">Paso 1 de 5</span><span class="guardado" id="guardado">✓ Progreso guardado</span></div>
+        <div class="retomar" id="retomar"><div><b>Tienes una solicitud a medias</b><span id="retomar-t"></span></div><button class="btn tinta" type="button" id="retomar-si">Continuar</button><button class="btn linea" type="button" id="retomar-no">Empezar de nuevo</button></div>
+      </div>
+      <form id="ag" novalidate>
+        <div class="trampa" aria-hidden="true"><label>No llenar <input name="empresa_web" tabindex="-1" autocomplete="off"></label></div>
+
+        <div class="paso-ag" data-paso="1">
+          <h2>Primero, <em>tú.</em></h2>
+          <p>Con quién vamos a platicar y cómo te contactamos.</p>
+          <div class="campos">
+            <div class="campo req"><input id="f-nombre" name="nombre" type="text" placeholder=" " autocomplete="name" required><label for="f-nombre">Nombre completo</label></div>
+            <div class="campo req"><input id="f-cargo" name="cargo" type="text" placeholder=" " autocomplete="organization-title" required><label for="f-cargo">Cargo o rol</label><span class="ayuda">Ej. Director general, socia fundadora, secretario.</span></div>
+            <div class="campo req"><input id="f-correo" name="correo" type="email" placeholder=" " autocomplete="email" required><label for="f-correo">Correo</label></div>
+            <div class="campo req"><input id="f-whatsapp" name="whatsapp" type="tel" placeholder=" " autocomplete="tel" required inputmode="tel"><label for="f-whatsapp">WhatsApp</label></div>
+            <div class="campo ancho"><input id="f-linkedin" name="linkedin" type="url" placeholder=" "><label for="f-linkedin">LinkedIn (opcional)</label><span class="ayuda">Nos ayuda a conocerte antes de la sesión.</span></div>
+            <div class="campo req"><select id="f-estado" name="estado" required><option value="" disabled selected hidden></option><option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option><option>Campeche</option><option>Chiapas</option><option>Chihuahua</option><option>Ciudad de México</option><option>Coahuila</option><option>Colima</option><option>Durango</option><option>Estado de México</option><option>Guanajuato</option><option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option><option>Michoacán</option><option>Morelos</option><option>Nayarit</option><option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option><option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option><option>Sinaloa</option><option>Sonora</option><option>Tabasco</option><option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option><option>Yucatán</option><option>Zacatecas</option><option>Fuera de México</option></select><label for="f-estado">Estado</label></div>
+            <div class="campo"><input id="f-ciudad" name="ciudad" type="text" placeholder=" " autocomplete="address-level2"><label for="f-ciudad">Ciudad o municipio</label></div>
+          </div>
+        </div>
+
+        <div class="paso-ag" data-paso="2">
+          <h2>Tu <em>organización.</em></h2>
+          <p>Empresa, institución, proyecto o marca: lo que quieres llevar al siguiente nivel.</p>
+          <div class="campos">
+            <div class="campo req ancho"><input id="f-organizacion" name="organizacion" type="text" placeholder=" " autocomplete="organization" required><label for="f-organizacion">Nombre de la organización</label></div>
+          </div>
+          <p class="preg req">¿Qué tipo de organización es?</p>
+          <div class="tarjetas-op"><label class="op"><input type="radio" name="tipo_org" value="Empresa establecida"><span><b>Empresa establecida</b><small>Con operación y equipo consolidados</small></span></label><label class="op"><input type="radio" name="tipo_org" value="Startup o empresa en crecimiento"><span><b>Startup o empresa en crecimiento</b><small>Escalando producto, mercado o equipo</small></span></label><label class="op"><input type="radio" name="tipo_org" value="Gobierno o sector público"><span><b>Gobierno o sector público</b><small>Dependencia, secretaría o municipio</small></span></label><label class="op"><input type="radio" name="tipo_org" value="Campaña o figura política"><span><b>Campaña o figura política</b><small>Candidatura, partido o equipo de gobierno</small></span></label><label class="op"><input type="radio" name="tipo_org" value="Fundación u organización civil"><span><b>Fundación u organización civil</b><small>Incidencia, filantropía o RSE</small></span></label><label class="op"><input type="radio" name="tipo_org" value="Marca personal o figura pública"><span><b>Marca personal o figura pública</b><small>Líder, vocero, creador o experto</small></span></label><label class="op"><input type="radio" name="tipo_org" value="Emprendimiento en etapa inicial"><span><b>Emprendimiento en etapa inicial</b><small>Validando idea o primeros clientes</small></span></label></div>
+          <p class="preg req">¿Cuántas personas trabajan ahí?</p>
+          <div class="chips" role="group"><label class="chip"><input type="radio" name="tamano" value="1 a 10 personas"><span>1 a 10 personas</span></label><label class="chip"><input type="radio" name="tamano" value="11 a 50 personas"><span>11 a 50 personas</span></label><label class="chip"><input type="radio" name="tamano" value="51 a 200 personas"><span>51 a 200 personas</span></label><label class="chip"><input type="radio" name="tamano" value="201 a 1,000 personas"><span>201 a 1,000 personas</span></label><label class="chip"><input type="radio" name="tamano" value="Más de 1,000 personas"><span>Más de 1,000 personas</span></label></div>
+          <div class="campos" style="margin-top:28px">
+            <div class="campo"><select id="f-sector" name="sector"><option value="" disabled selected hidden></option><option>Agroindustria</option><option>Automotriz y manufactura</option><option>Banca, finanzas y seguros</option><option>Comercio y retail</option><option>Construcción e inmobiliario</option><option>Educación</option><option>Energía</option><option>Gobierno y sector público</option><option>Industria alimentaria</option><option>Logística y transporte</option><option>Medios y entretenimiento</option><option>Organizaciones civiles</option><option>Política</option><option>Salud</option><option>Servicios profesionales</option><option>Tecnología</option><option>Turismo y hospitalidad</option><option>Otro</option></select><label for="f-sector">Sector</label></div>
+            <div class="campo"><select id="f-antiguedad" name="antiguedad"><option value="" disabled selected hidden></option><option>Menos de 1 año</option><option>1 a 3 años</option><option>3 a 10 años</option><option>Más de 10 años</option></select><label for="f-antiguedad">Antigüedad</label></div>
+            <div class="campo ancho"><select id="f-facturacion" name="facturacion"><option value="" disabled selected hidden></option><option>Menos de $1 millón al año</option><option>$1 a $10 millones al año</option><option>$10 a $50 millones al año</option><option>$50 a $250 millones al año</option><option>Más de $250 millones al año</option><option>No aplica (gobierno u organización civil)</option><option>Prefiero no decirlo</option></select><label for="f-facturacion">Facturación anual aproximada</label></div>
+            <div class="campo ancho"><input id="f-sitio" name="sitio" type="text" placeholder=" "><label for="f-sitio">Sitio web o redes (opcional)</label><span class="ayuda">vorka.mx, @tuempresa, etc.</span></div>
+          </div>
+        </div>
+
+        <div class="paso-ag" data-paso="3">
+          <h2>Tu <em>reto.</em></h2>
+          <p>Mientras más claro, mejor llegamos preparados. Nadie fuera de nuestro equipo verá esto.</p>
+          <p class="preg req">¿En qué te podemos ayudar?<small>Elige una o varias.</small></p>
+          <div class="tarjetas-op"><label class="op multi"><input type="checkbox" name="areas" value="Estrategia y Dirección"><span><b>Estrategia y Dirección</b><small>Rumbo, prioridades, transformación, gobernanza</small></span></label><label class="op multi"><input type="checkbox" name="areas" value="Liderazgo y Talento"><span><b>Liderazgo y Talento</b><small>Coaching, equipos directivos, programas</small></span></label><label class="op multi"><input type="checkbox" name="areas" value="Comunicación e Influencia"><span><b>Comunicación e Influencia</b><small>Narrativa, redes, campañas, PR, crisis</small></span></label><label class="op multi"><input type="checkbox" name="areas" value="Aún no lo sé"><span><b>Aún no lo sé</b><small>Quiero que me orienten</small></span></label></div>
+          <p class="preg">¿Cuál se parece más a tu momento?</p>
+          <div class="tarjetas-op"><label class="op"><input type="radio" name="momento" value="Una decisión que no admite segundo intento"><span><b>Una decisión que no admite segundo intento</b></span></label><label class="op"><input type="radio" name="momento" value="Un cambio que no está aterrizando"><span><b>Un cambio que no está aterrizando</b></span></label><label class="op"><input type="radio" name="momento" value="Influir en un ecosistema"><span><b>Influir en un ecosistema</b></span></label><label class="op"><input type="radio" name="momento" value="Otro"><span><b>Otro</b></span></label></div>
+          <div class="campos" style="margin-top:28px">
+            <div class="ancho"><div class="campo req"><textarea id="f-reto" name="reto" placeholder=" " required maxlength="4000"></textarea><label for="f-reto">¿Qué necesitas resolver?</label></div><div class="contador" id="cont-reto"></div></div>
+            <div class="campo ancho"><textarea id="f-intentado" name="intentado" placeholder=" " maxlength="2000" style="min-height:100px"></textarea><label for="f-intentado">¿Qué has intentado hasta ahora? (opcional)</label></div>
+          </div>
+        </div>
+
+        <div class="paso-ag" data-paso="4">
+          <h2>Decisión y <em>agenda.</em></h2>
+          <p>Para proponerte algo realista desde la primera conversación.</p>
+          <p class="preg req">¿Qué tan pronto necesitas avanzar?</p>
+          <div class="chips" role="group"><label class="chip"><input type="radio" name="urgencia" value="Es urgente: esta semana"><span>Es urgente: esta semana</span></label><label class="chip"><input type="radio" name="urgencia" value="En las próximas semanas"><span>En las próximas semanas</span></label><label class="chip"><input type="radio" name="urgencia" value="En 1 a 3 meses"><span>En 1 a 3 meses</span></label><label class="chip"><input type="radio" name="urgencia" value="Estoy explorando opciones"><span>Estoy explorando opciones</span></label></div>
+          <p class="preg req">¿Quién toma la decisión de contratar?</p>
+          <div class="chips" role="group"><label class="chip"><input type="radio" name="decisor" value="Yo tomo la decisión"><span>Yo tomo la decisión</span></label><label class="chip"><input type="radio" name="decisor" value="La tomo con socios o consejo"><span>La tomo con socios o consejo</span></label><label class="chip"><input type="radio" name="decisor" value="Recomiendo a quien decide"><span>Recomiendo a quien decide</span></label></div>
+          <p class="preg req">¿Qué inversión tienes contemplada?<small>Un rango aproximado. No es un compromiso; nos ayuda a proponerte algo a tu medida.</small></p>
+          <div class="chips" role="group"><label class="chip"><input type="radio" name="presupuesto" value="Menos de $15,000 al mes"><span>Menos de $15,000 al mes</span></label><label class="chip"><input type="radio" name="presupuesto" value="$15,000 a $40,000 al mes"><span>$15,000 a $40,000 al mes</span></label><label class="chip"><input type="radio" name="presupuesto" value="$40,000 a $100,000 al mes"><span>$40,000 a $100,000 al mes</span></label><label class="chip"><input type="radio" name="presupuesto" value="Más de $100,000 al mes"><span>Más de $100,000 al mes</span></label><label class="chip"><input type="radio" name="presupuesto" value="Proyecto con presupuesto cerrado"><span>Proyecto con presupuesto cerrado</span></label><label class="chip"><input type="radio" name="presupuesto" value="Aún no lo tengo definido"><span>Aún no lo tengo definido</span></label></div>
+          <p class="preg">¿Cómo prefieres la sesión?</p>
+          <div class="chips" role="group"><label class="chip"><input type="radio" name="modalidad" value="Videollamada"><span>Videollamada</span></label><label class="chip"><input type="radio" name="modalidad" value="Presencial en CDMX"><span>Presencial en CDMX</span></label><label class="chip"><input type="radio" name="modalidad" value="Presencial en Monterrey"><span>Presencial en Monterrey</span></label><label class="chip"><input type="radio" name="modalidad" value="Presencial en Guadalajara"><span>Presencial en Guadalajara</span></label><label class="chip"><input type="radio" name="modalidad" value="Presencial en Querétaro"><span>Presencial en Querétaro</span></label><label class="chip"><input type="radio" name="modalidad" value="Presencial en Celaya"><span>Presencial en Celaya</span></label></div>
+          <p class="preg">¿En qué horario?</p>
+          <div class="chips" role="group"><label class="chip"><input type="radio" name="horario" value="Mañana (9 a 13 h)"><span>Mañana (9 a 13 h)</span></label><label class="chip"><input type="radio" name="horario" value="Tarde (13 a 18 h)"><span>Tarde (13 a 18 h)</span></label><label class="chip"><input type="radio" name="horario" value="Me adapto"><span>Me adapto</span></label></div>
+          <div class="campos" style="margin-top:28px"><div class="campo ancho"><select id="f-como_supo" name="como_supo"><option value="" disabled selected hidden></option><option>Recomendación de alguien</option><option>LinkedIn</option><option>Instagram</option><option>Google</option><option>Revista Sparks</option><option>Evento o conferencia</option><option>Ya fui cliente</option><option>Otro</option></select><label for="f-como_supo">¿Cómo nos conociste?</label></div></div>
+        </div>
+
+        <div class="paso-ag" data-paso="5">
+          <h2>Revisa y <em>envía.</em></h2>
+          <p>Confirma que todo esté bien. Puedes editar cualquier sección.</p>
+          <div class="revision" id="revision"></div>
+          <label class="casilla"><input type="checkbox" name="acepta" value="1"> <span>Acepto el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a> y que Vorka México me contacte sobre esta solicitud.</span></label>
+        </div>
+
+        <div class="aviso-err" id="err" role="alert"></div>
+        <div class="nav-ag">
+          <button type="button" class="atras" id="atras">← Anterior</button>
+          <button type="button" class="btn tinta" id="sig">Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button type="submit" class="btn oro" id="enviar" hidden>Enviar solicitud <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </form>
+
+      <div class="exito" id="exito" role="status" aria-live="polite">
+        <div class="sello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg></div>
+        <h2>Gracias, <span id="exito-nombre"></span>. <em>Ya estamos en ello.</em></h2>
+        <div class="folio">Folio <b id="folio"></b></div>
+        <p style="color:var(--tinta-2)">Te enviamos la confirmación a <b id="exito-correo"></b>. Guarda tu folio por si necesitas escribirnos.</p>
+        <ol class="linea-t">
+          <li class="ya"><b>Solicitud recibida</b><span>Tu información llegó directo a nuestro equipo.</span></li>
+          <li><b>Revisión personal · máximo 2 días hábiles</b><span>Leemos tu caso con calma para ver cómo podemos aportarte.</span></li>
+          <li><b>Diagnóstico de 45 minutos</b><span>Si encaja, te llega la invitación a tu calendario con fecha y enlace.</span></li>
+          <li><b>Propuesta a la medida</b><span>Alcance, equipo, tiempos e inversión, en claro.</span></li>
+        </ol>
+        <div class="botones" style="margin-top:28px"><a class="btn tinta" href="/sparks/celaya/">Mientras tanto, lee Sparks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn linea" href="/">Volver al inicio</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="pie">
+  <div class="marco">
+    <div class="pie-top">
+      <div>
+        <a class="marca" href="/"><svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+        <p class="pie-lema">Definimos el juego <em>con quienes lo juegan.</em></p>
+        <div class="redes"><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4z"/></svg></a><a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.2 10 6.3v2.2H7.5v3.7H10V22h4v-9.8h3l.4-3.7z"/></svg></a><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.3 1.9 3.8 4.2 4v3.4c-1.5.1-2.9-.4-4.2-1.2v6.3c0 3.6-2.6 6.5-6.3 6.5S4 19 4 15.6c0-3.7 3.2-6.6 7.1-6.1v3.6c-1.6-.4-3.4.6-3.4 2.4 0 1.4 1 2.6 2.6 2.6 1.6 0 2.6-1.2 2.6-2.8V3z"/></svg></a></div>
+      </div>
+      <div><h4>Servicios</h4><ul>
+        <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
+        <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
+        <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
+        <li><a href="/servicios/">Todos los servicios</a></li></ul></div>
+      <div><h4>Vorka</h4><ul>
+        <li><a href="/#metodo">Cómo trabajamos</a></li>
+        <li><a href="/#huella">Nuestra huella</a></li>
+        <li><a href="/sparks/">Revista Sparks</a></li>
+        <li><a href="/voluntariado">Tú en Vorka</a></li></ul></div>
+      <div><h4>Contacto</h4><ul>
+        <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
+        <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
+        <li><a href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20ya%20decid%C3%AD%20avanzar.%20Me%20gustar%C3%ADa%20empezar%20formalmente%20el%20proceso." target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li>
+        <li>Monterrey · CDMX · Guadalajara · Querétaro · Celaya</li></ul></div>
+    </div>
+    <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México. Todos los derechos reservados.</span><nav><a href="/privacidad/">Aviso de privacidad</a><a href="/agenda/">Contacto</a></nav></div>
+  </div>
+</footer>
+<script src="/assets/v2/vorka.js?v=1" defer></script>
+<script>
+(function () {
+  var API = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:8787' : 'https://os.vorka.mx';
+  var CLAVE = 'vorka_agenda_v1', TOTAL = 5;
+  var f = document.getElementById('ag'), pasos = f.querySelectorAll('.paso-ag'), marcas = document.querySelectorAll('.pasos-ag button');
+  var atras = document.getElementById('atras'), sig = document.getElementById('sig'), enviar = document.getElementById('enviar');
+  var err = document.getElementById('err'), guard = document.getElementById('guardado'), num = document.getElementById('num-paso');
+  var actual = 1;
+
+  function datos() {
+    var d = {};
+    new FormData(f).forEach(function (v, k) { if (k === 'areas') (d.areas = d.areas || []).push(v); else d[k] = typeof v === 'string' ? v.trim() : v; });
+    d.areas = d.areas || [];
+    return d;
+  }
+  function mostrar(n, sinScroll) {
+    actual = Math.max(1, Math.min(TOTAL, n));
+    pasos.forEach(function (p) { p.classList.toggle('activo', +p.dataset.paso === actual); });
+    marcas.forEach(function (b, i) { b.classList.toggle('activo', i + 1 === actual); b.classList.toggle('hecho', i + 1 < actual); b.setAttribute('aria-current', i + 1 === actual ? 'step' : 'false'); });
+    num.textContent = 'Paso ' + actual + ' de ' + TOTAL;
+    atras.classList.toggle('oculto', actual === 1);
+    sig.hidden = actual === TOTAL; enviar.hidden = actual !== TOTAL;
+    if (actual === TOTAL) revisar();
+    err.classList.remove('si');
+    if (!sinScroll) { document.querySelector('.ag-form').scrollIntoView({ behavior: 'smooth', block: 'start' }); guardar(); }
+  }
+  function falla(msg, el) {
+    err.textContent = msg; err.classList.add('si');
+    if (el) { var c = el.closest('.campo'); if (c) c.classList.add('error'); el.focus({ preventScroll: true }); (c || el).scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    return false;
+  }
+  function valida(n) {
+    var d = datos(), q = function (s) { return f.querySelector('[name="' + s + '"]'); };
+    f.querySelectorAll('.campo.error').forEach(function (c) { c.classList.remove('error'); });
+    if (n === 1) {
+      if (d.nombre.length < 3) return falla('Escribe tu nombre completo.', q('nombre'));
+      if (!d.cargo) return falla('Cuéntanos tu cargo o rol.', q('cargo'));
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.correo)) return falla('Revisa tu correo: ahí te confirmamos.', q('correo'));
+      if (d.whatsapp.replace(/\D/g, '').length < 10) return falla('Escribe tu WhatsApp a 10 dígitos.', q('whatsapp'));
+      if (!d.estado) return falla('Elige tu estado.', q('estado'));
+    }
+    if (n === 2) {
+      if (d.organizacion.length < 2) return falla('Escribe el nombre de tu organización, empresa o proyecto.', q('organizacion'));
+      if (!d.tipo_org) return falla('Elige qué tipo de organización es.');
+      if (!d.tamano) return falla('Elige el tamaño de tu equipo.');
+    }
+    if (n === 3) {
+      if (!d.areas.length) return falla('Elige al menos un área en la que te podemos ayudar.');
+      if ((d.reto || '').length < 40) return falla('Cuéntanos tu reto con un poco más de detalle (mínimo 40 caracteres).', q('reto'));
+    }
+    if (n === 4) {
+      if (!d.urgencia) return falla('Cuéntanos qué tan pronto necesitas avanzar.');
+      if (!d.decisor) return falla('Cuéntanos quién toma la decisión.');
+      if (!d.presupuesto) return falla('Elige un rango de inversión. Nos ayuda a proponerte algo realista.');
+    }
+    return true;
+  }
+  sig.addEventListener('click', function () { if (valida(actual)) mostrar(actual + 1); });
+  atras.addEventListener('click', function () { mostrar(actual - 1); });
+  marcas.forEach(function (b, i) { b.addEventListener('click', function () { if (i + 1 < actual) mostrar(i + 1); }); });
+  f.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type !== 'checkbox' && actual < TOTAL) { e.preventDefault(); sig.click(); } });
+
+  // Contador del reto
+  var reto = f.querySelector('[name=reto]'), cont = document.getElementById('cont-reto');
+  function contar() { var n = reto.value.trim().length; cont.textContent = n < 40 ? 'Faltan ' + (40 - n) + ' caracteres' : n < 220 ? n + ' caracteres · entre más contexto, mejor llegamos preparados' : n + ' caracteres · ¡excelente!'; cont.classList.toggle('ok', n >= 40); }
+  reto.addEventListener('input', contar);
+
+  // Guardado automático en este navegador
+  var t;
+  var enviado = false;
+  function guardar() { if (enviado) return; try { var d = datos(); d._paso = actual; d._t = Date.now(); localStorage.setItem(CLAVE, JSON.stringify(d)); guard.classList.add('si'); clearTimeout(guard._t); guard._t = setTimeout(function () { guard.classList.remove('si'); }, 1400); } catch (e) {} }
+  f.addEventListener('input', function () { clearTimeout(t); t = setTimeout(guardar, 400); });
+  f.addEventListener('change', function (e) { if (e.target.tagName === 'SELECT') e.target.classList.toggle('lleno', !!e.target.value); clearTimeout(t); t = setTimeout(guardar, 200); });
+  function aplicar(d) {
+    Object.keys(d).forEach(function (k) {
+      if (k.charAt(0) === '_') return;
+      var v = d[k];
+      f.querySelectorAll('[name="' + k + '"]').forEach(function (el) {
+        if (el.type === 'radio' || el.type === 'checkbox') el.checked = Array.isArray(v) ? v.indexOf(el.value) >= 0 : el.value === v;
+        else { el.value = v; if (el.tagName === 'SELECT') el.classList.toggle('lleno', !!v); }
+      });
+    });
+    contar();
+  }
+  var previo = null; try { previo = JSON.parse(localStorage.getItem(CLAVE) || 'null'); } catch (e) {}
+  if (previo && previo.nombre) {
+    var r = document.getElementById('retomar'), min = Math.round((Date.now() - (previo._t || 0)) / 60000);
+    document.getElementById('retomar-t').textContent = min < 1 ? 'Guardada hace un momento' : min < 60 ? 'Guardada hace ' + min + ' min' : min < 1440 ? 'Guardada hace ' + Math.round(min / 60) + ' h' : 'Guardada hace ' + Math.round(min / 1440) + ' días';
+    r.classList.add('si');
+    document.getElementById('retomar-si').onclick = function () { aplicar(previo); r.classList.remove('si'); mostrar(previo._paso || 1); };
+    document.getElementById('retomar-no').onclick = function () { try { localStorage.removeItem(CLAVE); } catch (e) {} r.classList.remove('si'); };
+  }
+
+  // Lo que venga en la liga (?area=estrategia&momento=A)
+  var qs = new URLSearchParams(location.search), MAPA = { estrategia: 'Estrategia y Dirección', liderazgo: 'Liderazgo y Talento', influencia: 'Comunicación e Influencia' };
+  var MOM = { A: 'Una decisión que no admite segundo intento', B: 'Un cambio que no está aterrizando', C: 'Influir en un ecosistema' };
+  if (MAPA[qs.get('area')]) { var a = f.querySelector('[name=areas][value="' + MAPA[qs.get('area')] + '"]'); if (a) a.checked = true; }
+  if (MOM[qs.get('momento')]) { var m = f.querySelector('[name=momento][value="' + MOM[qs.get('momento')] + '"]'); if (m) m.checked = true; }
+  var origen = qs.get('area') || (qs.get('momento') ? 'momento ' + qs.get('momento') : (document.referrer.indexOf(location.host) > -1 ? new URL(document.referrer).pathname : 'directo'));
+
+  // Revisión
+  var ETQ = [['Tú', 1, [['nombre', 'Nombre'], ['cargo', 'Cargo'], ['correo', 'Correo'], ['whatsapp', 'WhatsApp'], ['linkedin', 'LinkedIn'], ['ciudad', 'Ciudad'], ['estado', 'Estado']]],
+    ['Organización', 2, [['organizacion', 'Organización'], ['tipo_org', 'Tipo'], ['sector', 'Sector'], ['tamano', 'Tamaño'], ['facturacion', 'Facturación'], ['antiguedad', 'Antigüedad'], ['sitio', 'Sitio o redes']]],
+    ['Tu reto', 3, [['areas', 'Áreas'], ['momento', 'Momento'], ['reto', 'Qué necesitas resolver'], ['intentado', 'Qué has intentado']]],
+    ['Decisión y agenda', 4, [['urgencia', 'Urgencia'], ['decisor', 'Decisión'], ['presupuesto', 'Inversión'], ['modalidad', 'Modalidad'], ['horario', 'Horario'], ['como_supo', 'Cómo nos conociste']]]];
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function revisar() {
+    var d = datos();
+    document.getElementById('revision').innerHTML = ETQ.map(function (g) {
+      var filas = g[2].map(function (x) { var v = Array.isArray(d[x[0]]) ? d[x[0]].join(', ') : d[x[0]]; return v ? '<div><dt>' + x[1] + '</dt><dd>' + esc(v) + '</dd></div>' : ''; }).join('');
+      return '<h3>' + g[0] + '<button type="button" data-ir="' + g[1] + '">Editar</button></h3><dl>' + filas + '</dl>';
+    }).join('');
+    document.querySelectorAll('[data-ir]').forEach(function (b) { b.onclick = function () { mostrar(+b.dataset.ir); }; });
+  }
+
+  // Envío a os.vorka.mx
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (actual !== TOTAL) return;
+    var d = datos();
+    if (!f.querySelector('[name=acepta]').checked) return falla('Necesitamos que aceptes el aviso de privacidad.');
+    d.acepta = true; d.origen = origen;
+    enviar.disabled = true; enviar.firstChild.textContent = 'Enviando… ';
+    fetch(API + '/api/publico/vorka/diagnostico', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(d) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'No se pudo enviar.'); return j; }); })
+      .then(function (j) {
+        enviado = true; clearTimeout(t);
+        try { localStorage.removeItem(CLAVE); } catch (e) {}
+        document.getElementById('folio').textContent = j.folio;
+        document.getElementById('exito-correo').textContent = d.correo;
+        document.getElementById('exito-nombre').textContent = d.nombre.split(/\s+/)[0];
+        f.hidden = true; document.querySelector('.cabeza-ag').hidden = true;
+        document.getElementById('exito').classList.add('si');
+        document.querySelector('.ag-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      })
+      .catch(function (x) { falla(x.message === 'Failed to fetch' ? 'No pudimos conectar. Revisa tu internet e intenta de nuevo.' : x.message); enviar.disabled = false; enviar.firstChild.textContent = 'Enviar solicitud '; });
+  });
+
+  contar(); mostrar(1, true);
+})();
+</script>
+
+</body>
+</html>

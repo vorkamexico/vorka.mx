@@ -1,22 +1,27 @@
 # Imágenes de vorka.mx
 
 ## Sistema
-- Formato WebP en tres anchos: `-960`, `-1600`, `-2400` (`srcset` + `sizes`).
-- Contenedor `.foto` con `<img>` a pantalla completa (`object-fit:cover`).
-- Encuadre por variables en el contenedor:
+- WebP en tres anchos: `-960`, `-1600`, `-2400` (`srcset` + `sizes`). Las páginas principales se generan con `python3 _sitio/build.py`; las fotos se declaran en `_sitio/partes.py` (`FOTOS`).
+- Contenedor `.foto` con `<img>` a pantalla completa (`object-fit: cover`). Encuadre con variables:
   - `--foco: 50% 70%` → punto focal en escritorio
   - `--foco-m: 80% 60%` → punto focal en celular (≤760px)
-- Siempre con `alt` descriptivo (o `alt=""` si es decorativa) y crédito si no es foto propia.
-- Comprimir antes de subir (calidad ~78). Nada de más de ~400 KB en la versión 1600.
+- Siempre con `alt` descriptivo. Comprimir antes de subir (calidad ~70; la versión 1600 idealmente < 400 KB).
 
-## Fotos actuales (`img/ciudades/`, temporales de Unsplash, licencia libre)
-| Archivo | Uso | Autor |
+## Fotos actuales (temporales, Unsplash, licencia libre; el sitio no muestra créditos)
+| Archivo | Autor | Unsplash |
 |---|---|---|
-| monterrey-* | Portada (hero) | Jorge Orozco |
-| cdmx-* | Mosaico "Dónde trabajamos" y 404 | Diwei Zhu |
-| guadalajara-* | Mosaico | Roman Lopez |
-| queretaro-* | Mosaico | Daniel Uribarren |
-| celaya-* | Mosaico | Martin Arriola |
+| cdmx-reforma | Leonardo Gaspar | DegQnHS1tk0 |
+| cdmx-chapultepec | paws and prints | Tajg_JeZ_6o |
+| cdmx-noche | Humberto Arellano | TJYqbIAYs-E |
+| cdmx | Diwei Zhu | nEj6sIzBht4 |
+| monterrey-silla | Jorge Gardner | 6YkqE50Gin0 |
+| monterrey-skyline | Jesus Herrera | NNALse8o_uY |
+| monterrey-torres | Jesus Herrera | I_iNbhznH3M |
+| monterrey | Jorge Orozco | ffy8GyD73q4 |
+| guadalajara | Roman Lopez | cGOkS_UvttU |
+| queretaro | Daniel Uribarren | CSYOVRSJ1mY |
+| celaya | Martin Arriola | pBiFYYVmXWE |
+| sala-consejo | Benjamin Child | GWe0dlVD9e0 |
 
 ## Para reemplazarlas por fotos propias
-Pon el mismo nombre de archivo en los tres anchos y quita el crédito (`.foto-credito`) del HTML.
+Guarda la foto con el mismo nombre en los tres anchos (o agrega una nueva en `FOTOS`) y vuelve a correr el generador.
