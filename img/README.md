@@ -1,7 +1,7 @@
 # Imágenes de vorka.mx
 
 ## Sistema
-- WebP en tres anchos: `-960`, `-1600`, `-2400` (`srcset` + `sizes`). Las páginas principales se generan con `python3 _sitio/build.py`; las fotos se declaran en `_sitio/partes.py` (`FOTOS`).
+- WebP en tres anchos: `-960`, `-1600`, `-2400` (`srcset` + `sizes`). Las páginas principales se generan con `python3 _sitio/build.py`; las fotos se declaran en `_sitio/partes.py` (`FOTOS`). Estilos: `assets/v3/vorka.css` y `vorka.js`.
 - Contenedor `.foto` con `<img>` a pantalla completa (`object-fit: cover`). Encuadre con variables:
   - `--foco: 50% 70%` → punto focal en escritorio
   - `--foco-m: 80% 60%` → punto focal en celular (≤760px)

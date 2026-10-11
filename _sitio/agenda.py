@@ -49,22 +49,45 @@ def pregunta(titulo, ayuda='', req=True):
     return f'<p class="preg{" req" if req else ""}">{titulo}{f"<small>{ayuda}</small>" if ayuda else ""}</p>'
 
 CSS = '''<style>
+.agenda { --tinta: var(--fg); --tinta-2: var(--fg-2); --tinta-3: var(--fg-3); --hueso: var(--bg); --hueso-2: var(--bg-2); --hueso-3: var(--bg-3); --oro-osc: #8a6a2c;
+  --linea-c: var(--line); --linea-c2: var(--line-2); --blanco: var(--claro); --gris: var(--claro-2); --linea-o2: rgba(255,255,255,.14); }
+.campo { position: relative; display: block; }
+.campo input, .campo select, .campo textarea { width: 100%; font: inherit; font-size: 16px; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px 16px 9px; min-height: 58px; transition: border-color .2s, box-shadow .2s; -webkit-appearance: none; appearance: none; }
+.campo select { padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23141114' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+.campo textarea { min-height: 140px; resize: vertical; line-height: 1.5; padding-top: 28px; }
+.campo label { position: absolute; left: 17px; top: 18px; font-size: 16px; color: var(--fg-3); pointer-events: none; transition: all .18s var(--ease); }
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--fg); box-shadow: 0 0 0 4px rgba(107, 42, 133, .12); }
+.campo input:focus + label, .campo input:not(:placeholder-shown) + label, .campo textarea:focus + label, .campo textarea:not(:placeholder-shown) + label, .campo select:focus + label, .campo select.lleno + label { top: 8px; font-size: 11.5px; font-weight: 650; color: var(--fg-2); }
+.campo.req label::after { content: " *"; color: var(--morado); }
+.campo.error input, .campo.error select, .campo.error textarea { border-color: #C4412F; }
+.campo .ayuda { display: block; font-size: 12.5px; color: var(--fg-3); margin-top: 7px; }
+.campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.campos .ancho { grid-column: 1 / -1; }
+@media (max-width: 620px) { .campos { grid-template-columns: 1fr; } }
+.casilla { display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px; color: var(--fg-2); cursor: pointer; }
+.casilla input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--fg); flex: none; }
+.casilla a { color: var(--fg); font-weight: 650; }
+.trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ag-lado .art { position: absolute; right: -42%; top: -14%; height: 52%; aspect-ratio: 940 / 909; z-index: -1; opacity: .3; }
+.ag-lado .glow { position: absolute; left: -30%; right: -30%; bottom: -30%; height: 70%; background: radial-gradient(50% 50% at 50% 50%, rgba(214,179,106,.18), transparent 70%); z-index: -1; }
+.ag-lado { background: var(--noche); color: var(--claro); }
+.ag-lado .h1 em, .ag-lado .h1 .metal { background: var(--metal-osc); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .agenda { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); min-height: 100svh; }
 .ag-lado { position: relative; isolation: isolate; padding: 130px clamp(24px, 4vw, 64px) 56px; display: flex; flex-direction: column; overflow: hidden; }
 .ag-lado .foto { position: absolute; inset: 0; z-index: -2; }
-.ag-lado::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,10,11,.7), rgba(10,10,11,.55) 40%, rgba(10,10,11,.92)); }
+
 .ag-pega { position: sticky; top: 130px; }
-.ag-lado .display { font-size: clamp(44px, 4.6vw, 76px); margin: 22px 0 22px; }
+.ag-lado .h1 { font-size: clamp(38px, 3.8vw, 58px); margin: 20px 0 18px; }
 .ag-lado .lead { font-size: 18px; color: rgba(247,245,240,.8); }
 .ag-incluye { margin-top: 36px; display: grid; gap: 14px; }
 .ag-incluye li { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; font-size: 15.5px; color: rgba(247,245,240,.85); }
-.ag-incluye svg { width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: rgba(201,164,94,.16); color: var(--oro-claro); }
+.ag-incluye svg { width: 34px; height: 34px; padding: 8px; border-radius: 11px; background: rgba(255,255,255,.08); color: var(--oro-claro); }
 .ag-incluye b { color: var(--blanco); display: block; font-weight: 600; }
 .ag-nota { margin-top: 36px; padding: 18px 20px; border: 1px solid var(--linea-o2); border-radius: 14px; font-size: 14px; color: var(--gris); background: rgba(10,10,11,.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .ag-form { background: var(--hueso); color: var(--tinta); padding: 120px clamp(20px, 5vw, 80px) 72px; }
 .ag-caja { max-width: 760px; margin: 0 auto; }
 .pasos-ag { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
-.pasos-ag button { background: none; border: 0; padding: 0; text-align: left; cursor: default; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); }
+.pasos-ag button { background: none; border: 0; padding: 0; text-align: left; cursor: default; font-size: 12.5px; font-weight: 650; color: var(--tinta-3); }
 .pasos-ag button::before { content: ""; display: block; height: 3px; border-radius: 3px; background: var(--hueso-3); margin-bottom: 10px; transition: background .4s var(--ease); }
 .pasos-ag button.hecho, .pasos-ag button.activo { color: var(--tinta); }
 .pasos-ag button.hecho { cursor: pointer; }
@@ -84,8 +107,8 @@ CSS = '''<style>
 .paso-ag.activo { display: block; }
 @media (prefers-reduced-motion: no-preference) { .paso-ag.activo { animation: entra .45s var(--ease); } }
 @keyframes entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-.paso-ag h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 54px); line-height: 1.02; letter-spacing: -.012em; }
-.paso-ag h2 em { font-style: italic; color: var(--oro-osc); }
+.paso-ag h2 { font-weight: 750; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.04; letter-spacing: -.04em; }
+.paso-ag h2 em, .exito h2 em { font-style: normal; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .paso-ag > p { color: var(--tinta-2); margin: 12px 0 30px; font-size: 16.5px; }
 .preg { font-weight: 600; font-size: 16px; margin: 28px 0 12px; }
 .preg.req::after { content: " *"; color: var(--oro-osc); }
@@ -100,7 +123,7 @@ CSS = '''<style>
 .tarjetas-op { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .op { position: relative; cursor: pointer; }
 .op input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-.op > span { display: block; height: 100%; padding: 18px 18px 18px 50px; border-radius: 14px; border: 1px solid var(--linea-c2); background: #fff; transition: all .2s var(--ease); position: relative; }
+.op > span { display: block; height: 100%; padding: 18px 18px 18px 50px; border-radius: 16px; border: 1px solid var(--linea-c); background: #fff; transition: all .2s var(--ease); position: relative; }
 .op > span::before { content: ""; position: absolute; left: 18px; top: 20px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--tinta-3); transition: all .2s; }
 .op.multi > span::before { border-radius: 5px; }
 .op b { display: block; font-size: 15.5px; font-weight: 600; }
@@ -114,7 +137,7 @@ CSS = '''<style>
 .contador { font-size: 12.5px; color: var(--tinta-3); text-align: right; margin-top: 6px; }
 .contador.ok { color: #3E7B3A; }
 .revision { background: #fff; border: 1px solid var(--linea-c2); border-radius: 16px; padding: 6px 22px; margin-bottom: 22px; }
-.revision h3 { font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); margin: 18px 0 4px; display: flex; justify-content: space-between; }
+.revision h3 { font-size: 13px; font-weight: 650; color: var(--tinta-3); margin: 18px 0 4px; display: flex; justify-content: space-between; }
 .revision h3 button { background: none; border: 0; font: inherit; color: var(--oro-osc); cursor: pointer; letter-spacing: .06em; }
 .revision dl > div { display: grid; grid-template-columns: 180px 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--linea-c); font-size: 14.5px; }
 .revision dl > div:last-child { border-bottom: 0; }
@@ -131,9 +154,9 @@ CSS = '''<style>
 .exito.si { display: block; }
 .exito .sello { width: 64px; height: 64px; border-radius: 50%; background: var(--tinta); color: var(--oro-claro); display: grid; place-items: center; margin-bottom: 28px; }
 .exito .sello svg { width: 30px; height: 30px; }
-.exito h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 5vw, 64px); line-height: 1; }
-.exito h2 em { font-style: italic; color: var(--oro-osc); }
-.folio { display: inline-flex; gap: 12px; align-items: center; margin: 26px 0 8px; padding: 14px 20px; border-radius: 12px; border: 1px dashed var(--oro-osc); font-family: var(--mono); font-size: 15px; letter-spacing: .08em; background: #fff; }
+.exito h2 { font-weight: 750; font-size: clamp(36px, 4.4vw, 56px); line-height: 1.02; letter-spacing: -.045em; }
+
+.folio { display: inline-flex; gap: 12px; align-items: center; margin: 26px 0 8px; padding: 14px 20px; border-radius: 12px; border: 1px dashed var(--oro-osc); font-size: 15px; font-weight: 650; letter-spacing: .04em; background: #fff; font-variant-numeric: tabular-nums; }
 .linea-t { margin-top: 34px; display: grid; gap: 0; border-left: 1px solid var(--linea-c2); padding-left: 0; }
 .linea-t li { position: relative; padding: 0 0 22px 28px; }
 .linea-t li::before { content: ""; position: absolute; left: -6px; top: 6px; width: 11px; height: 11px; border-radius: 50%; background: var(--hueso-3); border: 2px solid var(--hueso); }
@@ -141,6 +164,7 @@ CSS = '''<style>
 .linea-t b { display: block; font-size: 16px; }
 .linea-t span { font-size: 14.5px; color: var(--tinta-2); }
 @media (max-width: 960px) {
+  .ag-lado .art { display: none; }
   .agenda { grid-template-columns: 1fr; }
   .ag-lado { padding: 120px var(--x) 48px; min-height: 0; }
   .ag-pega { position: static; }
@@ -304,13 +328,13 @@ def pagina_agenda():
     inc_html = ''.join(f'<li>{ICONOS["check"]}<span><b>{t}</b>{d}</span></li>' for t, d in inc)
     pasos_n = ['Tú', 'Organización', 'Tu reto', 'Decisión', 'Revisar']
     marcas = ''.join(f'<button type="button" aria-label="Paso {i + 1}: {t}">{t}</button>' for i, t in enumerate(pasos_n))
-    cuerpo = f'''{nav(siempre=True)}
+    cuerpo = f'''{nav()}
 <main id="contenido" class="agenda">
   <aside class="ag-lado">
-    {foto('cdmx-noche', foco='50% 40%', sizes='(max-width: 960px) 100vw, 42vw', carga='eager', prioridad=True)}
+    {v_metal('art', 'ga')}<div class="glow"></div><div class="grano"></div>
     <div class="ag-pega">
-      <span class="kicker">Diagnóstico sin costo</span>
-      <h1 class="display">Cuéntanos tu momento. <em>Te devolvemos un plan.</em></h1>
+      <span class="etiqueta">Diagnóstico sin costo</span>
+      <h1 class="h1">Cuéntanos tu momento. <span class="metal">Te devolvemos un plan.</span></h1>
       <p class="lead">Una sesión de 45 minutos con nuestro equipo para entender tu reto y decirte, con claridad, cómo lo resolveríamos.</p>
       <ul class="ag-incluye">{inc_html}</ul>
       <p class="ag-nota">Damos un número limitado de diagnósticos al mes. Con estas preguntas llegamos preparados a tu sesión; si no somos el equipo correcto para tu caso, te lo decimos con la misma claridad. Te respondemos en máximo 2 días hábiles.</p>
@@ -321,7 +345,7 @@ def pagina_agenda():
       <div class="cabeza-ag">
         <div class="pasos-ag">{marcas}</div>
         <div class="estado-ag"><span id="num-paso">Paso 1 de 5</span><span class="guardado" id="guardado">✓ Progreso guardado</span></div>
-        <div class="retomar" id="retomar"><div><b>Tienes una solicitud a medias</b><span id="retomar-t"></span></div><button class="btn tinta" type="button" id="retomar-si">Continuar</button><button class="btn linea" type="button" id="retomar-no">Empezar de nuevo</button></div>
+        <div class="retomar" id="retomar"><div><b>Tienes una solicitud a medias</b><span id="retomar-t"></span></div><button class="btn tinta" type="button" id="retomar-si">Continuar</button><button class="btn blanco" type="button" id="retomar-no">Empezar de nuevo</button></div>
       </div>
       <form id="ag" novalidate>
         <div class="trampa" aria-hidden="true"><label>No llenar <input name="empresa_web" tabindex="-1" autocomplete="off"></label></div>
@@ -398,7 +422,7 @@ def pagina_agenda():
         <div class="nav-ag">
           <button type="button" class="atras" id="atras">← Anterior</button>
           <button type="button" class="btn tinta" id="sig">Continuar {FLECHA}</button>
-          <button type="submit" class="btn oro" id="enviar" hidden>Enviar solicitud {FLECHA}</button>
+          <button type="submit" class="btn tinta" id="enviar" hidden>Enviar solicitud {FLECHA}</button>
         </div>
       </form>
 
@@ -413,7 +437,7 @@ def pagina_agenda():
           <li><b>Diagnóstico de 45 minutos</b><span>Si encaja, te llega la invitación a tu calendario con fecha y enlace.</span></li>
           <li><b>Propuesta a la medida</b><span>Alcance, equipo, tiempos e inversión, en claro.</span></li>
         </ol>
-        <div class="botones" style="margin-top:28px"><a class="btn tinta" href="/sparks/celaya/">Mientras tanto, lee Sparks {FLECHA}</a><a class="btn linea" href="/">Volver al inicio</a></div>
+        <div class="botones" style="margin-top:28px"><a class="btn tinta" href="/sparks/celaya/">Mientras tanto, lee Sparks {FLECHA}</a><a class="btn blanco" href="/">Volver al inicio</a></div>
       </div>
     </div>
   </section>

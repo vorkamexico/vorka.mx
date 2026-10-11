@@ -3,10 +3,10 @@
 SERVICIOS = [
     {
         'slug': 'estrategia', 'num': '01', 'area': 'Estrategia y Dirección',
-        'titulo': 'Estrategia y <em>Dirección.</em>',
+        'titulo': 'Estrategia y <span class="metal">Dirección.</span>',
         'promesa': 'Definimos hacia dónde va la organización y con qué criterio se decide.',
         'corta': 'Hacia dónde ir y con qué criterio decidir: estrategia corporativa o pública, transformación, cultura y gobernanza.',
-        'foto': 'monterrey-torres', 'foco': '50% 40%', 'cabecera': 'cdmx-reforma', 'cab_foco': '50% 55%', 'cab_foco_m': '42% 50%',
+        'foto': 'monterrey-torres', 'foco': '50% 40%', 'cabecera': 'cdmx-chapultepec', 'cab_foco': '50% 50%', 'cab_foco_m': '50% 50%',
         'tags': ['Estrategia', 'Transformación', 'Cultura', 'Gobernanza', 'Sucesión'],
         'necesitas': 'Tomar una decisión que define los próximos cinco años.',
         'para': 'CEOs, consejos, direcciones generales, secretarías, fundaciones y equipos fundadores ante una decisión de alto impacto.',
@@ -32,11 +32,11 @@ SERVICIOS = [
             ('ruta', 'Acompañamiento a la ejecución', 'Operamos dentro hasta que el cambio funciona solo.'),
         ],
         'datos': [('150+', 'proyectos entregados con resultados verificables'), ('3 sectores', 'público, privado y sociedad civil, con el mismo criterio'), ('HBS · Tec', 'y Silicon Valley: formación cruzada del equipo directivo')],
-        'cta': 'Cuéntanos qué decisión está <em>sobre la mesa.</em>',
+        'cta': 'Cuéntanos qué decisión está <span class="metal">sobre la mesa.</span>',
     },
     {
         'slug': 'liderazgo', 'num': '02', 'area': 'Liderazgo y Talento',
-        'titulo': 'Liderazgo y <em>Talento.</em>',
+        'titulo': 'Liderazgo y <span class="metal">Talento.</span>',
         'promesa': 'Fortalecemos a quienes deciden: coaching, formación y acompañamiento en momentos de alta exposición.',
         'corta': 'Fortalecemos a quienes deciden: coaching ejecutivo, equipos directivos y programas a la medida.',
         'foto': 'sala-consejo', 'foco': '60% 50%', 'cabecera': 'sala-consejo', 'cab_foco': '50% 50%', 'cab_foco_m': '62% 50%',
@@ -65,11 +65,11 @@ SERVICIOS = [
             ('tablero', 'Reporte de cierre', 'Resultados contra objetivos y transferencia al equipo.'),
         ],
         'datos': [('1 : 1', 'acompañamiento confidencial con bitácora e indicadores'), ('Cero catálogo', 'cada programa parte de un caso real del cliente'), ('HBS · Tec', 'y Silicon Valley: formación cruzada del equipo de coaches')],
-        'cta': 'Cuéntanos qué liderazgo <em>quieres desarrollar.</em>',
+        'cta': 'Cuéntanos qué liderazgo <span class="metal">quieres desarrollar.</span>',
     },
     {
         'slug': 'influencia', 'num': '03', 'area': 'Comunicación e Influencia',
-        'titulo': 'Comunicación e <em>Influencia.</em>',
+        'titulo': 'Comunicación e <span class="metal">Influencia.</span>',
         'promesa': 'Convertimos el trabajo en presencia: todo el frente digital, creativo y de vocería bajo una sola dirección estratégica.',
         'corta': 'Convertimos el trabajo en presencia: narrativa, redes, diseño, video, campañas, PR, vocería y crisis.',
         'foto': 'cdmx-noche', 'foco': '50% 40%', 'cabecera': 'cdmx-noche', 'cab_foco': '50% 38%', 'cab_foco_m': '50% 40%',
@@ -101,7 +101,7 @@ SERVICIOS = [
             ('tablero', 'Monitoreo y reporte', 'Escucha de la conversación y resultados claros.'),
         ],
         'datos': [('3 en 1', 'consultora, estudio creativo y agencia bajo el mismo equipo'), ('100%', 'producción de contenido, diseño y video en casa'), ('24/7', 'monitoreo de conversación y crisis para clientes activos')],
-        'cta': 'Cuéntanos cómo quieres <em>que te escuchen.</em>',
+        'cta': 'Cuéntanos cómo quieres <span class="metal">que te escuchen.</span>',
     },
 ]
 

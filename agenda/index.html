@@ -6,7 +6,7 @@
 <title>Agenda tu diagnóstico · Vorka México</title>
 <meta name="description" content="Solicita una sesión de diagnóstico de 45 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.">
 <link rel="canonical" href="https://www.vorka.mx/agenda/">
-<meta name="theme-color" content="#0A0A0B">
+<meta name="theme-color" content="#FBFAF8">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vorka México">
 <meta property="og:locale" content="es_MX">
@@ -15,29 +15,52 @@
 <meta property="og:url" content="https://www.vorka.mx/agenda/">
 <meta property="og:image" content="https://www.vorka.mx/img/ciudades/cdmx-noche-1600.webp">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="/assets/v2/icono.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/v3/icono.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/vorka-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/v2/vorka.css?v=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/v3/vorka.css?v=3">
 <style>
+.agenda { --tinta: var(--fg); --tinta-2: var(--fg-2); --tinta-3: var(--fg-3); --hueso: var(--bg); --hueso-2: var(--bg-2); --hueso-3: var(--bg-3); --oro-osc: #8a6a2c;
+  --linea-c: var(--line); --linea-c2: var(--line-2); --blanco: var(--claro); --gris: var(--claro-2); --linea-o2: rgba(255,255,255,.14); }
+.campo { position: relative; display: block; }
+.campo input, .campo select, .campo textarea { width: 100%; font: inherit; font-size: 16px; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px 16px 9px; min-height: 58px; transition: border-color .2s, box-shadow .2s; -webkit-appearance: none; appearance: none; }
+.campo select { padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23141114' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+.campo textarea { min-height: 140px; resize: vertical; line-height: 1.5; padding-top: 28px; }
+.campo label { position: absolute; left: 17px; top: 18px; font-size: 16px; color: var(--fg-3); pointer-events: none; transition: all .18s var(--ease); }
+.campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--fg); box-shadow: 0 0 0 4px rgba(107, 42, 133, .12); }
+.campo input:focus + label, .campo input:not(:placeholder-shown) + label, .campo textarea:focus + label, .campo textarea:not(:placeholder-shown) + label, .campo select:focus + label, .campo select.lleno + label { top: 8px; font-size: 11.5px; font-weight: 650; color: var(--fg-2); }
+.campo.req label::after { content: " *"; color: var(--morado); }
+.campo.error input, .campo.error select, .campo.error textarea { border-color: #C4412F; }
+.campo .ayuda { display: block; font-size: 12.5px; color: var(--fg-3); margin-top: 7px; }
+.campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.campos .ancho { grid-column: 1 / -1; }
+@media (max-width: 620px) { .campos { grid-template-columns: 1fr; } }
+.casilla { display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px; color: var(--fg-2); cursor: pointer; }
+.casilla input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--fg); flex: none; }
+.casilla a { color: var(--fg); font-weight: 650; }
+.trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ag-lado .art { position: absolute; right: -42%; top: -14%; height: 52%; aspect-ratio: 940 / 909; z-index: -1; opacity: .3; }
+.ag-lado .glow { position: absolute; left: -30%; right: -30%; bottom: -30%; height: 70%; background: radial-gradient(50% 50% at 50% 50%, rgba(214,179,106,.18), transparent 70%); z-index: -1; }
+.ag-lado { background: var(--noche); color: var(--claro); }
+.ag-lado .h1 em, .ag-lado .h1 .metal { background: var(--metal-osc); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .agenda { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); min-height: 100svh; }
 .ag-lado { position: relative; isolation: isolate; padding: 130px clamp(24px, 4vw, 64px) 56px; display: flex; flex-direction: column; overflow: hidden; }
 .ag-lado .foto { position: absolute; inset: 0; z-index: -2; }
-.ag-lado::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(10,10,11,.7), rgba(10,10,11,.55) 40%, rgba(10,10,11,.92)); }
+
 .ag-pega { position: sticky; top: 130px; }
-.ag-lado .display { font-size: clamp(44px, 4.6vw, 76px); margin: 22px 0 22px; }
+.ag-lado .h1 { font-size: clamp(38px, 3.8vw, 58px); margin: 20px 0 18px; }
 .ag-lado .lead { font-size: 18px; color: rgba(247,245,240,.8); }
 .ag-incluye { margin-top: 36px; display: grid; gap: 14px; }
 .ag-incluye li { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; font-size: 15.5px; color: rgba(247,245,240,.85); }
-.ag-incluye svg { width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: rgba(201,164,94,.16); color: var(--oro-claro); }
+.ag-incluye svg { width: 34px; height: 34px; padding: 8px; border-radius: 11px; background: rgba(255,255,255,.08); color: var(--oro-claro); }
 .ag-incluye b { color: var(--blanco); display: block; font-weight: 600; }
 .ag-nota { margin-top: 36px; padding: 18px 20px; border: 1px solid var(--linea-o2); border-radius: 14px; font-size: 14px; color: var(--gris); background: rgba(10,10,11,.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .ag-form { background: var(--hueso); color: var(--tinta); padding: 120px clamp(20px, 5vw, 80px) 72px; }
 .ag-caja { max-width: 760px; margin: 0 auto; }
 .pasos-ag { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
-.pasos-ag button { background: none; border: 0; padding: 0; text-align: left; cursor: default; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); }
+.pasos-ag button { background: none; border: 0; padding: 0; text-align: left; cursor: default; font-size: 12.5px; font-weight: 650; color: var(--tinta-3); }
 .pasos-ag button::before { content: ""; display: block; height: 3px; border-radius: 3px; background: var(--hueso-3); margin-bottom: 10px; transition: background .4s var(--ease); }
 .pasos-ag button.hecho, .pasos-ag button.activo { color: var(--tinta); }
 .pasos-ag button.hecho { cursor: pointer; }
@@ -57,8 +80,8 @@
 .paso-ag.activo { display: block; }
 @media (prefers-reduced-motion: no-preference) { .paso-ag.activo { animation: entra .45s var(--ease); } }
 @keyframes entra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-.paso-ag h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 54px); line-height: 1.02; letter-spacing: -.012em; }
-.paso-ag h2 em { font-style: italic; color: var(--oro-osc); }
+.paso-ag h2 { font-weight: 750; font-size: clamp(32px, 3.6vw, 46px); line-height: 1.04; letter-spacing: -.04em; }
+.paso-ag h2 em, .exito h2 em { font-style: normal; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .paso-ag > p { color: var(--tinta-2); margin: 12px 0 30px; font-size: 16.5px; }
 .preg { font-weight: 600; font-size: 16px; margin: 28px 0 12px; }
 .preg.req::after { content: " *"; color: var(--oro-osc); }
@@ -73,7 +96,7 @@
 .tarjetas-op { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .op { position: relative; cursor: pointer; }
 .op input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-.op > span { display: block; height: 100%; padding: 18px 18px 18px 50px; border-radius: 14px; border: 1px solid var(--linea-c2); background: #fff; transition: all .2s var(--ease); position: relative; }
+.op > span { display: block; height: 100%; padding: 18px 18px 18px 50px; border-radius: 16px; border: 1px solid var(--linea-c); background: #fff; transition: all .2s var(--ease); position: relative; }
 .op > span::before { content: ""; position: absolute; left: 18px; top: 20px; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--tinta-3); transition: all .2s; }
 .op.multi > span::before { border-radius: 5px; }
 .op b { display: block; font-size: 15.5px; font-weight: 600; }
@@ -87,7 +110,7 @@
 .contador { font-size: 12.5px; color: var(--tinta-3); text-align: right; margin-top: 6px; }
 .contador.ok { color: #3E7B3A; }
 .revision { background: #fff; border: 1px solid var(--linea-c2); border-radius: 16px; padding: 6px 22px; margin-bottom: 22px; }
-.revision h3 { font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--tinta-3); margin: 18px 0 4px; display: flex; justify-content: space-between; }
+.revision h3 { font-size: 13px; font-weight: 650; color: var(--tinta-3); margin: 18px 0 4px; display: flex; justify-content: space-between; }
 .revision h3 button { background: none; border: 0; font: inherit; color: var(--oro-osc); cursor: pointer; letter-spacing: .06em; }
 .revision dl > div { display: grid; grid-template-columns: 180px 1fr; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--linea-c); font-size: 14.5px; }
 .revision dl > div:last-child { border-bottom: 0; }
@@ -104,9 +127,9 @@
 .exito.si { display: block; }
 .exito .sello { width: 64px; height: 64px; border-radius: 50%; background: var(--tinta); color: var(--oro-claro); display: grid; place-items: center; margin-bottom: 28px; }
 .exito .sello svg { width: 30px; height: 30px; }
-.exito h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 5vw, 64px); line-height: 1; }
-.exito h2 em { font-style: italic; color: var(--oro-osc); }
-.folio { display: inline-flex; gap: 12px; align-items: center; margin: 26px 0 8px; padding: 14px 20px; border-radius: 12px; border: 1px dashed var(--oro-osc); font-family: var(--mono); font-size: 15px; letter-spacing: .08em; background: #fff; }
+.exito h2 { font-weight: 750; font-size: clamp(36px, 4.4vw, 56px); line-height: 1.02; letter-spacing: -.045em; }
+
+.folio { display: inline-flex; gap: 12px; align-items: center; margin: 26px 0 8px; padding: 14px 20px; border-radius: 12px; border: 1px dashed var(--oro-osc); font-size: 15px; font-weight: 650; letter-spacing: .04em; background: #fff; font-variant-numeric: tabular-nums; }
 .linea-t { margin-top: 34px; display: grid; gap: 0; border-left: 1px solid var(--linea-c2); padding-left: 0; }
 .linea-t li { position: relative; padding: 0 0 22px 28px; }
 .linea-t li::before { content: ""; position: absolute; left: -6px; top: 6px; width: 11px; height: 11px; border-radius: 50%; background: var(--hueso-3); border: 2px solid var(--hueso); }
@@ -114,6 +137,7 @@
 .linea-t b { display: block; font-size: 16px; }
 .linea-t span { font-size: 14.5px; color: var(--tinta-2); }
 @media (max-width: 960px) {
+  .ag-lado .art { display: none; }
   .agenda { grid-template-columns: 1fr; }
   .ag-lado { padding: 120px var(--x) 48px; min-height: 0; }
   .ag-pega { position: static; }
@@ -126,24 +150,24 @@
 </head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
-<header class="nav siempre">
-  <div class="marco">
-    <a class="marca" href="/" aria-label="Vorka México, inicio"><svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
-    <nav class="nav-links" aria-label="Principal"><a href="/servicios/">Servicios</a><a href="/#metodo">Método</a><a href="/#momentos">Para quién</a><a href="/#huella">Huella</a><a href="/sparks/">Sparks</a><a href="/voluntariado">Tú en Vorka</a></nav>
-    <a class="btn oro escritorio" href="/agenda/">Agenda tu diagnóstico</a>
+<header class="nav">
+  <div class="nav-in">
+    <a class="marca" href="/" aria-label="Vorka México, inicio"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+    <nav class="nav-links" aria-label="Principal"><a href="/servicios/">Servicios</a><a href="/#proceso">Cómo trabajamos</a><a href="/#momentos">Para quién</a><a href="/#red">Presencia</a><a href="/sparks/">Sparks</a><a href="/voluntariado">Tú en Vorka</a></nav>
+    <a class="btn tinta escritorio" href="/agenda/">Agenda tu diagnóstico</a>
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
   </div>
 </header>
-<div class="menu-movil" id="menu-movil"><a href="/servicios/">Servicios</a><a href="/#metodo">Método</a><a href="/#momentos">Para quién</a><a href="/#huella">Huella</a><a href="/sparks/">Sparks</a><a href="/voluntariado">Tú en Vorka</a><a class="btn oro" href="/agenda/">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><div class="pie-m">ESTRATEGIA · LIDERAZGO · INFLUENCIA</div></div>
+<div class="menu-movil" id="menu-movil"><a href="/servicios/">Servicios</a><a href="/#proceso">Cómo trabajamos</a><a href="/#momentos">Para quién</a><a href="/#red">Presencia</a><a href="/sparks/">Sparks</a><a href="/voluntariado">Tú en Vorka</a><a class="btn tinta" href="/agenda/">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 
 <main id="contenido" class="agenda">
   <aside class="ag-lado">
-    <div class="foto" style="--foco:50% 40%"><img src="/img/ciudades/cdmx-noche-1600.webp" srcset="/img/ciudades/cdmx-noche-960.webp 960w, /img/ciudades/cdmx-noche-1600.webp 1600w, /img/ciudades/cdmx-noche-2400.webp 2000w" sizes="(max-width: 960px) 100vw, 42vw" alt="Rascacielos de la Ciudad de México de noche" loading="eager" decoding="async" fetchpriority="high"></div>
+    <svg class="art" viewBox="69 225 940 909" aria-hidden="true"><defs><linearGradient id="ga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#bfc3c9"/><stop offset=".8" stop-color="#d6b36a"/><stop offset="1" stop-color="#a8853f"/></linearGradient></defs><g fill="url(#ga)"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></g></svg><div class="glow"></div><div class="grano"></div>
     <div class="ag-pega">
-      <span class="kicker">Diagnóstico sin costo</span>
-      <h1 class="display">Cuéntanos tu momento. <em>Te devolvemos un plan.</em></h1>
+      <span class="etiqueta">Diagnóstico sin costo</span>
+      <h1 class="h1">Cuéntanos tu momento. <span class="metal">Te devolvemos un plan.</span></h1>
       <p class="lead">Una sesión de 45 minutos con nuestro equipo para entender tu reto y decirte, con claridad, cómo lo resolveríamos.</p>
-      <ul class="ag-incluye"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Una lectura honesta</b>Qué vemos en tu caso, aunque no sea lo que esperabas oír.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Prioridades claras</b>Por dónde empezar y qué dejar para después.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Cómo lo haríamos</b>Si podemos ayudarte, el enfoque, el equipo y los tiempos.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Sin costo ni compromiso</b>45 minutos, por videollamada o en persona.</span></li></ul>
+      <ul class="ag-incluye"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Una lectura honesta</b>Qué vemos en tu caso, aunque no sea lo que esperabas oír.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Prioridades claras</b>Por dónde empezar y qué dejar para después.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Cómo lo haríamos</b>Si podemos ayudarte, el enfoque, el equipo y los tiempos.</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg><span><b>Sin costo ni compromiso</b>45 minutos, por videollamada o en persona.</span></li></ul>
       <p class="ag-nota">Damos un número limitado de diagnósticos al mes. Con estas preguntas llegamos preparados a tu sesión; si no somos el equipo correcto para tu caso, te lo decimos con la misma claridad. Te respondemos en máximo 2 días hábiles.</p>
     </div>
   </aside>
@@ -152,7 +176,7 @@
       <div class="cabeza-ag">
         <div class="pasos-ag"><button type="button" aria-label="Paso 1: Tú">Tú</button><button type="button" aria-label="Paso 2: Organización">Organización</button><button type="button" aria-label="Paso 3: Tu reto">Tu reto</button><button type="button" aria-label="Paso 4: Decisión">Decisión</button><button type="button" aria-label="Paso 5: Revisar">Revisar</button></div>
         <div class="estado-ag"><span id="num-paso">Paso 1 de 5</span><span class="guardado" id="guardado">✓ Progreso guardado</span></div>
-        <div class="retomar" id="retomar"><div><b>Tienes una solicitud a medias</b><span id="retomar-t"></span></div><button class="btn tinta" type="button" id="retomar-si">Continuar</button><button class="btn linea" type="button" id="retomar-no">Empezar de nuevo</button></div>
+        <div class="retomar" id="retomar"><div><b>Tienes una solicitud a medias</b><span id="retomar-t"></span></div><button class="btn tinta" type="button" id="retomar-si">Continuar</button><button class="btn blanco" type="button" id="retomar-no">Empezar de nuevo</button></div>
       </div>
       <form id="ag" novalidate>
         <div class="trampa" aria-hidden="true"><label>No llenar <input name="empresa_web" tabindex="-1" autocomplete="off"></label></div>
@@ -228,13 +252,13 @@
         <div class="aviso-err" id="err" role="alert"></div>
         <div class="nav-ag">
           <button type="button" class="atras" id="atras">← Anterior</button>
-          <button type="button" class="btn tinta" id="sig">Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-          <button type="submit" class="btn oro" id="enviar" hidden>Enviar solicitud <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button type="button" class="btn tinta" id="sig">Continuar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button type="submit" class="btn tinta" id="enviar" hidden>Enviar solicitud <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         </div>
       </form>
 
       <div class="exito" id="exito" role="status" aria-live="polite">
-        <div class="sello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg></div>
+        <div class="sello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"/></svg></div>
         <h2>Gracias, <span id="exito-nombre"></span>. <em>Ya estamos en ello.</em></h2>
         <div class="folio">Folio <b id="folio"></b></div>
         <p style="color:var(--tinta-2)">Te enviamos la confirmación a <b id="exito-correo"></b>. Guarda tu folio por si necesitas escribirnos.</p>
@@ -244,7 +268,7 @@
           <li><b>Diagnóstico de 45 minutos</b><span>Si encaja, te llega la invitación a tu calendario con fecha y enlace.</span></li>
           <li><b>Propuesta a la medida</b><span>Alcance, equipo, tiempos e inversión, en claro.</span></li>
         </ol>
-        <div class="botones" style="margin-top:28px"><a class="btn tinta" href="/sparks/celaya/">Mientras tanto, lee Sparks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn linea" href="/">Volver al inicio</a></div>
+        <div class="botones" style="margin-top:28px"><a class="btn tinta" href="/sparks/celaya/">Mientras tanto, lee Sparks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn blanco" href="/">Volver al inicio</a></div>
       </div>
     </div>
   </section>
@@ -253,30 +277,30 @@
   <div class="marco">
     <div class="pie-top">
       <div>
-        <a class="marca" href="/"><svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
-        <p class="pie-lema">Definimos el juego <em>con quienes lo juegan.</em></p>
-        <div class="redes"><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4z"/></svg></a><a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.2 10 6.3v2.2H7.5v3.7H10V22h4v-9.8h3l.4-3.7z"/></svg></a><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.3 1.9 3.8 4.2 4v3.4c-1.5.1-2.9-.4-4.2-1.2v6.3c0 3.6-2.6 6.5-6.3 6.5S4 19 4 15.6c0-3.7 3.2-6.6 7.1-6.1v3.6c-1.6-.4-3.4.6-3.4 2.4 0 1.4 1 2.6 2.6 2.6 1.6 0 2.6-1.2 2.6-2.8V3z"/></svg></a></div>
+        <a class="marca" href="/"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+        <p class="pie-lema">Definimos el juego con quienes lo juegan.</p>
+        <div class="redes"><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4z"/></svg></a><a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.2 10 6.3v2.2H7.5v3.7H10V22h4v-9.8h3l.4-3.7z"/></svg></a><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.3 1.9 3.8 4.2 4v3.4c-1.5.1-2.9-.4-4.2-1.2v6.3c0 3.6-2.6 6.5-6.3 6.5S4 19 4 15.6c0-3.7 3.2-6.6 7.1-6.1v3.6c-1.6-.4-3.4.6-3.4 2.4 0 1.4 1 2.6 2.6 2.6 1.6 0 2.6-1.2 2.6-2.8V3z"/></svg></a></div>
       </div>
       <div><h4>Servicios</h4><ul>
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
         <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
         <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
-        <li><a href="/servicios/">Todos los servicios</a></li></ul></div>
+        <li><a href="/servicios/">Comparar servicios</a></li></ul></div>
       <div><h4>Vorka</h4><ul>
-        <li><a href="/#metodo">Cómo trabajamos</a></li>
-        <li><a href="/#huella">Nuestra huella</a></li>
+        <li><a href="/#proceso">Cómo trabajamos</a></li>
+        <li><a href="/#red">Presencia nacional</a></li>
         <li><a href="/sparks/">Revista Sparks</a></li>
         <li><a href="/voluntariado">Tú en Vorka</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
         <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
         <li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
-        <li><a href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20ya%20decid%C3%AD%20avanzar.%20Me%20gustar%C3%ADa%20empezar%20formalmente%20el%20proceso." target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li>
-        <li>Monterrey · CDMX · Guadalajara · Querétaro · Celaya</li></ul></div>
+        <li><a href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20ya%20decid%C3%AD%20avanzar.%20Me%20gustar%C3%ADa%20empezar%20formalmente%20el%20proceso." target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>
     </div>
-    <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México. Todos los derechos reservados.</span><nav><a href="/privacidad/">Aviso de privacidad</a><a href="/agenda/">Contacto</a></nav></div>
+    <div class="marca-xl" aria-hidden="true"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg><b>Vorka</b></div>
+    <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México · Monterrey · CDMX · Guadalajara · Querétaro · Celaya</span><nav><a href="/privacidad/">Aviso de privacidad</a><a href="/agenda/">Contacto</a></nav></div>
   </div>
 </footer>
-<script src="/assets/v2/vorka.js?v=1" defer></script>
+<script src="/assets/v3/vorka.js?v=3" defer></script>
 <script>
 (function () {
   var API = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:8787' : 'https://os.vorka.mx';
