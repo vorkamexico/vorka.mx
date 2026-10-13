@@ -154,8 +154,31 @@ def cargar_historias_os(cfg):
     return ns
 
 
+# Historias que ya estaban publicadas antes del periódico (el sitio de Canva de Sparks Celaya).
+# Viven en _sparks/archivo/<municipio>.json con sus fotos en _sparks/archivo/<municipio>/, y se publican
+# junto con las del Sheet para que el bot no las borre. Para corregir una, edita ese JSON y haz commit.
+DIR_ARCHIVO = os.path.join(AQUI, "archivo")
+
+
+def cargar_archivo(cfg):
+    municipio = cfg["ruta"].rstrip("/").split("/")[-1]
+    ruta = os.path.join(DIR_ARCHIVO, municipio + ".json")
+    if not os.path.exists(ruta):
+        return []
+    with open(ruta, encoding="utf-8") as f:
+        ns = [n for n in json.load(f)["noticias"] if n.get("slug") and n.get("titulo") and n.get("publicar", True)]
+    print("Historias del archivo: %d" % len(ns))
+    return ns
+
+
 def bajar_foto(args, foto_id):
     """Devuelve los bytes de la foto (ya reducida por Google a máx. 1600 px)."""
+    if foto_id.startswith("archivo:"):
+        ruta = os.path.normpath(os.path.join(DIR_ARCHIVO, foto_id[8:]))
+        if not ruta.startswith(DIR_ARCHIVO + os.sep):
+            raise RuntimeError("ruta fuera del archivo")
+        with open(ruta, "rb") as f:
+            return f.read()
     if foto_id.startswith("os:"):
         data = http_json("%s/foto/%s" % (OS_API, urllib.parse.quote(foto_id[3:])))
         if "data" not in data:
@@ -679,7 +702,9 @@ def main():
     dir_img = os.path.join(destino, "img")
 
     # Primero las historias de Vorka México para que conserven el enlace que se eligió en la app
-    noticias = (cargar_historias_os(cfg) if not args.datos else []) + cargar_noticias(args)
+    # El archivo va al final: si un enlace se repite, gana la noticia viva (la del archivo recibe -2).
+    noticias = ((cargar_historias_os(cfg) if not args.datos else []) + cargar_noticias(args)
+                + (cargar_archivo(cfg) if not args.datos else []))
     almacen = Almacen(cfg, dir_img, cfg["ruta"].rstrip("/"))
 
     # Huella de todo lo que afecta al resultado: si no cambió nada, no se toca el repo.
@@ -713,6 +738,8 @@ def main():
         n.setdefault("etiquetas", [])
         for k in ("persona", "resumen", "texto", "pie", "video", "autor"):
             n[k] = (n.get(k) or "").strip()
+        n.setdefault("categoria", "Noticias")
+        n.setdefault("destacada", False)
     noticias.sort(key=lambda n: (n["_d"], n["_c"]), reverse=True)
 
     manifest_path = os.path.join(destino, "fotos.json")
