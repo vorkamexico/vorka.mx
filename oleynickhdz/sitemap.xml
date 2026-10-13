@@ -2,28 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://www.vorka.mx/oleynickhdz/</loc>
+    <loc>https://vorka.mx/oleynickhdz/</loc>
     <lastmod>2026-10-04</lastmod>
     <image:image>
-      <image:loc>https://www.vorka.mx/oleynickhdz/brandon.jpg</image:loc>
+      <image:loc>https://vorka.mx/oleynickhdz/brandon.jpg</image:loc>
     </image:image>
   </url>
   <url>
-    <loc>https://www.vorka.mx/oleynickhdz/conferencias/</loc>
+    <loc>https://vorka.mx/oleynickhdz/conferencias/</loc>
     <lastmod>2026-10-04</lastmod>
-    <image:image><image:loc>https://www.vorka.mx/oleynickhdz/conferencias/gallery-1.webp</image:loc></image:image>
-    <image:image><image:loc>https://www.vorka.mx/oleynickhdz/conferencias/gallery-2.webp</image:loc></image:image>
-    <image:image><image:loc>https://www.vorka.mx/oleynickhdz/conferencias/gallery-3.webp</image:loc></image:image>
-    <image:image><image:loc>https://www.vorka.mx/oleynickhdz/conferencias/gallery-4.webp</image:loc></image:image>
-    <image:image><image:loc>https://www.vorka.mx/oleynickhdz/conferencias/gallery-5.webp</image:loc></image:image>
-    <image:image><image:loc>https://www.vorka.mx/oleynickhdz/conferencias/gallery-6.webp</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-1.webp</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-2.webp</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-3.webp</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-4.webp</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-5.webp</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-6.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://www.vorka.mx/oleynickhdz/proyecto-social/</loc>
+    <loc>https://vorka.mx/oleynickhdz/proyecto-social/</loc>
     <lastmod>2026-10-04</lastmod>
   </url>
   <url>
-    <loc>https://www.vorka.mx/oleynickhdz/servicios/</loc>
+    <loc>https://vorka.mx/oleynickhdz/servicios/</loc>
     <lastmod>2026-10-04</lastmod>
   </url>
 </urlset>

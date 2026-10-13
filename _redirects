@@ -11,3 +11,9 @@
 /impacto/*                   https://soyimpacto.org/:splat           301
 /conferenciadeimpacto        https://soyimpacto.org/conferenciadeimpacto/        301
 /conferenciadeimpacto/*      https://soyimpacto.org/conferenciadeimpacto/:splat  301
+
+# Enlaces del sitio viejo de Canva
+/celaya          /sparks/celaya/   301
+/celaya/*        /sparks/celaya/   301
+/services        /servicios        301
+/services/*      /servicios        301
