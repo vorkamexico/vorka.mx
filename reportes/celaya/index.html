@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reporte privado · Vorka México</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#FBFAF8">
+<link rel="icon" href="/assets/v3/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/v3/vorka.css?v=3">
+<style>
+/* Reporte privado — el contenido viene cifrado en datos.bin; la llave va en la liga después de '#'. */
+:root { --ig: #6B2A85; --fb: #3B5BA9; --tt: #141114; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font, Inter, system-ui, sans-serif); margin: 0; }
+.rp-wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.rp-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+.rp-top a { display: flex; align-items: center; gap: 8px; color: var(--fg); text-decoration: none; font-weight: 800; letter-spacing: -.02em; }
+.rp-top img { width: 22px; height: 22px; }
+.rp-priv { font-size: 12px; font-weight: 600; color: var(--fg-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; display: inline-flex; gap: 6px; align-items: center; }
+.rp-priv svg { width: 13px; height: 13px; }
+
+.rp-hero { background: var(--noche); color: #fff; border-radius: 22px; padding: clamp(28px, 6vw, 56px); position: relative; overflow: hidden; margin-top: 4px; }
+.rp-hero::after { content: ""; position: absolute; right: -60px; top: -40px; width: 320px; height: 320px; background: linear-gradient(145deg, var(--morado), transparent 70%); transform: skewX(-12deg); opacity: .55; }
+.rp-hero > * { position: relative; z-index: 1; }
+.rp-k { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--oro); }
+.rp-hero h1 { font-size: clamp(34px, 6.5vw, 64px); line-height: 1; letter-spacing: -.04em; margin: 12px 0 10px; font-weight: 800; }
+.rp-hero p { color: rgba(255,255,255,.72); margin: 0; font-size: 16px; }
+.rp-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 32px; }
+.rp-kpi { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 16px; }
+.rp-kpi b { display: block; font-size: clamp(22px, 3.4vw, 34px); letter-spacing: -.03em; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rp-kpi span { font-size: 13px; color: rgba(255,255,255,.65); }
+@media (max-width: 760px) { .rp-kpis { grid-template-columns: 1fr 1fr; } }
+
+.rp-sec { margin: 44px 0; }
+.rp-sec h2 { font-size: clamp(22px, 3vw, 30px); letter-spacing: -.03em; margin: 0 0 6px; }
+.rp-sub { color: var(--fg-2); margin: 0 0 20px; font-size: 15px; }
+
+/* Gráfica de barras: una serie, un color, valores directos, detalle al pasar el cursor */
+.rp-chart { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 22px 18px 14px; }
+.rp-bars { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; align-items: end; height: 240px; position: relative; border-bottom: 1px solid var(--line); }
+.rp-bar { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; cursor: default; outline: none; }
+.rp-bar i { display: block; width: min(56px, 70%); background: var(--morado); border-radius: 4px 4px 0 0; transition: opacity .2s; }
+.rp-bars:hover .rp-bar i, .rp-bars:focus-within .rp-bar i { opacity: .45; }
+.rp-bars .rp-bar:hover i, .rp-bars .rp-bar:focus i { opacity: 1; }
+.rp-bar em { font-style: normal; font-size: 13px; font-weight: 700; color: var(--fg); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.rp-labels { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-top: 8px; }
+.rp-labels span { text-align: center; font-size: 13px; color: var(--fg-2); }
+.rp-tip { position: absolute; pointer-events: none; background: var(--noche); color: #fff; font-size: 13px; line-height: 1.45; padding: 10px 12px; border-radius: 10px; white-space: nowrap; transform: translate(-50%, -100%); opacity: 0; transition: opacity .15s; z-index: 5; box-shadow: var(--sombra); }
+.rp-tip b { font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .rp-bar em { font-size: 11px; } .rp-bars { height: 200px; gap: 6px; } }
+
+/* Meses */
+.rp-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+.rp-tabs button { font: inherit; font-size: 14px; font-weight: 600; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 9px 16px; border-radius: 999px; cursor: pointer; }
+.rp-tabs button[aria-selected="true"] { background: var(--fg); color: #fff; border-color: var(--fg); }
+.rp-mes-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.rp-mes-h h3 { font-size: clamp(28px, 5vw, 44px); letter-spacing: -.04em; margin: 0; font-weight: 800; }
+.rp-mes-h p { margin: 0; color: var(--fg-2); font-size: 15px; }
+.rp-mes-h p b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.rp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; }
+.rp-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.rp-card .im { aspect-ratio: 3 / 4; background: var(--bg-3); position: relative; }
+.rp-card .im img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rp-card .tag { position: absolute; left: 8px; top: 8px; background: var(--oro); color: var(--noche); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 6px; }
+.rp-card .tx { padding: 12px 14px 14px; display: grid; gap: 8px; }
+.rp-card .tot { font-size: 22px; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.rp-card .tot small { font-size: 12px; font-weight: 600; color: var(--fg-3); letter-spacing: 0; margin-left: 4px; }
+.rp-plat { display: grid; gap: 4px; font-size: 13px; color: var(--fg-2); }
+.rp-plat div { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.rp-plat div span:first-child { display: inline-flex; align-items: center; gap: 6px; }
+.rp-plat i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.rp-plat b { color: var(--fg); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+.rp-tabla { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.rp-tabla th, .rp-tabla td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.rp-tabla th:first-child, .rp-tabla td:first-child { text-align: left; }
+.rp-tabla th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--fg-3); font-weight: 700; }
+.rp-tabla tr:last-child td { border-bottom: 0; font-weight: 800; }
+.rp-tabla-w { overflow-x: auto; }
+.rp-nota { font-size: 13px; color: var(--fg-3); margin-top: 12px; }
+
+.rp-foot { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--fg-2); font-size: 14px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.rp-foot a { color: var(--fg); font-weight: 600; }
+
+.rp-lock { min-height: 70vh; display: grid; place-items: center; text-align: center; padding: 40px 16px; }
+.rp-lock h1 { font-size: 30px; letter-spacing: -.03em; margin: 14px 0 8px; }
+.rp-lock p { color: var(--fg-2); max-width: 420px; margin: 0 auto; }
+.rp-lock svg { width: 40px; height: 40px; color: var(--morado); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="rp-wrap">
+  <header class="rp-top">
+    <a href="/" aria-label="Vorka México"><img src="/assets/v3/icono.svg" alt=""> Vorka <span style="font-weight:500;color:var(--fg-3)">México</span></a>
+    <span class="rp-priv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Reporte privado</span>
+  </header>
+
+  <main id="app">
+    <div class="rp-lock" id="estado">
+      <div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <h1 id="estado-t">Abriendo reporte…</h1>
+        <p id="estado-p">Un momento.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="rp-foot">
+    <span>Elaborado por <a href="/">Vorka México</a> · Vorka Sparks</span>
+    <span>Documento confidencial. No compartir esta liga.</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var fmt = new Intl.NumberFormat("es-MX");
+  function el(tag, attrs, html) { var e = document.createElement(tag); for (var k in attrs || {}) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+  function bloqueado(t, p) { document.getElementById("estado-t").textContent = t; document.getElementById("estado-p").textContent = p; }
+
+  function b64url(s) { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+
+  async function abrir() {
+    var llave = (location.hash || "").replace(/^#/, "").trim();
+    if (!llave) return bloqueado("Esta liga es privada", "Para ver el reporte necesitas la liga completa que te compartió Vorka México.");
+    if (!window.crypto || !crypto.subtle) return bloqueado("Navegador no compatible", "Abre la liga en una versión reciente de Chrome, Safari, Edge o Firefox.");
+    try {
+      var k = await crypto.subtle.importKey("raw", b64url(llave), "AES-GCM", false, ["decrypt"]);
+      var r = await fetch("datos.bin", { cache: "no-cache" });
+      if (!r.ok) throw new Error("http " + r.status);
+      var buf = new Uint8Array(await r.arrayBuffer());
+      var plano = await crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, k, buf.slice(12));
+      pintar(JSON.parse(new TextDecoder().decode(plano)));
+    } catch (e) {
+      bloqueado("No se pudo abrir el reporte", "La liga está incompleta o cambió. Pide a Vorka México la liga actualizada.");
+    }
+  }
+
+  function plataformas(n) {
+    if (n.length === 3) {
+      var et = [["Instagram", "var(--ig)"], ["Facebook", "var(--fb)"], ["TikTok", "var(--tt)"]];
+      return n.map(function (v, i) { return '<div><span><i style="background:' + et[i][1] + '"></i>' + et[i][0] + '</span><b>' + fmt.format(v) + '</b></div>'; }).join("");
+    }
+    return '<div><span>Desglose</span><b>' + n.map(function (v) { return fmt.format(v); }).join(" + ") + '</b></div>';
+  }
+
+  function pintar(d) {
+    document.title = d.titulo + " · " + d.periodo + " · Vorka México";
+    var app = document.getElementById("app"); app.innerHTML = "";
+    var totMes = d.meses.map(function (m) { return sum(m.piezas.map(function (p) { return sum(p.n); })); });
+    var total = sum(totMes), piezas = sum(d.meses.map(function (m) { return m.piezas.length; }));
+    var mejor = totMes.indexOf(Math.max.apply(null, totMes));
+
+    app.appendChild(el("section", { class: "rp-hero" },
+      '<div class="rp-k">' + esc(d.cliente) + ' · ' + esc(d.periodo) + '</div>' +
+      '<h1>' + esc(d.titulo) + '</h1><p>' + esc(d.lema) + '. Alcance de las publicaciones de Vorka Sparks en Instagram, Facebook y TikTok.</p>' +
+      '<div class="rp-kpis">' +
+        '<div class="rp-kpi"><b>' + fmt.format(total) + '</b><span>Alcance total</span></div>' +
+        '<div class="rp-kpi"><b>' + piezas + '</b><span>Publicaciones</span></div>' +
+        '<div class="rp-kpi"><b>' + fmt.format(Math.round(total / piezas)) + '</b><span>Alcance promedio por publicación</span></div>' +
+        '<div class="rp-kpi"><b>' + esc(d.meses[mejor].mes) + '</b><span>Mes con mayor alcance (' + fmt.format(totMes[mejor]) + ')</span></div>' +
+      '</div>'));
+
+    // Gráfica
+    var max = Math.max.apply(null, totMes);
+    var sec = el("section", { class: "rp-sec" }, '<h2>Alcance por mes</h2><p class="rp-sub">Suma del alcance de las publicaciones de cada mes, en todas las plataformas.</p>');
+    var chart = el("div", { class: "rp-chart" });
+    var bars = el("div", { class: "rp-bars", role: "img", "aria-label": "Alcance por mes: " + d.meses.map(function (m, i) { return m.mes + " " + fmt.format(totMes[i]); }).join(", ") });
+    var tip = el("div", { class: "rp-tip" });
+    var labels = el("div", { class: "rp-labels" });
+    d.meses.forEach(function (m, i) {
+      var b = el("div", { class: "rp-bar", tabindex: "0" }, '<em>' + fmt.format(totMes[i]) + '</em><i style="height:' + (totMes[i] / max * 82).toFixed(1) + '%"></i>');
+      function mostrar() {
+        tip.innerHTML = '<b>' + esc(m.mes) + '</b><br>Alcance: <b>' + fmt.format(totMes[i]) + '</b><br>' + m.piezas.length + ' publicaciones · ' + Math.round(totMes[i] / total * 100) + '% del total';
+        var r = b.getBoundingClientRect(), rb = bars.getBoundingClientRect();
+        tip.style.left = Math.min(Math.max(r.left - rb.left + r.width / 2, 90), rb.width - 90) + "px";
+        tip.style.top = (b.querySelector("i").getBoundingClientRect().top - rb.top - 30) + "px";
+        tip.style.opacity = 1;
+      }
+      b.addEventListener("mouseenter", mostrar); b.addEventListener("focus", mostrar);
+      b.addEventListener("mouseleave", function () { tip.style.opacity = 0; }); b.addEventListener("blur", function () { tip.style.opacity = 0; });
+      b.addEventListener("click", function () { elegir(i, true); });
+      bars.appendChild(b);
+      labels.appendChild(el("span", {}, esc(m.mes)));
+    });
+    bars.appendChild(tip);
+    chart.appendChild(bars); chart.appendChild(labels); sec.appendChild(chart);
+    app.appendChild(sec);
+
+    // Publicaciones por mes
+    var pub = el("section", { class: "rp-sec", id: "publicaciones" }, '<h2>Publicaciones</h2><p class="rp-sub">Cada mes: cuatro publicaciones y dos destacadas, con su alcance.</p>');
+    var tabs = el("div", { class: "rp-tabs", role: "tablist" });
+    var panel = el("div", { role: "tabpanel" });
+    d.meses.forEach(function (m, i) {
+      var t = el("button", { role: "tab", type: "button", "aria-selected": "false" }, esc(m.mes));
+      t.addEventListener("click", function () { elegir(i); });
+      tabs.appendChild(t);
+    });
+    function elegir(i, bajar) {
+      [].forEach.call(tabs.children, function (t, j) { t.setAttribute("aria-selected", j === i ? "true" : "false"); });
+      var m = d.meses[i];
+      panel.innerHTML = '<div class="rp-mes-h"><h3>' + esc(m.mes) + '</h3><p>Alcance del mes: <b>' + fmt.format(totMes[i]) + '</b></p></div>';
+      var g = el("div", { class: "rp-grid" });
+      m.piezas.forEach(function (p, j) {
+        g.appendChild(el("article", { class: "rp-card" },
+          '<div class="im"><img alt="Publicación ' + (j + 1) + ' de ' + esc(m.mes) + '" src="' + p.img + '" loading="lazy">' + (p.tipo === "destacada" ? '<span class="tag">Destacada</span>' : '') + '</div>' +
+          '<div class="tx"><div class="tot">' + fmt.format(sum(p.n)) + '<small>alcance</small></div><div class="rp-plat">' + plataformas(p.n) + '</div></div>'));
+      });
+      panel.appendChild(g);
+      if (bajar) pub.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    pub.appendChild(tabs); pub.appendChild(panel); app.appendChild(pub);
+    elegir(0);
+
+    // Tabla resumen
+    var filas = d.meses.map(function (m, i) {
+      return '<tr><td>' + esc(m.mes) + '</td><td>' + m.piezas.length + '</td><td>' + fmt.format(totMes[i]) + '</td><td>' + fmt.format(Math.round(totMes[i] / m.piezas.length)) + '</td><td>' + fmt.format(Math.max.apply(null, m.piezas.map(function (p) { return sum(p.n); }))) + '</td></tr>';
+    }).join("");
+    app.appendChild(el("section", { class: "rp-sec" },
+      '<h2>Resumen</h2><div class="rp-tabla-w"><table class="rp-tabla"><thead><tr><th>Mes</th><th>Publicaciones</th><th>Alcance</th><th>Promedio</th><th>Mejor publicación</th></tr></thead><tbody>' +
+      filas + '<tr><td>Total</td><td>' + piezas + '</td><td>' + fmt.format(total) + '</td><td>' + fmt.format(Math.round(total / piezas)) + '</td><td>' + fmt.format(Math.max.apply(null, [].concat.apply([], d.meses.map(function (m) { return m.piezas.map(function (p) { return sum(p.n); }); })))) + '</td></tr></tbody></table></div>' +
+      '<p class="rp-nota">Alcance = cuentas únicas que vieron cada publicación, sumado por plataforma. Cuando una publicación muestra tres cifras, son Instagram, Facebook y TikTok; cuando muestra dos, se suman tal como se reportaron.</p>'));
+  }
+
+  abrir();
+  window.addEventListener("hashchange", function () { location.reload(); });
+})();
+</script>
+</body>
+</html>

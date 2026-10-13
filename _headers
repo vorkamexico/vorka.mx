@@ -1,0 +1,4 @@
+/reportes/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  Referrer-Policy: no-referrer
+  Cache-Control: private, max-age=300
