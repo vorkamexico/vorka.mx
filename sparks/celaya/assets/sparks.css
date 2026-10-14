@@ -252,36 +252,40 @@ h1,h2,h3{margin:0;text-wrap:balance}
 @media (min-width:860px){.cta-historia{grid-template-columns:1fr auto}}
 .art-body blockquote{margin:32px 0;padding:6px 0 6px 22px;border-left:3px solid #C8A45C;font-family:var(--serif);font-size:clamp(21px,2.4vw,26px);line-height:1.45;font-style:italic;color:var(--ink)}
 
-/* ---------- intro de la ciudad ---------- */
-.intro{--i-bg:#0B0A09;--i-fg:#F4F1EA;--i-fg2:rgba(244,241,234,.74);--i-fg3:rgba(244,241,234,.52);--i-oro:#D9B76E;--i-mor:#C9A6DA;
-  position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:center;
-  margin:clamp(24px,4vw,40px) 0 clamp(8px,2vw,16px);padding:clamp(28px,5vw,64px);border-radius:28px;background:var(--i-bg);color:var(--i-fg);overflow:hidden;isolation:isolate}
-.intro::before{content:"";position:absolute;inset:auto auto -30% -20%;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(201,166,218,.18),transparent 70%);z-index:-1;pointer-events:none}
-.intro::after{content:"";position:absolute;inset:-25% -15% auto auto;width:55%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(217,183,110,.14),transparent 70%);z-index:-1;pointer-events:none}
-.intro-foto{margin:0;align-self:stretch;display:grid;place-items:center}
-.intro-foto img{width:118%;max-width:600px;height:auto;display:block;mix-blend-mode:lighten;margin:-6% -9%}
-.intro .eyebrow{color:var(--i-oro)}
-.intro-t{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,4.2vw,3.4rem);line-height:1.02;letter-spacing:-.03em;margin:14px 0 22px;text-wrap:balance}
-.intro-t em{font-style:italic;color:var(--i-mor)}
-.intro-p{color:var(--i-fg2);font-size:clamp(1rem,1.25vw,1.12rem);line-height:1.7;margin:0 0 14px;max-width:62ch}
-.intro-p:first-of-type{color:var(--i-fg);font-size:clamp(1.08rem,1.45vw,1.28rem)}
-.intro-frase{font-family:var(--serif);font-style:italic;font-size:clamp(1.12rem,1.6vw,1.35rem);line-height:1.45;color:var(--i-fg);border-left:3px solid var(--i-oro);padding:4px 0 4px 18px;margin:22px 0}
-.intro-construye h3{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--i-fg3);margin:0 0 12px}
-.intro-construye ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.intro-construye li{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:14.5px;line-height:1.45;color:var(--i-fg)}
-.intro-mas{margin-top:18px}
-.intro-mas summary{display:inline-flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:14px;font-weight:600;color:var(--i-fg);padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.22)}
-.intro-mas summary::-webkit-details-marker{display:none}
-.intro-mas summary:hover{background:rgba(255,255,255,.08)}
-.intro-mas .cerrar,.intro-mas[open] .abrir{display:none}.intro-mas[open] .cerrar{display:inline}
-.intro-mas p{color:var(--i-fg2);line-height:1.7;margin:16px 0 0;max-width:62ch}
-.intro-cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12)}
-.intro-cierre p{margin:0;font-family:var(--serif);font-size:clamp(1.2rem,1.9vw,1.6rem);line-height:1.25;color:var(--i-fg2)}
-.intro-cierre b{color:var(--i-oro);font-weight:700}
-.intro-ir{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;background:var(--i-fg);color:#141210;font-size:14px;font-weight:700;white-space:nowrap}
+/* ---------- intro de la ciudad: el texto vive sobre la foto ---------- */
+.intro{--i-negro:#000;--i-fg:#F4EEE4;--i-fg2:rgba(244,238,228,.76);--i-lila:#CBA7DC;--i-oro:#D8B46A;margin:clamp(22px,4vw,40px) 0 clamp(6px,2vw,12px)}
+.intro-panel{position:relative;isolation:isolate;overflow:hidden;border-radius:28px;background:var(--i-negro);color:var(--i-fg);min-height:clamp(540px,46vw,640px);display:flex;align-items:center}
+.intro-foto{position:absolute;z-index:-2;right:0;top:50%;height:118%;width:auto;max-width:none;transform:translateY(-50%);mix-blend-mode:lighten}
+.intro-panel::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#000 0%,#000 34%,rgba(0,0,0,.72) 50%,rgba(0,0,0,0) 72%);pointer-events:none}
+.intro-txt{position:relative;width:min(560px,58%);padding:clamp(32px,5vw,64px)}
+.intro-lugar{margin:0 0 18px;font-size:13.5px;font-weight:600;letter-spacing:.02em;color:var(--i-oro)}
+.intro-t{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,4.4vw,3.6rem);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px;color:var(--i-fg);text-wrap:balance}
+.intro-lead{font-size:clamp(1.02rem,1.3vw,1.14rem);line-height:1.62;color:var(--i-fg2);margin:0 0 26px;max-width:46ch}
+.intro-construye{border-left:2px solid var(--i-lila);padding:2px 0 2px 16px;margin:0 0 30px}
+.intro-construye p{margin:0 0 8px;font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--i-lila)}
+.intro-construye ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.intro-construye li{font-size:14.5px;line-height:1.45;color:var(--i-fg)}
+.intro-ir{display:inline-flex;align-items:center;padding:13px 24px;border-radius:999px;background:var(--i-fg);color:#000;font-size:14.5px;font-weight:700;transition:background .2s}
 .intro-ir:hover{background:#fff}
+.intro-ir:focus-visible,.intro-mas summary:focus-visible{outline:2px solid var(--i-lila);outline-offset:3px}
+.intro-mas{max-width:68ch;margin:18px auto 0}
+.intro-mas summary{display:flex;justify-content:center;cursor:pointer;list-style:none;font-size:14.5px;font-weight:600;color:var(--ink-2);padding:10px 0}
+.intro-mas summary::-webkit-details-marker{display:none}
+.intro-mas summary span{border-bottom:1px solid var(--line-strong);padding-bottom:2px}
+.intro-mas summary:hover span{color:var(--ink);border-color:var(--ink)}
+.intro-mas .cerrar,.intro-mas[open] .abrir{display:none}.intro-mas[open] .cerrar{display:inline}
+.intro-lectura{padding:10px 0 18px;font-family:var(--serif);font-size:1.12rem;line-height:1.78;color:var(--ink)}
+.intro-lectura p{margin:0 0 1.05em}
+.intro-lectura blockquote{margin:1.4em 0;padding:0 0 0 20px;border-left:3px solid var(--accent);font-style:italic;font-size:1.3rem;line-height:1.5}
+.intro-lectura .intro-final{font-size:1.25rem}
+.intro-lectura .intro-final b{color:var(--accent)}
 @media (max-width:860px){
-  .intro{grid-template-columns:1fr;padding:26px 20px 28px;border-radius:22px}
-  .intro-foto img{width:100%;max-width:320px;margin:-4% auto -14%}
-  .intro-construye ul{grid-template-columns:1fr}
+  .intro-panel{display:block;min-height:0;border-radius:22px}
+  .intro-foto{position:relative;display:block;width:100%;height:auto;max-height:none;transform:none;margin:0 auto -38%;top:0}
+  .intro-panel::before{background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 34%,#000 58%)}
+  .intro-txt{width:auto;padding:0 22px 30px}
+  .intro-t{font-size:clamp(2rem,9vw,2.6rem)}
+  .intro-ir{width:100%;justify-content:center}
 }
+@media (prefers-reduced-motion:no-preference){.intro-foto{animation:intro-entra 1.2s cubic-bezier(.2,.8,.2,1) both}@keyframes intro-entra{from{opacity:0;transform:translateY(-50%) scale(1.04)}to{opacity:1;transform:translateY(-50%) scale(1)}}}
+@media (prefers-reduced-motion:no-preference) and (max-width:860px){.intro-foto{animation-name:intro-entra-m}@keyframes intro-entra-m{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}}
