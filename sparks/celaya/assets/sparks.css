@@ -252,22 +252,27 @@ h1,h2,h3{margin:0;text-wrap:balance}
 @media (min-width:860px){.cta-historia{grid-template-columns:1fr auto}}
 .art-body blockquote{margin:32px 0;padding:6px 0 6px 22px;border-left:3px solid #C8A45C;font-family:var(--serif);font-size:clamp(21px,2.4vw,26px);line-height:1.45;font-style:italic;color:var(--ink)}
 
-/* ---------- intro de la ciudad: el texto vive sobre la foto ---------- */
-.intro{--i-negro:#000;--i-fg:#F4EEE4;--i-fg2:rgba(244,238,228,.76);--i-lila:#CBA7DC;--i-oro:#D8B46A;margin:clamp(22px,4vw,40px) 0 clamp(6px,2vw,12px)}
-.intro-panel{position:relative;isolation:isolate;overflow:hidden;border-radius:28px;background:var(--i-negro);color:var(--i-fg);min-height:clamp(540px,46vw,640px);display:flex;align-items:center}
-.intro-foto{position:absolute;z-index:-2;right:0;top:50%;height:118%;width:auto;max-width:none;transform:translateY(-50%);mix-blend-mode:lighten}
-.intro-panel::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#000 0%,#000 34%,rgba(0,0,0,.72) 50%,rgba(0,0,0,0) 72%);pointer-events:none}
-.intro-txt{position:relative;width:min(560px,58%);padding:clamp(32px,5vw,64px)}
-.intro-lugar{margin:0 0 18px;font-size:13.5px;font-weight:600;letter-spacing:.02em;color:var(--i-oro)}
-.intro-t{font-family:var(--serif);font-weight:700;font-size:clamp(2.2rem,4.4vw,3.6rem);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px;color:var(--i-fg);text-wrap:balance}
-.intro-lead{font-size:clamp(1.02rem,1.3vw,1.14rem);line-height:1.62;color:var(--i-fg2);margin:0 0 26px;max-width:46ch}
-.intro-construye{border-left:2px solid var(--i-lila);padding:2px 0 2px 16px;margin:0 0 30px}
-.intro-construye p{margin:0 0 8px;font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--i-lila)}
-.intro-construye ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
-.intro-construye li{font-size:14.5px;line-height:1.45;color:var(--i-fg)}
-.intro-ir{display:inline-flex;align-items:center;padding:13px 24px;border-radius:999px;background:var(--i-fg);color:#000;font-size:14.5px;font-weight:700;transition:background .2s}
+/* ---------- intro de la ciudad: fotos de Celaya y el texto sobre la principal ---------- */
+.intro{margin:clamp(22px,4vw,40px) 0 clamp(8px,2vw,16px)}
+.intro figure{margin:0;overflow:hidden;border-radius:20px;background:var(--paper-3)}
+.intro figure img{display:block;width:100%;height:100%;object-fit:cover}
+.intro-mosaico{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:12px;height:clamp(420px,44vw,600px)}
+.intro-hero{position:relative;isolation:isolate}
+.intro-hero::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(20,14,8,0) 30%,rgba(20,14,8,.32) 55%,rgba(20,14,8,.86) 100%);pointer-events:none}
+.intro-hero figcaption{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:clamp(22px,3.6vw,44px);color:#FBF6EE}
+.intro-lugar{margin:0 0 10px;font-size:14px;font-weight:600;color:#F2D9A8}
+.intro-t{font-family:var(--serif);font-weight:700;font-size:clamp(2.1rem,4.2vw,3.6rem);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px;max-width:15ch;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.25)}
+.intro-ir{display:inline-flex;align-items:center;padding:12px 22px;border-radius:999px;background:#FBF6EE;color:#1a140d;font-size:14.5px;font-weight:700;transition:background .2s}
 .intro-ir:hover{background:#fff}
-.intro-ir:focus-visible,.intro-mas summary:focus-visible{outline:2px solid var(--i-lila);outline-offset:3px}
+.intro-ir:focus-visible,.intro-mas summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.intro-cuerpo{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);padding:clamp(24px,3.4vw,40px) clamp(4px,1vw,12px) 6px}
+.intro-lead{margin:0;font-family:var(--serif);font-size:clamp(1.18rem,1.7vw,1.42rem);line-height:1.55;color:var(--ink)}
+.intro-construye{border-left:2px solid var(--accent);padding:2px 0 2px 18px}
+.intro-construye p{margin:0 0 10px;font-family:var(--serif);font-style:italic;font-size:1.08rem;color:var(--accent)}
+.intro-construye ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.intro-construye li{font-size:15px;line-height:1.45;color:var(--ink-2)}
+.intro-tira{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:clamp(20px,3vw,32px)}
+.intro-tira figure{aspect-ratio:4/3}
 .intro-mas{max-width:68ch;margin:18px auto 0}
 .intro-mas summary{display:flex;justify-content:center;cursor:pointer;list-style:none;font-size:14.5px;font-weight:600;color:var(--ink-2);padding:10px 0}
 .intro-mas summary::-webkit-details-marker{display:none}
@@ -279,13 +284,34 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .intro-lectura blockquote{margin:1.4em 0;padding:0 0 0 20px;border-left:3px solid var(--accent);font-style:italic;font-size:1.3rem;line-height:1.5}
 .intro-lectura .intro-final{font-size:1.25rem}
 .intro-lectura .intro-final b{color:var(--accent)}
+.intro-credito{margin:6px 0 0;text-align:center;font-size:12px;color:var(--ink-3)}
 @media (max-width:860px){
-  .intro-panel{display:block;min-height:0;border-radius:22px}
-  .intro-foto{position:relative;display:block;width:100%;height:auto;max-height:none;transform:none;margin:0 auto -38%;top:0}
-  .intro-panel::before{background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0) 34%,#000 58%)}
-  .intro-txt{width:auto;padding:0 22px 30px}
-  .intro-t{font-size:clamp(2rem,9vw,2.6rem)}
-  .intro-ir{width:100%;justify-content:center}
+  .intro-mosaico{grid-template-columns:1fr;height:auto}
+  .intro-hero{aspect-ratio:4/5}
+  .intro-hero img{object-position:30% 50%}
+  .intro-lado{display:none}
+  .intro-cuerpo{grid-template-columns:1fr;padding:22px 2px 0}
+  .intro-tira{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-right:calc(-1 * var(--shell-x));padding-right:var(--shell-x);scrollbar-width:none}
+  .intro-tira::-webkit-scrollbar{display:none}
+  .intro-tira figure{flex:0 0 72%;scroll-snap-align:start}
 }
-@media (prefers-reduced-motion:no-preference){.intro-foto{animation:intro-entra 1.2s cubic-bezier(.2,.8,.2,1) both}@keyframes intro-entra{from{opacity:0;transform:translateY(-50%) scale(1.04)}to{opacity:1;transform:translateY(-50%) scale(1)}}}
-@media (prefers-reduced-motion:no-preference) and (max-width:860px){.intro-foto{animation-name:intro-entra-m}@keyframes intro-entra-m{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}}
+
+/* ---------- boletín en cada historia ---------- */
+.bol{margin:clamp(36px,5vw,56px) 0 8px;padding:clamp(22px,3.4vw,34px);border-radius:22px;background:var(--paper-2);border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px 28px;align-items:center}
+.bol h2{margin:0 0 8px;font-family:var(--serif);font-size:clamp(1.35rem,2.2vw,1.7rem);line-height:1.15;letter-spacing:-.02em}
+.bol p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.55}
+.bol-f{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bol-f input[type=email],.bol-f input[name=nombre]{font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:1px solid var(--line-strong);background:var(--paper);color:var(--ink);min-width:0}
+.bol-f input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.bol-ok{grid-column:1/-1;display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink-2);line-height:1.45}
+.bol-ok input{margin-top:2px;accent-color:var(--accent)}
+.bol-ok a{text-decoration:underline}
+.bol,.bol input,.bol button{font-family:var(--sans)}
+.art-body .bol-f .btn{grid-column:1/-1;justify-content:center;color:var(--paper);background:var(--ink);font-size:15px;padding:14px 26px}
+.art-body .bol-f .btn:hover{background:var(--accent);border-color:var(--accent)}
+.art-body .bol p{margin:0}
+.art-body .bol .bol-ok a{color:var(--accent)}
+.bol-msg{grid-column:1/-1;min-height:1em;font-size:13.5px;color:var(--terra)!important}
+.bol-trampa{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.bol-listo{grid-column:1/-1;font-size:15.5px!important;color:var(--ink)!important}
+@media (max-width:720px){.bol{grid-template-columns:1fr}.bol-f{grid-template-columns:1fr}}
