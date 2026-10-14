@@ -354,8 +354,18 @@ class Sitio:
         partes = []
         if n["persona"]:
             partes.append('<span class="who">%s</span>' % esc(n["persona"]))
-        partes.append('<time datetime="%s">%s</time>' % (n["_d"].strftime("%Y-%m-%d"), fecha_corta(n["_d"])))
-        return '<div class="meta">%s</div>' % '<span class="dot" aria-hidden="true">·</span>'.join(partes)
+        # Sin fecha visible: las historias de la revista no caducan
+        return '<div class="meta">%s</div>' % '<span class="dot" aria-hidden="true">·</span>'.join(partes) if partes else ''
+
+    # Caja de suscripción al boletín semanal (se guarda en os.vorka.mx, desde donde sale el boletín)
+    def caja_boletin(self):
+        return ('<aside class="bol" aria-labelledby="bol-t"><div class="bol-tx"><h2 id="bol-t">Una historia así, cada semana en tu correo</h2>'
+                '<p>El boletín de la Revista Sparks: lo nuevo de %s y de la gente que está moviendo su comunidad. Una vez por semana, sin spam.</p></div>'
+                '<form class="bol-f" data-boletin novalidate><input name="nombre" placeholder="Tu nombre" autocomplete="name" aria-label="Nombre">'
+                '<input name="correo" type="email" placeholder="Tu correo" autocomplete="email" aria-label="Correo">'
+                '<input class="bol-trampa" name="sitio" tabindex="-1" autocomplete="off" aria-hidden="true">'
+                '<label class="bol-ok"><input type="checkbox" name="acepto" value="1"><span>Acepto recibir el boletín y el <a href="/privacidad/">aviso de privacidad</a>.</span></label>'
+                '<button class="btn btn-solid" type="submit">Suscribirme</button><p class="bol-msg" role="status"></p></form></aside>') % esc(self.cfg["ciudad"].split(",")[0])
 
     def kicker(self, n):
         return '<span class="kicker tone-%s">%s</span>' % (tono(n["categoria"]), esc(n["categoria"]))
@@ -492,18 +502,21 @@ class Sitio:
         i = self.cfg.get("intro")
         if not i:
             return ""
-        foto = ""
-        if i.get("foto"):
-            b = "%s/assets/%s" % (self.base, i["foto"])
-            foto = ('<img class="intro-foto" src="%s-900.webp" srcset="%s-600.webp 600w, %s-900.webp 900w" '
-                    'sizes="(min-width:900px) 46vw, 100vw" width="900" height="1350" alt="%s" fetchpriority="high" decoding="async">') % (
-                b, b, b, esc(i.get("fotoAlt", "")))
+        f = i.get("fotos", {})
+
+        def img(x, sizes, clase="", eager=False):
+            if not x:
+                return ""
+            base = "%s/assets/%s" % (self.base, x["src"])
+            a = x.get("anchos", [900])
+            return ('<img class="%s" src="%s-%d.webp" srcset="%s" sizes="%s" alt="%s" decoding="async"%s>') % (
+                clase, base, a[-1], ", ".join("%s-%d.webp %dw" % (base, w, w) for w in a), sizes, esc(x.get("alt", "")),
+                ' fetchpriority="high"' if eager else ' loading="lazy"')
+        parrafos = i.get("parrafos", [])
         construye = ""
         if i.get("construye"):
             construye = '<div class="intro-construye"><p>%s</p><ul>%s</ul></div>' % (
                 esc(i.get("construyeTitulo", "")), "".join("<li>%s</li>" % esc(x) for x in i["construye"]))
-        parrafos = i.get("parrafos", [])
-        lead = '<p class="intro-lead">%s</p>' % esc(parrafos[0]) if parrafos else ""
         lectura = "".join("<p>%s</p>" % esc(x) for x in parrafos[1:])
         if i.get("frase"):
             lectura += '<blockquote>%s</blockquote>' % esc(i["frase"])
@@ -512,10 +525,18 @@ class Sitio:
             lectura += '<p class="intro-final"><b>%s</b> %s</p>' % (esc(i["cierre"]), esc(i.get("cierreSub", "")))
         mas = ('<details class="intro-mas"><summary><span class="abrir">Leer la presentación completa</span><span class="cerrar">Cerrar</span></summary>'
                '<div class="intro-lectura">%s</div></details>' % lectura) if lectura else ""
-        return ('<section class="intro" aria-labelledby="intro-t"><div class="intro-panel">%s<div class="intro-txt">'
-                '<p class="intro-lugar">%s</p><h2 class="intro-t" id="intro-t">%s %s</h2>%s%s'
-                '<a class="intro-ir" href="#front">Leer sus historias</a></div></div>%s</section>') % (
-            foto, esc(i.get("etiqueta", "")), esc(i.get("titulo", "")), esc(i.get("acento", "")), lead, construye, mas)
+        tira = "".join('<figure>%s</figure>' % img(x, "(min-width:900px) 30vw, 70vw") for x in f.get("tira", []))
+        return ('<section class="intro" aria-labelledby="intro-t">'
+                '<div class="intro-mosaico"><figure class="intro-hero">%s<figcaption><p class="intro-lugar">%s</p>'
+                '<h2 class="intro-t" id="intro-t">%s %s</h2><a class="intro-ir" href="#front">Leer sus historias</a></figcaption></figure>'
+                '<figure class="intro-lado">%s</figure></div>'
+                '<div class="intro-cuerpo"><p class="intro-lead">%s</p>%s</div>'
+                '%s%s%s</section>') % (
+            img(f.get("principal"), "(min-width:900px) 66vw, 100vw", eager=True), esc(i.get("etiqueta", "")), esc(i.get("titulo", "")), esc(i.get("acento", "")),
+            img(f.get("lateral"), "(min-width:900px) 33vw, 1px"),
+            esc(parrafos[0]) if parrafos else "", construye,
+            '<div class="intro-tira">%s</div>' % tira if tira else "", mas,
+            '<p class="intro-credito">%s</p>' % esc(f["credito"]) if f.get("credito") else "")
 
     # ---- portada
 
@@ -592,7 +613,6 @@ class Sitio:
         meta = []
         if n["persona"]:
             meta.append('<span class="who-chip">%s</span>' % esc(n["persona"]))
-        meta.append('<time datetime="%s">%s</time>' % (n["_d"].strftime("%Y-%m-%d"), fecha_larga(n["_d"])))
         if n["autor"]:
             meta.append("<span>Por %s</span>" % esc(n["autor"]))
         meta.append("<span>%d min de lectura</span>" % minutos)
@@ -645,14 +665,14 @@ class Sitio:
 <nav class="crumbs" aria-label="Ruta"><a href="{base}/">{nombre}</a><span aria-hidden="true">/</span><a href="{base}/?categoria={cs}">{cat}</a></nav>
 <header class="art-head">{kicker}<h1 class="art-title">{titulo}</h1><p class="art-deck">{resumen}</p><div class="art-meta">{meta}</div></header>
 {portada}
-<div class="art-body">{texto}{anuncio}{video}{galeria}{etiquetas}{compartir}</div>
+<div class="art-body">{texto}{anuncio}{video}{galeria}{etiquetas}{compartir}{boletin}</div>
 </article>
 {rel}
 </div>""".format(base=self.base, nombre=esc(c["nombre"]), cs=esc(slug_cat(n["categoria"])), cat=esc(n["categoria"]),
                  kicker=self.kicker(n), titulo=esc(n["titulo"]), resumen=esc(n["resumen"]),
                  meta='<span class="dot" aria-hidden="true">·</span>'.join(meta), portada=portada,
                  texto="\n".join(bloques), anuncio=anuncio, video=video, galeria=galeria, etiquetas=etiquetas,
-                 compartir=compartir, rel=rel)
+                 compartir=compartir, rel=rel, boletin=self.caja_boletin())
 
         autor = {"@type": "Person", "name": n["autor"]} if n["autor"] else {"@type": "Organization", "name": "Vorka México"}
         jsonld = [{

@@ -90,7 +90,7 @@
       var fijas = notas.innerHTML;
       notas.innerHTML = j.n.slice(0, 2).map(function (n) {
         var im = n.i ? '<img src="' + esc(j.img + '/' + n.i + '-800.webp') + '" alt="" loading="lazy">' : '';
-        return '<a class="nota-h" href="/sparks/celaya/' + esc(n.s) + '/"><span class="im">' + im + '</span><span class="tx"><small>' + esc(n.c) + ' · ' + esc(n.f) + '</small><b>' + esc(n.t) + '</b></span></a>';
+        return '<a class="nota-h" href="/sparks/celaya/' + esc(n.s) + '/"><span class="im">' + im + '</span><span class="tx"><small>' + esc(n.c) + '</small><b>' + esc(n.t) + '</b></span></a>';
       }).join('');
       if (j.n.length < 2) { var t = d.createElement('div'); t.innerHTML = fijas; notas.appendChild(t.lastElementChild); }
     }).catch(function () {});

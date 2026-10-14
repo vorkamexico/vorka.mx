@@ -195,7 +195,7 @@ a.ed-caja:hover .ir-s { transform: translate(3px, -3px); }
   </div>
 </footer>
 
-<script src="/assets/v3/vorka.js?v=4" defer></script>
+<script src="/assets/v3/vorka.js?v=5" defer></script>
 <script>
 // Año dinámico
 document.getElementById('anio').textContent = new Date().getFullYear();
@@ -216,7 +216,7 @@ document.getElementById('anio').textContent = new Date().getFullYear();
     document.getElementById('lista').innerHTML = todas.map(function (x) {
       var n = x.n, url = '/sparks/' + x.e.slug + '/' + n.s + '/';
       return '<a class="historia" href="' + url + '"><div class="im">' + (n.i ? '<img src="' + esc(x.img) + '/' + esc(n.i) + '-800.webp" alt="' + esc(n.p || n.t) + '" loading="lazy">' : '') + '</div>' +
-        '<div class="tx"><span class="k">' + esc(x.e.nombre) + ' · ' + esc(n.c) + '</span><h3>' + esc(n.t) + '</h3><p>' + esc(n.r) + '</p><small>' + esc(n.p ? n.p + ' · ' : '') + esc(n.f) + '</small></div></a>';
+        '<div class="tx"><span class="k">' + esc(x.e.nombre) + ' · ' + esc(n.c) + '</span><h3>' + esc(n.t) + '</h3><p>' + esc(n.r) + '</p>' + (n.p ? '<small>' + esc(n.p) + '</small>' : '') + '</div></a>';
     }).join('');
   });
 })();

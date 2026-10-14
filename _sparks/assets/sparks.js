@@ -26,7 +26,7 @@
     var img = n.i
       ? '<img src="' + IMG + '/' + n.i + '-800.webp" srcset="' + IMG + '/' + n.i + '-800.webp 800w, ' + IMG + '/' + n.i + '-1600.webp 1600w" sizes="(min-width:1024px) 400px, (min-width:640px) 50vw, 120px" width="' + n.w + '" height="' + n.h + '" alt="' + esc(n.p || n.t) + '" loading="lazy" decoding="async">'
       : '<span class="noimg tone-' + n.o + '" aria-hidden="true"><b>' + esc(n.c) + '</b></span>';
-    var meta = (n.p ? '<span class="who">' + esc(n.p) + '</span><span class="dot" aria-hidden="true">·</span>' : '') + '<time datetime="' + n.d + '">' + esc(n.f) + '</time>';
+    var meta = n.p ? '<span class="who">' + esc(n.p) + '</span>' : '';
     return '<article class="card"><a class="card-link" href="' + BASE + '/' + n.s + '/"><div class="card-img">' + img + '</div>' +
       '<div class="card-body"><span class="kicker tone-' + n.o + '">' + esc(n.c) + '</span><h3 class="card-title">' + esc(n.t) + '</h3>' +
       '<p class="card-sum">' + esc(n.r) + '</p><div class="meta">' + meta + '</div></div></a></article>';
@@ -191,3 +191,20 @@
     }
   }
 })();
+
+// Boletín semanal desde cada historia: la suscripción queda en Vorka México (os.vorka.mx)
+document.querySelectorAll('[data-boletin]').forEach(function (f) {
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = f.querySelector('.bol-msg'), btn = f.querySelector('button');
+    var nombre = f.nombre.value.trim(), correo = f.correo.value.trim();
+    if (nombre.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { msg.textContent = 'Escribe tu nombre y un correo válido.'; return; }
+    if (!f.acepto.checked) { msg.textContent = 'Acepta recibir el boletín para suscribirte.'; return; }
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    fetch('https://os.vorka.mx/api/publico/boletin', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nombre, correo: correo, acepto: true, origen: 'sparks-historia', sitio: f.sitio.value }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+      .then(function (j) { f.innerHTML = '<p class="bol-listo"><b>' + (j.ya ? 'Ya estabas suscrito.' : '¡Listo, te sumamos!') + '</b> El próximo boletín llega a tu correo.</p>'; })
+      .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo.'; btn.disabled = false; btn.textContent = 'Suscribirme'; });
+  });
+});

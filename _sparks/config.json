@@ -11,8 +11,6 @@
     "etiqueta": "Celaya, Guanajuato. Juventud que construye futuro.",
     "titulo": "Celaya: donde las historias",
     "acento": "no esperan permiso.",
-    "foto": "celaya-intro",
-    "fotoAlt": "Celaya en miniatura: el Templo del Carmen, sus cúpulas y jacarandas sobre un pequeño planeta",
     "parrafos": [
       "Celaya no es solo un punto en el mapa. Es una ciudad que late en medio de contrastes. Es una comunidad que, aun cuando enfrenta desafíos complejos, está llena de personas que decidieron no quedarse inmóviles.",
       "Aquí hay jóvenes que crean espacios de diálogo, docentes que transforman aulas, organizaciones que acompañan realidades difíciles y familias que sostienen valores incluso cuando el contexto presiona en sentido contrario."
@@ -33,7 +31,52 @@
       "Este espacio busca visibilizar eso: las historias que no siempre aparecen en primera plana, pero que están redefiniendo lo que significa crecer en esta ciudad. Lo que se mueve en las escuelas, en los foros, en las organizaciones, en los barrios y en los espacios donde alguien decidió transformar una inquietud en acción."
     ],
     "cierre": "Celaya ya está en movimiento.",
-    "cierreSub": "Ahora es momento de contar cómo."
+    "cierreSub": "Ahora es momento de contar cómo.",
+    "fotos": {
+      "principal": {
+        "src": "celaya-torre",
+        "anchos": [
+          900,
+          1600
+        ],
+        "alt": "La torre y la cúpula del Templo del Carmen en Celaya bajo un cielo azul"
+      },
+      "lateral": {
+        "src": "celaya-arcos",
+        "anchos": [
+          700,
+          900
+        ],
+        "alt": "Los arcos del Templo del Carmen con su cúpula amarilla"
+      },
+      "tira": [
+        {
+          "src": "celaya-jardin",
+          "anchos": [
+            700,
+            1200
+          ],
+          "alt": "Escultura de un ángel junto al kiosco del jardín"
+        },
+        {
+          "src": "celaya-templo",
+          "anchos": [
+            700,
+            1200
+          ],
+          "alt": "Templo de cantera con su campanario en el centro de Celaya"
+        },
+        {
+          "src": "celaya-guitarra",
+          "anchos": [
+            700,
+            1200
+          ],
+          "alt": "Un hombre con sombrero toca la guitarra en una banca del parque"
+        }
+      ],
+      "credito": "Fotos de Celaya: Martin Arriola y Gabriel Segundo en Unsplash."
+    }
   },
   "fotos": {
     "bucket": "sparks-fotos",
