@@ -28,10 +28,12 @@
 .ed-caja.activa { background: var(--noche); color: var(--claro); border-color: var(--noche); }
 a.ed-caja:hover { transform: translateY(-3px); box-shadow: var(--sombra-2); border-color: var(--line-2); }
 a.ed-caja.activa:hover { border-color: var(--oro); }
-.ed-caja b { font-size: clamp(26px, 2.4vw, 32px); font-weight: 750; letter-spacing: -.028em; line-height: 1.05; }
-.ed-caja .lugar { font-size: 13px; color: var(--fg-3); font-weight: 600; margin-top: 6px; }
+.ed-caja { gap: 22px; }
+.ed-caja > div { padding-right: 44px; }
+.ed-caja b { display: block; font-size: clamp(26px, 2.4vw, 32px); font-weight: 750; letter-spacing: -.028em; line-height: 1.05; }
+.ed-caja .lugar { display: block; font-size: 13px; color: var(--fg-3); font-weight: 600; margin-top: 6px; }
 .ed-caja.activa .lugar { color: var(--claro-3); }
-.ed-caja .estado { position: absolute; top: 20px; right: 22px; font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-3); display: inline-flex; align-items: center; gap: 6px; }
+.ed-caja .estado { order: -1; align-self: flex-start; font-size: 11.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-3); display: inline-flex; align-items: center; gap: 6px; }
 .ed-caja.activa .estado { color: var(--oro-claro); }
 .ed-caja.activa .estado::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--oro); box-shadow: 0 0 0 4px rgba(200, 164, 92, .18); }
 .ed-caja.off { opacity: .62; cursor: not-allowed; }
@@ -115,9 +117,9 @@ a.ed-caja:hover .ir-s { transform: translate(3px, -3px); }
         <span class="ir-s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
       <div class="ed-caja off"><div><b>León</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
-      <div class="ed-caja off"><div><b>Irapuato</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
-      <div class="ed-caja off"><div><b>Salamanca</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
-      <div class="ed-caja off"><div><b>San Miguel de Allende</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
+      <div class="ed-caja off"><div><b>Cortazar</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
+      <div class="ed-caja off"><div><b>Apaseo el Grande</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
+      <div class="ed-caja off"><div><b>Villagrán</b><span class="lugar">Guanajuato</span></div><span class="estado">Próximamente</span></div>
       <div class="ed-caja off"><div><b>Guanajuato</b><span class="lugar">Capital</span></div><span class="estado">Próximamente</span></div>
     </div>
   </div>
@@ -193,7 +195,7 @@ a.ed-caja:hover .ir-s { transform: translate(3px, -3px); }
   </div>
 </footer>
 
-<script src="/assets/v3/vorka.js?v=3" defer></script>
+<script src="/assets/v3/vorka.js?v=4" defer></script>
 <script>
 // Año dinámico
 document.getElementById('anio').textContent = new Date().getFullYear();

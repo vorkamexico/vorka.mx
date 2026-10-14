@@ -6,7 +6,7 @@ SITIO = 'https://vorka.mx'
 CORREO = 'vorkamexico@gmail.com'
 WHATSAPP = '528117804869'
 WA_MSG = 'Hola Vorka, ya decidí avanzar. Me gustaría empezar formalmente el proceso.'
-VERSION = '3'
+VERSION = '4'
 
 def e(s):
     return html.escape(str(s), quote=True)

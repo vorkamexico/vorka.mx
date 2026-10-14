@@ -486,6 +486,37 @@ class Sitio:
             return u if u.startswith("http") else self.cfg["sitio"].rstrip("/") + u
         return "%s/assets/og-default.jpg" % self.abs
 
+    # ---- intro de la ciudad (primero se presenta la ciudad, luego sus historias)
+
+    def intro(self):
+        i = self.cfg.get("intro")
+        if not i:
+            return ""
+        foto = ""
+        if i.get("foto"):
+            b = "%s/assets/%s" % (self.base, i["foto"])
+            foto = ('<figure class="intro-foto"><img src="%s-900.webp" srcset="%s-600.webp 600w, %s-900.webp 900w" '
+                    'sizes="(min-width:900px) 40vw, 80vw" width="900" height="1350" alt="%s" fetchpriority="high" decoding="async"></figure>') % (
+                b, b, b, esc(i.get("fotoAlt", "")))
+        construye = ""
+        if i.get("construye"):
+            construye = '<div class="intro-construye"><h3>%s</h3><ul>%s</ul></div>' % (
+                esc(i.get("construyeTitulo", "")), "".join("<li>%s</li>" % esc(x) for x in i["construye"]))
+        mas = ""
+        if i.get("mas"):
+            mas = ('<details class="intro-mas"><summary><span class="abrir">Seguir leyendo</span><span class="cerrar">Leer menos</span></summary>%s</details>'
+                   % "".join("<p>%s</p>" % esc(x) for x in i["mas"]))
+        cierre = ""
+        if i.get("cierre"):
+            cierre = ('<div class="intro-cierre"><p><b>%s</b> %s</p><a class="intro-ir" href="#front">Leer sus historias '
+                      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a></div>') % (
+                esc(i["cierre"]), esc(i.get("cierreSub", "")))
+        return ('<section class="intro" aria-labelledby="intro-t">%s<div class="intro-txt"><span class="eyebrow">%s</span>'
+                '<h2 class="intro-t" id="intro-t">%s <em>%s</em></h2>%s%s%s%s%s</div></section>') % (
+            foto, esc(i.get("etiqueta", "")), esc(i.get("titulo", "")), esc(i.get("acento", "")),
+            "".join('<p class="intro-p">%s</p>' % esc(x) for x in i.get("parrafos", [])),
+            '<p class="intro-frase">%s</p>' % esc(i["frase"]) if i.get("frase") else "", construye, mas, cierre)
+
     # ---- portada
 
     def portada(self):
@@ -507,6 +538,7 @@ class Sitio:
                   '<h1 class="mast-title">%s</h1><p class="mast-lema">%s</p></section>' % (
                       esc(c["nombre"]).replace(" ", " <em>", 1) + "</em>" if " " in c["nombre"] else esc(c["nombre"]),
                       esc(c["lema"])),
+                  self.intro(),
                   '<div class="tools" id="buscar"><label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
                   '<input type="search" id="q" placeholder="Buscar noticia, persona o tema…" aria-label="Buscar" autocomplete="off"></label>'
                   '<div class="chips" role="group" aria-label="Categorías"><button class="chip is-on" data-cat="">Todas</button>%s</div></div>' % "".join(

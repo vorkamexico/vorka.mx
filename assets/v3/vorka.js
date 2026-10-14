@@ -105,10 +105,12 @@
     if (nombre.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { msg.textContent = 'Escribe tu nombre y un correo válido.'; return; }
     if (!f.get('acepto')) { msg.textContent = 'Acepta recibir comunicaciones para suscribirte.'; return; }
     btn.disabled = true; btn.textContent = 'Enviando…';
-    fetch('https://formsubmit.co/ajax/vorkamexico@gmail.com', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ _subject: 'Sparks — nueva suscripción: ' + nombre, _template: 'table', _captcha: 'false', nombre: nombre, correo: correo }) })
-      .then(function (r) { if (!r.ok) throw 0; bol.innerHTML = '<p style="font-size:20px;font-weight:700;color:#fff;margin:0">Listo, te sumamos.</p><p style="margin:8px 0 0">Recibirás la próxima edición de Sparks en tu correo.</p>'; })
-      .catch(function () { msg.textContent = 'No se pudo enviar. Intenta de nuevo en un momento.'; btn.disabled = false; btn.textContent = 'Suscribirme'; });
+    // La suscripción queda en Vorka México (os.vorka.mx → Boletín semanal), desde donde sale el boletín cada semana
+    fetch('https://os.vorka.mx/api/publico/boletin', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nombre, correo: correo, acepto: true, origen: 'vorka.mx', sitio: String(f.get('sitio') || '') }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+      .then(function () { bol.innerHTML = '<p style="font-size:20px;font-weight:700;color:#fff;margin:0">Listo, te sumamos.</p><p style="margin:8px 0 0">Recibirás la próxima edición de Sparks en tu correo.</p>'; })
+      .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo en un momento.'; btn.disabled = false; btn.textContent = 'Suscribirme'; });
   });
 
   var anio = d.getElementById('anio'); if (anio) anio.textContent = new Date().getFullYear();

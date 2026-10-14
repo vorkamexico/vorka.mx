@@ -7,13 +7,39 @@
   "ciudad": "Celaya, Guanajuato",
   "instagram": "https://www.instagram.com/vorka.mx/",
   "noticiasPorPagina": 12,
-
+  "intro": {
+    "etiqueta": "Celaya, Gto. · Juventud que construye futuro",
+    "titulo": "Celaya: donde las historias",
+    "acento": "no esperan permiso.",
+    "foto": "celaya-intro",
+    "fotoAlt": "Celaya en miniatura: el Templo del Carmen, sus cúpulas y jacarandas sobre un pequeño planeta",
+    "parrafos": [
+      "Celaya no es solo un punto en el mapa. Es una ciudad que late en medio de contrastes. Es una comunidad que, aun cuando enfrenta desafíos complejos, está llena de personas que decidieron no quedarse inmóviles.",
+      "Aquí hay jóvenes que crean espacios de diálogo, docentes que transforman aulas, organizaciones que acompañan realidades difíciles y familias que sostienen valores incluso cuando el contexto presiona en sentido contrario."
+    ],
+    "frase": "En Vorka creemos que los territorios no se definen por lo que les falta, sino por lo que están construyendo.",
+    "construyeTitulo": "Celaya está construyendo",
+    "construye": [
+      "Liderazgo joven desde preparatorias y universidades.",
+      "Participación social con iniciativas que conectan a adolescentes con causas reales.",
+      "Comunidad desde el arte, el deporte, la fe y la conversación.",
+      "Redes que sostienen, escuchan y acompañan."
+    ],
+    "mas": [
+      "Y cuando una ciudad empieza a escucharse a sí misma, cuando sus jóvenes dejan de esperar permiso para participar y sus comunidades eligen dialogar en lugar de dividirse, algo cambia. No de un día para otro, pero cambia.",
+      "Este es el inicio de esas historias. No para idealizar la ciudad. No para ignorar sus retos. Sino para reconocer su impulso. Porque cada transformación grande comienza con algo pequeño: una conversación, una actividad, una persona que decide no mirar hacia otro lado.",
+      "Hablar de Celaya es fácil si solo miramos cifras, titulares o estereotipos. Pero esa no es la conversación que queremos abrir. Cada historia que nace aquí tiene algo en común: no surge desde la comodidad, surge desde la decisión. La decisión de involucrarse, de abrir espacios de conciencia, de impulsar a otros incluso cuando el camino no es sencillo.",
+      "Las actividades que se desarrollan en Celaya no son solo eventos en un calendario. Son puntos de encuentro: oportunidades para que alguien descubra su voz, para que otro encuentre dirección, para que un equipo entienda que avanzar juntos siempre es más fuerte que avanzar solos.",
+      "Este espacio busca visibilizar eso: las historias que no siempre aparecen en primera plana, pero que están redefiniendo lo que significa crecer en esta ciudad. Lo que se mueve en las escuelas, en los foros, en las organizaciones, en los barrios y en los espacios donde alguien decidió transformar una inquietud en acción."
+    ],
+    "cierre": "Celaya ya está en movimiento.",
+    "cierreSub": "Ahora es momento de contar cómo."
+  },
   "fotos": {
     "bucket": "sparks-fotos",
     "urlPublica": "https://fotos.vorka.mx",
     "prefijo": "celaya"
   },
-
   "adsense": {
     "cliente": "",
     "slotFeed": "",
