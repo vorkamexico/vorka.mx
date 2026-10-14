@@ -495,27 +495,27 @@ class Sitio:
         foto = ""
         if i.get("foto"):
             b = "%s/assets/%s" % (self.base, i["foto"])
-            foto = ('<figure class="intro-foto"><img src="%s-900.webp" srcset="%s-600.webp 600w, %s-900.webp 900w" '
-                    'sizes="(min-width:900px) 40vw, 80vw" width="900" height="1350" alt="%s" fetchpriority="high" decoding="async"></figure>') % (
+            foto = ('<img class="intro-foto" src="%s-900.webp" srcset="%s-600.webp 600w, %s-900.webp 900w" '
+                    'sizes="(min-width:900px) 46vw, 100vw" width="900" height="1350" alt="%s" fetchpriority="high" decoding="async">') % (
                 b, b, b, esc(i.get("fotoAlt", "")))
         construye = ""
         if i.get("construye"):
-            construye = '<div class="intro-construye"><h3>%s</h3><ul>%s</ul></div>' % (
+            construye = '<div class="intro-construye"><p>%s</p><ul>%s</ul></div>' % (
                 esc(i.get("construyeTitulo", "")), "".join("<li>%s</li>" % esc(x) for x in i["construye"]))
-        mas = ""
-        if i.get("mas"):
-            mas = ('<details class="intro-mas"><summary><span class="abrir">Seguir leyendo</span><span class="cerrar">Leer menos</span></summary>%s</details>'
-                   % "".join("<p>%s</p>" % esc(x) for x in i["mas"]))
-        cierre = ""
+        parrafos = i.get("parrafos", [])
+        lead = '<p class="intro-lead">%s</p>' % esc(parrafos[0]) if parrafos else ""
+        lectura = "".join("<p>%s</p>" % esc(x) for x in parrafos[1:])
+        if i.get("frase"):
+            lectura += '<blockquote>%s</blockquote>' % esc(i["frase"])
+        lectura += "".join("<p>%s</p>" % esc(x) for x in i.get("mas", []))
         if i.get("cierre"):
-            cierre = ('<div class="intro-cierre"><p><b>%s</b> %s</p><a class="intro-ir" href="#front">Leer sus historias '
-                      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a></div>') % (
-                esc(i["cierre"]), esc(i.get("cierreSub", "")))
-        return ('<section class="intro" aria-labelledby="intro-t">%s<div class="intro-txt"><span class="eyebrow">%s</span>'
-                '<h2 class="intro-t" id="intro-t">%s <em>%s</em></h2>%s%s%s%s%s</div></section>') % (
-            foto, esc(i.get("etiqueta", "")), esc(i.get("titulo", "")), esc(i.get("acento", "")),
-            "".join('<p class="intro-p">%s</p>' % esc(x) for x in i.get("parrafos", [])),
-            '<p class="intro-frase">%s</p>' % esc(i["frase"]) if i.get("frase") else "", construye, mas, cierre)
+            lectura += '<p class="intro-final"><b>%s</b> %s</p>' % (esc(i["cierre"]), esc(i.get("cierreSub", "")))
+        mas = ('<details class="intro-mas"><summary><span class="abrir">Leer la presentación completa</span><span class="cerrar">Cerrar</span></summary>'
+               '<div class="intro-lectura">%s</div></details>' % lectura) if lectura else ""
+        return ('<section class="intro" aria-labelledby="intro-t"><div class="intro-panel">%s<div class="intro-txt">'
+                '<p class="intro-lugar">%s</p><h2 class="intro-t" id="intro-t">%s %s</h2>%s%s'
+                '<a class="intro-ir" href="#front">Leer sus historias</a></div></div>%s</section>') % (
+            foto, esc(i.get("etiqueta", "")), esc(i.get("titulo", "")), esc(i.get("acento", "")), lead, construye, mas)
 
     # ---- portada
 
