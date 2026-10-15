@@ -1,5 +1,5 @@
 // Stripe Checkout (página de pago hospedada por Stripe). Sin SDK: la API REST con fetch basta en Workers.
-// Métodos: tarjeta (con meses sin intereses si la cuenta los tiene), OXXO y SPEI (customer_balance → mx_bank_transfer).
+// Métodos dinámicos (Dashboard): tarjeta, OXXO y SPEI (customer_balance → mx_bank_transfer, requiere Customer).
 
 import { enc, hex, iguales } from '../util.js';
 
@@ -33,24 +33,32 @@ export async function llamar(env, metodo, ruta, datos, { idempotencia } = {}) {
   return body;
 }
 
-// Configurable desde wrangler.jsonc (vars.STRIPE_METODOS) para no tocar código si un método no está activo en la cuenta
-export const metodos = env => String(env.STRIPE_METODOS || 'card,oxxo,customer_balance').split(',').map(s => s.trim()).filter(Boolean);
+// Etiqueta para comparar este flujo en el Dashboard (API 2026-03-25.dahlia o posterior)
+export const INTEGRACION = 'vorka-tienda-checkout-qmzvhrtk';
 
-export function sesionCheckout(env, orden, { exito, cancelar }) {
-  const tipos = metodos(env);
-  const opciones = {};
-  if (tipos.includes('oxxo')) opciones.oxxo = { expires_after_days: 3 };
-  if (tipos.includes('customer_balance'))
-    opciones.customer_balance = { funding_type: 'bank_transfer', bank_transfer: { type: 'mx_bank_transfer' } };
+// Cliente de Stripe reutilizado por correo (SPEI lo exige; también deja el historial de compras junto)
+export async function clienteStripe(env, orden) {
+  const ya = await env.DB.prepare('SELECT customer_id FROM stripe_clientes WHERE email = ?').bind(orden.email).first();
+  if (ya) return ya.customer_id;
+  const c = await llamar(env, 'POST', '/customers', { email: orden.email, name: orden.nombre, preferred_locales: ['es-419'], metadata: { fuente: 'vorka-tienda' } },
+    { idempotencia: `cliente-${orden.email}` });
+  await env.DB.prepare('INSERT OR IGNORE INTO stripe_clientes (email, customer_id) VALUES (?, ?)').bind(orden.email, c.id).run();
+  return c.id;
+}
+
+// Métodos de pago dinámicos: cuáles aparecen (tarjeta, OXXO, SPEI…) se decide en Dashboard → Settings → Payment methods.
+// Nunca se manda payment_method_types (en 2026-09-30.endive ya no existe para Checkout).
+export function sesionCheckout(env, orden, { exito, cancelar }, customer) {
   return {
     mode: 'payment',
     locale: 'es-419',
     client_reference_id: orden.id,
-    customer_email: orden.email,
-    // SPEI necesita un Customer de Stripe para asignar la CLABE de referencia
-    customer_creation: tipos.includes('customer_balance') ? 'always' : undefined,
-    payment_method_types: tipos,
-    payment_method_options: opciones,
+    customer,
+    integration_identifier: INTEGRACION,
+    payment_method_options: {
+      oxxo: { expires_after_days: 3 },
+      customer_balance: { funding_type: 'bank_transfer', bank_transfer: { type: 'mx_bank_transfer' } },
+    },
     line_items: orden.items.map(i => ({
       quantity: i.cantidad,
       price_data: { currency: orden.moneda.toLowerCase(), unit_amount: i.precio_centavos, product_data: { name: i.nombre, metadata: { product_id: i.product_id } } },
@@ -91,7 +99,8 @@ export default {
 
   async crearCobro(env, orden, urls) {
     // Idempotency-Key = id de la orden: un reintento de red no crea dos sesiones
-    const s = await llamar(env, 'POST', '/checkout/sessions', sesionCheckout(env, orden, urls), { idempotencia: `checkout-${orden.id}` });
+    const customer = await clienteStripe(env, orden);
+    const s = await llamar(env, 'POST', '/checkout/sessions', sesionCheckout(env, orden, urls, customer), { idempotencia: `checkout-${orden.id}` });
     return { sessionId: s.id, url: s.url };
   },
 
@@ -99,7 +108,8 @@ export default {
     const cuerpo = await request.text();
     if (!(await firmaValida(cuerpo, request.headers.get('stripe-signature'), env.STRIPE_WEBHOOK_SECRET))) return null;
     const ev = JSON.parse(cuerpo);
-    return { id: ev.id, tipo: ev.type, objeto: ev.data?.object?.id, payload: cuerpo };
+    // pago: id del PaymentIntent del objeto (para reembolsos); se vuelve a consultar en la API antes de usarlo
+    return { id: ev.id, tipo: ev.type, objeto: ev.data?.object?.id, pago: ev.data?.object?.payment_intent || null, payload: cuerpo };
   },
 
   // Nunca se usa el contenido del webhook: solo su tipo y el id del objeto, y se consulta a Stripe.
@@ -121,17 +131,19 @@ export default {
       };
     }
     if (evento.tipo === 'charge.refunded') {
-      const c = await llamar(env, 'GET', `/charges/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent`);
-      const orderId = c.payment_intent?.metadata?.order_id || c.metadata?.order_id;
+      // Se consulta el PaymentIntent (no la API de Charges) y su último cargo
+      if (!evento.pago) return null;
+      const pi = await llamar(env, 'GET', `/payment_intents/${encodeURIComponent(evento.pago)}?expand[]=latest_charge`);
+      const orderId = pi.metadata?.order_id;
       // Reembolso parcial: no se revoca el acceso (se decide a mano en el panel)
-      if (!orderId || !c.refunded) return null;
-      return { orderId, resultado: 'reembolsado', provider_payment_id: c.payment_intent?.id || null };
+      if (!orderId || !pi.latest_charge?.refunded) return null;
+      return { orderId, resultado: 'reembolsado', provider_payment_id: pi.id };
     }
     if (evento.tipo === 'charge.dispute.created') {
-      const d = await llamar(env, 'GET', `/disputes/${encodeURIComponent(evento.objeto)}?expand[]=charge.payment_intent`);
-      const orderId = d.charge?.payment_intent?.metadata?.order_id || d.charge?.metadata?.order_id;
+      const d = await llamar(env, 'GET', `/disputes/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent`);
+      const orderId = d.payment_intent?.metadata?.order_id;
       if (!orderId) return null;
-      return { orderId, resultado: 'reembolsado', provider_payment_id: d.charge?.payment_intent?.id || null };
+      return { orderId, resultado: 'reembolsado', provider_payment_id: d.payment_intent.id };
     }
     return null;
   },

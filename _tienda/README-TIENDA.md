@@ -45,13 +45,13 @@ npx wrangler d1 execute vorka-tienda --remote --command "SELECT slug, precio_cen
 ### 2. Secretos
 
 ```bash
-npx wrangler secret put STRIPE_SECRET_KEY        # sk_test_… (prueba) o sk_live_… (producción)
+npx wrangler secret put STRIPE_SECRET_KEY        # clave restringida rk_test_… (prueba) o rk_live_… (producción), ver paso 4
 npx wrangler secret put STRIPE_WEBHOOK_SECRET    # whsec_… del paso 4
 npx wrangler secret put RESEND_API_KEY           # la misma de Vorka OS sirve
 npx wrangler secret put DOWNLOAD_TOKEN_SECRET    # openssl rand -hex 32
 ```
 
-`SITE_URL` y `STRIPE_METODOS` están en `wrangler.jsonc` (no son secretos). Para desarrollo local copia `.dev.vars.example` a `.dev.vars`.
+`SITE_URL` está en `wrangler.jsonc` (no es secreto). Nunca pongas claves en el código ni en archivos que se suben a GitHub. Para desarrollo local copia `.dev.vars.example` a `.dev.vars`.
 
 ### 3. Publicar el Worker
 
@@ -64,17 +64,32 @@ Revisa que `https://vorka.mx/api/tienda/salud` responda `{"ok":true}` y que la p
 
 ### 4. Stripe
 
+La integración usa **Stripe Checkout** (página de pago de Stripe) con la API fijada en **`2026-09-30.endive`** (`src/pagos/stripe.js`).
+
 1. Cuenta de Stripe México (persona física con RFC y cuenta bancaria mexicana).
-2. **Settings → Payment methods**: activa **Cards**, **OXXO** y **Bank transfers** (SPEI). Si alguno no está disponible, quítalo de `STRIPE_METODOS` en `wrangler.jsonc` y vuelve a publicar.
-3. **Developers → Webhooks → Add endpoint**: `https://vorka.mx/api/webhooks/stripe` con estos eventos:
+2. **Settings → Payment methods**: activa **Cards**, **OXXO** y **Bank transfers** (SPEI). La tienda usa *métodos de pago dinámicos*: Stripe muestra los que tengas activos ahí, sin tocar código. SPEI necesita un cliente de Stripe; la tienda lo crea solo (uno por correo, tabla `stripe_clientes`) para que cada comprador conserve su misma CLABE.
+3. **Settings → Emails**: activa los correos de instrucciones de **OXXO** y de **transferencia bancaria**, para que el comprador reciba su ficha o su CLABE aunque cierre la página.
+4. **Clave restringida (recomendada en lugar de la secreta):** Developers → API keys → *Create restricted key*, con solo estos permisos:
+
+   | Recurso | Permiso |
+   |---|---|
+   | Checkout Sessions | Write |
+   | Customers | Write |
+   | PaymentIntents | Read |
+   | Charges | Read (para leer si un reembolso fue total) |
+   | Disputes | Read |
+
+   Todo lo demás en *None*. Guárdala con `npx wrangler secret put STRIPE_SECRET_KEY`. Si algo falla con `403`, el error dice qué permiso falta. Usa claves distintas para prueba y producción, y renuévalas si alguien con acceso deja el equipo.
+5. **Developers → Webhooks → Add endpoint**: `https://vorka.mx/api/webhooks/stripe`, **versión de API `2026-09-30.endive`** (la misma del código), con estos eventos:
    - `checkout.session.completed`
    - `checkout.session.async_payment_succeeded`
    - `checkout.session.async_payment_failed`
    - `checkout.session.expired`
    - `charge.refunded`
    - `charge.dispute.created`
-4. Copia el *Signing secret* (`whsec_…`) a `STRIPE_WEBHOOK_SECRET`.
-5. Haz todo primero en **modo de prueba** (claves `sk_test_`, webhook de prueba) y repítelo en modo real al final.
+6. Copia el *Signing secret* (`whsec_…`) a `STRIPE_WEBHOOK_SECRET`.
+7. Activa la verificación en dos pasos con app o llave de acceso (no SMS) en tu cuenta de Stripe.
+8. Haz todo primero en **modo de prueba** (claves `rk_test_`, webhook de prueba) y repítelo en modo real al final.
 
 ### 5. Resend
 
@@ -120,7 +135,8 @@ Casos de aceptación con Stripe en modo prueba (tarjetas en https://docs.stripe.
 |---|---|---|
 | Tarjeta aprobada | `4242 4242 4242 4242` | Orden `paid`, llega el correo y los archivos se descargan |
 | Tarjeta rechazada | `4000 0000 0000 0002` | Stripe no deja pagar; al volver, `/tienda/gracias` ofrece reintentar |
-| OXXO pendiente | Elegir OXXO en el checkout de prueba | Orden `pending` con mensaje de OXXO; al confirmarse (Stripe lo simula en unos minutos) llega el correo |
+| OXXO pendiente | Elegir OXXO con un correo como `prueba@test.com` | Orden `pending` con mensaje de OXXO; Stripe simula el pago a los 3 minutos y llega el correo (`succeed_immediately@test.com` lo paga al instante, `expire_immediately@test.com` lo vence → `failed`) |
+| SPEI | Elegir transferencia; luego en el Dashboard de prueba, en el cliente → *Add* → *Cash balance (test only)* por el monto exacto | Orden `pending` y, al “llegar” la transferencia, `paid` con correo |
 | Webhook repetido 3 veces | Dashboard de Stripe → evento → *Resend* tres veces | Un solo correo y un solo enlace (cubierto también por `test/webhook.test.js`) |
 | Firma inválida | `curl -X POST https://vorka.mx/api/webhooks/stripe -d '{}'` | `401` y nada cambia |
 | Enlace vencido o sin descargas | Esperar o descargar 10 veces | Mensaje claro y botón para pedir uno nuevo |

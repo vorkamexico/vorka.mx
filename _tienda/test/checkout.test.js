@@ -6,13 +6,17 @@ import { formulario, sesionCheckout } from '../src/pagos/stripe.js';
 let env, llamadas;
 const URL_PAGO = 'https://checkout.stripe.com/c/pay/cs_test_1';
 
+let sesiones, clientes;
 function stripeFalso({ status = 200 } = {}) {
-  llamadas = [];
+  llamadas = []; sesiones = 0; clientes = 0;
   vi.stubGlobal('fetch', vi.fn(async (url, init) => {
     llamadas.push({ url, init, params: new URLSearchParams(init.body) });
-    return new Response(JSON.stringify(status === 200 ? { id: `cs_test_${llamadas.length}`, url: URL_PAGO } : { error: { message: 'boom' } }), { status });
+    if (status !== 200) return new Response(JSON.stringify({ error: { message: 'boom' } }), { status });
+    if (url.endsWith('/customers')) return new Response(JSON.stringify({ id: `cus_${++clientes}` }));
+    return new Response(JSON.stringify({ id: `cs_test_${++sesiones}`, url: URL_PAGO }));
   }));
 }
+const llamada = ruta => llamadas.filter(l => l.url === `https://api.stripe.com/v1${ruta}`);
 
 const pedir = (body, { tipo = 'json', ip = '1.1.1.1', cookie } = {}) => {
   const headers = { 'cf-connecting-ip': ip };
@@ -26,7 +30,7 @@ const base = { nombre: 'Ana López', email: 'ana@mail.com', terminos: true, slug
 const orden = () => env.DB.raw.prepare('SELECT * FROM orders').all();
 
 beforeEach(() => {
-  env = { DB: d1(), SITE_URL: 'https://vorka.mx', STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_METODOS: 'card,oxxo,customer_balance' };
+  env = { DB: d1(), SITE_URL: 'https://vorka.mx', STRIPE_SECRET_KEY: 'sk_test_x' };
   env.DB.raw.exec("UPDATE products SET activo = 1; INSERT INTO affiliates (code, nombre, comision_pct) VALUES ('ANA', 'Ana', 15);");
   stripeFalso();
 });
@@ -40,15 +44,22 @@ describe('POST /api/checkout', () => {
     expect(url).toBe(URL_PAGO);
     const [o] = orden();
     expect(o).toMatchObject({ id: order, estado: 'pending', monto_centavos: 27900, provider_session_id: 'cs_test_1' });
-    const p = llamadas[0].params;
-    expect(llamadas[0].url).toBe('https://api.stripe.com/v1/checkout/sessions');
-    expect(llamadas[0].init.headers['idempotency-key']).toBe(`checkout-${order}`);
+    const [ses] = llamada('/checkout/sessions'), p = ses.params;
+    expect(ses.init.headers['idempotency-key']).toBe(`checkout-${order}`);
+    expect(ses.init.headers['stripe-version']).toBe('2026-09-30.endive');
     expect(p.get('line_items[0][price_data][unit_amount]')).toBe('27900');
     expect(p.get('line_items[0][price_data][currency]')).toBe('mxn');
     expect(p.get('client_reference_id')).toBe(order);
     expect(p.get('payment_intent_data[metadata][order_id]')).toBe(order);
-    expect(p.getAll('payment_method_types[0]').concat(p.getAll('payment_method_types[1]'), p.getAll('payment_method_types[2]'))).toEqual(['card', 'oxxo', 'customer_balance']);
+    // Métodos dinámicos: nunca payment_method_types; SPEI con Customer y opciones de transferencia MX
+    expect([...p.keys()].some(k => k.startsWith('payment_method_types'))).toBe(false);
+    expect(p.get('customer')).toBe('cus_1');
+    expect(p.has('customer_email')).toBe(false);
     expect(p.get('payment_method_options[customer_balance][bank_transfer][type]')).toBe('mx_bank_transfer');
+    expect(p.get('payment_method_options[oxxo][expires_after_days]')).toBe('3');
+    expect(p.get('integration_identifier')).toMatch(/^vorka-tienda-checkout-[a-z]{8}$/);
+    const [cli] = llamada('/customers');
+    expect(cli.params.get('email')).toBe('ana@mail.com');
     expect(p.get('success_url')).toBe(`https://vorka.mx/tienda/gracias?order=${order}`);
     expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM events WHERE tipo = 'begin_checkout'").get().n).toBe(1);
   });
@@ -112,10 +123,16 @@ describe('Stripe: parámetros', () => {
   it('formulario anida objetos y listas', () => {
     expect(formulario({ a: { b: [1, 2] }, c: 'x', d: undefined }).toString()).toBe('a%5Bb%5D%5B0%5D=1&a%5Bb%5D%5B1%5D=2&c=x');
   });
-  it('sin SPEI no pide Customer ni opciones de transferencia', () => {
-    const s = sesionCheckout({ STRIPE_METODOS: 'card' }, { id: 'o', email: 'a@b.mx', moneda: 'MXN', items: [] }, { exito: 'e', cancelar: 'c' });
-    expect(s.customer_creation).toBeUndefined();
-    expect(s.payment_method_options).toEqual({});
+  it('el mismo correo reutiliza su Customer de Stripe (una sola CLABE)', async () => {
+    await pedir(base, { ip: '5.5.5.1' });
+    await pedir(base, { ip: '5.5.5.2' });
+    expect(llamada('/customers')).toHaveLength(1);
+    expect(llamada('/checkout/sessions').map(l => l.params.get('customer'))).toEqual(['cus_1', 'cus_1']);
+  });
+  it('sesionCheckout no incluye payment_method_types', () => {
+    const s = sesionCheckout({}, { id: 'o', email: 'a@b.mx', moneda: 'MXN', items: [] }, { exito: 'e', cancelar: 'c' }, 'cus_x');
+    expect(s.payment_method_types).toBeUndefined();
+    expect(s.customer).toBe('cus_x');
   });
 });
 

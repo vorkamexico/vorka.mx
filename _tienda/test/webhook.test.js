@@ -30,7 +30,7 @@ beforeEach(async () => {
   env = { DB: d1(), SITE_URL: 'https://vorka.mx', STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_WEBHOOK_SECRET: SECRETO, RESEND_API_KEY: 're_x', DOWNLOAD_TOKEN_SECRET: 'x'.repeat(64) };
   env.DB.raw.exec('UPDATE products SET activo = 1');
   orden = await crearOrden(env, { items: [{ slug: 'de-idea-a-proyecto' }], email: 'ana@mail.com', nombre: 'Ana López' });
-  stripe = { sesion: sesion(), cargo: null, disputa: null };
+  stripe = { sesion: sesion(), pi: null, disputa: null };
   correos = []; resendFalla = false;
   vi.stubGlobal('fetch', vi.fn(async (url, init) => {
     const ok = b => new Response(JSON.stringify(b), { status: 200 });
@@ -39,7 +39,8 @@ beforeEach(async () => {
       correos.push(JSON.parse(init.body)); return ok({ id: 'em_1' });
     }
     if (url.includes('/checkout/sessions/')) return ok(stripe.sesion);
-    if (url.includes('/charges/')) return ok(stripe.cargo);
+    if (url.includes('/charges/')) throw new Error('No se usa la API de Charges');
+    if (url.includes('/payment_intents/')) return ok(stripe.pi);
     if (url.includes('/disputes/')) return ok(stripe.disputa);
     return new Response('{}', { status: 404 });
   }));
@@ -137,22 +138,22 @@ describe('webhook de Stripe', () => {
 
   it('reembolso total → refunded y tokens revocados', async () => {
     await evento('checkout.session.completed', 'cs_1');
-    stripe.cargo = { id: 'ch_1', refunded: true, payment_intent: { id: 'pi_1', metadata: { order_id: orden.id } } };
-    await evento('charge.refunded', 'ch_1');
+    stripe.pi = { id: 'pi_1', metadata: { order_id: orden.id }, latest_charge: { id: 'ch_1', refunded: true } };
+    await evento('charge.refunded', 'ch_1', { cuerpoFalso: { payment_intent: 'pi_1' } });
     expect(estado().estado).toBe('refunded');
     expect(tokens().every(t => t.revocado === 1)).toBe(true);
   });
 
   it('reembolso parcial → no cambia nada', async () => {
     await evento('checkout.session.completed', 'cs_1');
-    stripe.cargo = { id: 'ch_1', refunded: false, payment_intent: { id: 'pi_1', metadata: { order_id: orden.id } } };
-    await evento('charge.refunded', 'ch_1');
+    stripe.pi = { id: 'pi_1', metadata: { order_id: orden.id }, latest_charge: { id: 'ch_1', refunded: false } };
+    await evento('charge.refunded', 'ch_1', { cuerpoFalso: { payment_intent: 'pi_1' } });
     expect(estado().estado).toBe('paid');
   });
 
   it('contracargo → refunded y tokens revocados', async () => {
     await evento('checkout.session.completed', 'cs_1');
-    stripe.disputa = { id: 'dp_1', charge: { id: 'ch_1', payment_intent: { id: 'pi_1', metadata: { order_id: orden.id } } } };
+    stripe.disputa = { id: 'dp_1', payment_intent: { id: 'pi_1', metadata: { order_id: orden.id } } };
     await evento('charge.dispute.created', 'dp_1');
     expect(estado().estado).toBe('refunded');
     expect(tokens()[0].revocado).toBe(1);
