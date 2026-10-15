@@ -151,6 +151,9 @@ export async function guardarProducto(env, datos) {
     archivos = d.archivos;
   }
   if (d.activo && !archivos.length) throw new Error('Sube al menos un archivo antes de poner el producto a la venta.');
+  // No se activa un producto cuyos archivos no están realmente en R2 (el comprador recibiría un enlace roto)
+  if (d.activo) for (const a of archivos)
+    if (!(await env.PRODUCTOS.head(a.key))) throw new Error(`Falta subir "${a.nombre}". Quítalo de la lista o súbelo de nuevo.`);
 
   const contenido = d.contenido
     ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })) }

@@ -65,6 +65,7 @@ describe('productos desde el panel (sin código)', () => {
 
   it('cambiar precio desde el panel cambia lo que cobra el checkout', async () => {
     const p = (await A.productos()).find(x => x.slug === 'de-idea-a-proyecto');
+    for (const a of p.r2_keys) env.PRODUCTOS.m.set(a.key, { buf: new Uint8Array(1) });
     await A.guardarProducto({ id: p.id, nombre: p.nombre, precio: 199, activo: true });
     const o = await crearOrden(env, { items: [{ slug: 'de-idea-a-proyecto' }], email: 'a@b.mx', nombre: 'A' });
     expect(o.monto_centavos).toBe(19900);
@@ -188,5 +189,12 @@ describe('editar sin contenido', () => {
     const p = (await A.productos())[0];
     await A.guardarProducto({ id: p.id, nombre: p.nombre, precio: 300 });
     expect((await A.producto(p.id)).contenido.titular).toBe(p.contenido.titular);
+  });
+});
+
+describe('archivos faltantes', () => {
+  it('no deja activar si un archivo de la lista no está en R2', async () => {
+    const p = (await A.productos()).find(x => x.slug === 'de-idea-a-proyecto'); // el seed trae archivos de ejemplo que no existen
+    await expect(A.guardarProducto({ id: p.id, nombre: p.nombre, precio: 279, activo: true })).rejects.toThrow(/Falta subir/);
   });
 });
