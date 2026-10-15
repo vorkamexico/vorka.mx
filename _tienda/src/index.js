@@ -6,9 +6,10 @@ import { checkout } from './checkout.js';
 import { webhook } from './webhook.js';
 import { paginaDescargas, bajarArchivo } from './descargas.js';
 import { paginaGracias, apiOrden } from './gracias.js';
+import { paginaReenviar, postReenviar } from './reenviar.js';
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     try {
       if (url.pathname === '/api/tienda/salud') return json({ ok: true });
@@ -19,6 +20,10 @@ export default {
       const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
       if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
       if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);
+      if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {
+        if (request.method === 'POST') return await postReenviar(request, env, ctx);
+        if (request.method === 'GET') return paginaReenviar();
+      }
       const desc = url.pathname.match(/^\/descargas\/([^/]{1,100})\/?(?:(\d{1,3})\/?)?$/);
       if (desc && desc[1] !== 'reenviar' && ['GET', 'HEAD'].includes(request.method))
         return await (desc[2] === undefined ? paginaDescargas(env, desc[1]) : bajarArchivo(env, desc[1], desc[2], request.method));

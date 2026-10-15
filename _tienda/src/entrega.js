@@ -54,6 +54,32 @@ Vorka México · Guanajuato, México`;
   return { asunto, html, texto };
 }
 
+// Token nuevo + correo. Si el correo falla, el token se borra (no quedan enlaces que nadie recibió).
+async function mandarEnlace(env, orderId, ahora = Date.now()) {
+  const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
+  const items = await all(env, 'SELECT product_id, nombre FROM order_items WHERE order_id = ?', orderId);
+  const { token, hash } = await crearToken(env, orderId, ahora);
+  try {
+    await enviar(env, { para: orden.email, ...correoEntrega(env, orden, items, token), idempotencia: `entrega-${hash.slice(0, 32)}` });
+  } catch (e) {
+    await run(env, 'DELETE FROM download_tokens WHERE token_hash = ?', hash);
+    console.error('entrega: correo falló', orderId, correoOculto(orden.email), e.message);
+    throw e;
+  }
+}
+
+/**
+ * Reenvío (formulario /descargas/reenviar y botón del panel): token nuevo y correo otra vez.
+ * Solo para órdenes pagadas; los tokens anteriores siguen hasta que venzan.
+ */
+export async function reenviarEnlace(env, orderId) {
+  const o = await one(env, "SELECT id FROM orders WHERE id = ? AND estado = 'paid'", orderId);
+  if (!o) return false;
+  await mandarEnlace(env, orderId);
+  await run(env, 'UPDATE orders SET correo_enviado_at = COALESCE(correo_enviado_at, ?), updated_at = ? WHERE id = ?', ahoraISO(), ahoraISO(), orderId);
+  return true;
+}
+
 /**
  * Manda el correo de entrega de una orden pagada, una sola vez aunque lleguen varios webhooks a la vez.
  * Reserva el envío con un UPDATE condicional; si el correo falla, borra el token y libera la reserva
@@ -67,15 +93,10 @@ export async function entregar(env, orderId) {
     new Date(ahora).toISOString(), orderId, new Date(ahora - RESERVA_MS).toISOString());
   if (!r.meta.changes) return false;
 
-  const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
-  const items = await all(env, 'SELECT product_id, nombre FROM order_items WHERE order_id = ?', orderId);
-  const { token, hash } = await crearToken(env, orderId, ahora);
   try {
-    await enviar(env, { para: orden.email, ...correoEntrega(env, orden, items, token), idempotencia: `entrega-${hash.slice(0, 32)}` });
+    await mandarEnlace(env, orderId, ahora);
   } catch (e) {
-    await run(env, 'DELETE FROM download_tokens WHERE token_hash = ?', hash);
     await run(env, 'UPDATE orders SET correo_intento_at = NULL WHERE id = ?', orderId);
-    console.error('entrega: correo falló', orderId, correoOculto(orden.email), e.message);
     throw e;
   }
   await run(env, 'UPDATE orders SET correo_enviado_at = ?, updated_at = ? WHERE id = ?', ahoraISO(), ahoraISO(), orderId);

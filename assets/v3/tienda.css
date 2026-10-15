@@ -36,3 +36,17 @@
   .t-archivo { flex-wrap: wrap; }
   .t-archivo .btn { width: 100%; }
 }
+
+/* Formularios */
+.t-form { display: grid; gap: 18px; margin-top: 28px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(20px, 4vw, 32px); box-shadow: var(--sombra); }
+.t-form .btn { width: 100%; }
+.t-campo { display: grid; gap: 7px; }
+.t-campo label { font-size: 14.5px; font-weight: 650; letter-spacing: -.005em; }
+.t-campo input[type="text"], .t-campo input[type="email"] { width: 100%; min-height: 50px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--bg); font: inherit; font-size: 16px; color: var(--fg); transition: border-color .2s, box-shadow .2s; }
+.t-campo input:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 4px var(--morado-suave); }
+.t-campo input[aria-invalid="true"] { border-color: #B3261E; }
+.t-error { font-size: 14px; color: #B3261E; font-weight: 600; }
+.t-casilla { display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px; line-height: 1.5; color: var(--fg-2); }
+.t-casilla input { width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: var(--morado); }
+.t-casilla a { color: var(--morado); }
+.t-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }

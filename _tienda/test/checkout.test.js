@@ -118,3 +118,11 @@ describe('Stripe: parámetros', () => {
     expect(s.payment_method_options).toEqual({});
   });
 });
+
+describe('checkout: correo con espacios', () => {
+  it('acepta y normaliza " Ana@Mail.com "', async () => {
+    const r = await pedir({ ...base, email: ' Ana@Mail.com ' });
+    expect(r.status).toBe(200);
+    expect(orden()[0].email).toBe('ana@mail.com');
+  });
+});

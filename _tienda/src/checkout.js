@@ -11,7 +11,7 @@ const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
 
 export const EsquemaCheckout = z.object({
   nombre: z.string().trim().min(2, 'Escribe tu nombre.').max(120),
-  email: z.email('Escribe un correo válido.').max(254),
+  email: z.string().trim().toLowerCase().pipe(z.email('Escribe un correo válido.').max(254)),
   terminos: casilla,
   // Un producto (formulario de la página de venta) o varios (carrito, más adelante)
   slug: slug.optional(),
