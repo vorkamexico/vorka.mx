@@ -4,11 +4,16 @@ import { transicion } from './estados.js';
 
 const producto = r => r && { ...r, activo: !!r.activo, r2_keys: JSON.parse(r.r2_keys || '[]'), contenido: JSON.parse(r.contenido || '{}') };
 
+// Se vende si está activo y aprobado, y —si es de un creador— el creador está aprobado y su cuenta de Stripe lista para recibir
+export const VENDIBLE = `p.activo = 1 AND p.revision = 'aprobado'
+  AND (p.creador_id IS NULL OR EXISTS (SELECT 1 FROM creadores c WHERE c.id = p.creador_id AND c.estado = 'aprobado' AND c.stripe_listo = 1))`;
+
 export const listarProductos = async env =>
-  (await all(env, 'SELECT * FROM products WHERE activo = 1 ORDER BY orden, nombre')).map(producto);
+  (await all(env, `SELECT p.*, c.nombre creador_nombre FROM products p LEFT JOIN creadores c ON c.id = p.creador_id WHERE ${VENDIBLE} ORDER BY p.orden, p.nombre`)).map(producto);
 
 export const productoPorSlug = async (env, slug, { inactivos = false } = {}) =>
-  producto(await one(env, `SELECT * FROM products WHERE slug = ?${inactivos ? '' : ' AND activo = 1'}`, slug));
+  producto(await one(env, `SELECT p.*, c.nombre creador_nombre, c.comision_pct creador_comision_pct FROM products p LEFT JOIN creadores c ON c.id = p.creador_id
+    WHERE p.slug = ?${inactivos ? '' : ` AND ${VENDIBLE}`}`, slug));
 
 // El código solo cuenta si existe y está activo
 export async function afiliadoActivo(env, code) {
@@ -45,8 +50,9 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
   await env.DB.batch([
     env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct) VALUES (?,?,?,?,?,?,?,?)')
       .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct),
-    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) VALUES (?,?,?,?,?)')
-      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad)),
+    // Si es de un creador, se copia a quién le toca y su % de ese momento
+    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) VALUES (?,?,?,?,?,?,?)')
+      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null)),
   ]);
   return { ...orden, items: lineas.map(l => ({ product_id: l.p.id, slug: l.p.slug, nombre: l.p.nombre, precio_centavos: l.p.precio_centavos, cantidad: l.cantidad, imagen: l.p.imagen })) };
 }
@@ -79,9 +85,10 @@ export async function aplicarPago(env, orderId, pago) {
   const ahora = ahoraISO();
   const r = await run(env,
     `UPDATE orders SET estado = ?, provider_payment_id = COALESCE(?, provider_payment_id), metodo_pago = COALESCE(?, metodo_pago),
+       provider_charge_id = COALESCE(?, provider_charge_id),
        paid_at = CASE WHEN ? = 'paid' THEN ? ELSE paid_at END, updated_at = ?
      WHERE id = ? AND estado = ?`,
-    t.estado, pago.provider_payment_id ?? null, pago.metodo_pago ?? null, t.estado, ahora, ahora, orderId, orden.estado);
+    t.estado, pago.provider_payment_id ?? null, pago.metodo_pago ?? null, pago.provider_charge_id ?? null, t.estado, ahora, ahora, orderId, orden.estado);
   if (!r.meta.changes) return { orden, accion: null, cambia: false, motivo: 'carrera' };
 
   if (t.accion === 'revocar') await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ?', orderId);

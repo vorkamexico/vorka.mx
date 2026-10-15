@@ -11,6 +11,8 @@ import { paginaReenviar, postReenviar } from './reenviar.js';
 import { paginaCatalogo, paginaProducto, sitemapTienda } from './tienda.js';
 import * as admin from './admin.js';
 import { ESTILOS } from './paginas.js';
+import { procesarTransferencias, refrescarCreador } from './marketplace.js';
+import { all } from './util.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -79,5 +81,17 @@ export default {
       console.error('tienda', url.pathname, err?.message);
       return fail('Error interno', 500);
     }
+  },
+
+  // Cada hora: transferencias a creadores que ya pasaron su plazo, y estado de cuentas de Stripe en revisión
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil((async () => {
+      try {
+        if (!env.STRIPE_SECRET_KEY) return;
+        const pendientes = await all(env, "SELECT id, stripe_account_id FROM creadores WHERE estado = 'aprobado' AND stripe_account_id IS NOT NULL AND stripe_listo = 0 LIMIT 25");
+        for (const c of pendientes) await refrescarCreador(env, c).catch(e => console.error('creador', c.id, e.message));
+        console.log('transferencias', JSON.stringify(await procesarTransferencias(env)));
+      } catch (e) { console.error('cron', e?.message); }
+    })());
   },
 };

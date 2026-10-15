@@ -23,5 +23,7 @@
   "vars": {
     "SITE_URL": "https://vorka.mx"
   },
+  // Cada hora: transferencias a creadores (marketplace)
+  "triggers": { "crons": ["17 * * * *"] },
   "observability": { "enabled": true }
 }

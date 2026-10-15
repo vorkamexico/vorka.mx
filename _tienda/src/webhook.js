@@ -5,6 +5,7 @@ import { json, fail } from './util.js';
 import { proveedor } from './pagos/index.js';
 import { aplicarPago, registrarEvento, marcarEvento, registrarAnalitica, itemsDeOrden } from './modelo.js';
 import { entregar } from './entrega.js';
+import { programarTransferencias, anularTransferencias } from './marketplace.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -26,6 +27,9 @@ export async function webhook(req, env, nombre) {
           await registrarAnalitica(env, 'purchase', { product_id: it.product_id, order_id: pago.orderId, ref_code: r.orden.ref_code });
       // También en reintentos: si el correo falló la vez pasada, la orden ya está paid pero sin correo
       if (r.orden?.estado === 'paid') await entregar(env, pago.orderId);
+      // Reparto a creadores (si hay productos de creadores). Idempotente.
+      if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null) await programarTransferencias(env, pago.orderId, { fee: pago.stripe_fee_centavos });
+      if (r.accion === 'revocar') await anularTransferencias(env, pago.orderId);
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });
