@@ -29,6 +29,8 @@ from datetime import datetime, timezone
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ_REPO = os.path.dirname(AQUI)
+sys.path.insert(0, os.path.join(RAIZ_REPO, "_sitio"))
+import partes  # cabecera, pie y piezas del sistema visual v3 (compartidas con todo vorka.mx)
 
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
          "septiembre", "octubre", "noviembre", "diciembre"]
@@ -365,7 +367,7 @@ class Sitio:
                 '<input name="correo" type="email" placeholder="Tu correo" autocomplete="email" aria-label="Correo">'
                 '<input class="bol-trampa" name="sitio" tabindex="-1" autocomplete="off" aria-hidden="true">'
                 '<label class="bol-ok"><input type="checkbox" name="acepto" value="1"><span>Acepto recibir el boletín y el <a href="/privacidad/">aviso de privacidad</a>.</span></label>'
-                '<button class="btn btn-solid" type="submit">Suscribirme</button><p class="bol-msg" role="status"></p></form></aside>') % esc(self.cfg["ciudad"].split(",")[0])
+                '<button class="btn tinta" type="submit">Suscribirme</button><p class="bol-msg" role="status"></p></form></aside>') % esc(self.cfg["ciudad"].split(",")[0])
 
     def kicker(self, n):
         return '<span class="kicker tone-%s">%s</span>' % (tono(n["categoria"]), esc(n["categoria"]))
@@ -388,11 +390,12 @@ class Sitio:
                 '<script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>') % (esc(self.ads_cliente), esc(slot))
 
     def pagina(self, titulo, descripcion, canonical, og_img, cuerpo, tipo="website", jsonld=None, extra_head=""):
+        """Página con la misma cabecera, pie y estilo que el resto de vorka.mx (sistema v3, ver _sitio/partes.py)."""
         c = self.cfg
         ads = ('<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=%s" crossorigin="anonymous"></script>'
                % esc(self.ads_cliente)) if self.ads_cliente else ""
         ld = '<script type="application/ld+json">%s</script>' % json.dumps(jsonld, ensure_ascii=False).replace("</", "<\\/") if jsonld else ""
-        return """<!doctype html>
+        cabeza = """<!doctype html>
 <html lang="es-MX">
 <head>
 <meta charset="utf-8">
@@ -401,6 +404,7 @@ class Sitio:
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canon}">
 <meta name="robots" content="max-image-preview:large">
+<meta name="theme-color" content="#FBFAF8">
 <meta property="og:site_name" content="{nombre}">
 <meta property="og:locale" content="es_MX">
 <meta property="og:type" content="{tipo}">
@@ -411,77 +415,25 @@ class Sitio:
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/png" href="{base}/assets/favicon.png">
+<link rel="icon" href="/assets/v3/icono.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{base}/assets/favicon.png">
 <link rel="alternate" type="application/rss+xml" title="{nombre}" href="{base}/feed.xml">
-<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0F0F0E" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/v3/vorka.css?v={vv}">
 <link rel="stylesheet" href="{base}/assets/sparks.css?v={v}">
 {extra}{ads}{ld}
 </head>
-<body>
-<a class="skip" href="#contenido">Saltar al contenido</a>
-<header class="topbar"><div class="shell topbar-inner">
-<a href="/" class="brand" aria-label="Vorka México — inicio"><img class="brand-logo" src="{base}/assets/logo.png" alt="" width="30" height="29"><span class="brand-name">Vorka <span>México</span></span></a>
-<nav class="nav" aria-label="Sparks">
-<a href="{base}/">Portada</a>
-<a class="hide-sm" href="/sparks/">Revista</a>
-<a class="hide-sm" href="https://wa.me/528117804869?text=Hola%2C%20me%20gustar%C3%ADa%20compartir%20mi%20historia%20con%20la%20Revista%20Sparks" target="_blank" rel="noopener">Contacto</a>
-<a class="hide-sm" href="{ig}" target="_blank" rel="noopener">Instagram</a>
-<a class="nav-search" href="{base}/#buscar" aria-label="Buscar noticias"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>
-</nav></div></header>
-<main id="contenido">
-{cuerpo}
-</main>
-<footer class="foot"><div class="shell">
-<div class="foot-cols">
-<div class="foot-col foot-brand">
-<h5>{nombre}</h5>
-<p class="desc">{lema}. Un medio de <b>Vorka Sparks</b> hecho en {ciudad}.</p>
-<img class="foot-mark" src="{base}/assets/logo.png" alt="Vorka" width="56" height="55" loading="lazy">
-</div>
-<div class="foot-col"><h5>Secciones</h5><ul>
-<li><a href="{base}/">Portada</a></li>
-{secciones}
-<li><a href="{base}/#buscar">Buscar noticias</a></li>
-</ul></div>
-<div class="foot-col"><h5>Vorka</h5><ul>
-<li><a href="/">Vorka México</a></li>
-<li><a href="/sparks/">Revista Sparks</a></li>
-<li><a href="/voluntariado">Tú en Vorka</a></li>
-<li><a href="/servicios/estrategia">Servicios</a></li>
-<li><a href="/#contact">Hablemos</a></li>
-</ul></div>
-<div class="foot-col"><h5>Contacto</h5><ul>
-<li><a href="https://wa.me/528117804869?text={wa_historia}" target="_blank" rel="noopener">Comparte una historia</a></li>
-<li><a href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></li>
-<li><a href="https://wa.me/528117804869" target="_blank" rel="noopener">+52 81 1780 4869</a></li>
-<li><a href="{base}/feed.xml">RSS</a></li>
-</ul></div>
-</div>
-<div class="foot-tagline">
-<div class="left">Historias reales de la gente que está moviendo {ciudad_corta}. Si conoces una, cuéntanosla.</div>
-<div class="right">definiendo el juego</div>
-</div>
-<div class="foot-bottom">
-<div class="foot-social">
-<a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram — @vorka.mx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
-<a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn — Vorka México"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V16"/><path d="M8 7.5v.01"/><path d="M12 16v-3.3a2.3 2.3 0 0 1 4.6 0V16"/><path d="M12 10.5V16"/></svg></a>
-<a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok — @vorka.mx"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3.5h-2.7v12.1a2.6 2.6 0 1 1-2.6-2.6c.27 0 .53.04.77.12V10.4a5.4 5.4 0 1 0 4.53 5.32V8.62a6.6 6.6 0 0 0 3.9 1.26V7.2a3.9 3.9 0 0 1-3.9-3.7Z"/></svg></a>
-<a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook — vorka.mx"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21.95v-8.05h2.7l.4-3.13H13.5V8.78c0-.9.25-1.52 1.55-1.52h1.66V4.46a22 22 0 0 0-2.42-.13c-2.4 0-4.04 1.46-4.04 4.15v2.32H7.55v3.13h2.7v8.02h3.25Z"/></svg></a>
-</div>
-<div class="foot-name">{nombre}<small>vorka.mx{base}</small></div>
-<div class="foot-copy">© {anio} Vorka México.<br>Todos los derechos reservados.</div>
-</div></div></footer>
-<dialog class="lb" id="lb" aria-label="Galería"><button class="lb-x" data-lb-close aria-label="Cerrar">×</button><button class="lb-nav lb-prev" data-lb-prev aria-label="Anterior">‹</button><img alt=""><button class="lb-nav lb-next" data-lb-next aria-label="Siguiente">›</button><p class="lb-cap"></p></dialog>
-<script src="{base}/assets/sparks.js?v={v}" defer></script>
-</body>
-</html>
+<body class="sparks">
+<a class="saltar" href="#contenido">Saltar al contenido</a>
 """.format(titulo=esc(titulo), desc=esc(descripcion), canon=esc(canonical), og=esc(og_img), tipo=tipo,
-           nombre=esc(c["nombre"]), lema=esc(c["lema"]), base=self.base, ig=esc(c["instagram"]),
-           ciudad=esc(c["ciudad"]), ciudad_corta=esc(c["ciudad"].split(",")[0]), anio=datetime.now().year,
-           secciones=self.secciones_footer(), wa_historia=urllib.parse.quote("Hola, tengo una historia para %s: " % c["nombre"]), cuerpo=cuerpo, extra=extra_head,
-           ads=ads, ld=ld, v=self.version)
+           nombre=esc(c["nombre"]), base=self.base, extra=extra_head, ads=ads, ld=ld, v=self.version, vv=partes.VERSION)
+        lb = ('<dialog class="lb" id="lb" aria-label="Galería"><button class="lb-x" data-lb-close aria-label="Cerrar">×</button>'
+              '<button class="lb-nav lb-prev" data-lb-prev aria-label="Anterior">‹</button><img alt="">'
+              '<button class="lb-nav lb-next" data-lb-next aria-label="Siguiente">›</button><p class="lb-cap"></p></dialog>')
+        return (cabeza + partes.nav("/sparks/") + '<main id="contenido">\n' + cuerpo + '\n</main>\n' + partes.pie() + lb
+                + '<script src="%s/assets/sparks.js?v=%s" defer></script>\n</body>\n</html>\n' % (self.base, self.version))
 
     def secciones_footer(self):
         conteo = {}
@@ -553,42 +505,54 @@ class Sitio:
                 categorias.append(n["categoria"])
         categorias.sort()
 
-        partes = ['<div class="shell">',
-                  '<section class="mast"><div class="mast-top"><span class="eyebrow">Vorka Sparks</span>'
-                  '<span class="mast-date" data-hoy></span></div>'
-                  '<h1 class="mast-title">%s</h1><p class="mast-lema">%s</p></section>' % (
-                      esc(c["nombre"]).replace(" ", " <em>", 1) + "</em>" if " " in c["nombre"] else esc(c["nombre"]),
-                      esc(c["lema"])),
+        nombre = esc(c["nombre"])
+        titular = nombre.replace(" ", ' <span class="metal">', 1) + "</span>" if " " in nombre else nombre
+        ciudad_corta = esc(c["ciudad"].split(",")[0])
+        partes_html = ['<section class="sp-cab">%s<div class="marco">'
+                  '<div class="migas"><a href="/">Vorka</a><span>/</span><a href="/sparks/">Revista Sparks</a><span>/</span><span>%s</span></div>'
+                  '<span class="etiqueta">Revista Sparks · Edición %s</span>'
+                  '<h1 class="h1 sp-titulo">%s</h1><p class="lead">%s.</p>'
+                  '<div class="sp-datos"><span class="sp-pill"><b>%d</b> %s</span>'
+                  '<a class="sp-pill" href="#buscar">Buscar historias</a>'
+                  '<a class="sp-pill" href="%s" target="_blank" rel="noopener">@vorka.mx</a></div>'
+                  '</div></section>' % (
+                      partes.v_metal("v-fondo", "gsp", oscuro=False), nombre, ciudad_corta, titular, esc(c["lema"]),
+                      len(ns), "historia" if len(ns) == 1 else "historias", esc(c["instagram"])),
+                  '<div class="marco">',
                   self.intro(),
                   '<div class="tools" id="buscar"><label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
                   '<input type="search" id="q" placeholder="Buscar noticia, persona o tema…" aria-label="Buscar" autocomplete="off"></label>'
                   '<div class="chips" role="group" aria-label="Categorías"><button class="chip is-on" data-cat="">Todas</button>%s</div></div>' % "".join(
                       '<button class="chip" data-cat="%s">%s</button>' % (esc(slug_cat(x)), esc(x)) for x in categorias)]
 
-        cta = ('<section class="cta-historia"><div><span class="eyebrow">Revista Sparks</span><h2>¿Tienes una noticia?</h2>'
-               '<p>Un logro, un evento, un proyecto o una persona de %s que merece contarse. Escríbenos y lo platicamos.</p></div>'
-               '<a class="btn btn-solid" href="https://wa.me/528117804869?text=Hola%%2C%%20tengo%%20una%%20noticia%%20para%%20la%%20Revista%%20Sparks" target="_blank" rel="noopener">Escríbenos →</a></section>') % esc(c["ciudad"].split(",")[0])
+        wa = "https://wa.me/528117804869?text=" + urllib.parse.quote("Hola, tengo una noticia para %s: " % c["nombre"])
+        cta = ('<section class="sp-cta">%s<div class="grano"></div><div><span class="etiqueta">¿Tienes una noticia?</span>'
+               '<h2 class="h2">Si está pasando en %s y <span class="metal">merece contarse,</span> escríbenos.</h2>'
+               '<p class="lead">Un logro, un evento, un proyecto que está cambiando tu colonia o una persona que vale la pena conocer.</p></div>'
+               '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos por WhatsApp %s</a>'
+               '<a class="btn vidrio" href="/sparks/sumate/">Súmate al equipo</a></div></section>') % (
+                   partes.v_metal("art", "gct"), ciudad_corta, esc(wa), partes.FLECHA)
         if not ns:
-            partes.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
-            return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes))
+            partes_html.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
+            return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes_html))
 
-        lead = ('<article class="lead"><a href="%s"><div class="lead-img">%s</div>%s<h2 class="lead-title">%s</h2>'
+        lead = ('<article class="principal"><a href="%s"><div class="lead-img">%s</div>%s<h2 class="lead-title">%s</h2>'
                 '<p class="lead-sum">%s</p>%s</a></article>') % (
             self.url(destacada), self.media(destacada, "(min-width:900px) 66vw, 100vw", eager=True),
             self.kicker(destacada), esc(destacada["titulo"]), esc(destacada["resumen"]), self.meta_linea(destacada))
         side = "".join(('<article class="side"><a href="%s"><div class="side-img">%s</div>%s<h3 class="side-title">%s</h3>%s</a></article>') % (
             self.url(n), self.media(n, "(min-width:900px) 30vw, 100vw"), self.kicker(n), esc(n["titulo"]), self.meta_linea(n))
             for n in secundarias)
-        partes.append('<section class="front" id="front">%s<div class="front-side">%s</div></section>' % (lead, side))
-        partes.append(self.anuncio("slotFeed"))
+        partes_html.append('<section class="front" id="front">%s<div class="front-side">%s</div></section>' % (lead, side))
+        partes_html.append(self.anuncio("slotFeed"))
 
         tarjetas = []
         for i, n in enumerate(lista[:por_pagina]):
             tarjetas.append(self.tarjeta(n))
-        partes.append('<div class="sec-head"><h2 id="grid-title">Lo más reciente</h2></div>'
+        partes_html.append('<div class="sec-head"><span class="etiqueta">Archivo</span><h2 class="h3" id="grid-title">Lo más reciente</h2></div>'
                       '<div class="grid" id="grid" data-por-pagina="%d">%s</div>'
                       '<p class="empty" id="vacio" hidden>No encontramos noticias con esa búsqueda.</p>'
-                      '<div class="more"><button class="btn" id="mas"%s>Cargar más noticias</button></div>%s</div>' % (
+                      '<div class="more"><button class="btn blanco" id="mas"%s>Cargar más noticias</button></div>%s</div>' % (
                           por_pagina, "".join(tarjetas), "" if len(lista) > por_pagina else " hidden", cta))
 
         jsonld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": c["nombre"],
@@ -596,7 +560,7 @@ class Sitio:
                   "publisher": {"@type": "Organization", "name": "Vorka México", "url": c["sitio"]}}
         extra = '<link rel="preload" as="fetch" href="%s/noticias.json?v=%s" crossorigin>' % (self.base, self.version)
         return self.pagina("%s — %s" % (c["nombre"], c["lema"]), c["descripcion"], self.abs + "/",
-                           self.og_de(destacada), "".join(partes), jsonld=jsonld, extra_head=extra)
+                           self.og_de(destacada), "".join(partes_html), jsonld=jsonld, extra_head=extra)
 
     # ---- artículo
 
@@ -631,7 +595,7 @@ class Sitio:
                      '<img src="https://i.ytimg.com/vi/%s/hqdefault.jpg" alt="" loading="lazy" width="480" height="360">'
                      '<span class="yt-play" aria-hidden="true"></span></button></div>') % (vid, vid)
         elif n["video"].startswith("http"):
-            video = '<p><a class="btn" href="%s" target="_blank" rel="noopener">Ver video ↗</a></p>' % esc(n["video"])
+            video = '<p><a class="btn blanco" href="%s" target="_blank" rel="noopener">Ver video ↗</a></p>' % esc(n["video"])
 
         galeria = ""
         if len(n["fotos"]) > 1:
@@ -657,18 +621,24 @@ class Sitio:
         relacionadas += [x for x in self.noticias if x is not n and x not in relacionadas][:3 - len(relacionadas)]
         rel = ""
         if relacionadas:
-            rel = '<section class="related"><div class="sec-head"><h2>Sigue leyendo</h2></div><div class="grid">%s</div></section>' % "".join(
+            rel = '<section class="related"><div class="sec-head"><span class="etiqueta">Revista Sparks</span><h2 class="h3">Sigue leyendo</h2></div><div class="grid">%s</div></section>' % "".join(
                 self.tarjeta(x) for x in relacionadas)
 
-        cuerpo = """<div class="shell">
+        wa = "https://wa.me/528117804869?text=" + urllib.parse.quote("Hola, tengo una historia para %s: " % c["nombre"])
+        cierre = ('<section class="sp-cta chica">%s<div class="grano"></div><div><span class="etiqueta">Revista Sparks</span>'
+                  '<h2 class="h3">¿Conoces una historia así? <span class="metal">Cuéntanosla.</span></h2></div>'
+                  '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos %s</a><a class="btn vidrio" href="%s/">Más historias</a></div></section>') % (
+                      partes.v_metal("art", "gca"), esc(wa), partes.FLECHA, self.base)
+        cuerpo = """<div class="marco">
 <article class="art">
-<nav class="crumbs" aria-label="Ruta"><a href="{base}/">{nombre}</a><span aria-hidden="true">/</span><a href="{base}/?categoria={cs}">{cat}</a></nav>
+<nav class="migas" aria-label="Ruta"><a href="/sparks/">Revista Sparks</a><span aria-hidden="true">/</span><a href="{base}/">{nombre}</a><span aria-hidden="true">/</span><a href="{base}/?categoria={cs}">{cat}</a></nav>
 <header class="art-head">{kicker}<h1 class="art-title">{titulo}</h1><p class="art-deck">{resumen}</p><div class="art-meta">{meta}</div></header>
 {portada}
 <div class="art-body">{texto}{anuncio}{video}{galeria}{etiquetas}{compartir}{boletin}</div>
 </article>
 {rel}
-</div>""".format(base=self.base, nombre=esc(c["nombre"]), cs=esc(slug_cat(n["categoria"])), cat=esc(n["categoria"]),
+{cierre}
+</div>""".format(cierre=cierre, base=self.base, nombre=esc(c["nombre"]), cs=esc(slug_cat(n["categoria"])), cat=esc(n["categoria"]),
                  kicker=self.kicker(n), titulo=esc(n["titulo"]), resumen=esc(n["resumen"]),
                  meta='<span class="dot" aria-hidden="true">·</span>'.join(meta), portada=portada,
                  texto="\n".join(bloques), anuncio=anuncio, video=video, galeria=galeria, etiquetas=etiquetas,
@@ -755,12 +725,18 @@ def main():
 
     # Primero las historias de Vorka México para que conserven el enlace que se eligió en la app
     # El archivo va al final: si un enlace se repite, gana la noticia viva (la del archivo recibe -2).
-    noticias = ((cargar_historias_os(cfg) if not args.datos else []) + cargar_noticias(args)
-                + (cargar_archivo(cfg) if not args.datos else []))
+    del_os = cargar_historias_os(cfg) if not args.datos else []
+    # Lo que vive en Vorka México (os.vorka.mx) manda: si la Hoja o el archivo traen la misma nota, se usa la de la app
+    vistos = {slug_cat(n.get("titulo", "")) for n in del_os} | {n.get("slug") for n in del_os}
+    otras = cargar_noticias(args) + (cargar_archivo(cfg) if not args.datos else [])
+    noticias = del_os + [n for n in otras if slug_cat(n.get("titulo", "")) not in vistos and n.get("slug") not in vistos]
     almacen = Almacen(cfg, dir_img, cfg["ruta"].rstrip("/"))
 
     # Huella de todo lo que afecta al resultado: si no cambió nada, no se toca el repo.
     h = hashlib.sha256(json.dumps(noticias, sort_keys=True, ensure_ascii=False).encode() + almacen.url_base.encode())
+    for extra in (os.path.join(RAIZ_REPO, "_sitio", "partes.py"), os.path.join(RAIZ_REPO, "assets", "v3", "vorka.css")):
+        with open(extra, "rb") as f:
+            h.update(f.read())
     for raiz, _, archivos in os.walk(AQUI):
         if "google-apps-script" in raiz:
             continue
