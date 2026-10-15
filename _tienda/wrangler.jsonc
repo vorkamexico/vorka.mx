@@ -17,6 +17,10 @@
   "r2_buckets": [
     { "binding": "PRODUCTOS", "bucket_name": "vorka-productos" }
   ],
-  "vars": { "SITE_URL": "https://vorka.mx" },
+  "vars": {
+    "SITE_URL": "https://vorka.mx",
+    // Métodos de Stripe Checkout; quitar uno si la cuenta no lo tiene activo (customer_balance = SPEI)
+    "STRIPE_METODOS": "card,oxxo,customer_balance"
+  },
   "observability": { "enabled": true }
 }
