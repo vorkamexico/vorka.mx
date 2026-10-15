@@ -17,3 +17,7 @@
 /celaya/*        /sparks/celaya/   301
 /services        /servicios        301
 /services/*      /servicios        301
+
+# Tienda: el aviso de privacidad es uno solo para todo el sitio
+/legal/aviso-de-privacidad    /privacidad/   301
+/legal/aviso-de-privacidad/   /privacidad/   301
