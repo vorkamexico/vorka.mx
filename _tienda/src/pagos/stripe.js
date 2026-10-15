@@ -1,7 +1,10 @@
 // Stripe Checkout (página de pago hospedada por Stripe). Sin SDK: la API REST con fetch basta en Workers.
 // Métodos: tarjeta (con meses sin intereses si la cuenta los tiene), OXXO y SPEI (customer_balance → mx_bank_transfer).
 
+import { enc, hex, iguales } from '../util.js';
+
 const API = 'https://api.stripe.com/v1';
+const TOLERANCIA_S = 300; // firmas con más de 5 min se rechazan (evita repetir un webhook viejo)
 
 // { a: { b: [1, 2] } } → a[b][0]=1&a[b][1]=2  (formato que espera Stripe)
 export function formulario(obj, prefijo = '', out = new URLSearchParams()) {
@@ -59,6 +62,29 @@ export function sesionCheckout(env, orden, { exito, cancelar }) {
   };
 }
 
+// Stripe-Signature: "t=1700000000,v1=abc…,v1=def…". Firma = HMAC-SHA256(secreto, `${t}.${cuerpo}`)
+export async function firmaValida(cuerpo, cabecera, secreto, ahora = Date.now()) {
+  if (!cabecera || !secreto) return false;
+  const partes = cabecera.split(',').map(p => p.split('='));
+  const t = Number(partes.find(([k]) => k === 't')?.[1]);
+  const firmas = partes.filter(([k]) => k === 'v1').map(([, v]) => v);
+  if (!t || !firmas.length || Math.abs(ahora / 1000 - t) > TOLERANCIA_S) return false;
+  const llave = await crypto.subtle.importKey('raw', enc.encode(secreto), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const esperada = hex(await crypto.subtle.sign('HMAC', llave, enc.encode(`${t}.${cuerpo}`)));
+  return firmas.some(f => iguales(f, esperada));
+}
+
+const EVENTOS_SESION = ['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'checkout.session.async_payment_failed', 'checkout.session.expired'];
+export const EVENTOS = [...EVENTOS_SESION, 'charge.refunded', 'charge.dispute.created'];
+
+// Estado del PaymentIntent → resultado normalizado
+function resultadoDeIntent(pi) {
+  if (!pi) return null;
+  if (pi.status === 'succeeded') return 'aprobado';
+  if (['processing', 'requires_action', 'requires_confirmation'].includes(pi.status)) return 'pendiente'; // OXXO/SPEI esperando pago
+  return 'rechazado'; // requires_payment_method (vencido/rechazado) o canceled
+}
+
 export default {
   nombre: 'stripe',
 
@@ -68,5 +94,44 @@ export default {
     return { sessionId: s.id, url: s.url };
   },
 
-  // leerWebhook e interpretar llegan en el bloque de webhook
+  async leerWebhook(request, env) {
+    const cuerpo = await request.text();
+    if (!(await firmaValida(cuerpo, request.headers.get('stripe-signature'), env.STRIPE_WEBHOOK_SECRET))) return null;
+    const ev = JSON.parse(cuerpo);
+    return { id: ev.id, tipo: ev.type, objeto: ev.data?.object?.id, payload: cuerpo };
+  },
+
+  // Nunca se usa el contenido del webhook: solo su tipo y el id del objeto, y se consulta a Stripe.
+  async interpretar(evento, env) {
+    if (EVENTOS_SESION.includes(evento.tipo)) {
+      const s = await llamar(env, 'GET', `/checkout/sessions/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent.payment_method`);
+      const orderId = s.metadata?.order_id || s.client_reference_id;
+      if (!orderId) return null;
+      const pi = typeof s.payment_intent === 'object' ? s.payment_intent : null;
+      let resultado;
+      if (s.payment_status === 'paid' || s.payment_status === 'no_payment_required') resultado = 'aprobado';
+      else if (s.status === 'expired') resultado = 'rechazado';
+      else resultado = resultadoDeIntent(pi) || 'pendiente';
+      return {
+        orderId, resultado,
+        monto_centavos: s.amount_total, moneda: s.currency,
+        provider_payment_id: pi?.id || null,
+        metodo_pago: pi?.payment_method?.type || null,
+      };
+    }
+    if (evento.tipo === 'charge.refunded') {
+      const c = await llamar(env, 'GET', `/charges/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent`);
+      const orderId = c.payment_intent?.metadata?.order_id || c.metadata?.order_id;
+      // Reembolso parcial: no se revoca el acceso (se decide a mano en el panel)
+      if (!orderId || !c.refunded) return null;
+      return { orderId, resultado: 'reembolsado', provider_payment_id: c.payment_intent?.id || null };
+    }
+    if (evento.tipo === 'charge.dispute.created') {
+      const d = await llamar(env, 'GET', `/disputes/${encodeURIComponent(evento.objeto)}?expand[]=charge.payment_intent`);
+      const orderId = d.charge?.payment_intent?.metadata?.order_id || d.charge?.metadata?.order_id;
+      if (!orderId) return null;
+      return { orderId, resultado: 'reembolsado', provider_payment_id: d.charge?.payment_intent?.id || null };
+    }
+    return null;
+  },
 };
