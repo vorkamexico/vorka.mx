@@ -1,0 +1,20 @@
+// Tienda Vorka México · punto de entrada del Worker
+// Rutas (se irán llenando por bloques): /tienda*, /api/*, /descargas*
+import { json, fail } from './util.js';
+import { listarProductos } from './modelo.js';
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    try {
+      if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+      if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
+        return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
+          ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));
+      return fail('No encontrado', 404);
+    } catch (err) {
+      console.error('tienda', url.pathname, err?.message);
+      return fail('Error interno', 500);
+    }
+  },
+};
