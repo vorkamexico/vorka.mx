@@ -9,3 +9,5 @@ SITE_URL=http://localhost:8787
 # Mercado Pago (fase 2)
 # MP_ACCESS_TOKEN=
 # MP_WEBHOOK_SECRET=
+# Solo local: servidor estático del sitio para que las páginas de la tienda carguen CSS y menú
+# ESTATICO_DEV=http://localhost:8791

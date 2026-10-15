@@ -1,0 +1,38 @@
+/* Vorka México · tienda · capa sobre /assets/v3/vorka.css (mismas variables, mismo lenguaje visual) */
+
+.t-main { padding-top: 104px; min-height: 70vh; }
+.t-sec { padding: clamp(32px, 6vw, 72px) 0 clamp(64px, 9vw, 120px); }
+.t-estrecho { max-width: 760px; }
+.t-centro { justify-content: center; }
+.t-h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 750; letter-spacing: -.035em; line-height: 1.05; margin-top: 12px; }
+.t-lead { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.55; color: var(--fg-2); margin-top: 14px; }
+.t-nota { font-size: 14.5px; color: var(--fg-2); margin-top: 22px; }
+.t-nota a, .t-lead a { color: var(--morado); }
+
+/* Tarjeta de estado (gracias, errores de descarga) */
+.t-aviso { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sombra); padding: clamp(28px, 5vw, 48px); text-align: center; }
+.t-aviso .t-lead { margin-left: auto; margin-right: auto; max-width: 52ch; }
+.t-aviso .botones { margin-top: 28px; }
+.t-icono { width: 64px; height: 64px; margin: 0 auto 6px; border-radius: 50%; display: grid; place-items: center; }
+.t-icono svg { width: 30px; height: 30px; }
+.exito .t-icono { background: var(--verde-suave); color: var(--verde); }
+.espera .t-icono { background: #FBF5E8; color: #8a6d2f; }
+.alerta .t-icono { background: var(--morado-suave); color: var(--morado); }
+.t-girando { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--oro-claro); border-top-color: #8a6d2f; }
+@media (prefers-reduced-motion: no-preference) { .t-girando { animation: t-girar .9s linear infinite; } }
+@keyframes t-girar { to { transform: rotate(360deg); } }
+
+/* Lista de archivos */
+.t-archivos { display: grid; gap: 10px; margin-top: 28px; }
+.t-archivo { display: flex; align-items: center; gap: 14px; padding: 14px 14px 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+.t-archivo-i { width: 44px; height: 44px; flex: none; border-radius: 12px; background: var(--bg-2); display: grid; place-items: center; color: var(--fg-2); }
+.t-archivo-i svg { width: 22px; height: 22px; }
+.t-archivo-t { flex: 1; min-width: 0; }
+.t-archivo-t b { display: block; font-size: 15.5px; font-weight: 650; letter-spacing: -.01em; }
+.t-archivo-t small { display: block; font-size: 13px; color: var(--fg-2); margin-top: 2px; }
+.t-archivo.agotado { opacity: .6; }
+.t-archivo [aria-disabled="true"] { cursor: not-allowed; }
+@media (max-width: 520px) {
+  .t-archivo { flex-wrap: wrap; }
+  .t-archivo .btn { width: 100%; }
+}
