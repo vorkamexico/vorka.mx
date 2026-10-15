@@ -12,6 +12,7 @@ import { paginaCatalogo, paginaProducto, sitemapTienda } from './tienda.js';
 import * as admin from './admin.js';
 import { ESTILOS } from './paginas.js';
 import { procesarTransferencias, refrescarCreador } from './marketplace.js';
+import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -44,6 +45,8 @@ export default {
     const url = new URL(request.url);
     try {
       if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+      const cr = await rutasCreadores(request, env, ctx, url);
+      if (cr) return cr;
       if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
         return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
           ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));

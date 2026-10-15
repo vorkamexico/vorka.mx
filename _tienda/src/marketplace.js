@@ -2,6 +2,7 @@
 //   creador recibe = venta − (venta × % de Vorka) − parte proporcional de la comisión real de Stripe
 import { all, one, run, ahoraISO, correoOculto } from './util.js';
 import { transferir, revertir, leerCuenta, cuentaLista } from './pagos/connect.js';
+import { ventaNueva } from './correos-creadores.js';
 
 export const DIAS_PARA_TRANSFERIR = 7; // cubre los 5 días hábiles de la política de reembolsos
 const MAX_INTENTOS = 6;
@@ -32,7 +33,7 @@ export function calcularReparto(items, total, fee) {
 export async function programarTransferencias(env, orderId, { fee, ahora = Date.now() }) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   if (!orden || orden.estado !== 'paid' || fee == null) return 0;
-  const items = await all(env, 'SELECT creador_id, comision_pct, precio_centavos, cantidad FROM order_items WHERE order_id = ?', orderId);
+  const items = await all(env, 'SELECT nombre, creador_id, comision_pct, precio_centavos, cantidad FROM order_items WHERE order_id = ?', orderId);
   const reparto = calcularReparto(items, orden.monto_centavos, fee);
   const disponible = new Date(ahora + DIAS_PARA_TRANSFERIR * 864e5).toISOString();
   let n = 0;
@@ -40,6 +41,12 @@ export async function programarTransferencias(env, orderId, { fee, ahora = Date.
     const x = await run(env, `INSERT OR IGNORE INTO transferencias (id, order_id, creador_id, venta_centavos, comision_vorka_centavos, comision_stripe_centavos, monto_centavos, moneda, disponible_en)
       VALUES (?,?,?,?,?,?,?,?,?)`, nuevoId('trf'), orderId, r.creador_id, r.venta_centavos, r.comision_vorka_centavos, r.comision_stripe_centavos, r.monto_centavos, orden.moneda, disponible);
     n += x.meta.changes;
+    // Aviso al creador solo la primera vez (si el correo falla, la venta no se ve afectada)
+    if (x.meta.changes) {
+      const c = await one(env, 'SELECT * FROM creadores WHERE id = ?', r.creador_id);
+      const productos = items.filter(i => i.creador_id === r.creador_id).map(i => i.nombre).join(' + ');
+      if (c) await ventaNueva(env, c, r, productos).catch(e => console.error('aviso venta', r.creador_id, e.message));
+    }
   }
   return n;
 }

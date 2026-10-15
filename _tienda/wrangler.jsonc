@@ -7,7 +7,8 @@
   "routes": [
     { "pattern": "vorka.mx/tienda*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/api/*", "zone_name": "vorka.mx" },
-    { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" }
+    { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/creadores*", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
     { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
@@ -21,7 +22,11 @@
     { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
   ],
   "vars": {
-    "SITE_URL": "https://vorka.mx"
+    "SITE_URL": "https://vorka.mx",
+    // Marketplace de creadores: "1" abre vorka.mx/creadores (apagado hasta tener la revisión fiscal)
+    "MARKETPLACE": "0",
+    // Llave publicable de Stripe (no es secreta): la usan los componentes incrustados del portal de creadores
+    "STRIPE_PUBLISHABLE_KEY": ""
   },
   // Cada hora: transferencias a creadores (marketplace)
   "triggers": { "crons": ["17 * * * *"] },
