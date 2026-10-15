@@ -38,6 +38,16 @@ export class Admin extends WorkerEntrypoint {
   afiliados() { return admin.afiliados(this.env); }
   guardarAfiliado(d) { return admin.guardarAfiliado(this.env, d); }
   reporteAfiliados(f) { return admin.reporteAfiliados(this.env, f); }
+  // Marketplace de creadores
+  pendientesMarketplace() { return admin.pendientesMarketplace(this.env); }
+  creadores() { return admin.creadores(this.env); }
+  decidirCreador(id, d) { return admin.decidirCreador(this.env, id, d); }
+  comisionCreador(id, pct) { return admin.comisionCreador(this.env, id, pct); }
+  revisarStripeCreador(id) { return admin.revisarStripeCreador(this.env, id); }
+  revision() { return admin.revision(this.env); }
+  decidirProducto(id, d) { return admin.decidirProducto(this.env, id, d); }
+  transferencias(f) { return admin.transferencias(this.env, f); }
+  archivoRevision(id, key) { return admin.archivoRevision(this.env, id, key); }
 }
 
 export default {

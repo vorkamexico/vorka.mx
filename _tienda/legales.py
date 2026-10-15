@@ -28,7 +28,7 @@ def pagina(ruta, titulo, titulo_html, lead, etiqueta, apartados):
     <span class="etiqueta">{etiqueta}</span>
     <h1 class="h1" style="margin-top:18px">{titulo_html}</h1>
     <p class="lead">{lead}</p>
-    <div class="vigencia"><span>Última actualización: {ACTUALIZADO}</span><span>Aplica a las compras en vorka.mx/tienda</span></div>
+    <div class="vigencia"><span>Última actualización: {ACTUALIZADO}</span><span>Aplica a vorka.mx/tienda</span></div>
   </div>
 </section>
 <section class="sec pegada">
@@ -76,6 +76,32 @@ REEMBOLSOS = [
     ('como', 'Cómo se hace el reembolso', '<p>El reembolso se hace al mismo medio de pago. En tarjeta puede tardar de 5 a 10 días hábiles en reflejarse, según tu banco. En OXXO o SPEI te pediremos una cuenta (CLABE) a tu nombre para transferirte.</p>'),
 ]
 
+CREADORES = [
+    ('partes', 'Quiénes participan', f'<p>Estos términos regulan la relación entre {RESPONSABLE} (“Vorka”) y las personas o empresas (“creadores”) que venden productos digitales propios en vorka.mx/tienda. Al enviar tu solicitud y al publicar productos aceptas estos términos.</p>'),
+    ('aprobacion', 'Solicitud y aprobación', li(
+        'Vorka revisa cada solicitud y puede aprobarla o rechazarla a su criterio.',
+        'Cada producto se revisa antes de publicarse. Vorka puede pedir cambios, no publicarlo o retirarlo si no cumple estos términos o la calidad de la tienda.',
+        'Para recibir pagos debes completar tu registro con Stripe, el procesador de pagos de Vorka, y mantener tus datos al día.')),
+    ('contenido', 'Tu contenido', li(
+        'Declaras que eres autor o titular de los derechos de lo que vendes y que no infringe derechos de terceros.',
+        'Conservas la propiedad de tus productos. Nos das permiso no exclusivo para mostrarlos, promocionarlos, venderlos y entregarlos a los compradores mientras estén publicados.',
+        'No se permiten contenidos ilegales, engañosos, ofensivos, que promuevan odio o violencia, ni datos personales de terceros.',
+        'Si recibimos un reclamo sobre tu producto podemos pausarlo mientras se aclara.')),
+    ('venta', 'Precio, venta y entrega', li(
+        'Tú fijas el precio (mínimo $20 MXN). Vorka cobra al comprador, entrega los archivos y atiende el soporte de la compra.',
+        'Vorka aparece como vendedor ante el comprador y en su estado de cuenta.')),
+    ('pagos', 'Comisiones y pagos', li(
+        'Por cada venta recibes: precio − comisión de Vorka (20 % salvo acuerdo distinto) − comisión del procesador de pagos de esa venta. En tu portal ves el desglose de cada venta.',
+        'Los pagos se transfieren automáticamente a tu cuenta de Stripe 7 días después de cada venta, al terminar el plazo de reembolso, y de ahí a tu cuenta bancaria.',
+        'Si un comprador obtiene un reembolso o desconoce el cargo, se cancela o se revierte el pago correspondiente; si ya no tienes saldo, se descuenta de tus siguientes ventas.',
+        'Vorka puede cambiar la comisión para ventas futuras avisándote con 30 días de anticipación.')),
+    ('impuestos', 'Impuestos', '<p>Eres responsable de tus obligaciones fiscales. Cuando la ley obligue a Vorka a retener impuestos o a reportar información sobre tus ingresos, lo hará y se reflejará en tu desglose.</p>'),
+    ('baja', 'Pausa y baja', li(
+        'Puedes retirar tus productos o darte de baja cuando quieras; los compradores conservan acceso a lo que ya compraron.',
+        'Vorka puede pausar o cerrar tu cuenta si incumples estos términos. Los pagos de ventas válidas ya realizadas se te transfieren en su plazo.')),
+    ('datos', 'Datos personales', '<p>Tratamos tus datos conforme al <a href="/privacidad/">aviso de privacidad</a>. Tus datos fiscales, de identidad y bancarios los recaba y resguarda Stripe para procesar tus pagos.</p>'),
+]
+
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -87,3 +113,5 @@ escribir('/legal/terminos/', pagina('/legal/terminos/', 'Términos y condiciones
     'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS))
 escribir('/legal/reembolsos/', pagina('/legal/reembolsos/', 'Política de reembolsos', 'Política de <span class="metal">reembolsos.</span>',
     'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS))
+escribir('/legal/creadores/', pagina('/legal/creadores/', 'Términos para creadores', 'Términos para <span class="metal">creadores.</span>',
+    'Cómo funciona vender tus productos digitales en la tienda de Vorka México: aprobación, contenido, comisiones, pagos e impuestos.', 'Creadores', CREADORES))
