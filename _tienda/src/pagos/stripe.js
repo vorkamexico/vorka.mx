@@ -4,6 +4,7 @@
 import { enc, hex, iguales } from '../util.js';
 
 const API = 'https://api.stripe.com/v1';
+export const STRIPE_VERSION = '2026-09-30.endive';
 const TOLERANCIA_S = 300; // firmas con más de 5 min se rechazan (evita repetir un webhook viejo)
 
 // { a: { b: [1, 2] } } → a[b][0]=1&a[b][1]=2  (formato que espera Stripe)
@@ -18,8 +19,8 @@ export function formulario(obj, prefijo = '', out = new URLSearchParams()) {
 }
 
 export async function llamar(env, metodo, ruta, datos, { idempotencia } = {}) {
-  // Sin stripe-version: usa la versión fijada en la cuenta (Dashboard → Developers). Fijarla aquí al pasar a producción.
-  const headers = { authorization: `Bearer ${env.STRIPE_SECRET_KEY}` };
+  // Versión fijada: un cambio de versión en la cuenta no puede romper el cobro. Crear el webhook con esta misma versión.
+  const headers = { authorization: `Bearer ${env.STRIPE_SECRET_KEY}`, 'stripe-version': STRIPE_VERSION };
   if (datos) headers['content-type'] = 'application/x-www-form-urlencoded';
   if (idempotencia) headers['idempotency-key'] = idempotencia;
   const r = await fetch(API + ruta, { method: metodo, headers, body: datos ? formulario(datos) : undefined });
