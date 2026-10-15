@@ -10,8 +10,7 @@
     { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
-    // database_id: pegar el id que da `wrangler d1 create vorka-tienda` (ver README-TIENDA.md)
-    { "binding": "DB", "database_name": "vorka-tienda", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+    { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
   ],
   // Bucket privado: los archivos solo salen por /descargas/<token>, nunca por URL pública
   "r2_buckets": [

@@ -22,6 +22,8 @@ Todo desde `vorka.mx/_tienda`, con `npx wrangler login` hecho en la cuenta de Cl
 
 ### 1. Base de datos y bucket
 
+> **Hecho el 15 de octubre de 2026:** D1 `vorka-tienda` (id `7e6febec-475c-4810-a32f-c8a79659dbfd`, ya en `wrangler.jsonc`) con las migraciones 0001–0005 aplicadas, y bucket privado `vorka-productos` (sin acceso público). Los comandos quedan como referencia.
+
 ```bash
 npm ci
 npx wrangler d1 create vorka-tienda
