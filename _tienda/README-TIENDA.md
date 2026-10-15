@@ -160,7 +160,7 @@ Casos de aceptación con Stripe en modo prueba (tarjetas en https://docs.stripe.
 ```bash
 npm run db:local                  # migraciones en la D1 local
 npm run dev                       # Worker en http://localhost:8787 (o --port 8790)
-python3 _tienda/marco.py          # si cambia el menú o el pie del sitio (_sitio/partes.py)
+python3 _tienda/marco.py          # si cambia el menú o el pie (_sitio/partes.py) o assets/v3/tienda.css
 python3 _tienda/legales.py        # si cambian los textos legales
 ```
 

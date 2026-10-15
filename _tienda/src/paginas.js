@@ -1,8 +1,7 @@
 // Marco HTML de las páginas de la tienda: mismo menú, pie y CSS (v3) que el resto de vorka.mx.
 // El menú y el pie vienen de _sitio/partes.py vía marco.generado.js (python3 _tienda/marco.py).
-import { NAV, PIE, VERSION } from './marco.generado.js';
+import { NAV, PIE, VERSION, CSS_TIENDA } from './marco.generado.js';
 import { esc } from './correo.js';
-import CSS_TIENDA from '../../assets/v3/tienda.css';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
