@@ -66,6 +66,8 @@ Revisa que `https://vorka.mx/api/tienda/salud` responda `{"ok":true}` y que la p
 
 ### 4. Stripe
 
+> **Hecho en modo prueba el 15 de octubre de 2026:** OXXO y Transferencias bancarias activados; webhook `Tienda vorka.mx` (`we_1UQwYNCSlkfDAZsFpyAqaxDS`) a `https://vorka.mx/api/webhooks/stripe` con versión `2026-09-30.endive` y los 6 eventos; clave restringida `Tienda vorka.mx (Worker vorka-tienda)` con los 5 permisos de la tabla. Worker publicado y `DOWNLOAD_TOKEN_SECRET` guardado. Falta cargar la clave restringida, el `whsec_` y la clave de Resend con `cargar-claves.command` (doble clic). Los correos de instrucciones OXXO/SPEI se activan al pasar a modo real (Stripe los oculta en prueba).
+
 La integración usa **Stripe Checkout** (página de pago de Stripe) con la API fijada en **`2026-09-30.endive`** (`src/pagos/stripe.js`).
 
 1. Cuenta de Stripe México (persona física con RFC y cuenta bancaria mexicana).
