@@ -7,6 +7,7 @@ import { webhook } from './webhook.js';
 import { paginaDescargas, bajarArchivo } from './descargas.js';
 import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
+import { paginaCatalogo, paginaProducto, sitemapTienda } from './tienda.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -27,6 +28,12 @@ export default {
       const desc = url.pathname.match(/^\/descargas\/([^/]{1,100})\/?(?:(\d{1,3})\/?)?$/);
       if (desc && desc[1] !== 'reenviar' && ['GET', 'HEAD'].includes(request.method))
         return await (desc[2] === undefined ? paginaDescargas(env, desc[1]) : bajarArchivo(env, desc[1], desc[2], request.method));
+      if (request.method === 'GET' || request.method === 'HEAD') {
+        if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
+        if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
+        const prod = url.pathname.match(/^\/tienda\/([a-z0-9-]{1,80})\/?$/);
+        if (prod) return await paginaProducto(env, request, url, prod[1]);
+      }
       const wh = url.pathname.match(/^\/api\/webhooks\/([a-z]+)$/);
       if (wh && request.method === 'POST') return await webhook(request, env, wh[1]);
       // Solo en desarrollo (.dev.vars): CSS, imágenes y demás páginas del sitio salen del servidor estático local
