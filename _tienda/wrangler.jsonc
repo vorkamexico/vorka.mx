@@ -1,0 +1,23 @@
+{
+  // Tienda de productos digitales de Vorka México: vive en rutas de vorka.mx, el resto del sitio no pasa por aquí
+  "name": "vorka-tienda",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "vorka.mx/tienda*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/api/*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" }
+  ],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
+  ],
+  // Bucket privado: los archivos solo salen por /descargas/<token>, nunca por URL pública
+  "r2_buckets": [
+    { "binding": "PRODUCTOS", "bucket_name": "vorka-productos" }
+  ],
+  "vars": {
+    "SITE_URL": "https://vorka.mx"
+  },
+  "observability": { "enabled": true }
+}

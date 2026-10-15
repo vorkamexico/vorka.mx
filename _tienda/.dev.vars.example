@@ -1,0 +1,14 @@
+# Copia este archivo a .dev.vars para desarrollo local. En producción van como secretos:
+#   npx wrangler secret put STRIPE_SECRET_KEY   (y así cada uno)
+# Clave restringida de prueba (rk_test_…), ver README-TIENDA.md paso 4
+STRIPE_SECRET_KEY=rk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+RESEND_API_KEY=re_...
+# 32+ caracteres aleatorios: openssl rand -hex 32
+DOWNLOAD_TOKEN_SECRET=
+SITE_URL=http://localhost:8787
+# Mercado Pago (fase 2)
+# MP_ACCESS_TOKEN=
+# MP_WEBHOOK_SECRET=
+# Solo local: servidor estático del sitio para que las páginas de la tienda carguen CSS y menú
+# ESTATICO_DEV=http://localhost:8791

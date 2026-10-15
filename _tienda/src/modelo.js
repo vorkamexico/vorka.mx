@@ -1,0 +1,110 @@
+// Acceso a datos de la tienda (D1). Los precios SIEMPRE salen de aquí, nunca del navegador.
+import { all, one, run, ahoraISO } from './util.js';
+import { transicion } from './estados.js';
+
+const producto = r => r && { ...r, activo: !!r.activo, r2_keys: JSON.parse(r.r2_keys || '[]'), contenido: JSON.parse(r.contenido || '{}') };
+
+export const listarProductos = async env =>
+  (await all(env, 'SELECT * FROM products WHERE activo = 1 ORDER BY orden, nombre')).map(producto);
+
+export const productoPorSlug = async (env, slug, { inactivos = false } = {}) =>
+  producto(await one(env, `SELECT * FROM products WHERE slug = ?${inactivos ? '' : ' AND activo = 1'}`, slug));
+
+// El código solo cuenta si existe y está activo
+export async function afiliadoActivo(env, code) {
+  if (!code) return null;
+  return one(env, 'SELECT code, comision_pct FROM affiliates WHERE code = ? AND activo = 1', String(code).trim().toUpperCase());
+}
+
+/**
+ * Crea la orden en estado pending con sus renglones.
+ * items: [{ slug, cantidad? }] — el precio se toma de la base de datos.
+ * Lanza Error('producto') si algún slug no existe o está inactivo.
+ */
+export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe' }) {
+  const lineas = [];
+  for (const it of items) {
+    const p = await productoPorSlug(env, it.slug);
+    if (!p) throw new Error('producto');
+    lineas.push({ p, cantidad: it.cantidad || 1 });
+  }
+  const monedas = new Set(lineas.map(l => l.p.moneda));
+  if (monedas.size !== 1) throw new Error('moneda');
+  const afiliado = await afiliadoActivo(env, ref);
+  const orden = {
+    id: crypto.randomUUID(),
+    email: email.trim().toLowerCase(),
+    nombre: nombre.trim(),
+    monto_centavos: lineas.reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0),
+    moneda: [...monedas][0],
+    estado: 'pending',
+    proveedor,
+    ref_code: afiliado?.code || null,
+    comision_pct: afiliado?.comision_pct ?? null,
+  };
+  await env.DB.batch([
+    env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct) VALUES (?,?,?,?,?,?,?,?)')
+      .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct),
+    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) VALUES (?,?,?,?,?)')
+      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad)),
+  ]);
+  return { ...orden, items: lineas.map(l => ({ product_id: l.p.id, slug: l.p.slug, nombre: l.p.nombre, precio_centavos: l.p.precio_centavos, cantidad: l.cantidad, imagen: l.p.imagen })) };
+}
+
+export const ordenPorId = (env, id) => one(env, 'SELECT * FROM orders WHERE id = ?', id);
+export const itemsDeOrden = (env, id) =>
+  all(env, 'SELECT i.*, p.slug, p.r2_keys FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', id);
+
+export const guardarSesion = (env, id, sessionId) =>
+  run(env, 'UPDATE orders SET provider_session_id = ?, updated_at = ? WHERE id = ?', sessionId, ahoraISO(), id);
+
+/**
+ * Aplica el resultado normalizado de un pago a la orden.
+ * Idempotente y a prueba de carreras: el UPDATE solo pasa si el estado sigue siendo el que leímos,
+ * así que si dos webhooks llegan juntos, solo uno obtiene la acción 'entregar'.
+ * pago: { resultado, monto_centavos, moneda, provider_payment_id, metodo_pago }
+ * Devuelve { orden, accion, cambia, motivo? }.
+ */
+export async function aplicarPago(env, orderId, pago) {
+  const orden = await ordenPorId(env, orderId);
+  if (!orden) return { orden: null, accion: null, cambia: false, motivo: 'orden_no_existe' };
+
+  // Un "aprobado" que no cuadra en monto o moneda no se entrega: queda para revisión manual
+  if (pago.resultado === 'aprobado' && (pago.monto_centavos !== orden.monto_centavos || String(pago.moneda).toUpperCase() !== orden.moneda))
+    return { orden, accion: null, cambia: false, motivo: 'monto_no_coincide' };
+
+  const t = transicion(orden.estado, pago.resultado);
+  if (!t.cambia) return { orden, accion: null, cambia: false };
+
+  const ahora = ahoraISO();
+  const r = await run(env,
+    `UPDATE orders SET estado = ?, provider_payment_id = COALESCE(?, provider_payment_id), metodo_pago = COALESCE(?, metodo_pago),
+       paid_at = CASE WHEN ? = 'paid' THEN ? ELSE paid_at END, updated_at = ?
+     WHERE id = ? AND estado = ?`,
+    t.estado, pago.provider_payment_id ?? null, pago.metodo_pago ?? null, t.estado, ahora, ahora, orderId, orden.estado);
+  if (!r.meta.changes) return { orden, accion: null, cambia: false, motivo: 'carrera' };
+
+  if (t.accion === 'revocar') await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ?', orderId);
+  return { orden: { ...orden, estado: t.estado }, accion: t.accion, cambia: true };
+}
+
+// Webhooks: registra el evento crudo. Devuelve false si ya se había procesado (reintento del proveedor).
+export async function registrarEvento(env, proveedor, eventoId, tipo, payload) {
+  await run(env, 'INSERT OR IGNORE INTO webhook_events (proveedor, evento_id, tipo, payload) VALUES (?,?,?,?)', proveedor, eventoId, tipo, payload);
+  const ev = await one(env, 'SELECT procesado FROM webhook_events WHERE proveedor = ? AND evento_id = ?', proveedor, eventoId);
+  return !ev.procesado;
+}
+export const marcarEvento = (env, proveedor, eventoId, error = null) =>
+  run(env, 'UPDATE webhook_events SET procesado = ?, error = ? WHERE proveedor = ? AND evento_id = ?', error ? 0 : 1, error, proveedor, eventoId);
+
+export const registrarAnalitica = (env, tipo, { product_id = null, order_id = null, ref_code = null } = {}) =>
+  run(env, 'INSERT INTO events (tipo, product_id, order_id, ref_code) VALUES (?,?,?,?)', tipo, product_id, order_id, ref_code);
+
+// Ventana fija. Devuelve true si la petición entra en el límite.
+export async function dentroDelLimite(env, clave, max, segundos) {
+  const ventana = Math.floor(Date.now() / 1000 / segundos) * segundos;
+  const r = await one(env,
+    `INSERT INTO rate_limits (clave, ventana, conteo) VALUES (?,?,1)
+     ON CONFLICT (clave, ventana) DO UPDATE SET conteo = conteo + 1 RETURNING conteo`, clave, ventana);
+  return r.conteo <= max;
+}
