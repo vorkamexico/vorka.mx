@@ -10,6 +10,7 @@ import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
 import { paginaCatalogo, paginaProducto, sitemapTienda } from './tienda.js';
 import * as admin from './admin.js';
+import { ESTILOS } from './paginas.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -58,6 +59,7 @@ export default {
       if (request.method === 'GET' || request.method === 'HEAD') {
         if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
         if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
+        if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
         // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.
         const img = url.pathname.match(/^\/tienda\/img\/(portadas\/[a-z0-9-]+\.(?:jpg|png|webp))$/);
         if (img) {

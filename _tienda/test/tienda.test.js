@@ -116,3 +116,12 @@ describe('rutas que no deben chocar', () => {
     expect(await (await pedir('/tienda/gracias?order=nada')).text()).toContain('No encontramos esa orden');
   });
 });
+
+describe('estilos de la tienda', () => {
+  it('el Worker sirve tienda.css y las páginas lo enlazan con versión', async () => {
+    const r = await pedir('/tienda/estilos.css');
+    expect(r.headers.get('content-type')).toContain('text/css');
+    expect(await r.text()).toContain('.t-prod');
+    expect(await (await pedir('/tienda/')).text()).toMatch(/href="\/tienda\/estilos\.css\?v=[a-z0-9]+"/);
+  });
+});

@@ -2,6 +2,11 @@
 // El menú y el pie vienen de _sitio/partes.py vía marco.generado.js (python3 _tienda/marco.py).
 import { NAV, PIE, VERSION } from './marco.generado.js';
 import { esc } from './correo.js';
+import CSS_TIENDA from '../../assets/v3/tienda.css';
+
+// Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
+export const ESTILOS = CSS_TIENDA;
+const VERSION_CSS = [...CSS_TIENDA].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
 
 export { esc };
 export const nonce = () => btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
@@ -60,7 +65,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="can
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
-<link rel="stylesheet" href="/assets/v3/tienda.css?v=${VERSION}">
+<link rel="stylesheet" href="/tienda/estilos.css?v=${VERSION_CSS}">
 ${head}</head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>

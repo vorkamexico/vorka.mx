@@ -4,6 +4,8 @@
   "main": "src/index.js",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
+  // tienda.css viaja dentro del Worker (/tienda/estilos.css): la tienda no depende de cuándo se publique el sitio
+  "rules": [{ "type": "Text", "globs": ["**/*.css"], "fallthrough": true }],
   "routes": [
     { "pattern": "vorka.mx/tienda*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/api/*", "zone_name": "vorka.mx" },
