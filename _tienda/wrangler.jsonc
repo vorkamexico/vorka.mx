@@ -30,5 +30,31 @@
   },
   // Cada hora: transferencias a creadores (marketplace)
   "triggers": { "crons": ["17 * * * *"] },
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // Entorno de PRUEBAS (Stripe en modo prueba): npx wrangler deploy --env pruebas
+  // Base de datos y archivos propios; no toca la tienda real. Marketplace encendido.
+  "env": {
+    "pruebas": {
+      "name": "vorka-tienda-pruebas",
+      "workers_dev": true,
+      "routes": [],
+      "d1_databases": [
+        { "binding": "DB", "database_name": "vorka-tienda-pruebas", "database_id": "6f80e8b9-fb89-43b2-82f0-fb317d95ce62", "migrations_dir": "migrations" }
+      ],
+      "r2_buckets": [
+        { "binding": "PRODUCTOS", "bucket_name": "vorka-productos-pruebas" }
+      ],
+      "services": [
+        { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
+      ],
+      "vars": {
+        "SITE_URL": "https://vorka-tienda-pruebas.oleynickhdz.workers.dev",
+        "MARKETPLACE": "1",
+        "STRIPE_PUBLISHABLE_KEY": "",
+        // Estilos, imágenes y demás páginas salen del sitio real
+        "ESTATICO_DEV": "https://vorka.mx"
+      },
+      "triggers": { "crons": ["17 * * * *"] }
+    }
+  }
 }
