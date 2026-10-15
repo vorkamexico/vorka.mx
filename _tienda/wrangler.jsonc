@@ -16,6 +16,10 @@
   "r2_buckets": [
     { "binding": "PRODUCTOS", "bucket_name": "vorka-productos" }
   ],
+  // Correos de entrega: por Vorka OS (clase Correo), que ya tiene la llave de Resend
+  "services": [
+    { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
+  ],
   "vars": {
     "SITE_URL": "https://vorka.mx"
   },
