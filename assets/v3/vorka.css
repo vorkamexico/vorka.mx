@@ -132,7 +132,7 @@ ul, ol { padding: 0; list-style: none; }
 .menu-abierto .menu-movil { opacity: 1; visibility: visible; transform: none; }
 .menu-movil a:not(.btn) { font-size: 30px; font-weight: 700; letter-spacing: -.035em; text-decoration: none; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .menu-movil .btn { margin-top: 24px; }
-@media (max-width: 1080px) { .nav-links, .nav .btn.escritorio { display: none; } .menu-btn { display: inline-flex; } }
+@media (max-width: 1180px) { .nav-links, .nav .btn.escritorio { display: none; } .menu-btn { display: inline-flex; } }
 @media (min-width: 1081px) { .menu-movil { display: none; } }
 
 /* ---------- Portada ---------- */
@@ -539,6 +539,8 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .tira-t { flex: 1; min-width: 220px; }
 .tira-t b { display: block; font-size: 18px; letter-spacing: -.02em; }
 .tira-t span { color: var(--fg-2); font-size: 15px; }
+.tira-tienda { margin-top: 10px; }
+.tira-tienda .letra-v::before { background: linear-gradient(145deg, #8a6a2c, #c8a45c); }
 .cab-servicio { min-height: min(860px, 100svh); display: flex; align-items: center; }
 .ventana-v.v-cab { left: auto; right: max(-3vw, -40px); top: 50%; height: auto; width: min(46vw, 660px); transform: translateY(-42%); z-index: -1; }
 .cab-servicio .marco > * { max-width: min(560px, 48vw); }

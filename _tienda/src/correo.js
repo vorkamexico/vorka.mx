@@ -33,10 +33,14 @@ export function marco(titulo, cuerpoHtml) {
 }
 
 /**
- * Envía por Resend. Sin RESEND_API_KEY queda en "modo prueba": se registra y se da por enviado.
- * Lanza error si Resend falla, para que el webhook responda 500 y la pasarela reintente.
+ * Envía el correo. Orden: llave propia de Resend (RESEND_API_KEY) → Vorka OS por service binding (CORREO),
+ * que usa la llave de Resend que ya tiene → "modo prueba" (se registra y se da por enviado).
+ * Lanza error si el envío falla, para que el webhook responda 500 y la pasarela reintente.
  */
+const REMITENTE = 'Vorka México <tienda@vorka.mx>';
 export async function enviar(env, { para, asunto, html, texto, idempotencia }) {
+  if (!env.RESEND_API_KEY && env.CORREO)
+    return env.CORREO.enviar({ para, asunto, html, texto, de: REMITENTE, responder_a: SOPORTE.correo, idempotencia });
   if (!env.RESEND_API_KEY) {
     console.log('correo (modo prueba)', correoOculto(para), asunto);
     return { prueba: true };
@@ -45,7 +49,7 @@ export async function enviar(env, { para, asunto, html, texto, idempotencia }) {
   if (idempotencia) headers['idempotency-key'] = idempotencia;
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers,
-    body: JSON.stringify({ from: 'Vorka México <tienda@vorka.mx>', to: [para], reply_to: SOPORTE.correo, subject: asunto, html, text: texto }),
+    body: JSON.stringify({ from: REMITENTE, to: [para], reply_to: SOPORTE.correo, subject: asunto, html, text: texto }),
   });
   if (!r.ok) throw new Error(`Resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
   return r.json();

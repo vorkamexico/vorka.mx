@@ -6,7 +6,7 @@ SITIO = 'https://vorka.mx'
 CORREO = 'vorkamexico@gmail.com'
 WHATSAPP = '528117804869'
 WA_MSG = 'Hola Vorka, ya decidí avanzar. Me gustaría empezar formalmente el proceso.'
-VERSION = '4'
+VERSION = '6'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -110,7 +110,7 @@ def cabeza(titulo, descripcion, ruta, og='cdmx-reforma', extra=''):
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 '''
 
-MENU = [('/servicios/', 'Servicios'), ('/#proceso', 'Cómo trabajamos'), ('/#momentos', 'Para quién'), ('/#red', 'Presencia'), ('/sparks/', 'Sparks'), ('/voluntariado', 'Tú en Vorka')]
+MENU = [('/servicios/', 'Servicios'), ('/#proceso', 'Cómo trabajamos'), ('/#momentos', 'Para quién'), ('/#red', 'Presencia'), ('/sparks/', 'Sparks'), ('/tienda/', 'Tienda'), ('/voluntariado', 'Tú en Vorka')]
 
 def nav(actual='', oscuro=False):
     cur = ' aria-current="page"'
@@ -146,6 +146,7 @@ def pie():
         <li><a href="/#proceso">Cómo trabajamos</a></li>
         <li><a href="/#red">Presencia nacional</a></li>
         <li><a href="/sparks/">Revista Sparks</a></li>
+        <li><a href="/tienda/">Tienda</a></li>
         <li><a href="/voluntariado">Tú en Vorka</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
         <li><a href="/agenda/">Agenda tu diagnóstico</a></li>

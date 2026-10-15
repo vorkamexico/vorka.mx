@@ -235,6 +235,11 @@ def inicio():
       <span class="tira-t"><b>Programa Tú en Vorka</b><span>Voluntariado estratégico para jóvenes de 16 a 29 años. Presencial en el Bajío y remoto en todo México.</span></span>
       <span class="flecha">Conocer el programa {FLECHA}</span>
     </a>
+    <a class="caja tira tira-tienda rv" href="/tienda/">
+      <span class="letra-v">Kit</span>
+      <span class="tira-t"><b>Tienda Vorka México</b><span>Guías, cuadernos de trabajo y calculadoras que usamos con nuestros clientes, listos para descargar.</span></span>
+      <span class="flecha">Ver la tienda {FLECHA}</span>
+    </a>
   </div>
 </section>
 {cierre()}

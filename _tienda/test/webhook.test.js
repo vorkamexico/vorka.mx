@@ -183,3 +183,16 @@ describe('webhook de Stripe', () => {
     expect(r.status).toBe(404);
   });
 });
+
+describe('correo por Vorka OS', () => {
+  it('sin RESEND_API_KEY manda el correo por el binding CORREO (Vorka OS)', async () => {
+    const enviados = [];
+    delete env.RESEND_API_KEY;
+    env.CORREO = { async enviar(c) { enviados.push(c); return { id: 'em_vos' }; } };
+    await evento('checkout.session.completed', 'cs_1');
+    expect(enviados).toHaveLength(1);
+    expect(enviados[0]).toMatchObject({ para: 'ana@mail.com', de: 'Vorka México <tienda@vorka.mx>', responder_a: 'hola@vorka.mx' });
+    expect(enviados[0].texto).toMatch(/descargas\/[a-f0-9]{64}/);
+    expect(estado().correo_enviado_at).toBeTruthy();
+  });
+});
