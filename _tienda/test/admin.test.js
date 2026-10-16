@@ -198,3 +198,44 @@ describe('archivos faltantes', () => {
     await expect(A.guardarProducto({ id: p.id, nombre: p.nombre, precio: 279, activo: true })).rejects.toThrow(/Falta subir/);
   });
 });
+
+describe('marketplace en el panel', () => {
+  let enviados;
+  beforeEach(() => {
+    enviados = [];
+    env.CORREO = { async enviar(c) { enviados.push(c); return {}; } };
+    env.DB.raw.exec(`INSERT INTO creadores (id, nombre, email, estado, que_vende) VALUES ('cre_s', 'Sol', 'sol@mail.com', 'solicitud', 'Guías de finanzas personales para jóvenes');
+      INSERT INTO creadores (id, nombre, email, estado, stripe_listo) VALUES ('cre_a', 'Ale', 'ale@mail.com', 'aprobado', 1);
+      INSERT INTO products (id, slug, nombre, precio_centavos, r2_keys, creador_id, revision) VALUES ('prod_ale', 'guia-ale', 'Guía de Ale', 9900, '[{"key":"guia-ale/g.pdf","nombre":"Guía"}]', 'cre_a', 'en_revision');`);
+  });
+
+  it('aprobar una solicitud le manda su enlace de bienvenida', async () => {
+    await A.decidirCreador('cre_s', { accion: 'aprobar', comision_pct: 25 });
+    expect(env.DB.raw.prepare("SELECT estado, comision_pct FROM creadores WHERE id = 'cre_s'").get()).toEqual({ estado: 'aprobado', comision_pct: 25 });
+    expect(enviados[0]).toMatchObject({ para: 'sol@mail.com' });
+    expect(enviados[0].texto).toMatch(/creadores\/acceso\/[a-f0-9]{64}/);
+    expect((await A.pendientesMarketplace()).solicitudes).toBe(0);
+  });
+
+  it('aprobar un producto exige sus archivos; al aprobar se publica y se avisa', async () => {
+    await expect(A.decidirProducto('prod_ale', { aprobar: true })).rejects.toThrow(/Falta el archivo/);
+    env.PRODUCTOS.m.set('guia-ale/g.pdf', { buf: new Uint8Array(1) });
+    const r = await A.decidirProducto('prod_ale', { aprobar: true });
+    expect(r).toMatchObject({ publicado: true });
+    const html = await (await worker.fetch(new Request('https://vorka.mx/tienda/'), env)).text();
+    expect(html).toContain('/tienda/guia-ale/');
+    expect(enviados.at(-1).asunto).toMatch(/ya está a la venta/);
+  });
+
+  it('rechazar un producto exige explicar qué cambiar', async () => {
+    await expect(A.decidirProducto('prod_ale', { aprobar: false })).rejects.toThrow(/Escribe qué/);
+    await A.decidirProducto('prod_ale', { aprobar: false, nota: 'Agrega una portada y revisa la ortografía.' });
+    expect(env.DB.raw.prepare("SELECT revision, nota_revision FROM products WHERE id = 'prod_ale'").get()).toEqual({ revision: 'rechazado', nota_revision: 'Agrega una portada y revisa la ortografía.' });
+  });
+
+  it('lista creadores con su estado, y la cola de revisión', async () => {
+    const l = await A.creadores();
+    expect(l[0]).toMatchObject({ id: 'cre_s', estado: 'solicitud' });
+    expect((await A.revision()).map(p => p.id)).toEqual(['prod_ale']);
+  });
+});

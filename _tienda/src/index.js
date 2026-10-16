@@ -11,6 +11,9 @@ import { paginaReenviar, postReenviar } from './reenviar.js';
 import { paginaCatalogo, paginaProducto, sitemapTienda } from './tienda.js';
 import * as admin from './admin.js';
 import { ESTILOS } from './paginas.js';
+import { procesarTransferencias, refrescarCreador, repartosPendientes } from './marketplace.js';
+import { rutasCreadores } from './creadores.js';
+import { all } from './util.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -35,6 +38,16 @@ export class Admin extends WorkerEntrypoint {
   afiliados() { return admin.afiliados(this.env); }
   guardarAfiliado(d) { return admin.guardarAfiliado(this.env, d); }
   reporteAfiliados(f) { return admin.reporteAfiliados(this.env, f); }
+  // Marketplace de creadores
+  pendientesMarketplace() { return admin.pendientesMarketplace(this.env); }
+  creadores() { return admin.creadores(this.env); }
+  decidirCreador(id, d) { return admin.decidirCreador(this.env, id, d); }
+  comisionCreador(id, pct) { return admin.comisionCreador(this.env, id, pct); }
+  revisarStripeCreador(id) { return admin.revisarStripeCreador(this.env, id); }
+  revision() { return admin.revision(this.env); }
+  decidirProducto(id, d) { return admin.decidirProducto(this.env, id, d); }
+  transferencias(f) { return admin.transferencias(this.env, f); }
+  archivoRevision(id, key) { return admin.archivoRevision(this.env, id, key); }
 }
 
 export default {
@@ -42,6 +55,8 @@ export default {
     const url = new URL(request.url);
     try {
       if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+      const cr = await rutasCreadores(request, env, ctx, url);
+      if (cr) return cr;
       if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
         return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
           ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));
@@ -79,5 +94,18 @@ export default {
       console.error('tienda', url.pathname, err?.message);
       return fail('Error interno', 500);
     }
+  },
+
+  // Cada hora: transferencias a creadores que ya pasaron su plazo, y estado de cuentas de Stripe en revisión
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil((async () => {
+      try {
+        if (!env.STRIPE_SECRET_KEY) return;
+        const pendientes = await all(env, "SELECT id, stripe_account_id FROM creadores WHERE estado = 'aprobado' AND stripe_account_id IS NOT NULL AND stripe_listo = 0 LIMIT 25");
+        for (const c of pendientes) await refrescarCreador(env, c).catch(e => console.error('creador', c.id, e.message));
+        const programadas = await repartosPendientes(env);
+        console.log('transferencias', JSON.stringify({ programadas, ...(await procesarTransferencias(env)) }));
+      } catch (e) { console.error('cron', e?.message); }
+    })());
   },
 };

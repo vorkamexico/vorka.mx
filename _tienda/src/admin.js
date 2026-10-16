@@ -4,6 +4,9 @@
 import { z } from 'zod';
 import { all, one, run, ahoraISO } from './util.js';
 import { reenviarEnlace } from './entrega.js';
+import { crearEnlace } from './creadores-acceso.js';
+import { enlaceAcceso, solicitudRechazada, productoRevisado } from './correos-creadores.js';
+import { refrescarCreador } from './marketplace.js';
 
 const TZ = 'America/Mexico_City';
 const fechaMx = iso => iso ? new Date(iso).toLocaleString('sv-SE', { timeZone: TZ }).slice(0, 16) : '';
@@ -69,7 +72,8 @@ export async function orden(env, id) {
   const items = await all(env, 'SELECT i.*, p.slug FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id);
   const tokens = (await all(env, 'SELECT id, expires_at, descargas, revocado, created_at FROM download_tokens WHERE order_id = ? ORDER BY id DESC', o.id))
     .map(t => ({ ...t, revocado: !!t.revocado, vencido: t.expires_at < ahoraISO(), descargas: Object.values(JSON.parse(t.descargas || '{}')).reduce((s, n) => s + n, 0) }));
-  return { ...o, items, tokens };
+  const trf = await all(env, 'SELECT t.*, c.nombre creador_nombre FROM transferencias t JOIN creadores c ON c.id = t.creador_id WHERE t.order_id = ?', o.id);
+  return { ...o, items, tokens, transferencias: trf };
 }
 
 export async function reenviar(env, id) {
@@ -98,9 +102,9 @@ export async function exportarCSV(env, { desde, hasta }) {
 
 // ---------- productos ----------
 export async function productos(env) {
-  return (await all(env, `SELECT p.*,
+  return (await all(env, `SELECT p.*, c.nombre creador_nombre,
       (SELECT COUNT(*) FROM order_items i JOIN orders o ON o.id = i.order_id WHERE i.product_id = p.id AND o.estado = 'paid') vendidos
-    FROM products p ORDER BY p.orden, p.nombre`)).map(producto);
+    FROM products p LEFT JOIN creadores c ON c.id = p.creador_id ORDER BY p.creador_id IS NOT NULL, p.orden, p.nombre`)).map(producto);
 }
 export const productoPorId = async (env, id) => producto(await one(env, 'SELECT * FROM products WHERE id = ?', String(id)));
 
@@ -271,4 +275,97 @@ export async function reporteAfiliados(env, { mes }) {
     GROUP BY a.code ORDER BY comision_centavos DESC, a.nombre`, desde, hasta);
   const total = filas.reduce((s, f) => ({ ventas: s.ventas + f.ventas, monto_centavos: s.monto_centavos + f.monto_centavos, comision_centavos: s.comision_centavos + f.comision_centavos }), { ventas: 0, monto_centavos: 0, comision_centavos: 0 });
   return { mes, afiliados: filas, total };
+}
+
+// ---------- marketplace: creadores, revisión de productos y transferencias ----------
+
+export async function pendientesMarketplace(env) {
+  const r = await one(env, `SELECT (SELECT COUNT(*) FROM creadores WHERE estado = 'solicitud') solicitudes,
+      (SELECT COUNT(*) FROM products WHERE revision = 'en_revision') revision,
+      (SELECT COALESCE(SUM(monto_centavos), 0) FROM transferencias WHERE estado = 'programada') por_transferir,
+      (SELECT COUNT(*) FROM transferencias WHERE estado = 'error') con_error`);
+  return r;
+}
+
+export async function creadores(env) {
+  return (await all(env, `SELECT c.*,
+      (SELECT COUNT(*) FROM products p WHERE p.creador_id = c.id) productos,
+      (SELECT COUNT(*) FROM products p WHERE p.creador_id = c.id AND p.activo = 1 AND p.revision = 'aprobado') publicados,
+      (SELECT COALESCE(SUM(venta_centavos), 0) FROM transferencias t WHERE t.creador_id = c.id AND t.estado IN ('programada','enviada')) ventas_centavos,
+      (SELECT COALESCE(SUM(comision_vorka_centavos), 0) FROM transferencias t WHERE t.creador_id = c.id AND t.estado IN ('programada','enviada')) comision_centavos,
+      (SELECT COALESCE(SUM(monto_centavos), 0) FROM transferencias t WHERE t.creador_id = c.id AND t.estado = 'programada') por_transferir_centavos
+    FROM creadores c ORDER BY CASE c.estado WHEN 'solicitud' THEN 0 WHEN 'aprobado' THEN 1 WHEN 'suspendido' THEN 2 ELSE 3 END, c.created_at DESC`))
+    .map(c => ({ ...c, stripe_listo: !!c.stripe_listo }));
+}
+
+const DecisionCreador = z.object({
+  accion: z.enum(['aprobar', 'rechazar', 'suspender', 'reactivar']),
+  nota: z.string().trim().max(500).optional(),
+  comision_pct: z.coerce.number().min(0).max(100).optional(),
+});
+
+export async function decidirCreador(env, id, datos) {
+  const v = DecisionCreador.safeParse(datos);
+  if (!v.success) throw new Error(v.error.issues[0].message);
+  const d = v.data;
+  const c = await one(env, 'SELECT * FROM creadores WHERE id = ?', String(id));
+  if (!c) throw new Error('Ese creador ya no existe.');
+  const estado = { aprobar: 'aprobado', rechazar: 'rechazado', suspender: 'suspendido', reactivar: 'aprobado' }[d.accion];
+  await run(env, `UPDATE creadores SET estado = ?, nota = ?, comision_pct = COALESCE(?, comision_pct),
+      aprobado_at = CASE WHEN ? = 'aprobar' THEN ? ELSE aprobado_at END WHERE id = ?`,
+    estado, d.nota || null, d.comision_pct ?? null, d.accion, ahoraISO(), c.id);
+  const actual = { ...c, estado, nota: d.nota || null };
+  if (d.accion === 'aprobar') await enlaceAcceso(env, actual, await crearEnlace(env, c.id), { bienvenida: true });
+  if (d.accion === 'rechazar') await solicitudRechazada(env, actual);
+  return { ok: true, estado };
+}
+
+export async function comisionCreador(env, id, pct) {
+  const n = Number(pct);
+  if (!(n >= 0 && n <= 100)) throw new Error('La comisión va de 0 a 100 %.');
+  await run(env, 'UPDATE creadores SET comision_pct = ? WHERE id = ?', n, String(id));
+  return { ok: true };
+}
+
+export async function revisarStripeCreador(env, id) {
+  const c = await one(env, 'SELECT id, stripe_account_id FROM creadores WHERE id = ?', String(id));
+  if (!c?.stripe_account_id) return { listo: false, sin_cuenta: true };
+  return { listo: await refrescarCreador(env, c) };
+}
+
+export async function revision(env) {
+  return (await all(env, `SELECT p.*, c.nombre creador_nombre, c.email creador_email, c.stripe_listo creador_stripe_listo
+    FROM products p JOIN creadores c ON c.id = p.creador_id WHERE p.revision = 'en_revision' ORDER BY p.updated_at`)).map(producto);
+}
+
+export async function decidirProducto(env, id, { aprobar, nota } = {}) {
+  const p = await productoPorId(env, id);
+  if (!p?.creador_id) throw new Error('Ese producto no es de un creador.');
+  const c = await one(env, 'SELECT * FROM creadores WHERE id = ?', p.creador_id);
+  if (aprobar) {
+    if (!p.r2_keys.length) throw new Error('El producto no tiene archivos.');
+    for (const a of p.r2_keys) if (!(await env.PRODUCTOS.head(a.key))) throw new Error(`Falta el archivo "${a.nombre}".`);
+    await run(env, "UPDATE products SET revision = 'aprobado', activo = 1, nota_revision = ?, updated_at = ? WHERE id = ?", nota || null, ahoraISO(), p.id);
+  } else {
+    if (!String(nota || '').trim()) throw new Error('Escribe qué tiene que cambiar el creador.');
+    await run(env, "UPDATE products SET revision = 'rechazado', activo = 0, nota_revision = ?, updated_at = ? WHERE id = ?", String(nota).trim().slice(0, 600), ahoraISO(), p.id);
+  }
+  await productoRevisado(env, c, { ...p, nota_revision: nota || null }, !!aprobar).catch(e => console.error('aviso revisión', p.id, e.message));
+  return { ok: true, publicado: !!aprobar && !!c.stripe_listo, creador_stripe_listo: !!c.stripe_listo };
+}
+
+export async function transferencias(env, { estado } = {}) {
+  const w = estado ? 'WHERE t.estado = ?' : '';
+  return all(env, `SELECT t.*, c.nombre creador_nombre,
+      (SELECT GROUP_CONCAT(i.nombre, ' + ') FROM order_items i WHERE i.order_id = t.order_id AND i.creador_id = t.creador_id) productos
+    FROM transferencias t JOIN creadores c ON c.id = t.creador_id ${w} ORDER BY t.created_at DESC LIMIT 200`, ...(estado ? [estado] : []));
+}
+
+// Para revisar un producto: el archivo tal cual lo subió el creador (solo por RPC desde Vorka OS)
+export async function archivoRevision(env, id, key) {
+  const p = await productoPorId(env, id);
+  if (!p || !p.r2_keys.some(a => a.key === key)) throw new Error('Ese archivo no es de este producto.');
+  const o = await env.PRODUCTOS.get(key);
+  if (!o) throw new Error('El archivo no está.');
+  return { cuerpo: o.body, tipo: o.httpMetadata?.contentType || 'application/octet-stream', nombre: key.split('/').pop() };
 }

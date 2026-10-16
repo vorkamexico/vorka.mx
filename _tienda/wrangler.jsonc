@@ -7,7 +7,8 @@
   "routes": [
     { "pattern": "vorka.mx/tienda*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/api/*", "zone_name": "vorka.mx" },
-    { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" }
+    { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/creadores*", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
     { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
@@ -21,7 +22,40 @@
     { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
   ],
   "vars": {
-    "SITE_URL": "https://vorka.mx"
+    "SITE_URL": "https://vorka.mx",
+    // Marketplace de creadores: "1" abre vorka.mx/creadores (apagado hasta tener la revisión fiscal)
+    "MARKETPLACE": "0",
+    // Llave publicable de Stripe (no es secreta): la usan los componentes incrustados del portal de creadores
+    "STRIPE_PUBLISHABLE_KEY": ""
   },
-  "observability": { "enabled": true }
+  // Cada hora: transferencias a creadores (marketplace)
+  "triggers": { "crons": ["17 * * * *"] },
+  "observability": { "enabled": true },
+  // Entorno de PRUEBAS (Stripe en modo prueba): npx wrangler deploy --env pruebas
+  // Base de datos y archivos propios; no toca la tienda real. Marketplace encendido.
+  "env": {
+    "pruebas": {
+      "name": "vorka-tienda-pruebas",
+      "workers_dev": true,
+      "routes": [],
+      "d1_databases": [
+        { "binding": "DB", "database_name": "vorka-tienda-pruebas", "database_id": "6f80e8b9-fb89-43b2-82f0-fb317d95ce62", "migrations_dir": "migrations" }
+      ],
+      "r2_buckets": [
+        { "binding": "PRODUCTOS", "bucket_name": "vorka-productos-pruebas" }
+      ],
+      "services": [
+        { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
+      ],
+      "vars": {
+        "SITE_URL": "https://vorka-tienda-pruebas.oleynickhdz.workers.dev",
+        "MARKETPLACE": "1",
+        // Llave publicable del "Entorno de prueba de Vorka México" (sandbox de Connect, acct_1UQtCGFv4vp449UW). No es secreta.
+        "STRIPE_PUBLISHABLE_KEY": "pk_test_51UQtCGFv4vp449UWimvSrKZ8TAQuVmZsPVfrTAt3HyfIb2QaEi98eTTSnAVKJKopuyJONf8iyQmFCdwJCf5Zc3B300yiadUI5Q",
+        // Estilos, imágenes y demás páginas salen del sitio real
+        "ESTATICO_DEV": "https://vorka.mx"
+      },
+      "triggers": { "crons": ["17 * * * *"] }
+    }
+  }
 }

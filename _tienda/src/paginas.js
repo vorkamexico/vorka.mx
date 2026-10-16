@@ -12,15 +12,18 @@ export const nonce = () => btoa(String.fromCharCode(...crypto.getRandomValues(ne
 
 // CSP estricta solo en las rutas de la tienda (el resto del sitio no pasa por el Worker).
 // form-action incluye Stripe porque /api/checkout redirige al pago con un 303.
-export function seguridad(n) {
+// stripe: páginas del portal de creadores con los componentes incrustados de Stripe Connect
+export function seguridad(n, { stripe = false } = {}) {
+  const st = stripe ? ' https://connect-js.stripe.com https://js.stripe.com' : '';
   return {
     'content-security-policy': [
       "default-src 'self'",
-      `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com`,
+      `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com${st}`,
+      ...(stripe ? ['frame-src https://connect-js.stripe.com https://js.stripe.com'] : []),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://cloudflareinsights.com",
+      `connect-src 'self' https://cloudflareinsights.com${stripe ? ' https://api.stripe.com https://*.stripe.com' : ''}`,
       "form-action 'self' https://checkout.stripe.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
@@ -30,7 +33,9 @@ export function seguridad(n) {
     'x-content-type-options': 'nosniff',
     'referrer-policy': 'strict-origin-when-cross-origin',
     'x-frame-options': 'DENY',
-    'permissions-policy': 'camera=(), microphone=(), geolocation=()',
+    // La verificación de identidad de Stripe puede pedir la cámara dentro de su iframe
+    'permissions-policy': stripe ? 'camera=(self "https://connect-js.stripe.com" "https://js.stripe.com"), microphone=(), geolocation=()' : 'camera=(), microphone=(), geolocation=()',
+    ...(stripe ? { 'cross-origin-opener-policy': 'unsafe-none' } : {}),
   };
 }
 
@@ -38,7 +43,7 @@ export function seguridad(n) {
  * pagina({ titulo, descripcion, ruta, cuerpo, head?, script?, noindex?, status?, headers? }) → Response
  * `script` va inline con nonce; `head` acepta JSON-LD u otras etiquetas.
  */
-export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', noindex = false, status = 200, headers = {}, imagen }) {
+export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false }) {
   const n = nonce();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
@@ -71,12 +76,12 @@ ${head}</head>
 ${NAV.replace('<script ', `<script nonce="${n}" `)}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
-${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}
+${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {
     status,
-    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridad(n), ...headers },
+    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridad(n, { stripe }), ...headers },
   });
 }
 

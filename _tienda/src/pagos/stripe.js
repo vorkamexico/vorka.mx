@@ -115,7 +115,7 @@ export default {
   // Nunca se usa el contenido del webhook: solo su tipo y el id del objeto, y se consulta a Stripe.
   async interpretar(evento, env) {
     if (EVENTOS_SESION.includes(evento.tipo)) {
-      const s = await llamar(env, 'GET', `/checkout/sessions/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent.payment_method`);
+      const s = await llamar(env, 'GET', `/checkout/sessions/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent.payment_method&expand[]=payment_intent.latest_charge.balance_transaction`);
       const orderId = s.metadata?.order_id || s.client_reference_id;
       if (!orderId) return null;
       const pi = typeof s.payment_intent === 'object' ? s.payment_intent : null;
@@ -128,6 +128,9 @@ export default {
         monto_centavos: s.amount_total, moneda: s.currency,
         provider_payment_id: pi?.id || null,
         metodo_pago: pi?.payment_method?.type || null,
+        // Para el reparto a creadores: el cargo (source_transaction) y la comisión real que cobró Stripe
+        provider_charge_id: typeof pi?.latest_charge === 'object' ? pi.latest_charge?.id : pi?.latest_charge || null,
+        stripe_fee_centavos: pi?.latest_charge?.balance_transaction?.fee ?? null,
       };
     }
     if (evento.tipo === 'charge.refunded') {
