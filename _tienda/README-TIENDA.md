@@ -152,7 +152,7 @@ Casos de aceptación con Stripe en modo prueba (tarjetas en https://docs.stripe.
 ## Del modo de prueba a producción
 
 - [ ] Todas las pruebas pasan (`npm test`) y los casos de aceptación funcionaron en modo prueba.
-- [ ] Textos legales revisados por un abogado (quitar el aviso de BORRADOR en `legales.py` y regenerar).
+- [ ] Textos legales revisados por un abogado (se publicaron sin el aviso de BORRADOR el 2026-10-16, a decisión de Vorka México).
 - [ ] Contenido final del producto: 7 pasos, portada y archivos reales.
 - [ ] Stripe en modo real: `STRIPE_SECRET_KEY` con `sk_live_…`, webhook real creado y su `whsec_…` en `STRIPE_WEBHOOK_SECRET`.
 - [ ] Una compra real de bajo monto de punta a punta (y reembolsarla).

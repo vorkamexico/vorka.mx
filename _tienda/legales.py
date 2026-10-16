@@ -1,6 +1,5 @@
 # Vorka México · páginas legales de la tienda: /legal/terminos/ y /legal/reembolsos/
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
-# BORRADOR: revisar con abogado antes de vender en producción.
 import os, re, sys
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, os.path.join(RAIZ, '_sitio'))
@@ -14,13 +13,11 @@ DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, Mé
 privacidad = open(os.path.join(RAIZ, 'privacidad', 'index.html'), encoding='utf-8').read()
 ESTILO = re.search(r'<style>.*?</style>', privacidad, re.S).group(0)
 
-BORRADOR = '<p class="borrador" role="note"><b>BORRADOR – revisar con abogado.</b> Este texto es una base de trabajo y aún no es la versión definitiva.</p>'
-ESTILO_BORRADOR = '<style>.borrador{margin:0 0 28px;padding:14px 18px;border-radius:14px;background:#FBF5E8;border:1px solid #E6CF96;font-size:15px;color:#6f5420}</style>'
 
 def pagina(ruta, titulo, titulo_html, lead, etiqueta, apartados):
     indice = ''.join(f'<li><a href="#{a}"><span>{i:02d}</span>{t}</a></li>' for i, (a, t, _) in enumerate(apartados, 1))
     cuerpo = ''.join(f'<section class="apartado" id="{a}"><h2><span class="n">{i:02d}</span>{t}</h2>{html}</section>' for i, (a, t, html) in enumerate(apartados, 1))
-    return (cabeza(f'{titulo} · Vorka México', lead, ruta, extra=ESTILO + ESTILO_BORRADOR) + nav() + f'''<main id="contenido">
+    return (cabeza(f'{titulo} · Vorka México', lead, ruta, extra=ESTILO) + nav() + f'''<main id="contenido">
 <section class="cabecera">
   {v_metal('v-fondo', 'gl', oscuro=False)}
   <div class="marco">
@@ -34,7 +31,7 @@ def pagina(ruta, titulo, titulo_html, lead, etiqueta, apartados):
 <section class="sec pegada">
   <div class="marco priv">
     <nav aria-label="Contenido"><b>Contenido</b><ol>{indice}</ol></nav>
-    <div class="texto-aviso">{BORRADOR}{cuerpo}</div>
+    <div class="texto-aviso">{cuerpo}</div>
   </div>
 </section>
 </main>
