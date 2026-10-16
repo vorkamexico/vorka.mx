@@ -55,7 +55,9 @@
         // Estilos, imágenes y demás páginas salen del sitio real
         "ESTATICO_DEV": "https://vorka.mx"
       },
-      "triggers": { "crons": ["17 * * * *"] }
+      // Sin cron: el plan gratis de Cloudflare permite 5 en toda la cuenta. Para probar transferencias:
+      // npx wrangler dev --remote --env pruebas --test-scheduled  y abrir /__scheduled
+      "triggers": { "crons": [] }
     }
   }
 }
