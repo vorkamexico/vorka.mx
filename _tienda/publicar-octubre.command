@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Vorka México · publica los ajustes de octubre (doble clic, una sola vez, DESPUÉS de aprobar el PR en GitHub)
+# Vorka México · publica la tienda y Vorka OS (doble clic, DESPUÉS de aprobar el PR en GitHub). Incluye correos nuevos, permisos e Instagram.
 # Tienda: recordatorio de órdenes sin pagar, enlaces editables con redirección y portada nueva de /tienda.
 # Vorka OS: avisos con horario, pendientes al celular (o correo), página "Mis pendientes", invitar clientes a reuniones
 # y la base para Instagram. Se puede volver a correr sin problema.
@@ -17,7 +17,9 @@ echo "4/6 · Publicando la tienda…"
 npx wrangler deploy
 echo "5/6 · Actualizando y publicando Vorka OS…"
 cd ../../vorka-os
-npx wrangler d1 execute vorka-os --remote --yes --file=migracion_026_avisos_instagram.sql >/dev/null 2>&1 && echo "   base lista" || echo "   (la base ya estaba actualizada)"
+for f in migracion_026_avisos_instagram.sql migracion_027_reporte_cuenta_ig.sql migracion_028_permisos.sql; do
+  npx wrangler d1 execute vorka-os --remote --yes --file=$f >/dev/null 2>&1 && echo "   $f lista" || echo "   $f (ya estaba)"
+done
 npx wrangler deploy
 echo "6/6 · Revisando que todo responda…"
 for u in https://vorka.mx/tienda https://vorka.mx/api/tienda/salud https://os.vorka.mx; do
