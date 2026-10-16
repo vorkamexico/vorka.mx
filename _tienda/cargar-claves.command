@@ -3,8 +3,13 @@
 # Las claves se escriben ocultas y van directo a los secretos del Worker vorka-tienda: no se guardan en ningún archivo.
 cd "$(dirname "$0")" || exit 1
 
+# Entorno: real (vorka.mx) o pruebas (vorka-tienda-pruebas, Stripe en modo prueba)
+ENV_ARGS=()
+TITULO="TIENDA REAL (vorka.mx)"
+if [ "$(basename "$0")" = "cargar-claves-pruebas.command" ] || [ "$1" = "pruebas" ]; then ENV_ARGS=(--env pruebas); TITULO="ENTORNO DE PRUEBAS (Stripe modo prueba)"; fi
+
 echo ""
-echo "Tienda Vorka México · cargar claves"
+echo "Tienda Vorka México · cargar claves · $TITULO"
 echo "Pega cada clave cuando te la pida y presiona Enter (no se ve mientras la pegas, es normal)."
 echo "Si quieres saltarte una, deja vacío y presiona Enter."
 echo ""
@@ -18,19 +23,19 @@ cargar() { # nombre, descripción, prefijos válidos
     if [[ "$valor" =~ ^($prefijos) ]]; then break; fi
     echo "  ✗ No parece correcta (debe empezar con ${prefijos//|/ o }). Intenta de nuevo."
   done
-  if printf "%s" "$valor" | npx --yes wrangler secret put "$nombre" >/dev/null 2>&1; then
+  if printf "%s" "$valor" | npx --yes wrangler secret put "$nombre" "${ENV_ARGS[@]}" >/dev/null 2>&1; then
     echo "  ✓ Guardada."
   else
     echo "  ✗ No se pudo guardar. Revisa que hayas iniciado sesión en Cloudflare (npx wrangler login)."
   fi
 }
 
-cargar STRIPE_SECRET_KEY     "1/3 Clave restringida de Stripe (rk_test_… o rk_live_…)" "rk_test_|rk_live_|sk_test_|sk_live_"
-cargar STRIPE_WEBHOOK_SECRET "2/3 Secreto del webhook de Stripe (whsec_…)"              "whsec_"
-cargar RESEND_API_KEY        "3/3 Clave de Resend (re_…)"                               "re_"
+cargar STRIPE_SECRET_KEY     "1/2 Clave restringida de Stripe (rk_test_… o rk_live_…)" "rk_test_|rk_live_|sk_test_|sk_live_"
+cargar STRIPE_WEBHOOK_SECRET "2/2 Secreto del webhook de Stripe (whsec_…)"              "whsec_"
+# Los correos salen por Vorka OS: la clave de Resend ya no hace falta
 
 echo ""
 echo "Listo. Secretos que tiene la tienda ahora:"
-npx --yes wrangler secret list 2>/dev/null | grep -o '"name": "[A-Z_]*"' | sed 's/"name": /  · /'
+npx --yes wrangler secret list "${ENV_ARGS[@]}" 2>/dev/null | grep -o '"name": "[A-Z_]*"' | sed 's/"name": /  · /'
 echo ""
 read -rp "Presiona Enter para cerrar."
