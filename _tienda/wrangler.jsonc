@@ -50,7 +50,8 @@
       "vars": {
         "SITE_URL": "https://vorka-tienda-pruebas.oleynickhdz.workers.dev",
         "MARKETPLACE": "1",
-        "STRIPE_PUBLISHABLE_KEY": "",
+        // Llave publicable del "Entorno de prueba de Vorka México" (sandbox de Connect, acct_1UQtCGFv4vp449UW). No es secreta.
+        "STRIPE_PUBLISHABLE_KEY": "pk_test_51UQtCGFv4vp449UWimvSrKZ8TAQuVmZsPVfrTAt3HyfIb2QaEi98eTTSnAVKJKopuyJONf8iyQmFCdwJCf5Zc3B300y",
         // Estilos, imágenes y demás páginas salen del sitio real
         "ESTATICO_DEV": "https://vorka.mx"
       },
