@@ -22,6 +22,14 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/tienda/">');
   });
 
+  it('la portada destaca el primer producto del orden del catálogo y explica cómo comprar', async () => {
+    const html = await (await pedir('/tienda/')).text();
+    expect(html).toMatch(/class="t-destacado" href="\/tienda\/de-idea-a-proyecto\/"/);
+    expect(html).toContain('Destacado');
+    expect(html).toContain('Descarga al momento');
+    expect(html).toContain('id="productos"');
+  });
+
   it('sin productos activos muestra un estado vacío', async () => {
     env.DB.raw.exec('UPDATE products SET activo = 0');
     const html = await (await pedir('/tienda')).text();

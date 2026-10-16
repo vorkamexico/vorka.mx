@@ -7,6 +7,7 @@ import { reenviarEnlace } from './entrega.js';
 import { crearEnlace } from './creadores-acceso.js';
 import { enlaceAcceso, solicitudRechazada, productoRevisado } from './correos-creadores.js';
 import { refrescarCreador } from './marketplace.js';
+import { motivoNoRecordar } from './recordatorio.js';
 
 const TZ = 'America/Mexico_City';
 const fechaMx = iso => iso ? new Date(iso).toLocaleString('sv-SE', { timeZone: TZ }).slice(0, 16) : '';
@@ -60,7 +61,7 @@ export async function ordenes(env, filtros = {}) {
   if (f.q) { w.push('(o.email LIKE ? OR o.nombre LIKE ? OR o.id LIKE ?)'); p.push(`%${f.q}%`, `%${f.q}%`, `${f.q}%`); }
   const donde = w.length ? `WHERE ${w.join(' AND ')}` : '';
   const total = await one(env, `SELECT COUNT(*) n FROM orders o ${donde}`, ...p);
-  const lista = await all(env, `SELECT o.id, o.email, o.nombre, o.monto_centavos, o.moneda, o.estado, o.metodo_pago, o.ref_code, o.created_at, o.paid_at, o.correo_enviado_at,
+  const lista = await all(env, `SELECT o.id, o.email, o.nombre, o.monto_centavos, o.moneda, o.estado, o.metodo_pago, o.ref_code, o.created_at, o.paid_at, o.correo_enviado_at, o.recordatorio_at,
       (SELECT GROUP_CONCAT(i.nombre, ' + ') FROM order_items i WHERE i.order_id = o.id) productos
     FROM orders o ${donde} ORDER BY o.created_at DESC LIMIT ? OFFSET ?`, ...p, POR_PAGINA, f.pagina * POR_PAGINA);
   return { total: total.n, pagina: f.pagina, por_pagina: POR_PAGINA, ordenes: lista };
@@ -73,7 +74,9 @@ export async function orden(env, id) {
   const tokens = (await all(env, 'SELECT id, expires_at, descargas, revocado, created_at FROM download_tokens WHERE order_id = ? ORDER BY id DESC', o.id))
     .map(t => ({ ...t, revocado: !!t.revocado, vencido: t.expires_at < ahoraISO(), descargas: Object.values(JSON.parse(t.descargas || '{}')).reduce((s, n) => s + n, 0) }));
   const trf = await all(env, 'SELECT t.*, c.nombre creador_nombre FROM transferencias t JOIN creadores c ON c.id = t.creador_id WHERE t.order_id = ?', o.id);
-  return { ...o, items, tokens, transferencias: trf };
+  // Recordatorio de pago: se puede mandar una sola vez (si no, por qué no)
+  const recordatorio = ['pending', 'failed'].includes(o.estado) ? { enviado: o.recordatorio_at, motivo: await motivoNoRecordar(env, o) } : null;
+  return { ...o, items, tokens, transferencias: trf, recordatorio };
 }
 
 export async function reenviar(env, id) {
@@ -131,6 +134,18 @@ const EsquemaProducto = z.object({
 // Texto de FAQ propio del producto: viene del panel como texto plano → se escapa y los saltos de línea se vuelven <br>
 const htmlSeguro = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/\n/g, '<br>');
 
+// Slugs que no pueden usarse porque son rutas de la tienda
+const RESERVADOS = new Set(['gracias', 'retomar', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar']);
+export const SLUG_VALIDO = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// Slug escrito a mano en el editor: formato válido, no reservado y que nadie más lo use (ni como enlace anterior de otro producto)
+export async function validarSlug(env, slug, id) {
+  if (!SLUG_VALIDO.test(slug) || slug.length < 3 || slug.length > 60) throw new Error('El enlace solo puede llevar minúsculas, números y guiones (de 3 a 60), sin acentos ni espacios.');
+  if (RESERVADOS.has(slug)) throw new Error(`"${slug}" está reservado por la tienda. Elige otro enlace.`);
+  if (await one(env, 'SELECT 1 FROM products WHERE slug = ? AND id != ?', slug, id || '')) throw new Error(`Ya hay otro producto con el enlace "${slug}".`);
+  if (await one(env, 'SELECT 1 FROM slugs_anteriores WHERE slug = ? AND product_id != ?', slug, id || '')) throw new Error(`"${slug}" fue el enlace de otro producto y sigue redirigiendo ahí. Elige otro.`);
+  return slug;
+}
+
 async function slugLibre(env, base, id) {
   base = slugify(base) || 'producto';
   for (let k = 1; k < 50; k++) {
@@ -162,7 +177,14 @@ export async function guardarProducto(env, datos) {
   const contenido = d.contenido
     ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })) }
     : actual?.contenido || {};
-  const slug = await slugLibre(env, d.slug || actual?.slug || d.nombre, d.id);
+  // Si escribieron un enlace nuevo a mano se valida y no se cambia en silencio; si no, se arma solo del nombre
+  const pedido = d.slug ? d.slug.toLowerCase() : null;
+  const slug = pedido && pedido !== actual?.slug ? await validarSlug(env, pedido, d.id) : await slugLibre(env, actual?.slug || d.slug || d.nombre, d.id);
+  // El enlace anterior se guarda para redirigir (301) a quien lo tenga guardado o compartido
+  if (actual && slug !== actual.slug) await env.DB.batch([
+    env.DB.prepare('INSERT INTO slugs_anteriores (slug, product_id) VALUES (?, ?) ON CONFLICT(slug) DO UPDATE SET product_id = excluded.product_id').bind(actual.slug, actual.id),
+    env.DB.prepare('DELETE FROM slugs_anteriores WHERE slug = ? AND product_id = ?').bind(slug, actual.id),
+  ]);
   const precio_centavos = Math.round(d.precio * 100);
   if (actual) {
     await run(env, `UPDATE products SET nombre = ?, slug = ?, descripcion_corta = ?, precio_centavos = ?, activo = ?, categoria = ?, orden = ?,

@@ -15,6 +15,12 @@ export const productoPorSlug = async (env, slug, { inactivos = false } = {}) =>
   producto(await one(env, `SELECT p.*, c.nombre creador_nombre, c.comision_pct creador_comision_pct FROM products p LEFT JOIN creadores c ON c.id = p.creador_id
     WHERE p.slug = ?${inactivos ? '' : ` AND ${VENDIBLE}`}`, slug));
 
+// Enlace viejo de un producto al que le cambiaron el slug
+export async function productoPorSlugAnterior(env, slug, op) {
+  const r = await one(env, 'SELECT p.slug FROM slugs_anteriores s JOIN products p ON p.id = s.product_id WHERE s.slug = ?', slug);
+  return r ? productoPorSlug(env, r.slug, op) : null;
+}
+
 // El código solo cuenta si existe y está activo
 export async function afiliadoActivo(env, code) {
   if (!code) return null;
@@ -29,7 +35,7 @@ export async function afiliadoActivo(env, code) {
 export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe' }) {
   const lineas = [];
   for (const it of items) {
-    const p = await productoPorSlug(env, it.slug);
+    const p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
     if (!p) throw new Error('producto');
     lineas.push({ p, cantidad: it.cantidad || 1 });
   }

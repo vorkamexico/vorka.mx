@@ -3,7 +3,7 @@
 // /tienda/sitemap.xml → sitemap dinámico de la tienda
 // ?ref=CODIGO en cualquier página de la tienda guarda la cookie vorka_ref (30 días) si el afiliado existe y está activo.
 import { pesos } from './util.js';
-import { listarProductos, productoPorSlug, afiliadoActivo, registrarAnalitica } from './modelo.js';
+import { listarProductos, productoPorSlug, productoPorSlugAnterior, afiliadoActivo, registrarAnalitica } from './modelo.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 
@@ -37,10 +37,12 @@ const portada = (p, clase = '') => p.imagen
 
 const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : `$${(p.precio_centavos / 100).toLocaleString('es-MX')} MXN`;
 
+// Portada de la tienda: hero con el producto destacado (el primero del orden del catálogo), cómo funciona y el resto del catálogo
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
-  const tarjetas = productos.map((p, i) => `
+  const [destacado, ...resto] = productos;
+  const tarjeta = (p, i) => `
     <a class="t-prod rv" style="--d:${(i % 3) * 0.06}s" href="/tienda/${esc(p.slug)}/">
       <div class="t-prod-img">${portada(p)}</div>
       <div class="t-prod-t">
@@ -49,7 +51,8 @@ export async function paginaCatalogo(env, req, url) {
         <p>${esc(p.descripcion_corta)}</p>
         <div class="t-prod-pie"><b class="num">${precio(p)}</b><span class="flecha">Ver ${FLECHA}</span></div>
       </div>
-    </a>`).join('');
+    </a>`;
+  const incluye = (destacado?.contenido?.incluye || []).slice(0, 3);
   const ld = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: productos.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}/tienda/${p.slug}/`, name: p.nombre })) };
   return pagina({
     titulo: 'Tienda · Vorka México', ruta: '/tienda/',
@@ -57,18 +60,40 @@ export async function paginaCatalogo(env, req, url) {
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     cuerpo: `
-<section class="t-sec t-cab"><div class="marco">
-  <span class="etiqueta">Tienda</span>
-  <h1 class="h1 t-titulo">Herramientas para <span class="metal">pasar a la acción.</span></h1>
-  <p class="lead">Kits, guías y plantillas que usamos con nuestros clientes, listos para descargar y trabajar a tu ritmo.</p>
+<section class="t-inicio"><div class="marco t-inicio-g">
+  <div class="t-inicio-txt">
+    <span class="etiqueta">Tienda Vorka México</span>
+    <h1 class="h1 t-inicio-h1">Herramientas para <span class="metal">pasar a la acción.</span></h1>
+    <p class="lead">Kits, guías y plantillas que usamos con nuestros clientes. Cómpralas hoy y empieza a usarlas en minutos, a tu ritmo.</p>
+    <div class="botones"><a class="btn tinta" href="${destacado ? `/tienda/${esc(destacado.slug)}/` : '#productos'}">${destacado ? 'Ver el destacado' : 'Ver productos'} ${FLECHA}</a>${productos.length > 1 ? `<a class="btn blanco" href="#productos">Todo el catálogo</a>` : ''}</div>
+    <ul class="t-sellos" aria-label="Por qué comprar aquí">
+      <li>${CHECK}<span>Descarga inmediata</span></li>
+      <li>${CHECK}<span>Tarjeta, OXXO o SPEI</span></li>
+      <li>${CHECK}<span>Soporte real</span></li>
+    </ul>
+  </div>
+  ${destacado ? `<a class="t-destacado" href="/tienda/${esc(destacado.slug)}/" aria-label="${esc(destacado.nombre)}">
+    <span class="t-destacado-sello">Destacado</span>
+    <div class="t-destacado-img">${portada(destacado)}</div>
+    <div class="t-destacado-t">
+      <h2>${esc(destacado.nombre)}</h2>
+      <p>${esc(destacado.descripcion_corta)}</p>
+      ${incluye.length ? `<ul>${incluye.map(x => `<li>${CHECK}<span>${esc(x.titulo)}</span></li>`).join('')}</ul>` : ''}
+      <div class="t-prod-pie"><b class="num">${precio(destacado)}</b><span class="flecha">Conócelo ${FLECHA}</span></div>
+    </div>
+  </a>` : ''}
 </div></section>
-<section class="t-sec t-sin-arriba"><div class="marco">
-  ${productos.length ? `<div class="t-grid">${tarjetas}</div>` : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
-  <ul class="t-garantias">
-    <li>${CHECK}<span><b>Descarga inmediata</b> por correo al confirmar tu pago</span></li>
-    <li>${CHECK}<span><b>Tarjeta, OXXO o SPEI</b> con pago seguro de Stripe</span></li>
-    <li>${CHECK}<span><b>Soporte real</b> por correo y WhatsApp si algo falla</span></li>
-  </ul>
+<section class="t-sec t-como suave"><div class="marco">
+  <ol class="t-como-g">
+    <li class="rv"><span class="num">01</span><b>Elige tu herramienta</b><p>Cada producto explica qué incluye y para quién es, antes de pagar.</p></li>
+    <li class="rv" style="--d:.06s"><span class="num">02</span><b>Paga seguro</b><p>Con tarjeta, en efectivo en OXXO o por SPEI. Lo procesa Stripe.</p></li>
+    <li class="rv" style="--d:.12s"><span class="num">03</span><b>Descarga al momento</b><p>Te llega un correo con tus archivos en cuanto se confirma el pago.</p></li>
+  </ol>
+</div></section>
+<section class="t-sec" id="productos"><div class="marco">
+  <div class="cab rv"><span class="etiqueta">Catálogo</span><h2 class="h2">${productos.length > 1 ? 'Todo lo que puedes llevarte' : 'Lo que puedes llevarte'}</h2></div>
+  ${productos.length ? `<div class="t-grid">${(resto.length ? resto : [destacado]).map(tarjeta).join('')}</div>` : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
+  <p class="t-nota t-ayuda-pie">¿Dudas antes de comprar? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. ${env.MARKETPLACE === '1' ? '¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.' : ''}</p>
 </div></section>`,
   });
 }
@@ -112,6 +137,11 @@ const lista = items => `<ul class="t-lista">${items.map(t => `<li>${CHECK}<span>
 
 export async function paginaProducto(env, req, url, slug) {
   const p = await productoPorSlug(env, slug);
+  if (!p) {
+    // Le cambiaron el enlace: redirigir para siempre al nuevo (conserva ?ref= y demás)
+    const nuevo = await productoPorSlugAnterior(env, slug);
+    if (nuevo) return new Response(null, { status: 301, headers: { location: `/tienda/${nuevo.slug}/${url.search}`, 'cache-control': 'public, max-age=3600' } });
+  }
   if (!p) return pagina({
     titulo: 'Producto no disponible · Vorka México', ruta: `/tienda/${slug}/`, noindex: true, status: 404,
     cuerpo: aviso({ clase: 'alerta', titulo: 'Este producto no está disponible', texto: 'Puede que ya no esté a la venta o que el enlace tenga un error.',

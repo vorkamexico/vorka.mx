@@ -178,3 +178,9 @@ Con `ESTATICO_DEV` en `.dev.vars` apuntando a un servidor estático del repo, la
 - **Marca de agua con el correo del comprador**: implementar `personalizeFile(orden, archivo)` en `src/entrega.js`.
 - **Suscripciones o membresías**.
 - **Carrito**: el modelo ya tiene `order_items` y el checkout acepta `items`.
+
+## Ajustes de octubre 2026
+- **Recordatorio de compra sin terminar** (`src/recordatorio.js`): en Vorka OS › Tienda › Órdenes, al abrir una orden pendiente o no pagada aparece *Enviar recordatorio*. Es un solo correo por orden (queda registrado en `orders.recordatorio_at`), con una liga firmada `/tienda/retomar/<orden>` que abre un pago nuevo con los mismos productos y datos (dura 14 días). No se manda si la orden tiene menos de 1 hora, si esa persona ya compró el producto o si a ese correo ya se le recordó algo en la última semana. WhatsApp no se incluye: las órdenes no guardan teléfono.
+- **Enlace editable**: el editor del producto tiene *Enlace del producto*. Se valida (minúsculas, números y guiones; único; no reservado) y el enlace anterior queda en `slugs_anteriores` y redirige con 301 al nuevo (también funciona si alguien compra desde una página vieja).
+- **Portada nueva de /tienda**: hero con el producto destacado (el primero según *Orden en el catálogo*), "cómo funciona" y el catálogo.
+- Publicar: `_tienda/publicar-octubre.command` (aplica la migración 0007, publica la tienda y Vorka OS).

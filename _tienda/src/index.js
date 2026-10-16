@@ -14,6 +14,7 @@ import { ESTILOS } from './paginas.js';
 import { procesarTransferencias, refrescarCreador, repartosPendientes } from './marketplace.js';
 import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
+import { recordarOrden, retomarPago } from './recordatorio.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -22,6 +23,7 @@ export class Admin extends WorkerEntrypoint {
   orden(id) { return admin.orden(this.env, id); }
   reenviar(id) { return admin.reenviar(this.env, id); }
   revocar(id) { return admin.revocar(this.env, id); }
+  recordar(id) { return recordarOrden(this.env, id); }
   exportarCSV(f) { return admin.exportarCSV(this.env, f); }
   productos() { return admin.productos(this.env); }
   async producto(id) {
@@ -64,6 +66,8 @@ export default {
       const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
       if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
       if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);
+      const ret = url.pathname.match(/^\/tienda\/retomar\/([0-9a-f-]{36})\/?$/);
+      if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
       if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {
         if (request.method === 'POST') return await postReenviar(request, env, ctx);
         if (request.method === 'GET') return paginaReenviar();
