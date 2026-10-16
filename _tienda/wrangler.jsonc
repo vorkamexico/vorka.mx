@@ -24,9 +24,9 @@
   "vars": {
     "SITE_URL": "https://vorka.mx",
     // Marketplace de creadores: "1" abre vorka.mx/creadores (apagado hasta tener la revisión fiscal)
-    "MARKETPLACE": "0",
+    "MARKETPLACE": "1",
     // Llave publicable de Stripe (no es secreta): la usan los componentes incrustados del portal de creadores
-    "STRIPE_PUBLISHABLE_KEY": ""
+    "STRIPE_PUBLISHABLE_KEY": "pk_live_51UQtC5CSlkfDAZsFVmXDPlky30HIpbsjf5ygxQBtTAThMHAeWvm5mUepbtSQDtkuTkJSwMUdvl6BE9n5yfKyckzf00aXIyzYQy"
   },
   // Cada hora: transferencias a creadores (marketplace)
   "triggers": { "crons": ["17 * * * *"] },
