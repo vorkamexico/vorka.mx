@@ -1,7 +1,7 @@
 // Reparto a creadores: se programa al pagarse la orden y se envía pasado el plazo de reembolso.
 //   creador recibe = venta − (venta × % de Vorka) − parte proporcional de la comisión real de Stripe
 import { all, one, run, ahoraISO, correoOculto } from './util.js';
-import { transferir, revertir, leerCuenta, cuentaLista } from './pagos/connect.js';
+import { transferir, revertir, leerCuenta, cuentaLista, comisionDeCargo } from './pagos/connect.js';
 import { ventaNueva } from './correos-creadores.js';
 
 export const DIAS_PARA_TRANSFERIR = 7; // cubre los 5 días hábiles de la política de reembolsos
@@ -47,6 +47,26 @@ export async function programarTransferencias(env, orderId, { fee, ahora = Date.
       const productos = items.filter(i => i.creador_id === r.creador_id).map(i => i.nombre).join(' + ');
       if (c) await ventaNueva(env, c, r, productos).catch(e => console.error('aviso venta', r.creador_id, e.message));
     }
+  }
+  return n;
+}
+
+/**
+ * Cron: ventas pagadas con productos de creadores que aún no tienen reparto porque Stripe no había
+ * calculado su comisión cuando llegó el webhook. Se consulta el cargo y se programa (plazo desde el pago).
+ */
+export async function repartosPendientes(env) {
+  const ordenes = await all(env, `SELECT o.id, o.provider_charge_id, o.paid_at FROM orders o
+    WHERE o.estado = 'paid' AND o.provider_charge_id IS NOT NULL
+      AND EXISTS (SELECT 1 FROM order_items i WHERE i.order_id = o.id AND i.creador_id IS NOT NULL)
+      AND NOT EXISTS (SELECT 1 FROM transferencias t WHERE t.order_id = o.id)
+    ORDER BY o.paid_at LIMIT 25`);
+  let n = 0;
+  for (const o of ordenes) {
+    try {
+      const fee = await comisionDeCargo(env, o.provider_charge_id);
+      if (fee != null) n += await programarTransferencias(env, o.id, { fee, ahora: Date.parse(o.paid_at) || Date.now() });
+    } catch (e) { console.error('reparto pendiente', o.id, e.message); }
   }
   return n;
 }

@@ -141,7 +141,7 @@
 .c-dato b { display: block; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }
 .c-dato span { font-size: 13.5px; color: var(--fg-2); }
 .c-caja { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; display: grid; gap: 14px; }
-.c-caja.ok { border-color: #bfe3cd; background: #f6fbf8; }
+.c-caja.c-ok { border-color: #bfe3cd; background: #f6fbf8; }
 .c-caja p { color: var(--fg-2); }
 .c-caja b { color: var(--fg); }
 .c-stripe { min-height: 60px; }
@@ -152,7 +152,7 @@
 .c-lista b { display: block; font-weight: 650; }
 .c-lista small { display: block; font-size: 13px; color: var(--fg-2); margin-top: 2px; }
 .c-pill { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--bg-2); color: var(--fg-2); white-space: nowrap; }
-.c-pill.ok { background: var(--verde-suave); color: var(--verde); }
+.c-pill.c-ok { background: var(--verde-suave); color: var(--verde); }
 .c-pill.espera { background: #FBF5E8; color: #8a6d2f; }
 .c-pill.alerta { background: var(--morado-suave); color: var(--morado); }
 .c-tabla { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }

@@ -69,6 +69,12 @@ export async function enlacePanel(env, cuentaId) {
   return l.url;
 }
 
+// Comisión real de Stripe de un cargo (null si aún no se liquida: con tarjeta llega segundos después del pago)
+export async function comisionDeCargo(env, cargoId) {
+  const c = await llamar(env, 'GET', `/charges/${encodeURIComponent(cargoId)}?expand[]=balance_transaction`);
+  return c?.balance_transaction?.fee ?? null;
+}
+
 export const transferir = (env, t, cuentaId, cargoId) =>
   llamar(env, 'POST', '/transfers', {
     amount: t.monto_centavos, currency: String(t.moneda || 'MXN').toLowerCase(), destination: cuentaId,

@@ -19,7 +19,9 @@ import { CONNECT_JS } from './vendor/connectjs.generado.js';
 
 const base = { noindex: true };
 const RESPUESTA_ENTRAR = 'Si ese correo es de un creador aprobado, en un momento te llega un enlace para entrar. Revisa también spam o promociones.';
-const ESTADO_PROD = { borrador: ['Borrador', ''], en_revision: ['En revisión', 'espera'], aprobado: ['Publicado', 'ok'], rechazado: ['Necesita cambios', 'alerta'] };
+const ESTADO_PROD = { borrador: ['Borrador', ''], en_revision: ['En revisión', 'espera'], aprobado: ['Publicado', 'c-ok'], rechazado: ['Necesita cambios', 'alerta'] };
+// Aprobado pero sin pagos configurados: todavía no sale en la tienda
+const estadoProd = (p, listo) => p.revision === 'aprobado' && !listo ? ['Aprobado · falta configurar tus pagos', 'espera'] : ESTADO_PROD[p.revision] || [p.revision, ''];
 const ESTADO_TRF = { programada: 'Programada', enviada: 'Pagada', cancelada: 'Cancelada (reembolso)', revertida: 'Revertida (reembolso o aclaración)', error: 'En revisión' };
 const fechaMx = iso => iso ? new Date(iso).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
@@ -153,15 +155,15 @@ async function paginaPanel(env, c) {
   </div>
 
   <h2 class="t-h2 c-sec">Cómo recibes tus pagos</h2>
-  ${listo ? `<div class="c-caja ok"><p><b>Tu cuenta está lista para recibir pagos.</b> Las ventas se depositan ${DIAS_PARA_TRANSFERIR} días después, cuando termina el plazo de reembolso.</p>
+  ${listo ? `<div class="c-caja c-ok"><p><b>Tu cuenta está lista para recibir pagos.</b> Las ventas se depositan ${DIAS_PARA_TRANSFERIR} días después, cuando termina el plazo de reembolso.</p>
       <div class="botones"><button class="btn blanco chico" type="button" id="btn-depositos">Ver mis depósitos ${FLECHA}</button><button class="btn blanco chico" type="button" id="btn-datos">Actualizar mis datos</button></div></div>
       <div id="stripe-gestion" hidden></div>`
     : `<div class="c-caja"><p><b>Configura cómo recibes tus pagos.</b> Stripe (nuestro procesador de pagos) te pedirá tus datos, una identificación y tu cuenta bancaria. Tus productos se publican cuando esto esté listo.</p>
       <div id="stripe-registro" class="c-stripe"><button class="btn tinta" type="button" id="btn-registro">Configurar mis pagos ${FLECHA}</button></div></div>`}
 
   <div class="c-sec c-sec-fila"><h2 class="t-h2">Mis productos</h2>${suspendido ? '' : `<a class="btn tinta chico" href="/creadores/productos/nuevo">Nuevo producto</a>`}</div>
-  ${productos.length ? `<ul class="c-lista">${productos.map(p => { const [t, cl] = ESTADO_PROD[p.revision] || [p.revision, '']; return `
-    <li><a href="/creadores/productos/${esc(p.id)}"><span><b>${esc(p.nombre)}</b><small>${pesos(p.precio_centavos)} · ${p.vendidos} vendidos${p.revision === 'rechazado' && p.nota_revision ? ` · ${esc(p.nota_revision)}` : ''}</small></span><span class="c-pill ${cl}">${t}</span></a></li>`; }).join('')}</ul>`
+  ${productos.length ? `<ul class="c-lista">${productos.map(p => { const [t, cl] = estadoProd(p, listo); return `
+    <li><a href="/creadores/productos/${esc(p.id)}"><span><b>${esc(p.nombre)}</b><small>${pesos(p.precio_centavos)} · ${p.vendidos} ${p.vendidos === 1 ? 'vendido' : 'vendidos'}${p.revision === 'rechazado' && p.nota_revision ? ` · ${esc(p.nota_revision)}` : ''}</small></span><span class="c-pill ${cl}">${t}</span></a></li>`; }).join('')}</ul>`
     : `<p class="t-nota">Aún no tienes productos. Crea el primero: le pones nombre, precio, subes tus archivos y lo envías a revisión.</p>`}
 
   <h2 class="t-h2 c-sec">Mis ventas</h2>
@@ -202,7 +204,7 @@ function paginaEditor(env, c, p) {
   const nuevo = !p;
   p = p || { nombre: '', precio_centavos: 0, descripcion_corta: '', categoria: '', r2_keys: [], contenido: {}, revision: 'borrador' };
   const co = p.contenido || {};
-  const [et, ecl] = ESTADO_PROD[p.revision] || ['', ''];
+  const [et, ecl] = nuevo ? ['', ''] : estadoProd(p, !!c.stripe_listo);
   const item = (tipo, x) => `<div class="c-item" data-item>${LISTAS[tipo][2].map(([k, l, largo]) => {
     const val = k ? (x?.[k] || '') : (typeof x === 'string' ? x : '');
     return `<div class="t-campo"><label>${l}</label>${largo ? `<textarea data-k="${k}" rows="2">${esc(val)}</textarea>` : `<input data-k="${k}" value="${esc(val)}" maxlength="400">`}</div>`;
@@ -215,7 +217,7 @@ function paginaEditor(env, c, p) {
 <section class="t-sec"><div class="marco t-estrecho">
   <a class="t-volver" href="/creadores/panel">← Mi portal</a>
   <h1 class="t-h1">${nuevo ? 'Nuevo producto' : esc(p.nombre)}</h1>
-  ${nuevo ? '' : `<p class="t-nota"><span class="c-pill ${ecl}">${et}</span>${p.revision === 'rechazado' && p.nota_revision ? ` ${esc(p.nota_revision)}` : ''}${p.revision === 'aprobado' ? ` · <a href="/tienda/${esc(p.slug)}/" target="_blank">Ver en la tienda</a>. Si guardas cambios, vuelve a revisión antes de publicarse de nuevo.` : ''}</p>`}
+  ${nuevo ? '' : `<p class="t-nota"><span class="c-pill ${ecl}">${et}</span>${p.revision === 'rechazado' && p.nota_revision ? ` ${esc(p.nota_revision)}` : ''}${p.revision === 'aprobado' && c.stripe_listo ? ` · <a href="/tienda/${esc(p.slug)}/" target="_blank">Ver en la tienda</a>. Si guardas cambios, vuelve a revisión antes de publicarse de nuevo.` : ''}</p>`}
   <form class="t-form" id="editor" novalidate data-id="${esc(p.id || '')}">
     <div class="t-campo"><label for="nombre">Nombre del producto</label><input id="nombre" name="nombre" required maxlength="160" value="${esc(p.nombre)}"></div>
     <div class="t-campo"><label for="precio">Precio (MXN)</label><input id="precio" name="precio" type="number" min="20" step="1" required value="${p.precio_centavos ? p.precio_centavos / 100 : ''}"><small class="t-ayuda">Mínimo $20. Recibes el precio − ${c.comision_pct} % − comisión de Stripe.</small></div>

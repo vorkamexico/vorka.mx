@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { d1 } from './d1.js';
 import { crearOrden, aplicarPago, listarProductos } from '../src/modelo.js';
-import { calcularReparto, programarTransferencias, procesarTransferencias, anularTransferencias, DIAS_PARA_TRANSFERIR } from '../src/marketplace.js';
+import { calcularReparto, programarTransferencias, repartosPendientes, procesarTransferencias, anularTransferencias, DIAS_PARA_TRANSFERIR } from '../src/marketplace.js';
 import { cuentaCreadorBody, cuentaLista } from '../src/pagos/connect.js';
 
 let env, llamadas, cuentaActiva;
@@ -18,6 +18,7 @@ beforeEach(() => {
     llamadas.push({ url, init, params: new URLSearchParams(init?.body) });
     if (url.includes('/v2/core/accounts/')) return new Response(JSON.stringify({ id: 'acct_lucia', configuration: { recipient: { capabilities: { stripe_balance: {
       stripe_transfers: { status: cuentaActiva ? 'active' : 'pending' }, payouts: { status: cuentaActiva ? 'active' : 'pending' } } } } } }));
+    if (url.includes('/v1/charges/')) return new Response(JSON.stringify({ id: 'ch_1', balance_transaction: { fee: 1100 } }));
     if (url.endsWith('/reversals')) return new Response(JSON.stringify({ id: 'trr_1' }));
     if (url.endsWith('/v1/transfers')) return new Response(JSON.stringify({ id: `tr_${llamadas.length}` }));
     return new Response('{}', { status: 404 });
@@ -131,5 +132,21 @@ describe('cuenta de Stripe del creador', () => {
     expect(cuentaLista(c(['active', 'active']))).toBe(true);
     expect(cuentaLista(c(['active', 'pending']))).toBe(false);
     expect(cuentaLista({})).toBe(false);
+  });
+});
+
+describe('reparto cuando Stripe aún no calcula su comisión', () => {
+  it('el cron consulta el cargo y programa el reparto con plazo desde el pago, una sola vez', async () => {
+    const o = await crearOrden(env, { items: [{ slug: 'plantillas-lucia' }], email: 'comprador@mail.com', nombre: 'Comprador' });
+    await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: o.monto_centavos, moneda: 'MXN', provider_payment_id: 'pi_1', provider_charge_id: 'ch_1' });
+    await programarTransferencias(env, o.id, { fee: null }); // así llega el webhook de una tarjeta
+    expect(transf()).toHaveLength(0);
+    expect(await repartosPendientes(env)).toBe(1);
+    const [t] = transf();
+    expect(t).toMatchObject({ venta_centavos: 20000, comision_vorka_centavos: 4000, comision_stripe_centavos: 1100, monto_centavos: 14900, estado: 'programada' });
+    const pagada = env.DB.raw.prepare('SELECT paid_at FROM orders WHERE id = ?').get(o.id).paid_at;
+    expect(Date.parse(t.disponible_en) - Date.parse(pagada)).toBe(DIAS_PARA_TRANSFERIR * 864e5);
+    expect(llamadas.some(l => l.url.includes('/v1/charges/ch_1?expand[]=balance_transaction'))).toBe(true);
+    expect(await repartosPendientes(env)).toBe(0);
   });
 });
