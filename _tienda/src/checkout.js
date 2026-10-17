@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { json, fail, sha256, correoOculto } from './util.js';
 import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { proveedor } from './pagos/index.js';
+import { puedeComprarIntento } from './simulador/index.js';
+import { productoPorSlug } from './modelo.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -47,6 +49,13 @@ export async function checkout(req, env) {
     const valor = tipo === 'ip' ? ip : d.email.toLowerCase();
     if (!(await dentroDelLimite(env, `checkout:${tipo}:${await sha256(valor)}`, max, VENTANA)))
       return error('Demasiados intentos. Espera unos minutos y vuelve a intentarlo.', 429);
+  }
+
+  // Los simulacros adicionales del Simulador PAA solo los compra quien ya tiene el simulador
+  for (const it of d.items || [{ slug: d.slug }]) {
+    const p = await productoPorSlug(env, it.slug);
+    if (p?.contenido?.acceso?.tipo === 'intento' && !(await puedeComprarIntento(env, d.email)))
+      return error('Para comprar simulacros adicionales primero necesitas el Simulador PAA, con el mismo correo de tu compra.', 403);
   }
 
   let orden;

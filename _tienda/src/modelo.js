@@ -8,8 +8,10 @@ const producto = r => r && { ...r, activo: !!r.activo, r2_keys: JSON.parse(r.r2_
 export const VENDIBLE = `p.activo = 1 AND p.revision = 'aprobado'
   AND (p.creador_id IS NULL OR EXISTS (SELECT 1 FROM creadores c WHERE c.id = p.creador_id AND c.estado = 'aprobado' AND c.stripe_listo = 1))`;
 
+// Catálogo público: los productos con contenido.oculto (p. ej. simulacros adicionales) se venden, pero no se listan
 export const listarProductos = async env =>
-  (await all(env, `SELECT p.*, c.nombre creador_nombre FROM products p LEFT JOIN creadores c ON c.id = p.creador_id WHERE ${VENDIBLE} ORDER BY p.orden, p.nombre`)).map(producto);
+  (await all(env, `SELECT p.*, c.nombre creador_nombre FROM products p LEFT JOIN creadores c ON c.id = p.creador_id WHERE ${VENDIBLE} ORDER BY p.orden, p.nombre`)).map(producto)
+    .filter(p => !p.contenido.oculto);
 
 export const productoPorSlug = async (env, slug, { inactivos = false } = {}) =>
   producto(await one(env, `SELECT p.*, c.nombre creador_nombre, c.comision_pct creador_comision_pct FROM products p LEFT JOIN creadores c ON c.id = p.creador_id

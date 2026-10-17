@@ -12,7 +12,7 @@
   var reloj = null;
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
-  var K_RUN = 'vk_paa_run', K_META = 'vk_paa_meta';
+  var K_RUN = 'vk_paa_run', K_META = 'vk_paa_meta', K_PEND = 'vk_paa_pendiente';
 
   // ---------- utilidades ----------
   function guardar(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
@@ -30,7 +30,7 @@
   function h(html) { app.innerHTML = html; app.focus({ preventScroll: true }); window.scrollTo(0, 0); }
   function api(ruta, op) {
     return fetch('/api/simulador-paa/' + ruta, Object.assign({ credentials: 'same-origin', headers: { 'content-type': 'application/json' } }, op || {}))
-      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw Object.assign(new Error(d.error || 'Algo falló'), { status: r.status }); return d; }); });
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw Object.assign(new Error(d.error || 'Algo falló'), { status: r.status, datos: d }); return d; }); });
   }
   function fecha(iso) { try { return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
   var ICONO = {
@@ -44,7 +44,9 @@
 
   // ---------- arranque ----------
   function iniciar() {
-    Promise.all([api('banco'), api('yo')]).then(function (res) {
+    var pend = leer(K_PEND);
+    var antes = pend ? api('resultados', { method: 'POST', body: JSON.stringify(pend) }).then(function () { guardar(K_PEND, null); }, function (e) { if (e.status) guardar(K_PEND, null); }) : Promise.resolve();
+    antes.then(function () { return Promise.all([api('banco'), api('yo')]); }).then(function (res) {
       B = res[0]; YO = res[1];
       B.reactivos.forEach(function (r) { R[r.id] = r; });
       run = leer(K_RUN);
@@ -93,11 +95,65 @@
     return r;
   }
   function empezar(modo, arg) {
-    var secs;
-    if (modo === 'completo') secs = B.secciones.map(function (s) { return armarSeccion(s.id); });
-    else if (modo === 'seccion') secs = [armarSeccion(arg)];
-    else secs = [armarPractica(arg)];
+    if (modo === 'completo') return empezarCompleto();
+    var secs = modo === 'seccion' ? [armarSeccion(arg)] : [armarPractica(arg)];
     run = nuevoRun(modo, secs); guardar(K_RUN, run); introSeccion();
+  }
+  // El simulacro completo gasta 1 intento: lo abre el servidor (o retoma el que esté abierto, aunque sea de otro dispositivo)
+  function empezarCompleto() {
+    var it = YO.intentos || { disponibles: 0 };
+    if (!it.abierto) {
+      if (it.disponibles <= 0) return comprar();
+      if (!confirm('Este simulacro usa 1 de tus ' + it.disponibles + ' simulacro' + (it.disponibles === 1 ? '' : 's') + ' completo' + (it.disponibles === 1 ? '' : 's') + ' disponible' + (it.disponibles === 1 ? '' : 's') + '. Aunque no lo termines, el intento cuenta. ¿Empezar ahora?')) return;
+    }
+    api('iniciar', { method: 'POST' }).then(function (d) {
+      YO.intentos = d.intentos;
+      var secs = B.secciones.map(function (s, i) { return { id: s.id, items: d.items[i], idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false }; });
+      run = nuevoRun('completo', secs); run.intento = d.id; guardar(K_RUN, run); introSeccion();
+    }).catch(function (e) {
+      if (e.status === 402) { YO.intentos = (e.datos || {}).intentos || YO.intentos; comprar(); }
+      else alert(e.message || 'No pudimos abrir el simulacro. Revisa tu conexión.');
+    });
+  }
+  function descartar() {
+    var id = run && run.modo === 'completo' ? run.intento : null;
+    run = null; guardar(K_RUN, null);
+    if (!id) return inicio();
+    api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; }).finally(inicio);
+  }
+
+  // ---------- comprar simulacros adicionales ----------
+  function precio(c) { return '$' + (c / 100).toLocaleString('es-MX') + ' MXN'; }
+  function comprar() {
+    detenerReloj(); pintarBarra();
+    var x = YO.intentoExtra, it = YO.intentos || {};
+    if (!x) { h('<section class="sim-intro"><h1>Ya usaste tus simulacros completos</h1><p class="sim-lead">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para conseguir más intentos. Mientras tanto, puedes seguir practicando por sección sin límite.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
+    h('<section class="sim-intro sim-comprar"><span class="sim-paso">Simulacros completos</span>' +
+      '<h1>' + (it.disponibles ? 'Suma más simulacros completos' : 'Ya usaste tus ' + (it.incluidos || 2) + ' simulacros completos') + '</h1>' +
+      '<p class="sim-lead">Cada simulacro adicional cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago. La práctica por sección y por temas sigue sin límite.</p>' +
+      '<form class="sim-card sim-compra" id="f-compra">' +
+        '<div class="sim-cant"><span>¿Cuántos quieres?</span><div class="sim-cant-c"><button type="button" id="c-menos" aria-label="Uno menos">−</button><b class="num" id="c-n" aria-live="polite">1</b><button type="button" id="c-mas" aria-label="Uno más">+</button></div></div>' +
+        '<div class="sim-total"><span>Total</span><b class="num" id="c-total">' + precio(x.precio_centavos) + '</b></div>' +
+        '<label class="sim-casilla"><input type="checkbox" id="c-term" required><span>Acepto los <a href="/legal/terminos/" target="_blank" rel="noopener">términos y condiciones</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>' +
+        '<p class="sim-nota">Se carga a la cuenta de ' + esc(YO.email) + '. Pagas con tarjeta, OXXO o SPEI.</p>' +
+        '<p class="sim-error" id="c-error" role="alert" hidden></p>' +
+        '<button class="btn tinta" id="c-pagar">Ir a pagar ' + FL + '</button>' +
+      '</form>' +
+      '<div class="botones"><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>');
+    var n = 1, out = document.getElementById('c-n'), tot = document.getElementById('c-total');
+    function pinta() { out.textContent = n; tot.textContent = precio(n * x.precio_centavos); }
+    document.getElementById('c-menos').onclick = function () { n = Math.max(1, n - 1); pinta(); };
+    document.getElementById('c-mas').onclick = function () { n = Math.min(10, n + 1); pinta(); };
+    document.getElementById('b-inicio').onclick = inicio;
+    document.getElementById('f-compra').onsubmit = function (e) {
+      e.preventDefault();
+      var err = document.getElementById('c-error'), btn = document.getElementById('c-pagar');
+      if (!document.getElementById('c-term').checked) { err.textContent = 'Acepta los términos para continuar.'; err.hidden = false; return; }
+      btn.disabled = true; btn.textContent = 'Abriendo el pago…'; err.hidden = true;
+      fetch('/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ items: [{ slug: x.slug, cantidad: n }], nombre: YO.nombre, email: YO.email, terminos: true }) })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.url) throw new Error(d.error || 'No pudimos abrir el pago.'); location.href = d.url; }); })
+        .catch(function (e2) { err.textContent = e2.message; err.hidden = false; btn.disabled = false; btn.innerHTML = 'Ir a pagar ' + FL; });
+    };
   }
   // Práctica: hasta 10 reactivos de los temas pedidos; primero los que fallaste, luego los que no has visto
   function armarPractica(temas) {
@@ -120,6 +176,12 @@
     var retomar = run && run.fase !== 'fin' ? '<div class="sim-aviso"><div><b>Tienes un simulacro sin terminar.</b><span>' + esc(nombreModo(run)) + ' · ' + contestadas(run) + ' de ' + totalItems(run) + ' respondidas</span></div><div class="botones"><button class="btn tinta chico" id="b-ret">Continuar</button><button class="btn blanco chico" id="b-desc">Descartar</button></div></div>' : '';
     var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu puntaje estimado por sección, tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
     var debiles = u ? temasDebiles(u.temas, 3) : [];
+    var it = YO.intentos || { incluidos: 0, disponibles: 0 };
+    // Si el simulacro completo de este dispositivo ya se cerró en otro, se descarta aquí
+    if (run && run.modo === 'completo' && (!it.abierto || it.abierto.id !== run.intento)) { run = null; guardar(K_RUN, null); retomar = ''; }
+    if (!run && it.abierto) retomar = '<div class="sim-aviso"><div><b>Tienes un simulacro completo abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
+    var intentos = '<div class="sim-intentos' + (it.disponibles ? '' : ' agotados') + '"><div><b class="num">' + it.disponibles + '</b><span>de ' + it.incluidos + ' simulacros completos disponibles</span></div>' +
+      (YO.intentoExtra ? '<button class="btn ' + (it.disponibles ? 'blanco' : 'tinta') + ' chico" id="b-comprar">Comprar más · ' + precio(YO.intentoExtra.precio_centavos) + ' c/u</button>' : '') + '</div>';
     h(
       '<section class="sim-hola"><span class="etiqueta">Simulador PAA</span><h1>Hola' + (SIM.nombre ? ', ' + esc(SIM.nombre) : '') + '</h1><p>Practica con tiempo real. Si fallas, el tutor te guía para intentarlo de nuevo.</p></section>' +
       retomar +
@@ -129,7 +191,9 @@
         '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>' +
       '</div>' +
       '<h2 class="sim-h2">Elige cómo practicar</h2>' +
-      '<button class="sim-op sim-op-grande" data-modo="completo"><span class="sim-op-t"><b>Simulacro completo</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · las 4 secciones con cronómetro</small></span><span class="sim-op-f">' + FL + '</span></button>' +
+      '<button class="sim-op sim-op-grande" data-modo="completo"><span class="sim-op-t"><b>Simulacro completo</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · las 4 secciones con cronómetro · usa 1 intento</small></span><span class="sim-op-f">' + FL + '</span></button>' +
+      intentos +
+      '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
       '<div class="sim-secs">' + B.secciones.map(function (s) {
         return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
       }).join('') + '</div>' +
@@ -142,14 +206,21 @@
     r.onchange = function () { guardar(K_META, Number(r.value)); };
     app.querySelectorAll('[data-modo]').forEach(function (b) {
       b.onclick = function () {
-        if (run && run.fase !== 'fin' && !confirm('Tienes un simulacro sin terminar. ¿Empezar uno nuevo y descartarlo?')) return;
+        if (run && run.fase !== 'fin') {
+          if (b.dataset.modo === 'completo' && run.modo === 'completo') return continuar();
+          if (!confirm(run.modo === 'completo' ? 'Tienes un simulacro completo sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
+          if (run.modo === 'completo') { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; }); }
+        }
         empezar(b.dataset.modo, b.dataset.modo === 'practica' ? b.dataset.temas.split(',') : b.dataset.sec);
       };
     });
     if (retomar) {
-      document.getElementById('b-ret').onclick = continuar;
-      document.getElementById('b-desc').onclick = function () { if (confirm('¿Descartar el simulacro sin terminar?')) { run = null; guardar(K_RUN, null); inicio(); } };
+      var bd = document.getElementById('b-desc');
+      if (bd) bd.onclick = function () { if (confirm(run.modo === 'completo' ? '¿Descartar el simulacro completo? El intento ya cuenta y no se recupera.' : '¿Descartar la práctica sin terminar?')) descartar(); };
+      var bs = document.getElementById('b-ret-srv'); if (bs) bs.onclick = empezarCompleto;
+      var br = document.getElementById('b-ret'); if (br) br.onclick = continuar;
     }
+    var bc = document.getElementById('b-comprar'); if (bc) bc.onclick = comprar;
     app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
     conectarSparks();
   }
@@ -375,14 +446,15 @@
     var res = { modo: run.modo, secciones: secs, temas: temas, fallados: fallados, vistos: vistos, global: global, meta: meta(), fecha: new Date().toISOString(),
       resp: run.resp, orden: run.orden, items: run.secciones.map(function (s) { return s.items; }) };
     res.confianza = confianza(res, ultimoCompleto()).total;
+    var intento = run.intento || null;
     run.fase = 'fin'; guardar(K_RUN, null); run = null;
     // Al servidor solo va el resumen (el detalle de respuestas se queda para este reporte)
-    var envio = { modo: res.modo, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
-    api('resultados', { method: 'POST', body: JSON.stringify(envio) }).then(function () {
-      YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos }, envio));
-    }).catch(function () {
-      YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos }, envio));
-      var a = document.getElementById('aviso-guardar'); if (a) a.hidden = false;
+    var envio = { modo: res.modo, intento: intento, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
+    YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos }, envio));
+    if (intento && YO.intentos) YO.intentos.abierto = null;
+    api('resultados', { method: 'POST', body: JSON.stringify(envio) }).catch(function (e) {
+      // Sin conexión: se guarda y se reintenta al volver a abrir el simulador
+      if (!e.status) { guardar(K_PEND, envio); var a = document.getElementById('aviso-guardar'); if (a) a.hidden = false; }
     });
     reporte(res, false);
   }
@@ -489,7 +561,7 @@
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
         '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global ? '<p class="sim-global">Puntaje estimado <b class="num">' + res.global + '</b><small> / 800 · meta ' + m + '</small></p>' : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' +
-      '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado en tu historial (sin conexión). Tu reporte sigue aquí.</p>' +
+      '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado (sin conexión). Se guardará en tu historial la próxima vez que abras el simulador con internet.</p>' +
       '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +
       htmlRefuerza +
       (htmlFuertes ? '<div class="sim-grid2">' + htmlTemas + htmlFuertes + '</div>' : '<div class="sim-grid2 uno">' + htmlTemas + '</div>') +

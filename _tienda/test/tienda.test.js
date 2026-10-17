@@ -26,7 +26,7 @@ describe('/tienda (catálogo)', () => {
     const html = await (await pedir('/tienda/')).text();
     expect(html).toMatch(/class="t-destacado" href="\/tienda\/de-idea-a-proyecto\/"/);
     expect(html).toContain('Destacado');
-    expect(html).toContain('Descarga al momento');
+    expect(html).toContain('Recíbelo al momento');
     expect(html).toContain('id="productos"');
   });
 
