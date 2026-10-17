@@ -177,7 +177,7 @@ export async function guardarProducto(env, datos) {
     if (!(await env.PRODUCTOS.head(a.key))) throw new Error(`Falta subir "${a.nombre}". Quítalo de la lista o súbelo de nuevo.`);
 
   const contenido = d.contenido
-    ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })), ...(acceso ? { acceso } : {}) }
+    ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })), ...(acceso ? { acceso } : {}), ...(actual?.contenido?.oculto ? { oculto: true } : {}) }
     : actual?.contenido || {};
   // Si escribieron un enlace nuevo a mano se valida y no se cambia en silencio; si no, se arma solo del nombre
   const pedido = d.slug ? d.slug.toLowerCase() : null;

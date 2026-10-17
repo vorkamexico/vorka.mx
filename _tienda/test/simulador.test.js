@@ -54,12 +54,18 @@ describe('banco de reactivos', () => {
 });
 
 describe('acceso al simulador', () => {
-  it('sin acceso muestra la página de venta con el botón a la tienda', async () => {
+  it('sin acceso muestra la página pública para Google con compra directa y datos estructurados', async () => {
     const r = await pedir('/simulador-paa/');
     expect(r.status).toBe(200);
     const html = await r.text();
-    expect(html).toContain('/tienda/simulador-paa');
     expect(html).not.toContain('/simulador-paa/app.js');
+    expect(html).toContain('<link rel="canonical" href="https://vorka.mx/simulador-paa/">');
+    expect(html).toContain('<title>Simulador PAA 2026 en línea');
+    expect(html).toContain('"@type":"FAQPage"');
+    expect(html).toContain('"@type":"Product"');
+    expect(html).toContain('simulador-paa-og.png');
+    expect(html).toContain('name="slug" value="simulador-paa"');
+    expect(html).not.toContain('noindex');
   });
 
   it('el enlace del correo deja una cookie que abre la app y la API', async () => {
@@ -104,7 +110,8 @@ describe('acceso al simulador', () => {
 
   it('guarda resultados, limpia campos y los devuelve en el historial', async () => {
     const cookie = soloCookie(await cookieAcceso(env, orden.id, Date.now() + 864e5));
-    const body = JSON.stringify({ modo: 'completo', global: 9999, meta: 600, confianza: 72, extra: 'x',
+    const { id } = await (await pedir('/api/simulador-paa/iniciar', { metodo: 'POST', cookie })).json();
+    const body = JSON.stringify({ modo: 'completo', intento: id, global: 9999, meta: 600, confianza: 72, extra: 'x',
       secciones: [{ id: 'lectura', puntaje: 610, aciertos: 8, segundo: 2, total: 12, tiempo: 700, limite: 840 }],
       temas: { inferencia: { ok: 2, total: 3 }, inventado: { ok: 1, total: 1 } }, fallados: ['L-sue-3'] });
     expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body })).status).toBe(200);
@@ -114,6 +121,8 @@ describe('acceso al simulador', () => {
     expect(yo.historial[0].temas.inventado).toBeUndefined();
     expect(yo.historial[0].extra).toBeUndefined();
     expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body: '{"modo":"otro"}' })).status).toBe(400);
+    // El mismo intento no se puede cerrar dos veces
+    expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body })).status).toBe(409);
   });
 
   it('cliente público y con caché larga', async () => {
@@ -144,5 +153,79 @@ describe('integración con la tienda', () => {
     expect(d.activo).toBe(true);
     expect(d.contenido.acceso.app).toBe('simulador-paa');
     expect(d.contenido.titular).toBe('Nuevo titular');
+  });
+});
+
+describe('intentos de simulacro completo', () => {
+  const cookieDe = async o => soloCookie(await cookieAcceso(env, o.id, Date.now() + 864e5));
+  const iniciar = cookie => pedir('/api/simulador-paa/iniciar', { metodo: 'POST', cookie });
+  const yo = async cookie => (await pedir('/api/simulador-paa/yo', { cookie })).json();
+
+  it('la compra trae 2; el tercero pide comprar; abandonar no devuelve el intento', async () => {
+    const cookie = await cookieDe(orden);
+    expect((await yo(cookie)).intentos).toMatchObject({ incluidos: 2, usados: 0, disponibles: 2, abierto: null });
+    const a = await (await iniciar(cookie)).json();
+    expect(a.items).toHaveLength(4);
+    expect(a.items.map(x => x.length)).toEqual(SECCIONES.map(s => s.reactivos));
+    // Retomar (otro dispositivo) no gasta otro intento
+    const a2 = await (await iniciar(cookie)).json();
+    expect(a2).toMatchObject({ id: a.id, retomado: true });
+    expect((await yo(cookie)).intentos).toMatchObject({ usados: 1, disponibles: 1 });
+    await pedir('/api/simulador-paa/abandonar', { metodo: 'POST', cookie, body: JSON.stringify({ id: a.id }) });
+    expect((await yo(cookie)).intentos).toMatchObject({ usados: 1, disponibles: 1, abierto: null });
+    await iniciar(cookie);
+    await pedir('/api/simulador-paa/abandonar', { metodo: 'POST', cookie, body: JSON.stringify({ id: (await yo(cookie)).intentos.abierto.id }) });
+    const r = await iniciar(cookie);
+    expect(r.status).toBe(402);
+    expect((await r.json()).sinIntentos).toBe(true);
+    // Las secciones sueltas no gastan intentos
+    const sec = JSON.stringify({ modo: 'seccion', secciones: [{ id: 'lectura', puntaje: 500, aciertos: 6, total: 12 }], temas: {} });
+    expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body: sec })).status).toBe(200);
+  });
+
+  it('un simulacro adicional comprado con el mismo correo suma intentos (por cantidad)', async () => {
+    const extra = await crearOrden(env, { items: [{ slug: 'simulador-paa-intento', cantidad: 3 }], email: 'ana@mail.com', nombre: 'Ana López' });
+    expect(extra.monto_centavos).toBe(15000);
+    await aplicarPago(env, extra.id, { resultado: 'aprobado', monto_centavos: 15000, moneda: 'MXN', metodo_pago: 'card' });
+    const y = await yo(await cookieDe(orden));
+    expect(y.intentos).toMatchObject({ incluidos: 5, disponibles: 5 });
+    expect(y.intentoExtra).toEqual({ slug: 'simulador-paa-intento', precio_centavos: 5000 });
+    // Con la cookie de la compra del intento también entra, y el historial es el mismo (el de la compra base)
+    const y2 = await yo(await cookieDe(extra));
+    expect(y2.intentos.incluidos).toBe(5);
+  });
+
+  it('comprar solo el intento no da acceso, y el checkout lo bloquea si no tienes el simulador', async () => {
+    const r = await worker.fetch(new Request('https://vorka.mx/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ items: [{ slug: 'simulador-paa-intento', cantidad: 1 }], nombre: 'Luis', email: 'luis@mail.com', terminos: true }) }), env);
+    expect(r.status).toBe(403);
+    const sola = await comprar('simulador-paa-intento', 'luis@mail.com');
+    expect((await pedir('/api/simulador-paa/banco', { cookie: soloCookie(await cookieAcceso(env, sola.id, Date.now() + 864e5)) })).status).toBe(401);
+  });
+});
+
+describe('tienda por secciones y SEO', () => {
+  it('el catálogo agrupa por secciones y no lista el simulacro adicional', async () => {
+    const html = await (await pedir('/tienda/')).text();
+    expect(html).toContain('Preparación para exámenes');
+    expect(html).toContain('Kits para emprender');
+    expect(html).toContain('href="#examenes"');
+    expect(html).not.toContain('simulador-paa-intento');
+  });
+
+  it('la página del intento redirige al simulador y la del simulador apunta a su página canónica', async () => {
+    const r = await pedir('/tienda/simulador-paa-intento/');
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('/simulador-paa/');
+    const html = await (await pedir('/tienda/simulador-paa/')).text();
+    expect(html).toContain('<link rel="canonical" href="https://vorka.mx/simulador-paa/">');
+    expect(html).toContain('acceso inmediato por un año');
+  });
+
+  it('el sitemap incluye vorka.mx/simulador-paa/', async () => {
+    const xml = await (await pedir('/tienda/sitemap.xml')).text();
+    expect(xml).toContain('<loc>https://vorka.mx/simulador-paa/</loc>');
+    expect(xml).not.toContain('/tienda/simulador-paa/');
+    expect(xml).not.toContain('simulador-paa-intento');
   });
 });

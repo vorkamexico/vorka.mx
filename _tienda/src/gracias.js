@@ -10,9 +10,12 @@ const ESPERA_EFECTIVO = ['oxxo', 'customer_balance'];
 async function leer(env, id) {
   if (!UUID.test(id || '')) return null;
   return one(env, `SELECT o.id, o.estado, o.metodo_pago, o.email, o.correo_enviado_at,
-      (SELECT p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) slug
+      (SELECT p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) slug,
+      (SELECT p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) contenido
     FROM orders o WHERE o.id = ?`, id);
 }
+// Producto de acceso (p. ej. Simulador PAA o sus simulacros adicionales): { app, ruta, tipo, … } o null
+const accesoDe = o => { try { return JSON.parse(o.contenido || '{}').acceso || null; } catch { return null; } };
 
 // Qué ve el comprador en cada caso. 'cancelado' = volvió de Stripe sin pagar.
 export function vista(o, { cancelado = false } = {}) {
@@ -38,11 +41,22 @@ const ICONOS = {
 };
 
 function bloques(o, v) {
-  const reintentar = `<div class="botones t-centro"><a class="btn tinta" href="/tienda/${esc(o.slug || '')}#comprar">Intentar de nuevo ${FLECHA}</a><a class="btn blanco" href="/tienda/">Volver a la tienda</a></div>`;
-  return {
-    pagado: { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
+  const acc = accesoDe(o);
+  const reintentar = acc?.tipo === 'intento'
+    ? `<div class="botones t-centro"><a class="btn tinta" href="${esc(acc.ruta)}">Volver al simulador ${FLECHA}</a></div>`
+    : `<div class="botones t-centro"><a class="btn tinta" href="/tienda/${esc(o.slug || '')}#comprar">Intentar de nuevo ${FLECHA}</a><a class="btn blanco" href="/tienda/">Volver a la tienda</a></div>`;
+  const pagado = acc?.tipo === 'intento'
+    ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Ya tienes más simulacros',
+      texto: 'Tus simulacros completos adicionales ya están disponibles en tu cuenta.',
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="${esc(acc.ruta)}">Volver al simulador ${FLECHA}</a></div>` }
+    : acc ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
+      texto: `Enviamos tu acceso a <b>${esc(correoOculto(o.email))}</b>. Ábrelo y toca <b>${esc(acc.boton || 'Entrar')}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
+      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>' }
+    : { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
       texto: `Enviamos tus archivos a <b>${esc(correoOculto(o.email))}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
-      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>' },
+      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>' };
+  return {
+    pagado,
     pendiente_efectivo: { clase: 'espera', icono: ICONOS.reloj, titulo: 'Tu pedido está apartado',
       texto: 'Tu pago se confirma al realizarlo; te llegará el correo automáticamente. Si pagas en OXXO, tienes 3 días con la referencia que te dio Stripe. Si es por SPEI, usa la CLABE que te mostró.' },
     confirmando: { clase: 'espera', icono: ICONOS.carga, titulo: 'Estamos confirmando tu pago',

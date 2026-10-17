@@ -196,4 +196,10 @@ Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"
 - Historial de resultados en la tabla `simulador_resultados` (últimos 60 por compra).
 - El botón de la Revista Sparks suscribe al boletín en `os.vorka.mx/api/publico/boletin` con el correo de la compra (`origen: simulador-paa`).
 
-Publicar: `npm run db:remoto` (migración 0008) → deploy del Worker (agrega la ruta `vorka.mx/simulador-paa*`) → en Vorka OS, Tienda → Productos: ajustar precio y activar.
+**Intentos** (migración 0009): la compra trae 2 simulacros completos (`contenido.acceso.intentos`). El producto oculto `simulador-paa-intento` ($50, `contenido.oculto`) suma 1 por unidad y solo lo compra quien ya tiene el simulador (candado en `/api/checkout`). Se cuentan por correo en `simulador_intentos`; el servidor arma cada simulacro completo (`src/simulador/armar.js`) y un intento abandonado también cuenta. Secciones sueltas y práctica de temas no gastan intentos.
+
+**Tienda por secciones**: el catálogo agrupa por categoría (`SECCIONES_TIENDA` en `src/tienda.js`); una categoría nueva aparece sola como sección.
+
+**Google**: `vorka.mx/simulador-paa/` es la página canónica (título, FAQ y Product en JSON-LD, imagen para compartir) y es la que va en `/tienda/sitemap.xml`. Portadas: `python3 _tienda/simulador/portadas.py` y subirlas a R2 como `portadas/simulador-paa.png` y `portadas/simulador-paa-og.png`.
+
+Publicar: doble clic en `_tienda/publicar-simulador.command` después del merge (migraciones, deploy y, si dices que sí, lo pone a la venta).

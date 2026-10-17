@@ -245,3 +245,25 @@
 .sim-sparks-a .btn svg { width: 17px; height: 17px; }
 .sim-sparks-a .sim-link { color: var(--claro); text-decoration-color: var(--linea-o); }
 .sim-sparks-a small { font-size: 12.5px; color: var(--claro-3); }
+
+/* Intentos de simulacro completo */
+.sim-intentos { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 10px; padding: 14px 18px; border-radius: 18px; background: var(--bg-2); }
+.sim-intentos > div { display: flex; align-items: baseline; gap: 8px; }
+.sim-intentos b { font-size: 26px; font-weight: 750; letter-spacing: -.03em; }
+.sim-intentos span { font-size: 14px; color: var(--fg-2); }
+.sim-intentos.agotados { background: #fbf6ea; border: 1px solid #eedfb8; }
+.sim-libre { margin: 22px 0 0 !important; font-weight: 650; color: var(--fg) !important; }
+.sim-compra { display: flex; flex-direction: column; gap: 16px; margin: 22px 0; }
+.sim-cant, .sim-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.sim-cant span, .sim-total span { font-weight: 650; }
+.sim-cant-c { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line-2); border-radius: 999px; padding: 4px; }
+.sim-cant-c button { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--bg-2); font-size: 20px; font-weight: 600; cursor: pointer; }
+.sim-cant-c button:hover { background: var(--bg-3); }
+.sim-cant-c b { min-width: 34px; text-align: center; font-size: 18px; }
+.sim-total { padding-top: 14px; border-top: 1px solid var(--line); }
+.sim-total b { font-size: 26px; font-weight: 750; letter-spacing: -.03em; }
+.sim-casilla { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--fg-2); cursor: pointer; }
+.sim-casilla input { width: 20px; height: 20px; margin-top: 1px; accent-color: var(--fg); flex: none; }
+.sim-casilla a { color: var(--fg); }
+.sim-error { color: #a3261e; font-size: 14.5px; font-weight: 600; }
+.sim-compra .btn { width: 100%; }

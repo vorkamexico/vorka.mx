@@ -20,6 +20,14 @@ const FAQ_TIENDA = [
   { p: '¿Me pueden facturar?', r: 'Sí. Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales y el número de orden que viene en tu correo, dentro del mismo mes de la compra.' },
 ];
 
+// Para productos de acceso (apps como el Simulador PAA): cómo se recibe y la política de reembolso cambian
+const FAQ_ACCESO = [
+  { p: '¿Cómo recibo mi acceso?', r: 'En cuanto se confirma tu pago te llega un correo con el botón para entrar. Si cambias de dispositivo o lo pierdes, pide uno nuevo en <a href="/descargas/reenviar">vorka.mx/descargas/reenviar</a> con el correo de tu compra.' },
+  FAQ_TIENDA[1], FAQ_TIENDA[2],
+  { p: '¿Hay reembolsos?', r: 'Por ser un producto digital de acceso inmediato no hay reembolso una vez que entras. Si algo no funciona, escríbenos y lo resolvemos. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.' },
+  FAQ_TIENDA[4],
+];
+
 // Guarda la cookie de afiliado (si el código es válido) y devuelve el código vigente
 export async function refDeVisita(env, req, url) {
   const nuevo = url.searchParams.get('ref');
@@ -35,18 +43,41 @@ const portada = (p, clase = '') => p.imagen
   ? `<img class="t-portada-img ${clase}" src="${esc(p.imagen)}" alt="Portada de ${esc(p.nombre)}" width="1200" height="1500" decoding="async">`
   : `<div class="t-portada ${clase}" role="img" aria-label="Portada de ${esc(p.nombre)}"><span class="t-portada-v">${LOGO}</span><b>${esc(p.contenido.portada || p.nombre.split(':')[0])}</b><small>Vorka México</small></div>`;
 
-const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : `$${(p.precio_centavos / 100).toLocaleString('es-MX')} MXN`;
+export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : `$${(p.precio_centavos / 100).toLocaleString('es-MX')} MXN`;
 
 // Portada de la tienda: hero con el producto destacado (el primero del orden del catálogo), cómo funciona y el resto del catálogo
+// Secciones del catálogo según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
+// Una categoría nueva desde el panel aparece sola como sección con su propio nombre.
+const SECCIONES_TIENDA = [
+  { id: 'examenes', claves: ['examenes', 'educacion'], titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
+  { id: 'emprender', claves: ['kits', 'emprender'], titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
+];
+const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+export function seccionesCatalogo(productos) {
+  const grupos = new Map();
+  for (const p of productos) {
+    const k = sinAcentos(p.categoria);
+    const def = SECCIONES_TIENDA.find(s => s.claves.includes(k));
+    const id = def?.id || (k ? k.replace(/[^a-z0-9]+/g, '-') : 'mas');
+    if (!grupos.has(id)) grupos.set(id, { id, titulo: def?.titulo || p.categoria || 'Más productos', texto: def?.texto || '', productos: [] });
+    grupos.get(id).productos.push(p);
+  }
+  // El orden de las secciones sigue al primer producto de cada una (campo "orden" del panel)
+  return [...grupos.values()];
+}
+// Producto que abre una app (Simulador PAA) en lugar de entregar archivos
+const esAcceso = p => !!p.contenido?.acceso;
+
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
-  const [destacado, ...resto] = productos;
+  const [destacado] = productos;
+  const secciones = seccionesCatalogo(productos);
   const tarjeta = (p, i) => `
     <a class="t-prod rv" style="--d:${(i % 3) * 0.06}s" href="/tienda/${esc(p.slug)}/">
       <div class="t-prod-img">${portada(p)}</div>
       <div class="t-prod-t">
-        ${p.categoria ? `<span class="t-cat">${esc(p.categoria)}</span>` : ''}
+        <span class="t-cat">${esAcceso(p) ? 'Acceso en línea' : 'Descarga digital'}</span>
         <h2>${esc(p.nombre)}</h2>
         <p>${esc(p.descripcion_corta)}</p>
         <div class="t-prod-pie"><b class="num">${precio(p)}</b><span class="flecha">Ver ${FLECHA}</span></div>
@@ -56,7 +87,7 @@ export async function paginaCatalogo(env, req, url) {
   const ld = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: productos.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}/tienda/${p.slug}/`, name: p.nombre })) };
   return pagina({
     titulo: 'Tienda · Vorka México', ruta: '/tienda/',
-    descripcion: 'Kits, guías y herramientas digitales de Vorka México para lanzar y hacer crecer tu negocio o proyecto social. Descarga inmediata.',
+    descripcion: 'Simulador PAA, kits y herramientas digitales de Vorka México para preparar tu examen de admisión o lanzar tu negocio. Entrega inmediata.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     cuerpo: `
@@ -64,10 +95,10 @@ export async function paginaCatalogo(env, req, url) {
   <div class="t-inicio-txt">
     <span class="etiqueta">Tienda Vorka México</span>
     <h1 class="h1 t-inicio-h1">Herramientas para <span class="metal">pasar a la acción.</span></h1>
-    <p class="lead">Kits, guías y plantillas que usamos con nuestros clientes. Cómpralas hoy y empieza a usarlas en minutos, a tu ritmo.</p>
+    <p class="lead">Simuladores de examen, kits y plantillas que usamos con nuestros estudiantes y clientes. Cómpralos hoy y empieza a usarlos en minutos, a tu ritmo.</p>
     <div class="botones"><a class="btn tinta" href="${destacado ? `/tienda/${esc(destacado.slug)}/` : '#productos'}">${destacado ? 'Ver el destacado' : 'Ver productos'} ${FLECHA}</a>${productos.length > 1 ? `<a class="btn blanco" href="#productos">Todo el catálogo</a>` : ''}</div>
     <ul class="t-sellos" aria-label="Por qué comprar aquí">
-      <li>${CHECK}<span>Descarga inmediata</span></li>
+      <li>${CHECK}<span>Entrega inmediata</span></li>
       <li>${CHECK}<span>Tarjeta, OXXO o SPEI</span></li>
       <li>${CHECK}<span>Soporte real</span></li>
     </ul>
@@ -87,32 +118,37 @@ export async function paginaCatalogo(env, req, url) {
   <ol class="t-como-g">
     <li class="rv"><span class="num">01</span><b>Elige tu herramienta</b><p>Cada producto explica qué incluye y para quién es, antes de pagar.</p></li>
     <li class="rv" style="--d:.06s"><span class="num">02</span><b>Paga seguro</b><p>Con tarjeta, en efectivo en OXXO o por SPEI. Lo procesa Stripe.</p></li>
-    <li class="rv" style="--d:.12s"><span class="num">03</span><b>Descarga al momento</b><p>Te llega un correo con tus archivos en cuanto se confirma el pago.</p></li>
+    <li class="rv" style="--d:.12s"><span class="num">03</span><b>Recíbelo al momento</b><p>Te llega un correo con tus archivos o tu acceso en cuanto se confirma el pago.</p></li>
   </ol>
 </div></section>
 <section class="t-sec" id="productos"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Catálogo</span><h2 class="h2">${productos.length > 1 ? 'Todo lo que puedes llevarte' : 'Lo que puedes llevarte'}</h2></div>
-  ${productos.length ? `<div class="t-grid">${(resto.length ? resto : [destacado]).map(tarjeta).join('')}</div>` : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
+  ${secciones.length > 1 ? `<nav class="t-secciones-nav" aria-label="Secciones de la tienda">${secciones.map(g => `<a href="#${esc(g.id)}">${esc(g.titulo)}<small class="num">${g.productos.length}</small></a>`).join('')}</nav>` : ''}
+  ${productos.length ? secciones.map(g => `
+  <section class="t-seccion" id="${esc(g.id)}" aria-labelledby="sec-${esc(g.id)}">
+    <div class="t-seccion-cab rv"><h3 class="h3" id="sec-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div>
+    <div class="t-grid">${g.productos.map(tarjeta).join('')}</div>
+  </section>`).join('') : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
   <p class="t-nota t-ayuda-pie">¿Dudas antes de comprar? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. ${env.MARKETPLACE === '1' ? '¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.' : ''}</p>
 </div></section>`,
   });
 }
 
 // Formulario de compra: funciona sin JavaScript (POST normal → 303 a Stripe) y con JavaScript (fetch + errores en línea)
-const formCompra = (p, { error = '', ref = '' } = {}) => `
+export const formCompra = (p, { error = '', ref = '' } = {}) => `
 <form class="t-form t-compra" id="form-compra" method="post" action="/api/checkout" novalidate>
   <input type="hidden" name="slug" value="${esc(p.slug)}">
   ${ref ? `<input type="hidden" name="ref" value="${esc(ref)}">` : ''}
-  <div class="t-precio"><b class="num">${precio(p)}</b><span>Pago único · descarga inmediata</span></div>
+  <div class="t-precio"><b class="num">${precio(p)}</b><span>Pago único · ${esAcceso(p) ? 'acceso inmediato por un año' : 'descarga inmediata'}</span></div>
   <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
-  <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llegan tus archivos.</small></div>
+  <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">${esAcceso(p) ? 'Aquí te llega tu acceso. Úsalo también para entrar después.' : 'Aquí te llegan tus archivos.'}</small></div>
   <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos y condiciones</a> y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
   <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
   <button class="btn tinta" type="submit" id="btn-compra">Comprar ahora ${FLECHA}</button>
   <p class="t-pago">Tarjeta · OXXO · SPEI &nbsp;·&nbsp; Pago seguro con Stripe</p>
 </form>`;
 
-const SCRIPT_COMPRA = `(function(){
+export const SCRIPT_COMPRA = `(function(){
   var f=document.getElementById('form-compra'); if(!f||!window.fetch) return;
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
@@ -142,6 +178,8 @@ export async function paginaProducto(env, req, url, slug) {
     const nuevo = await productoPorSlugAnterior(env, slug);
     if (nuevo) return new Response(null, { status: 301, headers: { location: `/tienda/${nuevo.slug}/${url.search}`, 'cache-control': 'public, max-age=3600' } });
   }
+  // Productos ocultos (simulacros adicionales) se compran desde su app, no tienen página propia
+  if (p?.contenido?.oculto) return new Response(null, { status: 302, headers: { location: p.contenido.acceso?.ruta || '/tienda/' } });
   if (!p) return pagina({
     titulo: 'Producto no disponible · Vorka México', ruta: `/tienda/${slug}/`, noindex: true, status: 404,
     cuerpo: aviso({ clase: 'alerta', titulo: 'Este producto no está disponible', texto: 'Puede que ya no esté a la venta o que el enlace tenga un error.',
@@ -151,7 +189,8 @@ export async function paginaProducto(env, req, url, slug) {
   if (!BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code });
 
   const c = p.contenido;
-  const ruta = `/tienda/${p.slug}/`;
+  // Si el producto tiene su propia página (p. ej. vorka.mx/simulador-paa/), esa es la canónica para Google
+  const ruta = c.acceso?.ruta || `/tienda/${p.slug}/`;
   const imagen = p.imagen ? new URL(p.imagen, SITIO).toString() : undefined;
   const ld = {
     '@context': 'https://schema.org', '@type': 'Product', name: p.nombre, description: p.descripcion_corta, sku: p.id,
@@ -159,7 +198,7 @@ export async function paginaProducto(env, req, url, slug) {
     offers: { '@type': 'Offer', url: SITIO + ruta, price: (p.precio_centavos / 100).toFixed(2), priceCurrency: p.moneda, availability: 'https://schema.org/InStock',
       seller: { '@type': 'Organization', name: 'Vorka México' } },
   };
-  const faq = [...(c.faq || []), ...FAQ_TIENDA];
+  const faq = [...(c.faq || []), ...(esAcceso(p) ? FAQ_ACCESO : FAQ_TIENDA)];
   const pasos = c.pasos || [];
 
   return pagina({
@@ -193,14 +232,17 @@ ${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-estrecho">
   <div class="t-faq">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('')}</div>
   <div class="botones t-faq-cta"><a class="btn tinta" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>
 </div></section>
-<div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>Descarga inmediata</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>`,
+<div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>`,
   });
 }
 
 export async function sitemapTienda(env) {
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
-    ...ps.map(p => `<url><loc>${SITIO}/tienda/${p.slug}/</loc><lastmod>${p.updated_at.slice(0, 10)}</lastmod><priority>0.7</priority></url>`)];
+    // Si el producto tiene página propia (p. ej. /simulador-paa/), en el sitemap va esa (es la canónica)
+    ...ps.map(p => p.contenido.acceso?.ruta
+      ? `<url><loc>${SITIO}${p.contenido.acceso.ruta}</loc><lastmod>${p.updated_at.slice(0, 10)}</lastmod><priority>0.9</priority></url>`
+      : `<url><loc>${SITIO}/tienda/${p.slug}/</loc><lastmod>${p.updated_at.slice(0, 10)}</lastmod><priority>0.7</priority></url>`)];
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  ${urls.join('\n  ')}\n</urlset>\n`,
     { headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': 'public, max-age=3600' } });
 }
