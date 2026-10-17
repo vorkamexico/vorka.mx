@@ -25,3 +25,10 @@
 
 ## Para reemplazarlas por fotos propias
 Guarda la foto con el mismo nombre en los tres anchos (o agrega una nueva en `FOTOS`) y vuelve a correr el generador.
+
+## Vorka FC (`img/fc/`, blanco y negro)
+| Archivo | Autor | Licencia |
+|---|---|---|
+| madero, carmen, bola-agua | Juan Carlos Fonseca Mata (Wikimedia Commons) | CC BY-SA 4.0: el crédito va al pie de `/fc/` |
+| balon | Peter Glaser (Unsplash, vía Wikimedia Commons) | CC0 |
+| lobo.png | Logo de Vorka FC (silueta blanca, se usa como máscara CSS) | Propio |
