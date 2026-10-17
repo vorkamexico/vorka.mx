@@ -1,0 +1,25 @@
+Necesito que crees un archivo en dos repositorios de GitHub, directo en la rama main, usando la interfaz web de GitHub.
+
+Repositorios:
+1. https://github.com/vorkamexico/vorka.mx
+2. https://github.com/vorkamexico/os
+
+En cada uno:
+1. Abre https://github.com/vorkamexico/<repo>/new/main
+2. En el nombre del archivo escribe exactamente: .claude/settings.json
+3. Pega este contenido exacto:
+
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push origin main)",
+      "Bash(git push origin *:main)",
+      "Bash(gh api -X PUT repos/vorkamexico/*/pulls/*/merge *)"
+    ]
+  }
+}
+
+4. Haz clic en "Commit changes...", usa el mensaje "Permisos de Claude Code: publicar en main sin confirmación", elige "Commit directly to the main branch" y confirma.
+
+Si el archivo .claude/settings.json ya existe en algún repo, NO lo sobrescribas: detente y dime qué contiene.
+Al terminar, dame el enlace al commit de cada repo.
