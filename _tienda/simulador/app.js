@@ -1,0 +1,529 @@
+// Simulador PAA · cliente (vorka.mx/simulador-paa). Sin dependencias.
+// Se empaqueta dentro del Worker con: python3 _tienda/simulador/construir.py
+(function () {
+  'use strict';
+  var SIM = window.SIM || {};
+  var app = document.getElementById('app');
+  var barra = document.getElementById('barra-der');
+  var B = null;            // banco: { secciones, temas, textos, reactivos }
+  var R = {};              // reactivos por id
+  var YO = { historial: [] };
+  var run = null;          // simulacro en curso (se guarda en localStorage para retomarlo)
+  var reloj = null;
+  var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
+  var LETRAS = ['A', 'B', 'C', 'D'];
+  var K_RUN = 'vk_paa_run', K_META = 'vk_paa_meta';
+
+  // ---------- utilidades ----------
+  function guardar(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+  function leer(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  // Texto del banco: escapado, **negritas** y saltos de línea
+  function rico(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); }
+  function barajar(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function mmss(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+  function minutos(s) { var m = Math.round(s / 60); return m < 1 ? 'menos de 1 min' : m + ' min'; }
+  function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function meta() { return leer(K_META) || 600; }
+  function seccion(id) { for (var i = 0; i < B.secciones.length; i++) if (B.secciones[i].id === id) return B.secciones[i]; return { id: id, nombre: 'Práctica', minutos: 0, reactivos: 0 }; }
+  function h(html) { app.innerHTML = html; app.focus({ preventScroll: true }); window.scrollTo(0, 0); }
+  function api(ruta, op) {
+    return fetch('/api/simulador-paa/' + ruta, Object.assign({ credentials: 'same-origin', headers: { 'content-type': 'application/json' } }, op || {}))
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw Object.assign(new Error(d.error || 'Algo falló'), { status: r.status }); return d; }); });
+  }
+  function fecha(iso) { try { return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+  var ICONO = {
+    reloj: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    foco: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>',
+    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    no: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+    libro: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
+  };
+  var FL = SIM.flecha || '→';
+
+  // ---------- arranque ----------
+  function iniciar() {
+    Promise.all([api('banco'), api('yo')]).then(function (res) {
+      B = res[0]; YO = res[1];
+      B.reactivos.forEach(function (r) { R[r.id] = r; });
+      run = leer(K_RUN);
+      if (run && (!run.secciones || run.v !== 1)) { run = null; guardar(K_RUN, null); }
+      pintarBarra();
+      inicio();
+    }).catch(function (e) {
+      if (e.status === 401) { location.reload(); return; }
+      h('<section class="sim-vacio"><h1>No pudimos cargar el simulador</h1><p>Revisa tu conexión e inténtalo de nuevo.</p><button class="btn tinta" id="reint">Reintentar</button></section>');
+      document.getElementById('reint').onclick = function () { location.reload(); };
+    });
+  }
+
+  function pintarBarra(tiempo) {
+    if (tiempo) { barra.innerHTML = tiempo; return; }
+    barra.innerHTML = '<button class="sim-link" id="b-salir" type="button">Cerrar sesión</button>';
+    document.getElementById('b-salir').onclick = function () {
+      if (!confirm('¿Cerrar sesión en este dispositivo? Para volver a entrar necesitarás el enlace de tu correo de compra.')) return;
+      api('salir', { method: 'POST' }).finally(function () { location.reload(); });
+    };
+  }
+
+  // ---------- armar simulacros ----------
+  function porTema(lista, n) {
+    var grupos = {};
+    barajar(lista).forEach(function (r) { (grupos[r.tema] = grupos[r.tema] || []).push(r); });
+    var temas = barajar(Object.keys(grupos)), out = [];
+    while (out.length < n && temas.some(function (t) { return grupos[t].length; }))
+      temas.forEach(function (t) { if (out.length < n && grupos[t].length) out.push(grupos[t].shift()); });
+    return out.sort(function (a, b) { return a.dificultad - b.dificultad; });
+  }
+  function delTexto(id) { return B.reactivos.filter(function (r) { return r.texto === id; }); }
+  function textosDe(sid, tipo) { return Object.keys(B.textos).filter(function (k) { return B.textos[k].seccion === sid && (!tipo || B.textos[k].tipo === tipo); }); }
+  function armarSeccion(sid) {
+    var s = seccion(sid), sueltos = B.reactivos.filter(function (r) { return r.seccion === sid && !r.texto; }), items;
+    if (sid === 'lectura') items = delTexto(barajar(textosDe(sid, 'literario'))[0]).concat(delTexto(barajar(textosDe(sid, 'no_literario'))[0]));
+    else if (sid === 'ingles') { var lect = delTexto(barajar(textosDe(sid))[0]); items = porTema(sueltos, s.reactivos - lect.length).concat(lect); }
+    else items = porTema(sueltos, s.reactivos);
+    return { id: sid, items: items.map(function (r) { return r.id; }), idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false };
+  }
+  function nuevoRun(modo, secs) {
+    var r = { v: 1, modo: modo, secciones: secs, actual: 0, resp: {}, orden: {}, inicio: new Date().toISOString(), fase: 'intro' };
+    secs.forEach(function (s) { s.items.forEach(function (id) {
+      var x = R[id]; if (x.opciones) r.orden[id] = x.fijo ? [0, 1, 2, 3] : barajar([0, 1, 2, 3]);
+    }); });
+    return r;
+  }
+  function empezar(modo, arg) {
+    var secs;
+    if (modo === 'completo') secs = B.secciones.map(function (s) { return armarSeccion(s.id); });
+    else if (modo === 'seccion') secs = [armarSeccion(arg)];
+    else secs = [armarPractica(arg)];
+    run = nuevoRun(modo, secs); guardar(K_RUN, run); introSeccion();
+  }
+  // Práctica: hasta 10 reactivos de los temas pedidos; primero los que fallaste, luego los que no has visto
+  function armarPractica(temas) {
+    var ultimo = YO.historial[0] || {}, fallados = {}, vistos = {};
+    YO.historial.forEach(function (x) { (x.fallados || []).forEach(function (id) { fallados[id] = 1; }); });
+    YO.historial.forEach(function (x) { (x.vistos || []).forEach(function (id) { vistos[id] = 1; }); });
+    var cand = barajar(B.reactivos.filter(function (r) { return temas.indexOf(r.tema) >= 0; }));
+    cand.sort(function (a, b) { return (fallados[b.id] || 0) - (fallados[a.id] || 0) || (vistos[a.id] || 0) - (vistos[b.id] || 0); });
+    var items = porTema(cand.slice(0, Math.max(10, temas.length * 3)), 10);
+    void ultimo;
+    return { id: 'practica', temas: temas, items: items.map(function (r) { return r.id; }), idx: 0, limite: 0, usado: 0, cerrada: false };
+  }
+
+  // ---------- inicio ----------
+  function ultimoCompleto() { for (var i = 0; i < YO.historial.length; i++) if (YO.historial[i].modo === 'completo') return YO.historial[i]; return null; }
+  function inicio() {
+    detenerReloj(); pintarBarra();
+    var u = ultimoCompleto(), m = meta();
+    var totalR = B.secciones.reduce(function (a, s) { return a + s.reactivos; }, 0), totalM = B.secciones.reduce(function (a, s) { return a + s.minutos; }, 0);
+    var retomar = run && run.fase !== 'fin' ? '<div class="sim-aviso"><div><b>Tienes un simulacro sin terminar.</b><span>' + esc(nombreModo(run)) + ' · ' + contestadas(run) + ' de ' + totalItems(run) + ' respondidas</span></div><div class="botones"><button class="btn tinta chico" id="b-ret">Continuar</button><button class="btn blanco chico" id="b-desc">Descartar</button></div></div>' : '';
+    var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu puntaje estimado por sección, tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
+    var debiles = u ? temasDebiles(u.temas, 3) : [];
+    h(
+      '<section class="sim-hola"><span class="etiqueta">Simulador PAA</span><h1>Hola' + (SIM.nombre ? ', ' + esc(SIM.nombre) : '') + '</h1><p>Practica con tiempo real. Si fallas, el tutor te guía para intentarlo de nuevo.</p></section>' +
+      retomar +
+      '<div class="sim-grid2">' + resumen +
+        '<div class="sim-card sim-meta"><span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800</small></div>' +
+        '<input type="range" id="meta" min="400" max="800" step="10" value="' + m + '" aria-label="Meta de puntaje por sección (200 a 800)">' +
+        '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>' +
+      '</div>' +
+      '<h2 class="sim-h2">Elige cómo practicar</h2>' +
+      '<button class="sim-op sim-op-grande" data-modo="completo"><span class="sim-op-t"><b>Simulacro completo</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · las 4 secciones con cronómetro</small></span><span class="sim-op-f">' + FL + '</span></button>' +
+      '<div class="sim-secs">' + B.secciones.map(function (s) {
+        return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
+      }).join('') + '</div>' +
+      (debiles.length ? '<button class="sim-op sim-op-practica" data-modo="practica" data-temas="' + debiles.map(function (t) { return t.id; }).join(',') + '"><span class="sim-op-i">' + ICONO.foco + '</span><span class="sim-op-t"><b>Practicar mis temas débiles</b><small>' + esc(debiles.map(function (t) { return t.nombre; }).join(' · ')) + '</small></span><span class="sim-op-f">' + FL + '</span></button>' : '') +
+      historial() +
+      sparks('inicio')
+    );
+    var r = document.getElementById('meta');
+    r.oninput = function () { document.getElementById('meta-v').textContent = r.value; };
+    r.onchange = function () { guardar(K_META, Number(r.value)); };
+    app.querySelectorAll('[data-modo]').forEach(function (b) {
+      b.onclick = function () {
+        if (run && run.fase !== 'fin' && !confirm('Tienes un simulacro sin terminar. ¿Empezar uno nuevo y descartarlo?')) return;
+        empezar(b.dataset.modo, b.dataset.modo === 'practica' ? b.dataset.temas.split(',') : b.dataset.sec);
+      };
+    });
+    if (retomar) {
+      document.getElementById('b-ret').onclick = continuar;
+      document.getElementById('b-desc').onclick = function () { if (confirm('¿Descartar el simulacro sin terminar?')) { run = null; guardar(K_RUN, null); inicio(); } };
+    }
+    app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
+    conectarSparks();
+  }
+  function nombreModo(r) { return r.modo === 'completo' ? 'Simulacro completo' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
+  function totalItems(r) { return r.secciones.reduce(function (a, s) { return a + s.items.length; }, 0); }
+  function contestadas(r) { return Object.keys(r.resp).filter(function (id) { return r.resp[id].fase === 'fin'; }).length; }
+  function tarjetaResumen(u) {
+    var c = u.confianza || 0, e = estado(c);
+    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último simulacro completo</span>' +
+      '<div class="sim-res-mini-f">' + medidor(c, 120) + '<div><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' +
+      (u.global ? '<p>Puntaje estimado: <b class="num">' + u.global + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
+      '<p class="sim-nota">' + fecha(u.fecha) + '</p></div></div></div>';
+  }
+  function historial() {
+    if (!YO.historial.length) return '';
+    var comp = YO.historial.filter(function (x) { return x.modo === 'completo' && x.global; }).slice(0, 8).reverse();
+    var graf = comp.length >= 2 ? graficaHistorial(comp) : '';
+    return '<h2 class="sim-h2">Tu avance</h2>' + graf + '<ul class="sim-hist">' + YO.historial.slice(0, 8).map(function (x, i) {
+      var t = x.modo === 'completo' ? 'Simulacro completo' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
+      var ok = x.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = x.secciones.reduce(function (a, s) { return a + s.total; }, 0);
+      return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global ? x.global + ' pts' : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
+    }).join('') + '</ul>';
+  }
+  // Puntaje global de los últimos simulacros (una serie: un solo color, valor y fecha en el tooltip)
+  function graficaHistorial(lista) {
+    var W = 560, H = 150, pad = 28, n = lista.length, bw = Math.min(44, (W - pad * 2) / n - 10);
+    var y = function (v) { return H - 22 - (v - 200) / 600 * (H - 40); };
+    var m = meta();
+    var barras = lista.map(function (x, i) {
+      var cx = pad + (i + .5) * (W - pad * 2) / n, top = y(x.global);
+      return '<g class="sim-gh-b" tabindex="0"><title>' + esc(fecha(x.fecha)) + ': ' + x.global + ' puntos</title>' +
+        '<path d="M' + (cx - bw / 2) + ' ' + (H - 22) + 'V' + (top + 4) + 'q0 -4 4 -4h' + (bw - 8) + 'q4 0 4 4V' + (H - 22) + 'z"/>' +
+        (i === n - 1 ? '<text x="' + cx + '" y="' + (top - 6) + '" text-anchor="middle">' + x.global + '</text>' : '') + '</g>';
+    }).join('');
+    return '<figure class="sim-card sim-gh"><figcaption>Puntaje estimado en tus simulacros completos</figcaption>' +
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Puntajes: ' + lista.map(function (x) { return x.global; }).join(', ') + '">' +
+      '<line class="sim-gh-base" x1="' + pad + '" x2="' + (W - pad) + '" y1="' + (H - 22) + '" y2="' + (H - 22) + '"/>' +
+      '<line class="sim-gh-meta" x1="' + pad + '" x2="' + (W - pad) + '" y1="' + y(m) + '" y2="' + y(m) + '"/><text class="sim-gh-mt" x="' + (W - pad) + '" y="' + (y(m) - 6) + '" text-anchor="end">Meta ' + m + '</text>' +
+      barras + '</svg></figure>';
+  }
+
+  // ---------- sección: intro, preguntas, cierre ----------
+  function secActual() { return run.secciones[run.actual]; }
+  function continuar() {
+    var s = secActual();
+    if (run.fase === 'intro') introSeccion(); else if (s.idx >= s.items.length || s.cerrada) finSeccion(); else pregunta();
+  }
+  function introSeccion() {
+    detenerReloj(); pintarBarra();
+    var s = secActual(), info = seccion(s.id), practica = s.id === 'practica';
+    run.fase = 'intro'; guardar(K_RUN, run);
+    var paso = run.secciones.length > 1 ? '<span class="sim-paso">Sección ' + (run.actual + 1) + ' de ' + run.secciones.length + '</span>' : '';
+    h('<section class="sim-intro">' + paso + '<h1>' + (practica ? 'Práctica de tus temas' : esc(info.nombre)) + '</h1>' +
+      '<p class="sim-lead">' + (practica ? esc(s.temas.map(function (t) { return B.temas[t].nombre; }).join(' · ')) + '. Sin límite de tiempo: enfócate en entender el método.' : esc(info.descripcion)) + '</p>' +
+      '<ul class="sim-datos"><li><b class="num">' + s.items.length + '</b><span>reactivos</span></li>' + (s.limite ? '<li><b class="num">' + info.minutos + '</b><span>minutos</span></li><li><b class="num">' + Math.round(s.limite / s.items.length) + ' s</b><span>por reactivo</span></li>' : '<li><b>Libre</b><span>tiempo</span></li>') + '</ul>' +
+      '<div class="sim-reglas"><h2>Cómo funciona</h2><ol>' +
+        '<li><b>Primer intento.</b> Elige tu respuesta y confírmala. Este intento es el que cuenta para tu puntaje, como en la PAA.</li>' +
+        '<li><b>Si fallas,</b> el tutor no te da la respuesta: te explica el concepto y cómo resolverlo para que lo intentes otra vez.</li>' +
+        '<li><b>Segundo intento.</b> Aciertes o no, verás la solución paso a paso y la regla teórica detrás.</li>' +
+        (s.limite ? '<li><b>El cronómetro</b> solo corre mientras respondes por primera vez; leer pistas y explicaciones no te quita tiempo.</li>' : '') +
+      '</ol></div>' +
+      '<div class="botones"><button class="btn tinta" id="b-go">' + (s.idx ? 'Continuar sección' : 'Empezar') + ' ' + FL + '</button><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>');
+    document.getElementById('b-go').onclick = function () { run.fase = 'preguntas'; guardar(K_RUN, run); pregunta(); };
+    document.getElementById('b-inicio').onclick = inicio;
+  }
+
+  function estadoDe(id) { return run.resp[id] || (run.resp[id] = { fase: 'r1', sel1: null, sel2: null, t: 0 }); }
+  function pregunta() {
+    var s = secActual(), id = s.items[s.idx], r = R[id], st = estadoDe(id);
+    var texto = r.texto ? B.textos[r.texto] : null;
+    var orden = run.orden[id] || [0, 1, 2, 3];
+    var progreso = '<div class="sim-prog" role="progressbar" aria-valuemin="0" aria-valuemax="' + s.items.length + '" aria-valuenow="' + (s.idx + 1) + '" aria-label="Reactivo ' + (s.idx + 1) + ' de ' + s.items.length + '"><span style="width:' + pct(s.idx, s.items.length) + '%"></span></div>';
+    var cab = '<div class="sim-q-cab"><span>' + esc(s.id === 'practica' ? 'Práctica' : seccion(s.id).nombre) + ' · <b class="num">' + (s.idx + 1) + '</b> de ' + s.items.length + '</span><span class="sim-tema">' + esc(B.temas[r.tema].nombre) + '</span></div>';
+    var lectura = texto ? '<details class="sim-texto"' + (window.innerWidth >= 960 || s.idx === 0 || !texto.visto ? ' open' : '') + '><summary>' + ICONO.libro + '<span><b>' + esc(texto.titulo) + '</b><small>' + esc(texto.genero) + '</small></span></summary><div class="sim-texto-c' + (texto.verso ? ' verso' : '') + '">' +
+      texto.parrafos.map(function (p, i) { return '<p><span class="sim-np" aria-label="' + (texto.verso ? 'Estrofa ' : 'Párrafo ') + (i + 1) + '">' + (i + 1) + '</span>' + rico(p) + '</p>'; }).join('') + '</div></details>' : '';
+    var tabla = r.tabla ? '<table class="sim-tabla"><thead><tr>' + r.tabla[0].map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + r.tabla.slice(1).map(function (f) { return '<tr>' + f.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>' : '';
+    var cuerpo;
+    if (r.tipo === 'abierta') {
+      cuerpo = '<form class="sim-abierta" id="f-abierta" autocomplete="off"><label for="resp">Tu respuesta</label><div class="sim-abierta-f"><input id="resp" inputmode="decimal" maxlength="12" ' + (st.fase === 'fin' ? 'disabled' : '') + ' value="' + esc(st.fase === 'r2' ? '' : (st.sel2 != null ? st.sel2 : st.sel1 != null ? st.sel1 : '')) + '"><button class="btn tinta" ' + (st.fase === 'fin' ? 'disabled' : '') + '>Confirmar</button></div>' +
+        (st.sel1 != null && st.fase !== 'r1' ? '<p class="sim-nota">Primer intento: <b>' + esc(st.sel1) + '</b>' + (st.sel2 != null ? ' · Segundo intento: <b>' + esc(st.sel2) + '</b>' : '') + '</p>' : '') + '</form>';
+    } else {
+      cuerpo = '<div class="sim-ops" role="radiogroup" aria-label="Opciones">' + orden.map(function (o, i) {
+        var cls = '', dis = st.fase === 'fin', marca = '';
+        if (st.sel1 === o && o !== r.correcta) { cls = ' tachada'; dis = true; marca = ICONO.no; }
+        if (st.fase === 'fin') {
+          if (o === r.correcta) { cls = ' correcta'; marca = ICONO.ok; }
+          else if (st.sel2 === o) { cls = ' mal'; marca = ICONO.no; }
+        }
+        return '<button type="button" class="sim-opc' + cls + '" role="radio" aria-checked="false" data-o="' + o + '"' + (dis ? ' disabled' : '') + '><span class="sim-letra">' + LETRAS[i] + '</span><span class="sim-opc-t">' + rico(r.opciones[o]) + '</span><span class="sim-marca">' + marca + '</span></button>';
+      }).join('') + '</div>';
+    }
+    // La pista va justo arriba del botón para el segundo intento
+    var accion = st.fase === 'fin' ? '' : r.tipo === 'abierta' ? '' : '<div class="sim-acc"><button class="btn tinta" id="b-conf" disabled>' + (st.fase === 'r2' ? 'Confirmar segundo intento' : 'Confirmar respuesta') + '</button></div>';
+    h('<section class="sim-q' + (texto ? ' con-texto' : '') + '">' + progreso + cab +
+      '<div class="sim-q-cols">' + lectura + '<div class="sim-q-main"><h1 class="sim-enun">' + rico(r.enunciado) + '</h1>' + tabla + cuerpo +
+      '<div id="tutor">' + tutor(r, st, orden) + '</div>' + accion + '</div></div></section>');
+    if (texto) texto.visto = true;
+    conectarPregunta(r, st, orden);
+    if (s.limite && st.fase === 'r1') correrReloj(); else { detenerReloj(); pintarBarra(s.limite ? relojHTML(s, true) : ''); }
+  }
+  // Las pistas y pasos usan {A}…{D} = posición de la opción en el banco; aquí se cambian por la letra que se ve
+  function letras(txt, orden) { return rico(txt).replace(/\{([A-D])\}/g, function (_, L) { var i = orden.indexOf(LETRAS.indexOf(L)); return i < 0 ? L : LETRAS[i]; }); }
+  function tutor(r, st, orden) {
+    if (st.fase === 'r1') return '';
+    if (st.fase === 'r2') return '<div class="sim-tutor pista" role="status"><div class="sim-tutor-i">' + ICONO.foco + '</div><div><b>Todavía no. Pista del tutor</b><p>' + letras(r.pista, orden) + '</p><small>Tienes un intento más. Esta vez te mostraremos la solución completa.</small></div></div>';
+    var ok1 = st.ok1, ok2 = st.ok2;
+    var titulo = ok1 ? '¡Correcto a la primera!' : ok2 ? 'Bien, lo lograste en el segundo intento' : st.sinTiempo ? 'Se acabó el tiempo en este reactivo' : 'Esta era la respuesta correcta';
+    var correcta = r.tipo === 'abierta' ? r.respuestas[0] : LETRAS[orden.indexOf(r.correcta)] + ') ' + r.opciones[r.correcta];
+    var ultimo = secActual().idx >= secActual().items.length - 1;
+    return '<div class="sim-tutor ' + (ok1 || ok2 ? 'bien' : 'sol') + '" role="status"><div class="sim-tutor-i">' + (ok1 || ok2 ? ICONO.ok : ICONO.libro) + '</div><div>' +
+      '<b>' + titulo + '</b><p class="sim-correcta">Respuesta: <b>' + rico(correcta) + '</b></p>' +
+      '<details' + (ok1 ? '' : ' open') + '><summary>Solución paso a paso</summary><ol class="sim-pasos">' + r.pasos.map(function (p) { return '<li>' + letras(p, orden) + '</li>'; }).join('') + '</ol>' +
+      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details></div></div>' +
+      '<div class="sim-acc"><button class="btn tinta" id="b-sig">' + (ultimo ? 'Terminar sección' : 'Siguiente') + ' ' + FL + '</button></div>';
+  }
+  function normal(v) {
+    v = String(v || '').trim().replace(/\s/g, '').replace(',', '.').replace(/°$/, '');
+    var f = v.match(/^(-?\d+)\/(\d+)$/); if (f && Number(f[2])) return Number(f[1]) / Number(f[2]);
+    return v === '' || isNaN(Number(v)) ? NaN : Number(v);
+  }
+  function esCorrecta(r, v) {
+    if (r.tipo === 'abierta') { var n = normal(v); return r.respuestas.some(function (a) { return Math.abs(normal(a) - n) < 1e-6; }); }
+    return v === r.correcta;
+  }
+  function responder(r, st, v) {
+    var s = secActual();
+    if (st.fase === 'r1') {
+      st.sel1 = v; st.ok1 = esCorrecta(r, v);
+      st.fase = st.ok1 ? 'fin' : 'r2';
+      detenerReloj();
+    } else if (st.fase === 'r2') {
+      st.sel2 = v; st.ok2 = esCorrecta(r, v); st.fase = 'fin';
+    }
+    guardar(K_RUN, run);
+    pregunta();
+    var t = document.getElementById('tutor'); if (t && t.firstChild) t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    void s;
+  }
+  function conectarPregunta(r, st, orden) {
+    var elegido = null, conf = document.getElementById('b-conf');
+    app.querySelectorAll('.sim-opc').forEach(function (b) {
+      b.onclick = function () {
+        app.querySelectorAll('.sim-opc').forEach(function (x) { x.classList.remove('sel'); x.setAttribute('aria-checked', 'false'); });
+        b.classList.add('sel'); b.setAttribute('aria-checked', 'true'); elegido = Number(b.dataset.o); if (conf) conf.disabled = false;
+      };
+    });
+    if (conf) conf.onclick = function () { if (elegido != null) responder(r, st, elegido); };
+    var f = document.getElementById('f-abierta');
+    if (f) f.onsubmit = function (e) {
+      e.preventDefault(); var v = document.getElementById('resp').value;
+      if (isNaN(normal(v))) { document.getElementById('resp').setCustomValidity('Escribe un número (puede ser fracción, como 3/4).'); document.getElementById('resp').reportValidity(); return; }
+      responder(r, st, v.trim());
+    };
+    var inp = document.getElementById('resp'); if (inp) inp.oninput = function () { inp.setCustomValidity(''); };
+    var sig = document.getElementById('b-sig');
+    if (sig) sig.onclick = function () { var s = secActual(); s.idx++; guardar(K_RUN, run); if (s.idx >= s.items.length) finSeccion(); else pregunta(); };
+    void orden;
+  }
+
+  // ---------- cronómetro (solo corre en el primer intento) ----------
+  function relojHTML(s, pausado) {
+    var resta = s.limite - s.usado, poco = resta <= 60;
+    return '<span class="sim-reloj' + (poco ? ' poco' : '') + (pausado ? ' pausa' : '') + '" role="timer" aria-label="Tiempo restante ' + mmss(resta) + (pausado ? ', en pausa' : '') + '">' + ICONO.reloj + '<b class="num">' + mmss(resta) + '</b>' + (pausado ? '<small>pausa</small>' : '') + '</span>';
+  }
+  function correrReloj() {
+    detenerReloj();
+    var s = secActual(), id = s.items[s.idx], antes = Date.now();
+    pintarBarra(relojHTML(s));
+    reloj = setInterval(function () {
+      var ahora = Date.now(), d = (ahora - antes) / 1000; antes = ahora;
+      s.usado += d; estadoDe(id).t += d;
+      if (s.usado >= s.limite) { s.usado = s.limite; tiempoAgotado(); return; }
+      pintarBarra(relojHTML(s));
+      if (Math.round(s.usado) % 5 === 0) guardar(K_RUN, run);
+    }, 1000);
+  }
+  function detenerReloj() { if (reloj) { clearInterval(reloj); reloj = null; } }
+  function tiempoAgotado() {
+    detenerReloj();
+    var s = secActual();
+    s.cerrada = true;
+    // Lo que no se respondió cuenta como no contestado (no suma puntos)
+    s.items.slice(s.idx).forEach(function (id) { var st = estadoDe(id); if (st.fase === 'r1') { st.fase = 'fin'; st.ok1 = false; st.sinTiempo = true; } });
+    guardar(K_RUN, run);
+    finSeccion(true);
+  }
+  function finSeccion(sinTiempo) {
+    detenerReloj(); pintarBarra();
+    var s = secActual(), res = calcSeccion(s), ultima = run.actual >= run.secciones.length - 1;
+    if (ultima) { terminar(); return; }
+    var sig = seccion(run.secciones[run.actual + 1].id);
+    h('<section class="sim-intro"><span class="sim-paso">Sección ' + (run.actual + 1) + ' de ' + run.secciones.length + ' terminada</span>' +
+      '<h1>' + (sinTiempo ? 'Se acabó el tiempo de ' : 'Terminaste ') + esc(seccion(s.id).nombre) + '</h1>' +
+      '<ul class="sim-datos"><li><b class="num">' + res.aciertos + '/' + res.total + '</b><span>a la primera</span></li><li><b class="num">' + res.segundo + '</b><span>en el 2.º intento</span></li><li><b class="num">' + mmss(res.tiempo) + '</b><span>de ' + mmss(res.limite) + '</span></li></ul>' +
+      '<p class="sim-lead">Respira un momento. Sigue <b>' + esc(sig.nombre) + '</b>: ' + sig.reactivos + ' reactivos en ' + sig.minutos + ' minutos.</p>' +
+      '<div class="botones"><button class="btn tinta" id="b-sig">Ir a ' + esc(sig.nombre) + ' ' + FL + '</button><button class="btn blanco" id="b-inicio">Pausar y volver al inicio</button></div></section>');
+    document.getElementById('b-sig').onclick = function () { run.actual++; run.fase = 'intro'; guardar(K_RUN, run); introSeccion(); };
+    document.getElementById('b-inicio').onclick = function () { run.actual++; run.fase = 'intro'; guardar(K_RUN, run); inicio(); };
+  }
+
+  // ---------- cálculo de resultados ----------
+  function calcSeccion(s) {
+    var ok = 0, seg = 0, w = 0, wt = 0, sinR = 0;
+    s.items.forEach(function (id) {
+      var r = R[id], st = run.resp[id] || {}, p = PESO[r.dificultad] || 1;
+      wt += p; if (st.ok1) { ok++; w += p; } else if (st.ok2) seg++;
+      if (st.sinTiempo || st.fase !== 'fin') sinR++;
+    });
+    var puntaje = Math.round((200 + 600 * (wt ? w / wt : 0)) / 10) * 10;
+    return { id: s.id, puntaje: puntaje, aciertos: ok, segundo: seg, total: s.items.length, tiempo: Math.round(s.usado), limite: s.limite, sinResponder: sinR };
+  }
+  function terminar() {
+    detenerReloj();
+    var secs = run.secciones.map(calcSeccion), temas = {}, fallados = [], vistos = [];
+    run.secciones.forEach(function (s) { s.items.forEach(function (id) {
+      var r = R[id], st = run.resp[id] || {};
+      var t = temas[r.tema] || (temas[r.tema] = { ok: 0, total: 0 });
+      t.total++; if (st.ok1) t.ok++; else fallados.push(id);
+      vistos.push(id);
+    }); });
+    var base = secs.filter(function (s) { return ['lectura', 'redaccion', 'matematicas'].indexOf(s.id) >= 0; });
+    var global = run.modo === 'completo' && base.length ? Math.round(base.reduce(function (a, s) { return a + s.puntaje; }, 0) / base.length / 10) * 10 : null;
+    var res = { modo: run.modo, secciones: secs, temas: temas, fallados: fallados, vistos: vistos, global: global, meta: meta(), fecha: new Date().toISOString(),
+      resp: run.resp, orden: run.orden, items: run.secciones.map(function (s) { return s.items; }) };
+    res.confianza = confianza(res, ultimoCompleto()).total;
+    run.fase = 'fin'; guardar(K_RUN, null); run = null;
+    // Al servidor solo va el resumen (el detalle de respuestas se queda para este reporte)
+    var envio = { modo: res.modo, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
+    api('resultados', { method: 'POST', body: JSON.stringify(envio) }).then(function () {
+      YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos }, envio));
+    }).catch(function () {
+      YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos }, envio));
+      var a = document.getElementById('aviso-guardar'); if (a) a.hidden = false;
+    });
+    reporte(res, false);
+  }
+
+  // Medidor de preparación: combina nivel frente a la meta, tiempo, consistencia por tema, aprendizaje con el tutor y tendencia
+  function confianza(res, previo) {
+    var m = res.meta || meta(), secs = res.secciones.filter(function (s) { return s.total; });
+    var nivel = secs.length ? secs.reduce(function (a, s) { return a + clamp(1 - Math.max(0, m - s.puntaje) / 300, 0, 1); }, 0) / secs.length : 0;
+    var conLimite = secs.filter(function (s) { return s.limite; });
+    var tiempo = conLimite.length ? conLimite.reduce(function (a, s) { return a + (s.total - (s.sinResponder || 0)) / s.total; }, 0) / conLimite.length : 1;
+    var ts = Object.keys(res.temas).map(function (k) { return res.temas[k]; });
+    var consist = ts.length ? ts.filter(function (t) { return t.ok / t.total >= .6; }).length / ts.length : 0;
+    var fallos = secs.reduce(function (a, s) { return a + s.total - s.aciertos; }, 0), recup = secs.reduce(function (a, s) { return a + s.segundo; }, 0);
+    var aprend = fallos ? recup / fallos : 1;
+    var tend = .5;
+    if (previo && previo.global && res.global) tend = res.global > previo.global + 10 ? 1 : res.global < previo.global - 10 ? .2 : .6;
+    var partes = { nivel: nivel, tiempo: tiempo, consist: consist, aprend: aprend, tend: tend };
+    var total = Math.round(100 * (.5 * nivel + .15 * tiempo + .15 * consist + .1 * aprend + .1 * tend));
+    return { total: clamp(total, 0, 100), partes: partes };
+  }
+  function estado(c) {
+    if (c >= 85) return { nombre: 'Listo para el examen', clase: 'listo' };
+    if (c >= 70) return { nombre: 'Casi listo', clase: 'casi' };
+    if (c >= 50) return { nombre: 'En construcción', clase: 'medio' };
+    return { nombre: 'Base inicial', clase: 'base' };
+  }
+  function temasDebiles(temas, n) {
+    return Object.keys(temas || {}).map(function (k) { var t = temas[k]; return { id: k, nombre: (B.temas[k] || {}).nombre || k, ok: t.ok, total: t.total, p: t.ok / t.total }; })
+      .filter(function (t) { return B.temas[t.id] && t.p < .6; }).sort(function (a, b) { return a.p - b.p || b.total - a.total; }).slice(0, n);
+  }
+  function nivelIngles(s) { var p = s.aciertos / s.total; return p < .4 ? 'Novato' : p < .6 ? 'Básico' : p < .8 ? 'Intermedio' : 'Avanzado'; }
+
+  // ---------- reporte (dashboard de retroalimentación) ----------
+  function medidor(v, tam) {
+    var r = 52, L = Math.PI * r, e = estado(v);
+    return '<svg class="sim-medidor e-' + e.clase + '" viewBox="0 0 120 70" width="' + tam + '" role="img" aria-label="Medidor de preparación: ' + v + ' de 100">' +
+      '<path class="sim-med-f" d="M8 64a52 52 0 0 1 104 0" pathLength="' + L + '"/>' +
+      '<path class="sim-med-v" d="M8 64a52 52 0 0 1 104 0" stroke-dasharray="' + (L * v / 100) + ' ' + L + '" pathLength="' + L + '"/>' +
+      '<text x="60" y="58" text-anchor="middle" class="num">' + v + '</text></svg>';
+  }
+  function mensaje(res, c) {
+    var m = res.meta, secs = res.secciones.filter(function (s) { return s.id !== 'practica'; });
+    if (!secs.length) {
+      var ok = res.secciones[0].aciertos, tot = res.secciones[0].total, rec = res.secciones[0].segundo;
+      return 'Acertaste ' + ok + ' de ' + tot + ' a la primera y recuperaste ' + rec + ' con la pista del tutor. ' + (ok / tot >= .7 ? 'Estos temas ya se están volviendo tuyos: pásalos a un simulacro con tiempo.' : 'Repite esta práctica en un par de días: la segunda vuelta es donde se fija el método.');
+    }
+    var bajo = secs.slice().sort(function (a, b) { return a.puntaje - b.puntaje; })[0], alto = secs.slice().sort(function (a, b) { return b.puntaje - a.puntaje; })[0];
+    var ref = res.global || bajo.puntaje, dist = m - ref, txt = '';
+    if (res.global) txt += dist > 0 ? 'Estás a <b>' + dist + ' puntos</b> de tu meta de ' + m + ' en promedio. ' : 'Tu promedio estimado (' + res.global + ') <b>ya alcanza tu meta</b> de ' + m + '. ';
+    if (alto.puntaje >= m) txt += 'Tienes bases sólidas en <b>' + esc(seccion(alto.id).nombre) + '</b> (' + alto.puntaje + '). ';
+    else if (alto !== bajo) txt += 'Tu sección más fuerte es <b>' + esc(seccion(alto.id).nombre) + '</b> (' + alto.puntaje + '). ';
+    if (bajo.puntaje < m) {
+      var faltan = Math.max(1, Math.ceil((m - bajo.puntaje) / 600 * bajo.total));
+      txt += 'Tu mayor oportunidad está en <b>' + esc(seccion(bajo.id).nombre) + '</b>: subir de ' + bajo.puntaje + ' a ' + m + ' equivale a acertar unos <b>' + faltan + ' reactivo' + (faltan > 1 ? 's' : '') + ' más</b> de cada ' + bajo.total + '.';
+    } else txt += 'Todas tus secciones están en tu meta: mantén el ritmo con un simulacro por semana.';
+    if (c.partes.tend === 1) txt += ' Además, <b>mejoraste</b> respecto a tu simulacro anterior.';
+    return txt;
+  }
+  function reporte(res, desdeHistorial) {
+    detenerReloj(); pintarBarra();
+    var c = confianza(res, desdeHistorial ? null : ultimoCompleto()), e = estado(c.total), m = res.meta || meta();
+    if (desdeHistorial && res.confianza != null) c.total = res.confianza;
+    var secs = res.secciones.filter(function (s) { return s.id !== 'practica'; });
+    var temas = Object.keys(res.temas).map(function (k) { var t = res.temas[k]; return { id: k, t: B.temas[k], ok: t.ok, total: t.total, p: t.ok / t.total }; }).filter(function (x) { return x.t; }).sort(function (a, b) { return a.p - b.p; });
+    var debiles = temasDebiles(res.temas, 3), fuertes = temas.filter(function (x) { return x.p >= .75 && x.total >= 2; }).slice(-3).reverse();
+    var totOk = res.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), totSeg = res.secciones.reduce(function (a, s) { return a + s.segundo; }, 0), tot = res.secciones.reduce(function (a, s) { return a + s.total; }, 0);
+
+    var htmlSecs = secs.length ? '<div class="sim-card"><h2 class="sim-h3">Puntaje estimado por sección</h2><p class="sim-nota">Escala de la PAA: 200 a 800. La línea marca tu meta (' + m + ').</p><ul class="sim-barras">' + secs.map(function (s) {
+      var w = (s.puntaje - 200) / 6, mw = (m - 200) / 6;
+      return '<li title="' + esc(seccion(s.id).nombre) + ': ' + s.puntaje + ' puntos, ' + s.aciertos + ' de ' + s.total + ' a la primera"><div class="sim-barra-c"><b>' + esc(seccion(s.id).nombre) + '</b><span class="num">' + s.puntaje + (s.id === 'ingles' ? ' · ' + nivelIngles(s) : '') + '</span></div>' +
+        '<div class="sim-barra-p"><span class="sim-barra-v" style="width:' + w + '%"></span><span class="sim-barra-m" style="left:' + mw + '%"></span></div>' +
+        '<small>' + s.aciertos + '/' + s.total + ' a la primera · ' + s.segundo + ' recuperadas con el tutor' + (s.limite ? ' · ' + mmss(s.tiempo) + ' de ' + mmss(s.limite) + (s.sinResponder ? ' · ' + s.sinResponder + ' sin responder' : '') : '') + '</small></li>';
+    }).join('') + '</ul></div>' : '';
+
+    var htmlTemas = '<div class="sim-card"><h2 class="sim-h3">Aciertos por tema</h2><p class="sim-nota">Primer intento. Ordenados de menor a mayor.</p><ul class="sim-temas">' + temas.map(function (x) {
+      var cl = x.p >= .75 ? 'alto' : x.p >= .6 ? 'medio' : 'bajo', et = x.p >= .75 ? 'Fortaleza' : x.p >= .6 ? 'En camino' : 'Reforzar';
+      return '<li title="' + esc(x.t.nombre) + ': ' + x.ok + ' de ' + x.total + '"><span class="sim-tema-n">' + esc(x.t.nombre) + '<small>' + esc(seccion(x.t.seccion).nombre) + '</small></span><span class="sim-tema-b"><span style="width:' + Math.max(3, x.p * 100) + '%"></span></span><span class="sim-tema-v num">' + x.ok + '/' + x.total + '</span><span class="sim-chip c-' + cl + '">' + et + '</span></li>';
+    }).join('') + '</ul></div>';
+
+    var htmlRefuerza = debiles.length ? '<h2 class="sim-h2">Qué reforzar exactamente</h2><div class="sim-refuerzo">' + debiles.map(function (x) {
+      return '<div class="sim-card sim-ref"><span class="sim-chip c-bajo">' + x.ok + '/' + x.total + ' a la primera</span><h3>' + esc(x.nombre) + '</h3><p>' + esc(B.temas[x.id].consejo) + '</p><button class="btn blanco chico" data-practica="' + x.id + '">Practicar este tema ' + FL + '</button></div>';
+    }).join('') + '</div>' + (debiles.length > 1 ? '<button class="btn tinta" data-practica="' + debiles.map(function (x) { return x.id; }).join(',') + '">Practicar mis ' + debiles.length + ' temas débiles ' + FL + '</button>' : '') : '';
+
+    var htmlFuertes = fuertes.length ? '<div class="sim-card"><h2 class="sim-h3">Tus fortalezas</h2><ul class="sim-fuertes">' + fuertes.map(function (x) { return '<li>' + ICONO.ok + '<span><b>' + esc(x.t.nombre) + '</b> · ' + x.ok + ' de ' + x.total + '</span></li>'; }).join('') + '</ul><p class="sim-nota">Mantén estos temas con práctica ligera; tu tiempo rinde más en los que están en rojo.</p></div>' : '';
+
+    var htmlTutor = '<div class="sim-card"><h2 class="sim-h3">El tutor en números</h2><ul class="sim-datos chico"><li><b class="num">' + totOk + '</b><span>a la primera</span></li><li><b class="num">' + totSeg + '</b><span>con la pista</span></li><li><b class="num">' + (tot - totOk - totSeg) + '</b><span>por repasar</span></li></ul>' +
+      '<p class="sim-nota">' + (tot - totOk ? 'Recuperaste ' + pct(totSeg, tot - totOk) + ' % de tus errores con una pista. ' + (totSeg / Math.max(1, tot - totOk) >= .5 ? 'Eso indica que conoces los temas: muchos errores son de método o de prisa, y eso se corrige con práctica cronometrada.' : 'Varios temas todavía necesitan teoría: lee la regla de cada reactivo fallado antes de volver a practicar.') : '¡Ningún error! Sube tu meta para seguir retándote.') + '</p></div>';
+
+    var revision = '';
+    if (res.resp && res.fallados.length) {
+      revision = '<h2 class="sim-h2">Repasa tus errores</h2><div class="sim-revision">' + res.fallados.map(function (id) {
+        var r = R[id]; if (!r) return ''; var st = res.resp[id] || {}, orden = (res.orden || {})[id] || [0, 1, 2, 3];
+        var correcta = r.tipo === 'abierta' ? r.respuestas[0] : r.opciones[r.correcta];
+        var tuya = st.sinTiempo ? 'Sin responder (tiempo agotado)' : r.tipo === 'abierta' ? st.sel1 : (st.sel1 != null ? r.opciones[st.sel1] : '—');
+        return '<details class="sim-card sim-rev"><summary><span class="sim-tema">' + esc(B.temas[r.tema].nombre) + '</span><b>' + rico(r.enunciado.split('\n')[0]) + '</b></summary>' +
+          (r.texto ? '<p class="sim-nota">Lectura: ' + esc(B.textos[r.texto].titulo) + '</p>' : '') +
+          '<p><span class="sim-no">Tu respuesta:</span> ' + rico(tuya) + '</p><p><span class="sim-si">Correcta:</span> ' + rico(correcta) + '</p>' +
+          '<ol class="sim-pasos">' + r.pasos.map(function (p) { return '<li>' + letras(p, orden) + '</li>'; }).join('') + '</ol><div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details>';
+      }).join('') + '</div>';
+    }
+
+    h('<section class="sim-rep">' +
+      '<span class="etiqueta">' + esc(res.modo === 'completo' ? 'Resultado del simulacro completo' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
+      '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
+        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global ? '<p class="sim-global">Puntaje estimado <b class="num">' + res.global + '</b><small> / 800 · meta ' + m + '</small></p>' : '') +
+        '<p>' + mensaje(res, c) + '</p></div></div>' +
+      '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado en tu historial (sin conexión). Tu reporte sigue aquí.</p>' +
+      '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +
+      htmlRefuerza +
+      (htmlFuertes ? '<div class="sim-grid2">' + htmlTemas + htmlFuertes + '</div>' : '<div class="sim-grid2 uno">' + htmlTemas + '</div>') +
+      revision +
+      '<p class="sim-nota sim-disc">El puntaje es una estimación de Vorka México basada en tus aciertos ponderados por dificultad; no es una calificación oficial del College Board. Úsalo para orientar tu estudio y medir tu avance.</p>' +
+      sparks('reporte') +
+      '<div class="botones sim-fin"><button class="btn tinta" id="b-inicio">Volver al inicio</button>' + (res.modo === 'completo' ? '' : '<button class="btn blanco" data-modo-otra="completo">Hacer el simulacro completo</button>') + '</div>' +
+      '</section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    app.querySelectorAll('[data-practica]').forEach(function (b) { b.onclick = function () { empezar('practica', b.dataset.practica.split(',')); }; });
+    var o = app.querySelector('[data-modo-otra]'); if (o) o.onclick = function () { empezar('completo'); };
+    conectarSparks();
+  }
+
+  // ---------- Revista Sparks (boletín) ----------
+  function sparks(donde) {
+    return '<aside class="sim-sparks" aria-labelledby="sp-' + donde + '"><div class="sim-sparks-t"><span class="etiqueta">Revista Sparks</span>' +
+      '<h2 id="sp-' + donde + '">Historias de jóvenes que ya están construyendo lo que sigue</h2>' +
+      '<p>Cada semana, en tu correo: jóvenes de Guanajuato que emprenden, crean y cambian su comunidad. Inspiración real para lo que viene después del examen.</p></div>' +
+      '<div class="sim-sparks-a"><button class="btn plata" data-sparks>Suscribirme gratis</button><a class="sim-link" href="/sparks/" target="_blank" rel="noopener">Ver la revista</a>' +
+      '<small>Te llega al correo de tu compra. Puedes darte de baja cuando quieras.</small></div></aside>';
+  }
+  function conectarSparks() {
+    app.querySelectorAll('[data-sparks]').forEach(function (b) {
+      if (leer('vk_paa_sparks')) { listo(b); return; }
+      b.onclick = function () {
+        b.disabled = true; b.textContent = 'Suscribiendo…';
+        fetch(SIM.os + '/api/publico/boletin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nombre: YO.nombre, correo: YO.email, acepto: true, origen: 'simulador-paa' }) })
+          .then(function (r) { if (!r.ok) throw new Error(); guardar('vk_paa_sparks', 1); app.querySelectorAll('[data-sparks]').forEach(listo); })
+          .catch(function () { b.disabled = false; b.textContent = 'Reintentar suscripción'; });
+      };
+    });
+    function listo(b) { b.disabled = true; b.innerHTML = (SIM.check || '') + ' ¡Listo! Ya estás suscrito'; b.classList.add('hecho'); }
+  }
+
+  iniciar();
+})();

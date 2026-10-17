@@ -15,6 +15,7 @@ import { procesarTransferencias, refrescarCreador, repartosPendientes } from './
 import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
+import { rutasSimulador } from './simulador/index.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -57,6 +58,8 @@ export default {
     const url = new URL(request.url);
     try {
       if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+      const sim = await rutasSimulador(request, env, url);
+      if (sim) return sim;
       const cr = await rutasCreadores(request, env, ctx, url);
       if (cr) return cr;
       if (url.pathname === '/api/tienda/productos' && request.method === 'GET')

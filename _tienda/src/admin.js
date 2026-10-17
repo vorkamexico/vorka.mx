@@ -169,13 +169,15 @@ export async function guardarProducto(env, datos) {
     if (d.archivos.some(a => !existentes.has(a.key))) throw new Error('Hay un archivo que ya no existe. Recarga la página.');
     archivos = d.archivos;
   }
-  if (d.activo && !archivos.length) throw new Error('Sube al menos un archivo antes de poner el producto a la venta.');
+  // Productos de acceso (contenido.acceso: abren una app como el Simulador PAA) no necesitan archivos
+  const acceso = actual?.contenido?.acceso;
+  if (d.activo && !archivos.length && !acceso) throw new Error('Sube al menos un archivo antes de poner el producto a la venta.');
   // No se activa un producto cuyos archivos no están realmente en R2 (el comprador recibiría un enlace roto)
   if (d.activo) for (const a of archivos)
     if (!(await env.PRODUCTOS.head(a.key))) throw new Error(`Falta subir "${a.nombre}". Quítalo de la lista o súbelo de nuevo.`);
 
   const contenido = d.contenido
-    ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })) }
+    ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })), ...(acceso ? { acceso } : {}) }
     : actual?.contenido || {};
   // Si escribieron un enlace nuevo a mano se valida y no se cambia en silencio; si no, se arma solo del nombre
   const pedido = d.slug ? d.slug.toLowerCase() : null;
