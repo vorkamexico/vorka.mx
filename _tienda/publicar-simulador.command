@@ -24,8 +24,8 @@ if [[ "$R" == [sS]* ]]; then
 else
   echo "   Queda oculto. Actívalo cuando quieras en Vorka México → Tienda → Productos."
 fi
-echo "   Publicando el panel de Vorka México (Regalar accesos)…"
-( cd ../../vorka-os && npx wrangler deploy >/dev/null && echo "   Panel publicado." ) || echo "   No se pudo publicar el panel: corre 'npx wrangler deploy' dentro de vorka-os."
+# El panel (os.vorka.mx) ya no se publica desde aquí: Cloudflare lo publica solo al unir a main en GitHub (vorkamexico/os).
+# Publicarlo desde la Mac dejaría lo publicado distinto de GitHub.
 echo "5/5 · Revisando que todo responda…"
 for u in https://vorka.mx/simulador-paa/ https://vorka.mx/tienda/ https://vorka.mx/tienda/sitemap.xml https://vorka.mx/sitemap.xml https://vorka.mx/api/tienda/salud https://os.vorka.mx; do
   printf "  %-40s %s\n" "$u" "$(curl -s -o /dev/null -w '%{http_code}' "$u")"

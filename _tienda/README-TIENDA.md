@@ -106,7 +106,7 @@ El dominio `vorka.mx` ya está verificado (Vorka OS envía desde `hola@vorka.mx`
 Solo después del paso 3 (si el Worker no existe, publicar Vorka OS falla):
 
 1. En `vorka-os/wrangler.jsonc` descomenta el bloque `"services"` (binding `TIENDA` → `vorka-tienda`, entrypoint `Admin`).
-2. `cd vorka-os && npx wrangler deploy`.
+2. Haz commit y push a `main` en `vorkamexico/os`: Cloudflare publica el panel solo (no uses `npx wrangler deploy` desde la Mac).
 3. Entra como Ejecutivo: **Tienda** aparece en el menú lateral y en **Yo**.
 
 Archivos de Vorka OS que forman parte de la tienda: `src/tienda.js`, `src/index.js` (import, ruta y subida de archivos), `public/tienda-app.js`, `public/tienda-app.css`, `public/index.html`, `public/app.js` (menú y rutas) y `wrangler.jsonc`.
