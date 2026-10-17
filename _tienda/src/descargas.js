@@ -21,11 +21,13 @@ export async function validarToken(env, token, ahora = Date.now()) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', t.order_id);
   if (t.revocado || !orden || orden.estado !== 'paid') return { ok: false, motivo: 'revocado' };
   if (new Date(t.expires_at).getTime() < ahora) return { ok: false, motivo: 'vencido', orden };
-  const items = await all(env, 'SELECT i.nombre producto, p.r2_keys FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ? ORDER BY i.id', orden.id);
+  const items = await all(env, 'SELECT i.nombre producto, p.r2_keys, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ? ORDER BY i.id', orden.id);
+  // Productos de acceso (contenido.acceso): en lugar de archivos, un botón que abre la app con este mismo token
+  const accesos = items.map(i => { try { return { producto: i.producto, ...JSON.parse(i.contenido || '{}').acceso }; } catch { return null; } }).filter(a => a?.app);
   const usadas = JSON.parse(t.descargas || '{}');
   const archivos = items.flatMap(i => JSON.parse(i.r2_keys || '[]').map(a => ({ ...a, producto: i.producto })))
     .map((a, n) => ({ n, key: a.key, nombre: a.nombre, producto: a.producto, usadas: usadas[a.key] || 0, restantes: Math.max(0, MAX_DESCARGAS - (usadas[a.key] || 0)) }));
-  return { ok: true, token: t, orden, archivos };
+  return { ok: true, token: t, orden, archivos, accesos };
 }
 
 const ICONO_RELOJ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
@@ -57,14 +59,19 @@ export async function paginaDescargas(env, token) {
       ${a.restantes
         ? `<a class="btn tinta chico" href="/descargas/${token}/${a.n}" download aria-label="Descargar ${esc(a.nombre)}">Descargar</a>`
         : '<span class="btn blanco chico" aria-disabled="true">Agotado</span>'}
+    </li>`).join('') + v.accesos.map(a => `
+    <li class="t-archivo">
+      <span class="t-archivo-i" aria-hidden="true">${FLECHA}</span>
+      <span class="t-archivo-t"><b>${esc(a.producto)}</b><small>Acceso en línea durante un año desde tu compra</small></span>
+      <a class="btn tinta chico" href="/${esc(a.app)}/entrar/${token}">${esc(a.boton || 'Entrar')}</a>
     </li>`).join('');
   return pagina({
     titulo: 'Tus descargas · Vorka México', ruta: '/descargas/', noindex: true, headers: SIN_REFERER,
     cuerpo: `
 <section class="t-sec"><div class="marco t-estrecho">
   <span class="etiqueta">Compra confirmada</span>
-  <h1 class="t-h1">Tus archivos, ${esc(v.orden.nombre.split(' ')[0])}</h1>
-  <p class="t-lead">Descárgalos y guárdalos en tu computadora o en tu nube. Este enlace funciona hasta el ${vence}.</p>
+  <h1 class="t-h1">${v.archivos.length ? 'Tus archivos' : 'Tu acceso'}, ${esc(v.orden.nombre.split(' ')[0])}</h1>
+  <p class="t-lead">${v.archivos.length ? `Descárgalos y guárdalos en tu computadora o en tu nube. Este enlace funciona hasta el ${vence}.` : 'Entra desde aquí en cada dispositivo que quieras usar.'}</p>
   <ul class="t-archivos">${filas}</ul>
   <p class="t-nota">¿Algún archivo llegó dañado o no abre? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> y te lo reponemos.</p>
 </div></section>`,

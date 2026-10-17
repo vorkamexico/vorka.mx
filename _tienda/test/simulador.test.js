@@ -1,0 +1,148 @@
+import { describe, it, expect, beforeEach } from 'vitest';
+import { d1 } from './d1.js';
+import worker from '../src/index.js';
+import { crearOrden, aplicarPago } from '../src/modelo.js';
+import { crearToken, correoEntrega } from '../src/entrega.js';
+import { cookieAcceso } from '../src/simulador/index.js';
+import { SECCIONES, TEMAS, TEXTOS, REACTIVOS } from '../src/simulador/banco.js';
+import * as admin from '../src/admin.js';
+
+let env, orden, token;
+const pedir = (ruta, { metodo = 'GET', cookie, body } = {}) => worker.fetch(new Request(`https://vorka.mx${ruta}`, {
+  method: metodo, headers: { ...(cookie ? { cookie } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, body, redirect: 'manual',
+}), env);
+const soloCookie = setCookie => setCookie.split(';')[0];
+
+async function comprar(slug = 'simulador-paa', email = 'ana@mail.com') {
+  const o = await crearOrden(env, { items: [{ slug }], email, nombre: 'Ana López' });
+  await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: 24900, moneda: 'MXN', metodo_pago: 'card' });
+  return o;
+}
+
+beforeEach(async () => {
+  env = { DB: d1(), SITE_URL: 'https://vorka.mx', DOWNLOAD_TOKEN_SECRET: 's'.repeat(64), PRODUCTOS: { head: async () => ({ size: 1 }) } };
+  env.DB.raw.exec("UPDATE products SET activo = 1");
+  orden = await comprar();
+  ({ token } = await crearToken(env, orden.id));
+});
+
+describe('banco de reactivos', () => {
+  it('cada reactivo es válido y tiene tutor completo', () => {
+    const ids = new Set();
+    for (const r of REACTIVOS) {
+      expect(ids.has(r.id), r.id).toBe(false); ids.add(r.id);
+      expect(TEMAS[r.tema]?.seccion, r.id).toBe(r.seccion);
+      if (r.texto) expect(TEXTOS[r.texto], r.id).toBeTruthy();
+      if (r.tipo === 'abierta') expect(r.respuestas.length, r.id).toBeGreaterThan(0);
+      else { expect(r.opciones, r.id).toHaveLength(4); expect(r.correcta >= 0 && r.correcta < 4, r.id).toBe(true); }
+      expect(r.pista && r.regla && r.pasos.length, r.id).toBeTruthy();
+      // Las explicaciones no nombran letras sueltas: el cliente baraja las opciones
+      for (const t of [r.pista, ...r.pasos, r.regla]) expect(t, r.id).not.toMatch(/\bopci[oó]n [A-D]\b/);
+    }
+  });
+
+  it('alcanza para armar cada sección del simulacro', () => {
+    for (const s of SECCIONES) {
+      const sueltos = REACTIVOS.filter(r => r.seccion === s.id && !r.texto).length;
+      const textos = Object.values(TEXTOS).filter(t => t.seccion === s.id);
+      if (s.id === 'lectura') {
+        expect(textos.filter(t => t.tipo === 'literario').length).toBeGreaterThan(0);
+        expect(textos.filter(t => t.tipo === 'no_literario').length).toBeGreaterThan(0);
+      } else expect(sueltos, s.id).toBeGreaterThanOrEqual(s.reactivos - (s.id === 'ingles' ? 4 : 0));
+    }
+  });
+});
+
+describe('acceso al simulador', () => {
+  it('sin acceso muestra la página de venta con el botón a la tienda', async () => {
+    const r = await pedir('/simulador-paa/');
+    expect(r.status).toBe(200);
+    const html = await r.text();
+    expect(html).toContain('/tienda/simulador-paa');
+    expect(html).not.toContain('/simulador-paa/app.js');
+  });
+
+  it('el enlace del correo deja una cookie que abre la app y la API', async () => {
+    const r = await pedir(`/simulador-paa/entrar/${token}`);
+    expect(r.status).toBe(303);
+    expect(r.headers.get('location')).toBe('/simulador-paa/');
+    const sc = r.headers.get('set-cookie');
+    expect(sc).toMatch(/HttpOnly/); expect(sc).toMatch(/Secure/);
+    const cookie = soloCookie(sc);
+    const app = await pedir('/simulador-paa/', { cookie });
+    expect(await app.text()).toContain('/simulador-paa/app.js');
+    expect(app.headers.get('content-security-policy')).toContain('https://os.vorka.mx');
+    const banco = await (await pedir('/api/simulador-paa/banco', { cookie })).json();
+    expect(banco.reactivos.length).toBe(REACTIVOS.length);
+    const yo = await (await pedir('/api/simulador-paa/yo', { cookie })).json();
+    expect(yo).toMatchObject({ nombre: 'Ana López', email: 'ana@mail.com', historial: [] });
+  });
+
+  it('la API sin cookie, con cookie alterada o de otra compra responde 401', async () => {
+    expect((await pedir('/api/simulador-paa/banco')).status).toBe(401);
+    const cookie = soloCookie(await cookieAcceso(env, orden.id, Date.now() + 864e5));
+    expect((await pedir('/api/simulador-paa/banco', { cookie: cookie.replace(/.$/, c => c === 'a' ? 'b' : 'a') })).status).toBe(401);
+    // Compra de otro producto (sin acceso a la app)
+    const otra = await comprar('de-idea-a-proyecto', 'luis@mail.com');
+    const ajena = soloCookie(await cookieAcceso(env, otra.id, Date.now() + 864e5));
+    expect((await pedir('/api/simulador-paa/banco', { cookie: ajena })).status).toBe(401);
+  });
+
+  it('un reembolso corta el acceso aunque la cookie siga vigente', async () => {
+    const cookie = soloCookie(await cookieAcceso(env, orden.id, Date.now() + 864e5));
+    env.DB.raw.prepare("UPDATE orders SET estado = 'refunded' WHERE id = ?").run(orden.id);
+    expect((await pedir('/api/simulador-paa/banco', { cookie })).status).toBe(401);
+  });
+
+  it('el acceso dura un año desde la compra; un token de descarga vencido sigue sirviendo dentro del año', async () => {
+    env.DB.raw.prepare("UPDATE download_tokens SET expires_at = '2000-01-01T00:00:00Z'").run();
+    expect((await pedir(`/simulador-paa/entrar/${token}`)).status).toBe(303);
+    env.DB.raw.prepare("UPDATE orders SET paid_at = '2020-01-01T00:00:00Z' WHERE id = ?").run(orden.id);
+    expect((await pedir(`/simulador-paa/entrar/${token}`)).status).toBe(410);
+    expect((await pedir('/simulador-paa/entrar/' + 'f'.repeat(64))).status).toBe(404);
+  });
+
+  it('guarda resultados, limpia campos y los devuelve en el historial', async () => {
+    const cookie = soloCookie(await cookieAcceso(env, orden.id, Date.now() + 864e5));
+    const body = JSON.stringify({ modo: 'completo', global: 9999, meta: 600, confianza: 72, extra: 'x',
+      secciones: [{ id: 'lectura', puntaje: 610, aciertos: 8, segundo: 2, total: 12, tiempo: 700, limite: 840 }],
+      temas: { inferencia: { ok: 2, total: 3 }, inventado: { ok: 1, total: 1 } }, fallados: ['L-sue-3'] });
+    expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body })).status).toBe(200);
+    const yo = await (await pedir('/api/simulador-paa/yo', { cookie })).json();
+    expect(yo.historial).toHaveLength(1);
+    expect(yo.historial[0]).toMatchObject({ modo: 'completo', global: 800, confianza: 72, temas: { inferencia: { ok: 2, total: 3 } }, fallados: ['L-sue-3'] });
+    expect(yo.historial[0].temas.inventado).toBeUndefined();
+    expect(yo.historial[0].extra).toBeUndefined();
+    expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body: '{"modo":"otro"}' })).status).toBe(400);
+  });
+
+  it('cliente público y con caché larga', async () => {
+    const r = await pedir('/simulador-paa/app.js');
+    expect(r.status).toBe(200);
+    expect(r.headers.get('cache-control')).toContain('immutable');
+  });
+});
+
+describe('integración con la tienda', () => {
+  it('la página de descargas muestra el botón para entrar', async () => {
+    const html = await (await pedir(`/descargas/${token}`)).text();
+    expect(html).toContain(`/simulador-paa/entrar/${token}`);
+    expect(html).toContain('Tu acceso, Ana');
+  });
+
+  it('el correo de entrega lleva directo al simulador', () => {
+    const c = correoEntrega(env, { id: orden.id, nombre: 'Ana López' }, [{ nombre: 'Simulador PAA', contenido: JSON.stringify({ acceso: { app: 'simulador-paa', boton: 'Entrar al simulador' } }) }], 'abc');
+    expect(c.asunto).toBe('Tu acceso: Simulador PAA');
+    expect(c.html).toContain('https://vorka.mx/simulador-paa/entrar/abc');
+    expect(c.texto).toContain('Entrar al simulador');
+  });
+
+  it('el panel puede activar el producto sin archivos y conserva contenido.acceso al editar', async () => {
+    const p = await admin.productoPorId(env, 'prod_simulador_paa');
+    await admin.guardarProducto(env, { id: p.id, nombre: p.nombre, precio: 299, activo: true, contenido: { titular: 'Nuevo titular', incluye: [], pasos: [], para_quien: [], faq: [] } });
+    const d = await admin.productoPorId(env, p.id);
+    expect(d.activo).toBe(true);
+    expect(d.contenido.acceso.app).toBe('simulador-paa');
+    expect(d.contenido.titular).toBe('Nuevo titular');
+  });
+});

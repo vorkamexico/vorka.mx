@@ -184,3 +184,16 @@ Con `ESTATICO_DEV` en `.dev.vars` apuntando a un servidor estático del repo, la
 - **Enlace editable**: el editor del producto tiene *Enlace del producto*. Se valida (minúsculas, números y guiones; único; no reservado) y el enlace anterior queda en `slugs_anteriores` y redirige con 301 al nuevo (también funciona si alguien compra desde una página vieja).
 - **Portada nueva de /tienda**: hero con el producto destacado (el primero según *Orden en el catálogo*), "cómo funciona" y el catálogo.
 - Publicar: `_tienda/publicar-octubre.command` (aplica la migración 0007, publica la tienda y Vorka OS).
+
+## Simulador PAA (vorka.mx/simulador-paa)
+
+Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"` en el producto `prod_simulador_paa` (migración 0008, entra inactivo con precio provisional de $249).
+
+- Compra → el correo de entrega lleva el botón **Entrar al simulador** (`/simulador-paa/entrar/<token>`). La página `/descargas/<token>` también lo muestra.
+- El enlace deja la cookie `vk_paa` (HttpOnly, firmada con `DOWNLOAD_TOKEN_SECRET`). En cada petición se revisa en D1 que la orden siga pagada y dentro de su año de vigencia (`VIGENCIA_DIAS`). Un reembolso corta el acceso.
+- Cambió de dispositivo → `/descargas/reenviar` manda un enlace nuevo, como con las descargas.
+- Código: `src/simulador/` (rutas + banco de reactivos `banco.js`). Cliente en `simulador/app.js` y `app.css`; después de editarlos: `python3 _tienda/simulador/construir.py`.
+- Historial de resultados en la tabla `simulador_resultados` (últimos 60 por compra).
+- El botón de la Revista Sparks suscribe al boletín en `os.vorka.mx/api/publico/boletin` con el correo de la compra (`origen: simulador-paa`).
+
+Publicar: `npm run db:remoto` (migración 0008) → deploy del Worker (agrega la ruta `vorka.mx/simulador-paa*`) → en Vorka OS, Tienda → Productos: ajustar precio y activar.

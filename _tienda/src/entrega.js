@@ -21,7 +21,13 @@ export async function crearToken(env, orderId, ahora = Date.now()) {
   return { token, hash, expires_at };
 }
 
+// Productos de acceso (contenido.acceso, p. ej. Simulador PAA): abren una app en lugar de entregar archivos
+const accesoDe = i => { try { return JSON.parse(i.contenido || '{}').acceso || null; } catch { return null; } };
+
 export function correoEntrega(env, orden, items, token) {
+  const accesos = items.map(accesoDe);
+  // Compra de un solo producto de acceso: el botón entra directo a la app; con archivos, a la página de descargas
+  if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0]);
   const url = `${env.SITE_URL}/descargas/${token}`;
   const nombre = orden.nombre.split(' ')[0];
   const productos = items.map(i => i.nombre);
@@ -54,10 +60,43 @@ Vorka México · Guanajuato, México`;
   return { asunto, html, texto };
 }
 
+function correoAcceso(env, orden, items, token, acceso) {
+  const url = items.length === 1 ? `${env.SITE_URL}/${acceso.app}/entrar/${token}` : `${env.SITE_URL}/descargas/${token}`;
+  const boton_ = acceso.boton || 'Entrar';
+  const nombre = orden.nombre.split(' ')[0];
+  const asunto = `Tu acceso: ${items[0].nombre}`;
+  const html = marco(asunto, `
+<p style="${P}">Hola, ${esc(nombre)}:</p>
+<p style="${P}">¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.</p>
+${lista(items.map(i => esc(i.nombre)))}
+${boton(url, boton_)}
+<p style="${P}">Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.</p>
+<p style="${P}">Si el botón deja de funcionar o cambias de dispositivo, pide un enlace nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con este mismo correo.</p>
+<p style="${P}">¿Algún problema? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a> y lo resolvemos.</p>
+<p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
+  const texto = `Hola, ${nombre}:
+
+¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.
+
+${items.map(i => `- ${i.nombre}`).join('\n')}
+
+${boton_}:
+${url}
+
+Tu acceso dura un año a partir de hoy. Usa este enlace en cada dispositivo donde quieras practicar.
+Si deja de funcionar, pide uno nuevo en ${env.SITE_URL}/descargas/reenviar con este mismo correo.
+
+¿Algún problema? Escríbenos a ${SOPORTE.correo} o por WhatsApp: ${SOPORTE.whatsapp}
+
+Orden ${orden.id}
+Vorka México · Guanajuato, México`;
+  return { asunto, html, texto };
+}
+
 // Token nuevo + correo. Si el correo falla, el token se borra (no quedan enlaces que nadie recibió).
 async function mandarEnlace(env, orderId, ahora = Date.now()) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
-  const items = await all(env, 'SELECT product_id, nombre FROM order_items WHERE order_id = ?', orderId);
+  const items = await all(env, 'SELECT i.product_id, i.nombre, p.contenido FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
   const { token, hash } = await crearToken(env, orderId, ahora);
   try {
     await enviar(env, { para: orden.email, ...correoEntrega(env, orden, items, token), idempotencia: `entrega-${hash.slice(0, 32)}` });
