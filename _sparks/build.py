@@ -728,7 +728,9 @@ def main():
     del_os = cargar_historias_os(cfg) if not args.datos else []
     # Lo que vive en Vorka México (os.vorka.mx) manda: si la Hoja o el archivo traen la misma nota, se usa la de la app
     vistos = {slug_cat(n.get("titulo", "")) for n in del_os} | {n.get("slug") for n in del_os}
-    otras = cargar_noticias(args) + (cargar_archivo(cfg) if not args.datos else [])
+    # Notas de la Hoja que ya se pasaron a os.vorka.mx: no se publican desde la Hoja aunque la app las quite
+    ignorar = set(cfg.get("hojaIgnorar", []))
+    otras = [n for n in cargar_noticias(args) if n.get("slug") not in ignorar and slug_cat(n.get("titulo", "")) not in ignorar] + (cargar_archivo(cfg) if not args.datos else [])
     noticias = del_os + [n for n in otras if slug_cat(n.get("titulo", "")) not in vistos and n.get("slug") not in vistos]
     almacen = Almacen(cfg, dir_img, cfg["ruta"].rstrip("/"))
 

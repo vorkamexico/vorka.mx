@@ -87,5 +87,8 @@
     "cliente": "",
     "slotFeed": "",
     "slotArticulo": ""
-  }
+  },
+  "hojaIgnorar": [
+    "danna-galvan"
+  ]
 }
