@@ -1,11 +1,12 @@
 # Vorka México · genera las páginas principales del sitio
 # Uso: python3 _sitio/build.py   (desde la raíz del repo vorka.mx)
-# Páginas: / · /servicios/ · /servicios/<slug>/ · /agenda/ · /404.html
+# Páginas: / · /servicios/ · /servicios/<slug>/ · /agenda/ · /fc/ · /404.html
 import os, sys, json
 sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
 from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS
 from agenda import pagina_agenda
+from fc import pagina_fc
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
@@ -402,4 +403,5 @@ if __name__ == '__main__':
     for s in SERVICIOS:
         escribir(f"servicios/{s['slug']}/index.html", servicio(s))
     escribir('agenda/index.html', pagina_agenda())
+    escribir('fc/index.html', pagina_fc())
     escribir('404.html', no_encontrada())

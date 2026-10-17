@@ -10,7 +10,7 @@ Cada URL es una carpeta con `index.html` (`/servicios/estrategia/` → `servicio
 
 | Carpeta | URL | Cómo se edita |
 |---|---|---|
-| `index.html`, `servicios/`, `agenda/`, `404.html` | `/`, `/servicios/…`, `/agenda/` | **Generadas**: edita `_sitio/` y corre `python3 _sitio/build.py` |
+| `index.html`, `servicios/`, `agenda/`, `fc/`, `404.html` | `/`, `/servicios/…`, `/agenda/`, `/fc/` | **Generadas**: edita `_sitio/` y corre `python3 _sitio/build.py` |
 | `voluntariado/`, `sparks/`, `sparks/sumate/`, `privacidad/`, `legal/` | | A mano |
 | `sparks/celaya/` | `/sparks/celaya/` | **Automática** (bot cada hora). No editar a mano: ver `_sparks/GUIA-INSTALACION.md` |
 | `oleynickhdz/`, `mentoriaoleynick/` | Sitio de Brandon Oleynick | A mano |
@@ -38,6 +38,8 @@ Llevan `<meta name="robots" content="noindex">` y además la cabecera `X-Robots-
 
 - `assets/v3/`: `vorka.css` y `vorka.js` (la misma tipografía y paleta que os.vorka.mx)
 - `img/ciudades/`: fotos WebP en 960 / 1600 / 2400 (ver `img/README.md`)
+- `img/fc/`: fotos de Celaya en blanco y negro y el lobo de Vorka FC (créditos al pie de `/fc/`)
+- `assets/v3/fc.css`: estilos propios de Vorka FC (azul de Vorka Run, naranja, Anton)
 - `vorka-logo.png`
 
 ## Archivos de Cloudflare
@@ -48,7 +50,7 @@ Llevan `<meta name="robots" content="noindex">` y además la cabecera `X-Robots-
 
 ## Conexiones
 
-- Agenda, voluntariado y boletín: van a **os.vorka.mx** (`/api/publico/…`)
+- Agenda, voluntariado, boletín e inscripciones de Vorka FC (`/fc/`): van a **os.vorka.mx** (`/api/publico/…`)
 - Formularios de `oleynickhdz/` y `heymaya/`: Formsubmit → vorkamexico@gmail.com
 - Fotos de Sparks: `fotos.vorka.mx` (Cloudflare R2)
 
