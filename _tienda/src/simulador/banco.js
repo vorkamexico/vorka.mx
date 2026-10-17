@@ -9,6 +9,11 @@
 // El cliente baraja las opciones en cada intento (salvo fijo: true). Por eso pistas y pasos no nombran letras:
 // {A}…{D} se refieren a la opción en su posición de este archivo y el cliente las cambia por la letra que se ve.
 
+import { TEXTOS_LECTURA, REACTIVOS_LECTURA } from './extra-lectura.js';
+import { REACTIVOS_REDACCION } from './extra-redaccion.js';
+import { REACTIVOS_MATEMATICAS } from './extra-matematicas.js';
+import { TEXTOS_INGLES, REACTIVOS_INGLES } from './extra-ingles.js';
+
 export const SECCIONES = [
   { id: 'lectura', nombre: 'Lectura', minutos: 14, reactivos: 12, color: 'morado',
     descripcion: 'Dos lecturas (una literaria y una no literaria) con preguntas de vocabulario en contexto, idea central, inferencia y análisis.' },
@@ -75,7 +80,7 @@ export const TEMAS = {
 };
 
 // Lecturas. tipo: 'literario' | 'no_literario' (el simulacro toma una de cada una en Lectura). En Inglés se toma una.
-export const TEXTOS = {
+const TEXTOS_BASE = {
   radio: {
     seccion: 'lectura', tipo: 'literario', titulo: 'La radio de mi abuelo', genero: 'Cuento',
     parrafos: [
@@ -137,7 +142,7 @@ export const TEXTOS = {
   },
 };
 
-export const REACTIVOS = [
+const REACTIVOS_BASE = [
   // ───────────── LECTURA · La radio de mi abuelo ─────────────
   { id: 'L-radio-1', seccion: 'lectura', tema: 'vocabulario', dificultad: 1, texto: 'radio',
     enunciado: 'En el párrafo 3, la expresión "había callado a la caja entera" significa que el capacitor…',
@@ -816,3 +821,7 @@ export const REACTIVOS = [
     pasos: ['Expected: good design → clear results.', 'Reality: the results were inconclusive (contrast with what was expected).', '"Nevertheless" introduces a contrast; "therefore" would mean a logical result.'],
     regla: 'Transitions: contrast (however, nevertheless), result (therefore, consequently), example (for example), similarity (similarly). Use ; before and , after.' },
 ];
+
+// Banco completo: base + ampliación (extra-*.js). Cada simulacro completo prioriza lo que el estudiante no ha visto.
+export const TEXTOS = { ...TEXTOS_BASE, ...TEXTOS_LECTURA, ...TEXTOS_INGLES };
+export const REACTIVOS = [...REACTIVOS_BASE, ...REACTIVOS_LECTURA, ...REACTIVOS_REDACCION, ...REACTIVOS_MATEMATICAS, ...REACTIVOS_INGLES];

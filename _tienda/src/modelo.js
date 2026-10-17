@@ -34,7 +34,7 @@ export async function afiliadoActivo(env, code) {
  * items: [{ slug, cantidad? }] — el precio se toma de la base de datos.
  * Lanza Error('producto') si algún slug no existe o está inactivo.
  */
-export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe' }) {
+export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null }) {
   const lineas = [];
   for (const it of items) {
     const p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
@@ -56,8 +56,9 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
     comision_pct: afiliado?.comision_pct ?? null,
   };
   await env.DB.batch([
-    env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct) VALUES (?,?,?,?,?,?,?,?)')
-      .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct),
+    env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct, regalo, regalo_para, regalo_mensaje) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+      .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct,
+        regalo ? 1 : 0, regalo?.para || null, regalo?.mensaje || null),
     // Si es de un creador, se copia a quién le toca y su % de ese momento
     ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) VALUES (?,?,?,?,?,?,?)')
       .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null)),
@@ -99,7 +100,10 @@ export async function aplicarPago(env, orderId, pago) {
     t.estado, pago.provider_payment_id ?? null, pago.metodo_pago ?? null, pago.provider_charge_id ?? null, t.estado, ahora, ahora, orderId, orden.estado);
   if (!r.meta.changes) return { orden, accion: null, cambia: false, motivo: 'carrera' };
 
-  if (t.accion === 'revocar') await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ?', orderId);
+  if (t.accion === 'revocar') {
+    await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ?', orderId);
+    await run(env, "UPDATE regalos SET estado = 'revocado' WHERE order_id = ? AND estado = 'pendiente'", orderId);
+  }
   return { orden: { ...orden, estado: t.estado }, accion: t.accion, cambia: true };
 }
 

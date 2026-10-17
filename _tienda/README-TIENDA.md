@@ -200,6 +200,16 @@ Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"
 
 **Tienda por secciones**: el catálogo agrupa por categoría (`SECCIONES_TIENDA` en `src/tienda.js`); una categoría nueva aparece sola como sección.
 
-**Google**: `vorka.mx/simulador-paa/` es la página canónica (título, FAQ y Product en JSON-LD, imagen para compartir) y es la que va en `/tienda/sitemap.xml`. Portadas: `python3 _tienda/simulador/portadas.py` y subirlas a R2 como `portadas/simulador-paa.png` y `portadas/simulador-paa-og.png`.
+**Google**: `vorka.mx/simulador-paa/` es la página canónica (título, FAQ y Product en JSON-LD, imagen para compartir) y es la que va en `/tienda/sitemap.xml`. Portadas: `python3 _tienda/simulador/portadas.py` y subirlas a R2 como `portadas/simulador-paa-v2.png` y `portadas/simulador-paa-og.png`.
+
+**Banco** (235 reactivos): base en `src/simulador/banco.js` + ampliación en `extra-lectura.js`, `extra-redaccion.js`, `extra-matematicas.js` y `extra-ingles.js`. El servidor arma cada simulacro completo priorizando lo no visto por ese correo (`vistosDe` + `armar.js`): los primeros 3 salen 100 % distintos y el 4.º–5.º casi. Las secciones sueltas hacen lo mismo en el cliente con lo que ya vio.
+
+**Regalos** (migración 0010, `src/regalos.js`): en productos con `contenido.regalable` el formulario ofrece *Para regalar* (cantidad, para quién, mensaje). Al pagarse, quien compra recibe una liga `/tienda/regalo/<token>` por unidad (no recibe acceso). Cada liga se canjea una sola vez: crea una orden de $0 (`proveedor = 'regalo'`, `regalo_de`) a nombre de quien la abre, le manda su acceso y lo deja entrar. Reenviar cambia las ligas no usadas; un reembolso apaga las pendientes y el acceso de quien canjeó.
+
+**Cortesías** (accesos gratis): en Vorka México → Tienda → *Regalar accesos* creas N ligas de un solo uso (para quién, mensaje y nota interna). Es una orden de $0 con `proveedor = 'cortesia'` a nombre de Vorka México; las ligas solo se muestran al crearlas y nunca se reenvían. Se pueden apagar las que no se usaron. Regalos y cortesías no cuentan como ventas ni salen en el CSV del contador.
+
+**Google**: `/simulador-paa/` está en `sitemap.xml` (raíz, a mano) y en `/tienda/sitemap.xml`; tiene enlaces desde el inicio (tarjeta) y el pie de todo el sitio (`_sitio/partes.py`).
+
+**Portadas**: se sirven con caché de un año; si cambias una, súbela con otro nombre (p. ej. `simulador-paa-v3.png`) y actualiza `products.imagen`.
 
 Publicar: doble clic en `_tienda/publicar-simulador.command` después del merge (migraciones, deploy y, si dices que sí, lo pone a la venta).

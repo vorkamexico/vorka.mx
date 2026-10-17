@@ -216,3 +216,44 @@
 .t-seccion + .t-seccion { margin-top: clamp(56px, 7vw, 88px); }
 .t-seccion-cab { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 24px; margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .t-seccion-cab p { color: var(--fg-2); font-size: 15.5px; max-width: 560px; }
+
+/* Comprar para mí / para regalar */
+.t-modo { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 999px; background: var(--bg-2); margin-bottom: 18px; }
+.t-modo label { position: relative; cursor: pointer; }
+.t-modo input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.t-modo span { display: flex; align-items: center; justify-content: center; min-height: 42px; border-radius: 999px; font-size: 14.5px; font-weight: 650; color: var(--fg-2); transition: background .2s, color .2s, box-shadow .2s; }
+.t-modo input:checked + span { background: var(--card); color: var(--fg); box-shadow: var(--sombra); }
+.t-modo input:focus-visible + span { outline: 2px solid var(--morado); outline-offset: 2px; }
+.t-regalo-campos, .t-ayuda-regalo, .t-btn-regalo { display: none; }
+.t-regalo-campos { border: 0; margin: 0 0 6px; padding: 16px; border-radius: 18px; background: var(--morado-suave); gap: 14px; }
+.t-regalable.es-regalo .t-regalo-campos, .t-regalable:has(input[name=para_quien][value=regalo]:checked) .t-regalo-campos { display: grid; }
+.t-regalable.es-regalo .t-ayuda-regalo, .t-regalable:has(input[name=para_quien][value=regalo]:checked) .t-ayuda-regalo { display: block; }
+.t-regalable.es-regalo #ayuda-email, .t-regalable:has(input[name=para_quien][value=regalo]:checked) #ayuda-email { display: none; }
+.t-regalable.es-regalo .t-btn-regalo, .t-regalable:has(input[name=para_quien][value=regalo]:checked) .t-btn-regalo { display: inline; }
+.t-regalable.es-regalo .t-btn-yo, .t-regalable:has(input[name=para_quien][value=regalo]:checked) .t-btn-yo { display: none; }
+.t-regalo-campos .t-campo { margin: 0; }
+.t-regalo-campos textarea { width: 100%; resize: vertical; min-height: 76px; font: inherit; font-size: 15px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--card); }
+.t-regalo-campos label small { font-weight: 500; color: var(--fg-2); }
+.t-cant { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.t-cant > span { display: flex; flex-direction: column; font-size: 15px; }
+.t-cant small { font-size: 12.5px; color: var(--fg-2); }
+.t-cant-c { display: inline-flex; align-items: center; gap: 2px; border-radius: 999px; background: var(--card); border: 1px solid var(--line-2); padding: 3px; flex: none; }
+.t-cant-c button { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--bg-2); font-size: 18px; font-weight: 600; cursor: pointer; }
+.t-cant-c input { width: 38px; border: 0; background: none; text-align: center; font: inherit; font-weight: 700; font-size: 16px; -moz-appearance: textfield; }
+.t-cant-c input::-webkit-outer-spin-button, .t-cant-c input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Franja del producto gancho en la portada de la tienda */
+.t-gancho { background: var(--noche); color: var(--claro); padding: clamp(64px, 8vw, 110px) 0; overflow: hidden; }
+.t-gancho-g { display: grid; gap: 40px 64px; align-items: center; }
+@media (min-width: 960px) { .t-gancho-g { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); } }
+.t-gancho .etiqueta { color: var(--claro-2); }
+.t-gancho .etiqueta::before { background: var(--oro); }
+.t-gancho .h2 { margin-top: 16px; color: #fff; }
+.t-gancho .lead { margin-top: 16px; color: var(--claro-2); }
+.t-gancho-l { display: flex; flex-direction: column; gap: 10px; margin: 22px 0 28px; }
+.t-gancho-l li { display: flex; gap: 10px; align-items: flex-start; color: var(--claro); font-size: 16px; }
+.t-gancho-l svg { width: 18px; height: 18px; color: var(--oro-claro); flex: none; margin-top: 3px; }
+.t-gancho-img { display: block; border-radius: var(--r); overflow: hidden; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .7); transform: perspective(1400px) rotateY(-6deg); transition: transform .5s var(--ease); }
+.t-gancho-img:hover { transform: perspective(1400px) rotateY(0); }
+.t-gancho-img img { width: 100%; height: auto; display: block; }
+@media (prefers-reduced-motion: reduce) { .t-gancho-img, .t-gancho-img:hover { transform: none; } }

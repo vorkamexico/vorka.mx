@@ -64,7 +64,9 @@ const accesoDeItem = c => { try { const a = JSON.parse(c || '{}').acceso; return
 async function comprasDe(env, email) {
   const filas = await all(env, `SELECT o.id orden_id, o.paid_at, o.created_at, i.cantidad, p.contenido FROM orders o
     JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
-    WHERE o.email = ? AND o.estado = 'paid' ORDER BY o.paid_at DESC`, String(email).toLowerCase());
+    WHERE o.email = ? AND o.estado = 'paid' AND o.regalo = 0
+      AND (o.regalo_de IS NULL OR EXISTS (SELECT 1 FROM orders g WHERE g.id = o.regalo_de AND g.estado = 'paid'))
+    ORDER BY o.paid_at DESC`, String(email).toLowerCase());
   return filas.map(f => ({ ...f, acceso: accesoDeItem(f.contenido) })).filter(f => f.acceso);
 }
 const esBase = c => c.acceso.tipo !== 'intento';
@@ -90,6 +92,12 @@ export async function cuentaIntentos(env, email) {
   const usados = (await one(env, 'SELECT COUNT(*) n FROM simulador_intentos WHERE email = ? AND app = ?', email, APP)).n;
   const abierto = await one(env, "SELECT id, items FROM simulador_intentos WHERE email = ? AND app = ? AND estado = 'abierto' ORDER BY id DESC LIMIT 1", email, APP);
   return { incluidos, usados, disponibles: Math.max(0, incluidos - usados), abierto: abierto ? { id: abierto.id, items: JSON.parse(abierto.items) } : null };
+}
+
+// Reactivos que ya salieron en sus simulacros completos (para no repetirlos en el siguiente)
+export async function vistosDe(env, email) {
+  const filas = await all(env, 'SELECT items FROM simulador_intentos WHERE email = ? AND app = ?', email, APP);
+  return new Set(filas.flatMap(f => { try { return JSON.parse(f.items).flat(); } catch { return []; } }));
 }
 
 // Solo puede comprar simulacros adicionales quien ya tiene el simulador (lo revisa /api/checkout)
@@ -173,12 +181,13 @@ function errorAcceso(motivo) {
 }
 
 async function yo(env, a) {
-  const filas = await all(env, 'SELECT id, modo, resultado, created_at FROM simulador_resultados WHERE order_id = ? AND app = ? ORDER BY created_at DESC LIMIT ?', a.orden.id, APP, MAX_HISTORIAL);
+  const filas = await all(env, `SELECT id, modo, resultado, created_at FROM simulador_resultados
+    WHERE order_id IN (SELECT id FROM orders WHERE email = ?) AND app = ? ORDER BY created_at DESC LIMIT ?`, a.orden.email, APP, MAX_HISTORIAL);
   const historial = filas.map(f => { try { return { id: f.id, modo: f.modo, fecha: f.created_at, ...JSON.parse(f.resultado) }; } catch { return null; } }).filter(Boolean);
   const intentos = await cuentaIntentos(env, a.orden.email);
   const extra = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', SLUG_INTENTO);
   return json({ nombre: a.orden.nombre, email: a.orden.email, vence: new Date(a.vence).toISOString(), historial,
-    intentos, intentoExtra: extra ? { slug: SLUG_INTENTO, precio_centavos: extra.precio_centavos } : null });
+    intentos, vistos: [...await vistosDe(env, a.orden.email)], intentoExtra: extra ? { slug: SLUG_INTENTO, precio_centavos: extra.precio_centavos } : null });
 }
 
 // Abre un simulacro completo: retoma el abierto o gasta un intento y arma los reactivos en el servidor
@@ -187,7 +196,7 @@ async function iniciar(env, a) {
   const c = await cuentaIntentos(env, email);
   if (c.abierto) return json({ id: c.abierto.id, items: c.abierto.items, retomado: true, intentos: c });
   if (c.disponibles <= 0) return json({ error: 'Ya usaste tus simulacros completos. Compra uno adicional para seguir.', sinIntentos: true, intentos: c }, 402);
-  const items = armarCompleto();
+  const items = armarCompleto(Math.random, await vistosDe(env, email));
   const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items) VALUES (?,?,?)', email, APP, JSON.stringify(items));
   const id = r.meta.last_row_id ?? (await one(env, 'SELECT id FROM simulador_intentos WHERE email = ? ORDER BY id DESC LIMIT 1', email)).id;
   return json({ id, items, retomado: false, intentos: await cuentaIntentos(env, email) });
@@ -279,6 +288,8 @@ const FAQ_PAA = [
   { p: '¿Cómo se califica la PAA?', r: 'Cada sección se califica en una escala de 200 a 800 puntos y no se resta por respuesta incorrecta, así que conviene contestar todo. Nuestro simulador estima tu puntaje en esa misma escala para que veas qué tan cerca estás de tu meta.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen la estructura y el tipo de preguntas de la PAA. No está afiliado al College Board y el puntaje es una estimación para orientar tu estudio.' },
   { p: '¿Cuántos simulacros incluye?', r: 'Tu compra incluye 2 simulacros completos de 46 reactivos con cronómetro. Cada simulacro adicional cuesta $50 y lo compras desde el mismo simulador. La práctica por sección y por temas débiles no tiene límite.' },
+  { p: '¿Se repiten las preguntas?', r: 'El banco tiene más de 230 reactivos originales y cada simulacro completo prioriza los que no has visto, así que tus primeros cinco simulacros traen preguntas prácticamente distintas.' },
+  { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo para que la compartas. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre, así que no se puede compartir.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta.' },
 ];
 
@@ -286,10 +297,12 @@ async function paginaVenta(env, req, url) {
   const prod = await productoPorSlug(env, APP);
   const { code, cookie } = await refDeVisita(env, req, url);
   const total = SECCIONES.reduce((s, x) => s + x.reactivos, 0), min = SECCIONES.reduce((s, x) => s + x.minutos, 0);
+  const banco = REACTIVOS.length, lecturas = Object.keys(TEXTOS).length, temas = Object.keys(TEMAS).length;
   const ej = REACTIVOS.find(r => r.id === 'R-cnx-2');
   const precioTxt = prod ? precio(prod) : null;
+  const IMG = `${SITIO}/tienda/img/portadas`;
   const ld = [
-    { '@context': 'https://schema.org', '@type': 'Product', name: 'Simulador PAA en línea', description: DESCRIPCION, image: [`${SITIO}/tienda/img/portadas/simulador-paa.png`, OG],
+    { '@context': 'https://schema.org', '@type': 'Product', name: 'Simulador PAA en línea', description: DESCRIPCION, image: [`${IMG}/simulador-paa-v2.png`, OG, `${IMG}/simulador-paa-reporte.png`],
       brand: { '@type': 'Brand', name: 'Vorka México' }, category: 'Preparación para exámenes de admisión', sku: 'prod_simulador_paa',
       ...(prod ? { offers: { '@type': 'Offer', url: `${SITIO}${RUTA}/`, price: (prod.precio_centavos / 100).toFixed(2), priceCurrency: prod.moneda, availability: 'https://schema.org/InStock', seller: { '@type': 'Organization', name: 'Vorka México' } } } : {}) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_PAA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) },
@@ -297,25 +310,75 @@ async function paginaVenta(env, req, url) {
       { '@type': 'ListItem', position: 1, name: 'Tienda', item: `${SITIO}/tienda/` },
       { '@type': 'ListItem', position: 2, name: 'Simulador PAA', item: `${SITIO}${RUTA}/` }] },
   ];
-  const secciones = SECCIONES.map(s => `<tr><th scope="row">${esc(s.nombre)}</th><td class="num">${s.reactivos}</td><td class="num">${s.minutos} min</td><td>${esc(s.descripcion)}</td></tr>`).join('');
-  const opciones = ej.opciones.map((o, i) => `<li><span>${'ABCD'[i]}</span>${esc(o)}</li>`).join('');
+  const secciones = SECCIONES.map(s => `<tr><th scope="row"><span class="sv-dot s-${s.color}"></span>${esc(s.nombre)}</th><td class="num">${s.reactivos}</td><td class="num">${s.minutos} min</td><td>${esc(s.descripcion)}</td></tr>`).join('');
+  const sinLetras = t => esc(String(t).replace(/\{([A-D])\}/g, '$1'));
+  const ejemplo = { correcta: ej.correcta, pista: ej.pista, pasos: ej.pasos.map(x => x.replace(/\{([A-D])\}/g, '$1')), regla: ej.regla };
+  const comparar = [
+    ['Cronómetro con el ritmo real de la PAA', true, false],
+    ['Pista de método cuando fallas (sin darte la respuesta)', true, false],
+    ['Explicación paso a paso y la regla detrás', true, 'A veces'],
+    ['Puntaje estimado por sección (200–800)', true, false],
+    ['Plan de qué reforzar según tus errores', true, false],
+    ['Preguntas nuevas en cada simulacro', true, false],
+  ].map(([t, a, b]) => `<tr><th scope="row">${esc(t)}</th><td>${a === true ? `<span class="sv-si">${CHECK}<span class="sr">Sí</span></span>` : esc(a)}</td><td>${b === true ? `<span class="sv-si">${CHECK}</span>` : b ? esc(b) : '<span class="sv-no" aria-label="No">—</span>'}</td></tr>`).join('');
+  const SCRIPT_EJEMPLO = `(function(){
+  var box=document.getElementById('sv-ej'); if(!box) return;
+  var D=${JSON.stringify(ejemplo).replace(/</g, '\\u003c')}, intentos=0, fin=false;
+  var tutor=document.getElementById('sv-tutor');
+  function li(t){var e=document.createElement('li');e.textContent=t;return e;}
+  box.querySelectorAll('[data-o]').forEach(function(b){ b.addEventListener('click',function(){
+    if(fin||b.disabled) return; var o=+b.dataset.o; intentos++;
+    if(o===D.correcta||intentos>=2){ fin=true;
+      box.querySelectorAll('[data-o]').forEach(function(x){ x.disabled=true; if(+x.dataset.o===D.correcta) x.classList.add('sv-ok'); });
+      if(o!==D.correcta) b.classList.add('sv-mal');
+      tutor.className='sv-tutor '+(o===D.correcta?'bien':'sol'); tutor.innerHTML='';
+      var h=document.createElement('b'); h.textContent=o===D.correcta?(intentos===1?'¡Correcto a la primera!':'¡Bien! Lo lograste en el segundo intento'):'Esta era la respuesta correcta'; tutor.appendChild(h);
+      var ol=document.createElement('ol'); D.pasos.forEach(function(p){ol.appendChild(li(p));}); tutor.appendChild(ol);
+      var r=document.createElement('p'); r.innerHTML='<b>La regla:</b> '; r.appendChild(document.createTextNode(D.regla)); tutor.appendChild(r);
+      var c=document.createElement('p'); c.className='sv-ej-cta'; c.innerHTML='Así funciona en cada uno de los ${banco} reactivos. <a href="#comprar">Quiero el simulador →</a>'; tutor.appendChild(c);
+    } else { b.disabled=true; b.classList.add('sv-x');
+      tutor.className='sv-tutor pista'; tutor.innerHTML='<b>Todavía no. Pista del tutor</b>'; var p=document.createElement('p'); p.textContent=D.pista; tutor.appendChild(p);
+      var s=document.createElement('small'); s.textContent='Tienes un intento más.'; tutor.appendChild(s); }
+    tutor.hidden=false;
+  }); });
+})();`;
   return pagina({
     titulo: 'Simulador PAA 2026 en línea: examen de práctica | Vorka México', ruta: `${RUTA}/`, descripcion: DESCRIPCION, imagen: OG,
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: prod ? SCRIPT_COMPRA : '',
+    script: (prod ? SCRIPT_COMPRA : '') + SCRIPT_EJEMPLO,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
+<link rel="preload" as="image" href="/tienda/img/portadas/simulador-paa-v2.png">
 <style>
-.sv-hero{padding:clamp(110px,13vw,160px) 0 clamp(40px,5vw,64px)}
-.sv-hero .t-lead{margin-top:18px;max-width:600px}
+.sv-hero{padding:clamp(108px,12vw,150px) 0 clamp(40px,5vw,64px)}
 .sv-hero-g{display:grid;gap:32px 56px;align-items:start}
 @media(min-width:980px){.sv-hero-g{grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr)}}
-.sv-portada{margin-top:28px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra-2);aspect-ratio:4/3;background:var(--noche)}
-.sv-portada img{width:100%;height:100%;object-fit:cover;display:block}
-.sv-sellos{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-size:14.5px;color:var(--fg-2)}
+.sv-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sv-chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--morado-suave);color:var(--morado)}
+.sv-chip.oro{background:#fbf3e2;color:#8a6a2c}
+.sv-hero h1{margin-top:16px}
+.sv-hero .t-lead{margin-top:16px;max-width:600px}
+.sv-sellos{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:14.5px;color:var(--fg-2)}
 .sv-sellos li{display:flex;align-items:center;gap:6px}.sv-sellos svg{width:16px;height:16px;color:var(--verde)}
+.sv-portada{margin-top:26px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra-2);aspect-ratio:4/3;background:var(--noche)}
+.sv-portada img{width:100%;height:100%;object-fit:cover;display:block}
+.sv-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .sv-compra{position:sticky;top:96px}
 .sv-pronto{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--sombra)}
 .sv-pronto p{color:var(--fg-2);margin:8px 0 18px}
+.sv-cifras{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--linea-o);border-radius:var(--r);overflow:hidden}
+@media(min-width:760px){.sv-cifras{grid-template-columns:repeat(4,1fr)}}
+.sv-cifras div{background:var(--noche-2);padding:26px 22px}
+.sv-cifras b{display:block;font-size:clamp(36px,4.4vw,52px);font-weight:750;letter-spacing:-.04em;line-height:1;background:var(--metal-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sv-cifras span{display:block;margin-top:8px;font-size:14.5px;color:var(--claro-2)}
+.sv-pasos{display:grid;gap:18px;margin-top:28px}
+@media(min-width:900px){.sv-pasos{grid-template-columns:repeat(3,1fr)}}
+.sv-paso{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra);display:flex;flex-direction:column}
+.sv-paso figure{aspect-ratio:16/10;background:var(--bg-2);overflow:hidden}
+.sv-paso img{width:100%;height:100%;object-fit:cover;display:block}
+.sv-paso div{padding:20px 22px 24px}
+.sv-paso small{font-size:13px;font-weight:700;color:var(--morado)}
+.sv-paso h3{font-size:19px;letter-spacing:-.02em;margin:6px 0 6px}
+.sv-paso p{color:var(--fg-2);font-size:15px}
 .sv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin-top:28px}
 .sv-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--sombra)}
 .sv-card h3{font-size:18px;letter-spacing:-.02em;margin-bottom:8px}.sv-card p{color:var(--fg-2);font-size:15.5px}
@@ -323,68 +386,142 @@ async function paginaVenta(env, req, url) {
 .sv-tabla th,.sv-tabla td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 .sv-tabla thead th{font-size:13px;color:var(--fg-2);font-weight:650}
 .sv-tabla td:last-child{color:var(--fg-2)}
-@media(max-width:640px){.sv-tabla td:last-child,.sv-tabla thead th:last-child{display:none}}
+.sv-dot{display:inline-block;width:7px;height:16px;border-radius:2px;transform:skewX(var(--skew));margin-right:10px;vertical-align:-2px}
+.s-morado{background:var(--morado)}.s-oro{background:var(--oro)}.s-verde{background:var(--verde)}.s-tinta{background:var(--fg)}
+@media(max-width:640px){.sv-tabla.sec td:last-child,.sv-tabla.sec thead th:last-child{display:none}}
+.sv-comp th{font-weight:600}.sv-comp td{text-align:center;width:120px}.sv-comp thead th:not(:first-child){text-align:center}
+.sv-comp thead th:nth-child(2){color:var(--morado)}
+.sv-si svg{width:20px;height:20px;color:var(--verde);display:inline-block}
+.sv-no{color:var(--fg-3);font-weight:700}
 .sv-ej{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,3vw,32px);margin-top:24px;box-shadow:var(--sombra)}
-.sv-ej h3{font-size:19px;letter-spacing:-.02em;line-height:1.4}
-.sv-ej ol{display:flex;flex-direction:column;gap:8px;margin:16px 0}
-.sv-ej li{display:flex;gap:10px;align-items:center;padding:11px 14px;border:1px solid var(--line);border-radius:14px}
-.sv-ej li span{width:26px;height:26px;border-radius:8px;background:var(--bg-2);display:grid;place-items:center;font-size:13px;font-weight:750;flex:none}
-.sv-ej details{margin-top:10px;border-radius:16px;padding:14px 16px}
-.sv-ej details summary{cursor:pointer;font-weight:650}
-.sv-ej .pista{background:#fbf6ea;border:1px solid #eedfb8}.sv-ej .sol{background:var(--verde-suave);border:1px solid #c6e5d2}
-.sv-ej details p,.sv-ej details ol{margin-top:8px;font-size:15px}
-.sv-ej details ol{list-style:decimal;padding-left:20px;display:block}.sv-ej details ol li{display:list-item;border:0;padding:3px 0}
-.sv-ya{margin-top:40px;padding:22px;border-radius:var(--r);border:1px dashed var(--line-2);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.sv-ej .sv-tema{display:inline-block;font-size:12.5px;font-weight:650;color:var(--morado);background:var(--morado-suave);padding:3px 10px;border-radius:999px}
+.sv-ej h3{font-size:19px;letter-spacing:-.02em;line-height:1.4;margin-top:12px}
+.sv-ops{display:flex;flex-direction:column;gap:9px;margin:16px 0 0}
+.sv-ops button{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:13px 15px;border:1.5px solid var(--line);border-radius:15px;background:var(--card);font:inherit;font-size:16px;cursor:pointer;transition:border-color .15s,background .15s}
+.sv-ops button:hover:not(:disabled){border-color:var(--fg)}
+.sv-ops button span{width:28px;height:28px;border-radius:9px;background:var(--bg-2);display:grid;place-items:center;font-size:13px;font-weight:750;flex:none}
+.sv-ops button.sv-x{opacity:.5;border-style:dashed;text-decoration:line-through}
+.sv-ops button.sv-ok{border-color:var(--verde);background:var(--verde-suave);opacity:1}.sv-ops button.sv-ok span{background:var(--verde);color:#fff}
+.sv-ops button.sv-mal{border-color:#e9b4b0;background:#fdf1f0}
+.sv-ops button:disabled{cursor:default}
+.sv-tutor{margin-top:16px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);font-size:15.5px;line-height:1.55}
+.sv-tutor > b{display:block;margin-bottom:4px}.sv-tutor p b{display:inline}
+.sv-tutor.pista{background:#fbf6ea;border-color:#eedfb8}.sv-tutor.bien{background:var(--verde-suave);border-color:#c6e5d2}.sv-tutor.sol{background:var(--morado-suave);border-color:#e3d4ea}
+.sv-tutor ol{list-style:decimal;padding-left:20px;margin:8px 0;display:flex;flex-direction:column;gap:4px}
+.sv-tutor small{display:block;margin-top:6px;color:var(--fg-2);font-size:13px}
+.sv-ej-cta{margin-top:10px;font-weight:650}.sv-ej-cta a{color:var(--morado)}
+.sv-regalo{display:grid;gap:28px 56px;align-items:center}
+@media(min-width:900px){.sv-regalo{grid-template-columns:1fr 1fr}}
+.sv-regalo img{width:100%;height:auto;border-radius:var(--r);display:block}
+.sv-regalo ul{display:flex;flex-direction:column;gap:10px;margin:20px 0 26px}
+.sv-regalo li{display:flex;gap:10px;align-items:flex-start;color:var(--fg-2);font-size:16px}
+.sv-regalo li svg{width:18px;height:18px;color:var(--verde);flex:none;margin-top:3px}
+.sv-final{text-align:center}
+.sv-final .h2{max-width:760px;margin:0 auto}
+.sv-final p{margin:16px auto 28px;max-width:560px}
+.sv-final .botones{justify-content:center}
+.sv-dos{display:grid;gap:28px 64px;align-items:start}
+@media(min-width:960px){.sv-dos{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}.sv-pegado{position:sticky;top:110px}}
+.sv-dos .sv-ej{margin-top:0}
+.sv-mini-l{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.sv-mini-l li{display:flex;gap:10px;align-items:flex-start;font-size:16px;color:var(--fg-2)}.sv-mini-l li b{color:var(--fg)}
+.sv-mini-l svg{width:18px;height:18px;color:var(--verde);flex:none;margin-top:3px}
+.sv-dos .t-faq{margin-top:0}
+.sv-disc{padding:28px 0 56px}
+.sv-ya{margin-top:28px;padding:22px;border-radius:var(--r);border:1px dashed var(--line-2);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
 .sv-ya p{color:var(--fg-2);font-size:15.5px;max-width:520px}
 </style>`,
     cuerpo: `
 <section class="sv-hero"><div class="marco sv-hero-g">
   <div>
     <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / Preparación para exámenes</nav>
-    <span class="etiqueta" style="margin-top:14px">Prueba de Aptitud Académica · College Board</span>
-    <h1 class="t-h1" style="margin-top:14px">Simulador PAA en línea: practica como si fuera el día del examen</h1>
+    <div class="sv-chips"><span class="sv-chip">Nuevo · ${banco} reactivos originales</span><span class="sv-chip oro"><span aria-hidden="true">🎁</span> También para regalar</span></div>
+    <h1 class="t-h1">Simulador PAA en línea: practica como si fuera el día del examen</h1>
     <p class="t-lead">Preguntas tipo PAA de Lectura, Redacción, Matemáticas e Inglés con el mismo ritmo de tiempo que el examen real. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice exactamente qué reforzar.</p>
     <ul class="sv-sellos"><li>${CHECK}${total} reactivos por simulacro</li><li>${CHECK}${min} minutos con cronómetro</li><li>${CHECK}Puntaje estimado 200–800</li><li>${CHECK}En celular o computadora</li></ul>
-    <div class="sv-portada"><img src="/tienda/img/portadas/simulador-paa.png" alt="Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación" width="1600" height="1200" fetchpriority="high"></div>
+    <div class="sv-portada"><img src="/tienda/img/portadas/simulador-paa-v2.png" alt="Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación" width="1600" height="1200" fetchpriority="high"></div>
+    <div class="sv-links"><a class="btn blanco chico" href="#probar">Probar un reactivo gratis ${FLECHA}</a>${prod ? `<a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a>` : ''}</div>
   </div>
   <aside class="sv-compra" id="comprar" aria-label="Comprar el simulador">
-    ${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del Simulador PAA.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
+    ${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del Simulador PAA.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
   </aside>
 </div></section>
 
-<section class="t-sec suave"><div class="marco">
+<section class="t-sec oscura"><div class="marco">
+  <div class="cab"><span class="etiqueta">Un banco que no se acaba en dos intentos</span><h2 class="h2">Cada simulacro es <span class="metal">diferente</span></h2>
+  <p class="lead">Cada simulacro completo prioriza preguntas que todavía no has visto: tus primeros cinco simulacros traen reactivos prácticamente distintos.</p></div>
+  <div class="sv-cifras"><div><b class="num">${banco}</b><span>reactivos originales</span></div><div><b class="num">${lecturas}</b><span>lecturas en español e inglés</span></div><div><b class="num">${temas}</b><span>temas medidos en tu reporte</span></div><div><b class="num">5</b><span>simulacros sin repetir preguntas</span></div></div>
+</div></section>
+
+<section class="t-sec"><div class="marco">
+  <div class="cab"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Practica, aprende de cada error y mide tu avance</h2></div>
+  <div class="sv-pasos">
+    <article class="sv-paso"><figure><img src="/tienda/img/portadas/simulador-paa-v2.png" alt="" loading="lazy" width="1600" height="1200"></figure><div><small>01 · Con cronómetro</small><h3>Contesta como en la PAA</h3><p>Las cuatro secciones con el mismo tiempo por pregunta que el examen real. El reloj se pausa mientras lees las explicaciones.</p></div></article>
+    <article class="sv-paso"><figure><img src="/tienda/img/portadas/simulador-paa-og.png" alt="" loading="lazy" width="1200" height="630"></figure><div><small>02 · Tutor de dos intentos</small><h3>Si fallas, no te da la respuesta</h3><p>Te da una pista de método para que lo intentes otra vez. En el segundo intento ves la solución paso a paso y la regla detrás.</p></div></article>
+    <article class="sv-paso"><figure><img src="/tienda/img/portadas/simulador-paa-reporte.png" alt="Reporte del simulador con medidor de preparación, puntaje por sección y aciertos por tema" loading="lazy" width="1600" height="900"></figure><div><small>03 · Reporte</small><h3>Sabes exactamente qué reforzar</h3><p>Puntaje estimado por sección, distancia a tu meta, tus fortalezas y los temas que más puntos te restan, con práctica dirigida.</p></div></article>
+  </div>
+</div></section>
+
+<section class="t-sec suave" id="probar"><div class="marco sv-dos">
+  <div class="sv-dos-t">
+    <span class="etiqueta">Pruébalo gratis</span><h2 class="h2" style="margin-top:14px">Contesta un reactivo con el tutor</h2>
+    <p class="t-lead" style="margin-top:14px">Elige una opción. Si fallas, verás cómo el tutor te guía sin darte la respuesta, igual que en cada uno de los ${banco} reactivos del simulador.</p>
+    <ul class="sv-mini-l"><li>${CHECK}<span><b>1.er error:</b> una pista de método.</span></li><li>${CHECK}<span><b>2.º intento:</b> la solución paso a paso.</span></li><li>${CHECK}<span><b>Siempre:</b> la regla teórica detrás.</span></li></ul>
+  </div>
+  <div class="sv-ej" id="sv-ej">
+    <span class="sv-tema">Redacción · Conectores</span>
+    <h3>${esc(ej.enunciado)}</h3>
+    <div class="sv-ops">${ej.opciones.map((o, i) => `<button type="button" data-o="${i}"><span>${'ABCD'[i]}</span>${esc(o)}</button>`).join('')}</div>
+    <div class="sv-tutor" id="sv-tutor" role="status" aria-live="polite" hidden></div>
+    <noscript><p class="t-nota" style="margin-top:14px">Respuesta: ${'ABCD'[ej.correcta]}) ${esc(ej.opciones[ej.correcta])}. ${sinLetras(ej.regla)}</p></noscript>
+  </div>
+</div></section>
+
+<section class="t-sec"><div class="marco">
   <div class="cab"><span class="etiqueta">Qué incluye</span><h2 class="h2">Más que un examen de práctica</h2></div>
   <div class="sv-grid">
     <div class="sv-card"><h3>2 simulacros completos</h3><p>Las cuatro secciones con cronómetro, como en la PAA. ¿Quieres más? Cada simulacro adicional cuesta $50.</p></div>
-    <div class="sv-card"><h3>Tutor de dos intentos</h3><p>Primer error: una pista de método, sin darte la respuesta. Segundo intento: la solución paso a paso y la regla detrás.</p></div>
-    <div class="sv-card"><h3>Medidor de preparación</h3><p>Puntaje estimado por sección en escala 200–800, distancia a tu meta y nivel de confianza basado en tus datos.</p></div>
     <div class="sv-card"><h3>Práctica ilimitada</h3><p>Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.</p></div>
+    <div class="sv-card"><h3>Medidor de preparación</h3><p>Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos puntos de tu meta.</p></div>
+    <div class="sv-card"><h3>Historial en tu cuenta</h3><p>Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.</p></div>
   </div>
+  <table class="sv-tabla sv-comp" style="margin-top:40px"><thead><tr><th scope="col">Lo que necesitas para prepararte</th><th scope="col">Simulador Vorka</th><th scope="col">Guía en PDF</th></tr></thead><tbody>${comparar}</tbody></table>
 </div></section>
 
-<section class="t-sec"><div class="marco t-estrecho">
-  <span class="etiqueta">Estructura</span><h2 class="h2">Las 4 secciones del simulador</h2>
-  <p class="t-lead" style="margin-top:14px">Versión compacta de la PAA: menos preguntas, pero con el mismo tiempo por pregunta que el examen real para que practiques con la misma exigencia.</p>
-  <table class="sv-tabla"><thead><tr><th scope="col">Sección</th><th scope="col">Reactivos</th><th scope="col">Tiempo</th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>
+<section class="t-sec suave"><div class="marco">
+  <div class="cab par"><div><span class="etiqueta">Estructura</span><h2 class="h2" style="margin-top:14px">Las 4 secciones del simulador</h2></div>
+  <p class="lead">Versión compacta de la PAA: menos preguntas, pero con el mismo tiempo por pregunta que el examen real para que practiques con la misma exigencia.</p></div>
+  <table class="sv-tabla sec"><thead><tr><th scope="col">Sección</th><th scope="col">Reactivos</th><th scope="col">Tiempo</th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>
 </div></section>
 
-<section class="t-sec suave"><div class="marco t-estrecho">
-  <span class="etiqueta">Pruébalo gratis</span><h2 class="h2">Un reactivo de ejemplo</h2>
-  <div class="sv-ej">
-    <h3>${esc(ej.enunciado)}</h3>
-    <ol>${opciones}</ol>
-    <details class="pista"><summary>Fallé: ver la pista del tutor</summary><p>${esc(ej.pista)}</p></details>
-    <details class="sol"><summary>Ver la solución paso a paso</summary><p><b>Respuesta: ${'ABCD'[ej.correcta]}) ${esc(ej.opciones[ej.correcta])}</b></p><ol>${ej.pasos.map(x => `<li>${esc(x.replace(/\{([A-D])\}/g, '$1'))}</li>`).join('')}</ol><p><b>La regla:</b> ${esc(ej.regla)}</p></details>
+${prod ? `<section class="t-sec"><div class="marco sv-regalo">
+  <img src="/tienda/img/portadas/simulador-paa-regalo.png" alt="Tarjeta de regalo del Simulador PAA con mensaje personalizado" loading="lazy" width="1200" height="900">
+  <div>
+    <span class="etiqueta">Para regalar</span><h2 class="h2" style="margin-top:14px">Regálalo a quien va a presentar</h2>
+    <ul>
+      <li>${CHECK}<span>Elige <b>Para regalar</b> y cuántos: te llega una liga por cada persona, con tu mensaje.</span></li>
+      <li>${CHECK}<span>Cada liga funciona <b>una sola vez</b>: al abrirla, el acceso queda a nombre de quien la recibe y nadie más puede usarla.</span></li>
+      <li>${CHECK}<span>Ideal para hijos, sobrinos, amigos o todo un grupo de estudiantes.</span></li>
+    </ul>
+    <a class="btn tinta" href="?regalo=1#comprar">Regalar el simulador ${FLECHA}</a>
   </div>
-</div></section>
+</div></section>` : ''}
 
-<section class="t-sec"><div class="marco t-estrecho">
-  <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2 t-h2-sec">Sobre la PAA y el simulador</h2>
+<section class="t-sec suave"><div class="marco sv-dos">
+  <div class="sv-dos-t sv-pegado">
+    <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" style="margin-top:14px">Sobre la PAA y el simulador</h2>
+    <div class="sv-ya"><p><b>¿Ya lo compraste o te lo regalaron?</b> Entra con el botón de tu correo. Si cambiaste de dispositivo o no encuentras el correo, te mandamos un enlace nuevo.</p><a class="btn blanco chico" href="/descargas/reenviar">Recibir mi enlace ${FLECHA}</a></div>
+  </div>
   <div class="t-faq">${FAQ_PAA.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
-  ${prod ? `<div class="botones t-faq-cta"><a class="btn tinta" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a></div>` : ''}
-  <div class="sv-ya"><p><b>¿Ya lo compraste?</b> Entra con el botón de tu correo de compra. Si cambiaste de dispositivo o no encuentras el correo, te mandamos un enlace nuevo.</p><a class="btn blanco chico" href="/descargas/reenviar">Recibir mi enlace ${FLECHA}</a></div>
-  <p class="t-nota" style="margin-top:24px">Simulador de práctica de Vorka México con reactivos originales. No está afiliado al College Board; PAA es una prueba del College Board. El puntaje es una estimación para orientar tu estudio.</p>
 </div></section>
+
+${prod ? `<section class="t-sec oscura sv-final"><div class="marco">
+  <span class="etiqueta">Tu próximo paso</span>
+  <h2 class="h2" style="margin-top:14px">Llega al examen sabiendo <span class="metal">qué esperar</span></h2>
+  <p class="lead">Haz tu primer simulacro hoy y descubre en menos de una hora en qué temas estás listo y cuáles te faltan.</p>
+  <div class="botones"><a class="btn plata" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="btn vidrio" href="?regalo=1#comprar">🎁 Regalarlo</a></div>
+</div></section>` : ''}
+<section class="sv-disc"><div class="marco"><p class="t-nota">Simulador de práctica de Vorka México con reactivos originales. No está afiliado al College Board; PAA es una prueba del College Board. El puntaje es una estimación para orientar tu estudio.</p></div></section>
 ${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>` : ''}`,
   });
 }

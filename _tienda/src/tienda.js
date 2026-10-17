@@ -67,6 +67,7 @@ export function seccionesCatalogo(productos) {
 }
 // Producto que abre una app (Simulador PAA) en lugar de entregar archivos
 const esAcceso = p => !!p.contenido?.acceso;
+const enlace = p => p.contenido?.acceso?.ruta || `/tienda/${p.slug}/`;
 
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
@@ -74,7 +75,7 @@ export async function paginaCatalogo(env, req, url) {
   const [destacado] = productos;
   const secciones = seccionesCatalogo(productos);
   const tarjeta = (p, i) => `
-    <a class="t-prod rv" style="--d:${(i % 3) * 0.06}s" href="/tienda/${esc(p.slug)}/">
+    <a class="t-prod rv" style="--d:${(i % 3) * 0.06}s" href="${esc(enlace(p))}">
       <div class="t-prod-img">${portada(p)}</div>
       <div class="t-prod-t">
         <span class="t-cat">${esAcceso(p) ? 'Acceso en línea' : 'Descarga digital'}</span>
@@ -96,14 +97,14 @@ export async function paginaCatalogo(env, req, url) {
     <span class="etiqueta">Tienda Vorka México</span>
     <h1 class="h1 t-inicio-h1">Herramientas para <span class="metal">pasar a la acción.</span></h1>
     <p class="lead">Simuladores de examen, kits y plantillas que usamos con nuestros estudiantes y clientes. Cómpralos hoy y empieza a usarlos en minutos, a tu ritmo.</p>
-    <div class="botones"><a class="btn tinta" href="${destacado ? `/tienda/${esc(destacado.slug)}/` : '#productos'}">${destacado ? 'Ver el destacado' : 'Ver productos'} ${FLECHA}</a>${productos.length > 1 ? `<a class="btn blanco" href="#productos">Todo el catálogo</a>` : ''}</div>
+    <div class="botones"><a class="btn tinta" href="${destacado ? esc(enlace(destacado)) : '#productos'}">${destacado ? 'Ver el destacado' : 'Ver productos'} ${FLECHA}</a>${productos.length > 1 ? `<a class="btn blanco" href="#productos">Todo el catálogo</a>` : ''}</div>
     <ul class="t-sellos" aria-label="Por qué comprar aquí">
       <li>${CHECK}<span>Entrega inmediata</span></li>
       <li>${CHECK}<span>Tarjeta, OXXO o SPEI</span></li>
       <li>${CHECK}<span>Soporte real</span></li>
     </ul>
   </div>
-  ${destacado ? `<a class="t-destacado" href="/tienda/${esc(destacado.slug)}/" aria-label="${esc(destacado.nombre)}">
+  ${destacado ? `<a class="t-destacado" href="${esc(enlace(destacado))}" aria-label="${esc(destacado.nombre)}">
     <span class="t-destacado-sello">Destacado</span>
     <div class="t-destacado-img">${portada(destacado)}</div>
     <div class="t-destacado-t">
@@ -114,6 +115,16 @@ export async function paginaCatalogo(env, req, url) {
     </div>
   </a>` : ''}
 </div></section>
+${destacado?.contenido?.regalable ? `<section class="t-gancho"><div class="marco t-gancho-g">
+  <div>
+    <span class="etiqueta">Nuevo · Producto estrella</span>
+    <h2 class="h2">${esc(destacado.contenido.titular || destacado.nombre)}</h2>
+    <p class="lead">${esc(destacado.descripcion_corta)}</p>
+    <ul class="t-gancho-l">${(destacado.contenido.incluye || []).slice(0, 3).map(x => `<li>${CHECK}<span>${esc(x.titulo)}</span></li>`).join('')}</ul>
+    <div class="botones"><a class="btn plata" href="${esc(enlace(destacado))}">Conócelo ${FLECHA}</a><a class="btn vidrio" href="${esc(enlace(destacado))}?regalo=1#comprar">🎁 Regalarlo</a></div>
+  </div>
+  <a class="t-gancho-img" href="${esc(enlace(destacado))}" tabindex="-1" aria-hidden="true"><img src="/tienda/img/portadas/simulador-paa-reporte.png" alt="" loading="lazy" width="1600" height="900"></a>
+</div></section>` : ''}
 <section class="t-sec t-como suave"><div class="marco">
   <ol class="t-como-g">
     <li class="rv"><span class="num">01</span><b>Elige tu herramienta</b><p>Cada producto explica qué incluye y para quién es, antes de pagar.</p></li>
@@ -135,26 +146,53 @@ export async function paginaCatalogo(env, req, url) {
 }
 
 // Formulario de compra: funciona sin JavaScript (POST normal → 303 a Stripe) y con JavaScript (fetch + errores en línea)
-export const formCompra = (p, { error = '', ref = '' } = {}) => `
-<form class="t-form t-compra" id="form-compra" method="post" action="/api/checkout" novalidate>
+// Formulario de compra. Los productos con contenido.regalable muestran "Para mí / Para regalar":
+// al regalar se eligen cuántos (una liga de un solo uso por unidad), para quién y un mensaje.
+// Sin JavaScript también funciona (el bloque de regalo se muestra con :has() y el servidor valida).
+export const formCompra = (p, { error = '', ref = '', regalo = false } = {}) => {
+  const regalable = !!p.contenido?.regalable;
+  return `
+<form class="t-form t-compra${regalable ? ' t-regalable' : ''}" id="form-compra" method="post" action="/api/checkout" novalidate data-unidad="${p.precio_centavos}">
   <input type="hidden" name="slug" value="${esc(p.slug)}">
   ${ref ? `<input type="hidden" name="ref" value="${esc(ref)}">` : ''}
-  <div class="t-precio"><b class="num">${precio(p)}</b><span>Pago único · ${esAcceso(p) ? 'acceso inmediato por un año' : 'descarga inmediata'}</span></div>
+  ${regalable ? `<div class="t-modo" role="radiogroup" aria-label="¿Para quién es?">
+    <label><input type="radio" name="para_quien" value="yo"${regalo ? '' : ' checked'}><span>Para mí</span></label>
+    <label><input type="radio" name="para_quien" value="regalo"${regalo ? ' checked' : ''}><span>🎁 Para regalar</span></label>
+  </div>
+  <input type="checkbox" name="regalo" value="on" id="es-regalo" hidden${regalo ? ' checked' : ''}>` : ''}
+  <div class="t-precio"><b class="num" id="precio-total">${precio(p)}</b><span id="precio-nota">Pago único · ${esAcceso(p) ? 'acceso inmediato por un año' : 'descarga inmediata'}</span></div>
+  ${regalable ? `<fieldset class="t-regalo-campos" id="regalo-campos">
+    <legend class="sr">Datos del regalo</legend>
+    <div class="t-cant"><span><b>¿Cuántos regalas?</b><small>Una liga por persona; cada una funciona una sola vez.</small></span>
+      <div class="t-cant-c"><button type="button" data-cant="-1" aria-label="Uno menos">−</button><input id="cantidad" name="cantidad" type="number" inputmode="numeric" min="1" max="10" value="1" aria-label="Cantidad de regalos"><button type="button" data-cant="1" aria-label="Uno más">+</button></div></div>
+    <div class="t-campo"><label for="regalo_para">¿Para quién es? <small>(opcional)</small></label><input id="regalo_para" name="regalo_para" type="text" maxlength="80" placeholder="Ej. Sofía"></div>
+    <div class="t-campo"><label for="regalo_mensaje">Mensaje en la tarjeta <small>(opcional)</small></label><textarea id="regalo_mensaje" name="regalo_mensaje" maxlength="280" rows="3" placeholder="¡Mucho éxito en tu examen!"></textarea></div>
+  </fieldset>` : ''}
   <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
-  <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">${esAcceso(p) ? 'Aquí te llega tu acceso. Úsalo también para entrar después.' : 'Aquí te llegan tus archivos.'}</small></div>
+  <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda" id="ayuda-email">${esAcceso(p) ? 'Aquí te llega tu acceso. Úsalo también para entrar después.' : 'Aquí te llegan tus archivos.'}</small>${regalable ? '<small class="t-ayuda t-ayuda-regalo">Aquí te llegan las ligas de regalo para que las compartas.</small>' : ''}</div>
   <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos y condiciones</a> y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
   <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
-  <button class="btn tinta" type="submit" id="btn-compra">Comprar ahora ${FLECHA}</button>
+  <button class="btn tinta" type="submit" id="btn-compra"><span class="t-btn-yo">Comprar ahora</span>${regalable ? '<span class="t-btn-regalo">Comprar regalo</span>' : ''} ${FLECHA}</button>
   <p class="t-pago">Tarjeta · OXXO · SPEI &nbsp;·&nbsp; Pago seguro con Stripe</p>
 </form>`;
+};
 
 export const SCRIPT_COMPRA = `(function(){
   var f=document.getElementById('form-compra'); if(!f||!window.fetch) return;
+  // Para mí / Para regalar: cantidad, precio total y textos
+  var cant=document.getElementById('cantidad'), nota=document.getElementById('precio-nota'), total=document.getElementById('precio-total'), regalo=document.getElementById('es-regalo'), unidad=+f.dataset.unidad;
+  function pesos(c){ return '$'+(c/100).toLocaleString('es-MX')+' MXN'; }
+  function pinta(){ var esR=regalo&&regalo.checked, n=cant?Math.min(10,Math.max(1,parseInt(cant.value,10)||1)):1; if(cant) cant.value=n; if(total) total.textContent=pesos(unidad*(esR?n:1)); if(nota){ if(!nota.dataset.base) nota.dataset.base=nota.textContent; nota.textContent=esR?(n>1?n+' ligas de regalo':'1 liga de regalo')+' · cada una da un año de acceso':nota.dataset.base; } f.classList.toggle('es-regalo',!!esR); }
+  f.querySelectorAll('input[name=para_quien]').forEach(function(r){ r.addEventListener('change',function(){ if(regalo) regalo.checked=(r.value==='regalo'&&r.checked); pinta(); }); });
+  f.querySelectorAll('[data-cant]').forEach(function(b){ b.addEventListener('click',function(){ cant.value=(parseInt(cant.value,10)||1)+(+b.dataset.cant); pinta(); }); });
+  if(cant) cant.addEventListener('input',pinta);
+  pinta();
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    var d={}; new FormData(f).forEach(function(v,k){d[k]=v;}); d.terminos=!!f.terminos.checked;
+    var d={}; new FormData(f).forEach(function(v,k){d[k]=v;}); d.terminos=!!f.terminos.checked; delete d.para_quien;
+    if(regalo&&regalo.checked){ d.regalo=true; d.cantidad=+cant.value||1; } else { delete d.regalo; delete d.cantidad; delete d.regalo_para; delete d.regalo_mensaje; }
     if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Escribe tu nombre.'); }
     if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Escribe un correo válido.'); }
     if(!d.terminos){ return mostrar('Debes aceptar los términos y el aviso de privacidad.'); }
@@ -217,7 +255,7 @@ export async function paginaProducto(env, req, url, slug) {
     ${c.incluye?.length ? `<div class="t-bloque rv"><h2 class="t-h2">Qué incluye</h2>${lista(c.incluye)}</div>` : ''}
   </div>
   <aside class="t-hero-compra" id="comprar" aria-label="Comprar">
-    ${formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '' })}
+    ${formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' })}
   </aside>
 </div></section>
 ${pasos.length ? `<section class="t-sec suave"><div class="marco">

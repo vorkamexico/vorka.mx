@@ -11,8 +11,8 @@ beforeEach(() => {
 });
 
 describe('modelo de datos', () => {
-  it('el seed trae el primer producto a $279 MXN', async () => {
-    const [p] = await listarProductos(env);
+  it('el seed trae el kit De Idea a Proyecto a $279 MXN', async () => {
+    const p = (await listarProductos(env)).find(x => x.slug === 'de-idea-a-proyecto');
     expect(p.slug).toBe('de-idea-a-proyecto');
     expect(p.precio_centavos).toBe(27900);
     expect(p.r2_keys).toHaveLength(3);

@@ -90,7 +90,7 @@ describe('productos desde el panel (sin código)', () => {
   });
 
   it('portada: se sube, se sirve en /tienda/img y solo acepta imágenes', async () => {
-    const p = (await A.productos())[0];
+    const p = (await A.productos()).find(x => x.slug === 'de-idea-a-proyecto');
     await expect(A.subirPortada(p.id, { tipo: 'application/pdf', cuerpo: new Blob(['x']).stream(), tamano: 1 })).rejects.toThrow(/JPG, PNG o WebP/);
     const q = await A.subirPortada(p.id, { tipo: 'image/png', cuerpo: new Blob(['png']).stream(), tamano: 3 });
     expect(q.imagen).toMatch(/^\/tienda\/img\/portadas\/de-idea-a-proyecto-[a-z0-9]+\.png$/);
@@ -103,7 +103,7 @@ describe('productos desde el panel (sin código)', () => {
 
   it('borrar solo productos sin órdenes', async () => {
     await pagar();
-    const p = (await A.productos())[0];
+    const p = (await A.productos()).find(x => x.slug === 'de-idea-a-proyecto');
     expect(p.vendidos).toBe(1);
     await expect(A.borrarProducto(p.id)).rejects.toThrow(/desactívalo/);
     const n = await A.guardarProducto({ nombre: 'Borrable', precio: 1 });

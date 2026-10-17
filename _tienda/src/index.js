@@ -16,6 +16,7 @@ import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
+import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -51,6 +52,10 @@ export class Admin extends WorkerEntrypoint {
   decidirProducto(id, d) { return admin.decidirProducto(this.env, id, d); }
   transferencias(f) { return admin.transferencias(this.env, f); }
   archivoRevision(id, key) { return admin.archivoRevision(this.env, id, key); }
+  // Cortesías: accesos gratis con ligas de un solo uso (Simulador PAA y demás productos regalables)
+  cortesias() { return cortesias(this.env); }
+  crearCortesias(d) { return crearCortesias(this.env, d); }
+  revocarCortesias(id) { return revocarCortesias(this.env, id); }
 }
 
 export default {
@@ -69,6 +74,9 @@ export default {
       const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
       if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
       if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);
+      const reg = url.pathname.match(/^\/tienda\/regalo\/([^/]{1,100})\/?$/);
+      if (reg && (request.method === 'GET' || request.method === 'HEAD')) return await paginaRegalo(env, reg[1]);
+      if (url.pathname === '/api/regalo/canjear' && request.method === 'POST') return await canjearRegalo(request, env);
       const ret = url.pathname.match(/^\/tienda\/retomar\/([0-9a-f-]{36})\/?$/);
       if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
       if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {

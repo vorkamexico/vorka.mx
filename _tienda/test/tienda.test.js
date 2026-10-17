@@ -22,9 +22,10 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/tienda/">');
   });
 
-  it('la portada destaca el primer producto del orden del catálogo y explica cómo comprar', async () => {
+  it('la portada destaca el primer producto del orden del catálogo (el Simulador PAA) y explica cómo comprar', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toMatch(/class="t-destacado" href="\/tienda\/de-idea-a-proyecto\/"/);
+    expect(html).toMatch(/class="t-destacado" href="\/simulador-paa\/"/);
+    expect(html).toContain('class="t-gancho"');
     expect(html).toContain('Destacado');
     expect(html).toContain('Recíbelo al momento');
     expect(html).toContain('id="productos"');
