@@ -32,27 +32,53 @@ main.fc { overflow-x: clip; }
 .fc-marca { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 26px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; }
 .fc-marca .lobo { width: 30px; }
 
-/* ---------- Portada ---------- */
-.fc-hero { position: relative; isolation: isolate; overflow: hidden; background: var(--tinta); color: #fff; padding: clamp(128px, 14vw, 176px) 0 clamp(64px, 8vw, 104px); }
-.fc-hero .foto { position: absolute; inset: 0; z-index: -2; }
-.fc-hero .foto img { width: 100%; height: 100%; object-fit: cover; object-position: var(--foco, 50% 60%); opacity: .4; }
-.fc-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(14, 15, 20, .88) 0%, rgba(14, 15, 20, .55) 60%, rgba(14, 15, 20, .3) 100%); }
-.fc-hero-in { display: grid; gap: 26px; justify-items: start; }
-.lockup { display: flex; align-items: center; gap: clamp(14px, 2vw, 22px); }
-.lockup .lobo { width: clamp(64px, 8vw, 96px); flex: none; color: #fff; }
-.lockup h1 { font-size: clamp(56px, 9vw, 120px); line-height: .85; color: #fff; white-space: nowrap; }
-.lockup h1 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.fc-hero .lead { color: rgba(255, 255, 255, .82); font-size: clamp(18px, 1.7vw, 22px); max-width: 34ch; }
+/* ---------- Portada: escudo de club sobre cancha azul ---------- */
+.fc-hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; padding: clamp(124px, 13vw, 168px) 0 clamp(72px, 9vw, 120px);
+  background: radial-gradient(120% 90% at 78% 40%, #2A4BFF 0%, var(--azul) 45%, #061BB0 100%); }
+.fc-hero .cancha { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; color: rgba(255, 255, 255, .08); }
+.fc-hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(32px, 6vw, 88px); align-items: center; }
+.fc-hero-txt { display: grid; gap: 24px; justify-items: start; min-width: 0; }
+.chip-vivo { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 12px; border-radius: 999px; background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .22); font-size: 14px; font-weight: 600; }
+.chip-vivo i { width: 8px; height: 8px; border-radius: 50%; background: #3BE37A; box-shadow: 0 0 0 3px rgba(59, 227, 122, .25); }
+.fc-hero h1 { font-size: clamp(56px, 7.6vw, 112px); line-height: .96; color: #fff; max-width: 9ch; }
+.fc-hero h1 em { font-style: normal; color: var(--azul); background: #fff; padding: 0 .12em; display: inline-block; transform: rotate(-2deg); line-height: .95; margin: .02em 0 .1em; }
+.fc-hero h1 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.fc-hero .lead { color: rgba(255, 255, 255, .86); font-size: clamp(18px, 1.6vw, 21px); max-width: 40ch; }
 .fc-hero .lead b { color: #fff; }
-.datos-hero { display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 16px; font-weight: 600; color: rgba(255, 255, 255, .9); }
-.datos-hero li { display: flex; align-items: center; gap: 9px; }
-.datos-hero svg { width: 20px; height: 20px; flex: none; color: #8FA0FF; }
+.fc-hero .btn.blanco { background: #fff; color: var(--azul); box-shadow: 0 14px 30px -14px rgba(0, 0, 0, .5); }
+.fc-hero .btn.blanco:hover { background: #EEF1FF; }
+
+.escudo-zona { display: grid; justify-items: center; gap: 22px; min-width: 0; }
+.escudo { position: relative; width: clamp(230px, 27vw, 360px); aspect-ratio: 300 / 360; filter: drop-shadow(0 30px 40px rgba(2, 10, 80, .45)); }
+.escudo-forma { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ef-fondo { fill: var(--tinta); }
+.ef-linea { fill: none; stroke: #fff; stroke-width: 3; opacity: .9; }
+.escudo .lobo { position: absolute; left: 50%; top: 15%; width: 50%; transform: translateX(-50%); color: #fff; }
+.escudo-nombre { position: absolute; left: 0; right: 0; top: 64%; text-align: center; font-size: clamp(34px, 4.1vw, 54px); line-height: 1; color: #fff; letter-spacing: .03em; }
+.escudo-ciudad { position: absolute; left: 0; right: 0; top: 77.5%; text-align: center; font-size: clamp(10px, .9vw, 12px); font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #8FA0FF; }
+.horario { display: grid; grid-template-columns: 1fr 1fr; width: min(100%, 420px); border-radius: 18px; background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .2); }
+.horario li { padding: 14px 18px; display: grid; gap: 2px; }
+.horario li + li { border-left: 1px solid rgba(255, 255, 255, .2); }
+.horario b { font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.05; letter-spacing: .02em; }
+.horario span { font-size: 13px; color: rgba(255, 255, 255, .75); line-height: 1.3; }
 @media (prefers-reduced-motion: no-preference) {
-  .js .fc-hero-in > * { animation: entra-fc .7s var(--ease) both; }
-  .js .fc-hero-in > :nth-child(2) { animation-delay: .06s; } .js .fc-hero-in > :nth-child(3) { animation-delay: .12s; } .js .fc-hero-in > :nth-child(4) { animation-delay: .18s; }
+  .js .fc-hero-txt > * { animation: entra-fc .7s var(--ease) both; }
+  .js .fc-hero-txt > :nth-child(2) { animation-delay: .06s; } .js .fc-hero-txt > :nth-child(3) { animation-delay: .12s; } .js .fc-hero-txt > :nth-child(4) { animation-delay: .18s; }
+  .js .escudo { animation: entra-escudo .9s .15s var(--ease) both; }
 }
 @keyframes entra-fc { from { opacity: 0; transform: translateY(14px); } }
-@media (max-width: 640px) { .datos-hero { flex-direction: column; } }
+@keyframes entra-escudo { from { opacity: 0; transform: translateY(20px) scale(.94); } }
+@media (max-width: 900px) {
+  .fc-hero { padding-top: clamp(104px, 26vw, 128px); }
+  .fc-hero-grid { grid-template-columns: 1fr; }
+  .escudo-zona { order: -1; grid-template-columns: auto minmax(0, 1fr); justify-items: start; align-items: center; gap: 18px; }
+  .escudo { width: 108px; filter: drop-shadow(0 14px 18px rgba(2, 10, 80, .4)); }
+  .escudo-nombre { font-size: 17px; } .escudo-ciudad { display: none; }
+  .horario { grid-template-columns: 1fr; width: auto; background: none; border: 0; border-radius: 0; }
+  .horario li { padding: 4px 0; } .horario li + li { border-left: 0; }
+  .horario b { font-size: 21px; }
+  .fc-hero .botones { width: 100%; }
+}
 
 /* ---------- Programa ---------- */
 .ficha { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
