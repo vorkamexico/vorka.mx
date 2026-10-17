@@ -21,3 +21,20 @@
 # Tienda: el aviso de privacidad es uno solo para todo el sitio
 /legal/aviso-de-privacidad    /privacidad/   301
 /legal/aviso-de-privacidad/   /privacidad/   301
+
+# Archivos internos del repo (generadores, guías, la tienda): no se publican
+/README.md       /   301
+/_tienda/*       /   301
+/_sitio/*        /   301
+/_sparks/*       /   301
+/_impacto/*      /   301
+/.github/*       /   301
+
+# URLs viejas de Brandon Oleynick (antes eran páginas con meta refresh)
+/oleeynick                       /oleynickhdz/                  301
+/oleeynick/                      /oleynickhdz/                  301
+/oleeynick/conferencias*         /oleynickhdz/conferencias/     301
+/oleeynick/proyecto-social*      /oleynickhdz/proyecto-social/  301
+/oleeynick/servicios*            /oleynickhdz/servicios/        301
+/oleeynick/*                     /oleynickhdz/                  301
+/oleynickhdz/socialproyects*     /oleynickhdz/proyecto-social/  301

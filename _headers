@@ -1,0 +1,31 @@
+# Cabeceras de Cloudflare Pages
+
+/*
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+# Documentos de clientes y material interno: se abren con la URL, pero Google no los indexa
+/propuesta/*
+  X-Robots-Tag: noindex, nofollow
+/diagnostico/*
+  X-Robots-Tag: noindex, nofollow
+/1ertrimestrecelaya/*
+  X-Robots-Tag: noindex, nofollow
+/2dotrimestrecelaya/*
+  X-Robots-Tag: noindex, nofollow
+/consultor/*
+  X-Robots-Tag: noindex, nofollow
+/acuerdosaltamesa/*
+  X-Robots-Tag: noindex, nofollow
+/manual/*
+  X-Robots-Tag: noindex, nofollow
+/clubers/*
+  X-Robots-Tag: noindex, nofollow
+/imagen/*
+  X-Robots-Tag: noindex, nofollow
+/vorkacortazar/*
+  X-Robots-Tag: noindex, nofollow
+/eugetuagente/*
+  X-Robots-Tag: noindex, nofollow
+/fundamentos/*
+  X-Robots-Tag: noindex, nofollow

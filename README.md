@@ -1,87 +1,65 @@
-# Vorka México
+# Vorka México · vorka.mx
 
-Sitio web oficial de **Vorka México** — consultora de estrategia, liderazgo e influencia.
+Sitio oficial de **Vorka México**: consultora de estrategia, liderazgo e influencia. Sitio estático en **Cloudflare Pages**: cada commit a `main` se publica solo.
 
 ## Estructura
 
-```
-vorka web/
-├── index.html                                → https://www.vorka.mx/
-└── servicios/
-    ├── estrategia/
-    │   └── index.html                        → https://www.vorka.mx/servicios/estrategia
-    ├── liderazgo/
-    │   └── index.html                        → https://www.vorka.mx/servicios/liderazgo
-    └── influencia/
-        └── index.html                        → https://www.vorka.mx/servicios/influencia
-```
+Cada URL es una carpeta con `index.html` (`/servicios/estrategia/` → `servicios/estrategia/index.html`).
 
-Cada URL es una **carpeta con `index.html` adentro** — así el servidor sirve automáticamente la URL sin `.html` (`/servicios/estrategia` en vez de `/servicios/estrategia.html`).
+### Páginas públicas (indexadas, en `sitemap.xml`)
 
-Este patrón funciona en **cualquier hosting** sin necesidad de reglas de reescritura: Cloudflare Pages, Netlify, Vercel, GitHub Pages, cPanel, Apache, nginx — todos sirven `index.html` de una carpeta automáticamente.
+| Carpeta | URL | Cómo se edita |
+|---|---|---|
+| `index.html`, `servicios/`, `agenda/`, `404.html` | `/`, `/servicios/…`, `/agenda/` | **Generadas**: edita `_sitio/` y corre `python3 _sitio/build.py` |
+| `voluntariado/`, `sparks/`, `sparks/sumate/`, `privacidad/`, `legal/` | | A mano |
+| `sparks/celaya/` | `/sparks/celaya/` | **Automática** (bot cada hora). No editar a mano: ver `_sparks/GUIA-INSTALACION.md` |
+| `oleynickhdz/`, `mentoriaoleynick/` | Sitio de Brandon Oleynick | A mano |
+| `heymaya/`, `aviso/` | | A mano |
 
-## Optimización
+### Documentos de clientes y material interno (se abren con la URL, Google no los indexa)
 
-- **Logo en base64** dentro del CSS de cada página, guardado **una sola vez por archivo** como `--logo` (variable CSS) y referenciado desde topbar y footer. Sin duplicación.
-- **Sin peticiones HTTP externas**: ni fuentes web, ni CDNs, ni imágenes externas. Cada página carga completa en una sola petición.
-- **Sin frameworks**: HTML + CSS + JS vanilla.
-- Tamaño promedio: ~165 KB por página. Total del sitio: 680 KB.
+`propuesta/`, `diagnostico/`, `1ertrimestrecelaya/`, `2dotrimestrecelaya/`, `consultor/`, `acuerdosaltamesa/`, `manual/`, `clubers/`, `imagen/`, `vorkacortazar/`, `eugetuagente/`, `fundamentos/`
 
-## Enlaces internos
+Llevan `<meta name="robots" content="noindex">` y además la cabecera `X-Robots-Tag: noindex` (en `_headers`). **Si agregas una carpeta de este tipo, agrégala también en `_headers`**, y no la pongas en `sitemap.xml`.
 
-Todos los enlaces usan **rutas absolutas desde la raíz** (`/`, `/servicios/estrategia`, etc.), no relativas. Esto garantiza que funcionen desde cualquier profundidad sin `../` propensos a romperse.
+### Código y herramientas (no se publican)
 
-## Deploy
+| Carpeta | Qué es |
+|---|---|
+| `_sitio/` | Generador de las páginas principales (Python) |
+| `_sparks/` | Generador de Sparks Celaya + guía |
+| `_impacto/` | Generador del directorio de IMPACTO (se ve en soyimpacto.org/directorio) |
+| `_tienda/` | Worker de la tienda (`/tienda`, `/api`, `/descargas`, `/creadores`): ver `_tienda/README-TIENDA.md` |
+| `.github/workflows/` | Bots de Sparks e IMPACTO |
 
-Sitio 100% estático. Sube toda la carpeta a cualquier hosting:
+`_redirects` manda estas carpetas al inicio para que no se vean desde internet.
 
-- **Cloudflare Pages / Netlify / Vercel** — arrastra la carpeta o conecta el repositorio. Sin configuración.
-- **GitHub Pages** — activa Pages en Settings → Pages → Source `main` / (root).
-- **cPanel / FTP** — sube el contenido directamente al `public_html`.
+### Recursos compartidos
 
-### Preview local
+- `assets/v3/`: `vorka.css` y `vorka.js` (la misma tipografía y paleta que os.vorka.mx)
+- `img/ciudades/`: fotos WebP en 960 / 1600 / 2400 (ver `img/README.md`)
+- `vorka-logo.png`
 
-Los enlaces internos usan rutas absolutas (`/servicios/estrategia`), por eso **abrir `index.html` con doble clic (`file://`) no funciona para navegar** — los links quedan rotos localmente.
+## Archivos de Cloudflare
 
-Para previsualizar bien, corre un servidor local:
+- `_redirects`: redirecciones (IMPACTO → soyimpacto.org, URLs viejas, carpetas internas)
+- `_headers`: cabeceras de seguridad y `noindex` de documentos privados
+- `robots.txt`, `sitemap.xml`
+
+## Conexiones
+
+- Agenda, voluntariado y boletín: van a **os.vorka.mx** (`/api/publico/…`)
+- Formularios de `oleynickhdz/` y `heymaya/`: Formsubmit → vorkamexico@gmail.com
+- Fotos de Sparks: `fotos.vorka.mx` (Cloudflare R2)
+
+## Preview local
 
 ```bash
-cd "vorka web"
 python3 -m http.server 8000
 ```
 
-Y abre `http://localhost:8000` en el navegador.
-
-## Formularios
-
-Los 4 formularios (contacto principal + 3 subpáginas + boletín Sparks) usan **Formsubmit** para enviar directo a `vorkamexico@gmail.com` sin backend.
-
-**Primer envío desde producción:** llegará un correo de activación de Formsubmit. Confírmalo una sola vez y después todos los mensajes fluyen sin fricción.
-
-Subject de cada correo identifica de qué formulario vino:
-
-| Formulario | Subject |
-|---|---|
-| Contacto principal | `Nueva solicitud — {nombre} ({organización})` |
-| Estrategia | `Solicitud [Estrategia y Dirección] — {nombre} ({organización})` |
-| Liderazgo | `Solicitud [Liderazgo y Talento] — {nombre} ({organización})` |
-| Influencia | `Solicitud [Comunicación e Influencia] — {nombre} ({organización})` |
-| Boletín Sparks | `Sparks — nueva suscripción: {nombre}` |
-
-## WhatsApp
-
-Botón "Contrátanos directo por WhatsApp" abre `wa.me/528117804869` con mensaje pre-cargado personalizado según la página (en las subpáginas menciona el servicio específico).
+Abre `http://localhost:8000` (los enlaces son absolutos, con doble clic en el archivo no navegan).
 
 ## Contacto
 
-- Correo: vorkamexico@gmail.com
-- WhatsApp: +52 81 1780 4869
-- Instagram: [@vorka.mx](https://www.instagram.com/vorka.mx/)
-
----
-
-© 2026 Vorka México. Todos los derechos reservados.
-
-## Sparks Celaya (periódico)
-
-`/sparks/celaya` se genera solo desde un Google Form + Sheet mediante `.github/workflows/sparks-celaya.yml`. No edites `sparks/celaya/` a mano. Instalación y uso: [`_sparks/GUIA-INSTALACION.md`](_sparks/GUIA-INSTALACION.md).
+vorkamexico@gmail.com · WhatsApp +52 81 1780 4869 · [@vorka.mx](https://www.instagram.com/vorka.mx/)

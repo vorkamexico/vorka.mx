@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://vorka.mx/sitemap.xml
 Sitemap: https://vorka.mx/oleynickhdz/sitemap.xml
 Sitemap: https://vorka.mx/sparks/celaya/sitemap.xml
 Sitemap: https://vorka.mx/tienda/sitemap.xml
