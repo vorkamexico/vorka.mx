@@ -82,7 +82,7 @@ describe('recordatorio de compra sin terminar', () => {
     expect(r.headers.get('location')).toBe('https://checkout.stripe.com/c/pay/nuevo');
     const nuevas = env.DB.raw.prepare("SELECT email, nombre, monto_centavos FROM orders WHERE id != ? AND email = 'f@mail.com'").all(o.id);
     expect(nuevas).toEqual([{ email: 'f@mail.com', nombre: 'Ana López', monto_centavos: 27900 }]);
-    expect((await get(liga.pathname + liga.search.replace(/s=\w/, 's=0'))).status).toBe(410);
+    expect((await get(liga.pathname + liga.search.replace(/s=(\w)/, (_, c) => `s=${c === '0' ? '1' : '0'}`))).status).toBe(410);
     const vieja = new URL(await ligaRetomar(env, o.id, Date.now() - 15 * 864e5));
     expect((await get(vieja.pathname + vieja.search)).status).toBe(410);
   });

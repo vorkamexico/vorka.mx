@@ -1,7 +1,9 @@
 # Vorka México · imágenes del Simulador PAA para la tienda y para compartir (Google, WhatsApp, redes).
 # Uso: python3 _tienda/simulador/portadas.py   → _tienda/simulador/img/
-#   portada_1600x1200.png  (portada del producto en la tienda; se sube a R2 como portadas/simulador-paa.png)
+#   portada_1600x1200.png  (portada del producto en la tienda; se sube a R2 como portadas/simulador-paa-v2.png)
 #   og_1200x630.png        (vista previa al compartir vorka.mx/simulador-paa)
+#   reporte_1600x900.png  (el reporte en computadora; portadas/simulador-paa-reporte.png)
+#   regalo_1200x900.png    (tarjeta de regalo; portadas/simulador-paa-regalo.png)
 # Requiere Playwright con Chrome (mismo método que productos-digitales/fuente/mockups.py).
 import pathlib
 from playwright.sync_api import sync_playwright
@@ -80,7 +82,7 @@ def portada():
   <div class="eti" style="margin-top:58px;font-size:22px"><i style="height:22px"></i>Prueba de Aptitud Académica</div>
   <h1 style="margin-top:22px;font-size:112px;line-height:.94">Simulador<br><span>PAA.</span></h1>
   <p class="sub" style="margin:30px 0 0;font-size:27px;line-height:1.42;max-width:600px">Practica Lectura, Redacción, Matemáticas e Inglés con cronómetro real y un tutor que te guía cuando fallas.</p>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:38px;font-size:20px"><span class="pill">2 simulacros completos</span><span class="pill">Tutor de 2 intentos</span><span class="pill">Reporte de preparación</span></div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:38px;font-size:20px"><span class="pill">235 reactivos</span><span class="pill">Tutor de 2 intentos</span><span class="pill">Reporte de preparación</span></div>
 </div>
 {telefono(930, 118)}
 {reporte(1170, 730, 330)}
@@ -100,9 +102,50 @@ def og():
 {reporte(905, 400, 280, .85)}
 </div>"""
 
+def reporte_pc():
+    temas = [('Conectores y transiciones', 1, 3, 'bajo'), ('Inferencias', 2, 4, 'bajo'), ('Geometría', 2, 3, 'medio'), ('Vocabulario en contexto', 3, 3, 'alto'), ('Grammar', 4, 4, 'alto')]
+    color = {'bajo': ('#fdf1f0', '#a3261e', 'Reforzar'), 'medio': ('#fbf3e2', '#8a6a2c', 'En camino'), 'alto': ('#E7F4EC', '#2B8553', 'Fortaleza')}
+    filas = ''.join(f"""<div style="display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;margin-top:14px">
+      <span style="font-size:15px;font-weight:600">{n}</span><span style="justify-self:end;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:{color[c][0]};color:{color[c][1]}">{color[c][2]}</span>
+      <span style="height:8px;border-radius:4px;background:#F4F2EF;overflow:hidden"><i style="display:block;height:100%;width:{100*o/t}%;background:#6B2A85;border-radius:4px"></i></span><span style="font-size:13px;font-weight:700;text-align:right">{o}/{t}</span></div>""" for n, o, t, c in temas)
+    barras = ''.join(f"""<div style="margin-top:16px"><div style="display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px"><b>{n}</b><b>{p}</b></div>
+      <div style="position:relative;height:12px;border-radius:4px;background:#F4F2EF"><i style="position:absolute;inset:0 auto 0 0;width:{(p-200)/6}%;background:#6B2A85;border-radius:4px"></i><u style="position:absolute;top:-4px;bottom:-4px;left:66.6%;width:2px;background:#141114"></u></div></div>""" for n, p in [('Lectura', 640), ('Redacción', 560), ('Matemáticas', 590), ('Inglés', 620)])
+    return f"""<style>{CSS}</style><div class="lienzo" style="width:1600px;height:900px;background:#F4F2EF">
+<div style="position:absolute;left:80px;top:60px;width:1440px;height:780px;border-radius:22px;background:#FBFAF8;box-shadow:0 40px 90px -30px rgba(20,17,20,.35);overflow:hidden;color:#141114">
+  <div style="height:46px;background:#ECEAE6;display:flex;align-items:center;gap:8px;padding:0 18px"><i style="width:12px;height:12px;border-radius:50%;background:#e06c5c"></i><i style="width:12px;height:12px;border-radius:50%;background:#e8b84c"></i><i style="width:12px;height:12px;border-radius:50%;background:#5fbf6a"></i>
+    <span style="margin-left:22px;flex:1;max-width:520px;height:28px;border-radius:8px;background:#fff;font-size:13px;color:#6D696E;display:flex;align-items:center;padding:0 12px">vorka.mx/simulador-paa</span></div>
+  <div style="padding:36px 48px">
+    <div style="font-size:14px;font-weight:650;color:#6D696E">▍Resultado del simulacro completo</div>
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:36px;align-items:center;margin-top:16px;background:#fff;border:1px solid #E7E5E7;border-radius:24px;padding:28px 34px">
+      <svg viewBox="0 0 120 70" width="280"><path d="M8 64a52 52 0 0 1 104 0" fill="none" stroke="#ECEAE6" stroke-width="10" stroke-linecap="round"/><path d="M8 64a52 52 0 0 1 104 0" fill="none" stroke="#6B2A85" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="78 100"/><text x="60" y="58" text-anchor="middle" font-size="26" font-weight="750" fill="#141114">78</text></svg>
+      <div><div style="font-size:30px;font-weight:750;letter-spacing:-.03em;color:#6B2A85">▰ Casi listo</div>
+        <div style="margin-top:6px;font-size:18px">Puntaje estimado <b style="font-size:30px">600</b> <span style="color:#6D696E">/ 800 · meta 600</span></div>
+        <p style="margin:12px 0 0;font-size:17px;line-height:1.55;color:#6D696E">Tu promedio estimado <b style="color:#141114">ya alcanza tu meta</b>. Tu mayor oportunidad está en <b style="color:#141114">Redacción</b>: subir de 560 a 600 equivale a acertar <b style="color:#141114">1 reactivo más</b> de cada 10.</p></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px">
+      <div style="background:#fff;border:1px solid #E7E5E7;border-radius:24px;padding:24px 28px"><b style="font-size:18px">Puntaje estimado por sección</b>{barras}</div>
+      <div style="background:#fff;border:1px solid #E7E5E7;border-radius:24px;padding:24px 28px"><b style="font-size:18px">Aciertos por tema</b>{filas}</div>
+    </div>
+  </div>
+</div></div>"""
+
+def regalo():
+    return f"""<style>{CSS}</style><div class="lienzo" style="width:1200px;height:900px;background:#F4F2EF">
+<div style="position:absolute;left:150px;top:110px;width:900px;height:560px;border-radius:36px;background:#0F0D10;overflow:hidden;box-shadow:0 50px 100px -30px rgba(20,17,20,.55);transform:rotate(-3deg)">
+  <div class="vfondo" style="right:-90px;bottom:-130px;width:520px">{V}</div>
+  <div style="position:absolute;left:60px;top:56px;right:60px">
+    <div style="font-size:64px">🎁</div>
+    <h1 style="margin-top:22px;font-size:68px;line-height:1">Sofía, tienes un<br>regalo de <span>Ana</span></h1>
+    <p class="sub" style="margin-top:22px;font-size:24px;line-height:1.45;max-width:640px">Te regalaron el Simulador PAA de Vorka México.</p>
+    <div style="margin-top:26px;padding:20px 24px;border-radius:22px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:22px;color:#F4F2F5;max-width:640px">¡Mucho éxito en tu examen! Sé que lo vas a lograr.<div style="margin-top:8px;font-size:16px;color:rgba(244,242,245,.4)">— Ana</div></div>
+  </div>
+</div>
+<div style="position:absolute;right:120px;bottom:90px;display:flex;align-items:center;gap:12px;background:#fff;border-radius:999px;padding:14px 22px;box-shadow:0 20px 40px -16px rgba(20,17,20,.35);font-size:18px;font-weight:650;color:#141114">🔒 Liga de un solo uso</div>
+</div>"""
+
 with sync_playwright() as p:
     nav = p.chromium.launch(channel='chrome')
-    for nombre, html, w, h in [('portada_1600x1200.png', portada(), 1600, 1200), ('og_1200x630.png', og(), 1200, 630)]:
+    for nombre, html, w, h in [('portada_1600x1200.png', portada(), 1600, 1200), ('og_1200x630.png', og(), 1200, 630), ('reporte_1600x900.png', reporte_pc(), 1600, 900), ('regalo_1200x900.png', regalo(), 1200, 900)]:
         pag = nav.new_page(viewport={'width': w, 'height': h}, device_scale_factor=1)
         pag.set_content(html)
         pag.wait_for_timeout(300)

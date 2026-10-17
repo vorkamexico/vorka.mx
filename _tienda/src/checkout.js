@@ -19,6 +19,12 @@ export const EsquemaCheckout = z.object({
   slug: slug.optional(),
   items: z.array(z.object({ slug, cantidad: z.number().int().min(1).max(10).default(1) })).min(1).max(20).optional(),
   ref: z.string().trim().regex(/^[A-Za-z0-9_-]{1,40}$/).optional().or(z.literal('')),
+  // Comprar para regalar (solo productos con contenido.regalable): una liga de un solo uso por unidad
+  para_quien: z.enum(['yo', 'regalo']).optional(),   // formulario sin JavaScript
+  regalo: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
+  cantidad: z.coerce.number().int().min(1, 'Elige cuántos regalos.').max(10, 'Puedes regalar hasta 10 por compra.').optional(),
+  regalo_para: z.string().trim().max(80).optional().or(z.literal('')),
+  regalo_mensaje: z.string().trim().max(280, 'El mensaje puede tener hasta 280 caracteres.').optional().or(z.literal('')),
 }).refine(d => d.slug || d.items, { message: 'Falta el producto.', path: ['slug'] });
 
 // Límites: por IP 10 intentos / 10 min, por correo 5 / 10 min
@@ -43,6 +49,7 @@ export async function checkout(req, env) {
   const v = EsquemaCheckout.safeParse(datos);
   if (!v.success) return error(v.error.issues[0].message);
   const d = v.data;
+  if (d.para_quien === 'regalo') d.regalo = true;
 
   const ip = req.headers.get('cf-connecting-ip') || 'local';
   for (const [tipo, max] of LIMITES) {
@@ -51,18 +58,22 @@ export async function checkout(req, env) {
       return error('Demasiados intentos. Espera unos minutos y vuelve a intentarlo.', 429);
   }
 
-  // Los simulacros adicionales del Simulador PAA solo los compra quien ya tiene el simulador
-  for (const it of d.items || [{ slug: d.slug }]) {
+  // Varias unidades del mismo producto solo tienen sentido al regalar (o en el carrito con items)
+  const items = d.items || [{ slug: d.slug, cantidad: d.regalo ? (d.cantidad || 1) : 1 }];
+  for (const it of items) {
     const p = await productoPorSlug(env, it.slug);
+    // Los simulacros adicionales del Simulador PAA solo los compra quien ya tiene el simulador
     if (p?.contenido?.acceso?.tipo === 'intento' && !(await puedeComprarIntento(env, d.email)))
       return error('Para comprar simulacros adicionales primero necesitas el Simulador PAA, con el mismo correo de tu compra.', 403);
+    if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
   }
 
   let orden;
   try {
     orden = await crearOrden(env, {
-      items: d.items || [{ slug: d.slug }],
+      items,
       email: d.email, nombre: d.nombre,
+      regalo: d.regalo ? { para: d.regalo_para || null, mensaje: d.regalo_mensaje || null } : null,
       ref: d.ref || cookie(req, 'vorka_ref'),
     });
   } catch (e) {

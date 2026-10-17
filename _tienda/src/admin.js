@@ -28,7 +28,7 @@ export async function resumen(env, { mes } = {}) {
   const desde = inicioDia(`${mes}-01`);
   const [a, m] = mes.split('-').map(Number);
   const hasta = inicioDia(`${m === 12 ? a + 1 : a}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01`);
-  const ventas = await one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'paid' AND paid_at >= ? AND paid_at < ?", desde, hasta);
+  const ventas = await one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'paid' AND proveedor NOT IN ('regalo', 'cortesia') AND paid_at >= ? AND paid_at < ?", desde, hasta);
   const pendientes = await one(env, "SELECT COUNT(*) n FROM orders WHERE estado = 'pending' AND metodo_pago IN ('oxxo', 'customer_balance')");
   const embudo = await all(env, `SELECT p.id, p.nombre,
       (SELECT COUNT(*) FROM events e WHERE e.product_id = p.id AND e.tipo = 'view_product' AND e.created_at >= ? AND e.created_at < ?) vistas,
@@ -95,7 +95,7 @@ const celda = v => { const s = String(v ?? ''); return /[",\n;]/.test(s) ? `"${s
 export async function exportarCSV(env, { desde, hasta }) {
   if (!FECHA.safeParse(desde).success || !FECHA.safeParse(hasta).success) throw new Error('Elige las fechas.');
   const filas = await all(env, `SELECT o.*, (SELECT GROUP_CONCAT(i.nombre, ' + ') FROM order_items i WHERE i.order_id = o.id) productos
-    FROM orders o WHERE o.estado IN ('paid', 'refunded') AND o.paid_at >= ? AND o.paid_at < ? ORDER BY o.paid_at`, inicioDia(desde), finDia(hasta));
+    FROM orders o WHERE o.estado IN ('paid', 'refunded') AND o.proveedor NOT IN ('regalo', 'cortesia') AND o.paid_at >= ? AND o.paid_at < ? ORDER BY o.paid_at`, inicioDia(desde), finDia(hasta));
   const enc = ['fecha', 'orden', 'nombre', 'correo', 'producto', 'monto', 'moneda', 'metodo_pago', 'id_pago_stripe', 'estado'];
   const lineas = filas.map(o => [fechaMx(o.paid_at), o.id, o.nombre, o.email, o.productos, (o.monto_centavos / 100).toFixed(2), o.moneda,
     { card: 'tarjeta', oxxo: 'oxxo', customer_balance: 'spei' }[o.metodo_pago] || o.metodo_pago || '', o.provider_payment_id || '', o.estado === 'paid' ? 'pagada' : 'reembolsada'].map(celda).join(','));
@@ -135,7 +135,7 @@ const EsquemaProducto = z.object({
 const htmlSeguro = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/\n/g, '<br>');
 
 // Slugs que no pueden usarse porque son rutas de la tienda
-const RESERVADOS = new Set(['gracias', 'retomar', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar']);
+const RESERVADOS = new Set(['gracias', 'retomar', 'regalo', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar']);
 export const SLUG_VALIDO = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 // Slug escrito a mano en el editor: formato válido, no reservado y que nadie más lo use (ni como enlace anterior de otro producto)
 export async function validarSlug(env, slug, id) {
@@ -177,7 +177,7 @@ export async function guardarProducto(env, datos) {
     if (!(await env.PRODUCTOS.head(a.key))) throw new Error(`Falta subir "${a.nombre}". Quítalo de la lista o súbelo de nuevo.`);
 
   const contenido = d.contenido
-    ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })), ...(acceso ? { acceso } : {}), ...(actual?.contenido?.oculto ? { oculto: true } : {}) }
+    ? { ...d.contenido, faq: d.contenido.faq.map(f => ({ p: f.p, r: htmlSeguro(f.r) })), ...(acceso ? { acceso } : {}), ...(actual?.contenido?.oculto ? { oculto: true } : {}), ...(actual?.contenido?.regalable ? { regalable: true } : {}) }
     : actual?.contenido || {};
   // Si escribieron un enlace nuevo a mano se valida y no se cambia en silencio; si no, se arma solo del nombre
   const pedido = d.slug ? d.slug.toLowerCase() : null;

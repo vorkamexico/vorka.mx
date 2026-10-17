@@ -11,7 +11,8 @@ async function leer(env, id) {
   if (!UUID.test(id || '')) return null;
   return one(env, `SELECT o.id, o.estado, o.metodo_pago, o.email, o.correo_enviado_at,
       (SELECT p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) slug,
-      (SELECT p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) contenido
+      (SELECT p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) contenido,
+      o.regalo, (SELECT SUM(i.cantidad) FROM order_items i WHERE i.order_id = o.id) unidades
     FROM orders o WHERE o.id = ?`, id);
 }
 // Producto de acceso (p. ej. Simulador PAA o sus simulacros adicionales): { app, ruta, tipo, … } o null
@@ -45,7 +46,11 @@ function bloques(o, v) {
   const reintentar = acc?.tipo === 'intento'
     ? `<div class="botones t-centro"><a class="btn tinta" href="${esc(acc.ruta)}">Volver al simulador ${FLECHA}</a></div>`
     : `<div class="botones t-centro"><a class="btn tinta" href="/tienda/${esc(o.slug || '')}#comprar">Intentar de nuevo ${FLECHA}</a><a class="btn blanco" href="/tienda/">Volver a la tienda</a></div>`;
-  const pagado = acc?.tipo === 'intento'
+  const pagado = o.regalo
+    ? { clase: 'exito', icono: ICONOS.ok, titulo: o.unidades > 1 ? '¡Listo! Tus regalos van en camino' : '¡Listo! Tu regalo va en camino',
+      texto: `Enviamos ${o.unidades > 1 ? `tus ${o.unidades} ligas de regalo` : 'tu liga de regalo'} a <b>${esc(correoOculto(o.email))}</b>. Mándale cada liga a una persona: funciona una sola vez y el acceso queda a su nombre.`,
+      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a> (las ligas nuevas reemplazan a las que no se han usado).</p>' }
+    : acc?.tipo === 'intento'
     ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Ya tienes más simulacros',
       texto: 'Tus simulacros completos adicionales ya están disponibles en tu cuenta.',
       extra: `<div class="botones t-centro"><a class="btn tinta" href="${esc(acc.ruta)}">Volver al simulador ${FLECHA}</a></div>` }

@@ -1,6 +1,7 @@
 #!/bin/zsh
 # Vorka México · publica el Simulador PAA (doble clic, DESPUÉS de aprobar el PR en GitHub).
-# Incluye: intentos (2 simulacros completos + $50 por cada adicional), portada, tienda por secciones y la página para Google.
+# Incluye: banco de 235 reactivos, simulacros sin repetir, regalos con liga de un solo uso, intentos ($50 c/u),
+# portadas, tienda por secciones con el simulador como producto estrella y la página para Google.
 # Se puede volver a correr sin problema.
 set -e
 cd "$(dirname "$0")/.."
@@ -23,10 +24,13 @@ if [[ "$R" == [sS]* ]]; then
 else
   echo "   Queda oculto. Actívalo cuando quieras en Vorka México → Tienda → Productos."
 fi
+echo "   Publicando el panel de Vorka México (Regalar accesos)…"
+( cd ../../vorka-os && npx wrangler deploy >/dev/null && echo "   Panel publicado." ) || echo "   No se pudo publicar el panel: corre 'npx wrangler deploy' dentro de vorka-os."
 echo "5/5 · Revisando que todo responda…"
-for u in https://vorka.mx/simulador-paa/ https://vorka.mx/tienda/ https://vorka.mx/tienda/sitemap.xml https://vorka.mx/api/tienda/salud; do
+for u in https://vorka.mx/simulador-paa/ https://vorka.mx/tienda/ https://vorka.mx/tienda/sitemap.xml https://vorka.mx/sitemap.xml https://vorka.mx/api/tienda/salud https://os.vorka.mx; do
   printf "  %-40s %s\n" "$u" "$(curl -s -o /dev/null -w '%{http_code}' "$u")"
 done
 echo ""
 echo "Listo. Si todas dicen 200, ya quedó."
-echo "Último paso para Google: en search.google.com/search-console pide indexar https://vorka.mx/simulador-paa/"
+echo "Último paso para Google (Search Console → Sitemaps): reenvía https://vorka.mx/sitemap.xml y https://vorka.mx/tienda/sitemap.xml,"
+echo "y en Inspección de URLs pide indexar https://vorka.mx/simulador-paa/"

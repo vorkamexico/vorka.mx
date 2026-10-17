@@ -1,6 +1,7 @@
 // Entrega: token de descarga + correo. Se llama desde el webhook (y luego desde "reenviar" y el panel).
 import { one, all, run, aleatorio, hex, enc, ahoraISO, correoOculto } from './util.js';
 import { marco, boton, lista, enviar, esc, P, SOPORTE } from './correo.js';
+import { mandarRegalos } from './regalos.js';
 
 export const VIGENCIA_DIAS = 7;
 export const MAX_DESCARGAS = 10; // por archivo
@@ -64,9 +65,10 @@ function correoAcceso(env, orden, items, token, acceso) {
   const url = items.length === 1 ? `${env.SITE_URL}/${acceso.app}/entrar/${token}` : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
   const nombre = orden.nombre.split(' ')[0];
-  const intento = acceso.tipo === 'intento';
-  const asunto = intento ? 'Tus simulacros adicionales ya están listos' : `Tu acceso: ${items[0].nombre}`;
-  const linea1 = intento ? '¡Gracias por tu compra! Tus simulacros completos adicionales ya están disponibles en tu cuenta.' : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
+  const intento = acceso.tipo === 'intento', regalo = !!orden.regalo_de;
+  const asunto = intento ? 'Tus simulacros adicionales ya están listos' : regalo ? `Tu regalo está activo: ${items[0].nombre}` : `Tu acceso: ${items[0].nombre}`;
+  const linea1 = intento ? '¡Gracias por tu compra! Tus simulacros completos adicionales ya están disponibles en tu cuenta.'
+    : regalo ? `¡Te regalaron el ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.` : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
   const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.' : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
@@ -97,8 +99,12 @@ Vorka México · Guanajuato, México`;
 }
 
 // Token nuevo + correo. Si el correo falla, el token se borra (no quedan enlaces que nadie recibió).
-async function mandarEnlace(env, orderId, ahora = Date.now()) {
+export async function mandarEnlace(env, orderId, ahora = Date.now()) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
+  // Compra para regalar: quien paga recibe las ligas de un solo uso, no el acceso
+  // Cortesías del panel: sus ligas solo se ven al crearlas; reenviar las apagaría aunque ya se hayan compartido
+  if (orden.proveedor === 'cortesia') return;
+  if (orden.regalo) return mandarRegalos(env, orden);
   const items = await all(env, 'SELECT i.product_id, i.nombre, i.cantidad, p.contenido FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
   const { token, hash } = await crearToken(env, orderId, ahora);
   try {

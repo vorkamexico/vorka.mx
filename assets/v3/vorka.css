@@ -551,3 +551,4 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
   .cab-servicio .marco > *, .cab-servicio .datos { max-width: none; }
   .cab-servicio { flex-direction: column; }
 }
+.tira-paa .letra-v::before { background: linear-gradient(145deg, #4a1c5c, #6b2a85); }
