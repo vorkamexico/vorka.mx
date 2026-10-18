@@ -13,6 +13,10 @@ import { TEXTOS_LECTURA, REACTIVOS_LECTURA } from './extra-lectura.js';
 import { REACTIVOS_REDACCION } from './extra-redaccion.js';
 import { REACTIVOS_MATEMATICAS } from './extra-matematicas.js';
 import { TEXTOS_INGLES, REACTIVOS_INGLES } from './extra-ingles.js';
+import { TEXTOS_LECTURA3, REACTIVOS_LECTURA3 } from './extra3-lectura.js';
+import { REACTIVOS_REDACCION3 } from './extra3-redaccion.js';
+import { REACTIVOS_MATEMATICAS3 } from './extra3-matematicas.js';
+import { TEXTOS_INGLES3, REACTIVOS_INGLES3 } from './extra3-ingles.js';
 
 export const SECCIONES = [
   { id: 'lectura', nombre: 'Lectura', minutos: 14, reactivos: 12, color: 'morado',
@@ -23,6 +27,16 @@ export const SECCIONES = [
     descripcion: 'Aritmética, álgebra, geometría y análisis de datos. Algunas preguntas piden escribir la respuesta.' },
   { id: 'ingles', nombre: 'Inglés', minutos: 12, reactivos: 12, color: 'tinta',
     descripcion: 'Uso del lenguaje y vocabulario, comprensión de lectura y redacción indirecta en inglés.' },
+];
+
+// Examen PAA completo: la estructura real del examen (guía de estudio del College Board: Lectura, Redacción y
+// Matemáticas en 2 h 20 min; Inglés en 40 min; 175 reactivos que cuentan para la calificación).
+// No incluye los ejercicios de investigación que el College Board a veces agrega y que no se califican.
+export const SECCIONES_EXAMEN = [
+  { id: 'lectura', reactivos: 45, minutos: 50 },
+  { id: 'redaccion', reactivos: 25, minutos: 30 },
+  { id: 'matematicas', reactivos: 55, minutos: 60 },
+  { id: 'ingles', reactivos: 50, minutos: 40 },
 ];
 
 // Qué debe reforzar el estudiante en cada tema (se usa en el dashboard)
@@ -251,7 +265,7 @@ const REACTIVOS_BASE = [
     opciones: ['durmieran más horas, de forma más acorde con su reloj biológico.', 'usaran menos pantallas por la noche.', 'liberaran la melatonina más temprano.', 'estudiaran menos en casa.'],
     correcta: 0,
     pista: 'El párrafo explica por qué a los jóvenes les cuesta dormir temprano y cuál es el choque con el horario escolar. Si cambias el horario, ¿qué parte del problema se resuelve?',
-    pasos: ['El problema: su cuerpo les da sueño tarde (melatonina retrasada), pero deben levantarse a las seis.', 'Retrasar la entrada no cambia la melatonina (C) ni las pantallas (B): cambia la hora de levantarse.', 'Consecuencia lógica: dormirían más horas, ajustadas a su reloj biológico.'],
+    pasos: ['El problema: su cuerpo les da sueño tarde (melatonina retrasada), pero deben levantarse a las seis.', 'Retrasar la entrada no cambia la melatonina ({C}) ni las pantallas ({B}): cambia la hora de levantarse.', 'Consecuencia lógica: dormirían más horas, ajustadas a su reloj biológico.'],
     regla: 'Inferencia de causa-efecto: identifica la causa que el texto describe y aplica el cambio propuesto solo a esa causa.' },
   { id: 'L-sue-4', seccion: 'lectura', tema: 'proposito_tono', dificultad: 2, texto: 'sueno',
     enunciado: 'El experimento descrito en el párrafo 2 le sirve al autor para…',
@@ -281,7 +295,7 @@ const REACTIVOS_BASE = [
     opciones: ['están contaminados.', 'se usan más de lo que pueden recuperar.', 'están abandonados.', 'son muy profundos.'],
     correcta: 1,
     pista: 'El texto explica la palabra inmediatamente después de los dos puntos. ¿Qué relación hay entre lo que se extrae y lo que se recarga?',
-    pasos: ['Definición en el texto: "cada año se extrae más agua de la que se recarga".', 'Eso es usar un recurso por encima de su capacidad de recuperarse.', 'La contaminación (A) aparece después como consecuencia, no como significado.'],
+    pasos: ['Definición en el texto: "cada año se extrae más agua de la que se recarga".', 'Eso es usar un recurso por encima de su capacidad de recuperarse.', 'La contaminación ({A}) aparece después como consecuencia, no como significado.'],
     regla: 'Prefijo "sobre-" = exceso. Combínalo con la definición que da el texto para confirmar el significado.' },
   { id: 'L-agua-2', seccion: 'lectura', tema: 'idea_central', dificultad: 2, texto: 'agua',
     enunciado: '¿Cuál es el propósito principal del Texto A?',
@@ -823,5 +837,6 @@ const REACTIVOS_BASE = [
 ];
 
 // Banco completo: base + ampliación (extra-*.js). Cada simulacro completo prioriza lo que el estudiante no ha visto.
-export const TEXTOS = { ...TEXTOS_BASE, ...TEXTOS_LECTURA, ...TEXTOS_INGLES };
-export const REACTIVOS = [...REACTIVOS_BASE, ...REACTIVOS_LECTURA, ...REACTIVOS_REDACCION, ...REACTIVOS_MATEMATICAS, ...REACTIVOS_INGLES];
+export const TEXTOS = { ...TEXTOS_BASE, ...TEXTOS_LECTURA, ...TEXTOS_INGLES, ...TEXTOS_LECTURA3, ...TEXTOS_INGLES3 };
+export const REACTIVOS = [...REACTIVOS_BASE, ...REACTIVOS_LECTURA, ...REACTIVOS_REDACCION, ...REACTIVOS_MATEMATICAS, ...REACTIVOS_INGLES,
+  ...REACTIVOS_LECTURA3, ...REACTIVOS_REDACCION3, ...REACTIVOS_MATEMATICAS3, ...REACTIVOS_INGLES3];

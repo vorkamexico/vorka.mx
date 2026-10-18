@@ -112,32 +112,52 @@ def cabeza(titulo, descripcion, ruta, og='cdmx-reforma', extra=''):
 
 MENU = [('/servicios/', 'Servicios'), ('/#proceso', 'Cómo trabajamos'), ('/#momentos', 'Para quién'), ('/#red', 'Presencia'), ('/sparks/', 'Sparks'), ('/tienda/', 'Tienda'), ('/voluntariado', 'Tú en Vorka')]
 
-def nav(actual='', oscuro=False):
+# Vorka FC es para familias de Celaya: su menú habla de la academia, Sparks y la comunidad, no de consultoría ni de la tienda
+MENU_FC = [('/fc/#programa', 'Programa'), ('/fc/#costo', 'Costo'), ('/fc/#celaya', 'Dónde'), ('/sparks/celaya/', 'Noticias de Celaya'), ('/sparks/', 'Revista Sparks'), ('/voluntariado', 'Tú en Vorka')]
+CTA = {'general': ('/agenda/', 'Agenda tu diagnóstico'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
+
+def nav(actual='', oscuro=False, publico='general'):
     cur = ' aria-current="page"'
-    links = ''.join(f'<a href="{h}"{cur if h == actual else ""}>{t}</a>' for h, t in MENU)
-    movil = ''.join(f'<a href="{h}">{t}</a>' for h, t in MENU)
+    menu = MENU_FC if publico == 'fc' else MENU
+    links = ''.join(f'<a href="{h}"{cur if h == actual else ""}>{t}</a>' for h, t in menu)
+    movil = ''.join(f'<a href="{h}">{t}</a>' for h, t in menu)
+    cta, cta_t = CTA.get(publico, CTA['general'])
     return f'''<header class="nav{' oscuro' if oscuro else ''}">
   <div class="nav-in">
     <a class="marca" href="/" aria-label="Vorka México, inicio">{LOGO}Vorka <span>México</span></a>
     <nav class="nav-links" aria-label="Principal">{links}</nav>
-    <a class="btn tinta escritorio" href="/agenda/">Agenda tu diagnóstico</a>
+    <a class="btn tinta escritorio" href="{cta}">{cta_t}</a>
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
   </div>
 </header>
-<div class="menu-movil" id="menu-movil">{movil}<a class="btn tinta" href="/agenda/">Agenda tu diagnóstico {FLECHA}</a></div>
+<div class="menu-movil" id="menu-movil">{movil}<a class="btn tinta" href="{cta}">{cta_t} {FLECHA}</a></div>
 '''
 
-def pie():
+# El pie cambia según para quién es la página:
+#  general  → todo lo de Vorka (inicio, 404)
+#  empresas → servicios y agenda: sin el Simulador PAA (es para estudiantes)
+#  fc       → familias de Vorka FC: la academia, Sparks y la comunidad, sin servicios ni tienda
+def pie(publico='general'):
     redes = ''.join(f'<a href="{u}" target="_blank" rel="noopener" aria-label="{n}">{s}</a>' for n, u, s in REDES)
-    return f'''<footer class="pie">
-  <div class="marco">
-    <div class="pie-top">
-      <div>
-        <a class="marca" href="/">{LOGO}Vorka <span>México</span></a>
-        <p class="pie-lema">Definimos el juego con quienes lo juegan.</p>
-        <div class="redes">{redes}</div>
-      </div>
-      <div><h4>Servicios</h4><ul>
+    if publico == 'fc':
+        columnas = f'''<div><h4>Vorka FC</h4><ul>
+        <li><a href="/fc/#programa">Programa y horarios</a></li>
+        <li><a href="/fc/#costo">Costo</a></li>
+        <li><a href="/fc/#celaya">Dónde entrenamos</a></li>
+        <li><a href="/fc/#inscripcion">Inscripción</a></li></ul></div>
+      <div><h4>Vorka en Celaya</h4><ul>
+        <li><a href="/sparks/celaya/">Noticias de Celaya</a></li>
+        <li><a href="/sparks/">Revista Sparks</a></li>
+        <li><a href="/sparks/sumate/">Cuenta tu historia</a></li>
+        <li><a href="/voluntariado">Tú en Vorka · voluntariado</a></li>
+        <li><a href="/">Quiénes somos</a></li></ul></div>
+      <div><h4>Contacto</h4><ul>
+        <li><a href="{wa('Hola, quiero información de Vorka FC.')}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li>
+        <li><a href="mailto:{CORREO}">{CORREO}</a></li></ul></div>'''
+        lema, base = 'Fútbol, valores y comunidad en Celaya.', '<a href="/privacidad/">Aviso de privacidad</a>'
+    else:
+        simulador = '' if publico == 'empresas' else '\n        <li><a href="/simulador-paa/">Simulador PAA</a></li>'
+        columnas = f'''<div><h4>Servicios</h4><ul>
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
         <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
         <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
@@ -146,17 +166,26 @@ def pie():
         <li><a href="/#proceso">Cómo trabajamos</a></li>
         <li><a href="/#red">Presencia nacional</a></li>
         <li><a href="/sparks/">Revista Sparks</a></li>
-        <li><a href="/tienda/">Tienda</a></li>
-        <li><a href="/simulador-paa/">Simulador PAA</a></li>
+        <li><a href="/tienda/">Tienda</a></li>{simulador}
         <li><a href="/voluntariado">Tú en Vorka</a></li>
         <li><a href="/fc/">Vorka FC</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
         <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li>
-        <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>
+        <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>'''
+        lema, base = 'Definimos el juego con quienes lo juegan.', '<a href="/privacidad/">Aviso de privacidad</a><a href="/agenda/">Contacto</a>'
+    return f'''<footer class="pie">
+  <div class="marco">
+    <div class="pie-top">
+      <div>
+        <a class="marca" href="/">{LOGO}Vorka <span>México</span></a>
+        <p class="pie-lema">{lema}</p>
+        <div class="redes">{redes}</div>
+      </div>
+      {columnas}
     </div>
     <div class="marca-xl" aria-hidden="true">{LOGO}<b>Vorka</b></div>
-    <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México · Monterrey · CDMX · Guadalajara · Querétaro · Celaya</span><nav><a href="/privacidad/">Aviso de privacidad</a><a href="/agenda/">Contacto</a></nav></div>
+    <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México · Monterrey · CDMX · Guadalajara · Querétaro · Celaya</span><nav>{base}</nav></div>
   </div>
 </footer>
 <script src="/assets/v3/vorka.js?v={VERSION}" defer></script>

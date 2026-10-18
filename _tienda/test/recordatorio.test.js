@@ -34,17 +34,17 @@ describe('recordatorio de compra sin terminar', () => {
   it('manda un solo correo amable con liga para retomar y lo registra', async () => {
     const o = await pendiente('ana@mail.com', 3, 'oxxo');
     const det = await A.orden(o.id);
-    expect(det.recordatorio).toEqual({ enviado: null, motivo: null });
+    expect(det.recordatorio).toEqual({ enviado: null, enviados: 0, maximo: 3, motivo: null });
     const r = await A.recordar(o.id);
     expect(r.ok).toBe(true);
     expect(correos).toHaveLength(1);
     expect(correos[0].to).toEqual(['ana@mail.com']);
     expect(correos[0].subject).toMatch(/quedó pendiente/);
     expect(correos[0].text).toMatch(/https:\/\/vorka\.mx\/tienda\/retomar\/[0-9a-f-]{36}\?e=\d+&s=[0-9a-f]{32}/);
-    expect(correos[0].text).toMatch(/único recordatorio/);
+    expect(correos[0].text).not.toMatch(/único recordatorio/);
     expect(correos[0].text).toMatch(/ya pagaste en OXXO/);
     expect((await A.orden(o.id)).recordatorio.enviado).toBe(r.recordatorio_at);
-    await expect(A.recordar(o.id)).rejects.toThrow(/ya se le mandó/);
+    await expect(A.recordar(o.id)).rejects.toThrow(/menos de 48 horas/);
     expect(correos).toHaveLength(1);
     expect((await A.ordenes({ estado: 'pending' })).ordenes[0].recordatorio_at).toBe(r.recordatorio_at);
   });
@@ -61,10 +61,37 @@ describe('recordatorio de compra sin terminar', () => {
     expect(correos).toHaveLength(0);
   });
 
-  it('no repite recordatorio al mismo correo en la misma semana', async () => {
+  it('no repite seguimiento al mismo correo antes de 48 horas', async () => {
     const a = await pendiente('d@mail.com', 30), b = await pendiente('d@mail.com', 4);
     await A.recordar(a.id);
-    await expect(A.recordar(b.id)).rejects.toThrow(/esta semana/);
+    await expect(A.recordar(b.id)).rejects.toThrow(/48 horas/);
+  });
+
+  it('permite hasta 3 correos de seguimiento por orden, con 48 horas entre uno y otro', async () => {
+    const o = await pendiente('f@mail.com', 24 * 10);
+    const r1 = await A.recordar(o.id);
+    expect(r1.seguimientos).toBe(1);
+    // simula que pasaron 3 días desde el último
+    const atras = iso => new Date(Date.parse(iso) - 3 * 864e5).toISOString();
+    await env.DB.prepare('UPDATE orders SET recordatorio_at = ? WHERE id = ?').bind(atras(r1.recordatorio_at), o.id).run();
+    const r2 = await A.recordar(o.id);
+    expect(r2.seguimientos).toBe(2);
+    expect(correos[1].subject).toMatch(/Te ayudamos a terminar/);
+    await env.DB.prepare('UPDATE orders SET recordatorio_at = ? WHERE id = ?').bind(atras(r2.recordatorio_at), o.id).run();
+    await A.recordar(o.id);
+    await env.DB.prepare("UPDATE orders SET recordatorio_at = '2000-01-01T00:00:00.000Z' WHERE id = ?").bind(o.id).run();
+    await expect(A.recordar(o.id)).rejects.toThrow(/los 3 correos/);
+    expect(correos).toHaveLength(3);
+  });
+
+  it('archivar ("borrar") una orden sin pagar la oculta, y si después se paga vuelve a aparecer', async () => {
+    const o = await pendiente('g@mail.com', 5);
+    await A.archivarOrden(o.id);
+    expect((await A.ordenes({ q: 'g@mail.com' })).ordenes).toHaveLength(0);
+    expect((await A.ordenes({ q: 'g@mail.com', archivadas: '1' })).ordenes).toHaveLength(1);
+    await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: 27900, moneda: 'MXN', metodo_pago: 'oxxo', provider_payment_id: 'pi_tarde' });
+    expect((await A.ordenes({ q: 'g@mail.com' })).ordenes[0].estado).toBe('paid');
+    await expect(A.archivarOrden(o.id)).rejects.toThrow(/no se pagaron/);
   });
 
   it('si el correo falla, no queda marcado como enviado', async () => {

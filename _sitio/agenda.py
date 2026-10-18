@@ -442,5 +442,5 @@ def pagina_agenda():
     </div>
   </section>
 </main>
-{pie()}{JS}'''
+{pie('empresas')}{JS}'''
     return cabeza('Agenda tu diagnóstico · Vorka México', 'Solicita una sesión de diagnóstico de 45 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.', '/agenda/', og='cdmx-noche', extra=CSS) + cuerpo + '\n</body>\n</html>\n'

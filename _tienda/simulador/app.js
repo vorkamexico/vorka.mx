@@ -114,42 +114,46 @@
     return r;
   }
   function empezar(modo, arg) {
-    if (modo === 'completo') return empezarCompleto();
+    if (esIntento(modo)) return empezarCompleto(modo);
     var secs = modo === 'seccion' ? [armarSeccion(arg)] : [armarPractica(arg)];
     run = nuevoRun(modo, secs); guardar(K_RUN, run); introSeccion();
   }
-  // El simulacro completo gasta 1 intento: lo abre el servidor (o retoma el que esté abierto, aunque sea de otro dispositivo)
-  function empezarCompleto() {
-    var it = YO.intentos || { disponibles: 0 };
+  // El simulacro corto y el examen completo gastan 1 intento: los abre el servidor (o retoma el que esté abierto, aunque sea de otro dispositivo)
+  function empezarCompleto(modo) {
+    modo = modo === 'examen' ? 'examen' : 'completo';
+    var it = cuentaDe(modo), ex = modo === 'examen', uno = it.disponibles === 1;
+    var nombre = ex ? 'examen' : 'simulacro', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen completo disponible' : 'exámenes completos disponibles') : (uno ? 'simulacro corto disponible' : 'simulacros cortos disponibles'));
     if (!it.abierto) {
-      if (it.disponibles <= 0) return comprar();
-      if (!confirm('Este simulacro usa 1 de tus ' + it.disponibles + ' simulacro' + (it.disponibles === 1 ? '' : 's') + ' completo' + (it.disponibles === 1 ? '' : 's') + ' disponible' + (it.disponibles === 1 ? '' : 's') + '. Aunque no lo termines, el intento cuenta. ¿Empezar ahora?')) return;
+      if (it.disponibles <= 0) return comprar(modo);
+      if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex ? ' Son 175 reactivos y 3 horas, como la PAA real; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
     }
-    api('iniciar', { method: 'POST' }).then(function (d) {
-      YO.intentos = d.intentos;
-      var secs = B.secciones.map(function (s, i) { return { id: s.id, items: d.items[i], idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false }; });
-      run = nuevoRun('completo', secs); run.intento = d.id; guardar(K_RUN, run); introSeccion();
+    api('iniciar', { method: 'POST', body: JSON.stringify({ tipo: ex ? 'examen' : 'corto' }) }).then(function (d) {
+      if (ex) YO.examenes = d.intentos; else YO.intentos = d.intentos;
+      var base = ex ? B.examen : B.secciones;
+      var secs = base.map(function (s, i) { return { id: s.id, items: d.items[i], idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false }; });
+      run = nuevoRun(modo, secs); run.intento = d.id; if (ex) run.sinTutor = true; guardar(K_RUN, run); introSeccion();
     }).catch(function (e) {
-      if (e.status === 402) { YO.intentos = (e.datos || {}).intentos || YO.intentos; comprar(); }
+      if (e.status === 402) { var c = (e.datos || {}).intentos; if (c) { if (ex) YO.examenes = c; else YO.intentos = c; } comprar(modo); }
       else alert(e.message || 'No pudimos abrir el simulacro. Revisa tu conexión.');
     });
   }
   function descartar() {
-    var id = run && run.modo === 'completo' ? run.intento : null;
+    var id = run && esIntento(run.modo) ? run.intento : null;
     run = null; guardar(K_RUN, null);
     if (!id) return inicio();
-    api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; }).finally(inicio);
+    api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; }).finally(inicio);
   }
 
   // ---------- comprar simulacros adicionales ----------
   function precio(c) { return '$' + (c / 100).toLocaleString('es-MX') + ' MXN'; }
-  function comprar() {
+  function comprar(modo) {
     detenerReloj(); pintarBarra();
-    var x = YO.intentoExtra, it = YO.intentos || {};
-    if (!x) { h('<section class="sim-intro"><h1>Ya usaste tus simulacros completos</h1><p class="sim-lead">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para conseguir más intentos. Mientras tanto, puedes seguir practicando por sección sin límite.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
-    h('<section class="sim-intro sim-comprar"><span class="sim-paso">Simulacros completos</span>' +
-      '<h1>' + (it.disponibles ? 'Suma más simulacros completos' : 'Ya usaste tus ' + (it.incluidos || 2) + ' simulacros completos') + '</h1>' +
-      '<p class="sim-lead">Cada simulacro adicional cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago. La práctica por sección y por temas sigue sin límite.</p>' +
+    var ex = modo === 'examen', x = ex ? YO.examenExtra : YO.intentoExtra, it = cuentaDe(ex ? 'examen' : 'completo');
+    var que = ex ? 'exámenes PAA completos' : 'simulacros cortos', uno = ex ? 'examen completo adicional' : 'simulacro corto adicional';
+    if (!x) { h('<section class="sim-intro"><h1>Ya usaste tus ' + que + '</h1><p class="sim-lead">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para conseguir más intentos. Mientras tanto, puedes seguir practicando por sección sin límite.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
+    h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + (ex ? 'Examen PAA completo' : 'Simulacros cortos') + '</span>' +
+      '<h1>' + (it.disponibles ? 'Suma más ' + que : 'Ya usaste tus ' + (it.incluidos || (ex ? 1 : 2)) + ' ' + que) + '</h1>' +
+      '<p class="sim-lead">Cada ' + uno + ' cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago.' + (ex ? ' Son 175 reactivos y 3 horas, como la PAA real, con preguntas que priorizan lo que no has visto.' : '') + ' La práctica por sección y por temas sigue sin límite.</p>' +
       '<form class="sim-card sim-compra" id="f-compra">' +
         '<div class="sim-cant"><span>¿Cuántos quieres?</span><div class="sim-cant-c"><button type="button" id="c-menos" aria-label="Uno menos">−</button><b class="num" id="c-n" aria-live="polite">1</b><button type="button" id="c-mas" aria-label="Uno más">+</button></div></div>' +
         '<div class="sim-total"><span>Total</span><b class="num" id="c-total">' + precio(x.precio_centavos) + '</b></div>' +
@@ -186,7 +190,7 @@
   }
 
   // ---------- inicio ----------
-  function ultimoCompleto() { for (var i = 0; i < YO.historial.length; i++) if (YO.historial[i].modo === 'completo') return YO.historial[i]; return null; }
+  function ultimoCompleto() { for (var i = 0; i < YO.historial.length; i++) if (esIntento(YO.historial[i].modo)) return YO.historial[i]; return null; }
   function inicio() {
     detenerReloj(); pintarBarra();
     var u = ultimoCompleto(), m = meta();
@@ -194,12 +198,18 @@
     var retomar = run && run.fase !== 'fin' ? '<div class="sim-aviso"><div><b>Tienes un simulacro sin terminar.</b><span>' + esc(nombreModo(run)) + ' · ' + contestadas(run) + ' de ' + totalItems(run) + ' respondidas</span></div><div class="botones"><button class="btn tinta chico" id="b-ret">Continuar</button><button class="btn blanco chico" id="b-desc">Descartar</button></div></div>' : '';
     var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu puntaje estimado por sección, tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
     var debiles = u ? temasDebiles(u.temas, 3) : [];
-    var it = YO.intentos || { incluidos: 0, disponibles: 0 };
-    // Si el simulacro completo de este dispositivo ya se cerró en otro, se descarta aquí
-    if (run && run.modo === 'completo' && (!it.abierto || it.abierto.id !== run.intento)) { run = null; guardar(K_RUN, null); retomar = ''; }
-    if (!run && it.abierto) retomar = '<div class="sim-aviso"><div><b>Tienes un simulacro completo abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
-    var intentos = '<div class="sim-intentos' + (it.disponibles ? '' : ' agotados') + '"><div><b class="num">' + it.disponibles + '</b><span>de ' + it.incluidos + ' simulacros completos disponibles</span></div>' +
-      (YO.intentoExtra ? '<button class="btn ' + (it.disponibles ? 'blanco' : 'tinta') + ' chico" id="b-comprar">Comprar más · ' + precio(YO.intentoExtra.precio_centavos) + ' c/u</button>' : '') + '</div>';
+    var it = cuentaDe('completo'), ie = cuentaDe('examen');
+    // Si el intento de este dispositivo ya se cerró en otro, se descarta aquí
+    if (run && esIntento(run.modo) && (!cuentaDe(run.modo).abierto || cuentaDe(run.modo).abierto.id !== run.intento)) { run = null; guardar(K_RUN, null); retomar = ''; }
+    var abiertoSrv = !run && (ie.abierto ? 'examen' : it.abierto ? 'completo' : null);
+    if (abiertoSrv) retomar = '<div class="sim-aviso"><div><b>Tienes ' + (abiertoSrv === 'examen' ? 'un examen PAA completo' : 'un simulacro corto') + ' abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
+    var cajaIntentos = function (c, txt, extra, id) {
+      return '<div class="sim-intentos' + (c.disponibles ? '' : ' agotados') + '"><div><b class="num">' + c.disponibles + '</b><span>de ' + c.incluidos + ' ' + txt + '</span></div>' +
+        (extra ? '<button class="btn ' + (c.disponibles ? 'blanco' : 'tinta') + ' chico" id="' + id + '">Comprar más · ' + precio(extra.precio_centavos) + ' c/u</button>' : '') + '</div>';
+    };
+    var intentos = cajaIntentos(it, 'simulacros cortos disponibles', YO.intentoExtra, 'b-comprar');
+    var intentosEx = cajaIntentos(ie, ie.incluidos === 1 ? 'examen completo disponible' : 'exámenes completos disponibles', YO.examenExtra, 'b-comprar-ex');
+    var exR = (B.examen || []).reduce(function (a, s) { return a + s.reactivos; }, 0), exM = (B.examen || []).reduce(function (a, s) { return a + s.minutos; }, 0);
     // Computadora: dos columnas (practicar a la izquierda; tu estado, meta y banco a la derecha).
     // Celular: una sola columna; el orden lo dan las clases o-* (las columnas se vuelven display: contents).
     h(
@@ -208,7 +218,8 @@
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
           '<section class="o-4"><h2 class="sim-h2 sim-h2-top">Elige cómo practicar</h2>' +
-          '<button class="sim-op sim-op-grande" data-modo="completo"><span class="sim-op-t"><b>Simulacro completo</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · las 4 secciones con cronómetro · usa 1 intento</small></span><span class="sim-op-f">' + FL + '</span></button>' +
+          (B.examen ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Como el examen real</span><b>Examen PAA completo</b><small>' + exR + ' reactivos · ' + Math.floor(exM / 60) + ' horas · las 4 secciones con los tiempos oficiales · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
+          '<button class="sim-op sim-op-grande" data-modo="completo"><span class="sim-op-t"><b>Simulacro corto</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · las 4 secciones con el mismo ritmo por pregunta · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' +
           intentos +
           '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
@@ -235,20 +246,21 @@
     app.querySelectorAll('[data-modo]').forEach(function (b) {
       b.onclick = function () {
         if (run && run.fase !== 'fin') {
-          if (b.dataset.modo === 'completo' && run.modo === 'completo') return continuar();
-          if (!confirm(run.modo === 'completo' ? 'Tienes un simulacro completo sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
-          if (run.modo === 'completo') { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; }); }
+          if (b.dataset.modo === run.modo && esIntento(run.modo)) return continuar();
+          if (!confirm(esIntento(run.modo) ? 'Tienes ' + (run.modo === 'examen' ? 'un examen completo' : 'un simulacro') + ' sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
+          if (esIntento(run.modo)) { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; }); }
         }
         empezar(b.dataset.modo, b.dataset.modo === 'practica' ? b.dataset.temas.split(',') : b.dataset.sec);
       };
     });
     if (retomar) {
       var bd = document.getElementById('b-desc');
-      if (bd) bd.onclick = function () { if (confirm(run.modo === 'completo' ? '¿Descartar el simulacro completo? El intento ya cuenta y no se recupera.' : '¿Descartar la práctica sin terminar?')) descartar(); };
-      var bs = document.getElementById('b-ret-srv'); if (bs) bs.onclick = empezarCompleto;
+      if (bd) bd.onclick = function () { if (confirm(esIntento(run.modo) ? '¿Descartar ' + (run.modo === 'examen' ? 'el examen completo' : 'el simulacro') + '? El intento ya cuenta y no se recupera.' : '¿Descartar la práctica sin terminar?')) descartar(); };
+      var bs = document.getElementById('b-ret-srv'); if (bs) bs.onclick = function () { empezarCompleto(abiertoSrv); };
       var br = document.getElementById('b-ret'); if (br) br.onclick = continuar;
     }
-    var bc = document.getElementById('b-comprar'); if (bc) bc.onclick = comprar;
+    var bc = document.getElementById('b-comprar'); if (bc) bc.onclick = function () { comprar('completo'); };
+    var bce = document.getElementById('b-comprar-ex'); if (bce) bce.onclick = function () { comprar('examen'); };
     app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
     conectarSparks();
   }
@@ -263,22 +275,25 @@
   function regaloHTML() {
     return '<a class="sim-regalo" href="/tienda/simulador-paa/?regalo=1#comprar"><span class="sim-regalo-i" aria-hidden="true">🎁</span><span><b>¿Conoces a alguien que va a presentar?</b><small>Regálale el simulador: le llega una liga de un solo uso con tu mensaje.</small></span><span class="sim-op-f">' + FL + '</span></a>';
   }
-  function nombreModo(r) { return r.modo === 'completo' ? 'Simulacro completo' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
+  // 'completo' = simulacro corto (46 reactivos) · 'examen' = Examen PAA completo (estructura real). Los dos gastan intento.
+  function esIntento(m) { return m === 'completo' || m === 'examen'; }
+  function cuentaDe(m) { return (m === 'examen' ? YO.examenes : YO.intentos) || { incluidos: 0, disponibles: 0 }; }
+  function nombreModo(r) { return r.modo === 'examen' ? 'Examen PAA completo' : r.modo === 'completo' ? 'Simulacro corto' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
   function totalItems(r) { return r.secciones.reduce(function (a, s) { return a + s.items.length; }, 0); }
   function contestadas(r) { return Object.keys(r.resp).filter(function (id) { return r.resp[id].fase === 'fin'; }).length; }
   function tarjetaResumen(u) {
     var c = u.confianza || 0, e = estado(c);
-    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último simulacro completo</span>' +
+    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen PAA completo' : 'simulacro') + '</span>' +
       '<div class="sim-res-mini-f">' + medidor(c, 120) + '<div><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' +
       (u.global ? '<p>Puntaje estimado: <b class="num">' + u.global + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
       '<p class="sim-nota">' + fecha(u.fecha) + '</p></div></div></div>';
   }
   function historial() {
     if (!YO.historial.length) return '';
-    var comp = YO.historial.filter(function (x) { return x.modo === 'completo' && x.global; }).slice(0, 8).reverse();
+    var comp = YO.historial.filter(function (x) { return esIntento(x.modo) && x.global; }).slice(0, 8).reverse();
     var graf = comp.length >= 2 ? graficaHistorial(comp) : '';
     return '<h2 class="sim-h2">Tu avance</h2>' + graf + '<ul class="sim-hist">' + YO.historial.slice(0, 8).map(function (x, i) {
-      var t = x.modo === 'completo' ? 'Simulacro completo' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
+      var t = x.modo === 'examen' ? 'Examen PAA completo' : x.modo === 'completo' ? 'Simulacro corto' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
       var ok = x.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = x.secciones.reduce(function (a, s) { return a + s.total; }, 0);
       return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global ? x.global + ' pts' : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
     }).join('') + '</ul>';
@@ -314,7 +329,7 @@
     var paso = run.secciones.length > 1 ? '<span class="sim-paso">Sección ' + (run.actual + 1) + ' de ' + run.secciones.length + '</span>' : '';
     h('<section class="sim-intro">' + paso + '<h1>' + (practica ? 'Práctica de tus temas' : esc(info.nombre)) + '</h1>' +
       '<p class="sim-lead">' + (practica ? esc(s.temas.map(function (t) { return B.temas[t].nombre; }).join(' · ')) + '. Sin límite de tiempo: enfócate en entender el método.' : esc(info.descripcion)) + '</p>' +
-      '<ul class="sim-datos"><li><b class="num">' + s.items.length + '</b><span>reactivos</span></li>' + (s.limite ? '<li><b class="num">' + info.minutos + '</b><span>minutos</span></li><li><b class="num">' + Math.round(s.limite / s.items.length) + ' s</b><span>por reactivo</span></li>' : '<li><b>Libre</b><span>tiempo</span></li>') + '</ul>' +
+      '<ul class="sim-datos"><li><b class="num">' + s.items.length + '</b><span>reactivos</span></li>' + (s.limite ? '<li><b class="num">' + Math.round(s.limite / 60) + '</b><span>minutos</span></li><li><b class="num">' + Math.round(s.limite / s.items.length) + ' s</b><span>por reactivo</span></li>' : '<li><b>Libre</b><span>tiempo</span></li>') + '</ul>' +
       '<div class="sim-reglas"><h2>Cómo funciona</h2><ol>' +
         '<li><b>Primer intento.</b> Elige tu respuesta y confírmala. Este intento es el que cuenta para tu puntaje, como en la PAA.</li>' +
         '<li><b>Si fallas,</b> el tutor no te da la respuesta: te explica el concepto y cómo resolverlo para que lo intentes otra vez.</li>' +
@@ -354,7 +369,7 @@
     // La pista va justo arriba del botón para el segundo intento
     var accion = st.fase === 'fin' ? '' : r.tipo === 'abierta' ? '' : '<div class="sim-acc"><span class="sim-atajos" aria-hidden="true"><kbd>A</kbd>–<kbd>D</kbd> elegir · <kbd>Enter</kbd> confirmar</span><button class="btn tinta" id="b-conf" disabled>' + (st.fase === 'r2' ? 'Confirmar segundo intento' : 'Confirmar respuesta') + '</button></div>';
     h('<section class="sim-q' + (texto ? ' con-texto' : '') + '">' + progreso + cab +
-      '<div class="sim-q-cols">' + lectura + '<div class="sim-q-main"><h1 class="sim-enun">' + rico(r.enunciado) + '</h1>' + tabla + cuerpo +
+      '<div class="sim-q-cols">' + lectura + '<div class="sim-q-main"><h1 class="sim-enun">' + rico(r.enunciado) + '</h1>' + (r.figura ? '<figure class="sim-fig">' + r.figura + '</figure>' : '') + tabla + cuerpo +
       '<div id="tutor">' + tutor(r, st, orden) + '</div>' + accion + '</div></div></section>');
     if (texto) texto.visto = true;
     conectarPregunta(r, st, orden);
@@ -377,7 +392,9 @@
       '<div class="sim-acc"><button class="btn tinta" id="b-sig">' + (ultimo ? 'Terminar sección' : 'Siguiente') + ' ' + FL + '</button></div>';
   }
   function normal(v) {
-    v = String(v || '').trim().replace(/\s/g, '').replace(',', '.').replace(/°$/, '');
+    v = String(v || '').trim().replace(/\s/g, '').replace(/[−–]/g, '-').replace(/°$/, '');
+    // 6,050 es separador de miles; 2,5 es decimal
+    v = /^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(v) ? v.replace(/,/g, '') : v.replace(',', '.');
     var f = v.match(/^(-?\d+)\/(\d+)$/); if (f && Number(f[2])) return Number(f[1]) / Number(f[2]);
     return v === '' || isNaN(Number(v)) ? NaN : Number(v);
   }
@@ -387,6 +404,13 @@
   }
   function responder(r, st, v) {
     var s = secActual();
+    if (st.fase === 'r1' && run.sinTutor) {
+      // Examen completo: como en la PAA, una sola respuesta y a la siguiente; las explicaciones van en el reporte
+      st.sel1 = v; st.ok1 = esCorrecta(r, v); st.fase = 'fin';
+      s.idx++; guardar(K_RUN, run);
+      if (s.idx >= s.items.length) { detenerReloj(); finSeccion(); } else pregunta();
+      return;
+    }
     if (st.fase === 'r1') {
       st.sel1 = v; st.ok1 = esCorrecta(r, v);
       st.fase = st.ok1 ? 'fin' : 'r2';
@@ -496,7 +520,7 @@
       vistos_.push(id);
     }); });
     var base = secs.filter(function (s) { return ['lectura', 'redaccion', 'matematicas'].indexOf(s.id) >= 0; });
-    var global = run.modo === 'completo' && base.length ? Math.round(base.reduce(function (a, s) { return a + s.puntaje; }, 0) / base.length / 10) * 10 : null;
+    var global = esIntento(run.modo) && base.length ? Math.round(base.reduce(function (a, s) { return a + s.puntaje; }, 0) / base.length / 10) * 10 : null;
     var res = { modo: run.modo, secciones: secs, temas: temas, fallados: fallados, vistos: vistos_, global: global, meta: meta(), fecha: new Date().toISOString(),
       resp: run.resp, orden: run.orden, items: run.secciones.map(function (s) { return s.items; }) };
     res.confianza = confianza(res, ultimoCompleto()).total;
@@ -506,7 +530,7 @@
     // Al servidor solo va el resumen (el detalle de respuestas se queda para este reporte)
     var envio = { modo: res.modo, intento: intento, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
     YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos_ }, envio));
-    if (intento && YO.intentos) YO.intentos.abierto = null;
+    if (intento) cuentaDe(res.modo).abierto = null;
     api('resultados', { method: 'POST', body: JSON.stringify(envio) }).catch(function (e) {
       // Sin conexión: se guarda y se reintenta al volver a abrir el simulador
       if (!e.status) { guardar(K_PEND, envio); var a = document.getElementById('aviso-guardar'); if (a) a.hidden = false; }
@@ -612,7 +636,7 @@
     }
 
     h('<section class="sim-rep">' +
-      '<span class="etiqueta">' + esc(res.modo === 'completo' ? 'Resultado del simulacro completo' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
+      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen PAA completo' : res.modo === 'completo' ? 'Resultado del simulacro corto' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
         '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global ? '<p class="sim-global">Puntaje estimado <b class="num">' + res.global + '</b><small> / 800 · meta ' + m + '</small></p>' : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' +
@@ -624,7 +648,7 @@
       '<p class="sim-nota sim-disc">El puntaje es una estimación de Vorka México basada en tus aciertos ponderados por dificultad; no es una calificación oficial del College Board. Úsalo para orientar tu estudio y medir tu avance.</p>' +
       regaloHTML() +
       sparks('reporte') +
-      '<div class="botones sim-fin"><button class="btn tinta" id="b-inicio">Volver al inicio</button>' + (res.modo === 'completo' ? '' : '<button class="btn blanco" data-modo-otra="completo">Hacer el simulacro completo</button>') + '</div>' +
+      '<div class="botones sim-fin"><button class="btn tinta" id="b-inicio">Volver al inicio</button>' + (esIntento(res.modo) ? '' : '<button class="btn blanco" data-modo-otra="completo">Hacer un simulacro corto</button>') + '</div>' +
       '</section>');
     document.getElementById('b-inicio').onclick = inicio;
     app.querySelectorAll('[data-practica]').forEach(function (b) { b.onclick = function () { empezar('practica', b.dataset.practica.split(',')); }; });

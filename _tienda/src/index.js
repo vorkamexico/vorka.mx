@@ -16,7 +16,7 @@ import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
-import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias } from './regalos.js';
+import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
@@ -56,6 +56,15 @@ export class Admin extends WorkerEntrypoint {
   cortesias() { return cortesias(this.env); }
   crearCortesias(d) { return crearCortesias(this.env, d); }
   revocarCortesias(id) { return revocarCortesias(this.env, id); }
+  borrarCortesia(id) { return borrarCortesia(this.env, id); }
+  // Ligas de regalo (compras para regalar y cortesías): ver, apagar y volver a prender una por una
+  ligas(orderId) { return ligasDe(this.env, orderId); }
+  apagarLiga(id) { return apagarLiga(this.env, id); }
+  prenderLiga(id) { return prenderLiga(this.env, id); }
+  async apagarLigasOrden(orderId) { await revocarRegalos(this.env, String(orderId)); return { ok: true }; }
+  // Órdenes sin pagar: archivarlas (dejan de verse; si se pagan después, vuelven solas)
+  archivarOrden(id) { return admin.archivarOrden(this.env, id); }
+  archivarSinPagar(f) { return admin.archivarSinPagar(this.env, f); }
 }
 
 export default {

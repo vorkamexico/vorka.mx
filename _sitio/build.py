@@ -323,7 +323,7 @@ def servicios_hub():
 </section>
 {cierre()}
 </main>
-{pie()}'''
+{pie('empresas')}'''
     extra = f'<script type="application/ld+json">{json.dumps(faq_ld, ensure_ascii=False)}</script>\n'
     return cabeza('Servicios · Vorka México', 'Estrategia y Dirección, Liderazgo y Talento, Comunicación e Influencia: qué incluye cada servicio, para quién es y qué te llevas. Agenda tu diagnóstico sin costo.', '/servicios/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
@@ -377,7 +377,7 @@ def servicio(s):
   </div>
 </section>
 </main>
-{pie()}'''
+{pie('empresas')}'''
     return cabeza(f"{s['area']} · Vorka México", f"{s['promesa']} {s['para']}", f"/servicios/{s['slug']}/", og=s['cabecera']) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- 404

@@ -63,7 +63,7 @@ export async function checkout(req, env) {
   for (const it of items) {
     const p = await productoPorSlug(env, it.slug);
     // Los simulacros adicionales del Simulador PAA solo los compra quien ya tiene el simulador
-    if (p?.contenido?.acceso?.tipo === 'intento' && !(await puedeComprarIntento(env, d.email)))
+    if (['intento', 'examen'].includes(p?.contenido?.acceso?.tipo) && !(await puedeComprarIntento(env, d.email)))
       return error('Para comprar simulacros adicionales primero necesitas el Simulador PAA, con el mismo correo de tu compra.', 403);
     if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
   }

@@ -1,7 +1,7 @@
 // Arma un simulacro completo en el servidor (así el intento queda registrado con sus reactivos y se puede
 // retomar en otro dispositivo). Prioriza lo que el estudiante NO ha visto en simulacros anteriores:
 // primero lecturas nuevas y reactivos nuevos de cada tema; solo si se acaban, repite.
-import { SECCIONES, TEXTOS, REACTIVOS } from './banco.js';
+import { SECCIONES, SECCIONES_EXAMEN, TEXTOS, REACTIVOS } from './banco.js';
 
 const barajar = (a, azar) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(azar() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -38,3 +38,28 @@ export function armarSeccion(sid, azar = Math.random, vistos = new Set()) {
 }
 
 export const armarCompleto = (azar = Math.random, vistos = new Set()) => SECCIONES.map(s => armarSeccion(s.id, azar, vistos));
+
+// ---------- Examen PAA completo (estructura real: 175 reactivos) ----------
+// Lectura: lecturas completas (alternando literaria y no literaria, las menos vistas primero) hasta llegar a n;
+// si sobran preguntas de la última lectura se recortan, y si faltan se completa con reactivos sueltos.
+// Inglés: unas 2 de cada 5 preguntas salen de lecturas; el resto, sueltos repartidos por tema.
+function lecturasHasta(sid, n, azar, vistos, tipos = ['literario', 'no_literario']) {
+  const vistosDe = k => delTexto(k).filter(r => vistos.has(r.id)).length;
+  const porTipo = tipos.map(t => barajar(Object.keys(TEXTOS).filter(k => TEXTOS[k].seccion === sid && (!t || TEXTOS[k].tipo === t)), azar).sort((a, b) => vistosDe(a) - vistosDe(b)));
+  const out = [];
+  for (let i = 0; out.length < n && porTipo.some(l => l.length); i++) {
+    const l = porTipo[i % porTipo.length]; if (!l.length) continue;
+    out.push(...delTexto(l.shift()).slice(0, n - out.length));
+  }
+  return out;
+}
+export function armarSeccionExamen(sid, azar = Math.random, vistos = new Set()) {
+  const n = SECCIONES_EXAMEN.find(x => x.id === sid).reactivos;
+  const sueltos = REACTIVOS.filter(r => r.seccion === sid && !r.texto);
+  let items;
+  if (sid === 'lectura') { const lect = lecturasHasta(sid, n, azar, vistos); items = [...lect, ...porTema(sueltos, n - lect.length, azar, vistos)]; }
+  else if (sid === 'ingles') { const lect = lecturasHasta(sid, Math.round(n * 0.4), azar, vistos, [null]); items = [...porTema(sueltos, n - lect.length, azar, vistos), ...lect]; }
+  else items = porTema(sueltos, n, azar, vistos);
+  return items.map(r => r.id);
+}
+export const armarExamen = (azar = Math.random, vistos = new Set()) => SECCIONES_EXAMEN.map(s => armarSeccionExamen(s.id, azar, vistos));

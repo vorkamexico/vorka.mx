@@ -5,7 +5,7 @@ export const REACTIVOS_REDACCION = [
   { id: 'R2-con-1', seccion: 'redaccion', tema: 'concordancia', dificultad: 1,
     enunciado: 'Completa: "El grupo de turistas que llegó ayer ______ el museo esta mañana."',
     opciones: ['visitaron', 'visitó', 'visitamos', 'visitarán'], correcta: 1,
-    pista: 'Quita el complemento "de turistas que llegó ayer" y pregúntate: ¿quién visitó? ¿Esa palabra es singular o plural? Fíjate también en "esta mañana".',
+    pista: 'Quita el complemento "de turistas que llegó ayer" y pregúntate: ¿quién realizó la acción? ¿Esa palabra es singular o plural? Fíjate también en "esta mañana".',
     pasos: ['Núcleo del sujeto: "grupo" (singular).', 'El verbo debe ir en singular, aunque "turistas" sea plural.', '"Esta mañana" pide pasado: "visitó".'],
     regla: 'El verbo concuerda con el núcleo del sujeto. Los sustantivos colectivos en singular (grupo, conjunto, equipo) llevan verbo en singular.' },
   { id: 'R2-con-2', seccion: 'redaccion', tema: 'concordancia', dificultad: 2,
