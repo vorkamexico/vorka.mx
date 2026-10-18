@@ -198,7 +198,7 @@ Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"
 
 **Intentos** (migración 0009): la compra trae 2 simulacros completos (`contenido.acceso.intentos`). El producto oculto `simulador-paa-intento` ($50, `contenido.oculto`) suma 1 por unidad y solo lo compra quien ya tiene el simulador (candado en `/api/checkout`). Se cuentan por correo en `simulador_intentos`; el servidor arma cada simulacro completo (`src/simulador/armar.js`) y un intento abandonado también cuenta. Secciones sueltas y práctica de temas no gastan intentos.
 
-**Examen PAA completo** (migración 0011): misma cantidad de preguntas y tiempo que la PAA real (`SECCIONES_EXAMEN` en `banco.js`: Lectura 45/50 min, Redacción 25/30, Matemáticas 55/60, Inglés 50/40 = 175 reactivos, 3 h), sin tutor. La compra trae 1 (`contenido.acceso.examenes`) además de los 2 cortos; el producto oculto `simulador-paa-examen` ($100) suma 1. `simulador_intentos.tipo` distingue `corto` y `examen`.
+**Examen PAA completo** (migración 0012): misma cantidad de preguntas y tiempo que la PAA real (`SECCIONES_EXAMEN` en `banco.js`: Lectura 45/50 min, Redacción 25/30, Matemáticas 55/60, Inglés 50/40 = 175 reactivos, 3 h), sin tutor. La compra trae 1 (`contenido.acceso.examenes`) además de los 2 cortos; el producto oculto `simulador-paa-examen` ($100) suma 1. `simulador_intentos.tipo` distingue `corto` y `examen`.
 
 **Panel (os.vorka.mx → Tienda)**: hasta 3 correos de seguimiento por orden sin pagar (48 h entre uno y otro), "Borrar" una orden sin pagar la archiva (si el pago llega tarde se entrega y vuelve a aparecer), y las ligas de regalo se pueden apagar/prender una por una o borrar una tanda de cortesías que nadie ha usado.
 
@@ -222,7 +222,7 @@ Publicar: doble clic en `_tienda/publicar-simulador.command` después del merge 
 
 Invitaciones digitales con marca propia (Diversificación). Aquí solo se vende; la app vive en `os.vorka.mx/brindi/` (ver `vorka-os/PLAN-BRINDI.md`).
 
-- Productos de **acceso** (`contenido.acceso.app = "brindi"`, migración 0011): 3 planes y 8 complementos. Entran **ocultos**; solo el plan Celebración sale en el catálogo y todos se compran desde `/tienda/brindi/` (`src/brindi.js`).
+- Productos de **acceso** (`contenido.acceso.app = "brindi"`, migración 0012): 3 planes y 8 complementos. Entran **ocultos**; solo el plan Celebración sale en el catálogo y todos se compran desde `/tienda/brindi/` (`src/brindi.js`).
 - El correo de compra lleva a `acceso.url` (`https://os.vorka.mx/brindi/entrar/<token>`). Vorka OS valida ese token con `Admin.validarAcceso` y convierte cada unidad pagada en un crédito con `Admin.comprasApp`. Un reembolso revoca el crédito y despublica el evento.
 - La analítica de ventas para Diversificación sale de `Admin.resumenApp`. Las visitas a la ficha se registran en el producto Celebración.
 - Condiciones: `/legal/brindi/` (generada con `python3 _tienda/legales.py`).
