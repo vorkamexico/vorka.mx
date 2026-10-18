@@ -1,4 +1,4 @@
-# Vorka México · páginas legales de la tienda: /legal/terminos/ y /legal/reembolsos/
+# Vorka México · páginas legales de la tienda: /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y /legal/brindi/
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
 import os, re, sys
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -99,6 +99,37 @@ CREADORES = [
     ('datos', 'Datos personales', '<p>Tratamos tus datos conforme al <a href="/privacidad/">aviso de privacidad</a>. Tus datos fiscales, de identidad y bancarios los recaba y resguarda Stripe para procesar tus pagos.</p>'),
 ]
 
+# Brindi (invitaciones digitales). Pendiente de revisión legal antes del lanzamiento (ver vorka-os/PLAN-BRINDI.md).
+BRINDI = [
+    ('quien', 'Qué es Brindi y quién lo presta', f'<p>Brindi es un servicio de invitaciones digitales desarrollado y prestado por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Al comprar un plan o usar Brindi aceptas estas condiciones, los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/privacidad/">aviso de privacidad</a>.</p>'),
+    ('planes', 'Planes y complementos', li(
+        'Cada plan es un pago único por un evento. No hay mensualidades ni cargos automáticos.',
+        'Lo que incluye cada plan y cada complemento (límite de invitados, funciones, fotos) se describe en <a href="/tienda/brindi/">vorka.mx/tienda/brindi</a> al momento de comprar. Esos límites se respetan durante toda la vigencia de tu evento.',
+        'Puedes crear y previsualizar tu invitación sin pagar. Para publicarla necesitas un plan.',
+        'El plan se aplica al publicar tu primer evento con él y queda ligado a ese evento: no se transfiere a otro.')),
+    ('vigencia', 'Vigencia y conservación de datos', li(
+        'Tu invitación queda en línea hasta 30 días después de la fecha de tu evento. Después muestra un mensaje de agradecimiento y deja de recibir confirmaciones.',
+        'Conservamos la información del evento (invitados, confirmaciones, entradas y fotos) 90 días más para que puedas descargarla. Después se borra de forma definitiva.',
+        'Con el complemento de extensión sumas 90 días a ambos plazos.',
+        'Puedes borrar un evento o tu cuenta completa en cualquier momento desde tu panel.')),
+    ('reembolsos', 'Cancelaciones y reembolsos', li(
+        'Si no has publicado ninguna invitación con tu plan, puedes pedir el reembolso completo dentro de los 7 días siguientes a tu compra escribiendo a hola@vorka.mx con tu número de orden.',
+        'Una vez publicada una invitación con el plan, no hay reembolso, salvo que una falla atribuible a Brindi impida usar el servicio y no la resolvamos en un plazo razonable.',
+        'Los servicios de configuración asistida y diseño profesional se reembolsan completos si cancelas antes de que empecemos a trabajar.',
+        'Si se reembolsa una compra, se retira el plan o complemento y la invitación puede dejar de estar en línea.')),
+    ('contenido', 'Tu contenido', li(
+        'Eres responsable de los textos, nombres, fotos y datos que publicas. Debes tener derecho a usarlos y el consentimiento de las personas que aparecen, en especial si son menores de edad.',
+        'No se permite usar Brindi para engaños, spam, contenido ilegal u ofensivo, ni para recabar datos de personas sin su conocimiento.',
+        'Los invitados pueden reportar una invitación. Podemos suspender eventos o cuentas que incumplan estas reglas y te avisaremos el motivo.',
+        'Conservas los derechos sobre tu contenido. Nos das permiso de alojarlo y mostrarlo solo para prestarte el servicio.')),
+    ('invitados', 'Datos de tus invitados', '<p>Al registrar invitados y recibir sus confirmaciones, tú decides para qué se usan esos datos (organizar tu evento) y Vorka los trata solo por tu cuenta para prestarte el servicio. Ningún dato se vende ni se usa para publicidad.</p>' + li(
+        'Las invitaciones no aparecen en buscadores salvo que tú lo actives. Los enlaces personales y los pases de acceso usan códigos aleatorios que no revelan nombres.',
+        'Quien recibe una invitación puede pedirte que corrijas o borres sus datos; también puede escribirnos a hola@vorka.mx y te lo haremos saber.',
+        'Solo pide a tus invitados los datos que necesitas (nombre, número de lugares y, si quieres, celular y preferencia de alimentación).')),
+    ('servicio', 'Disponibilidad del servicio', '<p>Hacemos lo razonable para que Brindi funcione sin interrupciones, con copias de seguridad de la base de datos y monitoreo de errores. Puede haber mantenimientos o fallas de terceros (internet, proveedores de nube o de pago). Brindi no envía mensajes por WhatsApp en tu nombre: los envíos los haces tú desde tu celular.</p>'),
+    ('cambios', 'Cambios a estas condiciones', '<p>Si cambiamos estas condiciones, la versión nueva aplica a compras posteriores. Lo que ya compraste conserva las condiciones del momento de la compra.</p>'),
+]
+
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -112,3 +143,5 @@ escribir('/legal/reembolsos/', pagina('/legal/reembolsos/', 'Política de reembo
     'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS))
 escribir('/legal/creadores/', pagina('/legal/creadores/', 'Términos para creadores', 'Términos para <span class="metal">creadores.</span>',
     'Cómo funciona vender tus productos digitales en la tienda de Vorka México: aprobación, contenido, comisiones, pagos e impuestos.', 'Creadores', CREADORES))
+escribir('/legal/brindi/', pagina('/legal/brindi/', 'Condiciones de Brindi', 'Condiciones de <span class="metal">Brindi.</span>',
+    'Cómo funcionan los planes de Brindi, cuánto tiempo está en línea tu invitación, qué pasa con los datos de tus invitados y cuándo hay reembolso.', 'Brindi', BRINDI))

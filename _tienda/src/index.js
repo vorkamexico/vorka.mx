@@ -16,6 +16,7 @@ import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
+import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp } from './brindi.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -65,6 +66,11 @@ export class Admin extends WorkerEntrypoint {
   // Órdenes sin pagar: archivarlas (dejan de verse; si se pagan después, vuelven solas)
   archivarOrden(id) { return admin.archivarOrden(this.env, id); }
   archivarSinPagar(f) { return admin.archivarSinPagar(this.env, f); }
+  // Apps de Diversificación en Vorka OS (Brindi): entrada con el correo de compra, créditos, ventas y productos
+  validarAcceso(token, app) { return validarAcceso(this.env, token, app); }
+  comprasApp(email, app) { return comprasApp(this.env, email, app); }
+  resumenApp(app, f) { return resumenApp(this.env, app, f); }
+  productosApp(app) { return productosApp(this.env, app); }
 }
 
 export default {
@@ -98,6 +104,7 @@ export default {
       if (request.method === 'GET' || request.method === 'HEAD') {
         if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
         if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
+        if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
         if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
         // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.
         const img = url.pathname.match(/^\/tienda\/img\/(portadas\/[a-z0-9-]+\.(?:jpg|png|webp))$/);
