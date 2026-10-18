@@ -41,7 +41,6 @@ main.fc { overflow-x: clip; }
 .fc-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
   radial-gradient(70% 60% at 50% 52%, rgba(11, 18, 64, .55) 0%, rgba(11, 18, 64, .25) 100%),
   linear-gradient(180deg, rgba(8, 13, 46, .72) 0%, rgba(11, 18, 64, .38) 45%, rgba(8, 13, 46, .88) 100%); }
-.fc-hero::after { content: "Calle Madero · Celaya"; position: absolute; right: var(--x); bottom: 18px; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: rgba(230, 207, 150, .75); }
 .fc-hero-in { display: grid; justify-items: center; gap: 20px; }
 .escudo { width: clamp(120px, 10.5vw, 148px); height: auto; overflow: visible; filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .45)); }
 .ef-fondo { fill: #0E0F14; }
