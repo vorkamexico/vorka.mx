@@ -2,7 +2,7 @@
 // /descargas/<token>/<n>        → descarga el archivo n desde R2 (Content-Disposition: attachment)
 // El bucket es privado: los archivos solo salen por aquí, nunca con URL pública de R2.
 import { one, all, run, fail } from './util.js';
-import { hashToken, MAX_DESCARGAS, personalizeFile } from './entrega.js';
+import { hashToken, MAX_DESCARGAS, personalizeFile, urlEntrar } from './entrega.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, DOC } from './marco.generado.js';
 
@@ -62,8 +62,8 @@ export async function paginaDescargas(env, token) {
     </li>`).join('') + v.accesos.map(a => `
     <li class="t-archivo">
       <span class="t-archivo-i" aria-hidden="true">${FLECHA}</span>
-      <span class="t-archivo-t"><b>${esc(a.producto)}</b><small>Acceso en línea durante un año desde tu compra</small></span>
-      <a class="btn tinta chico" href="/${esc(a.app)}/entrar/${token}">${esc(a.boton || 'Entrar')}</a>
+      <span class="t-archivo-t"><b>${esc(a.producto)}</b><small>${esc(a.detalle || 'Acceso en línea durante un año desde tu compra')}</small></span>
+      <a class="btn tinta chico" href="${esc(urlEntrar(env, a, token))}">${esc(a.boton || 'Entrar')}</a>
     </li>`).join('');
   return pagina({
     titulo: 'Tus descargas · Vorka México', ruta: '/descargas/', noindex: true, headers: SIN_REFERER,

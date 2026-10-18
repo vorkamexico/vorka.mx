@@ -61,15 +61,20 @@ Vorka México · Guanajuato, México`;
   return { asunto, html, texto };
 }
 
+// Enlace de entrada de una app: en vorka.mx/<app>/entrar/ o, si la app vive en otro dominio (Brindi en os.vorka.mx), en acceso.url
+export const urlEntrar = (env, acceso, token) => acceso.url && /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(acceso.url) ? `${acceso.url}${token}` : `${env.SITE_URL}/${acceso.app}/entrar/${token}`;
+
 function correoAcceso(env, orden, items, token, acceso) {
-  const url = items.length === 1 ? `${env.SITE_URL}/${acceso.app}/entrar/${token}` : `${env.SITE_URL}/descargas/${token}`;
+  const url = items.length === 1 ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
   const nombre = orden.nombre.split(' ')[0];
   const intento = acceso.tipo === 'intento', regalo = !!orden.regalo_de;
   const asunto = intento ? 'Tus simulacros adicionales ya están listos' : regalo ? `Tu regalo está activo: ${items[0].nombre}` : `Tu acceso: ${items[0].nombre}`;
   const linea1 = intento ? '¡Gracias por tu compra! Tus simulacros completos adicionales ya están disponibles en tu cuenta.'
     : regalo ? `¡Te regalaron el ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.` : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
-  const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.' : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
+  const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.'
+    : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
+    : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">${linea1}</p>

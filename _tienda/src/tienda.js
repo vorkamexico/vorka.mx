@@ -50,6 +50,7 @@ export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : 
 // Una categoría nueva desde el panel aparece sola como sección con su propio nombre.
 const SECCIONES_TIENDA = [
   { id: 'examenes', claves: ['examenes', 'educacion'], titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
+  { id: 'invitaciones', claves: ['invitaciones'], titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
   { id: 'emprender', claves: ['kits', 'emprender'], titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
 ];
 const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
@@ -277,10 +278,11 @@ ${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-estrecho">
 export async function sitemapTienda(env) {
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
+    // Varios productos comparten página (Brindi): cada ruta va una sola vez
     // Si el producto tiene página propia (p. ej. /simulador-paa/), en el sitemap va esa (es la canónica)
     ...ps.map(p => p.contenido.acceso?.ruta
       ? `<url><loc>${SITIO}${p.contenido.acceso.ruta}</loc><lastmod>${p.updated_at.slice(0, 10)}</lastmod><priority>0.9</priority></url>`
-      : `<url><loc>${SITIO}/tienda/${p.slug}/</loc><lastmod>${p.updated_at.slice(0, 10)}</lastmod><priority>0.7</priority></url>`)];
+      : `<url><loc>${SITIO}/tienda/${p.slug}/</loc><lastmod>${p.updated_at.slice(0, 10)}</lastmod><priority>0.7</priority></url>`)].filter((u, i, a) => a.findIndex(x => x.split('</loc>')[0] === u.split('</loc>')[0]) === i);
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  ${urls.join('\n  ')}\n</urlset>\n`,
     { headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': 'public, max-age=3600' } });
 }

@@ -29,7 +29,7 @@ Llevan `<meta name="robots" content="noindex">` y además la cabecera `X-Robots-
 | `_sitio/` | Generador de las páginas principales (Python) |
 | `_sparks/` | Generador de Sparks Celaya + guía |
 | `_impacto/` | Generador del directorio de IMPACTO (se ve en soyimpacto.org/directorio) |
-| `_tienda/` | Worker de la tienda (`/tienda`, `/api`, `/descargas`, `/creadores`): ver `_tienda/README-TIENDA.md` |
+| `_tienda/` | Worker de la tienda (`/tienda`, `/api`, `/descargas`, `/creadores`, ficha de Brindi en `/tienda/brindi/`): ver `_tienda/README-TIENDA.md` |
 | `.github/workflows/` | Bots de Sparks e IMPACTO |
 
 `_redirects` manda estas carpetas al inicio para que no se vean desde internet.

@@ -13,13 +13,13 @@ export const nonce = () => btoa(String.fromCharCode(...crypto.getRandomValues(ne
 // CSP estricta solo en las rutas de la tienda (el resto del sitio no pasa por el Worker).
 // form-action incluye Stripe porque /api/checkout redirige al pago con un 303.
 // stripe: páginas del portal de creadores con los componentes incrustados de Stripe Connect
-export function seguridad(n, { stripe = false } = {}) {
+export function seguridad(n, { stripe = false, frames = [] } = {}) {
   const st = stripe ? ' https://connect-js.stripe.com https://js.stripe.com' : '';
   return {
     'content-security-policy': [
       "default-src 'self'",
       `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com${st}`,
-      ...(stripe ? ['frame-src https://connect-js.stripe.com https://js.stripe.com'] : []),
+      ...(stripe ? ['frame-src https://connect-js.stripe.com https://js.stripe.com'] : frames.length ? [`frame-src ${frames.join(' ')}`] : []),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
@@ -43,7 +43,7 @@ export function seguridad(n, { stripe = false } = {}) {
  * pagina({ titulo, descripcion, ruta, cuerpo, head?, script?, noindex?, status?, headers? }) → Response
  * `script` va inline con nonce; `head` acepta JSON-LD u otras etiquetas.
  */
-export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false }) {
+export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [] }) {
   const n = nonce();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
@@ -81,7 +81,7 @@ ${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="$
 </html>`;
   return new Response(html, {
     status,
-    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridad(n, { stripe }), ...headers },
+    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridad(n, { stripe, frames }), ...headers },
   });
 }
 
