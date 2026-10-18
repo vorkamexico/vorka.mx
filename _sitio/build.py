@@ -241,6 +241,11 @@ def inicio():
       <span class="tira-t"><b>Simulador PAA en línea</b><span>Practica el examen de admisión con cronómetro real, un tutor que te guía cuando fallas y un reporte de qué reforzar. Prueba un reactivo gratis.</span></span>
       <span class="flecha">Probar el simulador {FLECHA}</span>
     </a>
+    <a class="caja tira tira-tienda tira-brindi rv" href="/tienda/brindi/">
+      <span class="letra-v">B</span>
+      <span class="tira-t"><b>Brindi · Invitaciones digitales</b><span>Invitaciones digitales con QR para bodas, XV años, bautizos y cumpleaños. Se comparten por WhatsApp, reciben confirmaciones y controlan el acceso.</span></span>
+      <span class="flecha">Ver invitaciones <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
     <a class="caja tira tira-tienda rv" href="/tienda/">
       <span class="letra-v">Kit</span>
       <span class="tira-t"><b>Tienda Vorka México</b><span>Simuladores de examen, guías, cuadernos de trabajo y calculadoras que usamos con estudiantes y clientes.</span></span>
