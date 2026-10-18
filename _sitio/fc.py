@@ -362,3 +362,17 @@ JS = r'''<script>
 })();
 </script>
 '''
+
+
+# La portada de /fc/ se diseña a mano en fc/index.html (escudo, lobo, fotos de Celaya).
+# build.py ya no la regenera completa: solo le pone el menú y el pie de Vorka FC de partes.py.
+# pagina_fc() se queda como referencia del primer diseño.
+def actualizar_fc(html):
+    import re
+    menu = nav(actual='/fc/#programa', oscuro=True, publico='fc')
+    a, b = html.index('<header class="nav'), html.index('<div class="menu-movil"')
+    b = html.index('</div>', b) + len('</div>')
+    html = html[:a] + menu.strip() + html[b:]
+    a, b = html.index('<footer'), html.index('</footer>') + len('</footer>')
+    pie_fc = re.search(r'<footer.*?</footer>', pie('fc'), re.S).group(0)
+    return html[:a] + pie_fc + html[b:]
