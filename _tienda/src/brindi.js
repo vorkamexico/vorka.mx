@@ -72,13 +72,14 @@ const COMPLEMENTOS = [
   ['brindi-extension-90', 'Tu invitación y tus datos se quedan 90 días más.'],
   ['brindi-mejora-celebracion', 'De Esencial a Celebración en el mismo evento.'],
   ['brindi-mejora-premium', 'De Celebración a Premium en el mismo evento.'],
-  ['brindi-plantilla-premium', 'Usa Gala o Noche de estrellas sin cambiar de plan.'],
+  ['brindi-plantilla-premium', 'Usa Gala, la plantilla de glamour, sin cambiar de plan.'],
   ['brindi-configuracion-asistida', 'Cargamos tu lista y dejamos todo listo contigo en 30 min.'],
   ['brindi-diseno-profesional', 'Nuestro equipo personaliza tu invitación (2 rondas de cambios).'],
   ['brindi-paquete-organizador', 'Cinco eventos Celebración para organizadores, salones y fotógrafos.'],
 ];
-const DEMOS = [['demo-boda', 'Boda', 'Aurora · romántica, con sobre que se abre'], ['demo-xv', 'XV años', 'Noche de estrellas · temática'], ['demo-cumple', 'Cumpleaños', 'Confeti · divertida'],
-  ['demo-graduacion', 'Graduación', 'Revista · editorial'], ['demo-bautizo', 'Bautizo', 'Jardín · floral']];
+const DEMOS = [['demo-boda-editorial', 'Boda', 'Atelier · editorial de lujo', 'revista'], ['demo-boda', 'Boda', 'Aurora · romántica, con sobre que se abre', 'aurora'],
+  ['demo-xv', 'XV años', 'Gala · glamour para una noche de fiesta', 'gala'], ['demo-bautizo', 'Bautizo', 'Jardín · botánica contemporánea', 'jardin'],
+  ['demo-graduacion', 'Graduación', 'Línea · moderna y arquitectónica', 'linea'], ['demo-cumple', 'Cumpleaños', 'Confeti · expresiva y colorida', 'confeti']];
 const FAQ = [
   ['¿Cómo funciona?', 'Compras tu plan, entras a Brindi con tu correo, eliges una plantilla y la personalizas viendo cómo queda en tiempo real. Al publicar te damos un enlace y un QR para compartir. Tus invitados la abren desde su celular y confirman ahí mismo.'],
   ['¿Mis invitados tienen que instalar algo?', 'No. La invitación se abre en el navegador del celular desde WhatsApp, un mensaje o escaneando el QR. No necesitan cuenta.'],
@@ -91,8 +92,8 @@ const FAQ = [
   ['¿Puedo cambiar algo después de publicar?', 'Sí, cuantas veces quieras. Editas y tocas “Publicar cambios”; el enlace y los QR no cambian. Si cambia la fecha del evento, la actualizas igual y la vigencia se recalcula.'],
   ['¿Cuánto tiempo está en línea?', 'Hasta 30 días después de la fecha de tu evento. Después mostramos un mensaje de agradecimiento y guardamos tus datos 90 días más para que los descargues; luego se borran. Puedes extenderlo con el complemento de 90 días.'],
   ['¿Y si necesito más invitados?', 'Compras un paquete de +100 invitados y lo aplicas a tu evento desde Ajustes. O mejoras tu plan pagando solo la diferencia.'],
-  ['¿Cómo pago? ¿Hay reembolsos?', 'Pago único con tarjeta u OXXO, procesado por Stripe: nunca vemos los datos de tu tarjeta. Si no has publicado ninguna invitación con tu plan, te devolvemos tu dinero completo dentro de los 7 días siguientes a la compra. Detalles en las <a href="/legal/brindi/">condiciones de Brindi</a>.'],
-  ['¿Qué pasa con los datos de mis invitados?', 'Solo tú los ves. Las invitaciones no aparecen en Google (salvo que tú lo actives) y los enlaces personales usan códigos aleatorios que no revelan nombres. No vendemos ni compartimos datos y puedes borrar todo cuando quieras. Lee el <a href="/legal/brindi/">aviso de privacidad para invitados</a>.'],
+  ['¿Cómo pago? ¿Hay reembolsos?', 'Pago único con tarjeta u OXXO, procesado por Stripe: nunca vemos los datos de tu tarjeta. Si no has publicado ninguna invitación con tu plan, te devolvemos tu dinero completo si lo pides dentro de los 10 días naturales siguientes a la compra. Detalles en las <a href="/legal/brindi/">condiciones de Brindi</a>.'],
+  ['¿Qué pasa con los datos de mis invitados?', 'Solo tú los ves. Las invitaciones no aparecen en Google (salvo que tú lo actives) y los enlaces personales usan códigos aleatorios que no revelan nombres. No vendemos ni compartimos datos y puedes borrar todo cuando quieras. Lee el <a href="/legal/brindi/privacidad-invitados/">aviso de privacidad para invitados</a>.'],
   ['¿Tienen soporte?', 'Sí. Escríbenos desde la sección Ayuda de tu panel o a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. En Premium te atendemos con prioridad. Si prefieres que lo hagamos contigo, existe la configuración asistida.'],
   ['¿Sirve para eventos de empresa?', 'Sí: lanzamientos, posadas, congresos o cenas de gala. Con Premium controlas el acceso en la entrada. Para varios eventos al año, el paquete Organizador sale más barato.'],
 ];
@@ -142,7 +143,7 @@ export async function paginaBrindi(env, req, url) {
 
 <section class="t-sec suave" id="demos"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Demostraciones</span><h2 class="h2">Ábrelas como si fueras invitado</h2><p class="lead">Datos ficticios, identificados como demostración. Las respuestas no se guardan.</p></div>
-  <div class="br-demos">${DEMOS.map(([s, t, d]) => `<a class="br-demo rv" href="${OS}/i/${s}" target="_blank" rel="noopener"><img src="${OS}/brindi/og/${{ 'demo-boda': 'aurora', 'demo-xv': 'estrellas', 'demo-cumple': 'confeti', 'demo-graduacion': 'revista', 'demo-bautizo': 'jardin' }[s]}.png" alt="" loading="lazy" width="1200" height="630"><b>${t}</b><span>${d}</span><span class="flecha">Abrir ${FLECHA}</span></a>`).join('')}</div>
+  <div class="br-demos">${DEMOS.map(([s, t, d, og]) => `<a class="br-demo rv" href="${OS}/i/${s}" target="_blank" rel="noopener"><img src="${OS}/brindi/og/${og}.png" alt="" loading="lazy" width="1200" height="630"><b>${t}</b><span>${d}</span><span class="flecha">Abrir ${FLECHA}</span></a>`).join('')}</div>
 </div></section>
 
 <section class="t-sec" id="planes"><div class="marco">
@@ -168,7 +169,7 @@ ${aLaVenta ? `<section class="t-sec" id="comprar"><div class="marco t-estrecho">
       ${extras.length ? `<optgroup label="Complementos">${extras.map(x => opcion(x.prod, x.prod.nombre.replace('Brindi · ', ''))).join('')}</optgroup>` : ''}</select></div>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llega tu acceso a Brindi. Si ya tienes cuenta, usa el mismo correo.</small></div>
-    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/brindi/" target="_blank">condiciones de Brindi</a> y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
+    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/brindi/" target="_blank">condiciones de Brindi</a> y el <a href="/legal/brindi/privacidad/" target="_blank">aviso de privacidad de Brindi</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn tinta" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
     <p class="t-pago">Tarjeta · OXXO &nbsp;·&nbsp; Pago seguro con Stripe · Te llega el acceso al confirmarse el pago</p>
@@ -183,7 +184,7 @@ ${aLaVenta ? `<section class="t-sec" id="comprar"><div class="marco t-estrecho">
 <section class="t-sec"><div class="marco">
   <div class="br-confianza">${[['Pago seguro', 'Stripe procesa el pago; nunca vemos tu tarjeta. Factura disponible escribiendo a hola@vorka.mx.'], ['Tus datos, tuyos', 'Invitaciones fuera de Google por defecto, enlaces con códigos aleatorios y borrado cuando tú quieras.'],
     ['Soporte de personas', 'Escríbenos desde tu panel o a hola@vorka.mx. Respondemos en horario laboral de México.'], ['Respaldo', 'Brindi es una marca desarrollada por Vorka México.']].map(([t, d]) => `<div><b>${t}</b><p>${d}</p></div>`).join('')}</div>
-  <p class="t-nota"><a href="/legal/brindi/">Condiciones de Brindi y aviso de privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
+  <p class="t-nota"><a href="/legal/brindi/">Condiciones de Brindi</a> · <a href="/legal/brindi/privacidad/">Aviso de privacidad</a> · <a href="/legal/brindi/privacidad-invitados/">Privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
 </div></section>
 </div>`,
   });
