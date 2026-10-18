@@ -35,21 +35,25 @@ main.fc { overflow-x: clip; }
 .fc-marca .lobo { width: 30px; }
 
 /* ---------- Portada: centrada, azul marino, escudo y fotos de Celaya ---------- */
-.fc-hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; text-align: center; padding: clamp(116px, 12vw, 156px) 0 clamp(56px, 7vw, 88px);
-  background: radial-gradient(90% 70% at 50% 0%, #17227A 0%, var(--marino) 62%, #080D2E 100%); }
-.fc-hero::before { content: ""; position: absolute; left: 50%; top: 52%; width: min(1100px, 150vw); aspect-ratio: 1; transform: translate(-50%, -50%); z-index: -1; border-radius: 50%; border: 2px solid rgba(230, 207, 150, .08); box-shadow: 0 0 0 140px rgba(255, 255, 255, .015); }
-.fc-hero-in { display: grid; justify-items: center; gap: 22px; }
-.escudo { width: clamp(130px, 13vw, 176px); height: auto; overflow: visible; filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .45)); }
+.fc-hero { position: relative; isolation: isolate; overflow: hidden; color: #fff; text-align: center; background: var(--marino); padding: clamp(112px, 11vw, 132px) 0 clamp(72px, 8vw, 104px); min-height: min(100svh, 940px); display: grid; align-content: center; }
+.fc-hero .foto { position: absolute; inset: 0; z-index: -2; }
+.fc-hero .foto img { width: 100%; height: 100%; object-fit: cover; object-position: var(--foco, 50% 60%); }
+.fc-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  radial-gradient(70% 60% at 50% 52%, rgba(11, 18, 64, .55) 0%, rgba(11, 18, 64, .25) 100%),
+  linear-gradient(180deg, rgba(8, 13, 46, .72) 0%, rgba(11, 18, 64, .38) 45%, rgba(8, 13, 46, .88) 100%); }
+.fc-hero::after { content: "Calle Madero · Celaya"; position: absolute; right: var(--x); bottom: 18px; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: rgba(230, 207, 150, .75); }
+.fc-hero-in { display: grid; justify-items: center; gap: 20px; }
+.escudo { width: clamp(120px, 10.5vw, 148px); height: auto; overflow: visible; filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .45)); }
 .ef-fondo { fill: #0E0F14; }
 .ef-linea { fill: none; stroke: var(--oro-fc); stroke-width: 4; }
 .ef-nombre { font-family: var(--display); font-size: 50px; fill: #fff; letter-spacing: .02em; }
 .ef-ciudad { font-family: var(--font); font-size: 13px; font-weight: 700; fill: var(--oro-fc-claro); }
 .chip-vivo { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 12px; border-radius: 999px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .16); font-size: 14px; font-weight: 600; }
 .chip-vivo i { width: 8px; height: 8px; border-radius: 50%; background: #3BE37A; box-shadow: 0 0 0 3px rgba(59, 227, 122, .22); }
-.fc-hero h1 { font-size: clamp(44px, 6vw, 84px); line-height: 1.14; color: #fff; max-width: 13ch; padding-top: .04em; }
+.fc-hero h1 { text-shadow: 0 4px 30px rgba(8, 13, 46, .5); font-size: clamp(44px, 5.2vw, 74px); line-height: 1.14; color: #fff; max-width: 13ch; padding-top: .04em; }
 .fc-hero h1 em { font-style: normal; color: var(--oro-fc-claro); }
 .fc-hero h1 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.fc-hero .lead { color: rgba(255, 255, 255, .8); font-size: clamp(17px, 1.5vw, 20px); max-width: 52ch; margin-inline: auto; }
+.fc-hero .lead { color: rgba(255, 255, 255, .9); text-shadow: 0 1px 12px rgba(8, 13, 46, .6); font-size: clamp(17px, 1.5vw, 20px); max-width: 52ch; margin-inline: auto; }
 .fc-hero .lead b { color: #fff; }
 .datos-hero { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 26px; font-size: 16px; font-weight: 600; }
 .datos-hero li { display: flex; align-items: center; gap: 9px; }
@@ -57,11 +61,6 @@ main.fc { overflow-x: clip; }
 .fc-hero .botones { justify-content: center; }
 .fc .btn.oro { background: var(--oro-fc); color: #141114; box-shadow: 0 12px 28px -12px rgba(200, 164, 92, .7); }
 .fc .btn.oro:hover { background: var(--oro-fc-claro); }
-.fotos-celaya { margin-top: clamp(40px, 6vw, 72px); display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: clamp(8px, 1.4vw, 16px); align-items: end; }
-.fotos-celaya figure { position: relative; margin: 0; overflow: hidden; border-radius: clamp(14px, 2vw, 24px); aspect-ratio: 4 / 3; background: #0E0F14; }
-.fotos-celaya figure.centro { aspect-ratio: 4 / 3.4; }
-.fotos-celaya img { width: 100%; height: 100%; object-fit: cover; opacity: .9; }
-.fotos-celaya figcaption { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); white-space: nowrap; padding: 5px 12px; border-radius: 999px; background: rgba(11, 18, 64, .78); color: var(--oro-fc-claro); font-size: 12.5px; font-weight: 650; }
 @media (prefers-reduced-motion: no-preference) {
   .js .fc-hero-in > * { animation: entra-fc .7s var(--ease) both; }
   .js .fc-hero-in > :nth-child(2) { animation-delay: .05s; } .js .fc-hero-in > :nth-child(3) { animation-delay: .1s; } .js .fc-hero-in > :nth-child(4) { animation-delay: .15s; } .js .fc-hero-in > :nth-child(n+5) { animation-delay: .2s; }
@@ -73,10 +72,6 @@ main.fc { overflow-x: clip; }
   .escudo { width: 112px; }
   .fc-hero .botones { flex-direction: column; align-items: stretch; width: 100%; max-width: 360px; }
   .datos-hero { flex-direction: column; align-items: center; }
-  .fotos-celaya { grid-template-columns: 1fr 1fr; }
-  .fotos-celaya figure.centro { grid-column: 1 / -1; grid-row: 1; aspect-ratio: 16 / 10; }
-  .fotos-celaya figure { aspect-ratio: 1; }
-  .fotos-celaya figcaption { font-size: 11.5px; bottom: 8px; }
 }
 
 /* ---------- Encabezados centrados y detalles en oro ---------- */
