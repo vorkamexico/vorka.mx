@@ -278,6 +278,7 @@ ${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-estrecho">
 export async function sitemapTienda(env) {
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
+    `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
     // Varios productos comparten página (Brindi): cada ruta va una sola vez
     // Si el producto tiene página propia (p. ej. /simulador-paa/), en el sitemap va esa (es la canónica)
     ...ps.map(p => p.contenido.acceso?.ruta

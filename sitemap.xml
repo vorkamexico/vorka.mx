@@ -18,5 +18,8 @@
   <url><loc>https://vorka.mx/tienda/</loc><lastmod>2026-10-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://vorka.mx/legal/terminos/</loc><lastmod>2026-10-15</lastmod><priority>0.3</priority></url>
   <url><loc>https://vorka.mx/legal/reembolsos/</loc><lastmod>2026-10-15</lastmod><priority>0.3</priority></url>
+  <url><loc>https://vorka.mx/legal/brindi/</loc><lastmod>2026-10-18</lastmod><priority>0.3</priority></url>
+  <url><loc>https://vorka.mx/legal/brindi/privacidad/</loc><lastmod>2026-10-18</lastmod><priority>0.3</priority></url>
+  <url><loc>https://vorka.mx/legal/brindi/privacidad-invitados/</loc><lastmod>2026-10-18</lastmod><priority>0.3</priority></url>
   <url><loc>https://vorka.mx/fc/</loc><lastmod>2026-10-17</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 </urlset>

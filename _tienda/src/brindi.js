@@ -108,14 +108,14 @@ export async function paginaBrindi(env, req, url) {
   const desde = planes.filter(p => p.prod).map(p => p.prod.precio_centavos).sort((a, b) => a - b)[0];
   const error = url.searchParams.get('error') || '';
   const elegido = url.searchParams.get('plan') || rec.slug;
-  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Brindi · Invitaciones digitales', description: 'Invitaciones digitales con QR para bodas, XV años, cumpleaños y toda celebración: confirmaciones, control de acompañantes y acceso con QR.',
-    brand: { '@type': 'Brand', name: 'Brindi' }, image: [`${OS}/brindi/og/aurora.png`],
+  const ld = [{ '@context': 'https://schema.org', '@type': aLaVenta ? 'Product' : 'Service', name: 'Brindi · Invitaciones digitales', ...(aLaVenta ? {} : { serviceType: 'Invitaciones digitales', areaServed: 'MX', provider: { '@type': 'Organization', name: 'Vorka México', url: 'https://vorka.mx/' } }), description: 'Invitaciones digitales con QR para bodas, XV años, cumpleaños y toda celebración: confirmaciones, control de acompañantes y acceso con QR.',
+    ...(aLaVenta ? { brand: { '@type': 'Brand', name: 'Brindi' } } : {}), image: [`${OS}/brindi/og/aurora.png`],
     ...(aLaVenta ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: (desde / 100).toFixed(2), highPrice: (Math.max(...planes.filter(p => p.prod).map(p => p.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.filter(p => p.prod).length } } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const opcion = (p, n) => `<option value="${esc(p.slug)}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   return pagina({
-    titulo: 'Brindi · Invitaciones digitales con QR para bodas, XV años y más', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
-    descripcion: 'Crea una invitación inolvidable, compártela por WhatsApp en segundos y organiza a tus invitados desde un solo lugar. Confirmaciones, acompañantes y acceso con QR. Pago único desde $299 MXN.',
+    titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
+    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Compártelas por WhatsApp, recibe confirmaciones y controla el acceso con QR. Pago único desde $299 MXN.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     frames: [OS],   // demostración interactiva en el celular
@@ -125,7 +125,7 @@ export async function paginaBrindi(env, req, url) {
   <div class="br-hero-t">
     <a class="t-volver" href="/tienda/">← Tienda</a>
     <span class="br-logo">brindi<i>✦</i></span>
-    <h1 class="br-h1">Crea una invitación inolvidable. Compártela en segundos.</h1>
+    <h1 class="br-h1">Invitaciones digitales inolvidables. Compártelas en segundos.</h1>
     <p class="br-lead">Invitaciones digitales con diseño de autor para bodas, XV años, cumpleaños, graduaciones y bautizos. Tus invitados confirman desde su celular y tú organizas todo desde un solo lugar.</p>
     <div class="botones">${aLaVenta ? `<a class="btn tinta" href="#comprar">Elegir mi plan ${FLECHA}</a>` : ''}<a class="btn blanco" href="${OS}/brindi/" rel="noopener">Crear gratis y ver cómo queda</a></div>
     <p class="br-nota">${aLaVenta ? `Pago único desde <b>${precio({ precio_centavos: desde })}</b> por evento · tarjeta u OXXO · sin mensualidades` : 'Muy pronto a la venta. Ya puedes crear tu invitación gratis y verla en vista previa.'}</p>
@@ -152,7 +152,6 @@ export async function paginaBrindi(env, req, url) {
     <p class="br-precio">${p.prod ? `<b>${precio(p.prod)}</b><small>por evento</small>` : '<b>Muy pronto</b>'}</p><p class="br-inv">Hasta <b>${p.invitados}</b> invitados</p>
     <ul>${p.items.map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
     ${p.prod ? `<a class="btn ${p.recomendado ? 'tinta' : 'blanco'}" href="?plan=${p.slug}#comprar" data-plan="${p.slug}">Elegir ${p.nombre}</a>` : ''}</article>`).join('')}</div>
-  <p class="t-nota">Ningún plan pone publicidad en tus invitaciones. Solo una línea discreta al final: “Hecha con Brindi · Powered by vorka.mx”.</p>
 </div></section>
 
 ${extras.length ? `<section class="t-sec suave" id="complementos"><div class="marco">
