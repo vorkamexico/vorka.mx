@@ -98,8 +98,30 @@ export async function revocarRegalos(env, orderId) {
 
 async function leerRegalo(env, token) {
   if (!FORMATO.test(token || '')) return null;
-  return one(env, `SELECT r.*, o.nombre de_nombre, o.proveedor, o.regalo_para, o.regalo_mensaje, o.estado orden_estado, p.nombre producto, p.contenido
+  return one(env, `SELECT r.*, o.nombre de_nombre, o.proveedor, o.regalo_para, o.regalo_mensaje, o.estado orden_estado, p.nombre producto, p.contenido, p.descripcion_corta
     FROM regalos r JOIN orders o ON o.id = r.order_id JOIN products p ON p.id = r.product_id WHERE r.token_hash = ?`, await hashRegalo(env, token));
+}
+
+// Qué es el producto, en una frase, y lo que incluye (para la tarjeta del regalo)
+function describir(r, acceso) {
+  let c = {}; try { c = JSON.parse(r.contenido || '{}'); } catch { }
+  if (acceso.app === 'simulador' || /simulador/i.test(r.producto)) return { texto: 'simulacros con cronómetro, un tutor que te guía cuando fallas y un reporte de qué reforzar.', chips: ['2 simulacros completos', 'Práctica ilimitada', 'Acceso por un año'] };
+  if (acceso.app === 'brindi') return { texto: 'una invitación digital con confirmaciones de asistencia y acceso con QR para tu evento.', chips: [acceso.detalle || 'Un evento', 'Se comparte por WhatsApp', 'Confirmaciones y QR'].filter(Boolean) };
+  return { texto: r.descripcion_corta || '', chips: acceso.app ? [] : ['Descarga inmediata', 'Queda a tu nombre'] };
+}
+// Para qué es el enlace que le llega por correo
+const entrada = r => { try { const a = JSON.parse(r.contenido || '{}').acceso || {}; return a.app === 'brindi' ? 'crear tu invitación' : a.app ? 'entrar' : 'descargar tus archivos'; } catch { return 'entrar'; } };
+
+// Desde el panel se puede regalar cualquier producto, salvo los complementos que solo suman a otra compra (simulacros adicionales)
+export const regalableCortesia = p => { try { return JSON.parse(p.contenido || '{}').acceso?.tipo !== 'intento'; } catch { return true; } };
+
+// Quitar una cortesía enviada directo: la persona pierde el acceso (sus enlaces de descarga dejan de funcionar
+// y, en Brindi, el plan se retira en la siguiente sincronización, igual que con un reembolso)
+export async function quitarCortesia(env, orderId) {
+  const r = await run(env, "UPDATE orders SET estado = 'refunded', updated_at = ? WHERE id = ? AND proveedor = 'cortesia' AND regalo = 0 AND estado = 'paid'", ahoraISO(), String(orderId));
+  if (!r.meta.changes) throw new Error('Ese regalo ya no estaba activo.');
+  await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ?', String(orderId));
+  return { ok: true, revocadas: 1 };
 }
 
 // ---------- página para abrir el regalo ----------
@@ -109,11 +131,12 @@ export async function paginaRegalo(env, token) {
     cuerpo: aviso({ clase: 'alerta', titulo, texto, extra }) });
   if (!r) return error('Esta liga no es válida', 'Revisa que hayas abierto la liga completa. Si te la mandaron por WhatsApp, pide que te la reenvíen.');
   if (r.estado === 'canjeado') return error('Este regalo ya se abrió', 'Cada liga de regalo funciona una sola vez y esta ya se usó. Si fuiste tú, entra con el correo que recibiste o pide un enlace nuevo.',
-    `<div class="botones t-centro"><a class="btn tinta" href="/descargas/reenviar">Recibir mi enlace ${FLECHA}</a><a class="btn blanco" href="/simulador-paa/">Conocer el simulador</a></div>`);
+    `<div class="botones t-centro"><a class="btn tinta" href="/descargas/reenviar">Recibir mi enlace ${FLECHA}</a><a class="btn blanco" href="/tienda/">Ver la tienda</a></div>`);
   if (r.estado === 'revocado' || r.orden_estado !== 'paid') return error('Este regalo ya no está activo', 'Esta liga fue reemplazada o cancelada. Pide a quien te la regaló que te comparta la liga nueva.');
   const acceso = (() => { try { return JSON.parse(r.contenido || '{}').acceso || {}; } catch { return {}; } })();
   const de = r.proveedor === 'cortesia' ? 'Vorka México' : primerNombre(r.de_nombre);
   const para = primerNombre(r.regalo_para);
+  const { texto: queEs, chips } = describir(r, acceso);
   return pagina({
     titulo: `Tienes un regalo: ${r.producto} · Vorka México`, ruta: '/tienda/regalo/', noindex: true, headers: SIN_REFERER,
     head: `<style>
@@ -150,7 +173,7 @@ export async function paginaRegalo(env, token) {
     err.hidden=true; btn.disabled=true; btn.textContent='Abriendo tu regalo…';
     fetch('/api/regalo/canjear',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(d),credentials:'same-origin'})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
-      .then(function(x){ if(x.ok&&x.j.url){ location.href=x.j.url; } else mostrar(x.j.error||'No pudimos abrir tu regalo. Intenta de nuevo.'); })
+      .then(function(x){ if(x.ok&&x.j.url){ location.href=x.j.url; } else if(x.ok){ f.innerHTML='<h2>¡Listo! Tu regalo ya es tuyo</h2><p>'+(x.j.mensaje||'Te enviamos tu acceso por correo.')+'</p>'; } else mostrar(x.j.error||'No pudimos abrir tu regalo. Intenta de nuevo.'); })
       .catch(function(){ mostrar('Sin conexión. Revisa tu internet e intenta de nuevo.'); });
   });
 })();`,
@@ -160,9 +183,9 @@ export async function paginaRegalo(env, token) {
     <span class="rg-v" aria-hidden="true">${LOGO}</span>
     <span class="rg-moño" aria-hidden="true">🎁</span>
     <h1>${para ? `${esc(para)}, tienes` : 'Tienes'} un regalo${de ? ` de <span>${esc(de)}</span>` : ''}</h1>
-    <p>Te regalaron el <b style="color:#fff">${esc(r.producto)}</b> de Vorka México: simulacros con cronómetro, un tutor que te guía cuando fallas y un reporte de qué reforzar.</p>
+    <p>Te regalaron <b style="color:#fff">${esc(r.producto)}</b> de Vorka México${queEs ? `: ${esc(queEs)}` : '.'}</p>
     ${r.regalo_mensaje ? `<div class="rg-msj">${esc(r.regalo_mensaje)}${de ? `<small>— ${esc(de)}</small>` : ''}</div>` : ''}
-    <div class="rg-inc"><span>2 simulacros completos</span><span>Práctica ilimitada</span><span>Acceso por un año</span></div>
+    ${chips.length ? `<div class="rg-inc">${chips.map(c => `<span>${esc(c)}</span>`).join('')}</div>` : ''}
   </div>
   <form class="rg-form t-form" id="form-regalo" method="post" action="/api/regalo/canjear" novalidate>
     <h2>Abre tu regalo</h2>
@@ -218,9 +241,11 @@ export async function canjearRegalo(req, env) {
     await run(env, 'UPDATE orders SET correo_enviado_at = ? WHERE id = ?', ahoraISO(), id);
   } catch (e) { console.error('regalo: correo de acceso falló', id, e.message); }
 
+  // Simulador: entra en este momento con su cookie. Lo demás (descargas, Brindi) llega por correo.
   const acceso = await ordenConAcceso(env, id);
+  if (!acceso) return json({ ok: true, mensaje: `Te enviamos a <b>${esc(correoOculto(d.email))}</b> el enlace para ${esc(entrada(r))}. Revisa también tu carpeta de spam.` });
   const destino = (() => { try { return JSON.parse(r.contenido || '{}').acceso?.ruta || '/'; } catch { return '/'; } })();
-  return json({ ok: true, url: destino }, 200, acceso ? { 'set-cookie': await cookieAcceso(env, id, acceso.vence) } : {});
+  return json({ ok: true, url: destino }, 200, { 'set-cookie': await cookieAcceso(env, id, acceso.vence) });
 }
 
 // ---------- cortesías: accesos gratis que regala Vorka México desde el panel ----------
@@ -232,6 +257,9 @@ const EsquemaCortesia = z.object({
   para: z.string().trim().max(80).optional().or(z.literal('')),
   mensaje: z.string().trim().max(280, 'El mensaje puede tener hasta 280 caracteres.').optional().or(z.literal('')),
   nota: z.string().trim().max(200).optional().or(z.literal('')),   // interna: para qué o para quién fue la tanda
+  modo: z.enum(['ligas', 'correo']).optional(),                   // ligas de un solo uso (por defecto) o directo al correo de la persona
+  email: z.string().trim().toLowerCase().pipe(z.email('Escribe un correo válido.').max(254)).optional().or(z.literal('')),
+  nombre: z.string().trim().max(120).optional().or(z.literal('')),
 });
 
 export async function crearCortesias(env, datos) {
@@ -240,9 +268,23 @@ export async function crearCortesias(env, datos) {
   const d = v.data;
   const p = await one(env, 'SELECT id, nombre, contenido FROM products WHERE id = ?', d.product_id);
   if (!p) throw new Error('Ese producto no existe.');
-  let regalable = false; try { regalable = !!JSON.parse(p.contenido || '{}').regalable; } catch { }
-  if (!regalable) throw new Error('Este producto no se puede regalar.');
+  if (!regalableCortesia(p)) throw new Error('Este producto no se puede regalar: es un complemento de otra compra.');
   const id = crypto.randomUUID(), ahora = ahoraISO();
+  if (d.modo === 'correo') {
+    if (!d.email) throw new Error('Escribe el correo de quien recibe el regalo.');
+    if (!d.nombre || d.nombre.length < 2) throw new Error('Escribe el nombre de quien recibe el regalo.');
+    // Una "compra" de $0 a nombre de la persona: recibe su acceso o sus descargas igual que si hubiera pagado
+    await env.DB.batch([
+      env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, regalo, regalo_para, regalo_mensaje, paid_at, metodo_pago)
+        VALUES (?, ?, ?, 0, 'MXN', 'paid', 'cortesia', 0, ?, ?, ?, ?)`)
+        .bind(id, d.email, d.nombre, d.nombre, d.mensaje || null, ahora, d.nota ? `cortesía: ${d.nota}` : 'cortesía'),
+      env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) VALUES (?,?,?,0,?)').bind(id, p.id, p.nombre, d.cantidad),
+    ]);
+    let enviado = true;
+    try { await mandarEnlace(env, id); await run(env, 'UPDATE orders SET correo_enviado_at = ? WHERE id = ?', ahoraISO(), id); }
+    catch (e) { enviado = false; console.error('cortesía: correo falló', id, e.message); }
+    return { id, producto: p.nombre, directo: true, email: d.email, enviado };
+  }
   await env.DB.batch([
     env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, regalo, regalo_para, regalo_mensaje, paid_at, correo_enviado_at, metodo_pago)
       VALUES (?, ?, 'Vorka México', 0, 'MXN', 'paid', 'cortesia', 1, ?, ?, ?, ?, ?)`)
@@ -264,14 +306,17 @@ export async function cortesias(env) {
       (SELECT COUNT(*) FROM regalos r WHERE r.order_id = o.id AND r.estado = 'canjeado') canjeadas,
       (SELECT COUNT(*) FROM regalos r WHERE r.order_id = o.id AND r.estado = 'pendiente') pendientes,
       (SELECT GROUP_CONCAT(r.canjeado_email, ', ') FROM regalos r WHERE r.order_id = o.id AND r.estado = 'canjeado') quienes
+    , o.regalo, o.email, o.estado, o.correo_enviado_at
     FROM orders o JOIN order_items i ON i.order_id = o.id WHERE o.proveedor = 'cortesia' ORDER BY o.created_at DESC LIMIT 100`);
-  return filas.map(f => ({ ...f, nota: String(f.nota || '').replace(/^cortesía:?\s*/, '') }));
+  // directo = enviada al correo de la persona (sin ligas); activa = no se le ha quitado
+  return filas.map(f => ({ ...f, nota: String(f.nota || '').replace(/^cortesía:?\s*/, ''), directo: !f.regalo, activa: f.estado === 'paid', email: f.regalo ? null : f.email }));
 }
 
 // Apaga las ligas que aún no se usan de una tanda (las ya canjeadas siguen funcionando)
 export async function revocarCortesias(env, orderId) {
-  const o = await one(env, "SELECT id FROM orders WHERE id = ? AND proveedor = 'cortesia'", String(orderId));
+  const o = await one(env, "SELECT id, regalo FROM orders WHERE id = ? AND proveedor = 'cortesia'", String(orderId));
   if (!o) throw new Error('Esa tanda no existe.');
+  if (!o.regalo) return quitarCortesia(env, o.id);
   const r = await run(env, "UPDATE regalos SET estado = 'revocado' WHERE order_id = ? AND estado = 'pendiente'", o.id);
   return { ok: true, revocadas: r.meta.changes };
 }
@@ -295,8 +340,9 @@ export async function ligasDe(env, orderId) {
 }
 // Borrar una tanda de cortesías: solo si nadie la ha usado (si alguien canjeó, su acceso depende de ella)
 export async function borrarCortesia(env, orderId) {
-  const o = await one(env, "SELECT id FROM orders WHERE id = ? AND proveedor = 'cortesia'", String(orderId));
+  const o = await one(env, "SELECT id, regalo FROM orders WHERE id = ? AND proveedor = 'cortesia'", String(orderId));
   if (!o) throw new Error('Esa tanda no existe.');
+  if (!o.regalo) throw new Error('Este regalo ya se entregó a su correo. Si quieres, quítale el acceso.');
   const usadas = (await one(env, "SELECT COUNT(*) n FROM regalos WHERE order_id = ? AND estado = 'canjeado'", o.id)).n;
   if (usadas) throw new Error(`No se puede borrar: ${usadas === 1 ? 'una liga ya se usó' : `${usadas} ligas ya se usaron`}. Apaga las que faltan.`);
   await env.DB.batch([

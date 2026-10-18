@@ -32,10 +32,12 @@ export function correoEntrega(env, orden, items, token) {
   const url = `${env.SITE_URL}/descargas/${token}`;
   const nombre = orden.nombre.split(' ')[0];
   const productos = items.map(i => i.nombre);
-  const asunto = items.length === 1 ? `Tu descarga: ${items[0].nombre}` : 'Tus descargas de Vorka México';
+  const regalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
+  const asunto = regalo ? `Te regalaron: ${items[0].nombre}` : items.length === 1 ? `Tu descarga: ${items[0].nombre}` : 'Tus descargas de Vorka México';
+  const linea1 = regalo ? `¡Te ${orden.proveedor === 'cortesia' ? 'regalamos' : 'regalaron'} ${items.length === 1 ? 'este material' : 'estos materiales'} de Vorka México! Tus archivos ya están listos y quedan a tu nombre.` : '¡Gracias por tu compra! Tu pago quedó confirmado y tus archivos ya están listos.';
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
-<p style="${P}">¡Gracias por tu compra! Tu pago quedó confirmado y tus archivos ya están listos.</p>
+<p style="${P}">${esc(linea1)}</p>${orden.regalo_mensaje && regalo ? `\n<p style="${P};padding:12px 16px;border-left:3px solid #6b2a85;background:#f7f4f8">${esc(orden.regalo_mensaje)}</p>` : ''}
 ${lista(productos.map(esc))}
 ${boton(url, 'Descargar mis archivos')}
 <p style="${P}">El enlace funciona durante ${VIGENCIA_DIAS} días y puedes descargar cada archivo hasta ${MAX_DESCARGAS} veces. Te recomendamos guardarlos en tu computadora o en tu nube en cuanto los descargues.</p>
@@ -44,7 +46,7 @@ ${boton(url, 'Descargar mis archivos')}
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
   const texto = `Hola, ${nombre}:
 
-¡Gracias por tu compra! Tu pago quedó confirmado y tus archivos ya están listos.
+${linea1}${orden.regalo_mensaje && regalo ? `\n\n${orden.regalo_mensaje}` : ''}
 
 ${productos.map(p => `- ${p}`).join('\n')}
 
@@ -68,10 +70,10 @@ function correoAcceso(env, orden, items, token, acceso) {
   const url = items.length === 1 ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
   const nombre = orden.nombre.split(' ')[0];
-  const intento = acceso.tipo === 'intento', regalo = !!orden.regalo_de;
+  const intento = acceso.tipo === 'intento', regalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
   const asunto = intento ? 'Tus simulacros adicionales ya están listos' : regalo ? `Tu regalo está activo: ${items[0].nombre}` : `Tu acceso: ${items[0].nombre}`;
   const linea1 = intento ? '¡Gracias por tu compra! Tus simulacros completos adicionales ya están disponibles en tu cuenta.'
-    : regalo ? `¡Te regalaron el ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.` : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
+    : regalo ? `¡Te ${orden.proveedor === 'cortesia' ? 'regalamos' : 'regalaron'} ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.` : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
   const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.'
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
@@ -107,8 +109,9 @@ Vorka México · Guanajuato, México`;
 export async function mandarEnlace(env, orderId, ahora = Date.now()) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   // Compra para regalar: quien paga recibe las ligas de un solo uso, no el acceso
-  // Cortesías del panel: sus ligas solo se ven al crearlas; reenviar las apagaría aunque ya se hayan compartido
-  if (orden.proveedor === 'cortesia') return;
+  // Cortesías del panel con ligas: sus ligas solo se ven al crearlas; reenviar las apagaría aunque ya se hayan compartido.
+  // Las cortesías enviadas directo a un correo (regalo = 0) se entregan como cualquier compra.
+  if (orden.proveedor === 'cortesia' && orden.regalo) return;
   if (orden.regalo) return mandarRegalos(env, orden);
   const items = await all(env, 'SELECT i.product_id, i.nombre, i.cantidad, p.contenido FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
   const { token, hash } = await crearToken(env, orderId, ahora);

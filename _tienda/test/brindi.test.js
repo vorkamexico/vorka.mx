@@ -46,8 +46,12 @@ describe('Brindi en la tienda', () => {
     env.DB.raw.exec("UPDATE products SET activo = 1");
     const html = await (await pedir('/tienda/')).text();
     expect(html).toContain('Invitaciones digitales');
-    expect(html).toContain('Brindi · Plan Celebración');
+    // Una sola tarjeta de Brindi, con su portada y el precio del plan más barato
+    expect(html).toContain('Brindi · Invitaciones digitales');
+    expect(html).toContain('/assets/tienda/brindi.webp');
+    expect(html).toContain('Desde $299 MXN');
     expect(html).not.toContain('Brindi · Plan Premium');
+    expect(html.match(/class="t-(?:hz-img|prod rv)[^>]*href="\/tienda\/brindi\/"/g)).toHaveLength(1);
     const mapa = await (await pedir('/tienda/sitemap.xml')).text();
     expect(mapa.match(/\/tienda\/brindi\//g)).toHaveLength(1);
   });

@@ -45,13 +45,12 @@ const portada = (p, clase = '') => p.imagen
 
 export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : `$${(p.precio_centavos / 100).toLocaleString('es-MX')} MXN`;
 
-// Portada de la tienda: hero con el producto destacado (el primero del orden del catálogo), cómo funciona y el resto del catálogo
-// Secciones del catálogo según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
-// Una categoría nueva desde el panel aparece sola como sección con su propio nombre.
+// Líneas de la tienda según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
+// Una categoría nueva desde el panel aparece sola como línea con su propio nombre.
 const SECCIONES_TIENDA = [
-  { id: 'examenes', claves: ['examenes', 'educacion'], titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
-  { id: 'invitaciones', claves: ['invitaciones'], titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
-  { id: 'emprender', claves: ['kits', 'emprender'], titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
+  { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
+  { id: 'invitaciones', claves: ['invitaciones'], linea: 'Celebraciones', titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
+  { id: 'emprender', claves: ['kits', 'emprender'], linea: 'Emprendimiento', titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
 ];
 const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 export function seccionesCatalogo(productos) {
@@ -60,36 +59,78 @@ export function seccionesCatalogo(productos) {
     const k = sinAcentos(p.categoria);
     const def = SECCIONES_TIENDA.find(s => s.claves.includes(k));
     const id = def?.id || (k ? k.replace(/[^a-z0-9]+/g, '-') : 'mas');
-    if (!grupos.has(id)) grupos.set(id, { id, titulo: def?.titulo || p.categoria || 'Más productos', texto: def?.texto || '', productos: [] });
+    if (!grupos.has(id)) grupos.set(id, { id, linea: def?.linea || p.categoria || 'Más', titulo: def?.titulo || p.categoria || 'Más productos', texto: def?.texto || '', productos: [] });
     grupos.get(id).productos.push(p);
   }
   // El orden de las secciones sigue al primer producto de cada una (campo "orden" del panel)
   return [...grupos.values()];
 }
-// Producto que abre una app (Simulador PAA) en lugar de entregar archivos
+// Producto que abre una app (Simulador PAA, Brindi) en lugar de entregar archivos
 const esAcceso = p => !!p.contenido?.acceso;
 const enlace = p => p.contenido?.acceso?.ruta || `/tienda/${p.slug}/`;
+
+// Brindi se vende por planes en su propia página: en el catálogo es una sola tarjeta con su portada y "desde"
+export const PORTADA_BRINDI = '/assets/tienda/brindi.webp';
+const BRINDI = {
+  nombre: 'Brindi · Invitaciones digitales',
+  texto: 'Invitaciones digitales para bodas, XV años, bautizos y cumpleaños. Se comparten por WhatsApp, reciben confirmaciones y controlan el acceso con QR.',
+  incluye: ['Seis diseños premium que personalizas a tu gusto', 'Confirmaciones y control de acompañantes', 'Pase con QR para la entrada de tu evento'],
+};
+const esBrindi = p => p.contenido?.acceso?.app === 'brindi';
+
+// Cómo se presenta cada producto en el catálogo (una sola tarjeta por página de destino)
+function vistas(productos, desdeBrindi) {
+  const vistos = new Set();
+  return productos.map(p => {
+    const url = enlace(p);
+    if (vistos.has(url)) return null;
+    vistos.add(url);
+    if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
+      img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
+    return { p, url, nombre: p.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
+      cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: p, precio: precio(p), regalable: !!p.contenido?.regalable };
+  }).filter(Boolean);
+}
 
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
-  const [destacado] = productos;
-  const secciones = seccionesCatalogo(productos);
-  const tarjeta = (p, i) => `
-    <a class="t-prod rv" style="--d:${(i % 3) * 0.06}s" href="${esc(enlace(p))}">
-      <div class="t-prod-img">${portada(p)}</div>
+  // Precio de entrada de Brindi: el plan más barato a la venta (los planes viven ocultos del catálogo)
+  const planesBrindi = (await env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()).results
+    .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
+  const desdeBrindi = planesBrindi.length ? Math.min(...planesBrindi.map(x => x.precio_centavos)) : null;
+  const secciones = seccionesCatalogo(productos).map(g => ({ ...g, vistas: vistas(g.productos, desdeBrindi) }));
+  const todas = secciones.flatMap(g => g.vistas);
+
+  const lista = xs => xs.length ? `<ul class="t-incluye">${xs.map(x => `<li>${CHECK}<span>${esc(x)}</span></li>`).join('')}</ul>` : '';
+  // Una línea con un solo producto: tarjeta horizontal grande. Con varios: cuadrícula.
+  const horizontal = v => `
+    <article class="t-hz rv">
+      <a class="t-hz-img" href="${esc(v.url)}" tabindex="-1" aria-hidden="true">${portada(v.img)}</a>
+      <div class="t-hz-t">
+        <span class="t-cat">${v.cat}</span>
+        <h4><a href="${esc(v.url)}">${esc(v.nombre)}</a></h4>
+        <p>${esc(v.texto)}</p>
+        ${lista(v.incluye)}
+        <div class="t-hz-pie"><b class="num">${v.precio}</b><div class="botones"><a class="btn tinta" href="${esc(v.url)}">Conócelo ${FLECHA}</a>${v.regalable ? `<a class="btn blanco" href="${esc(v.url)}?regalo=1#comprar">🎁 Regalarlo</a>` : ''}</div></div>
+      </div>
+    </article>`;
+  const tarjeta = (v, i) => `
+    <a class="t-prod rv" style="--d:${(i % 3) * 0.06}s" href="${esc(v.url)}">
+      <div class="t-prod-img">${portada(v.img)}</div>
       <div class="t-prod-t">
-        <span class="t-cat">${esAcceso(p) ? 'Acceso en línea' : 'Descarga digital'}</span>
-        <h2>${esc(p.nombre)}</h2>
-        <p>${esc(p.descripcion_corta)}</p>
-        <div class="t-prod-pie"><b class="num">${precio(p)}</b><span class="flecha">Ver ${FLECHA}</span></div>
+        <span class="t-cat">${v.cat}</span>
+        <h2>${esc(v.nombre)}</h2>
+        <p>${esc(v.texto)}</p>
+        <div class="t-prod-pie"><b class="num">${v.precio}</b><span class="flecha">Ver ${FLECHA}</span></div>
       </div>
     </a>`;
-  const incluye = (destacado?.contenido?.incluye || []).slice(0, 3);
-  const ld = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: productos.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}/tienda/${p.slug}/`, name: p.nombre })) };
+  const desde = g => { const cs = g.vistas.map(v => v.p.precio_centavos); const b = g.vistas.find(v => esBrindi(v.p)); return b ? b.precio.replace('Desde ', '') : precio({ precio_centavos: Math.min(...cs) }); };
+  const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
-    titulo: 'Tienda · Vorka México', ruta: '/tienda/',
-    descripcion: 'Simulador PAA, kits y herramientas digitales de Vorka México para preparar tu examen de admisión o lanzar tu negocio. Entrega inmediata.',
+    titulo: 'Tienda Vorka México · Simulador PAA, invitaciones digitales y kits', ruta: '/tienda/',
+    descripcion: 'Simulador PAA para tu examen de admisión, invitaciones digitales con QR para tus celebraciones y kits para emprender. Productos digitales de Vorka México con entrega inmediata.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     cuerpo: `
@@ -97,51 +138,39 @@ export async function paginaCatalogo(env, req, url) {
   <div class="t-inicio-txt">
     <span class="etiqueta">Tienda Vorka México</span>
     <h1 class="h1 t-inicio-h1">Herramientas para <span class="metal">pasar a la acción.</span></h1>
-    <p class="lead">Simuladores de examen, kits y plantillas que usamos con nuestros estudiantes y clientes. Cómpralos hoy y empieza a usarlos en minutos, a tu ritmo.</p>
-    <div class="botones"><a class="btn tinta" href="${destacado ? esc(enlace(destacado)) : '#productos'}">${destacado ? 'Ver el destacado' : 'Ver productos'} ${FLECHA}</a>${productos.length > 1 ? `<a class="btn blanco" href="#productos">Todo el catálogo</a>` : ''}</div>
+    <p class="lead">Lo que usamos con estudiantes, familias y emprendedores, listo para ti: prepárate para tu examen, celebra tus momentos y lanza tu idea. Todo digital, al momento.</p>
     <ul class="t-sellos" aria-label="Por qué comprar aquí">
       <li>${CHECK}<span>Entrega inmediata</span></li>
       <li>${CHECK}<span>Tarjeta, OXXO o SPEI</span></li>
-      <li>${CHECK}<span>Soporte real</span></li>
+      <li>${CHECK}<span>Soporte de personas reales</span></li>
     </ul>
   </div>
-  ${destacado ? `<a class="t-destacado" href="${esc(enlace(destacado))}" aria-label="${esc(destacado.nombre)}">
-    <span class="t-destacado-sello">Destacado</span>
-    <div class="t-destacado-img">${portada(destacado)}</div>
-    <div class="t-destacado-t">
-      <h2>${esc(destacado.nombre)}</h2>
-      <p>${esc(destacado.descripcion_corta)}</p>
-      ${incluye.length ? `<ul>${incluye.map(x => `<li>${CHECK}<span>${esc(x.titulo)}</span></li>`).join('')}</ul>` : ''}
-      <div class="t-prod-pie"><b class="num">${precio(destacado)}</b><span class="flecha">Conócelo ${FLECHA}</span></div>
-    </div>
-  </a>` : ''}
+  ${secciones.length ? `<nav class="t-lineas" aria-label="Líneas de la tienda">${secciones.map((g, i) => `
+    <a class="t-linea-t rv" style="--d:${i * 0.06}s" href="#${esc(g.id)}">
+      <span class="t-linea-t-img">${portada(g.vistas[0].img)}</span>
+      <span class="t-linea-t-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><span>${g.vistas.length === 1 ? '1 producto' : `${g.vistas.length} productos`} · desde ${desde(g)}</span></span>
+      <span class="t-linea-t-f" aria-hidden="true">${FLECHA}</span>
+    </a>`).join('')}</nav>` : ''}
 </div></section>
-${destacado?.contenido?.regalable ? `<section class="t-gancho"><div class="marco t-gancho-g">
-  <div>
-    <span class="etiqueta">Nuevo · Producto estrella</span>
-    <h2 class="h2">${esc(destacado.contenido.titular || destacado.nombre)}</h2>
-    <p class="lead">${esc(destacado.descripcion_corta)}</p>
-    <ul class="t-gancho-l">${(destacado.contenido.incluye || []).slice(0, 3).map(x => `<li>${CHECK}<span>${esc(x.titulo)}</span></li>`).join('')}</ul>
-    <div class="botones"><a class="btn plata" href="${esc(enlace(destacado))}">Conócelo ${FLECHA}</a><a class="btn vidrio" href="${esc(enlace(destacado))}?regalo=1#comprar">🎁 Regalarlo</a></div>
-  </div>
-  <a class="t-gancho-img" href="${esc(enlace(destacado))}" tabindex="-1" aria-hidden="true"><img src="/tienda/img/portadas/simulador-paa-reporte.png" alt="" loading="lazy" width="1600" height="900"></a>
-</div></section>` : ''}
+<section class="t-sec t-catalogo" id="productos"><div class="marco">
+  ${secciones.length ? secciones.map((g, i) => `
+  <section class="t-seccion t-linea" id="${esc(g.id)}" aria-labelledby="sec-${esc(g.id)}">
+    <div class="t-linea-cab rv"><span class="t-linea-n num">${String(i + 1).padStart(2, '0')}</span><div><span class="etiqueta">${esc(g.linea)}</span><h2 class="h2" id="sec-${esc(g.id)}">${esc(g.titulo)}</h2>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div></div>
+    ${g.vistas.length === 1 ? horizontal(g.vistas[0]) : `<div class="t-grid t-grid-${Math.min(g.vistas.length, 3)}">${g.vistas.map(tarjeta).join('')}</div>`}
+  </section>`).join('') : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
+</div></section>
 <section class="t-sec t-como suave"><div class="marco">
+  <div class="cab rv"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Compra en minutos, úsalo hoy</h2></div>
   <ol class="t-como-g">
     <li class="rv"><span class="num">01</span><b>Elige tu herramienta</b><p>Cada producto explica qué incluye y para quién es, antes de pagar.</p></li>
     <li class="rv" style="--d:.06s"><span class="num">02</span><b>Paga seguro</b><p>Con tarjeta, en efectivo en OXXO o por SPEI. Lo procesa Stripe.</p></li>
     <li class="rv" style="--d:.12s"><span class="num">03</span><b>Recíbelo al momento</b><p>Te llega un correo con tus archivos o tu acceso en cuanto se confirma el pago.</p></li>
   </ol>
 </div></section>
-<section class="t-sec" id="productos"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Catálogo</span><h2 class="h2">${productos.length > 1 ? 'Todo lo que puedes llevarte' : 'Lo que puedes llevarte'}</h2></div>
-  ${secciones.length > 1 ? `<nav class="t-secciones-nav" aria-label="Secciones de la tienda">${secciones.map(g => `<a href="#${esc(g.id)}">${esc(g.titulo)}<small class="num">${g.productos.length}</small></a>`).join('')}</nav>` : ''}
-  ${productos.length ? secciones.map(g => `
-  <section class="t-seccion" id="${esc(g.id)}" aria-labelledby="sec-${esc(g.id)}">
-    <div class="t-seccion-cab rv"><h3 class="h3" id="sec-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div>
-    <div class="t-grid">${g.productos.map(tarjeta).join('')}</div>
-  </section>`).join('') : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
-  <p class="t-nota t-ayuda-pie">¿Dudas antes de comprar? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. ${env.MARKETPLACE === '1' ? '¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.' : ''}</p>
+<section class="t-sec"><div class="marco t-estrecho">
+  <div class="cab rv"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2">Antes de comprar</h2></div>
+  <div class="t-faq">${FAQ_TIENDA.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('')}</div>
+  <p class="t-nota t-ayuda-pie">¿Otra duda? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. ${env.MARKETPLACE === '1' ? '¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.' : ''}</p>
 </div></section>`,
   });
 }

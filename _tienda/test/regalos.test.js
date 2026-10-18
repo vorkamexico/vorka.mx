@@ -159,4 +159,43 @@ describe('cortesías (accesos gratis desde el panel)', () => {
     const A = new Admin({}, env); A.env = env;
     await expect(A.crearCortesias({ product_id: 'prod_simulador_paa_intento', cantidad: 1 })).rejects.toThrow(/no se puede regalar/);
   });
+
+  it('regala cualquier producto: una guía descargable por liga llega a nombre de quien la abre', async () => {
+    const { Admin } = await import('../src/index.js');
+    const A = new Admin({}, env); A.env = env;
+    const t = await A.crearCortesias({ product_id: 'prod_de_idea_a_proyecto', cantidad: 1 });
+    const html = await (await pedir(t.ligas[0].replace('https://vorka.mx', ''))).text();
+    expect(html).toContain('Descarga inmediata');
+    expect(html).not.toContain('simulacros');
+    const r = await canjear(tokenDe(t.ligas[0]), 'maestra@mail.com');
+    expect(r.status).toBe(200);
+    expect((await r.json()).mensaje).toMatch(/descargar tus archivos/);
+    expect(correos).toHaveLength(1);
+    expect(correos[0]).toMatchObject({ para: 'maestra@mail.com' });
+    expect(correos[0].texto).toMatch(/Te regalaron|regalaron/);
+    expect(correos[0].texto).toContain('/descargas/');
+  });
+
+  it('regala directo al correo: Brindi llega con su botón para crear la invitación y se puede quitar', async () => {
+    const { Admin } = await import('../src/index.js');
+    const A = new Admin({}, env); A.env = env;
+    await expect(A.crearCortesias({ product_id: 'prod_brindi_celebracion', cantidad: 1, modo: 'correo', email: '' })).rejects.toThrow(/correo/);
+    const t = await A.crearCortesias({ product_id: 'prod_brindi_celebracion', cantidad: 1, modo: 'correo', email: 'Novia@Mail.com', nombre: 'Ana López', mensaje: '¡Felicidades!' });
+    expect(t).toMatchObject({ directo: true, enviado: true, email: 'novia@mail.com' });
+    expect(correos).toHaveLength(1);
+    expect(correos[0].para).toBe('novia@mail.com');
+    expect(correos[0].texto).toContain('https://os.vorka.mx/brindi/entrar/');
+    expect(correos[0].texto).toMatch(/Te regalamos/);
+    // Cuenta como plan disponible en Brindi y no como venta
+    const { comprasApp } = await import('../src/brindi.js');
+    const c = await comprasApp(env, 'novia@mail.com', 'brindi');
+    expect(JSON.stringify(c)).toContain('celebracion');
+    expect((await A.resumen({})).ventas).toBe(0);
+    const lista = await A.cortesias();
+    expect(lista[0]).toMatchObject({ directo: true, activa: true, email: 'novia@mail.com' });
+    await expect(A.borrarCortesia(t.id)).rejects.toThrow(/quítale el acceso/);
+    await A.revocarCortesias(t.id);
+    expect((await A.cortesias())[0].activa).toBe(false);
+    expect(env.DB.raw.prepare('SELECT estado FROM orders WHERE id = ?').get(t.id).estado).toBe('refunded');
+  });
 });
