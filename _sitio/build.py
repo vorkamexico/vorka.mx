@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
 from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS
 from agenda import pagina_agenda
-from fc import pagina_fc
+from fc import actualizar_fc
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
@@ -403,5 +403,6 @@ if __name__ == '__main__':
     for s in SERVICIOS:
         escribir(f"servicios/{s['slug']}/index.html", servicio(s))
     escribir('agenda/index.html', pagina_agenda())
-    escribir('fc/index.html', pagina_fc())
+    with open(os.path.join(RAIZ, 'fc/index.html'), encoding='utf-8') as f:
+        escribir('fc/index.html', actualizar_fc(f.read()))
     escribir('404.html', no_encontrada())
