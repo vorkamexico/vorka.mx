@@ -1110,7 +1110,11 @@
 
   const STRUCT_ORDER = ["nacional","estatal","distrital","municipal"];
   const STRUCT_LABELS = {nacional:"Nacional",estatal:"Estatal",distrital:"Distrital",municipal:"Municipal"};
-  const CARGO_ORDER = ["presidente","vicepresidente","vicepresidente regional","consejero","director","secretaría","representante"];
+  const CARGO_ORDER = ["presidente","vicepresidente","vicepresidente regional","consejero","director","director de mercurio","secretaría","representante"];
+  // Cargos con nombre propio (los demás se muestran tal cual)
+  const CARGO_LABELS = {"director de mercurio":"Dirección de Mercurio"};
+  const cargoDe = c => CARGO_LABELS[c] || c;
+  const esDireccion = c => c === "director" || c === "director de mercurio";
 
   function titleCase(str){
     const particles = new Set(["de","del","la","las","los","y","el","en","al","da","do"]);
@@ -1199,7 +1203,7 @@
     const row = el("div","row");
     const regionKey = regionKeyOf(d);
     row.dataset.region = regionKey;
-    const cargoText = d.cargo + (d.estructura !== "nacional" ? ' <span class="sep">·</span> ' + STRUCT_LABELS[d.estructura] : "");
+    const cargoText = cargoDe(d.cargo) + (d.estructura !== "nacional" ? ' <span class="sep">·</span> ' + STRUCT_LABELS[d.estructura] : "");
     const badge = d._nationalGeneral ? '<span class="badge">Nacional</span>' : (d._vprRegions ? '<span class="badge">Regional</span>' : "");
     const regionLabel = d.region ? REGION_LABELS[d.region] : "Nacional";
     row.style.setProperty("--tone", "var(--" + regionKey + ")");
@@ -1219,7 +1223,7 @@
     const card = el("div","mcard");
     const regionKey = regionKeyOf(d);
     card.dataset.region = regionKey;
-    const cargoText = d.cargo + (d.estructura !== "nacional" ? " · " + STRUCT_LABELS[d.estructura] : "");
+    const cargoText = cargoDe(d.cargo) + (d.estructura !== "nacional" ? " · " + STRUCT_LABELS[d.estructura] : "");
     card.innerHTML = `
       ${avatarEl(d, 72)}
       <div>
@@ -1313,8 +1317,8 @@
         const members = filtered.filter(d => d.estructura === s);
         if (!members.length) return;
         if (s === "nacional"){
-          const liderazgo = members.filter(d => d.cargo !== "director");
-          const direccion = members.filter(d => d.cargo === "director");
+          const liderazgo = members.filter(d => !esDireccion(d.cargo));
+          const direccion = members.filter(d => esDireccion(d.cargo));
           if (liderazgo.length){
             anyRendered = true;
             dir.appendChild(renderGroup("Nacional", liderazgo, {tone: "var(--nacional)", showCount: true}));
