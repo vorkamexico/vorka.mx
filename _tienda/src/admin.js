@@ -7,7 +7,7 @@ import { reenviarEnlace } from './entrega.js';
 import { crearEnlace } from './creadores-acceso.js';
 import { enlaceAcceso, solicitudRechazada, productoRevisado } from './correos-creadores.js';
 import { refrescarCreador } from './marketplace.js';
-import { motivoNoRecordar } from './recordatorio.js';
+import { motivoNoRecordar, MAX_SEGUIMIENTOS } from './recordatorio.js';
 
 const TZ = 'America/Mexico_City';
 const fechaMx = iso => iso ? new Date(iso).toLocaleString('sv-SE', { timeZone: TZ }).slice(0, 16) : '';
@@ -46,6 +46,7 @@ const FiltrosOrdenes = z.object({
   producto: z.string().max(80).optional().catch(undefined),
   afiliado: z.string().max(40).optional().catch(undefined),
   q: z.string().trim().max(120).optional().catch(undefined),
+  archivadas: z.preprocess(v => v === true || v === '1' || v === 'true', z.boolean()).catch(false),
   pagina: z.coerce.number().int().min(0).max(1000).default(0).catch(0),
 });
 const POR_PAGINA = 50;
@@ -54,6 +55,8 @@ export async function ordenes(env, filtros = {}) {
   const f = FiltrosOrdenes.parse(filtros);
   const w = [], p = [];
   if (f.estado) { w.push('o.estado = ?'); p.push(f.estado); }
+  // Las órdenes sin pagar que se archivaron no salen; si después se pagan, vuelven a aparecer solas
+  if (!f.archivadas) w.push("(o.archivada_at IS NULL OR o.estado = 'paid')");
   if (f.desde) { w.push('o.created_at >= ?'); p.push(inicioDia(f.desde)); }
   if (f.hasta) { w.push('o.created_at < ?'); p.push(finDia(f.hasta)); }
   if (f.producto) { w.push('EXISTS (SELECT 1 FROM order_items i WHERE i.order_id = o.id AND i.product_id = ?)'); p.push(f.producto); }
@@ -75,8 +78,9 @@ export async function orden(env, id) {
     .map(t => ({ ...t, revocado: !!t.revocado, vencido: t.expires_at < ahoraISO(), descargas: Object.values(JSON.parse(t.descargas || '{}')).reduce((s, n) => s + n, 0) }));
   const trf = await all(env, 'SELECT t.*, c.nombre creador_nombre FROM transferencias t JOIN creadores c ON c.id = t.creador_id WHERE t.order_id = ?', o.id);
   // Recordatorio de pago: se puede mandar una sola vez (si no, por qué no)
-  const recordatorio = ['pending', 'failed'].includes(o.estado) ? { enviado: o.recordatorio_at, motivo: await motivoNoRecordar(env, o) } : null;
-  return { ...o, items, tokens, transferencias: trf, recordatorio };
+  const recordatorio = ['pending', 'failed'].includes(o.estado) ? { enviado: o.recordatorio_at, enviados: Number(o.seguimientos) || (o.recordatorio_at ? 1 : 0), maximo: MAX_SEGUIMIENTOS, motivo: await motivoNoRecordar(env, o) } : null;
+  const regalos = o.regalo ? await all(env, 'SELECT id, estado, canjeado_email, canjeado_at, created_at FROM regalos WHERE order_id = ? ORDER BY id', o.id) : [];
+  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at };
 }
 
 export async function reenviar(env, id) {
@@ -88,6 +92,19 @@ export async function reenviar(env, id) {
 export async function revocar(env, id) {
   const r = await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ? AND revocado = 0', String(id));
   return { revocados: r.meta.changes };
+}
+
+// "Borrar" una orden sin pagar = archivarla: deja de verse en el panel, pero sigue existiendo por si el pago
+// llega después (una ficha OXXO o un SPEI tardío). Si se paga, vuelve a aparecer sola y se entrega normal.
+export async function archivarOrden(env, id) {
+  const r = await run(env, "UPDATE orders SET archivada_at = ?, updated_at = ? WHERE id = ? AND estado IN ('pending','failed') AND archivada_at IS NULL", ahoraISO(), ahoraISO(), String(id));
+  if (!r.meta.changes) throw new Error('Solo se pueden borrar órdenes que no se pagaron.');
+  return { ok: true };
+}
+export async function archivarSinPagar(env, { dias = 7 } = {}) {
+  const d = Math.max(1, Math.min(365, Number(dias) || 7));
+  const r = await run(env, "UPDATE orders SET archivada_at = ?, updated_at = ? WHERE estado IN ('pending','failed') AND archivada_at IS NULL AND created_at < ?", ahoraISO(), ahoraISO(), new Date(Date.now() - d * 864e5).toISOString());
+  return { archivadas: r.meta.changes };
 }
 
 // CSV para la factura global del contador: compras pagadas (y reembolsadas, marcadas) en el rango

@@ -198,11 +198,15 @@ Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"
 
 **Intentos** (migración 0009): la compra trae 2 simulacros completos (`contenido.acceso.intentos`). El producto oculto `simulador-paa-intento` ($50, `contenido.oculto`) suma 1 por unidad y solo lo compra quien ya tiene el simulador (candado en `/api/checkout`). Se cuentan por correo en `simulador_intentos`; el servidor arma cada simulacro completo (`src/simulador/armar.js`) y un intento abandonado también cuenta. Secciones sueltas y práctica de temas no gastan intentos.
 
+**Examen PAA completo** (migración 0011): misma cantidad de preguntas y tiempo que la PAA real (`SECCIONES_EXAMEN` en `banco.js`: Lectura 45/50 min, Redacción 25/30, Matemáticas 55/60, Inglés 50/40 = 175 reactivos, 3 h), sin tutor. La compra trae 1 (`contenido.acceso.examenes`) además de los 2 cortos; el producto oculto `simulador-paa-examen` ($100) suma 1. `simulador_intentos.tipo` distingue `corto` y `examen`.
+
+**Panel (os.vorka.mx → Tienda)**: hasta 3 correos de seguimiento por orden sin pagar (48 h entre uno y otro), "Borrar" una orden sin pagar la archiva (si el pago llega tarde se entrega y vuelve a aparecer), y las ligas de regalo se pueden apagar/prender una por una o borrar una tanda de cortesías que nadie ha usado.
+
 **Tienda por secciones**: el catálogo agrupa por categoría (`SECCIONES_TIENDA` en `src/tienda.js`); una categoría nueva aparece sola como sección.
 
 **Google**: `vorka.mx/simulador-paa/` es la página canónica (título, FAQ y Product en JSON-LD, imagen para compartir) y es la que va en `/tienda/sitemap.xml`. Portadas: `python3 _tienda/simulador/portadas.py` y subirlas a R2 como `portadas/simulador-paa-v2.png` y `portadas/simulador-paa-og.png`.
 
-**Banco** (235 reactivos): base en `src/simulador/banco.js` + ampliación en `extra-lectura.js`, `extra-redaccion.js`, `extra-matematicas.js` y `extra-ingles.js`. El servidor arma cada simulacro completo priorizando lo no visto por ese correo (`vistosDe` + `armar.js`): los primeros 3 salen 100 % distintos y el 4.º–5.º casi. Las secciones sueltas hacen lo mismo en el cliente con lo que ya vio.
+**Banco** (406 reactivos): base en `src/simulador/banco.js` + ampliaciones `extra-*.js` y `extra3-*.js` (Matemáticas trae figuras SVG originales en el campo `figura`; no se copian imágenes de la guía del College Board). Antes de agregar reactivos corre `node scripts/validar-banco.mjs` (ids, opciones, letras en pistas, SVG seguro). El servidor arma cada simulacro y examen priorizando lo no visto por ese correo (`vistosDe` + `armar.js`). Las secciones sueltas hacen lo mismo en el cliente con lo que ya vio.
 
 **Regalos** (migración 0010, `src/regalos.js`): en productos con `contenido.regalable` el formulario ofrece *Para regalar* (cantidad, para quién, mensaje). Al pagarse, quien compra recibe una liga `/tienda/regalo/<token>` por unidad (no recibe acceso). Cada liga se canjea una sola vez: crea una orden de $0 (`proveedor = 'regalo'`, `regalo_de`) a nombre de quien la abre, le manda su acceso y lo deja entrar. Reenviar cambia las ligas no usadas; un reembolso apaga las pendientes y el acceso de quien canjeó.
 

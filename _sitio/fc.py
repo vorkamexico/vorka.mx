@@ -57,7 +57,7 @@ def pagina_fc():
 <meta property="og:image:alt" content="Vorka FC, academia de fútbol en Celaya">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 '''
-    cuerpo = f'''{nav(oscuro=True)}
+    cuerpo = f'''{nav(actual='/fc/#programa', oscuro=True, publico='fc')}
 {GRANO}
 <main id="contenido" class="fc">
   <section class="fc-hero">
@@ -228,7 +228,7 @@ def pagina_fc():
     </div>
   </section>
 </main>
-{pie()}{JS}'''
+{pie('fc')}{JS}'''
     return (cabeza('Vorka FC · Academia de fútbol en Celaya', f'Academia de fútbol para niñas y niños de {EDADES[0]} a {EDADES[1]} años en Celaya. Lunes, miércoles y viernes de 5:00 a 6:30 pm. Los primeros 3 meses son gratis, con cuota voluntaria. Cupo de {CUPO}.',
                    '/fc/', og='celaya', extra=extra).replace(f'{SITIO}/img/ciudades/celaya-1600.webp', f'{SITIO}/img/fc/madero-1600.webp')
             + cuerpo + '\n</body>\n</html>\n')

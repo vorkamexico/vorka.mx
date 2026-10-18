@@ -4,7 +4,7 @@ import worker from '../src/index.js';
 import { crearOrden, aplicarPago } from '../src/modelo.js';
 import { crearToken, correoEntrega } from '../src/entrega.js';
 import { cookieAcceso } from '../src/simulador/index.js';
-import { SECCIONES, TEMAS, TEXTOS, REACTIVOS } from '../src/simulador/banco.js';
+import { SECCIONES, SECCIONES_EXAMEN, TEMAS, TEXTOS, REACTIVOS } from '../src/simulador/banco.js';
 import * as admin from '../src/admin.js';
 
 let env, orden, token;
@@ -201,6 +201,43 @@ describe('intentos de simulacro completo', () => {
     expect(r.status).toBe(403);
     const sola = await comprar('simulador-paa-intento', 'luis@mail.com');
     expect((await pedir('/api/simulador-paa/banco', { cookie: soloCookie(await cookieAcceso(env, sola.id, Date.now() + 864e5)) })).status).toBe(401);
+  });
+});
+
+describe('examen PAA completo (estructura real)', () => {
+  const cookieDe = async o => soloCookie(await cookieAcceso(env, o.id, Date.now() + 864e5));
+  const iniciarEx = cookie => pedir('/api/simulador-paa/iniciar', { metodo: 'POST', cookie, body: JSON.stringify({ tipo: 'examen' }) });
+  const yo = async cookie => (await pedir('/api/simulador-paa/yo', { cookie })).json();
+
+  it('la compra trae 1 examen completo de 175 reactivos sin repetir, aparte de los 2 cortos', async () => {
+    const cookie = await cookieDe(orden);
+    const y = await yo(cookie);
+    expect(y.examenes).toMatchObject({ incluidos: 1, disponibles: 1 });
+    expect(y.intentos).toMatchObject({ incluidos: 2, disponibles: 2 });
+    expect(y.examenExtra).toEqual({ slug: 'simulador-paa-examen', precio_centavos: 10000 });
+    const a = await (await iniciarEx(cookie)).json();
+    expect(a.items.map(x => x.length)).toEqual(SECCIONES_EXAMEN.map(s => s.reactivos));
+    expect(a.items.flat()).toHaveLength(175);
+    expect(new Set(a.items.flat()).size).toBe(175);
+    // gastar el examen no toca los cortos
+    expect((await yo(cookie)).intentos).toMatchObject({ disponibles: 2 });
+    // el resultado del examen cierra su intento
+    const res = JSON.stringify({ modo: 'examen', intento: a.id, secciones: [{ id: 'lectura', puntaje: 600, aciertos: 30, total: 45 }], temas: {} });
+    expect((await pedir('/api/simulador-paa/resultados', { metodo: 'POST', cookie, body: res })).status).toBe(200);
+    const r = await iniciarEx(cookie);
+    expect(r.status).toBe(402);
+  });
+
+  it('un examen adicional de $100 suma un examen, y solo lo compra quien ya tiene el simulador', async () => {
+    const ex = await crearOrden(env, { items: [{ slug: 'simulador-paa-examen', cantidad: 2 }], email: 'ana@mail.com', nombre: 'Ana López' });
+    expect(ex.monto_centavos).toBe(20000);
+    await aplicarPago(env, ex.id, { resultado: 'aprobado', monto_centavos: 20000, moneda: 'MXN', metodo_pago: 'card' });
+    const y = await yo(await cookieDe(orden));
+    expect(y.examenes).toMatchObject({ incluidos: 3 });
+    expect(y.intentos).toMatchObject({ incluidos: 2 });
+    const r = await worker.fetch(new Request('https://vorka.mx/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ items: [{ slug: 'simulador-paa-examen', cantidad: 1 }], nombre: 'Luis', email: 'luis@mail.com', terminos: true }) }), env);
+    expect(r.status).toBe(403);
   });
 });
 

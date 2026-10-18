@@ -11,6 +11,8 @@ import { FLECHA } from './marco.generado.js';
 
 export const VIGENCIA_RETOMAR_DIAS = 14;
 const ESPERA_MIN_MS = 60 * 60e3;   // no se recuerda una orden de hace menos de 1 hora (puede estar pagando)
+export const MAX_SEGUIMIENTOS = 3;           // correos de seguimiento por orden
+const ENTRE_SEGUIMIENTOS_MS = 48 * 36e5;    // al menos 48 h entre uno y otro (por orden y por correo)
 
 async function firma(env, id, e) {
   if (!env.DOWNLOAD_TOKEN_SECRET) throw new Error('Falta DOWNLOAD_TOKEN_SECRET');
@@ -22,10 +24,11 @@ export async function ligaRetomar(env, id, ahora = Date.now()) {
   return `${env.SITE_URL}/tienda/retomar/${id}?e=${e}&s=${await firma(env, id, e)}`;
 }
 
-export function correoRecordatorio(env, orden, items, url) {
+export function correoRecordatorio(env, orden, items, url, vez = 1) {
   const nombre = orden.nombre.split(' ')[0];
   const uno = items.length === 1;
-  const asunto = uno ? `Tu compra de ${items[0].nombre} quedó pendiente` : 'Tu compra en Vorka México quedó pendiente';
+  const asunto = vez > 1 ? (uno ? `¿Te ayudamos a terminar tu compra de ${items[0].nombre}?` : '¿Te ayudamos a terminar tu compra en Vorka México?')
+    : uno ? `Tu compra de ${items[0].nombre} quedó pendiente` : 'Tu compra en Vorka México quedó pendiente';
   const oxxo = orden.metodo_pago === 'oxxo';
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
@@ -35,7 +38,7 @@ ${lista(items.map(i => esc(i.nombre)))}
 ${boton(url, 'Terminar mi compra')}
 ${oxxo ? `<p style="${P}">Si ya pagaste en OXXO, ignora este correo: en cuanto se refleje tu pago te llegan tus archivos.</p>` : ''}
 <p style="${P}">Si tienes alguna duda sobre el producto o el pago, responde este correo o escríbenos por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a>. Con gusto te ayudamos.</p>
-<p style="${P}">Y si ya no te interesa, no tienes que hacer nada: es el único recordatorio que te mandaremos.</p>
+<p style="${P}">Y si ya no te interesa, no tienes que hacer nada.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)} · la liga funciona ${VIGENCIA_RETOMAR_DIAS} días</p>`);
   const texto = `Hola, ${nombre}:
 
@@ -48,7 +51,7 @@ ${url}
 ${oxxo ? '\nSi ya pagaste en OXXO, ignora este correo: en cuanto se refleje tu pago te llegan tus archivos.\n' : ''}
 Si tienes alguna duda, responde este correo o escríbenos por WhatsApp: ${SOPORTE.whatsapp}
 
-Y si ya no te interesa, no tienes que hacer nada: es el único recordatorio que te mandaremos.
+Y si ya no te interesa, no tienes que hacer nada.
 
 Orden ${orden.id}
 Vorka México · Guanajuato, México`;
@@ -59,14 +62,16 @@ Vorka México · Guanajuato, México`;
 export async function motivoNoRecordar(env, o, ahora = Date.now()) {
   if (!o) return 'Esa orden no existe.';
   if (!['pending', 'failed'].includes(o.estado)) return 'Solo se recuerdan órdenes que no se pagaron.';
-  if (o.recordatorio_at) return 'A esta orden ya se le mandó su recordatorio.';
+  const enviados = Number(o.seguimientos) || (o.recordatorio_at ? 1 : 0);
+  if (enviados >= MAX_SEGUIMIENTOS) return `A esta orden ya se le mandaron los ${MAX_SEGUIMIENTOS} correos de seguimiento.`;
   if (ahora - Date.parse(o.created_at) < ESPERA_MIN_MS) return 'Es muy reciente: espera al menos una hora, puede estar pagando.';
+  if (o.recordatorio_at && ahora - Date.parse(o.recordatorio_at) < ENTRE_SEGUIMIENTOS_MS) return 'Ya se le mandó un correo hace menos de 48 horas: dale tiempo de verlo.';
   // Si después compró lo mismo con ese correo, no se le molesta
   const yaCompro = await one(env, `SELECT 1 FROM orders o2 JOIN order_items i2 ON i2.order_id = o2.id
     WHERE o2.email = ? AND o2.estado = 'paid' AND o2.created_at >= ? AND i2.product_id IN (SELECT product_id FROM order_items WHERE order_id = ?) LIMIT 1`, o.email, o.created_at, o.id);
   if (yaCompro) return 'Esta persona ya lo compró en otra orden.';
-  const otro = await one(env, 'SELECT id FROM orders WHERE email = ? AND recordatorio_at >= ? AND id != ?', o.email, new Date(ahora - 7 * 864e5).toISOString(), o.id);
-  if (otro) return 'A este correo ya le mandamos un recordatorio esta semana.';
+  const otro = await one(env, 'SELECT id FROM orders WHERE email = ? AND recordatorio_at >= ? AND id != ?', o.email, new Date(ahora - ENTRE_SEGUIMIENTOS_MS).toISOString(), o.id);
+  if (otro) return 'A este correo ya le mandamos un seguimiento por otra orden en las últimas 48 horas.';
   return null;
 }
 
@@ -75,19 +80,21 @@ export async function recordarOrden(env, id, ahora = Date.now()) {
   const motivo = await motivoNoRecordar(env, o, ahora);
   if (motivo) throw new Error(motivo);
   const items = await all(env, 'SELECT product_id, nombre FROM order_items WHERE order_id = ?', o.id);
-  // Se marca primero (sin carrera: solo si sigue sin recordatorio) y si el correo falla se desmarca
+  const vez = (Number(o.seguimientos) || (o.recordatorio_at ? 1 : 0)) + 1;
+  // Se marca primero (sin carrera: solo si nadie mandó otro mientras tanto) y si el correo falla se regresa como estaba
   const marca = new Date(ahora).toISOString();
-  const r = await run(env, "UPDATE orders SET recordatorio_at = ?, updated_at = ? WHERE id = ? AND recordatorio_at IS NULL AND estado IN ('pending','failed')", marca, ahoraISO(), o.id);
-  if (!r.meta.changes) throw new Error('A esta orden ya se le mandó su recordatorio.');
+  const r = await run(env, "UPDATE orders SET recordatorio_at = ?, seguimientos = ?, updated_at = ? WHERE id = ? AND estado IN ('pending','failed') AND recordatorio_at IS ?",
+    marca, vez, ahoraISO(), o.id, o.recordatorio_at ?? null);
+  if (!r.meta.changes) throw new Error('Alguien acaba de mandarle un correo a esta orden.');
   try {
-    const c = correoRecordatorio(env, o, items, await ligaRetomar(env, o.id, ahora));
-    await enviar(env, { para: o.email, ...c, idempotencia: `recordatorio-${o.id}` });
+    const c = correoRecordatorio(env, o, items, await ligaRetomar(env, o.id, ahora), vez);
+    await enviar(env, { para: o.email, ...c, idempotencia: `recordatorio-${o.id}-${vez}` });
   } catch (e) {
-    await run(env, 'UPDATE orders SET recordatorio_at = NULL WHERE id = ? AND recordatorio_at = ?', o.id, marca);
+    await run(env, 'UPDATE orders SET recordatorio_at = ?, seguimientos = ? WHERE id = ? AND recordatorio_at = ?', o.recordatorio_at ?? null, vez - 1, o.id, marca);
     console.error('recordatorio', o.id, correoOculto(o.email), e.message);
     throw new Error('No se pudo mandar el correo. Intenta de nuevo en un momento.');
   }
-  return { ok: true, recordatorio_at: marca };
+  return { ok: true, recordatorio_at: marca, seguimientos: vez };
 }
 
 // GET /tienda/retomar/<orden>?e&s → pago nuevo con los mismos productos (los que sigan a la venta)

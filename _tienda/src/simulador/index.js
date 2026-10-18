@@ -13,16 +13,17 @@
 // Acceso: cookie HttpOnly firmada con HMAC (DOWNLOAD_TOKEN_SECRET). En cada petición se revisa en D1 que la orden
 // siga pagada (un reembolso corta el acceso) y que esté dentro de su año de vigencia.
 //
-// Intentos: la compra del simulador trae contenido.acceso.intentos = 2 y cada "Simulacro adicional" ($50) trae 1.
-// Se suman por correo del comprador y solo los gasta el simulacro completo (secciones y práctica son libres).
+// Intentos: la compra del simulador trae 2 simulacros cortos y 1 examen PAA completo; cada "Simulacro adicional" ($50)
+// suma 1 corto y cada "Examen PAA completo adicional" ($100) suma 1 examen. Se suman por correo del comprador y solo
+// los gastan los simulacros y exámenes completos (secciones y práctica son libres).
 import { one, all, run, json, fail, enc, hex, iguales } from '../util.js';
 import { hashToken } from '../entrega.js';
 import { pagina, aviso, esc, nonce, seguridad } from '../paginas.js';
 import { productoPorSlug } from '../modelo.js';
 import { formCompra, SCRIPT_COMPRA, precio, refDeVisita } from '../tienda.js';
 import { FLECHA, CHECK, LOGO, VERSION } from '../marco.generado.js';
-import { SECCIONES, TEMAS, TEXTOS, REACTIVOS } from './banco.js';
-import { armarCompleto } from './armar.js';
+import { SECCIONES, SECCIONES_EXAMEN, TEMAS, TEXTOS, REACTIVOS } from './banco.js';
+import { armarCompleto, armarExamen } from './armar.js';
 import { APP_JS, APP_CSS } from './cliente.generado.js';
 
 export const APP = 'simulador-paa';
@@ -32,6 +33,7 @@ export const VIGENCIA_DIAS = 365;
 const MAX_RESULTADO = 60_000;   // bytes de JSON por resultado
 const MAX_HISTORIAL = 60;       // resultados que se guardan por compra
 export const SLUG_INTENTO = 'simulador-paa-intento';
+export const SLUG_EXAMEN = 'simulador-paa-examen';   // examen PAA completo adicional ($100)
 const OS = 'https://os.vorka.mx'; // boletín de la Revista Sparks
 const SIN_REFERER = { 'referrer-policy': 'no-referrer' };
 
@@ -69,7 +71,8 @@ async function comprasDe(env, email) {
     ORDER BY o.paid_at DESC`, String(email).toLowerCase());
   return filas.map(f => ({ ...f, acceso: accesoDeItem(f.contenido) })).filter(f => f.acceso);
 }
-const esBase = c => c.acceso.tipo !== 'intento';
+// Compra base = el simulador; 'intento' suma simulacros cortos y 'examen' suma exámenes completos
+const esBase = c => c.acceso.tipo !== 'intento' && c.acceso.tipo !== 'examen';
 
 // La cookie puede ser de la compra del simulador o de un simulacro adicional: el acceso siempre lo da
 // la compra base más reciente del mismo correo (pagada y dentro de su año). Devuelve { orden (base), vence } o null.
@@ -84,13 +87,19 @@ export async function ordenConAcceso(env, orderId, ahora = Date.now()) {
   return { orden: ordenBase, vence };
 }
 
-// Intentos de simulacro completo: comprados (base × 2 + adicionales) menos los ya abiertos
-export async function cuentaIntentos(env, email) {
+// Intentos por tipo: 'corto' (simulacro de 46 reactivos) o 'examen' (examen PAA completo, estructura real).
+// Base: 2 cortos + 1 examen (también para quien compró antes de que existiera el examen). Adicionales: lo que diga el producto.
+// Un intento abandonado también cuenta: si no, bastaría con abandonar para cambiar de preguntas gratis.
+const cuantos = (c, tipo) => {
+  const a = c.acceso;
+  if (tipo === 'examen') return a.examenes != null ? Number(a.examenes) || 0 : esBase(c) ? 1 : a.tipo === 'examen' ? 1 : 0;
+  return a.intentos != null ? Number(a.intentos) || 0 : esBase(c) ? 2 : a.tipo === 'intento' ? 1 : 0;
+};
+export async function cuentaIntentos(env, email, tipo = 'corto') {
   const compras = await comprasDe(env, email);
-  const incluidos = compras.reduce((s, c) => s + (Number(c.acceso.intentos) || (esBase(c) ? 2 : 1)) * (c.cantidad || 1), 0);
-  // Un simulacro abandonado también cuenta: si no, bastaría con abandonar para cambiar de preguntas gratis
-  const usados = (await one(env, 'SELECT COUNT(*) n FROM simulador_intentos WHERE email = ? AND app = ?', email, APP)).n;
-  const abierto = await one(env, "SELECT id, items FROM simulador_intentos WHERE email = ? AND app = ? AND estado = 'abierto' ORDER BY id DESC LIMIT 1", email, APP);
+  const incluidos = compras.reduce((s, c) => s + cuantos(c, tipo) * (c.cantidad || 1), 0);
+  const usados = (await one(env, 'SELECT COUNT(*) n FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = ?', email, APP, tipo)).n;
+  const abierto = await one(env, "SELECT id, items FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = ? AND estado = 'abierto' ORDER BY id DESC LIMIT 1", email, APP, tipo);
   return { incluidos, usados, disponibles: Math.max(0, incluidos - usados), abierto: abierto ? { id: abierto.id, items: JSON.parse(abierto.items) } : null };
 }
 
@@ -139,10 +148,10 @@ export async function rutasSimulador(req, env, url) {
     const a = await accesoDe(env, req);
     if (!a) return fail('Tu acceso no está activo. Entra con el enlace de tu correo de compra.', 401);
     if (p === '/api/simulador-paa/banco' && M === 'GET')
-      return json({ secciones: SECCIONES, temas: TEMAS, textos: TEXTOS, reactivos: REACTIVOS }, 200, { 'cache-control': 'private, max-age=300' });
+      return json({ secciones: SECCIONES, examen: SECCIONES_EXAMEN, temas: TEMAS, textos: TEXTOS, reactivos: REACTIVOS }, 200, { 'cache-control': 'private, max-age=300' });
     if (p === '/api/simulador-paa/yo' && M === 'GET') return yo(env, a);
     if (p === '/api/simulador-paa/resultados' && M === 'POST') return guardarResultado(req, env, a);
-    if (p === '/api/simulador-paa/iniciar' && M === 'POST') return iniciar(env, a);
+    if (p === '/api/simulador-paa/iniciar' && M === 'POST') return iniciar(env, a, (await req.json().catch(() => ({}))).tipo === 'examen' ? 'examen' : 'corto');
     if (p === '/api/simulador-paa/abandonar' && M === 'POST') return abandonar(req, env, a);
     return fail('No encontrado', 404);
   }
@@ -184,39 +193,43 @@ async function yo(env, a) {
   const filas = await all(env, `SELECT id, modo, resultado, created_at FROM simulador_resultados
     WHERE order_id IN (SELECT id FROM orders WHERE email = ?) AND app = ? ORDER BY created_at DESC LIMIT ?`, a.orden.email, APP, MAX_HISTORIAL);
   const historial = filas.map(f => { try { return { id: f.id, modo: f.modo, fecha: f.created_at, ...JSON.parse(f.resultado) }; } catch { return null; } }).filter(Boolean);
-  const intentos = await cuentaIntentos(env, a.orden.email);
+  const intentos = await cuentaIntentos(env, a.orden.email), examenes = await cuentaIntentos(env, a.orden.email, 'examen');
   const extra = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', SLUG_INTENTO);
+  const extraEx = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', SLUG_EXAMEN);
   return json({ nombre: a.orden.nombre, email: a.orden.email, vence: new Date(a.vence).toISOString(), historial,
-    intentos, vistos: [...await vistosDe(env, a.orden.email)], intentoExtra: extra ? { slug: SLUG_INTENTO, precio_centavos: extra.precio_centavos } : null });
+    intentos, examenes, vistos: [...await vistosDe(env, a.orden.email)],
+    intentoExtra: extra ? { slug: SLUG_INTENTO, precio_centavos: extra.precio_centavos } : null,
+    examenExtra: extraEx ? { slug: SLUG_EXAMEN, precio_centavos: extraEx.precio_centavos } : null });
 }
 
-// Abre un simulacro completo: retoma el abierto o gasta un intento y arma los reactivos en el servidor
-async function iniciar(env, a) {
+// Abre un simulacro corto o un examen completo: retoma el abierto o gasta un intento y arma los reactivos en el servidor
+async function iniciar(env, a, tipo = 'corto') {
   const email = a.orden.email;
-  const c = await cuentaIntentos(env, email);
-  if (c.abierto) return json({ id: c.abierto.id, items: c.abierto.items, retomado: true, intentos: c });
-  if (c.disponibles <= 0) return json({ error: 'Ya usaste tus simulacros completos. Compra uno adicional para seguir.', sinIntentos: true, intentos: c }, 402);
-  const items = armarCompleto(Math.random, await vistosDe(env, email));
-  const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items) VALUES (?,?,?)', email, APP, JSON.stringify(items));
+  const c = await cuentaIntentos(env, email, tipo);
+  if (c.abierto) return json({ id: c.abierto.id, items: c.abierto.items, retomado: true, tipo, intentos: c });
+  if (c.disponibles <= 0) return json({ error: tipo === 'examen' ? 'Ya usaste tus exámenes completos. Compra uno adicional para seguir.' : 'Ya usaste tus simulacros completos. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: c }, 402);
+  const vistos = await vistosDe(env, email);
+  const items = tipo === 'examen' ? armarExamen(Math.random, vistos) : armarCompleto(Math.random, vistos);
+  const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items, tipo) VALUES (?,?,?,?)', email, APP, JSON.stringify(items), tipo);
   const id = r.meta.last_row_id ?? (await one(env, 'SELECT id FROM simulador_intentos WHERE email = ? ORDER BY id DESC LIMIT 1', email)).id;
-  return json({ id, items, retomado: false, intentos: await cuentaIntentos(env, email) });
+  return json({ id, items, retomado: false, tipo, intentos: await cuentaIntentos(env, email, tipo) });
 }
 
 async function abandonar(req, env, a) {
   const b = await req.json().catch(() => ({}));
   await run(env, "UPDATE simulador_intentos SET estado = 'abandonado', terminado_at = ? WHERE id = ? AND email = ? AND estado = 'abierto'", new Date().toISOString(), Number(b.id) || 0, a.orden.email);
-  return json({ ok: true, intentos: await cuentaIntentos(env, a.orden.email) });
+  return json({ ok: true, intentos: await cuentaIntentos(env, a.orden.email), examenes: await cuentaIntentos(env, a.orden.email, 'examen') });
 }
 
 async function guardarResultado(req, env, a) {
   const texto = await req.text();
   if (texto.length > MAX_RESULTADO) return fail('Resultado demasiado grande.', 413);
   let r; try { r = JSON.parse(texto); } catch { return fail('Resultado inválido.'); }
-  if (!r || typeof r !== 'object' || !['completo', 'seccion', 'practica'].includes(r.modo)) return fail('Resultado inválido.');
+  if (!r || typeof r !== 'object' || !['completo', 'examen', 'seccion', 'practica'].includes(r.modo)) return fail('Resultado inválido.');
   // El simulacro completo solo se guarda si corresponde a un intento abierto de este comprador (y lo cierra)
-  if (r.modo === 'completo') {
-    const cerrado = await run(env, "UPDATE simulador_intentos SET estado = 'terminado', terminado_at = ? WHERE id = ? AND email = ? AND estado = 'abierto'",
-      new Date().toISOString(), Number(r.intento) || 0, a.orden.email);
+  if (r.modo === 'completo' || r.modo === 'examen') {
+    const cerrado = await run(env, "UPDATE simulador_intentos SET estado = 'terminado', terminado_at = ? WHERE id = ? AND email = ? AND estado = 'abierto' AND tipo = ?",
+      new Date().toISOString(), Number(r.intento) || 0, a.orden.email, r.modo === 'examen' ? 'examen' : 'corto');
     if (!cerrado.meta.changes) return fail('Este simulacro ya no está abierto.', 409);
   }
   // Solo se guardan los campos que el dashboard usa
@@ -280,6 +293,8 @@ function appShell(a) {
 // ---------- página pública (la que encuentra Google) ----------
 const SITIO = 'https://vorka.mx';
 const OG = `${SITIO}/tienda/img/portadas/simulador-paa-og.png`;
+const EXAMEN_REACTIVOS = SECCIONES_EXAMEN.reduce((t, x) => t + x.reactivos, 0), EXAMEN_HORAS = SECCIONES_EXAMEN.reduce((t, x) => t + x.minutos, 0) / 60;
+const CORTO_REACTIVOS = SECCIONES.reduce((t, x) => t + x.reactivos, 0);
 const DESCRIPCION = 'Simulador PAA en línea con preguntas tipo examen de Lectura, Redacción, Matemáticas e Inglés, cronómetro real, tutor con pistas, explicación paso a paso y puntaje estimado.';
 // Datos de la guía oficial de estudio de la PAA (College Board)
 const FAQ_PAA = [
@@ -287,8 +302,8 @@ const FAQ_PAA = [
   { p: '¿Qué secciones tiene la PAA?', r: 'Cuatro: Lectura, Redacción, Matemáticas e Inglés. Según la guía oficial, Lectura, Redacción y Matemáticas duran 2 horas y 20 minutos, e Inglés 40 minutos. Las preguntas son de opción múltiple con cuatro opciones, y algunas de Matemáticas piden escribir la respuesta.' },
   { p: '¿Cómo se califica la PAA?', r: 'Cada sección se califica en una escala de 200 a 800 puntos y no se resta por respuesta incorrecta, así que conviene contestar todo. Nuestro simulador estima tu puntaje en esa misma escala para que veas qué tan cerca estás de tu meta.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen la estructura y el tipo de preguntas de la PAA. No está afiliado al College Board y el puntaje es una estimación para orientar tu estudio.' },
-  { p: '¿Cuántos simulacros incluye?', r: 'Tu compra incluye 2 simulacros completos de 46 reactivos con cronómetro. Cada simulacro adicional cuesta $50 y lo compras desde el mismo simulador. La práctica por sección y por temas débiles no tiene límite.' },
-  { p: '¿Se repiten las preguntas?', r: 'El banco tiene más de 230 reactivos originales y cada simulacro completo prioriza los que no has visto, así que tus primeros cinco simulacros traen preguntas prácticamente distintas.' },
+  { p: '¿Qué incluye la compra?', r: `Un Examen PAA completo con la misma cantidad de preguntas y el mismo tiempo que el real (${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas, como el día del examen) y 2 simulacros cortos de ${CORTO_REACTIVOS} reactivos con el tutor. Si quieres más, desde el mismo simulador compras otro examen completo por $100 o un simulacro corto por $50. La práctica por sección y por temas débiles no tiene límite.` },
+  { p: '¿Se repiten las preguntas?', r: `El banco tiene ${REACTIVOS.length} reactivos originales y cada simulacro o examen prioriza los que todavía no has visto, así que tus primeros intentos traen preguntas prácticamente distintas. Las gráficas y figuras de Matemáticas son originales de Vorka México.` },
   { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo para que la compartas. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre, así que no se puede compartir.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta.' },
 ];
@@ -310,7 +325,8 @@ async function paginaVenta(env, req, url) {
       { '@type': 'ListItem', position: 1, name: 'Tienda', item: `${SITIO}/tienda/` },
       { '@type': 'ListItem', position: 2, name: 'Simulador PAA', item: `${SITIO}${RUTA}/` }] },
   ];
-  const secciones = SECCIONES.map(s => `<tr><th scope="row"><span class="sv-dot s-${s.color}"></span>${esc(s.nombre)}</th><td class="num">${s.reactivos}</td><td class="num">${s.minutos} min</td><td>${esc(s.descripcion)}</td></tr>`).join('');
+  const secciones = SECCIONES.map(s => { const x = SECCIONES_EXAMEN.find(e => e.id === s.id); return `<tr><th scope="row"><span class="sv-dot s-${s.color}"></span>${esc(s.nombre)}</th><td class="num">${x.reactivos} · ${x.minutos} min</td><td class="num">${s.reactivos} · ${s.minutos} min</td><td>${esc(s.descripcion)}</td></tr>`; }).join('')
+    + `<tr><th scope="row">Total</th><td class="num"><b>${EXAMEN_REACTIVOS} · ${EXAMEN_HORAS} h</b></td><td class="num">${total} · ${min} min</td><td></td></tr>`;
   const sinLetras = t => esc(String(t).replace(/\{([A-D])\}/g, '$1'));
   const ejemplo = { correcta: ej.correcta, pista: ej.pista, pasos: ej.pasos.map(x => x.replace(/\{([A-D])\}/g, '$1')), regla: ej.regla };
   const comparar = [
@@ -438,7 +454,7 @@ async function paginaVenta(env, req, url) {
     <div class="sv-chips"><span class="sv-chip">Nuevo · ${banco} reactivos originales</span><span class="sv-chip oro"><span aria-hidden="true">🎁</span> También para regalar</span></div>
     <h1 class="t-h1">Simulador PAA en línea: practica como si fuera el día del examen</h1>
     <p class="t-lead">Preguntas tipo PAA de Lectura, Redacción, Matemáticas e Inglés con el mismo ritmo de tiempo que el examen real. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice exactamente qué reforzar.</p>
-    <ul class="sv-sellos"><li>${CHECK}${total} reactivos por simulacro</li><li>${CHECK}${min} minutos con cronómetro</li><li>${CHECK}Puntaje estimado 200–800</li><li>${CHECK}En celular o computadora</li></ul>
+    <ul class="sv-sellos"><li>${CHECK}1 examen completo como el real: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas</li><li>${CHECK}2 simulacros cortos con tutor</li><li>${CHECK}Puntaje estimado 200–800</li><li>${CHECK}En celular o computadora</li></ul>
     <div class="sv-portada"><img src="/tienda/img/portadas/simulador-paa-v2.png" alt="Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación" width="1600" height="1200" fetchpriority="high"></div>
     <div class="sv-links"><a class="btn blanco chico" href="#probar">Probar un reactivo gratis ${FLECHA}</a>${prod ? `<a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a>` : ''}</div>
   </div>
@@ -448,9 +464,9 @@ async function paginaVenta(env, req, url) {
 </div></section>
 
 <section class="t-sec oscura"><div class="marco">
-  <div class="cab"><span class="etiqueta">Un banco que no se acaba en dos intentos</span><h2 class="h2">Cada simulacro es <span class="metal">diferente</span></h2>
-  <p class="lead">Cada simulacro completo prioriza preguntas que todavía no has visto: tus primeros cinco simulacros traen reactivos prácticamente distintos.</p></div>
-  <div class="sv-cifras"><div><b class="num">${banco}</b><span>reactivos originales</span></div><div><b class="num">${lecturas}</b><span>lecturas en español e inglés</span></div><div><b class="num">${temas}</b><span>temas medidos en tu reporte</span></div><div><b class="num">5</b><span>simulacros sin repetir preguntas</span></div></div>
+  <div class="cab"><span class="etiqueta">Un banco que no se acaba en el primer intento</span><h2 class="h2">Cada intento es <span class="metal">diferente</span></h2>
+  <p class="lead">Cada simulacro y cada examen prioriza preguntas que todavía no has visto, así que al repetir no te aprendes las respuestas: practicas de verdad.</p></div>
+  <div class="sv-cifras"><div><b class="num">${banco}</b><span>reactivos originales</span></div><div><b class="num">${lecturas}</b><span>lecturas en español e inglés</span></div><div><b class="num">${temas}</b><span>temas medidos en tu reporte</span></div><div><b class="num">${EXAMEN_REACTIVOS}</b><span>reactivos en el examen completo</span></div></div>
 </div></section>
 
 <section class="t-sec"><div class="marco">
@@ -480,7 +496,8 @@ async function paginaVenta(env, req, url) {
 <section class="t-sec"><div class="marco">
   <div class="cab"><span class="etiqueta">Qué incluye</span><h2 class="h2">Más que un examen de práctica</h2></div>
   <div class="sv-grid">
-    <div class="sv-card"><h3>2 simulacros completos</h3><p>Las cuatro secciones con cronómetro, como en la PAA. ¿Quieres más? Cada simulacro adicional cuesta $50.</p></div>
+    <div class="sv-card"><h3>1 examen PAA completo</h3><p>${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas: la misma cantidad de preguntas y el mismo tiempo que el real. ¿Otro? Cuesta $100.</p></div>
+    <div class="sv-card"><h3>2 simulacros cortos</h3><p>Las cuatro secciones en ${CORTO_REACTIVOS} reactivos, con cronómetro y tutor. Cada simulacro adicional cuesta $50.</p></div>
     <div class="sv-card"><h3>Práctica ilimitada</h3><p>Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.</p></div>
     <div class="sv-card"><h3>Medidor de preparación</h3><p>Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos puntos de tu meta.</p></div>
     <div class="sv-card"><h3>Historial en tu cuenta</h3><p>Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.</p></div>
@@ -489,9 +506,9 @@ async function paginaVenta(env, req, url) {
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
-  <div class="cab par"><div><span class="etiqueta">Estructura</span><h2 class="h2" style="margin-top:14px">Las 4 secciones del simulador</h2></div>
-  <p class="lead">Versión compacta de la PAA: menos preguntas, pero con el mismo tiempo por pregunta que el examen real para que practiques con la misma exigencia.</p></div>
-  <table class="sv-tabla sec"><thead><tr><th scope="col">Sección</th><th scope="col">Reactivos</th><th scope="col">Tiempo</th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>
+  <div class="cab par"><div><span class="etiqueta">Estructura</span><h2 class="h2" style="margin-top:14px">Las 4 secciones, en dos formatos</h2></div>
+  <p class="lead">El <b>examen completo</b> tiene la cantidad de preguntas y el tiempo del examen real. El <b>simulacro corto</b> es una versión compacta con el mismo tiempo por pregunta, para practicar en menos de una hora.</p></div>
+  <table class="sv-tabla sec"><thead><tr><th scope="col">Sección</th><th scope="col">Examen completo</th><th scope="col">Simulacro corto</th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>
 </div></section>
 
 ${prod ? `<section class="t-sec"><div class="marco sv-regalo">
@@ -518,7 +535,7 @@ ${prod ? `<section class="t-sec"><div class="marco sv-regalo">
 ${prod ? `<section class="t-sec oscura sv-final"><div class="marco">
   <span class="etiqueta">Tu próximo paso</span>
   <h2 class="h2" style="margin-top:14px">Llega al examen sabiendo <span class="metal">qué esperar</span></h2>
-  <p class="lead">Haz tu primer simulacro hoy y descubre en menos de una hora en qué temas estás listo y cuáles te faltan.</p>
+  <p class="lead">Haz un simulacro corto hoy para ver en menos de una hora qué temas te faltan, y cuando estés listo, el examen completo para medirte con el tiempo real.</p>
   <div class="botones"><a class="btn plata" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="btn vidrio" href="?regalo=1#comprar">🎁 Regalarlo</a></div>
 </div></section>` : ''}
 <section class="sv-disc"><div class="marco"><p class="t-nota">Simulador de práctica de Vorka México con reactivos originales. No está afiliado al College Board; PAA es una prueba del College Board. El puntaje es una estimación para orientar tu estudio.</p></div></section>

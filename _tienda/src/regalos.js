@@ -275,3 +275,34 @@ export async function revocarCortesias(env, orderId) {
   const r = await run(env, "UPDATE regalos SET estado = 'revocado' WHERE order_id = ? AND estado = 'pendiente'", o.id);
   return { ok: true, revocadas: r.meta.changes };
 }
+
+// ---------- control de ligas desde el panel (regalos comprados y cortesías) ----------
+// Apagar una liga: deja de funcionar si nadie la ha usado. Quien ya canjeó conserva su acceso.
+export async function apagarLiga(env, id) {
+  const r = await run(env, "UPDATE regalos SET estado = 'revocado' WHERE id = ? AND estado = 'pendiente'", Number(id));
+  if (!r.meta.changes) throw new Error('Esa liga ya se usó o ya estaba apagada.');
+  return { ok: true };
+}
+// Volver a prender una liga apagada (solo si nunca se canjeó)
+export async function prenderLiga(env, id) {
+  const r = await run(env, "UPDATE regalos SET estado = 'pendiente' WHERE id = ? AND estado = 'revocado' AND canje_order_id IS NULL", Number(id));
+  if (!r.meta.changes) throw new Error('Esa liga no se puede volver a prender.');
+  return { ok: true };
+}
+// Ligas de una tanda o compra de regalo (sin el token: solo se ve al crearlas)
+export async function ligasDe(env, orderId) {
+  return all(env, 'SELECT id, estado, canjeado_email, canjeado_at, created_at FROM regalos WHERE order_id = ? ORDER BY id', String(orderId));
+}
+// Borrar una tanda de cortesías: solo si nadie la ha usado (si alguien canjeó, su acceso depende de ella)
+export async function borrarCortesia(env, orderId) {
+  const o = await one(env, "SELECT id FROM orders WHERE id = ? AND proveedor = 'cortesia'", String(orderId));
+  if (!o) throw new Error('Esa tanda no existe.');
+  const usadas = (await one(env, "SELECT COUNT(*) n FROM regalos WHERE order_id = ? AND estado = 'canjeado'", o.id)).n;
+  if (usadas) throw new Error(`No se puede borrar: ${usadas === 1 ? 'una liga ya se usó' : `${usadas} ligas ya se usaron`}. Apaga las que faltan.`);
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM regalos WHERE order_id = ?').bind(o.id),
+    env.DB.prepare('DELETE FROM order_items WHERE order_id = ?').bind(o.id),
+    env.DB.prepare('DELETE FROM orders WHERE id = ?').bind(o.id),
+  ]);
+  return { ok: true };
+}

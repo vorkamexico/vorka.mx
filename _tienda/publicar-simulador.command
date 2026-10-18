@@ -1,7 +1,7 @@
 #!/bin/zsh
 # Vorka México · publica el Simulador PAA (doble clic, DESPUÉS de aprobar el PR en GitHub).
-# Incluye: banco de 235 reactivos, simulacros sin repetir, regalos con liga de un solo uso, intentos ($50 c/u),
-# portadas, tienda por secciones con el simulador como producto estrella y la página para Google.
+# Incluye: banco de 406 reactivos, Examen PAA completo como el real (1 incluido, $100 c/u adicional), simulacros
+# cortos ($50 c/u), regalos con liga de un solo uso, seguimiento y archivo de órdenes sin pagar desde os.vorka.mx.
 # Se puede volver a correr sin problema.
 set -e
 cd "$(dirname "$0")/.."

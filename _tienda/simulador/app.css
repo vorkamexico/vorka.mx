@@ -316,3 +316,9 @@
   .sim-q:not(.con-texto) .sim-q-main { max-width: 820px; }
   .sim-refuerzo { gap: 16px; }
 }
+/* Examen PAA completo (estructura real) y figuras de los reactivos */
+.sim-op-examen{border-color:var(--tinta,#141114);box-shadow:0 0 0 1px var(--tinta,#141114) inset}
+.sim-op-tag{display:inline-block;margin-bottom:6px;padding:3px 9px;border-radius:999px;background:#f3ecf6;color:#6b2a85;font-size:12px;font-weight:700;letter-spacing:.02em}
+.sim-fig{margin:4px 0 18px;padding:14px;border:1px solid #e7e5e7;border-radius:14px;background:#fff;color:#141114;display:flex;justify-content:center}
+.sim-fig svg{width:100%;max-width:360px;height:auto;display:block}
+@media (prefers-color-scheme:dark){.sim-fig{background:#fff;color:#141114}}
