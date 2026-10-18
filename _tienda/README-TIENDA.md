@@ -217,3 +217,13 @@ Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"
 **Portadas**: se sirven con caché de un año; si cambias una, súbela con otro nombre (p. ej. `simulador-paa-v3.png`) y actualiza `products.imagen`.
 
 Publicar: doble clic en `_tienda/publicar-simulador.command` después del merge (migraciones, deploy y, si dices que sí, lo pone a la venta).
+
+## Brindi (vorka.mx/tienda/brindi)
+
+Invitaciones digitales con marca propia (Diversificación). Aquí solo se vende; la app vive en `os.vorka.mx/brindi/` (ver `vorka-os/PLAN-BRINDI.md`).
+
+- Productos de **acceso** (`contenido.acceso.app = "brindi"`, migración 0011): 3 planes y 8 complementos. Entran **ocultos**; solo el plan Celebración sale en el catálogo y todos se compran desde `/tienda/brindi/` (`src/brindi.js`).
+- El correo de compra lleva a `acceso.url` (`https://os.vorka.mx/brindi/entrar/<token>`). Vorka OS valida ese token con `Admin.validarAcceso` y convierte cada unidad pagada en un crédito con `Admin.comprasApp`. Un reembolso revoca el crédito y despublica el evento.
+- La analítica de ventas para Diversificación sale de `Admin.resumenApp`. Las visitas a la ficha se registran en el producto Celebración.
+- Condiciones: `/legal/brindi/` (generada con `python3 _tienda/legales.py`).
+- Publicar: `_tienda/publicar-brindi.command` después de unir los PR.
