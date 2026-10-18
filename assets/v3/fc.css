@@ -52,6 +52,7 @@ main.fc { overflow-x: clip; }
 .chip-vivo i { width: 8px; height: 8px; border-radius: 50%; background: #3BE37A; box-shadow: 0 0 0 3px rgba(59, 227, 122, .22); }
 .fc-hero h1 { text-shadow: 0 4px 30px rgba(8, 13, 46, .5); font-size: clamp(44px, 5.2vw, 74px); line-height: 1.14; color: #fff; max-width: 13ch; padding-top: .04em; }
 .fc-hero h1 em { font-style: normal; color: var(--oro-fc-claro); }
+@media (min-width: 901px) { .fc-hero h1 { max-width: none; } .fc-hero h1 .renglon { display: block; } }
 .fc-hero h1 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .fc-hero .lead { color: rgba(255, 255, 255, .9); text-shadow: 0 1px 12px rgba(8, 13, 46, .6); font-size: clamp(17px, 1.5vw, 20px); max-width: 52ch; margin-inline: auto; }
 .fc-hero .lead b { color: #fff; }
