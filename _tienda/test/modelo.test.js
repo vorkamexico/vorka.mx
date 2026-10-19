@@ -18,9 +18,11 @@ describe('modelo de datos', () => {
     expect(p.r2_keys).toHaveLength(3);
   });
 
-  it('el seed entra inactivo (no se vende sin archivos)', async () => {
+  it('el seed entra inactivo (no se vende sin archivos); solo los accesos de apps pueden entrar a la venta', async () => {
     const env2 = { DB: d1() };
-    expect(await listarProductos(env2)).toHaveLength(0);
+    const activos = await listarProductos(env2);
+    expect(activos.every(p => p.contenido?.acceso)).toBe(true);
+    expect(activos.map(p => p.slug).sort()).toEqual(['cupo-paquete-5', 'cupo-pro']);
   });
 
   it('crea la orden con el precio de la base y el afiliado activo', async () => {

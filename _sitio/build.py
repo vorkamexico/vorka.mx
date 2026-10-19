@@ -246,6 +246,11 @@ def inicio():
       <span class="tira-t"><b>Brindi · Invitaciones digitales</b><span>Invitaciones digitales con QR para bodas, XV años, bautizos y cumpleaños. Se comparten por WhatsApp, reciben confirmaciones y controlan el acceso.</span></span>
       <span class="flecha">Ver invitaciones <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </a>
+    <a class="caja tira tira-tienda tira-cupo rv" href="/tienda/cupo-pro/">
+      <span class="letra-v">C</span>
+      <span class="tira-t"><b>Cupo · Eventos con registro</b><span>La página de tu evento en un minuto: registro sin cuentas, cover pagado directo a ti, recordatorios y check-in con QR. Gratis para eventos gratis.</span></span>
+      <span class="flecha">Conocer Cupo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
     <a class="caja tira tira-tienda rv" href="/tienda/">
       <span class="letra-v">Kit</span>
       <span class="tira-t"><b>Tienda Vorka México</b><span>Simuladores de examen, guías, cuadernos de trabajo y calculadoras que usamos con estudiantes y clientes.</span></span>

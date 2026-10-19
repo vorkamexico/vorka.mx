@@ -553,3 +553,4 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 }
 .tira-paa .letra-v::before { background: linear-gradient(145deg, #4a1c5c, #6b2a85); }
 .tira-brindi .letra-v::before { background: linear-gradient(145deg, #7a2e4a, #c08a5b); }
+.tira-cupo .letra-v::before { background: linear-gradient(145deg, #17161a, #ff5a36); }

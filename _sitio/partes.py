@@ -6,7 +6,7 @@ SITIO = 'https://vorka.mx'
 CORREO = 'vorkamexico@gmail.com'
 WHATSAPP = '528117804869'
 WA_MSG = 'Hola Vorka, ya decidí avanzar. Me gustaría empezar formalmente el proceso.'
-VERSION = '8'
+VERSION = '9'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -168,6 +168,7 @@ def pie(publico='general'):
         <li><a href="/sparks/">Revista Sparks</a></li>
         <li><a href="/tienda/">Tienda</a></li>{simulador}
         <li><a href="/tienda/brindi/">Invitaciones digitales</a></li>
+        <li><a href="/tienda/cupo-pro/">Eventos con registro</a></li>
         <li><a href="/voluntariado">Tú en Vorka</a></li>
         <li><a href="/fc/">Vorka FC</a></li></ul></div>
       <div><h4>Contacto</h4><ul>

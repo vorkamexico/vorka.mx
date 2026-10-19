@@ -1,4 +1,4 @@
-# Vorka México · páginas legales de la tienda: /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
+# Vorka México · páginas legales de la tienda (y de Cupo: /legal/cupo/, /legal/cupo/privacidad/, /legal/cupo/privacidad-asistentes/): /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
 import os, re, sys
@@ -8,6 +8,7 @@ from partes import cabeza, nav, pie, v_metal
 
 ACTUALIZADO = '15 de octubre de 2026'
 ACTUALIZADO_BRINDI = '18 de octubre de 2026'
+ACTUALIZADO_CUPO = '19 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -210,6 +211,70 @@ BRINDI_INVITADOS = [
     ('cambios', 'Cambios a este aviso', '<p>Si cambiamos este aviso, la versión nueva se publicará en esta misma dirección con su fecha. Siempre puedes consultarlo desde el enlace “Aviso de privacidad” del formulario de confirmación.</p>'),
 ]
 
+# Cupo (eventos con registro, cover y QR). Redactado con base en la LFPDPPP (DOF 20-03-2025) y la LFPC (art. 76 Bis).
+# Debe revisarlo un abogado con cédula (ver vorka-os/PLAN-CUPO.md).
+MIGAS_CUPO = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/cupo-pro/">Cupo</a>'
+CUPO = [
+    ('quien', 'Quién presta el servicio', f'<p>Cupo es una plataforma para crear la página de un evento, recibir registros, administrar asistentes y hacer check-in con código QR, desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y la persona que usa Cupo para organizar un evento (“tú” u “organizador”). Al crear tu cuenta o comprar Cupo Pro las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/cupo/privacidad/">aviso de privacidad de Cupo</a>.</p>'),
+    ('planes', 'Planes y precio', li(
+        '<b>Gratis</b>: eventos sin costo de entrada, con los límites que se indican en <a href="https://os.vorka.mx/cupo/">os.vorka.mx/cupo</a>.',
+        '<b>Cupo Pro</b> y el <b>paquete de 5 eventos</b> son pagos únicos, en pesos mexicanos con IVA incluido, a través de Stripe. No hay mensualidades ni cargos automáticos. Vorka nunca recibe los datos de tu tarjeta.',
+        'Cada evento Pro comprado queda en tu cuenta y se aplica al publicar un evento; desde ese momento queda ligado a ese evento. Los del paquete deben usarse dentro de los 12 meses siguientes a la compra.',
+        'Lo que incluye cada plan se describe en la página de compra al momento de pagar.')),
+    ('cover', 'El cover de tu evento: el dinero es tuyo y lo cobras tú', '<p>Cupo te permite mostrar a tus asistentes cómo pagarte (tu CLABE, tu propia liga de pago o el pago en la puerta) y marcar quién ya pagó. <b>Vorka no recibe, no retiene y no transfiere ese dinero</b>, no actúa como intermediario de pagos ni como agente de cobro, y no cobra comisión por él.</p>' + li(
+        'Tú eres el único responsable de cobrar el cover, de confirmar los pagos, de emitir los comprobantes o facturas que correspondan y de cumplir tus obligaciones fiscales.',
+        'Tú defines y comunicas a tus asistentes tu política de cancelación y reembolso, y la cumples. Si cancelas tu evento, Cupo avisa a las personas registradas, pero los reembolsos del cover los haces tú.',
+        'Frente a tus asistentes, eres tú quien ofrece el evento. Vorka solo presta la herramienta.')),
+    ('reembolsos', 'Cancelación y reembolso de Cupo Pro', li(
+        'Si no has aplicado tu evento Pro a ningún evento publicado, puedes pedir el reembolso completo dentro de los 10 días naturales siguientes al pago escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tu número de orden.',
+        'En el paquete de 5 eventos, dentro del mismo plazo se reembolsan completos si no has usado ninguno; si ya usaste alguno, te devolvemos la parte proporcional de los que no has usado.',
+        'Una vez aplicado a un evento publicado, el servicio se presta de inmediato y no hay reembolso por cambio de opinión; sí lo hay, total o proporcional, si una falla atribuible a Cupo impide usarlo y no la resolvemos en un plazo razonable.',
+        'Si se reembolsa una compra, el evento vuelve al plan gratis y se desactivan las funciones Pro.')),
+    ('uso', 'Uso aceptable', li(
+        'Solo puedes publicar eventos lícitos y reales. No se permite usar Cupo para fraudes, para cobrar por eventos que no existen, para spam, para suplantar a otras personas ni para recabar datos de personas sin su conocimiento.',
+        'Si tu evento tiene restricciones (por ejemplo, venta de alcohol solo a mayores de edad), es tu responsabilidad informarlo y verificarlo en la entrada.',
+        'Cualquier persona puede reportar un evento. Podemos ocultar o suspender eventos o cuentas que incumplan estas reglas; te avisaremos el motivo. Si suspendemos un evento por un error nuestro, te reembolsamos.')),
+    ('asistentes', 'Datos de tus asistentes', '<p>Tú decides para qué se usan los datos de las personas que se registran en tu evento; Vorka los trata solo por tu cuenta para prestarte el servicio (enviar entradas, recordatorios y tus avisos, y hacer el check-in). Te comprometes a usarlos solo para tu evento, a no enviarles publicidad que no hayan aceptado y a atender sus peticiones de corregir o borrar sus datos. Las personas encuentran lo que deben saber en el <a href="/legal/cupo/privacidad-asistentes/">aviso de privacidad para asistentes</a>, que se enlaza en cada formulario de registro.</p>'),
+    ('servicio', 'Correos y disponibilidad', '<p>Cupo envía por correo las entradas, los recordatorios y tus avisos. Hacemos lo razonable para que lleguen, pero dependen de terceros (proveedores de correo y de internet) y pueden llegar a spam; por eso cada persona tiene además su entrada en una liga propia. Para proteger el servicio puede haber límites diarios de envío: las entradas y confirmaciones de pago tienen prioridad sobre los recordatorios. Te recomendamos descargar tu lista antes del evento.</p>'),
+    ('conservacion', 'Cuánto se conserva', '<p>Los registros de cada evento se borran de forma definitiva 90 días después de la fecha del evento. Puedes borrar un evento o pedir que borremos tu cuenta en cualquier momento.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, la versión nueva aplica a compras posteriores y la publicamos aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes federales de México.</p>'),
+]
+
+CUPO_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de las personas que crean eventos en Cupo (“organizadores”). Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. Si te registraste a un evento, consulta el <a href="/legal/cupo/privacidad-asistentes/">aviso para asistentes</a>.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Cuenta:</b> correo electrónico y, si lo das, tu nombre.',
+        '<b>Tus eventos:</b> lo que capturas (título, fecha, lugar, descripción, portada, nombre del organizador) y, si cobras cover, los datos de pago que decides mostrar a tus asistentes (CLABE, banco, titular o liga de pago).',
+        '<b>Compras de Cupo Pro:</b> productos, monto, fecha y número de orden. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Uso y seguridad:</b> los avisos que envías, una bitácora de acciones y una huella cifrada e irreversible de tu dirección IP para limitar intentos repetidos.') + '<p>No pedimos datos personales sensibles.</p>'),
+    ('finalidades', 'Para qué los usamos', '<p><b>Finalidades necesarias:</b> crear y mantener tu cuenta; publicar tus eventos y mostrar a tus asistentes la información que capturas; procesar tus compras y reembolsos; enviarte correos de tu cuenta y tus eventos; darte soporte, atender reportes y cumplir obligaciones legales; mantener la seguridad y obtener estadísticas agregadas que no te identifican.</p><p><b>Finalidad adicional</b> (puedes negarte): enviarte, como máximo una vez al mes, novedades de Cupo y de Vorka. Escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con el asunto “Finalidades adicionales” o usa el enlace de baja del correo.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos tus datos. Usamos proveedores que los tratan solo por nuestra cuenta: <b>Cloudflare</b> (alojamiento, base de datos y fotos), <b>Stripe</b> (pagos de Cupo Pro) y <b>Resend</b> (correos), algunos con servidores fuera de México. Los datos de pago que tú publicas en tu evento los ven las personas que se registran, porque así lo decides. Solo entregaríamos datos a una autoridad si una ley o una orden fundada y motivada lo exige.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde tu cuenta (editar o borrar eventos). Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('conservacion', 'Cuánto tiempo los conservamos', li('Eventos y sus registros: hasta 90 días después de la fecha del evento, o antes si los borras.', 'Cuenta: mientras la uses o hasta que pidas borrarla.', 'Compras y facturación: durante los plazos fiscales (al menos 5 años).', 'Huellas de IP: se borran a más tardar 2 días después.')),
+    ('cookies', 'Cookies', '<p>La app usa una sola cookie necesaria (<code>vcu</code>) para mantener tu sesión. La página pública de un evento no usa cookies; solo cuenta visitas sin identificar a nadie.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
+CUPO_ASISTENTES = [
+    ('resumen', 'En pocas palabras', li(
+        'Tus datos los usa <b>quien organiza el evento</b> para saber quién va, confirmar tu lugar y tu pago, y dejarte entrar.',
+        'Vorka México presta la plataforma Cupo y trata tus datos solo para eso. <b>No los vendemos ni los usamos para publicidad.</b>',
+        'Se borran a más tardar 90 días después del evento.',
+        'Puedes pedir verlos, corregirlos o borrarlos escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o a quien organiza.')),
+    ('quien', 'Quién trata tus datos', f'<p>La persona o empresa que organiza el evento (su nombre aparece en la página) decide qué datos te pide y para qué los usa. {RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, presta la plataforma y trata tus datos <b>por cuenta del organizador</b>; es responsable directa solo de los datos que usa para la seguridad del servicio. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('datos', 'Qué datos se tratan', li(
+        'Los que das al registrarte: nombre, correo, WhatsApp (opcional) y tus respuestas a las preguntas del organizador, si las hay.',
+        'El estado de tu lugar (confirmado, por pagar, en lista de espera…), si avisaste que ya pagaste y la referencia que escribiste, y la hora en que entraste al evento.',
+        'Para seguridad: una huella cifrada e irreversible de tu dirección IP. La página del evento no usa cookies.') + '<p>No pedimos datos sensibles. Si el organizador hace una pregunta, responde solo lo que quieras compartir.</p>'),
+    ('finalidades', 'Para qué se usan', '<p>Registrarte, enviarte tu entrada con QR, mostrarte cómo pagar si el evento tiene cover, enviarte recordatorios automáticos (un día y dos horas antes) y los avisos del organizador sobre el evento, avisarte si se libera un lugar o si cambia o se cancela el evento, y verificar tu entrada en la puerta. <b>No hay finalidades adicionales</b>: no recibirás publicidad de Vorka por registrarte.</p>'),
+    ('pagos', 'Pagos del cover', '<p>Si el evento cobra cover, le pagas directo al organizador. Vorka no recibe ese dinero ni ve tus datos bancarios: solo registra si el organizador confirmó tu pago. Los reembolsos los gestiona el organizador.</p>'),
+    ('compartir', 'Con quién se comparten', '<p>Tus datos los ve el organizador y, para el check-in, las personas de su equipo a quienes él dé acceso. Vorka usa a Cloudflare (alojamiento) y a Resend (envío de correos) como proveedores que tratan la información solo por su cuenta. No se venden ni se rentan.</p>'),
+    ('arco', 'Tus derechos', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos y revocar tu consentimiento. Puedes liberar tu lugar desde tu entrada. Para lo demás, escribe al organizador o a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con el enlace del evento; se lo haremos llegar y le ayudaremos a atenderlo. Podemos pedirte:</p>' + ARCO + ARCO_PLAZOS),
+    ('menores', 'Personas menores de edad', '<p>Si eres menor de edad, regístrate con el conocimiento de tu madre, padre o tutor. Si un evento no es apto para menores, el organizador debe indicarlo y verificarlo.</p>'),
+    ('conservacion', 'Cuánto tiempo se conservan', '<p>Los registros del evento se borran de forma definitiva 90 días después de la fecha del evento. El organizador puede borrarlos antes. Las huellas de IP se borran a más tardar 2 días después.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>La versión vigente siempre está en esta dirección, enlazada desde cada formulario de registro.</p>'),
+]
+
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -232,3 +297,12 @@ escribir('/legal/brindi/privacidad/', pagina('/legal/brindi/privacidad/', 'Aviso
 escribir('/legal/brindi/privacidad-invitados/', pagina('/legal/brindi/privacidad-invitados/', 'Aviso de privacidad para invitados', 'Aviso de privacidad para <span class="metal">invitados.</span>',
     'Recibiste una invitación hecha con Brindi. Esto es lo que pasa con los datos que das al confirmar tu asistencia.', 'Brindi · Invitados', BRINDI_INVITADOS,
     aplica='Aplica a quien recibe una invitación de Brindi', migas=MIGAS_BRINDI, actualizado=ACTUALIZADO_BRINDI))
+escribir('/legal/cupo/', pagina('/legal/cupo/', 'Condiciones de Cupo', 'Condiciones de <span class="metal">Cupo.</span>',
+    'El contrato entre Vorka México y quien organiza eventos con Cupo: planes, el cover de tu evento, reembolsos, uso aceptable y datos de tus asistentes.', 'Cupo', CUPO,
+    aplica='Aplica a quien organiza eventos con Cupo', migas=MIGAS_CUPO, actualizado=ACTUALIZADO_CUPO))
+escribir('/legal/cupo/privacidad/', pagina('/legal/cupo/privacidad/', 'Aviso de privacidad de Cupo', 'Aviso de privacidad de <span class="metal">Cupo.</span>',
+    'Qué datos tratamos de las personas que organizan eventos con Cupo, para qué y cómo ejercer tus derechos.', 'Cupo · Organizadores', CUPO_PRIVACIDAD,
+    aplica='Aplica a quien organiza eventos con Cupo', migas=MIGAS_CUPO, actualizado=ACTUALIZADO_CUPO))
+escribir('/legal/cupo/privacidad-asistentes/', pagina('/legal/cupo/privacidad-asistentes/', 'Aviso de privacidad para asistentes', 'Aviso de privacidad para <span class="metal">asistentes.</span>',
+    'Te registraste a un evento en Cupo. Esto es lo que pasa con tus datos.', 'Cupo · Asistentes', CUPO_ASISTENTES,
+    aplica='Aplica a quien se registra a un evento de Cupo', migas=MIGAS_CUPO, actualizado=ACTUALIZADO_CUPO))

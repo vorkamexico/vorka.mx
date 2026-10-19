@@ -50,6 +50,7 @@ export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : 
 const SECCIONES_TIENDA = [
   { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
   { id: 'invitaciones', claves: ['invitaciones'], linea: 'Celebraciones', titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
+  { id: 'eventos', claves: ['eventos'], linea: 'Eventos', titulo: 'Eventos con registro y cover', texto: 'Cupo: la página de tu evento, registro sin cuentas, cover pagado directo a ti y check-in con QR. Gratis para eventos gratis.' },
   { id: 'emprender', claves: ['kits', 'emprender'], linea: 'Emprendimiento', titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
 ];
 const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
@@ -190,7 +191,7 @@ export const formCompra = (p, { error = '', ref = '', regalo = false } = {}) => 
     <label><input type="radio" name="para_quien" value="regalo"${regalo ? ' checked' : ''}><span>🎁 Para regalar</span></label>
   </div>
   <input type="checkbox" name="regalo" value="on" id="es-regalo" hidden${regalo ? ' checked' : ''}>` : ''}
-  <div class="t-precio"><b class="num" id="precio-total">${precio(p)}</b><span id="precio-nota">Pago único · ${esAcceso(p) ? 'acceso inmediato por un año' : 'descarga inmediata'}</span></div>
+  <div class="t-precio"><b class="num" id="precio-total">${precio(p)}</b><span id="precio-nota">${esc(['cupo', 'brindi'].includes(p.contenido?.acceso?.app) && p.contenido.acceso.detalle ? p.contenido.acceso.detalle : `Pago único · ${esAcceso(p) ? 'acceso inmediato por un año' : 'descarga inmediata'}`)}</span></div>
   ${regalable ? `<fieldset class="t-regalo-campos" id="regalo-campos">
     <legend class="sr">Datos del regalo</legend>
     <div class="t-cant"><span><b>¿Cuántos regalas?</b><small>Una liga por persona; cada una funciona una sola vez.</small></span>
