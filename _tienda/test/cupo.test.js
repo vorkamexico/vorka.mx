@@ -19,7 +19,7 @@ beforeEach(() => {
 describe('Cupo en la tienda', () => {
   it('Cupo Pro y el paquete están a la venta, en su propia línea del catálogo', async () => {
     const ps = await A.productosApp('cupo');
-    expect(ps.map(p => p.slug).sort()).toEqual(['cupo-paquete-5', 'cupo-pro', 'cupo-pro-1000', 'cupo-pro-3000']);
+    expect(ps.map(p => p.slug).sort()).toEqual(['cupo-paquete-5', 'cupo-paquete-5-100', 'cupo-paquete-5-1000', 'cupo-pro', 'cupo-pro-100', 'cupo-pro-1000', 'cupo-pro-3000']);
     const html = await (await pedir('/tienda/')).text();
     expect(html).toContain('href="#eventos"');
     expect(html).toContain('Eventos con registro y cover');

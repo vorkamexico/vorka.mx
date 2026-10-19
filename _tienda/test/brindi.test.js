@@ -35,7 +35,7 @@ describe('Brindi en la tienda', () => {
     expect(r.status).toBe(200);
     expect(r.headers.get('content-security-policy')).toContain('frame-src https://os.vorka.mx');
     const html = await r.text();
-    for (const t of ['$299 MXN', '$599 MXN', '$999 MXN', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
+    for (const t of ['$399 MXN', '$599 MXN', '$1,290 MXN', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
       expect(html, t).toContain(t);
     expect((await pedir('/tienda/brindi')).status).toBe(301);
     // Las páginas de los planes ocultos llevan a la ficha
@@ -49,7 +49,7 @@ describe('Brindi en la tienda', () => {
     // Una sola tarjeta de Brindi, con su portada y el precio del plan más barato
     expect(html).toContain('Brindi · Invitaciones digitales');
     expect(html).toContain('/assets/tienda/brindi.webp');
-    expect(html).toContain('Desde $299 MXN');
+    expect(html).toContain('Desde $399 MXN');
     expect(html).not.toContain('Brindi · Plan Premium');
     expect(html.match(/class="t-(?:hz-img|prod rv)[^>]*href="\/tienda\/brindi\/"/g)).toHaveLength(1);
     const mapa = await (await pedir('/tienda/sitemap.xml')).text();

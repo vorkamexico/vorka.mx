@@ -117,7 +117,7 @@ export async function paginaBrindi(env, req, url) {
   const opcion = (p, n) => `<option value="${esc(p.slug)}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   return pagina({
     titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
-    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Compártelas por WhatsApp, recibe confirmaciones y controla el acceso con QR. Pago único desde $299 MXN.',
+    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Compártelas con un enlace o QR, recibe confirmaciones y controla el acceso con QR. Pago único desde $399 MXN.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     frames: [OS],   // demostración interactiva en el celular
