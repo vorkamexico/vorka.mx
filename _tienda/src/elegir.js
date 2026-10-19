@@ -11,6 +11,6 @@ export const ELEGIR = (resaltar = '') => `
       <ul><li>Se prepara con calma y se ve espectacular</li><li>Confirmación y acompañantes por invitado</li><li>Desde $299 MXN por evento</li></ul><span class="flecha">Conocer Brindi ${FLECHA}</span></a>
     <a class="t-elegir-c rv${resaltar === 'cupo' ? ' es' : ''}" href="/tienda/cupo-pro/"><span class="t-cat">Rápido e informal</span><b>Cupo · Eventos con registro</b>
       <p>Fiestas, Halloween, networking, talleres, cumpleaños casuales y eventos de negocio. Una página con los datos, registro en segundos, cover directo a ti y check-in con QR.</p>
-      <ul><li>Listo en un minuto, desde el celular</li><li>Cobra cover sin comisiones</li><li>Gratis para eventos gratis · Pro $99 MXN</li></ul><span class="flecha">Conocer Cupo ${FLECHA}</span></a>
+      <ul><li>Listo en un minuto, desde el celular</li><li>Cobra cover sin comisiones</li><li>Gratis sin correos · Pro con correos $139 MXN</li></ul><span class="flecha">Conocer Cupo ${FLECHA}</span></a>
   </div>
 </div></section>`;

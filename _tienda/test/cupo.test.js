@@ -23,9 +23,10 @@ describe('Cupo en la tienda', () => {
     const html = await (await pedir('/tienda/')).text();
     expect(html).toContain('href="#eventos"');
     expect(html).toContain('Eventos con registro y cover');
-    expect(html).toContain('$99 MXN');
+    expect(html).toContain('$139 MXN');
     const ficha = await (await pedir('/tienda/cupo-pro/')).text();
-    expect(ficha).toContain('Tu evento con cover, sin comisiones');
+    expect(ficha).toContain('Tu evento con correos, recordatorios y cover');
+    expect(ficha).toContain('¿Puedo armar mi evento antes de pagar?');
     expect(ficha).toContain('Pago único · un evento Pro');
     expect(ficha).not.toContain('por un año');
   });
@@ -49,6 +50,6 @@ describe('Brindi o Cupo', () => {
       expect(html, ruta).toContain('¿Brindi o Cupo?');
       expect(html, ruta).toContain('Regla rápida');
     }
-    expect(await (await pedir('/tienda/cupo-pro/')).text()).toContain('$99 MXN');
+    expect(await (await pedir('/tienda/cupo-pro/')).text()).toContain('$139 MXN');
   });
 });

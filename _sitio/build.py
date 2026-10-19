@@ -248,7 +248,7 @@ def inicio():
     </a>
     <a class="caja tira tira-tienda tira-cupo rv" href="/tienda/cupo-pro/">
       <span class="letra-v">C</span>
-      <span class="tira-t"><b>Cupo · Eventos con registro</b><span>La página de tu evento en un minuto: registro sin cuentas, cover pagado directo a ti, recordatorios y check-in con QR. Gratis para eventos gratis.</span></span>
+      <span class="tira-t"><b>Cupo · Eventos con registro</b><span>La página de tu evento en un minuto: registro sin cuentas y check-in con QR, gratis. Con Pro: correos, recordatorios y cover directo a ti.</span></span>
       <span class="flecha">Conocer Cupo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </a>
     <a class="caja tira tira-tienda rv" href="/tienda/">
