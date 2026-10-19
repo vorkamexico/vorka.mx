@@ -43,6 +43,8 @@
 .t-campo { display: grid; gap: 7px; }
 .t-campo label { font-size: 14.5px; font-weight: 650; letter-spacing: -.005em; }
 .t-campo input[type="text"], .t-campo input[type="email"] { width: 100%; min-height: 50px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--bg); font: inherit; font-size: 16px; color: var(--fg); transition: border-color .2s, box-shadow .2s; }
+.t-campo select { width: 100%; min-height: 50px; padding: 0 44px 0 16px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23777' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 16px center; font: inherit; font-size: 16px; color: var(--fg); appearance: none; -webkit-appearance: none; }
+.t-campo select:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 4px var(--morado-suave); }
 .t-campo input:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 4px var(--morado-suave); }
 .t-campo input[aria-invalid="true"] { border-color: #B3261E; }
 .t-error { font-size: 14px; color: #B3261E; font-weight: 600; }

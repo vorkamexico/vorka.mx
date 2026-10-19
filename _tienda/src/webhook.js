@@ -6,6 +6,7 @@ import { proveedor } from './pagos/index.js';
 import { aplicarPago, registrarEvento, marcarEvento, registrarAnalitica, itemsDeOrden } from './modelo.js';
 import { entregar } from './entrega.js';
 import { programarTransferencias, anularTransferencias } from './marketplace.js';
+import { puntosAlPagar, puntosAlReembolsar } from './puntos.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -30,6 +31,9 @@ export async function webhook(req, env, nombre) {
       // Reparto a creadores (si hay productos de creadores). Idempotente.
       if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null) await programarTransferencias(env, pago.orderId, { fee: pago.stripe_fee_centavos });
       if (r.accion === 'revocar') await anularTransferencias(env, pago.orderId);
+      // Puntos Vorka: suma al que compartió la liga y descuenta los usados; en reembolso, se revierten. Idempotente.
+      if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
+      if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });

@@ -48,8 +48,9 @@ export async function clienteStripe(env, orden) {
 
 // Métodos de pago dinámicos: cuáles aparecen (tarjeta, OXXO, SPEI…) se decide en Dashboard → Settings → Payment methods.
 // Nunca se manda payment_method_types (en 2026-09-30.endive ya no existe para Checkout).
-export function sesionCheckout(env, orden, { exito, cancelar }, customer) {
+export function sesionCheckout(env, orden, { exito, cancelar }, customer, cupon = null) {
   return {
+    ...(cupon ? { discounts: [{ coupon: cupon }] } : {}),
     mode: 'payment',
     locale: 'es-419',
     client_reference_id: orden.id,
@@ -100,7 +101,14 @@ export default {
   async crearCobro(env, orden, urls) {
     // Idempotency-Key = id de la orden: un reintento de red no crea dos sesiones
     const customer = await clienteStripe(env, orden);
-    const s = await llamar(env, 'POST', '/checkout/sessions', sesionCheckout(env, orden, urls, customer), { idempotencia: `checkout-${orden.id}` });
+    // Puntos Vorka: un cupón de un solo uso por el monto exacto del descuento (Stripe lo muestra en el pago y en el recibo)
+    let cupon = null;
+    if (orden.descuento_centavos > 0) {
+      const c = await llamar(env, 'POST', '/coupons', { amount_off: orden.descuento_centavos, currency: orden.moneda.toLowerCase(), duration: 'once', max_redemptions: 1, name: 'Puntos Vorka', metadata: { order_id: orden.id } },
+        { idempotencia: `cupon-${orden.id}` });
+      cupon = c.id;
+    }
+    const s = await llamar(env, 'POST', '/checkout/sessions', sesionCheckout(env, orden, urls, customer, cupon), { idempotencia: `checkout-${orden.id}` });
     return { sessionId: s.id, url: s.url };
   },
 

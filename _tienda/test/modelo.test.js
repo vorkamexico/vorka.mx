@@ -22,7 +22,7 @@ describe('modelo de datos', () => {
     const env2 = { DB: d1() };
     const activos = await listarProductos(env2);
     expect(activos.every(p => p.contenido?.acceso)).toBe(true);
-    expect(activos.map(p => p.slug).sort()).toEqual(['cupo-paquete-5', 'cupo-paquete-5-100', 'cupo-paquete-5-1000', 'cupo-pro', 'cupo-pro-100', 'cupo-pro-1000', 'cupo-pro-3000']);
+    expect(activos.map(p => p.slug)).toEqual(['cupo-pro']);   // los demás niveles de Cupo se venden en /tienda/cupo/ sin listarse
   });
 
   it('crea la orden con el precio de la base y el afiliado activo', async () => {

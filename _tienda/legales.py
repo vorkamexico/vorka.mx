@@ -55,6 +55,13 @@ TERMINOS = [
         'Al confirmarse el pago te enviamos un correo con un enlace para descargar tus archivos. Revisa también spam o promociones.',
         'El enlace funciona durante 7 días y permite descargar cada archivo hasta 10 veces. Si vence, pide uno nuevo en <a href="/descargas/reenviar">vorka.mx/descargas/reenviar</a> con el correo de tu compra.',
         'Es tu responsabilidad escribir bien tu correo al comprar. Si te equivocaste, escríbenos con tu número de orden y lo corregimos.')),
+    ('puntos', 'Programa de puntos Vorka', li(
+        'Cualquier persona mayor de edad puede crear gratis una cuenta de puntos con su correo en <a href="/tienda/puntos/">vorka.mx/tienda/puntos</a> y recibir una liga personal para recomendar productos de la tienda.',
+        'Por cada compra pagada que entre con tu liga ganas 10 puntos, sin importar el producto. No cuentan las compras hechas con tu mismo correo. La persona que llega con tu liga tiene 30 días para comprar.',
+        'Cada punto equivale a $1 MXN de descuento en productos de Vorka México (no en productos de creadores). Se usan al pagar, con el mismo correo de tu cuenta; siempre se cobra al menos $10 MXN por compra. Los puntos no se cambian por dinero ni se transfieren.',
+        'Si una compra hecha con tu liga se reembolsa o se desconoce el cargo, se descuentan sus puntos. Si se reembolsa una compra en la que usaste puntos, te los regresamos.',
+        'Podemos cancelar puntos obtenidos con engaños (compras falsas, spam o suplantación). Si cambiamos o terminamos el programa, te avisaremos con al menos 30 días para que uses tus puntos.',
+        'Las comisiones en dinero para afiliados son un programa aparte, solo por invitación de Vorka.')),
     ('licencia', 'Uso de los materiales', li(
         'Al comprar recibes una licencia personal, no exclusiva e intransferible para usar los materiales en tus propios proyectos, negocios u organizaciones.',
         'No puedes revender, compartir públicamente, subir a sitios de descarga ni distribuir los archivos, completos o en partes, ni presentarlos como propios.',
@@ -213,7 +220,7 @@ BRINDI_INVITADOS = [
 
 # Cupo (eventos con registro, cover y QR). Redactado con base en la LFPDPPP (DOF 20-03-2025) y la LFPC (art. 76 Bis).
 # Debe revisarlo un abogado con cédula (ver vorka-os/PLAN-CUPO.md).
-MIGAS_CUPO = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/cupo-pro/">Cupo</a>'
+MIGAS_CUPO = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/cupo/">Cupo</a>'
 CUPO = [
     ('quien', 'Quién presta el servicio', f'<p>Cupo es una plataforma para crear la página de un evento, recibir registros, administrar asistentes y hacer check-in con código QR, desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y la persona que usa Cupo para organizar un evento (“tú” u “organizador”). Al crear tu cuenta o comprar Cupo Pro las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/cupo/privacidad/">aviso de privacidad de Cupo</a>.</p>'),
     ('planes', 'Planes y precio', li(

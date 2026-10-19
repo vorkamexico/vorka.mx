@@ -23,12 +23,18 @@ describe('Cupo en la tienda', () => {
     const html = await (await pedir('/tienda/')).text();
     expect(html).toContain('href="#eventos"');
     expect(html).toContain('Eventos con registro y cover');
-    expect(html).toContain('$149 MXN');
-    const ficha = await (await pedir('/tienda/cupo-pro/')).text();
-    expect(ficha).toContain('Correos, cover y RPs para llenar tu evento');
-    expect(ficha).toContain('¿Cómo funcionan las ligas de RP?');
-    expect(ficha).toContain('Pago único · un evento de hasta 300 personas');
-    expect(ficha).not.toContain('por un año');
+    expect(html).toContain('Gratis · Pro desde $99 MXN');
+    expect(html.match(/href="\/tienda\/cupo\/"/g)?.length).toBeGreaterThan(0);
+    expect(html).not.toContain('/tienda/cupo-pro-1000/');   // una sola tarjeta de Cupo
+    // Página única de Cupo: plan gratis, los 4 niveles, los 3 paquetes y el formulario
+    const ficha = await (await pedir('/tienda/cupo/')).text();
+    for (const t of ['Gratis hasta 30 personas', 'Crear mi evento gratis', '$99 MXN', '$149 MXN', '$299 MXN', '$599 MXN', '$399 MXN', '$1,199 MXN', 'id="form-cupo"', '¿Cómo funcionan las ligas de RP?'])
+      expect(ficha, t).toContain(t);
+    // Las fichas viejas llevan a la página única con el plan elegido
+    const r = await pedir('/tienda/cupo-pro-1000/?ref=ABC');
+    expect(r.status).toBe(301);
+    expect(r.headers.get('location')).toBe('/tienda/cupo/?ref=ABC&plan=cupo-pro-1000#comprar');
+    expect(await (await pedir('/tienda/cupo/?plan=cupo-paquete-5-100')).text()).toContain('value="cupo-paquete-5-100" selected');
   });
 
   it('la compra lleva a os.vorka.mx/cupo y Vorka OS ve el paquete con sus 5 unidades', async () => {
@@ -47,12 +53,12 @@ describe('Cupo en la tienda', () => {
 describe('Brindi o Cupo', () => {
   it('el catálogo, la página de Brindi y la ficha de Cupo explican cuál conviene', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
-    for (const ruta of ['/tienda/', '/tienda/brindi/', '/tienda/cupo-pro/']) {
+    for (const ruta of ['/tienda/', '/tienda/brindi/', '/tienda/cupo/']) {
       const html = await (await pedir(ruta)).text();
       expect(html, ruta).toContain('¿Brindi o Cupo?');
       expect(html, ruta).toContain('Regla rápida');
     }
-    expect(await (await pedir('/tienda/cupo-pro/')).text()).toContain('$149 MXN');
+    expect(await (await pedir('/tienda/cupo/')).text()).toContain('$149 MXN');
   });
 });
 

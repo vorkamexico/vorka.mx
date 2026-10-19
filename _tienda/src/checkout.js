@@ -7,6 +7,7 @@ import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLi
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento } from './simulador/index.js';
 import { productoPorSlug } from './modelo.js';
+import { cuentaActual, saldoDe, descuentoMaximo } from './puntos.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -25,6 +26,8 @@ export const EsquemaCheckout = z.object({
   cantidad: z.coerce.number().int().min(1, 'Elige cuántos regalos.').max(10, 'Puedes regalar hasta 10 por compra.').optional(),
   regalo_para: z.string().trim().max(80).optional().or(z.literal('')),
   regalo_mensaje: z.string().trim().max(280, 'El mensaje puede tener hasta 280 caracteres.').optional().or(z.literal('')),
+  // Canjear puntos Vorka (requiere la sesión de la cuenta de puntos y comprar con su mismo correo)
+  usar_puntos: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
 }).refine(d => d.slug || d.items, { message: 'Falta el producto.', path: ['slug'] });
 
 // Límites: por IP 10 intentos / 10 min, por correo 5 / 10 min
@@ -68,9 +71,21 @@ export async function checkout(req, env) {
     if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
   }
 
+  // Puntos: descuento hasta el saldo disponible, dejando siempre el cobro mínimo de la pasarela
+  let puntos = null;
+  if (d.usar_puntos) {
+    const cta = await cuentaActual(req, env);
+    if (!cta) return error('Entra a tu cuenta de puntos para usarlos (vorka.mx/tienda/puntos).', 401);
+    if (cta.email !== d.email) return error(`Para usar tus puntos, compra con el correo de tu cuenta (${cta.email}).`);
+    let total = 0;
+    for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p?.creador_id) return error('Los puntos se canjean en productos de Vorka México, no en los de creadores.'); total += (p?.precio_centavos || 0) * (it.cantidad || 1); }
+    const desc = descuentoMaximo((await saldoDe(env, cta.email)).disponibles, total);
+    if (desc > 0) puntos = { descuento_centavos: desc, email: cta.email };
+  }
+
   let orden;
   try {
-    orden = await crearOrden(env, {
+    orden = await crearOrden(env, { puntos,
       items,
       email: d.email, nombre: d.nombre,
       regalo: d.regalo ? { para: d.regalo_para || null, mensaje: d.regalo_mensaje || null } : null,

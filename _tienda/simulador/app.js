@@ -120,20 +120,20 @@
   }
   // El simulacro corto y el examen completo gastan 1 intento: los abre el servidor (o retoma el que esté abierto, aunque sea de otro dispositivo)
   function empezarCompleto(modo) {
-    modo = modo === 'examen' ? 'examen' : 'completo';
-    var it = cuentaDe(modo), ex = modo === 'examen', uno = it.disponibles === 1;
-    var nombre = ex ? 'examen' : 'simulacro', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen completo disponible' : 'exámenes completos disponibles') : (uno ? 'simulacro corto disponible' : 'simulacros cortos disponibles'));
+    modo = modo === 'examen' || modo === 'calentamiento' ? modo : 'completo';
+    var it = cuentaDe(modo), ex = modo === 'examen', ca = modo === 'calentamiento', uno = it.disponibles === 1;
+    var nombre = ex ? 'examen oficial' : ca ? 'calentamiento' : 'simulacro de nivel Medio', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen oficial disponible' : 'exámenes oficiales disponibles') : ca ? (uno ? 'calentamiento disponible' : 'calentamientos disponibles') : (uno ? 'simulacro Medio disponible' : 'simulacros Medios disponibles'));
     if (!it.abierto) {
       if (it.disponibles <= 0) return comprar(modo);
       if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex ? ' Son 175 reactivos y 3 horas, como la PAA real; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
     }
-    api('iniciar', { method: 'POST', body: JSON.stringify({ tipo: ex ? 'examen' : 'corto' }) }).then(function (d) {
-      if (ex) YO.examenes = d.intentos; else YO.intentos = d.intentos;
-      var base = ex ? B.examen : B.secciones;
+    api('iniciar', { method: 'POST', body: JSON.stringify({ tipo: ex ? 'examen' : ca ? 'calentamiento' : 'corto' }) }).then(function (d) {
+      if (ex) YO.examenes = d.intentos; else if (ca) YO.calentamientos = d.intentos; else YO.intentos = d.intentos;
+      var base = ex ? B.examen : ca ? B.calentamiento : B.secciones;
       var secs = base.map(function (s, i) { return { id: s.id, items: d.items[i], idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false }; });
       run = nuevoRun(modo, secs); run.intento = d.id; if (ex) run.sinTutor = true; guardar(K_RUN, run); introSeccion();
     }).catch(function (e) {
-      if (e.status === 402) { var c = (e.datos || {}).intentos; if (c) { if (ex) YO.examenes = c; else YO.intentos = c; } comprar(modo); }
+      if (e.status === 402) { var c = (e.datos || {}).intentos; if (c) { if (ex) YO.examenes = c; else if (ca) YO.calentamientos = c; else YO.intentos = c; } comprar(modo); }
       else alert(e.message || 'No pudimos abrir el simulacro. Revisa tu conexión.');
     });
   }
@@ -141,17 +141,18 @@
     var id = run && esIntento(run.modo) ? run.intento : null;
     run = null; guardar(K_RUN, null);
     if (!id) return inicio();
-    api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; }).finally(inicio);
+    api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; if (d.calentamientos) YO.calentamientos = d.calentamientos; }).finally(inicio);
   }
 
   // ---------- comprar simulacros adicionales ----------
   function precio(c) { return '$' + (c / 100).toLocaleString('es-MX') + ' MXN'; }
   function comprar(modo) {
     detenerReloj(); pintarBarra();
+    if (modo === 'calentamiento') { h('<section class="sim-intro"><span class="sim-paso">Nivel Calentamiento</span><h1>Ya usaste tus calentamientos</h1><p class="sim-lead">¡Bien! Ya estás listo para subir de nivel: sigue con el simulacro de nivel Medio. La práctica por sección y por temas sigue sin límite.</p><div class="botones"><button class="btn tinta" id="b-medio">Ir al nivel Medio</button><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; document.getElementById('b-medio').onclick = function () { empezarCompleto('completo'); }; return; }
     var ex = modo === 'examen', x = ex ? YO.examenExtra : YO.intentoExtra, it = cuentaDe(ex ? 'examen' : 'completo');
-    var que = ex ? 'exámenes PAA completos' : 'simulacros cortos', uno = ex ? 'examen completo adicional' : 'simulacro corto adicional';
+    var que = ex ? 'exámenes oficiales' : 'simulacros de nivel Medio', uno = ex ? 'examen oficial adicional' : 'simulacro Medio adicional';
     if (!x) { h('<section class="sim-intro"><h1>Ya usaste tus ' + que + '</h1><p class="sim-lead">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para conseguir más intentos. Mientras tanto, puedes seguir practicando por sección sin límite.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
-    h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + (ex ? 'Examen PAA completo' : 'Simulacros cortos') + '</span>' +
+    h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + (ex ? 'Nivel Oficial · examen completo' : 'Nivel Medio') + '</span>' +
       '<h1>' + (it.disponibles ? 'Suma más ' + que : 'Ya usaste tus ' + (it.incluidos || (ex ? 1 : 2)) + ' ' + que) + '</h1>' +
       '<p class="sim-lead">Cada ' + uno + ' cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago.' + (ex ? ' Son 175 reactivos y 3 horas, como la PAA real, con preguntas que priorizan lo que no has visto.' : '') + ' La práctica por sección y por temas sigue sin límite.</p>' +
       '<form class="sim-card sim-compra" id="f-compra">' +
@@ -198,17 +199,19 @@
     var retomar = run && run.fase !== 'fin' ? '<div class="sim-aviso"><div><b>Tienes un simulacro sin terminar.</b><span>' + esc(nombreModo(run)) + ' · ' + contestadas(run) + ' de ' + totalItems(run) + ' respondidas</span></div><div class="botones"><button class="btn tinta chico" id="b-ret">Continuar</button><button class="btn blanco chico" id="b-desc">Descartar</button></div></div>' : '';
     var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu puntaje estimado por sección, tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
     var debiles = u ? temasDebiles(u.temas, 3) : [];
-    var it = cuentaDe('completo'), ie = cuentaDe('examen');
+    var it = cuentaDe('completo'), ie = cuentaDe('examen'), ic = cuentaDe('calentamiento');
     // Si el intento de este dispositivo ya se cerró en otro, se descarta aquí
     if (run && esIntento(run.modo) && (!cuentaDe(run.modo).abierto || cuentaDe(run.modo).abierto.id !== run.intento)) { run = null; guardar(K_RUN, null); retomar = ''; }
-    var abiertoSrv = !run && (ie.abierto ? 'examen' : it.abierto ? 'completo' : null);
-    if (abiertoSrv) retomar = '<div class="sim-aviso"><div><b>Tienes ' + (abiertoSrv === 'examen' ? 'un examen PAA completo' : 'un simulacro corto') + ' abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
+    var abiertoSrv = !run && (ie.abierto ? 'examen' : it.abierto ? 'completo' : ic.abierto ? 'calentamiento' : null);
+    if (abiertoSrv) retomar = '<div class="sim-aviso"><div><b>Tienes ' + (abiertoSrv === 'examen' ? 'un examen oficial' : abiertoSrv === 'calentamiento' ? 'un calentamiento' : 'un simulacro de nivel Medio') + ' abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
     var cajaIntentos = function (c, txt, extra, id) {
       return '<div class="sim-intentos' + (c.disponibles ? '' : ' agotados') + '"><div><b class="num">' + c.disponibles + '</b><span>de ' + c.incluidos + ' ' + txt + '</span></div>' +
         (extra ? '<button class="btn ' + (c.disponibles ? 'blanco' : 'tinta') + ' chico" id="' + id + '">Comprar más · ' + precio(extra.precio_centavos) + ' c/u</button>' : '') + '</div>';
     };
-    var intentos = cajaIntentos(it, 'simulacros cortos disponibles', YO.intentoExtra, 'b-comprar');
-    var intentosEx = cajaIntentos(ie, ie.incluidos === 1 ? 'examen completo disponible' : 'exámenes completos disponibles', YO.examenExtra, 'b-comprar-ex');
+    var intentos = cajaIntentos(it, 'simulacros Medios disponibles', YO.intentoExtra, 'b-comprar');
+    var intentosEx = cajaIntentos(ie, ie.incluidos === 1 ? 'examen oficial disponible' : 'exámenes oficiales disponibles', YO.examenExtra, 'b-comprar-ex');
+    var intentosCa = cajaIntentos(ic, 'calentamientos disponibles', null, '');
+    var caR = (B.calentamiento || []).reduce(function (a, s) { return a + s.reactivos; }, 0), caM = (B.calentamiento || []).reduce(function (a, s) { return a + s.minutos; }, 0);
     var exR = (B.examen || []).reduce(function (a, s) { return a + s.reactivos; }, 0), exM = (B.examen || []).reduce(function (a, s) { return a + s.minutos; }, 0);
     // Computadora: dos columnas (practicar a la izquierda; tu estado, meta y banco a la derecha).
     // Celular: una sola columna; el orden lo dan las clases o-* (las columnas se vuelven display: contents).
@@ -217,10 +220,11 @@
       retomar +
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
-          '<section class="o-4"><h2 class="sim-h2 sim-h2-top">Elige cómo practicar</h2>' +
-          (B.examen ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Como el examen real</span><b>Examen PAA completo</b><small>' + exR + ' reactivos · ' + Math.floor(exM / 60) + ' horas · las 4 secciones con los tiempos oficiales · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
-          '<button class="sim-op sim-op-grande" data-modo="completo"><span class="sim-op-t"><b>Simulacro corto</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · las 4 secciones con el mismo ritmo por pregunta · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' +
+          '<section class="o-4"><h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el Oficial, que tiene la dificultad y el tiempo de la PAA real.</p>' +
+          (B.calentamiento ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
+          '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como la PAA · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' +
           intentos +
+          (B.examen ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Oficial: examen PAA completo</b><small>' + exR + ' reactivos · ' + Math.floor(exM / 60) + ' horas · las 4 secciones con los tiempos y la dificultad oficiales · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
             return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
@@ -235,7 +239,7 @@
             '<input type="range" id="meta" min="400" max="800" step="10" value="' + m + '" aria-label="Meta de puntaje por sección (200 a 800)">' +
             '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>' +
           '<div class="o-3">' + bancoHTML() + '</div>' +
-          '<div class="o-6">' + regaloHTML() + '</div>' +
+          '<div class="o-6">' + compartirHTML() + regaloHTML() + '</div>' +
           '<div class="o-7">' + sparks('inicio') + '</div>' +
         '</aside>' +
       '</div>'
@@ -247,8 +251,8 @@
       b.onclick = function () {
         if (run && run.fase !== 'fin') {
           if (b.dataset.modo === run.modo && esIntento(run.modo)) return continuar();
-          if (!confirm(esIntento(run.modo) ? 'Tienes ' + (run.modo === 'examen' ? 'un examen completo' : 'un simulacro') + ' sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
-          if (esIntento(run.modo)) { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; }); }
+          if (!confirm(esIntento(run.modo) ? 'Tienes ' + (run.modo === 'examen' ? 'un examen oficial' : run.modo === 'calentamiento' ? 'un calentamiento' : 'un simulacro') + ' sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
+          if (esIntento(run.modo)) { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; if (d.calentamientos) YO.calentamientos = d.calentamientos; }); }
         }
         empezar(b.dataset.modo, b.dataset.modo === 'practica' ? b.dataset.temas.split(',') : b.dataset.sec);
       };
@@ -271,19 +275,23 @@
       '<div class="sim-banco-p" role="progressbar" aria-valuemin="0" aria-valuemax="' + total + '" aria-valuenow="' + n + '" aria-label="Reactivos vistos"><span style="width:' + pct(n, total) + '%"></span></div>' +
       '<small>' + (n ? 'Has visto ' + n + ' de ' + total + ' (' + pct(n, total) + ' %)' : 'Aún no has visto ninguno: todo es nuevo para ti') + '</small></div>';
   }
+  // Programa de puntos: comparte tu liga y gana 10 puntos ($10) por cada compra (se canjean en la tienda)
+  function compartirHTML() {
+    return '<a class="sim-regalo sim-compartir" href="/tienda/puntos/"><span class="sim-regalo-i" aria-hidden="true">🤝</span><span><b>Comparte el simulador y gana</b><small>Por cada amigo que lo compre con tu liga ganas 10 puntos ($10) para la tienda Vorka.</small></span><span class="sim-op-f">' + FL + '</span></a>';
+  }
   // Regalar: abre la ficha de la tienda (con sesión, /simulador-paa/ muestra la app y no la página de venta)
   function regaloHTML() {
     return '<a class="sim-regalo" href="/tienda/simulador-paa/?regalo=1#comprar"><span class="sim-regalo-i" aria-hidden="true">🎁</span><span><b>¿Conoces a alguien que va a presentar?</b><small>Regálale el simulador: le llega una liga de un solo uso con tu mensaje.</small></span><span class="sim-op-f">' + FL + '</span></a>';
   }
-  // 'completo' = simulacro corto (46 reactivos) · 'examen' = Examen PAA completo (estructura real). Los dos gastan intento.
-  function esIntento(m) { return m === 'completo' || m === 'examen'; }
-  function cuentaDe(m) { return (m === 'examen' ? YO.examenes : YO.intentos) || { incluidos: 0, disponibles: 0 }; }
-  function nombreModo(r) { return r.modo === 'examen' ? 'Examen PAA completo' : r.modo === 'completo' ? 'Simulacro corto' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
+  // Niveles: 'calentamiento' (24 reactivos) · 'completo' = Medio (46) · 'examen' = Oficial (examen PAA completo). Los tres gastan intento.
+  function esIntento(m) { return m === 'completo' || m === 'examen' || m === 'calentamiento'; }
+  function cuentaDe(m) { return (m === 'examen' ? YO.examenes : m === 'calentamiento' ? YO.calentamientos : YO.intentos) || { incluidos: 0, disponibles: 0 }; }
+  function nombreModo(r) { return r.modo === 'examen' ? 'Oficial · examen PAA completo' : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
   function totalItems(r) { return r.secciones.reduce(function (a, s) { return a + s.items.length; }, 0); }
   function contestadas(r) { return Object.keys(r.resp).filter(function (id) { return r.resp[id].fase === 'fin'; }).length; }
   function tarjetaResumen(u) {
     var c = u.confianza || 0, e = estado(c);
-    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen PAA completo' : 'simulacro') + '</span>' +
+    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen oficial' : u.modo === 'calentamiento' ? 'calentamiento' : 'simulacro Medio') + '</span>' +
       '<div class="sim-res-mini-f">' + medidor(c, 120) + '<div><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' +
       (u.global ? '<p>Puntaje estimado: <b class="num">' + u.global + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
       '<p class="sim-nota">' + fecha(u.fecha) + '</p></div></div></div>';
@@ -293,7 +301,7 @@
     var comp = YO.historial.filter(function (x) { return esIntento(x.modo) && x.global; }).slice(0, 8).reverse();
     var graf = comp.length >= 2 ? graficaHistorial(comp) : '';
     return '<h2 class="sim-h2">Tu avance</h2>' + graf + '<ul class="sim-hist">' + YO.historial.slice(0, 8).map(function (x, i) {
-      var t = x.modo === 'examen' ? 'Examen PAA completo' : x.modo === 'completo' ? 'Simulacro corto' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
+      var t = x.modo === 'examen' ? 'Oficial · examen completo' : x.modo === 'calentamiento' ? 'Calentamiento' : x.modo === 'completo' ? 'Nivel Medio' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
       var ok = x.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = x.secciones.reduce(function (a, s) { return a + s.total; }, 0);
       return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global ? x.global + ' pts' : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
     }).join('') + '</ul>';
@@ -636,7 +644,7 @@
     }
 
     h('<section class="sim-rep">' +
-      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen PAA completo' : res.modo === 'completo' ? 'Resultado del simulacro corto' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
+      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen oficial' : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
         '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global ? '<p class="sim-global">Puntaje estimado <b class="num">' + res.global + '</b><small> / 800 · meta ' + m + '</small></p>' : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' +

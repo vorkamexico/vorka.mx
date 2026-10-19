@@ -43,6 +43,19 @@ export function seguridad(n, { stripe = false, frames = [] } = {}) {
  * pagina({ titulo, descripcion, ruta, cuerpo, head?, script?, noindex?, status?, headers? }) → Response
  * `script` va inline con nonce; `head` acepta JSON-LD u otras etiquetas.
  */
+// Casilla "Usar mis puntos" en cualquier formulario de compra de la tienda (si hay sesión con saldo)
+const SCRIPT_PUNTOS = `(function(){
+  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo'); if(!f||!window.fetch) return;
+  fetch('/api/puntos/saldo',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){
+    if(!d.cuenta||!d.disponibles) return;
+    var l=document.createElement('label'); l.className='t-casilla t-puntos';
+    l.innerHTML='<input type="checkbox" name="usar_puntos" value="on" checked><span>Usar mis <b>'+d.disponibles+' puntos</b> (hasta $'+d.disponibles+' de descuento). Compra con <b></b>.</span>';
+    l.querySelectorAll('b')[1].textContent=d.email;
+    var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(l);
+    if(f.email&&!f.email.value) f.email.value=d.email;
+  }).catch(function(){});
+})();`;
+
 export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [] }) {
   const n = nonce();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
@@ -76,7 +89,7 @@ ${head}</head>
 ${NAV.replace('<script ', `<script nonce="${n}" `)}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
-${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

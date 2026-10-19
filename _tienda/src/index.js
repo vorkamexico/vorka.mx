@@ -17,6 +17,8 @@ import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
 import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp } from './brindi.js';
+import { paginaCupo } from './cupo.js';
+import { rutasPuntos } from './puntos.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -43,6 +45,7 @@ export class Admin extends WorkerEntrypoint {
   afiliados() { return admin.afiliados(this.env); }
   guardarAfiliado(d) { return admin.guardarAfiliado(this.env, d); }
   reporteAfiliados(f) { return admin.reporteAfiliados(this.env, f); }
+  resumenPuntos() { return admin.resumenPuntos(this.env); }
   // Marketplace de creadores
   pendientesMarketplace() { return admin.pendientesMarketplace(this.env); }
   creadores() { return admin.creadores(this.env); }
@@ -95,6 +98,7 @@ export default {
       if (url.pathname === '/api/tienda/salud') return json({ ok: true });
       const corta = ligaCorta(url);
       if (corta) return corta;
+      if (/^\/(tienda\/(puntos|cuenta)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
       const sim = await rutasSimulador(request, env, url);
       if (sim) return sim;
       const cr = await rutasCreadores(request, env, ctx, url);
@@ -121,6 +125,7 @@ export default {
       if (request.method === 'GET' || request.method === 'HEAD') {
         if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
         if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
+        if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
         if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
         if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
         // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.

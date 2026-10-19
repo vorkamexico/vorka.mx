@@ -79,6 +79,12 @@ const BRINDI = {
   incluye: ['Seis diseños premium que personalizas a tu gusto', 'Confirmaciones y control de acompañantes', 'Pase con QR para la entrada de tu evento'],
 };
 const esBrindi = p => p.contenido?.acceso?.app === 'brindi';
+const CUPO = {
+  nombre: 'Cupo · Eventos con registro',
+  texto: 'La página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas; con Pro, correos, cover sin comisión y ligas para RPs.',
+  incluye: ['Gratis hasta 30 personas', 'Cupo Pro desde $99 según tu aforo', 'Cover directo a ti y ligas para RPs'],
+};
+const esCupo = p => p.contenido?.acceso?.app === 'cupo';
 
 // Cómo se presenta cada producto en el catálogo (una sola tarjeta por página de destino)
 function vistas(productos, desdeBrindi) {
@@ -89,6 +95,8 @@ function vistas(productos, desdeBrindi) {
     vistos.add(url);
     if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
+    if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
+      img: { ...p, imagen: p.imagen || '/assets/tienda/cupo.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
     return { p, url, nombre: p.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
       cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: p, precio: precio(p), regalable: !!p.contenido?.regalable };
   }).filter(Boolean);
@@ -146,11 +154,12 @@ export async function paginaCatalogo(env, req, url) {
       <li>${CHECK}<span>Tarjeta, OXXO o SPEI</span></li>
       <li>${CHECK}<span>Soporte de personas reales</span></li>
     </ul>
+    <p class="t-nota t-puntos-aviso"><b>Recomienda y gana:</b> 10 puntos por cada compra con tu liga, canjeables en toda la tienda (1 punto = $1). <a href="/tienda/puntos/">Crear mi cuenta de puntos ${FLECHA}</a></p>
   </div>
   ${secciones.length ? `<nav class="t-lineas" aria-label="Líneas de la tienda">${secciones.map((g, i) => `
     <a class="t-linea-t rv" style="--d:${i * 0.06}s" href="#${esc(g.id)}">
       <span class="t-linea-t-img">${portada(g.vistas[0].img)}</span>
-      <span class="t-linea-t-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><span>${g.vistas.length === 1 ? '1 producto' : `${g.vistas.length} productos`} · desde ${desde(g)}</span></span>
+      <span class="t-linea-t-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><span>${g.vistas.length === 1 ? '1 producto' : `${g.vistas.length} productos`} · ${g.vistas.some(v => esCupo(v.p)) ? 'gratis para empezar' : `desde ${desde(g)}`}</span></span>
       <span class="t-linea-t-f" aria-hidden="true">${FLECHA}</span>
     </a>`).join('')}</nav>` : ''}
 </div></section>
@@ -248,6 +257,11 @@ export async function paginaProducto(env, req, url, slug) {
     // Le cambiaron el enlace: redirigir para siempre al nuevo (conserva ?ref= y demás)
     const nuevo = await productoPorSlugAnterior(env, slug);
     if (nuevo) return new Response(null, { status: 301, headers: { location: `/tienda/${nuevo.slug}/${url.search}`, 'cache-control': 'public, max-age=3600' } });
+  }
+  // Cupo: todos sus niveles y paquetes se venden en su página única, con el plan ya elegido
+  if (p?.contenido?.acceso?.app === 'cupo') {
+    const q = new URLSearchParams(url.search); q.set('plan', p.slug);
+    return new Response(null, { status: 301, headers: { location: `/tienda/cupo/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
   // Productos ocultos (simulacros adicionales) se compran desde su app, no tienen página propia
   if (p?.contenido?.oculto) return new Response(null, { status: 302, headers: { location: p.contenido.acceso?.ruta || '/tienda/' } });

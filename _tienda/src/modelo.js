@@ -34,7 +34,7 @@ export async function afiliadoActivo(env, code) {
  * items: [{ slug, cantidad? }] — el precio se toma de la base de datos.
  * Lanza Error('producto') si algún slug no existe o está inactivo.
  */
-export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null }) {
+export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null, puntos = null }) {
   const lineas = [];
   for (const it of items) {
     const p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
@@ -48,17 +48,20 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
     id: crypto.randomUUID(),
     email: email.trim().toLowerCase(),
     nombre: nombre.trim(),
-    monto_centavos: lineas.reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0),
+    subtotal_centavos: lineas.reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0),
+    descuento_centavos: puntos?.descuento_centavos || 0,
+    puntos_email: puntos?.descuento_centavos ? puntos.email : null,
     moneda: [...monedas][0],
     estado: 'pending',
     proveedor,
     ref_code: afiliado?.code || null,
     comision_pct: afiliado?.comision_pct ?? null,
   };
+  orden.monto_centavos = orden.subtotal_centavos - orden.descuento_centavos;   // lo que se cobra (neto de puntos)
   await env.DB.batch([
-    env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct, regalo, regalo_para, regalo_mensaje) VALUES (?,?,?,?,?,?,?,?,?,?,?)')
+    env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct, regalo, regalo_para, regalo_mensaje, descuento_centavos, puntos_email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
       .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct,
-        regalo ? 1 : 0, regalo?.para || null, regalo?.mensaje || null),
+        regalo ? 1 : 0, regalo?.para || null, regalo?.mensaje || null, orden.descuento_centavos, orden.puntos_email),
     // Si es de un creador, se copia a quién le toca y su % de ese momento
     ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) VALUES (?,?,?,?,?,?,?)')
       .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null)),

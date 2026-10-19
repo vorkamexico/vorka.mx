@@ -282,7 +282,21 @@ export async function afiliados(env) {
   return (await all(env, `SELECT a.*,
       (SELECT COUNT(*) FROM orders o WHERE o.ref_code = a.code AND o.estado = 'paid') ventas,
       (SELECT COALESCE(SUM(o.monto_centavos), 0) FROM orders o WHERE o.ref_code = a.code AND o.estado = 'paid') monto_centavos
-    FROM affiliates a ORDER BY a.activo DESC, a.nombre`)).map(a => ({ ...a, activo: !!a.activo }));
+    FROM affiliates a WHERE a.tipo = 'dinero' ORDER BY a.activo DESC, a.nombre`)).map(a => ({ ...a, activo: !!a.activo }));
+}
+
+// Programa de puntos (las cuentas de puntos no se listan con los afiliados de dinero): totales para el panel
+export async function resumenPuntos(env) {
+  const n = (sql, ...a) => one(env, sql, ...a).then(x => x?.n ?? 0);
+  return {
+    cuentas: await n("SELECT COUNT(*) n FROM affiliates WHERE tipo = 'puntos'"),
+    compras_con_liga: await n("SELECT COUNT(*) n FROM puntos_movimientos WHERE tipo = 'ganado'"),
+    emitidos: await n("SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos WHERE tipo = 'ganado'"),
+    canjeados: await n("SELECT COALESCE(-SUM(puntos), 0) n FROM puntos_movimientos WHERE tipo = 'canje'"),
+    saldo_vivo: await n('SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos'),
+    top: await all(env, `SELECT a.code, a.nombre, a.email, COUNT(m.id) compras, COALESCE(SUM(m.puntos), 0) puntos FROM affiliates a JOIN puntos_movimientos m ON m.email = a.email AND m.tipo = 'ganado'
+      WHERE a.tipo = 'puntos' GROUP BY a.code ORDER BY compras DESC LIMIT 20`),
+  };
 }
 
 const EsquemaAfiliado = z.object({
@@ -313,7 +327,7 @@ export async function reporteAfiliados(env, { mes }) {
   const filas = await all(env, `SELECT a.code, a.nombre, a.email, COUNT(o.id) ventas, COALESCE(SUM(o.monto_centavos), 0) monto_centavos,
       COALESCE(SUM(ROUND(o.monto_centavos * COALESCE(o.comision_pct, a.comision_pct) / 100.0)), 0) comision_centavos
     FROM affiliates a LEFT JOIN orders o ON o.ref_code = a.code AND o.estado = 'paid' AND o.paid_at >= ? AND o.paid_at < ?
-    GROUP BY a.code ORDER BY comision_centavos DESC, a.nombre`, desde, hasta);
+    WHERE a.tipo = 'dinero' GROUP BY a.code ORDER BY comision_centavos DESC, a.nombre`, desde, hasta);
   const total = filas.reduce((s, f) => ({ ventas: s.ventas + f.ventas, monto_centavos: s.monto_centavos + f.monto_centavos, comision_centavos: s.comision_centavos + f.comision_centavos }), { ventas: 0, monto_centavos: 0, comision_centavos: 0 });
   return { mes, afiliados: filas, total };
 }

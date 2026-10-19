@@ -82,7 +82,7 @@ const DEMOS = [['demo-boda-editorial', 'Boda', 'Atelier · editorial de lujo', '
   ['demo-xv', 'XV años', 'Gala · glamour para una noche de fiesta', 'gala'], ['demo-bautizo', 'Bautizo', 'Jardín · botánica contemporánea', 'jardin'],
   ['demo-graduacion', 'Graduación', 'Línea · moderna y arquitectónica', 'linea'], ['demo-cumple', 'Cumpleaños', 'Confeti · expresiva y colorida', 'confeti']];
 const FAQ = [
-  ['¿Brindi o Cupo?', 'Brindi es para los momentos importantes (bodas, XV años, bautizos, aniversarios): invitación con diseño de autor y confirmación por invitado. Para algo rápido o informal (una fiesta, Halloween, networking, un taller) usa <a href="/tienda/cupo-pro/">Cupo</a>: página con los datos, registro en segundos y cover directo a ti. Es gratis para eventos gratis.'],
+  ['¿Brindi o Cupo?', 'Brindi es para los momentos importantes (bodas, XV años, bautizos, aniversarios): invitación con diseño de autor y confirmación por invitado. Para algo rápido o informal (una fiesta, Halloween, networking, un taller) usa <a href="/tienda/cupo/">Cupo</a>: página con los datos, registro en segundos y cover directo a ti. Es gratis hasta 30 personas.'],
   ['¿Cómo funciona?', 'Compras tu plan, entras a Brindi con tu correo, eliges una plantilla y la personalizas viendo cómo queda en tiempo real. Al publicar te damos un enlace y un QR para compartir. Tus invitados la abren desde su celular y confirman ahí mismo.'],
   ['¿Mis invitados tienen que instalar algo?', 'No. La invitación se abre en el navegador del celular desde WhatsApp, un mensaje o escaneando el QR. No necesitan cuenta.'],
   ['¿Puedo probar antes de pagar?', `Sí. En <a href="${OS}/brindi/">os.vorka.mx/brindi</a> creas tu invitación gratis y la ves en vista previa. Solo pagas cuando la quieres publicar.`],
@@ -229,7 +229,7 @@ const SCRIPT = `(function(){
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    var d={ slug:f.slug.value, nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked }; if(f.ref) d.ref=f.ref.value;
+    var d={ slug:f.slug.value, nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked }; if(f.ref) d.ref=f.ref.value; if(f.usar_puntos&&f.usar_puntos.checked) d.usar_puntos=true;
     if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Escribe tu nombre.'); }
     if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Escribe un correo válido.'); }
     if(!d.terminos) return mostrar('Debes aceptar los términos y el aviso de privacidad.');
