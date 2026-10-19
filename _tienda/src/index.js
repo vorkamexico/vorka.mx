@@ -73,11 +73,28 @@ export class Admin extends WorkerEntrypoint {
   productosApp(app) { return productosApp(this.env, app); }
 }
 
+// Ligas cortas de las apps de eventos: vorka.mx/cupo/<liga> y vorka.mx/brindi/<liga>[/<invitado>] llevan al evento en os.vorka.mx
+const APPS = 'https://os.vorka.mx';
+export function ligaCorta(url) {
+  const p = url.pathname;
+  if (!/^\/(cupo|brindi)(\/|$)/.test(p)) return null;
+  const ir = (destino, codigo = 302) => new Response(null, { status: codigo, headers: { location: destino, 'cache-control': 'no-store' } });
+  if (p === '/cupo' || p === '/cupo/') return ir(`${APPS}/cupo/${url.search}`, 301);
+  if (p === '/brindi' || p === '/brindi/') return ir(`/tienda/brindi/${url.search}`, 301);
+  let m = p.match(/^\/cupo\/([a-z0-9-]{3,60})\/?$/i);
+  if (m) return ir(`${APPS}/e/${m[1].toLowerCase()}${url.search}`);
+  m = p.match(/^\/brindi\/([a-z0-9-]{3,60})(?:\/([a-z0-9]{6,40}))?\/?$/i);
+  if (m) return ir(`${APPS}/i/${m[1].toLowerCase()}${m[2] ? `/${m[2]}` : ''}${url.search}`);
+  return ir(p.startsWith('/cupo') ? `${APPS}/cupo/` : '/tienda/brindi/');
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     try {
       if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+      const corta = ligaCorta(url);
+      if (corta) return corta;
       const sim = await rutasSimulador(request, env, url);
       if (sim) return sim;
       const cr = await rutasCreadores(request, env, ctx, url);

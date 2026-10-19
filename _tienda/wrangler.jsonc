@@ -9,7 +9,9 @@
     { "pattern": "vorka.mx/api/*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/creadores*", "zone_name": "vorka.mx" },
-    { "pattern": "vorka.mx/simulador-paa*", "zone_name": "vorka.mx" }
+    { "pattern": "vorka.mx/simulador-paa*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/cupo*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/brindi*", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
     { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
