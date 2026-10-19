@@ -25,8 +25,8 @@ describe('Cupo en la tienda', () => {
     expect(html).toContain('Eventos con registro y cover');
     expect(html).toContain('$139 MXN');
     const ficha = await (await pedir('/tienda/cupo-pro/')).text();
-    expect(ficha).toContain('Tu evento con correos, recordatorios y cover');
-    expect(ficha).toContain('¿Puedo armar mi evento antes de pagar?');
+    expect(ficha).toContain('Correos, cover y RPs para llenar tu evento');
+    expect(ficha).toContain('¿Cómo funcionan las ligas de RP?');
     expect(ficha).toContain('Pago único · un evento Pro');
     expect(ficha).not.toContain('por un año');
   });
