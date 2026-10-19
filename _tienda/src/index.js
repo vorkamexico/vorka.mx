@@ -46,6 +46,12 @@ export class Admin extends WorkerEntrypoint {
   guardarAfiliado(d) { return admin.guardarAfiliado(this.env, d); }
   reporteAfiliados(f) { return admin.reporteAfiliados(this.env, f); }
   resumenPuntos() { return admin.resumenPuntos(this.env); }
+  // Puntos Vorka: sugerencias de productos (aceptar con el producto → puntos dobles para quien la sugirió) y promociones 2×
+  sugerenciasPuntos() { return admin.sugerenciasPuntos(this.env); }
+  decidirSugerencia(id, d) { return admin.decidirSugerencia(this.env, id, d); }
+  promosPuntos() { return admin.promosPuntos(this.env); }
+  guardarPromo(d) { return admin.guardarPromo(this.env, d); }
+  borrarPromo(id) { return admin.borrarPromo(this.env, id); }
   // Marketplace de creadores
   pendientesMarketplace() { return admin.pendientesMarketplace(this.env); }
   creadores() { return admin.creadores(this.env); }

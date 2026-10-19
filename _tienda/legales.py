@@ -56,10 +56,15 @@ TERMINOS = [
         'El enlace funciona durante 7 días y permite descargar cada archivo hasta 10 veces. Si vence, pide uno nuevo en <a href="/descargas/reenviar">vorka.mx/descargas/reenviar</a> con el correo de tu compra.',
         'Es tu responsabilidad escribir bien tu correo al comprar. Si te equivocaste, escríbenos con tu número de orden y lo corregimos.')),
     ('puntos', 'Programa de puntos Vorka', li(
-        'Cualquier persona mayor de edad puede crear gratis una cuenta de puntos con su correo en <a href="/tienda/puntos/">vorka.mx/tienda/puntos</a> y recibir una liga personal para recomendar productos de la tienda.',
-        'Por cada compra pagada que entre con tu liga ganas 10 puntos, sin importar el producto. No cuentan las compras hechas con tu mismo correo. La persona que llega con tu liga tiene 30 días para comprar.',
+        'Cualquier persona mayor de edad puede crear gratis una cuenta de puntos con su correo en <a href="/tienda/puntos/">vorka.mx/tienda/puntos</a> y recibir una liga personal para recomendar productos de la tienda. Tu cuenta se usa desde la app “Puntos Vorka” (<a href="/tienda/cuenta/">vorka.mx/tienda/cuenta</a>), que puedes agregar a la pantalla de inicio de tu celular. Para entrar te enviamos a tu correo un enlace y un código de 6 dígitos (vence en 15 minutos y sirve una sola vez).',
+        'Por cada compra pagada que entre con tu liga ganas 10 puntos. No cuentan las compras hechas con tu mismo correo. La persona que llega con tu liga tiene 30 días para comprar.',
+        '<b>Puntos dobles.</b> Una compra con tu liga vale 20 puntos en lugar de 10 si incluye: (a) un producto con una promoción de puntos dobles vigente el día del pago (las anunciamos en la app con sus fechas, en hora del centro de México, y aplican para todos), o (b) un producto que tú nos sugeriste desde la app y que Vorka aceptó y ligó a esa sugerencia, en compras pagadas después de aceptarla. Se cuentan una vez por compra y no se acumulan entre sí: el máximo son 20 puntos por compra. Enviar una sugerencia no obliga a Vorka a crear el producto ni le da derechos sobre él a quien la envía; Vorka decide qué sugerencias acepta.',
         'Cada punto equivale a $1 MXN de descuento en productos de Vorka México (no en productos de creadores). Se usan al pagar, con el mismo correo de tu cuenta; siempre se cobra al menos $10 MXN por compra. Los puntos no se cambian por dinero ni se transfieren.',
-        'Si una compra hecha con tu liga se reembolsa o se desconoce el cargo, se descuentan sus puntos. Si se reembolsa una compra en la que usaste puntos, te los regresamos.',
+        'Si una compra hecha con tu liga se reembolsa o se desconoce el cargo, se descuentan exactamente los puntos que te dio (10 o 20). Si se reembolsa una compra en la que usaste puntos, te los regresamos.',
+        '<b>Niveles, metas y logros.</b> Los niveles (Inicial, Bronce, Plata, Oro y Diamante, según tus compras con tu liga que no se reembolsaron), las metas y los logros son solo reconocimiento dentro de la app: no dan dinero, puntos extra ni descuentos adicionales.',
+        '<b>Top del mes (opcional).</b> Solo apareces si lo activas en la app. Se muestra tu nombre y la inicial de tu apellido (por ejemplo, “Ana L.”) y tu número de compras del mes a las demás cuentas del programa; puedes desactivarlo cuando quieras.',
+        '<b>Avisos.</b> Las notificaciones en tu celular son opcionales: las activas y desactivas en la app o en tu navegador. Además te avisamos en la app, y por correo cuando ganas puntos o aceptamos tu sugerencia.',
+        '<b>Visitas a tu liga.</b> Para mostrarte cuántas personas abrieron tu liga contamos una visita por persona al día. No guardamos la dirección IP: solo una huella cifrada que cambia cada día y no permite identificar ni seguir a nadie.',
         'Podemos cancelar puntos obtenidos con engaños (compras falsas, spam o suplantación). Si cambiamos o terminamos el programa, te avisaremos con al menos 30 días para que uses tus puntos.',
         'Las comisiones en dinero para afiliados son un programa aparte, solo por invitación de Vorka.')),
     ('licencia', 'Uso de los materiales', li(
@@ -292,7 +297,7 @@ def escribir(ruta, html):
     print('·', os.path.relpath(p, RAIZ), f'{len(html) // 1024} KB')
 
 escribir('/legal/terminos/', pagina('/legal/terminos/', 'Términos y condiciones', 'Términos y <span class="metal">condiciones.</span>',
-    'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS))
+    'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS, actualizado='19 de octubre de 2026'))
 escribir('/legal/reembolsos/', pagina('/legal/reembolsos/', 'Política de reembolsos', 'Política de <span class="metal">reembolsos.</span>',
     'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS))
 escribir('/legal/creadores/', pagina('/legal/creadores/', 'Términos para creadores', 'Términos para <span class="metal">creadores.</span>',

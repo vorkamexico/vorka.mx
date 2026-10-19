@@ -8,6 +8,8 @@ import { crearEnlace } from './creadores-acceso.js';
 import { enlaceAcceso, solicitudRechazada, productoRevisado } from './correos-creadores.js';
 import { refrescarCreador } from './marketplace.js';
 import { motivoNoRecordar, MAX_SEGUIMIENTOS } from './recordatorio.js';
+import { avisar } from './puntos-push.js';
+import { diaMx } from './puntos-reglas.js';
 
 const TZ = 'America/Mexico_City';
 const fechaMx = iso => iso ? new Date(iso).toLocaleString('sv-SE', { timeZone: TZ }).slice(0, 16) : '';
@@ -288,16 +290,73 @@ export async function afiliados(env) {
 // Programa de puntos (las cuentas de puntos no se listan con los afiliados de dinero): totales para el panel
 export async function resumenPuntos(env) {
   const n = (sql, ...a) => one(env, sql, ...a).then(x => x?.n ?? 0);
+  const hace30 = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10), hoy = diaMx();
   return {
     cuentas: await n("SELECT COUNT(*) n FROM affiliates WHERE tipo = 'puntos'"),
     compras_con_liga: await n("SELECT COUNT(*) n FROM puntos_movimientos WHERE tipo = 'ganado'"),
     emitidos: await n("SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos WHERE tipo = 'ganado'"),
+    dobles: await n("SELECT COUNT(*) n FROM puntos_movimientos WHERE tipo = 'ganado' AND multiplicador > 1"),
     canjeados: await n("SELECT COALESCE(-SUM(puntos), 0) n FROM puntos_movimientos WHERE tipo = 'canje'"),
     saldo_vivo: await n('SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos'),
+    visitas_30d: await n('SELECT COUNT(*) n FROM puntos_visitas WHERE dia >= ?', hace30),
+    con_avisos: await n('SELECT COUNT(DISTINCT email) n FROM puntos_push'),
+    sugerencias_nuevas: await n("SELECT COUNT(*) n FROM puntos_sugerencias WHERE estado = 'nueva'"),
+    promos_vigentes: await n('SELECT COUNT(*) n FROM puntos_promos WHERE inicia <= ? AND termina >= ?', hoy, hoy),
     top: await all(env, `SELECT a.code, a.nombre, a.email, COUNT(m.id) compras, COALESCE(SUM(m.puntos), 0) puntos FROM affiliates a JOIN puntos_movimientos m ON m.email = a.email AND m.tipo = 'ganado'
       WHERE a.tipo = 'puntos' GROUP BY a.code ORDER BY compras DESC LIMIT 20`),
   };
 }
+
+// ---------- Puntos Vorka: sugerencias de productos (aceptar = puntos dobles para quien la sugirió en ese producto) ----------
+export async function sugerenciasPuntos(env) {
+  return all(env, `SELECT s.*, p.slug producto_slug, p.nombre producto_nombre, a.code, a.nombre cuenta_nombre FROM puntos_sugerencias s
+    LEFT JOIN products p ON p.id = s.product_id LEFT JOIN affiliates a ON a.email = s.email AND a.tipo = 'puntos'
+    ORDER BY CASE s.estado WHEN 'nueva' THEN 0 ELSE 1 END, s.id DESC LIMIT 200`);
+}
+
+export async function decidirSugerencia(env, id, d = {}) {
+  const s = await one(env, 'SELECT * FROM puntos_sugerencias WHERE id = ?', Number(id));
+  if (!s) throw new Error('No encontramos esa sugerencia.');
+  const nota = String(d.nota || '').trim().slice(0, 280) || null;
+  if (d.aceptar) {
+    const slug = String(d.slug || '').trim().toLowerCase();
+    const p = slug ? await one(env, 'SELECT id, nombre FROM products WHERE slug = ?', slug) : null;
+    if (!p) throw new Error('Para aceptarla, elige el producto de la tienda que salió de esta idea (su enlace).');
+    await run(env, "UPDATE puntos_sugerencias SET estado = 'aceptada', product_id = ?, nota = ?, decidida_at = ? WHERE id = ?", p.id, nota, ahoraISO(), s.id);
+    await avisar(env, s.email, { clave: `sugerencia:${s.id}`, tipo: 'sugerencia', titulo: '¡Aceptamos tu idea!',
+      cuerpo: `Tu sugerencia «${s.idea.slice(0, 80)}» ahora es ${p.nombre}. Ganas puntos dobles en cada compra de ese producto con tu liga.`, url: '/tienda/cuenta/#compartir' },
+      { correo: { asunto: 'Aceptamos tu idea: ganas puntos dobles' } });
+  } else {
+    await run(env, "UPDATE puntos_sugerencias SET estado = 'descartada', product_id = NULL, nota = ?, decidida_at = ? WHERE id = ?", nota, ahoraISO(), s.id);
+  }
+  return { ok: true };
+}
+
+// ---------- Puntos Vorka: promociones de puntos dobles por producto (para todos, por fechas de CDMX, ambos días incluidos) ----------
+export async function promosPuntos(env) {
+  return all(env, `SELECT x.*, p.slug, p.nombre producto FROM puntos_promos x JOIN products p ON p.id = x.product_id
+    ORDER BY CASE WHEN x.termina >= ? THEN 0 ELSE 1 END, x.inicia DESC LIMIT 100`, diaMx());
+}
+
+export async function guardarPromo(env, d = {}) {
+  const slug = String(d.slug || '').trim().toLowerCase();
+  const p = await one(env, 'SELECT id, nombre FROM products WHERE slug = ?', slug);
+  if (!p) throw new Error('Elige un producto de la tienda.');
+  if (!FECHA.safeParse(d.inicia).success || !FECHA.safeParse(d.termina).success) throw new Error('Elige las fechas de inicio y fin.');
+  if (d.termina < d.inicia) throw new Error('La fecha de fin no puede ser antes del inicio.');
+  if (d.termina < diaMx()) throw new Error('La promoción ya terminó: elige fechas de hoy en adelante.');
+  const nota = String(d.nota || '').trim().slice(0, 140) || null;
+  if (d.id) await run(env, 'UPDATE puntos_promos SET product_id = ?, inicia = ?, termina = ?, nota = ? WHERE id = ?', p.id, d.inicia, d.termina, nota, Number(d.id));
+  else await run(env, 'INSERT INTO puntos_promos (product_id, inicia, termina, nota) VALUES (?, ?, ?, ?)', p.id, d.inicia, d.termina, nota);
+  return { ok: true };
+}
+
+// Borrar una promoción no cambia los puntos ya ganados con ella
+export async function borrarPromo(env, id) {
+  await run(env, 'DELETE FROM puntos_promos WHERE id = ?', Number(id));
+  return { ok: true };
+}
+
 
 const EsquemaAfiliado = z.object({
   code: z.string().trim().toUpperCase().regex(/^[A-Z0-9_-]{2,40}$/, 'El código lleva solo letras, números, guion o guion bajo (2 a 40).'),

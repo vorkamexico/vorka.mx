@@ -1,12 +1,14 @@
 // /tienda            → catálogo (productos activos de D1)
 // /tienda/<slug>     → página de venta con formulario de compra
 // /tienda/sitemap.xml → sitemap dinámico de la tienda
-// ?ref=CODIGO en cualquier página de la tienda guarda la cookie vorka_ref (30 días) si el afiliado existe y está activo.
+// ?ref=CODIGO en cualquier página de la tienda guarda la cookie vorka_ref (30 días) si el afiliado existe y está activo
+// (y, si es una cuenta de Puntos Vorka, cuenta la visita).
 import { pesos } from './util.js';
 import { listarProductos, productoPorSlug, productoPorSlugAnterior, afiliadoActivo, registrarAnalitica } from './modelo.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
+import { contarVisita } from './puntos.js';
 
 const SITIO = 'https://vorka.mx';
 const COOKIE_DIAS = 30;
@@ -34,7 +36,11 @@ export async function refDeVisita(env, req, url) {
   const nuevo = url.searchParams.get('ref');
   if (nuevo && /^[A-Za-z0-9_-]{1,40}$/.test(nuevo)) {
     const a = await afiliadoActivo(env, nuevo);
-    if (a) return { code: a.code, cookie: `vorka_ref=${a.code}; Max-Age=${COOKIE_DIAS * 86400}; Path=/; Secure; HttpOnly; SameSite=Lax` };
+    if (a) {
+      // Puntos Vorka: cuenta la visita para "N personas abrieron tu liga" (una por persona y día; no guarda IPs)
+      if (req.method === 'GET') await contarVisita(env, req, a.code);
+      return { code: a.code, cookie: `vorka_ref=${a.code}; Max-Age=${COOKIE_DIAS * 86400}; Path=/; Secure; HttpOnly; SameSite=Lax` };
+    }
   }
   return { code: null, cookie: null };
 }
