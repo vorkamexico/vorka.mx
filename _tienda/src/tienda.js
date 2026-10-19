@@ -6,6 +6,7 @@ import { pesos } from './util.js';
 import { listarProductos, productoPorSlug, productoPorSlugAnterior, afiliadoActivo, registrarAnalitica } from './modelo.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
+import { ELEGIR } from './elegir.js';
 
 const SITIO = 'https://vorka.mx';
 const COOKIE_DIAS = 30;
@@ -160,6 +161,7 @@ export async function paginaCatalogo(env, req, url) {
     ${g.vistas.length === 1 ? horizontal(g.vistas[0]) : `<div class="t-grid t-grid-${Math.min(g.vistas.length, 3)}">${g.vistas.map(tarjeta).join('')}</div>`}
   </section>`).join('') : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
 </div></section>
+${secciones.some(g => g.id === 'invitaciones') && secciones.some(g => g.id === 'eventos') ? ELEGIR() : ''}
 <section class="t-sec t-como suave"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Compra en minutos, úsalo hoy</h2></div>
   <ol class="t-como-g">
@@ -296,6 +298,7 @@ ${pasos.length ? `<section class="t-sec suave"><div class="marco">
 ${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-estrecho">
   <div class="rv"><span class="etiqueta">Para quién es</span><h2 class="h2 t-h2-sec">Te sirve si…</h2>${lista(c.para_quien)}</div>
 </div></section>` : ''}
+${c.acceso?.app === 'cupo' ? ELEGIR('cupo') : ''}
 <section class="t-sec${c.para_quien?.length ? ' suave' : ''}"><div class="marco t-estrecho">
   <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2 t-h2-sec">Antes de comprar</h2>
   <div class="t-faq">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('')}</div>

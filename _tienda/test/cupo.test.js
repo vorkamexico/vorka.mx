@@ -23,7 +23,7 @@ describe('Cupo en la tienda', () => {
     const html = await (await pedir('/tienda/')).text();
     expect(html).toContain('href="#eventos"');
     expect(html).toContain('Eventos con registro y cover');
-    expect(html).toContain('$199 MXN');
+    expect(html).toContain('$99 MXN');
     const ficha = await (await pedir('/tienda/cupo-pro/')).text();
     expect(ficha).toContain('Tu evento con cover, sin comisiones');
     expect(ficha).toContain('Pago único · un evento Pro');
@@ -38,5 +38,17 @@ describe('Cupo en la tienda', () => {
     expect(c.texto).toMatch(/Entrar a Cupo|os\.vorka\.mx\/cupo/);
     const compras = await A.comprasApp('org@mail.com', 'cupo');
     expect(compras[0].items[0].acceso).toMatchObject({ app: 'cupo', tipo: 'paquete', unidades: 5, meses: 12 });
+  });
+});
+
+describe('Brindi o Cupo', () => {
+  it('el catálogo, la página de Brindi y la ficha de Cupo explican cuál conviene', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
+    for (const ruta of ['/tienda/', '/tienda/brindi/', '/tienda/cupo-pro/']) {
+      const html = await (await pedir(ruta)).text();
+      expect(html, ruta).toContain('¿Brindi o Cupo?');
+      expect(html, ruta).toContain('Regla rápida');
+    }
+    expect(await (await pedir('/tienda/cupo-pro/')).text()).toContain('$99 MXN');
   });
 });

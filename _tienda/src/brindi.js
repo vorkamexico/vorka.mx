@@ -8,6 +8,7 @@ import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { ELEGIR } from './elegir.js';
 
 export const APP = 'brindi';
 const OS = 'https://os.vorka.mx';
@@ -81,6 +82,7 @@ const DEMOS = [['demo-boda-editorial', 'Boda', 'Atelier · editorial de lujo', '
   ['demo-xv', 'XV años', 'Gala · glamour para una noche de fiesta', 'gala'], ['demo-bautizo', 'Bautizo', 'Jardín · botánica contemporánea', 'jardin'],
   ['demo-graduacion', 'Graduación', 'Línea · moderna y arquitectónica', 'linea'], ['demo-cumple', 'Cumpleaños', 'Confeti · expresiva y colorida', 'confeti']];
 const FAQ = [
+  ['¿Brindi o Cupo?', 'Brindi es para los momentos importantes (bodas, XV años, bautizos, aniversarios): invitación con diseño de autor y confirmación por invitado. Para algo rápido o informal (una fiesta, Halloween, networking, un taller) usa <a href="/tienda/cupo-pro/">Cupo</a>: página con los datos, registro en segundos y cover directo a ti. Es gratis para eventos gratis.'],
   ['¿Cómo funciona?', 'Compras tu plan, entras a Brindi con tu correo, eliges una plantilla y la personalizas viendo cómo queda en tiempo real. Al publicar te damos un enlace y un QR para compartir. Tus invitados la abren desde su celular y confirman ahí mismo.'],
   ['¿Mis invitados tienen que instalar algo?', 'No. La invitación se abre en el navegador del celular desde WhatsApp, un mensaje o escaneando el QR. No necesitan cuenta.'],
   ['¿Puedo probar antes de pagar?', `Sí. En <a href="${OS}/brindi/">os.vorka.mx/brindi</a> creas tu invitación gratis y la ves en vista previa. Solo pagas cuando la quieres publicar.`],
@@ -175,6 +177,7 @@ ${aLaVenta ? `<section class="t-sec" id="comprar"><div class="marco t-estrecho">
   </form>
 </div></section>` : ''}
 
+${ELEGIR('brindi')}
 <section class="t-sec suave"><div class="marco t-estrecho">
   <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2 t-h2-sec">Antes de empezar</h2>
   <div class="t-faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join('')}</div>
