@@ -151,7 +151,7 @@ export async function paginaBrindi(env, req, url) {
     ...(aLaVenta ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: (desde / 100).toFixed(2), highPrice: (Math.max(...planes.filter(p => p.prod).map(p => p.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.filter(p => p.prod).length } } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   { '@context': 'https://schema.org', '@type': 'HowTo', name: 'Cómo hacer tu invitación digital con Brindi', step: TUTORIAL.map(([n, t], i) => ({ '@type': 'HowToStep', position: i + 1, name: n, text: t.replace(/<[^>]+>/g, '') })) }];
-  const opcion = (p, n) => `<option value="${esc(p.slug)}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
+  const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`;
   return pagina({
     titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
@@ -313,7 +313,7 @@ const SCRIPT = `(function(){
   var suma=document.getElementById('br-suma'), tot=document.getElementById('br-total');
   function esPlan(){ return /^brindi-(esencial|celebracion|premium)$/.test(f.slug.value); }
   function extrasElegidos(){ return suma&&esPlan()?[].slice.call(suma.querySelectorAll('input[name=extra]:checked')):[]; }
-  function precioDe(){ var o=f.slug.options[f.slug.selectedIndex]; var m=(o.textContent.match(/\$([\d,]+)/)||[])[1]; return m?+m.replace(/,/g,'')*100:0; }
+  function precioDe(){ var o=f.slug.options[f.slug.selectedIndex]; return o?+o.dataset.precio||0:0; }
   function total(){ if(!suma) return; suma.hidden=!esPlan(); var c=precioDe(); extrasElegidos().forEach(function(x){ c+=+x.dataset.precio; }); tot.textContent='$'+(c/100).toLocaleString('es-MX')+' MXN'; }
   f.slug.addEventListener('change',total); if(suma) suma.addEventListener('change',total); total();
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;

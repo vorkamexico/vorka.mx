@@ -35,7 +35,7 @@ describe('Brindi en la tienda', () => {
     expect(r.status).toBe(200);
     expect(r.headers.get('content-security-policy')).toContain('frame-src https://os.vorka.mx');
     const html = await r.text();
-    for (const t of ['$399 MXN', '$599 MXN', '$1,290 MXN', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
+    for (const t of ['$399 MXN', '$599 MXN', '$1,290 MXN', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" data-precio="59900" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
       expect(html, t).toContain(t);
     expect((await pedir('/tienda/brindi')).status).toBe(301);
     // Las páginas de los planes ocultos llevan a la ficha
@@ -129,6 +129,7 @@ describe('Brindi en la tienda', () => {
     expect(html).not.toMatch(/class="t-mas[\s\S]*href="\/tienda\/brindi\/"[\s\S]*class="br-confianza/);   // no se sugiere a sí misma
     expect(html).toContain('id="br-suma"');
     expect(html).toContain('value="brindi-100-invitados" data-precio="14900"');
+    expect(html).toContain('<option value="brindi-celebracion" data-precio="59900" selected');
     expect(html).not.toMatch(/name="extra" value="brindi-mejora/);   // las mejoras no se suman a un plan nuevo
     const cupo = await (await pedir('/tienda/cupo/')).text();
     expect(cupo).toContain('Sigue explorando');
