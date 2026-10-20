@@ -368,3 +368,5 @@
 .t-garantias { list-style: none; padding: 18px 0 0; margin: 22px 0 0; border-top: 1px solid var(--line); display: grid; gap: 10px; }
 .t-garantias li { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--fg-2); }
 .t-garantias svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--verde, #2b8553); }
+/* Igual en las portadas de Brindi y Cupo: las columnas del encabezado nunca crecen más que la pantalla */
+.br-hero-g > *, .cu-hero-g > *, .t-inicio-g > * { min-width: 0; }
