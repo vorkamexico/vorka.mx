@@ -108,6 +108,31 @@ function vistas(productos, desdeBrindi) {
   }).filter(Boolean);
 }
 
+// Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
+const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
+  ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
+const seccionDe = p => seccionesCatalogo([p])[0]?.id;
+
+// "También en la tienda": las demás líneas, con su portada y precio de entrada, al final de cada página
+export async function masTienda(env, actual) {
+  const productos = await listarProductos(env);
+  const planes = (await env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()).results
+    .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
+  const desdeBrindi = planes.length ? Math.min(...planes.map(x => x.precio_centavos)) : null;
+  const otras = seccionesCatalogo(productos).filter(g => g.id !== actual).map(g => ({ ...g, vistas: vistas(g.productos, desdeBrindi) })).filter(g => g.vistas.length);
+  if (!otras.length) return '';
+  const desde = g => g.vistas.some(v => esCupo(v.p)) ? 'gratis para empezar' : `desde ${g.vistas.find(v => esBrindi(v.p))?.precio.replace('Desde ', '') || precio({ precio_centavos: Math.min(...g.vistas.map(v => v.p.precio_centavos)) })}`;
+  return `<section class="t-sec suave t-mas"><div class="marco">
+  <div class="cab"><span class="etiqueta">También en la tienda</span><h2 class="h2">Sigue explorando</h2></div>
+  <div class="t-lineas">${otras.map(g => `<a class="t-linea-t" href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `/tienda/#${g.id}`)}">
+    <span class="t-linea-t-img">${portada(g.vistas[0].img)}</span>
+    <span class="t-linea-t-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><span>${g.vistas.length === 1 ? '1 producto' : `${g.vistas.length} productos`} · ${desde(g)}</span></span>
+    <span class="t-linea-t-f" aria-hidden="true">${FLECHA}</span></a>`).join('')}</div>
+  <p class="t-nota t-mas-pie">¿Compras para alguien más? Varios productos se pueden <b>regalar</b> desde su página. ¿Dudas? <a href="mailto:hola@vorka.mx">hola@vorka.mx</a></p>
+</div></section>`;
+}
+
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
@@ -300,7 +325,7 @@ export async function paginaProducto(env, req, url, slug) {
     cuerpo: `
 <section class="t-sec t-hero"><div class="marco t-hero-g">
   <div class="t-hero-txt">
-    <a class="t-volver" href="/tienda/">← Tienda</a>
+    ${navTienda(seccionDe(p))}
     <h1 class="t-h1 t-nombre">${esc(c.titular || p.nombre)}</h1>
     ${c.titular ? `<p class="t-sub">${esc(p.nombre)}</p>` : ''}
     <p class="t-lead">${esc(c.subtitulo || p.descripcion_corta)}</p>
@@ -324,6 +349,7 @@ ${c.acceso?.app === 'cupo' ? ELEGIR('cupo') : ''}
   <div class="t-faq">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('')}</div>
   <div class="botones t-faq-cta"><a class="btn tinta" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>
 </div></section>
+${await masTienda(env, seccionDe(p))}
 <div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>`,
   });
 }

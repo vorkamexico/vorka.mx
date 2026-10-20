@@ -4,7 +4,7 @@
 // La app vive en os.vorka.mx/cupo/ y los eventos en vorka.mx/cupo/<liga>. Aquí solo se vende.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio } from './tienda.js';
+import { refDeVisita, precio, navTienda, masTienda } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 
@@ -68,7 +68,7 @@ export async function paginaCupo(env, req, url) {
     cuerpo: `<div class="cu">
 <section class="cu-hero"><div class="marco cu-hero-g">
   <div>
-    <a class="t-volver" href="/tienda/">← Tienda</a>
+    ${navTienda('eventos')}
     <span class="cu-logo">cupo<i>.</i></span>
     <h1 class="cu-h1">Tu evento, listo <i>en un minuto.</i></h1>
     <p class="cu-lead">Una página bonita para tu fiesta, taller o evento de negocio. La gente aparta su lugar en segundos, sin cuenta, y en la puerta escaneas su QR.</p>
@@ -130,6 +130,7 @@ ${ELEGIR('cupo')}
   <div class="t-faq">${FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join('')}</div>
   <p class="t-nota"><a href="/legal/cupo/">Condiciones de Cupo</a> · <a href="/legal/cupo/privacidad/">Aviso de privacidad</a> · <a href="/legal/cupo/privacidad-asistentes/">Privacidad para asistentes</a> · Cupo · Powered by vorka.mx</p>
 </div></section>
+${await masTienda(env, 'eventos')}
 </div>`,
   });
 }

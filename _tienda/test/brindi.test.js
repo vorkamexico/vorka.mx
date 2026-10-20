@@ -106,4 +106,32 @@ describe('Brindi en la tienda', () => {
     const cel = d.productos.find(p => p.slug === 'brindi-celebracion');
     expect(cel).toMatchObject({ vistas: 1, compras: 1, monto_centavos: 59900, reembolsos: 1, activo: true, tipo: 'plan' });
   });
+
+  it('un plan con complementos en la misma compra: un solo correo de acceso y todo queda para la app', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1");
+    const o = await crearOrden(env, { items: [{ slug: 'brindi-celebracion' }, { slug: 'brindi-100-invitados' }, { slug: 'brindi-configuracion-asistida' }], email: 'multi@mail.com', nombre: 'Ana López' });
+    expect(o.monto_centavos).toBe(59900 + 14900 + 39900);
+    await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: o.monto_centavos, moneda: 'MXN', metodo_pago: 'card' });
+    const items = await env.DB.prepare('SELECT i.*, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?').bind(o.id).all();
+    const c = correoEntrega(env, { ...o, regalo_de: null }, items.results, 'b'.repeat(64));
+    expect(c.html).toContain(`https://os.vorka.mx/brindi/entrar/${'b'.repeat(64)}`);
+    const compras = await A.comprasApp('multi@mail.com', 'brindi');
+    expect(compras).toHaveLength(1);
+    expect(compras[0].items.map(x => x.slug).sort()).toEqual(['brindi-100-invitados', 'brindi-celebracion', 'brindi-configuracion-asistida']);
+  });
+
+  it('navegar la tienda: barra de líneas, "Sigue explorando" y complementos para sumar al plan', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1");
+    const html = await (await pedir('/tienda/brindi/')).text();
+    expect(html).toContain('class="t-nav-tienda"');
+    expect(html).toMatch(/href="\/tienda\/brindi\/" aria-current="page"/);
+    expect(html).toContain('Sigue explorando');
+    expect(html).not.toMatch(/class="t-mas[\s\S]*href="\/tienda\/brindi\/"[\s\S]*class="br-confianza/);   // no se sugiere a sí misma
+    expect(html).toContain('id="br-suma"');
+    expect(html).toContain('value="brindi-100-invitados" data-precio="14900"');
+    expect(html).not.toMatch(/name="extra" value="brindi-mejora/);   // las mejoras no se suman a un plan nuevo
+    const cupo = await (await pedir('/tienda/cupo/')).text();
+    expect(cupo).toContain('Sigue explorando');
+    expect(cupo).toMatch(/href="\/tienda\/cupo\/" aria-current="page"/);
+  });
 });

@@ -320,3 +320,30 @@
 .t-elegir-c li::before { content: '✓  '; color: var(--verde); font-weight: 800; }
 .t-elegir-c .flecha { margin-top: auto; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
 .t-elegir-c .flecha svg { width: 16px; height: 16px; }
+
+/* ---------- Sin huecos y navegación entre productos (oct 2026) ---------- */
+/* En la tienda todo se ve de inmediato: la animación de aparición dejaba huecos en blanco al bajar rápido */
+.js .t-main .rv { opacity: 1; transform: none; transition: none; }
+/* Íconos dentro de enlaces de texto: del tamaño de la letra (sin esto la flecha crecía a todo el ancho) */
+.t-nota a svg, .t-lead a svg, .t-faq a svg, .t-puntos-aviso svg { display: inline-block; width: 1em; height: 1em; vertical-align: -.14em; }
+/* Menos aire vacío entre secciones */
+.t-sec { padding: clamp(28px, 5vw, 56px) 0 clamp(36px, 6vw, 72px); }
+.t-inicio { padding-bottom: clamp(28px, 5vw, 56px); }
+.t-seccion + .t-seccion { margin-top: clamp(36px, 5vw, 60px); }
+.t-faq-cta { margin-top: 20px; }
+
+/* Barra de la tienda: ir de un producto a otro sin regresar al inicio */
+.t-nav-tienda { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 0 18px; padding: 2px 0; -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent); mask-image: linear-gradient(90deg, #000 92%, transparent); }
+.t-nav-tienda::-webkit-scrollbar { display: none; }
+.t-nav-tienda a { flex: none; display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-size: 14px; font-weight: 600; color: var(--fg-2); text-decoration: none; white-space: nowrap; transition: border-color .2s, color .2s; }
+.t-nav-tienda a:hover { border-color: var(--line-2); color: var(--fg); }
+.t-nav-tienda a[aria-current] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.t-nav-tienda a.t-nav-inicio { color: var(--fg); }
+
+/* "También en la tienda": las otras líneas al final de cada página */
+.t-mas .t-lineas { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.t-mas .t-linea-t { grid-template-columns: 84px minmax(0, 1fr) auto; }
+.t-mas .t-linea-t-img { width: 84px; }
+.t-mas-pie { margin-top: 18px; }
+/* La barra se desplaza dentro de su columna: nunca ensancha la página */
+.t-hero-txt, .t-hero-g > *, .t-nav-tienda { min-width: 0; max-width: 100%; }

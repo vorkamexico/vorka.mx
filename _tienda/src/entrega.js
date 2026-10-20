@@ -28,7 +28,7 @@ const accesoDe = i => { try { return JSON.parse(i.contenido || '{}').acceso || n
 export function correoEntrega(env, orden, items, token) {
   const accesos = items.map(accesoDe);
   // Compra de un solo producto de acceso: el botón entra directo a la app; con archivos, a la página de descargas
-  if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0]);
+  if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0], accesos.every(x => x.app === accesos[0].app && x.url === accesos[0].url));
   const url = `${env.SITE_URL}/descargas/${token}`;
   const nombre = orden.nombre.split(' ')[0];
   const productos = items.map(i => i.nombre);
@@ -66,8 +66,9 @@ Vorka México · Guanajuato, México`;
 // Enlace de entrada de una app: en vorka.mx/<app>/entrar/ o, si la app vive en otro dominio (Brindi en os.vorka.mx), en acceso.url
 export const urlEntrar = (env, acceso, token) => acceso.url && /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(acceso.url) ? `${acceso.url}${token}` : `${env.SITE_URL}/${acceso.app}/entrar/${token}`;
 
-function correoAcceso(env, orden, items, token, acceso) {
-  const url = items.length === 1 ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
+// Todo de la misma app (p. ej. un plan de Brindi con complementos): el botón entra directo; si son apps distintas, a la página con un botón por cada una
+function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1) {
+  const url = items.length === 1 || mismaApp ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
   const nombre = orden.nombre.split(' ')[0];
   const intento = acceso.tipo === 'intento', regalo = !!orden.regalo_de || orden.proveedor === 'cortesia';

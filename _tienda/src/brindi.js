@@ -6,7 +6,7 @@ import { one, all } from './util.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio } from './tienda.js';
+import { refDeVisita, precio, navTienda, masTienda } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 
@@ -136,6 +136,8 @@ export async function paginaBrindi(env, req, url) {
   const planes = await Promise.all(PLANES.map(async p => ({ ...p, prod: await productoPorSlug(env, p.slug) })));
   const grupos = (await Promise.all(GRUPOS_EXTRA.map(async g => ({ ...g, items: (await Promise.all(g.items.map(async ([slug, titulo, texto]) => ({ slug, titulo, texto, prod: await productoPorSlug(env, slug) })))).filter(x => x.prod) })))).filter(g => g.items.length);
   const extras = grupos.flatMap(g => g.items);
+  // Se pueden sumar a un plan en la misma compra (las mejoras no: son para quien ya tiene un plan)
+  const conPlan = extras.filter(x => !/mejora/.test(x.slug));
   const org = await productoPorSlug(env, ORGANIZADOR);
   const aLaVenta = planes.some(p => p.prod);
   const rec = planes.find(p => p.recomendado);
@@ -161,7 +163,7 @@ export async function paginaBrindi(env, req, url) {
     cuerpo: `<div class="br">
 <section class="br-hero"><div class="marco br-hero-g">
   <div class="br-hero-t">
-    <a class="t-volver" href="/tienda/">← Tienda</a>
+    ${navTienda('invitaciones')}
     <span class="br-logo">brindi<i>✦</i></span>
     <h1 class="br-h1">Tu invitación digital, lista en minutos.</h1>
     <p class="br-lead">Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.</p>
@@ -217,13 +219,16 @@ ${aLaVenta ? `<section class="t-sec suave" id="comprar"><div class="marco t-estr
     <div class="t-campo"><label for="slug">¿Qué vas a comprar?</label><select id="slug" name="slug">
       <optgroup label="Planes (para un evento)">${planes.filter(p => p.prod).map(p => opcion(p.prod, `Plan ${p.nombre} · hasta ${p.invitados} invitados`)).join('')}${org ? opcion(org, 'Paquete Organizador · 5 eventos') : ''}</optgroup>
       ${extras.length ? `<optgroup label="Complementos (si ya tienes tu invitación)">${extras.map(x => opcion(x.prod, x.titulo)).join('')}</optgroup>` : ''}</select></div>
+    ${conPlan.length ? `<fieldset class="br-suma" id="br-suma" hidden><legend>¿Le agregas algo a tu plan? <small>(opcional, en la misma compra)</small></legend>
+      ${conPlan.map(x => `<label class="t-casilla"><input type="checkbox" name="extra" value="${esc(x.slug)}" data-precio="${x.prod.precio_centavos}"><span><b>${esc(x.titulo)}</b> · ${precio(x.prod)}</span></label>`).join('')}
+      <p class="br-total">Total: <b class="num" id="br-total"></b></p></fieldset>` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Tu correo</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llega tu acceso. Si ya creaste tu invitación gratis, usa ese mismo correo y el plan se activa solo.</small></div>
     <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/brindi/" target="_blank">condiciones de Brindi</a> y el <a href="/legal/brindi/privacidad/" target="_blank">aviso de privacidad de Brindi</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn tinta" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
     <p class="t-pago">Tarjeta · OXXO &nbsp;·&nbsp; Pago seguro con Stripe</p>
-    <ol class="br-despues"><li>Pagas con tarjeta u OXXO.</li><li>Te llega un correo con tu acceso.</li><li>Entras, terminas tu invitación y la publicas.</li></ol>
+    <ol class="br-despues" aria-label="Qué pasa después"><li><i>1</i>Pagas</li><li><i>2</i>Te llega tu acceso por correo</li><li><i>3</i>Terminas y publicas tu invitación</li></ol>
   </form>
 </div></section>` : ''}
 
@@ -234,7 +239,8 @@ ${ELEGIR('brindi')}
   <details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>
 </div></section>
 
-<section class="t-sec suave"><div class="marco">
+${await masTienda(env, 'invitaciones')}
+<section class="t-sec"><div class="marco">
   <div class="br-confianza">${[['Pago seguro', 'Stripe procesa el pago; nunca vemos tu tarjeta. Factura disponible escribiendo a hola@vorka.mx.'], ['Tus datos, tuyos', 'Invitaciones fuera de Google por defecto, enlaces con códigos aleatorios y borrado cuando tú quieras.'],
     ['Soporte de personas', 'Escríbenos desde tu panel o a hola@vorka.mx. Respondemos en horario laboral de México.'], ['Respaldo', 'Brindi es una marca desarrollada por Vorka México.']].map(([t, d]) => `<div><b>${t}</b><p>${d}</p></div>`).join('')}</div>
   <p class="t-nota"><a href="/legal/brindi/">Condiciones de Brindi</a> · <a href="/legal/brindi/privacidad/">Aviso de privacidad</a> · <a href="/legal/brindi/privacidad-invitados/">Privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
@@ -290,7 +296,8 @@ const CSS = `
 .br-grupo h3{font-size:17px;margin:0 0 10px}
 .br-extra{background:#fff;border-radius:16px;padding:16px;display:grid;gap:10px;border:1px solid #eee7dc;margin-bottom:10px}.br-extra b{display:block;font-size:16px}.br-extra span{color:#5c4a50;font-size:14px}
 .br-extra-p{display:flex;align-items:center;justify-content:space-between;gap:10px}.br-extra-p b{color:#1f1a1d;font-size:18px}
-.br-despues{margin:16px 0 0;padding-left:20px;color:#5c4a50;font-size:14.5px;display:grid;gap:4px}
+.br-despues{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;color:#5c4a50;font-size:13.5px}.br-despues li{display:flex;align-items:center;gap:6px}.br-despues i{font-style:normal;font-weight:800;font-size:11px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--br-champan);color:var(--br-vino)}
+.br-suma{border:1px solid #eee7dc;border-radius:14px;padding:12px 14px;margin:0;display:grid;gap:8px}.br-suma legend{font-weight:700;padding:0 4px}.br-suma legend small{font-weight:500;color:#5c4a50}.br-suma .t-casilla{margin:0}.br-total{margin:4px 0 0;font-size:15px}.br-total b{font-size:18px}
 .br-mas{margin-top:10px}.br-mas>summary{cursor:pointer;font-weight:700;color:var(--br-vino);padding:10px 0}
 .br-confianza{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.br-confianza div{border-top:2px solid var(--br-vino);padding-top:10px}.br-confianza p{margin:4px 0 0;color:#5c4a50;font-size:15px}`;
 
@@ -302,11 +309,19 @@ const SCRIPT = `(function(){
   }); });
   var f=document.getElementById('form-brindi'); if(!f||!window.fetch) return;
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ var s=document.getElementById('slug'); if(!s) return; e.preventDefault(); s.value=a.dataset.plan; document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
+  // Complementos en la misma compra: solo cuando lo elegido es un plan
+  var suma=document.getElementById('br-suma'), tot=document.getElementById('br-total');
+  function esPlan(){ return /^brindi-(esencial|celebracion|premium)$/.test(f.slug.value); }
+  function extrasElegidos(){ return suma&&esPlan()?[].slice.call(suma.querySelectorAll('input[name=extra]:checked')):[]; }
+  function precioDe(){ var o=f.slug.options[f.slug.selectedIndex]; var m=(o.textContent.match(/\$([\d,]+)/)||[])[1]; return m?+m.replace(/,/g,'')*100:0; }
+  function total(){ if(!suma) return; suma.hidden=!esPlan(); var c=precioDe(); extrasElegidos().forEach(function(x){ c+=+x.dataset.precio; }); tot.textContent='$'+(c/100).toLocaleString('es-MX')+' MXN'; }
+  f.slug.addEventListener('change',total); if(suma) suma.addEventListener('change',total); total();
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var d={ slug:f.slug.value, nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked }; if(f.ref) d.ref=f.ref.value; if(f.usar_puntos&&f.usar_puntos.checked) d.usar_puntos=true;
+    var ex=extrasElegidos(); if(ex.length){ d.items=[{slug:d.slug}].concat(ex.map(function(x){return {slug:x.value};})); }
     if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Escribe tu nombre.'); }
     if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Escribe un correo válido.'); }
     if(!d.terminos) return mostrar('Debes aceptar los términos y el aviso de privacidad.');
