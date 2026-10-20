@@ -7,6 +7,7 @@ import { aplicarPago, registrarEvento, marcarEvento, registrarAnalitica, itemsDe
 import { entregar } from './entrega.js';
 import { programarTransferencias, anularTransferencias } from './marketplace.js';
 import { puntosAlPagar, puntosAlReembolsar } from './puntos.js';
+import { guardarSuscripcion } from './suscripciones.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -34,6 +35,11 @@ export async function webhook(req, env, nombre) {
       // Puntos Vorka: suma al que compartió la liga y descuenta los usados; en reembolso, se revierten. Idempotente.
       if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
       if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
+    }
+    // Suscripciones (Vuelve): la primera compra, renovaciones, fallas de pago y cancelaciones actualizan su renglón
+    if (pasarela.suscripcionDe) {
+      const sub = await pasarela.suscripcionDe(evento, env, pago);
+      if (sub) await guardarSuscripcion(env, sub);
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });

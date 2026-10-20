@@ -2,6 +2,7 @@
 // Métodos dinámicos (Dashboard): tarjeta, OXXO y SPEI (customer_balance → mx_bank_transfer, requiere Customer).
 
 import { enc, hex, iguales } from '../util.js';
+import { suscripcionDeOrden } from '../suscripciones.js';
 
 const API = 'https://api.stripe.com/v1';
 export const STRIPE_VERSION = '2026-09-30.endive';
@@ -72,6 +73,27 @@ export function sesionCheckout(env, orden, { exito, cancelar }, customer, cupon 
   };
 }
 
+// Suscripción (Vuelve y demás apps de cobro recurrente): precios recurrentes en línea, sin OXXO ni SPEI (no sirven
+// para cobros automáticos). Los datos para reconocer la suscripción viajan en su metadata (order_id, app, email, product_id).
+export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus) {
+  return {
+    mode: 'subscription',
+    locale: 'es-419',
+    client_reference_id: orden.id,
+    customer,
+    integration_identifier: INTEGRACION,
+    line_items: orden.items.map(i => ({
+      quantity: i.cantidad,
+      price_data: { currency: orden.moneda.toLowerCase(), unit_amount: i.precio_centavos, recurring: { interval: sus.intervalo },
+        product_data: { name: i.nombre, metadata: { product_id: i.product_id } } },
+    })),
+    metadata: { order_id: orden.id },
+    subscription_data: { metadata: { order_id: orden.id, app: sus.app || '', email: orden.email, product_id: sus.product_id } },
+    success_url: exito,
+    cancel_url: cancelar,
+  };
+}
+
 // Stripe-Signature: "t=1700000000,v1=abc…,v1=def…". Firma = HMAC-SHA256(secreto, `${t}.${cuerpo}`)
 export async function firmaValida(cuerpo, cabecera, secreto, ahora = Date.now()) {
   if (!cabecera || !secreto) return false;
@@ -85,7 +107,8 @@ export async function firmaValida(cuerpo, cabecera, secreto, ahora = Date.now())
 }
 
 const EVENTOS_SESION = ['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'checkout.session.async_payment_failed', 'checkout.session.expired'];
-export const EVENTOS = [...EVENTOS_SESION, 'charge.refunded', 'charge.dispute.created'];
+const EVENTOS_SUSCRIPCION = ['customer.subscription.created', 'customer.subscription.updated', 'customer.subscription.deleted', 'invoice.paid', 'invoice.payment_failed'];
+export const EVENTOS = [...EVENTOS_SESION, 'charge.refunded', 'charge.dispute.created', ...EVENTOS_SUSCRIPCION];
 
 // Estado del PaymentIntent → resultado normalizado
 function resultadoDeIntent(pi) {
@@ -101,6 +124,11 @@ export default {
   async crearCobro(env, orden, urls) {
     // Idempotency-Key = id de la orden: un reintento de red no crea dos sesiones
     const customer = await clienteStripe(env, orden);
+    const sus = await suscripcionDeOrden(env, orden);
+    if (sus) {
+      const s = await llamar(env, 'POST', '/checkout/sessions', sesionSuscripcion(env, orden, urls, customer, sus), { idempotencia: `checkout-${orden.id}` });
+      return { sessionId: s.id, url: s.url };
+    }
     // Puntos Vorka: un cupón de un solo uso por el monto exacto del descuento (Stripe lo muestra en el pago y en el recibo)
     let cupon = null;
     if (orden.descuento_centavos > 0) {
@@ -139,6 +167,8 @@ export default {
         // Para el reparto a creadores: el cargo (source_transaction) y la comisión real que cobró Stripe
         provider_charge_id: typeof pi?.latest_charge === 'object' ? pi.latest_charge?.id : pi?.latest_charge || null,
         stripe_fee_centavos: pi?.latest_charge?.balance_transaction?.fee ?? null,
+        // Modo suscripción: no hay PaymentIntent en la sesión; la suscripción se guarda aparte (suscripcionDe)
+        suscripcion_id: typeof s.subscription === 'object' ? s.subscription?.id : s.subscription || null,
       };
     }
     if (evento.tipo === 'charge.refunded') {
@@ -157,5 +187,19 @@ export default {
       return { orderId, resultado: 'reembolsado', provider_payment_id: d.payment_intent.id };
     }
     return null;
+  },
+
+  // Suscripción afectada por el evento, leída de la API (con los productos de cada renglón) para guardarla. null si no aplica.
+  async suscripcionDe(evento, env, pago) {
+    let id = pago?.suscripcion_id || null;
+    if (!id && evento.tipo.startsWith('customer.subscription.')) id = evento.objeto;
+    if (!id && evento.tipo.startsWith('invoice.')) {
+      const inv = await llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);
+      // Desde la API 2025-03-31 la suscripción de la factura vive en parent.subscription_details
+      id = inv.parent?.subscription_details?.subscription || inv.subscription || null;
+      if (typeof id === 'object') id = id?.id;
+    }
+    if (!id) return null;
+    return llamar(env, 'GET', `/subscriptions/${encodeURIComponent(id)}?expand[]=items.data.price.product`);
   },
 };
