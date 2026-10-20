@@ -4,6 +4,7 @@ import { esc, nonce, seguridad, pagina } from './paginas.js';
 import { LOGO, FLECHA, CHECK } from './marco.generado.js';
 import { ICONOS } from './puntos-iconos.generado.js';
 import qrcode from './vendor/qrcode.js';
+import { navTienda } from './tienda.js';
 import { PUNTOS_POR_COMPRA, MULTIPLICADOR_DOBLE, NIVELES, LOGROS, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
 
 const SITIO = 'https://vorka.mx';
@@ -514,7 +515,7 @@ export function paginaApp(env, d) {
   <div class="sec-t" style="--i:7"><h2>Mi meta</h2></div>
   <div class="card" style="--i:8">${metaHtml}</div>
   ${dobles.length ? `<div class="card promo doble" style="--i:9"><span class="ico-c">${I.rayo}</span><div><h3>Puntos dobles en ${esc(dobles[0].titulo)}${dobles.length > 1 ? ` y ${dobles.length - 1} más` : ''}</h3><p>Cada compra con tu liga ${dobleDe(dobles[0]).termina ? `hasta el ${terminaTexto(dobleDe(dobles[0]).termina)}` : ''} vale ${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} puntos.</p><button class="pv-btn oro chico" type="button" data-ir="compartir">Compartir ahora</button></div></div>` : ''}
-  <div class="card promo" id="c-instalar" hidden style="--i:10"><span class="ico-c">${I.instalar}</span><div><h3>Ponla en tu inicio</h3><p id="c-instalar-t">Tenla a un toque, como una app, para ver tus puntos y tu meta.</p><p id="c-instalar-ios" hidden>En Safari toca <b>Compartir</b> <span class="ico-in">${I.ios}</span> y luego <b>Agregar a inicio</b>. Así la tienes como app y recibes avisos.</p><button class="pv-btn oro chico" type="button" id="b-instalar" hidden>Instalar app</button></div><button class="cerrar-x" type="button" data-descartar="instalar" aria-label="Ahora no">${I.cerrar}</button></div>
+  <div class="card promo" id="c-instalar" hidden style="--i:10"><span class="ico-c">${I.instalar}</span><div><h3>Ponla en tu inicio</h3><p id="c-instalar-t">Tenla a un toque, como una app, para ver tus puntos y tu meta.</p><p id="c-instalar-and" hidden>En Chrome toca el menú <b>⋮</b> (arriba a la derecha) y elige <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</p><p id="c-instalar-ios" hidden>En Safari toca <b>Compartir</b> <span class="ico-in">${I.ios}</span> y luego <b>Agregar a inicio</b>. Así la tienes como app y recibes avisos.</p><button class="pv-btn oro chico" type="button" id="b-instalar" hidden>Instalar app</button></div><button class="cerrar-x" type="button" data-descartar="instalar" aria-label="Ahora no">${I.cerrar}</button></div>
   <div class="card promo" id="c-avisos" hidden style="--i:11"><span class="ico-c">${I.actividad}</span><div><h3>Entérate al instante</h3><p id="c-avisos-t">Te avisamos cuando alguien compre con tu liga, subas de nivel o alcances tu meta.</p><button class="pv-btn oro chico" type="button" id="b-avisos">Activar avisos</button></div><button class="cerrar-x" type="button" data-descartar="avisos" aria-label="Ahora no">${I.cerrar}</button></div>
   <div class="card promo" style="--i:12"><span class="ico-c">${I.foco}</span><div><h3>Sugiere un producto, gana el doble</h3><p>Si lo agregamos a la tienda, ganas ${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} puntos por cada compra de ese producto con tu liga.</p><button class="pv-btn vidrio chico" type="button" data-abrir="h-sugerir">Sugerir</button></div></div>
 </section>`;
@@ -592,6 +593,8 @@ export function paginaApp(env, d) {
   </div>
   <div class="grupo">
     <a class="opcion" href="/tienda/">Ir a la tienda y usar mis puntos ${I.tienda}</a>
+    <a class="opcion" href="/tienda/puntos/#instalar">Ponla en tu celular (instrucciones) ${I.instalar}</a>
+    <button class="opcion" type="button" data-compartir="Te comparto Puntos Vorka: recomiendas productos de la tienda de Vorka México y ganas descuentos. Es gratis: https://vorka.mx/tienda/puntos/" data-url="https://vorka.mx/tienda/puntos/" data-titulo="Puntos Vorka">Invitar a alguien a Puntos Vorka ${I.compartir}</button>
     <a class="opcion" href="/tienda/puntos/">Cómo funciona el programa ${I.ayuda}</a>
     <a class="opcion" href="/legal/terminos/#puntos">Condiciones del programa ${I.flecha}</a>
     <a class="opcion" href="mailto:hola@vorka.mx?subject=Puntos%20Vorka">¿Dudas? hola@vorka.mx ${I.correo}</a>
@@ -730,7 +733,9 @@ const SCRIPT_APP = String.raw`(function(){
   var aviso=null;
   if(!standalone&&!descartado('instalar')){
     if(ios){ $('#c-instalar-t').hidden=true; $('#c-instalar-ios').hidden=false; $('#c-instalar').hidden=false; }
-    window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); aviso=e; $('#c-instalar').hidden=false; $('#b-instalar').hidden=false; });
+    window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); aviso=e; $('#c-instalar').hidden=false; $('#b-instalar').hidden=false; $('#c-instalar-and').hidden=true; $('#c-instalar-t').hidden=false; });
+    // Android sin el botón automático del navegador: instrucciones a mano
+    if(/android/i.test(navigator.userAgent)) setTimeout(function(){ if(!aviso){ $('#c-instalar-t').hidden=true; $('#c-instalar-and').hidden=false; $('#c-instalar').hidden=false; } },1500);
   }
   $('#b-instalar').onclick=function(){ if(!aviso) return; aviso.prompt(); aviso.userChoice.then(function(r){ if(r.outcome==='accepted'){ $('#c-instalar').hidden=true; toast('¡Listo! Búscala en tu inicio'); } aviso=null; }); };
   window.addEventListener('appinstalled',function(){ $('#c-instalar').hidden=true; });
@@ -887,7 +892,19 @@ const CSS_PROGRAMA = `
 .pv-form ul{display:grid;gap:12px;margin-top:24px}.pv-form li{display:flex;gap:12px;color:rgba(244,242,245,.78);font-size:15.5px;line-height:1.5}
 .pv-form li svg{width:20px;height:20px;color:#E6CF96;flex:none;margin-top:2px}
 .pv-ya{display:grid;gap:14px;justify-items:start}
+.pv-inst{display:grid;gap:14px;margin-top:26px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.pv-inst article{background:var(--card,#fff);border:1px solid var(--line);border-radius:20px;padding:22px}
+.pv-inst h3{font-size:18px;font-weight:750;letter-spacing:-.02em}
+.pv-inst ol{list-style:decimal;margin:12px 0 0;padding-left:22px;display:grid;gap:8px;color:var(--fg-2);font-size:15px;line-height:1.5}
+.pv-inst ol b{color:var(--fg)}.pv-inst li::marker{font-weight:800;color:var(--fg)}
+.pv-inst p{color:var(--fg-2);font-size:15px;margin-top:8px}
+.pv-inv .botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 #toast.ver{opacity:1!important}`;
+
+const SCRIPT_COPIAR_PROG = `(function(){ var b=document.getElementById('pv-copiar-prog'); if(!b) return; b.addEventListener('click',function(){ var u='https://vorka.mx/tienda/puntos/', t=document.getElementById('toast');
+  function ok(){ if(t){ t.textContent='Enlace copiado'; t.style.opacity=1; setTimeout(function(){ t.style.opacity=0; },1800); } }
+  if(navigator.share){ navigator.share({title:'Puntos Vorka',url:u}).catch(function(){}); return; }
+  if(navigator.clipboard) navigator.clipboard.writeText(u).then(ok,function(){ prompt('Copia el enlace:',u); }); else prompt('Copia el enlace:',u); }); })();`;
 
 export function paginaPrograma(env, { cuenta }) {
   const ben = [
@@ -902,12 +919,12 @@ export function paginaPrograma(env, { cuenta }) {
     titulo: 'Puntos Vorka: comparte y gana descuentos en la tienda', ruta: '/tienda/puntos/',
     descripcion: `La app de puntos de Vorka México: comparte tu liga, gana ${PUNTOS_POR_COMPRA} puntos por cada compra (dobles en promociones), ponte metas y recibe avisos. 1 punto = $1 MXN.`,
     head: `<style>.pv-lp,#toast{${TOKENS}}${CSS_BASE}${CSS_PROGRAMA}</style>`,
-    script: cuenta ? '' : SCRIPT_ENTRAR,
+    script: (cuenta ? '' : SCRIPT_ENTRAR) + SCRIPT_COPIAR_PROG,
     cuerpo: `
 <section class="pv-lp"><div class="marco">
   <div class="pv-hero">
     <div>
-      <a class="t-volver" href="/tienda/">← Tienda</a>
+      ${navTienda('puntos')}
       <p class="pv-et" style="margin-top:22px"><i></i>Puntos Vorka · la app</p>
       <h1>Recomienda.<br>Gana <span class="pv-metal">descuentos.</span></h1>
       <p class="lead">Tu propia app para compartir el Simulador PAA, Brindi, Cupo y todo lo de la tienda. Cada compra con tu liga son ${PUNTOS_POR_COMPRA} puntos, y cada punto vale $1.</p>
@@ -939,6 +956,18 @@ export function paginaPrograma(env, { cuenta }) {
   </ol>
   <div class="pv-niv">${NIVELES.map(x => `<span style="--c:${x.color}"><i></i>${x.nombre} <small>${x.min ? `${x.min}+ ventas` : 'al empezar'}</small></span>`).join('')}</div>
   <p class="t-nota">Los niveles son reconocimiento (insignias y el color de tu tarjeta); los puntos valen lo mismo en todos. No cuentan las compras que te hagas a ti mismo y si una compra se reembolsa, sus puntos se descuentan. <a href="/legal/terminos/#puntos">Condiciones del programa</a>.</p>
+</div></section>
+<section class="t-sec suave" id="instalar"><div class="marco">
+  <span class="etiqueta">Instálala y compártela</span>
+  <h2 class="h2" style="margin-top:14px">Tenla en tu celular como app</h2>
+  <p class="lead" style="margin-top:10px;max-width:640px">No se descarga de ninguna tienda de apps: se agrega a tu inicio en tres toques y queda con su ícono, como cualquier app.</p>
+  <div class="pv-inst">
+    <article><h3>iPhone · Safari</h3><ol><li>Abre <b>vorka.mx/tienda/cuenta</b> en Safari.</li><li>Toca <b>Compartir</b> (el cuadro con la flecha hacia arriba, abajo al centro).</li><li>Elige <b>Agregar a inicio</b> y toca <b>Agregar</b>.</li></ol></article>
+    <article><h3>Android · Chrome</h3><ol><li>Abre <b>vorka.mx/tienda/cuenta</b> en Chrome.</li><li>Toca el menú <b>⋮</b> (arriba a la derecha).</li><li>Elige <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</li></ol></article>
+    <article class="pv-inv"><h3>Invita a alguien</h3><p>Comparte Puntos Vorka para que también gane descuentos con su propia liga.</p>
+      <div class="botones"><a class="btn tinta chico" href="https://wa.me/?text=${encodeURIComponent('Te comparto Puntos Vorka: recomiendas productos de la tienda de Vorka México y ganas descuentos. Es gratis: https://vorka.mx/tienda/puntos/')}" target="_blank" rel="noopener">WhatsApp</a><button class="btn blanco chico" type="button" id="pv-copiar-prog">Copiar enlace</button></div></article>
+  </div>
+  <p class="t-nota">Ya instalada, entra con tu correo y el código de 6 dígitos que te llega. Activa los avisos para enterarte de cada compra con tu liga.</p>
 </div></section>
 <section class="pv-lp" id="entrar"><div class="marco"><div class="pv-form">
   <div>
