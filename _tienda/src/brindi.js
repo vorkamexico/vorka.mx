@@ -6,7 +6,7 @@ import { one, all } from './util.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda } from './tienda.js';
+import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 
@@ -212,9 +212,10 @@ ${grupos.length ? `<section class="t-sec" id="complementos"><div class="marco">
   <div class="br-grupos">${grupos.map(g => `<div class="br-grupo"><h3>${g.titulo}</h3>${g.items.map(x => `<div class="br-extra"><div><b>${esc(x.titulo)}</b><span>${esc(x.texto)}</span></div><span class="br-extra-p"><b class="num">${precio(x.prod)}</b><a class="btn blanco chico" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Agregar</a></span></div>`).join('')}</div>`).join('')}</div>
 </div></section>` : ''}
 
-${aLaVenta ? `<section class="t-sec suave" id="comprar"><div class="marco t-estrecho">
-  <span class="etiqueta">Compra segura</span><h2 class="h2 t-h2-sec">Contrata en un minuto</h2>
-  <form class="t-form t-compra" id="form-brindi" method="post" action="/api/checkout" novalidate>
+${aLaVenta ? seccionCompra({ titulo: 'Contrata en un minuto', intro: '¿Ya creaste tu invitación gratis? Usa el mismo correo y el plan se activa solo.',
+  pasos: [['Eliges tu plan', 'Y si quieres, le sumas complementos en la misma compra.'], ['Pagas con tarjeta u OXXO', 'Un solo pago, sin mensualidades.'], ['Te llega tu acceso por correo', 'Entras con un toque, sin contraseña.'], ['Terminas y publicas tu invitación', 'Y la compartes por WhatsApp.']],
+  garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Si no has publicado, te devolvemos tu dinero en los primeros 10 días', 'Soporte de personas por correo y WhatsApp'],
+  form: `<form class="t-form t-compra" id="form-brindi" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">¿Qué vas a comprar?</label><select id="slug" name="slug">
       <optgroup label="Planes (para un evento)">${planes.filter(p => p.prod).map(p => opcion(p.prod, `Plan ${p.nombre} · hasta ${p.invitados} invitados`)).join('')}${org ? opcion(org, 'Paquete Organizador · 5 eventos') : ''}</optgroup>
@@ -228,16 +229,10 @@ ${aLaVenta ? `<section class="t-sec suave" id="comprar"><div class="marco t-estr
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn tinta" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
     <p class="t-pago">Tarjeta · OXXO &nbsp;·&nbsp; Pago seguro con Stripe</p>
-    <ol class="br-despues" aria-label="Qué pasa después"><li><i>1</i>Pagas</li><li><i>2</i>Te llega tu acceso por correo</li><li><i>3</i>Terminas y publicas tu invitación</li></ol>
-  </form>
-</div></section>` : ''}
+  </form>` }) : ''}
 
 ${ELEGIR('brindi')}
-<section class="t-sec"><div class="marco t-estrecho">
-  <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2 t-h2-sec">Lo que más nos preguntan</h2>
-  <div class="t-faq">${FAQ.slice(0, VISIBLES_FAQ).map(faq).join('')}</div>
-  <details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>
-</div></section>
+${seccionFaq({ titulo: 'Lo que más nos preguntan', items: FAQ.slice(0, VISIBLES_FAQ).map(faq).join(''), pie: `<details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>` })}
 
 ${await masTienda(env, 'invitaciones')}
 <section class="t-sec"><div class="marco">

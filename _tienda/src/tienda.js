@@ -108,6 +108,24 @@ function vistas(productos, desdeBrindi) {
   }).filter(Boolean);
 }
 
+// Secciones a dos columnas en computadora (en celular, una debajo de otra): así no queda una columna angosta con vacío a los lados.
+const WHATSAPP = 'https://wa.me/528117804869';
+// Preguntas frecuentes: a la izquierda el título y cómo contactarnos; a la derecha las preguntas
+export const seccionFaq = ({ titulo = 'Antes de comprar', items, pie = '', suave = false }) => `<section class="t-sec${suave ? ' suave' : ''}"><div class="marco t-dos">
+  <div class="t-dos-a"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2">${titulo}</h2>
+    <p class="t-dos-txt">¿No encuentras tu respuesta? Te contesta una persona del equipo, en horario laboral de México.</p>
+    <div class="t-contacto"><a class="btn blanco chico" href="mailto:hola@vorka.mx">Escríbenos</a><a class="btn blanco chico" href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a></div></div>
+  <div class="t-dos-b"><div class="t-faq">${items}</div>${pie}</div>
+</div></section>`;
+// Compra: a la izquierda qué pasa después y las garantías; a la derecha el formulario
+export const seccionCompra = ({ titulo, intro = '', pasos, garantias, form }) => `<section class="t-sec suave" id="comprar"><div class="marco t-dos t-dos-compra">
+  <div class="t-dos-a"><span class="etiqueta">Compra segura</span><h2 class="h2">${titulo}</h2>${intro ? `<p class="t-dos-txt">${intro}</p>` : ''}
+    <ol class="t-pasos-compra">${pasos.map(([t, d], i) => `<li><span class="num">${i + 1}</span><span><b>${t}</b>${d ? `<small>${d}</small>` : ''}</span></li>`).join('')}</ol>
+    <ul class="t-garantias">${garantias.map(g => `<li>${CHECK}<span>${g}</span></li>`).join('')}</ul></div>
+  <div class="t-dos-b">${form}</div>
+</div></section>`;
+const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('');
+
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
   ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
@@ -210,11 +228,7 @@ ${secciones.some(g => g.id === 'invitaciones') && secciones.some(g => g.id === '
     <li class="rv" style="--d:.12s"><span class="num">03</span><b>Recíbelo al momento</b><p>Te llega un correo con tus archivos o tu acceso en cuanto se confirma el pago.</p></li>
   </ol>
 </div></section>
-<section class="t-sec"><div class="marco t-estrecho">
-  <div class="cab rv"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2">Antes de comprar</h2></div>
-  <div class="t-faq">${FAQ_TIENDA.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('')}</div>
-  <p class="t-nota t-ayuda-pie">¿Otra duda? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. ${env.MARKETPLACE === '1' ? '¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.' : ''}</p>
-</div></section>`,
+${seccionFaq({ items: faqHtml(FAQ_TIENDA), pie: env.MARKETPLACE === '1' ? '<p class="t-nota">¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.</p>' : '' })}`,
   });
 }
 
@@ -340,15 +354,12 @@ ${pasos.length ? `<section class="t-sec suave"><div class="marco">
   <div class="cab rv"><span class="etiqueta">El camino</span><h2 class="h2">${pasos.length === 7 ? 'Los 7 pasos' : 'Paso a paso'}</h2></div>
   <ol class="t-pasos">${pasos.map((s, i) => `<li class="rv" style="--d:${(i % 4) * 0.05}s"><span class="t-paso-n num">${String(i + 1).padStart(2, '0')}</span><h3>${esc(s.titulo)}</h3>${s.texto ? `<p>${esc(s.texto)}</p>` : ''}</li>`).join('')}</ol>
 </div></section>` : ''}
-${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-estrecho">
-  <div class="rv"><span class="etiqueta">Para quién es</span><h2 class="h2 t-h2-sec">Te sirve si…</h2>${lista(c.para_quien)}</div>
+${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-dos">
+  <div class="t-dos-a"><span class="etiqueta">Para quién es</span><h2 class="h2">Te sirve si…</h2></div>
+  <div class="t-dos-b">${lista(c.para_quien)}</div>
 </div></section>` : ''}
 ${c.acceso?.app === 'cupo' ? ELEGIR('cupo') : ''}
-<section class="t-sec${c.para_quien?.length ? ' suave' : ''}"><div class="marco t-estrecho">
-  <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2 t-h2-sec">Antes de comprar</h2>
-  <div class="t-faq">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('')}</div>
-  <div class="botones t-faq-cta"><a class="btn tinta" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>
-</div></section>
+${seccionFaq({ items: faqHtml(faq), suave: !!c.para_quien?.length, pie: `<div class="botones t-faq-cta"><a class="btn tinta" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>` })}
 ${await masTienda(env, seccionDe(p))}
 <div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>`,
   });

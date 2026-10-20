@@ -347,3 +347,24 @@
 .t-mas-pie { margin-top: 18px; }
 /* La barra se desplaza dentro de su columna: nunca ensancha la página */
 .t-hero-txt, .t-hero-g > *, .t-nav-tienda { min-width: 0; max-width: 100%; }
+
+/* Dos columnas en computadora: título y apoyo a la izquierda, contenido a la derecha (sin columna angosta con vacío a los lados) */
+.t-dos { display: grid; gap: 24px; }
+.t-dos-a .h2 { margin-top: 10px; }
+.t-dos-txt { margin-top: 14px; color: var(--fg-2); font-size: 16px; line-height: 1.55; max-width: 34em; }
+.t-dos-txt a { color: var(--morado); }
+.t-contacto { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.t-dos-b > .t-form { margin-top: 0; }
+.t-dos-b > .t-nota:first-child, .t-dos-b > .t-lista:first-child { margin-top: 0; }
+@media (min-width: 960px) {
+  .t-dos { grid-template-columns: minmax(0, .85fr) minmax(0, 1.3fr); gap: clamp(40px, 5vw, 88px); align-items: start; }
+  .t-dos-a { position: sticky; top: 120px; }
+}
+.t-pasos-compra { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 14px; }
+.t-pasos-compra li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; align-items: start; }
+.t-pasos-compra .num { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--fg); color: var(--bg); font-weight: 750; font-size: 14px; }
+.t-pasos-compra b { display: block; font-size: 16px; font-weight: 700; letter-spacing: -.01em; padding-top: 4px; }
+.t-pasos-compra small { display: block; color: var(--fg-2); font-size: 14.5px; margin-top: 2px; }
+.t-garantias { list-style: none; padding: 18px 0 0; margin: 22px 0 0; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.t-garantias li { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--fg-2); }
+.t-garantias svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--verde, #2b8553); }
