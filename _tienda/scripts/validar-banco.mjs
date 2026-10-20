@@ -49,6 +49,7 @@ for (const r of lista) {
   if (vacio(r.regla)) errores.push(`${id}: falta regla`);
   const pistaTxt = [r.pista, ...(r.pasos || [])].join(' ');
   if (/\b(opci[oó]n|inciso|respuesta)\s+[ABCD]\b|\([ABCD]\)/.test(pistaTxt)) errores.push(`${id}: pista o pasos nombran una letra (el cliente baraja las opciones; usa {A}…{D})`);
+  if (/\b(primera|segunda|tercera|cuarta|última) opción|\b(first|second|third|fourth|last) option/i.test(pistaTxt)) errores.push(`${id}: pista o pasos señalan una opción por su lugar (el cliente baraja las opciones; usa {A}…{D})`);
   if (r.tipo !== 'abierta' && r.opciones && r.pista && r.opciones[r.correcta] && r.pista.includes(r.opciones[r.correcta]) && r.opciones[r.correcta].length > 3) avisos.push(`${id}: la pista contiene el texto de la respuesta correcta`);
   if (r.tabla && (!Array.isArray(r.tabla) || r.tabla.length < 2 || r.tabla.some(f => !Array.isArray(f) || f.length !== r.tabla[0].length))) errores.push(`${id}: tabla mal formada`);
   if (r.figura) revisarSVG(id, r.figura);
@@ -58,6 +59,10 @@ for (const [k, t] of Object.entries(textos)) {
   if (!Array.isArray(t.parrafos) || !t.parrafos.length) errores.push(`lectura ${k}: sin párrafos`);
   const n = lista.filter(r => r.texto === k).length;
   if (archivo ? (n === 0 && !TEXTOS[k]) : n === 0) errores.push(`lectura ${k}: no tiene reactivos`);
+  // Extensión de referencia (formato PAA: textos breves). Lectura ≤ 380 palabras (pareadas ≤ 420), Inglés ≤ 260.
+  const palabras = (t.parrafos || []).join(' ').split(/\s+/).filter(Boolean).length;
+  const tope = t.seccion === 'ingles' ? 260 : (t.parrafos || []).some(p => /^\*\*Texto 2/.test(p)) ? 420 : 380;
+  if (palabras > tope) avisos.push(`lectura ${k}: ${palabras} palabras (referencia PAA: hasta ${tope})`);
 }
 // Distribución de respuestas correctas (que no caigan siempre en la misma posición)
 const pos = [0, 0, 0, 0]; lista.filter(r => r.tipo !== 'abierta').forEach(r => pos[r.correcta]++);

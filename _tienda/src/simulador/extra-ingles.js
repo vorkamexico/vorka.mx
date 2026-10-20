@@ -234,7 +234,7 @@ export const REACTIVOS_INGLES = [
     enunciado: 'Choose the best way to combine the sentences:\n"The test was long. Most students finished it on time."',
     opciones: ['Although the test was long, most students finished it on time.', 'Because the test was long, most students finished it on time.', 'The test was long, so most students finished it on time.', 'The test was long, most students finished it on time.'], correcta: 0,
     pista: 'Is finishing on time an expected result of a long test? Choose the connector that shows a contrast.',
-    pasos: ['A long test would make finishing on time harder.', 'Finishing on time is an unexpected result: contrast.', '"Although" shows contrast; "because" and "so" show the wrong logic; the last option is a comma splice.'],
+    pasos: ['A long test would make finishing on time harder.', 'Finishing on time is an unexpected result: contrast.', '"Although" shows contrast; "because" and "so" show the wrong logic; option {D} is a comma splice.'],
     regla: 'Contrast: although, even though, but. Cause: because, since. Result: so. Never join two sentences with only a comma.' },
   { id: 'E2-wri-3', seccion: 'ingles', tema: 'en_writing', dificultad: 3,
     enunciado: 'Many students study late at night. ______, research shows that sleep is essential for memory.',

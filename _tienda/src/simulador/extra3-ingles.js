@@ -290,10 +290,10 @@ export const REACTIVOS_INGLES3 = [
     pasos: ['Pregunta original: "Where do you live?"', 'En estilo indirecto se usa orden afirmativo (sujeto + verbo) y sin auxiliar do/did.', 'El tiempo retrocede: live → lived.'],
     regla: 'Preguntas reportadas: asked + Wh- + sujeto + verbo (sin do/does/did y sin signo de interrogación). "She asked what time it was."' },
   { id: 'I3-str-5', seccion: 'ingles', tema: 'en_structure', dificultad: 3,
-    enunciado: 'Not only ______ the exam, but she also got the highest score in her class.',
-    opciones: ['she passed', 'passed she', 'she did pass', 'did she pass'], correcta: 3,
-    pista: 'Cuando una oración empieza con una expresión negativa o restrictiva como "Not only", el orden cambia como si fuera una pregunta.',
-    pasos: ['"Not only" al inicio exige inversión: auxiliar + sujeto + verbo.', 'En pasado simple el auxiliar es "did" y el verbo va en forma base.', 'Resultado: "Not only did she pass…".'],
+    enunciado: 'Never ______ so many people at the school festival before.',
+    opciones: ['I have seen', 'I had seen', 'did I saw', 'have I seen'], correcta: 3,
+    pista: 'Cuando una oración empieza con una expresión negativa como "Never", el orden cambia como si fuera una pregunta.',
+    pasos: ['"Never" al inicio exige inversión: auxiliar + sujeto + verbo.', 'Para una experiencia hasta hoy ("before") se usa present perfect: have + participio. "Did I saw" falla porque después de "did" va la forma base.', 'Resultado: "Never have I seen…".'],
     regla: 'Inversión tras Not only, Never, Rarely, Hardly: auxiliar + sujeto + verbo. "Never have I seen…", "Not only did he win…".' },
 
   // ───────────── Indirect writing ─────────────

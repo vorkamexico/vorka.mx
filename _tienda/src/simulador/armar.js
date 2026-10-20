@@ -25,11 +25,21 @@ const filtrar = (lista, n, nivel, vistos = new Set()) => {
 const dificultadTexto = k => { const rs = REACTIVOS.filter(r => r.texto === k); return rs.reduce((s, r) => s + r.dificultad, 0) / (rs.length || 1); };
 const textoDelNivel = (k, nivel) => !nivel || nivel === 'oficial' ? true : nivel === 'calentamiento' ? dificultadTexto(k) <= 2 : dificultadTexto(k) >= 2;
 
+// Cuota de dificultad media en Medio y Oficial: sin ella, al preferir los difíciles, Matemáticas y Redacción salían
+// 100 % de dificultad 3. Con 1 de cada 4 (Medio) y 1 de cada 5 (Oficial) de dificultad 2, siguen cargados a lo difícil.
+const CUOTA_MEDIA = { medio: 0.25, oficial: 0.2 };
+
 // Reparte n reactivos entre los temas por turnos (para que ninguno se quede fuera) y los ordena de fácil a difícil.
-// Dentro de cada tema van primero los no vistos; en Medio y Oficial, entre los no vistos, primero los difíciles.
-function porTema(lista, n, azar, vistos, nivel = null) {
+// Dentro de cada tema van primero los no vistos; en Medio y Oficial, entre los no vistos, primero los difíciles
+// (salvo la cuota de dificultad media, que se toma de reactivos no vistos).
+function porTema(lista, n, azar, vistos, nivel = null, sinCuota = false) {
   lista = filtrar(lista, n, nivel, vistos);
   const dificiles = nivel === 'oficial' || nivel === 'medio';
+  if (dificiles && !sinCuota) {
+    const medios = porTema(lista.filter(r => r.dificultad === 2 && !vistos.has(r.id)), Math.floor(n * CUOTA_MEDIA[nivel]), azar, vistos);
+    const resto = porTema(lista.filter(r => !medios.includes(r)), n - medios.length, azar, vistos, nivel, true);
+    return [...medios, ...resto].sort((a, b) => a.dificultad - b.dificultad);
+  }
   const out = [];
   // Primero se reparten los no vistos; solo si no alcanzan, se repiten vistos
   for (const parte of [lista.filter(r => !vistos.has(r.id)), lista.filter(r => vistos.has(r.id))]) {
