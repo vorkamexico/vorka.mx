@@ -57,10 +57,13 @@ npx wrangler secret put DOWNLOAD_TOKEN_SECRET    # openssl rand -hex 32
 
 ### 3. Publicar el Worker
 
+**Se publica solo:** el Worker `vorka-tienda` está conectado a GitHub (Workers Builds, rama `main`, carpeta `/_tienda`). Cada push a `main` aplica las migraciones pendientes de D1 y publica (`npx wrangler d1 migrations apply vorka-tienda --remote && npx wrangler deploy`). Antes de unir a `main`, corre las pruebas:
+
 ```bash
 npm test          # todas las pruebas deben pasar
-npm run deploy
 ```
+
+Los scripts `publicar-*.command` y `npm run deploy` quedan solo como respaldo si Workers Builds fallara.
 
 Revisa que `https://vorka.mx/api/tienda/salud` responda `{"ok":true}` y que la página de inicio y `/sparks/` sigan igual.
 
