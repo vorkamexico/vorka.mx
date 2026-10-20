@@ -101,7 +101,15 @@
   }
   function armarSeccion(sid) {
     var s = seccion(sid), sueltos = B.reactivos.filter(function (r) { return r.seccion === sid && !r.texto; }), items;
-    if (sid === 'lectura') items = delTexto(textosDe(sid, 'literario')[0]).concat(delTexto(textosDe(sid, 'no_literario')[0]));
+    if (sid === 'lectura') {
+      items = delTexto(textosDe(sid, 'literario')[0]).concat(delTexto(textosDe(sid, 'no_literario')[0]));
+      // Igual que en el servidor (armar.js): si las dos lecturas pasan del número de reactivos de la sección,
+      // va una sola y se completa con vocabulario suelto (antes podían salir 18 preguntas para 14 minutos).
+      if (items.length > s.reactivos) {
+        items = delTexto(textosDe(sid, Math.random() < 0.5 ? 'literario' : 'no_literario')[0]).slice(0, s.reactivos);
+        items = items.concat(porTema(sueltos, s.reactivos - items.length));
+      }
+    }
     else if (sid === 'ingles') { var lect = delTexto(textosDe(sid)[0]); items = porTema(sueltos, s.reactivos - lect.length).concat(lect); }
     else items = porTema(sueltos, s.reactivos);
     return { id: sid, items: items.map(function (r) { return r.id; }), idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false };

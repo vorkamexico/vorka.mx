@@ -19,7 +19,7 @@ export const REACTIVOS_MATEMATICAS4 = [
     pasos: ['Alcohol inicial: 30 × 0.20 = 6 L.', 'Con x litros agregados: (6 + x) ÷ (30 + x) = 0.40.', '6 + x = 12 + 0.4x → 0.6x = 6 → x = 10 L. (Comprobación: 16 ÷ 40 = 0.40.)'],
     regla: 'Mezclas: concentración = cantidad de soluto ÷ volumen total. Si agregas soluto puro, aumentan el numerador y el denominador; calcular el 40 % de los 30 L originales olvida que el total crece.' },
   { id: 'M4-ari-3', seccion: 'matematicas', tema: 'aritmetica', dificultad: 3,
-    enunciado: 'Seis pintores pueden pintar una barda en 10 días trabajando al mismo ritmo. Trabajan solos los primeros 4 días y entonces se suman 3 pintores más que trabajan al mismo ritmo. ¿Cuántos días tardaron en total en terminar la barda?',
+    enunciado: 'Seis pintores pueden pintar una barda en 10 días. Los seis trabajan solos los primeros 4 días; después se suman 3 pintores más, que trabajan al mismo ritmo. ¿Cuántos días tardan en total en terminar la barda?',
     opciones: ['8 días', '4 días', '13 días', '6⅔ días'], correcta: 0,
     pista: 'Mide el trabajo total en "días-pintor". ¿Cuánto trabajo ya se hizo en los primeros días y cuánto falta? Más pintores significa menos días: es proporción inversa.',
     pasos: ['Trabajo total: 6 × 10 = 60 días-pintor.', 'En 4 días se hicieron 6 × 4 = 24; faltan 36.', 'Con 9 pintores: 36 ÷ 9 = 4 días más.', 'Total: 4 + 4 = 8 días.'],

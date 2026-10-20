@@ -1,43 +1,43 @@
 // Banco ampliado 4 · Inglés, nivel B2 (contenido original de Vorka México). Se suma en banco.js.
 // Modelado sobre los tipos de reactivo de la guía de estudio del ELASH II del College Board (uso de la lengua,
-// redacción indirecta con "No error", combinación de oraciones, expresiones idiomáticas en contexto y lecturas largas).
+// redacción indirecta con "No error", combinación de oraciones, expresiones idiomáticas en contexto y lecturas de unas 250 palabras).
 // Pistas en inglés con apoyo en español; pistas y pasos no nombran letras (el cliente baraja las opciones).
 
 export const TEXTOS_INGLES4 = {
   patterns: {
     seccion: 'ingles', tipo: 'no_literario', titulo: 'Whose Pattern Is It?', genero: 'Reading · B2 (essay)',
     parrafos: [
-      "In 2015, a European fashion label presented a blouse that looked remarkably familiar to the women of Santa María Tlahuitoltepec, a Mixe community in the mountains of Oaxaca. Its embroidery—geometric flowers, zigzags and a bold diagonal band—reproduced, almost stitch for stitch, a design that local artisans had been making for generations. The blouse was sold for hundreds of dollars; the community received neither credit nor payment.",
-      "Cases like this have multiplied over the past decade, and they raise a question that the law has struggled to answer: who owns a traditional design? Copyright, the tool most countries rely on to protect creative work, was built around the idea of an individual author who creates something new at a specific moment. A collective pattern, refined over centuries by thousands of anonymous hands, fits poorly into that model. In many legal systems it is treated as part of the “public domain”, which means that anyone may use it freely.",
-      "Critics of this approach argue that “public” has too often meant “available to the powerful”. A global brand can afford lawyers, advertising and distribution networks; a cooperative of weavers usually cannot. When the brand's version becomes famous, the original may even be mistaken for an imitation. What is lost, they insist, is not only income but also meaning, since a design may be tied to rituals, family histories or a particular landscape.",
-      "In 2022, Mexico approved a federal law intended to protect the cultural heritage of Indigenous and Afro-Mexican communities, which requires their free, prior and informed consent before their designs are used commercially. Supporters celebrated it as long overdue. Skeptics, however, pointed out practical problems. Who has the authority to give consent on behalf of a community? What happens when the same motif appears in several regions? And how can a small town monitor the catalogues of companies on the other side of the world?",
-      "Some artisans have chosen not to wait for the courts. Cooperatives in Chiapas and Oaxaca now sign collaboration agreements with designers that specify how profits will be shared and require the community to be named on every label. Others have opened online stores to sell directly to customers who care about where, and by whom, a garment was made.",
-      "None of these solutions is perfect. Yet together they suggest a shift in the debate: from asking whether traditional designs can be copied to asking under what conditions they should be shared. That question has no single legal answer, but it places the people who created the designs at the center of the conversation rather than at its margins.",
+      "In 2015, a European fashion label sold a blouse whose embroidery copied, almost stitch for stitch, a design that Mixe women in Oaxaca had made for generations. The community received neither credit nor payment.",
+      "Copyright was built around the idea of an individual author who creates something new at a specific moment. A collective pattern, refined over centuries by thousands of anonymous hands, fits poorly into that model, so it is often treated as “public domain”: anyone may use it.",
+      "Critics of this approach argue that “public” has too often meant “available to the powerful”. A global brand can afford lawyers and advertising; a cooperative of weavers usually cannot.",
+      "In 2022, Mexico approved a law that requires a community's consent before its designs are used commercially. Supporters celebrated it as long overdue. Skeptics asked: Who has the authority to give consent on behalf of a community? What happens when the same motif appears in several regions? And how can a small town monitor companies on the other side of the world?",
+      "Meanwhile, some cooperatives sign agreements with designers that share profits and name the community on every label. Others sell directly online.",
+      "None of these solutions is perfect. Yet together they suggest a shift in the debate: from whether traditional designs can be copied to under what conditions they should be shared. That places the people who created them at the center of the conversation.",
     ],
   },
   interpreter: {
     seccion: 'ingles', tipo: 'literario', titulo: 'The Interpreter', genero: 'Reading · B2 (short story)',
     parrafos: [
-      "My father has a way of nodding that means nothing at all. I learned to read it when I was nine, the year we moved from Puebla to Phoenix and I became, without anyone asking me, the official interpreter of the Herrera family.",
-      "At first it felt like a superpower. I translated menus, cartoons and the instructions on the back of the washing machine. Then the jobs grew heavier. I translated the landlord's warnings about late rent, the doctor's questions about my father's chest pain, the letter from school saying that my brother had been fighting again. I learned words in English before I knew what they meant in Spanish—“deductible”, “eviction”, “probation”—and I carried them around like stones in my pockets.",
-      "The worst part was not the vocabulary. It was deciding what to leave out. When the bank manager said that my father's application had been rejected “due to insufficient credit history”, I told my father, “They need more papers.” When the doctor frowned at the X-ray and said that the shadow was “probably nothing, but we should keep an eye on it”, I said, “Everything is fine.” I told myself I was protecting him. Looking back, I suspect I was protecting myself from the look on his face.",
-      "He knew, of course. Parents usually know more than we give them credit for. One evening, after a meeting with my brother's principal, we sat in the car in the school parking lot, the engine off, the windows fogging up.",
+      "My father has a way of nodding that means nothing at all. I learned to read it at nine, when we moved from Puebla to Phoenix and I became the family interpreter.",
+      "At first it felt like a superpower. Then the jobs grew heavier. I learned words like “deductible”, “eviction” and “probation” before I knew them in Spanish, and I carried them around like stones in my pockets.",
+      "The worst part was deciding what to leave out. When the doctor said a shadow on his X-ray was “probably nothing, but we should keep an eye on it”, I told my father, “Everything is fine.” I told myself I was protecting him. Looking back, I suspect I was protecting myself from the look on his face.",
+      "He knew, of course. Parents usually know more than we give them credit for. One evening, after a meeting with my brother's principal, we sat in the car.",
       "“What did she really say?” he asked.",
-      "I opened my mouth to tell him the softer version, the one I had already prepared. Then I saw his hands on the steering wheel—cracked from the cold and from twelve-hour shifts at the warehouse—and I realized that every time I edited the world for him, I made it a little smaller.",
-      "So I told him everything: the fights, the final warning, the word “expulsion”, which I had to explain twice. He listened without nodding. When I finished, he was quiet for so long that I thought he was angry.",
+      "I opened my mouth to tell him the softer version I had prepared. Then I saw his hands on the steering wheel, cracked from long shifts at the warehouse, and I realized that every time I edited the world for him, I made it a little smaller.",
+      "So I told him everything: the fights, the final warning, the word “expulsion”. He listened without nodding.",
       "“Thank you,” he said at last. “Now I can help him.”",
-      "I was fifteen. It was the first time I understood that translating is not only about changing words from one language into another. It is also about deciding who gets to know the truth—and I had been deciding for him for far too long.",
+      "I was fifteen. That day I understood that translating is also about deciding who gets to know the truth.",
     ],
   },
   volcano: {
     seccion: 'ingles', tipo: 'no_literario', titulo: 'Listening to the Volcano', genero: 'Reading · B2 (science article)',
     parrafos: [
-      "Millions of people live within a hundred kilometers of Popocatépetl, one of the most active volcanoes in North America. For them, “Don Goyo”, as the volcano is affectionately known, is both a neighbor and a threat. Since it reawakened in 1994, it has produced thousands of small explosions, occasional ash clouds that close airports, and a handful of larger eruptions. The question that worries residents is simple to ask and extraordinarily difficult to answer: when will the next big one happen?",
-      "Unlike weather forecasters, who can watch a storm form on satellite images, volcanologists cannot observe the process they are trying to predict. The magma that drives an eruption moves several kilometers underground, hidden beneath layers of rock. Scientists must therefore rely on indirect signals: small earthquakes caused by rising magma, slight changes in the shape of the mountain's slopes, and the composition of the gases that escape from the crater. An increase in sulfur dioxide, for instance, may indicate that fresh magma is approaching the surface.",
-      "The difficulty is that none of these signals is decisive on its own. A swarm of earthquakes may be followed by a violent eruption—or by nothing at all. Had the authorities ordered an evacuation every time the instruments showed unusual activity, nearby towns would have been emptied dozens of times, and residents would soon have stopped taking warnings seriously. This danger, sometimes called “alarm fatigue”, is as real as the volcano itself.",
-      "To manage this uncertainty, Mexico uses a “volcanic traffic light”. Green means normal activity; yellow, divided into phases, signals increasing activity and the need to prepare; red indicates that a dangerous eruption is imminent or under way and that evacuation may be necessary. The system does not claim to predict the exact day of an eruption. Instead, it translates complex data into a few clear stages, each linked to specific actions for authorities and citizens.",
-      "Experts insist, however, that a warning system is only as good as the public's response to it. A color on a screen is of little use if families do not know which evacuation route to take, where the nearest shelter is, or what to pack. For that reason, schools and civil protection agencies in the region organize drills and distribute maps long before any alarm sounds.",
-      "Perhaps the most realistic goal, then, is not to predict eruptions perfectly but to build communities that can respond calmly when the signals change. Forecasting, in this sense, is less about reading the future than about preparing for several possible futures at once.",
+      "Millions of people live near Popocatépetl, one of the most active volcanoes in North America. Since 1994 it has produced thousands of small explosions. The question residents ask is simple: when will the next big eruption happen?",
+      "Unlike weather forecasters, who can watch a storm form on satellite images, volcanologists cannot observe the process they are trying to predict. They rely on indirect signals: small earthquakes, changes in the shape of the slopes and gases from the crater. An increase in sulfur dioxide, for instance, may indicate that magma is rising.",
+      "None of these signals is decisive on its own. Had the authorities ordered an evacuation every time the instruments showed unusual activity, nearby towns would have been emptied dozens of times, and residents would soon have stopped taking warnings seriously. This danger, sometimes called “alarm fatigue”, is very real.",
+      "To manage this uncertainty, Mexico uses a “volcanic traffic light”. Green means normal activity; yellow, increasing activity; red, a dangerous eruption that is imminent or under way. The system does not claim to predict the exact day of an eruption. Instead, it defines a few clear stages, each linked to specific actions for authorities and citizens.",
+      "But a warning system is only as good as the public's response. That is why schools in the region organize drills long before any alarm sounds.",
+      "The realistic goal, then, is not to predict eruptions perfectly but to build communities that can respond calmly. Forecasting is less about reading the future than about preparing for several possible futures at once.",
     ],
   },
 };
@@ -134,7 +134,7 @@ export const REACTIVOS_INGLES4 = [
     enunciado: 'According to paragraph 3, why did the narrator soften her translations?',
     opciones: [
       "Her father had asked her to give him only the good news.",
-      "The bank manager and the doctor asked her to keep secrets.",
+      "The doctor asked her to keep the X-ray results secret.",
       "She did not know the Spanish words for the bad news.",
       "She was partly trying to avoid seeing her father suffer.",
     ], correcta: 3,
@@ -156,7 +156,7 @@ export const REACTIVOS_INGLES4 = [
       "Her brother tells her on the phone that she must be honest.",
     ], correcta: 1,
     pista: 'Paragraph 6 begins with "Then I saw…". What did she see, and what did she realize right after?',
-    pasos: ['She was about to tell "the softer version".', 'She sees his hands, damaged by cold and long shifts — a man who works hard and can face reality.', 'She realizes that editing the world for him "made it a little smaller": it limited him.'],
+    pasos: ['She was about to tell "the softer version".', 'She sees his hands, damaged by long shifts — a man who works hard and can face reality.', 'She realizes that editing the world for him "made it a little smaller": it limited him.'],
     regla: 'Turning point: look for the moment introduced by "Then", "Suddenly" or "But" and for the realization (I realized…) that follows it.' },
   { id: 'E4-int-6', seccion: 'ingles', tema: 'en_reading', dificultad: 3, texto: 'interpreter',
     enunciado: 'Which statement best expresses a theme of the story?',
