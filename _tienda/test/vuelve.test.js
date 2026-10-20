@@ -158,6 +158,12 @@ describe('páginas y ligas', () => {
     expect(h).toContain('id="form-vuelve"');
     expect(h).toContain('/legal/vuelve/');
   });
+  it('llena el correo que manda la app y no refleja correos con código', async () => {
+    expect(await (await pedir('/tienda/vuelve/?email=laura%40cafe.mx')).text()).toContain('value="laura@cafe.mx"');
+    const h = await (await pedir('/tienda/vuelve/?email=%22%3E%3Cscript%3Ex@y.mx')).text();
+    expect(h).not.toContain('<script>x');
+    expect(h).toContain('value=""');
+  });
   it('sin productos activos invita a la prueba gratis y no muestra el formulario', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'vuelve-%'");
     const h = await (await pedir('/tienda/vuelve/')).text();
