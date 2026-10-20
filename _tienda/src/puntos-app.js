@@ -107,7 +107,7 @@ const CSS_BASE = `
 .pv-btn[disabled]{opacity:.65;cursor:progress}
 .pv-giro{width:18px;height:18px;border-radius:50%;border:2.2px solid currentColor;border-right-color:transparent;animation:pvgiro .7s linear infinite;flex:none}
 @keyframes pvgiro{to{transform:rotate(360deg)}}
-.pv-campo{display:grid;gap:7px}.pv-campo label{font-size:13.5px;font-weight:650;color:var(--fg2)}
+.pv-campo{display:grid;gap:7px}.pv-clave{position:relative}.pv-clave input{padding-right:52px}.pv-ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:42px;height:42px;display:grid;place-items:center;border:0;background:none;color:var(--fg3);cursor:pointer;border-radius:12px}.pv-ojo svg{width:20px;height:20px}.pv-campo label{font-size:13.5px;font-weight:650;color:var(--fg2)}
 .pv-campo input,.pv-campo textarea{width:100%;min-height:52px;padding:0 16px;border-radius:15px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--fg);font:inherit;font-size:16px;transition:border-color .2s,box-shadow .2s}
 .pv-campo textarea{padding:13px 16px;min-height:84px;resize:vertical}
 .pv-campo input::placeholder,.pv-campo textarea::placeholder{color:var(--fg3)}
@@ -324,29 +324,48 @@ button.opcion{width:100%;background:none;border:0;border-bottom:1px solid var(--
 // ---------- piezas compartidas ----------
 const V = LOGO.replace('<svg ', '<svg width="100%" ');
 
-// Formulario de entrada (página del programa y app sin sesión): correo → enlace + código → entrar.
+// Formulario de entrada (página del programa y app sin sesión): primero el correo; la app sabe si ya tienes cuenta.
+// Nueva → nombre + contraseña. Con contraseña → entrar. Sin contraseña (cuentas de antes) u olvido → código al correo para crearla.
+const ojo = id => `<button class="pv-ojo" type="button" data-ojo="${id}" aria-label="Mostrar contraseña">${I.ojo || '👁'}</button>`;
 export const formEntrar = ({ enApp = false } = {}) => `
 <div class="pv-entrada" id="pv-entrada">
-  <form class="pv-paso" id="pv-paso1" novalidate>
+  <form class="pv-paso" id="pv-p-correo" novalidate>
     <div style="display:grid;gap:16px">
-      <div><h2>${enApp ? 'Entra o crea tu cuenta' : 'Crea tu cuenta gratis'}</h2><p class="pv-sub" style="margin-top:6px">Te mandamos un correo con un enlace y un código de 6 dígitos. Sin contraseñas.</p></div>
-      <div class="pv-campo"><label for="pv-email">Correo electrónico</label><input id="pv-email" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="254" placeholder="tu@correo.com"></div>
-      <div class="pv-campo"><label for="pv-nombre">Tu nombre <span style="font-weight:500;color:var(--fg3)">(si es tu primera vez)</span></label><input id="pv-nombre" name="nombre" type="text" autocomplete="name" maxlength="80" placeholder="Ana López"></div>
-      <label class="pv-casilla"><input type="checkbox" name="terminos" required><span>Acepto las <a href="/legal/terminos/#puntos" target="_blank" rel="noopener">condiciones del programa</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>
-      <p class="pv-error" id="pv-err1" role="alert" hidden></p>
-      <button class="pv-btn oro ancho" type="submit" id="pv-enviar"><span>Mandarme el correo</span>${I.flecha}</button>
-      <div class="pv-pie"><span>Usa el correo con el que compras.</span><button class="pv-enlace" type="button" id="pv-ya-tengo">Ya tengo un código</button></div>
+      <div><h2>${enApp ? 'Entra o crea tu cuenta' : 'Crea tu cuenta o entra'}</h2><p class="pv-sub" style="margin-top:6px">Escribe tu correo: si ya tienes cuenta, te pedimos tu contraseña; si no, la creas en un minuto.</p></div>
+      <div class="pv-campo"><label for="pv-email">Correo electrónico</label><input id="pv-email" name="email" type="email" inputmode="email" autocomplete="username" required maxlength="254" placeholder="tu@correo.com"></div>
+      <p class="pv-error" role="alert" hidden></p>
+      <button class="pv-btn oro ancho" type="submit"><span>Continuar</span>${I.flecha}</button>
+      <div class="pv-pie"><span>Usa el correo con el que compras en la tienda.</span></div>
     </div>
   </form>
-  <form class="pv-paso" id="pv-paso2" novalidate hidden>
+  <form class="pv-paso" id="pv-p-nueva" novalidate hidden>
     <div style="display:grid;gap:16px">
-      <div class="pv-ok-ico">${I.check}</div>
-      <div><h2>¡Listo! Revisa tu correo</h2><p class="pv-sub" style="margin-top:6px">Te mandamos un enlace a <b id="pv-destino" style="color:var(--fg)"></b>. Tócalo para entrar${enApp ? ', o escribe aquí el código de 6 dígitos que viene en el mismo correo' : ' desde este dispositivo, o escribe aquí el código de 6 dígitos'}.</p></div>
+      <div><h2>Crea tu cuenta</h2><p class="pv-sub" style="margin-top:6px"><b class="pv-correo"></b> · <button class="pv-enlace" type="button" data-cambiar>Cambiar</button></p></div>
+      <div class="pv-campo"><label for="pv-nombre">Tu nombre</label><input id="pv-nombre" name="nombre" type="text" autocomplete="name" required maxlength="80" placeholder="Ana López"></div>
+      <div class="pv-campo"><label for="pv-clave-n">Crea una contraseña</label><div class="pv-clave"><input id="pv-clave-n" name="clave" type="password" autocomplete="new-password" required minlength="8" maxlength="200" placeholder="Mínimo 8 caracteres">${ojo('pv-clave-n')}</div></div>
+      <label class="pv-casilla"><input type="checkbox" name="terminos" required><span>Acepto las <a href="/legal/terminos/#puntos" target="_blank" rel="noopener">condiciones del programa</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>
+      <p class="pv-error" role="alert" hidden></p>
+      <button class="pv-btn oro ancho" type="submit"><span>Crear mi cuenta</span>${I.flecha}</button>
+    </div>
+  </form>
+  <form class="pv-paso" id="pv-p-clave" novalidate hidden>
+    <div style="display:grid;gap:16px">
+      <div><h2 id="pv-hola">Hola de nuevo</h2><p class="pv-sub" style="margin-top:6px">Ya tienes cuenta con <b class="pv-correo"></b> · <button class="pv-enlace" type="button" data-cambiar>Cambiar</button></p></div>
+      <div class="pv-campo"><label for="pv-clave">Tu contraseña</label><div class="pv-clave"><input id="pv-clave" name="clave" type="password" autocomplete="current-password" required maxlength="200">${ojo('pv-clave')}</div></div>
+      <p class="pv-error" role="alert" hidden></p>
+      <button class="pv-btn oro ancho" type="submit"><span>Entrar</span>${I.flecha}</button>
+      <div class="pv-pie"><button class="pv-enlace" type="button" id="pv-olvide">¿Olvidaste tu contraseña?</button></div>
+    </div>
+  </form>
+  <form class="pv-paso" id="pv-p-codigo" novalidate hidden>
+    <div style="display:grid;gap:16px">
+      <div><h2>Crea tu contraseña</h2><p class="pv-sub" style="margin-top:6px" id="pv-cod-txt">Te mandamos un código de 6 dígitos a <b class="pv-correo"></b>. Escríbelo aquí junto con tu nueva contraseña.</p></div>
       <div class="pv-campo"><label for="pv-cod">Código de 6 dígitos</label><input class="pv-codigo" id="pv-cod" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="······"></div>
-      <p class="pv-error" id="pv-err2" role="alert" hidden></p>
-      <button class="pv-btn oro ancho" type="submit" id="pv-entrar-btn"><span>Entrar</span>${I.flecha}</button>
-      <div class="pv-nota">${I.correo}<span>¿No llega? Revisa spam o promociones. Puede tardar un minuto. El código vence en 15 minutos.</span></div>
-      <div class="pv-pie"><button class="pv-enlace" type="button" id="pv-reenviar" disabled>Reenviar en 60 s</button><button class="pv-enlace" type="button" id="pv-cambiar">Cambiar correo</button></div>
+      <div class="pv-campo"><label for="pv-clave-c">Nueva contraseña</label><div class="pv-clave"><input id="pv-clave-c" name="clave" type="password" autocomplete="new-password" required minlength="8" maxlength="200" placeholder="Mínimo 8 caracteres">${ojo('pv-clave-c')}</div></div>
+      <p class="pv-error" role="alert" hidden></p>
+      <button class="pv-btn oro ancho" type="submit"><span>Guardar y entrar</span>${I.flecha}</button>
+      <div class="pv-nota">${I.correo}<span>¿No llega? Revisa spam o promociones. El código vence en 15 minutos.</span></div>
+      <div class="pv-pie"><button class="pv-enlace" type="button" id="pv-reenviar" disabled>Reenviar en 60 s</button><button class="pv-enlace" type="button" data-cambiar>Cambiar correo</button></div>
       <p class="pv-sub" id="pv-dev" hidden style="font-size:13px"></p>
     </div>
   </form>
@@ -354,58 +373,66 @@ export const formEntrar = ({ enApp = false } = {}) => `
 
 // Script del formulario: nunca deja la pantalla congelada (carga, éxito, error y tiempo límite visibles)
 export const SCRIPT_ENTRAR = String.raw`(function(){
-  var p1=document.getElementById('pv-paso1'), p2=document.getElementById('pv-paso2'); if(!p1) return;
-  var e1=document.getElementById('pv-err1'), e2=document.getElementById('pv-err2'), b1=document.getElementById('pv-enviar'), b2=document.getElementById('pv-entrar-btn');
-  var cod=document.getElementById('pv-cod'), re=document.getElementById('pv-reenviar'), dest=document.getElementById('pv-destino'), dev=document.getElementById('pv-dev');
-  var CL='pv_entrada', email='', timer=null;
-  function guarda(o){ try{ if(o) localStorage.setItem(CL, JSON.stringify(o)); else localStorage.removeItem(CL); }catch(e){} }
-  function lee(){ try{ var o=JSON.parse(localStorage.getItem(CL)||'null'); return o&&Date.now()-o.t<15*60e3?o:null; }catch(e){ return null; } }
+  var raiz=document.getElementById('pv-entrada'); if(!raiz) return;
+  var P={correo:document.getElementById('pv-p-correo'),nueva:document.getElementById('pv-p-nueva'),clave:document.getElementById('pv-p-clave'),codigo:document.getElementById('pv-p-codigo')};
+  var email='', timer=null, re=document.getElementById('pv-reenviar'), dev=document.getElementById('pv-dev');
+  function ir(k){ for(var x in P) P[x].hidden=x!==k; [].forEach.call(raiz.querySelectorAll('.pv-correo'),function(b){ b.textContent=email; });
+    [].forEach.call(raiz.querySelectorAll('.pv-error'),function(e){ e.hidden=true; });
+    var f=P[k].querySelector('input:not([type=checkbox])'); setTimeout(function(){ try{ f&&f.focus({preventScroll:true}); }catch(e){} },250); }
+  function error(form,msg){ var e=form.querySelector('.pv-error'); e.textContent=msg; e.hidden=false; }
   function cargando(b,si,txt){ if(si){ b.dataset.html=b.innerHTML; b.disabled=true; b.innerHTML='<span class="pv-giro"></span><span>'+txt+'</span>'; } else { b.disabled=false; if(b.dataset.html) b.innerHTML=b.dataset.html; } }
-  function error(el,msg){ el.textContent=msg; el.hidden=false; }
   function llamar(url,datos){
     var ctl=window.AbortController?new AbortController():null, t=setTimeout(function(){ if(ctl) ctl.abort(); },20000);
     return fetch(url,{method:'POST',headers:{'content-type':'application/json'},credentials:'same-origin',body:JSON.stringify(datos),signal:ctl?ctl.signal:undefined})
-      .then(function(r){ clearTimeout(t); return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok,j:j}; }); })
+      .then(function(r){ clearTimeout(t); return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok,status:r.status,j:j}; }); })
       .catch(function(err){ clearTimeout(t); return {ok:false,j:{error:err&&err.name==='AbortError'?'Tardó demasiado. Revisa tu conexión e intenta de nuevo.':'Sin conexión. Revisa tu internet e intenta de nuevo.'}}; });
   }
-  function cuenta(seg){ clearInterval(timer); re.disabled=true; var s=seg;
-    re.textContent='Reenviar en '+s+' s';
-    timer=setInterval(function(){ s--; if(s<=0){ clearInterval(timer); re.disabled=false; re.textContent='Reenviar correo'; } else re.textContent='Reenviar en '+s+' s'; },1000); }
-  function paso2(correo,seg,j){ email=correo; dest.textContent=correo; p1.hidden=true; p2.hidden=false; e2.hidden=true; cuenta(seg||60);
-    if(j&&j.enlace){ dev.hidden=false; dev.innerHTML='Modo prueba (sin correo): código <b>'+j.codigo+'</b> · <a class="pv-enlace" href="'+j.enlace+'">entrar con el enlace</a>'; }
-    setTimeout(function(){ try{ cod.focus({preventScroll:true}); }catch(e){} },350); }
-  function pedir(datos,boton){
-    e1.hidden=true; cargando(boton,true,boton===b1?'Enviando…':'Reenviando…');
-    return llamar('/api/puntos/entrar',datos).then(function(x){ cargando(boton,false);
-      if(x.ok){ guarda({email:datos.email,nombre:datos.nombre,t:Date.now()}); paso2(datos.email,x.j.reenviar_en,x.j); if(boton===re) toastLocal('Te mandamos otro correo'); }
-      else if(boton===re){ error(e2,x.j.error||'No se pudo reenviar. Intenta en un momento.'); re.disabled=false; re.textContent='Reenviar correo'; }
-      else error(e1,x.j.error||'No se pudo enviar. Intenta de nuevo.');
-    });
-  }
-  function toastLocal(m){ var t=document.getElementById('toast'); if(!t){ return; } t.textContent=m; t.classList.add('ver'); setTimeout(function(){ t.classList.remove('ver'); },2200); }
-  p1.addEventListener('submit',function(ev){ ev.preventDefault(); e1.hidden=true;
-    var em=p1.email.value.trim().toLowerCase();
-    if(!em||!p1.email.checkValidity()){ error(e1,'Escribe un correo válido.'); p1.email.focus(); return; }
-    if(!p1.terminos.checked){ error(e1,'Acepta las condiciones del programa para continuar.'); return; }
-    pedir({email:em,nombre:p1.nombre.value.trim(),terminos:true},b1);
+  function adentro(b){ b.innerHTML='<span class="pv-giro"></span><span>¡Bienvenido!</span>'; location.href='/tienda/cuenta/'; }
+  function cuenta(seg){ clearInterval(timer); re.disabled=true; var s=seg; re.textContent='Reenviar en '+s+' s';
+    timer=setInterval(function(){ s--; if(s<=0){ clearInterval(timer); re.disabled=false; re.textContent='Reenviar código'; } else re.textContent='Reenviar en '+s+' s'; },1000); }
+  function pedirCodigo(texto){ document.getElementById('pv-cod-txt').innerHTML=(texto||'Te mandamos un código de 6 dígitos a')+' <b class="pv-correo"></b>. Escríbelo aquí junto con tu nueva contraseña.'; ir('codigo');
+    return llamar('/api/puntos/clave/codigo',{email:email}).then(function(x){ if(!x.ok){ error(P.codigo,x.j.error||'No se pudo enviar el código.'); re.disabled=false; re.textContent='Reenviar código'; return; }
+      cuenta(x.j.reenviar_en||60); if(x.j.codigo){ dev.hidden=false; dev.innerHTML='Modo prueba (sin correo): código <b>'+x.j.codigo+'</b>'; } }); }
+  // 1) correo
+  P.correo.addEventListener('submit',function(ev){ ev.preventDefault(); var f=P.correo, b=f.querySelector('button[type=submit]');
+    var em=f.email.value.trim().toLowerCase(); if(!em||!f.email.checkValidity()){ error(f,'Escribe un correo válido.'); f.email.focus(); return; }
+    email=em; cargando(b,true,'Revisando…');
+    llamar('/api/puntos/existe',{email:em}).then(function(x){ cargando(b,false); if(!x.ok){ error(f,x.j.error||'No se pudo revisar. Intenta de nuevo.'); return; }
+      if(!x.j.existe) ir('nueva');
+      else if(x.j.con_clave){ document.getElementById('pv-hola').textContent=x.j.nombre?'Hola de nuevo, '+x.j.nombre:'Hola de nuevo'; ir('clave'); }
+      else pedirCodigo('Ya tienes cuenta. Para entrar, crea tu contraseña (solo esta vez). Te mandamos un código a'); });
   });
-  document.getElementById('pv-ya-tengo').onclick=function(){ var em=p1.email.value.trim().toLowerCase();
-    if(!em||!p1.email.checkValidity()){ error(e1,'Escribe primero el correo al que te llegó el código.'); p1.email.focus(); return; }
-    paso2(em,1); };
-  re.onclick=function(){ var g=lee()||{}; pedir({email:email,nombre:g.nombre||'',terminos:true},re); };
-  document.getElementById('pv-cambiar').onclick=function(){ clearInterval(timer); guarda(null); p2.hidden=true; p1.hidden=false; p1.email.value=email; p1.email.focus(); };
-  function entrar(){ e2.hidden=true; var c=cod.value.replace(/\D/g,'');
-    if(c.length!==6){ error(e2,'El código tiene 6 dígitos.'); cod.focus(); return; }
-    cargando(b2,true,'Entrando…');
-    llamar('/api/puntos/codigo',{email:email,codigo:c}).then(function(x){
-      if(x.ok){ guarda(null); b2.innerHTML='<span class="pv-giro"></span><span>¡Bienvenido!</span>'; location.href='/tienda/cuenta/'; return; }
-      cargando(b2,false); error(e2,x.j.error||'No se pudo entrar. Intenta de nuevo.'); cod.select();
-    });
-  }
-  p2.addEventListener('submit',function(ev){ ev.preventDefault(); entrar(); });
-  cod.addEventListener('input',function(){ cod.value=cod.value.replace(/\D/g,'').slice(0,6); if(cod.value.length===6&&!b2.disabled) entrar(); });
-  // Si la app se cerró mientras ibas al correo, regresa directo al paso del código
-  var g=lee(); if(g&&g.email){ p1.email.value=g.email; paso2(g.email,Math.max(1,60-Math.round((Date.now()-g.t)/1000))); }
+  // 2) cuenta nueva
+  P.nueva.addEventListener('submit',function(ev){ ev.preventDefault(); var f=P.nueva, b=f.querySelector('button[type=submit]');
+    if(f.nombre.value.trim().length<2){ error(f,'Escribe tu nombre.'); f.nombre.focus(); return; }
+    if(f.clave.value.length<8){ error(f,'La contraseña debe tener al menos 8 caracteres.'); f.clave.focus(); return; }
+    if(!f.terminos.checked){ error(f,'Acepta las condiciones del programa para continuar.'); return; }
+    cargando(b,true,'Creando tu cuenta…');
+    llamar('/api/puntos/registro',{email:email,nombre:f.nombre.value.trim(),clave:f.clave.value,terminos:true}).then(function(x){
+      if(x.ok) return adentro(b); cargando(b,false);
+      if(x.j.existe){ if(x.j.con_clave) ir('clave'); else pedirCodigo('Ese correo ya tiene cuenta. Para entrar, crea tu contraseña. Te mandamos un código a'); return; }
+      error(f,x.j.error||'No se pudo crear la cuenta. Intenta de nuevo.'); });
+  });
+  // 3) entrar con contraseña
+  P.clave.addEventListener('submit',function(ev){ ev.preventDefault(); var f=P.clave, b=f.querySelector('button[type=submit]');
+    if(!f.clave.value){ error(f,'Escribe tu contraseña.'); f.clave.focus(); return; }
+    cargando(b,true,'Entrando…');
+    llamar('/api/puntos/login',{email:email,clave:f.clave.value}).then(function(x){ if(x.ok) return adentro(b); cargando(b,false);
+      if(x.j.existe===false){ ir('nueva'); return; } if(x.j.con_clave===false){ pedirCodigo(); return; }
+      error(f,x.j.error||'No se pudo entrar.'); f.clave.select(); });
+  });
+  document.getElementById('pv-olvide').onclick=function(){ pedirCodigo('Para crear una contraseña nueva, te mandamos un código a'); };
+  // 4) código + contraseña nueva
+  P.codigo.addEventListener('submit',function(ev){ ev.preventDefault(); var f=P.codigo, b=f.querySelector('button[type=submit]');
+    var c=f.codigo.value.replace(/\D/g,''); if(c.length!==6){ error(f,'El código tiene 6 dígitos.'); f.codigo.focus(); return; }
+    if(f.clave.value.length<8){ error(f,'La contraseña debe tener al menos 8 caracteres.'); f.clave.focus(); return; }
+    cargando(b,true,'Guardando…');
+    llamar('/api/puntos/clave/nueva',{email:email,codigo:c,clave:f.clave.value}).then(function(x){ if(x.ok) return adentro(b); cargando(b,false); error(f,x.j.error||'No se pudo guardar. Intenta de nuevo.'); });
+  });
+  document.getElementById('pv-cod').addEventListener('input',function(e){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,6); });
+  re.onclick=function(){ pedirCodigo(); };
+  [].forEach.call(raiz.querySelectorAll('[data-cambiar]'),function(b){ b.onclick=function(){ clearInterval(timer); ir('correo'); P.correo.email.value=email; }; });
+  [].forEach.call(raiz.querySelectorAll('[data-ojo]'),function(b){ b.onclick=function(){ var i=document.getElementById(b.dataset.ojo); i.type=i.type==='password'?'text':'password'; b.setAttribute('aria-label',i.type==='password'?'Mostrar contraseña':'Ocultar contraseña'); }; });
 })();`;
 
 // ---------- documento de la app ----------

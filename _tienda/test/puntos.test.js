@@ -60,7 +60,7 @@ describe('Programa de puntos', () => {
     // Sin sesión, la app muestra su propia entrada (correo + código), también dentro de la app instalada
     const sin = await pedir('/tienda/cuenta/');
     expect(sin.status).toBe(200);
-    expect(await sin.text()).toContain('id="pv-paso1"');
+    expect(await sin.text()).toContain('id="pv-p-correo"');
   });
 
   it('los puntos se canjean al pagar: cupón de Stripe por el descuento, orden por el neto y se descuentan al confirmarse', async () => {
@@ -94,7 +94,7 @@ describe('Programa de puntos', () => {
   it('la página del programa, la tienda y los formularios de compra lo anuncian; los afiliados de dinero no se mezclan', async () => {
     const programa = await (await pedir('/tienda/puntos/')).text();
     expect(programa).toContain('Gana <span class="pv-metal">descuentos.</span>');
-    expect(programa).toContain('id="pv-paso2"');           // éxito con código, sin pantalla congelada
+    expect(programa).toContain('id="pv-p-codigo"');           // éxito con código, sin pantalla congelada
     const tienda = await (await pedir('/tienda/')).text();
     expect(tienda).toContain('/tienda/puntos/');
     expect(await (await pedir('/tienda/cupo/')).text()).toContain("fetch('/api/puntos/saldo'");
@@ -155,6 +155,45 @@ describe('Puntos Vorka · entrar con código (app instalada)', () => {
     // Otro origen no puede pedir códigos
     const ajeno = await worker.fetch(new Request(SITIO + '/api/puntos/entrar', { method: 'POST', headers: { 'content-type': 'application/json', origin: 'https://malo.com' }, body: JSON.stringify({ email: 'x@mail.com', terminos: true }) }), env);
     expect(ajeno.status).toBe(403);
+  });
+});
+
+describe('Puntos Vorka · cuenta con contraseña', () => {
+  const sesion = r => (r.headers.get('set-cookie') || '').split(';')[0];
+  it('reconoce el correo: nuevo → crea con contraseña; existente → entra con contraseña; no se duplica', async () => {
+    let r = await (await pedir('/api/puntos/existe', { method: 'POST', body: { email: 'Nueva@Mail.com' } })).json();
+    expect(r).toMatchObject({ existe: false, con_clave: false });
+    let x = await pedir('/api/puntos/registro', { method: 'POST', body: { email: 'Nueva@Mail.com', nombre: 'Nora Pérez', clave: 'corta', terminos: true } });
+    expect(x.status).toBe(400);
+    x = await pedir('/api/puntos/registro', { method: 'POST', body: { email: 'Nueva@Mail.com', nombre: 'Nora Pérez', clave: 'unaclave123', terminos: true } });
+    expect(x.status).toBe(200);
+    const c = sesion(x); expect(c).toMatch(/^vorka_cuenta=[a-f0-9]{64}$/);
+    expect((await (await pedir('/api/puntos/saldo', { cookie: c })).json()).email).toBe('nueva@mail.com');
+    r = await (await pedir('/api/puntos/existe', { method: 'POST', body: { email: 'nueva@mail.com' } })).json();
+    expect(r).toMatchObject({ existe: true, con_clave: true, nombre: 'Nora' });
+    // otra vez con el mismo correo: no crea otra cuenta
+    x = await pedir('/api/puntos/registro', { method: 'POST', body: { email: 'nueva@mail.com', nombre: 'Otra', clave: 'otraclave123', terminos: true } });
+    expect(x.status).toBe(409); expect((await x.json()).con_clave).toBe(true);
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM puntos_cuentas WHERE email = 'nueva@mail.com'").get().n).toBe(1);
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM affiliates WHERE email = 'nueva@mail.com'").get().n).toBe(1);
+    expect((await pedir('/api/puntos/login', { method: 'POST', body: { email: 'nueva@mail.com', clave: 'mala-clave' } })).status).toBe(401);
+    x = await pedir('/api/puntos/login', { method: 'POST', body: { email: 'NUEVA@mail.com', clave: 'unaclave123' } });
+    expect(x.status).toBe(200); expect(sesion(x)).toMatch(/^vorka_cuenta=/);
+  });
+  it('una cuenta de antes (sin contraseña) no se puede tomar sin el código del correo', async () => {
+    await entrar('vieja@mail.com', 'Vicky');
+    const r = await (await pedir('/api/puntos/existe', { method: 'POST', body: { email: 'vieja@mail.com' } })).json();
+    expect(r).toMatchObject({ existe: true, con_clave: false });
+    expect((await pedir('/api/puntos/registro', { method: 'POST', body: { email: 'vieja@mail.com', nombre: 'Intrusa', clave: 'tomarla123', terminos: true } })).status).toBe(409);
+    expect((await pedir('/api/puntos/login', { method: 'POST', body: { email: 'vieja@mail.com', clave: 'loquesea123' } })).status).toBe(409);
+    expect((await pedir('/api/puntos/clave/nueva', { method: 'POST', body: { email: 'vieja@mail.com', codigo: '000000', clave: 'tomarla123' } })).status).toBe(400);
+    const cod = (await (await pedir('/api/puntos/clave/codigo', { method: 'POST', body: { email: 'vieja@mail.com' } })).json()).codigo;
+    expect(cod).toMatch(/^\d{6}$/);
+    const x = await pedir('/api/puntos/clave/nueva', { method: 'POST', body: { email: 'vieja@mail.com', codigo: cod, clave: 'mipropia123' } });
+    expect(x.status).toBe(200);
+    expect((await pedir('/api/puntos/login', { method: 'POST', body: { email: 'vieja@mail.com', clave: 'mipropia123' } })).status).toBe(200);
+    // el código ya no sirve otra vez
+    expect((await pedir('/api/puntos/clave/nueva', { method: 'POST', body: { email: 'vieja@mail.com', codigo: cod, clave: 'otra12345' } })).status).toBe(400);
   });
 });
 

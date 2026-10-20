@@ -188,6 +188,115 @@ async function pedirEnlace(req, env) {
   return json({ ok: true, reenviar_en: 60, ...(!env.RESEND_API_KEY && !env.CORREO ? { enlace: enlace.replace(env.SITE_URL, ''), codigo: c } : {}) });
 }
 
+// ---------- contraseña ----------
+// Correo → la app sabe si ya hay cuenta. Nueva: nombre + contraseña. Con contraseña: entrar. Sin contraseña (cuentas de antes)
+// u olvido: un código al correo para crearla. Ninguna cuenta existente se puede tomar sin ese código.
+const ITER = 100000;
+async function pbkdf2(clave, salt) {
+  const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(clave), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode(salt), iterations: ITER }, k, 256);
+  return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+const claveInvalida = c => typeof c !== 'string' || c.length < 8 ? 'La contraseña debe tener al menos 8 caracteres.' : c.length > 200 ? 'La contraseña es demasiado larga.' : null;
+// ¿Ya hay cuenta con ese correo? (también si ya tenía liga de puntos aunque nunca haya entrado a la app)
+async function cuentaDe(env, email) {
+  const c = await one(env, 'SELECT email, nombre, clave_hash, clave_salt FROM puntos_cuentas WHERE email = ?', email);
+  if (c) return c;
+  const a = await one(env, "SELECT email FROM affiliates WHERE email = ? AND tipo = 'puntos'", email);
+  return a ? { email, clave_hash: null } : null;
+}
+async function leerCuerpo(req, env) {
+  if (!mismoOrigen(req, env)) return null;
+  const b = await req.json().catch(() => ({}));
+  return { ...b, email: String(b.email || '').trim().toLowerCase() };
+}
+const limiteIp = async (req, env, k, n, s) => dentroDelLimite(env, `puntos:${k}:${await sha256(req.headers.get('cf-connecting-ip') || 'local')}`, n, s);
+
+async function existeCuenta(req, env) {
+  const b = await leerCuerpo(req, env); if (!b) return fail('Solicitud inválida.', 403);
+  if (!emailValido(b.email)) return fail('Escribe un correo válido.');
+  if (!(await limiteIp(req, env, 'existe', 40, 600))) return fail('Demasiados intentos. Espera unos minutos.', 429);
+  const c = await cuentaDe(env, b.email);
+  return json({ existe: !!c, con_clave: !!c?.clave_hash, nombre: c?.nombre ? String(c.nombre).split(' ')[0] : null }, 200, NO_CACHE);
+}
+
+async function registrar(req, env) {
+  const b = await leerCuerpo(req, env); if (!b) return fail('Solicitud inválida.', 403);
+  if (!emailValido(b.email)) return fail('Escribe un correo válido.');
+  const nombre = String(b.nombre || '').trim().slice(0, 80);
+  if (nombre.length < 2) return fail('Escribe tu nombre.');
+  const mal = claveInvalida(b.clave); if (mal) return fail(mal);
+  if (b.terminos !== true) return fail('Acepta las condiciones del programa de puntos.');
+  if (!(await limiteIp(req, env, 'registro', 10, 3600))) return fail('Demasiados intentos. Espera un rato e intenta de nuevo.', 429);
+  const ya = await cuentaDe(env, b.email);
+  if (ya) return json({ error: ya.clave_hash ? 'Ese correo ya tiene cuenta. Entra con tu contraseña.' : 'Ese correo ya tiene cuenta. Te mandamos un código para crear tu contraseña.', existe: true, con_clave: !!ya.clave_hash }, 409);
+  const salt = aleatorio(16), hash = await pbkdf2(b.clave, salt);
+  await codigoDe(env, b.email, nombre);
+  const r = await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email, nombre, clave_hash, clave_salt) VALUES (?, ?, ?, ?)', b.email, nombre, hash, salt);
+  if (!r.meta.changes) return json({ error: 'Ese correo ya tiene cuenta. Entra con tu contraseña.', existe: true, con_clave: true }, 409);
+  // Bienvenida (si no fue esa persona, lo sabrá)
+  await enviar(env, { para: b.email, asunto: 'Tu cuenta de Puntos Vorka está lista', idempotencia: `puntos-bienvenida-${await sha256(b.email)}`,
+    html: marco('¡Bienvenida a Puntos Vorka!', `<p style="${P}">Hola, ${esc(nombre.split(' ')[0])}: tu cuenta ya está lista. Entra con tu correo y la contraseña que creaste para compartir tu liga y ganar puntos.</p>${boton(`${env.SITE_URL}/tienda/cuenta/`, 'Abrir mi app')}<p style="${P}">¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.</p>`, { etiqueta: 'Puntos' }),
+    texto: `Tu cuenta de Puntos Vorka está lista. Entra en ${env.SITE_URL}/tienda/cuenta/ con tu correo y tu contraseña.\n\n¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.` }).catch(e => console.error('puntos bienvenida', e));
+  return json({ ok: true }, 200, { 'set-cookie': await crearSesion(env, b.email) });
+}
+
+async function entrarConClave(req, env) {
+  const b = await leerCuerpo(req, env); if (!b) return fail('Solicitud inválida.', 403);
+  if (!emailValido(b.email)) return fail('Escribe un correo válido.');
+  if (!(await limiteIp(req, env, 'login-ip', 30, 900)) || !(await dentroDelLimite(env, `puntos:login:${await sha256(b.email)}`, 10, 900)))
+    return fail('Demasiados intentos. Espera unos minutos o crea una contraseña nueva con “¿Olvidaste tu contraseña?”.', 429);
+  const c = await cuentaDe(env, b.email);
+  if (!c) return json({ error: 'No hay cuenta con ese correo. Crea una nueva.', existe: false }, 404);
+  if (!c.clave_hash) return json({ error: 'Tu cuenta todavía no tiene contraseña. Te mandamos un código para crearla.', existe: true, con_clave: false }, 409);
+  if (!iguales(c.clave_hash, await pbkdf2(String(b.clave || ''), c.clave_salt))) return fail('Contraseña incorrecta. Revísala o usa “¿Olvidaste tu contraseña?”.', 401);
+  return json({ ok: true }, 200, { 'set-cookie': await crearSesion(env, b.email) });
+}
+
+// Código al correo para crear o cambiar la contraseña (cuentas de antes u olvido)
+async function codigoClave(req, env) {
+  const b = await leerCuerpo(req, env); if (!b) return fail('Solicitud inválida.', 403);
+  if (!emailValido(b.email)) return fail('Escribe un correo válido.');
+  if (!(await limiteIp(req, env, 'clave-ip', 10, 600)) || !(await dentroDelLimite(env, `puntos:clave:${await sha256(b.email)}`, 4, 600)))
+    return fail('Pediste muchos códigos seguidos. Espera unos minutos y revisa tu bandeja (también spam).', 429);
+  const c = await cuentaDe(env, b.email);
+  // No decimos si el correo existe o no más de lo que ya dice la pantalla: sin cuenta no se manda nada
+  if (!c) return json({ error: 'No hay cuenta con ese correo. Crea una nueva.', existe: false }, 404);
+  const cod = codigo6(), ahora = new Date().toISOString();
+  await run(env, 'UPDATE puntos_codigos SET usado_at = ? WHERE email = ? AND usado_at IS NULL', ahora, b.email);
+  await run(env, 'INSERT INTO puntos_codigos (email, codigo_hash, expira_at) VALUES (?, ?, ?)', b.email, await hashCodigo(env, b.email, cod), new Date(Date.now() + CODIGO_MIN * 60e3).toISOString());
+  await enviar(env, { para: b.email, asunto: `${cod} es tu código para crear tu contraseña de Puntos Vorka`, idempotencia: `puntos-clave-${aleatorio(8)}`,
+    html: marco('Crea tu contraseña', `<p style="${P}">Escribe este código en la app para crear tu contraseña de Puntos Vorka:</p><table role="presentation" cellpadding="0" cellspacing="0" style="margin:4px 0 22px;width:100%"><tr><td align="center" style="background:#F4F2EF;border-radius:16px;padding:18px 12px"><div style="font-size:34px;font-weight:800;letter-spacing:10px;color:#141114;font-family:'SF Mono',Menlo,Consolas,monospace">${cod}</div><div style="font-size:12.5px;color:#A8A4A9;margin-top:6px">Vence en ${CODIGO_MIN} minutos · un solo uso</div></td></tr></table><p style="${P}">Si no lo pediste, ignora este correo: tu cuenta sigue igual.</p>`, { etiqueta: 'Puntos' }),
+    texto: `Tu código para crear tu contraseña de Puntos Vorka: ${cod} (vence en ${CODIGO_MIN} minutos).\n\nSi no lo pediste, ignora este correo.` });
+  return json({ ok: true, reenviar_en: 60, ...(!env.RESEND_API_KEY && !env.CORREO ? { codigo: cod } : {}) });
+}
+
+async function nuevaClave(req, env) {
+  const b = await leerCuerpo(req, env); if (!b) return fail('Solicitud inválida.', 403);
+  if (!emailValido(b.email)) return fail('Escribe un correo válido.');
+  const cod = String(b.codigo || '').replace(/\D/g, '');
+  if (cod.length !== 6) return fail('El código tiene 6 dígitos.');
+  const mal = claveInvalida(b.clave); if (mal) return fail(mal);
+  if (!(await limiteIp(req, env, 'codigo-ip', 30, 900)) || !(await dentroDelLimite(env, `puntos:codigo:${await sha256(b.email)}`, 12, 900)))
+    return fail('Demasiados intentos. Espera unos minutos y pide un código nuevo.', 429);
+  const ahora = new Date().toISOString();
+  const fila = await one(env, 'SELECT * FROM puntos_codigos WHERE email = ? AND usado_at IS NULL AND expira_at > ? ORDER BY id DESC LIMIT 1', b.email, ahora);
+  if (!fila) return fail('Ese código ya venció o ya se usó. Pide uno nuevo.');
+  if (fila.intentos >= CODIGO_INTENTOS) return fail('Demasiados intentos con este código. Pide uno nuevo.', 429);
+  if (!iguales(fila.codigo_hash, await hashCodigo(env, b.email, cod))) {
+    await run(env, 'UPDATE puntos_codigos SET intentos = intentos + 1 WHERE id = ?', fila.id);
+    return fail('Código incorrecto. Revisa el último correo que te llegó.');
+  }
+  if (!(await run(env, 'UPDATE puntos_codigos SET usado_at = ? WHERE id = ? AND usado_at IS NULL', ahora, fila.id)).meta.changes) return fail('Ese código ya se usó. Pide uno nuevo.');
+  const salt = aleatorio(16), hash = await pbkdf2(b.clave, salt), nombre = String(b.nombre || '').trim().slice(0, 80) || null;
+  await codigoDe(env, b.email, nombre);
+  await run(env, `INSERT INTO puntos_cuentas (email, nombre, clave_hash, clave_salt) VALUES (?, ?, ?, ?)
+    ON CONFLICT(email) DO UPDATE SET clave_hash = excluded.clave_hash, clave_salt = excluded.clave_salt, nombre = COALESCE(puntos_cuentas.nombre, excluded.nombre)`, b.email, nombre, hash, salt);
+  // Al cambiar la contraseña se cierran las demás sesiones
+  await run(env, "DELETE FROM puntos_accesos WHERE email = ? AND tipo = 'sesion'", b.email);
+  return json({ ok: true }, 200, { 'set-cookie': await crearSesion(env, b.email) });
+}
+
 async function entrarConCodigo(req, env) {
   if (!mismoOrigen(req, env)) return fail('Solicitud inválida.', 403);
   const b = await req.json().catch(() => ({}));
@@ -368,6 +477,11 @@ export async function rutasPuntos(req, env, url) {
   if ((m = p.match(/^\/tienda\/puntos\/acceso\/([a-f0-9]{64})$/)) && M === 'GET') return canjear(env, m[1]);
   if (p === '/api/puntos/entrar' && M === 'POST') return pedirEnlace(req, env);
   if (p === '/api/puntos/codigo' && M === 'POST') return entrarConCodigo(req, env);
+  if (p === '/api/puntos/existe' && M === 'POST') return existeCuenta(req, env);
+  if (p === '/api/puntos/registro' && M === 'POST') return registrar(req, env);
+  if (p === '/api/puntos/login' && M === 'POST') return entrarConClave(req, env);
+  if (p === '/api/puntos/clave/codigo' && M === 'POST') return codigoClave(req, env);
+  if (p === '/api/puntos/clave/nueva' && M === 'POST') return nuevaClave(req, env);
   if (p === '/api/puntos/salir' && M === 'POST') {
     const t = leerCookie(req);
     if (/^[a-f0-9]{64}$/.test(t || '')) await run(env, 'DELETE FROM puntos_accesos WHERE token_hash = ?', await hashToken(env, t));
