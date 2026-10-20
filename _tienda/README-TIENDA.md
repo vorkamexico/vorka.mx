@@ -243,7 +243,7 @@ Tarjetas de lealtad para negocios (Diversificación). Aquí solo se vende; la ap
 **Antes de activar los productos** (en este orden):
 1. Unir el PR y aplicar la migración: `npx wrangler d1 migrations apply vorka-tienda --remote`.
 2. Stripe (modo real) → *Settings → Billing → Customer portal*: activarlo con cambiar tarjeta, ver facturas y **cancelar al final del periodo**; sin cambio de plan por ahora. Guardar.
-3. Stripe → *Developers → Webhooks* → el endpoint de la tienda: agregar `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid` e `invoice.payment_failed`. La llave restringida necesita permiso de escritura en *Subscriptions*, *Invoices* (lectura) y *Customer portal*.
+3. Stripe → *Developers → Webhooks* → el endpoint de la tienda: agregar `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid` e `invoice.payment_failed`. La llave restringida necesita lectura en *Subscriptions* e *Invoices*, y escritura en *Customer portal*.
 4. Publicar el Worker (agrega la ruta `vorka.mx/vuelve*`).
 5. Probar una suscripción en modo prueba (tarjeta 4242) con un correo propio, cancelarla desde el portal y confirmar que en Vuelve › Cuenta cambia el estado.
 6. Activar `vuelve-mensual`, `vuelve-anual` y las dos sucursales en Vorka México → Tienda → Productos.
