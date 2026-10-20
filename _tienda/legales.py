@@ -1,5 +1,6 @@
 # Vorka México · páginas legales de la tienda (y de Cupo: /legal/cupo/, /legal/cupo/privacidad/, /legal/cupo/privacidad-asistentes/): /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
+# Vuelve: /legal/vuelve/ (condiciones), /legal/vuelve/privacidad/ (negocios) y /legal/vuelve/privacidad-clientes/ (clientes de cada negocio)
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
 import os, re, sys
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -9,6 +10,7 @@ from partes import cabeza, nav, pie, v_metal
 ACTUALIZADO = '15 de octubre de 2026'
 ACTUALIZADO_BRINDI = '18 de octubre de 2026'
 ACTUALIZADO_CUPO = '19 de octubre de 2026'
+ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -289,6 +291,74 @@ CUPO_ASISTENTES = [
     ('cambios', 'Cambios a este aviso', '<p>La versión vigente siempre está en esta dirección, enlazada desde cada formulario de registro.</p>'),
 ]
 
+# Vuelve (tarjetas de lealtad por suscripción). Mismas bases que Cupo (LFPDPPP 2025, LFPC art. 76 Bis); aquí además hay
+# renovación automática (LFPC: informar antes de contratar y permitir cancelar por el mismo medio). Debe revisarlo un abogado.
+MIGAS_VUELVE = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/vuelve/">Vuelve</a>'
+VUELVE = [
+    ('quien', 'Quién presta el servicio', f'<p>Vuelve es una plataforma de tarjetas de lealtad digitales (sellos o puntos, recompensas, avisos a clientes y métricas) para negocios, desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y el negocio que usa Vuelve (“tú”). Al crear tu cuenta o suscribirte las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/vuelve/privacidad/">aviso de privacidad de Vuelve</a>.</p>'),
+    ('prueba', 'Prueba gratis', li(
+        'Al crear tu cuenta tienes 7 días naturales con todas las funciones, sin dar una tarjeta. No se te cobra nada al terminar.',
+        'Si al terminar la prueba no te suscribes, tu programa queda en pausa: tus clientes conservan su tarjeta y su saldo, pero no se pueden sumar sellos ni salen avisos. Te suscribes cuando quieras y todo sigue donde lo dejaste.')),
+    ('suscripcion', 'Suscripción, precio y renovación automática', li(
+        'El plan es <b>mensual o anual</b>, en pesos mexicanos con IVA incluido, e incluye una sucursal. Cada sucursal adicional se suma a tu plan con el mismo periodo. El precio vigente se muestra en <a href="/tienda/vuelve/">vorka.mx/tienda/vuelve</a> antes de pagar.',
+        '<b>La suscripción se renueva sola</b> al final de cada periodo y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto tu programa sigue funcionando. Si no se logra cobrar, la suscripción se cancela y tu programa queda en pausa.',
+        'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
+        'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
+    ('cancelar', 'Cancelación y reembolsos', li(
+        'Cancelas cuando quieras desde Vuelve › Cuenta › Suscripción, sin llamadas ni trámites. Tu programa sigue activo hasta el final del periodo que ya pagaste; no se hacen cobros nuevos.',
+        'Antes y después de cancelar puedes descargar a tus clientes en Excel.',
+        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo que una falla atribuible a Vuelve te impida usarlo y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al primer cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
+    ('programa', 'Tu programa y tus promesas a tus clientes', li(
+        'Tú defines los sellos, los puntos, las recompensas, los niveles, los premios de referidos y los mensajes. <b>Frente a tus clientes, las recompensas las ofreces y las cumples tú.</b> Vorka solo presta la herramienta.',
+        'Si cambias o terminas tu programa, avísalo a tus clientes y respeta las recompensas que ya ganaron.',
+        'Tú eres responsable de lo que hace tu equipo con el escáner. Vuelve te da PIN por persona, topes y una bitácora para ayudarte a controlarlo.')),
+    ('clientes', 'Datos de tus clientes', '<p>Tú eres el <b>responsable</b> de los datos de las personas que se registran en tu programa y decides para qué los usas; Vorka los trata <b>solo por tu cuenta</b> (como encargado) para prestarte el servicio: mostrar su tarjeta, sumar sellos, enviar los avisos que configures y darte tus métricas. Vuelve pone en tu página de registro un <a href="/legal/vuelve/privacidad-clientes/">aviso de privacidad para clientes</a> con tus datos de contacto, pide su aceptación y separa el permiso para recibir promociones. Te comprometes a usar esos datos solo para tu programa, a no enviar promociones a quien no las aceptó, a no venderlos y a atender sus peticiones de corregir o borrar sus datos. Vorka no usa los datos de tus clientes para nada más ni los comparte con otros negocios.</p>'),
+    ('avisos', 'Avisos, tarjetas en el celular y disponibilidad', '<p>Los avisos llegan a la tarjeta del cliente (Apple Wallet, Google Wallet o tarjeta web con notificaciones) y, si dejó su correo, por correo. Su entrega depende de terceros (Apple, Google, proveedores de correo y los ajustes del celular de cada persona), así que no garantizamos que cada aviso se vea. En iPhone, el aviso por cercanía muestra la tarjeta en la pantalla de bloqueo cuando la persona pasa cerca de tu sucursal y tiene activada la ubicación; no es una notificación con sonido. Hacemos lo razonable para que Vuelve esté disponible siempre, pero puede haber interrupciones por mantenimiento o fallas de terceros.</p>'),
+    ('uso', 'Uso aceptable', li(
+        'Solo para negocios reales y lícitos. No se permite usar Vuelve para spam, para ofrecer recompensas que no piensas cumplir, para suplantar a otro negocio ni para recabar datos de personas sin su conocimiento.',
+        'Podemos suspender una cuenta que incumpla estas reglas; te avisaremos el motivo. Si la suspensión fue por un error nuestro, te reembolsamos el periodo afectado.')),
+    ('conservacion', 'Qué pasa con tus datos si te vas', '<p>Si cancelas o tu prueba termina sin suscripción, conservamos tu programa y tus clientes 90 días después del fin de tu último periodo, por si vuelves. Después se borran de forma definitiva, salvo lo que la ley nos obligue a conservar (por ejemplo, tus facturas). Puedes pedir que lo borremos antes.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes de México.</p>'),
+]
+
+VUELVE_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de los negocios y de las personas que los administran en Vuelve. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. Si eres cliente de un negocio que usa Vuelve, consulta el <a href="/legal/vuelve/privacidad-clientes/">aviso para clientes</a>.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Cuenta:</b> correo electrónico y, si lo das, tu nombre.',
+        '<b>Tu negocio:</b> nombre, giro, logo, colores, sucursales (dirección y ubicación) y los nombres de tu equipo (su PIN se guarda cifrado de forma irreversible).',
+        '<b>Suscripción:</b> plan, monto, fechas y estado de tus pagos. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Uso y seguridad:</b> bitácora de acciones y una huella cifrada e irreversible de tu dirección IP para limitar intentos repetidos.') + '<p>No pedimos datos personales sensibles.</p>'),
+    ('finalidades', 'Para qué los usamos', '<p><b>Finalidades necesarias:</b> crear y mantener tu cuenta; prestar el servicio; cobrar tu suscripción y emitir facturas; enviarte correos de tu cuenta (accesos, avisos de cobro, reportes de tu programa); darte soporte y cumplir obligaciones legales; mantener la seguridad y obtener estadísticas agregadas que no te identifican. <b>Finalidad opcional:</b> enviarte novedades de Vorka México. Puedes negarte escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> sin que eso afecte tu servicio.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos tus datos. Usamos proveedores que los tratan solo por nuestra cuenta: <b>Cloudflare</b> (alojamiento, base de datos e imágenes), <b>Stripe</b> (cobro de la suscripción), <b>Amazon Web Services</b> (Amazon SES), <b>Resend</b> y <b>Brevo</b> (correos), y <b>Apple</b> y <b>Google</b> (tarjetas en Wallet), algunos con servidores fuera de México. Tu nombre comercial, logo y la información de tu programa se muestran a tus clientes en sus tarjetas.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde tu cuenta. Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('conservacion', 'Cuánto tiempo los conservamos', li('Cuenta y programa: mientras uses Vuelve y hasta 90 días después del fin de tu último periodo.', 'Suscripción y facturación: durante los plazos fiscales (al menos 5 años).', 'Huellas de IP: se borran a más tardar 2 días después.')),
+    ('cookies', 'Cookies', '<p>La app usa una sola cookie necesaria (<code>vvu</code>) para mantener tu sesión. Las páginas de registro y las tarjetas de tus clientes no usan cookies de rastreo.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
+VUELVE_CLIENTES = [
+    ('resumen', 'En pocas palabras', li(
+        'Tus datos los usa <b>el negocio</b> donde te registraste para darte tu tarjeta, sumar tus sellos o puntos y darte tus recompensas.',
+        'Vorka México presta la plataforma Vuelve y trata tus datos solo para eso. <b>No los vendemos, no los compartimos con otros negocios y no los usamos para publicidad.</b>',
+        'Solo recibes promociones si lo aceptaste; puedes dejar de recibirlas cuando quieras desde tu tarjeta.',
+        'Puedes borrar tu tarjeta y tus datos desde la propia tarjeta, en cualquier momento.')),
+    ('quien', 'Quién trata tus datos', f'<p>El negocio cuyo nombre aparece en tu tarjeta es el <b>responsable</b> de tus datos y decide para qué los usa dentro de su programa de lealtad. {RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, presta la plataforma y trata tus datos <b>por cuenta del negocio</b>; es responsable directa solo de los datos que usa para la seguridad del servicio. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('datos', 'Qué datos se tratan', li(
+        'Los que das al registrarte: nombre, teléfono y, si quieres, tu correo y el día y mes de tu cumpleaños (sin el año).',
+        'Tu actividad en el programa: visitas, sellos o puntos, recompensas canjeadas, nivel y, si el negocio lo registra, el monto de tus compras.',
+        'Si invitaste a alguien o alguien te invitó con su liga, esa relación (para darles a los dos su premio).',
+        'Si agregas tu tarjeta a Apple Wallet o Google Wallet, o activas las notificaciones de tu tarjeta web, los identificadores técnicos que esos servicios generan para enviarte avisos.',
+        'Para seguridad: una huella cifrada e irreversible de tu dirección IP.') + '<p>No se piden datos personales sensibles ni datos bancarios.</p>'),
+    ('finalidades', 'Para qué se usan', '<p><b>Necesarias:</b> darte tu tarjeta, sumar y canjear tus sellos o puntos, avisarte de tus recompensas, felicitarte en tu cumpleaños con el regalo del negocio, darte el premio de referidos y evitar abusos. <b>Opcionales (solo si las aceptaste):</b> recibir promociones del negocio, avisos de “te extrañamos” y avisos cuando pasas cerca de una sucursal. Puedes revocar este permiso desde tu tarjeta sin perder tus sellos.</p>'),
+    ('compartir', 'Con quién se comparten', '<p>Tus datos los ve el negocio y su equipo (al sellar ven tu nombre, nivel y saldo). Vorka usa a Cloudflare (alojamiento), a Amazon Web Services (Amazon SES), Resend y Brevo (correos), y a Apple y Google si agregas tu tarjeta a su Wallet; algunos tienen servidores fuera de México. No se comparten con otros negocios ni con terceros para publicidad.</p>'),
+    ('arco', 'Tus derechos', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos y revocar tu consentimiento. Desde tu tarjeta puedes dejar de recibir promociones o borrar tu tarjeta y tus datos. Para lo demás, escribe al negocio o a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con el nombre del negocio; se lo haremos llegar y le ayudaremos a atenderlo. Podemos pedirte:</p>' + ARCO + ARCO_PLAZOS),
+    ('menores', 'Personas menores de edad', '<p>Si eres menor de edad, regístrate con el conocimiento de tu madre, padre o tutor.</p>'),
+    ('conservacion', 'Cuánto tiempo se conservan', '<p>Mientras tengas tu tarjeta y el negocio use Vuelve. Si borras tu tarjeta, tus datos se borran de inmediato (el negocio conserva solo totales sin tu nombre). Si el negocio deja Vuelve, se borran 90 días después. Las huellas de IP se borran a más tardar 2 días después.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>La versión vigente siempre está en esta dirección, enlazada desde cada página de registro y desde tu tarjeta.</p>'),
+]
+
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -320,3 +390,12 @@ escribir('/legal/cupo/privacidad/', pagina('/legal/cupo/privacidad/', 'Aviso de 
 escribir('/legal/cupo/privacidad-asistentes/', pagina('/legal/cupo/privacidad-asistentes/', 'Aviso de privacidad para asistentes', 'Aviso de privacidad para <span class="metal">asistentes.</span>',
     'Te registraste a un evento en Cupo. Esto es lo que pasa con tus datos.', 'Cupo · Asistentes', CUPO_ASISTENTES,
     aplica='Aplica a quien se registra a un evento de Cupo', migas=MIGAS_CUPO, actualizado=ACTUALIZADO_CUPO))
+escribir('/legal/vuelve/', pagina('/legal/vuelve/', 'Condiciones de Vuelve', 'Condiciones de <span class="metal">Vuelve.</span>',
+    'El contrato entre Vorka México y el negocio que usa Vuelve: prueba gratis, suscripción con renovación automática, cancelación, tu programa y los datos de tus clientes.', 'Vuelve', VUELVE,
+    aplica='Aplica a los negocios que usan Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))
+escribir('/legal/vuelve/privacidad/', pagina('/legal/vuelve/privacidad/', 'Aviso de privacidad de Vuelve', 'Aviso de privacidad de <span class="metal">Vuelve.</span>',
+    'Qué datos tratamos de los negocios que usan Vuelve, para qué y cómo ejercer tus derechos.', 'Vuelve · Negocios', VUELVE_PRIVACIDAD,
+    aplica='Aplica a los negocios que usan Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))
+escribir('/legal/vuelve/privacidad-clientes/', pagina('/legal/vuelve/privacidad-clientes/', 'Aviso de privacidad para clientes', 'Aviso de privacidad para <span class="metal">clientes.</span>',
+    'Te registraste en el programa de lealtad de un negocio que usa Vuelve. Esto es lo que pasa con tus datos.', 'Vuelve · Clientes', VUELVE_CLIENTES,
+    aplica='Aplica a quien tiene una tarjeta de Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))

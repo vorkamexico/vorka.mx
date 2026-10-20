@@ -8,6 +8,7 @@ import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento } from './simulador/index.js';
 import { productoPorSlug } from './modelo.js';
 import { cuentaActual, saldoDe, descuentoMaximo } from './puntos.js';
+import { suscripcionDe, itemsSuscripcion, vigente } from './suscripciones.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -28,6 +29,8 @@ export const EsquemaCheckout = z.object({
   regalo_mensaje: z.string().trim().max(280, 'El mensaje puede tener hasta 280 caracteres.').optional().or(z.literal('')),
   // Canjear puntos Vorka (requiere la sesión de la cuenta de puntos y comprar con su mismo correo)
   usar_puntos: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
+  // Suscripciones (Vuelve): sucursales adicionales a la incluida en el plan
+  sucursales: z.coerce.number().int().min(0).max(20, 'Hasta 20 sucursales adicionales; para más, escríbenos.').optional(),
 }).refine(d => d.slug || d.items, { message: 'Falta el producto.', path: ['slug'] });
 
 // Límites: por IP 10 intentos / 10 min, por correo 5 / 10 min
@@ -62,7 +65,20 @@ export async function checkout(req, env) {
   }
 
   // Varias unidades del mismo producto solo tienen sentido al regalar (o en el carrito con items)
-  const items = d.items || [{ slug: d.slug, cantidad: d.regalo ? (d.cantidad || 1) : 1 }];
+  let items = d.items || [{ slug: d.slug, cantidad: d.regalo ? (d.cantidad || 1) : 1 }];
+  // Suscripción: un solo plan por compra (+ sucursales adicionales del mismo intervalo); sin regalos ni puntos
+  const subs = [];
+  for (const it of items) { const p = await productoPorSlug(env, it.slug); if (suscripcionDe(p)) subs.push(p); }
+  if (subs.length) {
+    const plan = subs[0];
+    if (items.length > 1 || plan.contenido.complemento) return error('Elige un solo plan; las sucursales adicionales se agregan junto con él.');
+    if (d.regalo) return error('Las suscripciones no se pueden regalar.');
+    if (d.usar_puntos) return error('Los puntos no se pueden usar en suscripciones.');
+    if (await vigente(env, d.email, plan.contenido.acceso?.app))
+      return error('Ya tienes una suscripción activa con este correo. Adminístrala desde la app, en Cuenta.', 409);
+    try { items = await itemsSuscripcion(env, plan, d.sucursales || 0); }
+    catch { return error('Las sucursales adicionales no están disponibles por ahora.'); }
+  }
   for (const it of items) {
     const p = await productoPorSlug(env, it.slug);
     // Los simulacros adicionales del Simulador PAA solo los compra quien ya tiene el simulador

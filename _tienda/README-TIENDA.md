@@ -230,3 +230,20 @@ Invitaciones digitales con marca propia (Diversificación). Aquí solo se vende;
 - La analítica de ventas para Diversificación sale de `Admin.resumenApp`. Las visitas a la ficha se registran en el producto Celebración.
 - Condiciones: `/legal/brindi/` (generada con `python3 _tienda/legales.py`).
 - Publicar: `_tienda/publicar-brindi.command` después de unir los PR.
+
+## Vuelve (vorka.mx/tienda/vuelve) · suscripciones
+
+Tarjetas de lealtad para negocios (Diversificación). Aquí solo se vende; la app vive en `os.vorka.mx/vuelve/` (ver `vorka-os/PLAN-VUELVE.md`). Es el primer producto de la tienda que se cobra **por suscripción** (Stripe Billing).
+
+- Productos (migración 0025, entran **inactivos**): `vuelve-mensual` ($399), `vuelve-anual` ($3,990, oculto) y la sucursal adicional de cada intervalo (`vuelve-sucursal-*`, ocultas). `contenido.suscripcion = { intervalo, extra }` le dice al checkout que abra Stripe en `mode: 'subscription'` con precios recurrentes en línea (`src/suscripciones.js`, `sesionSuscripcion` en `src/pagos/stripe.js`). Sin OXXO ni SPEI: no sirven para cobros automáticos.
+- La primera compra es una orden normal (paid → correo con `os.vorka.mx/vuelve/entrar/<token>`). Renovaciones, fallas de pago y cancelaciones llegan por webhook y solo actualizan la tabla `suscripciones` (siempre consultando la suscripción en la API, nunca el cuerpo del webhook).
+- Vorka OS lee el estado con `Admin.suscripcionApp(correo, 'vuelve')`, abre el portal de clientes con `Admin.portalApp` y muestra MRR con `Admin.resumenSuscripciones`.
+- Ligas: `vorka.mx/vuelve/<negocio>` → registro de clientes en `os.vorka.mx/v/<negocio>` (cartel con QR). Condiciones: `/legal/vuelve/`, `/legal/vuelve/privacidad/`, `/legal/vuelve/privacidad-clientes/`.
+
+**Antes de activar los productos** (en este orden):
+1. Unir el PR y aplicar la migración: `npx wrangler d1 migrations apply vorka-tienda --remote`.
+2. Stripe (modo real) → *Settings → Billing → Customer portal*: activarlo con cambiar tarjeta, ver facturas y **cancelar al final del periodo**; sin cambio de plan por ahora. Guardar.
+3. Stripe → *Developers → Webhooks* → el endpoint de la tienda: agregar `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid` e `invoice.payment_failed`. La llave restringida necesita lectura en *Subscriptions* e *Invoices*, y escritura en *Customer portal*.
+4. Publicar el Worker (agrega la ruta `vorka.mx/vuelve*`).
+5. Probar una suscripción en modo prueba (tarjeta 4242) con un correo propio, cancelarla desde el portal y confirmar que en Vuelve › Cuenta cambia el estado.
+6. Activar `vuelve-mensual`, `vuelve-anual` y las dos sucursales en Vorka México → Tienda → Productos.

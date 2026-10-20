@@ -18,6 +18,8 @@ import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
 import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp } from './brindi.js';
 import { paginaCupo } from './cupo.js';
+import { paginaVuelve } from './vuelve.js';
+import { suscripcionApp, portalApp, resumenSuscripciones } from './suscripciones.js';
 import { rutasPuntos } from './puntos.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
@@ -80,13 +82,22 @@ export class Admin extends WorkerEntrypoint {
   comprasApp(email, app) { return comprasApp(this.env, email, app); }
   resumenApp(app, f) { return resumenApp(this.env, app, f); }
   productosApp(app) { return productosApp(this.env, app); }
+  // Apps por suscripción (Vuelve): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
+  suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }
+  portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
+  resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
 }
 
 // Ligas cortas de las apps de eventos: vorka.mx/cupo/<liga> y vorka.mx/brindi/<liga>[/<invitado>] llevan al evento en os.vorka.mx
 const APPS = 'https://os.vorka.mx';
 export function ligaCorta(url) {
   const p = url.pathname;
-  if (!/^\/(cupo|brindi)(\/|$)/.test(p)) return null;
+  if (!/^\/(cupo|brindi|vuelve)(\/|$)/.test(p)) return null;
+  // Vuelve: vorka.mx/vuelve/<negocio> es la liga del cartel con QR → registro de clientes en os.vorka.mx/v/<negocio>
+  if (p.startsWith('/vuelve')) {
+    const v = p.match(/^\/vuelve\/([a-z0-9-]{3,60})\/?$/i);
+    return new Response(null, { status: v ? 302 : 301, headers: { location: v ? `${APPS}/v/${v[1].toLowerCase()}${url.search}` : `/tienda/vuelve/${url.search}`, 'cache-control': 'no-store' } });
+  }
   const ir = (destino, codigo = 302) => new Response(null, { status: codigo, headers: { location: destino, 'cache-control': 'no-store' } });
   if (p === '/cupo' || p === '/cupo/') return ir(`${APPS}/cupo/${url.search}`, 301);
   if (p === '/brindi' || p === '/brindi/') return ir(`/tienda/brindi/${url.search}`, 301);
@@ -132,6 +143,7 @@ export default {
         if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
         if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
         if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
+        if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
         if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
         if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
         // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.
