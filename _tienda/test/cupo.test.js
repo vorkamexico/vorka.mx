@@ -51,9 +51,9 @@ describe('Cupo en la tienda', () => {
 });
 
 describe('Brindi o Cupo', () => {
-  it('el catálogo, la página de Brindi y la ficha de Cupo explican cuál conviene', async () => {
+  it('la página de Brindi y la ficha de Cupo explican cuál conviene (la portada de la tienda queda ligera)', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
-    for (const ruta of ['/tienda/', '/tienda/brindi/', '/tienda/cupo/']) {
+    for (const ruta of ['/tienda/brindi/', '/tienda/cupo/']) {
       const html = await (await pedir(ruta)).text();
       expect(html, ruta).toContain('¿Brindi o Cupo?');
       expect(html, ruta).toContain('Regla rápida');

@@ -414,8 +414,8 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .marca-xl { margin-top: 64px; display: flex; align-items: flex-end; gap: 2vw; color: var(--fg); line-height: .8; user-select: none; }
 .marca-xl svg { width: 15vw; height: auto; flex: none; }
 .marca-xl b { font-size: 19vw; font-weight: 800; letter-spacing: -.07em; margin-bottom: -2.4vw; background: linear-gradient(180deg, var(--fg) 30%, rgba(20, 17, 20, .1)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.pie-base { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; font-size: 13px; color: var(--fg-3); }
-.pie-base nav { display: flex; gap: 20px; }
+.pie-base { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; font-size: 13px; color: var(--fg-3); }
+.pie-base nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; }
 @media (max-width: 900px) { .pie-top { grid-template-columns: 1fr 1fr; } .pie-top > div:first-child { grid-column: 1 / -1; } }
 
 /* ---------- Páginas interiores ---------- */

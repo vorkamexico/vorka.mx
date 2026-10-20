@@ -370,3 +370,56 @@
 .t-garantias svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--verde, #2b8553); }
 /* Igual en las portadas de Brindi y Cupo: las columnas del encabezado nunca crecen más que la pantalla */
 .br-hero-g > *, .cu-hero-g > *, .t-inicio-g > *, .pv-hero > * { min-width: 0; }
+/* Líneas legales al pie (condiciones, privacidad, Powered by): centradas */
+.t-legal { text-align: center; }
+
+/* ---------- Portada de la tienda (oct 2026): menos es más ---------- */
+.t-home { position: relative; isolation: isolate; overflow: hidden; margin-top: -104px; padding: 148px 0 clamp(40px, 6vw, 72px); }
+.t-home::after { content: ""; position: absolute; right: -15%; top: 5%; width: 900px; height: 700px; z-index: -1; background: radial-gradient(closest-side, rgba(200, 164, 92, .2), rgba(107, 42, 133, .07) 55%, transparent); }
+.t-home-g { display: grid; gap: clamp(32px, 5vw, 64px); align-items: center; }
+.t-home-g > * { min-width: 0; }
+@media (min-width: 980px) { .t-home-g { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); } }
+.t-home-h1 { margin-top: 14px; max-width: 13ch; }
+.t-home .lead { margin-top: 18px; max-width: 30em; }
+.t-home .botones { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; }
+.t-vitrina { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.t-vitrina-t { position: relative; display: block; border-radius: 22px; overflow: hidden; aspect-ratio: 1 / 1; background: var(--bg-2); text-decoration: none; color: inherit; box-shadow: var(--sombra); transition: transform .35s var(--ease), box-shadow .35s var(--ease); }
+.t-vitrina-t:hover { transform: translateY(-4px); box-shadow: var(--sombra-2); }
+.t-vitrina-img, .t-vitrina-img > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.t-vitrina-img .t-portada { padding: 18px; }
+.t-vitrina-img .t-portada b { font-size: 18px; }
+.t-vitrina-x { position: absolute; left: 10px; right: 10px; bottom: 10px; display: grid; gap: 1px; padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, .92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #141114; }
+.t-vitrina-x small { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--morado); }
+.t-vitrina-x b { font-size: 14.5px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
+.t-vitrina-x em { font-style: normal; font-size: 12.5px; color: #6d696e; }
+@media (min-width: 980px) { .t-vitrina-t { aspect-ratio: 4 / 4.3; } }
+
+.t-cat-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin-bottom: 22px; }
+.t-filtros { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+.t-filtros::-webkit-scrollbar { display: none; }
+.t-filtros a { flex: none; display: inline-flex; align-items: center; min-height: 38px; padding: 0 15px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-size: 14px; font-weight: 600; color: var(--fg-2); text-decoration: none; white-space: nowrap; transition: border-color .2s, color .2s; }
+.t-filtros a:hover { color: var(--fg); border-color: var(--line-2); }
+.t-filtros a[aria-current] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+.t-cards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); }
+.t-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s; scroll-margin-top: 110px; }
+.t-card:hover { transform: translateY(-4px); box-shadow: var(--sombra-2); border-color: var(--line-2); }
+.t-card[hidden] { display: none; }
+.t-card-img { display: block; aspect-ratio: 4 / 3; background: var(--bg-2); overflow: hidden; }
+.t-card-img > * { width: 100%; height: 100%; object-fit: cover; border-radius: 0; transition: transform .6s var(--ease); }
+.t-card:hover .t-card-img > * { transform: scale(1.03); }
+.t-card-img .t-portada { padding: 22px; }
+.t-card-t { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+.t-card h3 { font-size: 18.5px; font-weight: 700; letter-spacing: -.02em; line-height: 1.25; margin-top: 6px; }
+.t-card h3 a { color: inherit; text-decoration: none; }
+.t-card p { font-size: 14.5px; color: var(--fg-2); margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.t-card-pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 16px; }
+.t-card-pie b { font-size: 17px; font-weight: 750; letter-spacing: -.02em; }
+.t-card-acc { display: flex; align-items: center; gap: 6px; }
+.t-card-regalo { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); text-decoration: none; font-size: 16px; }
+.t-card-regalo:hover { border-color: var(--line-2); }
+.t-puntos-banda { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 20px 24px; border-radius: var(--r); background: var(--noche); color: var(--claro); text-decoration: none; font-size: 15.5px; }
+.t-puntos-banda b { color: var(--oro-claro); }
+.t-puntos-banda .btn svg { width: 16px; height: 16px; }
+.t-como { padding: clamp(28px, 4vw, 44px) 0; }
+/* En celular la vitrina repetiría el catálogo que está justo abajo: se queda solo en pantallas grandes */
+@media (max-width: 700px) { .t-vitrina { display: none; } .t-home { padding-bottom: 8px; } }
