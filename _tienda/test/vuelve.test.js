@@ -180,4 +180,8 @@ describe('páginas y ligas', () => {
     expect((await pedir('/vuelve/cafe-la-paloma-x7k2?ref=ab')).headers.get('location')).toBe('https://os.vorka.mx/v/cafe-la-paloma-x7k2?ref=ab');
     expect((await pedir('/vuelve/')).headers.get('location')).toBe('/tienda/vuelve/');
   });
+  it('vorka.mx/vuelve/negocios lleva al directorio de negocios Vuelve', async () => {
+    expect((await pedir('/vuelve/negocios')).headers.get('location')).toBe('https://os.vorka.mx/negocios');
+    expect((await pedir('/vuelve/negocios/')).headers.get('location')).toBe('https://os.vorka.mx/negocios');
+  });
 });

@@ -110,7 +110,9 @@ const APPS = 'https://os.vorka.mx';
 export function ligaCorta(url) {
   const p = url.pathname;
   if (!/^\/(cupo|brindi|vuelve)(\/|$)/.test(p)) return null;
-  // Vuelve: vorka.mx/vuelve/<negocio> es la liga del cartel con QR → registro de clientes en os.vorka.mx/v/<negocio>
+  // Vuelve: vorka.mx/vuelve/<negocio> es la liga del cartel con QR → registro de clientes en os.vorka.mx/v/<negocio>;
+  // vorka.mx/vuelve/negocios es el directorio de negocios Vuelve (os.vorka.mx/negocios)
+  if (/^\/vuelve\/negocios\/?$/i.test(p)) return new Response(null, { status: 302, headers: { location: `${APPS}/negocios${url.search}`, 'cache-control': 'no-store' } });
   if (p.startsWith('/vuelve')) {
     const v = p.match(/^\/vuelve\/([a-z0-9-]{3,60})\/?$/i);
     return new Response(null, { status: v ? 302 : 301, headers: { location: v ? `${APPS}/v/${v[1].toLowerCase()}${url.search}` : `/tienda/vuelve/${url.search}`, 'cache-control': 'no-store' } });

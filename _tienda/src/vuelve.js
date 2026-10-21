@@ -13,7 +13,7 @@ export const RUTA_VUELVE = '/tienda/vuelve/';
 const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', nombre: 'Mensual', cada: 'al mes' }, { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
 
 const INCLUYE = ['Clientes ilimitados y tu propia página de registro con QR', 'Sellos o puntos, recompensas y niveles (Bronce, Plata, Oro)', 'Tarjeta en Apple Wallet, Google Wallet o en el navegador',
-  'Avisos de cumpleaños, de "te extrañamos" y por cercanía, automáticos', 'Programa de referidos: "trae a un amigo"', 'Reporte de dinero recuperado y retorno de clientes', 'Escáner para tu equipo con PIN y bitácora antifraude', 'Cartel con QR listo para imprimir'];
+  'Avisos de cumpleaños, de "te extrañamos" y por cercanía, automáticos', 'Programa de referidos: "trae a un amigo" (ves quién invitó a quién)', 'Tu liga propia (vorka.mx/vuelve/tu-negocio) y lugar en el directorio de negocios Vuelve', 'Reporte de dinero recuperado y retorno de clientes', 'Escáner para tu equipo con PIN y bitácora antifraude', 'Cartel con QR listo para imprimir'];
 const FAQ = [
   ['¿Puedo probar antes de pagar?', `Sí. Creas tu programa en <a href="${OS}/vuelve/">os.vorka.mx/vuelve</a> y lo usas completo 7 días, sin tarjeta. Si te sirve, te suscribes; si no, no pasa nada.`],
   ['¿Mis clientes tienen que descargar una app?', 'No. Escanean tu QR, escriben su nombre y teléfono, y su tarjeta queda en Apple Wallet, Google Wallet o como tarjeta en su navegador. Tarda menos de 30 segundos.'],
@@ -24,6 +24,8 @@ const FAQ = [
   ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Los descargas en Excel cuando quieras, también si cancelas. Vorka solo los guarda por tu cuenta para darte el servicio: no los vende ni los usa para publicidad. Cada cliente puede pedir su baja desde su tarjeta.'],
   ['¿Cuánto cuesta y cómo pago?', 'Mensual o anual (con 2 meses gratis), con tarjeta, procesado por Stripe. La suscripción incluye una sucursal; cada sucursal adicional se suma a tu plan. Te emitimos factura (CFDI) si la pides.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Vuelve › Cuenta, sin llamadas. Tu programa sigue activo hasta el final del periodo que pagaste y tus clientes conservan su tarjeta.'],
+  ['¿Mi negocio puede aparecer en un directorio?', 'Sí, si tú quieres. Con tu suscripción activa, tu negocio puede aparecer en <a href="/vuelve/negocios">vorka.mx/vuelve/negocios</a> con tu logo, tu ciudad y tu premio, para que te encuentren clientes nuevos. Lo prendes o apagas en Vuelve › Mi liga.'],
+  ['¿Es difícil de usar?', 'No. Está pensado para dueños que no son de computadora: todo desde el celular, con botones grandes, una pregunta a la vez y preguntas frecuentes dentro de la app. Y si te atoras, te ayuda una persona.'],
   ['¿Para qué negocios sirve?', 'Cafeterías, restaurantes, barberías, salones, estéticas, gimnasios, autolavados, tintorerías, panaderías: cualquier negocio con clientes que pueden regresar. Al empezar eliges tu giro y Vuelve te sugiere sellos, premios y mensajes.'],
 ];
 
@@ -52,7 +54,7 @@ export async function paginaVuelve(env, req, url) {
 <section class="vu-hero"><div class="marco vu-hero-g">
   <div>
     ${navTienda('lealtad')}
-    <span class="vu-logo">vuelve<i aria-hidden="true">↻</i></span>
+    <span class="vu-logo">vuelve</span>
     <h1 class="vu-h1">Que tus clientes <i>vuelvan solos.</i></h1>
     <p class="vu-lead">La tarjeta de sellos de tu negocio, en el celular de tus clientes. Sin app y sin cartón. Vuelve les avisa en su cumpleaños, cuando llevan tiempo sin venir y cuando pasan cerca, y tú ves cuánto dinero te traen de vuelta.</p>
     <div class="botones"><a class="btn tinta" href="${OS}/vuelve/#/nuevo">Probar 7 días gratis ${FLECHA}</a><a class="btn blanco" href="#planes">Ver precios</a></div>
