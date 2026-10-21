@@ -29,19 +29,29 @@ async function unidades(env, orderId) {
 
 /**
  * Crea ligas nuevas para las unidades que aún no se canjean y se las manda a quien compró.
- * Si ya había ligas pendientes (reenvío), se revocan DESPUÉS de mandar el correo con las nuevas,
+ * Si ya había ligas pendientes (reenvío desde el panel), se revocan DESPUÉS de mandar el correo con las nuevas,
  * para que nunca circulen dos ligas válidas para el mismo regalo.
+ * publico = true (formulario /descargas/reenviar): cualquiera que sepa el correo puede pedirlo, así que NUNCA se cambian
+ * ni apagan ligas ya enviadas (quizá ya se compartieron). Como en D1 solo vive el HMAC del token, no se pueden volver a
+ * mandar: quien compró recibe un aviso para buscar el correo original o escribirnos. Cambiarlas queda solo en el panel.
  */
-export async function mandarRegalos(env, orden) {
-  const items = await unidades(env, orden.id);
-  const canjeadas = (await one(env, "SELECT COUNT(*) n FROM regalos WHERE order_id = ? AND estado = 'canjeado'", orden.id)).n;
-  const anteriores = await all(env, "SELECT id FROM regalos WHERE order_id = ? AND estado = 'pendiente'", orden.id);
+export async function mandarRegalos(env, orden, { publico = false } = {}) {
+  const ya = await all(env, 'SELECT id, product_id, estado FROM regalos WHERE order_id = ?', orden.id);
+  if (publico && ya.length) return avisarRegalosEnviados(env, orden, ya);
+  // Por producto: en un carrito con varios regalables, lo canjeado de uno no puede "gastar" unidades de otro
+  const porProducto = new Map();
+  for (const it of await unidades(env, orden.id)) {
+    const x = porProducto.get(it.product_id) || { nombre: it.nombre, cantidad: 0 };
+    x.cantidad += it.cantidad || 1;
+    porProducto.set(it.product_id, x);
+  }
+  const canjeadasDe = pid => ya.filter(r => r.product_id === pid && r.estado === 'canjeado').length;
+  const canjeadas = ya.filter(r => r.estado === 'canjeado').length;
+  const anteriores = ya.filter(r => r.estado === 'pendiente');
   const ligas = [];
-  let porSaltar = canjeadas;
-  for (const it of items) for (let k = 0; k < (it.cantidad || 1); k++) {
-    if (porSaltar > 0) { porSaltar--; continue; }
+  for (const [pid, it] of porProducto) for (let k = canjeadasDe(pid); k < it.cantidad; k++) {
     const token = aleatorio(32);
-    await run(env, 'INSERT INTO regalos (order_id, product_id, token_hash) VALUES (?,?,?)', orden.id, it.product_id, await hashRegalo(env, token));
+    await run(env, 'INSERT INTO regalos (order_id, product_id, token_hash) VALUES (?,?,?)', orden.id, pid, await hashRegalo(env, token));
     ligas.push({ token, producto: it.nombre, url: `${env.SITE_URL}/tienda/regalo/${token}` });
   }
   if (!ligas.length) return; // todo canjeado: no hay nada que reenviar
@@ -54,6 +64,31 @@ export async function mandarRegalos(env, orden) {
     throw e;
   }
   if (anteriores.length) await run(env, `UPDATE regalos SET estado = 'revocado' WHERE id IN (${anteriores.map(() => '?').join(',')})`, ...anteriores.map(a => a.id));
+}
+
+// Reenvío público de una compra para regalar: no toca las ligas, solo le recuerda a quien compró dónde están
+async function avisarRegalosEnviados(env, orden, ligas) {
+  const nombre = primerNombre(orden.nombre);
+  const abiertas = ligas.filter(l => l.estado === 'canjeado').length, porAbrir = ligas.filter(l => l.estado === 'pendiente').length;
+  const fecha = orden.correo_enviado_at ? new Date(orden.correo_enviado_at).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'long' }) : '';
+  const asunto = 'Tus ligas de regalo';
+  const estado = `${abiertas === 1 ? '1 regalo ya se abrió' : `${abiertas} regalos ya se abrieron`} y ${porAbrir === 1 ? '1 liga sigue' : `${porAbrir} ligas siguen`} sin abrir.`;
+  const html = marco(asunto, `
+<p style="${P}">Hola, ${esc(nombre)}:</p>
+<p style="${P}">Pediste recuperar tu compra para regalar. Por seguridad, las ligas de regalo <b>no se vuelven a generar</b> desde ese formulario: si lo hiciéramos, se apagarían las que ya compartiste.</p>
+<p style="${P}">Tus ligas están en el correo que te mandamos${fecha ? ` el ${esc(fecha)}` : ''} con el asunto «Tu regalo está listo» o «Tus regalos». ${esc(estado)}</p>
+<p style="${P}">¿Lo perdiste o necesitas ligas nuevas? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a> con tu número de orden y te las cambiamos.</p>
+<p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
+  const texto = `Hola, ${nombre}:
+
+Por seguridad, las ligas de regalo no se vuelven a generar desde el formulario de reenvío (se apagarían las que ya compartiste).
+Búscalas en el correo que te mandamos${fecha ? ` el ${fecha}` : ''} con el asunto "Tu regalo está listo" o "Tus regalos". ${estado}
+
+¿Lo perdiste o necesitas ligas nuevas? Escríbenos a ${SOPORTE.correo} o por WhatsApp (${SOPORTE.whatsapp}) con tu número de orden.
+
+Orden ${orden.id}
+Vorka México · Guanajuato, México`;
+  await enviar(env, { para: orden.email, asunto, html, texto, idempotencia: `regalo-aviso-${orden.id}-${Math.floor(Date.now() / 3600e3)}` });
 }
 
 export function correoRegalos(env, orden, ligas, canjeadas = 0) {
@@ -223,18 +258,19 @@ export async function canjearRegalo(req, env) {
   if (!r) return fail('Esta liga no es válida.', 404);
   if (r.orden_estado !== 'paid') return fail('Este regalo ya no está activo.', 410);
 
-  // Canje atómico: si dos personas abren la liga a la vez, solo una gana
-  const ahora = ahoraISO();
-  const t = await run(env, "UPDATE regalos SET estado = 'canjeado', canjeado_email = ?, canjeado_at = ? WHERE id = ? AND estado = 'pendiente'", d.email, ahora, r.id);
-  if (!t.meta.changes) return fail(r.estado === 'canjeado' ? 'Este regalo ya se abrió: cada liga funciona una sola vez.' : 'Este regalo ya no está activo.', 410);
-
-  const id = crypto.randomUUID();
-  await env.DB.batch([
-    env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, regalo_de, paid_at) VALUES (?,?,?,0,'MXN','paid','regalo',?,?)`)
-      .bind(id, d.email, d.nombre, r.order_id, ahora),
-    env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) VALUES (?,?,?,0,1)').bind(id, r.product_id, r.producto),
-    env.DB.prepare('UPDATE regalos SET canje_order_id = ? WHERE id = ?').bind(id, r.id),
+  // Canje atómico y todo o nada: la orden de $0, su renglón y marcar la liga van en la misma transacción (batch).
+  // Cada paso depende de que la liga siga pendiente y la compra pagada: si dos personas la abren a la vez, solo una gana;
+  // si algo falla a la mitad, no queda una liga "canjeada" sin acceso.
+  const ahora = ahoraISO(), id = crypto.randomUUID();
+  const [orden] = await env.DB.batch([
+    env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, regalo_de, paid_at)
+      SELECT ?, ?, ?, 0, 'MXN', 'paid', 'regalo', ?, ? WHERE EXISTS (SELECT 1 FROM regalos g JOIN orders o ON o.id = g.order_id WHERE g.id = ? AND g.estado = 'pendiente' AND o.estado = 'paid')`)
+      .bind(id, d.email, d.nombre, r.order_id, ahora, r.id),
+    env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) SELECT ?, ?, ?, 0, 1 WHERE EXISTS (SELECT 1 FROM orders WHERE id = ?)').bind(id, r.product_id, r.producto, id),
+    env.DB.prepare("UPDATE regalos SET estado = 'canjeado', canjeado_email = ?, canjeado_at = ?, canje_order_id = ? WHERE id = ? AND estado = 'pendiente' AND EXISTS (SELECT 1 FROM orders WHERE id = ?)")
+      .bind(d.email, ahora, id, r.id, id),
   ]);
+  if (!orden.meta.changes) return fail(r.estado === 'canjeado' ? 'Este regalo ya se abrió: cada liga funciona una sola vez.' : 'Este regalo ya no está activo.', 410);
   // Correo con su propio acceso (si falla, igual entra ahora y puede pedirlo en /descargas/reenviar)
   try {
     await mandarEnlace(env, id);
@@ -328,11 +364,18 @@ export async function apagarLiga(env, id) {
   if (!r.meta.changes) throw new Error('Esa liga ya se usó o ya estaba apagada.');
   return { ok: true };
 }
-// Volver a prender una liga apagada (solo si nunca se canjeó)
+// Volver a prender una liga apagada (solo si nunca se canjeó y la compra sigue pagada). Nunca deja dos ligas válidas
+// para la misma unidad pagada: si al reenviar ya se creó una más nueva para ese producto, primero hay que apagar esa.
 export async function prenderLiga(env, id) {
-  const r = await run(env, "UPDATE regalos SET estado = 'pendiente' WHERE id = ? AND estado = 'revocado' AND canje_order_id IS NULL", Number(id));
-  if (!r.meta.changes) throw new Error('Esa liga no se puede volver a prender.');
-  return { ok: true };
+  const r = await run(env, `UPDATE regalos SET estado = 'pendiente' WHERE id = ? AND estado = 'revocado' AND canje_order_id IS NULL
+    AND EXISTS (SELECT 1 FROM orders o WHERE o.id = regalos.order_id AND o.estado = 'paid')
+    AND (SELECT COUNT(*) FROM regalos g WHERE g.order_id = regalos.order_id AND g.product_id = regalos.product_id AND g.estado IN ('pendiente', 'canjeado'))
+      < (SELECT COALESCE(SUM(i.cantidad), 0) FROM order_items i WHERE i.order_id = regalos.order_id AND i.product_id = regalos.product_id)`, Number(id));
+  if (r.meta.changes) return { ok: true };
+  const l = await one(env, 'SELECT * FROM regalos WHERE id = ?', Number(id));
+  if (l && l.estado === 'revocado' && !l.canje_order_id && (await one(env, "SELECT 1 FROM orders WHERE id = ? AND estado = 'paid'", l.order_id)))
+    throw new Error('Esa liga ya se reemplazó por una más nueva (al reenviar). Usa la nueva o apágala primero.');
+  throw new Error('Esa liga no se puede volver a prender.');
 }
 // Ligas de una tanda o compra de regalo (sin el token: solo se ve al crearlas)
 export async function ligasDe(env, orderId) {

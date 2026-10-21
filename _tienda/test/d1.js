@@ -10,7 +10,8 @@ class Stmt {
   bind(...p) { this.p = p; return this; }
   async all() { return { results: this.db.prepare(this.sql).all(...this.p) }; }
   async first() { return this.db.prepare(this.sql).get(...this.p) ?? null; }
-  async run() { const r = this.db.prepare(this.sql).run(...this.p); return { meta: { changes: Number(r.changes) } }; }
+  async run() { return this.runSync(); }
+  runSync() { const r = this.db.prepare(this.sql).run(...this.p); return { meta: { changes: Number(r.changes) } }; }
 }
 
 export function d1({ seed = true } = {}) {
@@ -21,9 +22,10 @@ export function d1({ seed = true } = {}) {
   return {
     raw: db,
     prepare: sql => new Stmt(db, sql),
+    // Como en D1, un batch es una transacción que corre completa sin intercalarse con otras peticiones
     async batch(stmts) {
       db.exec('BEGIN');
-      try { const out = []; for (const s of stmts) out.push(await s.run()); db.exec('COMMIT'); return out; }
+      try { const out = []; for (const s of stmts) out.push(s.runSync ? s.runSync() : await s.run()); db.exec('COMMIT'); return out; }
       catch (e) { db.exec('ROLLBACK'); throw e; }
     },
   };

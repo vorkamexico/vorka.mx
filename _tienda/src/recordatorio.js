@@ -112,7 +112,7 @@ export async function retomarPago(env, id, url) {
   if (pagada) return Response.redirect(`${env.SITE_URL}/tienda/gracias?order=${pagada.id}`, 303);
   const items = await all(env, 'SELECT i.cantidad, p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id);
   let nueva;
-  try { nueva = await crearOrden(env, { items: items.map(i => ({ slug: i.slug, cantidad: i.cantidad })), email: o.email, nombre: o.nombre, ref: o.ref_code }); }
+  try { nueva = await crearOrden(env, { items: items.map(i => ({ slug: i.slug, cantidad: i.cantidad })), email: o.email, nombre: o.nombre, ref: o.ref_code, socio: o.socio_id }); }
   catch { return vencida('Este producto ya no está disponible', 'Puede que ya no esté a la venta. Escríbenos a hola@vorka.mx y te ayudamos.'); }
   const gracias = new URL('/tienda/gracias', env.SITE_URL); gracias.searchParams.set('order', nueva.id);
   const cancelar = new URL(gracias); cancelar.searchParams.set('cancelado', '1');

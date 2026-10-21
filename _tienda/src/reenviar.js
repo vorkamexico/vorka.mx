@@ -56,7 +56,7 @@ export async function postReenviar(req, env, ctx) {
     const trabajo = (async () => {
       const ordenes = await all(env, "SELECT id FROM orders WHERE email = ? AND estado = 'paid' ORDER BY paid_at DESC LIMIT ?", email, MAX_ORDENES);
       for (const o of ordenes) {
-        try { await reenviarEnlace(env, o.id); }
+        try { await reenviarEnlace(env, o.id, { publico: true }); }
         catch (e) { console.error('reenviar', o.id, correoOculto(email), e.message); }
       }
     })();

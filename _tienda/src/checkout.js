@@ -7,7 +7,8 @@ import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLi
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento } from './simulador/index.js';
 import { productoPorSlug } from './modelo.js';
-import { cuentaActual, saldoDe, descuentoMaximo } from './puntos.js';
+import { cuentaActual, saldoDe } from './puntos.js';
+import { socioParaCompra, COOKIE_SOCIO } from './socios.js';
 import { suscripcionDe, itemsSuscripcion, vigente } from './suscripciones.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
@@ -21,6 +22,8 @@ export const EsquemaCheckout = z.object({
   slug: slug.optional(),
   items: z.array(z.object({ slug, cantidad: z.number().int().min(1).max(10).default(1) })).min(1).max(20).optional(),
   ref: z.string().trim().regex(/^[A-Za-z0-9_-]{1,40}$/).optional().or(z.literal('')),
+  // Código de un socio Vorka escrito en el formulario (gana sobre la liga); si no existe o está suspendido se ignora
+  codigo: z.string().trim().max(40).optional().or(z.literal('')),
   // Comprar para regalar (solo productos con contenido.regalable): una liga de un solo uso por unidad
   para_quien: z.enum(['yo', 'regalo']).optional(),   // formulario sin JavaScript
   regalo: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
@@ -87,21 +90,22 @@ export async function checkout(req, env) {
     if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
   }
 
-  // Puntos: descuento hasta el saldo disponible, dejando siempre el cobro mínimo de la pasarela
+  // Puntos: descuento hasta el saldo disponible, dejando siempre el cobro mínimo de la pasarela (se calcula en crearOrden)
   let puntos = null;
   if (d.usar_puntos) {
     const cta = await cuentaActual(req, env);
     if (!cta) return error('Entra a tu cuenta de puntos para usarlos (vorka.mx/tienda/puntos).', 401);
     if (cta.email !== d.email) return error(`Para usar tus puntos, compra con el correo de tu cuenta (${cta.email}).`);
-    let total = 0;
-    for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p?.creador_id) return error('Los puntos se canjean en productos de Vorka México, no en los de creadores.'); total += (p?.precio_centavos || 0) * (it.cantidad || 1); }
-    const desc = descuentoMaximo((await saldoDe(env, cta.email)).disponibles, total);
-    if (desc > 0) puntos = { descuento_centavos: desc, email: cta.email };
+    for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p?.creador_id) return error('Los puntos se canjean en productos de Vorka México, no en los de creadores.'); }
+    puntos = { email: cta.email, disponibles: (await saldoDe(env, cta.email)).disponibles };
   }
+  // Socio Vorka: el código escrito gana sobre la liga (cookie de 30 días)
+  const galleta = cookie(req, COOKIE_SOCIO);
+  const socio = await socioParaCompra(env, { codigo: d.codigo, cookie: galleta ? decodeURIComponent(galleta) : null, email: d.email });
 
   let orden;
   try {
-    orden = await crearOrden(env, { puntos,
+    orden = await crearOrden(env, { puntos, socio, suscripcion: subs.length > 0,
       items,
       email: d.email, nombre: d.nombre,
       regalo: d.regalo ? { para: d.regalo_para || null, mensaje: d.regalo_mensaje || null } : null,
@@ -109,6 +113,7 @@ export async function checkout(req, env) {
     });
   } catch (e) {
     if (e.message === 'producto') return error('Este producto no está disponible.', 404);
+    if (e.message === 'puntos') return error('Tus puntos cambiaron mientras comprabas (¿tienes otra compra abierta?). Revisa tu saldo e intenta de nuevo.', 409);
     throw e;
   }
 
@@ -121,7 +126,16 @@ export async function checkout(req, env) {
     cobro = await pasarela.crearCobro(env, orden, { exito: gracias.toString(), cancelar: cancelar.toString() });
   } catch (e) {
     console.error('checkout: pasarela', orden.id, correoOculto(orden.email), e.message);
-    await aplicarPago(env, orden.id, { resultado: 'rechazado' }); // la orden huérfana no queda colgada en pending
+    await aplicarPago(env, orden.id, { resultado: 'rechazado' }); // la orden huérfana no queda colgada en pending (y suelta los puntos)
+    // El cupón del descuento no se pudo crear (p. ej. la llave de Stripe sin permiso de Coupons): mensaje claro y alerta
+    if (e.cupon) {
+      console.error('ALERTA checkout: Stripe no dejó crear el cupón de descuento', e.status, e.message, 'revisa el permiso Coupons (Write) de la llave restringida');
+      const sinPuntos = orden.puntos_usados > 0;
+      const msg = sinPuntos
+        ? 'No pudimos aplicar tus puntos en este momento. Puedes pagar sin puntos (quita la casilla "Usar mis puntos") o intentar más tarde: tus puntos siguen en tu cuenta.'
+        : 'No pudimos aplicar el descuento de tu código en este momento. Puedes comprar sin el código o intentar más tarde.';
+      return esJson ? json({ error: msg, sin_puntos: sinPuntos, sin_descuento: !sinPuntos }, 503) : error(msg, 503);
+    }
     return error('No pudimos abrir el pago. Intenta de nuevo en un momento.', 502);
   }
   await guardarSesion(env, orden.id, cobro.sessionId);

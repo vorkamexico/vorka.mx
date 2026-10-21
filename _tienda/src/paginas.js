@@ -47,13 +47,29 @@ export function seguridad(n, { stripe = false, frames = [] } = {}) {
 const SCRIPT_PUNTOS = `(function(){
   var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo'); if(!f||!window.fetch) return;
   fetch('/api/puntos/saldo',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){
-    if(!d.cuenta||!d.disponibles) return;
+    if(!d.cuenta||!(d.disponibles>0)) return;
     var l=document.createElement('label'); l.className='t-casilla t-puntos';
     l.innerHTML='<input type="checkbox" name="usar_puntos" value="on" checked><span>Usar mis <b>'+d.disponibles+' puntos</b> (hasta $'+d.disponibles+' de descuento). Compra con <b></b>.</span>';
     l.querySelectorAll('b')[1].textContent=d.email;
     var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(l);
     if(f.email&&!f.email.value) f.email.value=d.email;
   }).catch(function(){});
+})();`;
+
+// "¿Tienes un código de socio?" en cualquier formulario de compra: si llegaste con la liga de un socio ya sale aplicado.
+// Se valida al escribirlo (/api/socios/codigo, con límite por IP); el servidor lo vuelve a revisar al pagar.
+const SCRIPT_SOCIO = `(function(){
+  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
+  var w=document.createElement('div'); w.className='t-campo t-socio';
+  w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Tienes un código de socio?</button><div class="t-socio-c" hidden><label for="codigo">Código de socio <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. ANA-CELAYA"><small class="t-ayuda" id="codigo-msj" role="status"></small></div>';
+  var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(w);
+  var b=w.querySelector('button'), c=w.querySelector('.t-socio-c'), i=w.querySelector('input'), m=w.querySelector('#codigo-msj'), tm;
+  function abrir(){ c.hidden=false; b.hidden=true; b.setAttribute('aria-expanded','true'); }
+  function pinta(d,vacio){ m.textContent=vacio?'':d.valido?('Código de '+d.nombre+(d.descuento_pct?' · '+d.descuento_pct+'% de descuento al pagar':'')+' ✓'):'Ese código no existe o ya no está activo; puedes comprar sin él.'; }
+  function revisa(){ var v=i.value.trim(); if(!v){ pinta({},true); return; } fetch('/api/socios/codigo?c='+encodeURIComponent(v),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if('valido' in d) pinta(d); }).catch(function(){}); }
+  b.addEventListener('click',function(){ abrir(); i.focus(); });
+  i.addEventListener('input',function(){ clearTimeout(tm); tm=setTimeout(revisa,450); });
+  fetch('/api/socios/codigo',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); } }).catch(function(){});
 })();`;
 
 export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [] }) {
@@ -89,7 +105,7 @@ ${head}</head>
 ${NAV.replace('<script ', `<script nonce="${n}" `)}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
-${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

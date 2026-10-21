@@ -129,12 +129,15 @@ export default {
       const s = await llamar(env, 'POST', '/checkout/sessions', sesionSuscripcion(env, orden, urls, customer, sus), { idempotencia: `checkout-${orden.id}` });
       return { sessionId: s.id, url: s.url };
     }
-    // Puntos Vorka: un cupón de un solo uso por el monto exacto del descuento (Stripe lo muestra en el pago y en el recibo)
+    // Descuentos (Puntos Vorka y código de socio): un cupón de un solo uso por el monto exacto (Stripe lo muestra en el pago y el recibo)
     let cupon = null;
     if (orden.descuento_centavos > 0) {
-      const c = await llamar(env, 'POST', '/coupons', { amount_off: orden.descuento_centavos, currency: orden.moneda.toLowerCase(), duration: 'once', max_redemptions: 1, name: 'Puntos Vorka', metadata: { order_id: orden.id } },
-        { idempotencia: `cupon-${orden.id}` });
-      cupon = c.id;
+      const nombre = [orden.socio_descuento_centavos > 0 ? `Código ${orden.socio_code || 'de socio'}` : null, orden.puntos_usados > 0 || orden.socio_descuento_centavos < orden.descuento_centavos ? 'Puntos Vorka' : null].filter(Boolean).join(' + ');
+      try {
+        const c = await llamar(env, 'POST', '/coupons', { amount_off: orden.descuento_centavos, currency: orden.moneda.toLowerCase(), duration: 'once', max_redemptions: 1, name: nombre.slice(0, 40), metadata: { order_id: orden.id } },
+          { idempotencia: `cupon-${orden.id}` });
+        cupon = c.id;
+      } catch (e) { e.cupon = true; throw e; }   // el checkout lo distingue: ofrece pagar sin el descuento
     }
     const s = await llamar(env, 'POST', '/checkout/sessions', sesionCheckout(env, orden, urls, customer, cupon), { idempotencia: `checkout-${orden.id}` });
     return { sessionId: s.id, url: s.url };
@@ -194,12 +197,18 @@ export default {
     let id = pago?.suscripcion_id || null;
     if (!id && evento.tipo.startsWith('customer.subscription.')) id = evento.objeto;
     if (!id && evento.tipo.startsWith('invoice.')) {
-      const inv = await llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);
+      const inv = evento.factura = await llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);
       // Desde la API 2025-03-31 la suscripción de la factura vive en parent.subscription_details
       id = inv.parent?.subscription_details?.subscription || inv.subscription || null;
       if (typeof id === 'object') id = id?.id;
     }
     if (!id) return null;
     return llamar(env, 'GET', `/subscriptions/${encodeURIComponent(id)}?expand[]=items.data.price.product`);
+  },
+
+  // Factura de un invoice.paid, leída de la API (la misma consulta de suscripcionDe si ya se hizo). Para comisiones de socios.
+  async facturaDe(evento, env) {
+    if (evento.tipo !== 'invoice.paid') return null;
+    return evento.factura || llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);
   },
 };
