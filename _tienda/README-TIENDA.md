@@ -87,6 +87,7 @@ La integración usa **Stripe Checkout** (página de pago de Stripe) con la API f
    | PaymentIntents | Read |
    | Charges | Read (para leer si un reembolso fue total) |
    | Disputes | Read |
+   | Coupons | Write (descuentos de Puntos Vorka y de códigos de socio; sin este permiso el checkout con descuento responde que se puede pagar sin él) |
 
    Todo lo demás en *None*. Guárdala con `npx wrangler secret put STRIPE_SECRET_KEY`. Si algo falla con `403`, el error dice qué permiso falta. Usa claves distintas para prueba y producción, y renuévalas si alguien con acceso deja el equipo.
 5. **Developers → Webhooks → Add endpoint**: `https://vorka.mx/api/webhooks/stripe`, **versión de API `2026-09-30.endive`** (la misma del código), con estos eventos:
@@ -247,3 +248,32 @@ Tarjetas de lealtad para negocios (Diversificación). Aquí solo se vende; la ap
 4. Publicar el Worker (agrega la ruta `vorka.mx/vuelve*`).
 5. Probar una suscripción en modo prueba (tarjeta 4242) con un correo propio, cancelarla desde el portal y confirmar que en Vuelve › Cuenta cambia el estado.
 6. Activar `vuelve-mensual`, `vuelve-anual` y las dos sucursales en Vorka México → Tienda → Productos.
+
+## Auditoría de regalos y puntos (octubre 2026, migración 0026)
+
+- **Reenviar desde /descargas/reenviar ya no cambia ligas de regalo.** Cualquiera que sepa el correo puede pedir el reenvío, así que las ligas ya enviadas (quizá ya compartidas) no se tocan: en D1 solo vive su HMAC, no se pueden volver a mandar, y quien compró recibe un correo para buscar el original o escribirnos. Cambiar las ligas queda solo en Vorka OS (Órdenes › Reenviar).
+- **Canje atómico:** la orden de $0, su renglón y marcar la liga como canjeada van en un solo batch; si algo falla, la liga sigue pendiente.
+- **Reenvío con varios productos regalables:** lo canjeado se cuenta por producto.
+- **Prender una liga apagada:** no se puede si ya hay otra liga vigente (o canjeada) para esa misma unidad pagada.
+- **Descargables de regalo:** si la compra original se reembolsa, quien lo recibió también pierde las descargas.
+- **Puntos apartados sin límite de tiempo** mientras la orden esté pendiente (OXXO dura 3 días); se liberan cuando vence o se rechaza (`orders.puntos_usados`). El apartado es atómico (INSERT condicional): dos compras simultáneas no pueden usar los mismos puntos.
+- **Al confirmarse el pago** se revisa el saldo antes del canje. Si ya no alcanza, el canje se registra igual (el descuento ya se cobró), el saldo queda negativo a la vista y la orden se marca en `orders.revisar` (sale en el detalle de la orden en Vorka OS) con un `ALERTA` en los registros.
+- **Si Stripe no deja crear el cupón** (401/403), el checkout responde 503 con un mensaje que ofrece pagar sin puntos (o sin el código) y registra `ALERTA checkout` en los registros. Revisa que la llave restringida tenga **Coupons: Write**.
+
+## Socios Vorka (programa de socios, migración 0027)
+
+Programa **solo por invitación** para que personas (a menudo dueños de negocios que ya usan nuestros productos) ganen dinero recomendando la tienda con su propio código. Código: `src/socios.js` (reglas, comisiones, pagos y RPC del panel) y `src/socios-portal.js` (portal del socio). Panel: Vorka OS › Tienda › Socios (permiso *Socios* de la tienda).
+
+- **Alta:** el equipo crea a cada socio con nombre, correo, teléfono, CLABE (18 dígitos con dígito verificador), banco, RFC (opcional), notas, descuento para quien compra (0% por defecto) y, si se quiere, niveles propios. El código (p. ej. `ANA-CELAYA`) se edita y no distingue mayúsculas. *Mandar acceso* le envía la bienvenida con su código, su liga y el portal.
+- **Atribución:** `vorka.mx/tienda/?socio=CODIGO` (o `?codigo=`) en cualquier página deja la cookie `vorka_socio` 30 días. En el formulario de compra aparece *¿Tienes un código de socio?*; el código escrito gana sobre la liga. Códigos inexistentes o suspendidos se ignoran, y comprarse a uno mismo no cuenta. El descuento del socio aplica a productos de Vorka (no a suscripciones) y se suma al de puntos en un solo cupón de Stripe.
+- **Comisión escalonada por mes calendario** (hora del centro de México): por defecto 15% en las ventas 1 a 10 del socio y 25% desde la 11; se reinicia cada mes. El % queda fijo en cada venta (las ventas canceladas no cuentan para el nivel). Niveles editables en general y por socio.
+- **Base de la comisión:** lo efectivamente cobrado de productos de Vorka (`orders.monto_centavos`: neto de descuentos de puntos y de socio, **IVA incluido**, antes de la comisión de Stripe). Se guardan la base y el % usados. Productos de creadores del marketplace no dan comisión.
+- **Suscripciones (Vuelve):** la compra es el pago 1; cada `invoice.paid` de renovación da comisión hasta el pago 12 (configurable). Las renovaciones usan el % del nivel que el socio lleva ese mes y no suben de nivel.
+- **Ciclo:** `pendiente` al pagarse → `disponible` tras la retención (7 días, configurable; el cron de cada hora la libera) → `pagada` cuando el equipo marca el SPEI. Reembolso o contracargo antes del pago: se cancela (y sale del pago por hacer). Después: ajuste negativo que se descuenta del siguiente pago.
+- **Pagos (nada se transfiere solo):** cada lunes (hora del centro de México) el cron arma un pago `por_pagar` por socio activo con saldo positivo. El socio puede pedir *Pedir mi pago ahora* desde su portal: crea un pago inmediato y avisa por correo a `correo_avisos` (hola@vorka.mx por defecto). El equipo transfiere por SPEI y lo marca como pagado con la clave de rastreo y la fecha; al socio le llega un correo. CSV de comisiones en el panel.
+- **Portal del socio:** `vorka.mx/tienda/socios/`, sin contraseña (enlace por correo de 30 minutos y un uso → sesión de 30 días). Muestra su código y liga (copiar, compartir, QR), ventas y nivel del mes, comisiones por estado, pagos y el botón de pago. Nunca muestra datos de quien compró (solo producto, fecha, monto y comisión) ni la CLABE completa. `/api/socios/codigo` tiene límite por IP.
+- **Condiciones:** `/legal/socios/` (generada con `python3 _tienda/legales.py`), marcada como **versión preliminar**.
+
+> **Impuestos (pendiente, antes del primer pago):** el sistema **no retiene ISR ni IVA ni emite CFDI** por las comisiones. Antes de pagarle al primer socio, revisa con el contador si corresponde retener (personas físicas con o sin actividad empresarial, RESICO, personas morales) y qué comprobante pedir. Por eso el alta guarda el RFC y el CSV de comisiones lo incluye.
+
+**Pendiente / límites conocidos:** el reembolso de una *renovación* de suscripción no cancela su comisión automáticamente (los reembolsos de facturas no traen la orden en su metadata); si pasa, usa *Anular* en esa comisión desde el detalle del socio en Vorka OS (si ya se pagó, crea el ajuste negativo). Los afiliados con comisión en dinero de antes (`affiliates.tipo = 'dinero'`, `?ref=`) siguen funcionando aparte.

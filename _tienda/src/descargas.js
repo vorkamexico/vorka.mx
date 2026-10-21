@@ -20,6 +20,8 @@ export async function validarToken(env, token, ahora = Date.now()) {
   if (!t) return { ok: false, motivo: 'invalido' };
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', t.order_id);
   if (t.revocado || !orden || orden.estado !== 'paid') return { ok: false, motivo: 'revocado' };
+  // Regalo canjeado: si la compra original se reembolsó (o tuvo contracargo), quien lo recibió también pierde las descargas
+  if (orden.regalo_de && (await one(env, 'SELECT estado FROM orders WHERE id = ?', orden.regalo_de))?.estado !== 'paid') return { ok: false, motivo: 'revocado' };
   if (new Date(t.expires_at).getTime() < ahora) return { ok: false, motivo: 'vencido', orden };
   const items = await all(env, 'SELECT i.nombre producto, p.r2_keys, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ? ORDER BY i.id', orden.id);
   // Productos de acceso (contenido.acceso): en lugar de archivos, un botón que abre la app con este mismo token

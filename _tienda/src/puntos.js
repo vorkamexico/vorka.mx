@@ -24,7 +24,6 @@ import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } fro
 export { PUNTOS_POR_COMPRA, COBRO_MINIMO };
 const COOKIE = 'vorka_cuenta';
 const ENLACE_MIN = 30, CODIGO_MIN = 15, CODIGO_INTENTOS = 5, SESION_DIAS = 60;
-const RESERVA_HORAS = 24;                 // puntos apartados por una compra que aún no se paga (OXXO, carrito abandonado)
 const emailValido = e => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e || '');
 const leerCookie = req => (req.headers.get('cookie') || '').split(';').map(s => s.trim().split('=')).find(([k]) => k === COOKIE)?.[1];
 const mismoOrigen = (req, env) => { const o = req.headers.get('origin'); return !o || o === new URL(env.SITE_URL).origin; };
@@ -52,12 +51,18 @@ export async function codigoDe(env, email, nombre = null) {
   throw new Error('codigo');
 }
 
-// Saldo disponible = movimientos − puntos apartados en compras pendientes (para no usarlos dos veces)
+// Puntos apartados: los de órdenes pendientes (OXXO dura 3 días; sin límite de tiempo, se liberan cuando la orden
+// vence o se rechaza) y los de órdenes ya pagadas cuyo canje aún no se registra (entre el pago y puntosAlPagar).
+// Lo usa también el INSERT condicional de crearOrden para apartar puntos de forma atómica.
+export const SQL_APARTADOS = `SELECT COALESCE(SUM(o.puntos_usados), 0) FROM orders o WHERE o.puntos_email = ? AND o.puntos_usados > 0
+  AND (o.estado = 'pending' OR (o.estado = 'paid' AND NOT EXISTS (SELECT 1 FROM puntos_movimientos m WHERE m.order_id = o.id AND m.tipo = 'canje')))`;
+export const SQL_MOVIMIENTOS = 'SELECT COALESCE(SUM(puntos), 0) FROM puntos_movimientos WHERE email = ?';
+
+// Saldo disponible = movimientos − apartados. Puede ser negativo (no se esconde): una orden con saldo insuficiente al pagar
+// queda marcada para revisar en el panel.
 export async function saldoDe(env, email) {
-  const m = await one(env, 'SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos WHERE email = ?', email);
-  const desde = new Date(Date.now() - RESERVA_HORAS * 3600e3).toISOString();
-  const r = await one(env, "SELECT COALESCE(SUM(descuento_centavos), 0) c FROM orders WHERE puntos_email = ? AND estado = 'pending' AND created_at >= ?", email, desde);
-  return { total: m.n, apartados: Math.round(r.c / 100), disponibles: Math.max(0, m.n - Math.round(r.c / 100)) };
+  const r = await one(env, `SELECT (${SQL_MOVIMIENTOS}) total, (${SQL_APARTADOS}) apartados`, email, email);
+  return { total: r.total, apartados: r.apartados, disponibles: r.total - r.apartados };
 }
 
 // Cuánto descuento (en centavos) se puede aplicar a una compra de `total` centavos
@@ -88,8 +93,17 @@ export async function multiplicadorDe(env, orden, refEmail) {
 export async function puntosAlPagar(env, orderId) {
   const o = await one(env, "SELECT o.*, a.email ref_email, a.tipo ref_tipo FROM orders o LEFT JOIN affiliates a ON a.code = o.ref_code WHERE o.id = ?", orderId);
   if (!o || o.estado !== 'paid') return;
-  if (o.descuento_centavos > 0 && o.puntos_email)
-    await run(env, "INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota) VALUES (?, 'canje', ?, ?, 'Usados en tu compra')", o.puntos_email, -Math.round(o.descuento_centavos / 100), o.id);
+  if (o.puntos_usados > 0 && o.puntos_email && !(await one(env, "SELECT 1 FROM puntos_movimientos WHERE order_id = ? AND tipo = 'canje'", o.id))) {
+    // Antes de descontar se revisa que el saldo alcance (sin contar esta misma orden). Si no alcanza (p. ej. se revirtieron
+    // puntos de una venta reembolsada mientras esta orden esperaba su pago), el canje se registra igual —el descuento ya
+    // se cobró así— y la orden queda marcada para revisar: el saldo negativo se ve, no se esconde.
+    const habia = (await saldoDe(env, o.puntos_email)).disponibles + o.puntos_usados;
+    const r = await run(env, "INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota) VALUES (?, 'canje', ?, ?, 'Usados en tu compra')", o.puntos_email, -o.puntos_usados, o.id);
+    if (r.meta.changes && habia < o.puntos_usados) {
+      await run(env, 'UPDATE orders SET revisar = ? WHERE id = ?', `Puntos insuficientes al pagar: se canjearon ${o.puntos_usados} y había ${habia} disponibles.`, o.id);
+      console.error('ALERTA puntos: saldo insuficiente al confirmar el pago', o.id, o.puntos_usados, habia);
+    }
+  }
   // Gana quien compartió la liga, si es una cuenta de puntos y no se compró a sí mismo
   if (!(o.ref_tipo === 'puntos' && o.ref_email && o.ref_email !== o.email && o.monto_centavos > 0)) return;
   const m = await multiplicadorDe(env, o, o.ref_email);

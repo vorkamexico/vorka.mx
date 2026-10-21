@@ -109,13 +109,13 @@ Vorka México · Guanajuato, México`;
 }
 
 // Token nuevo + correo. Si el correo falla, el token se borra (no quedan enlaces que nadie recibió).
-export async function mandarEnlace(env, orderId, ahora = Date.now()) {
+export async function mandarEnlace(env, orderId, ahora = Date.now(), { publico = false } = {}) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   // Compra para regalar: quien paga recibe las ligas de un solo uso, no el acceso
   // Cortesías del panel con ligas: sus ligas solo se ven al crearlas; reenviar las apagaría aunque ya se hayan compartido.
   // Las cortesías enviadas directo a un correo (regalo = 0) se entregan como cualquier compra.
   if (orden.proveedor === 'cortesia' && orden.regalo) return;
-  if (orden.regalo) return mandarRegalos(env, orden);
+  if (orden.regalo) return mandarRegalos(env, orden, { publico });
   const items = await all(env, 'SELECT i.product_id, i.nombre, i.cantidad, p.contenido FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
   const { token, hash } = await crearToken(env, orderId, ahora);
   try {
@@ -130,11 +130,12 @@ export async function mandarEnlace(env, orderId, ahora = Date.now()) {
 /**
  * Reenvío (formulario /descargas/reenviar y botón del panel): token nuevo y correo otra vez.
  * Solo para órdenes pagadas; los tokens anteriores siguen hasta que venzan.
+ * publico = true desde el formulario: en compras para regalar no cambia las ligas ya enviadas (ver mandarRegalos).
  */
-export async function reenviarEnlace(env, orderId) {
+export async function reenviarEnlace(env, orderId, { publico = false } = {}) {
   const o = await one(env, "SELECT id FROM orders WHERE id = ? AND estado = 'paid'", orderId);
   if (!o) return false;
-  await mandarEnlace(env, orderId);
+  await mandarEnlace(env, orderId, Date.now(), { publico });
   await run(env, 'UPDATE orders SET correo_enviado_at = COALESCE(correo_enviado_at, ?), updated_at = ? WHERE id = ?', ahoraISO(), ahoraISO(), orderId);
   return true;
 }

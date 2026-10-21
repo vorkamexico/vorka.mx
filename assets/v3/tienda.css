@@ -423,3 +423,8 @@
 .t-como { padding: clamp(28px, 4vw, 44px) 0; }
 /* En celular la vitrina repetiría el catálogo que está justo abajo: se queda solo en pantallas grandes */
 @media (max-width: 700px) { .t-vitrina { display: none; } .t-home { padding-bottom: 8px; } }
+
+/* Código de socio en el formulario de compra (se agrega con JavaScript) */
+.t-socio-abrir { justify-self: start; background: none; border: 0; padding: 0; font: inherit; font-size: 14.5px; color: var(--morado); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.t-socio-c { display: grid; gap: 6px; }
+.t-socio input { text-transform: uppercase; letter-spacing: .02em; }

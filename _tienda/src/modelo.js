@@ -1,6 +1,8 @@
 // Acceso a datos de la tienda (D1). Los precios SIEMPRE salen de aquí, nunca del navegador.
 import { all, one, run, ahoraISO } from './util.js';
 import { transicion } from './estados.js';
+import { SQL_APARTADOS, SQL_MOVIMIENTOS, descuentoMaximo, COBRO_MINIMO } from './puntos.js';
+import { socioActivo } from './socios.js';
 
 const producto = r => r && { ...r, activo: !!r.activo, r2_keys: JSON.parse(r.r2_keys || '[]'), contenido: JSON.parse(r.contenido || '{}') };
 
@@ -32,9 +34,11 @@ export async function afiliadoActivo(env, code) {
 /**
  * Crea la orden en estado pending con sus renglones.
  * items: [{ slug, cantidad? }] — el precio se toma de la base de datos.
- * Lanza Error('producto') si algún slug no existe o está inactivo.
+ * socio: el de socioParaCompra (o su id, al retomar un pago); su descuento solo aplica a productos de Vorka y no a suscripciones.
+ * puntos: { email, disponibles } — el descuento con puntos se calcula aquí, después del descuento del socio.
+ * Lanza Error('producto') si algún slug no existe o está inactivo, y Error('puntos') si al apartar los puntos ya no alcanzan.
  */
-export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null, puntos = null }) {
+export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null, puntos = null, socio = null, suscripcion = false }) {
   const lineas = [];
   for (const it of items) {
     const p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
@@ -44,28 +48,48 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
   const monedas = new Set(lineas.map(l => l.p.moneda));
   if (monedas.size !== 1) throw new Error('moneda');
   const afiliado = await afiliadoActivo(env, ref);
+  email = email.trim().toLowerCase();
+  if (socio && typeof socio !== 'object') socio = await socioActivo(env, Number(socio));
+  if (socio && socio.email.toLowerCase() === email) socio = null;   // comprarse a uno mismo no cuenta
+  const subtotal = lineas.reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0);
+  const propio = lineas.filter(l => !l.p.creador_id).reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0);
+  // Descuentos: primero el del socio (sobre productos de Vorka), luego puntos; siempre queda el cobro mínimo de la pasarela
+  const tope = Math.max(0, subtotal - COBRO_MINIMO);
+  const descSocio = socio && !suscripcion && socio.descuento_pct > 0 ? Math.min(Math.round(propio * socio.descuento_pct / 100), tope) : 0;
+  // Puntos enteros (1 punto = $1): nunca se regalan centavos
+  const descPuntos = puntos ? Math.floor(descuentoMaximo(puntos.disponibles, subtotal - descSocio) / 100) * 100 : 0;
+  const puntosUsados = descPuntos / 100;
   const orden = {
     id: crypto.randomUUID(),
-    email: email.trim().toLowerCase(),
+    email,
     nombre: nombre.trim(),
-    subtotal_centavos: lineas.reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0),
-    descuento_centavos: puntos?.descuento_centavos || 0,
-    puntos_email: puntos?.descuento_centavos ? puntos.email : null,
+    subtotal_centavos: subtotal,
+    descuento_centavos: descSocio + descPuntos,
+    socio_descuento_centavos: descSocio,
+    puntos_usados: puntosUsados,
+    puntos_email: puntosUsados > 0 ? puntos.email : null,
     moneda: [...monedas][0],
     estado: 'pending',
     proveedor,
     ref_code: afiliado?.code || null,
     comision_pct: afiliado?.comision_pct ?? null,
+    socio_id: socio?.id || null,
+    socio_code: socio?.code || null,
   };
-  orden.monto_centavos = orden.subtotal_centavos - orden.descuento_centavos;   // lo que se cobra (neto de puntos)
-  await env.DB.batch([
-    env.DB.prepare('INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct, regalo, regalo_para, regalo_mensaje, descuento_centavos, puntos_email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
+  orden.monto_centavos = orden.subtotal_centavos - orden.descuento_centavos;   // lo que se cobra (neto de descuentos)
+  // Apartado atómico de puntos: la orden solo se inserta si, en ese mismo instante, movimientos − apartados alcanzan.
+  // Dos compras simultáneas con el mismo saldo no pueden apartar los mismos puntos (la segunda no se inserta).
+  const [ins] = await env.DB.batch([
+    env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct, regalo, regalo_para, regalo_mensaje, descuento_centavos, puntos_email, puntos_usados, socio_id, socio_descuento_centavos)
+      SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE ? = 0 OR ((${SQL_MOVIMIENTOS}) - (${SQL_APARTADOS})) >= ?`)
       .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct,
-        regalo ? 1 : 0, regalo?.para || null, regalo?.mensaje || null, orden.descuento_centavos, orden.puntos_email),
+        regalo ? 1 : 0, regalo?.para || null, regalo?.mensaje || null, orden.descuento_centavos, orden.puntos_email, orden.puntos_usados, orden.socio_id, orden.socio_descuento_centavos,
+        puntosUsados, orden.puntos_email, orden.puntos_email, puntosUsados),
     // Si es de un creador, se copia a quién le toca y su % de ese momento
-    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) VALUES (?,?,?,?,?,?,?)')
-      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null)),
+    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) SELECT ?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM orders WHERE id = ?)')
+      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null, orden.id)),
   ]);
+  if (!ins.meta.changes) throw new Error('puntos');
   return { ...orden, items: lineas.map(l => ({ product_id: l.p.id, slug: l.p.slug, nombre: l.p.nombre, precio_centavos: l.p.precio_centavos, cantidad: l.cantidad, imagen: l.p.imagen })) };
 }
 

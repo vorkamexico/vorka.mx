@@ -73,7 +73,7 @@ export async function ordenes(env, filtros = {}) {
 }
 
 export async function orden(env, id) {
-  const o = await one(env, 'SELECT * FROM orders WHERE id = ?', String(id));
+  const o = await one(env, 'SELECT o.*, (SELECT code FROM socios s WHERE s.id = o.socio_id) socio_code FROM orders o WHERE o.id = ?', String(id));
   if (!o) return null;
   const items = await all(env, 'SELECT i.*, p.slug FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id);
   const tokens = (await all(env, 'SELECT id, expires_at, descargas, revocado, created_at FROM download_tokens WHERE order_id = ? ORDER BY id DESC', o.id))
@@ -154,7 +154,7 @@ const EsquemaProducto = z.object({
 const htmlSeguro = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/\n/g, '<br>');
 
 // Slugs que no pueden usarse porque son rutas de la tienda
-const RESERVADOS = new Set(['gracias', 'retomar', 'regalo', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar']);
+const RESERVADOS = new Set(['gracias', 'retomar', 'regalo', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar', 'socios', 'puntos', 'cuenta']);
 export const SLUG_VALIDO = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 // Slug escrito a mano en el editor: formato válido, no reservado y que nadie más lo use (ni como enlace anterior de otro producto)
 export async function validarSlug(env, slug, id) {

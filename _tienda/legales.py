@@ -1,5 +1,6 @@
 # Vorka México · páginas legales de la tienda (y de Cupo: /legal/cupo/, /legal/cupo/privacidad/, /legal/cupo/privacidad-asistentes/): /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
+# Socios Vorka: /legal/socios/ (condiciones del programa de socios; versión preliminar)
 # Vuelve: /legal/vuelve/ (condiciones), /legal/vuelve/privacidad/ (negocios) y /legal/vuelve/privacidad-clientes/ (clientes de cada negocio)
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
 import os, re, sys
@@ -11,6 +12,7 @@ ACTUALIZADO = '15 de octubre de 2026'
 ACTUALIZADO_BRINDI = '18 de octubre de 2026'
 ACTUALIZADO_CUPO = '19 de octubre de 2026'
 ACTUALIZADO_VUELVE = '20 de octubre de 2026'
+ACTUALIZADO_SOCIOS = '20 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -359,6 +361,36 @@ VUELVE_CLIENTES = [
     ('cambios', 'Cambios a este aviso', '<p>La versión vigente siempre está en esta dirección, enlazada desde cada página de registro y desde tu tarjeta.</p>'),
 ]
 
+# Condiciones de Socios Vorka. VERSIÓN PRELIMINAR: falta la revisión legal y fiscal (retenciones de ISR/IVA y CFDI de las comisiones).
+SOCIOS = [
+    ('aviso', 'Versión preliminar', '<p><b>Estas condiciones son una versión preliminar</b> y pueden cambiar tras su revisión legal y fiscal. Antes de tu primer pago te confirmaremos por correo la versión final y, en su caso, los datos fiscales que necesitemos.</p>'),
+    ('quien', 'Quiénes participan', f'<p>Estas condiciones regulan la relación entre {RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, y las personas o negocios que Vorka invita a recomendar sus productos a cambio de una comisión (“socios”). Socios Vorka es <b>solo por invitación</b>: Vorka da de alta a cada socio y puede pausar o terminar su participación. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('codigo', 'Tu código y tu liga', li(
+        'Recibes un código (por ejemplo, ANA-CELAYA) y una liga vorka.mx/tienda/?socio=TU-CÓDIGO. Quien entra con tu liga queda ligado a ti durante 30 días en ese navegador; si escribe un código al pagar, cuenta el código escrito.',
+        'Comprarte a ti mismo con tu código no genera comisión ni descuento.',
+        'Si Vorka configura un descuento para tu código, lo recibe quien compra; no aplica a suscripciones.',
+        'Tu código no da acceso a tu portal: entras con el enlace que llega a tu correo.')),
+    ('comision', 'Comisiones', li(
+        'Ganas una comisión por cada compra pagada con tu código o tu liga de productos de Vorka México (no de creadores del marketplace).',
+        'La comisión es escalonada por mes calendario (hora del centro de México): salvo que Vorka te indique otros porcentajes, 15% en tus primeras 10 ventas del mes y 25% de la venta 11 en adelante. El conteo vuelve a empezar cada mes y el porcentaje queda fijo al momento de cada venta.',
+        'Se calcula sobre lo efectivamente pagado por el comprador (después de descuentos, con IVA incluido y antes de comisiones del procesador de pagos).',
+        'En suscripciones (por ejemplo, Vuelve) ganas comisión en la compra y en las renovaciones pagadas hasta completar 12 pagos, salvo que Vorka te indique otro número.')),
+    ('retencion', 'Retención y reembolsos', li(
+        'Cada comisión queda en retención 7 días después del pago para cubrir reembolsos y contracargos; después pasa a disponible.',
+        'Si una compra se reembolsa o tiene contracargo antes de que te paguemos su comisión, la comisión se cancela. Si ya te la pagamos, se descuenta de tus siguientes comisiones.')),
+    ('pagos', 'Pagos', li(
+        'Cada lunes juntamos tus comisiones disponibles y te las transferimos por SPEI a la CLABE que nos diste; también puedes pedir tu pago antes desde tu portal.',
+        'Es tu responsabilidad que tu CLABE y tus datos estén correctos. Te mandamos la clave de rastreo de cada transferencia.',
+        'Si el saldo de un periodo es negativo por ajustes, se compensa con tus siguientes comisiones.')),
+    ('impuestos', 'Impuestos', '<p>Las comisiones son ingresos para ti y eres responsable de tus obligaciones fiscales. Vorka puede pedirte tu RFC y, cuando la ley lo exija, aplicar retenciones de impuestos o pedirte un comprobante fiscal (CFDI) antes de pagarte. Te avisaremos antes de tu primer pago.</p>'),
+    ('conducta', 'Cómo recomendar', li(
+        'Recomienda con honestidad: no prometas resultados, precios o descuentos que no existan, ni te presentes como empleado o representante de Vorka.',
+        'No envíes mensajes masivos sin consentimiento (spam) ni uses la marca Vorka en anuncios pagados sin autorización por escrito.',
+        'Vorka puede no pagar comisiones de compras hechas con engaño, fraude o en contra de estas condiciones, y pausar tu código.')),
+    ('privacidad', 'Datos personales', '<p>Tratamos tus datos (nombre, correo, teléfono, CLABE, banco y RFC) para administrar el programa y pagarte, conforme al <a href="/privacidad/">aviso de privacidad</a>. Por privacidad, en tu portal ves el producto, la fecha, el monto y tu comisión de cada venta, pero nunca quién compró.</p>'),
+    ('cambios', 'Cambios y terminación', '<p>Vorka puede cambiar estas condiciones o los porcentajes con aviso por correo; los cambios aplican a ventas posteriores. Tú o Vorka pueden terminar la participación en cualquier momento; las comisiones ya disponibles se pagan conforme a estas condiciones.</p>'),
+]
+
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -399,3 +431,6 @@ escribir('/legal/vuelve/privacidad/', pagina('/legal/vuelve/privacidad/', 'Aviso
 escribir('/legal/vuelve/privacidad-clientes/', pagina('/legal/vuelve/privacidad-clientes/', 'Aviso de privacidad para clientes', 'Aviso de privacidad para <span class="metal">clientes.</span>',
     'Te registraste en el programa de lealtad de un negocio que usa Vuelve. Esto es lo que pasa con tus datos.', 'Vuelve · Clientes', VUELVE_CLIENTES,
     aplica='Aplica a quien tiene una tarjeta de Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))
+escribir('/legal/socios/', pagina('/legal/socios/', 'Condiciones de Socios Vorka', 'Condiciones de <span class="metal">Socios Vorka.</span>',
+    'Cómo funciona recomendar productos de Vorka México con tu código: comisiones escalonadas, retención, reembolsos, pagos por SPEI e impuestos. Versión preliminar.', 'Socios', SOCIOS,
+    aplica='Aplica a los socios invitados por Vorka México', actualizado=ACTUALIZADO_SOCIOS))

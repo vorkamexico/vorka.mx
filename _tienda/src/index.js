@@ -21,6 +21,8 @@ import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
 import { suscripcionApp, portalApp, resumenSuscripciones } from './suscripciones.js';
 import { rutasPuntos } from './puntos.js';
+import { rutasSocios } from './socios-portal.js';
+import * as socios from './socios.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -86,6 +88,21 @@ export class Admin extends WorkerEntrypoint {
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
+  // Socios Vorka (solo por invitación): alta y edición, niveles, cola de pagos por SPEI (manual) y CSV
+  resumenSocios() { return socios.resumenSocios(this.env); }
+  socios() { return socios.listaSocios(this.env); }
+  socio(id) { return socios.detalleSocio(this.env, id); }
+  guardarSocio(d) { return socios.guardarSocio(this.env, d); }
+  estadoSocio(id, estado) { return socios.estadoSocio(this.env, id, estado); }
+  invitarSocio(id) { return socios.invitarSocio(this.env, id); }
+  ajustesSocios() { return socios.ajustesSocios(this.env); }
+  guardarAjustesSocios(d) { return socios.guardarAjustesSocios(this.env, d); }
+  pagosSocios() { return socios.pagosSocios(this.env); }
+  marcarPagoSocio(id, d) { return socios.marcarPagoSocio(this.env, id, d); }
+  cancelarPagoSocio(id, nota) { return socios.cancelarPago(this.env, id, String(nota || '').slice(0, 280) || 'Cancelado desde el panel.'); }
+  loteSociosAhora() { return socios.loteSemanal(this.env, new Date(), { forzar: true }); }
+  exportarSociosCSV(f) { return socios.exportarSociosCSV(this.env, f); }
+  anularComisionSocio(id) { return socios.anularComision(this.env, id); }
 }
 
 // Ligas cortas de las apps de eventos: vorka.mx/cupo/<liga> y vorka.mx/brindi/<liga>[/<invitado>] llevan al evento en os.vorka.mx
@@ -111,65 +128,21 @@ export function ligaCorta(url) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    try {
-      if (url.pathname === '/api/tienda/salud') return json({ ok: true });
-      const corta = ligaCorta(url);
-      if (corta) return corta;
-      if (/^\/(tienda\/(puntos|cuenta)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
-      const sim = await rutasSimulador(request, env, url);
-      if (sim) return sim;
-      const cr = await rutasCreadores(request, env, ctx, url);
-      if (cr) return cr;
-      if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
-        return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
-          ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));
-      if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env);
-      const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
-      if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
-      if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);
-      const reg = url.pathname.match(/^\/tienda\/regalo\/([^/]{1,100})\/?$/);
-      if (reg && (request.method === 'GET' || request.method === 'HEAD')) return await paginaRegalo(env, reg[1]);
-      if (url.pathname === '/api/regalo/canjear' && request.method === 'POST') return await canjearRegalo(request, env);
-      const ret = url.pathname.match(/^\/tienda\/retomar\/([0-9a-f-]{36})\/?$/);
-      if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
-      if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {
-        if (request.method === 'POST') return await postReenviar(request, env, ctx);
-        if (request.method === 'GET') return paginaReenviar();
-      }
-      const desc = url.pathname.match(/^\/descargas\/([^/]{1,100})\/?(?:(\d{1,3})\/?)?$/);
-      if (desc && desc[1] !== 'reenviar' && ['GET', 'HEAD'].includes(request.method))
-        return await (desc[2] === undefined ? paginaDescargas(env, desc[1]) : bajarArchivo(env, desc[1], desc[2], request.method));
-      if (request.method === 'GET' || request.method === 'HEAD') {
-        if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
-        if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
-        if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
-        if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
-        if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
-        if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
-        // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.
-        const img = url.pathname.match(/^\/tienda\/img\/(portadas\/[a-z0-9-]+\.(?:jpg|png|webp))$/);
-        if (img) {
-          const o = await env.PRODUCTOS.get(img[1]);
-          if (!o) return fail('No encontrado', 404);
-          return new Response(o.body, { headers: { 'content-type': o.httpMetadata?.contentType || 'image/jpeg', 'cache-control': 'public, max-age=31536000, immutable', 'x-content-type-options': 'nosniff' } });
-        }
-        const prod = url.pathname.match(/^\/tienda\/([a-z0-9-]{1,80})\/?$/);
-        if (prod) return await paginaProducto(env, request, url, prod[1]);
-      }
-      const wh = url.pathname.match(/^\/api\/webhooks\/([a-z]+)$/);
-      if (wh && request.method === 'POST') return await webhook(request, env, wh[1]);
-      // Solo en desarrollo (.dev.vars): CSS, imágenes y demás páginas del sitio salen del servidor estático local
-      if (env.ESTATICO_DEV) return fetch(env.ESTATICO_DEV + url.pathname + url.search);
-      return fail('No encontrado', 404);
-    } catch (err) {
-      console.error('tienda', url.pathname, err?.message);
-      return fail('Error interno', 500);
+    const res = await atender(request, env, ctx, url);
+    // Liga de un socio (?socio=CODIGO o ?codigo=CODIGO): deja la cookie de atribución (30 días) en la página que se abra
+    if (request.method === 'GET' && !url.pathname.startsWith('/api/') && (url.searchParams.has('socio') || url.searchParams.has('codigo'))) {
+      const c = await socios.cookieDeVisita(env, url).catch(e => { console.error('socio visita', e?.message); return null; });
+      if (c) { const r = new Response(res.body, res); r.headers.append('set-cookie', c); return r; }
     }
+    return res;
   },
 
-  // Cada hora: transferencias a creadores que ya pasaron su plazo, y estado de cuentas de Stripe en revisión
+  // Cada hora: transferencias a creadores que ya pasaron su plazo, y estado de cuentas de Stripe en revisión.
+  // Socios: libera comisiones que pasaron la retención y, los lunes (hora del centro de México), arma el lote de pagos.
   async scheduled(event, env, ctx) {
     ctx.waitUntil((async () => {
+      try { console.log('socios', JSON.stringify(await socios.loteSemanal(env))); }
+      catch (e) { console.error('cron socios', e?.message); }
       try {
         if (!env.STRIPE_SECRET_KEY) return;
         const pendientes = await all(env, "SELECT id, stripe_account_id FROM creadores WHERE estado = 'aprobado' AND stripe_account_id IS NOT NULL AND stripe_listo = 0 LIMIT 25");
@@ -180,3 +153,61 @@ export default {
     })());
   },
 };
+
+async function atender(request, env, ctx, url) {
+  try {
+    if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+    const corta = ligaCorta(url);
+    if (corta) return corta;
+    if (/^\/(tienda\/socios|api\/socios)(\/|$)/.test(url.pathname)) { const r = await rutasSocios(request, env, url); if (r) return r; }
+    if (/^\/(tienda\/(puntos|cuenta)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
+    const sim = await rutasSimulador(request, env, url);
+    if (sim) return sim;
+    const cr = await rutasCreadores(request, env, ctx, url);
+    if (cr) return cr;
+    if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
+      return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
+        ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));
+    if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env);
+    const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
+    if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
+    if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);
+    const reg = url.pathname.match(/^\/tienda\/regalo\/([^/]{1,100})\/?$/);
+    if (reg && (request.method === 'GET' || request.method === 'HEAD')) return await paginaRegalo(env, reg[1]);
+    if (url.pathname === '/api/regalo/canjear' && request.method === 'POST') return await canjearRegalo(request, env);
+    const ret = url.pathname.match(/^\/tienda\/retomar\/([0-9a-f-]{36})\/?$/);
+    if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
+    if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {
+      if (request.method === 'POST') return await postReenviar(request, env, ctx);
+      if (request.method === 'GET') return paginaReenviar();
+    }
+    const desc = url.pathname.match(/^\/descargas\/([^/]{1,100})\/?(?:(\d{1,3})\/?)?$/);
+    if (desc && desc[1] !== 'reenviar' && ['GET', 'HEAD'].includes(request.method))
+      return await (desc[2] === undefined ? paginaDescargas(env, desc[1]) : bajarArchivo(env, desc[1], desc[2], request.method));
+    if (request.method === 'GET' || request.method === 'HEAD') {
+      if (url.pathname === '/tienda' || url.pathname === '/tienda/') return await paginaCatalogo(env, request, url);
+      if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
+      if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
+      if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
+      if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
+      if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
+      // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.
+      const img = url.pathname.match(/^\/tienda\/img\/(portadas\/[a-z0-9-]+\.(?:jpg|png|webp))$/);
+      if (img) {
+        const o = await env.PRODUCTOS.get(img[1]);
+        if (!o) return fail('No encontrado', 404);
+        return new Response(o.body, { headers: { 'content-type': o.httpMetadata?.contentType || 'image/jpeg', 'cache-control': 'public, max-age=31536000, immutable', 'x-content-type-options': 'nosniff' } });
+      }
+      const prod = url.pathname.match(/^\/tienda\/([a-z0-9-]{1,80})\/?$/);
+      if (prod) return await paginaProducto(env, request, url, prod[1]);
+    }
+    const wh = url.pathname.match(/^\/api\/webhooks\/([a-z]+)$/);
+    if (wh && request.method === 'POST') return await webhook(request, env, wh[1]);
+    // Solo en desarrollo (.dev.vars): CSS, imágenes y demás páginas del sitio salen del servidor estático local
+    if (env.ESTATICO_DEV) return fetch(env.ESTATICO_DEV + url.pathname + url.search);
+    return fail('No encontrado', 404);
+  } catch (err) {
+    console.error('tienda', url.pathname, err?.message);
+    return fail('Error interno', 500);
+  }
+}
