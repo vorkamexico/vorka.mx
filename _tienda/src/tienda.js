@@ -5,7 +5,7 @@
 // (y, si es una cuenta de Puntos Vorka, cuenta la visita).
 import { pesos } from './util.js';
 import { listarProductos, productoPorSlug, productoPorSlugAnterior, afiliadoActivo, registrarAnalitica } from './modelo.js';
-import { pagina, aviso, esc } from './paginas.js';
+import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 import { contarVisita } from './puntos.js';
@@ -111,7 +111,6 @@ function vistas(productos, desdeBrindi) {
 }
 
 // Secciones a dos columnas en computadora (en celular, una debajo de otra): así no queda una columna angosta con vacío a los lados.
-const WHATSAPP = 'https://wa.me/528117804869';
 // Preguntas frecuentes: a la izquierda el título y cómo contactarnos; a la derecha las preguntas
 export const seccionFaq = ({ titulo = 'Antes de comprar', items, pie = '', suave = false }) => `<section class="t-sec${suave ? ' suave' : ''}" id="ayuda"><div class="marco t-dos">
   <div class="t-dos-a"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2">${titulo}</h2>
@@ -168,7 +167,7 @@ export async function paginaCatalogo(env, req, url) {
   const desde = g => { const b = g.vistas.find(v => esBrindi(v.p)); if (g.vistas.some(v => esCupo(v.p))) return 'Gratis para empezar'; return `Desde ${b ? b.precio.replace('Desde ', '') : precio({ precio_centavos: Math.min(...g.vistas.map(v => v.p.precio_centavos)) })}`; };
   // Tarjeta de producto: la portada completa (4:3, sin recortar) sobre fondo neutro, nombre, precio y un solo botón
   const tarjeta = (v, g, primera) => `
-    <article class="t-card" data-linea="${esc(g.id)}"${primera ? ` id="${esc(g.id)}"` : ''}>
+    <article class="t-card" data-linea="${esc(g.id)}" data-buscar="${esc(sinAcentos(`${v.nombre} ${v.texto || ''} ${g.linea} ${g.titulo}`))}"${primera ? ` id="${esc(g.id)}"` : ''}>
       <a class="t-card-img" href="${esc(v.url)}" tabindex="-1" aria-hidden="true">${portada(v.img)}<span class="t-card-ver">Ver detalles</span></a>
       <div class="t-card-t">
         <span class="t-cat">${esc(g.linea)}</span>
@@ -182,7 +181,10 @@ export async function paginaCatalogo(env, req, url) {
     return `<a class="t-bento-t${i === 0 ? ' grande' : ''}" data-linea="${esc(g.id)}" href="${esc(una ? v.url : `#${g.id}`)}"${una ? '' : ` data-f="${esc(g.id)}"`}>
       <span class="t-bento-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><em>${una ? desde(g) : `${g.vistas.length} productos · ${desde(g).toLowerCase()}`}</em></span>
       <span class="t-bento-img" aria-hidden="true">${portada(v.img)}</span><span class="t-bento-f" aria-hidden="true">${FLECHA}</span></a>`; };
-  const destacado = todas[0];
+  const destacado = todas[0] && { ...todas[0], linea: secciones[0].linea };
+  // Lo nuevo de la tienda (solo si está a la venta): la pastilla de arriba de la portada
+  const lealtad = secciones.find(g => g.id === 'lealtad');
+  const nuevo = lealtad ? { url: lealtad.vistas[0].url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
@@ -190,19 +192,29 @@ export async function paginaCatalogo(env, req, url) {
     descripcion: 'Simulador PAA para tu examen de admisión, invitaciones digitales con QR para tus celebraciones y kits para emprender. Productos digitales de Vorka México con entrega inmediata.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: SCRIPT_CATALOGO,
+    script: SCRIPT_CATALOGO, whatsapp: true, navOscuro: true,
     cuerpo: `
-<section class="t-portal"><div class="marco t-portal-g">
-  <div class="t-portal-txt">
-    <span class="etiqueta">Tienda Vorka México</span>
-    <h1 class="t-portal-h1">Todo para avanzar, <span class="metal">en un solo lugar.</span></h1>
-    <p class="t-portal-sub">Exámenes, celebraciones, eventos y herramientas para tu negocio. Digital y al momento.</p>
-    <div class="botones"><a class="btn acento" href="#productos">Explorar catálogo ${FLECHA}</a><a class="btn vidrio" href="/tienda/puntos/">Gana puntos</a></div>
-    <p class="t-confianza">Entrega inmediata · Tarjeta, OXXO o SPEI · Soporte de personas reales</p>
+<section class="t-hero">
+  <picture class="t-hero-foto" aria-hidden="true"><source type="image/webp" srcset="/img/ciudades/cdmx-noche-960.webp 960w, /img/ciudades/cdmx-noche-1600.webp 1600w, /img/ciudades/cdmx-noche-2400.webp 2400w" sizes="100vw"><img src="/img/ciudades/cdmx-noche-1600.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async"></picture>
+  <div class="marco t-hero-g">
+    <div class="t-hero-txt">
+      ${nuevo ? `<a class="t-hero-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
+      <h1 class="t-hero-h1">Todo para avanzar, <span class="metal">en un solo lugar.</span></h1>
+      <p class="t-hero-sub">Exámenes, celebraciones, eventos y herramientas para tu negocio. Digital y al momento.</p>
+      <div class="botones"><a class="btn acento" href="#productos">Explorar catálogo ${FLECHA}</a><a class="btn vidrio" href="/tienda/puntos/">Gana puntos</a></div>
+      <ul class="t-hero-sellos" aria-label="Por qué comprar aquí"><li>${ICONOS.rayo}Entrega inmediata</li><li>${CANDADO_PAGO}Pago protegido</li><li>${ICONOS.tarjeta}Tarjeta, OXXO o SPEI</li></ul>
+    </div>
+    ${destacado ? `<a class="t-hero-pieza" href="${esc(destacado.url)}"><span class="t-hero-img">${portada(destacado.img)}</span><span class="t-hero-prot">${CANDADO_PAGO}Compra protegida</span>
+      <span class="t-hero-cap"><small>Destacado · ${esc(destacado.linea)}</small><b>${esc(destacado.nombre)}</b><em class="num">${destacado.precio}</em></span></a>` : ''}
   </div>
-  ${destacado ? `<a class="t-portal-pieza" href="${esc(destacado.url)}"><span class="t-portal-img">${portada(destacado.img)}</span>
-    <span class="t-portal-cap"><small>Destacado</small><b>${esc(destacado.nombre)}</b><em class="num">${destacado.precio}</em></span></a>` : ''}
-</div></section>
+  ${secciones.length > 1 ? `<nav class="marco t-hero-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"><i aria-hidden="true"></i>${esc(g.linea)}</a>`).join('')}<a class="t-hero-todas" href="#categorias">Todas las categorías ${FLECHA}</a></nav>` : ''}
+</section>
+<section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
+  <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>
+  <li>${CANDADO_PAGO}<b>Pago protegido</b><span>Lo procesa Stripe. Nosotros nunca vemos los datos de tu tarjeta.</span></li>
+  <li>${ICONOS.tarjeta}<b>Paga como quieras</b><span>Tarjeta de crédito o débito, efectivo en OXXO o transferencia SPEI.</span></li>
+  <li>${ICONOS.chat}<b>Personas reales</b><span>Te contesta alguien del equipo por correo o WhatsApp, en horario laboral.</span></li>
+</ul></div></section>
 ${secciones.length ? `<section class="t-sec t-categorias" id="categorias"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">Categorías</h2></div>
   <nav class="t-bento" aria-label="Categorías de la tienda">${secciones.map(tile).join('')}
@@ -211,28 +223,31 @@ ${secciones.length ? `<section class="t-sec t-categorias" id="categorias"><div c
 </div></section>` : ''}
 <section class="t-sec t-catalogo" id="productos"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
+    <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>
     ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por línea"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>
-  ${secciones.length ? `<div class="t-cards">${secciones.map(g => g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')).join('')}</div>`
+  ${secciones.length ? `<div class="t-cards">${secciones.map(g => g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')).join('')}</div>
+  <p class="t-sin" id="sin-resultados" hidden role="status">No encontramos nada con esa búsqueda. Prueba con otra palabra o <a href="${WHATSAPP}" target="_blank" rel="noopener">pregúntanos por WhatsApp</a>.</p>`
     : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
   <a class="t-puntos-banda" href="/tienda/puntos/"><span><b>Recomienda y gana.</b> 10 puntos por cada compra con tu liga, canjeables en toda la tienda (1 punto = $1).</span><span class="btn acento chico">Crear mi cuenta de puntos ${FLECHA}</span></a>
-</div></section>
-<section class="t-sec t-como suave"><div class="marco">
-  <ol class="t-como-g">
-    <li><span class="num">01</span><b>Elige tu herramienta</b><p>Cada producto explica qué incluye y para quién es, antes de pagar.</p></li>
-    <li><span class="num">02</span><b>Paga seguro</b><p>Con tarjeta, en efectivo en OXXO o por SPEI. Lo procesa Stripe.</p></li>
-    <li><span class="num">03</span><b>Recíbelo al momento</b><p>Te llega un correo con tus archivos o tu acceso en cuanto se confirma el pago.</p></li>
-  </ol>
 </div></section>
 ${seccionFaq({ items: faqHtml(FAQ_TIENDA), pie: env.MARKETPLACE === '1' ? '<p class="t-nota">¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.</p>' : '' })}`,
   });
 }
 
 // Filtros del catálogo: muestran solo una línea sin recargar (sin JavaScript, los enlaces bajan a esa línea)
+// y el buscador (sin JavaScript no aparece): filtra por nombre, descripción y línea, sin importar acentos
 const SCRIPT_CATALOGO = `(function(){
   var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-cards .t-card'));
-  function filtra(k){ fs.forEach(function(a){ if(a.dataset.f===k) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); }); cards.forEach(function(c){ c.hidden=!!k&&c.dataset.linea!==k; }); }
+  var caja=document.querySelector('.t-buscar'), q=document.getElementById('buscar'), sin=document.getElementById('sin-resultados'), linea='';
+  var norm=function(t){ return String(t||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim(); };
+  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); if(sin) sin.hidden=n>0; }
+  function filtra(k){ linea=k; fs.forEach(function(a){ if(a.dataset.f===k) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); }); pinta(); }
   document.addEventListener('click',function(e){ var a=e.target.closest('[data-f]'); if(!a||!fs.length) return; e.preventDefault(); filtra(a.dataset.f); document.getElementById('productos').scrollIntoView({behavior:'smooth'}); history.replaceState(null,'',a.dataset.f?'#'+a.dataset.f:'#productos'); });
-  var h=location.hash.slice(1); if(h&&fs.some(function(a){ return a.dataset.f===h; })) filtra(h);
+  if(caja&&q){ caja.hidden=false; q.addEventListener('input',pinta); }
+  // la lupa del menú lleva aquí y abre el buscador
+  function enfocar(){ if(location.hash==='#buscar'&&q){ document.getElementById('productos').scrollIntoView(); q.focus(); } }
+  window.addEventListener('hashchange',enfocar);
+  var h=location.hash.slice(1); if(h&&fs.some(function(a){ return a.dataset.f===h; })) filtra(h); else enfocar();
 })();`;
 
 // Formulario de compra: funciona sin JavaScript (POST normal → 303 a Stripe) y con JavaScript (fetch + errores en línea)
