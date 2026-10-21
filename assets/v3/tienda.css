@@ -607,3 +607,92 @@
 .con-pestanas .t-panel + .t-panel { margin-top: 0; }
 .t-panel > .t-h2 { margin: 0 0 6px; } .t-panel > .t-lista + .t-h2 { margin-top: 30px; }
 .t-panel .t-nota { margin-top: 18px; }
+
+/* ---------- Tienda · portada con foto (oct 2026): vitrina a todo lo ancho, confianza y buscador ---------- */
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Menú sobre la foto: lupa y cuenta como botones redondos; en celular quedan la lupa, la pastilla y el menú */
+.t-nav-ico { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--fg-2); text-decoration: none; transition: background var(--t-rapido), color var(--t-rapido); }
+.t-nav-ico svg { width: 21px; height: 21px; }
+.t-nav-ico:hover { background: rgba(20, 17, 20, .06); color: var(--fg); }
+.nav.t-navs .t-nav-ico + .t-pastilla { margin-left: 4px; }
+.nav.oscuro .t-nav-ico { color: rgba(244, 242, 245, .78); } .nav.oscuro .t-nav-ico:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.nav.oscuro.t-navs .marca span { color: var(--oro-claro); }
+@media (max-width: 899px) { .nav.t-navs .t-nav-ico:first-of-type { margin-left: auto; } }
+@media (max-width: 600px) { .t-nav-cuenta { display: none; } }
+@media (max-width: 430px) { .nav.t-navs .t-pastilla { display: none; } }
+
+.t-hero { position: relative; isolation: isolate; overflow: hidden; margin-top: -104px; padding: 150px 0 0; background: #0F0D10; color: #F4F2F5; }
+.t-hero-foto, .t-hero-foto img { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
+.t-hero-foto img { object-fit: cover; object-position: 50% 40%; border-radius: 0; }
+/* la foto se oscurece del lado del texto y abajo (donde van las líneas), y conserva sus luces del otro lado */
+.t-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(90deg, rgba(15, 13, 16, .94) 0%, rgba(15, 13, 16, .78) 42%, rgba(15, 13, 16, .35) 100%),
+  linear-gradient(0deg, rgba(15, 13, 16, .96) 0%, rgba(15, 13, 16, 0) 38%),
+  radial-gradient(50% 60% at 80% 20%, rgba(107, 42, 133, .3), transparent 70%); }
+.t-hero-g { display: grid; gap: clamp(28px, 5vw, 64px); align-items: center; padding-bottom: clamp(28px, 4vw, 48px); }
+.t-hero-g > * { min-width: 0; }
+@media (min-width: 960px) { .t-hero-g { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); min-height: 430px; } }
+.t-hero .etiqueta { color: rgba(244, 242, 245, .66); } .t-hero .etiqueta::before { background: var(--acento); }
+.t-hero-chip { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; padding: 5px 14px 5px 5px; border-radius: 999px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14); color: #F4F2F5; text-decoration: none; font-size: 14px; font-weight: 550; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transition: background var(--t-rapido), border-color var(--t-rapido); }
+.t-hero-chip:hover { background: rgba(255, 255, 255, .13); border-color: rgba(200, 164, 92, .5); }
+.t-hero-chip b { flex: none; padding: 4px 10px; border-radius: 999px; background: var(--acento); color: var(--sobre-acento); font-size: 12px; font-weight: 750; letter-spacing: .02em; }
+.t-hero-chip span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-hero-chip svg { flex: none; width: 15px; height: 15px; }
+.t-hero-h1 { font-size: clamp(42px, 6.4vw, 78px); font-weight: 760; letter-spacing: -.045em; line-height: 1; margin-top: 20px; max-width: 12ch; text-wrap: balance; }
+.t-hero-h1 .metal { background: var(--metal-osc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.t-hero-sub { margin-top: 18px; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; color: rgba(244, 242, 245, .78); max-width: 32em; }
+.t-hero .botones { margin-top: 28px; }
+.t-hero-sellos { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: rgba(244, 242, 245, .72); }
+.t-hero-sellos li { display: inline-flex; align-items: center; gap: 7px; }
+.t-hero-sellos svg { width: 17px; height: 17px; color: var(--oro-claro); flex: none; }
+/* el producto destacado en una tarjeta de vidrio, con el sello de compra protegida encima */
+.t-hero-pieza { position: relative; display: grid; gap: 14px; padding: 12px 12px 16px; border-radius: 26px; background: rgba(28, 25, 32, .62); border: 1px solid rgba(255, 255, 255, .12); -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .9); color: inherit; text-decoration: none; max-width: 520px; width: 100%; justify-self: center; transition: transform var(--t-medio) var(--ease), border-color var(--t-medio); }
+.t-hero-pieza:hover { transform: translateY(-3px); border-color: rgba(200, 164, 92, .45); }
+.t-hero-img { display: block; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; background: #0E0C10; }
+.t-hero-img > * { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
+.t-hero-prot { position: absolute; top: 24px; left: 24px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px 7px 10px; border-radius: 999px; background: rgba(15, 13, 16, .78); border: 1px solid rgba(92, 196, 139, .35); color: #BFEBD2; font-size: 12.5px; font-weight: 650; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.t-hero-prot svg { width: 14px; height: 14px; color: #5CC48B; }
+.t-hero-cap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: end; padding: 0 6px; }
+.t-hero-cap small { grid-column: 1 / -1; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--acento); }
+.t-hero-cap b { font-size: 17px; font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.t-hero-cap em { font-style: normal; font-weight: 700; color: rgba(244, 242, 245, .86); white-space: nowrap; }
+@media (max-width: 959px) { .t-hero-pieza { max-width: 440px; } }
+@media (max-width: 600px) { .t-hero-pieza { display: none; } .t-hero { padding-top: 132px; } }
+/* explora por línea: chips con su color, al pie de la foto (en celular se desplazan de lado) */
+.t-hero-lineas { display: flex; gap: 8px; padding-bottom: clamp(22px, 3vw, 34px); overflow-x: auto; scrollbar-width: none; }
+.t-hero-lineas::-webkit-scrollbar { display: none; }
+.t-hero-lineas a { --tinte: var(--oro-claro); flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .12); color: rgba(244, 242, 245, .9); font-size: 14.5px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background var(--t-rapido), border-color var(--t-rapido); }
+.t-hero-lineas a:hover { background: rgba(255, 255, 255, .13); border-color: rgba(255, 255, 255, .24); }
+.t-hero-lineas a i { width: 8px; height: 8px; border-radius: 50%; background: var(--tinte); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tinte) 25%, transparent); }
+.t-hero-lineas a[data-linea="examenes"] { --tinte: #C08ADB; } .t-hero-lineas a[data-linea="invitaciones"] { --tinte: #E58AAA; } .t-hero-lineas a[data-linea="eventos"] { --tinte: #FF8A6B; }
+.t-hero-lineas a[data-linea="lealtad"] { --tinte: #E6CF96; } .t-hero-lineas a[data-linea="emprender"] { --tinte: #6FD39B; }
+.t-hero-lineas .t-hero-todas { background: none; border-color: transparent; color: var(--oro-claro); margin-left: auto; }
+.t-hero-lineas .t-hero-todas svg { width: 15px; height: 15px; }
+
+/* Compra con confianza: cuatro razones con su ícono, justo debajo de la foto */
+.t-confia { padding: clamp(22px, 3vw, 34px) 0 0; }
+.t-confia-g { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 980px) { .t-confia-g { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; } }
+.t-confia-g li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; align-items: start; padding: 16px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+.t-confia-g svg { grid-row: span 2; width: 40px; height: 40px; padding: 9px; border-radius: 12px; background: color-mix(in srgb, var(--acento) 16%, transparent); color: color-mix(in srgb, var(--acento) 60%, var(--fg)); }
+.t-confia-g b { font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; }
+.t-confia-g span { font-size: 13.5px; line-height: 1.45; color: var(--fg-2); }
+@media (max-width: 520px) { .t-confia-g li { grid-template-columns: minmax(0, 1fr); padding: 14px; } .t-confia-g svg { grid-row: auto; margin-bottom: 6px; } .t-confia-g span { font-size: 13px; } }
+
+/* Buscador del catálogo (aparece con JavaScript) */
+.t-buscar { display: flex; align-items: center; gap: 8px; flex: 1 1 260px; max-width: 380px; min-height: 46px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg-3); transition: border-color var(--t-rapido), box-shadow var(--t-rapido); }
+.t-buscar[hidden] { display: none; }
+.t-buscar:focus-within { border-color: var(--fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--acento) 28%, transparent); }
+.t-buscar svg { width: 18px; height: 18px; flex: none; }
+.t-buscar input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 16px; color: var(--fg); }
+.t-buscar input::placeholder { color: var(--fg-3); }
+.t-cat-cab .t-filtros { flex-basis: 100%; }
+.t-sin { margin-top: 8px; padding: 22px; border-radius: var(--r); border: 1px dashed var(--line-2); text-align: center; color: var(--fg-2); }
+.t-sin[hidden] { display: none; }
+
+/* WhatsApp a la mano (portada de la tienda) */
+.t-wa { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 90; display: inline-flex; align-items: center; gap: 8px; height: 54px; padding: 0 20px 0 16px; border-radius: 999px; background: #1F9D55; color: #fff; font-size: 15px; font-weight: 650; text-decoration: none; box-shadow: 0 14px 30px -12px rgba(0, 0, 0, .45); transition: transform var(--t-medio) var(--ease), background var(--t-rapido); }
+.t-wa:hover { transform: translateY(-2px); background: #1A8A4A; }
+.t-wa svg { width: 24px; height: 24px; }
+@media (max-width: 600px) { .t-wa { width: 54px; padding: 0; justify-content: center; } .t-wa span { display: none; } }
+@media print { .t-wa { display: none; } }

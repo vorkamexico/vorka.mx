@@ -22,17 +22,30 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/tienda/">');
   });
 
-  it('la portada: mensaje corto con 2 botones, una sola pieza destacada, categorías en mosaico, catálogo con filtros y cómo comprar', async () => {
+  it('la portada: foto a todo lo ancho con 2 botones, una sola pieza destacada, líneas, confianza, categorías en mosaico y catálogo con buscador y filtros', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toContain('class="t-portal"');
+    expect(html).toContain('class="t-hero"');
+    expect(html).toMatch(/<picture class="t-hero-foto"[^>]*><source type="image\/webp" srcset="\/img\/ciudades\/cdmx-noche-960\.webp 960w/);
+    expect(html).toContain('fetchpriority="high"');
     expect(html).toContain('Explorar catálogo');
-    expect(html).toContain('Entrega inmediata · Tarjeta, OXXO o SPEI · Soporte de personas reales');
-    expect(html.match(/class="t-portal-pieza"/g)).toHaveLength(1);       // como mucho una pieza visual, no todo el catálogo
+    expect(html.match(/class="t-hero-pieza"/g)).toHaveLength(1);       // como mucho una pieza visual, no todo el catálogo
+    expect(html).toContain('Compra protegida');
+    // explora por línea: una línea de un solo producto lleva directo a él; las demás filtran el catálogo
+    expect(html).toMatch(/class="marco t-hero-lineas"[^>]*><a href="\/simulador-paa\/" data-linea="examenes">/);
+    expect(html).toContain('class="t-confia-g"');
+    for (const t of ['Entrega inmediata', 'Pago protegido', 'Paga como quieras', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
+    // buscador del catálogo (oculto sin JavaScript), con el texto de cada tarjeta sin acentos y mensaje si no hay resultados
+    expect(html).toContain('<label class="t-buscar" hidden>');
+    expect(html).toMatch(/class="t-card" data-linea="examenes" data-buscar="simulador paa en linea [^"]*educacion/);
+    expect(html).toContain('id="sin-resultados" hidden');
+    // menú oscuro sobre la foto, con lupa y cuenta; WhatsApp flotante
+    expect(html).toContain('<header class="nav t-navs oscuro">');
+    expect(html).toContain('href="/tienda/#buscar" aria-label="Buscar en la tienda"');
+    expect(html).toContain('class="t-wa" href="https://wa.me/528117804869?text=');
     expect(html).toContain('id="categorias"');
     expect(html).toMatch(/class="t-bento-t[^"]*" data-linea="examenes" href="\/simulador-paa\/"/);   // una línea de un producto lleva directo a él
     expect(html).toContain('class="t-bento-t t-bento-puntos" href="/tienda/puntos/"');
     // menú propio de la tienda con la pastilla destacada
-    expect(html).toContain('<header class="nav t-navs">');
     for (const l of ['Inicio', 'Catálogo', 'Categorías', 'Puntos', 'Contacto']) expect(html).toContain(`>${l}</a>`);
     expect(html).toContain('class="btn acento t-pastilla" href="/tienda/puntos/"');
     // las portadas se declaran con su proporción real (4:3)
@@ -42,7 +55,6 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('"@type":"FAQPage"');
     // Cada producto aparece una sola vez como tarjeta
     expect(html.match(/class="t-card-img" href="\/simulador-paa\/"/g)).toHaveLength(1);
-    expect(html).toContain('Recíbelo al momento');
     expect(html).toContain('id="productos"');
   });
 

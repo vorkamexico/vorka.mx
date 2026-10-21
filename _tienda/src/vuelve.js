@@ -12,7 +12,7 @@ const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headl
 export const RUTA_VUELVE = '/tienda/vuelve/';
 const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', nombre: 'Mensual', cada: 'al mes' }, { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
 
-const INCLUYE = ['Clientes ilimitados y tu propia página de registro con QR', 'Sellos o puntos, recompensas y niveles (Bronce, Plata, Oro)', 'Tarjeta en Apple Wallet, Google Wallet o en el navegador',
+const INCLUYE = ['Clientes ilimitados y tu propia página de registro con QR', 'Sellos o puntos, recompensas y niveles (Bronce, Plata, Oro)', 'Tarjeta en Apple Wallet, Google Wallet o en el navegador, con tu logo y una foto de tu negocio detrás de los sellos',
   'Avisos de cumpleaños, de "te extrañamos" y por cercanía, automáticos', 'Programa de referidos: "trae a un amigo" (ves quién invitó a quién)', 'Tu liga propia (vorka.mx/vuelve/tu-negocio) y lugar en el directorio de negocios Vuelve', 'Reporte de dinero recuperado y retorno de clientes', 'Escáner para tu equipo con PIN y bitácora antifraude', 'Cartel con QR listo para imprimir'];
 const FAQ = [
   ['¿Puedo probar antes de pagar?', `Sí. Creas tu programa en <a href="${OS}/vuelve/">os.vorka.mx/vuelve</a> y lo usas completo 7 días, sin tarjeta. Si te sirve, te suscribes; si no, no pasa nada.`],
@@ -69,7 +69,7 @@ export async function paginaVuelve(env, req, url) {
 
 <section class="t-sec"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Así funciona</span><h2 class="h2">Listo en minutos, desde tu celular</h2></div>
-  <ol class="vu-pasos">${[['Arma tu tarjeta', 'Elige tu giro, sube tu logo y define sellos y premios. Vuelve te sugiere todo.'], ['Pon tu QR en el mostrador', 'Te damos un cartel listo para imprimir. Tus clientes se registran en 30 segundos.'],
+  <ol class="vu-pasos">${[['Arma tu tarjeta', 'Elige tu giro, sube tu logo y una foto de tu negocio, y define sellos y premios. Vuelve te sugiere todo.'], ['Pon tu QR en el mostrador', 'Te damos un cartel listo para imprimir. Tus clientes se registran en 30 segundos.'],
     ['Sella con el celular', 'Tu equipo escanea la tarjeta del cliente con su PIN. Un toque y listo.'], ['Vuelve hace el resto', 'Avisos de cumpleaños, de "te extrañamos" y de cercanía, y tus números de cada mes.']].map(([t, d], k) => `<li class="rv" style="--d:${k * .05}s"><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
 </div></section>
 
