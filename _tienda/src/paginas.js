@@ -84,9 +84,9 @@ export const ICONOS = {
 export const WHATSAPP = 'https://wa.me/528117804869';
 
 // Menú propio de la tienda (mismas piezas que el del sitio, así vorka.js le da el menú del celular y la sombra al bajar):
-// Inicio · Catálogo · Categorías · Puntos · Contacto; a la derecha la lupa (lleva al buscador del catálogo), tu cuenta de
+// Inicio · Catálogo · Puntos · Contacto; a la derecha la lupa (lleva al buscador del catálogo), tu cuenta de
 // puntos y la pastilla destacada "Gana puntos". oscuro: sobre la foto de la portada.
-const MENU_TIENDA = [['inicio', 'Inicio', '/tienda/'], ['catalogo', 'Catálogo', '/tienda/#productos'], ['categorias', 'Categorías', '/tienda/#categorias'], ['puntos', 'Puntos', '/tienda/puntos/'], ['contacto', 'Contacto', '/tienda/#ayuda']];
+const MENU_TIENDA = [['inicio', 'Inicio', '/tienda/'], ['catalogo', 'Catálogo', '/tienda/#productos'], ['puntos', 'Puntos', '/tienda/puntos/'], ['contacto', 'Contacto', '/tienda/#ayuda']];
 export const navTiendaSup = (actual = '', { oscuro = false } = {}) => `<header class="nav t-navs${oscuro ? ' oscuro' : ''}">
   <div class="nav-in">
     <a class="marca" href="/tienda/" aria-label="Tienda Vorka México, inicio">${LOGO}Vorka <span>Tienda</span></a>

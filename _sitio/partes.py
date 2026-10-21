@@ -6,7 +6,7 @@ SITIO = 'https://vorka.mx'
 CORREO = 'vorkamexico@gmail.com'
 WHATSAPP = '528117804869'
 WA_MSG = 'Hola Vorka, ya decidí avanzar. Me gustaría empezar formalmente el proceso.'
-VERSION = '9'
+VERSION = '10'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -157,6 +157,7 @@ def pie(publico='general'):
         lema, base = 'Fútbol, valores y comunidad en Celaya.', '<a href="/privacidad/">Aviso de privacidad</a>'
     else:
         simulador = '' if publico == 'empresas' else '\n        <li><a href="/simulador-paa/">Simulador PAA</a></li>'
+        # cuatro columnas cortas y parejas (antes "Vorka" llevaba 9 ligas y alargaba todo el pie)
         columnas = f'''<div><h4>Servicios</h4><ul>
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
         <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
@@ -166,11 +167,13 @@ def pie(publico='general'):
         <li><a href="/#proceso">Cómo trabajamos</a></li>
         <li><a href="/#red">Presencia nacional</a></li>
         <li><a href="/sparks/">Revista Sparks</a></li>
+        <li><a href="/voluntariado">Tú en Vorka</a></li>
+        <li><a href="/fc/">Vorka FC</a></li></ul></div>
+      <div><h4>Productos</h4><ul>
         <li><a href="/tienda/">Tienda</a></li>{simulador}
         <li><a href="/tienda/brindi/">Invitaciones digitales</a></li>
         <li><a href="/tienda/cupo/">Eventos con registro</a></li>
-        <li><a href="/voluntariado">Tú en Vorka</a></li>
-        <li><a href="/fc/">Vorka FC</a></li></ul></div>
+        <li><a href="/tienda/vuelve/">Vuelve · lealtad</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
         <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li>
@@ -186,7 +189,6 @@ def pie(publico='general'):
       </div>
       {columnas}
     </div>
-    <div class="marca-xl" aria-hidden="true">{LOGO}<b>Vorka</b></div>
     <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México · Monterrey · CDMX · Guadalajara · Querétaro · Celaya</span><nav>{base}</nav></div>
   </div>
 </footer>

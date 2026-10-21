@@ -921,6 +921,8 @@ export function icono(n) {
 // ---------- página del programa (pública, con el menú del sitio) ----------
 const CSS_PROGRAMA = `
 .pv-lp{background:#0B090C;color:#F4F2F5;position:relative;overflow:hidden}
+/* la portada oscura sube por debajo del menú (sin esto quedaba una tira clara arriba) */
+.t-main>.pv-lp:first-child{margin-top:-104px;padding-top:104px}
 .pv-lp::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(50% 50% at 85% 10%,rgba(107,42,133,.55),transparent 70%),radial-gradient(40% 40% at 0% 90%,rgba(200,164,92,.12),transparent 70%)}
 .pv-lp .marco{position:relative}
 .pv-hero{display:grid;gap:44px;align-items:center;padding:clamp(40px,7vw,96px) 0 clamp(56px,8vw,110px)}
@@ -998,7 +1000,7 @@ export function paginaPrograma(env, { cuenta }) {
     [I.compartir, 'Comparte en un toque', 'Tu liga para cada producto con WhatsApp, Telegram, X, código QR y mensajes listos para pegar.'],
     [I.instalar, 'Instálala en tu inicio', 'Funciona como app en iPhone y Android, sin descargar nada de una tienda de apps.'],
   ];
-  return pagina({ navActual: 'puntos',
+  return pagina({ navActual: 'puntos', navOscuro: true,
     titulo: 'Puntos Vorka: comparte y gana descuentos en la tienda', ruta: '/tienda/puntos/',
     descripcion: `La app de puntos de Vorka México: comparte tu liga, gana ${PUNTOS_POR_COMPRA} puntos por cada compra (dobles en promociones), ponte metas y recibe avisos. 1 punto = $1 MXN.`,
     head: `<style>.pv-lp,#toast{${TOKENS}}${CSS_BASE}${CSS_PROGRAMA}</style>`,

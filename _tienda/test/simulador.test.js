@@ -244,8 +244,8 @@ describe('examen PAA completo (estructura real)', () => {
 describe('tienda por secciones y SEO', () => {
   it('el catálogo agrupa por secciones y no lista el simulacro adicional', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toContain('Preparación para exámenes');
-    expect(html).toContain('Kits para emprender');
+    expect(html).toMatch(/data-linea="examenes"[^>]*><i aria-hidden="true"><\/i>Educación<\/a>/);
+    expect(html).toMatch(/data-linea="emprender"[^>]*><i aria-hidden="true"><\/i>Emprendimiento<\/a>/);
     expect(html).toContain('href="#examenes"');
     expect(html).not.toContain('simulador-paa-intento');
   });

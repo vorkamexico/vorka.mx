@@ -176,11 +176,6 @@ export async function paginaCatalogo(env, req, url) {
         <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="btn blanco chico" href="${esc(v.url)}">Ver ${FLECHA}</a></span></div>
       </div>
     </article>`;
-  // Categorías en mosaico: cada línea con su nombre y su portada completa; si la línea tiene un solo producto, lleva directo a él
-  const tile = (g, i) => { const una = g.vistas.length === 1, v = g.vistas[0];
-    return `<a class="t-bento-t${i === 0 ? ' grande' : ''}" data-linea="${esc(g.id)}" href="${esc(una ? v.url : `#${g.id}`)}"${una ? '' : ` data-f="${esc(g.id)}"`}>
-      <span class="t-bento-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><em>${una ? desde(g) : `${g.vistas.length} productos · ${desde(g).toLowerCase()}`}</em></span>
-      <span class="t-bento-img" aria-hidden="true">${portada(v.img)}</span><span class="t-bento-f" aria-hidden="true">${FLECHA}</span></a>`; };
   const destacado = todas[0] && { ...todas[0], linea: secciones[0].linea };
   // Lo nuevo de la tienda (solo si está a la venta): la pastilla de arriba de la portada
   const lealtad = secciones.find(g => g.id === 'lealtad');
@@ -207,7 +202,7 @@ export async function paginaCatalogo(env, req, url) {
     ${destacado ? `<a class="t-hero-pieza" href="${esc(destacado.url)}"><span class="t-hero-img">${portada(destacado.img)}</span><span class="t-hero-prot">${CANDADO_PAGO}Compra protegida</span>
       <span class="t-hero-cap"><small>Destacado · ${esc(destacado.linea)}</small><b>${esc(destacado.nombre)}</b><em class="num">${destacado.precio}</em></span></a>` : ''}
   </div>
-  ${secciones.length > 1 ? `<nav class="marco t-hero-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"><i aria-hidden="true"></i>${esc(g.linea)}</a>`).join('')}<a class="t-hero-todas" href="#categorias">Todas las categorías ${FLECHA}</a></nav>` : ''}
+  ${secciones.length > 1 ? `<nav class="marco t-hero-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"><i aria-hidden="true"></i>${esc(g.linea)}</a>`).join('')}<a class="t-hero-todas" href="#productos" data-f="">Ver todo el catálogo ${FLECHA}</a></nav>` : ''}
 </section>
 <section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
   <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>
@@ -215,12 +210,6 @@ export async function paginaCatalogo(env, req, url) {
   <li>${ICONOS.tarjeta}<b>Paga como quieras</b><span>Tarjeta de crédito o débito, efectivo en OXXO o transferencia SPEI.</span></li>
   <li>${ICONOS.chat}<b>Personas reales</b><span>Te contesta alguien del equipo por correo o WhatsApp, en horario laboral.</span></li>
 </ul></div></section>
-${secciones.length ? `<section class="t-sec t-categorias" id="categorias"><div class="marco">
-  <div class="t-cat-cab"><h2 class="h2">Categorías</h2></div>
-  <nav class="t-bento" aria-label="Categorías de la tienda">${secciones.map(tile).join('')}
-    <a class="t-bento-t t-bento-puntos" href="/tienda/puntos/"><span class="t-bento-x"><small>Puntos Vorka</small><b>Recomienda y gana</b><em>10 puntos por cada compra con tu liga · 1 punto = $1</em></span><span class="t-bento-v" aria-hidden="true">${LOGO}</span><span class="t-bento-f" aria-hidden="true">${FLECHA}</span></a>
-  </nav>
-</div></section>` : ''}
 <section class="t-sec t-catalogo" id="productos"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
     <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>

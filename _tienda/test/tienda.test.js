@@ -22,7 +22,7 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/tienda/">');
   });
 
-  it('la portada: foto a todo lo ancho con 2 botones, una sola pieza destacada, líneas, confianza, categorías en mosaico y catálogo con buscador y filtros', async () => {
+  it('la portada: foto a todo lo ancho con 2 botones, una sola pieza destacada, líneas, confianza, un solo catálogo con buscador y filtros', async () => {
     const html = await (await pedir('/tienda/')).text();
     expect(html).toContain('class="t-hero"');
     expect(html).toMatch(/<picture class="t-hero-foto"[^>]*><source type="image\/webp" srcset="\/img\/ciudades\/cdmx-noche-960\.webp 960w/);
@@ -42,11 +42,12 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<header class="nav t-navs oscuro">');
     expect(html).toContain('href="/tienda/#buscar" aria-label="Buscar en la tienda"');
     expect(html).toContain('class="t-wa" href="https://wa.me/528117804869?text=');
-    expect(html).toContain('id="categorias"');
-    expect(html).toMatch(/class="t-bento-t[^"]*" data-linea="examenes" href="\/simulador-paa\/"/);   // una línea de un producto lleva directo a él
-    expect(html).toContain('class="t-bento-t t-bento-puntos" href="/tienda/puntos/"');
+    // categorías y catálogo eran lo mismo: queda un solo catálogo (las líneas se eligen arriba o en los filtros)
+    expect(html).not.toContain('id="categorias"');
+    expect(html).not.toContain('t-bento');
+    expect(html).toContain('class="t-puntos-banda" href="/tienda/puntos/"');
     // menú propio de la tienda con la pastilla destacada
-    for (const l of ['Inicio', 'Catálogo', 'Categorías', 'Puntos', 'Contacto']) expect(html).toContain(`>${l}</a>`);
+    for (const l of ['Inicio', 'Catálogo', 'Puntos', 'Contacto']) expect(html).toContain(`>${l}</a>`);
     expect(html).toContain('class="btn acento t-pastilla" href="/tienda/puntos/"');
     // las portadas se declaran con su proporción real (4:3)
     expect(html).toContain('width="1600" height="1200"');
