@@ -60,8 +60,8 @@ export async function paginaVuelve(env, req, url) {
     <div class="botones"><a class="btn tinta" href="${OS}/vuelve/#/nuevo">Probar 7 días gratis ${FLECHA}</a><a class="btn blanco" href="#planes">Ver precios</a></div>
     <p class="vu-nota"><b>Sin tarjeta para probar.</b> Después, ${mensual ? `<b>${precio(mensual.prod)}</b> al mes` : 'una mensualidad'} con clientes ilimitados · cancela cuando quieras</p>
   </div>
-  <div class="vu-cel" aria-hidden="true"><div class="vu-tarjeta"><div class="vu-t-cab"><span class="vu-t-logo">☕</span><span><b>Café La Paloma</b><small>Tarjeta de cliente</small></span><span class="vu-t-nivel">Oro</span></div>
-    <div class="vu-sellos">${Array.from({ length: 10 }, (_, i) => `<span class="${i < 7 ? 'si' : ''}">${i < 7 ? '☕' : ''}</span>`).join('')}</div>
+  <div class="vu-cel" aria-hidden="true"><div class="vu-tarjeta"><div class="vu-t-cab"><span class="vu-t-logo">C</span><span><b>Café La Paloma</b><small>Tarjeta de cliente</small></span><span class="vu-t-nivel">Oro</span></div>
+    <div class="vu-sellos">${Array.from({ length: 10 }, (_, i) => `<span class="${i < 7 ? 'si' : i === 9 ? 'pr' : ''}"></span>`).join('')}</div>
     <p class="vu-t-meta"><b>7 de 10</b> · te faltan 3 para tu bebida gratis</p>
     <div class="vu-t-pie"><span><small>Cliente</small><b>María G.</b></span><span class="vu-qr"></span></div></div>
     <div class="vu-aviso"><b>Café La Paloma</b><span>¡Feliz cumpleaños, María! Tu bebida va por nuestra cuenta esta semana 🎂</span></div></div>
@@ -120,38 +120,42 @@ ${await masTienda(env, 'lealtad')}
 }
 
 const CSS = `
-.vu{--vu-a:#16a36a;--vu-t:#0f241c;--vu-f:#f2f6f1;--vu-o:#ff8a3d}
+.vu{--vu-n:#121212;--vu-n2:#1d1c1a;--vu-m:#f4f1ea;--vu-o:#d9b87c;--vu-o2:#9c7a3e;--vu-f:var(--bg-2);--vu-acento:#8a6a2c}
+[data-tema="oscuro"] .vu{--vu-acento:#d9b87c}
 .vu-hero{background:var(--vu-f);padding:clamp(28px,6vw,72px) 0;overflow:hidden}
 .vu-hero-g{display:grid;gap:36px;align-items:center}
 @media(min-width:900px){.vu-hero-g{grid-template-columns:1.1fr .9fr}}
-.vu-logo{display:flex;align-items:center;gap:6px;font:800 34px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;color:var(--vu-t);margin:16px 0 10px}.vu-logo i{color:var(--vu-a);font-style:normal;font-size:.8em}
-.vu-h1{font:800 clamp(36px,6.4vw,62px)/1.02 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--vu-t)}.vu-h1 i{font-style:normal;color:var(--vu-a)}
-.vu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:#3f4a45;margin:0 0 22px;max-width:34em}
-.vu-nota{color:#53605a;font-size:15px;margin-top:14px}
-.vu-cel{position:relative;max-width:360px;margin:0 auto;width:100%}
-.vu-tarjeta{background:linear-gradient(160deg,#1b3a2e,#0f241c);color:#fff;border-radius:24px;padding:20px;box-shadow:0 30px 60px -30px rgba(15,36,28,.7)}
-.vu-t-cab{display:flex;align-items:center;gap:12px}.vu-t-logo{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#fff;font-size:22px}
-.vu-t-cab b{display:block;font-size:17px}.vu-t-cab small{color:#b9d3c6;font-size:12.5px}.vu-t-nivel{margin-left:auto;background:#e8c46a;color:#3d2c00;font-weight:800;font-size:12px;padding:4px 10px;border-radius:999px}
-.vu-sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0 10px}
-.vu-sellos span{aspect-ratio:1;border-radius:50%;border:2px dashed rgba(255,255,255,.35);display:grid;place-items:center;font-size:20px}.vu-sellos .si{background:#fff;border:0}
-.vu-t-meta{margin:0;color:#d7e9df;font-size:14px}.vu-t-meta b{color:#fff}
-.vu-t-pie{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px}.vu-t-pie small{display:block;color:#b9d3c6;font-size:12px}
-.vu-qr{width:64px;height:64px;border-radius:10px;background:#fff;background-image:repeating-linear-gradient(90deg,#0f241c 0 6px,transparent 6px 10px),repeating-linear-gradient(0deg,#0f241c 0 6px,transparent 6px 10px);background-blend-mode:multiply;border:6px solid #fff}
-.vu-aviso{position:absolute;left:-14px;right:18px;bottom:-26px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 20px 40px -22px rgba(15,36,28,.6);font-size:14px;display:grid;gap:2px}
-.vu-aviso b{font-size:13px;color:var(--vu-a)}
+.vu-logo{display:flex;align-items:center;gap:6px;font:700 34px/1 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-.045em;color:var(--fg);margin:16px 0 10px}
+.vu-h1{font:750 clamp(36px,6.4vw,62px)/1.02 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--fg)}.vu-h1 i{font-style:normal;color:var(--vu-acento)}
+.vu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:var(--fg-2);margin:0 0 22px;max-width:34em}
+.vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}.vu-nota b{color:var(--fg)}
+.vu-cel{position:relative;max-width:360px;margin:0 auto 26px;width:100%}
+.vu-tarjeta{background:radial-gradient(130% 90% at 15% 0%,#2a2a2a,var(--vu-n) 62%);color:var(--vu-m);border-radius:24px;padding:20px;box-shadow:0 30px 60px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.05)}
+.vu-t-cab{display:flex;align-items:center;gap:12px}.vu-t-logo{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--vu-o);color:#3a2c12;font-weight:700;font-size:18px}
+.vu-t-cab b{display:block;font-size:16.5px;font-weight:600}.vu-t-cab small{color:#8f8b84;font-size:12.5px}.vu-t-nivel{margin-left:auto;border:1px solid rgba(217,184,124,.5);color:var(--vu-o);font-weight:600;font-size:12px;padding:3px 10px;border-radius:999px}
+.vu-sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0 12px}
+.vu-sellos span{aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.26);background:rgba(0,0,0,.18);display:grid;place-items:center}
+.vu-sellos .si{background:radial-gradient(circle at 35% 28%,#fff,var(--vu-m) 50%,#bdb6a8);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 6px rgba(0,0,0,.45)}
+.vu-sellos .si::after{content:"";width:34%;height:18%;border-left:2.5px solid var(--vu-n);border-bottom:2.5px solid var(--vu-n);transform:translateY(-12%) rotate(-45deg)}
+.vu-sellos .pr{box-shadow:inset 0 0 0 1.5px var(--vu-o)}.vu-sellos .pr::after{content:"★";color:var(--vu-o);font-size:15px}
+.vu-t-meta{margin:0;color:#a8a39b;font-size:14px}.vu-t-meta b{color:var(--vu-m);font-weight:600}
+.vu-t-pie{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px}.vu-t-pie small{display:block;color:#8f8b84;font-size:12px}
+.vu-qr{width:64px;height:64px;border-radius:10px;background:#fff;background-image:repeating-linear-gradient(90deg,#121212 0 6px,transparent 6px 10px),repeating-linear-gradient(0deg,#121212 0 6px,transparent 6px 10px);background-blend-mode:multiply;border:6px solid #fff}
+.vu-aviso{position:absolute;left:-10px;right:18px;bottom:-30px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--sombra-2);font-size:14px;display:grid;gap:2px}
+.vu-aviso b{font-size:13px;color:var(--vu-acento)}
 .vu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));counter-reset:p}
-.vu-pasos li{background:#fff;border:1px solid #e1e8e3;border-radius:18px;padding:18px;counter-increment:p}.vu-pasos li::before{content:counter(p);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--vu-t);color:#fff;font-weight:800;margin-bottom:10px}
-.vu-pasos b{font-size:17px}.vu-pasos p{margin:4px 0 0;color:#53605a}
+.vu-pasos li{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);padding:20px;counter-increment:p}.vu-pasos li::before{content:counter(p);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--fg);color:var(--bg);font-weight:750;margin-bottom:12px}
+.vu-pasos b{font-size:17px}.vu-pasos p{margin:4px 0 0;color:var(--fg-2)}
 .vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.vu-ben li{background:#fff;border:1px solid #e1e8e3;border-radius:18px;padding:20px}.vu-ben span{font-size:28px}.vu-ben b{display:block;font-size:18px;margin:8px 0 4px}.vu-ben p{margin:0;color:#53605a}
+.vu-ben li{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);padding:20px}.vu-ben span{font-size:26px}.vu-ben b{display:block;font-size:18px;margin:8px 0 4px}.vu-ben p{margin:0;color:var(--fg-2)}
 .vu-planes{display:grid;gap:18px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
-.vu-plan{position:relative;background:#fff;border:1.5px solid #e1e8e3;border-radius:22px;padding:24px;display:grid;gap:8px}
-.vu-plan.rec{border-color:var(--vu-t);box-shadow:0 24px 50px -28px rgba(15,36,28,.5)}
-.vu-sello{position:absolute;top:-12px;left:24px;background:var(--vu-o);color:#fff;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px}
-.vu-plan h3{font:800 26px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:4px 0 0}.vu-para{color:#53605a;margin:0}
-.vu-precio{margin:6px 0 0}.vu-precio b{font-size:34px;letter-spacing:-.03em}.vu-precio small{color:#53605a}
-.vu-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--vu-a)}
-.vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px}`;
+.vu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
+.vu-plan.rec{border-color:var(--fg);box-shadow:var(--sombra-2)}
+.vu-sello{position:absolute;top:-12px;left:24px;background:var(--fg);color:var(--bg);font-size:12px;font-weight:750;padding:4px 12px;border-radius:999px}
+.vu-plan h3{font:750 26px/1.1 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:4px 0 0}.vu-para{color:var(--fg-2);margin:0}
+.vu-precio{margin:6px 0 0}.vu-precio b{font-size:34px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.vu-precio small{color:var(--fg-2)}
+.vu-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--verde)}
+.vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;

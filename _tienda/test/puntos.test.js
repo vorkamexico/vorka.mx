@@ -42,7 +42,7 @@ describe('Programa de puntos', () => {
     const cookie = await entrar('ana@mail.com');
     const cuenta = await (await pedir('/tienda/cuenta/', { cookie })).text();
     const code = cuenta.match(/\?ref=([A-Z0-9]+)/)[1];
-    expect(cuenta).toContain('data-contar="0">0</b><span>puntos</span>');
+    expect(cuenta).toContain('data-sensible>0</b><span>puntos</span>');
     expect(env.DB.raw.prepare("SELECT tipo FROM affiliates WHERE code = ?").get(code).tipo).toBe('puntos');
 
     await compraPagada('beto@mail.com', code);

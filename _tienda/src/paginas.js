@@ -2,6 +2,7 @@
 // El menú y el pie vienen de _sitio/partes.py vía marco.generado.js (python3 _tienda/marco.py).
 import { NAV, PIE, VERSION, CSS_TIENDA } from './marco.generado.js';
 import { esc } from './correo.js';
+import { TEMA_HEAD, selectorTema } from './tema.js';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
@@ -76,14 +77,16 @@ export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', scri
   const n = nonce();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
-<html lang="es-MX">
+<html lang="es-MX" data-app="tienda">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script nonce="${n}">${TEMA_HEAD}</script>
 <title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descripcion)}">
 ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="canonical" href="https://vorka.mx${esc(ruta)}">`}
-<meta name="theme-color" content="#FBFAF8">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FBFAF8" data-claro="#FBFAF8" data-oscuro="#141216">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vorka México">
 <meta property="og:locale" content="es_MX">
@@ -105,7 +108,7 @@ ${head}</head>
 ${NAV.replace('<script ', `<script nonce="${n}" `)}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
-${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${PIE.replace('<div class="pie-base">', `<div class="t-tema-pie"><span>Apariencia</span>${selectorTema({ clase: 'pie' })}</div><div class="pie-base">`).replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

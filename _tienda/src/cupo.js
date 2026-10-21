@@ -131,36 +131,37 @@ ${await masTienda(env, 'eventos')}
 }
 
 const CSS = `
-.cu{--cu-a:#ff5a36;--cu-t:#17161a;--cu-f:#f6f4f0}
+.cu{--cu-a:#ff5a36;--cu-t:var(--fg);--cu-f:var(--bg-2)}
 .cu-hero{background:var(--cu-f);padding:clamp(28px,6vw,72px) 0;overflow:hidden}
 .cu-hero-g{display:grid;gap:32px;align-items:center}
 @media(min-width:900px){.cu-hero-g{grid-template-columns:1.05fr .95fr}}
 .cu-logo{display:block;font:800 34px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;color:var(--cu-t);margin:16px 0 10px}.cu-logo i{color:var(--cu-a);font-style:normal}
 .cu-h1{font:800 clamp(36px,6.4vw,62px)/1.02 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--cu-t)}.cu-h1 i{font-style:normal;color:var(--cu-a)}
-.cu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:#4b4750;margin:0 0 22px;max-width:34em}
-.cu-nota{color:#5f5b63;font-size:15px;margin-top:14px}
+.cu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:var(--fg-2);margin:0 0 22px;max-width:34em}
+.cu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .cu-demos-h{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-.cu-demo{display:grid;background:#fff;border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid #e8e4dd;box-shadow:0 18px 40px -28px rgba(23,22,26,.45)}
+.cu-demo{display:grid;background:var(--card);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--line);box-shadow:0 18px 40px -28px rgba(23,22,26,.45)}
 .cu-demo.g{grid-column:1/-1}.cu-demo img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;display:block}
-.cu-demo span{padding:10px 14px 12px}.cu-demo b{display:block;font-size:16px}.cu-demo small{color:#5f5b63;font-size:13px}
+.cu-demo span{padding:10px 14px 12px}.cu-demo b{display:block;font-size:16px}.cu-demo small{color:var(--fg-2);font-size:13px}
 .cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));counter-reset:p}
-.cu-pasos li{background:#fff;border:1px solid #e8e4dd;border-radius:18px;padding:18px;counter-increment:p}.cu-pasos li::before{content:counter(p);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--cu-t);color:#fff;font-weight:800;margin-bottom:10px}
-.cu-pasos b{font-size:17px}.cu-pasos p{margin:4px 0 0;color:#5f5b63}
+.cu-pasos li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;counter-increment:p}.cu-pasos li::before{content:counter(p);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--cu-t);color:var(--bg);font-weight:800;margin-bottom:10px}
+.cu-pasos b{font-size:17px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2)}
 .cu-planes{display:grid;gap:18px;align-items:start}
 @media(min-width:900px){.cu-planes{grid-template-columns:.85fr 1.15fr;grid-template-areas:'gratis pro' 'paq pro';column-gap:22px}.cu-planes>.cu-plan:first-child{grid-area:gratis}.cu-planes>.cu-plan.rec{grid-area:pro}.cu-planes>.cu-paq{grid-area:paq}}
-.cu-plan{position:relative;background:#fff;border:1.5px solid #e8e4dd;border-radius:22px;padding:24px;display:grid;gap:8px}
+.cu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
 .cu-plan.rec{border-color:var(--cu-t);box-shadow:0 24px 50px -28px rgba(23,22,26,.5)}
 .cu-sello{position:absolute;top:-12px;left:24px;background:var(--cu-a);color:#fff;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px}
-.cu-plan h3{font:800 26px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:4px 0 0}.cu-para{color:#5f5b63;margin:0}
+.cu-plan h3{font:800 26px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:4px 0 0}.cu-para{color:var(--fg-2);margin:0}
 .cu-precio{margin:6px 0 0}.cu-precio b{font-size:36px;letter-spacing:-.03em}
 .cu-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.cu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cu-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--cu-a)}
 .cu-niveles,.cu-paq-l{display:grid;gap:10px;margin:6px 0}
-.cu-nivel{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid #e8e4dd;background:var(--cu-f);text-decoration:none;color:var(--cu-t)}
-.cu-nivel.dest{border:2px solid var(--cu-a);background:#fff}.cu-nivel small{display:block;color:#5f5b63;font-size:13px}.cu-nivel .num{font-size:20px;white-space:nowrap}
-.cu-paq{background:#fff;border:1.5px solid #e8e4dd;border-radius:22px;padding:24px;display:grid;gap:16px;align-content:start}
-.cu-paq h3{font:800 22px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;margin:6px 0}.cu-paq p{margin:0;color:#5f5b63}
+.cu-nivel{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--cu-f);text-decoration:none;color:var(--cu-t)}
+.cu-nivel.dest{border:2px solid var(--cu-a);background:var(--card)}.cu-nivel small{display:block;color:var(--fg-2);font-size:13px}.cu-nivel .num{font-size:20px;white-space:nowrap}
+.cu-paq{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:16px;align-content:start}
+.cu-paq h3{font:800 22px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;margin:6px 0}.cu-paq p{margin:0;color:var(--fg-2)}
 .cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.cu-ben li{background:#fff;border:1px solid #e8e4dd;border-radius:18px;padding:20px}.cu-ben span{font-size:28px}.cu-ben b{display:block;font-size:18px;margin:8px 0 4px}.cu-ben p{margin:0;color:#5f5b63}`;
+.cu-ben li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.cu-ben span{font-size:28px}.cu-ben b{display:block;font-size:18px;margin:8px 0 4px}.cu-ben p{margin:0;color:var(--fg-2)}
+[data-tema="oscuro"] .cu{--cu-a:#FF7A5C}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-cupo'); if(!f||!window.fetch) return;
