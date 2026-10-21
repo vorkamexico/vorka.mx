@@ -11,6 +11,7 @@ import { ELEGIR } from './elegir.js';
 import { contarVisita } from './puntos.js';
 
 const SITIO = 'https://vorka.mx';
+export const CANDADO_PAGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>';
 const COOKIE_DIAS = 30;
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 
@@ -47,7 +48,7 @@ export async function refDeVisita(env, req, url) {
 
 // Portada: la imagen del producto o, si no hay, una portada con la V y el nombre
 const portada = (p, clase = '') => p.imagen
-  ? `<img class="t-portada-img ${clase}" src="${esc(p.imagen)}" alt="Portada de ${esc(p.nombre)}" width="1200" height="1500" decoding="async">`
+  ? `<img class="t-portada-img ${clase}" src="${esc(p.imagen)}" alt="Portada de ${esc(p.nombre)}" width="1600" height="1200" decoding="async">`
   : `<div class="t-portada ${clase}" role="img" aria-label="Portada de ${esc(p.nombre)}"><span class="t-portada-v">${LOGO}</span><b>${esc(p.contenido.portada || p.nombre.split(':')[0])}</b><small>Vorka México</small></div>`;
 
 export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : `$${(p.precio_centavos / 100).toLocaleString('es-MX')} MXN`;
@@ -112,7 +113,7 @@ function vistas(productos, desdeBrindi) {
 // Secciones a dos columnas en computadora (en celular, una debajo de otra): así no queda una columna angosta con vacío a los lados.
 const WHATSAPP = 'https://wa.me/528117804869';
 // Preguntas frecuentes: a la izquierda el título y cómo contactarnos; a la derecha las preguntas
-export const seccionFaq = ({ titulo = 'Antes de comprar', items, pie = '', suave = false }) => `<section class="t-sec${suave ? ' suave' : ''}"><div class="marco t-dos">
+export const seccionFaq = ({ titulo = 'Antes de comprar', items, pie = '', suave = false }) => `<section class="t-sec${suave ? ' suave' : ''}" id="ayuda"><div class="marco t-dos">
   <div class="t-dos-a"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2">${titulo}</h2>
     <p class="t-dos-txt">¿No encuentras tu respuesta? Te contesta una persona del equipo, en horario laboral de México.</p>
     <div class="t-contacto"><a class="btn blanco chico" href="mailto:hola@vorka.mx">Escríbenos</a><a class="btn blanco chico" href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a></div></div>
@@ -165,46 +166,55 @@ export async function paginaCatalogo(env, req, url) {
   // Portada de la tienda: menos es más. Arriba la promesa y una vitrina con las líneas; abajo una sola cuadrícula de
   // productos con tarjetas iguales y filtros por línea (sin JavaScript se ven todos).
   const desde = g => { const b = g.vistas.find(v => esBrindi(v.p)); if (g.vistas.some(v => esCupo(v.p))) return 'Gratis para empezar'; return `Desde ${b ? b.precio.replace('Desde ', '') : precio({ precio_centavos: Math.min(...g.vistas.map(v => v.p.precio_centavos)) })}`; };
+  // Tarjeta de producto: la portada completa (4:3, sin recortar) sobre fondo neutro, nombre, precio y un solo botón
   const tarjeta = (v, g, primera) => `
     <article class="t-card" data-linea="${esc(g.id)}"${primera ? ` id="${esc(g.id)}"` : ''}>
-      <a class="t-card-img" href="${esc(v.url)}" tabindex="-1" aria-hidden="true">${portada(v.img)}</a>
+      <a class="t-card-img" href="${esc(v.url)}" tabindex="-1" aria-hidden="true">${portada(v.img)}<span class="t-card-ver">Ver detalles</span></a>
       <div class="t-card-t">
-        <span class="t-cat">${esc(g.titulo)}</span>
+        <span class="t-cat">${esc(g.linea)}</span>
         <h3><a href="${esc(v.url)}">${esc(v.nombre)}</a></h3>
         <p>${esc(v.texto)}</p>
-        <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="btn tinta chico" href="${esc(v.url)}">Ver ${FLECHA}</a></span></div>
+        <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="btn blanco chico" href="${esc(v.url)}">Ver ${FLECHA}</a></span></div>
       </div>
     </article>`;
+  // Categorías en mosaico: cada línea con su nombre y su portada completa; si la línea tiene un solo producto, lleva directo a él
+  const tile = (g, i) => { const una = g.vistas.length === 1, v = g.vistas[0];
+    return `<a class="t-bento-t${i === 0 ? ' grande' : ''}" data-linea="${esc(g.id)}" href="${esc(una ? v.url : `#${g.id}`)}"${una ? '' : ` data-f="${esc(g.id)}"`}>
+      <span class="t-bento-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><em>${una ? desde(g) : `${g.vistas.length} productos · ${desde(g).toLowerCase()}`}</em></span>
+      <span class="t-bento-img" aria-hidden="true">${portada(v.img)}</span><span class="t-bento-f" aria-hidden="true">${FLECHA}</span></a>`; };
+  const destacado = todas[0];
   const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
-    titulo: 'Tienda Vorka México · Simulador PAA, invitaciones digitales y kits', ruta: '/tienda/',
+    titulo: 'Tienda Vorka México · Simulador PAA, invitaciones digitales y kits', ruta: '/tienda/', navActual: 'inicio',
     descripcion: 'Simulador PAA para tu examen de admisión, invitaciones digitales con QR para tus celebraciones y kits para emprender. Productos digitales de Vorka México con entrega inmediata.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO,
     cuerpo: `
-<section class="t-home"><div class="marco t-home-g">
-  <div class="t-home-txt">
+<section class="t-portal"><div class="marco t-portal-g">
+  <div class="t-portal-txt">
     <span class="etiqueta">Tienda Vorka México</span>
-    <h1 class="h1 t-home-h1">Herramientas para <span class="metal">pasar a la acción.</span></h1>
-    <p class="lead">Prepárate para tu examen, celebra tus momentos y lanza tu idea. Todo digital, al momento.</p>
-    <div class="botones"><a class="btn tinta" href="#productos">Ver productos ${FLECHA}</a><a class="btn blanco" href="/tienda/puntos/">Gana puntos</a></div>
-    <ul class="t-sellos" aria-label="Por qué comprar aquí">
-      <li>${CHECK}<span>Entrega inmediata</span></li>
-      <li>${CHECK}<span>Tarjeta, OXXO o SPEI</span></li>
-      <li>${CHECK}<span>Soporte de personas reales</span></li>
-    </ul>
+    <h1 class="t-portal-h1">Todo para avanzar, <span class="metal">en un solo lugar.</span></h1>
+    <p class="t-portal-sub">Exámenes, celebraciones, eventos y herramientas para tu negocio. Digital y al momento.</p>
+    <div class="botones"><a class="btn acento" href="#productos">Explorar catálogo ${FLECHA}</a><a class="btn vidrio" href="/tienda/puntos/">Gana puntos</a></div>
+    <p class="t-confianza">Entrega inmediata · Tarjeta, OXXO o SPEI · Soporte de personas reales</p>
   </div>
-  ${secciones.length ? `<nav class="t-vitrina" aria-label="Líneas de la tienda">${secciones.slice(0, 4).map(g => `
-    <a class="t-vitrina-t" href="#${esc(g.id)}" data-f="${esc(g.id)}"><span class="t-vitrina-img">${portada(g.vistas[0].img)}</span><span class="t-vitrina-x"><small>${esc(g.linea)}</small><b>${esc(g.titulo)}</b><em>${desde(g)}</em></span></a>`).join('')}</nav>` : ''}
+  ${destacado ? `<a class="t-portal-pieza" href="${esc(destacado.url)}"><span class="t-portal-img">${portada(destacado.img)}</span>
+    <span class="t-portal-cap"><small>Destacado</small><b>${esc(destacado.nombre)}</b><em class="num">${destacado.precio}</em></span></a>` : ''}
 </div></section>
+${secciones.length ? `<section class="t-sec t-categorias" id="categorias"><div class="marco">
+  <div class="t-cat-cab"><h2 class="h2">Categorías</h2></div>
+  <nav class="t-bento" aria-label="Categorías de la tienda">${secciones.map(tile).join('')}
+    <a class="t-bento-t t-bento-puntos" href="/tienda/puntos/"><span class="t-bento-x"><small>Puntos Vorka</small><b>Recomienda y gana</b><em>10 puntos por cada compra con tu liga · 1 punto = $1</em></span><span class="t-bento-v" aria-hidden="true">${LOGO}</span><span class="t-bento-f" aria-hidden="true">${FLECHA}</span></a>
+  </nav>
+</div></section>` : ''}
 <section class="t-sec t-catalogo" id="productos"><div class="marco">
-  <div class="t-cat-cab"><h2 class="h2">Productos</h2>
-    ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por línea"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.titulo)}</a>`).join('')}</div>` : ''}</div>
+  <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
+    ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por línea"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>
   ${secciones.length ? `<div class="t-cards">${secciones.map(g => g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')).join('')}</div>`
     : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
-  <a class="t-puntos-banda" href="/tienda/puntos/"><span><b>Recomienda y gana.</b> 10 puntos por cada compra con tu liga, canjeables en toda la tienda (1 punto = $1).</span><span class="btn blanco chico">Crear mi cuenta de puntos ${FLECHA}</span></a>
+  <a class="t-puntos-banda" href="/tienda/puntos/"><span><b>Recomienda y gana.</b> 10 puntos por cada compra con tu liga, canjeables en toda la tienda (1 punto = $1).</span><span class="btn acento chico">Crear mi cuenta de puntos ${FLECHA}</span></a>
 </div></section>
 <section class="t-sec t-como suave"><div class="marco">
   <ol class="t-como-g">
@@ -219,7 +229,7 @@ ${seccionFaq({ items: faqHtml(FAQ_TIENDA), pie: env.MARKETPLACE === '1' ? '<p cl
 
 // Filtros del catálogo: muestran solo una línea sin recargar (sin JavaScript, los enlaces bajan a esa línea)
 const SCRIPT_CATALOGO = `(function(){
-  var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-card'));
+  var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-cards .t-card'));
   function filtra(k){ fs.forEach(function(a){ if(a.dataset.f===k) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); }); cards.forEach(function(c){ c.hidden=!!k&&c.dataset.linea!==k; }); }
   document.addEventListener('click',function(e){ var a=e.target.closest('[data-f]'); if(!a||!fs.length) return; e.preventDefault(); filtra(a.dataset.f); document.getElementById('productos').scrollIntoView({behavior:'smooth'}); history.replaceState(null,'',a.dataset.f?'#'+a.dataset.f:'#productos'); });
   var h=location.hash.slice(1); if(h&&fs.some(function(a){ return a.dataset.f===h; })) filtra(h);
@@ -252,11 +262,17 @@ export const formCompra = (p, { error = '', ref = '', regalo = false } = {}) => 
   <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda" id="ayuda-email">${esAcceso(p) ? 'Aquí te llega tu acceso. Úsalo también para entrar después.' : 'Aquí te llegan tus archivos.'}</small>${regalable ? '<small class="t-ayuda t-ayuda-regalo">Aquí te llegan las ligas de regalo para que las compartas.</small>' : ''}</div>
   <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos y condiciones</a> y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
   <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
-  <button class="btn tinta" type="submit" id="btn-compra"><span class="t-btn-yo">Comprar ahora</span>${regalable ? '<span class="t-btn-regalo">Comprar regalo</span>' : ''} ${FLECHA}</button>
-  <p class="t-pago">Tarjeta · OXXO · SPEI &nbsp;·&nbsp; Pago seguro con Stripe</p>
+  <button class="btn acento" type="submit" id="btn-compra"><span class="t-btn-yo">Comprar ahora</span>${regalable ? '<span class="t-btn-regalo">Comprar regalo</span>' : ''} ${FLECHA}</button>
+  <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta, OXXO o SPEI con Stripe</span></p>
 </form>`;
 };
 
+const SCRIPT_PESTANAS = `(function(){ var ts=[].slice.call(document.querySelectorAll('.t-tabs [role=tab]')); if(!ts.length) return;
+  var ps=ts.map(function(t){ return document.getElementById(t.getAttribute('aria-controls')); }); document.documentElement.classList.add('con-pestanas');
+  function ve(i,foco){ ts.forEach(function(t,k){ t.setAttribute('aria-selected',k===i?'true':'false'); t.tabIndex=k===i?0:-1; ps[k].hidden=k!==i; }); if(foco) ts[i].focus(); }
+  ts.forEach(function(t,i){ t.addEventListener('click',function(){ ve(i); }); t.addEventListener('keydown',function(e){ var k=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0; if(k){ e.preventDefault(); ve((i+k+ts.length)%ts.length,true); } }); });
+  ve(0);
+})();`;
 export const SCRIPT_COMPRA = `(function(){
   var f=document.getElementById('form-compra'); if(!f||!window.fetch) return;
   // Para mí / Para regalar: cantidad, precio total y textos
@@ -287,6 +303,11 @@ export const SCRIPT_COMPRA = `(function(){
   if(barra&&'IntersectionObserver' in window) new IntersectionObserver(function(es){ barra.classList.toggle('oculta',es[0].isIntersecting); }).observe(f);
 })();`;
 
+// Pestañas de la ficha (Descripción · Detalles · Preguntas): solo las que tienen contenido. Sin JavaScript se ven todas, una tras otra.
+const pestanas = l => { const v = l.filter(([, , h]) => h); if (!v.length) return '';
+  return `<section class="t-sec t-ficha"><div class="marco"><div class="t-tabs" role="tablist" aria-label="Información del producto">${v.map(([id, t], i) =>
+    `<button type="button" role="tab" id="tab-${id}" aria-controls="panel-${id}" aria-selected="${i === 0}"${i ? ' tabindex="-1"' : ''}>${esc(t)}</button>`).join('')}</div>
+  ${v.map(([id, t, h], i) => `<div class="t-panel" role="tabpanel" id="panel-${id}" aria-labelledby="tab-${id}" data-i="${i}">${h}</div>`).join('')}</div></section>`; };
 const lista = items => `<ul class="t-lista">${items.map(t => `<li>${CHECK}<span>${typeof t === 'string' ? esc(t) : `<b>${esc(t.titulo)}</b>${t.texto ? ` ${esc(t.texto)}` : ''}`}</span></li>`).join('')}</ul>`;
 
 export async function paginaProducto(env, req, url, slug) {
@@ -333,7 +354,7 @@ export async function paginaProducto(env, req, url, slug) {
     titulo: `${p.nombre} · Vorka México`, descripcion: p.descripcion_corta, ruta, imagen,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: SCRIPT_COMPRA,
+    script: SCRIPT_COMPRA + SCRIPT_PESTANAS, navActual: 'catalogo',
     cuerpo: `
 <section class="t-sec t-hero"><div class="marco t-hero-g">
   <div class="t-hero-txt">
@@ -342,24 +363,21 @@ export async function paginaProducto(env, req, url, slug) {
     ${c.titular ? `<p class="t-sub">${esc(p.nombre)}</p>` : ''}
     <p class="t-lead">${esc(c.subtitulo || p.descripcion_corta)}</p>
     <div class="t-portada-hero">${portada(p, 'grande')}</div>
-    ${c.incluye?.length ? `<div class="t-bloque rv"><h2 class="t-h2">Qué incluye</h2>${lista(c.incluye)}</div>` : ''}
   </div>
   <aside class="t-hero-compra" id="comprar" aria-label="Comprar">
     ${formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' })}
   </aside>
 </div></section>
-${pasos.length ? `<section class="t-sec suave"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">El camino</span><h2 class="h2">${pasos.length === 7 ? 'Los 7 pasos' : 'Paso a paso'}</h2></div>
-  <ol class="t-pasos">${pasos.map((s, i) => `<li class="rv" style="--d:${(i % 4) * 0.05}s"><span class="t-paso-n num">${String(i + 1).padStart(2, '0')}</span><h3>${esc(s.titulo)}</h3>${s.texto ? `<p>${esc(s.texto)}</p>` : ''}</li>`).join('')}</ol>
-</div></section>` : ''}
-${c.para_quien?.length ? `<section class="t-sec"><div class="marco t-dos">
-  <div class="t-dos-a"><span class="etiqueta">Para quién es</span><h2 class="h2">Te sirve si…</h2></div>
-  <div class="t-dos-b">${lista(c.para_quien)}</div>
-</div></section>` : ''}
+${pestanas([
+  ['descripcion', 'Descripción', [c.para_quien?.length ? `<h2 class="t-h2">Te sirve si…</h2>${lista(c.para_quien)}` : '', c.incluye?.length ? `<h2 class="t-h2">Qué incluye</h2>${lista(c.incluye)}` : ''].filter(Boolean).join('')],
+  ['detalles', pasos.length === 7 ? 'Los 7 pasos' : 'Paso a paso', pasos.length ? `<ol class="t-pasos">${pasos.map((s, i) => `<li><span class="t-paso-n num">${String(i + 1).padStart(2, '0')}</span><h3>${esc(s.titulo)}</h3>${s.texto ? `<p>${esc(s.texto)}</p>` : ''}</li>`).join('')}</ol>` : ''],
+  ['preguntas', 'Preguntas', `<h2 class="t-h2 sr">Preguntas frecuentes</h2><div class="t-faq">${faqHtml(faq)}</div>
+    <p class="t-nota">¿No encuentras tu respuesta? Te contesta una persona: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o <a href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a>.</p>
+    <div class="botones t-faq-cta"><a class="btn acento" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>`],
+])}
 ${c.acceso?.app === 'cupo' ? ELEGIR('cupo') : ''}
-${seccionFaq({ items: faqHtml(faq), suave: !!c.para_quien?.length, pie: `<div class="botones t-faq-cta"><a class="btn tinta" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>` })}
 ${await masTienda(env, seccionDe(p))}
-<div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>`,
+<div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn acento chico" href="#comprar">Comprar</a></div>`,
   });
 }
 

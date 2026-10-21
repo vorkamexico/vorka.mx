@@ -21,7 +21,7 @@ describe('Cupo en la tienda', () => {
     const ps = await A.productosApp('cupo');
     expect(ps.map(p => p.slug).sort()).toEqual(['cupo-paquete-5', 'cupo-paquete-5-100', 'cupo-paquete-5-1000', 'cupo-pro', 'cupo-pro-100', 'cupo-pro-1000', 'cupo-pro-3000']);
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toContain('href="#eventos"');
+    expect(html).toContain('data-linea="eventos"');   // su línea en el mosaico y en el catálogo
     expect(html).toContain('Eventos con registro y cover');
     expect(html).toContain('Gratis · Pro desde $99 MXN');
     expect(html.match(/href="\/tienda\/cupo\/"/g)?.length).toBeGreaterThan(0);

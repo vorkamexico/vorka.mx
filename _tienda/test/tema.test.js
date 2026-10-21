@@ -25,7 +25,7 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Apariencia en las páginas de la tienda', () => {
-  it('cada página del Worker decide el tema en <head> con el nonce de su CSP y trae el selector en el pie', async () => {
+  it('cada página del Worker decide el tema en <head> con el nonce de su CSP (sin selector en el pie: automático o lo ya guardado)', async () => {
     for (const ruta of ['/tienda/', '/tienda/vuelve/', '/tienda/cupo/', '/tienda/brindi/', '/tienda/puntos/']) {
       const r = await pedir(ruta);
       expect(r.status, ruta).toBe(200);
@@ -37,8 +37,8 @@ describe('Apariencia en las páginas de la tienda', () => {
       expect(iTema, ruta).toBeLessThan(iCss);
       expect(h, ruta).toContain('name="color-scheme" content="light dark"');
       expect(h, ruta).toContain('data-claro="#FBFAF8" data-oscuro="#141216"');
-      expect(h, ruta).toContain('class="t-tema-pie"');
-      for (const op of ['auto', 'claro', 'oscuro']) expect(h, ruta).toContain(`data-tema-op="${op}"`);
+      expect(h, ruta).not.toContain('t-tema-pie');
+      expect(h, ruta).not.toContain('data-tema-op=');
     }
   });
   it('los colores oscuros viven en tokens escopados a las páginas del Worker (el resto del sitio no cambia)', () => {

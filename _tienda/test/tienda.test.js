@@ -22,10 +22,21 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/tienda/">');
   });
 
-  it('la portada presenta las líneas en una vitrina, un catálogo con filtros y cómo comprar', async () => {
+  it('la portada: mensaje corto con 2 botones, una sola pieza destacada, categorías en mosaico, catálogo con filtros y cómo comprar', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toContain('class="t-vitrina"');
-    expect(html).toMatch(/class="t-vitrina-t" href="#examenes"/);
+    expect(html).toContain('class="t-portal"');
+    expect(html).toContain('Explorar catálogo');
+    expect(html).toContain('Entrega inmediata · Tarjeta, OXXO o SPEI · Soporte de personas reales');
+    expect(html.match(/class="t-portal-pieza"/g)).toHaveLength(1);       // como mucho una pieza visual, no todo el catálogo
+    expect(html).toContain('id="categorias"');
+    expect(html).toMatch(/class="t-bento-t[^"]*" data-linea="examenes" href="\/simulador-paa\/"/);   // una línea de un producto lleva directo a él
+    expect(html).toContain('class="t-bento-t t-bento-puntos" href="/tienda/puntos/"');
+    // menú propio de la tienda con la pastilla destacada
+    expect(html).toContain('<header class="nav t-navs">');
+    for (const l of ['Inicio', 'Catálogo', 'Categorías', 'Puntos', 'Contacto']) expect(html).toContain(`>${l}</a>`);
+    expect(html).toContain('class="btn acento t-pastilla" href="/tienda/puntos/"');
+    // las portadas se declaran con su proporción real (4:3)
+    expect(html).toContain('width="1600" height="1200"');
     expect(html).toMatch(/class="t-card-img" href="\/simulador-paa\/"/);
     expect(html).toContain('class="t-filtros"');
     expect(html).toContain('"@type":"FAQPage"');
@@ -57,6 +68,12 @@ describe('/tienda/<slug> (página de venta)', () => {
     expect(html).toContain('Qué incluye');
     expect(html).toContain('Te sirve si…');
     expect(html).toContain('Preguntas frecuentes');
+    // pestañas solo con lo que existe y el pago protegido junto al botón
+    expect(html).toContain('role="tablist"');
+    expect(html).toContain('id="tab-descripcion"');
+    expect(html).toContain('id="tab-preguntas"');
+    expect(html).toContain('Pago 100% protegido');
+    expect(html).toContain('<button class="btn acento" type="submit" id="btn-compra">');
     expect(html).toContain('id="form-compra" method="post" action="/api/checkout"');
     expect(html).toContain('name="terminos"');
     expect(html).toContain('id="barra-compra"');

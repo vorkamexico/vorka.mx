@@ -74,16 +74,6 @@
 }
 @media (prefers-reduced-motion: reduce) { :root[data-app] *, :root[data-app] *::before, :root[data-app] *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 
-/* ---------- Selector de apariencia (pie de cada página) ---------- */
-.tema-sel { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--bg-2); border: 1px solid var(--line); }
-.tema-sel button { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border: 0; border-radius: 999px; background: none; color: var(--fg-2); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background var(--t-rapido), color var(--t-rapido); }
-.tema-sel button svg { width: 16px; height: 16px; flex: none; }
-.tema-sel button:hover { color: var(--fg); }
-.tema-sel button[aria-checked="true"] { background: var(--card); color: var(--fg); box-shadow: var(--sombra); }
-.t-tema-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px; margin-top: 30px; font-size: 13px; color: var(--fg-3); }
-@media (max-width: 420px) { .tema-sel button span { display: none; } .tema-sel button { width: var(--tap); justify-content: center; padding: 0; } }
-
-
 .t-main { padding-top: 104px; min-height: 70vh; }
 .t-sec { padding: clamp(32px, 6vw, 72px) 0 clamp(64px, 9vw, 120px); }
 .t-estrecho { max-width: 760px; }
@@ -513,3 +503,107 @@
 .t-socio-abrir { justify-self: start; background: none; border: 0; padding: 0; font: inherit; font-size: 14.5px; color: var(--morado); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .t-socio-c { display: grid; gap: 6px; }
 .t-socio input { text-transform: uppercase; letter-spacing: .02em; }
+
+
+/* ---------- Tienda · rediseño (oct 2026): acento oro, menú propio, portada oscura, categorías en mosaico ---------- */
+/* Un solo acento luminoso para las acciones principales (comprar, pagar, explorar): el oro de Vorka */
+:root[data-app] { --acento: #C8A45C; --acento-2: #D9BA74; --sobre-acento: #1B1408; }
+.btn.acento { background: var(--acento); color: var(--sobre-acento); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 8px 22px -10px rgba(200, 164, 92, .7); }
+.btn.acento:hover { background: var(--acento-2); }
+.btn.acento:focus-visible { outline-color: var(--acento); }
+
+/* Menú de la tienda: en computadora se ven las ligas (Inicio · Catálogo · Categorías · Puntos · Contacto) */
+.nav.t-navs .marca span { color: var(--morado); }
+.nav.t-navs .t-pastilla { min-height: 44px; padding: 0 18px; font-size: 14.5px; margin-left: 8px; }
+@media (min-width: 900px) { .nav.t-navs .nav-links { display: flex; } .nav.t-navs .menu-btn { display: none; } .nav.t-navs .marca { margin-right: 18px; } .nav.t-navs .nav-links { margin-right: auto; } }
+@media (max-width: 380px) { .nav.t-navs .t-pastilla { padding: 0 14px; font-size: 14px; } .nav.t-navs .marca { font-size: 15.5px; } }
+
+/* Portada: banda oscura en los dos temas (el oscuro es el protagonista), mensaje corto y UNA pieza completa */
+.t-portal { position: relative; isolation: isolate; overflow: hidden; margin-top: -104px; padding: 148px 0 clamp(48px, 7vw, 88px); background: #121014; color: #F4F2F5; }
+.t-portal::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(60% 70% at 85% 30%, rgba(107, 42, 133, .38), transparent 70%), radial-gradient(40% 50% at 0% 100%, rgba(200, 164, 92, .1), transparent 70%); }
+.t-portal::after { content: ""; position: absolute; z-index: -1; right: 8%; top: 0; bottom: 0; width: 120px; border-left: 1px solid rgba(200, 164, 92, .22); border-right: 1px solid rgba(200, 164, 92, .08); transform: skewX(var(--skew)); }
+.t-portal-g { display: grid; gap: clamp(32px, 5vw, 64px); align-items: center; }
+.t-portal-g > * { min-width: 0; }
+@media (min-width: 960px) { .t-portal-g { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); } }
+.t-portal .etiqueta { color: rgba(244, 242, 245, .66); }
+.t-portal .etiqueta::before { background: var(--acento); }
+.t-portal-h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 750; letter-spacing: -.045em; line-height: 1.02; margin-top: 18px; max-width: 13ch; }
+.t-portal-h1 .metal { background: var(--metal-osc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.t-portal-sub { margin-top: 18px; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; color: rgba(244, 242, 245, .74); max-width: 34em; }
+.t-portal .botones { margin-top: 28px; }
+.t-confianza { margin-top: 22px; font-size: 13.5px; color: rgba(244, 242, 245, .5); letter-spacing: .01em; }
+.t-portal-pieza { display: grid; gap: 14px; padding: 12px 12px 16px; border-radius: 26px; background: #1C1920; border: 1px solid rgba(255, 255, 255, .08); box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .8); text-decoration: none; color: inherit; max-width: 560px; justify-self: center; width: 100%; transition: transform var(--t-medio) var(--ease), border-color var(--t-medio); }
+.t-portal-pieza:hover { transform: translateY(-3px); border-color: rgba(200, 164, 92, .35); }
+.t-portal-img { display: block; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; background: #0E0C10; }
+.t-portal-img > * { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
+.t-portal-cap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: end; padding: 0 6px; }
+.t-portal-cap small { grid-column: 1 / -1; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--acento); }
+.t-portal-cap b { font-size: 17px; font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.t-portal-cap em { font-style: normal; font-weight: 700; color: rgba(244, 242, 245, .8); white-space: nowrap; }
+@media (max-width: 959px) { .t-portal-pieza { max-width: 440px; } }
+
+/* Categorías en mosaico: el nombre arriba y la portada completa abajo (nunca recortada) */
+.t-categorias { padding-bottom: 0; }
+.t-bento { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: dense; }
+@media (min-width: 1000px) {
+  .t-bento { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  /* la línea principal ocupa dos columnas, a lo ancho: texto a la izquierda y su portada completa a la derecha */
+  .t-bento-t.grande { grid-column: span 2; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: end; gap: 18px; }
+  .t-bento-t.grande .t-bento-x { align-self: start; }
+  .t-bento-puntos { grid-column: span 2; }
+}
+@media (max-width: 999px) { .t-bento-t.grande { grid-column: 1 / -1; } }
+.t-bento-t { --tinte: var(--morado); position: relative; display: flex; flex-direction: column; gap: 14px; padding: 18px 18px 16px; border-radius: 24px; text-decoration: none; color: inherit; overflow: hidden;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tinte) 10%, var(--card)), var(--card) 65%); border: 1px solid var(--line); transition: transform var(--t-medio) var(--ease), box-shadow var(--t-medio) var(--ease), border-color var(--t-medio); }
+.t-bento-t:hover { transform: translateY(-3px); box-shadow: var(--sombra-2); border-color: var(--line-2); }
+.t-bento-t[data-linea="examenes"] { --tinte: #6B2A85; } .t-bento-t[data-linea="invitaciones"] { --tinte: #9B2F55; } .t-bento-t[data-linea="eventos"] { --tinte: #E2553A; }
+.t-bento-t[data-linea="lealtad"] { --tinte: #C8A45C; } .t-bento-t[data-linea="emprender"] { --tinte: #2B8553; }
+.t-bento-x { display: grid; gap: 3px; padding-right: 34px; }
+.t-bento-x small { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: color-mix(in srgb, var(--tinte) 70%, var(--fg)); }
+.t-bento-x b { font-size: clamp(17px, 1.8vw, 22px); font-weight: 720; letter-spacing: -.022em; line-height: 1.15; }
+.t-bento-t.grande .t-bento-x b { font-size: clamp(22px, 2.6vw, 32px); }
+.t-bento-x em { font-style: normal; font-size: 13.5px; color: var(--fg-2); }
+.t-bento-img { display: block; margin-top: auto; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: var(--bg-2); box-shadow: 0 14px 30px -18px rgba(20, 17, 20, .5); }
+.t-bento-img > * { width: 100%; height: 100%; object-fit: contain; border-radius: 0; }
+.t-bento-img .t-portada { padding: 16px; } .t-bento-img .t-portada small { display: none; } .t-bento-img .t-portada b { font-size: clamp(15px, 1.6vw, 20px); }
+.t-bento-f { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-2); color: var(--fg); transition: transform var(--t-medio) var(--ease), background var(--t-medio); }
+.t-bento-f svg { width: 15px; height: 15px; } .t-bento-t:hover .t-bento-f { transform: translateX(2px); background: var(--acento); color: var(--sobre-acento); }
+.t-bento-puntos { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 116px; background: #121014; color: #F4F2F5; border-color: rgba(255, 255, 255, .08); }
+.t-bento-puntos .t-bento-x small { color: var(--acento); } .t-bento-puntos .t-bento-x em { color: rgba(244, 242, 245, .66); }
+.t-bento-puntos .t-bento-f { position: static; margin-left: auto; flex: none; background: var(--acento); color: var(--sobre-acento); }
+.t-bento-v { position: absolute; right: 70px; top: 50%; width: 140px; transform: translateY(-50%); color: rgba(200, 164, 92, .14); pointer-events: none; }
+.t-bento-v svg { width: 100%; height: auto; }
+@media (max-width: 520px) { .t-bento-t { padding: 14px 14px 12px; border-radius: 20px; gap: 10px; } .t-bento-x { padding-right: 30px; } .t-bento-x em { font-size: 12.5px; } .t-bento-f { top: 12px; right: 12px; width: 30px; height: 30px; } .t-bento-v { display: none; } }
+
+/* Tarjetas de producto: portada completa (contain) sobre fondo neutro y "Ver detalles" al pasar el mouse */
+.t-card-img { position: relative; aspect-ratio: 4 / 3; background: var(--bg-2); }
+.t-card-img > img, .t-card-img > .t-portada { width: 100%; height: 100%; object-fit: contain; }
+.t-card:hover .t-card-img > * { transform: none; }
+.t-card-ver { position: absolute; left: 50%; bottom: 14px; transform: translate(-50%, 6px); padding: 8px 14px; border-radius: 999px; background: var(--vidrio); color: var(--fg); font-size: 13px; font-weight: 650; box-shadow: var(--sombra); opacity: 0; transition: opacity var(--t-rapido), transform var(--t-medio) var(--ease); pointer-events: none; white-space: nowrap; }
+@media (hover: hover) { .t-card:hover .t-card-ver, .t-card:focus-within .t-card-ver { opacity: 1; transform: translate(-50%, 0); } }
+.t-card .t-cat { color: var(--morado); font-weight: 700; letter-spacing: .02em; }
+.t-card-pie b { font-size: 18px; }
+
+/* Ninguna portada se recorta: todas son 4:3 y llevan texto y maquetas adentro */
+.t-portada-hero { aspect-ratio: 4 / 3; background: var(--bg-2); }
+.t-portada-hero > img, .t-hz-img > img, .t-linea-t-img > img, .t-destacado-img > img, .t-vitrina-img > img { object-fit: contain; }
+.t-hz:hover .t-hz-img > * { transform: none; }
+
+/* Pago protegido */
+.t-pago { display: block; text-align: center; line-height: 1.5; }
+.t-pago svg { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 5px; color: var(--verde); }
+.t-pago b { color: var(--fg); font-weight: 650; }
+
+/* Pestañas de la ficha: sin JavaScript se ven todas las secciones, una tras otra */
+.t-ficha { padding-top: 0; }
+.t-tabs { display: none; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 26px; overflow-x: auto; scrollbar-width: none; }
+.t-tabs::-webkit-scrollbar { display: none; }
+.con-pestanas .t-tabs { display: flex; }
+.t-tabs button { flex: none; min-height: var(--tap); padding: 0 16px; border: 0; background: none; font: inherit; font-size: 15.5px; font-weight: 650; color: var(--fg-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color var(--t-rapido), border-color var(--t-rapido); }
+.t-tabs button:hover { color: var(--fg); }
+.t-tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--acento); }
+.t-panel { max-width: 920px; }
+.t-panel + .t-panel { margin-top: 40px; }
+.con-pestanas .t-panel + .t-panel { margin-top: 0; }
+.t-panel > .t-h2 { margin: 0 0 6px; } .t-panel > .t-lista + .t-h2 { margin-top: 30px; }
+.t-panel .t-nota { margin-top: 18px; }

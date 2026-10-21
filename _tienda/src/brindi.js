@@ -6,7 +6,7 @@ import { one, all } from './util.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra } from './tienda.js';
+import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 
@@ -153,7 +153,7 @@ export async function paginaBrindi(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'HowTo', name: 'Cómo hacer tu invitación digital con Brindi', step: TUTORIAL.map(([n, t], i) => ({ '@type': 'HowToStep', position: i + 1, name: n, text: t.replace(/<[^>]+>/g, '') })) }];
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`;
-  return pagina({
+  return pagina({ navActual: 'catalogo',
     titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
     descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $399 MXN.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
@@ -227,8 +227,8 @@ ${aLaVenta ? seccionCompra({ titulo: 'Contrata en un minuto', intro: '¿Ya creas
     <div class="t-campo"><label for="email">Tu correo</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llega tu acceso. Si ya creaste tu invitación gratis, usa ese mismo correo y el plan se activa solo.</small></div>
     <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/brindi/" target="_blank">condiciones de Brindi</a> y el <a href="/legal/brindi/privacidad/" target="_blank">aviso de privacidad de Brindi</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
-    <button class="btn tinta" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
-    <p class="t-pago">Tarjeta · OXXO &nbsp;·&nbsp; Pago seguro con Stripe</p>
+    <button class="btn acento" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
+    <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta u OXXO con Stripe</span></p>
   </form>` }) : ''}
 
 ${ELEGIR('brindi')}

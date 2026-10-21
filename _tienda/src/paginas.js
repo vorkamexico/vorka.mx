@@ -1,8 +1,8 @@
 // Marco HTML de las páginas de la tienda: mismo menú, pie y CSS (v3) que el resto de vorka.mx.
 // El menú y el pie vienen de _sitio/partes.py vía marco.generado.js (python3 _tienda/marco.py).
-import { NAV, PIE, VERSION, CSS_TIENDA } from './marco.generado.js';
+import { PIE, VERSION, CSS_TIENDA, LOGO, FLECHA } from './marco.generado.js';
 import { esc } from './correo.js';
-import { TEMA_HEAD, selectorTema } from './tema.js';
+import { TEMA_HEAD } from './tema.js';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
@@ -73,7 +73,21 @@ const SCRIPT_SOCIO = `(function(){
   fetch('/api/socios/codigo',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); } }).catch(function(){});
 })();`;
 
-export function pagina({ titulo, descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [] }) {
+// Menú propio de la tienda (mismas piezas que el del sitio, así vorka.js le da el menú del celular y la sombra al bajar):
+// Inicio · Catálogo · Categorías · Puntos · Contacto y, a la derecha, la pastilla destacada "Gana puntos".
+const MENU_TIENDA = [['inicio', 'Inicio', '/tienda/'], ['catalogo', 'Catálogo', '/tienda/#productos'], ['categorias', 'Categorías', '/tienda/#categorias'], ['puntos', 'Puntos', '/tienda/puntos/'], ['contacto', 'Contacto', '/tienda/#ayuda']];
+export const navTiendaSup = (actual = '') => `<header class="nav t-navs">
+  <div class="nav-in">
+    <a class="marca" href="/tienda/" aria-label="Tienda Vorka México, inicio">${LOGO}Vorka <span>Tienda</span></a>
+    <nav class="nav-links" aria-label="Tienda">${MENU_TIENDA.map(([k, t, u]) => `<a href="${u}"${k === actual ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+    <a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
+  </div>
+</header>
+<div class="menu-movil" id="menu-movil">${MENU_TIENDA.map(([, t, u]) => `<a href="${u}">${t}</a>`).join('')}<a href="/">Vorka México</a><a class="btn acento" href="/tienda/puntos/">Gana puntos ${FLECHA}</a></div>
+`;
+
+export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [] }) {
   const n = nonce();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
@@ -105,10 +119,10 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="can
 ${head}</head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
-${NAV.replace('<script ', `<script nonce="${n}" `)}<main id="contenido" class="t-main">
+${navTiendaSup(navActual)}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
-${PIE.replace('<div class="pie-base">', `<div class="t-tema-pie"><span>Apariencia</span>${selectorTema({ clase: 'pie' })}</div><div class="pie-base">`).replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${PIE.replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

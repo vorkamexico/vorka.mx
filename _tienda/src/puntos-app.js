@@ -998,7 +998,7 @@ export function paginaPrograma(env, { cuenta }) {
     [I.compartir, 'Comparte en un toque', 'Tu liga para cada producto con WhatsApp, Telegram, X, código QR y mensajes listos para pegar.'],
     [I.instalar, 'Instálala en tu inicio', 'Funciona como app en iPhone y Android, sin descargar nada de una tienda de apps.'],
   ];
-  return pagina({
+  return pagina({ navActual: 'puntos',
     titulo: 'Puntos Vorka: comparte y gana descuentos en la tienda', ruta: '/tienda/puntos/',
     descripcion: `La app de puntos de Vorka México: comparte tu liga, gana ${PUNTOS_POR_COMPRA} puntos por cada compra (dobles en promociones), ponte metas y recibe avisos. 1 punto = $1 MXN.`,
     head: `<style>.pv-lp,#toast{${TOKENS}}${CSS_BASE}${CSS_PROGRAMA}</style>`,

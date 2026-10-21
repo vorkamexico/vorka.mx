@@ -4,7 +4,7 @@
 // La app vive en os.vorka.mx/cupo/ y los eventos en vorka.mx/cupo/<liga>. Aquí solo se vende.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra } from './tienda.js';
+import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 
@@ -59,7 +59,7 @@ export async function paginaCupo(env, req, url) {
     ...(niveles.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: '0.00', highPrice: (Math.max(...todos.map(x => x.prod.precio_centavos)) / 100).toFixed(2), offerCount: todos.length + 1 } } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const opcion = x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${esc(x.etiqueta)} · ${precio(x.prod)}</option>`;
-  return pagina({
+  return pagina({ navActual: 'catalogo',
     titulo: 'Cupo: página de tu evento con registro, cover y QR | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: `${OS}/cupo/og/halloween.png`,
     descripcion: 'Crea la página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas. Cupo Pro desde $99: correos y recordatorios, cover sin comisión y ligas para RPs.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
@@ -119,8 +119,8 @@ ${todos.length ? seccionCompra({ titulo: 'Activa Cupo Pro', intro: `¿Tu evento 
     <div id="puntos-cupo"></div>
     <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/cupo/" target="_blank">condiciones de Cupo</a> y el <a href="/legal/cupo/privacidad/" target="_blank">aviso de privacidad de Cupo</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
-    <button class="btn tinta" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
-    <p class="t-pago">Tarjeta · OXXO &nbsp;·&nbsp; Pago seguro con Stripe · Te llega el acceso al confirmarse el pago</p>
+    <button class="btn acento" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
+    <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta u OXXO con Stripe · Te llega el acceso al confirmarse el pago</span></p>
   </form>` }) : ''}
 
 ${ELEGIR('cupo')}
