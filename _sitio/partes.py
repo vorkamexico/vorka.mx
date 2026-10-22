@@ -196,7 +196,7 @@ def pie(publico='general'):
 '''
 
 def cierre(titulo='Tu próxima gran decisión empieza con <span class="metal">una conversación.</span>',
-           lead='Agenda un diagnóstico de 45 minutos, sin costo. Nos cuentas el contexto y te devolvemos una lectura honesta y, si podemos ayudarte, cómo lo haríamos.', destino='/agenda/'):
+           lead='Agenda un diagnóstico de 20 minutos, sin costo. Nos cuentas el contexto y te devolvemos una lectura honesta y, si podemos ayudarte, cómo lo haríamos.', destino='/agenda/'):
     return f'''<section class="cierre" id="contact">
   {v_metal('art', 'gc')}<div class="glow"></div><div class="grano"></div>
   <div class="marco rv">
@@ -204,7 +204,7 @@ def cierre(titulo='Tu próxima gran decisión empieza con <span class="metal">un
     <h2 class="h1" style="margin-top:18px">{titulo}</h2>
     <p class="lead">{lead}</p>
     <div class="botones"><a class="btn plata" href="{destino}">Agenda tu diagnóstico {FLECHA}</a><a class="btn vidrio" href="{wa()}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>
-    <div class="garantias"><span>45 minutos</span><span>Sin costo ni compromiso</span><span>Respuesta en 2 días hábiles</span></div>
+    <div class="garantias"><span>20 minutos</span><span>Sin costo ni compromiso</span><span>Respuesta en 2 días hábiles</span></div>
   </div>
 </section>
 '''

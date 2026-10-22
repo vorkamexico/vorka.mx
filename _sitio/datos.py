@@ -112,7 +112,7 @@ FORMATOS = [
 ]
 
 PREGUNTAS = [
-    ('¿Cuánto cuesta el diagnóstico?', 'Nada. Es una sesión de 45 minutos sin costo ni compromiso. Damos un número limitado de diagnósticos al mes; por eso te pedimos contexto antes de agendar, para llegar preparados.'),
+    ('¿Cuánto cuesta el diagnóstico?', 'Nada. Es una sesión de 20 minutos sin costo ni compromiso. Damos un número limitado de diagnósticos al mes; por eso te pedimos contexto antes de agendar, para llegar preparados.'),
     ('¿Cuánto cuesta trabajar con Vorka?', 'Depende del alcance, la duración y el equipo que requiera tu caso. Después del diagnóstico te enviamos una propuesta a la medida, con alcance, tiempos e inversión claros.'),
     ('¿Puedo contratar solo una parte?', 'Sí. Puedes empezar con un servicio o un frente específico y sumar capacidades cuando lo necesites. Todo queda bajo la misma dirección estratégica.'),
     ('¿Trabajan fuera de sus ciudades base?', 'Sí. Tenemos bases en Monterrey, Ciudad de México, Guadalajara, Querétaro y Celaya, y con aliados locales trabajamos en toda la República, de forma presencial o a distancia.'),

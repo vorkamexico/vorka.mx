@@ -40,7 +40,7 @@ def escena():
     return f'''<div class="escena" aria-hidden="true">
     {v_contorno('contorno-v', 'vc')}
     {ventana_svg(cuadros, 'vv')}
-    <div class="flota f1" data-z="1.4"><div class="tarjeta"><div class="fila-t"><span class="ok">{ICONOS['check']}</span><div><span class="t">Diagnóstico agendado</span><b>Jueves · 10:00</b><small>45 min · videollamada</small></div></div></div></div>
+    <div class="flota f1" data-z="1.4"><div class="tarjeta"><div class="fila-t"><span class="ok">{ICONOS['check']}</span><div><span class="t">Diagnóstico agendado</span><b>Jueves · 10:00</b><small>20 min · videollamada</small></div></div></div></div>
     <div class="flota f2" data-z="1"><div class="tarjeta"><span class="t">Prioridades del trimestre</span><div class="barras"><div>Estructura<span><i style="--w:86%"></i></span></div><div>Talento<span><i style="--w:62%"></i></span></div><div>Narrativa<span><i style="--w:40%"></i></span></div></div></div></div>
     <div class="flota f3" data-z="1.2"><div class="tarjeta"><span class="t">Conversación pública</span><b>Tendencia al alza</b>{chispa()}</div></div>
     <div class="flota f4" data-z=".8"><div class="tarjeta"><span class="t"><span class="punto"></span>Equipo en campo</span><b id="lugar">Monterrey</b></div></div>
@@ -93,7 +93,7 @@ def inicio():
              + caja_servicio(lid, 'c-b', mini_lid) + caja_servicio(inf, 'c-c', mini_inf)
              + '<div class="caja c-d rv"><span class="etq">Monitoreo</span><div class="cifra-c">24/7</div><p>De conversación pública y crisis para clientes activos.</p></div>'
              + '<div class="caja c-e rv"><span class="etq">Producción</span><div class="cifra-c">100%</div><p>Contenido, diseño y video hechos en casa.</p></div>'
-             + f'<a class="caja c-oro c-f rv" href="/agenda/"><span class="etq">Empieza aquí<span class="ir">{FLECHA}</span></span><h3 class="h3">Diagnóstico sin costo</h3><p>45 minutos para entender tu reto y decirte cómo lo resolveríamos.</p>{LOGO_DECO}</a>')
+             + f'<a class="caja c-oro c-f rv" href="/agenda/"><span class="etq">Empieza aquí<span class="ir">{FLECHA}</span></span><h3 class="h3">Diagnóstico sin costo</h3><p>20 minutos para entender tu reto y decirte cómo lo resolveríamos.</p>{LOGO_DECO}</a>')
     pasos = [('Diagnóstico', 'Escuchamos primero: contexto real, objetivos verdaderos y la brecha entre lo que se dice y lo que pasa.', 'proyecto / diagnóstico'),
              ('Diseño', 'Construimos la intervención a la medida, combinando solo lo que tu contexto exige.', 'proyecto / plan'),
              ('Activación', 'Operamos dentro de tu organización hasta que el cambio funciona solo.', 'proyecto / tablero'),
@@ -291,7 +291,7 @@ def servicios_hub():
     </article>'''
     filas = ''.join(f'<tr><th scope="row">{s["area"]}</th><td>{e(s["necesitas"])}</td><td>{e(s["para"])}</td><td>{e(", ".join(t for _, t, _ in s["entregables"]))}</td><td><a href="/servicios/{s["slug"]}/">Ver detalle</a></td></tr>' for s in SERVICIOS)
     formatos = ''.join(f'<article class="formato rv" style="--d:{i * .08}s"><small>{e(k)}</small><h3 class="h3">{e(t)}</h3><p>{e(d)}</p></article>' for i, (k, t, d) in enumerate(FORMATOS))
-    pasos = [('Paso 1', 'Diagnóstico sin costo', 'Llenas la solicitud y, si encaja, agendamos 45 minutos.'), ('Paso 2', 'Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro.'),
+    pasos = [('Paso 1', 'Diagnóstico sin costo', 'Llenas la solicitud y, si encaja, agendamos 20 minutos.'), ('Paso 2', 'Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro.'),
              ('Paso 3', 'Arranque', 'Definimos indicadores y empezamos dentro de tu organización.'), ('Paso 4', 'Resultados medibles', 'Reportes contra los objetivos acordados.')]
     pasos_html = ''.join(f'<div class="rv" style="--d:{i * .08}s"><small>{n}</small><h3>{t}</h3><p>{d}</p></div>' for i, (n, t, d) in enumerate(pasos))
     faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in PREGUNTAS]}

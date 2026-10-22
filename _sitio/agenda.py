@@ -324,7 +324,7 @@ def pagina_agenda():
     areas = ''.join(f'<label class="op multi"><input type="checkbox" name="areas" value="{e(t)}"><span><b>{e(t)}</b><small>{e(d)}</small></span></label>' for t, _, d in AREAS)
     momentos = ''.join(f'<label class="op"><input type="radio" name="momento" value="{e(t)}"><span><b>{e(t)}</b></span></label>' for t, _ in MOMENTOS)
     inc = [('Una lectura honesta', 'Qué vemos en tu caso, aunque no sea lo que esperabas oír.'), ('Prioridades claras', 'Por dónde empezar y qué dejar para después.'),
-           ('Cómo lo haríamos', 'Si podemos ayudarte, el enfoque, el equipo y los tiempos.'), ('Sin costo ni compromiso', '45 minutos, por videollamada o en persona.')]
+           ('Cómo lo haríamos', 'Si podemos ayudarte, el enfoque, el equipo y los tiempos.'), ('Sin costo ni compromiso', '20 minutos, por videollamada o en persona.')]
     inc_html = ''.join(f'<li>{ICONOS["check"]}<span><b>{t}</b>{d}</span></li>' for t, d in inc)
     pasos_n = ['Tú', 'Organización', 'Tu reto', 'Decisión', 'Revisar']
     marcas = ''.join(f'<button type="button" aria-label="Paso {i + 1}: {t}">{t}</button>' for i, t in enumerate(pasos_n))
@@ -335,7 +335,7 @@ def pagina_agenda():
     <div class="ag-pega">
       <span class="etiqueta">Diagnóstico sin costo</span>
       <h1 class="h1">Cuéntanos tu momento. <span class="metal">Te devolvemos un plan.</span></h1>
-      <p class="lead">Una sesión de 45 minutos con nuestro equipo para entender tu reto y decirte, con claridad, cómo lo resolveríamos.</p>
+      <p class="lead">Una sesión de 20 minutos con nuestro equipo para entender tu reto y decirte, con claridad, cómo lo resolveríamos.</p>
       <ul class="ag-incluye">{inc_html}</ul>
       <p class="ag-nota">Damos un número limitado de diagnósticos al mes. Con estas preguntas llegamos preparados a tu sesión; si no somos el equipo correcto para tu caso, te lo decimos con la misma claridad. Te respondemos en máximo 2 días hábiles.</p>
     </div>
@@ -434,7 +434,7 @@ def pagina_agenda():
         <ol class="linea-t">
           <li class="ya"><b>Solicitud recibida</b><span>Tu información llegó directo a nuestro equipo.</span></li>
           <li><b>Revisión personal · máximo 2 días hábiles</b><span>Leemos tu caso con calma para ver cómo podemos aportarte.</span></li>
-          <li><b>Diagnóstico de 45 minutos</b><span>Si encaja, te llega la invitación a tu calendario con fecha y enlace.</span></li>
+          <li><b>Diagnóstico de 20 minutos</b><span>Si encaja, te llega la invitación a tu calendario con fecha y enlace.</span></li>
           <li><b>Propuesta a la medida</b><span>Alcance, equipo, tiempos e inversión, en claro.</span></li>
         </ol>
         <div class="botones" style="margin-top:28px"><a class="btn tinta" href="/sparks/celaya/">Mientras tanto, lee Sparks {FLECHA}</a><a class="btn blanco" href="/">Volver al inicio</a></div>
@@ -443,4 +443,4 @@ def pagina_agenda():
   </section>
 </main>
 {pie('empresas')}{JS}'''
-    return cabeza('Agenda tu diagnóstico · Vorka México', 'Solicita una sesión de diagnóstico de 45 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.', '/agenda/', og='cdmx-noche', extra=CSS) + cuerpo + '\n</body>\n</html>\n'
+    return cabeza('Agenda tu diagnóstico · Vorka México', 'Solicita una sesión de diagnóstico de 20 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.', '/agenda/', og='cdmx-noche', extra=CSS) + cuerpo + '\n</body>\n</html>\n'
