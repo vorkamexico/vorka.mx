@@ -189,7 +189,7 @@ async function atender(request, env, ctx, url) {
     if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
     if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {
       if (request.method === 'POST') return await postReenviar(request, env, ctx);
-      if (request.method === 'GET') return paginaReenviar();
+      if (request.method === 'GET') return paginaReenviar(url);
     }
     const desc = url.pathname.match(/^\/descargas\/([^/]{1,100})\/?(?:(\d{1,3})\/?)?$/);
     if (desc && desc[1] !== 'reenviar' && ['GET', 'HEAD'].includes(request.method))

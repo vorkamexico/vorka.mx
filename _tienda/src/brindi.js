@@ -95,7 +95,7 @@ const PASOS = [
   ['Recibe confirmaciones', 'Tus invitados confirman desde su celular y tú ves quién viene y cuántos son.'],
 ];
 const TUTORIAL = [
-  ['Entra a Brindi', `Abre <a href="${OS}/brindi/">os.vorka.mx/brindi</a> y escribe tu correo. Te llega un enlace para entrar; no necesitas contraseña.`],
+  ['Entra a Brindi', `Abre <a href="${OS}/brindi/">os.vorka.mx/brindi</a> y escribe tu correo. La primera vez te llega un enlace para entrar; ya adentro creas tu contraseña y la próxima entras directo.`],
   ['Crea tu evento', 'Toca “Nueva invitación”, elige el tipo (boda, XV años, bautizo, cumpleaños…) y pon la fecha y el lugar.'],
   ['Elige un diseño', 'Escoge una de las plantillas. Puedes cambiar la paleta de colores y la tipografía cuando quieras.'],
   ['Personalízala', 'Cambia los textos, sube tu foto de portada y elige qué secciones aparecen: padrinos, itinerario, vestimenta, mesa de regalos, hospedaje… La vista previa se actualiza mientras editas.'],
@@ -153,7 +153,7 @@ export async function paginaBrindi(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'HowTo', name: 'Cómo hacer tu invitación digital con Brindi', step: TUTORIAL.map(([n, t], i) => ({ '@type': 'HowToStep', position: i + 1, name: n, text: t.replace(/<[^>]+>/g, '') })) }];
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`;
-  return pagina({ navActual: 'catalogo',
+  return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/brindi/`, app: 'Brindi' },
     titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
     descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $399 MXN.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
@@ -168,6 +168,7 @@ export async function paginaBrindi(env, req, url) {
     <h1 class="br-h1">Tu invitación digital, lista en minutos.</h1>
     <p class="br-lead">Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.</p>
     <div class="botones"><a class="btn tinta" href="${OS}/brindi/" rel="noopener">Créala gratis ${FLECHA}</a>${aLaVenta ? '<a class="btn blanco" href="#planes">Ver precios</a>' : ''}</div>
+    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/brindi/">Entra aquí</a></p>
     <p class="br-nota">${aLaVenta ? `Pagas solo cuando la quieras publicar: <b>un pago por evento desde ${precio({ precio_centavos: desde })}</b>, sin mensualidades.` : 'Muy pronto a la venta. Ya puedes crear tu invitación gratis y verla en vista previa.'}</p>
   </div>
   <div class="br-tel" aria-label="Ejemplo de invitación en un celular"><iframe src="${OS}/i/demo-boda" title="Demostración de una invitación de boda" loading="lazy"></iframe><span class="br-tel-cinta">Toca y explora · demostración</span></div>

@@ -59,7 +59,7 @@ export async function paginaCupo(env, req, url) {
     ...(niveles.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: '0.00', highPrice: (Math.max(...todos.map(x => x.prod.precio_centavos)) / 100).toFixed(2), offerCount: todos.length + 1 } } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const opcion = x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${esc(x.etiqueta)} · ${precio(x.prod)}</option>`;
-  return pagina({ navActual: 'catalogo',
+  return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/cupo/#entrar`, app: 'Cupo' },
     titulo: 'Cupo: página de tu evento con registro, cover y QR | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: `${OS}/cupo/og/halloween.png`,
     descripcion: 'Crea la página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas. Cupo Pro desde $99: correos y recordatorios, cover sin comisión y ligas para RPs.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
@@ -73,6 +73,7 @@ export async function paginaCupo(env, req, url) {
     <h1 class="cu-h1">Tu evento, listo <i>en un minuto.</i></h1>
     <p class="cu-lead">Una página bonita para tu fiesta, taller o evento de negocio. La gente aparta su lugar en segundos, sin cuenta, y en la puerta escaneas su QR.</p>
     <div class="botones"><a class="btn tinta" href="${OS}/cupo/#/nuevo">Crear mi evento gratis ${FLECHA}</a><a class="btn blanco" href="#planes">Ver precios</a><a class="btn blanco" href="${OS}/cupo/#/como-funciona/organizador">Cómo funciona</a></div>
+    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/cupo/#entrar">Entra aquí</a></p>
     <p class="cu-nota"><b>Gratis hasta 30 personas.</b> Cupo Pro desde <b>${desde ? precio({ precio_centavos: desde }) : '$99 MXN'}</b> por evento · sin comisión por tu cover · sin mensualidades</p>
   </div>
   <div class="cu-demos-h">${DEMOS.map(([s, og, t, d], i) => `<a class="cu-demo${i === 0 ? ' g' : ''}" href="${OS}/e/${s}" target="_blank" rel="noopener"><img src="${OS}/cupo/og/${og}.png" alt="" loading="${i ? 'lazy' : 'eager'}" width="1200" height="630"><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>

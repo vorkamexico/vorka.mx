@@ -88,20 +88,24 @@ export const WHATSAPP = 'https://wa.me/528117804869';
 // Inicio · Catálogo · Puntos · Contacto; a la derecha la lupa (lleva al buscador del catálogo), tu cuenta de
 // puntos y la pastilla destacada "Gana puntos". oscuro: sobre la foto de la portada.
 const MENU_TIENDA = [['inicio', 'Inicio', '/tienda/'], ['catalogo', 'Catálogo', '/tienda/#productos'], ['puntos', 'Puntos', '/tienda/puntos/'], ['contacto', 'Contacto', '/tienda/#ayuda']];
-export const navTiendaSup = (actual = '', { oscuro = false } = {}) => `<header class="nav t-navs${oscuro ? ' oscuro' : ''}">
+// entrar: { url, app } en las páginas de un producto con cuenta (Vuelve, Brindi, Cupo, Cuentas, Simulador): la pastilla de la
+// derecha pasa a ser "Entrar" y lleva directo a iniciar sesión en esa app (o a su panel si ya tiene sesión). Se ve también en celular.
+export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}) => `<header class="nav t-navs${oscuro ? ' oscuro' : ''}">
   <div class="nav-in">
     <a class="marca" href="/tienda/" aria-label="Tienda Vorka México, inicio">${LOGO}Vorka <span>Tienda</span></a>
     <nav class="nav-links" aria-label="Tienda">${MENU_TIENDA.map(([k, t, u]) => `<a href="${u}"${k === actual ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
     <a class="t-nav-ico" href="/tienda/#buscar" aria-label="Buscar en la tienda" title="Buscar">${ICONOS.buscar}</a>
-    <a class="t-nav-ico t-nav-cuenta" href="/tienda/puntos/" aria-label="Mi cuenta de puntos" title="Mi cuenta">${ICONOS.cuenta}</a>
-    <a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>
+    ${entrar ? '' : `<a class="t-nav-ico t-nav-cuenta" href="/tienda/puntos/" aria-label="Mi cuenta de puntos" title="Mi cuenta">${ICONOS.cuenta}</a>`}
+    ${entrar ? `<a class="btn acento t-pastilla t-entrar" href="${esc(entrar.url)}" aria-label="Entrar a ${esc(entrar.app)}">${ICONOS.cuenta}<span>Entrar</span></a>` : '<a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>'}
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
   </div>
 </header>
-<div class="menu-movil" id="menu-movil">${MENU_TIENDA.map(([, t, u]) => `<a href="${u}">${t}</a>`).join('')}<a href="/">Vorka México</a><a class="btn acento" href="/tienda/puntos/">Gana puntos ${FLECHA}</a></div>
+<div class="menu-movil" id="menu-movil">${entrar ? `<a class="btn acento" href="${esc(entrar.url)}">Entrar a ${esc(entrar.app)} ${FLECHA}</a>` : ''}${MENU_TIENDA.map(([, t, u]) => `<a href="${u}">${t}</a>`).join('')}<a href="/">Vorka México</a><a class="btn acento" href="/tienda/puntos/">Gana puntos ${FLECHA}</a></div>
 `;
 
-export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false }) {
+// La pastilla "Entrar" se queda visible en celular (la de "Gana puntos" se esconde en pantallas chicas)
+const ENTRAR_CSS = '<style>.nav.t-navs .t-entrar{gap:7px}.nav.t-navs .t-entrar svg{width:18px;height:18px}@media (max-width:430px){.nav.t-navs .t-pastilla.t-entrar{display:inline-flex;min-height:40px;padding:0 14px}}.t-ya{margin:14px 0 0;font-size:15px;opacity:.85}.t-ya a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}</style>';
+export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null }) {
   const n = nonce(), temporada = temporadaActual();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
@@ -130,10 +134,10 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="can
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
 <link rel="stylesheet" href="/tienda/estilos.css?v=${VERSION_CSS}">
-${estiloTemporada(temporada)}${head}</head>
+${estiloTemporada(temporada)}${entrar ? ENTRAR_CSS : ''}${head}</head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
-${navTiendaSup(navActual, { oscuro: navOscuro })}<main id="contenido" class="t-main">
+${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}

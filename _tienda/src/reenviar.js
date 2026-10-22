@@ -15,11 +15,12 @@ const MAX_IP = 10;     // por hora
 const MAX_EMAIL = 3;   // por hora
 const MAX_ORDENES = 5; // reenvía las 5 compras pagadas más recientes
 
-const formulario = ({ error = '', email = '' } = {}) => `
+// para=simulador: el botón "Entrar" del Simulador PAA trae aquí (su acceso es el botón del correo de compra)
+const formulario = ({ error = '', email = '', simulador = false } = {}) => `
 <section class="t-sec"><div class="marco t-estrecho">
-  <span class="etiqueta">Descargas</span>
-  <h1 class="t-h1">Recupera tus archivos</h1>
-  <p class="t-lead">Escribe el correo con el que compraste y te mandamos un enlace nuevo, válido por 7 días.</p>
+  <span class="etiqueta">${simulador ? 'Simulador PAA' : 'Descargas'}</span>
+  <h1 class="t-h1">${simulador ? 'Entra a tu simulador' : 'Recupera tus archivos'}</h1>
+  <p class="t-lead">${simulador ? 'Escribe el correo con el que compraste y te mandamos tu botón para entrar. Si ya entraste antes en este celular, <a href="/simulador-paa/">ábrelo directo</a>.' : 'Escribe el correo con el que compraste y te mandamos un enlace nuevo, válido por 7 días.'}</p>
   <form class="t-form" method="post" action="/descargas/reenviar" novalidate>
     <div class="t-campo">
       <label for="email">Correo electrónico</label>
@@ -34,7 +35,9 @@ const formulario = ({ error = '', email = '' } = {}) => `
 
 const base = { titulo: 'Recupera tus archivos · Vorka México', descripcion: 'Pide un enlace nuevo para descargar tus compras de la tienda de Vorka México.', ruta: '/descargas/reenviar', noindex: true };
 
-export const paginaReenviar = () => pagina({ ...base, cuerpo: formulario() });
+export const paginaReenviar = url => url?.searchParams.get('para') === 'simulador'
+  ? pagina({ ...base, titulo: 'Entra a tu Simulador PAA · Vorka México', cuerpo: formulario({ simulador: true }), entrar: { url: '/simulador-paa/', app: 'Simulador PAA' } })
+  : pagina({ ...base, cuerpo: formulario() });
 
 export const RESPUESTA = 'Si ese correo tiene compras con nosotros, en unos minutos te llegará un enlace nuevo. Revisa también spam o promociones.';
 

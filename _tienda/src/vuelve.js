@@ -71,7 +71,7 @@ export async function paginaVuelve(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => ({ '@type': 'Offer', priceCurrency: 'MXN', price: (x.prod.precio_centavos / 100).toFixed(2), name: `Plan ${x.nombre.toLowerCase()}` })) } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
-  return pagina({ navActual: 'catalogo', navOscuro: true,
+  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: `${OS}/vuelve/og.png`,
     descripcion: 'Que tus clientes vuelvan solos: sellos o puntos en su celular, sin app ni cartón. Avisos automáticos, referidos y el dinero que te traen de vuelta, medido. Prueba 7 días gratis, sin tarjeta.',
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
@@ -84,6 +84,7 @@ export async function paginaVuelve(env, req, url) {
     <h1 class="vu-h1">Que tus clientes <em>vuelvan solos.</em></h1>
     <p class="vu-lead">La tarjeta de lealtad de tu negocio en Apple Wallet y Google Wallet de tus clientes. Sin app, sin cartón. Vuelve les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.</p>
     <div class="vu-ctas"><a class="vu-btn" href="${OS}/vuelve/#/nuevo">Pruébalo 7 días gratis ${FLECHA}</a><a class="vu-btn ghost" href="#planes">Ver precios</a></div>
+    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a></p>
     <ul class="vu-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.wallet}Apple y Google Wallet</li><li>${ICONO.reloj}Lista en 5 minutos</li></ul>
   </div>
   <div class="vu-escena" aria-hidden="true">

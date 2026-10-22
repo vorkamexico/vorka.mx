@@ -395,7 +395,7 @@ async function paginaVenta(env, req, url) {
     tutor.hidden=false;
   }); });
 })();`;
-  return pagina({
+  return pagina({ entrar: { url: '/descargas/reenviar?para=simulador', app: 'Simulador PAA' },
     titulo: 'Simulador PAA 2026 en línea: examen de práctica | Vorka México', ruta: `${RUTA}/`, descripcion: DESCRIPCION, imagen: OG,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: (prod ? SCRIPT_COMPRA : '') + SCRIPT_EJEMPLO,
@@ -505,6 +505,7 @@ async function paginaVenta(env, req, url) {
     <ul class="sv-sellos"><li>${CHECK}Práctica ilimitada con tutor</li><li>${CHECK}Examen completo como el real: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas</li><li>${CHECK}Puntaje estimado 200–800</li><li>${CHECK}En celular o computadora</li></ul>
     <div class="sv-portada"><img src="/tienda/img/portadas/simulador-paa-v2.png" alt="Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación" width="1600" height="1200" fetchpriority="high"></div>
     <div class="sv-links"><a class="btn blanco chico" href="#probar">Probar un reactivo gratis ${FLECHA}</a>${prod ? `<a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a>` : ''}</div>
+    <p class="t-ya">¿Ya lo compraste? <a href="/descargas/reenviar?para=simulador">Entra aquí</a></p>
   </div>
   <aside class="sv-compra" id="comprar" aria-label="Comprar el simulador">
     ${selector}${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del Simulador PAA.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}

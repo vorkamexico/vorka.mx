@@ -57,7 +57,7 @@ export async function paginaCuentas(env, req, url) {
     description: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estado de cuenta. Prueba 7 días gratis.', image: ['https://vorka.mx/assets/tienda/cuentas.webp'],
     ...(plan ? { offers: [{ '@type': 'Offer', priceCurrency: 'MXN', price: (plan.precio_centavos / 100).toFixed(2), name: 'Plan mensual' }] } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  return pagina({ navActual: 'catalogo', navOscuro: true,
+  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Cuentas' },
     titulo: 'Cuentas: administra tus préstamos personales | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/cuentas-og.png',
     descripcion: 'Lleva en orden lo que prestas a familiares y amigos: cada abono, intereses claros, el saldo al día y estados de cuenta en PDF y Excel. Sin hojas de cálculo. Prueba 7 días gratis, sin tarjeta.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
@@ -70,6 +70,7 @@ export async function paginaCuentas(env, req, url) {
     <h1 class="cu-h1">Lo que prestas, <em>claro y en orden.</em></h1>
     <p class="cu-lead">Registra el dinero que prestas a tu familia y amigos, cada abono que te hacen y mira al instante cuánto falta, cuánto fue a intereses y cuánto a capital. Sin hojas de cálculo ni pleitos por números.</p>
     <div class="cu-ctas"><a class="cu-btn" href="${APP}/entrar">Pruébala 7 días gratis ${FLECHA}</a><a class="cu-btn ghost" href="#planes">Ver precio</a></div>
+    <p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>
     <ul class="cu-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.candado}No pedimos datos bancarios</li><li>${ICONO.reloj}Lista en 2 minutos</li></ul>
   </div>
   <div class="cu-escena">${pantalla}</div>
