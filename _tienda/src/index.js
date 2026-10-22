@@ -20,7 +20,7 @@ import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp } fro
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
 import { cargarTemporada } from './temporadas.js';
-import { suscripcionApp, portalApp, resumenSuscripciones } from './suscripciones.js';
+import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp } from './suscripciones.js';
 import { rutasPuntos } from './puntos.js';
 import { rutasSocios } from './socios-portal.js';
 import * as socios from './socios.js';
@@ -92,6 +92,7 @@ export class Admin extends WorkerEntrypoint {
   // Apps por suscripción (Vuelve): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
+  lugaresApp(email, app, extras) { return lugaresApp(this.env, email, app, extras); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
   // Socios Vorka (solo por invitación): alta y edición, niveles, cola de pagos por SPEI (manual) y CSV
   resumenSocios() { return socios.resumenSocios(this.env); }

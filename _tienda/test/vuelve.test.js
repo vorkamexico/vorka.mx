@@ -28,8 +28,8 @@ const fila = sql => env.DB.raw.prepare(sql).get();
 const sub = (o = {}) => ({
   id: 'sub_1', status: 'active', customer: 'cus_1', cancel_at_period_end: false, metadata: { order_id: stripe.orden, app: 'vuelve', email: 'laura@cafe.mx', product_id: 'prod_vuelve_mensual' },
   items: { data: [
-    { quantity: 1, current_period_end: 1893456000, price: { unit_amount: 39900, recurring: { interval: 'month' }, product: { metadata: { product_id: 'prod_vuelve_mensual' } } } },
-    { quantity: 2, current_period_end: 1893456000, price: { unit_amount: 24900, recurring: { interval: 'month' }, product: { metadata: { product_id: 'prod_vuelve_sucursal_mensual' } } } },
+    { id: 'si_plan', quantity: 1, current_period_end: 1893456000, price: { unit_amount: 39900, recurring: { interval: 'month' }, product: { metadata: { product_id: 'prod_vuelve_mensual' } } } },
+    { id: 'si_suc', quantity: 2, current_period_end: 1893456000, price: { unit_amount: 24900, recurring: { interval: 'month' }, product: { metadata: { product_id: 'prod_vuelve_sucursal_mensual' } } } },
   ] }, ...o,
 });
 
@@ -48,6 +48,8 @@ beforeEach(() => {
     if (url.includes('/subscriptions/')) return ok(stripe.sub);
     if (url.includes('/invoices/')) return ok(stripe.factura);
     if (url.endsWith('/billing_portal/sessions')) return ok({ url: 'https://billing.stripe.com/p/session/x' });
+    if (url.endsWith('/products')) return ok({ id: 'prod_stripe_suc' });
+    if (url.includes('/subscription_items')) return ok({ id: 'si_nuevo' });
     return new Response('{}', { status: 404 });
   }));
 });
@@ -185,5 +187,31 @@ describe('páginas y ligas', () => {
   it('vorka.mx/vuelve/negocios lleva al directorio de negocios Vuelve', async () => {
     expect((await pedir('/vuelve/negocios')).headers.get('location')).toBe('https://os.vorka.mx/negocios');
     expect((await pedir('/vuelve/negocios/')).headers.get('location')).toBe('https://os.vorka.mx/negocios');
+  });
+
+  it('lugares adicionales (sucursales o negocios): cambia la cantidad en Stripe, lo agrega si no existe y lo quita con 0', async () => {
+    const { order } = await (await comprar({ sucursales: 2 })).json();
+    stripe.orden = order; stripe.sub = sub();
+    expect((await evento('checkout.session.completed', 'cs_1')).status).toBe(200);
+    const A = new Admin({}, env);
+    await A.lugaresApp('laura@cafe.mx', 'vuelve', 3);
+    let c = llamadas.at(-2);
+    expect(c.url).toBe('https://api.stripe.com/v1/subscription_items/si_suc');
+    expect(c.params.get('quantity')).toBe('3');
+    expect(c.params.get('proration_behavior')).toBe('create_prorations');
+    // sin cambio, no le habla a Stripe para cambiar nada
+    llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 2);
+    expect(llamada('/subscription_items')).toHaveLength(0);
+    // con 0 se quita el renglón
+    await A.lugaresApp('laura@cafe.mx', 'vuelve', 0);
+    expect(llamada('/subscription_items/si_suc')[0].init.method).toBe('DELETE');
+    // si la suscripción no lo tiene, se agrega con el producto de Stripe del complemento (creado una sola vez)
+    stripe.sub = sub({ items: { data: [sub().items.data[0]] } });
+    llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 1); await A.lugaresApp('laura@cafe.mx', 'vuelve', 2);
+    expect(llamada('/products')).toHaveLength(1);
+    const nuevo = llamada('/subscription_items').filter(l => l.url.endsWith('/subscription_items'))[0].params;
+    expect(Object.fromEntries(nuevo)).toMatchObject({ subscription: 'sub_1', quantity: '1', 'price_data[product]': 'prod_stripe_suc', 'price_data[unit_amount]': '24900', 'price_data[recurring][interval]': 'month', 'price_data[currency]': 'mxn' });
+    await expect(A.lugaresApp('laura@cafe.mx', 'vuelve', 99)).rejects.toThrow(/de 0 a 50/);
+    await expect(A.lugaresApp('nadie@x.mx', 'vuelve', 1)).rejects.toThrow(/No hay una suscripción vigente/);
   });
 });

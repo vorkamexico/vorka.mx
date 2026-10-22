@@ -22,7 +22,7 @@ const FAQ = [
   ['¿Cómo sé si de verdad funciona?', 'En tu panel ves cuántos clientes regresaron, cada cuánto vienen y cuánto dinero te trajeron de vuelta (con el ticket que registras al sellar o con tu ticket promedio). También ves cuántos regresaron después de cada aviso.'],
   ['¿Y si mi equipo regala sellos?', 'Cada persona de tu equipo sella con su PIN, hay un tope de sellos por cliente al día y todo queda en una bitácora. Si alguien sella de más, te avisamos.'],
   ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Los descargas en Excel cuando quieras, también si cancelas. Vorka solo los guarda por tu cuenta para darte el servicio: no los vende ni los usa para publicidad. Cada cliente puede pedir su baja desde su tarjeta.'],
-  ['¿Cuánto cuesta y cómo pago?', 'Mensual o anual (con 2 meses gratis), con tarjeta, procesado por Stripe. La suscripción incluye una sucursal; cada sucursal adicional se suma a tu plan. Te emitimos factura (CFDI) si la pides.'],
+  ['¿Cuánto cuesta y cómo pago?', 'Mensual o anual (con 2 meses gratis), con tarjeta, procesado por Stripe. La suscripción incluye una sucursal; cada sucursal adicional, o cada negocio distinto que manejes con el mismo correo (por ejemplo, tu cafetería y tu panadería), se suma a tu plan al mismo precio de sucursal. Te emitimos factura (CFDI) si la pides.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Vuelve › Cuenta, sin llamadas. Tu programa sigue activo hasta el final del periodo que pagaste y tus clientes conservan su tarjeta.'],
   ['¿Mi negocio puede aparecer en un directorio?', 'Sí, si tú quieres. Con tu suscripción activa, tu negocio puede aparecer en <a href="/vuelve/negocios">vorka.mx/vuelve/negocios</a> con tu logo, tu ciudad y tu premio, para que te encuentren clientes nuevos. Lo prendes o apagas en Vuelve › Mi liga.'],
   ['¿Es difícil de usar?', 'No. Está pensado para dueños que no son de computadora: todo desde el celular, con botones grandes, una pregunta a la vez y preguntas frecuentes dentro de la app. Y si te atoras, te ayuda una persona.'],
@@ -62,6 +62,8 @@ export async function paginaVuelve(env, req, url) {
   const error = url.searchParams.get('error') || '';
   // Desde la app (Suscribirme) llega el correo de la cuenta para que la suscripción quede ligada a ella
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
+  // y cuántos lugares adicionales ya usa (sucursales o negocios de más con el mismo correo)
+  const lugares = Math.min(20, Math.max(0, parseInt(url.searchParams.get('sucursales') || '0', 10) || 0));
   const mensual = planes.find(x => x.slug === 'vuelve-mensual');
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Vuelve · Tarjeta de lealtad digital para tu negocio', brand: { '@type': 'Brand', name: 'Vuelve' },
     description: 'Sellos o puntos en el celular de tus clientes, avisos automáticos de cumpleaños y de regreso, referidos y el dinero que te traen de vuelta, medido. Prueba 7 días gratis.',
@@ -122,19 +124,19 @@ ${navTienda('lealtad')}
       <a class="vu-btn ghost oscuro" href="${OS}/vuelve/#/nuevo">Empezar gratis</a></article>
     ${planes.map(x => `<article class="vu-plan${x.slug === 'vuelve-mensual' ? ' rec' : ''}">${x.nota ? `<span class="vu-sello">${x.nota}</span>` : ''}<h3>${x.nombre}</h3><p class="vu-para">Una sucursal incluida</p>
       <p class="vu-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
-      <ul>${INCLUYE.slice(0, 5).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${x.sucursal ? `<li>${CHECK}<span>Sucursal adicional: ${precio(x.sucursal)} ${x.cada}</span></li>` : ''}</ul>
+      <ul>${INCLUYE.slice(0, 5).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${x.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(x.sucursal)} ${x.cada}</span></li>` : ''}</ul>
       <a class="vu-btn${x.slug === 'vuelve-mensual' ? '' : ' ghost oscuro'}" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
   </div>
   ${planes.length ? '' : `<p class="vu-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${OS}/vuelve/#/nuevo">empieza tu prueba gratis</a>.</p>`}
 </div></section>
 
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="${OS}/vuelve/#/nuevo">Empieza gratis 7 días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
-  pasos: [['Eliges mensual o anual', 'Y cuántas sucursales adicionales necesitas.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Te llega tu acceso por correo', 'Con el mismo correo de tu prueba, todo sigue igual.']],
+  pasos: [['Eliges mensual o anual', 'Y cuántas sucursales o negocios adicionales necesitas.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Te llega tu acceso por correo', 'Con el mismo correo de tu prueba, todo sigue igual.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
   form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">Plan</label><select id="slug" name="slug">${planes.map(x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${x.nombre} · ${precio(x.prod)} ${x.cada}${x.nota ? ` (${x.nota})` : ''}</option>`).join('')}</select></div>
-    <div class="t-campo"><label for="sucursales">Sucursales adicionales</label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="20" value="0"><small class="t-ayuda">Tu plan incluye una sucursal. Suma aquí las demás.</small></div>
+    <div class="t-campo"><label for="sucursales">Sucursales o negocios adicionales</label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="20" value="${lugares}"><small class="t-ayuda">Tu plan incluye un lugar. Cada sucursal de más, o cada negocio distinto con el mismo correo, se suma aquí al mismo precio.</small></div>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" value="${esc(correo)}"><small class="t-ayuda">Usa el mismo correo de tu prueba para que tu programa siga igual.</small></div>
     <p class="vu-total">Pagas hoy <b id="vu-total">${planes[0] ? precio(planes.find(x => x.slug === elegido)?.prod || planes[0].prod) : ''}</b> <span id="vu-cada"></span></p>

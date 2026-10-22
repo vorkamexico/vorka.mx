@@ -87,6 +87,38 @@ export async function suscripcionApp(env, email, app) {
     cancelar_al_final: !!s.cancelar_al_final, sucursales: s.sucursales, monto_centavos: s.monto_centavos };
 }
 
+// Lugares adicionales (sucursales o negocios extra de la misma cuenta) de la suscripción vigente: cambia en Stripe la
+// cantidad del renglón del complemento (lo agrega si no existe, lo quita con 0). Stripe prorratea: la diferencia sale en
+// la siguiente factura. Devuelve la suscripción ya actualizada (la misma forma que suscripcionApp).
+export const MAX_LUGARES = 50;
+export async function lugaresApp(env, email, app, extras) {
+  extras = Math.trunc(Number(extras));
+  if (!Number.isFinite(extras) || extras < 0 || extras > MAX_LUGARES) throw new Error(`Elige de 0 a ${MAX_LUGARES} lugares adicionales.`);
+  const s = await vigente(env, email, app);
+  if (!s) throw new Error('No hay una suscripción vigente con este correo.');
+  const plan = await one(env, 'SELECT contenido FROM products WHERE id = ?', s.product_id);
+  let c; try { c = JSON.parse(plan?.contenido || '{}'); } catch { c = {}; }
+  const extra = c.suscripcion?.extra && await one(env, 'SELECT id, nombre, precio_centavos FROM products WHERE id = ?', c.suscripcion.extra);
+  if (!extra) throw new Error('Este plan no admite lugares adicionales.');
+  const sub = await llamar(env, 'GET', `/subscriptions/${encodeURIComponent(s.id)}?expand[]=items.data.price.product`);
+  const renglon = (sub.items?.data || []).find(it => typeof it.price?.product === 'object' && it.price.product.metadata?.product_id === extra.id);
+  const prorrateo = { proration_behavior: 'create_prorations' };
+  if (renglon && extras === 0) await llamar(env, 'DELETE', `/subscription_items/${encodeURIComponent(renglon.id)}?proration_behavior=create_prorations`);
+  else if (renglon) { if ((renglon.quantity || 0) !== extras) await llamar(env, 'POST', `/subscription_items/${encodeURIComponent(renglon.id)}`, { quantity: extras, ...prorrateo }); }
+  else if (extras > 0) await llamar(env, 'POST', '/subscription_items', { subscription: s.id, quantity: extras, ...prorrateo,
+    price_data: { currency: 'mxn', unit_amount: extra.precio_centavos, recurring: { interval: s.intervalo === 'year' ? 'year' : 'month' }, product: await productoStripe(env, extra) } });
+  await guardarSuscripcion(env, await llamar(env, 'GET', `/subscriptions/${encodeURIComponent(s.id)}?expand[]=items.data.price.product`));
+  return suscripcionApp(env, email, app);
+}
+// El producto de Stripe de un complemento (para agregarlo a una suscripción hace falta uno guardado): se crea una vez
+async function productoStripe(env, p) {
+  const clave = `stripe_producto:${p.id}`, ya = await one(env, 'SELECT valor FROM ajustes WHERE clave = ?', clave);
+  if (ya?.valor) return ya.valor;
+  const r = await llamar(env, 'POST', '/products', { name: p.nombre, metadata: { product_id: p.id } }, { idempotencia: clave });
+  await run(env, 'INSERT INTO ajustes (clave, valor) VALUES (?, ?) ON CONFLICT (clave) DO UPDATE SET valor = excluded.valor', clave, r.id);
+  return r.id;
+}
+
 // Liga de un solo uso al portal de clientes de Stripe (cambiar tarjeta, ver facturas, cancelar). Requiere configurarlo en el Dashboard.
 export async function portalApp(env, email, app, volver) {
   if (!/^https:\/\/([a-z0-9-]+\.)*vorka\.mx\//.test(String(volver || '')) && !/^http:\/\/(localhost|127\.0\.0\.1):\d+\//.test(String(volver || ''))) throw new Error('Liga de regreso inválida');
