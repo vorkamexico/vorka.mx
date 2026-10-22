@@ -29,8 +29,8 @@ const FAQ = [
   ['¿Para qué negocios sirve?', 'Cafeterías, restaurantes, barberías, salones, estéticas, gimnasios, autolavados, tintorerías, panaderías: cualquier negocio con clientes que pueden regresar. Al empezar eliges tu giro y Vuelve te sugiere sellos, premios y mensajes.'],
 ];
 
-// ---------- identidad de Vuelve (la misma de la app: verde Vuelve, tinta verde y crema; símbolo: la v que cierra el sello) ----------
-const SIMBOLO = '<svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true" style="display:block;flex:none"><circle cx="32" cy="32" r="22" fill="none" stroke="#1fbf75" stroke-width="6.2" stroke-dasharray="110 28" stroke-linecap="round" transform="rotate(-50 32 32)"/><path d="M19.5 25.5l12.5 16.5 16.5-25.5" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+// ---------- identidad de Vuelve (la misma de la app: la familia de Vorka —tinta, marfil, morado y oro— y la palabra "vuelve") ----------
+// La marca es solo la palabra "vuelve" (Inter Tight), en la familia de colores de Vorka
 const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICONO = {
   check: ico('<path d="M5 12.5l4.5 4.5L19 7.5"/>'), wallet: ico('<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/>'), reloj: ico('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
@@ -47,7 +47,7 @@ const DEMO = [
 ];
 // Réplica fiel de una storeCard de Apple Wallet: logo y nombre, saldo arriba, la tira, cliente · nivel, premio y QR
 const pase = d => `<div class="vu-pase${d.cls ? ` ${d.cls}` : ''}" style="--pf:${d.fondo};--pt:${d.tinta};--pt2:${d.tinta2}">
-  <div class="vu-pase-cab"><span class="vu-pase-logo">${d.logo ? '<img src="/assets/tienda/vuelve/logo-paloma.png" alt="" width="30" height="30">' : `<i>${d.inicial}</i>`}</span><b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
+  <div class="vu-pase-cab">${d.logo ? '<span class="vu-pase-logo con"><img src="/assets/tienda/vuelve/logo-paloma-pase.png" alt="" height="30"></span>' : ''}<b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
   <img class="vu-pase-tira" src="/assets/tienda/vuelve/${d.tira}.png" alt="" width="375" height="123" loading="lazy" decoding="async">
   <div class="vu-pase-campos"><span><small>CLIENTE</small>${esc(d.cliente)}</span><span class="der"><small>NIVEL</small>${d.nivel}</span></div>
   <div class="vu-pase-campos aux"><span><small>${d.premioEt}</small>${esc(d.premio)}</span></div>
@@ -78,7 +78,7 @@ export async function paginaVuelve(env, req, url) {
     cuerpo: `<div class="vu">
 <section class="vu-hero"><div class="marco vu-hero-g">
   <div class="vu-hero-txt">
-    <span class="vu-marca">${SIMBOLO}<span>vuelve</span></span>
+    <span class="vu-marca"><span>vuelve</span></span>
     <h1 class="vu-h1">Que tus clientes <em>vuelvan solos.</em></h1>
     <p class="vu-lead">La tarjeta de lealtad de tu negocio en Apple Wallet y Google Wallet de tus clientes. Sin app, sin cartón. Vuelve les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.</p>
     <div class="vu-ctas"><a class="vu-btn" href="${OS}/vuelve/#/nuevo">Pruébalo 7 días gratis ${FLECHA}</a><a class="vu-btn ghost" href="#planes">Ver precios</a></div>
@@ -151,24 +151,24 @@ ${await masTienda(env, 'lealtad')}
 }
 
 const CSS = `
-.vu{--vu-tinta:#0f1a15;--vu-tinta2:#16241d;--vu-verde:#1fbf75;--vu-verde-o:#0b8a50;--vu-verde-c:#45d08e;--vu-crema:#f6f4ee;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
-[data-tema="oscuro"] .vu{--vu-verde-o:#45d08e}
-.vu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--vu-verde);color:#06120c;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(31,191,117,.8);transition:transform .2s var(--ease),background .2s}
-.vu-btn:hover{background:#2bd486;transform:translateY(-1px)}.vu-btn svg{width:17px;height:17px}
+.vu{--vu-tinta:#0f0d10;--vu-tinta2:#171519;--vu-morado:#6b2a85;--vu-morado-c:#c59bd9;--vu-oro:#c8a45c;--vu-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
+[data-tema="oscuro"] .vu{--vu-morado:#c59bd9}
+.vu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(20,17,20,.5);transition:transform .2s var(--ease),background .2s}
+.vu-btn:hover{transform:translateY(-1px)}.vu-hero .vu-btn:not(.ghost),.vu-osc .vu-btn:not(.ghost){background:var(--vu-crema);color:var(--vu-tinta);box-shadow:0 10px 26px -12px rgba(0,0,0,.6)}.vu-hero .vu-btn:not(.ghost):hover,.vu-osc .vu-btn:not(.ghost):hover{background:#fff}.vu-btn svg{width:17px;height:17px}
 .vu-btn.ghost{background:rgba(255,255,255,.06);color:var(--vu-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}.vu-btn.ghost:hover{background:rgba(255,255,255,.12)}
 .vu-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.vu-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
 /* portada */
 .vu-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;background:var(--vu-tinta);color:var(--vu-crema)}
-.vu-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 80% 30%,rgba(31,191,117,.22),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(69,208,142,.08),transparent 70%)}
+.vu-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 80% 30%,rgba(107,42,133,.38),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(200,164,92,.1),transparent 70%)}
 .vu-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.vu-hero-g>*{min-width:0}
 @media(min-width:960px){.vu-hero-g{grid-template-columns:1.05fr .95fr}}
 .vu-marca{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:30px;letter-spacing:-.05em;color:var(--vu-crema)}.vu-marca span{margin-top:-3px}
-.vu-h1{font-weight:800;font-size:clamp(42px,6.6vw,80px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:11ch;text-wrap:balance}.vu-h1 em{font-style:normal;color:var(--vu-verde-c)}
-.vu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(246,244,238,.76);max-width:33em}
+.vu-h1{font-weight:800;font-size:clamp(42px,6.6vw,80px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:11ch;text-wrap:balance}.vu-h1 em{font-style:normal;color:var(--vu-morado-c)}
+.vu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(244,242,245,.76);max-width:33em}
 .vu-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.vu-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(246,244,238,.7)}
-.vu-chips li{display:inline-flex;align-items:center;gap:7px}.vu-chips svg{width:18px;height:18px;color:var(--vu-verde-c)}
-.vu-hero .t-nav-tienda{margin-top:8px}.vu-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(246,244,238,.8)}.vu-hero .t-nav-tienda a[aria-current]{background:var(--vu-verde);border-color:var(--vu-verde);color:#06120c}
+.vu-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(244,242,245,.7)}
+.vu-chips li{display:inline-flex;align-items:center;gap:7px}.vu-chips svg{width:18px;height:18px;color:var(--vu-morado-c)}
+.vu-hero .t-nav-tienda{margin-top:8px}.vu-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(244,242,245,.8)}.vu-hero .t-nav-tienda a[aria-current]{background:var(--vu-crema);border-color:var(--vu-crema);color:var(--vu-tinta)}
 .vu-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
 /* el celular con el Wallet abierto */
 .vu-escena{position:relative;justify-self:center;width:min(100%,360px);padding:10px 0 40px}
@@ -177,13 +177,13 @@ const CSS = `
 .vu-pantalla{border-radius:43px;overflow:hidden;background:#000;padding:62px 10px 0;height:600px;position:relative}
 .vu-wallet-t{margin:0 8px 12px;font:700 30px/1 -apple-system,'SF Pro Display','Inter Tight',sans-serif;letter-spacing:-.02em;color:#fff}
 .vu-pantalla .vu-pase.abajo{position:absolute;left:10px;right:10px;top:540px}
-.vu-noti{position:absolute;left:-36px;right:24px;bottom:22px;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:rgba(246,244,238,.88);color:#111;font:14px/1.35 -apple-system,'Inter Tight',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
+.vu-noti{position:absolute;left:-36px;right:24px;bottom:22px;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:rgba(244,242,245,.88);color:#111;font:14px/1.35 -apple-system,'Inter Tight',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
 .vu-noti b{display:flex;justify-content:space-between;gap:8px;font-weight:650}.vu-noti b small{font-weight:400;color:#6b6b6b}.vu-noti-ic img{display:block;width:38px;height:38px;border-radius:9px}
 @media(max-width:600px){.vu-noti{left:-6px;right:-6px}.vu-pantalla{height:540px}}
 /* tarjeta de Apple Wallet (storeCard) */
 .vu-pase{background:var(--pf);color:var(--pt);border-radius:14px;overflow:hidden;font-family:-apple-system,'SF Pro Text','Inter Tight',sans-serif;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 20px 40px -24px rgba(0,0,0,.7)}
 .vu-pase-cab{display:flex;align-items:center;gap:9px;padding:11px 12px}
-.vu-pase-logo img,.vu-pase-logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:#fff;color:#111;font:700 15px/1 Georgia,serif;font-style:normal}
+.vu-pase-logo img,.vu-pase-logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:#fff;color:#111;font:700 15px/1 Georgia,serif;font-style:normal}.vu-pase-logo.con img{width:auto;height:30px;border-radius:0;background:none}
 .vu-pase-cab b{font-size:15px;font-weight:600;letter-spacing:-.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vu-pase-h{margin-left:auto;text-align:right;font-size:17px;font-weight:500;line-height:1.1;white-space:nowrap}.vu-pase small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--pt2);margin-bottom:2px}
 .vu-pase-tira{display:block;width:100%;height:auto}
@@ -193,34 +193,34 @@ const CSS = `
 .vu-sec{padding:clamp(56px,8vw,104px) 0}.vu-sec.suave{background:var(--bg-2)}
 .vu-osc{background:var(--vu-tinta);color:var(--vu-crema)}
 .vu-cab{max-width:680px;margin:0 auto 38px;text-align:center}.vu-cab.izq{text-align:left;margin:0}
-.vu-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vu-verde-o)}.vu-osc .vu-et{color:var(--vu-verde-c)}
+.vu-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vu-morado)}.vu-osc .vu-et{color:var(--vu-morado-c)}
 .vu-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.vu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.vu-osc .vu-cab p{color:rgba(246,244,238,.72)}
+.vu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.vu-osc .vu-cab p{color:rgba(244,242,245,.72)}
 .vu-galeria{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
 .vu-galeria figure{margin:0}.vu-galeria figcaption{margin-top:12px;text-align:center;font-weight:650;color:var(--fg-2);font-size:15px}
 .vu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
 .vu-pasos li{padding:24px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-.vu-num{display:block;font-weight:800;font-size:15px;color:var(--vu-verde-c);letter-spacing:.04em}.vu-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.vu-pasos p{margin:6px 0 0;color:rgba(246,244,238,.7);line-height:1.5}
+.vu-num{display:block;font-weight:800;font-size:15px;color:var(--vu-morado-c);letter-spacing:.04em}.vu-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.vu-pasos p{margin:6px 0 0;color:rgba(244,242,245,.7);line-height:1.5}
 .vu-dos{display:grid;gap:40px;align-items:start}@media(min-width:980px){.vu-dos{grid-template-columns:.95fr 1.05fr}}
 .vu-panel{margin-top:28px;padding:20px;border-radius:24px;background:var(--vu-tinta);color:var(--vu-crema);box-shadow:var(--sombra-2)}
-.vu-panel small{color:rgba(246,244,238,.55);font-size:12.5px}
-.vu-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.vu-kpis span{font-size:12.5px;color:rgba(246,244,238,.66);line-height:1.3}.vu-kpis b{display:block;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.03em;color:#fff;margin-bottom:4px}
-.vu-barras{display:flex;align-items:flex-end;gap:8px;height:90px;margin-top:18px}.vu-barras i{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--vu-verde-c),rgba(31,191,117,.35))}
+.vu-panel small{color:rgba(244,242,245,.55);font-size:12.5px}
+.vu-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.vu-kpis span{font-size:12.5px;color:rgba(244,242,245,.66);line-height:1.3}.vu-kpis b{display:block;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.03em;color:#fff;margin-bottom:4px}
+.vu-barras{display:flex;align-items:flex-end;gap:8px;height:90px;margin-top:18px}.vu-barras i{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--vu-morado-c),rgba(197,155,217,.3))}
 .vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
 .vu-ben li{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
-.vu-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--vu-verde) 14%,transparent);color:var(--vu-verde-o)}
+.vu-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--vu-morado) 12%,transparent);color:var(--vu-morado)}
 .vu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.vu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
 /* precios */
 .vu-planes{display:grid;gap:18px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
 .vu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:26px;display:grid;gap:8px}
-.vu-plan.rec{border-color:var(--vu-verde);box-shadow:0 30px 60px -36px rgba(31,191,117,.6)}
-.vu-sello{position:absolute;top:-13px;left:24px;background:var(--vu-verde);color:#06120c;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.vu-plan.rec{border-color:var(--vu-morado);box-shadow:0 30px 60px -36px rgba(107,42,133,.5)}
+.vu-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .vu-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.vu-para{color:var(--fg-2);margin:0}
 .vu-precio{margin:6px 0 0}.vu-precio b{font-size:38px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.vu-precio small{color:var(--fg-2)}
-.vu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--vu-verde-o)}
+.vu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--vu-morado)}
 .vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.vu #form-vuelve .btn.acento{background:var(--vu-verde);color:#06120c;box-shadow:0 10px 26px -12px rgba(31,191,117,.8)}`;
+.vu #form-vuelve .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
