@@ -78,6 +78,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
   const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.'
     : acceso.app === 'cupo' ? 'Con este botón entras a Cupo. Tus eventos Pro quedan guardados en tu cuenta y se aplican al publicar cada evento. Para volver a entrar después, usa este mismo correo en os.vorka.mx/cupo.'
     : acceso.app === 'vuelve' ? 'Con este botón entras a Vuelve. Tu suscripción ya está activa: se renueva sola y la puedes cancelar cuando quieras desde Vuelve › Cuenta. Para volver a entrar después, usa este mismo correo en os.vorka.mx/vuelve.'
+    : acceso.app === 'cuentas' ? 'Con este botón entras a Cuentas. Tu suscripción ya está activa y tus registros siguen tal cual: se renueva cada mes y la puedes cancelar cuando quieras desde Cuentas › Ajustes. Para volver a entrar después, usa este mismo correo en cuentas.vorka.mx.'
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const html = marco(asunto, `

@@ -61,6 +61,7 @@ const SECCIONES_TIENDA = [
   { id: 'invitaciones', claves: ['invitaciones'], linea: 'Celebraciones', titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
   { id: 'eventos', claves: ['eventos'], linea: 'Eventos', titulo: 'Eventos con registro y cover', texto: 'Cupo: la página de tu evento, registro sin cuentas y check-in con QR, gratis hasta 30 personas. Con Pro (desde $99): correos y recordatorios, cover directo a ti y ligas para tus RPs.' },
   { id: 'lealtad', claves: ['lealtad'], linea: 'Negocios', titulo: 'Lealtad para tu negocio', texto: 'Vuelve: tarjeta de sellos o puntos en el celular de tus clientes, avisos automáticos y el dinero que te traen de vuelta, medido. Prueba gratis 7 días.' },
+  { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.' },
   { id: 'emprender', claves: ['kits', 'emprender'], linea: 'Emprendimiento', titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
 ];
 const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
@@ -139,7 +140,7 @@ const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
-  ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+  ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
 
