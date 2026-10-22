@@ -89,6 +89,9 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
     })),
     metadata: { order_id: orden.id },
     subscription_data: { metadata: { order_id: orden.id, app: sus.app || '', email: orden.email, product_id: sus.product_id } },
+    // Códigos de promoción de Stripe (p. ej. el de fundador) solo en planes mensuales: en el anual un cupón por meses
+    // se aplicaría sobre todo el año
+    ...(sus.intervalo === 'month' ? { allow_promotion_codes: true } : {}),
     success_url: exito,
     cancel_url: cancelar,
   };

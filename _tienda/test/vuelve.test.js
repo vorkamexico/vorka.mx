@@ -70,6 +70,7 @@ describe('checkout de Vuelve (suscripción)', () => {
     expect(p.get('subscription_data[metadata][order_id]')).toBe(order);
     expect(p.get('subscription_data[metadata][email]')).toBe('laura@cafe.mx');
     expect([...p.keys()].some(k => k.startsWith('payment_method_options') || k.startsWith('payment_intent_data'))).toBe(false);
+    expect(p.get('allow_promotion_codes')).toBe('true');
   });
 
   it('el plan anual usa precios anuales y su sucursal anual', async () => {
@@ -77,6 +78,7 @@ describe('checkout de Vuelve (suscripción)', () => {
     const p = llamada('/checkout/sessions')[0].params;
     expect(p.get('line_items[0][price_data][recurring][interval]')).toBe('year');
     expect(p.get('line_items[1][price_data][unit_amount]')).toBe('249000');
+    expect(p.has('allow_promotion_codes')).toBe(false);
   });
 
   it('no se regala, no se paga con puntos, no se compra la sucursal sola y no se duplica', async () => {
