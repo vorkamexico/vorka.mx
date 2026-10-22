@@ -1,6 +1,7 @@
 # Vorka México · páginas legales de la tienda (y de Cupo: /legal/cupo/, /legal/cupo/privacidad/, /legal/cupo/privacidad-asistentes/): /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
 # Socios Vorka: /legal/socios/ (condiciones del programa de socios; versión preliminar)
+# Cuentas: /legal/cuentas/ (condiciones) y /legal/cuentas/privacidad/
 # Vuelve: /legal/vuelve/ (condiciones), /legal/vuelve/privacidad/ (negocios) y /legal/vuelve/privacidad-clientes/ (clientes de cada negocio)
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
 import os, re, sys
@@ -13,6 +14,7 @@ ACTUALIZADO_BRINDI = '18 de octubre de 2026'
 ACTUALIZADO_CUPO = '19 de octubre de 2026'
 ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 ACTUALIZADO_SOCIOS = '20 de octubre de 2026'
+ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -344,6 +346,56 @@ VUELVE_PRIVACIDAD = [
     ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
 ]
 
+# Cuentas (registro de préstamos personales por suscripción, en cuentas.vorka.mx). Mismas bases que Vuelve (LFPDPPP 2025,
+# LFPC: renovación automática informada y cancelación por el mismo medio). Aquí además: no es entidad financiera. Debe revisarlo un abogado.
+MIGAS_CUENTAS = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/cuentas/">Cuentas</a>'
+CUENTAS = [
+    ('quien', 'Quién presta el servicio', f'<p>Cuentas es una herramienta de software para llevar el registro de préstamos personales entre familiares, amigos y personas de confianza (lo que se entregó, los abonos, los intereses pactados y el saldo), desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y la persona que usa Cuentas (“tú”). Al crear tu cuenta o suscribirte las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/cuentas/privacidad/">aviso de privacidad de Cuentas</a>.</p>'),
+    ('no-es', 'Qué es y qué no es Cuentas', li(
+        'Cuentas <b>solo registra y calcula</b>. No es un banco, una institución financiera ni una plataforma de financiamiento colectivo: no capta ni custodia dinero, no hace transferencias, no otorga créditos, no conecta a quien presta con quien pide prestado y no reporta a burós de crédito.',
+        'El dinero se entrega y se paga directamente entre las personas, por sus propios medios. Los movimientos se capturan a mano y su estado (confirmado o por confirmar) es solo para tu control: no es una verificación bancaria.',
+        '<b>Cuentas no sustituye un contrato ni asesoría jurídica, fiscal o financiera.</b> Los préstamos, sus intereses y sus obligaciones fiscales son responsabilidad de las partes. Para montos importantes te recomendamos un contrato o pagaré por escrito y consultar a un profesional.')),
+    ('prueba', 'Prueba gratis', li(
+        'Al crear tu cuenta tienes 7 días naturales con todas las funciones, sin dar una tarjeta. No se te cobra nada al terminar.',
+        'Si al terminar la prueba no te suscribes, tu cuenta queda en <b>modo consulta</b>: puedes ver, descargar e imprimir todos tus registros, pero no agregar ni cambiar movimientos. Te suscribes cuando quieras y todo sigue donde lo dejaste.')),
+    ('suscripcion', 'Suscripción, precio y renovación automática', li(
+        'El plan es <b>mensual</b>, en pesos mexicanos con IVA incluido. El precio vigente se muestra en <a href="/tienda/cuentas/">vorka.mx/tienda/cuentas</a> antes de pagar.',
+        '<b>La suscripción se renueva sola</b> cada mes y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto tu cuenta sigue funcionando. Si no se logra cobrar, la suscripción se cancela y tu cuenta queda en modo consulta.',
+        'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
+        'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
+    ('cancelar', 'Cancelación y reembolsos', li(
+        'Cancelas cuando quieras desde Cuentas › Ajustes › Suscripción, sin llamadas ni trámites. Tu cuenta sigue completa hasta el final del mes que ya pagaste; no se hacen cobros nuevos.',
+        'Antes y después de cancelar puedes descargar tus estados de cuenta en PDF y Excel.',
+        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un mes, salvo que una falla atribuible a Cuentas te impida usarlo y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.')),
+    ('calculos', 'Cálculos y tu información', li(
+        'Cuentas calcula con las condiciones que tú capturas: interés simple sobre el saldo pendiente, sin sumar intereses al capital y sin cargos por atraso salvo que los registres como pactados. Cada cálculo se puede revisar en el estado de cuenta.',
+        'Revisamos los cálculos con pruebas automáticas, pero los resultados dependen de que los datos capturados sean correctos. Revisa tus registros antes de usarlos para cualquier trámite.',
+        'Los intereses y condiciones deben acordarse de forma clara entre las partes y ser razonables. En México, un juez puede reducir intereses que considere excesivos.')),
+    ('terceros', 'Datos de las personas que registras', '<p>Al registrar a otra persona (a quien le prestas), declaras que tienes una relación con ella y que usarás sus datos solo para llevar el registro del préstamo. Te pedimos registrar lo mínimo (su nombre y, si quieres, cómo contactarla) y nunca datos bancarios ni sensibles. Cuentas no contacta a esas personas. Si compartes un enlace de solo lectura, quien lo tenga podrá ver ese estado de cuenta hasta que lo desactives.</p>'),
+    ('uso', 'Uso aceptable', li(
+        'Solo para llevar registros de préstamos lícitos entre personas. No se permite usar Cuentas para cobranza abusiva, amenazas, exhibición pública de deudas, presión a familiares o conocidos, préstamos usurarios ni actividades ilícitas, ni como si fuera una entidad financiera.',
+        'Podemos suspender una cuenta que incumpla estas reglas; te avisaremos el motivo. Si la suspensión fue por un error nuestro, te reembolsamos el periodo afectado.')),
+    ('disponibilidad', 'Disponibilidad', '<p>Hacemos lo razonable para que Cuentas esté disponible siempre y para proteger tu información, pero puede haber interrupciones por mantenimiento o fallas de terceros. Te recomendamos descargar tus estados de cuenta de vez en cuando.</p>'),
+    ('conservacion', 'Qué pasa con tus datos si te vas', '<p>Si cancelas o tu prueba termina sin suscripción, tus registros siguen disponibles en modo consulta durante 12 meses después del fin de tu último periodo, para que puedas descargarlos. Después se borran de forma definitiva, salvo lo que la ley nos obligue a conservar (por ejemplo, tus facturas). Puedes pedir que los borremos antes.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes de México.</p>'),
+]
+
+CUENTAS_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de las personas que usan Cuentas. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Tu cuenta:</b> correo electrónico y nombre; y de quienes invites a tu cuenta, su correo y nombre.',
+        '<b>Tus registros:</b> las personas que registras (nombre y, si los capturas, relación, teléfono, correo y notas), tus préstamos, sus condiciones, movimientos, referencias, comprobantes y contratos que subas, y tus recordatorios.',
+        '<b>Suscripción:</b> plan, monto, fechas y estado de tus pagos. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Uso y seguridad:</b> historial de cambios de tus registros y la dirección IP para limitar intentos repetidos de acceso.') + '<p>No pedimos datos bancarios, contraseñas bancarias ni datos personales sensibles. Te pedimos no capturarlos en notas ni comprobantes.</p>'),
+    ('finalidades', 'Para qué los usamos', '<p><b>Finalidades necesarias:</b> crear y mantener tu cuenta; guardar tus registros, calcular saldos y generar estados de cuenta; enviarte códigos de acceso y, si lo activas, recordatorios; cobrar tu suscripción y emitir facturas; darte soporte y cumplir obligaciones legales; mantener la seguridad. <b>Finalidad opcional:</b> enviarte novedades de Vorka México. Puedes negarte escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> sin que eso afecte tu servicio.</p><p>Los datos de las personas que registras se tratan <b>solo por tu cuenta</b>, para llevar tu registro: no las contactamos, no los usamos para nada más y no los compartimos.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos datos. Usamos proveedores que los tratan solo por nuestra cuenta: <b>Cloudflare</b> (alojamiento, base de datos y archivos), <b>Stripe</b> (cobro de la suscripción) y <b>Resend</b> (correos), algunos con servidores fuera de México. Si compartes un enlace de solo lectura, quien lo tenga verá ese estado de cuenta.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde tu cuenta. Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('conservacion', 'Cuánto tiempo los conservamos', li('Cuenta y registros: mientras uses Cuentas y hasta 12 meses después del fin de tu último periodo.', 'Suscripción y facturación: durante los plazos fiscales (al menos 5 años).', 'Códigos de acceso: se borran a más tardar un día después de vencer.')),
+    ('cookies', 'Cookies', '<p>Cuentas usa una sola cookie necesaria (<code>cs</code>) para mantener tu sesión. No usa cookies de rastreo ni publicidad.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
 VUELVE_CLIENTES = [
     ('resumen', 'En pocas palabras', li(
         'Tus datos los usa <b>el negocio</b> donde te registraste para darte tu tarjeta, sumar tus sellos o puntos y darte tus recompensas.',
@@ -435,6 +487,12 @@ escribir('/legal/vuelve/privacidad/', pagina('/legal/vuelve/privacidad/', 'Aviso
 escribir('/legal/vuelve/privacidad-clientes/', pagina('/legal/vuelve/privacidad-clientes/', 'Aviso de privacidad para clientes', 'Aviso de privacidad para <span class="metal">clientes.</span>',
     'Te registraste en el programa de lealtad de un negocio que usa Vuelve. Esto es lo que pasa con tus datos.', 'Vuelve · Clientes', VUELVE_CLIENTES,
     aplica='Aplica a quien tiene una tarjeta de Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))
+escribir('/legal/cuentas/', pagina('/legal/cuentas/', 'Condiciones de Cuentas', 'Condiciones de <span class="metal">Cuentas.</span>',
+    'El contrato entre Vorka México y quien usa Cuentas para llevar sus préstamos personales: qué es y qué no es, prueba gratis, suscripción mensual con renovación automática, cancelación y datos.', 'Cuentas', CUENTAS,
+    aplica='Aplica a quien usa cuentas.vorka.mx', migas=MIGAS_CUENTAS, actualizado=ACTUALIZADO_CUENTAS))
+escribir('/legal/cuentas/privacidad/', pagina('/legal/cuentas/privacidad/', 'Aviso de privacidad de Cuentas', 'Aviso de privacidad de <span class="metal">Cuentas.</span>',
+    'Qué datos tratamos de las personas que usan Cuentas y de quienes registran en ella, para qué y cómo ejercer tus derechos.', 'Cuentas', CUENTAS_PRIVACIDAD,
+    aplica='Aplica a quien usa cuentas.vorka.mx', migas=MIGAS_CUENTAS, actualizado=ACTUALIZADO_CUENTAS))
 escribir('/legal/socios/', pagina('/legal/socios/', 'Condiciones de Socios Vorka', 'Condiciones de <span class="metal">Socios Vorka.</span>',
     'Cómo funciona recomendar productos de Vorka México con tu código: comisiones escalonadas, retención, reembolsos, pagos por SPEI e impuestos. Versión preliminar.', 'Socios', SOCIOS,
     aplica='Aplica a los socios invitados por Vorka México', actualizado=ACTUALIZADO_SOCIOS))

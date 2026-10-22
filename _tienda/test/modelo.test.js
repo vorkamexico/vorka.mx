@@ -22,7 +22,7 @@ describe('modelo de datos', () => {
     const env2 = { DB: d1() };
     const activos = await listarProductos(env2);
     expect(activos.every(p => p.contenido?.acceso)).toBe(true);
-    expect(activos.map(p => p.slug)).toEqual(['cupo-pro']);   // los demás niveles de Cupo se venden en /tienda/cupo/ sin listarse
+    expect(activos.map(p => p.slug)).toEqual(['cupo-pro', 'cuentas-mensual']);   // los demás niveles de Cupo se venden en /tienda/cupo/ sin listarse; Cuentas entra activo (decisión 2026-10-22)
   });
 
   it('crea la orden con el precio de la base y el afiliado activo', async () => {

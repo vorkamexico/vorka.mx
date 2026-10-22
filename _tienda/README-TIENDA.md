@@ -251,6 +251,16 @@ Tarjetas de lealtad para negocios (Diversificación). Aquí solo se vende; la ap
 5. Probar una suscripción en modo prueba (tarjeta 4242) con un correo propio, cancelarla desde el portal y confirmar que en Vuelve › Cuenta cambia el estado.
 6. Activar `vuelve-mensual`, `vuelve-anual` y las dos sucursales en Vorka México → Tienda → Productos.
 
+## Cuentas (vorka.mx/tienda/cuentas) · suscripción mensual
+
+Cuentas (administrador de préstamos personales) es una app aparte: Worker `cuentas` en **cuentas.vorka.mx** (repo `vorkamexico/cuentas`). Aquí solo se vende.
+
+- Producto `prod_cuentas_mensual` (slug `cuentas-mensual`, $99 MXN al mes, migración 0031). Entra **activo**. Usa la misma maquinaria de suscripciones que Vuelve: el checkout abre Stripe en modo suscripción y los webhooks actualizan la tabla `suscripciones` con `app = 'cuentas'`.
+- La prueba de 7 días sin tarjeta vive en la app. Cuando termina sin suscripción, la cuenta queda en **modo consulta**: se puede ver y descargar todo, pero no registrar nada nuevo.
+- La app consulta por service binding `TIENDA` → `Admin` con estos métodos: `suscripcionApp(correo, 'cuentas')`, `portalApp(...)` para el portal de Stripe y `validarAcceso(token, 'cuentas')` para el botón del correo de compra (`cuentas.vorka.mx/entrar/<token>`).
+- Ficha: `src/cuentas.js`. Legales: `/legal/cuentas/` y `/legal/cuentas/privacidad/` (en `legales.py`). Portadas: `assets/tienda/cuentas.webp` y `cuentas-og.png`.
+- No necesita nada nuevo en Stripe: el portal de clientes y los eventos de suscripción del webhook ya están desde Vuelve.
+
 ## Auditoría de regalos y puntos (octubre 2026, migración 0026)
 
 - **Reenviar desde /descargas/reenviar ya no cambia ligas de regalo.** Cualquiera que sepa el correo puede pedir el reenvío, así que las ligas ya enviadas (quizá ya compartidas) no se tocan: en D1 solo vive su HMAC, no se pueden volver a mandar, y quien compró recibe un correo para buscar el original o escribirnos. Cambiar las ligas queda solo en Vorka OS (Órdenes › Reenviar).
