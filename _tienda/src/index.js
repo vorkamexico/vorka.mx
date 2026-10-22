@@ -29,6 +29,7 @@ import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesia
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
 export class Admin extends WorkerEntrypoint {
   resumen(f) { return admin.resumen(this.env, f); }
+  tablero(f) { return admin.tablero(this.env, f); }
   ordenes(f) { return admin.ordenes(this.env, f); }
   orden(id) { return admin.orden(this.env, id); }
   reenviar(id) { return admin.reenviar(this.env, id); }

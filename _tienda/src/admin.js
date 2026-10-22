@@ -41,6 +41,50 @@ export async function resumen(env, { mes } = {}) {
   return { mes, ventas: ventas.n, monto_centavos: ventas.monto, pendientes_efectivo: pendientes.n, embudo };
 }
 
+// ---------- tablero (la portada de la Tienda en Vorka OS) ----------
+// Lo que sirve para decidir de un vistazo: el mes contra el anterior, los últimos 30 días, los últimos 6 meses y cuánto
+// deja cada producto (con su conversión). Fechas en hora de CDMX (UTC−6). Sin regalos ni cortesías.
+const PAGADA = "o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia')";
+const mesMas = (mes, k) => { const [a, m] = mes.split('-').map(Number), d = new Date(Date.UTC(a, m - 1 + k, 1)); return d.toISOString().slice(0, 7); };
+const DIA_MX = "substr(datetime(o.paid_at, '-6 hours'), 1, 10)";
+export async function tablero(env, { mes } = {}) {
+  const hoy = new Date(Date.now() - 6 * 3600e3).toISOString().slice(0, 10), esteMes = hoy.slice(0, 7);
+  mes = MES.safeParse(mes).success && mes <= esteMes ? mes : esteMes;
+  const ant = mesMas(mes, -1), sig = mesMas(mes, 1), desde = inicioDia(`${mes}-01`), hasta = inicioDia(`${sig}-01`);
+  // "en curso": el mes anterior se compara hasta el mismo día (si hoy es 22, del 1 al 22 de los dos meses)
+  const enCurso = mes === esteMes, dia = Number(hoy.slice(8, 10));
+  const hastaAnt = enCurso ? new Date(Math.min(Date.parse(inicioDia(`${ant}-01`)) + dia * 864e5, Date.parse(desde))).toISOString() : desde;
+  const fin30 = enCurso ? inicioDia(new Date(Date.parse(hoy) + 864e5).toISOString().slice(0, 10)) : hasta;
+  const ini30 = new Date(Date.parse(fin30) - 30 * 864e5).toISOString();
+  const ini6 = inicioDia(`${mesMas(mes, -5)}-01`);
+  const [act, prev, dias, meses, prods, ev, reemb, pend] = await Promise.all([
+    one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ?`, desde, hasta),
+    one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ?`, inicioDia(`${ant}-01`), hastaAnt),
+    all(env, `SELECT ${DIA_MX} d, COUNT(*) n, SUM(o.monto_centavos) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ? GROUP BY d`, ini30, fin30),
+    all(env, `SELECT substr(${DIA_MX}, 1, 7) m, COUNT(*) n, SUM(o.monto_centavos) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ? GROUP BY m`, ini6, hasta),
+    all(env, `SELECT i.product_id id, COUNT(DISTINCT o.id) ventas, SUM(i.precio_centavos * i.cantidad) monto FROM order_items i JOIN orders o ON o.id = i.order_id
+      WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ? GROUP BY i.product_id`, desde, hasta),
+    all(env, `SELECT product_id id, SUM(tipo = 'view_product') vistas, SUM(tipo = 'begin_checkout') checkouts FROM events WHERE created_at >= ? AND created_at < ? AND product_id IS NOT NULL GROUP BY product_id`, desde, hasta),
+    one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto FROM orders o WHERE o.estado = 'refunded' AND o.paid_at >= ? AND o.paid_at < ?`, desde, hasta),
+    one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'pending' AND metodo_pago IN ('oxxo', 'customer_balance')"),
+  ]);
+  // series completas (los días o meses sin ventas en cero)
+  const porDia = Object.fromEntries(dias.map(x => [x.d, x])), porMes = Object.fromEntries(meses.map(x => [x.m, x]));
+  const serieDias = Array.from({ length: 30 }, (_, i) => { const d = new Date(Date.parse(fin30) - (30 - i) * 864e5).toISOString().slice(0, 10); return { d, ventas: porDia[d]?.n || 0, monto_centavos: porDia[d]?.monto || 0 }; });
+  const serieMeses = Array.from({ length: 6 }, (_, i) => { const m = mesMas(mes, i - 5); return { mes: m, ventas: porMes[m]?.n || 0, monto_centavos: porMes[m]?.monto || 0 }; });
+  const nombres = Object.fromEntries((await all(env, 'SELECT id, nombre, slug, activo, imagen, precio_centavos FROM products')).map(p => [p.id, p]));
+  const evs = Object.fromEntries(ev.map(x => [x.id, x])), ids = new Set([...prods.map(x => x.id), ...ev.filter(x => x.vistas > 0).map(x => x.id)]);
+  const productos = [...ids].filter(id => nombres[id]).map(id => {
+    const v = prods.find(x => x.id === id), e = evs[id] || {};
+    return { id, nombre: nombres[id].nombre, slug: nombres[id].slug, activo: !!nombres[id].activo, imagen: nombres[id].imagen, ventas: v?.ventas || 0, monto_centavos: v?.monto || 0, vistas: e.vistas || 0, checkouts: e.checkouts || 0 };
+  }).sort((a, b) => b.monto_centavos - a.monto_centavos || b.vistas - a.vistas);
+  return { mes, anterior: ant, en_curso: enCurso, dia: enCurso ? dia : null,
+    actual: { ventas: act.n, monto_centavos: act.monto }, previo: { ventas: prev.n, monto_centavos: prev.monto },
+    visitas: ev.reduce((s, x) => s + (x.vistas || 0), 0), checkouts: ev.reduce((s, x) => s + (x.checkouts || 0), 0),
+    reembolsos: { ventas: reemb.n, monto_centavos: reemb.monto }, pendientes_efectivo: { ventas: pend.n, monto_centavos: pend.monto },
+    dias: serieDias, meses: serieMeses, productos };
+}
+
 // ---------- órdenes ----------
 const FiltrosOrdenes = z.object({
   estado: z.enum(['pending', 'paid', 'failed', 'refunded']).optional().catch(undefined),

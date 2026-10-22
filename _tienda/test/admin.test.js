@@ -161,6 +161,26 @@ describe('órdenes', () => {
     expect(r).toMatchObject({ ventas: 1, monto_centavos: 27900 });
     expect(r.embudo[0]).toMatchObject({ nombre: expect.any(String) });
   });
+
+  it('tablero: el mes contra el anterior, 30 días, 6 meses y lo que deja cada producto', async () => {
+    const o = await pagar();
+    env.DB.raw.exec("INSERT INTO events (tipo, product_id) SELECT 'view_product', id FROM products WHERE slug = 'de-idea-a-proyecto'");
+    env.DB.raw.exec("INSERT INTO events (tipo, product_id) SELECT 'view_product', id FROM products WHERE slug = 'de-idea-a-proyecto'");
+    const t = await A.tablero({});
+    expect(t.actual).toEqual({ ventas: 1, monto_centavos: 27900 });
+    expect(t.previo).toEqual({ ventas: 0, monto_centavos: 0 });
+    expect(t.dias).toHaveLength(30);
+    expect(t.dias.at(-1).d).toBe(new Date(Date.now() - 6 * 3600e3).toISOString().slice(0, 10));
+    expect(t.dias.reduce((s, d) => s + d.monto_centavos, 0)).toBe(27900);
+    expect(t.meses).toHaveLength(6);
+    expect(t.meses.at(-1)).toMatchObject({ mes: t.mes, ventas: 1, monto_centavos: 27900 });
+    expect(t.productos[0]).toMatchObject({ slug: 'de-idea-a-proyecto', ventas: 1, monto_centavos: 27900, vistas: 2 });
+    expect(t.visitas).toBe(2);
+    // un mes pasado se compara completo y no deja pedir meses futuros
+    expect((await A.tablero({ mes: '2020-03' }))).toMatchObject({ mes: '2020-03', anterior: '2020-02', en_curso: false, actual: { ventas: 0 } });
+    expect((await A.tablero({ mes: '2999-01' })).mes).toBe(t.mes);
+    expect(o.id).toBeTruthy();
+  });
 });
 
 describe('afiliados', () => {
