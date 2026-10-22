@@ -19,6 +19,7 @@ import { rutasSimulador } from './simulador/index.js';
 import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp } from './brindi.js';
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
+import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones } from './suscripciones.js';
 import { rutasPuntos } from './puntos.js';
 import { rutasSocios } from './socios-portal.js';
@@ -50,6 +51,9 @@ export class Admin extends WorkerEntrypoint {
   guardarAfiliado(d) { return admin.guardarAfiliado(this.env, d); }
   reporteAfiliados(f) { return admin.reporteAfiliados(this.env, f); }
   resumenPuntos() { return admin.resumenPuntos(this.env); }
+  // Tema de temporada de la tienda (automático, apagado o uno fijo)
+  temporada() { return admin.temporada(this.env); }
+  guardarTemporada(d) { return admin.guardarTemporada(this.env, d); }
   // Puntos Vorka: sugerencias de productos (aceptar con el producto → puntos dobles para quien la sugirió) y promociones 2×
   sugerenciasPuntos() { return admin.sugerenciasPuntos(this.env); }
   decidirSugerencia(id, d) { return admin.decidirSugerencia(this.env, id, d); }
@@ -130,6 +134,7 @@ export function ligaCorta(url) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (request.method === 'GET' && !url.pathname.startsWith('/api/')) await cargarTemporada(env);   // el tema de temporada (en memoria un minuto)
     const res = await atender(request, env, ctx, url);
     // Liga de un socio (?socio=CODIGO o ?codigo=CODIGO): deja la cookie de atribución (30 días) en la página que se abra
     if (request.method === 'GET' && !url.pathname.startsWith('/api/') && (url.searchParams.has('socio') || url.searchParams.has('codigo'))) {

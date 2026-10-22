@@ -30,7 +30,7 @@ describe('Apariencia en las páginas de la tienda', () => {
       const r = await pedir(ruta);
       expect(r.status, ruta).toBe(200);
       const h = await r.text(), n = nonceDe(r);
-      expect(h, ruta).toContain('<html lang="es-MX" data-app="tienda">');
+      expect(h, ruta).toMatch(/<html lang="es-MX" data-app="tienda"( data-temporada="[a-z-]+")?>/);
       // el script del tema va antes de cualquier hoja de estilos: así no hay destello del tema equivocado
       const iTema = h.indexOf(`<script nonce="${n}">${TEMA_HEAD}`), iCss = h.indexOf('<link rel="stylesheet"');
       expect(iTema, ruta).toBeGreaterThan(0);

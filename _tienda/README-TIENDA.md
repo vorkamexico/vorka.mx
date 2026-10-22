@@ -277,3 +277,11 @@ Programa **solo por invitación** para que personas (a menudo dueños de negocio
 > **Impuestos (pendiente, antes del primer pago):** el sistema **no retiene ISR ni IVA ni emite CFDI** por las comisiones. Antes de pagarle al primer socio, revisa con el contador si corresponde retener (personas físicas con o sin actividad empresarial, RESICO, personas morales) y qué comprobante pedir. Por eso el alta guarda el RFC y el CSV de comisiones lo incluye.
 
 **Pendiente / límites conocidos:** el reembolso de una *renovación* de suscripción no cancela su comisión automáticamente (los reembolsos de facturas no traen la orden en su metadata); si pasa, usa *Anular* en esa comisión desde el detalle del socio en Vorka OS (si ya se pagó, crea el ajuste negativo). Los afiliados con comisión en dinero de antes (`affiliates.tipo = 'dinero'`, `?ref=`) siguen funcionando aparte.
+
+## Temas de temporada (vorka.mx/tienda)
+
+La tienda se viste sola en las fechas que importan en México (`src/temporadas.js`, hora de CDMX): color de acento, decoración en la portada (papel picado, luces, corazones, estrellas o confeti, en SVG), un aviso en la pastilla de arriba y su línea primero (chips y producto destacado). Los avisos nunca prometen descuentos.
+
+- Calendario: Año Nuevo, San Valentín, Día del Niño, Día de las Madres, Día del Padre, Regreso a clases, Fiestas patrias, Halloween y Día de Muertos, El Buen Fin (viernes antes del tercer lunes de noviembre al martes siguiente; 2026: 13–17 nov) y Navidad.
+- Se elige en Vorka OS › Tienda › Tema de temporada: **Automático por calendario** (de fábrica), **Apagado** o una **fija**. Se guarda en la tabla `ajustes` (migración 0028, clave `temporada`) y la tienda la toma en un minuto.
+- Las tarjetas de Vuelve tienen sus propios temas de temporada (opcionales para cada negocio, ver `PLAN-VUELVE.md` en Vorka OS).

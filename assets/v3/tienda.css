@@ -698,3 +698,14 @@
 .t-wa svg { width: 24px; height: 24px; }
 @media (max-width: 600px) { .t-wa { width: 54px; padding: 0; justify-content: center; } .t-wa span { display: none; } }
 @media print { .t-wa { display: none; } }
+
+/* ---------- Temas de temporada (temporadas.js): decoración en la portada y el aviso de la temporada ---------- */
+.t-deco { position: absolute; left: 0; width: 100%; z-index: -1; pointer-events: none; }
+.t-deco.papel, .t-deco.luces { top: 80px; height: clamp(46px, 5vw, 64px); z-index: 0; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35)); }
+.t-deco.lluvia { top: 0; height: 100%; opacity: .9; }
+:root[data-temporada] .t-hero { padding-top: 168px; }
+@media (max-width: 600px) { .t-deco.papel, .t-deco.luces { top: 76px; } :root[data-temporada] .t-hero { padding-top: 150px; } }
+.t-hero-chip.temporada { border-color: color-mix(in srgb, var(--acento) 55%, transparent); background: color-mix(in srgb, var(--acento) 14%, rgba(255, 255, 255, .06)); }
+.t-hero-lineas a.dest { background: color-mix(in srgb, var(--acento) 22%, transparent); border-color: color-mix(in srgb, var(--acento) 60%, transparent); }
+@media (prefers-reduced-motion: no-preference) { .t-deco.luces ellipse { animation: t-brillo 2.4s ease-in-out infinite alternate; } .t-deco.luces ellipse:nth-of-type(2n) { animation-delay: 1.2s; } }
+@keyframes t-brillo { from { opacity: 1; } to { opacity: .55; } }

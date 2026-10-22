@@ -10,6 +10,7 @@ import { refrescarCreador } from './marketplace.js';
 import { motivoNoRecordar, MAX_SEGUIMIENTOS } from './recordatorio.js';
 import { avisar } from './puntos-push.js';
 import { diaMx } from './puntos-reglas.js';
+import { TEMPORADAS, temporadaDe, temporadaVigente, olvidarTemporada } from './temporadas.js';
 
 const TZ = 'America/Mexico_City';
 const fechaMx = iso => iso ? new Date(iso).toLocaleString('sv-SE', { timeZone: TZ }).slice(0, 16) : '';
@@ -482,4 +483,26 @@ export async function archivoRevision(env, id, key) {
   const o = await env.PRODUCTOS.get(key);
   if (!o) throw new Error('El archivo no está.');
   return { cuerpo: o.body, tipo: o.httpMetadata?.contentType || 'application/octet-stream', nombre: key.split('/').pop() };
+}
+
+// ---------- tema de temporada de la tienda ----------
+const MESES_C = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const diaTxt = d => `${d.getUTCDate()} ${MESES_C[d.getUTCMonth()]}`;
+const mdTxt = s => `${Number(s.slice(3))} ${MESES_C[Number(s.slice(0, 2)) - 1]}`;
+function cuando(t, anio) {
+  if (t.fechas) { const [a, b] = t.fechas(anio); return `${diaTxt(a)} – ${diaTxt(b)}`; }
+  return `${mdTxt(t.desde)} – ${mdTxt(t.hasta)}`;
+}
+export async function temporada(env) {
+  const r = await one(env, "SELECT valor FROM ajustes WHERE clave = 'temporada'");
+  const modo = r?.valor || 'auto', anio = new Date(Date.now() - 6 * 3600e3).getUTCFullYear();
+  return { modo, actual: temporadaVigente(modo)?.id || null, calendario: temporadaDe()?.id || null,
+    lista: TEMPORADAS.map(t => ({ id: t.id, nombre: t.nombre, cuando: cuando(t, anio), aviso: t.aviso, acento: t.acento })) };
+}
+export async function guardarTemporada(env, { modo } = {}) {
+  const v = String(modo || '');
+  if (!['auto', 'apagado', ...TEMPORADAS.map(t => t.id)].includes(v)) throw new Error('Tema no válido.');
+  await run(env, "INSERT INTO ajustes (clave, valor, actualizado) VALUES ('temporada', ?, ?) ON CONFLICT (clave) DO UPDATE SET valor = excluded.valor, actualizado = excluded.actualizado", v, ahoraISO());
+  olvidarTemporada();
+  return temporada(env);
 }

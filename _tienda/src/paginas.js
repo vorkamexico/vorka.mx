@@ -3,6 +3,7 @@
 import { PIE, VERSION, CSS_TIENDA, LOGO, FLECHA } from './marco.generado.js';
 import { esc } from './correo.js';
 import { TEMA_HEAD } from './tema.js';
+import { temporadaActual, estiloTemporada } from './temporadas.js';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
@@ -101,10 +102,10 @@ export const navTiendaSup = (actual = '', { oscuro = false } = {}) => `<header c
 `;
 
 export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false }) {
-  const n = nonce();
+  const n = nonce(), temporada = temporadaActual();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
-<html lang="es-MX" data-app="tienda">
+<html lang="es-MX" data-app="tienda"${temporada ? ` data-temporada="${temporada.id}"` : ''}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -129,7 +130,7 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="can
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
 <link rel="stylesheet" href="/tienda/estilos.css?v=${VERSION_CSS}">
-${head}</head>
+${estiloTemporada(temporada)}${head}</head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 ${navTiendaSup(navActual, { oscuro: navOscuro })}<main id="contenido" class="t-main">

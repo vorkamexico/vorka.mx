@@ -9,6 +9,7 @@ import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 import { contarVisita } from './puntos.js';
+import { temporadaActual, decoracion } from './temporadas.js';
 
 const SITIO = 'https://vorka.mx';
 export const CANDADO_PAGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>';
@@ -176,7 +177,10 @@ export async function paginaCatalogo(env, req, url) {
         <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="btn blanco chico" href="${esc(v.url)}">Ver ${FLECHA}</a></span></div>
       </div>
     </article>`;
-  const destacado = todas[0] && { ...todas[0], linea: secciones[0].linea };
+  // Temporada: su línea va primero (chips y producto destacado) y su aviso reemplaza la pastilla de "Nuevo"
+  const temporada = temporadaActual(), lineaT = temporada?.destacar && secciones.find(g => g.id === temporada.destacar);
+  if (lineaT) secciones.sort((a, b) => (b === lineaT) - (a === lineaT));
+  const destacado = (lineaT || secciones[0]) && { ...(lineaT || secciones[0]).vistas[0], linea: (lineaT || secciones[0]).linea };
   // Lo nuevo de la tienda (solo si está a la venta): la pastilla de arriba de la portada
   const lealtad = secciones.find(g => g.id === 'lealtad');
   const nuevo = lealtad ? { url: lealtad.vistas[0].url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
@@ -190,10 +194,12 @@ export async function paginaCatalogo(env, req, url) {
     script: SCRIPT_CATALOGO, whatsapp: true, navOscuro: true,
     cuerpo: `
 <section class="t-hero">
+  ${decoracion(temporada)}
   <picture class="t-hero-foto" aria-hidden="true"><source type="image/webp" srcset="/img/ciudades/cdmx-noche-960.webp 960w, /img/ciudades/cdmx-noche-1600.webp 1600w, /img/ciudades/cdmx-noche-2400.webp 2400w" sizes="100vw"><img src="/img/ciudades/cdmx-noche-1600.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async"></picture>
   <div class="marco t-hero-g">
     <div class="t-hero-txt">
-      ${nuevo ? `<a class="t-hero-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
+      ${temporada ? `<a class="t-hero-chip temporada" href="${lineaT ? esc(lineaT.vistas.length === 1 ? lineaT.vistas[0].url : `#${lineaT.id}`) : '#productos'}"${lineaT && lineaT.vistas.length > 1 ? ` data-f="${esc(lineaT.id)}"` : ''}><b>${esc(temporada.nombre)}</b><span>${esc(temporada.aviso)}</span>${FLECHA}</a>`
+        : nuevo ? `<a class="t-hero-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
       <h1 class="t-hero-h1">Todo para avanzar, <span class="metal">en un solo lugar.</span></h1>
       <p class="t-hero-sub">Exámenes, celebraciones, eventos y herramientas para tu negocio. Digital y al momento.</p>
       <div class="botones"><a class="btn acento" href="#productos">Explorar catálogo ${FLECHA}</a><a class="btn vidrio" href="/tienda/puntos/">Gana puntos</a></div>
@@ -202,7 +208,7 @@ export async function paginaCatalogo(env, req, url) {
     ${destacado ? `<a class="t-hero-pieza" href="${esc(destacado.url)}"><span class="t-hero-img">${portada(destacado.img)}</span><span class="t-hero-prot">${CANDADO_PAGO}Compra protegida</span>
       <span class="t-hero-cap"><small>Destacado · ${esc(destacado.linea)}</small><b>${esc(destacado.nombre)}</b><em class="num">${destacado.precio}</em></span></a>` : ''}
   </div>
-  ${secciones.length > 1 ? `<nav class="marco t-hero-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"><i aria-hidden="true"></i>${esc(g.linea)}</a>`).join('')}<a class="t-hero-todas" href="#productos" data-f="">Ver todo el catálogo ${FLECHA}</a></nav>` : ''}
+  ${secciones.length > 1 ? `<nav class="marco t-hero-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}><i aria-hidden="true"></i>${esc(g.linea)}</a>`).join('')}<a class="t-hero-todas" href="#productos" data-f="">Ver todo el catálogo ${FLECHA}</a></nav>` : ''}
 </section>
 <section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
   <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>

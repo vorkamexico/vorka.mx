@@ -29,6 +29,31 @@ const FAQ = [
   ['¿Para qué negocios sirve?', 'Cafeterías, restaurantes, barberías, salones, estéticas, gimnasios, autolavados, tintorerías, panaderías: cualquier negocio con clientes que pueden regresar. Al empezar eliges tu giro y Vuelve te sugiere sellos, premios y mensajes.'],
 ];
 
+// ---------- identidad de Vuelve (la misma de la app: verde Vuelve, tinta verde y crema; símbolo: la v que cierra el sello) ----------
+const SIMBOLO = '<svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true" style="display:block;flex:none"><circle cx="32" cy="32" r="22" fill="none" stroke="#1fbf75" stroke-width="6.2" stroke-dasharray="110 28" stroke-linecap="round" transform="rotate(-50 32 32)"/><path d="M19.5 25.5l12.5 16.5 16.5-25.5" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICONO = {
+  check: ico('<path d="M5 12.5l4.5 4.5L19 7.5"/>'), wallet: ico('<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/>'), reloj: ico('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+  pesos: ico('<path d="M12 3v18M16.5 7.5c-.7-1.5-2.4-2.5-4.5-2.5-2.5 0-4.5 1.4-4.5 3.4 0 4.6 9 2.4 9 7.2 0 2-2 3.4-4.5 3.4-2.3 0-4.1-1-4.8-2.7"/>'), campana: ico('<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
+  amigos: ico('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.6-5.5 6.5-5.5s5.5 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.7 3 2.4 3.5 5.2"/>'), escudo: ico('<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'),
+  pin: ico('<path d="M12 21s-7-6.3-7-11.5a7 7 0 0 1 14 0C19 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'), datos: ico('<path d="M4 5h16v14H4z"/><path d="M4 10h16M10 10v9"/>'),
+};
+// Tarjetas de muestra: las tiras son las reales que pinta Vuelve para el Wallet (assets/tienda/vuelve/tira-*.png)
+const DEMO = [
+  { nombre: 'Café La Paloma', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis', logo: true, pie: 'Tu logo como sello' },
+  { nombre: 'Bodega Santa Rita', fondo: '#3b111a', tinta: '#f4f1ea', tinta2: '#a98c90', etiqueta: 'SELLOS', valor: '5 de 8', tira: 'tira-bodega', cliente: 'Jorge Ramírez', nivel: 'Plata', premioEt: 'PREMIO', premio: 'Botella de la casa', inicial: 'B', pie: 'Monedas de oro' },
+  { nombre: 'Verde Bistró', fondo: '#12291f', tinta: '#f4f1ea', tinta2: '#93a098', etiqueta: 'PUNTOS', valor: '2,160', tira: 'tira-puntos', cliente: 'Ana Torres', nivel: 'Bronce', premioEt: 'TU META', premio: 'Postre gratis', inicial: 'V', pie: 'Puntos por cada peso' },
+  { nombre: 'Café La Paloma', fondo: '#0e1a33', tinta: '#f4f1ea', tinta2: '#8d95a6', etiqueta: 'SELLOS', valor: '4 de 6', tira: 'tira-circulo', cliente: 'Luis Herrera', nivel: 'Plata', premioEt: 'YA CASI', premio: 'Pan dulce gratis', logo: true, pie: 'Tu logo en círculo' },
+];
+// Réplica fiel de una storeCard de Apple Wallet: logo y nombre, saldo arriba, la tira, cliente · nivel, premio y QR
+const pase = d => `<div class="vu-pase${d.cls ? ` ${d.cls}` : ''}" style="--pf:${d.fondo};--pt:${d.tinta};--pt2:${d.tinta2}">
+  <div class="vu-pase-cab"><span class="vu-pase-logo">${d.logo ? '<img src="/assets/tienda/vuelve/logo-paloma.png" alt="" width="30" height="30">' : `<i>${d.inicial}</i>`}</span><b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
+  <img class="vu-pase-tira" src="/assets/tienda/vuelve/${d.tira}.png" alt="" width="375" height="123" loading="lazy" decoding="async">
+  <div class="vu-pase-campos"><span><small>CLIENTE</small>${esc(d.cliente)}</span><span class="der"><small>NIVEL</small>${d.nivel}</span></div>
+  <div class="vu-pase-campos aux"><span><small>${d.premioEt}</small>${esc(d.premio)}</span></div>
+  <div class="vu-pase-qr"><img src="/assets/tienda/vuelve/qr-demo.svg" alt="" width="84" height="84" loading="lazy"><small>LP7Q2K</small></div>
+</div>`;
+
 export async function paginaVuelve(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug), sucursal: await productoPorSlug(env, x.extra) })))).filter(x => x.prod);
@@ -44,55 +69,61 @@ export async function paginaVuelve(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => ({ '@type': 'Offer', priceCurrency: 'MXN', price: (x.prod.precio_centavos / 100).toFixed(2), name: `Plan ${x.nombre.toLowerCase()}` })) } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
-  return pagina({ navActual: 'catalogo',
+  return pagina({ navActual: 'catalogo', navOscuro: true,
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: `${OS}/vuelve/og.png`,
     descripcion: 'Que tus clientes vuelvan solos: sellos o puntos en su celular, sin app ni cartón. Avisos automáticos, referidos y el dinero que te traen de vuelta, medido. Prueba 7 días gratis, sin tarjeta.',
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
+    head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="vu">
 <section class="vu-hero"><div class="marco vu-hero-g">
-  <div>
-    ${navTienda('lealtad')}
-    <span class="vu-logo">vuelve</span>
-    <h1 class="vu-h1">Que tus clientes <i>vuelvan solos.</i></h1>
-    <p class="vu-lead">La tarjeta de sellos de tu negocio, en el celular de tus clientes. Sin app y sin cartón. Vuelve les avisa en su cumpleaños, cuando llevan tiempo sin venir y cuando pasan cerca, y tú ves cuánto dinero te traen de vuelta.</p>
-    <div class="botones"><a class="btn tinta" href="${OS}/vuelve/#/nuevo">Probar 7 días gratis ${FLECHA}</a><a class="btn blanco" href="#planes">Ver precios</a></div>
-    <p class="vu-nota"><b>Sin tarjeta para probar.</b> Después, ${mensual ? `<b>${precio(mensual.prod)}</b> al mes` : 'una mensualidad'} con clientes ilimitados · cancela cuando quieras</p>
+  <div class="vu-hero-txt">
+    <span class="vu-marca">${SIMBOLO}<span>vuelve</span></span>
+    <h1 class="vu-h1">Que tus clientes <em>vuelvan solos.</em></h1>
+    <p class="vu-lead">La tarjeta de lealtad de tu negocio en Apple Wallet y Google Wallet de tus clientes. Sin app, sin cartón. Vuelve les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.</p>
+    <div class="vu-ctas"><a class="vu-btn" href="${OS}/vuelve/#/nuevo">Pruébalo 7 días gratis ${FLECHA}</a><a class="vu-btn ghost" href="#planes">Ver precios</a></div>
+    <ul class="vu-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.wallet}Apple y Google Wallet</li><li>${ICONO.reloj}Lista en 5 minutos</li></ul>
   </div>
-  <div class="vu-cel" aria-hidden="true"><div class="vu-tarjeta"><div class="vu-t-cab"><span class="vu-t-logo">C</span><span><b>Café La Paloma</b><small>Tarjeta de cliente</small></span><span class="vu-t-nivel">Oro</span></div>
-    <div class="vu-sellos">${Array.from({ length: 10 }, (_, i) => `<span class="${i < 7 ? 'si' : i === 9 ? 'pr' : ''}"></span>`).join('')}</div>
-    <p class="vu-t-meta"><b>7 de 10</b> · te faltan 3 para tu bebida gratis</p>
-    <div class="vu-t-pie"><span><small>Cliente</small><b>María G.</b></span><span class="vu-qr"></span></div></div>
-    <div class="vu-aviso"><b>Café La Paloma</b><span>¡Feliz cumpleaños, María! Tu bebida va por nuestra cuenta esta semana 🎂</span></div></div>
+  <div class="vu-escena" aria-hidden="true">
+    <div class="vu-cel"><i class="vu-isla"></i><div class="vu-pantalla"><p class="vu-wallet-t">Wallet</p>${pase(DEMO[0])}${pase({ ...DEMO[1], cls: 'abajo' })}</div></div>
+    <div class="vu-noti"><span class="vu-noti-ic"><img src="/assets/tienda/vuelve/logo-paloma.png" alt="" width="38" height="38"></span><span><b>Café La Paloma <small>ahora</small></b>¡Ya tienes tu bebida gratis! Pídela al pagar ☕</span></div>
+  </div>
+</div>
+${navTienda('lealtad')}
+</section>
+
+<section class="vu-sec"><div class="marco">
+  <div class="vu-cab"><span class="vu-et">Así se ve en sus celulares</span><h2>Tu marca, en su Wallet.</h2><p>Estas son tarjetas reales hechas con Vuelve. Eliges colores, metal y sellos, o usas tu logo como sello. También puedes poner una foto de tu negocio detrás.</p></div>
+  <div class="vu-galeria">${DEMO.map(d => `<figure>${pase(d)}<figcaption>${d.pie}</figcaption></figure>`).join('')}</div>
 </div></section>
 
-<section class="t-sec"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Así funciona</span><h2 class="h2">Listo en minutos, desde tu celular</h2></div>
-  <ol class="vu-pasos">${[['Arma tu tarjeta', 'Elige tu giro, sube tu logo y una foto de tu negocio, y define sellos y premios. Vuelve te sugiere todo.'], ['Pon tu QR en el mostrador', 'Te damos un cartel listo para imprimir. Tus clientes se registran en 30 segundos.'],
-    ['Sella con el celular', 'Tu equipo escanea la tarjeta del cliente con su PIN. Un toque y listo.'], ['Vuelve hace el resto', 'Avisos de cumpleaños, de "te extrañamos" y de cercanía, y tus números de cada mes.']].map(([t, d], k) => `<li class="rv" style="--d:${k * .05}s"><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+<section class="vu-sec vu-osc"><div class="marco">
+  <div class="vu-cab"><span class="vu-et">Cómo funciona</span><h2>Listo hoy. Desde tu celular.</h2></div>
+  <ol class="vu-pasos">${[['Arma tu tarjeta', 'Tu logo, tus colores, una foto de tu negocio y tus premios. Vuelve te sugiere todo según tu giro.'], ['Pon tu QR en caja', 'Te damos el cartel listo para imprimir. Tus clientes sacan su tarjeta en 30 segundos, sin descargar nada.'],
+    ['Sella con un toque', 'Tú o tu equipo escanean su tarjeta. Cada quien con su PIN y todo queda en la bitácora.'], ['Vuelve hace el resto', 'Avisos de cumpleaños y de "te extrañamos", su tarjeta al día en el Wallet y tus números cada mes.']].map(([t, d], k) => `<li><span class="vu-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
 </div></section>
 
-<section class="t-sec suave"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Lo que te hace ganar</span><h2 class="h2">Más que una tarjeta de sellos</h2></div>
-  <ul class="vu-ben">${[['💸', 'Dinero recuperado, medido', 'Ves cuántos clientes regresaron, cada cuánto y cuánto dejaron. Y cuántos volvieron después de cada aviso.'],
-    ['🎂', 'Avisos que trabajan solos', 'Cumpleaños con regalo, "te extrañamos" a quien no ha venido y tus promociones para todos o por grupo. Sin costo por mensaje.'],
-    ['🤝', 'Trae a un amigo', 'Cada tarjeta trae una liga para invitar. Cuando el amigo hace su primera visita, los dos ganan sellos.'],
-    ['🔐', 'Sin sellos regalados', 'PIN por persona de tu equipo, tope de sellos por cliente al día y bitácora de todo. Te avisamos si algo se ve raro.'],
-    ['📍', 'Por sucursal', 'Cada sucursal con su ubicación, su equipo y su mensaje de cercanía.'],
-    ['🧾', 'Tuyos, tus datos', 'Descargas a tus clientes en Excel cuando quieras. Aviso de privacidad listo para tu negocio y factura de tu suscripción.']].map(([i, t, d], k) => `<li class="rv" style="--d:${(k % 2) * .05}s"><span aria-hidden="true">${i}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+<section class="vu-sec"><div class="marco vu-dos">
+  <div class="vu-cab izq"><span class="vu-et">Lo que te hace ganar</span><h2>Clientes que regresan, medidos en pesos.</h2><p>No es solo una tarjeta de sellos: es saber quién volvió, cuándo y cuánto dejó. Y que se lo recuerden solos.</p>
+    <div class="vu-panel" role="img" aria-label="Ejemplo del panel de Vuelve"><small>Ejemplo · panel de este mes</small><div class="vu-kpis"><span><b>148</b>visitas de regreso</span><span><b>$41,300</b>dinero que regresó</span><span><b>23</b>volvieron tras un aviso</span></div><div class="vu-barras">${[38, 52, 47, 61, 58, 73, 80].map(v => `<i style="height:${v}%"></i>`).join('')}</div></div></div>
+  <ul class="vu-ben">${[[ICONO.pesos, 'Dinero recuperado, medido', 'Cuántos regresaron, cada cuánto y cuánto dejaron. Y cuántos volvieron después de cada aviso.'],
+    [ICONO.campana, 'Avisos que trabajan solos', 'Cumpleaños con regalo, "te extrañamos" y tus promociones. Llegan a su Wallet, sin costo por mensaje.'],
+    [ICONO.amigos, 'Trae a un amigo', 'Cada tarjeta trae su invitación. Cuando el amigo viene por primera vez, los dos ganan.'],
+    [ICONO.escudo, 'Sin sellos regalados', 'PIN por persona, tope de sellos al día y bitácora. Te avisamos si algo se ve raro.'],
+    [ICONO.pin, 'Por sucursal', 'Cada sucursal con su ubicación, su equipo y su aviso cuando pasan cerca.'],
+    [ICONO.datos, 'Tus datos son tuyos', 'Descargas a tus clientes en Excel. Aviso de privacidad listo y factura de tu suscripción.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
 </div></section>
 
-<section class="t-sec" id="planes"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Precios</span><h2 class="h2">Pruébalo 7 días. Después, un solo plan con todo.</h2><p class="lead">En pesos mexicanos con IVA incluido. Clientes y avisos ilimitados. Cancela cuando quieras.</p></div>
+<section class="vu-sec suave" id="planes"><div class="marco">
+  <div class="vu-cab"><span class="vu-et">Precios</span><h2>Pruébalo 7 días. Después, un solo plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Clientes y avisos ilimitados. Cancela cuando quieras.</p></div>
   <div class="vu-planes">
     <article class="vu-plan"><h3>Prueba</h3><p class="vu-para">Todo Vuelve, 7 días</p><p class="vu-precio"><b>$0</b></p>
       <ul>${['Sin tarjeta', 'Todas las funciones', 'Tus clientes conservan su tarjeta si decides seguir'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
-      <a class="btn blanco" href="${OS}/vuelve/#/nuevo">Empezar gratis</a></article>
+      <a class="vu-btn ghost oscuro" href="${OS}/vuelve/#/nuevo">Empezar gratis</a></article>
     ${planes.map(x => `<article class="vu-plan${x.slug === 'vuelve-mensual' ? ' rec' : ''}">${x.nota ? `<span class="vu-sello">${x.nota}</span>` : ''}<h3>${x.nombre}</h3><p class="vu-para">Una sucursal incluida</p>
       <p class="vu-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
       <ul>${INCLUYE.slice(0, 5).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${x.sucursal ? `<li>${CHECK}<span>Sucursal adicional: ${precio(x.sucursal)} ${x.cada}</span></li>` : ''}</ul>
-      <a class="btn ${x.slug === 'vuelve-mensual' ? 'tinta' : 'blanco'}" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
+      <a class="vu-btn${x.slug === 'vuelve-mensual' ? '' : ' ghost oscuro'}" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
   </div>
   ${planes.length ? '' : `<p class="vu-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${OS}/vuelve/#/nuevo">empieza tu prueba gratis</a>.</p>`}
 </div></section>
@@ -120,42 +151,76 @@ ${await masTienda(env, 'lealtad')}
 }
 
 const CSS = `
-.vu{--vu-n:#121212;--vu-n2:#1d1c1a;--vu-m:#f4f1ea;--vu-o:#d9b87c;--vu-o2:#9c7a3e;--vu-f:var(--bg-2);--vu-acento:#8a6a2c}
-[data-tema="oscuro"] .vu{--vu-acento:#d9b87c}
-.vu-hero{background:var(--vu-f);padding:clamp(28px,6vw,72px) 0;overflow:hidden}
-.vu-hero-g{display:grid;gap:36px;align-items:center}
-@media(min-width:900px){.vu-hero-g{grid-template-columns:1.1fr .9fr}}
-.vu-logo{display:flex;align-items:center;gap:6px;font:700 34px/1 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-.045em;color:var(--fg);margin:16px 0 10px}
-.vu-h1{font:750 clamp(36px,6.4vw,62px)/1.02 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--fg)}.vu-h1 i{font-style:normal;color:var(--vu-acento)}
-.vu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:var(--fg-2);margin:0 0 22px;max-width:34em}
-.vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}.vu-nota b{color:var(--fg)}
-.vu-cel{position:relative;max-width:360px;margin:0 auto 26px;width:100%}
-.vu-tarjeta{background:radial-gradient(130% 90% at 15% 0%,#2a2a2a,var(--vu-n) 62%);color:var(--vu-m);border-radius:24px;padding:20px;box-shadow:0 30px 60px -30px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.05)}
-.vu-t-cab{display:flex;align-items:center;gap:12px}.vu-t-logo{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--vu-o);color:#3a2c12;font-weight:700;font-size:18px}
-.vu-t-cab b{display:block;font-size:16.5px;font-weight:600}.vu-t-cab small{color:#8f8b84;font-size:12.5px}.vu-t-nivel{margin-left:auto;border:1px solid rgba(217,184,124,.5);color:var(--vu-o);font-weight:600;font-size:12px;padding:3px 10px;border-radius:999px}
-.vu-sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0 12px}
-.vu-sellos span{aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.26);background:rgba(0,0,0,.18);display:grid;place-items:center}
-.vu-sellos .si{background:radial-gradient(circle at 35% 28%,#fff,var(--vu-m) 50%,#bdb6a8);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 6px rgba(0,0,0,.45)}
-.vu-sellos .si::after{content:"";width:34%;height:18%;border-left:2.5px solid var(--vu-n);border-bottom:2.5px solid var(--vu-n);transform:translateY(-12%) rotate(-45deg)}
-.vu-sellos .pr{box-shadow:inset 0 0 0 1.5px var(--vu-o)}.vu-sellos .pr::after{content:"★";color:var(--vu-o);font-size:15px}
-.vu-t-meta{margin:0;color:#a8a39b;font-size:14px}.vu-t-meta b{color:var(--vu-m);font-weight:600}
-.vu-t-pie{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px}.vu-t-pie small{display:block;color:#8f8b84;font-size:12px}
-.vu-qr{width:64px;height:64px;border-radius:10px;background:#fff;background-image:repeating-linear-gradient(90deg,#121212 0 6px,transparent 6px 10px),repeating-linear-gradient(0deg,#121212 0 6px,transparent 6px 10px);background-blend-mode:multiply;border:6px solid #fff}
-.vu-aviso{position:absolute;left:-10px;right:18px;bottom:-30px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--sombra-2);font-size:14px;display:grid;gap:2px}
-.vu-aviso b{font-size:13px;color:var(--vu-acento)}
-.vu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));counter-reset:p}
-.vu-pasos li{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);padding:20px;counter-increment:p}.vu-pasos li::before{content:counter(p);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--fg);color:var(--bg);font-weight:750;margin-bottom:12px}
-.vu-pasos b{font-size:17px}.vu-pasos p{margin:4px 0 0;color:var(--fg-2)}
-.vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.vu-ben li{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);padding:20px}.vu-ben span{font-size:26px}.vu-ben b{display:block;font-size:18px;margin:8px 0 4px}.vu-ben p{margin:0;color:var(--fg-2)}
-.vu-planes{display:grid;gap:18px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
-.vu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
-.vu-plan.rec{border-color:var(--fg);box-shadow:var(--sombra-2)}
-.vu-sello{position:absolute;top:-12px;left:24px;background:var(--fg);color:var(--bg);font-size:12px;font-weight:750;padding:4px 12px;border-radius:999px}
-.vu-plan h3{font:750 26px/1.1 'Inter',system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:4px 0 0}.vu-para{color:var(--fg-2);margin:0}
-.vu-precio{margin:6px 0 0}.vu-precio b{font-size:34px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.vu-precio small{color:var(--fg-2)}
-.vu-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--verde)}
-.vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}`;
+.vu{--vu-tinta:#0f1a15;--vu-tinta2:#16241d;--vu-verde:#1fbf75;--vu-verde-o:#0b8a50;--vu-verde-c:#45d08e;--vu-crema:#f6f4ee;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
+[data-tema="oscuro"] .vu{--vu-verde-o:#45d08e}
+.vu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--vu-verde);color:#06120c;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(31,191,117,.8);transition:transform .2s var(--ease),background .2s}
+.vu-btn:hover{background:#2bd486;transform:translateY(-1px)}.vu-btn svg{width:17px;height:17px}
+.vu-btn.ghost{background:rgba(255,255,255,.06);color:var(--vu-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}.vu-btn.ghost:hover{background:rgba(255,255,255,.12)}
+.vu-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.vu-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
+/* portada */
+.vu-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;background:var(--vu-tinta);color:var(--vu-crema)}
+.vu-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 80% 30%,rgba(31,191,117,.22),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(69,208,142,.08),transparent 70%)}
+.vu-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.vu-hero-g>*{min-width:0}
+@media(min-width:960px){.vu-hero-g{grid-template-columns:1.05fr .95fr}}
+.vu-marca{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:30px;letter-spacing:-.05em;color:var(--vu-crema)}.vu-marca span{margin-top:-3px}
+.vu-h1{font-weight:800;font-size:clamp(42px,6.6vw,80px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:11ch;text-wrap:balance}.vu-h1 em{font-style:normal;color:var(--vu-verde-c)}
+.vu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(246,244,238,.76);max-width:33em}
+.vu-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.vu-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(246,244,238,.7)}
+.vu-chips li{display:inline-flex;align-items:center;gap:7px}.vu-chips svg{width:18px;height:18px;color:var(--vu-verde-c)}
+.vu-hero .t-nav-tienda{margin-top:8px}.vu-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(246,244,238,.8)}.vu-hero .t-nav-tienda a[aria-current]{background:var(--vu-verde);border-color:var(--vu-verde);color:#06120c}
+.vu-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
+/* el celular con el Wallet abierto */
+.vu-escena{position:relative;justify-self:center;width:min(100%,360px);padding:10px 0 40px}
+.vu-cel{position:relative;border-radius:54px;padding:12px;background:#0a0a0a;box-shadow:0 0 0 2px #2a2a2a,0 50px 90px -40px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
+.vu-isla{position:absolute;top:22px;left:50%;width:96px;height:28px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
+.vu-pantalla{border-radius:43px;overflow:hidden;background:#000;padding:62px 10px 0;height:600px;position:relative}
+.vu-wallet-t{margin:0 8px 12px;font:700 30px/1 -apple-system,'SF Pro Display','Inter Tight',sans-serif;letter-spacing:-.02em;color:#fff}
+.vu-pantalla .vu-pase.abajo{position:absolute;left:10px;right:10px;top:540px}
+.vu-noti{position:absolute;left:-36px;right:24px;bottom:22px;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:rgba(246,244,238,.88);color:#111;font:14px/1.35 -apple-system,'Inter Tight',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
+.vu-noti b{display:flex;justify-content:space-between;gap:8px;font-weight:650}.vu-noti b small{font-weight:400;color:#6b6b6b}.vu-noti-ic img{display:block;width:38px;height:38px;border-radius:9px}
+@media(max-width:600px){.vu-noti{left:-6px;right:-6px}.vu-pantalla{height:540px}}
+/* tarjeta de Apple Wallet (storeCard) */
+.vu-pase{background:var(--pf);color:var(--pt);border-radius:14px;overflow:hidden;font-family:-apple-system,'SF Pro Text','Inter Tight',sans-serif;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 20px 40px -24px rgba(0,0,0,.7)}
+.vu-pase-cab{display:flex;align-items:center;gap:9px;padding:11px 12px}
+.vu-pase-logo img,.vu-pase-logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:#fff;color:#111;font:700 15px/1 Georgia,serif;font-style:normal}
+.vu-pase-cab b{font-size:15px;font-weight:600;letter-spacing:-.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vu-pase-h{margin-left:auto;text-align:right;font-size:17px;font-weight:500;line-height:1.1;white-space:nowrap}.vu-pase small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--pt2);margin-bottom:2px}
+.vu-pase-tira{display:block;width:100%;height:auto}
+.vu-pase-campos{display:flex;justify-content:space-between;gap:12px;padding:10px 12px 0;font-size:15px}.vu-pase-campos .der{text-align:right}.vu-pase-campos.aux{font-size:13px;padding-top:8px}
+.vu-pase-qr{display:grid;justify-items:center;gap:2px;width:max-content;margin:14px auto 14px;padding:8px 8px 4px;border-radius:9px;background:#fff}.vu-pase-qr img{display:block;width:84px;height:84px}.vu-pase-qr small{color:#333;font-size:10px;letter-spacing:.04em;margin:0}
+/* secciones */
+.vu-sec{padding:clamp(56px,8vw,104px) 0}.vu-sec.suave{background:var(--bg-2)}
+.vu-osc{background:var(--vu-tinta);color:var(--vu-crema)}
+.vu-cab{max-width:680px;margin:0 auto 38px;text-align:center}.vu-cab.izq{text-align:left;margin:0}
+.vu-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vu-verde-o)}.vu-osc .vu-et{color:var(--vu-verde-c)}
+.vu-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
+.vu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.vu-osc .vu-cab p{color:rgba(246,244,238,.72)}
+.vu-galeria{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.vu-galeria figure{margin:0}.vu-galeria figcaption{margin-top:12px;text-align:center;font-weight:650;color:var(--fg-2);font-size:15px}
+.vu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.vu-pasos li{padding:24px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.vu-num{display:block;font-weight:800;font-size:15px;color:var(--vu-verde-c);letter-spacing:.04em}.vu-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.vu-pasos p{margin:6px 0 0;color:rgba(246,244,238,.7);line-height:1.5}
+.vu-dos{display:grid;gap:40px;align-items:start}@media(min-width:980px){.vu-dos{grid-template-columns:.95fr 1.05fr}}
+.vu-panel{margin-top:28px;padding:20px;border-radius:24px;background:var(--vu-tinta);color:var(--vu-crema);box-shadow:var(--sombra-2)}
+.vu-panel small{color:rgba(246,244,238,.55);font-size:12.5px}
+.vu-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.vu-kpis span{font-size:12.5px;color:rgba(246,244,238,.66);line-height:1.3}.vu-kpis b{display:block;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.03em;color:#fff;margin-bottom:4px}
+.vu-barras{display:flex;align-items:flex-end;gap:8px;height:90px;margin-top:18px}.vu-barras i{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--vu-verde-c),rgba(31,191,117,.35))}
+.vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
+.vu-ben li{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.vu-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--vu-verde) 14%,transparent);color:var(--vu-verde-o)}
+.vu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.vu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+/* precios */
+.vu-planes{display:grid;gap:18px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.vu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:26px;display:grid;gap:8px}
+.vu-plan.rec{border-color:var(--vu-verde);box-shadow:0 30px 60px -36px rgba(31,191,117,.6)}
+.vu-sello{position:absolute;top:-13px;left:24px;background:var(--vu-verde);color:#06120c;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.vu-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.vu-para{color:var(--fg-2);margin:0}
+.vu-precio{margin:6px 0 0}.vu-precio b{font-size:38px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.vu-precio small{color:var(--fg-2)}
+.vu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--vu-verde-o)}
+.vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
+.vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
+.vu #form-vuelve .btn.acento{background:var(--vu-verde);color:#06120c;box-shadow:0 10px 26px -12px rgba(31,191,117,.8)}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
