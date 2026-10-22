@@ -15,7 +15,7 @@ const soloCookie = setCookie => setCookie.split(';')[0];
 
 async function comprar(slug = 'simulador-paa', email = 'ana@mail.com') {
   const o = await crearOrden(env, { items: [{ slug }], email, nombre: 'Ana López' });
-  await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: 24900, moneda: 'MXN', metodo_pago: 'card' });
+  await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: o.monto_centavos ?? 24900, moneda: 'MXN', metodo_pago: 'card' });
   return o;
 }
 
@@ -64,7 +64,12 @@ describe('acceso al simulador', () => {
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain('"@type":"Product"');
     expect(html).toContain('simulador-paa-og.png');
-    expect(html).toContain('name="slug" value="simulador-paa"');
+    // tres planes que se complementan; de fábrica se elige el paquete, que muestra cuánto ahorra
+    for (const k of ['practica', 'completo', 'paquete']) expect(html).toContain(`href="?plan=${k}#comprar"`);
+    expect(html).toContain('name="slug" value="simulador-paa-paquete"');
+    expect(html).toContain('Ahorra $69 MXN');
+    expect(html).toContain('"@type":"AggregateOffer"');
+    expect(await (await pedir('/simulador-paa/?plan=practica')).text()).toContain('name="slug" value="simulador-paa-practica"');
     expect(html).not.toContain('noindex');
   });
 
@@ -264,5 +269,57 @@ describe('tienda por secciones y SEO', () => {
     expect(xml).toContain('<loc>https://vorka.mx/simulador-paa/</loc>');
     expect(xml).not.toContain('/tienda/simulador-paa/');
     expect(xml).not.toContain('simulador-paa-intento');
+  });
+});
+
+describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
+  const entrar = async (slug, email) => { const o = await comprar(slug, email); const { token: t } = await crearToken(env, o.id); return soloCookie((await pedir(`/simulador-paa/entrar/${t}`)).headers.get('set-cookie')); };
+  const iniciar = (cookie, tipo) => pedir('/api/simulador-paa/iniciar', { metodo: 'POST', cookie, body: JSON.stringify({ tipo }) });
+  const abandonar = async (cookie, id) => pedir('/api/simulador-paa/abandonar', { metodo: 'POST', cookie, body: JSON.stringify({ id }) });
+
+  it('Práctica ilimitada: Calentamientos y Medios sin límite, sin examen oficial', async () => {
+    const cookie = await entrar('simulador-paa-practica', 'pra@mail.com');
+    const yo = await (await pedir('/api/simulador-paa/yo', { cookie })).json();
+    expect(yo.plan).toEqual({ practica: true, completo: false, legado: false });
+    expect(yo.intentos).toMatchObject({ ilimitado: true }); expect(yo.calentamientos).toMatchObject({ ilimitado: true });
+    expect(yo.examenes).toMatchObject({ incluidos: 0, disponibles: 0 });
+    expect(yo.ofertas.completo).toMatchObject({ slug: 'simulador-paa-completo', precio_centavos: 24900 });
+    for (let i = 0; i < 4; i++) { const r = await (await iniciar(cookie, 'corto')).json(); expect(r.id).toBeTruthy(); await abandonar(cookie, r.id); }
+    const ex = await iniciar(cookie, 'examen');
+    expect(ex.status).toBe(402);
+    expect((await ex.json()).error).toContain('Simulador completo');
+  });
+
+  it('Simulador completo: 2 exámenes oficiales y nada de práctica', async () => {
+    const cookie = await entrar('simulador-paa-completo', 'com@mail.com');
+    const yo = await (await pedir('/api/simulador-paa/yo', { cookie })).json();
+    expect(yo.plan).toEqual({ practica: false, completo: true, legado: false });
+    expect(yo.examenes).toMatchObject({ incluidos: 2, disponibles: 2 });
+    const corto = await iniciar(cookie, 'corto');
+    expect(corto.status).toBe(402);
+    expect((await corto.json()).error).toContain('Práctica ilimitada');
+    expect((await iniciar(cookie, 'examen')).status).toBe(200);
+  });
+
+  it('el paquete trae los dos, y quien compró antes conserva lo que traía su compra', async () => {
+    const cookie = await entrar('simulador-paa-paquete', 'paq@mail.com');
+    const yo = await (await pedir('/api/simulador-paa/yo', { cookie })).json();
+    expect(yo.plan).toEqual({ practica: true, completo: true, legado: false });
+    expect(yo.intentos.ilimitado).toBe(true); expect(yo.examenes.incluidos).toBe(2);
+    // la compra de siempre (la de beforeEach): 2 Medios, 1 Oficial y 2 Calentamientos, como antes
+    const c0 = soloCookie((await pedir(`/simulador-paa/entrar/${token}`)).headers.get('set-cookie'));
+    const yo0 = await (await pedir('/api/simulador-paa/yo', { cookie: c0 })).json();
+    expect(yo0.plan).toEqual({ practica: false, completo: false, legado: true });
+    expect(yo0.intentos).toMatchObject({ incluidos: 2, ilimitado: false }); expect(yo0.examenes.incluidos).toBe(1); expect(yo0.calentamientos.incluidos).toBe(2);
+    // si compra la Práctica ilimitada, sus Medios se vuelven ilimitados
+    await comprar('simulador-paa-practica', 'ana@mail.com');
+    const yo1 = await (await pedir('/api/simulador-paa/yo', { cookie: c0 })).json();
+    expect(yo1.plan).toEqual({ practica: true, completo: false, legado: true }); expect(yo1.intentos.ilimitado).toBe(true);
+  });
+
+  it('el catálogo muestra una sola tarjeta del simulador, desde el plan más barato', async () => {
+    const html = await (await pedir('/tienda/')).text();
+    expect(html.match(/class="t-card-img" href="\/simulador-paa\/"/g)).toHaveLength(1);
+    expect(html).toMatch(/Desde \$199 MXN/);
   });
 });

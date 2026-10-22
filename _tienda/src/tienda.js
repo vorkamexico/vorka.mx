@@ -97,18 +97,27 @@ const esCupo = p => p.contenido?.acceso?.app === 'cupo';
 
 // Cómo se presenta cada producto en el catálogo (una sola tarjeta por página de destino)
 function vistas(productos, desdeBrindi) {
-  const vistos = new Set();
+  const vistos = new Map();
   return productos.map(p => {
     const url = enlace(p);
-    if (vistos.has(url)) return null;
-    vistos.add(url);
+    // varios productos con la misma página (los planes del Simulador PAA): una tarjeta "Desde" el más barato
+    if (vistos.has(url)) { const v = vistos.get(url); if (v.min != null && p.precio_centavos < v.min) { v.min = p.precio_centavos; v.precio = `Desde ${precio(p)}`; } else if (v.min != null && !v.precio.startsWith('Desde')) v.precio = `Desde ${precio({ precio_centavos: v.min })}`; return null; }
+    const v = vista(p, url, desdeBrindi);
+    vistos.set(url, v);
+    return v;
+  }).filter(Boolean);
+}
+function vista(p, url, desdeBrindi) {
+  {
     if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/cupo.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
-    return { p, url, nombre: p.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
-      cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: p, precio: precio(p), regalable: !!p.contenido?.regalable };
-  }).filter(Boolean);
+    // los planes del simulador se presentan con el nombre del simulador (no el del plan)
+    const plan = p.contenido?.plan && p.contenido?.acceso?.app === 'simulador-paa';
+    return { p, url, nombre: plan ? 'Simulador PAA en línea' : p.nombre, texto: plan ? 'Práctica ilimitada con tutor y exámenes oficiales como la PAA real: elige tu plan o llévate los dos.' : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
+      cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: p, precio: precio(p), regalable: !!p.contenido?.regalable, min: esBrindi(p) || esCupo(p) ? null : p.precio_centavos };
+  }
 }
 
 // Secciones a dos columnas en computadora (en celular, una debajo de otra): así no queda una columna angosta con vacío a los lados.

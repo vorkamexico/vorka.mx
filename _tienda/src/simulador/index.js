@@ -13,9 +13,10 @@
 // Acceso: cookie HttpOnly firmada con HMAC (DOWNLOAD_TOKEN_SECRET). En cada petición se revisa en D1 que la orden
 // siga pagada (un reembolso corta el acceso) y que esté dentro de su año de vigencia.
 //
-// Intentos: la compra del simulador trae 2 Calentamientos, 2 simulacros Medios y 1 examen Oficial; cada "Simulacro adicional" ($50)
-// suma 1 corto y cada "Examen PAA completo adicional" ($100) suma 1 examen. Se suman por correo del comprador y solo
-// los gastan los simulacros y exámenes completos (secciones y práctica son libres).
+// Planes (migración 0029): "Práctica ilimitada" ($199: Calentamientos, Medios y práctica sin límite), "Simulador completo"
+// ($249: 2 exámenes Oficiales) y el "Paquete completo" ($379: los dos). La compra del simulador de antes (simulador-paa)
+// conserva lo que traía: 2 Calentamientos, 2 Medios y 1 Oficial. "Simulacro adicional" ($50) suma 1 corto y "Examen PAA
+// completo adicional" ($100) suma 1 examen. Todo se suma por correo del comprador; secciones y práctica por tema son libres.
 import { one, all, run, json, fail, enc, hex, iguales } from '../util.js';
 import { hashToken } from '../entrega.js';
 import { pagina, aviso, esc, nonce, seguridad } from '../paginas.js';
@@ -35,6 +36,11 @@ const MAX_RESULTADO = 60_000;   // bytes de JSON por resultado
 const MAX_HISTORIAL = 60;       // resultados que se guardan por compra
 export const SLUG_INTENTO = 'simulador-paa-intento';
 export const SLUG_EXAMEN = 'simulador-paa-examen';   // examen PAA completo adicional ($100)
+// Planes (oct 2026), para que se complementen: Práctica ilimitada (Calentamientos, Medios y práctica por sección y por tema sin
+// límite), Simulador completo (2 exámenes oficiales como la PAA real, con reporte) y el paquete con los dos. La compra de siempre
+// (producto sin acceso.tipo, ya no está a la venta) conserva lo que traía: 2 Calentamientos, 2 Medios, 1 Oficial y práctica libre.
+export const PLANES = { practica: 'simulador-paa-practica', completo: 'simulador-paa-completo', paquete: 'simulador-paa-paquete' };
+const ILIMITADO = 9999;
 const OS = 'https://os.vorka.mx'; // boletín de la Revista Sparks
 const SIN_REFERER = { 'referrer-policy': 'no-referrer' };
 
@@ -93,6 +99,7 @@ export async function ordenConAcceso(env, orderId, ahora = Date.now()) {
 // Un intento abandonado también cuenta: si no, bastaría con abandonar para cambiar de preguntas gratis.
 const cuantos = (c, tipo) => {
   const a = c.acceso;
+  if (a.ilimitado && (tipo === 'calentamiento' || tipo === 'corto')) return ILIMITADO;
   if (tipo === 'calentamiento') return a.calentamientos != null ? Number(a.calentamientos) || 0 : esBase(c) ? INCLUIDOS.calentamiento : 0;
   if (tipo === 'examen') return a.examenes != null ? Number(a.examenes) || 0 : esBase(c) ? 1 : a.tipo === 'examen' ? 1 : 0;
   return a.intentos != null ? Number(a.intentos) || 0 : esBase(c) ? 2 : a.tipo === 'intento' ? 1 : 0;
@@ -102,7 +109,8 @@ export async function cuentaIntentos(env, email, tipo = 'corto') {
   const incluidos = compras.reduce((s, c) => s + cuantos(c, tipo) * (c.cantidad || 1), 0);
   const usados = (await one(env, 'SELECT COUNT(*) n FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = ?', email, APP, tipo)).n;
   const abierto = await one(env, "SELECT id, items FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = ? AND estado = 'abierto' ORDER BY id DESC LIMIT 1", email, APP, tipo);
-  return { incluidos, usados, disponibles: Math.max(0, incluidos - usados), abierto: abierto ? { id: abierto.id, items: JSON.parse(abierto.items) } : null };
+  const ilimitado = incluidos >= ILIMITADO;
+  return { incluidos: ilimitado ? null : incluidos, usados, disponibles: ilimitado ? ILIMITADO : Math.max(0, incluidos - usados), ilimitado, abierto: abierto ? { id: abierto.id, items: JSON.parse(abierto.items) } : null };
 }
 
 // Reactivos que ya salieron en sus simulacros completos (para no repetirlos en el siguiente)
@@ -199,9 +207,20 @@ async function yo(env, a) {
   const extra = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', SLUG_INTENTO);
   const extraEx = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', SLUG_EXAMEN);
   return json({ nombre: a.orden.nombre, email: a.orden.email, vence: new Date(a.vence).toISOString(), historial,
+    ...(await planDe(env, a.orden.email)),
     intentos, examenes, calentamientos, vistos: [...await vistosDe(env, a.orden.email)],
     intentoExtra: extra ? { slug: SLUG_INTENTO, precio_centavos: extra.precio_centavos } : null,
     examenExtra: extraEx ? { slug: SLUG_EXAMEN, precio_centavos: extraEx.precio_centavos } : null });
+}
+
+// Qué tiene esta persona (practica: sin límite · completo: exámenes oficiales · legado: la compra de antes) y los planes a la
+// venta (para invitarla a llevarse el que le falta)
+export async function planDe(env, email) {
+  const compras = await comprasDe(env, email);
+  const plan = { practica: compras.some(c => c.acceso.ilimitado), completo: compras.some(c => c.acceso.tipo === 'completo' || c.acceso.tipo === 'paquete'), legado: compras.some(c => esBase(c) && !c.acceso.tipo) };
+  const ofertas = {};
+  for (const [k, slug] of Object.entries(PLANES)) { const p = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', slug); if (p) ofertas[k] = { slug, precio_centavos: p.precio_centavos }; }
+  return { plan, ofertas };
 }
 
 // Abre un simulacro corto o un examen completo: retoma el abierto o gasta un intento y arma los reactivos en el servidor
@@ -209,7 +228,7 @@ async function iniciar(env, a, tipo = 'corto') {
   const email = a.orden.email;
   const c = await cuentaIntentos(env, email, tipo);
   if (c.abierto) return json({ id: c.abierto.id, items: c.abierto.items, retomado: true, tipo, intentos: c });
-  if (c.disponibles <= 0) return json({ error: tipo === 'examen' ? 'Ya usaste tus exámenes oficiales. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: c }, 402);
+  if (c.disponibles <= 0) return json({ error: !c.usados && !c.incluidos ? (tipo === 'examen' ? 'El examen oficial viene en el Simulador completo.' : 'Los simulacros de práctica vienen en la Práctica ilimitada.') : tipo === 'examen' ? 'Ya usaste tus exámenes oficiales. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: c }, 402);
   const vistos = await vistosDe(env, email);
   const items = tipo === 'examen' ? armarExamen(Math.random, vistos) : tipo === 'calentamiento' ? armarCalentamiento(Math.random, vistos) : armarCompleto(Math.random, vistos);
   const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items, tipo) VALUES (?,?,?,?)', email, APP, JSON.stringify(items), tipo);
@@ -305,14 +324,27 @@ const FAQ_PAA = [
   { p: '¿Qué secciones tiene la PAA?', r: 'Cuatro: Lectura, Redacción, Matemáticas e Inglés. Según la guía oficial, Lectura, Redacción y Matemáticas duran 2 horas y 20 minutos, e Inglés 40 minutos. Las preguntas son de opción múltiple con cuatro opciones, y algunas de Matemáticas piden escribir la respuesta.' },
   { p: '¿Cómo se califica la PAA?', r: 'Cada sección se califica en una escala de 200 a 800 puntos y no se resta por respuesta incorrecta, así que conviene contestar todo. Nuestro simulador estima tu puntaje en esa misma escala para que veas qué tan cerca estás de tu meta.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen la estructura y el tipo de preguntas de la PAA. No está afiliado al College Board y el puntaje es una estimación para orientar tu estudio.' },
-  { p: '¿Qué incluye la compra?', r: `Tres niveles para llegar listo: 2 Calentamientos (${CAL_REACTIVOS} reactivos de dificultad básica e intermedia, para entrar en ritmo), 2 simulacros de nivel Medio (${CORTO_REACTIVOS} reactivos, la mayoría de dificultad alta, con tutor) y 1 examen Oficial con la misma cantidad de preguntas, el mismo tiempo y la dificultad de la PAA real (${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas). Si quieres más, desde el simulador compras otro Oficial por $100 o un Medio por $50. La práctica por sección y por temas es ilimitada.` },
+  { p: '¿Qué plan me conviene?', r: `Son dos que se complementan. La Práctica ilimitada es para entrenar todos los días: Calentamientos (${CAL_REACTIVOS} reactivos) y simulacros de nivel Medio (${CORTO_REACTIVOS} reactivos, con tutor) sin límite, más práctica por sección y por tema. El Simulador completo es para medirte como el día del examen: 2 exámenes oficiales con la misma cantidad de preguntas, el mismo tiempo y la dificultad de la PAA real (${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas). Lo ideal es practicar hasta que el simulador te diga que ya estás listo y cerrar con el examen completo: por eso el paquete trae los dos y te ahorra dinero.` },
   { p: '¿Se repiten las preguntas?', r: `El banco tiene ${REACTIVOS.length} reactivos originales y cada simulacro o examen prioriza los que todavía no has visto, así que tus primeros intentos traen preguntas prácticamente distintas. Las gráficas y figuras de Matemáticas son originales de Vorka México.` },
   { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo para que la compartas. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre, así que no se puede compartir.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta.' },
 ];
 
+// Los planes de la página de venta, con lo que trae cada uno
+const PLANES_VENTA = [
+  { k: 'practica', nombre: 'Práctica ilimitada', para: 'Para entrenar todos los días', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por sección y por tema', 'Tutor con pistas y explicación paso a paso', 'Puntaje estimado y qué reforzar'] },
+  { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => [`2 exámenes oficiales: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Mismos tiempos y dificultad que la PAA', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] },
+  { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', `Los 2 exámenes oficiales de ${EXAMEN_HORAS} horas`, 'Un año de acceso a todo'] },
+];
 async function paginaVenta(env, req, url) {
-  const prod = await productoPorSlug(env, APP);
+  // Planes a la venta; si todavía no están (antes de la migración 0029), la compra de siempre
+  const planes = (await Promise.all(PLANES_VENTA.map(async x => ({ ...x, prod: await productoPorSlug(env, PLANES[x.k]) })))).filter(x => x.prod);
+  const elegido = planes.find(x => x.k === url.searchParams.get('plan')) || planes.find(x => x.k === 'paquete') || planes[0];
+  const prod = elegido?.prod || await productoPorSlug(env, APP);
+  const ahorro = planes.length === 3 ? planes[0].prod.precio_centavos + planes[1].prod.precio_centavos - planes[2].prod.precio_centavos : 0;
+  const selector = planes.length ? `<div class="sv-planes" role="radiogroup" aria-label="Elige tu plan">${planes.map(x => `<a class="sv-plan${x === elegido ? ' sel' : ''}${x.k === 'paquete' ? ' rec' : ''}" role="radio" aria-checked="${x === elegido}" href="?plan=${x.k}#comprar">
+      ${x.k === 'paquete' && ahorro > 0 ? `<span class="sv-ahorro">Ahorra ${precio({ precio_centavos: ahorro })}</span>` : ''}<span class="sv-plan-c"><b>${x.nombre}</b><em class="num">${precio(x.prod)}</em></span><small>${x.para}</small>
+      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>` : '';
   const { code, cookie } = await refDeVisita(env, req, url);
   const total = SECCIONES.reduce((s, x) => s + x.reactivos, 0), min = SECCIONES.reduce((s, x) => s + x.minutos, 0);
   const banco = REACTIVOS.length, lecturas = Object.keys(TEXTOS).length, temas = Object.keys(TEMAS).length;
@@ -322,7 +354,8 @@ async function paginaVenta(env, req, url) {
   const ld = [
     { '@context': 'https://schema.org', '@type': 'Product', name: 'Simulador PAA en línea', description: DESCRIPCION, image: [`${IMG}/simulador-paa-v2.png`, OG, `${IMG}/simulador-paa-reporte.png`],
       brand: { '@type': 'Brand', name: 'Vorka México' }, category: 'Preparación para exámenes de admisión', sku: 'prod_simulador_paa',
-      ...(prod ? { offers: { '@type': 'Offer', url: `${SITIO}${RUTA}/`, price: (prod.precio_centavos / 100).toFixed(2), priceCurrency: prod.moneda, availability: 'https://schema.org/InStock', seller: { '@type': 'Organization', name: 'Vorka México' } } } : {}) },
+      ...(planes.length ? { offers: { '@type': 'AggregateOffer', url: `${SITIO}${RUTA}/`, lowPrice: (Math.min(...planes.map(x => x.prod.precio_centavos)) / 100).toFixed(2), highPrice: (Math.max(...planes.map(x => x.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.length, priceCurrency: 'MXN', availability: 'https://schema.org/InStock', seller: { '@type': 'Organization', name: 'Vorka México' } } }
+        : prod ? { offers: { '@type': 'Offer', url: `${SITIO}${RUTA}/`, price: (prod.precio_centavos / 100).toFixed(2), priceCurrency: prod.moneda, availability: 'https://schema.org/InStock', seller: { '@type': 'Organization', name: 'Vorka México' } } } : {}) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_PAA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) },
     { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Tienda', item: `${SITIO}/tienda/` },
@@ -382,6 +415,17 @@ async function paginaVenta(env, req, url) {
 .sv-portada img{width:100%;height:100%;object-fit:cover;display:block}
 .sv-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .sv-compra{position:sticky;top:96px}
+.sv-planes{display:grid;gap:10px;margin-bottom:14px}
+.sv-plan{position:relative;display:block;padding:16px 18px;border-radius:18px;background:var(--card);border:1.5px solid var(--line);color:inherit;text-decoration:none;transition:border-color var(--t-rapido),box-shadow var(--t-rapido)}
+.sv-plan:hover{border-color:var(--line-2)}.sv-plan.sel{border-color:var(--fg);box-shadow:var(--sombra-2)}
+.sv-plan.sel::before{content:"";position:absolute;top:18px;right:18px;width:18px;height:18px;border-radius:50%;background:var(--fg);box-shadow:inset 0 0 0 4px var(--card)}
+.sv-plan-c{display:flex;align-items:baseline;gap:10px;padding-right:28px}.sv-plan-c b{font-size:17px;letter-spacing:-.015em}.sv-plan-c em{font-style:normal;font-weight:750;margin-left:auto}
+.sv-plan small{display:block;color:var(--fg-2);font-size:13.5px;margin-top:2px}
+.sv-plan ul{display:none;margin:10px 0 0;gap:6px}.sv-plan.sel ul{display:grid}
+.sv-plan li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--fg-2)}.sv-plan li svg{width:16px;height:16px;flex:none;margin-top:2px;color:var(--verde)}
+.sv-ahorro{position:absolute;top:-10px;left:16px;padding:3px 10px;border-radius:999px;background:var(--acento);color:var(--sobre-acento);font-size:12px;font-weight:800}
+.sv-plan.rec{border-color:color-mix(in srgb,var(--acento) 60%,var(--line))}.sv-plan.rec.sel{border-color:var(--fg)}
+.sv-tag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--morado-suave);color:var(--morado);font-size:11.5px;font-weight:700;vertical-align:2px}.sv-tag.oro{background:color-mix(in srgb,var(--acento) 18%,transparent);color:color-mix(in srgb,var(--acento) 55%,var(--fg))}
 .sv-pronto{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--sombra)}
 .sv-pronto p{color:var(--fg-2);margin:8px 0 18px}
 .sv-cifras{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--linea-o);border-radius:var(--r);overflow:hidden}
@@ -457,12 +501,12 @@ async function paginaVenta(env, req, url) {
     <div class="sv-chips"><span class="sv-chip">Nuevo · ${banco} reactivos originales</span><span class="sv-chip oro"><span aria-hidden="true">🎁</span> También para regalar</span></div>
     <h1 class="t-h1">Simulador PAA en línea: practica como si fuera el día del examen</h1>
     <p class="t-lead">Preguntas tipo PAA de Lectura, Redacción, Matemáticas e Inglés con el mismo ritmo de tiempo que el examen real. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice exactamente qué reforzar.</p>
-    <ul class="sv-sellos"><li>${CHECK}1 examen completo como el real: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas</li><li>${CHECK}3 niveles: Calentamiento, Medio y Oficial</li><li>${CHECK}Puntaje estimado 200–800</li><li>${CHECK}En celular o computadora</li></ul>
+    <ul class="sv-sellos"><li>${CHECK}Práctica ilimitada con tutor</li><li>${CHECK}Examen completo como el real: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas</li><li>${CHECK}Puntaje estimado 200–800</li><li>${CHECK}En celular o computadora</li></ul>
     <div class="sv-portada"><img src="/tienda/img/portadas/simulador-paa-v2.png" alt="Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación" width="1600" height="1200" fetchpriority="high"></div>
     <div class="sv-links"><a class="btn blanco chico" href="#probar">Probar un reactivo gratis ${FLECHA}</a>${prod ? `<a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a>` : ''}</div>
   </div>
   <aside class="sv-compra" id="comprar" aria-label="Comprar el simulador">
-    ${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del Simulador PAA.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
+    ${selector}${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del Simulador PAA.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
   </aside>
 </div></section>
 
@@ -499,10 +543,10 @@ async function paginaVenta(env, req, url) {
 <section class="t-sec"><div class="marco">
   <div class="cab"><span class="etiqueta">Qué incluye</span><h2 class="h2">Más que un examen de práctica</h2></div>
   <div class="sv-grid">
-    <div class="sv-card"><h3>Nivel 1 · 2 Calentamientos</h3><p>${CAL_REACTIVOS} reactivos de dificultad básica e intermedia con tutor, para entrar en ritmo sin frustrarte.</p></div>
-    <div class="sv-card"><h3>Nivel 2 · 2 simulacros Medios</h3><p>Las cuatro secciones en ${CORTO_REACTIVOS} reactivos, la mayoría de dificultad alta, con cronómetro y tutor. Cada Medio adicional cuesta $50.</p></div>
-    <div class="sv-card"><h3>Nivel 3 · 1 examen Oficial</h3><p>${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas: la misma cantidad de preguntas, el tiempo y la dificultad de la PAA real. ¿Otro? Cuesta $100.</p></div>
-    <div class="sv-card"><h3>Práctica ilimitada</h3><p>Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.</p></div>
+    <div class="sv-card"><h3>Calentamientos <small class="sv-tag">Práctica ilimitada</small></h3><p>${CAL_REACTIVOS} reactivos de dificultad básica e intermedia con tutor, para entrar en ritmo sin frustrarte. Todos los que quieras.</p></div>
+    <div class="sv-card"><h3>Simulacros Medios <small class="sv-tag">Práctica ilimitada</small></h3><p>Las cuatro secciones en ${CORTO_REACTIVOS} reactivos, la mayoría de dificultad alta, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.</p></div>
+    <div class="sv-card"><h3>Examen Oficial <small class="sv-tag oro">Simulador completo</small></h3><p>2 exámenes de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas: la misma cantidad de preguntas, el tiempo y la dificultad de la PAA real. ¿Otro? Cuesta $100.</p></div>
+    <div class="sv-card"><h3>Por sección y por tema <small class="sv-tag">Práctica ilimitada</small></h3><p>Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.</p></div>
     <div class="sv-card"><h3>Medidor de preparación</h3><p>Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos puntos de tu meta.</p></div>
     <div class="sv-card"><h3>Historial en tu cuenta</h3><p>Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.</p></div>
   </div>

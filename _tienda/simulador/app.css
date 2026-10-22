@@ -324,3 +324,16 @@
 @media (prefers-color-scheme:dark){.sim-fig{background:#fff;color:#141114}}
 .sim-op-tag.n1{background:#e8f4ec;color:#1f6b41}.sim-op-tag.n2{background:#fff3df;color:#8a5a00}
 .sim-compartir{margin-bottom:10px}
+
+/* Planes (oct 2026): tarjeta para desbloquear lo que le falta, simulacros ilimitados y "ya estás listo" */
+.sim-plan-up { margin-top: 12px; display: grid; gap: 8px; justify-items: start; border: 1.5px dashed var(--line-2); background: var(--bg-2); }
+.sim-plan-up h3 { font-size: 19px; letter-spacing: -.02em; margin: 2px 0 0; }
+.sim-plan-up p { color: var(--fg-2); margin: 0 0 6px; font-size: 15.5px; }
+.sim-intentos.ilimitado { background: var(--verde-suave, #e8f4ed); }
+.sim-intentos.ilimitado b { color: var(--verde, #2B8553); }
+.sim-listo { margin-top: 16px; border: 1.5px solid var(--verde, #2B8553); background: linear-gradient(135deg, var(--verde-suave, #e8f4ed), var(--card)); }
+.sim-listo h2 { font-size: clamp(22px, 3vw, 28px); letter-spacing: -.03em; margin: 6px 0 6px; }
+.sim-listo p { color: var(--fg-2); margin: 0 0 14px; }
+.sim-casi { margin-top: 12px; }
+.sim-plan-l { display: grid; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.sim-plan-l li { display: flex; gap: 8px; align-items: flex-start; } .sim-plan-l svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--verde, #2B8553); }
