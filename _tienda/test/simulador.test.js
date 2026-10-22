@@ -323,3 +323,13 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     expect(html).toMatch(/Desde \$199 MXN/);
   });
 });
+
+describe('reembolsos del simulador (panel)', () => {
+  it('sin usar: sí aplica; con un simulacro empezado: no aplica', async () => {
+    expect((await admin.orden(env, orden.id)).reembolso).toMatchObject({ aplica: true });
+    env.DB.raw.exec(`INSERT INTO simulador_intentos (email, items) VALUES ('ana@mail.com', '[]')`);
+    const r = (await admin.orden(env, orden.id)).reembolso;
+    expect(r.aplica).toBe(false);
+    expect(r.motivo).toMatch(/Ya usó el simulador/);
+  });
+});

@@ -85,6 +85,10 @@ TERMINOS = [
 REEMBOLSOS = [
     ('regla', 'La regla general', '<p>Por tratarse de productos digitales que se entregan al momento, <b>no hay reembolso una vez que descargaste algún archivo</b> de tu compra.</p>'),
     ('sin-descargar', 'Si aún no descargaste nada', '<p>Si no has descargado ningún archivo, puedes pedir el reembolso dentro de los 5 días hábiles siguientes a tu compra. Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tu número de orden. Al reembolsarse, tu enlace de descarga se desactiva.</p>'),
+    ('acceso', 'Simulador PAA y productos de acceso', li(
+        'En los productos que se usan en línea en lugar de descargarse (como el <a href="/simulador-paa/">Simulador PAA</a>), usarlos cuenta igual que descargar: <b>no hay reembolso una vez que empezaste un simulacro, un examen o una práctica</b>, aunque no lo termines.',
+        'Si aún no lo has usado, puedes pedir el reembolso dentro de los 5 días hábiles siguientes a tu compra, como en el punto anterior. Al reembolsarse, el acceso se cierra.',
+        'Si algo del simulador falla y no te deja usarlo, escríbenos: lo resolvemos o te devolvemos tu dinero.')),
     ('reposicion', 'Garantía de reposición', li(
         'Si un archivo llega dañado, incompleto o no abre en los programas indicados en la página del producto, te lo reponemos sin costo.',
         'Escríbenos con tu número de orden y una captura del error. Si no podemos resolverlo, te devolvemos tu dinero.')),
@@ -401,7 +405,7 @@ def escribir(ruta, html):
 escribir('/legal/terminos/', pagina('/legal/terminos/', 'Términos y condiciones', 'Términos y <span class="metal">condiciones.</span>',
     'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS, actualizado='19 de octubre de 2026'))
 escribir('/legal/reembolsos/', pagina('/legal/reembolsos/', 'Política de reembolsos', 'Política de <span class="metal">reembolsos.</span>',
-    'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS))
+    'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS, actualizado='22 de octubre de 2026'))
 escribir('/legal/creadores/', pagina('/legal/creadores/', 'Términos para creadores', 'Términos para <span class="metal">creadores.</span>',
     'Cómo funciona vender tus productos digitales en la tienda de Vorka México: aprobación, contenido, comisiones, pagos e impuestos.', 'Creadores', CREADORES))
 escribir('/legal/brindi/', pagina('/legal/brindi/', 'Condiciones de Brindi', 'Condiciones de <span class="metal">Brindi.</span>',

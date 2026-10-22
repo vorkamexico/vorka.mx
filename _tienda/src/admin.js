@@ -127,7 +127,25 @@ export async function orden(env, id) {
   // Recordatorio de pago: se puede mandar una sola vez (si no, por qué no)
   const recordatorio = ['pending', 'failed'].includes(o.estado) ? { enviado: o.recordatorio_at, enviados: Number(o.seguimientos) || (o.recordatorio_at ? 1 : 0), maximo: MAX_SEGUIMIENTOS, motivo: await motivoNoRecordar(env, o) } : null;
   const regalos = o.regalo ? await all(env, 'SELECT id, estado, canjeado_email, canjeado_at, created_at FROM regalos WHERE order_id = ? ORDER BY id', o.id) : [];
-  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at };
+  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at, reembolso: await reembolsoDe(env, o, items, tokens) };
+}
+// ¿Se puede reembolsar? (política en vorka.mx/legal/reembolsos): solo si no se usó nada y dentro de 5 días hábiles.
+// Productos de acceso (Simulador PAA): basta con que haya empezado un simulacro, examen o sección. Lo decide el equipo
+// en Stripe; esto le dice en el panel si aplica y por qué.
+export async function reembolsoDe(env, o, items, tokens) {
+  if (o.estado !== 'paid' || o.proveedor === 'regalo' || o.proveedor === 'cortesia') return null;
+  const simulador = items.some(i => String(i.slug || '').startsWith('simulador-paa'));
+  if (simulador) {
+    const [r, t] = await Promise.all([
+      one(env, 'SELECT COUNT(*) n FROM simulador_resultados WHERE order_id = ?', o.id),
+      one(env, 'SELECT COUNT(*) n FROM simulador_intentos WHERE email = ? AND created_at >= ?', o.email, o.paid_at || o.created_at)]);
+    if (r.n || t.n) return { aplica: false, motivo: `Ya usó el simulador (${t.n} ${t.n === 1 ? 'simulacro o examen' : 'simulacros o exámenes'}, ${r.n} ${r.n === 1 ? 'resultado' : 'resultados'}). Por política no hay reembolso.` };
+  }
+  const descargas = tokens.reduce((s, x) => s + (x.descargas || 0), 0);
+  if (descargas) return { aplica: false, motivo: `Ya descargó ${descargas} ${descargas === 1 ? 'archivo' : 'archivos'}. Por política no hay reembolso (salvo archivo dañado).` };
+  const dias = (Date.now() - Date.parse(o.paid_at || o.created_at)) / 864e5;
+  if (dias > 7) return { aplica: false, motivo: 'Pasaron más de 5 días hábiles desde la compra.' };
+  return { aplica: true, motivo: simulador ? 'Aún no empieza ningún simulacro: se puede reembolsar.' : 'Aún no descarga nada: se puede reembolsar.' };
 }
 
 export async function reenviar(env, id) {
