@@ -2567,7 +2567,7 @@
   .hx-tag b { font-family: var(--display); font-weight: 400; font-size: 1.55em; line-height: 1; letter-spacing: .01em; }
   .hx-tag.atras { z-index: -1; }
   .hx-tag:hover { transform: translateY(-3px) rotate(0deg) !important; }
-  .t-verde { background: #2BA35A; left: -30%; top: 56%; transform: rotate(-4deg); }
+  .t-amarilla { background: #2BA35A; left: -30%; top: 56%; transform: rotate(-4deg); }
   .t-rosa { background: #E8478C; right: -26%; top: 14%; transform: rotate(5deg); padding-left: 64px; }
   .t-azul { background: #2E7FD0; right: -16%; top: 66%; transform: rotate(3deg); }
   .t-roja { background: #D63F4E; left: -34%; top: 34%; transform: rotate(-6deg); padding-right: 40px; }
@@ -2576,7 +2576,7 @@
     .hx-figura .hx-foto { width: 100% !important; height: auto !important; display: block; }
     .hx-tag { font-size: 12.5px; padding: 8px 13px; }
     .hx-tag.atras { z-index: 1; }
-    .t-verde { left: -6%; top: 56%; } .t-rosa { right: -5%; top: 22%; padding-left: 13px; } .t-azul { right: -4%; top: 68%; } .t-roja { left: -6%; top: 40%; padding-right: 13px; }
+    .t-amarilla { left: -6%; top: 56%; } .t-rosa { right: -5%; top: 22%; padding-left: 13px; } .t-azul { right: -4%; top: 68%; } .t-roja { left: -6%; top: 40%; padding-right: 13px; }
   }
   .conf-card { display: block !important; }
   .conf-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 26px; }
@@ -2588,11 +2588,11 @@
   .hx-tag span { opacity: .92; }
   .t-rosa { left: 52%; right: -31%; top: 15%; justify-content: flex-end; padding-left: 26px; transform: rotate(4deg); }
   .t-roja { left: -52%; right: 62%; top: 48%; justify-content: flex-start; padding-right: 26px; transform: rotate(-5deg); }
-  .t-verde { left: auto; right: -18%; top: 68%; transform: rotate(-3deg); }
+  .t-amarilla { background: #F7B33E; color: #141414; left: auto; right: -18%; top: 68%; transform: rotate(-3deg); }
   .t-azul { right: -52%; top: 71%; transform: rotate(3deg); }
   @media (prefers-reduced-motion: no-preference) {
     .hx-tag { animation: cinta 900ms cubic-bezier(.2,.8,.2,1) both; }
-    .t-rosa { animation-delay: 350ms; } .t-roja { animation-delay: 450ms; } .t-verde { animation-delay: 550ms; } .t-azul { animation-delay: 650ms; }
+    .t-rosa { animation-delay: 350ms; } .t-roja { animation-delay: 450ms; } .t-amarilla { animation-delay: 550ms; } .t-azul { animation-delay: 650ms; }
     .t-rosa, .t-azul { --desde: 60px; }
     @keyframes cinta { from { opacity: 0; translate: var(--desde, -60px) 0; } to { opacity: 1; translate: 0 0; } }
   }
@@ -2600,8 +2600,18 @@
   @media (max-width: 960px) {
     .hx-tag, .hx-tag.atras { z-index: 1; left: -2.5% !important; right: auto !important; width: auto; margin: 0; justify-content: flex-start !important; padding: 7px 14px !important; font-size: 12.5px; transform: none !important; box-shadow: 0 8px 18px -10px rgba(0,0,0,.5); }
     .hx-tag b { font-size: 1.35em; }
-    .t-rosa { top: 58%; } .t-verde { top: 65.5%; } .t-roja { top: 73%; }
+    .t-rosa { top: 49%; } .t-amarilla { top: 56.5%; } .t-roja { top: 64%; }
+    /* Las tiras salen de detrás de la foto al tocar el botón */
+    .hx-tag, .hx-tag.atras { opacity: 0; translate: 45% 0; scale: .92; pointer-events: none; animation: none !important; transition: opacity .3s ease, translate .55s cubic-bezier(.2,.9,.25,1.15), scale .55s cubic-bezier(.2,.9,.25,1.15); }
+    .hx-figura.abierto .hx-tag { opacity: 1; translate: 0 0; scale: 1; pointer-events: auto; }
+    .hx-figura.abierto .t-amarilla { transition-delay: 70ms; } .hx-figura.abierto .t-roja { transition-delay: 140ms; }
+    .hx-ver { display: inline-flex; position: absolute; z-index: 2; left: -2.5%; top: 72.5%; align-items: center; gap: 9px; padding: 7px 16px 7px 7px; border: 0; border-radius: 999px; background: #141414; color: #F5F5F0; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 22px -12px rgba(0,0,0,.6); -webkit-tap-highlight-color: transparent; }
+    .hx-ver i { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #141414; font-style: normal; font-size: 17px; font-weight: 800; line-height: 1; transition: transform .35s ease; }
+    .hx-figura.abierto .hx-ver i { transform: rotate(45deg); }
   }
+  .hx-ver { display: none; }
+  @media (max-width: 960px) { .hx-ver { display: inline-flex; } }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hx-ver { background: #F5F5F0; color: #141414; } }
   /* Sesiones: lista sobria en lugar de tarjetas de planes */
   .ses-lista { margin-top: 10px; border-top: 1px solid var(--rule); }
   .ses-fila { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1.25fr) minmax(0, 1.6fr) 150px 52px; align-items: center; gap: 28px; padding: 30px 6px; border-bottom: 1px solid var(--rule); color: var(--ink); transition: background .25s, padding .25s; }
@@ -2691,7 +2701,8 @@
     <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Impactando en</span> <b data-vivo="municipios">121</b> <span>municipios</span></a>
     <a class="hx-tag t-roja atras" href="./conferencias/"><span>Inspirando en</span> <b>+100</b> <span>conferencias</span></a>
     <img class="hx-foto" src="img/brandon-portada.webp" alt="Brandon Oleynick saludando" width="1000" height="1521" fetchpriority="high">
-    <a class="hx-tag t-verde" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><span>Liderando</span> <b>+3,000</b> <span>juventudes</span></a>
+    <a class="hx-tag t-amarilla" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><span>Liderando</span> <b>+3,000</b> <span>juventudes</span></a>
+    <button class="hx-ver" type="button" aria-expanded="false" data-abrir="Ver mi impacto"><i aria-hidden="true">+</i><span>Mi impacto</span></button>
   </div>
   <div class="shell hx-frente">
     <div class="hx-izq">
@@ -3517,6 +3528,15 @@ fetch('https://voluntarios.soyimpacto.org/api/publico/presencia').then(function 
   document.querySelectorAll('[data-vivo="municipios"]').forEach(function (e) { e.textContent = d.total_municipios.toLocaleString('es-MX'); });
   document.querySelectorAll('[data-vivo="estados"]').forEach(function (e) { e.textContent = (d.estados || []).length; });
 }).catch(function () {});
+</script>
+<script>
+(function () {
+  var b = document.querySelector('.hx-ver'); if (!b) return;
+  b.addEventListener('click', function () {
+    var f = b.parentNode, abierto = f.classList.toggle('abierto');
+    b.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
+})();
 </script>
 </body>
 </html>
