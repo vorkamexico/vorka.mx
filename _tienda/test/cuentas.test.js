@@ -125,3 +125,27 @@ describe('después de pagar', () => {
     expect(await A.suscripcionApp('laura@correo.mx', 'cuentas')).toMatchObject({ estado: 'canceled', vigente: false });
   });
 });
+
+describe('plan anual de Cuentas', () => {
+  it('la ficha muestra los dos planes y el ahorro', async () => {
+    const h = await (await pedir('/tienda/cuentas/')).text();
+    expect(h).toContain('$799 MXN');
+    expect(h).toContain('Ahorra $389');
+    expect(h).toContain('value="cuentas-anual"');
+    expect(h).toContain('value="cuentas-mensual" checked');
+    expect(await (await pedir('/tienda/cuentas/?plan=cuentas-anual')).text()).toContain('value="cuentas-anual" checked');
+  });
+  it('el checkout anual abre Stripe con intervalo anual de $799', async () => {
+    const r = await comprar({ slug: 'cuentas-anual' });
+    expect(r.status).toBe(200);
+    const p = llamada('/checkout/sessions')[0].params;
+    expect(p.get('mode')).toBe('subscription');
+    expect(p.get('line_items[0][price_data][recurring][interval]')).toBe('year');
+    expect(p.get('line_items[0][price_data][unit_amount]')).toBe('79900');
+    expect(p.get('subscription_data[metadata][app]')).toBe('cuentas');
+  });
+  it('con una suscripción vigente no se compra la otra', async () => {
+    env.DB.raw.exec("INSERT INTO suscripciones (id, email, app, product_id, estado) VALUES ('sub_m', 'laura@correo.mx', 'cuentas', 'prod_cuentas_mensual', 'active')");
+    expect((await comprar({ slug: 'cuentas-anual' })).status).toBe(409);
+  });
+});
