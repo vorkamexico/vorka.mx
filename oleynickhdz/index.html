@@ -2915,42 +2915,39 @@
         </div>
       </aside>
 
-      <form class="habla-form" id="habla-form" action="https://formsubmit.co/oleynickhdz@gmail.com" method="POST">
-        <input type="hidden" name="_subject" value="Nuevo mensaje desde brandonoleynick.mx">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_next" value="https://vorka.mx/oleynickhdz/?enviado=1#habla">
-        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <!-- Llega a os.vorka.mx: aviso a Brandon, copia a su correo y queda en Sesiones 1:1 › Mensajes de tu página -->
+      <form class="habla-form" id="habla-form" novalidate>
+        <input type="text" name="sitio" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <div class="row">
           <label>
             <span>Nombre</span>
-            <input type="text" name="Nombre" required autocomplete="name">
+            <input type="text" name="nombre" required autocomplete="name" maxlength="100">
           </label>
           <label>
             <span>Correo</span>
-            <input type="email" name="Correo" required autocomplete="email">
+            <input type="email" name="correo" required autocomplete="email" maxlength="120">
           </label>
         </div>
         <div class="row">
           <label>
             <span>Teléfono / WhatsApp</span>
-            <input type="tel" name="Telefono" required autocomplete="tel" placeholder="+52 461 000 0000">
+            <input type="tel" name="telefono" required autocomplete="tel" placeholder="461 000 0000" maxlength="30">
           </label>
           <label>
             <span>Ciudad o estado <em style="font-style: normal; opacity: 0.6; font-weight: 500;">(opcional)</em></span>
-            <input type="text" name="Ciudad" autocomplete="address-level2">
+            <input type="text" name="ciudad" autocomplete="address-level2" maxlength="80">
           </label>
         </div>
         <label>
           <span>Tu mensaje</span>
-          <textarea name="Mensaje" rows="6" required placeholder="Escríbeme una propuesta, una duda, una alianza…"></textarea>
+          <textarea name="mensaje" rows="6" required maxlength="3000" placeholder="Escríbeme una propuesta, una duda, una alianza…"></textarea>
         </label>
         <button type="submit">
           Enviar mensaje
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </button>
-        <p class="habla-note">Respondo el mismo día en horario hábil por WhatsApp o correo. Tu información se mantiene privada.</p>
+        <p class="habla-note" id="habla-msg" role="status">Respondo el mismo día en horario hábil por WhatsApp o correo. Tu información se mantiene privada. ¿Quieres una sesión? <a href="https://os.vorka.mx/agendar?o=oleynickhdz">Agéndala aquí</a>.</p>
         <div class="habla-sent" id="habla-sent">¡Mensaje enviado! Te respondo pronto por WhatsApp o correo.</div>
       </form>
     </div>
@@ -3148,10 +3145,6 @@
     // ===== Post-submit success banners (Formsubmit redirects back with query param) =====
     try {
       var params = new URLSearchParams(location.search);
-      if (params.get('enviado') === '1') {
-        var s = document.getElementById('habla-sent');
-        if (s) { s.classList.add('on'); setTimeout(function(){ s.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 250); }
-      }
     } catch (e) {}
   })();
 </script>
@@ -3184,6 +3177,26 @@
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
       .then(function (j) { f.style.display = 'none'; acepto.parentNode.style.display = 'none'; ok.textContent = j.ya ? 'Ya estabas suscrito: te seguirá llegando cada edición.' : 'Listo, te sumamos. Recibirás la próxima edición en tu correo.'; ok.classList.add('on'); })
       .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo en un momento.'; btn.disabled = false; });
+  });
+})();
+</script>
+
+<script>
+// "Habla conmigo": llega a os.vorka.mx (aviso a Brandon, copia a su correo y en Sesiones 1:1 › Mensajes de tu página)
+(function () {
+  var f = document.getElementById('habla-form'); if (!f) return;
+  var msg = document.getElementById('habla-msg'), ok = document.getElementById('habla-sent'), nota = msg.innerHTML;
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = function (n) { return (f.elements[n].value || '').trim(); }, btn = f.querySelector('button[type=submit]');
+    var error = v('nombre').length < 3 ? 'Escribe tu nombre.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('correo')) ? 'Revisa tu correo.' : v('telefono').replace(/\D/g, '').length < 10 ? 'Escribe tu WhatsApp a 10 dígitos.' : v('mensaje').length < 10 ? 'Cuéntame un poco más en tu mensaje.' : '';
+    if (error) { msg.textContent = error; msg.style.color = '#c04c3a'; return; }
+    btn.disabled = true; msg.style.color = ''; msg.innerHTML = nota;
+    fetch('https://os.vorka.mx/api/publico/agenda/mensaje', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mentor: 'brandon', nombre: v('nombre'), correo: v('correo'), telefono: v('telefono'), ciudad: v('ciudad'), mensaje: v('mensaje'), origen: 'vorka.mx/oleynickhdz', sitio: v('sitio') }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+      .then(function () { f.reset(); ok.classList.add('on'); ok.scrollIntoView({ behavior: 'smooth', block: 'center' }); btn.disabled = false; })
+      .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Escríbeme por WhatsApp, por favor.'; msg.style.color = '#c04c3a'; btn.disabled = false; });
   });
 })();
 </script>
