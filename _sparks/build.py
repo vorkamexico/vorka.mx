@@ -564,12 +564,59 @@ class Sitio:
 
     # ---- artículo
 
+    def vertical(self, foto_id):
+        w, h = self.manifest[id_archivo(foto_id)][:2]
+        return h > w * 1.08
+
+    def fotos_en_texto(self, n, bloques, desde):
+        """Reparte las fotos (sin la portada) entre los párrafos, para aligerar la lectura.
+        Una sola foto: horizontal a lo ancho o vertical a un lado del texto (alternando). Si hay más fotos
+        que espacios, se agrupan en pares o en mosaicos de tres. Devuelve {índice de bloque: html} y las que sobran."""
+        fotos = n["fotos"][1:]
+        # Espacios: después de un párrafo, cita o lista, sin el primero ni el último bloque (abre y cierra el texto)
+        huecos = [i for i in range(desde, len(bloques) - 1) if bloques[i].startswith(("<p", "<blockquote", "<ul"))]
+        if not fotos or not huecos:
+            return {}, fotos
+        # Ritmo: como máximo un momento con fotos cada dos espacios, para que el texto respire
+        grupos = min(len(fotos), max(1, (len(huecos) + 1) // 2))
+        cupo = min(len(fotos), grupos * 3)
+        tam = [cupo // grupos + (1 if g < cupo % grupos else 0) for g in range(grupos)]
+        elegidos = [huecos[int((g + 0.5) * len(huecos) / grupos)] for g in range(grupos)]
+        k, lado, salida = 0, 0, {}
+        alt = lambda i: "%s — foto %d" % (n["persona"] or n["titulo"], i + 2)
+        def a(f, i, sizes, clase=""):
+            return '<a href="%s" data-lb="%d"%s>%s</a>' % (self.foto(f, "1600.webp"), i + 1, clase, self.img_tag(f, alt(i), sizes))
+        for g, t in enumerate(tam):
+            grupo = fotos[k:k + t]
+            if t == 1:
+                f = grupo[0]
+                if self.vertical(f) and bloques[elegidos[g] + 1].startswith("<p"):
+                    # Vertical junto al texto (el párrafo siguiente la rodea), alternando lados
+                    clase = "af-lado " + ("der" if lado % 2 == 0 else "izq")
+                    lado += 1
+                    html = '<figure class="af %s">%s</figure>' % (clase, a(f, k, "(min-width:900px) 380px, 80vw"))
+                elif self.vertical(f):
+                    html = '<figure class="af af-vert">%s</figure>' % a(f, k, "(min-width:900px) 460px, 80vw")
+                else:
+                    html = '<figure class="af af-ancha">%s</figure>' % a(f, k, "(min-width:1100px) 900px, 100vw")
+            elif t == 2:
+                html = '<figure class="af af-par">%s</figure>' % "".join(a(f, k + j, "(min-width:900px) 450px, 50vw") for j, f in enumerate(grupo))
+            else:
+                html = '<figure class="af af-trio">%s</figure>' % "".join(
+                    a(f, k + j, "(min-width:900px) 600px, 100vw" if j == 0 else "(min-width:900px) 300px, 50vw") for j, f in enumerate(grupo))
+            salida[elegidos[g]] = html
+            k += t
+        return salida, fotos[cupo:]
+
     def articulo(self, n):
         c = self.cfg
         url_abs = self.abs + "/" + n["slug"] + "/"
         bloques = texto_a_bloques(n["texto"])
         anuncio = self.anuncio("slotArticulo")
-        if anuncio and len(bloques) > 3:
+        con_anuncio = bool(anuncio and len(bloques) > 3)
+        en_texto, sobran = self.fotos_en_texto(n, bloques, 2 if con_anuncio else 1)
+        bloques = [b + en_texto.get(i, "") for i, b in enumerate(bloques)]
+        if con_anuncio:
             bloques.insert(2, anuncio)
             anuncio = ""
         minutos = max(1, round(palabras(n["texto"]) / 200))
@@ -597,12 +644,15 @@ class Sitio:
         elif n["video"].startswith("http"):
             video = '<p><a class="btn blanco" href="%s" target="_blank" rel="noopener">Ver video ↗</a></p>' % esc(n["video"])
 
+        # Solo si sobran (más de 3 fotos por espacio, o un texto sin párrafos): galería al final
         galeria = ""
-        if len(n["fotos"]) > 1:
-            galeria = '<section class="gallery" aria-label="Galería de fotos"><h2>Galería</h2><div class="gal-grid">%s</div></section>' % "".join(
+        if sobran:
+            inicio = len(n["fotos"]) - len(sobran)
+            galeria = '<section class="gallery" aria-label="Más fotos"><h2>%s</h2><div class="gal-grid">%s</div></section>' % (
+                "Más fotos" if inicio > 1 else "Galería", "".join(
                 '<a href="%s" data-lb="%d">%s</a>' % (
-                    self.foto(f, "1600.webp"), i, self.img_tag(f, "%s — foto %d" % (n["titulo"], i + 1), "(min-width:720px) 240px, 50vw"))
-                for i, f in enumerate(n["fotos"]) if i > 0)
+                    self.foto(f, "1600.webp"), inicio + i, self.img_tag(f, "%s — foto %d" % (n["titulo"], inicio + i + 1), "(min-width:720px) 240px, 50vw"))
+                for i, f in enumerate(sobran)))
 
         etiquetas = ""
         if n["etiquetas"]:
