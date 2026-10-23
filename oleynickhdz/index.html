@@ -532,6 +532,45 @@
     .ms-mas { margin-left: 0; }
   }
 
+  /* ---- Retrato ilustrado sobre degradado ---- */
+  .portrait.portrait-arte { aspect-ratio: auto; background: transparent; box-shadow: none; overflow: visible; border-radius: 0; }
+  .portrait-arte::before { content: ""; position: absolute; inset: 8% -4% 0; border-radius: 50% 50% 32px 32px; background: linear-gradient(160deg, #F7B33E 0%, #E9782C 38%, #8446A8 78%, #2E88C8 100%); opacity: .9; z-index: -1; }
+  .portrait-arte img { position: relative; width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 24px 40px rgba(0,0,0,.25)); }
+  /* ---- Manifiesto y visión en tarjetas (toca para leer) ---- */
+  .reveal-section .reveal-details { width: 100%; min-width: 0; max-width: none; }
+  .reveal-section .principios { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  .reveal-section .principio { display: flex; flex-direction: column; gap: 14px; padding: 22px 20px; border: 1px solid var(--rule); border-top: 5px solid var(--accent); border-radius: 20px; background: var(--paper); text-align: left; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+  .reveal-section .principio:last-child { border-bottom: 1px solid var(--rule); }
+  .reveal-section .principio:hover { transform: translateY(-4px); box-shadow: 0 20px 36px -24px rgba(0,0,0,.35); }
+  .reveal-section .principio:nth-child(2) { border-top-color: var(--c-green); } .reveal-section .principio:nth-child(3) { border-top-color: var(--c-blue); }
+  .reveal-section .principio:nth-child(4) { border-top-color: var(--c-purple); } .reveal-section .principio:nth-child(5) { border-top-color: var(--c-red); }
+  .reveal-section .principio .num { font-size: 2.4rem; line-height: 1; }
+  .reveal-section .principio h3 { font-size: 1.08rem; line-height: 1.3; margin: 0; }
+  .reveal-section .principio p { display: none; margin: 0; font-size: 14px; }
+  .reveal-section .principio.abierto p { display: block; }
+  .reveal-section .principio::after { content: "Leer +"; margin-top: auto; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+  .reveal-section .principio.abierto::after { content: "Cerrar −"; }
+  .reveal-section.section { padding: clamp(56px, 8vh, 88px) 0; }
+  @media (max-width: 1080px) { .reveal-section .principios { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 720px) {
+    .reveal-section .principios { display: flex; flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: var(--gutter); padding-bottom: 10px; margin: 0 calc(var(--gutter) * -1); padding-left: var(--gutter); padding-right: var(--gutter); }
+    .reveal-section .principio { flex: 0 0 78%; scroll-snap-align: start; }
+  }
+  /* ---- Franja de fotos ---- */
+  .foto-franja { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px; padding: 8px 0 clamp(24px, 4vh, 40px); }
+  .foto-franja figure { margin: 0; border-radius: 22px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--paper-2); }
+  .foto-franja img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+  .foto-franja figure:hover img { transform: scale(1.04); }
+  @media (max-width: 720px) { .foto-franja { grid-template-columns: 1fr 1fr; } .foto-franja figure:first-child { grid-column: 1 / -1; } }
+  /* ---- Gana mientras compartes ---- */
+  .gana { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin: clamp(24px, 4vh, 48px) 0; padding: clamp(26px, 4vw, 44px); border-radius: 28px; background: linear-gradient(120deg, #F7B33E 0%, #E9782C 55%, #D63F4E 100%); color: #111; transition: transform .25s; }
+  .gana:hover { transform: translateY(-4px); }
+  .gana-pre { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .75; }
+  .gana h2 { margin: 8px 0 10px; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1; letter-spacing: -0.035em; font-weight: 800; }
+  .gana p { margin: 0; max-width: 54ch; font-weight: 500; }
+  .gana-cta { flex-shrink: 0; padding: 16px 26px; border-radius: 999px; background: #111; color: #fff; font-weight: 800; white-space: nowrap; }
+  @media (max-width: 760px) { .gana { flex-direction: column; align-items: flex-start; } }
+
   /* ============ SECTIONS ============ */
   .section { padding: clamp(72px, 11vh, 120px) 0; }
   .section + .section { border-top: 1px solid var(--rule); }
@@ -1648,7 +1687,6 @@
     margin: 0 0 28px;
     max-width: 44ch;
   }
-  .conf-cta-2{display:inline-block;margin:14px 0 0 18px;font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:4px}
   .conf-cta {
     display: inline-flex;
     align-items: center;
@@ -2440,10 +2478,10 @@
     </div>
     <div class="portrait-wrap">
       <span class="pdot d1" aria-hidden="true"></span><span class="pdot d2" aria-hidden="true"></span><span class="pdot d3" aria-hidden="true"></span><span class="pdot d4" aria-hidden="true"></span>
-      <div class="portrait">
-        <img src="brandon.jpg" alt="Retrato de Brandon Oleynick" width="900" height="1200" loading="eager" fetchpriority="high">
+      <div class="portrait portrait-arte">
+        <img src="img/brandon-arte.webp" alt="Retrato ilustrado de Brandon Oleynick" width="767" height="931" loading="eager" fetchpriority="high">
       </div>
-      <a class="badge b-top" href="./prensa/#reconocimientos"><span class="b-ico y"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></svg></span><span><b>Premio Municipal de la Juventud</b><small>Celaya 2026 · Políticas y Cívicas</small></span></a>
+      <a class="badge b-top" href="./prensa/#reconocimientos"><span class="b-ico y"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></svg></span><span><b>Premio Estatal de la Juventud</b><small>Guanajuato · Compromiso Social</small></span></a>
       <a class="badge b-bot" href="./prensa/#medios"><span class="b-ico g"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></svg></span><span><b>Premios FRISA y Bright Journey</b><small>Tecnológico de Monterrey</small></span></a>
     </div>
   </section>
@@ -2462,7 +2500,7 @@
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Manifiesto</div>
       <h2 class="section-title" id="h-manif">Cinco principios que <span class="accent">guían mi trabajo.</span></h2>
-      <p class="reveal-intro">Los principios que sostienen cada decisión que tomo con equipos, instituciones y comunidades.</p>
+      <p class="reveal-intro">Lo que sostiene cada decisión que tomo. Toca cada uno para leerlo.</p>
     </div>
     <div class="reveal-summary-wrap">
       <details class="reveal-details" open>
@@ -2511,13 +2549,22 @@
   </section>
 </div>
 
+<!-- FOTOS EN ACCIÓN -->
+<div class="shell">
+  <div class="foto-franja" aria-label="Brandon en conferencias">
+    <figure><img src="conferencias/gallery-1.webp" alt="Brandon Oleynick en el escenario frente a un auditorio lleno" loading="lazy" width="800" height="533"></figure>
+    <figure><img src="conferencias/gallery-2.webp" alt="Brandon Oleynick con jóvenes después de una conferencia" loading="lazy" width="1200" height="900"></figure>
+    <figure><img src="conferencias/gallery-6.webp" alt="Brandon Oleynick hablando de los Objetivos de Desarrollo Sostenible" loading="lazy" width="1200" height="900"></figure>
+  </div>
+</div>
+
 <!-- MI VISIÓN PARA MÉXICO (reveal, centered) -->
 <div class="shell">
   <section class="section reveal-section" id="vision" aria-labelledby="h-vis">
     <div class="section-head">
       <div class="section-eyebrow eyebrow-r">Mi visión para México</div>
       <h2 class="section-title" id="h-vis">Un país que se lidera <span class="a-r">desde abajo.</span></h2>
-      <p class="reveal-intro">Cinco ejes en los que trabajo hoy y en los que quiero seguir empujando. No es un programa cerrado: es la brújula con la que decido qué proyectos abrazar y qué compromisos asumir.</p>
+      <p class="reveal-intro">Cinco ejes en los que trabajo hoy. Toca cada uno para leerlo.</p>
     </div>
     <div class="reveal-summary-wrap">
       <details class="reveal-details" open>
@@ -2644,7 +2691,6 @@
           Ver conferencias
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
-        <a class="conf-cta-2" href="./conferencias/#solicitud">Solicitar una conferencia →</a>
       </div>
       <div class="conf-meta">
         <div class="m">
@@ -2777,6 +2823,18 @@
       </div>
     </section>
   </div>
+</div>
+
+<!-- GANA MIENTRAS COMPARTES (Puntos Vorka) -->
+<div class="shell">
+  <a class="gana" href="https://vorka.mx/tienda/puntos/">
+    <div>
+      <span class="gana-pre">Puntos Vorka</span>
+      <h2>Gana mientras compartes.</h2>
+      <p>Comparte la tienda de Vorka con tu liga y gana puntos por cada compra que hagan con ella. Úsalos en lo que quieras de la tienda.</p>
+    </div>
+    <span class="gana-cta">Quiero mi liga →</span>
+  </a>
 </div>
 
 <!-- SESIONES 1:1 (embudo principal: cada opción lleva directo a la agenda con el servicio ya elegido) -->
@@ -3273,6 +3331,15 @@
       .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Escríbeme por WhatsApp, por favor.'; msg.style.color = '#c04c3a'; btn.disabled = false; });
   });
 })();
+</script>
+<script>
+// Manifiesto y visión: cada tarjeta se abre al tocarla
+document.querySelectorAll('.reveal-section .principio').forEach(function (c) {
+  c.setAttribute('tabindex', '0'); c.setAttribute('role', 'button'); c.setAttribute('aria-expanded', 'false');
+  var t = function () { var a = c.classList.toggle('abierto'); c.setAttribute('aria-expanded', a ? 'true' : 'false'); };
+  c.addEventListener('click', t);
+  c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t(); } });
+});
 </script>
 </body>
 </html>
