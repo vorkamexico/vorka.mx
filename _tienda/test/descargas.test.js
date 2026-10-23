@@ -115,6 +115,16 @@ describe('/tienda/gracias', () => {
     expect(html).toContain('¡Listo! Revisa tu correo');
     expect(html).toContain('an***@mail.com');
     expect(html).not.toContain('ana@mail.com');
+    // Bienvenida: liga de Puntos (se gana recomendando, no es cashback) y a quién apoya Vorka
+    expect(html).toContain('¡Gracias por comprar en la tienda!');
+    expect(html).toContain('by vorka.mx');
+    expect(html).toContain('href="https://soyimpacto.org/"');
+    expect(html).not.toMatch(/cashback/i);
+  });
+
+  it('la bienvenida no sale si la compra aún no se paga', async () => {
+    const o = await crearOrden(env, { items: [{ slug: 'de-idea-a-proyecto' }], email: 'c@mail.com', nombre: 'Caro' });
+    expect(await (await pedir(`/tienda/gracias?order=${o.id}`)).text()).not.toContain('t-bienvenida"');
   });
 
   it('OXXO pendiente: mensaje de pago al realizarlo + sondeo', async () => {

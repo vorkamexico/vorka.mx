@@ -89,6 +89,17 @@ const SONDEO = `(function(){
   setTimeout(paso,5000);
 })();`;
 
+// Bienvenida al pagar (no en regalos): el nombre de lo que compró, su liga de Puntos (gana al recomendar) y a quién apoya Vorka.
+// Los puntos se ganan recomendando, no comprando: por eso no se llama "cashback".
+const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', cuentas: 'Cuentas', 'simulador-paa': 'el Simulador PAA' };
+export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO · Juventudes Impactando México A.C.</a>, la red de jóvenes que transforma sus comunidades en 121 municipios del país.';
+const bienvenida = o => {
+  const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;
+  return `<div class="t-bienvenida"><b>${nombre ? `¡Te damos la bienvenida a ${esc(nombre)}!` : '¡Gracias por comprar en la tienda!'}</b><small>by vorka.mx</small>
+    <p>Recomienda${nombre ? ` ${esc(nombre)}` : ' la tienda'} con tu liga de <a href="/tienda/puntos/">Puntos Vorka</a> y gana del 10% al 30% de cada compra en puntos: cada punto vale $1 en la tienda.</p>
+    <p class="t-impacto">${IMPACTO}</p></div>`;
+};
+
 export async function paginaGracias(env, url) {
   const o = await leer(env, url.searchParams.get('order'));
   if (!o) return pagina({
@@ -101,7 +112,8 @@ export async function paginaGracias(env, url) {
   const nota = `<p class="t-nota" id="estado-nota" hidden>Seguimos esperando la confirmación. No te preocupes: en cuanto llegue te mandamos el correo automáticamente.</p>`;
   return pagina({
     titulo: `${b.titulo} · Vorka México`, ruta: '/tienda/gracias', noindex: true,
-    cuerpo: `<div id="estado" data-order="${esc(o.id)}" data-vista="${v}" role="status" aria-live="polite">${aviso({ ...b, extra: (b.extra || '') + nota })}</div>`,
+    cuerpo: `<div id="estado" data-order="${esc(o.id)}" data-vista="${v}" role="status" aria-live="polite">${aviso({ ...b, extra: (b.extra || '') + nota + (v === 'pagado' && !o.regalo ? bienvenida(o) : '') })}</div>`,
+    head: '<style>.t-bienvenida{margin:22px auto 0;max-width:34em;text-align:center;border-top:1px solid var(--line);padding-top:18px;display:grid;gap:6px}.t-bienvenida>b{font-size:19px}.t-bienvenida>small{color:var(--fg-2);letter-spacing:.04em}.t-bienvenida p{margin:4px 0 0;color:var(--fg-2)}.t-impacto{font-size:14px}</style>',
     script: SONDEO,
   });
 }

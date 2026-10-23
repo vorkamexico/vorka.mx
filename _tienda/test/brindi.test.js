@@ -20,7 +20,7 @@ beforeEach(() => {
 describe('Brindi en la tienda', () => {
   it('los productos entran ocultos y no se pueden comprar hasta activarlos', async () => {
     const ps = await A.productosApp('brindi');
-    expect(ps).toHaveLength(11);
+    expect(ps).toHaveLength(12);
     expect(ps.every(p => !p.activo)).toBe(true);
     await expect(crearOrden(env, { items: [{ slug: 'brindi-celebracion' }], email: 'a@b.mx', nombre: 'Ana' })).rejects.toThrow('producto');
     const html = await (await pedir('/tienda/brindi/')).text();
@@ -146,10 +146,13 @@ describe('Brindi en la tienda', () => {
     expect(html).toContain('¿Ya la creaste? Paga Premium aquí');
     expect(html).toContain('¿Ya la creaste? Paga aquí');
     expect(html).toContain('<details class="br-compl">');   // complementos plegados
+    expect(html).toContain('href="https://soyimpacto.org/"');
     expect(html).toContain('/brindi/og/gala.webp');
     expect(html).toContain('Diseño Gala · incluido en Premium o +$149 MXN en otro plan');
     // Gala no se ofrece junto con Premium (ya lo incluye)
     expect(html).toContain('value="brindi-plantilla-premium" data-precio="14900" data-incluido-en="brindi-premium"');
+    expect(html).toContain('value="brindi-album" data-precio="19900" data-incluido-en="brindi-premium"');
+    expect(html).toContain('Álbum de fotos de tus invitados');
   });
 
   it('el WhatsApp de la página habla de Brindi, no de la consultoría', async () => {
@@ -169,6 +172,8 @@ describe('Brindi en la tienda', () => {
     const org = await (await pedir('/tienda/brindi/organizadores/')).text();
     expect(org).toContain('<option value="brindi-paquete-organizador" data-precio="249000" selected');
     expect(org).toContain('Gana con tu liga');
+    expect(org).toContain('Diseños con tu marca');
+    expect(org).toContain('https://os.vorka.mx/brindi/#/organizador');
     expect(org).toContain('Compra tu paquete');
     const pos = await (await pedir('/tienda/brindi/posadas/')).text();
     expect(pos).toContain('<option value="brindi-premium" data-precio="129000" selected');
@@ -186,5 +191,9 @@ describe('Brindi en la tienda', () => {
     expect(a).toMatch(/^MARIANAR[A-Z0-9]{2,8}$/);
     expect(await A.codigoPuntos('mariana@mail.com', 'Otra')).toBe(a);
     expect(await A.codigoPuntos('no-es-correo', 'X')).toBeNull();
+    const p = await A.puntosApp('mariana@mail.com', 'Mariana');
+    expect(p).toMatchObject({ code: a, liga: `https://vorka.mx/tienda/brindi/?ref=${a}`, disponibles: 0, ventas: 0 });
+    expect(p.pct).toBeGreaterThan(0);
+    expect(typeof p.nivel).toBe('string');
   });
 });

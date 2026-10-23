@@ -43,6 +43,9 @@ describe('POST /api/checkout', () => {
     expect((await r.json()).error).toContain('ya incluye el diseño Gala');
     expect(orden()).toHaveLength(0);
     expect((await pedir({ ...base, slug: 'brindi-celebracion', items: [{ slug: 'brindi-celebracion' }, { slug: 'brindi-plantilla-premium' }] })).status).toBe(200);
+    const r2 = await pedir({ ...base, email: 'otra@mail.com', slug: 'brindi-premium', items: [{ slug: 'brindi-premium' }, { slug: 'brindi-album' }] });
+    expect(r2.status).toBe(400);
+    expect((await r2.json()).error).toContain('álbum');
   });
 
   it('crea la orden pending y la sesión de Stripe con el precio de la base', async () => {

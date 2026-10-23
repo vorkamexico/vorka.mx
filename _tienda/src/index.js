@@ -22,7 +22,7 @@ import { paginaVuelve } from './vuelve.js';
 import { paginaCuentas } from './cuentas.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
-import { rutasPuntos, codigoDe } from './puntos.js';
+import { rutasPuntos, codigoDe, saldoDe, nivelActual } from './puntos.js';
 import * as retiros from './puntos-retiros.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
@@ -96,6 +96,15 @@ export class Admin extends WorkerEntrypoint {
     const code = await codigoDe(this.env, e, nombre ? String(nombre).slice(0, 80) : null);
     await this.env.DB.prepare('INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)').bind(e).run();
     return code;
+  }
+  // Resumen de Puntos para el portal de organizadores de Brindi: liga, saldo y nivel (crea la cuenta la primera vez)
+  async puntosApp(email, nombre) {
+    const code = await this.codigoPuntos(email, nombre);
+    if (!code) return null;
+    const e = String(email).trim().toLowerCase();
+    const [s, n] = await Promise.all([saldoDe(this.env, e), nivelActual(this.env, e)]);
+    return { code, liga: `${this.env.SITE_URL || 'https://vorka.mx'}/tienda/brindi/?ref=${code}`, disponibles: s.disponibles, ventas: n.ventas, pct: n.pct,
+      nivel: n.nivel.actual.nombre, siguiente: n.nivel.siguiente ? { nombre: n.nivel.siguiente.nombre, pct: n.nivel.siguiente.pct, faltan: n.nivel.faltan } : null };
   }
   // Apps por suscripción (Vuelve): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }

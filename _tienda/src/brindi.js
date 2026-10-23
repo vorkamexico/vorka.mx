@@ -8,6 +8,7 @@ import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { IMPACTO } from './gracias.js';
 
 export const APP = 'brindi';
 const OS = 'https://os.vorka.mx';
@@ -67,7 +68,7 @@ export async function resumenApp(env, app, { desde } = {}) {
 const PLANES = [
   { slug: 'brindi-esencial', nombre: 'Esencial', para: 'Una fiesta sencilla', invitados: '100', items: ['Tu invitación con tu diseño, fotos y textos', 'Un enlace y un QR para compartir con todos', 'Mapa para llegar', 'Tus invitados confirman desde su celular', 'Ves quién viene en tiempo real'] },
   { slug: 'brindi-celebracion', nombre: 'Celebración', para: 'Bodas, XV años y graduaciones', invitados: '300', recomendado: true, items: ['Todo lo de Esencial', 'Un enlace personal por invitado, listo para WhatsApp', 'Lugares contados por invitado (nadie lleva de más)', 'Sube tu lista desde Excel', 'Galería, cuenta regresiva e itinerario'] },
-  { slug: 'brindi-premium', nombre: 'Premium', para: 'Eventos grandes con control en la entrada', invitados: '1,000', items: ['Todo lo de Celebración', 'Diseños premium', 'Pase con QR de acceso para cada invitado', 'Tu equipo lo escanea en la entrada con el celular', 'Nadie entra dos veces con el mismo pase', 'Atención prioritaria'] },
+  { slug: 'brindi-premium', nombre: 'Premium', para: 'Eventos grandes con control en la entrada', invitados: '1,000', items: ['Todo lo de Celebración', 'Diseños premium', 'Pase con QR de acceso para cada invitado', 'Tu equipo lo escanea en la entrada con el celular', 'Nadie entra dos veces con el mismo pase', 'Álbum de fotos de tus invitados', 'Atención prioritaria'] },
 ];
 // Complementos agrupados por la necesidad de quien ya tiene su invitación (el Paquete Organizador va con los planes)
 const GRUPOS_EXTRA = [
@@ -79,6 +80,7 @@ const GRUPOS_EXTRA = [
     ['brindi-mejora-celebracion', 'Subir de Esencial a Celebración', 'Para tener enlaces personales por invitado. Pagas solo la diferencia.'],
     ['brindi-mejora-premium', 'Subir de Celebración a Premium', 'Para tener pases con QR en la entrada. Pagas solo la diferencia.'],
     ['brindi-plantilla-premium', 'Diseño Gala', 'Usa el diseño Gala (glamour) sin cambiar de plan.'],
+    ['brindi-album', 'Álbum de invitados', 'El día del evento tus invitados suben sus fotos desde la invitación; tú eliges cuáles se ven y las descargas todas.'],
   ] },
   { titulo: '¿Prefieres que lo hagamos por ti?', items: [
     ['brindi-configuracion-asistida', 'Te ayudamos a configurarla', 'Una videollamada de 30 minutos: cargamos tu lista contigo y la dejamos lista.'],
@@ -126,6 +128,7 @@ const FAQ = [
   ['¿Cuánto tiempo está en línea?', 'Hasta 30 días después de la fecha de tu evento. Después mostramos un mensaje de agradecimiento y guardamos tus datos 90 días más para que los descargues; luego se borran. Puedes extenderlo con el complemento de 90 días.'],
   ['¿Qué pasa con los datos de mis invitados?', 'Solo tú los ves. Las invitaciones no aparecen en Google (salvo que tú lo actives) y los enlaces personales usan códigos aleatorios que no revelan nombres. No vendemos ni compartimos datos y puedes borrar todo cuando quieras. Lee el <a href="/legal/brindi/privacidad-invitados/">aviso de privacidad para invitados</a>.'],
   ['¿Tienen soporte?', 'Sí. Escríbenos desde la sección Ayuda de tu panel o a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. En Premium te atendemos con prioridad. Si prefieres que lo hagamos contigo, existe la configuración asistida.'],
+  ['¿Mis invitados pueden compartir sus fotos?', 'Sí, con el álbum de invitados (incluido en Premium; complemento en Esencial y Celebración). Desde el día del evento, en la misma invitación aparece “Subir mis fotos”: no instalan nada. Tú revisas cada foto antes de que la vean los demás y al final descargas todas. Hasta 400 fotos por evento.'],
   ['¿Sirve para eventos de empresa?', 'Sí: lanzamientos, posadas, congresos o cenas de gala. Con Premium controlas el acceso en la entrada. Para varios eventos al año, el paquete Organizador sale más barato.'],
 ];
 const VISIBLES_FAQ = 8;
@@ -199,7 +202,7 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a.replaceAll(`${OS}/brindi/"`, `${APP}"`)}</div></details>`;
   // Lo que el plan Premium ya incluye no se ofrece como complemento (el diseño Gala)
-  const incluido = slug => slug === 'brindi-plantilla-premium' ? ' data-incluido-en="brindi-premium"' : '';
+  const incluido = slug => ['brindi-plantilla-premium', 'brindi-album'].includes(slug) ? ' data-incluido-en="brindi-premium"' : '';
   const otras = Object.entries(VARIANTES).filter(([k]) => k && k !== clave);
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/brindi/`, app: 'Brindi' },
     titulo: V.titulo, ruta, imagen: `${OS}/brindi/og/aurora.png`, descripcion: V.descripcion, whatsappTexto: msgWa,
@@ -231,9 +234,11 @@ export async function paginaBrindi(env, req, url, clave = '') {
 </div></section>
 ${clave === 'organizadores' ? `
 <section class="t-sec suave" id="organizadores"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Para organizadores</span><h2 class="h2">Un servicio más para tus clientes, sin trabajo extra</h2></div>
+  <div class="cab rv"><span class="etiqueta">Para organizadores</span><h2 class="h2">Un servicio más para tus clientes, sin trabajo extra</h2><p class="lead"><a class="btn tinta" href="${OS}/brindi/#/organizador" rel="noopener">Entrar a mi portal de organizador ${FLECHA}</a></p></div>
   <ul class="br-ben">${[['📦', 'Paquete de 5 eventos', `5 eventos Celebración${org ? ` por ${precio(org)}${ahorroOrg > 0 ? `: ahorras ${precio({ precio_centavos: ahorroOrg })} contra comprarlos uno por uno` : ''}` : ''}. Los usas cuando quieras, uno por evento.`],
     ['🔗', 'Gana con tu liga', 'Con <a href="/tienda/puntos/">Puntos Vorka</a> tienes una liga para recomendar Brindi. Cada cliente que contrata con ella te da del 10% al 30% de lo que pagó en puntos (1 punto = $1 en la tienda).'],
+    ['🎨', 'Diseños con tu marca', `Nuestro equipo diseña contigo una plantilla con tu logo, tus colores y tu tipografía para usarla con todos tus clientes. La pides desde tu <a href="${OS}/brindi/#/organizador">portal de organizador</a> y te cotizamos sin compromiso.`],
+    ['📋', 'Tu portal de organizador', `En <a href="${OS}/brindi/#/organizador">os.vorka.mx/brindi</a> ves tus paquetes, tu saldo de puntos y tu liga, y sigues cada pedido de diseño.`],
     ['🤝', 'Te ayudamos con el primero', 'Con la configuración asistida cargamos contigo la lista de invitados de tu primer evento en una videollamada de 30 minutos.']]
     .map(([i, t, d]) => `<li class="rv"><span aria-hidden="true">${i}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
 </div></section>` : `
@@ -300,7 +305,7 @@ ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items:
   <p class="br-cupo">¿Es algo rápido o informal, como una fiesta o un taller? <a href="/tienda/cupo/">Cupo</a> es gratis hasta 30 personas.</p>
   <nav class="br-tipos" aria-label="Brindi por tipo de evento"><b>Brindi para:</b>${otras.map(([k, v]) => `<a href="/tienda/brindi/${k}/">${esc(v.corta)}</a>`).join('')}${clave ? '<a href="/tienda/brindi/">Todas las celebraciones</a>' : ''}</nav>
   <div class="br-confianza">${[['Pago seguro', 'Stripe procesa el pago; nunca vemos tu tarjeta. Factura disponible escribiendo a hola@vorka.mx.'], ['Tus datos, tuyos', 'Invitaciones fuera de Google por defecto, enlaces con códigos aleatorios y borrado cuando tú quieras.'],
-    ['Soporte de personas', 'Escríbenos desde tu panel o a hola@vorka.mx. Respondemos en horario laboral de México.'], ['Respaldo', 'Brindi es una marca desarrollada por Vorka México.']].map(([t, d]) => `<div><b>${t}</b><p>${d}</p></div>`).join('')}</div>
+    ['Soporte de personas', 'Escríbenos desde tu panel o a hola@vorka.mx. Respondemos en horario laboral de México.'], ['Respaldo', `Brindi es una marca desarrollada por Vorka México. ${IMPACTO}`]].map(([t, d]) => `<div><b>${t}</b><p>${d}</p></div>`).join('')}</div>
   <p class="t-nota t-legal"><a href="/legal/brindi/">Condiciones de Brindi</a> · <a href="/legal/brindi/privacidad/">Aviso de privacidad</a> · <a href="/legal/brindi/privacidad-invitados/">Privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
 </div></section>
 <div class="t-barra br-barra" id="barra-brindi"><div><b>Créala gratis</b><small>Pagas solo al publicar</small></div><a class="btn tinta chico" href="${APP}" rel="noopener">Empezar ${FLECHA}</a></div>
