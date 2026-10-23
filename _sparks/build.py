@@ -583,7 +583,7 @@ class Sitio:
         tam = [cupo // grupos + (1 if g < cupo % grupos else 0) for g in range(grupos)]
         elegidos = [huecos[int((g + 0.5) * len(huecos) / grupos)] for g in range(grupos)]
         k, lado, salida = 0, 0, {}
-        alt = lambda i: "%s — foto %d" % (n["persona"] or n["titulo"], i + 2)
+        alt = lambda i: "%s, foto %d de la historia «%s» · Revista Sparks %s" % (n["persona"] or "Sparks", i + 2, n["titulo"], self.cfg["ciudad"])
         def a(f, i, sizes, clase=""):
             return '<a href="%s" data-lb="%d"%s>%s</a>' % (self.foto(f, "1600.webp"), i + 1, clase, self.img_tag(f, alt(i), sizes))
         for g, t in enumerate(tam):
@@ -697,7 +697,7 @@ class Sitio:
         autor = {"@type": "Person", "name": n["autor"]} if n["autor"] else {"@type": "Organization", "name": "Vorka México"}
         jsonld = [{
             "@context": "https://schema.org", "@type": "NewsArticle", "headline": n["titulo"][:110],
-            "description": n["resumen"], "image": [self.og_de(n)], "datePublished": n["_d"].strftime("%Y-%m-%d"),
+            "description": n["resumen"], "image": self.imagenes_abs(n) or [self.og_de(n)], "datePublished": n["_d"].strftime("%Y-%m-%d"),
             "dateModified": n["_d"].strftime("%Y-%m-%d"), "author": autor, "inLanguage": "es-MX",
             "mainEntityOfPage": url_abs, "articleSection": n["categoria"], "keywords": ", ".join(n["etiquetas"]),
             "about": [{"@type": "Person", "name": n["persona"]}] if n["persona"] else [],
@@ -728,11 +728,16 @@ class Sitio:
             out.append(item)
         return json.dumps({"img": self.almacen.url_base, "n": out}, ensure_ascii=False, separators=(",", ":"))
 
+    def imagenes_abs(self, n):
+        """Todas las fotos de la nota con URL absoluta (para Google: datos estructurados y sitemap de imágenes)."""
+        base = self.cfg["sitio"].rstrip("/")
+        return [u if u.startswith("http") else base + u for u in (self.foto(f, "1600.webp") for f in n["fotos"])]
+
     def sitemap(self):
         urls = ['<url><loc>%s/</loc>%s<changefreq>hourly</changefreq></url>' % (
             self.abs, "<lastmod>%s</lastmod>" % self.noticias[0]["_d"].strftime("%Y-%m-%d") if self.noticias else "")]
         for n in self.noticias:
-            img = '<image:image><image:loc>%s</image:loc></image:image>' % esc(self.og_de(n)) if n["fotos"] else ""
+            img = "".join('<image:image><image:loc>%s</image:loc></image:image>' % esc(u) for u in ([self.og_de(n)] + self.imagenes_abs(n)[1:])) if n["fotos"] else ""
             urls.append('<url><loc>%s/%s/</loc><lastmod>%s</lastmod>%s</url>' % (self.abs, n["slug"], n["_d"].strftime("%Y-%m-%d"), img))
         return ('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
                 'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n%s\n</urlset>\n') % "\n".join(urls)
