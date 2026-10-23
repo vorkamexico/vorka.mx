@@ -2617,24 +2617,15 @@
   .hx-ver { display: none; }
   @media (max-width: 960px) { .hx-ver { display: inline-flex; } }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .hx-ver { background: #F5F5F0; color: #141414; } }
-  /* Paleta de etiquetas: azul, amarillo y morado de Vorka. El punto amarillo indica cifra en vivo */
-  .hx-tag.t-rosa { background: var(--c-blue, #2E88C8); color: #fff; }
+  /* Paleta de etiquetas: rojo, amarillo y rosa. El punto amarillo indica cifra en vivo */
+  .hx-tag.t-rosa { background: var(--c-red, #D63F4E); color: #fff; }
   .hx-tag.t-rosa b { color: #fff; }
   .hx-tag.t-rosa::before { content: ""; flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: #F7B33E; box-shadow: 0 0 0 0 rgba(247,179,62,.8); animation: envivo 2s ease-out infinite; }
   @keyframes envivo { 0% { box-shadow: 0 0 0 0 rgba(247,179,62,.8); } 70%, 100% { box-shadow: 0 0 0 8px rgba(247,179,62,0); } }
   .hx-tag.t-amarilla { background: var(--accent, #F7B33E); color: #141414; }
-  .hx-tag.t-roja { background: var(--c-purple, #8446A8); color: #fff; }
+  .hx-tag.t-roja { background: #E8478C; color: #fff; }
   .hx-tag.t-roja b { color: #fff; }
   .hx-tag { box-shadow: 0 12px 26px -14px rgba(0,0,0,.45); }
-  /* Celular: portada centrada y equilibrada */
-  @media (max-width: 760px) {
-    .hx-nom { text-align: center; }
-    .hx-ape { text-align: center; }
-    .hx-izq { text-align: center; margin: 0 auto; max-width: 34ch; }
-    .hx-ctas { justify-content: center; flex-direction: column; gap: 14px; }
-    .hx-tag, .hx-tag.atras { left: 0 !important; right: 0 !important; margin: 0 auto !important; width: max-content; }
-    .hx-ver { left: 0; right: 0; margin: 0 auto; width: max-content; }
-  }
   @media (prefers-reduced-motion: reduce) { .hx-tag.t-rosa::before { animation: none; } }
 </style>
 </head>
