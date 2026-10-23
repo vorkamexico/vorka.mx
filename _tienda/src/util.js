@@ -28,3 +28,13 @@ export const correoOculto = e => {
 };
 
 export const pesos = centavos => '$' + (Number(centavos || 0) / 100).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' MXN';
+
+// CLABE interbancaria: 18 dígitos; el último es el verificador (pesos 3, 7, 1 sobre los primeros 17, módulo 10)
+export function clabeValida(clabe) {
+  const c = String(clabe || '').replace(/\s+/g, '');
+  if (!/^\d{18}$/.test(c)) return false;
+  const pesos = [3, 7, 1];
+  let suma = 0;
+  for (let i = 0; i < 17; i++) suma += (Number(c[i]) * pesos[i % 3]) % 10;
+  return (10 - (suma % 10)) % 10 === Number(c[17]);
+}

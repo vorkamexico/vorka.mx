@@ -6,9 +6,8 @@ import { json, fail, sha256, correoOculto } from './util.js';
 import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento } from './simulador/index.js';
-import { productoPorSlug } from './modelo.js';
+import { productoPorSlug, afiliadoActivo } from './modelo.js';
 import { cuentaActual, saldoDe } from './puntos.js';
-import { socioParaCompra, COOKIE_SOCIO } from './socios.js';
 import { suscripcionDe, itemsSuscripcion, vigente } from './suscripciones.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
@@ -22,7 +21,7 @@ export const EsquemaCheckout = z.object({
   slug: slug.optional(),
   items: z.array(z.object({ slug, cantidad: z.number().int().min(1).max(10).default(1) })).min(1).max(20).optional(),
   ref: z.string().trim().regex(/^[A-Za-z0-9_-]{1,40}$/).optional().or(z.literal('')),
-  // Código de un socio Vorka escrito en el formulario (gana sobre la liga); si no existe o está suspendido se ignora
+  // Código de quien te recomendó escrito en el formulario (gana sobre la liga); si no existe o está inactivo se ignora
   codigo: z.string().trim().max(40).optional().or(z.literal('')),
   // Comprar para regalar (solo productos con contenido.regalable): una liga de un solo uso por unidad
   para_quien: z.enum(['yo', 'regalo']).optional(),   // formulario sin JavaScript
@@ -99,17 +98,16 @@ export async function checkout(req, env) {
     for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p?.creador_id) return error('Los puntos se canjean en productos de Vorka México, no en los de creadores.'); }
     puntos = { email: cta.email, disponibles: (await saldoDe(env, cta.email)).disponibles };
   }
-  // Socio Vorka: el código escrito gana sobre la liga (cookie de 30 días)
-  const galleta = cookie(req, COOKIE_SOCIO);
-  const socio = await socioParaCompra(env, { codigo: d.codigo, cookie: galleta ? decodeURIComponent(galleta) : null, email: d.email });
+  // Quién recomendó: el código escrito gana sobre la liga (?ref= en el formulario o la cookie de 30 días)
+  const codigoEscrito = /^[A-Za-z0-9_-]{1,40}$/.test(d.codigo || '') && (await afiliadoActivo(env, d.codigo)) ? d.codigo : null;
 
   let orden;
   try {
-    orden = await crearOrden(env, { puntos, socio, suscripcion: subs.length > 0,
+    orden = await crearOrden(env, { puntos,
       items,
       email: d.email, nombre: d.nombre,
       regalo: d.regalo ? { para: d.regalo_para || null, mensaje: d.regalo_mensaje || null } : null,
-      ref: d.ref || cookie(req, 'vorka_ref'),
+      ref: codigoEscrito || d.ref || cookie(req, 'vorka_ref'),
     });
   } catch (e) {
     if (e.message === 'producto') return error('Este producto no está disponible.', 404);

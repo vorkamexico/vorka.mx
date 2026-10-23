@@ -6,22 +6,27 @@
 //                                   instalada, que en iPhone no comparte cookies con Safari).
 //   /tienda/cuenta/sw.js · manifest.webmanifest · iconos/<n>.png
 //   /api/puntos/entrar · codigo · salir · saldo · estado · meta · ajustes · sugerir · leidas · push/{clave,suscribir,quitar}
-// Reglas: por cada compra pagada que entra con tu liga ganas 10 puntos (no cuenta comprarte a ti mismo); 20 (puntos dobles)
-// si la compra incluye un producto con promoción vigente o un producto que tú sugeriste y el equipo aceptó.
+//   /api/puntos/retiro              transferencia a cuenta (solo cuentas habilitadas por el equipo)
+// Reglas (Socios Vorka quedó integrado aquí): por cada compra pagada que entra con tu liga ganas un % de lo cobrado de
+// productos de Vorka en puntos, según tu nivel del semestre (10% a 30%, ver puntos-reglas.js). +10 puntos porcentuales
+// (tope 40%) si la compra incluye un producto con promoción vigente o un producto que tú sugeriste y el equipo aceptó.
+// Comprarte a ti mismo no cuenta. Las renovaciones de suscripciones dan puntos hasta la factura 12 (no suben de nivel).
 // 1 punto = $1 MXN, se canjean en cualquier producto de la tienda; siempre se cobra al menos $10 (mínimo de la pasarela).
 // Si una compra se reembolsa, sus puntos se revierten exactamente (y los que se usaron en ella, regresan).
-// Las comisiones en DINERO (affiliates.tipo = 'dinero') son solo por invitación: las da de alta el equipo.
-import { one, all, run, json, fail, aleatorio, sha256, iguales } from './util.js';
+// Transferencia a cuenta: solo si el equipo la habilitó para esa persona (puntos_cuentas.puede_retirar); SPEI manual,
+// mínimo 500 puntos, y los puntos de cada venta se pueden transferir 7 días después. No se anuncia en textos públicos.
+import { one, all, run, json, fail, aleatorio, sha256, iguales, clabeValida } from './util.js';
 import { hashToken } from './entrega.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
 import { dentroDelLimite, VENDIBLE } from './modelo.js';
 import { avisar, rutasPush } from './puntos-push.js';
-import { PUNTOS_POR_COMPRA, MULTIPLICADOR_DOBLE, COBRO_MINIMO, NIVELES, nivelDe, objetivoMeta, ventasPara, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
+import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
 import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } from './puntos-app.js';
+import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
 
-export { PUNTOS_POR_COMPRA, COBRO_MINIMO };
+export { COBRO_MINIMO };
 const COOKIE = 'vorka_cuenta';
 const ENLACE_MIN = 30, CODIGO_MIN = 15, CODIGO_INTENTOS = 5, SESION_DIAS = 60;
 const emailValido = e => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e || '');
@@ -71,11 +76,21 @@ export const descuentoMaximo = (saldo, total) => Math.max(0, Math.min(saldo * 10
 // Compras con tu liga que siguen vigentes (las reembolsadas no cuentan): definen tu nivel y tus logros
 const VIGENTE = "m.tipo = 'ganado' AND NOT EXISTS (SELECT 1 FROM puntos_movimientos r WHERE r.order_id = m.order_id AND r.tipo = 'revertido')";
 export const ventasDe = async (env, email) => (await one(env, `SELECT COUNT(*) n FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE}`, email)).n;
+// Ventas vigentes del semestre (definen el nivel y el %). Las renovaciones no cuentan (no tienen order_id).
+export const ventasSemestre = async (env, email, fecha = new Date()) => {
+  const sem = semestreMx(fecha);
+  return (await one(env, `SELECT COUNT(*) n FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE} AND m.order_id IS NOT NULL AND m.created_at >= ? AND m.created_at < ?`, email, sem.desde, sem.hasta)).n;
+};
+// Nivel y % de hoy (lo que ganaría la siguiente venta sin puntos extra)
+export async function nivelActual(env, email, fecha = new Date()) {
+  const ventas = await ventasSemestre(env, email, fecha), sem = semestreMx(fecha);
+  return { ventas, semestre: sem, nivel: nivelDe(ventas), pct: pctPara(ventas) };
+}
 
-// ---------- puntos dobles ----------
+// ---------- puntos extra (antes "puntos dobles") ----------
 // Multiplicador de una orden para quien compartió la liga: se revisa cada producto de la orden y se toma el mayor
-// (2 si ese producto tiene promoción vigente el día del pago, o si lo sugirió quien compartió y el equipo lo aceptó
-// antes del pago). Los dobles no se acumulan entre sí: el máximo es 2× por orden.
+// (2 = con puntos extra si ese producto tiene promoción vigente el día del pago, o si lo sugirió quien compartió y el equipo
+// lo aceptó antes del pago). Los extra no se acumulan entre sí: una vez por orden (+10 puntos porcentuales, tope 40%).
 export async function multiplicadorDe(env, orden, refEmail) {
   const items = await all(env, 'SELECT i.product_id, i.nombre FROM order_items i WHERE i.order_id = ? ORDER BY i.id', orden.id);
   const pagada = orden.paid_at || new Date().toISOString(), dia = diaMx(pagada);
@@ -83,8 +98,8 @@ export async function multiplicadorDe(env, orden, refEmail) {
   for (const it of items) {
     const sug = await one(env, "SELECT id FROM puntos_sugerencias WHERE email = ? AND estado = 'aceptada' AND product_id = ? AND decidida_at <= ? LIMIT 1", refEmail, it.product_id, pagada);
     const promo = sug ? null : await one(env, 'SELECT id FROM puntos_promos WHERE product_id = ? AND inicia <= ? AND termina >= ? LIMIT 1', it.product_id, dia, dia);
-    if ((sug || promo) && mejor.mult < MULTIPLICADOR_DOBLE)
-      mejor = { mult: MULTIPLICADOR_DOBLE, motivo: sug ? 'sugerencia' : 'promo', product_id: it.product_id, producto: it.nombre };
+    if ((sug || promo) && mejor.mult < 2)
+      mejor = { mult: 2, motivo: sug ? 'sugerencia' : 'promo', product_id: it.product_id, producto: it.nombre };
   }
   return mejor;
 }
@@ -106,12 +121,66 @@ export async function puntosAlPagar(env, orderId) {
   }
   // Gana quien compartió la liga, si es una cuenta de puntos y no se compró a sí mismo
   if (!(o.ref_tipo === 'puntos' && o.ref_email && o.ref_email !== o.email && o.monto_centavos > 0)) return;
+  const base = await baseDeOrden(env, o);
+  if (!base) return;   // solo productos de creadores: no dan puntos
   const m = await multiplicadorDe(env, o, o.ref_email);
-  const puntos = PUNTOS_POR_COMPRA * m.mult;
-  const nota = m.mult > 1 ? `Puntos dobles${m.motivo === 'sugerencia' ? ' por tu sugerencia' : ''} · ${m.producto}` : `Compra con tu liga${m.producto ? ` · ${m.producto}` : ''}`;
-  const r = await run(env, "INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota, product_id, multiplicador, motivo) VALUES (?, 'ganado', ?, ?, ?, ?, ?, ?)",
-    o.ref_email, puntos, o.id, nota.slice(0, 160), m.product_id, m.mult, m.motivo);
-  if (r.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos, ...m, orderId: o.id });
+  const pagada = o.paid_at || new Date().toISOString();
+  const nota = m.mult > 1 ? `Puntos extra${m.motivo === 'sugerencia' ? ' por tu sugerencia' : ''} · ${m.producto}` : `Compra con tu liga${m.producto ? ` · ${m.producto}` : ''}`;
+  const r = await insertarGanado(env, { email: o.ref_email, order_id: o.id, base, extra: m.mult > 1, pagada, cuenta: true,
+    nota, product_id: m.product_id, multiplicador: m.mult, motivo: m.motivo });
+  if (r.meta.changes) {
+    const g = await one(env, "SELECT puntos, pct FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
+    await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: m.mult, motivo: m.motivo, producto: m.producto, orderId: o.id });
+  }
+}
+
+// Base de una orden: lo efectivamente cobrado de productos de Vorka (neto de descuentos, IVA incluido, antes de la
+// comisión de Stripe). Si la orden mezcla productos de creadores, se prorratea. Los de creadores no dan puntos.
+export async function baseDeOrden(env, o) {
+  const items = await all(env, 'SELECT precio_centavos, cantidad, creador_id FROM order_items WHERE order_id = ?', o.id);
+  const total = items.reduce((t, i) => t + i.precio_centavos * i.cantidad, 0);
+  const propia = items.filter(i => !i.creador_id).reduce((t, i) => t + i.precio_centavos * i.cantidad, 0);
+  if (!propia || !total) return 0;
+  return propia === total ? o.monto_centavos : Math.round(o.monto_centavos * propia / total);
+}
+
+// Inserta un 'ganado' de forma atómica: el número de ventas vigentes del semestre (y con él el %) se cuenta dentro del
+// mismo INSERT, así dos pagos que llegan juntos no pueden quedar con el mismo nivel. Idempotente por (order_id, tipo)
+// o por `clave` (renovaciones). cuenta: false = renovación (usa el % del nivel, pero no sube de nivel).
+async function insertarGanado(env, v) {
+  const sem = semestreMx(v.pagada);
+  const niveles = [...NIVELES].sort((a, b) => b.min - a.min);
+  const caso = `(CASE ${niveles.map(() => 'WHEN x.n >= ? THEN ?').join(' ')} ELSE ? END)`;
+  const pc = [...niveles.flatMap(n => [n.min, n.pct]), NIVELES[0].pct];
+  const pct = `MIN(?, ${caso} + ?)`, pp = [PCT_TOPE, ...pc, v.extra ? PCT_EXTRA : 0];
+  return run(env, `WITH x AS (SELECT COUNT(*) n FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE} AND m.order_id IS NOT NULL AND m.created_at >= ? AND m.created_at < ?)
+    INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota, product_id, multiplicador, motivo, base_centavos, pct, semestre, clave, suscripcion_id)
+    SELECT ?, 'ganado', CAST(ROUND(? * ${pct} / 100.0) AS INTEGER), ?, ?, ?, ?, ?, ?, ${pct}, ?, ?, ? FROM x`,
+    v.email, sem.desde, sem.hasta,
+    v.email, v.base / 100, ...pp, v.order_id ?? null, String(v.nota || '').slice(0, 160), v.product_id ?? null, v.multiplicador ?? 1, v.motivo ?? null,
+    v.base, ...pp, sem.id, v.clave ?? null, v.suscripcion_id ?? null);
+}
+
+// Renovación pagada de una suscripción (invoice.paid) que entró con una liga: puntos hasta la factura 12, con el % del
+// nivel que la persona lleva en ese semestre (las renovaciones no suben de nivel). f = factura de Stripe; sub = suscripción.
+export async function puntosFactura(env, f, sub) {
+  if (!f || f.status !== 'paid' || !(f.amount_paid > 0)) return null;
+  if (f.billing_reason === 'subscription_create') return null;   // la factura 1 es la compra: ya dio puntos con la orden
+  const orderId = sub?.metadata?.order_id;
+  if (!orderId) return null;
+  const o = await one(env, "SELECT o.id, o.email, a.email ref_email, a.tipo ref_tipo, (SELECT nombre FROM order_items WHERE order_id = o.id ORDER BY id LIMIT 1) producto FROM orders o JOIN affiliates a ON a.code = o.ref_code WHERE o.id = ?", orderId);
+  if (!o || o.ref_tipo !== 'puntos' || !o.ref_email || o.ref_email === o.email) return null;
+  const previas = (await one(env, "SELECT COUNT(*) n FROM puntos_movimientos WHERE suscripcion_id = ? AND tipo = 'ganado' AND clave != ?", sub.id, `factura:${f.id}`)).n;
+  const numero = 2 + previas;
+  if (numero > FACTURAS_SUSCRIPCION) return null;
+  const pagada = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
+  const r = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, extra: false, pagada,
+    nota: `${o.producto || 'Suscripción'} · pago ${numero} de ${FACTURAS_SUSCRIPCION}` });
+  if (r.meta.changes) {
+    const g = await one(env, 'SELECT puntos, pct FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
+    await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
+  }
+  return r;
 }
 
 export async function puntosAlReembolsar(env, orderId) {
@@ -123,19 +192,20 @@ export async function puntosAlReembolsar(env, orderId) {
 }
 
 // Avisos al ganar: puntos (app + push + correo corto), subir de nivel y meta alcanzada (app + push). Nunca lanza.
-async function despuesDeGanar(env, email, { puntos, mult, motivo, producto, orderId }) {
+async function despuesDeGanar(env, email, { puntos, pct, mult, motivo, producto, orderId, renovacion = false }) {
   try {
     const s = await saldoDe(env, email);
     await avisar(env, email, {
       clave: `ganado:${orderId}`, tipo: 'ganado',
-      titulo: mult > 1 ? `¡Puntos dobles! +${puntos} puntos` : `¡Ganaste ${puntos} puntos!`,
-      cuerpo: `Alguien compró${producto ? ` ${producto}` : ''} con tu liga${motivo === 'sugerencia' ? ' (el producto que sugeriste)' : ''}. Ya tienes ${s.disponibles} puntos ($${s.disponibles} MXN en la tienda).`,
+      titulo: mult > 1 ? `¡Puntos extra! +${puntos} puntos` : `¡Ganaste ${puntos} puntos!`,
+      cuerpo: `${renovacion ? 'Se renovó una suscripción que entró con tu liga' : `Alguien compró${producto ? ` ${producto}` : ''} con tu liga`}${motivo === 'sugerencia' ? ' (el producto que sugeriste)' : ''}: ${pct}% en puntos. Ya tienes ${s.disponibles} puntos ($${s.disponibles} MXN en la tienda).`,
       url: '/tienda/cuenta/#actividad',
     }, { correo: { asunto: `Ganaste ${puntos} puntos Vorka` } });
-    const ventas = await ventasDe(env, email);
+    if (renovacion) return revisarMeta(env, email, s);
+    const ventas = await ventasSemestre(env, email);
     const n = nivelDe(ventas);
     if (n.indice > 0 && n.actual.min === ventas)
-      await avisar(env, email, { clave: `nivel:${n.actual.id}`, tipo: 'nivel', titulo: `Subiste a nivel ${n.actual.nombre}`, cuerpo: `Llevas ${ventas} compras con tu liga. ${n.siguiente ? `Te faltan ${n.siguiente.min - ventas} para ${n.siguiente.nombre}.` : 'Llegaste a lo más alto.'}`, url: '/tienda/cuenta/#metas' });
+      await avisar(env, email, { clave: `nivel:${semestreMx().id}:${n.actual.id}`, tipo: 'nivel', titulo: `Subiste a nivel ${n.actual.nombre}: ${n.actual.pct}%`, cuerpo: `Llevas ${ventas} compras con tu liga este semestre. Desde ahora ganas ${n.actual.pct}% de cada compra. ${n.siguiente ? `Te faltan ${n.siguiente.min - ventas} para ${n.siguiente.nombre} (${n.siguiente.pct}%).` : 'Llegaste a lo más alto.'}`, url: '/tienda/cuenta/#metas' });
     await revisarMeta(env, email, s);
   } catch (e) { console.error('puntos avisos', e?.message); }
 }
@@ -395,7 +465,8 @@ export async function datosApp(env, email) {
   const cuenta = await one(env, 'SELECT * FROM puntos_cuentas WHERE email = ?', email);
   const af = await one(env, "SELECT nombre FROM affiliates WHERE code = ?", code);
   const saldo = await saldoDe(env, email);
-  const ventas = await ventasDe(env, email);
+  const ventas = await ventasDe(env, email);   // de por vida (logros)
+  const ahora = await nivelActual(env, email);  // del semestre (nivel y %)
   const hoy = diaMx(), hace7 = sumarDias(hoy, -6), desde7 = inicioDiaMx(hace7);
   const n = (sql, ...a) => one(env, sql, ...a).then(x => x?.n ?? 0);
   const semana = {
@@ -425,10 +496,11 @@ export async function datosApp(env, email) {
   const top = await topDelMes(env);
   return {
     email, code, nombre: cuenta.nombre || af?.nombre || email.split('@')[0], nombre_ranking: cuenta.nombre || '', ranking: !!cuenta.ranking,
-    saldo, ventas, nivel: nivelDe(ventas), semana, productos, compartir: compartibles(todos), dobles: await doblesDe(env, email),
+    saldo, ventas, ventas_semestre: ahora.ventas, nivel: ahora.nivel, pct: ahora.pct, semestre: ahora.semestre, semana, productos, compartir: compartibles(todos), dobles: await doblesDe(env, email),
     meta: meta && { id: meta.id, nombre: meta.nombre, precio_centavos: meta.precio_centavos, objetivo: objetivoMeta(meta.precio_centavos) },
     movimientos, notificaciones, no_leidas: notificaciones.filter(x => !x.leida_at).length, sugerencias, push,
     logros: LOGROS.map(l => ({ ...l, ok: !!logrado[l.id] })),
+    retiro: await datosRetiro(env, email),
     top: top.map(t => ({ ...t, yo: t.email === email, email: undefined })),
   };
 }
@@ -459,6 +531,12 @@ async function accion(req, env, url, email) {
     if (!(await dentroDelLimite(env, `puntos:sugerir:${await sha256(email)}`, 5, 86400))) return fail('Ya enviaste varias ideas hoy. Mañana puedes mandar más.', 429);
     await run(env, 'INSERT INTO puntos_sugerencias (email, idea, para_quien, por_que) VALUES (?, ?, ?, ?)', email, idea, para || null, porque || null);
     return json({ ok: true });
+  }
+  // Transferencia a cuenta: solo cuentas habilitadas por el equipo (las demás reciben 404, como si no existiera)
+  if (p === '/api/puntos/retiro') {
+    if (!(await dentroDelLimite(env, `puntos:retiro:${await sha256(email)}`, 10, 3600))) return fail('Demasiados intentos. Espera unos minutos.', 429);
+    const r = await pedirRetiro(env, email, b);
+    return r.error ? fail(r.error, r.status || 400) : json(r);
   }
   if (p === '/api/puntos/leidas') {
     await run(env, 'UPDATE puntos_notificaciones SET leida_at = ? WHERE email = ? AND leida_at IS NULL', new Date().toISOString(), email);
@@ -511,6 +589,17 @@ export async function rutasPuntos(req, env, url) {
     if (!c) return json({ cuenta: false }, 200, NO_CACHE);
     const nl = await one(env, 'SELECT COUNT(*) n FROM puntos_notificaciones WHERE email = ? AND leida_at IS NULL', c.email);
     return json({ cuenta: true, ...(await saldoDe(env, c.email)), no_leidas: nl.n }, 200, NO_CACHE);
+  }
+  // ¿Existe este código de recomendación? (formulario de compra; con límite por IP para que no se puedan adivinar)
+  // Sin ?c= responde con el de la liga (cookie vorka_ref), para mostrarlo ya aplicado. Solo dice el primer nombre.
+  if (p === '/api/puntos/liga' && M === 'GET') {
+    const ipq = req.headers.get('cf-connecting-ip') || 'local';
+    if (!(await dentroDelLimite(env, `puntos:liga:${await sha256(ipq)}`, 30, 600))) return fail('Demasiados intentos. Espera unos minutos.', 429);
+    const deCookie = (req.headers.get('cookie') || '').split(';').map(s => s.trim().split('=')).find(([k]) => k === 'vorka_ref')?.[1] || '';
+    const c = String(url.searchParams.get('c') ?? decodeURIComponent(deCookie)).trim().toUpperCase().slice(0, 40);
+    const a = /^[A-Z0-9_-]{1,40}$/.test(c) ? await one(env, 'SELECT code, nombre FROM affiliates WHERE code = ? AND activo = 1', c) : null;
+    if (!a) return json({ valido: false }, 200, NO_CACHE);
+    return json({ valido: true, codigo: a.code, nombre: String(a.nombre || '').trim().split(/\s+/)[0], de_liga: !url.searchParams.has('c') }, 200, NO_CACHE);
   }
   if (p === '/api/puntos/push/clave' && M === 'GET') {
     const c = await cuentaActual(req, env);

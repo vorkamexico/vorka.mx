@@ -3,7 +3,7 @@ import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { crearOrden, aplicarPago } from '../src/modelo.js';
 import { puntosAlPagar, puntosAlReembolsar, saldoDe, descuentoMaximo, datosApp } from '../src/puntos.js';
-import { diaMx, sumarDias, nivelDe, objetivoMeta, nombrePublico } from '../src/puntos-reglas.js';
+import { diaMx, sumarDias, nivelDe, objetivoMeta, nombrePublico, semestreMx } from '../src/puntos-reglas.js';
 
 let env, llamadas;
 const SITIO = 'https://vorka.mx';
@@ -38,7 +38,7 @@ beforeEach(() => { env = { DB: d1(), SITE_URL: SITIO, STRIPE_SECRET_KEY: 'sk_tes
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Programa de puntos', () => {
-  it('crear cuenta da una liga propia; cada compra con ella suma 10 puntos (no las propias) y un reembolso los revierte', async () => {
+  it('crear cuenta da una liga propia; cada compra con ella suma 10% en puntos (Cupo Pro 100: $99 → 10; no las propias) y un reembolso los revierte', async () => {
     const cookie = await entrar('ana@mail.com');
     const cuenta = await (await pedir('/tienda/cuenta/', { cookie })).text();
     const code = cuenta.match(/\?ref=([A-Z0-9]+)/)[1];
@@ -93,7 +93,8 @@ describe('Programa de puntos', () => {
 
   it('la página del programa, la tienda y los formularios de compra lo anuncian; los afiliados de dinero no se mezclan', async () => {
     const programa = await (await pedir('/tienda/puntos/')).text();
-    expect(programa).toContain('Gana <span class="pv-metal">descuentos.</span>');
+    expect(programa).toContain('Gana hasta <span class="pv-metal">30%.</span>');
+    expect(programa).not.toMatch(/dinero|efectivo|transferir/i);   // la transferencia a cuenta nunca se anuncia
     expect(programa).toContain('id="pv-p-codigo"');           // éxito con código, sin pantalla congelada
     const tienda = await (await pedir('/tienda/')).text();
     expect(tienda).toContain('/tienda/puntos/');
@@ -197,8 +198,8 @@ describe('Puntos Vorka · cuenta con contraseña', () => {
   });
 });
 
-describe('Puntos Vorka · puntos dobles', () => {
-  it('una sugerencia aceptada da 2× (20) solo a quien la sugirió y solo en ese producto; el reembolso revierte exactamente 20', async () => {
+describe('Puntos Vorka · puntos extra (+10 puntos porcentuales)', () => {
+  it('una sugerencia aceptada da +10% (20% → 20 puntos en $99) solo a quien la sugirió y solo en ese producto; el reembolso revierte exactamente 20', async () => {
     const cookie = await entrar('ana@mail.com');
     const code = await codigoDeCuenta(cookie);
     const otra = await entrar('caro@mail.com', 'Caro');
@@ -214,24 +215,25 @@ describe('Puntos Vorka · puntos dobles', () => {
     expect(avisos('ana@mail.com').map(a => a.clave)).toContain(`sugerencia:${s.id}`);
 
     const o1 = await compraPagada('beto@mail.com', code, 'cupo-pro-100');
-    await compraPagada('dani@mail.com', code, 'cupo-pro');            // otro producto: 10
+    await compraPagada('dani@mail.com', code, 'cupo-pro');            // otro producto: 10% de $149 = 15
     await compraPagada('eli@mail.com', codeCaro, 'cupo-pro-100');     // otra cuenta: 10
     await puntosAlPagar(env, o1.id);                                  // reintento: no duplica
-    expect(movs('ana@mail.com').map(m => [m.puntos, m.multiplicador, m.motivo])).toEqual([[20, 2, 'sugerencia'], [10, 1, null]]);
+    expect(movs('ana@mail.com').map(m => [m.puntos, m.pct, m.multiplicador, m.motivo])).toEqual([[20, 20, 2, 'sugerencia'], [15, 10, 1, null]]);
+    expect(movs('ana@mail.com')[0]).toMatchObject({ base_centavos: 9900, semestre: semestreMx().id });
     expect(movs('caro@mail.com').map(m => m.puntos)).toEqual([10]);
-    expect((await saldoDe(env, 'ana@mail.com')).disponibles).toBe(30);
+    expect((await saldoDe(env, 'ana@mail.com')).disponibles).toBe(35);
 
     await aplicarPago(env, o1.id, { resultado: 'reembolsado' });
     await puntosAlReembolsar(env, o1.id);
     await puntosAlReembolsar(env, o1.id);
     expect(movs('ana@mail.com', 'revertido').map(m => m.puntos)).toEqual([-20]);
-    expect((await saldoDe(env, 'ana@mail.com')).disponibles).toBe(10);
+    expect((await saldoDe(env, 'ana@mail.com')).disponibles).toBe(15);
     const app = await (await pedir('/tienda/cuenta/', { cookie })).text();
-    expect(app).toContain('Puntos dobles · tu idea');
+    expect(app).toContain('Puntos extra · tu idea');
     expect(app).toContain('Aceptada');
   });
 
-  it('una promoción de puntos dobles aplica a todos en sus fechas (CDMX); fuera de fechas son 10', async () => {
+  it('una promoción de puntos extra aplica a todos en sus fechas (CDMX); fuera de fechas es el % del nivel', async () => {
     const cookie = await entrar('ana@mail.com');
     const code = await codigoDeCuenta(cookie);
     const { Admin } = await import('../src/index.js');
@@ -245,17 +247,17 @@ describe('Puntos Vorka · puntos dobles', () => {
 
     const o = await compraPagada('beto@mail.com', code, 'cupo-pro');
     await compraPagada('caro@mail.com', code, 'cupo-pro-100');
-    expect(movs('ana@mail.com').map(m => [m.puntos, m.motivo])).toEqual([[20, 'promo'], [10, null]]);
-    expect(avisos('ana@mail.com').find(a => a.clave === `ganado:${o.id}`).titulo).toBe('¡Puntos dobles! +20 puntos');
+    expect(movs('ana@mail.com').map(m => [m.puntos, m.motivo])).toEqual([[30, 'promo'], [10, null]]);   // 20% de $149 · 10% de $99
+    expect(avisos('ana@mail.com').find(a => a.clave === `ganado:${o.id}`).titulo).toBe('¡Puntos extra! +30 puntos');
     await aplicarPago(env, o.id, { resultado: 'reembolsado' });
     await puntosAlReembolsar(env, o.id);
     expect((await saldoDe(env, 'ana@mail.com')).disponibles).toBe(10);
-    // Si la orden tiene varios productos, cuenta el mayor multiplicador (una vez por orden, sin acumular)
+    // Si la orden tiene varios productos, el extra se aplica una vez a toda la orden (sin acumular): 20% de $248 = 50
     const o3 = await crearOrden(env, { items: [{ slug: 'cupo-pro-100' }, { slug: 'cupo-pro' }], email: 'dani@mail.com', nombre: 'Dani', ref: code });
     await aplicarPago(env, o3.id, { resultado: 'aprobado', monto_centavos: o3.monto_centavos, moneda: 'MXN' });
     await puntosAlPagar(env, o3.id);
-    expect(movs('ana@mail.com').at(-1)).toMatchObject({ puntos: 20, multiplicador: 2, motivo: 'promo', order_id: o3.id });
-    expect(await (await pedir('/tienda/cuenta/', { cookie })).text()).toContain('Puntos dobles · hasta');
+    expect(movs('ana@mail.com').at(-1)).toMatchObject({ puntos: 50, pct: 20, multiplicador: 2, motivo: 'promo', order_id: o3.id });
+    expect(await (await pedir('/tienda/cuenta/', { cookie })).text()).toContain('Puntos extra · hasta');
     await A.borrarPromo((await A.promosPuntos())[0].id);
     expect((await A.promosPuntos()).length).toBe(1);
   });
@@ -306,10 +308,10 @@ describe('Puntos Vorka · visitas, avisos y app', () => {
     const o = await compraPagada('b@mail.com', code);
     await puntosAlPagar(env, o.id);                       // reintento: sin avisos repetidos
     await compraPagada('c@mail.com', code);
-    await compraPagada('d@mail.com', code);               // 3 ventas → Bronce; 60 + 30 = 90 ≥ 89 → meta
+    await compraPagada('d@mail.com', code);               // 3 ventas → Bronce; 60 + 3 × 10% de $99 = 90 ≥ 89 → meta
     const a = avisos('ana@mail.com');
     expect(a.filter(x => x.tipo === 'ganado').length).toBe(3);
-    expect(a.find(x => x.tipo === 'nivel')).toMatchObject({ clave: 'nivel:bronce', titulo: 'Subiste a nivel Bronce' });
+    expect(a.find(x => x.tipo === 'nivel')).toMatchObject({ clave: `nivel:${semestreMx().id}:bronce`, titulo: 'Subiste a nivel Bronce: 15%' });
     expect(a.filter(x => x.tipo === 'meta').length).toBe(1);
     expect(enviados.length).toBeGreaterThanOrEqual(6);    // prueba + 3 ganados + nivel + meta
     // Bandeja de la app: punto de no leídas y se marcan al abrir Actividad

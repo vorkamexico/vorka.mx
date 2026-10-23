@@ -8,7 +8,7 @@ import { webhook } from './webhook.js';
 import { paginaDescargas, bajarArchivo } from './descargas.js';
 import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
-import { paginaCatalogo, paginaProducto, sitemapTienda } from './tienda.js';
+import { paginaCatalogo, paginaProducto, sitemapTienda, refDeVisita } from './tienda.js';
 import * as admin from './admin.js';
 import { ESTILOS } from './paginas.js';
 import { procesarTransferencias, refrescarCreador, repartosPendientes } from './marketplace.js';
@@ -23,8 +23,7 @@ import { paginaCuentas } from './cuentas.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
 import { rutasPuntos } from './puntos.js';
-import { rutasSocios } from './socios-portal.js';
-import * as socios from './socios.js';
+import * as retiros from './puntos-retiros.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -97,21 +96,15 @@ export class Admin extends WorkerEntrypoint {
   creditoApp(email, app, centavos, motivo) { return creditoApp(this.env, email, app, centavos, motivo); }
   lugaresApp(email, app, extras) { return lugaresApp(this.env, email, app, extras); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
-  // Socios Vorka (solo por invitación): alta y edición, niveles, cola de pagos por SPEI (manual) y CSV
-  resumenSocios() { return socios.resumenSocios(this.env); }
-  socios() { return socios.listaSocios(this.env); }
-  socio(id) { return socios.detalleSocio(this.env, id); }
-  guardarSocio(d) { return socios.guardarSocio(this.env, d); }
-  estadoSocio(id, estado) { return socios.estadoSocio(this.env, id, estado); }
-  invitarSocio(id) { return socios.invitarSocio(this.env, id); }
-  ajustesSocios() { return socios.ajustesSocios(this.env); }
-  guardarAjustesSocios(d) { return socios.guardarAjustesSocios(this.env, d); }
-  pagosSocios() { return socios.pagosSocios(this.env); }
-  marcarPagoSocio(id, d) { return socios.marcarPagoSocio(this.env, id, d); }
-  cancelarPagoSocio(id, nota) { return socios.cancelarPago(this.env, id, String(nota || '').slice(0, 280) || 'Cancelado desde el panel.'); }
-  loteSociosAhora() { return socios.loteSemanal(this.env, new Date(), { forzar: true }); }
-  exportarSociosCSV(f) { return socios.exportarSociosCSV(this.env, f); }
-  anularComisionSocio(id) { return socios.anularComision(this.env, id); }
+  // Puntos Vorka (Socios Vorka quedó integrado aquí): cuentas, nivel y %, transferencia a cuenta (privada) y CSV
+  cuentasPuntos(f) { return retiros.cuentasPuntos(this.env, f); }
+  cuentaPuntos(email) { return retiros.cuentaPuntos(this.env, email); }
+  habilitarRetiro(email, d) { return retiros.habilitarRetiro(this.env, email, d); }
+  retirosPuntos() { return retiros.retirosPuntos(this.env); }
+  resumenRetiros() { return retiros.resumenRetiros(this.env); }
+  marcarRetiro(id, d) { return retiros.marcarRetiro(this.env, id, d); }
+  cancelarRetiro(id, nota) { return retiros.cancelarRetiro(this.env, id, String(nota || '').slice(0, 280) || 'Cancelada desde el panel.'); }
+  exportarRetirosCSV(f) { return retiros.exportarRetirosCSV(this.env, f); }
 }
 
 // Ligas cortas de las apps de eventos: vorka.mx/cupo/<liga> y vorka.mx/brindi/<liga>[/<invitado>] llevan al evento en os.vorka.mx
@@ -141,20 +134,19 @@ export default {
     const url = new URL(request.url);
     if (request.method === 'GET' && !url.pathname.startsWith('/api/')) await cargarTemporada(env);   // el tema de temporada (en memoria un minuto)
     const res = await atender(request, env, ctx, url);
-    // Liga de un socio (?socio=CODIGO o ?codigo=CODIGO): deja la cookie de atribución (30 días) en la página que se abra
-    if (request.method === 'GET' && !url.pathname.startsWith('/api/') && (url.searchParams.has('socio') || url.searchParams.has('codigo'))) {
-      const c = await socios.cookieDeVisita(env, url).catch(e => { console.error('socio visita', e?.message); return null; });
-      if (c) { const r = new Response(res.body, res); r.headers.append('set-cookie', c); return r; }
+    // Ligas anteriores de Socios Vorka (?socio=CODIGO o ?codigo=CODIGO): ahora son ligas de Puntos Vorka. Dejan la cookie
+    // de atribución (30 días) si el código es de una cuenta activa, igual que ?ref=
+    if (request.method === 'GET' && !url.pathname.startsWith('/api/') && !url.searchParams.has('ref') && (url.searchParams.has('socio') || url.searchParams.has('codigo'))) {
+      const u = new URL(url); u.searchParams.set('ref', url.searchParams.get('socio') || url.searchParams.get('codigo'));
+      const { cookie } = await refDeVisita(env, request, u).catch(e => { console.error('liga anterior', e?.message); return {}; });
+      if (cookie) { const r = new Response(res.body, res); r.headers.append('set-cookie', cookie); return r; }
     }
     return res;
   },
 
   // Cada hora: transferencias a creadores que ya pasaron su plazo, y estado de cuentas de Stripe en revisión.
-  // Socios: libera comisiones que pasaron la retención y, los lunes (hora del centro de México), arma el lote de pagos.
   async scheduled(event, env, ctx) {
     ctx.waitUntil((async () => {
-      try { console.log('socios', JSON.stringify(await socios.loteSemanal(env))); }
-      catch (e) { console.error('cron socios', e?.message); }
       try {
         if (!env.STRIPE_SECRET_KEY) return;
         const pendientes = await all(env, "SELECT id, stripe_account_id FROM creadores WHERE estado = 'aprobado' AND stripe_account_id IS NOT NULL AND stripe_listo = 0 LIMIT 25");
@@ -171,7 +163,9 @@ async function atender(request, env, ctx, url) {
     if (url.pathname === '/api/tienda/salud') return json({ ok: true });
     const corta = ligaCorta(url);
     if (corta) return corta;
-    if (/^\/(tienda\/socios|api\/socios)(\/|$)/.test(url.pathname)) { const r = await rutasSocios(request, env, url); if (r) return r; }
+    // El portal de Socios Vorka ya no existe: todo vive en Puntos Vorka
+    if (/^\/tienda\/socios(\/|$)/.test(url.pathname)) return new Response(null, { status: 301, headers: { location: '/tienda/puntos/' } });
+    if (url.pathname === '/api/socios/codigo') return fail('Usa /api/puntos/liga', 410);
     if (/^\/(tienda\/(puntos|cuenta)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
     const sim = await rutasSimulador(request, env, url);
     if (sim) return sim;

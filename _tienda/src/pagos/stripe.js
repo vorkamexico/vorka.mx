@@ -132,10 +132,10 @@ export default {
       const s = await llamar(env, 'POST', '/checkout/sessions', sesionSuscripcion(env, orden, urls, customer, sus), { idempotencia: `checkout-${orden.id}` });
       return { sessionId: s.id, url: s.url };
     }
-    // Descuentos (Puntos Vorka y código de socio): un cupón de un solo uso por el monto exacto (Stripe lo muestra en el pago y el recibo)
+    // Descuento con Puntos Vorka: un cupón de un solo uso por el monto exacto (Stripe lo muestra en el pago y el recibo)
     let cupon = null;
     if (orden.descuento_centavos > 0) {
-      const nombre = [orden.socio_descuento_centavos > 0 ? `Código ${orden.socio_code || 'de socio'}` : null, orden.puntos_usados > 0 || orden.socio_descuento_centavos < orden.descuento_centavos ? 'Puntos Vorka' : null].filter(Boolean).join(' + ');
+      const nombre = 'Puntos Vorka';
       try {
         const c = await llamar(env, 'POST', '/coupons', { amount_off: orden.descuento_centavos, currency: orden.moneda.toLowerCase(), duration: 'once', max_redemptions: 1, name: nombre.slice(0, 40), metadata: { order_id: orden.id } },
           { idempotencia: `cupon-${orden.id}` });
@@ -209,7 +209,7 @@ export default {
     return llamar(env, 'GET', `/subscriptions/${encodeURIComponent(id)}?expand[]=items.data.price.product`);
   },
 
-  // Factura de un invoice.paid, leída de la API (la misma consulta de suscripcionDe si ya se hizo). Para comisiones de socios.
+  // Factura de un invoice.paid, leída de la API (la misma consulta de suscripcionDe si ya se hizo). Para los puntos de renovaciones (Puntos Vorka).
   async facturaDe(evento, env) {
     if (evento.tipo !== 'invoice.paid') return null;
     return evento.factura || llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);

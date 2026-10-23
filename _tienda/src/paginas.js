@@ -58,20 +58,20 @@ const SCRIPT_PUNTOS = `(function(){
   }).catch(function(){});
 })();`;
 
-// "¿Tienes un código de socio?" en cualquier formulario de compra: si llegaste con la liga de un socio ya sale aplicado.
-// Se valida al escribirlo (/api/socios/codigo, con límite por IP); el servidor lo vuelve a revisar al pagar.
+// "¿Alguien te recomendó?" en cualquier formulario de compra: si llegaste con la liga de alguien (Puntos Vorka) ya sale
+// aplicado. Se valida al escribirlo (/api/puntos/liga, con límite por IP); el servidor lo vuelve a revisar al pagar.
 const SCRIPT_SOCIO = `(function(){
   var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
   var w=document.createElement('div'); w.className='t-campo t-socio';
-  w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Tienes un código de socio?</button><div class="t-socio-c" hidden><label for="codigo">Código de socio <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. ANA-CELAYA"><small class="t-ayuda" id="codigo-msj" role="status"></small></div>';
+  w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Alguien te recomendó?</button><div class="t-socio-c" hidden><label for="codigo">Código de quien te recomendó <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. ANAL3X"><small class="t-ayuda" id="codigo-msj" role="status"></small></div>';
   var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(w);
   var b=w.querySelector('button'), c=w.querySelector('.t-socio-c'), i=w.querySelector('input'), m=w.querySelector('#codigo-msj'), tm;
   function abrir(){ c.hidden=false; b.hidden=true; b.setAttribute('aria-expanded','true'); }
-  function pinta(d,vacio){ m.textContent=vacio?'':d.valido?('Código de '+d.nombre+(d.descuento_pct?' · '+d.descuento_pct+'% de descuento al pagar':'')+' ✓'):'Ese código no existe o ya no está activo; puedes comprar sin él.'; }
-  function revisa(){ var v=i.value.trim(); if(!v){ pinta({},true); return; } fetch('/api/socios/codigo?c='+encodeURIComponent(v),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if('valido' in d) pinta(d); }).catch(function(){}); }
+  function pinta(d,vacio){ m.textContent=vacio?'':d.valido?('Te recomendó '+d.nombre+' ✓'):'Ese código no existe o ya no está activo; puedes comprar sin él.'; }
+  function revisa(){ var v=i.value.trim(); if(!v){ pinta({},true); return; } fetch('/api/puntos/liga?c='+encodeURIComponent(v),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if('valido' in d) pinta(d); }).catch(function(){}); }
   b.addEventListener('click',function(){ abrir(); i.focus(); });
   i.addEventListener('input',function(){ clearTimeout(tm); tm=setTimeout(revisa,450); });
-  fetch('/api/socios/codigo',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); } }).catch(function(){});
+  fetch('/api/puntos/liga',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); } }).catch(function(){});
 })();`;
 
 // Íconos de trazo de la tienda (heredan el color del texto)
