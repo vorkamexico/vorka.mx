@@ -17,7 +17,7 @@
 <meta property="og:title" content="Sala de prensa · Brandon Oleynick">
 <meta property="og:description" content="Semblanza, fotos, reconocimientos y notas en medios de Brandon Oleynick.">
 <meta property="og:url" content="https://vorka.mx/oleynickhdz/prensa/">
-<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
+<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_MX">
@@ -26,7 +26,7 @@
 <meta name="twitter:site" content="@oleynickhdz">
 <meta name="twitter:title" content="Sala de prensa · Brandon Oleynick">
 <meta name="twitter:description" content="Semblanza, fotos, reconocimientos y notas en medios.">
-<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
+<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg?v=2">
 
 <link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
@@ -628,7 +628,13 @@
   .pr-btn:hover { transform: translateY(-2px); background: #fff; }
   .pr-btn2 { font-weight: 700; color: #fff; text-decoration: underline; text-underline-offset: 6px; text-decoration-color: rgba(255,255,255,.4); }
   .pr-btn2:hover { text-decoration-color: var(--accent); }
-  @media (max-width: 760px) { .pr-foto { width: 100%; object-position: 50% 18%; opacity: .6; } .pr-hero { min-height: 92vh; } .pr-hero::after { background: linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.35) 40%, rgba(15,15,15,.9) 75%, var(--paper) 100%); } }
+  @media (max-width: 760px) {
+    .pr-hero { min-height: 0; display: block; padding-top: min(108vw, 520px); }
+    .pr-foto { width: 100%; height: min(118vw, 570px); bottom: auto; object-position: 50% 12%; }
+    .pr-foto { -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+    .pr-hero::after { background: linear-gradient(180deg, rgba(15,15,15,.5) 0px, transparent 110px, transparent 80%, var(--paper) 100%); }
+    .pr-in { padding-top: 0; }
+  }
 </style>
 </head>
 <body>
