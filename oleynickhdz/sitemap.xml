@@ -3,14 +3,14 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://vorka.mx/oleynickhdz/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <image:image>
       <image:loc>https://vorka.mx/oleynickhdz/brandon.jpg</image:loc>
     </image:image>
   </url>
   <url>
     <loc>https://vorka.mx/oleynickhdz/conferencias/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-1.webp</image:loc></image:image>
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-2.webp</image:loc></image:image>
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-3.webp</image:loc></image:image>
@@ -19,11 +19,17 @@
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-6.webp</image:loc></image:image>
   </url>
   <url>
+    <loc>https://vorka.mx/oleynickhdz/prensa/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/brandon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/hero.jpg</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://vorka.mx/oleynickhdz/proyecto-social/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
   </url>
   <url>
     <loc>https://vorka.mx/oleynickhdz/servicios/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
   </url>
 </urlset>

@@ -414,6 +414,41 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
   :root[data-theme="dark"] { --accent-ink: var(--accent); }
   .hero-eyebrow, .section-eyebrow, .section-title em, .formato .time, .estado .pin { color: var(--accent-ink); }
+  /* ============ SOLICITUD ============ */
+  .solicitud{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,5vw,72px);align-items:start}
+  .sol-head{position:sticky;top:calc(var(--header-h) + 24px)}
+  .sol-checks{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px}
+  .sol-checks li{position:relative;padding-left:28px;font-size:14.5px;color:var(--ink-soft)}
+  .sol-checks li::before{content:"";position:absolute;left:0;top:5px;width:16px;height:16px;border-radius:50%;background:var(--accent)}
+  .sol-checks a{text-decoration:underline;text-underline-offset:3px}
+  .sol-form{display:flex;flex-direction:column;gap:22px;background:var(--paper-2);border:1px solid var(--rule);border-radius:24px;padding:clamp(20px,3vw,36px)}
+  .sol-form fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+  .sol-form legend{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);margin-bottom:14px;padding:0}
+  .sol-form .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .sol-form label{display:flex;flex-direction:column;gap:7px;min-width:0}
+  .sol-form label>span{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .sol-form label>span i{font-style:normal;font-weight:500;opacity:.75}
+  .sol-form input:not([type=checkbox]),.sol-form select,.sol-form textarea{border:1px solid var(--rule);border-radius:12px;padding:13px 14px;font-family:inherit;font-size:15px;color:var(--ink);background:var(--paper);outline:none;width:100%;min-width:0;transition:border-color .2s}
+  .sol-form input:focus,.sol-form select:focus,.sol-form textarea:focus{border-color:var(--accent)}
+  .sol-form textarea{resize:vertical;min-height:110px}
+  .sol-flex{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .sol-acepta{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-size:13.5px;color:var(--ink-soft)}
+  .sol-acepta input{margin-top:3px;flex-shrink:0}
+  .sol-acepta a,.sol-note a{text-decoration:underline;text-underline-offset:3px}
+  .sol-form button{align-self:flex-start;padding:16px 30px;background:var(--accent);color:#111;border:0;border-radius:999px;font-family:inherit;font-weight:700;font-size:14.5px;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:background .2s,color .2s,transform .2s}
+  .sol-form button:hover{background:var(--ink);color:var(--paper);transform:translateY(-2px)}
+  .sol-form button:disabled{opacity:.6;cursor:wait;transform:none}
+  .sol-form button svg{width:14px;height:14px}
+  .sol-note{margin:0;font-size:13px;color:var(--muted)}
+  .sol-note.error{color:var(--c-red);font-weight:600}
+  .sol-form[hidden],.sol-sent[hidden]{display:none}
+  .sol-sent{grid-column:2;padding:28px;border-radius:24px;background:color-mix(in srgb,var(--c-green) 14%,transparent);border:1px solid var(--c-green);outline:none}
+  .sol-sent b{font-size:20px;display:block;margin-bottom:6px}
+  .sol-sent p{margin:0 0 14px;color:var(--ink-soft)}
+  .sol-sent a{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+  @media (max-width:880px){.solicitud{grid-template-columns:1fr}.sol-head{position:static}.sol-sent{grid-column:auto}}
+  @media (max-width:560px){.sol-form .row{grid-template-columns:1fr}.sol-form button{align-self:stretch;justify-content:center}}
+
 </style>
 </head>
 <body>
@@ -456,11 +491,11 @@
     <h1>+100 conferencias. <span class="word hl">Un mensaje que mueve.</span></h1>
     <p class="hero-sub">Intervenciones sobre <strong>liderazgo juvenil, estrategia digital, impacto social y transformación de México</strong>. Como <strong>CEO de Vorka México</strong> y Presidente de Juventudes Impactando México A.C., preparo cada conferencia desde el contexto de tu público para universidades, foros institucionales, gobiernos y empresas.</p>
     <div class="hero-ctas">
-      <a href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia." target="_blank" rel="noopener" class="btn-primary">
+      <a href="#solicitud" class="btn-primary">
         Solicitar una conferencia
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
       </a>
-      <a href="#proceso" class="btn-ghost">Ver cómo agendar ↓</a>
+      <a href="/oleynickhdz/prensa/" class="btn-ghost">Kit de prensa</a>
     </div>
   </section>
 </div>
@@ -822,13 +857,13 @@
       <div class="section-head centered">
         <div class="section-eyebrow eyebrow-g">Cómo agendar</div>
         <h2 class="section-title">Agendar es un <span class="a-g">proceso claro y rápido.</span></h2>
-        <p class="section-lede">Desde el primer mensaje hasta la conferencia, el camino es directo: sin burocracia innecesaria pero con la preparación que un evento serio exige.</p>
+        <p class="section-lede">Desde la solicitud hasta la conferencia, el camino es directo: sin burocracia innecesaria pero con la preparación que un evento serio exige.</p>
       </div>
       <div class="proceso">
         <article class="paso">
           <span class="num-pill">Paso 01</span>
-          <h4>Escribes por WhatsApp</h4>
-          <p>Con contexto: institución, fecha tentativa, tema que te interesa, formato aproximado y tamaño del público.</p>
+          <h4>Llenas la solicitud</h4>
+          <p>En dos minutos: institución, fecha tentativa, tema, formato, tamaño del público y presupuesto. Te llega un folio a tu correo.</p>
         </article>
         <article class="paso">
           <span class="num-pill">Paso 02</span>
@@ -860,21 +895,78 @@
   </div>
 </div>
 
-<!-- ============ CTA ============ -->
+<!-- ============ SOLICITUD (llega a os.vorka.mx › Prospectos) ============ -->
 <div class="shell" style="padding-top: clamp(72px, 10vh, 112px); padding-bottom: clamp(72px, 10vh, 112px);">
-  <div class="cta-dark">
-    <div class="pre">Siguiente paso</div>
-    <h2>¿Tienes un evento <em>que pide un mensaje potente?</em></h2>
-    <p>Mándame el contexto y te respondo el mismo día en horario hábil. La primera conversación es sin compromiso.</p>
-    <a href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia.%20Te%20cuento%3A" target="_blank" rel="noopener" class="btn-primary">
-      Escribir por WhatsApp
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-    </a>
-    <div class="alt-ctas">
-      <a href="mailto:oleynickhdz@gmail.com?subject=Solicitud%20de%20conferencia">o escríbeme al correo →</a>
-      <a href="tel:+524612242547">o llámame →</a>
+  <section class="solicitud" id="solicitud" aria-labelledby="sol-t">
+    <div class="sol-head">
+      <div class="section-eyebrow">Solicitud de conferencia</div>
+      <h2 class="section-title" id="sol-t">¿Tienes un evento <em>que pide un mensaje potente?</em></h2>
+      <p class="section-lede">Cuéntame del evento. En máximo dos días hábiles te escribo con disponibilidad y una propuesta formal con enfoque, duración, requisitos técnicos y cotización. La primera conversación es sin compromiso.</p>
+      <ul class="sol-checks">
+        <li>Factura de Vorka México a nombre de tu institución</li>
+        <li>Presencial en todo México, en línea o híbrida</li>
+        <li>¿Necesitas presentarlo internamente? Semblanza y fotos en el <a href="/oleynickhdz/prensa/">kit de prensa</a></li>
+      </ul>
     </div>
-  </div>
+    <form class="sol-form" id="conf-form" novalidate>
+      <input type="text" name="sitio_web" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <fieldset>
+        <legend>Tú</legend>
+        <div class="row">
+          <label><span>Nombre completo</span><input name="nombre" required autocomplete="name" maxlength="100"></label>
+          <label><span>Cargo <i>(opcional)</i></span><input name="cargo" autocomplete="organization-title" maxlength="100" placeholder="Coordinadora de vinculación"></label>
+        </div>
+        <div class="row">
+          <label><span>Correo</span><input type="email" name="correo" required autocomplete="email" maxlength="120"></label>
+          <label><span>WhatsApp</span><input type="tel" name="whatsapp" required autocomplete="tel" maxlength="30" placeholder="461 000 0000"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Tu institución</legend>
+        <div class="row">
+          <label><span>Institución u organización</span><input name="institucion" required autocomplete="organization" maxlength="140"></label>
+          <label><span>Tipo</span><select name="tipo" required><option value="">Elige…</option><option>Universidad o tecnológico</option><option>Preparatoria o bachillerato</option><option>Empresa</option><option>Gobierno o institución pública</option><option>Organización civil o fundación</option><option>Congreso, foro o evento</option><option>Otro</option></select></label>
+        </div>
+        <label><span>Sitio web o redes <i>(opcional)</i></span><input name="sitio" maxlength="200" placeholder="www.tuinstitucion.mx"></label>
+      </fieldset>
+      <fieldset>
+        <legend>El evento</legend>
+        <div class="row">
+          <label><span>Formato</span><select name="evento" required><option value="">Elige…</option><option>Conferencia magistral</option><option>Taller práctico</option><option>Panel o conversatorio</option><option>Ceremonia o inauguración</option><option>Programa de varias sesiones</option></select></label>
+          <label><span>Tema</span><select name="tema" required><option value="">Elige…</option><option>Liderazgo juvenil</option><option>Participación de las juventudes</option><option>Emprendimiento con propósito</option><option>Gestión de proyectos de impacto</option><option>Agenda 2030 y ODS</option><option>Propuesta a la medida</option></select></label>
+        </div>
+        <div class="row">
+          <label><span>¿Quién estará en el público?</span><input name="publico" required maxlength="300" placeholder="Estudiantes de 5.º semestre de ingeniería"></label>
+          <label><span>Asistentes</span><select name="asistentes" required><option value="">Elige…</option><option>Menos de 50</option><option>50 a 150</option><option>150 a 500</option><option>Más de 500</option></select></label>
+        </div>
+        <div class="row">
+          <label><span>Fecha tentativa <i>(opcional)</i></span><input type="date" name="fecha"><small class="sol-flex"><input type="checkbox" name="flexible"><span>La fecha es flexible</span></small></label>
+          <label><span>Modalidad</span><select name="modalidad" required><option value="">Elige…</option><option>Presencial</option><option>En línea</option><option>Por definir</option></select></label>
+        </div>
+        <div class="row">
+          <label><span>Ciudad del evento</span><input name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="Celaya"></label>
+          <label><span>Estado</span><input name="estado" autocomplete="address-level1" maxlength="40" placeholder="Guanajuato"></label>
+        </div>
+        <label><span>¿Qué buscan que la conferencia deje instalado?</span><textarea name="objetivo" rows="4" required maxlength="3000" placeholder="El contexto del evento, qué esperan que el público se lleve y cualquier detalle importante."></textarea></label>
+      </fieldset>
+      <fieldset>
+        <legend>Inversión</legend>
+        <div class="row">
+          <label><span>Presupuesto aproximado (MXN)</span><select name="presupuesto" required><option value="">Elige…</option><option>Sin presupuesto (buscamos apoyo)</option><option>Menos de $10,000</option><option>$10,000 a $25,000</option><option>$25,000 a $50,000</option><option>Más de $50,000</option><option>Por definir</option></select></label>
+          <label><span>¿Quién decide la contratación?</span><select name="decisor" required><option value="">Elige…</option><option>Yo decido la contratación</option><option>La propongo a quien decide</option></select></label>
+        </div>
+        <label><span>¿Cómo conociste a Brandon? <i>(opcional)</i></span><input name="como_supo" maxlength="100" placeholder="Lo escuché en un foro, Instagram, una recomendación…"></label>
+      </fieldset>
+      <label class="sol-acepta"><input type="checkbox" name="acepta" required><span>Acepto el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a> y que me contacten por correo o WhatsApp sobre esta solicitud.</span></label>
+      <button type="submit">Enviar solicitud <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+      <p class="sol-note" id="conf-msg" role="status">¿Prefieres platicarlo? <a href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia." target="_blank" rel="noopener">Escríbeme por WhatsApp</a> o a <a href="mailto:oleynickhdz@gmail.com?subject=Solicitud%20de%20conferencia">oleynickhdz@gmail.com</a>.</p>
+    </form>
+    <div class="sol-sent" id="conf-sent" tabindex="-1" hidden>
+      <b>¡Solicitud recibida!</b>
+      <p>Tu folio es <strong id="conf-folio"></strong>. Te llegó una copia a tu correo y en máximo dos días hábiles te escribo con disponibilidad y propuesta.</p>
+      <a href="/oleynickhdz/prensa/">Mientras, descarga el kit de prensa →</a>
+    </div>
+  </section>
 </div>
 
 <!-- ============ FAQ ============ -->
@@ -931,7 +1023,7 @@
         <span class="mark" aria-hidden="true">BO</span>
         <span>Brandon Oleynick<small>Conferencias · Liderazgo e impacto</small></span>
       </a>
-      <a class="foot-primary" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20quiero%20solicitar%20informaci%C3%B3n%20para%20una%20conferencia." target="_blank" rel="noopener">
+      <a class="foot-primary" href="#solicitud">
         Solicitar conferencia
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
       </a>
@@ -952,6 +1044,7 @@
           <li><a href="../">Perfil principal</a></li>
           <li><a href="../servicios/">Servicios y mentoría</a></li>
           <li><a href="../proyecto-social/">¿Qué es un proyecto social?</a></li>
+          <li><a href="../prensa/">Sala de prensa</a></li>
           <li><a href="https://vorka.mx/" target="_blank" rel="noopener">Vorka México (factura)</a></li>
         </ul>
       </div>
@@ -1028,5 +1121,33 @@
   })();
 </script>
 
+<script>
+// Solicitud de conferencia: llega a os.vorka.mx › Prospectos (aviso y copia por correo a Brandon, acuse con folio a quien la pide)
+(function () {
+  var f = document.getElementById('conf-form'); if (!f) return;
+  var msg = document.getElementById('conf-msg'), nota = msg.innerHTML, ok = document.getElementById('conf-sent');
+  var hoy = new Date(); f.fecha.min = hoy.toISOString().slice(0, 10);
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = function (n) { return (f.elements[n].value || '').trim(); }, btn = f.querySelector('button[type=submit]');
+    var error = v('nombre').length < 3 ? 'Escribe tu nombre completo.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('correo')) ? 'Revisa tu correo.' : v('whatsapp').replace(/\D/g, '').length < 10 ? 'Escribe tu WhatsApp a 10 dígitos.'
+      : v('institucion').length < 2 ? 'Escribe el nombre de la institución.' : !v('tipo') ? 'Elige el tipo de institución.' : !v('evento') || !v('tema') ? 'Elige el formato y el tema.'
+      : v('publico').length < 3 ? 'Cuéntame quién estará en el público.' : !v('asistentes') ? 'Elige cuántas personas asistirán.' : !v('modalidad') ? 'Elige la modalidad.'
+      : v('modalidad') === 'Presencial' && !v('ciudad') ? 'Escribe la ciudad del evento.' : v('objetivo').length < 30 ? 'Cuéntame un poco más de lo que buscan lograr.'
+      : !v('presupuesto') || !v('decisor') ? 'Completa presupuesto y quién decide.' : !f.acepta.checked ? 'Acepta el aviso de privacidad para enviar.' : '';
+    if (error) { msg.textContent = error; msg.classList.add('error'); return; }
+    btn.disabled = true; msg.classList.remove('error'); msg.textContent = 'Enviando…';
+    var datos = {}; ['nombre', 'cargo', 'correo', 'whatsapp', 'institucion', 'tipo', 'sitio', 'evento', 'tema', 'publico', 'asistentes', 'fecha', 'modalidad', 'ciudad', 'estado', 'objetivo', 'presupuesto', 'decisor', 'como_supo', 'sitio_web'].forEach(function (n) { datos[n] = v(n); });
+    datos.flexible = f.flexible.checked; datos.acepta = true;
+    fetch('https://os.vorka.mx/api/publico/oleynick/conferencia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+      .then(function (j) {
+        document.getElementById('conf-folio').textContent = j.folio || '';
+        f.hidden = true; ok.hidden = false; ok.focus(); ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function (er) { msg.innerHTML = ''; msg.textContent = (er && er.message) || 'No se pudo enviar. Escríbeme por WhatsApp, por favor.'; msg.classList.add('error'); btn.disabled = false; });
+  });
+})();
+</script>
 </body>
 </html>
