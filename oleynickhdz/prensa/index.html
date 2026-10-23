@@ -17,7 +17,7 @@
 <meta property="og:title" content="Sala de prensa · Brandon Oleynick">
 <meta property="og:description" content="Semblanza, fotos, reconocimientos y notas en medios de Brandon Oleynick.">
 <meta property="og:url" content="https://vorka.mx/oleynickhdz/prensa/">
-<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
+<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_MX">
@@ -26,7 +26,7 @@
 <meta name="twitter:site" content="@oleynickhdz">
 <meta name="twitter:title" content="Sala de prensa · Brandon Oleynick">
 <meta name="twitter:description" content="Semblanza, fotos, reconocimientos y notas en medios.">
-<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
+<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg?v=2">
 
 <link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
@@ -613,6 +613,28 @@
   .lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; min-width: 46px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .06em; transition: border-color .2s, color .2s; }
   .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
+  /* Portada de sala de prensa (mismo estilo que conferencias) */
+  .pr-hero { position: relative; isolation: isolate; overflow: hidden; margin-top: -86px; min-height: min(92vh, 880px); display: flex; align-items: flex-end; background: #0f0f0f; color: #fff; }
+  .pr-foto { position: absolute; top: 0; right: 0; bottom: 0; z-index: -2; width: min(58%, 900px); height: 100%; object-fit: cover; object-position: 50% 22%; filter: grayscale(1) contrast(1.08) brightness(.9); }
+  .pr-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #0f0f0f 0%, #0f0f0f 40%, rgba(15,15,15,.7) 58%, rgba(15,15,15,.1) 85%), linear-gradient(180deg, rgba(0,0,0,.45) 0%, transparent 28%, transparent 72%, var(--paper) 100%); }
+  .pr-in { width: 100%; padding-top: 150px; padding-bottom: clamp(48px, 8vh, 88px); }
+  .pr-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .pr-pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .pr-hero h1 { margin: 18px 0 14px; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(3.6rem, 10vw, 9rem); line-height: .88; letter-spacing: .005em; color: #fff; }
+  .pr-hero h1 span { color: var(--accent); }
+  .pr-hero p { margin: 0; max-width: 46ch; font-size: clamp(1rem, 1.4vw, 1.15rem); color: rgba(255,255,255,.82); }
+  .pr-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 26px; }
+  .pr-btn { padding: 15px 26px; border-radius: 999px; background: var(--accent); color: #111; font-weight: 800; font-size: 15px; transition: transform .2s, background .2s; }
+  .pr-btn:hover { transform: translateY(-2px); background: #fff; }
+  .pr-btn2 { font-weight: 700; color: #fff; text-decoration: underline; text-underline-offset: 6px; text-decoration-color: rgba(255,255,255,.4); }
+  .pr-btn2:hover { text-decoration-color: var(--accent); }
+  @media (max-width: 760px) {
+    .pr-hero { min-height: 0; display: block; padding-top: min(108vw, 520px); }
+    .pr-foto { width: 100%; height: min(118vw, 570px); bottom: auto; object-position: 50% 12%; }
+    .pr-foto { -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+    .pr-hero::after { background: linear-gradient(180deg, rgba(15,15,15,.5) 0px, transparent 110px, transparent 80%, var(--paper) 100%); }
+    .pr-in { padding-top: 0; }
+  }
 </style>
 </head>
 <body>
@@ -643,20 +665,18 @@
 
 
 <main id="main">
-<div class="shell">
-  <section class="p-hero" aria-labelledby="p-t">
-    <div>
-      <div class="section-eyebrow">Sala de prensa</div>
-      <h1 id="p-t">Brandon Oleynick<span>.</span></h1>
-      <p>Líder social juvenil y activista por la participación de las juventudes. Fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México. Aquí está todo lo que necesitas para una nota, una presentación o un programa: semblanza, fotos, reconocimientos y contacto.</p>
-      <div class="ctas">
-        <a class="btn-primary" href="#semblanza">Copiar semblanza</a>
-        <a class="btn-ghost" href="#fotos">Descargar fotos</a>
-      </div>
+<section class="pr-hero" aria-labelledby="p-t">
+  <img class="pr-foto" src="../brandon.jpg" alt="Retrato de Brandon Oleynick" width="960" height="1200" fetchpriority="high">
+  <div class="shell pr-in">
+    <span class="pr-pill"><i></i>Sala de prensa · Kit para medios</span>
+    <h1 id="p-t">Brandon<br><span>Oleynick.</span></h1>
+    <p>Líder social juvenil, fundador de Juventudes Impactando México y de Vorka México. Semblanza, fotos, reconocimientos y contacto para tu nota o evento.</p>
+    <div class="pr-ctas">
+      <a class="pr-btn" href="#semblanza">Copiar semblanza</a>
+      <a class="pr-btn2" href="#fotos">Descargar fotos →</a>
     </div>
-    <div class="p-foto"><img src="../brandon.jpg" alt="Retrato de Brandon Oleynick" width="960" height="1200" loading="eager" fetchpriority="high"></div>
-  </section>
-</div>
+  </div>
+</section>
 
 <div class="band-2">
   <div class="shell">
