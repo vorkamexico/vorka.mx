@@ -2582,6 +2582,51 @@
   .conf-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 26px; }
   .conf-link { color: #F5F5F0; font-weight: 700; text-decoration: underline; text-underline-offset: 6px; text-decoration-color: rgba(255,255,255,.35); }
   .conf-link:hover { text-decoration-color: var(--accent); }
+  /* ---- Etiquetas largas: las de atrás se esconden tras la silueta, el texto queda a la vista ---- */
+  .hx-tag { align-items: center; gap: 8px; padding: 13px 26px; font-size: 16px; font-weight: 600; letter-spacing: -.005em; }
+  .hx-tag b { font-size: 1.6em; }
+  .hx-tag span { opacity: .92; }
+  .t-rosa { left: 38%; right: -58%; top: 15%; justify-content: flex-end; padding-left: 26px; transform: rotate(4deg); }
+  .t-roja { left: -62%; right: 42%; top: 35%; justify-content: flex-start; padding-right: 26px; transform: rotate(-5deg); }
+  .t-verde { left: -46%; top: 57%; transform: rotate(-3deg); }
+  .t-azul { right: -52%; top: 71%; transform: rotate(3deg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hx-tag { animation: cinta 900ms cubic-bezier(.2,.8,.2,1) both; }
+    .t-rosa { animation-delay: 350ms; } .t-roja { animation-delay: 450ms; } .t-verde { animation-delay: 550ms; } .t-azul { animation-delay: 650ms; }
+    .t-rosa, .t-azul { --desde: 60px; }
+    @keyframes cinta { from { opacity: 0; translate: var(--desde, -60px) 0; } to { opacity: 1; translate: 0 0; } }
+  }
+  /* Celular: cintas de lado a lado que cruzan el pecho, como listones */
+  @media (max-width: 960px) {
+    .hx-tag, .hx-tag.atras { z-index: 1; left: 50% !important; right: auto !important; width: 112vw; margin-left: -56vw; justify-content: center !important; padding: 10px 16px !important; font-size: 13.5px; border-radius: 0; box-shadow: 0 10px 22px -12px rgba(0,0,0,.55); }
+    .hx-tag b { font-size: 1.5em; }
+    .t-rosa { top: 46.5%; transform: rotate(-4deg); }
+    .t-verde { top: 55%; transform: rotate(2.5deg); }
+    .t-azul { top: 63.5%; transform: rotate(-2deg); }
+    .t-roja { top: 72%; transform: rotate(3.5deg); }
+  }
+  /* Sesiones: lista sobria en lugar de tarjetas de planes */
+  .ses-lista { margin-top: 10px; border-top: 1px solid var(--rule); }
+  .ses-fila { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1.25fr) minmax(0, 1.6fr) 150px 52px; align-items: center; gap: 28px; padding: 30px 6px; border-bottom: 1px solid var(--rule); color: var(--ink); transition: background .25s, padding .25s; }
+  .ses-fila:hover { background: var(--paper-2); padding-left: 18px; padding-right: 18px; }
+  .ses-n { font-family: var(--display); font-size: 2.2rem; line-height: 1; color: var(--muted); transition: color .2s; }
+  .ses-fila:hover .ses-n, .ses-fila.destacada .ses-n { color: var(--accent); }
+  .ses-nom b { display: block; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1; letter-spacing: .005em; }
+  .ses-nom i, .ses-dato i { display: block; margin-top: 8px; font-style: normal; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .ses-desc { font-size: 15px; line-height: 1.55; color: var(--muted); }
+  .ses-dato { text-align: right; }
+  .ses-dato b { font-size: 1.7rem; font-weight: 800; letter-spacing: -.03em; }
+  .ses-ir { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--rule); transition: background .2s, border-color .2s, transform .2s; }
+  .ses-ir svg { width: 16px; height: 16px; }
+  .ses-fila:hover .ses-ir, .ses-fila.destacada .ses-ir { background: var(--accent); border-color: var(--accent); color: #141414; }
+  .ses-fila:hover .ses-ir { transform: rotate(45deg); }
+  .ses-fila.destacada .ses-nom::before { content: "Más elegida"; display: inline-block; margin-bottom: 10px; padding: 4px 10px; border-radius: 999px; background: var(--accent); color: #141414; font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; }
+  @media (max-width: 900px) {
+    .ses-fila { grid-template-columns: 44px minmax(0, 1fr) 44px; grid-template-areas: "n nom ir" "n desc desc" "n dato dato"; gap: 10px 16px; padding: 24px 0; }
+    .ses-fila:hover { padding-left: 0; padding-right: 0; background: none; }
+    .ses-n { grid-area: n; font-size: 1.7rem; align-self: start; padding-top: 4px; } .ses-nom { grid-area: nom; } .ses-desc { grid-area: desc; font-size: 14.5px; } .ses-dato { grid-area: dato; text-align: left; } .ses-ir { grid-area: ir; width: 44px; height: 44px; align-self: start; }
+    .ses-dato b { font-size: 1.4rem; } .ses-dato i { display: inline; margin-left: 6px; }
+  }
 </style>
 </head>
 <body>
@@ -2646,11 +2691,11 @@
   <div class="hx-luz" aria-hidden="true"></div>
   <h1 class="hx-nombre"><span class="hx-nom">Brandon</span><span class="hx-ape">Oleynick</span></h1>
   <div class="hx-figura">
-    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b data-vivo="municipios">121</b> municipios</a>
-    <a class="hx-tag t-roja atras" href="./conferencias/"><b>100+</b> conferencias</a>
+    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Impactando en</span> <b data-vivo="municipios">121</b> <span>municipios</span></a>
+    <a class="hx-tag t-roja atras" href="./conferencias/"><span>Inspirando en</span> <b>+100</b> <span>conferencias</span></a>
     <img class="hx-foto" src="img/brandon-portada.webp" alt="Brandon Oleynick saludando" width="1000" height="1521" fetchpriority="high">
-    <a class="hx-tag t-verde" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><b>3,000+</b> jóvenes en IMPACTO</a>
-    <a class="hx-tag t-azul" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b data-vivo="estados">30</b> estados</a>
+    <a class="hx-tag t-verde" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><span>Liderando</span> <b>+3,000</b> <span>juventudes</span></a>
+    <a class="hx-tag t-azul" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Construyendo un México mejor en</span> <b data-vivo="estados">30</b> <span>estados</span></a>
   </div>
   <div class="shell hx-frente">
     <div class="hx-izq">
@@ -3003,33 +3048,32 @@
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Sesiones 1:1</div>
       <h2 class="section-title" id="h-ses">Trabajemos <span class="accent">juntos.</span></h2>
-      <p class="ses-intro">Elige la sesión según tu momento. Agendas en línea, pagas por transferencia y recibes la confirmación con tu enlace de videollamada.</p>
+      <p class="ses-intro">Por videollamada. Agendas en línea y recibes tu enlace al confirmar.</p>
     </div>
-    <div class="ses-grid">
-      <article class="ses-op">
-        <div class="ses-ideal">Ideal si tienes una duda o decisión concreta</div>
-        <h3>Asesoría Express</h3>
-        <div class="ses-precio"><b>$300</b> MXN · 20 min</div>
-        <p>Una segunda opinión, retroalimentación de una idea u orientación puntual para una beca, convocatoria o proyecto.</p>
-        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=express&amp;o=oleynickhdz">Agendar Express <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </article>
-      <article class="ses-op destacada">
-        <div class="ses-flag">Más elegida</div>
-        <div class="ses-ideal">Ideal si quieres avanzar con acompañamiento</div>
-        <h3>Mentoría Mensual</h3>
-        <div class="ses-precio"><b>$900</b> MXN al mes · 45 min</div>
-        <p>Diagnóstico y plan personalizado, seguimiento mes a mes, revisión de CV o proyecto y WhatsApp directo entre sesiones. Después del primer mes, también en pagos quincenales de $450.</p>
-        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=mentoria&amp;o=oleynickhdz">Empezar mi mentoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </article>
-      <article class="ses-op">
-        <div class="ses-ideal">Ideal para proyectos y organizaciones</div>
-        <h3>Consultoría Estratégica</h3>
-        <div class="ses-precio"><b>$600</b> MXN · 60 min</div>
-        <p>Diagnóstico y hoja de ruta, revisión de propuestas, presentaciones institucionales o estrategia de comunicación e impacto.</p>
-        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=consultoria&amp;o=oleynickhdz">Agendar Consultoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </article>
+    <div class="ses-lista">
+      <a class="ses-fila" href="https://os.vorka.mx/agendar?s=express&amp;o=oleynickhdz">
+        <span class="ses-n">01</span>
+        <span class="ses-nom"><b>Asesoría Express</b><i>Una duda o decisión concreta</i></span>
+        <span class="ses-desc">Segunda opinión, retroalimentación de una idea u orientación para una beca, convocatoria o proyecto.</span>
+        <span class="ses-dato"><b>$300</b><i>MXN · 20 min</i></span>
+        <span class="ses-ir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="ses-fila destacada" href="https://os.vorka.mx/agendar?s=mentoria&amp;o=oleynickhdz">
+        <span class="ses-n">02</span>
+        <span class="ses-nom"><b>Mentoría Mensual</b><i>Avanzar con acompañamiento</i></span>
+        <span class="ses-desc">Plan personalizado, seguimiento mes a mes, revisión de CV o proyecto y WhatsApp directo entre sesiones.</span>
+        <span class="ses-dato"><b>$900</b><i>MXN al mes · 45 min</i></span>
+        <span class="ses-ir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
+      <a class="ses-fila" href="https://os.vorka.mx/agendar?s=consultoria&amp;o=oleynickhdz">
+        <span class="ses-n">03</span>
+        <span class="ses-nom"><b>Consultoría Estratégica</b><i>Proyectos y organizaciones</i></span>
+        <span class="ses-desc">Hoja de ruta, revisión de propuestas, presentaciones institucionales o estrategia de comunicación e impacto.</span>
+        <span class="ses-dato"><b>$600</b><i>MXN · 60 min</i></span>
+        <span class="ses-ir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      </a>
     </div>
-    <p class="ses-ayuda">¿No sabes cuál elegir? <a href="https://os.vorka.mx/agendar?o=oleynickhdz">La agenda te ayuda a decidir</a> · <a href="./servicios/">Ver detalles de cada servicio</a> · ¿Una conferencia para tu organización? <a href="./conferencias/">Cotízala aquí</a></p>
+    <p class="ses-ayuda">¿No sabes cuál elegir? <a href="https://os.vorka.mx/agendar?o=oleynickhdz">La agenda te ayuda a decidir</a> · <a href="./servicios/">Ver detalles de cada servicio</a></p>
   </section>
 </div>
 

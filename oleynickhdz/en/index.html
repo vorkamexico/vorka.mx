@@ -2587,6 +2587,29 @@
     .hx-tag.atras { z-index: 1; }
     .t-verde { left: -6%; top: 56%; } .t-rosa { right: -5%; top: 22%; padding-left: 13px; } .t-azul { right: -4%; top: 68%; } .t-roja { left: -6%; top: 40%; padding-right: 13px; }
   }
+  /* ---- Etiquetas largas: las de atrás se esconden tras la silueta, el texto queda a la vista ---- */
+  .hx-tag { align-items: center; gap: 8px; padding: 13px 26px; font-size: 16px; font-weight: 600; letter-spacing: -.005em; }
+  .hx-tag b { font-size: 1.6em; }
+  .hx-tag span { opacity: .92; }
+  .t-rosa { left: 38%; right: -58%; top: 15%; justify-content: flex-end; padding-left: 26px; transform: rotate(4deg); }
+  .t-roja { left: -62%; right: 42%; top: 35%; justify-content: flex-start; padding-right: 26px; transform: rotate(-5deg); }
+  .t-verde { left: -46%; top: 57%; transform: rotate(-3deg); }
+  .t-azul { right: -52%; top: 71%; transform: rotate(3deg); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hx-tag { animation: cinta 900ms cubic-bezier(.2,.8,.2,1) both; }
+    .t-rosa { animation-delay: 350ms; } .t-roja { animation-delay: 450ms; } .t-verde { animation-delay: 550ms; } .t-azul { animation-delay: 650ms; }
+    .t-rosa, .t-azul { --desde: 60px; }
+    @keyframes cinta { from { opacity: 0; translate: var(--desde, -60px) 0; } to { opacity: 1; translate: 0 0; } }
+  }
+  /* Celular: cintas de lado a lado que cruzan el pecho, como listones */
+  @media (max-width: 960px) {
+    .hx-tag, .hx-tag.atras { z-index: 1; left: 50% !important; right: auto !important; width: 112vw; margin-left: -56vw; justify-content: center !important; padding: 10px 16px !important; font-size: 13.5px; border-radius: 0; box-shadow: 0 10px 22px -12px rgba(0,0,0,.55); }
+    .hx-tag b { font-size: 1.5em; }
+    .t-rosa { top: 46.5%; transform: rotate(-4deg); }
+    .t-verde { top: 55%; transform: rotate(2.5deg); }
+    .t-azul { top: 63.5%; transform: rotate(-2deg); }
+    .t-roja { top: 72%; transform: rotate(3.5deg); }
+  }
 </style>
 </head>
 <body>
@@ -2646,11 +2669,11 @@
   <div class="hx-luz" aria-hidden="true"></div>
   <h1 class="hx-nombre"><span class="hx-nom">Brandon</span><span class="hx-ape">Oleynick</span></h1>
   <div class="hx-figura">
-    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b data-vivo="municipios">121</b> municipalities</a>
-    <a class="hx-tag t-roja atras" href="#conferencias"><b>100+</b> talks</a>
+    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Impacting</span> <b data-vivo="municipios">121</b> <span>municipalities</span></a>
+    <a class="hx-tag t-roja atras" href="#conferencias"><span>Inspiring through</span> <b>100+</b> <span>talks</span></a>
     <img class="hx-foto" src="../img/brandon-portada.webp" alt="Brandon Oleynick waving" width="1000" height="1521" fetchpriority="high">
-    <a class="hx-tag t-verde" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><b>3,000+</b> young changemakers</a>
-    <a class="hx-tag t-azul" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b data-vivo="estados">30</b> states</a>
+    <a class="hx-tag t-verde" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><span>Leading</span> <b>3,000+</b> <span>young people</span></a>
+    <a class="hx-tag t-azul" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Building a better Mexico in</span> <b data-vivo="estados">30</b> <span>states</span></a>
   </div>
   <div class="shell hx-frente">
     <div class="hx-izq">
