@@ -19,16 +19,18 @@
 <meta property="og:title" content="Servicios con Brandon Oleynick — Mentoría, Asesoría, Consultoría">
 <meta property="og:description" content="Agenda una sesión conmigo: mentoría, asesoría o consultoría estratégica. Reserva directo por WhatsApp.">
 <meta property="og:url" content="https://vorka.mx/oleynickhdz/servicios/">
-<meta property="og:image" content="https://vorka.mx/oleynickhdz/brandon.jpg">
+<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
 <meta property="og:locale" content="es_MX">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@oleynickhdz">
 <meta name="twitter:title" content="Servicios con Brandon Oleynick">
 <meta name="twitter:description" content="Mentoría, asesoría y consultoría. Agenda directo por WhatsApp.">
-<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/brandon.jpg">
+<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231A1A1A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7B33E'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
+<link rel="apple-touch-icon" href="/oleynickhdz/img/apple-touch-icon.png">
 
 <script type="application/ld+json">
 {
@@ -61,7 +63,7 @@
     { "@type": "Question", "name": "¿Qué pasa después de la primera sesión?", "acceptedAnswer": { "@type": "Answer", "text": "Recibes notas con lo acordado, los próximos pasos concretos y recursos complementarios si aplican. En mentoría mensual se agenda la siguiente sesión." } },
     { "@type": "Question", "name": "¿Puedo contratar varias Asesorías Express a la vez?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Puedes pagar 2 o 3 sesiones por adelantado y usarlas dentro de los 3 meses siguientes al pago." } },
     { "@type": "Question", "name": "¿Qué pasa si no sé qué servicio me conviene?", "acceptedAnswer": { "@type": "Answer", "text": "La conversación inicial por WhatsApp para definirlo es sin costo. Solo se cobra la sesión agendada." } },
-    { "@type": "Question", "name": "¿Las conferencias tienen el mismo precio?", "acceptedAnswer": { "@type": "Answer", "text": "No. Las conferencias se cotizan aparte según duración, formato, público y logística, y se solicitan con el formulario de vorka.mx/oleynickhdz/conferencias." } },
+    { "@type": "Question", "name": "¿Las conferencias tienen el mismo precio?", "acceptedAnswer": { "@type": "Answer", "text": "No. Las conferencias se cotizan aparte según duración, formato, público y logística, y se solicitan con el formulario de vorka.mx/oleynickhdz/conferencias/solicitar." } },
     { "@type": "Question", "name": "¿Puedo pagar con PayPal, Mercado Pago u OXXO?", "acceptedAnswer": { "@type": "Answer", "text": "Por ahora solo transferencia bancaria (SPEI)." } },
     { "@type": "Question", "name": "¿Haces descuentos para estudiantes?", "acceptedAnswer": { "@type": "Answer", "text": "No manejo descuentos sistemáticos, pero existen espacios becados para casos de alto impacto sin recursos." } }
   ]
@@ -70,7 +72,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root {
     --paper:      #FFFFFF;
@@ -97,7 +99,7 @@
     --dark-bg-2:  #1A1A1B;
     --dark-fg:    #F5F5F0;
 
-    --font: 'Manrope', 'Mont', 'Helvetica Neue', system-ui, sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --max: 1180px;
     --gutter: clamp(20px, 5vw, 64px);
     --header-h: 68px;
@@ -1464,6 +1466,50 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
   :root[data-theme="dark"] { --accent-ink: var(--accent); }
   .section-eyebrow, .section-title em, .section-title .accent, .how-step:nth-child(3) .n, .method-card .num, .stars { color: var(--accent-ink); }
+  /* Instagram del encabezado: sobrio, del mismo estilo que los demás botones */
+  .ig-btn { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; box-shadow: none !important; }
+  .ig-btn::after { display: none !important; }
+  .ig-btn:hover { border-color: var(--ink) !important; transform: none !important; }
+  /* Barra flotante como la de vorka.mx (píldora translúcida) y foto de perfil */
+  .site-header { position: fixed !important; inset: 12px 0 auto !important; background: none !important; border: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; pointer-events: none; z-index: 80; }
+  .site-header .nav-shell { pointer-events: auto; height: 62px !important; width: min(100% - 24px, 1180px); max-width: none; margin: 0 auto; padding: 0 8px 0 8px !important; border-radius: 999px; background: color-mix(in srgb, var(--paper) 72%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 8px 30px -14px rgba(0,0,0,.25); }
+  .site-header .nav-main { margin-left: auto; }
+  .brand-mark { width: 44px !important; height: 44px !important; background: var(--paper-3) !important; overflow: visible; }
+  .brand-mark img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .brand-mark::after { top: 0 !important; right: 0 !important; }
+  .site-header .cta-mini, .site-header .toggle, .site-header .ig-btn { height: 46px; }
+  .site-header .cta-mini { display: inline-flex; align-items: center; padding: 0 20px; }
+  @media (max-width: 960px) { .site-header .cta-mini { display: none; } }
+  @media (max-width: 520px) { .site-header .brand span:last-child { display: inline !important; font-size: 14px; } .site-header .toggle { font-size: 0 !important; width: 40px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; } .site-header .toggle::before { content: "◐"; font-size: 16px; } }
+  .site-header .toggle { padding: 0 16px; }
+  .site-header .ig-btn { width: 46px; }
+  @media (max-width: 520px) { .site-header .nav-shell { height: 58px !important; } .brand-mark { width: 40px !important; height: 40px !important; } .site-header .ig-btn, .site-header .toggle { width: 40px; height: 40px; } }
+  body { padding-top: 86px; }
+  .hero, .hero-centered { scroll-margin-top: 90px; }
+
+  /* =====================================================================
+     SISTEMA DE DISEÑO (mismo lenguaje que la portada del inicio)
+     ===================================================================== */
+  :root { --paper: #F2F1EC; --paper-2: #E9E8E2; --paper-3: #DEDDD6; --rule: #D9D8D0; --display: 'Anton', 'Impact', 'Arial Narrow', sans-serif; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; } }
+  :root[data-theme="dark"] { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; }
+  body { background: var(--paper); }
+  .band-2 { background: transparent !important; }
+  .section + .section { border-top: 0 !important; }
+  .section-eyebrow { font-size: 12px !important; font-weight: 800 !important; letter-spacing: .16em !important; text-transform: uppercase; color: var(--muted) !important; }
+  .section-eyebrow::before { width: 28px !important; height: 3px !important; background: var(--accent) !important; }
+  .section-title, .hero h1, .p-hero h1, .portada h1 { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; letter-spacing: .005em !important; text-wrap: balance; }
+  .section-title { font-size: clamp(2.4rem, 5.6vw, 4.8rem) !important; line-height: .94 !important; }
+  .section-title em, .section-title .a-o, .section-title .accent { color: var(--accent) !important; font-style: normal; }
+  .hero h1, .p-hero h1 { line-height: .92 !important; }
+  /* Letra de Vorka para todo el texto (los títulos siguen en Anton) y enlace de accesibilidad bien escondido */
+  body, button, input, select, textarea { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .skip-link { top: -200px !important; }
+  .skip-link:focus { top: 0 !important; }
+  /* Botón de idioma (el tema sigue al dispositivo) */
+  .lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; min-width: 46px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .06em; transition: border-color .2s, color .2s; }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
 </style>
 </head>
 <body>
@@ -1472,21 +1518,22 @@
 <header class="site-header">
   <div class="shell nav-shell">
     <a href="../" class="brand" aria-label="Brandon Oleynick — Inicio">
-      <span class="brand-mark">BO</span>
+      <span class="brand-mark" aria-hidden="true"><img src="../img/avatar.webp" alt="" width="44" height="44"></span>
       <span>Brandon Oleynick</span>
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
-      <a href="../">Perfil</a>
+      <a href="../#manifiesto">Manifiesto</a>
       <a href="../#trayectoria">Trayectoria</a>
-      <a href="../#conferencias">Conferencias</a>
-      <a href="#faq">FAQs</a>
+      <a href="../conferencias/">Conferencias</a>
+      <a href="../prensa/">Prensa</a>
+      <a href="../#sesiones">Sesiones</a>
     </nav>
     <div class="nav-right">
       <a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener" class="ig-btn" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
       </a>
       <a href="../#habla" class="cta-mini">Contactar</a>
-      <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
+      <a class="lang-btn" href="../en/" hreflang="en" lang="en" aria-label="Read in English">EN</a>
     </div>
   </div>
 </header>
@@ -1958,7 +2005,7 @@
         </details>
         <details class="faq-item">
           <summary>¿Las conferencias para universidades y empresas tienen el mismo precio?</summary>
-          <div class="answer"><p>No. Las <strong>conferencias se cotizan aparte</strong> según duración, formato, público y logística (presencial o virtual). Se solicitan con el <a href="../conferencias/#solicitud" style="text-decoration:underline">formulario de conferencias</a> y la propuesta formal llega por correo en máximo dos días hábiles.</p></div>
+          <div class="answer"><p>No. Las <strong>conferencias se cotizan aparte</strong> según duración, formato, público y logística (presencial o virtual). Se solicitan con el <a href="../conferencias/solicitar/" style="text-decoration:underline">formulario de conferencias</a> y la propuesta formal llega por correo en máximo dos días hábiles.</p></div>
         </details>
         <details class="faq-item">
           <summary>¿Qué incluye la Mentoría Mensual mes a mes, exactamente?</summary>
@@ -2003,7 +2050,7 @@
   <div class="shell">
     <div class="foot-top">
       <a class="foot-brand-line" href="../">
-        <span class="mark" aria-hidden="true">BO</span>
+        <span class="mark" aria-hidden="true" style="overflow:hidden;padding:0"><img src="/oleynickhdz/img/avatar.webp" alt="" width="40" height="40" style="width:100%;height:100%;border-radius:50%;object-fit:cover"></span>
         <span>
           Brandon Oleynick
           <small>Servicios · Mentoría, Asesoría y Consultoría</small>
@@ -2031,7 +2078,7 @@
           <li><a href="#servicios">Asesoría Express — $300</a></li>
           <li><a href="#servicios">Mentoría Mensual — $900</a></li>
           <li><a href="#servicios">Consultoría Estratégica — $600</a></li>
-          <li><a href="../conferencias/#solicitud">Solicitar una conferencia</a></li>
+          <li><a href="../conferencias/solicitar/">Solicitar una conferencia</a></li>
         </ul>
       </div>
 
@@ -2097,7 +2144,7 @@
   (function () {
     var root = document.documentElement;
     var stored = null;
-    try { stored = localStorage.getItem('bo-theme'); } catch (e) {}
+    try { stored = null; } catch (e) {}
     if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
     var btn = document.getElementById('themeToggle');
     if (btn) btn.addEventListener('click', function () {

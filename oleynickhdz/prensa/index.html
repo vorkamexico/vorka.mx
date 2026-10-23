@@ -17,18 +17,20 @@
 <meta property="og:title" content="Sala de prensa · Brandon Oleynick">
 <meta property="og:description" content="Semblanza, fotos, reconocimientos y notas en medios de Brandon Oleynick.">
 <meta property="og:url" content="https://vorka.mx/oleynickhdz/prensa/">
-<meta property="og:image" content="https://vorka.mx/oleynickhdz/conferencias/hero.jpg">
+<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="675">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_MX">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@oleynickhdz">
 <meta name="twitter:title" content="Sala de prensa · Brandon Oleynick">
 <meta name="twitter:description" content="Semblanza, fotos, reconocimientos y notas en medios.">
-<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/conferencias/hero.jpg">
+<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231A1A1A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7B33E'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
+<link rel="apple-touch-icon" href="/oleynickhdz/img/apple-touch-icon.png">
 
 <script type="application/ld+json">
 {
@@ -69,7 +71,7 @@
       "name": "Brandon Oleynick",
       "url": "https://vorka.mx/oleynickhdz/",
       "image": "https://vorka.mx/oleynickhdz/brandon.jpg",
-      "description": "Brandon Oleynick es líder social juvenil, presidente y fundador de Juventudes Impactando México A.C. y conferencista sobre liderazgo y participación de las juventudes.",
+      "description": "Brandon Oleynick es internacionalista, activista y emprendedor de innovación social, fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México.",
       "subjectOf": [
         {
           "@type": "NewsArticle",
@@ -173,7 +175,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root {
     --paper:#FFFFFF; --paper-2:#F5F5F1; --paper-3:#EBEBE6;
@@ -183,7 +185,7 @@
     --dark-bg:#111111; --dark-bg-2:#1A1A1B; --dark-fg:#F5F5F0;
     --c-green:#6FAE3B; --c-blue:#2E88C8; --c-purple:#8446A8;
     --c-red:#D63F4E; --c-orange:#E9782C;
-    --font:'Manrope','Helvetica Neue',system-ui,sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --max:1180px; --gutter:clamp(20px,5vw,64px); --header-h:68px;
   }
   @media (prefers-color-scheme:dark) {
@@ -567,6 +569,50 @@
   .uso{font-size:13.5px;color:var(--muted);margin-top:18px}
   @media (max-width:880px){.p-hero{grid-template-columns:1fr}.p-foto{max-width:380px}.datos{grid-template-columns:repeat(2,minmax(0,1fr))}.premios{grid-template-columns:1fr}.fotos{grid-template-columns:1fr 1fr}.contacto-p{grid-template-columns:1fr}}
   @media (max-width:560px){.fotos{grid-template-columns:1fr}.bio-top{flex-wrap:wrap}}
+  /* Instagram del encabezado: sobrio, del mismo estilo que los demás botones */
+  .ig-btn { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; box-shadow: none !important; }
+  .ig-btn::after { display: none !important; }
+  .ig-btn:hover { border-color: var(--ink) !important; transform: none !important; }
+  /* Barra flotante como la de vorka.mx (píldora translúcida) y foto de perfil */
+  .site-header { position: fixed !important; inset: 12px 0 auto !important; background: none !important; border: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; pointer-events: none; z-index: 80; }
+  .site-header .nav-shell { pointer-events: auto; height: 62px !important; width: min(100% - 24px, 1180px); max-width: none; margin: 0 auto; padding: 0 8px 0 8px !important; border-radius: 999px; background: color-mix(in srgb, var(--paper) 72%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 8px 30px -14px rgba(0,0,0,.25); }
+  .site-header .nav-main { margin-left: auto; }
+  .brand-mark { width: 44px !important; height: 44px !important; background: var(--paper-3) !important; overflow: visible; }
+  .brand-mark img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .brand-mark::after { top: 0 !important; right: 0 !important; }
+  .site-header .cta-mini, .site-header .toggle, .site-header .ig-btn { height: 46px; }
+  .site-header .cta-mini { display: inline-flex; align-items: center; padding: 0 20px; }
+  @media (max-width: 960px) { .site-header .cta-mini { display: none; } }
+  @media (max-width: 520px) { .site-header .brand span:last-child { display: inline !important; font-size: 14px; } .site-header .toggle { font-size: 0 !important; width: 40px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; } .site-header .toggle::before { content: "◐"; font-size: 16px; } }
+  .site-header .toggle { padding: 0 16px; }
+  .site-header .ig-btn { width: 46px; }
+  @media (max-width: 520px) { .site-header .nav-shell { height: 58px !important; } .brand-mark { width: 40px !important; height: 40px !important; } .site-header .ig-btn, .site-header .toggle { width: 40px; height: 40px; } }
+  body { padding-top: 86px; }
+  .hero, .hero-centered { scroll-margin-top: 90px; }
+
+  /* =====================================================================
+     SISTEMA DE DISEÑO (mismo lenguaje que la portada del inicio)
+     ===================================================================== */
+  :root { --paper: #F2F1EC; --paper-2: #E9E8E2; --paper-3: #DEDDD6; --rule: #D9D8D0; --display: 'Anton', 'Impact', 'Arial Narrow', sans-serif; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; } }
+  :root[data-theme="dark"] { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; }
+  body { background: var(--paper); }
+  .band-2 { background: transparent !important; }
+  .section + .section { border-top: 0 !important; }
+  .section-eyebrow { font-size: 12px !important; font-weight: 800 !important; letter-spacing: .16em !important; text-transform: uppercase; color: var(--muted) !important; }
+  .section-eyebrow::before { width: 28px !important; height: 3px !important; background: var(--accent) !important; }
+  .section-title, .hero h1, .p-hero h1, .portada h1 { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; letter-spacing: .005em !important; text-wrap: balance; }
+  .section-title { font-size: clamp(2.4rem, 5.6vw, 4.8rem) !important; line-height: .94 !important; }
+  .section-title em, .section-title .a-o, .section-title .accent { color: var(--accent) !important; font-style: normal; }
+  .hero h1, .p-hero h1 { line-height: .92 !important; }
+  /* Letra de Vorka para todo el texto (los títulos siguen en Anton) y enlace de accesibilidad bien escondido */
+  body, button, input, select, textarea { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .skip-link { top: -200px !important; }
+  .skip-link:focus { top: 0 !important; }
+  /* Botón de idioma (el tema sigue al dispositivo) */
+  .lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; min-width: 46px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .06em; transition: border-color .2s, color .2s; }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
 </style>
 </head>
 <body>
@@ -575,21 +621,22 @@
 <header class="site-header" role="banner">
   <div class="shell nav-shell">
     <a href="../" class="brand" aria-label="Brandon Oleynick — Inicio">
-      <span class="brand-mark">BO</span>
+      <span class="brand-mark" aria-hidden="true"><img src="../img/avatar.webp" alt="" width="44" height="44"></span>
       <span>Brandon Oleynick</span>
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
-      <a href="../">Perfil</a>
+      <a href="../#manifiesto">Manifiesto</a>
       <a href="../#trayectoria">Trayectoria</a>
       <a href="../conferencias/">Conferencias</a>
-      <a href="#medios">En los medios</a>
+      <a href="../prensa/">Prensa</a>
+      <a href="../#sesiones">Sesiones</a>
     </nav>
     <div class="nav-right">
       <a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener" class="ig-btn" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
       </a>
       <a href="../#habla" class="cta-mini">Contactar</a>
-      <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
+      <a class="lang-btn" href="../en/" hreflang="en" lang="en" aria-label="Read in English">EN</a>
     </div>
   </div>
 </header>
@@ -601,7 +648,7 @@
     <div>
       <div class="section-eyebrow">Sala de prensa</div>
       <h1 id="p-t">Brandon Oleynick<span>.</span></h1>
-      <p>Líder social juvenil y activista por la participación de las juventudes. Presidente y fundador de Juventudes Impactando México A.C. Aquí está todo lo que necesitas para una nota, una presentación o un programa: semblanza, fotos, reconocimientos y contacto.</p>
+      <p>Líder social juvenil y activista por la participación de las juventudes. Fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México. Aquí está todo lo que necesitas para una nota, una presentación o un programa: semblanza, fotos, reconocimientos y contacto.</p>
       <div class="ctas">
         <a class="btn-primary" href="#semblanza">Copiar semblanza</a>
         <a class="btn-ghost" href="#fotos">Descargar fotos</a>
@@ -621,16 +668,16 @@
       </div>
       <div class="bios">
       <article class="bio">
-        <div class="bio-top"><h3>Una línea <small>23 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-corta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
-        <div class="bio-txt" id="bio-corta"><p>Brandon Oleynick es líder social juvenil, presidente y fundador de Juventudes Impactando México A.C. y conferencista sobre liderazgo y participación de las juventudes.</p></div>
+        <div class="bio-top"><h3>Una línea <small>24 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-corta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
+        <div class="bio-txt" id="bio-corta"><p>Brandon Oleynick es internacionalista, activista y emprendedor de innovación social, fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México.</p></div>
       </article>
       <article class="bio">
-        <div class="bio-top"><h3>Corta <small>77 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
-        <div class="bio-txt" id="bio-media"><p>Brandon Oleynick (Celaya, Guanajuato) es líder social juvenil y activista por la participación de las juventudes. Es presidente y fundador de Juventudes Impactando México A.C. (IMPACTO), red de más de 3,000 jóvenes con presencia en más de 120 municipios del país, y CEO de la consultora Vorka México. Ha impartido más de 100 conferencias en 6 estados del país. Recibió el Premio Municipal de la Juventud de Celaya (2026) y el Premio Estatal de la Juventud de Guanajuato (2023).</p></div>
+        <div class="bio-top"><h3>Corta <small>83 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
+        <div class="bio-txt" id="bio-media"><p>Brandon Oleynick es internacionalista, consultor, activista y emprendedor de innovación social originario de Celaya, Guanajuato. Es fundador y presidente nacional de Juventudes Impactando México A.C. (IMPACTO), con presencia en 30 estados y más de 3,000 líderes, y fundador y CEO de Vorka México. Beneficiario del programa Líderes del Mañana del Tecnológico de Monterrey, ha recibido el Premio Estatal de la Juventud de Guanajuato, el Premio Municipal de la Juventud de Celaya 2026 y los premios FRISA y Bright Journey del Tec de Monterrey.</p></div>
       </article>
       <article class="bio">
-        <div class="bio-top"><h3>Larga <small>208 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-larga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
-        <div class="bio-txt" id="bio-larga"><p>Brandon Oleynick es un líder social juvenil originario de Celaya, Guanajuato, y activista por la participación de las juventudes en la vida pública de México. Estudió Relaciones Internacionales en el Tecnológico de Monterrey y se ha formado en programas de Harvard Business School y UC Santa Cruz Silicon Valley.</p><p>Desde la preparatoria fundó Juventudes Impactando México A.C. (IMPACTO), asociación civil que preside y que hoy reúne a más de 3,000 integrantes con presidencias en más de 120 municipios de 30 estados, con proyectos de educación, medio ambiente y emprendimiento alineados con la Agenda 2030. Desde IMPACTO firmó un convenio de colaboración con el Instituto Municipal de la Juventud de Celaya y presentó, junto al Consejo Coordinador Empresarial, el proyecto Ciudad Impacto.</p><p>Es fundador y CEO de Vorka México, consultora de estrategia, liderazgo e influencia, y director de Oleynick Group. Ha impartido más de 100 conferencias en Guanajuato, Nuevo León, Jalisco, Querétaro, Ciudad de México y Tamaulipas para universidades, foros, gobiernos y empresas.</p><p>Entre sus reconocimientos están el Premio Municipal de la Juventud de Celaya (2026), el Premio Bright Journey (2025) y el Premio FRISA (2024) del Tecnológico de Monterrey, el nombramiento como Embajador 2030 del INJUVE Nuevo León (2024), el Premio Estatal de la Juventud de Guanajuato en Compromiso Social (2023) y el Premio Nacional de Juventudes X La Pacificación (2022).</p></div>
+        <div class="bio-top"><h3>Para conferencias <small>205 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-larga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
+        <div class="bio-txt" id="bio-larga"><p>Brandon Oleynick es un internacionalista, consultor, activista y emprendedor de innovación social originario de Celaya, Guanajuato. Beneficiario del programa Líderes del Mañana del Tecnológico de Monterrey, ha enfocado su trayectoria en diseñar soluciones sostenibles, replicables y de bajo costo para transformar comunidades y generar oportunidades a escala.</p><p>Es fundador y presidente nacional de Juventudes Impactando México A.C. (IMPACTO), organización surgida en Celaya con presencia en 30 estados, más de 3,000 líderes y un impacto reportado en más de 600,000 vidas, mediante el trabajo articulado entre sociedad civil, gobierno, empresas e instituciones. Además, es fundador y CEO de Vorka México, desde donde se desempeña como consultor, y creador de contenido, buscando democratizar conocimientos y oportunidades relacionados con el emprendimiento y el impacto social.</p><p>Su trayectoria se distingue por una visión sistémica orientada no solo a resolver problemáticas, sino a desarrollar modelos que puedan escalar, replicarse y generar cambios sostenibles más allá de sus propios creadores. Su liderazgo y visión le han valido reconocimientos como el Premio Estatal de la Juventud de Guanajuato, el Premio Municipal de la Juventud de Celaya 2026, en la categoría de Políticas y Cívicas, así como el Premio FRISA y el Premio Bright Journey del Tecnológico de Monterrey por Trayectoria de Emprendimiento.</p></div>
       </article>
       </div>
     </section>
@@ -647,7 +694,7 @@
       <div class="dato"><b>100<sup>+</sup></b><span>conferencias desde 2021</span></div>
       <div class="dato"><b>6</b><span>estados con conferencias</span></div>
       <div class="dato"><b>3,000<sup>+</sup></b><span>integrantes de Juventudes Impactando México A.C.</span></div>
-      <div class="dato"><b>120<sup>+</sup></b><span>municipios con presidencia IMPACTO · <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">ver mapa</a></span></div>
+      <div class="dato"><b>121</b><span>municipios con presidencia IMPACTO · <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">ver mapa</a></span></div>
     </div>
   </section>
 
@@ -657,8 +704,8 @@
       <h2 class="section-title" id="h-rec">Premios y <em>distinciones.</em></h2>
     </div>
     <ul class="premios">
-        <li><b>2026</b><span>Premio Municipal de la Juventud<small>Gobierno Municipal de Celaya</small></span></li>
-        <li><b>2025</b><span>Premio Bright Journey<small>Tecnológico de Monterrey</small></span></li>
+        <li><b>2026</b><span>Premio Municipal de la Juventud · Políticas y Cívicas<small>Gobierno Municipal de Celaya</small></span></li>
+        <li><b>2025</b><span>Premio Bright Journey · Trayectoria de Emprendimiento<small>Tecnológico de Monterrey</small></span></li>
         <li><b>2025</b><span>Pasillo de la Fama<small>ENMS de Celaya</small></span></li>
         <li><b>2024</b><span>Premio FRISA · Reconocimiento al Emprendedor<small>Tecnológico de Monterrey</small></span></li>
         <li><b>2024</b><span>Embajador 2030<small>INJUVE Nuevo León</small></span></li>
@@ -715,7 +762,7 @@
     <div class="contacto-p">
       <a href="mailto:oleynickhdz@gmail.com?subject=Prensa%20%C2%B7%20Brandon%20Oleynick"><small>Correo de prensa</small><b>oleynickhdz@gmail.com</b></a>
       <a href="https://wa.me/524612242547?text=Hola%2C%20escribo%20de%20un%20medio%20y%20me%20gustar%C3%ADa%20una%20entrevista%20con%20Brandon." target="_blank" rel="noopener"><small>WhatsApp</small><b>+52 461 224 2547</b></a>
-      <a href="../conferencias/#solicitud"><small>Eventos</small><b>Solicitar una conferencia →</b></a>
+      <a href="../conferencias/solicitar/"><small>Eventos</small><b>Solicitar una conferencia →</b></a>
     </div>
   </section>
 </div>
@@ -726,10 +773,10 @@
   <div class="shell">
     <div class="foot-top">
       <a class="foot-brand-line" href="../">
-        <span class="mark" aria-hidden="true">BO</span>
+        <span class="mark" aria-hidden="true" style="overflow:hidden;padding:0"><img src="/oleynickhdz/img/avatar.webp" alt="" width="40" height="40" style="width:100%;height:100%;border-radius:50%;object-fit:cover"></span>
         <span>Brandon Oleynick<small>Sala de prensa</small></span>
       </a>
-      <a class="foot-primary" href="../conferencias/#solicitud">
+      <a class="foot-primary" href="../conferencias/solicitar/">
         Solicitar conferencia
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
       </a>
@@ -810,7 +857,7 @@
   (function(){
     var root = document.documentElement;
     var stored = null;
-    try { stored = localStorage.getItem('bo-theme'); } catch(e){}
+    try { stored = null; } catch(e){}
     if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
     var btn = document.getElementById('themeToggle');
     if (btn) btn.addEventListener('click', function(){
