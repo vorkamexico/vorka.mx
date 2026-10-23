@@ -144,3 +144,14 @@ export async function resumenSuscripciones(env, app) {
   }
   return { estados, vigentes: filas.filter(f => VIGENTES.includes(f.estado)).length, mrr_centavos: mrr, por_cancelar: porCancelar };
 }
+
+// Saldo a favor en la siguiente factura (p. ej. el mes gratis por invitar en Cuentas). Stripe lo descuenta del próximo cobro.
+export async function creditoApp(env, email, app, centavos, motivo) {
+  email = String(email || '').trim().toLowerCase();
+  const monto = Math.floor(Number(centavos));
+  if (!(monto > 0 && monto <= 100000)) throw new Error('Monto inválido');
+  const s = await vigente(env, email, app);
+  if (!s?.customer_id) return { ok: false, motivo: 'sin_suscripcion' };
+  await llamar(env, 'POST', `/customers/${s.customer_id}/balance_transactions`, { amount: -monto, currency: 'mxn', description: String(motivo || 'Crédito').slice(0, 300) });
+  return { ok: true };
+}
