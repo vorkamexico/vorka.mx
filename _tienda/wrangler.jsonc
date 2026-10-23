@@ -23,7 +23,9 @@
   ],
   // Correos de entrega: por Vorka OS (clase Correo), que ya tiene la llave de Resend
   "services": [
-    { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
+    { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" },
+    // Las páginas de los clientes de Vuelve (vorka.mx/vuelve/…): se traen de Vorka OS sin salir a internet
+    { "binding": "OS", "service": "vorka-os" }
   ],
   "vars": {
     "SITE_URL": "https://vorka.mx",
@@ -49,7 +51,8 @@
         { "binding": "PRODUCTOS", "bucket_name": "vorka-productos-pruebas" }
       ],
       "services": [
-        { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" }
+        { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" },
+        { "binding": "OS", "service": "vorka-os" }
       ],
       "vars": {
         "SITE_URL": "https://vorka-tienda-pruebas.oleynickhdz.workers.dev",

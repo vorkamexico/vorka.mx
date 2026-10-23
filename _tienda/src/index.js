@@ -107,18 +107,45 @@ export class Admin extends WorkerEntrypoint {
   exportarRetirosCSV(f) { return retiros.exportarRetirosCSV(this.env, f); }
 }
 
+// Vuelve: las páginas de los clientes de cada negocio se ven bajo vorka.mx/vuelve, no en os.vorka.mx. La tienda las trae de
+// Vorka OS por el enlace directo (service binding OS) y OS arma sus ligas con esta forma (le avisa x-vuelve-base):
+//   /vuelve/<negocio> → /v/<negocio> (registro: la liga del cartel con QR) · /vuelve/c/… → /c/… (la tarjeta, su Wallet y avisos)
+//   /vuelve/api/… → /api/vuelve/publico/… · /vuelve/negocios → /negocios · logos, fotos, catálogo y tema: la misma ruta
+const RECURSOS_VUELVE = /^\/vuelve\/(logo|foto|catalogo|tira)\/[a-z0-9./-]+$|^\/vuelve\/(tema\.js|icono\.png|pase\/vorka\.png)$/;
+export function rutaVuelve(p) {
+  let m;
+  if (/^\/vuelve\/negocios\/?$/i.test(p)) return '/negocios';
+  if ((m = p.match(/^\/vuelve\/c\/([a-z0-9./-]+)$/))) return `/c/${m[1]}`;
+  if ((m = p.match(/^\/vuelve\/api\/([a-z0-9/-]+)$/))) return `/api/vuelve/publico/${m[1]}`;
+  if (RECURSOS_VUELVE.test(p)) return p;
+  if ((m = p.match(/^\/vuelve\/([a-z0-9-]{3,60})\/?$/i))) return `/v/${m[1].toLowerCase()}`;
+  return null;
+}
+// Sin cookies de vorka.mx: solo lo que la página necesita (y la IP, para los límites de registro)
+const PASAN = ['content-type', 'user-agent', 'accept', 'accept-language', 'cf-connecting-ip', 'if-none-match'];
+export async function vuelvePublico(request, env, url) {
+  const destino = rutaVuelve(url.pathname);
+  if (!destino) return new Response(null, { status: 301, headers: { location: `/tienda/vuelve/${url.search}`, 'cache-control': 'no-store' } });
+  const h = new Headers({ 'x-vuelve-base': '1' });
+  for (const k of PASAN) { const v = request.headers.get(k); if (v) h.set(k, v); }
+  const conCuerpo = !['GET', 'HEAD'].includes(request.method);
+  const pedido = new Request(`${APPS}${destino}${url.search}`, { method: request.method, headers: h, body: conCuerpo ? await request.arrayBuffer() : undefined, redirect: 'manual' });
+  try {
+    const r = await (env.OS ? env.OS.fetch(pedido) : fetch(pedido));
+    return new Response(r.body, r);
+  } catch (e) {
+    console.error('vuelve publico', e?.message);
+    return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vuelve</title><p style="font:17px system-ui;padding:40px;text-align:center">No pudimos abrir esta página. Intenta de nuevo en un momento.</p>',
+      { status: 503, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '30' } });
+  }
+}
+
 // Ligas cortas de las apps de eventos: vorka.mx/cupo/<liga> y vorka.mx/brindi/<liga>[/<invitado>] llevan al evento en os.vorka.mx
 const APPS = 'https://os.vorka.mx';
 export function ligaCorta(url) {
   const p = url.pathname;
-  if (!/^\/(cupo|brindi|vuelve)(\/|$)/.test(p)) return null;
-  // Vuelve: vorka.mx/vuelve/<negocio> es la liga del cartel con QR → registro de clientes en os.vorka.mx/v/<negocio>;
-  // vorka.mx/vuelve/negocios es el directorio de negocios Vuelve (os.vorka.mx/negocios)
-  if (/^\/vuelve\/negocios\/?$/i.test(p)) return new Response(null, { status: 302, headers: { location: `${APPS}/negocios${url.search}`, 'cache-control': 'no-store' } });
-  if (p.startsWith('/vuelve')) {
-    const v = p.match(/^\/vuelve\/([a-z0-9-]{3,60})\/?$/i);
-    return new Response(null, { status: v ? 302 : 301, headers: { location: v ? `${APPS}/v/${v[1].toLowerCase()}${url.search}` : `/tienda/vuelve/${url.search}`, 'cache-control': 'no-store' } });
-  }
+  if (!/^\/(cupo|brindi)(\/|$)/.test(p)) return null;
+  // Vuelve no redirige: sus páginas de clientes se sirven aquí mismo (ver vuelvePublico)
   const ir = (destino, codigo = 302) => new Response(null, { status: codigo, headers: { location: destino, 'cache-control': 'no-store' } });
   if (p === '/cupo' || p === '/cupo/') return ir(`${APPS}/cupo/${url.search}`, 301);
   if (p === '/brindi' || p === '/brindi/') return ir(`/tienda/brindi/${url.search}`, 301);
@@ -161,6 +188,7 @@ export default {
 async function atender(request, env, ctx, url) {
   try {
     if (url.pathname === '/api/tienda/salud') return json({ ok: true });
+    if (/^\/vuelve(\/|$)/.test(url.pathname)) return await vuelvePublico(request, env, url);
     const corta = ligaCorta(url);
     if (corta) return corta;
     // El portal de Socios Vorka ya no existe: todo vive en Puntos Vorka

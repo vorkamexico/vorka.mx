@@ -6,26 +6,32 @@ import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import qrcode from './vendor/qrcode.js';
 
 const OS = 'https://os.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 export const RUTA_VUELVE = '/tienda/vuelve/';
+// El negocio de ejemplo: el dueño saca una tarjeta en su celular y simula visitas (lo arma Vorka OS, se borra solo al día)
+const DEMO = 'https://vorka.mx/vuelve/demo';
+// "Te lo dejamos listo": videollamada de 15 minutos con el equipo, gratis para los primeros negocios
+const WA_LISTO = `https://wa.me/528117804869?text=${encodeURIComponent('Hola, quiero que me ayuden a dejar listo Vuelve en una videollamada de 15 minutos.')}`;
 const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', nombre: 'Mensual', cada: 'al mes' }, { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
 
 const INCLUYE = ['Clientes ilimitados y tu propia página de registro con QR', 'Sellos o puntos, recompensas y niveles (Bronce, Plata, Oro)', 'Tarjeta en Apple Wallet, Google Wallet o en el navegador, con tu logo y una foto de tu negocio detrás de los sellos',
   'Avisos de cumpleaños, de "te extrañamos" y por cercanía, automáticos', 'Programa de referidos: "trae a un amigo" (ves quién invitó a quién)', 'Tu liga propia (vorka.mx/vuelve/tu-negocio) y lugar en el directorio de negocios Vuelve', 'Reporte de dinero recuperado y retorno de clientes', 'Escáner para tu equipo con PIN y bitácora antifraude', 'Cartel con QR listo para imprimir'];
-const FAQ = [
-  ['¿Puedo probar antes de pagar?', `Sí. Creas tu programa en <a href="${OS}/vuelve/">os.vorka.mx/vuelve</a> y lo usas completo 7 días, sin tarjeta. Si te sirve, te suscribes; si no, no pasa nada.`],
+const faq = ({ dias = 7, directorio = false } = {}) => [
+  ['¿Puedo probar antes de pagar?', `Sí. Creas tu programa en <a href="${OS}/vuelve/">os.vorka.mx/vuelve</a> y lo usas completo ${dias} días, sin tarjeta. Si te sirve, te suscribes; si no, no pasa nada. Y si quieres verlo antes como lo verán tus clientes, <a href="${DEMO}">saca una tarjeta de ejemplo</a>.`],
   ['¿Mis clientes tienen que descargar una app?', 'No. Escanean tu QR, escriben su nombre y teléfono, y su tarjeta queda en Apple Wallet, Google Wallet o como tarjeta en su navegador. Tarda menos de 30 segundos.'],
   ['¿Cómo funcionan los avisos?', 'Vuelve manda solo: felicitación de cumpleaños con un regalo, un "te extrañamos" a quien lleva tiempo sin venir y los avisos que tú escribas para todos o para un grupo (por nivel o por visitas). Llegan a la tarjeta de su celular y, si nos dio su correo, también por correo. Sin costo por mensaje.'],
   ['¿Y lo de "cuando pasan cerca"?', 'En iPhone, cuando tu cliente pasa cerca de tu sucursal, su tarjeta aparece en la pantalla de bloqueo con tu mensaje (por ejemplo, "¡Estás cerca! Pasa por tu sello"). Es una sugerencia del teléfono, no una notificación con sonido, y depende de los permisos de ubicación de cada persona. Te lo decimos claro para que no te vendan humo.'],
   ['¿Cómo sé si de verdad funciona?', 'En tu panel ves cuántos clientes regresaron, cada cuánto vienen y cuánto dinero te trajeron de vuelta (con el ticket que registras al sellar o con tu ticket promedio). También ves cuántos regresaron después de cada aviso.'],
   ['¿Y si mi equipo regala sellos?', 'Cada persona de tu equipo sella con su PIN, hay un tope de sellos por cliente al día y todo queda en una bitácora. Si alguien sella de más, te avisamos.'],
   ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Los descargas en Excel cuando quieras, también si cancelas. Vorka solo los guarda por tu cuenta para darte el servicio: no los vende ni los usa para publicidad. Cada cliente puede pedir su baja desde su tarjeta.'],
-  ['¿Cuánto cuesta y cómo pago?', 'Mensual o anual (con 2 meses gratis), con tarjeta, procesado por Stripe. La suscripción incluye una sucursal; cada sucursal adicional, o cada negocio distinto que manejes con el mismo correo (por ejemplo, tu cafetería y tu panadería), se suma a tu plan al mismo precio de sucursal. Te emitimos factura (CFDI) si la pides.'],
+  ['¿Cuánto cuesta y cómo pago?', 'Mensual o anual (con 2 meses gratis), con tarjeta, procesado por Stripe. La suscripción incluye una sucursal; cada sucursal adicional, o cada negocio distinto que manejes con el mismo correo (por ejemplo, tu cafetería y tu panadería), se suma a tu plan al mismo precio de sucursal. Tu comprobante de pago de cada cobro lo descargas en Vuelve › Cuenta › Administrar suscripción.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Vuelve › Cuenta, sin llamadas. Tu programa sigue activo hasta el final del periodo que pagaste y tus clientes conservan su tarjeta.'],
-  ['¿Mi negocio puede aparecer en un directorio?', 'Sí, si tú quieres. Con tu suscripción activa, tu negocio puede aparecer en <a href="/vuelve/negocios">vorka.mx/vuelve/negocios</a> con tu logo, tu ciudad y tu premio, para que te encuentren clientes nuevos. Lo prendes o apagas en Vuelve › Mi liga.'],
+  ['¿Mi negocio puede aparecer en un directorio?', `Sí, si tú quieres. Con tu suscripción activa, tu negocio puede aparecer en el directorio de negocios Vuelve${directorio ? ' (<a href="/vuelve/negocios">vorka.mx/vuelve/negocios</a>)' : ''} con tu logo, tu ciudad y tu premio, para que te encuentren clientes nuevos. Lo prendes o apagas en Vuelve › Mi liga.`],
   ['¿Es difícil de usar?', 'No. Está pensado para dueños que no son de computadora: todo desde el celular, con botones grandes, una pregunta a la vez y preguntas frecuentes dentro de la app. Y si te atoras, te ayuda una persona.'],
+  ['¿Me ayudan a dejarlo listo?', `Sí. En una videollamada de 15 minutos lo dejamos funcionando contigo: tu tarjeta con tu logo, tu premio, tu cartel con QR y tu primer cliente registrado. Es gratis para los primeros 10 negocios: <a href="${WA_LISTO}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.`],
   ['¿Para qué negocios sirve?', 'Cafeterías, restaurantes, barberías, salones, estéticas, gimnasios, autolavados, tintorerías, panaderías: cualquier negocio con clientes que pueden regresar. Al empezar eliges tu giro y Vuelve te sugiere sellos, premios y mensajes.'],
 ];
 
@@ -38,8 +44,40 @@ const ICONO = {
   amigos: ico('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.6-5.5 6.5-5.5s5.5 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.7 3 2.4 3.5 5.2"/>'), escudo: ico('<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'),
   pin: ico('<path d="M12 21s-7-6.3-7-11.5a7 7 0 0 1 14 0C19 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'), datos: ico('<path d="M4 5h16v14H4z"/><path d="M4 10h16M10 10v9"/>'),
 };
+// De dónde llega cada visita, para saber qué trae negocios: ?invita=<negocio que recomienda>&o=<tarjeta, dueno…>, ?utm_source
+// o el sitio de donde vino. Se guarda 30 días en una cookie y viaja en las ligas a la app (ahí se queda con la cuenta).
+const SITIOS = [[/instagram\./, 'instagram'], [/facebook\.|fb\.|messenger\./, 'facebook'], [/tiktok\./, 'tiktok'], [/google\./, 'google'], [/bing\.|duckduckgo\./, 'buscador'],
+  [/whatsapp\.|wa\.me/, 'whatsapp'], [/(^|\.)t\.co$|twitter\.|x\.com/, 'x'], [/linkedin\./, 'linkedin']];
+export function fuenteVisita(req, url) {
+  const limpia = v => String(v || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30) || null;
+  const invita = /^[a-z0-9-]{3,60}$/.test(url.searchParams.get('invita') || '') ? url.searchParams.get('invita') : null;
+  let o = limpia(url.searchParams.get('o') || url.searchParams.get('utm_source'));
+  if (!o && !invita) {
+    let host = ''; try { host = new URL(req.headers.get('referer') || '').hostname; } catch { /* sin referer */ }
+    o = SITIOS.find(([re]) => re.test(host))?.[1] || null;
+  }
+  if (invita || o) return { invita, o, cookie: `vu_fuente=${encodeURIComponent(`${invita || ''}|${o || ''}`)}; Max-Age=${30 * 86400}; Path=/; Secure; SameSite=Lax` };
+  const g = (req.headers.get('cookie') || '').match(/(?:^|;\s*)vu_fuente=([^;]+)/);
+  if (!g) return { invita: null, o: null, cookie: null };
+  const [i, oo] = decodeURIComponent(g[1]).split('|');
+  return { invita: /^[a-z0-9-]{3,60}$/.test(i) ? i : null, o: limpia(oo), cookie: null };
+}
+// Pregunta a Vorka OS (por el enlace directo); si tarda o falla, la página sale igual
+async function deOS(env, ruta) {
+  try {
+    const p = (env.OS ? env.OS.fetch(new Request(`${OS}${ruta}`)) : fetch(`${OS}${ruta}`)).then(r => r.ok ? r.json() : null);
+    return await Promise.race([p, new Promise(res => setTimeout(() => res(null), 1500))]);
+  } catch { return null; }
+}
+function qrSvg(texto) {
+  const q = qrcode(0, 'M'); q.addData(texto, 'Byte'); q.make();
+  const n = q.getModuleCount(), m = 2, t = n + m * 2;
+  let d = ''; for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (q.isDark(y, x)) d += `M${x + m} ${y + m}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}" shape-rendering="crispEdges" role="img" aria-label="Código QR de la tarjeta de ejemplo"><rect width="${t}" height="${t}" fill="#fff"/><path d="${d}" fill="#141114"/></svg>`;
+}
+
 // Tarjetas de muestra: las tiras son las reales que pinta Vuelve para el Wallet (assets/tienda/vuelve/tira-*.png)
-const DEMO = [
+const MUESTRAS = [
   { nombre: 'Café La Paloma', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis', logo: true, pie: 'Tu logo como sello' },
   { nombre: 'Bodega Santa Rita', fondo: '#3b111a', tinta: '#f4f1ea', tinta2: '#a98c90', etiqueta: 'SELLOS', valor: '5 de 8', tira: 'tira-bodega', cliente: 'Jorge Ramírez', nivel: 'Plata', premioEt: 'PREMIO', premio: 'Botella de la casa', inicial: 'B', pie: 'Monedas de oro' },
   { nombre: 'Verde Bistró', fondo: '#12291f', tinta: '#f4f1ea', tinta2: '#93a098', etiqueta: 'PUNTOS', valor: '2,160', tira: 'tira-puntos', cliente: 'Ana Torres', nivel: 'Bronce', premioEt: 'TU META', premio: 'Postre gratis', inicial: 'V', pie: 'Puntos por cada peso' },
@@ -65,13 +103,20 @@ export async function paginaVuelve(env, req, url) {
   // y cuántos lugares adicionales ya usa (sucursales o negocios de más con el mismo correo)
   const lugares = Math.min(20, Math.max(0, parseInt(url.searchParams.get('sucursales') || '0', 10) || 0));
   const mensual = planes.find(x => x.slug === 'vuelve-mensual');
+  // Quién lo recomendó (prueba de 30 días) y si el directorio ya tiene suficientes negocios para presumirlo
+  const fuente = fuenteVisita(req, url);
+  const [dir, reco] = await Promise.all([deOS(env, '/api/vuelve/publico/directorio'), fuente.invita ? deOS(env, `/api/vuelve/publico/recomienda/${fuente.invita}`) : null]);
+  const dias = reco?.dias || 7, FAQ = faq({ dias, directorio: !!dir?.visible });
+  const q = new URLSearchParams(Object.entries({ invita: reco ? fuente.invita : null, o: fuente.o }).filter(([, v]) => v)).toString();
+  const nuevo = `${OS}/vuelve/${q ? `?${q}` : ''}#/nuevo`;
+  const precioMes = mensual ? mensual.prod.precio_centavos / 100 : 399;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Vuelve · Tarjeta de lealtad digital para tu negocio', brand: { '@type': 'Brand', name: 'Vuelve' },
     description: 'Sellos o puntos en el celular de tus clientes, avisos automáticos de cumpleaños y de regreso, referidos y el dinero que te traen de vuelta, medido. Prueba 7 días gratis.',
     image: [`${OS}/vuelve/og.png`],
     ...(planes.length ? { offers: planes.map(x => ({ '@type': 'Offer', priceCurrency: 'MXN', price: (x.prod.precio_centavos / 100).toFixed(2), name: `Plan ${x.nombre.toLowerCase()}` })) } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
-  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
+  const res = pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: `${OS}/vuelve/og.png`,
     descripcion: 'Que tus clientes vuelvan solos: sellos o puntos en su celular, sin app ni cartón. Avisos automáticos, referidos y el dinero que te traen de vuelta, medido. Prueba 7 días gratis, sin tarjeta.',
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
@@ -81,14 +126,15 @@ export async function paginaVuelve(env, req, url) {
 <section class="vu-hero"><div class="marco vu-hero-g">
   <div class="vu-hero-txt">
     <span class="vu-marca"><span>vuelve</span></span>
+    ${reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : ''}
     <h1 class="vu-h1">Que tus clientes <em>vuelvan solos.</em></h1>
     <p class="vu-lead">La tarjeta de lealtad de tu negocio en Apple Wallet y Google Wallet de tus clientes. Sin app, sin cartón. Vuelve les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.</p>
-    <div class="vu-ctas"><a class="vu-btn" href="${OS}/vuelve/#/nuevo">Pruébalo 7 días gratis ${FLECHA}</a><a class="vu-btn ghost" href="#planes">Ver precios</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a></p>
+    <div class="vu-ctas"><a class="vu-btn" href="${esc(nuevo)}">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="vu-btn ghost" href="#ejemplo">Vívelo como tu cliente</a></div>
+    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a> · <a href="#planes">Ver precios</a></p>
     <ul class="vu-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.wallet}Apple y Google Wallet</li><li>${ICONO.reloj}Lista en 5 minutos</li></ul>
   </div>
   <div class="vu-escena" aria-hidden="true">
-    <div class="vu-cel"><i class="vu-isla"></i><div class="vu-pantalla"><p class="vu-wallet-t">Wallet</p>${pase(DEMO[0])}${pase({ ...DEMO[1], cls: 'abajo' })}</div></div>
+    <div class="vu-cel"><i class="vu-isla"></i><div class="vu-pantalla"><p class="vu-wallet-t">Wallet</p>${pase(MUESTRAS[0])}${pase({ ...MUESTRAS[1], cls: 'abajo' })}</div></div>
     <div class="vu-noti"><span class="vu-noti-ic"><img src="/assets/tienda/vuelve/logo-paloma.png" alt="" width="38" height="38"></span><span><b>Café La Paloma <small>ahora</small></b>¡Ya tienes tu bebida gratis! Pídela al pagar ☕</span></div>
   </div>
 </div>
@@ -96,8 +142,15 @@ ${navTienda('lealtad')}
 </section>
 
 <section class="vu-sec"><div class="marco">
-  <div class="vu-cab"><span class="vu-et">Así se ve en sus celulares</span><h2>Tu marca, en su Wallet.</h2><p>Estas son tarjetas reales hechas con Vuelve. Eliges colores, metal y sellos, o usas tu logo como sello. También puedes poner una foto de tu negocio detrás.</p></div>
-  <div class="vu-galeria">${DEMO.map(d => `<figure>${pase(d)}<figcaption>${d.pie}</figcaption></figure>`).join('')}</div>
+  <div class="vu-cab"><span class="vu-et">Así se ve en sus celulares</span><h2>Tu marca, en su Wallet.</h2><p>Estos son ejemplos de lo que puedes armar. Eliges colores, metal y sellos, o usas tu logo como sello. También puedes poner una foto de tu negocio detrás.</p></div>
+  <div class="vu-galeria">${MUESTRAS.map(d => `<figure>${pase(d)}<figcaption>${d.pie}</figcaption></figure>`).join('')}</div>
+</div></section>
+
+<section class="vu-sec vu-osc" id="ejemplo"><div class="marco vu-demo">
+  <div class="vu-cab izq"><span class="vu-et">Pruébalo como tu cliente</span><h2>Vive en 20 segundos lo que vivirán tus clientes.</h2>
+    <p>Saca una tarjeta de ejemplo en tu celular, guárdala en tu Wallet y simula visitas: verás cómo se suman los sellos y cómo llega el aviso del premio. Solo te pedimos tu nombre y se borra sola mañana.</p>
+    <div class="vu-ctas"><a class="vu-btn" href="${DEMO}">Sacar mi tarjeta de ejemplo ${FLECHA}</a></div></div>
+  <figure class="vu-demo-qr"><div>${qrSvg(DEMO)}</div><figcaption>¿Estás en la computadora? Escanéalo con la cámara de tu celular.</figcaption></figure>
 </div></section>
 
 <section class="vu-sec vu-osc"><div class="marco">
@@ -114,24 +167,39 @@ ${navTienda('lealtad')}
     [ICONO.amigos, 'Trae a un amigo', 'Cada tarjeta trae su invitación. Cuando el amigo viene por primera vez, los dos ganan.'],
     [ICONO.escudo, 'Sin sellos regalados', 'PIN por persona, tope de sellos al día y bitácora. Te avisamos si algo se ve raro.'],
     [ICONO.pin, 'Por sucursal', 'Cada sucursal con su ubicación, su equipo y su aviso cuando pasan cerca.'],
-    [ICONO.datos, 'Tus datos son tuyos', 'Descargas a tus clientes en Excel. Aviso de privacidad listo y factura de tu suscripción.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+    [ICONO.datos, 'Tus datos son tuyos', 'Descargas a tus clientes en Excel. Aviso de privacidad listo y comprobante de pago de tu suscripción.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+</div></section>
+
+<section class="vu-sec" id="calcula"><div class="marco vu-calc">
+  <div class="vu-cab izq"><span class="vu-et">¿Cuánto te deja?</span><h2>Haz la cuenta con tus números.</h2><p>Cámbialos y mira cuánto representa que algunos de tus clientes regresen una vez más al mes.</p></div>
+  <div class="vu-calc-c">
+    <form class="vu-calc-f" id="vu-calc" novalidate>
+      <label>Clientes distintos que atiendes al mes<input id="c-cli" type="number" inputmode="numeric" min="1" max="100000" value="300"></label>
+      <label>Lo que gasta un cliente por visita (pesos)<input id="c-tic" type="number" inputmode="numeric" min="1" max="100000" value="80"></label>
+      <label>De cada 10, ¿cuántos regresarían una vez más al mes con su tarjeta? <output id="c-reg-o">1 de cada 10</output><input id="c-reg" type="range" min="0" max="5" step="1" value="1"></label>
+    </form>
+    <div class="vu-calc-r" aria-live="polite" data-precio="${precioMes}"><small>Ventas extra al mes</small><b id="c-extra">$2,400</b><p id="c-paga">Vuelve cuesta $${precioMes.toLocaleString('es-MX')} al mes: se paga con ${Math.ceil(precioMes / 80)} visitas extra.</p>
+      <p class="vu-nota">Es un cálculo con tus números, no una promesa. En tu panel de Vuelve ves el dinero que de verdad regresó.</p></div>
+  </div>
 </div></section>
 
 <section class="vu-sec suave" id="planes"><div class="marco">
-  <div class="vu-cab"><span class="vu-et">Precios</span><h2>Pruébalo 7 días. Después, un solo plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Clientes y avisos ilimitados. Cancela cuando quieras.</p></div>
+  <div class="vu-cab"><span class="vu-et">Precios</span><h2>Pruébalo ${dias} días. Después, un solo plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Clientes y avisos ilimitados. Cancela cuando quieras.</p></div>
   <div class="vu-planes">
-    <article class="vu-plan"><h3>Prueba</h3><p class="vu-para">Todo Vuelve, 7 días</p><p class="vu-precio"><b>$0</b></p>
+    <article class="vu-plan"><h3>Prueba</h3><p class="vu-para">Todo Vuelve, ${dias} días</p><p class="vu-precio"><b>$0</b></p>
       <ul>${['Sin tarjeta', 'Todas las funciones', 'Tus clientes conservan su tarjeta si decides seguir'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
-      <a class="vu-btn ghost oscuro" href="${OS}/vuelve/#/nuevo">Empezar gratis</a></article>
+      <a class="vu-btn ghost oscuro" href="${esc(nuevo)}">Empezar gratis</a></article>
     ${planes.map(x => `<article class="vu-plan${x.slug === 'vuelve-mensual' ? ' rec' : ''}">${x.nota ? `<span class="vu-sello">${x.nota}</span>` : ''}<h3>${x.nombre}</h3><p class="vu-para">Una sucursal incluida</p>
       <p class="vu-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
       <ul>${INCLUYE.slice(0, 5).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${x.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(x.sucursal)} ${x.cada}</span></li>` : ''}</ul>
       <a class="vu-btn${x.slug === 'vuelve-mensual' ? '' : ' ghost oscuro'}" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
   </div>
-  ${planes.length ? '' : `<p class="vu-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${OS}/vuelve/#/nuevo">empieza tu prueba gratis</a>.</p>`}
+  ${planes.length ? '' : `<p class="vu-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
+  <div class="vu-listo"><div><b>¿Sin tiempo? Te lo dejamos listo, gratis.</b><p>Una videollamada de 15 minutos: tu tarjeta con tu logo, tu premio, tu cartel con QR y tu primer cliente registrado. Gratis para los primeros 10 negocios.</p></div>
+    <a class="vu-btn ghost oscuro" href="${WA_LISTO}" target="_blank" rel="noopener">Pedirlo por WhatsApp</a></div>
 </div></section>
 
-${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="${OS}/vuelve/#/nuevo">Empieza gratis 7 días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
+${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="${esc(nuevo)}">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
   pasos: [['Eliges mensual o anual', 'Y cuántas sucursales o negocios adicionales necesitas.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Te llega tu acceso por correo', 'Con el mismo correo de tu prueba, todo sigue igual.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
   form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate>
@@ -151,6 +219,8 @@ ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details>
 ${await masTienda(env, 'lealtad')}
 </div>`,
   });
+  if (fuente.cookie) res.headers.append('set-cookie', fuente.cookie);
+  return res;
 }
 
 const CSS = `
@@ -223,9 +293,29 @@ const CSS = `
 .vu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--vu-morado)}
 .vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
+.vu-reco{display:inline-block;margin:22px 0 -6px;padding:8px 14px;border-radius:999px;background:rgba(200,164,92,.16);color:#f1dfb8;font-size:15px}.vu-reco b{color:#fff}
+.vu-demo{display:grid;gap:34px;align-items:center}@media(min-width:900px){.vu-demo{grid-template-columns:1.2fr .8fr}}
+.vu-demo-qr{margin:0;justify-self:center;text-align:center;max-width:280px}.vu-demo-qr div{background:#fff;border-radius:22px;padding:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}.vu-demo-qr svg{display:block;width:100%;height:auto}
+.vu-demo-qr figcaption{margin-top:12px;color:rgba(244,242,245,.7);font-size:14.5px}
+.vu-calc-c{display:grid;gap:22px;margin-top:30px}@media(min-width:900px){.vu-calc-c{grid-template-columns:1.1fr .9fr;align-items:start}}
+.vu-calc-f{display:grid;gap:18px;padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line)}.vu-calc-f label{display:grid;gap:8px;font-weight:650;font-size:15.5px}
+.vu-calc-f input[type=number]{font:inherit;font-size:18px;min-height:50px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--fg)}.vu-calc-f input[type=range]{width:100%;accent-color:var(--vu-morado)}
+.vu-calc-f output{font-weight:800;color:var(--vu-morado)}
+.vu-calc-r{padding:26px;border-radius:24px;background:var(--vu-tinta);color:var(--vu-crema)}.vu-calc-r small{color:rgba(244,242,245,.6)}.vu-calc-r b{display:block;font-size:clamp(40px,6vw,58px);letter-spacing:-.04em;margin:4px 0 6px;font-variant-numeric:tabular-nums}
+.vu-calc-r p{margin:0;color:rgba(244,242,245,.8);line-height:1.5}.vu-calc-r .vu-nota{color:rgba(244,242,245,.55);font-size:13.5px;margin-top:12px}
+.vu-listo{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;margin-top:22px;padding:22px 24px;border-radius:24px;border:1.5px dashed var(--line-2);background:var(--card)}.vu-listo b{font-size:18px;letter-spacing:-.02em}.vu-listo p{margin:4px 0 0;color:var(--fg-2);max-width:40em}
 .vu #form-vuelve .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}`;
 
 const SCRIPT = `(function(){
+  // calculadora: clientes al mes × de cada 10 cuántos regresan una vez más × lo que gastan
+  var cf=document.getElementById('vu-calc');
+  if(cf){ var cr=document.querySelector('.vu-calc-r'), precio=Number(cr.dataset.precio)||399;
+    var m=function(n){ return '$'+Math.round(n).toLocaleString('es-MX'); };
+    var calc=function(){ var cli=Math.max(0,Number(cf.querySelector('#c-cli').value)||0), tic=Math.max(0,Number(cf.querySelector('#c-tic').value)||0), reg=Number(cf.querySelector('#c-reg').value)||0;
+      var visitas=Math.round(cli*reg/10); document.getElementById('c-reg-o').textContent=reg+' de cada 10';
+      document.getElementById('c-extra').textContent=m(visitas*tic);
+      document.getElementById('c-paga').textContent=tic>0?'Vuelve cuesta '+m(precio)+' al mes: se paga con '+Math.ceil(precio/tic)+' visitas extra'+(visitas?' (de las '+visitas.toLocaleString('es-MX')+' de tu cálculo).':'.'):''; };
+    cf.addEventListener('input',calc); cf.addEventListener('submit',function(e){e.preventDefault();}); calc(); }
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('vu-precios').textContent); }catch(e){}
   var tot=document.getElementById('vu-total'), cada=document.getElementById('vu-cada');

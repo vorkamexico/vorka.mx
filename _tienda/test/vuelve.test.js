@@ -180,13 +180,72 @@ describe('páginas y ligas', () => {
     const m = await pedir('/tienda/vuelve-mensual/');
     expect(m.headers.get('location')).toBe('/tienda/vuelve/?plan=vuelve-mensual#comprar');
   });
-  it('vorka.mx/vuelve/<negocio> lleva al registro del negocio en os.vorka.mx', async () => {
-    expect((await pedir('/vuelve/cafe-la-paloma-x7k2?ref=ab')).headers.get('location')).toBe('https://os.vorka.mx/v/cafe-la-paloma-x7k2?ref=ab');
+  // Vorka OS de mentiras (el enlace directo OS): responde según la ruta y guarda lo que le pidieron
+  const conOS = (resp = {}) => {
+    const pedidos = [];
+    env.OS = { async fetch(req) {
+      const u = new URL(req.url); pedidos.push({ url: req.url, metodo: req.method, h: Object.fromEntries(req.headers), cuerpo: req.method === 'POST' ? await req.text() : null });
+      const r = resp[u.pathname]; return r ? new Response(JSON.stringify(r), { headers: { 'content-type': 'application/json' } }) : new Response('<p>pagina de os</p>', { status: 200, headers: { 'content-type': 'text/html', 'content-security-policy': "default-src 'none'" } });
+    } };
+    return pedidos;
+  };
+  it('vorka.mx/vuelve/… muestra las páginas de los clientes sin mandarlos a os.vorka.mx', async () => {
+    const p = conOS();
+    let r = await worker.fetch(new Request('https://vorka.mx/vuelve/cafe-la-paloma-x7k2?ref=ab', { headers: { 'cf-connecting-ip': '9.9.9.9', cookie: 'vorka_sesion=secreta' }, redirect: 'manual' }), env);
+    expect(r.status).toBe(200); expect(r.headers.get('location')).toBeNull();
+    expect(await r.text()).toContain('pagina de os');
+    expect(r.headers.get('content-security-policy')).toBe("default-src 'none'");
+    expect(p[0].url).toBe('https://os.vorka.mx/v/cafe-la-paloma-x7k2?ref=ab');
+    expect(p[0].h['x-vuelve-base']).toBe('1'); expect(p[0].h['cf-connecting-ip']).toBe('9.9.9.9'); expect(p[0].h.cookie).toBeUndefined();
+    await pedir('/vuelve/negocios'); await pedir('/vuelve/c/abcdefghij0123456789/pase.pkpass'); await pedir('/vuelve/logo/3/web/121212.png?v=a'); await pedir('/vuelve/tema.js?v=1');
+    await pedir('/vuelve/api/registro', { metodo: 'POST', body: { slug: 'cafe', nombre: 'Ana' } });
+    expect(p.slice(1).map(x => new URL(x.url).pathname)).toEqual(['/negocios', '/c/abcdefghij0123456789/pase.pkpass', '/vuelve/logo/3/web/121212.png', '/vuelve/tema.js', '/api/vuelve/publico/registro']);
+    expect(p.at(-1)).toMatchObject({ metodo: 'POST', cuerpo: JSON.stringify({ slug: 'cafe', nombre: 'Ana' }) });
+    expect(p.at(-1).h['content-type']).toBe('application/json');
+    // lo que no es de los clientes no se le pide a OS
     expect((await pedir('/vuelve/')).headers.get('location')).toBe('/tienda/vuelve/');
+    expect((await pedir('/vuelve/api/../../admin')).status).not.toBe(200);
+    expect(p.length).toBe(6);
   });
-  it('vorka.mx/vuelve/negocios lleva al directorio de negocios Vuelve', async () => {
-    expect((await pedir('/vuelve/negocios')).headers.get('location')).toBe('https://os.vorka.mx/negocios');
-    expect((await pedir('/vuelve/negocios/')).headers.get('location')).toBe('https://os.vorka.mx/negocios');
+  it('si Vorka OS no responde, la página lo dice en lugar de romperse', async () => {
+    env.OS = { fetch: async () => { throw new Error('caído'); } };
+    const r = await pedir('/vuelve/cafe-la-paloma-x7k2');
+    expect(r.status).toBe(503); expect(await r.text()).toContain('Intenta de nuevo');
+  });
+  it('la ficha: ejemplos honestos, comprobante de pago, ejemplo en vivo, calculadora y "te lo dejamos listo"', async () => {
+    conOS({ '/api/vuelve/publico/directorio': { total: 2, visible: false } });
+    const h = await (await pedir('/tienda/vuelve/')).text();
+    expect(h).not.toContain('tarjetas reales'); expect(h).toContain('Estos son ejemplos');
+    expect(h).not.toMatch(/factura de tu suscripci/); expect(h).toContain('comprobante de pago');
+    expect(h).not.toContain('href="/vuelve/negocios"');   // con menos de 5 negocios el directorio no se presume
+    expect(h).toContain('href="https://vorka.mx/vuelve/demo"'); expect(h).toContain('aria-label="Código QR de la tarjeta de ejemplo"');
+    expect(h).toContain('id="vu-calc"'); expect(h).toContain('data-precio="399"');
+    expect(h).toContain('Te lo dejamos listo'); expect(h).toContain('https://wa.me/528117804869?text=');
+    expect(h).toContain('Pruébalo 7 días gratis');
+    conOS({ '/api/vuelve/publico/directorio': { total: 6, visible: true } });
+    expect(await (await pedir('/tienda/vuelve/')).text()).toContain('href="/vuelve/negocios"');
+  });
+  it('recomendado por otro negocio: lo dice, la prueba es de 30 días y la liga a la app lleva quién lo recomendó', async () => {
+    const p = conOS({ '/api/vuelve/publico/directorio': { total: 0, visible: false }, '/api/vuelve/publico/recomienda/cafe-la-paloma': { nombre: 'Café <La> Paloma', dias: 30 } });
+    const r = await pedir('/tienda/vuelve/?invita=cafe-la-paloma&o=tarjeta');
+    const h = await r.text();
+    expect(h).toContain('Te recomendó <b>Café &lt;La&gt; Paloma</b>'); expect(h).toContain('Pruébalo 30 días gratis');
+    expect(h).toContain('https://os.vorka.mx/vuelve/?invita=cafe-la-paloma&amp;o=tarjeta#/nuevo');
+    expect(r.headers.get('set-cookie')).toContain('vu_fuente=cafe-la-paloma%7Ctarjeta');
+    expect(p.some(x => x.url.endsWith('/recomienda/cafe-la-paloma'))).toBe(true);
+    // regresa días después sin la liga: la cookie lo recuerda
+    const h2 = await (await worker.fetch(new Request('https://vorka.mx/tienda/vuelve/', { headers: { cookie: 'vu_fuente=cafe-la-paloma%7Ctarjeta' } }), env)).text();
+    expect(h2).toContain('?invita=cafe-la-paloma&amp;o=tarjeta#/nuevo');
+    // un negocio que no existe no da 30 días ni se presume
+    const h3 = await (await pedir('/tienda/vuelve/?invita=no-existe')).text();
+    expect(h3).not.toContain('class="vu-reco"'); expect(h3).toContain('Pruébalo 7 días gratis'); expect(h3).not.toContain('invita=no-existe');
+  });
+  it('de dónde llega: utm_source o el sitio de donde viene', async () => {
+    conOS();
+    const r = await worker.fetch(new Request('https://vorka.mx/tienda/vuelve/', { headers: { referer: 'https://l.instagram.com/?u=x' } }), env);
+    expect(r.headers.get('set-cookie')).toContain('vu_fuente=%7Cinstagram');
+    expect(await r.text()).toContain('?o=instagram#/nuevo');
+    expect((await (await pedir('/tienda/vuelve/?utm_source=Folleto_Celaya')).text())).toContain('?o=folleto_celaya#/nuevo');
   });
 
   it('lugares adicionales (sucursales o negocios): cambia la cantidad en Stripe, lo agrega si no existe y lo quita con 0', async () => {
