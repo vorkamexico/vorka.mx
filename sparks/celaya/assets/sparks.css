@@ -111,6 +111,8 @@ a.sp-pill:hover { border-color: var(--line-2); color: var(--fg); }
 .art-body { font-size: 19px; line-height: 1.75; color: #2a262b; letter-spacing: -.005em; }
 .art-body > p, .art-body > ul, .art-body > blockquote, .art-body > h2 { max-width: 700px; }
 .art-body p + p { margin-top: 1.1em; }
+/* Texto justificado como revista: con separación de sílabas en español para que no queden huecos */
+.art-body > p { text-align: justify; -webkit-hyphens: auto; hyphens: auto; hyphenate-limit-chars: 6 3 2; text-wrap: pretty; }
 .art-body h2 { margin: 1.8em 0 .5em; font-size: 26px; font-weight: 750; letter-spacing: -.035em; line-height: 1.2; color: var(--fg); }
 .art-body ul { padding-left: 1.2em; margin: 1em 0; list-style: disc; }
 .art-body li + li { margin-top: .4em; }
