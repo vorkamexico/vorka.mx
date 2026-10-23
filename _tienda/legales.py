@@ -359,15 +359,16 @@ CUENTAS = [
         'Al crear tu cuenta tienes 7 días naturales con todas las funciones, sin dar una tarjeta. No se te cobra nada al terminar.',
         'Si al terminar la prueba no te suscribes, tu cuenta queda en <b>modo consulta</b>: puedes ver, descargar e imprimir todos tus registros, pero no agregar ni cambiar movimientos. Te suscribes cuando quieras y todo sigue donde lo dejaste.')),
     ('suscripcion', 'Suscripción, precio y renovación automática', li(
-        'El plan es <b>mensual</b>, en pesos mexicanos con IVA incluido. El precio vigente se muestra en <a href="/tienda/cuentas/">vorka.mx/tienda/cuentas</a> antes de pagar.',
-        '<b>La suscripción se renueva sola</b> cada mes y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
+        'El plan es <b>mensual o anual</b>, en pesos mexicanos con IVA incluido. El precio vigente se muestra en <a href="/tienda/cuentas/">vorka.mx/tienda/cuentas</a> antes de pagar.',
+        '<b>La suscripción se renueva sola</b> al final de cada periodo (cada mes o cada año, según tu plan) y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
         'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto tu cuenta sigue funcionando. Si no se logra cobrar, la suscripción se cancela y tu cuenta queda en modo consulta.',
         'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
         'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
     ('cancelar', 'Cancelación y reembolsos', li(
-        'Cancelas cuando quieras desde Cuentas › Ajustes › Suscripción, sin llamadas ni trámites. Tu cuenta sigue completa hasta el final del mes que ya pagaste; no se hacen cobros nuevos.',
+        'Cancelas cuando quieras desde Cuentas › Ajustes › Suscripción, sin llamadas ni trámites. Tu cuenta sigue completa hasta el final del periodo que ya pagaste; no se hacen cobros nuevos.',
         'Antes y después de cancelar puedes descargar tus estados de cuenta en PDF y Excel.',
-        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un mes, salvo que una falla atribuible a Cuentas te impida usarlo y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.')),
+        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo que una falla atribuible a Cuentas te impida usarlo y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
     ('calculos', 'Cálculos y tu información', li(
         'Cuentas calcula con las condiciones que tú capturas: interés simple sobre el saldo pendiente, sin sumar intereses al capital y sin cargos por atraso salvo que los registres como pactados. Cada cálculo se puede revisar en el estado de cuenta.',
         'Revisamos los cálculos con pruebas automáticas, pero los resultados dependen de que los datos capturados sean correctos. Revisa tus registros antes de usarlos para cualquier trámite.',
@@ -488,7 +489,7 @@ escribir('/legal/vuelve/privacidad-clientes/', pagina('/legal/vuelve/privacidad-
     'Te registraste en el programa de lealtad de un negocio que usa Vuelve. Esto es lo que pasa con tus datos.', 'Vuelve · Clientes', VUELVE_CLIENTES,
     aplica='Aplica a quien tiene una tarjeta de Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))
 escribir('/legal/cuentas/', pagina('/legal/cuentas/', 'Condiciones de Cuentas', 'Condiciones de <span class="metal">Cuentas.</span>',
-    'El contrato entre Vorka México y quien usa Cuentas para llevar sus préstamos personales: qué es y qué no es, prueba gratis, suscripción mensual con renovación automática, cancelación y datos.', 'Cuentas', CUENTAS,
+    'El contrato entre Vorka México y quien usa Cuentas para llevar sus préstamos personales: qué es y qué no es, prueba gratis, suscripción mensual o anual con renovación automática, cancelación y datos.', 'Cuentas', CUENTAS,
     aplica='Aplica a quien usa cuentas.vorka.mx', migas=MIGAS_CUENTAS, actualizado=ACTUALIZADO_CUENTAS))
 escribir('/legal/cuentas/privacidad/', pagina('/legal/cuentas/privacidad/', 'Aviso de privacidad de Cuentas', 'Aviso de privacidad de <span class="metal">Cuentas.</span>',
     'Qué datos tratamos de las personas que usan Cuentas y de quienes registran en ella, para qué y cómo ejercer tus derechos.', 'Cuentas', CUENTAS_PRIVACIDAD,

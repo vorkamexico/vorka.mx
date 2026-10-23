@@ -10,7 +10,8 @@ import { FLECHA, CHECK } from './marco.generado.js';
 const APP = 'https://cuentas.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 export const RUTA_CUENTAS = '/tienda/cuentas/';
-const PLAN = 'cuentas-mensual';
+const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
+const PLANES = [{ slug: 'cuentas-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'cuentas-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
 
 const INCLUYE = ['Personas y préstamos ilimitados', 'Pagos flexibles o cuotas fijas, con o sin interés', 'Desglose de cada abono: cuánto va a interés y cuánto a capital',
   'Simulación de liquidación a cualquier fecha', 'Estado de cuenta en PDF y Excel', 'Enlace de solo lectura para la persona que te debe', 'Recordatorios por correo', 'Acceso para tu pareja o alguien de confianza'];
@@ -22,7 +23,8 @@ const FAQ = [
   ['¿La persona que me debe puede ver su saldo?', 'Si tú quieres. Le compartes un enlace privado de solo lectura con su estado de cuenta, y lo desactivas cuando quieras. Cuentas nunca le escribe ni le cobra: los avisos son solo para ti.'],
   ['¿Y si se equivocan en una fecha o un monto?', 'Editas el movimiento y todo se recalcula. Si ya estaba confirmado, te pide el motivo y queda en el historial de cambios, para que siempre haya claridad.'],
   ['¿Qué pasa si dejo de pagar la suscripción?', 'Tu cuenta queda en modo consulta: puedes ver, imprimir y descargar todos tus registros, pero no agregar movimientos nuevos. Cuando vuelvas a suscribirte, todo sigue donde lo dejaste.'],
-  ['¿Cuánto cuesta y cómo pago?', 'Un solo plan mensual con todo incluido, con tarjeta de crédito o débito, procesado por Stripe. Te emitimos factura (CFDI) si la pides.'],
+  ['¿Cuánto cuesta y cómo pago?', 'Mensual ($99 al mes) o anual ($799 al año, ahorras $389), los dos con todo incluido. Pagas con tarjeta de crédito o débito, procesado por Stripe. Te emitimos factura (CFDI) si la pides.'],
+  ['¿Y si pago el anual y no me convence?', 'Si cancelas dentro de los 10 días naturales siguientes al cobro anual, te devolvemos tu dinero completo. Escríbenos a hola@vorka.mx.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Cuentas › Ajustes › Suscripción, sin llamadas. Tu cuenta sigue completa hasta el final del mes pagado.'],
   ['¿Reemplaza un contrato?', 'No. Cuentas te ayuda a llevar en orden lo que acordaron y puedes adjuntar el contrato o pagaré que firmen, pero no sustituye un contrato ni asesoría legal o fiscal.'],
 ];
@@ -48,14 +50,19 @@ const pantalla = `<div class="cu-cel" aria-hidden="true"><i class="cu-isla"></i>
 
 export async function paginaCuentas(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
-  const plan = await productoPorSlug(env, PLAN);
+  const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug) })))).filter(x => x.prod);
+  const mensual = planes.find(x => x.slug === 'cuentas-mensual'), anual = planes.find(x => x.slug === 'cuentas-anual');
+  const plan = mensual?.prod || planes[0]?.prod || null;
+  const ahorro = mensual && anual ? mensual.prod.precio_centavos * 12 - anual.prod.precio_centavos : 0;
+  const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : (planes[0]?.slug || '');
+  const elegidoP = planes.find(x => x.slug === elegido);
   if (plan && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: plan.id, ref_code: code });
   const error = url.searchParams.get('error') || '';
   // Desde la app (Suscribirme) llega el correo de la cuenta para que la suscripción quede ligada a ella
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Cuentas · Administrador de préstamos personales', brand: { '@type': 'Brand', name: 'Vorka México' },
     description: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estado de cuenta. Prueba 7 días gratis.', image: ['https://vorka.mx/assets/tienda/cuentas.webp'],
-    ...(plan ? { offers: [{ '@type': 'Offer', priceCurrency: 'MXN', price: (plan.precio_centavos / 100).toFixed(2), name: 'Plan mensual' }] } : {}) },
+    ...(planes.length ? { offers: planes.map(x => ({ '@type': 'Offer', priceCurrency: 'MXN', price: (x.prod.precio_centavos / 100).toFixed(2), name: `Plan ${x.nombre.toLowerCase()}` })) } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Cuentas' },
     titulo: 'Cuentas: administra tus préstamos personales | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/cuentas-og.png',
@@ -114,27 +121,28 @@ ${navTienda('finanzas')}
     <article class="cu-plan"><h3>Prueba</h3><p class="cu-para">Todo Cuentas, 7 días</p><p class="cu-precio"><b>$0</b></p>
       <ul>${['Sin tarjeta', 'Todas las funciones', 'Tus registros se quedan si decides seguir'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
       <a class="cu-btn ghost oscuro" href="${APP}/entrar">Empezar gratis</a></article>
-    ${plan ? `<article class="cu-plan rec"><h3>Mensual</h3><p class="cu-para">Préstamos ilimitados</p><p class="cu-precio"><b>${precio(plan)}</b> <small>al mes</small></p>
-      <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
-      <a class="cu-btn" href="#comprar" data-ir="comprar">Suscribirme</a></article>` : ''}
+    ${planes.map(x => `<article class="cu-plan${x.slug === 'cuentas-mensual' ? ' rec' : ''}">${x.slug === 'cuentas-anual' && ahorro > 0 ? `<span class="cu-sello">Ahorra ${pesosRedondo(ahorro)}</span>` : ''}<h3>${x.nombre}</h3><p class="cu-para">Préstamos ilimitados</p><p class="cu-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
+      ${x.slug === 'cuentas-anual' ? `<p class="cu-para" style="margin-top:-4px">Equivale a ${pesosRedondo(Math.round(x.prod.precio_centavos / 12))} al mes, en un solo pago</p>` : ''}
+      <ul>${(x.slug === 'cuentas-anual' ? ['Todo lo del plan mensual', 'Un solo pago al año', 'Si cancelas en los primeros 10 días, te devolvemos todo'] : INCLUYE).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
+      <a class="cu-btn${x.slug === 'cuentas-mensual' ? '' : ' ghost oscuro'}" href="?plan=${x.slug}#comprar" data-ir="comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
   </div>
   ${plan ? '' : `<p class="cu-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${APP}/entrar">empieza tu prueba gratis</a>.</p>`}
 </div></section>
 
 ${plan ? seccionCompra({ titulo: 'Suscríbete a Cuentas', intro: `¿Aún no la pruebas? <a href="${APP}/entrar">Empieza gratis 7 días</a>, sin tarjeta. Si ya la estás probando, suscríbete con el mismo correo y todo sigue tal cual.`,
-  pasos: [['Escribe tu correo', 'El mismo con el que entras a Cuentas.'], ['Pagas con tarjeta', 'Se renueva cada mes; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Tu cuenta queda activa al instante, con todos tus registros.']],
+  pasos: [['Elige mensual o anual', 'Y escribe el mismo correo con el que entras a Cuentas.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Tu cuenta queda activa al instante, con todos tus registros.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo'],
   form: `<form class="t-form t-compra" id="form-cuentas" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
-    <input type="hidden" name="slug" value="${PLAN}">
+    <fieldset class="t-campo cu-elige"><legend>Plan</legend>${planes.map(x => `<label class="cu-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b>${x.slug === 'cuentas-anual' && ahorro > 0 ? `<small>Ahorra ${pesosRedondo(ahorro)} contra el mensual</small>` : '<small>Sin plazo forzoso</small>'}</span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" value="${esc(correo)}"><small class="t-ayuda">Usa el mismo correo con el que entras a Cuentas.</small></div>
-    <p class="cu-total">Pagas hoy <b>${precio(plan)}</b> y luego ${precio(plan)} cada mes</p>
-    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/cuentas/" target="_blank">condiciones de Cuentas</a> (incluida la renovación automática cada mes) y el <a href="/legal/cuentas/privacidad/" target="_blank">aviso de privacidad de Cuentas</a>.</span></label>
+    <p class="cu-total">Pagas hoy <b id="cu-hoy">${precio(elegidoP.prod)}</b> <span id="cu-luego">y luego ${precio(elegidoP.prod)} ${elegidoP.renueva}</span></p>
+    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/cuentas/" target="_blank">condiciones de Cuentas</a> (incluida la renovación automática) y el <a href="/legal/cuentas/privacidad/" target="_blank">aviso de privacidad de Cuentas</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn acento" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
-    <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta de crédito o débito con Stripe · Se renueva cada mes y lo cancelas cuando quieras</span></p>
-  </form>` }) : ''}
+    <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta de crédito o débito con Stripe · Se renueva solo y lo cancelas cuando quieras</span></p>
+  </form><script type="application/json" id="cu-precios">${JSON.stringify(Object.fromEntries(planes.map(x => [x.slug, { p: precio(x.prod), renueva: x.renueva }]))).replace(/</g, '\\u003c')}</script>` }) : ''}
 
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/cuentas/">Condiciones de Cuentas</a> · <a href="/legal/cuentas/privacidad/">Aviso de privacidad</a> · Cuentas · by Vorka México</p>' })}
 ${await masTienda(env, 'finanzas')}
@@ -205,8 +213,13 @@ const CSS = `
 .cu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.cu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
 .cu-aviso{max-width:720px;margin:28px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
 /* precio */
-.cu-planes{display:grid;gap:18px;align-items:start;max-width:820px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.cu-planes{display:grid;gap:18px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
 .cu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:28px;display:grid;gap:8px}
+.cu-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.cu-elige{border:0;padding:0;margin:0 0 6px}.cu-elige legend{font-weight:650;font-size:14px;margin-bottom:8px;padding:0}
+.cu-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}
+.cu-op input{margin-top:3px;accent-color:var(--cu-morado)}.cu-op b{display:block;font-size:15px}.cu-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
+.cu-op:has(input:checked){border-color:var(--cu-morado);background:color-mix(in srgb,var(--cu-morado) 7%,transparent)}
 .cu-plan.rec{border-color:var(--cu-morado);box-shadow:0 30px 60px -36px rgba(107,42,133,.55)}
 .cu-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.cu-para{color:var(--fg-2);margin:0}
 .cu-precio{margin:6px 0 0}.cu-precio b{font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.cu-precio small{color:var(--fg-2)}
@@ -217,12 +230,17 @@ const CSS = `
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-cuentas'); if(!f||!window.fetch) return;
+  var P={}; try{ P=JSON.parse(document.getElementById('cu-precios').textContent); }catch(e){}
+  function elegido(){ var r=f.querySelector('input[name=slug]:checked'); return r?r.value:''; }
+  function pinta(){ var x=P[elegido()]; if(!x) return; document.getElementById('cu-hoy').textContent=x.p; document.getElementById('cu-luego').textContent='y luego '+x.p+' '+x.renueva; }
+  f.querySelectorAll('input[name=slug]').forEach(function(r){ r.addEventListener('change',pinta); }); pinta();
+  document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(){ var r=f.querySelector('input[name=slug][value="'+a.dataset.plan+'"]'); if(r){ r.checked=true; pinta(); } }); });
   document.querySelectorAll('[data-ir]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    var d={ slug:f.slug.value, sucursales:0, nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked }; if(f.ref) d.ref=f.ref.value; if(f.codigo&&f.codigo.value) d.codigo=f.codigo.value.trim();
+    var d={ slug:elegido(), sucursales:0, nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked }; if(f.ref) d.ref=f.ref.value; if(f.codigo&&f.codigo.value) d.codigo=f.codigo.value.trim();
     if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Escribe tu nombre.'); }
     if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Escribe un correo válido.'); }
     if(!d.terminos) return mostrar('Debes aceptar los términos, las condiciones y el aviso de privacidad.');
