@@ -2634,13 +2634,13 @@
     .ses-n { grid-area: n; font-size: 1.7rem; align-self: start; padding-top: 4px; } .ses-nom { grid-area: nom; } .ses-desc { grid-area: desc; font-size: 14.5px; } .ses-dato { grid-area: dato; text-align: left; } .ses-ir { grid-area: ir; width: 44px; height: 44px; align-self: start; }
     .ses-dato b { font-size: 1.4rem; } .ses-dato i { display: inline; margin-left: 6px; }
   }
-  /* Paleta de etiquetas: rojo, amarillo y rosa. El punto amarillo indica cifra en vivo */
+  /* Paleta de etiquetas: rojo, rosa y verde. El punto amarillo indica cifra en vivo */
   .hx-tag.t-rosa { background: var(--c-red, #D63F4E); color: #fff; }
   .hx-tag.t-rosa b { color: #fff; }
   .hx-tag.t-rosa::before { content: ""; flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: #F7B33E; box-shadow: 0 0 0 0 rgba(247,179,62,.8); animation: envivo 2s ease-out infinite; }
   @keyframes envivo { 0% { box-shadow: 0 0 0 0 rgba(247,179,62,.8); } 70%, 100% { box-shadow: 0 0 0 8px rgba(247,179,62,0); } }
-  .hx-tag.t-amarilla { background: var(--accent, #F7B33E); color: #141414; }
-  .hx-tag.t-roja { background: #E8478C; color: #fff; }
+  .hx-tag.t-amarilla { background: #E8478C; color: #fff; }
+  .hx-tag.t-roja { background: var(--c-green, #6FAE3B); color: #fff; }
   .hx-tag.t-roja b { color: #fff; }
   .hx-tag { box-shadow: 0 12px 26px -14px rgba(0,0,0,.45); }
   @media (prefers-reduced-motion: reduce) { .hx-tag.t-rosa::before { animation: none; } }
