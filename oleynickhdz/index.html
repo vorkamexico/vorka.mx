@@ -493,6 +493,45 @@
     filter: contrast(1.02) saturate(0.95);
   }
 
+  /* ---- Portada: etiqueta, cifras, insignias y medios ---- */
+  .hero-pill { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 26px; }
+  .hero-pill .live { width: 8px; height: 8px; border-radius: 50%; background: var(--c-green); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-green) 22%, transparent); }
+  .hero-stats { display: flex; gap: clamp(18px, 3vw, 40px); margin-top: 34px; flex-wrap: wrap; }
+  .hs { padding-top: 12px; border-top: 3px solid var(--accent); min-width: 120px; }
+  .hs.c-g { border-color: var(--c-green); } .hs.c-b { border-color: var(--c-blue); } .hs.c-y { border-color: var(--accent); }
+  .hs b { display: block; font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--ink); }
+  .hs b sup { font-size: .5em; color: var(--accent); vertical-align: .9em; margin-left: 1px; }
+  .hs span { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); font-weight: 500; }
+  .hero .hero-ctas { margin-top: 36px; }
+  .portrait-wrap { position: relative; }
+  .portrait { border-radius: 28px; box-shadow: 0 40px 80px -40px rgba(0,0,0,.35); }
+  .pdot { position: absolute; border-radius: 50%; z-index: 0; }
+  .pdot.d1 { width: 34px; height: 34px; background: var(--accent); top: -14px; right: 18%; }
+  .pdot.d2 { width: 22px; height: 22px; background: var(--c-blue); top: 26%; left: -11px; }
+  .pdot.d3 { width: 26px; height: 26px; background: var(--c-green); bottom: 20%; right: -13px; }
+  .pdot.d4 { width: 16px; height: 16px; background: var(--c-red); bottom: -8px; left: 30%; }
+  .portrait-wrap .portrait { position: relative; z-index: 1; }
+  .badge { position: absolute; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 12px 16px 12px 12px; border-radius: 18px; background: var(--paper); border: 1px solid var(--rule); box-shadow: 0 18px 40px -18px rgba(0,0,0,.35); max-width: 270px; transition: transform .25s; }
+  .badge:hover { transform: translateY(-3px); }
+  .badge .b-ico { width: 38px; height: 38px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+  .badge .b-ico svg { width: 18px; height: 18px; }
+  .badge .b-ico.y { background: var(--accent); color: #111; } .badge .b-ico.g { background: var(--c-green); }
+  .badge b { display: block; font-size: 13.5px; line-height: 1.25; color: var(--ink); }
+  .badge small { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .badge.b-top { top: 9%; left: -18%; }
+  .badge.b-bot { bottom: 8%; right: -6%; }
+  .medios-strip { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 18px 0; }
+  .medios-strip .shell { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 26px; }
+  .ms-k { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .ms-l { font-weight: 800; font-size: 15px; color: var(--faint, #A0A0A0); letter-spacing: -0.01em; }
+  .ms-mas { margin-left: auto; font-weight: 700; font-size: 14px; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 1100px) { .badge.b-top { left: -6%; } .badge.b-bot { right: -4%; } }
+  @media (max-width: 860px) {
+    .badge.b-top { left: 12px; top: 12px; } .badge.b-bot { right: 12px; bottom: 12px; }
+    .badge { max-width: calc(100% - 24px); }
+    .ms-mas { margin-left: 0; }
+  }
+
   /* ============ SECTIONS ============ */
   .section { padding: clamp(72px, 11vh, 120px) 0; }
   .section + .section { border-top: 1px solid var(--rule); }
@@ -1021,7 +1060,7 @@
     transform: translateY(-2px);
     box-shadow: 0 18px 40px -16px rgba(247, 179, 62, 0.9);
   }
-  .reveal-details[open] summary { background: var(--ink); color: var(--paper); box-shadow: none; }
+  .reveal-details[open] summary { display: none; }
   .reveal-details summary .arrow {
     display: inline-flex;
     transition: transform .25s;
@@ -2100,7 +2139,9 @@
     .menu-btn { display: inline-flex; }
     .hero { grid-template-columns: 1fr; gap: 40px; padding: 40px 0 56px; align-items: start; }
     .hero-copy { order: 2; }
-    .portrait-wrap { order: 1; max-width: 300px; }
+    .portrait-wrap { order: 1; max-width: 340px; margin-bottom: 18px; }
+    .badge.b-bot { display: none; }
+    .badge.b-top { top: auto; bottom: -22px; left: 14px; }
     .perfil-body { grid-template-columns: 1fr; gap: 24px; }
     .venture { grid-template-columns: 1fr; gap: 16px; padding: 32px 0; }
     .services { grid-template-columns: 1fr; padding-top: 0; }
@@ -2119,7 +2160,7 @@
   }
   @media (max-width: 520px) {
     :root { --gutter: 20px; --header-h: 60px; }
-    .brand span:last-child { display: none; }
+    .nav-right .ig-btn { display: none; }
     .nav-right { gap: 8px; }
     .conf-meta { grid-template-columns: 1fr; }
     .foot-bottom { flex-direction: column; align-items: flex-start; }
@@ -2128,9 +2169,10 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .hero h1, .hero-lede, .hero-meta, .portrait-wrap {
+    .hero-pill, .hero h1, .hero-lede, .hero-stats, .hero-ctas, .portrait-wrap, .badge {
       animation: rise 800ms cubic-bezier(.2,.7,.2,1) both;
     }
+    .hero-stats { animation-delay: 300ms; } .hero-ctas { animation-delay: 380ms; } .badge { animation-delay: 520ms; }
     .hero h1 { animation-delay: 80ms; }
     .hero-lede { animation-delay: 200ms; }
     .hero-meta { animation-delay: 280ms; }
@@ -2329,17 +2371,17 @@
       <span>Brandon Oleynick</span>
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
-      <a href="./" class="is-current" aria-current="page">Perfil</a>
-      <a href="#sesiones">Sesiones</a>
+      <a href="#manifiesto">Manifiesto</a>
       <a href="#trayectoria">Trayectoria</a>
       <a href="#conferencias">Conferencias</a>
-      <a href="#faq">FAQs</a>
+      <a href="./prensa/">Prensa</a>
+      <a href="#sesiones">Sesiones</a>
     </nav>
     <div class="nav-right">
       <a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener" class="ig-btn" aria-label="Sígueme en Instagram · @oleynickhdz" title="Sígueme en Instagram · @oleynickhdz">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
       </a>
-      <a href="https://os.vorka.mx/agendar?o=oleynickhdz" class="cta-mini">Agendar sesión</a>
+      <a href="./conferencias/#solicitud" class="cta-mini">Invítame</a>
       <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
       <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileNav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
@@ -2353,15 +2395,14 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
   </button>
   <div class="m-inner">
-    <a href="#perfil">Perfil</a>
-    <a href="#sesiones">Sesiones 1:1</a>
     <a href="#manifiesto">Manifiesto</a>
     <a href="#vision">Mi visión para México</a>
     <a href="#trayectoria">Trayectoria</a>
     <a href="#conferencias">Conferencias</a>
     <a href="#reconocimientos">Reconocimientos</a>
-    <a href="#formacion">Formación</a>
     <a href="#comunidades">Comunidades</a>
+    <a href="#sesiones">Sesiones 1:1</a>
+    <a href="#perfil">Perfil</a>
     <a href="#faq">Preguntas frecuentes</a>
     <a href="#habla">Habla conmigo</a>
     <div style="height: 1px; background: var(--rule); margin: 10px 0;"></div>
@@ -2381,93 +2422,38 @@
 <div class="shell">
   <section class="hero" aria-label="Presentación">
     <div class="hero-copy">
+      <span class="hero-pill"><span class="live" aria-hidden="true"></span>Líder social juvenil · Celaya, México</span>
       <h1>Brandon<br>Oleynick<span class="yellow">.</span></h1>
       <p class="hero-lede">
-        <strong>Líder social juvenil y activista por la participación de las juventudes.</strong>
-        Fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México. Lidero equipos multidisciplinarios y articulo esfuerzos entre los sectores público, privado y social para llevar iniciativas estratégicas del planteamiento a la ejecución.
+        <strong>Activista por la participación de las juventudes.</strong>
+        Fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México.
       </p>
-      <div class="hero-meta">
-        <span><span class="swatch y" aria-hidden="true"></span>Lic. Relaciones Internacionales</span>
-        <span><span class="swatch b" aria-hidden="true"></span>Tec de Monterrey</span>
-        <span><span class="swatch g" aria-hidden="true"></span>México</span>
+      <div class="hero-stats">
+        <div class="hs c-g"><b>3,000<sup>+</sup></b><span>jóvenes en la red IMPACTO</span></div>
+        <div class="hs c-b"><b>30</b><span>estados de la República</span></div>
+        <div class="hs c-y"><b>100<sup>+</sup></b><span>conferencias en 6 estados</span></div>
       </div>
       <div class="hero-ctas">
-        <a class="sesiones-cta" href="https://os.vorka.mx/agendar?o=oleynickhdz">Agenda una sesión <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-        <a class="hero-link" href="#sesiones">Ver opciones y precios ↓</a>
+        <a class="sesiones-cta" href="#manifiesto">Conoce mi visión <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+        <a class="hero-link" href="./conferencias/#solicitud">Invítame a tu evento →</a>
       </div>
     </div>
     <div class="portrait-wrap">
+      <span class="pdot d1" aria-hidden="true"></span><span class="pdot d2" aria-hidden="true"></span><span class="pdot d3" aria-hidden="true"></span><span class="pdot d4" aria-hidden="true"></span>
       <div class="portrait">
         <img src="brandon.jpg" alt="Retrato de Brandon Oleynick" width="900" height="1200" loading="eager" fetchpriority="high">
       </div>
+      <a class="badge b-top" href="./prensa/#reconocimientos"><span class="b-ico y"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></svg></span><span><b>Premio Municipal de la Juventud</b><small>Celaya 2026 · Políticas y Cívicas</small></span></a>
+      <a class="badge b-bot" href="./prensa/#medios"><span class="b-ico g"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></svg></span><span><b>Premios FRISA y Bright Journey</b><small>Tecnológico de Monterrey</small></span></a>
     </div>
   </section>
 </div>
-
-<!-- PERFIL -->
-<div class="shell">
-  <section class="section" id="perfil" aria-labelledby="h-perfil">
-    <div class="section-head">
-      <div class="section-eyebrow eyebrow-y">Perfil</div>
-      <h2 class="section-title" id="h-perfil">Práctica al cruce del liderazgo, la <span class="accent">estrategia</span> y el impacto social.</h2>
-    </div>
-    <div class="perfil-body">
-      <div class="side">
-        <div class="row c-y">
-          <span class="k">Basado en</span>
-          <span class="v">Celaya · Monterrey · CDMX</span>
-        </div>
-        <div class="row c-p">
-          <span class="k">Enfoque</span>
-          <span class="v">Liderazgo juvenil, consultoría y dirección estratégica</span>
-        </div>
-        <div class="row c-b">
-          <span class="k">Trabajo con</span>
-          <span class="v">Personas, proyectos, instituciones y empresas</span>
-        </div>
-      </div>
-      <div>
-        <p>Trabajo con equipos, instituciones y comunidades para diseñar iniciativas que sostienen su impacto en el tiempo. Mi enfoque combina el <em>análisis estratégico</em>, la gestión de proyectos y la comunicación intercultural para resolver problemáticas complejas y articular a actores diversos alrededor de un mismo horizonte.</p>
-        <p>En los últimos cinco años he construido tres organizaciones —Juventudes Impactando México A.C., Vorka México y Oleynick Group— cada una atendiendo un frente distinto: formación juvenil, consultoría empresarial y dirección corporativa. La lectura de contexto y la formación de nuevos liderazgos son la constante entre ellas.</p>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- SESIONES 1:1 (embudo principal: cada opción lleva directo a la agenda con el servicio ya elegido) -->
-<div class="shell">
-  <section class="section" id="sesiones" aria-labelledby="h-ses">
-    <div class="section-head">
-      <div class="section-eyebrow eyebrow-y">Sesiones 1:1</div>
-      <h2 class="section-title" id="h-ses">Trabajemos juntos en tu <span class="accent">siguiente paso.</span></h2>
-      <p class="ses-intro">Elige la sesión según tu momento. Agendas en línea, pagas por transferencia y recibes la confirmación con tu enlace de videollamada.</p>
-    </div>
-    <div class="ses-grid">
-      <article class="ses-op">
-        <div class="ses-ideal">Ideal si tienes una duda o decisión concreta</div>
-        <h3>Asesoría Express</h3>
-        <div class="ses-precio"><b>$300</b> MXN · 20 min</div>
-        <p>Una segunda opinión, retroalimentación de una idea u orientación puntual para una beca, convocatoria o proyecto.</p>
-        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=express&amp;o=oleynickhdz">Agendar Express <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </article>
-      <article class="ses-op destacada">
-        <div class="ses-flag">Más elegida</div>
-        <div class="ses-ideal">Ideal si quieres avanzar con acompañamiento</div>
-        <h3>Mentoría Mensual</h3>
-        <div class="ses-precio"><b>$900</b> MXN al mes · 45 min</div>
-        <p>Diagnóstico y plan personalizado, seguimiento mes a mes, revisión de CV o proyecto y WhatsApp directo entre sesiones. Después del primer mes, también en pagos quincenales de $450.</p>
-        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=mentoria&amp;o=oleynickhdz">Empezar mi mentoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </article>
-      <article class="ses-op">
-        <div class="ses-ideal">Ideal para proyectos y organizaciones</div>
-        <h3>Consultoría Estratégica</h3>
-        <div class="ses-precio"><b>$600</b> MXN · 60 min</div>
-        <p>Diagnóstico y hoja de ruta, revisión de propuestas, presentaciones institucionales o estrategia de comunicación e impacto.</p>
-        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=consultoria&amp;o=oleynickhdz">Agendar Consultoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </article>
-    </div>
-    <p class="ses-ayuda">¿No sabes cuál elegir? <a href="https://os.vorka.mx/agendar?o=oleynickhdz">La agenda te ayuda a decidir</a> · <a href="./servicios/">Ver detalles de cada servicio</a> · ¿Una conferencia para tu organización? <a href="./conferencias/">Cotízala aquí</a></p>
-  </section>
+<div class="medios-strip">
+  <div class="shell">
+    <span class="ms-k">Lo han contado</span>
+    <span class="ms-l">Conecta · Tec de Monterrey</span><span class="ms-l">El Sol del Bajío</span><span class="ms-l">Periódico Correo</span><span class="ms-l">Gobierno de Celaya</span><span class="ms-l">SDP Noticias</span>
+    <a class="ms-mas" href="./prensa/#medios">Ver notas →</a>
+  </div>
 </div>
 
 <!-- MANIFIESTO (reveal, centered) -->
@@ -2476,10 +2462,10 @@
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Manifiesto</div>
       <h2 class="section-title" id="h-manif">Cinco principios que <span class="accent">guían mi trabajo.</span></h2>
-      <p class="reveal-intro">Los principios que sostienen cada decisión que tomo con equipos, instituciones y comunidades. Léelos si quieres saber cómo pienso antes de trabajar conmigo.</p>
+      <p class="reveal-intro">Los principios que sostienen cada decisión que tomo con equipos, instituciones y comunidades.</p>
     </div>
     <div class="reveal-summary-wrap">
-      <details class="reveal-details">
+      <details class="reveal-details" open>
         <summary>Leer manifiesto <span class="arrow">→</span></summary>
         <div class="reveal-content">
           <div class="principios">
@@ -2534,7 +2520,7 @@
       <p class="reveal-intro">Cinco ejes en los que trabajo hoy y en los que quiero seguir empujando. No es un programa cerrado: es la brújula con la que decido qué proyectos abrazar y qué compromisos asumir.</p>
     </div>
     <div class="reveal-summary-wrap">
-      <details class="reveal-details">
+      <details class="reveal-details" open>
         <summary>Ver mi visión <span class="arrow">→</span></summary>
         <div class="reveal-content">
           <div class="principios">
@@ -2730,41 +2716,6 @@
   </div>
 </div>
 
-<!-- FORMACIÓN -->
-<div class="shell">
-  <section class="section" id="formacion" aria-labelledby="h-form">
-    <div class="section-head">
-      <div class="section-eyebrow eyebrow-b">Formación</div>
-      <h2 class="section-title" id="h-form">Bases académicas y <span class="a-b">especializaciones continuas.</span></h2>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-item">
-        <span class="level">Nivel superior</span>
-        <h3>Lic. en Relaciones Internacionales</h3>
-        <div class="place">Tecnológico de Monterrey<span class="sep">·</span>2021 – 2025</div>
-        <p>Formación con enfoque en análisis geopolítico, cooperación internacional, negociación y estudios de desarrollo.</p>
-      </div>
-      <div class="form-item c-y">
-        <span class="level">Media superior</span>
-        <h3>Bachillerato Económico Administrativo</h3>
-        <div class="place">ENMS de Celaya<span class="sep">·</span>2018 – 2021</div>
-        <p>Bases en economía, administración y contabilidad, junto con análisis de datos, gestión de recursos y toma de decisiones.</p>
-      </div>
-    </div>
-
-    <div class="certs-title">Diplomados &amp; Certificaciones</div>
-    <ul class="certs">
-      <li><div>Diplomado U-LEAD TEC<span>Programa de alto rendimiento · Líderes de impacto</span></div></li>
-      <li><div>Exercising Leadership · Foundational Principles<span>Harvard Business School</span></div></li>
-      <li><div>Financial Strategist Essentials<span>Diplomado · Tecnológico de Monterrey</span></div></li>
-      <li><div>Effective Leader Essentials<span>Diplomado · Tecnológico de Monterrey</span></div></li>
-      <li><div>Facilitador QPR &amp; Testigo Activo<span>Primeros Auxilios Psicológicos · Tec de Monterrey</span></div></li>
-      <li><div>Creación y Validación de Startups<span>Certificación · UCSC Silicon Valley</span></div></li>
-    </ul>
-  </section>
-</div>
-
 <!-- COMUNIDADES -->
 <div class="band-2">
   <div class="shell">
@@ -2826,6 +2777,107 @@
       </div>
     </section>
   </div>
+</div>
+
+<!-- SESIONES 1:1 (embudo principal: cada opción lleva directo a la agenda con el servicio ya elegido) -->
+<div class="shell">
+  <section class="section" id="sesiones" aria-labelledby="h-ses">
+    <div class="section-head">
+      <div class="section-eyebrow eyebrow-y">Sesiones 1:1</div>
+      <h2 class="section-title" id="h-ses">Trabajemos juntos en tu <span class="accent">siguiente paso.</span></h2>
+      <p class="ses-intro">Elige la sesión según tu momento. Agendas en línea, pagas por transferencia y recibes la confirmación con tu enlace de videollamada.</p>
+    </div>
+    <div class="ses-grid">
+      <article class="ses-op">
+        <div class="ses-ideal">Ideal si tienes una duda o decisión concreta</div>
+        <h3>Asesoría Express</h3>
+        <div class="ses-precio"><b>$300</b> MXN · 20 min</div>
+        <p>Una segunda opinión, retroalimentación de una idea u orientación puntual para una beca, convocatoria o proyecto.</p>
+        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=express&amp;o=oleynickhdz">Agendar Express <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </article>
+      <article class="ses-op destacada">
+        <div class="ses-flag">Más elegida</div>
+        <div class="ses-ideal">Ideal si quieres avanzar con acompañamiento</div>
+        <h3>Mentoría Mensual</h3>
+        <div class="ses-precio"><b>$900</b> MXN al mes · 45 min</div>
+        <p>Diagnóstico y plan personalizado, seguimiento mes a mes, revisión de CV o proyecto y WhatsApp directo entre sesiones. Después del primer mes, también en pagos quincenales de $450.</p>
+        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=mentoria&amp;o=oleynickhdz">Empezar mi mentoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </article>
+      <article class="ses-op">
+        <div class="ses-ideal">Ideal para proyectos y organizaciones</div>
+        <h3>Consultoría Estratégica</h3>
+        <div class="ses-precio"><b>$600</b> MXN · 60 min</div>
+        <p>Diagnóstico y hoja de ruta, revisión de propuestas, presentaciones institucionales o estrategia de comunicación e impacto.</p>
+        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=consultoria&amp;o=oleynickhdz">Agendar Consultoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </article>
+    </div>
+    <p class="ses-ayuda">¿No sabes cuál elegir? <a href="https://os.vorka.mx/agendar?o=oleynickhdz">La agenda te ayuda a decidir</a> · <a href="./servicios/">Ver detalles de cada servicio</a> · ¿Una conferencia para tu organización? <a href="./conferencias/">Cotízala aquí</a></p>
+  </section>
+</div>
+
+<!-- PERFIL -->
+<div class="shell">
+  <section class="section" id="perfil" aria-labelledby="h-perfil">
+    <div class="section-head">
+      <div class="section-eyebrow eyebrow-y">Perfil</div>
+      <h2 class="section-title" id="h-perfil">Práctica al cruce del liderazgo, la <span class="accent">estrategia</span> y el impacto social.</h2>
+    </div>
+    <div class="perfil-body">
+      <div class="side">
+        <div class="row c-y">
+          <span class="k">Basado en</span>
+          <span class="v">Celaya · Monterrey · CDMX</span>
+        </div>
+        <div class="row c-p">
+          <span class="k">Enfoque</span>
+          <span class="v">Liderazgo juvenil, consultoría y dirección estratégica</span>
+        </div>
+        <div class="row c-b">
+          <span class="k">Trabajo con</span>
+          <span class="v">Personas, proyectos, instituciones y empresas</span>
+        </div>
+      </div>
+      <div>
+        <p>Trabajo con equipos, instituciones y comunidades para diseñar iniciativas que sostienen su impacto en el tiempo. Mi enfoque combina el <em>análisis estratégico</em>, la gestión de proyectos y la comunicación intercultural para resolver problemáticas complejas y articular a actores diversos alrededor de un mismo horizonte.</p>
+        <p>En los últimos cinco años he construido tres organizaciones —Juventudes Impactando México A.C., Vorka México y Oleynick Group— cada una atendiendo un frente distinto: formación juvenil, consultoría empresarial y dirección corporativa. La lectura de contexto y la formación de nuevos liderazgos son la constante entre ellas.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FORMACIÓN -->
+<div class="shell">
+  <section class="section" id="formacion" aria-labelledby="h-form">
+    <div class="section-head">
+      <div class="section-eyebrow eyebrow-b">Formación</div>
+      <h2 class="section-title" id="h-form">Bases académicas y <span class="a-b">especializaciones continuas.</span></h2>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-item">
+        <span class="level">Nivel superior</span>
+        <h3>Lic. en Relaciones Internacionales</h3>
+        <div class="place">Tecnológico de Monterrey<span class="sep">·</span>2021 – 2025</div>
+        <p>Formación con enfoque en análisis geopolítico, cooperación internacional, negociación y estudios de desarrollo.</p>
+      </div>
+      <div class="form-item c-y">
+        <span class="level">Media superior</span>
+        <h3>Bachillerato Económico Administrativo</h3>
+        <div class="place">ENMS de Celaya<span class="sep">·</span>2018 – 2021</div>
+        <p>Bases en economía, administración y contabilidad, junto con análisis de datos, gestión de recursos y toma de decisiones.</p>
+      </div>
+    </div>
+
+    <div class="certs-title">Diplomados &amp; Certificaciones</div>
+    <ul class="certs">
+      <li><div>Diplomado U-LEAD TEC<span>Programa de alto rendimiento · Líderes de impacto</span></div></li>
+      <li><div>Exercising Leadership · Foundational Principles<span>Harvard Business School</span></div></li>
+      <li><div>Financial Strategist Essentials<span>Diplomado · Tecnológico de Monterrey</span></div></li>
+      <li><div>Effective Leader Essentials<span>Diplomado · Tecnológico de Monterrey</span></div></li>
+      <li><div>Facilitador QPR &amp; Testigo Activo<span>Primeros Auxilios Psicológicos · Tec de Monterrey</span></div></li>
+      <li><div>Creación y Validación de Startups<span>Certificación · UCSC Silicon Valley</span></div></li>
+    </ul>
+  </section>
 </div>
 
 <!-- FAQ -->
