@@ -607,7 +607,7 @@
   .hx-nombre { position: absolute; z-index: -2; left: 0; right: 0; top: calc(86px + clamp(16px, 4vh, 48px)); margin: 0 auto; max-width: var(--max); padding: 0 var(--gutter); pointer-events: none; }
   .hx-nom { display: block; font-family: var(--font); font-weight: 800; font-size: clamp(2.4rem, calc((var(--ancho) - 2 * var(--gutter)) * .075), 5.2rem); letter-spacing: -0.02em; line-height: 1; text-transform: uppercase; color: var(--hx-nom); }
   .hx-ape { display: block; font-family: 'Anton', 'Impact', 'Arial Narrow', sans-serif; font-weight: 400; text-transform: uppercase; font-size: calc((var(--ancho) - 2 * var(--gutter)) / 3.55); line-height: .86; letter-spacing: .005em; color: var(--hx-ape); margin-top: .02em; white-space: nowrap; }
-  .hx-foto { position: absolute; z-index: -1; left: 50%; margin-left: calc(var(--ancho) * .1); bottom: 0; transform: translateX(-50%); height: min(84vh, 860px); width: auto; max-width: none; filter: drop-shadow(0 24px 40px rgba(0,0,0,.35)); }
+  .hx-foto { position: absolute; z-index: -1; left: 50%; margin-left: calc(var(--ancho) * .1); bottom: 0; transform: translateX(-50%); height: min(84vh, 860px); width: auto; max-width: none; }
   .hx-frente { position: relative; width: 100%; padding-bottom: clamp(32px, 6vh, 64px); }
   .hx-izq { max-width: 330px; }
   .hx-lede { margin: 0; font-size: 17px; line-height: 1.45; color: var(--hx-sub); }
@@ -2562,6 +2562,9 @@
   @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
   /* ---- Cifras como etiquetas de colores alrededor de la silueta ---- */
   .hx-figura { position: absolute; z-index: -1; left: 50%; margin-left: calc(var(--ancho) * .1); bottom: 0; transform: translateX(-50%); height: min(84vh, 860px); aspect-ratio: 1000 / 1521; isolation: isolate; }
+  /* Sombra en el contenedor (no en la foto): así sigue la silueta ya desvanecida y no deja líneas rectas */
+  .hx-figura { filter: drop-shadow(0 22px 34px rgba(0,0,0,.28)); }
+  .hx-figura .hx-foto { filter: none !important; -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%); mask-image: linear-gradient(180deg, #000 82%, transparent 100%); }
   .hx-figura .hx-foto { position: relative !important; left: auto !important; margin: 0 !important; transform: none !important; height: 100% !important; width: auto !important; z-index: 0; }
   .hx-tag { position: absolute; z-index: 1; display: inline-flex; align-items: baseline; gap: 7px; padding: 11px 18px; border-radius: 999px; color: #fff; font-size: 15px; font-weight: 600; white-space: nowrap; box-shadow: 0 14px 30px -12px rgba(0,0,0,.45); transition: transform .25s; }
   .hx-tag b { font-family: var(--display); font-weight: 400; font-size: 1.55em; line-height: 1; letter-spacing: .01em; }
@@ -2574,6 +2577,8 @@
   @media (max-width: 960px) {
     .hx-figura { position: relative; left: auto; margin: -20vw auto 0; transform: none; height: auto; width: min(86%, 460px); aspect-ratio: auto; }
     .hx-figura .hx-foto { width: 100% !important; height: auto !important; display: block; }
+    .hx-figura { filter: drop-shadow(0 16px 26px rgba(0,0,0,.22)); }
+    .hx-figura .hx-foto { -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 96%); mask-image: linear-gradient(180deg, #000 62%, transparent 96%); }
     .hx-tag { font-size: 12.5px; padding: 8px 13px; }
     .hx-tag.atras { z-index: 1; }
     .t-amarilla { left: -6%; top: 56%; } .t-rosa { right: -5%; top: 22%; padding-left: 13px; } .t-azul { right: -4%; top: 68%; } .t-roja { left: -6%; top: 40%; padding-right: 13px; }
