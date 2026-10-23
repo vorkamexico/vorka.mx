@@ -1715,6 +1715,22 @@
   .ig-btn { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; box-shadow: none !important; }
   .ig-btn::after { display: none !important; }
   .ig-btn:hover { border-color: var(--ink) !important; transform: none !important; }
+  /* Barra flotante como la de vorka.mx (píldora translúcida) y foto de perfil */
+  .site-header { position: fixed !important; inset: 12px 0 auto !important; background: none !important; border: 0 !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important; pointer-events: none; z-index: 80; }
+  .site-header .nav-shell { pointer-events: auto; height: 62px !important; width: min(100% - 24px, 1180px); max-width: none; margin: 0 auto; padding: 0 8px 0 8px !important; border-radius: 999px; background: color-mix(in srgb, var(--paper) 72%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); box-shadow: 0 8px 30px -14px rgba(0,0,0,.25); }
+  .site-header .nav-main { margin-left: auto; }
+  .brand-mark { width: 44px !important; height: 44px !important; background: var(--paper-3) !important; overflow: visible; }
+  .brand-mark img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .brand-mark::after { top: 0 !important; right: 0 !important; }
+  .site-header .cta-mini, .site-header .toggle, .site-header .ig-btn { height: 46px; }
+  .site-header .cta-mini { display: inline-flex; align-items: center; padding: 0 20px; }
+  @media (max-width: 960px) { .site-header .cta-mini { display: none; } }
+  @media (max-width: 520px) { .site-header .brand span:last-child { display: inline !important; font-size: 14px; } .site-header .toggle { font-size: 0 !important; width: 40px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; } .site-header .toggle::before { content: "◐"; font-size: 16px; } }
+  .site-header .toggle { padding: 0 16px; }
+  .site-header .ig-btn { width: 46px; }
+  @media (max-width: 520px) { .site-header .nav-shell { height: 58px !important; } .brand-mark { width: 40px !important; height: 40px !important; } .site-header .ig-btn, .site-header .toggle { width: 40px; height: 40px; } }
+  body { padding-top: 86px; }
+  .hero, .hero-centered { scroll-margin-top: 90px; }
 </style>
 </head>
 <body>
@@ -1725,7 +1741,7 @@
 <header class="site-header" role="banner">
   <div class="shell nav-shell">
     <a href="/oleynickhdz/" class="brand" aria-label="Brandon Oleynick — Inicio">
-      <span class="brand-mark" aria-hidden="true">BO</span>
+      <span class="brand-mark" aria-hidden="true"><img src="../img/avatar.webp" alt="" width="44" height="44"></span>
       <span>Brandon Oleynick</span>
     </a>
     <nav class="nav-main" aria-label="Navegación principal">

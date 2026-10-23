@@ -167,13 +167,19 @@
   @media (max-width:900px){.cuerpo{grid-template-columns:1fr}.resumen{position:static;order:-1}.resumen dl{grid-template-columns:1fr 1fr}.incluye{display:none}}
   @media (max-width:560px){.campos{grid-template-columns:1fr}.pasos button span{display:none}.pasos{gap:8px}.ops{grid-template-columns:1fr}.ops.chicas{grid-template-columns:1fr 1fr}.nav-pasos .btn-prim{flex:1}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  .top{position:fixed;inset:12px 0 auto;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;pointer-events:none}
+  .top .shell{pointer-events:auto;height:58px;width:min(100% - 24px,1180px);margin:0 auto;padding:0 18px 0 8px;border-radius:999px;background:color-mix(in srgb,var(--paper) 72%,transparent);border:1px solid color-mix(in srgb,var(--ink) 8%,transparent);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:0 8px 30px -14px rgba(0,0,0,.25)}
+  .brand-mark{width:42px;height:42px;background:var(--paper-3)}
+  .brand-mark img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .brand-mark::after{top:0;right:0}
+  .portada .shell{padding-top:96px}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="shell">
-    <a class="brand" href="../../"><span class="brand-mark">BO</span><span>Brandon Oleynick</span></a>
+    <a class="brand" href="../../"><span class="brand-mark" aria-hidden="true"><img src="../../img/avatar.webp" alt="" width="44" height="44"></span><span>Brandon Oleynick</span></a>
     <a class="volver" href="../">← Conferencias</a>
   </div>
 </header>
