@@ -62,7 +62,7 @@
     "url": "https://vorka.mx/oleynickhdz/",
     "image": "https://vorka.mx/oleynickhdz/brandon.jpg",
     "jobTitle": "Líder social juvenil · Presidente de Juventudes Impactando México A.C.",
-    "description": "Líder social juvenil y activista por la participación de las juventudes en México. Presidente y fundador de Juventudes Impactando México A.C., CEO de Vorka México y conferencista con más de 100 conferencias en 6 estados.",
+    "description": "Líder social juvenil y activista por la participación de las juventudes en México. Fundador y presidente nacional de Juventudes Impactando México A.C., fundador y CEO de Vorka México y conferencista con más de 100 conferencias en 6 estados.",
     "email": "mailto:oleynickhdz@gmail.com",
     "telephone": "+52-461-224-2547",
     "nationality": { "@type": "Country", "name": "México" },
@@ -74,15 +74,18 @@
       { "@type": "EducationalOrganization", "name": "Harvard Business School" },
       { "@type": "EducationalOrganization", "name": "UC Santa Cruz Silicon Valley" }
     ],
-    "founder": { "@type": "NGO", "name": "Juventudes Impactando México A.C.", "url": "https://soyimpacto.org/" },
+    "founder": [
+      { "@type": "NGO", "name": "Juventudes Impactando México A.C.", "url": "https://soyimpacto.org/" },
+      { "@type": "Organization", "name": "Vorka México", "url": "https://vorka.mx/" }
+    ],
     "worksFor": [
       { "@type": "NGO", "name": "Juventudes Impactando México A.C.", "url": "https://soyimpacto.org/" },
       { "@type": "Organization", "name": "Vorka México", "url": "https://vorka.mx/" },
       { "@type": "Organization", "name": "Oleynick Group" }
     ],
     "award": [
-      "Premio Municipal de la Juventud 2026, Gobierno Municipal de Celaya",
-      "Premio Bright Journey 2025, Tecnológico de Monterrey",
+      "Premio Municipal de la Juventud 2026, categoría Políticas y Cívicas, Gobierno Municipal de Celaya",
+      "Premio Bright Journey 2025 por Trayectoria de Emprendimiento, Tecnológico de Monterrey",
       "Premio FRISA · Reconocimiento al Emprendedor 2024, Tecnológico de Monterrey",
       "Embajador 2030, INJUVE Nuevo León (2024)",
       "Premio Estatal de la Juventud · Juventudes con Grandeza 2023, Gobierno del Estado de Guanajuato",
@@ -598,6 +601,8 @@
   }
   .venture:first-of-type { border-top: none; padding-top: 0; }
   .venture-meta { display: flex; flex-direction: column; gap: 8px; }
+  .venture-logo { width: 64px; height: 64px; border-radius: 16px; background: #fff; border: 1px solid var(--rule); display: inline-flex; align-items: center; justify-content: center; padding: 11px; margin-bottom: 6px; }
+  .venture-logo img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
   .venture-date {
     font-size: 13px;
     font-weight: 700;
@@ -2379,7 +2384,7 @@
       <h1>Brandon<br>Oleynick<span class="yellow">.</span></h1>
       <p class="hero-lede">
         <strong>Líder social juvenil y activista por la participación de las juventudes.</strong>
-        Presidente y fundador de Juventudes Impactando México A.C. Lidero equipos multidisciplinarios y articulo esfuerzos entre los sectores público, privado y social para llevar iniciativas estratégicas del planteamiento a la ejecución.
+        Fundador y presidente nacional de Juventudes Impactando México A.C. y fundador de Vorka México. Lidero equipos multidisciplinarios y articulo esfuerzos entre los sectores público, privado y social para llevar iniciativas estratégicas del planteamiento a la ejecución.
       </p>
       <div class="hero-meta">
         <span><span class="swatch y" aria-hidden="true"></span>Lic. Relaciones Internacionales</span>
@@ -2586,6 +2591,7 @@
 
       <article class="venture c-g">
         <div class="venture-meta">
+          <span class="venture-logo"><img src="img/logo-impacto.png" alt="Logo de IMPACTO · Juventudes Impactando México" loading="lazy"></span>
           <div class="venture-date"><span class="live" aria-hidden="true"></span>2021 — Presente</div>
           <div class="venture-role">Presidente &amp; Fundador</div>
           <a class="venture-handle" href="https://www.instagram.com/soyimpacto.mx/" target="_blank" rel="noopener">@soyimpacto.mx</a>
@@ -2602,6 +2608,7 @@
 
       <article class="venture c-p">
         <div class="venture-meta">
+          <span class="venture-logo"><img src="img/logo-vorka.png" alt="Logo de Vorka México" loading="lazy"></span>
           <div class="venture-date"><span class="live" aria-hidden="true"></span>2022 — Presente</div>
           <div class="venture-role">Fundador &amp; CEO</div>
           <a class="venture-handle" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener">@vorka.mx</a>
@@ -2618,6 +2625,7 @@
 
       <article class="venture c-b">
         <div class="venture-meta">
+          <span class="venture-logo"><img src="img/logo-oleynick.png" alt="Logo de Oleynick Group" loading="lazy"></span>
           <div class="venture-date"><span class="live" aria-hidden="true"></span>2024 — Presente</div>
           <div class="venture-role">Director</div>
           <a class="venture-handle" href="https://instagram.com/oleynickgroup" target="_blank" rel="noopener">@oleynickgroup</a>
