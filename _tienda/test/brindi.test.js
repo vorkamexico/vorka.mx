@@ -21,7 +21,9 @@ describe('Brindi en la tienda', () => {
   it('los productos entran ocultos y no se pueden comprar hasta activarlos', async () => {
     const ps = await A.productosApp('brindi');
     expect(ps).toHaveLength(12);
-    expect(ps.every(p => !p.activo)).toBe(true);
+    // Entran ocultos; el álbum de invitados se puso a la venta con la migración 0035 (después de publicar os.vorka.mx)
+    expect(ps.filter(p => p.slug !== 'brindi-album').every(p => !p.activo)).toBe(true);
+    expect(ps.find(p => p.slug === 'brindi-album').activo).toBe(true);
     await expect(crearOrden(env, { items: [{ slug: 'brindi-celebracion' }], email: 'a@b.mx', nombre: 'Ana' })).rejects.toThrow('producto');
     const html = await (await pedir('/tienda/brindi/')).text();
     expect(html).toContain('Muy pronto');
@@ -147,6 +149,8 @@ describe('Brindi en la tienda', () => {
     expect(html).toContain('¿Ya la creaste? Paga aquí');
     expect(html).toContain('<details class="br-compl">');   // complementos plegados
     expect(html).toContain('href="https://soyimpacto.org/"');
+    expect(html).toContain('Imprimir 200 invitaciones con sobre: desde $9,000 MXN');
+    expect(html).toContain('https://www.eventplannermexico.mx/invitaciones-para-eventos/');
     expect(html).toContain('/brindi/og/gala.webp');
     expect(html).toContain('Diseño Gala · incluido en Premium o +$149 MXN en otro plan');
     // Gala no se ofrece junto con Premium (ya lo incluye)

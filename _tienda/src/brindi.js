@@ -169,8 +169,9 @@ export const VARIANTES = {
 // Ej.: { texto: 'Confirmaron 180 de 200 sin que yo persiguiera a nadie.', quien: 'Mariana R.', evento: 'Boda · marzo 2027' }
 const TESTIMONIOS = [];
 // Comparación contra la invitación impresa: SOLO con cotizaciones reales (imprenta, fecha y lo que incluye). null = no se muestra.
-// Ej.: { invitados: 200, impresa_centavos: 0, fuente: 'Cotización de <imprenta>, <ciudad>, <mes año>: impresión, sobres y entrega' }
-const COMPARA_PAPEL = null;
+// Fuente verificada el 23 de octubre de 2026: Event Planner México (CDMX) publica $45–$70 MXN por invitación impresa sencilla
+// (papel 250 g, sobre coordinado y diseño; mínimo 30). Se usa el precio más bajo, sin entrega: la comparación es conservadora.
+const COMPARA_PAPEL = { invitados: 200, impresa_centavos: 200 * 4500, fuente: 'Precio orientativo 2026 publicado por Event Planner México (CDMX): invitación impresa sencilla con sobre y diseño desde $45 por pieza. Sin contar la entrega.', url: 'https://www.eventplannermexico.mx/invitaciones-para-eventos/' };
 
 export async function paginaBrindi(env, req, url, clave = '') {
   const V = VARIANTES[clave] || VARIANTES[''];
@@ -270,7 +271,7 @@ ${TESTIMONIOS.length ? `
     ${p.prod ? `<a class="br-ya" href="?plan=${p.slug}#comprar" data-plan="${p.slug}">¿Ya la creaste? Paga ${p.nombre} aquí</a>` : ''}</article>`).join('')}</div>
   <p class="br-gratis">Tu diseño se guarda: <a href="${APP}" rel="noopener">créala gratis</a> y eliges plan al publicar. Si ya creaste tu invitación, el plan se activa solo con el mismo correo.</p>
   ${org ? `<div class="br-org"><div><b>¿Organizas eventos?</b><span>Paquete Organizador: 5 eventos Celebración por ${precio(org)}${ahorroOrg > 0 ? ` (ahorras ${precio({ precio_centavos: ahorroOrg })})` : ''}. Para salones, fotógrafos y planners.</span></div><span class="br-org-a">${clave === 'organizadores' ? '' : '<a class="btn blanco chico" href="/tienda/brindi/organizadores/">Ver para organizadores</a>'}<a class="btn ${clave === 'organizadores' ? 'tinta' : 'blanco'} chico" href="?plan=${ORGANIZADOR}#comprar" data-plan="${ORGANIZADOR}">Quiero el paquete</a></span></div>` : ''}
-  ${COMPARA_PAPEL && rec.prod ? `<div class="br-papel"><b>Contra la invitación impresa</b><span>Imprimir y repartir ${COMPARA_PAPEL.invitados} invitaciones: ${precio({ precio_centavos: COMPARA_PAPEL.impresa_centavos })}. Brindi Celebración, hasta 300 invitados: ${precio(rec.prod)}.</span><small>${esc(COMPARA_PAPEL.fuente)}</small></div>` : ''}
+  ${COMPARA_PAPEL && rec.prod ? `<div class="br-papel"><b>Contra la invitación impresa</b><span>Imprimir ${COMPARA_PAPEL.invitados} invitaciones con sobre: desde ${precio({ precio_centavos: COMPARA_PAPEL.impresa_centavos })}, más llevarlas una por una. Brindi Celebración, hasta 300 invitados y sin repartir nada: ${precio(rec.prod)}.</span><small>${esc(COMPARA_PAPEL.fuente)} <a href="${esc(COMPARA_PAPEL.url)}" target="_blank" rel="noopener nofollow">Ver fuente</a></small></div>` : ''}
 </div></section>
 
 ${grupos.length ? `<section class="t-sec" id="complementos"><div class="marco">
