@@ -15,6 +15,9 @@
 <meta name="keywords" content="Brandon Oleynick, Brandon Oleynick Hernández, oleynickhdz, líder social juvenil, activista juvenil, participación de las juventudes, Juventudes Impactando México, Vorka México, Oleynick Group, mentoría liderazgo, consultoría estratégica, conferencias liderazgo México, asesoría joven emprendedor, Celaya Guanajuato, Tec de Monterrey, impacto social México">
 
 <link rel="canonical" href="https://vorka.mx/oleynickhdz/">
+<link rel="alternate" hreflang="es-MX" href="https://vorka.mx/oleynickhdz/">
+<link rel="alternate" hreflang="en" href="https://vorka.mx/oleynickhdz/en/">
+<link rel="alternate" hreflang="x-default" href="https://vorka.mx/oleynickhdz/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="profile">
@@ -22,10 +25,10 @@
 <meta property="og:title" content="Brandon Oleynick — Líder social juvenil y conferencista">
 <meta property="og:description" content="Presidente de Juventudes Impactando México A.C. Activista por la participación de las juventudes, conferencista y mentor.">
 <meta property="og:url" content="https://vorka.mx/oleynickhdz/">
-<meta property="og:image" content="https://vorka.mx/oleynickhdz/brandon.jpg">
-<meta property="og:image:width" content="900">
-<meta property="og:image:height" content="1200">
-<meta property="og:image:alt" content="Retrato de Brandon Oleynick">
+<meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Brandon Oleynick: 3,000+ jóvenes, 120+ municipios, 30 estados y 100+ conferencias">
 <meta property="og:locale" content="es_MX">
 <meta property="profile:first_name" content="Brandon">
 <meta property="profile:last_name" content="Oleynick">
@@ -37,10 +40,12 @@
 <meta name="twitter:creator" content="@oleynickhdz">
 <meta name="twitter:title" content="Brandon Oleynick">
 <meta name="twitter:description" content="Líder social juvenil · Presidente de Juventudes Impactando México · Conferencista.">
-<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/brandon.jpg">
+<meta name="twitter:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
 
 <!-- Favicon -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231A1A1A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7B33E'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
+<link rel="apple-touch-icon" href="/oleynickhdz/img/apple-touch-icon.png">
 
 <!-- Structured data (JSON-LD) -->
 <script type="application/ld+json">
@@ -106,7 +111,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root {
     --paper:      #FFFFFF;
@@ -134,7 +139,7 @@
     --c-red:      #D63F4E;
     --c-orange:   #E9782C;
 
-    --font: 'Manrope', 'Mont', 'Söhne', 'Helvetica Neue', system-ui, sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
     --max: 1180px;
     --gutter: clamp(20px, 5vw, 64px);
@@ -2533,14 +2538,28 @@
   .conf-cta { background: var(--accent) !important; color: #111 !important; }
   .conf-meta .k { color: var(--accent) !important; }
   .conf-meta .m { border-color: var(--accent) !important; }
-  /* Puntos Vorka con el mismo lenguaje de la portada (conserva la V de Vorka) */
-  .vk-puntos { background: #161616 !important; font-family: var(--font) !important; }
-  .vk-raya { background: var(--accent) !important; opacity: .1 !important; }
-  .vk-puntos h2 { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; font-size: clamp(2.4rem, 5vw, 4rem) !important; line-height: .95 !important; letter-spacing: .005em !important; }
-  .vk-puntos h2 span { background: none !important; -webkit-background-clip: initial !important; background-clip: initial !important; color: var(--accent) !important; }
-  .vk-pre { color: var(--accent) !important; font-weight: 800 !important; }
-  .vk-pre svg { fill: var(--accent) !important; }
-  .vk-cta { background: var(--accent) !important; color: #111 !important; }
+  /* Letra de Vorka para todo el texto (los títulos siguen en Anton) y enlace de accesibilidad bien escondido */
+  body, button, input, select, textarea { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .skip-link { top: -200px !important; }
+  .skip-link:focus { top: 0 !important; }
+  /* Cifras: cuatro datos que llevan a la red, al mapa y a conferencias */
+  .hx-cifras .shell { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 0 !important; }
+  .hx-cifras a { display: block; padding: 6px 22px 6px 0; border-left: 0; transition: transform .2s; }
+  .hx-cifras a + a { padding-left: 22px; border-left: 1px solid var(--rule); }
+  .hx-cifras a i { display: inline-block; margin-top: 10px; font-style: normal; font-size: 13px; font-weight: 700; color: var(--accent); opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .2s; }
+  .hx-cifras a:hover b { color: var(--accent); }
+  .hx-cifras a:hover i, .hx-cifras a:focus-visible i { opacity: 1; transform: none; }
+  @media (hover: none) { .hx-cifras a i { opacity: 1; transform: none; } }
+  @media (max-width: 760px) {
+    .hx-cifras .shell { grid-template-columns: 1fr 1fr !important; gap: 22px 0 !important; }
+    .hx-cifras a:nth-child(3) { padding-left: 0; border-left: 0; }
+  }
+  .hx-org { color: var(--hx-txt); font-weight: 700; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 70%, transparent); text-underline-offset: 4px; text-decoration-thickness: 2px; transition: color .2s; }
+  .hx-org:hover { color: var(--accent); }
+  /* Botón de idioma (el tema sigue al dispositivo) */
+  .lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; min-width: 46px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .06em; transition: border-color .2s, color .2s; }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
 </style>
 </head>
 <body>
@@ -2566,7 +2585,7 @@
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
       </a>
       <a href="./conferencias/solicitar/" class="cta-mini">Invítame</a>
-      <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
+      <a class="lang-btn" href="./en/" hreflang="en" lang="en" aria-label="Read in English">EN</a>
       <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileNav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
       </button>
@@ -2607,7 +2626,7 @@
   <img class="hx-foto" src="img/brandon-portada.webp" alt="Brandon Oleynick saludando" width="1000" height="1521" fetchpriority="high">
   <div class="shell hx-frente">
     <div class="hx-izq">
-      <p class="hx-lede"><strong>Líder social juvenil.</strong><br>Fundador de Juventudes Impactando México y de Vorka México.</p>
+      <p class="hx-lede"><strong>Líder social juvenil.</strong><br>Fundador de <a class="hx-org" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Juventudes Impactando México</a> y de <a class="hx-org" href="https://vorka.mx/" target="_blank" rel="noopener">Vorka México</a>.</p>
       <div class="hx-ctas">
         <a class="hx-btn" href="#manifiesto">Conoce mi visión</a>
         <a class="hx-btn2" href="./conferencias/solicitar/">Invítame a tu evento →</a>
@@ -2617,9 +2636,10 @@
 </section>
 <div class="hx-cifras" aria-label="En cifras">
   <div class="shell">
-    <div><b>3,000<sup>+</sup></b><span>jóvenes en la red IMPACTO</span></div>
-    <div><b>30</b><span>estados de la República</span></div>
-    <div><b>100<sup>+</sup></b><span>conferencias en 6 estados</span></div>
+    <a href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><b>3,000<sup>+</sup></b><span>jóvenes en la red IMPACTO</span><i>Conoce la red ↗</i></a>
+    <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b>120<sup>+</sup></b><span>municipios con presidencia IMPACTO</span><i>Ver el mapa ↗</i></a>
+    <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b>30</b><span>estados de la República</span><i>Ver presencia ↗</i></a>
+    <a href="./conferencias/"><b>100<sup>+</sup></b><span>conferencias en 6 estados</span><i>Ver conferencias →</i></a>
   </div>
 </div>
 <div class="medios-strip">
@@ -3341,7 +3361,7 @@
     var body = document.body;
 
     var stored = null;
-    try { stored = localStorage.getItem('bo-theme'); } catch (e) {}
+    try { stored = null; } catch (e) {}
     if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
     var btn = document.getElementById('themeToggle');
     if (btn) btn.addEventListener('click', function () {

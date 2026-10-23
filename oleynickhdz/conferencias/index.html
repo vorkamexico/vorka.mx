@@ -27,7 +27,9 @@
 <meta name="twitter:description" content="+100 conferencias en 6 estados sobre liderazgo, juventud e impacto.">
 <meta name="twitter:image" content="https://vorka.mx/oleynickhdz/conferencias/hero.jpg">
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231A1A1A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7B33E'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
+<link rel="apple-touch-icon" href="/oleynickhdz/img/apple-touch-icon.png">
 
 <script type="application/ld+json">
 {
@@ -85,7 +87,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root {
     --paper:#FFFFFF; --paper-2:#F5F5F1; --paper-3:#EBEBE6;
@@ -95,7 +97,7 @@
     --dark-bg:#111111; --dark-bg-2:#1A1A1B; --dark-fg:#F5F5F0;
     --c-green:#6FAE3B; --c-blue:#2E88C8; --c-purple:#8446A8;
     --c-red:#D63F4E; --c-orange:#E9782C;
-    --font:'Manrope','Helvetica Neue',system-ui,sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --max:1180px; --gutter:clamp(20px,5vw,64px); --header-h:68px;
   }
   @media (prefers-color-scheme:dark) {
@@ -519,6 +521,30 @@
   .stat .num { font-family: var(--display); font-weight: 400 !important; color: var(--ink) !important; font-size: clamp(2.6rem, 5vw, 4rem) !important; }
   .stat .label { color: var(--muted) !important; }
   .site-header .nav-right { margin-left: auto; }
+  /* Letra de Vorka para todo el texto (los títulos siguen en Anton) y enlace de accesibilidad bien escondido */
+  body, button, input, select, textarea { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .skip-link { top: -200px !important; }
+  .skip-link:focus { top: 0 !important; }
+  /* Portada de conferencias */
+  .cf-hero { position: relative; isolation: isolate; overflow: hidden; min-height: min(92vh, 860px); display: flex; align-items: flex-end; background: #0f0f0f; color: #fff; margin-top: -86px; }
+  .cf-foto { position: absolute; top: 0; right: 0; bottom: 0; z-index: -2; width: min(68%, 1000px); height: 100%; object-fit: cover; object-position: 42% 35%; filter: grayscale(1) contrast(1.1) brightness(.85); }
+  .cf-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #0f0f0f 0%, #0f0f0f 32%, rgba(15,15,15,.75) 52%, rgba(15,15,15,.25) 80%), linear-gradient(180deg, rgba(0,0,0,.4) 0%, transparent 30%, transparent 70%, var(--paper) 100%); }
+  @media (max-width: 760px) { .cf-foto { width: 100%; object-position: 50% 35%; opacity: .55; } .cf-hero::after { background: linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.4) 40%, var(--paper) 100%); } }
+  .cf-in { width: 100%; padding-top: 140px; padding-bottom: clamp(48px, 8vh, 88px); }
+  .cf-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24); backdrop-filter: blur(8px); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .cf-pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .cf-hero h1 { margin: 18px 0 14px; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(3.2rem, 9vw, 8rem); line-height: .9; letter-spacing: .005em; }
+  .cf-hero h1 span { color: var(--accent); }
+  .cf-hero p { margin: 0; max-width: 52ch; font-size: clamp(1rem, 1.4vw, 1.15rem); color: rgba(255,255,255,.82); }
+  .cf-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 26px; }
+  .cf-btn { padding: 15px 26px; border-radius: 999px; background: var(--accent); color: #111; font-weight: 800; font-size: 15px; transition: transform .2s, background .2s; }
+  .cf-btn:hover { transform: translateY(-2px); background: #fff; }
+  .cf-btn2 { font-weight: 700; color: #fff; text-decoration: underline; text-underline-offset: 6px; text-decoration-color: rgba(255,255,255,.4); }
+  .cf-btn2:hover { text-decoration-color: var(--accent); }
+  /* Botón de idioma (el tema sigue al dispositivo) */
+  .lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; min-width: 46px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .06em; transition: border-color .2s, color .2s; }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
 </style>
 </head>
 <body>
@@ -531,44 +557,35 @@
       <span>Brandon Oleynick</span>
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
-      <a href="../">Perfil</a>
+      <a href="../#manifiesto">Manifiesto</a>
       <a href="../#trayectoria">Trayectoria</a>
-      <a href="../#conferencias">Conferencias</a>
-      <a href="#faq">FAQs</a>
+      <a href="../conferencias/">Conferencias</a>
+      <a href="../prensa/">Prensa</a>
+      <a href="../#sesiones">Sesiones</a>
     </nav>
     <div class="nav-right">
       <a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener" class="ig-btn" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
       </a>
       <a href="../#habla" class="cta-mini">Contactar</a>
-      <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
+      <a class="lang-btn" href="../en/" hreflang="en" lang="en" aria-label="Read in English">EN</a>
     </div>
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
-<div class="shell">
-  <section class="hero hero-centered">
-    <div class="hero-dots" aria-hidden="true">
-      <span class="d1"></span>
-      <span class="d2"></span>
-      <span class="d3"></span>
-      <span class="d4"></span>
-      <span class="d5"></span>
-      <span class="d6"></span>
+<!-- ============ HERO (foto a todo lo ancho, como la portada del inicio) ============ -->
+<section class="cf-hero" aria-labelledby="cf-t">
+  <img class="cf-foto" src="hero.jpg" alt="Brandon Oleynick con estudiantes durante una conferencia" width="1200" height="675" fetchpriority="high">
+  <div class="shell cf-in">
+    <span class="cf-pill"><i></i>Conferencias · Agenda 2026 abierta</span>
+    <h1 id="cf-t">+100 conferencias.<br><span>Un mensaje que mueve.</span></h1>
+    <p>Liderazgo juvenil, impacto social y emprendimiento para universidades, gobiernos, foros y empresas.</p>
+    <div class="cf-ctas">
+      <a class="cf-btn" href="solicitar/">Solicitar una conferencia</a>
+      <a class="cf-btn2" href="../prensa/">Kit de prensa →</a>
     </div>
-    <div class="hero-eyebrow">Conferencias</div>
-    <h1>+100 conferencias. <span class="word hl">Un mensaje que mueve.</span></h1>
-    <p class="hero-sub">Liderazgo juvenil, impacto social y emprendimiento para universidades, gobiernos, foros y empresas. Cada conferencia se prepara para tu público.</p>
-    <div class="hero-ctas">
-      <a href="solicitar/" class="btn-primary">
-        Solicitar una conferencia
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-      </a>
-      <a href="/oleynickhdz/prensa/" class="btn-ghost">Kit de prensa</a>
-    </div>
-  </section>
-</div>
+  </div>
+</section>
 
 <!-- ============ STATS STRIP ============ -->
 <div class="stats-strip">
@@ -1031,7 +1048,7 @@
   <div class="shell">
     <div class="foot-top">
       <a class="foot-brand-line" href="../">
-        <span class="mark" aria-hidden="true">BO</span>
+        <span class="mark" aria-hidden="true" style="overflow:hidden;padding:0"><img src="/oleynickhdz/img/avatar.webp" alt="" width="40" height="40" style="width:100%;height:100%;border-radius:50%;object-fit:cover"></span>
         <span>Brandon Oleynick<small>Conferencias · Liderazgo e impacto</small></span>
       </a>
       <a class="foot-primary" href="solicitar/">
@@ -1116,7 +1133,7 @@
   (function(){
     var root = document.documentElement;
     var stored = null;
-    try { stored = localStorage.getItem('bo-theme'); } catch(e){}
+    try { stored = null; } catch(e){}
     if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
     var btn = document.getElementById('themeToggle');
     if (btn) btn.addEventListener('click', function(){

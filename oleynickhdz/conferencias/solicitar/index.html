@@ -16,13 +16,15 @@
 <meta property="og:image" content="https://vorka.mx/oleynickhdz/conferencias/hero.jpg">
 <meta property="og:locale" content="es_MX">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231A1A1A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7B33E'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="64x64" href="/oleynickhdz/img/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/oleynickhdz/img/favicon-192.png">
+<link rel="apple-touch-icon" href="/oleynickhdz/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap">
 <script>
   // Mismo tema que el resto del sitio de Brandon (bo-theme)
-  try { var t = localStorage.getItem('bo-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  try { var t = null; if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
 </script>
 <style>
   :root {
@@ -30,7 +32,7 @@
     --ink:#111111; --ink-soft:#2E2E2E; --muted:#6B6B6B; --faint:#A0A0A0;
     --rule:#E8E8E4; --accent:#F7B33E; --accent-ink:#9A6A12;
     --c-green:#6FAE3B; --c-blue:#2E88C8; --c-purple:#8446A8; --c-red:#D63F4E; --c-orange:#E9782C;
-    --font:'Manrope','Helvetica Neue',system-ui,sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --max:1180px; --gutter:clamp(16px,5vw,56px);
   }
   @media (prefers-color-scheme:dark) {
@@ -180,6 +182,16 @@
   .portada img{filter:grayscale(1) contrast(1.08)}
   .t-cab h2{font-family:'Anton','Impact',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.005em;font-size:clamp(1.7rem,3.2vw,2.4rem)}
   .franja i:nth-child(n){background:var(--accent)}.franja i:nth-child(2){background:var(--c-red)}.franja i:nth-child(4){background:var(--c-green)}
+  /* Letra de Vorka para todo el texto (los títulos siguen en Anton) y enlace de accesibilidad bien escondido */
+  body, button, input, select, textarea { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .skip-link { top: -200px !important; }
+  .skip-link:focus { top: 0 !important; }
+  /* foto a la derecha y más grande: se ve la cara, se va el letrero del fondo */
+  .portada{min-height:clamp(360px,56vh,520px)}
+  .portada img{left:auto;right:0;width:min(60%,860px);object-position:52% 30%;transform:scale(1.7);transform-origin:52% 32%}
+  .portada::after{background:linear-gradient(90deg,#0f0f0f 0%,#0f0f0f 26%,rgba(15,15,15,.55) 48%,rgba(15,15,15,.1) 75%),linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 40%,rgba(0,0,0,.55) 100%)}
+  .portada{background:#0f0f0f}
+  @media (max-width:760px){.portada img{width:100%;object-position:62% 30%;transform:scale(1.25)}.portada::after{background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.35) 40%,rgba(0,0,0,.85) 100%)}}
 </style>
 </head>
 <body>
