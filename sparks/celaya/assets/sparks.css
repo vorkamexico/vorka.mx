@@ -127,6 +127,35 @@ a.sp-pill:hover { border-color: var(--line-2); color: var(--fg); }
 .yt-play::after { content: ""; position: absolute; left: 29px; top: 23px; border-left: 20px solid var(--fg); border-top: 13px solid transparent; border-bottom: 13px solid transparent; }
 .video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 22px; }
 
+/* Fotos dentro del artículo: se reparten entre los párrafos */
+.art-body .af { margin: 2em 0; }
+.art-body .af-ancha, .art-body .af-par, .art-body .af-trio, .art-body .af-vert { clear: both; }
+.art-body .af-vert { width: 56%; margin: 2.2em auto; }
+.art-body .af + p { margin-top: 1.1em; }
+.art-body .af-vert img { height: auto; }
+.art-body .af a { display: block; border-radius: 22px; overflow: hidden; background: var(--bg-3); }
+.art-body .af img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.art-body .af a:hover img { transform: scale(1.03); }
+.art-body .af-ancha { margin: 2.2em -40px; }
+.art-body .af-ancha img { height: auto; }
+.art-body .af-lado { width: 44%; margin: .4em 0 1em; }
+.art-body .af-lado img { height: auto; }
+.art-body .af-lado.der { float: right; margin-left: 32px; margin-right: -40px; }
+.art-body .af-lado.izq { float: left; margin-right: 32px; margin-left: -40px; }
+.art-body .af-par { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-left: -40px; margin-right: -40px; }
+.art-body .af-par a { aspect-ratio: 4 / 5; }
+.art-body .af-trio { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; aspect-ratio: 3 / 2; margin-left: -40px; margin-right: -40px; }
+.art-body .af-trio a:first-child { grid-row: 1 / 3; }
+.art-body h2, .art-body .gallery, .art-body .tags, .art-body .share, .art-body .video { clear: both; }
+@media (max-width: 900px) {
+  .art-body .af-ancha, .art-body .af-par, .art-body .af-trio { margin-left: 0; margin-right: 0; }
+  .art-body .af-lado.der, .art-body .af-lado.izq, .art-body .af-vert { float: none; width: 78%; margin: 2em auto; }
+}
+@media (max-width: 600px) {
+  .art-body .af a { border-radius: 16px; }
+  .art-body .af-par, .art-body .af-trio { gap: 6px; }
+  .art-body .af-lado.der, .art-body .af-lado.izq, .art-body .af-vert { width: 86%; }
+}
 .gallery { margin: 2.4em 0 0; }
 .gallery h2 { margin-top: 0; }
 .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
