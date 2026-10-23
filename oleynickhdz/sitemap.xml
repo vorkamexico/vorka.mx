@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://vorka.mx/oleynickhdz/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <image:image>
       <image:loc>https://vorka.mx/oleynickhdz/brandon.jpg</image:loc>
     </image:image>
   </url>
   <url>
     <loc>https://vorka.mx/oleynickhdz/conferencias/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
+    <video:video>
+      <video:thumbnail_loc>https://vorka.mx/oleynickhdz/conferencias/conferencia-portada.jpg</video:thumbnail_loc>
+      <video:title>Conferencia de Brandon Oleynick · ¿Y si tú impactas? 2026</video:title>
+      <video:description>Dinámica con estudiantes en el escenario durante una conferencia de Brandon Oleynick sobre liderazgo juvenil.</video:description>
+      <video:content_loc>https://vorka.mx/oleynickhdz/conferencias/conferencia.mp4</video:content_loc>
+      <video:duration>25</video:duration>
+    </video:video>
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-1.webp</image:loc></image:image>
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-2.webp</image:loc></image:image>
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-3.webp</image:loc></image:image>
@@ -19,11 +27,17 @@
     <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/gallery-6.webp</image:loc></image:image>
   </url>
   <url>
+    <loc>https://vorka.mx/oleynickhdz/prensa/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/brandon.jpg</image:loc></image:image>
+    <image:image><image:loc>https://vorka.mx/oleynickhdz/conferencias/hero.jpg</image:loc></image:image>
+  </url>
+  <url>
     <loc>https://vorka.mx/oleynickhdz/proyecto-social/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
   </url>
   <url>
     <loc>https://vorka.mx/oleynickhdz/servicios/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-22</lastmod>
   </url>
 </urlset>
