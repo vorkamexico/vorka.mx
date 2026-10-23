@@ -37,6 +37,14 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('POST /api/checkout', () => {
+  it('Brindi: no cobra el diseño Gala junto con Premium (ya lo incluye)', async () => {
+    const r = await pedir({ ...base, slug: 'brindi-premium', items: [{ slug: 'brindi-premium' }, { slug: 'brindi-plantilla-premium' }] });
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toContain('ya incluye el diseño Gala');
+    expect(orden()).toHaveLength(0);
+    expect((await pedir({ ...base, slug: 'brindi-celebracion', items: [{ slug: 'brindi-celebracion' }, { slug: 'brindi-plantilla-premium' }] })).status).toBe(200);
+  });
+
   it('crea la orden pending y la sesión de Stripe con el precio de la base', async () => {
     const r = await pedir({ ...base, precio: 1 }); // un precio mandado por el navegador se ignora
     expect(r.status).toBe(200);

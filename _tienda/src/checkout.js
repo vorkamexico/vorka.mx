@@ -88,6 +88,10 @@ export async function checkout(req, env) {
       return error('Para comprar simulacros adicionales primero necesitas el Simulador PAA, con el mismo correo de tu compra.', 403);
     if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
   }
+  // Brindi: el plan Premium ya incluye los diseños premium (Gala); no se cobra dos veces
+  const slugs = items.map(it => it.slug);
+  if (slugs.includes('brindi-premium') && slugs.includes('brindi-plantilla-premium'))
+    return error('El plan Premium ya incluye el diseño Gala. Quítalo de tu compra.');
 
   // Puntos: descuento hasta el saldo disponible, dejando siempre el cobro mínimo de la pasarela (se calcula en crearOrden)
   let puntos = null;

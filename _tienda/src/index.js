@@ -16,13 +16,13 @@ import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
-import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp } from './brindi.js';
+import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp, VARIANTES } from './brindi.js';
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
 import { paginaCuentas } from './cuentas.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
-import { rutasPuntos } from './puntos.js';
+import { rutasPuntos, codigoDe } from './puntos.js';
 import * as retiros from './puntos-retiros.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
@@ -89,6 +89,14 @@ export class Admin extends WorkerEntrypoint {
   comprasApp(email, app) { return comprasApp(this.env, email, app); }
   resumenApp(app, f) { return resumenApp(this.env, app, f); }
   productosApp(app) { return productosApp(this.env, app); }
+  // Liga de Puntos Vorka del anfitrión de una invitación (se crea la primera vez): si un invitado contrata desde el pie, gana puntos
+  async codigoPuntos(email, nombre) {
+    const e = String(email || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) return null;
+    const code = await codigoDe(this.env, e, nombre ? String(nombre).slice(0, 80) : null);
+    await this.env.DB.prepare('INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)').bind(e).run();
+    return code;
+  }
   // Apps por suscripción (Vuelve): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
@@ -225,6 +233,8 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
       if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
+      const brv = url.pathname.match(/^\/tienda\/brindi\/([a-z-]{3,20})(\/?)$/);
+      if (brv && Object.hasOwn(VARIANTES, brv[1]) && brv[1]) return brv[2] ? await paginaBrindi(env, request, url, brv[1]) : Response.redirect(`${url.origin}/tienda/brindi/${brv[1]}/${url.search}`, 301);
       if (url.pathname === '/tienda/estilos.css') return new Response(ESTILOS, { headers: { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=31536000, immutable' } });
       // Portadas (públicas). Solo el prefijo portadas/: los archivos de venta nunca salen por aquí.
       const img = url.pathname.match(/^\/tienda\/img\/(portadas\/[a-z0-9-]+\.(?:jpg|png|webp))$/);

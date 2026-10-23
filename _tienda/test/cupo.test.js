@@ -52,11 +52,11 @@ describe('Cupo en la tienda', () => {
 describe('Brindi o Cupo', () => {
   it('la página de Brindi y la ficha de Cupo explican cuál conviene (la portada de la tienda queda ligera)', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
-    for (const ruta of ['/tienda/brindi/', '/tienda/cupo/']) {
-      const html = await (await pedir(ruta)).text();
-      expect(html, ruta).toContain('¿Brindi o Cupo?');
-      expect(html, ruta).toContain('Regla rápida');
-    }
+    // En Cupo, el bloque completo; en Brindi, una línea al final (antes de comprar distraía)
+    const cupo = await (await pedir('/tienda/cupo/')).text();
+    expect(cupo).toContain('¿Brindi o Cupo?');
+    expect(cupo).toContain('Regla rápida');
+    expect(await (await pedir('/tienda/brindi/')).text()).toContain('es gratis hasta 30 personas');
     expect(await (await pedir('/tienda/cupo/')).text()).toContain('$149 MXN');
   });
 });

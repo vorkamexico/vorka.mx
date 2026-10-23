@@ -6,9 +6,8 @@ import { one, all } from './util.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, navTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
-import { ELEGIR } from './elegir.js';
 
 export const APP = 'brindi';
 const OS = 'https://os.vorka.mx';
@@ -131,31 +130,79 @@ const FAQ = [
 ];
 const VISIBLES_FAQ = 8;
 
-export async function paginaBrindi(env, req, url) {
+// Páginas por tipo de evento (SEO y anuncios): misma ficha, con su título, su demostración y su mensaje de WhatsApp.
+// La principal es '' (/tienda/brindi/); las demás viven en /tienda/brindi/<clave>/ y entran en el sitemap.
+export const VARIANTES = {
+  '': { titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi',
+    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $399 MXN.',
+    h1: 'Tu invitación digital, lista en minutos.', lead: 'Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.',
+    demo: 'demo-boda', evento: 'mi evento' },
+  bodas: { titulo: 'Invitaciones digitales para boda con confirmación por WhatsApp | Brindi',
+    descripcion: 'Invitación digital de boda con sobre que se abre, padres y padrinos, itinerario, mesa de regalos y confirmación por invitado. Créala gratis y paga solo al publicar, desde $399 MXN.',
+    h1: 'La invitación de su boda, digital y con estilo.', lead: 'Con padres y padrinos, itinerario, mesa de regalos y hospedaje. La mandan por WhatsApp, cada invitado confirma los lugares que le reservaron y ustedes saben quién viene.',
+    demo: 'demo-boda', primero: ['demo-boda', 'demo-boda-editorial'], evento: 'mi boda', corta: 'Bodas' },
+  'xv-anos': { titulo: 'Invitaciones digitales para XV años con QR | Brindi',
+    descripcion: 'Invitación digital de XV años con vals, padrinos, cuenta regresiva y galería. Se manda por WhatsApp y cada invitado confirma desde su celular. Créala gratis; pago único desde $399 MXN.',
+    h1: 'Invitaciones digitales para XV años.', lead: 'Con padrinos, cuenta regresiva, itinerario de la noche y galería. La mandas por WhatsApp, cada invitado confirma sus lugares y tú llegas a la fiesta sabiendo quién viene.',
+    demo: 'demo-xv', primero: ['demo-xv'], evento: 'unos XV años', corta: 'XV años' },
+  bautizo: { titulo: 'Invitaciones digitales para bautizo | Brindi',
+    descripcion: 'Invitación digital de bautizo con papás y padrinos, ceremonia y comida, mapa y confirmación de asistencia. Créala gratis y compártela por WhatsApp. Pago único desde $399 MXN.',
+    h1: 'Invitaciones digitales para bautizo.', lead: 'Con papás y padrinos, la ceremonia, la comida y el mapa para llegar. La mandas por WhatsApp y tus invitados confirman desde su celular.',
+    demo: 'demo-bautizo', primero: ['demo-bautizo'], evento: 'un bautizo', corta: 'Bautizo' },
+  graduacion: { titulo: 'Invitaciones digitales para graduación | Brindi',
+    descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Créala gratis y compártela por WhatsApp con un enlace o QR. Pago único desde $399 MXN.',
+    h1: 'Invitaciones digitales para tu graduación.', lead: 'Ceremonia, cena y brindis en una sola invitación. La mandas por WhatsApp, tus invitados confirman y tú sabes cuántos lugares apartar.',
+    demo: 'demo-graduacion', primero: ['demo-graduacion'], evento: 'una graduación', corta: 'Graduación' },
+  posadas: { titulo: 'Invitaciones digitales para posadas y eventos de empresa con QR | Brindi',
+    descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: confirmación por colaborador y acceso con QR en la entrada. Créala gratis; pago único desde $399 MXN.',
+    h1: 'La posada de tu empresa, con invitación y acceso con QR.', lead: 'Para la posada, la cena de fin de año o un lanzamiento. Cada colaborador confirma desde su celular, sabes cuántos van y, con Premium, tu equipo escanea los pases en la entrada.',
+    demo: 'demo-graduacion', primero: ['demo-graduacion', 'demo-boda-editorial'], evento: 'un evento de empresa', corta: 'Posadas y empresas', plan: 'brindi-premium' },
+  organizadores: { titulo: 'Invitaciones digitales para organizadores, salones y fotógrafos | Brindi',
+    descripcion: 'Ofrece invitaciones digitales a tus clientes: 5 eventos Celebración en un paquete y puntos por cada cliente que contrate Brindi con tu liga. Para wedding planners, salones y fotógrafos.',
+    h1: 'Invitaciones digitales para tus clientes.', lead: 'Para wedding planners, salones, fotógrafos y organizadores: armas la invitación de cada evento desde tu cuenta, tus clientes la mandan por WhatsApp y tú ves quién confirma.',
+    demo: 'demo-boda-editorial', primero: ['demo-boda-editorial', 'demo-xv'], evento: 'mis clientes (soy organizador)', corta: 'Organizadores', plan: ORGANIZADOR },
+};
+// Testimonios: SOLO reales, con el permiso por escrito de quien lo dice (nombre como lo autorizó, evento y mes). Vacío = no se muestra la sección.
+// Ej.: { texto: 'Confirmaron 180 de 200 sin que yo persiguiera a nadie.', quien: 'Mariana R.', evento: 'Boda · marzo 2027' }
+const TESTIMONIOS = [];
+// Comparación contra la invitación impresa: SOLO con cotizaciones reales (imprenta, fecha y lo que incluye). null = no se muestra.
+// Ej.: { invitados: 200, impresa_centavos: 0, fuente: 'Cotización de <imprenta>, <ciudad>, <mes año>: impresión, sobres y entrega' }
+const COMPARA_PAPEL = null;
+
+export async function paginaBrindi(env, req, url, clave = '') {
+  const V = VARIANTES[clave] || VARIANTES[''];
+  const ruta = clave ? `/tienda/brindi/${clave}/` : '/tienda/brindi/';
   const { code, cookie } = await refDeVisita(env, req, url);
+  // Quien llega desde el pie de una invitación: la cuenta nueva queda marcada con ese origen (se mide en Diversificación)
+  const APP = `${OS}/brindi/${url.searchParams.get('desde') === 'invitacion' ? '?origen=invitacion' : ''}`;
   const planes = await Promise.all(PLANES.map(async p => ({ ...p, prod: await productoPorSlug(env, p.slug) })));
   const grupos = (await Promise.all(GRUPOS_EXTRA.map(async g => ({ ...g, items: (await Promise.all(g.items.map(async ([slug, titulo, texto]) => ({ slug, titulo, texto, prod: await productoPorSlug(env, slug) })))).filter(x => x.prod) })))).filter(g => g.items.length);
   const extras = grupos.flatMap(g => g.items);
   // Se pueden sumar a un plan en la misma compra (las mejoras no: son para quien ya tiene un plan)
   const conPlan = extras.filter(x => !/mejora/.test(x.slug));
   const org = await productoPorSlug(env, ORGANIZADOR);
+  const gala = extras.find(x => x.slug === 'brindi-plantilla-premium');
   const aLaVenta = planes.some(p => p.prod);
   const rec = planes.find(p => p.recomendado);
   if (rec.prod && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: rec.prod.id, ref_code: code });
   const desde = planes.filter(p => p.prod).map(p => p.prod.precio_centavos).sort((a, b) => a - b)[0];
   const ahorroOrg = org && rec.prod ? rec.prod.precio_centavos * 5 - org.precio_centavos : 0;
   const error = url.searchParams.get('error') || '';
-  const elegido = url.searchParams.get('plan') || rec.slug;
+  const elegido = url.searchParams.get('plan') || (V.plan === ORGANIZADOR && !org ? null : V.plan) || rec.slug;
+  const msgWa = `Hola, tengo dudas sobre Brindi para ${V.evento}.`;
+  const ordenDemos = V.primero ? [...V.primero.map(s => DEMOS.find(d => d[0] === s)).filter(Boolean), ...DEMOS.filter(d => !V.primero.includes(d[0]))] : DEMOS;
   const ld = [{ '@context': 'https://schema.org', '@type': aLaVenta ? 'Product' : 'Service', name: 'Brindi · Invitaciones digitales', ...(aLaVenta ? {} : { serviceType: 'Invitaciones digitales', areaServed: 'MX', provider: { '@type': 'Organization', name: 'Vorka México', url: 'https://vorka.mx/' } }), description: 'Invitaciones digitales con QR para bodas, XV años, cumpleaños y toda celebración: confirmaciones, control de acompañantes y acceso con QR.',
     ...(aLaVenta ? { brand: { '@type': 'Brand', name: 'Brindi' } } : {}), image: [`${OS}/brindi/og/aurora.png`],
     ...(aLaVenta ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: (desde / 100).toFixed(2), highPrice: (Math.max(...planes.filter(p => p.prod).map(p => p.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.filter(p => p.prod).length } } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   { '@context': 'https://schema.org', '@type': 'HowTo', name: 'Cómo hacer tu invitación digital con Brindi', step: TUTORIAL.map(([n, t], i) => ({ '@type': 'HowToStep', position: i + 1, name: n, text: t.replace(/<[^>]+>/g, '') })) }];
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
-  const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`;
+  const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a.replaceAll(`${OS}/brindi/"`, `${APP}"`)}</div></details>`;
+  // Lo que el plan Premium ya incluye no se ofrece como complemento (el diseño Gala)
+  const incluido = slug => slug === 'brindi-plantilla-premium' ? ' data-incluido-en="brindi-premium"' : '';
+  const otras = Object.entries(VARIANTES).filter(([k]) => k && k !== clave);
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/brindi/`, app: 'Brindi' },
-    titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi', ruta: '/tienda/brindi/', imagen: `${OS}/brindi/og/aurora.png`,
-    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $399 MXN.',
+    titulo: V.titulo, ruta, imagen: `${OS}/brindi/og/aurora.png`, descripcion: V.descripcion, whatsappTexto: msgWa,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     frames: [OS],   // demostración interactiva en el celular
@@ -165,55 +212,70 @@ export async function paginaBrindi(env, req, url) {
   <div class="br-hero-t">
     ${navTienda('invitaciones')}
     <span class="br-logo">brindi<i>✦</i></span>
-    <h1 class="br-h1">Tu invitación digital, lista en minutos.</h1>
-    <p class="br-lead">Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.</p>
-    <div class="botones"><a class="btn tinta" href="${OS}/brindi/" rel="noopener">Créala gratis ${FLECHA}</a>${aLaVenta ? '<a class="btn blanco" href="#planes">Ver precios</a>' : ''}</div>
+    <h1 class="br-h1">${esc(V.h1)}</h1>
+    <p class="br-lead">${esc(V.lead)}</p>
+    <div class="botones" id="br-cta"><a class="btn tinta" href="${APP}" rel="noopener">Créala gratis ${FLECHA}</a>${aLaVenta ? '<a class="btn blanco" href="#planes">Ver precios</a>' : ''}</div>
     <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/brindi/">Entra aquí</a></p>
     <p class="br-nota">${aLaVenta ? `Pagas solo cuando la quieras publicar: <b>un pago por evento desde ${precio({ precio_centavos: desde })}</b>, sin mensualidades.` : 'Muy pronto a la venta. Ya puedes crear tu invitación gratis y verla en vista previa.'}</p>
   </div>
-  <div class="br-tel" aria-label="Ejemplo de invitación en un celular"><iframe src="${OS}/i/demo-boda" title="Demostración de una invitación de boda" loading="lazy"></iframe><span class="br-tel-cinta">Toca y explora · demostración</span></div>
+  <div class="br-tel" aria-label="Ejemplo de invitación en un celular"><iframe src="${OS}/i/${V.demo}" title="Demostración de una invitación" loading="lazy"></iframe><span class="br-tel-cinta">Toca y explora · demostración</span></div>
 </div></section>
 
 <section class="t-sec" id="como-funciona"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Cuatro pasos y listo</h2></div>
   <ol class="br-pasos">${PASOS.map(([t, d], i) => `<li class="rv" style="--d:${i * .05}s"><span class="br-num" aria-hidden="true">${i + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
   <details class="br-tuto" id="tutorial"><summary><span>Ver el tutorial paso a paso</span><small>${TUTORIAL.length} pasos · 3 minutos de lectura</small></summary>
-    <ol>${TUTORIAL.map(([t, d]) => `<li><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
-    <p class="br-tuto-fin"><a class="btn tinta" href="${OS}/brindi/" rel="noopener">Empezar mi invitación gratis ${FLECHA}</a></p>
+    <ol>${TUTORIAL.map(([t, d]) => `<li><b>${t}</b><p>${d.replaceAll(`${OS}/brindi/"`, `${APP}"`)}</p></li>`).join('')}</ol>
+    <p class="br-tuto-fin"><a class="btn tinta" href="${APP}" rel="noopener">Empezar mi invitación gratis ${FLECHA}</a></p>
   </details>
 </div></section>
-
+${clave === 'organizadores' ? `
+<section class="t-sec suave" id="organizadores"><div class="marco">
+  <div class="cab rv"><span class="etiqueta">Para organizadores</span><h2 class="h2">Un servicio más para tus clientes, sin trabajo extra</h2></div>
+  <ul class="br-ben">${[['📦', 'Paquete de 5 eventos', `5 eventos Celebración${org ? ` por ${precio(org)}${ahorroOrg > 0 ? `: ahorras ${precio({ precio_centavos: ahorroOrg })} contra comprarlos uno por uno` : ''}` : ''}. Los usas cuando quieras, uno por evento.`],
+    ['🔗', 'Gana con tu liga', 'Con <a href="/tienda/puntos/">Puntos Vorka</a> tienes una liga para recomendar Brindi. Cada cliente que contrata con ella te da del 10% al 30% de lo que pagó en puntos (1 punto = $1 en la tienda).'],
+    ['🤝', 'Te ayudamos con el primero', 'Con la configuración asistida cargamos contigo la lista de invitados de tu primer evento en una videollamada de 30 minutos.']]
+    .map(([i, t, d]) => `<li class="rv"><span aria-hidden="true">${i}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+</div></section>` : `
 <section class="t-sec suave"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Beneficios</span><h2 class="h2">Por qué Brindi</h2></div>
   <ul class="br-ben">${[['💌', 'Se ve increíble', 'Diseños de autor —un sobre que se abre, un arco floral, una portada de revista— que haces tuyos sin saber de diseño.'],
     ['⚡', 'La mandas en segundos', 'Un enlace y un QR para todos, o uno personal por invitado listo para WhatsApp.'], ['🌱', 'Cero impresión', 'Sin imprenta ni mensajería. Si cambia un dato, lo corriges y todos lo ven al instante.'],
     ['✅', 'Sabes quién viene', 'Quién confirma, cuántos son y qué comen, en tiempo real. Con fecha límite y lista de quién falta.'], ['👪', 'Nadie lleva de más', 'Cada invitado confirma solo los lugares que le reservaste.'],
     ['🎟️', 'Entrada ordenada', 'En Premium, cada invitado trae su pase con QR y tu equipo lo escanea en la puerta.']].map(([i, t, d], k) => `<li class="rv" style="--d:${(k % 3) * .05}s"><span aria-hidden="true">${i}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
-</div></section>
+</div></section>`}
 
 <section class="t-sec" id="demos"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Ejemplos</span><h2 class="h2">Ábrelas como si fueras invitado</h2><p class="lead">Son de demostración: puedes tocar todo, las respuestas no se guardan.</p></div>
-  <div class="br-demos">${DEMOS.map(([s, t, d, og]) => `<a class="br-demo rv" href="${OS}/i/${s}" target="_blank" rel="noopener"><img src="${OS}/brindi/og/${og}.png" alt="" loading="lazy" width="1200" height="630"><b>${t}</b><span>${d}</span><span class="flecha">Abrir ${FLECHA}</span></a>`).join('')}</div>
+  <div class="br-demos">${ordenDemos.map(([s, t, d, og]) => `<a class="br-demo rv" href="${OS}/i/${s}" target="_blank" rel="noopener"><img src="${OS}/brindi/og/${og}.webp" alt="" loading="lazy" width="1200" height="630"><b>${t}</b><span>${d}</span>${og === 'gala' ? `<span class="br-demo-nota">Diseño Gala · incluido en Premium${gala ? ` o +${precio(gala.prod)} en otro plan` : ''}</span>` : ''}<span class="flecha">Abrir ${FLECHA}</span></a>`).join('')}</div>
 </div></section>
+${TESTIMONIOS.length ? `
+<section class="t-sec suave" id="testimonios"><div class="marco">
+  <div class="cab rv"><span class="etiqueta">Lo que dicen</span><h2 class="h2">Quienes ya celebraron con Brindi</h2></div>
+  <ul class="br-testi">${TESTIMONIOS.map(t => `<li class="rv"><blockquote>“${esc(t.texto)}”</blockquote><b>${esc(t.quien)}</b><small>${esc(t.evento)}</small></li>`).join('')}</ul>
+</div></section>` : ''}
 
 <section class="t-sec suave" id="planes"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Precios</span><h2 class="h2">Un solo pago por evento</h2><p class="lead">Sin mensualidades. Eliges según cuántos invitados tienes. Precios en pesos con IVA incluido.</p></div>
+  <div class="cab rv"><span class="etiqueta">Precios</span><h2 class="h2">Un solo pago por evento</h2><p class="lead">Sin mensualidades. Créala gratis y paga solo cuando la quieras publicar, según cuántos invitados tienes. Precios en pesos con IVA incluido.</p></div>
   <div class="br-guia" role="group" aria-label="¿Qué plan me conviene?"><b>¿Cuál me conviene?</b>${planes.map(p => `<button type="button" data-ver="${p.slug}"><span>${p.slug === 'brindi-esencial' ? 'Hasta 100 invitados' : p.slug === 'brindi-celebracion' ? 'Boda o XV · hasta 300' : 'Más de 300 o control en la puerta'}</span><em>${p.nombre}</em></button>`).join('')}</div>
   <div class="br-planes">${planes.map(p => `<article class="br-plan${p.recomendado ? ' rec' : ''}" id="plan-${p.slug}">${p.recomendado ? '<span class="br-sello">Recomendado</span>' : ''}<h3>${p.nombre}</h3><p class="br-para">${p.para}</p>
     <p class="br-precio">${p.prod ? `<b>${precio(p.prod)}</b><small>un solo pago</small>` : '<b>Muy pronto</b>'}</p><p class="br-inv">Hasta <b>${p.invitados}</b> invitados</p>
     <ul>${p.items.map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
-    ${p.prod ? `<a class="btn ${p.recomendado ? 'tinta' : 'blanco'}" href="?plan=${p.slug}#comprar" data-plan="${p.slug}">Quiero ${p.nombre}</a>` : ''}</article>`).join('')}</div>
-  <p class="br-gratis">¿No sabes todavía? <a href="${OS}/brindi/" rel="noopener">Créala gratis</a> y decide al publicar. Tu diseño se guarda.</p>
-  ${org ? `<div class="br-org"><div><b>¿Organizas eventos?</b><span>Paquete Organizador: 5 eventos Celebración por ${precio(org)}${ahorroOrg > 0 ? ` (ahorras ${precio({ precio_centavos: ahorroOrg })})` : ''}. Para salones, fotógrafos y planners.</span></div><a class="btn blanco chico" href="?plan=${ORGANIZADOR}#comprar" data-plan="${ORGANIZADOR}">Quiero el paquete</a></div>` : ''}
+    <a class="btn ${p.recomendado ? 'tinta' : 'blanco'}" href="${APP}" rel="noopener">Empezar gratis</a>
+    ${p.prod ? `<a class="br-ya" href="?plan=${p.slug}#comprar" data-plan="${p.slug}">¿Ya la creaste? Paga ${p.nombre} aquí</a>` : ''}</article>`).join('')}</div>
+  <p class="br-gratis">Tu diseño se guarda: <a href="${APP}" rel="noopener">créala gratis</a> y eliges plan al publicar. Si ya creaste tu invitación, el plan se activa solo con el mismo correo.</p>
+  ${org ? `<div class="br-org"><div><b>¿Organizas eventos?</b><span>Paquete Organizador: 5 eventos Celebración por ${precio(org)}${ahorroOrg > 0 ? ` (ahorras ${precio({ precio_centavos: ahorroOrg })})` : ''}. Para salones, fotógrafos y planners.</span></div><span class="br-org-a">${clave === 'organizadores' ? '' : '<a class="btn blanco chico" href="/tienda/brindi/organizadores/">Ver para organizadores</a>'}<a class="btn ${clave === 'organizadores' ? 'tinta' : 'blanco'} chico" href="?plan=${ORGANIZADOR}#comprar" data-plan="${ORGANIZADOR}">Quiero el paquete</a></span></div>` : ''}
+  ${COMPARA_PAPEL && rec.prod ? `<div class="br-papel"><b>Contra la invitación impresa</b><span>Imprimir y repartir ${COMPARA_PAPEL.invitados} invitaciones: ${precio({ precio_centavos: COMPARA_PAPEL.impresa_centavos })}. Brindi Celebración, hasta 300 invitados: ${precio(rec.prod)}.</span><small>${esc(COMPARA_PAPEL.fuente)}</small></div>` : ''}
 </div></section>
 
 ${grupos.length ? `<section class="t-sec" id="complementos"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Complementos</span><h2 class="h2">¿Ya tienes tu invitación? Agrégale lo que te falte</h2><p class="lead">No son necesarios para empezar: tu plan ya trae todo lo básico.</p></div>
+  <details class="br-compl"><summary><span class="etiqueta">Complementos</span><b>¿Ya tienes tu invitación? Agrégale lo que te falte</b><small>Más invitados, más tiempo en línea, subir de plan o que lo hagamos por ti. No son necesarios para empezar.</small></summary>
   <ol class="br-como"><li><i>1</i><span>Compra con el <b>mismo correo</b> de tu cuenta de Brindi</span></li><li><i>2</i><span>Entra a tu invitación → <b>Ajustes</b></span></li><li><i>3</i><span>Toca <b>“Aplicar a este evento”</b></span></li></ol>
   <div class="br-grupos">${grupos.map(g => `<div class="br-grupo"><h3>${g.titulo}</h3>${g.items.map(x => `<div class="br-extra"><div><b>${esc(x.titulo)}</b><span>${esc(x.texto)}</span></div><span class="br-extra-p"><b class="num">${precio(x.prod)}</b><a class="btn blanco chico" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Agregar</a></span></div>`).join('')}</div>`).join('')}</div>
+  </details>
 </div></section>` : ''}
 
-${aLaVenta ? seccionCompra({ titulo: 'Contrata en un minuto', intro: '¿Ya creaste tu invitación gratis? Usa el mismo correo y el plan se activa solo.',
+${aLaVenta ? seccionCompra({ titulo: clave === 'organizadores' ? 'Compra tu paquete' : '¿Ya la creaste? Paga aquí', intro: 'Usa el mismo correo de tu cuenta de Brindi y el plan se activa solo. ¿Todavía no la haces? <a href="' + APP + '">Créala gratis primero</a>: pagas al publicar.',
   pasos: [['Eliges tu plan', 'Y si quieres, le sumas complementos en la misma compra.'], ['Pagas con tarjeta u OXXO', 'Un solo pago, sin mensualidades.'], ['Te llega tu acceso por correo', 'Entras con un toque, sin contraseña.'], ['Terminas y publicas tu invitación', 'Y la compartes por WhatsApp.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Si no has publicado, te devolvemos tu dinero en los primeros 10 días', 'Soporte de personas por correo y WhatsApp'],
   form: `<form class="t-form t-compra" id="form-brindi" method="post" action="/api/checkout" novalidate>
@@ -222,7 +284,7 @@ ${aLaVenta ? seccionCompra({ titulo: 'Contrata en un minuto', intro: '¿Ya creas
       <optgroup label="Planes (para un evento)">${planes.filter(p => p.prod).map(p => opcion(p.prod, `Plan ${p.nombre} · hasta ${p.invitados} invitados`)).join('')}${org ? opcion(org, 'Paquete Organizador · 5 eventos') : ''}</optgroup>
       ${extras.length ? `<optgroup label="Complementos (si ya tienes tu invitación)">${extras.map(x => opcion(x.prod, x.titulo)).join('')}</optgroup>` : ''}</select></div>
     ${conPlan.length ? `<fieldset class="br-suma" id="br-suma" hidden><legend>¿Le agregas algo a tu plan? <small>(opcional, en la misma compra)</small></legend>
-      ${conPlan.map(x => `<label class="t-casilla"><input type="checkbox" name="extra" value="${esc(x.slug)}" data-precio="${x.prod.precio_centavos}"><span><b>${esc(x.titulo)}</b> · ${precio(x.prod)}</span></label>`).join('')}
+      ${conPlan.map(x => `<label class="t-casilla"><input type="checkbox" name="extra" value="${esc(x.slug)}" data-precio="${x.prod.precio_centavos}"${incluido(x.slug)}><span><b>${esc(x.titulo)}</b> · ${precio(x.prod)}</span></label>`).join('')}
       <p class="br-total">Total: <b class="num" id="br-total"></b></p></fieldset>` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Tu correo</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llega tu acceso. Si ya creaste tu invitación gratis, usa ese mismo correo y el plan se activa solo.</small></div>
@@ -232,15 +294,16 @@ ${aLaVenta ? seccionCompra({ titulo: 'Contrata en un minuto', intro: '¿Ya creas
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta u OXXO con Stripe</span></p>
   </form>` }) : ''}
 
-${ELEGIR('brindi')}
-${seccionFaq({ titulo: 'Lo que más nos preguntan', items: FAQ.slice(0, VISIBLES_FAQ).map(faq).join(''), pie: `<details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>` })}
+${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items: FAQ.slice(0, VISIBLES_FAQ).map(faq).join(''), pie: `<details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>` })}
 
-${await masTienda(env, 'invitaciones')}
 <section class="t-sec"><div class="marco">
+  <p class="br-cupo">¿Es algo rápido o informal, como una fiesta o un taller? <a href="/tienda/cupo/">Cupo</a> es gratis hasta 30 personas.</p>
+  <nav class="br-tipos" aria-label="Brindi por tipo de evento"><b>Brindi para:</b>${otras.map(([k, v]) => `<a href="/tienda/brindi/${k}/">${esc(v.corta)}</a>`).join('')}${clave ? '<a href="/tienda/brindi/">Todas las celebraciones</a>' : ''}</nav>
   <div class="br-confianza">${[['Pago seguro', 'Stripe procesa el pago; nunca vemos tu tarjeta. Factura disponible escribiendo a hola@vorka.mx.'], ['Tus datos, tuyos', 'Invitaciones fuera de Google por defecto, enlaces con códigos aleatorios y borrado cuando tú quieras.'],
     ['Soporte de personas', 'Escríbenos desde tu panel o a hola@vorka.mx. Respondemos en horario laboral de México.'], ['Respaldo', 'Brindi es una marca desarrollada por Vorka México.']].map(([t, d]) => `<div><b>${t}</b><p>${d}</p></div>`).join('')}</div>
   <p class="t-nota t-legal"><a href="/legal/brindi/">Condiciones de Brindi</a> · <a href="/legal/brindi/privacidad/">Aviso de privacidad</a> · <a href="/legal/brindi/privacidad-invitados/">Privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
 </div></section>
+<div class="t-barra br-barra" id="barra-brindi"><div><b>Créala gratis</b><small>Pagas solo al publicar</small></div><a class="btn tinta chico" href="${APP}" rel="noopener">Empezar ${FLECHA}</a></div>
 </div>`,
   });
 }
@@ -294,25 +357,41 @@ const CSS = `
 .br-extra-p{display:flex;align-items:center;justify-content:space-between;gap:10px}.br-extra-p b{color:var(--fg);font-size:18px}
 .br-despues{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;color:var(--fg-2);font-size:13.5px}.br-despues li{display:flex;align-items:center;gap:6px}.br-despues i{font-style:normal;font-weight:800;font-size:11px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--br-champan);color:var(--br-vino-t)}
 .br-suma{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:0;display:grid;gap:8px}.br-suma legend{font-weight:700;padding:0 4px}.br-suma legend small{font-weight:500;color:var(--fg-2)}.br-suma .t-casilla{margin:0}.br-total{margin:4px 0 0;font-size:15px}.br-total b{font-size:18px}
+.br-ya{justify-self:center;font-size:14px;color:var(--fg-2);text-decoration:underline;text-underline-offset:3px}
+.br-org-a{display:flex;flex-wrap:wrap;gap:8px}
+.br-demo-nota{font-size:13px!important;color:var(--br-vino-t)!important;font-weight:600}
+.br-testi{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}.br-testi li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.br-testi blockquote{margin:0 0 10px;font:italic 500 19px/1.4 Fraunces,Georgia,serif}.br-testi small{display:block;color:var(--fg-2)}
+.br-papel{margin-top:16px;display:grid;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}.br-papel small{color:var(--fg-2)}
+.br-compl>summary{cursor:pointer;list-style:none;display:grid;gap:6px;padding:4px 0 8px}.br-compl>summary::-webkit-details-marker{display:none}.br-compl>summary b{font-size:clamp(22px,3vw,28px);letter-spacing:-.02em;color:var(--fg)}.br-compl>summary b::after{content:" ↓";color:var(--br-vino-t)}.br-compl[open]>summary b::after{content:" ↑"}.br-compl>summary small{color:var(--fg-2);font-size:15px}.br-compl[open]>summary{margin-bottom:18px}
+.br-cupo{margin:0 0 14px;color:var(--fg-2)}.br-cupo a{color:var(--br-vino-t);font-weight:700}
+.br-tipos{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 22px}.br-tipos a{border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;font-size:14px;color:var(--fg);text-decoration:none}
+.br-barra.oculta{transform:translateY(140%);opacity:0;pointer-events:none}
 .br-mas{margin-top:10px}.br-mas>summary{cursor:pointer;font-weight:700;color:var(--br-vino-t);padding:10px 0}
 .br-confianza{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.br-confianza div{border-top:2px solid var(--br-vino);padding-top:10px}.br-confianza p{margin:4px 0 0;color:var(--fg-2);font-size:15px}
 [data-tema="oscuro"] .br{--br-vino-t:#E796B5;--br-champan:#231B1F;--br-oro:#D8AE58}
 [data-tema="oscuro"] .br-logo{color:#E796B5}[data-tema="oscuro"] .br-plan.rec,[data-tema="oscuro"] .br-guia button.si{border-color:#E796B5}[data-tema="oscuro"] .br-plan.si{outline-color:#E796B5}`;
 
 const SCRIPT = `(function(){
+  // Botón fijo en celular: "Créala gratis" se esconde mientras se ven los botones de arriba o el formulario de pago
+  var barra=document.getElementById('barra-brindi');
+  if(barra&&'IntersectionObserver' in window){ var vistos=new Set(); var io=new IntersectionObserver(function(es){ es.forEach(function(e){ e.isIntersecting?vistos.add(e.target):vistos.delete(e.target); }); barra.classList.toggle('oculta',vistos.size>0); });
+    ['br-cta','form-brindi'].forEach(function(id){ var el=document.getElementById(id); if(el) io.observe(el); }); }
   document.querySelectorAll('[data-ver]').forEach(function(b){ b.addEventListener('click',function(){
     document.querySelectorAll('[data-ver]').forEach(function(x){ x.classList.toggle('si', x===b); });
     document.querySelectorAll('.br-plan').forEach(function(p){ p.classList.toggle('si', p.id==='plan-'+b.dataset.ver); });
     var p=document.getElementById('plan-'+b.dataset.ver); if(p) p.scrollIntoView({behavior:'smooth',block:'center'});
   }); });
   var f=document.getElementById('form-brindi'); if(!f||!window.fetch) return;
-  document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ var s=document.getElementById('slug'); if(!s) return; e.preventDefault(); s.value=a.dataset.plan; document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
+  document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ var s=document.getElementById('slug'); if(!s) return; e.preventDefault(); s.value=a.dataset.plan; s.dispatchEvent(new Event('change')); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
   // Complementos en la misma compra: solo cuando lo elegido es un plan
   var suma=document.getElementById('br-suma'), tot=document.getElementById('br-total');
   function esPlan(){ return /^brindi-(esencial|celebracion|premium)$/.test(f.slug.value); }
   function extrasElegidos(){ return suma&&esPlan()?[].slice.call(suma.querySelectorAll('input[name=extra]:checked')):[]; }
   function precioDe(){ var o=f.slug.options[f.slug.selectedIndex]; return o?+o.dataset.precio||0:0; }
-  function total(){ if(!suma) return; suma.hidden=!esPlan(); var c=precioDe(); extrasElegidos().forEach(function(x){ c+=+x.dataset.precio; }); tot.textContent='$'+(c/100).toLocaleString('es-MX')+' MXN'; }
+  function total(){ if(!suma) return; suma.hidden=!esPlan();
+    // Lo que el plan ya incluye (Gala en Premium) no se ofrece ni se cobra
+    [].forEach.call(suma.querySelectorAll('[data-incluido-en]'),function(x){ var dentro=x.dataset.incluidoEn===f.slug.value; x.closest('label').hidden=dentro; if(dentro) x.checked=false; });
+    var c=precioDe(); extrasElegidos().forEach(function(x){ c+=+x.dataset.precio; }); tot.textContent='$'+(c/100).toLocaleString('es-MX')+' MXN'; }
   f.slug.addEventListener('change',total); if(suma) suma.addEventListener('change',total); total();
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }

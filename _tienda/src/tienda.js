@@ -9,6 +9,7 @@ import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 import { contarVisita } from './puntos.js';
+import { VARIANTES } from './brindi.js';
 import { temporadaActual, decoracion } from './temporadas.js';
 
 const SITIO = 'https://vorka.mx';
@@ -123,10 +124,10 @@ function vista(p, url, desdeBrindi) {
 
 // Secciones a dos columnas en computadora (en celular, una debajo de otra): así no queda una columna angosta con vacío a los lados.
 // Preguntas frecuentes: a la izquierda el título y cómo contactarnos; a la derecha las preguntas
-export const seccionFaq = ({ titulo = 'Antes de comprar', items, pie = '', suave = false }) => `<section class="t-sec${suave ? ' suave' : ''}" id="ayuda"><div class="marco t-dos">
+export const seccionFaq = ({ titulo = 'Antes de comprar', items, pie = '', suave = false, whatsappTexto = '' }) => `<section class="t-sec${suave ? ' suave' : ''}" id="ayuda"><div class="marco t-dos">
   <div class="t-dos-a"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2">${titulo}</h2>
     <p class="t-dos-txt">¿No encuentras tu respuesta? Te contesta una persona del equipo, en horario laboral de México.</p>
-    <div class="t-contacto"><a class="btn blanco chico" href="mailto:hola@vorka.mx">Escríbenos</a><a class="btn blanco chico" href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a></div></div>
+    <div class="t-contacto"><a class="btn blanco chico" href="mailto:hola@vorka.mx">Escríbenos</a><a class="btn blanco chico" href="${WHATSAPP}${whatsappTexto ? `?text=${encodeURIComponent(whatsappTexto)}` : ''}" target="_blank" rel="noopener">WhatsApp</a></div></div>
   <div class="t-dos-b"><div class="t-faq">${items}</div>${pie}</div>
 </div></section>`;
 // Compra: a la izquierda qué pasa después y las garantías; a la derecha el formulario
@@ -405,6 +406,7 @@ export async function sitemapTienda(env) {
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
     `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
+    ...Object.keys(VARIANTES).filter(Boolean).map(k => `<url><loc>${SITIO}/tienda/brindi/${k}/</loc><priority>0.8</priority></url>`),   // por tipo de evento
     // Varios productos comparten página (Brindi): cada ruta va una sola vez
     // Si el producto tiene página propia (p. ej. /simulador-paa/), en el sitemap va esa (es la canónica)
     ...ps.map(p => p.contenido.acceso?.ruta

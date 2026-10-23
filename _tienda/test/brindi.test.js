@@ -53,7 +53,8 @@ describe('Brindi en la tienda', () => {
     expect(html).not.toContain('Brindi · Plan Premium');
     expect(html.match(/class="t-card-img" href="\/tienda\/brindi\/"/g)).toHaveLength(1);
     const mapa = await (await pedir('/tienda/sitemap.xml')).text();
-    expect(mapa.match(/\/tienda\/brindi\//g)).toHaveLength(1);
+    expect(mapa.match(/\/tienda\/brindi\/<\/loc>/g)).toHaveLength(1);
+    for (const k of ['bodas', 'xv-anos', 'bautizo', 'graduacion', 'posadas', 'organizadores']) expect(mapa, k).toContain(`/tienda/brindi/${k}/</loc>`);
   });
 
   it('el correo de compra lleva a os.vorka.mx con el texto de Brindi', async () => {
@@ -120,13 +121,14 @@ describe('Brindi en la tienda', () => {
     expect(compras[0].items.map(x => x.slug).sort()).toEqual(['brindi-100-invitados', 'brindi-celebracion', 'brindi-configuracion-asistida']);
   });
 
-  it('navegar la tienda: barra de líneas, "Sigue explorando" y complementos para sumar al plan', async () => {
+  it('navegar la tienda: barra de líneas, sin "Sigue explorando" (distrae al que organiza su evento) y complementos para sumar al plan', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1");
     const html = await (await pedir('/tienda/brindi/')).text();
     expect(html).toContain('class="t-nav-tienda"');
     expect(html).toMatch(/href="\/tienda\/brindi\/" aria-current="page"/);
-    expect(html).toContain('Sigue explorando');
-    expect(html).not.toMatch(/class="t-mas[\s\S]*href="\/tienda\/brindi\/"[\s\S]*class="br-confianza/);   // no se sugiere a sí misma
+    expect(html).not.toContain('Sigue explorando');
+    expect(html).not.toContain('Regla rápida');   // Brindi o Cupo queda en una línea
+    expect(html).toContain('href="/tienda/cupo/">Cupo</a> es gratis hasta 30 personas');
     expect(html).toContain('id="br-suma"');
     expect(html).toContain('value="brindi-100-invitados" data-precio="14900"');
     expect(html).toContain('<option value="brindi-celebracion" data-precio="59900" selected');
@@ -134,5 +136,55 @@ describe('Brindi en la tienda', () => {
     const cupo = await (await pedir('/tienda/cupo/')).text();
     expect(cupo).toContain('Sigue explorando');
     expect(cupo).toMatch(/href="\/tienda\/cupo\/" aria-current="page"/);
+  });
+
+  it('el camino principal es crearla gratis: botón fijo en celular, planes que llevan a la app y el pago para quien ya la creó', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
+    const html = await (await pedir('/tienda/brindi/')).text();
+    expect(html).toContain('id="barra-brindi"');
+    expect(html.match(/>Empezar gratis</g)).toHaveLength(3);
+    expect(html).toContain('¿Ya la creaste? Paga Premium aquí');
+    expect(html).toContain('¿Ya la creaste? Paga aquí');
+    expect(html).toContain('<details class="br-compl">');   // complementos plegados
+    expect(html).toContain('/brindi/og/gala.webp');
+    expect(html).toContain('Diseño Gala · incluido en Premium o +$149 MXN en otro plan');
+    // Gala no se ofrece junto con Premium (ya lo incluye)
+    expect(html).toContain('value="brindi-plantilla-premium" data-precio="14900" data-incluido-en="brindi-premium"');
+  });
+
+  it('el WhatsApp de la página habla de Brindi, no de la consultoría', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
+    const html = await (await pedir('/tienda/brindi/bodas/')).text();
+    const msg = encodeURIComponent('Hola, tengo dudas sobre Brindi para mi boda.');
+    expect(html.split(`wa.me/528117804869?text=${msg}`).length - 1).toBe(2);   // preguntas frecuentes y pie
+    expect(html).not.toContain('ya%20decid%C3%AD%20avanzar');
+  });
+
+  it('páginas por tipo de evento: título, demostración y canónica propios; las desconocidas no existen', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
+    const xv = await (await pedir('/tienda/brindi/xv-anos/')).text();
+    expect(xv).toContain('<title>Invitaciones digitales para XV años con QR | Brindi</title>');
+    expect(xv).toContain('<link rel="canonical" href="https://vorka.mx/tienda/brindi/xv-anos/">');
+    expect(xv).toContain('<iframe src="https://os.vorka.mx/i/demo-xv"');
+    const org = await (await pedir('/tienda/brindi/organizadores/')).text();
+    expect(org).toContain('<option value="brindi-paquete-organizador" data-precio="249000" selected');
+    expect(org).toContain('Gana con tu liga');
+    expect(org).toContain('Compra tu paquete');
+    const pos = await (await pedir('/tienda/brindi/posadas/')).text();
+    expect(pos).toContain('<option value="brindi-premium" data-precio="129000" selected');
+    expect((await pedir('/tienda/brindi/bodas')).status).toBe(301);
+    expect((await pedir('/tienda/brindi/xyz/')).status).not.toBe(200);
+  });
+
+  it('quien llega desde el pie de una invitación crea su cuenta marcada con ese origen', async () => {
+    const html = await (await pedir('/tienda/brindi/?desde=invitacion&utm_source=invitacion')).text();
+    expect(html).toContain('href="https://os.vorka.mx/brindi/?origen=invitacion"');
+  });
+
+  it('codigoPuntos: la liga del anfitrión se crea una vez y se reutiliza', async () => {
+    const a = await A.codigoPuntos('Mariana@Mail.com', 'Mariana Robles');
+    expect(a).toMatch(/^MARIANAR[A-Z0-9]{2,8}$/);
+    expect(await A.codigoPuntos('mariana@mail.com', 'Otra')).toBe(a);
+    expect(await A.codigoPuntos('no-es-correo', 'X')).toBeNull();
   });
 });
