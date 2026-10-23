@@ -11,7 +11,7 @@
 <meta name="format-detection" content="telephone=yes">
 
 <title>Brandon Oleynick · Youth Leader and Speaker from Mexico</title>
-<meta name="description" content="Official site of Brandon Oleynick, youth leader and speaker from Celaya, Mexico. Founder and national president of Juventudes Impactando México (3,000+ young changemakers in 120+ municipalities) and founder of Vorka México.">
+<meta name="description" content="Official site of Brandon Oleynick, youth leader and speaker from Celaya, Mexico. Founder and national president of Juventudes Impactando México (3,000+ young changemakers in 121 municipalities) and founder of Vorka México.">
 <meta name="keywords" content="Brandon Oleynick, Brandon Oleynick Hernández, oleynickhdz, líder social juvenil, activista juvenil, participación de las juventudes, Juventudes Impactando México, Vorka México, Oleynick Group, mentoría liderazgo, consultoría estratégica, conferencias liderazgo México, asesoría joven emprendedor, Celaya Guanajuato, Tec de Monterrey, impacto social México">
 
 <link rel="canonical" href="https://vorka.mx/oleynickhdz/en/">
@@ -23,12 +23,12 @@
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="Brandon Oleynick">
 <meta property="og:title" content="Brandon Oleynick · Youth Leader and Speaker">
-<meta property="og:description" content="Founder of Juventudes Impactando México: 3,000+ young changemakers, 120+ municipalities, 30 states, 100+ talks.">
+<meta property="og:description" content="Founder of Juventudes Impactando México: 3,000+ young changemakers, 121 municipalities, 30 states, 100+ talks.">
 <meta property="og:url" content="https://vorka.mx/oleynickhdz/en/">
 <meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Brandon Oleynick: 3,000+ jóvenes, 120+ municipios, 30 estados y 100+ conferencias">
+<meta property="og:image:alt" content="Brandon Oleynick: 3,000+ young changemakers, 121 municipalities, 30 states, 100+ talks">
 <meta property="og:locale" content="en_US">
 <meta property="profile:first_name" content="Brandon">
 <meta property="profile:last_name" content="Oleynick">
@@ -628,7 +628,7 @@
     .hx::after { height: 220px; }
     .hx-nombre { position: relative; top: auto; }
     .hx-foto { position: relative; display: block; left: auto; margin: -20vw auto 0; transform: none; height: auto; width: min(86%, 460px); }
-    .hx-foto { -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 96%); mask-image: linear-gradient(180deg, #000 62%, transparent 96%); }
+    .hx-figura .hx-foto { -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 96%); mask-image: linear-gradient(180deg, #000 62%, transparent 96%); }
     .hx-frente { margin-top: -70px; }
     .hx-izq { max-width: none; }
     .hx-cifras .shell { gap: 12px; }
@@ -2284,7 +2284,7 @@
     .hx-nombre, .hx-izq, .hx-der {
       animation: rise 800ms cubic-bezier(.2,.7,.2,1) both;
     }
-    .hx-foto { animation: aparece 900ms ease 120ms both; } .hx-izq { animation-delay: 320ms; } .hx-der { animation-delay: 420ms; }
+    .hx-figura { animation: aparece 900ms ease 120ms both; } .hx-izq { animation-delay: 320ms; } .hx-der { animation-delay: 420ms; }
     @keyframes aparece { from { opacity: 0; } to { opacity: 1; } }
     .hero h1 { animation-delay: 80ms; }
     .hero-lede { animation-delay: 200ms; }
@@ -2569,6 +2569,24 @@
   .en-pie .shell { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
   .en-pie a:hover { color: var(--accent); }
   @media (max-width: 760px) { .en-contacto { grid-template-columns: 1fr; } }
+  /* ---- Cifras como etiquetas de colores alrededor de la silueta ---- */
+  .hx-figura { position: absolute; z-index: -1; left: 50%; margin-left: calc(var(--ancho) * .1); bottom: 0; transform: translateX(-50%); height: min(84vh, 860px); aspect-ratio: 1000 / 1521; isolation: isolate; }
+  .hx-figura .hx-foto { position: relative !important; left: auto !important; margin: 0 !important; transform: none !important; height: 100% !important; width: auto !important; z-index: 0; }
+  .hx-tag { position: absolute; z-index: 1; display: inline-flex; align-items: baseline; gap: 7px; padding: 11px 18px; border-radius: 999px; color: #fff; font-size: 15px; font-weight: 600; white-space: nowrap; box-shadow: 0 14px 30px -12px rgba(0,0,0,.45); transition: transform .25s; }
+  .hx-tag b { font-family: var(--display); font-weight: 400; font-size: 1.55em; line-height: 1; letter-spacing: .01em; }
+  .hx-tag.atras { z-index: -1; }
+  .hx-tag:hover { transform: translateY(-3px) rotate(0deg) !important; }
+  .t-verde { background: #2BA35A; left: -30%; top: 56%; transform: rotate(-4deg); }
+  .t-rosa { background: #E8478C; right: -26%; top: 14%; transform: rotate(5deg); padding-left: 64px; }
+  .t-azul { background: #2E7FD0; right: -16%; top: 66%; transform: rotate(3deg); }
+  .t-roja { background: #D63F4E; left: -34%; top: 34%; transform: rotate(-6deg); padding-right: 40px; }
+  @media (max-width: 960px) {
+    .hx-figura { position: relative; left: auto; margin: -20vw auto 0; transform: none; height: auto; width: min(86%, 460px); aspect-ratio: auto; }
+    .hx-figura .hx-foto { width: 100% !important; height: auto !important; display: block; }
+    .hx-tag { font-size: 12.5px; padding: 8px 13px; }
+    .hx-tag.atras { z-index: 1; }
+    .t-verde { left: -6%; top: 56%; } .t-rosa { right: -5%; top: 22%; padding-left: 13px; } .t-azul { right: -4%; top: 68%; } .t-roja { left: -6%; top: 40%; padding-right: 13px; }
+  }
 </style>
 </head>
 <body>
@@ -2627,7 +2645,13 @@
 <section class="hx" aria-label="Presentación">
   <div class="hx-luz" aria-hidden="true"></div>
   <h1 class="hx-nombre"><span class="hx-nom">Brandon</span><span class="hx-ape">Oleynick</span></h1>
-  <img class="hx-foto" src="../img/brandon-portada.webp" alt="Brandon Oleynick waving" width="1000" height="1521" fetchpriority="high">
+  <div class="hx-figura">
+    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b data-vivo="municipios">121</b> municipalities</a>
+    <a class="hx-tag t-roja atras" href="#conferencias"><b>100+</b> talks</a>
+    <img class="hx-foto" src="../img/brandon-portada.webp" alt="Brandon Oleynick waving" width="1000" height="1521" fetchpriority="high">
+    <a class="hx-tag t-verde" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><b>3,000+</b> young changemakers</a>
+    <a class="hx-tag t-azul" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b data-vivo="estados">30</b> states</a>
+  </div>
   <div class="shell hx-frente">
     <div class="hx-izq">
       <p class="hx-lede"><strong>Youth leader.</strong><br>Founder of <a class="hx-org" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Juventudes Impactando México</a> (Youth Impacting Mexico) and <a class="hx-org" href="https://vorka.mx/" target="_blank" rel="noopener">Vorka México</a>.</p>
@@ -2638,14 +2662,6 @@
     </div>
   </div>
 </section>
-<div class="hx-cifras" aria-label="En cifras">
-  <div class="shell">
-    <a href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><b>3,000<sup>+</sup></b><span>young people in the IMPACTO network</span><i>Meet the network ↗</i></a>
-    <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b>120<sup>+</sup></b><span>municipalities with an IMPACTO chapter</span><i>See the map ↗</i></a>
-    <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><b>30</b><span>Mexican states</span><i>See presence ↗</i></a>
-    <a href="../conferencias/"><b>100<sup>+</sup></b><span>talks in 6 states</span><i>See talks →</i></a>
-  </div>
-</div>
 <div class="medios-strip">
   <div class="shell">
     <span class="ms-k">In the media</span>
@@ -3089,6 +3105,14 @@ document.querySelectorAll('.reveal-section .principio').forEach(function (c) {
   c.addEventListener('click', t);
   c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t(); } });
 });
+</script>
+<script>
+// Municipios y estados en vivo (los mismos que muestra soyimpacto.org)
+fetch('https://voluntarios.soyimpacto.org/api/publico/presencia').then(function (r) { return r.json(); }).then(function (d) {
+  if (!d || !d.total_municipios) return;
+  document.querySelectorAll('[data-vivo="municipios"]').forEach(function (e) { e.textContent = d.total_municipios.toLocaleString('en-US'); });
+  document.querySelectorAll('[data-vivo="estados"]').forEach(function (e) { e.textContent = (d.estados || []).length; });
+}).catch(function () {});
 </script>
 </body>
 </html>
