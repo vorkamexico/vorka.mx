@@ -1534,7 +1534,7 @@
   /* ============ CONFERENCIAS ============ */
   .conf-card {
     background: #1A1A1A;
-    color: var(--paper);
+    color: #F5F5F0;   /* fondo siempre oscuro: texto siempre claro (con var(--paper) desaparecía en modo oscuro) */
     border-radius: 20px;
     padding: clamp(36px, 5vw, 56px);
     display: grid;
@@ -1586,7 +1586,7 @@
     line-height: 1.05;
     letter-spacing: -0.03em;
     margin: 0 0 18px;
-    color: var(--paper);
+    color: #F5F5F0;
     text-wrap: balance;
   }
   .conf-title .a-o { color: var(--c-orange); }
@@ -2252,6 +2252,56 @@
   /* Ensure images never overflow */
   img, svg, video { max-width: 100%; height: auto; }
 
+
+
+  .nl-lado { position: relative; z-index: 1; min-width: 0; }
+  .nl-acepto { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0 0; font-size: 12.5px; line-height: 1.5; color: rgba(255, 255, 255, .6); cursor: pointer; }
+  .nl-acepto input { margin: 2px 0 0; accent-color: var(--accent); flex: none; width: 16px; height: 16px; }
+  .nl-note:empty { display: none; }
+  #nl-msg { color: #FFC2B5; border-top: 0; padding-top: 8px; }
+  .nl-lado .nl-sent { margin-top: 0; }
+  /* ============ SESIONES 1:1 (embudo: hero → opciones → agenda en os.vorka.mx) ============ */
+  .hero-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 28px; }
+  .hero-link { font-size: 14.5px; font-weight: 650; color: var(--muted); transition: color .2s; }
+  .hero-link:hover { color: var(--ink); }
+  .ses-intro { max-width: 60ch; margin: 14px 0 0; font-size: 1.05rem; line-height: 1.6; color: var(--muted); }
+  .ses-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 34px; align-items: stretch; }
+  .ses-op { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 28px 26px 26px; border-radius: 22px; background: var(--paper-2); border: 1px solid var(--rule); transition: transform .2s, border-color .2s; }
+  .ses-op:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .ses-op.destacada { background: #141414; border-color: #141414; color: #F5F5F0; }
+  .ses-op.destacada p { color: rgba(245, 245, 240, .72); }
+  .ses-op.destacada .ses-ideal { color: var(--accent); }
+  .ses-op.destacada .ses-precio { color: rgba(245, 245, 240, .72); }
+  .ses-op.destacada .ses-precio b { color: #F5F5F0; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ses-op.destacada { border-color: var(--accent); background: #17140C; } }
+  :root[data-theme="dark"] .ses-op.destacada { border-color: var(--accent); background: #17140C; }
+  .ses-flag { position: absolute; top: -12px; left: 26px; background: var(--accent); color: #141414; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+  .ses-ideal { font-size: 12.5px; font-weight: 700; color: var(--accent-ink, var(--accent)); letter-spacing: .01em; }
+  .ses-op h3 { margin: 0; font-size: 1.45rem; font-weight: 800; letter-spacing: -.025em; line-height: 1.1; }
+  .ses-precio { font-size: 14px; color: var(--muted); }
+  .ses-precio b { font-size: 1.6rem; font-weight: 800; letter-spacing: -.03em; color: var(--ink); margin-right: 2px; }
+  .ses-op p { margin: 4px 0 8px; font-size: 14.5px; line-height: 1.55; color: var(--muted); flex: 1; }
+  .ses-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 999px; background: var(--accent); color: #141414; font-weight: 750; font-size: 14.5px; transition: transform .2s, box-shadow .2s; }
+  .ses-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -14px rgba(247, 179, 62, .9); }
+  .ses-btn svg, .agenda-fija svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .ses-ayuda { margin: 22px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--muted); }
+  .ses-ayuda a { color: var(--ink); font-weight: 650; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+  @media (max-width: 900px) { .ses-grid { grid-template-columns: 1fr; gap: 22px; } .ses-op.destacada { order: -1; } }
+  /* Botón fijo en celular: aparece al pasar el inicio y se esconde en las opciones y el pie */
+  .agenda-fija { display: none; }
+  @media (max-width: 760px) {
+    .agenda-fija { display: inline-flex; position: fixed; left: 16px; right: 16px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 60; align-items: center; justify-content: center; gap: 10px;
+      min-height: 52px; border-radius: 999px; background: var(--accent); color: #141414; font-weight: 750; font-size: 15px; box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .45);
+      transform: translateY(140%); opacity: 0; transition: transform .3s, opacity .3s; pointer-events: none; }
+    .agenda-fija.on { transform: none; opacity: 1; pointer-events: auto; }
+  }
+
+  /* Contraste: el amarillo de marca sobre blanco casi no se lee (1.8:1). En modo claro, los textos amarillos
+     sobre fondo claro usan un ámbar más oscuro (4.4:1); en fondos oscuros y en modo oscuro sigue el amarillo. */
+  :root { --accent-ink: #A86B00; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
+  :root[data-theme="dark"] { --accent-ink: var(--accent); }
+  .eyebrow-y, .section-title .accent, .perfil-body .side .row.c-y .k, .principio .num, .form-item.c-y .level, .habla-direct h5 { color: var(--accent-ink); }
 </style>
 </head>
 <body>
@@ -2267,6 +2317,7 @@
     </a>
     <nav class="nav-main" aria-label="Navegación principal">
       <a href="./" class="is-current" aria-current="page">Perfil</a>
+      <a href="#sesiones">Sesiones</a>
       <a href="#trayectoria">Trayectoria</a>
       <a href="#conferencias">Conferencias</a>
       <a href="#faq">FAQs</a>
@@ -2275,7 +2326,7 @@
       <a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener" class="ig-btn" aria-label="Sígueme en Instagram · @oleynickhdz" title="Sígueme en Instagram · @oleynickhdz">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>
       </a>
-      <a href="#contacto" class="cta-mini">Contactar</a>
+      <a href="https://os.vorka.mx/agendar?o=oleynickhdz" class="cta-mini">Agendar sesión</a>
       <button class="toggle" id="themeToggle" aria-label="Cambiar tema">Tema</button>
       <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileNav">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="13" x2="20" y2="13"/><line x1="4" y1="19" x2="14" y2="19"/></svg>
@@ -2290,10 +2341,10 @@
   </button>
   <div class="m-inner">
     <a href="#perfil">Perfil</a>
+    <a href="#sesiones">Sesiones 1:1</a>
     <a href="#manifiesto">Manifiesto</a>
     <a href="#vision">Mi visión para México</a>
     <a href="#trayectoria">Trayectoria</a>
-    <a href="#sesiones">Sesiones</a>
     <a href="#conferencias">Conferencias</a>
     <a href="#reconocimientos">Reconocimientos</a>
     <a href="#formacion">Formación</a>
@@ -2303,10 +2354,12 @@
     <div style="height: 1px; background: var(--rule); margin: 10px 0;"></div>
     <a href="./servicios/" style="font-size: 15px; color: var(--muted);">Servicios</a>
     <a href="./proyecto-social/" style="font-size: 15px; color: var(--muted);">Proyecto social</a>
-    <a href="#contacto" class="m-cta">Contactar</a>
+    <a href="#habla" style="font-size: 15px; color: var(--muted);">Contacto y alianzas</a>
+    <a href="https://os.vorka.mx/agendar?o=oleynickhdz" class="m-cta">Agendar una sesión</a>
   </div>
 </nav>
 
+<a class="agenda-fija" id="agendaFija" href="https://os.vorka.mx/agendar?o=oleynickhdz" aria-label="Agenda una sesión con Brandon">Agenda una sesión <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
 <a id="top"></a>
 <main id="main">
 
@@ -2323,6 +2376,10 @@
         <span><span class="swatch y" aria-hidden="true"></span>Lic. Relaciones Internacionales</span>
         <span><span class="swatch b" aria-hidden="true"></span>Tec de Monterrey</span>
         <span><span class="swatch g" aria-hidden="true"></span>México</span>
+      </div>
+      <div class="hero-ctas">
+        <a class="sesiones-cta" href="https://os.vorka.mx/agendar?o=oleynickhdz">Agenda una sesión <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        <a class="hero-link" href="#sesiones">Ver opciones y precios ↓</a>
       </div>
     </div>
     <div class="portrait-wrap">
@@ -2360,6 +2417,42 @@
         <p>En los últimos cinco años he construido tres organizaciones —Juventudes Impactando México A.C., Vorka México y Oleynick Group— cada una atendiendo un frente distinto: formación juvenil, consultoría empresarial y dirección corporativa. La lectura de contexto y la formación de nuevos liderazgos son la constante entre ellas.</p>
       </div>
     </div>
+  </section>
+</div>
+
+<!-- SESIONES 1:1 (embudo principal: cada opción lleva directo a la agenda con el servicio ya elegido) -->
+<div class="shell">
+  <section class="section" id="sesiones" aria-labelledby="h-ses">
+    <div class="section-head">
+      <div class="section-eyebrow eyebrow-y">Sesiones 1:1</div>
+      <h2 class="section-title" id="h-ses">Trabajemos juntos en tu <span class="accent">siguiente paso.</span></h2>
+      <p class="ses-intro">Elige la sesión según tu momento. Agendas en línea, pagas por transferencia y recibes la confirmación con tu enlace de videollamada.</p>
+    </div>
+    <div class="ses-grid">
+      <article class="ses-op">
+        <div class="ses-ideal">Ideal si tienes una duda o decisión concreta</div>
+        <h3>Asesoría Express</h3>
+        <div class="ses-precio"><b>$300</b> MXN · 20 min</div>
+        <p>Una segunda opinión, retroalimentación de una idea u orientación puntual para una beca, convocatoria o proyecto.</p>
+        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=express&amp;o=oleynickhdz">Agendar Express <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </article>
+      <article class="ses-op destacada">
+        <div class="ses-flag">Más elegida</div>
+        <div class="ses-ideal">Ideal si quieres avanzar con acompañamiento</div>
+        <h3>Mentoría Mensual</h3>
+        <div class="ses-precio"><b>$900</b> MXN al mes · 45 min</div>
+        <p>Diagnóstico y plan personalizado, seguimiento mes a mes, revisión de CV o proyecto y WhatsApp directo entre sesiones. Después del primer mes, también en pagos quincenales de $450.</p>
+        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=mentoria&amp;o=oleynickhdz">Empezar mi mentoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </article>
+      <article class="ses-op">
+        <div class="ses-ideal">Ideal para proyectos y organizaciones</div>
+        <h3>Consultoría Estratégica</h3>
+        <div class="ses-precio"><b>$600</b> MXN · 60 min</div>
+        <p>Diagnóstico y hoja de ruta, revisión de propuestas, presentaciones institucionales o estrategia de comunicación e impacto.</p>
+        <a class="ses-btn" href="https://os.vorka.mx/agendar?s=consultoria&amp;o=oleynickhdz">Agendar Consultoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </article>
+    </div>
+    <p class="ses-ayuda">¿No sabes cuál elegir? <a href="https://os.vorka.mx/agendar?o=oleynickhdz">La agenda te ayuda a decidir</a> · <a href="./servicios/">Ver detalles de cada servicio</a> · ¿Una conferencia para tu organización? <a href="./conferencias/">Cotízala aquí</a></p>
   </section>
 </div>
 
@@ -2527,26 +2620,6 @@
       </article>
     </section>
   </div>
-</div>
-
-<!-- SESIONES -->
-<div class="shell">
-  <section class="section reveal-section" id="sesiones" aria-labelledby="h-ses">
-    <div class="section-head">
-      <div class="section-eyebrow eyebrow-y">Sesiones</div>
-      <h2 class="section-title" id="h-ses">Si quieres trabajar <span class="accent">juntos.</span></h2>
-      <p class="reveal-intro">Mentoría, asesoría, consultoría y conferencias. Elige tu horario en línea, haz tu transferencia y sube tu comprobante; las conferencias se cotizan por WhatsApp.</p>
-    </div>
-    <div class="reveal-summary-wrap" style="flex-direction: column; gap: 14px; align-items: center;">
-      <a class="sesiones-cta" href="https://os.vorka.mx/agendar?o=oleynickhdz">
-        Agendar una sesión
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-      </a>
-      <a href="./servicios/" style="font-size: 13.5px; font-weight: 600; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; transition: color .2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">
-        o ver precios y detalles →
-      </a>
-    </div>
-  </section>
 </div>
 
 <!-- CONFERENCIAS -->
@@ -2748,7 +2821,7 @@
       <details class="faq-item">
         <summary>¿Cómo agendo una sesión contigo?</summary>
         <div class="answer">
-          <p>Todo se agenda directamente por WhatsApp. Mándame un mensaje con lo que traes en mente y coordinamos día, hora y modalidad. También puedes llenar el formulario en <a href="#habla">Habla conmigo</a> si prefieres ese canal.</p>
+          <p>En línea, en <a href="https://os.vorka.mx/agendar?o=oleynickhdz">os.vorka.mx/agendar</a>: eliges el servicio y tu horario, haces tu transferencia y subes tu comprobante en la misma página. En cuanto lo valido te llega la confirmación con el enlace de la videollamada y un cuestionario breve. Las conferencias se cotizan por WhatsApp.</p>
         </div>
       </details>
 
@@ -2892,24 +2965,24 @@
   <div class="shell">
     <div class="nl-card">
       <div class="nl-body">
-        <div class="nl-eyebrow">Newsletter · Vorka México</div>
-        <h3>Estrategia, cultura y proyectos que están transformando México.</h3>
-        <p>Un correo cada dos semanas con casos reales, aprendizajes y oportunidades para líderes que están construyendo el país. Sin ruido.</p>
+        <div class="nl-eyebrow">Boletín semanal · Vorka México</div>
+        <h3>Historias y proyectos que están transformando México.</h3>
+        <p>Una edición por semana, siete minutos de lectura: historias, proyectos y oportunidades de Vorka México y la Revista Sparks. Sin spam.</p>
       </div>
-      <form class="nl-form" id="newsletter-form" action="https://formsubmit.co/vorkamexico@gmail.com" method="POST">
-        <input type="hidden" name="_subject" value="Nueva suscripción · Newsletter Vorka México">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_next" value="https://vorka.mx/oleynickhdz/?suscrito=1#newsletter">
-        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
-        <input type="email" name="Correo" placeholder="tu@correo.com" aria-label="Correo electrónico" required autocomplete="email">
+      <!-- La suscripción queda en os.vorka.mx › Boletín semanal (la misma lista que vorka.mx), desde donde sale cada edición -->
+      <div class="nl-lado">
+      <form class="nl-form" id="newsletter-form" novalidate>
+        <input type="text" name="sitio" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="email" name="correo" placeholder="tu@correo.com" aria-label="Correo electrónico" required autocomplete="email">
         <button type="submit">
           Suscribirme
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </button>
       </form>
-      <div class="nl-note">Tu suscripción llega directo al equipo de Vorka México (vorkamexico@gmail.com), quien lleva la lista.</div>
-      <div class="nl-sent" id="nl-sent">Listo — se abrió tu cliente de correo con la solicitud lista para Vorka. Solo dale enviar.</div>
+      <label class="nl-acepto"><input type="checkbox" id="nl-acepto"> Acepto recibir comunicaciones de Vorka México. Puedes darte de baja cuando quieras.</label>
+      <div class="nl-note" id="nl-msg" role="status"></div>
+      <div class="nl-sent" id="nl-sent">Listo, te sumamos. Recibirás la próxima edición en tu correo.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2920,8 +2993,8 @@
       <div class="foot-brand">
         <h3>Trabajemos<br>juntos<span class="a-y">.</span></h3>
         <p>Un espacio abierto para conversar sobre proyectos, iniciativas y colaboraciones que dejen algo instalado.</p>
-        <a class="quick-cta" href="https://wa.me/524612242547?text=Hola%20Brandon%2C%20me%20gustar%C3%ADa%20platicar%20contigo." target="_blank" rel="noopener">
-          Escríbeme por WhatsApp
+        <a class="quick-cta" href="https://os.vorka.mx/agendar?o=oleynickhdz">
+          Agenda una sesión
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
         </a>
       </div>
@@ -3019,7 +3092,7 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "¿Cómo agendo una sesión con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "Directamente por WhatsApp o llenando el formulario de Habla conmigo. Brandon confirma disponibilidad y coordina día, hora y modalidad." } },
+    { "@type": "Question", "name": "¿Cómo agendo una sesión con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "En línea, en os.vorka.mx/agendar: eliges el servicio y el horario, pagas por transferencia y subes tu comprobante. Al validarlo llega la confirmación con el enlace de la videollamada. Las conferencias se cotizan por WhatsApp." } },
     { "@type": "Question", "name": "¿Cómo puedo sumarme a Juventudes Impactando México A.C.?", "acceptedAnswer": { "@type": "Answer", "text": "Puedes registrarte en el formulario de ¡Únete al cambio! en menos de tres minutos. Más información en vorka.mx/impacto." } },
     { "@type": "Question", "name": "¿Cómo se solicita una conferencia con Brandon Oleynick?", "acceptedAnswer": { "@type": "Answer", "text": "Escríbele por WhatsApp desde el botón de la sección de Conferencias con el contexto: institución, público, tema y fechas tentativas. Cada intervención se prepara desde el contexto del público." } },
     { "@type": "Question", "name": "¿Brandon trabaja con empresas o solo con personas?", "acceptedAnswer": { "@type": "Answer", "text": "Con ambas. La mentoría suele ser individual, mientras que la consultoría estratégica está diseñada para proyectos, iniciativas y organizaciones incluyendo empresas, ONGs y áreas de gobierno." } },
@@ -3079,13 +3152,40 @@
         var s = document.getElementById('habla-sent');
         if (s) { s.classList.add('on'); setTimeout(function(){ s.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 250); }
       }
-      if (params.get('suscrito') === '1') {
-        var s2 = document.getElementById('nl-sent');
-        if (s2) { s2.classList.add('on'); setTimeout(function(){ s2.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 250); }
-      }
     } catch (e) {}
   })();
 </script>
 
+
+<script>
+// Botón "Agenda una sesión" fijo en celular: visible después del inicio, oculto en Sesiones y en el pie (ahí ya hay botones)
+(function () {
+  var b = document.getElementById('agendaFija'); if (!b || !('IntersectionObserver' in window)) return;
+  var vis = {}, hero = document.querySelector('.hero'), ses = document.getElementById('sesiones'), pie = document.getElementById('contacto');
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { vis[e.target.id || 'hero'] = e.isIntersecting; }); b.classList.toggle('on', !vis.hero && !vis.sesiones && !vis.contacto); });
+  [hero, ses, pie].forEach(function (el) { if (el) io.observe(el); });
+})();
+</script>
+
+<script>
+// Boletín: misma lista que vorka.mx (os.vorka.mx › Boletín semanal)
+(function () {
+  var f = document.getElementById('newsletter-form'); if (!f) return;
+  var msg = document.getElementById('nl-msg'), ok = document.getElementById('nl-sent'), acepto = document.getElementById('nl-acepto');
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var correo = (f.correo.value || '').trim(), btn = f.querySelector('button');
+    msg.textContent = '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) { msg.textContent = 'Escribe un correo válido.'; f.correo.focus(); return; }
+    if (!acepto.checked) { msg.textContent = 'Acepta recibir comunicaciones para suscribirte.'; return; }
+    btn.disabled = true;
+    fetch('https://os.vorka.mx/api/publico/boletin', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ correo: correo, acepto: true, origen: 'vorka.mx/oleynickhdz', sitio: f.sitio.value }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+      .then(function (j) { f.style.display = 'none'; acepto.parentNode.style.display = 'none'; ok.textContent = j.ya ? 'Ya estabas suscrito: te seguirá llegando cada edición.' : 'Listo, te sumamos. Recibirás la próxima edición en tu correo.'; ok.classList.add('on'); })
+      .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo en un momento.'; btn.disabled = false; });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1704,6 +1704,13 @@
   /* Ensure images never overflow */
   img, svg, video { max-width: 100%; height: auto; }
 
+
+  /* Contraste: el amarillo de marca sobre blanco casi no se lee (1.8:1). En modo claro, los textos amarillos
+     sobre fondo claro usan un ámbar más oscuro (4.4:1); en fondos oscuros y en modo oscuro sigue el amarillo. */
+  :root { --accent-ink: #A86B00; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
+  :root[data-theme="dark"] { --accent-ink: var(--accent); }
+  .hero-eyebrow, .eyebrow-y, .section-title .a-y { color: var(--accent-ink); }
 </style>
 </head>
 <body>

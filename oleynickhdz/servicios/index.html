@@ -511,7 +511,7 @@
     top: -16px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--ink);
+    background: #111111;   /* fija: con var(--ink) quedaba clara en modo oscuro y el amarillo no se leía */
     color: var(--accent);
     padding: 6px 14px;
     border-radius: 999px;
@@ -1457,6 +1457,13 @@
   /* Ensure images never overflow */
   img, svg, video { max-width: 100%; height: auto; }
 
+
+  /* Contraste: el amarillo de marca sobre blanco casi no se lee (1.8:1). En modo claro, los textos amarillos
+     sobre fondo claro usan un ámbar más oscuro (4.4:1); en fondos oscuros y en modo oscuro sigue el amarillo. */
+  :root { --accent-ink: #A86B00; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
+  :root[data-theme="dark"] { --accent-ink: var(--accent); }
+  .section-eyebrow, .section-title em, .section-title .accent, .how-step:nth-child(3) .n, .method-card .num, .stars { color: var(--accent-ink); }
 </style>
 </head>
 <body>
