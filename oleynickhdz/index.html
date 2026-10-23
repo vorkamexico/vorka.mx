@@ -2634,6 +2634,15 @@
     .ses-n { grid-area: n; font-size: 1.7rem; align-self: start; padding-top: 4px; } .ses-nom { grid-area: nom; } .ses-desc { grid-area: desc; font-size: 14.5px; } .ses-dato { grid-area: dato; text-align: left; } .ses-ir { grid-area: ir; width: 44px; height: 44px; align-self: start; }
     .ses-dato b { font-size: 1.4rem; } .ses-dato i { display: inline; margin-left: 6px; }
   }
+  /* Paleta de etiquetas: solo colores del sitio (negro, amarillo y papel). El punto amarillo indica cifra en vivo */
+  .hx-tag.t-rosa { background: #141414; color: #F5F5F0; box-shadow: 0 14px 30px -12px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.12); }
+  .hx-tag.t-rosa b { color: #F7B33E; }
+  .hx-tag.t-rosa::before { content: ""; flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: #F7B33E; box-shadow: 0 0 0 0 rgba(247,179,62,.7); animation: envivo 2s ease-out infinite; }
+  @keyframes envivo { 0% { box-shadow: 0 0 0 0 rgba(247,179,62,.7); } 70%, 100% { box-shadow: 0 0 0 8px rgba(247,179,62,0); } }
+  .hx-tag.t-amarilla { background: #F7B33E; color: #141414; }
+  .hx-tag.t-roja { background: #FFFFFF; color: #141414; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35), inset 0 0 0 1px rgba(20,20,20,.08); }
+  .hx-tag.t-roja b { color: #141414; }
+  @media (prefers-reduced-motion: reduce) { .hx-tag.t-rosa::before { animation: none; } }
 </style>
 </head>
 <body>
