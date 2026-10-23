@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#F7B33E">
+<title>Solicita una conferencia · Brandon Oleynick</title>
+<meta name="description" content="Invita a Brandon Oleynick a tu evento: elige formato, tema y público en 6 pasos cortos. Recibes tu folio al instante y una propuesta formal en máximo dos días hábiles.">
+<link rel="canonical" href="https://vorka.mx/oleynickhdz/conferencias/solicitar/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brandon Oleynick">
+<meta property="og:title" content="Solicita una conferencia de Brandon Oleynick">
+<meta property="og:description" content="6 pasos cortos: formato, tema, público, fecha e inversión. Folio al instante.">
+<meta property="og:url" content="https://vorka.mx/oleynickhdz/conferencias/solicitar/">
+<meta property="og:image" content="https://vorka.mx/oleynickhdz/conferencias/hero.jpg">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231A1A1A'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23F7B33E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<script>
+  // Mismo tema que el resto del sitio de Brandon (bo-theme)
+  try { var t = localStorage.getItem('bo-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<style>
+  :root {
+    --paper:#FFFFFF; --paper-2:#F5F5F1; --paper-3:#EBEBE6;
+    --ink:#111111; --ink-soft:#2E2E2E; --muted:#6B6B6B; --faint:#A0A0A0;
+    --rule:#E8E8E4; --accent:#F7B33E; --accent-ink:#9A6A12;
+    --c-green:#6FAE3B; --c-blue:#2E88C8; --c-purple:#8446A8; --c-red:#D63F4E; --c-orange:#E9782C;
+    --font:'Manrope','Helvetica Neue',system-ui,sans-serif;
+    --max:1180px; --gutter:clamp(16px,5vw,56px);
+  }
+  @media (prefers-color-scheme:dark) {
+    :root:not([data-theme="light"]) { --paper:#0F0F10; --paper-2:#191919; --paper-3:#212122; --ink:#F5F5F0; --ink-soft:#D5D5D0; --muted:#8A8A8A; --faint:#666; --rule:#2A2A2C; --accent-ink:#F7B33E; }
+  }
+  :root[data-theme="dark"] { --paper:#0F0F10; --paper-2:#191919; --paper-3:#212122; --ink:#F5F5F0; --ink-soft:#D5D5D0; --muted:#8A8A8A; --faint:#666; --rule:#2A2A2C; --accent-ink:#F7B33E; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  button,input,select,textarea{font:inherit;color:inherit}
+  [hidden]{display:none!important}
+  .shell{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+
+  /* Encabezado */
+  .top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--rule)}
+  .top .shell{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+  .brand-mark{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--paper);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;position:relative}
+  .brand-mark::after{content:"";position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:var(--accent);border:2px solid var(--paper)}
+  .volver{font-size:14px;font-weight:600;color:var(--muted)}
+  .volver:hover{color:var(--ink)}
+
+  /* Portada */
+  .portada{position:relative;isolation:isolate;overflow:hidden;color:#fff;min-height:clamp(300px,46vh,440px);display:flex;align-items:flex-end}
+  .portada img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%;z-index:-2}
+  .portada::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.85) 100%)}
+  .portada .shell{width:100%;padding-top:48px;padding-bottom:clamp(28px,5vh,48px)}
+  .chip-osc{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .chip-osc i{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .portada h1{margin:16px 0 10px;font-size:clamp(2.4rem,6vw,4.4rem);line-height:.98;letter-spacing:-.045em;font-weight:800}
+  .portada h1 span{color:var(--accent)}
+  .portada p{margin:0;max-width:56ch;color:rgba(255,255,255,.82);font-size:clamp(1rem,1.4vw,1.12rem)}
+  .franja{display:flex;height:6px}
+  .franja i{flex:1}
+  .franja i:nth-child(1){background:var(--c-blue)}.franja i:nth-child(2){background:var(--c-purple)}.franja i:nth-child(3){background:var(--accent)}.franja i:nth-child(4){background:var(--c-red)}.franja i:nth-child(5){background:var(--c-green)}
+
+  /* Pasos */
+  .cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:clamp(20px,3vw,40px);align-items:start;padding:clamp(24px,4vh,40px) 0 clamp(60px,9vh,96px)}
+  .barra{height:5px;border-radius:5px;background:var(--paper-3);overflow:hidden;margin-bottom:16px}
+  .barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--c-orange));transition:width .4s cubic-bezier(.2,.8,.2,1)}
+  .pasos{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
+  .pasos button{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;background:none;cursor:pointer;font-size:13.5px;font-weight:700;color:var(--faint)}
+  .pasos button b{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;background:var(--paper-2);border:1px solid var(--rule);color:var(--muted)}
+  .pasos button[aria-current="step"]{color:var(--ink)}
+  .pasos button[aria-current="step"] b{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .pasos button.hecho{color:var(--muted)}
+  .pasos button.hecho b{background:var(--accent);border-color:var(--accent);color:#111}
+  .pasos button:disabled{cursor:default}
+
+  .tarjeta{border:1px solid var(--rule);border-radius:24px;background:var(--paper);padding:clamp(20px,3vw,32px)}
+  .t-cab{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .t-num{width:44px;height:44px;border-radius:14px;background:var(--ink);color:var(--paper);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+  .t-cab h2{margin:0;font-size:clamp(1.3rem,2.4vw,1.7rem);letter-spacing:-.03em;line-height:1.1}
+  .t-sub{margin:0 0 22px;color:var(--muted);font-size:15px}
+  .grupo{margin-top:24px}
+  .grupo:first-of-type{margin-top:0}
+  .etq{display:block;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .etq em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:500}
+
+  /* Opciones para elegir */
+  .ops{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+  .ops.chicas{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .op{position:relative;text-align:left;border:1.5px solid var(--rule);border-radius:16px;background:var(--paper);padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;display:flex;flex-direction:column;gap:4px}
+  .op:hover{border-color:color-mix(in srgb,var(--accent) 60%,var(--rule));transform:translateY(-1px)}
+  .op b{font-size:15px;line-height:1.3}
+  .op small{color:var(--muted);font-size:13px;line-height:1.4}
+  .op .dur{position:absolute;top:12px;right:12px;font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--paper-2);color:var(--muted)}
+  .op[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--paper))}
+  .op[aria-pressed="true"]::after{content:"";position:absolute;bottom:12px;right:12px;width:20px;height:20px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/12px no-repeat}
+  .op[aria-pressed="true"] .dur{background:var(--accent);color:#111}
+  .pildoras{display:flex;flex-wrap:wrap;gap:8px}
+  .pildora{border:1.5px solid var(--rule);background:var(--paper);border-radius:999px;padding:9px 15px;font-size:14px;font-weight:600;cursor:pointer;transition:border-color .15s,background .15s}
+  .pildora:hover{border-color:color-mix(in srgb,var(--accent) 60%,var(--rule))}
+  .pildora[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:#111}
+
+  /* Campos */
+  .campos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .campo{display:flex;flex-direction:column;gap:7px;min-width:0}
+  .campo.todo{grid-column:1/-1}
+  .campo span{font-size:12.5px;font-weight:700;color:var(--muted)}
+  .campo span em{font-style:normal;font-weight:500;opacity:.8}
+  .campo input,.campo select,.campo textarea{width:100%;min-width:0;border:1.5px solid var(--rule);border-radius:14px;padding:13px 14px;background:var(--paper-2);font-size:15.5px;outline:none;transition:border-color .15s,background .15s}
+  .campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--accent);background:var(--paper)}
+  .campo textarea{min-height:110px;resize:vertical}
+  .acepta{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-soft);margin-top:18px}
+  .acepta input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent);flex-shrink:0}
+  .acepta a{text-decoration:underline;text-underline-offset:3px}
+
+  /* Navegación */
+  .nav-pasos{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 26px;border-radius:999px;font-weight:800;font-size:15px;border:0;cursor:pointer;transition:transform .2s,background .2s,color .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-prim{background:var(--accent);color:#111;box-shadow:0 14px 30px -14px rgba(247,179,62,.75)}
+  .btn-prim:hover{background:var(--ink);color:var(--paper)}
+  .btn-prim:disabled{opacity:.6;cursor:wait;transform:none}
+  .btn-sec{background:transparent;color:var(--muted);padding-left:6px;padding-right:6px}
+  .btn-sec:hover{color:var(--ink);transform:none}
+  .cuenta{font-size:13px;font-weight:700;color:var(--muted)}
+  .error{margin:16px 0 0;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--c-red) 12%,transparent);color:var(--c-red);font-weight:700;font-size:14px}
+  .guardado{font-size:12.5px;color:var(--muted);margin:12px 0 0;display:flex;align-items:center;gap:8px}
+  .guardado i{width:7px;height:7px;border-radius:50%;background:var(--c-green)}
+
+  /* Resumen (aside) */
+  .resumen{position:sticky;top:84px;border-radius:24px;background:var(--paper-2);border:1px solid var(--rule);padding:22px}
+  .resumen h3{margin:0 0 4px;font-size:16px;letter-spacing:-.01em}
+  .resumen > p{margin:0 0 16px;font-size:13px;color:var(--muted)}
+  .resumen dl{margin:0;display:grid;gap:12px}
+  .resumen dt{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .resumen dd{margin:2px 0 0;font-size:14.5px;font-weight:600;line-height:1.35}
+  .resumen dd.vacio{color:var(--faint);font-weight:500}
+  .incluye{margin-top:18px;padding-top:16px;border-top:1px solid var(--rule);display:grid;gap:8px;font-size:13px;color:var(--ink-soft)}
+  .incluye span{display:flex;gap:8px;align-items:flex-start}
+  .incluye span::before{content:"";width:8px;height:8px;margin-top:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+
+  /* Revisar */
+  .rev{display:grid;gap:10px}
+  .rev-fila{display:flex;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--rule);border-radius:16px}
+  .rev-fila small{display:block;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .rev-fila p{margin:3px 0 0;font-weight:600;font-size:15px;white-space:pre-line;word-break:break-word}
+  .rev-fila button{border:0;background:none;color:var(--accent-ink);font-weight:800;font-size:13px;cursor:pointer;flex-shrink:0;align-self:flex-start}
+
+  /* Listo */
+  .listo{text-align:center;padding:clamp(30px,5vw,52px) clamp(20px,4vw,40px)}
+  .listo .ok{width:72px;height:72px;border-radius:50%;margin:0 auto 18px;background:var(--c-green);display:flex;align-items:center;justify-content:center}
+  .listo .ok svg{width:34px;height:34px}
+  .listo h2{margin:0 0 10px;font-size:clamp(1.6rem,3.2vw,2.3rem);letter-spacing:-.035em}
+  .listo p{margin:0 auto;max-width:48ch;color:var(--muted)}
+  .folio{display:inline-block;margin:18px 0 6px;padding:10px 18px;border-radius:14px;background:var(--paper-2);border:1px dashed var(--rule);font-weight:800;font-size:22px;letter-spacing:.06em}
+  .listo .sig{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:24px}
+  .btn-borde{border:1.5px solid var(--rule);background:var(--paper);color:var(--ink)}
+
+  @media (max-width:900px){.cuerpo{grid-template-columns:1fr}.resumen{position:static;order:-1}.resumen dl{grid-template-columns:1fr 1fr}.incluye{display:none}}
+  @media (max-width:560px){.campos{grid-template-columns:1fr}.pasos button span{display:none}.pasos{gap:8px}.ops{grid-template-columns:1fr}.ops.chicas{grid-template-columns:1fr 1fr}.nav-pasos .btn-prim{flex:1}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="shell">
+    <a class="brand" href="../../"><span class="brand-mark">BO</span><span>Brandon Oleynick</span></a>
+    <a class="volver" href="../">← Conferencias</a>
+  </div>
+</header>
+
+<section class="portada" aria-labelledby="t-portada">
+  <img src="../gallery-1.webp" alt="" width="800" height="533">
+  <div class="shell">
+    <span class="chip-osc"><i></i>Conferencias 2026 · Agenda abierta</span>
+    <h1 id="t-portada">Invítame a <span>tu evento.</span></h1>
+    <p>6 pasos cortos: casi todo es elegir. Al final recibes tu folio y, en máximo dos días hábiles, una propuesta formal con disponibilidad y cotización.</p>
+  </div>
+</section>
+<div class="franja" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<main class="shell">
+  <div class="cuerpo">
+    <div>
+      <div class="barra" aria-hidden="true"><i id="barra"></i></div>
+      <ol class="pasos" id="pasos" aria-label="Pasos de la solicitud"></ol>
+
+      <form id="sol" novalidate>
+        <input type="text" name="sitio_web" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <!-- 1 · Formato -->
+        <section class="tarjeta paso" data-paso="1" aria-labelledby="h1p">
+          <div class="t-cab"><span class="t-num">01</span><h2 id="h1p">¿Qué formato buscas?</h2></div>
+          <p class="t-sub">Cada formato se prepara desde el contexto de tu público.</p>
+          <div class="grupo">
+            <span class="etq">Formato</span>
+            <div class="ops" data-campo="evento">
+              <button type="button" class="op" data-valor="Keynote inspiracional (30 min)"><span class="dur">30 min</span><b>Keynote inspiracional</b><small>Para abrir un evento o cerrar un ciclo. Un mensaje claro y accionable.</small></button>
+              <button type="button" class="op" data-valor="Conferencia (60 min)"><span class="dur">60 min</span><b>Conferencia</b><small>Bloques de contenido y preguntas al final. Ideal para universidades.</small></button>
+              <button type="button" class="op" data-valor="Taller interactivo (90 min)"><span class="dur">90 min</span><b>Taller interactivo</b><small>Conferencia más ejercicios: salen con algo construido en sus manos.</small></button>
+              <button type="button" class="op" data-valor="Taller extendido (120 min)"><span class="dur">120 min</span><b>Taller extendido</b><small>Grupos pequeños y trabajo profundo: estrategia o diseño de proyecto.</small></button>
+              <button type="button" class="op" data-valor="Panel o moderación"><span class="dur">Flexible</span><b>Panel o moderación</b><small>Como panelista o moderador en un foro multidisciplinario.</small></button>
+            </div>
+          </div>
+          <div class="grupo">
+            <span class="etq">Modalidad</span>
+            <div class="pildoras" data-campo="modalidad">
+              <button type="button" class="pildora" data-valor="Presencial">Presencial</button>
+              <button type="button" class="pildora" data-valor="En línea">En línea</button>
+              <button type="button" class="pildora" data-valor="Híbrido">Híbrido</button>
+              <button type="button" class="pildora" data-valor="Por definir">Por definir</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 · Tema -->
+        <section class="tarjeta paso" data-paso="2" aria-labelledby="h2p" hidden>
+          <div class="t-cab"><span class="t-num">02</span><h2 id="h2p">¿Sobre qué quieres que hable?</h2></div>
+          <p class="t-sub">Elige el gran tema. En la propuesta lo aterrizamos a tu público.</p>
+          <div class="ops" data-campo="tema">
+            <button type="button" class="op" data-valor="Liderazgo juvenil"><b>Liderazgo juvenil</b><small>Formar liderazgos reales y pasar de individuo a movimiento.</small></button>
+            <button type="button" class="op" data-valor="Impacto social y proyectos"><b>Impacto social y proyectos</b><small>De la idea a la acción con método: proyectos que no mueren a los 6 meses.</small></button>
+            <button type="button" class="op" data-valor="Emprendimiento con propósito"><b>Emprendimiento con propósito</b><small>Negocios de triple impacto que resuelven, no solo ganan.</small></button>
+            <button type="button" class="op" data-valor="Juventud y transformación nacional"><b>Juventud y transformación nacional</b><small>Participación juvenil efectiva, Agenda 2030 y los 17 ODS.</small></button>
+            <button type="button" class="op" data-valor="Marca personal con propósito"><b>Marca personal con propósito</b><small>Construir presencia desde los valores, no desde la tendencia.</small></button>
+            <button type="button" class="op" data-valor="Redes sociales y comunidades digitales"><b>Redes y comunidades digitales</b><small>Construir audiencia y comunidad con sentido.</small></button>
+            <button type="button" class="op" data-valor="Propuesta a la medida"><b>Propuesta a la medida</b><small>Tienes otro tema en mente: lo platicamos.</small></button>
+          </div>
+        </section>
+
+        <!-- 3 · Público -->
+        <section class="tarjeta paso" data-paso="3" aria-labelledby="h3p" hidden>
+          <div class="t-cab"><span class="t-num">03</span><h2 id="h3p">¿Para quién es?</h2></div>
+          <p class="t-sub">Así preparo ejemplos y dinámicas que conecten.</p>
+          <div class="grupo">
+            <span class="etq">Tipo de institución</span>
+            <div class="ops chicas" data-campo="tipo">
+              <button type="button" class="op" data-valor="Universidad o tecnológico"><b>Universidad</b><small>o tecnológico</small></button>
+              <button type="button" class="op" data-valor="Preparatoria o bachillerato"><b>Preparatoria</b><small>o bachillerato</small></button>
+              <button type="button" class="op" data-valor="Empresa"><b>Empresa</b><small>o equipo de trabajo</small></button>
+              <button type="button" class="op" data-valor="Gobierno o institución pública"><b>Gobierno</b><small>o institución pública</small></button>
+              <button type="button" class="op" data-valor="Organización civil o fundación"><b>Organización civil</b><small>o fundación</small></button>
+              <button type="button" class="op" data-valor="Congreso, foro o evento"><b>Congreso o foro</b><small>evento abierto</small></button>
+              <button type="button" class="op" data-valor="Otro"><b>Otro</b><small>cuéntamelo después</small></button>
+            </div>
+          </div>
+          <div class="grupo">
+            <span class="etq">¿Quién estará en el público? <em>(elige uno o varios)</em></span>
+            <div class="pildoras" data-campo="publico" data-multi="1">
+              <button type="button" class="pildora" data-valor="Estudiantes de preparatoria">Estudiantes de prepa</button>
+              <button type="button" class="pildora" data-valor="Estudiantes universitarios">Universitarios</button>
+              <button type="button" class="pildora" data-valor="Docentes">Docentes</button>
+              <button type="button" class="pildora" data-valor="Jóvenes líderes">Jóvenes líderes</button>
+              <button type="button" class="pildora" data-valor="Servidores públicos">Servidores públicos</button>
+              <button type="button" class="pildora" data-valor="Colaboradores de empresa">Colaboradores</button>
+              <button type="button" class="pildora" data-valor="Emprendedores">Emprendedores</button>
+              <button type="button" class="pildora" data-valor="Público general">Público general</button>
+            </div>
+          </div>
+          <div class="grupo">
+            <span class="etq">¿Cuántas personas?</span>
+            <div class="pildoras" data-campo="asistentes">
+              <button type="button" class="pildora" data-valor="Menos de 50">Menos de 50</button>
+              <button type="button" class="pildora" data-valor="50 a 150">50 a 150</button>
+              <button type="button" class="pildora" data-valor="150 a 500">150 a 500</button>
+              <button type="button" class="pildora" data-valor="Más de 500">Más de 500</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4 · Fecha y lugar -->
+        <section class="tarjeta paso" data-paso="4" aria-labelledby="h4p" hidden>
+          <div class="t-cab"><span class="t-num">04</span><h2 id="h4p">¿Cuándo y dónde?</h2></div>
+          <p class="t-sub">Con 3 semanas o más de anticipación es más fácil apartar la fecha.</p>
+          <div class="grupo">
+            <span class="etq">Fecha</span>
+            <div class="pildoras" data-campo="tipo_fecha">
+              <button type="button" class="pildora" data-valor="fija">Ya tengo fecha</button>
+              <button type="button" class="pildora" data-valor="flexible">Tengo una fecha tentativa</button>
+              <button type="button" class="pildora" data-valor="sin">Aún no hay fecha</button>
+            </div>
+            <div class="campos" id="caja-fecha" style="margin-top:12px" hidden>
+              <label class="campo"><span>Día del evento</span><input type="date" name="fecha"></label>
+            </div>
+          </div>
+          <div class="grupo" id="caja-lugar">
+            <span class="etq">Lugar del evento</span>
+            <div class="campos">
+              <label class="campo"><span>Ciudad</span><input name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="Celaya"></label>
+              <label class="campo"><span>Estado</span>
+                <select name="estado"><option value="">Elige…</option><option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option><option>Campeche</option><option>Chiapas</option><option>Chihuahua</option><option>Ciudad de México</option><option>Coahuila</option><option>Colima</option><option>Durango</option><option>Estado de México</option><option>Guanajuato</option><option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option><option>Michoacán</option><option>Morelos</option><option>Nayarit</option><option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option><option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option><option>Sinaloa</option><option>Sonora</option><option>Tabasco</option><option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option><option>Yucatán</option><option>Zacatecas</option><option>Fuera de México</option></select>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 · Inversión -->
+        <section class="tarjeta paso" data-paso="5" aria-labelledby="h5p" hidden>
+          <div class="t-cab"><span class="t-num">05</span><h2 id="h5p">Inversión y objetivo</h2></div>
+          <p class="t-sub">La cotización final se arma a la medida. Esto me ayuda a proponerte lo que mejor encaje.</p>
+          <div class="grupo">
+            <span class="etq">Presupuesto aproximado (MXN)</span>
+            <div class="ops chicas" data-campo="presupuesto">
+              <button type="button" class="op" data-valor="Menos de $10,000"><b>Menos de $10,000</b></button>
+              <button type="button" class="op" data-valor="$10,000 a $25,000"><b>$10,000 a $25,000</b></button>
+              <button type="button" class="op" data-valor="$25,000 a $50,000"><b>$25,000 a $50,000</b></button>
+              <button type="button" class="op" data-valor="Más de $50,000"><b>Más de $50,000</b></button>
+              <button type="button" class="op" data-valor="Por definir"><b>Por definir</b></button>
+              <button type="button" class="op" data-valor="Sin presupuesto (buscamos apoyo)"><b>Sin presupuesto</b><small>buscamos apoyo</small></button>
+            </div>
+          </div>
+          <div class="grupo">
+            <span class="etq">¿Quién decide la contratación?</span>
+            <div class="pildoras" data-campo="decisor">
+              <button type="button" class="pildora" data-valor="Yo decido la contratación">Yo decido</button>
+              <button type="button" class="pildora" data-valor="La propongo a quien decide">La propongo a quien decide</button>
+            </div>
+          </div>
+          <div class="grupo">
+            <label class="campo"><span>¿Qué quieren que el público se lleve? <em>(una o dos frases)</em></span><textarea name="objetivo" maxlength="3000" placeholder="Ej. Que los estudiantes se animen a crear un proyecto social en su comunidad este semestre."></textarea></label>
+          </div>
+        </section>
+
+        <!-- 6 · Tus datos -->
+        <section class="tarjeta paso" data-paso="6" aria-labelledby="h6p" hidden>
+          <div class="t-cab"><span class="t-num">06</span><h2 id="h6p">¿A quién le respondo?</h2></div>
+          <p class="t-sub">Te escribo por correo o WhatsApp con disponibilidad y propuesta.</p>
+          <div class="campos">
+            <label class="campo"><span>Nombre completo</span><input name="nombre" autocomplete="name" maxlength="100"></label>
+            <label class="campo"><span>Cargo <em>(opcional)</em></span><input name="cargo" autocomplete="organization-title" maxlength="100" placeholder="Coordinación de vinculación"></label>
+            <label class="campo"><span>Correo</span><input type="email" name="correo" autocomplete="email" maxlength="120"></label>
+            <label class="campo"><span>WhatsApp</span><input type="tel" name="whatsapp" autocomplete="tel" maxlength="30" placeholder="461 000 0000"></label>
+            <label class="campo"><span>Institución u organización</span><input name="institucion" autocomplete="organization" maxlength="140"></label>
+            <label class="campo"><span>Sitio web o redes <em>(opcional)</em></span><input name="sitio" maxlength="200" placeholder="www.tuinstitucion.mx"></label>
+          </div>
+          <div class="grupo" style="margin-top:20px">
+            <span class="etq">¿Cómo me conociste? <em>(opcional)</em></span>
+            <div class="pildoras" data-campo="como_supo">
+              <button type="button" class="pildora" data-valor="Lo escuché en un evento">En un evento</button>
+              <button type="button" class="pildora" data-valor="Recomendación">Recomendación</button>
+              <button type="button" class="pildora" data-valor="Instagram o TikTok">Instagram o TikTok</button>
+              <button type="button" class="pildora" data-valor="LinkedIn">LinkedIn</button>
+              <button type="button" class="pildora" data-valor="Google">Google</button>
+              <button type="button" class="pildora" data-valor="Juventudes Impactando México">IMPACTO</button>
+            </div>
+          </div>
+          <label class="acepta"><input type="checkbox" name="acepta"><span>Acepto el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a> y que me contacten sobre esta solicitud.</span></label>
+        </section>
+
+        <!-- 7 · Revisar -->
+        <section class="tarjeta paso" data-paso="7" aria-labelledby="h7p" hidden>
+          <div class="t-cab"><span class="t-num">✓</span><h2 id="h7p">Revisa y envía</h2></div>
+          <p class="t-sub">Si algo no está bien, toca «Cambiar».</p>
+          <div class="rev" id="rev"></div>
+        </section>
+
+        <p class="error" id="error" role="alert" hidden></p>
+        <div class="nav-pasos">
+          <button type="button" class="btn btn-sec" id="atras">← Anterior</button>
+          <span class="cuenta" id="cuenta"></span>
+          <button type="submit" class="btn btn-prim" id="sig">Siguiente →</button>
+        </div>
+        <p class="guardado" id="guardado" hidden><i></i>Progreso guardado en este dispositivo</p>
+      </form>
+
+      <section class="tarjeta listo" id="listo" hidden tabindex="-1" aria-live="polite">
+        <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></div>
+        <h2>¡Solicitud recibida!</h2>
+        <p>Te llegó una copia a tu correo. En máximo dos días hábiles te escribo con disponibilidad y una propuesta formal.</p>
+        <div class="folio" id="folio"></div>
+        <p style="font-size:13px">Guarda tu folio por si quieres agregar algo: solo responde el correo.</p>
+        <div class="sig">
+          <a class="btn btn-prim" href="../../prensa/">Descargar kit de prensa</a>
+          <a class="btn btn-borde" href="../../">Conocer a Brandon</a>
+        </div>
+      </section>
+    </div>
+
+    <aside class="resumen" aria-label="Tu solicitud">
+      <h3>Tu solicitud</h3>
+      <p>Se va llenando mientras eliges.</p>
+      <dl>
+        <div><dt>Formato</dt><dd data-r="evento" class="vacio">Sin elegir</dd></div>
+        <div><dt>Tema</dt><dd data-r="tema" class="vacio">Sin elegir</dd></div>
+        <div><dt>Público</dt><dd data-r="publico" class="vacio">Sin elegir</dd></div>
+        <div><dt>Fecha y lugar</dt><dd data-r="cuando" class="vacio">Sin elegir</dd></div>
+      </dl>
+      <div class="incluye">
+        <span>Preparación a la medida de tu público</span>
+        <span>Propuesta formal con cotización por correo</span>
+        <span>Factura de Vorka México a nombre de tu institución</span>
+        <span>Presencial en todo México, en línea o híbrida</span>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+(function () {
+  var TOTAL = 7, CLAVE = 'bo-solicitud-conferencia';
+  var f = document.getElementById('sol'), pasos = [].slice.call(document.querySelectorAll('.paso'));
+  var err = document.getElementById('error'), sig = document.getElementById('sig'), atras = document.getElementById('atras');
+  var datos = { evento: '', modalidad: '', tema: '', tipo: '', publico: [], asistentes: '', tipo_fecha: '', presupuesto: '', decisor: '', como_supo: '' };
+  var paso = 1;
+  var NOMBRES = ['Formato', 'Tema', 'Público', 'Fecha', 'Inversión', 'Tus datos', 'Revisar'];
+  var CAMPOS_TEXTO = ['fecha', 'ciudad', 'estado', 'objetivo', 'nombre', 'cargo', 'correo', 'whatsapp', 'institucion', 'sitio'];
+
+  // Progreso guardado en este dispositivo (si el navegador lo permite)
+  try {
+    var g = JSON.parse(localStorage.getItem(CLAVE) || 'null');
+    if (g && g.datos) { Object.keys(datos).forEach(function (k) { if (g.datos[k] != null) datos[k] = g.datos[k]; }); CAMPOS_TEXTO.forEach(function (k) { if (g.texto && g.texto[k] != null && f.elements[k]) f.elements[k].value = g.texto[k]; }); paso = Math.min(Math.max(1, g.paso || 1), 6); }
+  } catch (e) {}
+  function guardar() {
+    try { var t = {}; CAMPOS_TEXTO.forEach(function (k) { t[k] = f.elements[k].value; }); localStorage.setItem(CLAVE, JSON.stringify({ datos: datos, texto: t, paso: paso })); document.getElementById('guardado').hidden = false; } catch (e) {}
+  }
+
+  // Opciones: un toque elige (o alterna en las de varias opciones)
+  [].forEach.call(document.querySelectorAll('[data-campo]'), function (grupo) {
+    var campo = grupo.getAttribute('data-campo'), multi = grupo.hasAttribute('data-multi');
+    [].forEach.call(grupo.querySelectorAll('[data-valor]'), function (b) {
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () {
+        var v = b.getAttribute('data-valor');
+        if (multi) { var i = datos[campo].indexOf(v); if (i >= 0) datos[campo].splice(i, 1); else datos[campo].push(v); }
+        else datos[campo] = datos[campo] === v && campo === 'como_supo' ? '' : v;
+        pintar(); guardar(); err.hidden = true;
+      });
+    });
+  });
+  f.addEventListener('input', function () { pintar(); guardar(); });
+
+  function texto(k) { return (f.elements[k].value || '').trim(); }
+  function cuando() {
+    var fecha = texto('fecha'), lugar = [texto('ciudad'), texto('estado')].filter(Boolean).join(', ');
+    var c = datos.tipo_fecha === 'sin' ? 'Sin fecha aún' : fecha ? new Date(fecha + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) + (datos.tipo_fecha === 'flexible' ? ' (tentativa)' : '') : '';
+    return [c, lugar, datos.modalidad].filter(Boolean).join(' · ');
+  }
+  function pintar() {
+    [].forEach.call(document.querySelectorAll('[data-campo]'), function (grupo) {
+      var campo = grupo.getAttribute('data-campo'), val = datos[campo];
+      [].forEach.call(grupo.querySelectorAll('[data-valor]'), function (b) { var v = b.getAttribute('data-valor'); b.setAttribute('aria-pressed', Array.isArray(val) ? String(val.indexOf(v) >= 0) : String(val === v)); });
+    });
+    document.getElementById('caja-fecha').hidden = !(datos.tipo_fecha === 'fija' || datos.tipo_fecha === 'flexible');
+    document.getElementById('caja-lugar').hidden = datos.modalidad === 'En línea';
+    var r = { evento: datos.evento ? datos.evento + (datos.modalidad ? ' · ' + datos.modalidad : '') : '', tema: datos.tema, publico: [datos.publico.join(', '), datos.asistentes ? datos.asistentes + ' personas' : ''].filter(Boolean).join(' · '), cuando: cuando() };
+    Object.keys(r).forEach(function (k) { var dd = document.querySelector('[data-r="' + k + '"]'); dd.textContent = r[k] || 'Sin elegir'; dd.classList.toggle('vacio', !r[k]); });
+  }
+
+  function falta(n) {
+    if (n === 1) return !datos.evento ? 'Elige un formato.' : !datos.modalidad ? 'Elige la modalidad.' : '';
+    if (n === 2) return !datos.tema ? 'Elige un tema.' : '';
+    if (n === 3) return !datos.tipo ? 'Elige el tipo de institución.' : !datos.publico.length ? 'Elige quién estará en el público.' : !datos.asistentes ? 'Elige cuántas personas asistirán.' : '';
+    if (n === 4) {
+      if (!datos.tipo_fecha) return 'Dime si ya hay fecha.';
+      if (datos.tipo_fecha !== 'sin' && !texto('fecha')) return 'Elige el día del evento.';
+      if (datos.modalidad !== 'En línea' && datos.modalidad !== 'Por definir' && !texto('ciudad')) return 'Escribe la ciudad del evento.';
+      return '';
+    }
+    if (n === 5) return !datos.presupuesto ? 'Elige un presupuesto aproximado.' : !datos.decisor ? 'Dime quién decide la contratación.' : texto('objetivo').length < 30 ? 'Cuéntame en una o dos frases qué buscan lograr (mínimo 30 caracteres).' : '';
+    if (n === 6) {
+      if (texto('nombre').length < 3) return 'Escribe tu nombre completo.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(texto('correo'))) return 'Revisa tu correo.';
+      if (texto('whatsapp').replace(/\D/g, '').length < 10) return 'Escribe tu WhatsApp a 10 dígitos.';
+      if (texto('institucion').length < 2) return 'Escribe el nombre de tu institución.';
+      if (!f.acepta.checked) return 'Acepta el aviso de privacidad para continuar.';
+      return '';
+    }
+    return '';
+  }
+  function primeroIncompleto() { for (var n = 1; n <= 6; n++) if (falta(n)) return n; return 7; }
+
+  function lista() {
+    var ol = document.getElementById('pasos'); ol.innerHTML = '';
+    var tope = primeroIncompleto();
+    NOMBRES.forEach(function (nom, i) {
+      var n = i + 1, li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.innerHTML = '<b>' + (n === 7 ? '✓' : n) + '</b><span>' + nom + '</span>';
+      if (n === paso) b.setAttribute('aria-current', 'step');
+      if (n < paso || (n !== paso && !falta(n) && n < 7)) b.classList.add('hecho');
+      b.disabled = n > tope;
+      b.addEventListener('click', function () { ir(n); });
+      li.appendChild(b); ol.appendChild(li);
+    });
+  }
+  function revisar() {
+    var filas = [
+      [1, 'Formato', datos.evento + ' · ' + datos.modalidad], [2, 'Tema', datos.tema],
+      [3, 'Público', datos.tipo + '\n' + datos.publico.join(', ') + ' · ' + datos.asistentes + ' personas'],
+      [4, 'Fecha y lugar', cuando() || 'Por definir'],
+      [5, 'Inversión', datos.presupuesto + ' · ' + datos.decisor + '\n' + texto('objetivo')],
+      [6, 'Contacto', texto('nombre') + (texto('cargo') ? ', ' + texto('cargo') : '') + '\n' + texto('institucion') + '\n' + texto('correo') + ' · ' + texto('whatsapp')]
+    ];
+    var c = document.getElementById('rev'); c.innerHTML = '';
+    filas.forEach(function (x) {
+      var d = document.createElement('div'); d.className = 'rev-fila';
+      var t = document.createElement('div'), s = document.createElement('small'), p = document.createElement('p');
+      s.textContent = x[1]; p.textContent = x[2]; t.appendChild(s); t.appendChild(p);
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Cambiar'; b.addEventListener('click', function () { ir(x[0]); });
+      d.appendChild(t); d.appendChild(b); c.appendChild(d);
+    });
+  }
+  function ir(n) {
+    paso = Math.max(1, Math.min(TOTAL, n));
+    pasos.forEach(function (p) { p.hidden = Number(p.getAttribute('data-paso')) !== paso; });
+    atras.style.visibility = paso === 1 ? 'hidden' : 'visible';
+    sig.textContent = paso === 7 ? 'Enviar solicitud' : 'Siguiente →';
+    document.getElementById('cuenta').textContent = paso === 7 ? 'Último paso' : paso + ' / 6';
+    document.getElementById('barra').style.width = Math.round((paso - 1) / 6 * 100) + '%';
+    err.hidden = true;
+    if (paso === 7) revisar();
+    lista(); guardar();
+    var top = document.querySelector('.cuerpo').getBoundingClientRect().top + scrollY - 80;
+    if (scrollY > top) scrollTo({ top: top, behavior: 'smooth' });
+  }
+  atras.addEventListener('click', function () { ir(paso - 1); });
+
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (paso < 7) { var m = falta(paso); if (m) { err.textContent = m; err.hidden = false; return; } ir(paso + 1); return; }
+    var n = primeroIncompleto(); if (n < 7) { ir(n); err.textContent = falta(n); err.hidden = false; return; }
+    sig.disabled = true; sig.textContent = 'Enviando…';
+    var cuerpo = {
+      nombre: texto('nombre'), cargo: texto('cargo'), correo: texto('correo'), whatsapp: texto('whatsapp'), institucion: texto('institucion'), tipo: datos.tipo,
+      sitio: texto('sitio'), evento: datos.evento, tema: datos.tema, publico: datos.publico.join(', '), asistentes: datos.asistentes,
+      fecha: datos.tipo_fecha === 'sin' ? '' : texto('fecha'), flexible: datos.tipo_fecha === 'flexible', modalidad: datos.modalidad,
+      ciudad: datos.modalidad === 'En línea' ? '' : texto('ciudad'), estado: datos.modalidad === 'En línea' ? '' : texto('estado'),
+      objetivo: texto('objetivo'), presupuesto: datos.presupuesto, decisor: datos.decisor, como_supo: datos.como_supo, sitio_web: f.sitio_web.value, acepta: true
+    };
+    fetch('https://os.vorka.mx/api/publico/oleynick/conferencia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+      .then(function (j) {
+        try { localStorage.removeItem(CLAVE); } catch (e) {}
+        document.getElementById('folio').textContent = j.folio || '';
+        f.hidden = true; document.getElementById('pasos').hidden = true; document.querySelector('.barra').hidden = true;
+        var l = document.getElementById('listo'); l.hidden = false; l.focus(); l.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function (er) { err.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo o escríbeme a oleynickhdz@gmail.com.'; err.hidden = false; sig.disabled = false; sig.textContent = 'Enviar solicitud'; });
+  });
+
+  var hoy = new Date(); f.fecha.min = hoy.toISOString().slice(0, 10);
+  pintar(); ir(paso);
+  document.getElementById('guardado').hidden = true;
+})();
+</script>
+</body>
+</html>
