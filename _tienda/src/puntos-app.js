@@ -6,7 +6,7 @@ import { ICONOS } from './puntos-iconos.generado.js';
 import qrcode from './vendor/qrcode.js';
 import { navTienda } from './tienda.js';
 import { TEMA_HEAD, selectorTema } from './tema.js';
-import { PUNTOS_POR_COMPRA, MULTIPLICADOR_DOBLE, NIVELES, LOGROS, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
+import { NIVELES, LOGROS, PCT_EXTRA, PCT_TOPE, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
 
 const SITIO = 'https://vorka.mx';
 const TZ = 'America/Mexico_City';
@@ -508,8 +508,8 @@ export function paginaEntrarApp() {
   <div class="entrar-hero pv-paso">
     <span class="marca-v">${V}</span>
     <h1>Puntos <span class="pv-metal">Vorka</span></h1>
-    <p>Comparte lo que te gusta de la tienda y gana descuentos. Cada compra con tu liga son ${PUNTOS_POR_COMPRA} puntos = $${PUNTOS_POR_COMPRA}.</p>
-    <div class="ventajas"><span>Puntos dobles</span><span>Metas y niveles</span><span>Avisos al instante</span></div>
+    <p>Comparte lo que te gusta de la tienda y gana del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% de cada compra en puntos. 1 punto = $1.</p>
+    <div class="ventajas"><span>Hasta ${NIVELES.at(-1).pct}%</span><span>Metas y niveles</span><span>Avisos al instante</span></div>
   </div>
   ${formEntrar({ enApp: true })}
   <p class="legal">Vorka México · <a href="/tienda/puntos/">Cómo funciona</a> · <a href="/legal/terminos/#puntos">Condiciones</a></p>
@@ -534,7 +534,7 @@ function movimientosPorMes(lista) {
     const [t, c, ic] = TIPOS_MOV[m.tipo] || [m.tipo, 'oro', I.moneda];
     const este = new Date(m.created_at).toLocaleDateString('es-MX', { month: 'long', year: 'numeric', timeZone: TZ });
     const cab = este !== mes ? `<p class="mes">${esc(este)}</p>` : ''; mes = este;
-    return `${cab}<div class="mov" data-signo="${m.puntos >= 0 ? 'mas' : 'menos'}"><span class="mov-i ${c}">${ic}</span><div><b>${t}${m.multiplicador > 1 && m.tipo === 'ganado' ? ' · doble' : ''}</b><small>${m.nota ? `${esc(m.nota)} · ` : ''}${fechaCorta(m.created_at)}</small></div><span class="n ${m.puntos >= 0 ? 'mas' : m.tipo === 'canje' ? 'usado' : 'menos'}">${m.puntos >= 0 ? '+' : '−'}${fmt(Math.abs(m.puntos))}<small>pts</small></span></div>`;
+    return `${cab}<div class="mov" data-signo="${m.puntos >= 0 ? 'mas' : 'menos'}"><span class="mov-i ${c}">${ic}</span><div><b>${t}${m.multiplicador > 1 && m.tipo === 'ganado' ? ' · extra' : ''}</b><small>${m.nota ? `${esc(m.nota)} · ` : ''}${fechaCorta(m.created_at)}</small></div><span class="n ${m.puntos >= 0 ? 'mas' : m.tipo === 'canje' ? 'usado' : 'menos'}">${m.puntos >= 0 ? '+' : '−'}${fmt(Math.abs(m.puntos))}<small>pts</small></span></div>`;
   }).join('');
 }
 
@@ -543,13 +543,38 @@ function anillo(p, centro) {
   return `<div class="anillo"><svg viewBox="0 0 84 84"><circle class="fondo" cx="42" cy="42" r="${r}"/><circle class="valor" cx="42" cy="42" r="${r}" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${c.toFixed(1)}" data-offset="${(c * (1 - p)).toFixed(1)}"/></svg><b>${centro}</b></div>`;
 }
 
+// ---------- transferencia a cuenta (solo cuentas habilitadas por el equipo; nunca en textos públicos) ----------
+const ESTADO_RETIRO = { por_pagar: ['En proceso', 'pend'], pagado: ['Transferido', 'ok'], cancelado: ['Cancelada', 'no'] };
+function tarjetaRetiro(r) {
+  const puede = r.transferibles >= r.minimo, enProceso = r.retiros.some(x => x.estado === 'por_pagar');
+  return `<div class="card retiro" style="--i:3">
+    <div class="nivel-fila"><span><b>Transferir a mi cuenta</b></span><span>${fmt(r.transferibles)} ${r.transferibles === 1 ? 'punto' : 'puntos'} = $${fmt(r.transferibles)}</span></div>
+    <p class="pv-sub" style="font-size:13px;margin:6px 0 10px">Mínimo ${fmt(r.minimo)} puntos. Los puntos de cada venta se pueden transferir ${r.retencion_dias} días después${r.retenidos ? ` (${fmt(r.retenidos)} aún en espera)` : ''}. Te avisamos por correo con la clave de rastreo.</p>
+    ${enProceso ? '<p class="pv-sub" style="font-size:13.5px;margin:0 0 10px"><b>Tienes una transferencia en proceso.</b></p>' : `<button class="pv-btn oro chico" type="button" data-abrir="h-retiro" ${puede ? '' : 'disabled'}>Transferir</button>`}
+    ${r.retiros.length ? `<div style="margin-top:12px">${r.retiros.map(x => `<div class="mov"><span class="mov-i ${ESTADO_RETIRO[x.estado][1] === 'ok' ? 'oro' : 'pend'}">${I.moneda}</span><div><b>$${fmt(x.puntos)}<span class="estado">${ESTADO_RETIRO[x.estado][0]}</span></b><small>${fechaCorta(x.created_at)}${x.clave_rastreo ? ` · Rastreo ${esc(x.clave_rastreo)}` : ''}</small></div></div>`).join('')}</div>` : ''}
+  </div>`;
+}
+function hojaRetiro(r) {
+  return `<div class="hoja" id="h-retiro" role="dialog" aria-modal="true" aria-labelledby="hr-t" hidden><div class="hoja-fondo" data-cerrar></div><div class="hoja-panel"><div class="asa"></div>
+  <form id="f-retiro" novalidate style="display:grid;gap:14px">
+    <div><h2 id="hr-t">Transferir a mi cuenta</h2><p class="pv-sub" style="margin:4px 0 0">Hasta ${fmt(r.transferibles)} puntos (= $${fmt(r.transferibles)}). Lo transferimos por SPEI a la cuenta que nos indiques.</p></div>
+    <div class="pv-campo"><label for="r-puntos">¿Cuántos puntos?</label><input id="r-puntos" name="puntos" type="number" inputmode="numeric" min="${r.minimo}" max="${r.transferibles}" step="1" value="${r.transferibles}" required></div>
+    <div class="pv-campo"><label for="r-clabe">CLABE (18 dígitos)</label><input id="r-clabe" name="clabe" inputmode="numeric" maxlength="22" autocomplete="off" value="${esc(r.clabe)}" required></div>
+    <div class="pv-campo"><label for="r-titular">Titular de la cuenta</label><input id="r-titular" name="titular" maxlength="120" autocomplete="name" value="${esc(r.titular)}" required></div>
+    <div class="pv-campo"><label for="r-banco">Banco <small>(opcional)</small></label><input id="r-banco" name="banco" maxlength="60" value="${esc(r.banco)}"></div>
+    <p class="pv-error" id="hr-err" role="alert" hidden></p>
+    <button class="pv-btn oro ancho" type="submit">Pedir transferencia ${I.flecha}</button>
+  </form>
+</div></div>`;
+}
+
 export function paginaApp(env, d) {
   const n = d.nivel, inicial = (d.nombre || d.email).trim().charAt(0).toUpperCase();
   const s = d.saldo;
   const metaHtml = d.meta ? (() => {
-    const p = d.meta.objetivo ? Math.min(1, s.disponibles / d.meta.objetivo) : 1, faltan = Math.max(0, d.meta.objetivo - s.disponibles), ventas = ventasPara(faltan);
+    const p = d.meta.objetivo ? Math.min(1, s.disponibles / d.meta.objetivo) : 1, faltan = Math.max(0, d.meta.objetivo - s.disponibles), ventas = ventasPara(faltan, d.meta.precio_centavos, d.pct);
     return `<div class="meta">${anillo(p, `${Math.round(p * 100)}%`)}<div><span class="chip" style="margin-bottom:8px">Mi meta</span><h3>${esc(d.meta.nombre)}</h3>
-      ${faltan ? `<p>Te faltan <b>${plural(faltan, 'punto', 'puntos')}</b> · unas <b>${plural(ventas, 'venta', 'ventas')}</b> con tu liga.</p>` : '<p class="meta-ok">¡Ya te alcanza! Lo pagas con solo $10.</p>'}
+      ${faltan ? `<p>Te faltan <b>${plural(faltan, 'punto', 'puntos')}</b>${ventas ? ` · unas <b>${plural(ventas, 'venta', 'ventas')}</b> de este producto con tu liga` : ''}.</p>` : '<p class="meta-ok">¡Ya te alcanza! Lo pagas con solo $10.</p>'}
       <button class="pv-enlace" type="button" data-abrir="h-meta" style="margin-top:8px;font-size:14px">Cambiar meta</button></div></div>`;
   })() : `<div class="vacio-meta"><span class="ico-c">${LOGRO_ICONO.bandera}</span><div><h3 style="font-size:16px">Ponte una meta</h3><p class="pv-sub" style="font-size:14px;margin-top:2px">Elige un producto de la tienda y te decimos cuántas ventas te faltan para llevártelo.</p>
       <button class="pv-btn vidrio chico" type="button" data-abrir="h-meta" style="margin-top:10px">Elegir mi meta</button></div></div>`;
@@ -560,19 +585,21 @@ export function paginaApp(env, d) {
 
   const inicio = `
 <section class="vista" id="v-inicio" data-vista="inicio" aria-label="Inicio">
-  <div class="hola" style="--i:0"><div><span>Hola,</span><b>${esc(String(d.nombre).split(' ')[0])}</b></div><span class="chip" style="--nivel:${n.actual.color}"><i></i>Nivel ${esc(n.actual.nombre)}</span></div>
+  <div class="hola" style="--i:0"><div><span>Hola,</span><b>${esc(String(d.nombre).split(' ')[0])}</b></div><span class="chip" style="--nivel:${n.actual.color}"><i></i>${esc(n.actual.nombre)} · ${d.pct}%</span></div>
   <div class="saldo" style="--i:1">
     <span class="saldo-v">${V}</span>
     <div class="saldo-cab"><span>Tu saldo</span><span class="saldo-cab-d">Puntos Vorka<button class="saldo-ojo" type="button" id="b-ocultar" aria-pressed="false" aria-label="Ocultar saldo"><span class="si">${I.ojo}</span><span class="no">${I.ojoNo}</span></button></span></div>
     <div class="saldo-num"><b data-sensible>${fmt(s.disponibles)}</b><span>${s.disponibles === 1 ? 'punto' : 'puntos'}</span></div>
     <p class="saldo-mxn">= <b data-sensible>$${fmt(s.disponibles)} MXN</b> para usar en la tienda${s.apartados ? ` · <a href="#actividad" data-ir="actividad" style="color:inherit">${fmt(s.apartados)} apartados</a> en una compra por pagar` : ''}</p>
-    <div class="saldo-pie"><span>Tu código<code>${esc(d.code)}</code></span><span style="text-align:right">${plural(d.ventas, 'venta', 'ventas')}<b class="saldo-nivel" style="color:${n.actual.color}">${esc(n.actual.nombre)}</b></span></div>
+    <div class="saldo-pie"><span>Tu código<code>${esc(d.code)}</code></span><span style="text-align:right">${plural(d.ventas_semestre, 'venta', 'ventas')} este semestre<b class="saldo-nivel" style="color:${n.actual.color}">${esc(n.actual.nombre)}</b></span></div>
   </div>
   <div class="card nivel" style="--i:2">
-    <div class="nivel-fila"><span><b>${esc(n.actual.nombre)}</b>${n.siguiente ? ` → ${esc(n.siguiente.nombre)}` : ''}</span><span>${n.siguiente ? `${plural(n.faltan, 'venta más', 'ventas más')}` : 'Nivel máximo'}</span></div>
+    <div class="nivel-fila"><span><b>${esc(n.actual.nombre)} · ${n.actual.pct}%</b>${n.siguiente ? ` → ${esc(n.siguiente.nombre)} · ${n.siguiente.pct}%` : ''}</span><span>${n.siguiente ? `${plural(n.faltan, 'venta más', 'ventas más')}` : 'Nivel máximo'}</span></div>
     <div class="barra-p"><i data-p="${n.progreso}"></i></div>
+    <p class="pv-sub" style="font-size:12.5px;margin:8px 0 0">Ganas ${d.pct}% de cada compra con tu liga. El nivel se cuenta por semestre (hasta el ${terminaTexto(d.semestre.fin)}).</p>
   </div>
   <div class="acciones2" style="--i:3"><button class="pv-btn oro" type="button" data-ir="compartir">${I.compartir}Compartir mi liga</button><a class="pv-btn vidrio" href="/tienda/">${I.bolsa}Usar puntos</a></div>
+  ${d.retiro ? tarjetaRetiro(d.retiro) : ''}
   <div class="sec-t" style="--i:4"><h2>Últimos 7 días</h2></div>
   <div class="stats" style="--i:5">
     <div class="stat">${I.ojo}<b data-contar="${d.semana.visitas}">${fmt(d.semana.visitas)}</b><span>Visitas a tu liga</span></div>
@@ -582,16 +609,16 @@ export function paginaApp(env, d) {
   <p class="frase" style="--i:6">${d.semana.visitas ? `<b>${plural(d.semana.visitas, 'persona abrió', 'personas abrieron')}</b> tu liga esta semana.` : 'Nadie ha abierto tu liga esta semana. Compártela en tus grupos y estados.'}</p>
   <div class="sec-t" style="--i:7"><h2>Mi meta</h2></div>
   <div class="card" style="--i:8">${metaHtml}</div>
-  ${dobles.length ? `<div class="card promo doble" style="--i:9"><span class="ico-c">${I.rayo}</span><div><h3>Puntos dobles en ${esc(dobles[0].titulo)}${dobles.length > 1 ? ` y ${dobles.length - 1} más` : ''}</h3><p>Cada compra con tu liga ${dobleDe(dobles[0]).termina ? `hasta el ${terminaTexto(dobleDe(dobles[0]).termina)}` : ''} vale ${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} puntos.</p><button class="pv-btn oro chico" type="button" data-ir="compartir">Compartir ahora</button></div></div>` : ''}
+  ${dobles.length ? `<div class="card promo doble" style="--i:9"><span class="ico-c">${I.rayo}</span><div><h3>Puntos extra en ${esc(dobles[0].titulo)}${dobles.length > 1 ? ` y ${dobles.length - 1} más` : ''}</h3><p>Cada compra con tu liga${dobleDe(dobles[0]).termina ? ` hasta el ${terminaTexto(dobleDe(dobles[0]).termina)}` : ''} te da ${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% en puntos.</p><button class="pv-btn oro chico" type="button" data-ir="compartir">Compartir ahora</button></div></div>` : ''}
   <div class="card promo" id="c-instalar" hidden style="--i:10"><span class="ico-c">${I.instalar}</span><div><h3>Ponla en tu inicio</h3><p id="c-instalar-t">Tenla a un toque, como una app, para ver tus puntos y tu meta.</p><p id="c-instalar-and" hidden>En Chrome toca el menú <b>⋮</b> (arriba a la derecha) y elige <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</p><p id="c-instalar-ios" hidden>En Safari toca <b>Compartir</b> <span class="ico-in">${I.ios}</span> y luego <b>Agregar a inicio</b>. Así la tienes como app y recibes avisos.</p><button class="pv-btn oro chico" type="button" id="b-instalar" hidden>Instalar app</button></div><button class="cerrar-x" type="button" data-descartar="instalar" aria-label="Ahora no">${I.cerrar}</button></div>
   <div class="card promo" id="c-avisos" hidden style="--i:11"><span class="ico-c">${I.actividad}</span><div><h3>Entérate al instante</h3><p id="c-avisos-t">Te avisamos cuando alguien compre con tu liga, subas de nivel o alcances tu meta.</p><button class="pv-btn oro chico" type="button" id="b-avisos">Activar avisos</button></div><button class="cerrar-x" type="button" data-descartar="avisos" aria-label="Ahora no">${I.cerrar}</button></div>
-  <div class="card promo" style="--i:12"><span class="ico-c">${I.foco}</span><div><h3>Sugiere un producto, gana el doble</h3><p>Si lo agregamos a la tienda, ganas ${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} puntos por cada compra de ese producto con tu liga.</p><button class="pv-btn vidrio chico" type="button" data-abrir="h-sugerir">Sugerir</button></div></div>
+  <div class="card promo" style="--i:12"><span class="ico-c">${I.foco}</span><div><h3>Sugiere un producto, gana puntos extra</h3><p>Si lo agregamos a la tienda, ganas ${PCT_EXTRA}% extra en cada compra de ese producto con tu liga.</p><button class="pv-btn vidrio chico" type="button" data-abrir="h-sugerir">Sugerir</button></div></div>
 </section>`;
 
   const compartir = `
 <section class="vista" id="v-compartir" data-vista="compartir" aria-label="Compartir" hidden>
   <h1 class="titulo" style="--i:0">Comparte y <span class="pv-metal">gana</span></h1>
-  <p class="subt" style="--i:1">Cada compra con tu liga son ${PUNTOS_POR_COMPRA} puntos (${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} con puntos dobles). La persona tiene 30 días para comprar.</p>
+  <p class="subt" style="--i:1">Cada compra con tu liga te da ${d.pct}% en puntos (${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% con puntos extra). La persona tiene 30 días para comprar.</p>
   <div class="card codigo-card" style="--i:2"><div><small>Tu código</small><code>${esc(d.code)}</code></div><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(ligaDe('/tienda/', d.code))}">${I.copiar}Copiar liga</button></div>
   <div class="sec-t" style="--i:3"><h2>Elige qué compartir</h2></div>
   <div class="prods">${tarjetasCompartir.map((c, i) => {
@@ -599,7 +626,7 @@ export function paginaApp(env, d) {
     const sinLiga = principal.replace(liga, '').trim();
     return `<article class="prod" style="--i:${4 + i}">
       <div class="prod-top"><div class="prod-img">${c.tipo === 'tienda' ? I.tienda : V}${c.imagen ? `<img src="${esc(c.imagen)}" alt="" loading="lazy" decoding="async">` : ''}</div>
-        <div>${doble ? `<span class="insignia">${I.rayo}Puntos dobles${doble.motivo === 'sugerencia' ? ' · tu idea' : doble.termina ? ` · hasta ${terminaTexto(doble.termina)}` : ''}</span>` : ''}<h3 style="${doble ? 'margin-top:6px' : ''}">${esc(c.titulo)}</h3><p>${esc(c.texto || '')}</p></div></div>
+        <div>${doble ? `<span class="insignia">${I.rayo}Puntos extra${doble.motivo === 'sugerencia' ? ' · tu idea' : doble.termina ? ` · hasta ${terminaTexto(doble.termina)}` : ''}</span>` : ''}<h3 style="${doble ? 'margin-top:6px' : ''}">${esc(c.titulo)}</h3><p>${esc(c.texto || '')}</p></div></div>
       <div class="liga"><code>${esc(sinProtocolo(liga))}</code><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(liga)}" aria-label="Copiar liga de ${esc(c.titulo)}">${I.copiar}</button></div>
       <div class="redes">
         <button class="red prin" type="button" data-compartir="${esc(principal)}" data-url="${esc(liga)}" data-titulo="${esc(c.titulo)}">${I.enviar}Compartir</button>
@@ -617,18 +644,18 @@ export function paginaApp(env, d) {
   const metas = `
 <section class="vista" id="v-metas" data-vista="metas" aria-label="Metas" hidden>
   <h1 class="titulo" style="--i:0">Tus <span class="pv-metal">metas</span></h1>
-  <p class="subt" style="--i:1">Sube de nivel con cada compra que entra con tu liga. Los niveles son reconocimiento: tus puntos valen lo mismo en todos.</p>
+  <p class="subt" style="--i:1">Sube de nivel con cada compra que entra con tu liga: entre más alto, más % de cada compra en puntos. El nivel se cuenta por semestre.</p>
   <div class="card" style="--i:2">${metaHtml}</div>
-  <div class="sec-t" style="--i:3"><h2>Niveles</h2><span style="font-size:13px;color:var(--fg3)">${plural(d.ventas, 'venta', 'ventas')}</span></div>
+  <div class="sec-t" style="--i:3"><h2>Niveles</h2><span style="font-size:13px;color:var(--fg3)">${plural(d.ventas_semestre, 'venta', 'ventas')} este semestre</span></div>
   <div class="card niveles" style="--i:4;padding:8px">${NIVELES.map((x, k) => {
-    const ok = d.ventas >= x.min, actual = k === n.indice;
+    const ok = d.ventas_semestre >= x.min, actual = k === n.indice;
     return `<div class="nv${ok ? ' ok' : ' bloq'}${actual ? ' actual' : ''}" style="--c:${x.color}"><span class="nv-p">${ok ? I.check.replace('<svg ', '<svg width="20" ') : I.candado}</span><div><b>${esc(x.nombre)}</b><small>${esc(x.texto)}</small></div><em>${actual ? 'Tu nivel' : x.min ? `${x.min}+ ventas` : 'Inicio'}</em></div>`;
   }).join('')}</div>
   <div class="sec-t" style="--i:5"><h2>Logros</h2><span style="font-size:13px;color:var(--fg3)">${d.logros.filter(l => l.ok).length} de ${d.logros.length}</span></div>
   <div class="logros" style="--i:6">${d.logros.map(l => `<div class="logro${l.ok ? '' : ' no'}" title="${esc(l.texto)}"><i>${LOGRO_ICONO[l.icono] || I.check}</i><b>${esc(l.nombre)}</b><small>${esc(l.texto)}</small></div>`).join('')}</div>
   <div class="sec-t" style="--i:7"><h2>Sugiere un producto</h2><button type="button" data-abrir="h-sugerir">Nueva idea</button></div>
   <div class="card sug" style="--i:8">
-    <div class="promo" style="margin:0"><span class="ico-c">${I.foco}</span><div><h3>¿Qué le falta a la tienda?</h3><p>Si aceptamos tu idea y la convertimos en producto, ganas <b>puntos dobles</b> (${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} por compra) en ese producto con tu liga.</p><button class="pv-btn oro chico" type="button" data-abrir="h-sugerir">Sugerir un producto</button></div></div>
+    <div class="promo" style="margin:0"><span class="ico-c">${I.foco}</span><div><h3>¿Qué le falta a la tienda?</h3><p>Si aceptamos tu idea y la convertimos en producto, ganas <b>puntos extra</b> (+${PCT_EXTRA}% por compra) en ese producto con tu liga.</p><button class="pv-btn oro chico" type="button" data-abrir="h-sugerir">Sugerir un producto</button></div></div>
     ${d.sugerencias.length ? `<div>${d.sugerencias.map(x => `<div class="sug-item"><div><b>${esc(x.idea)}</b><small>${fechaCorta(x.created_at)}${x.producto ? ` · Ahora es «${esc(x.producto)}»` : ''}${x.nota ? ` · ${esc(x.nota)}` : ''}</small></div><span class="pill ${x.estado}">${{ nueva: 'En revisión', aceptada: 'Aceptada', descartada: 'No por ahora' }[x.estado]}</span></div>`).join('')}</div>` : ''}
   </div>
   <div class="sec-t" style="--i:9"><h2>Top del mes</h2>${d.ranking ? '' : '<button type="button" data-abrir="h-ajustes">Participar</button>'}</div>
@@ -679,20 +706,21 @@ export function paginaApp(env, d) {
 <div class="hoja" id="h-meta" role="dialog" aria-modal="true" aria-labelledby="hm-t" hidden><div class="hoja-fondo" data-cerrar></div><div class="hoja-panel"><div class="asa"></div>
   <h2 id="hm-t">Elige tu meta</h2><p class="pv-sub">Un producto que quieras llevarte con tus puntos. Siempre se pagan al menos $10.</p>
   <form id="f-meta"><div class="metas-op">${d.productos.map(p => { const o = objetivoMeta(p.precio_centavos);
-    return `<label class="meta-op"><input type="radio" name="meta" value="${esc(p.id)}" ${d.meta?.id === p.id ? 'checked' : ''}><div><b>${esc(p.nombre)}</b><small>${pesosCortos(p.precio_centavos)} · unas ${plural(ventasPara(o), 'venta', 'ventas')}</small></div><em>${fmt(o)} pts</em></label>`; }).join('')}</div>
+    return `<label class="meta-op"><input type="radio" name="meta" value="${esc(p.id)}" ${d.meta?.id === p.id ? 'checked' : ''}><div><b>${esc(p.nombre)}</b><small>${pesosCortos(p.precio_centavos)} · unas ${plural(ventasPara(o, p.precio_centavos, d.pct) || 0, 'venta', 'ventas')}</small></div><em>${fmt(o)} pts</em></label>`; }).join('')}</div>
   <p class="pv-error" id="hm-err" role="alert" hidden style="margin-top:12px"></p>
   <div class="acciones2" style="margin-top:16px;grid-template-columns:1fr auto"><button class="pv-btn oro" type="submit">Guardar meta</button>${d.meta ? '<button class="pv-btn vidrio" type="button" id="hm-quitar">Quitar</button>' : '<button class="pv-btn vidrio" type="button" data-cerrar>Cancelar</button>'}</div></form>
 </div></div>
+${d.retiro ? hojaRetiro(d.retiro) : ''}
 <div class="hoja" id="h-sugerir" role="dialog" aria-modal="true" aria-labelledby="hs-t" hidden><div class="hoja-fondo" data-cerrar></div><div class="hoja-panel"><div class="asa"></div>
   <form id="f-sugerir" novalidate style="display:grid;gap:14px">
-    <div><h2 id="hs-t">Sugiere un producto</h2><p class="pv-sub" style="margin:4px 0 0">Si lo agregamos a la tienda, ganas ${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} puntos por cada compra de ese producto con tu liga. Te avisamos cuando lo revisemos.</p></div>
+    <div><h2 id="hs-t">Sugiere un producto</h2><p class="pv-sub" style="margin:4px 0 0">Si lo agregamos a la tienda, ganas ${PCT_EXTRA}% extra en cada compra de ese producto con tu liga. Te avisamos cuando lo revisemos.</p></div>
     <div class="pv-campo"><label for="s-idea">¿Qué producto te gustaría ver?</label><input id="s-idea" name="idea" maxlength="200" required placeholder="Ej. Guía para preparar el examen de la UNAM"></div>
     <div class="pv-campo"><label for="s-para">¿Para quién es?</label><input id="s-para" name="para_quien" maxlength="160" placeholder="Ej. Estudiantes de prepa"></div>
     <div class="pv-campo"><label for="s-porque">¿Por qué crees que se vendería?</label><textarea id="s-porque" name="por_que" maxlength="600" placeholder="Cuéntanos a quién se lo recomendarías"></textarea></div>
     <p class="pv-error" id="hs-err" role="alert" hidden></p>
     <button class="pv-btn oro ancho" type="submit">Enviar idea ${I.flecha}</button>
   </form>
-  <div id="hs-ok" hidden style="text-align:center;display:grid;justify-items:center;gap:12px;padding:10px 0"><div class="pv-ok-ico">${I.check}</div><h2>¡Gracias por tu idea!</h2><p class="pv-sub">La revisamos y te avisamos aquí. Si la aceptamos, tendrás puntos dobles en ese producto.</p><button class="pv-btn vidrio" type="button" data-cerrar>Listo</button></div>
+  <div id="hs-ok" hidden style="text-align:center;display:grid;justify-items:center;gap:12px;padding:10px 0"><div class="pv-ok-ico">${I.check}</div><h2>¡Gracias por tu idea!</h2><p class="pv-sub">La revisamos y te avisamos aquí. Si la aceptamos, tendrás puntos extra en ese producto.</p><button class="pv-btn vidrio" type="button" data-cerrar>Listo</button></div>
 </div></div>`;
 
   const tabs = [['inicio', 'Inicio'], ['compartir', 'Compartir'], ['metas', 'Metas'], ['actividad', 'Actividad']];
@@ -787,6 +815,13 @@ const SCRIPT_APP = String.raw`(function(){
       if(!r){ er.textContent='Elige un producto.'; er.hidden=false; return; } var b=fm.querySelector('[type=submit]'); b.disabled=true;
       post('/api/puntos/meta',{product_id:r.value}).then(function(x){ b.disabled=false; if(x.ok){ location.hash='#inicio'; location.reload(); } else { er.textContent=x.j.error||'No se pudo guardar.'; er.hidden=false; } }); };
     var q=$('#hm-quitar'); if(q) q.onclick=function(){ post('/api/puntos/meta',{product_id:null}).then(function(){ location.reload(); }); }; }
+
+  // ----- transferencia a cuenta -----
+  var fr=$('#f-retiro'); if(fr){ fr.onsubmit=function(e){ e.preventDefault(); var er=$('#hr-err'); er.hidden=true;
+    var b=fr.querySelector('[type=submit]'), h=b.innerHTML; b.disabled=true; b.innerHTML='<span class="pv-giro"></span>Enviando…';
+    post('/api/puntos/retiro',{puntos:fr.puntos.value,clabe:fr.clabe.value,titular:fr.titular.value,banco:fr.banco.value}).then(function(x){ b.disabled=false; b.innerHTML=h;
+      if(x.ok){ toast('Listo: te avisamos cuando la hagamos'); setTimeout(function(){ location.hash='#inicio'; location.reload(); },900); }
+      else { er.textContent=x.j.error||'No se pudo enviar.'; er.hidden=false; } }); }; }
 
   // ----- sugerir -----
   var fs=$('#f-sugerir'); fs.onsubmit=function(e){ e.preventDefault(); var er=$('#hs-err'); er.hidden=true;
@@ -993,16 +1028,16 @@ const SCRIPT_COPIAR_PROG = `(function(){ var b=document.getElementById('pv-copia
 
 export function paginaPrograma(env, { cuenta }) {
   const ben = [
-    [I.moneda, `${PUNTOS_POR_COMPRA} puntos por compra`, `Cada compra que entra con tu liga suma ${PUNTOS_POR_COMPRA} puntos. 1 punto = $1 MXN en cualquier producto de Vorka México.`],
-    [I.rayo, 'Puntos dobles', `En productos con promoción, y en los productos que tú sugieras y agreguemos a la tienda: ${PUNTOS_POR_COMPRA * MULTIPLICADOR_DOBLE} puntos por compra.`],
-    [LOGRO_ICONO.bandera, 'Metas y niveles', 'Elige un producto como meta y ve cuántas ventas te faltan. Sube de Inicial a Diamante y desbloquea logros.'],
+    [I.moneda, `Del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% en puntos`, `Cada compra que entra con tu liga te da un porcentaje de lo que se pagó en puntos, según tu nivel. 1 punto = $1 MXN en cualquier producto de Vorka México.`],
+    [I.rayo, 'Puntos extra', `En productos con promoción, y en los que tú sugieras y agreguemos a la tienda: ${PCT_EXTRA}% extra sobre tu nivel (hasta ${PCT_TOPE}%).`],
+    [LOGRO_ICONO.bandera, 'Metas y niveles', 'Elige un producto como meta y ve cuántas ventas te faltan. Sube de Inicial a Diamante cada semestre y gana más % por compra.'],
     [I.actividad, 'Avisos en tu celular', 'Te avisamos al momento cuando alguien compra con tu liga, subes de nivel o alcanzas tu meta.'],
     [I.compartir, 'Comparte en un toque', 'Tu liga para cada producto con WhatsApp, Telegram, X, código QR y mensajes listos para pegar.'],
     [I.instalar, 'Instálala en tu inicio', 'Funciona como app en iPhone y Android, sin descargar nada de una tienda de apps.'],
   ];
   return pagina({ navActual: 'puntos', navOscuro: true,
-    titulo: 'Puntos Vorka: comparte y gana descuentos en la tienda', ruta: '/tienda/puntos/',
-    descripcion: `La app de puntos de Vorka México: comparte tu liga, gana ${PUNTOS_POR_COMPRA} puntos por cada compra (dobles en promociones), ponte metas y recibe avisos. 1 punto = $1 MXN.`,
+    titulo: 'Puntos Vorka: comparte y gana puntos en la tienda', ruta: '/tienda/puntos/',
+    descripcion: `La app de puntos de Vorka México: comparte tu liga y gana del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% de cada compra en puntos según tu nivel, ponte metas y recibe avisos. 1 punto = $1 MXN.`,
     head: `<style>.pv-lp,#toast{${TOKENS}}${CSS_BASE}${CSS_PROGRAMA}</style>`,
     script: (cuenta ? '' : SCRIPT_ENTRAR) + SCRIPT_COPIAR_PROG,
     cuerpo: `
@@ -1011,22 +1046,22 @@ export function paginaPrograma(env, { cuenta }) {
     <div>
       ${navTienda('puntos')}
       <p class="pv-et" style="margin-top:22px"><i></i>Puntos Vorka · la app</p>
-      <h1>Recomienda.<br>Gana <span class="pv-metal">descuentos.</span></h1>
-      <p class="lead">Tu propia app para compartir el Simulador PAA, Brindi, Cupo y todo lo de la tienda. Cada compra con tu liga son ${PUNTOS_POR_COMPRA} puntos, y cada punto vale $1.</p>
+      <h1>Recomienda.<br>Gana hasta <span class="pv-metal">${NIVELES.at(-1).pct}%.</span></h1>
+      <p class="lead">Tu propia app para compartir el Simulador PAA, Brindi, Cupo y todo lo de la tienda. Cada compra con tu liga te da del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% en puntos, y cada punto vale $1.</p>
       <div class="botones">${cuenta ? `<a class="pv-btn oro" href="/tienda/cuenta/">Abrir mi app ${I.flecha}</a>` : `<a class="pv-btn oro" href="#entrar">Crear mi cuenta gratis ${I.flecha}</a><a class="pv-btn vidrio" href="/tienda/cuenta/">Ya tengo cuenta</a>`}</div>
-      <div class="pv-chips"><span>Gratis</span><span>Sin contraseñas</span><span>Puntos dobles</span><span>Avisos al instante</span></div>
+      <div class="pv-chips"><span>Gratis</span><span>Sin contraseñas</span><span>Hasta ${NIVELES.at(-1).pct}%</span><span>Avisos al instante</span></div>
     </div>
     <div style="position:relative;padding:10px 0" aria-hidden="true">
       <div class="pv-tel"><div class="pv-tel-in">
         <div class="pv-m-cab"><span>Hola, Ana</span><span></span></div>
-        <div class="pv-m-saldo"><small>TU SALDO · NIVEL PLATA</small><b>180</b><em>= $180 MXN para usar en la tienda</em></div>
+        <div class="pv-m-saldo"><small>TU SALDO · PLATA 20%</small><b>180</b><em>= $180 MXN para usar en la tienda</em></div>
         <div class="pv-m-barra"><i></i></div>
         <div class="pv-m-stats"><div><b>23</b><span>Visitas</span></div><div><b>4</b><span>Compras</span></div><div><b>+50</b><span>Puntos</span></div></div>
-        <div class="pv-m-card"><i></i><div><b>Cupo · Eventos</b>vorka.mx/tienda/cupo/?ref=ANA</div><em>2×</em></div>
+        <div class="pv-m-card"><i></i><div><b>Cupo · Eventos</b>vorka.mx/tienda/cupo/?ref=ANA</div><em>+10%</em></div>
         <div class="pv-m-card"><i></i><div><b>Mi meta: Simulador PAA</b>Te faltan 7 ventas</div></div>
         <div class="pv-m-tabs"><span>Inicio</span><span>Compartir</span><span>Metas</span><span>Actividad</span></div>
       </div></div>
-      <div class="pv-notif"><img src="/tienda/cuenta/iconos/192.png" alt="" width="34" height="34"><div><b>¡Puntos dobles! +20 puntos</b><span>Alguien compró Cupo Pro con tu liga.</span></div></div>
+      <div class="pv-notif"><img src="/tienda/cuenta/iconos/192.png" alt="" width="34" height="34"><div><b>¡Puntos extra! +60 puntos</b><span>Alguien compró Cupo Pro con tu liga.</span></div></div>
     </div>
   </div>
 </div></section>
@@ -1039,8 +1074,8 @@ export function paginaPrograma(env, { cuenta }) {
     <li><b>Comparte tu liga</b>En tus grupos, estados o redes. La persona tiene 30 días para comprar.</li>
     <li><b>Usa tus puntos</b>Al pagar en la tienda, con el mismo correo. Siempre se cobran al menos $10.</li>
   </ol>
-  <div class="pv-niv">${NIVELES.map(x => `<span style="--c:${x.color}"><i></i>${x.nombre} <small>${x.min ? `${x.min}+ ventas` : 'al empezar'}</small></span>`).join('')}</div>
-  <p class="t-nota">Los niveles son reconocimiento (insignias y el color de tu tarjeta); los puntos valen lo mismo en todos. No cuentan las compras que te hagas a ti mismo y si una compra se reembolsa, sus puntos se descuentan. <a href="/legal/terminos/#puntos">Condiciones del programa</a>.</p>
+  <div class="pv-niv">${NIVELES.map(x => `<span style="--c:${x.color}"><i></i>${x.nombre} · ${x.pct}% <small>${x.min ? `${x.min}+ ventas` : 'al empezar'}</small></span>`).join('')}</div>
+  <p class="t-nota">Tu nivel se cuenta con tus compras del semestre (enero a junio y julio a diciembre) y cada semestre empiezas de nuevo en Inicial; los puntos que ya ganaste se quedan. No cuentan las compras que te hagas a ti mismo y si una compra se reembolsa, sus puntos se descuentan. <a href="/legal/terminos/#puntos">Condiciones del programa</a>.</p>
 </div></section>
 <section class="t-sec suave" id="instalar"><div class="marco">
   <span class="etiqueta">Instálala y compártela</span>
@@ -1059,7 +1094,7 @@ export function paginaPrograma(env, { cuenta }) {
     <p class="pv-et"><i></i>${cuenta ? 'Tu cuenta' : 'Empieza hoy'}</p>
     <h2 style="margin-top:14px">${cuenta ? 'Ya tienes tu app lista.' : 'Tu liga en un minuto.'}</h2>
     <p class="lead">${cuenta ? `Entraste como <b>${esc(cuenta.email)}</b>.` : 'Escribe tu correo. Te mandamos un enlace para entrar desde aquí y un código de 6 dígitos para entrar desde la app instalada.'}</p>
-    <ul>${['Ábrela desde tu celular y agrégala a tu inicio: queda como app.', 'Activa los avisos para enterarte de cada compra con tu liga.', '¿Eres creador de contenido, escuela o institución? También hay comisiones en dinero, solo por invitación: <a href="mailto:hola@vorka.mx" style="color:#E6CF96">hola@vorka.mx</a>.'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
+    <ul>${['Ábrela desde tu celular y agrégala a tu inicio: queda como app.', 'Activa los avisos para enterarte de cada compra con tu liga.', '¿Eres creador de contenido, escuela o institución? Escríbenos y te ayudamos a compartir: <a href="mailto:hola@vorka.mx" style="color:#E6CF96">hola@vorka.mx</a>.'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
   </div>
   ${cuenta ? `<div class="pv-entrada pv-ya"><h2>Hola de nuevo</h2><p class="pv-sub">Tu liga, tus metas y tus puntos están en tu app.</p><a class="pv-btn oro ancho" href="/tienda/cuenta/">Abrir mi app ${I.flecha}</a></div>` : formEntrar()}
 </div></div></section>

@@ -6,9 +6,8 @@ import { proveedor } from './pagos/index.js';
 import { aplicarPago, registrarEvento, marcarEvento, registrarAnalitica, itemsDeOrden } from './modelo.js';
 import { entregar } from './entrega.js';
 import { programarTransferencias, anularTransferencias } from './marketplace.js';
-import { puntosAlPagar, puntosAlReembolsar } from './puntos.js';
+import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
-import { comisionAlPagar, comisionAlReembolsar, comisionFactura } from './socios.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -33,19 +32,17 @@ export async function webhook(req, env, nombre) {
       // Reparto a creadores (si hay productos de creadores). Idempotente.
       if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null) await programarTransferencias(env, pago.orderId, { fee: pago.stripe_fee_centavos });
       if (r.accion === 'revocar') await anularTransferencias(env, pago.orderId);
-      // Puntos Vorka: suma al que compartió la liga y descuenta los usados; en reembolso, se revierten. Idempotente.
+      // Puntos Vorka: % en puntos al que compartió la liga (según su nivel del semestre) y descuenta los usados;
+      // en reembolso, se revierten. Idempotente.
       if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
       if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
-      // Socios Vorka: comisión al pagarse (pendiente hasta que pase la retención); en reembolso se cancela o se ajusta. Idempotente.
-      if (r.orden?.estado === 'paid') await comisionAlPagar(env, pago.orderId);
-      if (r.accion === 'revocar') await comisionAlReembolsar(env, pago.orderId);
     }
     // Suscripciones (Vuelve): la primera compra, renovaciones, fallas de pago y cancelaciones actualizan su renglón
     if (pasarela.suscripcionDe) {
       const sub = await pasarela.suscripcionDe(evento, env, pago);
       if (sub) await guardarSuscripcion(env, sub);
-      // Renovación pagada de una suscripción que entró con el código de un socio: comisión hasta la factura N
-      if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) await comisionFactura(env, await pasarela.facturaDe(evento, env), sub);
+      // Renovación pagada de una suscripción que entró con una liga de puntos: puntos hasta la factura 12
+      if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) await puntosFactura(env, await pasarela.facturaDe(evento, env), sub);
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });

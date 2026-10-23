@@ -18,6 +18,10 @@
 /services        /servicios        301
 /services/*      /servicios        301
 
+# Socios Vorka se integró a Puntos Vorka (octubre 2026)
+/legal/socios      /legal/terminos/#puntos   301
+/legal/socios/     /legal/terminos/#puntos   301
+
 # Tienda: el aviso de privacidad es uno solo para todo el sitio
 /legal/aviso-de-privacidad    /privacidad/   301
 /legal/aviso-de-privacidad/   /privacidad/   301

@@ -1,6 +1,5 @@
 # Vorka México · páginas legales de la tienda (y de Cupo: /legal/cupo/, /legal/cupo/privacidad/, /legal/cupo/privacidad-asistentes/): /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
-# Socios Vorka: /legal/socios/ (condiciones del programa de socios; versión preliminar)
 # Cuentas: /legal/cuentas/ (condiciones) y /legal/cuentas/privacidad/
 # Vuelve: /legal/vuelve/ (condiciones), /legal/vuelve/privacidad/ (negocios) y /legal/vuelve/privacidad-clientes/ (clientes de cada negocio)
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
@@ -13,7 +12,6 @@ ACTUALIZADO = '15 de octubre de 2026'
 ACTUALIZADO_BRINDI = '18 de octubre de 2026'
 ACTUALIZADO_CUPO = '19 de octubre de 2026'
 ACTUALIZADO_VUELVE = '20 de octubre de 2026'
-ACTUALIZADO_SOCIOS = '20 de octubre de 2026'
 ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
@@ -63,16 +61,18 @@ TERMINOS = [
         'Es tu responsabilidad escribir bien tu correo al comprar. Si te equivocaste, escríbenos con tu número de orden y lo corregimos.')),
     ('puntos', 'Programa de puntos Vorka', li(
         'Cualquier persona mayor de edad puede crear gratis una cuenta de puntos con su correo en <a href="/tienda/puntos/">vorka.mx/tienda/puntos</a> y recibir una liga personal para recomendar productos de la tienda. Tu cuenta se usa desde la app “Puntos Vorka” (<a href="/tienda/cuenta/">vorka.mx/tienda/cuenta</a>), que puedes agregar a la pantalla de inicio de tu celular. Para entrar te enviamos a tu correo un enlace y un código de 6 dígitos (vence en 15 minutos y sirve una sola vez).',
-        'Por cada compra pagada que entre con tu liga ganas 10 puntos. No cuentan las compras hechas con tu mismo correo. La persona que llega con tu liga tiene 30 días para comprar.',
-        '<b>Puntos dobles.</b> Una compra con tu liga vale 20 puntos en lugar de 10 si incluye: (a) un producto con una promoción de puntos dobles vigente el día del pago (las anunciamos en la app con sus fechas, en hora del centro de México, y aplican para todos), o (b) un producto que tú nos sugeriste desde la app y que Vorka aceptó y ligó a esa sugerencia, en compras pagadas después de aceptarla. Se cuentan una vez por compra y no se acumulan entre sí: el máximo son 20 puntos por compra. Enviar una sugerencia no obliga a Vorka a crear el producto ni le da derechos sobre él a quien la envía; Vorka decide qué sugerencias acepta.',
-        'Cada punto equivale a $1 MXN de descuento en productos de Vorka México (no en productos de creadores). Se usan al pagar, con el mismo correo de tu cuenta; siempre se cobra al menos $10 MXN por compra. Los puntos no se cambian por dinero ni se transfieren.',
-        'Si una compra hecha con tu liga se reembolsa o se desconoce el cargo, se descuentan exactamente los puntos que te dio (10 o 20). Si se reembolsa una compra en la que usaste puntos, te los regresamos.',
-        '<b>Niveles, metas y logros.</b> Los niveles (Inicial, Bronce, Plata, Oro y Diamante, según tus compras con tu liga que no se reembolsaron), las metas y los logros son solo reconocimiento dentro de la app: no dan dinero, puntos extra ni descuentos adicionales.',
+        'Por cada compra pagada que entre con tu liga ganas en puntos un porcentaje de lo que se pagó por productos de Vorka México (después de descuentos y con IVA incluido; los productos de creadores no dan puntos). No cuentan las compras hechas con tu mismo correo. La persona que llega con tu liga tiene 30 días para comprar.',
+        '<b>Niveles.</b> El porcentaje depende de tu nivel, que se calcula con tus compras con tu liga del semestre (enero a junio y julio a diciembre, en hora del centro de México) que no se reembolsaron: Inicial 10% (de 0 a 2 compras), Bronce 15% (desde 3), Plata 20% (desde 10), Oro 25% (desde 25) y Diamante 30% (desde 50). Cada compra usa el porcentaje del nivel que tenías antes de ella. Al empezar cada semestre todas las cuentas vuelven a Inicial; los puntos que ya ganaste no cambian.',
+        '<b>Puntos extra.</b> Una compra con tu liga suma 10 puntos porcentuales más a tu nivel (con un máximo de 40% en total) si incluye: (a) un producto con una promoción de puntos extra vigente el día del pago (las anunciamos en la app con sus fechas, en hora del centro de México, y aplican para todos), o (b) un producto que tú nos sugeriste desde la app y que Vorka aceptó y ligó a esa sugerencia, en compras pagadas después de aceptarla. Se cuentan una vez por compra y no se acumulan entre sí. Enviar una sugerencia no obliga a Vorka a crear el producto ni le da derechos sobre él a quien la envía; Vorka decide qué sugerencias acepta.',
+        '<b>Suscripciones.</b> Si alguien contrata con tu liga una suscripción (por ejemplo, Vuelve), también ganas puntos en sus renovaciones pagadas hasta completar 12 pagos, con el porcentaje de tu nivel en ese momento. Las renovaciones no suben tu nivel.',
+        'Cada punto equivale a $1 MXN de descuento en productos de Vorka México (no en productos de creadores). Se usan al pagar, con el mismo correo de tu cuenta; siempre se cobra al menos $10 MXN por compra.',
+        'Si una compra hecha con tu liga se reembolsa o se desconoce el cargo, se descuentan exactamente los puntos que te dio. Si se reembolsa una compra en la que usaste puntos, te los regresamos.',
+        '<b>Metas y logros.</b> Las metas y los logros son reconocimiento dentro de la app: no dan puntos ni descuentos adicionales.',
         '<b>Top del mes (opcional).</b> Solo apareces si lo activas en la app. Se muestra tu nombre y la inicial de tu apellido (por ejemplo, “Ana L.”) y tu número de compras del mes a las demás cuentas del programa; puedes desactivarlo cuando quieras.',
         '<b>Avisos.</b> Las notificaciones en tu celular son opcionales: las activas y desactivas en la app o en tu navegador. Además te avisamos en la app, y por correo cuando ganas puntos o aceptamos tu sugerencia.',
         '<b>Visitas a tu liga.</b> Para mostrarte cuántas personas abrieron tu liga contamos una visita por persona al día. No guardamos la dirección IP: solo una huella cifrada que cambia cada día y no permite identificar ni seguir a nadie.',
         'Podemos cancelar puntos obtenidos con engaños (compras falsas, spam o suplantación). Si cambiamos o terminamos el programa, te avisaremos con al menos 30 días para que uses tus puntos.',
-        'Las comisiones en dinero para afiliados son un programa aparte, solo por invitación de Vorka.')),
+        'Vorka puede acordar por escrito condiciones adicionales con participantes específicos del programa; esas condiciones solo aplican a quienes las firman.')),
     ('licencia', 'Uso de los materiales', li(
         'Al comprar recibes una licencia personal, no exclusiva e intransferible para usar los materiales en tus propios proyectos, negocios u organizaciones.',
         'No puedes revender, compartir públicamente, subir a sitios de descarga ni distribuir los archivos, completos o en partes, ni presentarlos como propios.',
@@ -422,36 +422,6 @@ VUELVE_CLIENTES = [
     ('cambios', 'Cambios a este aviso', '<p>La versión vigente siempre está en esta dirección, enlazada desde cada página de registro y desde tu tarjeta.</p>'),
 ]
 
-# Condiciones de Socios Vorka. VERSIÓN PRELIMINAR: falta la revisión legal y fiscal (retenciones de ISR/IVA y CFDI de las comisiones).
-SOCIOS = [
-    ('aviso', 'Versión preliminar', '<p><b>Estas condiciones son una versión preliminar</b> y pueden cambiar tras su revisión legal y fiscal. Antes de tu primer pago te confirmaremos por correo la versión final y, en su caso, los datos fiscales que necesitemos.</p>'),
-    ('quien', 'Quiénes participan', f'<p>Estas condiciones regulan la relación entre {RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, y las personas o negocios que Vorka invita a recomendar sus productos a cambio de una comisión (“socios”). Socios Vorka es <b>solo por invitación</b>: Vorka da de alta a cada socio y puede pausar o terminar su participación. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
-    ('codigo', 'Tu código y tu liga', li(
-        'Recibes un código (por ejemplo, ANA-CELAYA) y una liga vorka.mx/tienda/?socio=TU-CÓDIGO. Quien entra con tu liga queda ligado a ti durante 30 días en ese navegador; si escribe un código al pagar, cuenta el código escrito.',
-        'Comprarte a ti mismo con tu código no genera comisión ni descuento.',
-        'Si Vorka configura un descuento para tu código, lo recibe quien compra; no aplica a suscripciones.',
-        'Tu código no da acceso a tu portal: entras con el enlace que llega a tu correo.')),
-    ('comision', 'Comisiones', li(
-        'Ganas una comisión por cada compra pagada con tu código o tu liga de productos de Vorka México (no de creadores del marketplace).',
-        'La comisión es escalonada por mes calendario (hora del centro de México): salvo que Vorka te indique otros porcentajes, 15% en tus primeras 10 ventas del mes y 25% de la venta 11 en adelante. El conteo vuelve a empezar cada mes y el porcentaje queda fijo al momento de cada venta.',
-        'Se calcula sobre lo efectivamente pagado por el comprador (después de descuentos, con IVA incluido y antes de comisiones del procesador de pagos).',
-        'En suscripciones (por ejemplo, Vuelve) ganas comisión en la compra y en las renovaciones pagadas hasta completar 12 pagos, salvo que Vorka te indique otro número.')),
-    ('retencion', 'Retención y reembolsos', li(
-        'Cada comisión queda en retención 7 días después del pago para cubrir reembolsos y contracargos; después pasa a disponible.',
-        'Si una compra se reembolsa o tiene contracargo antes de que te paguemos su comisión, la comisión se cancela. Si ya te la pagamos, se descuenta de tus siguientes comisiones.')),
-    ('pagos', 'Pagos', li(
-        'Cada lunes juntamos tus comisiones disponibles y te las transferimos por SPEI a la CLABE que nos diste; también puedes pedir tu pago antes desde tu portal.',
-        'Es tu responsabilidad que tu CLABE y tus datos estén correctos. Te mandamos la clave de rastreo de cada transferencia.',
-        'Si el saldo de un periodo es negativo por ajustes, se compensa con tus siguientes comisiones.')),
-    ('impuestos', 'Impuestos', '<p>Las comisiones son ingresos para ti y eres responsable de tus obligaciones fiscales. Vorka puede pedirte tu RFC y, cuando la ley lo exija, aplicar retenciones de impuestos o pedirte un comprobante fiscal (CFDI) antes de pagarte. Te avisaremos antes de tu primer pago.</p>'),
-    ('conducta', 'Cómo recomendar', li(
-        'Recomienda con honestidad: no prometas resultados, precios o descuentos que no existan, ni te presentes como empleado o representante de Vorka.',
-        'No envíes mensajes masivos sin consentimiento (spam) ni uses la marca Vorka en anuncios pagados sin autorización por escrito.',
-        'Vorka puede no pagar comisiones de compras hechas con engaño, fraude o en contra de estas condiciones, y pausar tu código.')),
-    ('privacidad', 'Datos personales', '<p>Tratamos tus datos (nombre, correo, teléfono, CLABE, banco y RFC) para administrar el programa y pagarte, conforme al <a href="/privacidad/">aviso de privacidad</a>. Por privacidad, en tu portal ves el producto, la fecha, el monto y tu comisión de cada venta, pero nunca quién compró.</p>'),
-    ('cambios', 'Cambios y terminación', '<p>Vorka puede cambiar estas condiciones o los porcentajes con aviso por correo; los cambios aplican a ventas posteriores. Tú o Vorka pueden terminar la participación en cualquier momento; las comisiones ya disponibles se pagan conforme a estas condiciones.</p>'),
-]
-
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -460,7 +430,7 @@ def escribir(ruta, html):
     print('·', os.path.relpath(p, RAIZ), f'{len(html) // 1024} KB')
 
 escribir('/legal/terminos/', pagina('/legal/terminos/', 'Términos y condiciones', 'Términos y <span class="metal">condiciones.</span>',
-    'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS, actualizado='19 de octubre de 2026'))
+    'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS, actualizado='23 de octubre de 2026'))
 escribir('/legal/reembolsos/', pagina('/legal/reembolsos/', 'Política de reembolsos', 'Política de <span class="metal">reembolsos.</span>',
     'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS, actualizado='22 de octubre de 2026'))
 escribir('/legal/creadores/', pagina('/legal/creadores/', 'Términos para creadores', 'Términos para <span class="metal">creadores.</span>',
@@ -498,6 +468,3 @@ escribir('/legal/cuentas/', pagina('/legal/cuentas/', 'Condiciones de Cuentas', 
 escribir('/legal/cuentas/privacidad/', pagina('/legal/cuentas/privacidad/', 'Aviso de privacidad de Cuentas', 'Aviso de privacidad de <span class="metal">Cuentas.</span>',
     'Qué datos tratamos de las personas que usan Cuentas y de quienes registran en ella, para qué y cómo ejercer tus derechos.', 'Cuentas', CUENTAS_PRIVACIDAD,
     aplica='Aplica a quien usa cuentas.vorka.mx', migas=MIGAS_CUENTAS, actualizado=ACTUALIZADO_CUENTAS))
-escribir('/legal/socios/', pagina('/legal/socios/', 'Condiciones de Socios Vorka', 'Condiciones de <span class="metal">Socios Vorka.</span>',
-    'Cómo funciona recomendar productos de Vorka México con tu código: comisiones escalonadas, retención, reembolsos, pagos por SPEI e impuestos. Versión preliminar.', 'Socios', SOCIOS,
-    aplica='Aplica a los socios invitados por Vorka México', actualizado=ACTUALIZADO_SOCIOS))
