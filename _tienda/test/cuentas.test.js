@@ -46,6 +46,7 @@ beforeEach(() => {
     if (url.endsWith('/billing_portal/sessions')) return ok({ url: 'https://billing.stripe.com/p/session/x' });
     if (url.endsWith('/products')) return ok({ id: 'prod_stripe_suc' });
     if (url.includes('/subscription_items')) return ok({ id: 'si_nuevo' });
+    if (url.includes('/balance_transactions')) return ok({ id: 'cbtxn_1' });
     return new Response('{}', { status: 404 });
   }));
 });
@@ -147,5 +148,23 @@ describe('plan anual de Cuentas', () => {
   it('con una suscripción vigente no se compra la otra', async () => {
     env.DB.raw.exec("INSERT INTO suscripciones (id, email, app, product_id, estado) VALUES ('sub_m', 'laura@correo.mx', 'cuentas', 'prod_cuentas_mensual', 'active')");
     expect((await comprar({ slug: 'cuentas-anual' })).status).toBe(409);
+  });
+});
+
+describe('mes gratis por invitar (crédito)', () => {
+  it('con suscripción vigente deja saldo a favor en Stripe', async () => {
+    const { order } = await (await comprar()).json();
+    stripe.orden = order; stripe.sub = sub();
+    await evento('checkout.session.completed', 'cs_1');
+    const A = new Admin({}, env);
+    expect(await A.creditoApp('laura@correo.mx', 'cuentas', 9900, 'Mes gratis por invitar')).toEqual({ ok: true });
+    const p = llamada('/customers/cus_1/balance_transactions')[0].params;
+    expect(p.get('amount')).toBe('-9900');
+    expect(p.get('currency')).toBe('mxn');
+  });
+  it('sin suscripción no hace nada (la app da días de cortesía)', async () => {
+    const A = new Admin({}, env);
+    expect(await A.creditoApp('nadie@correo.mx', 'cuentas', 9900, 'x')).toEqual({ ok: false, motivo: 'sin_suscripcion' });
+    await expect(A.creditoApp('laura@correo.mx', 'cuentas', 0, 'x')).rejects.toThrow();
   });
 });

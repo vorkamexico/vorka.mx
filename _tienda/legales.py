@@ -355,13 +355,17 @@ CUENTAS = [
         'Cuentas <b>solo registra y calcula</b>. No es un banco, una institución financiera ni una plataforma de financiamiento colectivo: no capta ni custodia dinero, no hace transferencias, no otorga créditos, no conecta a quien presta con quien pide prestado y no reporta a burós de crédito.',
         'El dinero se entrega y se paga directamente entre las personas, por sus propios medios. Los movimientos se capturan a mano y su estado (confirmado o por confirmar) es solo para tu control: no es una verificación bancaria.',
         '<b>Cuentas no sustituye un contrato ni asesoría jurídica, fiscal o financiera.</b> Los préstamos, sus intereses y sus obligaciones fiscales son responsabilidad de las partes. Para montos importantes te recomendamos un contrato o pagaré por escrito y consultar a un profesional.')),
-    ('prueba', 'Prueba gratis', li(
-        'Al crear tu cuenta tienes 7 días naturales con todas las funciones, sin dar una tarjeta. No se te cobra nada al terminar.',
-        'Si al terminar la prueba no te suscribes, tu cuenta queda en <b>modo consulta</b>: puedes ver, descargar e imprimir todos tus registros, pero no agregar ni cambiar movimientos. Te suscribes cuando quieras y todo sigue donde lo dejaste.')),
+    ('prueba', 'Plan gratis y prueba', li(
+        'Cuentas es <b>gratis para siempre con 1 préstamo activo</b> (sin archivar, sin eliminar y sin liquidar), con todas sus funciones. No pedimos tarjeta.',
+        'Al crear tu cuenta tienes además 7 días naturales para llevar todos los préstamos que quieras. No se te cobra nada al terminar.',
+        'Si sin suscripción tienes más de 1 préstamo activo, tu cuenta queda en <b>modo consulta</b>: puedes ver, descargar e imprimir todos tus registros, pero no agregar ni cambiar movimientos. Archiva los que ya terminaron o suscríbete y todo sigue donde lo dejaste.')),
+    ('referidos', 'Invita y gana', li(
+        'Desde Cuentas › Ajustes tienes un enlace para invitar. Por cada persona que se registre con él y se suscriba por primera vez, te regalamos <b>un mes</b>: si tienes suscripción, como saldo a favor en tu siguiente cobro; si no, como 30 días de acceso completo.',
+        'El premio es uno por cada cuenta invitada, no se cambia por dinero y no aplica a cuentas propias ni duplicadas. Podemos retirarlo si detectamos abuso.')),
     ('suscripcion', 'Suscripción, precio y renovación automática', li(
         'El plan es <b>mensual o anual</b>, en pesos mexicanos con IVA incluido. El precio vigente se muestra en <a href="/tienda/cuentas/">vorka.mx/tienda/cuentas</a> antes de pagar.',
         '<b>La suscripción se renueva sola</b> al final de cada periodo (cada mes o cada año, según tu plan) y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
-        'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto tu cuenta sigue funcionando. Si no se logra cobrar, la suscripción se cancela y tu cuenta queda en modo consulta.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto tu cuenta sigue funcionando. Si no se logra cobrar, la suscripción se cancela y vuelves al plan gratis.',
         'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
         'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
     ('cancelar', 'Cancelación y reembolsos', li(
@@ -489,7 +493,7 @@ escribir('/legal/vuelve/privacidad-clientes/', pagina('/legal/vuelve/privacidad-
     'Te registraste en el programa de lealtad de un negocio que usa Vuelve. Esto es lo que pasa con tus datos.', 'Vuelve · Clientes', VUELVE_CLIENTES,
     aplica='Aplica a quien tiene una tarjeta de Vuelve', migas=MIGAS_VUELVE, actualizado=ACTUALIZADO_VUELVE))
 escribir('/legal/cuentas/', pagina('/legal/cuentas/', 'Condiciones de Cuentas', 'Condiciones de <span class="metal">Cuentas.</span>',
-    'El contrato entre Vorka México y quien usa Cuentas para llevar sus préstamos personales: qué es y qué no es, prueba gratis, suscripción mensual o anual con renovación automática, cancelación y datos.', 'Cuentas', CUENTAS,
+    'El contrato entre Vorka México y quien usa Cuentas para llevar sus préstamos personales: qué es y qué no es, plan gratis, suscripción mensual o anual con renovación automática, invita y gana, cancelación y datos.', 'Cuentas', CUENTAS,
     aplica='Aplica a quien usa cuentas.vorka.mx', migas=MIGAS_CUENTAS, actualizado=ACTUALIZADO_CUENTAS))
 escribir('/legal/cuentas/privacidad/', pagina('/legal/cuentas/privacidad/', 'Aviso de privacidad de Cuentas', 'Aviso de privacidad de <span class="metal">Cuentas.</span>',
     'Qué datos tratamos de las personas que usan Cuentas y de quienes registran en ella, para qué y cómo ejercer tus derechos.', 'Cuentas', CUENTAS_PRIVACIDAD,

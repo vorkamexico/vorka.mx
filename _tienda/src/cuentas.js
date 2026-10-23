@@ -16,13 +16,14 @@ const PLANES = [{ slug: 'cuentas-mensual', nombre: 'Mensual', cada: 'al mes', re
 const INCLUYE = ['Personas y préstamos ilimitados', 'Pagos flexibles o cuotas fijas, con o sin interés', 'Desglose de cada abono: cuánto va a interés y cuánto a capital',
   'Simulación de liquidación a cualquier fecha', 'Estado de cuenta en PDF y Excel', 'Enlace de solo lectura para la persona que te debe', 'Recordatorios por correo', 'Acceso para tu pareja o alguien de confianza'];
 const FAQ = [
-  ['¿Puedo probar antes de pagar?', `Sí. Entra a <a href="${APP}/entrar">cuentas.vorka.mx</a> con tu correo y úsala completa 7 días, sin tarjeta. Si te sirve, te suscribes con el mismo correo; si no, no pasa nada.`],
+  ['¿Es gratis?', `Sí: con 1 préstamo activo, Cuentas es gratis para siempre, con todo (acuerdo, recibos, recordatorios y estado de cuenta). Los primeros 7 días puedes llevar los que quieras para probar. Si prestas a varias personas a la vez, el plan mensual o anual te deja llevar todos. Entra en <a href="${APP}/entrar">cuentas.vorka.mx</a> con tu correo; no pedimos tarjeta.`],
   ['¿Cuentas presta dinero o lo mueve?', 'No. Cuentas solo lleva el registro. El dinero se entrega y se paga directamente entre ustedes, por transferencia o depósito, como siempre. No somos banco, no pedimos tus datos bancarios y no nos conectamos a tu cuenta.'],
   ['¿Cómo calcula los intereses?', 'Con interés simple sobre lo que falta por pagar, por día, desde la fecha de cada abono. Nunca suma intereses al capital y no pone cargos por atraso que no hayan pactado. Cada número trae su explicación para que lo revises con calculadora.'],
   ['¿Sirve si presto sin intereses?', 'Sí. Puedes llevar préstamos sin interés, con pagos cuando se pueda o con cuotas fijas. Verás siempre cuánto falta y cuánto se ha pagado.'],
   ['¿La persona que me debe puede ver su saldo?', 'Si tú quieres. Le compartes un enlace privado de solo lectura con su estado de cuenta, y lo desactivas cuando quieras. Cuentas nunca le escribe ni le cobra: los avisos son solo para ti.'],
   ['¿Y si se equivocan en una fecha o un monto?', 'Editas el movimiento y todo se recalcula. Si ya estaba confirmado, te pide el motivo y queda en el historial de cambios, para que siempre haya claridad.'],
-  ['¿Qué pasa si dejo de pagar la suscripción?', 'Tu cuenta queda en modo consulta: puedes ver, imprimir y descargar todos tus registros, pero no agregar movimientos nuevos. Cuando vuelvas a suscribirte, todo sigue donde lo dejaste.'],
+  ['¿Qué pasa si dejo de pagar la suscripción?', 'Vuelves al plan gratis. Si tienes más de 1 préstamo activo, tu cuenta queda en modo consulta: ves y descargas todo, pero para registrar archiva los que ya terminaron o vuelve a suscribirte. Todo sigue donde lo dejaste.'],
+  ['¿Gano algo si la recomiendo?', 'Sí: en Cuentas › Ajustes tienes tu enlace para invitar. Por cada persona que se suscriba con él, te regalamos un mes.'],
   ['¿Cuánto cuesta y cómo pago?', 'Mensual ($99 al mes) o anual ($799 al año, ahorras $389), los dos con todo incluido. Pagas con tarjeta de crédito o débito, procesado por Stripe. Te emitimos factura (CFDI) si la pides.'],
   ['¿Y si pago el anual y no me convence?', 'Si cancelas dentro de los 10 días naturales siguientes al cobro anual, te devolvemos tu dinero completo. Escríbenos a hola@vorka.mx.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Cuentas › Ajustes › Suscripción, sin llamadas. Tu cuenta sigue completa hasta el final del mes pagado.'],
@@ -116,10 +117,10 @@ ${navTienda('finanzas')}
 </div></section>
 
 <section class="cu-sec suave" id="planes"><div class="marco">
-  <div class="cu-cab"><span class="cu-et">Precio</span><h2>Pruébala 7 días. Después, un plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Cancela cuando quieras.</p></div>
+  <div class="cu-cab"><span class="cu-et">Precio</span><h2>Gratis con 1 préstamo. Para más, un plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Cancela cuando quieras.</p></div>
   <div class="cu-planes">
-    <article class="cu-plan"><h3>Prueba</h3><p class="cu-para">Todo Cuentas, 7 días</p><p class="cu-precio"><b>$0</b></p>
-      <ul>${['Sin tarjeta', 'Todas las funciones', 'Tus registros se quedan si decides seguir'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
+    <article class="cu-plan"><h3>Gratis</h3><p class="cu-para">Para quien presta de vez en cuando</p><p class="cu-precio"><b>$0</b> <small>para siempre</small></p>
+      <ul>${['1 préstamo activo, con todo', 'Acuerdo, recibos y recordatorios', 'Los primeros 7 días, préstamos ilimitados', 'Sin tarjeta'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
       <a class="cu-btn ghost oscuro" href="${APP}/entrar">Empezar gratis</a></article>
     ${planes.map(x => `<article class="cu-plan${x.slug === 'cuentas-mensual' ? ' rec' : ''}">${x.slug === 'cuentas-anual' && ahorro > 0 ? `<span class="cu-sello">Ahorra ${pesosRedondo(ahorro)}</span>` : ''}<h3>${x.nombre}</h3><p class="cu-para">Préstamos ilimitados</p><p class="cu-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
       ${x.slug === 'cuentas-anual' ? `<p class="cu-para" style="margin-top:-4px">Equivale a ${pesosRedondo(Math.round(x.prod.precio_centavos / 12))} al mes, en un solo pago</p>` : ''}
