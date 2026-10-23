@@ -2634,14 +2634,24 @@
     .ses-n { grid-area: n; font-size: 1.7rem; align-self: start; padding-top: 4px; } .ses-nom { grid-area: nom; } .ses-desc { grid-area: desc; font-size: 14.5px; } .ses-dato { grid-area: dato; text-align: left; } .ses-ir { grid-area: ir; width: 44px; height: 44px; align-self: start; }
     .ses-dato b { font-size: 1.4rem; } .ses-dato i { display: inline; margin-left: 6px; }
   }
-  /* Paleta de etiquetas: solo colores del sitio (negro, amarillo y papel). El punto amarillo indica cifra en vivo */
-  .hx-tag.t-rosa { background: #141414; color: #F5F5F0; box-shadow: 0 14px 30px -12px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.12); }
-  .hx-tag.t-rosa b { color: #F7B33E; }
-  .hx-tag.t-rosa::before { content: ""; flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: #F7B33E; box-shadow: 0 0 0 0 rgba(247,179,62,.7); animation: envivo 2s ease-out infinite; }
-  @keyframes envivo { 0% { box-shadow: 0 0 0 0 rgba(247,179,62,.7); } 70%, 100% { box-shadow: 0 0 0 8px rgba(247,179,62,0); } }
-  .hx-tag.t-amarilla { background: #F7B33E; color: #141414; }
-  .hx-tag.t-roja { background: #FFFFFF; color: #141414; box-shadow: 0 14px 30px -14px rgba(0,0,0,.35), inset 0 0 0 1px rgba(20,20,20,.08); }
-  .hx-tag.t-roja b { color: #141414; }
+  /* Paleta de etiquetas: azul, amarillo y morado de Vorka. El punto amarillo indica cifra en vivo */
+  .hx-tag.t-rosa { background: var(--c-blue, #2E88C8); color: #fff; }
+  .hx-tag.t-rosa b { color: #fff; }
+  .hx-tag.t-rosa::before { content: ""; flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: #F7B33E; box-shadow: 0 0 0 0 rgba(247,179,62,.8); animation: envivo 2s ease-out infinite; }
+  @keyframes envivo { 0% { box-shadow: 0 0 0 0 rgba(247,179,62,.8); } 70%, 100% { box-shadow: 0 0 0 8px rgba(247,179,62,0); } }
+  .hx-tag.t-amarilla { background: var(--accent, #F7B33E); color: #141414; }
+  .hx-tag.t-roja { background: var(--c-purple, #8446A8); color: #fff; }
+  .hx-tag.t-roja b { color: #fff; }
+  .hx-tag { box-shadow: 0 12px 26px -14px rgba(0,0,0,.45); }
+  /* Celular: portada centrada y equilibrada */
+  @media (max-width: 760px) {
+    .hx-nom { text-align: center; }
+    .hx-ape { text-align: center; }
+    .hx-izq { text-align: center; margin: 0 auto; max-width: 34ch; }
+    .hx-ctas { justify-content: center; flex-direction: column; gap: 14px; }
+    .hx-tag, .hx-tag.atras { left: 0 !important; right: 0 !important; margin: 0 auto !important; width: max-content; }
+    .hx-ver { left: 0; right: 0; margin: 0 auto; width: max-content; }
+  }
   @media (prefers-reduced-motion: reduce) { .hx-tag.t-rosa::before { animation: none; } }
 </style>
 </head>
@@ -2709,7 +2719,7 @@
   <div class="hx-figura">
     <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Impactando en</span> <b data-vivo="municipios">121</b> <span>municipios</span></a>
     <a class="hx-tag t-roja atras" href="./conferencias/"><span>Inspirando en</span> <b>+100</b> <span>conferencias</span></a>
-    <img class="hx-foto" src="img/brandon-portada.webp" alt="Brandon Oleynick saludando" width="1000" height="1521" fetchpriority="high">
+    <img class="hx-foto" src="img/brandon-portada.webp?v=2" alt="Brandon Oleynick saludando" width="1000" height="1521" fetchpriority="high">
     <a class="hx-tag t-amarilla" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><span>Liderando</span> <b>+3,000</b> <span>juventudes</span></a>
     <button class="hx-ver" type="button" aria-expanded="false" data-abrir="Ver mi impacto"><i aria-hidden="true">+</i><span>Mi impacto</span></button>
   </div>
