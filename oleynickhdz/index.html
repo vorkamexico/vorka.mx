@@ -584,7 +584,7 @@
   .hx-nombre { position: absolute; z-index: -2; left: 0; right: 0; top: clamp(40px, 7vh, 80px); margin: 0; padding: 0 var(--gutter); pointer-events: none; }
   .hx-nom { display: block; font-family: var(--font); font-weight: 800; font-size: clamp(2.6rem, 6vw, 5.4rem); letter-spacing: -0.02em; line-height: 1; text-transform: uppercase; color: var(--accent); }
   .hx-ape { display: block; font-family: 'Anton', 'Impact', 'Arial Narrow', sans-serif; font-weight: 400; text-transform: uppercase; font-size: clamp(6rem, 26vw, 26rem); line-height: .86; letter-spacing: .005em; color: #E6E6E2; margin-top: .02em; white-space: nowrap; }
-  .hx-foto { position: absolute; z-index: -1; left: 54%; bottom: 0; transform: translateX(-50%); height: min(80vh, 820px); width: auto; max-width: none; filter: drop-shadow(0 30px 60px rgba(0,0,0,.55)); }
+  .hx-foto { position: absolute; z-index: -1; left: 57%; bottom: 0; transform: translateX(-50%); height: min(84vh, 860px); width: auto; max-width: none; filter: drop-shadow(0 30px 60px rgba(0,0,0,.55)); }
   .hx-frente { position: relative; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-bottom: clamp(28px, 5vh, 52px); }
   .hx-izq { max-width: 400px; }
   .hx-lede { margin: 0; font-size: 15.5px; line-height: 1.5; color: rgba(245,245,240,.82); text-shadow: 0 2px 12px rgba(0,0,0,.6); }
@@ -2435,6 +2435,10 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
   :root[data-theme="dark"] { --accent-ink: var(--accent); }
   .eyebrow-y, .section-title .accent, .perfil-body .side .row.c-y .k, .principio .num, .form-item.c-y .level, .habla-direct h5 { color: var(--accent-ink); }
+  /* Instagram del encabezado: sobrio, del mismo estilo que los demás botones */
+  .ig-btn { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; box-shadow: none !important; }
+  .ig-btn::after { display: none !important; }
+  .ig-btn:hover { border-color: var(--ink) !important; transform: none !important; }
 </style>
 </head>
 <body>
@@ -2500,7 +2504,7 @@
 <section class="hx" aria-label="Presentación">
   <div class="hx-marca" aria-hidden="true"><b>BRANDON <span>OLEYNICK</span></b><small>@oleynickhdz</small></div>
   <h1 class="hx-nombre"><span class="hx-nom">Brandon</span><span class="hx-ape">Oleynick</span></h1>
-  <img class="hx-foto" src="img/brandon-recorte.webp" alt="Brandon Oleynick, de traje y con los brazos cruzados" width="1037" height="1500" fetchpriority="high">
+  <img class="hx-foto" src="img/brandon-portada.webp" alt="Brandon Oleynick saludando, con una figura de facetas de colores detrás" width="1010" height="1400" fetchpriority="high">
   <div class="shell hx-frente">
     <div class="hx-izq">
       <p class="hx-lede">Líder social juvenil. Fundador y presidente nacional de <strong>Juventudes Impactando México</strong>, fundador y CEO de <strong>Vorka México</strong> y director de <strong>Oleynick Group</strong>.</p>

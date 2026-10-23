@@ -567,6 +567,10 @@
   .uso{font-size:13.5px;color:var(--muted);margin-top:18px}
   @media (max-width:880px){.p-hero{grid-template-columns:1fr}.p-foto{max-width:380px}.datos{grid-template-columns:repeat(2,minmax(0,1fr))}.premios{grid-template-columns:1fr}.fotos{grid-template-columns:1fr 1fr}.contacto-p{grid-template-columns:1fr}}
   @media (max-width:560px){.fotos{grid-template-columns:1fr}.bio-top{flex-wrap:wrap}}
+  /* Instagram del encabezado: sobrio, del mismo estilo que los demás botones */
+  .ig-btn { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; box-shadow: none !important; }
+  .ig-btn::after { display: none !important; }
+  .ig-btn:hover { border-color: var(--ink) !important; transform: none !important; }
 </style>
 </head>
 <body>

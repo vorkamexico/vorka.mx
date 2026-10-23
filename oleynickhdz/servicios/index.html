@@ -1464,6 +1464,10 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-ink: var(--accent); } }
   :root[data-theme="dark"] { --accent-ink: var(--accent); }
   .section-eyebrow, .section-title em, .section-title .accent, .how-step:nth-child(3) .n, .method-card .num, .stars { color: var(--accent-ink); }
+  /* Instagram del encabezado: sobrio, del mismo estilo que los demás botones */
+  .ig-btn { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; box-shadow: none !important; }
+  .ig-btn::after { display: none !important; }
+  .ig-btn:hover { border-color: var(--ink) !important; transform: none !important; }
 </style>
 </head>
 <body>
