@@ -85,7 +85,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700;800&display=swap">
 <style>
   :root {
     --paper:#FFFFFF; --paper-2:#F5F5F1; --paper-3:#EBEBE6;
@@ -489,6 +489,36 @@
   @media (max-width: 520px) { .site-header .nav-shell { height: 58px !important; } .brand-mark { width: 40px !important; height: 40px !important; } .site-header .ig-btn, .site-header .toggle { width: 40px; height: 40px; } }
   body { padding-top: 86px; }
   .hero, .hero-centered { scroll-margin-top: 90px; }
+
+  /* =====================================================================
+     SISTEMA DE DISEÑO (mismo lenguaje que la portada del inicio)
+     ===================================================================== */
+  :root { --paper: #F2F1EC; --paper-2: #E9E8E2; --paper-3: #DEDDD6; --rule: #D9D8D0; --display: 'Anton', 'Impact', 'Arial Narrow', sans-serif; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; } }
+  :root[data-theme="dark"] { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; }
+  body { background: var(--paper); }
+  .band-2 { background: transparent !important; }
+  .section + .section { border-top: 0 !important; }
+  .section-eyebrow { font-size: 12px !important; font-weight: 800 !important; letter-spacing: .16em !important; text-transform: uppercase; color: var(--muted) !important; }
+  .section-eyebrow::before { width: 28px !important; height: 3px !important; background: var(--accent) !important; }
+  .section-title, .hero h1, .p-hero h1, .portada h1 { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; letter-spacing: .005em !important; text-wrap: balance; }
+  .section-title { font-size: clamp(2.4rem, 5.6vw, 4.8rem) !important; line-height: .94 !important; }
+  .section-title em, .section-title .a-o, .section-title .accent { color: var(--accent) !important; font-style: normal; }
+  .hero h1, .p-hero h1 { line-height: .92 !important; }
+  /* menos texto: temas en una línea, pasos sin párrafo, fotos en gris con un toque de color */
+  .tema-points { display: none !important; }
+  .paso p { display: none !important; }
+  .gallery img, .galeria img, #galeria img { filter: grayscale(1) contrast(1.08); transition: filter .5s; }
+  #galeria figure:hover img, #galeria a:hover img, #galeria img:hover { filter: none; }
+  .cta-dark { background: #161616 !important; }
+  .hero-dots { display: none !important; }
+  .hero h1 .word.hl, .hero h1 .hl { background: none !important; color: var(--accent) !important; padding: 0 !important; box-shadow: none !important; }
+  .hero h1 { font-size: clamp(3rem, 9vw, 7rem) !important; }
+  .hero::before, .hero::after { opacity: .12 !important; }
+  .stats-strip { background: transparent !important; color: var(--ink) !important; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .stat .num { font-family: var(--display); font-weight: 400 !important; color: var(--ink) !important; font-size: clamp(2.6rem, 5vw, 4rem) !important; }
+  .stat .label { color: var(--muted) !important; }
+  .site-header .nav-right { margin-left: auto; }
 </style>
 </head>
 <body>
@@ -529,7 +559,7 @@
     </div>
     <div class="hero-eyebrow">Conferencias</div>
     <h1>+100 conferencias. <span class="word hl">Un mensaje que mueve.</span></h1>
-    <p class="hero-sub">Intervenciones sobre <strong>liderazgo juvenil, estrategia digital, impacto social y transformación de México</strong>. Como <strong>CEO de Vorka México</strong> y Presidente de Juventudes Impactando México A.C., preparo cada conferencia desde el contexto de tu público para universidades, foros institucionales, gobiernos y empresas.</p>
+    <p class="hero-sub">Liderazgo juvenil, impacto social y emprendimiento para universidades, gobiernos, foros y empresas. Cada conferencia se prepara para tu público.</p>
     <div class="hero-ctas">
       <a href="solicitar/" class="btn-primary">
         Solicitar una conferencia
@@ -855,24 +885,6 @@
       </div>
     </section>
   </div>
-</div>
-
-<!-- ============ VORKA CALLOUT ============ -->
-<div class="shell">
-  <section class="section" id="vorka-callout" style="padding-top:clamp(32px,5vh,56px);padding-bottom:clamp(32px,5vh,56px)">
-    <div class="vorka-card">
-      <div class="vorka-badge">
-        <span class="dot"></span>
-        CEO · Vorka México
-      </div>
-      <h3 class="vorka-title">¿Tu organización necesita <span class="word hl">más que una conferencia?</span></h3>
-      <p class="vorka-desc">Soy CEO de <strong>Vorka México</strong>, consultora especializada en fortalecimiento de empresas, organizaciones y gobierno en <strong>posicionamiento digital, redes sociales, relaciones públicas y talento humano</strong>. Si lo que buscas trasciende una conferencia, podemos conversarlo.</p>
-      <a href="https://vorka.mx/" target="_blank" rel="noopener" class="vorka-link">
-        Conoce Vorka México
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-      </a>
-    </div>
-  </section>
 </div>
 
 <!-- ============ GALERÍA ============ -->

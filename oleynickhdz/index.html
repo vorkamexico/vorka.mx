@@ -2482,6 +2482,65 @@
   .site-header .toggle { padding: 0 16px; }
   .site-header .ig-btn { width: 46px; }
   @media (max-width: 520px) { .site-header .nav-shell { height: 58px !important; } .brand-mark { width: 40px !important; height: 40px !important; } .site-header .ig-btn, .site-header .toggle { width: 40px; height: 40px; } }
+
+  /* =====================================================================
+     SISTEMA DE DISEÑO (mismo lenguaje que la portada)
+     Fondo único, títulos condensados en mayúsculas, amarillo como color
+     principal y rojo/verde/azul solo como acentos. Fotos en gris.
+     ===================================================================== */
+  :root { --paper: #F2F1EC; --paper-2: #E9E8E2; --paper-3: #DEDDD6; --rule: #D9D8D0; --rule-soft: #E4E3DC; --hx-bg: #F2F1EC; --display: 'Anton', 'Impact', 'Arial Narrow', sans-serif; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; --rule-soft: #202020; --hx-bg: #141414; } }
+  :root[data-theme="dark"] { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; --rule-soft: #202020; --hx-bg: #141414; }
+  body { background: var(--paper); }
+  .band-2 { background: transparent !important; }
+  .section + .section { border-top: 0 !important; }
+  .section { padding: clamp(64px, 10vh, 112px) 0 !important; }
+  .section-head { margin-bottom: clamp(32px, 5vh, 56px) !important; }
+  .section-eyebrow { font-size: 12px !important; font-weight: 800 !important; letter-spacing: .16em !important; text-transform: uppercase; color: var(--muted) !important; }
+  .section-eyebrow::before { width: 28px !important; height: 3px !important; background: var(--accent) !important; }
+  .section-title { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; font-size: clamp(2.6rem, 6.4vw, 5.6rem) !important; line-height: .92 !important; letter-spacing: .005em !important; text-wrap: balance; }
+  .section-title .accent, .section-title .a-o { color: var(--accent) !important; }
+  .reveal-intro, .section-lede { font-size: 16px !important; color: var(--muted) !important; max-width: 52ch; }
+  h3 { letter-spacing: -0.02em; }
+  /* tarjetas planas y consistentes */
+  .reveal-section .principio, .award, .form-item, .certs li, .comm, .faq-item, .service { border-radius: 20px !important; }
+  .reveal-section .principio, .form-item, .comm, .faq-item { background: var(--paper-2) !important; border: 1px solid var(--rule) !important; }
+  .reveal-section .principio .num { font-family: var(--display); font-weight: 400; font-size: 3rem !important; color: var(--accent) !important; }
+  /* trayectoria */
+  .venture p { font-size: 16px !important; max-width: 56ch; }
+  .venture h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(1.8rem, 3.2vw, 2.6rem) !important; letter-spacing: .005em !important; line-height: 1 !important; }
+  /* conferencias: tarjeta oscura como la portada */
+  .conf-card { background: #141414 !important; color: #F5F5F0; border-radius: 28px !important; }
+  .conf-title { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; font-size: clamp(2.2rem, 4.6vw, 3.8rem) !important; line-height: .95 !important; letter-spacing: .005em !important; color: #F5F5F0 !important; }
+  .conf-title .a-o { color: var(--accent) !important; }
+  .conf-eyebrow { color: var(--accent) !important; }
+  /* reconocimientos */
+  .award-year { font-family: var(--display); font-weight: 400 !important; font-size: 1.6rem !important; color: var(--accent) !important; }
+  .award-year::before { display: none !important; }
+  .respaldo-list { display: block !important; -webkit-mask-image: none !important; mask-image: none !important; overflow: visible !important; }
+  .rl-track { display: block !important; width: auto !important; animation: none !important; }
+  .respaldo-list .r { display: inline !important; background: none !important; padding: 0 !important; font-size: 15px !important; font-weight: 600 !important; color: var(--ink-soft) !important; line-height: 2 !important; white-space: nowrap; }
+  .respaldo-list .r:not(:last-child)::after { content: "·"; margin: 0 10px; color: var(--accent); }
+  .respaldo-list .r:hover { transform: none !important; }
+  /* habla conmigo: sin lista de promesas */
+  .habla-checks { display: none !important; }
+  /* barra: botones de la derecha alineados a la derecha */
+  .site-header .nav-right { margin-left: auto; }
+  /* conferencias: tarjeta con contraste en ambos modos */
+  .conf-card { background: #161616 !important; border: 1px solid rgba(255,255,255,.08); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .conf-card { background: #1E1E1E !important; } }
+  :root[data-theme="dark"] .conf-card { background: #1E1E1E !important; }
+  .conf-cta { background: var(--accent) !important; color: #111 !important; }
+  .conf-meta .k { color: var(--accent) !important; }
+  .conf-meta .m { border-color: var(--accent) !important; }
+  /* Puntos Vorka con el mismo lenguaje de la portada (conserva la V de Vorka) */
+  .vk-puntos { background: #161616 !important; font-family: var(--font) !important; }
+  .vk-raya { background: var(--accent) !important; opacity: .1 !important; }
+  .vk-puntos h2 { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; font-size: clamp(2.4rem, 5vw, 4rem) !important; line-height: .95 !important; letter-spacing: .005em !important; }
+  .vk-puntos h2 span { background: none !important; -webkit-background-clip: initial !important; background-clip: initial !important; color: var(--accent) !important; }
+  .vk-pre { color: var(--accent) !important; font-weight: 800 !important; }
+  .vk-pre svg { fill: var(--accent) !important; }
+  .vk-cta { background: var(--accent) !important; color: #111 !important; }
 </style>
 </head>
 <body>
@@ -2576,7 +2635,7 @@
   <section class="section reveal-section" id="manifiesto" aria-labelledby="h-manif">
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Manifiesto</div>
-      <h2 class="section-title" id="h-manif">Cinco principios que <span class="accent">guían mi trabajo.</span></h2>
+      <h2 class="section-title" id="h-manif">Lo que <span class="accent">me mueve.</span></h2>
       <p class="reveal-intro">Lo que sostiene cada decisión que tomo. Toca cada uno para leerlo.</p>
     </div>
     <div class="reveal-summary-wrap">
@@ -2696,7 +2755,7 @@
     <section class="section" id="trayectoria" aria-labelledby="h-tray">
       <div class="section-head">
         <div class="section-eyebrow eyebrow-g">Trayectoria</div>
-        <h2 class="section-title" id="h-tray">Tres organizaciones. Un mismo eje: <span class="a-g">articular impacto real.</span></h2>
+        <h2 class="section-title" id="h-tray">Tres proyectos. <span class="a-g">Un mismo eje.</span></h2>
       </div>
 
       <article class="venture c-g">
@@ -2712,7 +2771,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
             Ver sitio web
           </a>
-          <p>Asociación civil constituida e iniciativa nacional para el desarrollo juvenil. Coordino la estrategia y operación de un equipo de más de <strong>3,000 agentes de impacto</strong> distribuidos en <strong>30 estados</strong> de la República, articulando proyectos alineados con los <strong>17 Objetivos de Desarrollo Sostenible</strong> en educación, medio ambiente y emprendimiento. Establecemos alianzas con instituciones públicas y privadas para amplificar el alcance de cada iniciativa.</p>
+          <p>Red nacional de juventudes con <strong>más de 3,000 agentes de impacto</strong> en <strong>30 estados</strong> y proyectos alineados a los 17 ODS.</p>
         </div>
       </article>
 
@@ -2729,7 +2788,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
             Ver sitio web
           </a>
-          <p>Consultora dedicada al fortalecimiento de <strong>empresas, organizaciones y gobierno</strong> en desarrollo de estrategias de posicionamiento digital, redes sociales, relaciones públicas y talento humano. Superviso la implementación de estrategias y el diseño de soluciones que promueven modelos de <strong>sostenibilidad e innovación social</strong> para el crecimiento empresarial de nuestros aliados.</p>
+          <p>Consultora de estrategia, posicionamiento y talento para <strong>empresas, organizaciones y gobiernos</strong>.</p>
         </div>
       </article>
 
@@ -2742,7 +2801,7 @@
         </div>
         <div>
           <h3>Oleynick Group</h3>
-          <p>Grupo empresarial orientado a la <strong>innovación, el posicionamiento estratégico y la consultoría de alto impacto</strong>. Dirijo la visión estratégica, la operación y la expansión del holding y sus aliados, así como el desarrollo de planes de negocio y la gestión de relaciones institucionales que sostienen la operación en el largo plazo.</p>
+          <p>Grupo empresarial de <strong>innovación, posicionamiento estratégico y consultoría de alto impacto</strong>.</p>
         </div>
       </article>
     </section>
@@ -2754,16 +2813,12 @@
   <section class="section" id="conferencias" aria-labelledby="h-conf">
     <div class="section-head">
       <div class="section-eyebrow eyebrow-o">Conferencias</div>
-      <h2 class="section-title" id="h-conf">Un espacio para <span class="a-o">compartir aprendizajes</span> en foros, universidades y empresas.</h2>
+      <h2 class="section-title" id="h-conf">+100 conferencias. <span class="a-o">Un mensaje que mueve.</span></h2>
     </div>
 
     <div class="conf-card">
       <div class="conf-body">
-        <div class="conf-eyebrow">+100 conferencias en 6 estados</div>
-        <h3 class="conf-title">Conferencias sobre <span class="a-o">liderazgo, juventud e impacto.</span></h3>
-        <p class="conf-desc">
-          Intervenciones diseñadas para universidades, foros institucionales, gobiernos y empresas. Cada conferencia se prepara desde el contexto del público, con casos reales de mi trabajo con Juventudes Impactando México, Vorka y Oleynick Group.
-        </p>
+        <h3 class="conf-title">Liderazgo, juventud <span class="a-o">e impacto.</span></h3>
         <a class="conf-cta" href="./conferencias/">
           Ver conferencias
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
@@ -2793,7 +2848,7 @@
     <section class="section" id="reconocimientos" aria-labelledby="h-rec">
       <div class="section-head">
         <div class="section-eyebrow eyebrow-r">Reconocimientos</div>
-        <h2 class="section-title" id="h-rec">Distinciones y premios que <span class="a-r">marcan el trayecto.</span></h2>
+        <h2 class="section-title" id="h-rec">Premios y <span class="a-r">distinciones.</span></h2>
       </div>
 
       <div class="respaldo">
@@ -2817,26 +2872,7 @@
           <span class="r">UTEC</span>
           <span class="r">Universidad de Guanajuato</span>
           <span class="r">ENMS de Celaya</span>
-        <span aria-hidden="true" class="rl-dup">
-          <span class="r">Gobierno de México</span>
-          <span class="r">INJUVE Nuevo León</span>
-          <span class="r">Gobierno del Estado de Guanajuato</span>
-          <span class="r">Municipio de Monterrey</span>
-          <span class="r">Municipio de Celaya</span>
-          <span class="r">Municipio de Cortazar</span>
-          <span class="r">Municipio de Guanajuato Capital</span>
-          <span class="r">Municipio de Villagrán</span>
-          <span class="r">FRISA</span>
-          <span class="r">Clubers</span>
-          <span class="r">Tecnológico de Monterrey</span>
-          <span class="r">Harvard Business School</span>
-          <span class="r">UC Santa Cruz · Silicon Valley</span>
-          <span class="r">TECNM de Celaya</span>
-          <span class="r">CECyTEG</span>
-          <span class="r">UTEC</span>
-          <span class="r">Universidad de Guanajuato</span>
-          <span class="r">ENMS de Celaya</span>
-        </span></div></div>
+        </div></div>
       </div>
 
       <div class="awards">
@@ -2865,7 +2901,7 @@
     <section class="section" id="comunidades" aria-labelledby="h-com">
       <div class="section-head">
         <div class="section-eyebrow eyebrow-g">Comunidades</div>
-        <h2 class="section-title" id="h-com">Espacios abiertos para <span class="a-g">seguir aprendiendo juntos.</span></h2>
+        <h2 class="section-title" id="h-com">Súmate a la <span class="a-g">comunidad.</span></h2>
       </div>
 
       <div class="communities">
@@ -2940,7 +2976,7 @@
   <section class="section" id="sesiones" aria-labelledby="h-ses">
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Sesiones 1:1</div>
-      <h2 class="section-title" id="h-ses">Trabajemos juntos en tu <span class="accent">siguiente paso.</span></h2>
+      <h2 class="section-title" id="h-ses">Trabajemos <span class="accent">juntos.</span></h2>
       <p class="ses-intro">Elige la sesión según tu momento. Agendas en línea, pagas por transferencia y recibes la confirmación con tu enlace de videollamada.</p>
     </div>
     <div class="ses-grid">
@@ -2976,7 +3012,7 @@
   <section class="section" id="formacion" aria-labelledby="h-form">
     <div class="section-head">
       <div class="section-eyebrow eyebrow-b">Formación</div>
-      <h2 class="section-title" id="h-form">Bases académicas y <span class="a-b">especializaciones continuas.</span></h2>
+      <h2 class="section-title" id="h-form">Formación <span class="a-b">continua.</span></h2>
     </div>
 
     <div class="form-grid">
@@ -3011,7 +3047,7 @@
   <section class="section" id="faq" aria-labelledby="h-faq">
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Preguntas frecuentes</div>
-      <h2 class="section-title" id="h-faq">Lo que suelen preguntar antes de <span class="accent">empezar a trabajar juntos.</span></h2>
+      <h2 class="section-title" id="h-faq">Preguntas <span class="accent">frecuentes.</span></h2>
     </div>
 
     <div class="faq">
@@ -3086,8 +3122,8 @@
 <div class="shell">
   <section class="section habla" id="habla" aria-labelledby="h-habla">
     <div class="section-head">
-      <div class="section-eyebrow eyebrow-p">Habla conmigo</div>
-      <h2 class="section-title" id="h-habla">Este espacio es <span class="a-p">directo.</span></h2>
+      <div class="section-eyebrow eyebrow-p">Contacto</div>
+      <h2 class="section-title" id="h-habla">Habla <span class="accent">conmigo.</span></h2>
     </div>
 
     <div class="habla-grid">

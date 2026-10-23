@@ -151,7 +151,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700;800&display=swap">
 <style>
   :root {
     --paper:      #FFFFFF;
@@ -1731,6 +1731,22 @@
   @media (max-width: 520px) { .site-header .nav-shell { height: 58px !important; } .brand-mark { width: 40px !important; height: 40px !important; } .site-header .ig-btn, .site-header .toggle { width: 40px; height: 40px; } }
   body { padding-top: 86px; }
   .hero, .hero-centered { scroll-margin-top: 90px; }
+
+  /* =====================================================================
+     SISTEMA DE DISEÑO (mismo lenguaje que la portada del inicio)
+     ===================================================================== */
+  :root { --paper: #F2F1EC; --paper-2: #E9E8E2; --paper-3: #DEDDD6; --rule: #D9D8D0; --display: 'Anton', 'Impact', 'Arial Narrow', sans-serif; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; } }
+  :root[data-theme="dark"] { --paper: #141414; --paper-2: #1B1B1B; --paper-3: #232323; --rule: #2A2A2A; }
+  body { background: var(--paper); }
+  .band-2 { background: transparent !important; }
+  .section + .section { border-top: 0 !important; }
+  .section-eyebrow { font-size: 12px !important; font-weight: 800 !important; letter-spacing: .16em !important; text-transform: uppercase; color: var(--muted) !important; }
+  .section-eyebrow::before { width: 28px !important; height: 3px !important; background: var(--accent) !important; }
+  .section-title, .hero h1, .p-hero h1, .portada h1 { font-family: var(--display) !important; font-weight: 400 !important; text-transform: uppercase; letter-spacing: .005em !important; text-wrap: balance; }
+  .section-title { font-size: clamp(2rem, 4.2vw, 3.4rem) !important; line-height: .94 !important; }
+  .section-title em, .section-title .a-o, .section-title .accent { color: var(--accent) !important; font-style: normal; }
+  .hero h1, .p-hero h1 { line-height: .92 !important; }
 </style>
 </head>
 <body>
