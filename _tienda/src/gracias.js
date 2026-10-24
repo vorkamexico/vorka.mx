@@ -91,7 +91,7 @@ const SONDEO = `(function(){
 
 // Bienvenida al pagar (no en regalos): el nombre de lo que compró, su liga de Puntos (gana al recomendar) y a quién apoya Vorka.
 // Los puntos se ganan recomendando, no comprando: por eso no se llama "cashback".
-const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', cuentas: 'Cuentas', 'simulador-paa': 'el Simulador PAA' };
+const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', cuentas: 'Cuentas', vende: 'Vende', 'simulador-paa': 'el Simulador PAA' };
 export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO · Juventudes Impactando México A.C.</a>, la red de jóvenes que transforma sus comunidades en 121 municipios del país.';
 const bienvenida = o => {
   const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;

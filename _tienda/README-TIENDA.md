@@ -300,3 +300,13 @@ La tienda se viste sola en las fechas que importan en México (`src/temporadas.j
 - Calendario: Año Nuevo, San Valentín, Día del Niño, Día de las Madres, Día del Padre, Regreso a clases, Fiestas patrias, Halloween y Día de Muertos, El Buen Fin (viernes antes del tercer lunes de noviembre al martes siguiente; 2026: 13–17 nov) y Navidad.
 - Se elige en Vorka OS › Tienda › Tema de temporada: **Automático por calendario** (de fábrica), **Apagado** o una **fija**. Se guarda en la tabla `ajustes` (migración 0028, clave `temporada`) y la tienda la toma en un minuto.
 - Las tarjetas de Vuelve tienen sus propios temas de temporada (opcionales para cada negocio, ver `PLAN-VUELVE.md` en Vorka OS).
+
+## Vende (vorka.mx/tienda/vende)
+
+App propia en **vende.vorka.mx** (Worker `vende`, repo `vorkamexico/vende`): clientas, pedidos, cobros y ganancia para vendedoras por catálogo y por encargo. Se cobra igual que Cuentas: **suscripción** (Stripe Billing) con la app preguntando por RPC `Admin.suscripcionApp(correo, 'vende')`; el botón del correo de compra lleva a `vende.vorka.mx/entrar/<token>` (`validarAcceso(token, 'vende')`).
+
+- Migración `0038_vende.sql`: `vende-mensual` y `vende-anual` (oculto), categoría **Ventas**. **Entran inactivos con precio provisional** ($99/mes, $799/año, igual que Cuentas). Para vender: Vorka OS › Tienda › Vende Pro → precio definitivo → *A la venta*.
+- Ficha: `src/vende.js` (`/tienda/vende/`), con plan gratis (los límites deben coincidir con `LIMITES_GRATIS` del Worker `vende`), Pro y programas patrocinados. Portadas: `assets/tienda/vende.webp` y `vende-og.png`.
+- Legales: `/legal/vende/`, `/legal/vende/privacidad/` y `/legal/vende/privacidad-clientas/` (generadas con `legales.py`). **Borrador: revisarlos con un abogado antes de activar la venta.**
+- Los programas patrocinados (marcas, distribuidores, directoras) **no** pasan por la tienda: Vende genera el reporte mensual de vendedoras activas y Vorka factura por fuera.
+- Pruebas: `test/vende.test.js`.

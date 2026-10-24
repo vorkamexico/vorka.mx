@@ -13,6 +13,7 @@ ACTUALIZADO_BRINDI = '24 de octubre de 2026'
 ACTUALIZADO_CUPO = '19 de octubre de 2026'
 ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
+ACTUALIZADO_VENDE = '24 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -405,6 +406,68 @@ CUENTAS_PRIVACIDAD = [
     ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
 ]
 
+# Vende (registro de clientas, pedidos y cobros para vendedoras independientes, en vende.vorka.mx). Mismas bases que Cuentas y Vuelve
+# (LFPDPPP 2025, LFPC: renovación automática informada y cancelación por el mismo medio). Aquí además: programas patrocinados y datos
+# de las clientas que registra la vendedora. BORRADOR: debe revisarlo un abogado antes de activar la venta.
+MIGAS_VENDE = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/vende/">Vende</a>'
+VENDE = [
+    ('quien', 'Quién presta el servicio', f'<p>Vende es una herramienta de software para que vendedoras independientes (venta por catálogo, venta directa y comida por encargo) lleven el registro de sus clientas, productos, pedidos, cobros y ganancia, desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y la persona que usa Vende (“tú”). Al crear tu cuenta o suscribirte las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/vende/privacidad/">aviso de privacidad de Vende</a>.</p>'),
+    ('no-es', 'Qué es y qué no es Vende', li(
+        'Vende <b>solo registra y calcula</b>. No es un banco ni una institución financiera: no capta ni custodia dinero, no hace transferencias, no otorga créditos y no cobra a nombre de nadie.',
+        'Tus clientas te pagan directamente a ti, por sus propios medios (efectivo o transferencia). Los pedidos y abonos se capturan a mano: no son una verificación bancaria.',
+        'Vende <b>nunca escribe ni cobra a tus clientas por su cuenta</b>. Los mensajes de WhatsApp los envías tú, desde tu teléfono, cuando tú decides.',
+        'Vende no está afiliada a las marcas cuyos productos vendes. Las marcas se capturan solo como texto para organizar tu catálogo.')),
+    ('planes', 'Plan gratis, prueba y Vende Pro', li(
+        'Vende es <b>gratis para siempre</b> con límites de uso que se muestran en <a href="/tienda/vende/">vorka.mx/tienda/vende</a> y en la app (clientas, pedidos al mes y productos). No pedimos tarjeta.',
+        'Al crear tu cuenta tienes 7 días naturales sin límites. No se te cobra nada al terminar.',
+        'Si llegas a un límite del plan gratis, puedes seguir viendo, descargando y exportando todo; solo no podrás agregar más hasta el siguiente mes o hasta suscribirte a Vende Pro.')),
+    ('programas', 'Programas patrocinados', li(
+        'Una marca, un distribuidor o una líder pueden patrocinar un programa para que sus vendedoras usen Vende Pro sin pagar. En ese caso el patrocinador paga a Vorka por separado; tú no pagas nada.',
+        'El patrocinador y tu líder solo ven <b>indicadores agregados</b> de tu actividad (por ejemplo, pedidos del mes o días sin actividad). <b>Nunca ven los datos personales de tus clientas.</b>',
+        'Puedes salir de un programa cuando quieras. Tus clientas, pedidos y cuentas siguen siendo tuyos y te los llevas.')),
+    ('suscripcion', 'Suscripción, precio y renovación automática', li(
+        'Vende Pro es <b>mensual o anual</b>, en pesos mexicanos con IVA incluido. El precio vigente se muestra en <a href="/tienda/vende/">vorka.mx/tienda/vende</a> antes de pagar.',
+        '<b>La suscripción se renueva sola</b> al final de cada periodo y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días; mientras tanto tu cuenta sigue funcionando. Si no se logra cobrar, vuelves al plan gratis.',
+        'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
+        'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
+    ('cancelar', 'Cancelación y reembolsos', li(
+        'Cancelas cuando quieras desde Vende › Ajustes › Administrar suscripción, sin llamadas ni trámites. Sigues con Vende Pro hasta el final del periodo pagado.',
+        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo una falla atribuible a Vende que no resolvamos en un plazo razonable.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
+    ('clientas', 'Datos de tus clientas', '<p>Al registrar a tus clientas declaras que tienes una relación comercial con ellas y que usarás sus datos solo para atenderlas. Tú eres responsable de esos datos; Vorka los trata por tu cuenta. Registra solo lo necesario y marca en la app si te dieron permiso de enviarles promociones. Si una clienta pide no recibir promociones (también puede hacerlo desde su enlace de estado de cuenta), Vende deja de sugerirte esos mensajes.</p>'),
+    ('uso', 'Uso aceptable', li(
+        'No se permite usar Vende para cobranza abusiva, amenazas, exhibición de deudas, mensajes masivos no solicitados, promesas de ingresos ni actividades ilícitas.',
+        'Podemos suspender una cuenta que incumpla estas reglas; te avisaremos el motivo.')),
+    ('conservacion', 'Tus datos son tuyos', '<p>Puedes exportar tus clientas, pedidos, cuentas y abonos en cualquier momento. Si cancelas, tus registros siguen disponibles 12 meses para descargarlos; después se borran de forma definitiva, salvo lo que la ley nos obligue a conservar. Puedes pedir que los borremos antes.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Profeco. Estas condiciones se rigen por las leyes de México.</p>'),
+]
+
+VENDE_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de las personas que usan Vende. De los datos de las clientas que cada vendedora registra, la responsable es la vendedora y Vorka los trata por su cuenta (ver <a href="/legal/vende/privacidad-clientas/">aviso para clientas</a>). Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Tu cuenta:</b> correo, nombre, WhatsApp, zona, qué vendes y tus preferencias.',
+        '<b>Tu negocio:</b> clientas, productos, recetas, pedidos, cuentas por cobrar, abonos, metas y la actividad dentro de la app.',
+        '<b>Programas:</b> si participas en uno, tu membresía, equipo, fuente de registro, fotos de tickets de compras comprobadas y negocios (B2B) que registres.',
+        '<b>Suscripción:</b> plan, monto, fechas y estado de tus pagos. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Seguridad:</b> historial de cambios y la dirección IP para limitar intentos repetidos de acceso.')),
+    ('finalidades', 'Para qué los usamos', '<p><b>Necesarias:</b> darte el servicio, calcular saldos y ganancia, generar estados de cuenta, enviarte tu resumen diario y códigos de acceso, cobrar tu suscripción, darte soporte y cumplir obligaciones legales. Si participas en un programa, generar indicadores agregados para tu patrocinador y tu líder, <b>sin datos personales de tus clientas</b>. <b>Opcional:</b> novedades de Vorka México; puedes negarte escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos datos. Proveedores que los tratan por nuestra cuenta: <b>Cloudflare</b> (alojamiento, base de datos y archivos), <b>Stripe</b> (cobro) y nuestros proveedores de correo, algunos con servidores fuera de México. Con el patrocinador de tu programa y tu líder solo compartimos indicadores de actividad y, en compras comprobadas, la foto del ticket que tú subes.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde la app (incluida la exportación completa). Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('cookies', 'Cookies y almacenamiento', '<p>Vende usa una sola cookie necesaria (<code>vs</code>) para tu sesión y guarda en tu teléfono una copia de tus datos para funcionar sin internet. No usa cookies de rastreo ni publicidad.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
+VENDE_CLIENTAS = [
+    ('resumen', 'En pocas palabras', li(
+        'Tus datos los usa <b>la vendedora</b> que te atiende para registrar tus pedidos, tus pagos y, si lo aceptaste, avisarte de productos o promociones.',
+        'Vorka México presta la herramienta Vende y trata tus datos solo por cuenta de tu vendedora. <b>No los vendemos, no los compartimos con marcas ni con otras vendedoras y no te escribimos.</b>',
+        'Si tu vendedora te compartió un enlace de estado de cuenta, desde ahí puedes pedir no recibir promociones.')),
+    ('quien', 'Quién trata tus datos', f'<p>La vendedora es la <b>responsable</b> de tus datos. {RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, presta la herramienta y los trata por su cuenta. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('datos', 'Qué datos se tratan', li('Los que le das a tu vendedora: nombre, WhatsApp y, si quieres, cumpleaños (día y mes), dirección de entrega y preferencias (talla, tono de piel, alergias, gustos).', 'Tus pedidos, lo que debes y tus pagos.') + '<p>No se piden datos bancarios ni datos personales sensibles.</p>'),
+    ('arco', 'Tus derechos', '<p>Pídele a tu vendedora que corrija o borre tus datos, o escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> y lo atendemos con ella.</p>' + ARCO_PLAZOS),
+]
+
 VUELVE_CLIENTES = [
     ('resumen', 'En pocas palabras', li(
         'Tus datos los usa <b>el negocio</b> donde te registraste para darte tu tarjeta, sumar tus sellos o puntos y darte tus recompensas.',
@@ -472,3 +535,12 @@ escribir('/legal/cuentas/', pagina('/legal/cuentas/', 'Condiciones de Cuentas', 
 escribir('/legal/cuentas/privacidad/', pagina('/legal/cuentas/privacidad/', 'Aviso de privacidad de Cuentas', 'Aviso de privacidad de <span class="metal">Cuentas.</span>',
     'Qué datos tratamos de las personas que usan Cuentas y de quienes registran en ella, para qué y cómo ejercer tus derechos.', 'Cuentas', CUENTAS_PRIVACIDAD,
     aplica='Aplica a quien usa cuentas.vorka.mx', migas=MIGAS_CUENTAS, actualizado=ACTUALIZADO_CUENTAS))
+escribir('/legal/vende/', pagina('/legal/vende/', 'Condiciones de Vende', 'Condiciones de <span class="metal">Vende.</span>',
+    'El contrato entre Vorka México y quien usa Vende para llevar su negocio de venta: qué es y qué no es, plan gratis, programas patrocinados, Vende Pro con renovación automática, cancelación y datos.', 'Vende', VENDE,
+    aplica='Aplica a quien usa vende.vorka.mx', migas=MIGAS_VENDE, actualizado=ACTUALIZADO_VENDE))
+escribir('/legal/vende/privacidad/', pagina('/legal/vende/privacidad/', 'Aviso de privacidad de Vende', 'Aviso de privacidad de <span class="metal">Vende.</span>',
+    'Qué datos tratamos de las vendedoras que usan Vende, para qué y cómo ejercer tus derechos.', 'Vende · Vendedoras', VENDE_PRIVACIDAD,
+    aplica='Aplica a quien usa vende.vorka.mx', migas=MIGAS_VENDE, actualizado=ACTUALIZADO_VENDE))
+escribir('/legal/vende/privacidad-clientas/', pagina('/legal/vende/privacidad-clientas/', 'Aviso de privacidad para clientas', 'Aviso de privacidad para <span class="metal">clientas.</span>',
+    'Tu vendedora lleva tus pedidos y pagos con Vende. Esto es lo que pasa con tus datos.', 'Vende · Clientas', VENDE_CLIENTAS,
+    aplica='Aplica a las clientas registradas por una vendedora en Vende', migas=MIGAS_VENDE, actualizado=ACTUALIZADO_VENDE))

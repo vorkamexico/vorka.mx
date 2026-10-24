@@ -20,6 +20,7 @@ import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp, VARI
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
 import { paginaCuentas } from './cuentas.js';
+import { paginaVende } from './vende.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual } from './puntos.js';
@@ -240,6 +241,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
       if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
+      if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
       if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
       const brv = url.pathname.match(/^\/tienda\/brindi\/([a-z-]{3,20})(\/?)$/);
