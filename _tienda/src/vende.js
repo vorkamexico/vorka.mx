@@ -13,7 +13,7 @@ export const RUTA_VENDE = '/tienda/vende/';
 const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 const PLANES = [{ slug: 'vende-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'vende-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
 // Límites del plan gratis: deben coincidir con LIMITES_GRATIS del Worker vende (src/config.js)
-const GRATIS = { clientas: 30, pedidos: 30, productos: 50 };
+const GRATIS = { clientas: 10, pedidos: 30, productos: 50 };
 
 const INCLUYE = ['Clientas, pedidos y productos sin límite', 'Catálogo por marca o menú de comida con costo por porción', '"Hoy": a quién escribirle, con el WhatsApp ya redactado',
   'Abonos, cuotas y estados de cuenta en PDF y Excel', 'Enlace de solo lectura para tu clienta', 'Ganancia real: vendido contra cobrado', 'Funciona sin internet y se sincroniza solo', 'Exporta todos tus datos cuando quieras'];
@@ -40,13 +40,11 @@ const ICONO = {
 const V = '<svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>';
 
 
-// Réplica de la pantalla "Hoy" de la app (datos de ejemplo)
-const pantalla = `<div class="ve-cel" aria-hidden="true"><i class="ve-isla"></i><div class="ve-pant">
-  <div class="ve-app-top"><span class="ve-logo">${V}</span><b>Vende</b></div>
-  <div class="ve-tarj"><small class="ve-rot">Hola, Lupita · lo que toca hoy</small><b class="ve-saldo">$1,850</b><small class="ve-ley">por cobrar esta semana · 4 pedidos por entregar</small></div>
-  <div class="ve-hoy">${[['#a8201a', 'Cobro pendiente: Laura', '$250 de su pedido #51', 'WhatsApp'], ['#1d4e89', 'Entregar pedido #20', 'Hoy a las 4:00 p.m.', 'WhatsApp'],
-    ['#1b6e3a', 'A Sofía se le acaba su crema', 'La compró el 10 sep', 'WhatsApp'], ['#b45309', 'Mañana cumple Ana', 'Un mensaje a tiempo', 'WhatsApp']].map(([c, a, b, d]) => `<div><i style="background:${c}"></i><span><b>${a}</b><small>${b}</small></span><em>${d}</em></div>`).join('')}</div>
-</div></div>`;
+// Captura real de la pantalla "Hoy" de la app (datos de ejemplo), dentro de un celular
+const pantalla = `<div class="ve-cel"><i class="ve-isla" aria-hidden="true"></i><div class="ve-pant"><img src="/assets/tienda/vende/hoy.webp" width="600" height="1298" alt="Pantalla Hoy de Vende: 6 cosas por hacer, con botones para mandar WhatsApp y anotar el abono" fetchpriority="high"></div></div>`;
+// Galería con capturas reales
+const GALERIA = [['hoy', 'Hoy', 'Lo que te toca: cobros, entregas, recompras y cumpleaños.'], ['cobros', 'Cobros', 'Quién te debe, cuánto y desde cuándo. Recuérdale con un toque.'],
+  ['pedido', 'Anotar una venta', 'Clienta, productos y cómo te pagó. Total y ganancia al momento.'], ['clientas', 'Clientas', 'Tu cartera completa, con lo que cada una te debe.'], ['oscuro', 'Modo oscuro', 'Se pone sola según la configuración de tu teléfono.']];
 
 export async function paginaVende(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
@@ -84,6 +82,11 @@ export async function paginaVende(env, req, url) {
 </div>
 ${navTienda('vende')}
 </section>
+
+<section class="ve-sec ve-gal-s"><div class="marco">
+  <div class="ve-cab"><span class="ve-et">Así se ve</span><h2>Botones grandes, palabras claras.</h2><p>Hecha para quien no se lleva con la tecnología: si usas WhatsApp, puedes usar Vende. Blanca y sencilla, o en modo oscuro si así tienes tu teléfono.</p></div>
+  <ul class="ve-gal">${GALERIA.map(([f, t, d]) => `<li><div class="ve-cel chico"><div class="ve-pant"><img src="/assets/tienda/vende/${f}.webp" width="600" height="1298" alt="Pantalla ${t} de Vende" loading="lazy"></div></div><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+</div></section>
 
 <section class="ve-sec"><div class="marco">
   <div class="ve-cab"><span class="ve-et">Cómo funciona</span><h2>Tu negocio, sin libreta ni hojas sueltas.</h2><p>Registrar a una clienta toma menos de 20 segundos. Lo demás lo calcula Vende: cuándo le toca recomprar, cuánto te debe y cuánto ganaste de verdad.</p></div>
@@ -157,9 +160,9 @@ ${await masTienda(env, 'vende')}
 }
 
 const CSS = `
-.ve{--ve-tinta:#0f0b12;--ve-morado:#7a2e5c;--ve-morado-c:#e7a9cb;--ve-h1:#4d1739;--ve-h2:#7a2e5c;--ve-h3:#b4558a;--ve-crema:#f6f4f7}
-[data-tema="oscuro"] .ve{--ve-morado:#e7a9cb}
-.ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--ve-morado);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -12px rgba(122,46,92,.7);transition:transform .2s var(--ease),background .2s}
+.ve{--ve-tinta:#0f0d10;--ve-morado:#6B2A85;--ve-morado-c:#C9A3D9;--ve-h1:#1f0f28;--ve-h2:#4e1d63;--ve-h3:#6B2A85;--ve-crema:#f6f4f7}
+[data-tema="oscuro"] .ve{--ve-morado:#C9A3D9}
+.ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--ve-morado);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -12px rgba(107,42,133,.7);transition:transform .2s var(--ease),background .2s}
 .ve-btn:hover{transform:translateY(-1px)}.ve-btn svg{width:17px;height:17px}
 .ve-hero .ve-btn:not(.ghost){background:#fff;color:var(--ve-h1)}
 .ve-btn.ghost{background:rgba(255,255,255,.08);color:var(--ve-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}.ve-btn.ghost:hover{background:rgba(255,255,255,.14)}
@@ -173,18 +176,22 @@ const CSS = `
 .ve-marca{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em}.ve-marca small{font-weight:500;font-size:14px;opacity:.7;letter-spacing:0}
 .ve-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ve-morado);color:#fff}.ve-logo svg{width:15px;height:15px}
 .ve-logo.grande{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--ve-h1)}.ve-logo.grande svg{width:21px;height:21px}
-.ve-h1{font-weight:800;font-size:clamp(42px,6.4vw,78px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:12ch;text-wrap:balance}.ve-h1 em{font-style:normal;color:#f6d9e8}
+.ve-h1{font-weight:800;font-size:clamp(42px,6.4vw,78px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:12ch;text-wrap:balance}.ve-h1 em{font-style:normal;color:#E6CF96}
 .ve-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(246,244,247,.82);max-width:34em}
 .ve-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
 .ve-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(246,244,247,.78)}
-.ve-chips li{display:inline-flex;align-items:center;gap:7px}.ve-chips svg{width:18px;height:18px;color:#f6d9e8}
+.ve-chips li{display:inline-flex;align-items:center;gap:7px}.ve-chips svg{width:18px;height:18px;color:#E6CF96}
 .ve-hero .t-nav-tienda{margin-top:8px}.ve-hero .t-nav-tienda a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:rgba(246,244,247,.86)}.ve-hero .t-nav-tienda a[aria-current]{background:#fff;border-color:#fff;color:var(--ve-h1)}
 .ve-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
 /* el celular con la app */
 .ve-escena{justify-self:center;width:min(100%,340px);padding:10px 0 30px}
 .ve-cel{position:relative;padding:12px;border-radius:52px;background:#16101a;box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(255,255,255,.12)}
 .ve-isla{position:absolute;top:24px;left:50%;width:90px;height:26px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
-.ve-pant{border-radius:41px;overflow:hidden;background:#0c0a0d;padding:58px 14px 18px;color:#f4f1f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.ve-pant{border-radius:41px;overflow:hidden;background:#fff;padding-top:34px}.ve-pant img{display:block;width:100%;height:auto}
+.ve-gal{list-style:none;padding:4px 16px 18px;margin:0 -16px;display:grid;grid-auto-flow:column;grid-auto-columns:min(72vw,250px);gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.ve-gal li{scroll-snap-align:start}.ve-gal b{display:block;margin-top:16px;font-size:18px;letter-spacing:-.015em}.ve-gal p{margin:4px 0 0;color:var(--fg-2);font-size:15px;line-height:1.45}
+.ve-cel.chico{padding:8px;border-radius:36px;box-shadow:0 24px 50px -28px rgba(20,17,20,.45),inset 0 0 0 1.5px rgba(255,255,255,.12)}.ve-cel.chico .ve-pant{border-radius:29px;padding-top:0}
+@media(min-width:1180px){.ve-gal{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:4px 0 0}}
 .ve-app-top{display:flex;align-items:center;gap:8px;font-size:15px;margin:0 2px 12px}
 .ve-tarj{position:relative;overflow:hidden;border-radius:22px;padding:16px;background:radial-gradient(120% 140% at 100% 0%,var(--ve-h3),transparent 55%),linear-gradient(135deg,#3d0f2c,#6c2552)}
 .ve-q{display:flex;gap:10px;align-items:center}.ve-q b{display:block;font-size:14.5px}.ve-q small{display:block;font-size:11.5px;opacity:.75}
@@ -211,7 +218,7 @@ const CSS = `
 .ve-calc{padding:24px;border-radius:26px;background:#1a1520;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-variant-numeric:tabular-nums}
 .ve-calc small{color:rgba(246,244,247,.55);font-size:12.5px}
 .ve-linea{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-size:16px}.ve-linea b{font-weight:700}
-.ve-linea.sub{margin-top:6px;font-size:14.5px;color:rgba(246,244,247,.7)}.ve-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-size:19px}.ve-linea.total b{color:#f6d9e8;font-weight:800}
+.ve-linea.sub{margin-top:6px;font-size:14.5px;color:rgba(246,244,247,.7)}.ve-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-size:19px}.ve-linea.total b{color:#E6CF96;font-weight:800}
 .ve-form{margin:6px 0 0;padding-left:12px;border-left:3px solid var(--ve-h2);font-size:13.5px;color:rgba(246,244,247,.66)}
 .ve-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
 .ve-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
@@ -226,13 +233,13 @@ const CSS = `
 .ve-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}
 .ve-op input{margin-top:3px;accent-color:var(--ve-morado)}.ve-op b{display:block;font-size:15px}.ve-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
 .ve-op:has(input:checked){border-color:var(--ve-morado);background:color-mix(in srgb,var(--ve-morado) 7%,transparent)}
-.ve-plan.rec{border-color:var(--ve-morado);box-shadow:0 30px 60px -36px rgba(122,46,92,.55)}
+.ve-plan.rec{border-color:var(--ve-morado);box-shadow:0 30px 60px -36px rgba(107,42,133,.55)}
 .ve-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.ve-para{color:var(--fg-2);margin:0}
 .ve-precio{margin:6px 0 0}.ve-precio b{font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.ve-precio small{color:var(--fg-2)}
 .ve-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.ve-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.ve-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ve-morado)}
 .ve-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .ve-total{margin:4px 0 12px;font-size:16px}.ve-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.ve #form-vende .btn.acento{background:var(--ve-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(122,46,92,.7)}.ve-hoy{border-radius:18px;background:#17141a;padding:4px 12px;margin-top:12px}.ve-hoy div{display:flex;gap:10px;align-items:center;padding:10px 0}.ve-hoy div+div{border-top:1px solid #26222a}
+.ve #form-vende .btn.acento{background:var(--ve-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}.ve-hoy{border-radius:18px;background:#17141a;padding:4px 12px;margin-top:12px}.ve-hoy div{display:flex;gap:10px;align-items:center;padding:10px 0}.ve-hoy div+div{border-top:1px solid #26222a}
 .ve-hoy i{width:6px;align-self:stretch;border-radius:4px;flex:none}.ve-hoy span{flex:1;min-width:0}.ve-hoy b{display:block;font-size:12.5px}.ve-hoy small{display:block;font-size:10.5px;color:#a89fad}
 .ve-hoy em{font-style:normal;font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:#136c3c;color:#fff;white-space:nowrap}
 .ve-pat{display:grid;gap:18px;align-items:center}@media(min-width:900px){.ve-pat{grid-template-columns:1.2fr .8fr}}
