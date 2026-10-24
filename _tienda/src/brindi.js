@@ -66,8 +66,9 @@ export async function resumenApp(env, app, { desde } = {}) {
 // Pensada para que sea lo más fácil entender y contratar: primero cómo funciona (tutorial), luego por qué Brindi,
 // después qué plan te conviene según tus invitados y, aparte, los complementos para quien ya tiene su invitación.
 const PLANES = [
-  { slug: 'brindi-esencial', nombre: 'Esencial', para: 'Una fiesta sencilla', invitados: '100', items: ['Tu invitación con tu diseño, fotos y textos', 'Un enlace y un QR para compartir con todos', 'Mapa para llegar', 'Tus invitados confirman desde su celular', 'Ves quién viene en tiempo real'] },
-  { slug: 'brindi-celebracion', nombre: 'Celebración', para: 'Bodas, XV años y graduaciones', invitados: '300', recomendado: true, items: ['Todo lo de Esencial', 'Un enlace personal por invitado, listo para WhatsApp', 'Lugares contados por invitado (nadie lleva de más)', 'Sube tu lista desde Excel', 'Galería, cuenta regresiva e itinerario'] },
+  { slug: 'brindi-intimo', nombre: 'Íntimo', para: 'Una reunión en familia', invitados: '150', items: ['Tu invitación con tu diseño, fotos y textos', 'Un enlace y un QR para compartir con todos', 'Mapa para llegar', 'Tus invitados confirman desde su celular', 'Ves quién viene en tiempo real'] },
+  { slug: 'brindi-esencial', nombre: 'Esencial', para: 'Una fiesta sencilla', invitados: '300', items: ['Todo lo de Íntimo', 'El doble de lugares: hasta 300 invitados', 'Ideal para cumpleaños, bautizos y fiestas grandes'] },
+  { slug: 'brindi-celebracion', nombre: 'Celebración', para: 'Bodas, XV años y graduaciones', invitados: '600', recomendado: true, items: ['Todo lo de Esencial', 'Un enlace personal por invitado, listo para WhatsApp', 'Lugares contados por invitado (nadie lleva de más)', 'Sube tu lista desde Excel', 'Galería, cuenta regresiva e itinerario'] },
   { slug: 'brindi-premium', nombre: 'Premium', para: 'Eventos grandes con control en la entrada', invitados: '1,000', items: ['Todo lo de Celebración', 'Diseños premium', 'Pase con QR de acceso para cada invitado', 'Tu equipo lo escanea en la entrada con el celular', 'Nadie entra dos veces con el mismo pase', 'Álbum de fotos de tus invitados', 'Atención prioritaria'] },
 ];
 // Complementos agrupados por la necesidad de quien ya tiene su invitación (el Paquete Organizador va con los planes)
@@ -77,6 +78,7 @@ const GRUPOS_EXTRA = [
     ['brindi-extension-90', '90 días más en línea', 'Tu invitación y tu lista siguen disponibles 90 días más después del evento.'],
   ] },
   { titulo: '¿Quieres más funciones?', items: [
+    ['brindi-mejora-esencial', 'Subir de Íntimo a Esencial', 'Tu lista pasó de 150: llega hasta 300 invitados. Pagas solo la diferencia.'],
     ['brindi-mejora-celebracion', 'Subir de Esencial a Celebración', 'Para tener enlaces personales por invitado. Pagas solo la diferencia.'],
     ['brindi-mejora-premium', 'Subir de Celebración a Premium', 'Para tener pases con QR en la entrada. Pagas solo la diferencia.'],
     ['brindi-plantilla-premium', 'Diseño Gala', 'Usa el diseño Gala (glamour) sin cambiar de plan.'],
@@ -115,7 +117,7 @@ const FAQ = [
   ['¿Puedo probar antes de pagar?', `Sí. En <a href="${OS}/brindi/">os.vorka.mx/brindi</a> creas tu invitación gratis y la ves en vista previa. Solo pagas cuando la quieres publicar.`],
   ['¿Mis invitados tienen que instalar algo?', 'No. La invitación se abre en el navegador del celular desde WhatsApp, un mensaje o escaneando el QR. No necesitan cuenta.'],
   ['¿Cómo la comparto por WhatsApp?', 'Tú la mandas desde tu propio WhatsApp (Brindi no envía mensajes por ti): en tu panel tocas el ícono junto a cada invitado y el mensaje sale listo con su enlace personal (planes Celebración y Premium). También puedes mandar un enlace general a grupos.'],
-  ['¿Qué plan me conviene?', 'Si es algo sencillo para menos de 100 personas, Esencial. Para una boda, XV años o graduación, Celebración: cada invitado recibe su enlace y confirma sus lugares. Si son más de 300 o quieres controlar quién entra, Premium.'],
+  ['¿Qué plan me conviene?', 'Según cuántos invitados tienes: hasta 150, Íntimo; hasta 300, Esencial. Para una boda, XV años o graduación, Celebración (hasta 600): cada invitado recibe su enlace y confirma sus lugares. Si son más de 600 o quieres controlar quién entra, Premium.'],
   ['¿Puedo cambiar algo después de publicar?', 'Sí, cuantas veces quieras. Editas y tocas “Publicar cambios”; el enlace y los QR no cambian. Si cambia la fecha del evento, la actualizas igual y la vigencia se recalcula.'],
   ['¿Y si necesito más invitados?', 'Compras un paquete de +100 invitados y lo aplicas a tu evento desde Ajustes. O subes de plan pagando solo la diferencia.'],
   ['¿Cómo pago? ¿Hay reembolsos?', 'Pago único con tarjeta u OXXO, procesado por Stripe: nunca vemos los datos de tu tarjeta. Si no has publicado ninguna invitación con tu plan, te devolvemos tu dinero completo si lo pides dentro de los 10 días naturales siguientes a la compra. Detalles en las <a href="/legal/brindi/">condiciones de Brindi</a>.'],
@@ -137,27 +139,27 @@ const VISIBLES_FAQ = 8;
 // La principal es '' (/tienda/brindi/); las demás viven en /tienda/brindi/<clave>/ y entran en el sitemap.
 export const VARIANTES = {
   '': { titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi',
-    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $399 MXN.',
+    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $299 MXN.',
     h1: 'Tu invitación digital, lista en minutos.', lead: 'Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.',
     demo: 'demo-boda', evento: 'mi evento' },
   bodas: { titulo: 'Invitaciones digitales para boda con confirmación por WhatsApp | Brindi',
-    descripcion: 'Invitación digital de boda con sobre que se abre, padres y padrinos, itinerario, mesa de regalos y confirmación por invitado. Créala gratis y paga solo al publicar, desde $399 MXN.',
+    descripcion: 'Invitación digital de boda con sobre que se abre, padres y padrinos, itinerario, mesa de regalos y confirmación por invitado. Créala gratis y paga solo al publicar, desde $299 MXN.',
     h1: 'La invitación de su boda, digital y con estilo.', lead: 'Con padres y padrinos, itinerario, mesa de regalos y hospedaje. La mandan por WhatsApp, cada invitado confirma los lugares que le reservaron y ustedes saben quién viene.',
     demo: 'demo-boda', primero: ['demo-boda', 'demo-boda-editorial'], evento: 'mi boda', corta: 'Bodas' },
   'xv-anos': { titulo: 'Invitaciones digitales para XV años con QR | Brindi',
-    descripcion: 'Invitación digital de XV años con vals, padrinos, cuenta regresiva y galería. Se manda por WhatsApp y cada invitado confirma desde su celular. Créala gratis; pago único desde $399 MXN.',
+    descripcion: 'Invitación digital de XV años con vals, padrinos, cuenta regresiva y galería. Se manda por WhatsApp y cada invitado confirma desde su celular. Créala gratis; pago único desde $299 MXN.',
     h1: 'Invitaciones digitales para XV años.', lead: 'Con padrinos, cuenta regresiva, itinerario de la noche y galería. La mandas por WhatsApp, cada invitado confirma sus lugares y tú llegas a la fiesta sabiendo quién viene.',
     demo: 'demo-xv', primero: ['demo-xv'], evento: 'unos XV años', corta: 'XV años' },
   bautizo: { titulo: 'Invitaciones digitales para bautizo | Brindi',
-    descripcion: 'Invitación digital de bautizo con papás y padrinos, ceremonia y comida, mapa y confirmación de asistencia. Créala gratis y compártela por WhatsApp. Pago único desde $399 MXN.',
+    descripcion: 'Invitación digital de bautizo con papás y padrinos, ceremonia y comida, mapa y confirmación de asistencia. Créala gratis y compártela por WhatsApp. Pago único desde $299 MXN.',
     h1: 'Invitaciones digitales para bautizo.', lead: 'Con papás y padrinos, la ceremonia, la comida y el mapa para llegar. La mandas por WhatsApp y tus invitados confirman desde su celular.',
     demo: 'demo-bautizo', primero: ['demo-bautizo'], evento: 'un bautizo', corta: 'Bautizo' },
   graduacion: { titulo: 'Invitaciones digitales para graduación | Brindi',
-    descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Créala gratis y compártela por WhatsApp con un enlace o QR. Pago único desde $399 MXN.',
+    descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Créala gratis y compártela por WhatsApp con un enlace o QR. Pago único desde $299 MXN.',
     h1: 'Invitaciones digitales para tu graduación.', lead: 'Ceremonia, cena y brindis en una sola invitación. La mandas por WhatsApp, tus invitados confirman y tú sabes cuántos lugares apartar.',
     demo: 'demo-graduacion', primero: ['demo-graduacion'], evento: 'una graduación', corta: 'Graduación' },
   posadas: { titulo: 'Invitaciones digitales para posadas y eventos de empresa con QR | Brindi',
-    descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: confirmación por colaborador y acceso con QR en la entrada. Créala gratis; pago único desde $399 MXN.',
+    descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: confirmación por colaborador y acceso con QR en la entrada. Créala gratis; pago único desde $299 MXN.',
     h1: 'La posada de tu empresa, con invitación y acceso con QR.', lead: 'Para la posada, la cena de fin de año o un lanzamiento. Cada colaborador confirma desde su celular, sabes cuántos van y, con Premium, tu equipo escanea los pases en la entrada.',
     demo: 'demo-graduacion', primero: ['demo-graduacion', 'demo-boda-editorial'], evento: 'un evento de empresa', corta: 'Posadas y empresas', plan: 'brindi-premium' },
   organizadores: { titulo: 'Invitaciones digitales para organizadores, salones y fotógrafos | Brindi',
@@ -263,7 +265,7 @@ ${TESTIMONIOS.length ? `
 
 <section class="t-sec suave" id="planes"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Precios</span><h2 class="h2">Un solo pago por evento</h2><p class="lead">Sin mensualidades. Créala gratis y paga solo cuando la quieras publicar, según cuántos invitados tienes. Precios en pesos con IVA incluido.</p></div>
-  <div class="br-guia" role="group" aria-label="¿Qué plan me conviene?"><b>¿Cuál me conviene?</b>${planes.map(p => `<button type="button" data-ver="${p.slug}"><span>${p.slug === 'brindi-esencial' ? 'Hasta 100 invitados' : p.slug === 'brindi-celebracion' ? 'Boda o XV · hasta 300' : 'Más de 300 o control en la puerta'}</span><em>${p.nombre}</em></button>`).join('')}</div>
+  <div class="br-guia" role="group" aria-label="¿Qué plan me conviene?"><b>¿Cuál me conviene?</b>${planes.map(p => `<button type="button" data-ver="${p.slug}"><span>${{ 'brindi-intimo': 'Hasta 150 invitados', 'brindi-esencial': 'Hasta 300 invitados', 'brindi-celebracion': 'Boda o XV · hasta 600' }[p.slug] || 'Más de 600 o control en la puerta'}</span><em>${p.nombre}</em></button>`).join('')}</div>
   <div class="br-planes">${planes.map(p => `<article class="br-plan${p.recomendado ? ' rec' : ''}" id="plan-${p.slug}">${p.recomendado ? '<span class="br-sello">Recomendado</span>' : ''}<h3>${p.nombre}</h3><p class="br-para">${p.para}</p>
     <p class="br-precio">${p.prod ? `<b>${precio(p.prod)}</b><small>un solo pago</small>` : '<b>Muy pronto</b>'}</p><p class="br-inv">Hasta <b>${p.invitados}</b> invitados</p>
     <ul>${p.items.map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
@@ -271,7 +273,7 @@ ${TESTIMONIOS.length ? `
     ${p.prod ? `<a class="br-ya" href="?plan=${p.slug}#comprar" data-plan="${p.slug}">¿Ya la creaste? Paga ${p.nombre} aquí</a>` : ''}</article>`).join('')}</div>
   <p class="br-gratis">Tu diseño se guarda: <a href="${APP}" rel="noopener">créala gratis</a> y eliges plan al publicar. Si ya creaste tu invitación, el plan se activa solo con el mismo correo.</p>
   ${org ? `<div class="br-org"><div><b>¿Organizas eventos?</b><span>Paquete Organizador: 5 eventos Celebración por ${precio(org)}${ahorroOrg > 0 ? ` (ahorras ${precio({ precio_centavos: ahorroOrg })})` : ''}. Para salones, fotógrafos y planners.</span></div><span class="br-org-a">${clave === 'organizadores' ? '' : '<a class="btn blanco chico" href="/tienda/brindi/organizadores/">Ver para organizadores</a>'}<a class="btn ${clave === 'organizadores' ? 'tinta' : 'blanco'} chico" href="?plan=${ORGANIZADOR}#comprar" data-plan="${ORGANIZADOR}">Quiero el paquete</a></span></div>` : ''}
-  ${COMPARA_PAPEL && rec.prod ? `<div class="br-papel"><b>Contra la invitación impresa</b><span>Imprimir ${COMPARA_PAPEL.invitados} invitaciones con sobre: desde ${precio({ precio_centavos: COMPARA_PAPEL.impresa_centavos })}, más llevarlas una por una. Brindi Celebración, hasta 300 invitados y sin repartir nada: ${precio(rec.prod)}.</span><small>${esc(COMPARA_PAPEL.fuente)} <a href="${esc(COMPARA_PAPEL.url)}" target="_blank" rel="noopener nofollow">Ver fuente</a></small></div>` : ''}
+  ${COMPARA_PAPEL && rec.prod ? `<div class="br-papel"><b>Contra la invitación impresa</b><span>Imprimir ${COMPARA_PAPEL.invitados} invitaciones con sobre: desde ${precio({ precio_centavos: COMPARA_PAPEL.impresa_centavos })}, más llevarlas una por una. Brindi Celebración, hasta 600 invitados y sin repartir nada: ${precio(rec.prod)}.</span><small>${esc(COMPARA_PAPEL.fuente)} <a href="${esc(COMPARA_PAPEL.url)}" target="_blank" rel="noopener nofollow">Ver fuente</a></small></div>` : ''}
 </div></section>
 
 ${grupos.length ? `<section class="t-sec" id="complementos"><div class="marco">
@@ -332,7 +334,7 @@ const CSS = `
 .br-demo{display:grid;gap:4px;background:var(--card);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--line);padding-bottom:14px}
 .br-demo img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover}.br-demo b,.br-demo span{padding:0 16px}.br-demo b{font-size:18px;margin-top:8px}.br-demo span{color:var(--fg-2);font-size:14px}.br-demo .flecha{color:var(--br-vino-t);font-weight:700}
 .br-planes{display:grid;gap:16px;align-items:start}
-@media(min-width:900px){.br-planes{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:700px){.br-planes{grid-template-columns:repeat(2,1fr)}}@media(min-width:1100px){.br-planes{grid-template-columns:repeat(4,1fr)}}
 .br-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
 .br-plan.rec{border-color:var(--br-vino-t);box-shadow:0 24px 50px -28px rgba(110,31,58,.6)}
 .br-sello{position:absolute;top:-12px;left:24px;background:var(--br-vino);color:#fff;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:.04em}
@@ -391,7 +393,7 @@ const SCRIPT = `(function(){
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ var s=document.getElementById('slug'); if(!s) return; e.preventDefault(); s.value=a.dataset.plan; s.dispatchEvent(new Event('change')); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
   // Complementos en la misma compra: solo cuando lo elegido es un plan
   var suma=document.getElementById('br-suma'), tot=document.getElementById('br-total');
-  function esPlan(){ return /^brindi-(esencial|celebracion|premium)$/.test(f.slug.value); }
+  function esPlan(){ return /^brindi-(intimo|esencial|celebracion|premium)$/.test(f.slug.value); }
   function extrasElegidos(){ return suma&&esPlan()?[].slice.call(suma.querySelectorAll('input[name=extra]:checked')):[]; }
   function precioDe(){ var o=f.slug.options[f.slug.selectedIndex]; return o?+o.dataset.precio||0:0; }
   function total(){ if(!suma) return; suma.hidden=!esPlan();

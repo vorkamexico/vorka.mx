@@ -20,11 +20,13 @@ beforeEach(() => {
 describe('Brindi en la tienda', () => {
   it('los productos entran ocultos y no se pueden comprar hasta activarlos', async () => {
     const ps = await A.productosApp('brindi');
-    expect(ps).toHaveLength(12);
+    expect(ps).toHaveLength(14);
     // Entran ocultos; el álbum de invitados se puso a la venta con la migración 0035 (después de publicar os.vorka.mx)
-    expect(ps.filter(p => p.slug !== 'brindi-album').every(p => !p.activo)).toBe(true);
+    expect(ps.filter(p => !['brindi-album', 'brindi-intimo', 'brindi-mejora-esencial'].includes(p.slug)).every(p => !p.activo)).toBe(true);   // los de 0034–0036 se pusieron a la venta ya aprobados
     expect(ps.find(p => p.slug === 'brindi-album').activo).toBe(true);
     await expect(crearOrden(env, { items: [{ slug: 'brindi-celebracion' }], email: 'a@b.mx', nombre: 'Ana' })).rejects.toThrow('producto');
+    // Sin ningún plan a la venta, la página no ofrece pagar (pero sí crear gratis)
+    env.DB.raw.exec("UPDATE products SET activo = 0 WHERE id = 'prod_brindi_intimo'");
     const html = await (await pedir('/tienda/brindi/')).text();
     expect(html).toContain('Muy pronto');
     expect(html).not.toContain('id="form-brindi"');
@@ -37,7 +39,7 @@ describe('Brindi en la tienda', () => {
     expect(r.status).toBe(200);
     expect(r.headers.get('content-security-policy')).toContain('frame-src https://os.vorka.mx');
     const html = await r.text();
-    for (const t of ['$399 MXN', '$599 MXN', '$1,290 MXN', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" data-precio="59900" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
+    for (const t of ['$299 MXN', '$449 MXN', '$699 MXN', '$1,290 MXN', 'Hasta <b>150</b>', 'Hasta <b>600</b>', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" data-precio="69900" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
       expect(html, t).toContain(t);
     expect((await pedir('/tienda/brindi')).status).toBe(301);
     // Las páginas de los planes ocultos llevan a la ficha
@@ -51,7 +53,7 @@ describe('Brindi en la tienda', () => {
     // Una sola tarjeta de Brindi, con su portada y el precio del plan más barato
     expect(html).toContain('Brindi · Invitaciones digitales');
     expect(html).toContain('/assets/tienda/brindi.webp');
-    expect(html).toContain('Desde $399 MXN');
+    expect(html).toContain('Desde $299 MXN');
     expect(html).not.toContain('Brindi · Plan Premium');
     expect(html.match(/class="t-card-img" href="\/tienda\/brindi\/"/g)).toHaveLength(1);
     const mapa = await (await pedir('/tienda/sitemap.xml')).text();
@@ -107,13 +109,13 @@ describe('Brindi en la tienda', () => {
     await aplicarPago(env, r.id, { resultado: 'reembolsado' });
     const d = await A.resumenApp('brindi', {});
     const cel = d.productos.find(p => p.slug === 'brindi-celebracion');
-    expect(cel).toMatchObject({ vistas: 1, compras: 1, monto_centavos: 59900, reembolsos: 1, activo: true, tipo: 'plan' });
+    expect(cel).toMatchObject({ vistas: 1, compras: 1, monto_centavos: 69900, reembolsos: 1, activo: true, tipo: 'plan' });
   });
 
   it('un plan con complementos en la misma compra: un solo correo de acceso y todo queda para la app', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1");
     const o = await crearOrden(env, { items: [{ slug: 'brindi-celebracion' }, { slug: 'brindi-100-invitados' }, { slug: 'brindi-configuracion-asistida' }], email: 'multi@mail.com', nombre: 'Ana López' });
-    expect(o.monto_centavos).toBe(59900 + 14900 + 39900);
+    expect(o.monto_centavos).toBe(69900 + 14900 + 39900);
     await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: o.monto_centavos, moneda: 'MXN', metodo_pago: 'card' });
     const items = await env.DB.prepare('SELECT i.*, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?').bind(o.id).all();
     const c = correoEntrega(env, { ...o, regalo_de: null }, items.results, 'b'.repeat(64));
@@ -133,7 +135,7 @@ describe('Brindi en la tienda', () => {
     expect(html).toContain('href="/tienda/cupo/">Cupo</a> es gratis hasta 30 personas');
     expect(html).toContain('id="br-suma"');
     expect(html).toContain('value="brindi-100-invitados" data-precio="14900"');
-    expect(html).toContain('<option value="brindi-celebracion" data-precio="59900" selected');
+    expect(html).toContain('<option value="brindi-celebracion" data-precio="69900" selected');
     expect(html).not.toMatch(/name="extra" value="brindi-mejora/);   // las mejoras no se suman a un plan nuevo
     const cupo = await (await pedir('/tienda/cupo/')).text();
     expect(cupo).toContain('Sigue explorando');
@@ -144,7 +146,7 @@ describe('Brindi en la tienda', () => {
     env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
     const html = await (await pedir('/tienda/brindi/')).text();
     expect(html).toContain('id="barra-brindi"');
-    expect(html.match(/>Empezar gratis</g)).toHaveLength(3);
+    expect(html.match(/>Empezar gratis</g)).toHaveLength(4);
     expect(html).toContain('¿Ya la creaste? Paga Premium aquí');
     expect(html).toContain('¿Ya la creaste? Paga aquí');
     expect(html).toContain('<details class="br-compl">');   // complementos plegados
@@ -174,7 +176,7 @@ describe('Brindi en la tienda', () => {
     expect(xv).toContain('<link rel="canonical" href="https://vorka.mx/tienda/brindi/xv-anos/">');
     expect(xv).toContain('<iframe src="https://os.vorka.mx/i/demo-xv"');
     const org = await (await pedir('/tienda/brindi/organizadores/')).text();
-    expect(org).toContain('<option value="brindi-paquete-organizador" data-precio="249000" selected');
+    expect(org).toContain('<option value="brindi-paquete-organizador" data-precio="279000" selected');
     expect(org).toContain('Gana con tu liga');
     expect(org).toContain('Diseños con tu marca');
     expect(org).toContain('https://os.vorka.mx/brindi/#/organizador');
