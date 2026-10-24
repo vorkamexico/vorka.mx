@@ -69,7 +69,7 @@ const PLANES = [
   { slug: 'brindi-intimo', nombre: 'Íntimo', para: 'Una reunión en familia', invitados: '150', items: ['Tu invitación con tu diseño, fotos y textos', 'Un enlace y un QR para compartir con todos', 'Mapa para llegar', 'Tus invitados confirman desde su celular', 'Ves quién viene en tiempo real'] },
   { slug: 'brindi-esencial', nombre: 'Esencial', para: 'Una fiesta sencilla', invitados: '300', items: ['Todo lo de Íntimo', 'El doble de lugares: hasta 300 invitados', 'Ideal para cumpleaños, bautizos y fiestas grandes'] },
   { slug: 'brindi-celebracion', nombre: 'Celebración', para: 'Bodas, XV años y graduaciones', invitados: '600', recomendado: true, items: ['Todo lo de Esencial', 'Un enlace personal por invitado, listo para WhatsApp', 'Lugares contados por invitado (nadie lleva de más)', 'Sube tu lista desde Excel', 'Galería, cuenta regresiva e itinerario'] },
-  { slug: 'brindi-premium', nombre: 'Premium', para: 'Eventos grandes con control en la entrada', invitados: '1,000', items: ['Todo lo de Celebración', 'Diseños premium', 'Pase con QR de acceso para cada invitado', 'Tu equipo lo escanea en la entrada con el celular', 'Nadie entra dos veces con el mismo pase', 'Álbum de fotos de tus invitados', 'Atención prioritaria'] },
+  { slug: 'brindi-premium', nombre: 'Premium', para: 'Eventos grandes con control en la entrada', invitados: '1,000', items: ['Todo lo de Celebración', 'Diseños premium', 'Pase con QR de acceso para cada invitado', 'Tu equipo lo escanea en la entrada con el celular', 'Nadie entra dos veces con el mismo pase', 'Álbum de fotos de tus invitados', 'Música y mensaje de voz', 'Atención prioritaria'] },
 ];
 // Complementos agrupados por la necesidad de quien ya tiene su invitación (el Paquete Organizador va con los planes)
 const GRUPOS_EXTRA = [
@@ -82,6 +82,7 @@ const GRUPOS_EXTRA = [
     ['brindi-mejora-celebracion', 'Subir de Esencial a Celebración', 'Para tener enlaces personales por invitado. Pagas solo la diferencia.'],
     ['brindi-mejora-premium', 'Subir de Celebración a Premium', 'Para tener pases con QR en la entrada. Pagas solo la diferencia.'],
     ['brindi-plantilla-premium', 'Diseño Gala', 'Usa el diseño Gala (glamour) sin cambiar de plan.'],
+    ['brindi-musica', 'Música y mensaje de voz', 'Tu invitación suena al abrirla: elige una pieza de nuestra biblioteca o sube un mensaje de voz de hasta un minuto. Escucha el ejemplo de boda.'],
     ['brindi-album', 'Álbum de invitados', 'El día del evento tus invitados suben sus fotos desde la invitación; tú eliges cuáles se ven y las descargas todas.'],
   ] },
   { titulo: '¿Prefieres que lo hagamos por ti?', items: [
@@ -131,6 +132,7 @@ const FAQ = [
   ['¿Qué pasa con los datos de mis invitados?', 'Solo tú los ves. Las invitaciones no aparecen en Google (salvo que tú lo actives) y los enlaces personales usan códigos aleatorios que no revelan nombres. No vendemos ni compartimos datos y puedes borrar todo cuando quieras. Lee el <a href="/legal/brindi/privacidad-invitados/">aviso de privacidad para invitados</a>.'],
   ['¿Tienen soporte?', 'Sí. Escríbenos desde la sección Ayuda de tu panel o a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. En Premium te atendemos con prioridad. Si prefieres que lo hagamos contigo, existe la configuración asistida.'],
   ['¿Mis invitados pueden compartir sus fotos?', 'Sí, con el álbum de invitados (incluido en Premium; complemento en Esencial y Celebración). Desde el día del evento, en la misma invitación aparece “Subir mis fotos”: no instalan nada. Tú revisas cada foto antes de que la vean los demás y al final descargas todas. Hasta 400 fotos por evento.'],
+  ['¿Puedo ponerle música?', 'Sí, con el complemento Música y mensaje de voz ($99; incluido en Premium). Eliges una pieza de nuestra biblioteca (Canon en Re, marcha nupcial, vals, Gymnopédie y más, con licencia para usarse en invitaciones) o subes un mensaje de voz o una pieza tuya de hasta un minuto. Suena cuando tus invitados abren la invitación y tienen un botón para pausarla. Canciones comerciales no se pueden subir: necesitan permiso de sus autores.'],
   ['¿Sirve para eventos de empresa?', 'Sí: lanzamientos, posadas, congresos o cenas de gala. Con Premium controlas el acceso en la entrada. Para varios eventos al año, el paquete Organizador sale más barato.'],
 ];
 const VISIBLES_FAQ = 8;
@@ -205,7 +207,7 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a.replaceAll(`${OS}/brindi/"`, `${APP}"`)}</div></details>`;
   // Lo que el plan Premium ya incluye no se ofrece como complemento (el diseño Gala)
-  const incluido = slug => ['brindi-plantilla-premium', 'brindi-album'].includes(slug) ? ' data-incluido-en="brindi-premium"' : '';
+  const incluido = slug => ['brindi-plantilla-premium', 'brindi-album', 'brindi-musica'].includes(slug) ? ' data-incluido-en="brindi-premium"' : '';
   const otras = Object.entries(VARIANTES).filter(([k]) => k && k !== clave);
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/brindi/`, app: 'Brindi' },
     titulo: V.titulo, ruta, imagen: `${OS}/brindi/og/aurora.png`, descripcion: V.descripcion, whatsappTexto: msgWa,
@@ -279,7 +281,7 @@ ${TESTIMONIOS.length ? `
 ${grupos.length ? `<section class="t-sec" id="complementos"><div class="marco">
   <details class="br-compl"><summary><span class="etiqueta">Complementos</span><b>¿Ya tienes tu invitación? Agrégale lo que te falte</b><small>Más invitados, más tiempo en línea, subir de plan o que lo hagamos por ti. No son necesarios para empezar.</small></summary>
   <ol class="br-como"><li><i>1</i><span>Compra con el <b>mismo correo</b> de tu cuenta de Brindi</span></li><li><i>2</i><span>Entra a tu invitación → <b>Ajustes</b></span></li><li><i>3</i><span>Toca <b>“Aplicar a este evento”</b></span></li></ol>
-  <div class="br-grupos">${grupos.map(g => `<div class="br-grupo"><h3>${g.titulo}</h3>${g.items.map(x => `<div class="br-extra"><div><b>${esc(x.titulo)}</b><span>${esc(x.texto)}</span></div><span class="br-extra-p"><b class="num">${precio(x.prod)}</b><a class="btn blanco chico" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Agregar</a></span></div>`).join('')}</div>`).join('')}</div>
+  <div class="br-grupos">${grupos.map(g => `<div class="br-grupo"><h3>${g.titulo}</h3>${g.items.map(x => `<div class="br-extra"><div><b>${esc(x.titulo)}</b><span>${esc(x.texto)}${x.slug === 'brindi-musica' ? ` <a href="${OS}/i/demo-boda" target="_blank" rel="noopener">Escuchar ejemplo</a>` : ''}</span></div><span class="br-extra-p"><b class="num">${precio(x.prod)}</b><a class="btn blanco chico" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Agregar</a></span></div>`).join('')}</div>`).join('')}</div>
   </details>
 </div></section>` : ''}
 

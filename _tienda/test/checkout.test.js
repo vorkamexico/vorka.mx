@@ -46,6 +46,9 @@ describe('POST /api/checkout', () => {
     const r2 = await pedir({ ...base, email: 'otra@mail.com', slug: 'brindi-premium', items: [{ slug: 'brindi-premium' }, { slug: 'brindi-album' }] });
     expect(r2.status).toBe(400);
     expect((await r2.json()).error).toContain('álbum');
+    const r3 = await pedir({ ...base, email: 'tres@mail.com', slug: 'brindi-premium', items: [{ slug: 'brindi-premium' }, { slug: 'brindi-musica' }] });
+    expect(r3.status).toBe(400);
+    expect((await r3.json()).error).toContain('música');
   });
 
   it('crea la orden pending y la sesión de Stripe con el precio de la base', async () => {

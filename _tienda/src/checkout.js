@@ -92,6 +92,8 @@ export async function checkout(req, env) {
   const slugs = items.map(it => it.slug);
   if (slugs.includes('brindi-premium') && slugs.includes('brindi-plantilla-premium'))
     return error('El plan Premium ya incluye el diseño Gala. Quítalo de tu compra.');
+  if (slugs.includes('brindi-premium') && slugs.includes('brindi-musica'))
+    return error('El plan Premium ya incluye la música y el mensaje de voz. Quítalo de tu compra.');
   if (slugs.includes('brindi-premium') && slugs.includes('brindi-album'))
     return error('El plan Premium ya incluye el álbum de invitados. Quítalo de tu compra.');
 

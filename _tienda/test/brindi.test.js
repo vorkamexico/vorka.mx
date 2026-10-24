@@ -20,9 +20,9 @@ beforeEach(() => {
 describe('Brindi en la tienda', () => {
   it('los productos entran ocultos y no se pueden comprar hasta activarlos', async () => {
     const ps = await A.productosApp('brindi');
-    expect(ps).toHaveLength(14);
+    expect(ps).toHaveLength(15);
     // Entran ocultos; el álbum de invitados se puso a la venta con la migración 0035 (después de publicar os.vorka.mx)
-    expect(ps.filter(p => !['brindi-album', 'brindi-intimo', 'brindi-mejora-esencial'].includes(p.slug)).every(p => !p.activo)).toBe(true);   // los de 0034–0036 se pusieron a la venta ya aprobados
+    expect(ps.filter(p => !['brindi-album', 'brindi-intimo', 'brindi-mejora-esencial', 'brindi-musica'].includes(p.slug)).every(p => !p.activo)).toBe(true);   // los de 0034–0036 se pusieron a la venta ya aprobados
     expect(ps.find(p => p.slug === 'brindi-album').activo).toBe(true);
     await expect(crearOrden(env, { items: [{ slug: 'brindi-celebracion' }], email: 'a@b.mx', nombre: 'Ana' })).rejects.toThrow('producto');
     // Sin ningún plan a la venta, la página no ofrece pagar (pero sí crear gratis)
@@ -159,6 +159,9 @@ describe('Brindi en la tienda', () => {
     expect(html).toContain('value="brindi-plantilla-premium" data-precio="14900" data-incluido-en="brindi-premium"');
     expect(html).toContain('value="brindi-album" data-precio="19900" data-incluido-en="brindi-premium"');
     expect(html).toContain('Álbum de fotos de tus invitados');
+    expect(html).toContain('value="brindi-musica" data-precio="9900" data-incluido-en="brindi-premium"');
+    expect(html).toContain('Escuchar ejemplo</a>');
+    expect(html).toContain('¿Puedo ponerle música?');
   });
 
   it('el WhatsApp de la página habla de Brindi, no de la consultoría', async () => {

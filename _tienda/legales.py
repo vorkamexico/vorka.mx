@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(RAIZ, '_sitio'))
 from partes import cabeza, nav, pie, v_metal
 
 ACTUALIZADO = '15 de octubre de 2026'
-ACTUALIZADO_BRINDI = '23 de octubre de 2026'
+ACTUALIZADO_BRINDI = '24 de octubre de 2026'
 ACTUALIZADO_CUPO = '19 de octubre de 2026'
 ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
@@ -164,6 +164,7 @@ BRINDI = [
         'Eres responsable de los textos, nombres, fotos y datos que publicas. Debes tener derecho a usarlos y el consentimiento de las personas que aparecen.',
         '<b>Personas menores de edad:</b> solo publica fotos o datos de niñas, niños o adolescentes si eres su madre, padre o tutor, o cuentas con su autorización. Para invitaciones de XV años, bautizos o cumpleaños infantiles, la cuenta debe abrirla una persona adulta.',
         'No se permite usar Brindi para engaños, fraudes, spam, suplantar a otras personas, contenido ilegal, sexual, violento o que promueva odio, ni para recabar datos de personas sin su conocimiento.',
+        '<b>Música y mensaje de voz:</b> la música de nuestra biblioteca tiene licencia para usarse en tu invitación y su crédito se muestra al pie, como lo pide esa licencia. Si subes tu propio audio, debe ser tuyo (por ejemplo, un mensaje de voz) o debes tener permiso de sus autores: no subas canciones comerciales. Podemos quitar un audio si recibimos un reclamo fundado de derechos de autor.',
         '<b>Álbum de invitados:</b> si tu evento lo tiene, tus invitados pueden subir fotos desde la invitación. Ninguna se muestra hasta que tú la apruebas; eres responsable de las que apruebes y debes ocultar o borrar las que alguien te pida quitar. Puedes descargarlas para el recuerdo de tu evento, no para usos comerciales sin el permiso de quien aparece.',
         'Los invitados pueden reportar una invitación. Podemos ocultar contenido o suspender eventos o cuentas que incumplan estas reglas; te avisaremos el motivo y podrás responder. Si la suspensión no se debe a un incumplimiento tuyo, te reembolsamos.',
         'Conservas los derechos sobre tu contenido. Nos das permiso, no exclusivo y gratuito, de alojarlo y mostrarlo solo para prestarte el servicio, y lo retiramos cuando borras el evento. No usamos tu invitación como ejemplo ni en publicidad sin tu autorización por escrito.',
