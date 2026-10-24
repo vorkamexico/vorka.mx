@@ -176,7 +176,7 @@ describe('Brindi en la tienda', () => {
     expect(xv).toContain('<link rel="canonical" href="https://vorka.mx/tienda/brindi/xv-anos/">');
     expect(xv).toContain('<iframe src="https://os.vorka.mx/i/demo-xv"');
     const org = await (await pedir('/tienda/brindi/organizadores/')).text();
-    expect(org).toContain('<option value="brindi-paquete-organizador" data-precio="279000" selected');
+    expect(org).toContain('<option value="brindi-paquete-organizador" data-precio="239000" selected');
     expect(org).toContain('Gana con tu liga');
     expect(org).toContain('Diseños con tu marca');
     expect(org).toContain('https://os.vorka.mx/brindi/#/organizador');
