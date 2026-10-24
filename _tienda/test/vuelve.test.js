@@ -197,15 +197,15 @@ describe('páginas y ligas', () => {
     expect(r.headers.get('content-security-policy')).toBe("default-src 'none'");
     expect(p[0].url).toBe('https://os.vorka.mx/v/cafe-la-paloma-x7k2?ref=ab');
     expect(p[0].h['x-vuelve-base']).toBe('1'); expect(p[0].h['cf-connecting-ip']).toBe('9.9.9.9'); expect(p[0].h.cookie).toBeUndefined();
-    await pedir('/vuelve/negocios'); await pedir('/vuelve/c/abcdefghij0123456789/pase.pkpass'); await pedir('/vuelve/logo/3/web/121212.png?v=a'); await pedir('/vuelve/tema.js?v=1');
+    await pedir('/vuelve/negocios'); await pedir('/vuelve/c/abcdefghij0123456789/pase.pkpass'); await pedir('/vuelve/logo/3/web/121212.png?v=a'); await pedir('/vuelve/tema.js?v=1'); await pedir('/vuelve/producto/7.jpg?v=a');
     await pedir('/vuelve/api/registro', { metodo: 'POST', body: { slug: 'cafe', nombre: 'Ana' } });
-    expect(p.slice(1).map(x => new URL(x.url).pathname)).toEqual(['/negocios', '/c/abcdefghij0123456789/pase.pkpass', '/vuelve/logo/3/web/121212.png', '/vuelve/tema.js', '/api/vuelve/publico/registro']);
+    expect(p.slice(1).map(x => new URL(x.url).pathname)).toEqual(['/negocios', '/c/abcdefghij0123456789/pase.pkpass', '/vuelve/logo/3/web/121212.png', '/vuelve/tema.js', '/vuelve/producto/7.jpg', '/api/vuelve/publico/registro']);
     expect(p.at(-1)).toMatchObject({ metodo: 'POST', cuerpo: JSON.stringify({ slug: 'cafe', nombre: 'Ana' }) });
     expect(p.at(-1).h['content-type']).toBe('application/json');
     // lo que no es de los clientes no se le pide a OS
     expect((await pedir('/vuelve/')).headers.get('location')).toBe('/tienda/vuelve/');
     expect((await pedir('/vuelve/api/../../admin')).status).not.toBe(200);
-    expect(p.length).toBe(6);
+    expect(p.length).toBe(7);
   });
   it('si Vorka OS no responde, la página lo dice en lugar de romperse', async () => {
     env.OS = { fetch: async () => { throw new Error('caído'); } };

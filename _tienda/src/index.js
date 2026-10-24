@@ -128,7 +128,7 @@ export class Admin extends WorkerEntrypoint {
 // Vorka OS por el enlace directo (service binding OS) y OS arma sus ligas con esta forma (le avisa x-vuelve-base):
 //   /vuelve/<negocio> → /v/<negocio> (registro: la liga del cartel con QR) · /vuelve/c/… → /c/… (la tarjeta, su Wallet y avisos)
 //   /vuelve/api/… → /api/vuelve/publico/… · /vuelve/negocios → /negocios · logos, fotos, catálogo y tema: la misma ruta
-const RECURSOS_VUELVE = /^\/vuelve\/(logo|foto|catalogo|tira)\/[a-z0-9./-]+$|^\/vuelve\/(tema\.js|icono\.png|pase\/vorka\.png)$/;
+const RECURSOS_VUELVE = /^\/vuelve\/(logo|foto|producto|catalogo|tira)\/[a-z0-9./-]+$|^\/vuelve\/(tema\.js|icono\.png|pase\/vorka\.png)$/;
 export function rutaVuelve(p) {
   let m;
   if (/^\/vuelve\/negocios\/?$/i.test(p)) return '/negocios';
