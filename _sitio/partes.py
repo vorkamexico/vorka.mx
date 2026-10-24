@@ -116,12 +116,12 @@ MENU = [('/servicios/', 'Servicios'), ('/#proceso', 'Cómo trabajamos'), ('/#mom
 MENU_FC = [('/fc/#programa', 'Programa'), ('/fc/#costo', 'Costo'), ('/fc/#celaya', 'Dónde'), ('/sparks/celaya/', 'Noticias de Celaya'), ('/sparks/', 'Revista Sparks'), ('/voluntariado', 'Tú en Vorka')]
 CTA = {'general': ('/agenda/', 'Agenda tu diagnóstico'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
 
-def nav(actual='', oscuro=False, publico='general'):
+def nav(actual='', oscuro=False, publico='general', cta=None):
     cur = ' aria-current="page"'
     menu = MENU_FC if publico == 'fc' else MENU
     links = ''.join(f'<a href="{h}"{cur if h == actual else ""}>{t}</a>' for h, t in menu)
     movil = ''.join(f'<a href="{h}">{t}</a>' for h, t in menu)
-    cta, cta_t = CTA.get(publico, CTA['general'])
+    cta, cta_t = cta or CTA.get(publico, CTA['general'])   # cta=(enlace, texto) para páginas propias (p. ej. el equipo)
     return f'''<header class="nav{' oscuro' if oscuro else ''}">
   <div class="nav-in">
     <a class="marca" href="/" aria-label="Vorka México, inicio">{LOGO}Vorka <span>México</span></a>
