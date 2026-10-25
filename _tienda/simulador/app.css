@@ -337,3 +337,15 @@
 .sim-casi { margin-top: 12px; }
 .sim-plan-l { display: grid; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
 .sim-plan-l li { display: flex; gap: 8px; align-items: flex-start; } .sim-plan-l svg { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--verde, #2B8553); }
+
+/* Área (UNAM): el examen se arma con las materias y el peso del área elegida */
+.sim-area { margin-bottom: 22px; }
+.sim-area .sim-nota { margin: 4px 0 12px; }
+.sim-area-ops { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 720px) { .sim-area-ops { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.sim-chip-area { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--card); color: inherit; font: inherit; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.sim-chip-area:hover { border-color: var(--line-2); }
+.sim-chip-area b { font-size: 15px; letter-spacing: -.01em; }
+.sim-chip-area small { font-size: 12.5px; color: var(--fg-2); line-height: 1.3; }
+.sim-chip-area.sel { border-color: var(--fg); box-shadow: var(--sombra-2); }
+.sim-chip-area:focus-visible { outline: 2px solid var(--morado); outline-offset: 2px; }

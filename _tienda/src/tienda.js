@@ -110,6 +110,11 @@ function vistas(productos, desdeBrindi) {
     return v;
   }).filter(Boolean);
 }
+// Planes de los simuladores: en la tienda se presentan con el nombre del simulador (no el del plan)
+const SIM_TIENDA = {
+  'simulador-paa': { nombre: 'Simulador PAA en línea', texto: 'Práctica ilimitada con tutor y exámenes oficiales como la PAA real: elige tu plan o llévate los dos.' },
+  'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
+};
 function vista(p, url, desdeBrindi) {
   {
     if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
@@ -117,8 +122,8 @@ function vista(p, url, desdeBrindi) {
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/cupo.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
-    const plan = p.contenido?.plan && p.contenido?.acceso?.app === 'simulador-paa';
-    return { p, url, nombre: plan ? 'Simulador PAA en línea' : p.nombre, texto: plan ? 'Práctica ilimitada con tutor y exámenes oficiales como la PAA real: elige tu plan o llévate los dos.' : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
+    const sim = p.contenido?.plan && SIM_TIENDA[p.contenido?.acceso?.app];
+    return { p, url, nombre: sim ? sim.nombre : p.nombre, texto: sim ? sim.texto : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
       cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: p, precio: precio(p), regalable: !!p.contenido?.regalable, min: esBrindi(p) || esCupo(p) ? null : p.precio_centavos };
   }
 }

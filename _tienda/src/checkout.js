@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { json, fail, sha256, correoOculto } from './util.js';
 import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { proveedor } from './pagos/index.js';
-import { puedeComprarIntento } from './simulador/index.js';
+import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
 import { productoPorSlug, afiliadoActivo } from './modelo.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente } from './suscripciones.js';
@@ -83,9 +83,10 @@ export async function checkout(req, env) {
   }
   for (const it of items) {
     const p = await productoPorSlug(env, it.slug);
-    // Los simulacros adicionales del Simulador PAA solo los compra quien ya tiene el simulador
-    if (['intento', 'examen'].includes(p?.contenido?.acceso?.tipo) && !(await puedeComprarIntento(env, d.email)))
-      return error('Para comprar simulacros adicionales primero necesitas el Simulador PAA, con el mismo correo de tu compra.', 403);
+    // Los simulacros y exámenes adicionales de un simulador solo los compra quien ya tiene ese simulador
+    const appSim = p?.contenido?.acceso?.app;
+    if (['intento', 'examen'].includes(p?.contenido?.acceso?.tipo) && !(await puedeComprarIntento(env, d.email, appSim)))
+      return error(`Para comprar simulacros adicionales primero necesitas el ${simuladorDe(appSim)?.titulo || 'simulador'}, con el mismo correo de tu compra.`, 403);
     if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
   }
   // Brindi: el plan Premium ya incluye los diseños premium (Gala); no se cobra dos veces

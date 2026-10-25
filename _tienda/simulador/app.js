@@ -1,11 +1,13 @@
-// Simulador PAA · cliente (vorka.mx/simulador-paa). Sin dependencias.
+// Simuladores de examen (PAA, UNAM, ECOEMS) · cliente. Sin dependencias. La configuración del examen llega en api/banco.
 // Se empaqueta dentro del Worker con: python3 _tienda/simulador/construir.py
 (function () {
   'use strict';
   var SIM = window.SIM || {};
   var app = document.getElementById('app');
   var barra = document.getElementById('barra-der');
-  var B = null;            // banco: { secciones, temas, textos, reactivos }
+  var B = null;            // banco: { config, secciones, examen, calentamiento, areas, temas, textos, reactivos }
+  var CFG = { examen: 'PAA', escala: 'paa', examenReactivos: 175, examenHoras: 3, globalSecciones: ['lectura', 'redaccion', 'matematicas'], oficial: 'College Board' };
+  var APP = SIM.app || 'simulador-paa', RUTA = SIM.ruta || '/simulador-paa';
   var R = {};              // reactivos por id
   var YO = { historial: [] };
   var run = null;          // simulacro en curso (se guarda en localStorage para retomarlo)
@@ -13,11 +15,12 @@
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
   // Llaves de localStorage por cuenta (se completan al saber quién entró): dos personas en el mismo dispositivo no se mezclan
-  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS;
+  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA;
   function llaves(email) {
     var h = 0; String(email || '').split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
     var x = ':' + h.toString(36);
-    K_RUN = 'vk_paa_run' + x; K_META = 'vk_paa_meta' + x; K_PEND = 'vk_paa_pendiente' + x; K_VISTOS = 'vk_paa_vistos' + x; K_SPARKS = 'vk_paa_sparks' + x;
+    var p = APP === 'simulador-paa' ? 'vk_paa' : 'vk_' + APP.replace('simulador-', '');
+    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x;
   }
 
   // ---------- utilidades ----------
@@ -31,11 +34,21 @@
   function minutos(s) { var m = Math.round(s / 60); return m < 1 ? 'menos de 1 min' : m + ' min'; }
   function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
-  function meta() { return leer(K_META) || 600; }
+  function esPAA() { return CFG.escala === 'paa'; }
+  // Rango del puntaje global y de la meta: PAA 200–800; por aciertos, 0 al total del examen
+  function rango() { return esPAA() ? { min: 200, max: 800 } : { min: 0, max: CFG.examenReactivos }; }
+  function meta() { var m = leer(K_META); return m && m >= rango().min && m <= rango().max ? m : (CFG.meta && CFG.meta.inicial) || 600; }
+  function unidad(n) { return esPAA() ? n + ' pts' : n + '/' + CFG.examenReactivos; }
+  // Meta expresada en la escala de cada sección (PAA: 200–800; aciertos: porcentaje)
+  function metaSec() { return esPAA() ? meta() : Math.round(100 * meta() / CFG.examenReactivos); }
+  // Área (UNAM): la elige el estudiante; el examen se arma con su distribución
+  function areas() { return B.areas || null; }
+  function areaActual() { var a = areas(); if (!a) return null; var x = leer(K_AREA); return a.some(function (y) { return y.id === x; }) ? x : a[0].id; }
+  function infoArea() { var a = areas(), id = areaActual(); if (!a) return null; for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i]; return a[0]; }
   function seccion(id) { for (var i = 0; i < B.secciones.length; i++) if (B.secciones[i].id === id) return B.secciones[i]; return { id: id, nombre: 'Práctica', minutos: 0, reactivos: 0 }; }
   function h(html) { app.innerHTML = html; app.focus({ preventScroll: true }); window.scrollTo(0, 0); }
   function api(ruta, op) {
-    return fetch('/api/simulador-paa/' + ruta, Object.assign({ credentials: 'same-origin', headers: { 'content-type': 'application/json' } }, op || {}))
+    return fetch('/api/' + APP + '/' + ruta, Object.assign({ credentials: 'same-origin', headers: { 'content-type': 'application/json' } }, op || {}))
       .then(function (r) { return r.json().then(function (d) { if (!r.ok) throw Object.assign(new Error(d.error || 'Algo falló'), { status: r.status, datos: d }); return d; }); });
   }
   function fecha(iso) { try { return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
@@ -51,7 +64,7 @@
   // ---------- arranque ----------
   function iniciar() {
     Promise.all([api('banco'), api('yo')]).then(function (res) {
-      B = res[0]; YO = res[1];
+      B = res[0]; YO = res[1]; if (B.config) CFG = B.config;
       llaves(YO.email);
       // Resultado que no se pudo guardar por falta de conexión: se manda ahora
       var pend = leer(K_PEND);
@@ -110,7 +123,11 @@
         items = items.concat(porTema(sueltos, s.reactivos - items.length));
       }
     }
-    else if (sid === 'ingles') { var lect = delTexto(textosDe(sid)[0]); items = porTema(sueltos, s.reactivos - lect.length).concat(lect); }
+    else if (textosDe(sid).length) {
+      // Materia con lecturas (inglés de la PAA; Español o Literatura): una lectura que quepa y el resto sueltos
+      var lect = delTexto(textosDe(sid).filter(function (k) { return delTexto(k).length <= s.reactivos; })[0] || '');
+      items = porTema(sueltos, s.reactivos - lect.length).concat(lect);
+    }
     else items = porTema(sueltos, s.reactivos);
     return { id: sid, items: items.map(function (r) { return r.id; }), idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false };
   }
@@ -135,13 +152,14 @@
     var nombre = ex ? 'examen oficial' : ca ? 'calentamiento' : 'simulacro de nivel Medio', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen oficial disponible' : 'exámenes oficiales disponibles') : ca ? (uno ? 'calentamiento disponible' : 'calentamientos disponibles') : (uno ? 'simulacro Medio disponible' : 'simulacros Medios disponibles'));
     if (!it.abierto) {
       if (it.disponibles <= 0) return comprar(modo);
-      if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex ? ' Son 175 reactivos y 3 horas, como la PAA real; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
+      if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex ? ' Son ' + exTotales().reactivos + ' reactivos y ' + horas(exTotales().minutos) + ', como el examen real' + (infoArea() ? ' (' + infoArea().nombre + ')' : '') + '; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
     }
-    api('iniciar', { method: 'POST', body: JSON.stringify({ tipo: ex ? 'examen' : ca ? 'calentamiento' : 'corto' }) }).then(function (d) {
+    api('iniciar', { method: 'POST', body: JSON.stringify({ tipo: ex ? 'examen' : ca ? 'calentamiento' : 'corto', area: areaActual() }) }).then(function (d) {
       if (ex) YO.examenes = d.intentos; else if (ca) YO.calentamientos = d.intentos; else YO.intentos = d.intentos;
-      var base = ex ? B.examen : ca ? B.calentamiento : B.secciones;
+      // Las secciones vienen del servidor cuando dependen del área (UNAM); si no, son las fijas del banco (PAA)
+      var base = d.secciones || (ex ? B.examen : ca ? B.calentamiento : B.secciones);
       var secs = base.map(function (s, i) { return { id: s.id, items: d.items[i], idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false }; });
-      run = nuevoRun(modo, secs); run.intento = d.id; if (ex) run.sinTutor = true; guardar(K_RUN, run); introSeccion();
+      run = nuevoRun(modo, secs); run.intento = d.id; run.area = areaActual(); if (ex) run.sinTutor = true; guardar(K_RUN, run); introSeccion();
     }).catch(function (e) {
       if (e.status === 402) { var c = (e.datos || {}).intentos; if (c) { if (ex) YO.examenes = c; else if (ca) YO.calentamientos = c; else YO.intentos = c; } comprar(modo); }
       else alert(e.message || 'No pudimos abrir el simulacro. Revisa tu conexión.');
@@ -153,6 +171,12 @@
     if (!id) return inicio();
     api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; if (d.calentamientos) YO.calentamientos = d.calentamientos; }).finally(inicio);
   }
+
+  function suma(l, k) { return (l || []).reduce(function (a, s) { return a + (s[k] || 0); }, 0); }
+  function exTotales() { var a = infoArea(); return a ? a.examen : { reactivos: suma(B.examen, 'reactivos'), minutos: suma(B.examen, 'minutos') }; }
+  function medioTotales() { var a = infoArea(); return a ? a.medio : { reactivos: suma(B.secciones, 'reactivos'), minutos: suma(B.secciones, 'minutos') }; }
+  function calTotales() { var a = infoArea(); return a ? a.calentamiento : { reactivos: suma(B.calentamiento, 'reactivos'), minutos: suma(B.calentamiento, 'minutos') }; }
+  function horas(min) { var h = min / 60; return (h === Math.floor(h) ? h : h.toFixed(1)) + (h === 1 ? ' hora' : ' horas'); }
 
   // ---------- comprar simulacros adicionales ----------
   function precio(c) { return '$' + (c / 100).toLocaleString('es-MX') + ' MXN'; }
@@ -166,7 +190,7 @@
     if (!x) { h('<section class="sim-intro"><h1>Ya usaste tus ' + que + '</h1><p class="sim-lead">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para conseguir más intentos. Mientras tanto, puedes seguir practicando por sección sin límite.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
     h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + (ex ? 'Nivel Oficial · examen completo' : 'Nivel Medio') + '</span>' +
       '<h1>' + (it.disponibles ? 'Suma más ' + que : 'Ya usaste tus ' + (it.incluidos || (ex ? 1 : 2)) + ' ' + que) + '</h1>' +
-      '<p class="sim-lead">Cada ' + uno + ' cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago.' + (ex ? ' Son 175 reactivos y 3 horas, como la PAA real, con preguntas que priorizan lo que no has visto.' : '') + ' La práctica por sección y por temas sigue sin límite.</p>' +
+      '<p class="sim-lead">Cada ' + uno + ' cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago.' + (ex ? ' Son ' + exTotales().reactivos + ' reactivos y ' + horas(exTotales().minutos) + ', como el examen real, con preguntas que priorizan lo que no has visto.' : '') + ' La práctica por sección y por temas sigue sin límite.</p>' +
       '<form class="sim-card sim-compra" id="f-compra">' +
         '<div class="sim-cant"><span>¿Cuántos quieres?</span><div class="sim-cant-c"><button type="button" id="c-menos" aria-label="Uno menos">−</button><b class="num" id="c-n" aria-live="polite">1</b><button type="button" id="c-mas" aria-label="Uno más">+</button></div></div>' +
         '<div class="sim-total"><span>Total</span><b class="num" id="c-total">' + precio(x.precio_centavos) + '</b></div>' +
@@ -207,9 +231,9 @@
   function inicio() {
     detenerReloj(); pintarBarra();
     var u = ultimoCompleto(), m = meta();
-    var totalR = B.secciones.reduce(function (a, s) { return a + s.reactivos; }, 0), totalM = B.secciones.reduce(function (a, s) { return a + s.minutos; }, 0);
+    var totalR = medioTotales().reactivos, totalM = medioTotales().minutos;
     var retomar = run && run.fase !== 'fin' ? '<div class="sim-aviso"><div><b>Tienes un simulacro sin terminar.</b><span>' + esc(nombreModo(run)) + ' · ' + contestadas(run) + ' de ' + totalItems(run) + ' respondidas</span></div><div class="botones"><button class="btn tinta chico" id="b-ret">Continuar</button><button class="btn blanco chico" id="b-desc">Descartar</button></div></div>' : '';
-    var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu puntaje estimado por sección, tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
+    var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu ' + (esPAA() ? 'puntaje estimado por sección' : 'número de aciertos estimado por materia') + ', tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
     var debiles = u ? temasDebiles(u.temas, 3) : [];
     var it = cuentaDe('completo'), ie = cuentaDe('examen'), ic = cuentaDe('calentamiento');
     // Si el intento de este dispositivo ya se cerró en otro, se descarta aquí
@@ -224,21 +248,24 @@
     var intentos = cajaIntentos(it, 'simulacros Medios disponibles', YO.intentoExtra, 'b-comprar');
     var intentosEx = cajaIntentos(ie, ie.incluidos === 1 ? 'examen oficial disponible' : 'exámenes oficiales disponibles', YO.examenExtra, 'b-comprar-ex');
     var intentosCa = cajaIntentos(ic, 'calentamientos disponibles', null, '');
-    var caR = (B.calentamiento || []).reduce(function (a, s) { return a + s.reactivos; }, 0), caM = (B.calentamiento || []).reduce(function (a, s) { return a + s.minutos; }, 0);
-    var exR = (B.examen || []).reduce(function (a, s) { return a + s.reactivos; }, 0), exM = (B.examen || []).reduce(function (a, s) { return a + s.minutos; }, 0);
+    var caR = calTotales().reactivos, caM = calTotales().minutos, exR = exTotales().reactivos, exM = exTotales().minutos;
+    var hayCal = !!(B.calentamiento || infoArea()), hayExamen = !!(B.examen || infoArea());
+    // UNAM: el examen se arma con la distribución del área (cambia el peso de cada materia)
+    var selArea = areas() ? '<div class="sim-card sim-area"><span class="etiqueta">Tu área</span><p class="sim-nota">El examen y los simulacros se arman con las materias y el peso de tu área.</p><div class="sim-area-ops" role="radiogroup" aria-label="Elige tu área">' +
+      areas().map(function (a) { return '<button type="button" class="sim-chip-area' + (a.id === areaActual() ? ' sel' : '') + '" role="radio" aria-checked="' + (a.id === areaActual()) + '" data-area="' + a.id + '"><b>Área ' + a.id + '</b><small>' + esc(a.corto) + '</small></button>'; }).join('') + '</div></div>' : '';
     // Computadora: dos columnas (practicar a la izquierda; tu estado, meta y banco a la derecha).
     // Celular: una sola columna; el orden lo dan las clases o-* (las columnas se vuelven display: contents).
     h(
-      '<section class="sim-hola"><div><span class="etiqueta">Simulador PAA</span><h1>Hola' + (SIM.nombre ? ', ' + esc(SIM.nombre) : '') + '</h1><p>Practica con tiempo real. Si fallas, el tutor te guía para intentarlo de nuevo.</p></div></section>' +
+      '<section class="sim-hola"><div><span class="etiqueta">Simulador ' + esc(CFG.examen) + '</span><h1>Hola' + (SIM.nombre ? ', ' + esc(SIM.nombre) : '') + '</h1><p>Practica con tiempo real. Si fallas, el tutor te guía para intentarlo de nuevo.</p></div></section>' +
       retomar +
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
-          '<section class="o-4"><h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el Oficial, que tiene la dificultad y el tiempo de la PAA real.</p>' +
+          '<section class="o-4">' + selArea + '<h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el Oficial, que tiene la dificultad y el tiempo del examen real.</p>' +
           (!puedePracticar() ? tarjetaPlan('practica', 'Llega al examen con práctica de sobra') : '') +
-          (puedePracticar() && B.calentamiento ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
-          (puedePracticar() ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como la PAA · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentos : '') +
-          (B.examen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
-          (B.examen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Oficial: examen PAA completo</b><small>' + exR + ' reactivos · ' + Math.floor(exM / 60) + ' horas · las 4 secciones con los tiempos y la dificultad oficiales · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
+          (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
+          (puedePracticar() ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como el examen real · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentos : '') +
+          (hayExamen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
+          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Oficial: examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + ' secciones con los tiempos y la dificultad oficiales') + ' · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           (puedePracticar() ? '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
             return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
@@ -249,15 +276,19 @@
         '</div>' +
         '<aside class="sim-col sim-col-lado">' +
           '<div class="o-1">' + resumen + '</div>' +
-          '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800</small></div>' +
+          (esPAA() ? '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800</small></div>' +
             '<input type="range" id="meta" min="400" max="800" step="10" value="' + m + '" aria-label="Meta de puntaje por sección (200 a 800)">' +
-            '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>' +
+            '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>'
+          : '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta de aciertos</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de ' + CFG.examenReactivos + '</small></div>' +
+            '<input type="range" id="meta" min="' + CFG.meta.min + '" max="' + CFG.meta.max + '" step="' + CFG.meta.paso + '" value="' + m + '" aria-label="Meta de aciertos (de ' + CFG.examenReactivos + ')">' +
+            '<p class="sim-nota">Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.</p></div>') +
           '<div class="o-3">' + bancoHTML() + '</div>' +
           '<div class="o-6">' + compartirHTML() + regaloHTML() + '</div>' +
           '<div class="o-7">' + sparks('inicio') + '</div>' +
         '</aside>' +
       '</div>'
     );
+    app.querySelectorAll('[data-area]').forEach(function (b) { b.onclick = function () { guardar(K_AREA, b.dataset.area); inicio(); }; });
     var r = document.getElementById('meta');
     r.oninput = function () { document.getElementById('meta-v').textContent = r.value; };
     r.onchange = function () { guardar(K_META, Number(r.value)); };
@@ -296,28 +327,33 @@
   }
   // Regalar: abre la ficha de la tienda (con sesión, /simulador-paa/ muestra la app y no la página de venta)
   function regaloHTML() {
-    return '<a class="sim-regalo" href="/tienda/simulador-paa/?regalo=1#comprar"><span class="sim-regalo-i" aria-hidden="true">🎁</span><span><b>¿Conoces a alguien que va a presentar?</b><small>Regálale el simulador: le llega una liga de un solo uso con tu mensaje.</small></span><span class="sim-op-f">' + FL + '</span></a>';
+    return '<a class="sim-regalo" href="' + esc(CFG.regalo || '/tienda/simulador-paa/?regalo=1#comprar') + '"><span class="sim-regalo-i" aria-hidden="true">🎁</span><span><b>¿Conoces a alguien que va a presentar?</b><small>Regálale el simulador: le llega una liga de un solo uso con tu mensaje.</small></span><span class="sim-op-f">' + FL + '</span></a>';
   }
-  // Niveles: 'calentamiento' (24 reactivos) · 'completo' = Medio (46) · 'examen' = Oficial (examen PAA completo). Los tres gastan intento.
+  // Niveles: 'calentamiento' · 'completo' = Medio · 'examen' = Oficial (examen completo). Los tres gastan intento.
   function esIntento(m) { return m === 'completo' || m === 'examen' || m === 'calentamiento'; }
   function cuentaDe(m) { return (m === 'examen' ? YO.examenes : m === 'calentamiento' ? YO.calentamientos : YO.intentos) || { incluidos: 0, disponibles: 0 }; }
   // Planes: practica (Calentamientos, Medios y práctica sin límite), completo (exámenes oficiales) o la compra de antes (legado)
   function plan() { return YO.plan || { legado: true }; }
   function puedePracticar() { var p = plan(); return !!(p.practica || p.legado); }
   function tieneExamen() { var e = cuentaDe('examen'); return !!(e.incluidos || e.usados || e.abierto); }
-  var PLAN_INFO = {
-    practica: { nombre: 'Práctica ilimitada', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por sección y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por sección y por tema', 'Tutor con pistas y explicación paso a paso'] },
-    completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes oficiales con la misma cantidad de preguntas, el tiempo y la dificultad de la PAA real.', trae: ['2 exámenes oficiales: 175 reactivos en 3 horas', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] }
-  };
+  // Textos de los planes (con el tamaño del examen de este simulador)
+  function planInfo(k) {
+    var ex = exTotales();
+    return {
+      practica: { nombre: 'Práctica ilimitada', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (areas() ? 'materia' : 'sección') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (areas() ? 'materia' : 'sección') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
+      completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes oficiales con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes oficiales: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (areas() ? 'materia' : 'sección')] }
+    }[k];
+  }
+
   function tarjetaPlan(k, titulo) {
-    var o = (YO.ofertas || {})[k], i = PLAN_INFO[k];
+    var o = (YO.ofertas || {})[k], i = planInfo(k);
     return '<div class="sim-card sim-plan-up"><span class="sim-op-tag ' + (k === 'completo' ? 'n3' : 'n2') + '">' + i.nombre + '</span><h3>' + titulo + '</h3><p>' + i.lead + '</p>' +
       (o ? '<button class="btn tinta" data-plan="' + k + '">Desbloquear · ' + precio(o.precio_centavos) + '</button>' : '<p class="sim-nota">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para sumarlo a tu cuenta.</p>') + '</div>';
   }
   // Comprar el plan que le falta (se suma a su cuenta con el mismo correo)
   function comprarPlan(k) {
     detenerReloj(); pintarBarra();
-    var o = (YO.ofertas || {})[k], i = PLAN_INFO[k];
+    var o = (YO.ofertas || {})[k], i = planInfo(k);
     if (!o) { h('<section class="sim-intro"><h1>' + i.nombre + '</h1><p class="sim-lead">' + i.lead + ' Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para sumarlo a tu cuenta.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
     h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + i.nombre + '</span><h1>' + (k === 'completo' ? 'Mídete con el examen real' : 'Practica sin límite') + '</h1><p class="sim-lead">' + i.lead + '</p>' +
       '<form class="sim-card sim-compra" id="f-plan"><ul class="sim-plan-l">' + i.trae.map(function (t) { return '<li>' + ICONO.ok + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul>' +
@@ -337,38 +373,38 @@
         .catch(function (e2) { err.textContent = e2.message; err.hidden = false; btn.disabled = false; btn.innerHTML = 'Ir a pagar ' + FL; });
     };
   }
-  function nombreModo(r) { return r.modo === 'examen' ? 'Oficial · examen PAA completo' : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
+  function nombreModo(r) { return r.modo === 'examen' ? 'Oficial · examen ' + CFG.examen + ' completo' : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
   function totalItems(r) { return r.secciones.reduce(function (a, s) { return a + s.items.length; }, 0); }
   function contestadas(r) { return Object.keys(r.resp).filter(function (id) { return r.resp[id].fase === 'fin'; }).length; }
   function tarjetaResumen(u) {
     var c = u.confianza || 0, e = estado(c);
     return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen oficial' : u.modo === 'calentamiento' ? 'calentamiento' : 'simulacro Medio') + '</span>' +
       '<div class="sim-res-mini-f">' + medidor(c, 120) + '<div><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' +
-      (u.global ? '<p>Puntaje estimado: <b class="num">' + u.global + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
+      (u.global != null ? '<p>' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ': <b class="num">' + unidad(u.global) + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
       '<p class="sim-nota">' + fecha(u.fecha) + '</p></div></div></div>';
   }
   function historial() {
     if (!YO.historial.length) return '';
-    var comp = YO.historial.filter(function (x) { return esIntento(x.modo) && x.global; }).slice(0, 8).reverse();
+    var comp = YO.historial.filter(function (x) { return esIntento(x.modo) && x.global != null; }).slice(0, 8).reverse();
     var graf = comp.length >= 2 ? graficaHistorial(comp) : '';
     return '<h2 class="sim-h2">Tu avance</h2>' + graf + '<ul class="sim-hist">' + YO.historial.slice(0, 8).map(function (x, i) {
       var t = x.modo === 'examen' ? 'Oficial · examen completo' : x.modo === 'calentamiento' ? 'Calentamiento' : x.modo === 'completo' ? 'Nivel Medio' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
       var ok = x.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = x.secciones.reduce(function (a, s) { return a + s.total; }, 0);
-      return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global ? x.global + ' pts' : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
+      return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global != null && esIntento(x.modo) ? unidad(x.global) : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
     }).join('') + '</ul>';
   }
   // Puntaje global de los últimos simulacros (una serie: un solo color, valor y fecha en el tooltip)
   function graficaHistorial(lista) {
     var W = 560, H = 150, pad = 28, n = lista.length, bw = Math.min(44, (W - pad * 2) / n - 10);
-    var y = function (v) { return H - 22 - (v - 200) / 600 * (H - 40); };
+    var R0 = rango(), y = function (v) { return H - 22 - (v - R0.min) / (R0.max - R0.min) * (H - 40); };
     var m = meta();
     var barras = lista.map(function (x, i) {
       var cx = pad + (i + .5) * (W - pad * 2) / n, top = y(x.global);
-      return '<g class="sim-gh-b" tabindex="0"><title>' + esc(fecha(x.fecha)) + ': ' + x.global + ' puntos</title>' +
+      return '<g class="sim-gh-b" tabindex="0"><title>' + esc(fecha(x.fecha)) + ': ' + (esPAA() ? x.global + ' puntos' : x.global + ' aciertos') + '</title>' +
         '<path d="M' + (cx - bw / 2) + ' ' + (H - 22) + 'V' + (top + 4) + 'q0 -4 4 -4h' + (bw - 8) + 'q4 0 4 4V' + (H - 22) + 'z"/>' +
         (i === n - 1 ? '<text x="' + cx + '" y="' + (top - 6) + '" text-anchor="middle">' + x.global + '</text>' : '') + '</g>';
     }).join('');
-    return '<figure class="sim-card sim-gh"><figcaption>Puntaje estimado en tus simulacros completos</figcaption>' +
+    return '<figure class="sim-card sim-gh"><figcaption>' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados (de ' + CFG.examenReactivos + ')') + ' en tus simulacros completos</figcaption>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Puntajes: ' + lista.map(function (x) { return x.global; }).join(', ') + '">' +
       '<line class="sim-gh-base" x1="' + pad + '" x2="' + (W - pad) + '" y1="' + (H - 22) + '" y2="' + (H - 22) + '"/>' +
       '<line class="sim-gh-meta" x1="' + pad + '" x2="' + (W - pad) + '" y1="' + y(m) + '" y2="' + y(m) + '"/><text class="sim-gh-mt" x="' + (W - pad) + '" y="' + (y(m) - 6) + '" text-anchor="end">Meta ' + m + '</text>' +
@@ -390,7 +426,7 @@
       '<p class="sim-lead">' + (practica ? esc(s.temas.map(function (t) { return B.temas[t].nombre; }).join(' · ')) + '. Sin límite de tiempo: enfócate en entender el método.' : esc(info.descripcion)) + '</p>' +
       '<ul class="sim-datos"><li><b class="num">' + s.items.length + '</b><span>reactivos</span></li>' + (s.limite ? '<li><b class="num">' + Math.round(s.limite / 60) + '</b><span>minutos</span></li><li><b class="num">' + Math.round(s.limite / s.items.length) + ' s</b><span>por reactivo</span></li>' : '<li><b>Libre</b><span>tiempo</span></li>') + '</ul>' +
       '<div class="sim-reglas"><h2>Cómo funciona</h2><ol>' +
-        '<li><b>Primer intento.</b> Elige tu respuesta y confírmala. Este intento es el que cuenta para tu puntaje, como en la PAA.</li>' +
+        '<li><b>Primer intento.</b> Elige tu respuesta y confírmala. Este intento es el que cuenta para tu resultado, como en el examen real.</li>' +
         '<li><b>Si fallas,</b> el tutor no te da la respuesta: te explica el concepto y cómo resolverlo para que lo intentes otra vez.</li>' +
         '<li><b>Segundo intento.</b> Aciertes o no, verás la solución paso a paso y la regla teórica detrás.</li>' +
         (s.limite ? '<li><b>El cronómetro</b> solo corre mientras respondes por primera vez; leer pistas y explicaciones no te quita tiempo.</li>' : '') +
@@ -566,7 +602,8 @@
       wt += p; if (st.ok1) { ok++; w += p; } else if (st.ok2) seg++;
       if (st.sinTiempo || st.fase !== 'fin') sinR++;
     });
-    var puntaje = Math.round((200 + 600 * (wt ? w / wt : 0)) / 10) * 10;
+    // PAA: 200–800 ponderado por dificultad · por aciertos: porcentaje de aciertos a la primera
+    var puntaje = esPAA() ? Math.round((200 + 600 * (wt ? w / wt : 0)) / 10) * 10 : pct(ok, s.items.length);
     return { id: s.id, puntaje: puntaje, aciertos: ok, segundo: seg, total: s.items.length, tiempo: Math.round(s.usado), limite: s.limite, sinResponder: sinR };
   }
   function terminar() {
@@ -578,16 +615,23 @@
       t.total++; if (st.ok1) t.ok++; else fallados.push(id);
       vistos_.push(id);
     }); });
-    var base = secs.filter(function (s) { return ['lectura', 'redaccion', 'matematicas'].indexOf(s.id) >= 0; });
-    var global = esIntento(run.modo) && base.length ? Math.round(base.reduce(function (a, s) { return a + s.puntaje; }, 0) / base.length / 10) * 10 : null;
-    var res = { modo: run.modo, secciones: secs, temas: temas, fallados: fallados, vistos: vistos_, global: global, meta: meta(), fecha: new Date().toISOString(),
+    var global = null;
+    if (esIntento(run.modo) && esPAA()) {
+      var base = secs.filter(function (s) { return (CFG.globalSecciones || []).indexOf(s.id) >= 0; });
+      global = base.length ? Math.round(base.reduce(function (a, s) { return a + s.puntaje; }, 0) / base.length / 10) * 10 : null;
+    } else if (esIntento(run.modo)) {
+      // Aciertos estimados sobre el examen completo (en Calentamiento y Medio se escalan a su tamaño)
+      var okT = secs.reduce(function (a, s) { return a + s.aciertos; }, 0), totT = secs.reduce(function (a, s) { return a + s.total; }, 0);
+      global = totT ? Math.round(okT / totT * CFG.examenReactivos) : null;
+    }
+    var res = { modo: run.modo, area: run.area || null, secciones: secs, temas: temas, fallados: fallados, vistos: vistos_, global: global, meta: meta(), fecha: new Date().toISOString(),
       resp: run.resp, orden: run.orden, items: run.secciones.map(function (s) { return s.items; }) };
     res.confianza = confianza(res, ultimoCompleto()).total;
     var intento = run.intento || null;
     marcarVistos(vistos_);
     run.fase = 'fin'; guardar(K_RUN, null); run = null;
     // Al servidor solo va el resumen (el detalle de respuestas se queda para este reporte)
-    var envio = { modo: res.modo, intento: intento, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
+    var envio = { modo: res.modo, area: res.area, intento: intento, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
     YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos_ }, envio));
     if (intento) cuentaDe(res.modo).abierto = null;
     api('resultados', { method: 'POST', body: JSON.stringify(envio) }).catch(function (e) {
@@ -599,8 +643,9 @@
 
   // Medidor de preparación: combina nivel frente a la meta, tiempo, consistencia por tema, aprendizaje con el tutor y tendencia
   function confianza(res, previo) {
-    var m = res.meta || meta(), secs = res.secciones.filter(function (s) { return s.total; });
-    var nivel = secs.length ? secs.reduce(function (a, s) { return a + clamp(1 - Math.max(0, m - s.puntaje) / 300, 0, 1); }, 0) / secs.length : 0;
+    var m = esPAA() ? (res.meta || meta()) : Math.round(100 * (res.meta || meta()) / CFG.examenReactivos), secs = res.secciones.filter(function (s) { return s.total; });
+    var holgura = esPAA() ? 300 : 50;   // la mitad del rango de cada sección
+    var nivel = secs.length ? secs.reduce(function (a, s) { return a + clamp(1 - Math.max(0, m - s.puntaje) / holgura, 0, 1); }, 0) / secs.length : 0;
     var conLimite = secs.filter(function (s) { return s.limite; });
     var tiempo = conLimite.length ? conLimite.reduce(function (a, s) { return a + (s.total - (s.sinResponder || 0)) / s.total; }, 0) / conLimite.length : 1;
     var ts = Object.keys(res.temas).map(function (k) { return res.temas[k]; });
@@ -608,7 +653,8 @@
     var fallos = secs.reduce(function (a, s) { return a + s.total - s.aciertos; }, 0), recup = secs.reduce(function (a, s) { return a + s.segundo; }, 0);
     var aprend = fallos ? recup / fallos : 1;
     var tend = .5;
-    if (previo && previo.global && res.global) tend = res.global > previo.global + 10 ? 1 : res.global < previo.global - 10 ? .2 : .6;
+    var umbral = esPAA() ? 10 : 3;
+    if (previo && previo.global && res.global) tend = res.global > previo.global + umbral ? 1 : res.global < previo.global - umbral ? .2 : .6;
     var partes = { nivel: nivel, tiempo: tiempo, consist: consist, aprend: aprend, tend: tend };
     var total = Math.round(100 * (.5 * nivel + .15 * tiempo + .15 * consist + .1 * aprend + .1 * tend));
     return { total: clamp(total, 0, 100), partes: partes };
@@ -640,6 +686,7 @@
       return 'Acertaste ' + ok + ' de ' + tot + ' a la primera y recuperaste ' + rec + ' con la pista del tutor. ' + (ok / tot >= .7 ? 'Estos temas ya se están volviendo tuyos: pásalos a un simulacro con tiempo.' : 'Repite esta práctica en un par de días: la segunda vuelta es donde se fija el método.');
     }
     var bajo = secs.slice().sort(function (a, b) { return a.puntaje - b.puntaje; })[0], alto = secs.slice().sort(function (a, b) { return b.puntaje - a.puntaje; })[0];
+    if (!esPAA()) return mensajeAciertos(res, c, bajo, alto);
     var ref = res.global || bajo.puntaje, dist = m - ref, txt = '';
     if (res.global) txt += dist > 0 ? 'Estás a <b>' + dist + ' puntos</b> de tu meta de ' + m + ' en promedio. ' : 'Tu promedio estimado (' + res.global + ') <b>ya alcanza tu meta</b> de ' + m + '. ';
     if (alto.puntaje >= m) txt += 'Tienes bases sólidas en <b>' + esc(seccion(alto.id).nombre) + '</b> (' + alto.puntaje + '). ';
@@ -648,6 +695,16 @@
       var faltan = Math.max(1, Math.ceil((m - bajo.puntaje) / 600 * bajo.total));
       txt += 'Tu mayor oportunidad está en <b>' + esc(seccion(bajo.id).nombre) + '</b>: subir de ' + bajo.puntaje + ' a ' + m + ' equivale a acertar unos <b>' + faltan + ' reactivo' + (faltan > 1 ? 's' : '') + ' más</b> de cada ' + bajo.total + '.';
     } else txt += 'Todas tus secciones están en tu meta: mantén el ritmo con un simulacro por semana.';
+    if (c.partes.tend === 1) txt += ' Además, <b>mejoraste</b> respecto a tu simulacro anterior.';
+    return txt;
+  }
+  // Mensaje del reporte para exámenes por aciertos (UNAM, ECOEMS): distancia a la meta y materia con más oportunidad
+  function mensajeAciertos(res, c, bajo, alto) {
+    var m = res.meta || meta(), T = CFG.examenReactivos, mp = Math.round(100 * m / T), txt = '';
+    if (res.global != null) txt += res.global < m ? 'Llevas unos <b>' + res.global + ' aciertos de ' + T + '</b>: te faltan <b>' + (m - res.global) + '</b> para tu meta de ' + m + '. ' : 'Llevas unos <b>' + res.global + ' aciertos de ' + T + '</b>: <b>ya alcanzas tu meta</b> de ' + m + '. ';
+    if (alto !== bajo) txt += 'Tu materia más fuerte es <b>' + esc(seccion(alto.id).nombre) + '</b> (' + alto.puntaje + ' % de aciertos). ';
+    if (bajo.puntaje < mp) txt += 'Tu mayor oportunidad está en <b>' + esc(seccion(bajo.id).nombre) + '</b>: ' + bajo.aciertos + ' de ' + bajo.total + ' a la primera; subir a ' + mp + ' % en esa materia te acerca a tu meta.';
+    else txt += 'Todas tus materias están al nivel de tu meta: mantén el ritmo con un simulacro por semana.';
     if (c.partes.tend === 1) txt += ' Además, <b>mejoraste</b> respecto a tu simulacro anterior.';
     return txt;
   }
@@ -660,9 +717,9 @@
     var debiles = temasDebiles(res.temas, 3), fuertes = temas.filter(function (x) { return x.p >= .75 && x.total >= 2; }).slice(-3).reverse();
     var totOk = res.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), totSeg = res.secciones.reduce(function (a, s) { return a + s.segundo; }, 0), tot = res.secciones.reduce(function (a, s) { return a + s.total; }, 0);
 
-    var htmlSecs = secs.length ? '<div class="sim-card"><h2 class="sim-h3">Puntaje estimado por sección</h2><p class="sim-nota">Escala de la PAA: 200 a 800. La línea marca tu meta (' + m + ').</p><ul class="sim-barras">' + secs.map(function (s) {
-      var w = (s.puntaje - 200) / 6, mw = (m - 200) / 6;
-      return '<li title="' + esc(seccion(s.id).nombre) + ': ' + s.puntaje + ' puntos, ' + s.aciertos + ' de ' + s.total + ' a la primera"><div class="sim-barra-c"><b>' + esc(seccion(s.id).nombre) + '</b><span class="num">' + s.puntaje + (s.id === 'ingles' ? ' · ' + nivelIngles(s) : '') + '</span></div>' +
+    var htmlSecs = secs.length ? '<div class="sim-card"><h2 class="sim-h3">' + (esPAA() ? 'Puntaje estimado por sección' : 'Aciertos por materia') + '</h2><p class="sim-nota">' + (esPAA() ? 'Escala de la PAA: 200 a 800. La línea marca tu meta (' + m + ').' : 'Porcentaje de aciertos a la primera. La línea marca el porcentaje de tu meta (' + m + ' de ' + CFG.examenReactivos + ').') + '</p><ul class="sim-barras">' + secs.map(function (s) {
+      var w = esPAA() ? (s.puntaje - 200) / 6 : s.puntaje, mw = esPAA() ? (m - 200) / 6 : metaSec();
+      return '<li title="' + esc(seccion(s.id).nombre) + ': ' + s.puntaje + ' puntos, ' + s.aciertos + ' de ' + s.total + ' a la primera"><div class="sim-barra-c"><b>' + esc(seccion(s.id).nombre) + '</b><span class="num">' + (esPAA() ? s.puntaje : s.aciertos + '/' + s.total) + (s.id === 'ingles' ? ' · ' + nivelIngles(s) : '') + '</span></div>' +
         '<div class="sim-barra-p"><span class="sim-barra-v" style="width:' + w + '%"></span><span class="sim-barra-m" style="left:' + mw + '%"></span></div>' +
         '<small>' + s.aciertos + '/' + s.total + ' a la primera · ' + s.segundo + ' recuperadas con el tutor' + (s.limite ? ' · ' + mmss(s.tiempo) + ' de ' + mmss(s.limite) + (s.sinResponder ? ' · ' + s.sinResponder + ' sin responder' : '') : '') + '</small></li>';
     }).join('') + '</ul></div>' : '';
@@ -685,9 +742,9 @@
     var htmlListo = '';
     if (res.modo === 'completo' && res.global && !desdeHistorial) {
       if (res.global >= m) htmlListo = tieneExamen()
-        ? '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para tu examen oficial!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Ahora mídete con las 4 secciones, los tiempos y la dificultad de la PAA real.</p><button class="btn tinta" data-modo-otra="examen">Hacer mi examen oficial ' + FL + '</button></div>'
-        : '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para el simulador completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Mídete como el día de la PAA: 2 exámenes oficiales de 175 reactivos en 3 horas, sin pistas y con tu reporte de preparación.</p><button class="btn tinta" data-plan="completo">Quiero el simulador completo ' + FL + '</button></div>';
-      else if (!tieneExamen()) htmlListo = '<p class="sim-nota sim-casi">Te faltan <b>' + (m - res.global) + ' puntos</b> para tu meta. Cuando la alcances en un simulacro Medio, te avisamos que ya estás listo para el simulador completo.</p>';
+        ? '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para tu examen oficial!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Ahora mídete con el tiempo y la dificultad del examen ' + esc(CFG.examen) + ' real.</p><button class="btn tinta" data-modo-otra="examen">Hacer mi examen oficial ' + FL + '</button></div>'
+        : '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para el simulador completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Mídete como el día del examen: 2 exámenes oficiales de ' + exTotales().reactivos + ' reactivos en ' + horas(exTotales().minutos) + ', sin pistas y con tu reporte de preparación.</p><button class="btn tinta" data-plan="completo">Quiero el simulador completo ' + FL + '</button></div>';
+      else if (!tieneExamen()) htmlListo = '<p class="sim-nota sim-casi">Te faltan <b>' + (m - res.global) + (esPAA() ? ' puntos' : ' aciertos') + '</b> para tu meta. Cuando la alcances en un simulacro Medio, te avisamos que ya estás listo para el simulador completo.</p>';
     }
 
     var revision = '';
@@ -706,14 +763,14 @@
     h('<section class="sim-rep">' +
       '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen oficial' : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
-        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global ? '<p class="sim-global">Puntaje estimado <b class="num">' + res.global + '</b><small> / 800 · meta ' + m + '</small></p>' : '') +
+        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +
       '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado (sin conexión). Se guardará en tu historial la próxima vez que abras el simulador con internet.</p>' +
       '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +
       htmlRefuerza +
       (htmlFuertes ? '<div class="sim-grid2">' + htmlTemas + htmlFuertes + '</div>' : '<div class="sim-grid2 uno">' + htmlTemas + '</div>') +
       revision +
-      '<p class="sim-nota sim-disc">El puntaje es una estimación de Vorka México basada en tus aciertos ponderados por dificultad; no es una calificación oficial del College Board. Úsalo para orientar tu estudio y medir tu avance.</p>' +
+      '<p class="sim-nota sim-disc">' + (esPAA() ? 'El puntaje es una estimación de Vorka México basada en tus aciertos ponderados por dificultad; no es una calificación oficial del College Board.' : 'Los aciertos estimados se calculan sobre un examen de ' + CFG.examenReactivos + ' reactivos con reactivos originales de Vorka México; no es un resultado oficial de ' + esc(CFG.oficial) + '.') + ' Úsalo para orientar tu estudio y medir tu avance.</p>' +
       regaloHTML() +
       sparks('reporte') +
       '<div class="botones sim-fin"><button class="btn tinta" id="b-inicio">Volver al inicio</button>' + (esIntento(res.modo) ? '' : '<button class="btn blanco" data-modo-otra="completo">Hacer un simulacro corto</button>') + '</div>' +
@@ -738,7 +795,7 @@
       if (leer(K_SPARKS)) { listo(b); return; }
       b.onclick = function () {
         b.disabled = true; b.textContent = 'Suscribiendo…';
-        fetch(SIM.os + '/api/publico/boletin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nombre: YO.nombre, correo: YO.email, acepto: true, origen: 'simulador-paa' }) })
+        fetch(SIM.os + '/api/publico/boletin', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nombre: YO.nombre, correo: YO.email, acepto: true, origen: APP }) })
           .then(function (r) { if (!r.ok) throw new Error(); guardar(K_SPARKS, 1); app.querySelectorAll('[data-sparks]').forEach(listo); })
           .catch(function () { b.disabled = false; b.textContent = 'Reintentar suscripción'; });
       };

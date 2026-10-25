@@ -13,7 +13,7 @@ import { hashToken, mandarEnlace } from './entrega.js';
 import { marco, boton, enviar, esc, P, SOPORTE } from './correo.js';
 import { pagina, aviso } from './paginas.js';
 import { dentroDelLimite } from './modelo.js';
-import { cookieAcceso, ordenConAcceso } from './simulador/index.js';
+import { simuladorDeContenido } from './simulador/index.js';
 import { FLECHA, LOGO } from './marco.generado.js';
 
 const FORMATO = /^[a-f0-9]{64}$/;
@@ -278,10 +278,11 @@ export async function canjearRegalo(req, env) {
   } catch (e) { console.error('regalo: correo de acceso falló', id, e.message); }
 
   // Simulador: entra en este momento con su cookie. Lo demás (descargas, Brindi) llega por correo.
-  const acceso = await ordenConAcceso(env, id);
+  const sim = simuladorDeContenido(r.contenido);
+  const acceso = sim ? await sim.ordenConAcceso(env, id) : null;
   if (!acceso) return json({ ok: true, mensaje: `Te enviamos a <b>${esc(correoOculto(d.email))}</b> el enlace para ${esc(entrada(r))}. Revisa también tu carpeta de spam.` });
   const destino = (() => { try { return JSON.parse(r.contenido || '{}').acceso?.ruta || '/'; } catch { return '/'; } })();
-  return json({ ok: true, url: destino }, 200, { 'set-cookie': await cookieAcceso(env, id, acceso.vence) });
+  return json({ ok: true, url: destino }, 200, { 'set-cookie': await sim.cookieAcceso(env, id, acceso.vence) });
 }
 
 // ---------- cortesías: accesos gratis que regala Vorka México desde el panel ----------
