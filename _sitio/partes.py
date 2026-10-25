@@ -116,9 +116,9 @@ MENU = [('/servicios/', 'Servicios'), ('/#proceso', 'Cómo trabajamos'), ('/#mom
 MENU_FC = [('/fc/#programa', 'Programa'), ('/fc/#costo', 'Costo'), ('/fc/#celaya', 'Dónde'), ('/sparks/celaya/', 'Noticias de Celaya'), ('/sparks/', 'Revista Sparks'), ('/voluntariado', 'Tú en Vorka')]
 CTA = {'general': ('/agenda/', 'Agenda tu diagnóstico'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
 
-def nav(actual='', oscuro=False, publico='general', cta=None):
+def nav(actual='', oscuro=False, publico='general', cta=None, menu=None):
     cur = ' aria-current="page"'
-    menu = MENU_FC if publico == 'fc' else MENU
+    menu = menu or (MENU_FC if publico == 'fc' else MENU)   # menu=[(enlace, texto)] para páginas propias
     links = ''.join(f'<a href="{h}"{cur if h == actual else ""}>{t}</a>' for h, t in menu)
     movil = ''.join(f'<a href="{h}">{t}</a>' for h, t in menu)
     cta, cta_t = cta or CTA.get(publico, CTA['general'])   # cta=(enlace, texto) para páginas propias (p. ej. el equipo)
