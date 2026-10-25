@@ -147,7 +147,7 @@ def pagina_persona(p):
   <section class="xp-intro">
     <div class="marco xp-intro-g">
       <div class="xp-intro-l"><span class="xp-etq">Mi enfoque</span>{CASITA}<span class="mano nota">espacios para convivir</span></div>
-      <p class="xp-grande">Creo que <mark class="m-ocre">los espacios también construyen comunidad</mark> y que las mejores soluciones nacen cuando <mark class="m-salvia">las personas se vuelven parte</mark> de su construcción. Mi forma de crear es <mark class="m-terracota">mirar distinto</mark>.</p>
+      <p class="xp-grande"><mark class="m-ocre">Los espacios también construyen comunidad</mark>, y las mejores soluciones nacen cuando <mark class="m-salvia">las personas se vuelven parte</mark> de su construcción. Mi forma de crear es <mark class="m-terracota">mirar distinto</mark>.</p>
     </div>
   </section>
 
