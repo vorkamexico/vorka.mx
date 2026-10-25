@@ -6,6 +6,7 @@
 import { PAA } from './paa.js';
 import { UNAM } from './unam.js';
 import { ECOEMS } from './ecoems.js';
+import { paginaPaaUniversidad } from './paa-universidades.js';
 
 // Se arma al usarse (no al cargar el módulo): los simuladores importan la tienda, que a su vez importa este archivo
 export const simuladores = () => [PAA, UNAM, ECOEMS];
@@ -16,6 +17,12 @@ export const simuladorDeContenido = contenido => {
 };
 
 export async function rutasSimulador(req, env, url) {
+  // Páginas de la PAA por universidad: /simulador-paa/<universidad>/
+  const u = url.pathname.match(/^\/simulador-paa\/([a-z-]{2,30})(\/?)$/);
+  if (u && (req.method === 'GET' || req.method === 'HEAD') && !['app.js', 'app.css', 'entrar'].includes(u[1])) {
+    const r = paginaPaaUniversidad(u[1]);
+    if (r) return u[2] ? r : Response.redirect(`${url.origin}/simulador-paa/${u[1]}/`, 301);
+  }
   for (const s of simuladores()) { const r = await s.rutas(req, env, url); if (r) return r; }
   return null;
 }
