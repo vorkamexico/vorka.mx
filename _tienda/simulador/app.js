@@ -265,7 +265,7 @@
           (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
           (puedePracticar() ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como el examen real · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentos : '') +
           (hayExamen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
-          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + ' secciones cronometradas y con la dificultad del examen') + ' · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
+          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + (esPAA() ? ' secciones' : ' materias') + ' cronometradas y con la dificultad del examen') + ' · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           (puedePracticar() ? '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
             return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
@@ -281,7 +281,7 @@
             '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>'
           : '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta de aciertos</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de ' + CFG.examenReactivos + '</small></div>' +
             '<input type="range" id="meta" min="' + CFG.meta.min + '" max="' + CFG.meta.max + '" step="' + CFG.meta.paso + '" value="' + m + '" aria-label="Meta de aciertos (de ' + CFG.examenReactivos + ')">' +
-            '<p class="sim-nota">Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.</p></div>') +
+            '<p class="sim-nota">' + esc(CFG.metaNota || 'Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.') + '</p></div>') +
           '<div class="o-3">' + bancoHTML() + '</div>' +
           '<div class="o-6">' + compartirHTML() + regaloHTML() + '</div>' +
           '<div class="o-7">' + sparks('inicio') + '</div>' +
@@ -340,8 +340,8 @@
   function planInfo(k) {
     var ex = exTotales();
     return {
-      practica: { nombre: 'Práctica ilimitada', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (areas() ? 'materia' : 'sección') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (areas() ? 'materia' : 'sección') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
-      completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (areas() ? 'materia' : 'sección')] }
+      practica: { nombre: 'Práctica ilimitada', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
+      completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (esPAA() ? 'sección' : 'materia')] }
     }[k];
   }
 
