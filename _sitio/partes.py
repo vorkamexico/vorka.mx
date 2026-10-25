@@ -156,7 +156,7 @@ def pie(publico='general'):
         <li><a href="mailto:{CORREO}">{CORREO}</a></li></ul></div>'''
         lema, base = 'Fútbol, valores y comunidad en Celaya.', '<a href="/privacidad/">Aviso de privacidad</a>'
     else:
-        simulador = '' if publico == 'empresas' else '\n        <li><a href="/simulador-paa/">Simulador PAA</a></li>'
+        simulador = '' if publico == 'empresas' else '\n        <li><a href="/simulador-paa/">Simulador PAA</a></li>\n        <li><a href="/simulador-unam/">Simulador UNAM</a></li>'
         # cuatro columnas cortas y parejas (antes "Vorka" llevaba 9 ligas y alargaba todo el pie)
         columnas = f'''<div><h4>Servicios</h4><ul>
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
