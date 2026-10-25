@@ -161,6 +161,46 @@ export const UNIVERSIDADES = {
       { p: '¿El simulador de Vorka es la PAA oficial?', r: 'No. Es un simulador de práctica con reactivos originales y un puntaje estimado para orientar tu estudio. La PAA es una prueba del College Board. No estamos afiliados al ITAM ni al College Board.' },
     ],
   },
+  iteso: {
+    nombre: 'ITESO', completo: 'ITESO, Universidad Jesuita de Guadalajara', art: 'el',
+    titulo: 'PAA ITESO: cómo validar tu puntaje de otra universidad | Vorka México',
+    descripcion: 'El ITESO valida tu PAA de otra universidad si no tiene más de año y medio. Qué documento entregas, cuánto cuesta el trámite, fechas de examen para enero 2027 y la beca que pide PAA mayor a 1,250.',
+    h1: 'PAA para el ITESO: cómo validar tu puntaje y qué beca la pide',
+    lead: 'Si ya presentaste la PAA en otra universidad, el ITESO puede validar tu puntaje en lugar de pedirte otro examen. Aquí están sus reglas oficiales, las fechas de examen para entrar en enero de 2027 y un plan para subir tu puntaje.',
+    fuentes: [
+      { nombre: 'ITESO: preguntas frecuentes de admisión', url: 'https://iteso.mx/web/general/detalle?group_id=245342' },
+      { nombre: 'ITESO: folleto Admisión Carreras, primavera (ingreso en enero 2027)', url: 'https://www.iteso.mx/documents/d/admision/26a-folleto-admision-carreras-v06' },
+    ],
+    verificado: '25 de octubre de 2026',
+    pideEtiqueta: 'PAA de otra universidad',
+    pide: [
+      ['Validan tu puntaje', 'Si presentaste la Prueba de Aptitud Académica (PAA o SAT del College Board) en otra universidad y no tiene más de año y medio, el ITESO valida tu puntaje.'],
+      ['Qué entregas', 'Al hacer tus trámites de admisión, agregas a tus documentos una carta de puntaje expedida por la universidad donde presentaste el examen.'],
+      ['Cuánto cuesta', 'Según sus preguntas frecuentes, el trámite cuesta $400. Si en cambio presentas el examen de admisión del ITESO, la cuota es de $900 (prepa de convenio) o $1,300 (prepa sin convenio).'],
+    ],
+    reglas: [
+      ['Pase automático por convenio', 'Si vienes de una prepa con convenio y tienes el promedio de pase automático, recibes tu carta de aceptación sin presentar examen y sin costo. El promedio requerido varía según la prepa.'],
+      ['Fechas de examen para enero 2027', 'Quedan los sábados 7 y 21 de noviembre y 5 de diciembre de 2026, y el 9 de enero de 2027, presenciales.'],
+      ['Resultados en días', 'Te llegan por correo entre el martes y el jueves siguientes a tu examen, junto con la Guía de Inscripción.'],
+      ['Beca Descubre STEM', 'Para ingenierías: pide promedio de preparatoria mayor o igual a 90 y un puntaje en la PAA mayor a 1,250 puntos.'],
+      ['Si vienes de la IBERO', 'Si presentaste examen para alguna universidad IBERO y fuiste admitido, agregas a tus documentos la carta de aceptación de esa universidad.'],
+      ['Curso de preparación opcional', 'El ITESO ofrece uno presencial la semana previa a cada examen; cuesta $1,050 y tiene cupo limitado.'],
+    ],
+    plan: [
+      ['Mide tu punto de partida', 'Haz un simulacro corto: en una sola sentada ves tu puntaje estimado por sección y qué temas te restan más puntos.'],
+      ['Revisa la vigencia', 'Si ya tienes una PAA, cuenta: debe tener año y medio o menos al hacer tu trámite. Si se vence o tu puntaje es bajo, vale la pena volver a presentarla.'],
+      ['Apunta a la beca', 'Si vas a una ingeniería, la Beca Descubre STEM pide más de 1,250 puntos en la PAA. Ponte una meta por sección en el simulador y ataca la más baja.'],
+      ['Cierra con el examen completo', 'Cuando el simulador te diga que ya estás listo, presenta el examen completo, sin pistas, para medirte como el día del examen.'],
+    ],
+    faq: [
+      { p: '¿El ITESO acepta la PAA que presenté en otra universidad?', r: 'Sí. Según sus preguntas frecuentes, si es la Prueba de Aptitud Académica (PAA o SAT del College Board) y no tiene una antigüedad mayor a año y medio, validan tu puntaje. Entregas una carta de puntaje de la universidad donde la presentaste y cubres el costo del trámite ($400).' },
+      { p: '¿Cuánto cuesta el examen de admisión del ITESO?', r: 'Según su folleto para el ingreso en enero de 2027: $900 si vienes de una prepa de convenio y $1,300 si vienes de una prepa sin convenio.' },
+      { p: '¿Cuándo son los exámenes para entrar en enero de 2027?', r: 'Según el folleto oficial, los sábados 7 y 21 de noviembre y 5 de diciembre de 2026, y el 9 de enero de 2027. Antes hubo fechas en septiembre y octubre.' },
+      { p: '¿Qué puntaje de PAA pide la Beca Descubre STEM?', r: 'Más de 1,250 puntos, además de promedio de preparatoria mayor o igual a 90. Es para estudiar ingenierías y aplica para los periodos que inician en enero y agosto.' },
+      { p: '¿Tengo que presentar examen si vengo de una prepa de convenio?', r: 'Si tu prepa tiene convenio y tienes el promedio de pase automático, no: recibes tu carta de aceptación y el proceso no tiene costo. El promedio requerido varía según la prepa.' },
+      { p: '¿El simulador de Vorka es la PAA oficial?', r: 'No. Es un simulador de práctica con reactivos originales y un puntaje estimado para orientar tu estudio. La PAA es una prueba del College Board. No estamos afiliados al ITESO ni al College Board.' },
+    ],
+  },
 };
 
 const CSS = `<style>
