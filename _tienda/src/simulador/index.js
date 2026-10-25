@@ -20,7 +20,7 @@
 import { one, all, run, json, fail, enc, hex, iguales } from '../util.js';
 import { hashToken } from '../entrega.js';
 import { pagina, aviso, esc, nonce, seguridad } from '../paginas.js';
-import { productoPorSlug } from '../modelo.js';
+import { productoPorSlug, registrarAnalitica } from '../modelo.js';
 import { formCompra, SCRIPT_COMPRA, precio, refDeVisita } from '../tienda.js';
 import { FLECHA, CHECK, LOGO, VERSION } from '../marco.generado.js';
 import { SECCIONES, SECCIONES_EXAMEN, TEMAS, TEXTOS, REACTIVOS } from './banco.js';
@@ -337,6 +337,7 @@ const PLANES_VENTA = [
   { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => [`2 exámenes oficiales: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Mismos tiempos y dificultad que la PAA', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] },
   { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', `Los 2 exámenes oficiales de ${EXAMEN_HORAS} horas`, 'Un año de acceso a todo'] },
 ];
+const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 async function paginaVenta(env, req, url) {
   // Planes a la venta; si todavía no están (antes de la migración 0029), la compra de siempre
   const planes = (await Promise.all(PLANES_VENTA.map(async x => ({ ...x, prod: await productoPorSlug(env, PLANES[x.k]) })))).filter(x => x.prod);
@@ -347,6 +348,8 @@ async function paginaVenta(env, req, url) {
       ${x.k === 'paquete' && ahorro > 0 ? `<span class="sv-ahorro">Ahorra ${precio({ precio_centavos: ahorro })}</span>` : ''}<span class="sv-plan-c"><b>${x.nombre}</b><em class="num">${precio(x.prod)}</em></span><small>${x.para}</small>
       <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>` : '';
   const { code, cookie } = await refDeVisita(env, req, url);
+  // Visita a la página de venta (como en el resto de la tienda): sin esto el panel no veía cuántos llegan al simulador
+  if (prod && req.method === 'GET' && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: prod.id, ref_code: code });
   const total = SECCIONES.reduce((s, x) => s + x.reactivos, 0), min = SECCIONES.reduce((s, x) => s + x.minutos, 0);
   const banco = REACTIVOS.length, lecturas = Object.keys(TEXTOS).length, temas = Object.keys(TEMAS).length;
   const ej = REACTIVOS.find(r => r.id === 'R-cnx-2');
