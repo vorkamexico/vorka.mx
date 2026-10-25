@@ -265,7 +265,7 @@ def inicio():
     ld = {"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Vorka México", "url": SITIO, "logo": SITIO + "/vorka-logo.png",
           "description": "Consultora de estrategia, liderazgo e influencia con presencia nacional.", "email": CORREO, "telephone": "+52 81 1780 4869",
           "areaServed": "MX", "sameAs": [u for _, u, _ in REDES]}
-    extra = f'<link rel="preload" as="image" href="/img/ciudades/monterrey-silla-1600.webp" imagesrcset="/img/ciudades/monterrey-silla-960.webp 960w, /img/ciudades/monterrey-silla-1600.webp 1600w" imagesizes="720px" fetchpriority="high">\n<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>\n'
+    extra = f'<link rel="preload" as="image" href="/img/ciudades/monterrey-silla-1600.webp" fetchpriority="high">\n<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>\n'
     return cabeza('Vorka México · Estrategia, liderazgo e influencia', 'Consultora de estrategia con alcance nacional. Acompañamos a líderes, empresas y gobiernos en las decisiones que no admiten segundo intento. Agenda tu diagnóstico sin costo.', '/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- servicios (hub)
@@ -389,7 +389,15 @@ def servicio(s):
 </section>
 </main>
 {pie('empresas')}'''
-    return cabeza(f"{s['area']} · Vorka México", f"{s['promesa']} {s['para']}", f"/servicios/{s['slug']}/", og=s['cabecera']) + cuerpo + '\n</body>\n</html>\n'
+    ld = {"@context": "https://schema.org", "@type": "Service", "name": s['area'], "serviceType": s['area'], "description": f"{s['promesa']} {s['para']}",
+          "url": f"{SITIO}/servicios/{s['slug']}/", "areaServed": {"@type": "Country", "name": "México"},
+          "provider": {"@type": "ProfessionalService", "name": "Vorka México", "url": SITIO + "/"},
+          "potentialAction": {"@type": "ReserveAction", "name": "Agenda tu diagnóstico sin costo", "target": f"{SITIO}/agenda/?area={s['slug']}"}}
+    migas = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Servicios", "item": SITIO + "/servicios/"},
+        {"@type": "ListItem", "position": 3, "name": s['area'], "item": f"{SITIO}/servicios/{s['slug']}/"}]}
+    extra = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (ld, migas))
+    return cabeza(f"{s['area']} · Vorka México", f"{s['promesa']} {s['para']}", f"/servicios/{s['slug']}/", og=s['cabecera'], extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- 404
 def no_encontrada():
