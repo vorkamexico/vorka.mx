@@ -23,7 +23,7 @@ XIMENA = {
     'disciplina': 'Arquitectura y compromiso social',
     'frase': 'Enfoque hacia las personas, las ideas y las posibilidades de transformar nuestro entorno.',
     'lugar': 'San Miguel de Allende, Gto. · Querétaro, Qro.',
-    'mentor': 'ximena',   # agenda pública en os.vorka.mx/agendar?m=ximena
+    'mentor': 'ximepastor',   # agenda pública en os.vorka.mx/agendar?m=ximepastor
     'whatsapp': '524151887476',
     'linkedin': 'https://www.linkedin.com/in/ximena-pastor',
     'instagram': 'https://www.instagram.com/ximenaaguilar1/',
