@@ -7,6 +7,7 @@ import { paginaVentaSimulador } from './venta.js';
 import { SECCIONES, SECCIONES_EXAMEN, TEMAS, TEXTOS, REACTIVOS } from './banco.js';
 import { armarCompleto, armarExamen, armarCalentamiento } from './armar.js';
 import { SECCIONES_CALENTAMIENTO, INCLUIDOS } from './niveles.js';
+import { UNIVERSIDADES } from './paa-universidades.js';
 
 const SITIO = 'https://vorka.mx';
 const IMG = `${SITIO}/tienda/img/portadas`;
@@ -93,6 +94,12 @@ const VENTA = {
     lead: 'El <b>examen completo</b> tiene la cantidad de preguntas de la PAA. El <b>simulacro corto</b> es una versión compacta para practicar en una sola sentada.',
     tabla: `<table class="sv-tabla sec"><thead><tr><th scope="col">Sección</th><th scope="col">Examen completo<br><small>reactivos</small></th><th scope="col">Simulacro corto<br><small>reactivos</small></th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>`,
   },
+  // Ligas a las páginas por universidad (requisitos verificados de cada una)
+  antesRegalo: `<section class="t-sec suave"><div class="marco">
+  <div class="cab"><span class="etiqueta">PAA por universidad</span><h2 class="h2" style="margin-top:14px">Lo que pide cada universidad</h2>
+  <p class="lead">Puntajes, vigencia y reglas de la PAA, con la fuente oficial de cada una.</p></div>
+  <div class="sv-grid">${Object.entries(UNIVERSIDADES).map(([k, u]) => `<a class="sv-card" style="text-decoration:none;color:inherit" href="/simulador-paa/${k}/"><h3>PAA ${u.nombre}</h3><p>${u.completo}</p></a>`).join('')}</div>
+</div></section>`,
   faqTitulo: 'Sobre la PAA y el simulador',
   faq: FAQ_PAA,
   final: 'Haz un simulacro corto hoy para ver qué temas te faltan y, cuando estés listo, el examen completo para medirte como el día del examen.',
