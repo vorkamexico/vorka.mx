@@ -117,7 +117,7 @@ html:has(.xp) { background: #1B1916; }
 /* contacto */
 .xp-contacto { background: var(--terracota); color: #fff; padding: clamp(88px, 11vw, 140px) 0; overflow: hidden; }
 .xp-contacto-g { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); gap: 48px; align-items: end; }
-.xp-mano-claro { font-size: 34px; color: var(--ocre); display: inline-block; transform: rotate(-3deg); }
+.xp-mano-claro { font-size: 34px; color: #fff; display: inline-block; transform: rotate(-3deg); }
 .xp-contacto h2 { margin-top: 8px; font-size: clamp(40px, 5.4vw, 76px); line-height: 1.02; letter-spacing: -.045em; font-weight: 300; }
 .xp-contacto h2 .subr { font-weight: 600; } .xp-contacto .trazo { color: var(--ocre); }
 .xp-contacto p { margin: 22px 0 30px; font-size: 18.5px; color: rgba(255, 255, 255, .9); max-width: 48ch; }
