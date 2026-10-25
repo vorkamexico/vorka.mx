@@ -1,5 +1,6 @@
 # Vorka México · /equipo/<persona>/: páginas del equipo Vorka, hechas por Vorka.
 # Cada persona es un diccionario con sus textos y fotos (img/equipo/<slug>-<foto>-960|1600.webp).
+# Sin correo ni teléfono a la vista: el contacto es por WhatsApp (botón) y la agenda de os.vorka.mx.
 # La primera es Ximena Pastor (arquitectura): plano de arquitectura con la identidad de Vorka.
 # Más adelante /equipo/ reunirá a todo el equipo con las mismas fichas.
 import json
@@ -16,9 +17,7 @@ XIMENA = {
     'frase': 'Enfoque hacia las personas, las ideas y las posibilidades de transformar nuestro entorno.',
     'lugar': 'San Miguel de Allende, Gto. · Querétaro, Qro.',
     'mentor': 'ximena',   # agenda pública en os.vorka.mx/agendar?m=ximena
-    'correo': 'brendapastor0@gmail.com',
     'whatsapp': '524151887476',
-    'tel': '+52 415 188 7476',
     'linkedin': 'https://www.linkedin.com/in/ximena-pastor',
     'instagram': 'https://www.instagram.com/ximenaaguilar1/',
     # (foto, ancho real a 960, ancho real a 1600, alto/ancho, texto alternativo)
@@ -83,7 +82,7 @@ def pagina_persona(p):
     og = f"{SITIO}/img/equipo/{p['slug']}-retrato-og.jpg"
     ld = {'@context': 'https://schema.org', '@type': 'ProfilePage', 'url': SITIO + ruta, 'mainEntity': {
         '@type': 'Person', 'name': p['nombre'], 'alternateName': p['nombre_completo'], 'jobTitle': p['rol'], 'description': p['frase'],
-        'image': f"{SITIO}/img/equipo/{p['slug']}-retrato-1600.webp", 'email': f"mailto:{p['correo']}", 'sameAs': [p['linkedin'], p['instagram']],
+        'image': f"{SITIO}/img/equipo/{p['slug']}-retrato-1600.webp", 'sameAs': [p['linkedin'], p['instagram']],
         'worksFor': {'@type': 'Organization', 'name': 'Vorka México', 'url': SITIO},
         'alumniOf': [{'@type': 'CollegeOrUniversity', 'name': 'Tecnológico de Monterrey'}, {'@type': 'EducationalOrganization', 'name': 'CBTIS No. 60'}],
         'award': [f'{n} · {o} ({a})' for n, o, a in p['reconocimientos']],
@@ -115,7 +114,6 @@ def pagina_persona(p):
     recs = ''.join(fila(*x) for x in p['reconocimientos'])
     habs = ''.join(f'<li><span class="mono">{i:02d}</span>{e(h)}</li>' for i, h in enumerate(p['habilidades'], 1))
     primero = p['nombre'].split()[0]
-    ICO_MAIL = ico('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>')
     ICO_WA = ico('<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L4 20l1.2-4.4A8.4 8.4 0 1 1 21 11.5Z"/>')
     ICO_IN = ico('<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/>')
     ICO_IG = ico('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/>')
@@ -187,8 +185,7 @@ def pagina_persona(p):
         <div class="botones"><a class="btn tinta" href="{agendar}" rel="noopener">{ICO_CAL} Agendar una sesión {FLECHA}</a><a class="btn blanco" href="{wa_url}" target="_blank" rel="noopener">WhatsApp</a></div>
       </div>
       <ul class="eq-medios">
-        <li><a href="mailto:{p['correo']}">{ICO_MAIL}<span><small class="mono">CORREO</small>{e(p['correo'])}</span></a></li>
-        <li><a href="{wa_url}" target="_blank" rel="noopener">{ICO_WA}<span><small class="mono">WHATSAPP</small>{e(p['tel'])}</span></a></li>
+        <li><a href="{wa_url}" target="_blank" rel="noopener">{ICO_WA}<span><small class="mono">WHATSAPP</small>Escríbele a {e(primero)}</span></a></li>
         <li><a href="{p['linkedin']}" target="_blank" rel="noopener">{ICO_IN}<span><small class="mono">LINKEDIN</small>in/ximena-pastor</span></a></li>
         <li><a href="{p['instagram']}" target="_blank" rel="noopener">{ICO_IG}<span><small class="mono">INSTAGRAM</small>@ximenaaguilar1</span></a></li>
       </ul>
