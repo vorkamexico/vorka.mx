@@ -94,7 +94,7 @@ const CSS = `<style>
 .sv-dos .sv-ej{margin-top:0}
 .sv-probar{margin-top:26px}.sv-probar > b{display:block;font-size:15px;letter-spacing:-.01em}.sv-probar > small{display:block;color:var(--fg-2);font-size:14px;margin-top:2px}
 .sv-probar .sv-ej{margin-top:12px}
-.t-barra .sv-barra-b{display:flex;gap:6px}.t-barra b,.t-barra small{white-space:nowrap}.t-barra .sv-barra-b .btn{padding-inline:14px}
+.t-barra .sv-barra-b{display:flex;gap:6px}.t-barra b,.t-barra small{white-space:nowrap}.t-barra .sv-barra-b .btn{padding-inline:12px;font-size:14px}@media(max-width:370px){.t-barra small{display:none}}
 .sv-mini-l{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 .sv-mini-l li{display:flex;gap:10px;align-items:flex-start;font-size:16px;color:var(--fg-2)}.sv-mini-l li b{color:var(--fg)}
 .sv-mini-l svg{width:18px;height:18px;color:var(--verde);flex:none;margin-top:3px}

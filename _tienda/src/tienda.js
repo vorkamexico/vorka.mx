@@ -114,6 +114,7 @@ function vistas(productos, desdeBrindi) {
 const SIM_TIENDA = {
   'simulador-paa': { nombre: 'Simulador PAA en línea', texto: 'Práctica ilimitada con tutor y exámenes completos como la PAA real: elige tu plan o llévate los dos.' },
   'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
+  'simulador-ecoems': { nombre: 'Simulador ECOEMS en línea', texto: 'Para la prepa de la UNAM y del IPN: práctica ilimitada con tutor y exámenes de 128 reactivos en 3 horas.' },
 };
 function vista(p, url, desdeBrindi) {
   {

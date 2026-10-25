@@ -1,12 +1,14 @@
 // Simuladores de examen de la tienda. Cada uno es una configuración del motor (motor.js):
 //   vorka.mx/simulador-paa   → paa.js
 //   vorka.mx/simulador-unam  → unam.js (4 áreas de licenciatura)
+//   vorka.mx/simulador-ecoems → ecoems.js (bachillerato UNAM e IPN, sin áreas)
 // Para sumar uno nuevo: su configuración, su banco y sus productos en D1 (con contenido.acceso.app = su ruta sin "/").
 import { PAA } from './paa.js';
 import { UNAM } from './unam.js';
+import { ECOEMS } from './ecoems.js';
 
 // Se arma al usarse (no al cargar el módulo): los simuladores importan la tienda, que a su vez importa este archivo
-export const simuladores = () => [PAA, UNAM];
+export const simuladores = () => [PAA, UNAM, ECOEMS];
 export const simuladorDe = app => simuladores().find(s => s.APP === app) || null;
 // Simulador al que da acceso un producto (por su contenido en D1), o null
 export const simuladorDeContenido = contenido => {
