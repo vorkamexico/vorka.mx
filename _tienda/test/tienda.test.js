@@ -61,6 +61,18 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('id="productos"');
   });
 
+  it('"Todo" va separado por línea: cada grupo con su título, sus tarjetas y su ancla para los filtros', async () => {
+    const html = await (await pedir('/tienda/')).text();
+    const grupos = [...html.matchAll(/<section class="t-grupo" data-linea="([^"]+)" id="([^"]+)"/g)];
+    expect(grupos.length).toBeGreaterThan(1);
+    for (const [, linea, id] of grupos) expect(linea).toBe(id);
+    expect(html).toContain('<h3 class="t-grupo-h" id="g-examenes">Preparación para exámenes</h3>');
+    // cada tarjeta queda dentro del grupo de su línea, y el filtro oculta los grupos vacíos
+    for (const [bloque, linea] of html.matchAll(/<section class="t-grupo" data-linea="([^"]+)"[\s\S]*?<\/section>/g))
+      for (const [, l] of bloque.matchAll(/class="t-card" data-linea="([^"]+)"/g)) expect(l).toBe(linea);
+    expect(html).toContain("querySelectorAll('.t-grupo')");
+  });
+
   it('sin productos activos muestra un estado vacío', async () => {
     env.DB.raw.exec('UPDATE products SET activo = 0');
     const html = await (await pedir('/tienda')).text();

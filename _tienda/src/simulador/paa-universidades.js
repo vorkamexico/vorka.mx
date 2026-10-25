@@ -237,7 +237,7 @@ export function paginaPaaUniversidad(clave) {
       { '@type': 'ListItem', position: 2, name: `PAA ${u.nombre}`, item: `${SITIO}${ruta}` }] },
   ];
   const m = u.minimos;
-  return pagina({ titulo: u.titulo, ruta, descripcion: u.descripcion, imagen: `${SITIO}/tienda/img/portadas/simulador-paa-og.png`,
+  return pagina({ titulo: u.titulo, ruta, descripcion: u.descripcion, imagen: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}`,
     cuerpo: `
 <section class="pu-hero"><div class="marco">

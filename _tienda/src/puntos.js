@@ -428,7 +428,7 @@ export function compartibles(productos) {
   const m = new Map();
   for (const p of productos.filter(p => !p.contenido?.oculto)) {
     const d = destinoDe(p);
-    if (!m.has(d.ruta)) m.set(d.ruta, { ...d, ids: [], imagen: p.imagen || (d.tipo === 'brindi' ? '/assets/tienda/brindi.webp' : d.tipo === 'cupo' ? '/assets/tienda/cupo.webp' : null) });
+    if (!m.has(d.ruta)) m.set(d.ruta, { ...d, ids: [], imagen: p.imagen || (d.tipo === 'brindi' ? '/assets/tienda/v3/brindi-portada.webp' : d.tipo === 'cupo' ? '/assets/tienda/v3/cupo-portada.webp' : null) });
   }
   for (const p of productos) m.get(destinoDe(p).ruta)?.ids.push(p.id);
   return [...m.values()];
