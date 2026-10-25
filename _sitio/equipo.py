@@ -193,7 +193,6 @@ def pagina_persona(p):
     </div>
   </section>
 
-  <section class="eq-firma"><div class="marco"><p class="mono"><span>{LOGO}</span>Página del Equipo Vorka · diseñada y desarrollada por Vorka México</p></div></section>
 </main>
 {pie()}'''
     return (cabeza(titulo, desc, ruta, extra=extra).replace(f'{SITIO}/img/ciudades/cdmx-reforma-1600.webp', og) + cuerpo + '\n</body>\n</html>\n')
