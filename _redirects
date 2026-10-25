@@ -44,3 +44,7 @@
 /oleynickhdz/socialproyects*     /oleynickhdz/proyecto-social/  301
 
 /.claude/* / 302
+
+# Equipo Vorka: la página de Ximena vive en su dirección corta
+/equipo/ximena-pastor        /ximepastor/        301
+/equipo/ximena-pastor/*      /ximepastor/        301

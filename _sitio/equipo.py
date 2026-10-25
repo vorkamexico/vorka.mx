@@ -1,4 +1,4 @@
-# Vorka México · /equipo/<persona>/: páginas del equipo Vorka, hechas por Vorka.
+# Vorka México · páginas del equipo Vorka, hechas por Vorka (en /equipo/<persona>/ o en su dirección corta, p. ej. /ximepastor/).
 # Cada persona es un diccionario con sus textos y fotos (img/equipo/<slug>-<foto>-960|1600.webp).
 # Sin correo ni teléfono a la vista: el contacto es por WhatsApp (botón) y la agenda de os.vorka.mx.
 # La primera es Ximena Pastor (arquitectura): plano de arquitectura con la identidad de Vorka.
@@ -9,7 +9,8 @@ from partes import *
 OS = 'https://os.vorka.mx'
 
 XIMENA = {
-    'slug': 'ximena-pastor',
+    'slug': 'ximena-pastor',   # nombre de sus fotos (img/equipo/ximena-pastor-*)
+    'ruta': '/ximepastor/',    # su dirección corta en vorka.mx (/equipo/ximena-pastor/ redirige aquí)
     'nombre': 'Ximena Pastor',
     'nombre_completo': 'Brenda Ximena Pastor Aguilar',
     'rol': 'Directora Estatal de Vorka Sparks',
@@ -74,7 +75,7 @@ def cota(texto):
 
 
 def pagina_persona(p):
-    ruta = f"/equipo/{p['slug']}/"
+    ruta = p.get('ruta') or f"/equipo/{p['slug']}/"
     agendar = f"{OS}/agendar?m={p['mentor']}"
     wa_url = f"https://wa.me/{p['whatsapp']}?text=" + quote(f"Hola {p['nombre'].split()[0]}, vi tu página en Vorka México y me gustaría platicar contigo.")
     titulo = f"{p['nombre']} · {p['disciplina']} | Equipo Vorka"
@@ -199,4 +200,4 @@ def pagina_persona(p):
 
 
 def paginas_equipo():
-    return {f"equipo/{p['slug']}/index.html": pagina_persona(p) for p in EQUIPO}
+    return {(p.get('ruta') or f"/equipo/{p['slug']}/").strip('/') + '/index.html': pagina_persona(p) for p in EQUIPO}
