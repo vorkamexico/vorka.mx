@@ -31,7 +31,9 @@ describe('/tienda (catálogo)', () => {
     expect(html.match(/class="t-hero-pieza"/g)).toHaveLength(1);       // como mucho una pieza visual, no todo el catálogo
     expect(html).toContain('Compra protegida');
     // explora por línea: una línea de un solo producto lleva directo a él; las demás filtran el catálogo
-    expect(html).toMatch(/class="marco t-hero-lineas"[^>]*>.*<a href="\/simulador-paa\/" data-linea="examenes"/s);
+    // (Exámenes ya tiene dos simuladores, PAA y UNAM: filtra el catálogo)
+    expect(html).toMatch(/class="marco t-hero-lineas"[^>]*>.*<a href="#examenes"[^>]*data-linea="examenes"/s);
+    expect(html).toMatch(/class="t-card" data-linea="examenes" data-buscar="simulador unam en linea /);
     expect(html).toContain('class="t-confia-g"');
     for (const t of ['Entrega inmediata', 'Pago protegido', 'Paga como quieras', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
     // buscador del catálogo (oculto sin JavaScript), con el texto de cada tarjeta sin acentos y mensaje si no hay resultados

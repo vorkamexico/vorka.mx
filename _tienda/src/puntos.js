@@ -419,7 +419,7 @@ function destinoDe(p) {
   const app = p.contenido?.acceso?.app;
   if (app === 'brindi') return { ruta: '/tienda/brindi/', titulo: 'Brindi · Invitaciones digitales', tipo: 'brindi', texto: 'Invitaciones digitales con confirmaciones y QR para bodas, XV años y toda celebración.' };
   if (app === 'cupo') return { ruta: '/tienda/cupo/', titulo: 'Cupo · Eventos con registro', tipo: 'cupo', texto: 'Registro, cover y check-in con QR para eventos. Gratis hasta 30 personas.' };
-  if (app === 'simulador-paa') return { ruta: '/simulador-paa/', titulo: p.nombre, tipo: 'simulador', texto: p.descripcion_corta };
+  if (app === 'simulador-paa' || app === 'simulador-unam') return { ruta: `/${app}/`, titulo: p.nombre, tipo: 'simulador', texto: p.descripcion_corta };
   return { ruta: p.contenido?.acceso?.ruta || `/tienda/${p.slug}/`, titulo: p.nombre, tipo: 'producto', texto: p.descripcion_corta };
 }
 // Las tarjetas salen de los productos visibles en el catálogo (se respeta contenido.oculto); los planes ocultos que se

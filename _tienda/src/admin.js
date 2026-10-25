@@ -134,7 +134,7 @@ export async function orden(env, id) {
 // en Stripe; esto le dice en el panel si aplica y por qué.
 export async function reembolsoDe(env, o, items, tokens) {
   if (o.estado !== 'paid' || o.proveedor === 'regalo' || o.proveedor === 'cortesia') return null;
-  const simulador = items.some(i => String(i.slug || '').startsWith('simulador-paa'));
+  const simulador = items.some(i => /^simulador-(paa|unam)/.test(String(i.slug || '')));
   if (simulador) {
     const [r, t] = await Promise.all([
       one(env, 'SELECT COUNT(*) n FROM simulador_resultados WHERE order_id = ?', o.id),

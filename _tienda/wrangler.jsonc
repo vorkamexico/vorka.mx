@@ -10,6 +10,7 @@
     { "pattern": "vorka.mx/descargas*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/creadores*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/simulador-paa*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/simulador-unam*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/cupo*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/brindi*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/vuelve*", "zone_name": "vorka.mx" }

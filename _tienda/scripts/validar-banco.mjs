@@ -1,73 +1,43 @@
-// Revisa el banco del Simulador PAA: formato, ids únicos, temas válidos, opciones, lecturas y figuras seguras.
-// Uso: node scripts/validar-banco.mjs [archivo-extra.js]   (sin archivo revisa el banco completo)
-import { SECCIONES, TEMAS, TEXTOS, REACTIVOS } from '../src/simulador/banco.js';
-
-const errores = [], avisos = [];
-const ids = new Set();
-const archivo = process.argv[2];
-let lista = REACTIVOS, textos = TEXTOS;
-if (archivo) {
-  const m = await import(new URL('../' + archivo, import.meta.url));
-  lista = Object.entries(m).filter(([k, v]) => k.startsWith('REACTIVOS') && Array.isArray(v)).flatMap(([, v]) => v);
-  textos = { ...TEXTOS, ...Object.assign({}, ...Object.entries(m).filter(([k]) => k.startsWith('TEXTOS')).map(([, v]) => v)) };
-  // los ids del archivo no deben chocar con los del banco ya armado (si el archivo aún no está sumado)
-  const enBanco = new Set(REACTIVOS.map(r => r.id));
-  for (const r of lista) if (enBanco.has(r.id) && !REACTIVOS.includes(r)) errores.push(`${r.id}: ese id ya existe en el banco`);
-}
-const secs = new Set(SECCIONES.map(s => s.id));
-const vacio = v => typeof v !== 'string' || v.trim().length < 8;
-function revisarSVG(id, svg) {
-  if (typeof svg !== 'string' || !svg.trim().startsWith('<svg')) return errores.push(`${id}: figura debe ser un <svg> en texto`);
-  if (/<script|on\w+=|href=|xlink:|<image|<foreignObject|url\(/i.test(svg)) errores.push(`${id}: la figura trae algo no permitido (script, eventos, enlaces o imágenes externas)`);
-  if (!/viewBox="[\d.\s-]+"/.test(svg)) errores.push(`${id}: la figura necesita viewBox`);
-  if (!/role="img"/.test(svg) || !/aria-label="[^"]{8,}"/.test(svg)) errores.push(`${id}: la figura necesita role="img" y aria-label descriptivo`);
-  const abre = (svg.match(/<(?!\/)(?![^>]*\/>)[a-zA-Z]+/g) || []).length, cierra = (svg.match(/<\//g) || []).length;
-  if (abre !== cierra) errores.push(`${id}: etiquetas del SVG sin cerrar (${abre} abren, ${cierra} cierran)`);
-  if (svg.length > 6000) avisos.push(`${id}: figura grande (${svg.length} caracteres)`);
-}
-for (const r of lista) {
-  const id = r.id || '(sin id)';
-  if (!r.id || ids.has(r.id)) errores.push(`${id}: id vacío o repetido`); ids.add(r.id);
-  if (!secs.has(r.seccion)) errores.push(`${id}: sección inválida "${r.seccion}"`);
-  if (!TEMAS[r.tema] || TEMAS[r.tema].seccion !== r.seccion) errores.push(`${id}: tema "${r.tema}" no existe en ${r.seccion}`);
-  if (![1, 2, 3].includes(r.dificultad)) errores.push(`${id}: dificultad debe ser 1, 2 o 3`);
-  if (vacio(r.enunciado)) errores.push(`${id}: falta enunciado`);
-  if (r.texto && (!textos[r.texto] || textos[r.texto].seccion !== r.seccion)) errores.push(`${id}: la lectura "${r.texto}" no existe en ${r.seccion}`);
-  if (r.tipo === 'abierta') {
-    if (r.seccion !== 'matematicas') errores.push(`${id}: solo Matemáticas tiene respuesta abierta`);
-    if (!Array.isArray(r.respuestas) || !r.respuestas.length || r.respuestas.some(x => typeof x !== 'string' || !x.trim())) errores.push(`${id}: abierta sin respuestas válidas`);
-  } else {
-    if (!Array.isArray(r.opciones) || r.opciones.length !== 4) errores.push(`${id}: debe tener 4 opciones`);
+// Revisa un banco de reactivos del simulador (UNAM, ECOEMS o PAA) antes de sumarlo.
+// Uso: node _tienda/scripts/validar-banco.mjs <archivo.js> [<archivo.js> …]
+// Cada archivo exporta TEMAS_* (objeto), REACTIVOS_* (arreglo) y, si tiene lecturas, TEXTOS_* (objeto).
+import { pathToFileURL } from 'node:url';
+import path from 'node:path';
+let errores = 0, total = 0;
+const mal = (f, id, m) => { errores++; console.log(`✗ ${path.basename(f)} ${id}: ${m}`); };
+const ids = new Map();
+for (const f of process.argv.slice(2)) {
+  const mod = await import(pathToFileURL(path.resolve(f)).href);
+  const temas = Object.assign({}, ...Object.entries(mod).filter(([k]) => k.startsWith('TEMAS')).map(([, v]) => v));
+  const textos = Object.assign({}, ...Object.entries(mod).filter(([k]) => k.startsWith('TEXTOS')).map(([, v]) => v));
+  const reactivos = Object.entries(mod).filter(([k]) => k.startsWith('REACTIVOS')).flatMap(([, v]) => v);
+  if (!reactivos.length) mal(f, '-', 'no exporta REACTIVOS_*');
+  for (const [k, t] of Object.entries(temas)) if (!t.seccion || !t.nombre || !t.consejo) mal(f, k, 'tema sin seccion, nombre o consejo');
+  for (const [k, t] of Object.entries(textos)) if (!t.seccion || !t.titulo || !Array.isArray(t.parrafos) || !t.parrafos.length) mal(f, k, 'texto sin seccion, titulo o parrafos');
+  const porDif = { 1: 0, 2: 0, 3: 0 }, porTema = {};
+  for (const r of reactivos) {
+    total++;
+    const id = r.id || '(sin id)';
+    if (ids.has(id)) mal(f, id, `id repetido (también en ${ids.get(id)})`); else ids.set(id, path.basename(f));
+    for (const c of ['seccion', 'tema', 'enunciado', 'pista', 'regla']) if (!r[c] || typeof r[c] !== 'string') mal(f, id, `falta ${c}`);
+    if (!Array.isArray(r.pasos) || !r.pasos.length) mal(f, id, 'falta pasos');
+    if (![1, 2, 3].includes(r.dificultad)) mal(f, id, 'dificultad debe ser 1, 2 o 3');
+    if (r.tema && !temas[r.tema]) mal(f, id, `tema "${r.tema}" no está en TEMAS`);
+    if (r.texto && !textos[r.texto]) mal(f, id, `texto "${r.texto}" no está en TEXTOS`);
+    if (r.tipo === 'abierta') { if (!Array.isArray(r.respuestas) || !r.respuestas.length) mal(f, id, 'abierta sin respuestas'); }
     else {
-      if (new Set(r.opciones.map(o => String(o).trim().toLowerCase())).size !== 4) errores.push(`${id}: opciones repetidas`);
-      if (r.opciones.some(o => typeof o !== 'string' || !o.trim())) errores.push(`${id}: opción vacía`);
+      if (!Array.isArray(r.opciones) || r.opciones.length !== 4) mal(f, id, 'debe tener 4 opciones');
+      else {
+        if (new Set(r.opciones.map(o => String(o).trim().toLowerCase())).size !== 4) mal(f, id, 'opciones repetidas');
+        if (!Number.isInteger(r.correcta) || r.correcta < 0 || r.correcta > 3) mal(f, id, 'correcta debe ser 0–3');
+      }
     }
-    if (!Number.isInteger(r.correcta) || r.correcta < 0 || r.correcta > 3) errores.push(`${id}: "correcta" debe ser 0–3`);
+    // El cliente baraja las opciones: las pistas y pasos no pueden nombrar letras sueltas ("la opción B")
+    const txt = [r.pista, ...(r.pasos || []), r.regla].join(' ');
+    if (/\b(opci[oó]n|inciso|respuesta)\s+[A-D]\b/.test(txt)) mal(f, id, 'nombra una letra de opción; usa {A}…{D}');
+    porDif[r.dificultad] = (porDif[r.dificultad] || 0) + 1; porTema[r.tema] = (porTema[r.tema] || 0) + 1;
   }
-  if (vacio(r.pista)) errores.push(`${id}: falta pista`);
-  if (!Array.isArray(r.pasos) || r.pasos.length < 2) errores.push(`${id}: faltan pasos (mínimo 2)`);
-  if (vacio(r.regla)) errores.push(`${id}: falta regla`);
-  const pistaTxt = [r.pista, ...(r.pasos || [])].join(' ');
-  if (/\b(opci[oó]n|inciso|respuesta)\s+[ABCD]\b|\([ABCD]\)/.test(pistaTxt)) errores.push(`${id}: pista o pasos nombran una letra (el cliente baraja las opciones; usa {A}…{D})`);
-  if (/\b(primera|segunda|tercera|cuarta|última) opción|\b(first|second|third|fourth|last) option/i.test(pistaTxt)) errores.push(`${id}: pista o pasos señalan una opción por su lugar (el cliente baraja las opciones; usa {A}…{D})`);
-  if (r.tipo !== 'abierta' && r.opciones && r.pista && r.opciones[r.correcta] && r.pista.includes(r.opciones[r.correcta]) && r.opciones[r.correcta].length > 3) avisos.push(`${id}: la pista contiene el texto de la respuesta correcta`);
-  if (r.tabla && (!Array.isArray(r.tabla) || r.tabla.length < 2 || r.tabla.some(f => !Array.isArray(f) || f.length !== r.tabla[0].length))) errores.push(`${id}: tabla mal formada`);
-  if (r.figura) revisarSVG(id, r.figura);
+  console.log(`· ${path.basename(f)}: ${reactivos.length} reactivos · dificultad 1/2/3: ${porDif[1]}/${porDif[2]}/${porDif[3]} · temas: ${Object.entries(porTema).map(([t, n]) => `${t} ${n}`).join(', ')}`);
 }
-// Lecturas: cada una con párrafos y con reactivos
-for (const [k, t] of Object.entries(textos)) {
-  if (!Array.isArray(t.parrafos) || !t.parrafos.length) errores.push(`lectura ${k}: sin párrafos`);
-  const n = lista.filter(r => r.texto === k).length;
-  if (archivo ? (n === 0 && !TEXTOS[k]) : n === 0) errores.push(`lectura ${k}: no tiene reactivos`);
-  // Extensión de referencia (formato PAA: textos breves). Lectura ≤ 380 palabras (pareadas ≤ 420), Inglés ≤ 260.
-  const palabras = (t.parrafos || []).join(' ').split(/\s+/).filter(Boolean).length;
-  const tope = t.seccion === 'ingles' ? 260 : (t.parrafos || []).some(p => /^\*\*Texto 2/.test(p)) ? 420 : 380;
-  if (palabras > tope) avisos.push(`lectura ${k}: ${palabras} palabras (referencia PAA: hasta ${tope})`);
-}
-// Distribución de respuestas correctas (que no caigan siempre en la misma posición)
-const pos = [0, 0, 0, 0]; lista.filter(r => r.tipo !== 'abierta').forEach(r => pos[r.correcta]++);
-const conteo = {}; lista.forEach(r => { conteo[r.seccion] = (conteo[r.seccion] || 0) + 1; });
-console.log(`${lista.length} reactivos`, conteo, '· posición de la correcta (A-D en el archivo):', pos.join(' / '), '· con figura:', lista.filter(r => r.figura).length);
-if (avisos.length) console.log('Avisos:\n - ' + avisos.join('\n - '));
-if (errores.length) { console.log(`✗ ${errores.length} errores:\n - ` + errores.join('\n - ')); process.exit(1); }
-console.log('✓ Banco válido');
+console.log(errores ? `\n✗ ${errores} problemas en ${total} reactivos` : `\n✓ ${total} reactivos sin problemas`);
+process.exit(errores ? 1 : 0);

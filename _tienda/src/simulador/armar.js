@@ -4,7 +4,7 @@
 import { SECCIONES, SECCIONES_EXAMEN, TEXTOS, REACTIVOS } from './banco.js';
 import { SECCIONES_CALENTAMIENTO } from './niveles.js';
 
-const barajar = (a, azar) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(azar() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+export const barajar = (a, azar) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(azar() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 // Niveles: Calentamiento (dificultad 1–2), Medio (2–3) y Oficial (todas, cargado a lo difícil como la PAA real).
 // Si un nivel se queda sin reactivos de su dificultad, se completa con los demás (nunca se queda corto).
@@ -32,7 +32,7 @@ const CUOTA_MEDIA = { medio: 0.25, oficial: 0.2 };
 // Reparte n reactivos entre los temas por turnos (para que ninguno se quede fuera) y los ordena de fácil a difícil.
 // Dentro de cada tema van primero los no vistos; en Medio y Oficial, entre los no vistos, primero los difíciles
 // (salvo la cuota de dificultad media, que se toma de reactivos no vistos).
-function porTema(lista, n, azar, vistos, nivel = null, sinCuota = false) {
+export function porTema(lista, n, azar, vistos, nivel = null, sinCuota = false) {
   lista = filtrar(lista, n, nivel, vistos);
   const dificiles = nivel === 'oficial' || nivel === 'medio';
   if (dificiles && !sinCuota) {
