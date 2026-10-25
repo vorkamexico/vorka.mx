@@ -15,7 +15,7 @@
 // siga pagada (un reembolso corta el acceso) y que esté dentro de su año de vigencia. Todo se suma por correo del comprador.
 //
 // Planes por simulador: "Práctica ilimitada" (Calentamientos, Medios y práctica sin límite), "Simulador completo"
-// (exámenes oficiales) y el "Paquete" (los dos). Adicionales: "intento" suma 1 Medio y "examen" suma 1 examen oficial.
+// (exámenes completos) y el "Paquete" (los dos). Adicionales: "intento" suma 1 Medio y "examen" suma 1 examen oficial.
 import { one, all, run, json, fail, enc, hex, iguales } from '../util.js';
 import { hashToken } from '../entrega.js';
 import { pagina, aviso, nonce, seguridad } from '../paginas.js';
@@ -206,7 +206,7 @@ export function crearSimulador(c) {
       examenExtra: extraEx ? { slug: c.slugExamen, precio_centavos: extraEx.precio_centavos } : null });
   }
 
-  // Qué tiene esta persona (practica: sin límite · completo: exámenes oficiales · legado: la compra de antes) y los planes a la
+  // Qué tiene esta persona (practica: sin límite · completo: exámenes completos · legado: la compra de antes) y los planes a la
   // venta (para invitarla a llevarse el que le falta)
   async function planDe(env, email) {
     const compras = await comprasDe(env, email);
@@ -221,7 +221,7 @@ export function crearSimulador(c) {
     const email = a.orden.email;
     const k = await cuentaIntentos(env, email, tipo);
     if (k.abierto) return json({ id: k.abierto.id, items: k.abierto.items, secciones: k.abierto.secciones, retomado: true, tipo, intentos: k });
-    if (k.disponibles <= 0) return json({ error: !k.usados && !k.incluidos ? (tipo === 'examen' ? 'El examen oficial viene en el Simulador completo.' : 'Los simulacros de práctica vienen en la Práctica ilimitada.') : tipo === 'examen' ? 'Ya usaste tus exámenes oficiales. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: k }, 402);
+    if (k.disponibles <= 0) return json({ error: !k.usados && !k.incluidos ? (tipo === 'examen' ? 'El examen completo viene en el Simulador completo.' : 'Los simulacros de práctica vienen en la Práctica ilimitada.') : tipo === 'examen' ? 'Ya usaste tus exámenes completos. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: k }, 402);
     const vistos = await vistosDe(env, email);
     const items = c.armar[tipo === 'corto' ? 'corto' : tipo](Math.random, vistos, area);
     const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items, tipo) VALUES (?,?,?,?)', email, APP, JSON.stringify(items), tipo);

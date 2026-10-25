@@ -1,5 +1,5 @@
 // Simulador PAA (vorka.mx/simulador-paa): configuración para el motor (motor.js) y contenido de su página de venta.
-// Planes (migración 0029): "Práctica ilimitada" ($199), "Simulador completo" ($249: 2 exámenes oficiales) y el "Paquete
+// Planes (migración 0029): "Práctica ilimitada" ($199), "Simulador completo" ($249: 2 exámenes completos) y el "Paquete
 // completo" ($379: los dos). La compra de antes (simulador-paa) conserva lo que traía: 2 Calentamientos, 2 Medios y 1 Oficial.
 // "Simulacro adicional" ($50) suma 1 Medio y "Examen PAA completo adicional" ($100) suma 1 examen.
 import { crearSimulador } from './motor.js';
@@ -11,17 +11,17 @@ import { SECCIONES_CALENTAMIENTO, INCLUIDOS } from './niveles.js';
 const SITIO = 'https://vorka.mx';
 const IMG = `${SITIO}/tienda/img/portadas`;
 const EXAMEN_REACTIVOS = SECCIONES_EXAMEN.reduce((t, x) => t + x.reactivos, 0), EXAMEN_HORAS = SECCIONES_EXAMEN.reduce((t, x) => t + x.minutos, 0) / 60;
-const CORTO_REACTIVOS = SECCIONES.reduce((t, x) => t + x.reactivos, 0), CORTO_MIN = SECCIONES.reduce((t, x) => t + x.minutos, 0);
+const CORTO_REACTIVOS = SECCIONES.reduce((t, x) => t + x.reactivos, 0);
 const CAL_REACTIVOS = SECCIONES_CALENTAMIENTO.reduce((t, x) => t + x.reactivos, 0);
 const DESCRIPCION = 'Simulador PAA en línea con preguntas tipo examen de Lectura, Redacción, Matemáticas e Inglés, cronómetro real, tutor con pistas, explicación paso a paso y puntaje estimado.';
 // Datos de la guía oficial de estudio de la PAA (College Board)
 export const FAQ_PAA = [
   { p: '¿Qué es la PAA?', r: 'La Prueba de Aptitud Académica (PAA) del College Board es un examen de admisión que usan universidades de México, Puerto Rico y América Latina. Evalúa razonamiento verbal y matemático, y aprovechamiento en español, matemáticas e inglés.' },
-  { p: '¿Qué secciones tiene la PAA?', r: 'Cuatro: Lectura, Redacción, Matemáticas e Inglés. Según la guía oficial, Lectura, Redacción y Matemáticas duran 2 horas y 20 minutos, e Inglés 40 minutos. Las preguntas son de opción múltiple con cuatro opciones, y algunas de Matemáticas piden escribir la respuesta.' },
+  { p: '¿Qué secciones tiene la PAA?', r: 'Cuatro: Lectura, Redacción, Matemáticas e Inglés. Las preguntas son de opción múltiple con cuatro opciones, y algunas de Matemáticas piden escribir la respuesta. El College Board define el número de preguntas y los tiempos de cada aplicación: confírmalos con la universidad donde vas a presentar.' },
   { p: '¿Cómo se califica la PAA?', r: 'Cada sección se califica en una escala de 200 a 800 puntos y no se resta por respuesta incorrecta, así que conviene contestar todo. Nuestro simulador estima tu puntaje en esa misma escala para que veas qué tan cerca estás de tu meta.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen la estructura y el tipo de preguntas de la PAA. No está afiliado al College Board y el puntaje es una estimación para orientar tu estudio.' },
   { p: '¿Hay reembolso?', r: 'Solo si aún no lo usas: puedes pedirlo dentro de los 5 días hábiles siguientes a tu compra escribiendo a hola@vorka.mx. Una vez que empiezas un simulacro, un examen o una práctica ya no hay reembolso, aunque no lo termines (igual que un archivo ya descargado). Si algo falla y no te deja usarlo, lo resolvemos o te devolvemos tu dinero. Detalles en la política de reembolsos.' },
-  { p: '¿Qué plan me conviene?', r: `Son dos que se complementan. La Práctica ilimitada es para entrenar todos los días: Calentamientos (${CAL_REACTIVOS} reactivos) y simulacros de nivel Medio (${CORTO_REACTIVOS} reactivos, con tutor) sin límite, más práctica por sección y por tema. El Simulador completo es para medirte como el día del examen: 2 exámenes oficiales con la misma cantidad de preguntas, el mismo tiempo y la dificultad de la PAA real (${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas). Lo ideal es practicar hasta que el simulador te diga que ya estás listo y cerrar con el examen completo: por eso el paquete trae los dos y te ahorra dinero.` },
+  { p: '¿Qué plan me conviene?', r: `Son dos que se complementan. La Práctica ilimitada es para entrenar todos los días: Calentamientos (${CAL_REACTIVOS} reactivos) y simulacros de nivel Medio (${CORTO_REACTIVOS} reactivos, con tutor) sin límite, más práctica por sección y por tema. El Simulador completo es para medirte como el día del examen: 2 exámenes completos con la misma cantidad de preguntas y la dificultad de la PAA real (${EXAMEN_REACTIVOS} reactivos con cronómetro, sin pistas). Lo ideal es practicar hasta que el simulador te diga que ya estás listo y cerrar con el examen completo: por eso el paquete trae los dos y te ahorra dinero.` },
   { p: '¿Se repiten las preguntas?', r: `El banco tiene ${REACTIVOS.length} reactivos originales y cada simulacro o examen prioriza los que todavía no has visto, así que tus primeros intentos traen preguntas prácticamente distintas. Las gráficas y figuras de Matemáticas son originales de Vorka México.` },
   { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo para que la compartas. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre, así que no se puede compartir.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta.' },
@@ -32,8 +32,9 @@ export const PLANES = { practica: 'simulador-paa-practica', completo: 'simulador
 export const SLUG_INTENTO = 'simulador-paa-intento';
 export const SLUG_EXAMEN = 'simulador-paa-examen';   // examen PAA completo adicional ($100)
 
-const secciones = SECCIONES.map(s => { const x = SECCIONES_EXAMEN.find(e => e.id === s.id); return `<tr><th scope="row"><span class="sv-dot s-${s.color}"></span>${s.nombre}</th><td class="num">${x.reactivos} · ${x.minutos} min</td><td class="num">${s.reactivos} · ${s.minutos} min</td><td>${s.descripcion}</td></tr>`; }).join('')
-  + `<tr><th scope="row">Total</th><td class="num"><b>${EXAMEN_REACTIVOS} · ${EXAMEN_HORAS} h</b></td><td class="num">${CORTO_REACTIVOS} · ${CORTO_MIN} min</td><td></td></tr>`;
+// Sin minutos en la página: la guía oficial disponible del College Board es de 2020 y los tiempos pueden haber cambiado
+const secciones = SECCIONES.map(s => { const x = SECCIONES_EXAMEN.find(e => e.id === s.id); return `<tr><th scope="row"><span class="sv-dot s-${s.color}"></span>${s.nombre}</th><td class="num">${x.reactivos}</td><td class="num">${s.reactivos}</td><td>${s.descripcion}</td></tr>`; }).join('')
+  + `<tr><th scope="row">Total</th><td class="num"><b>${EXAMEN_REACTIVOS}</b></td><td class="num">${CORTO_REACTIVOS}</td><td></td></tr>`;
 const ej = REACTIVOS.find(r => r.id === 'R-cnx-2');
 
 export const PAA = crearSimulador({
@@ -57,29 +58,30 @@ const VENTA = {
   chip: `Nuevo · ${REACTIVOS.length} reactivos originales`,
   hero: {
     h1: 'Simulador PAA en línea: practica como si fuera el día del examen',
-    lead: 'Preguntas tipo PAA de Lectura, Redacción, Matemáticas e Inglés con el mismo ritmo de tiempo que el examen real. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice exactamente qué reforzar.',
-    sellos: ['Práctica ilimitada con tutor', `Examen completo como el real: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Puntaje estimado 200–800', 'En celular o computadora'],
+    lead: 'Preguntas tipo PAA de Lectura, Redacción, Matemáticas e Inglés, con cronómetro como en el examen real. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice exactamente qué reforzar.',
+    sellos: ['Práctica ilimitada con tutor', `Examen completo como el real: ${EXAMEN_REACTIVOS} reactivos`, 'Puntaje estimado 200–800', 'En celular o computadora'],
     alt: 'Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación',
   },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica ilimitada', para: 'Para entrenar todos los días', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por sección y por tema', 'Tutor con pistas y explicación paso a paso', 'Puntaje estimado y qué reforzar'] },
-    { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => [`2 exámenes oficiales: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Mismos tiempos y dificultad que la PAA', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] },
-    { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', `Los 2 exámenes oficiales de ${EXAMEN_HORAS} horas`, 'Un año de acceso a todo'] },
+    { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => [`2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos`, 'Con cronómetro y la dificultad de la PAA', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] },
+    { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', 'Los 2 exámenes completos', 'Un año de acceso a todo'] },
   ],
   cifras: [[REACTIVOS.length, 'reactivos originales'], [Object.keys(TEXTOS).length, 'lecturas en español e inglés'], [Object.keys(TEMAS).length, 'temas medidos en tu reporte'], [EXAMEN_REACTIVOS, 'reactivos en el examen completo']],
-  pasos: [['Contesta como en la PAA', 'Las cuatro secciones con el mismo tiempo por pregunta que el examen real. El reloj se pausa mientras lees las explicaciones.'], null,
+  pasos: [['Contesta como en la PAA', 'Las cuatro secciones con cronómetro, como en el examen real. El reloj se pausa mientras lees las explicaciones.'], null,
     [null, 'Puntaje estimado por sección, distancia a tu meta, tus fortalezas y los temas que más puntos te restan, con práctica dirigida.']],
   ejemplo: { ...ej, etiqueta: 'Redacción · Conectores' },
+  planInicial: 'practica',   // el más barato: la primera compra pesa más que el ticket
   incluye: [
     { titulo: 'Calentamientos', tag: 'Práctica ilimitada', texto: `${CAL_REACTIVOS} reactivos de dificultad básica e intermedia con tutor, para entrar en ritmo sin frustrarte. Todos los que quieras.` },
     { titulo: 'Simulacros Medios', tag: 'Práctica ilimitada', texto: `Las cuatro secciones en ${CORTO_REACTIVOS} reactivos, la mayoría de dificultad alta, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.` },
-    { titulo: 'Examen Oficial', tag: 'Simulador completo', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas: la misma cantidad de preguntas, el tiempo y la dificultad de la PAA real. ¿Otro? Cuesta $100.` },
+    { titulo: 'Examen completo', tag: 'Simulador completo', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos con cronómetro y sin pistas: la misma cantidad de preguntas y la dificultad de la PAA real. ¿Otro? Cuesta $100.` },
     { titulo: 'Por sección y por tema', tag: 'Práctica ilimitada', texto: 'Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.' },
     { titulo: 'Medidor de preparación', texto: 'Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos puntos de tu meta.' },
     { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.' },
   ],
   comparar: [
-    ['Cronómetro con el ritmo real de la PAA', true, false],
+    ['Cronómetro en cada simulacro', true, false],
     ['Pista de método cuando fallas (sin darte la respuesta)', true, false],
     ['Explicación paso a paso y la regla detrás', true, 'A veces'],
     ['Puntaje estimado por sección (200–800)', true, false],
@@ -88,11 +90,11 @@ const VENTA = {
   ],
   estructura: {
     titulo: 'Las 4 secciones, en dos formatos',
-    lead: 'El <b>examen completo</b> tiene la cantidad de preguntas y el tiempo del examen real. El <b>simulacro corto</b> es una versión compacta con el mismo tiempo por pregunta, para practicar en menos de una hora.',
-    tabla: `<table class="sv-tabla sec"><thead><tr><th scope="col">Sección</th><th scope="col">Examen completo</th><th scope="col">Simulacro corto</th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>`,
+    lead: 'El <b>examen completo</b> tiene la cantidad de preguntas de la PAA. El <b>simulacro corto</b> es una versión compacta para practicar en una sola sentada.',
+    tabla: `<table class="sv-tabla sec"><thead><tr><th scope="col">Sección</th><th scope="col">Examen completo<br><small>reactivos</small></th><th scope="col">Simulacro corto<br><small>reactivos</small></th><th scope="col">Qué evalúa</th></tr></thead><tbody>${secciones}</tbody></table>`,
   },
   faqTitulo: 'Sobre la PAA y el simulador',
   faq: FAQ_PAA,
-  final: 'Haz un simulacro corto hoy para ver en menos de una hora qué temas te faltan, y cuando estés listo, el examen completo para medirte con el tiempo real.',
+  final: 'Haz un simulacro corto hoy para ver qué temas te faltan y, cuando estés listo, el examen completo para medirte como el día del examen.',
   aviso: 'Simulador de práctica de Vorka México con reactivos originales. No está afiliado al College Board; PAA es una prueba del College Board. El puntaje es una estimación para orientar tu estudio.',
 };
