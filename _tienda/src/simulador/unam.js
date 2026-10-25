@@ -1,7 +1,7 @@
 // Simulador UNAM (vorka.mx/simulador-unam): examen de selección de licenciatura de la UNAM.
 // 120 reactivos de opción múltiple en 3 horas; las materias y su peso dependen del área. La UNAM no publica el desglose
 // oficial por materia: usamos la distribución de referencia en la que coinciden las guías de preparación (cada área suma 120).
-// Planes: Práctica ilimitada, Simulador completo (2 exámenes oficiales) y Paquete. Adicionales: 1 Medio o 1 examen más.
+// Planes: Práctica ilimitada, Simulador completo (2 exámenes completos) y Paquete. Adicionales: 1 Medio o 1 examen más.
 import { crearSimulador } from './motor.js';
 import { paginaVentaSimulador } from './venta.js';
 import { armarPorMaterias } from './armar-por-area.js';
@@ -95,7 +95,7 @@ const FAQ = [
   { p: '¿Cuántos aciertos necesito para entrar?', r: 'No hay un mínimo fijo: la UNAM asigna los lugares por número de aciertos hasta cubrir el cupo de cada carrera y plantel, así que cambia cada año. Revisa los resultados de concursos anteriores de tu carrera, ponlo como meta en el simulador y mide qué tan cerca estás.' },
   { p: '¿Cuándo es el examen?', r: 'En el concurso 2026, según el calendario oficial de la DGAE, la convocatoria se publicó el 12 de enero, el registro fue del 23 de enero al 3 de febrero y el examen del 23 de mayo al 10 de junio. Consulta siempre la convocatoria vigente en dgae.unam.mx.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen el temario y el tipo de preguntas del examen. No está afiliado a la UNAM y los aciertos son una estimación para orientar tu estudio.' },
-  { p: '¿Qué plan me conviene?', r: 'La Práctica ilimitada es para entrenar todos los días: Calentamientos, simulacros Medios de 60 reactivos y práctica por materia y por tema, sin límite y con tutor. El Simulador completo es para medirte como el día del examen: 2 exámenes oficiales de 120 reactivos en 3 horas, de tu área y sin pistas. El paquete trae los dos y te ahorra dinero.' },
+  { p: '¿Qué plan me conviene?', r: 'La Práctica ilimitada es para entrenar todos los días: Calentamientos, simulacros Medios de 60 reactivos y práctica por materia y por tema, sin límite y con tutor. El Simulador completo es para medirte como el día del examen: 2 exámenes completos de 120 reactivos en 3 horas, de tu área y sin pistas. El paquete trae los dos y te ahorra dinero.' },
   { p: '¿Hay reembolso?', r: 'Solo si aún no lo usas: puedes pedirlo dentro de los 5 días hábiles siguientes a tu compra escribiendo a hola@vorka.mx. Una vez que empiezas un simulacro, un examen o una práctica ya no hay reembolso. Si algo falla y no te deja usarlo, lo resolvemos o te devolvemos tu dinero.' },
   { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta durante un año.' },
@@ -120,8 +120,8 @@ const VENTA = {
   },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica ilimitada', para: 'Para entrenar todos los días', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
-    { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => ['2 exámenes oficiales de tu área: 120 reactivos en 3 horas', 'Sin pistas: la revisión va al final', 'Aciertos por materia y temas a reforzar', 'Cambia de área cuando quieras'] },
-    { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', 'Los 2 exámenes oficiales de 3 horas', 'Un año de acceso a todo'] },
+    { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => ['2 exámenes completos de tu área: 120 reactivos en 3 horas', 'Sin pistas: la revisión va al final', 'Aciertos por materia y temas a reforzar', 'Cambia de área cuando quieras'] },
+    { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', 'Los 2 exámenes completos de 3 horas', 'Un año de acceso a todo'] },
   ],
   cifras: [[REACTIVOS.length, 'reactivos originales'], [10, 'materias del examen'], [Object.keys(TEMAS).length, 'temas medidos en tu reporte'], [120, 'reactivos en el examen completo']],
   pasos: [['Contesta como en el examen', 'Las materias de tu área con su peso y el mismo tiempo por pregunta que el examen real (1.5 minutos). El reloj se pausa mientras lees las explicaciones.'], null,
@@ -130,7 +130,7 @@ const VENTA = {
   incluye: [
     { titulo: 'Elige tu área', texto: 'El simulador arma cada examen con las materias y el peso del área de tu carrera. Puedes cambiar de área cuando quieras.' },
     { titulo: 'Calentamientos y Medios', tag: 'Práctica ilimitada', texto: 'Calentamientos de unos 30 reactivos y simulacros Medios de 60, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.' },
-    { titulo: 'Examen Oficial', tag: 'Simulador completo', oro: true, texto: '2 exámenes de 120 reactivos en 3 horas, sin pistas, con la distribución de tu área. Al final, tu reporte de aciertos.' },
+    { titulo: 'Examen completo', tag: 'Simulador completo', oro: true, texto: '2 exámenes de 120 reactivos en 3 horas, sin pistas, con la distribución de tu área. Al final, tu reporte de aciertos.' },
     { titulo: 'Por materia y por tema', tag: 'Práctica ilimitada', texto: 'Practica cada materia por separado y tus temas débiles todas las veces que quieras.' },
     { titulo: 'Medidor de preparación', texto: 'Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos aciertos de tu meta.' },
     { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.' },

@@ -64,12 +64,16 @@ describe('acceso al simulador', () => {
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain('"@type":"Product"');
     expect(html).toContain('simulador-paa-og.png');
-    // tres planes que se complementan; de fábrica se elige el paquete, que muestra cuánto ahorra
+    // tres planes que se complementan; de fábrica se elige el más barato y el paquete muestra cuánto ahorra
     for (const k of ['practica', 'completo', 'paquete']) expect(html).toContain(`href="?plan=${k}#comprar"`);
-    expect(html).toContain('name="slug" value="simulador-paa-paquete"');
+    expect(html).toContain('name="slug" value="simulador-paa-practica"');
     expect(html).toContain('Ahorra $69 MXN');
     expect(html).toContain('"@type":"AggregateOffer"');
-    expect(await (await pedir('/simulador-paa/?plan=practica')).text()).toContain('name="slug" value="simulador-paa-practica"');
+    expect(await (await pedir('/simulador-paa/?plan=paquete')).text()).toContain('name="slug" value="simulador-paa-paquete"');
+    // el reactivo de prueba va antes del formulario de compra, y la página ya no dice "oficiales" ni minutos de la PAA
+    expect(html.indexOf('id="sv-ej"')).toBeLessThan(html.indexOf('id="comprar"'));
+    expect(html).not.toMatch(/exámenes oficiales|Examen Oficial/);
+    expect(html).not.toMatch(/\d+ min</);
     expect(html).not.toContain('noindex');
   });
 

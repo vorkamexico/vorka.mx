@@ -149,7 +149,7 @@
   function empezarCompleto(modo) {
     modo = modo === 'examen' || modo === 'calentamiento' ? modo : 'completo';
     var it = cuentaDe(modo), ex = modo === 'examen', ca = modo === 'calentamiento', uno = it.disponibles === 1;
-    var nombre = ex ? 'examen oficial' : ca ? 'calentamiento' : 'simulacro de nivel Medio', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen oficial disponible' : 'exámenes oficiales disponibles') : ca ? (uno ? 'calentamiento disponible' : 'calentamientos disponibles') : (uno ? 'simulacro Medio disponible' : 'simulacros Medios disponibles'));
+    var nombre = ex ? 'examen completo' : ca ? 'calentamiento' : 'simulacro de nivel Medio', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen completo disponible' : 'exámenes completos disponibles') : ca ? (uno ? 'calentamiento disponible' : 'calentamientos disponibles') : (uno ? 'simulacro Medio disponible' : 'simulacros Medios disponibles'));
     if (!it.abierto) {
       if (it.disponibles <= 0) return comprar(modo);
       if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex ? ' Son ' + exTotales().reactivos + ' reactivos y ' + horas(exTotales().minutos) + ', como el examen real' + (infoArea() ? ' (' + infoArea().nombre + ')' : '') + '; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
@@ -186,9 +186,9 @@
     detenerReloj(); pintarBarra();
     if (modo === 'calentamiento') { h('<section class="sim-intro"><span class="sim-paso">Nivel Calentamiento</span><h1>Ya usaste tus calentamientos</h1><p class="sim-lead">¡Bien! Ya estás listo para subir de nivel: sigue con el simulacro de nivel Medio. La práctica por sección y por temas sigue sin límite.</p><div class="botones"><button class="btn tinta" id="b-medio">Ir al nivel Medio</button><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; document.getElementById('b-medio').onclick = function () { empezarCompleto('completo'); }; return; }
     var ex = modo === 'examen', x = ex ? YO.examenExtra : YO.intentoExtra, it = cuentaDe(ex ? 'examen' : 'completo');
-    var que = ex ? 'exámenes oficiales' : 'simulacros de nivel Medio', uno = ex ? 'examen oficial adicional' : 'simulacro Medio adicional';
+    var que = ex ? 'exámenes completos' : 'simulacros de nivel Medio', uno = ex ? 'examen completo adicional' : 'simulacro Medio adicional';
     if (!x) { h('<section class="sim-intro"><h1>Ya usaste tus ' + que + '</h1><p class="sim-lead">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para conseguir más intentos. Mientras tanto, puedes seguir practicando por sección sin límite.</p><div class="botones"><button class="btn tinta" id="b-inicio">Volver al inicio</button></div></section>'); document.getElementById('b-inicio').onclick = inicio; return; }
-    h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + (ex ? 'Nivel Oficial · examen completo' : 'Nivel Medio') + '</span>' +
+    h('<section class="sim-intro sim-comprar"><span class="sim-paso">' + (ex ? 'Nivel 3 · examen completo' : 'Nivel Medio') + '</span>' +
       '<h1>' + (it.disponibles ? 'Suma más ' + que : 'Ya usaste tus ' + (it.incluidos || (ex ? 1 : 2)) + ' ' + que) + '</h1>' +
       '<p class="sim-lead">Cada ' + uno + ' cuesta <b>' + precio(x.precio_centavos) + '</b> y queda disponible en cuanto se confirma tu pago.' + (ex ? ' Son ' + exTotales().reactivos + ' reactivos y ' + horas(exTotales().minutos) + ', como el examen real, con preguntas que priorizan lo que no has visto.' : '') + ' La práctica por sección y por temas sigue sin límite.</p>' +
       '<form class="sim-card sim-compra" id="f-compra">' +
@@ -239,14 +239,14 @@
     // Si el intento de este dispositivo ya se cerró en otro, se descarta aquí
     if (run && esIntento(run.modo) && (!cuentaDe(run.modo).abierto || cuentaDe(run.modo).abierto.id !== run.intento)) { run = null; guardar(K_RUN, null); retomar = ''; }
     var abiertoSrv = !run && (ie.abierto ? 'examen' : it.abierto ? 'completo' : ic.abierto ? 'calentamiento' : null);
-    if (abiertoSrv) retomar = '<div class="sim-aviso"><div><b>Tienes ' + (abiertoSrv === 'examen' ? 'un examen oficial' : abiertoSrv === 'calentamiento' ? 'un calentamiento' : 'un simulacro de nivel Medio') + ' abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
+    if (abiertoSrv) retomar = '<div class="sim-aviso"><div><b>Tienes ' + (abiertoSrv === 'examen' ? 'un examen completo' : abiertoSrv === 'calentamiento' ? 'un calentamiento' : 'un simulacro de nivel Medio') + ' abierto.</b><span>Lo empezaste en otro dispositivo o no lo terminaste. Puedes retomarlo sin gastar otro intento (las respuestas empiezan de cero).</span></div><div class="botones"><button class="btn tinta chico" id="b-ret-srv">Retomar</button></div></div>';
     var cajaIntentos = function (c, txt, extra, id) {
       if (c.ilimitado) return '<div class="sim-intentos ilimitado"><div><b class="num" aria-hidden="true">∞</b><span>' + esc(txt.replace(/ disponibles?$/, '')) + ' ilimitados con tu Práctica</span></div></div>';
       return '<div class="sim-intentos' + (c.disponibles ? '' : ' agotados') + '"><div><b class="num">' + c.disponibles + '</b><span>de ' + c.incluidos + ' ' + txt + '</span></div>' +
         (extra ? '<button class="btn ' + (c.disponibles ? 'blanco' : 'tinta') + ' chico" id="' + id + '">Comprar más · ' + precio(extra.precio_centavos) + ' c/u</button>' : '') + '</div>';
     };
     var intentos = cajaIntentos(it, 'simulacros Medios disponibles', YO.intentoExtra, 'b-comprar');
-    var intentosEx = cajaIntentos(ie, ie.incluidos === 1 ? 'examen oficial disponible' : 'exámenes oficiales disponibles', YO.examenExtra, 'b-comprar-ex');
+    var intentosEx = cajaIntentos(ie, ie.incluidos === 1 ? 'examen completo disponible' : 'exámenes completos disponibles', YO.examenExtra, 'b-comprar-ex');
     var intentosCa = cajaIntentos(ic, 'calentamientos disponibles', null, '');
     var caR = calTotales().reactivos, caM = calTotales().minutos, exR = exTotales().reactivos, exM = exTotales().minutos;
     var hayCal = !!(B.calentamiento || infoArea()), hayExamen = !!(B.examen || infoArea());
@@ -260,12 +260,12 @@
       retomar +
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
-          '<section class="o-4">' + selArea + '<h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el Oficial, que tiene la dificultad y el tiempo del examen real.</p>' +
+          '<section class="o-4">' + selArea + '<h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el examen completo, que tiene la dificultad y el tiempo del examen real.</p>' +
           (!puedePracticar() ? tarjetaPlan('practica', 'Llega al examen con práctica de sobra') : '') +
           (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
           (puedePracticar() ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como el examen real · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentos : '') +
           (hayExamen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
-          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Oficial: examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + ' secciones con los tiempos y la dificultad oficiales') + ' · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
+          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + ' secciones cronometradas y con la dificultad del examen') + ' · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           (puedePracticar() ? '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
             return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
@@ -296,7 +296,7 @@
       b.onclick = function () {
         if (run && run.fase !== 'fin') {
           if (b.dataset.modo === run.modo && esIntento(run.modo)) return continuar();
-          if (!confirm(esIntento(run.modo) ? 'Tienes ' + (run.modo === 'examen' ? 'un examen oficial' : run.modo === 'calentamiento' ? 'un calentamiento' : 'un simulacro') + ' sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
+          if (!confirm(esIntento(run.modo) ? 'Tienes ' + (run.modo === 'examen' ? 'un examen completo' : run.modo === 'calentamiento' ? 'un calentamiento' : 'un simulacro') + ' sin terminar. Si empiezas otra práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
           if (esIntento(run.modo)) { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; if (d.calentamientos) YO.calentamientos = d.calentamientos; }); }
         }
         empezar(b.dataset.modo, b.dataset.modo === 'practica' ? b.dataset.temas.split(',') : b.dataset.sec);
@@ -332,7 +332,7 @@
   // Niveles: 'calentamiento' · 'completo' = Medio · 'examen' = Oficial (examen completo). Los tres gastan intento.
   function esIntento(m) { return m === 'completo' || m === 'examen' || m === 'calentamiento'; }
   function cuentaDe(m) { return (m === 'examen' ? YO.examenes : m === 'calentamiento' ? YO.calentamientos : YO.intentos) || { incluidos: 0, disponibles: 0 }; }
-  // Planes: practica (Calentamientos, Medios y práctica sin límite), completo (exámenes oficiales) o la compra de antes (legado)
+  // Planes: practica (Calentamientos, Medios y práctica sin límite), completo (exámenes completos) o la compra de antes (legado)
   function plan() { return YO.plan || { legado: true }; }
   function puedePracticar() { var p = plan(); return !!(p.practica || p.legado); }
   function tieneExamen() { var e = cuentaDe('examen'); return !!(e.incluidos || e.usados || e.abierto); }
@@ -341,7 +341,7 @@
     var ex = exTotales();
     return {
       practica: { nombre: 'Práctica ilimitada', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (areas() ? 'materia' : 'sección') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (areas() ? 'materia' : 'sección') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
-      completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes oficiales con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes oficiales: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (areas() ? 'materia' : 'sección')] }
+      completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (areas() ? 'materia' : 'sección')] }
     }[k];
   }
 
@@ -373,12 +373,12 @@
         .catch(function (e2) { err.textContent = e2.message; err.hidden = false; btn.disabled = false; btn.innerHTML = 'Ir a pagar ' + FL; });
     };
   }
-  function nombreModo(r) { return r.modo === 'examen' ? 'Oficial · examen ' + CFG.examen + ' completo' : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
+  function nombreModo(r) { return r.modo === 'examen' ? 'Examen ' + CFG.examen + ' completo' : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
   function totalItems(r) { return r.secciones.reduce(function (a, s) { return a + s.items.length; }, 0); }
   function contestadas(r) { return Object.keys(r.resp).filter(function (id) { return r.resp[id].fase === 'fin'; }).length; }
   function tarjetaResumen(u) {
     var c = u.confianza || 0, e = estado(c);
-    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen oficial' : u.modo === 'calentamiento' ? 'calentamiento' : 'simulacro Medio') + '</span>' +
+    return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen completo' : u.modo === 'calentamiento' ? 'calentamiento' : 'simulacro Medio') + '</span>' +
       '<div class="sim-res-mini-f">' + medidor(c, 120) + '<div><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' +
       (u.global != null ? '<p>' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ': <b class="num">' + unidad(u.global) + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
       '<p class="sim-nota">' + fecha(u.fecha) + '</p></div></div></div>';
@@ -388,7 +388,7 @@
     var comp = YO.historial.filter(function (x) { return esIntento(x.modo) && x.global != null; }).slice(0, 8).reverse();
     var graf = comp.length >= 2 ? graficaHistorial(comp) : '';
     return '<h2 class="sim-h2">Tu avance</h2>' + graf + '<ul class="sim-hist">' + YO.historial.slice(0, 8).map(function (x, i) {
-      var t = x.modo === 'examen' ? 'Oficial · examen completo' : x.modo === 'calentamiento' ? 'Calentamiento' : x.modo === 'completo' ? 'Nivel Medio' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
+      var t = x.modo === 'examen' ? 'Examen completo' : x.modo === 'calentamiento' ? 'Calentamiento' : x.modo === 'completo' ? 'Nivel Medio' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
       var ok = x.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = x.secciones.reduce(function (a, s) { return a + s.total; }, 0);
       return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global != null && esIntento(x.modo) ? unidad(x.global) : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
     }).join('') + '</ul>';
@@ -742,8 +742,8 @@
     var htmlListo = '';
     if (res.modo === 'completo' && res.global && !desdeHistorial) {
       if (res.global >= m) htmlListo = tieneExamen()
-        ? '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para tu examen oficial!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Ahora mídete con el tiempo y la dificultad del examen ' + esc(CFG.examen) + ' real.</p><button class="btn tinta" data-modo-otra="examen">Hacer mi examen oficial ' + FL + '</button></div>'
-        : '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para el simulador completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Mídete como el día del examen: 2 exámenes oficiales de ' + exTotales().reactivos + ' reactivos en ' + horas(exTotales().minutos) + ', sin pistas y con tu reporte de preparación.</p><button class="btn tinta" data-plan="completo">Quiero el simulador completo ' + FL + '</button></div>';
+        ? '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para tu examen completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Ahora mídete con el tiempo y la dificultad del examen ' + esc(CFG.examen) + ' real.</p><button class="btn tinta" data-modo-otra="examen">Hacer mi examen completo ' + FL + '</button></div>'
+        : '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para el simulador completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Mídete como el día del examen: 2 exámenes completos de ' + exTotales().reactivos + ' reactivos en ' + horas(exTotales().minutos) + ', sin pistas y con tu reporte de preparación.</p><button class="btn tinta" data-plan="completo">Quiero el simulador completo ' + FL + '</button></div>';
       else if (!tieneExamen()) htmlListo = '<p class="sim-nota sim-casi">Te faltan <b>' + (m - res.global) + (esPAA() ? ' puntos' : ' aciertos') + '</b> para tu meta. Cuando la alcances en un simulacro Medio, te avisamos que ya estás listo para el simulador completo.</p>';
     }
 
@@ -761,7 +761,7 @@
     }
 
     h('<section class="sim-rep">' +
-      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen oficial' : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
+      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen completo' : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
         '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +

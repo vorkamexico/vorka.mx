@@ -9,7 +9,7 @@ import { FLECHA, CHECK } from '../marco.generado.js';
 const SITIO = 'https://vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const CSS = `<style>
-.sv-hero{padding:clamp(108px,12vw,150px) 0 clamp(40px,5vw,64px)}
+.sv-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 .sv-hero-g{display:grid;gap:32px 56px;align-items:start}
 @media(min-width:980px){.sv-hero-g{grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr)}}
 .sv-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
@@ -19,8 +19,6 @@ const CSS = `<style>
 .sv-hero .t-lead{margin-top:16px;max-width:600px}
 .sv-sellos{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:14.5px;color:var(--fg-2)}
 .sv-sellos li{display:flex;align-items:center;gap:6px}.sv-sellos svg{width:16px;height:16px;color:var(--verde)}
-.sv-portada{margin-top:26px;border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra-2);aspect-ratio:4/3;background:var(--noche)}
-.sv-portada img{width:100%;height:100%;object-fit:cover;display:block}
 .sv-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .sv-compra{position:sticky;top:96px}
 .sv-planes{display:grid;gap:10px;margin-bottom:14px}
@@ -94,6 +92,9 @@ const CSS = `<style>
 .sv-dos{display:grid;gap:28px 64px;align-items:start}
 @media(min-width:960px){.sv-dos{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}.sv-pegado{position:sticky;top:110px}}
 .sv-dos .sv-ej{margin-top:0}
+.sv-probar{margin-top:26px}.sv-probar > b{display:block;font-size:15px;letter-spacing:-.01em}.sv-probar > small{display:block;color:var(--fg-2);font-size:14px;margin-top:2px}
+.sv-probar .sv-ej{margin-top:12px}
+.t-barra .sv-barra-b{display:flex;gap:6px}.t-barra b,.t-barra small{white-space:nowrap}.t-barra .sv-barra-b .btn{padding-inline:14px}
 .sv-mini-l{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 .sv-mini-l li{display:flex;gap:10px;align-items:flex-start;font-size:16px;color:var(--fg-2)}.sv-mini-l li b{color:var(--fg)}
 .sv-mini-l svg{width:18px;height:18px;color:var(--verde);flex:none;margin-top:3px}
@@ -159,7 +160,6 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: (prod ? SCRIPT_COMPRA : '') + SCRIPT_EJEMPLO,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
-<link rel="preload" as="image" href="${img.portada}">
 ${CSS}${v.css || ''}`,
     cuerpo: `
 <section class="sv-hero"><div class="marco sv-hero-g">
@@ -169,8 +169,17 @@ ${CSS}${v.css || ''}`,
     <h1 class="t-h1">${esc(v.hero.h1)}</h1>
     <p class="t-lead">${esc(v.hero.lead)}</p>
     <ul class="sv-sellos">${v.hero.sellos.map(t => `<li>${CHECK}${esc(t)}</li>`).join('')}</ul>
-    <div class="sv-portada"><img src="${img.portada}" alt="${esc(v.hero.alt)}" width="1600" height="1200" fetchpriority="high"></div>
-    <div class="sv-links"><a class="btn blanco chico" href="#probar">Probar un reactivo gratis ${FLECHA}</a>${prod ? `<a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a>` : ''}</div>
+    <div class="sv-probar" id="probar">
+      <b>Pruébalo gratis: contesta un reactivo con el tutor</b><small>Si fallas, te da una pista; en el segundo intento, la solución paso a paso.</small>
+      <div class="sv-ej" id="sv-ej">
+        <span class="sv-tema">${esc(ej.etiqueta)}</span>
+        <h3>${esc(ej.enunciado)}</h3>
+        <div class="sv-ops">${ej.opciones.map((o, i) => `<button type="button" data-o="${i}"><span>${'ABCD'[i]}</span>${esc(o)}</button>`).join('')}</div>
+        <div class="sv-tutor" id="sv-tutor" role="status" aria-live="polite" hidden></div>
+        <noscript><p class="t-nota" style="margin-top:14px">Respuesta: ${'ABCD'[ej.correcta]}) ${esc(ej.opciones[ej.correcta])}. ${sinLetras(ej.regla)}</p></noscript>
+      </div>
+    </div>
+    ${prod ? `<div class="sv-links"><a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a></div>` : ''}
     <p class="t-ya">¿Ya lo compraste? <a href="/descargas/reenviar?para=simulador">Entra aquí</a></p>
   </div>
   <aside class="sv-compra" id="comprar" aria-label="Comprar el simulador">
@@ -190,21 +199,6 @@ ${v.despuesHero || ''}
     <article class="sv-paso"><figure><img src="${img.portada}" alt="" loading="lazy" width="1600" height="1200"></figure><div><small>01 · Con cronómetro</small><h3>${esc(v.pasos[0][0])}</h3><p>${esc(v.pasos[0][1])}</p></div></article>
     <article class="sv-paso"><figure><img src="${img.og}" alt="" loading="lazy" width="1200" height="630"></figure><div><small>02 · Tutor de dos intentos</small><h3>Si fallas, no te da la respuesta</h3><p>Te da una pista de método para que lo intentes otra vez. En el segundo intento ves la solución paso a paso y la regla detrás.</p></div></article>
     <article class="sv-paso"><figure><img src="${img.reporte}" alt="Reporte del simulador con medidor de preparación, resultado por sección y aciertos por tema" loading="lazy" width="1600" height="900"></figure><div><small>03 · Reporte</small><h3>Sabes exactamente qué reforzar</h3><p>${esc(v.pasos[2][1])}</p></div></article>
-  </div>
-</div></section>
-
-<section class="t-sec suave" id="probar"><div class="marco sv-dos">
-  <div class="sv-dos-t">
-    <span class="etiqueta">Pruébalo gratis</span><h2 class="h2" style="margin-top:14px">Contesta un reactivo con el tutor</h2>
-    <p class="t-lead" style="margin-top:14px">Elige una opción. Si fallas, verás cómo el tutor te guía sin darte la respuesta, igual que en cada uno de los ${v.banco} reactivos del simulador.</p>
-    <ul class="sv-mini-l"><li>${CHECK}<span><b>1.er error:</b> una pista de método.</span></li><li>${CHECK}<span><b>2.º intento:</b> la solución paso a paso.</span></li><li>${CHECK}<span><b>Siempre:</b> la regla teórica detrás.</span></li></ul>
-  </div>
-  <div class="sv-ej" id="sv-ej">
-    <span class="sv-tema">${esc(ej.etiqueta)}</span>
-    <h3>${esc(ej.enunciado)}</h3>
-    <div class="sv-ops">${ej.opciones.map((o, i) => `<button type="button" data-o="${i}"><span>${'ABCD'[i]}</span>${esc(o)}</button>`).join('')}</div>
-    <div class="sv-tutor" id="sv-tutor" role="status" aria-live="polite" hidden></div>
-    <noscript><p class="t-nota" style="margin-top:14px">Respuesta: ${'ABCD'[ej.correcta]}) ${esc(ej.opciones[ej.correcta])}. ${sinLetras(ej.regla)}</p></noscript>
   </div>
 </div></section>
 
@@ -250,6 +244,6 @@ ${prod ? `<section class="t-sec oscura sv-final"><div class="marco">
   <div class="botones"><a class="btn plata" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="btn vidrio" href="?regalo=1#comprar">🎁 Regalarlo</a></div>
 </div></section>` : ''}
 <section class="sv-disc"><div class="marco"><p class="t-nota">${esc(v.aviso)}</p></div></section>
-${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><a class="btn tinta chico" href="#comprar">Comprar</a></div>` : ''}`,
+${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="#probar">Probar gratis</a><a class="btn tinta chico" href="#comprar">Comprar</a></div></div>` : ''}`,
   });
 }
