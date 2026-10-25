@@ -1,4 +1,5 @@
 # Vorka México · /agenda/: solicitud de diagnóstico por pasos. Los datos llegan a os.vorka.mx (Prospectos).
+import json
 from partes import *
 
 # Mismos textos que acepta el servidor (vorka-os/src/prospectos.js)
@@ -443,4 +444,9 @@ def pagina_agenda():
   </section>
 </main>
 {pie('empresas')}{JS}'''
-    return cabeza('Agenda tu diagnóstico · Vorka México', 'Solicita una sesión de diagnóstico de 20 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.', '/agenda/', og='cdmx-noche', extra=CSS) + cuerpo + '\n</body>\n</html>\n'
+    ld = {"@context": "https://schema.org", "@type": "Service", "name": "Diagnóstico estratégico sin costo", "serviceType": "Consultoría",
+          "description": "Sesión de diagnóstico de 20 minutos por videollamada con Vorka México: nos cuentas tu reto y te devolvemos una lectura honesta y un plan.",
+          "url": SITIO + "/agenda/", "areaServed": {"@type": "Country", "name": "México"}, "provider": {"@type": "ProfessionalService", "name": "Vorka México", "url": SITIO + "/"},
+          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "MXN"}}
+    CSS_LD = CSS + f'<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>\n'
+    return cabeza('Agenda tu diagnóstico · Vorka México', 'Solicita una sesión de diagnóstico de 20 minutos sin costo con Vorka México. Cuéntanos tu reto y te devolvemos una lectura honesta y un plan.', '/agenda/', og='cdmx-noche', extra=CSS_LD) + cuerpo + '\n</body>\n</html>\n'

@@ -165,6 +165,20 @@ def fotos(args, lideres):
             json.dump(manifest, f, ensure_ascii=False, indent=1, sort_keys=True)
 
 
+CON_FOTO = re.compile(r"  const CON_FOTO = new Set\(.*?\);")
+
+
+def marcar_fotos():
+    """Escribe en la página quién tiene foto, para mostrar iniciales a los demás sin pedir una foto inexistente."""
+    with open(PAGINA, encoding="utf-8") as f:
+        html = f.read()
+    hay = sorted(n[:-5] for n in os.listdir(FOTOS) if n.endswith(".webp")) if os.path.isdir(FOTOS) else []
+    nuevo = CON_FOTO.sub(lambda _: "  const CON_FOTO = new Set(%s);" % json.dumps(hay, ensure_ascii=False), html, count=1)
+    if nuevo != html:
+        with open(PAGINA, "w", encoding="utf-8") as f:
+            f.write(nuevo)
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--datos", help="JSON local con {lideres:[...]} en lugar de la API")
@@ -172,6 +186,7 @@ def main():
     lideres = limpiar(cargar(args))
     reescribir_pagina(lideres)
     fotos(args, lideres)
+    marcar_fotos()
 
 
 if __name__ == "__main__":
