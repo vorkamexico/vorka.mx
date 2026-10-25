@@ -1,7 +1,7 @@
 # Vorka México · páginas del equipo Vorka, hechas por Vorka (en /equipo/<persona>/ o en su dirección corta, p. ej. /ximepastor/).
 # Cada persona es un diccionario con sus textos y fotos (img/equipo/<slug>-<foto>-960|1600.webp).
 # Sin correo ni teléfono a la vista: el contacto es por WhatsApp (botón) y la agenda de os.vorka.mx.
-# La primera es Ximena Pastor (arquitectura): plano de arquitectura con la identidad de Vorka.
+# La primera es Ximena Pastor (arquitectura): foto a pantalla completa, bocetos a mano y color, con la barra y el pie de Vorka.
 # Más adelante /equipo/ reunirá a todo el equipo con las mismas fichas.
 import json
 from partes import *
@@ -58,7 +58,6 @@ XIMENA = {
 }
 
 EQUIPO = [XIMENA]
-EJES = 'ABCDE'
 
 
 def foto(p, k, sizes, carga='lazy', prioridad=False, clase=''):
@@ -69,16 +68,19 @@ def foto(p, k, sizes, carga='lazy', prioridad=False, clase=''):
     return f'<img{f" class={chr(34)}{clase}{chr(34)}" if clase else ""} src="{base}-1600.webp" srcset="{srcset}" sizes="{sizes}" alt="{e(alt)}" loading="{carga}" decoding="async"{extra}>'
 
 
-def cota(texto):
-    """Línea de cota de plano: |—— texto ——|"""
-    return f'<div class="cota" aria-hidden="true"><i></i><span>{e(texto)}</span><i></i></div>'
+# Trazos a mano (bocetos de arquitecta): subrayado, flecha y una casita de línea
+TRAZO = '<svg class="trazo" viewBox="0 0 420 40" preserveAspectRatio="none" aria-hidden="true"><path d="M4 28 C 80 10, 170 34, 250 18 S 380 8, 416 22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg>'
+FLECHITA = '<svg class="flechita" viewBox="0 0 90 60" aria-hidden="true"><path d="M6 52 C 20 20, 50 10, 80 14 M66 4 L82 14 L68 26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+CASITA = '<svg class="casita" viewBox="0 0 160 120" aria-hidden="true"><path d="M10 112 L10 58 L80 12 L150 58 L150 112 Z M56 112 L56 74 L104 74 L104 112 M24 60 L24 104 M136 60 L136 104 M2 112 L158 112" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+COLORES = ['terracota', 'ocre', 'salvia', 'tinta', 'cielo']
 
 
 def pagina_persona(p):
     ruta = p.get('ruta') or f"/equipo/{p['slug']}/"
     agendar = f"{OS}/agendar?m={p['mentor']}"
-    wa_url = f"https://wa.me/{p['whatsapp']}?text=" + quote(f"Hola {p['nombre'].split()[0]}, vi tu página en Vorka México y me gustaría platicar contigo.")
-    titulo = f"{p['nombre']} · {p['disciplina']} | Equipo Vorka"
+    primero = p['nombre'].split()[0]
+    wa_url = f"https://wa.me/{p['whatsapp']}?text=" + quote(f"Hola {primero}, vi tu página en Vorka México y me gustaría platicar contigo.")
+    titulo = f"{p['nombre']} · {p['disciplina']} | Vorka México"
     desc = f"{p['nombre']}, {p['rol']} en Vorka México. {p['disciplina']}: {p['frase']}"
     og = f"{SITIO}/img/equipo/{p['slug']}-retrato-og.jpg"
     ld = {'@context': 'https://schema.org', '@type': 'ProfilePage', 'url': SITIO + ruta, 'mainEntity': {
@@ -88,111 +90,109 @@ def pagina_persona(p):
         'alumniOf': [{'@type': 'CollegeOrUniversity', 'name': 'Tecnológico de Monterrey'}, {'@type': 'EducationalOrganization', 'name': 'CBTIS No. 60'}],
         'award': [f'{n} · {o} ({a})' for n, o, a in p['reconocimientos']],
         'knowsAbout': ['Arquitectura', 'Diseño social', 'Servicio comunitario', 'Coordinación de equipos', 'Gestión de proyectos']}}
-    extra = f'''<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    extra = f'''<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/equipo.css?v={VERSION}">
-<meta property="og:image:alt" content="{e(p['nombre'])}, equipo Vorka">
+<meta property="og:image:alt" content="{e(p['nombre'])}, Vorka México">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 '''
-    hitos = [('2020', 'Técnico en Construcción'), ('2022', 'Caring SMA'), ('2023', 'Arquitectura · Tec'), ('2024', 'Harvard · Aspire'), ('2026', 'Vorka Sparks')]
-    linea = ''.join(f'<li><b class="mono">{a}</b><span>{e(t)}</span></li>' for a, t in hitos)
-
-    def lamina(i, t, d, tono=''):
-        return f'''<article class="lamina{tono}"><header><span class="mono">LÁMINA {i:02d}</span><span class="mono">EJE {EJES[i - 1]}</span></header>
-      <b class="lam-n" aria-hidden="true">{i:02d}</b><h3>{e(t)}</h3><p>{e(d)}</p></article>'''
-
     man_t, man_s, man = p['manifiesto']
     vis_t, vis_s, vis = p['vision']
-    manifiesto = ''.join(lamina(i, t, d) for i, (t, d) in enumerate(man, 1))
-    vision = ''.join(f'<li><span class="mono">{i:02d}</span><div><h3>{e(t)}</h3><p>{e(d)}</p></div></li>' for i, (t, d) in enumerate(vis, 1))
+    tarjetas = ''.join(f'''<article class="tarjeta t-{COLORES[i % 5]}"><span class="t-n">{i + 1:02d}</span><h3>{e(t)}</h3><p>{e(d)}</p></article>''' for i, (t, d) in enumerate(man))
+    vision = ''.join(f'<li><span class="v-n">{i:02d}</span><div><h3>{e(t)}</h3><p>{e(d)}</p></div></li>' for i, (t, d) in enumerate(vis, 1))
 
-    def tramo(org, puesto, fechas, desc, img_k=None):
-        fig = f'<figure class="tr-foto">{foto(p, img_k, "(min-width: 980px) 420px, 100vw")}</figure>' if img_k else ''
-        return f'''<article class="tramo"><div class="tr-txt"><span class="mono">{e(fechas)}</span><h3>{e(puesto)}</h3><b>{e(org)}</b><p>{e(desc)}</p></div>{fig}</article>'''
-    experiencia = ''.join(tramo(*x) for x in p['experiencia'])
-    educacion = ''.join(tramo(*x) for x in p['educacion'])
-    fila = lambda n, o, a: f'<tr><th scope="row">{e(n)}</th><td>{e(o)}</td><td class="mono">{a}</td></tr>'
-    certs = ''.join(fila(*x) for x in p['certificaciones'])
-    recs = ''.join(fila(*x) for x in p['reconocimientos'])
-    habs = ''.join(f'<li><span class="mono">{i:02d}</span>{e(h)}</li>' for i, h in enumerate(p['habilidades'], 1))
-    primero = p['nombre'].split()[0]
+    def hito(anio, puesto, org, fechas, texto, color):
+        return f'''<li class="hito h-{color}"><span class="h-anio">{anio}</span><div><h3>{e(puesto)}</h3><b>{e(org)}</b><small>{e(fechas)}</small><p>{e(texto)}</p></div></li>'''
+    exp, edu = p['experiencia'], p['educacion']
+    hitos = (hito('2026', exp[0][1], exp[0][0], exp[0][2], exp[0][3], 'terracota') + hito('2023', edu[0][1], edu[0][0], edu[0][2], edu[0][3], 'cielo')
+             + hito('2022', exp[1][1], exp[1][0], exp[1][2], exp[1][3], 'salvia') + hito('2020', edu[1][1], edu[1][0], edu[1][2], edu[1][3], 'ocre'))
+    habs = ''.join(f'<li class="chip c-{COLORES[i % 4]}">{e(h)}</li>' for i, h in enumerate(p['habilidades']))
+    premio = lambda n, o, a: f'<li><span class="p-anio">{a}</span><b>{e(n)}</b><small>{e(o)}</small></li>'
+    recs = ''.join(premio(*x) for x in p['reconocimientos'])
+    certs = ''.join(premio(*x) for x in p['certificaciones'])
     ICO_WA = ico('<path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L4 20l1.2-4.4A8.4 8.4 0 1 1 21 11.5Z"/>')
     ICO_IN = ico('<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/>')
     ICO_IG = ico('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/>')
     ICO_CAL = ico('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')
+    menu = [('#manifiesto', 'Manifiesto'), ('#trayectoria', 'Trayectoria'), ('#vision', 'Visión'), ('#reconocimientos', 'Reconocimientos'), ('#contacto', 'Contacto')]
+    apellido = ' '.join(p['nombre'].split()[1:])
 
-    cuerpo = f'''{nav(cta=(agendar, f'Agendar con {primero}'))}
-<main id="contenido" class="eq">
-  <section class="eq-hero plano">
-    <div class="marco eq-hero-g">
-      <div class="eq-hero-t">
-        <nav class="eq-migas mono" aria-label="Ruta"><a href="/">Vorka México</a><span>/</span><span>Equipo Vorka</span></nav>
-        <p class="eq-rotulo mono"><span>PLANO 01</span><span>{e(p['disciplina'].upper())}</span></p>
-        <h1 class="eq-nombre">{e(p['nombre'].split()[0])}<br><span>{e(" ".join(p['nombre'].split()[1:]))}</span></h1>
-        <p class="eq-frase">{e(p['frase'])}</p>
-        <p class="eq-rol"><span class="eq-sello">{LOGO}</span><span><b>{e(p['rol'])}</b><small>Equipo Vorka México</small></span></p>
-        <div class="botones"><a class="btn tinta" href="{agendar}" rel="noopener">{ICO_CAL} Agendar una sesión</a><a class="btn blanco" href="#contacto">Contacto</a></div>
-      </div>
-      <figure class="eq-retrato">
-        <div class="eq-marco">{foto(p, 'retrato', '(min-width: 980px) 460px, 90vw', carga='eager', prioridad=True)}</div>
-        {cota(p['lugar'])}
-        <figcaption class="mono">FIG. 01 — {e(p['nombre'].upper())}</figcaption>
-      </figure>
-    </div>
-    <div class="marco"><ol class="eq-linea" aria-label="Trayectoria en el tiempo">{linea}</ol></div>
-  </section>
-
-  <section class="sec" id="manifiesto">
-    <div class="marco">
-      <div class="eq-cab"><span class="mono eq-etq">MANIFIESTO</span><h2 class="eq-h2">{e(man_t)}</h2><p class="lead">{e(man_s)}</p></div>
-      <div class="laminas">{manifiesto}</div>
-    </div>
-  </section>
-
-  <section class="sec suave" id="trayectoria">
-    <div class="marco">
-      <div class="eq-cab"><span class="mono eq-etq">TRAYECTORIA · CORTE A–A′</span><h2 class="eq-h2">Experiencia</h2></div>
-      <div class="tramos">{experiencia}</div>
-      <div class="eq-cab" style="margin-top:clamp(64px,8vw,110px)"><span class="mono eq-etq">TRAYECTORIA · CORTE B–B′</span><h2 class="eq-h2">Educación</h2></div>
-      <div class="tramos con-foto">{educacion}<figure class="tr-foto alta">{foto(p, 'biblioteca', '(min-width: 980px) 420px, 100vw')}</figure></div>
-    </div>
-  </section>
-
-  <section class="sec oscura plano-osc" id="vision">
-    <div class="marco eq-vision">
-      <div class="eq-cab"><span class="mono eq-etq">MI VISIÓN</span><h2 class="eq-h2">{e(vis_t)}</h2><p class="lead">{e(vis_s)}</p>
-        <figure class="vis-foto">{foto(p, 'prepatec', '(min-width: 980px) 480px, 100vw')}<figcaption class="mono">FIG. 02 — CONSTRUIR EN COMUNIDAD</figcaption></figure></div>
-      <ol class="vis-lista">{vision}</ol>
-    </div>
-  </section>
-
-  <section class="sec" id="especificaciones">
-    <div class="marco">
-      <div class="eq-cab"><span class="mono eq-etq">ESPECIFICACIONES</span><h2 class="eq-h2">Habilidades, certificaciones y reconocimientos</h2></div>
-      <div class="specs">
-        <div class="spec"><h3 class="mono">HABILIDADES</h3><ul class="habs">{habs}</ul></div>
-        <div class="spec"><h3 class="mono">CERTIFICACIONES</h3><table class="tabla-spec"><tbody>{certs}</tbody></table>
-          <h3 class="mono" style="margin-top:34px">RECONOCIMIENTOS</h3><table class="tabla-spec"><tbody>{recs}</tbody></table></div>
-        <figure class="spec-foto">{foto(p, 'reconocimiento', '(min-width: 980px) 340px, 80vw')}<figcaption class="mono">FIG. 03 — RECONOCIMIENTO</figcaption></figure>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec suave plano" id="contacto">
-    <div class="marco eq-contacto">
+    cuerpo = f'''{nav(oscuro=True, cta=(agendar, f'Agendar con {primero}'), menu=menu)}
+<main id="contenido" class="xp">
+  <section class="xp-hero">
+    <div class="xp-hero-foto">{foto(p, 'biblioteca', '100vw', carga='eager', prioridad=True)}</div>
+    <div class="marco xp-hero-in">
       <div>
-        <span class="mono eq-etq">AGENDA</span>
-        <h2 class="eq-h2">Platiquemos sobre tu proyecto o tu comunidad.</h2>
-        <p class="lead">Agenda una sesión 1:1 o una mentoría con {e(primero)}: eliges el tipo de sesión, el día y la hora, y te llega la confirmación a tu correo.</p>
-        <div class="botones"><a class="btn tinta" href="{agendar}" rel="noopener">{ICO_CAL} Agendar una sesión {FLECHA}</a><a class="btn blanco" href="{wa_url}" target="_blank" rel="noopener">WhatsApp</a></div>
+        <p class="xp-kicker"><span class="mano">hola, soy</span></p>
+        <h1 class="xp-nombre">{e(primero)}<br><span class="subr">{e(apellido)}{TRAZO}</span></h1>
+        <p class="xp-disc"><i></i>{e(p['disciplina'])}</p>
       </div>
-      <ul class="eq-medios">
-        <li><a href="{wa_url}" target="_blank" rel="noopener">{ICO_WA}<span><small class="mono">WHATSAPP</small>Escríbele a {e(primero)}</span></a></li>
-        <li><a href="{p['linkedin']}" target="_blank" rel="noopener">{ICO_IN}<span><small class="mono">LINKEDIN</small>in/ximena-pastor</span></a></li>
-        <li><a href="{p['instagram']}" target="_blank" rel="noopener">{ICO_IG}<span><small class="mono">INSTAGRAM</small>@ximenaaguilar1</span></a></li>
+      <div class="xp-hero-lado">
+        <p>{e(p['rol'])} en Vorka México. Estudio Arquitectura en el Tecnológico de Monterrey y diseño desde las personas, las ideas y la comunidad.</p>
+        <div class="botones"><a class="btn blanco" href="{agendar}" rel="noopener">{ICO_CAL} Agendar una sesión</a><a class="btn vidrio" href="{wa_url}" target="_blank" rel="noopener">{ICO_WA} WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="xp-intro">
+    <div class="marco xp-intro-g">
+      <div class="xp-intro-l"><span class="xp-etq">Mi enfoque</span>{CASITA}<span class="mano nota">espacios para convivir</span></div>
+      <p class="xp-grande">Creo que <mark class="m-ocre">los espacios también construyen comunidad</mark> y que las mejores soluciones nacen cuando <mark class="m-salvia">las personas se vuelven parte</mark> de su construcción. Mi forma de crear es <mark class="m-terracota">mirar distinto</mark>.</p>
+    </div>
+  </section>
+
+  <section class="xp-sec" id="manifiesto">
+    <div class="marco">
+      <div class="xp-cab"><span class="xp-etq">Manifiesto</span><h2>{e(man_t)}</h2><p>{e(man_s)}</p>{FLECHITA}</div>
+      <div class="tablero">{tarjetas}</div>
+    </div>
+  </section>
+
+  <section class="xp-collage" aria-label="Fotos">
+    <div class="marco collage">
+      <figure class="cl-a">{foto(p, 'charla', '(min-width: 980px) 640px, 100vw')}<figcaption class="mano">compartiendo ideas · Vorka Sparks</figcaption></figure>
+      <figure class="cl-b polaroid">{foto(p, 'retrato', '(min-width: 980px) 340px, 70vw')}<figcaption class="mano">yo, {e(primero)} ✦</figcaption></figure>
+      <figure class="cl-c">{foto(p, 'prepatec', '(min-width: 980px) 460px, 100vw')}<figcaption class="mano">construir en comunidad</figcaption></figure>
+      <figure class="cl-d polaroid">{foto(p, 'comunidad', '(min-width: 980px) 260px, 60vw')}<figcaption class="mano">Caring SMA</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="xp-sec" id="trayectoria">
+    <div class="marco xp-tray">
+      <div class="xp-cab"><span class="xp-etq">Trayectoria</span><h2>Lo que he construido hasta hoy.</h2><p>Experiencia y formación, de la obra al aula y a la comunidad.</p></div>
+      <ol class="hitos">{hitos}</ol>
+    </div>
+  </section>
+
+  <section class="xp-sec xp-vision" id="vision">
+    <div class="marco xp-vision-g">
+      <div class="xp-cab"><span class="xp-etq">Mi visión</span><h2>{e(vis_t)}</h2><p>{e(vis_s)}</p></div>
+      <ol class="vision">{vision}</ol>
+    </div>
+  </section>
+
+  <section class="xp-sec" id="reconocimientos">
+    <div class="marco xp-reco">
+      <div><span class="xp-etq">Reconocimientos</span><ul class="premios">{recs}</ul></div>
+      <div><span class="xp-etq">Certificaciones</span><ul class="premios">{certs}</ul>
+        <span class="xp-etq" style="margin-top:44px">Habilidades</span><ul class="chips">{habs}</ul></div>
+      <figure class="polaroid reco-foto">{foto(p, 'reconocimiento', '(min-width: 980px) 300px, 70vw')}<figcaption class="mano">¡un logro más!</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="xp-contacto" id="contacto">
+    <div class="marco xp-contacto-g">
+      <div>
+        <span class="mano xp-mano-claro">¿platicamos?</span>
+        <h2>Construyamos algo que <span class="subr">trascienda{TRAZO}</span></h2>
+        <p>Agenda una sesión 1:1 o una mentoría: eliges el tipo de sesión, el día y la hora, y te llega la confirmación a tu correo.</p>
+        <div class="botones"><a class="btn blanco" href="{agendar}" rel="noopener">{ICO_CAL} Agendar una sesión {FLECHA}</a><a class="btn vidrio" href="{wa_url}" target="_blank" rel="noopener">{ICO_WA} WhatsApp</a></div>
+      </div>
+      <ul class="xp-redes">
+        <li><a href="{p['linkedin']}" target="_blank" rel="noopener">{ICO_IN}<span>LinkedIn</span></a></li>
+        <li><a href="{p['instagram']}" target="_blank" rel="noopener">{ICO_IG}<span>Instagram</span></a></li>
       </ul>
     </div>
   </section>
-
 </main>
 {pie()}'''
     return (cabeza(titulo, desc, ruta, extra=extra).replace(f'{SITIO}/img/ciudades/cdmx-reforma-1600.webp', og) + cuerpo + '\n</body>\n</html>\n')
