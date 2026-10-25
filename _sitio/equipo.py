@@ -3,8 +3,14 @@
 # Sin correo ni teléfono a la vista: el contacto es por WhatsApp (botón) y la agenda de os.vorka.mx.
 # La primera es Ximena Pastor (arquitectura): foto a pantalla completa, bocetos a mano y color, con la barra y el pie de Vorka.
 # Más adelante /equipo/ reunirá a todo el equipo con las mismas fichas.
+import hashlib
 import json
+import os
 from partes import *
+
+# La hoja de estilos se pide con una huella de su contenido: si cambia, los navegadores la bajan de nuevo
+# (con un número fijo seguían usando la anterior hasta 4 horas)
+CSS_VER = hashlib.md5(open(os.path.join(os.path.dirname(__file__), '..', 'assets', 'v3', 'equipo.css'), 'rb').read()).hexdigest()[:8]
 
 OS = 'https://os.vorka.mx'
 
@@ -91,7 +97,7 @@ def pagina_persona(p):
         'award': [f'{n} · {o} ({a})' for n, o, a in p['reconocimientos']],
         'knowsAbout': ['Arquitectura', 'Diseño social', 'Servicio comunitario', 'Coordinación de equipos', 'Gestión de proyectos']}}
     extra = f'''<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/v3/equipo.css?v={VERSION}">
+<link rel="stylesheet" href="/assets/v3/equipo.css?v={CSS_VER}">
 <meta property="og:image:alt" content="{e(p['nombre'])}, Vorka México">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 '''
