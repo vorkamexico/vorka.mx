@@ -81,6 +81,11 @@ CASITA = '<svg class="casita" viewBox="0 0 160 120" aria-hidden="true"><path d="
 COLORES = ['terracota', 'ocre', 'salvia', 'tinta', 'cielo']
 
 
+def con_sparks(t):
+    """Texto escapado con 'Vorka Sparks' enlazado a la revista."""
+    return e(t).replace('Vorka Sparks', '<a class="xp-link" href="/sparks/">Vorka Sparks</a>')
+
+
 def pagina_persona(p):
     ruta = p.get('ruta') or f"/equipo/{p['slug']}/"
     agendar = f"{OS}/agendar?m={p['mentor']}"
@@ -107,7 +112,7 @@ def pagina_persona(p):
     vision = ''.join(f'<li><span class="v-n">{i:02d}</span><div><h3>{e(t)}</h3><p>{e(d)}</p></div></li>' for i, (t, d) in enumerate(vis, 1))
 
     def hito(anio, puesto, org, fechas, texto, color):
-        return f'''<li class="hito h-{color}"><span class="h-anio">{anio}</span><div><h3>{e(puesto)}</h3><b>{e(org)}</b><small>{e(fechas)}</small><p>{e(texto)}</p></div></li>'''
+        return f'''<li class="hito h-{color}"><span class="h-anio">{anio}</span><div><h3>{con_sparks(puesto)}</h3><b>{e(org)}</b><small>{e(fechas)}</small><p>{con_sparks(texto)}</p></div></li>'''
     exp, edu = p['experiencia'], p['educacion']
     hitos = (hito('2026', exp[0][1], exp[0][0], exp[0][2], exp[0][3], 'terracota') + hito('2023', edu[0][1], edu[0][0], edu[0][2], edu[0][3], 'cielo')
              + hito('2022', exp[1][1], exp[1][0], exp[1][2], exp[1][3], 'salvia') + hito('2020', edu[1][1], edu[1][0], edu[1][2], edu[1][3], 'ocre'))
@@ -133,7 +138,7 @@ def pagina_persona(p):
         <p class="xp-disc"><i></i>{e(p['disciplina'])}</p>
       </div>
       <div class="xp-hero-lado">
-        <p>{e(p['rol'])} en Vorka México. Estudio Arquitectura en el Tecnológico de Monterrey y diseño desde las personas, las ideas y la comunidad.</p>
+        <p>{con_sparks(p['rol'])} en Vorka México. Estudio Arquitectura en el Tecnológico de Monterrey y diseño desde las personas, las ideas y la comunidad.</p>
         <div class="botones"><a class="btn blanco" href="{agendar}" rel="noopener">{ICO_CAL} Agendar una sesión</a><a class="btn vidrio" href="{wa_url}" target="_blank" rel="noopener">{ICO_WA} WhatsApp</a></div>
       </div>
     </div>
@@ -155,7 +160,7 @@ def pagina_persona(p):
 
   <section class="xp-collage" aria-label="Fotos">
     <div class="marco collage">
-      <figure class="cl-a">{foto(p, 'charla', '(min-width: 980px) 640px, 100vw')}<figcaption class="mano">compartiendo ideas · Vorka Sparks</figcaption></figure>
+      <figure class="cl-a">{foto(p, 'charla', '(min-width: 980px) 640px, 100vw')}<figcaption class="mano">compartiendo ideas · <a class="xp-link" href="/sparks/">Vorka Sparks</a></figcaption></figure>
       <figure class="cl-b polaroid">{foto(p, 'retrato', '(min-width: 980px) 340px, 70vw')}<figcaption class="mano">yo, {e(primero)} ✦</figcaption></figure>
       <figure class="cl-c">{foto(p, 'prepatec', '(min-width: 980px) 460px, 100vw')}<figcaption class="mano">construir en comunidad</figcaption></figure>
       <figure class="cl-d polaroid">{foto(p, 'comunidad', '(min-width: 980px) 260px, 60vw')}<figcaption class="mano">Caring SMA</figcaption></figure>
@@ -200,8 +205,16 @@ def pagina_persona(p):
     </div>
   </section>
 </main>
-{pie()}'''
-    return (cabeza(titulo, desc, ruta, extra=extra).replace(f'{SITIO}/img/ciudades/cdmx-reforma-1600.webp', og) + cuerpo + '\n</body>\n</html>\n')
+{pie()}
+<script>
+(function () {{
+  var nav = document.querySelector('.nav'), hero = document.querySelector('.xp-hero');
+  if (!nav || !hero) return;
+  function tono() {{ nav.classList.toggle('oscuro', window.scrollY < hero.offsetHeight - 80); }}
+  tono(); window.addEventListener('scroll', tono, {{ passive: true }}); window.addEventListener('resize', tono);
+}})();
+</script>'''
+    return (cabeza(titulo, desc, ruta, extra=extra).replace(f'{SITIO}/img/ciudades/cdmx-reforma-1600.webp', og).replace('<meta name="theme-color" content="#FBFAF8">', '<meta name="theme-color" content="#1B1916">') + cuerpo + '\n</body>\n</html>\n')
 
 
 def paginas_equipo():
