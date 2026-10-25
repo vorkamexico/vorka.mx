@@ -139,6 +139,8 @@ const VISIBLES_FAQ = 8;
 
 // Páginas por tipo de evento (SEO y anuncios): misma ficha, con su título, su demostración y su mensaje de WhatsApp.
 // La principal es '' (/tienda/brindi/); las demás viven en /tienda/brindi/<clave>/ y entran en el sitemap.
+import { GUIAS } from './brindi-guias.js';
+
 export const VARIANTES = {
   '': { titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi',
     descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $299 MXN.',
@@ -202,7 +204,7 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const ld = [{ '@context': 'https://schema.org', '@type': aLaVenta ? 'Product' : 'Service', name: 'Brindi · Invitaciones digitales', ...(aLaVenta ? {} : { serviceType: 'Invitaciones digitales', areaServed: 'MX', provider: { '@type': 'Organization', name: 'Vorka México', url: 'https://vorka.mx/' } }), description: 'Invitaciones digitales con QR para bodas, XV años, cumpleaños y toda celebración: confirmaciones, control de acompañantes y acceso con QR.',
     ...(aLaVenta ? { brand: { '@type': 'Brand', name: 'Brindi' } } : {}), image: [`${OS}/brindi/og/aurora.png`],
     ...(aLaVenta ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: (desde / 100).toFixed(2), highPrice: (Math.max(...planes.filter(p => p.prod).map(p => p.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.filter(p => p.prod).length } } : {}) },
-  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [...(GUIAS[clave]?.preguntas || []), ...FAQ].map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   { '@context': 'https://schema.org', '@type': 'HowTo', name: 'Cómo hacer tu invitación digital con Brindi', step: TUTORIAL.map(([n, t], i) => ({ '@type': 'HowToStep', position: i + 1, name: n, text: t.replace(/<[^>]+>/g, '') })) }];
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
   const faq = ([q, a]) => `<details><summary>${esc(q)}</summary><div>${a.replaceAll(`${OS}/brindi/"`, `${APP}"`)}</div></details>`;
@@ -232,11 +234,20 @@ export async function paginaBrindi(env, req, url, clave = '') {
 <section class="t-sec" id="como-funciona"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Cuatro pasos y listo</h2></div>
   <ol class="br-pasos">${PASOS.map(([t, d], i) => `<li class="rv" style="--d:${i * .05}s"><span class="br-num" aria-hidden="true">${i + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
-  <details class="br-tuto" id="tutorial"><summary><span>Ver el tutorial paso a paso</span><small>${TUTORIAL.length} pasos · 3 minutos de lectura</small></summary>
+  ${clave ? `<p class="br-tuto-fin"><a href="/tienda/brindi/#tutorial">Ver el tutorial paso a paso</a></p>` : `  <details class="br-tuto" id="tutorial"><summary><span>Ver el tutorial paso a paso</span><small>${TUTORIAL.length} pasos · 3 minutos de lectura</small></summary>
     <ol>${TUTORIAL.map(([t, d]) => `<li><b>${t}</b><p>${d.replaceAll(`${OS}/brindi/"`, `${APP}"`)}</p></li>`).join('')}</ol>
     <p class="br-tuto-fin"><a class="btn tinta" href="${APP}" rel="noopener">Empezar mi invitación gratis ${FLECHA}</a></p>
-  </details>
+  </details>`}
 </div></section>
+${GUIAS[clave] ? `
+<section class="t-sec" id="guia"><div class="marco">
+  <div class="cab rv"><span class="etiqueta">${esc(V.corta)}</span><h2 class="h2">${esc(GUIAS[clave].titulo)}</h2><p class="lead">${esc(GUIAS[clave].intro)}</p></div>
+  <div class="br-guia-g">
+    <div><h3 class="h3">Qué poner</h3><ul class="br-incluir">${GUIAS[clave].incluir.map(([t, d]) => `<li class="rv"><b>${esc(t)}</b><p>${esc(d)}</p></li>`).join('')}</ul></div>
+    <div><h3 class="h3">Cuándo mandarla</h3><ol class="br-tiempos">${GUIAS[clave].tiempos.map(([t, d]) => `<li class="rv"><b>${esc(t)}</b><p>${esc(d)}</p></li>`).join('')}</ol><p class="t-nota">Son sugerencias: ajústalas a tu evento.</p>
+      <h3 class="h3">Dudas de ${esc(V.corta.toLowerCase())}</h3><div class="t-faq">${GUIAS[clave].preguntas.map(faq).join('')}</div></div>
+  </div>
+</div></section>` : ''}
 ${clave === 'organizadores' ? `
 <section class="t-sec suave" id="organizadores"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Para organizadores</span><h2 class="h2">Un servicio más para tus clientes, sin trabajo extra</h2><p class="lead"><a class="btn tinta" href="${OS}/brindi/#/organizador" rel="noopener">Entrar a mi portal de organizador ${FLECHA}</a></p></div>
@@ -304,7 +315,7 @@ ${aLaVenta ? seccionCompra({ titulo: clave === 'organizadores' ? 'Compra tu paqu
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta u OXXO con Stripe</span></p>
   </form>` }) : ''}
 
-${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items: FAQ.slice(0, VISIBLES_FAQ).map(faq).join(''), pie: `<details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>` })}
+${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items: FAQ.slice(0, clave ? 4 : VISIBLES_FAQ).map(faq).join(''), pie: clave ? `<p class="br-tuto-fin"><a href="/tienda/brindi/#ayuda">Ver todas las preguntas sobre Brindi</a></p>` : `<details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>` })}
 
 <section class="t-sec"><div class="marco">
   <p class="br-cupo">¿Es algo rápido o informal, como una fiesta o un taller? <a href="/tienda/cupo/">Cupo</a> es gratis hasta 30 personas.</p>
@@ -319,6 +330,10 @@ ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items:
 }
 
 const CSS = `
+.br-guia-g{display:grid;gap:28px}@media(min-width:900px){.br-guia-g{grid-template-columns:1fr 1fr;gap:48px}}
+.br-incluir,.br-tiempos{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:14px}
+.br-incluir li,.br-tiempos li{border-left:3px solid var(--br-oro);padding:2px 0 2px 14px}.br-incluir p,.br-tiempos p{margin:4px 0 0;color:var(--fg-2)}
+.br-guia-g .h3{margin:0}.br-guia-g .t-faq{margin-top:12px}.br-guia-g .t-nota{margin:10px 0 24px}
 .br{--br-vino:#6e1f3a;--br-vino-t:#6e1f3a;--br-champan:#f7efe3;--br-oro:#b98a2e}
 .br-hero{background:var(--br-champan);padding:clamp(28px,6vw,72px) 0;overflow:hidden}
 .br-hero-g{display:grid;gap:36px;align-items:center}
