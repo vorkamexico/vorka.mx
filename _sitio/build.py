@@ -7,6 +7,7 @@ from partes import *
 from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS
 from agenda import pagina_agenda
 from fc import actualizar_fc
+from equipo import paginas_equipo
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
@@ -415,4 +416,6 @@ if __name__ == '__main__':
     escribir('agenda/index.html', pagina_agenda())
     with open(os.path.join(RAIZ, 'fc/index.html'), encoding='utf-8') as f:
         escribir('fc/index.html', actualizar_fc(f.read()))
+    for ruta, html in paginas_equipo().items():
+        escribir(ruta, html)
     escribir('404.html', no_encontrada())
