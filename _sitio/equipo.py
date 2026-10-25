@@ -23,7 +23,7 @@ XIMENA = {
     'disciplina': 'Arquitectura y compromiso social',
     'frase': 'Enfoque hacia las personas, las ideas y las posibilidades de transformar nuestro entorno.',
     'lugar': 'San Miguel de Allende, Gto. · Querétaro, Qro.',
-    'mentor': 'ximepastor',   # agenda pública en os.vorka.mx/agendar?m=ximepastor
+    'mentor': 'ximepastor',   # agenda pública en os.vorka.mx/agendar/ximepastor
     'whatsapp': '524151887476',
     'linkedin': 'https://www.linkedin.com/in/ximena-pastor',
     'instagram': 'https://www.instagram.com/ximenaaguilar1/',
@@ -88,7 +88,7 @@ def con_sparks(t):
 
 def pagina_persona(p):
     ruta = p.get('ruta') or f"/equipo/{p['slug']}/"
-    agendar = f"{OS}/agendar?m={p['mentor']}"
+    agendar = f"{OS}/agendar/{p['mentor']}"
     primero = p['nombre'].split()[0]
     wa_url = f"https://wa.me/{p['whatsapp']}?text=" + quote(f"Hola {primero}, vi tu página en Vorka México y me gustaría platicar contigo.")
     titulo = f"{p['nombre']} · {p['disciplina']} | Vorka México"
