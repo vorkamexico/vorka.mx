@@ -476,6 +476,13 @@
 .t-filtros a:hover { color: var(--fg); border-color: var(--line-2); }
 .t-filtros a[aria-current] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
 .t-cards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); }
+/* "Todo" separado por línea: cada grupo con su título y su descripción */
+.t-grupo { scroll-margin-top: 110px; }
+.t-grupo + .t-grupo { margin-top: clamp(40px, 6vw, 64px); }
+.t-grupo[hidden] { display: none; }
+.t-grupo-cab { padding-bottom: 14px; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
+.t-grupo-h { font-size: clamp(22px, 2.6vw, 30px); font-weight: 750; letter-spacing: -.03em; line-height: 1.15; margin-top: 4px; }
+.t-grupo-cab p { color: var(--fg-2); font-size: 15.5px; max-width: 680px; margin-top: 6px; }
 .t-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s; scroll-margin-top: 110px; }
 .t-card:hover { transform: translateY(-4px); box-shadow: var(--sombra-2); border-color: var(--line-2); }
 .t-card[hidden] { display: none; }

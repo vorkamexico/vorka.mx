@@ -53,8 +53,8 @@ export const PAA = crearSimulador({
 const VENTA = {
   slugLegado: APP, sku: 'prod_simulador_paa', nombreProducto: 'Simulador PAA en línea', descripcion: DESCRIPCION,
   tituloSEO: 'Simulador PAA 2026 en línea: examen de práctica | Vorka México',
-  og: `${IMG}/simulador-paa-og.png`, imagenesLD: [`${IMG}/simulador-paa-v2.png`, `${IMG}/simulador-paa-og.png`, `${IMG}/simulador-paa-reporte.png`],
-  imagenes: { portada: '/tienda/img/portadas/simulador-paa-v2.png', og: '/tienda/img/portadas/simulador-paa-og.png', reporte: '/tienda/img/portadas/simulador-paa-reporte.png', regalo: '/tienda/img/portadas/simulador-paa-regalo.png' },
+  og: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`, imagenesLD: [`${SITIO}/assets/tienda/v3/simulador-paa-portada.webp`, `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`, `${IMG}/simulador-paa-reporte.png`],
+  imagenes: { portada: '/assets/tienda/v3/simulador-paa-portada.webp', og: '/assets/tienda/v3/simulador-paa-og.jpg', paso1: '/assets/tienda/v3/simulador-paa-paso-reloj.webp', paso2: '/assets/tienda/v3/simulador-paa-paso-tutor.webp', reporte: '/tienda/img/portadas/simulador-paa-reporte.png', regalo: '/tienda/img/portadas/simulador-paa-regalo.png' },
   banco: REACTIVOS.length,
   chip: `Nuevo · ${REACTIVOS.length} reactivos originales`,
   hero: {
