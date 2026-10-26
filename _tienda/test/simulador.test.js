@@ -254,7 +254,9 @@ describe('tienda por secciones y SEO', () => {
   it('el catálogo agrupa por secciones y no lista el simulacro adicional', async () => {
     const html = await (await pedir('/tienda/')).text();
     expect(html).toMatch(/data-linea="examenes"[^>]*><i aria-hidden="true"><\/i>Educación<\/a>/);
-    expect(html).toMatch(/data-linea="emprender"[^>]*><i aria-hidden="true"><\/i>Emprendimiento<\/a>/);
+    // Cuatro secciones: Educación, Negocios (Agenda, Vuelve, Vende y kits), Eventos (Brindi y Cupo) y Finanzas personales
+    expect(html).toMatch(/data-linea="negocios"[^>]*><i aria-hidden="true"><\/i>Negocios<\/a>/);
+    expect(html).not.toMatch(/data-linea="(emprender|invitaciones|lealtad|citas|vende)"/);
     expect(html).toContain('href="#examenes"');
     expect(html).not.toContain('simulador-paa-intento');
   });

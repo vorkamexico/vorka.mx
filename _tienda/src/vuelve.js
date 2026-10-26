@@ -216,7 +216,7 @@ ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún
   </form><script type="application/json" id="vu-precios">${JSON.stringify(datos).replace(/</g, '\\u003c')}</script>` }) : ''}
 
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vuelve/">Condiciones de Vuelve</a> · <a href="/legal/vuelve/privacidad/">Aviso de privacidad</a> · <a href="/legal/vuelve/privacidad-clientes/">Privacidad para clientes de cada negocio</a> · Vuelve · Powered by vorka.mx</p>' })}
-${await masTienda(env, 'lealtad')}
+${await masTienda(env, 'negocios')}
 </div>`,
   });
   if (fuente.cookie) res.headers.append('set-cookie', fuente.cookie);

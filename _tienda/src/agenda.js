@@ -231,7 +231,7 @@ ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Agenda', intro: `¿Aún
   </form><script type="application/json" id="ag-precios">${JSON.stringify(datos).replace(/</g, '\\u003c')}</script>` }) : ''}
 
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/agenda/">Condiciones de Agenda</a> · <a href="/legal/agenda/privacidad/">Aviso de privacidad</a> · <a href="https://agenda.vorka.mx/citas/privacidad-clientes">Privacidad para clientes de cada negocio</a> · Agenda · Powered by vorka.mx</p>' })}
-${await masTienda(env, 'citas')}
+${await masTienda(env, 'negocios')}
 </div>`,
   });
   return res;
