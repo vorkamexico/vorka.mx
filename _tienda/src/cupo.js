@@ -23,16 +23,25 @@ const PAQUETES = [
   { slug: 'cupo-paquete-5', nombre: '5 eventos de hasta 300', texto: 'Para organizadores que hacen un evento al mes.' },
   { slug: 'cupo-paquete-5-1000', nombre: '5 eventos de hasta 1,000', texto: 'Para antros, bares y fiestas de temporada.' },
 ];
-const PRO = ['Entrada por correo y recordatorios un día y dos horas antes', '10 avisos por correo a tus asistentes', 'Cobro de cover sin comisión (transferencia, liga o en la puerta)',
+const PRO = ['Entrada por correo y recordatorios un día y dos horas antes', '10 avisos por correo a tus asistentes', 'Cobro de cover sin comisión por transferencia o con tu liga de pago, y confirmas cada pago con un toque',
   'Ligas para tus RPs con ranking y panel', 'Aprobar registros y hasta 6 preguntas propias (matrícula, grupo, empresa…)', 'Check-in con tu equipo y lista en Excel'];
-const GRATIS = ['Hasta 30 personas', 'Página del evento con tu foto o tema', 'Registro sin cuentas y entrada con QR', 'Check-in desde tu celular y lista de espera', 'Sin correos, cover ni RPs'];
-const DEMOS = [['demo-halloween', 'halloween', 'Noche de Brujas', 'Fiesta con cover · transferencia o en la puerta'], ['demo-networking', 'networking', 'Café & Networking', 'Evento de negocio · con aprobación'], ['demo-fiesta', 'fiesta', 'Cumple de Vale', 'Fiesta gratis · 30 lugares']];
+const GRATIS = ['Hasta 30 personas', 'Página del evento con tu foto o tema', 'Registro sin cuentas y entrada con QR, también para sus acompañantes', 'Cada quien se manda su entrada por WhatsApp', 'Cover en la puerta, si quieres cobrarlo', 'Check-in desde tu celular (también sin señal) y lista de espera', 'Sin correos ni RPs'];
+// Demos: la de temporada va primero y en grande (Halloween en octubre, Día de Muertos el 1 y 2 de noviembre, Posada en diciembre)
+const DEMOS = { halloween: ['demo-halloween', 'halloween', 'Noche de Brujas', 'Fiesta con cover · con acompañantes'], muertos: ['demo-muertos', 'muertos', 'Noche de Ofrendas', 'Día de Muertos · gratis, con acompañantes'],
+  posada: ['demo-posada', 'posada', 'Posada de la oficina', 'Posada · cada quien con su acompañante'], networking: ['demo-networking', 'networking', 'Café & Networking', 'Evento de negocio · con aprobación'], fiesta: ['demo-fiesta', 'fiesta', 'Cumple de Vale', 'Fiesta gratis · 30 lugares'] };
+function temporada(d = new Date(Date.now() - 6 * 3600e3)) {
+  const m = d.getUTCMonth(), dia = d.getUTCDate();
+  return m === 9 ? 'halloween' : m === 10 && dia <= 2 ? 'muertos' : m === 11 ? 'posada' : null;
+}
+const demosDe = t => [t || 'fiesta', ...['networking', 'fiesta', 'halloween'].filter(k => k !== (t || 'fiesta'))].slice(0, 3).map(k => DEMOS[k]);
 const FAQ = [
-  ['¿Puedo usar Cupo gratis?', `Sí. Los eventos de hasta 30 personas son gratis: página, registro, entrada con QR y check-in. Entra a <a href="${OS}/cupo/">os.vorka.mx/cupo</a>, arma tu evento sin cuenta y publícalo. Pro lo activas solo si necesitas más lugares, correos, cover o RPs.`],
+  ['¿Puedo usar Cupo gratis?', `Sí. Los eventos de hasta 30 personas son gratis: página, registro con acompañantes, entrada con QR, check-in y hasta cover cobrado en la puerta. Entra a <a href="${OS}/cupo/">os.vorka.mx/cupo</a>, arma tu evento sin cuenta y publícalo. Pro lo activas solo si necesitas más lugares, correos, cobro por transferencia o RPs.`],
   ['¿Puedo armar mi evento antes de pagar?', `Sí. Arma todo (portada, cover, preguntas, tu liga) y ve cómo queda. Al publicar eliges: gratis, o Pro según tu aforo.`],
   ['¿Cuánto cuesta si van más personas?', 'Cupo Pro se paga una vez por evento según tu aforo: hasta 100 personas $99, hasta 300 $149, hasta 1,000 $299 y hasta 3,000 $599. Si se te llena, subes de nivel desde tu evento.'],
-  ['¿Los correos son gratis?', 'No: la entrada por correo, los recordatorios y los avisos vienen con Pro. En el plan gratis cada persona ve su entrada al registrarse y la recupera en la página del evento con su correo y un NIP.'],
-  ['¿Cupo cobra comisión por mi cover?', 'No. Las personas te pagan directo a ti (transferencia, tu liga de pago o en la puerta) y tú confirmas cada pago con un toque. Cupo solo cobra el plan Pro.'],
+  ['¿Los correos son gratis?', 'No: la entrada por correo, los recordatorios y los avisos vienen con Pro. En el plan gratis cada persona ve su entrada al registrarse, se la manda por WhatsApp con un botón y, si la pierde, la recupera en la página del evento con su correo y un NIP.'],
+  ['¿Cupo cobra comisión por mi cover?', 'No. Las personas te pagan directo a ti. Si solo cobras en la puerta, es gratis hasta 30 personas: al escanear su QR te avisa a quién le falta pagar. Para que te paguen antes por transferencia o con tu liga de pago (y confirmar cada pago con un toque) necesitas Pro. Cupo solo cobra el plan Pro.'],
+  ['¿Mis invitados pueden llevar a alguien?', 'Sí, si lo activas en tu evento (hasta 5 acompañantes por registro). Quien se registra escribe sus nombres y cada quien recibe su propio QR, que se manda por WhatsApp. Todos cuentan en tu cupo y en la puerta sabes quién llegó.'],
+  ['¿Y si no hay señal en la puerta?', 'El check-in guarda la lista en tu celular al abrirlo. Si se cae la señal sigue validando entradas, sin dejar pasar dos veces el mismo QR, y sincroniza solo cuando vuelve.'],
   ['¿Sirve para escuelas o empresas?', 'Sí. Con Pro agregas hasta 6 preguntas al registro (texto, opciones, número o sí/no), como matrícula, grupo o grado en una escuela, o empresa y puesto en un evento de negocios, y las descargas en tu lista de Excel. Esos datos los decide y es responsable de ellos el organizador; Vorka México solo los guarda por su cuenta y los borra junto con el evento. No se permite pedir datos de salud, religión, bancarios, contraseñas ni identificaciones oficiales.'],
   ['¿Cómo funciona para quien asiste y para quien organiza?', 'Tenemos un tutorial paso a paso para cada uno en <a href="https://os.vorka.mx/cupo/#/como-funciona/organizador">os.vorka.mx/cupo/#/como-funciona</a>. Quien asiste no descarga nada ni crea cuenta: abre la liga, aparta su lugar y muestra su QR en la puerta.'],
   ['¿Cómo funcionan las ligas de RP?', 'En tu evento entras a “RPs”, escribes el nombre de cada uno y le compartes su liga y su panel. Tú ves el ranking (registros, pagos y llegadas) y cada RP ve solo a su gente, sin correos ni teléfonos.'],
@@ -53,14 +62,15 @@ export async function paginaCupo(env, req, url) {
   const elegido = todos.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : rec?.slug;
   const error = url.searchParams.get('error') || '';
   const desde = niveles.length ? Math.min(...niveles.map(n => n.prod.precio_centavos)) : null;
+  const t = temporada(), demos = demosDe(t), og = `${OS}/cupo/og/${demos[0][1]}.png`;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Cupo · Eventos con registro, cover y QR', brand: { '@type': 'Brand', name: 'Cupo' },
     description: 'Página de tu evento, registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas; Cupo Pro desde $99 MXN con correos, cover sin comisión y ligas para RPs.',
-    image: [`${OS}/cupo/og/halloween.png`],
+    image: [og],
     ...(niveles.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: '0.00', highPrice: (Math.max(...todos.map(x => x.prod.precio_centavos)) / 100).toFixed(2), offerCount: todos.length + 1 } } : {}) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const opcion = x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${esc(x.etiqueta)} · ${precio(x.prod)}</option>`;
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/cupo/#entrar`, app: 'Cupo' },
-    titulo: 'Cupo: página de tu evento con registro, cover y QR | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: `${OS}/cupo/og/halloween.png`,
+    titulo: 'Cupo: página de tu evento con registro, cover y QR | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: og,
     descripcion: 'Crea la página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas. Cupo Pro desde $99: correos y recordatorios, cover sin comisión y ligas para RPs.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
@@ -71,18 +81,18 @@ export async function paginaCupo(env, req, url) {
     ${navTienda('eventos')}
     <span class="cu-logo">cupo<i>.</i></span>
     <h1 class="cu-h1">Tu evento, listo <i>en un minuto.</i></h1>
-    <p class="cu-lead">Una página bonita para tu fiesta, taller o evento de negocio. La gente aparta su lugar en segundos, sin cuenta, y en la puerta escaneas su QR.</p>
+    <p class="cu-lead">Una página bonita para tu fiesta, posada, taller o evento de negocio. La gente aparta su lugar (y el de sus acompañantes) en segundos, sin cuenta, se manda su entrada por WhatsApp y en la puerta escaneas su QR.</p>
     <div class="botones"><a class="btn tinta" href="${OS}/cupo/#/nuevo">Crear mi evento gratis ${FLECHA}</a><a class="btn blanco" href="#planes">Ver precios</a><a class="btn blanco" href="${OS}/cupo/#/como-funciona/organizador">Cómo funciona</a></div>
     <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/cupo/#entrar">Entra aquí</a></p>
     <p class="cu-nota"><b>Gratis hasta 30 personas.</b> Cupo Pro desde <b>${desde ? precio({ precio_centavos: desde }) : '$99 MXN'}</b> por evento · sin comisión por tu cover · sin mensualidades</p>
   </div>
-  <div class="cu-demos-h">${DEMOS.map(([s, og, t, d], i) => `<a class="cu-demo${i === 0 ? ' g' : ''}" href="${OS}/e/${s}" target="_blank" rel="noopener"><img src="${OS}/cupo/og/${og}.png" alt="" loading="${i ? 'lazy' : 'eager'}" width="1200" height="630"><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>
+  <div class="cu-demos-h">${demos.map(([s, og, t, d], i) => `<a class="cu-demo${i === 0 ? ' g' : ''}" href="${OS}/e/${s}" target="_blank" rel="noopener"><img src="${OS}/cupo/og/${og}.png" alt="" loading="${i ? 'lazy' : 'eager'}" width="1200" height="630"><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>
 </div></section>
 
 <section class="t-sec"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Así de fácil</span><h2 class="h2">De la idea a la puerta, desde tu celular</h2></div>
-  <ol class="cu-pasos">${[['Arma tu evento', 'Título, fecha, lugar y portada. Lo ves como quedará, sin cuenta y sin pagar.'], ['Comparte tu liga', 'vorka.mx/cupo/tu-evento, con QR. La gente aparta su lugar con nombre y correo.'],
-    ['Cobra y confirma', 'Con Pro, tu CLABE o tu liga de pago; confirmas cada pago con un toque. Sin comisión.'], ['Recibe a tu gente', 'Escaneas su QR en la puerta: nadie entra dos veces y sabes quién llegó.']].map(([t, d], k) => `<li class="rv" style="--d:${k * .05}s"><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+  <ol class="cu-pasos">${[['Arma tu evento', 'Título, fecha, lugar y portada. Lo ves como quedará, sin cuenta y sin pagar.'], ['Comparte tu liga', 'vorka.mx/cupo/tu-evento, con QR. La gente aparta su lugar con nombre y correo, y el de sus acompañantes.'],
+    ['Cobra sin comisión', 'En la puerta, gratis. Con Pro, también por transferencia o tu liga de pago, y confirmas cada pago con un toque.'], ['Recibe a tu gente', 'Escaneas su QR en la puerta, aunque no haya señal: nadie entra dos veces y sabes quién llegó.']].map(([t, d], k) => `<li class="rv" style="--d:${k * .05}s"><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
 </div></section>
 
 <section class="t-sec suave" id="planes"><div class="marco">
@@ -91,7 +101,7 @@ export async function paginaCupo(env, req, url) {
     <article class="cu-plan"><h3>Gratis</h3><p class="cu-para">Para probar y eventos chicos</p><p class="cu-precio"><b>$0</b></p>
       <ul>${GRATIS.map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
       <a class="btn blanco" href="${OS}/cupo/#/nuevo">Crear mi evento gratis</a></article>
-    <article class="cu-plan rec"><span class="cu-sello">Para eventos con cover o RPs</span><h3>Cupo Pro</h3><p class="cu-para">Elige según cuántas personas recibes</p>
+    <article class="cu-plan rec"><span class="cu-sello">Para eventos grandes, con cobro anticipado o RPs</span><h3>Cupo Pro</h3><p class="cu-para">Elige según cuántas personas recibes</p>
       <div class="cu-niveles">${niveles.map(n => `<a class="cu-nivel${n.recomendado ? ' dest' : ''}" href="?plan=${n.slug}#comprar" data-plan="${n.slug}"><span><b>Hasta ${n.personas} personas</b><small>${n.para}</small></span><b class="num">${precio(n.prod)}</b></a>`).join('')}</div>
       <ul>${PRO.map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul></article>
   ${paquetes.length ? `<div class="cu-paq"><div><span class="etiqueta">Paquetes de 5 eventos</span><h3>Si haces eventos seguido, hasta 20 % menos</h3><p>Todo lo de Pro en cada evento, para usar en 12 meses.</p></div>
