@@ -88,8 +88,10 @@
   .portada-foto{max-width:380px;padding-top:12px}
   .sobre-g,.resenas-g{grid-template-columns:1fr}
   .puertas{grid-template-columns:1fr}
-  .logos{gap:22px 34px}
-  .logos img{height:36px;max-width:120px}
+  .logos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 16px}
+  .logos li{height:60px}
+  .logos img{height:34px;max-width:130px}
+  .logos .con-nombre img{height:34px}
 }
 @media (max-width:560px){
   .acciones .boton{flex:1 1 100%}
@@ -143,16 +145,21 @@
     <div class="marco">
       <h2>Ha colaborado con</h2>
       <ul class="logos">
-        <li><span class="txt">AMMJE<small>Mujeres Jefas de Empresa</small></span></li>
         <li class="con-nombre"><img src="img/logos/tec-de-monterrey.webp" alt="" loading="lazy"><span class="txt">Tec de<br>Monterrey</span></li>
         <li><img src="img/logos/cfe.webp" alt="Comisión Federal de Electricidad" loading="lazy"></li>
-        <li><img src="img/logos/dif.webp" alt="DIF" loading="lazy"></li>
+        <li><img src="img/logos/bosch.webp" alt="Bosch" loading="lazy"></li>
         <li><img src="img/logos/gkn.webp" alt="GKN" loading="lazy"></li>
+        <li><img src="img/logos/dif.webp" alt="DIF" loading="lazy"></li>
         <li><img src="img/logos/bni.webp" alt="BNI" loading="lazy"></li>
-        <li><img src="img/logos/juventudes-impactando-mexico.webp" alt="Juventudes Impactando México" loading="lazy"></li>
+        <li class="con-nombre"><img src="img/logos/juventudes-impactando-mexico.webp" alt="" loading="lazy"><span class="txt">Juventudes<br>Impactando México</span></li>
+        <li><span class="txt">AMMJE<small>Mujeres Jefas de Empresa</small></span></li>
+        <li><span class="txt">CRODE<small>Celaya</small></span></li>
         <li><span class="txt">Instituto de la Mujer<small>Celaya</small></span></li>
         <li><span class="txt">TecNM<small>Celaya</small></span></li>
+        <li><span class="txt">ITESBA<small>Bajío</small></span></li>
         <li><span class="txt">CECyTE<small>Guanajuato</small></span></li>
+        <li><span class="txt">Municipio de Celaya<small>Desarrollo Económico</small></span></li>
+        <li><span class="txt">UNIDOS<small>Para el Cambio</small></span></li>
       </ul>
     </div>
   </section>
