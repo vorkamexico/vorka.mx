@@ -61,7 +61,7 @@ export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : 
 const SECCIONES_TIENDA = [
   { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM y ECOEMS.' },
   { id: 'negocios', claves: ['negocios', 'citas', 'agenda', 'lealtad', 'ventas', 'vende', 'kits', 'emprender'], linea: 'Negocios', titulo: 'Herramientas para tu negocio',
-    texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen, Vende para tus pedidos y kits para arrancar tu idea. Las apps traen prueba gratis.' },
+    texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen y Vende para tus pedidos y cobros. Pruébalas gratis.' },
   { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',
     texto: 'Brindi: invitaciones digitales para bodas, XV años y toda celebración. Cupo: la página de tu evento con registro, cover y check-in con QR, gratis hasta 30 personas.' },
   { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.' },
@@ -123,6 +123,11 @@ const SIM_TIENDA = {
   'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
   'simulador-ecoems': { nombre: 'Simulador ECOEMS en línea', texto: 'Para la prepa de la UNAM y del IPN: práctica ilimitada con tutor y exámenes de 128 reactivos en 3 horas.' },
 };
+const APPS_TIENDA = {
+  vuelve: { nombre: 'Vuelve · Tarjetas de lealtad', precio: p => `${precio(p)} al mes` },
+  vende: { nombre: 'Vende · Pedidos y cobros', precio: p => `Gratis · Pro ${precio(p)} al mes` },
+  cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
+};
 function vista(p, url, desdeBrindi) {
   {
     if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
@@ -130,7 +135,11 @@ function vista(p, url, desdeBrindi) {
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/v3/cupo-portada.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
     if (esAgenda(p)) return { p, url, nombre: AGENDA.nombre, texto: AGENDA.texto, incluye: AGENDA.incluye, cat: 'Acceso en línea',
-      img: { ...p, imagen: p.imagen || '/assets/tienda/agenda.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
+      img: { ...p, imagen: p.imagen || '/assets/tienda/v3/agenda-portada.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
+    // Las demás apps por suscripción: nombre de la app (no el del plan) y el precio "al mes", igual que Agenda
+    const app = APPS_TIENDA[p.contenido?.acceso?.app];
+    if (app) return { p, url, nombre: app.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x), cat: 'Acceso en línea',
+      img: p, precio: app.precio(p), regalable: false, min: p.precio_centavos };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
     const sim = p.contenido?.plan && SIM_TIENDA[p.contenido?.acceso?.app];
     return { p, url, nombre: sim ? sim.nombre : p.nombre, texto: sim ? sim.texto : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),

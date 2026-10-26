@@ -96,6 +96,18 @@ def ui_vende():
     <span class="btn" style="background:#25D366;color:#fff">Mandar WhatsApp</span></div>
   <div class="fila"><span>Ganancia real del mes</span><b>$7,023.63</b></div><div class="fila"><span>Pedidos activos</span><b>14</b></div></div>"""
 
+def ui_agenda():
+    horas = ''.join(f'<span style="border:1.5px solid {"#047857" if h == "10:30" else "#E7E5E7"};background:{"#047857" if h == "10:30" else "#fff"};color:{"#fff" if h == "10:30" else "#141114"};border-radius:12px;padding:11px 0;text-align:center;font-weight:750;font-size:17px">{h}</span>' for h in ['9:00', '9:30', '10:30', '11:00', '12:30', '16:00'])
+    dias = ''.join(f'<span style="border-radius:14px;padding:8px 0;text-align:center;{"background:#047857;color:#fff" if d == "4" else "border:1.5px solid #E7E5E7"}"><small style="display:block;font-size:12px;opacity:.75">{n}</small><b style="font-size:20px">{d}</b></span>' for n, d in [('Lun', '3'), ('Mar', '4'), ('Mié', '5'), ('Jue', '6')])
+    return f"""<div class="ui" style="padding:70px 26px 0">
+  <div style="display:flex;gap:12px;align-items:center"><span style="width:44px;height:44px;border-radius:12px;background:#047857;color:#fff;display:grid;place-items:center;font-weight:800;font-size:20px">A</span>
+    <div><div class="h" style="font-size:20px">Nutrición Ana Ruiz</div><div class="s">Consulta de seguimiento · 30 min</div></div></div>
+  <div style="margin-top:18px;font-weight:800;font-size:17px">¿Qué día y a qué hora?</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">{dias}</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">{horas}</div>
+  <span class="btn" style="background:#047857;color:#fff">Agendar mi cita</span>
+  <div class="card" style="background:#ECFDF5;border-color:#A7F3D0"><b>✓ Cita confirmada</b><div class="s">Martes 4 · 10:30 · te llega tu recordatorio</div></div></div>"""
+
 def hojas(color, titulo, partes):
     a = f'<div class="hoja" style="left:930px;top:260px;transform:rotate(8deg);opacity:.9"><div class="k" style="color:{color}">Workbook</div><div class="l" style="width:80%"></div><div class="l"></div><div class="l" style="width:60%"></div></div>'
     b = f'<div class="hoja" style="left:880px;top:220px;transform:rotate(3deg)"><div class="k" style="color:{color}">Vorka México · Kit digital</div><h4>{titulo}</h4>' + ''.join(f'<div style="display:flex;gap:12px;align-items:center;font-size:20px;font-weight:650;margin:14px 0"><span style="width:30px;height:30px;border-radius:9px;background:{color};color:#fff;display:grid;place-items:center;font-size:16px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes)) + '</div>'
@@ -131,6 +143,8 @@ P = {
     tag='Invitaciones digitales', beneficio='Tu invitación con confirmación y acceso con QR.', datos=['6 diseños premium', 'Confirmaciones al momento', 'Pase con QR'], ui=ui_brindi),
   'cupo': dict(**OSCURO, fondo='linear-gradient(140deg,#17062F 0%,#3A1C71 55%,#6D28D9 100%)', acento='#C8F560', pre='', nombre='Cupo',
     tag='Eventos con registro', beneficio='La página de tu evento, con registro, cover y check-in.', datos=['Gratis hasta 30 personas', 'Cover sin comisión', 'Check-in con QR'], ui=ui_cupo),
+  'agenda': dict(**OSCURO, fondo='linear-gradient(140deg,#022C22 0%,#065F46 55%,#059669 100%)', acento='#B7F7D9', pre='', nombre='Agenda', px=218,
+    tag='Citas en línea para tu negocio', beneficio='Tus clientes reservan solos, a cualquier hora.', datos=['Confirmación al instante', 'Recordatorios', 'Prueba 7 días gratis'], ui=ui_agenda),
   'vuelve': dict(**OSCURO, fondo='linear-gradient(140deg,#4A0D18 0%,#8E1B2E 55%,#C9364F 100%)', acento='#FFD6A0', pre='', nombre='Vuelve',
     tag='Lealtad para tu negocio', beneficio='Que tus clientes vuelvan solos, con sellos o puntos.', datos=['Sin descargar app', 'Avisos automáticos', 'Prueba 7 días gratis'], ui=ui_vuelve),
   'cuentas': dict(**OSCURO, fondo='linear-gradient(140deg,#06262D 0%,#0D4F5A 55%,#14808A 100%)', acento='#9FF0E1', pre='', nombre='Cuentas', px=200,
@@ -212,7 +226,9 @@ with sync_playwright() as pw:
         im = Image.open(png).convert('RGB')
         im.save(OUT / f'{nombre}.{ext}', 'JPEG' if ext == 'jpg' else 'WEBP', quality=88, **({} if ext == 'jpg' else {'method': 6}))
         png.unlink(); print('·', OUT / f'{nombre}.{ext}')
+    SOLO = [x for x in os.environ.get('SOLO', '').split(',') if x]   # SOLO=agenda: solo esa portada
     for k, p in P.items():
+        if SOLO and k not in SOLO: continue
         foto(f'{k}-portada', portada(k, p), 1600, 1200)
         if 'sim' in p:
             foto(f'{k}-og', og(k, p), 1200, 630)
