@@ -71,8 +71,8 @@ describe('ficha /tienda/agenda/', () => {
     // comparación con los datos verificados del plan, y ningún otro competidor
     expect(h).toContain('≈ $184–221 MXN'); expect(h).toContain('$299 (1 profesional)'); expect(h).toContain('desde $100 por 50 mensajes'); expect(h).toContain('<th scope="row">Booksy</th><td>$499</td>');
     expect(h).not.toMatch(/Doctoralia|Fresha|Reservo/);
-    // el sello automático del paquete no existe todavía: se dice "Muy pronto" y que aún no está disponible
-    expect(h).toContain('Muy pronto'); expect(h).toContain('Aún no está disponible');
+    // el sello automático del paquete ya funciona: se explica sin "muy pronto"
+    expect(h).toContain('la visita se suma sola en la tarjeta de Vuelve'); expect(h).not.toContain('Muy pronto'); expect(h).not.toContain('todavía no está disponible');
     expect(h).toContain('Por separado: $498 MXN al mes');
     expect(h).toContain('id="form-agenda"'); expect(h).toContain('name="profesionales"'); expect(h).toContain('id="campo-sucursales"');
     expect(h).toContain('href="/legal/agenda/"'); expect(h).toContain('href="/legal/agenda/privacidad/"');

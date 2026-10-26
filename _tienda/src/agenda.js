@@ -53,7 +53,7 @@ const faq = ({ dias = 7, precioProf = PRECIO_BASE } = {}) => [
   ['¿Cuánto cuesta y cómo pago?', `$${precioProf} al mes por profesional, o el plan anual con 2 meses gratis. En pesos mexicanos con IVA incluido. Pagas con tarjeta de crédito o débito, procesado por Stripe, y se renueva solo. Agregas o quitas profesionales desde Agenda › Cuenta y Stripe cobra solo la parte proporcional. Tu comprobante de cada cobro lo descargas en Agenda › Cuenta › Administrar mi suscripción. Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.`],
   ['¿Agenda cobra las citas?', 'No. El precio que pones en cada servicio es informativo: tu cliente te paga en tu negocio, como siempre. Vorka no cobra comisión por cita.'],
   ['¿Se conecta con mi calendario?', 'Tus clientes agregan su cita a su calendario con un botón (Google Calendar o archivo .ics). Tu agenda la ves en Agenda, por día y por semana para cada profesional. Por ahora no se sincroniza con el calendario de cada profesional.'],
-  ['¿Qué incluye el paquete con Vuelve?', 'Las dos apps con la misma cuenta y el mismo correo: Agenda para tus citas y Vuelve, la tarjeta de lealtad en el celular de tus clientes. Incluye 1 profesional de Agenda y 1 sucursal de Vuelve; lo adicional se suma con el precio de cada app. El sello automático al marcar «vino» todavía no está disponible: hoy sellas desde Vuelve, como siempre.'],
+  ['¿Qué incluye el paquete con Vuelve?', 'Las dos apps con la misma cuenta y el mismo correo: Agenda para tus citas y Vuelve, la tarjeta de lealtad en el celular de tus clientes. Incluye 1 profesional de Agenda y 1 sucursal de Vuelve; lo adicional se suma con el precio de cada app. Además, cada cita que marcas como «vino» le suma la visita en su tarjeta de Vuelve, sola: el cliente la pide al reservar (o ya la tiene) y no escaneas nada.'],
   ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Vorka solo los guarda por tu cuenta para darte el servicio: no los vende ni los usa para publicidad. En cada reserva tus clientes ven y aceptan un aviso de privacidad.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Agenda › Cuenta, sin llamadas. Tu agenda sigue activa hasta el final del periodo que pagaste. Después queda en pausa: tu página ya no recibe citas, pero tus citas y tus clientes se quedan guardados por si vuelves.'],
 ];
@@ -193,10 +193,10 @@ ${navTienda('citas')}
     <p>Con el paquete tienes las dos apps con la misma cuenta y el mismo correo: Agenda para tus citas y Vuelve, la tarjeta de lealtad en el celular de tus clientes.${paqM ? ` Por ${precio(paqM.prod)} al mes${ahorro ? `, ${(ahorro / 100).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} menos que por separado` : ''}.` : ''}</p>
     <ul class="ag-paq-l">${['Una sola suscripción y un solo cobro', '1 profesional de Agenda y 1 sucursal de Vuelve incluidos', 'Lo adicional, con el precio de cada app'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
     ${paqM || paqA ? `<div class="ag-ctas"><a class="ag-btn" href="?plan=${(paqM || paqA).slug}#comprar" data-plan="${(paqM || paqA).slug}">Quiero el paquete ${FLECHA}</a><a class="ag-btn ghost" href="/tienda/vuelve/">Conoce Vuelve</a></div>` : '<div class="ag-ctas"><a class="ag-btn ghost" href="/tienda/vuelve/">Conoce Vuelve</a></div>'}</div>
-  <div class="ag-pronto"><span class="ag-pill">Muy pronto</span>
+  <div class="ag-pronto"><span class="ag-pill">Solo en el paquete</span>
     <div class="ag-pronto-v" aria-hidden="true"><span class="ag-pronto-a">✓ Vino</span><span class="ag-pronto-f">${FLECHA}</span><span class="ag-pronto-s">${ICONO.sello}<b>+1 sello</b></span></div>
     <h3>Cada cita a la que llega tu cliente le suma un sello solo.</h3>
-    <p>Cuando esté listo, al marcar «vino» en Agenda el sello se sumará en la tarjeta de Vuelve de tu cliente, sin escanear nada. <b>Aún no está disponible:</b> hoy marcas la cita en Agenda y sellas en Vuelve, como siempre.</p></div>
+    <p>Marcas «vino» en Agenda y la visita se suma sola en la tarjeta de Vuelve de tu cliente, sin escanear nada. Al reservar, tu cliente puede pedir su tarjeta; a quien ya la tiene se le suma solo. <b>¿Te equivocaste?</b> Deshacer también quita el sello.</p></div>
 </div></section>
 
 <section class="ag-sec suave" id="planes"><div class="marco">
@@ -208,7 +208,7 @@ ${navTienda('citas')}
     ${plan(mensual, anual, { titulo: 'Agenda', para: '1 profesional incluido', rec: true,
       lista: ['Todo lo que incluye Agenda', 'Tu página de citas y tu QR', `Profesional adicional: ${mensual?.profesional ? `${precio(mensual.profesional)} al mes` : anual?.profesional ? `${precio(anual.profesional)} al año` : 'al mismo precio'}`] })}
     ${plan(paqM, paqA, { titulo: 'Agenda + Vuelve', para: '1 profesional y 1 sucursal de Vuelve',
-      lista: ['Agenda y Vuelve con la misma cuenta', separado && paqM ? `Por separado: ${precio({ precio_centavos: separado })} al mes` : 'Una sola suscripción', `Sucursal de Vuelve adicional: ${paqM?.sucursal ? `${precio(paqM.sucursal)} al mes` : 'con el precio de Vuelve'}`, 'Sello automático por cita: muy pronto'] })}
+      lista: ['Agenda y Vuelve con la misma cuenta', separado && paqM ? `Por separado: ${precio({ precio_centavos: separado })} al mes` : 'Una sola suscripción', `Sucursal de Vuelve adicional: ${paqM?.sucursal ? `${precio(paqM.sucursal)} al mes` : 'con el precio de Vuelve'}`, 'Sello automático en cada cita'] })}
   </div>
   ${planes.length ? '' : `<p class="ag-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
 </div></section>
@@ -315,7 +315,7 @@ const CSS = `
 /* paquete con Vuelve */
 .ag-paq{display:grid;gap:34px;align-items:center}@media(min-width:960px){.ag-paq{grid-template-columns:1.05fr .95fr}}
 .ag-paq-l{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:9px}.ag-paq-l li{display:flex;gap:9px;align-items:flex-start;color:rgba(244,242,245,.85)}.ag-paq-l svg{flex:none;width:19px;height:19px;margin-top:2px;color:var(--ag-morado-c)}
-.ag-pronto{position:relative;padding:26px;border-radius:26px;border:1.5px dashed rgba(244,242,245,.28);background:rgba(255,255,255,.03)}
+.ag-pronto{position:relative;padding:26px;border-radius:26px;border:1.5px solid rgba(244,242,245,.18);background:rgba(255,255,255,.03)}
 .ag-pill{display:inline-block;padding:5px 12px;border-radius:999px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;letter-spacing:.02em}
 .ag-pronto-v{display:flex;align-items:center;gap:12px;margin:20px 0 4px;flex-wrap:wrap}.ag-pronto-a{padding:9px 14px;border-radius:14px;background:rgba(159,216,184,.14);color:#9fd8b8;font-weight:700}
 .ag-pronto-f svg{width:22px;height:22px;color:rgba(244,242,245,.5)}.ag-pronto-s{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:14px;background:rgba(200,164,92,.16);color:#f1dfb8}.ag-pronto-s svg{width:22px;height:22px}
