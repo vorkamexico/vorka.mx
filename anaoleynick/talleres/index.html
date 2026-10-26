@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../estilo.css?v=1">
+<link rel="stylesheet" href="../estilo.css?v=2">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "Asesoría de Imagen Personal", "description": "Formación en Asesoría de Imagen Personal: imagen, hábitos saludables, siluetas, estilos, colores, comunicación verbal y corporal y proyecto final. Certificación SDES 479.", "provider": {"@type": "Organization", "name": "Oleynick Center"}, "offers": {"@type": "Offer", "price": "2755", "priceCurrency": "MXN"}}</script>
 <style>
 
@@ -205,6 +205,7 @@ details ul b{font-weight:500;color:var(--tinta)}
 (function(){
   var y=document.getElementById('anio'); if(y) y.textContent=new Date().getFullYear();
   var nav=document.getElementById('nav'), b=nav.querySelector('.abrir');
+  function sc(){nav.classList.toggle('scroll',scrollY>8);} sc(); addEventListener('scroll',sc,{passive:true});
   b.addEventListener('click',function(){var a=nav.classList.toggle('abierto');b.setAttribute('aria-expanded',String(a));});
   nav.querySelector('.menu').addEventListener('click',function(e){if(e.target.closest('a')){nav.classList.remove('abierto');b.setAttribute('aria-expanded','false');}});
 })();

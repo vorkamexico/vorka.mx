@@ -3,7 +3,7 @@
 :root{
   --blanco:#FFFFFF;
   --gris:#E7E7E7;      /* el fondo de su retrato */
-  --gris-claro:#F4F3F2;
+  --gris-claro:#F8F1EE;
   --tinta:#171515;
   --texto:#3F3B3A;
   --suave:#77716F;
@@ -28,7 +28,8 @@ p{margin:0}
 .marco{max-width:var(--ancho);margin-inline:auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
 
 /* Navegación */
-.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--linea)}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav.scroll{border-bottom-color:var(--linea)}
 .nav-in{display:flex;align-items:center;gap:32px;height:72px}
 .logo{text-decoration:none;color:var(--tinta);font-size:15px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;margin-right:auto}
 .logo b{font-weight:600}
@@ -48,7 +49,7 @@ p{margin:0}
 .abrir[aria-expanded="true"] span::after{content:"";display:block;width:20px;height:1.5px;background:currentColor;transform:rotate(-90deg)}
 
 /* Encabezados de página */
-.titulo-pag{background:var(--gris-claro);border-bottom:1px solid var(--linea)}
+.titulo-pag{background:linear-gradient(180deg,#F8F1EE,var(--blanco))}
 .titulo-pag .marco{padding-block:64px 56px;display:grid;gap:14px}
 .titulo-pag h1{font-size:clamp(36px,5vw,56px);font-weight:500;letter-spacing:-.01em}
 .titulo-pag p{max-width:60ch;font-size:19px;color:var(--suave)}
@@ -58,8 +59,7 @@ p{margin:0}
 
 /* Bloques */
 .bloque{padding-block:clamp(64px,8vw,104px)}
-.bloque.gris{background:var(--gris-claro)}
-.bloque + .bloque:not(.gris){border-top:1px solid var(--linea)}
+.bloque.gris{background:transparent}
 .sub{font-size:clamp(28px,3.4vw,40px);font-weight:500;letter-spacing:-.005em;margin-bottom:18px}
 .intro{max-width:62ch;color:var(--suave);font-size:18px}
 .cita{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--tinta)}
@@ -67,21 +67,20 @@ p{margin:0}
 .enlace:hover{color:var(--rosa);border-color:var(--rosa)}
 
 /* Contacto (al pie de cada página) */
-.contacto{background:var(--tinta);color:#D9D4D2}
+.contacto{background:linear-gradient(180deg,var(--blanco),#F8F1EE);color:var(--texto)}
 .contacto .marco{padding-block:clamp(64px,8vw,96px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:center}
-.contacto h2{color:var(--blanco);font-size:clamp(30px,4vw,46px);font-weight:400}
+.contacto h2{color:var(--tinta);font-size:clamp(30px,4vw,46px);font-weight:400}
 .contacto p{margin-top:14px;max-width:46ch}
-.contacto .boton{background:var(--blanco);color:var(--tinta);border-color:var(--blanco);margin-top:28px}
-.contacto .boton:hover{background:var(--rosa);color:var(--blanco);border-color:var(--rosa)}
-.redes{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid rgba(255,255,255,.15)}
-.redes a{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.15);text-decoration:none;color:var(--blanco);font-weight:400}
-.redes a:hover{color:#E9B8C6}
+.contacto .boton{margin-top:28px}
+.redes{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--linea)}
+.redes a{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--linea);text-decoration:none;color:var(--tinta);font-weight:400}
+.redes a:hover{color:var(--rosa)}
 .redes svg{width:20px;height:20px;flex:none}
-.redes small{margin-left:auto;color:#A49D9A;font-size:14px;font-weight:300;overflow-wrap:anywhere;text-align:right}
-.pie{background:var(--tinta);color:#8F8886;border-top:1px solid rgba(255,255,255,.1);font-size:13px}
+.redes small{margin-left:auto;color:var(--suave);font-size:14px;font-weight:300;overflow-wrap:anywhere;text-align:right}
+.pie{background:#F8F1EE;color:var(--suave);font-size:13px}
 .pie .marco{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
 .pie a{text-decoration:none;letter-spacing:.04em}
-.pie a:hover{color:var(--blanco)}
+.pie a:hover{color:var(--tinta)}
 
 @media (max-width:900px){
   .menu,.nav .boton{display:none}
