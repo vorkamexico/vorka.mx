@@ -59,14 +59,12 @@ export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : 
 // Líneas de la tienda según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
 // Una categoría nueva desde el panel aparece sola como línea con su propio nombre.
 const SECCIONES_TIENDA = [
-  { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
-  { id: 'invitaciones', claves: ['invitaciones'], linea: 'Celebraciones', titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
-  { id: 'eventos', claves: ['eventos'], linea: 'Eventos', titulo: 'Eventos con registro y cover', texto: 'Cupo: la página de tu evento, registro sin cuentas y check-in con QR, gratis hasta 30 personas. Con Pro (desde $99): correos y recordatorios, cover directo a ti y ligas para tus RPs.' },
-  { id: 'citas', claves: ['citas', 'agenda'], linea: 'Citas', titulo: 'Citas en línea para tu negocio', texto: 'Agenda: tus clientes eligen servicio, profesional, día y hora, y su cita queda confirmada al instante. Se paga por profesional. Prueba gratis 7 días.' },
-  { id: 'lealtad', claves: ['lealtad'], linea: 'Negocios', titulo: 'Lealtad para tu negocio', texto: 'Vuelve: tarjeta de sellos o puntos en el celular de tus clientes, avisos automáticos y el dinero que te traen de vuelta, medido. Prueba gratis 7 días.' },
-  { id: 'vende', claves: ['ventas', 'vende'], linea: 'Ventas', titulo: 'Tu venta por catálogo, en orden', texto: 'Vende: clientas, pedidos, cobros y ganancia real para quien vende por catálogo o por encargo, con el WhatsApp de cada día ya redactado. Gratis para empezar.' },
+  { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM y ECOEMS.' },
+  { id: 'negocios', claves: ['negocios', 'citas', 'agenda', 'lealtad', 'ventas', 'vende', 'kits', 'emprender'], linea: 'Negocios', titulo: 'Herramientas para tu negocio',
+    texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen, Vende para tus pedidos y kits para arrancar tu idea. Las apps traen prueba gratis.' },
+  { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',
+    texto: 'Brindi: invitaciones digitales para bodas, XV años y toda celebración. Cupo: la página de tu evento con registro, cover y check-in con QR, gratis hasta 30 personas.' },
   { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.' },
-  { id: 'emprender', claves: ['kits', 'emprender'], linea: 'Emprendimiento', titulo: 'Kits para emprender', texto: 'Herramientas paso a paso para ordenar tu idea, validarla con clientes y hacer tus números.' },
 ];
 const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 export function seccionesCatalogo(productos) {
@@ -211,8 +209,9 @@ export async function paginaCatalogo(env, req, url) {
   if (lineaT) secciones.sort((a, b) => (b === lineaT) - (a === lineaT));
   const destacado = (lineaT || secciones[0]) && { ...(lineaT || secciones[0]).vistas[0], linea: (lineaT || secciones[0]).linea };
   // Lo nuevo de la tienda (solo si está a la venta): la pastilla de arriba de la portada
-  const lealtad = secciones.find(g => g.id === 'lealtad'), citas = secciones.find(g => g.id === 'citas');
-  const nuevo = citas ? { url: citas.vistas[0].url, chip: 'Agenda: citas en línea para tu negocio' } : lealtad ? { url: lealtad.vistas[0].url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
+  const negocios = secciones.find(g => g.id === 'negocios')?.vistas || [];
+  const agendaV = negocios.find(v => esAgenda(v.p)), vuelveV = negocios.find(v => v.p.contenido?.acceso?.app === 'vuelve');
+  const nuevo = agendaV ? { url: agendaV.url, chip: 'Agenda: citas en línea para tu negocio' } : vuelveV ? { url: vuelveV.url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({

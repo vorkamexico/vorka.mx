@@ -154,7 +154,7 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo
   </form><script type="application/json" id="ve-precios">${JSON.stringify(Object.fromEntries(planes.map(x => [x.slug, { p: precio(x.prod), renueva: x.renueva }]))).replace(/</g, '\\u003c')}</script>` }) : ''}
 
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vende/">Condiciones de Vende</a> · <a href="/legal/vende/privacidad/">Aviso de privacidad</a> · Vende · by Vorka México</p>' })}
-${await masTienda(env, 'vende')}
+${await masTienda(env, 'negocios')}
 </div>`,
   });
 }

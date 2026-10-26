@@ -11,15 +11,15 @@ const mas = (d, dias) => new Date(d.getTime() + dias * 864e5);
 
 export const TEMPORADAS = [
   { id: 'ano-nuevo', nombre: 'Año Nuevo', desde: '12-26', hasta: '01-06', acento: '#E6CF96', acento2: '#F2DFAE', sobre: '#1B1408', deco: 'confeti', colores: ['#E6CF96', '#C8A45C', '#FFFFFF', '#C08ADB'],
-    aviso: 'Metas nuevas: empieza el año con todo', destacar: 'emprender' },
+    aviso: 'Metas nuevas: empieza el año con todo', destacar: 'negocios' },
   { id: 'san-valentin', nombre: 'San Valentín', desde: '02-01', hasta: '02-14', acento: '#E8577E', acento2: '#F07596', sobre: '#FFFFFF', deco: 'corazones', colores: ['#E8577E', '#F6A5B9', '#FFFFFF'],
-    aviso: 'Celebra el mes del amor con una invitación digital', destacar: 'invitaciones' },
+    aviso: 'Celebra el mes del amor con una invitación digital', destacar: 'eventos' },
   { id: 'dia-del-nino', nombre: 'Día del Niño', desde: '04-20', hasta: '04-30', acento: '#F2C94C', acento2: '#F6D873', sobre: '#1B1408', deco: 'confeti', colores: ['#F2C94C', '#45B7E8', '#E8577E', '#6FD39B'],
-    aviso: 'Arma su fiesta con invitación y registro', destacar: 'invitaciones' },
+    aviso: 'Arma su fiesta con invitación y registro', destacar: 'eventos' },
   { id: 'dia-de-las-madres', nombre: 'Día de las Madres', desde: '05-01', hasta: '05-10', acento: '#E58AAA', acento2: '#EEA3BE', sobre: '#2A0E18', deco: 'corazones', colores: ['#E58AAA', '#F6C7D6', '#FFFFFF'],
-    aviso: 'Un festejo inolvidable para mamá', destacar: 'invitaciones' },
+    aviso: 'Un festejo inolvidable para mamá', destacar: 'eventos' },
   { id: 'dia-del-padre', nombre: 'Día del Padre', fechas: a => { const d = enesimo(a, 6, 0, 3); return [mas(d, -10), d]; }, acento: '#6FA3D9', acento2: '#8DB7E2', sobre: '#08121F', deco: 'estrellas', colores: ['#6FA3D9', '#FFFFFF', '#E6CF96'],
-    aviso: 'Celebra a papá como se merece', destacar: 'invitaciones' },
+    aviso: 'Celebra a papá como se merece', destacar: 'eventos' },
   { id: 'regreso-a-clases', nombre: 'Regreso a clases', desde: '08-01', hasta: '09-05', acento: '#7FB7E6', acento2: '#9BC8EC', sobre: '#08121F', deco: 'estrellas', colores: ['#7FB7E6', '#F2C94C', '#FFFFFF'],
     aviso: 'Prepárate para tu examen de admisión', destacar: 'examenes' },
   { id: 'fiestas-patrias', nombre: 'Fiestas patrias', desde: '09-06', hasta: '09-16', acento: '#2FA36B', acento2: '#45B67E', sobre: '#FFFFFF', deco: 'papel', colores: ['#2FA36B', '#FFFFFF', '#D6283C'],
@@ -30,7 +30,7 @@ export const TEMPORADAS = [
   { id: 'buen-fin', nombre: 'El Buen Fin', fechas: a => { const l = enesimo(a, 11, 1, 3); return [mas(l, -3), mas(l, 1)]; }, acento: '#E5484D', acento2: '#EC6A6E', sobre: '#FFFFFF', deco: 'confeti', colores: ['#E5484D', '#F2C94C', '#FFFFFF'],
     aviso: 'Herramientas para avanzar, al momento', destacar: null },
   { id: 'navidad', nombre: 'Navidad', desde: '12-01', hasta: '12-25', acento: '#2FA36B', acento2: '#45B67E', sobre: '#FFFFFF', deco: 'luces', colores: ['#E5484D', '#2FA36B', '#F2C94C', '#45B7E8'],
-    aviso: 'Invitaciones para tus posadas y regalos digitales', destacar: 'invitaciones' },
+    aviso: 'Invitaciones para tus posadas y regalos digitales', destacar: 'eventos' },
 ];
 export const temporadaPorId = id => TEMPORADAS.find(t => t.id === id) || null;
 
