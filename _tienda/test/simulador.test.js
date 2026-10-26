@@ -63,7 +63,7 @@ describe('acceso al simulador', () => {
     expect(html).toContain('<title>Simulador PAA 2026 en línea');
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain('"@type":"Product"');
-    expect(html).toContain('simulador-paa-og.png');
+    expect(html).toContain('/assets/tienda/v3/simulador-paa-og.jpg');
     // tres planes que se complementan; de fábrica se elige el más barato y el paquete muestra cuánto ahorra
     for (const k of ['practica', 'completo', 'paquete']) expect(html).toContain(`href="?plan=${k}#comprar"`);
     expect(html).toContain('name="slug" value="simulador-paa-practica"');

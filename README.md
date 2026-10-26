@@ -14,6 +14,7 @@ Cada URL es una carpeta con `index.html` (`/servicios/estrategia/` → `servicio
 | `voluntariado/`, `sparks/`, `sparks/sumate/`, `privacidad/`, `legal/` | | A mano |
 | `sparks/celaya/` | `/sparks/celaya/` | **Automática** (bot cada hora). No editar a mano: ver `_sparks/GUIA-INSTALACION.md` |
 | `oleynickhdz/`, `mentoriaoleynick/` | Sitio de Brandon Oleynick | A mano |
+| `anaoleynick/` | Sitio de Ana Laura Hernández: inicio, `talleres/`, `portafolio/`, `trayectoria/` y `estilo.css` compartido. Sin marca Vorka, sólo "Powered by vorka.mx" al pie | A mano |
 | `heymaya/`, `aviso/` | | A mano |
 
 ### Documentos de clientes y material interno (se abren con la URL, Google no los indexa)

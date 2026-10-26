@@ -96,8 +96,8 @@ const ej = REACTIVOS.find(r => r.seccion === 'habilidad_matematica' && r.dificul
 const VENTA = {
   sku: 'prod_simulador_ecoems', nombreProducto: 'Simulador ECOEMS en línea', descripcion: DESCRIPCION, planInicial: 'practica',
   tituloSEO: 'Simulador ECOEMS 2027 en línea: examen para prepa UNAM e IPN | Vorka México',
-  og: `${SITIO}${IMG}/simulador-ecoems-og.png`, imagenesLD: [`${SITIO}${IMG}/simulador-ecoems-portada.png`, `${SITIO}${IMG}/simulador-ecoems-og.png`],
-  imagenes: { portada: `${IMG}/simulador-ecoems-portada.png`, og: `${IMG}/simulador-ecoems-og.png`, reporte: `${IMG}/simulador-ecoems-reporte.png`, regalo: `${IMG}/simulador-ecoems-regalo.png` },
+  og: `${SITIO}${IMG}/v3/simulador-ecoems-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-ecoems-portada.webp`, `${SITIO}${IMG}/v3/simulador-ecoems-og.jpg`],
+  imagenes: { portada: `${IMG}/v3/simulador-ecoems-portada.webp`, og: `${IMG}/v3/simulador-ecoems-og.jpg`, paso1: `${IMG}/v3/simulador-ecoems-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-ecoems-paso-tutor.webp`, reporte: `${IMG}/simulador-ecoems-reporte.png`, regalo: `${IMG}/simulador-ecoems-regalo.png` },
   banco: REACTIVOS.length,
   chip: `Nuevo · ${REACTIVOS.length} reactivos originales`,
   hero: {

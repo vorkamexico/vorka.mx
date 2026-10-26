@@ -52,7 +52,7 @@ describe('Brindi en la tienda', () => {
     expect(html).toContain('Invitaciones digitales');
     // Una sola tarjeta de Brindi, con su portada y el precio del plan más barato
     expect(html).toContain('Brindi · Invitaciones digitales');
-    expect(html).toContain('/assets/tienda/brindi.webp');
+    expect(html).toContain('/assets/tienda/v3/brindi-portada.webp');
     expect(html).toContain('Desde $299 MXN');
     expect(html).not.toContain('Brindi · Plan Premium');
     expect(html.match(/class="t-card-img" href="\/tienda\/brindi\/"/g)).toHaveLength(1);

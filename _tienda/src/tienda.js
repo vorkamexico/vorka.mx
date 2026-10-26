@@ -86,7 +86,7 @@ const esAcceso = p => !!p.contenido?.acceso;
 const enlace = p => p.contenido?.acceso?.ruta || `/tienda/${p.slug}/`;
 
 // Brindi se vende por planes en su propia página: en el catálogo es una sola tarjeta con su portada y "desde"
-export const PORTADA_BRINDI = '/assets/tienda/brindi.webp';
+export const PORTADA_BRINDI = '/assets/tienda/v3/brindi-portada.webp';
 const BRINDI = {
   nombre: 'Brindi · Invitaciones digitales',
   texto: 'Invitaciones digitales para bodas, XV años, bautizos y cumpleaños. Se comparten por WhatsApp, reciben confirmaciones y controlan el acceso con QR.',
@@ -130,7 +130,7 @@ function vista(p, url, desdeBrindi) {
     if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
-      img: { ...p, imagen: p.imagen || '/assets/tienda/cupo.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
+      img: { ...p, imagen: p.imagen || '/assets/tienda/v3/cupo-portada.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
     if (esAgenda(p)) return { p, url, nombre: AGENDA.nombre, texto: AGENDA.texto, incluye: AGENDA.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/agenda.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
@@ -193,11 +193,11 @@ export async function paginaCatalogo(env, req, url) {
   const todas = secciones.flatMap(g => g.vistas);
 
   // Portada de la tienda: menos es más. Arriba la promesa y una vitrina con las líneas; abajo una sola cuadrícula de
-  // productos con tarjetas iguales y filtros por línea (sin JavaScript se ven todos).
+  // productos agrupados por línea, cada una con su título, y filtros por línea (sin JavaScript se ven todos).
   const desde = g => { const b = g.vistas.find(v => esBrindi(v.p)); if (g.vistas.some(v => esCupo(v.p))) return 'Gratis para empezar'; return `Desde ${b ? b.precio.replace('Desde ', '') : precio({ precio_centavos: Math.min(...g.vistas.map(v => v.p.precio_centavos)) })}`; };
   // Tarjeta de producto: la portada completa (4:3, sin recortar) sobre fondo neutro, nombre, precio y un solo botón
   const tarjeta = (v, g, primera) => `
-    <article class="t-card" data-linea="${esc(g.id)}" data-buscar="${esc(sinAcentos(`${v.nombre} ${v.texto || ''} ${g.linea} ${g.titulo}`))}"${primera ? ` id="${esc(g.id)}"` : ''}>
+    <article class="t-card" data-linea="${esc(g.id)}" data-buscar="${esc(sinAcentos(`${v.nombre} ${v.texto || ''} ${g.linea} ${g.titulo}`))}">
       <a class="t-card-img" href="${esc(v.url)}" tabindex="-1" aria-hidden="true">${portada(v.img)}<span class="t-card-ver">Ver detalles</span></a>
       <div class="t-card-t">
         <span class="t-cat">${esc(g.linea)}</span>
@@ -249,7 +249,11 @@ export async function paginaCatalogo(env, req, url) {
   <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
     <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>
     ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por línea"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>
-  ${secciones.length ? `<div class="t-cards">${secciones.map(g => g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')).join('')}</div>
+  ${secciones.length ? `<div class="t-grupos">${secciones.map(g => `
+  <section class="t-grupo" data-linea="${esc(g.id)}" id="${esc(g.id)}" aria-labelledby="g-${esc(g.id)}">
+    <div class="t-grupo-cab"><div><span class="t-cat">${esc(g.linea)}</span><h3 class="t-grupo-h" id="g-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div></div>
+    <div class="t-cards">${g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')}</div>
+  </section>`).join('')}</div>
   <p class="t-sin" id="sin-resultados" hidden role="status">No encontramos nada con esa búsqueda. Prueba con otra palabra o <a href="${WHATSAPP}" target="_blank" rel="noopener">pregúntanos por WhatsApp</a>.</p>`
     : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
   <a class="t-puntos-banda" href="/tienda/puntos/"><span><b>Recomienda y gana.</b> Del 10% al 30% de cada compra con tu liga en puntos, canjeables en toda la tienda (1 punto = $1).</span><span class="btn acento chico">Crear mi cuenta de puntos ${FLECHA}</span></a>
@@ -264,7 +268,7 @@ const SCRIPT_CATALOGO = `(function(){
   var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-cards .t-card'));
   var caja=document.querySelector('.t-buscar'), q=document.getElementById('buscar'), sin=document.getElementById('sin-resultados'), linea='';
   var norm=function(t){ return String(t||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim(); };
-  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); if(sin) sin.hidden=n>0; }
+  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); [].forEach.call(document.querySelectorAll('.t-grupo'),function(g){ g.hidden=!g.querySelector('.t-card:not([hidden])'); }); if(sin) sin.hidden=n>0; }
   function filtra(k){ linea=k; fs.forEach(function(a){ if(a.dataset.f===k) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); }); pinta(); }
   document.addEventListener('click',function(e){ var a=e.target.closest('[data-f]'); if(!a||!fs.length) return; e.preventDefault(); filtra(a.dataset.f); document.getElementById('productos').scrollIntoView({behavior:'smooth'}); history.replaceState(null,'',a.dataset.f?'#'+a.dataset.f:'#productos'); });
   if(caja&&q){ caja.hidden=false; q.addEventListener('input',pinta); }

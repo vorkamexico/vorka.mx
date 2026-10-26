@@ -196,8 +196,8 @@ ${v.despuesHero || ''}
 <section class="t-sec"><div class="marco">
   <div class="cab"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Practica, aprende de cada error y mide tu avance</h2></div>
   <div class="sv-pasos">
-    <article class="sv-paso"><figure><img src="${img.portada}" alt="" loading="lazy" width="1600" height="1200"></figure><div><small>01 · Con cronómetro</small><h3>${esc(v.pasos[0][0])}</h3><p>${esc(v.pasos[0][1])}</p></div></article>
-    <article class="sv-paso"><figure><img src="${img.og}" alt="" loading="lazy" width="1200" height="630"></figure><div><small>02 · Tutor de dos intentos</small><h3>Si fallas, no te da la respuesta</h3><p>Te da una pista de método para que lo intentes otra vez. En el segundo intento ves la solución paso a paso y la regla detrás.</p></div></article>
+    <article class="sv-paso"><figure><img src="${img.paso1 || img.portada}" alt="" loading="lazy" width="1600" height="${img.paso1 ? 1000 : 1200}"></figure><div><small>01 · Con cronómetro</small><h3>${esc(v.pasos[0][0])}</h3><p>${esc(v.pasos[0][1])}</p></div></article>
+    <article class="sv-paso"><figure><img src="${img.paso2 || img.og}" alt="Pista del tutor después del primer error" loading="lazy" width="${img.paso2 ? 1600 : 1200}" height="${img.paso2 ? 1000 : 630}"></figure><div><small>02 · Tutor de dos intentos</small><h3>Si fallas, no te da la respuesta</h3><p>Te da una pista de método para que lo intentes otra vez. En el segundo intento ves la solución paso a paso y la regla detrás.</p></div></article>
     <article class="sv-paso"><figure><img src="${img.reporte}" alt="Reporte del simulador con medidor de preparación, resultado por sección y aciertos por tema" loading="lazy" width="1600" height="900"></figure><div><small>03 · Reporte</small><h3>Sabes exactamente qué reforzar</h3><p>${esc(v.pasos[2][1])}</p></div></article>
   </div>
 </div></section>

@@ -1,0 +1,102 @@
+/* Ana Laura Hernández · sitio personal
+   Fotografía al centro, tipografía de su marca (ANA LAURA en negrita, HERNÁNDEZ ligera), blanco y negro con un rosa profundo. */
+:root{
+  --blanco:#FFFFFF;
+  --gris:#E7E7E7;      /* el fondo de su retrato */
+  --gris-claro:#F4F3F2;
+  --tinta:#171515;
+  --texto:#3F3B3A;
+  --suave:#77716F;
+  --rosa:#9C3656;
+  --linea:#DEDAD8;
+  --sans:"Jost","Futura","Avenir Next","Century Gothic",system-ui,sans-serif;
+  --serif:"Cormorant Garamond","Garamond",Georgia,serif;
+  --ancho:1160px;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--blanco);color:var(--texto);font-family:var(--sans);font-weight:300;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--blanco)}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{margin:0;color:var(--tinta);font-weight:500;line-height:1.15;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+.saltar{position:absolute;left:-9999px}
+.saltar:focus{left:16px;top:16px;z-index:99;background:var(--blanco);padding:8px 14px}
+.marco{max-width:var(--ancho);margin-inline:auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+
+/* Navegación */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--linea)}
+.nav-in{display:flex;align-items:center;gap:32px;height:72px}
+.logo{text-decoration:none;color:var(--tinta);font-size:15px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;margin-right:auto}
+.logo b{font-weight:600}
+.menu{display:flex;gap:28px}
+.menu a{text-decoration:none;font-size:15px;font-weight:400;color:var(--texto);padding:6px 0;border-bottom:1px solid transparent}
+.menu a:hover{color:var(--tinta)}
+.menu a[aria-current="page"]{color:var(--tinta);border-bottom-color:var(--tinta)}
+.boton{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border:1px solid var(--tinta);background:var(--tinta);color:var(--blanco);font-family:var(--sans);font-size:15px;font-weight:400;text-decoration:none;border-radius:999px;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.boton:hover{background:var(--rosa);border-color:var(--rosa)}
+.boton svg{width:18px;height:18px;flex:none}
+.boton.claro{background:transparent;color:var(--tinta)}
+.boton.claro:hover{background:var(--tinta);color:var(--blanco);border-color:var(--tinta)}
+.nav .boton{min-height:40px;padding:0 18px;font-size:14px}
+.abrir{display:none;margin-left:auto;background:none;border:0;padding:10px;cursor:pointer;color:var(--tinta);font:inherit;font-size:15px;gap:8px;align-items:center}
+.abrir span{display:block;width:20px;height:1.5px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor}
+.abrir[aria-expanded="true"] span{box-shadow:none;transform:rotate(45deg)}
+.abrir[aria-expanded="true"] span::after{content:"";display:block;width:20px;height:1.5px;background:currentColor;transform:rotate(-90deg)}
+
+/* Encabezados de página */
+.titulo-pag{background:var(--gris-claro);border-bottom:1px solid var(--linea)}
+.titulo-pag .marco{padding-block:64px 56px;display:grid;gap:14px}
+.titulo-pag h1{font-size:clamp(36px,5vw,56px);font-weight:500;letter-spacing:-.01em}
+.titulo-pag p{max-width:60ch;font-size:19px;color:var(--suave)}
+.migas{font-size:14px;color:var(--suave)}
+.migas a{text-decoration:none}
+.migas a:hover{color:var(--tinta)}
+
+/* Bloques */
+.bloque{padding-block:clamp(64px,8vw,104px)}
+.bloque.gris{background:var(--gris-claro)}
+.bloque + .bloque:not(.gris){border-top:1px solid var(--linea)}
+.sub{font-size:clamp(28px,3.4vw,40px);font-weight:500;letter-spacing:-.005em;margin-bottom:18px}
+.intro{max-width:62ch;color:var(--suave);font-size:18px}
+.cita{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--tinta)}
+.enlace{color:var(--tinta);font-weight:400;text-decoration:none;border-bottom:1px solid var(--tinta);padding-bottom:1px}
+.enlace:hover{color:var(--rosa);border-color:var(--rosa)}
+
+/* Contacto (al pie de cada página) */
+.contacto{background:var(--tinta);color:#D9D4D2}
+.contacto .marco{padding-block:clamp(64px,8vw,96px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:center}
+.contacto h2{color:var(--blanco);font-size:clamp(30px,4vw,46px);font-weight:400}
+.contacto p{margin-top:14px;max-width:46ch}
+.contacto .boton{background:var(--blanco);color:var(--tinta);border-color:var(--blanco);margin-top:28px}
+.contacto .boton:hover{background:var(--rosa);color:var(--blanco);border-color:var(--rosa)}
+.redes{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid rgba(255,255,255,.15)}
+.redes a{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.15);text-decoration:none;color:var(--blanco);font-weight:400}
+.redes a:hover{color:#E9B8C6}
+.redes svg{width:20px;height:20px;flex:none}
+.redes small{margin-left:auto;color:#A49D9A;font-size:14px;font-weight:300;overflow-wrap:anywhere;text-align:right}
+.pie{background:var(--tinta);color:#8F8886;border-top:1px solid rgba(255,255,255,.1);font-size:13px}
+.pie .marco{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
+.pie a{text-decoration:none;letter-spacing:.04em}
+.pie a:hover{color:var(--blanco)}
+
+@media (max-width:900px){
+  .menu,.nav .boton{display:none}
+  .abrir{display:inline-flex}
+  .nav.abierto .menu{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;left:0;right:0;background:var(--blanco);border-bottom:1px solid var(--linea);padding:8px max(24px,env(safe-area-inset-right,0px)) 20px max(24px,env(safe-area-inset-left,0px))}
+  .nav.abierto .menu a{padding:14px 0;border-bottom:1px solid var(--linea);font-size:18px}
+  .nav.abierto .menu a[aria-current="page"]{border-bottom-color:var(--linea);font-weight:500}
+  .contacto .marco{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .marco{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .titulo-pag .marco{padding-block:44px 40px}
+  .titulo-pag p{font-size:17px}
+  .contacto .boton{width:100%}
+  .redes small{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
