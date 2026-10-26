@@ -8,6 +8,7 @@ import { entregar } from './entrega.js';
 import { programarTransferencias, anularTransferencias } from './marketplace.js';
 import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
+import { revocarRuta } from './ruta-entrega.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -36,6 +37,9 @@ export async function webhook(req, env, nombre) {
       // en reembolso, se revierten. Idempotente.
       if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
       if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
+      // Ruta de Impacto: el acceso (o la liga de regalo) vive en Vorka OS y se apaga allá. También en reintentos del mismo
+      // reembolso: si os no respondió la vez pasada, la orden ya está refunded pero el acceso sigue (revocar es idempotente).
+      if (r.accion === 'revocar' || (pago.resultado === 'reembolsado' && r.orden?.estado === 'refunded' && r.orden?.paid_at)) await revocarRuta(env, pago.orderId);
     }
     // Suscripciones (Vuelve): la primera compra, renovaciones, fallas de pago y cancelaciones actualizan su renglón
     if (pasarela.suscripcionDe) {

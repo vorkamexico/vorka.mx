@@ -29,7 +29,9 @@
   "services": [
     { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" },
     // Las páginas de los clientes de Vuelve (vorka.mx/vuelve/…) y de Agenda (vorka.mx/citas/…): se traen de Vorka OS sin salir a internet
-    { "binding": "OS", "service": "vorka-os" }
+    { "binding": "OS", "service": "vorka-os" },
+    // Ruta de Impacto: el acceso de cada compra, las ligas de regalo y los reembolsos se piden a Vorka OS (src/ruta-entrega.js)
+    { "binding": "RUTA", "service": "vorka-os", "entrypoint": "Ruta" }
   ],
   "vars": {
     "SITE_URL": "https://vorka.mx",
@@ -56,7 +58,8 @@
       ],
       "services": [
         { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" },
-        { "binding": "OS", "service": "vorka-os" }
+        { "binding": "OS", "service": "vorka-os" },
+        { "binding": "RUTA", "service": "vorka-os", "entrypoint": "Ruta" }
       ],
       "vars": {
         "SITE_URL": "https://vorka-tienda-pruebas.oleynickhdz.workers.dev",

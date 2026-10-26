@@ -49,7 +49,8 @@ function bloques(o, v) {
   const pagado = o.regalo
     ? { clase: 'exito', icono: ICONOS.ok, titulo: o.unidades > 1 ? '¡Listo! Tus regalos van en camino' : '¡Listo! Tu regalo va en camino',
       texto: `Enviamos ${o.unidades > 1 ? `tus ${o.unidades} ligas de regalo` : 'tu liga de regalo'} a <b>${esc(correoOculto(o.email))}</b>. Mándale cada liga a una persona: funciona una sola vez y el acceso queda a su nombre.`,
-      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a> (las ligas nuevas reemplazan a las que no se han usado).</p>' }
+      // Ruta de Impacto: sus ligas no cambian al reenviarlas (las da ruta.vorka.mx)
+      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>${acc?.app === 'ruta' ? ' (te mandamos las mismas ligas).' : ' (las ligas nuevas reemplazan a las que no se han usado).'}</p>` }
     : acc?.tipo === 'intento'
     ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Ya tienes más simulacros',
       texto: 'Tus simulacros completos adicionales ya están disponibles en tu cuenta.',
@@ -91,13 +92,13 @@ const SONDEO = `(function(){
 
 // Bienvenida al pagar (no en regalos): el nombre de lo que compró, su liga de Puntos (gana al recomendar) y a quién apoya Vorka.
 // Los puntos se ganan recomendando, no comprando: por eso no se llama "cashback".
-const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', cuentas: 'Cuentas', vende: 'Vende', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS' };
+const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', cuentas: 'Cuentas', vende: 'Vende', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', ruta: 'Ruta de Impacto' };
 export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO · Juventudes Impactando México A.C.</a>, la red de jóvenes que transforma sus comunidades en 121 municipios del país.';
 const bienvenida = o => {
   const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;
   return `<div class="t-bienvenida"><b>${nombre ? `¡Te damos la bienvenida a ${esc(nombre)}!` : '¡Gracias por comprar en la tienda!'}</b><small>by vorka.mx</small>
     <p>Recomienda${nombre ? ` ${esc(nombre)}` : ' la tienda'} con tu liga de <a href="/tienda/puntos/">Puntos Vorka</a> y gana del 10% al 30% de cada compra en puntos: cada punto vale $1 en la tienda.</p>
-    <p class="t-impacto">${IMPACTO}</p></div>`;
+    <p class="t-impacto">${acc?.app === 'ruta' ? 'Lo recibido va para <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO</a>.' : IMPACTO}</p></div>`;
 };
 
 export async function paginaGracias(env, url) {

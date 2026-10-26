@@ -108,6 +108,27 @@ def ui_agenda():
   <span class="btn" style="background:#047857;color:#fff">Agendar mi cita</span>
   <div class="card" style="background:#ECFDF5;border-color:#A7F3D0"><b>✓ Cita confirmada</b><div class="s">Martes 4 · 10:30 · te llega tu recordatorio</div></div></div>"""
 
+# Ruta de Impacto: el mapa de la ruta como se ve en ruta.vorka.mx (racha, XP, el nivel y sus lecciones; la siguiente se abre al
+# terminar la anterior). Morado y oro de la app; el texto es el del nivel 1 real.
+def ui_ruta():
+    def nodo(estado, titulo, dx):
+        cara = {'hecho': 'background:#6B2A85;color:#fff;box-shadow:0 7px 0 #4A1C5C', 'ahora': 'background:#C8A45C;color:#141114;box-shadow:0 7px 0 #8E7136,0 0 0 12px rgba(200,164,92,.22)',
+                'cerrado': 'background:#ECEAE6;color:#9A969B;box-shadow:0 7px 0 #D3D0CC'}[estado]
+        ic = {'hecho': '✓', 'ahora': '★', 'cerrado': '🔒'}[estado]
+        burbuja = '<div style="position:absolute;top:-46px;left:50%;transform:translateX(-50%);background:#141114;color:#fff;border-radius:10px;padding:6px 12px;font-size:15px;font-weight:750;white-space:nowrap">Empezar</div>' if estado == 'ahora' else ''
+        return f'''<div style="position:relative;margin:{66 if estado == "ahora" else 18}px auto 0;width:220px;text-align:center;transform:translateX({dx}px)">{burbuja}
+  <div style="width:82px;height:76px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:32px;font-weight:800;{cara}">{ic}</div>
+  <div style="margin-top:12px;font-size:16px;font-weight:750;line-height:1.2;color:{"#141114" if estado != "cerrado" else "#6D696E"}">{titulo}</div></div>'''
+    stat = lambda v, n, c: f'<div style="flex:1;border:1px solid #E7E5E7;border-radius:16px;padding:10px 12px;background:#fff"><b style="font-size:24px;color:{c}">{v}</b><div class="s" style="font-size:13px">{n}</div></div>'
+    return f"""<div class="ui" style="padding:66px 22px 0">
+  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:21px;letter-spacing:-.03em">ruta de impacto</b>
+    <span style="background:#F6EEDC;border-radius:999px;padding:5px 12px;font-weight:800;color:#8E5B0C">🔥 7</span></div>
+  <div class="s" style="margin-top:4px">Proyecto: <b style="color:#141114">Canal limpio</b></div>
+  <div style="display:flex;gap:8px;margin-top:14px">{stat('🔥 7', 'Racha', '#8E5B0C')}{stat('⚡ 120', 'XP', '#6B2A85')}{stat('10/10', 'Meta de hoy', '#141114')}</div>
+  <div style="margin-top:16px;border-radius:20px;background:#141114;color:#fff;padding:16px 18px"><div style="color:#C8A45C;font-size:13px;font-weight:800;letter-spacing:.1em">NIVEL 1</div>
+    <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">El problema</div><div style="font-size:14px;opacity:.75">Distinguir el problema de sus síntomas y probarlo con datos</div></div>
+  {nodo('hecho', 'Problema, síntoma o solución disfrazada', -40)}{nodo('ahora', 'El árbol de problemas', 40)}{nodo('cerrado', '¿A quién le pasa?', -20)}</div>"""
+
 def hojas(color, titulo, partes):
     a = f'<div class="hoja" style="left:930px;top:260px;transform:rotate(8deg);opacity:.9"><div class="k" style="color:{color}">Workbook</div><div class="l" style="width:80%"></div><div class="l"></div><div class="l" style="width:60%"></div></div>'
     b = f'<div class="hoja" style="left:880px;top:220px;transform:rotate(3deg)"><div class="k" style="color:{color}">Vorka México · Kit digital</div><h4>{titulo}</h4>' + ''.join(f'<div style="display:flex;gap:12px;align-items:center;font-size:20px;font-weight:650;margin:14px 0"><span style="width:30px;height:30px;border-radius:9px;background:{color};color:#fff;display:grid;place-items:center;font-size:16px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes)) + '</div>'
@@ -151,6 +172,9 @@ P = {
     tag='Tus préstamos personales', beneficio='Lo que prestas, claro y en orden.', datos=['Intereses claros', 'PDF y Excel', 'Prueba 7 días gratis'], ui=ui_cuentas),
   'vende': dict(**OSCURO, fondo='linear-gradient(140deg,#4D0836 0%,#9C1468 55%,#D63384 100%)', acento='#FFD1EC', pre='', nombre='Vende',
     tag='Venta por catálogo o encargo', beneficio='Clientas, pedidos y cobros en orden.', datos=['Ganancia real', 'WhatsApp listo', 'Gratis para empezar'], ui=ui_vende),
+  # Índigo profundo con oro: no repite el azul de PAA ni los morados de Cupo y del kit Idea → Negocio. og=True: también su imagen para compartir
+  'ruta-de-impacto': dict(**OSCURO, fondo='linear-gradient(140deg,#120E33 0%,#2A2479 55%,#4338CA 100%)', acento='#F5D08A', pre='Ruta de', nombre='Impacto', px=210,
+    tag='Proyectos sociales · 15 a 29 años', beneficio='Tu proyecto social, de la idea a la comunidad.', datos=['6 niveles + final', 'Tutor con pistas', 'Pago único · 1 año'], ui=ui_ruta, og=True),
   'idea-en-orden': dict(**OSCURO, fondo='linear-gradient(140deg,#0B2A17 0%,#14532D 55%,#1F7A44 100%)', acento='#BEF264', pre='Kit', nombre='Idea en Orden',
     tag='Emprendimiento · Nivel 1', beneficio='Ordena tu idea y planea tus próximos 7 días.', datos=['Workbook PDF · 32 págs.', 'Word y Excel', '6 herramientas'],
     hojas=('#1F7A44', 'Idea en Orden', ['Tu idea en una frase', 'El problema y el cliente', 'Matriz de prioridades', 'Plan de 7 días'])),
@@ -190,6 +214,7 @@ def portada(k, p):
 </div>"""
 
 def og(k, p):
+    if 'ui' in p: return og_app(k, p)
     s = SIMS[p['sim']]
     return f"""<style>{CSS}{EXTRA}</style><div class="lienzo t3" style="width:1200px;height:630px;background:{p['fondo']};color:{p['texto']}">
 <div class="glow" style="width:500px;height:500px;right:-100px;top:-160px;background:{p['acento']};opacity:.3"></div>
@@ -201,6 +226,20 @@ def og(k, p):
   <p style="margin:18px 0 0;font-size:30px;line-height:1.2;font-weight:650">{p['beneficio']}</p>
 </div>
 {tel(sim_ui(s), 790, 60, .66, 5)}
+</div>"""
+
+# Imagen para compartir de una app (la de los simuladores, con su pantalla): pre + nombre, beneficio y el celular
+def og_app(k, p):
+    return f"""<style>{CSS}{EXTRA}</style><div class="lienzo t3" style="width:1200px;height:630px;background:{p['fondo']};color:{p['texto']}">
+<div class="glow" style="width:500px;height:500px;right:-100px;top:-160px;background:{p['acento']};opacity:.3"></div>
+<div style="position:absolute;left:64px;top:56px">{marca(24, p)}</div>
+<div style="position:absolute;left:64px;top:140px;width:660px">
+  <span class="tag" style="font-size:24px;background:{p['tagf']};color:{p['texto']}">{p['tag']}</span>
+  {f'<div style="margin-top:22px;font-size:60px;font-weight:800;letter-spacing:-.04em;color:{p["suave"]};line-height:1">{p["pre"]}</div>' if p['pre'] else ''}
+  <h1 style="font-size:130px;color:{p['acento']}">{p['nombre']}</h1>
+  <p style="margin:18px 0 0;font-size:32px;line-height:1.2;font-weight:650">{p['beneficio']}</p>
+</div>
+{tel(p['ui'](), 790, 60, .66, 5)}
 </div>"""
 
 def paso(k, p, cual):
@@ -230,8 +269,9 @@ with sync_playwright() as pw:
     for k, p in P.items():
         if SOLO and k not in SOLO: continue
         foto(f'{k}-portada', portada(k, p), 1600, 1200)
-        if 'sim' in p:
+        if 'sim' in p or p.get('og'):
             foto(f'{k}-og', og(k, p), 1200, 630)
+        if 'sim' in p:
             foto(f'{k}-paso-reloj', paso(k, p, 'reloj'), 1600, 1000)
             foto(f'{k}-paso-tutor', paso(k, p, 'tutor'), 1600, 1000)
     nav.close()
