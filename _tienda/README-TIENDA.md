@@ -310,3 +310,21 @@ App propia en **vende.vorka.mx** (Worker `vende`, repo `vorkamexico/vende`): cli
 - Legales: `/legal/vende/`, `/legal/vende/privacidad/` y `/legal/vende/privacidad-clientas/` (generadas con `legales.py`). **Borrador: revisarlos con un abogado antes de activar la venta.**
 - Los programas patrocinados (marcas, distribuidores, directoras) **no** pasan por la tienda: Vende genera el reporte mensual de vendedoras activas y Vorka factura por fuera.
 - Pruebas: `test/vende.test.js`.
+
+## Agenda (vorka.mx/tienda/agenda) · suscripción por profesional y paquete con Vuelve
+
+Citas en línea para consultorios y negocios de servicios (Diversificación). Aquí solo se vende; la app vive en Vorka OS: el dueño entra por `agenda.vorka.mx` y sus clientes reservan en `vorka.mx/citas/<negocio>` (ver `vorka-os/PLAN-AGENDA.md`).
+
+- Productos (migración 0042, entran **inactivos**): `agenda-mensual` ($99, 1 profesional incluido), `agenda-anual` ($990, oculto), `agenda-profesional-mensual` / `-anual` (complementos ocultos, $99 / $990), y el paquete `agenda-vuelve-mensual` ($449) / `agenda-vuelve-anual` ($4,490), ambos ocultos y vendidos en la ficha. Precios con IVA incluido.
+- `contenido.suscripcion.extras = { profesional, sucursal }` dice qué complementos admite cada plan (Vuelve sigue con su `extra` = sucursal). El checkout recibe `profesionales` (total, 1 incluido) y `sucursales` (solo en el paquete).
+- **Paquete:** la suscripción se guarda con `app = 'agenda-vuelve'` y cuenta para las dos apps (`suscripciones.js › PAQUETES`): `suscripcionApp(correo, 'agenda')` y `suscripcionApp(correo, 'vuelve')` la devuelven con `paquete: 'agenda-vuelve'`, `portalApp` la encuentra desde cualquiera y `lugaresApp(correo, app, n, tipo)` cambia solo el complemento de esa app (`'sucursal'` en Vuelve, `'profesional'` en Agenda). El correo de entrega trae dos botones (Agenda y Vuelve) con el mismo token; `validarAcceso` lo acepta para las dos (`acceso.apps`). No se puede comprar el paquete encima de Vuelve o Agenda sueltas con el mismo correo (ni al revés).
+- La tabla `suscripciones` ganó la columna `profesionales` (adicionales, sin el incluido).
+- Ligas: `vorka.mx/citas/<negocio>` → `os /con/<negocio>`, `/citas/cita/<token>[/calendario.ics]` → `os /cita/…`, `/citas/api/*` → `os /api/citas/publico/*`, `/citas/logo/<id>` → la misma ruta (todo con `x-citas-base: 1`). `vorka.mx/citas/` lleva a `agenda.vorka.mx`. `vorka.mx/agenda/` («Agenda tu diagnóstico») no pasa por el Worker. Condiciones: `/legal/agenda/` y `/legal/agenda/privacidad/` (generadas con `legales.py`); el aviso para clientes vive en `agenda.vorka.mx/citas/privacidad-clientes`.
+- Portada del catálogo `assets/tienda/agenda.webp` e imagen OG `assets/tienda/agenda-og.png` (archivos estáticos del sitio, hechos con Playwright).
+
+**Antes de activar los productos** (en este orden):
+1. Unir el PR de Vorka OS (`agenda-tienda`) y después el de este repo: Workers Builds aplica la migración 0042 y publica la ruta `vorka.mx/citas*`.
+2. Stripe ya tiene el portal y los eventos de suscripción de Vuelve; no hace falta nada nuevo. Revisar solo que el portal de clientes siga **sin cambio de plan** (los profesionales se cambian desde la app).
+3. Si `vuelve-sucursal-mensual` / `-anual` no están activos, el paquete no puede llevar sucursales adicionales hasta activarlos.
+4. Activar desde Vorka OS › Tienda › Productos, o:
+   `npx wrangler d1 execute vorka-tienda --remote --command "UPDATE products SET activo = 1 WHERE slug IN ('agenda-mensual','agenda-anual','agenda-profesional-mensual','agenda-profesional-anual','agenda-vuelve-mensual','agenda-vuelve-anual')"`

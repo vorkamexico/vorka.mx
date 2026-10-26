@@ -24,9 +24,14 @@ export async function crearToken(env, orderId, ahora = Date.now()) {
 
 // Productos de acceso (contenido.acceso, p. ej. Simulador PAA): abren una app en lugar de entregar archivos
 const accesoDe = i => { try { return JSON.parse(i.contenido || '{}').acceso || null; } catch { return null; } };
+const contenidoDe = i => { try { return JSON.parse(i.contenido || '{}'); } catch { return {}; } };
 
 export function correoEntrega(env, orden, items, token) {
   const accesos = items.map(accesoDe);
+  // Suscripción con sus complementos (profesionales de Agenda, sucursales de Vuelve): el botón es el del plan, aunque el
+  // complemento sea de otra app del paquete (la sucursal de Vuelve en Agenda + Vuelve)
+  const plan = items.map(contenidoDe).find(c => c.suscripcion && !c.complemento && c.acceso);
+  if (plan && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, plan.acceso, true);
   // Compra de un solo producto de acceso: el botón entra directo a la app; con archivos, a la página de descargas
   if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0], accesos.every(x => x.app === accesos[0].app && x.url === accesos[0].url));
   const url = `${env.SITE_URL}/descargas/${token}`;
@@ -70,6 +75,8 @@ export const urlEntrar = (env, acceso, token) => acceso.url && /^https:\/\/[a-z0
 function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1) {
   const url = items.length === 1 || mismaApp ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
+  // Paquete: un botón más por cada app que también abre (el mismo token sirve para las dos; ver validarAcceso)
+  const tambien = (items.length === 1 || mismaApp ? acceso.tambien || [] : []).filter(t => /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(t.url || '')).map(t => ({ url: `${t.url}${token}`, boton: t.boton || 'Entrar' }));
   const nombre = orden.nombre.split(' ')[0];
   const intento = acceso.tipo === 'intento', regalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
   const asunto = intento ? 'Tus simulacros adicionales ya están listos' : regalo ? `Tu regalo está activo: ${items[0].nombre}` : `Tu acceso: ${items[0].nombre}`;
@@ -77,6 +84,8 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : regalo ? `¡Te ${orden.proveedor === 'cortesia' ? 'regalamos' : 'regalaron'} ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.` : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
   const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.'
     : acceso.app === 'cupo' ? 'Con este botón entras a Cupo. Tus eventos Pro quedan guardados en tu cuenta y se aplican al publicar cada evento. Para volver a entrar después, usa este mismo correo en os.vorka.mx/cupo.'
+    : acceso.app === 'agenda' ? 'Con este botón entras a Agenda. Tu suscripción ya está activa y tu página de citas sigue tal cual: se renueva sola y la puedes cancelar cuando quieras desde Agenda › Cuenta. Para volver a entrar después, usa este mismo correo en agenda.vorka.mx.'
+    : acceso.app === 'agenda-vuelve' ? 'Con este botón entras a Agenda. Tu paquete ya está activo y abre Agenda y Vuelve con este mismo correo: se renueva solo y lo puedes cancelar cuando quieras desde la app, en Cuenta. Para volver a entrar después, usa este mismo correo en agenda.vorka.mx y en os.vorka.mx/vuelve.'
     : acceso.app === 'vuelve' ? 'Con este botón entras a Vuelve. Tu suscripción ya está activa: se renueva sola y la puedes cancelar cuando quieras desde Vuelve › Cuenta. Para volver a entrar después, usa este mismo correo en os.vorka.mx/vuelve.'
     : acceso.app === 'cuentas' ? 'Con este botón entras a Cuentas. Tu suscripción ya está activa y tus registros siguen tal cual: se renueva cada mes y la puedes cancelar cuando quieras desde Cuentas › Ajustes. Para volver a entrar después, usa este mismo correo en cuentas.vorka.mx.'
     : acceso.app === 'vende' ? 'Con este botón entras a Vende. Tu suscripción a Vende Pro ya está activa y tus clientas, pedidos y cobros siguen tal cual: se renueva sola y la puedes cancelar cuando quieras desde Vende › Ajustes. Para volver a entrar después, usa este mismo correo en vende.vorka.mx.'
@@ -87,7 +96,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
 <p style="${P}">${linea1}</p>
 ${lista(items.map(i => esc(i.nombre) + (i.cantidad > 1 ? ` × ${i.cantidad}` : '')))}
 ${boton(url, boton_)}
-<p style="${P}">${linea2}</p>
+<p style="${P}">${linea2}</p>${tambien.map(t => `\n${boton(t.url, t.boton)}`).join('')}
 <p style="${P}">Si el botón deja de funcionar o cambias de dispositivo, pide un enlace nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con este mismo correo.</p>
 <p style="${P}">¿Algún problema? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a> y lo resolvemos.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
@@ -100,7 +109,7 @@ ${items.map(i => `- ${i.nombre}${i.cantidad > 1 ? ` × ${i.cantidad}` : ''}`).jo
 ${boton_}:
 ${url}
 
-${linea2}
+${linea2}${tambien.map(t => `\n\n${t.boton}:\n${t.url}`).join('')}
 Si deja de funcionar, pide uno nuevo en ${env.SITE_URL}/descargas/reenviar con este mismo correo.
 
 ¿Algún problema? Escríbenos a ${SOPORTE.correo} o por WhatsApp: ${SOPORTE.whatsapp}

@@ -23,7 +23,8 @@ export async function validarAcceso(env, token, app) {
     WHERE t.token_hash = ? AND t.revocado = 0 AND t.expires_at > ? AND o.estado = 'paid'`, await hashToken(env, token), new Date().toISOString());
   if (!t) return null;
   const items = await all(env, 'SELECT p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', t.order_id);
-  if (!items.some(i => accesoDe(i.contenido)?.app === app)) return null;
+  // Un paquete (Agenda + Vuelve) abre cada una de sus apps con el mismo enlace (acceso.apps)
+  if (!items.some(i => { const a = accesoDe(i.contenido); return a?.app === app || a?.apps?.includes(app); })) return null;
   return { order_id: t.order_id, email: t.email, nombre: t.nombre };
 }
 
