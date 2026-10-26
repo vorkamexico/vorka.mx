@@ -328,3 +328,23 @@ Citas en línea para consultorios y negocios de servicios (Diversificación). Aq
 3. Si `vuelve-sucursal-mensual` / `-anual` no están activos, el paquete no puede llevar sucursales adicionales hasta activarlos.
 4. Activar desde Vorka OS › Tienda › Productos, o:
    `npx wrangler d1 execute vorka-tienda --remote --command "UPDATE products SET activo = 1 WHERE slug IN ('agenda-mensual','agenda-anual','agenda-profesional-mensual','agenda-profesional-anual','agenda-vuelve-mensual','agenda-vuelve-anual')"`
+
+## Ruta de Impacto (vorka.mx/tienda/ruta-de-impacto) · pago único y regalable
+
+Curso interactivo para jóvenes de 15 a 29 años que hacen proyectos sociales. Aquí solo se vende; la app vive en Vorka OS con dominio aislado: **ruta.vorka.mx** (ver `vorka-os/PLAN-RUTA-DE-IMPACTO.md`). Decisión de Dirección (26-10-2026): **$99 MXN, pago único, acceso por 1 año, regalable**. Lo recibido va para IMPACTO.
+
+- Producto `prod_ruta_de_impacto` (slug `ruta-de-impacto`, migración `0044_ruta_de_impacto.sql`, categoría **Educación**). **Entra inactivo.** `contenido.acceso = { app: 'ruta', curso: 'jovenes', dias: 365, boton: 'Empezar mi Ruta', url: 'https://ruta.vorka.mx/entrar/' }` y `contenido.regalable`.
+- Ficha: `src/ruta.js` (`/tienda/ruta-de-impacto/`, con `Course` y `FAQPage` en JSON-LD). Mientras el producto está inactivo la ficha se ve sin compra y con `noindex`. Capturas reales de la app en `assets/tienda/ruta/*.webp`; portada e imagen para compartir en `assets/tienda/v3/ruta-de-impacto-portada.webp` y `-og.jpg` (`SOLO=ruta-de-impacto python3 _tienda/simulador/portadas_v3.py`).
+- **Entrega distinta a las demás apps** (`src/ruta-entrega.js`): el enlace no es de la tienda, lo da Vorka OS por el service binding `RUTA` (`vorka-os`, entrypoint `Ruta`):
+  - Compra para uno mismo, cortesía directa o regalo de la tienda ya canjeado → `darAcceso({ correo, nombre, orden, curso, dias })` y el correo lleva el botón **Empezar mi Ruta** con su `enlace` (un solo uso, 7 días).
+  - Compra para regalar → `crearRegalo({ orden, curso, de_nombre, mensaje })` por unidad (la 1.ª con el id de la orden, las demás `id:2`, `id:3`…) y el correo a quien paga lleva las ligas `ruta.vorka.mx/regalo/…`. La tienda no crea ligas propias para Ruta. Reenviar manda **las mismas** ligas (no apaga nada de lo compartido).
+  - Reembolso o contracargo (webhook), *Revocar* del panel o quitar una cortesía → `revocar({ orden, curso })` por unidad. La ficha de la orden en el panel trae `ruta` con `estado({ orden })`.
+  - **Si os no responde, la orden no se pierde:** no se manda correo ni se crea token, la orden queda con la nota `Ruta de Impacto: …` en `orders.revisar` (sale en el panel), se registra `ALERTA ruta` en los registros y el webhook responde 500 para que Stripe reintente. Cuando sale bien, la nota se quita sola. También se puede usar *Reenviar* en la orden.
+- Pruebas: `test/ruta.test.js`.
+
+**Antes de activar** (en este orden):
+1. Unir el PR de este repo: Workers Builds aplica la migración 0044 y publica el binding `RUTA` (Vorka OS ya exporta la clase `Ruta` en `main`).
+2. Confirmar que `ruta.vorka.mx` responde (la app del alumno en Vorka OS).
+3. Una compra de prueba con tarjeta 4242 en el entorno de pruebas: llega «Empezar mi Ruta» y entra a ruta.vorka.mx; un regalo de 1 y su liga; un reembolso que quita el acceso.
+4. Activar desde Vorka OS › Tienda › Productos, o:
+   `npx wrangler d1 execute vorka-tienda --remote --command "UPDATE products SET activo = 1 WHERE slug = 'ruta-de-impacto'"`

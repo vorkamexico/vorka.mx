@@ -2,6 +2,7 @@
 // (service binding a la clase Admin de index.js): no tienen ruta pública.
 // Vorka OS se encarga de que solo el rol Ejecutivo llegue aquí.
 import { z } from 'zod';
+import { revocarRuta, estadoRuta } from './ruta-entrega.js';
 import { all, one, run, ahoraISO } from './util.js';
 import { reenviarEnlace } from './entrega.js';
 import { crearEnlace } from './creadores-acceso.js';
@@ -127,7 +128,9 @@ export async function orden(env, id) {
   // Recordatorio de pago: se puede mandar una sola vez (si no, por qué no)
   const recordatorio = ['pending', 'failed'].includes(o.estado) ? { enviado: o.recordatorio_at, enviados: Number(o.seguimientos) || (o.recordatorio_at ? 1 : 0), maximo: MAX_SEGUIMIENTOS, motivo: await motivoNoRecordar(env, o) } : null;
   const regalos = o.regalo ? await all(env, 'SELECT id, estado, canjeado_email, canjeado_at, created_at FROM regalos WHERE order_id = ? ORDER BY id', o.id) : [];
-  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at, reembolso: await reembolsoDe(env, o, items, tokens) };
+  // Ruta de Impacto: qué dio la orden en ruta.vorka.mx y si el regalo ya se abrió (null si no aplica u os no responde)
+  const ruta = await estadoRuta(env, o, await all(env, 'SELECT i.cantidad, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id));
+  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, ruta, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at, reembolso: await reembolsoDe(env, o, items, tokens) };
 }
 // ¿Se puede reembolsar? (política en vorka.mx/legal/reembolsos): solo si no se usó nada y dentro de 5 días hábiles.
 // Productos de acceso (Simulador PAA): basta con que haya empezado un simulacro, examen o sección. Lo decide el equipo
@@ -156,7 +159,8 @@ export async function reenviar(env, id) {
 
 export async function revocar(env, id) {
   const r = await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ? AND revocado = 0', String(id));
-  return { revocados: r.meta.changes };
+  // Ruta de Impacto: el acceso vive en Vorka OS (si os no responde, el error llega al panel)
+  return { revocados: r.meta.changes, ruta: await revocarRuta(env, String(id)) };
 }
 
 // "Borrar" una orden sin pagar = archivarla: deja de verse en el panel, pero sigue existiendo por si el pago

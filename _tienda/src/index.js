@@ -22,6 +22,7 @@ import { paginaVuelve } from './vuelve.js';
 import { paginaAgenda } from './agenda.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaVende } from './vende.js';
+import { paginaRuta } from './ruta.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual } from './puntos.js';
@@ -276,6 +277,8 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
       if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);
+      // Ruta de Impacto: su ficha propia (el producto es de pago único, pero la página no es la genérica)
+      if (url.pathname === '/tienda/ruta-de-impacto' || url.pathname === '/tienda/ruta-de-impacto/') return url.pathname.endsWith('/') ? await paginaRuta(env, request, url) : Response.redirect(`${url.origin}/tienda/ruta-de-impacto/${url.search}`, 301);
       if (url.pathname === '/tienda/agenda' || url.pathname === '/tienda/agenda/') return url.pathname.endsWith('/') ? await paginaAgenda(env, request, url) : Response.redirect(`${url.origin}/tienda/agenda/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
       if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);

@@ -59,7 +59,9 @@ export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : 
 // Líneas de la tienda según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
 // Una categoría nueva desde el panel aparece sola como línea con su propio nombre.
 const SECCIONES_TIENDA = [
-  { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM y ECOEMS.' },
+  { id: 'examenes', claves: ['examenes', 'educacion', 'proyectos sociales', 'cursos'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM y ECOEMS.',
+    // Con Ruta de Impacto a la venta, la línea también habla del curso (si no, se queda como estaba)
+    variante: { si: p => p.contenido?.acceso?.app === 'ruta', titulo: 'Exámenes y proyectos', texto: 'Simuladores con tutor para tu examen de admisión (PAA, UNAM y ECOEMS) y Ruta de Impacto, el curso para sacar adelante tu proyecto social.' } },
   { id: 'negocios', claves: ['negocios', 'citas', 'agenda', 'lealtad', 'ventas', 'vende', 'kits', 'emprender'], linea: 'Negocios', titulo: 'Herramientas para tu negocio',
     texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen y Vende para tus pedidos y cobros. Pruébalas gratis.' },
   { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',
@@ -73,9 +75,10 @@ export function seccionesCatalogo(productos) {
     const k = sinAcentos(p.categoria);
     const def = SECCIONES_TIENDA.find(s => s.claves.includes(k));
     const id = def?.id || (k ? k.replace(/[^a-z0-9]+/g, '-') : 'mas');
-    if (!grupos.has(id)) grupos.set(id, { id, linea: def?.linea || p.categoria || 'Más', titulo: def?.titulo || p.categoria || 'Más productos', texto: def?.texto || '', productos: [] });
+    if (!grupos.has(id)) grupos.set(id, { id, def, linea: def?.linea || p.categoria || 'Más', titulo: def?.titulo || p.categoria || 'Más productos', texto: def?.texto || '', productos: [] });
     grupos.get(id).productos.push(p);
   }
+  for (const g of grupos.values()) { const v = g.def?.variante; if (v && g.productos.some(v.si)) Object.assign(g, { titulo: v.titulo, texto: v.texto }); delete g.def; }
   // El orden de las secciones sigue al primer producto de cada una (campo "orden" del panel)
   return [...grupos.values()];
 }
@@ -165,7 +168,7 @@ export const seccionCompra = ({ titulo, intro = '', pasos, garantias, form }) =>
 const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f.r}</div></details>`).join('');
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
-const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
+const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['ruta', 'Proyectos · Ruta de Impacto', '/tienda/ruta-de-impacto/'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
   ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
@@ -290,7 +293,7 @@ const SCRIPT_CATALOGO = `(function(){
 // Formulario de compra. Los productos con contenido.regalable muestran "Para mí / Para regalar":
 // al regalar se eligen cuántos (una liga de un solo uso por unidad), para quién y un mensaje.
 // Sin JavaScript también funciona (el bloque de regalo se muestra con :has() y el servidor valida).
-export const formCompra = (p, { error = '', ref = '', regalo = false } = {}) => {
+export const formCompra = (p, { error = '', ref = '', regalo = false, mensajeEjemplo = '¡Mucho éxito en tu examen!' } = {}) => {
   const regalable = !!p.contenido?.regalable;
   return `
 <form class="t-form t-compra${regalable ? ' t-regalable' : ''}" id="form-compra" method="post" action="/api/checkout" novalidate data-unidad="${p.precio_centavos}">
@@ -307,7 +310,7 @@ export const formCompra = (p, { error = '', ref = '', regalo = false } = {}) => 
     <div class="t-cant"><span><b>¿Cuántos regalas?</b><small>Una liga por persona; cada una funciona una sola vez.</small></span>
       <div class="t-cant-c"><button type="button" data-cant="-1" aria-label="Uno menos">−</button><input id="cantidad" name="cantidad" type="number" inputmode="numeric" min="1" max="10" value="1" aria-label="Cantidad de regalos"><button type="button" data-cant="1" aria-label="Uno más">+</button></div></div>
     <div class="t-campo"><label for="regalo_para">¿Para quién es? <small>(opcional)</small></label><input id="regalo_para" name="regalo_para" type="text" maxlength="80" placeholder="Ej. Sofía"></div>
-    <div class="t-campo"><label for="regalo_mensaje">Mensaje en la tarjeta <small>(opcional)</small></label><textarea id="regalo_mensaje" name="regalo_mensaje" maxlength="280" rows="3" placeholder="¡Mucho éxito en tu examen!"></textarea></div>
+    <div class="t-campo"><label for="regalo_mensaje">Mensaje en la tarjeta <small>(opcional)</small></label><textarea id="regalo_mensaje" name="regalo_mensaje" maxlength="280" rows="3" placeholder="${esc(mensajeEjemplo)}"></textarea></div>
   </fieldset>` : ''}
   <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
   <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda" id="ayuda-email">${esAcceso(p) ? 'Aquí te llega tu acceso. Úsalo también para entrar después.' : 'Aquí te llegan tus archivos.'}</small>${regalable ? '<small class="t-ayuda t-ayuda-regalo">Aquí te llegan las ligas de regalo para que las compartas.</small>' : ''}</div>

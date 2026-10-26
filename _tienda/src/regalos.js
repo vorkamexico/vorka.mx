@@ -15,6 +15,7 @@ import { pagina, aviso } from './paginas.js';
 import { dentroDelLimite } from './modelo.js';
 import { simuladorDeContenido } from './simulador/index.js';
 import { FLECHA, LOGO } from './marco.generado.js';
+import { esItemRuta, ligasRegaloRuta, revocarRuta } from './ruta-entrega.js';
 
 const FORMATO = /^[a-f0-9]{64}$/;
 const SIN_REFERER = { 'referrer-policy': 'no-referrer' };
@@ -38,9 +39,14 @@ async function unidades(env, orderId) {
 export async function mandarRegalos(env, orden, { publico = false } = {}) {
   const ya = await all(env, 'SELECT id, product_id, estado FROM regalos WHERE order_id = ?', orden.id);
   if (publico && ya.length) return avisarRegalosEnviados(env, orden, ya);
+  const todas = await unidades(env, orden.id);
+  // Ruta de Impacto: sus ligas las da Vorka OS (ruta.vorka.mx/regalo/…), una por unidad y siempre la misma, así que
+  // reenviarlas no apaga nada de lo ya compartido. Se piden antes de crear ligas de la tienda: si os falla, no queda nada a medias.
+  const deRuta = await ligasRegaloRuta(env, orden, todas.filter(esItemRuta));
+  const rutaAbiertas = deRuta.filter(l => l.abierto).length;
   // Por producto: en un carrito con varios regalables, lo canjeado de uno no puede "gastar" unidades de otro
   const porProducto = new Map();
-  for (const it of await unidades(env, orden.id)) {
+  for (const it of todas.filter(i => !esItemRuta(i))) {
     const x = porProducto.get(it.product_id) || { nombre: it.nombre, cantidad: 0 };
     x.cantidad += it.cantidad || 1;
     porProducto.set(it.product_id, x);
@@ -54,10 +60,14 @@ export async function mandarRegalos(env, orden, { publico = false } = {}) {
     await run(env, 'INSERT INTO regalos (order_id, product_id, token_hash) VALUES (?,?,?)', orden.id, pid, await hashRegalo(env, token));
     ligas.push({ token, producto: it.nombre, url: `${env.SITE_URL}/tienda/regalo/${token}` });
   }
+  const nuevos = ligas.length;   // las de la tienda: si el correo falla, se borran
+  ligas.push(...deRuta.filter(l => !l.abierto));
   if (!ligas.length) return; // todo canjeado: no hay nada que reenviar
-  const nuevos = ligas.length;
+  // Las ligas de Ruta no cambian al reenviar: su idempotencia lleva el momento del envío para que un reenvío sí salga
+  // (los envíos dobles los evita la reserva de entregar(), igual que con las ligas de la tienda, que son nuevas cada vez)
+  const semilla = nuevos ? ligas[0].token : `${ligas.map(l => l.url).join('|')}|${Date.now()}|${Math.random()}`;
   try {
-    await enviar(env, { para: orden.email, ...correoRegalos(env, orden, ligas, canjeadas), idempotencia: `regalo-${(await sha256(ligas[0].token)).slice(0, 32)}` });
+    await enviar(env, { para: orden.email, ...correoRegalos(env, orden, ligas, canjeadas + rutaAbiertas), idempotencia: `regalo-${(await sha256(semilla)).slice(0, 32)}` });
   } catch (e) {
     await run(env, `DELETE FROM regalos WHERE id IN (SELECT id FROM regalos WHERE order_id = ? AND estado = 'pendiente' ORDER BY id DESC LIMIT ?)`, orden.id, nuevos);
     console.error('regalos: correo falló', orden.id, correoOculto(orden.email), e.message);
@@ -95,8 +105,10 @@ export function correoRegalos(env, orden, ligas, canjeadas = 0) {
   const nombre = primerNombre(orden.nombre);
   const varias = ligas.length > 1;
   const producto = ligas[0].producto;
+  // "el Simulador PAA", pero "Ruta de Impacto" (sin artículo)
+  const el = ligas[0].ruta ? '' : 'el ';
   const asunto = varias ? `Tus ${ligas.length} regalos: ${producto}` : `Tu regalo está listo: ${producto}`;
-  const whats = url => `https://wa.me/?text=${encodeURIComponent(`Te regalé el ${producto} de Vorka México 🎁 Ábrelo aquí (solo funciona una vez): ${url}`)}`;
+  const whats = url => `https://wa.me/?text=${encodeURIComponent(ligas[0].ruta ? `Te regalé Ruta de Impacto, un curso para sacar adelante tu proyecto social 🎁 Ábrelo aquí (solo funciona una vez): ${url}` : `Te regalé el ${producto} de Vorka México 🎁 Ábrelo aquí (solo funciona una vez): ${url}`)}`;
   const bloques = ligas.map((l, i) => `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 14px;border:1px solid #e7e5e7;border-radius:16px"><tr><td style="padding:16px 18px">
   <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#6b2a85">${varias ? `Regalo ${i + 1} de ${ligas.length}` : 'Tu liga de regalo'}</p>
@@ -105,15 +117,15 @@ export function correoRegalos(env, orden, ligas, canjeadas = 0) {
 </td></tr></table>`).join('');
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
-<p style="${P}">¡Gracias por regalar el <b>${esc(producto)}</b>! ${varias ? `Aquí están tus ${ligas.length} ligas de regalo: manda <b>una liga a cada persona</b>.` : 'Aquí está tu liga de regalo: mándasela a quien se la quieras regalar.'}</p>
+<p style="${P}">¡Gracias por regalar ${el}<b>${esc(producto)}</b>! ${varias ? `Aquí están tus ${ligas.length} ligas de regalo: manda <b>una liga a cada persona</b>.` : 'Aquí está tu liga de regalo: mándasela a quien se la quieras regalar.'}</p>
 ${bloques}
-<p style="${P}"><b>Importante:</b> cada liga funciona <b>una sola vez</b>. Quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante un año. Después, la liga deja de funcionar, así que nadie más puede usarla.</p>
+<p style="${P}"><b>Importante:</b> cada liga funciona <b>una sola vez</b>. Quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante un año. Después, la liga deja de funcionar, así que nadie más puede usarla.</p>${ligas[0].ruta ? `\n<p style="${P}">Lo recibido va para IMPACTO (<a href="https://soyimpacto.org/" style="color:#6b2a85;text-decoration:underline">soyimpacto.org</a>).</p>` : ''}
 ${canjeadas ? `<p style="${P}">${canjeadas === 1 ? 'Una liga ya se canjeó' : `${canjeadas} ligas ya se canjearon`} y sigue${canjeadas === 1 ? '' : 'n'} funcionando para quien la${canjeadas === 1 ? '' : 's'} abrió. Las ligas de este correo reemplazan a las anteriores que no se habían usado.</p>` : ''}
 <p style="${P}">¿Perdiste este correo? Pide uno nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con el correo de tu compra. ¿Dudas? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a>.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
   const texto = `Hola, ${nombre}:
 
-¡Gracias por regalar el ${producto}! ${varias ? `Manda una liga a cada persona:` : 'Esta es tu liga de regalo:'}
+¡Gracias por regalar ${el}${producto}! ${varias ? `Manda una liga a cada persona:` : 'Esta es tu liga de regalo:'}
 
 ${ligas.map((l, i) => `${varias ? `Regalo ${i + 1}: ` : ''}${l.url}`).join('\n')}
 
@@ -141,11 +153,12 @@ async function leerRegalo(env, token) {
 function describir(r, acceso) {
   let c = {}; try { c = JSON.parse(r.contenido || '{}'); } catch { }
   if (acceso.app === 'simulador' || /simulador/i.test(r.producto)) return { texto: 'simulacros con cronómetro, un tutor que te guía cuando fallas y un reporte de qué reforzar.', chips: ['2 simulacros completos', 'Práctica ilimitada', 'Acceso por un año'] };
+  if (acceso.app === 'ruta') return { texto: 'un curso interactivo para sacar adelante tu proyecto social: lecciones cortas, racha y un tutor que te guía paso a paso.', chips: ['6 niveles y el proyecto final', 'Tutor con pistas', 'Acceso por un año'] };
   if (acceso.app === 'brindi') return { texto: 'una invitación digital con confirmaciones de asistencia y acceso con QR para tu evento.', chips: [acceso.detalle || 'Un evento', 'Se comparte por WhatsApp', 'Confirmaciones y QR'].filter(Boolean) };
   return { texto: r.descripcion_corta || '', chips: acceso.app ? [] : ['Descarga inmediata', 'Queda a tu nombre'] };
 }
 // Para qué es el enlace que le llega por correo
-const entrada = r => { try { const a = JSON.parse(r.contenido || '{}').acceso || {}; return a.app === 'brindi' ? 'crear tu invitación' : a.app ? 'entrar' : 'descargar tus archivos'; } catch { return 'entrar'; } };
+const entrada = r => { try { const a = JSON.parse(r.contenido || '{}').acceso || {}; return a.app === 'brindi' ? 'crear tu invitación' : a.app === 'ruta' ? 'empezar tu Ruta' : a.app ? 'entrar' : 'descargar tus archivos'; } catch { return 'entrar'; } };
 
 // Desde el panel se puede regalar cualquier producto, salvo los complementos que solo suman a otra compra (simulacros adicionales)
 export const regalableCortesia = p => { try { return JSON.parse(p.contenido || '{}').acceso?.tipo !== 'intento'; } catch { return true; } };
@@ -153,6 +166,8 @@ export const regalableCortesia = p => { try { return JSON.parse(p.contenido || '
 // Quitar una cortesía enviada directo: la persona pierde el acceso (sus enlaces de descarga dejan de funcionar
 // y, en Brindi, el plan se retira en la siguiente sincronización, igual que con un reembolso)
 export async function quitarCortesia(env, orderId) {
+  // Ruta de Impacto: primero se quita en Vorka OS (si os no responde, no cambia nada y el panel muestra el error)
+  if (await one(env, "SELECT 1 FROM orders WHERE id = ? AND proveedor = 'cortesia' AND regalo = 0 AND estado = 'paid'", String(orderId))) await revocarRuta(env, String(orderId));
   const r = await run(env, "UPDATE orders SET estado = 'refunded', updated_at = ? WHERE id = ? AND proveedor = 'cortesia' AND regalo = 0 AND estado = 'paid'", ahoraISO(), String(orderId));
   if (!r.meta.changes) throw new Error('Ese regalo ya no estaba activo.');
   await run(env, 'UPDATE download_tokens SET revocado = 1 WHERE order_id = ?', String(orderId));

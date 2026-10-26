@@ -2,6 +2,7 @@
 import { one, all, run, aleatorio, hex, enc, ahoraISO, correoOculto } from './util.js';
 import { marco, boton, lista, enviar, esc, P, SOPORTE } from './correo.js';
 import { mandarRegalos } from './regalos.js';
+import { accesoRuta, esItemRuta } from './ruta-entrega.js';
 
 export const VIGENCIA_DIAS = 7;
 export const MAX_DESCARGAS = 10; // por archivo
@@ -26,14 +27,15 @@ export async function crearToken(env, orderId, ahora = Date.now()) {
 const accesoDe = i => { try { return JSON.parse(i.contenido || '{}').acceso || null; } catch { return null; } };
 const contenidoDe = i => { try { return JSON.parse(i.contenido || '{}'); } catch { return {}; } };
 
-export function correoEntrega(env, orden, items, token) {
+// extra.ruta: { enlace, hasta } que dio Vorka OS para Ruta de Impacto (su botón no usa el token de la tienda)
+export function correoEntrega(env, orden, items, token, extra = {}) {
   const accesos = items.map(accesoDe);
   // Suscripción con sus complementos (profesionales de Agenda, sucursales de Vuelve): el botón es el del plan, aunque el
   // complemento sea de otra app del paquete (la sucursal de Vuelve en Agenda + Vuelve)
   const plan = items.map(contenidoDe).find(c => c.suscripcion && !c.complemento && c.acceso);
   if (plan && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, plan.acceso, true);
   // Compra de un solo producto de acceso: el botón entra directo a la app; con archivos, a la página de descargas
-  if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0], accesos.every(x => x.app === accesos[0].app && x.url === accesos[0].url));
+  if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0], accesos.every(x => x.app === accesos[0].app && x.url === accesos[0].url), extra);
   const url = `${env.SITE_URL}/descargas/${token}`;
   const nombre = orden.nombre.split(' ')[0];
   const productos = items.map(i => i.nombre);
@@ -72,8 +74,10 @@ Vorka México · Guanajuato, México`;
 export const urlEntrar = (env, acceso, token) => acceso.url && /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(acceso.url) ? `${acceso.url}${token}` : `${env.SITE_URL}/${acceso.app}/entrar/${token}`;
 
 // Todo de la misma app (p. ej. un plan de Brindi con complementos): el botón entra directo; si son apps distintas, a la página con un botón por cada una
-function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1) {
-  const url = items.length === 1 || mismaApp ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
+function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1, extra = {}) {
+  // Ruta de Impacto: el botón lleva el enlace de entrada que dio ruta.vorka.mx (un solo uso, 7 días)
+  const ruta = acceso.app === 'ruta' && extra.ruta?.enlace ? extra.ruta : null;
+  const url = ruta ? ruta.enlace : items.length === 1 || mismaApp ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
   // Paquete: un botón más por cada app que también abre (el mismo token sirve para las dos; ver validarAcceso)
   const tambien = (items.length === 1 || mismaApp ? acceso.tambien || [] : []).filter(t => /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(t.url || '')).map(t => ({ url: `${t.url}${token}`, boton: t.boton || 'Entrar' }));
@@ -89,6 +93,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : acceso.app === 'vuelve' ? 'Con este botón entras a Vuelve. Tu suscripción ya está activa: se renueva sola y la puedes cancelar cuando quieras desde Vuelve › Cuenta. Para volver a entrar después, usa este mismo correo en os.vorka.mx/vuelve.'
     : acceso.app === 'cuentas' ? 'Con este botón entras a Cuentas. Tu suscripción ya está activa y tus registros siguen tal cual: se renueva cada mes y la puedes cancelar cuando quieras desde Cuentas › Ajustes. Para volver a entrar después, usa este mismo correo en cuentas.vorka.mx.'
     : acceso.app === 'vende' ? 'Con este botón entras a Vende. Tu suscripción a Vende Pro ya está activa y tus clientas, pedidos y cobros siguen tal cual: se renueva sola y la puedes cancelar cuando quieras desde Vende › Ajustes. Para volver a entrar después, usa este mismo correo en vende.vorka.mx.'
+    : acceso.app === 'ruta' ? `Con este botón empiezas tu Ruta de Impacto${ruta?.hasta ? `; tu acceso es válido hasta el ${fechaLarga(ruta.hasta)}` : ' y tu acceso dura un año'}. El botón funciona una sola vez durante 7 días; después entra en ruta.vorka.mx con este mismo correo y crea tu contraseña. Lo recibido va para IMPACTO (soyimpacto.org).`
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const html = marco(asunto, `
@@ -119,6 +124,8 @@ Vorka México · Guanajuato, México`;
   return { asunto, html, texto };
 }
 
+const fechaLarga = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'long', year: 'numeric' });
+
 // Token nuevo + correo. Si el correo falla, el token se borra (no quedan enlaces que nadie recibió).
 export async function mandarEnlace(env, orderId, ahora = Date.now(), { publico = false } = {}) {
   const orden = await one(env, 'SELECT * FROM orders WHERE id = ?', orderId);
@@ -128,9 +135,12 @@ export async function mandarEnlace(env, orderId, ahora = Date.now(), { publico =
   if (orden.proveedor === 'cortesia' && orden.regalo) return;
   if (orden.regalo) return mandarRegalos(env, orden, { publico });
   const items = await all(env, 'SELECT i.product_id, i.nombre, i.cantidad, p.contenido FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
+  // Ruta de Impacto: primero el acceso en Vorka OS (idempotente por orden). Si os falla, no se crea token ni se manda
+  // correo: el error sube, la orden queda marcada para revisar y el webhook reintenta.
+  const extra = items.some(esItemRuta) ? { ruta: await accesoRuta(env, orden, items) } : {};
   const { token, hash } = await crearToken(env, orderId, ahora);
   try {
-    await enviar(env, { para: orden.email, ...correoEntrega(env, orden, items, token), idempotencia: `entrega-${hash.slice(0, 32)}` });
+    await enviar(env, { para: orden.email, ...correoEntrega(env, orden, items, token, extra), idempotencia: `entrega-${hash.slice(0, 32)}` });
   } catch (e) {
     await run(env, 'DELETE FROM download_tokens WHERE token_hash = ?', hash);
     console.error('entrega: correo falló', orderId, correoOculto(orden.email), e.message);
