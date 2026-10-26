@@ -125,7 +125,7 @@ const SIM_TIENDA = {
 };
 const APPS_TIENDA = {
   vuelve: { nombre: 'Vuelve · Tarjetas de lealtad', precio: p => `${precio(p)} al mes` },
-  vende: { nombre: 'Vende · Pedidos y cobros', precio: p => `Gratis · Pro ${precio(p)} al mes` },
+  vende: { nombre: 'Vende · Pedidos y cobros', precio: p => `Gratis · Pro $${p.precio_centavos / 100}/mes` },   // corto: cabe en un renglón
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
 };
 function vista(p, url, desdeBrindi) {
