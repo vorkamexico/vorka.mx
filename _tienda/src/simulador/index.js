@@ -29,7 +29,7 @@ export async function rutasSimulador(req, env, url) {
 
 // Compatibilidad: quien no dice de qué simulador habla, habla del PAA (el primero)
 export const APP = 'simulador-paa';
-export const cookieAcceso = (env, orderId, venceMs, app = APP) => simuladorDe(app).cookieAcceso(env, orderId, venceMs);
+export const cookieAcceso = (env, orderId, venceMs, app = APP, op = {}) => simuladorDe(app).cookieAcceso(env, orderId, venceMs, op);
 export const ordenConAcceso = (env, orderId, ahora, app = APP) => simuladorDe(app).ordenConAcceso(env, orderId, ahora);
 // Solo puede comprar simulacros o exámenes adicionales quien ya tiene ese simulador (lo revisa /api/checkout)
 export const puedeComprarIntento = (env, email, app = APP) => (simuladorDe(app) || PAA).puedeComprarIntento(env, email);
