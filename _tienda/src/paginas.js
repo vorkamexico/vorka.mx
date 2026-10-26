@@ -61,7 +61,7 @@ const SCRIPT_PUNTOS = `(function(){
 // "¿Alguien te recomendó?" en cualquier formulario de compra: si llegaste con la liga de alguien (Puntos Vorka) ya sale
 // aplicado. Se valida al escribirlo (/api/puntos/liga, con límite por IP); el servidor lo vuelve a revisar al pagar.
 const SCRIPT_SOCIO = `(function(){
-  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
+  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve')||document.getElementById('form-agenda'); if(!f||!window.fetch) return;
   var w=document.createElement('div'); w.className='t-campo t-socio';
   w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Alguien te recomendó?</button><div class="t-socio-c" hidden><label for="codigo">Código de quien te recomendó <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. ANAL3X"><small class="t-ayuda" id="codigo-msj" role="status"></small></div>';
   var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(w);
@@ -141,7 +141,7 @@ ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" cl
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
-${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve|agenda)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

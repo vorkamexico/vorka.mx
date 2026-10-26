@@ -62,6 +62,7 @@ const SECCIONES_TIENDA = [
   { id: 'examenes', claves: ['examenes', 'educacion'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión.' },
   { id: 'invitaciones', claves: ['invitaciones'], linea: 'Celebraciones', titulo: 'Invitaciones digitales', texto: 'Brindi: invitaciones con QR para bodas, XV años y toda celebración, con confirmaciones y control de acceso.' },
   { id: 'eventos', claves: ['eventos'], linea: 'Eventos', titulo: 'Eventos con registro y cover', texto: 'Cupo: la página de tu evento, registro sin cuentas y check-in con QR, gratis hasta 30 personas. Con Pro (desde $99): correos y recordatorios, cover directo a ti y ligas para tus RPs.' },
+  { id: 'citas', claves: ['citas', 'agenda'], linea: 'Citas', titulo: 'Citas en línea para tu negocio', texto: 'Agenda: tus clientes eligen servicio, profesional, día y hora, y su cita queda confirmada al instante. Se paga por profesional. Prueba gratis 7 días.' },
   { id: 'lealtad', claves: ['lealtad'], linea: 'Negocios', titulo: 'Lealtad para tu negocio', texto: 'Vuelve: tarjeta de sellos o puntos en el celular de tus clientes, avisos automáticos y el dinero que te traen de vuelta, medido. Prueba gratis 7 días.' },
   { id: 'vende', claves: ['ventas', 'vende'], linea: 'Ventas', titulo: 'Tu venta por catálogo, en orden', texto: 'Vende: clientas, pedidos, cobros y ganancia real para quien vende por catálogo o por encargo, con el WhatsApp de cada día ya redactado. Gratis para empezar.' },
   { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.' },
@@ -98,6 +99,13 @@ const CUPO = {
   incluye: ['Gratis hasta 30 personas', 'Cupo Pro desde $99 según tu aforo', 'Cover directo a ti y ligas para RPs'],
 };
 const esCupo = p => p.contenido?.acceso?.app === 'cupo';
+// Agenda se cobra por profesional: la tarjeta lo dice junto al precio
+const AGENDA = {
+  nombre: 'Agenda · Citas en línea',
+  texto: 'Tu página de citas: tus clientes eligen servicio, profesional, día y hora, y su cita queda confirmada al instante. Recordatorios por correo y tu día en el celular.',
+  incluye: ['Prueba 7 días gratis, sin tarjeta', 'Confirmación al instante y recordatorios', 'Paquete con Vuelve, la tarjeta de lealtad'],
+};
+const esAgenda = p => p.contenido?.acceso?.app === 'agenda';
 
 // Cómo se presenta cada producto en el catálogo (una sola tarjeta por página de destino)
 function vistas(productos, desdeBrindi) {
@@ -123,6 +131,8 @@ function vista(p, url, desdeBrindi) {
       img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/v3/cupo-portada.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
+    if (esAgenda(p)) return { p, url, nombre: AGENDA.nombre, texto: AGENDA.texto, incluye: AGENDA.incluye, cat: 'Acceso en línea',
+      img: { ...p, imagen: p.imagen || '/assets/tienda/agenda.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
     const sim = p.contenido?.plan && SIM_TIENDA[p.contenido?.acceso?.app];
     return { p, url, nombre: sim ? sim.nombre : p.nombre, texto: sim ? sim.texto : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
@@ -149,7 +159,7 @@ const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
-  ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+  ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
 
@@ -201,8 +211,8 @@ export async function paginaCatalogo(env, req, url) {
   if (lineaT) secciones.sort((a, b) => (b === lineaT) - (a === lineaT));
   const destacado = (lineaT || secciones[0]) && { ...(lineaT || secciones[0]).vistas[0], linea: (lineaT || secciones[0]).linea };
   // Lo nuevo de la tienda (solo si está a la venta): la pastilla de arriba de la portada
-  const lealtad = secciones.find(g => g.id === 'lealtad');
-  const nuevo = lealtad ? { url: lealtad.vistas[0].url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
+  const lealtad = secciones.find(g => g.id === 'lealtad'), citas = secciones.find(g => g.id === 'citas');
+  const nuevo = citas ? { url: citas.vistas[0].url, chip: 'Agenda: citas en línea para tu negocio' } : lealtad ? { url: lealtad.vistas[0].url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
@@ -355,6 +365,11 @@ export async function paginaProducto(env, req, url, slug) {
   if (p?.contenido?.acceso?.app === 'vuelve') {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `/tienda/vuelve/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
+  }
+  // Agenda y su paquete con Vuelve: planes y profesionales en su página única
+  if (['agenda', 'agenda-vuelve'].includes(p?.contenido?.acceso?.app)) {
+    const q = new URLSearchParams(url.search); q.set('plan', p.slug);
+    return new Response(null, { status: 301, headers: { location: `/tienda/agenda/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
   if (p?.contenido?.acceso?.app === 'cupo') {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);

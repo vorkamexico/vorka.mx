@@ -14,7 +14,9 @@
     { "pattern": "vorka.mx/simulador-ecoems*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/cupo*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/brindi*", "zone_name": "vorka.mx" },
-    { "pattern": "vorka.mx/vuelve*", "zone_name": "vorka.mx" }
+    { "pattern": "vorka.mx/vuelve*", "zone_name": "vorka.mx" },
+    // Agenda: las páginas de reservas de cada negocio (vorka.mx/citas/…). vorka.mx/agenda/ es otra página y no pasa por aquí
+    { "pattern": "vorka.mx/citas*", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
     { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
@@ -26,7 +28,7 @@
   // Correos de entrega: por Vorka OS (clase Correo), que ya tiene la llave de Resend
   "services": [
     { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" },
-    // Las páginas de los clientes de Vuelve (vorka.mx/vuelve/…): se traen de Vorka OS sin salir a internet
+    // Las páginas de los clientes de Vuelve (vorka.mx/vuelve/…) y de Agenda (vorka.mx/citas/…): se traen de Vorka OS sin salir a internet
     { "binding": "OS", "service": "vorka-os" }
   ],
   "vars": {

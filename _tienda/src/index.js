@@ -19,6 +19,7 @@ import { rutasSimulador } from './simulador/index.js';
 import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp, VARIANTES } from './brindi.js';
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
+import { paginaAgenda } from './agenda.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaVende } from './vende.js';
 import { cargarTemporada } from './temporadas.js';
@@ -107,12 +108,13 @@ export class Admin extends WorkerEntrypoint {
     return { code, liga: `${this.env.SITE_URL || 'https://vorka.mx'}/tienda/brindi/?ref=${code}`, disponibles: s.disponibles, ventas: n.ventas, pct: n.pct,
       nivel: n.nivel.actual.nombre, siguiente: n.nivel.siguiente ? { nombre: n.nivel.siguiente.nombre, pct: n.nivel.siguiente.pct, faltan: n.nivel.faltan } : null };
   }
-  // Apps por suscripción (Vuelve): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
+  // Apps por suscripción (Vuelve, Agenda y su paquete): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
   // Cuentas: mes gratis por invitar → saldo a favor en el siguiente cobro
   creditoApp(email, app, centavos, motivo) { return creditoApp(this.env, email, app, centavos, motivo); }
-  lugaresApp(email, app, extras) { return lugaresApp(this.env, email, app, extras); }
+  // Complementos de la suscripción: lugares de Vuelve (tipo 'sucursal', el de siempre) o profesionales de Agenda ('profesional')
+  lugaresApp(email, app, extras, tipo) { return lugaresApp(this.env, email, app, extras, tipo); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
   // Puntos Vorka (Socios Vorka quedó integrado aquí): cuentas, nivel y %, transferencia a cuenta (privada) y CSV
   cuentasPuntos(f) { return retiros.cuentasPuntos(this.env, f); }
@@ -141,10 +143,10 @@ export function rutaVuelve(p) {
 }
 // Sin cookies de vorka.mx: solo lo que la página necesita (y la IP, para los límites de registro)
 const PASAN = ['content-type', 'user-agent', 'accept', 'accept-language', 'cf-connecting-ip', 'if-none-match'];
-export async function vuelvePublico(request, env, url) {
-  const destino = rutaVuelve(url.pathname);
-  if (!destino) return new Response(null, { status: 301, headers: { location: `/tienda/vuelve/${url.search}`, 'cache-control': 'no-store' } });
-  const h = new Headers({ 'x-vuelve-base': '1' });
+// Trae de Vorka OS (enlace directo OS) la página o la API de los clientes de un negocio. aviso: el encabezado con el que OS
+// arma sus ligas en la forma de vorka.mx; titulo: el de la página de error si OS no responde.
+async function deOS(request, env, url, destino, { aviso, titulo }) {
+  const h = new Headers({ [aviso]: '1' });
   for (const k of PASAN) { const v = request.headers.get(k); if (v) h.set(k, v); }
   const conCuerpo = !['GET', 'HEAD'].includes(request.method);
   const pedido = new Request(`${APPS}${destino}${url.search}`, { method: request.method, headers: h, body: conCuerpo ? await request.arrayBuffer() : undefined, redirect: 'manual' });
@@ -152,10 +154,41 @@ export async function vuelvePublico(request, env, url) {
     const r = await (env.OS ? env.OS.fetch(pedido) : fetch(pedido));
     return new Response(r.body, r);
   } catch (e) {
-    console.error('vuelve publico', e?.message);
-    return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vuelve</title><p style="font:17px system-ui;padding:40px;text-align:center">No pudimos abrir esta página. Intenta de nuevo en un momento.</p>',
+    console.error(`${titulo.toLowerCase()} publico`, e?.message);
+    return new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${titulo}</title><p style="font:17px system-ui;padding:40px;text-align:center">No pudimos abrir esta página. Intenta de nuevo en un momento.</p>`,
       { status: 503, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'retry-after': '30' } });
   }
+}
+export async function vuelvePublico(request, env, url) {
+  const destino = rutaVuelve(url.pathname);
+  if (!destino) return new Response(null, { status: 301, headers: { location: `/tienda/vuelve/${url.search}`, 'cache-control': 'no-store' } });
+  return deOS(request, env, url, destino, { aviso: 'x-vuelve-base', titulo: 'Vuelve' });
+}
+
+// Agenda: lo que ven los clientes de cada negocio vive en vorka.mx/citas (nunca en os.vorka.mx). La tienda lo trae de Vorka
+// OS por el enlace directo y OS arma sus ligas con esta forma (le avisa x-citas-base). Ver vorka-os/PLAN-AGENDA.md › 5.
+//   /citas/<negocio> → /con/<negocio> (la página de reservas; también las ligas viejas, que OS redirige con 301)
+//   /citas/cita/<token>[/calendario.ics] → /cita/… · /citas/api/… → /api/citas/publico/… · /citas/logo/<id> → la misma ruta
+// El dueño usa la app en agenda.vorka.mx: vorka.mx/citas/ sin negocio lleva ahí. No confundir con vorka.mx/agenda/
+// («Agenda tu diagnóstico», página del sitio que no pasa por este Worker).
+const APP_AGENDA = 'https://agenda.vorka.mx';
+export function rutaCitas(p) {
+  let m;
+  if ((m = p.match(/^\/citas\/cita\/([a-z0-9]{20})(\/calendario\.ics)?\/?$/))) return `/cita/${m[1]}${m[2] || ''}`;
+  if ((m = p.match(/^\/citas\/api\/([a-z0-9/-]+)$/))) return `/api/citas/publico/${m[1]}`;
+  if ((m = p.match(/^\/citas\/logo\/(\d{1,12})$/))) return `/citas/logo/${m[1]}`;
+  if ((m = p.match(/^\/citas\/([a-z0-9-]{3,60})\/?$/i))) return `/con/${m[1].toLowerCase()}`;
+  return null;
+}
+export async function citasPublico(request, env, url) {
+  const p = url.pathname, ir = (destino, codigo = 302) => new Response(null, { status: codigo, headers: { location: destino, 'cache-control': 'no-store' } });
+  // Lo que es de la app del dueño (su enlace del correo, el aviso de privacidad para clientes) está en agenda.vorka.mx
+  const m = p.match(/^\/citas\/entrar\/([a-f0-9]{64})\/?$/);
+  if (m) return ir(`${APP_AGENDA}/entrar/${m[1]}`);
+  if (/^\/citas\/privacidad-clientes\/?$/.test(p)) return ir(`${APP_AGENDA}/citas/privacidad-clientes`, 301);
+  const destino = rutaCitas(p);
+  if (!destino) return ir(`${APP_AGENDA}/`, p === '/citas' || p === '/citas/' ? 301 : 302);
+  return deOS(request, env, url, destino, { aviso: 'x-citas-base', titulo: 'Agenda' });
 }
 
 // Ligas cortas de las apps de eventos: vorka.mx/cupo/<liga> y vorka.mx/brindi/<liga>[/<invitado>] llevan al evento en os.vorka.mx
@@ -207,6 +240,7 @@ async function atender(request, env, ctx, url) {
   try {
     if (url.pathname === '/api/tienda/salud') return json({ ok: true });
     if (/^\/vuelve(\/|$)/.test(url.pathname)) return await vuelvePublico(request, env, url);
+    if (/^\/citas(\/|$)/.test(url.pathname)) return await citasPublico(request, env, url);
     const corta = ligaCorta(url);
     if (corta) return corta;
     // El portal de Socios Vorka ya no existe: todo vive en Puntos Vorka
@@ -242,6 +276,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
       if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);
+      if (url.pathname === '/tienda/agenda' || url.pathname === '/tienda/agenda/') return url.pathname.endsWith('/') ? await paginaAgenda(env, request, url) : Response.redirect(`${url.origin}/tienda/agenda/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
       if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);
       const brv = url.pathname.match(/^\/tienda\/brindi\/([a-z-]{3,20})(\/?)$/);

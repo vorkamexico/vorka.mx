@@ -2,6 +2,8 @@
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
 # Cuentas: /legal/cuentas/ (condiciones) y /legal/cuentas/privacidad/
 # Vuelve: /legal/vuelve/ (condiciones), /legal/vuelve/privacidad/ (negocios) y /legal/vuelve/privacidad-clientes/ (clientes de cada negocio)
+# Agenda: /legal/agenda/ (condiciones) y /legal/agenda/privacidad/ (negocios). El aviso para los clientes de cada negocio vive
+# en la app (agenda.vorka.mx/citas/privacidad-clientes, repo vorka-os) porque se enlaza desde cada reserva.
 # Uso: python3 _tienda/legales.py   (desde la raíz del repo). Mismo diseño que /privacidad.
 import os, re, sys
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -14,6 +16,7 @@ ACTUALIZADO_CUPO = '26 de octubre de 2026'
 ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
 ACTUALIZADO_VENDE = '24 de octubre de 2026'
+ACTUALIZADO_AGENDA = '26 de octubre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -352,6 +355,55 @@ VUELVE_PRIVACIDAD = [
     ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
 ]
 
+# Agenda (citas en línea por suscripción; la app en agenda.vorka.mx y las páginas de reservas en vorka.mx/citas). Mismas bases
+# que Vuelve (LFPDPPP 2025, LFPC: renovación automática informada y cancelación por el mismo medio). Debe revisarlo un abogado.
+MIGAS_AGENDA = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/agenda/">Agenda</a>'
+PRIVACIDAD_CLIENTES_AGENDA = 'https://agenda.vorka.mx/citas/privacidad-clientes'
+AGENDA = [
+    ('quien', 'Quién presta el servicio', f'<p>Agenda es una plataforma de citas en línea (página de reservas, horarios de tu equipo, recordatorios y registro de tus clientes) para consultorios y negocios de servicios, desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y el negocio que usa Agenda (“tú”). Al crear tu cuenta o suscribirte las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/agenda/privacidad/">aviso de privacidad de Agenda</a>.</p>'),
+    ('prueba', 'Prueba gratis', li(
+        'Al crear tu agenda tienes 7 días naturales con todas las funciones, sin dar una tarjeta. No se te cobra nada al terminar.',
+        'Si al terminar la prueba no te suscribes, tu agenda queda en pausa: tu página dice que no recibe citas en línea, pero tus citas, tus clientes y tu configuración se quedan guardados. Te suscribes cuando quieras y todo sigue donde lo dejaste.')),
+    ('suscripcion', 'Suscripción, precio y renovación automática', li(
+        'El plan es <b>mensual o anual</b>, en pesos mexicanos con IVA incluido, e incluye un profesional (la persona que atiende las citas). Cada profesional adicional se suma a tu plan con el mismo periodo. El precio vigente se muestra en <a href="/tienda/agenda/">vorka.mx/tienda/agenda</a> antes de pagar.',
+        'El <b>paquete Agenda + Vuelve</b> es una sola suscripción que abre las dos apps con el mismo correo. Incluye un profesional de Agenda y una sucursal de Vuelve; lo adicional se suma con el precio de cada app. Para Vuelve aplican además las <a href="/legal/vuelve/">condiciones de Vuelve</a>.',
+        '<b>La suscripción se renueva sola</b> al final de cada periodo y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
+        'Si agregas o quitas profesionales a mitad de un periodo, Stripe calcula la parte proporcional y la suma o la descuenta en tu siguiente cobro.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto tu agenda sigue funcionando. Si no se logra cobrar, la suscripción se cancela y tu agenda queda en pausa.',
+        'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
+        'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
+    ('cancelar', 'Cancelación y reembolsos', li(
+        'Cancelas cuando quieras desde Agenda › Cuenta › Administrar mi suscripción, sin llamadas ni trámites. Tu agenda sigue activa hasta el final del periodo que ya pagaste; no se hacen cobros nuevos.',
+        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo que una falla atribuible a Agenda te impida usarla y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al primer cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
+    ('citas', 'Tus citas y tus compromisos con tus clientes', li(
+        'Tú defines tus servicios, horarios, precios informativos y reglas para cambiar o cancelar. <b>Frente a tus clientes, la cita y el servicio los das tú.</b> Vorka solo presta la herramienta y no cobra las citas: tus clientes te pagan directo.',
+        'Revisa que tu horario y tus días bloqueados estén al día: Agenda ofrece las horas libres según lo que configuraste.',
+        'Si cancelas o cambias una cita, avísale a tu cliente; Agenda le manda un correo si dejó el suyo.')),
+    ('clientes', 'Datos de tus clientes', f'<p>Tú eres el <b>responsable</b> de los datos de las personas que agendan contigo (nombre, WhatsApp, correo opcional, sus citas y tus notas) y decides para qué los usas; Vorka los trata <b>solo por tu cuenta</b> (como encargado) para prestarte el servicio: mostrar tu página, apartar sus citas, mandarles su confirmación y sus recordatorios, y darte su historial. En cada reserva Agenda muestra un <a href="{PRIVACIDAD_CLIENTES_AGENDA}">aviso de privacidad para clientes</a> y pide su aceptación. Te comprometes a usar esos datos solo para atender sus citas, a no venderlos, a no usarlos para publicidad que no aceptaron y a atender sus peticiones de corregir o borrar sus datos. Vorka no usa los datos de tus clientes para nada más ni los comparte con otros negocios.</p>'),
+    ('avisos', 'Correos, recordatorios y disponibilidad', '<p>Los recordatorios por correo (24 y 2 horas antes) llegan solo a quien dejó su correo, y su entrega depende de proveedores de correo y de la bandeja de cada persona, así que no garantizamos que cada correo se vea. El botón «Recordar por WhatsApp» abre WhatsApp en tu celular con el mensaje listo: lo mandas tú desde tu número. Hacemos lo razonable para que Agenda esté disponible siempre, pero puede haber interrupciones por mantenimiento o fallas de terceros.</p>'),
+    ('uso', 'Uso aceptable', li(
+        'Solo para negocios reales y lícitos. No se permite usar Agenda para spam, para ofrecer servicios que no prestas, para suplantar a otro negocio ni para recabar datos de personas sin su conocimiento.',
+        'Podemos suspender una cuenta que incumpla estas reglas; te avisaremos el motivo. Si la suspensión fue por un error nuestro, te reembolsamos el periodo afectado.')),
+    ('conservacion', 'Qué pasa con tus datos si te vas', '<p>Si cancelas o tu prueba termina sin suscripción, conservamos tu agenda, tus citas y tus clientes 90 días después del fin de tu último periodo, por si vuelves. Después se borran de forma definitiva, salvo lo que la ley nos obligue a conservar (por ejemplo, tus facturas). Puedes pedir que lo borremos antes.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes de México.</p>'),
+]
+
+AGENDA_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de los negocios y de las personas que los administran en Agenda. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. Si agendaste una cita con un negocio que usa Agenda, consulta el <a href="{PRIVACIDAD_CLIENTES_AGENDA}">aviso para clientes</a>.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Cuenta:</b> correo electrónico y, si la creas, tu contraseña (guardada cifrada de forma irreversible).',
+        '<b>Tu negocio:</b> nombre, giro, logo, color, dirección o si atiendes en línea, WhatsApp, tus servicios, horarios y los nombres de los profesionales de tu equipo.',
+        '<b>Suscripción:</b> plan, número de profesionales, monto, fechas y estado de tus pagos. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Uso y seguridad:</b> bitácora de acciones y una huella cifrada e irreversible de tu dirección IP para limitar intentos repetidos.') + '<p>No pedimos datos personales sensibles.</p>'),
+    ('finalidades', 'Para qué los usamos', '<p><b>Finalidades necesarias:</b> crear y mantener tu cuenta; prestar el servicio; cobrar tu suscripción y emitir facturas; enviarte correos de tu cuenta (accesos, citas nuevas, canceladas o cambiadas, avisos de cobro); darte soporte y cumplir obligaciones legales; mantener la seguridad y obtener estadísticas agregadas que no te identifican. <b>Finalidad opcional:</b> enviarte novedades de Vorka México. Puedes negarte escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> sin que eso afecte tu servicio.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos tus datos. Usamos proveedores que los tratan solo por nuestra cuenta: <b>Cloudflare</b> (alojamiento, base de datos e imágenes), <b>Stripe</b> (cobro de la suscripción), y <b>Amazon Web Services</b> (Amazon SES), <b>Resend</b> y <b>Brevo</b> (correos), algunos con servidores fuera de México. Tu nombre comercial, logo, dirección, WhatsApp, servicios y horarios se muestran a tus clientes en tu página de citas.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde tu cuenta. Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('conservacion', 'Cuánto tiempo los conservamos', li('Cuenta y agenda: mientras uses Agenda y hasta 90 días después del fin de tu último periodo.', 'Suscripción y facturación: durante los plazos fiscales (al menos 5 años).', 'Huellas de IP: se borran a más tardar 2 días después.')),
+    ('cookies', 'Cookies', '<p>La app usa una sola cookie necesaria (<code>vag</code>) para mantener tu sesión. Las páginas de reservas de tus clientes no usan cookies de rastreo.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
 # Cuentas (registro de préstamos personales por suscripción, en cuentas.vorka.mx). Mismas bases que Vuelve (LFPDPPP 2025,
 # LFPC: renovación automática informada y cancelación por el mismo medio). Aquí además: no es entidad financiera. Debe revisarlo un abogado.
 MIGAS_CUENTAS = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/cuentas/">Cuentas</a>'
@@ -545,3 +597,9 @@ escribir('/legal/vende/privacidad/', pagina('/legal/vende/privacidad/', 'Aviso d
 escribir('/legal/vende/privacidad-clientas/', pagina('/legal/vende/privacidad-clientas/', 'Aviso de privacidad para clientas', 'Aviso de privacidad para <span class="metal">clientas.</span>',
     'Tu vendedora lleva tus pedidos y pagos con Vende. Esto es lo que pasa con tus datos.', 'Vende · Clientas', VENDE_CLIENTAS,
     aplica='Aplica a las clientas registradas por una vendedora en Vende', migas=MIGAS_VENDE, actualizado=ACTUALIZADO_VENDE))
+escribir('/legal/agenda/', pagina('/legal/agenda/', 'Condiciones de Agenda', 'Condiciones de <span class="metal">Agenda.</span>',
+    'El contrato entre Vorka México y el negocio que usa Agenda: prueba gratis, suscripción por profesional con renovación automática, el paquete con Vuelve, cancelación, tus citas y los datos de tus clientes.', 'Agenda', AGENDA,
+    aplica='Aplica a los negocios que usan Agenda', migas=MIGAS_AGENDA, actualizado=ACTUALIZADO_AGENDA))
+escribir('/legal/agenda/privacidad/', pagina('/legal/agenda/privacidad/', 'Aviso de privacidad de Agenda', 'Aviso de privacidad de <span class="metal">Agenda.</span>',
+    'Qué datos tratamos de los negocios que usan Agenda, para qué y cómo ejercer tus derechos.', 'Agenda · Negocios', AGENDA_PRIVACIDAD,
+    aplica='Aplica a los negocios que usan Agenda', migas=MIGAS_AGENDA, actualizado=ACTUALIZADO_AGENDA))

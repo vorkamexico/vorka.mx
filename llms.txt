@@ -20,7 +20,7 @@ Contacto: vorkamexico@gmail.com · +52 81 1780 4869 · https://vorka.mx/agenda/
 - [Simulador ECOEMS](https://vorka.mx/simulador-ecoems/): simulador en línea del examen para entrar a las prepas de la UNAM y del IPN (proceso «Mi derecho, mi lugar»): 128 reactivos en 3 horas con Habilidad verbal, Habilidad matemática y 8 materias de secundaria, tutor con pistas, explicación paso a paso y aciertos estimados por materia.
 - [Brindi](https://vorka.mx/tienda/brindi/): invitaciones digitales con QR para bodas, XV años, bautizos, graduaciones y posadas.
 - [Idea en orden](https://vorka.mx/tienda/idea-en-orden/) y [kit para validar tu idea de negocio](https://vorka.mx/tienda/idea-negocio-kit-para-validar-tu-idea-y-hacer-tus-numeros/): herramientas para emprender.
-- Apps para negocios: [Cupo](https://vorka.mx/tienda/cupo/) (eventos), [Vuelve](https://vorka.mx/tienda/vuelve/) (lealtad), [Vende](https://vorka.mx/tienda/vende/) (catálogo para vendedoras) y [Cuentas](https://vorka.mx/tienda/cuentas/).
+- Apps para negocios: [Cupo](https://vorka.mx/tienda/cupo/) (eventos), [Agenda](https://vorka.mx/tienda/agenda/) (citas en línea para consultorios y negocios de servicios: $99 MXN al mes por profesional, prueba de 7 días; paquete con Vuelve), [Vuelve](https://vorka.mx/tienda/vuelve/) (lealtad), [Vende](https://vorka.mx/tienda/vende/) (catálogo para vendedoras) y [Cuentas](https://vorka.mx/tienda/cuentas/).
 - [hey maya](https://vorka.mx/heymaya/): plataforma para que los colaboradores compartan ideas, quejas y alertas de forma anónima, con IA que las prioriza; ayuda a cumplir la NOM-035.
 
 ## Comunidad

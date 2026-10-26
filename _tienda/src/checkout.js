@@ -8,7 +8,7 @@ import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
 import { productoPorSlug, afiliadoActivo } from './modelo.js';
 import { cuentaActual, saldoDe } from './puntos.js';
-import { suscripcionDe, itemsSuscripcion, vigente } from './suscripciones.js';
+import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -33,6 +33,8 @@ export const EsquemaCheckout = z.object({
   usar_puntos: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
   // Suscripciones (Vuelve): sucursales adicionales a la incluida en el plan
   sucursales: z.coerce.number().int().min(0).max(20, 'Hasta 20 sucursales adicionales; para más, escríbenos.').optional(),
+  // Agenda: cuántos profesionales atienden en total (1 viene incluido; los demás se cobran como profesional adicional)
+  profesionales: z.coerce.number().int().min(1, 'Elige al menos un profesional.').max(50, 'Hasta 50 profesionales; para más, escríbenos.').optional(),
 }).refine(d => d.slug || d.items, { message: 'Falta el producto.', path: ['slug'] });
 
 // Límites: por IP 10 intentos / 10 min, por correo 5 / 10 min
@@ -68,7 +70,7 @@ export async function checkout(req, env) {
 
   // Varias unidades del mismo producto solo tienen sentido al regalar (o en el carrito con items)
   let items = d.items || [{ slug: d.slug, cantidad: d.regalo ? (d.cantidad || 1) : 1 }];
-  // Suscripción: un solo plan por compra (+ sucursales adicionales del mismo intervalo); sin regalos ni puntos
+  // Suscripción: un solo plan por compra (+ sus complementos del mismo intervalo: sucursales o profesionales); sin regalos ni puntos
   const subs = [];
   for (const it of items) { const p = await productoPorSlug(env, it.slug); if (suscripcionDe(p)) subs.push(p); }
   if (subs.length) {
@@ -76,10 +78,20 @@ export async function checkout(req, env) {
     if (items.length > 1 || plan.contenido.complemento) return error('Elige un solo plan; las sucursales adicionales se agregan junto con él.');
     if (d.regalo) return error('Las suscripciones no se pueden regalar.');
     if (d.usar_puntos) return error('Los puntos no se pueden usar en suscripciones.');
-    if (await vigente(env, d.email, plan.contenido.acceso?.app))
+    // Un paquete (Agenda + Vuelve) choca con la suscripción suelta de cualquiera de sus apps, y al revés
+    const acceso = plan.contenido.acceso || {};
+    for (const app of acceso.apps || [acceso.app]) {
+      const ya = await vigente(env, d.email, app);
+      if (!ya) continue;
+      if (ya.app !== acceso.app) return error(`Con este correo ya pagas ${ya.app === 'agenda-vuelve' ? 'el paquete Agenda + Vuelve' : app === 'vuelve' ? 'Vuelve' : 'Agenda'}. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble.`, 409);
       return error('Ya tienes una suscripción activa con este correo. Adminístrala desde la app, en Cuenta.', 409);
-    try { items = await itemsSuscripcion(env, plan, d.sucursales || 0); }
-    catch { return error('Las sucursales adicionales no están disponibles por ahora.'); }
+    }
+    try { items = await itemsSuscripcion(env, plan, { profesional: Math.max(0, (d.profesionales || 1) - 1), sucursal: d.sucursales || 0 }); }
+    catch (e) {
+      const tiene = !!extrasDe(suscripcionDe(plan))[e.message];
+      if (e.message === 'profesional') return error(tiene ? 'Los profesionales adicionales no están disponibles por ahora.' : 'Este plan no lleva profesionales adicionales.');
+      return error(tiene ? 'Las sucursales adicionales no están disponibles por ahora.' : 'Este plan no lleva sucursales de Vuelve; déjalas en 0.');
+    }
   }
   for (const it of items) {
     const p = await productoPorSlug(env, it.slug);
