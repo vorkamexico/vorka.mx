@@ -48,3 +48,12 @@
 # Equipo Vorka: la página de Ximena vive en su dirección corta
 /equipo/ximena-pastor        /ximepastor/        301
 /equipo/ximena-pastor/*      /ximepastor/        301
+
+# Ana Laura Hernández: enlaces que traían sus diseños de Canva
+/anaoleynick/anaoleynicktalleres          /anaoleynick/talleres/      301
+/anaoleynick/anaoleynicktalleres/         /anaoleynick/talleres/      301
+/anaoleynicktalleres                      /anaoleynick/talleres/      301
+/anaoleynicktrayectoria/portafolio        /anaoleynick/portafolio/    301
+/anaoleynicktrayectoria/portafolio/       /anaoleynick/portafolio/    301
+/anaoleynicktrayectoria                   /anaoleynick/trayectoria/   301
+/anaoleynicktrayectoria/                  /anaoleynick/trayectoria/   301
