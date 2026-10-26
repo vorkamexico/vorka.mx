@@ -282,7 +282,7 @@ export async function canjearRegalo(req, env) {
   const acceso = sim ? await sim.ordenConAcceso(env, id) : null;
   if (!acceso) return json({ ok: true, mensaje: `Te enviamos a <b>${esc(correoOculto(d.email))}</b> el enlace para ${esc(entrada(r))}. Revisa también tu carpeta de spam.` });
   const destino = (() => { try { return JSON.parse(r.contenido || '{}').acceso?.ruta || '/'; } catch { return '/'; } })();
-  return json({ ok: true, url: destino }, 200, { 'set-cookie': await sim.cookieAcceso(env, id, acceso.vence) });
+  return json({ ok: true, url: destino }, 200, { 'set-cookie': await sim.cookieAcceso(env, id, acceso.vence, { ua: req.headers.get('user-agent') || '' }) });
 }
 
 // ---------- cortesías: accesos gratis que regala Vorka México desde el panel ----------

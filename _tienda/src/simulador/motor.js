@@ -2,7 +2,8 @@
 // (paa.js, unam.js, …) y aquí vive lo que comparten: acceso con cookie firmada, intentos, resultados y la app.
 //
 // /<app>/                 → la app si hay acceso; si no, página de venta con el botón a la tienda
-// /<app>/entrar/<token>   → valida el token del correo de compra y deja la cookie de acceso
+// /<app>/entrar/<token>   → valida el token del correo de compra y deja la cookie de acceso (la primera vez que se usa
+//                           esa liga; si ya se usó, pide un código que llega al correo del dueño). POST: código.
 // /<app>/app.js|app.css   → cliente (público: no trae respuestas)
 // /api/<app>/banco        → reactivos con respuestas y explicaciones (solo con acceso) y la configuración del examen
 // /api/<app>/yo           → nombre, correo e historial de resultados
@@ -11,14 +12,19 @@
 // /api/<app>/abandonar    → POST cierra el simulacro abierto (el intento ya se gastó)
 // /api/<app>/salir        → POST borra la cookie
 //
-// Acceso: cookie HttpOnly firmada con HMAC (DOWNLOAD_TOKEN_SECRET). En cada petición se revisa en D1 que la orden
-// siga pagada (un reembolso corta el acceso) y que esté dentro de su año de vigencia. Todo se suma por correo del comprador.
+// Acceso: cookie HttpOnly firmada con HMAC (DOWNLOAD_TOKEN_SECRET) que lleva el id del dispositivo. En cada petición se
+// revisa en D1 que la orden siga pagada (un reembolso corta el acceso), que esté dentro de su año de vigencia y que el
+// dispositivo siga activo. Todo se suma por correo del comprador.
+// Cuentas compartidas: máximo MAX_DISPOSITIVOS por correo y simulador. Al entrar uno más se cierra el que lleva más
+// tiempo sin usarse y se avisa al dueño; una liga del correo entra directo solo la primera vez (luego pide código).
 //
 // Planes por simulador: "Práctica ilimitada" (Calentamientos, Medios y práctica sin límite), "Simulador completo"
 // (exámenes completos) y el "Paquete" (los dos). Adicionales: "intento" suma 1 Medio y "examen" suma 1 examen oficial.
-import { one, all, run, json, fail, enc, hex, iguales } from '../util.js';
+import { one, all, run, json, fail, enc, hex, iguales, aleatorio, sha256, correoOculto } from '../util.js';
 import { hashToken } from '../entrega.js';
-import { pagina, aviso, nonce, seguridad } from '../paginas.js';
+import { pagina, aviso, nonce, seguridad, esc } from '../paginas.js';
+import { dentroDelLimite } from '../modelo.js';
+import { enviar, marco, boton, P } from '../correo.js';
 import { FLECHA, CHECK, LOGO, VERSION } from '../marco.generado.js';
 import { APP_JS, APP_CSS } from './cliente.generado.js';
 
@@ -26,6 +32,16 @@ export const VIGENCIA_DIAS = 365;
 const MAX_RESULTADO = 60_000;   // bytes de JSON por resultado
 const MAX_HISTORIAL = 60;       // resultados que se guardan por compra
 const ILIMITADO = 9999;
+export const MAX_DISPOSITIVOS = 2;
+const CODIGO_MIN = 15;          // vigencia del código para entrar desde otro dispositivo
+const CODIGO_INTENTOS = 5;
+const codigo6 = () => { const b = new Uint32Array(1); do crypto.getRandomValues(b); while (b[0] >= 4294000000); return String(b[0] % 1e6).padStart(6, '0'); };
+// "iPhone · Safari": solo para que el dueño reconozca el dispositivo en el aviso
+function etiquetaDe(ua = '') {
+  const so = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /Linux/.test(ua) ? 'Linux' : 'otro dispositivo';
+  const nav = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : '';
+  return nav ? `${so} · ${nav}` : so;
+}
 const OS = 'https://os.vorka.mx'; // boletín de la Revista Sparks
 const SIN_REFERER = { 'referrer-policy': 'no-referrer' };
 const versionDe = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
@@ -54,14 +70,47 @@ export function crearSimulador(c) {
     const llave = await crypto.subtle.importKey('raw', enc.encode(env.DOWNLOAD_TOKEN_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
     return hex(await crypto.subtle.sign('HMAC', llave, enc.encode(`${c.firma}|${texto}`)));
   }
-  async function cookieAcceso(env, orderId, venceMs) {
+  // Cookie de un dispositivo nuevo de esta compra (lo registra; si ya hay MAX_DISPOSITIVOS, cierra el más antiguo)
+  async function cookieAcceso(env, orderId, venceMs, { ua = '' } = {}) {
+    const orden = await one(env, 'SELECT email FROM orders WHERE id = ?', orderId);
+    const dev = await nuevoDispositivo(env, String(orden?.email || '').toLowerCase(), ua);
+    return cookieDe(env, orderId, venceMs, dev);
+  }
+  async function cookieDe(env, orderId, venceMs, dev) {
     const exp = Math.floor(venceMs / 1000);
-    const valor = `${orderId}.${exp}.${await firma(env, `${orderId}.${exp}`)}`;
+    const valor = `${orderId}.${exp}.${dev}.${await firma(env, `${orderId}.${exp}.${dev}`)}`;
     const maxAge = Math.max(0, exp - Math.floor(Date.now() / 1000));
     return `${COOKIE}=${valor}; Max-Age=${maxAge}; Path=/; Secure; HttpOnly; SameSite=Lax`;
   }
   const cookieBorrar = () => `${COOKIE}=; Max-Age=0; Path=/; Secure; HttpOnly; SameSite=Lax`;
   const leerCookie = req => { const m = (req.headers.get('cookie') || '').match(new RegExp(`(?:^|;\\s*)${COOKIE}=([^;]+)`)); return m ? m[1] : null; };
+  // { orderId, exp, dev } si la cookie es de este simulador y su firma es buena (no revisa la orden ni el dispositivo)
+  async function cookieValida(env, req, ahora = Date.now()) {
+    const k = leerCookie(req);
+    const m = k && k.match(/^([0-9a-f-]{36})\.(\d{9,11})\.([0-9a-f]{32})\.([0-9a-f]{64})$/);
+    if (!m) return null;
+    const [, orderId, exp, dev, sig] = m;
+    if (Number(exp) * 1000 < ahora) return null;
+    if (!iguales(sig, await firma(env, `${orderId}.${exp}.${dev}`))) return null;
+    return { orderId, exp: Number(exp), dev };
+  }
+
+  // ---------- dispositivos ----------
+  async function nuevoDispositivo(env, email, ua) {
+    const id = aleatorio(16), ahora = new Date().toISOString(), etiqueta = etiquetaDe(ua);
+    await run(env, 'INSERT INTO simulador_dispositivos (id, email, app, etiqueta, creado_at, usado_at) VALUES (?,?,?,?,?,?)', id, email, APP, etiqueta, ahora, ahora);
+    // Se quedan los MAX_DISPOSITIVOS usados más recientemente (el nuevo es el más reciente)
+    const activos = await all(env, 'SELECT id FROM simulador_dispositivos WHERE email = ? AND app = ? AND revocado_at IS NULL ORDER BY usado_at DESC, rowid DESC', email, APP);
+    const sobran = activos.slice(MAX_DISPOSITIVOS);
+    for (const d of sobran) await run(env, "UPDATE simulador_dispositivos SET revocado_at = ?, motivo = 'limite' WHERE id = ?", ahora, d.id);
+    if (sobran.length) await avisoNuevoDispositivo(env, email, etiqueta).catch(e => console.error('simulador: aviso de dispositivo', e?.message));
+    return id;
+  }
+  async function avisoNuevoDispositivo(env, email, etiqueta) {
+    await enviar(env, { para: email, asunto: `Tu ${c.titulo} se abrió en otro dispositivo`, idempotencia: `sim-disp-${aleatorio(8)}`,
+      html: marco('Se abrió tu simulador en otro dispositivo', `<p style="${P}">Alguien entró a tu ${esc(c.titulo)} desde <b>${esc(etiqueta)}</b>. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos a la vez, así que cerramos la sesión en el que tenía más tiempo sin usarse.</p><p style="${P}">Si fuiste tú, no tienes que hacer nada. Si no, no compartas los enlaces de tus correos de Vorka: son tu llave de entrada. ¿Dudas? Escríbenos a hola@vorka.mx.</p>`, { etiqueta: 'Simulador' }),
+      texto: `Alguien entró a tu ${c.titulo} desde ${etiqueta}. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos a la vez, así que cerramos la sesión en el que tenía más tiempo sin usarse.\n\nSi fuiste tú, no tienes que hacer nada. Si no, no compartas los enlaces de tus correos de Vorka. ¿Dudas? hola@vorka.mx` });
+  }
 
   const accesoDeItem = x => { try { const a = JSON.parse(x || '{}').acceso; return a?.app === APP ? a : null; } catch { return null; } };
   // Compras pagadas de este correo con productos de este simulador: [{ orden_id, paid_at, cantidad, acceso }]
@@ -121,14 +170,16 @@ export function crearSimulador(c) {
   // Solo puede comprar simulacros adicionales quien ya tiene el simulador (lo revisa /api/checkout)
   async function puedeComprarIntento(env, email) { return (await comprasDe(env, email)).some(esBase); }
 
+  // { orden, vence, dispositivo } si hay acceso; { cerrada: true } si este dispositivo se cerró (entró otro); o null
   async function accesoDe(env, req, ahora = Date.now()) {
-    const k = leerCookie(req);
-    const m = k && k.match(/^([0-9a-f-]{36})\.(\d{9,11})\.([0-9a-f]{64})$/);
-    if (!m) return null;
-    const [, orderId, exp, sig] = m;
-    if (Number(exp) * 1000 < ahora) return null;
-    if (!iguales(sig, await firma(env, `${orderId}.${exp}`))) return null;
-    return ordenConAcceso(env, orderId, ahora);
+    const k = await cookieValida(env, req, ahora);
+    if (!k) return null;
+    const [a, d] = await Promise.all([ordenConAcceso(env, k.orderId, ahora),
+      one(env, 'SELECT email, usado_at, revocado_at FROM simulador_dispositivos WHERE id = ? AND app = ?', k.dev, APP)]);
+    if (!a || !d || d.email !== String(a.orden.email).toLowerCase()) return null;
+    if (d.revocado_at) return { cerrada: true };
+    if (Date.parse(d.usado_at) < ahora - 3600e3) await run(env, 'UPDATE simulador_dispositivos SET usado_at = ? WHERE id = ?', new Date(ahora).toISOString(), k.dev);
+    return { ...a, dispositivo: k.dev };
   }
 
   // ---------- rutas ----------
@@ -140,15 +191,22 @@ export function crearSimulador(c) {
     if (p === `${RUTA}/app.js`) return estatico(APP_JS, 'text/javascript; charset=utf-8');
     if (p === `${RUTA}/app.css`) return estatico(APP_CSS, 'text/css; charset=utf-8');
     const ent = p.match(new RegExp(`^${RUTA}/entrar/([^/]{1,100})/?$`));
-    if (ent && (M === 'GET' || M === 'HEAD')) return entrar(env, ent[1]);
+    if (ent && (M === 'GET' || M === 'HEAD' || M === 'POST')) return entrar(env, req, ent[1]);
     if ((p === RUTA || p === `${RUTA}/`) && (M === 'GET' || M === 'HEAD')) {
       if (p === RUTA) return Response.redirect(`${url.origin}${RUTA}/`, 301);
       const a = await accesoDe(env, req);
+      if (a?.cerrada) return sesionCerrada();
       return a ? appShell(a) : c.venta(env, req, url);
     }
     if (p.startsWith(`${API}/`)) {
-      if (p === `${API}/salir` && M === 'POST') return json({ ok: true }, 200, { 'set-cookie': cookieBorrar() });
+      if (p === `${API}/salir` && M === 'POST') {
+        // Cerrar sesión libera el lugar de este dispositivo
+        const k = await cookieValida(env, req);
+        if (k) await run(env, "UPDATE simulador_dispositivos SET revocado_at = ?, motivo = 'salir' WHERE id = ? AND app = ? AND revocado_at IS NULL", new Date().toISOString(), k.dev, APP);
+        return json({ ok: true }, 200, { 'set-cookie': cookieBorrar() });
+      }
       const a = await accesoDe(env, req);
+      if (a?.cerrada) return fail(`Tu sesión se cerró porque tu cuenta se abrió en otro dispositivo (máximo ${MAX_DISPOSITIVOS}). Entra de nuevo con el enlace de tu correo.`, 401);
       if (!a) return fail('Tu acceso no está activo. Entra con el enlace de tu correo de compra.', 401);
       if (p === `${API}/banco` && M === 'GET')
         return json({ config: c.cliente, secciones: BANCO.SECCIONES, examen: BANCO.SECCIONES_EXAMEN || null, calentamiento: BANCO.SECCIONES_CALENTAMIENTO, areas: AREAS,
@@ -165,9 +223,13 @@ export function crearSimulador(c) {
     return null;
   }
 
-  async function entrar(env, token) {
+  // Liga del correo. Si este navegador ya es uno de sus dispositivos, entra. Si la liga nunca se ha usado, entra directo
+  // (así entra el dueño desde su correo). Si ya se usó, pide un código que llega al correo del dueño: reenviar la liga
+  // no basta para entrar. POST: accion=enviar (manda el código) o accion=codigo (lo revisa).
+  async function entrar(env, req, token) {
     if (!/^[a-f0-9]{64}$/.test(token)) return errorAcceso('invalido');
-    const t = await one(env, 'SELECT * FROM download_tokens WHERE token_hash = ?', await hashToken(env, token));
+    const th = await hashToken(env, token);
+    const t = await one(env, 'SELECT * FROM download_tokens WHERE token_hash = ?', th);
     if (!t || t.revocado) return errorAcceso('invalido');
     // El token de descarga dura 7 días, pero el acceso al simulador dura un año desde la compra:
     // un token vencido sigue demostrando la compra (la vigencia la decide la orden).
@@ -176,7 +238,80 @@ export function crearSimulador(c) {
       const pagada = await one(env, "SELECT paid_at FROM orders WHERE id = ? AND estado = 'paid'", t.order_id);
       return errorAcceso(pagada ? 'vencido' : 'revocado');
     }
-    return new Response(null, { status: 303, headers: { location: `${RUTA}/`, 'set-cookie': await cookieAcceso(env, a.orden.id, a.vence), 'cache-control': 'no-store', ...SIN_REFERER } });
+    const email = String(a.orden.email).toLowerCase();
+    const ya = await accesoDe(env, req);
+    if (ya && !ya.cerrada && String(ya.orden.email).toLowerCase() === email) return irAlSimulador();
+    const ua = req.headers.get('user-agent') || '';
+    if (req.method === 'HEAD') return paginaCodigo({ email });
+    if (req.method === 'GET') {
+      if (!t.simulador_usado_at) {
+        const r = await run(env, 'UPDATE download_tokens SET simulador_usado_at = ? WHERE id = ? AND simulador_usado_at IS NULL', new Date().toISOString(), t.id);
+        if (r.meta.changes) return irAlSimulador(await cookieDe(env, a.orden.id, a.vence, await nuevoDispositivo(env, email, ua)));
+      }
+      return paginaCodigo({ email });
+    }
+    // POST
+    const o = req.headers.get('origin');
+    if (o && o !== new URL(env.SITE_URL).origin && o !== new URL(req.url).origin) return paginaCodigo({ email, error: 'Solicitud inválida. Vuelve a abrir el enlace de tu correo.' });
+    const f = await req.formData().catch(() => null);
+    const accion = f?.get('accion');
+    const ip = await sha256(req.headers.get('cf-connecting-ip') || 'local');
+    if (accion === 'codigo') {
+      if (!(await dentroDelLimite(env, `sim-cod-ip:${ip}`, 30, 600))) return paginaCodigo({ email, escribir: true, error: 'Demasiados intentos. Espera unos minutos.' });
+      const cod = String(f.get('codigo') || '').replace(/\D/g, '');
+      const fila = await one(env, 'SELECT * FROM simulador_codigos WHERE email = ? AND app = ? AND token_hash = ? AND usado_at IS NULL ORDER BY id DESC LIMIT 1', email, APP, th);
+      if (!fila || Date.parse(fila.expira_at) < Date.now()) return paginaCodigo({ email, error: 'Ese código ya venció. Pide uno nuevo.' });
+      if (fila.intentos >= CODIGO_INTENTOS) return paginaCodigo({ email, error: 'Demasiados intentos con ese código. Pide uno nuevo.' });
+      if (!iguales(fila.codigo_hash, await hashToken(env, `sim:${APP}:${email}:${cod}`))) {
+        await run(env, 'UPDATE simulador_codigos SET intentos = intentos + 1 WHERE id = ?', fila.id);
+        return paginaCodigo({ email, escribir: true, error: 'Ese código no es correcto. Revisa el último correo que te mandamos.' });
+      }
+      const usado = await run(env, 'UPDATE simulador_codigos SET usado_at = ? WHERE id = ? AND usado_at IS NULL', new Date().toISOString(), fila.id);
+      if (!usado.meta.changes) return paginaCodigo({ email, error: 'Ese código ya se usó. Pide uno nuevo.' });
+      return irAlSimulador(await cookieDe(env, a.orden.id, a.vence, await nuevoDispositivo(env, email, ua)));
+    }
+    // accion=enviar: código nuevo al correo del dueño (el último es el único que vale)
+    if (!(await dentroDelLimite(env, `sim-env-ip:${ip}`, 10, 600)) || !(await dentroDelLimite(env, `sim-env:${APP}:${await sha256(email)}`, 3, 600)))
+      return paginaCodigo({ email, escribir: true, error: 'Ya te mandamos varios códigos. Espera unos minutos y revisa tu correo (también spam).' });
+    const cod = codigo6(), ahora = new Date().toISOString();
+    await run(env, 'UPDATE simulador_codigos SET usado_at = ? WHERE email = ? AND app = ? AND usado_at IS NULL', ahora, email, APP);
+    await run(env, 'INSERT INTO simulador_codigos (email, app, token_hash, codigo_hash, expira_at) VALUES (?,?,?,?,?)',
+      email, APP, th, await hashToken(env, `sim:${APP}:${email}:${cod}`), new Date(Date.now() + CODIGO_MIN * 60e3).toISOString());
+    try {
+      await enviar(env, { para: email, asunto: `${cod} es tu código para entrar al ${c.titulo}`, idempotencia: `sim-cod-${aleatorio(8)}`,
+        html: marco(`Tu código para entrar al ${c.titulo}`, `<p style="${P}">Alguien quiere abrir tu ${esc(c.titulo)} en un dispositivo nuevo (${esc(etiquetaDe(ua))}). Si fuiste tú, escribe este código:</p><table role="presentation" cellpadding="0" cellspacing="0" style="margin:4px 0 22px;width:100%"><tr><td align="center" style="background:#F4F2EF;border-radius:16px;padding:18px 12px"><div style="font-size:34px;font-weight:800;letter-spacing:10px;color:#141114;font-family:'SF Mono',Menlo,Consolas,monospace">${cod}</div><div style="font-size:12.5px;color:#A8A4A9;margin-top:6px">Vence en ${CODIGO_MIN} minutos · un solo uso</div></td></tr></table><p style="${P}">Si no fuiste tú, ignora este correo: sin el código nadie puede entrar. Tu cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos.</p>`, { etiqueta: 'Simulador' }),
+        texto: `Tu código para entrar al ${c.titulo}: ${cod} (vence en ${CODIGO_MIN} minutos).\n\nSi no fuiste tú, ignora este correo: sin el código nadie puede entrar.` });
+    } catch (e) {
+      console.error('simulador: correo de código', e?.message);
+      return paginaCodigo({ email, error: 'No pudimos mandar el código. Intenta de nuevo en un momento.' });
+    }
+    // Sin correo configurado (pruebas locales) el código se muestra en la página
+    return paginaCodigo({ email, escribir: true, enviado: true, codigoLocal: !env.RESEND_API_KEY && !env.CORREO ? cod : null });
+  }
+
+  const irAlSimulador = cookie => new Response(null, { status: 303, headers: { location: `${RUTA}/`, 'cache-control': 'no-store', ...SIN_REFERER, ...(cookie ? { 'set-cookie': cookie } : {}) } });
+
+  function paginaCodigo({ email, escribir = false, enviado = false, error = '', codigoLocal = null }) {
+    const campo = 'width:100%;font:inherit;font-size:28px;letter-spacing:10px;text-align:center;padding:14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--card);color:var(--fg)';
+    const err = error ? `<p class="t-nota" role="alert" style="color:var(--er);margin-top:14px">${esc(error)}</p>` : '';
+    const pedir = `<form method="post" style="margin-top:22px"><input type="hidden" name="accion" value="enviar"><button class="btn ${escribir ? 'blanco' : 'tinta'}" type="submit">${escribir ? 'Mandar otro código' : 'Enviarme el código'} ${FLECHA}</button></form>`;
+    const form = `<form method="post" style="margin-top:22px;max-width:320px;margin-left:auto;margin-right:auto"><input type="hidden" name="accion" value="codigo">
+      <label class="vh" for="codigo">Código de 6 dígitos</label><input id="codigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus style="${campo}" placeholder="000000">
+      <button class="btn tinta" type="submit" style="margin-top:12px;width:100%">Entrar al simulador</button></form>`;
+    const local = codigoLocal ? `<p class="t-nota">Modo local, sin correo: tu código es <b>${codigoLocal}</b>.</p>` : '';
+    // same-origin (no no-referrer): la liga no sale a otros sitios y el formulario manda su Origin (con no-referrer llega "null")
+    return pagina({ titulo: `Confirma que eres tú · ${c.titulo}`, ruta: `${RUTA}/`, noindex: true, headers: { 'cache-control': 'no-store', 'referrer-policy': 'same-origin' },
+      cuerpo: aviso({ titulo: escribir ? 'Escribe tu código' : 'Confirma que eres tú',
+        texto: escribir
+          ? `${enviado ? 'Te mandamos' : 'Mandamos'} un código de 6 dígitos a <b>${esc(correoOculto(email))}</b>. Vence en ${CODIGO_MIN} minutos.`
+          : `Esta liga ya se usó para entrar. Para abrir tu ${esc(c.titulo)} en este dispositivo, te mandaremos un código a <b>${esc(correoOculto(email))}</b>. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos.`,
+        extra: `${err}${local}${escribir ? form : ''}${pedir}` }) });
+  }
+
+  function sesionCerrada() {
+    return pagina({ titulo: `Tu sesión se cerró · ${c.titulo}`, ruta: `${RUTA}/`, noindex: true, headers: { 'set-cookie': cookieBorrar(), 'cache-control': 'no-store', ...SIN_REFERER },
+      cuerpo: aviso({ titulo: 'Tu sesión se cerró en este dispositivo', texto: `Tu ${esc(c.titulo)} se abrió en otro dispositivo. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos a la vez, así que cerramos este. Para volver a entrar aquí, pide un enlace nuevo a tu correo.`,
+        extra: `<div class="botones t-centro"><a class="btn tinta" href="/descargas/reenviar?para=simulador">Recibir mi enlace ${FLECHA}</a></div>` }) });
   }
 
   function errorAcceso(motivo) {
