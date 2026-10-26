@@ -29,6 +29,9 @@ describe('Cupo en la tienda', () => {
     const ficha = await (await pedir('/tienda/cupo/')).text();
     for (const t of ['Gratis hasta 30 personas', 'Crear mi evento gratis', '$99 MXN', '$149 MXN', '$299 MXN', '$599 MXN', '$399 MXN', '$1,199 MXN', 'id="form-cupo"', '¿Cómo funcionan las ligas de RP?'])
       expect(ficha, t).toContain(t);
+    // Lo que el plan gratis sí trae (cover en la puerta, acompañantes, WhatsApp) y nada de "sin cover"
+    for (const t of ['Cover en la puerta, si quieres cobrarlo', '¿Mis invitados pueden llevar a alguien?', 'por WhatsApp', '¿Y si no hay señal en la puerta?']) expect(ficha, t).toContain(t);
+    expect(ficha).not.toContain('Sin correos, cover ni RPs');
     // Las fichas viejas llevan a la página única con el plan elegido
     const r = await pedir('/tienda/cupo-pro-1000/?ref=ABC');
     expect(r.status).toBe(301);
