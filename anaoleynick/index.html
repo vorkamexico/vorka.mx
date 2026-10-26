@@ -38,7 +38,7 @@
 .portada-txt strong{font-weight:500;color:var(--tinta)}
 .acciones{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
 .portada-foto{align-self:end;justify-self:end;width:100%;max-width:520px}
-.portada-foto img{width:100%;height:auto;-webkit-mask-image:linear-gradient(to right,transparent,#000 14%);mask-image:linear-gradient(to right,transparent,#000 14%)}
+.portada-foto img{width:100%;height:auto;-webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 90%,transparent),linear-gradient(to bottom,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 16%,#000 90%,transparent),linear-gradient(to bottom,#000 72%,transparent);mask-composite:intersect}
 .sobre-g{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(36px,6vw,88px)}
 .sobre-g > p{font-size:clamp(21px,2.2vw,26px);line-height:1.55;color:var(--tinta);font-weight:300}
 .datos{list-style:none;margin:0;padding:0;display:grid;gap:0;align-content:start;border-top:1px solid var(--linea)}
@@ -69,7 +69,9 @@
 @media (max-width:900px){
   .portada-g{grid-template-columns:1fr;min-height:0}
   .portada-txt{padding-block:48px 8px}
-  .portada-foto{justify-self:center;max-width:420px}
+  .portada-foto{justify-self:center;max-width:420px;margin-top:8px}
+  .portada-foto img{-webkit-mask-image:radial-gradient(ellipse 50% 52% at 50% 46%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 50% 52% at 50% 46%,#000 62%,transparent 100%)}
+  .portada{background:linear-gradient(to bottom,var(--gris) 75%,var(--blanco))}
   .sobre-g,.resenas-g{grid-template-columns:1fr}
   .puertas{grid-template-columns:1fr}
 }
