@@ -3,6 +3,7 @@
 
 import { enc, hex, iguales } from '../util.js';
 import { suscripcionDeOrden } from '../suscripciones.js';
+import { REFERIDO } from '../descuentos.js';
 
 const API = 'https://api.stripe.com/v1';
 export const STRIPE_VERSION = '2026-09-30.endive';
@@ -29,6 +30,7 @@ export async function llamar(env, metodo, ruta, datos, { idempotencia } = {}) {
   if (!r.ok) {
     const e = new Error(`Stripe ${r.status}: ${body?.error?.message || 'error'}`);
     e.status = r.status;
+    e.code = body?.error?.code || null;
     throw e;
   }
   return body;
@@ -75,8 +77,11 @@ export function sesionCheckout(env, orden, { exito, cancelar }, customer, cupon 
 
 // Suscripción (Vuelve y demás apps de cobro recurrente): precios recurrentes en línea, sin OXXO ni SPEI (no sirven
 // para cobros automáticos). Los datos para reconocer la suscripción viajan en su metadata (order_id, app, email, product_id).
-export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus) {
+// cupon: el cupón por % de un código de descuento o del 5 % por recomendación. Con discounts no se manda
+// allow_promotion_codes (Stripe no acepta los dos en la misma sesión).
+export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus, cupon = null) {
   return {
+    ...(cupon ? { discounts: [{ coupon: cupon }] } : {}),
     mode: 'subscription',
     locale: 'es-419',
     client_reference_id: orden.id,
@@ -91,10 +96,52 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
     subscription_data: { metadata: { order_id: orden.id, app: sus.app || '', email: orden.email, product_id: sus.product_id } },
     // Códigos de promoción de Stripe (p. ej. el de fundador) solo en planes mensuales: en el anual un cupón por meses
     // se aplicaría sobre todo el año
-    ...(sus.intervalo === 'month' ? { allow_promotion_codes: true } : {}),
+    ...(sus.intervalo === 'month' && !cupon ? { allow_promotion_codes: true } : {}),
     success_url: exito,
     cancel_url: cancelar,
   };
+}
+
+// Nombre del cupón por monto de un pago único (Stripe lo muestra; máximo 40 caracteres)
+export function nombreCupon(o) {
+  const partes = [];
+  if (o.descuento_codigo_centavos > 0) partes.push(o.descuento_codigo === REFERIDO ? `Recomendación ${o.descuento_pct} %` : `${o.descuento_codigo} ${o.descuento_pct} %`);
+  if (o.puntos_usados > 0) partes.push('Puntos Vorka');
+  return (partes.join(' + ') || 'Descuento').slice(0, 40);
+}
+
+// Cupón por % reutilizable con id fijo: vorka_<CÓDIGO> (vorka_FUNDADOR30) o vorka_ref5. Si ya existe con los mismos datos
+// se usa; si no existe, se crea. Si alguien lo cambió en Stripe (o cambió el % o los meses del código en la tabla), se usa
+// uno con el % y los meses en el id para no cobrar con datos viejos. Lo que falle (p. ej. la llave restringida sin permiso
+// de Coupons) lo distingue el checkout con e.cupon.
+export function datosCupon(o) {
+  const ref = o.descuento_codigo === REFERIDO;
+  const datos = { percent_off: o.descuento_pct, duration: o.descuento_duracion, ...(o.descuento_duracion === 'repeating' ? { duration_in_months: o.descuento_meses } : {}) };
+  const nombre = ref ? `Recomendación ${o.descuento_pct} %` : `${o.descuento_codigo} ${o.descuento_pct} %${o.descuento_meses ? ` · ${o.descuento_meses} ${o.descuento_meses === 1 ? 'mes' : 'meses'}` : ''}`;
+  const id = ref ? `vorka_ref${o.descuento_pct}`.replace('.', '_') : `vorka_${o.descuento_codigo}`;
+  return { id, datos, nombre: nombre.slice(0, 40) };
+}
+const mismoCupon = (c, d) => c && c.valid !== false && Number(c.percent_off) === Number(d.percent_off) && c.duration === d.duration
+  && (d.duration !== 'repeating' || Number(c.duration_in_months) === Number(d.duration_in_months));
+
+export async function cuponFijo(env, o) {
+  const { id, datos, nombre } = datosCupon(o);
+  const ids = [id, `${id}_${String(datos.percent_off).replace('.', '_')}p_${datos.duration}${datos.duration_in_months || ''}`];
+  for (const cid of ids) {
+    let c = null;
+    try { c = await llamar(env, 'GET', `/coupons/${encodeURIComponent(cid)}`); }
+    catch (e) { if (e.status !== 404) throw e; }
+    if (c) { if (mismoCupon(c, datos)) return c.id; continue; }
+    try {
+      return (await llamar(env, 'POST', '/coupons', { id: cid, name: nombre, ...datos, metadata: { fuente: 'vorka-tienda', codigo: o.descuento_codigo } }, { idempotencia: `cupon-${cid}` })).id;
+    } catch (e) {
+      // Otra compra lo creó al mismo tiempo
+      if (e.code !== 'resource_already_exists') throw e;
+      c = await llamar(env, 'GET', `/coupons/${encodeURIComponent(cid)}`);
+      if (mismoCupon(c, datos)) return c.id;
+    }
+  }
+  const e = new Error(`Stripe: el cupón ${id} existe con otros datos`); e.status = 409; throw e;
 }
 
 // Stripe-Signature: "t=1700000000,v1=abc…,v1=def…". Firma = HMAC-SHA256(secreto, `${t}.${cuerpo}`)
@@ -129,13 +176,19 @@ export default {
     const customer = await clienteStripe(env, orden);
     const sus = await suscripcionDeOrden(env, orden);
     if (sus) {
-      const s = await llamar(env, 'POST', '/checkout/sessions', sesionSuscripcion(env, orden, urls, customer, sus), { idempotencia: `checkout-${orden.id}` });
+      // Código de descuento o 5 % por recomendación: cupón por % reutilizable (vorka_FUNDADOR30, vorka_ref5)
+      let cupon = null;
+      if (orden.descuento_codigo && orden.descuento_pct > 0 && orden.descuento_duracion) {
+        try { cupon = await cuponFijo(env, orden); } catch (e) { e.cupon = true; throw e; }
+      }
+      const s = await llamar(env, 'POST', '/checkout/sessions', sesionSuscripcion(env, orden, urls, customer, sus, cupon), { idempotencia: `checkout-${orden.id}` });
       return { sessionId: s.id, url: s.url };
     }
-    // Descuento con Puntos Vorka: un cupón de un solo uso por el monto exacto (Stripe lo muestra en el pago y el recibo)
+    // Pago único: un solo cupón de un solo uso por el monto exacto de todo el descuento (código o 5 % por recomendación
+    // más Puntos Vorka); Stripe lo muestra en el pago y el recibo
     let cupon = null;
     if (orden.descuento_centavos > 0) {
-      const nombre = 'Puntos Vorka';
+      const nombre = nombreCupon(orden);
       try {
         const c = await llamar(env, 'POST', '/coupons', { amount_off: orden.descuento_centavos, currency: orden.moneda.toLowerCase(), duration: 'once', max_redemptions: 1, name: nombre.slice(0, 40), metadata: { order_id: orden.id } },
           { idempotencia: `cupon-${orden.id}` });

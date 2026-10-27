@@ -169,7 +169,10 @@ describe('Socios Vorka integrado a Puntos Vorka', () => {
     expect(r.headers.get('set-cookie')).toContain(`vorka_ref=${code}`);
     expect((await pedir('/tienda/?codigo=NOEXISTE')).headers.get('set-cookie') || '').not.toContain('vorka_ref');
     expect((await pedir('/tienda/socios/')).headers.get('location')).toBe('/tienda/puntos/');
-    expect(await (await pedir(`/api/puntos/liga?c=${code}`)).json()).toMatchObject({ valido: true, codigo: code, nombre: 'Ana' });
+    // Dice qué descuento se aplica y por qué, sin datos de quien recomendó
+    const liga = await (await pedir(`/api/puntos/liga?c=${code}`)).json();
+    expect(liga).toMatchObject({ valido: true, codigo: code, tipo: 'referido', texto: '5 % de descuento por recomendación' });
+    expect(liga).not.toHaveProperty('nombre');
     expect(await (await pedir('/api/puntos/liga?c=NOEXISTE')).json()).toEqual({ valido: false });
   });
 
@@ -180,6 +183,9 @@ describe('Socios Vorka integrado a Puntos Vorka', () => {
     const r = await worker.fetch(new Request(`${SITIO}/api/checkout`, { method: 'POST', headers: { 'content-type': 'application/json', 'cf-connecting-ip': '2.2.2.2', cookie: 'vorka_ref=OTRA' },
       body: JSON.stringify({ nombre: 'Beto Pérez', email: 'beto@mail.com', terminos: true, slug: 'cupo-pro-100', codigo: code.toLowerCase() }) }), env);
     expect(r.status).toBe(200);
-    expect(env.DB.raw.prepare('SELECT ref_code, descuento_centavos FROM orders').get()).toMatchObject({ ref_code: code, descuento_centavos: 0 });
+    // Y quien compra recibe el 5 % por recomendación
+    const precio = env.DB.raw.prepare("SELECT precio_centavos FROM products WHERE slug = 'cupo-pro-100'").get().precio_centavos;
+    expect(env.DB.raw.prepare('SELECT ref_code, descuento_centavos, descuento_codigo FROM orders').get())
+      .toMatchObject({ ref_code: code, descuento_centavos: Math.round(precio * 0.05), descuento_codigo: 'REFERIDO' });
   });
 });

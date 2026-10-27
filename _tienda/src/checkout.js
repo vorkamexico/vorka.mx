@@ -6,7 +6,8 @@ import { json, fail, sha256, correoOculto } from './util.js';
 import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
-import { productoPorSlug, afiliadoActivo } from './modelo.js';
+import { productoPorSlug } from './modelo.js';
+import { resolverDescuento, duracionDe } from './descuentos.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
 
@@ -21,7 +22,8 @@ export const EsquemaCheckout = z.object({
   slug: slug.optional(),
   items: z.array(z.object({ slug, cantidad: z.number().int().min(1).max(10).default(1) })).min(1).max(20).optional(),
   ref: z.string().trim().regex(/^[A-Za-z0-9_-]{1,40}$/).optional().or(z.literal('')),
-  // Código de quien te recomendó escrito en el formulario (gana sobre la liga); si no existe o está inactivo se ignora
+  // Código escrito en el formulario: de descuento (FUNDADOR30) o de quien te recomendó (gana sobre la liga y da 5 %).
+  // Si no existe, está inactivo o no aplica a esta compra, se ignora y la compra sigue sin ese descuento
   codigo: z.string().trim().max(40).optional().or(z.literal('')),
   // Comprar para regalar (solo productos con contenido.regalable): una liga de un solo uso por unidad
   para_quien: z.enum(['yo', 'regalo']).optional(),   // formulario sin JavaScript
@@ -72,10 +74,12 @@ export async function checkout(req, env) {
   let items = d.items || [{ slug: d.slug, cantidad: d.regalo ? (d.cantidad || 1) : 1 }];
   // Suscripción: un solo plan por compra (+ sus complementos del mismo intervalo: sucursales o profesionales); sin regalos ni puntos
   const subs = [];
+  let sus = null;   // { intervalo, app } del plan, para saber si aplica un código de descuento
   for (const it of items) { const p = await productoPorSlug(env, it.slug); if (suscripcionDe(p)) subs.push(p); }
   if (subs.length) {
     const plan = subs[0];
     if (items.length > 1 || plan.contenido.complemento) return error('Elige un solo plan; las sucursales adicionales se agregan junto con él.');
+    sus = { intervalo: suscripcionDe(plan).intervalo === 'year' ? 'year' : 'month', app: plan.contenido.acceso?.app || null };
     if (d.regalo) return error('Las suscripciones no se pueden regalar.');
     if (d.usar_puntos) return error('Los puntos no se pueden usar en suscripciones.');
     // Un paquete (Agenda + Vuelve) choca con la suscripción suelta de cualquiera de sus apps, y al revés
@@ -119,16 +123,18 @@ export async function checkout(req, env) {
     for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p?.creador_id) return error('Los puntos se canjean en productos de Vorka México, no en los de creadores.'); }
     puntos = { email: cta.email, disponibles: (await saldoDe(env, cta.email)).disponibles };
   }
-  // Quién recomendó: el código escrito gana sobre la liga (?ref= en el formulario o la cookie de 30 días)
-  const codigoEscrito = /^[A-Za-z0-9_-]{1,40}$/.test(d.codigo || '') && (await afiliadoActivo(env, d.codigo)) ? d.codigo : null;
+  // Quién recomendó (el código escrito gana sobre la liga: ?ref= en el formulario o la cookie de 30 días) y el descuento:
+  // un código de descuento o el 5 % por recomendación, el mayor (no se acumulan). Los puntos se suman en pagos únicos.
+  const desc = await resolverDescuento(env, { escrito: d.codigo, liga: d.ref || cookie(req, 'vorka_ref'), email: d.email, sus });
+  const descuento = desc.descuento ? { ...desc.descuento, duracion: sus ? duracionDe(desc.descuento) : null } : null;
 
   let orden;
   try {
-    orden = await crearOrden(env, { puntos,
+    orden = await crearOrden(env, { puntos, descuento,
       items,
       email: d.email, nombre: d.nombre,
       regalo: d.regalo ? { para: d.regalo_para || null, mensaje: d.regalo_mensaje || null } : null,
-      ref: codigoEscrito || d.ref || cookie(req, 'vorka_ref'),
+      ref: desc.ref,
     });
   } catch (e) {
     if (e.message === 'producto') return error('Este producto no está disponible.', 404);
@@ -149,10 +155,10 @@ export async function checkout(req, env) {
     // El cupón del descuento no se pudo crear (p. ej. la llave de Stripe sin permiso de Coupons): mensaje claro y alerta
     if (e.cupon) {
       console.error('ALERTA checkout: Stripe no dejó crear el cupón de descuento', e.status, e.message, 'revisa el permiso Coupons (Write) de la llave restringida');
-      const sinPuntos = orden.puntos_usados > 0;
+      const sinPuntos = orden.puntos_usados > 0 && !orden.descuento_codigo_centavos;
       const msg = sinPuntos
         ? 'No pudimos aplicar tus puntos en este momento. Puedes pagar sin puntos (quita la casilla "Usar mis puntos") o intentar más tarde: tus puntos siguen en tu cuenta.'
-        : 'No pudimos aplicar el descuento de tu código en este momento. Puedes comprar sin el código o intentar más tarde.';
+        : `No pudimos aplicar el descuento${orden.puntos_usados > 0 ? ' (ni tus puntos)' : ''} en este momento. Intenta de nuevo en unos minutos o escríbenos a hola@vorka.mx.`;
       return esJson ? json({ error: msg, sin_puntos: sinPuntos, sin_descuento: !sinPuntos }, 503) : error(msg, 503);
     }
     return error('No pudimos abrir el pago. Intenta de nuevo en un momento.', 502);
@@ -160,5 +166,7 @@ export async function checkout(req, env) {
   await guardarSesion(env, orden.id, cobro.sessionId);
   for (const it of orden.items) await registrarAnalitica(env, 'begin_checkout', { product_id: it.product_id, order_id: orden.id, ref_code: orden.ref_code });
 
-  return esJson ? json({ url: cobro.url, order: orden.id }) : Response.redirect(cobro.url, 303);
+  // descuento: qué se aplicó y por qué; aviso: por qué un código escrito no se aplicó (la compra sigue sin él)
+  return esJson ? json({ url: cobro.url, order: orden.id, descuento: orden.descuento_codigo_centavos > 0 ? descuento.texto : null, aviso: desc.avisos[0] || null })
+    : Response.redirect(cobro.url, 303);
 }
