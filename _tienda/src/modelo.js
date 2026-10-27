@@ -106,7 +106,14 @@ export async function aplicarPago(env, orderId, pago) {
     return { orden, accion: null, cambia: false, motivo: 'monto_no_coincide' };
 
   const t = transicion(orden.estado, pago.resultado);
-  if (!t.cambia) return { orden, accion: null, cambia: false };
+  if (!t.cambia) {
+    // OXXO o SPEI: el checkout se completó pero el pago llega después. Se guarda el método para que la página de
+    // gracias muestre "Tu pedido está apartado" con sus instrucciones (y no "Confirmando tu pago" para siempre).
+    if (orden.estado === 'pending' && pago.resultado === 'pendiente' && pago.metodo_pago && !orden.metodo_pago)
+      await run(env, "UPDATE orders SET metodo_pago = ?, provider_payment_id = COALESCE(?, provider_payment_id), updated_at = ? WHERE id = ? AND estado = 'pending'",
+        pago.metodo_pago, pago.provider_payment_id ?? null, ahoraISO(), orderId);
+    return { orden, accion: null, cambia: false };
+  }
 
   const ahora = ahoraISO();
   const r = await run(env,
