@@ -9,7 +9,7 @@ import { conciliarPendientes } from './conciliar.js';
 import { paginaDescargas, bajarArchivo } from './descargas.js';
 import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
-import { paginaCatalogo, paginaProducto, sitemapTienda, refDeVisita } from './tienda.js';
+import { paginaCatalogo, paginaProducto, sitemapTienda, refDeVisita, catalogoCompartir } from './tienda.js';
 import * as admin from './admin.js';
 import { ESTILOS } from './paginas.js';
 import { procesarTransferencias, refrescarCreador, repartosPendientes } from './marketplace.js';
@@ -26,7 +26,8 @@ import { paginaVende } from './vende.js';
 import { paginaRuta } from './ruta.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
-import { rutasPuntos, codigoDe, saldoDe, nivelActual } from './puntos.js';
+import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo } from './puntos.js';
+import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
@@ -107,8 +108,19 @@ export class Admin extends WorkerEntrypoint {
     if (!code) return null;
     const e = String(email).trim().toLowerCase();
     const [s, n] = await Promise.all([saldoDe(this.env, e), nivelActual(this.env, e)]);
+    // equipo / pct_efectivo / factor: cuentas del equipo de Vorka (×FACTOR_EQUIPO con tope). pct sigue siendo el del nivel.
     return { code, liga: `${this.env.SITE_URL || 'https://vorka.mx'}/tienda/brindi/?ref=${code}`, disponibles: s.disponibles, ventas: n.ventas, pct: n.pct,
-      nivel: n.nivel.actual.nombre, siguiente: n.nivel.siguiente ? { nombre: n.nivel.siguiente.nombre, pct: n.nivel.siguiente.pct, faltan: n.nivel.faltan } : null };
+      nivel: n.nivel.actual.nombre, siguiente: n.nivel.siguiente ? { nombre: n.nivel.siguiente.nombre, pct: n.nivel.siguiente.pct, faltan: n.nivel.faltan } : null,
+      equipo: n.equipo, factor: n.equipo ? FACTOR_EQUIPO : 1, pct_efectivo: n.pct_efectivo };
+  }
+  // Equipo de Vorka México (Vorka OS manda los correos de sus personas activas): marca exactamente esas cuentas y desmarca al resto
+  equipoPuntos(emails) { return marcarEquipo(this.env, emails); }
+  // Comparte y gana (Vorka OS): productos activos de Vorka para recomendar, por línea, con su página pública y la liga con
+  // ?ref=code (si se manda un código). Sin productos de creadores ni ocultos. Trae las reglas del programa para explicarlo
+  // sin inventar porcentajes: % por nivel del semestre, puntos extra y tope. 1 punto = $1 MXN.
+  async catalogoPuntos(code) {
+    const c = await catalogoCompartir(this.env, code ? String(code).slice(0, 40) : null);
+    return { ...c, reglas: { niveles: NIVELES.map(n => ({ nombre: n.nombre, min: n.min, pct: n.pct })), extra: PCT_EXTRA, tope: PCT_TOPE, punto_mxn: 1, factor_equipo: FACTOR_EQUIPO } };
   }
   // Apps por suscripción (Vuelve, Agenda y su paquete): estado de la suscripción de un correo, portal de Stripe y resumen para Diversificación
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }

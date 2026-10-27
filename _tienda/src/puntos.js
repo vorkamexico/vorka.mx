@@ -24,7 +24,7 @@ import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
 import { resolverDescuento, normalizar, duracionDe, PCT_REFERIDO } from './descuentos.js';
 import { suscripcionDe } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
-import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
+import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
 import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } from './puntos-app.js';
 import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
 
@@ -89,9 +89,25 @@ export const ventasSemestre = async (env, email, fecha = new Date()) => {
   return (await one(env, `SELECT COUNT(*) n FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE} AND m.order_id IS NOT NULL AND m.created_at >= ? AND m.created_at < ?`, email, sem.desde, sem.hasta)).n;
 };
 // Nivel y % de hoy (lo que ganaría la siguiente venta sin puntos extra)
+// pct: el del nivel (lo que gana cualquier persona) · equipo: si la cuenta es del equipo de Vorka · pct_efectivo: con el ×1.5 del equipo y el tope
 export async function nivelActual(env, email, fecha = new Date()) {
   const ventas = await ventasSemestre(env, email, fecha), sem = semestreMx(fecha);
-  return { ventas, semestre: sem, nivel: nivelDe(ventas), pct: pctPara(ventas) };
+  const equipo = await esEquipo(env, email);
+  return { ventas, semestre: sem, nivel: nivelDe(ventas), pct: pctPara(ventas), equipo, pct_efectivo: pctPara(ventas, false, equipo) };
+}
+export const esEquipo = async (env, email) => !!(await one(env, 'SELECT 1 FROM puntos_cuentas WHERE email = ? AND equipo = 1', email));
+
+// Equipo de Vorka México: Vorka OS manda los correos de sus personas activas. Marca exactamente esas cuentas (las que ya
+// existen; quien aún no tiene cuenta queda marcado en la siguiente llamada) y desmarca a quien ya no está (bajas).
+// No toca los puntos ya ganados: el factor solo cuenta para las ventas que se paguen después.
+export async function marcarEquipo(env, emails) {
+  if (!Array.isArray(emails)) throw new Error('emails');
+  const lista = [...new Set(emails.map(e => String(e || '').trim().toLowerCase()).filter(e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)))].slice(0, 2000);
+  const j = JSON.stringify(lista);
+  const r = await run(env, `UPDATE puntos_cuentas SET equipo = CASE WHEN email IN (SELECT value FROM json_each(?)) THEN 1 ELSE 0 END
+    WHERE equipo != CASE WHEN email IN (SELECT value FROM json_each(?)) THEN 1 ELSE 0 END`, j, j);
+  const marcados = (await all(env, 'SELECT email FROM puntos_cuentas WHERE equipo = 1 ORDER BY email')).map(x => x.email);
+  return { cambios: r.meta.changes, marcados };
 }
 
 // ---------- puntos extra (antes "puntos dobles") ----------
@@ -159,11 +175,13 @@ async function insertarGanado(env, v) {
   const niveles = [...NIVELES].sort((a, b) => b.min - a.min);
   const caso = `(CASE ${niveles.map(() => 'WHEN x.n >= ? THEN ?').join(' ')} ELSE ? END)`;
   const pc = [...niveles.flatMap(n => [n.min, n.pct]), NIVELES[0].pct];
-  const pct = `MIN(?, ${caso} + ?)`, pp = [PCT_TOPE, ...pc, v.extra ? PCT_EXTRA : 0];
-  return run(env, `WITH x AS (SELECT COUNT(*) n FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE} AND m.order_id IS NOT NULL AND m.created_at >= ? AND m.created_at < ?)
-    INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota, product_id, multiplicador, motivo, base_centavos, pct, semestre, clave, suscripcion_id)
-    SELECT ?, 'ganado', CAST(ROUND(? * ${pct} / 100.0) AS INTEGER), ?, ?, ?, ?, ?, ?, ${pct}, ?, ?, ? FROM x`,
-    v.email, sem.desde, sem.hasta,
+  // Equipo de Vorka (puntos_cuentas.equipo): el % (nivel + extra) se multiplica por FACTOR_EQUIPO, con el mismo tope (pctEfectivo)
+  const pct = `MIN(?, ROUND((${caso} + ?) * x.f * 10) / 10.0)`, pp = [PCT_TOPE, ...pc, v.extra ? PCT_EXTRA : 0];
+  return run(env, `WITH x AS (SELECT COUNT(*) n, COALESCE((SELECT CASE WHEN c.equipo = 1 THEN ? ELSE 1 END FROM puntos_cuentas c WHERE c.email = ?), 1) f
+      FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE} AND m.order_id IS NOT NULL AND m.created_at >= ? AND m.created_at < ?)
+    INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota, product_id, multiplicador, motivo, base_centavos, pct, semestre, clave, suscripcion_id, factor)
+    SELECT ?, 'ganado', CAST(ROUND(? * ${pct} / 100.0) AS INTEGER), ?, ?, ?, ?, ?, ?, ${pct}, ?, ?, ?, x.f FROM x`,
+    FACTOR_EQUIPO, v.email, v.email, sem.desde, sem.hasta,
     v.email, v.base / 100, ...pp, v.order_id ?? null, String(v.nota || '').slice(0, 160), v.product_id ?? null, v.multiplicador ?? 1, v.motivo ?? null,
     v.base, ...pp, sem.id, v.clave ?? null, v.suscripcion_id ?? null);
 }

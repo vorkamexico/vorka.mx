@@ -361,3 +361,12 @@ Curso interactivo para jóvenes de 15 a 29 años que hacen proyectos sociales. A
 - Ver y administrar (no hay pantalla en el panel todavía):
   `npx wrangler d1 execute vorka-tienda --remote --command "SELECT c.codigo, c.activo, c.usos, u.app, u.usos FROM codigos_descuento c LEFT JOIN codigos_descuento_usos u ON u.codigo = c.codigo"`
   `npx wrangler d1 execute vorka-tienda --remote --command "UPDATE codigos_descuento SET activo = 0 WHERE codigo = 'FUNDADOR30'"`
+
+## Puntos Vorka en Vorka OS: «Comparte y gana» y equipo ×1.5 (migración 0046)
+
+- **`Admin.catalogoPuntos(code)`**: productos activos de Vorka para recomendar, por línea (las mismas tarjetas, nombres y precios del catálogo de `/tienda/`), con su página pública y la liga `?ref=CODE`. Sin productos de creadores ni ocultos (intentos y exámenes adicionales, complementos, planes que se venden dentro de otra página). Todas las páginas de destino leen `?ref=` (prueba: `test/catalogo-puntos.test.js`); nunca usa las páginas por universidad del Simulador PAA. Trae las reglas del programa (`reglas`: niveles, extra, tope y `factor_equipo`) para que OS las explique sin copiar porcentajes.
+- **Equipo de Vorka ×1.5** (`FACTOR_EQUIPO` en `src/puntos-reglas.js`, única fuente): las cuentas con `puntos_cuentas.equipo = 1` ganan el % de su nivel (+ extra) × 1.5, con el **mismo tope de 40 %** (`PCT_TOPE`) y sobre lo efectivamente cobrado: Inicial 15 %, Bronce 22.5 %, Plata 30 %, Oro 37.5 %, Diamante 40 %. Cada movimiento guarda su `factor`. Los puntos ya ganados no cambian; comprarse a sí mismo sigue sin contar; el reembolso revierte exacto; las renovaciones también llevan el factor.
+- **`Admin.equipoPuntos(emails)`**: Vorka OS manda los correos de sus personas activas; marca exactamente esas cuentas y desmarca al resto (bajas). No crea cuentas. OS lo llama en `GET /api/puntos/yo`, en el cron diario y al dar de baja a alguien.
+- `puntosApp` ahora también devuelve `equipo`, `factor` y `pct_efectivo` (`pct` sigue siendo el del nivel).
+- **Orden de despliegue**: esta tienda primero (aplica 0046 y publica los RPC); después Vorka OS. Si OS sale antes: la tarjeta del Inicio muestra los puntos sin el ×1.5 y «Comparte y gana» no lista productos (aviso amable), porque `catalogoPuntos` y `equipoPuntos` aún no existen.
+- Pendiente: la app `vorka.mx/tienda/cuenta/` todavía muestra el % del nivel, no el efectivo del equipo (los avisos de «ganaste» sí dicen el % aplicado).
