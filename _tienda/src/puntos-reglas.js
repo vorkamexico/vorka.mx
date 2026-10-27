@@ -5,6 +5,12 @@ export const COBRO_MINIMO = 1000;          // centavos: Stripe no cobra menos de
 // En promociones y en productos que sugeriste (y aceptamos) se suman puntos extra: +10 puntos porcentuales, con tope de 40%.
 export const PCT_EXTRA = 10;
 export const PCT_TOPE = 40;
+// Equipo de Vorka México (personas activas en Vorka OS, puntos_cuentas.equipo = 1): ganan sus puntos ×1.5. Se multiplica el %
+// de cada venta (nivel + extra) y se respeta el mismo tope (PCT_TOPE): Inicial 15%, Bronce 22.5%, Plata 30%, Oro 37.5%,
+// Diamante 40% (el tope). Única fuente del factor: cambiarlo aquí cambia el cálculo y lo que muestra Vorka OS.
+export const FACTOR_EQUIPO = 1.5;
+// % de una venta para una cuenta: el del nivel (+ extra), por el factor del equipo si aplica, con tope (máximo 1 decimal)
+export const pctEfectivo = (pct, equipo = false) => Math.min(PCT_TOPE, Math.round(pct * (equipo ? FACTOR_EQUIPO : 1) * 10) / 10);
 export const FACTURAS_SUSCRIPCION = 12;   // renovaciones de una suscripción que dan puntos (la compra es la 1)
 // Transferencia a cuenta: solo cuentas habilitadas por el equipo (no se anuncia en ningún texto público)
 export const MINIMO_RETIRO = 500;          // puntos
@@ -27,7 +33,7 @@ export function nivelDe(ventas) {
   return { actual, siguiente, indice: i, faltan: siguiente ? siguiente.min - ventas : 0, progreso: Math.max(0, Math.min(1, progreso)) };
 }
 // % de una venta: el del nivel con las ventas previas del semestre, + extra si aplica, con tope
-export const pctPara = (ventasPrevias, extra = false) => Math.min(PCT_TOPE, nivelDe(ventasPrevias).actual.pct + (extra ? PCT_EXTRA : 0));
+export const pctPara = (ventasPrevias, extra = false, equipo = false) => pctEfectivo(nivelDe(ventasPrevias).actual.pct + (extra ? PCT_EXTRA : 0), equipo);
 // Puntos enteros de una venta: base en centavos × % (redondeado)
 export const puntosDe = (baseCentavos, pct) => Math.max(0, Math.round(baseCentavos * pct / 10000));
 

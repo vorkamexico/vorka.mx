@@ -193,6 +193,31 @@ export async function masTienda(env, actual) {
 </div></section>`;
 }
 
+// Catálogo para compartir con la liga de Puntos Vorka (Vorka OS › Comparte y gana, por RPC: Admin.catalogoPuntos).
+// Lo mismo que muestra la portada de la tienda, agrupado por línea y una tarjeta por página de destino, con nombre y precio
+// tal como se ven ahí (precio: el texto de la tarjeta, p. ej. «Desde $199 MXN» o «$99 MXN al mes»). Solo productos de Vorka: sin los de creadores (no dan puntos) ni los ocultos (intentos y exámenes
+// adicionales, complementos y planes que se venden dentro de otra página). Todas las páginas de destino leen ?ref=
+// (refDeVisita); nunca se usan las páginas por universidad del Simulador PAA, que no lo leen.
+export async function catalogoCompartir(env, code = null) {
+  const sitio = (env.SITE_URL || SITIO).replace(/\/$/, '');
+  const ref = code && /^[A-Za-z0-9_-]{1,40}$/.test(code) ? String(code).toUpperCase() : null;
+  const conRef = u => { if (!ref) return null; const x = new URL(u); x.searchParams.set('ref', ref); return x.toString(); };
+  const abs = u => (!u ? null : /^https?:\/\//.test(u) ? u : `${sitio}${u.startsWith('/') ? '' : '/'}${u}`);
+  const productos = (await listarProductos(env)).filter(p => !p.creador_id);
+  const planes = (await env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()).results
+    .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
+  const desdeBrindi = planes.length ? Math.min(...planes.map(x => x.precio_centavos)) : null;
+  const lineas = seccionesCatalogo(productos).map(g => ({
+    id: g.id, linea: g.linea, titulo: g.titulo, texto: g.texto,
+    productos: vistas(g.productos, desdeBrindi).map(v => {
+      const url = abs(v.url);
+      return { id: v.p.id, slug: v.p.slug, app: v.p.contenido?.acceso?.app || null, nombre: v.nombre, texto: v.texto || '', precio: v.precio,
+        imagen: abs(v.img?.imagen), url, liga: conRef(url) };
+    }),
+  })).filter(g => g.productos.length);
+  return { tienda: { url: `${sitio}/tienda/`, liga: conRef(`${sitio}/tienda/`) }, cuenta: `${sitio}/tienda/puntos/`, lineas };
+}
+
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
