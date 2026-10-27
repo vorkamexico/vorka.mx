@@ -20,7 +20,9 @@ import { hashToken } from './entrega.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
-import { dentroDelLimite, VENDIBLE } from './modelo.js';
+import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
+import { resolverDescuento, normalizar, duracionDe } from './descuentos.js';
+import { suscripcionDe } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
 import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
 import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } from './puntos-app.js';
@@ -590,16 +592,36 @@ export async function rutasPuntos(req, env, url) {
     const nl = await one(env, 'SELECT COUNT(*) n FROM puntos_notificaciones WHERE email = ? AND leida_at IS NULL', c.email);
     return json({ cuenta: true, ...(await saldoDe(env, c.email)), no_leidas: nl.n }, 200, NO_CACHE);
   }
-  // ¿Existe este código de recomendación? (formulario de compra; con límite por IP para que no se puedan adivinar)
-  // Sin ?c= responde con el de la liga (cookie vorka_ref), para mostrarlo ya aplicado. Solo dice el primer nombre.
+  // ¿Qué hace este código en esta compra? (formulario de compra; con límite por IP para que no se puedan adivinar)
+  // ?c= lo escrito (código de descuento o de quien recomendó) · ?slug= el producto o plan elegido (para saber si aplica).
+  // Sin ?c= responde con el de la liga (cookie vorka_ref), para mostrarlo ya aplicado. Nunca dice quién recomendó.
+  // { valido, codigo, tipo: 'codigo' | 'referido', texto: el descuento que se aplica y por qué, aviso: por qué no aplica }
   if (p === '/api/puntos/liga' && M === 'GET') {
     const ipq = req.headers.get('cf-connecting-ip') || 'local';
     if (!(await dentroDelLimite(env, `puntos:liga:${await sha256(ipq)}`, 30, 600))) return fail('Demasiados intentos. Espera unos minutos.', 429);
     const deCookie = (req.headers.get('cookie') || '').split(';').map(s => s.trim().split('=')).find(([k]) => k === 'vorka_ref')?.[1] || '';
-    const c = String(url.searchParams.get('c') ?? decodeURIComponent(deCookie)).trim().toUpperCase().slice(0, 40);
-    const a = /^[A-Z0-9_-]{1,40}$/.test(c) ? await one(env, 'SELECT code, nombre FROM affiliates WHERE code = ? AND activo = 1', c) : null;
-    if (!a) return json({ valido: false }, 200, NO_CACHE);
-    return json({ valido: true, codigo: a.code, nombre: String(a.nombre || '').trim().split(/\s+/)[0], de_liga: !url.searchParams.has('c') }, 200, NO_CACHE);
+    const liga = decodeURIComponent(deCookie);
+    const escrito = url.searchParams.has('c') ? normalizar(url.searchParams.get('c')).slice(0, 40) : null;
+    const slug = String(url.searchParams.get('slug') || '').trim().toLowerCase();
+    const prod = /^[a-z0-9-]{1,80}$/.test(slug) ? await productoPorSlug(env, slug) : null;
+    const s = suscripcionDe(prod);
+    const sus = s && !prod.contenido.complemento ? { intervalo: s.intervalo === 'year' ? 'year' : 'month', app: prod.contenido.acceso?.app || null } : null;
+    const r = await resolverDescuento(env, { escrito: escrito ?? liga, liga: escrito ? liga : null, sus });
+    // Los productos de creadores no llevan descuento (crearOrden lo calcula solo sobre lo de Vorka)
+    if (prod?.creador_id) r.descuento = null;
+    const codigo = escrito ?? normalizar(liga);
+    // ¿Lo escrito sirvió? Es un código de descuento que aplica, o es de una persona de referidos
+    const esDesc = r.descuento?.tipo === 'codigo' && r.descuento.codigo === codigo;
+    const esRef = !!r.ref && r.ref === codigo;
+    const valido = esDesc || esRef;
+    // descuento: lo que la página usa para su «Pagas hoy» (con el mismo cálculo que el servidor, centavosDescuento)
+    const calc = r.descuento ? { pct: r.descuento.pct, duracion: sus ? duracionDe(r.descuento) : null, meses: r.descuento.meses ?? null,
+      etiqueta: r.descuento.tipo === 'referido' ? `${r.descuento.pct} % por recomendación` : `${r.descuento.codigo}: ${r.descuento.pct} %` } : null;
+    if (!valido && !r.avisos.length) return json({ valido: false, ...(r.descuento ? { texto: r.descuento.texto, descuento: calc } : {}) }, 200, NO_CACHE);
+    // Gana un código de descuento sobre el 5 %: se dice que no se acumulan
+    const nota = esDesc && r.ref ? ' (no se acumula con el 5 % por recomendación)' : '';
+    return json({ valido, codigo, tipo: esDesc ? 'codigo' : esRef ? 'referido' : null, texto: r.descuento ? r.descuento.texto + nota : null,
+      aviso: r.avisos[0] || null, de_liga: !escrito, descuento: calc }, 200, NO_CACHE);
   }
   if (p === '/api/puntos/push/clave' && M === 'GET') {
     const c = await cuentaActual(req, env);

@@ -319,9 +319,8 @@ const SCRIPT = `(function(){
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('vu-precios').textContent); }catch(e){}
   var tot=document.getElementById('vu-total'), cada=document.getElementById('vu-cada');
-  function pesos(c){ return '$'+(c/100).toLocaleString('es-MX',{maximumFractionDigits:2})+' MXN'; }
-  function pinta(){ var x=P[f.slug.value]; if(!x) return; var n=Math.min(20,Math.max(0,parseInt(f.sucursales.value,10)||0)); var t=x.p+(x.s||0)*n; tot.textContent=pesos(t); cada.textContent='y luego '+pesos(t)+' '+x.cada; }
-  f.slug.addEventListener('change',pinta); f.sucursales.addEventListener('input',pinta); pinta();
+  function pinta(){ var x=P[f.slug.value]; if(!x) return; var n=Math.min(20,Math.max(0,parseInt(f.sucursales.value,10)||0)); var t=x.p+(x.s||0)*n; var fr=VD.frase(t,x.cada); tot.textContent=fr.hoy; cada.textContent=fr.luego; }
+  f.slug.addEventListener('change',pinta); f.sucursales.addEventListener('input',pinta); document.addEventListener('vorka:descuento',pinta); pinta();
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); f.slug.value=a.dataset.plan; pinta(); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }

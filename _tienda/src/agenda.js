@@ -335,12 +335,11 @@ const SCRIPT = `(function(){
   var f=document.getElementById('form-agenda'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('ag-precios').textContent); }catch(e){}
   var tot=document.getElementById('ag-total'), cada=document.getElementById('ag-cada'), cs=document.getElementById('campo-sucursales');
-  function pesos(c){ return '$'+(c/100).toLocaleString('es-MX',{maximumFractionDigits:2})+' MXN'; }
   function num(el,min,max){ return Math.min(max,Math.max(min,parseInt(el.value,10)||min)); }
   // total: el plan + cada profesional de más + (en el paquete) cada sucursal de Vuelve de más
   function pinta(){ var x=P[f.slug.value]; if(!x) return; cs.hidden=!x.paquete;
-    var t=x.p+(x.pr||0)*(num(f.profesionales,1,50)-1)+(x.paquete?(x.s||0)*num(f.sucursales,0,20):0); tot.textContent=pesos(t); cada.textContent='y luego '+pesos(t)+' '+x.cada; }
-  f.slug.addEventListener('change',pinta); f.profesionales.addEventListener('input',pinta); f.sucursales.addEventListener('input',pinta); pinta();
+    var t=x.p+(x.pr||0)*(num(f.profesionales,1,50)-1)+(x.paquete?(x.s||0)*num(f.sucursales,0,20):0); var fr=VD.frase(t,x.cada); tot.textContent=fr.hoy; cada.textContent=fr.luego; }
+  document.addEventListener('vorka:descuento',pinta); f.slug.addEventListener('change',pinta); f.profesionales.addEventListener('input',pinta); f.sucursales.addEventListener('input',pinta); pinta();
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); f.slug.value=a.dataset.plan; pinta(); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }

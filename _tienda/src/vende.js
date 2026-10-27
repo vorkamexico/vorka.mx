@@ -151,7 +151,7 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn acento" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta de crédito o débito con Stripe · Se renueva solo y lo cancelas cuando quieras</span></p>
-  </form><script type="application/json" id="ve-precios">${JSON.stringify(Object.fromEntries(planes.map(x => [x.slug, { p: precio(x.prod), renueva: x.renueva }]))).replace(/</g, '\\u003c')}</script>` }) : ''}
+  </form><script type="application/json" id="ve-precios">${JSON.stringify(Object.fromEntries(planes.map(x => [x.slug, { p: precio(x.prod), c: x.prod.precio_centavos, renueva: x.renueva }]))).replace(/</g, '\\u003c')}</script>` }) : ''}
 
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vende/">Condiciones de Vende</a> · <a href="/legal/vende/privacidad/">Aviso de privacidad</a> · Vende · by Vorka México</p>' })}
 ${await masTienda(env, 'negocios')}
@@ -249,7 +249,8 @@ const SCRIPT = `(function(){
   var f=document.getElementById('form-vende'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('ve-precios').textContent); }catch(e){}
   function elegido(){ var r=f.querySelector('input[name=slug]:checked'); return r?r.value:''; }
-  function pinta(){ var x=P[elegido()]; if(!x) return; document.getElementById('ve-hoy-p').textContent=x.p; document.getElementById('ve-luego').textContent='y luego '+x.p+' '+x.renueva; }
+  function pinta(){ var x=P[elegido()]; if(!x) return; var fr=VD.frase(x.c,x.renueva); document.getElementById('ve-hoy-p').textContent=fr.hoy; document.getElementById('ve-luego').textContent=fr.luego; }
+  document.addEventListener('vorka:descuento',pinta);
   f.querySelectorAll('input[name=slug]').forEach(function(r){ r.addEventListener('change',pinta); }); pinta();
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(){ var r=f.querySelector('input[name=slug][value="'+a.dataset.plan+'"]'); if(r){ r.checked=true; pinta(); } }); });
   document.querySelectorAll('[data-ir]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });

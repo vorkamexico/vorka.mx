@@ -510,6 +510,10 @@
 .t-socio-abrir { justify-self: start; background: none; border: 0; padding: 0; font: inherit; font-size: 14.5px; color: var(--morado); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .t-socio-c { display: grid; gap: 6px; }
 .t-socio input { text-transform: uppercase; letter-spacing: .02em; }
+.t-desc { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--fg-3); }
+.t-desc:empty { display: none; }
+.t-desc-ok b { color: var(--fg); font-weight: 650; }
+.t-desc-aviso { color: var(--fg-2); }
 
 
 /* ---------- Tienda · rediseño (oct 2026): acento oro, menú propio, portada oscura, categorías en mosaico ---------- */
