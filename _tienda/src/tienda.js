@@ -331,12 +331,11 @@ export const SCRIPT_COMPRA = `(function(){
   var f=document.getElementById('form-compra'); if(!f||!window.fetch) return;
   // Para mí / Para regalar: cantidad, precio total y textos
   var cant=document.getElementById('cantidad'), nota=document.getElementById('precio-nota'), total=document.getElementById('precio-total'), regalo=document.getElementById('es-regalo'), unidad=+f.dataset.unidad;
-  function pesos(c){ return '$'+(c/100).toLocaleString('es-MX')+' MXN'; }
-  function pinta(){ var esR=regalo&&regalo.checked, n=cant?Math.min(10,Math.max(1,parseInt(cant.value,10)||1)):1; if(cant) cant.value=n; if(total) total.textContent=pesos(unidad*(esR?n:1)); if(nota){ if(!nota.dataset.base) nota.dataset.base=nota.textContent; nota.textContent=esR?(n>1?n+' ligas de regalo':'1 liga de regalo')+' · cada una da un año de acceso':nota.dataset.base; } f.classList.toggle('es-regalo',!!esR); }
+  function pinta(){ var esR=regalo&&regalo.checked, n=cant?Math.min(10,Math.max(1,parseInt(cant.value,10)||1)):1; if(cant) cant.value=n; if(total) total.textContent=VD.pesos(VD.hoy(unidad*(esR?n:1))); if(nota){ if(!nota.dataset.base) nota.dataset.base=nota.textContent; nota.textContent=esR?(n>1?n+' ligas de regalo':'1 liga de regalo')+' · cada una da un año de acceso':nota.dataset.base; } f.classList.toggle('es-regalo',!!esR); }
   f.querySelectorAll('input[name=para_quien]').forEach(function(r){ r.addEventListener('change',function(){ if(regalo) regalo.checked=(r.value==='regalo'&&r.checked); pinta(); }); });
   f.querySelectorAll('[data-cant]').forEach(function(b){ b.addEventListener('click',function(){ cant.value=(parseInt(cant.value,10)||1)+(+b.dataset.cant); pinta(); }); });
   if(cant) cant.addEventListener('input',pinta);
-  pinta();
+  document.addEventListener('vorka:descuento',pinta); pinta();
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
   f.addEventListener('submit',function(e){

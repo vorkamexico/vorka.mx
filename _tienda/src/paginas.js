@@ -4,6 +4,7 @@ import { PIE, VERSION, CSS_TIENDA, LOGO, FLECHA } from './marco.generado.js';
 import { esc } from './correo.js';
 import { TEMA_HEAD } from './tema.js';
 import { temporadaActual, estiloTemporada } from './temporadas.js';
+import { CLIENTE_DESCUENTO } from './descuentos.js';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
@@ -77,13 +78,17 @@ const SCRIPT_SOCIO = `(function(){
     if(d.texto){ var x=document.createElement('b'); x.textContent='Descuento aplicado: '+d.texto+' ✓'; m.appendChild(x); m.classList.add('t-desc-ok'); }
     else if(!vacio) m.appendChild(document.createTextNode('Puedes comprar sin descuento.'));
   }
-  function revisa(){ var v=i.value.trim(); fetch('/api/puntos/liga?'+(v?'c='+encodeURIComponent(v)+'&':'')+'slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if('valido' in d) pinta(d,!v); }).catch(function(){}); }
+  function fija(d){ if(window.VD) VD.fijar(d&&d.descuento||null); }
+  function revisa(){ var v=i.value.trim(); fetch('/api/puntos/liga?'+(v?'c='+encodeURIComponent(v)+'&':'')+'slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if('valido' in d){ pinta(d,!v); fija(d); } }).catch(function(){}); }
   b.addEventListener('click',function(){ abrir(); i.focus(); });
   i.addEventListener('input',function(){ clearTimeout(tm); tm=setTimeout(revisa,450); });
   f.addEventListener('change',function(e){ if(e.target&&e.target.name==='slug') revisa(); });
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(){ setTimeout(revisa,50); }); });
-  fetch('/api/puntos/liga?slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); } }).catch(function(){});
+  fetch('/api/puntos/liga?slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); fija(d); } }).catch(function(){});
 })();`;
+
+// Formularios de compra: llevan el campo «código» y el ayudante del descuento (window.VD) antes del script de la página
+const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|cuentas)"/;
 
 // Íconos de trazo de la tienda (heredan el color del texto)
 const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -152,7 +157,7 @@ ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" cl
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
-${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${/id="form-(compra|brindi|cupo|vuelve|agenda|vende|cuentas)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

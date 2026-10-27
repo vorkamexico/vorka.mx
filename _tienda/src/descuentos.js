@@ -6,6 +6,7 @@
 // El mismo campo «código» acepta los dos. No se acumulan: se aplica el mayor. Los puntos de quien compra sí se suman al 5 %
 // en pagos únicos (las suscripciones no aceptan puntos). Siempre queda el cobro mínimo de la pasarela (crearOrden).
 import { one } from './util.js';
+import { COBRO_MINIMO } from './puntos-reglas.js';
 
 export const PCT_REFERIDO = 5;
 export const REFERIDO = 'REFERIDO';   // descuento_codigo de la orden cuando el descuento fue el 5 % por recomendación
@@ -28,7 +29,7 @@ export function textoCodigo(c, sus) {
   const cuando = sus ? (c.meses ? (c.meses === 1 ? ' en tu primer mes' : ` los primeros ${c.meses} meses`) : ' en tu primer pago') : ' de descuento';
   return `${c.codigo}: ${c.pct} %${cuando}`;
 }
-export const textoReferido = sus => `${PCT_REFERIDO} % ${sus ? 'en cada pago ' : 'de descuento '}por recomendación`;
+export const textoReferido = sus => `${PCT_REFERIDO} % ${sus ? 'en tu primer pago ' : 'de descuento '}por recomendación`;
 
 /**
  * Revisa un código de la tabla para esta compra. sus: { intervalo, app } del plan, o null si no es suscripción.
@@ -86,4 +87,30 @@ export async function resolverDescuento(env, { escrito, liga, email = null, sus 
 }
 
 // Duración del cupón de Stripe en suscripciones
-export const duracionDe = d => (d.tipo === 'referido' ? 'forever' : d.meses ? 'repeating' : 'once');
+// Decisión del dueño: el 5 % por recomendación aplica solo al primer pago ('once'), también en suscripciones
+export const duracionDe = d => (d.tipo !== 'referido' && d.meses ? 'repeating' : 'once');
+
+// Centavos de descuento de un código o del 5 %: el % de lo de Vorka (base), redondeado al centavo, dejando siempre el cobro
+// mínimo de la pasarela. Es LA cuenta: la usan crearOrden y, copiada tal cual (toString), la página de compra para el
+// «Pagas hoy». Con precios en pesos enteros, 30 % y 5 % dan centavos exactos, igual que Stripe; si algún precio llevara
+// centavos, Stripe puede redondear distinto por 1 centavo y aplicarPago lo acepta (TOLERANCIA_PCT) en suscripciones.
+export function centavosDescuento(base, subtotal, pct, minimo) {
+  return pct > 0 ? Math.max(0, Math.min(Math.round(base * pct / 100), subtotal - minimo)) : 0;
+}
+
+// Ayudante de la página de compra (va antes del script de cada página): window.VD guarda el descuento vigente que dice
+// /api/puntos/liga y cada página lo usa al pintar su total; al cambiar avisa con el evento 'vorka:descuento'.
+//   VD.hoy(t) → lo que se paga hoy · VD.frase(t, cada) → { hoy, luego } para «Pagas hoy … y luego …»
+//   d = { pct, duracion: 'once' | 'repeating' | 'forever' | null (pago único), meses, etiqueta: «5 % por recomendación» }
+export const CLIENTE_DESCUENTO = `(function(){ if(window.VD) return;
+  var MIN=${COBRO_MINIMO}, desc=${centavosDescuento.toString()};
+  function pesos(c){ return '$'+(c/100).toLocaleString('es-MX',{minimumFractionDigits:c%100?2:0,maximumFractionDigits:2})+' MXN'; }
+  var VD=window.VD={d:null,pesos:pesos,
+    hoy:function(t){ var d=VD.d; return d&&d.pct>0?t-desc(t,t,d.pct,MIN):t; },
+    frase:function(t,cada){ var d=VD.d, h=VD.hoy(t);
+      if(h===t) return {hoy:pesos(t),luego:'y luego '+pesos(t)+' '+cada};
+      if(d.duracion==='forever') return {hoy:pesos(h),luego:'y luego '+pesos(h)+' '+cada};
+      if(d.duracion==='repeating'&&d.meses>1) return {hoy:pesos(h),luego:'y luego '+pesos(h)+' '+cada+' hasta cumplir '+d.meses+' meses; después, '+pesos(t)+' '+cada};
+      return {hoy:pesos(h),luego:(d.etiqueta?'('+d.etiqueta+') ':'')+'y luego '+pesos(t)+' '+cada}; },
+    fijar:function(d){ VD.d=d&&d.pct>0?d:null; document.dispatchEvent(new Event('vorka:descuento')); }};
+})();`;

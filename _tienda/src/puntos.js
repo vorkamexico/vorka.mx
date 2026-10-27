@@ -21,7 +21,7 @@ import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
 import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
-import { resolverDescuento, normalizar } from './descuentos.js';
+import { resolverDescuento, normalizar, duracionDe } from './descuentos.js';
 import { suscripcionDe } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
 import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
@@ -607,16 +607,21 @@ export async function rutasPuntos(req, env, url) {
     const s = suscripcionDe(prod);
     const sus = s && !prod.contenido.complemento ? { intervalo: s.intervalo === 'year' ? 'year' : 'month', app: prod.contenido.acceso?.app || null } : null;
     const r = await resolverDescuento(env, { escrito: escrito ?? liga, liga: escrito ? liga : null, sus });
+    // Los productos de creadores no llevan descuento (crearOrden lo calcula solo sobre lo de Vorka)
+    if (prod?.creador_id) r.descuento = null;
     const codigo = escrito ?? normalizar(liga);
     // ¿Lo escrito sirvió? Es un código de descuento que aplica, o es de una persona de referidos
     const esDesc = r.descuento?.tipo === 'codigo' && r.descuento.codigo === codigo;
     const esRef = !!r.ref && r.ref === codigo;
     const valido = esDesc || esRef;
-    if (!valido && !r.avisos.length) return json({ valido: false, ...(r.descuento ? { texto: r.descuento.texto } : {}) }, 200, NO_CACHE);
+    // descuento: lo que la página usa para su «Pagas hoy» (con el mismo cálculo que el servidor, centavosDescuento)
+    const calc = r.descuento ? { pct: r.descuento.pct, duracion: sus ? duracionDe(r.descuento) : null, meses: r.descuento.meses ?? null,
+      etiqueta: r.descuento.tipo === 'referido' ? `${r.descuento.pct} % por recomendación` : `${r.descuento.codigo}: ${r.descuento.pct} %` } : null;
+    if (!valido && !r.avisos.length) return json({ valido: false, ...(r.descuento ? { texto: r.descuento.texto, descuento: calc } : {}) }, 200, NO_CACHE);
     // Gana un código de descuento sobre el 5 %: se dice que no se acumulan
     const nota = esDesc && r.ref ? ' (no se acumula con el 5 % por recomendación)' : '';
     return json({ valido, codigo, tipo: esDesc ? 'codigo' : esRef ? 'referido' : null, texto: r.descuento ? r.descuento.texto + nota : null,
-      aviso: r.avisos[0] || null, de_liga: !escrito }, 200, NO_CACHE);
+      aviso: r.avisos[0] || null, de_liga: !escrito, descuento: calc }, 200, NO_CACHE);
   }
   if (p === '/api/puntos/push/clave' && M === 'GET') {
     const c = await cuentaActual(req, env);

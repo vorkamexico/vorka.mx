@@ -2,7 +2,7 @@
 import { all, one, run, ahoraISO } from './util.js';
 import { transicion } from './estados.js';
 import { SQL_APARTADOS, SQL_MOVIMIENTOS, descuentoMaximo, COBRO_MINIMO } from './puntos.js';
-import { REFERIDO } from './descuentos.js';
+import { REFERIDO, centavosDescuento } from './descuentos.js';
 
 const producto = r => r && { ...r, activo: !!r.activo, r2_keys: JSON.parse(r.r2_keys || '[]'), contenido: JSON.parse(r.contenido || '{}') };
 
@@ -56,7 +56,7 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
   // Código de descuento o 5 % por recomendación: % de lo de Vorka (los productos de creadores no llevan descuento),
   // dejando siempre el cobro mínimo de la pasarela
   const propio = lineas.filter(l => !l.p.creador_id).reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0);
-  const descCodigo = descuento?.pct > 0 ? Math.max(0, Math.min(Math.round(propio * descuento.pct / 100), subtotal - COBRO_MINIMO)) : 0;
+  const descCodigo = centavosDescuento(propio, subtotal, descuento?.pct || 0, COBRO_MINIMO);
   const conCodigo = descCodigo > 0 ? descuento : null;
   // Descuento con puntos (sobre lo que queda); siempre queda el cobro mínimo. Puntos enteros (1 punto = $1): nunca se regalan centavos
   const descPuntos = puntos ? Math.floor(descuentoMaximo(puntos.disponibles, subtotal - descCodigo) / 100) * 100 : 0;

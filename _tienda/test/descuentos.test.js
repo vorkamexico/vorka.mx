@@ -5,7 +5,9 @@ import { d1 } from './d1.js';
 import worker, { Admin } from '../src/index.js';
 import { crearOrden, aplicarPago } from '../src/modelo.js';
 import { puntosAlPagar, codigoDe } from '../src/puntos.js';
-import { resolverDescuento, evaluarCodigo, duracionDe } from '../src/descuentos.js';
+import { resolverDescuento, evaluarCodigo, duracionDe, centavosDescuento, CLIENTE_DESCUENTO } from '../src/descuentos.js';
+import { COBRO_MINIMO } from '../src/puntos-reglas.js';
+import vm from 'node:vm';
 
 const SITIO = 'https://vorka.mx';
 let env, llamadas, cupones, cuponFalla, ip;
@@ -160,7 +162,7 @@ describe('FUNDADOR30', () => {
     // Con la liga de quien lo recomendó: 5 %
     const k = await (await comprar({ codigo: 'FUNDADOR30' }, { cookie: 'vorka_ref=ANA' })).json();
     expect(k.aviso).toBe('Los 10 lugares de fundador de Vuelve ya se ocuparon.');
-    expect(k.descuento).toBe('5 % en cada pago por recomendación');
+    expect(k.descuento).toBe('5 % en tu primer pago por recomendación');
     expect(ultima()).toMatchObject({ descuento_codigo: 'REFERIDO', ref_code: 'ANA' });
     // Las demás apps tienen sus propios 10 lugares
     for (const slug of ['agenda-mensual', 'agenda-vuelve-mensual', 'vende-mensual', 'cuentas-mensual']) {
@@ -217,15 +219,16 @@ describe('5 % por recomendación', () => {
     expect(ultima()).toMatchObject({ ref_code: 'ANA', descuento_codigo: 'REFERIDO' });
   });
 
-  it('en una suscripción: cupón vorka_ref5 por 5 % para siempre, reutilizado', async () => {
+  it('en una suscripción: cupón vorka_ref5 por 5 % solo en el primer pago, reutilizado', async () => {
     await comprar({}, { cookie: 'vorka_ref=ANA' });
     expect(sesion().get('discounts[0][coupon]')).toBe('vorka_ref5');
     expect(sesion().has('allow_promotion_codes')).toBe(false);
     const [c] = posts();
     expect(c.params.get('percent_off')).toBe('5');
-    expect(c.params.get('duration')).toBe('forever');
+    expect(c.params.get('duration')).toBe('once');
     expect(c.params.has('duration_in_months')).toBe(false);
-    await comprar({ codigo: 'ANA', slug: 'vuelve-anual' });   // en el anual también: 5 % de cada año
+    expect(ultima()).toMatchObject({ descuento_codigo: 'REFERIDO', descuento_duracion: 'once', descuento_meses: null });
+    await comprar({ codigo: 'ANA', slug: 'vuelve-anual' });   // en el anual también: 5 % del primer año
     expect(sesion().get('discounts[0][coupon]')).toBe('vorka_ref5');
     expect(posts()).toHaveLength(1);
   });
@@ -351,12 +354,90 @@ describe('vista previa del campo «código» (/api/puntos/liga)', () => {
     expect(await v('c=FUNDADOR30&slug=vuelve-anual')).toMatchObject({ valido: false, texto: null, aviso: expect.stringContaining('solo aplica en planes mensuales') });
     expect(await v('c=FUNDADOR30&slug=de-idea-a-proyecto')).toMatchObject({ valido: false, aviso: expect.stringContaining('solo aplica en planes mensuales') });
     expect(await v('c=ana&slug=de-idea-a-proyecto')).toMatchObject({ valido: true, codigo: 'ANA', tipo: 'referido', texto: '5 % de descuento por recomendación' });
-    expect(await v('c=ANA&slug=vuelve-mensual')).toMatchObject({ texto: '5 % en cada pago por recomendación' });
+    expect(await v('c=ANA&slug=vuelve-mensual')).toMatchObject({ texto: '5 % en tu primer pago por recomendación' });
     expect(await v('c=NOEXISTE')).toEqual({ valido: false });
     // Nunca dice quién recomendó
     expect(JSON.stringify(await v('c=ANA'))).not.toMatch(/Ana|vorka\.mx/);
     // Anual con la liga: FUNDADOR30 no aplica, pero sí el 5 %
     const x = await (await pedir('/api/puntos/liga?c=FUNDADOR30&slug=vuelve-anual', { cookie: 'vorka_ref=ANA' })).json();
-    expect(x).toMatchObject({ valido: false, texto: '5 % en cada pago por recomendación', aviso: expect.stringContaining('solo aplica en planes mensuales') });
+    expect(x).toMatchObject({ valido: false, texto: '5 % en tu primer pago por recomendación', aviso: expect.stringContaining('solo aplica en planes mensuales') });
+  });
+});
+
+// El «Pagas hoy … y luego …» de la página: el ayudante del navegador (window.VD) con el descuento que da /api/puntos/liga
+function navegador() {
+  const ctx = { window: {}, document: { dispatchEvent() {} }, Event: class {} };
+  vm.runInNewContext(CLIENTE_DESCUENTO, ctx);
+  return ctx.window.VD;
+}
+const liga = async q => (await pedir(`/api/puntos/liga?${q}`)).json();
+
+describe('total con descuento en la página de compra', () => {
+  it('FUNDADOR30 en Vuelve: «Pagas hoy $279.30 y luego $279.30 al mes hasta cumplir 3 meses; después, $399 al mes»', async () => {
+    const VD = navegador();
+    const r = await liga('c=FUNDADOR30&slug=vuelve-mensual');
+    expect(r.descuento).toEqual({ pct: 30, duracion: 'repeating', meses: 3, etiqueta: 'FUNDADOR30: 30 %' });
+    VD.fijar(r.descuento);
+    expect(VD.frase(39900, 'al mes')).toEqual({ hoy: '$279.30 MXN', luego: 'y luego $279.30 MXN al mes hasta cumplir 3 meses; después, $399 MXN al mes' });
+    // Sin descuento, como antes
+    VD.fijar(null);
+    expect(VD.frase(39900, 'al mes')).toEqual({ hoy: '$399 MXN', luego: 'y luego $399 MXN al mes' });
+  });
+
+  it('5 % de referido en una suscripción: «Pagas hoy $X (5 % por recomendación) y luego $399 al mes»', async () => {
+    const VD = navegador();
+    const r = await (await pedir('/api/puntos/liga?slug=vuelve-mensual', { cookie: 'vorka_ref=ANA' })).json();
+    expect(r.descuento).toEqual({ pct: 5, duracion: 'once', meses: null, etiqueta: '5 % por recomendación' });
+    VD.fijar(r.descuento);
+    expect(VD.frase(39900, 'al mes')).toEqual({ hoy: '$379.05 MXN', luego: '(5 % por recomendación) y luego $399 MXN al mes' });
+    const a = precio('vuelve-anual'), h = a - Math.round(a * 0.05);
+    expect(VD.frase(a, 'al año')).toEqual({ hoy: VD.pesos(h), luego: `(5 % por recomendación) y luego ${VD.pesos(a)} al año` });
+  });
+
+  it('si vorka_ref5 ya existe en Stripe para siempre (forever), usa uno con la duración en el id', async () => {
+    cupones.set('vorka_ref5', { id: 'vorka_ref5', valid: true, percent_off: 5, duration: 'forever' });
+    await comprar({}, { cookie: 'vorka_ref=ANA' });
+    expect(sesion().get('discounts[0][coupon]')).toBe('vorka_ref5_5p_once');
+    expect(cupones.get('vorka_ref5_5p_once')).toMatchObject({ percent_off: 5, duration: 'once' });
+  });
+
+  it('pago único: el total ya con el 5 %', async () => {
+    const VD = navegador();
+    const r = await liga('c=ANA&slug=de-idea-a-proyecto');
+    expect(r.descuento).toEqual({ pct: 5, duracion: null, meses: null, etiqueta: '5 % por recomendación' });
+    VD.fijar(r.descuento);
+    expect(VD.pesos(VD.hoy(27900))).toBe('$265.05 MXN');
+  });
+
+  it('la página calcula exactamente lo que cobra el servidor (mismo cálculo, mismo redondeo)', async () => {
+    const VD = navegador();
+    const casos = [
+      [{ codigo: 'FUNDADOR30', slug: 'vuelve-mensual', sucursales: 3 }, 'vuelve-mensual', p => p('vuelve-mensual') + 3 * p('vuelve-sucursal-mensual')],
+      [{ codigo: 'FUNDADOR30', slug: 'agenda-mensual', profesionales: 4 }, 'agenda-mensual', p => p('agenda-mensual') + 3 * p('agenda-profesional-mensual')],
+      [{ codigo: 'ANA', slug: 'vuelve-anual', sucursales: 2 }, 'vuelve-anual', p => p('vuelve-anual') + 2 * p('vuelve-sucursal-anual')],
+      [{ codigo: 'ANA', slug: 'de-idea-a-proyecto' }, 'de-idea-a-proyecto', p => p('de-idea-a-proyecto')],
+    ];
+    for (const [compra, slug, subtotal] of casos) {
+      const { descuento } = await liga(`c=${compra.codigo}&slug=${slug}`);
+      VD.fijar(descuento);
+      await comprar(compra);
+      expect(ultima().monto_centavos).toBe(VD.hoy(subtotal(precio)));
+    }
+    // Y la cuenta es la misma para cualquier monto (incluidos los que llevan medio centavo)
+    for (let t = COBRO_MINIMO; t < 600000; t += 997)
+      for (const pct of [5, 30, 12.5]) {
+        VD.fijar({ pct, duracion: 'once', meses: null });
+        expect(VD.hoy(t)).toBe(t - centavosDescuento(t, t, pct, COBRO_MINIMO));
+      }
+  });
+
+  it('las páginas de compra cargan el ayudante antes de su propio script y repintan al cambiar el descuento', async () => {
+    for (const ruta of ['/tienda/vuelve/', '/tienda/agenda/', '/tienda/vende/', '/tienda/cuentas/', '/tienda/de-idea-a-proyecto', '/tienda/brindi/']) {
+      const h = await (await pedir(ruta)).text();
+      const ayudante = h.indexOf('if(window.VD) return;');
+      expect(ayudante, ruta).toBeGreaterThan(-1);
+      expect(h.indexOf("addEventListener('vorka:descuento'"), ruta).toBeGreaterThan(ayudante);
+      expect(h.indexOf('VD.fijar(d&&d.descuento||null)'), ruta).toBeGreaterThan(ayudante);
+    }
   });
 });

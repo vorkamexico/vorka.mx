@@ -43,7 +43,8 @@ INSERT OR IGNORE INTO codigos_descuento (codigo, pct, meses, solo_mensual, activ
 
 -- En la orden: qué descuento se usó y cuánto (la parte de descuento_centavos que dio el código; el resto son puntos).
 -- descuento_codigo: el de la tabla (FUNDADOR30) o 'REFERIDO' (5 % por recomendación; quién recomendó sigue en ref_code).
--- descuento_duracion: solo en suscripciones ('once' | 'repeating' | 'forever'); NULL en pagos únicos (cupón por monto).
+-- descuento_duracion: solo en suscripciones ('once' | 'repeating'; el 5 % por recomendación es 'once': solo el primer pago);
+--   NULL en pagos únicos (cupón por monto).
 -- descuento_app: la app donde cuenta el uso al pagarse (Agenda + Vuelve → 'agenda').
 ALTER TABLE orders ADD COLUMN descuento_codigo TEXT;
 ALTER TABLE orders ADD COLUMN descuento_pct REAL;
