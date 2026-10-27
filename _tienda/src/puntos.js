@@ -21,7 +21,7 @@ import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
 import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
-import { resolverDescuento, normalizar, duracionDe } from './descuentos.js';
+import { resolverDescuento, normalizar, duracionDe, PCT_REFERIDO } from './descuentos.js';
 import { suscripcionDe } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
 import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
@@ -31,6 +31,11 @@ import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
 export { COBRO_MINIMO };
 const COOKIE = 'vorka_cuenta';
 const ENLACE_MIN = 30, CODIGO_MIN = 15, CODIGO_INTENTOS = 5, SESION_DIAS = 60;
+// Cómo funciona, en el correo de bienvenida (los % salen de puntos-reglas.js y descuentos.js)
+const BIENVENIDA = [
+  `<b>Así funciona:</b> comparte tu liga o tu código. Por cada compra pagada que entre con ellos ganas del ${NIVELES[0].pct} % al ${NIVELES.at(-1).pct} % de lo cobrado en puntos, según tu nivel del semestre. Cada punto vale $1 MXN en productos de Vorka México.`,
+  `<b>Quien compra también gana:</b> por ser parte del ecosistema Vorka, tiene ${PCT_REFERIDO} % de descuento en su primer pago con tu liga o tu código (no aplica en productos de creadores; si usa otro código de descuento, se aplica el mayor y, si llegó con tu liga, tú sigues ganando tus puntos).`,
+];
 const emailValido = e => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e || '');
 const leerCookie = req => (req.headers.get('cookie') || '').split(';').map(s => s.trim().split('=')).find(([k]) => k === COOKIE)?.[1];
 const mismoOrigen = (req, env) => { const o = req.headers.get('origin'); return !o || o === new URL(env.SITE_URL).origin; };
@@ -202,7 +207,7 @@ async function despuesDeGanar(env, email, { puntos, pct, mult, motivo, producto,
       titulo: mult > 1 ? `¡Puntos extra! +${puntos} puntos` : `¡Ganaste ${puntos} puntos!`,
       cuerpo: `${renovacion ? 'Se renovó una suscripción que entró con tu liga' : `Alguien compró${producto ? ` ${producto}` : ''} con tu liga`}${motivo === 'sugerencia' ? ' (el producto que sugeriste)' : ''}: ${pct}% en puntos. Ya tienes ${s.disponibles} puntos ($${s.disponibles} MXN en la tienda).`,
       url: '/tienda/cuenta/#actividad',
-    }, { correo: { asunto: `Ganaste ${puntos} puntos Vorka` } });
+    }, { correo: { asunto: `Ganaste ${puntos} puntos Vorka`, extra: `<p style="${P}">Sigue compartiendo tu liga: por ser parte del ecosistema Vorka, quien compra con ella tiene ${PCT_REFERIDO} % de descuento en su primer pago, y tú ganas tus puntos.</p>` } });
     if (renovacion) return revisarMeta(env, email, s);
     const ventas = await ventasSemestre(env, email);
     const n = nivelDe(ventas);
@@ -322,8 +327,8 @@ async function registrar(req, env) {
   if (!r.meta.changes) return json({ error: 'Ese correo ya tiene cuenta. Entra con tu contraseña.', existe: true, con_clave: true }, 409);
   // Bienvenida (si no fue esa persona, lo sabrá)
   await enviar(env, { para: b.email, asunto: 'Tu cuenta de Puntos Vorka está lista', idempotencia: `puntos-bienvenida-${await sha256(b.email)}`,
-    html: marco('¡Bienvenida a Puntos Vorka!', `<p style="${P}">Hola, ${esc(nombre.split(' ')[0])}: tu cuenta ya está lista. Entra con tu correo y la contraseña que creaste para compartir tu liga y ganar puntos.</p>${boton(`${env.SITE_URL}/tienda/cuenta/`, 'Abrir mi app')}<p style="${P}">¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.</p>`, { etiqueta: 'Puntos' }),
-    texto: `Tu cuenta de Puntos Vorka está lista. Entra en ${env.SITE_URL}/tienda/cuenta/ con tu correo y tu contraseña.\n\n¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.` }).catch(e => console.error('puntos bienvenida', e));
+    html: marco('¡Bienvenida a Puntos Vorka!', `<p style="${P}">Hola, ${esc(nombre.split(' ')[0])}: tu cuenta ya está lista. Entra con tu correo y la contraseña que creaste para compartir tu liga y ganar puntos.</p>${BIENVENIDA.map(x => `<p style="${P}">${x}</p>`).join('')}${boton(`${env.SITE_URL}/tienda/cuenta/`, 'Abrir mi app')}<p style="${P}">¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.</p>`, { etiqueta: 'Puntos' }),
+    texto: `Tu cuenta de Puntos Vorka está lista. Entra en ${env.SITE_URL}/tienda/cuenta/ con tu correo y tu contraseña.\n\n${BIENVENIDA.map(x => x.replace(/<[^>]+>/g, '')).join('\n\n')}\n\n¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.` }).catch(e => console.error('puntos bienvenida', e));
   return json({ ok: true }, 200, { 'set-cookie': await crearSesion(env, b.email) });
 }
 
@@ -430,7 +435,8 @@ export function compartibles(productos) {
   const m = new Map();
   for (const p of productos.filter(p => !p.contenido?.oculto)) {
     const d = destinoDe(p);
-    if (!m.has(d.ruta)) m.set(d.ruta, { ...d, ids: [], imagen: p.imagen || (d.tipo === 'brindi' ? '/assets/tienda/v3/brindi-portada.webp' : d.tipo === 'cupo' ? '/assets/tienda/v3/cupo-portada.webp' : null) });
+    // creador: los productos de creadores no llevan el 5 % de descuento por recomendación (los mensajes no lo ofrecen)
+    if (!m.has(d.ruta)) m.set(d.ruta, { ...d, creador: !!p.creador_id, ids: [], imagen: p.imagen || (d.tipo === 'brindi' ? '/assets/tienda/v3/brindi-portada.webp' : d.tipo === 'cupo' ? '/assets/tienda/v3/cupo-portada.webp' : null) });
   }
   for (const p of productos) m.get(destinoDe(p).ruta)?.ids.push(p.id);
   return [...m.values()];
@@ -438,7 +444,7 @@ export function compartibles(productos) {
 
 // Todo lo que se puede comprar hoy (incluye los planes ocultos del catálogo que se venden en su propia página)
 async function vendibles(env) {
-  return (await all(env, `SELECT p.id, p.slug, p.nombre, p.descripcion_corta, p.precio_centavos, p.imagen, p.contenido FROM products p WHERE ${VENDIBLE} ORDER BY p.orden, p.nombre`))
+  return (await all(env, `SELECT p.id, p.slug, p.nombre, p.descripcion_corta, p.precio_centavos, p.imagen, p.contenido, p.creador_id FROM products p WHERE ${VENDIBLE} ORDER BY p.orden, p.nombre`))
     .map(p => ({ ...p, contenido: JSON.parse(p.contenido || '{}') }));
 }
 // Productos que se pueden elegir como meta: los visibles y los planes de las apps (no complementos ni simulacros sueltos)

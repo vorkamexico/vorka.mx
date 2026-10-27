@@ -3,6 +3,7 @@
 import { one, json, fail, correoOculto } from './util.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { PCT_REFERIDO } from './descuentos.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const ESPERA_EFECTIVO = ['oxxo', 'customer_balance'];
@@ -97,7 +98,7 @@ export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" 
 const bienvenida = o => {
   const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;
   return `<div class="t-bienvenida"><b>${nombre ? `¡Te damos la bienvenida a ${esc(nombre)}!` : '¡Gracias por comprar en la tienda!'}</b><small>by vorka.mx</small>
-    <p>Recomienda${nombre ? ` ${esc(nombre)}` : ' la tienda'} con tu liga de <a href="/tienda/puntos/">Puntos Vorka</a> y gana del 10% al 30% de cada compra en puntos: cada punto vale $1 en la tienda.</p>
+    <p>Recomienda${nombre ? ` ${esc(nombre)}` : ' la tienda'} con tu liga de <a href="/tienda/puntos/">Puntos Vorka</a> y gana del 10% al 30% de cada compra en puntos: cada punto vale $1 en la tienda. Por ser parte del ecosistema Vorka, quien compre con tu liga tiene ${PCT_REFERIDO} % de descuento en su primer pago.</p>
     <p class="t-impacto">${acc?.app === 'ruta' ? 'Lo recibido va para <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO</a>.' : IMPACTO}</p></div>`;
 };
 

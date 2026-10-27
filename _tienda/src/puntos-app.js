@@ -4,9 +4,10 @@ import { esc, nonce, seguridad, pagina } from './paginas.js';
 import { LOGO, FLECHA, CHECK } from './marco.generado.js';
 import { ICONOS } from './puntos-iconos.generado.js';
 import qrcode from './vendor/qrcode.js';
-import { navTienda } from './tienda.js';
+import { navTienda, seccionFaq } from './tienda.js';
+import { PCT_REFERIDO } from './descuentos.js';
 import { TEMA_HEAD, selectorTema } from './tema.js';
-import { NIVELES, LOGROS, PCT_EXTRA, PCT_TOPE, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
+import { NIVELES, LOGROS, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
 
 const SITIO = 'https://vorka.mx';
 const TZ = 'America/Mexico_City';
@@ -84,13 +85,18 @@ export function qrSvg(texto) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}" shape-rendering="crispEdges" role="img" aria-label="Código QR de tu liga"><rect width="${t}" height="${t}" fill="#ffffff"/><path d="${d}" fill="#141114"/></svg>`;
 }
 
-// Mensajes listos para pegar, según lo que se comparte
+// Para invitar a alguien al programa (ajustes de la app y página del programa)
+const INVITA = `Te comparto Puntos Vorka: recomiendas productos de la tienda de Vorka México y ganas del ${NIVELES[0].pct} % al ${NIVELES.at(-1).pct} % de cada compra en puntos (1 punto = $1). Y quien compra con tu liga tiene ${PCT_REFERIDO} % de descuento en su primer pago. Es gratis: https://vorka.mx/tienda/puntos/`;
+
+// Mensajes listos para pegar, según lo que se comparte. Por ser parte del ecosistema Vorka, quien compra con la liga tiene
+// el 5 % en su primer pago (descuentos.js); los productos de creadores no lo llevan, así que su mensaje no lo ofrece.
 function mensajes(c, liga) {
-  if (c.tipo === 'simulador') return [`¿Vas a presentar el examen de admisión? Este simulador de la PAA te dice en qué temas vas bien y en cuáles no, con un tutor que te explica cada respuesta: ${liga}`, `Yo lo recomiendo para practicar la PAA antes del examen: ${liga}`];
-  if (c.tipo === 'brindi') return [`¿Tienes boda, XV años o bautizo? Con Brindi mandas la invitación por WhatsApp, recibes las confirmaciones y controlas la entrada con QR: ${liga}`, `Las invitaciones digitales de Brindi se ven increíbles y te quitan el lío de las confirmaciones: ${liga}`];
-  if (c.tipo === 'cupo') return [`Si organizas fiestas, talleres o eventos: con Cupo tienes página de registro, cover y entrada con QR. Gratis hasta 30 personas: ${liga}`, `Para tu próximo evento prueba Cupo, el registro y el check-in quedan resueltos: ${liga}`];
-  if (c.tipo === 'tienda') return [`Mira la tienda de Vorka México: simulador de la PAA, invitaciones digitales, eventos con registro y kits para emprender. ${liga}`];
-  return [`Te recomiendo «${c.titulo}»: ${String(c.texto || '').trim()} ${liga}`.replace(/\s+/g, ' '), `Esto te puede servir: ${c.titulo} ${liga}`];
+  const cierre = c.creador ? `: ${liga}` : `. Con mi liga tienes ${PCT_REFERIDO} % de descuento en tu primer pago${c.tipo === 'tienda' ? ' en productos de Vorka México' : ''}: ${liga}`;
+  if (c.tipo === 'simulador') return [`¿Vas a presentar tu examen de admisión? Este simulador te dice en qué temas vas bien y en cuáles no, con un tutor que te explica cada respuesta${cierre}`, `Yo lo recomiendo para practicar antes del examen${cierre}`];
+  if (c.tipo === 'brindi') return [`¿Tienes boda, XV años o bautizo? Con Brindi mandas la invitación por WhatsApp, recibes las confirmaciones y controlas la entrada con QR${cierre}`, `Las invitaciones digitales de Brindi se ven increíbles y te quitan el lío de las confirmaciones${cierre}`];
+  if (c.tipo === 'cupo') return [`Si organizas fiestas, talleres o eventos: con Cupo tienes página de registro, cover y entrada con QR. Gratis hasta 30 personas${cierre}`, `Para tu próximo evento prueba Cupo, el registro y el check-in quedan resueltos${cierre}`];
+  if (c.tipo === 'tienda') return [`Mira la tienda de Vorka México: simulador de la PAA, invitaciones digitales, eventos con registro y kits para emprender${cierre}`];
+  return [`Te recomiendo «${c.titulo}»: ${String(c.texto || '').trim().replace(/[.\s]+$/, '')}${cierre}`.replace(/\s+/g, ' '), `Esto te puede servir: ${c.titulo}${cierre}`];
 }
 
 // ---------- estilos ----------
@@ -508,7 +514,7 @@ export function paginaEntrarApp() {
   <div class="entrar-hero pv-paso">
     <span class="marca-v">${V}</span>
     <h1>Puntos <span class="pv-metal">Vorka</span></h1>
-    <p>Comparte lo que te gusta de la tienda y gana del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% de cada compra en puntos. 1 punto = $1.</p>
+    <p>Comparte lo que te gusta de la tienda y gana del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% de cada compra en puntos. 1 punto = $1. Quien compra con tu liga tiene ${PCT_REFERIDO} % de descuento en su primer pago.</p>
     <div class="ventajas"><span>Hasta ${NIVELES.at(-1).pct}%</span><span>Metas y niveles</span><span>Avisos al instante</span></div>
   </div>
   ${formEntrar({ enApp: true })}
@@ -618,7 +624,7 @@ export function paginaApp(env, d) {
   const compartir = `
 <section class="vista" id="v-compartir" data-vista="compartir" aria-label="Compartir" hidden>
   <h1 class="titulo" style="--i:0">Comparte y <span class="pv-metal">gana</span></h1>
-  <p class="subt" style="--i:1">Cada compra con tu liga te da ${d.pct}% en puntos (${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% con puntos extra). La persona tiene 30 días para comprar.</p>
+  <p class="subt" style="--i:1">Cada compra con tu liga te da ${d.pct}% en puntos (${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% con puntos extra). Por ser parte del ecosistema Vorka, quien compra con tu liga o tu código tiene ${PCT_REFERIDO} % de descuento en su primer pago. La persona tiene 30 días para comprar.</p>
   <div class="card codigo-card" style="--i:2"><div><small>Tu código</small><code>${esc(d.code)}</code></div><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(ligaDe('/tienda/', d.code))}">${I.copiar}Copiar liga</button></div>
   <div class="sec-t" style="--i:3"><h2>Elige qué compartir</h2></div>
   <div class="prods">${tarjetasCompartir.map((c, i) => {
@@ -690,7 +696,7 @@ export function paginaApp(env, d) {
   <div class="grupo">
     <a class="opcion" href="/tienda/">Ir a la tienda y usar mis puntos ${I.tienda}</a>
     <a class="opcion" href="/tienda/puntos/#instalar">Ponla en tu celular (instrucciones) ${I.instalar}</a>
-    <button class="opcion" type="button" data-compartir="Te comparto Puntos Vorka: recomiendas productos de la tienda de Vorka México y ganas descuentos. Es gratis: https://vorka.mx/tienda/puntos/" data-url="https://vorka.mx/tienda/puntos/" data-titulo="Puntos Vorka">Invitar a alguien a Puntos Vorka ${I.compartir}</button>
+    <button class="opcion" type="button" data-compartir="${esc(INVITA)}" data-url="https://vorka.mx/tienda/puntos/" data-titulo="Puntos Vorka">Invitar a alguien a Puntos Vorka ${I.compartir}</button>
     <a class="opcion" href="/tienda/puntos/">Cómo funciona el programa ${I.ayuda}</a>
     <a class="opcion" href="/legal/terminos/#puntos">Condiciones del programa ${I.flecha}</a>
     <a class="opcion" href="mailto:hola@vorka.mx?subject=Puntos%20Vorka">¿Dudas? hola@vorka.mx ${I.correo}</a>
@@ -1026,6 +1032,19 @@ const SCRIPT_COPIAR_PROG = `(function(){ var b=document.getElementById('pv-copia
   if(navigator.share){ navigator.share({title:'Puntos Vorka',url:u}).catch(function(){}); return; }
   if(navigator.clipboard) navigator.clipboard.writeText(u).then(ok,function(){ prompt('Copia el enlace:',u); }); else prompt('Copia el enlace:',u); }); })();`;
 
+// Preguntas frecuentes de la página del programa. Todo sale de las reglas (puntos-reglas.js, descuentos.js, checkout.js):
+// si cambian, cambia aquí. Nunca se menciona la transferencia a cuenta (README-TIENDA.md).
+const FAQ_PUNTOS = [
+  ['¿Qué es Puntos Vorka?', `El programa gratuito para recomendar la tienda de Vorka México. Por ser parte del ecosistema Vorka, ganan los dos: tú, puntos por cada compra que entra con tu liga; quien compra, ${PCT_REFERIDO} % de descuento en su primer pago.`],
+  ['¿Cuántos puntos gano por compra?', `Un porcentaje de lo que se pagó por productos de Vorka México (después de descuentos y con IVA), según tu nivel del semestre: ${NIVELES.map(n => `${n.nombre} ${n.pct} % (${n.min ? `desde ${n.min} compras` : 'al empezar'})`).join(', ')}. Cada compra usa el porcentaje del nivel que tenías antes de ella. En productos con promoción o que tú sugeriste y agregamos, se suman ${PCT_EXTRA} puntos porcentuales, hasta ${PCT_TOPE} %. Cada punto vale $1 MXN en la tienda.`],
+  ['¿Qué gana quien compra con mi liga?', `${PCT_REFERIDO} % de descuento en su primer pago en productos de Vorka México. En suscripciones (Vuelve, Agenda, Vende Pro y Cuentas) es solo el primer cobro; las renovaciones van a precio normal. Se aplica automáticamente al pagar si llegó con tu liga, o si escribe tu código en «¿Tienes un código de descuento o de quien te recomendó?». No aplica en productos de creadores ni cuando alguien compra con su propio código.`],
+  ['¿Y si usa otro código, como FUNDADOR30?', 'Los descuentos no se acumulan: se aplica el mayor. Si llegó con tu liga, la compra sigue contando a tu nombre y ganas tus puntos sobre lo que pagó. Como el campo del código es uno solo, que abra tu liga antes de escribir el otro código.'],
+  ['¿Cuánto tiempo tiene para comprar?', '30 días desde que abre tu liga, en el mismo celular o navegador. Si compra desde otro, que escriba tu código al pagar.'],
+  ['¿Las suscripciones me dan puntos?', `Sí: la compra y cada renovación pagada, hasta completar ${FACTURAS_SUSCRIPCION} pagos, con el porcentaje de tu nivel en ese momento. Las renovaciones no suben tu nivel.`],
+  ['¿Cómo uso mis puntos?', `Al pagar en la tienda, con el mismo correo de tu cuenta, en productos de Vorka México de pago único (no en suscripciones ni en productos de creadores). Siempre se cobran al menos $10 por compra. Si compras con la liga de alguien más, puedes usar tus puntos además de su ${PCT_REFERIDO} %.`],
+  ['¿Qué pasa si una compra se reembolsa?', 'Se descuentan los puntos que esa compra te dio. Si usaste puntos en una compra que se reembolsa, te los regresamos.'],
+];
+
 export function paginaPrograma(env, { cuenta }) {
   const ben = [
     [I.moneda, `Del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% en puntos`, `Cada compra que entra con tu liga te da un porcentaje de lo que se pagó en puntos, según tu nivel. 1 punto = $1 MXN en cualquier producto de Vorka México.`],
@@ -1033,11 +1052,11 @@ export function paginaPrograma(env, { cuenta }) {
     [LOGRO_ICONO.bandera, 'Metas y niveles', 'Elige un producto como meta y ve cuántas ventas te faltan. Sube de Inicial a Diamante cada semestre y gana más % por compra.'],
     [I.actividad, 'Avisos en tu celular', 'Te avisamos al momento cuando alguien compra con tu liga, subes de nivel o alcanzas tu meta.'],
     [I.compartir, 'Comparte en un toque', 'Tu liga para cada producto con WhatsApp, Telegram, X, código QR y mensajes listos para pegar.'],
-    [I.instalar, 'Instálala en tu inicio', 'Funciona como app en iPhone y Android, sin descargar nada de una tienda de apps.'],
+    [LOGRO_ICONO.regalo, `${PCT_REFERIDO} % para quien compra`, `Por ser parte del ecosistema Vorka, quien compra con tu liga o escribe tu código tiene ${PCT_REFERIDO} % de descuento en su primer pago (en suscripciones, solo el primer cobro). No aplica en productos de creadores.`],
   ];
   return pagina({ navActual: 'puntos', navOscuro: true,
     titulo: 'Puntos Vorka: comparte y gana puntos en la tienda', ruta: '/tienda/puntos/',
-    descripcion: `La app de puntos de Vorka México: comparte tu liga y gana del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% de cada compra en puntos según tu nivel, ponte metas y recibe avisos. 1 punto = $1 MXN.`,
+    descripcion: `La app de puntos de Vorka México: comparte tu liga y gana del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% de cada compra en puntos según tu nivel, ponte metas y recibe avisos. 1 punto = $1 MXN. Quien compra con tu liga tiene ${PCT_REFERIDO} % de descuento en su primer pago.`,
     head: `<style>.pv-lp,#toast{${TOKENS}}${CSS_BASE}${CSS_PROGRAMA}</style>`,
     script: (cuenta ? '' : SCRIPT_ENTRAR) + SCRIPT_COPIAR_PROG,
     cuerpo: `
@@ -1047,9 +1066,9 @@ export function paginaPrograma(env, { cuenta }) {
       ${navTienda('puntos')}
       <p class="pv-et" style="margin-top:22px"><i></i>Puntos Vorka · la app</p>
       <h1>Recomienda.<br>Gana hasta <span class="pv-metal">${NIVELES.at(-1).pct}%.</span></h1>
-      <p class="lead">Tu propia app para compartir el Simulador PAA, Brindi, Cupo y todo lo de la tienda. Cada compra con tu liga te da del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% en puntos, y cada punto vale $1.</p>
+      <p class="lead">Tu propia app para compartir el Simulador PAA, Brindi, Cupo y todo lo de la tienda. Cada compra con tu liga te da del ${NIVELES[0].pct}% al ${NIVELES.at(-1).pct}% en puntos, y cada punto vale $1. Y por ser parte del ecosistema Vorka, quien compra con tu liga tiene ${PCT_REFERIDO} % de descuento en su primer pago.</p>
       <div class="botones">${cuenta ? `<a class="pv-btn oro" href="/tienda/cuenta/">Abrir mi app ${I.flecha}</a>` : `<a class="pv-btn oro" href="#entrar">Crear mi cuenta gratis ${I.flecha}</a><a class="pv-btn vidrio" href="/tienda/cuenta/">Ya tengo cuenta</a>`}</div>
-      <div class="pv-chips"><span>Gratis</span><span>Sin contraseñas</span><span>Hasta ${NIVELES.at(-1).pct}%</span><span>Avisos al instante</span></div>
+      <div class="pv-chips"><span>Gratis</span><span>${PCT_REFERIDO} % para quien compra</span><span>Hasta ${NIVELES.at(-1).pct}%</span><span>Avisos al instante</span></div>
     </div>
     <div style="position:relative;padding:10px 0" aria-hidden="true">
       <div class="pv-tel"><div class="pv-tel-in">
@@ -1070,8 +1089,8 @@ export function paginaPrograma(env, { cuenta }) {
   <h2 class="h2" style="margin-top:14px;max-width:760px">Una app hecha para que recomendar <span class="metal">valga la pena.</span></h2>
   <div class="pv-ben">${ben.map(([ic, t, x]) => `<article><i>${ic}</i><h3>${t}</h3><p>${x}</p></article>`).join('')}</div>
   <ol class="pv-pasos">
-    <li><b>Crea tu cuenta</b>Con tu correo, sin contraseña. Te llega un enlace y un código.</li>
-    <li><b>Comparte tu liga</b>En tus grupos, estados o redes. La persona tiene 30 días para comprar.</li>
+    <li><b>Crea tu cuenta</b>Con tu correo y una contraseña. Es gratis.</li>
+    <li><b>Comparte tu liga</b>En tus grupos, estados o redes. La persona tiene 30 días para comprar y ${PCT_REFERIDO} % de descuento en su primer pago.</li>
     <li><b>Usa tus puntos</b>Al pagar en la tienda, con el mismo correo. Siempre se cobran al menos $10.</li>
   </ol>
   <div class="pv-niv">${NIVELES.map(x => `<span style="--c:${x.color}"><i></i>${x.nombre} · ${x.pct}% <small>${x.min ? `${x.min}+ ventas` : 'al empezar'}</small></span>`).join('')}</div>
@@ -1084,16 +1103,17 @@ export function paginaPrograma(env, { cuenta }) {
   <div class="pv-inst">
     <article><h3>iPhone · Safari</h3><ol><li>Abre <b>vorka.mx/tienda/cuenta</b> en Safari.</li><li>Toca <b>Compartir</b> (el cuadro con la flecha hacia arriba, abajo al centro).</li><li>Elige <b>Agregar a inicio</b> y toca <b>Agregar</b>.</li></ol></article>
     <article><h3>Android · Chrome</h3><ol><li>Abre <b>vorka.mx/tienda/cuenta</b> en Chrome.</li><li>Toca el menú <b>⋮</b> (arriba a la derecha).</li><li>Elige <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</li></ol></article>
-    <article class="pv-inv"><h3>Invita a alguien</h3><p>Comparte Puntos Vorka para que también gane descuentos con su propia liga.</p>
-      <div class="botones"><a class="btn tinta chico" href="https://wa.me/?text=${encodeURIComponent('Te comparto Puntos Vorka: recomiendas productos de la tienda de Vorka México y ganas descuentos. Es gratis: https://vorka.mx/tienda/puntos/')}" target="_blank" rel="noopener">WhatsApp</a><button class="btn blanco chico" type="button" id="pv-copiar-prog">Copiar enlace</button></div></article>
+    <article class="pv-inv"><h3>Invita a alguien</h3><p>Comparte Puntos Vorka para que también gane puntos con su propia liga.</p>
+      <div class="botones"><a class="btn tinta chico" href="https://wa.me/?text=${encodeURIComponent(INVITA)}" target="_blank" rel="noopener">WhatsApp</a><button class="btn blanco chico" type="button" id="pv-copiar-prog">Copiar enlace</button></div></article>
   </div>
-  <p class="t-nota">Ya instalada, entra con tu correo y el código de 6 dígitos que te llega. Activa los avisos para enterarte de cada compra con tu liga.</p>
+  <p class="t-nota">Ya instalada, entra con tu correo y tu contraseña. Activa los avisos para enterarte de cada compra con tu liga.</p>
 </div></section>
+${seccionFaq({ titulo: 'Cómo funcionan los puntos', items: FAQ_PUNTOS.map(([p, x]) => `<details><summary>${esc(p)}</summary><div>${x}</div></details>`).join(''), pie: '<p class="t-nota"><a href="/legal/terminos/#puntos">Condiciones del programa</a> · <a href="/legal/terminos/#descuentos">Condiciones de los descuentos</a></p>', whatsappTexto: 'Hola, tengo una duda de Puntos Vorka.' })}
 <section class="pv-lp" id="entrar"><div class="marco"><div class="pv-form">
   <div>
     <p class="pv-et"><i></i>${cuenta ? 'Tu cuenta' : 'Empieza hoy'}</p>
     <h2 style="margin-top:14px">${cuenta ? 'Ya tienes tu app lista.' : 'Tu liga en un minuto.'}</h2>
-    <p class="lead">${cuenta ? `Entraste como <b>${esc(cuenta.email)}</b>.` : 'Escribe tu correo. Te mandamos un enlace para entrar desde aquí y un código de 6 dígitos para entrar desde la app instalada.'}</p>
+    <p class="lead">${cuenta ? `Entraste como <b>${esc(cuenta.email)}</b>.` : 'Escribe tu correo: si ya tienes cuenta, entras con tu contraseña; si no, la creas en un minuto. Si la olvidas, te mandamos un código para crear otra.'}</p>
     <ul>${['Ábrela desde tu celular y agrégala a tu inicio: queda como app.', 'Activa los avisos para enterarte de cada compra con tu liga.', '¿Eres creador de contenido, escuela o institución? Escríbenos y te ayudamos a compartir: <a href="mailto:hola@vorka.mx" style="color:#E6CF96">hola@vorka.mx</a>.'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
   </div>
   ${cuenta ? `<div class="pv-entrada pv-ya"><h2>Hola de nuevo</h2><p class="pv-sub">Tu liga, tus metas y tus puntos están en tu app.</p><a class="pv-btn oro ancho" href="/tienda/cuenta/">Abrir mi app ${I.flecha}</a></div>` : formEntrar()}
