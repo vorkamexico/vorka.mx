@@ -3,6 +3,8 @@ import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { crearOrden } from '../src/modelo.js';
 import { firmaValida } from '../src/pagos/stripe.js';
+import { conciliarPendientes } from '../src/conciliar.js';
+import { vista } from '../src/gracias.js';
 import { enc, hex } from '../src/util.js';
 
 const SECRETO = 'whsec_prueba';
@@ -110,7 +112,9 @@ describe('webhook de Stripe', () => {
   it('OXXO pendiente → sigue pending; al pagarse llega el correo', async () => {
     stripe.sesion = sesion({ payment_status: 'unpaid', payment_intent: { id: 'pi_1', status: 'requires_action', payment_method: { type: 'oxxo' } } });
     await evento('checkout.session.completed', 'cs_1');
-    expect(estado()).toMatchObject({ estado: 'pending', metodo_pago: null });
+    // se guarda el método: la página de gracias muestra "Tu pedido está apartado" con las instrucciones de OXXO
+    expect(estado()).toMatchObject({ estado: 'pending', metodo_pago: 'oxxo', provider_payment_id: 'pi_1' });
+    expect(vista(estado())).toBe('pendiente_efectivo');
     stripe.sesion = sesion({ payment_intent: { id: 'pi_1', status: 'succeeded', payment_method: { type: 'oxxo' } } });
     await evento('checkout.session.async_payment_succeeded', 'cs_1');
     expect(estado()).toMatchObject({ estado: 'paid', metodo_pago: 'oxxo' });
@@ -194,5 +198,37 @@ describe('correo por Vorka OS', () => {
     expect(enviados[0]).toMatchObject({ para: 'ana@mail.com', de: 'Vorka México <tienda@vorka.mx>', responder_a: 'hola@vorka.mx' });
     expect(enviados[0].texto).toMatch(/descargas\/[a-f0-9]{64}/);
     expect(estado().correo_enviado_at).toBeTruthy();
+  });
+});
+
+describe('conciliación de cada hora (OXXO y SPEI sin webhook)', () => {
+  const conSesion = () => env.DB.raw.prepare("UPDATE orders SET provider_session_id = 'cs_1' WHERE id = ?").run(orden.id);
+
+  it('un pago que Stripe ya confirmó pero cuyo aviso no llegó → paid, correo de acceso y nada se duplica', async () => {
+    conSesion();
+    stripe.sesion = sesion({ payment_intent: { id: 'pi_1', status: 'succeeded', payment_method: { type: 'oxxo' } } });
+    expect(await conciliarPendientes(env)).toMatchObject({ revisadas: 1, pagadas: 1 });
+    expect(estado()).toMatchObject({ estado: 'paid', metodo_pago: 'oxxo' });
+    expect(correos).toHaveLength(1);
+    expect(await conciliarPendientes(env)).toMatchObject({ revisadas: 0 });
+    // y si después llega el webhook, tampoco se duplica
+    await evento('checkout.session.async_payment_succeeded', 'cs_1');
+    expect(correos).toHaveLength(1);
+  });
+
+  it('si sigue sin pagarse, la orden sigue pendiente (con su método) y no sale correo', async () => {
+    conSesion();
+    stripe.sesion = sesion({ payment_status: 'unpaid', payment_intent: { id: 'pi_1', status: 'requires_action', payment_method: { type: 'customer_balance' } } });
+    expect(await conciliarPendientes(env)).toMatchObject({ revisadas: 1, pagadas: 0 });
+    expect(estado()).toMatchObject({ estado: 'pending', metodo_pago: 'customer_balance' });
+    expect(correos).toHaveLength(0);
+  });
+
+  it('no toca órdenes viejas, sin sesión, ni de otra pasarela; sin llave de Stripe no hace nada', async () => {
+    expect(await conciliarPendientes(env)).toMatchObject({ revisadas: 0 });   // sin sesión
+    conSesion();
+    env.DB.raw.prepare("UPDATE orders SET created_at = '2020-01-01T00:00:00Z' WHERE id = ?").run(orden.id);
+    expect(await conciliarPendientes(env)).toMatchObject({ revisadas: 0 });
+    expect(await conciliarPendientes({ ...env, STRIPE_SECRET_KEY: undefined })).toMatchObject({ revisadas: 0 });
   });
 });

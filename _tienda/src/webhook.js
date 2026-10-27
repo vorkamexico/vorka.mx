@@ -22,25 +22,7 @@ export async function webhook(req, env, nombre) {
 
   try {
     const pago = await pasarela.interpretar(evento, env);
-    if (pago) {
-      const r = await aplicarPago(env, pago.orderId, pago);
-      if (r.motivo === 'monto_no_coincide') console.error('webhook: monto no coincide', pago.orderId, pago.monto_centavos, pago.moneda);
-      if (r.accion === 'entregar')
-        for (const it of await itemsDeOrden(env, pago.orderId))
-          await registrarAnalitica(env, 'purchase', { product_id: it.product_id, order_id: pago.orderId, ref_code: r.orden.ref_code });
-      // También en reintentos: si el correo falló la vez pasada, la orden ya está paid pero sin correo
-      if (r.orden?.estado === 'paid') await entregar(env, pago.orderId);
-      // Reparto a creadores (si hay productos de creadores). Idempotente.
-      if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null) await programarTransferencias(env, pago.orderId, { fee: pago.stripe_fee_centavos });
-      if (r.accion === 'revocar') await anularTransferencias(env, pago.orderId);
-      // Puntos Vorka: % en puntos al que compartió la liga (según su nivel del semestre) y descuenta los usados;
-      // en reembolso, se revierten. Idempotente.
-      if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
-      if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
-      // Ruta de Impacto: el acceso (o la liga de regalo) vive en Vorka OS y se apaga allá. También en reintentos del mismo
-      // reembolso: si os no respondió la vez pasada, la orden ya está refunded pero el acceso sigue (revocar es idempotente).
-      if (r.accion === 'revocar' || (pago.resultado === 'reembolsado' && r.orden?.estado === 'refunded' && r.orden?.paid_at)) await revocarRuta(env, pago.orderId);
-    }
+    if (pago) await procesarPago(env, pago);
     // Suscripciones (Vuelve): la primera compra, renovaciones, fallas de pago y cancelaciones actualizan su renglón
     if (pasarela.suscripcionDe) {
       const sub = await pasarela.suscripcionDe(evento, env, pago);
@@ -55,4 +37,27 @@ export async function webhook(req, env, nombre) {
     await marcarEvento(env, pasarela.nombre, evento.id, String(e.message).slice(0, 500));
     return fail('Error al procesar', 500);
   }
+}
+
+// Aplica un resultado de pago a su orden y hace todo lo que sigue (entrega, analítica, creadores, puntos). Idempotente:
+// lo usan el webhook y la conciliación de cada hora (conciliar.js).
+export async function procesarPago(env, pago) {
+  const r = await aplicarPago(env, pago.orderId, pago);
+  if (r.motivo === 'monto_no_coincide') console.error('webhook: monto no coincide', pago.orderId, pago.monto_centavos, pago.moneda);
+  if (r.accion === 'entregar')
+    for (const it of await itemsDeOrden(env, pago.orderId))
+      await registrarAnalitica(env, 'purchase', { product_id: it.product_id, order_id: pago.orderId, ref_code: r.orden.ref_code });
+  // También en reintentos: si el correo falló la vez pasada, la orden ya está paid pero sin correo
+  if (r.orden?.estado === 'paid') await entregar(env, pago.orderId);
+  // Reparto a creadores (si hay productos de creadores). Idempotente.
+  if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null) await programarTransferencias(env, pago.orderId, { fee: pago.stripe_fee_centavos });
+  if (r.accion === 'revocar') await anularTransferencias(env, pago.orderId);
+  // Puntos Vorka: % en puntos al que compartió la liga (según su nivel del semestre) y descuenta los usados;
+  // en reembolso, se revierten. Idempotente.
+  if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
+  if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
+  // Ruta de Impacto: el acceso (o la liga de regalo) vive en Vorka OS y se apaga allá. También en reintentos del mismo
+  // reembolso: si os no respondió la vez pasada, la orden ya está refunded pero el acceso sigue (revocar es idempotente).
+  if (r.accion === 'revocar' || (pago.resultado === 'reembolsado' && r.orden?.estado === 'refunded' && r.orden?.paid_at)) await revocarRuta(env, pago.orderId);
+  return r;
 }

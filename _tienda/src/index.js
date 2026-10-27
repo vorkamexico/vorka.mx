@@ -5,6 +5,7 @@ import { json, fail } from './util.js';
 import { listarProductos } from './modelo.js';
 import { checkout } from './checkout.js';
 import { webhook } from './webhook.js';
+import { conciliarPendientes } from './conciliar.js';
 import { paginaDescargas, bajarArchivo } from './descargas.js';
 import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
@@ -225,6 +226,8 @@ export default {
 
   // Cada hora: transferencias a creadores que ya pasaron su plazo, y estado de cuentas de Stripe en revisión.
   async scheduled(event, env, ctx) {
+    // Pagos que siguen pendientes (OXXO, SPEI): se confirman con Stripe aunque su webhook no haya llegado
+    ctx.waitUntil(conciliarPendientes(env).then(c => console.log('conciliar', JSON.stringify(c))).catch(e => console.error('conciliar', e?.message)));
     ctx.waitUntil((async () => {
       try {
         if (!env.STRIPE_SECRET_KEY) return;
