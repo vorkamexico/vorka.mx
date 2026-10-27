@@ -12,6 +12,7 @@ import { contarVisita } from './puntos.js';
 import { VARIANTES } from './brindi.js';
 import { UNIVERSIDADES } from './simulador/paa-universidades.js';
 import { temporadaActual, decoracion } from './temporadas.js';
+import { PCT_REFERIDO } from './descuentos.js';
 
 const SITIO = 'https://vorka.mx';
 export const CANDADO_PAGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>';
@@ -267,7 +268,7 @@ export async function paginaCatalogo(env, req, url) {
   </section>`).join('')}</div>
   <p class="t-sin" id="sin-resultados" hidden role="status">No encontramos nada con esa búsqueda. Prueba con otra palabra o <a href="${WHATSAPP}" target="_blank" rel="noopener">pregúntanos por WhatsApp</a>.</p>`
     : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
-  <a class="t-puntos-banda" href="/tienda/puntos/"><span><b>Recomienda y gana.</b> Del 10% al 30% de cada compra con tu liga en puntos, canjeables en toda la tienda (1 punto = $1).</span><span class="btn acento chico">Crear mi cuenta de puntos ${FLECHA}</span></a>
+  <a class="t-puntos-banda" href="/tienda/puntos/"><span><b>Recomienda y gana.</b> Del 10% al 30% de cada compra con tu liga en puntos, canjeables en toda la tienda (1 punto = $1). Y quien compra con tu liga tiene ${PCT_REFERIDO} % de descuento en su primer pago.</span><span class="btn acento chico">Crear mi cuenta de puntos ${FLECHA}</span></a>
 </div></section>
 ${seccionFaq({ items: faqHtml(FAQ_TIENDA), pie: env.MARKETPLACE === '1' ? '<p class="t-nota">¿Creas recursos? <a href="/creadores">Vende en la tienda</a>.</p>' : '' })}`,
   });

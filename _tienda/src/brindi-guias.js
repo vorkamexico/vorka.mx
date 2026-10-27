@@ -127,7 +127,7 @@ export const GUIAS = {
     ],
     preguntas: [
       ['¿Mis clientes ven mi marca?', 'Puedes pedir una plantilla con tu logo, tus colores y tu tipografía desde tu portal de organizador; te cotizamos sin compromiso.'],
-      ['¿Cómo gano por recomendar?', 'Con tu liga de Puntos Vorka, cada cliente que contrata Brindi te da puntos (1 punto = $1 en la tienda).'],
+      ['¿Cómo gano por recomendar?', 'Con tu liga de Puntos Vorka, cada cliente que contrata Brindi te da del 10 % al 30 % de lo que pagó en puntos, según tu nivel (1 punto = $1 en la tienda). Y tu cliente tiene 5 % de descuento en su primer pago por llegar con tu liga.'],
     ],
   },
 };

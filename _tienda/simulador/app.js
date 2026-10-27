@@ -321,9 +321,10 @@
       '<div class="sim-banco-p" role="progressbar" aria-valuemin="0" aria-valuemax="' + total + '" aria-valuenow="' + n + '" aria-label="Reactivos vistos"><span style="width:' + pct(n, total) + '%"></span></div>' +
       '<small>' + (n ? 'Has visto ' + n + ' de ' + total + ' (' + pct(n, total) + ' %)' : 'Aún no has visto ninguno: todo es nuevo para ti') + '</small></div>';
   }
-  // Programa de puntos: comparte tu liga y gana 10 puntos ($10) por cada compra (se canjean en la tienda)
+  // Programa de puntos: comparte tu liga y gana del 10 % al 30 % de cada compra en puntos (se canjean en la tienda); tu amigo
+  // tiene 5 % de descuento en su primer pago (src/puntos-reglas.js y src/descuentos.js)
   function compartirHTML() {
-    return '<a class="sim-regalo sim-compartir" href="/tienda/puntos/"><span class="sim-regalo-i" aria-hidden="true">🤝</span><span><b>Comparte el simulador y gana</b><small>Por cada amigo que lo compre con tu liga ganas 10 puntos ($10) para la tienda Vorka.</small></span><span class="sim-op-f">' + FL + '</span></a>';
+    return '<a class="sim-regalo sim-compartir" href="/tienda/puntos/"><span class="sim-regalo-i" aria-hidden="true">🤝</span><span><b>Comparte el simulador y gana</b><small>Por cada amigo que lo compre con tu liga ganas del 10 % al 30 % de lo que pagó en puntos para la tienda Vorka, y tu amigo tiene 5 % de descuento en su primer pago.</small></span><span class="sim-op-f">' + FL + '</span></a>';
   }
   // Regalar: abre la ficha de la tienda (con sesión, /simulador-paa/ muestra la app y no la página de venta)
   function regaloHTML() {

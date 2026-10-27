@@ -9,6 +9,7 @@ import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { IMPACTO } from './gracias.js';
+import { PCT_REFERIDO } from './descuentos.js';
 
 export const APP = 'brindi';
 const OS = 'https://os.vorka.mx';
@@ -253,7 +254,7 @@ ${clave === 'organizadores' ? `
 <section class="t-sec suave" id="organizadores"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Para organizadores</span><h2 class="h2">Un servicio más para tus clientes, sin trabajo extra</h2><p class="lead"><a class="btn tinta" href="${OS}/brindi/#/organizador" rel="noopener">Entrar a mi portal de organizador ${FLECHA}</a></p></div>
   <ul class="br-ben">${[['📦', 'Paquete de 5 eventos', `5 eventos Celebración${org ? ` por ${precio(org)}${ahorroOrg > 0 ? `: ahorras ${precio({ precio_centavos: ahorroOrg })} contra comprarlos uno por uno` : ''}` : ''}. Los usas cuando quieras, uno por evento.`],
-    ['🔗', 'Gana con tu liga', 'Con <a href="/tienda/puntos/">Puntos Vorka</a> tienes una liga para recomendar Brindi. Cada cliente que contrata con ella te da del 10% al 30% de lo que pagó en puntos (1 punto = $1 en la tienda).'],
+    ['🔗', 'Gana con tu liga', `Con <a href="/tienda/puntos/">Puntos Vorka</a> tienes una liga para recomendar Brindi. Cada cliente que contrata con ella te da del 10% al 30% de lo que pagó en puntos (1 punto = $1 en la tienda), y tu cliente tiene ${PCT_REFERIDO} % de descuento en su primer pago.`],
     ['🎨', 'Diseños con tu marca', `Nuestro equipo diseña contigo una plantilla con tu logo, tus colores y tu tipografía para usarla con todos tus clientes. La pides desde tu <a href="${OS}/brindi/#/organizador">portal de organizador</a> y te cotizamos sin compromiso.`],
     ['📋', 'Tu portal de organizador', `En <a href="${OS}/brindi/#/organizador">os.vorka.mx/brindi</a> ves tus paquetes, tu saldo de puntos y tu liga, y sigues cada pedido de diseño.`],
     ['🤝', 'Te ayudamos con el primero', 'Con la configuración asistida cargamos contigo la lista de invitados de tu primer evento en una videollamada de 30 minutos.']]
