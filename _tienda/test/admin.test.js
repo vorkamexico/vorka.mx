@@ -40,6 +40,13 @@ describe('productos desde el panel (sin código)', () => {
     expect((await A.producto(p.id)).contenido.faq[0].r).toBe('Sí <b>mucho</b>\nde verdad');
   });
 
+  it('editar desde el panel conserva lo que el editor no maneja (suscripción, complemento, oculto…)', async () => {
+    const p = await A.guardarProducto({ nombre: 'Plan Mensual', precio: 399, contenido: { titular: 'Antes', incluye: [], pasos: [], para_quien: [], faq: [] } });
+    await env.DB.prepare('UPDATE products SET contenido = json_set(contenido, \'$.suscripcion\', json(\'{"intervalo":"month","extra":"prod_x"}\'), \'$.complemento\', json(\'true\'), \'$.oculto\', json(\'true\')) WHERE id = ?').bind(p.id).run();
+    const q = await A.guardarProducto({ id: p.id, nombre: 'Plan Mensual', precio: 399, contenido: { titular: 'Después', incluye: [], pasos: [], para_quien: [], faq: [] } });
+    expect(q.contenido).toMatchObject({ titular: 'Después', suscripcion: { intervalo: 'month', extra: 'prod_x' }, complemento: true, oculto: true });
+  });
+
   it('el slug no se repite', async () => {
     const a = await A.guardarProducto({ nombre: 'Kit Uno', precio: 10 });
     const b = await A.guardarProducto({ nombre: 'Kit Uno', precio: 10 });
