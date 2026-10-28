@@ -17,6 +17,7 @@
   var MES_L = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
   var fecha = function (s) { return s ? Number(s.slice(8, 10)) + ' ' + MES[Number(s.slice(5, 7)) - 1] + (s.slice(0, 4) !== String(new Date().getFullYear()) ? ' ' + s.slice(0, 4) : '') : ''; };
   var hoy = new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+  var ROM = function (n) { var r = '', v = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; v.forEach(function (p) { while (n >= p[0]) { r += p[1]; n -= p[0]; } }); return r; };
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
   function error() { main.removeAttribute('aria-busy'); d.body.classList.add('dx-sin'); d.querySelector('.dx-error').hidden = false; }
@@ -82,10 +83,10 @@
     var secs = c.secciones || [];
     if (secs.length) {
       var ind = x('indice'); ind.hidden = false;
-      ind.innerHTML = '<span>En este documento</span>' + secs.map(function (s, i) { return '<a href="#' + esc(s.id || 's' + i) + '">' + esc(s.titulo) + '</a>'; }).join('');
+      ind.innerHTML = '<span>' + secs.length + ' secciones</span>' + secs.map(function (s, i) { return '<a href="#' + esc(s.id || 's' + i) + '"><i>' + (i + 1 < 10 ? '0' : '') + (i + 1) + '</i>' + esc(s.titulo) + '</a>'; }).join('');
     }
     x('secciones').innerHTML = secs.map(function (s, i) {
-      return '<section class="dx-sec rv" id="' + esc(s.id || 's' + i) + '">' + (s.etiqueta ? '<span class="etiqueta">' + esc(s.etiqueta) + '</span>' : '') + '<h2 class="h3">' + md(s.titulo) + '</h2>' + s.bloques.map(bloque).join('') + '</section>';
+      return '<section class="dx-sec rv" id="' + esc(s.id || 's' + i) + '"><span class="etiqueta"><b class="dx-rom">' + ROM(i + 1) + '.</b>' + (s.etiqueta ? ' ' + esc(s.etiqueta) : '') + '</span><h2 class="h3">' + md(s.titulo) + '</h2>' + s.bloques.map(bloque).join('') + '</section>';
     }).join('');
     if (secs.some(function (s) { return s.id === 'ruta'; })) { /* el enlace "Ruta" del menú lleva a su sección */ } else d.querySelector('.dx-nav a[href="#ruta"]').hidden = true;
 
@@ -112,6 +113,20 @@
             (i.paralelo ? '<p class="dx-et-p"><b>En paralelo:</b> ' + md(i.paralelo) + '</p>' : '') +
             (i.criterio ? '<p class="dx-et-c"><b>Avanza cuando:</b> ' + md(i.criterio) + '</p>' : '') + '</li>';
         }).join('') + '</ol>';
+      // Calificaciones en barra (matriz de competencias, score): valor sobre max (10 o 100)
+      case 'barras': return (b.titulo ? '<h3 class="dx-h4">' + md(b.titulo) + '</h3>' : '') + '<div class="dx-barras">' + (b.items || []).map(function (i) {
+        var max = Number(i.max || b.max || 10), pct = Math.max(0, Math.min(100, Number(i.valor) / max * 100));
+        return '<div class="dx-barra-f"><span>' + md(i.nombre) + (i.nota ? '<small>' + md(i.nota) + '</small>' : '') + '</span><i><b style="width:' + pct + '%"></b></i><em class="num">' + esc(i.valor) + '</em></div>';
+      }).join('') + '</div>' + (b.total ? '<div class="dx-total"><span>' + md(b.total.titulo || 'Total') + '</span><b class="num">' + esc(b.total.valor) + '</b>' + (b.total.texto ? '<p>' + md(b.total.texto) + '</p>' : '') + '</div>' : '');
+      // Línea de tiempo (trayectoria, evolución profesional)
+      case 'linea': return '<ol class="dx-linea">' + (b.items || []).map(function (i) {
+        return '<li><div class="dx-li-h"><small>' + esc(i.cuando) + '</small><h3>' + md(i.titulo) + '</h3></div>' + (i.texto ? '<p>' + md(i.texto) + '</p>' : '') + (i.nota ? '<p class="dx-li-n">' + md(i.nota) + '</p>' : '') + '</li>';
+      }).join('') + '</ol>';
+      case 'frase': return '<blockquote class="dx-frase"><p>' + md(b.texto) + '</p>' + (b.pie ? '<footer>' + md(b.pie) + '</footer>' : '') + '</blockquote>';
+      // Varias listas cortas en rejilla (Top 10 del diagnóstico final)
+      case 'grupos': return '<div class="dx-grupos">' + (b.items || []).map(function (g) {
+        return '<div class="dx-grupo' + (g.tono ? ' ' + esc(g.tono) : '') + '"><h3>' + md(g.titulo) + '</h3><ol>' + (g.items || []).map(function (x) { return '<li>' + md(x) + '</li>'; }).join('') + '</ol></div>';
+      }).join('') + '</div>';
       default: return '';
     }
   }
