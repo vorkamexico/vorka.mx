@@ -149,6 +149,10 @@ SIMS = {
     enun='¿Qué número sigue? 3, 7, 15, 31, …', ops=['47', '63', '62', '61'], mal=2,
     pista='Compara cada número con el doble del anterior: ¿qué le falta al doble para llegar al siguiente?',
     rep=('Casi listo · 92/128', [('Hab. verbal', 13, 16), ('Hab. matemática', 11, 16), ('Matemáticas', 8, 12), ('Biología', 10, 12)], 'ac')),
+  'prepa-ug': dict(nombre='prepa UG', ui='#2B8A3E', reloj='3:12:40', seccion='Pensamiento matemático', n='9 de 40', tema='Sentido numérico',
+    enun='Una mochila de $450 tiene 20 % de descuento. ¿Cuánto se paga?', ops=['$360', '$430', '$90'], mal=1,
+    pista='El 20 % de 450 no son 20 pesos: ¿cuánto es la quinta parte de 450?',
+    rep=('Casi listo · 112/160', [('Lectora', 23, 30), ('Redacción', 21, 30), ('Matemático', 27, 40), ('Científico', 22, 30)], 'ac')),
 }
 OSCURO = dict(texto='#fff', suave='rgba(255,255,255,.82)', chipf='rgba(255,255,255,.14)', tagf='rgba(0,0,0,.22)')
 CLARO = dict(texto='#1A1405', suave='rgba(26,20,5,.78)', chipf='rgba(26,20,5,.10)', tagf='rgba(26,20,5,.12)')
@@ -160,6 +164,9 @@ P = {
     tag='Examen de licenciatura · 4 áreas', beneficio='Practica con el peso de las materias de tu área.', datos=['476 reactivos', '4 áreas', '120 reactivos en 3 h'], sim='unam'),
   'simulador-ecoems': dict(**OSCURO, fondo='linear-gradient(140deg,#B53A07 0%,#E8590C 55%,#F7931E 100%)', acento='#FFE3A3', pre='Simulador', nombre='ECOEMS', px=176,
     tag='Para la prepa UNAM e IPN', beneficio='Prepárate desde la secundaria con un tutor que te guía.', datos=['320 reactivos', '10 materias', '128 reactivos en 3 h'], sim='ecoems'),
+  # Verde hoja claro con texto oscuro: no repite los verdes profundos de Agenda ni del kit Idea en Orden
+  'simulador-prepa-ug': dict(**CLARO, fondo='linear-gradient(140deg,#B6E86A 0%,#7ED957 55%,#4CB944 100%)', acento='#0F2E12', pre='Simulador', nombre='Prepa UG', px=200,
+    tag='EXANI-I · Prepa de la UG', beneficio='Prepárate desde la secundaria con un tutor que te guía.', datos=['400 reactivos', '5 áreas', '160 reactivos en 4.5 h'], sim='prepa-ug'),
   'brindi': dict(**OSCURO, fondo='linear-gradient(140deg,#2A0A16 0%,#5A1A2E 55%,#8A2E4A 100%)', acento='#F3D9A4', pre='', nombre='Brindi',
     tag='Invitaciones digitales', beneficio='Tu invitación con confirmación y acceso con QR.', datos=['6 diseños premium', 'Confirmaciones al momento', 'Pase con QR'], ui=ui_brindi),
   'cupo': dict(**OSCURO, fondo='linear-gradient(140deg,#17062F 0%,#3A1C71 55%,#6D28D9 100%)', acento='#C8F560', pre='', nombre='Cupo',

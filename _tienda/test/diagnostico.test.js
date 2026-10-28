@@ -5,6 +5,7 @@ import { armarDiagnostico, whatsappMx, TOTAL_DIAG } from '../src/simulador/diagn
 import * as BANCO_PAA from '../src/simulador/banco.js';
 import { UNAM } from '../src/simulador/unam.js';
 import { ECOEMS } from '../src/simulador/ecoems.js';
+import { PREPA_UG } from '../src/simulador/prepa-ug.js';
 
 let env, correos;
 const pedir = (ruta, { metodo = 'GET', cookie, body, origin } = {}) => worker.fetch(new Request(`https://vorka.mx${ruta}`, {
@@ -132,7 +133,7 @@ describe('armado del diagnóstico', () => {
   });
 
   const azar = s => { let a = s; return () => { a = (a * 9301 + 49297) % 233280; return a / 233280; }; };
-  for (const [nombre, banco] of [['PAA', BANCO_PAA], ['UNAM', UNAM.BANCO], ['ECOEMS', ECOEMS.BANCO]]) {
+  for (const [nombre, banco, opc] of [['PAA', BANCO_PAA, 4], ['UNAM', UNAM.BANCO, 4], ['ECOEMS', ECOEMS.BANCO, 4], ['prepa UG', PREPA_UG.BANCO, 3]]) {
     it(`${nombre}: ${TOTAL_DIAG} reactivos de opción múltiple, sin repetir y de menor a mayor dificultad`, () => {
       expect(banco?.REACTIVOS?.length).toBeGreaterThan(0);
       for (let semilla = 1; semilla < 30; semilla++) {
@@ -144,7 +145,7 @@ describe('armado del diagnóstico', () => {
         for (const s of secs) {
           const d = s.items.map(id => R[id].dificultad);
           expect(d).toEqual([...d].sort((a, b) => a - b));
-          for (const id of s.items) { expect(R[id].seccion).toBe(s.id); expect(R[id].opciones).toHaveLength(4); }
+          for (const id of s.items) { expect(R[id].seccion).toBe(s.id); expect(R[id].opciones).toHaveLength(opc); }
           // en lectura, una sola lectura corta para todo el bloque
           const textos = new Set(s.items.map(id => R[id].texto).filter(Boolean));
           expect(textos.size).toBeLessThanOrEqual(1);

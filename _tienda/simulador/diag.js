@@ -144,7 +144,7 @@
     document.getElementById('b-go').onclick = function () { guardar(K, run); pregunta(); };
   }
   function estadoDe(id) { return run.resp[id] || (run.resp[id] = { fase: 'r1', sel1: null, sel2: null }); }
-  function ordenDe(id) { return run.orden[id] || (run.orden[id] = barajar([0, 1, 2, 3])); }
+  function ordenDe(id) { return run.orden[id] || (run.orden[id] = barajar(E.reactivos[id].opciones.map(function (_, i) { return i; }))); }
   function letras(txt, orden) { return rico(txt).replace(/\{([A-D])\}/g, function (_, L) { var i = orden.indexOf(LETRAS.indexOf(L)); return i < 0 ? L : LETRAS[i]; }); }
 
   function pregunta() {

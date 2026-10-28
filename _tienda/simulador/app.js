@@ -29,6 +29,8 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   // Texto del banco: escapado, **negritas** y saltos de línea
   function rico(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); }
+  // Índices de las opciones de un reactivo: 4 en PAA, UNAM y ECOEMS; 3 en el EXANI-I (prepa UG)
+  function indices(r) { return (r && r.opciones ? r.opciones : [0, 1, 2, 3]).map(function (_, i) { return i; }); }
   function barajar(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function mmss(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
   function minutos(s) { var m = Math.round(s / 60); return m < 1 ? 'menos de 1 min' : m + ' min'; }
@@ -134,7 +136,7 @@
   function nuevoRun(modo, secs) {
     var r = { v: 1, modo: modo, secciones: secs, actual: 0, resp: {}, orden: {}, inicio: new Date().toISOString(), fase: 'intro' };
     secs.forEach(function (s) { s.items.forEach(function (id) {
-      var x = R[id]; if (x.opciones) r.orden[id] = x.fijo ? [0, 1, 2, 3] : barajar([0, 1, 2, 3]);
+      var x = R[id]; if (x.opciones) r.orden[id] = x.fijo ? indices(x) : barajar(indices(x));
     }); });
     return r;
   }
@@ -441,7 +443,7 @@
   function pregunta() {
     var s = secActual(), id = s.items[s.idx], r = R[id], st = estadoDe(id);
     var texto = r.texto ? B.textos[r.texto] : null;
-    var orden = run.orden[id] || [0, 1, 2, 3];
+    var orden = run.orden[id] || indices(r);
     var progreso = '<div class="sim-prog" role="progressbar" aria-valuemin="0" aria-valuemax="' + s.items.length + '" aria-valuenow="' + (s.idx + 1) + '" aria-label="Reactivo ' + (s.idx + 1) + ' de ' + s.items.length + '"><span style="width:' + pct(s.idx, s.items.length) + '%"></span></div>';
     var cab = '<div class="sim-q-cab"><span>' + esc(s.id === 'practica' ? 'Práctica' : seccion(s.id).nombre) + ' · <b class="num">' + (s.idx + 1) + '</b> de ' + s.items.length + '</span><span class="sim-q-der"><span class="sim-tema">' + esc(B.temas[r.tema].nombre) + '</span><button type="button" class="sim-pausa" id="b-pausa" aria-label="Pausar y volver al inicio">Pausar</button></span></div>';
     var lectura = texto ? '<details class="sim-texto"' + (window.innerWidth >= 960 || s.idx === 0 || !texto.visto ? ' open' : '') + '><summary>' + ICONO.libro + '<span><b>' + esc(texto.titulo) + '</b><small>' + esc(texto.genero) + '</small></span></summary><div class="sim-texto-c' + (texto.verso ? ' verso' : '') + '">' +
@@ -709,6 +711,13 @@
     if (c.partes.tend === 1) txt += ' Además, <b>mejoraste</b> respecto a tu simulacro anterior.';
     return txt;
   }
+  // Con CFG.ponderacion ({ seccion: peso en % }, p. ej. la ficha técnica de la prepa UG): aciertos de cada área por su peso, sobre 100
+  function ponderadoHTML(res, secs) {
+    var P = CFG.ponderacion; if (!P || !esIntento(res.modo)) return '';
+    var ids = Object.keys(P); if (!ids.every(function (k) { return secs.some(function (s) { return s.id === k && s.total; }); })) return '';
+    var v = secs.reduce(function (a, s) { return a + (P[s.id] || 0) * s.aciertos / s.total; }, 0);
+    return '<p class="sim-global">' + esc(CFG.ponderacionNombre || 'Con los pesos del examen') + ' <b class="num">' + Math.round(v) + '</b><small> / 100</small></p>';
+  }
   function reporte(res, desdeHistorial) {
     detenerReloj(); pintarBarra();
     var c = confianza(res, desdeHistorial ? null : ultimoCompleto()), e = estado(c.total), m = res.meta || meta();
@@ -751,7 +760,7 @@
     var revision = '';
     if (res.resp && res.fallados.length) {
       revision = '<h2 class="sim-h2">Repasa tus errores</h2><div class="sim-revision">' + res.fallados.map(function (id) {
-        var r = R[id]; if (!r) return ''; var st = res.resp[id] || {}, orden = (res.orden || {})[id] || [0, 1, 2, 3];
+        var r = R[id]; if (!r) return ''; var st = res.resp[id] || {}, orden = (res.orden || {})[id] || indices(r);
         var correcta = r.tipo === 'abierta' ? r.respuestas[0] : r.opciones[r.correcta];
         var tuya = st.sinTiempo ? 'Sin responder (tiempo agotado)' : r.tipo === 'abierta' ? st.sel1 : (st.sel1 != null ? r.opciones[st.sel1] : '—');
         return '<details class="sim-card sim-rev"><summary><span class="sim-tema">' + esc(B.temas[r.tema].nombre) + '</span><b>' + rico(r.enunciado.split('\n')[0]) + '</b></summary>' +
@@ -764,7 +773,7 @@
     h('<section class="sim-rep">' +
       '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen completo' + (res.tutor ? ' con tutor' : '') : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
-        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '') +
+        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '')  ponderadoHTML(res, secs) +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +
       '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado (sin conexión). Se guardará en tu historial la próxima vez que abras el simulador con internet.</p>' +
       '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +
