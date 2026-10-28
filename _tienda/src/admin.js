@@ -189,6 +189,31 @@ export async function exportarCSV(env, { desde, hasta }) {
   return '﻿' + [enc.join(','), ...lineas].join('\r\n') + '\r\n';
 }
 
+// ---------- diagnósticos gratis de los simuladores (interesados para seguimiento) ----------
+// estado: 'todos' | 'pendientes' (terminaron, no han comprado y nadie les ha escrito) | 'sin_terminar' | 'compraron'
+const ESTADO_DIAG = z.enum(['todos', 'pendientes', 'sin_terminar', 'compraron']).catch('todos');
+export async function diagnosticos(env, { estado = 'todos', app = '' } = {}) {
+  const e = ESTADO_DIAG.parse(estado);
+  const compro = `EXISTS (SELECT 1 FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
+    WHERE lower(o.email) = d.email AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND p.slug LIKE d.app || '%')`;
+  const filtro = { todos: '', pendientes: ` AND d.terminado_at IS NOT NULL AND d.contactado_at IS NULL AND NOT ${compro}`, sin_terminar: ' AND d.terminado_at IS NULL', compraron: ` AND ${compro}` }[e];
+  const filas = await all(env, `SELECT d.id, d.app, d.nombre, d.email, d.whatsapp, d.created_at, d.verificado_at, d.terminado_at, d.contactado_at, d.resultado, d.ref_code,
+      ${compro} compro FROM simulador_diagnosticos d WHERE (? = '' OR d.app = ?)${filtro} ORDER BY d.created_at DESC LIMIT 500`, String(app || ''), String(app || ''));
+  const total = await one(env, `SELECT COUNT(*) n, SUM(terminado_at IS NOT NULL) terminaron, SUM(${compro}) compraron FROM simulador_diagnosticos d WHERE (? = '' OR d.app = ?)`, String(app || ''), String(app || ''));
+  return {
+    resumen: { total: total.n || 0, terminaron: total.terminaron || 0, compraron: total.compraron || 0 },
+    diagnosticos: filas.map(({ resultado, ...d }) => {
+      let r = null; try { r = resultado ? JSON.parse(resultado) : null; } catch { }
+      return { ...d, compro: !!d.compro, resultado: r ? { global: r.global, de: r.de, escala: r.escala, aciertos: r.aciertos, total: r.total, reforzar: r.secciones?.find(s => s.id === r.reforzar)?.nombre || null } : null };
+    }),
+  };
+}
+export async function marcarDiagnostico(env, id, contactado) {
+  const r = await run(env, 'UPDATE simulador_diagnosticos SET contactado_at = ?, updated_at = ? WHERE id = ?', contactado ? ahoraISO() : null, ahoraISO(), Number(id) || 0);
+  if (!r.meta.changes) throw new Error('No encontramos ese diagnóstico.');
+  return { ok: true };
+}
+
 // ---------- productos ----------
 export async function productos(env) {
   return (await all(env, `SELECT p.*, c.nombre creador_nombre,

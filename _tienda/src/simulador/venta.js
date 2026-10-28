@@ -5,6 +5,7 @@ import { pagina } from '../paginas.js';
 import { productoPorSlug, registrarAnalitica } from '../modelo.js';
 import { formCompra, SCRIPT_COMPRA, precio, refDeVisita } from '../tienda.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
+import { TOTAL_DIAG } from './diagnostico.js';
 
 const SITIO = 'https://vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -20,6 +21,9 @@ const CSS = `<style>
 .sv-sellos{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:14.5px;color:var(--fg-2)}
 .sv-sellos li{display:flex;align-items:center;gap:6px}.sv-sellos svg{width:16px;height:16px;color:var(--verde)}
 .sv-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.sv-diag{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:16px;padding:16px 18px;border-radius:18px;background:var(--fg);color:var(--bg);text-decoration:none;box-shadow:var(--sombra-2)}
+.sv-diag span{display:grid;gap:2px}.sv-diag b{font-size:17px;letter-spacing:-.015em}.sv-diag small{font-size:14px;opacity:.78}
+.sv-diag em{font-style:normal;font-weight:750;font-size:14.5px;display:inline-flex;align-items:center;gap:6px;color:var(--acento)}.sv-diag em svg{width:16px;height:16px}
 .sv-compra{position:sticky;top:96px}
 .sv-planes{display:grid;gap:10px;margin-bottom:14px}
 .sv-plan{position:relative;display:block;padding:16px 18px;border-radius:18px;background:var(--card);border:1.5px solid var(--line);color:inherit;text-decoration:none;transition:border-color var(--t-rapido),box-shadow var(--t-rapido)}
@@ -181,7 +185,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
       var h=document.createElement('b'); h.textContent=o===D.correcta?(intentos===1?'¡Correcto a la primera!':'¡Bien! Lo lograste en el segundo intento'):'Esta era la respuesta correcta'; tutor.appendChild(h);
       var ol=document.createElement('ol'); D.pasos.forEach(function(p){ol.appendChild(li(p));}); tutor.appendChild(ol);
       var r=document.createElement('p'); r.innerHTML='<b>La regla:</b> '; r.appendChild(document.createTextNode(D.regla)); tutor.appendChild(r);
-      var c=document.createElement('p'); c.className='sv-ej-cta'; c.innerHTML='Así funciona en cada uno de los ${v.banco} reactivos. <a href="#comprar">Quiero el simulador →</a>'; tutor.appendChild(c);
+      var c=document.createElement('p'); c.className='sv-ej-cta'; c.innerHTML='Así funciona en cada uno de los ${v.banco} reactivos. <a href="${RUTA}/diagnostico/">Haz tu diagnóstico gratis →</a>'; tutor.appendChild(c);
     } else { b.disabled=true; b.classList.add('sv-x');
       tutor.className='sv-tutor pista'; tutor.innerHTML='<b>Todavía no. Pista del tutor</b>'; var p=document.createElement('p'); p.textContent=D.pista; tutor.appendChild(p);
       var s=document.createElement('small'); s.textContent='Tienes un intento más.'; tutor.appendChild(s); }
@@ -213,6 +217,7 @@ ${CSS}${v.css || ''}`,
         <noscript><p class="t-nota" style="margin-top:14px">Respuesta: ${'ABCD'[ej.correcta]}) ${esc(ej.opciones[ej.correcta])}. ${sinLetras(ej.regla)}</p></noscript>
       </div>
     </div>
+    <a class="sv-diag" href="${RUTA}/diagnostico/"><span><b>¿Cuánto sacarías hoy?</b><small>Diagnóstico gratis: ${TOTAL_DIAG} preguntas con tutor y tu puntaje estimado</small></span><em>Hacerlo gratis ${FLECHA}</em></a>
     ${prod ? `<div class="sv-links"><a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a></div>` : ''}
     <p class="t-ya">¿Ya lo compraste? <a href="/descargas/reenviar?para=simulador">Entra aquí</a></p>
   </div>
@@ -276,9 +281,9 @@ ${prod ? `<section class="t-sec oscura sv-final"><div class="marco">
   <span class="etiqueta">Tu próximo paso</span>
   <h2 class="h2" style="margin-top:14px">Llega al examen sabiendo <span class="metal">qué esperar</span></h2>
   <p class="lead">${esc(v.final)}</p>
-  <div class="botones"><a class="btn plata" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="btn vidrio" href="?regalo=1#comprar">🎁 Regalarlo</a></div>
+  <div class="botones"><a class="btn plata" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="btn vidrio" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>
 </div></section>` : ''}
 <section class="sv-disc"><div class="marco"><p class="t-nota">${esc(v.aviso)}</p></div></section>
-${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="#probar">Probar gratis</a><a class="btn tinta chico" href="#comprar">Comprar</a></div></div>` : ''}`,
+${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="${RUTA}/diagnostico/">Prueba gratis</a><a class="btn tinta chico" href="#comprar">Comprar</a></div></div>` : ''}`,
   });
 }

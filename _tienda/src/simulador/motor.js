@@ -27,6 +27,7 @@ import { dentroDelLimite } from '../modelo.js';
 import { enviar, marco, boton, P } from '../correo.js';
 import { FLECHA, CHECK, LOGO, VERSION } from '../marco.generado.js';
 import { APP_JS, APP_CSS } from './cliente.generado.js';
+import { crearDiagnostico } from './diagnostico.js';
 
 // Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
 // por la fecha en que se compró, no en la que se abrió).
@@ -195,11 +196,15 @@ export function crearSimulador(c) {
     return { ...a, dispositivo: k.dev };
   }
 
+  // Diagnóstico gratis (diagnostico.js): sus rutas no piden compra
+  const diagnostico = crearDiagnostico({ c, APP, RUTA, API, BANCO, REACTIVO, firma, cssUrl: `${RUTA}/app.css?v=${V_CSS}` });
+
   // ---------- rutas ----------
   async function rutas(req, env, url) {
     const p = url.pathname;
     if (!p.startsWith(RUTA) && !p.startsWith(API)) return null;
     if (p.startsWith(RUTA) && p.length > RUTA.length && p[RUTA.length] !== '/') return null;   // /simulador-paa-x no es este simulador
+    if (p.startsWith(`${RUTA}/diagnostico`) || p.startsWith(`${API}/diagnostico/`)) { const r = await diagnostico.rutas(req, env, url); if (r) return r; }
     const M = req.method;
     if (p === `${RUTA}/app.js`) return estatico(APP_JS, 'text/javascript; charset=utf-8');
     if (p === `${RUTA}/app.css`) return estatico(APP_CSS, 'text/css; charset=utf-8');
@@ -456,6 +461,6 @@ export function crearSimulador(c) {
     return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...cab } });
   }
 
-  return { APP, RUTA, COOKIE, nombre: c.nombre, titulo: c.titulo, planes: c.planes, slugIntento: c.slugIntento, slugExamen: c.slugExamen,
+  return { APP, RUTA, COOKIE, BANCO, nombre: c.nombre, titulo: c.titulo, planes: c.planes, slugIntento: c.slugIntento, slugExamen: c.slugExamen,
     rutas, accesoDe, cookieAcceso, ordenConAcceso, cuentaIntentos, vistosDe, puedeComprarIntento, planDe };
 }

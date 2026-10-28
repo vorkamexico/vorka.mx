@@ -41,6 +41,8 @@ export class Admin extends WorkerEntrypoint {
   revocar(id) { return admin.revocar(this.env, id); }
   recordar(id) { return recordarOrden(this.env, id); }
   exportarCSV(f) { return admin.exportarCSV(this.env, f); }
+  diagnosticos(f) { return admin.diagnosticos(this.env, f); }
+  marcarDiagnostico(id, contactado) { return admin.marcarDiagnostico(this.env, id, contactado); }
   productos() { return admin.productos(this.env); }
   async producto(id) {
     const p = await admin.productoPorId(this.env, id);
