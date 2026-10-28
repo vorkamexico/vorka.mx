@@ -406,6 +406,9 @@
   if (MAPA[qs.get('area')]) { var a = f.querySelector('[name=areas][value="' + MAPA[qs.get('area')] + '"]'); if (a) a.checked = true; }
   if (MOM[qs.get('momento')]) { var m = f.querySelector('[name=momento][value="' + MOM[qs.get('momento')] + '"]'); if (m) m.checked = true; }
   var origen = qs.get('area') || (qs.get('momento') ? 'momento ' + qs.get('momento') : (document.referrer.indexOf(location.host) > -1 ? new URL(document.referrer).pathname : 'directo'));
+  // Desde la página de un integrante del equipo (vorka.mx/equipo/<código>): queda quién lo recomendó
+  var refV = String(qs.get('ref') || '').toUpperCase();
+  if (/^[A-Z0-9_-]{1,30}$/.test(refV)) origen = 'recomendó ' + refV;
 
   // Revisión
   var ETQ = [['Tú', 1, [['nombre', 'Nombre'], ['cargo', 'Cargo'], ['correo', 'Correo'], ['whatsapp', 'WhatsApp'], ['linkedin', 'LinkedIn'], ['ciudad', 'Ciudad'], ['estado', 'Estado']]],
