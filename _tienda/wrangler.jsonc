@@ -17,7 +17,9 @@
     { "pattern": "vorka.mx/brindi*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/vuelve*", "zone_name": "vorka.mx" },
     // Agenda: las páginas de reservas de cada negocio (vorka.mx/citas/…). vorka.mx/agenda/ es otra página y no pasa por aquí
-    { "pattern": "vorka.mx/citas*", "zone_name": "vorka.mx" }
+    { "pattern": "vorka.mx/citas*", "zone_name": "vorka.mx" },
+    // Página pública de cada integrante del equipo (vorka.mx/equipo/<código>)
+    { "pattern": "vorka.mx/equipo/*", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
     { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }

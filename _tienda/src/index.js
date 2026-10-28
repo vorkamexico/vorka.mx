@@ -28,6 +28,7 @@ import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo } from './puntos.js';
 import { cambiarCodigo, ventasVendedor, DIAS_CAMBIO } from './codigo-publico.js';
+import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
@@ -120,6 +121,12 @@ export class Admin extends WorkerEntrypoint {
     return { code: a.publico || a.code, original: a.code, cambiado_at: a.publico_cambiado_at, puede_cambiar_desde: prox && prox > new Date().toISOString() ? prox : null };
   }
   ventasVendedor(email, limite) { return ventasVendedor(this.env, email, limite); }
+  // Página pública vorka.mx/equipo/<código> (opcional, la prende cada persona en Vorka OS › Ventas › Mi tarjeta)
+  async guardarPerfil(email, datos) {
+    try { return await guardarPerfil(this.env, email, datos); } catch (e) { return { ok: false, error: e.message }; }
+  }
+  borrarPerfil(email) { return borrarPerfil(this.env, email); }
+  perfilEquipo(email) { return perfilEquipo(this.env, email); }
   // Resumen de Puntos para el portal de organizadores de Brindi: liga, saldo y nivel (crea la cuenta la primera vez)
   async puntosApp(email, nombre) {
     const code = await this.codigoPuntos(email, nombre);
@@ -275,6 +282,7 @@ async function atender(request, env, ctx, url) {
     if (url.pathname === '/api/tienda/salud') return json({ ok: true });
     if (/^\/vuelve(\/|$)/.test(url.pathname)) return await vuelvePublico(request, env, url);
     if (/^\/citas(\/|$)/.test(url.pathname)) return await citasPublico(request, env, url);
+    if (/^\/equipo(\/|$)/.test(url.pathname)) return await rutasEquipo(request, env, url);
     const corta = ligaCorta(url);
     if (corta) return corta;
     // El portal de Socios Vorka ya no existe: todo vive en Puntos Vorka
