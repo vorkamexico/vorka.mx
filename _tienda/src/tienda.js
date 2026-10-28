@@ -60,9 +60,9 @@ export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : 
 // Líneas de la tienda según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
 // Una categoría nueva desde el panel aparece sola como línea con su propio nombre.
 const SECCIONES_TIENDA = [
-  { id: 'examenes', claves: ['examenes', 'educacion', 'proyectos sociales', 'cursos'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM y ECOEMS.',
+  { id: 'examenes', claves: ['examenes', 'educacion', 'proyectos sociales', 'cursos'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM, ECOEMS y prepa UG.',
     // Con Ruta de Impacto a la venta, la línea también habla del curso (si no, se queda como estaba)
-    variante: { si: p => p.contenido?.acceso?.app === 'ruta', titulo: 'Exámenes y proyectos', texto: 'Simuladores con tutor para tu examen de admisión (PAA, UNAM y ECOEMS) y Ruta de Impacto, el curso para sacar adelante tu proyecto social.' } },
+    variante: { si: p => p.contenido?.acceso?.app === 'ruta', titulo: 'Exámenes y proyectos', texto: 'Simuladores con tutor para tu examen de admisión (PAA, UNAM, ECOEMS y prepa UG) y Ruta de Impacto, el curso para sacar adelante tu proyecto social.' } },
   { id: 'negocios', claves: ['negocios', 'citas', 'agenda', 'lealtad', 'ventas', 'vende', 'kits', 'emprender'], linea: 'Negocios', titulo: 'Herramientas para tu negocio',
     texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen y Vende para tus pedidos y cobros. Pruébalas gratis.' },
   { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',
@@ -128,6 +128,7 @@ const SIM_TIENDA = {
   'simulador-paa': { nombre: 'Simulador PAA en línea', texto: 'Práctica ilimitada con tutor y exámenes completos como la PAA real: elige uno o llévate el Completo con los dos.' },
   'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
   'simulador-ecoems': { nombre: 'Simulador ECOEMS en línea', texto: 'Para la prepa de la UNAM y del IPN: práctica ilimitada con tutor y exámenes de 128 reactivos en 3 horas.' },
+  'simulador-prepa-ug': { nombre: 'Simulador prepa UG (EXANI-I) en línea', texto: 'Para la prepa de la Universidad de Guanajuato: práctica ilimitada con tutor y exámenes EXANI-I de 160 reactivos en 4 horas y media.' },
 };
 const APPS_TIENDA = {
   vuelve: { nombre: 'Vuelve · Tarjetas de lealtad', precio: p => `${precio(p)} al mes` },
