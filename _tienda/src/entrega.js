@@ -75,8 +75,9 @@ export const urlEntrar = (env, acceso, token) => acceso.url && /^https:\/\/[a-z0
 
 // Todo de la misma app (p. ej. un plan de Brindi con complementos): el botón entra directo; si son apps distintas, a la página con un botón por cada una
 function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1, extra = {}) {
-  // Ruta de Impacto: el botón lleva el enlace de entrada que dio ruta.vorka.mx (un solo uso, 7 días)
-  const ruta = acceso.app === 'ruta' && extra.ruta?.enlace ? extra.ruta : null;
+  // Ruta de Impacto y Evaluación de liderazgo: el botón lleva el enlace que dio Vorka OS (ruta.vorka.mx: un solo uso, 7 días;
+  // liderazgo.vorka.mx: la liga personal con sus 2 aplicaciones)
+  const ruta = (acceso.app === 'ruta' || acceso.app === 'liderazgo') && extra.ruta?.enlace ? extra.ruta : null;
   const url = ruta ? ruta.enlace : items.length === 1 || mismaApp ? urlEntrar(env, acceso, token) : `${env.SITE_URL}/descargas/${token}`;
   const boton_ = acceso.boton || 'Entrar';
   // Paquete: un botón más por cada app que también abre (el mismo token sirve para las dos; ver validarAcceso)
@@ -94,6 +95,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : acceso.app === 'cuentas' ? 'Con este botón entras a Cuentas. Tu suscripción ya está activa y tus registros siguen tal cual: se renueva cada mes y la puedes cancelar cuando quieras desde Cuentas › Ajustes. Para volver a entrar después, usa este mismo correo en cuentas.vorka.mx.'
     : acceso.app === 'vende' ? 'Con este botón entras a Vende. Tu suscripción a Vende Pro ya está activa y tus clientas, pedidos y cobros siguen tal cual: se renueva sola y la puedes cancelar cuando quieras desde Vende › Ajustes. Para volver a entrar después, usa este mismo correo en vende.vorka.mx.'
     : acceso.app === 'ruta' ? `Con este botón empiezas tu Ruta de Impacto${ruta?.hasta ? `; tu acceso es válido hasta el ${fechaLarga(ruta.hasta)}` : ' y tu acceso dura un año'}. El botón funciona una sola vez durante 7 días; después entra en ruta.vorka.mx con este mismo correo y crea tu contraseña. Lo recibido va para IMPACTO (soyimpacto.org).`
+    : acceso.app === 'liderazgo' ? 'Con este botón empiezas tu Evaluación de liderazgo Vorka: 80 preguntas, unos 25 minutos. La liga es personal e incluye 2 aplicaciones: la de hoy y una de seguimiento a partir de 90 días para ver tu avance. Si quien contesta tiene menos de 18 años, tenga a la mano el nombre y el correo de su mamá, papá o tutor.'
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura 6 meses a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const html = marco(asunto, `

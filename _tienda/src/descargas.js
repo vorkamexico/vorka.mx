@@ -64,7 +64,7 @@ export async function paginaDescargas(env, token) {
     </li>`).join('') + v.accesos.map(a => `
     <li class="t-archivo">
       <span class="t-archivo-i" aria-hidden="true">${FLECHA}</span>
-      <span class="t-archivo-t"><b>${esc(a.producto)}</b><small>${esc(a.detalle || `Acceso en línea durante ${a.app === 'ruta' ? 'un año' : '6 meses'} desde tu compra`)}</small></span>
+      <span class="t-archivo-t"><b>${esc(a.producto)}</b><small>${esc(a.detalle || `Acceso en línea durante ${a.app === 'ruta' ? 'un año' : a.app === 'liderazgo' ? 'dos aplicaciones' : '6 meses'} desde tu compra`)}</small></span>
       <a class="btn tinta chico" href="${esc(urlEntrar(env, a, token))}">${esc(a.boton || 'Entrar')}</a>
     </li>`).join('');
   return pagina({

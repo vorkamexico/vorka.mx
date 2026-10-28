@@ -51,7 +51,7 @@ function bloques(o, v) {
     ? { clase: 'exito', icono: ICONOS.ok, titulo: o.unidades > 1 ? '¡Listo! Tus regalos van en camino' : '¡Listo! Tu regalo va en camino',
       texto: `Enviamos ${o.unidades > 1 ? `tus ${o.unidades} ligas de regalo` : 'tu liga de regalo'} a <b>${esc(correoOculto(o.email))}</b>. Mándale cada liga a una persona: funciona una sola vez y el acceso queda a su nombre.`,
       // Ruta de Impacto: sus ligas no cambian al reenviarlas (las da ruta.vorka.mx)
-      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>${acc?.app === 'ruta' ? ' (te mandamos las mismas ligas).' : ' (las ligas nuevas reemplazan a las que no se han usado).'}</p>` }
+      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>${acc?.app === 'ruta' || acc?.app === 'liderazgo' ? ' (te mandamos las mismas ligas).' : ' (las ligas nuevas reemplazan a las que no se han usado).'}</p>` }
     : acc?.tipo === 'intento'
     ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Ya tienes más simulacros',
       texto: 'Tus simulacros completos adicionales ya están disponibles en tu cuenta.',
@@ -93,7 +93,7 @@ const SONDEO = `(function(){
 
 // Bienvenida al pagar (no en regalos): el nombre de lo que compró, su liga de Puntos (gana al recomendar) y a quién apoya Vorka.
 // Los puntos se ganan recomendando, no comprando: por eso no se llama "cashback".
-const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', cuentas: 'Cuentas', vende: 'Vende', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', 'simulador-prepa-ug': 'el Simulador prepa UG', ruta: 'Ruta de Impacto' };
+const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', cuentas: 'Cuentas', vende: 'Vende', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', 'simulador-prepa-ug': 'el Simulador prepa UG', ruta: 'Ruta de Impacto', liderazgo: 'la Evaluación de liderazgo Vorka' };
 export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO · Juventudes Impactando México A.C.</a>, la red de jóvenes que transforma sus comunidades en 121 municipios del país.';
 const bienvenida = o => {
   const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;

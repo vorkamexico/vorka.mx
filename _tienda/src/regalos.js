@@ -105,10 +105,12 @@ export function correoRegalos(env, orden, ligas, canjeadas = 0) {
   const nombre = primerNombre(orden.nombre);
   const varias = ligas.length > 1;
   const producto = ligas[0].producto;
-  // "el Simulador PAA", pero "Ruta de Impacto" (sin artículo)
-  const el = ligas[0].ruta ? '' : 'el ';
+  // "el Simulador PAA", "la Evaluación de liderazgo", pero "Ruta de Impacto" (sin artículo)
+  const lz = ligas[0].app === 'liderazgo', ri = ligas[0].ruta && !lz;
+  const el = ri ? '' : lz ? 'la ' : 'el ';
+  const dura = lz ? 'y trae sus 2 aplicaciones (la inicial y una de seguimiento a los 90 días)' : `durante ${ri ? 'un año' : '6 meses'}`;
   const asunto = varias ? `Tus ${ligas.length} regalos: ${producto}` : `Tu regalo está listo: ${producto}`;
-  const whats = url => `https://wa.me/?text=${encodeURIComponent(ligas[0].ruta ? `Te regalé Ruta de Impacto, un curso para sacar adelante tu proyecto social 🎁 Ábrelo aquí (solo funciona una vez): ${url}` : `Te regalé el ${producto} de Vorka México 🎁 Ábrelo aquí (solo funciona una vez): ${url}`)}`;
+  const whats = url => `https://wa.me/?text=${encodeURIComponent(lz ? `Te regalé la Evaluación de liderazgo Vorka: 80 preguntas para saber dónde estás como líder 🎁 Ábrela aquí: ${url}` : ri ? `Te regalé Ruta de Impacto, un curso para sacar adelante tu proyecto social 🎁 Ábrelo aquí (solo funciona una vez): ${url}` : `Te regalé el ${producto} de Vorka México 🎁 Ábrelo aquí (solo funciona una vez): ${url}`)}`;
   const bloques = ligas.map((l, i) => `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 14px;border:1px solid #e7e5e7;border-radius:16px"><tr><td style="padding:16px 18px">
   <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#6b2a85">${varias ? `Regalo ${i + 1} de ${ligas.length}` : 'Tu liga de regalo'}</p>
@@ -119,7 +121,7 @@ export function correoRegalos(env, orden, ligas, canjeadas = 0) {
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">¡Gracias por regalar ${el}<b>${esc(producto)}</b>! ${varias ? `Aquí están tus ${ligas.length} ligas de regalo: manda <b>una liga a cada persona</b>.` : 'Aquí está tu liga de regalo: mándasela a quien se la quieras regalar.'}</p>
 ${bloques}
-<p style="${P}"><b>Importante:</b> cada liga funciona <b>una sola vez</b>. Quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante ${ligas[0].ruta ? 'un año' : '6 meses'}. Después, la liga deja de funcionar, así que nadie más puede usarla.</p>${ligas[0].ruta ? `\n<p style="${P}">Lo recibido va para IMPACTO (<a href="https://soyimpacto.org/" style="color:#6b2a85;text-decoration:underline">soyimpacto.org</a>).</p>` : ''}
+<p style="${P}"><b>Importante:</b> cada liga funciona <b>una sola vez</b>. Quien la abra escribe su nombre y su correo, y el acceso queda a su nombre ${dura}. Después, la liga deja de funcionar, así que nadie más puede usarla.</p>${ri ? `\n<p style="${P}">Lo recibido va para IMPACTO (<a href="https://soyimpacto.org/" style="color:#6b2a85;text-decoration:underline">soyimpacto.org</a>).</p>` : ''}
 ${canjeadas ? `<p style="${P}">${canjeadas === 1 ? 'Una liga ya se canjeó' : `${canjeadas} ligas ya se canjearon`} y sigue${canjeadas === 1 ? '' : 'n'} funcionando para quien la${canjeadas === 1 ? '' : 's'} abrió. Las ligas de este correo reemplazan a las anteriores que no se habían usado.</p>` : ''}
 <p style="${P}">¿Perdiste este correo? Pide uno nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con el correo de tu compra. ¿Dudas? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a>.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
@@ -129,7 +131,7 @@ ${canjeadas ? `<p style="${P}">${canjeadas === 1 ? 'Una liga ya se canjeó' : `$
 
 ${ligas.map((l, i) => `${varias ? `Regalo ${i + 1}: ` : ''}${l.url}`).join('\n')}
 
-Cada liga funciona una sola vez: quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante ${ligas[0].ruta ? 'un año' : '6 meses'}.
+Cada liga funciona una sola vez: quien la abra escribe su nombre y su correo, y el acceso queda a su nombre ${dura}.
 
 ¿Perdiste este correo? Pide uno nuevo en ${env.SITE_URL}/descargas/reenviar
 
