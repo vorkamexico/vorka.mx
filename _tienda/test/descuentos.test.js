@@ -441,3 +441,22 @@ describe('total con descuento en la página de compra', () => {
     }
   });
 });
+
+describe('códigos de regalo personales (Vorka OS)', () => {
+  it('crea un código único de un solo uso con su vencimiento y se puede usar una vez', async () => {
+    const admin = await import('../src/admin.js');
+    const { evaluarCodigo } = await import('../src/descuentos.js');
+    const { d1 } = await import('./d1.js');
+    const env = { DB: d1() };
+    const a = await admin.crearCodigoRegalo(env, { prefijo: 'SPARKS', nombre: 'Daniela Ortega', correo: 'd@mail.com', pct: 20, dias: 60 });
+    const b = await admin.crearCodigoRegalo(env, { prefijo: 'SPARKS', nombre: 'Daniela Ortega', correo: 'd@mail.com', pct: 20, dias: 60 });
+    expect(a.codigo).toMatch(/^SPARKS-DANIE-[A-Z2-9]{4}$/);
+    expect(a.codigo).not.toBe(b.codigo);
+    const fila = env.DB.raw.prepare('SELECT * FROM codigos_descuento WHERE codigo = ?').get(a.codigo);
+    expect(fila).toMatchObject({ pct: 20, meses: 1, max_usos: 1, usos: 0 });
+    expect((await evaluarCodigo(env, a.codigo.toLowerCase()))?.pct).toBe(20);
+    env.DB.raw.exec(`UPDATE codigos_descuento SET usos = 1 WHERE codigo = '${a.codigo}'`);
+    expect((await evaluarCodigo(env, a.codigo)).valido).toBe(false);
+    await expect(admin.crearCodigoRegalo(env, { prefijo: 'sparks', nombre: 'x', pct: 20, dias: 60 })).rejects.toThrow();
+  });
+});

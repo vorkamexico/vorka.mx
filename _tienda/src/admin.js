@@ -189,6 +189,24 @@ export async function exportarCSV(env, { desde, hasta }) {
   return '﻿' + [enc.join(','), ...lineas].join('\r\n') + '\r\n';
 }
 
+// ---------- códigos de regalo personales (Vorka OS los pide, p. ej. a quien publicó su historia en Sparks) ----------
+// Un código único de un solo uso: pct % en la primera compra (en suscripciones, el primer mes). Vence en `dias` días.
+const REGALO = z.object({ prefijo: z.string().regex(/^[A-Z]{2,10}$/), nombre: z.string().trim().max(80).catch(''), correo: z.string().trim().max(254).catch(''),
+  pct: z.number().min(5).max(50), dias: z.number().int().min(7).max(365) });
+export async function crearCodigoRegalo(env, datos) {
+  const d = REGALO.parse(datos);
+  const corto = (d.nombre.normalize('NFD').replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 5)) || 'VORKA';
+  const hasta = new Date(Date.now() - 6 * 3600e3 + d.dias * 864e5).toISOString().slice(0, 10);   // día en hora de CDMX
+  for (let i = 0; i < 5; i++) {
+    const azar = [...crypto.getRandomValues(new Uint8Array(4))].map(b => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b % 32]).join('');
+    const codigo = `${d.prefijo}-${corto}-${azar}`;
+    const r = await run(env, 'INSERT OR IGNORE INTO codigos_descuento (codigo, pct, meses, max_usos, hasta, nombre) VALUES (?,?,1,1,?,?)',
+      codigo, d.pct, hasta, `Regalo ${d.prefijo === 'SPARKS' ? 'Sparks' : d.prefijo}${d.correo ? ` · ${d.correo}` : ''}`);
+    if (r.meta.changes) return { codigo, pct: d.pct, hasta };
+  }
+  throw new Error('No se pudo crear el código. Intenta de nuevo.');
+}
+
 // ---------- diagnósticos gratis de los simuladores (interesados para seguimiento) ----------
 // estado: 'todos' | 'pendientes' (terminaron, no han comprado y nadie les ha escrito) | 'sin_terminar' | 'compraron'
 const ESTADO_DIAG = z.enum(['todos', 'pendientes', 'sin_terminar', 'compraron']).catch('todos');

@@ -42,6 +42,7 @@ export class Admin extends WorkerEntrypoint {
   recordar(id) { return recordarOrden(this.env, id); }
   exportarCSV(f) { return admin.exportarCSV(this.env, f); }
   diagnosticos(f) { return admin.diagnosticos(this.env, f); }
+  crearCodigoRegalo(d) { return admin.crearCodigoRegalo(this.env, d); }
   marcarDiagnostico(id, contactado) { return admin.marcarDiagnostico(this.env, id, contactado); }
   productos() { return admin.productos(this.env); }
   async producto(id) {
