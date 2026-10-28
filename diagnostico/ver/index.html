@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa de ruta · Vorka México</title>
+<meta name="description" content="Diagnóstico y mapa de ruta personal con avance en vivo. Vorka México.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#FBFAF8">
+<link rel="icon" href="/assets/v3/icono.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/vorka-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://os.vorka.mx" crossorigin>
+<link rel="stylesheet" href="/assets/v3/vorka.css?v=10">
+<link rel="stylesheet" href="/assets/v3/diagnostico.css?v=3">
+</head>
+<body class="dx">
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="nav">
+  <div class="nav-in">
+    <a class="marca" href="/" aria-label="Vorka México, inicio"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+    <nav class="dx-nav" aria-label="Secciones"><a href="#progreso">Progreso</a><a href="#ruta">Ruta</a></nav>
+  </div>
+</header>
+<main id="contenido" data-api="https://os.vorka.mx/api/publico/diagnostico/" aria-busy="true">
+  <section class="dx-portada">
+    <div class="marco dx-portada-in">
+      <div class="dx-intro">
+        <span class="etiqueta" data-x="etiqueta">Mapa de ruta</span>
+        <h1 class="dx-nombre"><span class="skel" style="width:70%"></span></h1>
+        <p class="dx-titulo"><span class="skel" style="width:90%"></span></p>
+        <p class="dx-lugar"></p>
+      </div>
+      <div class="dx-extra"></div>
+      <aside class="dx-vivo" aria-label="Avance en vivo" aria-live="polite">
+        <div class="dx-vivo-h"><span class="punto"></span><span>Avance en vivo</span></div>
+        <div class="dx-anillo"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52"/><circle class="fondo-esp" cx="60" cy="60" r="52"/><circle class="avance" cx="60" cy="60" r="52"/></svg><div><b class="num">—</b><small>del plan</small></div></div>
+        <dl class="dx-datos"><div><dt>Esperado a hoy</dt><dd class="num" data-v="esperado">—</dd></div><div><dt>Calificación</dt><dd class="num" data-v="score">—</dd></div><div><dt>Hitos</dt><dd class="num" data-v="hitos">—</dd></div><div><dt>Al cierre</dt><dd class="num" data-v="dias">—</dd></div></dl>
+        <p class="dx-ritmo" data-v="ritmo"></p>
+      </aside>
+    </div>
+  </section>
+  <section class="marco dx-tarjetas" data-x="tarjetas" hidden></section>
+  <section class="dx-progreso oscura" id="progreso">
+    <div class="marco">
+      <div class="cab"><span class="etiqueta">Progreso real</span><h2 class="h2" style="margin-top:18px">Avanza solo con <span class="metal">evidencia.</span></h2>
+      <p class="lead">Cada hito suma cuando hay algo que lo demuestra: una constancia, un documento, un registro. Así el avance no depende de lo que se diga, sino de lo que se puede mostrar.</p></div>
+      <div class="dx-comps" data-x="competencias"></div>
+      <h3 class="dx-sub">Plan de hitos</h3>
+      <ol class="dx-hitos" data-x="hitos"></ol>
+    </div>
+  </section>
+  <div class="marco dx-cuerpo">
+    <nav class="dx-indice" aria-label="Contenido" data-x="indice" hidden></nav>
+    <div class="dx-secciones"><div data-x="secciones" class="dx-secciones"></div>
+      <section class="dx-sec dx-cierre" id="siguiente"><span class="etiqueta">Siguiente paso</span><h2 class="h3">¿Dudas sobre este diagnóstico o siguiente sesión de trabajo?</h2>
+        <p>Este documento es el punto de partida. Ensayos, biografía, CV y preparación de entrevista se construyen sobre él. Cualquier duda o ajuste, por aquí.</p>
+        <div class="dx-contacto"><a class="btn tinta chico" href="https://wa.me/528117804869" target="_blank" rel="noopener">WhatsApp</a><a class="btn blanco chico" href="mailto:vorkamexico@gmail.com">vorkamexico@gmail.com</a></div></section></div>
+  </div>
+  <section class="dx-error marco" hidden><span class="etiqueta">Vorka México</span><h1 class="h2" style="margin-top:16px">Esta liga no está activa.</h1><p class="lead">Revisa que la liga esté completa o pide una nueva a tu mentor.</p></section>
+</main>
+<footer class="pie dx-pie"><div class="marco"><a class="marca" href="/" aria-label="Vorka México, inicio"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+  <p data-x="actualizado">Documento privado de trabajo. Solo lo ve quien tiene la liga; no aparece en buscadores.</p></div></footer>
+<script src="/assets/v3/diagnostico.js?v=3" defer></script>
+</body>
+</html>
