@@ -5,6 +5,7 @@
 //   en el formulario o por la liga (?ref= / cookie vorka_ref). Quien recomendó sigue ganando sus puntos sobre lo cobrado.
 // El mismo campo «código» acepta los dos. No se acumulan: se aplica el mayor. Los puntos de quien compra sí se suman al 5 %
 // en pagos únicos (las suscripciones no aceptan puntos). Siempre queda el cobro mínimo de la pasarela (crearOrden).
+import { SQL_CODIGO_REAL } from './codigo-publico.js';
 import { one } from './util.js';
 import { COBRO_MINIMO } from './puntos-reglas.js';
 
@@ -58,7 +59,7 @@ export async function evaluarCodigo(env, codigo, { sus = null, ahora = new Date(
 
 // La persona de referidos de un código (activo), o null
 export const afiliado = (env, code) =>
-  pareceCodigo(code) ? one(env, 'SELECT code, email, comision_pct FROM affiliates WHERE code = ? AND activo = 1', normalizar(code)) : null;
+  pareceCodigo(code) ? one(env, `SELECT code, email, comision_pct FROM affiliates WHERE code = ${SQL_CODIGO_REAL} AND activo = 1`, normalizar(code)) : null;
 
 /**
  * Decide el descuento de una compra.

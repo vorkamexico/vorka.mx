@@ -27,6 +27,7 @@ import { paginaRuta } from './ruta.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo } from './puntos.js';
+import { cambiarCodigo, ventasVendedor, DIAS_CAMBIO } from './codigo-publico.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
@@ -103,8 +104,22 @@ export class Admin extends WorkerEntrypoint {
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) return null;
     const code = await codigoDe(this.env, e, nombre ? String(nombre).slice(0, 80) : null);
     await this.env.DB.prepare('INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)').bind(e).run();
-    return code;
+    // el que se comparte: si la persona cambió su código (alias), ese; el original sigue funcionando
+    const a = await this.env.DB.prepare('SELECT publico FROM affiliates WHERE code = ?').bind(code).first();
+    return a?.publico || code;
   }
+  // Embajadores de venta (Vorka OS › Ventas): cambiar el código que comparten (alias; el anterior sigue sirviendo)
+  // y sus ventas con puntos, sin datos de quien compró
+  async cambiarCodigo(email, nuevo) {
+    try { return await cambiarCodigo(this.env, email, nuevo); } catch (e) { return { ok: false, error: e.message }; }
+  }
+  async infoCodigo(email) {
+    const a = await this.env.DB.prepare("SELECT code, publico, publico_cambiado_at FROM affiliates WHERE email = ? AND tipo = 'puntos'").bind(String(email || '').trim().toLowerCase()).first();
+    if (!a) return null;
+    const prox = a.publico_cambiado_at ? new Date(Date.parse(a.publico_cambiado_at) + DIAS_CAMBIO * 864e5).toISOString() : null;
+    return { code: a.publico || a.code, original: a.code, cambiado_at: a.publico_cambiado_at, puede_cambiar_desde: prox && prox > new Date().toISOString() ? prox : null };
+  }
+  ventasVendedor(email, limite) { return ventasVendedor(this.env, email, limite); }
   // Resumen de Puntos para el portal de organizadores de Brindi: liga, saldo y nivel (crea la cuenta la primera vez)
   async puntosApp(email, nombre) {
     const code = await this.codigoPuntos(email, nombre);

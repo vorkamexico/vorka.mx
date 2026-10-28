@@ -484,6 +484,7 @@ export async function guardarAfiliado(env, datos) {
   if (!v.success) throw new Error(v.error.issues[0].message);
   const a = v.data;
   const existe = await one(env, 'SELECT 1 FROM affiliates WHERE code = ?', a.code);
+  if (await one(env, 'SELECT 1 FROM affiliate_alias WHERE alias = ?', a.code)) throw new Error('Ese código ya lo usa alguien de Puntos Vorka. Elige otro.');
   if (a.nuevo && existe) throw new Error('Ese código ya existe. Elige otro.');
   if (existe) await run(env, 'UPDATE affiliates SET nombre = ?, email = ?, comision_pct = ?, activo = ? WHERE code = ?', a.nombre, a.email || null, a.comision_pct, a.activo ? 1 : 0, a.code);
   else await run(env, 'INSERT INTO affiliates (code, nombre, email, comision_pct, activo) VALUES (?,?,?,?,?)', a.code, a.nombre, a.email || null, a.comision_pct, a.activo ? 1 : 0);
