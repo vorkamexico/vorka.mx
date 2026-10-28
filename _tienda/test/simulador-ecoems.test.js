@@ -48,8 +48,8 @@ describe('simulador ECOEMS', () => {
     expect(html).toContain('<title>Simulador ECOEMS 2027');
     expect(html).toContain('rel="canonical" href="https://vorka.mx/simulador-ecoems/"');
     for (const p of ['$129', '$179', '$249']) expect(html).toContain(p);
-    expect(html).toContain('name="slug" value="simulador-ecoems-practica"');   // arranca en el más barato
-    expect(html).toContain('Ahorra $59 MXN');
+    expect(html).toContain('name="slug" value="simulador-ecoems-paquete"');   // arranca en el Completo (el recomendado)
+    expect(html).toContain('Ahorras $59 MXN');
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain('No está afiliado a la UNAM, al IPN, al ECOEMS ni a la SEP');
     expect(html).toContain('Todavía no hay nada publicado del proceso 2027');

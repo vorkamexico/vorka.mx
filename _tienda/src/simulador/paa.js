@@ -1,6 +1,6 @@
 // Simulador PAA (vorka.mx/simulador-paa): configuración para el motor (motor.js) y contenido de su página de venta.
-// Planes (migración 0029): "Práctica ilimitada" ($199), "Simulador completo" ($249: 2 exámenes completos) y el "Paquete
-// completo" ($379: los dos). La compra de antes (simulador-paa) conserva lo que traía: 2 Calentamientos, 2 Medios y 1 Oficial.
+// Planes (migración 0029, nombres de 0047): "Práctica" ($199: entrenar sin límite), "Examen" ($249: 2 exámenes completos)
+// y "Completo" ($379: los dos). La compra de antes (simulador-paa) conserva lo que traía: 2 Calentamientos, 2 Medios y 1 Oficial.
 // "Simulacro adicional" ($50) suma 1 Medio y "Examen PAA completo adicional" ($100) suma 1 examen.
 import { crearSimulador } from './motor.js';
 import { paginaVentaSimulador } from './venta.js';
@@ -22,7 +22,7 @@ export const FAQ_PAA = [
   { p: '¿Cómo se califica la PAA?', r: 'Cada sección se califica en una escala de 200 a 800 puntos y no se resta por respuesta incorrecta, así que conviene contestar todo. Nuestro simulador estima tu puntaje en esa misma escala para que veas qué tan cerca estás de tu meta.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen la estructura y el tipo de preguntas de la PAA. No está afiliado al College Board y el puntaje es una estimación para orientar tu estudio.' },
   { p: '¿Hay reembolso?', r: 'Solo si aún no lo usas: puedes pedirlo dentro de los 5 días hábiles siguientes a tu compra escribiendo a hola@vorka.mx. Una vez que empiezas un simulacro, un examen o una práctica ya no hay reembolso, aunque no lo termines (igual que un archivo ya descargado). Si algo falla y no te deja usarlo, lo resolvemos o te devolvemos tu dinero. Detalles en la política de reembolsos.' },
-  { p: '¿Qué plan me conviene?', r: `Son dos que se complementan. La Práctica ilimitada es para entrenar todos los días: Calentamientos (${CAL_REACTIVOS} reactivos) y simulacros de nivel Medio (${CORTO_REACTIVOS} reactivos, con tutor) sin límite, más práctica por sección y por tema. El Simulador completo es para medirte como el día del examen: 2 exámenes completos con la misma cantidad de preguntas y la dificultad de la PAA real (${EXAMEN_REACTIVOS} reactivos con cronómetro, sin pistas). Lo ideal es practicar hasta que el simulador te diga que ya estás listo y cerrar con el examen completo: por eso el paquete trae los dos y te ahorra dinero.` },
+  { p: '¿Cuál es la diferencia entre los planes?', r: `Práctica ($199) es para entrenar: Calentamientos (${CAL_REACTIVOS} reactivos) y simulacros Medios (${CORTO_REACTIVOS} reactivos) sin límite, práctica por sección y por tema, y un tutor que te da pistas cuando fallas. No incluye los exámenes completos. Examen ($249) es para medirte como el día de la PAA: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos con cronómetro y sin pistas, con reporte de preparación. No incluye la práctica ilimitada ni el tutor. Completo ($379) trae las dos cosas: practicas sin límite y cierras con los 2 exámenes. Por separado cuestan $448, así que ahorras $69. Es el que recomendamos: practicar sin medirte no te dice si ya estás listo, y medirte sin practicar no te ayuda a subir tu puntaje.` },
   { p: '¿Se repiten las preguntas?', r: `El banco tiene ${REACTIVOS.length} reactivos originales y cada simulacro o examen prioriza los que todavía no has visto, así que tus primeros intentos traen preguntas prácticamente distintas. Las gráficas y figuras de Matemáticas son originales de Vorka México.` },
   { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo para que la compartas. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre, así que no se puede compartir.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta.' },
@@ -64,22 +64,30 @@ const VENTA = {
     alt: 'Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación',
   },
   planesVenta: [
-    { k: 'practica', nombre: 'Práctica ilimitada', para: 'Para entrenar todos los días', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por sección y por tema', 'Tutor con pistas y explicación paso a paso', 'Puntaje estimado y qué reforzar'] },
-    { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => [`2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos`, 'Con cronómetro y la dificultad de la PAA', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] },
-    { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', 'Los 2 exámenes completos', 'Un año de acceso a todo'] },
+    { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por sección y por tema', 'Tutor con pistas y explicación paso a paso', 'Puntaje estimado y qué reforzar'] },
+    { k: 'completo', nombre: 'Examen', para: `Solo medirte: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos`, falta: 'No incluye la práctica ilimitada ni el tutor', trae: () => [`2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos`, 'Con cronómetro y la dificultad de la PAA', 'Sin pistas: la revisión va al final', 'Reporte de preparación por sección'] },
+    { k: 'paquete', nombre: 'Completo', para: 'Práctica sin límite + los 2 exámenes completos', trae: () => ['Todo lo del plan Práctica: entrenas sin límite con tutor', `Todo lo del plan Examen: 2 exámenes de ${EXAMEN_REACTIVOS} reactivos`, '6 meses de acceso a todo'] },
+  ],
+  // Tabla "¿Cuál es la diferencia?": [qué, Práctica, Examen, Completo]
+  diferencias: [
+    ['Calentamientos y simulacros Medios sin límite', true, false, true],
+    ['Práctica por sección y por tema', true, false, true],
+    ['Tutor con pistas y solución paso a paso', true, false, true],
+    [`2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos con cronómetro`, false, true, true],
+    ['Puntaje estimado 200–800 y qué reforzar', true, true, true],
   ],
   cifras: [[REACTIVOS.length, 'reactivos originales'], [Object.keys(TEXTOS).length, 'lecturas en español e inglés'], [Object.keys(TEMAS).length, 'temas medidos en tu reporte'], [EXAMEN_REACTIVOS, 'reactivos en el examen completo']],
   pasos: [['Contesta como en la PAA', 'Las cuatro secciones con cronómetro, como en el examen real. El reloj se pausa mientras lees las explicaciones.'], null,
     [null, 'Puntaje estimado por sección, distancia a tu meta, tus fortalezas y los temas que más puntos te restan, con práctica dirigida.']],
   ejemplo: { ...ej, etiqueta: 'Redacción · Conectores' },
-  planInicial: 'practica',   // el más barato: la primera compra pesa más que el ticket
+  planInicial: 'paquete',   // el que recomendamos: practicar y medirte
   incluye: [
-    { titulo: 'Calentamientos', tag: 'Práctica ilimitada', texto: `${CAL_REACTIVOS} reactivos de dificultad básica e intermedia con tutor, para entrar en ritmo sin frustrarte. Todos los que quieras.` },
-    { titulo: 'Simulacros Medios', tag: 'Práctica ilimitada', texto: `Las cuatro secciones en ${CORTO_REACTIVOS} reactivos, la mayoría de dificultad alta, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.` },
-    { titulo: 'Examen completo', tag: 'Simulador completo', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos con cronómetro y sin pistas: la misma cantidad de preguntas y la dificultad de la PAA real. ¿Otro? Cuesta $100.` },
-    { titulo: 'Por sección y por tema', tag: 'Práctica ilimitada', texto: 'Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.' },
+    { titulo: 'Calentamientos', tag: 'Práctica', texto: `${CAL_REACTIVOS} reactivos de dificultad básica e intermedia con tutor, para entrar en ritmo sin frustrarte. Todos los que quieras.` },
+    { titulo: 'Simulacros Medios', tag: 'Práctica', texto: `Las cuatro secciones en ${CORTO_REACTIVOS} reactivos, la mayoría de dificultad alta, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.` },
+    { titulo: 'Examen completo', tag: 'Examen', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos con cronómetro y sin pistas: la misma cantidad de preguntas y la dificultad de la PAA real. ¿Otro? Cuesta $100.` },
+    { titulo: 'Por sección y por tema', tag: 'Práctica', texto: 'Repite cada sección por separado y practica tus temas débiles todas las veces que quieras.' },
     { titulo: 'Medidor de preparación', texto: 'Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos puntos de tu meta.' },
-    { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.' },
+    { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante 6 meses.' },
   ],
   comparar: [
     ['Cronómetro en cada simulacro', true, false],

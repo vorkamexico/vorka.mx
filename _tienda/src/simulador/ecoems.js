@@ -3,7 +3,7 @@
 // Datos verificados (convocatoria 2026): examen en línea de 128 reactivos en 3 horas, sin áreas. El reparto por materia
 // (Habilidad verbal 16, Habilidad matemática 16 y 12 de cada una de las otras 8) sale de la guía conjunta UNAM-IPN, que
 // solo encontramos en un sitio comercial: en la página se presenta como "de referencia".
-// Planes: Práctica ilimitada ($129), Simulador completo ($179: 2 exámenes completos) y Paquete ($249). Adicionales: 1 Medio
+// Planes: Práctica ($129), Examen ($179: 2 exámenes completos) y Completo ($249: los dos). Adicionales: 1 Medio
 // ($49) o 1 examen más ($79).
 import { crearSimulador } from './motor.js';
 import { paginaVentaSimulador } from './venta.js';
@@ -83,10 +83,10 @@ const FAQ = [
   { p: '¿Cómo es el examen?', r: 'En 2026 fue un examen en línea de 128 reactivos para resolver en 3 horas, sin áreas: todos presentan las mismas materias. El reparto que usa el simulador es de referencia: Habilidad verbal 16, Habilidad matemática 16 y 12 de cada una de estas: Español, Matemáticas, Biología, Física, Química, Historia, Geografía y Formación cívica y ética.' },
   { p: '¿Cuándo es el examen 2027?', r: 'Todavía no hay nada publicado del proceso 2027. Como referencia, en 2026 el examen fue el 20, 21, 27 y 28 de junio, y los resultados se publicaron el 18 de agosto. Consulta siempre la convocatoria vigente en miderechomilugar.gob.mx.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen el temario de secundaria y el tipo de preguntas del examen. No está afiliado a la UNAM, al IPN, al ECOEMS ni a la SEP, y los aciertos son una estimación para orientar el estudio.' },
-  { p: '¿Qué plan me conviene?', r: `La Práctica ilimitada es para entrenar todos los días: Calentamientos de ${CAL_REACTIVOS} reactivos, simulacros Medios de ${MEDIO_REACTIVOS} y práctica por materia y por tema, sin límite y con tutor. El Simulador completo es para medirse como el día del examen: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas. El paquete trae los dos y ahorra dinero.` },
-  { p: 'Soy mamá o papá: ¿cómo funciona la compra?', r: 'Pagas una sola vez con tarjeta, OXXO o SPEI y el acceso llega al correo que escribas. Si lo compras para tu hijo o hija, elige Para regalar: te llega una liga que abre su propia cuenta, con su historial y su reporte. Dura un año desde la compra.' },
+  { p: '¿Cuál es la diferencia entre los planes?', r: `Práctica es para entrenar: Calentamientos de ${CAL_REACTIVOS} reactivos, simulacros Medios de ${MEDIO_REACTIVOS} y práctica por materia y por tema, sin límite y con tutor; no incluye los exámenes completos. Examen es para medirse como el día del examen: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas; no incluye la práctica ilimitada ni el tutor. Completo trae las dos cosas y cuesta menos que comprarlas por separado: es el que recomendamos, porque practicar sin medirse no dice si ya se está listo y medirse sin practicar no ayuda a subir.` },
+  { p: 'Soy mamá o papá: ¿cómo funciona la compra?', r: 'Pagas una sola vez con tarjeta, OXXO o SPEI y el acceso llega al correo que escribas. Si lo compras para tu hijo o hija, elige Para regalar: te llega una liga que abre su propia cuenta, con su historial y su reporte. Dura 6 meses desde la compra.' },
   { p: '¿Hay reembolso?', r: 'Solo si aún no lo usas: puedes pedirlo dentro de los 5 días hábiles siguientes a tu compra escribiendo a hola@vorka.mx. Una vez que empiezas un simulacro, un examen o una práctica ya no hay reembolso. Si algo falla y no te deja usarlo, lo resolvemos o te devolvemos tu dinero.' },
-  { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador del celular, la tablet o la computadora, sin instalar nada. El historial se guarda en la cuenta durante un año.' },
+  { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador del celular, la tablet o la computadora, sin instalar nada. El historial se guarda en la cuenta durante 6 meses.' },
 ];
 const tablaMaterias = `<table class="sv-tabla sec"><thead><tr><th scope="col">Materia</th><th scope="col" class="num">Examen completo</th><th scope="col" class="num">Simulacro Medio</th><th scope="col">Qué evalúa</th></tr></thead><tbody>${
   SECCIONES_EXAMEN.map((s, i) => `<tr><th scope="row"><span class="sv-dot s-${s.color}"></span>${s.nombre}</th><td class="num">${s.reactivos}</td><td class="num">${SECCIONES[i].reactivos}</td><td>${s.descripcion}</td></tr>`).join('')
@@ -94,7 +94,7 @@ const tablaMaterias = `<table class="sv-tabla sec"><thead><tr><th scope="col">Ma
 const ej = REACTIVOS.find(r => r.seccion === 'habilidad_matematica' && r.dificultad === 2 && !r.texto && !r.figura && !r.tabla) || REACTIVOS[0];
 
 const VENTA = {
-  sku: 'prod_simulador_ecoems', nombreProducto: 'Simulador ECOEMS en línea', descripcion: DESCRIPCION, planInicial: 'practica',
+  sku: 'prod_simulador_ecoems', nombreProducto: 'Simulador ECOEMS en línea', descripcion: DESCRIPCION, planInicial: 'paquete',
   tituloSEO: 'Simulador ECOEMS 2027 en línea: examen para prepa UNAM e IPN | Vorka México',
   og: `${SITIO}${IMG}/v3/simulador-ecoems-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-ecoems-portada.webp`, `${SITIO}${IMG}/v3/simulador-ecoems-og.jpg`],
   imagenes: { portada: `${IMG}/v3/simulador-ecoems-portada.webp`, og: `${IMG}/v3/simulador-ecoems-og.jpg`, paso1: `${IMG}/v3/simulador-ecoems-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-ecoems-paso-tutor.webp`, reporte: `${IMG}/simulador-ecoems-reporte.png`, regalo: `${IMG}/simulador-ecoems-regalo.png` },
@@ -107,20 +107,27 @@ const VENTA = {
     alt: 'Simulador ECOEMS de Vorka México: pregunta con pista del tutor y reporte de aciertos por materia',
   },
   planesVenta: [
-    { k: 'practica', nombre: 'Práctica ilimitada', para: 'Para entrenar todos los días', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
-    { k: 'completo', nombre: 'Simulador completo', para: 'Para medirte como el día del examen', trae: () => [`2 exámenes completos: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Sin pistas: la revisión va al final', 'Aciertos por materia y temas a reforzar'] },
-    { k: 'paquete', nombre: 'Paquete completo', para: 'Practica sin límite y cierra con el examen', trae: () => ['Todo lo de la Práctica ilimitada', 'Los 2 exámenes completos', 'Un año de acceso a todo'] },
+    { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
+    { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada ni el tutor', trae: () => [`2 exámenes completos: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Sin pistas: la revisión va al final', 'Aciertos por materia y temas a reforzar'] },
+    { k: 'paquete', nombre: 'Completo', para: 'Práctica sin límite + los 2 exámenes completos', trae: () => ['Todo lo del plan Práctica: entrenas sin límite con tutor', 'Todo lo del plan Examen: Los 2 exámenes completos', '6 meses de acceso a todo'] },
+  ],
+  diferencias: [
+    ['Calentamientos y simulacros Medios sin límite', true, false, true],
+    ['Práctica por materia y por tema', true, false, true],
+    ['Tutor con pistas y solución paso a paso', true, false, true],
+    ['2 exámenes completos con cronómetro', false, true, true],
+    ['Aciertos estimados y qué reforzar', true, true, true],
   ],
   cifras: [[REACTIVOS.length, 'reactivos originales'], [MATERIA.length, 'materias del examen'], [Object.keys(TEMAS).length, 'temas medidos en tu reporte'], [EXAMEN_REACTIVOS, 'reactivos en el examen completo']],
   pasos: [['Contesta como en el examen', 'Las 10 materias con cronómetro, al ritmo de 3 horas para 128 reactivos. El reloj se pausa mientras lees las explicaciones.'], null,
     [null, `Aciertos estimados sobre ${EXAMEN_REACTIVOS}, distancia a tu meta, tus materias fuertes y los temas que más aciertos te cuestan, con práctica dirigida.`]],
   ejemplo: { ...ej, etiqueta: `Habilidad matemática · ${TEMAS[ej.tema]?.nombre || ''}` },
   incluye: [
-    { titulo: 'Calentamientos y Medios', tag: 'Práctica ilimitada', texto: `Calentamientos de ${CAL_REACTIVOS} reactivos y simulacros Medios de ${MEDIO_REACTIVOS}, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.` },
-    { titulo: 'Examen completo', tag: 'Simulador completo', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas. Al final, tu reporte de aciertos por materia.` },
-    { titulo: 'Por materia y por tema', tag: 'Práctica ilimitada', texto: 'Practica cada materia por separado y tus temas débiles todas las veces que quieras.' },
+    { titulo: 'Calentamientos y Medios', tag: 'Práctica', texto: `Calentamientos de ${CAL_REACTIVOS} reactivos y simulacros Medios de ${MEDIO_REACTIVOS}, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.` },
+    { titulo: 'Examen completo', tag: 'Examen', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas. Al final, tu reporte de aciertos por materia.` },
+    { titulo: 'Por materia y por tema', tag: 'Práctica', texto: 'Practica cada materia por separado y tus temas débiles todas las veces que quieras.' },
     { titulo: 'Medidor de preparación', texto: 'Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos aciertos de tu meta.' },
-    { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante un año.' },
+    { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante 6 meses.' },
     { titulo: 'Para regalar', texto: 'Mamá, papá o quien quiera apoyar lo compra y le llega una liga a quien va a presentar, con su propia cuenta.' },
   ],
   comparar: [

@@ -95,7 +95,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : acceso.app === 'vende' ? 'Con este botón entras a Vende. Tu suscripción a Vende Pro ya está activa y tus clientas, pedidos y cobros siguen tal cual: se renueva sola y la puedes cancelar cuando quieras desde Vende › Ajustes. Para volver a entrar después, usa este mismo correo en vende.vorka.mx.'
     : acceso.app === 'ruta' ? `Con este botón empiezas tu Ruta de Impacto${ruta?.hasta ? `; tu acceso es válido hasta el ${fechaLarga(ruta.hasta)}` : ' y tu acceso dura un año'}. El botón funciona una sola vez durante 7 días; después entra en ruta.vorka.mx con este mismo correo y crea tu contraseña. Lo recibido va para IMPACTO (soyimpacto.org).`
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
-    : 'Tu acceso dura un año a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
+    : 'Tu acceso dura 6 meses a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">${linea1}</p>

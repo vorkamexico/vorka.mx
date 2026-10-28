@@ -85,6 +85,8 @@ export function seccionesCatalogo(productos) {
 }
 // Producto que abre una app (Simulador PAA, Brindi) en lugar de entregar archivos
 const esAcceso = p => !!p.contenido?.acceso;
+// Los simuladores duran 6 meses; el resto de los accesos de pago único, un año
+const vigenciaDe = p => String(p.contenido?.acceso?.app || '').startsWith('simulador') ? '6 meses' : 'un año';
 const enlace = p => p.contenido?.acceso?.ruta || `/tienda/${p.slug}/`;
 
 // Brindi se vende por planes en su propia página: en el catálogo es una sola tarjeta con su portada y "desde"
@@ -123,7 +125,7 @@ function vistas(productos, desdeBrindi) {
 }
 // Planes de los simuladores: en la tienda se presentan con el nombre del simulador (no el del plan)
 const SIM_TIENDA = {
-  'simulador-paa': { nombre: 'Simulador PAA en línea', texto: 'Práctica ilimitada con tutor y exámenes completos como la PAA real: elige tu plan o llévate los dos.' },
+  'simulador-paa': { nombre: 'Simulador PAA en línea', texto: 'Práctica ilimitada con tutor y exámenes completos como la PAA real: elige uno o llévate el Completo con los dos.' },
   'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
   'simulador-ecoems': { nombre: 'Simulador ECOEMS en línea', texto: 'Para la prepa de la UNAM y del IPN: práctica ilimitada con tutor y exámenes de 128 reactivos en 3 horas.' },
 };
@@ -330,7 +332,7 @@ export const formCompra = (p, { error = '', ref = '', regalo = false, mensajeEje
     <label><input type="radio" name="para_quien" value="regalo"${regalo ? ' checked' : ''}><span>🎁 Para regalar</span></label>
   </div>
   <input type="checkbox" name="regalo" value="on" id="es-regalo" hidden${regalo ? ' checked' : ''}>` : ''}
-  <div class="t-precio"><b class="num" id="precio-total">${precio(p)}</b><span id="precio-nota">${esc(['cupo', 'brindi'].includes(p.contenido?.acceso?.app) && p.contenido.acceso.detalle ? p.contenido.acceso.detalle : `Pago único · ${esAcceso(p) ? 'acceso inmediato por un año' : 'descarga inmediata'}`)}</span></div>
+  <div class="t-precio"><b class="num" id="precio-total">${precio(p)}</b><span id="precio-nota" data-vig="${vigenciaDe(p)}">${esc(['cupo', 'brindi'].includes(p.contenido?.acceso?.app) && p.contenido.acceso.detalle ? p.contenido.acceso.detalle : `Pago único · ${esAcceso(p) ? `acceso inmediato por ${vigenciaDe(p)}` : 'descarga inmediata'}`)}</span></div>
   ${regalable ? `<fieldset class="t-regalo-campos" id="regalo-campos">
     <legend class="sr">Datos del regalo</legend>
     <div class="t-cant"><span><b>¿Cuántos regalas?</b><small>Una liga por persona; cada una funciona una sola vez.</small></span>
@@ -357,7 +359,7 @@ export const SCRIPT_COMPRA = `(function(){
   var f=document.getElementById('form-compra'); if(!f||!window.fetch) return;
   // Para mí / Para regalar: cantidad, precio total y textos
   var cant=document.getElementById('cantidad'), nota=document.getElementById('precio-nota'), total=document.getElementById('precio-total'), regalo=document.getElementById('es-regalo'), unidad=+f.dataset.unidad;
-  function pinta(){ var esR=regalo&&regalo.checked, n=cant?Math.min(10,Math.max(1,parseInt(cant.value,10)||1)):1; if(cant) cant.value=n; if(total) total.textContent=VD.pesos(VD.hoy(unidad*(esR?n:1))); if(nota){ if(!nota.dataset.base) nota.dataset.base=nota.textContent; nota.textContent=esR?(n>1?n+' ligas de regalo':'1 liga de regalo')+' · cada una da un año de acceso':nota.dataset.base; } f.classList.toggle('es-regalo',!!esR); }
+  function pinta(){ var esR=regalo&&regalo.checked, n=cant?Math.min(10,Math.max(1,parseInt(cant.value,10)||1)):1; if(cant) cant.value=n; if(total) total.textContent=VD.pesos(VD.hoy(unidad*(esR?n:1))); if(nota){ if(!nota.dataset.base) nota.dataset.base=nota.textContent; nota.textContent=esR?(n>1?n+' ligas de regalo':'1 liga de regalo')+' · cada una da '+(nota.dataset.vig||'un año')+' de acceso':nota.dataset.base; } f.classList.toggle('es-regalo',!!esR); }
   f.querySelectorAll('input[name=para_quien]').forEach(function(r){ r.addEventListener('change',function(){ if(regalo) regalo.checked=(r.value==='regalo'&&r.checked); pinta(); }); });
   f.querySelectorAll('[data-cant]').forEach(function(b){ b.addEventListener('click',function(){ cant.value=(parseInt(cant.value,10)||1)+(+b.dataset.cant); pinta(); }); });
   if(cant) cant.addEventListener('input',pinta);

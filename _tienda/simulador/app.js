@@ -341,8 +341,8 @@
   function planInfo(k) {
     var ex = exTotales();
     return {
-      practica: { nombre: 'Práctica ilimitada', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
-      completo: { nombre: 'Simulador completo', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (esPAA() ? 'sección' : 'materia')] }
+      practica: { nombre: 'Práctica', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
+      completo: { nombre: 'Examen', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (esPAA() ? 'sección' : 'materia')] }
     }[k];
   }
 

@@ -119,7 +119,7 @@ export function correoRegalos(env, orden, ligas, canjeadas = 0) {
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">¡Gracias por regalar ${el}<b>${esc(producto)}</b>! ${varias ? `Aquí están tus ${ligas.length} ligas de regalo: manda <b>una liga a cada persona</b>.` : 'Aquí está tu liga de regalo: mándasela a quien se la quieras regalar.'}</p>
 ${bloques}
-<p style="${P}"><b>Importante:</b> cada liga funciona <b>una sola vez</b>. Quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante un año. Después, la liga deja de funcionar, así que nadie más puede usarla.</p>${ligas[0].ruta ? `\n<p style="${P}">Lo recibido va para IMPACTO (<a href="https://soyimpacto.org/" style="color:#6b2a85;text-decoration:underline">soyimpacto.org</a>).</p>` : ''}
+<p style="${P}"><b>Importante:</b> cada liga funciona <b>una sola vez</b>. Quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante ${ligas[0].ruta ? 'un año' : '6 meses'}. Después, la liga deja de funcionar, así que nadie más puede usarla.</p>${ligas[0].ruta ? `\n<p style="${P}">Lo recibido va para IMPACTO (<a href="https://soyimpacto.org/" style="color:#6b2a85;text-decoration:underline">soyimpacto.org</a>).</p>` : ''}
 ${canjeadas ? `<p style="${P}">${canjeadas === 1 ? 'Una liga ya se canjeó' : `${canjeadas} ligas ya se canjearon`} y sigue${canjeadas === 1 ? '' : 'n'} funcionando para quien la${canjeadas === 1 ? '' : 's'} abrió. Las ligas de este correo reemplazan a las anteriores que no se habían usado.</p>` : ''}
 <p style="${P}">¿Perdiste este correo? Pide uno nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con el correo de tu compra. ¿Dudas? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a>.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
@@ -129,7 +129,7 @@ ${canjeadas ? `<p style="${P}">${canjeadas === 1 ? 'Una liga ya se canjeó' : `$
 
 ${ligas.map((l, i) => `${varias ? `Regalo ${i + 1}: ` : ''}${l.url}`).join('\n')}
 
-Cada liga funciona una sola vez: quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante un año.
+Cada liga funciona una sola vez: quien la abra escribe su nombre y su correo, y el acceso queda a su nombre durante ${ligas[0].ruta ? 'un año' : '6 meses'}.
 
 ¿Perdiste este correo? Pide uno nuevo en ${env.SITE_URL}/descargas/reenviar
 
@@ -152,7 +152,7 @@ async function leerRegalo(env, token) {
 // Qué es el producto, en una frase, y lo que incluye (para la tarjeta del regalo)
 function describir(r, acceso) {
   let c = {}; try { c = JSON.parse(r.contenido || '{}'); } catch { }
-  if (acceso.app === 'simulador' || /simulador/i.test(r.producto)) return { texto: 'simulacros con cronómetro, un tutor que te guía cuando fallas y un reporte de qué reforzar.', chips: ['2 simulacros completos', 'Práctica ilimitada', 'Acceso por un año'] };
+  if (acceso.app === 'simulador' || /simulador/i.test(r.producto)) return { texto: 'simulacros con cronómetro, un tutor que te guía cuando fallas y un reporte de qué reforzar.', chips: ['Simulacros con cronómetro', 'Tutor con pistas', 'Acceso por 6 meses'] };
   if (acceso.app === 'ruta') return { texto: 'un curso interactivo para sacar adelante tu proyecto social: lecciones cortas, racha y un tutor que te guía paso a paso.', chips: ['6 niveles y el proyecto final', 'Tutor con pistas', 'Acceso por un año'] };
   if (acceso.app === 'brindi') return { texto: 'una invitación digital con confirmaciones de asistencia y acceso con QR para tu evento.', chips: [acceso.detalle || 'Un evento', 'Se comparte por WhatsApp', 'Confirmaciones y QR'].filter(Boolean) };
   return { texto: r.descripcion_corta || '', chips: acceso.app ? [] : ['Descarga inmediata', 'Queda a tu nombre'] };

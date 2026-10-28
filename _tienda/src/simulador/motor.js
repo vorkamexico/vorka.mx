@@ -13,13 +13,13 @@
 // /api/<app>/salir        → POST borra la cookie
 //
 // Acceso: cookie HttpOnly firmada con HMAC (DOWNLOAD_TOKEN_SECRET) que lleva el id del dispositivo. En cada petición se
-// revisa en D1 que la orden siga pagada (un reembolso corta el acceso), que esté dentro de su año de vigencia y que el
+// revisa en D1 que la orden siga pagada (un reembolso corta el acceso), que esté dentro de su vigencia (venceDe) y que el
 // dispositivo siga activo. Todo se suma por correo del comprador.
 // Cuentas compartidas: máximo MAX_DISPOSITIVOS por correo y simulador. Al entrar uno más se cierra el que lleva más
 // tiempo sin usarse y se avisa al dueño; una liga del correo entra directo solo la primera vez (luego pide código).
 //
-// Planes por simulador: "Práctica ilimitada" (Calentamientos, Medios y práctica sin límite), "Simulador completo"
-// (exámenes completos) y el "Paquete" (los dos). Adicionales: "intento" suma 1 Medio y "examen" suma 1 examen oficial.
+// Planes por simulador: "Práctica" (Calentamientos, Medios y práctica sin límite), "Examen"
+// (exámenes completos) y "Completo" (los dos). Adicionales: "intento" suma 1 Medio y "examen" suma 1 examen oficial.
 import { one, all, run, json, fail, enc, hex, iguales, aleatorio, sha256, correoOculto } from '../util.js';
 import { hashToken } from '../entrega.js';
 import { pagina, aviso, nonce, seguridad, esc } from '../paginas.js';
@@ -28,7 +28,16 @@ import { enviar, marco, boton, P } from '../correo.js';
 import { FLECHA, CHECK, LOGO, VERSION } from '../marco.generado.js';
 import { APP_JS, APP_CSS } from './cliente.generado.js';
 
-export const VIGENCIA_DIAS = 365;
+// Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
+// por la fecha en que se compró, no en la que se abrió).
+export const VIGENCIA_MESES = 6;
+export const VIGENCIA_TXT = '6 meses';
+const CORTE_VIGENCIA = Date.parse('2026-10-29T06:00:00Z');   // 29 oct 2026, 00:00 CDMX
+export function venceDe(inicio, compra = inicio) {
+  const ini = new Date(inicio).getTime();
+  if (new Date(compra).getTime() < CORTE_VIGENCIA) return ini + 365 * 864e5;
+  const d = new Date(ini); d.setUTCMonth(d.getUTCMonth() + VIGENCIA_MESES); return d.getTime();
+}
 const MAX_RESULTADO = 60_000;   // bytes de JSON por resultado
 const MAX_HISTORIAL = 60;       // resultados que se guardan por compra
 const ILIMITADO = 9999;
@@ -115,7 +124,7 @@ export function crearSimulador(c) {
   const accesoDeItem = x => { try { const a = JSON.parse(x || '{}').acceso; return a?.app === APP ? a : null; } catch { return null; } };
   // Compras pagadas de este correo con productos de este simulador: [{ orden_id, paid_at, cantidad, acceso }]
   async function comprasDe(env, email) {
-    const filas = await all(env, `SELECT o.id orden_id, o.paid_at, o.created_at, i.cantidad, p.contenido FROM orders o
+    const filas = await all(env, `SELECT o.id orden_id, o.paid_at, o.created_at, COALESCE((SELECT g.paid_at FROM orders g WHERE g.id = o.regalo_de), o.paid_at, o.created_at) compra_at, i.cantidad, p.contenido FROM orders o
       JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
       WHERE o.email = ? AND o.estado = 'paid' AND o.regalo = 0
         AND (o.regalo_de IS NULL OR EXISTS (SELECT 1 FROM orders g WHERE g.id = o.regalo_de AND g.estado = 'paid'))
@@ -126,13 +135,13 @@ export function crearSimulador(c) {
   const esBase = x => x.acceso.tipo !== 'intento' && x.acceso.tipo !== 'examen';
 
   // La cookie puede ser de la compra del simulador o de un adicional: el acceso siempre lo da la compra base más reciente
-  // del mismo correo (pagada y dentro de su año). Devuelve { orden (base), vence } o null.
+  // del mismo correo (pagada y vigente). Devuelve { orden (base), vence } o null.
   async function ordenConAcceso(env, orderId, ahora = Date.now()) {
     const orden = await one(env, "SELECT * FROM orders WHERE id = ? AND estado = 'paid'", orderId);
     if (!orden) return null;
     const base = (await comprasDe(env, orden.email)).find(esBase);
     if (!base) return null;
-    const vence = new Date(base.paid_at || base.created_at).getTime() + VIGENCIA_DIAS * 864e5;
+    const vence = venceDe(base.paid_at || base.created_at, base.compra_at);
     if (vence < ahora) return null;
     const ordenBase = base.orden_id === orden.id ? orden : await one(env, 'SELECT * FROM orders WHERE id = ?', base.orden_id);
     return { orden: ordenBase, vence };
@@ -231,7 +240,7 @@ export function crearSimulador(c) {
     const th = await hashToken(env, token);
     const t = await one(env, 'SELECT * FROM download_tokens WHERE token_hash = ?', th);
     if (!t || t.revocado) return errorAcceso('invalido');
-    // El token de descarga dura 7 días, pero el acceso al simulador dura un año desde la compra:
+    // El token de descarga dura 7 días, pero el acceso al simulador dura 6 meses desde la compra:
     // un token vencido sigue demostrando la compra (la vigencia la decide la orden).
     const a = await ordenConAcceso(env, t.order_id);
     if (!a) {
@@ -317,7 +326,7 @@ export function crearSimulador(c) {
   function errorAcceso(motivo) {
     const t = {
       invalido: ['Enlace no válido', 'Revisa que hayas abierto el enlace completo de tu correo de compra. Si sigue sin funcionar, pide uno nuevo con el correo con el que compraste.'],
-      vencido: ['Tu acceso terminó', `El acceso al simulador dura ${VIGENCIA_DIAS} días desde la compra. Puedes volver a comprarlo en la tienda.`],
+      vencido: ['Tu acceso terminó', `El acceso al simulador dura ${VIGENCIA_TXT} desde la compra. Puedes volver a comprarlo en la tienda.`],
       revocado: ['Este acceso ya no está activo', 'Si crees que es un error, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> y lo revisamos.'],
     }[motivo];
     const extra = motivo === 'invalido'
@@ -356,7 +365,7 @@ export function crearSimulador(c) {
     const email = a.orden.email;
     const k = await cuentaIntentos(env, email, tipo);
     if (k.abierto) return json({ id: k.abierto.id, items: k.abierto.items, secciones: k.abierto.secciones, retomado: true, tipo, intentos: k });
-    if (k.disponibles <= 0) return json({ error: !k.usados && !k.incluidos ? (tipo === 'examen' ? 'El examen completo viene en el Simulador completo.' : 'Los simulacros de práctica vienen en la Práctica ilimitada.') : tipo === 'examen' ? 'Ya usaste tus exámenes completos. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: k }, 402);
+    if (k.disponibles <= 0) return json({ error: !k.usados && !k.incluidos ? (tipo === 'examen' ? 'El examen completo viene en los planes Examen y Completo.' : 'Los simulacros de práctica vienen en los planes Práctica y Completo.') : tipo === 'examen' ? 'Ya usaste tus exámenes completos. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: k }, 402);
     const vistos = await vistosDe(env, email);
     const items = c.armar[tipo === 'corto' ? 'corto' : tipo](Math.random, vistos, area);
     const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items, tipo) VALUES (?,?,?,?)', email, APP, JSON.stringify(items), tipo);

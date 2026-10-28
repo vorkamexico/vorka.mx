@@ -102,6 +102,22 @@ const CSS = `<style>
 .sv-disc{padding:28px 0 56px}
 .sv-ya{margin-top:28px;padding:22px;border-radius:var(--r);border:1px dashed var(--line-2);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
 .sv-ya p{color:var(--fg-2);font-size:15.5px;max-width:520px}
+.sv-planes-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-bottom:20px}.sv-planes-cab b{font-size:17px;letter-spacing:-.015em}.sv-planes-cab a{font-size:14px;font-weight:650;color:var(--morado)}
+.sv-planes{gap:14px}
+.sv-plan-c em{white-space:nowrap}.sv-plan-c em s{color:var(--fg-3);font-weight:500;font-size:14px;margin-right:2px}
+.sv-falta{color:var(--fg-3)!important;font-size:13px!important}.sv-falta::before{content:"✕ ";font-weight:700}
+.sv-plan.rec{background:color-mix(in srgb,var(--acento) 7%,var(--card))}
+.sv-empuje{display:flex;flex-direction:column;gap:6px;margin:-2px 0 14px;padding:14px 16px;border-radius:16px;border:1.5px dashed color-mix(in srgb,var(--acento) 60%,var(--line));color:inherit;text-decoration:none;font-size:14.5px;line-height:1.45}
+.sv-empuje > b{color:var(--morado);display:inline-flex;align-items:center;gap:6px}.sv-empuje svg{width:15px;height:15px}
+.sv-dif-w{margin-top:28px;overflow-x:auto}
+.sv-dif{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;table-layout:fixed}.sv-dif thead th:first-child{width:40%}
+.sv-dif th,.sv-dif td{padding:14px 10px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
+.sv-dif tbody th{text-align:left;font-weight:600}
+.sv-dif thead th{vertical-align:bottom}.sv-dif thead b{display:block;font-size:17px;letter-spacing:-.015em}.sv-dif thead span{display:block;color:var(--fg-2);font-weight:650;margin-top:2px}
+.sv-dif thead small{display:inline-block;margin-bottom:6px;padding:2px 9px;border-radius:999px;background:var(--acento);color:var(--sobre-acento);font-size:11.5px;font-weight:800}
+.sv-dif .rec{background:color-mix(in srgb,var(--acento) 9%,transparent)}.sv-dif thead .rec{border-radius:16px 16px 0 0}.sv-dif tfoot .rec{border-radius:0 0 16px 16px}
+.sv-dif tfoot td,.sv-dif tfoot th{border-bottom:0}
+@media(max-width:560px){.sv-dif{font-size:13px}.sv-dif thead th:first-child{width:37%}.sv-dif th,.sv-dif td{padding:11px 3px}.sv-dif tbody th{padding-right:8px}.sv-dif thead b{font-size:13.5px;letter-spacing:-.02em}.sv-dif thead small{display:none}.sv-dif tfoot .btn{padding:8px 4px;font-size:12.5px;width:100%;justify-content:center}}
 </style>`;
 
 // sim: lo que devuelve crearSimulador · v: contenido de la página (ver paa.js)
@@ -111,10 +127,27 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   const planes = (await Promise.all(v.planesVenta.map(async x => ({ ...x, prod: await productoPorSlug(env, sim.planes[x.k]) })))).filter(x => x.prod);
   const elegido = planes.find(x => x.k === url.searchParams.get('plan')) || planes.find(x => x.k === v.planInicial) || planes.find(x => x.k === 'paquete') || planes[0];
   const prod = elegido?.prod || (v.slugLegado ? await productoPorSlug(env, v.slugLegado) : null);
-  const ahorro = planes.length === 3 ? planes[0].prod.precio_centavos + planes[1].prod.precio_centavos - planes[2].prod.precio_centavos : 0;
-  const selector = planes.length ? `<div class="sv-planes" role="radiogroup" aria-label="Elige tu plan">${planes.map(x => `<a class="sv-plan${x === elegido ? ' sel' : ''}${x.k === 'paquete' ? ' rec' : ''}" role="radio" aria-checked="${x === elegido}" href="?plan=${x.k}#comprar">
-      ${x.k === 'paquete' && ahorro > 0 ? `<span class="sv-ahorro">Ahorra ${precio({ precio_centavos: ahorro })}</span>` : ''}<span class="sv-plan-c"><b>${x.nombre}</b><em class="num">${precio(x.prod)}</em></span><small>${esc(x.para)}</small>
-      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>` : '';
+  const pk = k => planes.find(x => x.k === k);
+  const ahorro = pk('practica') && pk('completo') && pk('paquete') ? pk('practica').prod.precio_centavos + pk('completo').prod.precio_centavos - pk('paquete').prod.precio_centavos : 0;
+  // El Completo va primero y marcado; a quien elige solo una parte le decimos cuánto más cuesta llevarse las dos
+  const orden = [...planes].sort((a, b) => (b.k === 'paquete') - (a.k === 'paquete'));
+  const otro = { practica: pk('completo'), completo: pk('practica') }[elegido?.k];
+  const extra = otro && pk('paquete') ? pk('paquete').prod.precio_centavos - elegido.prod.precio_centavos : 0;
+  const empuje = extra > 0 ? `<a class="sv-empuje" href="?plan=paquete#comprar"><span>Por <b>${precio({ precio_centavos: extra })} más</b> te llevas también ${elegido.k === 'practica' ? 'los 2 exámenes completos' : 'la práctica ilimitada con tutor'} (${elegido.k === 'practica' ? 'solos cuestan' : 'sola cuesta'} ${precio(otro.prod)}).</span><b>Cambiar a Completo ${FLECHA}</b></a>` : '';
+  const selector = planes.length ? `<div class="sv-planes-cab"><b>Elige tu plan</b>${v.diferencias ? '<a href="#diferencias">¿Cuál es la diferencia?</a>' : ''}</div>
+    <div class="sv-planes" role="radiogroup" aria-label="Elige tu plan">${orden.map(x => `<a class="sv-plan${x === elegido ? ' sel' : ''}${x.k === 'paquete' ? ' rec' : ''}" role="radio" aria-checked="${x === elegido}" href="?plan=${x.k}#comprar">
+      ${x.k === 'paquete' ? `<span class="sv-ahorro">Recomendado${ahorro > 0 ? ` · Ahorras ${precio({ precio_centavos: ahorro })}` : ''}</span>` : ''}<span class="sv-plan-c"><b>${x.nombre}</b><em class="num">${x.k === 'paquete' && ahorro > 0 ? `<s>${precio({ precio_centavos: x.prod.precio_centavos + ahorro }).replace(' MXN', '')}</s> ` : ''}${precio(x.prod)}</em></span><small>${esc(x.para)}</small>${x.falta ? `<small class="sv-falta">${esc(x.falta)}</small>` : ''}
+      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>${empuje}` : '';
+  // Tabla "¿Cuál es la diferencia?" (Práctica · Examen · Completo)
+  const cols = ['practica', 'completo', 'paquete'].map(pk);
+  const marca = b => b ? `<span class="sv-si">${CHECK}<span class="sr">Incluye</span></span>` : '<span class="sv-no" aria-label="No incluye">—</span>';
+  const diferencias = v.diferencias && cols.every(Boolean) ? `<section class="t-sec" id="diferencias"><div class="marco">
+  <div class="cab"><span class="etiqueta">Los planes</span><h2 class="h2" style="margin-top:14px">¿Cuál es la diferencia?</h2>
+  <p class="lead"><b>Práctica</b> es para entrenar. <b>Examen</b> es para medirte como el día del examen. <b>Completo</b> trae las dos cosas${ahorro > 0 ? ` y cuesta ${precio({ precio_centavos: ahorro })} menos que comprarlas por separado` : ''}.</p></div>
+  <div class="sv-dif-w"><table class="sv-dif"><thead><tr><th scope="col"><span class="sr">Qué incluye</span></th>${cols.map(x => `<th scope="col"${x.k === 'paquete' ? ' class="rec"' : ''}>${x.k === 'paquete' ? '<small>Recomendado</small>' : ''}<b>${x.nombre}</b><span class="num">${precio(x.prod).replace(' MXN', '')}</span></th>`).join('')}</tr></thead>
+  <tbody>${v.diferencias.map(([t, ...b]) => `<tr><th scope="row">${esc(t)}</th>${b.map((y, i) => `<td${i === 2 ? ' class="rec"' : ''}>${marca(y)}</td>`).join('')}</tr>`).join('')}</tbody>
+  <tfoot><tr><th scope="row"></th>${cols.map(x => `<td${x.k === 'paquete' ? ' class="rec"' : ''}><a class="btn ${x.k === 'paquete' ? 'tinta' : 'blanco'} chico" href="?plan=${x.k}#comprar">Elegir</a></td>`).join('')}</tr></tfoot></table></div>
+</div></section>` : '';
   const { code, cookie } = await refDeVisita(env, req, url);
   // Visita a la página de venta (como en el resto de la tienda)
   if (prod && req.method === 'GET' && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: prod.id, ref_code: code });
@@ -186,6 +219,7 @@ ${CSS}${v.css || ''}`,
     ${selector}${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del ${esc(sim.titulo)}.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
   </aside>
 </div></section>
+${diferencias}
 ${v.despuesHero || ''}
 <section class="t-sec oscura"><div class="marco">
   <div class="cab"><span class="etiqueta">Un banco que no se acaba en el primer intento</span><h2 class="h2">Cada intento es <span class="metal">diferente</span></h2>

@@ -66,8 +66,8 @@ describe('acceso al simulador', () => {
     expect(html).toContain('/assets/tienda/v3/simulador-paa-og.jpg');
     // tres planes que se complementan; de fábrica se elige el más barato y el paquete muestra cuánto ahorra
     for (const k of ['practica', 'completo', 'paquete']) expect(html).toContain(`href="?plan=${k}#comprar"`);
-    expect(html).toContain('name="slug" value="simulador-paa-practica"');
-    expect(html).toContain('Ahorra $69 MXN');
+    expect(html).toContain('name="slug" value="simulador-paa-paquete"');
+    expect(html).toContain('Ahorras $69 MXN');
     expect(html).toContain('"@type":"AggregateOffer"');
     expect(await (await pedir('/simulador-paa/?plan=paquete')).text()).toContain('name="slug" value="simulador-paa-paquete"');
     // el reactivo de prueba va antes del formulario de compra, y la página ya no dice "oficiales" ni minutos de la PAA
@@ -267,7 +267,7 @@ describe('tienda por secciones y SEO', () => {
     expect(r.headers.get('location')).toBe('/simulador-paa/');
     const html = await (await pedir('/tienda/simulador-paa/')).text();
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/simulador-paa/">');
-    expect(html).toContain('acceso inmediato por un año');
+    expect(html).toContain('acceso inmediato por 6 meses');
   });
 
   it('el sitemap incluye vorka.mx/simulador-paa/', async () => {
@@ -293,7 +293,7 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     for (let i = 0; i < 4; i++) { const r = await (await iniciar(cookie, 'corto')).json(); expect(r.id).toBeTruthy(); await abandonar(cookie, r.id); }
     const ex = await iniciar(cookie, 'examen');
     expect(ex.status).toBe(402);
-    expect((await ex.json()).error).toContain('Simulador completo');
+    expect((await ex.json()).error).toContain('planes Examen y Completo');
   });
 
   it('Simulador completo: 2 exámenes oficiales y nada de práctica', async () => {
@@ -303,7 +303,7 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     expect(yo.examenes).toMatchObject({ incluidos: 2, disponibles: 2 });
     const corto = await iniciar(cookie, 'corto');
     expect(corto.status).toBe(402);
-    expect((await corto.json()).error).toContain('Práctica ilimitada');
+    expect((await corto.json()).error).toContain('planes Práctica y Completo');
     expect((await iniciar(cookie, 'examen')).status).toBe(200);
   });
 
