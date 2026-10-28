@@ -152,14 +152,14 @@
     var nombre = ex ? 'examen completo' : ca ? 'calentamiento' : 'simulacro de nivel Medio', cuantos = it.disponibles + ' ' + (ex ? (uno ? 'examen completo disponible' : 'exámenes completos disponibles') : ca ? (uno ? 'calentamiento disponible' : 'calentamientos disponibles') : (uno ? 'simulacro Medio disponible' : 'simulacros Medios disponibles'));
     if (!it.abierto) {
       if (it.disponibles <= 0) return comprar(modo);
-      if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex ? ' Son ' + exTotales().reactivos + ' reactivos y ' + horas(exTotales().minutos) + ', como el examen real' + (infoArea() ? ' (' + infoArea().nombre + ')' : '') + '; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
+      if (!confirm('Este ' + nombre + ' usa 1 de tus ' + cuantos + '. Aunque no lo termines, el intento cuenta.' + (ex && it.tutorSiguiente ? ' Este primero va con tutor: si fallas, te da una pista y el reloj se pausa mientras la lees.' : '') + (ex ? ' Son ' + exTotales().reactivos + ' reactivos y ' + horas(exTotales().minutos) + ', como el examen real' + (infoArea() ? ' (' + infoArea().nombre + ')' : '') + '; puedes pausar y seguir después.' : '') + ' ¿Empezar?')) return;
     }
     api('iniciar', { method: 'POST', body: JSON.stringify({ tipo: ex ? 'examen' : ca ? 'calentamiento' : 'corto', area: areaActual() }) }).then(function (d) {
       if (ex) YO.examenes = d.intentos; else if (ca) YO.calentamientos = d.intentos; else YO.intentos = d.intentos;
       // Las secciones vienen del servidor cuando dependen del área (UNAM); si no, son las fijas del banco (PAA)
       var base = d.secciones || (ex ? B.examen : ca ? B.calentamiento : B.secciones);
       var secs = base.map(function (s, i) { return { id: s.id, items: d.items[i], idx: 0, limite: s.minutos * 60, usado: 0, cerrada: false }; });
-      run = nuevoRun(modo, secs); run.intento = d.id; run.area = areaActual(); if (ex) run.sinTutor = true; guardar(K_RUN, run); introSeccion();
+      run = nuevoRun(modo, secs); run.intento = d.id; run.area = areaActual(); if (ex && d.tutor) run.conTutor = true; else if (ex) run.sinTutor = true; guardar(K_RUN, run); introSeccion();
     }).catch(function (e) {
       if (e.status === 402) { var c = (e.datos || {}).intentos; if (c) { if (ex) YO.examenes = c; else if (ca) YO.calentamientos = c; else YO.intentos = c; } comprar(modo); }
       else alert(e.message || 'No pudimos abrir el simulacro. Revisa tu conexión.');
@@ -265,7 +265,7 @@
           (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
           (puedePracticar() ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como el examen real · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentos : '') +
           (hayExamen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
-          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + (esPAA() ? ' secciones' : ' materias') + ' cronometradas y con la dificultad del examen') + ' · sin pistas, la revisión va al final</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
+          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + (esPAA() ? ' secciones' : ' materias') + ' cronometradas y con la dificultad del examen') + (ie.tutorSiguiente || (ie.abierto && ie.abierto.tutor) ? ' · <b>el primero, con tutor</b>: si fallas te da una pista, para que veas cómo es el examen sin presión. El segundo, sin pistas como el día del examen' : ' · sin pistas, la revisión va al final') + '</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           (puedePracticar() ? '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
             return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
@@ -342,7 +342,7 @@
     var ex = exTotales();
     return {
       practica: { nombre: 'Práctica', lead: 'Entrena todos los días antes de tu examen: Calentamientos, simulacros Medios y práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema, sin límite y con tutor.', trae: ['Calentamientos y simulacros Medios sin límite', 'Práctica por ' + (esPAA() ? 'sección' : 'materia') + ' y por tema', 'Tutor con pistas y explicación paso a paso'] },
-      completo: { nombre: 'Examen', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'Sin pistas: la revisión va al final', 'Reporte de preparación por ' + (esPAA() ? 'sección' : 'materia')] }
+      completo: { nombre: 'Examen', lead: 'Mídete como el día del examen: 2 exámenes completos con la misma cantidad de preguntas, el tiempo y la dificultad del examen ' + CFG.examen + ' real.', trae: ['2 exámenes completos: ' + ex.reactivos + ' reactivos en ' + horas(ex.minutos), 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Reporte de preparación por ' + (esPAA() ? 'sección' : 'materia')] }
     }[k];
   }
 
@@ -374,7 +374,7 @@
         .catch(function (e2) { err.textContent = e2.message; err.hidden = false; btn.disabled = false; btn.innerHTML = 'Ir a pagar ' + FL; });
     };
   }
-  function nombreModo(r) { return r.modo === 'examen' ? 'Examen ' + CFG.examen + ' completo' : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
+  function nombreModo(r) { return r.modo === 'examen' ? 'Examen ' + CFG.examen + ' completo' + (r.tutor ? ' · con tutor' : '') : r.modo === 'calentamiento' ? 'Calentamiento' : r.modo === 'completo' ? 'Nivel Medio' : r.modo === 'seccion' ? 'Sección de ' + seccion(r.secciones[0].id).nombre : 'Práctica de temas'; }
   function totalItems(r) { return r.secciones.reduce(function (a, s) { return a + s.items.length; }, 0); }
   function contestadas(r) { return Object.keys(r.resp).filter(function (id) { return r.resp[id].fase === 'fin'; }).length; }
   function tarjetaResumen(u) {
@@ -625,14 +625,14 @@
       var okT = secs.reduce(function (a, s) { return a + s.aciertos; }, 0), totT = secs.reduce(function (a, s) { return a + s.total; }, 0);
       global = totT ? Math.round(okT / totT * CFG.examenReactivos) : null;
     }
-    var res = { modo: run.modo, area: run.area || null, secciones: secs, temas: temas, fallados: fallados, vistos: vistos_, global: global, meta: meta(), fecha: new Date().toISOString(),
+    var res = { modo: run.modo, tutor: !!run.conTutor || undefined, area: run.area || null, secciones: secs, temas: temas, fallados: fallados, vistos: vistos_, global: global, meta: meta(), fecha: new Date().toISOString(),
       resp: run.resp, orden: run.orden, items: run.secciones.map(function (s) { return s.items; }) };
     res.confianza = confianza(res, ultimoCompleto()).total;
     var intento = run.intento || null;
     marcarVistos(vistos_);
     run.fase = 'fin'; guardar(K_RUN, null); run = null;
     // Al servidor solo va el resumen (el detalle de respuestas se queda para este reporte)
-    var envio = { modo: res.modo, area: res.area, intento: intento, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
+    var envio = { modo: res.modo, tutor: res.tutor, area: res.area, intento: intento, secciones: secs, temas: temas, fallados: fallados, global: global, meta: res.meta, confianza: res.confianza };
     YO.historial.unshift(Object.assign({ fecha: res.fecha, vistos: vistos_ }, envio));
     if (intento) cuentaDe(res.modo).abierto = null;
     api('resultados', { method: 'POST', body: JSON.stringify(envio) }).catch(function (e) {
@@ -744,7 +744,7 @@
     if (res.modo === 'completo' && res.global && !desdeHistorial) {
       if (res.global >= m) htmlListo = tieneExamen()
         ? '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para tu examen completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Ahora mídete con el tiempo y la dificultad del examen ' + esc(CFG.examen) + ' real.</p><button class="btn tinta" data-modo-otra="examen">Hacer mi examen completo ' + FL + '</button></div>'
-        : '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para el simulador completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Mídete como el día del examen: 2 exámenes completos de ' + exTotales().reactivos + ' reactivos en ' + horas(exTotales().minutos) + ', sin pistas y con tu reporte de preparación.</p><button class="btn tinta" data-plan="completo">Quiero el simulador completo ' + FL + '</button></div>';
+        : '<div class="sim-card sim-listo"><span class="etiqueta">Siguiente paso</span><h2>¡Ya estás listo para el examen completo!</h2><p>Llegaste a tu meta (' + m + ') en el nivel Medio. Mídete como el día del examen: 2 exámenes completos de ' + exTotales().reactivos + ' reactivos en ' + horas(exTotales().minutos) + ': el primero con tutor y el segundo sin pistas, con tu reporte de preparación.</p><button class="btn tinta" data-plan="completo">Quiero los 2 exámenes ' + FL + '</button></div>';
       else if (!tieneExamen()) htmlListo = '<p class="sim-nota sim-casi">Te faltan <b>' + (m - res.global) + (esPAA() ? ' puntos' : ' aciertos') + '</b> para tu meta. Cuando la alcances en un simulacro Medio, te avisamos que ya estás listo para el simulador completo.</p>';
     }
 
@@ -762,7 +762,7 @@
     }
 
     h('<section class="sim-rep">' +
-      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen completo' : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
+      '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen completo' + (res.tutor ? ' con tutor' : '') : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
         '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +

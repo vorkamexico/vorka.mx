@@ -307,6 +307,21 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     expect((await iniciar(cookie, 'examen')).status).toBe(200);
   });
 
+  it('el primero de los 2 exámenes va con tutor (también al retomarlo); el segundo, sin pistas', async () => {
+    const cookie = await entrar('simulador-paa-completo', 'tut@mail.com');
+    expect((await (await pedir('/api/simulador-paa/yo', { cookie })).json()).examenes.tutorSiguiente).toBe(true);
+    const e1 = await (await iniciar(cookie, 'examen')).json();
+    expect(e1.tutor).toBe(true);
+    const r1 = await (await iniciar(cookie, 'examen')).json();
+    expect(r1).toMatchObject({ retomado: true, tutor: true });
+    await abandonar(cookie, e1.id);
+    const e2 = await (await iniciar(cookie, 'examen')).json();
+    expect(e2.tutor).toBe(false);
+    // la compra de siempre trae 1 examen: va sin tutor
+    const c0 = soloCookie((await pedir(`/simulador-paa/entrar/${token}`)).headers.get('set-cookie'));
+    expect((await (await iniciar(c0, 'examen')).json()).tutor).toBe(false);
+  });
+
   it('el paquete trae los dos, y quien compró antes conserva lo que traía su compra', async () => {
     const cookie = await entrar('simulador-paa-paquete', 'paq@mail.com');
     const yo = await (await pedir('/api/simulador-paa/yo', { cookie })).json();

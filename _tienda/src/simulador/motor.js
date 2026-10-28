@@ -162,8 +162,12 @@ export function crearSimulador(c) {
     const usados = (await one(env, 'SELECT COUNT(*) n FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = ?', email, APP, tipo)).n;
     const abierto = await one(env, "SELECT id, items FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = ? AND estado = 'abierto' ORDER BY id DESC LIMIT 1", email, APP, tipo);
     const ilimitado = incluidos >= ILIMITADO;
+    // Examen de entrenamiento: con 2 o más exámenes, el primero que abre la cuenta va con tutor; los demás (y los
+    // adicionales) van en condiciones reales, sin pistas
+    const primero = tipo === 'examen' && incluidos >= 2 ? (await one(env, "SELECT MIN(id) n FROM simulador_intentos WHERE email = ? AND app = ? AND tipo = 'examen'", email, APP)).n : null;
     return { incluidos: ilimitado ? null : incluidos, usados, disponibles: ilimitado ? ILIMITADO : Math.max(0, incluidos - usados), ilimitado,
-      abierto: abierto ? { id: abierto.id, items: JSON.parse(abierto.items), secciones: seccionesDe(JSON.parse(abierto.items), tipo) } : null };
+      ...(tipo === 'examen' ? { tutorSiguiente: incluidos >= 2 && !usados } : {}),
+      abierto: abierto ? { id: abierto.id, items: JSON.parse(abierto.items), secciones: seccionesDe(JSON.parse(abierto.items), tipo), ...(tipo === 'examen' ? { tutor: abierto.id === primero } : {}) } : null };
   }
   // Secciones de un intento (UNAM: dependen del área, así que se derivan de los reactivos que salieron). null = las fijas del banco
   function seccionesDe(items, tipo) {
@@ -364,13 +368,13 @@ export function crearSimulador(c) {
   async function iniciar(env, a, tipo = 'corto', area = null) {
     const email = a.orden.email;
     const k = await cuentaIntentos(env, email, tipo);
-    if (k.abierto) return json({ id: k.abierto.id, items: k.abierto.items, secciones: k.abierto.secciones, retomado: true, tipo, intentos: k });
+    if (k.abierto) return json({ id: k.abierto.id, items: k.abierto.items, secciones: k.abierto.secciones, retomado: true, tipo, tutor: tipo !== 'examen' || !!k.abierto.tutor, intentos: k });
     if (k.disponibles <= 0) return json({ error: !k.usados && !k.incluidos ? (tipo === 'examen' ? 'El examen completo viene en los planes Examen y Completo.' : 'Los simulacros de práctica vienen en los planes Práctica y Completo.') : tipo === 'examen' ? 'Ya usaste tus exámenes completos. Compra uno adicional para seguir.' : tipo === 'calentamiento' ? 'Ya usaste tus calentamientos. Sigue con el nivel Medio.' : 'Ya usaste tus simulacros de nivel Medio. Compra uno adicional para seguir.', sinIntentos: true, tipo, intentos: k }, 402);
     const vistos = await vistosDe(env, email);
     const items = c.armar[tipo === 'corto' ? 'corto' : tipo](Math.random, vistos, area);
     const r = await run(env, 'INSERT INTO simulador_intentos (email, app, items, tipo) VALUES (?,?,?,?)', email, APP, JSON.stringify(items), tipo);
     const id = r.meta.last_row_id ?? (await one(env, 'SELECT id FROM simulador_intentos WHERE email = ? ORDER BY id DESC LIMIT 1', email)).id;
-    return json({ id, items, secciones: seccionesDe(items, tipo), retomado: false, tipo, intentos: await cuentaIntentos(env, email, tipo) });
+    return json({ id, items, secciones: seccionesDe(items, tipo), retomado: false, tipo, tutor: tipo !== 'examen' || !!k.tutorSiguiente, intentos: await cuentaIntentos(env, email, tipo) });
   }
 
   async function abandonar(req, env, a) {
@@ -396,6 +400,7 @@ export function crearSimulador(c) {
     // Solo se guardan los campos que el dashboard usa
     const limpio = {
       modo: r.modo,
+      ...(r.modo === 'examen' && r.tutor === true ? { tutor: true } : {}),
       ...(AREAS && r.area ? { area: areaValida(r.area) } : {}),
       secciones: Array.isArray(r.secciones) ? r.secciones.slice(0, 12).map(s => ({
         id: String(s.id || '').slice(0, 24), puntaje: num(s.puntaje, ...R_PUNTAJE), aciertos: num(s.aciertos, 0, 200),

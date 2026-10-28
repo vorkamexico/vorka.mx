@@ -116,6 +116,7 @@ const CSS = `<style>
 .sv-dif thead th{vertical-align:bottom}.sv-dif thead b{display:block;font-size:17px;letter-spacing:-.015em}.sv-dif thead span{display:block;color:var(--fg-2);font-weight:650;margin-top:2px}
 .sv-dif thead small{display:inline-block;margin-bottom:6px;padding:2px 9px;border-radius:999px;background:var(--acento);color:var(--sobre-acento);font-size:11.5px;font-weight:800}
 .sv-dif .rec{background:color-mix(in srgb,var(--acento) 9%,transparent)}.sv-dif thead .rec{border-radius:16px 16px 0 0}.sv-dif tfoot .rec{border-radius:0 0 16px 16px}
+.sv-parcial{font-size:12.5px;font-weight:650;color:var(--fg-2);line-height:1.3}
 .sv-dif tfoot td,.sv-dif tfoot th{border-bottom:0}
 @media(max-width:560px){.sv-dif{font-size:13px}.sv-dif thead th:first-child{width:37%}.sv-dif th,.sv-dif td{padding:11px 3px}.sv-dif tbody th{padding-right:8px}.sv-dif thead b{font-size:13.5px;letter-spacing:-.02em}.sv-dif thead small{display:none}.sv-dif tfoot .btn{padding:8px 4px;font-size:12.5px;width:100%;justify-content:center}}
 </style>`;
@@ -140,7 +141,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
       <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>${empuje}` : '';
   // Tabla "¿Cuál es la diferencia?" (Práctica · Examen · Completo)
   const cols = ['practica', 'completo', 'paquete'].map(pk);
-  const marca = b => b ? `<span class="sv-si">${CHECK}<span class="sr">Incluye</span></span>` : '<span class="sv-no" aria-label="No incluye">—</span>';
+  const marca = b => typeof b === 'string' ? `<span class="sv-parcial">${esc(b)}</span>` : b ? `<span class="sv-si">${CHECK}<span class="sr">Incluye</span></span>` : '<span class="sv-no" aria-label="No incluye">—</span>';
   const diferencias = v.diferencias && cols.every(Boolean) ? `<section class="t-sec" id="diferencias"><div class="marco">
   <div class="cab"><span class="etiqueta">Los planes</span><h2 class="h2" style="margin-top:14px">¿Cuál es la diferencia?</h2>
   <p class="lead"><b>Práctica</b> es para entrenar. <b>Examen</b> es para medirte como el día del examen. <b>Completo</b> trae las dos cosas${ahorro > 0 ? ` y cuesta ${precio({ precio_centavos: ahorro })} menos que comprarlas por separado` : ''}.</p></div>

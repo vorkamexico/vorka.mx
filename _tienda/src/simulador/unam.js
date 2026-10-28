@@ -95,7 +95,7 @@ const FAQ = [
   { p: '¿Cuántos aciertos necesito para entrar?', r: 'No hay un mínimo fijo: la UNAM asigna los lugares por número de aciertos hasta cubrir el cupo de cada carrera y plantel, así que cambia cada año. Revisa los resultados de concursos anteriores de tu carrera, ponlo como meta en el simulador y mide qué tan cerca estás.' },
   { p: '¿Cuándo es el examen?', r: 'En el concurso 2026, según el calendario oficial de la DGAE, la convocatoria se publicó el 12 de enero, el registro fue del 23 de enero al 3 de febrero y el examen del 23 de mayo al 10 de junio. Consulta siempre la convocatoria vigente en dgae.unam.mx.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen el temario y el tipo de preguntas del examen. No está afiliado a la UNAM y los aciertos son una estimación para orientar tu estudio.' },
-  { p: '¿Cuál es la diferencia entre los planes?', r: 'Práctica es para entrenar: Calentamientos, simulacros Medios de 60 reactivos y práctica por materia y por tema, sin límite y con tutor; no incluye los exámenes completos. Examen es para medirte como el día del examen: 2 exámenes completos de 120 reactivos en 3 horas, de tu área y sin pistas; no incluye la práctica ilimitada ni el tutor. Completo trae las dos cosas y cuesta menos que comprarlas por separado: es el que recomendamos, porque practicar sin medirte no te dice si ya estás listo y medirte sin practicar no te ayuda a subir.' },
+  { p: '¿Cuál es la diferencia entre los planes?', r: 'Práctica es para entrenar: Calentamientos, simulacros Medios de 60 reactivos y práctica por materia y por tema, sin límite y con tutor; no incluye los exámenes completos. Examen es para medirte como el día del examen: 2 exámenes completos de 120 reactivos en 3 horas, de tu área: el primero con tutor y el segundo sin pistas, como el día del examen; no incluye la práctica ilimitada. Completo trae las dos cosas y cuesta menos que comprarlas por separado: es el que recomendamos, porque practicar sin medirte no te dice si ya estás listo y medirte sin practicar no te ayuda a subir.' },
   { p: '¿Hay reembolso?', r: 'Solo si aún no lo usas: puedes pedirlo dentro de los 5 días hábiles siguientes a tu compra escribiendo a hola@vorka.mx. Una vez que empiezas un simulacro, un examen o una práctica ya no hay reembolso. Si algo falla y no te deja usarlo, lo resolvemos o te devolvemos tu dinero.' },
   { p: '¿Lo puedo regalar?', r: 'Sí. Al comprar elige Para regalar y cuántos: te llega una liga por cada regalo. Cada liga funciona una sola vez y el acceso queda a nombre de quien la abre.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador de tu celular, tablet o computadora, sin instalar nada. Tu historial se guarda en tu cuenta durante 6 meses.' },
@@ -120,13 +120,13 @@ const VENTA = {
   },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
-    { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada ni el tutor', trae: () => ['2 exámenes completos de tu área: 120 reactivos en 3 horas', 'Sin pistas: la revisión va al final', 'Aciertos por materia y temas a reforzar', 'Cambia de área cuando quieras'] },
+    { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada', trae: () => ['2 exámenes completos de tu área: 120 reactivos en 3 horas', 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Aciertos por materia y temas a reforzar', 'Cambia de área cuando quieras'] },
     { k: 'paquete', nombre: 'Completo', para: 'Práctica sin límite + los 2 exámenes completos', trae: () => ['Todo lo del plan Práctica: entrenas sin límite con tutor', 'Todo lo del plan Examen: Los 2 exámenes completos de 3 horas', '6 meses de acceso a todo'] },
   ],
   diferencias: [
     ['Calentamientos y simulacros Medios sin límite', true, false, true],
     ['Práctica por materia y por tema', true, false, true],
-    ['Tutor con pistas y solución paso a paso', true, false, true],
+    ['Tutor con pistas y solución paso a paso', true, 'En el 1.er examen', true],
     ['2 exámenes completos con cronómetro', false, true, true],
     ['Aciertos estimados y qué reforzar', true, true, true],
   ],
@@ -137,7 +137,7 @@ const VENTA = {
   incluye: [
     { titulo: 'Elige tu área', texto: 'El simulador arma cada examen con las materias y el peso del área de tu carrera. Puedes cambiar de área cuando quieras.' },
     { titulo: 'Calentamientos y Medios', tag: 'Práctica', texto: 'Calentamientos de unos 30 reactivos y simulacros Medios de 60, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.' },
-    { titulo: 'Examen completo', tag: 'Examen', oro: true, texto: '2 exámenes de 120 reactivos en 3 horas, sin pistas, con la distribución de tu área. Al final, tu reporte de aciertos.' },
+    { titulo: 'Examen completo', tag: 'Examen', oro: true, texto: '2 exámenes de 120 reactivos en 3 horas, con la distribución de tu área: el primero con tutor y el segundo sin pistas, como el día del examen. Al final, tu reporte de aciertos.' },
     { titulo: 'Por materia y por tema', tag: 'Práctica', texto: 'Practica cada materia por separado y tus temas débiles todas las veces que quieras.' },
     { titulo: 'Medidor de preparación', texto: 'Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos aciertos de tu meta.' },
     { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante 6 meses.' },

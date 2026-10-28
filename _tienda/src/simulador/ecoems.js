@@ -83,7 +83,7 @@ const FAQ = [
   { p: '¿Cómo es el examen?', r: 'En 2026 fue un examen en línea de 128 reactivos para resolver en 3 horas, sin áreas: todos presentan las mismas materias. El reparto que usa el simulador es de referencia: Habilidad verbal 16, Habilidad matemática 16 y 12 de cada una de estas: Español, Matemáticas, Biología, Física, Química, Historia, Geografía y Formación cívica y ética.' },
   { p: '¿Cuándo es el examen 2027?', r: 'Todavía no hay nada publicado del proceso 2027. Como referencia, en 2026 el examen fue el 20, 21, 27 y 28 de junio, y los resultados se publicaron el 18 de agosto. Consulta siempre la convocatoria vigente en miderechomilugar.gob.mx.' },
   { p: '¿El simulador es el examen oficial?', r: 'No. Es un simulador de práctica de Vorka México con reactivos originales que siguen el temario de secundaria y el tipo de preguntas del examen. No está afiliado a la UNAM, al IPN, al ECOEMS ni a la SEP, y los aciertos son una estimación para orientar el estudio.' },
-  { p: '¿Cuál es la diferencia entre los planes?', r: `Práctica es para entrenar: Calentamientos de ${CAL_REACTIVOS} reactivos, simulacros Medios de ${MEDIO_REACTIVOS} y práctica por materia y por tema, sin límite y con tutor; no incluye los exámenes completos. Examen es para medirse como el día del examen: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas; no incluye la práctica ilimitada ni el tutor. Completo trae las dos cosas y cuesta menos que comprarlas por separado: es el que recomendamos, porque practicar sin medirse no dice si ya se está listo y medirse sin practicar no ayuda a subir.` },
+  { p: '¿Cuál es la diferencia entre los planes?', r: `Práctica es para entrenar: Calentamientos de ${CAL_REACTIVOS} reactivos, simulacros Medios de ${MEDIO_REACTIVOS} y práctica por materia y por tema, sin límite y con tutor; no incluye los exámenes completos. Examen es para medirse como el día del examen: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas: el primero con tutor y el segundo sin pistas, como el día del examen; no incluye la práctica ilimitada. Completo trae las dos cosas y cuesta menos que comprarlas por separado: es el que recomendamos, porque practicar sin medirse no dice si ya se está listo y medirse sin practicar no ayuda a subir.` },
   { p: 'Soy mamá o papá: ¿cómo funciona la compra?', r: 'Pagas una sola vez con tarjeta, OXXO o SPEI y el acceso llega al correo que escribas. Si lo compras para tu hijo o hija, elige Para regalar: te llega una liga que abre su propia cuenta, con su historial y su reporte. Dura 6 meses desde la compra.' },
   { p: '¿Hay reembolso?', r: 'Solo si aún no lo usas: puedes pedirlo dentro de los 5 días hábiles siguientes a tu compra escribiendo a hola@vorka.mx. Una vez que empiezas un simulacro, un examen o una práctica ya no hay reembolso. Si algo falla y no te deja usarlo, lo resolvemos o te devolvemos tu dinero.' },
   { p: '¿Funciona en celular?', r: 'Sí. Funciona en el navegador del celular, la tablet o la computadora, sin instalar nada. El historial se guarda en la cuenta durante 6 meses.' },
@@ -108,13 +108,13 @@ const VENTA = {
   },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
-    { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada ni el tutor', trae: () => [`2 exámenes completos: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Sin pistas: la revisión va al final', 'Aciertos por materia y temas a reforzar'] },
+    { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada', trae: () => [`2 exámenes completos: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Aciertos por materia y temas a reforzar'] },
     { k: 'paquete', nombre: 'Completo', para: 'Práctica sin límite + los 2 exámenes completos', trae: () => ['Todo lo del plan Práctica: entrenas sin límite con tutor', 'Todo lo del plan Examen: Los 2 exámenes completos', '6 meses de acceso a todo'] },
   ],
   diferencias: [
     ['Calentamientos y simulacros Medios sin límite', true, false, true],
     ['Práctica por materia y por tema', true, false, true],
-    ['Tutor con pistas y solución paso a paso', true, false, true],
+    ['Tutor con pistas y solución paso a paso', true, 'En el 1.er examen', true],
     ['2 exámenes completos con cronómetro', false, true, true],
     ['Aciertos estimados y qué reforzar', true, true, true],
   ],
@@ -124,7 +124,7 @@ const VENTA = {
   ejemplo: { ...ej, etiqueta: `Habilidad matemática · ${TEMAS[ej.tema]?.nombre || ''}` },
   incluye: [
     { titulo: 'Calentamientos y Medios', tag: 'Práctica', texto: `Calentamientos de ${CAL_REACTIVOS} reactivos y simulacros Medios de ${MEDIO_REACTIVOS}, con cronómetro y tutor. Sin límite: cada uno trae preguntas que no has visto.` },
-    { titulo: 'Examen completo', tag: 'Examen', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, sin pistas. Al final, tu reporte de aciertos por materia.` },
+    { titulo: 'Examen completo', tag: 'Examen', oro: true, texto: `2 exámenes de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas: el primero con tutor y el segundo sin pistas, como el día del examen. Al final, tu reporte de aciertos por materia.` },
     { titulo: 'Por materia y por tema', tag: 'Práctica', texto: 'Practica cada materia por separado y tus temas débiles todas las veces que quieras.' },
     { titulo: 'Medidor de preparación', texto: 'Una conclusión clara y basada en tus datos: qué tan listo estás y a cuántos aciertos de tu meta.' },
     { titulo: 'Historial en tu cuenta', texto: 'Tu avance se guarda: compara tus simulacros y entra desde cualquier dispositivo durante 6 meses.' },
