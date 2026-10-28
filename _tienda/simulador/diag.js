@@ -25,8 +25,19 @@
   function guardar(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
   function leer(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function pesos(c) { return '$' + Math.round(c / 100).toLocaleString('es-MX'); }
+  // Pantalla completa mientras contesta (como el simulador real); el registro y el resultado van en la página normal
+  function pantalla(on) {
+    document.documentElement.classList.toggle('dx-full', on);
+    if (!on || document.getElementById('dx-barra')) return;
+    var b = document.createElement('header'), logo = document.querySelector('.nav .marca svg');
+    b.id = 'dx-barra'; b.className = 'dx-barra';
+    b.innerHTML = '<a class="dx-marca" href="' + D.ruta + '/">' + (logo ? logo.outerHTML : '') + '<span class="dx-marca-t">Simulador <b>' + esc(D.examen) + '</b><em> · Diagnóstico gratis</em></span></a><button type="button" class="dx-salir" id="dx-salir">Salir</button>';
+    document.body.insertBefore(b, document.body.firstChild);
+    document.getElementById('dx-salir').onclick = function () { intro(); };
+  }
   function h(html, arriba) {
     caja.innerHTML = html;
+    if (document.documentElement.classList.contains('dx-full')) { window.scrollTo(0, 0); return; }
     if (arriba !== false) { var y = caja.getBoundingClientRect().top + window.pageYOffset - 90; if (Math.abs(window.pageYOffset - y) > 40 && caja.getBoundingClientRect().top < 0) window.scrollTo({ top: y, behavior: 'smooth' }); }
   }
   function api(ruta, op) {
@@ -122,12 +133,14 @@
     pregunta();
   }
   function intro() {
+    pantalla(false);
+    var sigue = run && run.i > 0;
     h('<h2>¡Listo, ' + esc(E.nombre) + '!</h2><p class="dx-sub">Tu diagnóstico tiene <b>' + lista.length + ' preguntas</b> tipo ' + esc(D.examen) + ', de menor a mayor dificultad. Lo haces en unos 10 minutos.</p>' +
       '<div class="dx-secs">' + E.secciones.map(function (s) { return '<span><i class="sim-punto s-' + esc(s.color) + '"></i>' + esc(s.nombre) + ' · ' + s.items.length + '</span>'; }).join('') + '</div>' +
       '<ul class="dx-lista"><li>' + ICONO.ok + '<span><b>Si fallas, el tutor te da una pista</b> y tienes otro intento. Así funciona el simulador.</span></li>' +
       '<li>' + ICONO.ok + '<span>Para tu puntaje cuenta lo que aciertas <b>a la primera</b>.</span></li>' +
       '<li>' + ICONO.ok + '<span>Puedes cerrar y seguir después: tu avance se guarda en este dispositivo.</span></li></ul>' +
-      '<button class="btn tinta" id="b-go" style="width:100%;justify-content:center">Empezar ' + ICONO.fl + '</button>');
+      '<button class="btn tinta" id="b-go" style="width:100%;justify-content:center">' + (sigue ? 'Seguir donde iba (' + (run.i + 1) + ' de ' + lista.length + ')' : 'Empezar') + ' ' + ICONO.fl + '</button>');
     document.getElementById('b-go').onclick = function () { guardar(K, run); pregunta(); };
   }
   function estadoDe(id) { return run.resp[id] || (run.resp[id] = { fase: 'r1', sel1: null, sel2: null }); }
@@ -135,6 +148,7 @@
   function letras(txt, orden) { return rico(txt).replace(/\{([A-D])\}/g, function (_, L) { var i = orden.indexOf(LETRAS.indexOf(L)); return i < 0 ? L : LETRAS[i]; }); }
 
   function pregunta() {
+    pantalla(true);
     var x = lista[run.i], r = E.reactivos[x.id], st = estadoDe(x.id), orden = ordenDe(x.id);
     var texto = r.texto ? E.textos[r.texto] : null;
     var progreso = '<div class="sim-prog" role="progressbar" aria-valuemin="0" aria-valuemax="' + lista.length + '" aria-valuenow="' + (run.i + 1) + '" aria-label="Pregunta ' + (run.i + 1) + ' de ' + lista.length + '"><span style="width:' + Math.round(100 * run.i / lista.length) + '%"></span></div>';
@@ -185,6 +199,7 @@
 
   // ---------- 4. resultado ----------
   function terminar() {
+    pantalla(false);
     h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Calculando tu resultado…</div>');
     var resp = {};
     Object.keys(run.resp).forEach(function (id) { var s = run.resp[id]; resp[id] = { sel1: s.sel1, sel2: s.sel2 }; });
@@ -202,6 +217,7 @@
     return 'Hay mucho por ganar, y eso es buena noticia: practicando con tutor es donde más rápido se sube.';
   }
   function resultado(R, nuevo) {
+    pantalla(false);
     var secs = R.secciones || [];
     var nombreDe = function (id) { var s = secs.filter(function (x) { return x.id === id; })[0]; return s ? s.nombre : ''; };
     var num = R.escala === 'paa' ? '<span class="dx-num num">' + R.global + '<small> de 800</small></span>' : '<span class="dx-num num">' + R.global + '<small> de ' + R.de + ' aciertos</small></span>';

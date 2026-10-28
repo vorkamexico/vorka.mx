@@ -279,7 +279,19 @@ const CSS = `<style>
 .dx-secs span{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:650;padding:7px 12px;border-radius:999px;background:var(--bg-2)}
 .dx-lista{display:grid;gap:8px;margin:0 0 22px}.dx-lista li{display:flex;gap:10px;align-items:flex-start;color:var(--fg-2);font-size:15px}.dx-lista svg{width:18px;height:18px;flex:none;color:var(--verde);margin-top:2px}
 .dx-caja .sim-q{margin:0}
-.dx-caja .sim-q-cols{display:block}
+/* Pantalla completa mientras contesta: como el simulador real (barra propia, lectura a la izquierda y pregunta a la derecha) */
+.dx-full .nav.t-navs,.dx-full .menu-movil,.dx-full .pie,.dx-full .dx-intro,.dx-full .t-wa,.dx-full .t-barra{display:none!important}
+.dx-full .t-main{padding-top:0!important}
+.dx-full .dx-hero{padding:0}
+.dx-full .dx-g{display:block;max-width:1320px}
+.dx-full .dx-caja{background:none;border:0;box-shadow:none;border-radius:0;padding:22px 0 80px;min-height:calc(100vh - 64px)}
+@media(min-width:720px){.dx-full .dx-caja{padding:34px 0 96px}}
+.dx-barra{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;padding:0 max(16px,env(safe-area-inset-left));background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px)}
+html:not(.dx-full) .dx-barra{display:none}
+.dx-marca{display:inline-flex;align-items:center;gap:9px;min-width:0;font-weight:650;font-size:15.5px;letter-spacing:-.02em;color:var(--fg);text-decoration:none;white-space:nowrap}
+.dx-marca svg{width:24px;height:23px;flex:none}.dx-marca-t{display:inline;white-space:nowrap}.dx-marca b{font-weight:800}.dx-marca em{display:inline;font-style:normal;color:var(--fg-2);font-weight:600;background:none;padding:0}
+@media(max-width:430px){.dx-marca em{display:none}}
+.dx-salir{flex:none;background:none;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;color:var(--fg);cursor:pointer}
 .dx-caja .sim-texto{margin-bottom:16px}
 .dx-caja .sim-texto-c p,.dx-caja .sim-enun,.dx-caja .sim-tutor p{text-align:left}
 .dx-res-cab{text-align:center;padding:6px 0 18px}
