@@ -1,4 +1,5 @@
 // Acceso a datos de la tienda (D1). Los precios SIEMPRE salen de aquí, nunca del navegador.
+import { SQL_CODIGO_REAL } from './codigo-publico.js';
 import { all, one, run, ahoraISO } from './util.js';
 import { transicion } from './estados.js';
 import { SQL_APARTADOS, SQL_MOVIMIENTOS, descuentoMaximo, COBRO_MINIMO } from './puntos.js';
@@ -28,7 +29,7 @@ export async function productoPorSlugAnterior(env, slug, op) {
 // El código solo cuenta si existe y está activo
 export async function afiliadoActivo(env, code) {
   if (!code) return null;
-  return one(env, 'SELECT code, comision_pct FROM affiliates WHERE code = ? AND activo = 1', String(code).trim().toUpperCase());
+  return one(env, `SELECT code, comision_pct FROM affiliates WHERE code = ${SQL_CODIGO_REAL} AND activo = 1`, String(code).trim().toUpperCase());
 }
 
 /**

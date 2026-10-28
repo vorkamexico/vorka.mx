@@ -21,7 +21,7 @@ import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
 import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
-import { resolverDescuento, normalizar, duracionDe, PCT_REFERIDO } from './descuentos.js';
+import { resolverDescuento, afiliado, normalizar, duracionDe, PCT_REFERIDO } from './descuentos.js';
 import { suscripcionDe } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
 import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
@@ -57,7 +57,7 @@ export async function codigoDe(env, email, nombre = null) {
   const base = (nombre || email.split('@')[0]).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8) || 'VORKA';
   for (let i = 0; i < 5; i++) {
     const code = `${base}${aleatorio(2).toUpperCase()}`;
-    const r = await run(env, "INSERT OR IGNORE INTO affiliates (code, nombre, email, comision_pct, activo, tipo) VALUES (?, ?, ?, 0, 1, 'puntos')", code, nombre || email.split('@')[0], email);
+    const r = await run(env, "INSERT OR IGNORE INTO affiliates (code, nombre, email, comision_pct, activo, tipo) SELECT ?1, ?2, ?3, 0, 1, 'puntos' WHERE NOT EXISTS (SELECT 1 FROM affiliate_alias WHERE alias = ?1)", code, nombre || email.split('@')[0], email);
     if (r.meta.changes) return code;
   }
   throw new Error('codigo');
@@ -489,7 +489,7 @@ export async function datosApp(env, email) {
   const code = await codigoDe(env, email);
   await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)', email);
   const cuenta = await one(env, 'SELECT * FROM puntos_cuentas WHERE email = ?', email);
-  const af = await one(env, "SELECT nombre FROM affiliates WHERE code = ?", code);
+  const af = await one(env, "SELECT nombre, publico FROM affiliates WHERE code = ?", code);
   const saldo = await saldoDe(env, email);
   const ventas = await ventasDe(env, email);   // de por vida (logros)
   const ahora = await nivelActual(env, email);  // del semestre (nivel y %)
@@ -521,7 +521,7 @@ export async function datosApp(env, email) {
   };
   const top = await topDelMes(env);
   return {
-    email, code, nombre: cuenta.nombre || af?.nombre || email.split('@')[0], nombre_ranking: cuenta.nombre || '', ranking: !!cuenta.ranking,
+    email, code: af?.publico || code, nombre: cuenta.nombre || af?.nombre || email.split('@')[0], nombre_ranking: cuenta.nombre || '', ranking: !!cuenta.ranking,
     saldo, ventas, ventas_semestre: ahora.ventas, nivel: ahora.nivel, pct: ahora.pct, semestre: ahora.semestre, semana, productos, compartir: compartibles(todos), dobles: await doblesDe(env, email),
     meta: meta && { id: meta.id, nombre: meta.nombre, precio_centavos: meta.precio_centavos, objetivo: objetivoMeta(meta.precio_centavos) },
     movimientos, notificaciones, no_leidas: notificaciones.filter(x => !x.leida_at).length, sugerencias, push,
@@ -636,7 +636,8 @@ export async function rutasPuntos(req, env, url) {
     const codigo = escrito ?? normalizar(liga);
     // ¿Lo escrito sirvió? Es un código de descuento que aplica, o es de una persona de referidos
     const esDesc = r.descuento?.tipo === 'codigo' && r.descuento.codigo === codigo;
-    const esRef = !!r.ref && r.ref === codigo;
+    // lo escrito puede ser un código público (alias): cuenta si apunta al mismo de quien recomendó
+    const esRef = !!r.ref && (r.ref === codigo || (await afiliado(env, codigo))?.code === r.ref);
     const valido = esDesc || esRef;
     // descuento: lo que la página usa para su «Pagas hoy» (con el mismo cálculo que el servidor, centavosDescuento)
     const calc = r.descuento ? { pct: r.descuento.pct, duracion: sus ? duracionDe(r.descuento) : null, meses: r.descuento.meses ?? null,
