@@ -32,7 +32,7 @@ import { cambiarCodigo, ventasVendedor, DIAS_CAMBIO } from './codigo-publico.js'
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
-import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo } from './cupones-regalo.js';
+import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -94,6 +94,11 @@ export class Admin extends WorkerEntrypoint {
   crearCuponesRegalo(d) { return crearCuponesRegalo(this.env, d); }
   revocarCuponesRegalo(d) { return revocarCuponesRegalo(this.env, d || {}); }
   enviarCuponRegalo(codigo, persona) { return enviarCuponRegalo(this.env, codigo, persona || null); }
+  // Datos de quien recibe un cupón (aviso de privacidad): borrar los de un cupón, o buscar y borrar los de un correo (ARCO).
+  // `por` = correo de quien del equipo lo hace (bitácora cupones_regalo_borrados; nunca guarda el dato borrado)
+  borrarDatosCupon(d) { return borrarDatosCupon(this.env, d || {}); }
+  buscarDatosCuponCorreo(email) { return buscarDatosCuponCorreo(this.env, email); }
+  borrarDatosCuponCorreo(d) { return borrarDatosCuponCorreo(this.env, d || {}); }
   // Ligas de regalo (compras para regalar y cortesías): ver, apagar y volver a prender una por una
   ligas(orderId) { return ligasDe(this.env, orderId); }
   apagarLiga(id) { return apagarLiga(this.env, id); }
@@ -273,6 +278,10 @@ export default {
   async scheduled(event, env, ctx) {
     // Pagos que siguen pendientes (OXXO, SPEI): se confirman con Stripe aunque su webhook no haya llegado
     ctx.waitUntil(conciliarPendientes(env).then(c => console.log('conciliar', JSON.stringify(c))).catch(e => console.error('conciliar', e?.message)));
+    // Una vez al día (la corrida de las 09:17 UTC, 03:17 en el centro de México): anonimiza los datos de quien recibió un
+    // cupón de regalo 12 meses después de que venció, se terminó de usar o se revocó (aviso de privacidad). Va en el mismo
+    // cron de cada hora para no gastar otro (el plan gratis de Cloudflare permite 5 en toda la cuenta).
+    if (esHoraDeLimpiar(event)) ctx.waitUntil(anonimizarCuponesViejos(env).then(r => console.log('cupones regalo: anonimizados', JSON.stringify(r))).catch(e => console.error('cupones regalo: anonimizar', e?.message)));
     ctx.waitUntil((async () => {
       try {
         if (!env.STRIPE_SECRET_KEY) return;
@@ -284,6 +293,10 @@ export default {
     })());
   },
 };
+
+// La corrida diaria de limpieza: la de las 09 UTC del cron de cada hora
+const HORA_LIMPIEZA_UTC = 9;
+export function esHoraDeLimpiar(event) { return new Date(event?.scheduledTime ?? Date.now()).getUTCHours() === HORA_LIMPIEZA_UTC; }
 
 async function atender(request, env, ctx, url) {
   try {

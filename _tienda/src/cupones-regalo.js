@@ -98,7 +98,8 @@ function estadoDe(c, ahora = ahoraISO()) {
   return 'vigente';
 }
 
-function vista(c, productos, ordenes = []) {
+function vista(c, productos, ordenes = [], borrados = []) {
+  const b = borrados.find(x => x.codigo === c.codigo);
   const usadas = ordenes.filter(o => o.descuento_codigo === c.codigo);
   return {
     codigo: c.codigo, lote: c.lote, tipo: c.tipo, pct: c.pct, monto_centavos: c.monto_centavos, alcance: c.alcance, linea: c.linea,
@@ -107,6 +108,9 @@ function vista(c, productos, ordenes = []) {
     max_usos: c.max_usos, usos: c.usos, restantes: Math.max(0, c.max_usos - c.usos), hasta: c.hasta, para: c.para, nota: c.nota,
     creado: c.creado, creado_por: c.creado_por, revocado_at: c.revocado_at, estado: estadoDe(c), url: ligaCupon(c, productos),
     envio: c.envio_at ? { nombre: c.envio_nombre, email: c.envio_email, at: c.envio_at, estado: c.envio_estado, error: c.envio_error, envios: c.envios } : null,
+    // ¿Guarda datos de quien lo recibe? y el último borrado (bitácora: quién y cuándo, nunca el dato)
+    con_datos: !!(c.envio_nombre || c.envio_email || c.envio_error || c.para || c.nota),
+    datos_borrados: b ? { at: b.borrado_at, por: b.por, motivo: b.motivo } : null,
     descuento_dado_centavos: usadas.filter(o => o.estado === 'paid').reduce((s, o) => s + (o.descuento_codigo_centavos || 0), 0),
     ordenes: usadas.map(o => ({ id: o.id, paid_at: o.paid_at, estado: o.estado, monto_centavos: o.monto_centavos, descuento_centavos: o.descuento_codigo_centavos })),
   };
@@ -114,13 +118,15 @@ function vista(c, productos, ordenes = []) {
 
 // Lista para la pantalla Regalar: cupones (los 500 más recientes) con usos, estado, descuento dado y órdenes; y las opciones del formulario
 export async function cuponesRegalo(env) {
-  const [filas, productos, ordenes] = await Promise.all([
+  const [filas, productos, ordenes, borrados] = await Promise.all([
     all(env, 'SELECT * FROM cupones_regalo ORDER BY creado DESC, codigo LIMIT 500'),
     productosCupon(env),
     all(env, `SELECT id, descuento_codigo, paid_at, estado, monto_centavos, descuento_codigo_centavos FROM orders
       WHERE descuento_codigo LIKE '${PREFIJO_REGALO}-%' AND estado IN ('paid', 'refunded') ORDER BY paid_at DESC`),
+    // El último borrado de cada cupón (MAX en SQLite trae las demás columnas de ese mismo renglón)
+    all(env, `SELECT codigo, MAX(borrado_at) borrado_at, por, motivo FROM cupones_regalo_borrados WHERE codigo LIKE '${PREFIJO_REGALO}-%' GROUP BY codigo`),
   ]);
-  return { cupones: filas.map(c => vista(c, productos, ordenes)), lineas: LINEAS, productos, dias_defecto: DIAS_DEFECTO, max_cupones: MAX_CUPONES };
+  return { cupones: filas.map(c => vista(c, productos, ordenes, borrados)), lineas: LINEAS, productos, dias_defecto: DIAS_DEFECTO, max_cupones: MAX_CUPONES };
 }
 
 /**
@@ -263,4 +269,102 @@ export async function avisoCupon(env, codigo) {
   const productos = await productosCupon(env);
   return { valido: true, codigo: c, regalo: true, linea: f.linea, url: ligaCupon(f, productos),
     texto: `${textoValor(f)} en ${textoAlcance(f, productos)}, hasta el ${fechaLarga(f.hasta)}. Elige lo que quieras: el cupón ya va en tu compra.` };
+}
+
+// ---------- borrado de los datos de quien recibe el cupón (migración 0056; vorka.mx/privacidad/#conservamos y #arco) ----------
+// «Borrar» = anonimizar: nombre y correo del envío, el error del envío (puede traer el correo), «para quién» y la nota quedan en
+// NULL. Se queda lo que sirve para contabilidad y reportes: código, tanda, montos, alcance, usos, vigencia, revocación, cuándo
+// se mandó, si salió y cuántos envíos lleva. Las órdenes no se tocan (su correo es de quien compra y tiene su propia regla).
+// Cada cupón anonimizado deja un renglón en cupones_regalo_borrados (quién y cuándo), nunca el dato borrado.
+export const MESES_CONSERVAR = 12;
+const CON_DATOS = '(envio_nombre IS NOT NULL OR envio_email IS NOT NULL OR envio_error IS NOT NULL OR para IS NOT NULL OR nota IS NOT NULL)';
+const SIN_DATOS = 'envio_nombre = NULL, envio_email = NULL, envio_error = NULL, para = NULL, nota = NULL';
+const POR = z.string().trim().min(1).max(254);
+
+// Fecha de corte: hace 12 meses (calendario) desde `ahora`
+export function corteConservar(ahora = new Date()) {
+  const t = new Date(ahora); t.setUTCMonth(t.getUTCMonth() - MESES_CONSERVAR); return t.toISOString();
+}
+
+// Anonimiza los cupones indicados que todavía tengan datos y deja su renglón en la bitácora (una sola transacción).
+// Devuelve los códigos que sí se anonimizaron.
+async function anonimizar(env, codigos, por, motivo) {
+  const lista = [...new Set(codigos)];
+  if (!lista.length) return [];
+  const conDatos = (await all(env, `SELECT codigo FROM cupones_regalo WHERE codigo IN (${lista.map(() => '?').join(',')}) AND ${CON_DATOS}`, ...lista)).map(f => f.codigo);
+  if (!conDatos.length) return [];
+  const ahora = ahoraISO(), out = [];
+  for (let i = 0; i < conDatos.length; i += 40) {   // de 40 en 40 para no pasar el límite de sentencias por lote
+    const parte = conDatos.slice(i, i + 40);
+    await env.DB.batch(parte.flatMap(c => [
+      env.DB.prepare(`INSERT INTO cupones_regalo_borrados (codigo, borrado_at, por, motivo) SELECT ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM cupones_regalo WHERE codigo = ? AND ${CON_DATOS})`).bind(c, ahora, por, motivo, c),
+      env.DB.prepare(`UPDATE cupones_regalo SET ${SIN_DATOS} WHERE codigo = ?`).bind(c),
+    ]));
+    out.push(...parte);
+  }
+  return out;
+}
+
+/**
+ * Cron diario (scheduled de src/index.js): anonimiza los cupones que terminaron hace más de 12 meses. «Terminó» es lo
+ * primero que haya pasado de: venció (fin del día `hasta`, hora del centro de México), se revocó o se terminó de usar
+ * (usos = max_usos; cuenta la fecha de pago de la última orden con ese código). Un cupón vigente con usos pendientes no
+ * termina: su vigencia es de 3 años como máximo, así que el vencimiento siempre llega.
+ */
+export async function anonimizarCuponesViejos(env, ahora = new Date()) {
+  const corte = corteConservar(ahora);
+  // fin(hasta) = día siguiente a las 06:00Z; fin(hasta) <= corte ⇔ hasta < el día de México del corte
+  const diaCorte = new Date(Date.parse(corte) - 6 * 3600e3).toISOString().slice(0, 10);
+  const filas = await all(env, `SELECT codigo FROM cupones_regalo r WHERE ${CON_DATOS} AND (
+      r.hasta < ?
+      OR (r.revocado_at IS NOT NULL AND r.revocado_at <= ?)
+      OR (r.usos >= r.max_usos AND (SELECT MAX(o.paid_at) FROM orders o WHERE o.descuento_codigo = r.codigo AND o.paid_at IS NOT NULL) <= ?))
+    LIMIT 2000`, diaCorte, corte, corte);
+  const hechos = await anonimizar(env, filas.map(f => f.codigo), 'automatico', 'plazo');
+  return { anonimizados: hechos.length, corte };
+}
+
+// Botón «Borrar datos de quien lo recibe» del panel (Vorka OS › Tienda › Regalar › Cupones)
+export async function borrarDatosCupon(env, { codigo, por } = {}) {
+  const c = String(codigo || '').toUpperCase();
+  const quien = POR.safeParse(por);
+  if (!quien.success) throw new Error('Falta quién del equipo borra los datos.');
+  const f = await one(env, 'SELECT codigo FROM cupones_regalo WHERE codigo = ?', c);
+  if (!f) throw new Error('Ese cupón no existe.');
+  const hechos = await anonimizar(env, [c], quien.data, 'panel');
+  if (!hechos.length) throw new Error('Este cupón ya no tiene datos de quien lo recibe.');
+  return { ok: true, codigo: c, borrados: 1 };
+}
+
+// Códigos de regalo personales de Sparks (admin.crearCodigoRegalo): su descripción es «Regalo Sparks · correo»
+const SPARKS_CON = "nombre LIKE 'Regalo %' AND instr(lower(nombre), ' · ' || ?) > 0";
+
+// Solicitud ARCO: qué cupones guardan este correo (en el envío, «para quién», la nota o el error del envío)
+export async function buscarDatosCuponCorreo(env, email) {
+  const e = CORREO.safeParse(email);
+  if (!e.success) throw new Error('Revisa el correo.');
+  const cupones = await all(env, `SELECT codigo, hasta, usos, max_usos, revocado_at, envio_at FROM cupones_regalo
+    WHERE lower(envio_email) = ?1 OR instr(lower(coalesce(para, '')), ?1) > 0 OR instr(lower(coalesce(nota, '')), ?1) > 0 OR instr(lower(coalesce(envio_error, '')), ?1) > 0
+    ORDER BY creado DESC LIMIT 500`, e.data);
+  const codigos = await all(env, `SELECT codigo FROM codigos_descuento WHERE ${SPARKS_CON} LIMIT 100`, e.data);
+  return { email: e.data, cupones: cupones.map(c => ({ ...c, estado: estadoDe(c) })), codigos: codigos.map(c => c.codigo) };
+}
+
+// Solicitud ARCO: «Borrar todos los datos de este correo en cupones»
+export async function borrarDatosCuponCorreo(env, { email, por } = {}) {
+  const quien = POR.safeParse(por);
+  if (!quien.success) throw new Error('Falta quién del equipo borra los datos.');
+  const b = await buscarDatosCuponCorreo(env, email);
+  const hechos = await anonimizar(env, b.cupones.map(c => c.codigo), quien.data, 'arco');
+  // En los códigos de Sparks solo se quita el correo de la descripción («Regalo Sparks · correo» → «Regalo Sparks»)
+  let codigos = 0;
+  if (b.codigos.length) {
+    const ahora = ahoraISO();
+    const r = await env.DB.batch([
+      ...b.codigos.map(c => env.DB.prepare('INSERT INTO cupones_regalo_borrados (codigo, borrado_at, por, motivo) VALUES (?, ?, ?, ?)').bind(c, ahora, quien.data, 'arco')),
+      env.DB.prepare(`UPDATE codigos_descuento SET nombre = substr(nombre, 1, instr(nombre, ' · ') - 1) WHERE ${SPARKS_CON}`).bind(b.email),
+    ]);
+    codigos = r.at(-1).meta.changes;
+  }
+  return { ok: true, borrados: hechos.length, codigos };
 }

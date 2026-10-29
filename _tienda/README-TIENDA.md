@@ -374,9 +374,14 @@ Se crean en **Vorka OS › Tienda › Regalar › Cupón de descuento** (permiso
 - **Ligas:** `vorka.mx/tienda/?cupon=CODIGO` (con `#linea` si es de una línea) o la ficha del producto con `?cupon=`. Cualquier página de la tienda guarda `?cupon=` en el navegador (30 días) y la página de compra prellena y revisa el campo; la portada muestra una banda con lo que da el cupón o por qué ya no sirve.
 - **Correo (opcional):** «Enviar por correo» al crear (lista `Nombre, correo` por renglón: un cupón por persona) o desde la lista («Enviar» / «Reenviar»). Sale de `tienda@vorka.mx` con `enviar()` de `src/correo.js` (Resend o la clase `Correo` de Vorka OS). Se guarda solo el último envío (nombre, correo, cuándo, resultado). Tope: 50 por tanda y 200 por hora en toda la tienda. El correo no amarra el cupón: sigue siendo transferible.
 - **Orden:** `descuento_codigo = 'REGALO-…'`, `descuento_pct` (NULL si es por monto), `descuento_monto_centavos` (valor del cupón por monto) y `descuento_codigo_centavos` (lo que de verdad descontó).
-- **Admin (RPC):** `cuponesRegalo()`, `crearCuponesRegalo(d)`, `revocarCuponesRegalo({ codigo | lote })`, `enviarCuponRegalo(codigo, { nombre, email }?)`.
+- **Admin (RPC):** `cuponesRegalo()`, `crearCuponesRegalo(d)`, `revocarCuponesRegalo({ codigo | lote })`, `enviarCuponRegalo(codigo, { nombre, email }?)`, `borrarDatosCupon({ codigo, por })`, `buscarDatosCuponCorreo(email)`, `borrarDatosCuponCorreo({ email, por })`.
 - **Orden de despliegue:** esta tienda primero (Workers Builds aplica 0055 y publica los RPC); después Vorka OS. Si OS sale antes, la opción «Cupón de descuento» muestra que la tienda aún no lo tiene.
 - Condiciones: párrafo «Cupones de regalo» en `/legal/terminos/#descuentos` (`legales.py`).
+- **Borrado de los datos de quien lo recibe (migración 0056, `/privacidad/#conservamos` y `#arco`):** «borrar» = anonimizar `envio_nombre`, `envio_email`, `envio_error`, `para` y `nota` (NULL). Se conserva lo contable (código, montos, usos, vigencia, revocación, cuándo se mandó, si salió, cuántos envíos) y `orders` no se toca. Tres caminos, todos con renglón en la bitácora `cupones_regalo_borrados` (código, quién, cuándo y motivo; nunca el dato borrado):
+  - **Automático:** `anonimizarCuponesViejos` corre una vez al día dentro del cron de cada hora (la corrida de las 09 UTC; no se gasta otro cron). Anonimiza 12 meses después de que el cupón venció, se revocó o se terminó de usar (fecha de pago de la última orden). Un cupón con usos pendientes no ha terminado hasta que vence (máximo 3 años).
+  - **Panel:** «Borrar datos de quien lo recibe» en el detalle del cupón (`Admin.borrarDatosCupon({ codigo, por })`).
+  - **ARCO por correo:** `Admin.buscarDatosCuponCorreo(email)` y `Admin.borrarDatosCuponCorreo({ email, por })`: busca el correo en el envío, «para quién», la nota y el error; también quita el correo de la descripción de los códigos personales de Sparks (`Regalo Sparks · correo` → `Regalo Sparks`).
+  - Pruebas: `test/cupones-regalo-borrado.test.js`.
 
 ## Puntos Vorka en Vorka OS: «Comparte y gana» y equipo ×1.5 (migración 0046)
 
