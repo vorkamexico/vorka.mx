@@ -24,6 +24,8 @@ const CSS = `<style>
 .sv-diag{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:16px;padding:16px 18px;border-radius:18px;background:var(--fg);color:var(--bg);text-decoration:none;box-shadow:var(--sombra-2)}
 .sv-diag span{display:grid;gap:2px}.sv-diag b{font-size:17px;letter-spacing:-.015em}.sv-diag small{font-size:14px;opacity:.78}
 .sv-diag em{font-style:normal;font-weight:750;font-size:14.5px;display:inline-flex;align-items:center;gap:6px;color:var(--acento)}.sv-diag em svg{width:16px;height:16px}
+/* En oscuro la tarjeta del diagnóstico se invierte a clara: el oro no alcanza 4.5:1 ahí, va en la tinta de la tarjeta */
+:root[data-tema="oscuro"] .sv-diag em{color:var(--bg)}
 .sv-compra{position:sticky;top:96px}
 .sv-planes{display:grid;gap:10px;margin-bottom:14px}
 .sv-plan{position:relative;display:block;padding:16px 18px;border-radius:18px;background:var(--card);border:1.5px solid var(--line);color:inherit;text-decoration:none;transition:border-color var(--t-rapido),box-shadow var(--t-rapido)}
@@ -108,8 +110,8 @@ const CSS = `<style>
 .sv-ya p{color:var(--fg-2);font-size:15.5px;max-width:520px}
 .sv-planes-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-bottom:20px}.sv-planes-cab b{font-size:17px;letter-spacing:-.015em}.sv-planes-cab a{font-size:14px;font-weight:650;color:var(--morado)}
 .sv-planes{gap:14px}
-.sv-plan-c em{white-space:nowrap}.sv-plan-c em s{color:var(--fg-3);font-weight:500;font-size:14px;margin-right:2px}
-.sv-falta{color:var(--fg-3)!important;font-size:13px!important}.sv-falta::before{content:"✕ ";font-weight:700}
+.sv-plan-c em{white-space:nowrap}.sv-plan-c em s{color:var(--fg-2);font-weight:500;font-size:14px;margin-right:2px}
+.sv-falta{color:var(--fg-2)!important;font-size:13px!important}.sv-falta::before{content:"✕ ";font-weight:700}
 .sv-plan.rec{background:color-mix(in srgb,var(--acento) 7%,var(--card))}
 .sv-empuje{display:flex;flex-direction:column;gap:6px;margin:-2px 0 14px;padding:14px 16px;border-radius:16px;border:1.5px dashed color-mix(in srgb,var(--acento) 60%,var(--line));color:inherit;text-decoration:none;font-size:14.5px;line-height:1.45}
 .sv-empuje > b{color:var(--morado);display:inline-flex;align-items:center;gap:6px}.sv-empuje svg{width:15px;height:15px}

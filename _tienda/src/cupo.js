@@ -147,7 +147,7 @@ const CSS = `
 .cu-hero-g{display:grid;gap:32px;align-items:center}
 @media(min-width:900px){.cu-hero-g{grid-template-columns:1.05fr .95fr}}
 .cu-logo{display:block;font:800 34px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;color:var(--cu-t);margin:16px 0 10px}.cu-logo i{color:var(--cu-a);font-style:normal}
-.cu-h1{font:800 clamp(36px,6.4vw,62px)/1.02 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--cu-t)}.cu-h1 i{font-style:normal;color:var(--cu-a)}
+.cu-h1{font:800 clamp(36px,6.4vw,62px)/1.02 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--cu-t)}.cu-h1 i{font-style:normal;color:color-mix(in srgb,var(--cu-a) 90%,var(--cu-t))}
 .cu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:var(--fg-2);margin:0 0 22px;max-width:34em}
 .cu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .cu-demos-h{display:grid;gap:12px;grid-template-columns:1fr 1fr}

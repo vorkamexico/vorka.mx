@@ -169,11 +169,11 @@ const CSS = `
 .cu-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--cu-morado);color:#fff}.cu-logo svg{width:15px;height:15px}
 .cu-logo.grande{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--cu-h1)}.cu-logo.grande svg{width:21px;height:21px}
 .cu-h1{font-weight:800;font-size:clamp(42px,6.4vw,78px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:12ch;text-wrap:balance}.cu-h1 em{font-style:normal;color:#ecd6f7}
-.cu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(246,244,247,.82);max-width:34em}
+.cu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:#fff;max-width:34em}
 .cu-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
 .cu-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(246,244,247,.78)}
 .cu-chips li{display:inline-flex;align-items:center;gap:7px}.cu-chips svg{width:18px;height:18px;color:#ecd6f7}
-.cu-hero .t-nav-tienda{margin-top:8px}.cu-hero .t-nav-tienda a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:rgba(246,244,247,.86)}.cu-hero .t-nav-tienda a[aria-current]{background:#fff;border-color:#fff;color:var(--cu-h1)}
+.cu-hero .t-nav-tienda{margin-top:8px}.cu-hero .t-nav-tienda a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#F6F4F7}.cu-hero .t-nav-tienda a[aria-current]{background:#fff;border-color:#fff;color:var(--cu-h1)}
 .cu-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
 /* el celular con la app */
 .cu-escena{justify-self:center;width:min(100%,340px);padding:10px 0 30px}
