@@ -111,14 +111,18 @@
   .t-archivo .btn { width: 100%; }
 }
 
-/* Formularios */
-.t-form { display: grid; gap: 18px; margin-top: 28px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(20px, 4vw, 32px); box-shadow: var(--sombra); }
+/* Formularios
+   La tarjeta trae su propio color de texto: si queda dentro de una sección oscura (p. ej. la ficha de producto, que hereda
+   el hero oscuro de la portada), las etiquetas no heredan la tinta clara de esa sección sobre la tarjeta blanca.
+   Ayudas, nota de pago y textos de ejemplo van en --fg-2 (≥ 4.5:1 sobre la tarjeta en claro y en oscuro); --fg-3 no alcanza. */
+.t-form { color: var(--fg); display: grid; gap: 18px; margin-top: 28px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(20px, 4vw, 32px); box-shadow: var(--sombra); }
 .t-form .btn { width: 100%; }
 .t-campo { display: grid; gap: 7px; }
 .t-campo label { font-size: 14.5px; font-weight: 650; letter-spacing: -.005em; }
 .t-campo input[type="text"], .t-campo input[type="email"] { width: 100%; min-height: 50px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--bg); font: inherit; font-size: 16px; color: var(--fg); transition: border-color .2s, box-shadow .2s; }
 .t-campo select { width: 100%; min-height: 50px; padding: 0 44px 0 16px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23777' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 16px center; font: inherit; font-size: 16px; color: var(--fg); appearance: none; -webkit-appearance: none; }
 .t-campo select:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 4px var(--morado-suave); }
+.t-campo input::placeholder, .t-campo textarea::placeholder { color: var(--fg-2); opacity: 1; }
 .t-campo input:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 4px var(--morado-suave); }
 .t-campo input[aria-invalid="true"], .t-campo select[aria-invalid="true"], .t-campo textarea[aria-invalid="true"] { border-color: var(--er); box-shadow: 0 0 0 4px var(--er-s); }
 .t-error { font-size: 14px; color: var(--er); font-weight: 600; padding: 10px 14px; border-radius: var(--r-s); background: var(--er-s); }
@@ -178,8 +182,8 @@
 .t-compra { margin-top: 0; }
 .t-precio b { display: block; font-size: 36px; font-weight: 800; letter-spacing: -.035em; line-height: 1; }
 .t-precio span { display: block; font-size: 14px; color: var(--fg-2); margin-top: 6px; }
-.t-ayuda { font-size: 13px; color: var(--fg-3); }
-.t-pago { text-align: center; font-size: 13px; color: var(--fg-3); }
+.t-ayuda { font-size: 13px; color: var(--fg-2); }
+.t-pago { text-align: center; font-size: 13px; color: var(--fg-2); }
 .t-compra .btn[disabled] { opacity: .7; cursor: progress; }
 .t-pasos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 14px; counter-reset: paso; }
 .t-pasos li { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }

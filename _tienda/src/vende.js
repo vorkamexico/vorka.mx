@@ -239,7 +239,9 @@ const CSS = `
 .ve-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.ve-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.ve-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ve-morado)}
 .ve-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .ve-total{margin:4px 0 12px;font-size:16px}.ve-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.ve #form-vende .btn.acento{background:var(--ve-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}.ve-hoy{border-radius:18px;background:#17141a;padding:4px 12px;margin-top:12px}.ve-hoy div{display:flex;gap:10px;align-items:center;padding:10px 0}.ve-hoy div+div{border-top:1px solid #26222a}
+.ve #form-vende .btn.acento{background:var(--ve-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}
+/* en oscuro el morado se aclara: el texto del botón pasa a tinta oscura para seguir en ≥ 4.5:1 */
+[data-tema="oscuro"] .ve #form-vende .btn.acento{color:#141216}.ve-hoy{border-radius:18px;background:#17141a;padding:4px 12px;margin-top:12px}.ve-hoy div{display:flex;gap:10px;align-items:center;padding:10px 0}.ve-hoy div+div{border-top:1px solid #26222a}
 .ve-hoy i{width:6px;align-self:stretch;border-radius:4px;flex:none}.ve-hoy span{flex:1;min-width:0}.ve-hoy b{display:block;font-size:12.5px}.ve-hoy small{display:block;font-size:10.5px;color:#a89fad}
 .ve-hoy em{font-style:normal;font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:#136c3c;color:#fff;white-space:nowrap}
 .ve-pat{display:grid;gap:18px;align-items:center}@media(min-width:900px){.ve-pat{grid-template-columns:1.2fr .8fr}}
