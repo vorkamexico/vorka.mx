@@ -80,7 +80,7 @@ describe('ficha /tienda/evaluacion-liderazgo/', () => {
     expect(h).toContain('no es una probabilidad de admisión');
     expect(h).toContain('Ejemplo ilustrativo');
     expect(h).toContain('2 aplicaciones');
-    expect(h).toContain('Desde 15 años, con permiso.');
+    expect(h).toContain('Desde 12 años, con permiso.');
     expect(h).toContain('id="form-compra"'); expect(h).toContain('value="evaluacion-liderazgo"'); expect(h).toContain('$149 MXN');
     expect(h).toContain('href="/privacidad/#evaluacion-liderazgo"');
     // nada de promesas que no se sostienen
