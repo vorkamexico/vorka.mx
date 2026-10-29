@@ -362,6 +362,22 @@ Curso interactivo para jóvenes de 15 a 29 años que hacen proyectos sociales. A
   `npx wrangler d1 execute vorka-tienda --remote --command "SELECT c.codigo, c.activo, c.usos, u.app, u.usos FROM codigos_descuento c LEFT JOIN codigos_descuento_usos u ON u.codigo = c.codigo"`
   `npx wrangler d1 execute vorka-tienda --remote --command "UPDATE codigos_descuento SET activo = 0 WHERE codigo = 'FUNDADOR30'"`
 
+## Cupones de regalo (migración 0055)
+
+Se crean en **Vorka OS › Tienda › Regalar › Cupón de descuento** (permiso `tienda_productos`). Lógica: `src/cupones-regalo.js` (crear, lista, revocar, correo) y `src/descuentos.js` (`evaluarRegalo`, `centavosDe`). Pruebas: `test/cupones-regalo.test.js`.
+
+- **Transferibles:** no van ligados a un correo; quien tenga el código lo usa en el mismo campo «código» de cualquier compra. Código `REGALO-XXXX-XXXX` (alfabeto sin 0/O/1/I/L, 31^8 combinaciones, único también frente a `codigos_descuento`).
+- **Datos:** % (5–100) o monto en pesos; alcance toda la tienda (solo Vorka, nunca creadores), una línea (`src/lineas.js`: Educación, Negocios, Eventos, Finanzas personales) o un producto; usos por cupón (1 por omisión); de 1 a 50 por tanda; vigencia 90 días por omisión (`hasta` = último día, hora del centro de México); «para quién» y nota solo internos.
+- **Al pagar:** como cualquier código. No se acumula con FUNDADOR30 (un solo campo) ni con el 5 % (gana el mayor **en pesos**; si gana el 5 %, se avisa y el cupón no gasta uso; quien recomendó suma sus puntos en cualquier caso). En pago único se suman los puntos de quien compra. Siempre queda el cobro mínimo de $10. Un monto mayor que el precio se pierde (no hay saldo) y la página lo dice antes de pagar (`#codigo-sobra`). El uso cuenta al pagarse la orden. Mientras una compra con el cupón espera su pago (24 h), sus usos quedan apartados para **otros** correos.
+- **Alcance en la compra:** pago único → solo lo que entra en el alcance (Brindi: un cupón de un plan no descuenta sus complementos). Suscripción → si el plan entra, todo el primer cobro (plan y complementos), que es lo que Stripe descuenta.
+- **Stripe:** pago único → el cupón `amount_off` de un uso de siempre (con puntos incluidos). Suscripción (`once`) → `vorka_regalo_<pct>p_once` (`percent_off`) o `vorka_regalo_<centavos>c_once` (`amount_off`, también cuando un % topa con el cobro mínimo), reutilizados por valor.
+- **Ligas:** `vorka.mx/tienda/?cupon=CODIGO` (con `#linea` si es de una línea) o la ficha del producto con `?cupon=`. Cualquier página de la tienda guarda `?cupon=` en el navegador (30 días) y la página de compra prellena y revisa el campo; la portada muestra una banda con lo que da el cupón o por qué ya no sirve.
+- **Correo (opcional):** «Enviar por correo» al crear (lista `Nombre, correo` por renglón: un cupón por persona) o desde la lista («Enviar» / «Reenviar»). Sale de `tienda@vorka.mx` con `enviar()` de `src/correo.js` (Resend o la clase `Correo` de Vorka OS). Se guarda solo el último envío (nombre, correo, cuándo, resultado). Tope: 50 por tanda y 200 por hora en toda la tienda. El correo no amarra el cupón: sigue siendo transferible.
+- **Orden:** `descuento_codigo = 'REGALO-…'`, `descuento_pct` (NULL si es por monto), `descuento_monto_centavos` (valor del cupón por monto) y `descuento_codigo_centavos` (lo que de verdad descontó).
+- **Admin (RPC):** `cuponesRegalo()`, `crearCuponesRegalo(d)`, `revocarCuponesRegalo({ codigo | lote })`, `enviarCuponRegalo(codigo, { nombre, email }?)`.
+- **Orden de despliegue:** esta tienda primero (Workers Builds aplica 0055 y publica los RPC); después Vorka OS. Si OS sale antes, la opción «Cupón de descuento» muestra que la tienda aún no lo tiene.
+- Condiciones: párrafo «Cupones de regalo» en `/legal/terminos/#descuentos` (`legales.py`).
+
 ## Puntos Vorka en Vorka OS: «Comparte y gana» y equipo ×1.5 (migración 0046)
 
 - **`Admin.catalogoPuntos(code)`**: productos activos de Vorka para recomendar, por línea (las mismas tarjetas, nombres y precios del catálogo de `/tienda/`), con su página pública y la liga `?ref=CODE`. Sin productos de creadores ni ocultos (intentos y exámenes adicionales, complementos, planes que se venden dentro de otra página). Todas las páginas de destino leen `?ref=` (prueba: `test/catalogo-puntos.test.js`); nunca usa las páginas por universidad del Simulador PAA. Trae las reglas del programa (`reglas`: niveles, extra, tope y `factor_equipo`) para que OS las explique sin copiar porcentajes.

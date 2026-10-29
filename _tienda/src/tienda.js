@@ -13,6 +13,9 @@ import { VARIANTES } from './brindi.js';
 import { UNIVERSIDADES } from './simulador/paa-universidades.js';
 import { temporadaActual, decoracion } from './temporadas.js';
 import { PCT_REFERIDO } from './descuentos.js';
+import { seccionesCatalogo, sinAcentos } from './lineas.js';
+import { avisoCupon } from './cupones-regalo.js';
+export { seccionesCatalogo };
 
 const SITIO = 'https://vorka.mx';
 export const CANDADO_PAGO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>';
@@ -57,32 +60,6 @@ const portada = (p, clase = '') => p.imagen
 
 export const precio = p => p.precio_centavos % 100 ? pesos(p.precio_centavos) : `$${(p.precio_centavos / 100).toLocaleString('es-MX')} MXN`;
 
-// Líneas de la tienda según la categoría del producto (se agrupan sin importar mayúsculas ni acentos).
-// Una categoría nueva desde el panel aparece sola como línea con su propio nombre.
-const SECCIONES_TIENDA = [
-  { id: 'examenes', claves: ['examenes', 'educacion', 'proyectos sociales', 'cursos'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM, ECOEMS y prepa UG.',
-    // Con Ruta de Impacto a la venta, la línea también habla del curso (si no, se queda como estaba)
-    variante: { si: p => p.contenido?.acceso?.app === 'ruta', titulo: 'Exámenes y proyectos', texto: 'Simuladores con tutor para tu examen de admisión (PAA, UNAM, ECOEMS y prepa UG) y Ruta de Impacto, el curso para sacar adelante tu proyecto social.' } },
-  { id: 'negocios', claves: ['negocios', 'citas', 'agenda', 'lealtad', 'ventas', 'vende', 'kits', 'emprender'], linea: 'Negocios', titulo: 'Herramientas para tu negocio',
-    texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen y Vende para tus pedidos y cobros. Pruébalas gratis.' },
-  { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',
-    texto: 'Brindi: invitaciones digitales para bodas, XV años y toda celebración. Cupo: la página de tu evento con registro, cover y check-in con QR, gratis hasta 30 personas.' },
-  { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.' },
-];
-const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-export function seccionesCatalogo(productos) {
-  const grupos = new Map();
-  for (const p of productos) {
-    const k = sinAcentos(p.categoria);
-    const def = SECCIONES_TIENDA.find(s => s.claves.includes(k));
-    const id = def?.id || (k ? k.replace(/[^a-z0-9]+/g, '-') : 'mas');
-    if (!grupos.has(id)) grupos.set(id, { id, def, linea: def?.linea || p.categoria || 'Más', titulo: def?.titulo || p.categoria || 'Más productos', texto: def?.texto || '', productos: [] });
-    grupos.get(id).productos.push(p);
-  }
-  for (const g of grupos.values()) { const v = g.def?.variante; if (v && g.productos.some(v.si)) Object.assign(g, { titulo: v.titulo, texto: v.texto }); delete g.def; }
-  // El orden de las secciones sigue al primer producto de cada una (campo "orden" del panel)
-  return [...grupos.values()];
-}
 // Producto que abre una app (Simulador PAA, Brindi) en lugar de entregar archivos
 const esAcceso = p => !!p.contenido?.acceso;
 // Los simuladores duran 6 meses; el resto de los accesos de pago único, un año
@@ -221,9 +198,16 @@ export async function catalogoCompartir(env, code = null) {
   return { tienda: { url: `${sitio}/tienda/`, liga: conRef(`${sitio}/tienda/`) }, cuenta: `${sitio}/tienda/puntos/`, lineas };
 }
 
+// Banda del cupón de regalo en la portada (?cupon=)
+// (va dentro del encabezado oscuro, arriba del título, para que el menú fijo no la tape)
+const CSS_CUPON = '<style>.t-cupon{display:grid;gap:8px;margin:0 0 18px;padding:14px 16px;border-radius:18px;background:rgba(200,164,92,.16);border:1px solid rgba(226,194,124,.55);color:#F4F2F5;font-size:15px;line-height:1.45;max-width:560px;backdrop-filter:blur(6px)}.t-cupon b{color:#E6CF96}.t-cupon code{justify-self:start;font:800 17px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;color:#fff;border:1.5px dashed #E2C27C;border-radius:10px;padding:6px 10px;overflow-wrap:anywhere}.t-cupon a{color:#E6CF96;font-weight:700;display:inline-flex;gap:6px;align-items:center}.t-cupon a svg{width:16px;height:16px}.t-cupon.no{background:rgba(179,38,30,.22);border-color:rgba(242,194,189,.5)}</style>';
+const bandaCupon = c => `<div class="t-cupon${c.valido ? '' : ' no'}" role="status" aria-label="Tu cupón">${c.valido ? `<span>${c.regalo ? '🎁 <b>Tienes un cupón de regalo</b>' : '<b>Tu código</b>'}</span><code>${esc(c.codigo)}</code>` : ''}<span>${esc(c.texto)}</span>${c.valido && c.linea ? `<a href="#${esc(c.linea)}" data-f="${esc(c.linea)}">Ver productos ${FLECHA}</a>` : ''}</div>`;
+
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
+  // Llegó con ?cupon= (liga de un cupón de regalo): una banda arriba dice qué da y hasta cuándo; se aplica en la compra
+  const cupon = url.searchParams.has('cupon') ? await avisoCupon(env, url.searchParams.get('cupon')) : null;
   // Precio de entrada de Brindi: el plan más barato a la venta (los planes viven ocultos del catálogo)
   const planesBrindi = (await env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()).results
     .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
@@ -258,7 +242,7 @@ export async function paginaCatalogo(env, req, url) {
   return pagina({
     titulo: 'Tienda Vorka México · Simulador PAA, invitaciones digitales y kits', ruta: '/tienda/', navActual: 'inicio',
     descripcion: 'Simulador PAA para tu examen de admisión, invitaciones digitales con QR para tus celebraciones y kits para emprender. Productos digitales de Vorka México con entrega inmediata.',
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO, whatsapp: true, navOscuro: true,
     cuerpo: `
@@ -267,6 +251,7 @@ export async function paginaCatalogo(env, req, url) {
   <picture class="t-hero-foto" aria-hidden="true"><source type="image/webp" srcset="/img/ciudades/cdmx-noche-960.webp 960w, /img/ciudades/cdmx-noche-1600.webp 1600w, /img/ciudades/cdmx-noche-2400.webp 2400w" sizes="100vw"><img src="/img/ciudades/cdmx-noche-1600.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async"></picture>
   <div class="marco t-hero-g">
     <div class="t-hero-txt">
+      ${cupon ? bandaCupon(cupon) : ''}
       ${temporada ? `<a class="t-hero-chip temporada" href="${lineaT ? esc(lineaT.vistas.length === 1 ? lineaT.vistas[0].url : `#${lineaT.id}`) : '#productos'}"${lineaT && lineaT.vistas.length > 1 ? ` data-f="${esc(lineaT.id)}"` : ''}><b>${esc(temporada.nombre)}</b><span>${esc(temporada.aviso)}</span>${FLECHA}</a>`
         : nuevo ? `<a class="t-hero-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
       <h1 class="t-hero-h1">Todo para avanzar, <span class="metal">en un solo lugar.</span></h1>

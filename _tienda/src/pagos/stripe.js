@@ -3,7 +3,7 @@
 
 import { enc, hex, iguales } from '../util.js';
 import { suscripcionDeOrden } from '../suscripciones.js';
-import { REFERIDO } from '../descuentos.js';
+import { REFERIDO, esCuponRegalo, pesosTexto } from '../descuentos.js';
 
 const API = 'https://api.stripe.com/v1';
 export const STRIPE_VERSION = '2026-09-30.endive';
@@ -105,7 +105,8 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
 // Nombre del cupón por monto de un pago único (Stripe lo muestra; máximo 40 caracteres)
 export function nombreCupon(o) {
   const partes = [];
-  if (o.descuento_codigo_centavos > 0) partes.push(o.descuento_codigo === REFERIDO ? `Recomendación ${o.descuento_pct} %` : `${o.descuento_codigo} ${o.descuento_pct} %`);
+  if (o.descuento_codigo_centavos > 0) partes.push(o.descuento_codigo === REFERIDO ? `Recomendación ${o.descuento_pct} %`
+    : o.descuento_pct == null ? `${o.descuento_codigo} ${pesosTexto(o.descuento_codigo_centavos).replace(' MXN', '')}` : `${o.descuento_codigo} ${o.descuento_pct} %`);
   if (o.puntos_usados > 0) partes.push('Puntos Vorka');
   return (partes.join(' + ') || 'Descuento').slice(0, 40);
 }
@@ -114,19 +115,34 @@ export function nombreCupon(o) {
 // se usa; si no existe, se crea. Si alguien lo cambió en Stripe (o cambió el % o los meses del código en la tabla), se usa
 // uno con el % y los meses en el id para no cobrar con datos viejos. Lo que falle (p. ej. la llave restringida sin permiso
 // de Coupons) lo distingue el checkout con e.cupon.
+// Cupón de regalo (solo el primer cobro, 'once'), reutilizable por valor: vorka_regalo_20p_once (percent_off) si el % se
+// aplica a todo el primer cobro tal cual; si no (cupón por monto, o un % que topó con el cobro mínimo), vorka_regalo_<centavos>c_once
+// (amount_off por lo que de verdad se descuenta, para que Stripe cobre exactamente lo de la orden).
+function datosRegalo(o) {
+  const sub = o.subtotal_centavos ?? (o.items || []).reduce((s, i) => s + i.precio_centavos * i.cantidad, 0);
+  if (o.descuento_pct != null && o.descuento_codigo_centavos === Math.round(sub * o.descuento_pct / 100)) {
+    const p = String(o.descuento_pct).replace('.', '_');
+    return { id: `vorka_regalo_${p}p_once`, datos: { percent_off: o.descuento_pct, duration: 'once' }, nombre: `Cupón de regalo ${o.descuento_pct} %` };
+  }
+  const c = o.descuento_codigo_centavos;
+  return { id: `vorka_regalo_${c}c_once`, datos: { amount_off: c, currency: String(o.moneda || 'MXN').toLowerCase(), duration: 'once' }, nombre: `Cupón de regalo ${pesosTexto(c)}`.slice(0, 40) };
+}
 export function datosCupon(o) {
+  if (esCuponRegalo(o.descuento_codigo)) return datosRegalo(o);
   const ref = o.descuento_codigo === REFERIDO;
   const datos = { percent_off: o.descuento_pct, duration: o.descuento_duracion, ...(o.descuento_duracion === 'repeating' ? { duration_in_months: o.descuento_meses } : {}) };
   const nombre = ref ? `Recomendación ${o.descuento_pct} %` : `${o.descuento_codigo} ${o.descuento_pct} %${o.descuento_meses ? ` · ${o.descuento_meses} ${o.descuento_meses === 1 ? 'mes' : 'meses'}` : ''}`;
   const id = ref ? `vorka_ref${o.descuento_pct}`.replace('.', '_') : `vorka_${o.descuento_codigo}`;
   return { id, datos, nombre: nombre.slice(0, 40) };
 }
-const mismoCupon = (c, d) => c && c.valid !== false && Number(c.percent_off) === Number(d.percent_off) && c.duration === d.duration
+const mismoCupon = (c, d) => c && c.valid !== false && c.duration === d.duration
+  && (d.amount_off != null ? Number(c.amount_off) === Number(d.amount_off) && String(c.currency).toLowerCase() === d.currency && !c.percent_off
+    : Number(c.percent_off) === Number(d.percent_off))
   && (d.duration !== 'repeating' || Number(c.duration_in_months) === Number(d.duration_in_months));
 
 export async function cuponFijo(env, o) {
   const { id, datos, nombre } = datosCupon(o);
-  const ids = [id, `${id}_${String(datos.percent_off).replace('.', '_')}p_${datos.duration}${datos.duration_in_months || ''}`];
+  const ids = [id, datos.amount_off != null ? `${id}_v2` : `${id}_${String(datos.percent_off).replace('.', '_')}p_${datos.duration}${datos.duration_in_months || ''}`];
   for (const cid of ids) {
     let c = null;
     try { c = await llamar(env, 'GET', `/coupons/${encodeURIComponent(cid)}`); }
@@ -176,9 +192,10 @@ export default {
     const customer = await clienteStripe(env, orden);
     const sus = await suscripcionDeOrden(env, orden);
     if (sus) {
-      // Código de descuento o 5 % por recomendación: cupón por % reutilizable (vorka_FUNDADOR30, vorka_ref5)
+      // Código de descuento o 5 % por recomendación: cupón por % reutilizable (vorka_FUNDADOR30, vorka_ref5); cupón de regalo:
+      // por % o por monto, solo el primer cobro (vorka_regalo_…)
       let cupon = null;
-      if (orden.descuento_codigo && orden.descuento_pct > 0 && orden.descuento_duracion) {
+      if (orden.descuento_codigo && orden.descuento_codigo_centavos > 0 && orden.descuento_duracion) {
         try { cupon = await cuponFijo(env, orden); } catch (e) { e.cupon = true; throw e; }
       }
       const s = await llamar(env, 'POST', '/checkout/sessions', sesionSuscripcion(env, orden, urls, customer, sus, cupon), { idempotencia: `checkout-${orden.id}` });

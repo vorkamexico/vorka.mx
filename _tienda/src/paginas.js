@@ -63,10 +63,13 @@ const SCRIPT_PUNTOS = `(function(){
 // de quien te recomendó (5 % de descuento). Si llegaste con la liga de alguien ya sale aplicado. Antes de pagar dice qué
 // descuento se aplica y por qué, sin datos de quien recomendó. Se revisa al escribirlo y al cambiar de plan
 // (/api/puntos/liga, con límite por IP); el servidor lo vuelve a revisar al pagar.
+// Cupones de regalo: la liga ?cupon=CODIGO (o el que se guardó al abrir esa liga en otra página de la tienda, ver SCRIPT_CUPON)
+// prellena el campo y se revisa al momento. Si el guardado ya no sirve, se olvida sin avisar y queda lo de siempre.
+// #codigo-sobra: con un cupón por monto que no se usa completo, dice cuánto se pierde antes de pagar (lo escribe VD.hoy).
 const SCRIPT_SOCIO = `(function(){
   var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve')||document.getElementById('form-agenda')||document.getElementById('form-vende')||document.getElementById('form-cuentas'); if(!f||!window.fetch) return;
   var w=document.createElement('div'); w.className='t-campo t-socio';
-  w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Tienes un código de descuento o de quien te recomendó?</button><div class="t-socio-c" hidden><label for="codigo">Código de descuento o de quien te recomendó <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. FUNDADOR30"><p class="t-desc" id="codigo-msj" role="status" aria-live="polite"></p></div>';
+  w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Tienes un código de descuento o de quien te recomendó?</button><div class="t-socio-c" hidden><label for="codigo">Código de descuento o de quien te recomendó <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. FUNDADOR30"><p class="t-desc" id="codigo-msj" role="status" aria-live="polite"></p><p class="t-desc t-desc-aviso" id="codigo-sobra" role="status" aria-live="polite" hidden></p></div>';
   var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(w);
   var b=w.querySelector('button'), c=w.querySelector('.t-socio-c'), i=w.querySelector('input'), m=w.querySelector('#codigo-msj'), tm;
   function abrir(){ c.hidden=false; b.hidden=true; b.setAttribute('aria-expanded','true'); }
@@ -84,8 +87,21 @@ const SCRIPT_SOCIO = `(function(){
   i.addEventListener('input',function(){ clearTimeout(tm); tm=setTimeout(revisa,450); });
   f.addEventListener('change',function(e){ if(e.target&&e.target.name==='slug') revisa(); });
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(){ setTimeout(revisa,50); }); });
-  fetch('/api/puntos/liga?slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); fija(d); } }).catch(function(){});
+  function deLiga(){ fetch('/api/puntos/liga?slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){ if(d.valido){ abrir(); i.value=d.codigo; pinta(d); fija(d); } }).catch(function(){}); }
+  var url=null, guardado=null; try{ url=new URLSearchParams(location.search).get('cupon'); }catch(e){}
+  if(!url){ try{ var g=JSON.parse(localStorage.getItem('vorka_cupon')||'null'); if(g&&g.c&&Date.now()-g.t<30*864e5) guardado=g.c; }catch(e){} }
+  var cup=String(url||guardado||'').trim().toUpperCase();
+  if(!/^[A-Z0-9_-]{1,40}$/.test(cup)) return deLiga();
+  abrir(); i.value=cup;
+  fetch('/api/puntos/liga?c='+encodeURIComponent(cup)+'&slug='+encodeURIComponent(plan()),{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(d){
+    if(!('valido' in d)) return;
+    if(!d.valido&&!url){ try{ localStorage.removeItem('vorka_cupon'); }catch(e){} i.value=''; c.hidden=true; b.hidden=false; return deLiga(); }
+    pinta(d); fija(d); }).catch(function(){});
 })();`;
+
+// ?cupon=CODIGO en cualquier página de la tienda: se guarda en este navegador (30 días) para prellenar el campo «código»
+// en la página de compra a la que se llegue después (p. ej. de vorka.mx/tienda/?cupon=… a un producto)
+const SCRIPT_CUPON = `(function(){ try{ var c=new URLSearchParams(location.search).get('cupon'); if(c&&/^[A-Za-z0-9_-]{1,40}$/.test(c)) localStorage.setItem('vorka_cupon',JSON.stringify({c:c.toUpperCase(),t:Date.now()})); }catch(e){} })();`;
 
 // Formularios de compra: llevan el campo «código» y el ayudante del descuento (window.VD) antes del script de la página
 const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|cuentas)"/;
@@ -157,7 +173,7 @@ ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" cl
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
-${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {
