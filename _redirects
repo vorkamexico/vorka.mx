@@ -68,3 +68,9 @@
 /diagnostico/fanny/*    /diagnostico/ver/   302
 /diagnostico/julian     /diagnostico/ver/   302
 /diagnostico/julian/*   /diagnostico/ver/   302
+
+# Reportes trimestrales de Sparks Celaya: ahora son parte del reporte completo en Vorka México (os.vorka.mx), con PDF por trimestre
+/1ertrimestrecelaya     https://os.vorka.mx/m/929cd876ee08f3dc8f   301
+/1ertrimestrecelaya/*   https://os.vorka.mx/m/929cd876ee08f3dc8f   301
+/2dotrimestrecelaya     https://os.vorka.mx/m/929cd876ee08f3dc8f   301
+/2dotrimestrecelaya/*   https://os.vorka.mx/m/929cd876ee08f3dc8f   301
