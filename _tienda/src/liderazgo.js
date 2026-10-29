@@ -28,7 +28,7 @@ const faq = ({ precioN = PRECIO_BASE } = {}) => [
   ['¿Cómo se califica?', 'Cada dimensión va de 0 a 10. Una cuarta parte sale de cómo te ves, otra cuarta parte de lo que eliges en las situaciones, y la mitad de los hechos que declaras: lo hecho pesa más que lo dicho. El global va de 0 a 100. Para cada dimensión ves si está «alineada», «por demostrar» (te ves capaz, pero faltan hechos) o «subestimada» (has hecho más de lo que crees).'],
   ['¿Qué recibo al terminar?', 'Tu resultado en las 12 dimensiones y el global, tus 3 fortalezas, tus 3 áreas de mejora y 3 acciones concretas para los próximos 30 días, cada una con la evidencia que te deja. Lo ves en pantalla, te llega por correo y lo puedes guardar en PDF.'],
   ['¿Qué es la segunda aplicación?', 'Tu compra incluye 2 aplicaciones con la misma liga: la de hoy y una de seguimiento que se abre 90 días después de terminar la primera. En tu segundo resultado ves cuánto subió cada dimensión.'],
-  ['Soy menor de edad, ¿la puedo contestar?', 'Sí, si tienes 15 años o más y con autorización de tu mamá, papá o tutor: antes de empezar escribe su nombre y su correo, y marca la autorización. Le mandamos una copia de tus resultados. Si tienes menos de 15 años, la evaluación todavía no es para ti.'],
+  ['Soy menor de edad, ¿la puedo contestar?', 'Sí, si tienes 12 años o más y con autorización de tu mamá, papá o tutor: antes de empezar escribe su nombre y su correo, y marca la autorización. Le mandamos una copia de tus resultados. Si tienes menos de 12 años, la evaluación todavía no es para ti.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tus resultados y, si contratas Mentoría, para tu plan de trabajo. No se venden ni se comparten. Puedes pedir que las borremos escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. Consulta el <a href="/privacidad/#evaluacion-liderazgo">aviso de privacidad</a>.'],
   ['¿Qué tiene que ver con la Mentoría?', `Es el primer paso de toda <a href="${MENTORIA}">mentoría con Brandon Oleynick</a>: con tus resultados fijamos tu punto de partida y medimos tu avance con hechos. Si ya eres cliente de Mentoría, te la mandamos sin costo. Al terminar puedes agendar una sesión de lectura de resultados de 20 minutos, sin costo.`],
   ['¿Cómo la regalo?', 'En la compra elige «Para regalar». Te llega por correo una liga por cada regalo para que se la mandes a quien quieras, por ejemplo por WhatsApp. La liga es personal: la primera persona que la abre y escribe sus datos es quien la contesta.'],
@@ -63,7 +63,7 @@ export async function paginaLiderazgo(env, req, url) {
     <h1 class="lv-h1">¿Dónde estás hoy <em>como líder?</em></h1>
     <p class="lv-lead">80 preguntas, unos 25 minutos. Comparamos lo que crees de ti con lo que has hecho y te decimos, dimensión por dimensión, qué ya está respaldado con hechos y qué todavía tienes que demostrar.</p>
     <div class="lv-ctas"><a class="lv-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? '<a class="lv-btn ghost" href="?regalo=1#comprar">🎁 Regalarla</a>' : ''}</div>
-    <ul class="lv-chips"><li>12 dimensiones</li><li>2 aplicaciones: hoy y a los 90 días</li><li>Desde 15 años</li></ul>
+    <ul class="lv-chips"><li>12 dimensiones</li><li>2 aplicaciones: hoy y a los 90 días</li><li>Desde 12 años</li></ul>
   </div>
   <figure class="lv-muestra" aria-label="Ejemplo ilustrativo de resultados">
     <figcaption>Ejemplo ilustrativo</figcaption>
@@ -97,8 +97,8 @@ ${navTienda('examenes')}
 <section class="lv-sec lv-osc" id="mentoria"><div class="marco lv-dos">
   <div class="lv-cab izq"><span class="lv-et">Mentoría</span><h2>El primer paso de cada mentoría.</h2>
     <p>Con tus resultados fijamos tu punto de partida y medimos tu avance con hechos, no con impresiones. Si ya eres cliente de <a href="${MENTORIA}">Mentoría</a>, te la mandamos sin costo.</p></div>
-  <div class="lv-cab izq"><span class="lv-et">Menores de edad</span><h2>Desde 15 años, con permiso.</h2>
-    <p>De 15 a 17 años, antes de empezar se pide la autorización de su mamá, papá o tutor, que recibe una copia de los resultados. No pedimos datos sensibles.</p></div>
+  <div class="lv-cab izq"><span class="lv-et">Menores de edad</span><h2>Desde 12 años, con permiso.</h2>
+    <p>De 12 a 17 años, antes de empezar se pide la autorización de su mamá, papá o tutor, que recibe una copia de los resultados. No pedimos datos sensibles.</p></div>
 </div></section>
 
 ${p ? seccionCompra({ titulo: 'Haz tu evaluación', intro: `${precioT}, pago único con 2 aplicaciones.`,
