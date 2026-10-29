@@ -657,6 +657,9 @@
 .t-hero-chip svg { flex: none; width: 15px; height: 15px; }
 .t-hero-h1 { font-size: clamp(42px, 6.4vw, 78px); font-weight: 760; letter-spacing: -.045em; line-height: 1; margin-top: 20px; max-width: 12ch; text-wrap: balance; }
 .t-hero-h1 .metal { background: var(--metal-osc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* La ficha de producto (.t-sec.t-hero) hereda este hero oscuro en los dos temas: subtítulo e introducción en tinta clara.
+   --fg-2 (#6D696E en claro) quedaba en 3.4:1 sobre el casi negro; --claro-2 da ≥ 7:1 en claro y en oscuro. */
+.t-hero .t-sub, .t-hero .t-lead { color: var(--claro-2); }
 .t-hero-sub { margin-top: 18px; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; color: rgba(244, 242, 245, .78); max-width: 32em; }
 .t-hero .botones { margin-top: 28px; }
 .t-hero-sellos { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: rgba(244, 242, 245, .72); }
