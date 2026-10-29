@@ -226,7 +226,7 @@ export function correoCupon(c, productos, nombre) {
   <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:28px;line-height:1.3;font-weight:800;letter-spacing:2px;color:#141114;margin:8px 0 6px">${esc(c.codigo)}</div>
   <div style="font-size:17px;font-weight:700;color:#6B2A85">${esc(valor)}</div>
 </td></tr></table>
-<p style="${P}"><b>Aplica en:</b> ${esc(aplica)}.${c.alcance !== 'producto' ? ' Solo productos de Vorka México.' : ''}${subs}<br><b>Vigencia:</b> hasta el ${esc(vence)}. ${esc(usos)}</p>
+<p style="${P}"><b>Aplica en:</b> ${esc(aplica)}.${c.alcance === 'linea' ? ' Solo productos de Vorka México.' : ''}${subs}<br><b>Vigencia:</b> hasta el ${esc(vence)}. ${esc(usos)}</p>
 ${boton(liga, 'Usar mi cupón')}
 <p style="${P}"><b>Es transferible:</b> si no lo vas a usar, regálaselo a alguien más. Quien tenga el código lo puede usar.</p>
 <p style="${P};font-size:13.5px;color:#6D696E">El cupón no se acumula con otros códigos (se aplica el mayor) y no se cambia por dinero.${c.tipo === 'monto' ? ' Si tu compra cuesta menos que el cupón, lo que sobra no queda como saldo.' : ''} Siempre se cobran al menos $10 MXN por compra. <a href="${SITIO}/legal/terminos/#descuentos" style="color:#6b2a85;text-decoration:underline">Condiciones</a>. ¿Dudas? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a>.</p>`, { etiqueta: 'Un regalo para ti' });
