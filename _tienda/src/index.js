@@ -32,6 +32,7 @@ import { cambiarCodigo, ventasVendedor, DIAS_CAMBIO } from './codigo-publico.js'
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
+import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo } from './cupones-regalo.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -87,6 +88,12 @@ export class Admin extends WorkerEntrypoint {
   crearCortesias(d) { return crearCortesias(this.env, d); }
   revocarCortesias(id) { return revocarCortesias(this.env, id); }
   borrarCortesia(id) { return borrarCortesia(this.env, id); }
+  // Cupones de regalo (transferibles): crear (con envío opcional por correo, uno por persona), lista con usos y órdenes,
+  // revocar uno o lo vigente de una tanda, y mandar / reenviar uno por correo
+  cuponesRegalo() { return cuponesRegalo(this.env); }
+  crearCuponesRegalo(d) { return crearCuponesRegalo(this.env, d); }
+  revocarCuponesRegalo(d) { return revocarCuponesRegalo(this.env, d || {}); }
+  enviarCuponRegalo(codigo, persona) { return enviarCuponRegalo(this.env, codigo, persona || null); }
   // Ligas de regalo (compras para regalar y cortesías): ver, apagar y volver a prender una por una
   ligas(orderId) { return ligasDe(this.env, orderId); }
   apagarLiga(id) { return apagarLiga(this.env, id); }

@@ -3,7 +3,7 @@ import { SQL_CODIGO_REAL } from './codigo-publico.js';
 import { all, one, run, ahoraISO } from './util.js';
 import { transicion } from './estados.js';
 import { SQL_APARTADOS, SQL_MOVIMIENTOS, descuentoMaximo, COBRO_MINIMO } from './puntos.js';
-import { REFERIDO, centavosDescuento } from './descuentos.js';
+import { REFERIDO, centavosDe, lineaCompra, esCuponRegalo } from './descuentos.js';
 
 const producto = r => r && { ...r, activo: !!r.activo, r2_keys: JSON.parse(r.r2_keys || '[]'), contenido: JSON.parse(r.contenido || '{}') };
 
@@ -37,12 +37,14 @@ export async function afiliadoActivo(env, code) {
  * items: [{ slug, cantidad? }] — el precio se toma de la base de datos.
  * ref: código de quien recomendó (liga de Puntos Vorka); da puntos a esa cuenta al pagarse, no descuento.
  * puntos: { email, disponibles } — el descuento con puntos se calcula aquí.
- * descuento: { codigo, pct, meses, app, duracion } de resolverDescuento (descuentos.js) — código de descuento o 5 % por
- *   recomendación. Se calcula sobre los productos de Vorka (no los de creadores), antes de los puntos. duracion: solo en
- *   suscripciones (cupón de Stripe por %); en pagos únicos va junto con los puntos en un cupón por monto.
+ * descuento: { codigo, pct, monto, meses, app, duracion } de resolverDescuento (descuentos.js) — código de descuento, 5 % por
+ *   recomendación o cupón de regalo (% o monto, con su alcance). Se calcula sobre los productos de Vorka (no los de creadores)
+ *   a los que aplica, antes de los puntos (centavosDe). duracion: solo en suscripciones (cupón de Stripe); en pagos únicos va
+ *   junto con los puntos en un cupón por monto.
+ * sus: la compra es una suscripción (un cupón de regalo cuyo alcance incluye el plan aplica a todo el primer cobro).
  * Lanza Error('producto') si algún slug no existe o está inactivo, y Error('puntos') si al apartar los puntos ya no alcanzan.
  */
-export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null, puntos = null, descuento = null }) {
+export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null, puntos = null, descuento = null, sus = null }) {
   const lineas = [];
   for (const it of items) {
     const p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
@@ -54,10 +56,9 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
   const afiliado = await afiliadoActivo(env, ref);
   email = email.trim().toLowerCase();
   const subtotal = lineas.reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0);
-  // Código de descuento o 5 % por recomendación: % de lo de Vorka (los productos de creadores no llevan descuento),
-  // dejando siempre el cobro mínimo de la pasarela
-  const propio = lineas.filter(l => !l.p.creador_id).reduce((s, l) => s + l.p.precio_centavos * l.cantidad, 0);
-  const descCodigo = centavosDescuento(propio, subtotal, descuento?.pct || 0, COBRO_MINIMO);
+  // Código de descuento, 5 % por recomendación o cupón de regalo: sobre lo de Vorka a lo que aplica (los productos de
+  // creadores no llevan descuento), dejando siempre el cobro mínimo de la pasarela
+  const descCodigo = centavosDe(descuento, lineas.map(l => lineaCompra(l.p, l.cantidad)), sus, COBRO_MINIMO);
   const conCodigo = descCodigo > 0 ? descuento : null;
   // Descuento con puntos (sobre lo que queda); siempre queda el cobro mínimo. Puntos enteros (1 punto = $1): nunca se regalan centavos
   const descPuntos = puntos ? Math.floor(descuentoMaximo(puntos.disponibles, subtotal - descCodigo) / 100) * 100 : 0;
@@ -74,6 +75,7 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
     descuento_meses: conCodigo?.meses ?? null,
     descuento_codigo_centavos: descCodigo,
     descuento_app: conCodigo && conCodigo.codigo !== REFERIDO ? conCodigo.app || null : null,
+    descuento_monto_centavos: conCodigo?.monto || null,
     puntos_usados: puntosUsados,
     puntos_email: puntosUsados > 0 ? puntos.email : null,
     moneda: [...monedas][0],
@@ -87,12 +89,12 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
   // Dos compras simultáneas con el mismo saldo no pueden apartar los mismos puntos (la segunda no se inserta).
   const [ins] = await env.DB.batch([
     env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, proveedor, ref_code, comision_pct, regalo, regalo_para, regalo_mensaje, descuento_centavos, puntos_email, puntos_usados,
-        descuento_codigo, descuento_pct, descuento_duracion, descuento_meses, descuento_codigo_centavos, descuento_app)
-      SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE ? = 0 OR ((${SQL_MOVIMIENTOS}) - (${SQL_APARTADOS})) >= ?`)
+        descuento_codigo, descuento_pct, descuento_duracion, descuento_meses, descuento_codigo_centavos, descuento_app, descuento_monto_centavos)
+      SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? WHERE ? = 0 OR ((${SQL_MOVIMIENTOS}) - (${SQL_APARTADOS})) >= ?`)
       .bind(orden.id, orden.email, orden.nombre, orden.monto_centavos, orden.moneda, orden.proveedor, orden.ref_code, orden.comision_pct,
         regalo ? 1 : 0, regalo?.para || null, regalo?.mensaje || null, orden.descuento_centavos, orden.puntos_email, orden.puntos_usados,
         orden.descuento_codigo, orden.descuento_pct, orden.descuento_duracion, orden.descuento_meses, orden.descuento_codigo_centavos, orden.descuento_app,
-        puntosUsados, orden.puntos_email, orden.puntos_email, puntosUsados),
+        orden.descuento_monto_centavos, puntosUsados, orden.puntos_email, orden.puntos_email, puntosUsados),
     // Si es de un creador, se copia a quién le toca y su % de ese momento
     ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) SELECT ?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM orders WHERE id = ?)')
       .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null, orden.id)),
@@ -162,6 +164,8 @@ export async function aplicarPago(env, orderId, pago) {
 export const TOLERANCIA_PCT = 5;
 
 async function contarUso(env, codigo, app) {
+  // Cupón de regalo: su propia tabla (puede pasar de max_usos si se pagaron a la vez compras abiertas antes; se registra lo real)
+  if (esCuponRegalo(codigo) && (await run(env, 'UPDATE cupones_regalo SET usos = usos + 1 WHERE codigo = ?', codigo)).meta.changes) return;
   await env.DB.batch([
     env.DB.prepare('UPDATE codigos_descuento SET usos = usos + 1 WHERE codigo = ?').bind(codigo),
     ...(app ? [env.DB.prepare(`INSERT INTO codigos_descuento_usos (codigo, app, usos) SELECT ?, ?, 1 WHERE EXISTS (SELECT 1 FROM codigos_descuento WHERE codigo = ?)

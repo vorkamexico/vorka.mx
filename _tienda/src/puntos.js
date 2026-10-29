@@ -16,12 +16,13 @@
 // Transferencia a cuenta: solo si el equipo la habilitó para esa persona (puntos_cuentas.puede_retirar); SPEI manual,
 // mínimo 500 puntos, y los puntos de cada venta se pueden transferir 7 días después. No se anuncia en textos públicos.
 import { one, all, run, json, fail, aleatorio, sha256, iguales, clabeValida } from './util.js';
+import { lineaDe } from './lineas.js';
 import { hashToken } from './entrega.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
 import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
-import { resolverDescuento, afiliado, normalizar, duracionDe, PCT_REFERIDO } from './descuentos.js';
+import { resolverDescuento, afiliado, normalizar, duracionDe, PCT_REFERIDO, lineaCompra, enAlcance } from './descuentos.js';
 import { suscripcionDe } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
 import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
@@ -630,7 +631,9 @@ export async function rutasPuntos(req, env, url) {
     const prod = /^[a-z0-9-]{1,80}$/.test(slug) ? await productoPorSlug(env, slug) : null;
     const s = suscripcionDe(prod);
     const sus = s && !prod.contenido.complemento ? { intervalo: s.intervalo === 'year' ? 'year' : 'month', app: prod.contenido.acceso?.app || null } : null;
-    const r = await resolverDescuento(env, { escrito: escrito ?? liga, liga: escrito ? liga : null, sus });
+    // El producto elegido como renglón: un cupón de regalo revisa su alcance y el mayor se decide en pesos
+    const lineas = prod ? [lineaCompra(prod)] : null;
+    const r = await resolverDescuento(env, { escrito: escrito ?? liga, liga: escrito ? liga : null, sus, lineas });
     // Los productos de creadores no llevan descuento (crearOrden lo calcula solo sobre lo de Vorka)
     if (prod?.creador_id) r.descuento = null;
     const codigo = escrito ?? normalizar(liga);
@@ -640,8 +643,12 @@ export async function rutasPuntos(req, env, url) {
     const esRef = !!r.ref && (r.ref === codigo || (await afiliado(env, codigo))?.code === r.ref);
     const valido = esDesc || esRef;
     // descuento: lo que la página usa para su «Pagas hoy» (con el mismo cálculo que el servidor, centavosDescuento)
-    const calc = r.descuento ? { pct: r.descuento.pct, duracion: sus ? duracionDe(r.descuento) : null, meses: r.descuento.meses ?? null,
-      etiqueta: r.descuento.tipo === 'referido' ? `${r.descuento.pct} % por recomendación` : `${r.descuento.codigo}: ${r.descuento.pct} %` } : null;
+    // Cupón de regalo: monto (si es por monto) y slugs a los que aplica (línea o producto; null = todo), para que la página
+    // descuente solo lo que entra (p. ej. Brindi con complementos)
+    const rg = r.descuento?.regalo ? r.descuento : null;
+    const slugs = rg && rg.alcance !== 'tienda' && !sus ? (await all(env, 'SELECT id, slug, categoria, creador_id FROM products')).map(x => ({ ...x, linea: lineaDe(x) })).filter(x => enAlcance(rg, x)).map(x => x.slug) : null;
+    const calc = r.descuento ? { pct: r.descuento.pct, ...(rg ? { monto: rg.monto || null, slugs } : {}), duracion: sus ? duracionDe(r.descuento) : null, meses: r.descuento.meses ?? null,
+      etiqueta: r.descuento.tipo === 'referido' ? `${r.descuento.pct} % por recomendación` : rg ? 'cupón de regalo' : `${r.descuento.codigo}: ${r.descuento.pct} %` } : null;
     if (!valido && !r.avisos.length) return json({ valido: false, ...(r.descuento ? { texto: r.descuento.texto, descuento: calc } : {}) }, 200, NO_CACHE);
     // Gana un código de descuento sobre el 5 %: se dice que no se acumulan
     const nota = esDesc && r.ref ? ' (no se acumula con el 5 % por recomendación)' : '';

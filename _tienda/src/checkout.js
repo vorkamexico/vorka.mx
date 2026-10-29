@@ -7,7 +7,7 @@ import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLi
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
 import { productoPorSlug } from './modelo.js';
-import { resolverDescuento, duracionDe } from './descuentos.js';
+import { resolverDescuento, duracionDe, lineaCompra } from './descuentos.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
 
@@ -125,12 +125,15 @@ export async function checkout(req, env) {
   }
   // Quién recomendó (el código escrito gana sobre la liga: ?ref= en el formulario o la cookie de 30 días) y el descuento:
   // un código de descuento o el 5 % por recomendación, el mayor (no se acumulan). Los puntos se suman en pagos únicos.
-  const desc = await resolverDescuento(env, { escrito: d.codigo, liga: d.ref || cookie(req, 'vorka_ref'), email: d.email, sus });
+  // Los renglones de la compra: un cupón de regalo revisa su alcance (línea o producto) y el mayor se decide en pesos
+  const lineas = [];
+  for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p) lineas.push(lineaCompra(p, it.cantidad || 1)); }
+  const desc = await resolverDescuento(env, { escrito: d.codigo, liga: d.ref || cookie(req, 'vorka_ref'), email: d.email, sus, lineas });
   const descuento = desc.descuento ? { ...desc.descuento, duracion: sus ? duracionDe(desc.descuento) : null } : null;
 
   let orden;
   try {
-    orden = await crearOrden(env, { puntos, descuento,
+    orden = await crearOrden(env, { puntos, descuento, sus,
       items,
       email: d.email, nombre: d.nombre,
       regalo: d.regalo ? { para: d.regalo_para || null, mensaje: d.regalo_mensaje || null } : null,

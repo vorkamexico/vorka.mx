@@ -418,7 +418,8 @@ const SCRIPT = `(function(){
   function total(){ if(!suma) return; suma.hidden=!esPlan();
     // Lo que el plan ya incluye (Gala en Premium) no se ofrece ni se cobra
     [].forEach.call(suma.querySelectorAll('[data-incluido-en]'),function(x){ var dentro=x.dataset.incluidoEn===f.slug.value; x.closest('label').hidden=dentro; if(dentro) x.checked=false; });
-    var c=precioDe(); extrasElegidos().forEach(function(x){ c+=+x.dataset.precio; }); tot.textContent=VD.pesos(VD.hoy(c)); }
+    // b: la parte a la que aplica el descuento (un cupón de regalo de un producto no descuenta los complementos)
+    var c=precioDe(), b=VD.en(f.slug.value)?c:0; extrasElegidos().forEach(function(x){ c+=+x.dataset.precio; if(VD.en(x.value)) b+=+x.dataset.precio; }); tot.textContent=VD.pesos(VD.hoy(c,b)); }
   document.addEventListener('vorka:descuento',total); f.slug.addEventListener('change',total); if(suma) suma.addEventListener('change',total); total();
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
