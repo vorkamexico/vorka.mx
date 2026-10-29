@@ -227,7 +227,9 @@ const CSS = `
 .cu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.cu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--cu-morado)}
 .cu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .cu-total{margin:4px 0 12px;font-size:16px}.cu-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.cu #form-cuentas .btn.acento{background:var(--cu-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}`;
+.cu #form-cuentas .btn.acento{background:var(--cu-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}
+/* en oscuro el morado se aclara: el texto del botón pasa a tinta oscura para seguir en ≥ 4.5:1 */
+[data-tema="oscuro"] .cu #form-cuentas .btn.acento{color:#141216}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-cuentas'); if(!f||!window.fetch) return;
