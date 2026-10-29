@@ -19,7 +19,9 @@ Cada URL es una carpeta con `index.html` (`/servicios/estrategia/` → `servicio
 
 ### Documentos de clientes y material interno (se abren con la URL, Google no los indexa)
 
-`propuesta/`, `diagnostico/`, `1ertrimestrecelaya/`, `2dotrimestrecelaya/`, `consultor/`, `acuerdosaltamesa/`, `manual/`, `clubers/`, `imagen/`, `vorkacortazar/`, `eugetuagente/`, `fundamentos/`
+`propuesta/`, `diagnostico/`, `consultor/`, `acuerdosaltamesa/`, `manual/`, `clubers/`, `imagen/`, `vorkacortazar/`, `eugetuagente/`, `fundamentos/`
+
+Los reportes trimestrales de Sparks ya no viven aquí: se capturan en Vorka México (os.vorka.mx › Reportes Sparks › Trimestres) y se ven con el reporte completo del cliente. `/1ertrimestrecelaya` y `/2dotrimestrecelaya` redirigen a esa liga (`_redirects`).
 
 Llevan `<meta name="robots" content="noindex">` y además la cabecera `X-Robots-Tag: noindex` (en `_headers`). **Si agregas una carpeta de este tipo, agrégala también en `_headers`**, y no la pongas en `sitemap.xml`.
 
