@@ -57,3 +57,14 @@
 /anaoleynicktrayectoria/portafolio/       /anaoleynick/portafolio/    301
 /anaoleynicktrayectoria                   /anaoleynick/trayectoria/   301
 /anaoleynicktrayectoria/                  /anaoleynick/trayectoria/   301
+
+# Diagnósticos de talento: el expediente vive en Vorka OS (este repo es público) y se ve en /diagnostico/ver/#<token>.
+# Las ligas viejas por nombre llevan a la página neutral («Esta liga no está activa»); la liga nueva se manda directo a cada persona.
+/diagnostico/dafne      /diagnostico/ver/   302
+/diagnostico/dafne/*    /diagnostico/ver/   302
+/diagnostico/aranel     /diagnostico/ver/   302
+/diagnostico/aranel/*   /diagnostico/ver/   302
+/diagnostico/fanny      /diagnostico/ver/   302
+/diagnostico/fanny/*    /diagnostico/ver/   302
+/diagnostico/julian     /diagnostico/ver/   302
+/diagnostico/julian/*   /diagnostico/ver/   302
