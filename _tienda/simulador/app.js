@@ -773,7 +773,7 @@
     h('<section class="sim-rep">' +
       '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen completo' + (res.tutor ? ' con tutor' : '') : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
-        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '')  ponderadoHTML(res, secs) +
+        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '') + ponderadoHTML(res, secs) +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +
       '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado (sin conexión). Se guardará en tu historial la próxima vez que abras el simulador con internet.</p>' +
       '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +
