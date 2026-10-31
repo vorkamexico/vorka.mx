@@ -76,7 +76,7 @@ export const ECOEMS = crearSimulador({
 // DGAE (fuentes en la respuesta de cada pregunta). Nada del proceso 2027: no hay nada publicado.
 const SITIO = 'https://vorka.mx';
 const IMG = '/assets/tienda';   // estáticas del sitio (assets/tienda/), no en R2
-const DESCRIPCION = 'Simulador ECOEMS en línea para entrar a las prepas de la UNAM y del IPN: 128 reactivos en 3 horas, tutor que te da pistas, explicación paso a paso y aciertos estimados por materia.';
+const DESCRIPCION = 'Simulador ECOEMS en línea para las prepas de la UNAM y del IPN: 128 reactivos en 3 horas, tutor con pistas y aciertos estimados por materia.';
 const FAQ = [
   { p: '¿Qué es el ECOEMS?', r: 'Es el Espacio de Coordinación que convoca el proceso de ingreso al bachillerato llamado «Mi derecho, mi lugar». Mucha gente le dice «examen ECOEMS» al examen que se presenta dentro de ese proceso.' },
   { p: '¿Quién tiene que presentar el examen?', r: 'Según la convocatoria 2026, el examen solo lo piden las opciones de la UNAM (las 9 Escuelas Nacionales Preparatorias y los 5 Colegios de Ciencias y Humanidades) y del IPN (los CECyT 1 al 15 y 19, y el CET 1), con promedio mínimo de 7.0. Las otras 8 instituciones del proceso son de acceso directo, sin examen.' },

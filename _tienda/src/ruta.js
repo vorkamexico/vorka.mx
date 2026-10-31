@@ -8,6 +8,8 @@
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc, WHATSAPP } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, formCompra, SCRIPT_COMPRA } from './tienda.js';
+import { oferta, ofertas, migas } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA } from './marco.generado.js';
 
 export const SLUG_RUTA = 'ruta-de-impacto';
@@ -75,13 +77,15 @@ export async function paginaRuta(env, req, url) {
   const precioT = p ? precio(p) : `$${PRECIO_BASE} MXN`;
   const regalo = url.searchParams.get('regalo') === '1';
   const FAQ = faq({ precioN });
-  const descripcion = `Curso interactivo para jóvenes de 15 a 29 años: lecciones cortas, racha y un tutor con pistas para llevar tu proyecto social de la idea a la comunidad, con entrevistas y un piloto. ${precioT}, pago único por un año. Lo recibido va para IMPACTO.`;
+  const rs = p ? await resenasDe(env, RUTA_RUTA) : null;
+  const descripcion = `Curso para jóvenes de 15 a 29 años: lecciones cortas y tutor para llevar tu proyecto social a tu comunidad. ${precioT}, un año. Lo recibido va para IMPACTO.`;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Course', name: 'Ruta de Impacto', description: descripcion, url: `https://vorka.mx${RUTA_RUTA}`, image: [OG_RUTA], inLanguage: 'es-MX',
     provider: { '@type': 'Organization', name: 'Vorka México', sameAs: 'https://vorka.mx/' },
     audience: { '@type': 'PeopleAudience', suggestedMinAge: 15, suggestedMaxAge: 29 },
     teaches: NIVELES.map(n => n[0]).concat('Contar tu proyecto'),
     hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'PT5M' },
-    offers: { '@type': 'Offer', category: 'Paid', price: precioN.toFixed(2), priceCurrency: 'MXN', url: `https://vorka.mx${RUTA_RUTA}`, availability: p ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder' } },
+    offers: oferta({ ruta: RUTA_RUTA, price: precioN.toFixed(2), disponible: !!p, category: 'Paid' }), ...ldResenas(rs) },
+  migas('Ruta de Impacto', RUTA_RUTA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Ruta de Impacto' }, noindex: !p,
@@ -166,6 +170,7 @@ ${p ? seccionCompra({ titulo: 'Empieza tu Ruta', intro: `${precioT}, pago único
   form: formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '', regalo, mensajeEjemplo: '¡Tu proyecto puede cambiar tu colonia!' }) })
   : `<section class="ri-sec suave" id="comprar"><div class="marco"><p class="ri-pronto">La venta abre muy pronto. ¿Dudas? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o por <a href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a>.</p></div></section>`}
 
+${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre Ruta de Impacto',
   pie: `<p class="t-nota t-legal">Ruta de Impacto · Powered by vorka.mx · Lo recibido va para <a href="${IMPACTO_URL}" target="_blank" rel="noopener">IMPACTO</a></p>` })}
 ${await masTienda(env, 'examenes')}

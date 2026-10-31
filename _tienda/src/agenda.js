@@ -6,6 +6,8 @@
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { oferta, ofertas, migas } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 
 const APP = 'https://agenda.vorka.mx';
@@ -114,12 +116,13 @@ export async function paginaAgenda(env, req, url) {
   const ahorro = separado && separado > paqM.prod.precio_centavos ? separado - paqM.prod.precio_centavos : null;
   const nuevo = `${APP}/#/nuevo`;
   const FAQ = faq({ precioProf });
-  const precios = planes.map(x => x.prod.precio_centavos / 100);
+  const rs = planes.length ? await resenasDe(env, RUTA_AGENDA) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Agenda · Citas en línea para consultorios y negocios de servicios', brand: { '@type': 'Brand', name: 'Agenda' },
     description: 'Tu página de citas: tus clientes eligen servicio, profesional, día y hora, y su cita queda confirmada al instante. Recordatorios, cambios y cancelaciones solos. Prueba 7 días gratis.',
     image: [OG_AGENDA], url: `https://vorka.mx${RUTA_AGENDA}`,
-    ...(planes.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: Math.min(...precios).toFixed(2), highPrice: Math.max(...precios).toFixed(2), offerCount: planes.length,
-      availability: 'https://schema.org/InStock', offers: planes.map(x => ({ '@type': 'Offer', priceCurrency: 'MXN', price: (x.prod.precio_centavos / 100).toFixed(2), name: `${x.nombre} · plan ${x.periodo.toLowerCase()}` })) } } : {}) },
+    ...(planes.length ? { offers: ofertas({ ruta: RUTA_AGENDA, centavos: planes.map(x => x.prod.precio_centavos),
+      detalle: planes.map(x => ({ centavos: x.prod.precio_centavos, name: `${x.nombre} · plan ${x.periodo.toLowerCase()}` })) }), ...ldResenas(rs) } : {}) },
+  migas('Agenda', RUTA_AGENDA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, pr: x.profesional?.precio_centavos ?? null, s: x.sucursal?.precio_centavos ?? null, cada: x.cada, paquete: !!x.paquete }]));
   // Tarjeta de precio de una línea (Agenda o el paquete): el mensual en grande y el anual abajo
@@ -130,7 +133,7 @@ export async function paginaAgenda(env, req, url) {
       <a class="ag-btn${rec ? '' : ' ghost oscuro'}" href="?plan=${(m || a).slug}#comprar" data-plan="${(m || a).slug}">Suscribirme</a></article>` : '';
   const res = pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Agenda' },
     titulo: 'Agenda: citas en línea para consultorios y negocios | Prueba 7 días gratis', ruta: RUTA_AGENDA, imagen: OG_AGENDA,
-    descripcion: `Tu página de citas en línea: tus clientes eligen servicio, profesional, día y hora, y su cita queda confirmada al instante. Recordatorios y cancelaciones solos. $${precioProf} al mes por profesional. Prueba 7 días gratis, sin tarjeta.`,
+    descripcion: `Tu página de citas en línea: tus clientes reservan servicio, día y hora, y los recordatorios salen solos. $${precioProf} al mes por profesional. Prueba 7 días gratis.`,
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
@@ -230,6 +233,7 @@ ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Agenda', intro: `¿Aún
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta de crédito o débito con Stripe · Se renueva solo y lo cancelas cuando quieras</span></p>
   </form><script type="application/json" id="ag-precios">${JSON.stringify(datos).replace(/</g, '\\u003c')}</script>` }) : ''}
 
+${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/agenda/">Condiciones de Agenda</a> · <a href="/legal/agenda/privacidad/">Aviso de privacidad</a> · <a href="https://agenda.vorka.mx/citas/privacidad-clientes">Privacidad para clientes de cada negocio</a> · Agenda · Powered by vorka.mx</p>' })}
 ${await masTienda(env, 'negocios')}
 </div>`,

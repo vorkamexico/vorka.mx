@@ -5,6 +5,8 @@
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { oferta, ofertas, migas } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 
 const APP = 'https://vende.vorka.mx';
@@ -58,13 +60,15 @@ export async function paginaVende(env, req, url) {
   const error = url.searchParams.get('error') || '';
   // Desde la app (Pasar a Vende Pro) llega el correo de la cuenta para que la suscripción quede ligada a ella
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
+  const rs = planes.length ? await resenasDe(env, RUTA_VENDE) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Vende · Para vendedoras por catálogo y por encargo', brand: { '@type': 'Brand', name: 'Vorka México' },
     description: 'Clientas, pedidos, cobros y ganancia real en un solo lugar, con recordatorios por WhatsApp listos para enviar. Gratis para empezar.', image: ['https://vorka.mx/assets/tienda/vende.webp'],
-    ...(planes.length ? { offers: planes.map(x => ({ '@type': 'Offer', priceCurrency: 'MXN', price: (x.prod.precio_centavos / 100).toFixed(2), name: `Plan ${x.nombre.toLowerCase()}` })) } : {}) },
+    ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_VENDE, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
+  migas('Vende', RUTA_VENDE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Vende' },
     titulo: 'Vende: tus clientas, pedidos y cobros en orden | Gratis para empezar', ruta: RUTA_VENDE, imagen: 'https://vorka.mx/assets/tienda/vende-og.png',
-    descripcion: 'Para vendedoras por catálogo y por encargo: a quién escribirle hoy, pedidos, cobros con estado de cuenta y tu ganancia real. Funciona sin internet. Gratis para empezar, sin tarjeta.',
+    descripcion: 'Para vendedoras por catálogo y por encargo: pedidos, cobros con estado de cuenta y tu ganancia real. Funciona sin internet. Gratis, sin tarjeta.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
@@ -153,6 +157,7 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta de crédito o débito con Stripe · Se renueva solo y lo cancelas cuando quieras</span></p>
   </form><script type="application/json" id="ve-precios">${JSON.stringify(Object.fromEntries(planes.map(x => [x.slug, { p: precio(x.prod), c: x.prod.precio_centavos, renueva: x.renueva }]))).replace(/</g, '\\u003c')}</script>` }) : ''}
 
+${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vende/">Condiciones de Vende</a> · <a href="/legal/vende/privacidad/">Aviso de privacidad</a> · Vende · by Vorka México</p>' })}
 ${await masTienda(env, 'negocios')}
 </div>`,

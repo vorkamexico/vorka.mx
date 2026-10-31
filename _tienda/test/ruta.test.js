@@ -91,7 +91,7 @@ describe('ficha /tienda/ruta-de-impacto/', () => {
   it('SEO: título, descripción, canónica, OG, Course y FAQPage', async () => {
     const h = await (await pedir('/tienda/ruta-de-impacto/')).text();
     expect(h).toMatch(/<title>Ruta de Impacto: curso para hacer tu proyecto social \| Jóvenes de 15 a 29 años<\/title>/);
-    expect(h).toMatch(/<meta name="description" content="Curso interactivo para jóvenes de 15 a 29 años[^"]+Lo recibido va para IMPACTO\.">/);
+    expect(h).toMatch(/<meta name="description" content="Curso para jóvenes de 15 a 29 años[^"]+Lo recibido va para IMPACTO\.">/);
     expect(h).toContain('<link rel="canonical" href="https://vorka.mx/tienda/ruta-de-impacto/">');
     expect(h).toContain('<meta property="og:image" content="https://vorka.mx/assets/tienda/v3/ruta-de-impacto-og.jpg">');
     expect(h).not.toContain('noindex');

@@ -14,7 +14,7 @@ const IMG = `${SITIO}/tienda/img/portadas`;
 const EXAMEN_REACTIVOS = SECCIONES_EXAMEN.reduce((t, x) => t + x.reactivos, 0), EXAMEN_HORAS = SECCIONES_EXAMEN.reduce((t, x) => t + x.minutos, 0) / 60;
 const CORTO_REACTIVOS = SECCIONES.reduce((t, x) => t + x.reactivos, 0);
 const CAL_REACTIVOS = SECCIONES_CALENTAMIENTO.reduce((t, x) => t + x.reactivos, 0);
-const DESCRIPCION = 'Simulador PAA en línea con preguntas tipo examen de Lectura, Redacción, Matemáticas e Inglés, cronómetro real, tutor con pistas, explicación paso a paso y puntaje estimado.';
+const DESCRIPCION = 'Simulador PAA en línea con preguntas tipo examen de Lectura, Redacción, Matemáticas e Inglés, cronómetro real, tutor con pistas y puntaje estimado.';
 // Datos de la guía oficial de estudio de la PAA (College Board)
 export const FAQ_PAA = [
   { p: '¿Qué es la PAA?', r: 'La Prueba de Aptitud Académica (PAA) del College Board es un examen de admisión que usan universidades de México, Puerto Rico y América Latina. Evalúa razonamiento verbal y matemático, y aprovechamiento en español, matemáticas e inglés.' },

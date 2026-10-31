@@ -13,7 +13,7 @@ export const UNIVERSIDADES = {
   udem: {
     nombre: 'UDEM', completo: 'Universidad de Monterrey (UDEM)', art: 'la',
     titulo: 'PAA UDEM: puntaje mínimo (1,200) y reglas de admisión | Vorka México',
-    descripcion: 'Cuánto pide la UDEM en la PAA: 1,200 en total, 550 en razonamiento verbal y matemático y promedio de 80 (Enfermería: 1,100, 500 y 70). Vigencia, constancia de otra institución, cursos remediales y portafolio.',
+    descripcion: 'Cuánto pide la UDEM en la PAA: 1,200 en total, 550 en razonamiento verbal y matemático y promedio de 80. Vigencia, constancias y cursos remediales.',
     h1: 'PAA para la UDEM: puntajes mínimos y cómo prepararte',
     lead: 'La UDEM pide la Prueba de Aptitud Académica (PAA) para entrar a cualquiera de sus licenciaturas. Aquí está lo que dice su lineamiento oficial de admisión, con el numeral de cada regla, y un plan para llegar a tu puntaje con el simulador.',
     fuentes: [{ nombre: 'Lineamiento de Admisión a Licenciatura de la UDEM (LO-DISE-003, versión B, emitido el 06/01/2026)', url: 'https://udem.edu.mx/sites/default/files/2026-03/LO-DISE-003-B%20Lineamiento%20Admisio%CC%81n%20a%20Licenciatura.pdf' }],
@@ -49,7 +49,7 @@ export const UNIVERSIDADES = {
   'tec-de-monterrey': {
     nombre: 'Tec de Monterrey', completo: 'Tecnológico de Monterrey', art: 'el',
     titulo: 'PAA Tec de Monterrey: reglas para entrar a profesional | Vorka México',
-    descripcion: 'El Tec pide la PAA para profesional (la prepa usa PIENSE II). Acepta SAT o ACT, pero la PAA solo cuenta si la aplicó un campus del Tec. Vigencia, intentos y qué más evalúa.',
+    descripcion: 'El Tec pide la PAA para profesional (la prepa usa PIENSE II). Acepta SAT o ACT, pero la PAA solo cuenta si la aplicó el Tec. Vigencia e intentos.',
     h1: 'PAA para el Tec de Monterrey: reglas de admisión a profesional',
     lead: 'El Tec usa la Prueba de Aptitud Académica (PAA) para entrar a profesional, dentro de una evaluación integral de tu expediente. Aquí está lo que dice su Reglamento de Admisiones, con el artículo de cada regla, y un plan para prepararte.',
     fuentes: [{ nombre: 'Reglamento de Admisiones para los Niveles de Preparatoria y Profesional del Tecnológico de Monterrey (edición febrero 2025)', url: 'https://tec.mx/sites/default/files/inline-files/reglamento-admisiones-preparatoria-profesional-2025.pdf' }],
@@ -126,7 +126,7 @@ export const UNIVERSIDADES = {
   itam: {
     nombre: 'ITAM', completo: 'Instituto Tecnológico Autónomo de México (ITAM)', art: 'el',
     titulo: 'PAA ITAM: examen de admisión en línea (ePAA) y reglas | Vorka México',
-    descripcion: 'El ITAM aplica la ePAA del College Board en línea. Cómo es el procedimiento, si sirve la PAA de otra institución, cuándo se paga y cuántas veces puedes presentarla.',
+    descripcion: 'El ITAM aplica la ePAA del College Board en línea: cómo es, si sirve la PAA de otra institución, cuándo se paga y cuántas veces puedes presentarla.',
     h1: 'PAA para el ITAM: cómo es su examen de admisión en línea',
     lead: 'El examen de admisión del ITAM es la PAA electrónica en línea (ePAA) del College Board. Aquí está lo que dice su Dirección Escolar y un plan para llegar listo a tu único intento del periodo.',
     fuentes: [
@@ -164,7 +164,7 @@ export const UNIVERSIDADES = {
   iteso: {
     nombre: 'ITESO', completo: 'ITESO, Universidad Jesuita de Guadalajara', art: 'el',
     titulo: 'PAA ITESO: cómo validar tu puntaje de otra universidad | Vorka México',
-    descripcion: 'El ITESO valida tu PAA de otra universidad si no tiene más de año y medio. Qué documento entregas, cuánto cuesta el trámite, fechas de examen para enero 2027 y la beca que pide PAA mayor a 1,250.',
+    descripcion: 'El ITESO valida tu PAA de otra universidad si no tiene más de año y medio. Trámite, costo, fechas para enero 2027 y la beca que pide más de 1,250.',
     h1: 'PAA para el ITESO: cómo validar tu puntaje y qué beca la pide',
     lead: 'Si ya presentaste la PAA en otra universidad, el ITESO puede validar tu puntaje en lugar de pedirte otro examen. Aquí están sus reglas oficiales, las fechas de examen para entrar en enero de 2027 y un plan para subir tu puntaje.',
     fuentes: [

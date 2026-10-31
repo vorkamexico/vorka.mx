@@ -15,6 +15,8 @@ import { temporadaActual, decoracion } from './temporadas.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { seccionesCatalogo, sinAcentos } from './lineas.js';
 import { avisoCupon } from './cupones-regalo.js';
+import { oferta, migas, ldScript } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 export { seccionesCatalogo };
 
 const SITIO = 'https://vorka.mx';
@@ -241,7 +243,7 @@ export async function paginaCatalogo(env, req, url) {
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
     titulo: 'Tienda Vorka México · Simulador PAA, invitaciones digitales y kits', ruta: '/tienda/', navActual: 'inicio',
-    descripcion: 'Simulador PAA para tu examen de admisión, invitaciones digitales con QR para tus celebraciones y kits para emprender. Productos digitales de Vorka México con entrega inmediata.',
+    descripcion: 'Simulador PAA, invitaciones digitales con QR y kits para emprender: productos digitales de Vorka México con entrega inmediata.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO, whatsapp: true, navOscuro: true,
@@ -413,18 +415,18 @@ export async function paginaProducto(env, req, url, slug) {
   // Si el producto tiene su propia página (p. ej. vorka.mx/simulador-paa/), esa es la canónica para Google
   const ruta = c.acceso?.ruta || `/tienda/${p.slug}/`;
   const imagen = p.imagen ? new URL(p.imagen, SITIO).toString() : undefined;
-  const ld = {
+  const rs = await resenasDe(env, ruta);
+  const ld = [{
     '@context': 'https://schema.org', '@type': 'Product', name: p.nombre, description: p.descripcion_corta, sku: p.id,
     brand: { '@type': 'Brand', name: 'Vorka México' }, ...(imagen ? { image: [imagen] } : {}),
-    offers: { '@type': 'Offer', url: SITIO + ruta, price: (p.precio_centavos / 100).toFixed(2), priceCurrency: p.moneda, availability: 'https://schema.org/InStock',
-      seller: { '@type': 'Organization', name: 'Vorka México' } },
-  };
+    offers: oferta({ ruta, centavos: p.precio_centavos, moneda: p.moneda }), ...ldResenas(rs),
+  }, migas(p.nombre, ruta)];
   const faq = [...(c.faq || []), ...(esAcceso(p) ? FAQ_ACCESO : FAQ_TIENDA)];
   const pasos = c.pasos || [];
 
   return pagina({
     titulo: `${p.nombre} · Vorka México`, descripcion: p.descripcion_corta, ruta, imagen,
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`,
+    head: ldScript(ld),
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_COMPRA + SCRIPT_PESTANAS, navActual: 'catalogo',
     cuerpo: `
@@ -447,6 +449,7 @@ ${pestanas([
     <p class="t-nota">¿No encuentras tu respuesta? Te contesta una persona: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o <a href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a>.</p>
     <div class="botones t-faq-cta"><a class="btn acento" href="#comprar">Comprar por ${precio(p)} ${FLECHA}</a></div>`],
 ])}
+${seccionResenas(rs)}
 ${c.acceso?.app === 'cupo' ? ELEGIR('cupo') : ''}
 ${await masTienda(env, seccionDe(p))}
 <div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn acento chico" href="#comprar">Comprar</a></div>`,

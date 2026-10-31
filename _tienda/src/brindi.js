@@ -7,6 +7,8 @@ import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { oferta, ofertas, migas } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { IMPACTO } from './gracias.js';
 import { PCT_REFERIDO } from './descuentos.js';
@@ -145,31 +147,31 @@ import { GUIAS } from './brindi-guias.js';
 
 export const VARIANTES = {
   '': { titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi',
-    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos, cumpleaños y graduaciones. Créala gratis, compártela por WhatsApp con un enlace o QR y recibe confirmaciones. Pago único desde $299 MXN.',
+    descripcion: 'Invitaciones digitales para bodas, XV años, bautizos y cumpleaños. Créala gratis, compártela por WhatsApp y recibe confirmaciones. Desde $299 MXN.',
     h1: 'Tu invitación digital, lista en minutos.', lead: 'Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.',
     demo: 'demo-boda', evento: 'mi evento' },
   bodas: { titulo: 'Invitaciones digitales para boda con confirmación por WhatsApp | Brindi',
-    descripcion: 'Invitación digital de boda con sobre que se abre, padres y padrinos, itinerario, mesa de regalos y confirmación por invitado. Créala gratis y paga solo al publicar, desde $299 MXN.',
+    descripcion: 'Invitación digital de boda con sobre que se abre, padrinos, itinerario, mesa de regalos y confirmación por invitado. Créala gratis; desde $299 MXN.',
     h1: 'La invitación de su boda, digital y con estilo.', lead: 'Con padres y padrinos, itinerario, mesa de regalos y hospedaje. La mandan por WhatsApp, cada invitado confirma los lugares que le reservaron y ustedes saben quién viene.',
     demo: 'demo-boda', primero: ['demo-boda', 'demo-boda-editorial'], evento: 'mi boda', corta: 'Bodas' },
   'xv-anos': { titulo: 'Invitaciones digitales para XV años con QR | Brindi',
-    descripcion: 'Invitación digital de XV años con vals, padrinos, cuenta regresiva y galería. Se manda por WhatsApp y cada invitado confirma desde su celular. Créala gratis; pago único desde $299 MXN.',
+    descripcion: 'Invitación digital de XV años con vals, padrinos, cuenta regresiva y galería. Se manda por WhatsApp y cada invitado confirma. Desde $299 MXN.',
     h1: 'Invitaciones digitales para XV años.', lead: 'Con padrinos, cuenta regresiva, itinerario de la noche y galería. La mandas por WhatsApp, cada invitado confirma sus lugares y tú llegas a la fiesta sabiendo quién viene.',
     demo: 'demo-xv', primero: ['demo-xv'], evento: 'unos XV años', corta: 'XV años' },
   bautizo: { titulo: 'Invitaciones digitales para bautizo | Brindi',
-    descripcion: 'Invitación digital de bautizo con papás y padrinos, ceremonia y comida, mapa y confirmación de asistencia. Créala gratis y compártela por WhatsApp. Pago único desde $299 MXN.',
+    descripcion: 'Invitación digital de bautizo con papás y padrinos, ceremonia, comida, mapa y confirmación de asistencia. Créala gratis; desde $299 MXN.',
     h1: 'Invitaciones digitales para bautizo.', lead: 'Con papás y padrinos, la ceremonia, la comida y el mapa para llegar. La mandas por WhatsApp y tus invitados confirman desde su celular.',
     demo: 'demo-bautizo', primero: ['demo-bautizo'], evento: 'un bautizo', corta: 'Bautizo' },
   graduacion: { titulo: 'Invitaciones digitales para graduación | Brindi',
-    descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Créala gratis y compártela por WhatsApp con un enlace o QR. Pago único desde $299 MXN.',
+    descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Compártela por WhatsApp o QR. Desde $299 MXN.',
     h1: 'Invitaciones digitales para tu graduación.', lead: 'Ceremonia, cena y brindis en una sola invitación. La mandas por WhatsApp, tus invitados confirman y tú sabes cuántos lugares apartar.',
     demo: 'demo-graduacion', primero: ['demo-graduacion'], evento: 'una graduación', corta: 'Graduación' },
   posadas: { titulo: 'Invitaciones digitales para posadas y eventos de empresa con QR | Brindi',
-    descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: confirmación por colaborador y acceso con QR en la entrada. Créala gratis; pago único desde $299 MXN.',
+    descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: cada colaborador confirma y entra con QR. Desde $299 MXN.',
     h1: 'La posada de tu empresa, con invitación y acceso con QR.', lead: 'Para la posada, la cena de fin de año o un lanzamiento. Cada colaborador confirma desde su celular, sabes cuántos van y, con Premium, tu equipo escanea los pases en la entrada.',
     demo: 'demo-graduacion', primero: ['demo-graduacion', 'demo-boda-editorial'], evento: 'un evento de empresa', corta: 'Posadas y empresas', plan: 'brindi-premium' },
   organizadores: { titulo: 'Invitaciones digitales para organizadores, salones y fotógrafos | Brindi',
-    descripcion: 'Ofrece invitaciones digitales a tus clientes: 5 eventos Celebración en un paquete y puntos por cada cliente que contrate Brindi con tu liga. Para wedding planners, salones y fotógrafos.',
+    descripcion: 'Invitaciones digitales para tus clientes: 5 eventos Celebración en un paquete y puntos por cada cliente que contrate con tu liga. Para wedding planners.',
     h1: 'Invitaciones digitales para tus clientes.', lead: 'Para wedding planners, salones, fotógrafos y organizadores: armas la invitación de cada evento desde tu cuenta, tus clientes la mandan por WhatsApp y tú ves quién confirma.',
     demo: 'demo-boda-editorial', primero: ['demo-boda-editorial', 'demo-xv'], evento: 'mis clientes (soy organizador)', corta: 'Organizadores', plan: ORGANIZADOR },
 };
@@ -203,9 +205,12 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const elegido = url.searchParams.get('plan') || (V.plan === ORGANIZADOR && !org ? null : V.plan) || rec.slug;
   const msgWa = `Hola, tengo dudas sobre Brindi para ${V.evento}.`;
   const ordenDemos = V.primero ? [...V.primero.map(s => DEMOS.find(d => d[0] === s)).filter(Boolean), ...DEMOS.filter(d => !V.primero.includes(d[0]))] : DEMOS;
+  // Reseñas: las de todo Brindi (sus planes viven en /tienda/brindi/), en la página general y en cada tipo de evento
+  const rs = aLaVenta ? await resenasDe(env, '/tienda/brindi/') : null;
   const ld = [{ '@context': 'https://schema.org', '@type': aLaVenta ? 'Product' : 'Service', name: 'Brindi · Invitaciones digitales', ...(aLaVenta ? {} : { serviceType: 'Invitaciones digitales', areaServed: 'MX', provider: { '@type': 'Organization', name: 'Vorka México', url: 'https://vorka.mx/' } }), description: 'Invitaciones digitales con QR para bodas, XV años, cumpleaños y toda celebración: confirmaciones, control de acompañantes y acceso con QR.',
     ...(aLaVenta ? { brand: { '@type': 'Brand', name: 'Brindi' } } : {}), image: [`${OS}/brindi/og/aurora.png`],
-    ...(aLaVenta ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: (desde / 100).toFixed(2), highPrice: (Math.max(...planes.filter(p => p.prod).map(p => p.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.filter(p => p.prod).length } } : {}) },
+    ...(aLaVenta ? { offers: ofertas({ ruta, centavos: planes.filter(p => p.prod).map(p => p.prod.precio_centavos) }), ...ldResenas(rs) } : {}) },
+  clave ? migas(V.corta || 'Brindi', ruta, [['Brindi', '/tienda/brindi/']]) : migas('Brindi', ruta),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [...(GUIAS[clave]?.preguntas || []), ...FAQ].map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   { '@context': 'https://schema.org', '@type': 'HowTo', name: 'Cómo hacer tu invitación digital con Brindi', step: TUTORIAL.map(([n, t], i) => ({ '@type': 'HowToStep', position: i + 1, name: n, text: t.replace(/<[^>]+>/g, '') })) }];
   const opcion = (p, n) => `<option value="${esc(p.slug)}" data-precio="${p.precio_centavos}"${elegido === p.slug ? ' selected' : ''}>${esc(n)} · ${precio(p)}</option>`;
@@ -317,6 +322,7 @@ ${aLaVenta ? seccionCompra({ titulo: clave === 'organizadores' ? 'Compra tu paqu
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta u OXXO con Stripe</span></p>
   </form>` }) : ''}
 
+${seccionResenas(rs, { titulo: 'Lo que dicen quienes ya usaron Brindi' })}
 ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items: FAQ.slice(0, clave ? 4 : VISIBLES_FAQ).map(faq).join(''), pie: clave ? `<p class="br-tuto-fin"><a href="/tienda/brindi/#ayuda">Ver todas las preguntas sobre Brindi</a></p>` : `<details class="br-mas"><summary>Más preguntas</summary><div class="t-faq">${FAQ.slice(VISIBLES_FAQ).map(faq).join('')}</div></details>` })}
 
 <section class="t-sec"><div class="marco">
