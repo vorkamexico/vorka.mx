@@ -151,7 +151,8 @@ export const ARTICULOS_CAMINO = [
           ['Platica con alguien que la estudia', 'Y con alguien que ya trabaja de eso. Pregúntales qué hacen en un día normal.'],
           ['Revisa el plan de estudios completo', 'No solo el nombre: las materias de los ocho o diez semestres.'],
           ['Haz una prueba corta', 'Un curso en línea gratuito, un taller o un fin de semana ayudando en algo relacionado.'],
-        ]) },
+        ])
+        + nota(`Si eres orientadora u orientador y quieres trabajar este método con tu grupo, mira ${a('/test-vocacional/escuelas/', 'cómo usar el Test vocacional Vorka en tu escuela')}.`) },
       { h2: 'Preguntas para hacerte antes de elegir', html: ul([
           '¿Me imagino haciendo esto en un día normal, no solo en lo emocionante?',
           '¿Las materias de los primeros semestres me retan o me ahogan?',
