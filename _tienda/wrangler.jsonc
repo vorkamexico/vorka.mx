@@ -53,7 +53,7 @@
     "STRIPE_PUBLISHABLE_KEY": "pk_live_51UQtC5CSlkfDAZsFVmXDPlky30HIpbsjf5ygxQBtTAThMHAeWvm5mUepbtSQDtkuTkJSwMUdvl6BE9n5yfKyckzf00aXIyzYQy",
     // Anuncios de Google AdSense, SOLO en Vorka Learn (src/anuncios.js). Vacías = apagados (sin script, sin espacios, sin ads.txt).
     // Para encender: ADSENSE_CLIENT "ca-pub-…" y ADSENSE_SLOTS "intro:<id>,mitad:<id>,final:<id>,indice:<id>"
-    "ADSENSE_CLIENT": "",
+    "ADSENSE_CLIENT": "ca-pub-8783293077359398",
     "ADSENSE_SLOTS": ""
   },
   // Cada hora: transferencias a creadores (marketplace)
