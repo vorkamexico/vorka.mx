@@ -10,6 +10,8 @@ export const SECCIONES = {
   ecoems:     { grupo: 'examen', corto: 'ECOEMS',    a: '#075A50', b: '#1F9C86', t: '#0B6E62', to: '#79D8C4', s: '#E6F4F1', so: 'rgba(70,195,170,.13)',  motivo: 'mapa' },
   'prepa-ug': { grupo: 'examen', corto: 'Prepa UG',  a: '#933A10', b: '#DC7A2E', t: '#A3461A', to: '#F4AE7E', s: '#FBEEE4', so: 'rgba(240,150,90,.13)',  motivo: 'cuaderno' },
   finanzas:   { grupo: 'tema',   corto: 'Finanzas',  a: '#155C38', b: '#2F9A62', t: '#1F7A4A', to: '#86DCAA', s: '#E8F5ED', so: 'rgba(92,196,139,.13)',  motivo: 'monedas' },
+  camino:     { grupo: 'tema',   corto: 'Camino',    a: '#3B2A86', b: '#6E5BD0', t: '#4A389E', to: '#B9ADF5', s: '#EFEDFB', so: 'rgba(160,145,240,.13)', motivo: 'senal' },
+  negocio:    { grupo: 'tema',   corto: 'Negocio',   a: '#7A1E46', b: '#C2416F', t: '#9A2858', to: '#F5A3C2', s: '#FBEAF1', so: 'rgba(235,120,165,.13)', motivo: 'tienda' },
 };
 // Vorka Learn (portada, acerca, búsqueda y secciones sin color propio)
 export const LEARN_COLOR = { grupo: 'tema', corto: 'Learn', a: '#2A1035', b: '#6B2A85', t: '#6B2A85', to: '#D6AAEC', s: '#F4EDF7', so: 'rgba(192,138,219,.13)', motivo: 'libro' };

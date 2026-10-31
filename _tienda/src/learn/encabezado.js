@@ -24,6 +24,8 @@ export const ICONO_SECCION = {
   mapa: I('<path d="M12 21s6-5.3 6-10.5a6 6 0 1 0-12 0C6 15.7 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>'),
   cuaderno: I('<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="m8.5 9 1.5 1.5L13 7.5M8.5 15h7"/>'),
   monedas: I('<ellipse cx="9" cy="7" rx="5" ry="2.5"/><path d="M4 7v4c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V7M4 11v4c0 1.4 2.2 2.5 5 2.5 1 0 2-.1 2.8-.4"/><path d="m14 18 3-3 2 2 3-4"/>'),
+  tienda: I('<path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5c0 1.4 1.1 2.5 2.7 2.5s2.6-1.1 2.6-2.5c0 1.4 1.2 2.5 2.7 2.5s2.7-1.1 2.7-2.5c0 1.4 1.1 2.5 2.6 2.5S20 10.9 20 9.5"/><path d="M5.5 12v8h13v-8M10 20v-4.5h4V20"/>'),
+  senal: I('<path d="M12 21V3"/><path d="M12 5h6.5l2 2.25-2 2.25H12M12 12H5.5l-2 2.25 2 2.25H12"/>'),
   libro: I('<path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"/>'),
 };
 export const iconoDe = clave => ICONO_SECCION[aspecto(clave).motivo] || ICONO_SECCION.libro;
