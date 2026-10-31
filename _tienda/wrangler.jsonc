@@ -19,7 +19,11 @@
     // Agenda: las páginas de reservas de cada negocio (vorka.mx/citas/…). vorka.mx/agenda/ es otra página y no pasa por aquí
     { "pattern": "vorka.mx/citas*", "zone_name": "vorka.mx" },
     // Página pública de cada integrante del equipo (vorka.mx/equipo/<código>)
-    { "pattern": "vorka.mx/equipo/*", "zone_name": "vorka.mx" }
+    { "pattern": "vorka.mx/equipo/*", "zone_name": "vorka.mx" },
+    // Vorka Learn: guías de estudio (vorka.mx/learn/…), su sitemap (/learn/sitemap.xml) y las 301 de /simulador-*/guias/…
+    { "pattern": "vorka.mx/learn*", "zone_name": "vorka.mx" },
+    // ads.txt de AdSense: lo arma el Worker desde ADSENSE_CLIENT (404 mientras los anuncios estén apagados)
+    { "pattern": "vorka.mx/ads.txt", "zone_name": "vorka.mx" }
   ],
   "d1_databases": [
     { "binding": "DB", "database_name": "vorka-tienda", "database_id": "7e6febec-475c-4810-a32f-c8a79659dbfd", "migrations_dir": "migrations" }
@@ -43,7 +47,11 @@
     // Marketplace de creadores: "1" abre vorka.mx/creadores (apagado hasta tener la revisión fiscal)
     "MARKETPLACE": "1",
     // Llave publicable de Stripe (no es secreta): la usan los componentes incrustados del portal de creadores
-    "STRIPE_PUBLISHABLE_KEY": "pk_live_51UQtC5CSlkfDAZsFVmXDPlky30HIpbsjf5ygxQBtTAThMHAeWvm5mUepbtSQDtkuTkJSwMUdvl6BE9n5yfKyckzf00aXIyzYQy"
+    "STRIPE_PUBLISHABLE_KEY": "pk_live_51UQtC5CSlkfDAZsFVmXDPlky30HIpbsjf5ygxQBtTAThMHAeWvm5mUepbtSQDtkuTkJSwMUdvl6BE9n5yfKyckzf00aXIyzYQy",
+    // Anuncios de Google AdSense, SOLO en Vorka Learn (src/anuncios.js). Vacías = apagados (sin script, sin espacios, sin ads.txt).
+    // Para encender: ADSENSE_CLIENT "ca-pub-…" y ADSENSE_SLOTS "intro:<id>,mitad:<id>,final:<id>,indice:<id>"
+    "ADSENSE_CLIENT": "",
+    "ADSENSE_SLOTS": ""
   },
   // Cada hora: transferencias a creadores (marketplace)
   "triggers": { "crons": ["17 * * * *"] },

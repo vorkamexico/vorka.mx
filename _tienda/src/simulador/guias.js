@@ -1,12 +1,16 @@
-// Guías para prepararte (vorka.mx/<simulador>/guias/<guía>/): contenido útil para quien busca en Google cómo es su examen,
-// cuánto necesita y cómo estudiar, con liga al simulador que le toca. Mismo patrón que brindi-guias.js: los datos aquí,
-// la página la arma paginaGuia(). Cada simulador tiene su índice (/<simulador>/guias/) y su sección en la página de venta.
+// Guías de Vorka Learn (vorka.mx/learn/<examen>/<guía>/): contenido útil para quien busca en Google cómo es su examen,
+// cuánto necesita y cómo estudiar. Es la rama editorial de Vorka México (plantilla propia en src/learn.js, sin tienda):
+// un solo llamado al simulador, al final. Los datos aquí; las páginas las arman paginaGuia(), paginaIndiceExamen() y
+// paginaLearn(). Índices: /learn/ (todas) y /learn/<examen>/. Las URL viejas /<simulador>/guias/… redirigen con 301.
+// La página de venta de cada simulador sigue ligando a sus guías (seccionGuias).
 // Reglas (política de la organización: sin inventar datos):
 //  - Todo dato concreto sale de la fuente que la guía cita en «Fuentes» (revisadas el 31 de octubre de 2026).
 //  - Lo que es consejo nuestro se presenta como tal. Ejemplos de preguntas: solo propios y marcados.
 //  - PAA: sin minutos por sección (la única guía del College Board con tiempos es de 2020; ver commit 5501997).
 //  - Nunca «oficial» para el simulador: es un simulador de práctica de Vorka México.
-import { esc, pagina } from '../paginas.js';
+import { esc } from '../paginas.js';
+import { paginaLearn } from '../learn.js';
+import { configAnuncios, espacioAnuncio } from '../anuncios.js';
 import { FLECHA } from '../marco.generado.js';
 import { UNIVERSIDADES } from './paa-universidades.js';
 
@@ -37,7 +41,7 @@ const uniFuentes = claves => claves.flatMap(k => UNIVERSIDADES[k].fuentes);
 // ---------- los simuladores ----------
 export const SIMS = {
   'simulador-paa': {
-    nombre: 'PAA', titulo: 'Simulador PAA', og: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`,
+    clave: 'paa', examen: 'PAA', nombre: 'PAA', titulo: 'Simulador PAA', og: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`,
     indice: {
       titulo: 'Guías de la PAA: qué viene, puntaje y preparación',
       descripcion: 'Guías para la PAA del College Board: qué viene en el examen, cómo se calcula el puntaje, cuánto pide cada universidad y un plan de 4 semanas.',
@@ -47,7 +51,7 @@ export const SIMS = {
     aviso: 'No estamos afiliados al College Board ni a ninguna universidad; PAA es una prueba del College Board.',
   },
   'simulador-unam': {
-    nombre: 'UNAM', titulo: 'Simulador UNAM', og: `${SITIO}/assets/tienda/v3/simulador-unam-og.jpg`,
+    clave: 'unam', examen: 'UNAM', nombre: 'UNAM', titulo: 'Simulador UNAM', og: `${SITIO}/assets/tienda/v3/simulador-unam-og.jpg`,
     indice: {
       titulo: 'Guías del examen UNAM de licenciatura',
       descripcion: 'Guías para el examen de admisión a licenciatura de la UNAM: qué viene según tu área, cómo estudiar y de qué dependen los aciertos para entrar.',
@@ -57,7 +61,7 @@ export const SIMS = {
     aviso: 'No estamos afiliados a la UNAM.',
   },
   'simulador-ecoems': {
-    nombre: 'ECOEMS', titulo: 'Simulador ECOEMS', og: `${SITIO}/assets/tienda/v3/simulador-ecoems-og.jpg`,
+    clave: 'ecoems', examen: 'ECOEMS', nombre: 'ECOEMS', titulo: 'Simulador ECOEMS', og: `${SITIO}/assets/tienda/v3/simulador-ecoems-og.jpg`,
     indice: {
       titulo: 'Guías ECOEMS: examen, opciones y preparación',
       descripcion: 'Guías para el proceso «Mi derecho, mi lugar» (antes COMIPEMS): qué viene en el examen de la UNAM y el IPN, cómo elegir tus opciones y cómo prepararte.',
@@ -67,7 +71,7 @@ export const SIMS = {
     aviso: 'No estamos afiliados a la UNAM, al IPN, al ECOEMS ni a la SEP.',
   },
   'simulador-prepa-ug': {
-    nombre: 'prepa UG', titulo: 'Simulador prepa UG', og: `${SITIO}/assets/tienda/v3/simulador-prepa-ug-og.jpg`,
+    clave: 'prepa-ug', examen: 'Prepa UG', nombre: 'prepa UG', titulo: 'Simulador prepa UG', og: `${SITIO}/assets/tienda/v3/simulador-prepa-ug-og.jpg`,
     indice: {
       titulo: 'Guías para entrar a la prepa de la UG',
       descripcion: 'Guías para el examen de admisión a la prepa de la Universidad de Guanajuato: qué viene en el EXANI-I, cómo se calcula tu resultado y cómo prepararte.',
@@ -91,7 +95,7 @@ const ejemplo = (enunciado, opciones, correcta, explicacion) => `<div class="gu-
 <details><summary>Ver respuesta</summary><p><b>${'ABCD'[correcta]})</b> ${explicacion}</p></details></div>`;
 const a = (href, t) => `<a href="${href}">${t}</a>`;
 const ext = (href, t) => `<a href="${href}" rel="noopener">${t}</a>`;
-const g = (sim, slug) => `/${sim}/guias/${slug}/`;
+const g = (sim, slug) => `/learn/${SIMS[sim].clave}/${slug}/`;
 
 // ---------- las guías (las de mayor potencial primero en cada simulador) ----------
 export const GUIAS = [
@@ -176,7 +180,7 @@ export const GUIAS = [
       { h2: 'Antes de empezar', html: p('La PAA mide lectura, redacción y matemáticas (más Inglés), no la memoria de un temario. Por eso cuatro semanas bien usadas sirven: no vas a aprender todo de cero, pero sí puedes subir tu velocidad, cerrar huecos y llegar sin sorpresas.')
         + caja('Lo que necesitas', ul(['Menos de una hora al día, cinco días a la semana (es nuestra sugerencia, ajústala a tu tiempo).', 'Un lugar sin celular a la mano.', 'Lápiz y hojas: en Matemáticas no hay calculadora, según la guía del College Board.'])) },
       { h2: 'Semana 1: mide y entiende el formato', html: ol([
-        ['Haz un diagnóstico', `Contesta un examen corto para ver tu puntaje estimado por parte. En Vorka hay ${a('/simulador-paa/diagnostico/', 'un diagnóstico gratis')}.`],
+        ['Haz un diagnóstico', `Contesta un examen corto para ver tu puntaje estimado por parte; puede ser ${a('/simulador-paa/diagnostico/', 'el diagnóstico del simulador')}.`],
         ['Haz una lista de tus 3 temas más débiles', 'No «Matemáticas» en general: «porcentajes», «conectores», «inferencias».'],
         ['Lee cómo es cada parte', `Repasa ${a(g('simulador-paa', 'que-es-la-paa'), 'qué viene en la PAA')} para que nada del formato te tome por sorpresa.`],
       ]) },
@@ -219,7 +223,7 @@ export const GUIAS = [
       { h2: 'La diferencia que más cambia tu forma de estudiar', html: p('La PAA mide <b>habilidades</b>: entender textos, redactar con coherencia y resolver problemas. El examen de la UNAM mide <b>conocimientos</b> de las asignaturas de tu área. Por eso para la PAA conviene practicar mucho el formato y la velocidad, y para la UNAM, repasar temario materia por materia.')
         + p(`Si vas a presentar los dos, lo que más se comparte es comprensión de lectura y matemáticas. Empieza por ahí y luego separa: Inglés para la PAA, y las demás materias de tu área para la UNAM (ve ${a(g('simulador-unam', 'examen-unam-por-area'), 'qué viene en el examen UNAM por área')}).`) },
       { h2: 'Cómo repartir tu tiempo si presentas los dos', html: p('Esto es consejo nuestro:') + ol([
-        ['Haz un diagnóstico de cada uno', `Uno de ${a('/simulador-paa/diagnostico/', 'la PAA')} y uno de ${a('/simulador-unam/diagnostico/', 'la UNAM')}: así sabes cuál te pide más trabajo.`],
+        ['Haz un diagnóstico de cada uno', `Uno de la PAA y uno de la UNAM: así sabes cuál te pide más trabajo.`],
         ['Ordena por fecha', 'El examen más cercano manda. La PAA la fija tu universidad; la UNAM publica su calendario en la convocatoria.'],
         ['Cierra cada uno con un examen completo', 'Con cronómetro y sin pistas, una o dos semanas antes de cada fecha.'],
       ]) },
@@ -316,7 +320,7 @@ export const GUIAS = [
         '<b>Las fechas.</b> En 2026 el registro fue del 23 de enero al 3 de febrero y el examen del 23 de mayo al 10 de junio. Revisa la convocatoria de tu año en dgae.unam.mx.',
       ]) },
       { h2: 'Un plan de 8 semanas', html: p('Esto es consejo nuestro; ajústalo a tu tiempo:') + ol([
-        ['Semana 1: diagnóstico', `Haz un examen de tu área para saber cuántos aciertos llevas y en qué asignaturas. En Vorka, ${a('/simulador-unam/diagnostico/', 'el diagnóstico es gratis')}.`],
+        ['Semana 1: diagnóstico', `Haz un examen de tu área para saber cuántos aciertos llevas y en qué asignaturas.`],
         ['Semanas 2 a 5: asignaturas de más peso', 'Empieza por las que más pesan en tu área y en las que sacaste menos. En la distribución de referencia del simulador, Matemáticas y Español son las de más reactivos en las cuatro áreas. Un tema por día, con ejercicios.'],
         ['Semana 6: el resto del temario', 'Repaso rápido de las asignaturas de menos peso: un acierto vale lo mismo en cualquiera.'],
         ['Semana 7: examen completo', '120 preguntas en tres horas, de una sentada. Revisa cada error y su regla.'],
@@ -391,7 +395,7 @@ export const GUIAS = [
         ['Piensa en el trayecto', 'Revisa la dirección de cada plantel en el catálogo y calcula cuánto tardarías en llegar diario.'],
         ['Revisa los requisitos de cada institución', 'Están en el documento «Requisitos e información de las instituciones».'],
         ['Decide en familia', 'La convocatoria pide ordenar las opciones según la preferencia de la persona aspirante, su mamá, papá o persona tutora.'],
-      ]) + p(`Para saber dónde están tus aciertos hoy, haz ${a('/simulador-ecoems/diagnostico/', 'el diagnóstico gratis')}.`) },
+      ]) + p(`Para saber dónde están tus aciertos hoy, haz ${a('/simulador-ecoems/diagnostico/', 'un diagnóstico')}.`) },
     ],
     faq: [
       { p: '¿Cuántas opciones puedo elegir en «Mi derecho, mi lugar»?', r: 'Según la convocatoria 2026: entre 5 y 10 sin examen, hasta 5 del IPN y hasta 5 de la UNAM. En la modalidad combinada, hasta 20 en total.' },
@@ -414,7 +418,7 @@ export const GUIAS = [
         'Necesitas promedio mínimo de 7.0 en secundaria para que te asignen en la UNAM o el IPN.',
       ]) },
       { h2: 'Un plan de 10 semanas', html: p('Esto es consejo nuestro; empieza con el tiempo que tengas:') + ol([
-        ['Semana 1: diagnóstico', `Un examen corto para ver en qué materias vas bien y en cuáles no. ${a('/simulador-ecoems/diagnostico/', 'El de Vorka es gratis')}.`],
+        ['Semana 1: diagnóstico', `Un examen corto para ver en qué materias vas bien y en cuáles no.`],
         ['Semanas 2 a 4: habilidades', 'Comprensión de lectura y razonamiento matemático: sucesiones, proporciones y problemas. Se entrenan con práctica diaria corta.'],
         ['Semanas 5 a 8: materias de secundaria', 'Repasa lo que viste en secundaria, empezando por lo que salió más bajo en tu diagnóstico. En el simulador de Vorka practicas Español, Matemáticas, Biología, Física, Química, Historia, Geografía y Formación cívica y ética.'],
         ['Semana 9: examen completo', 'Con cronómetro y de una sentada. Revisa cada error.'],
@@ -458,7 +462,7 @@ export const GUIAS = [
       { h2: 'Fechas: lo que sabemos', html: p('En el proceso de agosto-diciembre 2026: registro del 2 de febrero al 11 de abril, examen diagnóstico de la SEG el 20 de marzo, EXANI-I el 22 de mayo y resultados desde el 19 de junio. La cédula de admisión costó $1,645.')
         + p(`Al 31 de octubre de 2026, la UG solo tiene abiertos los procesos para entrar a 2.º y 4.º semestre; <b>la convocatoria de primer semestre 2027 todavía no se publica</b>. Revísala en ${ext('https://www.ugto.mx/admisionug/bachilleratos', 'ugto.mx/admisionug')}.`) },
       { h2: 'Cómo prepararte', html: p('Esto es consejo nuestro:') + ol([
-        ['Mide dónde estás', `Un diagnóstico por área te dice dónde se van los aciertos. ${a('/simulador-prepa-ug/diagnostico/', 'El de Vorka es gratis')}.`],
+        ['Mide dónde estás', `Un diagnóstico por área te dice dónde se van los aciertos.`],
         ['Prioriza por peso', 'Pensamiento matemático (27 %) y científico (26 %) valen más de la mitad del examen en la ficha de León.'],
         ['Lectura y redacción, diario', 'Un texto corto y unas preguntas al día. Valen 40 % juntas y mejoran con constancia.'],
         ['Entrena la resistencia', 'Cuatro horas y media es mucho para alguien de secundaria. Haz al menos un examen completo con cronómetro.'],
@@ -478,178 +482,194 @@ export const GUIAS = [
 // ---------- consultas ----------
 export const guiasDe = sim => GUIAS.filter(x => x.sim === sim);
 export const guia = (sim, slug) => GUIAS.find(x => x.sim === sim && x.slug === slug) || null;
+export const simDeClave = clave => Object.keys(SIMS).find(k => SIMS[k].clave === clave) || null;
 export const rutaGuia = x => g(x.sim, x.slug);
-export const rutaIndice = sim => `/${sim}/guias/`;
-// Todas las URL para el sitemap: índices y guías
-export const urlsGuias = () => [...Object.keys(SIMS).filter(s => guiasDe(s).length).map(rutaIndice), ...GUIAS.map(rutaGuia)];
+export const rutaIndice = sim => `/learn/${SIMS[sim].clave}/`;
+export const RUTA_LEARN = '/learn/';
+// URL viejas (antes de Vorka Learn), para las redirecciones y las pruebas
+export const rutaViejaGuia = x => `/${x.sim}/guias/${x.slug}/`;
+export const rutaViejaIndice = sim => `/${sim}/guias/`;
+const examenes = () => Object.keys(SIMS).filter(s => guiasDe(s).length);
+// Todas las URL para el sitemap de Learn: portada, índices por examen y guías
+export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia)];
 const porRuta = ruta => GUIAS.find(x => rutaGuia(x) === ruta);
-const nombreDe = ruta => porRuta(ruta)?.h1 || (UNIVERSIDADES[ruta.split('/')[2]] && `PAA para ${UNIVERSIDADES[ruta.split('/')[2]].nombre}`) || ruta;
-
-// ---------- estilos (mismo lenguaje visual que las páginas de venta y de universidad) ----------
-const CSS = `<style>
-.gu-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,3vw,40px)}
-.gu-hero h1{margin-top:14px;max-width:820px}.gu-hero .t-lead{margin-top:14px;max-width:720px}
-.gu-meta{margin-top:14px;font-size:14px;color:var(--fg-2)}
-.gu-botones{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
-.gu-cuerpo{display:grid;gap:32px 56px;align-items:start}
-@media(min-width:980px){.gu-cuerpo{grid-template-columns:minmax(0,1fr) 300px}.gu-lado{position:sticky;top:110px}}
-.gu-art{max-width:760px;font-size:17px;line-height:1.65}
-.gu-art h2{font-size:clamp(22px,2.6vw,28px);letter-spacing:-.02em;line-height:1.25;margin:40px 0 12px;scroll-margin-top:100px}.gu-art h2:first-child{margin-top:0}
-.gu-art p{margin:0 0 14px;color:var(--fg)}.gu-art a{color:var(--morado);text-decoration:underline;text-underline-offset:2px}
-.gu-lista{list-style:disc;padding-left:22px;margin:0 0 14px;display:grid;gap:8px}
-.gu-pasos{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:10px;counter-reset:p}
-.gu-pasos li{display:grid;grid-template-columns:40px 1fr;gap:4px 12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
-.gu-pasos li::before{counter-increment:p;content:counter(p);grid-row:span 2;width:32px;height:32px;border-radius:10px;background:var(--morado-suave);color:var(--morado);display:grid;place-items:center;font-weight:800;font-size:15px}
-.gu-pasos b{font-size:16.5px}.gu-pasos span{color:var(--fg-2);font-size:15.5px;line-height:1.55}
-.gu-tabla-w{overflow-x:auto;margin:6px 0 14px}
-.gu-tabla{width:100%;border-collapse:collapse;font-size:15px;line-height:1.5;background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra)}
-.gu-tabla th,.gu-tabla td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-.gu-tabla thead th{font-size:13px;color:var(--fg-2);font-weight:650}.gu-tabla tbody th{font-weight:650}
-@media(max-width:640px){.gu-tabla{font-size:14px}.gu-tabla th,.gu-tabla td{padding:10px}}
-.gu-nota{font-size:14px!important;color:var(--fg-2)!important}
-.gu-compartir{margin:28px 0 8px;padding:18px;border:1px solid var(--linea,#e5e1ea);border-radius:16px;display:grid;gap:12px}.gu-compartir p{margin:0}
-.gu-comp-bot{display:flex;flex-wrap:wrap;gap:10px}.gu-comp-bot a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none}
-.gu-wa{background:#0b7a3b;color:#fff}.gu-fb{background:#1b4fb3;color:#fff}
-.gu-caja{margin:6px 0 16px;padding:18px 20px;border-radius:var(--r);background:var(--morado-suave);border:1px solid color-mix(in srgb,var(--morado) 20%,transparent)}
-.gu-caja > b{display:block;margin-bottom:6px;color:var(--fg)}.gu-caja p:last-child,.gu-caja ul:last-child{margin-bottom:0}
-.gu-ej{margin:8px 0 18px;padding:18px 20px;border-radius:var(--r);border:1.5px dashed var(--line-2);background:var(--card)}
-.gu-ej-t{display:inline-block;font-size:12.5px;font-weight:700;color:var(--morado);background:var(--morado-suave);padding:3px 10px;border-radius:999px}
-.gu-ej-p{margin:12px 0 10px!important;font-weight:600}
-.gu-ej-o{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:6px}.gu-ej-o li{display:flex;gap:10px;align-items:center;font-size:16px}
-.gu-ej-o span{width:26px;height:26px;border-radius:8px;background:var(--bg-2);display:grid;place-items:center;font-size:13px;font-weight:750;flex:none}
-.gu-ej summary{cursor:pointer;font-weight:650;color:var(--morado)}.gu-ej details p{margin:8px 0 0}
-.gu-toc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
-.gu-toc b{font-size:14px;color:var(--fg-2)}.gu-toc ol{list-style:decimal;padding-left:20px;margin:8px 0 0;display:grid;gap:6px;font-size:15px}.gu-toc a{color:inherit}
-.gu-cta{margin-top:14px;padding:20px;border-radius:var(--r);background:var(--card);border:1.5px solid var(--line-2);box-shadow:var(--sombra-2)}
-.gu-cta b{display:block;font-size:17px;letter-spacing:-.015em}.gu-cta p{font-size:14.5px;color:var(--fg-2);margin:6px 0 14px}
-.gu-cta .btn{width:100%;justify-content:center;margin-top:8px}
-.gu-fuentes{list-style:decimal;padding-left:22px;display:grid;gap:6px;font-size:15px}.gu-fuentes a{color:var(--morado);word-break:break-word}
-.gu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:22px}
-.gu-card{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sombra);color:inherit;text-decoration:none;transition:border-color var(--t-rapido)}
-.gu-card:hover{border-color:var(--line-2)}.gu-card h3{font-size:17.5px;letter-spacing:-.02em;margin-bottom:6px}.gu-card p{color:var(--fg-2);font-size:15px}
-.gu-card em{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-style:normal;font-weight:700;font-size:14.5px;color:var(--morado)}.gu-card em svg{width:15px;height:15px}
-</style>`;
+// Título con la marca Learn (sin la marca si no cabe en 60 caracteres)
+const SUFIJO = ' | Vorka Learn';
+const conMarca = t => (t + SUFIJO).length <= 60 ? t + SUFIJO : t;
+export const tituloGuia = x => conMarca(x.titulo.replace(/\s*\|\s*Vorka( México)?$/, ''));
+export const tituloIndice = sim => conMarca(SIMS[sim].indice.titulo);
 
 const ld = x => `<script type="application/ld+json">${JSON.stringify(x).replace(/</g, '\\u003c')}</script>`;
 const ORG = { '@type': 'Organization', name: 'Vorka México', url: `${SITIO}/`, logo: { '@type': 'ImageObject', url: `${SITIO}/vorka-logo.png` } };
+// La marca editorial: Vorka Learn, parte de Vorka México
+const LEARN = { '@type': 'Organization', name: 'Vorka Learn', url: `${SITIO}/learn/`, parentOrganization: ORG };
+const SITIO_LEARN = { '@type': 'WebSite', name: 'Vorka Learn', url: `${SITIO}/learn/`, publisher: ORG };
 const textoPlano = h => h.replace(/<[^>]+>/g, '');
-const tarjeta = (href, t, d, cta = 'Leer la guía') => `<a class="gu-card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p><em>${cta} ${FLECHA}</em></a>`;
-const ctaSim = (sim, s) => `<aside class="gu-cta" aria-label="Practica con el simulador"><b>Practica con el ${esc(s.titulo)}</b><p>Reactivos originales, tutor que te da pistas cuando fallas y un reporte de qué reforzar.</p>
-  <a class="btn tinta" href="/${sim}/#probar">Probar un reactivo gratis</a><a class="btn blanco" href="/${sim}/diagnostico/">Diagnóstico gratis</a><a class="btn blanco" href="/${sim}/">Ver el simulador</a></aside>`;
+const tarjeta = (href, t, d) => `<a class="gu-card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p></a>`;
+const migas = l => `<nav class="lr-migas" aria-label="Migas de pan"><ol>${l.map(([t, href], i) => `<li>${i < l.length - 1 ? `<a href="${href}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol></nav>`;
+const migasLd = l => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: l.map(([name, href], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${SITIO}${href}` })) });
 
-// Página de una guía, o null si no existe
+// El único llamado al simulador: al final del artículo, sobrio
+const llamadoFinal = (sim, s) => `<aside class="lr-final" aria-label="Practica con el simulador"><p><b class="lr-final-t">¿Quieres practicar?</b>Haz un examen de práctica en el ${esc(s.titulo)}: reactivos originales y un reporte de qué reforzar.</p>
+  <a class="btn tinta" href="/${sim}/">Ir al ${esc(s.titulo)} ${FLECHA}</a></aside>`;
+
 // «¿Le sirve a alguien más?»: ligas para compartir la guía (sin JS; la página tiene CSP con nonce). La liga lleva utm para
 // medir cuántas visitas llegan porque alguien la recomendó; Google usa el canonical, así que no duplica la página.
 function compartir(x, ruta) {
-  const url = c => `${SITIO}${ruta}?utm_source=${c}&utm_medium=compartir&utm_campaign=guias`;
+  const url = c => `${SITIO}${ruta}?utm_source=${c}&utm_medium=compartir&utm_campaign=learn`;
   const wa = `https://wa.me/?text=${encodeURIComponent(`${x.h1}: ${url('whatsapp')}`)}`;
   const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url('facebook'))}`;
   return `<div class="gu-compartir"><p><b>¿Le sirve a alguien más?</b> Compártela con quien también va a presentar el examen.</p>
     <div class="gu-comp-bot"><a class="gu-wa" href="${esc(wa)}" target="_blank" rel="noopener">Compartir por WhatsApp</a><a class="gu-fb" href="${esc(fb)}" target="_blank" rel="noopener">Compartir en Facebook</a></div></div>`;
 }
 
-export function paginaGuia(sim, slug) {
+// Página de una guía, o null si no existe. anuncios: configAnuncios(env) o null (apagados).
+export function paginaGuia(sim, slug, anuncios = null) {
   const x = guia(sim, slug), s = SIMS[sim];
   if (!x || !s) return null;
   const ruta = rutaGuia(x), ids = x.secciones.map((_, i) => `s${i + 1}`);
+  const lugares = [['Vorka Learn', RUTA_LEARN], [s.examen, rutaIndice(sim)], [x.h1, ruta]];
   const datos = [
     { '@context': 'https://schema.org', '@type': 'Article', headline: x.h1, description: x.descripcion, inLanguage: 'es-MX', image: [s.og],
-      datePublished: x.publicado || ACTUALIZADO, dateModified: x.actualizado || ACTUALIZADO, author: ORG, publisher: ORG,
+      datePublished: x.publicado || ACTUALIZADO, dateModified: x.actualizado || ACTUALIZADO, author: LEARN, publisher: ORG, isPartOf: SITIO_LEARN,
       mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITIO}${ruta}` }, citation: x.fuentes.map(f => f.url) },
-    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-      { '@type': 'ListItem', position: 1, name: s.titulo, item: `${SITIO}/${sim}/` },
-      { '@type': 'ListItem', position: 2, name: `Guías ${s.nombre}`, item: `${SITIO}${rutaIndice(sim)}` },
-      { '@type': 'ListItem', position: 3, name: x.h1, item: `${SITIO}${ruta}` }] },
+    migasLd(lugares),
     ...(x.faq?.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: x.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) }] : []),
   ];
-  // Relacionadas: las que la guía pide y, si faltan, las demás del mismo simulador
-  const rel = [...new Set([...x.relacionadas, ...guiasDe(sim).map(rutaGuia)])].filter(r => r !== ruta).slice(0, 3);
-  return pagina({ titulo: x.titulo, ruta, descripcion: x.descripcion, imagen: s.og, ogTipo: 'article',
-    head: ld(datos) + CSS,
-    cuerpo: `
-<section class="gu-hero"><div class="marco">
-  <nav class="t-volver" aria-label="Ruta"><a href="/${sim}/">${esc(s.titulo)}</a> / <a href="${rutaIndice(sim)}">Guías</a></nav>
-  <h1 class="t-h1">${esc(x.h1)}</h1>
-  <p class="t-lead">${esc(x.lead)}</p>
-  <p class="gu-meta">Por Vorka México · Actualizado: <time datetime="${x.actualizado || ACTUALIZADO}">${ACTUALIZADO_TXT}</time> · Con fuentes oficiales al final</p>
-</div></section>
-
-<section class="t-sec" style="padding-top:0"><div class="marco gu-cuerpo">
-  <article class="gu-art">
-    ${x.secciones.map((y, i) => `<h2 id="${ids[i]}">${esc(y.h2)}</h2>\n${y.html}`).join('\n')}
+  // Anuncios (solo si están encendidos): tras la primera sección, a mitad del artículo y antes del llamado final
+  const n = x.secciones.length, mitad = Math.floor(n / 2);
+  const espacioTras = i => (i === 0 ? espacioAnuncio(anuncios, 'intro') : '') + (i === mitad && i > 0 && i < n - 1 ? espacioAnuncio(anuncios, 'mitad') : '');
+  // Sigue leyendo: solo guías de Learn (las que la guía pide y, si faltan, las demás del mismo examen)
+  const rel = [...new Set([...x.relacionadas, ...guiasDe(sim).map(rutaGuia)])].filter(r => r !== ruta && porRuta(r)).slice(0, 3);
+  return paginaLearn({ titulo: tituloGuia(x), ruta, descripcion: x.descripcion, imagen: s.og, ogTipo: 'article', actual: s.clave, anuncios,
+    head: ld(datos),
+    cuerpo: `<div class="marco"><div class="lr-col">
+  ${migas(lugares)}
+  <span class="lr-kicker">Guía · ${esc(s.examen)}</span>
+  <h1 class="lr-h1">${esc(x.h1)}</h1>
+  <p class="lr-lead">${esc(x.lead)}</p>
+  <p class="lr-meta">Por Vorka Learn · Actualizado: <time datetime="${x.actualizado || ACTUALIZADO}">${ACTUALIZADO_TXT}</time> · Con fuentes oficiales al final</p>
+  <details class="lr-toc"><summary>En esta guía</summary><ol>${x.secciones.map((y, i) => `<li><a href="#${ids[i]}">${esc(y.h2)}</a></li>`).join('')}${x.faq?.length ? '<li><a href="#preguntas">Preguntas frecuentes</a></li>' : ''}<li><a href="#fuentes">Fuentes</a></li></ol></details>
+  <article class="lr-art">
+    ${x.secciones.map((y, i) => `<h2 id="${ids[i]}">${esc(y.h2)}</h2>\n${y.html}${espacioTras(i)}`).join('\n')}
     ${x.faq?.length ? `<h2 id="preguntas">Preguntas frecuentes</h2><div class="t-faq">${x.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>` : ''}
     <h2 id="fuentes">Fuentes</h2>
     <ol class="gu-fuentes">${x.fuentes.map(f => `<li>${ext(esc(f.url), esc(f.nombre))}</li>`).join('')}</ol>
-    ${compartir(x, ruta)}
     <p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; los requisitos y las fechas cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>
+    ${espacioAnuncio(anuncios, 'final')}
+    ${llamadoFinal(sim, s)}
+    ${compartir(x, ruta)}
   </article>
-  <div class="gu-lado">
-    <nav class="gu-toc" aria-label="En esta guía"><b>En esta guía</b><ol>${x.secciones.map((y, i) => `<li><a href="#${ids[i]}">${esc(y.h2)}</a></li>`).join('')}${x.faq?.length ? '<li><a href="#preguntas">Preguntas frecuentes</a></li>' : ''}<li><a href="#fuentes">Fuentes</a></li></ol></nav>
-    ${ctaSim(sim, s)}
-  </div>
-</div></section>
-${rel.length ? `<section class="t-sec suave"><div class="marco">
-  <div class="cab"><span class="etiqueta">Sigue leyendo</span><h2 class="h2" style="margin-top:14px">Guías relacionadas</h2></div>
-  <div class="gu-grid">${rel.map(r => { const y = porRuta(r); return y ? tarjeta(r, y.h1, y.descripcion) : tarjeta(r, nombreDe(r), 'Requisitos de la PAA con la fuente oficial de la universidad.', 'Ver requisitos'); }).join('')}</div>
-</div></section>` : ''}
-<section class="t-sec"><div class="marco"><p class="t-nota">Guía informativa de Vorka México. El ${esc(s.titulo)} es un simulador de práctica con reactivos originales; los puntajes y aciertos que da son estimaciones para orientar el estudio. ${esc(s.aviso)}</p></div></section>`,
+  ${rel.length ? `<section class="lr-sigue" aria-labelledby="sigue"><p class="lr-sigue-t">Sigue leyendo</p><h2 class="lr-h2" id="sigue">Guías relacionadas</h2>
+  <div class="gu-grid">${rel.map(r => { const y = porRuta(r); return tarjeta(r, y.h1, y.descripcion); }).join('')}</div></section>` : ''}
+  <p class="lr-nota">Vorka Learn es la sección de guías de Vorka México. Esta guía es informativa; el ${esc(s.titulo)} es un simulador de práctica con reactivos originales y los puntajes y aciertos que da son estimaciones para orientar el estudio. ${esc(s.aviso)}</p>
+</div></div>`,
   });
 }
 
-// Índice de las guías de un simulador, o null
-export function paginaIndiceGuias(sim) {
+// Índice de un examen (/learn/<examen>/), o null
+export function paginaIndiceExamen(sim, anuncios = null) {
   const s = SIMS[sim], lista = guiasDe(sim);
   if (!s || !lista.length) return null;
-  const ruta = rutaIndice(sim);
+  const ruta = rutaIndice(sim), lugares = [['Vorka Learn', RUTA_LEARN], [s.examen, ruta]];
   const datos = [
-    { '@context': 'https://schema.org', '@type': 'CollectionPage', name: s.indice.h1, description: s.indice.descripcion, inLanguage: 'es-MX', url: `${SITIO}${ruta}`, publisher: ORG,
+    { '@context': 'https://schema.org', '@type': 'CollectionPage', name: s.indice.h1, description: s.indice.descripcion, inLanguage: 'es-MX', url: `${SITIO}${ruta}`, publisher: ORG, isPartOf: SITIO_LEARN,
       mainEntity: { '@type': 'ItemList', itemListElement: lista.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${rutaGuia(x)}`, name: x.h1 })) } },
-    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-      { '@type': 'ListItem', position: 1, name: s.titulo, item: `${SITIO}/${sim}/` },
-      { '@type': 'ListItem', position: 2, name: `Guías ${s.nombre}`, item: `${SITIO}${ruta}` }] },
+    migasLd(lugares),
   ];
-  const otros = Object.keys(SIMS).filter(k => k !== sim && guiasDe(k).length);
-  return pagina({ titulo: `${s.indice.titulo} | Vorka México`.length <= 60 ? `${s.indice.titulo} | Vorka México` : `${s.indice.titulo} | Vorka`, ruta, descripcion: s.indice.descripcion, imagen: s.og,
-    head: ld(datos) + CSS,
-    cuerpo: `
-<section class="gu-hero"><div class="marco">
-  <nav class="t-volver" aria-label="Ruta"><a href="/${sim}/">${esc(s.titulo)}</a> / Guías</nav>
-  <h1 class="t-h1">${esc(s.indice.h1)}</h1>
-  <p class="t-lead">${esc(s.indice.lead)}</p>
-  <div class="gu-botones"><a class="btn tinta" href="/${sim}/">Ver el ${esc(s.titulo)} ${FLECHA}</a><a class="btn blanco" href="/${sim}/diagnostico/">Diagnóstico gratis</a></div>
-</div></section>
-<section class="t-sec suave"><div class="marco">
-  <div class="gu-grid" style="margin-top:0">${lista.map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
-  ${sim === 'simulador-paa' ? `<div class="cab" style="margin-top:40px"><h2 class="h2">La PAA en cada universidad</h2></div>
-  <div class="gu-grid">${Object.entries(UNIVERSIDADES).map(([k, u]) => tarjeta(`/simulador-paa/${k}/`, `PAA ${u.nombre}`, u.completo, 'Ver requisitos')).join('')}</div>` : ''}
-</div></section>
-<section class="t-sec"><div class="marco">
-  <div class="cab"><h2 class="h2">Guías de otros exámenes</h2></div>
-  <div class="gu-grid">${otros.map(k => tarjeta(rutaIndice(k), SIMS[k].indice.h1, SIMS[k].indice.descripcion, 'Ver guías')).join('')}</div>
-  <p class="t-nota" style="margin-top:28px">Guías informativas de Vorka México, con las fuentes oficiales al final de cada una. ${esc(s.aviso)}</p>
-</div></section>`,
+  const otros = examenes().filter(k => k !== sim);
+  return paginaLearn({ titulo: tituloIndice(sim), ruta, descripcion: s.indice.descripcion, imagen: s.og, actual: s.clave, anuncios,
+    head: ld(datos),
+    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
+  ${migas(lugares)}
+  <span class="lr-kicker">Vorka Learn · ${esc(s.examen)}</span>
+  <h1 class="lr-h1">${esc(s.indice.h1)}</h1>
+  <p class="lr-lead">${esc(s.indice.lead)}</p>
+  <div class="gu-grid lr-primero">${lista.map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
+  ${sim === 'simulador-paa' ? `<section class="lr-grupo"><h2 class="lr-h2">La PAA en cada universidad</h2><p class="lr-grupo-lead">Cómo usa la PAA cada universidad, con la fuente oficial de cada una.</p>
+  <div class="gu-grid">${Object.entries(UNIVERSIDADES).map(([k, u]) => tarjeta(`/simulador-paa/${k}/`, `PAA ${u.nombre}`, u.completo)).join('')}</div></section>` : ''}
+  ${espacioAnuncio(anuncios, 'indice')}
+  <section class="lr-grupo"><h2 class="lr-h2">Guías de otros exámenes</h2>
+  <div class="gu-grid">${otros.map(k => tarjeta(rutaIndice(k), SIMS[k].indice.h1, SIMS[k].indice.descripcion)).join('')}</div></section>
+  <p class="lr-nota">Guías informativas de Vorka Learn, la sección de guías de Vorka México, con las fuentes oficiales al final de cada una. Para practicar, el <a href="/${sim}/">${esc(s.titulo)}</a> es un simulador de práctica con reactivos originales. ${esc(s.aviso)}</p>
+</div></div>`,
   });
 }
 
-// Sección «Guías para prepararte» de la página de venta de cada simulador ('' si no tiene guías)
+// Portada de Vorka Learn (/learn/): todas las guías, agrupadas por examen
+export const LEARN_PORTADA = {
+  titulo: 'Vorka Learn: guías para tu examen de admisión',
+  descripcion: 'Guías con fuentes oficiales para la PAA, el examen de la UNAM, el ECOEMS y la prepa de la UG: qué viene, cómo se califica y cómo estudiar.',
+  h1: 'Guías para tu examen de admisión',
+  lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen: qué viene, cómo se califica, cuánto piden y cómo organizar tu estudio. Cada dato sale de la convocatoria o de la institución que aplica el examen, y lo citamos al final de cada guía.',
+};
+export function paginaLearnPortada(anuncios = null) {
+  const lista = examenes(), p0 = LEARN_PORTADA;
+  const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: p0.h1, description: p0.descripcion, inLanguage: 'es-MX', url: `${SITIO}${RUTA_LEARN}`, publisher: ORG,
+    isPartOf: SITIO_LEARN, about: LEARN, mainEntity: { '@type': 'ItemList', itemListElement: GUIAS.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${rutaGuia(x)}`, name: x.h1 })) } }];
+  return paginaLearn({ titulo: p0.titulo, ruta: RUTA_LEARN, descripcion: p0.descripcion, anuncios, head: ld(datos),
+    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
+  <span class="lr-kicker lr-arriba">Vorka Learn</span>
+  <h1 class="lr-h1">${esc(p0.h1)}</h1>
+  <p class="lr-lead">${esc(p0.lead)}</p>
+  ${lista.map((sim, i) => { const s = SIMS[sim]; return `<section class="lr-grupo" aria-labelledby="g-${s.clave}">
+    <div class="lr-grupo-cab"><h2 class="lr-h2" id="g-${s.clave}">${esc(s.examen)}</h2><a href="${rutaIndice(sim)}">Todas las guías de ${esc(s.examen)}</a></div>
+    <p class="lr-grupo-lead">${esc(s.indice.lead)}</p>
+    <div class="gu-grid">${guiasDe(sim).map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
+  </section>${i === 0 ? espacioAnuncio(anuncios, 'indice') : ''}`; }).join('\n')}
+  <p class="lr-nota">Vorka Learn es la sección de guías de Vorka México. Las guías son informativas y no estamos afiliados a las instituciones que aplican estos exámenes; confirma siempre fechas y requisitos en la convocatoria vigente.</p>
+</div></div>`,
+  });
+}
+
+// Sitemap propio de Learn (vorka.mx/learn/sitemap.xml, declarado en el robots.txt de la raíz)
+export function sitemapLearn() {
+  const urls = urlsGuias().map(r => `<url><loc>${SITIO}${r}</loc><lastmod>${ACTUALIZADO}</lastmod></url>`);
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  ${urls.join('\n  ')}\n</urlset>\n`,
+    { headers: { 'content-type': 'application/xml; charset=utf-8', 'cache-control': 'public, max-age=3600' } });
+}
+
+// Sección «Guías para prepararte» de la página de venta de cada simulador ('' si no tiene guías): liga a Vorka Learn
+const CSS_VENTA = `<style>
+.gu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:22px}
+.gu-card{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sombra);color:inherit;text-decoration:none;transition:border-color var(--t-rapido)}
+.gu-card:hover{border-color:var(--line-2)}.gu-card h3{font-size:17.5px;letter-spacing:-.02em;margin-bottom:6px}.gu-card p{color:var(--fg-2);font-size:15px}
+</style>`;
 export function seccionGuias(sim) {
   const lista = guiasDe(sim);
   if (!lista.length) return '';
-  return `${CSS}<section class="t-sec" id="guias"><div class="marco">
-  <div class="cab par"><div><span class="etiqueta">Gratis</span><h2 class="h2" style="margin-top:14px">Guías para prepararte</h2></div>
+  return `${CSS_VENTA}<section class="t-sec" id="guias"><div class="marco">
+  <div class="cab par"><div><span class="etiqueta">Vorka Learn</span><h2 class="h2" style="margin-top:14px">Guías para prepararte</h2></div>
   <p class="lead">Qué viene en el examen, cómo se califica y cómo estudiar, con las fuentes oficiales. <a href="${rutaIndice(sim)}">Ver todas las guías</a></p></div>
   <div class="gu-grid">${lista.map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
 </div></section>`;
 }
 
-// /<simulador>/guias/ y /<simulador>/guias/<guía>/ (sin barra final: 301 a la de con barra)
-export function rutasGuias(req, url) {
+// Rutas de Learn y redirecciones de las URL viejas. 301 directo a la URL final (sin cadenas de redirección).
+//   /learn/  /learn/<examen>/  /learn/<examen>/<guía>/  /learn/sitemap.xml   (sin barra final → con barra)
+//   /<simulador>/guias/ y /<simulador>/guias/<guía>/ (con o sin barra) → su página en /learn/
+export function rutasLearn(req, env, url) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return null;
-  const m = url.pathname.match(/^\/(simulador-[a-z-]+)\/guias(?:\/([a-z0-9-]{2,80}))?(\/?)$/);
-  if (!m || !SIMS[m[1]]) return null;
-  const r = m[2] ? paginaGuia(m[1], m[2]) : paginaIndiceGuias(m[1]);
+  const ir = destino => new Response(null, { status: 301, headers: { location: `${url.origin}${destino}${url.search}` } });
+  const v = url.pathname.match(/^\/(simulador-[a-z-]+)\/guias(?:\/([a-z0-9-]{2,80}))?\/?$/);
+  if (v && SIMS[v[1]]) {
+    if (!v[2]) return guiasDe(v[1]).length ? ir(rutaIndice(v[1])) : null;
+    const x = guia(v[1], v[2]);
+    return x ? ir(rutaGuia(x)) : null;
+  }
+  if (url.pathname === '/learn/sitemap.xml') return sitemapLearn();
+  const m = url.pathname.match(/^\/learn(?:\/([a-z0-9-]{2,30})(?:\/([a-z0-9-]{2,80}))?)?(\/?)$/);
+  if (!m) return null;
+  const anuncios = configAnuncios(env);
+  let r;
+  if (!m[1]) r = paginaLearnPortada(anuncios);
+  else {
+    const sim = simDeClave(m[1]);
+    if (!sim) return null;
+    r = m[2] ? paginaGuia(sim, m[2], anuncios) : paginaIndiceExamen(sim, anuncios);
+  }
   if (!r) return null;
-  return m[3] ? r : Response.redirect(`${url.origin}/${m[1]}/guias/${m[2] ? m[2] + '/' : ''}`, 301);
+  return m[3] ? r : ir(`/learn/${m[1] ? `${m[1]}/` : ''}${m[2] ? `${m[2]}/` : ''}`);
 }
 
 // Para las pruebas: el texto de una guía sin etiquetas

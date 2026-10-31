@@ -5,6 +5,7 @@ import { esc } from './correo.js';
 import { TEMA_HEAD } from './tema.js';
 import { temporadaActual, estiloTemporada } from './temporadas.js';
 import { CLIENTE_DESCUENTO } from './descuentos.js';
+import { DOMINIOS_ADSENSE } from './anuncios.js';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
@@ -16,17 +17,20 @@ export const nonce = () => btoa(String.fromCharCode(...crypto.getRandomValues(ne
 // CSP estricta solo en las rutas de la tienda (el resto del sitio no pasa por el Worker).
 // form-action incluye Stripe porque /api/checkout redirige al pago con un 303.
 // stripe: páginas del portal de creadores con los componentes incrustados de Stripe Connect
-export function seguridad(n, { stripe = false, frames = [] } = {}) {
+// anuncios: SOLO las páginas de Vorka Learn con AdSense encendido (src/anuncios.js) abren script/frame/connect a Google.
+export function seguridad(n, { stripe = false, frames = [], anuncios = false } = {}) {
   const st = stripe ? ' https://connect-js.stripe.com https://js.stripe.com' : '';
+  const ad = k => anuncios ? ` ${DOMINIOS_ADSENSE[k].join(' ')}` : '';
+  const fr = stripe ? ['https://connect-js.stripe.com', 'https://js.stripe.com'] : [...frames, ...(anuncios ? DOMINIOS_ADSENSE.frame : [])];
   return {
     'content-security-policy': [
       "default-src 'self'",
-      `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com${st}`,
-      ...(stripe ? ['frame-src https://connect-js.stripe.com https://js.stripe.com'] : frames.length ? [`frame-src ${frames.join(' ')}`] : []),
+      `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com${st}${ad('script')}`,
+      ...(fr.length ? [`frame-src ${fr.join(' ')}`] : []),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      `connect-src 'self' https://cloudflareinsights.com${stripe ? ' https://api.stripe.com https://*.stripe.com' : ''}`,
+      `connect-src 'self' https://cloudflareinsights.com${stripe ? ' https://api.stripe.com https://*.stripe.com' : ''}${ad('connect')}`,
       "form-action 'self' https://checkout.stripe.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
