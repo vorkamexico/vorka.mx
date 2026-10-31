@@ -1,21 +1,23 @@
-// Vorka Learn (vorka.mx/learn/…): la rama editorial de Vorka México. Guías gratis para preparar exámenes de admisión.
-// Plantilla propia, separada de la tienda: encabezado «Vorka Learn» con los exámenes, sin carrito, sin precios, sin cuenta
+// Vorka Learn (vorka.mx/learn/…): la rama editorial de Vorka México. Guías gratis para preparar exámenes de admisión y,
+// desde octubre de 2026, de finanzas personales (src/learn-finanzas.js).
+// Plantilla propia, separada de la tienda: encabezado «Vorka Learn» con sus secciones, sin carrito, sin precios, sin cuenta
 // de puntos ni scripts de compra. Comparte con el sitio la tipografía, los colores (vorka.css + los tokens claro/oscuro de
 // /tienda/estilos.css, que el navegador ya tiene en caché) y el pie.
 // Anuncios: solo aquí y apagados por defecto (src/anuncios.js). Con ADSENSE_CLIENT, la CSP de estas páginas se abre a Google.
 import { PIE, VERSION, LOGO } from './marco.generado.js';
 import { esc, nonce, seguridad, ESTILOS } from './paginas.js';
 import { TEMA_HEAD } from './tema.js';
-import { scriptAnuncios } from './anuncios.js';
+import { scriptAnuncios, espacioAnuncio } from './anuncios.js';
 
 const VERSION_CSS = [...ESTILOS].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
-export const EXAMENES = [['paa', 'PAA'], ['unam', 'UNAM'], ['ecoems', 'ECOEMS'], ['prepa-ug', 'Prepa UG']];
+// Secciones del menú de Learn: los exámenes y Finanzas personales
+export const EXAMENES = [['paa', 'PAA'], ['unam', 'UNAM'], ['ecoems', 'ECOEMS'], ['prepa-ug', 'Prepa UG'], ['finanzas', 'Finanzas']];
 
 // Wordmark: la V de Vorka (la misma del sitio) + «Vorka Learn» en texto
 export const cabeceraLearn = (actual = '') => `<header class="lr-cab">
   <div class="marco lr-cab-in">
     <a class="lr-marca" href="/learn/" aria-label="Vorka Learn, inicio">${LOGO}<span>Vorka</span> <b>Learn</b></a>
-    <nav class="lr-nav" aria-label="Exámenes">${EXAMENES.map(([k, t]) => `<a href="/learn/${k}/"${k === actual ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+    <nav class="lr-nav" aria-label="Secciones de Vorka Learn">${EXAMENES.map(([k, t]) => `<a href="/learn/${k}/"${k === actual ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
   </div>
 </header>`;
 
@@ -28,7 +30,7 @@ const CSS = `<style>
 .lr-nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:0 -6px}.lr-nav::-webkit-scrollbar{display:none}
 .lr-nav a{display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border-radius:999px;font-size:15px;font-weight:600;color:var(--fg-2);text-decoration:none;white-space:nowrap}
 .lr-nav a:hover{color:var(--fg);background:var(--bg-2)}.lr-nav a[aria-current="page"]{color:var(--fg);background:var(--bg-2)}
-@media(max-width:560px){.lr-cab-in{flex-direction:column;align-items:flex-start;gap:6px}.lr-nav{width:calc(100% + 12px)}}
+@media(max-width:560px){.lr-cab-in{flex-direction:column;align-items:flex-start;gap:6px}.lr-nav{width:calc(100% + 12px);flex-wrap:wrap;overflow-x:visible;gap:2px}.lr-nav a{padding:0 10px}}
 .lr-main{padding-bottom:clamp(40px,7vw,96px)}
 .lr-col{max-width:var(--lr-col);margin:0 auto}.lr-col.lr-ancha{max-width:980px}
 .lr-primero{margin-top:32px}.lr-kicker.lr-arriba{margin-top:clamp(28px,5vw,56px)}
@@ -135,5 +137,85 @@ ${PIE.replace(/<script /g, `<script nonce="${n}" `)}${scriptAnuncios(anuncios, n
   return new Response(html, {
     status,
     headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridad(n, { anuncios: !!anuncios }) },
+  });
+}
+
+// ---------- piezas compartidas por las secciones de Learn (guías de exámenes y finanzas personales) ----------
+export const SITIO = 'https://vorka.mx';
+export const RUTA_LEARN = '/learn/';
+export const p = t => `<p>${t}</p>`;
+export const ul = l => `<ul class="gu-lista">${l.map(x => `<li>${x}</li>`).join('')}</ul>`;
+export const ol = l => `<ol class="gu-pasos">${l.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ol>`;
+export const tabla = (cab, filas, nota = '') => `<div class="gu-tabla-w"><table class="gu-tabla"><thead><tr>${cab.map(c => `<th scope="col">${c}</th>`).join('')}</tr></thead><tbody>${filas.map(([a, ...r]) => `<tr><th scope="row">${a}</th>${r.map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${nota ? `<p class="gu-nota">${nota}</p>` : ''}`;
+export const nota = t => `<p class="gu-nota">${t}</p>`;
+export const caja = (t, d) => `<div class="gu-caja"><b>${t}</b>${d}</div>`;
+export const a = (href, t) => `<a href="${href}">${t}</a>`;
+export const ext = (href, t) => `<a href="${href}" rel="noopener">${t}</a>`;
+export const ld = x => `<script type="application/ld+json">${JSON.stringify(x).replace(/</g, '\\u003c')}</script>`;
+export const ORG = { '@type': 'Organization', name: 'Vorka México', url: `${SITIO}/`, logo: { '@type': 'ImageObject', url: `${SITIO}/vorka-logo.png` } };
+// La marca editorial: Vorka Learn, parte de Vorka México
+export const LEARN = { '@type': 'Organization', name: 'Vorka Learn', url: `${SITIO}/learn/`, parentOrganization: ORG };
+export const SITIO_LEARN = { '@type': 'WebSite', name: 'Vorka Learn', url: `${SITIO}/learn/`, publisher: ORG };
+export const textoPlano = h => h.replace(/<[^>]+>/g, '');
+export const tarjeta = (href, t, d) => `<a class="gu-card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p></a>`;
+export const migas = l => `<nav class="lr-migas" aria-label="Migas de pan"><ol>${l.map(([t, href], i) => `<li>${i < l.length - 1 ? `<a href="${href}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol></nav>`;
+export const migasLd = l => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: l.map(([name, href], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${SITIO}${href}` })) });
+// Título con la marca Learn (sin la marca si no cabe en 60 caracteres)
+const SUFIJO = ' | Vorka Learn';
+export const conMarca = t => (t + SUFIJO).length <= 60 ? t + SUFIJO : t;
+
+// «¿Le sirve a alguien más?»: ligas para compartir (sin JS; la página tiene CSP con nonce). La liga lleva utm para medir
+// cuántas visitas llegan porque alguien la recomendó; Google usa el canonical, así que no duplica la página.
+export function compartir(h1, ruta, texto) {
+  const url = c => `${SITIO}${ruta}?utm_source=${c}&utm_medium=compartir&utm_campaign=learn`;
+  const wa = `https://wa.me/?text=${encodeURIComponent(`${h1}: ${url('whatsapp')}`)}`;
+  const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url('facebook'))}`;
+  return `<div class="gu-compartir"><p><b>¿Le sirve a alguien más?</b> ${texto}</p>
+    <div class="gu-comp-bot"><a class="gu-wa" href="${esc(wa)}" target="_blank" rel="noopener">Compartir por WhatsApp</a><a class="gu-fb" href="${esc(fb)}" target="_blank" rel="noopener">Compartir en Facebook</a></div></div>`;
+}
+
+/**
+ * Artículo de Learn con la plantilla editorial: migas, H1, índice, secciones, preguntas frecuentes, fuentes, un solo
+ * llamado final, compartir y «Sigue leyendo». Los espacios de anuncio solo aparecen si `anuncios` está encendido.
+ *  x: { h1, lead, descripcion, secciones: [{ h2, html }], faq?: [{ p, r }], fuentes: [{ nombre, url }], publicado?, actualizado? }
+ *  o: { ruta, titulo, lugares, kicker, imagen, actual, anuncios, actualizado, actualizadoTxt, notaFuentes (html),
+ *       llamado (html del <aside class="lr-final">), compartirTexto, rel: [{ href, h1, descripcion }], relTitulo, notaPie (html) }
+ */
+export function paginaArticulo(x, o) {
+  const { ruta, lugares, anuncios = null } = o, ids = x.secciones.map((_, i) => `s${i + 1}`);
+  const datos = [
+    { '@context': 'https://schema.org', '@type': 'Article', headline: x.h1, description: x.descripcion, inLanguage: 'es-MX', image: [o.imagen],
+      datePublished: x.publicado || o.actualizado, dateModified: x.actualizado || o.actualizado, author: LEARN, publisher: ORG, isPartOf: SITIO_LEARN,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITIO}${ruta}` }, citation: x.fuentes.map(f => f.url) },
+    migasLd(lugares),
+    ...(x.faq?.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: x.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) }] : []),
+  ];
+  // Anuncios (solo si están encendidos): tras la primera sección, a mitad del artículo y antes del llamado final
+  const n = x.secciones.length, mitad = Math.floor(n / 2);
+  const espacioTras = i => (i === 0 ? espacioAnuncio(anuncios, 'intro') : '') + (i === mitad && i > 0 && i < n - 1 ? espacioAnuncio(anuncios, 'mitad') : '');
+  const rel = o.rel || [];
+  return paginaLearn({ titulo: o.titulo, ruta, descripcion: x.descripcion, imagen: o.imagen, ogTipo: 'article', actual: o.actual, anuncios,
+    head: ld(datos),
+    cuerpo: `<div class="marco"><div class="lr-col">
+  ${migas(lugares)}
+  <span class="lr-kicker">${esc(o.kicker)}</span>
+  <h1 class="lr-h1">${esc(x.h1)}</h1>
+  <p class="lr-lead">${esc(x.lead)}</p>
+  <p class="lr-meta">Por Vorka Learn · Actualizado: <time datetime="${x.actualizado || o.actualizado}">${o.actualizadoTxt}</time> · Con fuentes oficiales al final</p>
+  <details class="lr-toc"><summary>En esta guía</summary><ol>${x.secciones.map((y, i) => `<li><a href="#${ids[i]}">${esc(y.h2)}</a></li>`).join('')}${x.faq?.length ? '<li><a href="#preguntas">Preguntas frecuentes</a></li>' : ''}<li><a href="#fuentes">Fuentes</a></li></ol></details>
+  <article class="lr-art">
+    ${x.secciones.map((y, i) => `<h2 id="${ids[i]}">${esc(y.h2)}</h2>\n${y.html}${espacioTras(i)}`).join('\n')}
+    ${x.faq?.length ? `<h2 id="preguntas">Preguntas frecuentes</h2><div class="t-faq">${x.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>` : ''}
+    <h2 id="fuentes">Fuentes</h2>
+    <ol class="gu-fuentes">${x.fuentes.map(f => `<li>${ext(esc(f.url), esc(f.nombre))}</li>`).join('')}</ol>
+    ${o.notaFuentes}
+    ${espacioAnuncio(anuncios, 'final')}
+    ${o.llamado}
+    ${compartir(x.h1, ruta, o.compartirTexto)}
+  </article>
+  ${rel.length ? `<section class="lr-sigue" aria-labelledby="sigue"><p class="lr-sigue-t">Sigue leyendo</p><h2 class="lr-h2" id="sigue">${esc(o.relTitulo)}</h2>
+  <div class="gu-grid">${rel.map(y => tarjeta(y.href, y.h1, y.descripcion)).join('')}</div></section>` : ''}
+  <p class="lr-nota">${o.notaPie}</p>
+</div></div>`,
   });
 }
