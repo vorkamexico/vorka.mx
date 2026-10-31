@@ -38,6 +38,7 @@ import * as retiros from './puntos-retiros.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
+import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -113,6 +114,16 @@ export class Admin extends WorkerEntrypoint {
   // pago, compró, con cupón, recuperadas por el correo) y borrar las respuestas de un correo (ARCO)
   metricasTests(f) { return metricasTests(this.env, f || {}); }
   borrarDatosTests(email) { return borrarDatosTests(this.env, email); }
+  // Vorka OS › Tienda › Tests (src/tests/panel.js): embudo y ventas por rango ('hoy' | '7d' | '30d'), licencias para grupo
+  // (liga del grupo, liga nueva del panel y reenviar su correo) y ARCO por correo. `por` = correo de quien del equipo lo hace
+  // (bitácora tests_bitacora, que nunca guarda el dato borrado). En las listas el correo va oculto.
+  panelTests(f) { return panelTests(this.env, f || {}); }
+  gruposTests(f) { return gruposTests(this.env, f || {}); }
+  ligaPanelTests(d) { return ligaPanelTests(this.env, d || {}); }
+  reenviarPanelTests(d) { return reenviarPanelTests(this.env, d || {}); }
+  buscarDatosTestsCorreo(email) { return buscarDatosTestsCorreo(this.env, email); }
+  borrarDatosTestsCorreo(d) { return borrarDatosTestsCorreo(this.env, d || {}); }
+  bitacoraTests(f) { return bitacoraTests(this.env, f || {}); }
   // Ligas de regalo (compras para regalar y cortesías): ver, apagar y volver a prender una por una
   ligas(orderId) { return ligasDe(this.env, orderId); }
   apagarLiga(id) { return apagarLiga(this.env, id); }

@@ -75,7 +75,8 @@ export async function cuponVigente(env, f, ahora = new Date().toISOString()) {
 export const horaVence = iso => `${new Date(iso).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' })} (hora del centro de México)`;
 
 // ---------- métricas del embudo (sin datos personales) ----------
-const hoy = () => new Date().toISOString().slice(0, 10);
+// El día es el del centro de México (UTC−6 todo el año): «hoy» en el panel de Vorka OS es el día de aquí, no el de UTC
+const hoy = () => new Date(Date.now() - 6 * 3600e3).toISOString().slice(0, 10);
 export const EVENTOS_CLIENTE = ['inicio', 'mitad'];
 export async function contar(env, producto, evento) {
   try {
