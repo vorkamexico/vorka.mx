@@ -13,6 +13,9 @@
     { "pattern": "vorka.mx/simulador-unam*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/simulador-ecoems*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/simulador-prepa-ug*", "zone_name": "vorka.mx" },
+    // Test vocacional y ¿Qué proyecto social hago? (src/tests/)
+    { "pattern": "vorka.mx/test-vocacional*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/que-proyecto-social*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/cupo*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/brindi*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/vuelve*", "zone_name": "vorka.mx" },

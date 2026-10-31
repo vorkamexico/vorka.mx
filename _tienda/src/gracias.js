@@ -56,6 +56,10 @@ function bloques(o, v) {
     ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Ya tienes más simulacros',
       texto: 'Tus simulacros completos adicionales ya están disponibles en tu cuenta.',
       extra: `<div class="botones t-centro"><a class="btn tinta" href="${esc(acc.ruta)}">Volver al simulador ${FLECHA}</a></div>` }
+    // Tests (src/tests/): en el navegador donde se contestó, el reporte se abre al momento (la ruta /ver/ revisa la cookie)
+    : acc && ['test-vocacional', 'que-proyecto-social'].includes(acc.app) && acc.tipo !== 'grupo' ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Tu reporte está desbloqueado',
+      texto: `También te mandamos la liga a <b>${esc(correoOculto(o.email))}</b> (no vence). Si contestaste en este navegador, ábrelo ya:`,
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="/${esc(acc.app)}/ver/${esc(o.id)}">Ver mi reporte ${FLECHA}</a></div><p class="t-nota">¿No te llegó el correo? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>` }
     : acc ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
       texto: `Enviamos tu acceso a <b>${esc(correoOculto(o.email))}</b>. Ábrelo y toca <b>${esc(acc.boton || 'Entrar')}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
       extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>' }

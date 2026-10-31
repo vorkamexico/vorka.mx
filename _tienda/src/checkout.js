@@ -7,7 +7,8 @@ import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLi
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
 import { productoPorSlug } from './modelo.js';
-import { resolverDescuento, duracionDe, lineaCompra } from './descuentos.js';
+import { resolverDescuento, duracionDe, lineaCompra, centavosDe } from './descuentos.js';
+import { alCrearOrden, paqueteCheckout } from './tests/index.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
 
@@ -37,6 +38,9 @@ export const EsquemaCheckout = z.object({
   sucursales: z.coerce.number().int().min(0).max(20, 'Hasta 20 sucursales adicionales; para más, escríbenos.').optional(),
   // Agenda: cuántos profesionales atienden en total (1 viene incluido; los demás se cobran como profesional adicional)
   profesionales: z.coerce.number().int().min(1, 'Elige al menos un profesional.').max(50, 'Hasta 50 profesionales; para más, escríbenos.').optional(),
+  // Tests (src/tests/): el resultado al que se liga la compra y, en el test vocacional, el simulador del paquete
+  resultado: z.string().regex(/^[a-f0-9]{32}$/).optional().or(z.literal('')),
+  paquete: z.string().trim().regex(/^[a-z0-9-]{1,80}$/).optional().or(z.literal('')),
 }).refine(d => d.slug || d.items, { message: 'Falta el producto.', path: ['slug'] });
 
 // Límites: por IP 10 intentos / 10 min, por correo 5 / 10 min
@@ -72,6 +76,13 @@ export async function checkout(req, env) {
 
   // Varias unidades del mismo producto solo tienen sentido al regalar (o en el carrito con items)
   let items = d.items || [{ slug: d.slug, cantidad: d.regalo ? (d.cantidad || 1) : 1 }];
+  // Paquete test vocacional + simulador de su examen (descuento fijo; no se acumula con otro: gana el mayor)
+  let paquete = null;
+  if (d.paquete) {
+    if (d.regalo || d.items) return error('El paquete no se puede regalar; compra el reporte solo para regalar.');
+    try { paquete = await paqueteCheckout(env, d.slug, d.paquete); } catch { return error('Ese paquete no está disponible.'); }
+    items = paquete.items;
+  }
   // Suscripción: un solo plan por compra (+ sus complementos del mismo intervalo: sucursales o profesionales); sin regalos ni puntos
   const subs = [];
   let sus = null;   // { intervalo, app } del plan, para saber si aplica un código de descuento
@@ -129,7 +140,8 @@ export async function checkout(req, env) {
   const lineas = [];
   for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p) lineas.push(lineaCompra(p, it.cantidad || 1)); }
   const desc = await resolverDescuento(env, { escrito: d.codigo, liga: d.ref || cookie(req, 'vorka_ref'), email: d.email, sus, lineas });
-  const descuento = desc.descuento ? { ...desc.descuento, duracion: sus ? duracionDe(desc.descuento) : null } : null;
+  let descuento = desc.descuento ? { ...desc.descuento, duracion: sus ? duracionDe(desc.descuento) : null } : null;
+  if (paquete && centavosDe(paquete.descuento, lineas) >= centavosDe(descuento, lineas)) descuento = { ...paquete.descuento, duracion: null };
 
   let orden;
   try {
@@ -144,6 +156,9 @@ export async function checkout(req, env) {
     if (e.message === 'puntos') return error('Tus puntos cambiaron mientras comprabas (¿tienes otra compra abierta?). Revisa tu saldo e intenta de nuevo.', 409);
     throw e;
   }
+
+  // Tests: la compra queda ligada a las respuestas del resultado desde donde se pagó
+  if (d.resultado) await alCrearOrden(env, { resultado: d.resultado, orden, slug: d.slug, regalo: d.regalo }).catch(e => console.error('checkout: resultado', e.message));
 
   const pasarela = proveedor(orden.proveedor);
   const gracias = new URL('/tienda/gracias', env.SITE_URL);
