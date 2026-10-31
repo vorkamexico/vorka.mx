@@ -462,6 +462,8 @@ export async function sitemapTienda(env) {
     `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
     ...Object.keys(VARIANTES).filter(Boolean).map(k => `<url><loc>${SITIO}/tienda/brindi/${k}/</loc><priority>0.8</priority></url>`),   // por tipo de evento
     ...Object.keys(UNIVERSIDADES).map(k => `<url><loc>${SITIO}/simulador-paa/${k}/</loc><priority>0.7</priority></url>`),   // PAA por universidad
+    // Test vocacional para escuelas (licencias para grupo): página propia, aunque las licencias estén ocultas en el catálogo
+    ...(ps.some(p => p.slug === 'test-vocacional') ? [`<url><loc>${SITIO}/test-vocacional/escuelas/</loc><priority>0.8</priority></url>`] : []),
     // Las guías viven en Vorka Learn y tienen su propio sitemap: /learn/sitemap.xml (en robots.txt)
     // Varios productos comparten página (Brindi): cada ruta va una sola vez
     // Si el producto tiene página propia (p. ej. /simulador-paa/), en el sitemap va esa (es la canónica)

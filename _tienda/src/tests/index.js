@@ -9,6 +9,7 @@
 //   GET  /<base>/reporte/<token>       el reporte de pago (no vence); si la compra aún no tiene respuestas, el test ahí mismo
 //   GET  /<base>/ver/<orden>           desde la página de gracias, en el navegador donde se contestó (cookie) → el reporte
 //   GET  /test-vocacional/panel/<token> panel del orientador · /grupo/<codigo> liga para que el grupo se una
+//   GET  /test-vocacional/escuelas/     página para escuelas (indexable) · /escuelas/volante/ volante carta imprimible (noindex)
 //   POST /api/tests/evento             embudo: inicio y mitad (sin datos personales)
 import { z } from 'zod';
 import { one, all, run, json, fail, ahoraISO, correoOculto } from '../util.js';
@@ -21,6 +22,7 @@ import * as V from './vocacional.js';
 import * as PS from './proyecto.js';
 import * as PV from './paginas-vocacional.js';
 import * as PP from './paginas-proyecto.js';
+import * as PE from './paginas-escuelas.js';
 import { PRODUCTOS_TEST, ID, TOKEN, SIN_REFERER, guardarResultado, leerResultado, resultadoDeOrden, contestado, ligarResultado, contar, metricas, abrirToken,
   codigoCompartir, leerFormulario, ipHash, cookieDe, cookieResultado, crearCupon, cuponVigente, EVENTOS_CLIENTE } from './comun.js';
 import { mandarResultado, mandarRecordatorios } from './correos.js';
@@ -277,6 +279,12 @@ export async function rutasTests(request, env, url) {
   if (resto === '' && lee) return ir(`${def.ruta}${url.search}`, 301);
   if (resto === '/') return m === 'POST' ? guardarTest(request, env, def) : lee ? landing(env, request, url, def) : fail('Método no permitido', 405);
   let r;
+  if (def.clave === 'vocacional' && /^\/escuelas(\/volante)?\/?$/.test(resto)) {
+    if (!lee) return fail('Método no permitido', 405);
+    if (!resto.endsWith('/')) return ir(`${def.ruta}${resto.slice(1)}/${url.search}`, 301);
+    const { p, grupos } = await datosLanding(env, def);
+    return resto.startsWith('/escuelas/volante') ? PE.volanteEscuelas({ p, grupos }) : PE.paginaEscuelas({ p, grupos });
+  }
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/?$/)) && lee) return verResultado(request, env, url, def, r[1]);
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/correo\/?$/)) && m === 'POST') return guardarCorreo(request, env, def, r[1]);
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/borrar\/?$/)) && m === 'POST') {

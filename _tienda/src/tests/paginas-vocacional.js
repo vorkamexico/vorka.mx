@@ -52,27 +52,35 @@ const FAQ = precioT => [
   ['¿Las carreras son de una universidad en específico?', 'No. Son nombres generales de carreras que se ofrecen en México. Cada universidad las llama un poco distinto: revisa su plan de estudios y su convocatoria antes de decidir.'],
   ['¿Sirve si voy en secundaria?', 'Sí. Te ayuda a elegir una prepa o un bachillerato que vaya con tus intereses y te dice si te toca el examen ECOEMS o el de la prepa de la UG.'],
   ['Soy mamá o papá, ¿cómo lo uso?', 'Pásale la liga a tu hija o hijo para que lo conteste. Si compras el reporte, también lo puedes regalar: te llega una liga por correo para que se la mandes. El reporte trae preguntas para que platiquen en familia.'],
-  ['Soy orientador, ¿hay precio para grupos?', 'Sí: licencias para 10, 30 o 100 alumnas y alumnos con precio por alumno más bajo. Recibes una sola liga para tu grupo y un panel con los resultados de quienes acepten compartirlos contigo.'],
+  ['Soy orientador, ¿hay precio para grupos?', 'Sí: licencias para 10, 30 o 100 alumnas y alumnos con precio por alumno más bajo. Recibes una sola liga para tu grupo y un panel con los resultados de quienes acepten compartirlos contigo. Todo el detalle está en <a href="/test-vocacional/escuelas/">la página para escuelas</a>.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tu resultado y tu reporte. No se venden ni se comparten. Si no compras ni dejas tu correo, se borran a los 12 meses, y puedes borrarlas tú cuando quieras desde tu resultado. Consulta el <a href="/privacidad/#tests">aviso de privacidad</a>.'],
   ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. ${precioT}, pago único. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
 ];
 
-// Licencias para grupo: un formulario por paquete (sin JavaScript también funciona)
-function licencias(grupos) {
-  if (!grupos.length) return '';
-  return `<section class="tv-sec" id="escuelas"><div class="marco">
-  <div class="tv-cab"><span class="tv-et">Escuelas y orientadores</span><h2>Licencias para tu grupo</h2>
-    <p>Una sola liga para tu grupo: cada alumna o alumno contesta con su correo y recibe su reporte completo. En tu panel ves los resultados de quienes acepten compartirlos contigo (tipos más comunes, carreras y áreas).</p></div>
-  <div class="tv-lic">${grupos.map((g, i) => `<form method="post" action="/api/checkout" class="${i === 1 ? 'dest' : ''}">
+// Licencias para grupo: un formulario por paquete (sin JavaScript también funciona). También los usa /test-vocacional/escuelas/.
+export const RUTA_ESCUELAS = `${RUTA}escuelas/`;
+export const porAlumno = g => pesosTexto(Math.round(g.precio_centavos / g.contenido.licencias));
+export function formsLicencias(grupos, pre = 'g') {
+  return `<div class="tv-lic">${grupos.map((g, i) => `<form method="post" action="/api/checkout" class="${i === 1 ? 'dest' : ''}">
     <input type="hidden" name="slug" value="${esc(g.slug)}">
     <h3>${g.contenido.licencias} licencias</h3>
     <span class="tv-pp num">${precio(g)}</span>
-    <span class="tv-nota">${pesosTexto(Math.round(g.precio_centavos / g.contenido.licencias))} por alumno · pago único</span>
-    <label class="vh" for="gn-${i}">Nombre de quien compra</label><input id="gn-${i}" name="nombre" type="text" required minlength="2" maxlength="120" placeholder="Tu nombre" autocomplete="name">
-    <label class="vh" for="ge-${i}">Correo</label><input id="ge-${i}" name="email" type="email" required maxlength="254" placeholder="Tu correo (aquí llega tu panel)" autocomplete="email">
+    <span class="tv-nota">${porAlumno(g)} por alumno · pago único</span>
+    <label class="vh" for="${pre}n-${i}">Nombre de quien compra</label><input id="${pre}n-${i}" name="nombre" type="text" required minlength="2" maxlength="120" placeholder="Tu nombre" autocomplete="name">
+    <label class="vh" for="${pre}e-${i}">Correo</label><input id="${pre}e-${i}" name="email" type="email" required maxlength="254" placeholder="Tu correo (aquí llega tu panel)" autocomplete="email">
     <label class="tv-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a> y el <a href="/privacidad/#tests" target="_blank">aviso de privacidad</a>.</span></label>
     <button class="btn ${i === 1 ? 'acento' : 'blanco'}" type="submit">Comprar ${g.contenido.licencias} licencias ${FLECHA}</button>
-  </form>`).join('')}</div>
+  </form>`).join('')}</div>`;
+}
+// Línea para el pie de las páginas del test: lleva a la página para escuelas
+export const PIE_ESCUELAS = `<p class="tv-nota tv-no-imprimir tv-pie-esc">¿Eres orientadora, orientador o das clases? <a href="${RUTA_ESCUELAS}">Usa el test con todo tu grupo</a>: licencias para grupos de 10, 30 o 100 alumnas y alumnos.</p>`;
+
+function licencias(grupos) {
+  return `<section class="tv-sec" id="escuelas"><div class="marco">
+  <div class="tv-cab"><span class="tv-et">Escuelas y orientadores</span><h2>Úsalo con todo tu grupo</h2>
+    <p>Una sola liga para tu grupo: cada alumna o alumno contesta con su correo y recibe su reporte completo. En tu panel ves los resultados de quienes acepten compartirlos contigo (tipos más comunes, carreras y áreas). Cabe en una clase de 50 minutos.</p>
+    <div class="tv-acciones"><a class="btn tinta" href="${RUTA_ESCUELAS}">Ver cómo funciona en escuelas ${FLECHA}</a></div></div>
+  ${grupos.length ? formsLicencias(grupos) : ''}
   <p class="tv-nota">¿Necesitas factura o más de 100 licencias? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>
 </div></section>`;
 }
@@ -137,7 +145,7 @@ ${p ? `<section class="tv-sec" id="regalar"><div class="marco tv-dos">
 ${licencias(grupos)}
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Preguntas sobre el test', items: F.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre el Test vocacional Vorka',
-  pie: '<p class="t-nota t-legal">Test vocacional Vorka · Basado en la teoría RIASEC de John L. Holland, con preguntas originales de Vorka México · Orientativo: no es una prueba psicométrica · Vorka México</p>' })}
+  pie: PIE_ESCUELAS + '<p class="t-nota t-legal">Test vocacional Vorka · Basado en la teoría RIASEC de John L. Holland, con preguntas originales de Vorka México · Orientativo: no es una prueba psicométrica · Vorka México</p>' })}
 ${await masTienda(env, 'examenes')}
 </div>`,
   });
@@ -233,6 +241,7 @@ export function resultadoVocacional({ f, p, paquetes = [], error = '', cupon = n
   <h2 class="h2" style="margin:0 0 10px">Tus respuestas, tus datos</h2>
   <p class="tv-nota">Guardamos tus respuestas para mostrarte este resultado${ya ? ' y tu reporte' : ''}. Si no compras, se borran solas a los 12 meses.${f.email ? ' Solo te escribimos lo que aceptaste.' : ''}</p>
   <form method="post" action="${RUTA}resultado/${f.id}/borrar"><button class="tv-mini" type="submit">Borrar mis respuestas ahora</button></form>
+  ${PIE_ESCUELAS}
 </div></section>
 </div>`,
   });
@@ -312,6 +321,7 @@ export function reporteVocacional({ f, orden, token, sims = {}, codigoRef = null
 <section aria-labelledby="r-base"><h2 id="r-base">Cómo leer este reporte</h2>
   <p class="tv-nota">Este test se basa en la teoría de intereses vocacionales de John L. Holland (seis tipos: Realista, Investigador, Artístico, Social, Emprendedor y Convencional). Las preguntas, el catálogo de carreras y los textos son de Vorka México. Tu puntaje combina intereses (65 %), habilidades que tú percibes (25 %) y preferencias (10 %). Es orientativo: no es una prueba psicométrica estandarizada ni un diagnóstico, y no sustituye la orientación de una o un profesional. Tus intereses pueden cambiar: vuelve a contestarlo en unos meses.</p>
   <p class="tv-nota">Orden ${esc(orden.id)} · Esta liga no vence; guárdala. ¿Quieres borrar tus respuestas? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>
+  ${PIE_ESCUELAS}
 </section>
 </div>
 </div>`,
