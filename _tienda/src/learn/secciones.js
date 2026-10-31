@@ -19,7 +19,7 @@ export const aspecto = clave => SECCIONES[clave] || (/^finanzas/.test(clave || '
 // Tokens CSS por sección: <body class="lr-s-<clave>"> (o cualquier elemento con esa clase) define --sec-a, --sec-b, --sec-t y
 // --sec-s, y el tema oscuro los cambia. Así cada pieza usa var(--sec-t) y no sabe en qué sección está.
 export function cssSecciones(claves = []) {
-  const todas = [...new Set([...Object.keys(SECCIONES), ...claves])];
+  const todas = [...new Set(['learn', ...Object.keys(SECCIONES), ...claves])];
   const reglas = (sel, x, oscuro) => `${sel}{--sec-a:${x.a};--sec-b:${x.b};--sec-t:${oscuro ? x.to : x.t};--sec-s:${oscuro ? x.so : x.s}}`;
   const sel = (k, pre = '') => `${pre}.lr-s-${k}`;
   const claro = [reglas(':root[data-app="learn"]', LEARN_COLOR, false), ...todas.map(k => reglas(sel(k), aspecto(k), false))];

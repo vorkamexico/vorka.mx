@@ -1,4 +1,6 @@
-// Vorka Learn (vorka.mx/learn/…): la rama editorial de Vorka México. Guías gratis con fuentes oficiales.
+// Vorka Learn (vorka.mx/learn/…): la rama editorial de Vorka México. Guías gratis con fuentes oficiales: exámenes de
+// admisión (src/simulador/guias.js) y finanzas personales (src/learn-finanzas.js). Para agregar una sección nueva
+// (p. ej. «Negocio pequeño»), los pasos están al inicio de src/learn/datos.js.
 // Plantilla propia, separada de la tienda: el encabezado es la misma píldora de la tienda (logo V + «Vorka Learn», lupa,
 // botón «Practica» y menú; src/learn/encabezado.js), sin carrito, sin precios, sin cuenta de puntos ni scripts de compra.
 // Comparte con el sitio la tipografía, los tokens claro/oscuro (vorka.css + /tienda/estilos.css, que el navegador ya tiene
@@ -10,9 +12,13 @@ import { PIE, VERSION } from './marco.generado.js';
 import { esc, nonce, seguridad, ESTILOS } from './paginas.js';
 import { TEMA_HEAD } from './tema.js';
 import { scriptAnuncios } from './anuncios.js';
+// Piezas compartidas por las secciones (van primero: los archivos de datos las usan al cargar)
+export { SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, ext, ld, ORG, LEARN, SITIO_LEARN, textoPlano, tarjeta, migas, migasLd, conMarca } from './learn/piezas.js';
 import { cssLearn } from './learn/estilos.js';
 import { encabezadoLearn } from './learn/encabezado.js';
 import { BARRA, SUBIR, SCRIPT_LEARN } from './learn/lectura.js';
+// La plantilla de artículo de todas las secciones
+export { paginaArticulo, compartir } from './learn/articulo.js';
 
 const VERSION_CSS = [...ESTILOS].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
 let CSS = null;   // se arma una vez por Worker (tokens de cada sección + estilos)

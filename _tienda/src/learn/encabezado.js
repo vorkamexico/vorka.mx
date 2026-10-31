@@ -12,8 +12,8 @@ import { selectorTema } from '../tema.js';
 import { aspecto } from './secciones.js';
 import { secciones } from './datos.js';
 
-export const RUTA_BUSCAR = '/learn/buscar/';
-export const RUTA_ACERCA = '/learn/acerca/';
+import { RUTA_BUSCAR, RUTA_ACERCA } from './piezas.js';
+export { RUTA_BUSCAR, RUTA_ACERCA };
 export const RUTA_PRACTICA = '/learn/#practica';
 
 // Íconos de línea (24×24) por dibujo de sección, para el menú y las etiquetas
@@ -32,7 +32,7 @@ const ICONO_PRACTICA = I('<path d="M9 11.5 11.5 14 16 9"/><rect x="3.5" y="3.5" 
 // A dónde lleva «Practica» desde una sección: al simulador de ese examen (si la sección tiene simulador) o a la portada
 export const practicaDe = (actual = '') => {
   const s = secciones().find(x => x.clave === actual);
-  return s && /^simulador-/.test(s.sim) ? { href: `/${s.sim}/`, etiqueta: `Practica con el simulador de ${s.corto}` } : { href: RUTA_PRACTICA, etiqueta: 'Practica con un simulador de examen' };
+  return s?.simulador ? { href: s.simulador.href, etiqueta: `Practica con el simulador de ${s.corto}` } : { href: RUTA_PRACTICA, etiqueta: 'Practica con un simulador de examen' };
 };
 
 const enlaceSeccion = (s, actual) => `<li><a class="lr-m-sec lr-s-${s.clave}" href="${s.ruta}"${s.clave === actual ? ' aria-current="page"' : ''}><span class="lr-m-ico">${iconoDe(s.clave)}</span><span class="lr-m-txt"><b>${esc(s.nombre)}</b><small>${s.n} ${s.n === 1 ? 'guía' : 'guías'}</small></span><span class="lr-m-fl" aria-hidden="true">›</span></a></li>`;

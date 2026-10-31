@@ -116,7 +116,7 @@ ${cssSecciones()}
 .lr-grupo p.lr-grupo-lead{color:var(--fg-2);margin:10px 0 0;font-size:16.5px;max-width:720px}
 .lr-practica-sec{margin-top:clamp(52px,8vw,96px);padding:clamp(24px,4vw,44px);border-radius:28px;background:var(--noche);color:#F4F2F5;position:relative;overflow:hidden;isolation:isolate}
 .lr-practica-sec::after{content:"";position:absolute;z-index:-1;right:12%;top:-20%;bottom:-20%;width:110px;background:rgba(200,164,92,.12);transform:skewX(-28deg)}
-.lr-practica-sec .lr-h2{color:#fff}.lr-practica-sec p{color:rgba(244,242,245,.72);margin:10px 0 0;max-width:620px}
+.lr-practica-sec .lr-h2{color:#fff}.lr-practica-sec .lr-oro{color:#E6CF96}.lr-practica-sec p{color:rgba(244,242,245,.72);margin:10px 0 0;max-width:620px}
 .lr-sims{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:22px}
 .lr-sim{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;text-decoration:none;font-weight:700}
 .lr-sim:hover{background:rgba(255,255,255,.1)}.lr-sim small{display:block;font-weight:500;font-size:13px;color:rgba(244,242,245,.65)}

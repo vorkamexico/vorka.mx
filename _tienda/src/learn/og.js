@@ -4,7 +4,7 @@
 import { LOGO } from '../marco.generado.js';
 import { aspecto } from './secciones.js';
 import { arte } from './arte.js';
-import { GUIAS, SIMS, secciones, claveDe, ogGuia, ogSeccion, OG_LEARN } from './datos.js';
+import { secciones, articulos, ogArticulo, ogSeccion, OG_LEARN } from './datos.js';
 import { LEARN_PORTADA } from '../simulador/guias.js';
 
 const e = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -36,6 +36,6 @@ h1{margin-top:22px;font-size:${tam}px;line-height:1.06;letter-spacing:-.035em;fo
 // Todas las imágenes que deben existir: { archivo (ruta pública), html }
 export const listaOg = () => [
   { archivo: OG_LEARN, html: htmlOg({ titulo: LEARN_PORTADA.h1, etiqueta: 'Guías gratis', pie: 'Con fuentes oficiales', semilla: 'portada' }) },
-  ...secciones().map(s => ({ archivo: ogSeccion(s.clave), html: htmlOg({ titulo: SIMS[s.sim].indice.h1, clave: s.clave, etiqueta: s.nombre, pie: `${s.n} ${s.n === 1 ? 'guía' : 'guías'} con fuentes oficiales`, semilla: 'indice' }) })),
-  ...GUIAS.map(x => ({ archivo: ogGuia(x), html: htmlOg({ titulo: x.h1, clave: claveDe(x), etiqueta: `Guía · ${SIMS[x.sim].examen || SIMS[x.sim].nombre}`, semilla: x.slug }) })),
+  ...secciones().map(s => ({ archivo: ogSeccion(s.clave), html: htmlOg({ titulo: s.indice.h1, clave: s.clave, etiqueta: s.nombre, pie: `${s.n} ${s.n === 1 ? 'guía' : 'guías'} con fuentes oficiales`, semilla: 'indice' }) })),
+  ...articulos().map(a => ({ archivo: ogArticulo(a), html: htmlOg({ titulo: a.x.h1, clave: a.clave, etiqueta: `Guía · ${a.s.corto}`, semilla: a.slug }) })),
 ];

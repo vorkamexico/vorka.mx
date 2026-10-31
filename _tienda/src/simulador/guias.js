@@ -9,11 +9,12 @@
 //  - PAA: sin minutos por sección (la única guía del College Board con tiempos es de 2020; ver commit 5501997).
 //  - Nunca «oficial» para el simulador: es un simulador de práctica de Vorka México.
 import { esc } from '../paginas.js';
+import { SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, ext, textoPlano, conMarca } from '../learn.js';
 import { configAnuncios } from '../anuncios.js';
-import { paginaGuia, paginaIndiceExamen, paginaLearnPortada } from '../learn/paginas.js';
+import { paginaGuia, paginaIndiceExamen, paginaLearnPortada, paginaIndiceSeccion } from '../learn/paginas.js';
 import { UNIVERSIDADES } from './paa-universidades.js';
+import { FINANZAS, ARTICULOS_FINANZAS, rutaArticuloFinanzas, RUTA_FINANZAS, paginaArticuloFinanzas } from '../learn-finanzas.js';
 
-const SITIO = 'https://vorka.mx';
 export const ACTUALIZADO = '2026-10-31';
 export const ACTUALIZADO_TXT = 'octubre de 2026';
 
@@ -81,20 +82,12 @@ export const SIMS = {
   },
 };
 
-// ---------- piezas de contenido ----------
-const p = t => `<p>${t}</p>`;
-const ul = l => `<ul class="gu-lista">${l.map(x => `<li>${x}</li>`).join('')}</ul>`;
-const ol = l => `<ol class="gu-pasos">${l.map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ol>`;
-const tabla = (cab, filas, nota = '') => `<div class="gu-tabla-w"><table class="gu-tabla"><thead><tr>${cab.map(c => `<th scope="col">${c}</th>`).join('')}</tr></thead><tbody>${filas.map(([a, ...r]) => `<tr><th scope="row">${a}</th>${r.map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${nota ? `<p class="gu-nota">${nota}</p>` : ''}`;
-const nota = t => `<p class="gu-nota">${t}</p>`;
-const caja = (t, d) => `<div class="gu-caja"><b>${t}</b>${d}</div>`;
+// ---------- piezas de contenido (p, ul, ol, tabla, nota, caja y a vienen de learn.js) ----------
 // Ejemplo de pregunta: siempre propio y marcado como tal
 const ejemplo = (enunciado, opciones, correcta, explicacion) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka México (no es un reactivo del examen)</span>
 <p class="gu-ej-p">${enunciado}</p><ol class="gu-ej-o">${opciones.map((o, i) => `<li><span>${'ABCD'[i]}</span>${o}</li>`).join('')}</ol>
 <details><summary>Ver respuesta</summary><p><b>${'ABCD'[correcta]})</b> ${explicacion}</p></details></div>`;
-const a = (href, t) => `<a href="${href}">${t}</a>`;
-const ext = (href, t) => `<a href="${href}" rel="noopener">${t}</a>`;
-const g = (sim, slug) => `/learn/${SIMS[sim].clave}/${slug}/`;
+const g =(sim, slug) => `/learn/${SIMS[sim].clave}/${slug}/`;
 
 // ---------- las guías (las de mayor potencial primero en cada simulador) ----------
 export const GUIAS = [
@@ -484,30 +477,27 @@ export const guia = (sim, slug) => GUIAS.find(x => x.sim === sim && x.slug === s
 export const simDeClave = clave => Object.keys(SIMS).find(k => SIMS[k].clave === clave) || null;
 export const rutaGuia = x => g(x.sim, x.slug);
 export const rutaIndice = sim => `/learn/${SIMS[sim].clave}/`;
-export const RUTA_LEARN = '/learn/';
+export { RUTA_LEARN };
 // URL viejas (antes de Vorka Learn), para las redirecciones y las pruebas
 export const rutaViejaGuia = x => `/${x.sim}/guias/${x.slug}/`;
 export const rutaViejaIndice = sim => `/${sim}/guias/`;
 const examenes = () => Object.keys(SIMS).filter(s => guiasDe(s).length);
-// Todas las URL para el sitemap de Learn: portada, índices por examen, guías y «Acerca de Vorka Learn»
-export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), '/learn/acerca/'];
-// Título con la marca Learn (sin la marca si no cabe en 60 caracteres)
-const SUFIJO = ' | Vorka Learn';
-const conMarca = t => (t + SUFIJO).length <= 60 ? t + SUFIJO : t;
+// Todas las URL para el sitemap de Learn: portada, índices por examen, guías, Finanzas personales y «Acerca de Vorka Learn»
+export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), RUTA_FINANZAS, ...ARTICULOS_FINANZAS.map(rutaArticuloFinanzas), '/learn/acerca/'];
 export const tituloGuia = x => conMarca(x.titulo.replace(/\s*\|\s*Vorka( México)?$/, ''));
 export const tituloIndice = sim => conMarca(SIMS[sim].indice.titulo);
 
-// Cómo se ven las páginas (portada, índice, guía y su JSON-LD) vive en src/learn/paginas.js; aquí solo los datos y las rutas.
+// Cómo se ven las páginas (portada, índices, guía y su JSON-LD) vive en src/learn/; aquí solo los datos y las rutas.
 export { paginaGuia, paginaIndiceExamen, paginaLearnPortada };
 // Tarjeta de la sección «Guías para prepararte» de la página de venta (estilos propios en CSS_VENTA)
 const tarjeta = (href, t, d) => `<a class="gu-card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p></a>`;
 
-// Portada de Vorka Learn (/learn/): sus textos (la página la arma src/learn/paginas.js)
+// Portada de Vorka Learn (/learn/): sus textos (la página la arma src/learn/paginas.js con todas las secciones)
 export const LEARN_PORTADA = {
-  titulo: 'Vorka Learn: guías para tu examen de admisión',
-  descripcion: 'Guías con fuentes oficiales para la PAA, el examen de la UNAM, el ECOEMS y la prepa de la UG: qué viene, cómo se califica y cómo estudiar.',
-  h1: 'Guías para tu examen de admisión',
-  lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen: qué viene, cómo se califica, cuánto piden y cómo organizar tu estudio. Cada dato sale de la convocatoria o de la institución que aplica el examen, y lo citamos al final de cada guía.',
+  titulo: 'Vorka Learn: guías de admisión y finanzas personales',
+  descripcion: 'Guías con fuentes oficiales para la PAA, la UNAM, el ECOEMS y la prepa de la UG, y guías de finanzas personales: tarjetas, préstamos, tandas y deudas.',
+  h1: 'Guías para tu examen de admisión y tu dinero',
+  lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen (qué viene, cómo se califica, cuánto piden y cómo estudiar) y guías claras de finanzas personales. Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.',
 };
 // Sitemap propio de Learn (vorka.mx/learn/sitemap.xml, declarado en el robots.txt de la raíz)
 export function sitemapLearn() {
@@ -533,7 +523,8 @@ export function seccionGuias(sim) {
 }
 
 // Rutas de Learn y redirecciones de las URL viejas. 301 directo a la URL final (sin cadenas de redirección).
-//   /learn/  /learn/<examen>/  /learn/<examen>/<guía>/  /learn/sitemap.xml   (sin barra final → con barra)
+//   /learn/  /learn/<examen>/  /learn/<examen>/<guía>/  /learn/finanzas/  /learn/finanzas/<artículo>/  /learn/sitemap.xml
+//   (sin barra final → con barra)
 //   /<simulador>/guias/ y /<simulador>/guias/<guía>/ (con o sin barra) → su página en /learn/
 export function rutasLearn(req, env, url) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return null;
@@ -550,6 +541,7 @@ export function rutasLearn(req, env, url) {
   const anuncios = configAnuncios(env);
   let r;
   if (!m[1]) r = paginaLearnPortada(anuncios);
+  else if (m[1] === FINANZAS.clave) r = m[2] ? paginaArticuloFinanzas(m[2], anuncios) : paginaIndiceSeccion(FINANZAS.clave, anuncios);
   else {
     const sim = simDeClave(m[1]);
     if (!sim) return null;
@@ -560,5 +552,4 @@ export function rutasLearn(req, env, url) {
 }
 
 // El texto de una guía sin etiquetas (pruebas, búsqueda y minutos de lectura)
-const textoPlano = h => h.replace(/<[^>]+>/g, '');
 export const textoDeGuia = x => [x.lead, ...x.secciones.map(y => textoPlano(y.html)), ...(x.faq || []).map(f => f.r)].join(' ');
