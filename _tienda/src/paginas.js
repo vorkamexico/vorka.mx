@@ -137,7 +137,7 @@ export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}
 
 // La pastilla "Entrar" se queda visible en celular (la de "Gana puntos" se esconde en pantallas chicas)
 const ENTRAR_CSS = '<style>.nav.t-navs .t-entrar{gap:7px}.nav.t-navs .t-entrar svg{width:18px;height:18px}@media (max-width:430px){.nav.t-navs .t-pastilla.t-entrar{display:inline-flex;min-height:40px;padding:0 14px}}.t-ya{margin:14px 0 0;font-size:15px;opacity:.85}.t-ya a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}</style>';
-export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null, whatsappTexto = '' }) {
+export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null, whatsappTexto = '', ogTipo = 'website' }) {
   const n = nonce(), temporada = temporadaActual();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
@@ -151,7 +151,7 @@ export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo,
 ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="canonical" href="https://vorka.mx${esc(ruta)}">`}
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#FBFAF8" data-claro="#FBFAF8" data-oscuro="#141216">
-<meta property="og:type" content="website">
+<meta property="og:type" content="${ogTipo}">
 <meta property="og:site_name" content="Vorka México">
 <meta property="og:locale" content="es_MX">
 <meta property="og:title" content="${esc(titulo)}">
