@@ -365,7 +365,7 @@ export const GUIAS = [
       { p: '¿Qué promedio piden para la UNAM y el IPN?', r: 'Un promedio mínimo de 7.0 en secundaria, según la convocatoria 2026.' },
     ],
     fuentes: [F.mdmlConv, F.mdmlInstr, F.mdmlCatalogo],
-    relacionadas: [g('simulador-ecoems', 'como-elegir-tus-opciones-ecoems'), g('simulador-ecoems', 'como-prepararte-para-el-examen-ecoems')],
+    relacionadas: [g('simulador-ecoems', 'como-elegir-tus-opciones-ecoems'), g('simulador-ecoems', 'como-prepararte-para-el-examen-ecoems'), g('simulador-prepa-ug', 'examen-admision-prepa-ug')],
   },
   {
     sim: 'simulador-ecoems', slug: 'como-elegir-tus-opciones-ecoems', busqueda: 'cómo elegir tus opciones COMIPEMS / ECOEMS',
@@ -432,7 +432,7 @@ export const GUIAS = [
       { p: '¿Qué estudio para el examen de la UNAM y el IPN?', r: 'Según el instructivo 2026, el examen evalúa conocimientos básicos y habilidades generales. Repasa lo que viste en secundaria y practica comprensión de lectura y razonamiento matemático.' },
     ],
     fuentes: [F.mdmlConv, F.mdmlInstr],
-    relacionadas: [g('simulador-ecoems', 'que-viene-en-el-examen-ecoems'), g('simulador-ecoems', 'como-elegir-tus-opciones-ecoems')],
+    relacionadas: [g('simulador-ecoems', 'que-viene-en-el-examen-ecoems'), g('simulador-prepa-ug', 'examen-admision-prepa-ug'), g('simulador-ecoems', 'como-elegir-tus-opciones-ecoems')],
   },
 
   // ===================== PREPA UG =====================
@@ -471,7 +471,7 @@ export const GUIAS = [
       { p: '¿Cuándo sale la convocatoria 2027 de la prepa UG?', r: 'Al 31 de octubre de 2026 no se ha publicado. En el proceso anterior se publicó en enero y el registro fue del 2 de febrero al 11 de abril de 2026; revisa ugto.mx/admisionug.' },
     ],
     fuentes: [F.ugConv, F.ugFicha, F.exani, F.ugBach],
-    relacionadas: [],
+    relacionadas: [g('simulador-ecoems', 'que-viene-en-el-examen-ecoems'), g('simulador-ecoems', 'como-prepararte-para-el-examen-ecoems'), g('simulador-ecoems', 'como-elegir-tus-opciones-ecoems')],
   },
 ];
 
@@ -507,6 +507,9 @@ const CSS = `<style>
 .gu-tabla thead th{font-size:13px;color:var(--fg-2);font-weight:650}.gu-tabla tbody th{font-weight:650}
 @media(max-width:640px){.gu-tabla{font-size:14px}.gu-tabla th,.gu-tabla td{padding:10px}}
 .gu-nota{font-size:14px!important;color:var(--fg-2)!important}
+.gu-compartir{margin:28px 0 8px;padding:18px;border:1px solid var(--linea,#e5e1ea);border-radius:16px;display:grid;gap:12px}.gu-compartir p{margin:0}
+.gu-comp-bot{display:flex;flex-wrap:wrap;gap:10px}.gu-comp-bot a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:999px;font-weight:700;text-decoration:none}
+.gu-wa{background:#0b7a3b;color:#fff}.gu-fb{background:#1b4fb3;color:#fff}
 .gu-caja{margin:6px 0 16px;padding:18px 20px;border-radius:var(--r);background:var(--morado-suave);border:1px solid color-mix(in srgb,var(--morado) 20%,transparent)}
 .gu-caja > b{display:block;margin-bottom:6px;color:var(--fg)}.gu-caja p:last-child,.gu-caja ul:last-child{margin-bottom:0}
 .gu-ej{margin:8px 0 18px;padding:18px 20px;border-radius:var(--r);border:1.5px dashed var(--line-2);background:var(--card)}
@@ -535,6 +538,16 @@ const ctaSim = (sim, s) => `<aside class="gu-cta" aria-label="Practica con el si
   <a class="btn tinta" href="/${sim}/#probar">Probar un reactivo gratis</a><a class="btn blanco" href="/${sim}/diagnostico/">Diagnóstico gratis</a><a class="btn blanco" href="/${sim}/">Ver el simulador</a></aside>`;
 
 // Página de una guía, o null si no existe
+// «¿Le sirve a alguien más?»: ligas para compartir la guía (sin JS; la página tiene CSP con nonce). La liga lleva utm para
+// medir cuántas visitas llegan porque alguien la recomendó; Google usa el canonical, así que no duplica la página.
+function compartir(x, ruta) {
+  const url = c => `${SITIO}${ruta}?utm_source=${c}&utm_medium=compartir&utm_campaign=guias`;
+  const wa = `https://wa.me/?text=${encodeURIComponent(`${x.h1}: ${url('whatsapp')}`)}`;
+  const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url('facebook'))}`;
+  return `<div class="gu-compartir"><p><b>¿Le sirve a alguien más?</b> Compártela con quien también va a presentar el examen.</p>
+    <div class="gu-comp-bot"><a class="gu-wa" href="${esc(wa)}" target="_blank" rel="noopener">Compartir por WhatsApp</a><a class="gu-fb" href="${esc(fb)}" target="_blank" rel="noopener">Compartir en Facebook</a></div></div>`;
+}
+
 export function paginaGuia(sim, slug) {
   const x = guia(sim, slug), s = SIMS[sim];
   if (!x || !s) return null;
@@ -567,6 +580,7 @@ export function paginaGuia(sim, slug) {
     ${x.faq?.length ? `<h2 id="preguntas">Preguntas frecuentes</h2><div class="t-faq">${x.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>` : ''}
     <h2 id="fuentes">Fuentes</h2>
     <ol class="gu-fuentes">${x.fuentes.map(f => `<li>${ext(esc(f.url), esc(f.nombre))}</li>`).join('')}</ol>
+    ${compartir(x, ruta)}
     <p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; los requisitos y las fechas cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>
   </article>
   <div class="gu-lado">
