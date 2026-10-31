@@ -9,6 +9,7 @@ import { UNAM } from './unam.js';
 import { ECOEMS } from './ecoems.js';
 import { PREPA_UG } from './prepa-ug.js';
 import { paginaPaaUniversidad } from './paa-universidades.js';
+import { rutasGuias } from './guias.js';
 
 // Se arma al usarse (no al cargar el módulo): los simuladores importan la tienda, que a su vez importa este archivo
 export const simuladores = () => [PAA, UNAM, ECOEMS, PREPA_UG];
@@ -19,6 +20,9 @@ export const simuladorDeContenido = contenido => {
 };
 
 export async function rutasSimulador(req, env, url) {
+  // Guías para prepararte: /<simulador>/guias/ y /<simulador>/guias/<guía>/
+  const gu = rutasGuias(req, url);
+  if (gu) return gu;
   // Páginas de la PAA por universidad: /simulador-paa/<universidad>/
   const u = url.pathname.match(/^\/simulador-paa\/([a-z-]{2,30})(\/?)$/);
   if (u && (req.method === 'GET' || req.method === 'HEAD') && !['app.js', 'app.css', 'entrar'].includes(u[1])) {

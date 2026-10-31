@@ -8,6 +8,7 @@ import { FLECHA, CHECK } from '../marco.generado.js';
 import { TOTAL_DIAG } from './diagnostico.js';
 import { oferta, ofertas, migas } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
+import { seccionGuias } from './guias.js';
 
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const CSS = `<style>
@@ -258,6 +259,7 @@ ${v.despuesHero || ''}
   ${v.estructura.tabla}
 </div></section>
 ${v.antesRegalo || ''}
+${seccionGuias(RUTA.slice(1))}
 ${prod ? `<section class="t-sec"><div class="marco sv-regalo">
   <img src="${img.regalo}" alt="Tarjeta de regalo del ${esc(sim.titulo)} con mensaje personalizado" loading="lazy" width="1200" height="900">
   <div>

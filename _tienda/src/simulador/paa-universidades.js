@@ -275,6 +275,7 @@ export function paginaPaaUniversidad(clave) {
     <li class="pu-card"><h3>Inglés</h3><p>50 reactivos.</p></li>
   </ul>
   <p class="pu-nota">${CHECK.replace('<svg', '<svg style="width:14px;height:14px;vertical-align:-2px"')} Cada parte se califica de 200 a 800. Fuente: <a href="${PAA_2020}" rel="noopener">guía de preguntas y respuestas de la PAA del College Board (2020)</a>. Puede haber cambiado: confírmalo con la universidad donde la vas a presentar.</p>
+  <p class="pu-nota">Más a fondo: <a href="/simulador-paa/guias/que-es-la-paa/">qué es la PAA y qué viene</a>, <a href="/simulador-paa/guias/puntaje-paa/">cómo se calcula el puntaje</a> y <a href="/simulador-paa/guias/como-prepararte-para-la-paa/">cómo prepararte en 4 semanas</a>.</p>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
