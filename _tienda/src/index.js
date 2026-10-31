@@ -37,6 +37,7 @@ import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js'
 import * as retiros from './puntos-retiros.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
+import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -108,6 +109,10 @@ export class Admin extends WorkerEntrypoint {
   resenas(f) { return resenasPanel(this.env, f || {}); }
   decidirResena(id, d) { return decidirResena(this.env, id, d || {}); }
   resenasPorAprobar() { return resenasPorAprobar(this.env); }
+  // Tests (vocacional y proyecto social): embudo por producto (inició, mitad, terminó, dejó correo, vio candado, abrió el
+  // pago, compró, con cupón, recuperadas por el correo) y borrar las respuestas de un correo (ARCO)
+  metricasTests(f) { return metricasTests(this.env, f || {}); }
+  borrarDatosTests(email) { return borrarDatosTests(this.env, email); }
   // Ligas de regalo (compras para regalar y cortesías): ver, apagar y volver a prender una por una
   ligas(orderId) { return ligasDe(this.env, orderId); }
   apagarLiga(id) { return apagarLiga(this.env, id); }
@@ -293,6 +298,10 @@ export default {
     // Reseñas: el correo que la pide a quien compró (7 días después en descargables, 14 en accesos y suscripciones; una sola
     // vez por orden). Cada hora, pocas órdenes por corrida (src/resenas.js)
     ctx.waitUntil(pedirResenas(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisadas) console.log('resenas', JSON.stringify(r)); }).catch(e => console.error('resenas', e?.message)));
+    // Tests: el único recordatorio «tu resultado te espera» (al día siguiente, con consentimiento) y, una vez al día, borrar
+    // respuestas viejas (12 meses sin compra, 24 con compra)
+    ctx.waitUntil(mandarRecordatorios(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisados) console.log('tests: recordatorios', JSON.stringify(r)); }).catch(e => console.error('tests: recordatorios', e?.message)));
+    if (esHoraDeLimpiar(event)) ctx.waitUntil(limpiarTests(env).then(r => console.log('tests: limpieza', JSON.stringify(r))).catch(e => console.error('tests: limpieza', e?.message)));
     if (esHoraDeLimpiar(event)) ctx.waitUntil(anonimizarCuponesViejos(env).then(r => console.log('cupones regalo: anonimizados', JSON.stringify(r))).catch(e => console.error('cupones regalo: anonimizar', e?.message)));
     ctx.waitUntil((async () => {
       try {
@@ -327,6 +336,9 @@ async function atender(request, env, ctx, url) {
     if (lr) return lr;
     // ads.txt de la raíz: solo existe con AdSense encendido (ADSENSE_CLIENT); si no, 404
     if (url.pathname === '/ads.txt' && (request.method === 'GET' || request.method === 'HEAD')) return adsTxt(env);
+    // Test vocacional y ¿Qué proyecto social hago? (src/tests/)
+    const tst = await rutasTests(request, env, url);
+    if (tst) return tst;
     const sim = await rutasSimulador(request, env, url);
     if (sim) return sim;
     const cr = await rutasCreadores(request, env, ctx, url);
