@@ -69,7 +69,7 @@ export const PREPA_UG = crearSimulador({
 // nuevo EXANI-I de CENEVAL (fuentes en el aviso). Nada del proceso 2027: no hay nada publicado.
 const SITIO = 'https://vorka.mx';
 const IMG = '/assets/tienda';   // estáticas del sitio (assets/tienda/), no en R2
-const DESCRIPCION = `Simulador del EXANI-I en línea para entrar a la prepa de la Universidad de Guanajuato: ${EXAMEN_REACTIVOS} reactivos en ${HORAS}, tutor que da pistas, explicación paso a paso y aciertos por área.`;
+const DESCRIPCION = `Simulador del EXANI-I en línea para la prepa de la Universidad de Guanajuato: ${EXAMEN_REACTIVOS} reactivos en ${HORAS}, tutor con pistas y aciertos por área.`;
 const FAQ = [
   { p: '¿Qué examen piden para entrar a la prepa de la UG?', r: 'El EXANI-I de CENEVAL. En el proceso de agosto-diciembre 2026, la UG eligió a sus aspirantes de Bachillerato General y Bivalente con tres elementos: el EXANI-I (70 %), el examen diagnóstico para el ingreso a Media Superior que coordina la Secretaría de Educación de Guanajuato (20 %) y el promedio de 1.º y 2.º de secundaria (10 %).' },
   { p: '¿Cómo es el EXANI-I?', r: `Son ${EXAMEN_REACTIVOS} preguntas de opción múltiple, cada una con tres opciones, y dura un máximo de ${HORAS}. Según la ficha técnica de la UG tiene cinco áreas: Comprensión lectora (30 reactivos), Redacción indirecta (30), Pensamiento matemático (40), Pensamiento científico (30) e Inglés (30). En 2026 se presentó en persona, en la Escuela de Nivel Medio Superior de la UG correspondiente.` },

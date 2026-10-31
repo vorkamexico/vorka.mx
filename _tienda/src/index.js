@@ -33,6 +33,7 @@ import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
+import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -99,6 +100,11 @@ export class Admin extends WorkerEntrypoint {
   borrarDatosCupon(d) { return borrarDatosCupon(this.env, d || {}); }
   buscarDatosCuponCorreo(email) { return buscarDatosCuponCorreo(this.env, email); }
   borrarDatosCuponCorreo(d) { return borrarDatosCuponCorreo(this.env, d || {}); }
+  // Reseñas de compradores verificados: lista por estado (pendiente, aprobada, oculta), aprobar u ocultar, y cuántas esperan.
+  // `por` = correo de quien del equipo decide. Solo las aprobadas se publican (página del producto y JSON-LD).
+  resenas(f) { return resenasPanel(this.env, f || {}); }
+  decidirResena(id, d) { return decidirResena(this.env, id, d || {}); }
+  resenasPorAprobar() { return resenasPorAprobar(this.env); }
   // Ligas de regalo (compras para regalar y cortesías): ver, apagar y volver a prender una por una
   ligas(orderId) { return ligasDe(this.env, orderId); }
   apagarLiga(id) { return apagarLiga(this.env, id); }
@@ -281,6 +287,9 @@ export default {
     // Una vez al día (la corrida de las 09:17 UTC, 03:17 en el centro de México): anonimiza los datos de quien recibió un
     // cupón de regalo 12 meses después de que venció, se terminó de usar o se revocó (aviso de privacidad). Va en el mismo
     // cron de cada hora para no gastar otro (el plan gratis de Cloudflare permite 5 en toda la cuenta).
+    // Reseñas: el correo que la pide a quien compró (7 días después en descargables, 14 en accesos y suscripciones; una sola
+    // vez por orden). Cada hora, pocas órdenes por corrida (src/resenas.js)
+    ctx.waitUntil(pedirResenas(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisadas) console.log('resenas', JSON.stringify(r)); }).catch(e => console.error('resenas', e?.message)));
     if (esHoraDeLimpiar(event)) ctx.waitUntil(anonimizarCuponesViejos(env).then(r => console.log('cupones regalo: anonimizados', JSON.stringify(r))).catch(e => console.error('cupones regalo: anonimizar', e?.message)));
     ctx.waitUntil((async () => {
       try {
@@ -324,6 +333,10 @@ async function atender(request, env, ctx, url) {
     const reg = url.pathname.match(/^\/tienda\/regalo\/([^/]{1,100})\/?$/);
     if (reg && (request.method === 'GET' || request.method === 'HEAD')) return await paginaRegalo(env, reg[1]);
     if (url.pathname === '/api/regalo/canjear' && request.method === 'POST') return await canjearRegalo(request, env);
+    // Reseña de un comprador (liga única del correo): ver / mandar el formulario y darse de baja de estos correos
+    const rsn = url.pathname.match(/^\/tienda\/resena\/([^/]{1,100})(\/baja)?\/?$/);
+    if (rsn && ['GET', 'HEAD', 'POST'].includes(request.method))
+      return await (rsn[2] ? bajaResenas(request, env, rsn[1]) : request.method === 'POST' ? paginaResenaPost(request, env, rsn[1]) : paginaResenaGet(env, rsn[1], url));
     const ret = url.pathname.match(/^\/tienda\/retomar\/([0-9a-f-]{36})\/?$/);
     if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
     if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {

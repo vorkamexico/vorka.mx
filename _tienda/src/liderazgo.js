@@ -7,6 +7,8 @@
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc, WHATSAPP } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, formCompra, SCRIPT_COMPRA } from './tienda.js';
+import { oferta, ofertas, migas } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA } from './marco.generado.js';
 
 export const SLUG_LIDERAZGO = 'evaluacion-liderazgo';
@@ -46,9 +48,11 @@ export async function paginaLiderazgo(env, req, url) {
   const precioT = p ? precio(p) : `$${PRECIO_BASE} MXN`;
   const regalo = url.searchParams.get('regalo') === '1';
   const FAQ = faq({ precioN });
-  const descripcion = `80 preguntas para saber dónde estás como líder: tu resultado en 12 dimensiones, lo que crees de ti contra lo que has hecho y 3 acciones para 30 días. Incluye una segunda aplicación a los 90 días. ${precioT}, pago único.`;
+  const rs = p ? await resenasDe(env, RUTA_LIDERAZGO) : null;
+  const descripcion = `80 preguntas para saber dónde estás como líder: 12 dimensiones, lo que crees de ti contra lo que has hecho y 3 acciones para 30 días. ${precioT}, pago único.`;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Evaluación de liderazgo Vorka', description: descripcion, url: `https://vorka.mx${RUTA_LIDERAZGO}`, brand: { '@type': 'Organization', name: 'Vorka México' },
-    offers: { '@type': 'Offer', price: precioN.toFixed(2), priceCurrency: 'MXN', url: `https://vorka.mx${RUTA_LIDERAZGO}`, availability: p ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder' } },
+    offers: oferta({ ruta: RUTA_LIDERAZGO, price: precioN.toFixed(2), disponible: !!p }), ...ldResenas(rs) },
+  migas('Evaluación de liderazgo Vorka', RUTA_LIDERAZGO),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'la Evaluación de liderazgo' }, noindex: !p,
@@ -107,6 +111,7 @@ ${p ? seccionCompra({ titulo: 'Haz tu evaluación', intro: `${precioT}, pago ún
   form: formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '', regalo, mensajeEjemplo: '¡Para que sepas todo lo que ya has logrado!' }) })
   : `<section class="lv-sec suave" id="comprar"><div class="marco"><p class="lv-pronto">La venta abre muy pronto. ¿Dudas? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o por <a href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a>.</p></div></section>`}
 
+${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre la Evaluación de liderazgo Vorka',
   pie: '<p class="t-nota t-legal">Evaluación de liderazgo Vorka · No es una prueba psicométrica ni una probabilidad de admisión · Vorka México</p>' })}
 ${await masTienda(env, 'examenes')}

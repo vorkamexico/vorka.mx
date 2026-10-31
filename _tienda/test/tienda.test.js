@@ -110,9 +110,15 @@ describe('/tienda/<slug> (página de venta)', () => {
 
   it('JSON-LD Product / Offer con precio y moneda', async () => {
     const html = await (await pedir('/tienda/de-idea-a-proyecto')).text();
-    const ld = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
-    expect(ld['@type']).toBe('Product');
-    expect(ld.offers).toMatchObject({ '@type': 'Offer', price: '279.00', priceCurrency: 'MXN', availability: 'https://schema.org/InStock' });
+    const lds = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
+    const ld = lds.find(x => x['@type'] === 'Product');
+    expect(ld.offers).toMatchObject({ '@type': 'Offer', price: '279.00', priceCurrency: 'MXN', availability: 'https://schema.org/InStock',
+      url: 'https://vorka.mx/tienda/de-idea-a-proyecto/', seller: { '@type': 'Organization', name: 'Vorka México', url: 'https://vorka.mx' } });
+    expect(ld.offers.hasMerchantReturnPolicy).toBeUndefined();   // la política es condicional: no se publica (ver src/seo.js)
+    expect(ld.aggregateRating).toBeUndefined();                    // sin reseñas aprobadas, nada de calificación
+    const migas = lds.find(x => x['@type'] === 'BreadcrumbList');
+    expect(migas.itemListElement.map(x => [x.position, x.name, x.item])).toEqual([[1, 'Inicio', 'https://vorka.mx/'], [2, 'Tienda', 'https://vorka.mx/tienda/'],
+      [3, ld.name, 'https://vorka.mx/tienda/de-idea-a-proyecto/']]);
   });
 
   it('producto inactivo o inexistente → 404', async () => {

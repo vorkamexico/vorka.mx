@@ -5,6 +5,8 @@
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { oferta, ofertas, migas } from './seo.js';
+import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 
@@ -63,15 +65,18 @@ export async function paginaCupo(env, req, url) {
   const error = url.searchParams.get('error') || '';
   const desde = niveles.length ? Math.min(...niveles.map(n => n.prod.precio_centavos)) : null;
   const t = temporada(), demos = demosDe(t), og = `${OS}/cupo/og/${demos[0][1]}.png`;
+  const rs = niveles.length ? await resenasDe(env, RUTA_CUPO) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Cupo · Eventos con registro, cover y QR', brand: { '@type': 'Brand', name: 'Cupo' },
     description: 'Página de tu evento, registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas; Cupo Pro desde $99 MXN con correos, cover sin comisión y ligas para RPs.',
     image: [og],
-    ...(niveles.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: '0.00', highPrice: (Math.max(...todos.map(x => x.prod.precio_centavos)) / 100).toFixed(2), offerCount: todos.length + 1 } } : {}) },
+    // El plan gratis (hasta 30 personas) no está en la tienda: cuenta como una oferta más, desde $0
+    ...(niveles.length ? { offers: ofertas({ ruta: RUTA_CUPO, centavos: todos.map(x => x.prod.precio_centavos), desde: 0, cuantas: todos.length + 1 }), ...ldResenas(rs) } : {}) },
+  migas('Cupo', RUTA_CUPO),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const opcion = x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${esc(x.etiqueta)} · ${precio(x.prod)}</option>`;
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/cupo/#entrar`, app: 'Cupo' },
     titulo: 'Cupo: página de tu evento con registro, cover y QR | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: og,
-    descripcion: 'Crea la página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas. Cupo Pro desde $99: correos y recordatorios, cover sin comisión y ligas para RPs.',
+    descripcion: 'La página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas; Cupo Pro desde $99, cover sin comisión.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
@@ -135,6 +140,7 @@ ${todos.length ? seccionCompra({ titulo: 'Activa Cupo Pro', intro: `¿Tu evento 
   </form>` }) : ''}
 
 ${ELEGIR('cupo')}
+${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/cupo/">Condiciones de Cupo</a> · <a href="/legal/cupo/privacidad/">Aviso de privacidad</a> · <a href="/legal/cupo/privacidad-asistentes/">Privacidad para asistentes</a> · Cupo · Powered by vorka.mx</p>' })}
 ${await masTienda(env, 'eventos')}
 </div>`,

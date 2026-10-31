@@ -87,7 +87,7 @@ export const UNAM = crearSimulador({
 // ---------- página de venta ----------
 const SITIO = 'https://vorka.mx';
 const IMG = '/assets/tienda';   // estáticas del sitio (assets/tienda/), no en R2
-const DESCRIPCION = 'Simulador del examen de admisión UNAM en línea para las 4 áreas: 120 reactivos en 3 horas, con tutor que te da pistas, explicación paso a paso y aciertos estimados por materia.';
+const DESCRIPCION = 'Simulador del examen UNAM en línea para las 4 áreas: 120 reactivos en 3 horas, tutor con pistas, explicación paso a paso y aciertos por materia.';
 const FAQ = [
   { p: '¿Cómo es el examen de admisión a licenciatura de la UNAM?', r: 'Es un examen de 120 reactivos de opción múltiple que se resuelve en 3 horas. Hay cuatro áreas de conocimiento y cada una pesa distinto las materias: por ejemplo, el Área 1 tiene más Matemáticas y Física, y el Área 4 incluye Filosofía. El simulador arma tu examen según el área que elijas.' },
   { p: '¿Cuáles son las cuatro áreas?', r: 'Área 1: Ciencias Físico-Matemáticas y de las Ingenierías. Área 2: Ciencias Biológicas, Químicas y de la Salud. Área 3: Ciencias Sociales. Área 4: Humanidades y de las Artes. Tu área depende de la carrera que elijas.' },

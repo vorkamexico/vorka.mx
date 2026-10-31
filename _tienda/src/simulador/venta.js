@@ -6,9 +6,10 @@ import { productoPorSlug, registrarAnalitica } from '../modelo.js';
 import { formCompra, SCRIPT_COMPRA, precio, refDeVisita } from '../tienda.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
 import { TOTAL_DIAG } from './diagnostico.js';
+import { oferta, ofertas, migas } from '../seo.js';
+import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { seccionGuias } from './guias.js';
 
-const SITIO = 'https://vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const CSS = `<style>
 .sv-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
@@ -160,16 +161,15 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   // Visita a la página de venta (como en el resto de la tienda)
   if (prod && req.method === 'GET' && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: prod.id, ref_code: code });
   const precioTxt = prod ? precio(prod) : null;
+  const rs = await resenasDe(env, `${RUTA}/`);
   const ej = v.ejemplo;
   const ld = [
     { '@context': 'https://schema.org', '@type': 'Product', name: v.nombreProducto, description: v.descripcion, image: v.imagenesLD,
       brand: { '@type': 'Brand', name: 'Vorka México' }, category: 'Preparación para exámenes de admisión', sku: v.sku,
-      ...(planes.length ? { offers: { '@type': 'AggregateOffer', url: `${SITIO}${RUTA}/`, lowPrice: (Math.min(...planes.map(x => x.prod.precio_centavos)) / 100).toFixed(2), highPrice: (Math.max(...planes.map(x => x.prod.precio_centavos)) / 100).toFixed(2), offerCount: planes.length, priceCurrency: planes[0].prod.moneda, availability: 'https://schema.org/InStock', seller: { '@type': 'Organization', name: 'Vorka México' } } }
-        : prod ? { offers: { '@type': 'Offer', url: `${SITIO}${RUTA}/`, price: (prod.precio_centavos / 100).toFixed(2), priceCurrency: prod.moneda, availability: 'https://schema.org/InStock', seller: { '@type': 'Organization', name: 'Vorka México' } } } : {}) },
+      ...(planes.length ? { offers: ofertas({ ruta: `${RUTA}/`, centavos: planes.map(x => x.prod.precio_centavos), moneda: planes[0].prod.moneda }) }
+        : prod ? { offers: oferta({ ruta: `${RUTA}/`, centavos: prod.precio_centavos, moneda: prod.moneda }) } : {}), ...ldResenas(rs) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: v.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) },
-    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Tienda', item: `${SITIO}/tienda/` },
-      { '@type': 'ListItem', position: 2, name: sim.titulo, item: `${SITIO}${RUTA}/` }] },
+    migas(sim.titulo, `${RUTA}/`),
   ];
   const sinLetras = t => esc(String(t).replace(/\{([A-D])\}/g, '$1'));
   const ejemplo = { correcta: ej.correcta, pista: ej.pista, pasos: ej.pasos.map(x => x.replace(/\{([A-D])\}/g, '$1')), regla: ej.regla };
@@ -273,6 +273,7 @@ ${prod ? `<section class="t-sec"><div class="marco sv-regalo">
   </div>
 </div></section>` : ''}
 
+${seccionResenas(rs)}
 <section class="t-sec suave"><div class="marco sv-dos">
   <div class="sv-dos-t sv-pegado">
     <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" style="margin-top:14px">${esc(v.faqTitulo)}</h2>

@@ -139,7 +139,7 @@ describe('panel: solicitud ARCO por correo', () => {
     // Código personal de Sparks con el correo en su descripción (admin.crearCodigoRegalo)
     env.DB.raw.prepare("INSERT INTO codigos_descuento (codigo, pct, meses, max_usos, hasta, nombre) VALUES ('SPARKS-SOFIA-AB12', 20, 1, 1, '2026-12-31', 'Regalo Sparks · sofia@correo.mx')").run();
     const r = await A.borrarDatosCuponCorreo({ email: 'sofia@correo.mx', por: 'ana@vorka.mx' });
-    expect(r).toEqual({ ok: true, borrados: 2, codigos: 1 });
+    expect(r).toEqual({ ok: true, borrados: 2, codigos: 1, resenas: 0 });
     expect(anonimo(a) && anonimo(b)).toBe(true);
     expect(fila(otra)).toMatchObject({ envio_email: 'mario@correo.mx', para: 'Mario' });
     expect(env.DB.raw.prepare("SELECT nombre FROM codigos_descuento WHERE codigo = 'SPARKS-SOFIA-AB12'").get().nombre).toBe('Regalo Sparks');
@@ -149,7 +149,7 @@ describe('panel: solicitud ARCO por correo', () => {
     expect(JSON.stringify(bit)).not.toMatch(/sofia@|Sofía/i);   // (el código de Sparks lleva el nombre corto: es el código, no un dato del envío)
     // Ya no queda nada de ese correo
     expect(await A.buscarDatosCuponCorreo('sofia@correo.mx')).toMatchObject({ cupones: [], codigos: [] });
-    expect(await A.borrarDatosCuponCorreo({ email: 'sofia@correo.mx', por: 'ana@vorka.mx' })).toEqual({ ok: true, borrados: 0, codigos: 0 });
+    expect(await A.borrarDatosCuponCorreo({ email: 'sofia@correo.mx', por: 'ana@vorka.mx' })).toEqual({ ok: true, borrados: 0, codigos: 0, resenas: 0 });
     await expect(A.borrarDatosCuponCorreo({ email: 'sofia@correo.mx' })).rejects.toThrow(/quién del equipo/);
   });
 });

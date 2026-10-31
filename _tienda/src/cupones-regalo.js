@@ -14,6 +14,7 @@ import { dentroDelLimite } from './modelo.js';
 import { PREFIJO_REGALO, fin, fechaLarga, pesosTexto, nombreLinea, evaluarCodigo } from './descuentos.js';
 import { LINEAS, lineaDe } from './lineas.js';
 import { marco, boton, enviar, esc, P, SOPORTE } from './correo.js';
+import { buscarResenasCorreo, borrarResenasCorreo } from './resenas.js';
 
 const ALFABETO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';   // 31 caracteres, sin 0/O ni 1/I/L
 const SITIO = 'https://vorka.mx';
@@ -339,7 +340,8 @@ export async function borrarDatosCupon(env, { codigo, por } = {}) {
 // Códigos de regalo personales de Sparks (admin.crearCodigoRegalo): su descripción es «Regalo Sparks · correo»
 const SPARKS_CON = "nombre LIKE 'Regalo %' AND instr(lower(nombre), ' · ' || ?) > 0";
 
-// Solicitud ARCO: qué cupones guardan este correo (en el envío, «para quién», la nota o el error del envío)
+// Solicitud ARCO: qué cupones guardan este correo (en el envío, «para quién», la nota o el error del envío). También trae
+// las reseñas de ese correo (src/resenas.js): el mismo botón del panel las borra.
 export async function buscarDatosCuponCorreo(env, email) {
   const e = CORREO.safeParse(email);
   if (!e.success) throw new Error('Revisa el correo.');
@@ -347,10 +349,12 @@ export async function buscarDatosCuponCorreo(env, email) {
     WHERE lower(envio_email) = ?1 OR instr(lower(coalesce(para, '')), ?1) > 0 OR instr(lower(coalesce(nota, '')), ?1) > 0 OR instr(lower(coalesce(envio_error, '')), ?1) > 0
     ORDER BY creado DESC LIMIT 500`, e.data);
   const codigos = await all(env, `SELECT codigo FROM codigos_descuento WHERE ${SPARKS_CON} LIMIT 100`, e.data);
-  return { email: e.data, cupones: cupones.map(c => ({ ...c, estado: estadoDe(c) })), codigos: codigos.map(c => c.codigo) };
+  const resenas = await buscarResenasCorreo(env, e.data);
+  return { email: e.data, cupones: cupones.map(c => ({ ...c, estado: estadoDe(c) })), codigos: codigos.map(c => c.codigo),
+    resenas: resenas.map(r => ({ id: r.id, producto: r.producto, estado: r.estado, escrita_at: r.escrita_at })) };
 }
 
-// Solicitud ARCO: «Borrar todos los datos de este correo en cupones»
+// Solicitud ARCO: «Borrar todos los datos de este correo en cupones y reseñas»
 export async function borrarDatosCuponCorreo(env, { email, por } = {}) {
   const quien = POR.safeParse(por);
   if (!quien.success) throw new Error('Falta quién del equipo borra los datos.');
@@ -366,5 +370,7 @@ export async function borrarDatosCuponCorreo(env, { email, por } = {}) {
     ]);
     codigos = r.at(-1).meta.changes;
   }
-  return { ok: true, borrados: hechos.length, codigos };
+  // Reseñas: quedan sin estrellas, texto, nombre ni correo, y dejan de verse en la página (con quién y cuándo)
+  const resenas = await borrarResenasCorreo(env, b.email, quien.data);
+  return { ok: true, borrados: hechos.length, codigos, resenas };
 }

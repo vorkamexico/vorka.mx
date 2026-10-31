@@ -727,3 +727,51 @@
 .t-hero-lineas a.dest { background: color-mix(in srgb, var(--acento) 22%, transparent); border-color: color-mix(in srgb, var(--acento) 60%, transparent); }
 @media (prefers-reduced-motion: no-preference) { .t-deco.luces ellipse { animation: t-brillo 2.4s ease-in-out infinite alternate; } .t-deco.luces ellipse:nth-of-type(2n) { animation-delay: 1.2s; } }
 @keyframes t-brillo { from { opacity: 1; } to { opacity: .55; } }
+
+/* ---------- Reseñas de compradores (src/resenas.js): sección en la página del producto y formulario /tienda/resena/<token> ---------- */
+.rs-sec .rs-cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--e-6); margin-bottom: var(--e-7); }
+.rs-sec .rs-cab .h2 { margin-top: 14px; }
+.rs-resumen { display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 12px; row-gap: 2px; }
+.rs-resumen b { grid-row: span 2; font-size: clamp(40px, 5vw, 54px); font-weight: 800; letter-spacing: -.04em; line-height: 1; color: var(--fg); }
+.rs-resumen small { font-size: 13.5px; color: var(--fg-2); }
+.rs-ver { display: inline-flex; gap: 2px; color: var(--line-2); vertical-align: middle; }
+.rs-ver i { display: inline-grid; width: 18px; height: 18px; }
+.rs-ver.grande i { width: 22px; height: 22px; }
+.rs-ver svg { width: 100%; height: 100%; fill: currentColor; }
+.rs-ver i.llena { color: var(--oro); }
+.rs-ver i.media { color: var(--oro); -webkit-mask: linear-gradient(90deg, #000 50%, rgba(0, 0, 0, .28) 50%); mask: linear-gradient(90deg, #000 50%, rgba(0, 0, 0, .28) 50%); }
+.rs-lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: var(--e-4); }
+.rs-item { display: flex; flex-direction: column; gap: var(--e-3); padding: var(--e-6); border-radius: var(--r-l); background: var(--card); border: 1px solid var(--line); box-shadow: var(--sombra); }
+.rs-texto { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--fg); overflow-wrap: anywhere; }
+.rs-quien { margin: auto 0 0; display: grid; gap: 2px; font-size: 14px; }
+.rs-quien b { font-weight: 650; color: var(--fg); overflow-wrap: anywhere; }
+.rs-quien span { color: var(--fg-3); font-size: 13px; }
+
+.rs-caja { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sombra); padding: clamp(24px, 5vw, 48px); }
+.rs-et { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--oro); }
+.rs-h1 { margin-top: 10px; overflow-wrap: anywhere; }
+.rs-form { display: grid; gap: var(--e-6); margin-top: var(--e-7); }
+.rs-estrellas { border: 0; margin: 0; padding: 0; min-width: 0; }
+.rs-estrellas legend { padding: 0; font-size: 14.5px; font-weight: 650; margin-bottom: 10px; }
+.rs-req { font-weight: 500; color: var(--fg-3); font-size: 13px; }
+.rs-est-fila { display: flex; gap: 4px; }
+.rs-est-fila input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.rs-est-fila label { display: grid; place-items: center; width: var(--tap); height: var(--tap); border-radius: 12px; cursor: pointer; color: var(--line-2); transition: color var(--t-rapido), transform var(--t-rapido); }
+.rs-est-fila label svg { width: 34px; height: 34px; fill: currentColor; }
+.rs-est-fila input:focus-visible + label { outline: 3px solid var(--foco); outline-offset: 2px; }
+.rs-est-fila:has(#est-1:checked) label:nth-of-type(-n+1), .rs-est-fila:has(#est-2:checked) label:nth-of-type(-n+2),
+.rs-est-fila:has(#est-3:checked) label:nth-of-type(-n+3), .rs-est-fila:has(#est-4:checked) label:nth-of-type(-n+4),
+.rs-est-fila:has(#est-5:checked) label:nth-of-type(-n+5), .rs-est-fila input:checked + label { color: var(--oro); }
+@media (hover: hover) {
+  .rs-est-fila:hover label { color: var(--oro); }
+  .rs-est-fila label:hover ~ label { color: var(--line-2); }
+  .rs-est-fila label:hover { transform: scale(1.08); }
+}
+.rs-estrellas[aria-invalid="true"] .rs-est-fila label { color: var(--er-l); }
+.rs-palabra { margin: 6px 0 0; font-size: 14px; font-weight: 600; color: var(--fg-2); min-height: 1.4em; }
+.rs-form textarea { min-height: 128px; }
+.rs-legal { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--fg-2); }
+.rs-legal a { color: var(--morado); }
+.rs-form .btn { justify-self: start; }
+@media (max-width: 520px) { .rs-form .btn { justify-self: stretch; justify-content: center; } .rs-est-fila label svg { width: 30px; height: 30px; } }
+@media (prefers-reduced-motion: reduce) { .rs-est-fila label { transition: none; } .rs-est-fila label:hover { transform: none; } }
