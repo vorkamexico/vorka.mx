@@ -12,8 +12,7 @@
 //  - Aviso al final de cada artículo: información general con fines educativos; no es asesoría financiera personalizada.
 import { esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
-import { paginaLearn, paginaArticulo, SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, ld, ORG, SITIO_LEARN, tarjeta, migas, migasLd, conMarca, textoPlano } from './learn.js';
-import { espacioAnuncio } from './anuncios.js';
+import { paginaArticulo, SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, conMarca, textoPlano } from './learn.js';
 
 export const ACTUALIZADO_FIN = '2026-10-31';
 const ACTUALIZADO_TXT = 'octubre de 2026';
@@ -368,26 +367,5 @@ export function paginaArticuloFinanzas(slug, anuncios = null) {
   });
 }
 
-// Índice de la sección (/learn/finanzas/). otras: [{ href, h1, descripcion }] de las otras secciones de Learn.
-export function paginaIndiceFinanzas(anuncios = null, otras = []) {
-  const ruta = RUTA_FINANZAS, s = FINANZAS.indice, lugares = [['Vorka Learn', RUTA_LEARN], [FINANZAS.nombre, ruta]];
-  const datos = [
-    { '@context': 'https://schema.org', '@type': 'CollectionPage', name: s.h1, description: s.descripcion, inLanguage: 'es-MX', url: `${SITIO}${ruta}`, publisher: ORG, isPartOf: SITIO_LEARN,
-      mainEntity: { '@type': 'ItemList', itemListElement: ARTICULOS_FINANZAS.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${rutaArticuloFinanzas(x)}`, name: x.h1 })) } },
-    migasLd(lugares),
-  ];
-  return paginaLearn({ titulo: tituloIndiceFinanzas(), ruta, descripcion: s.descripcion, imagen: OG_FINANZAS, actual: FINANZAS.clave, anuncios,
-    head: ld(datos),
-    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
-  ${migas(lugares)}
-  <span class="lr-kicker">Vorka Learn · ${esc(FINANZAS.nombre)}</span>
-  <h1 class="lr-h1">${esc(s.h1)}</h1>
-  <p class="lr-lead">${esc(s.lead)}</p>
-  <div class="gu-grid lr-primero">${ARTICULOS_FINANZAS.map(x => tarjeta(rutaArticuloFinanzas(x), x.h1, x.descripcion)).join('')}</div>
-  ${espacioAnuncio(anuncios, 'indice')}
-  ${otras.length ? `<section class="lr-grupo"><h2 class="lr-h2">Guías para exámenes de admisión</h2>
-  <div class="gu-grid">${otras.map(y => tarjeta(y.href, y.h1, y.descripcion)).join('')}</div></section>` : ''}
-  <p class="lr-nota">${NOTA_PIE}</p>
-</div></div>`,
-  });
-}
+// El índice de la sección (/learn/finanzas/) lo arma src/learn/paginas.js › paginaIndiceSeccion('finanzas'), igual que el
+// de cada examen; la sección está registrada en el catálogo de Learn (src/learn/datos.js).

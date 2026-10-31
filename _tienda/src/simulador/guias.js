@@ -1,7 +1,7 @@
 // Guías de Vorka Learn (vorka.mx/learn/<examen>/<guía>/): contenido útil para quien busca en Google cómo es su examen,
 // cuánto necesita y cómo estudiar. Es la rama editorial de Vorka México (plantilla propia en src/learn.js, sin tienda):
-// un solo llamado al simulador, al final. Los datos aquí; las páginas las arman paginaGuia(), paginaIndiceExamen() y
-// paginaLearn(). Índices: /learn/ (todas) y /learn/<examen>/. Las URL viejas /<simulador>/guias/… redirigen con 301.
+// un solo llamado al simulador, al final. Los datos aquí; el diseño (páginas, encabezado, colores, dibujos, búsqueda,
+// acerca, RSS) en src/learn/. Índices: /learn/ (todas) y /learn/<examen>/. Las URL viejas /<simulador>/guias/… → 301.
 // La página de venta de cada simulador sigue ligando a sus guías (seccionGuias).
 // Reglas (política de la organización: sin inventar datos):
 //  - Todo dato concreto sale de la fuente que la guía cita en «Fuentes» (revisadas el 31 de octubre de 2026).
@@ -9,14 +9,14 @@
 //  - PAA: sin minutos por sección (la única guía del College Board con tiempos es de 2020; ver commit 5501997).
 //  - Nunca «oficial» para el simulador: es un simulador de práctica de Vorka México.
 import { esc } from '../paginas.js';
-import { paginaLearn, paginaArticulo, SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, ext, ld, ORG, LEARN, SITIO_LEARN, textoPlano, tarjeta, migas, migasLd, conMarca } from '../learn.js';
-import { configAnuncios, espacioAnuncio } from '../anuncios.js';
-import { FLECHA } from '../marco.generado.js';
+import { SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, ext, textoPlano, conMarca } from '../learn.js';
+import { configAnuncios } from '../anuncios.js';
+import { paginaGuia, paginaIndiceExamen, paginaLearnPortada, paginaIndiceSeccion } from '../learn/paginas.js';
 import { UNIVERSIDADES } from './paa-universidades.js';
-import { FINANZAS, ARTICULOS_FINANZAS, rutaArticuloFinanzas, RUTA_FINANZAS, paginaArticuloFinanzas, paginaIndiceFinanzas } from '../learn-finanzas.js';
+import { FINANZAS, ARTICULOS_FINANZAS, rutaArticuloFinanzas, RUTA_FINANZAS, paginaArticuloFinanzas } from '../learn-finanzas.js';
 
 export const ACTUALIZADO = '2026-10-31';
-const ACTUALIZADO_TXT = 'octubre de 2026';
+export const ACTUALIZADO_TXT = 'octubre de 2026';
 
 // ---------- fuentes (todas revisadas el 31 de octubre de 2026) ----------
 const F = {
@@ -482,94 +482,23 @@ export { RUTA_LEARN };
 export const rutaViejaGuia = x => `/${x.sim}/guias/${x.slug}/`;
 export const rutaViejaIndice = sim => `/${sim}/guias/`;
 const examenes = () => Object.keys(SIMS).filter(s => guiasDe(s).length);
-// Todas las URL para el sitemap de Learn: portada, índices por examen, guías y la sección de Finanzas personales
-export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), RUTA_FINANZAS, ...ARTICULOS_FINANZAS.map(rutaArticuloFinanzas)];
-const porRuta = ruta => GUIAS.find(x => rutaGuia(x) === ruta);
+// Todas las URL para el sitemap de Learn: portada, índices por examen, guías, Finanzas personales y «Acerca de Vorka Learn»
+export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), RUTA_FINANZAS, ...ARTICULOS_FINANZAS.map(rutaArticuloFinanzas), '/learn/acerca/'];
 export const tituloGuia = x => conMarca(x.titulo.replace(/\s*\|\s*Vorka( México)?$/, ''));
 export const tituloIndice = sim => conMarca(SIMS[sim].indice.titulo);
 
-// El único llamado al simulador: al final del artículo, sobrio
-const llamadoFinal = (sim, s) => `<aside class="lr-final" aria-label="Practica con el simulador"><p><b class="lr-final-t">¿Quieres practicar?</b>Haz un examen de práctica en el ${esc(s.titulo)}: reactivos originales y un reporte de qué reforzar.</p>
-  <a class="btn tinta" href="/${sim}/">Ir al ${esc(s.titulo)} ${FLECHA}</a></aside>`;
+// Cómo se ven las páginas (portada, índices, guía y su JSON-LD) vive en src/learn/; aquí solo los datos y las rutas.
+export { paginaGuia, paginaIndiceExamen, paginaLearnPortada };
+// Tarjeta de la sección «Guías para prepararte» de la página de venta (estilos propios en CSS_VENTA)
+const tarjeta = (href, t, d) => `<a class="gu-card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p></a>`;
 
-// Página de una guía, o null si no existe. anuncios: configAnuncios(env) o null (apagados).
-export function paginaGuia(sim, slug, anuncios = null) {
-  const x = guia(sim, slug), s = SIMS[sim];
-  if (!x || !s) return null;
-  const ruta = rutaGuia(x);
-  // Sigue leyendo: solo guías de Learn (las que la guía pide y, si faltan, las demás del mismo examen)
-  const rel = [...new Set([...x.relacionadas, ...guiasDe(sim).map(rutaGuia)])].filter(r => r !== ruta && porRuta(r)).slice(0, 3)
-    .map(r => { const y = porRuta(r); return { href: r, h1: y.h1, descripcion: y.descripcion }; });
-  return paginaArticulo(x, {
-    ruta, titulo: tituloGuia(x), lugares: [['Vorka Learn', RUTA_LEARN], [s.examen, rutaIndice(sim)], [x.h1, ruta]],
-    kicker: `Guía · ${s.examen}`, imagen: s.og, actual: s.clave, anuncios, actualizado: ACTUALIZADO, actualizadoTxt: ACTUALIZADO_TXT,
-    notaFuentes: `<p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; los requisitos y las fechas cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>`,
-    llamado: llamadoFinal(sim, s), compartirTexto: 'Compártela con quien también va a presentar el examen.',
-    rel, relTitulo: 'Guías relacionadas',
-    notaPie: `Vorka Learn es la sección de guías de Vorka México. Esta guía es informativa; el ${esc(s.titulo)} es un simulador de práctica con reactivos originales y los puntajes y aciertos que da son estimaciones para orientar el estudio. ${esc(s.aviso)}`,
-  });
-}
-
-// Índice de un examen (/learn/<examen>/), o null
-export function paginaIndiceExamen(sim, anuncios = null) {
-  const s = SIMS[sim], lista = guiasDe(sim);
-  if (!s || !lista.length) return null;
-  const ruta = rutaIndice(sim), lugares = [['Vorka Learn', RUTA_LEARN], [s.examen, ruta]];
-  const datos = [
-    { '@context': 'https://schema.org', '@type': 'CollectionPage', name: s.indice.h1, description: s.indice.descripcion, inLanguage: 'es-MX', url: `${SITIO}${ruta}`, publisher: ORG, isPartOf: SITIO_LEARN,
-      mainEntity: { '@type': 'ItemList', itemListElement: lista.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${rutaGuia(x)}`, name: x.h1 })) } },
-    migasLd(lugares),
-  ];
-  const otros = examenes().filter(k => k !== sim);
-  return paginaLearn({ titulo: tituloIndice(sim), ruta, descripcion: s.indice.descripcion, imagen: s.og, actual: s.clave, anuncios,
-    head: ld(datos),
-    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
-  ${migas(lugares)}
-  <span class="lr-kicker">Vorka Learn · ${esc(s.examen)}</span>
-  <h1 class="lr-h1">${esc(s.indice.h1)}</h1>
-  <p class="lr-lead">${esc(s.indice.lead)}</p>
-  <div class="gu-grid lr-primero">${lista.map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
-  ${sim === 'simulador-paa' ? `<section class="lr-grupo"><h2 class="lr-h2">La PAA en cada universidad</h2><p class="lr-grupo-lead">Cómo usa la PAA cada universidad, con la fuente oficial de cada una.</p>
-  <div class="gu-grid">${Object.entries(UNIVERSIDADES).map(([k, u]) => tarjeta(`/simulador-paa/${k}/`, `PAA ${u.nombre}`, u.completo)).join('')}</div></section>` : ''}
-  ${espacioAnuncio(anuncios, 'indice')}
-  <section class="lr-grupo"><h2 class="lr-h2">Guías de otros exámenes</h2>
-  <div class="gu-grid">${otros.map(k => tarjeta(rutaIndice(k), SIMS[k].indice.h1, SIMS[k].indice.descripcion)).join('')}</div></section>
-  <p class="lr-nota">Guías informativas de Vorka Learn, la sección de guías de Vorka México, con las fuentes oficiales al final de cada una. Para practicar, el <a href="/${sim}/">${esc(s.titulo)}</a> es un simulador de práctica con reactivos originales. ${esc(s.aviso)}</p>
-</div></div>`,
-  });
-}
-
-// Portada de Vorka Learn (/learn/): todas las guías, agrupadas por examen, y la sección de Finanzas personales
+// Portada de Vorka Learn (/learn/): sus textos (la página la arma src/learn/paginas.js con todas las secciones)
 export const LEARN_PORTADA = {
   titulo: 'Vorka Learn: guías de admisión y finanzas personales',
   descripcion: 'Guías con fuentes oficiales para la PAA, la UNAM, el ECOEMS y la prepa de la UG, y guías de finanzas personales: tarjetas, préstamos, tandas y deudas.',
   h1: 'Guías para tu examen de admisión y tu dinero',
   lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen (qué viene, cómo se califica, cuánto piden y cómo estudiar) y guías claras de finanzas personales. Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.',
 };
-export function paginaLearnPortada(anuncios = null) {
-  const lista = examenes(), p0 = LEARN_PORTADA;
-  const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: p0.h1, description: p0.descripcion, inLanguage: 'es-MX', url: `${SITIO}${RUTA_LEARN}`, publisher: ORG,
-    isPartOf: SITIO_LEARN, about: LEARN, mainEntity: { '@type': 'ItemList', itemListElement: [...GUIAS.map(x => [rutaGuia(x), x.h1]), ...ARTICULOS_FINANZAS.map(x => [rutaArticuloFinanzas(x), x.h1])].map(([u, name], i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${u}`, name })) } }];
-  return paginaLearn({ titulo: p0.titulo, ruta: RUTA_LEARN, descripcion: p0.descripcion, anuncios, head: ld(datos),
-    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
-  <span class="lr-kicker lr-arriba">Vorka Learn</span>
-  <h1 class="lr-h1">${esc(p0.h1)}</h1>
-  <p class="lr-lead">${esc(p0.lead)}</p>
-  ${lista.map((sim, i) => { const s = SIMS[sim]; return `<section class="lr-grupo" aria-labelledby="g-${s.clave}">
-    <div class="lr-grupo-cab"><h2 class="lr-h2" id="g-${s.clave}">${esc(s.examen)}</h2><a href="${rutaIndice(sim)}">Todas las guías de ${esc(s.examen)}</a></div>
-    <p class="lr-grupo-lead">${esc(s.indice.lead)}</p>
-    <div class="gu-grid">${guiasDe(sim).map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
-  </section>${i === 0 ? espacioAnuncio(anuncios, 'indice') : ''}`; }).join('\n')}
-  <section class="lr-grupo" aria-labelledby="g-${FINANZAS.clave}">
-    <div class="lr-grupo-cab"><h2 class="lr-h2" id="g-${FINANZAS.clave}">${esc(FINANZAS.nombre)}</h2><a href="${RUTA_FINANZAS}">Todas las guías de finanzas</a></div>
-    <p class="lr-grupo-lead">${esc(FINANZAS.indice.lead)}</p>
-    <div class="gu-grid">${ARTICULOS_FINANZAS.map(x => tarjeta(rutaArticuloFinanzas(x), x.h1, x.descripcion)).join('')}</div>
-  </section>
-  <p class="lr-nota">Vorka Learn es la sección de guías de Vorka México. Las guías son informativas y no estamos afiliados a las instituciones que aplican estos exámenes ni a ninguna institución financiera; confirma siempre fechas y requisitos en la convocatoria vigente. Las guías de finanzas son información general con fines educativos; no son asesoría financiera personalizada.</p>
-</div></div>`,
-  });
-}
-
 // Sitemap propio de Learn (vorka.mx/learn/sitemap.xml, declarado en el robots.txt de la raíz)
 export function sitemapLearn() {
   const urls = urlsGuias().map(r => `<url><loc>${SITIO}${r}</loc><lastmod>${ACTUALIZADO}</lastmod></url>`);
@@ -612,7 +541,7 @@ export function rutasLearn(req, env, url) {
   const anuncios = configAnuncios(env);
   let r;
   if (!m[1]) r = paginaLearnPortada(anuncios);
-  else if (m[1] === FINANZAS.clave) r = m[2] ? paginaArticuloFinanzas(m[2], anuncios) : paginaIndiceFinanzas(anuncios, examenes().map(k => ({ href: rutaIndice(k), h1: SIMS[k].indice.h1, descripcion: SIMS[k].indice.descripcion })));
+  else if (m[1] === FINANZAS.clave) r = m[2] ? paginaArticuloFinanzas(m[2], anuncios) : paginaIndiceSeccion(FINANZAS.clave, anuncios);
   else {
     const sim = simDeClave(m[1]);
     if (!sim) return null;
@@ -622,5 +551,5 @@ export function rutasLearn(req, env, url) {
   return m[3] ? r : ir(`/learn/${m[1] ? `${m[1]}/` : ''}${m[2] ? `${m[2]}/` : ''}`);
 }
 
-// Para las pruebas: el texto de una guía sin etiquetas
+// El texto de una guía sin etiquetas (pruebas, búsqueda y minutos de lectura)
 export const textoDeGuia = x => [x.lead, ...x.secciones.map(y => textoPlano(y.html)), ...(x.faq || []).map(f => f.r)].join(' ');
