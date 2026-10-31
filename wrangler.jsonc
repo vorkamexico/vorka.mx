@@ -1,0 +1,8 @@
+// CANDADO (31 oct 2026): en Cloudflare, el Worker «vende» quedó conectado por error a ESTE repo (Workers Builds) y cada push
+// a main lo publicaba con la página de inicio de vorka.mx en lugar de la app de Vende (vende.vorka.mx dejaba de funcionar).
+// Este archivo hace que esa compilación falle sin publicar nada: no tiene punto de entrada y su nombre no es «vende».
+// Cloudflare Pages lo ignora (no trae pages_build_output_dir) y la tienda compila desde _tienda/ con su propio wrangler.jsonc.
+// Se puede borrar cuando en Cloudflare › Workers & Pages › vende › Settings › Build se desconecte este repo.
+{
+  "name": "no-publicar-vende-desde-vorka-mx"
+}
