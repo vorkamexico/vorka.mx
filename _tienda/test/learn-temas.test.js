@@ -46,7 +46,7 @@ const TEMAS = [
   { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 3,
     oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx)\//,
     // Sin Test vocacional en main todavía: «elegir carrera» apunta a Practica (TODO en src/learn-camino.js)
-    llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/learn/#practica', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/' },
+    llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/test-vocacional/', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/' },
     dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/] }, aviso: null, sinPesos: false },
 ];
 

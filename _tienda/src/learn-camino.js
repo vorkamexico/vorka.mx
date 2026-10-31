@@ -43,11 +43,10 @@ const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carre
 const r = slug => `/learn/camino/${slug}/`;
 
 const LLAMADO = {
-  // TODO test vocacional: cuando exista la página del Test vocacional Vorka, este llamado debe apuntar a ella
-  // (hoy no hay ninguna ruta de test vocacional en origin/main; revisado el 31 de octubre de 2026).
-  practica: llamadoFinal('Practica para tu examen de admisión', '¿Ya sabes a qué carrera vas?',
-    'El siguiente paso es el examen de admisión. En Vorka Learn tienes guías y simuladores de práctica de Vorka México para la PAA, el examen de la UNAM, el ECOEMS y la prepa de la UG, con reactivos originales y un reporte de qué reforzar.',
-    '/learn/#practica', 'Ver los simuladores'),
+  // Test vocacional Vorka (src/tests/): contestar y ver el perfil básico es gratis; el reporte completo es de pago
+  practica: llamadoFinal('Test vocacional gratis', '¿Todavía no sabes qué carrera elegir?',
+    'Haz el Test vocacional Vorka: 48 preguntas, de 8 a 10 minutos, basadas en los seis tipos de intereses de Holland (RIASEC). Al terminar ves gratis tus 3 tipos de interés y tu carrera más afín; si quieres, el reporte completo trae 20 carreras, el examen que te toca y un plan de 30 días. Es orientativo: no es una prueba psicométrica.',
+    '/test-vocacional/', 'Hacer el test gratis'),
   simUnam: llamadoFinal('Practica con el simulador', '¿Vas por el siguiente concurso?',
     'Empieza con tiempo: haz un examen de práctica en el Simulador UNAM de Vorka México, con reactivos originales y un reporte de qué reforzar. Es un simulador de práctica; sus aciertos son una estimación para orientar tu estudio.',
     '/simulador-unam/', 'Ir al Simulador UNAM'),
