@@ -155,7 +155,7 @@ const CSS = () => CSS_TESTS;
 const PSCRIPT = def => SCRIPT_TEST(def.clave) + (def.clave === 'proyecto' ? SCRIPT_TOPE : '');
 
 // ---------- licencias para grupo ----------
-async function grupoDeOrden(env, orden, item, contenido) {
+export async function grupoDeOrden(env, orden, item, contenido) {
   let g = await one(env, 'SELECT * FROM tests_grupos WHERE order_id = ?', orden.id);
   if (!g) {
     const cupo = (Number(contenido.licencias) || 1) * (item.cantidad || 1);
@@ -288,7 +288,9 @@ export async function rutasTests(request, env, url) {
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/?$/)) && lee) return verResultado(request, env, url, def, r[1]);
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/correo\/?$/)) && m === 'POST') return guardarCorreo(request, env, def, r[1]);
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/borrar\/?$/)) && m === 'POST') {
-    await run(env, 'DELETE FROM tests_resultados WHERE id = ? AND producto = ?', r[1], def.clave);
+    const b = await run(env, 'DELETE FROM tests_resultados WHERE id = ? AND producto = ?', r[1], def.clave);
+    // Bitácora sin datos (Vorka OS › Tienda › Tests): cuántas personas borraron sus respuestas
+    if (b.meta.changes) await run(env, "INSERT INTO tests_bitacora (accion, por, producto, n) VALUES ('borrado_persona', 'persona', ?, 1)", def.clave).catch(e => console.error('tests: bitácora', e?.message));
     return ir(`${def.ruta}?borrado=1`, 303, { 'set-cookie': `${def.cookie}=; Max-Age=0; Path=/; Secure; HttpOnly; SameSite=Lax` });
   }
   if ((r = resto.match(/^\/resultado\/([a-f0-9]{32})\/baja\/?$/)) && lee) {
