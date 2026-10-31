@@ -1,7 +1,7 @@
 // Guías de Vorka Learn (vorka.mx/learn/<examen>/<guía>/): contenido útil para quien busca en Google cómo es su examen,
 // cuánto necesita y cómo estudiar. Es la rama editorial de Vorka México (plantilla propia en src/learn.js, sin tienda):
-// un solo llamado al simulador, al final. Los datos aquí; las páginas las arman paginaGuia(), paginaIndiceExamen() y
-// paginaLearn(). Índices: /learn/ (todas) y /learn/<examen>/. Las URL viejas /<simulador>/guias/… redirigen con 301.
+// un solo llamado al simulador, al final. Los datos aquí; el diseño (páginas, encabezado, colores, dibujos, búsqueda,
+// acerca, RSS) en src/learn/. Índices: /learn/ (todas) y /learn/<examen>/. Las URL viejas /<simulador>/guias/… → 301.
 // La página de venta de cada simulador sigue ligando a sus guías (seccionGuias).
 // Reglas (política de la organización: sin inventar datos):
 //  - Todo dato concreto sale de la fuente que la guía cita en «Fuentes» (revisadas el 31 de octubre de 2026).
@@ -9,14 +9,13 @@
 //  - PAA: sin minutos por sección (la única guía del College Board con tiempos es de 2020; ver commit 5501997).
 //  - Nunca «oficial» para el simulador: es un simulador de práctica de Vorka México.
 import { esc } from '../paginas.js';
-import { paginaLearn } from '../learn.js';
-import { configAnuncios, espacioAnuncio } from '../anuncios.js';
-import { FLECHA } from '../marco.generado.js';
+import { configAnuncios } from '../anuncios.js';
+import { paginaGuia, paginaIndiceExamen, paginaLearnPortada } from '../learn/paginas.js';
 import { UNIVERSIDADES } from './paa-universidades.js';
 
 const SITIO = 'https://vorka.mx';
 export const ACTUALIZADO = '2026-10-31';
-const ACTUALIZADO_TXT = 'octubre de 2026';
+export const ACTUALIZADO_TXT = 'octubre de 2026';
 
 // ---------- fuentes (todas revisadas el 31 de octubre de 2026) ----------
 const F = {
@@ -490,138 +489,26 @@ export const RUTA_LEARN = '/learn/';
 export const rutaViejaGuia = x => `/${x.sim}/guias/${x.slug}/`;
 export const rutaViejaIndice = sim => `/${sim}/guias/`;
 const examenes = () => Object.keys(SIMS).filter(s => guiasDe(s).length);
-// Todas las URL para el sitemap de Learn: portada, índices por examen y guías
-export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia)];
-const porRuta = ruta => GUIAS.find(x => rutaGuia(x) === ruta);
+// Todas las URL para el sitemap de Learn: portada, índices por examen, guías y «Acerca de Vorka Learn»
+export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), '/learn/acerca/'];
 // Título con la marca Learn (sin la marca si no cabe en 60 caracteres)
 const SUFIJO = ' | Vorka Learn';
 const conMarca = t => (t + SUFIJO).length <= 60 ? t + SUFIJO : t;
 export const tituloGuia = x => conMarca(x.titulo.replace(/\s*\|\s*Vorka( México)?$/, ''));
 export const tituloIndice = sim => conMarca(SIMS[sim].indice.titulo);
 
-const ld = x => `<script type="application/ld+json">${JSON.stringify(x).replace(/</g, '\\u003c')}</script>`;
-const ORG = { '@type': 'Organization', name: 'Vorka México', url: `${SITIO}/`, logo: { '@type': 'ImageObject', url: `${SITIO}/vorka-logo.png` } };
-// La marca editorial: Vorka Learn, parte de Vorka México
-const LEARN = { '@type': 'Organization', name: 'Vorka Learn', url: `${SITIO}/learn/`, parentOrganization: ORG };
-const SITIO_LEARN = { '@type': 'WebSite', name: 'Vorka Learn', url: `${SITIO}/learn/`, publisher: ORG };
-const textoPlano = h => h.replace(/<[^>]+>/g, '');
+// Cómo se ven las páginas (portada, índice, guía y su JSON-LD) vive en src/learn/paginas.js; aquí solo los datos y las rutas.
+export { paginaGuia, paginaIndiceExamen, paginaLearnPortada };
+// Tarjeta de la sección «Guías para prepararte» de la página de venta (estilos propios en CSS_VENTA)
 const tarjeta = (href, t, d) => `<a class="gu-card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p></a>`;
-const migas = l => `<nav class="lr-migas" aria-label="Migas de pan"><ol>${l.map(([t, href], i) => `<li>${i < l.length - 1 ? `<a href="${href}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol></nav>`;
-const migasLd = l => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: l.map(([name, href], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${SITIO}${href}` })) });
 
-// El único llamado al simulador: al final del artículo, sobrio
-const llamadoFinal = (sim, s) => `<aside class="lr-final" aria-label="Practica con el simulador"><p><b class="lr-final-t">¿Quieres practicar?</b>Haz un examen de práctica en el ${esc(s.titulo)}: reactivos originales y un reporte de qué reforzar.</p>
-  <a class="btn tinta" href="/${sim}/">Ir al ${esc(s.titulo)} ${FLECHA}</a></aside>`;
-
-// «¿Le sirve a alguien más?»: ligas para compartir la guía (sin JS; la página tiene CSP con nonce). La liga lleva utm para
-// medir cuántas visitas llegan porque alguien la recomendó; Google usa el canonical, así que no duplica la página.
-function compartir(x, ruta) {
-  const url = c => `${SITIO}${ruta}?utm_source=${c}&utm_medium=compartir&utm_campaign=learn`;
-  const wa = `https://wa.me/?text=${encodeURIComponent(`${x.h1}: ${url('whatsapp')}`)}`;
-  const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url('facebook'))}`;
-  return `<div class="gu-compartir"><p><b>¿Le sirve a alguien más?</b> Compártela con quien también va a presentar el examen.</p>
-    <div class="gu-comp-bot"><a class="gu-wa" href="${esc(wa)}" target="_blank" rel="noopener">Compartir por WhatsApp</a><a class="gu-fb" href="${esc(fb)}" target="_blank" rel="noopener">Compartir en Facebook</a></div></div>`;
-}
-
-// Página de una guía, o null si no existe. anuncios: configAnuncios(env) o null (apagados).
-export function paginaGuia(sim, slug, anuncios = null) {
-  const x = guia(sim, slug), s = SIMS[sim];
-  if (!x || !s) return null;
-  const ruta = rutaGuia(x), ids = x.secciones.map((_, i) => `s${i + 1}`);
-  const lugares = [['Vorka Learn', RUTA_LEARN], [s.examen, rutaIndice(sim)], [x.h1, ruta]];
-  const datos = [
-    { '@context': 'https://schema.org', '@type': 'Article', headline: x.h1, description: x.descripcion, inLanguage: 'es-MX', image: [s.og],
-      datePublished: x.publicado || ACTUALIZADO, dateModified: x.actualizado || ACTUALIZADO, author: LEARN, publisher: ORG, isPartOf: SITIO_LEARN,
-      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITIO}${ruta}` }, citation: x.fuentes.map(f => f.url) },
-    migasLd(lugares),
-    ...(x.faq?.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: x.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) }] : []),
-  ];
-  // Anuncios (solo si están encendidos): tras la primera sección, a mitad del artículo y antes del llamado final
-  const n = x.secciones.length, mitad = Math.floor(n / 2);
-  const espacioTras = i => (i === 0 ? espacioAnuncio(anuncios, 'intro') : '') + (i === mitad && i > 0 && i < n - 1 ? espacioAnuncio(anuncios, 'mitad') : '');
-  // Sigue leyendo: solo guías de Learn (las que la guía pide y, si faltan, las demás del mismo examen)
-  const rel = [...new Set([...x.relacionadas, ...guiasDe(sim).map(rutaGuia)])].filter(r => r !== ruta && porRuta(r)).slice(0, 3);
-  return paginaLearn({ titulo: tituloGuia(x), ruta, descripcion: x.descripcion, imagen: s.og, ogTipo: 'article', actual: s.clave, anuncios,
-    head: ld(datos),
-    cuerpo: `<div class="marco"><div class="lr-col">
-  ${migas(lugares)}
-  <span class="lr-kicker">Guía · ${esc(s.examen)}</span>
-  <h1 class="lr-h1">${esc(x.h1)}</h1>
-  <p class="lr-lead">${esc(x.lead)}</p>
-  <p class="lr-meta">Por Vorka Learn · Actualizado: <time datetime="${x.actualizado || ACTUALIZADO}">${ACTUALIZADO_TXT}</time> · Con fuentes oficiales al final</p>
-  <details class="lr-toc"><summary>En esta guía</summary><ol>${x.secciones.map((y, i) => `<li><a href="#${ids[i]}">${esc(y.h2)}</a></li>`).join('')}${x.faq?.length ? '<li><a href="#preguntas">Preguntas frecuentes</a></li>' : ''}<li><a href="#fuentes">Fuentes</a></li></ol></details>
-  <article class="lr-art">
-    ${x.secciones.map((y, i) => `<h2 id="${ids[i]}">${esc(y.h2)}</h2>\n${y.html}${espacioTras(i)}`).join('\n')}
-    ${x.faq?.length ? `<h2 id="preguntas">Preguntas frecuentes</h2><div class="t-faq">${x.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>` : ''}
-    <h2 id="fuentes">Fuentes</h2>
-    <ol class="gu-fuentes">${x.fuentes.map(f => `<li>${ext(esc(f.url), esc(f.nombre))}</li>`).join('')}</ol>
-    <p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; los requisitos y las fechas cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>
-    ${espacioAnuncio(anuncios, 'final')}
-    ${llamadoFinal(sim, s)}
-    ${compartir(x, ruta)}
-  </article>
-  ${rel.length ? `<section class="lr-sigue" aria-labelledby="sigue"><p class="lr-sigue-t">Sigue leyendo</p><h2 class="lr-h2" id="sigue">Guías relacionadas</h2>
-  <div class="gu-grid">${rel.map(r => { const y = porRuta(r); return tarjeta(r, y.h1, y.descripcion); }).join('')}</div></section>` : ''}
-  <p class="lr-nota">Vorka Learn es la sección de guías de Vorka México. Esta guía es informativa; el ${esc(s.titulo)} es un simulador de práctica con reactivos originales y los puntajes y aciertos que da son estimaciones para orientar el estudio. ${esc(s.aviso)}</p>
-</div></div>`,
-  });
-}
-
-// Índice de un examen (/learn/<examen>/), o null
-export function paginaIndiceExamen(sim, anuncios = null) {
-  const s = SIMS[sim], lista = guiasDe(sim);
-  if (!s || !lista.length) return null;
-  const ruta = rutaIndice(sim), lugares = [['Vorka Learn', RUTA_LEARN], [s.examen, ruta]];
-  const datos = [
-    { '@context': 'https://schema.org', '@type': 'CollectionPage', name: s.indice.h1, description: s.indice.descripcion, inLanguage: 'es-MX', url: `${SITIO}${ruta}`, publisher: ORG, isPartOf: SITIO_LEARN,
-      mainEntity: { '@type': 'ItemList', itemListElement: lista.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${rutaGuia(x)}`, name: x.h1 })) } },
-    migasLd(lugares),
-  ];
-  const otros = examenes().filter(k => k !== sim);
-  return paginaLearn({ titulo: tituloIndice(sim), ruta, descripcion: s.indice.descripcion, imagen: s.og, actual: s.clave, anuncios,
-    head: ld(datos),
-    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
-  ${migas(lugares)}
-  <span class="lr-kicker">Vorka Learn · ${esc(s.examen)}</span>
-  <h1 class="lr-h1">${esc(s.indice.h1)}</h1>
-  <p class="lr-lead">${esc(s.indice.lead)}</p>
-  <div class="gu-grid lr-primero">${lista.map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
-  ${sim === 'simulador-paa' ? `<section class="lr-grupo"><h2 class="lr-h2">La PAA en cada universidad</h2><p class="lr-grupo-lead">Cómo usa la PAA cada universidad, con la fuente oficial de cada una.</p>
-  <div class="gu-grid">${Object.entries(UNIVERSIDADES).map(([k, u]) => tarjeta(`/simulador-paa/${k}/`, `PAA ${u.nombre}`, u.completo)).join('')}</div></section>` : ''}
-  ${espacioAnuncio(anuncios, 'indice')}
-  <section class="lr-grupo"><h2 class="lr-h2">Guías de otros exámenes</h2>
-  <div class="gu-grid">${otros.map(k => tarjeta(rutaIndice(k), SIMS[k].indice.h1, SIMS[k].indice.descripcion)).join('')}</div></section>
-  <p class="lr-nota">Guías informativas de Vorka Learn, la sección de guías de Vorka México, con las fuentes oficiales al final de cada una. Para practicar, el <a href="/${sim}/">${esc(s.titulo)}</a> es un simulador de práctica con reactivos originales. ${esc(s.aviso)}</p>
-</div></div>`,
-  });
-}
-
-// Portada de Vorka Learn (/learn/): todas las guías, agrupadas por examen
+// Portada de Vorka Learn (/learn/): sus textos (la página la arma src/learn/paginas.js)
 export const LEARN_PORTADA = {
   titulo: 'Vorka Learn: guías para tu examen de admisión',
   descripcion: 'Guías con fuentes oficiales para la PAA, el examen de la UNAM, el ECOEMS y la prepa de la UG: qué viene, cómo se califica y cómo estudiar.',
   h1: 'Guías para tu examen de admisión',
   lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen: qué viene, cómo se califica, cuánto piden y cómo organizar tu estudio. Cada dato sale de la convocatoria o de la institución que aplica el examen, y lo citamos al final de cada guía.',
 };
-export function paginaLearnPortada(anuncios = null) {
-  const lista = examenes(), p0 = LEARN_PORTADA;
-  const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: p0.h1, description: p0.descripcion, inLanguage: 'es-MX', url: `${SITIO}${RUTA_LEARN}`, publisher: ORG,
-    isPartOf: SITIO_LEARN, about: LEARN, mainEntity: { '@type': 'ItemList', itemListElement: GUIAS.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${rutaGuia(x)}`, name: x.h1 })) } }];
-  return paginaLearn({ titulo: p0.titulo, ruta: RUTA_LEARN, descripcion: p0.descripcion, anuncios, head: ld(datos),
-    cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
-  <span class="lr-kicker lr-arriba">Vorka Learn</span>
-  <h1 class="lr-h1">${esc(p0.h1)}</h1>
-  <p class="lr-lead">${esc(p0.lead)}</p>
-  ${lista.map((sim, i) => { const s = SIMS[sim]; return `<section class="lr-grupo" aria-labelledby="g-${s.clave}">
-    <div class="lr-grupo-cab"><h2 class="lr-h2" id="g-${s.clave}">${esc(s.examen)}</h2><a href="${rutaIndice(sim)}">Todas las guías de ${esc(s.examen)}</a></div>
-    <p class="lr-grupo-lead">${esc(s.indice.lead)}</p>
-    <div class="gu-grid">${guiasDe(sim).map(x => tarjeta(rutaGuia(x), x.h1, x.descripcion)).join('')}</div>
-  </section>${i === 0 ? espacioAnuncio(anuncios, 'indice') : ''}`; }).join('\n')}
-  <p class="lr-nota">Vorka Learn es la sección de guías de Vorka México. Las guías son informativas y no estamos afiliados a las instituciones que aplican estos exámenes; confirma siempre fechas y requisitos en la convocatoria vigente.</p>
-</div></div>`,
-  });
-}
-
 // Sitemap propio de Learn (vorka.mx/learn/sitemap.xml, declarado en el robots.txt de la raíz)
 export function sitemapLearn() {
   const urls = urlsGuias().map(r => `<url><loc>${SITIO}${r}</loc><lastmod>${ACTUALIZADO}</lastmod></url>`);
@@ -672,5 +559,6 @@ export function rutasLearn(req, env, url) {
   return m[3] ? r : ir(`/learn/${m[1] ? `${m[1]}/` : ''}${m[2] ? `${m[2]}/` : ''}`);
 }
 
-// Para las pruebas: el texto de una guía sin etiquetas
+// El texto de una guía sin etiquetas (pruebas, búsqueda y minutos de lectura)
+const textoPlano = h => h.replace(/<[^>]+>/g, '');
 export const textoDeGuia = x => [x.lead, ...x.secciones.map(y => textoPlano(y.html)), ...(x.faq || []).map(f => f.r)].join(' ');
