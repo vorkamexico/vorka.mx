@@ -17,6 +17,8 @@ import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
+import { rutasLearn } from './simulador/guias.js';
+import { adsTxt } from './anuncios.js';
 import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp, VARIANTES } from './brindi.js';
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve } from './vuelve.js';
@@ -319,6 +321,11 @@ async function atender(request, env, ctx, url) {
     if (/^\/tienda\/socios(\/|$)/.test(url.pathname)) return new Response(null, { status: 301, headers: { location: '/tienda/puntos/' } });
     if (url.pathname === '/api/socios/codigo') return fail('Usa /api/puntos/liga', 410);
     if (/^\/(tienda\/(puntos|cuenta)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
+    // Vorka Learn (/learn/…) y las URL viejas de las guías (/<simulador>/guias/… → 301 a /learn/…)
+    const lr = rutasLearn(request, env, url);
+    if (lr) return lr;
+    // ads.txt de la raíz: solo existe con AdSense encendido (ADSENSE_CLIENT); si no, 404
+    if (url.pathname === '/ads.txt' && (request.method === 'GET' || request.method === 'HEAD')) return adsTxt(env);
     const sim = await rutasSimulador(request, env, url);
     if (sim) return sim;
     const cr = await rutasCreadores(request, env, ctx, url);
