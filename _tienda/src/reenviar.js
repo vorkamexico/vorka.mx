@@ -7,6 +7,10 @@ import { dentroDelLimite } from './modelo.js';
 import { reenviarEnlace } from './entrega.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { SOPORTE } from './correo.js';
+
+// Si no llega nada (p. ej. se escribió mal el correo al pagar), a dónde escribir
+const AYUDA = `<p class="t-nota">¿No te llega nada o ya no tienes acceso a ese correo? Escríbenos a <a href="mailto:${SOPORTE.correo}">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}?text=${encodeURIComponent('Hola Vorka, hice una compra en la tienda y no me llegó el correo.')}" target="_blank" rel="noopener">WhatsApp</a> con tu nombre y la fecha de compra, y lo resolvemos.</p>`;
 
 // trim antes de validar: los teclados de celular suelen agregar un espacio al final
 const Esquema = z.object({ email: z.string().trim().toLowerCase().pipe(z.email().max(254)), sitio: z.string().max(0).optional() }); // sitio = trampa para bots
@@ -30,7 +34,7 @@ const formulario = ({ error = '', email = '', simulador = false } = {}) => `
     <div class="t-trampa" aria-hidden="true"><label for="sitio">No llenar</label><input id="sitio" name="sitio" tabindex="-1" autocomplete="off"></div>
     <button class="btn tinta" type="submit">Enviarme el enlace ${FLECHA}</button>
   </form>
-  <p class="t-nota">¿Ya no tienes acceso a ese correo? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tu nombre y la fecha de compra.</p>
+  ${AYUDA}
 </div></section>`;
 
 const base = { titulo: 'Recupera tus archivos · Vorka México', descripcion: 'Pide un enlace nuevo para descargar tus compras de la tienda de Vorka México.', ruta: '/descargas/reenviar', noindex: true };
@@ -69,4 +73,4 @@ export async function postReenviar(req, env, ctx) {
 }
 
 const listo = () => pagina({ ...base, cuerpo: aviso({ icono: CHECK, clase: 'exito', titulo: 'Revisa tu correo', texto: RESPUESTA,
-  extra: `<div class="botones t-centro"><a class="btn blanco" href="/tienda/">Volver a la tienda</a></div>` }) });
+  extra: `<div class="botones t-centro"><a class="btn blanco" href="/tienda/">Volver a la tienda</a></div>${AYUDA}` }) });

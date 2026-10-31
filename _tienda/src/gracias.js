@@ -4,6 +4,10 @@ import { one, json, fail, correoOculto } from './util.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { PCT_REFERIDO } from './descuentos.js';
+import { SOPORTE } from './correo.js';
+
+// Si no llegó nada (p. ej. el correo se escribió mal al pagar), que sepan a dónde escribir
+const SIN_CORREO = ` Si aun así no te llega nada, escríbenos a <a href="mailto:${SOPORTE.correo}">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}?text=${encodeURIComponent('Hola Vorka, hice una compra en la tienda y no me llegó el correo.')}" target="_blank" rel="noopener">WhatsApp</a> y lo resolvemos.`;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const ESPERA_EFECTIVO = ['oxxo', 'customer_balance'];
@@ -51,7 +55,7 @@ function bloques(o, v) {
     ? { clase: 'exito', icono: ICONOS.ok, titulo: o.unidades > 1 ? '¡Listo! Tus regalos van en camino' : '¡Listo! Tu regalo va en camino',
       texto: `Enviamos ${o.unidades > 1 ? `tus ${o.unidades} ligas de regalo` : 'tu liga de regalo'} a <b>${esc(correoOculto(o.email))}</b>. Mándale cada liga a una persona: funciona una sola vez y el acceso queda a su nombre.`,
       // Ruta de Impacto: sus ligas no cambian al reenviarlas (las da ruta.vorka.mx)
-      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>${acc?.app === 'ruta' || acc?.app === 'liderazgo' ? ' (te mandamos las mismas ligas).' : ' (las ligas nuevas reemplazan a las que no se han usado).'}</p>` }
+      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>${acc?.app === 'ruta' || acc?.app === 'liderazgo' ? ' (te mandamos las mismas ligas).' : ' (las ligas nuevas reemplazan a las que no se han usado).'}${SIN_CORREO}</p>` }
     : acc?.tipo === 'intento'
     ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Ya tienes más simulacros',
       texto: 'Tus simulacros completos adicionales ya están disponibles en tu cuenta.',
@@ -59,13 +63,13 @@ function bloques(o, v) {
     // Tests (src/tests/): en el navegador donde se contestó, el reporte se abre al momento (la ruta /ver/ revisa la cookie)
     : acc && ['test-vocacional', 'que-proyecto-social'].includes(acc.app) && acc.tipo !== 'grupo' ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Tu reporte está desbloqueado',
       texto: `También te mandamos la liga a <b>${esc(correoOculto(o.email))}</b> (no vence). Si contestaste en este navegador, ábrelo ya:`,
-      extra: `<div class="botones t-centro"><a class="btn tinta" href="/${esc(acc.app)}/ver/${esc(o.id)}">Ver mi reporte ${FLECHA}</a></div><p class="t-nota">¿No te llegó el correo? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>` }
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="/${esc(acc.app)}/ver/${esc(o.id)}">Ver mi reporte ${FLECHA}</a></div><p class="t-nota">¿No te llegó el correo? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.${SIN_CORREO}</p>` }
     : acc ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
       texto: `Enviamos tu acceso a <b>${esc(correoOculto(o.email))}</b>. Ábrelo y toca <b>${esc(acc.boton || 'Entrar')}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
-      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>' }
+      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.${SIN_CORREO}</p>` }
     : { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
       texto: `Enviamos tus archivos a <b>${esc(correoOculto(o.email))}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
-      extra: '<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.</p>' };
+      extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.${SIN_CORREO}</p>` };
   return {
     pagado,
     pendiente_efectivo: { clase: 'espera', icono: ICONOS.reloj, titulo: 'Tu pedido está apartado',
