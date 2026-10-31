@@ -3,16 +3,15 @@
 // mueve ningún dato; el menú, la portada, los índices, la búsqueda, el RSS, el sitemap y las imágenes OG leen de aquí.
 //
 // ── CÓMO AGREGAR UNA SECCIÓN NUEVA (p. ej. «Negocio pequeño», clave «negocio») ──────────────────────────────────────
-//  1. Datos: un archivo src/learn-negocio.js como src/learn-finanzas.js: NEGOCIO = { clave: 'negocio', nombre, corto,
-//     indice: { titulo, descripcion, h1, lead } }, RUTA_NEGOCIO = '/learn/negocio/', ARTICULOS_NEGOCIO = [{ slug, titulo,
-//     descripcion, h1, lead, secciones: [{ h2, html }], faq, fuentes, relacionadas }], rutaArticuloNegocio(x),
-//     textoDeArticulo(x) y paginaArticuloNegocio(slug, anuncios), que llama a paginaArticulo() de src/learn.js (la misma
-//     plantilla: dibujo, minutos, índice, fuentes, un solo llamado final, compartir, «Sigue leyendo»). Usa las piezas
-//     p, ul, ol, tabla, nota, caja, a, ext de src/learn.js.
-//  2. Catálogo: agrégala a TEMAS() abajo (un objeto como el de Finanzas). Con eso aparece sola en el menú, la portada,
-//     su índice /learn/negocio/ (paginaIndiceSeccion), la búsqueda, el RSS y la lista de imágenes OG.
-//  3. Rutas: en src/simulador/guias.js › rutasLearn, la línea de FINANZAS.clave tiene su gemela para la clave nueva;
-//     en urlsGuias() (sitemap) agrega su índice y sus artículos.
+//  1. Datos: un archivo src/learn-<clave>.js como src/learn-negocio.js o src/learn-camino.js: la sección { clave, nombre,
+//     corto, indice: { titulo, descripcion, h1, lead } }, sus artículos [{ slug, llamado, titulo, descripcion, h1, lead,
+//     secciones: [{ h2, html }], faq, fuentes, relacionadas }], sus llamados finales (llamadoFinal) y
+//     T = crearTema({...}) de src/learn/tema.js, que da rutas, texto para la búsqueda y la página de cada artículo con la
+//     plantilla común (dibujo, minutos, índice, fuentes, un solo llamado final, compartir, «Sigue leyendo»). Usa las
+//     piezas p, ul, ol, tabla, nota, caja, a, ext de src/learn/piezas.js. (Finanzas es anterior y lo hace a mano.)
+//  2. Catálogo: agrégala a TEMAS() abajo con temaDe(). Con eso aparece sola en el menú, la portada, su índice
+//     /learn/<clave>/ (paginaIndiceSeccion), la búsqueda, el RSS y la lista de imágenes OG.
+//  3. Rutas y sitemap: agrega su T a TEMAS_T en src/simulador/guias.js (rutasLearn y urlsGuias lo leen de ahí).
 //  4. Aspecto: en src/learn/secciones.js › SECCIONES, su color (a, b, t, to, s, so), grupo 'tema' y un motivo; si quieres
 //     un dibujo propio, agrégalo a MOTIVOS en src/learn/arte.js y su ícono en ICONO_SECCION de src/learn/encabezado.js.
 //  5. Imágenes OG: node herramientas/learn-og/generar.mjs --faltantes   (la prueba falla si falta alguna).
@@ -22,16 +21,23 @@
 // porque aquí nada lee los datos al cargar el módulo, solo dentro de funciones (al atender una visita).
 import { GUIAS, SIMS, guiasDe, rutaGuia, rutaIndice, textoDeGuia, tituloIndice, ACTUALIZADO } from '../simulador/guias.js';
 import { FINANZAS, ARTICULOS_FINANZAS, RUTA_FINANZAS, rutaArticuloFinanzas, tituloIndiceFinanzas, textoDeArticulo, AVISO_FINANZAS } from '../learn-finanzas.js';
+import { NEGOCIO, TEMA_NEGOCIO, ARTICULOS_NEGOCIO, AVISO_NEGOCIO } from '../learn-negocio.js';
+import { CAMINO, TEMA_CAMINO, ARTICULOS_CAMINO } from '../learn-camino.js';
 import { aspecto } from './secciones.js';
 import { minutosDeTexto } from './piezas.js';
 
 export { GUIAS, SIMS, rutaGuia, rutaIndice, textoDeGuia, ACTUALIZADO };
 
-// Secciones que no son exámenes (no tienen simulador). Para agregar una, ver arriba.
+// Secciones que no son exámenes (no tienen simulador). Para agregar una, ver arriba. Las que usan src/learn/tema.js
+// (crearTema) se registran con temaDe(); su objeto T trae ruta, rutaDe, textoDe y tituloIndice.
+const temaDe = (s, T, articulos, aviso) => ({ clave: s.clave, nombre: s.nombre, corto: s.corto, ruta: T.ruta, indice: s.indice, titulo: T.tituloIndice(),
+  articulos, rutaDe: T.rutaDe, textoDe: T.textoDe, aviso });
 const TEMAS = () => [
+  temaDe(CAMINO, TEMA_CAMINO, ARTICULOS_CAMINO, 'Guías informativas: confirma requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a las universidades que mencionamos ni al IMCO.'),
   { clave: FINANZAS.clave, nombre: FINANZAS.nombre, corto: FINANZAS.corto, ruta: RUTA_FINANZAS, indice: FINANZAS.indice, titulo: tituloIndiceFinanzas(),
     articulos: ARTICULOS_FINANZAS, rutaDe: rutaArticuloFinanzas, textoDe: textoDeArticulo,
     aviso: `${AVISO_FINANZAS} No estamos afiliados a CONDUSEF, al Banco de México ni a ninguna institución financiera, y no recomendamos bancos, tarjetas ni productos de terceros.` },
+  temaDe(NEGOCIO, TEMA_NEGOCIO, ARTICULOS_NEGOCIO, `${AVISO_NEGOCIO} No estamos afiliados al INEGI, a PROFECO ni al SAT.`),
 ];
 
 // Las secciones con al menos un artículo, exámenes primero:

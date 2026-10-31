@@ -3,6 +3,7 @@ import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { ARTICULOS_FINANZAS, FINANZAS, RUTA_FINANZAS, AVISO_FINANZAS, rutaArticuloFinanzas, tituloArticuloFinanzas, tituloIndiceFinanzas, llamadoDe, textoDeArticulo } from '../src/learn-finanzas.js';
 import { GUIAS, rutaGuia } from '../src/simulador/guias.js';
+import { articulos } from '../src/learn/datos.js';
 
 let env;
 const pedir = (ruta, metodo = 'GET', e = env) => worker.fetch(new Request(`https://vorka.mx${ruta}`, { method: metodo, redirect: 'manual' }), e);
@@ -198,7 +199,8 @@ describe('Vorka Learn › Finanzas personales', () => {
     expect(portada).toContain(`href="${RUTA_FINANZAS}"`);
     for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
     const lista = jsonLd(portada)[0].mainEntity.itemListElement.map(i => i.url);
-    expect(lista).toHaveLength(GUIAS.length + 4);
+    expect(lista).toHaveLength(articulos().length);
+    expect(lista.length).toBeGreaterThanOrEqual(GUIAS.length + 4);
     for (const x of RUTAS) expect(lista).toContain(`https://vorka.mx${x}`);
     // El menú de Learn liga a Finanzas en todas las páginas de Learn, también en las guías de exámenes
     expect(cabecera(await (await pedir(rutaGuia(GUIAS[0]))).text())).toContain('href="/learn/finanzas/">Finanzas</a>');
