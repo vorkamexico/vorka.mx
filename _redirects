@@ -74,3 +74,9 @@
 /1ertrimestrecelaya/*   https://os.vorka.mx/m/929cd876ee08f3dc8f   301
 /2dotrimestrecelaya     https://os.vorka.mx/m/929cd876ee08f3dc8f   301
 /2dotrimestrecelaya/*   https://os.vorka.mx/m/929cd876ee08f3dc8f   301
+
+# Ligas cortas de las apps que se venden en la tienda (las de Brindi y Cupo las resuelve el Worker de la tienda)
+/vende                       /tienda/vende/                          301
+/vende/                      /tienda/vende/                          301
+/cuentas                     /tienda/cuentas/                        301
+/cuentas/                    /tienda/cuentas/                        301
