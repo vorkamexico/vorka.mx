@@ -78,6 +78,19 @@ describe('guías de los simuladores', () => {
     }
   });
 
+  it('cada guía se puede compartir (WhatsApp y Facebook con utm) y ECOEMS y Prepa UG se recomiendan entre sí', async () => {
+    for (const x of GUIAS) {
+      const html = await (await pedir(rutaGuia(x))).text();
+      expect(html, rutaGuia(x)).toContain('https://wa.me/?text=');
+      expect(html, rutaGuia(x)).toContain('utm_medium%3Dcompartir');
+      expect(html, rutaGuia(x)).toContain('facebook.com/sharer');
+    }
+    const ug = await (await pedir('/simulador-prepa-ug/guias/examen-admision-prepa-ug/')).text();
+    expect(ug).toContain('/simulador-ecoems/guias/');
+    const ec = await (await pedir('/simulador-ecoems/guias/que-viene-en-el-examen-ecoems/')).text();
+    expect(ec).toContain('/simulador-prepa-ug/guias/examen-admision-prepa-ug/');
+  });
+
   it('ningún «oficial» engañoso: el simulador es de práctica y no está afiliado', async () => {
     for (const x of GUIAS) {
       expect(textoDeGuia(x), x.slug).not.toMatch(OFICIAL_ENGANOSO);
