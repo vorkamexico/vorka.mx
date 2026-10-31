@@ -21,7 +21,7 @@ export const ICONOS_LR = {
 };
 
 // «Por Vorka Learn · Actualizado: octubre de 2026 · 6 min de lectura»
-export const metaGuia = ({ fecha, fechaTxt, minutos }) => `<p class="lr-meta"><span class="lr-autor"><i>${LOGO}</i>Por Vorka Learn</span><span class="lr-dato">${ICONOS_LR.fecha}Actualizado: <time datetime="${fecha}">${fechaTxt}</time></span><span class="lr-dato">${ICONOS_LR.reloj}${minutos} min de lectura</span><span class="lr-dato">${ICONOS_LR.fuentes}Con fuentes oficiales al final</span></p>`;
+export const metaGuia = ({ fecha, fechaTxt, minutos }) => `<p class="lr-meta"><span class="lr-autor"><i>${LOGO}</i>Por Vorka Learn</span><span class="lr-dato">${ICONOS_LR.fecha}<span>Actualizado: <time datetime="${fecha}">${fechaTxt}</time></span></span><span class="lr-dato">${ICONOS_LR.reloj}${minutos} min de lectura</span><span class="lr-dato">${ICONOS_LR.fuentes}Con fuentes oficiales al final</span></p>`;
 
 // Índice «En esta guía»: se ve como lo que es (ícono, número de apartados y flecha que gira al abrir)
 export const indiceGuia = items => `<details class="lr-toc"><summary><span class="lr-toc-ico">${ICONOS_LR.indice}</span><span>En esta guía <span class="lr-toc-n">· ${items.length} apartados</span></span><span class="lr-toc-fl">${ICONOS_LR.abajo}</span></summary><ol>${items.map(([id, t]) => `<li><a href="#${id}">${t}</a></li>`).join('')}</ol></details>`;

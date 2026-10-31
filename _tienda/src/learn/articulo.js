@@ -57,7 +57,7 @@ export function paginaArticulo(x, o) {
   <h1 class="lr-h1">${esc(x.h1)}</h1>
   <p class="lr-lead">${esc(x.lead)}</p>
   ${metaGuia({ fecha: x.actualizado || o.actualizado, fechaTxt: o.actualizadoTxt, minutos })}
-  <div class="lr-portadilla">${arte(clave, { semilla: x.slug || ruta, id: 'p' })}</div>
+  <div class="lr-portadilla">${arte(clave, { semilla: x.slug || ruta, id: 'p' }).replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ')}</div>
   </div>
   ${indiceGuia(toc)}
   <article class="lr-art">

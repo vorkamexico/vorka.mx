@@ -58,10 +58,10 @@ export function paginaIndiceSeccion(clave, anuncios = null) {
     cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
   ${migas(lugares)}
   <section class="lr-banner">
-    <div><span class="lr-kicker">${iconoDe(clave)}Vorka Learn · ${esc(s.nombre)}</span>
+    <div><span class="lr-kicker">${iconoDe(clave)}Vorka Learn · ${esc(s.corto)}</span>
     <h1 class="lr-h1">${esc(s.indice.h1)}</h1>
     <p class="lr-lead">${esc(s.indice.lead)}</p></div>
-    <div class="lr-banner-arte">${arte(clave, { semilla: 'indice', id: 'b' })}</div>
+    <div class="lr-banner-arte">${arte(clave, { semilla: 'indice', id: 'b' }).replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ')}</div>
   </section>
   <div class="gu-grid">${lista.map(tarjetaArticulo).join('')}</div>
   ${clave === 'paa' ? `<section class="lr-grupo"><h2 class="lr-h2">La PAA en cada universidad</h2><p class="lr-grupo-lead">Cómo usa la PAA cada universidad, con la fuente oficial de cada una.</p>
@@ -94,7 +94,7 @@ export function paginaLearnPortada(anuncios = null) {
       <span class="lr-kicker">${iconoDe('learn')}Vorka Learn</span>
       <h1 class="lr-h1">${h1}</h1>
       <p class="lr-lead">${esc(p0.lead)}</p>
-      <form class="lr-buscador" action="${RUTA_BUSCAR}" method="get" role="search"><label class="vh" for="lr-q">Buscar en Vorka Learn</label><input id="lr-q" name="q" type="search" placeholder="¿Qué quieres saber? Ej.: puntaje PAA" enterkeyhint="search" maxlength="80" autocomplete="off"><button type="submit" aria-label="Buscar">${ICONOS_LR.lupa}</button></form>
+      <form class="lr-buscador" action="${RUTA_BUSCAR}" method="get" role="search"><label class="vh" for="lr-q">Buscar en Vorka Learn</label><input id="lr-q" name="q" type="search" placeholder="Busca una guía o un tema" enterkeyhint="search" maxlength="80" autocomplete="off"><button type="submit" aria-label="Buscar">${ICONOS_LR.lupa}</button></form>
       <nav class="lr-chips" aria-label="Secciones">${lista.map(s => `<a class="lr-chip lr-s-${s.clave}" href="${s.ruta}">${iconoDe(s.clave)}${esc(s.nombre)}</a>`).join('')}</nav>
     </div>
     <div class="lr-portada-arte">${arteHero(lista.map(s => s.clave))}</div>
