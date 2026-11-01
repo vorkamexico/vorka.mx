@@ -39,6 +39,18 @@ describe('portafolio por línea de producto', () => {
     expect(linea(r, 'sim_paa').uso).toEqual({ etiqueta: 'resultados de simulador', valor: 0 });
   });
 
+  it('el ingreso es lo cobrado con descuento, repartido entre los productos de la orden', async () => {
+    const id = orden({ email: 'dani@gmail.com', dias: 1, monto: 36000 });   // lista $379, cobró $360
+    env.DB.raw.prepare('UPDATE order_items SET precio_centavos = 37900 WHERE order_id = ?').run(id);
+    const id2 = orden({ email: 'eli@gmail.com', dias: 1, monto: 20000, producto: 'prod_vende_mensual' });   // dos productos, cobró $200
+    env.DB.raw.prepare('UPDATE order_items SET precio_centavos = 10000 WHERE order_id = ?').run(id2);
+    env.DB.raw.prepare("INSERT INTO order_items (order_id, product_id, nombre, precio_centavos) VALUES (?, 'prod_cupo_pro', 'Cupo', 30000)").run(id2);
+    const r = await A.portafolio({});
+    expect(linea(r, 'sim_paa').monto_centavos).toBe(36000);
+    expect(linea(r, 'vende').monto_centavos).toBe(5000);
+    expect(linea(r, 'cupo').monto_centavos).toBe(15000);
+  });
+
   it('lista interesados que no compraron, sin repetir correo y sin quien compró después', async () => {
     orden({ email: 'edwin@gmail.com', estado: 'failed', dias: 5 });
     orden({ email: 'edwin@gmail.com', estado: 'failed', dias: 3 });
