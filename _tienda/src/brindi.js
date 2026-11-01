@@ -198,7 +198,7 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const gala = extras.find(x => x.slug === 'brindi-plantilla-premium');
   const aLaVenta = planes.some(p => p.prod);
   const rec = planes.find(p => p.recomendado);
-  if (rec.prod && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: rec.prod.id, ref_code: code });
+  if (rec.prod && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: rec.prod.id, ref_code: code }, req);
   const desde = planes.filter(p => p.prod).map(p => p.prod.precio_centavos).sort((a, b) => a - b)[0];
   const ahorroOrg = org && rec.prod ? rec.prod.precio_centavos * 5 - org.precio_centavos : 0;
   const error = url.searchParams.get('error') || '';

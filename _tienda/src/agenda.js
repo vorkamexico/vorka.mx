@@ -99,7 +99,7 @@ const tuDia = () => `<div class="ag-dia" role="img" aria-label="Ejemplo de tu d√
 export async function paginaAgenda(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug), profesional: await productoPorSlug(env, x.prof), sucursal: x.suc ? await productoPorSlug(env, x.suc) : null })))).filter(x => x.prod);
-  if (planes[0] && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: planes[0].prod.id, ref_code: code });
+  if (planes[0] && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: planes[0].prod.id, ref_code: code }, req);
   const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : planes[0]?.slug;
   const error = url.searchParams.get('error') || '';
   // Desde la app (Suscribirme) llega el correo de la cuenta para que la suscripci√≥n quede ligada a ella

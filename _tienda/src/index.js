@@ -317,6 +317,8 @@ export default {
     // respuestas viejas (12 meses sin compra, 24 con compra)
     ctx.waitUntil(mandarRecordatorios(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisados) console.log('tests: recordatorios', JSON.stringify(r)); }).catch(e => console.error('tests: recordatorios', e?.message)));
     if (esHoraDeLimpiar(event)) ctx.waitUntil(limpiarTests(env).then(r => console.log('tests: limpieza', JSON.stringify(r))).catch(e => console.error('tests: limpieza', e?.message)));
+    // Límites de peticiones y de visitas contadas (ventanas fijas): lo de hace más de 2 días ya no sirve
+    if (esHoraDeLimpiar(event)) ctx.waitUntil(env.DB.prepare('DELETE FROM rate_limits WHERE ventana < ?').bind(Math.floor(Date.now() / 1000) - 2 * 86400).run().catch(e => console.error('rate_limits: limpieza', e?.message)));
     if (esHoraDeLimpiar(event)) ctx.waitUntil(anonimizarCuponesViejos(env).then(r => console.log('cupones regalo: anonimizados', JSON.stringify(r))).catch(e => console.error('cupones regalo: anonimizar', e?.message)));
     ctx.waitUntil((async () => {
       try {

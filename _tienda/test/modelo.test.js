@@ -88,3 +88,18 @@ describe('modelo de datos', () => {
     expect(r).toEqual([true, true, true, false]);
   });
 });
+
+describe('visitas: una por persona y producto cada 30 minutos', () => {
+  it('recargar o una revisión automática desde la misma IP no infla las vistas', async () => {
+    const { d1 } = await import('./d1.js');
+    const { registrarAnalitica } = await import('../src/modelo.js');
+    const env = { DB: d1() };
+    const req = ip => new Request('https://vorka.mx/tienda/x', { headers: { 'cf-connecting-ip': ip } });
+    for (let i = 0; i < 20; i++) await registrarAnalitica(env, 'view_product', { product_id: 'prod_a' }, req('1.1.1.1'));
+    await registrarAnalitica(env, 'view_product', { product_id: 'prod_a' }, req('2.2.2.2'));
+    await registrarAnalitica(env, 'view_product', { product_id: 'prod_b' }, req('1.1.1.1'));
+    await registrarAnalitica(env, 'begin_checkout', { product_id: 'prod_a' }, req('1.1.1.1'));
+    const n = env.DB.raw.prepare("SELECT tipo, product_id, COUNT(*) n FROM events GROUP BY tipo, product_id ORDER BY tipo, product_id").all();
+    expect(n).toEqual([{ tipo: 'begin_checkout', product_id: 'prod_a', n: 1 }, { tipo: 'view_product', product_id: 'prod_a', n: 2 }, { tipo: 'view_product', product_id: 'prod_b', n: 1 }]);
+  });
+});

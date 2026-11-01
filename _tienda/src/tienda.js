@@ -409,7 +409,7 @@ export async function paginaProducto(env, req, url, slug) {
       extra: `<div class="botones t-centro"><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>` }),
   });
   const { code, cookie } = await refDeVisita(env, req, url);
-  if (!BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code });
+  if (!BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
 
   const c = p.contenido;
   // Si el producto tiene su propia página (p. ej. vorka.mx/simulador-paa/), esa es la canónica para Google
