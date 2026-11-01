@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { d1 } from './d1.js';
 import worker, { Admin } from '../src/index.js';
 import { crearOrden, aplicarPago } from '../src/modelo.js';
-import { ligaRetomar } from '../src/recordatorio.js';
+import { ligaRetomar, recordatoriosAutomaticos } from '../src/recordatorio.js';
 
 let env, A, correos, sesiones;
 const HORA = 3600e3;
@@ -162,5 +162,48 @@ describe('enlace (slug) editable', () => {
     expect((await get('/tienda/de-idea-a-proyecto/')).status).toBe(200);
     expect((await get('/tienda/temporal/')).status).toBe(301);
     expect(env.DB.raw.prepare('SELECT slug FROM slugs_anteriores').all()).toEqual([{ slug: 'temporal' }]);
+  });
+});
+
+describe('recordatorios automáticos (1 h, 48 h y 10 % a los 3 días)', () => {
+  const DESDE = '2000-01-01T00:00:00.000Z';
+  const corre = (t) => recordatoriosAutomaticos(env, t, { desde: DESDE });
+  it('manda el 1.º a la hora, el 2.º a las 48 h y el 3.º con 10 % tres días después', async () => {
+    const o = await pendiente('luz@mail.com', 0.5);
+    const t0 = Date.now();
+    expect((await corre(t0)).enviados).toBe(0);                       // aún no pasa la hora
+    expect((await corre(t0 + 1 * HORA)).enviados).toBe(1);           // 1.º
+    expect(correos).toHaveLength(1);
+    expect((await corre(t0 + 30 * HORA)).enviados).toBe(0);           // aún no pasan 48 h
+    expect((await corre(t0 + 50 * HORA)).enviados).toBe(1);           // 2.º
+    expect((await corre(t0 + 100 * HORA)).enviados).toBe(0);          // aún no pasan 3 días del 2.º
+    const r3 = await corre(t0 + 125 * HORA);                           // 3.º con descuento
+    expect(r3).toMatchObject({ enviados: 1, con_descuento: 1 });
+    expect(correos).toHaveLength(3);
+    expect(correos[2].subject).toMatch(/10 %/);
+    expect(correos[2].text).toMatch(/\/tienda\/retomar\/.+&d=10&s=/);
+    expect((await corre(t0 + 400 * HORA)).enviados).toBe(0);          // nunca más de 3
+    // La liga del 3.º abre el pago con el 10 % aplicado; cambiar el % a mano la invalida
+    const liga = correos[2].text.match(/https:\/\/vorka\.mx(\/tienda\/retomar\/\S+)/)[1];
+    expect((await get(liga.replace('d=10', 'd=50'))).status).toBe(410);
+    const res = await get(liga);
+    expect(res.status).toBe(303);
+    const nueva = env.DB.raw.prepare("SELECT * FROM orders WHERE email = 'luz@mail.com' AND id != ? ORDER BY created_at DESC").get(o.id);
+    expect(nueva.descuento_codigo).toBe('RECORDATORIO');
+    expect(nueva.descuento_pct).toBe(10);
+    const sub = env.DB.raw.prepare('SELECT SUM(precio_centavos * cantidad) s FROM order_items WHERE order_id = ?').get(nueva.id).s;
+    expect(nueva.monto_centavos).toBe(sub - Math.round(sub * 0.1));
+  });
+  it('no molesta: OXXO esperando, compras del equipo, órdenes viejas y solo la más reciente de cada correo', async () => {
+    await pendiente('oxxo@mail.com', 3, 'oxxo');                      // pending con método: está por pagar en OXXO
+    env.DB.raw.prepare("INSERT INTO affiliates (code, nombre, email, comision_pct, activo) VALUES ('EQUIPO1', 'Equipo', 'equipo@vorka.mx', 0, 1)").run();
+    await pendiente('equipo@vorka.mx', 3);
+    await pendiente('dos@mail.com', 5);
+    await pendiente('dos@mail.com', 3);                               // la más reciente de ese correo
+    const r = await corre(Date.now());
+    expect(r.enviados).toBe(1);
+    expect(correos.map(c => c.to).flat()).toEqual(['dos@mail.com']);
+    await pendiente('vieja@mail.com', 3);
+    expect((await recordatoriosAutomaticos(env, Date.now(), { desde: new Date().toISOString() })).revisadas).toBe(0);
   });
 });

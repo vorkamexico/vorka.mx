@@ -64,3 +64,19 @@ export async function ventasVendedor(env, email, limite = 50) {
     total: { ventas: vigentes.length, monto_centavos: vigentes.reduce((s, f) => s + (f.monto_centavos || 0), 0), puntos: vigentes.reduce((s, f) => s + (f.puntos || 0), 0) },
   };
 }
+
+// Ventas con código del equipo (Vorka OS): avisos al momento (despues_de: el último id que ya vio) y tablero del mes (desde: fecha).
+// Solo de los correos que manda OS (sus personas activas) y sin datos de quien compró. Sin despues_de ni desde devuelve solo
+// el último id (para empezar a avisar desde ahí, sin repasar ventas viejas).
+export async function ventasEquipo(env, { emails = [], despues_de = null, desde = null, limite = 200 } = {}) {
+  const lista = [...new Set((emails || []).map(e => String(e || '').trim().toLowerCase()).filter(e => e.includes('@')))].slice(0, 300);
+  const ultimo = (await one(env, "SELECT COALESCE(MAX(id), 0) id FROM puntos_movimientos WHERE tipo = 'ganado'")).id;
+  if (!lista.length || (despues_de == null && !desde)) return { ultimo, ventas: [] };
+  const filas = await all(env, `SELECT m.id, m.email, m.order_id, m.puntos, m.created_at, o.monto_centavos,
+      (SELECT GROUP_CONCAT(p.nombre, ' · ') FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = m.order_id) productos,
+      EXISTS (SELECT 1 FROM puntos_movimientos r WHERE r.order_id = m.order_id AND r.tipo = 'revertido') revertida
+    FROM puntos_movimientos m JOIN orders o ON o.id = m.order_id
+    WHERE m.tipo = 'ganado' AND m.email IN (${lista.map(() => '?').join(',')}) AND ${despues_de != null ? 'm.id > ?' : 'm.created_at >= ?'}
+    ORDER BY m.id LIMIT ?`, ...lista, despues_de != null ? Number(despues_de) || 0 : String(desde), Math.min(Math.max(Number(limite) || 200, 1), 1000));
+  return { ultimo, ventas: filas.map(f => ({ id: f.id, email: f.email, venta: f.order_id, puntos: f.puntos, monto_centavos: f.monto_centavos, productos: f.productos || 'Compra en vorka.mx', fecha: f.created_at, revertida: !!f.revertida })) };
+}

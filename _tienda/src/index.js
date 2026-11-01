@@ -15,7 +15,7 @@ import { ESTILOS } from './paginas.js';
 import { procesarTransferencias, refrescarCreador, repartosPendientes } from './marketplace.js';
 import { rutasCreadores } from './creadores.js';
 import { all } from './util.js';
-import { recordarOrden, retomarPago } from './recordatorio.js';
+import { recordarOrden, retomarPago, recordatoriosAutomaticos } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
 import { rutasLearn } from './simulador/guias.js';
 import { rutasLearnExtra } from './learn/extra.js';
@@ -31,7 +31,7 @@ import { paginaLiderazgo } from './liderazgo.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo } from './puntos.js';
-import { cambiarCodigo, ventasVendedor, DIAS_CAMBIO } from './codigo-publico.js';
+import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codigo-publico.js';
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
@@ -159,6 +159,8 @@ export class Admin extends WorkerEntrypoint {
     return { code: a.publico || a.code, original: a.code, cambiado_at: a.publico_cambiado_at, puede_cambiar_desde: prox && prox > new Date().toISOString() ? prox : null };
   }
   ventasVendedor(email, limite) { return ventasVendedor(this.env, email, limite); }
+  // Ventas con código del equipo: avisos al momento y tablero del mes en Vorka OS (sin datos de quien compró)
+  ventasEquipo(f) { return ventasEquipo(this.env, f); }
   // Página pública vorka.mx/equipo/<código> (opcional, la prende cada persona en Vorka OS › Ventas › Mi tarjeta)
   async guardarPerfil(email, datos) {
     try { return await guardarPerfil(this.env, email, datos); } catch (e) { return { ok: false, error: e.message }; }
@@ -308,6 +310,8 @@ export default {
     // cron de cada hora para no gastar otro (el plan gratis de Cloudflare permite 5 en toda la cuenta).
     // Reseñas: el correo que la pide a quien compró (7 días después en descargables, 14 en accesos y suscripciones; una sola
     // vez por orden). Cada hora, pocas órdenes por corrida (src/resenas.js)
+    // Compras sin terminar: 1.º recordatorio a la hora, 2.º a las 48 h y 3.º con 10 % tres días después (src/recordatorio.js › AUTO)
+    ctx.waitUntil(recordatoriosAutomaticos(env, event?.scheduledTime ?? Date.now()).then(r => { if (r.revisadas) console.log('recordatorios', JSON.stringify(r)); }).catch(e => console.error('recordatorios', e?.message)));
     ctx.waitUntil(pedirResenas(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisadas) console.log('resenas', JSON.stringify(r)); }).catch(e => console.error('resenas', e?.message)));
     // Tests: el único recordatorio «tu resultado te espera» (al día siguiente, con consentimiento) y, una vez al día, borrar
     // respuestas viejas (12 meses sin compra, 24 con compra)
