@@ -3,6 +3,7 @@ import { one, all, run, aleatorio, hex, enc, ahoraISO, correoOculto } from './ut
 import { marco, boton, lista, enviar, esc, P, SOPORTE } from './correo.js';
 import { mandarRegalos } from './regalos.js';
 import { accesoRuta, esItemRuta } from './ruta-entrega.js';
+import { finCortesia } from './suscripciones.js';
 
 export const VIGENCIA_DIAS = 7;
 export const MAX_DESCARGAS = 10; // por archivo
@@ -33,7 +34,13 @@ export function correoEntrega(env, orden, items, token, extra = {}) {
   // Suscripción con sus complementos (profesionales de Agenda, sucursales de Vuelve): el botón es el del plan, aunque el
   // complemento sea de otra app del paquete (la sucursal de Vuelve en Agenda + Vuelve)
   const plan = items.map(contenidoDe).find(c => c.suscripcion && !c.complemento && c.acceso);
-  if (plan && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, plan.acceso, true);
+  if (plan && accesos.every(Boolean)) {
+    // Cortesía de un plan de suscripción: no se cobra ni se renueva; dura cantidad × el intervalo del plan (ver cortesiaApp)
+    const deRegalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
+    const it = items.find(i => { const c = contenidoDe(i); return c.suscripcion && !c.complemento; });
+    const cortesiaHasta = deRegalo ? finCortesia(orden.paid_at || orden.created_at || Date.now(), plan.suscripcion.intervalo === 'year' ? 'year' : 'month', it?.cantidad) : null;
+    return correoAcceso(env, orden, items, token, plan.acceso, true, { cortesiaHasta });
+  }
   // Compra de un solo producto de acceso: el botón entra directo a la app; con archivos, a la página de descargas
   if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0], accesos.every(x => x.app === accesos[0].app && x.url === accesos[0].url), extra);
   const url = `${env.SITE_URL}/descargas/${token}`;
@@ -136,12 +143,15 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : acceso.app === 'que-proyecto-social' ? 'Con este botón abres tu reporte completo de ¿Qué proyecto social hago?: tus proyectos a detalle, con primeros pasos, indicadores, ODS y cómo comunicarlos. Si todavía no contestas el cuestionario, lo contestas ahí mismo (unos 5 minutos). Guarda este correo: la liga no vence.'
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura 6 meses a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
+  const linea2Final = extra.cortesiaHasta
+    ? `Es una cortesía de Vorka México: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}. No se renueva y no se te cobra nada. Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
+    : linea2;
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">${linea1}</p>
 ${lista(items.map(i => esc(i.nombre) + (i.cantidad > 1 ? ` × ${i.cantidad}` : '')))}
 ${boton(url, boton_)}
-<p style="${P}">${linea2}</p>${tambien.map(t => `\n${boton(t.url, t.boton)}`).join('')}
+<p style="${P}">${extra.cortesiaHasta ? esc(linea2Final) : linea2}</p>${tambien.map(t => `\n${boton(t.url, t.boton)}`).join('')}
 <p style="${P}">Si el botón deja de funcionar o cambias de dispositivo, pide un enlace nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con este mismo correo.</p>
 <p style="${P}">¿Algún problema? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a> y lo resolvemos.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
@@ -154,7 +164,7 @@ ${items.map(i => `- ${i.nombre}${i.cantidad > 1 ? ` × ${i.cantidad}` : ''}`).jo
 ${boton_}:
 ${url}
 
-${linea2}${tambien.map(t => `\n\n${t.boton}:\n${t.url}`).join('')}
+${linea2Final}${tambien.map(t => `\n\n${t.boton}:\n${t.url}`).join('')}
 Si deja de funcionar, pide uno nuevo en ${env.SITE_URL}/descargas/reenviar con este mismo correo.
 
 ¿Algún problema? Escríbenos a ${SOPORTE.correo} o por WhatsApp: ${SOPORTE.whatsapp}
