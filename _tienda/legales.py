@@ -599,7 +599,7 @@ CLARA = [
         'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
     ('cancelar', 'Cancelación y reembolsos', li(
         'Cancelas cuando quieras desde Clara › Ajustes › Suscripción, en el portal de pagos de Stripe, sin llamadas ni trámites. Sigues con Pro hasta el final del periodo que ya pagaste; no se hacen cobros nuevos.',
-        'Borrar tu cuenta no cancela la suscripción, porque el cobro vive en la tienda: cancélala antes de borrar tu cuenta o escríbenos.',
+        'Si borras tu cuenta en Clara, cancelamos tu suscripción en ese momento: ya no se te vuelve a cobrar y no hay reembolso proporcional del periodo en curso (aplica lo de abajo). Si por algo no se pudo cancelar, la app te lo dice y te lleva al portal de pagos, o escríbenos.',
         'Aplica la <a href="/legal/reembolsos/">política de reembolsos</a> de la tienda. Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo que una falla atribuible a Clara te impida usarla y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.',
         'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
     ('calculos', 'Cálculos, avisos y tu estado de cuenta', li(

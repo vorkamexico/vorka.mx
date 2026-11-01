@@ -32,7 +32,7 @@ import { paginaClara } from './clara.js';
 import { paginaRuta } from './ruta.js';
 import { paginaLiderazgo } from './liderazgo.js';
 import { cargarTemporada } from './temporadas.js';
-import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
+import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp, cancelarApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo, modoSuscripcion } from './puntos.js';
 import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codigo-publico.js';
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
@@ -198,6 +198,7 @@ export class Admin extends WorkerEntrypoint {
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
   // Cuentas: mes gratis por invitar → saldo a favor en el siguiente cobro
   creditoApp(email, app, centavos, motivo) { return creditoApp(this.env, email, app, centavos, motivo); }
+  cancelarApp(email, app) { return cancelarApp(this.env, email, app); }
   // Complementos de la suscripción: lugares de Vuelve (tipo 'sucursal', el de siempre) o profesionales de Agenda ('profesional')
   lugaresApp(email, app, extras, tipo) { return lugaresApp(this.env, email, app, extras, tipo); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }

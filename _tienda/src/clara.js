@@ -28,7 +28,7 @@ const FAQ = [
   ['¿Qué pasa si dejo de pagar Pro?', 'Vuelves al plan gratis. Si tienes más de 1 tarjeta, tu cuenta queda en modo consulta: ves todo, pero para registrar archiva las tarjetas que sobran o vuelve a suscribirte. Nada se borra.'],
   ['¿Cuánto cuesta y cómo pago?', 'Mensual ($49 al mes) o anual ($490 al año, 2 meses gratis). Pagas con tarjeta de crédito o débito, procesado por Stripe. Si pagas por alguien más, usa en la compra el mismo correo con el que esa persona entra a Clara.'],
   ['¿Cómo cancelo?', 'Desde Clara › Ajustes › Suscripción, en el portal de pagos de Stripe, sin llamadas. Sigues con Pro hasta el final del periodo pagado. Si pagaste el anual y cancelas dentro de los 10 días naturales siguientes al cobro, te devolvemos tu dinero completo; escríbenos a hola@vorka.mx.'],
-  ['¿Cómo borro mi cuenta?', 'En Clara › Ajustes › Borrar mi cuenta. Se borra todo de inmediato: tus tarjetas, movimientos, metas y presupuesto. Antes puedes descargar tus datos en JSON, gratis. Si tienes Pro, cancélalo primero en Ajustes › Suscripción para que no se renueve.'],
+  ['¿Cómo borro mi cuenta?', 'En Clara › Ajustes › Borrar mi cuenta. Se borra todo de inmediato: tus tarjetas, movimientos, metas y presupuesto. Antes puedes descargar tus datos en JSON, gratis. Si tienes Pro, al borrar tu cuenta se cancela solo: ya no se te vuelve a cobrar.'],
 ];
 
 const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;

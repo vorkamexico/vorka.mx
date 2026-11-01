@@ -104,6 +104,20 @@ describe('ficha de Clara (activa)', () => {
     expect(await A.validarAcceso(m[1], 'clara')).toMatchObject({ email: 'sofia@correo.mx' });
     expect(await A.suscripcionApp('sofia@correo.mx', 'clara')).toMatchObject({ vigente: true, intervalo: 'month', monto_centavos: 4900 });
   });
+  it('al borrar la cuenta en Clara, la app cancela Pro: sin más cobros, al final del periodo pagado', async () => {
+    const { order } = await (await comprar()).json();
+    stripe.orden = order; stripe.sub = sub();
+    await evento('checkout.session.completed', 'cs_1');
+    const A = new Admin({}, env);
+    expect(await A.cancelarApp('Sofia@Correo.mx', 'clara')).toMatchObject({ ok: true });
+    const c = llamada('/subscriptions/sub_c1').filter(l => l.init.method === 'POST');
+    expect(c).toHaveLength(1);
+    expect(c[0].params.get('cancel_at_period_end')).toBe('true');
+    expect(fila("SELECT cancelar_al_final FROM suscripciones WHERE id = 'sub_c1'").cancelar_al_final).toBe(1);
+    expect(await A.cancelarApp('sofia@correo.mx', 'clara')).toMatchObject({ ok: true });
+    expect(llamada('/subscriptions/sub_c1').filter(l => l.init.method === 'POST')).toHaveLength(1);
+    expect(await A.cancelarApp('nadie@correo.mx', 'clara')).toEqual({ ok: false, motivo: 'sin_suscripcion' });
+  });
   it('en el portafolio cuenta como línea propia', () => {
     expect(lineaDe('prod_clara_mensual')).toBe('clara');
     expect(lineaDe('prod_clara_anual')).toBe('clara');
