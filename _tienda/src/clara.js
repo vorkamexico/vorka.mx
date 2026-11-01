@@ -13,7 +13,8 @@ const APP = 'https://clara.vorka.mx';
 const GUIA_TARJETA = 'https://vorka.mx/learn/finanzas/como-funciona-una-tarjeta-de-credito/';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 export const RUTA_CLARA = '/tienda/clara/';
-// Imagen para compartir y portada (simulador/portadas_v3.py, con la captura real de la app)
+// Imagen para compartir y portada: hechas con el diseño final de la app (blanco, tinta y un solo azul) y copiadas a
+// assets/tienda/v3/ con estos nombres fijos (la D1 también los usa). Ya no salen de simulador/portadas_v3.py.
 export const OG_CLARA = 'https://vorka.mx/assets/tienda/v3/clara-og.jpg';
 const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 const PLANES = [{ slug: 'clara-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'clara-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
@@ -40,16 +41,29 @@ const ICONO = {
   balanza: ico('<path d="M12 4v16M7 20h10M5 8h14"/><path d="M5 8l-2.5 6a3 3 0 0 0 5 0zM19 8l-2.5 6a3 3 0 0 0 5 0z"/>'), meta: ico('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>'),
   grafica: ico('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'), doc: ico('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>'),
 };
-const V = '<svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>';
+// La V de Clara: trazo largo en tinta y el corto en azul (como en la app)
+const V = '<svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path class="cl-v2" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>';
+const icoApp = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const APPICO = {
+  cal: icoApp('<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4M12 13v4M10 15h4"/>'), comida: icoApp('<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2 1.5-3 4-3 7h3"/>'),
+  casa: icoApp('<path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10M10 20v-5h4v5"/>'), tarjetas: icoApp('<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/>'),
+  lista: icoApp('<path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/>'), mes: icoApp('<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
+  sol: icoApp('<circle cx="12" cy="12" r="3.5"/><path d="M12 3v2M12 19v2M5.6 5.6 7 7M17 17l1.4 1.4M3 12h2M19 12h2M5.6 18.4 7 17M17 7l1.4-1.4"/>'),
+};
 
-// Réplica de la pantalla de inicio de la app (datos de ejemplo): la tarjeta con sus fechas y lo que hay que pagar
-const pantalla = `<div class="cl-cel" aria-hidden="true"><i class="cl-isla"></i><div class="cl-pant">
-  <div class="cl-app-top"><span class="cl-logo">${V}</span><b>Clara</b></div>
-  <div class="cl-tarj"><div class="cl-q"><span><b>Mi primera tarjeta</b><small>Terminación 4821</small></span><span class="cl-chip"></span></div>
-    <small class="cl-rot">Para no pagar intereses, paga antes del 23 nov</small><b class="cl-saldo">$2,350.00</b>
-    <div class="cl-uso"><i style="width:39%"></i></div><small class="cl-ley">Usas $2,350 de $6,000 de límite</small></div>
-  <div class="cl-rap">${['Anotar gasto', '¿Me alcanza?', 'Mi mes'].map((t, i) => `<span><i class="${i ? '' : 'pri'}"></i>${t}</span>`).join('')}</div>
-  <div class="cl-movs">${[['Corte de tu tarjeta', 'En 3 días · 3 nov', 'Aviso'], ['Comida con amigos', 'Ayer · Tarjeta', '−$280.00'], ['Pago de la semana', 'Lunes · Ingreso', '+$900.00']].map(([a, b, c]) => `<div><i></i><span><b>${a}</b><small>${b}</small></span><em>${c}</em></div>`).join('')}</div>
+// Réplica de la pantalla «Hoy» de la app (datos de ejemplo): cuánto te alcanza al día, el próximo pago y lo último que anotaste.
+// Sigue el tema de la página (claro u oscuro), igual que la app.
+const pantalla = `<div class="cl-cel" aria-hidden="true"><div class="cl-pant">
+  <div class="cl-app-top"><span class="cl-v">${V}</span><b>Clara</b><small>by Vorka</small><span class="cl-sol">${APPICO.sol}</span></div>
+  <p class="cl-hola"><b>Hola, Ana</b></p>
+  <div class="cl-prueba"><span>Prueba de Clara Pro: te quedan 7 días</span><em>Ver</em></div>
+  <div class="cl-caja cl-alc"><small>Te alcanzan</small><p><b>$133</b> al día</p><small>hasta el 15 de noviembre · 14 días</small><em>Ver cómo se calcula</em></div>
+  <div class="cl-caja cl-prox"><div class="cl-prox-f"><i class="cl-ic">${APPICO.cal}</i><span><small>Próximo pago · La del súper</small><b>15 de noviembre</b></span><b class="cl-monto">$900.00</b></div>
+    <div class="cl-prox-b"><span class="pri">Anotar pago</span><span>Ver detalle</span></div></div>
+  <div class="cl-ult"><b>Lo último</b><em>Ver todos</em></div>
+  <div class="cl-caja cl-movs">${[[APPICO.comida, 'Tacos', 'Comida · Efectivo · Hoy', '−$150.00'], [APPICO.casa, 'Luz', 'Casa y servicios · Efectivo', '−$420.00']].map(([i, a, b, c]) => `<div><i class="cl-ic ${a === 'Luz' ? 'casa' : 'sale'}">${i}</i><span><b>${a}</b><small>${b}</small></span><em>${c}</em></div>`).join('')}</div>
+  <div class="cl-acc"><span class="gasto"><i>−</i>Gasto</span><span class="ingreso"><i>+</i>Ingreso</span></div>
+  <div class="cl-tabs">${[['casa', 'Hoy'], ['tarjetas', 'Tarjetas'], ['lista', 'Movimientos'], ['mes', 'Mes']].map(([i, t], k) => `<span${k ? '' : ' class="act"'}><i>${APPICO[i]}</i>${t}</span>`).join('')}</div>
 </div></div>`;
 
 export async function paginaClara(env, req, url) {
@@ -70,17 +84,17 @@ export async function paginaClara(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_CLARA, centavos: x.prod.precio_centavos, name: `Clara Pro · plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Clara', RUTA_CLARA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Clara' },
+  return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Clara' },
     titulo: 'Clara: tus tarjetas y tu dinero claros | Gratis con 1 tarjeta', ruta: RUTA_CLARA, imagen: OG_CLARA,
     descripcion: 'Recordatorios del corte y del pago de tu tarjeta, registro de gastos, ¿Me alcanza? y resumen del mes. Gratis con 1 tarjeta, desde 15 años. Pro desde $49 al mes.',
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
+    head: `<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="cl">
 <section class="cl-hero"><div class="marco cl-hero-g">
   <div>
-    <span class="cl-marca"><span class="cl-logo grande">${V}</span>Clara <small>by Vorka</small></span>
-    <h1 class="cl-h1">Tu dinero, <em>claro desde el principio.</em></h1>
+    <span class="cl-marca"><span class="cl-v grande">${V}</span>Clara <small>by Vorka</small></span>
+    <h1 class="cl-h1">Tu dinero, claro. Anota todo <em>en segundos.</em></h1>
     <p class="cl-lead">Clara te avisa cuándo es el corte y hasta cuándo pagar tu tarjeta para no pagar intereses, lleva tus gastos e ingresos y te dice si te alcanza antes de comprar. Para quien empieza con su primera tarjeta o nunca le entendió.</p>
     <div class="cl-ctas"><a class="cl-btn" href="${APP}/entrar">Empieza gratis ${FLECHA}</a><a class="cl-btn ghost" href="#planes">Ver precio</a></div>
     <p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>
@@ -151,84 +165,105 @@ ${await masTienda(env, 'finanzas')}
 }
 
 const CSS = `
-.cl{--cl-tinta:#0b1412;--cl-verde:#0d5c4f;--cl-verde-c:#6cc7ab;--cl-h1:#08413a;--cl-h2:#0d5c4f;--cl-h3:#2f8f76;--cl-crema:#f5f4ef}
-[data-tema="oscuro"] .cl{--cl-verde:#6cc7ab}
-.cl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--cl-verde);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -12px rgba(13,92,79,.7);transition:transform .2s var(--ease),background .2s}
-.cl-btn:hover{transform:translateY(-1px)}.cl-btn svg{width:17px;height:17px}
-.cl-hero .cl-btn:not(.ghost){background:#fff;color:var(--cl-h1)}
-.cl-btn.ghost{background:rgba(255,255,255,.08);color:var(--cl-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}.cl-btn.ghost:hover{background:rgba(255,255,255,.14)}
-.cl-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.cl-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
-/* portada */
-.cl-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;color:var(--cl-crema);
-  background:radial-gradient(60% 80% at 85% 20%,var(--cl-h3) 0%,transparent 60%),linear-gradient(150deg,var(--cl-h1),var(--cl-h2))}
-.cl-hero::after{content:"";position:absolute;right:-6%;bottom:-18%;width:min(60vw,640px);aspect-ratio:1;opacity:.1;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='69 225 940 909'%3E%3Cpath fill='%23fff' d='M69 226H311L652 877L526 1133Z'/%3E%3Cpath fill='%23fff' d='M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z'/%3E%3C/svg%3E") no-repeat center/contain}
-.cl-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.cl-hero-g>*{min-width:0}
-@media(min-width:960px){.cl-hero-g{grid-template-columns:1.1fr .9fr}}
-.cl-marca{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em}.cl-marca small{font-weight:500;font-size:14px;opacity:.7;letter-spacing:0}
-.cl-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--cl-verde);color:#fff}.cl-logo svg{width:15px;height:15px}
-.cl-logo.grande{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--cl-h1)}.cl-logo.grande svg{width:21px;height:21px}
-.cl-h1{font-weight:800;font-size:clamp(42px,6.4vw,78px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:12ch;text-wrap:balance}.cl-h1 em{font-style:normal;color:#c9efe2}
-.cl-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:#fff;max-width:34em}
+/* Clara: blanco primero, tinta para el texto y UN azul para lo que se toca. Verde y coral solo para dinero que entra o sale;
+   ámbar solo para lo que pide atención. En oscuro sigue a las superficies de la tienda. */
+.cl{--cl-fondo:#fff;--cl-sup:#F2F4F7;--cl-borde:#E6E9EE;--cl-tinta:#16181D;--cl-suave:#5B616E;--cl-azul:#1F5FD6;--cl-azul-s:#E8EFFD;--cl-azul-t:#1A50B8;--cl-sobre-azul:#fff;
+  --cl-verde:#16803C;--cl-verde-s:#E6F4EA;--cl-rojo:#B3261E;--cl-rojo-s:#FCE8E6;--cl-ambar:#F2A900;--cl-ambar-s:#FEF3D6;
+  --cl-p-fondo:#fff;--cl-p-caja:#fff;--cl-p-sup:#F2F4F7;--cl-p-borde:#E6E9EE;--cl-p-tinta:#16181D;--cl-p-suave:#5B616E}
+[data-tema="oscuro"] .cl{--cl-fondo:var(--bg);--cl-sup:var(--bg-2);--cl-borde:var(--line);--cl-tinta:var(--fg);--cl-suave:var(--fg-2);--cl-azul:#8DB2F7;--cl-azul-s:rgba(141,178,247,.14);--cl-azul-t:#8DB2F7;--cl-sobre-azul:#0E1A33;
+  --cl-verde:#6FD39B;--cl-verde-s:rgba(111,211,155,.13);--cl-rojo:#FF9A8F;--cl-rojo-s:rgba(255,138,128,.14);--cl-ambar-s:rgba(242,169,0,.16);
+  --cl-p-fondo:#131416;--cl-p-caja:#1E2024;--cl-p-sup:#26292E;--cl-p-borde:#2C2F35;--cl-p-tinta:#F1F2F4;--cl-p-suave:#A7ACB5}
+.cl{--morado:var(--cl-azul-t);--morado-suave:var(--cl-azul-s)}
+.cl-v2{fill:var(--cl-azul)}
+/* secciones compartidas de la tienda (compra, preguntas, más productos) con las superficies de Clara */
+.cl .t-sec{background:var(--cl-fondo)}.cl .t-sec.suave{background:var(--cl-sup)}
+/* en esta página «Entrar» va en tinta (sin el dorado de la tienda) para no sumar otro color junto al azul */
+.nav.t-navs .t-pastilla.t-entrar{background:#16181D;color:#fff;box-shadow:none}
+[data-tema="oscuro"] .nav.t-navs .t-pastilla.t-entrar{background:#F1F2F4;color:#16181D}
+.cl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--cl-azul);color:var(--cl-sobre-azul);font-weight:700;font-size:16px;text-decoration:none;transition:transform .2s var(--ease),background .2s,box-shadow .2s}
+.cl-btn:hover{transform:translateY(-1px);background:color-mix(in srgb,var(--cl-azul) 88%,#000)}.cl-btn svg{width:17px;height:17px}
+[data-tema="oscuro"] .cl-btn:hover{background:color-mix(in srgb,var(--cl-azul) 88%,#fff)}
+.cl-btn.ghost{background:transparent;color:var(--cl-tinta);box-shadow:inset 0 0 0 1.5px var(--cl-borde)}.cl-btn.ghost:hover{background:transparent;box-shadow:inset 0 0 0 1.5px var(--cl-tinta)}
+/* portada: blanca, tipografía en tinta y el celular sobre una superficie gris suave */
+.cl-hero{position:relative;margin-top:-104px;padding:140px 0 26px;background:var(--cl-fondo);color:var(--cl-tinta)}
+.cl-hero-g{display:grid;gap:36px;align-items:center;padding-bottom:30px}.cl-hero-g>*{min-width:0}
+@media(min-width:960px){.cl-hero-g{grid-template-columns:1.08fr .92fr}}
+.cl-marca{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em}.cl-marca small{font-weight:500;font-size:14px;color:var(--cl-suave);letter-spacing:0}
+.cl-v{display:inline-block;width:22px;height:21px;color:var(--cl-tinta);flex:none}.cl-v svg{display:block;width:100%;height:100%}.cl-v.grande{width:32px;height:31px}
+.cl-h1{font-weight:800;font-size:clamp(40px,6vw,74px);line-height:1;letter-spacing:-.05em;margin:24px 0 0;max-width:13ch;text-wrap:balance}.cl-h1 em{font-style:normal;color:var(--cl-azul)}
+.cl-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:var(--cl-suave);max-width:34em}
 .cl-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.cl-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(245,244,239,.8)}
-.cl-chips li{display:inline-flex;align-items:center;gap:7px}.cl-chips svg{width:18px;height:18px;color:#c9efe2}
-.cl-hero .t-nav-tienda{margin-top:8px}.cl-hero .t-nav-tienda a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#F5F4EF}.cl-hero .t-nav-tienda a[aria-current]{background:#fff;border-color:#fff;color:var(--cl-h1)}
+.cl-hero .t-ya{color:var(--cl-suave);opacity:1}.cl-hero .t-ya a{color:var(--cl-azul-t)}
+.cl-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:var(--cl-suave)}
+.cl-chips li{display:inline-flex;align-items:center;gap:7px}.cl-chips svg{width:18px;height:18px;color:var(--cl-tinta)}
+.cl-hero .t-nav-tienda{margin-top:8px}
 .cl-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
-/* el celular con la app */
-.cl-escena{justify-self:center;width:min(100%,340px);padding:10px 0 30px}
-.cl-cel{position:relative;padding:12px;border-radius:52px;background:#0f1715;box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(255,255,255,.12)}
-.cl-isla{position:absolute;top:24px;left:50%;width:90px;height:26px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
-.cl-pant{border-radius:41px;overflow:hidden;background:#0d1211;padding:58px 14px 18px;color:#eef3f1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-.cl-app-top{display:flex;align-items:center;gap:8px;font-size:15px;margin:0 2px 12px}
-.cl-tarj{position:relative;overflow:hidden;border-radius:22px;padding:16px;background:radial-gradient(120% 140% at 100% 0%,var(--cl-h3),transparent 55%),linear-gradient(135deg,#06302a,#0d5c4f)}
-.cl-q{display:flex;justify-content:space-between;gap:10px;align-items:center}.cl-q b{display:block;font-size:14.5px}.cl-q small{display:block;font-size:11.5px;opacity:.75}
-.cl-chip{width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#e6cf96,#a8853f)}
-.cl-rot{display:block;margin-top:16px;font-size:12px;opacity:.85}.cl-saldo{display:block;font-size:31px;letter-spacing:-.045em;font-weight:800;margin-top:2px}
-.cl-uso{height:6px;border-radius:3px;background:rgba(255,255,255,.2);margin-top:14px;overflow:hidden}.cl-uso i{display:block;height:100%;background:#fff;border-radius:3px}
-.cl-ley{display:block;font-size:10.5px;opacity:.8;margin-top:7px}
-.cl-rap{display:flex;justify-content:space-around;margin:16px 0 12px;font-size:10.5px;font-weight:600;text-align:center}
-.cl-rap span{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px}.cl-rap i{width:42px;height:42px;border-radius:50%;background:#18201e}.cl-rap i.pri{background:#3fa98c}
-.cl-movs{border-radius:18px;background:#141b19;padding:2px 12px}.cl-movs div{display:flex;align-items:center;gap:10px;padding:10px 0}.cl-movs div+div{border-top:1px solid #222b28}
-.cl-movs i{width:30px;height:30px;border-radius:50%;background:#17302a;flex:none}.cl-movs span{flex:1;min-width:0}.cl-movs b{display:block;font-size:12.5px}.cl-movs small{display:block;font-size:10.5px;color:#9aa6a2}.cl-movs em{font-style:normal;font-size:12.5px;font-weight:700;color:#6cc7ab}
+/* el celular con la pantalla «Hoy» */
+.cl-escena{display:grid;place-items:center;padding:34px 16px;border-radius:32px;background:var(--cl-sup)}
+.cl-cel{width:min(100%,318px);padding:9px;border-radius:46px;background:#16181D;box-shadow:0 40px 70px -40px rgba(22,24,29,.45),inset 0 0 0 1.5px rgba(255,255,255,.08)}
+[data-tema="oscuro"] .cl-cel{background:#0A0B0D;box-shadow:0 40px 70px -40px rgba(0,0,0,.8),inset 0 0 0 1.5px rgba(255,255,255,.1)}
+.cl-pant{border-radius:38px;overflow:hidden;background:var(--cl-p-fondo);padding:22px 12px 0;color:var(--cl-p-tinta);font-family:Figtree,Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;line-height:1.3}
+.cl-pant b{font-weight:700}.cl-pant em{font-style:normal;color:var(--cl-azul-t);font-weight:600}
+.cl-app-top{display:flex;align-items:center;gap:6px;margin:0 4px 12px}.cl-app-top .cl-v{width:17px;height:16px;color:var(--cl-p-tinta)}.cl-app-top b{font-size:15px;letter-spacing:-.02em}.cl-app-top small{font-size:10px;color:var(--cl-p-suave)}
+.cl-sol{margin-left:auto;width:16px;height:16px;color:var(--cl-p-suave)}.cl-sol svg{width:100%;height:100%}
+.cl-hola{margin:0 4px 9px;font-size:11.5px}
+.cl-prueba{display:flex;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:12px;background:var(--cl-p-sup);font-size:10.5px}
+.cl-caja{margin-top:8px;border-radius:16px;background:var(--cl-p-caja);border:1px solid var(--cl-p-borde)}
+.cl-alc{padding:12px 14px;display:grid;gap:2px}.cl-alc small{color:var(--cl-p-suave);font-size:10.5px}.cl-alc p{margin:0;font-size:12px;color:var(--cl-p-suave);font-weight:600}
+.cl-alc p b{font-size:34px;letter-spacing:-.045em;color:var(--cl-p-tinta);font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}.cl-alc em{margin-top:6px;font-size:11px}
+.cl-prox{padding:11px 12px}.cl-prox-f{display:flex;align-items:center;gap:9px}.cl-prox-f span{flex:1;min-width:0}.cl-prox-f small{display:block;color:var(--cl-p-suave);font-size:9.5px}.cl-prox-f span b{display:block;font-size:12.5px}
+.cl-monto{font-size:12.5px;font-variant-numeric:tabular-nums}
+.cl-ic{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--cl-p-sup);color:var(--cl-p-tinta)}.cl-ic svg{width:15px;height:15px}
+.cl-ic.sale{background:var(--cl-rojo-s);color:var(--cl-rojo)}
+.cl-prox-b{display:flex;gap:6px;margin-top:9px}.cl-prox-b span{padding:6px 12px;border-radius:999px;background:var(--cl-p-sup);font-weight:700;font-size:10.5px}
+.cl-prox-b .pri{background:var(--cl-azul);color:var(--cl-sobre-azul)}
+.cl-ult{display:flex;justify-content:space-between;align-items:baseline;margin:13px 4px 0;font-size:12.5px}.cl-ult em{font-size:10.5px}
+.cl-movs{padding:0 12px}.cl-movs div{display:flex;align-items:center;gap:9px;padding:9px 0}.cl-movs div+div{border-top:1px solid var(--cl-p-borde)}
+.cl-movs span{flex:1;min-width:0}.cl-movs span b{display:block;font-size:12px}.cl-movs small{display:block;font-size:9.5px;color:var(--cl-p-suave);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-movs div>em{color:var(--cl-rojo);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+.cl-acc{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.cl-acc span{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0;border-radius:999px;font-weight:700;font-size:12px;border:1px solid var(--cl-p-borde);background:var(--cl-p-sup)}
+.cl-acc i{font-style:normal;font-size:18px;line-height:1;font-weight:500}.cl-acc .gasto i{color:var(--cl-rojo)}
+.cl-acc .ingreso{background:var(--cl-verde-s);border-color:color-mix(in srgb,var(--cl-verde) 30%,transparent);color:var(--cl-verde)}
+.cl-tabs{display:grid;grid-template-columns:repeat(4,1fr);margin:10px -12px 0;padding:7px 4px 14px;border-top:1px solid var(--cl-p-borde);font-size:9px;color:var(--cl-p-suave);text-align:center}
+.cl-tabs span{display:grid;justify-items:center;gap:3px}.cl-tabs i{display:grid;place-items:center;width:38px;height:22px;border-radius:999px}.cl-tabs svg{width:15px;height:15px}
+.cl-tabs .act{color:var(--cl-p-tinta);font-weight:700}.cl-tabs .act i{background:var(--cl-azul-s);color:var(--cl-azul)}
 /* secciones */
-.cl-sec{padding:clamp(56px,8vw,104px) 0}.cl-sec.suave{background:var(--bg-2)}
-.cl-osc{background:var(--cl-tinta);color:var(--cl-crema)}
+.cl-sec{padding:clamp(56px,8vw,104px) 0;background:var(--cl-fondo)}.cl-sec.suave,.cl-osc{background:var(--cl-sup)}
 .cl-cab{max-width:700px;margin:0 auto 38px;text-align:center}.cl-cab.izq{text-align:left;margin:0}
-.cl-cab a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-.cl-et{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cl-verde)}.cl-osc .cl-et{color:var(--cl-verde-c)}
-.cl-et::before{content:"";width:4px;height:14px;border-radius:1px;background:currentColor;transform:skewX(-28deg)}
-.cl-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.03;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.cl-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.cl-osc .cl-cab p{color:rgba(245,244,239,.76)}
+.cl-cab a{color:var(--cl-azul-t);text-decoration:underline;text-underline-offset:3px}
+.cl-et{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cl-suave)}
+.cl-et::before{content:"";width:4px;height:14px;border-radius:1px;background:var(--cl-azul);transform:skewX(-28deg)}
+.cl-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.03;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance;color:var(--cl-tinta)}
+.cl-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--cl-suave)}
 .cl-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
-.cl-pasos li{padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line)}
-.cl-num{display:block;font-weight:800;font-size:15px;color:var(--cl-verde);letter-spacing:.04em}.cl-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.cl-pasos p{margin:6px 0 0;color:var(--fg-2);line-height:1.5}
+.cl-pasos li{padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--cl-borde)}
+.cl-num{display:block;font-weight:700;font-size:15px;color:var(--cl-suave);letter-spacing:.04em;font-variant-numeric:tabular-nums}.cl-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.cl-pasos p{margin:6px 0 0;color:var(--cl-suave);line-height:1.5}
 .cl-dos{display:grid;gap:40px;align-items:center}@media(min-width:980px){.cl-dos{grid-template-columns:1fr 1fr}}
-.cl-linea-t{list-style:none;margin:0;padding:24px;border-radius:26px;background:#121c19;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);display:grid;gap:4px}
-.cl-linea-t li{position:relative;padding:12px 0 12px 28px}.cl-linea-t li+li{border-top:1px solid rgba(255,255,255,.08)}
-.cl-linea-t li::before{content:"";position:absolute;left:4px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--cl-verde-c)}
-.cl-linea-t b{display:block;font-size:17px}.cl-linea-t span{display:block;margin-top:2px;font-size:14.5px;color:rgba(245,244,239,.7)}
-.cl-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
-.cl-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
-.cl-ben svg{width:42px;height:42px;padding:10px;border-radius:50%;background:color-mix(in srgb,var(--cl-verde) 12%,transparent);color:var(--cl-verde)}
-.cl-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.cl-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
-.cl-aviso{max-width:760px;margin:28px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
+.cl-linea-t{list-style:none;margin:0;padding:10px 24px;border-radius:24px;background:var(--card);border:1px solid var(--cl-borde);display:grid}
+.cl-linea-t li{position:relative;padding:14px 0 14px 28px}.cl-linea-t li+li{border-top:1px solid var(--cl-borde)}
+.cl-linea-t li::before{content:"";position:absolute;left:3px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--cl-ambar);box-shadow:0 0 0 4px var(--cl-ambar-s)}
+.cl-linea-t b{display:block;font-size:17px}.cl-linea-t span{display:block;margin-top:2px;font-size:14.5px;color:var(--cl-suave)}
+.cl-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.cl-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--cl-borde)}
+.cl-ben svg{width:42px;height:42px;padding:10px;border-radius:12px;background:var(--cl-sup);color:var(--cl-tinta)}
+.cl-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.cl-ben p{margin:6px 0 0;color:var(--cl-suave);font-size:15px;line-height:1.5}
+.cl-aviso{max-width:760px;margin:28px auto 0;text-align:center;color:var(--cl-suave);font-size:15px;line-height:1.55}
 /* precio */
 .cl-planes{display:grid;gap:18px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
-.cl-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:28px;display:grid;gap:8px}
-.cl-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.cl-plan{position:relative;background:var(--card);border:1.5px solid var(--cl-borde);border-radius:28px;padding:28px;display:grid;gap:8px}
+.cl-sello{position:absolute;top:-13px;left:24px;background:var(--cl-tinta);color:var(--cl-fondo);font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px}
 .cl-elige{border:0;padding:0;margin:0 0 6px}.cl-elige legend{font-weight:650;font-size:14px;margin-bottom:8px;padding:0}
-.cl-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}
-.cl-op input{margin-top:3px;accent-color:var(--cl-verde)}.cl-op b{display:block;font-size:15px}.cl-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
-.cl-op:has(input:checked){border-color:var(--cl-verde);background:color-mix(in srgb,var(--cl-verde) 7%,transparent)}
-.cl-plan.rec{border-color:var(--cl-verde);box-shadow:0 30px 60px -36px rgba(13,92,79,.55)}
-.cl-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.cl-para{color:var(--fg-2);margin:0}
-.cl-precio{margin:6px 0 0}.cl-precio b{font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.cl-precio small{color:var(--fg-2)}
-.cl-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.cl-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cl-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--cl-verde)}
-.cl-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
+.cl-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--cl-borde);margin-bottom:8px;cursor:pointer}
+.cl-op input{margin-top:3px;accent-color:var(--cl-azul)}.cl-op b{display:block;font-size:15px}.cl-op small{display:block;color:var(--cl-suave);font-size:13px;margin-top:2px}
+.cl-op:has(input:checked){border-color:var(--cl-azul);background:var(--cl-azul-s)}
+.cl-plan.rec{border-color:var(--cl-azul);box-shadow:0 30px 60px -40px rgba(31,95,214,.45)}
+.cl-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.cl-para{color:var(--cl-suave);margin:0}
+.cl-precio{margin:6px 0 0}.cl-precio b{font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.cl-precio small{color:var(--cl-suave)}
+.cl-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.cl-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cl-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--cl-tinta)}
+.cl-nota{color:var(--cl-suave);font-size:15px;margin-top:14px}.cl-nota a{color:var(--cl-azul-t)}
 .cl-total{margin:4px 0 12px;font-size:16px}.cl-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.cl #form-clara .btn.acento{background:var(--cl-verde);color:#fff;box-shadow:0 12px 28px -12px rgba(13,92,79,.7)}
-/* en oscuro el verde se aclara: el texto del botón pasa a tinta oscura para seguir en ≥ 4.5:1 */
-[data-tema="oscuro"] .cl #form-clara .btn.acento{color:#06120f}`;
+.cl #form-clara .btn.acento{background:var(--cl-azul);color:var(--cl-sobre-azul);box-shadow:none}
+.cl #form-clara a{color:var(--cl-azul-t)}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-clara'); if(!f||!window.fetch) return;

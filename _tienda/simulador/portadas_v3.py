@@ -129,13 +129,9 @@ def ui_ruta():
     <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">El problema</div><div style="font-size:14px;opacity:.75">Distinguir el problema de sus síntomas y probarlo con datos</div></div>
   {nodo('hecho', 'Problema, síntoma o solución disfrazada', -40)}{nodo('ahora', 'El árbol de problemas', 40)}{nodo('cerrado', '¿A quién le pasa?', -20)}</div>"""
 
-# Clara: captura REAL de la app (clara.vorka.mx, «Hoy» en modo claro, datos de prueba), copiada de clara/docs/capturas/ a
-# simulador/capturas/. Si la app cambia, reemplaza la captura y vuelve a correr con SOLO=clara.
-def ui_clara():
-    import base64
-    b64 = base64.b64encode((AQUI / 'capturas' / 'clara-hoy-claro.jpg').read_bytes()).decode()
-    return f"""<div style="position:absolute;inset:0;background:#F5F4F0"><img src="data:image/jpeg;base64,{b64}" style="position:absolute;top:46px;left:0;width:100%;display:block"></div>
-  <div class="isla" style="z-index:3"></div>"""
+# Clara ya NO sale de este script: su portada (clara-portada.webp, 1600×1200) y su imagen para compartir (clara-og.jpg,
+# 1200×630) se hacen con el diseño final de la app (blanco, tinta y un solo azul) y se copian tal cual a assets/tienda/v3/.
+# Si la app cambia, reemplaza esos dos archivos (mismos nombres: la D1 y /tienda/clara/ los usan) en vez de correr esto.
 
 # Test vocacional: el ejemplo de resultado que muestra su página (/test-vocacional/): barras RIASEC y el código SAI
 def ui_vocacional():
@@ -238,14 +234,6 @@ P = {
   'idea-negocio': dict(**OSCURO, fondo='linear-gradient(140deg,#1E0B3D 0%,#3B1A78 55%,#5B2A9E 100%)', acento='#D8C4FF', pre='Kit', nombre='Idea → Negocio',
     tag='Emprendimiento · Nivel 2', beneficio='Valida tu idea con clientes reales y haz tus números.', datos=['Workbook PDF · 32 págs.', '2 Excel', 'Incluye Nivel 1'],
     hojas=('#5B2A9E', 'Idea → Negocio', ['Entrevistas y preventa', 'Costos y precio', 'Punto de equilibrio', 'Plan de 30 días'])),
-  # Clara: la única app en fondo claro. Crema y verde profundo de su marca, con oro suave de acento (sin que todo sea verde:
-  # Agenda y Cuentas ya lo son). El celular lleva la captura REAL de la app sobre un círculo verde profundo.
-  'clara': dict(texto='#12322C', suave='rgba(18,50,44,.72)', chipf='rgba(13,92,79,.09)', tagf='rgba(200,164,92,.24)', h1='#0D5C4F', punto='#C8A45C',
-    fondo='linear-gradient(150deg,#FBFAF6 0%,#F5F4EF 48%,#EFE6D2 100%)', acento='#E9C987', pre='', nombre='Clara',
-    tag='Finanzas personales · desde 15 años', beneficio='Tus tarjetas y tu dinero, claros desde el principio.', datos=['Avisos de corte y pago', '¿Me alcanza?', 'Gratis con 1 tarjeta'], ui=ui_clara, og=True,
-    deco='<div style="position:absolute;left:930px;top:170px;width:820px;height:820px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#1B7A67 0%,#0D5C4F 48%,#06302A 100%)"></div>'
-         '<div style="position:absolute;left:1380px;top:110px;width:120px;height:120px;border-radius:50%;background:#E9C987"></div>',
-    deco_og='<div style="position:absolute;left:700px;top:40px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#1B7A67 0%,#0D5C4F 48%,#06302A 100%)"></div>'),
   # Test vocacional: lavanda claro con tinta ciruela (el morado de su página), sin repetir los morados oscuros de Cupo y Ruta
   'test-vocacional': dict(**CLARO, fondo='linear-gradient(140deg,#F3EDFA 0%,#E2D3F4 55%,#CDB4EE 100%)', acento='#B98AE6', h1='#5B1F7A', punto='#5B1F7A', pre='Test', nombre='Vocacional', px=150, og_px=104,
     tag='Orientación vocacional', beneficio='Descubre en 10 minutos qué carreras van contigo.', datos=['48 preguntas', 'Perfil básico gratis', '20 carreras afines'], ui=ui_vocacional, og=True),
@@ -261,7 +249,7 @@ def marca(tam, p):
     sub = 'rgba(26,20,5,.55)' if p['texto'] != '#fff' else 'rgba(255,255,255,.55)'
     return f'<span class="marca" style="font-size:{tam}px;color:{p["texto"]}"><span class="v" style="width:{tam*1.25}px;height:{tam*1.2}px;color:{p.get("h1") or (p["acento"] if p["texto"] == "#fff" else p["texto"])}">{V}</span>Vorka <small style="color:{sub}">México</small></span>'
 
-# Color del nombre grande: el acento sobre fondo oscuro, la tinta sobre fondo claro (o el propio de la marca: Clara, su verde)
+# Color del nombre grande: el acento sobre fondo oscuro, la tinta sobre fondo claro (o el propio de la marca, si lo trae en h1)
 def color_h1(p):
     return p.get('h1') or (p['acento'] if p['texto'] == '#fff' else p['texto'])
 
