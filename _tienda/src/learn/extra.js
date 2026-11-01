@@ -13,7 +13,7 @@ import { SITIO, RUTA_BUSCAR, RUTA_ACERCA, RUTA_FEED, ld, ORG, LEARN, SITIO_LEARN
 import { etiqueta } from './tarjetas.js';
 
 export { RUTA_FEED };
-export const CORREO = 'vorkamexico@gmail.com';   // el mismo del pie de todo el sitio
+export const CORREO = 'hola@vorka.mx';   // el mismo del pie de todo el sitio
 
 // ---------- búsqueda ----------
 const VACIAS = new Set('a al como con cual cuales de del el en es esta este la las lo los me mi para por que se si sin su sus te tu un una uno y o'.split(' '));
