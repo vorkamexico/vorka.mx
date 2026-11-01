@@ -13,7 +13,7 @@
 //  - Un solo llamado final por artículo: el programa de creadores de la tienda de Vorka, descrito con lo que hace HOY
 //    (src/creadores.js y legal/creadores/). Lo que no hace (suscripciones) se dice.
 //  - La tienda de Vorka aparece en el cuerpo de UNA sola guía (dónde vender), en un bloque separado y marcado como de
-//    Vorka (TIENDA_VORKA, abajo). Cuando la tienda acepte suscripciones, se actualizan TIENDA_VORKA y LLAMADO.
+//    Vorka (TIENDA_VORKA, abajo). Desde nov 2026 la tienda también vende suscripciones de creadores (ver creadores.js); si cambian sus reglas, se actualizan TIENDA_VORKA, TIENDA_VORKA_FAQ y LLAMADO.
 //  - Aviso al final: información general; no es asesoría legal, fiscal ni contable.
 import { p, ul, ol, tabla, nota, caja, a } from './learn/piezas.js';
 import { crearTema, llamadoFinal } from './learn/tema.js';
@@ -80,18 +80,19 @@ ${ul([
   '<b>Comisión:</b> te quedas con el 80 % de cada venta, menos la comisión del procesador de pagos (Vorka cobra 20 %, salvo acuerdo distinto).',
   '<b>Pagos:</b> con Stripe, 7 días después de cada venta (al terminar el plazo de reembolso), a tu cuenta bancaria. Tus compradores pagan con tarjeta, OXXO o SPEI.',
   '<b>Revisión:</b> Vorka aprueba tu solicitud y revisa cada producto antes de publicarlo. Tú conservas la propiedad de lo que vendes.',
-  '<b>Lo que no hace hoy:</b> no cobra suscripciones ni aloja tu app.',
+  '<b>Apps y SaaS por suscripción:</b> también puedes vender tu app con cobro mensual o anual. Tú la alojas y das el soporte; la tienda cobra cada mes o cada año, tu app consulta con una llave quién está al corriente y recibe un aviso firmado en cada alta, renovación, pago fallido o cancelación. Vorka se queda con al menos 20 % de cada cobro, también en las renovaciones, y Stripe te paga tu parte 7 días después de cada cobro mensual (11 en los anuales).',
+  '<b>Lo que no hace:</b> no aloja tu app ni la programa por ti.',
 ])}
-${p('¿Tu app se cobra por suscripción? Escríbenos a hola@vorka.mx.')}
+${p('Los detalles técnicos para conectar tu app están en vorka.mx/creadores/docs, y las reglas completas en los términos para creadores.')}
 </div>`;
 
 // La pregunta frecuente de «dónde vender» sobre la tienda de Vorka (se actualiza junto con TIENDA_VORKA)
-export const TIENDA_VORKA_FAQ = { p: '¿Puedo vender mi app en la tienda de Vorka México?', r: 'Hoy la tienda de Vorka acepta productos digitales que se entregan como archivo, como plantillas, guías, kits o calculadoras, con revisión previa, precio mínimo de $20 MXN y 80 % para el creador menos la comisión del procesador de pagos. Todavía no cobra suscripciones; si tu app funciona así, escribe a hola@vorka.mx.' };
+export const TIENDA_VORKA_FAQ = { p: '¿Puedo vender mi app en la tienda de Vorka México?', r: 'Hoy la tienda de Vorka acepta productos digitales que se entregan como archivo, como plantillas, guías, kits o calculadoras, con revisión previa, precio mínimo de $20 MXN y 80 % para el creador menos la comisión del procesador de pagos. También vende apps y SaaS por suscripción mensual o anual: tú alojas la app, la tienda cobra y Vorka se queda con al menos 20 % de cada cobro, incluidas las renovaciones.' };
 
-// El único llamado final (el mismo en las siete guías): el programa de creadores, descrito con lo que hace hoy.
+// El único llamado final (el mismo en las siete guías): el programa de creadores, descrito con lo que hace hoy (descargables y, desde nov 2026, suscripciones).
 const LLAMADO = {
   creadores: llamadoFinal('Vende en la tienda de Vorka', '¿Ya tienes algo listo para vender?',
-    'Recuerda que puedes publicarlo en la tienda de Vorka México (vorka.mx/tienda), que ya recibe visitas. Hoy acepta productos digitales que se entregan como archivo (plantillas, guías, kits, calculadoras): tú pones el precio, te quedas con el 80 % menos la comisión del procesador de pagos y Stripe te paga 7 días después de cada venta. Cada producto se revisa antes de publicarse. Todavía no cobra suscripciones; si tu app funciona así, escríbenos a hola@vorka.mx.',
+    'Recuerda que puedes publicarlo en la tienda de Vorka México (vorka.mx/tienda), que ya recibe visitas. Hoy acepta productos digitales que se entregan como archivo (plantillas, guías, kits, calculadoras): tú pones el precio, te quedas con el 80 % menos la comisión del procesador de pagos y Stripe te paga 7 días después de cada venta. Si tu app se cobra cada mes o cada año, también: la tienda cobra la suscripción y Vorka se queda con al menos 20 % de cada cobro. Cada producto se revisa antes de publicarse.',
     '/creadores', 'Conoce el programa para creadores'),
 };
 

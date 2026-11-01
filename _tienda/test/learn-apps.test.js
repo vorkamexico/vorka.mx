@@ -1,7 +1,7 @@
 // Vorka Learn › Crea tu app (/learn/apps/): las mismas verificaciones que las otras secciones de tema
 // (test/learn-temas.test.js): SEO, JSON-LD, fuentes con enlace, «Actualizado», un solo llamado final, ejemplos marcados,
 // compartir, «Sigue leyendo», enlaces internos, índice, portada, búsqueda, RSS, sitemap y anuncios. Además:
-//  - el llamado final lleva al programa para creadores y dice lo que la tienda hace HOY (y que no cobra suscripciones);
+//  - el llamado final lleva al programa para creadores y dice lo que la tienda hace HOY (descargables y suscripciones con al menos 20 % para Vorka en cada cobro);
 //  - la tienda de Vorka solo aparece en el cuerpo de la guía «dónde vender», dentro de su bloque marcado (TIENDA_VORKA);
 //  - la aritmética de los ejemplos cuadra.
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -99,7 +99,7 @@ describe('Vorka Learn › Crea tu app', () => {
       expect(finales[0]).toContain('href="/creadores"');
       expect(main.indexOf('class="lr-final"')).toBeGreaterThan(main.indexOf('id="fuentes"'));
       // Lo que dice el programa hoy (src/creadores.js, legal/creadores/) y lo que no hace
-      for (const re of [/vorka\.mx\/tienda/, /80 %/, /7 días/, /se revisa/, /Todavía no cobra suscripciones/, /hola@vorka\.mx/]) expect(finales[0], `${x.slug} ${re}`).toMatch(re);
+      for (const re of [/vorka\.mx\/tienda/, /80 %/, /7 días/, /se revisa/, /cada mes o cada año/, /al menos 20 % de cada cobro/]) expect(finales[0], `${x.slug} ${re}`).toMatch(re);
       expect(finales[0]).not.toMatch(/\$\s?\d|garantiza|miles de|visitas al mes/i);
     }
     expect((await pedir('/creadores')).status).toBe(200);
@@ -119,7 +119,7 @@ describe('Vorka Learn › Crea tu app', () => {
     }
     // Lo que dice el bloque sale de los términos para creadores (legal/creadores/) y de src/creadores.js
     for (const re of [/quien publica esta guía/, /mínimo de \$20 MXN/, /80 %/, /20 %, salvo acuerdo distinto/, /7 días después de cada venta/, /tarjeta, OXXO o SPEI/,
-      /revisa cada producto/, /no cobra suscripciones/, /hola@vorka\.mx/]) expect(TIENDA_VORKA).toMatch(re);
+      /revisa cada producto/, /por suscripción/, /al menos 20 % de cada cobro/, /creadores\/docs/]) expect(TIENDA_VORKA).toMatch(re);
     expect(TIENDA_VORKA).not.toMatch(/\d[\d,.]*\s*(visitas|visitantes|usuarios)/i);
   });
 
