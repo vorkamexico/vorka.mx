@@ -11,6 +11,7 @@
 // productos de Vorka en puntos, según tu nivel del semestre (10% a 30%, ver puntos-reglas.js). +10 puntos porcentuales
 // (tope 40%) si la compra incluye un producto con promoción vigente o un producto que tú sugeriste y el equipo aceptó.
 // Comprarte a ti mismo no cuenta. Las renovaciones de suscripciones dan puntos hasta la factura 12 (no suben de nivel).
+// Equipo de Vorka en suscripciones: elige % de su nivel una vez o 5 % recurrente en cada pago (puntos-reglas.js › PCT_RECURRENTE).
 // 1 punto = $1 MXN, se canjean en cualquier producto de la tienda; siempre se cobra al menos $10 (mínimo de la pasarela).
 // Si una compra se reembolsa, sus puntos se revierten exactamente (y los que se usaron en ella, regresan).
 // Transferencia a cuenta: solo si el equipo la habilitó para esa persona (puntos_cuentas.puede_retirar); SPEI manual,
@@ -23,9 +24,9 @@ import { FLECHA } from './marco.generado.js';
 import { enviar, marco, boton, P } from './correo.js';
 import { dentroDelLimite, VENDIBLE, productoPorSlug } from './modelo.js';
 import { resolverDescuento, afiliado, normalizar, duracionDe, PCT_REFERIDO, lineaCompra, enAlcance } from './descuentos.js';
-import { suscripcionDe } from './suscripciones.js';
+import { suscripcionDe, suscripcionDeOrden } from './suscripciones.js';
 import { avisar, rutasPush } from './puntos-push.js';
-import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO, FACTURAS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
+import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO, FACTURAS_SUSCRIPCION, PCT_RECURRENTE, MODOS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
 import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } from './puntos-app.js';
 import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
 
@@ -149,6 +150,16 @@ export async function puntosAlPagar(env, orderId) {
   if (!base) return;   // solo productos de creadores: no dan puntos
   const m = await multiplicadorDe(env, o, o.ref_email);
   const pagada = o.paid_at || new Date().toISOString();
+  // Suscripción vendida por alguien del equipo: se fija su modo en la orden (una sola vez) y, si es recurrente, 5 % fijo
+  const modo = await modoDeVenta(env, o);
+  if (modo === 'recurrente') {
+    const r = await insertarGanado(env, { email: o.ref_email, order_id: o.id, base, pagada, pctFijo: PCT_RECURRENTE, nota: `Suscripción con tu liga · ${PCT_RECURRENTE} % recurrente${m.producto ? ` · ${m.producto}` : ''}` });
+    if (r.meta.changes) {
+      const g = await one(env, "SELECT puntos, pct FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
+      await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: m.producto, orderId: o.id });
+    }
+    return;
+  }
   const nota = m.mult > 1 ? `Puntos extra${m.motivo === 'sugerencia' ? ' por tu sugerencia' : ''} · ${m.producto}` : `Compra con tu liga${m.producto ? ` · ${m.producto}` : ''}`;
   const r = await insertarGanado(env, { email: o.ref_email, order_id: o.id, base, extra: m.mult > 1, pagada, cuenta: true,
     nota, product_id: m.product_id, multiplicador: m.mult, motivo: m.motivo });
@@ -156,6 +167,32 @@ export async function puntosAlPagar(env, orderId) {
     const g = await one(env, "SELECT puntos, pct FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
     await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: m.mult, motivo: m.motivo, producto: m.producto, orderId: o.id });
   }
+}
+
+// Modo de puntos de una suscripción vendida por alguien del equipo: el de su cuenta al pagarse, guardado en la orden
+// (orders.ref_modo) para que las renovaciones sigan igual aunque después cambie su preferencia. null = regla de antes.
+async function modoDeVenta(env, o) {
+  if (o.ref_modo) return o.ref_modo;
+  const cta = await one(env, 'SELECT equipo, modo_suscripcion FROM puntos_cuentas WHERE email = ?', o.ref_email);
+  if (cta?.equipo !== 1) return null;
+  const items = await all(env, 'SELECT product_id FROM order_items WHERE order_id = ?', o.id);
+  if (!(await suscripcionDeOrden(env, { items }))) return null;
+  const modo = MODOS_SUSCRIPCION.includes(cta.modo_suscripcion) ? cta.modo_suscripcion : 'recurrente';
+  await run(env, 'UPDATE orders SET ref_modo = ? WHERE id = ? AND ref_modo IS NULL', modo, o.id);
+  return (await one(env, 'SELECT ref_modo FROM orders WHERE id = ?', o.id)).ref_modo;
+}
+
+// Preferencia del equipo para sus próximas ventas de suscripciones (Vorka OS › Mi credencial)
+export async function modoSuscripcion(env, email, nuevo = null) {
+  const e = String(email || '').trim().toLowerCase();
+  if (!e.includes('@')) return null;
+  await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)', e);
+  if (nuevo != null) {
+    if (!MODOS_SUSCRIPCION.includes(nuevo)) return { ok: false, error: 'Elige una opción válida.' };
+    await run(env, 'UPDATE puntos_cuentas SET modo_suscripcion = ? WHERE email = ?', nuevo, e);
+  }
+  const c = await one(env, 'SELECT modo_suscripcion, equipo FROM puntos_cuentas WHERE email = ?', e);
+  return { ok: true, modo: c.modo_suscripcion, equipo: c.equipo === 1, pct_recurrente: PCT_RECURRENTE };
 }
 
 // Base de una orden: lo efectivamente cobrado de productos de Vorka (neto de descuentos, IVA incluido, antes de la
@@ -173,6 +210,11 @@ export async function baseDeOrden(env, o) {
 // o por `clave` (renovaciones). cuenta: false = renovación (usa el % del nivel, pero no sube de nivel).
 async function insertarGanado(env, v) {
   const sem = semestreMx(v.pagada);
+  // % fijo (5 % recurrente del equipo en suscripciones): sin nivel, extra ni ×1.5. La venta sí cuenta para su nivel.
+  if (v.pctFijo != null)
+    return run(env, `INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota, product_id, multiplicador, motivo, base_centavos, pct, semestre, clave, suscripcion_id, factor)
+      VALUES (?, 'ganado', ?, ?, ?, NULL, 1, 'recurrente', ?, ?, ?, ?, ?, 1)`,
+      v.email, Math.round(v.base / 100 * v.pctFijo / 100), v.order_id ?? null, String(v.nota || '').slice(0, 160), v.base, v.pctFijo, sem.id, v.clave ?? null, v.suscripcion_id ?? null);
   const niveles = [...NIVELES].sort((a, b) => b.min - a.min);
   const caso = `(CASE ${niveles.map(() => 'WHEN x.n >= ? THEN ?').join(' ')} ELSE ? END)`;
   const pc = [...niveles.flatMap(n => [n.min, n.pct]), NIVELES[0].pct];
@@ -194,10 +236,23 @@ export async function puntosFactura(env, f, sub) {
   if (f.billing_reason === 'subscription_create') return null;   // la factura 1 es la compra: ya dio puntos con la orden
   const orderId = sub?.metadata?.order_id;
   if (!orderId) return null;
-  const o = await one(env, "SELECT o.id, o.email, a.email ref_email, a.tipo ref_tipo, (SELECT nombre FROM order_items WHERE order_id = o.id ORDER BY id LIMIT 1) producto FROM orders o JOIN affiliates a ON a.code = o.ref_code WHERE o.id = ?", orderId);
+  const o = await one(env, "SELECT o.id, o.email, o.ref_modo, a.email ref_email, a.tipo ref_tipo, (SELECT nombre FROM order_items WHERE order_id = o.id ORDER BY id LIMIT 1) producto FROM orders o JOIN affiliates a ON a.code = o.ref_code WHERE o.id = ?", orderId);
   if (!o || o.ref_tipo !== 'puntos' || !o.ref_email || o.ref_email === o.email) return null;
   const previas = (await one(env, "SELECT COUNT(*) n FROM puntos_movimientos WHERE suscripcion_id = ? AND tipo = 'ganado' AND clave != ?", sub.id, `factura:${f.id}`)).n;
   const numero = 2 + previas;
+  // Equipo: 'unico' ya cobró todo en el primer pago; 'recurrente' = 5 % de cada pago, sin límite, mientras siga en el equipo
+  if (o.ref_modo === 'unico') return null;
+  if (o.ref_modo === 'recurrente') {
+    if ((await one(env, 'SELECT equipo FROM puntos_cuentas WHERE email = ?', o.ref_email))?.equipo !== 1) return null;
+    const pagadaR = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
+    const rr = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, pagada: pagadaR, pctFijo: PCT_RECURRENTE,
+      nota: `${o.producto || 'Suscripción'} · pago ${numero} · ${PCT_RECURRENTE} % recurrente` });
+    if (rr.meta.changes) {
+      const g = await one(env, 'SELECT puntos, pct FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
+      await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
+    }
+    return rr;
+  }
   if (numero > FACTURAS_SUSCRIPCION) return null;
   const pagada = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
   const r = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, extra: false, pagada,

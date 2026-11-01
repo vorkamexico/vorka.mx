@@ -30,7 +30,7 @@ import { paginaRuta } from './ruta.js';
 import { paginaLiderazgo } from './liderazgo.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
-import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo } from './puntos.js';
+import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo, modoSuscripcion } from './puntos.js';
 import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codigo-publico.js';
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
@@ -161,6 +161,8 @@ export class Admin extends WorkerEntrypoint {
   ventasVendedor(email, limite) { return ventasVendedor(this.env, email, limite); }
   // Ventas con código del equipo: avisos al momento y tablero del mes en Vorka OS (sin datos de quien compró)
   ventasEquipo(f) { return ventasEquipo(this.env, f); }
+  // Equipo: puntos en suscripciones, % de su nivel una vez o 5 % recurrente (nuevo = 'unico' | 'recurrente' para cambiarla)
+  modoSuscripcion(email, nuevo) { return modoSuscripcion(this.env, email, nuevo ?? null); }
   // Página pública vorka.mx/equipo/<código> (opcional, la prende cada persona en Vorka OS › Ventas › Mi tarjeta)
   async guardarPerfil(email, datos) {
     try { return await guardarPerfil(this.env, email, datos); } catch (e) { return { ok: false, error: e.message }; }
