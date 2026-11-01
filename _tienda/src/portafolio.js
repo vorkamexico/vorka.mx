@@ -1,6 +1,7 @@
 // Portafolio: cada línea de producto con lo que sirve para decidir si se escala, se valida o se congela.
 // Solo por RPC desde Vorka OS (Tienda › Portafolio, rol Ejecutivo). Vorka OS suma el uso de sus apps y el trabajo en código.
 // Ventas sin regalos, cortesías ni pruebas internas: correos @vorka.mx, con "prueba", o los que Vorka OS mande en `internos`.
+// El ingreso es lo cobrado (con descuentos), no el precio de lista.
 import { all } from './util.js';
 
 // Línea → productos (por id). El orden es el de la pantalla; lo que no entre en ninguna cae en "otros".
@@ -60,15 +61,20 @@ export async function portafolio(env, { internos = [], dias = 30 } = {}) {
   }
   for (const e of eventos) { const l = L[lineaDe(e.id)]; l.vistas += e.vistas || 0; l.checkouts += e.checkouts || 0; }
 
+  // Lo cobrado de verdad (con descuentos y cupones): el total de la orden se reparte entre sus productos según su precio de lista
+  const listaOrden = {};
+  for (const o of ordenes) listaOrden[o.id] = (listaOrden[o.id] || 0) + o.monto_item;
+  const cobrado = o => listaOrden[o.id] ? Math.round(o.monto_centavos * o.monto_item / listaOrden[o.id]) : 0;
+
   // Ventas: una orden cuenta una vez por línea (aunque lleve dos productos de la misma)
   const vistas = new Set(), compro = {};
   for (const o of ordenes) {
     if (o.estado !== 'paid' || esInterno(o.email, internos)) continue;
-    const clave = lineaDe(o.product_id), l = L[clave], k = `${clave}|${o.id}`, correo = o.email.toLowerCase();
+    const clave = lineaDe(o.product_id), l = L[clave], k = `${clave}|${o.id}`, correo = o.email.toLowerCase(), monto = cobrado(o);
     (compro[clave] ||= {})[correo] = o.paid_at > (compro[clave][correo] || '') ? o.paid_at : compro[clave][correo];
-    l.monto_total_centavos += o.monto_item;
-    if (o.paid_at >= desde) l.monto_centavos += o.monto_item;
-    else if (o.paid_at >= previo) l.monto_previo_centavos += o.monto_item;
+    l.monto_total_centavos += monto;
+    if (o.paid_at >= desde) l.monto_centavos += monto;
+    else if (o.paid_at >= previo) l.monto_previo_centavos += monto;
     if (vistas.has(k)) continue;
     vistas.add(k);
     l.ventas_total++;
