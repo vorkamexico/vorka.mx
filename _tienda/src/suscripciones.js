@@ -7,6 +7,9 @@
 //   (MRR y estados para Diversificación).
 // - Paquetes: una sola suscripción que abre varias apps con el mismo correo (Agenda + Vuelve). Se guarda con su propia app
 //   ('agenda-vuelve') y cuenta como suscripción de cada una (ver PAQUETES y appsQueCubren).
+// - Cortesías: un acceso regalado desde Vorka OS (Tienda › Regalar) a un plan de suscripción es una orden de $0 (proveedor
+//   'cortesia', regalo = 0, o el canje de una liga de cortesía) y NO crea nada en Stripe. suscripcionApp la toma en cuenta
+//   cuando no hay suscripción vigente en Stripe (ver cortesiaApp): dura cantidad × el intervalo del plan desde que se dio.
 import { one, all, run, ahoraISO } from './util.js';
 import { llamar } from './pagos/stripe.js';
 
@@ -51,11 +54,56 @@ export async function suscripcionDeOrden(env, orden) {
   return null;
 }
 
-// La suscripción vigente de un correo para una app: la suya o la de un paquete que la incluye
+// La suscripción vigente EN STRIPE de un correo para una app: la suya o la de un paquete que la incluye. No cuenta cortesías a
+// propósito: quien usa esto necesita una suscripción real (no comprar dos veces, cambiar complementos, dar crédito, cancelar).
 export function vigente(env, email, app) {
   const x = enApps(app);
   return one(env, `SELECT * FROM suscripciones WHERE email = ? AND ${x.sql} AND estado IN (${VIGENTES.map(() => '?').join(',')}) ORDER BY periodo_fin DESC LIMIT 1`,
     String(email || '').trim().toLowerCase(), ...x.a, ...VIGENTES);
+}
+
+// ---------- cortesías de apps por suscripción ----------
+// Fin del acceso: n periodos (meses o años) desde que se dio. Si el día no existe en el mes final (31 → febrero), el último del mes.
+export function finCortesia(desde, intervalo, n = 1) {
+  const d = new Date(desde), dia = d.getUTCDate(), meses = (intervalo === 'year' ? 12 : 1) * Math.max(1, Math.trunc(Number(n) || 1));
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() + meses);
+  d.setUTCDate(Math.min(dia, new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate()));
+  return d.toISOString();
+}
+const fechaMx = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'long', year: 'numeric' });
+
+// Órdenes de cortesía pagadas (no quitadas) de planes de suscripción de esas apps; sin correo, las de todos (para el resumen).
+// Cuentan las enviadas directo a un correo y los canjes de ligas de cortesía (las suscripciones no se pueden comprar para regalar,
+// así que un canje de un plan de suscripción siempre viene de una cortesía; igual se revisa).
+async function filasCortesia(env, apps, email = null) {
+  const filas = await all(env, `SELECT o.id, o.email, COALESCE(o.paid_at, o.created_at) desde, i.cantidad, i.intervalo, p.contenido
+    FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
+    WHERE o.estado = 'paid' AND o.regalo = 0 AND o.monto_centavos = 0${email ? ' AND lower(o.email) = ?' : ''}
+      AND (o.proveedor = 'cortesia' OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
+      AND json_extract(p.contenido, '$.acceso.app') IN (${apps.map(() => '?').join(',')})
+      AND json_extract(p.contenido, '$.suscripcion') IS NOT NULL AND COALESCE(json_extract(p.contenido, '$.complemento'), 0) = 0`,
+    ...(email ? [email] : []), ...apps);
+  const ahora = Date.now();
+  return filas.map(f => {
+    let c; try { c = JSON.parse(f.contenido || '{}'); } catch { c = {}; }
+    const intervalo = ['month', 'year'].includes(f.intervalo) ? f.intervalo : c.suscripcion?.intervalo === 'year' ? 'year' : 'month';
+    const periodo_fin = finCortesia(f.desde, intervalo, f.cantidad);
+    return { order_id: f.id, email: String(f.email || '').toLowerCase(), app: c.acceso?.app, intervalo, periodo_fin, vigente: Date.parse(periodo_fin) > ahora };
+  });
+}
+
+// La cortesía de un correo para una app (o un paquete que la incluye), con la misma forma que suscripcionApp: la vigente que
+// dura más o, si ya no hay vigente, la última que venció (estado 'canceled'). null si nunca tuvo. No se renueva ni se cobra:
+// cancelar_al_final siempre es true y no tiene complementos.
+export async function cortesiaApp(env, email, app) {
+  email = String(email || '').trim().toLowerCase();
+  if (!email || !app) return null;
+  const l = (await filasCortesia(env, appsQueCubren(app), email)).sort((a, b) => (b.vigente - a.vigente) || b.periodo_fin.localeCompare(a.periodo_fin));
+  const c = l[0];
+  if (!c) return null;
+  return { id: `cortesia_${c.order_id}`, estado: c.vigente ? 'active' : 'canceled', vigente: c.vigente, intervalo: c.intervalo, periodo_fin: c.periodo_fin,
+    cancelar_al_final: true, sucursales: 0, profesionales: 0, monto_centavos: 0, paquete: c.app !== app ? c.app : null, cortesia: true, order_id: c.order_id };
 }
 
 // ---------- webhook ----------
@@ -110,11 +158,18 @@ export async function guardarSuscripcion(env, sub) {
 // ---------- RPC para Vorka OS ----------
 // La suscripción de un correo para una app (la vigente o, si no hay, la última). paquete: la app del paquete si viene de uno
 // (p. ej. 'agenda-vuelve'). sucursales: las de Vuelve adicionales; profesionales: los de Agenda adicionales (sin el incluido).
+// Orden: la suscripción vigente de Stripe (siempre gana) → una cortesía vigente → la última suscripción de Stripe → la última
+// cortesía ya vencida. Una cortesía viene con cortesia: true, monto 0 y cancelar_al_final: true (ver cortesiaApp).
 export async function suscripcionApp(env, email, app) {
   const x = enApps(app);
-  const s = await vigente(env, email, app)
-    || await one(env, `SELECT * FROM suscripciones WHERE email = ? AND ${x.sql} ORDER BY updated_at DESC LIMIT 1`, String(email || '').trim().toLowerCase(), ...x.a);
-  if (!s) return null;
+  const v = await vigente(env, email, app);
+  if (v) return formaSuscripcion(v, app);
+  const c = await cortesiaApp(env, email, app);
+  if (c?.vigente) return c;
+  const s = await one(env, `SELECT * FROM suscripciones WHERE email = ? AND ${x.sql} ORDER BY updated_at DESC LIMIT 1`, String(email || '').trim().toLowerCase(), ...x.a);
+  return s ? formaSuscripcion(s, app) : c;
+}
+function formaSuscripcion(s, app) {
   return { id: s.id, estado: s.estado, vigente: VIGENTES.includes(s.estado), intervalo: s.intervalo, periodo_fin: s.periodo_fin,
     cancelar_al_final: !!s.cancelar_al_final, sucursales: s.sucursales, profesionales: s.profesionales || 0, monto_centavos: s.monto_centavos,
     paquete: s.app !== app ? s.app : null };
@@ -132,7 +187,13 @@ export async function lugaresApp(env, email, app, extras, tipo = 'sucursal') {
   extras = Math.trunc(Number(extras));
   if (!Number.isFinite(extras) || extras < 0 || extras > MAX_LUGARES) throw new Error(`Elige de 0 a ${MAX_LUGARES} ${QUE[tipo]}.`);
   const s = await vigente(env, email, app);
-  if (!s) throw new Error('No hay una suscripción vigente con este correo.');
+  if (!s) {
+    // Cortesía: no hay nada que cambiar en Stripe. Quitar complementos (0) no cambia nada; agregarlos requiere suscribirse.
+    const c = await cortesiaApp(env, email, app);
+    if (c?.vigente && extras === 0) return c;
+    if (c?.vigente) throw new Error(`Tu acceso es una cortesía de Vorka y no incluye ${QUE[tipo]}. Para agregarlos, contrata la suscripción.`);
+    throw new Error('No hay una suscripción vigente con este correo.');
+  }
   const plan = await one(env, 'SELECT contenido FROM products WHERE id = ?', s.product_id);
   let c; try { c = JSON.parse(plan?.contenido || '{}'); } catch { c = {}; }
   const id = extrasDe(c.suscripcion)[tipo];
@@ -161,6 +222,12 @@ async function productoStripe(env, p) {
 export async function portalApp(env, email, app, volver) {
   if (!/^https:\/\/([a-z0-9-]+\.)*vorka\.mx\//.test(String(volver || '')) && !/^http:\/\/(localhost|127\.0\.0\.1):\d+\//.test(String(volver || ''))) throw new Error('Liga de regreso inválida');
   email = String(email || '').trim().toLowerCase();
+  // Solo con cortesía (sin suscripción vigente en Stripe): no hay tarjeta ni cobro que administrar
+  if (!(await vigente(env, email, app))) {
+    const c = await cortesiaApp(env, email, app);
+    if (c?.vigente) return { url: null, cortesia: true, hasta: c.periodo_fin,
+      mensaje: `Tu acceso es una cortesía de Vorka hasta el ${fechaMx(c.periodo_fin)}; no hay nada que cancelar y no se te cobrará.` };
+  }
   const x = enApps(app);
   const s = await one(env, `SELECT customer_id FROM suscripciones WHERE email = ? AND ${x.sql} AND customer_id IS NOT NULL ORDER BY updated_at DESC LIMIT 1`, email, ...x.a)
     || await one(env, 'SELECT customer_id FROM stripe_clientes WHERE email = ?', email);
@@ -175,14 +242,19 @@ export async function portalApp(env, email, app, volver) {
 export async function cancelarApp(env, email, app) {
   email = String(email || '').trim().toLowerCase();
   const s = await vigente(env, email, app);
-  if (!s) return { ok: false, motivo: 'sin_suscripcion' };
+  if (!s) {
+    // Cortesía: no se cobra ni se renueva, así que no hay nada que cancelar (el acceso termina solo en su fecha)
+    const c = await cortesiaApp(env, email, app);
+    return c?.vigente ? { ok: true, cortesia: true, hasta: c.periodo_fin } : { ok: false, motivo: 'sin_suscripcion' };
+  }
   if (s.app !== app) return { ok: false, motivo: 'paquete' };
   if (!s.cancelar_al_final) await llamar(env, 'POST', `/subscriptions/${s.id}`, { cancel_at_period_end: 'true' }, { idempotencia: `cancelar-${s.id}` });
   await run(env, 'UPDATE suscripciones SET cancelar_al_final = 1 WHERE id = ?', s.id);
   return { ok: true, hasta: s.periodo_fin };
 }
 
-// Para Diversificación: cuántas suscripciones hay en cada estado y el ingreso mensual recurrente (los planes anuales cuentan /12)
+// Para Diversificación: cuántas suscripciones hay en cada estado y el ingreso mensual recurrente (los planes anuales cuentan /12).
+// Las cortesías no son ingreso: van aparte (cortesias = correos con una cortesía vigente de esta app y sin suscripción en Stripe).
 export async function resumenSuscripciones(env, app) {
   const filas = await all(env, 'SELECT estado, intervalo, monto_centavos, cancelar_al_final, created_at FROM suscripciones WHERE app = ?', app);
   const estados = {};
@@ -194,7 +266,9 @@ export async function resumenSuscripciones(env, app) {
       if (f.cancelar_al_final) porCancelar++;
     }
   }
-  return { estados, vigentes: filas.filter(f => VIGENTES.includes(f.estado)).length, mrr_centavos: mrr, por_cancelar: porCancelar };
+  const pagan = new Set((await all(env, `SELECT DISTINCT email FROM suscripciones WHERE app = ? AND estado IN (${VIGENTES.map(() => '?').join(',')})`, app, ...VIGENTES)).map(f => f.email));
+  const cortesias = new Set((await filasCortesia(env, [app])).filter(c => c.vigente && !pagan.has(c.email)).map(c => c.email)).size;
+  return { estados, vigentes: filas.filter(f => VIGENTES.includes(f.estado)).length, mrr_centavos: mrr, por_cancelar: porCancelar, cortesias };
 }
 
 // Saldo a favor en la siguiente factura (p. ej. el mes gratis por invitar en Cuentas). Stripe lo descuenta del próximo cobro.

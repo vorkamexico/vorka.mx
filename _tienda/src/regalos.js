@@ -162,11 +162,15 @@ function describir(r, acceso) {
 // Para qué es el enlace que le llega por correo
 const entrada = r => { try { const a = JSON.parse(r.contenido || '{}').acceso || {}; return a.app === 'brindi' ? 'crear tu invitación' : a.app === 'ruta' ? 'empezar tu Ruta' : a.app ? 'entrar' : 'descargar tus archivos'; } catch { return 'entrar'; } };
 
-// Desde el panel se puede regalar cualquier producto, salvo los complementos que solo suman a otra compra (simulacros adicionales)
-export const regalableCortesia = p => { try { return JSON.parse(p.contenido || '{}').acceso?.tipo !== 'intento'; } catch { return true; } };
+// Desde el panel se puede regalar cualquier producto, salvo los complementos que solo suman a otra compra (simulacros adicionales,
+// sucursales de Vuelve, profesionales de Agenda, sillas de Vende): solos no abren nada.
+// Un plan de suscripción (Clara, Cuentas, Vende, Vuelve, Agenda, el paquete…) regalado da acceso por cantidad × su intervalo
+// (1 mes el mensual, 1 año el anual) sin crear nada en Stripe; las apps lo ven por suscripcionApp (ver cortesiaApp).
+export const regalableCortesia = p => { try { const c = JSON.parse(p.contenido || '{}'); return c.acceso?.tipo !== 'intento' && !c.complemento; } catch { return true; } };
 
 // Quitar una cortesía enviada directo: la persona pierde el acceso (sus enlaces de descarga dejan de funcionar
-// y, en Brindi, el plan se retira en la siguiente sincronización, igual que con un reembolso)
+// y, en Brindi y en las apps por suscripción, el plan se retira en la siguiente sincronización, igual que con un reembolso:
+// suscripcionApp solo cuenta cortesías con estado 'paid')
 export async function quitarCortesia(env, orderId) {
   // Ruta de Impacto: primero se quita en Vorka OS (si os no responde, no cambia nada y el panel muestra el error)
   if (await one(env, "SELECT 1 FROM orders WHERE id = ? AND proveedor = 'cortesia' AND regalo = 0 AND estado = 'paid'", String(orderId))) await revocarRuta(env, String(orderId));

@@ -1,0 +1,157 @@
+// Cortesías de apps por suscripción (Clara, Cuentas, Vende, Vuelve, Agenda y el paquete Agenda + Vuelve): regalar desde
+// Vorka OS (Tienda › Regalar) un plan de suscripción debe dar Pro en la app sin crear nada en Stripe. Las apps preguntan con
+// suscripcionApp; portalApp, cancelarApp y lugaresApp responden sin romperse; el MRR no las cuenta como ingreso.
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { d1 } from './d1.js';
+import { Admin } from '../src/index.js';
+import { crearCortesias, revocarCortesias, canjearRegalo } from '../src/regalos.js';
+import { finCortesia, suscripcionApp, portalApp, cancelarApp, lugaresApp, resumenSuscripciones, vigente } from '../src/suscripciones.js';
+
+let env, correos, llamadas;
+const DIA = 864e5;
+const regalar = (product_id, extra = {}) => crearCortesias(env, { product_id, modo: 'correo', cantidad: 1, nombre: 'Oleynick', email: 'ole@correo.mx', ...extra });
+const fechar = (id, iso) => env.DB.raw.prepare('UPDATE orders SET paid_at = ? WHERE id = ?').run(iso, id);
+const cerca = (iso, ms) => expect(Math.abs(Date.parse(iso) - ms)).toBeLessThan(3 * DIA);
+const sub = (o = {}) => env.DB.raw.prepare(`INSERT INTO suscripciones (id, email, app, product_id, customer_id, estado, intervalo, periodo_fin, monto_centavos)
+  VALUES (?,?,?,?,?,?,?,?,?)`).run(o.id || 'sub_1', o.email || 'ole@correo.mx', o.app || 'cuentas', o.product_id || 'prod_cuentas_mensual', o.customer_id ?? 'cus_1',
+  o.estado || 'active', o.intervalo || 'month', o.periodo_fin || '2030-01-01T00:00:00.000Z', o.monto ?? 9900);
+
+beforeEach(() => {
+  correos = []; llamadas = [];
+  env = { DB: d1(), SITE_URL: 'https://vorka.mx', DOWNLOAD_TOKEN_SECRET: 's'.repeat(64), STRIPE_SECRET_KEY: 'sk_test_x',
+    CORREO: { async enviar(c) { correos.push(c); return { id: 'em' }; } } };
+  env.DB.raw.exec('UPDATE products SET activo = 1');
+  vi.stubGlobal('fetch', vi.fn(async (url, init = {}) => { llamadas.push(url); return new Response(JSON.stringify({ url: 'https://billing.stripe.com/p/x' })); }));
+});
+afterEach(() => vi.unstubAllGlobals());
+
+describe('finCortesia', () => {
+  it('suma meses o años de calendario y ajusta el día al final del mes', () => {
+    expect(finCortesia('2026-11-01T20:08:46.000Z', 'year')).toBe('2027-11-01T20:08:46.000Z');
+    expect(finCortesia('2026-11-01T20:08:46.000Z', 'month')).toBe('2026-12-01T20:08:46.000Z');
+    expect(finCortesia('2026-01-31T10:00:00.000Z', 'month')).toBe('2026-02-28T10:00:00.000Z');
+    expect(finCortesia('2026-01-15T10:00:00.000Z', 'month', 3)).toBe('2026-04-15T10:00:00.000Z');
+  });
+});
+
+describe('suscripcionApp con una cortesía', () => {
+  it('anual (Cuentas): vigente por un año, sin cobro y marcada como cortesía', async () => {
+    const r = await regalar('prod_cuentas_anual');
+    const s = await new Admin({}, env).suscripcionApp('Ole@Correo.mx', 'cuentas');
+    expect(s).toMatchObject({ estado: 'active', vigente: true, intervalo: 'year', cortesia: true, cancelar_al_final: true, monto_centavos: 0, sucursales: 0, profesionales: 0, paquete: null, order_id: r.id });
+    cerca(s.periodo_fin, Date.now() + 365 * DIA);
+    // Nada en Stripe
+    expect(llamadas).toHaveLength(0);
+    expect(await vigente(env, 'ole@correo.mx', 'cuentas')).toBeNull();
+  });
+
+  it('mensual (Clara): vigente por un mes; no abre otras apps', async () => {
+    await regalar('prod_clara_mensual');
+    const s = await suscripcionApp(env, 'ole@correo.mx', 'clara');
+    expect(s).toMatchObject({ estado: 'active', vigente: true, intervalo: 'month', cortesia: true });
+    cerca(s.periodo_fin, Date.now() + 30.5 * DIA);
+    expect(await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).toBeNull();
+    expect(await suscripcionApp(env, 'otra@correo.mx', 'clara')).toBeNull();
+  });
+
+  it('la cantidad son periodos: 3 × mensual = 3 meses', async () => {
+    await regalar('prod_vende_mensual', { cantidad: 3 });
+    cerca((await suscripcionApp(env, 'ole@correo.mx', 'vende')).periodo_fin, Date.now() + 91 * DIA);
+  });
+
+  it('vencida: ya no es vigente (estado canceled)', async () => {
+    const r = await regalar('prod_clara_mensual');
+    fechar(r.id, new Date(Date.now() - 40 * DIA).toISOString());
+    expect(await suscripcionApp(env, 'ole@correo.mx', 'clara')).toMatchObject({ estado: 'canceled', vigente: false, cortesia: true });
+  });
+
+  it('quitada desde el panel: el acceso termina en ese momento', async () => {
+    const r = await regalar('prod_cuentas_anual');
+    expect((await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).vigente).toBe(true);
+    await revocarCortesias(env, r.id);
+    expect(await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).toBeNull();
+  });
+
+  it('una suscripción vigente de Stripe siempre gana', async () => {
+    await regalar('prod_cuentas_anual');
+    sub({ periodo_fin: '2026-12-15T00:00:00.000Z' });
+    expect(await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).toMatchObject({ id: 'sub_1', estado: 'active', vigente: true, monto_centavos: 9900 });
+    expect((await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).cortesia).toBeUndefined();
+  });
+
+  it('una suscripción de Stripe cancelada no tapa una cortesía vigente', async () => {
+    sub({ estado: 'canceled' });
+    await regalar('prod_cuentas_mensual');
+    expect(await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).toMatchObject({ vigente: true, cortesia: true });
+  });
+
+  it('el paquete Agenda + Vuelve cubre las dos apps', async () => {
+    await regalar('prod_agenda_vuelve_anual');
+    for (const app of ['agenda', 'vuelve']) expect(await suscripcionApp(env, 'ole@correo.mx', app)).toMatchObject({ vigente: true, cortesia: true, paquete: 'agenda-vuelve', intervalo: 'year' });
+  });
+
+  it('también cuenta el canje de una liga de cortesía', async () => {
+    const r = await crearCortesias(env, { product_id: 'prod_clara_anual', cantidad: 1 });
+    const token = r.ligas[0].split('/').pop();
+    const res = await canjearRegalo(new Request('https://vorka.mx/api/regalo/canjear', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ token, nombre: 'Ana', email: 'ana@correo.mx', terminos: true }) }), env);
+    expect(res.status).toBe(200);
+    expect(await suscripcionApp(env, 'ana@correo.mx', 'clara')).toMatchObject({ vigente: true, cortesia: true, intervalo: 'year' });
+  });
+
+  it('el correo de la cortesía dice hasta cuándo y que no se cobra', async () => {
+    await regalar('prod_cuentas_anual');
+    expect(correos).toHaveLength(1);
+    expect(correos[0].texto).toMatch(/cortesía de Vorka México: tu acceso está activo hasta el/);
+    expect(correos[0].texto).not.toMatch(/se renueva sol|puedes cancelar/);
+  });
+
+  it('no se regalan complementos sueltos (sucursales, profesionales, sillas)', async () => {
+    await expect(regalar('prod_vuelve_sucursal_mensual')).rejects.toThrow(/complemento/);
+    await expect(regalar('prod_vende_silla_mensual')).rejects.toThrow(/complemento/);
+  });
+});
+
+describe('portal, cancelar y complementos con una cortesía', () => {
+  const VOLVER = 'https://clara.vorka.mx/ajustes';
+
+  it('portalApp: mensaje claro, sin portal de Stripe', async () => {
+    await regalar('prod_clara_anual');
+    const p = await portalApp(env, 'ole@correo.mx', 'clara', VOLVER);
+    expect(p).toMatchObject({ url: null, cortesia: true });
+    expect(p.mensaje).toMatch(/^Tu acceso es una cortesía de Vorka hasta el .+; no hay nada que cancelar/);
+    expect(llamadas).toHaveLength(0);
+  });
+
+  it('portalApp con Stripe vigente sigue abriendo el portal', async () => {
+    await regalar('prod_cuentas_anual');
+    sub();
+    expect(await portalApp(env, 'ole@correo.mx', 'cuentas', 'https://cuentas.vorka.mx/ajustes')).toEqual({ url: 'https://billing.stripe.com/p/x' });
+  });
+
+  it('cancelarApp: no hay nada que cancelar, responde ok (para que borrar la cuenta no se trabe)', async () => {
+    await regalar('prod_clara_mensual');
+    const r = await cancelarApp(env, 'ole@correo.mx', 'clara');
+    expect(r).toMatchObject({ ok: true, cortesia: true });
+    expect(r.hasta).toBeTruthy();
+    expect(llamadas).toHaveLength(0);
+    expect(await cancelarApp(env, 'nadie@correo.mx', 'clara')).toEqual({ ok: false, motivo: 'sin_suscripcion' });
+  });
+
+  it('lugaresApp: 0 no cambia nada; agregar pide contratar la suscripción', async () => {
+    await regalar('prod_vuelve_mensual');
+    expect(await lugaresApp(env, 'ole@correo.mx', 'vuelve', 0)).toMatchObject({ cortesia: true, vigente: true });
+    await expect(lugaresApp(env, 'ole@correo.mx', 'vuelve', 2)).rejects.toThrow(/cortesía de Vorka.*lugares adicionales.*suscripción/);
+    expect(llamadas).toHaveLength(0);
+  });
+});
+
+describe('resumenSuscripciones', () => {
+  it('las cortesías no cuentan en el MRR ni como vigentes: van aparte', async () => {
+    sub({ id: 'sub_a', email: 'paga@correo.mx', monto: 9900 });
+    await regalar('prod_cuentas_anual');
+    await regalar('prod_cuentas_mensual', { email: 'paga@correo.mx' }); // ya paga: no se cuenta como cortesía
+    const r = await resumenSuscripciones(env, 'cuentas');
+    expect(r).toMatchObject({ vigentes: 1, mrr_centavos: 9900, cortesias: 1, estados: { active: 1 } });
+  });
+});
