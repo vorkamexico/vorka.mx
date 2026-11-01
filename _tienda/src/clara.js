@@ -13,6 +13,8 @@ const APP = 'https://clara.vorka.mx';
 const GUIA_TARJETA = 'https://vorka.mx/learn/finanzas/como-funciona-una-tarjeta-de-credito/';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 export const RUTA_CLARA = '/tienda/clara/';
+// Imagen para compartir y portada (simulador/portadas_v3.py, con la captura real de la app)
+export const OG_CLARA = 'https://vorka.mx/assets/tienda/v3/clara-og.jpg';
 const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 const PLANES = [{ slug: 'clara-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'clara-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
 
@@ -63,13 +65,13 @@ export async function paginaClara(env, req, url) {
   // Desde la app (Suscribirme) llega el correo de la cuenta para que la suscripción quede ligada a ella
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   const rs = planes.length ? await resenasDe(env, RUTA_CLARA) : null;
-  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Clara · Finanzas personales para jóvenes', brand: { '@type': 'Brand', name: 'Vorka México' },
+  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Clara · Finanzas personales para jóvenes', brand: { '@type': 'Brand', name: 'Vorka México' }, image: ['https://vorka.mx/assets/tienda/v3/clara-portada.webp', OG_CLARA],
     description: 'Tus tarjetas de crédito y tu dinero claros: recordatorios del corte y del pago, ¿Me alcanza?, presupuesto y metas de ahorro. Gratis con 1 tarjeta.',
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_CLARA, centavos: x.prod.precio_centavos, name: `Clara Pro · plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Clara', RUTA_CLARA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Clara' },
-    titulo: 'Clara: tus tarjetas y tu dinero claros | Gratis con 1 tarjeta', ruta: RUTA_CLARA,
+    titulo: 'Clara: tus tarjetas y tu dinero claros | Gratis con 1 tarjeta', ruta: RUTA_CLARA, imagen: OG_CLARA,
     descripcion: 'Recordatorios del corte y del pago de tu tarjeta, registro de gastos, ¿Me alcanza? y resumen del mes. Gratis con 1 tarjeta, desde 15 años. Pro desde $49 al mes.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

@@ -10,7 +10,7 @@ import { FLECHA } from '../marco.generado.js';
 import qrcode from '../vendor/qrcode.js';
 import { CSS_TESTS } from './estilos.js';
 import { INTERESES, HABILIDADES, PREFERENCIAS } from './vocacional-datos.js';
-import { RUTA_ESCUELAS, formsLicencias, porAlumno } from './paginas-vocacional.js';
+import { RUTA_ESCUELAS, OG_VOCACIONAL, formsLicencias, porAlumno } from './paginas-vocacional.js';
 import { whatsapp } from './comun.js';
 
 const RUTA_TEST = '/test-vocacional/';
@@ -101,7 +101,7 @@ export function paginaEscuelas({ grupos = [], p = null } = {}) {
     migas('Para escuelas', RUTA_ESCUELAS, [['Test vocacional', RUTA_TEST]]),
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   ];
-  return pagina({ titulo: 'Test vocacional para escuelas y orientadores | Vorka México', ruta: RUTA_ESCUELAS, descripcion, navActual: 'catalogo',
+  return pagina({ titulo: 'Test vocacional para escuelas y orientadores | Vorka México', ruta: RUTA_ESCUELAS, descripcion, imagen: OG_VOCACIONAL, navActual: 'catalogo',
     head: `<style>${CSS_TESTS}${CSS_ESC}</style>${ldScript(ld)}`, whatsappTexto: TEXTO_DEMO,
     cuerpo: `<div class="tv">
 <section class="tv-hero"><div class="marco">

@@ -12,6 +12,8 @@ import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, SCRIP
 
 const DEF = PRODUCTOS_TEST.proyecto;
 const RUTA = DEF.ruta;
+// Imagen para compartir (simulador/portadas_v3.py)
+const OG_PROYECTO = 'https://vorka.mx/assets/tienda/v3/que-proyecto-social-og.jpg';
 const SITIO = 'https://vorka.mx';
 const RUTA_IMPACTO = '/tienda/ruta-de-impacto/';
 const head = (extra = '') => `<style>${CSS_TESTS}</style>${extra}`;
@@ -59,7 +61,7 @@ export async function landingProyecto(env, req, url, { p, code = null, cookie = 
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: '¿Qué proyecto social hago? · Reporte completo', description: descripcion, url: `${SITIO}${RUTA}`, brand: { '@type': 'Brand', name: 'Vorka México' },
     offers: oferta({ ruta: RUTA, centavos: p?.precio_centavos ?? 14900, disponible: !!p }), ...ldResenas(rs) }, migas('¿Qué proyecto social hago?', RUTA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  return pagina({ titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto | Vorka México', ruta: RUTA, descripcion, navActual: 'catalogo', status,
+  return pagina({ titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto | Vorka México', ruta: RUTA, descripcion, imagen: OG_PROYECTO, navActual: 'catalogo', status,
     head: head(ldScript(ld)), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('proyecto') + SCRIPT_TOPE + (p ? SCRIPT_COMPRA : ''),
     cuerpo: `<div class="tv">
 <section class="tv-hero"><div class="marco">

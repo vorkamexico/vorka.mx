@@ -13,6 +13,8 @@ import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, ICONO
 
 const DEF = PRODUCTOS_TEST.vocacional;
 const RUTA = DEF.ruta;
+// Imagen para compartir (simulador/portadas_v3.py)
+export const OG_VOCACIONAL = 'https://vorka.mx/assets/tienda/v3/test-vocacional-og.jpg';
 const SITIO = 'https://vorka.mx';
 const N_PREG = INTERESES.length + HABILIDADES.length + Object.keys(PREFERENCIAS).length;
 export const DESCUENTO_PAQUETE = 4000;   // $40 MXN menos al llevar el reporte con el simulador de tu examen
@@ -96,7 +98,7 @@ export async function landingVocacional(env, req, url, { p, grupos = [], code = 
     migas('Test vocacional', RUTA),
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   ];
-  return pagina({ titulo: 'Test vocacional gratis: descubre qué carrera estudiar | Vorka México', ruta: RUTA, descripcion, navActual: 'catalogo', status,
+  return pagina({ titulo: 'Test vocacional gratis: descubre qué carrera estudiar | Vorka México', ruta: RUTA, descripcion, imagen: OG_VOCACIONAL, navActual: 'catalogo', status,
     head: head(ldScript(ld)), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('vocacional') + (p ? SCRIPT_COMPRA : ''),
     cuerpo: `<div class="tv">
 <section class="tv-hero"><div class="marco">
