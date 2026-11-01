@@ -12,6 +12,10 @@ export const FACTOR_EQUIPO = 1.5;
 // % de una venta para una cuenta: el del nivel (+ extra), por el factor del equipo si aplica, con tope (máximo 1 decimal)
 export const pctEfectivo = (pct, equipo = false) => Math.min(PCT_TOPE, Math.round(pct * (equipo ? FACTOR_EQUIPO : 1) * 10) / 10);
 export const FACTURAS_SUSCRIPCION = 12;   // renovaciones de una suscripción que dan puntos (la compra es la 1)
+// Equipo de Vorka en suscripciones (migración 0060): 'unico' = el % del nivel solo en el primer pago; 'recurrente' = este %
+// fijo (sin ×1.5) en cada pago mientras la persona siga en el equipo. Cambiarlo aquí aplica a los pagos que vengan.
+export const PCT_RECURRENTE = 5;
+export const MODOS_SUSCRIPCION = ['unico', 'recurrente'];
 // Transferencia a cuenta: solo cuentas habilitadas por el equipo (no se anuncia en ningún texto público)
 export const MINIMO_RETIRO = 500;          // puntos
 export const RETENCION_DIAS = 7;           // los puntos de una venta se pueden transferir 7 días después (reembolsos)

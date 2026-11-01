@@ -107,3 +107,53 @@ describe('Ganar puntos como equipo', () => {
     expect(env.DB.raw.prepare("SELECT puntos, pct, factor FROM puntos_movimientos WHERE clave = 'factura:in_2'").get()).toEqual({ puntos: 45, pct: 15, factor: 1.5 });
   });
 });
+
+describe('Suscripciones del equipo: % de su nivel una vez o 5 % recurrente', () => {
+  const factura = (id, monto = 39900) => ({ id, status: 'paid', amount_paid: monto, billing_reason: 'subscription_cycle', status_transitions: { paid_at: Math.floor(Date.now() / 1000) } });
+  const renovar = (o, id) => puntosFactura(env, factura(id), { id: `sub_${o.id}`, metadata: { order_id: o.id } });
+  const mov = clave => env.DB.raw.prepare('SELECT puntos, pct, factor FROM puntos_movimientos WHERE clave = ?').get(clave);
+  const vuelve = ref => compraPagada('negocio@mail.com', ref, 'vuelve-mensual');   // $399 al mes
+  beforeEach(() => env.DB.raw.exec("UPDATE products SET activo = 1 WHERE slug = 'vuelve-mensual'"));
+
+  it('por omisión es recurrente: 5 % fijo (sin ×1.5) en el primer pago y en cada renovación, sin límite de 12', async () => {
+    const eq = await A.codigoPuntos('ana@vorka.mx', 'Ana');
+    await A.equipoPuntos(['ana@vorka.mx']);
+    expect(await A.modoSuscripcion('ana@vorka.mx')).toMatchObject({ modo: 'recurrente', equipo: true, pct_recurrente: 5 });
+    const o = await vuelve(eq);
+    expect(env.DB.raw.prepare('SELECT ref_modo FROM orders WHERE id = ?').get(o.id).ref_modo).toBe('recurrente');
+    expect(ganado('ana@vorka.mx')[0]).toMatchObject({ puntos: 20, pct: 5, factor: 1 });   // 5 % de $399
+    for (let i = 2; i <= 15; i++) await renovar(o, `in_r${i}`);
+    expect(mov('factura:in_r15')).toEqual({ puntos: 20, pct: 5, factor: 1 });              // pasó la factura 12 y sigue
+  });
+
+  it('pago único: su % de nivel con ×1.5 en el primer pago y las renovaciones ya no dan puntos', async () => {
+    const eq = await A.codigoPuntos('ana@vorka.mx', 'Ana');
+    await A.equipoPuntos(['ana@vorka.mx']);
+    expect(await A.modoSuscripcion('ana@vorka.mx', 'unico')).toMatchObject({ ok: true, modo: 'unico' });
+    const o = await vuelve(eq);
+    expect(ganado('ana@vorka.mx')[0]).toMatchObject({ pct: 15, factor: 1.5, puntos: 60 });  // 15 % de $399
+    await renovar(o, 'in_u2');
+    expect(mov('factura:in_u2')).toBeUndefined();
+  });
+
+  it('cada venta se queda con su modo aunque cambie la preferencia; al salir del equipo deja de ganar el recurrente', async () => {
+    const eq = await A.codigoPuntos('ana@vorka.mx', 'Ana');
+    await A.equipoPuntos(['ana@vorka.mx']);
+    const o = await vuelve(eq);                       // recurrente
+    await A.modoSuscripcion('ana@vorka.mx', 'unico');
+    await renovar(o, 'in_c2');
+    expect(mov('factura:in_c2')).toMatchObject({ pct: 5 });
+    await A.equipoPuntos([]);                          // se dio de baja en Vorka OS
+    await renovar(o, 'in_c3');
+    expect(mov('factura:in_c3')).toBeUndefined();
+    expect((await A.modoSuscripcion('ana@vorka.mx', 'otro')).ok).toBe(false);
+  });
+
+  it('fuera del equipo nada cambia: % del nivel en cada pago hasta la factura 12', async () => {
+    const ex = await A.codigoPuntos('externa@mail.com', 'Ext');
+    const o = await vuelve(ex);
+    expect(env.DB.raw.prepare('SELECT ref_modo FROM orders WHERE id = ?').get(o.id).ref_modo).toBeNull();
+    await renovar(o, 'in_e2');
+    expect(mov('factura:in_e2')).toMatchObject({ pct: 10, factor: 1 });
+  });
+});
