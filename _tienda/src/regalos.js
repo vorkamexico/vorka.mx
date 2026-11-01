@@ -309,6 +309,7 @@ export async function canjearRegalo(req, env) {
 // ---------- cortesías: accesos gratis que regala Vorka México desde el panel ----------
 // Se crea una "compra" de $0 (proveedor 'cortesia', regalo = 1) a nombre de Vorka México con N ligas de un solo uso.
 // Las ligas se devuelven al panel para copiarlas o mandarlas por WhatsApp; nadie recibe correo hasta que alguien canjea.
+export const MAX_SILLAS_CORTESIA = 50;
 const EsquemaCortesia = z.object({
   product_id: z.string().max(80),
   cantidad: z.coerce.number().int().min(1, 'Elige cuántos accesos.').max(100, 'Máximo 100 por tanda.'),
@@ -318,7 +319,10 @@ const EsquemaCortesia = z.object({
   modo: z.enum(['ligas', 'correo']).optional(),                   // ligas de un solo uso (por defecto) o directo al correo de la persona
   email: z.string().trim().toLowerCase().pipe(z.email('Escribe un correo válido.').max(254)).optional().or(z.literal('')),
   nombre: z.string().trim().max(120).optional().or(z.literal('')),
+  // Solo planes de Vende directo a un correo: vendedoras (sillas) incluidas en la cortesía, sin cobro mientras dure
+  sillas: z.coerce.number().int('Las vendedoras van en números enteros.').min(0, 'Las vendedoras van de 0 a 50.').max(MAX_SILLAS_CORTESIA, 'Las vendedoras van de 0 a 50.').optional(),
 });
+
 
 export async function crearCortesias(env, datos) {
   const v = EsquemaCortesia.safeParse(datos);
@@ -327,6 +331,7 @@ export async function crearCortesias(env, datos) {
   const p = await one(env, 'SELECT id, nombre, contenido FROM products WHERE id = ?', d.product_id);
   if (!p) throw new Error('Ese producto no existe.');
   if (!regalableCortesia(p)) throw new Error('Este producto no se puede regalar: es un complemento de otra compra.');
+  const silla = d.sillas ? await sillaDeCortesia(env, p, d) : null;
   const id = crypto.randomUUID(), ahora = ahoraISO();
   if (d.modo === 'correo') {
     if (!d.email) throw new Error('Escribe el correo de quien recibe el regalo.');
@@ -337,11 +342,13 @@ export async function crearCortesias(env, datos) {
         VALUES (?, ?, ?, 0, 'MXN', 'paid', 'cortesia', 0, ?, ?, ?, ?)`)
         .bind(id, d.email, d.nombre, d.nombre, d.mensaje || null, ahora, d.nota ? `cortesía: ${d.nota}` : 'cortesía'),
       env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) VALUES (?,?,?,0,?)').bind(id, p.id, p.nombre, d.cantidad),
+      // Vendedoras incluidas: un renglón más con el complemento del plan (la silla de Vende), como una compra con complementos
+      ...(silla ? [env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) VALUES (?,?,?,0,?)').bind(id, silla.id, silla.nombre, d.sillas)] : []),
     ]);
     let enviado = true;
     try { await mandarEnlace(env, id); await run(env, 'UPDATE orders SET correo_enviado_at = ? WHERE id = ?', ahoraISO(), id); }
     catch (e) { enviado = false; console.error('cortesía: correo falló', id, e.message); }
-    return { id, producto: p.nombre, directo: true, email: d.email, enviado };
+    return { id, producto: p.nombre, directo: true, email: d.email, enviado, sillas: silla ? d.sillas : 0 };
   }
   await env.DB.batch([
     env.DB.prepare(`INSERT INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, regalo, regalo_para, regalo_mensaje, paid_at, correo_enviado_at, metodo_pago)
@@ -358,14 +365,28 @@ export async function crearCortesias(env, datos) {
   return { id, producto: p.nombre, ligas };
 }
 
+// Las vendedoras incluidas solo van en un plan de Vende enviado directo a un correo (las ligas dan el plan solo): el complemento
+// es el del propio plan (suscripcion.extra: la silla mensual o la anual), así dura lo mismo que la cortesía.
+async function sillaDeCortesia(env, p, d) {
+  let c; try { c = JSON.parse(p.contenido || '{}'); } catch { c = {}; }
+  if (c.acceso?.app !== 'vende' || !c.suscripcion || !c.suscripcion.extra) throw new Error('Las vendedoras incluidas solo van con un plan de Vende.');
+  if (d.modo !== 'correo') throw new Error('Las vendedoras incluidas solo van al regalar directo a un correo.');
+  const silla = await one(env, 'SELECT id, nombre FROM products WHERE id = ?', c.suscripcion.extra);
+  if (!silla) throw new Error('Este plan de Vende no tiene sillas de vendedora.');
+  return silla;
+}
+
 // Tandas de cortesías con su avance (las ligas en claro solo se ven al crearlas)
 export async function cortesias(env) {
   const filas = await all(env, `SELECT o.id, o.created_at, o.regalo_para para, o.metodo_pago nota, i.nombre producto, i.cantidad,
       (SELECT COUNT(*) FROM regalos r WHERE r.order_id = o.id AND r.estado = 'canjeado') canjeadas,
       (SELECT COUNT(*) FROM regalos r WHERE r.order_id = o.id AND r.estado = 'pendiente') pendientes,
       (SELECT GROUP_CONCAT(r.canjeado_email, ', ') FROM regalos r WHERE r.order_id = o.id AND r.estado = 'canjeado') quienes
-    , o.regalo, o.email, o.estado, o.correo_enviado_at
-    FROM orders o JOIN order_items i ON i.order_id = o.id WHERE o.proveedor = 'cortesia' ORDER BY o.created_at DESC LIMIT 100`);
+    , o.regalo, o.email, o.estado, o.correo_enviado_at,
+      (SELECT COALESCE(SUM(x.cantidad), 0) FROM order_items x JOIN products px ON px.id = x.product_id
+        WHERE x.order_id = o.id AND COALESCE(json_extract(px.contenido, '$.complemento'), 0) = 1) sillas
+    FROM orders o JOIN order_items i ON i.order_id = o.id LEFT JOIN products p ON p.id = i.product_id
+    WHERE o.proveedor = 'cortesia' AND COALESCE(json_extract(p.contenido, '$.complemento'), 0) = 0 ORDER BY o.created_at DESC LIMIT 100`);
   // directo = enviada al correo de la persona (sin ligas); activa = no se le ha quitado
   return filas.map(f => ({ ...f, nota: String(f.nota || '').replace(/^cortesía:?\s*/, ''), directo: !f.regalo, activa: f.estado === 'paid', email: f.regalo ? null : f.email }));
 }

@@ -10,6 +10,9 @@
 // - Cortesías: un acceso regalado desde Vorka OS (Tienda › Regalar) a un plan de suscripción es una orden de $0 (proveedor
 //   'cortesia', regalo = 0, o el canje de una liga de cortesía) y NO crea nada en Stripe. suscripcionApp la toma en cuenta
 //   cuando no hay suscripción vigente en Stripe (ver cortesiaApp): dura cantidad × el intervalo del plan desde que se dio.
+//   Una cortesía de Vende puede incluir vendedoras (sillas): van en la misma orden como un renglón más del complemento del plan
+//   (la silla de Vende) con la cantidad de sillas, igual que una compra con complementos; cortesiaApp las devuelve en `sillas`.
+//   creditoApp a quien solo tiene cortesía le suma 1 mes con otra orden de cortesía que empieza donde termina la actual.
 import { one, all, run, ahoraISO } from './util.js';
 import { llamar } from './pagos/stripe.js';
 
@@ -79,7 +82,10 @@ const fechaMx = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'Am
 async function filasCortesia(env, apps, email = null) {
   // Las quitadas (estado 'refunded') también vienen, ya vencidas desde que se quitaron: así la app deja de dar acceso aunque
   // haya guardado la fecha de la cortesía (cortesia_hasta)
-  const filas = await all(env, `SELECT o.id, o.email, o.estado, o.updated_at, COALESCE(o.paid_at, o.created_at) desde, i.cantidad, i.intervalo, p.contenido
+  // extras: los complementos que vienen en la misma orden (las vendedoras incluidas en una cortesía de Vende)
+  const filas = await all(env, `SELECT o.id, o.email, o.nombre, o.estado, o.updated_at, COALESCE(o.paid_at, o.created_at) desde, i.product_id, i.nombre producto, i.cantidad, i.intervalo, p.contenido,
+      (SELECT COALESCE(SUM(x.cantidad), 0) FROM order_items x JOIN products px ON px.id = x.product_id
+        WHERE x.order_id = o.id AND COALESCE(json_extract(px.contenido, '$.complemento'), 0) = 1) extras
     FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
     WHERE o.estado IN ('paid', 'refunded') AND o.regalo = 0 AND o.monto_centavos = 0${email ? ' AND lower(o.email) = ?' : ''}
       AND (o.proveedor = 'cortesia' OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
@@ -92,13 +98,14 @@ async function filasCortesia(env, apps, email = null) {
     const intervalo = ['month', 'year'].includes(f.intervalo) ? f.intervalo : c.suscripcion?.intervalo === 'year' ? 'year' : 'month';
     const fin = finCortesia(f.desde, intervalo, f.cantidad);
     const periodo_fin = f.estado === 'refunded' ? [fin, f.updated_at || f.desde].sort()[0] : fin;
-    return { order_id: f.id, quitada: f.estado === 'refunded', email: String(f.email || '').toLowerCase(), app: c.acceso?.app, intervalo, periodo_fin, vigente: Date.parse(periodo_fin) > ahora };
+    return { order_id: f.id, quitada: f.estado === 'refunded', email: String(f.email || '').toLowerCase(), nombre: f.nombre, app: c.acceso?.app, intervalo, periodo_fin,
+      vigente: Date.parse(periodo_fin) > ahora, product_id: f.product_id, producto: f.producto, sillas: Number(f.extras) || 0 };
   });
 }
 
 // La cortesía de un correo para una app (o un paquete que la incluye), con la misma forma que suscripcionApp: la vigente que
 // dura más o, si ya no hay vigente, la última que venció (estado 'canceled'). null si nunca tuvo. No se renueva ni se cobra:
-// cancelar_al_final siempre es true y no tiene complementos.
+// cancelar_al_final siempre es true y no tiene complementos que se cobren; sillas: las vendedoras incluidas (solo Vende).
 export async function cortesiaApp(env, email, app) {
   email = String(email || '').trim().toLowerCase();
   if (!email || !app) return null;
@@ -106,7 +113,7 @@ export async function cortesiaApp(env, email, app) {
   const c = l[0];
   if (!c) return null;
   return { id: `cortesia_${c.order_id}`, estado: c.vigente ? 'active' : 'canceled', vigente: c.vigente, intervalo: c.intervalo, periodo_fin: c.periodo_fin,
-    cancelar_al_final: true, sucursales: 0, profesionales: 0, monto_centavos: 0, paquete: c.app !== app ? c.app : null, cortesia: true, order_id: c.order_id };
+    cancelar_al_final: true, sucursales: 0, profesionales: 0, sillas: c.sillas, monto_centavos: 0, paquete: c.app !== app ? c.app : null, cortesia: true, order_id: c.order_id };
 }
 
 // ---------- webhook ----------
@@ -191,9 +198,11 @@ export async function lugaresApp(env, email, app, extras, tipo = 'sucursal') {
   if (!Number.isFinite(extras) || extras < 0 || extras > MAX_LUGARES) throw new Error(`Elige de 0 a ${MAX_LUGARES} ${QUE[tipo]}.`);
   const s = await vigente(env, email, app);
   if (!s) {
-    // Cortesía: no hay nada que cambiar en Stripe. Quitar complementos (0) no cambia nada; agregarlos requiere suscribirse.
+    // Cortesía: no hay nada que cambiar en Stripe. Quitar complementos (0) o quedarse dentro de las sillas que incluye (Vende)
+    // no cambia nada; agregar más requiere suscribirse.
     const c = await cortesiaApp(env, email, app);
-    if (c?.vigente && extras === 0) return c;
+    if (c?.vigente && extras <= (tipo === 'sucursal' ? c.sillas || 0 : 0)) return c;
+    if (c?.vigente && c.sillas) throw new Error(`Tu cortesía incluye ${c.sillas === 1 ? '1 vendedora' : `${c.sillas} vendedoras`}; para sumar más, contrata Vende Pro.`);
     if (c?.vigente) throw new Error(`Tu acceso es una cortesía de Vorka y no incluye ${QUE[tipo]}. Para agregarlos, contrata la suscripción.`);
     throw new Error('No hay una suscripción vigente con este correo.');
   }
@@ -274,13 +283,54 @@ export async function resumenSuscripciones(env, app) {
   return { estados, vigentes: filas.filter(f => VIGENTES.includes(f.estado)).length, mrr_centavos: mrr, por_cancelar: porCancelar, cortesias };
 }
 
-// Saldo a favor en la siguiente factura (p. ej. el mes gratis por invitar en Cuentas). Stripe lo descuenta del próximo cobro.
-export async function creditoApp(env, email, app, centavos, motivo) {
+// Saldo a favor en la siguiente factura (p. ej. el mes gratis por invitar en Cuentas o por recomendar Vuelve). Stripe lo
+// descuenta del próximo cobro. clave: identifica el premio (p. ej. 'vuelve-recomendacion-<cuenta>') para no darlo dos veces.
+// Solo con cortesía (sin suscripción vigente en Stripe) no hay cobro donde descontar: se suma 1 mes a la cortesía (ver
+// mesDeCortesia) y la respuesta trae { ok, cortesia: true, hasta } con la nueva fecha de fin.
+export async function creditoApp(env, email, app, centavos, motivo, clave = null) {
   email = String(email || '').trim().toLowerCase();
   const monto = Math.floor(Number(centavos));
   if (!(monto > 0 && monto <= 100000)) throw new Error('Monto inválido');
   const s = await vigente(env, email, app);
-  if (!s?.customer_id) return { ok: false, motivo: 'sin_suscripcion' };
-  await llamar(env, 'POST', `/customers/${s.customer_id}/balance_transactions`, { amount: -monto, currency: 'mxn', description: String(motivo || 'Crédito').slice(0, 300) });
+  if (!s) {
+    const c = await cortesiaApp(env, email, app);
+    if (c?.vigente) return mesDeCortesia(env, email, app, c, motivo, clave);
+    return { ok: false, motivo: 'sin_suscripcion' };
+  }
+  if (!s.customer_id) return { ok: false, motivo: 'sin_suscripcion' };
+  await llamar(env, 'POST', `/customers/${s.customer_id}/balance_transactions`, { amount: -monto, currency: 'mxn', description: String(motivo || 'Crédito').slice(0, 300) },
+    clave ? { idempotencia: `credito-${app}-${String(clave).slice(0, 200)}` } : undefined);
   return { ok: true };
+}
+
+// +1 mes a una cortesía: otra orden de cortesía de $0 (proveedor 'cortesia', regalo 0: no cuenta como venta ni en el MRR) del
+// mismo plan, que empieza donde termina la cortesía vigente (paid_at = su fin) y dura 1 mes (renglón con intervalo 'month',
+// aunque el plan sea anual). cortesiaApp toma la que termina después. Lleva también las vendedoras (sillas) de la cortesía.
+// Una sola vez por premio: la llave va en provider_session_id, único por proveedor; si ya existe, responde lo mismo sin duplicar.
+async function mesDeCortesia(env, email, app, c, motivo, clave) {
+  const llave = `credito:${app}:${email}:${String(clave || motivo || 'mes').slice(0, 200)}`;
+  const hasta = o => finCortesia(o.desde, 'month', 1);
+  const ya = await one(env, "SELECT id, COALESCE(paid_at, created_at) desde FROM orders WHERE proveedor = 'cortesia' AND provider_session_id = ?", llave);
+  if (ya) return { ok: true, cortesia: true, hasta: hasta(ya), order_id: ya.id, ya: true };
+  const base = (await filasCortesia(env, appsQueCubren(app), email)).find(f => f.order_id === c.order_id);
+  if (!base) return { ok: false, motivo: 'sin_suscripcion' };
+  const id = crypto.randomUUID(), ahora = ahoraISO(), desde = c.periodo_fin;
+  const nota = `cortesía: Mes por recomendación${motivo ? ` (${String(motivo).slice(0, 150)})` : ''}`;
+  // Todo o nada: si otra petición ganó la misma llave, el INSERT OR IGNORE no hace nada y los renglones tampoco se crean
+  const [r] = await env.DB.batch([
+    env.DB.prepare(`INSERT OR IGNORE INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, provider_session_id, regalo, paid_at, correo_enviado_at, metodo_pago, created_at, updated_at)
+      VALUES (?, ?, ?, 0, 'MXN', 'paid', 'cortesia', ?, 0, ?, ?, ?, ?, ?)`).bind(id, email, base.nombre || email, llave, desde, ahora, nota, ahora, ahora),
+    env.DB.prepare(`INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, intervalo) SELECT ?, ?, ?, 0, 1, 'month' WHERE EXISTS (SELECT 1 FROM orders WHERE id = ?)`)
+      .bind(id, base.product_id, base.producto, id),
+    // Las vendedoras incluidas (complementos) de la cortesía siguen durante el mes extra
+    env.DB.prepare(`INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad)
+      SELECT ?, x.product_id, x.nombre, 0, x.cantidad FROM order_items x JOIN products px ON px.id = x.product_id
+      WHERE x.order_id = ? AND COALESCE(json_extract(px.contenido, '$.complemento'), 0) = 1 AND EXISTS (SELECT 1 FROM orders WHERE id = ?)`).bind(id, c.order_id, id),
+  ]);
+  if (!r.meta.changes) {
+    const otra = await one(env, "SELECT id, COALESCE(paid_at, created_at) desde FROM orders WHERE proveedor = 'cortesia' AND provider_session_id = ?", llave);
+    if (otra) return { ok: true, cortesia: true, hasta: hasta(otra), order_id: otra.id, ya: true };
+    throw new Error('No se pudo sumar el mes a la cortesía.');
+  }
+  return { ok: true, cortesia: true, hasta: finCortesia(desde, 'month', 1), order_id: id };
 }
