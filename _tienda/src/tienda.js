@@ -117,6 +117,15 @@ const APPS_TIENDA = {
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
   clara: { nombre: 'Clara · Tus tarjetas y tu dinero', precio: () => 'Empieza gratis' },   // gratis con 1 tarjeta (el precio de Pro está en su ficha)
 };
+// Portada v3 por app (simulador/portadas_v3.py) para los productos que todavía no la tienen en D1 (migración 0062):
+// así la tarjeta nunca cae en la portada genérica de la V. La imagen de D1 manda si existe.
+export const PORTADAS_APP = {
+  clara: '/assets/tienda/v3/clara-portada.webp',
+  'test-vocacional': '/assets/tienda/v3/test-vocacional-portada.webp',
+  'que-proyecto-social': '/assets/tienda/v3/que-proyecto-social-portada.webp',
+  liderazgo: '/assets/tienda/v3/evaluacion-liderazgo-portada.webp',
+};
+const conPortada = p => (p.imagen || !PORTADAS_APP[p.contenido?.acceso?.app] ? p : { ...p, imagen: PORTADAS_APP[p.contenido.acceso.app] });
 function vista(p, url, desdeBrindi) {
   {
     // SaaS de un creador por suscripción: "por <creador>" y el precio por periodo
@@ -131,11 +140,11 @@ function vista(p, url, desdeBrindi) {
     // Las demás apps por suscripción: nombre de la app (no el del plan) y el precio "al mes", igual que Agenda
     const app = APPS_TIENDA[p.contenido?.acceso?.app];
     if (app) return { p, url, nombre: app.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x), cat: 'Acceso en línea',
-      img: p, precio: app.precio(p), regalable: false, min: p.precio_centavos };
+      img: conPortada(p), precio: app.precio(p), regalable: false, min: p.precio_centavos };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
     const sim = p.contenido?.plan && SIM_TIENDA[p.contenido?.acceso?.app];
     return { p, url, nombre: sim ? sim.nombre : p.nombre, texto: sim ? sim.texto : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
-      cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: p, precio: precio(p), regalable: !!p.contenido?.regalable, min: esBrindi(p) || esCupo(p) ? null : p.precio_centavos };
+      cat: esAcceso(p) ? 'Acceso en línea' : 'Descarga digital', img: conPortada(p), precio: precio(p), regalable: !!p.contenido?.regalable, min: esBrindi(p) || esCupo(p) ? null : p.precio_centavos };
   }
 }
 

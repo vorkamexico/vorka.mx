@@ -63,6 +63,16 @@ describe('Clara entra inactiva', () => {
 
 describe('ficha de Clara (activa)', () => {
   beforeEach(() => env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_clara_%'"));
+  it('tiene su portada en el catálogo (también sin imagen en D1) y su imagen para compartir', async () => {
+    const portada = '/assets/tienda/v3/clara-portada.webp';
+    expect(fila("SELECT imagen FROM products WHERE id = 'prod_clara_mensual'").imagen).toBe(portada);
+    env.DB.raw.exec("UPDATE products SET imagen = NULL WHERE id LIKE 'prod_clara_%'");
+    const t = await (await pedir('/tienda/')).text();
+    expect(t).toContain(`src="${portada}" alt="Portada de Clara`);
+    expect(t).not.toMatch(/class="t-portada[ "][^>]*aria-label="Portada de Clara/);
+    const h = await (await pedir('/tienda/clara/')).text();
+    expect(h).toContain('https://vorka.mx/assets/tienda/v3/clara-og.jpg');
+  });
   it('muestra los dos planes, la nota de pagar por alguien más y los avisos legales', async () => {
     const h = await (await pedir('/tienda/clara/')).text();
     expect(h).toContain('$49 MXN');

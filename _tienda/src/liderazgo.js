@@ -13,6 +13,8 @@ import { FLECHA } from './marco.generado.js';
 
 export const SLUG_LIDERAZGO = 'evaluacion-liderazgo';
 export const RUTA_LIDERAZGO = '/tienda/evaluacion-liderazgo/';
+// Imagen para compartir (simulador/portadas_v3.py)
+export const OG_LIDERAZGO = 'https://vorka.mx/assets/tienda/v3/evaluacion-liderazgo-og.jpg';
 const APP = 'https://liderazgo.vorka.mx';
 const MENTORIA = '/mentoriaoleynick/';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -56,7 +58,7 @@ export async function paginaLiderazgo(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'la Evaluación de liderazgo' }, noindex: !p,
-    titulo: 'Evaluación de liderazgo Vorka: dónde estás hoy como líder | 12 dimensiones', ruta: RUTA_LIDERAZGO, descripcion,
+    titulo: 'Evaluación de liderazgo Vorka: dónde estás hoy como líder | 12 dimensiones', ruta: RUTA_LIDERAZGO, descripcion, imagen: OG_LIDERAZGO,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: p ? SCRIPT_COMPRA : '',

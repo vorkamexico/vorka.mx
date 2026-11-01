@@ -129,6 +129,56 @@ def ui_ruta():
     <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">El problema</div><div style="font-size:14px;opacity:.75">Distinguir el problema de sus síntomas y probarlo con datos</div></div>
   {nodo('hecho', 'Problema, síntoma o solución disfrazada', -40)}{nodo('ahora', 'El árbol de problemas', 40)}{nodo('cerrado', '¿A quién le pasa?', -20)}</div>"""
 
+# Clara: captura REAL de la app (clara.vorka.mx, «Hoy» en modo claro, datos de prueba), copiada de clara/docs/capturas/ a
+# simulador/capturas/. Si la app cambia, reemplaza la captura y vuelve a correr con SOLO=clara.
+def ui_clara():
+    import base64
+    b64 = base64.b64encode((AQUI / 'capturas' / 'clara-hoy-claro.jpg').read_bytes()).decode()
+    return f"""<div style="position:absolute;inset:0;background:#F5F4F0"><img src="data:image/jpeg;base64,{b64}" style="position:absolute;top:46px;left:0;width:100%;display:block"></div>
+  <div class="isla" style="z-index:3"></div>"""
+
+# Test vocacional: el ejemplo de resultado que muestra su página (/test-vocacional/): barras RIASEC y el código SAI
+def ui_vocacional():
+    tipos = [('Social', 82, '#2E8B57'), ('Artístico', 74, '#9A3B8C'), ('Investigador', 61, '#2F6FB0'), ('Emprendedor', 48, '#C8A45C'), ('Convencional', 35, '#5B6B7A'), ('Realista', 22, '#B5651D')]
+    barras = ''.join(f'<div style="display:grid;grid-template-columns:118px 1fr 34px;gap:10px;align-items:center;margin-top:13px;font-size:15px"><span style="font-weight:650">{n}</span><i style="height:10px;border-radius:5px;background:#EFECEF;display:block;overflow:hidden"><b style="display:block;height:100%;width:{v}%;background:{c};border-radius:5px"></b></i><b style="text-align:right">{v}</b></div>' for n, v, c in tipos)
+    letras = ''.join(f'<span style="width:62px;height:62px;border-radius:16px;display:grid;place-items:center;font-size:32px;font-weight:850;color:#fff;background:{c}">{l}</span>' for l, c in [('S', '#2E8B57'), ('A', '#9A3B8C'), ('I', '#2F6FB0')])
+    return f"""<div class="ui" style="padding:70px 26px 0">
+  <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px"><span style="width:22px;height:21px;color:#5B1F7A">{V}</span>Test vocacional</div>
+  <div class="s" style="margin-top:18px;text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:700">Ejemplo de resultado</div>
+  <div class="h" style="margin-top:6px">Tu código</div>
+  <div style="display:flex;gap:10px;margin-top:12px">{letras}</div>
+  <div class="card" style="margin-top:18px">{barras}</div>
+  <div class="card" style="background:#F6F0FA;border-color:#E4D6EE"><b>Carreras afines</b><div class="s" style="margin-top:4px">Psicología, Pedagogía, Ciencias de la Comunicación…</div></div></div>"""
+
+# ¿Qué proyecto social hago?: tres ideas reales del banco (src/tests/proyecto-datos.js) con sus ODS
+def ui_proyecto():
+    ideas = [('Rescate de alimentos', 'Dona tus excedentes de comida a un comedor o banco de alimentos en lugar de tirarlos.', [2, 12]),
+             ('Clínica de finanzas personales', 'Asesorías gratuitas para que familias y micronegocios ordenen sus cuentas.', [1, 8, 10]),
+             ('Huerto escolar o urbano', 'Junto con una escuela, crean un huerto que enseña a cultivar.', [15, 4, 13])]
+    def ods(l): return ''.join(f'<span style="background:#FBEBDD;color:#7A2E0C;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:750">ODS {o}</span>' for o in l)
+    tarjetas = ''.join(f'''<div class="card" style="margin-top:12px"><div style="display:flex;gap:10px;align-items:center"><span style="width:30px;height:30px;border-radius:9px;background:#8A3B12;color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px">{i + 1}</span><b style="font-size:17px;letter-spacing:-.01em">{n}</b></div>
+      <div class="s" style="margin-top:6px;line-height:1.35">{d}</div><div style="display:flex;gap:6px;margin-top:10px">{ods(o)}</div></div>''' for i, (n, d, o) in enumerate(ideas))
+    return f"""<div class="ui" style="padding:70px 22px 0">
+  <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px"><span style="width:22px;height:21px;color:#8A3B12">{V}</span>¿Qué proyecto social hago?</div>
+  <div class="h" style="margin-top:16px">Tus 3 ideas</div><div class="s">Según tu giro, tu presupuesto y tu tiempo</div>
+  {tarjetas}</div>"""
+
+# Evaluación de liderazgo: el «ejemplo ilustrativo» de su página (global 58 y cuatro dimensiones: lo que crees y lo que has hecho)
+def ui_liderazgo():
+    dims = [('Servicio', 7.4, 8.1, 7.2, 'Alineada', '#6D696E'), ('Iniciativa', 5.2, 8.4, 3.3, 'Por demostrar', '#7A3E8E'), ('Medición de impacto', 4.1, 6.9, 2.5, 'Por demostrar', '#7A3E8E'), ('Resiliencia', 7.0, 5.6, 8.3, 'Subestimada', '#2E7D4F')]
+    filas = ''.join(f'''<div style="margin-top:16px"><div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700"><span>{n}</span><span>{nota:.1f}</span></div>
+      <div style="position:relative;height:8px;border-radius:4px;background:#ECEAE6;margin-top:8px"><i style="position:absolute;left:0;top:0;bottom:0;width:{nota * 10}%;border-radius:4px;background:#D9D3DC"></i>
+        <i style="position:absolute;top:-3px;left:{per * 10}%;width:14px;height:14px;border-radius:50%;background:#4A2350;transform:translateX(-50%)"></i><i style="position:absolute;top:-3px;left:{evi * 10}%;width:14px;height:14px;border-radius:50%;background:#C8A45C;transform:translateX(-50%)"></i></div>
+      <div style="font-size:13px;font-weight:700;color:{c};margin-top:6px">{l}</div></div>''' for n, nota, per, evi, l, c in dims)
+    punto = lambda c: f'<i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{c};margin-right:6px"></i>'
+    return f"""<div class="ui" style="padding:70px 26px 0">
+  <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px"><span style="width:22px;height:21px;color:#4A2350">{V}</span>Evaluación de liderazgo</div>
+  <div class="s" style="margin-top:18px;text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:700">Ejemplo ilustrativo</div>
+  <div style="display:flex;align-items:baseline;gap:10px;margin-top:4px"><b style="font-size:64px;letter-spacing:-.04em">58</b><span class="s">de 100 · En construcción</span></div>
+  {filas}
+  <div style="display:flex;gap:16px;margin-top:20px;font-size:13px;color:#6D696E"><span>{punto('#4A2350')}Lo que crees de ti</span><span>{punto('#C8A45C')}Lo que has hecho</span></div>
+  <div class="card" style="background:#F7F1E3;border-color:#EADCB8;margin-top:18px"><b>Tus 3 acciones para 30 días</b><div class="s" style="margin-top:4px">Cada una con la evidencia que te deja</div></div></div>"""
+
 def hojas(color, titulo, partes):
     a = f'<div class="hoja" style="left:930px;top:260px;transform:rotate(8deg);opacity:.9"><div class="k" style="color:{color}">Workbook</div><div class="l" style="width:80%"></div><div class="l"></div><div class="l" style="width:60%"></div></div>'
     b = f'<div class="hoja" style="left:880px;top:220px;transform:rotate(3deg)"><div class="k" style="color:{color}">Vorka México · Kit digital</div><h4>{titulo}</h4>' + ''.join(f'<div style="display:flex;gap:12px;align-items:center;font-size:20px;font-weight:650;margin:14px 0"><span style="width:30px;height:30px;border-radius:9px;background:{color};color:#fff;display:grid;place-items:center;font-size:16px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes)) + '</div>'
@@ -188,17 +238,38 @@ P = {
   'idea-negocio': dict(**OSCURO, fondo='linear-gradient(140deg,#1E0B3D 0%,#3B1A78 55%,#5B2A9E 100%)', acento='#D8C4FF', pre='Kit', nombre='Idea → Negocio',
     tag='Emprendimiento · Nivel 2', beneficio='Valida tu idea con clientes reales y haz tus números.', datos=['Workbook PDF · 32 págs.', '2 Excel', 'Incluye Nivel 1'],
     hojas=('#5B2A9E', 'Idea → Negocio', ['Entrevistas y preventa', 'Costos y precio', 'Punto de equilibrio', 'Plan de 30 días'])),
+  # Clara: la única app en fondo claro. Crema y verde profundo de su marca, con oro suave de acento (sin que todo sea verde:
+  # Agenda y Cuentas ya lo son). El celular lleva la captura REAL de la app sobre un círculo verde profundo.
+  'clara': dict(texto='#12322C', suave='rgba(18,50,44,.72)', chipf='rgba(13,92,79,.09)', tagf='rgba(200,164,92,.24)', h1='#0D5C4F', punto='#C8A45C',
+    fondo='linear-gradient(150deg,#FBFAF6 0%,#F5F4EF 48%,#EFE6D2 100%)', acento='#E9C987', pre='', nombre='Clara',
+    tag='Finanzas personales · desde 15 años', beneficio='Tus tarjetas y tu dinero, claros desde el principio.', datos=['Avisos de corte y pago', '¿Me alcanza?', 'Gratis con 1 tarjeta'], ui=ui_clara, og=True,
+    deco='<div style="position:absolute;left:930px;top:170px;width:820px;height:820px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#1B7A67 0%,#0D5C4F 48%,#06302A 100%)"></div>'
+         '<div style="position:absolute;left:1380px;top:110px;width:120px;height:120px;border-radius:50%;background:#E9C987"></div>',
+    deco_og='<div style="position:absolute;left:700px;top:40px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#1B7A67 0%,#0D5C4F 48%,#06302A 100%)"></div>'),
+  # Test vocacional: lavanda claro con tinta ciruela (el morado de su página), sin repetir los morados oscuros de Cupo y Ruta
+  'test-vocacional': dict(**CLARO, fondo='linear-gradient(140deg,#F3EDFA 0%,#E2D3F4 55%,#CDB4EE 100%)', acento='#B98AE6', h1='#5B1F7A', punto='#5B1F7A', pre='Test', nombre='Vocacional', px=150, og_px=104,
+    tag='Orientación vocacional', beneficio='Descubre en 10 minutos qué carreras van contigo.', datos=['48 preguntas', 'Perfil básico gratis', '20 carreras afines'], ui=ui_vocacional, og=True),
+  # ¿Qué proyecto social hago?: terracota (tierra, comunidad), distinto del naranja brillante de ECOEMS
+  'que-proyecto-social': dict(**OSCURO, fondo='linear-gradient(140deg,#2E1408 0%,#6B2C0E 55%,#A8501F 100%)', acento='#FFD7A8', pre='¿Qué proyecto', nombre='social hago?', px=150, og_px=92,
+    tag='Negocios, OSC y profesionistas', beneficio='Ideas de proyecto social a la medida de tu giro y tu tiempo.', datos=['10 preguntas · 5 min', 'De 5 a 8 proyectos', 'Indicadores y ODS'], ui=ui_proyecto, og=True),
+  # Evaluación de liderazgo: berenjena casi negra con oro, como su página
+  'evaluacion-liderazgo': dict(**OSCURO, fondo='linear-gradient(140deg,#0F0811 0%,#24122A 55%,#43204C 100%)', acento='#E6C77E', pre='Evaluación de', nombre='liderazgo', px=172, og_px=110,
+    tag='Desde 12 años · 12 dimensiones', beneficio='Lo que crees de ti, contra lo que has hecho.', datos=['80 preguntas · 25 min', '12 dimensiones', '2 aplicaciones'], ui=ui_liderazgo, og=True),
 }
 
 def marca(tam, p):
     sub = 'rgba(26,20,5,.55)' if p['texto'] != '#fff' else 'rgba(255,255,255,.55)'
-    return f'<span class="marca" style="font-size:{tam}px;color:{p["texto"]}"><span class="v" style="width:{tam*1.25}px;height:{tam*1.2}px;color:{p["acento"] if p["texto"] == "#fff" else p["texto"]}">{V}</span>Vorka <small style="color:{sub}">México</small></span>'
+    return f'<span class="marca" style="font-size:{tam}px;color:{p["texto"]}"><span class="v" style="width:{tam*1.25}px;height:{tam*1.2}px;color:{p.get("h1") or (p["acento"] if p["texto"] == "#fff" else p["texto"])}">{V}</span>Vorka <small style="color:{sub}">México</small></span>'
+
+# Color del nombre grande: el acento sobre fondo oscuro, la tinta sobre fondo claro (o el propio de la marca: Clara, su verde)
+def color_h1(p):
+    return p.get('h1') or (p['acento'] if p['texto'] == '#fff' else p['texto'])
 
 def tam_nombre(n, base):
     return base if len(n) <= 6 else int(base * 6.2 / len(n)) if len(n) > 8 else int(base * .8)
 
 def portada(k, p):
-    chips = ''.join(f'<span class="chip" style="background:{p["chipf"]};color:{p["texto"]};font-size:36px"><i style="background:{p["acento"] if p["texto"] == "#fff" else "#fff"}"></i>{d}</span>' for d in p['datos'])
+    chips = ''.join(f'<span class="chip" style="background:{p["chipf"]};color:{p["texto"]};font-size:36px"><i style="background:{p.get("punto") or (p["acento"] if p["texto"] == "#fff" else "#fff")}"></i>{d}</span>' for d in p['datos'])
     if 'sim' in p:
         s = SIMS[p['sim']]; visual = tel(sim_ui(s), 1010, 150, 1.12, 5) + sim_rep(s, 1100, 840, 360)
     elif 'ui' in p:
@@ -208,12 +279,12 @@ def portada(k, p):
     nombre_px = p.get('px') or (300 if len(p['nombre']) <= 4 else tam_nombre(p['nombre'], 236))
     return f"""<style>{CSS}{EXTRA}</style><div class="lienzo t3" style="width:1600px;height:1200px;background:{p['fondo']};color:{p['texto']}">
 <div class="glow" style="width:700px;height:700px;right:-120px;top:-160px;background:{p['acento']};opacity:{.28 if p['texto'] == '#fff' else .35}"></div>
-<div class="vfondo" style="right:-200px;bottom:-300px;width:1100px;opacity:.07;color:{p['texto']}">{V}</div>
+<div class="vfondo" style="right:-200px;bottom:-300px;width:1100px;opacity:.07;color:{p['texto']}">{V}</div>{p.get('deco', '')}
 <div style="position:absolute;left:90px;top:84px">{marca(34, p)}</div>
 <div style="position:absolute;left:90px;top:{240 if p['pre'] else 300}px;width:820px">
   <span class="tag" style="font-size:34px;background:{p['tagf']};color:{p['texto']}">{p['tag']}</span>
   {f'<div style="margin-top:34px;font-size:92px;font-weight:800;letter-spacing:-.04em;color:{p["suave"]};line-height:1">{p["pre"]}</div>' if p['pre'] else '<div style="height:40px"></div>'}
-  <h1 style="font-size:{nombre_px}px;margin-top:6px;color:{p['acento'] if p['texto'] == '#fff' else p['texto']}">{p['nombre']}</h1>
+  <h1 style="font-size:{nombre_px}px;margin-top:6px;color:{color_h1(p)}">{p['nombre']}</h1>
   <p style="margin:30px 0 0;font-size:52px;line-height:1.18;font-weight:650;letter-spacing:-.02em;color:{p['texto']};max-width:800px">{p['beneficio']}</p>
 </div>
 <div style="position:absolute;left:90px;bottom:90px;display:flex;gap:16px;flex-wrap:wrap;width:860px">{chips}</div>
@@ -238,12 +309,12 @@ def og(k, p):
 # Imagen para compartir de una app (la de los simuladores, con su pantalla): pre + nombre, beneficio y el celular
 def og_app(k, p):
     return f"""<style>{CSS}{EXTRA}</style><div class="lienzo t3" style="width:1200px;height:630px;background:{p['fondo']};color:{p['texto']}">
-<div class="glow" style="width:500px;height:500px;right:-100px;top:-160px;background:{p['acento']};opacity:.3"></div>
+<div class="glow" style="width:500px;height:500px;right:-100px;top:-160px;background:{p['acento']};opacity:.3"></div>{p.get('deco_og', '')}
 <div style="position:absolute;left:64px;top:56px">{marca(24, p)}</div>
 <div style="position:absolute;left:64px;top:140px;width:660px">
   <span class="tag" style="font-size:24px;background:{p['tagf']};color:{p['texto']}">{p['tag']}</span>
   {f'<div style="margin-top:22px;font-size:60px;font-weight:800;letter-spacing:-.04em;color:{p["suave"]};line-height:1">{p["pre"]}</div>' if p['pre'] else ''}
-  <h1 style="font-size:130px;color:{p['acento']}">{p['nombre']}</h1>
+  <h1 style="font-size:{p.get('og_px', 130)}px;color:{color_h1(p)}">{p['nombre']}</h1>
   <p style="margin:18px 0 0;font-size:32px;line-height:1.2;font-weight:650">{p['beneficio']}</p>
 </div>
 {tel(p['ui'](), 790, 60, .66, 5)}
