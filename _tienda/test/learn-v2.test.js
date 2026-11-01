@@ -155,7 +155,7 @@ describe('Vorka Learn v2: búsqueda, acerca y RSS', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/learn/acerca/">');
     expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
     for (const t of ['Quién la hace', 'Cómo verificamos los datos', 'Sin afiliación', 'Cómo reportar un error', 'Celaya', 'College Board', 'asesoría financiera']) expect(html, t).toContain(t);
-    expect(html).toContain('href="mailto:vorkamexico@gmail.com');
+    expect(html).toContain('href="mailto:hola@vorka.mx');
     expect(html).toContain('id="errores"');
     expect(html).toContain('"@type":"AboutPage"');
     expect(html).not.toMatch(/agencia/i);

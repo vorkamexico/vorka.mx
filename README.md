@@ -54,7 +54,7 @@ Llevan `<meta name="robots" content="noindex">` y además la cabecera `X-Robots-
 ## Conexiones
 
 - Agenda, voluntariado, boletín e inscripciones de Vorka FC (`/fc/`): van a **os.vorka.mx** (`/api/publico/…`)
-- Formularios de `oleynickhdz/` y `heymaya/`: Formsubmit → vorkamexico@gmail.com
+- Formularios de `oleynickhdz/` y `heymaya/`: Formsubmit → hola@vorka.mx
 - Fotos de Sparks: `fotos.vorka.mx` (Cloudflare R2)
 
 ## Preview local
@@ -67,4 +67,4 @@ Abre `http://localhost:8000` (los enlaces son absolutos, con doble clic en el ar
 
 ## Contacto
 
-vorkamexico@gmail.com · WhatsApp +52 81 1780 4869 · [@vorka.mx](https://www.instagram.com/vorka.mx/)
+hola@vorka.mx · WhatsApp +52 81 1780 4869 · [@vorka.mx](https://www.instagram.com/vorka.mx/)

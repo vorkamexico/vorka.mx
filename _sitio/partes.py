@@ -3,7 +3,7 @@ import html
 from urllib.parse import quote
 
 SITIO = 'https://vorka.mx'
-CORREO = 'vorkamexico@gmail.com'
+CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
 WA_MSG = 'Hola Vorka, ya decidí avanzar. Me gustaría empezar formalmente el proceso.'
 VERSION = '10'
