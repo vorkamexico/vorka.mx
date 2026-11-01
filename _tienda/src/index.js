@@ -28,10 +28,11 @@ import { paginaVuelve } from './vuelve.js';
 import { paginaAgenda } from './agenda.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaVende } from './vende.js';
+import { paginaClara } from './clara.js';
 import { paginaRuta } from './ruta.js';
 import { paginaLiderazgo } from './liderazgo.js';
 import { cargarTemporada } from './temporadas.js';
-import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp } from './suscripciones.js';
+import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp, cancelarApp } from './suscripciones.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo, modoSuscripcion } from './puntos.js';
 import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codigo-publico.js';
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
@@ -197,6 +198,7 @@ export class Admin extends WorkerEntrypoint {
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
   // Cuentas: mes gratis por invitar → saldo a favor en el siguiente cobro
   creditoApp(email, app, centavos, motivo) { return creditoApp(this.env, email, app, centavos, motivo); }
+  cancelarApp(email, app) { return cancelarApp(this.env, email, app); }
   // Complementos de la suscripción: lugares de Vuelve (tipo 'sucursal', el de siempre) o profesionales de Agenda ('profesional')
   lugaresApp(email, app, extras, tipo) { return lugaresApp(this.env, email, app, extras, tipo); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
@@ -400,6 +402,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
       if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);
+      if (url.pathname === '/tienda/clara' || url.pathname === '/tienda/clara/') return url.pathname.endsWith('/') ? await paginaClara(env, request, url) : Response.redirect(`${url.origin}/tienda/clara/${url.search}`, 301);
       // Ruta de Impacto: su ficha propia (el producto es de pago único, pero la página no es la genérica)
       if (url.pathname === '/tienda/ruta-de-impacto' || url.pathname === '/tienda/ruta-de-impacto/') return url.pathname.endsWith('/') ? await paginaRuta(env, request, url) : Response.redirect(`${url.origin}/tienda/ruta-de-impacto/${url.search}`, 301);
       // Evaluación de liderazgo Vorka: su ficha propia (la app vive en liderazgo.vorka.mx)

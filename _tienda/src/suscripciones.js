@@ -169,6 +169,19 @@ export async function portalApp(env, email, app, volver) {
   return { url: p.url };
 }
 
+// La app borró la cuenta de esa persona (por ejemplo, Clara › Borrar mi cuenta): ya no se le vuelve a cobrar.
+// Se cancela al final del periodo que ya pagó (no hay cobro nuevo ni reembolso automático; los reembolsos siguen su política).
+// Solo la suscripción propia de la app: un paquete que abre otras apps no se toca (motivo 'paquete').
+export async function cancelarApp(env, email, app) {
+  email = String(email || '').trim().toLowerCase();
+  const s = await vigente(env, email, app);
+  if (!s) return { ok: false, motivo: 'sin_suscripcion' };
+  if (s.app !== app) return { ok: false, motivo: 'paquete' };
+  if (!s.cancelar_al_final) await llamar(env, 'POST', `/subscriptions/${s.id}`, { cancel_at_period_end: 'true' }, { idempotencia: `cancelar-${s.id}` });
+  await run(env, 'UPDATE suscripciones SET cancelar_al_final = 1 WHERE id = ?', s.id);
+  return { ok: true, hasta: s.periodo_fin };
+}
+
 // Para Diversificación: cuántas suscripciones hay en cada estado y el ingreso mensual recurrente (los planes anuales cuentan /12)
 export async function resumenSuscripciones(env, app) {
   const filas = await all(env, 'SELECT estado, intervalo, monto_centavos, cancelar_al_final, created_at FROM suscripciones WHERE app = ?', app);

@@ -71,7 +71,7 @@ const SCRIPT_PUNTOS = `(function(){
 // prellena el campo y se revisa al momento. Si el guardado ya no sirve, se olvida sin avisar y queda lo de siempre.
 // #codigo-sobra: con un cupón por monto que no se usa completo, dice cuánto se pierde antes de pagar (lo escribe VD.hoy).
 const SCRIPT_SOCIO = `(function(){
-  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve')||document.getElementById('form-agenda')||document.getElementById('form-vende')||document.getElementById('form-cuentas'); if(!f||!window.fetch) return;
+  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve')||document.getElementById('form-agenda')||document.getElementById('form-vende')||document.getElementById('form-cuentas')||document.getElementById('form-clara'); if(!f||!window.fetch) return;
   var w=document.createElement('div'); w.className='t-campo t-socio';
   w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Tienes un código de descuento o de quien te recomendó?</button><div class="t-socio-c" hidden><label for="codigo">Código de descuento o de quien te recomendó <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. FUNDADOR30"><p class="t-desc" id="codigo-msj" role="status" aria-live="polite"></p><p class="t-desc t-desc-aviso" id="codigo-sobra" role="status" aria-live="polite" hidden></p></div>';
   var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(w);
@@ -108,7 +108,7 @@ const SCRIPT_SOCIO = `(function(){
 const SCRIPT_CUPON = `(function(){ try{ var c=new URLSearchParams(location.search).get('cupon'); if(c&&/^[A-Za-z0-9_-]{1,40}$/.test(c)) localStorage.setItem('vorka_cupon',JSON.stringify({c:c.toUpperCase(),t:Date.now()})); }catch(e){} })();`;
 
 // Formularios de compra: llevan el campo «código» y el ayudante del descuento (window.VD) antes del script de la página
-const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|cuentas)"/;
+const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|cuentas|clara)"/;
 
 // Íconos de trazo de la tienda (heredan el color del texto)
 const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;

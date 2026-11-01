@@ -22,6 +22,7 @@ describe('portafolio por línea de producto', () => {
     expect(lineaDe('prod_paa_paquete')).toBe('sim_paa');
     expect(lineaDe('prod_simulador_paa_examen')).toBe('sim_paa');
     expect(lineaDe('prod_agenda_vuelve_mensual')).toBe('agenda');
+    expect(lineaDe('prod_clara_anual')).toBe('clara');
     expect(lineaDe('prod_de_idea_a_proyecto')).toBe('otros');
     expect(esInterno('pruebas+ruta@vorka.mx')).toBe(true);
     expect(esInterno('Yo@Gmail.com', ['yo@gmail.com'])).toBe(true);

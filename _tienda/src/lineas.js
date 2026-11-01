@@ -10,7 +10,9 @@ export const SECCIONES_TIENDA = [
     texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen y Vende para tus pedidos y cobros. Pruébalas gratis.' },
   { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',
     texto: 'Brindi: invitaciones digitales para bodas, XV años y toda celebración. Cupo: la página de tu evento con registro, cover y check-in con QR, gratis hasta 30 personas.' },
-  { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.' },
+  { id: 'finanzas', claves: ['finanzas', 'finanzas personales'], linea: 'Finanzas personales', titulo: 'Tus préstamos en orden', texto: 'Cuentas: lleva lo que prestas a familiares y amigos, cada abono, intereses claros y el saldo al día. Prueba gratis 7 días.',
+    // Con Clara a la venta, la línea también habla de ella (si no, se queda como estaba)
+    variante: { si: p => p.contenido?.acceso?.app === 'clara', titulo: 'Tus finanzas en orden', texto: 'Clara: tus tarjetas, fechas de corte y de pago y tus gastos claros, desde 15 años y gratis con 1 tarjeta. Cuentas: lo que prestas a familiares y amigos, al día.' } },
 ];
 export const sinAcentos = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 export function seccionesCatalogo(productos) {
