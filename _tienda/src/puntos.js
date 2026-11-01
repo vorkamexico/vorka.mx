@@ -10,7 +10,7 @@
 // Reglas (Socios Vorka quedó integrado aquí): por cada compra pagada que entra con tu liga ganas un % de lo cobrado de
 // productos de Vorka en puntos, según tu nivel del semestre (10% a 30%, ver puntos-reglas.js). +10 puntos porcentuales
 // (tope 40%) si la compra incluye un producto con promoción vigente o un producto que tú sugeriste y el equipo aceptó.
-// Comprarte a ti mismo no cuenta. Las renovaciones de suscripciones dan puntos hasta la factura 12 (no suben de nivel).
+// Comprarte a ti mismo no cuenta. Suscripciones: puntos solo en el primer pago (el equipo puede elegir 5 % recurrente).
 // Equipo de Vorka en suscripciones: elige % de su nivel una vez o 5 % recurrente en cada pago (puntos-reglas.js › PCT_RECURRENTE).
 // 1 punto = $1 MXN, se canjean en cualquier producto de la tienda; siempre se cobra al menos $10 (mínimo de la pasarela).
 // Si una compra se reembolsa, sus puntos se revierten exactamente (y los que se usaron en ella, regresan).
@@ -169,15 +169,17 @@ export async function puntosAlPagar(env, orderId) {
   }
 }
 
-// Modo de puntos de una suscripción vendida por alguien del equipo: el de su cuenta al pagarse, guardado en la orden
-// (orders.ref_modo) para que las renovaciones sigan igual aunque después cambie su preferencia. null = regla de antes.
+// Modo de puntos de una suscripción, guardado en la orden al pagarse (orders.ref_modo) para que las renovaciones sigan igual
+// aunque después cambie la preferencia o la regla. Equipo: el de su cuenta. Fuera del equipo: 'unico' (solo el primer pago).
+// null = venta anterior a esta regla (renovaciones hasta la factura 12).
+const EXTERNOS_UNICO_DESDE = '2026-11-01T06:00:00.000Z';   // 1 de noviembre de 2026, 0:00 en el centro de México (así dicen los términos)
 async function modoDeVenta(env, o) {
   if (o.ref_modo) return o.ref_modo;
-  const cta = await one(env, 'SELECT equipo, modo_suscripcion FROM puntos_cuentas WHERE email = ?', o.ref_email);
-  if (cta?.equipo !== 1) return null;
   const items = await all(env, 'SELECT product_id FROM order_items WHERE order_id = ?', o.id);
   if (!(await suscripcionDeOrden(env, { items }))) return null;
-  const modo = MODOS_SUSCRIPCION.includes(cta.modo_suscripcion) ? cta.modo_suscripcion : 'recurrente';
+  const cta = await one(env, 'SELECT equipo, modo_suscripcion FROM puntos_cuentas WHERE email = ?', o.ref_email);
+  if (cta?.equipo !== 1 && String(o.paid_at || o.created_at || new Date().toISOString()) < EXTERNOS_UNICO_DESDE) return null;
+  const modo = cta?.equipo !== 1 ? 'unico' : MODOS_SUSCRIPCION.includes(cta.modo_suscripcion) ? cta.modo_suscripcion : 'recurrente';
   await run(env, 'UPDATE orders SET ref_modo = ? WHERE id = ? AND ref_modo IS NULL', modo, o.id);
   return (await one(env, 'SELECT ref_modo FROM orders WHERE id = ?', o.id)).ref_modo;
 }
@@ -240,7 +242,8 @@ export async function puntosFactura(env, f, sub) {
   if (!o || o.ref_tipo !== 'puntos' || !o.ref_email || o.ref_email === o.email) return null;
   const previas = (await one(env, "SELECT COUNT(*) n FROM puntos_movimientos WHERE suscripcion_id = ? AND tipo = 'ganado' AND clave != ?", sub.id, `factura:${f.id}`)).n;
   const numero = 2 + previas;
-  // Equipo: 'unico' ya cobró todo en el primer pago; 'recurrente' = 5 % de cada pago, sin límite, mientras siga en el equipo
+  // 'unico' (fuera del equipo, o equipo que lo eligió) ya cobró todo en el primer pago; 'recurrente' = 5 % de cada pago,
+  // sin límite, mientras siga en el equipo; null = venta anterior a esta regla (hasta la factura 12)
   if (o.ref_modo === 'unico') return null;
   if (o.ref_modo === 'recurrente') {
     if ((await one(env, 'SELECT equipo FROM puntos_cuentas WHERE email = ?', o.ref_email))?.equipo !== 1) return null;

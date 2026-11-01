@@ -7,7 +7,7 @@ import qrcode from './vendor/qrcode.js';
 import { navTienda, seccionFaq } from './tienda.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { TEMA_HEAD, selectorTema } from './tema.js';
-import { NIVELES, LOGROS, PCT_EXTRA, PCT_TOPE, FACTURAS_SUSCRIPCION, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
+import { NIVELES, LOGROS, PCT_EXTRA, PCT_TOPE, nivelDe, objetivoMeta, ventasPara, nombrePublico } from './puntos-reglas.js';
 
 const SITIO = 'https://vorka.mx';
 const TZ = 'America/Mexico_City';
@@ -1040,7 +1040,7 @@ const FAQ_PUNTOS = [
   ['¿Qué gana quien compra con mi liga?', `${PCT_REFERIDO} % de descuento en su primer pago en productos de Vorka México. En suscripciones (Vuelve, Agenda, Vende Pro y Cuentas) es solo el primer cobro; las renovaciones van a precio normal. Se aplica automáticamente al pagar si llegó con tu liga, o si escribe tu código en «¿Tienes un código de descuento o de quien te recomendó?». No aplica en productos de creadores ni cuando alguien compra con su propio código.`],
   ['¿Y si usa otro código, como FUNDADOR30?', 'Los descuentos no se acumulan: se aplica el mayor. Si llegó con tu liga, la compra sigue contando a tu nombre y ganas tus puntos sobre lo que pagó. Como el campo del código es uno solo, que abra tu liga antes de escribir el otro código.'],
   ['¿Cuánto tiempo tiene para comprar?', '30 días desde que abre tu liga, en el mismo celular o navegador. Si compra desde otro, que escriba tu código al pagar.'],
-  ['¿Las suscripciones me dan puntos?', `Sí: la compra y cada renovación pagada, hasta completar ${FACTURAS_SUSCRIPCION} pagos, con el porcentaje de tu nivel en ese momento. Las renovaciones no suben tu nivel.`],
+  ['¿Las suscripciones me dan puntos?', 'Sí: ganas el porcentaje de tu nivel sobre el primer pago, igual que en cualquier compra, y cuenta para subir de nivel. Las renovaciones no dan puntos. Si alguien contrató con tu liga antes del 1 de noviembre de 2026, esa suscripción conserva la regla anterior.'],
   ['¿Cómo uso mis puntos?', `Al pagar en la tienda, con el mismo correo de tu cuenta, en productos de Vorka México de pago único (no en suscripciones ni en productos de creadores). Siempre se cobran al menos $10 por compra. Si compras con la liga de alguien más, puedes usar tus puntos además de su ${PCT_REFERIDO} %.`],
   ['¿Qué pasa si una compra se reembolsa?', 'Se descuentan los puntos que esa compra te dio. Si usaste puntos en una compra que se reembolsa, te los regresamos.'],
 ];
