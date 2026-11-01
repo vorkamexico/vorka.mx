@@ -11,6 +11,7 @@ import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
 import { paginaCatalogo, paginaProducto, sitemapTienda, refDeVisita, catalogoCompartir } from './tienda.js';
 import * as admin from './admin.js';
+import { portafolio } from './portafolio.js';
 import { ESTILOS } from './paginas.js';
 import { procesarTransferencias, refrescarCreador, repartosPendientes, facturasPorCalcular } from './marketplace.js';
 import { rutasCreadores } from './creadores.js';
@@ -46,6 +47,7 @@ import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesia
 export class Admin extends WorkerEntrypoint {
   resumen(f) { return admin.resumen(this.env, f); }
   tablero(f) { return admin.tablero(this.env, f); }
+  portafolio(f) { return portafolio(this.env, f); }
   ordenes(f) { return admin.ordenes(this.env, f); }
   orden(id) { return admin.orden(this.env, id); }
   reenviar(id) { return admin.reenviar(this.env, id); }
