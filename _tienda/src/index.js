@@ -197,7 +197,7 @@ export class Admin extends WorkerEntrypoint {
   suscripcionApp(email, app) { return suscripcionApp(this.env, email, app); }
   portalApp(email, app, volver) { return portalApp(this.env, email, app, volver); }
   // Cuentas: mes gratis por invitar → saldo a favor en el siguiente cobro
-  creditoApp(email, app, centavos, motivo) { return creditoApp(this.env, email, app, centavos, motivo); }
+  creditoApp(email, app, centavos, motivo, clave) { return creditoApp(this.env, email, app, centavos, motivo, clave); }
   cancelarApp(email, app) { return cancelarApp(this.env, email, app); }
   // Complementos de la suscripción: lugares de Vuelve (tipo 'sucursal', el de siempre) o profesionales de Agenda ('profesional')
   lugaresApp(email, app, extras, tipo) { return lugaresApp(this.env, email, app, extras, tipo); }

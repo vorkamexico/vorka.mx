@@ -158,3 +158,122 @@ describe('resumenSuscripciones', () => {
     expect(r).toMatchObject({ vigentes: 1, mrr_centavos: 9900, cortesias: 1, estados: { active: 1 } });
   });
 });
+
+describe('Vende: cortesía con vendedoras incluidas (sillas)', () => {
+  it('guarda las sillas como renglón del complemento del plan y cortesiaApp las devuelve', async () => {
+    const r = await regalar('prod_vende_mensual', { cantidad: 2, sillas: 5 });
+    expect(r).toMatchObject({ directo: true, sillas: 5 });
+    const items = env.DB.raw.prepare('SELECT product_id, cantidad, precio_centavos FROM order_items WHERE order_id = ? ORDER BY id').all(r.id);
+    expect(items).toEqual([{ product_id: 'prod_vende_mensual', cantidad: 2, precio_centavos: 0 }, { product_id: 'prod_vende_silla_mensual', cantidad: 5, precio_centavos: 0 }]);
+    const s = await suscripcionApp(env, 'ole@correo.mx', 'vende');
+    expect(s).toMatchObject({ cortesia: true, vigente: true, sillas: 5, sucursales: 0 });
+    // La duración la da el plan (2 meses), no las sillas
+    cerca(s.periodo_fin, Date.now() + 61 * DIA);
+    // El correo lo dice; el panel muestra una sola fila con sus sillas
+    expect(correos.at(-1).texto).toMatch(/Incluye 5 vendedoras en tu red/);
+    const lista = await new Admin({}, env).cortesias();
+    expect(lista.filter(t => t.id === r.id)).toHaveLength(1);
+    expect(lista.find(t => t.id === r.id)).toMatchObject({ sillas: 5, cantidad: 2, directo: true });
+    // Nada en Stripe y no es venta
+    expect(llamadas).toHaveLength(0);
+    expect(await resumenSuscripciones(env, 'vende')).toMatchObject({ mrr_centavos: 0, cortesias: 1 });
+  });
+
+  it('el plan anual usa la silla anual; sin sillas no hay renglón extra', async () => {
+    const r = await regalar('prod_vende_anual', { sillas: 1 });
+    expect(env.DB.raw.prepare("SELECT product_id FROM order_items WHERE order_id = ? AND product_id <> 'prod_vende_anual'").all(r.id)).toEqual([{ product_id: 'prod_vende_silla_anual' }]);
+    const r2 = await regalar('prod_vende_mensual', { email: 'otra@correo.mx', sillas: 0 });
+    expect(env.DB.raw.prepare('SELECT COUNT(*) n FROM order_items WHERE order_id = ?').get(r2.id).n).toBe(1);
+    expect((await suscripcionApp(env, 'otra@correo.mx', 'vende')).sillas).toBe(0);
+  });
+
+  it('solo con un plan de Vende, directo a un correo y de 0 a 50', async () => {
+    await expect(regalar('prod_vuelve_mensual', { sillas: 2 })).rejects.toThrow(/solo van con un plan de Vende/);
+    await expect(crearCortesias(env, { product_id: 'prod_vende_mensual', cantidad: 1, sillas: 2 })).rejects.toThrow(/directo a un correo/);
+    await expect(regalar('prod_vende_mensual', { sillas: 51 })).rejects.toThrow(/0 a 50/);
+    await expect(regalar('prod_vende_mensual', { sillas: -1 })).rejects.toThrow(/0 a 50/);
+  });
+
+  it('lugaresApp: dentro de las sillas de la cortesía no cambia nada; más allá pide contratar Vende Pro', async () => {
+    await regalar('prod_vende_mensual', { sillas: 3 });
+    expect(await lugaresApp(env, 'ole@correo.mx', 'vende', 0)).toMatchObject({ cortesia: true, sillas: 3 });
+    expect(await lugaresApp(env, 'ole@correo.mx', 'vende', 3)).toMatchObject({ cortesia: true, sillas: 3 });
+    await expect(lugaresApp(env, 'ole@correo.mx', 'vende', 4)).rejects.toThrow('Tu cortesía incluye 3 vendedoras; para sumar más, contrata Vende Pro.');
+    expect(llamadas).toHaveLength(0);
+  });
+
+  it('quitada: las sillas terminan con la cortesía (vencida, la app las apaga)', async () => {
+    const r = await regalar('prod_vende_mensual', { sillas: 4 });
+    await revocarCortesias(env, r.id);
+    const s = await suscripcionApp(env, 'ole@correo.mx', 'vende');
+    expect(s).toMatchObject({ cortesia: true, vigente: false });
+    expect(Date.parse(s.periodo_fin)).toBeLessThanOrEqual(Date.now());
+  });
+});
+
+describe('creditoApp con solo una cortesía: +1 mes de cortesía', () => {
+  const credito = (clave = 'vuelve-recomendacion-7', email = 'ole@correo.mx') =>
+    new Admin({}, env).creditoApp(email, 'vuelve', 39900, 'Mes gratis: Café Luna se suscribió a Vuelve por tu recomendación', clave);
+
+  it('suma 1 mes desde el fin de la cortesía actual, sin Stripe y sin contar como venta', async () => {
+    await regalar('prod_vuelve_mensual');
+    const antes = await suscripcionApp(env, 'ole@correo.mx', 'vuelve');
+    const r = await credito();
+    expect(r).toMatchObject({ ok: true, cortesia: true });
+    expect(r.hasta).toBe(finCortesia(antes.periodo_fin, 'month', 1));
+    const s = await suscripcionApp(env, 'ole@correo.mx', 'vuelve');
+    expect(s).toMatchObject({ cortesia: true, vigente: true, periodo_fin: r.hasta, order_id: r.order_id });
+    const o = env.DB.raw.prepare('SELECT * FROM orders WHERE id = ?').get(r.order_id);
+    expect(o).toMatchObject({ proveedor: 'cortesia', regalo: 0, monto_centavos: 0, estado: 'paid', paid_at: antes.periodo_fin });
+    expect(o.metodo_pago).toMatch(/^cortesía: Mes por recomendación/);
+    expect(llamadas).toHaveLength(0);
+    expect(await resumenSuscripciones(env, 'vuelve')).toMatchObject({ mrr_centavos: 0, vigentes: 0, cortesias: 1 });
+    // Ventas del panel: ni este mes ni el del mes extra la cuentan
+    const { resumen } = await import('../src/admin.js');
+    for (const mes of [new Date().toISOString().slice(0, 7), r.hasta.slice(0, 7), antes.periodo_fin.slice(0, 7)])
+      expect(await resumen(env, { mes })).toMatchObject({ ventas: 0, monto_centavos: 0 });
+  });
+
+  it('una cortesía anual también suma 1 mes (no un año)', async () => {
+    await regalar('prod_vuelve_anual');
+    const antes = await suscripcionApp(env, 'ole@correo.mx', 'vuelve');
+    const r = await credito();
+    expect(r.hasta).toBe(finCortesia(antes.periodo_fin, 'month', 1));
+    expect((await suscripcionApp(env, 'ole@correo.mx', 'vuelve')).periodo_fin).toBe(r.hasta);
+  });
+
+  it('el mismo premio nunca dos veces; otro premio suma otro mes', async () => {
+    await regalar('prod_vuelve_mensual');
+    const a = await credito();
+    const b = await credito();
+    expect(b).toMatchObject({ ok: true, cortesia: true, ya: true, hasta: a.hasta, order_id: a.order_id });
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM orders WHERE proveedor = 'cortesia'").get().n).toBe(2);
+    const c = await credito('vuelve-recomendacion-8');
+    expect(c.hasta).toBe(finCortesia(a.hasta, 'month', 1));
+    expect((await suscripcionApp(env, 'ole@correo.mx', 'vuelve')).periodo_fin).toBe(c.hasta);
+  });
+
+  it('Vende: el mes extra conserva las vendedoras incluidas', async () => {
+    await regalar('prod_vende_mensual', { sillas: 2 });
+    const r = await new Admin({}, env).creditoApp('ole@correo.mx', 'vende', 9900, 'Mes por invitar', 'vende-x');
+    expect(r.ok).toBe(true);
+    expect(await suscripcionApp(env, 'ole@correo.mx', 'vende')).toMatchObject({ periodo_fin: r.hasta, sillas: 2 });
+  });
+
+  it('sin cortesía ni suscripción: sin_suscripcion; con cortesía vencida tampoco suma', async () => {
+    expect(await credito()).toEqual({ ok: false, motivo: 'sin_suscripcion' });
+    const r = await regalar('prod_vuelve_mensual');
+    fechar(r.id, new Date(Date.now() - 40 * DIA).toISOString());
+    expect(await credito()).toEqual({ ok: false, motivo: 'sin_suscripcion' });
+  });
+
+  it('con Stripe vigente sigue siendo saldo a favor (con llave de idempotencia)', async () => {
+    await regalar('prod_vuelve_mensual');
+    sub({ app: 'vuelve', product_id: 'prod_vuelve_mensual' });
+    const heads = [];
+    fetch.mockImplementation(async (url, init = {}) => { llamadas.push(url); heads.push(init.headers); return new Response('{}'); });
+    expect(await credito()).toEqual({ ok: true });
+    expect(llamadas[0]).toMatch(/\/customers\/cus_1\/balance_transactions$/);
+    expect(heads[0]['idempotency-key']).toBe('credito-vuelve-vuelve-recomendacion-7');
+  });
+});

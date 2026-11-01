@@ -39,7 +39,9 @@ export function correoEntrega(env, orden, items, token, extra = {}) {
     const deRegalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
     const it = items.find(i => { const c = contenidoDe(i); return c.suscripcion && !c.complemento; });
     const cortesiaHasta = deRegalo ? finCortesia(orden.paid_at || orden.created_at || Date.now(), plan.suscripcion.intervalo === 'year' ? 'year' : 'month', it?.cantidad) : null;
-    return correoAcceso(env, orden, items, token, plan.acceso, true, { cortesiaHasta });
+    // Cortesía de Vende con vendedoras incluidas (renglón de la silla): se dice en el correo
+    const sillas = deRegalo && plan.acceso.app === 'vende' ? items.filter(i => contenidoDe(i).complemento).reduce((n, i) => n + (i.cantidad || 0), 0) : 0;
+    return correoAcceso(env, orden, items, token, plan.acceso, true, { cortesiaHasta, sillas });
   }
   // Compra de un solo producto de acceso: el botón entra directo a la app; con archivos, a la página de descargas
   if (items.length && accesos.every(Boolean)) return correoAcceso(env, orden, items, token, accesos[0], accesos.every(x => x.app === accesos[0].app && x.url === accesos[0].url), extra);
@@ -144,7 +146,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura 6 meses a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const linea2Final = extra.cortesiaHasta
-    ? `Es una cortesía de Vorka México: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}. No se renueva y no se te cobra nada. Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
+    ? `Es una cortesía de Vorka México: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}. No se renueva y no se te cobra nada.${extra.sillas ? ` Incluye ${extra.sillas === 1 ? '1 vendedora' : `${extra.sillas} vendedoras`} en tu red (Vende › Más › Mi red), también sin costo hasta esa fecha.` : ''} Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
     : linea2;
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
