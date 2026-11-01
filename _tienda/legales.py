@@ -1,6 +1,7 @@
 # Vorka México · páginas legales de la tienda (y de Cupo: /legal/cupo/, /legal/cupo/privacidad/, /legal/cupo/privacidad-asistentes/): /legal/terminos/, /legal/reembolsos/, /legal/creadores/ y Brindi:
 # /legal/brindi/ (condiciones), /legal/brindi/privacidad/ (clientes) y /legal/brindi/privacidad-invitados/ (invitados)
 # Cuentas: /legal/cuentas/ (condiciones) y /legal/cuentas/privacidad/
+# Clara: /legal/clara/ (condiciones) y /legal/clara/privacidad/
 # Vuelve: /legal/vuelve/ (condiciones), /legal/vuelve/privacidad/ (negocios) y /legal/vuelve/privacidad-clientes/ (clientes de cada negocio)
 # Agenda: /legal/agenda/ (condiciones) y /legal/agenda/privacidad/ (negocios). El aviso para los clientes de cada negocio vive
 # en la app (agenda.vorka.mx/citas/privacidad-clientes, repo vorka-os) porque se enlaza desde cada reserva.
@@ -17,6 +18,7 @@ ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
 ACTUALIZADO_VENDE = '24 de octubre de 2026'
 ACTUALIZADO_AGENDA = '26 de octubre de 2026'
+ACTUALIZADO_CLARA = '1 de noviembre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
 
@@ -566,6 +568,75 @@ VUELVE_CLIENTES = [
     ('cambios', 'Cambios a este aviso', '<p>La versión vigente siempre está en esta dirección, enlazada desde cada página de registro y desde tu tarjeta.</p>'),
 ]
 
+# Clara (finanzas personales para jóvenes desde 15 años y para quien no entiende de tarjetas; app propia en clara.vorka.mx, Worker `clara`).
+# Mismas bases que Cuentas y Vende (LFPDPPP 2025, LFPC: renovación automática informada y cancelación por el mismo medio). Aquí además:
+# - datos patrimoniales/financieros que la persona captura → consentimiento EXPRESO al registrarse (casilla «acepto» en la app);
+# - personas de 15 a 17 años con autorización de madre, padre o tutor, sin marketing a menores;
+# - no es asesoría financiera ni recomendación de productos; la regla de día inhábil (LTOSF art. 18 Bis 4) va solo como información.
+# BORRADOR (nov 2026): REQUIERE REVISIÓN DE UN ABOGADO CON CÉDULA antes de activar la venta (productos prod_clara_* entran con activo = 0).
+MIGAS_CLARA = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/clara/">Clara</a>'
+CLARA = [
+    ('quien', 'Quién presta el servicio', f'<p>Clara es una herramienta de software para organizar tus finanzas personales (tus tarjetas de crédito, sus fechas de corte y de pago, tus gastos, ingresos, presupuesto y metas de ahorro) y aprender a usarlas, desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y la persona que usa Clara (“tú”). Al crear tu cuenta o suscribirte las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/clara/privacidad/">aviso de privacidad de Clara</a>.</p>'),
+    ('no-es', 'Qué es y qué no es Clara', li(
+        'Clara es una herramienta de <b>organización y educación financiera</b>. <b>No es asesoría financiera</b> ni recomendación de productos financieros, y no sustituye la opinión de un profesional.',
+        'Clara <b>no es un banco</b> ni una institución financiera: no capta ni custodia dinero, no hace pagos ni transferencias, no otorga créditos y no reporta a burós de crédito.',
+        'Clara <b>no se conecta a tus cuentas bancarias</b>. Tus tarjetas y movimientos los capturas tú a mano o, con Pro, importando un archivo CSV que descargas de tu banco.',
+        'Clara <b>nunca te pide</b> el número completo de tu tarjeta, el código de seguridad (CVV), la fecha de vencimiento ni contraseñas o claves de tu banco. No los captures en ningún campo ni nota.')),
+    ('edad', 'Edad mínima y personas menores de edad', li(
+        'Clara se puede usar <b>desde los 15 años</b>.',
+        'Si tienes entre 15 y 17 años, tu madre, padre o tutor debe leer el aviso de privacidad y <b>autorizar</b> que uses Clara al registrarte. Guardamos la fecha en que se marcó esa autorización.',
+        'Si alguien paga Clara Pro por una persona menor de edad, debe usar en la compra el mismo correo con el que esa persona entra a Clara.')),
+    ('planes', 'Plan gratis, prueba y Clara Pro', li(
+        'Clara es <b>gratis para siempre</b> con 1 tarjeta de crédito y sus recordatorios, el registro de gastos e ingresos, «¿Me alcanza?» y el resumen del mes. No pedimos tarjeta.',
+        'Al crear tu cuenta tienes <b>7 días naturales de Clara Pro</b> para probarla, sin tarjeta. No se te cobra nada al terminar.',
+        'Clara Pro agrega tarjetas ilimitadas, «¿Con cuál tarjeta pago hoy?», presupuesto por categoría, metas de ahorro con fecha, meses anteriores, exportación a Excel e importación de CSV.',
+        'Si sin Pro tienes más de 1 tarjeta, tu cuenta queda en <b>modo consulta</b>: puedes ver y borrar tus registros, pero no agregar nuevos. Archiva las tarjetas que sobran o suscríbete y todo sigue donde lo dejaste.')),
+    ('suscripcion', 'Suscripción, precio y renovación automática', li(
+        'Clara Pro es <b>mensual o anual</b>, en pesos mexicanos con IVA incluido. El precio vigente se muestra en <a href="/tienda/clara/">vorka.mx/tienda/clara</a> antes de pagar.',
+        '<b>La suscripción se renueva sola</b> al final de cada periodo (cada mes o cada año, según tu plan) y se cobra a la tarjeta que registraste, a través de Stripe, desde la tienda de Vorka. Vorka nunca recibe los datos de tu tarjeta.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días; mientras tanto sigues con Pro. Si no se logra cobrar, vuelves al plan gratis.',
+        'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
+        'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
+    ('cancelar', 'Cancelación y reembolsos', li(
+        'Cancelas cuando quieras desde Clara › Ajustes › Suscripción, en el portal de pagos de Stripe, sin llamadas ni trámites. Sigues con Pro hasta el final del periodo que ya pagaste; no se hacen cobros nuevos.',
+        'Borrar tu cuenta no cancela la suscripción, porque el cobro vive en la tienda: cancélala antes de borrar tu cuenta o escríbenos.',
+        'Aplica la <a href="/legal/reembolsos/">política de reembolsos</a> de la tienda. Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo que una falla atribuible a Clara te impida usarla y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
+    ('calculos', 'Cálculos, avisos y tu estado de cuenta', li(
+        'Clara calcula con los datos que tú capturas (por ejemplo, saldos, fechas, tasa y montos de tu estado de cuenta). Los cálculos que dependen de supuestos, como los intereses si solo pagas el mínimo, son <b>estimados y se marcan como tal</b>; el banco puede calcular distinto.',
+        '<b>Revisa siempre tu estado de cuenta</b> y la información de tu banco: lo que diga tu banco es lo que cuenta. Si un dato capturado es incorrecto, el resultado también lo será.',
+        'Cuando una fecha límite de pago cae en día inhábil, Clara te muestra el siguiente día hábil conforme al artículo 18 Bis 4 de la Ley para la Transparencia y Ordenamiento de los Servicios Financieros, <b>solo como información</b>. Los días inhábiles bancarios pueden cambiar; confírmalo con tu banco y, si puedes, no dejes el pago para el final.',
+        'Los recordatorios (día del corte, 5 días antes del pago, 1 día antes y el día de pago) llegan como notificación del navegador si las activas (en iPhone, solo si instalas Clara en tu pantalla de inicio, con iOS 16.4 o más reciente) y por correo de respaldo. Pueden retrasarse o no llegar por causas del teléfono, del navegador o del correo; no dependas solo de ellos.')),
+    ('uso', 'Uso aceptable', li(
+        'Clara es para organizar tus propias finanzas. No captures datos de otras personas ni datos que Clara no pide (como números completos de tarjeta o contraseñas).',
+        'Podemos suspender una cuenta que abuse del servicio o lo use para actividades ilícitas; te avisaremos el motivo. Si la suspensión fue por un error nuestro, te reembolsamos el periodo afectado.')),
+    ('disponibilidad', 'Disponibilidad', '<p>Hacemos lo razonable para que Clara esté disponible siempre y para proteger tu información, pero puede haber interrupciones por mantenimiento o fallas de terceros.</p>'),
+    ('conservacion', 'Tus datos y cómo borrar tu cuenta', '<p>Tus datos son tuyos. Puedes descargarlos en JSON gratis cuando quieras y, con Pro, exportar tus movimientos a Excel. Desde Clara › Ajustes › Borrar mi cuenta borras tu cuenta y <b>todos</b> tus registros de inmediato y sin vuelta atrás. Mientras tu cuenta exista, tus datos se conservan aunque no tengas Pro.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes de México.</p>'),
+]
+
+CLARA_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de las personas que usan Clara. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Tu cuenta:</b> correo electrónico, nombre y fecha de nacimiento (para confirmar que tienes 15 años o más). Si eres menor de edad, la fecha en que se marcó la autorización de tu madre, padre o tutor.',
+        '<b>Datos financieros que tú capturas:</b> de tus tarjetas, el nombre con que las reconoces, el banco (en texto), los últimos 4 dígitos (opcional), el límite, el saldo, los días de corte y de pago, la tasa y los montos de tu estado de cuenta; además tus movimientos (gastos, ingresos, ahorro y pagos), categorías, metas y presupuesto.',
+        '<b>Suscripción:</b> si compras Clara Pro, plan, monto, fechas y estado de tus pagos, que lleva la tienda de Vorka. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Avisos:</b> si activas las notificaciones, la suscripción técnica que genera tu navegador para poder enviártelas.',
+        '<b>Seguridad:</b> la dirección IP y tu correo para limitar intentos repetidos de acceso, por periodos cortos.') +
+        '<p><b>Nunca pedimos</b> el número completo de tu tarjeta, el CVV, la fecha de vencimiento ni contraseñas o claves bancarias, y Clara no se conecta a tus cuentas. No tratamos datos personales sensibles.</p>'),
+    ('consentimiento', 'Datos patrimoniales y tu consentimiento expreso', '<p>Los datos financieros que capturas en Clara son <b>datos patrimoniales o financieros</b>. Por eso te pedimos tu <b>consentimiento expreso</b> al registrarte, marcando la casilla de aceptación del aviso de privacidad. Si eres menor de edad, ese consentimiento lo da tu madre, padre o tutor. Puedes revocarlo cuando quieras borrando tu cuenta o escribiéndonos; sin él no podemos darte el servicio.</p>'),
+    ('finalidades', 'Para qué los usamos', '<p><b>Finalidades necesarias:</b> crear y mantener tu cuenta; guardar tus registros y hacer los cálculos de la app; enviarte códigos de acceso y los recordatorios de tus tarjetas por notificación y por correo; darte soporte; cobrar Clara Pro a través de la tienda de Vorka (con Stripe) y emitir facturas; mantener la seguridad y cumplir obligaciones legales.</p><p><b>Finalidad secundaria:</b> enviarte promociones y novedades de Vorka México, <b>solo si eres mayor de edad y lo pides</b> marcándolo en la app. Puedes dejar de recibirlas cuando quieras sin que afecte tu servicio. <b>A personas menores de edad no les enviamos promociones ni marketing.</b></p><p>No usamos tus datos financieros para publicidad ni para ofrecerte productos financieros de terceros.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos datos. Usamos encargados que los tratan solo por nuestra cuenta: <b>Cloudflare</b> (alojamiento y base de datos), <b>Resend</b> (correos), <b>Stripe</b> (cobro de Clara Pro) y los servicios de notificaciones de tu navegador (<b>Apple, Google o Mozilla</b>), que reciben los avisos cifrados para entregarlos a tu dispositivo. Algunos tienen servidores fuera de México.</p>'),
+    ('menores', 'Personas de 15 a 17 años', '<p>Si tienes entre 15 y 17 años, solo puedes usar Clara con el consentimiento de tu madre, padre o tutor, que debe leer este aviso y autorizarlo al registrarte. Ellos pueden ejercer los derechos ARCO en tu nombre. No usamos los datos de menores de edad para marketing.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde la app: corriges tus registros, <b>descargas tus datos en JSON gratis</b> y borras tu cuenta. Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('conservacion', 'Cuánto tiempo los conservamos', li(
+        'Cuenta y registros: mientras tu cuenta exista. Con el botón <b>Borrar mi cuenta</b> (en Ajustes) se borran tu cuenta y todos tus registros <b>de inmediato</b>.',
+        'Suscripción y facturación de Clara Pro: los conserva la tienda durante los plazos fiscales (al menos 5 años).',
+        'Códigos de acceso y registros de intentos: se borran al vencer.')),
+    ('cookies', 'Cookies', '<p>Clara usa una sola cookie necesaria (<code>cl</code>) para mantener tu sesión. No usa cookies de rastreo ni publicidad.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
 def escribir(ruta, html):
     p = os.path.join(RAIZ, ruta.strip('/'), 'index.html')
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -628,3 +699,9 @@ escribir('/legal/agenda/', pagina('/legal/agenda/', 'Condiciones de Agenda', 'Co
 escribir('/legal/agenda/privacidad/', pagina('/legal/agenda/privacidad/', 'Aviso de privacidad de Agenda', 'Aviso de privacidad de <span class="metal">Agenda.</span>',
     'Qué datos tratamos de los negocios que usan Agenda, para qué y cómo ejercer tus derechos.', 'Agenda · Negocios', AGENDA_PRIVACIDAD,
     aplica='Aplica a los negocios que usan Agenda', migas=MIGAS_AGENDA, actualizado=ACTUALIZADO_AGENDA))
+escribir('/legal/clara/', pagina('/legal/clara/', 'Condiciones de Clara', 'Condiciones de <span class="metal">Clara.</span>',
+    'El contrato entre Vorka México y quien usa Clara para organizar sus tarjetas y su dinero: qué es y qué no es, edad mínima, plan gratis, Clara Pro con renovación automática, cálculos estimados, cancelación y datos.', 'Clara', CLARA,
+    aplica='Aplica a quien usa clara.vorka.mx', migas=MIGAS_CLARA, actualizado=ACTUALIZADO_CLARA))
+escribir('/legal/clara/privacidad/', pagina('/legal/clara/privacidad/', 'Aviso de privacidad de Clara', 'Aviso de privacidad de <span class="metal">Clara.</span>',
+    'Qué datos tratamos de las personas que usan Clara, incluidos los datos financieros que capturan, para qué, con quién y cómo ejercer tus derechos.', 'Clara', CLARA_PRIVACIDAD,
+    aplica='Aplica a quien usa clara.vorka.mx', migas=MIGAS_CLARA, actualizado=ACTUALIZADO_CLARA))

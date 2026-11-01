@@ -115,6 +115,7 @@ const APPS_TIENDA = {
   vuelve: { nombre: 'Vuelve · Tarjetas de lealtad', precio: p => `${precio(p)} al mes` },
   vende: { nombre: 'Vende · Pedidos y cobros', precio: () => 'Empieza gratis' },   // corto, en un renglón (el precio de Pro está en su ficha)
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
+  clara: { nombre: 'Clara · Tus tarjetas y tu dinero', precio: () => 'Empieza gratis' },   // gratis con 1 tarjeta (el precio de Pro está en su ficha)
 };
 function vista(p, url, desdeBrindi) {
   {

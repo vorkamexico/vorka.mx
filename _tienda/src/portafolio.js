@@ -20,6 +20,7 @@ export const LINEAS = [
   { clave: 'liderazgo', nombre: 'Evaluación de liderazgo', re: /^prod_evaluacion_liderazgo/ },
   { clave: 'test_vocacional', nombre: 'Test vocacional', re: /^prod_test_vocacional/, test: 'vocacional' },
   { clave: 'proyecto_social', nombre: '¿Qué proyecto social hago?', re: /^prod_proyecto_social/, test: 'proyecto' },
+  { clave: 'clara', nombre: 'Clara', re: /^prod_clara_/ },
   { clave: 'otros', nombre: 'Kits y otros', re: /./ },
 ];
 export const lineaDe = id => LINEAS.find(l => l.re.test(String(id || ''))).clave;
