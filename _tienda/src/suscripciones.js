@@ -77,9 +77,11 @@ const fechaMx = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'Am
 // Cuentan las enviadas directo a un correo y los canjes de ligas de cortesía (las suscripciones no se pueden comprar para regalar,
 // así que un canje de un plan de suscripción siempre viene de una cortesía; igual se revisa).
 async function filasCortesia(env, apps, email = null) {
-  const filas = await all(env, `SELECT o.id, o.email, COALESCE(o.paid_at, o.created_at) desde, i.cantidad, i.intervalo, p.contenido
+  // Las quitadas (estado 'refunded') también vienen, ya vencidas desde que se quitaron: así la app deja de dar acceso aunque
+  // haya guardado la fecha de la cortesía (cortesia_hasta)
+  const filas = await all(env, `SELECT o.id, o.email, o.estado, o.updated_at, COALESCE(o.paid_at, o.created_at) desde, i.cantidad, i.intervalo, p.contenido
     FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
-    WHERE o.estado = 'paid' AND o.regalo = 0 AND o.monto_centavos = 0${email ? ' AND lower(o.email) = ?' : ''}
+    WHERE o.estado IN ('paid', 'refunded') AND o.regalo = 0 AND o.monto_centavos = 0${email ? ' AND lower(o.email) = ?' : ''}
       AND (o.proveedor = 'cortesia' OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
       AND json_extract(p.contenido, '$.acceso.app') IN (${apps.map(() => '?').join(',')})
       AND json_extract(p.contenido, '$.suscripcion') IS NOT NULL AND COALESCE(json_extract(p.contenido, '$.complemento'), 0) = 0`,
@@ -88,8 +90,9 @@ async function filasCortesia(env, apps, email = null) {
   return filas.map(f => {
     let c; try { c = JSON.parse(f.contenido || '{}'); } catch { c = {}; }
     const intervalo = ['month', 'year'].includes(f.intervalo) ? f.intervalo : c.suscripcion?.intervalo === 'year' ? 'year' : 'month';
-    const periodo_fin = finCortesia(f.desde, intervalo, f.cantidad);
-    return { order_id: f.id, email: String(f.email || '').toLowerCase(), app: c.acceso?.app, intervalo, periodo_fin, vigente: Date.parse(periodo_fin) > ahora };
+    const fin = finCortesia(f.desde, intervalo, f.cantidad);
+    const periodo_fin = f.estado === 'refunded' ? [fin, f.updated_at || f.desde].sort()[0] : fin;
+    return { order_id: f.id, quitada: f.estado === 'refunded', email: String(f.email || '').toLowerCase(), app: c.acceso?.app, intervalo, periodo_fin, vigente: Date.parse(periodo_fin) > ahora };
   });
 }
 

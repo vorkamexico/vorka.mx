@@ -69,7 +69,10 @@ describe('suscripcionApp con una cortesía', () => {
     const r = await regalar('prod_cuentas_anual');
     expect((await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).vigente).toBe(true);
     await revocarCortesias(env, r.id);
-    expect(await suscripcionApp(env, 'ole@correo.mx', 'cuentas')).toBeNull();
+    // Regresa como cortesía vencida (no null): la app que guardó cortesia_hasta la corta en ese momento
+    const s = await suscripcionApp(env, 'ole@correo.mx', 'cuentas');
+    expect(s).toMatchObject({ cortesia: true, vigente: false, estado: 'canceled' });
+    expect(Date.parse(s.periodo_fin)).toBeLessThanOrEqual(Date.now());
   });
 
   it('una suscripción vigente de Stripe siempre gana', async () => {
