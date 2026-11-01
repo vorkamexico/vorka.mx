@@ -12,6 +12,7 @@ export const SECCIONES = {
   finanzas:   { grupo: 'tema',   corto: 'Finanzas',  a: '#155C38', b: '#2F9A62', t: '#1F7A4A', to: '#86DCAA', s: '#E8F5ED', so: 'rgba(92,196,139,.13)',  motivo: 'monedas' },
   camino:     { grupo: 'tema',   corto: 'Camino',    a: '#3B2A86', b: '#6E5BD0', t: '#4A389E', to: '#B9ADF5', s: '#EFEDFB', so: 'rgba(160,145,240,.13)', motivo: 'senal' },
   negocio:    { grupo: 'tema',   corto: 'Negocio',   a: '#7A1E46', b: '#C2416F', t: '#9A2858', to: '#F5A3C2', s: '#FBEAF1', so: 'rgba(235,120,165,.13)', motivo: 'tienda' },
+  apps:       { grupo: 'tema',   corto: 'Apps',      a: '#0D3F5C', b: '#1C6F96', t: '#155E80', to: '#8CCDEB', s: '#E8F3F9', so: 'rgba(110,190,230,.13)', motivo: 'celular' },
 };
 // Vorka Learn (portada, acerca, búsqueda y secciones sin color propio)
 export const LEARN_COLOR = { grupo: 'tema', corto: 'Learn', a: '#2A1035', b: '#6B2A85', t: '#6B2A85', to: '#D6AAEC', s: '#F4EDF7', so: 'rgba(192,138,219,.13)', motivo: 'libro' };

@@ -16,6 +16,7 @@ import { UNIVERSIDADES } from './paa-universidades.js';
 import { FINANZAS, ARTICULOS_FINANZAS, rutaArticuloFinanzas, RUTA_FINANZAS, paginaArticuloFinanzas } from '../learn-finanzas.js';
 import { TEMA_NEGOCIO } from '../learn-negocio.js';
 import { TEMA_CAMINO } from '../learn-camino.js';
+import { TEMA_APPS } from '../learn-apps.js';
 
 export const ACTUALIZADO = '2026-10-31';
 export const ACTUALIZADO_TXT = 'octubre de 2026';
@@ -486,7 +487,7 @@ export const rutaViejaIndice = sim => `/${sim}/guias/`;
 const examenes = () => Object.keys(SIMS).filter(s => guiasDe(s).length);
 // Todas las URL para el sitemap de Learn: portada, índices por examen, guías, Finanzas personales y «Acerca de Vorka Learn»
 // Secciones de tema hechas con src/learn/tema.js (crearTema): clave → T (rutas, página de cada artículo, URL del sitemap)
-const TEMAS_T = () => ({ camino: TEMA_CAMINO, negocio: TEMA_NEGOCIO });
+const TEMAS_T = () => ({ camino: TEMA_CAMINO, negocio: TEMA_NEGOCIO, apps: TEMA_APPS });
 export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), RUTA_FINANZAS, ...ARTICULOS_FINANZAS.map(rutaArticuloFinanzas),
   ...Object.values(TEMAS_T()).flatMap(T => T.urls()), '/learn/acerca/'];
 export const tituloGuia = x => conMarca(x.titulo.replace(/\s*\|\s*Vorka( México)?$/, ''));
@@ -502,7 +503,7 @@ export const LEARN_PORTADA = {
   titulo: 'Vorka Learn: guías de admisión, dinero y negocio',
   descripcion: 'Guías con fuentes oficiales: exámenes de admisión, becas y cómo elegir carrera, finanzas personales y consejos para tu negocio pequeño.',
   h1: 'Guías para tu examen, tu dinero y tu negocio',
-  lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen (qué viene, cómo se califica y cómo estudiar), cómo elegir carrera y pedir una beca, y guías claras de finanzas personales y de negocio pequeño. Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.',
+  lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen (qué viene, cómo se califica y cómo estudiar), cómo elegir carrera y pedir una beca, guías claras de finanzas personales y de negocio pequeño, y cómo crear y vender tu propia app. Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.',
 };
 // Sitemap propio de Learn (vorka.mx/learn/sitemap.xml, declarado en el robots.txt de la raíz)
 export function sitemapLearn() {
@@ -529,7 +530,7 @@ export function seccionGuias(sim) {
 
 // Rutas de Learn y redirecciones de las URL viejas. 301 directo a la URL final (sin cadenas de redirección).
 //   /learn/  /learn/<examen>/  /learn/<examen>/<guía>/  /learn/<tema>/  /learn/<tema>/<artículo>/  /learn/sitemap.xml
-//   (temas: finanzas, camino, negocio)
+//   (temas: finanzas, camino, negocio, apps)
 //   (sin barra final → con barra)
 //   /<simulador>/guias/ y /<simulador>/guias/<guía>/ (con o sin barra) → su página en /learn/
 export function rutasLearn(req, env, url) {

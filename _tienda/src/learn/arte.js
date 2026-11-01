@@ -1,5 +1,5 @@
 // Vorka Learn · ilustraciones originales hechas con código (SVG): fondo con el degradado de la sección, la franja inclinada
-// de la marca (-28°, el ángulo de la V) y un dibujo simple del tema (hoja de respuestas, libros, mapa, cuaderno, monedas).
+// de la marca (-28°, el ángulo de la V) y un dibujo simple del tema (hoja de respuestas, libros, mapa, cuaderno, monedas, tienda, señal, celular).
 // Sin fotos ni imágenes de terceros, sin logos de universidades ni de instituciones. Pesan 2–3 KB.
 // semilla: cambia detalles (qué burbuja va llena, dónde van los círculos) para que dos guías de la misma sección no se
 // vean idénticas. id: sufijo para que los degradados no choquen cuando hay varios dibujos en la misma página.
@@ -66,6 +66,16 @@ const MOTIVOS = {
 <path d="M${izq ? 208 : 206} 92h${izq ? 92 : 96}l22 17-22 17h-${izq ? 92 : 96}z" fill="${BLANCO}"/><rect x="${izq ? 220 : 218}" y="104" width="58" height="6" rx="3" fill="${x.a}" opacity=".45"/>
 <path d="M194 136h-86l-22 17 22 17h86z" fill="${ORO}"/><rect x="112" y="150" width="54" height="6" rx="3" fill="${TINTA}" opacity=".35"/>
 <path d="M208 180h70l18 14-18 14h-70z" fill="${BLANCO}" opacity=".85"/><rect x="220" y="191" width="40" height="6" rx="3" fill="${x.a}" opacity=".35"/>`;
+  },
+  // Celular con una cuadrícula de apps (una resaltada) y una burbuja de «nueva venta» con palomita
+  celular: (x, s) => {
+    const sel = s % 6;
+    const apps = [0, 1, 2, 3, 4, 5].map(i => { const cx = 208 + (i % 3) * 32, cy = 104 + Math.floor(i / 3) * 34;
+      return `<rect x="${cx - 12}" y="${cy - 12}" width="24" height="24" rx="7" fill="${i === sel ? ORO_2 : x.a}" opacity="${i === sel ? 1 : .22}"/>`; }).join('');
+    return `<path d="M0 236c80-24 160-26 240-8s160 12 240-14v56H0z" fill="${BLANCO}" opacity=".12"/>
+<rect x="182" y="50" width="116" height="196" rx="22" fill="${TINTA}"/><rect x="190" y="62" width="100" height="172" rx="14" fill="${BLANCO}"/><rect x="226" y="54" width="28" height="5" rx="2.5" fill="${BLANCO}" opacity=".35"/>
+${apps}<rect x="200" y="182" width="80" height="10" rx="5" fill="${x.a}" opacity=".35"/><rect x="200" y="200" width="52" height="10" rx="5" fill="${x.a}" opacity=".2"/>
+<g transform="translate(${300 + (s % 3) * 6} 88)"><rect width="98" height="40" rx="14" fill="${ORO}"/><path d="M14 40l-6 12 18-12z" fill="${ORO}"/><circle cx="22" cy="20" r="10" fill="${BLANCO}"/><path d="M17 20l4 4 7-8" fill="none" stroke="${x.a}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="13" width="46" height="6" rx="3" fill="${TINTA}" opacity=".45"/><rect x="40" y="24" width="30" height="5" rx="2.5" fill="${TINTA}" opacity=".25"/></g>`;
   },
   // Libro abierto con una chispa (Vorka Learn)
   libro: (x, s) => `<path d="M240 92c-26-16-62-20-92-14v128c30-6 66-2 92 14z" fill="${BLANCO}"/><path d="M240 92c26-16 62-20 92-14v128c-30-6-66-2-92 14z" fill="${BLANCO}" opacity=".9"/><path d="M240 92v128" stroke="${x.a}" stroke-opacity=".25" stroke-width="2"/>
