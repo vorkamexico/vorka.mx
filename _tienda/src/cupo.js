@@ -59,7 +59,7 @@ export async function paginaCupo(env, req, url) {
   const niveles = (await Promise.all(NIVELES.map(async n => ({ ...n, prod: await productoPorSlug(env, n.slug) })))).filter(n => n.prod);
   const paquetes = (await Promise.all(PAQUETES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug) })))).filter(x => x.prod);
   const rec = niveles.find(n => n.recomendado) || niveles[0];
-  if (rec && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: rec.prod.id, ref_code: code });
+  if (rec && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: rec.prod.id, ref_code: code }, req);
   const todos = [...niveles, ...paquetes];
   const elegido = todos.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : rec?.slug;
   const error = url.searchParams.get('error') || '';

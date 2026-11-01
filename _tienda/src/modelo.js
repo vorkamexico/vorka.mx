@@ -1,6 +1,6 @@
 // Acceso a datos de la tienda (D1). Los precios SIEMPRE salen de aquí, nunca del navegador.
 import { SQL_CODIGO_REAL } from './codigo-publico.js';
-import { all, one, run, ahoraISO } from './util.js';
+import { all, one, run, ahoraISO, hex, enc } from './util.js';
 import { transicion } from './estados.js';
 import { SQL_APARTADOS, SQL_MOVIMIENTOS, descuentoMaximo, COBRO_MINIMO } from './puntos.js';
 import { REFERIDO, centavosDe, lineaCompra, esCuponRegalo } from './descuentos.js';
@@ -182,8 +182,18 @@ export async function registrarEvento(env, proveedor, eventoId, tipo, payload) {
 export const marcarEvento = (env, proveedor, eventoId, error = null) =>
   run(env, 'UPDATE webhook_events SET procesado = ?, error = ? WHERE proveedor = ? AND evento_id = ?', error ? 0 : 1, error, proveedor, eventoId);
 
-export const registrarAnalitica = (env, tipo, { product_id = null, order_id = null, ref_code = null } = {}) =>
-  run(env, 'INSERT INTO events (tipo, product_id, order_id, ref_code) VALUES (?,?,?,?)', tipo, product_id, order_id, ref_code);
+// req (solo en view_product): una visita por persona y producto cada 30 minutos. Recargar, revisiones automáticas o robots que
+// no se anuncian inflaban las vistas (p. ej. 157 en 3 minutos a Brindi el 2026-10-30). La IP no se guarda: solo un hash.
+export async function registrarAnalitica(env, tipo, { product_id = null, order_id = null, ref_code = null } = {}, req = null) {
+  if (req && tipo === 'view_product' && product_id) {
+    const ip = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for') || '';
+    if (ip) {
+      const h = hex(await crypto.subtle.digest('SHA-256', enc.encode(`vista:${ip}:${product_id}`))).slice(0, 24);
+      if (!(await dentroDelLimite(env, `vista:${h}`, 1, 1800))) return;
+    }
+  }
+  return run(env, 'INSERT INTO events (tipo, product_id, order_id, ref_code) VALUES (?,?,?,?)', tipo, product_id, order_id, ref_code);
+}
 
 // Ventana fija. Devuelve true si la petición entra en el límite.
 export async function dentroDelLimite(env, clave, max, segundos) {

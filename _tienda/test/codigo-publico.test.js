@@ -56,6 +56,23 @@ describe('código público', () => {
     expect(JSON.stringify(v)).not.toMatch(/cliente|Secreto/i);   // nada de quien compró
   });
 
+  it('ventasEquipo: avisos desde el último id y tablero del mes, solo de los correos pedidos y sin datos de quien compró', async () => {
+    const ini = await A.ventasEquipo({ emails: [ANA] });
+    expect(ini.ventas).toEqual([]);                               // sin cursor: solo el último id
+    await compraPagada('cliente@mail.com', original);
+    const otro = await A.codigoPuntos('otro@vorka.mx', 'Otro');
+    await compraPagada('cliente2@mail.com', otro);
+    const nuevas = await A.ventasEquipo({ emails: [ANA], despues_de: ini.ultimo });
+    expect(nuevas.ventas).toHaveLength(1);
+    expect(nuevas.ventas[0]).toMatchObject({ email: ANA });
+    expect(nuevas.ventas[0].puntos).toBeGreaterThan(0);
+    expect(nuevas.ultimo).toBeGreaterThan(ini.ultimo);
+    expect(JSON.stringify(nuevas)).not.toMatch(/cliente|Secreto/i);
+    expect((await A.ventasEquipo({ emails: [ANA], despues_de: nuevas.ultimo })).ventas).toEqual([]);
+    const mes = await A.ventasEquipo({ emails: [ANA, 'otro@vorka.mx'], desde: '2000-01-01' });
+    expect(mes.ventas.map(v => v.email).sort()).toEqual([ANA, 'otro@vorka.mx']);
+  });
+
   it('la liga ?ref= con el código nuevo guarda la cookie y la página de compra lo reconoce', async () => {
     await A.cambiarCodigo(ANA, 'ANAVENDE');
     const r = await worker.fetch(new Request('https://vorka.mx/tienda/?ref=ANAVENDE'), env);

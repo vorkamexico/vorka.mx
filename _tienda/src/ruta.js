@@ -72,7 +72,7 @@ export async function paginaRuta(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   // A la venta: activo. Si todavía no, la ficha se ve (para revisarla) pero sin compra y sin indexar.
   const p = await productoPorSlug(env, SLUG_RUTA);
-  if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code });
+  if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
   const precioN = p ? p.precio_centavos / 100 : PRECIO_BASE;
   const precioT = p ? precio(p) : `$${PRECIO_BASE} MXN`;
   const regalo = url.searchParams.get('regalo') === '1';
