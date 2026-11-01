@@ -149,11 +149,29 @@ describe('Suscripciones del equipo: % de su nivel una vez o 5 % recurrente', () 
     expect((await A.modoSuscripcion('ana@vorka.mx', 'otro')).ok).toBe(false);
   });
 
-  it('fuera del equipo nada cambia: % del nivel en cada pago hasta la factura 12', async () => {
-    const ex = await A.codigoPuntos('externa@mail.com', 'Ext');
-    const o = await vuelve(ex);
-    expect(env.DB.raw.prepare('SELECT ref_modo FROM orders WHERE id = ?').get(o.id).ref_modo).toBeNull();
-    await renovar(o, 'in_e2');
-    expect(mov('factura:in_e2')).toMatchObject({ pct: 10, factor: 1 });
+  it('fuera del equipo, desde el 1 de noviembre de 2026: % del nivel solo en el primer pago; las renovaciones no dan puntos', async () => {
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-11-02T18:00:00Z') });
+    try {
+      const ex = await A.codigoPuntos('externa@mail.com', 'Ext');
+      const o = await vuelve(ex);
+      expect(env.DB.raw.prepare('SELECT ref_modo FROM orders WHERE id = ?').get(o.id).ref_modo).toBe('unico');
+      expect(ganado('externa@mail.com')[0]).toMatchObject({ pct: 10, factor: 1, puntos: 40 });   // 10 % de $399
+      await renovar(o, 'in_e2');
+      expect(mov('factura:in_e2')).toBeUndefined();
+      const p = await compraPagada('otro@mail.com', ex);                                        // pago único: igual que siempre
+      expect(env.DB.raw.prepare('SELECT ref_modo FROM orders WHERE id = ?').get(p.id).ref_modo).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('fuera del equipo, ventas anteriores al 1 de noviembre de 2026: conservan % del nivel hasta la factura 12', async () => {
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-31T23:00:00Z') });   // 31 de octubre, 17:00 en el centro de México
+    try {
+      const ex = await A.codigoPuntos('externa@mail.com', 'Ext');
+      const o = await vuelve(ex);
+      expect(env.DB.raw.prepare('SELECT ref_modo FROM orders WHERE id = ?').get(o.id).ref_modo).toBeNull();
+      vi.setSystemTime(new Date('2026-12-01T18:00:00Z'));
+      await renovar(o, 'in_e2');
+      expect(mov('factura:in_e2')).toMatchObject({ pct: 10, factor: 1 });
+    } finally { vi.useRealTimers(); }
   });
 });
