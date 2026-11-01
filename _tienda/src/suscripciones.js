@@ -37,12 +37,16 @@ export async function itemsSuscripcion(env, plan, cantidades = {}) {
   return items;
 }
 
-// ¿La orden es de suscripción? Devuelve { intervalo, app } leyendo los productos de la base (nunca del navegador)
+// ¿La orden es de suscripción? Devuelve { intervalo, app, product_id, creador_id } leyendo los productos de la base (nunca
+// del navegador). Producto de creador con precio mensual y anual: el intervalo es el que se eligió (order_items.intervalo).
 export async function suscripcionDeOrden(env, orden) {
   for (const it of orden.items || []) {
-    const r = await one(env, 'SELECT contenido FROM products WHERE id = ?', it.product_id);
+    const r = await one(env, 'SELECT contenido, creador_id FROM products WHERE id = ?', it.product_id);
     let c; try { c = JSON.parse(r?.contenido || '{}'); } catch { c = {}; }
-    if (c.suscripcion && !c.complemento) return { intervalo: c.suscripcion.intervalo === 'year' ? 'year' : 'month', app: c.acceso?.app || null, product_id: it.product_id };
+    if (c.suscripcion && !c.complemento) {
+      const intervalo = r?.creador_id && ['month', 'year'].includes(it.intervalo) ? it.intervalo : c.suscripcion.intervalo === 'year' ? 'year' : 'month';
+      return { intervalo, app: c.acceso?.app || null, product_id: it.product_id, creador_id: r?.creador_id || null };
+    }
   }
   return null;
 }
@@ -80,19 +84,26 @@ export async function guardarSuscripcion(env, sub) {
   if (!email || !app || !plan) { console.error('suscripción sin datos', sub.id); return null; }
   // Desde la API 2025-03-31 el periodo vive en cada item; antes, en la suscripción
   const fin = items[0]?.current_period_end ?? sub.current_period_end;
+  // De qué creador es (si es un SaaS de creador): siempre de la base, nunca de la metadata
+  const creador = await one(env, 'SELECT creador_id FROM products WHERE id = ?', plan);
   const fila = {
     id: sub.id, email, app, product_id: plan, order_id: meta.order_id || null,
     customer_id: typeof sub.customer === 'object' ? sub.customer?.id : sub.customer || null,
     estado: sub.status, intervalo: items[0]?.price?.recurring?.interval === 'year' ? 'year' : 'month',
     periodo_fin: segISO(fin), cancelar_al_final: sub.cancel_at_period_end || sub.cancel_at ? 1 : 0, sucursales, profesionales, monto_centavos: monto,
+    creador_id: creador?.creador_id || null,
+    cancelada_at: sub.status === 'canceled' ? segISO(sub.ended_at || sub.canceled_at) || ahoraISO() : null,
   };
-  await run(env, `INSERT INTO suscripciones (id, email, app, product_id, order_id, customer_id, estado, intervalo, periodo_fin, cancelar_al_final, sucursales, profesionales, monto_centavos)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+  await run(env, `INSERT INTO suscripciones (id, email, app, product_id, order_id, customer_id, estado, intervalo, periodo_fin, cancelar_al_final, sucursales, profesionales, monto_centavos, creador_id, cancelada_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     ON CONFLICT (id) DO UPDATE SET estado = excluded.estado, intervalo = excluded.intervalo, periodo_fin = excluded.periodo_fin,
       cancelar_al_final = excluded.cancelar_al_final, sucursales = excluded.sucursales, profesionales = excluded.profesionales, monto_centavos = excluded.monto_centavos,
       customer_id = COALESCE(excluded.customer_id, suscripciones.customer_id), order_id = COALESCE(suscripciones.order_id, excluded.order_id),
+      creador_id = COALESCE(suscripciones.creador_id, excluded.creador_id),
+      cancelada_at = CASE WHEN excluded.estado = 'canceled' THEN COALESCE(suscripciones.cancelada_at, excluded.cancelada_at) ELSE NULL END,
       updated_at = ?`,
-    fila.id, fila.email, fila.app, fila.product_id, fila.order_id, fila.customer_id, fila.estado, fila.intervalo, fila.periodo_fin, fila.cancelar_al_final, fila.sucursales, fila.profesionales, fila.monto_centavos, ahoraISO());
+    fila.id, fila.email, fila.app, fila.product_id, fila.order_id, fila.customer_id, fila.estado, fila.intervalo, fila.periodo_fin, fila.cancelar_al_final, fila.sucursales, fila.profesionales, fila.monto_centavos,
+    fila.creador_id, fila.cancelada_at, ahoraISO());
   return fila;
 }
 

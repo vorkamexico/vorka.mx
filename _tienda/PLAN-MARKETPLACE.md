@@ -84,7 +84,7 @@ Si no está activa, la transferencia queda pendiente y sale sola cuando se activ
 Las tarifas de Stripe dependen del método de pago: consulta [stripe.com/mx/pricing](https://stripe.com/mx/pricing). Conviene revisar el reporte de márgenes de Connect en el Dashboard.
 
 ### I. Cobros recurrentes
-No aplica por ahora: no hay suscripciones ni cuota mensual para los creadores.
+Desde noviembre de 2026 los creadores pueden vender su SaaS / app por suscripción (migración 0060, `src/creadores-saas.js`): mismo patrón de cargo de Vorka + transferencia, pero **una transferencia por cada factura pagada** (primer cobro y cada renovación), con la comisión de Vorka en **max(20 %, % del creador)** y un CHECK en `transferencias` que no acepta menos de 20 % en facturas. Plazo: 7 días (mensual) / 11 días (anual). La app del creador consulta `/api/creadores/v1/suscripciones` con su llave y recibe avisos firmados. Documentación: vorka.mx/creadores/docs.
 
 ### J. Plan de construcción
 1. **Stripe (tú, en el Dashboard):** activar Connect, completar el perfil de plataforma y aceptar la responsabilidad de saldos negativos de la plataforma.

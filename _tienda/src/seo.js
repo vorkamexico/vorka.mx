@@ -38,6 +38,18 @@ export function ofertas({ ruta, centavos, moneda = 'MXN', desde, cuantas, detall
 }
 
 /**
+ * Oferta de una suscripción (SaaS de creadores): el precio es por periodo, así que va con priceSpecification
+ * UnitPriceSpecification y referenceQuantity de 1 mes (MON) o 1 año (ANN) (códigos UN/CEFACT) — así Google no la lee
+ * como pago único. seller: quien cobra (Vorka México, el comercio); la marca del producto va aparte (brand).
+ */
+export function ofertaSuscripcion({ ruta, centavos, intervalo, moneda = 'MXN', nombre }) {
+  const price = pesos(centavos);
+  return { ...oferta({ ruta, price, moneda, ...(nombre ? { name: nombre } : {}) }),
+    priceSpecification: { '@type': 'UnitPriceSpecification', price, priceCurrency: moneda,
+      referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: intervalo === 'year' ? 'ANN' : 'MON' } } };
+}
+
+/**
  * Migas: Inicio › Tienda › Producto. ruta: la canónica del producto. medio: [nombre, ruta] opcionales entre Tienda y el
  * producto (p. ej. Brindi › Bodas).
  */

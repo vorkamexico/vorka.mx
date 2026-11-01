@@ -7,7 +7,7 @@ import { all, one, run, ahoraISO } from './util.js';
 import { reenviarEnlace } from './entrega.js';
 import { crearEnlace } from './creadores-acceso.js';
 import { enlaceAcceso, solicitudRechazada, productoRevisado } from './correos-creadores.js';
-import { refrescarCreador } from './marketplace.js';
+import { refrescarCreador, PISO_SUSCRIPCION } from './marketplace.js';
 import { motivoNoRecordar, MAX_SEGUIMIENTOS } from './recordatorio.js';
 import { avisar } from './puntos-push.js';
 import { diaMx } from './puntos-reglas.js';
@@ -264,7 +264,7 @@ const EsquemaProducto = z.object({
 const htmlSeguro = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/\n/g, '<br>');
 
 // Slugs que no pueden usarse porque son rutas de la tienda
-const RESERVADOS = new Set(['gracias', 'retomar', 'regalo', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar', 'socios', 'puntos', 'cuenta']);
+const RESERVADOS = new Set(['gracias', 'retomar', 'regalo', 'img', 'estilos-css', 'sitemap-xml', 'creadores', 'descargas', 'api', 'legal', 'carrito', 'checkout', 'buscar', 'socios', 'puntos', 'cuenta', 'suscripcion']);
 export const SLUG_VALIDO = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 // Slug escrito a mano en el editor: formato válido, no reservado y que nadie más lo use (ni como enlace anterior de otro producto)
 export async function validarSlug(env, slug, id) {
@@ -544,14 +544,18 @@ export async function decidirCreador(env, id, datos) {
   const actual = { ...c, estado, nota: d.nota || null };
   if (d.accion === 'aprobar') await enlaceAcceso(env, actual, await crearEnlace(env, c.id), { bienvenida: true });
   if (d.accion === 'rechazar') await solicitudRechazada(env, actual);
-  return { ok: true, estado };
+  return { ok: true, estado, ...(d.comision_pct != null ? notaPiso(d.comision_pct) : {}) };
 }
+
+// El % del creador vale tal cual en sus descargables; en sus suscripciones (SaaS) Vorka nunca cobra menos de 20 %
+// (marketplace.js › PISO_SUSCRIPCION; la base de datos tampoco acepta una transferencia de factura con menos)
+const notaPiso = n => n < PISO_SUSCRIPCION ? { nota_piso: `Este ${n} % aplica a sus descargables. En suscripciones (SaaS) Vorka cobra ${PISO_SUSCRIPCION} % mínimo.`, comision_suscripcion_pct: PISO_SUSCRIPCION } : { comision_suscripcion_pct: n };
 
 export async function comisionCreador(env, id, pct) {
   const n = Number(pct);
   if (!(n >= 0 && n <= 100)) throw new Error('La comisión va de 0 a 100 %.');
   await run(env, 'UPDATE creadores SET comision_pct = ? WHERE id = ?', n, String(id));
-  return { ok: true };
+  return { ok: true, ...notaPiso(n) };
 }
 
 export async function revisarStripeCreador(env, id) {
@@ -569,7 +573,12 @@ export async function decidirProducto(env, id, { aprobar, nota } = {}) {
   const p = await productoPorId(env, id);
   if (!p?.creador_id) throw new Error('Ese producto no es de un creador.');
   const c = await one(env, 'SELECT * FROM creadores WHERE id = ?', p.creador_id);
-  if (aprobar) {
+  if (aprobar && p.contenido?.tipo === 'saas') {
+    // SaaS: no hay archivos; lo que se revisa es su app (URL), su soporte y sus precios
+    if (!/^https:\/\//.test(p.contenido.acceso?.url || '') || !p.contenido.acceso?.soporte) throw new Error('Al SaaS le falta la URL de su app o su correo de soporte.');
+    if (!Object.values(p.contenido.suscripcion?.precios || {}).some(v => v > 0)) throw new Error('Al SaaS le falta su precio.');
+    await run(env, "UPDATE products SET revision = 'aprobado', activo = 1, nota_revision = ?, updated_at = ? WHERE id = ?", nota || null, ahoraISO(), p.id);
+  } else if (aprobar) {
     if (!p.r2_keys.length) throw new Error('El producto no tiene archivos.');
     for (const a of p.r2_keys) if (!(await env.PRODUCTOS.head(a.key))) throw new Error(`Falta el archivo "${a.nombre}".`);
     await run(env, "UPDATE products SET revision = 'aprobado', activo = 1, nota_revision = ?, updated_at = ? WHERE id = ?", nota || null, ahoraISO(), p.id);

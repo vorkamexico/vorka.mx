@@ -15,8 +15,10 @@ import { temporadaActual, decoracion } from './temporadas.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { seccionesCatalogo, sinAcentos } from './lineas.js';
 import { avisoCupon } from './cupones-regalo.js';
-import { oferta, migas, ldScript } from './seo.js';
+import { oferta, ofertaSuscripcion, migas, ldScript } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
+import { esSaas } from './creadores-saas.js';
+import { precioIntervalo } from './modelo.js';
 export { seccionesCatalogo };
 
 const SITIO = 'https://vorka.mx';
@@ -116,6 +118,9 @@ const APPS_TIENDA = {
 };
 function vista(p, url, desdeBrindi) {
   {
+    // SaaS de un creador por suscripción: "por <creador>" y el precio por periodo
+    if (esSaas(p)) return { p, url, nombre: p.nombre, texto: `Por ${p.creador_nombre || 'un creador'}. ${p.descripcion_corta || ''}`.trim(), incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),
+      cat: 'Suscripción', img: p, precio: precioSaas(p), regalable: false, min: p.precio_centavos };
     if (esBrindi(p)) return { p, url, nombre: BRINDI.nombre, texto: BRINDI.texto, incluye: BRINDI.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
@@ -410,6 +415,7 @@ export async function paginaProducto(env, req, url, slug) {
   });
   const { code, cookie } = await refDeVisita(env, req, url);
   if (!BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
+  if (esSaas(p)) return paginaSaas(env, url, p, cookie);
 
   const c = p.contenido;
   // Si el producto tiene su propia página (p. ej. vorka.mx/simulador-paa/), esa es la canónica para Google
@@ -453,6 +459,129 @@ ${seccionResenas(rs)}
 ${c.acceso?.app === 'cupo' ? ELEGIR('cupo') : ''}
 ${await masTienda(env, seccionDe(p))}
 <div class="t-barra" id="barra-compra"><div><b class="num">${precio(p)}</b><small>${esAcceso(p) ? 'Acceso inmediato' : 'Descarga inmediata'}</small></div><a class="btn acento chico" href="#comprar">Comprar</a></div>`,
+  });
+}
+
+// ---------- SaaS de creadores por suscripción ----------
+const POR = { month: 'al mes', year: 'al año' };
+const CORTO = { month: '/mes', year: '/año' };
+// Texto del precio en la tarjeta: el mensual si lo hay; si no, el anual
+export const precioSaas = p => { const m = precioIntervalo(p, 'month'); return m ? `${precio({ precio_centavos: m })} ${POR.month}` : `${precio({ precio_centavos: precioIntervalo(p, 'year') || p.precio_centavos })} ${POR.year}`; };
+
+const faqSaas = (p, a) => [
+  { p: '¿Cómo entro a la app?', r: `En cuanto se confirma tu pago te llega un correo con el botón para entrar a ${esc(p.nombre)}. Entra con el <b>mismo correo con el que pagas</b>: así la app reconoce tu suscripción.` },
+  { p: '¿Cómo pago y cuándo se cobra?', r: 'Con tarjeta de crédito o débito; el pago lo procesa Stripe y nosotros nunca vemos los datos de tu tarjeta. La suscripción se renueva sola cada periodo hasta que la canceles. En suscripciones no hay pago en OXXO ni SPEI.' },
+  { p: '¿Cómo cambio mi tarjeta o cancelo?', r: 'Cuando quieras, en <a href="/tienda/suscripcion">vorka.mx/tienda/suscripcion</a> con el correo de tu compra (o desde la app, si lo ofrece). Al cancelar, tu acceso sigue hasta el final del periodo que ya pagaste.' },
+  { p: '¿Quién da el soporte?', r: `La app la crea y la opera ${esc(p.creador_nombre || 'su creador')}: dudas de uso${a.soporte ? ` a <a href="mailto:${esc(a.soporte)}">${esc(a.soporte)}</a>` : ''}. Cobros, recibos, facturas y cancelaciones los atiende Vorka México en <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.` },
+  { p: '¿Hay reembolsos?', r: 'En planes anuales, si cancelas dentro de los 10 días naturales siguientes al primer cobro te devolvemos tu dinero completo. Fuera de eso no hay reembolsos proporcionales por cancelar a mitad de un periodo, salvo que la app no funcione y no se resuelva en un plazo razonable. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.' },
+  { p: '¿Me pueden facturar?', r: 'Sí. Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales y el número de orden de tu correo, dentro del mismo mes del cobro.' },
+];
+
+const CSS_SAAS = `<style>
+.s-por{display:inline-flex;gap:6px;align-items:center;margin:4px 0 0;font-weight:650;color:inherit;opacity:.85}
+.s-planes{display:grid;gap:10px;margin:0 0 6px;border:0;padding:0}.s-planes legend{font-weight:650;margin-bottom:6px}
+.s-plan{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
+.s-plan:has(input:checked){border-color:var(--fg,#141114);box-shadow:0 0 0 1px var(--fg,#141114)}.s-plan span{display:grid}.s-plan small{color:var(--fg-2)}.s-plan input{margin:0}
+.s-ahorro{font-size:12.5px;font-weight:700;color:#1d6b3a}
+.s-quien{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));margin:0;padding:0;list-style:none}
+.s-quien li{border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:4px}.s-quien small{color:var(--fg-2)}
+.s-capturas{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.s-capturas img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+</style>`;
+
+function formSaas(p, { error = '' } = {}) {
+  const m = precioIntervalo(p, 'month'), y = precioIntervalo(p, 'year');
+  const def = m ? 'month' : 'year';
+  const ahorro = m && y && m * 12 > y ? m * 12 - y : 0;
+  const plan = (k, c) => `<label class="s-plan"><span><b>${k === 'month' ? 'Mensual' : 'Anual'}</b><small>${precio({ precio_centavos: c })} ${POR[k]}</small>${k === 'year' && ahorro ? `<span class="s-ahorro">Ahorras ${precio({ precio_centavos: ahorro })} al año</span>` : ''}</span>
+    <input type="radio" name="intervalo" value="${k}" data-precio="${esc(precio({ precio_centavos: c }))}" data-por="${CORTO[k]}"${k === def ? ' checked' : ''}></label>`;
+  return `
+<form class="t-form t-compra" id="form-saas" method="post" action="/api/checkout" novalidate>
+  <input type="hidden" name="slug" value="${esc(p.slug)}">
+  ${m && y ? `<fieldset class="s-planes"><legend>Elige tu plan</legend>${plan('month', m)}${plan('year', y)}</fieldset>` : `<input type="hidden" name="intervalo" value="${def}">`}
+  <div class="t-precio"><b class="num" id="precio-total">${precio({ precio_centavos: def === 'month' ? m : y })}<small id="precio-por"> ${CORTO[def]}</small></b><span>Suscripción · se renueva sola · cancela cuando quieras</span></div>
+  <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
+  <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Con este correo entras a ${esc(p.nombre)}.</small></div>
+  <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos y condiciones</a>, el cobro automático en cada periodo y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
+  <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
+  <button class="btn acento" type="submit" id="btn-compra">Suscribirme ${FLECHA}</button>
+  <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta con Stripe · cobra Vorka México</span></p>
+</form>`;
+}
+const SCRIPT_SAAS = `(function(){
+  var f=document.getElementById('form-saas'); if(!f) return;
+  var total=document.getElementById('precio-total'), por=document.getElementById('precio-por');
+  f.querySelectorAll('input[name=intervalo][type=radio]').forEach(function(r){ r.addEventListener('change',function(){ if(r.checked){ total.firstChild.nodeValue=r.dataset.precio; por.textContent=' '+r.dataset.por; } }); });
+  if(!window.fetch) return;
+  var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;
+  function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var d={}; new FormData(f).forEach(function(v,k){d[k]=v;}); d.terminos=!!f.terminos.checked;
+    if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Escribe tu nombre.'); }
+    if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Escribe un correo válido.'); }
+    if(!d.terminos){ return mostrar('Debes aceptar los términos y el aviso de privacidad.'); }
+    err.hidden=true; btn.disabled=true; btn.textContent='Abriendo el pago…';
+    fetch('/api/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(d)})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+      .then(function(x){ if(x.ok&&x.j.url){ location.href=x.j.url; } else mostrar(x.j.error||'No pudimos abrir el pago. Intenta de nuevo.'); })
+      .catch(function(){ mostrar('Sin conexión. Revisa tu internet e intenta de nuevo.'); });
+  });
+  var barra=document.getElementById('barra-compra');
+  if(barra&&'IntersectionObserver' in window) new IntersectionObserver(function(es){ barra.classList.toggle('oculta',es[0].isIntersecting); }).observe(f);
+})();`;
+
+async function paginaSaas(env, url, p, cookie) {
+  const c = p.contenido, a = c.acceso || {};
+  const ruta = `/tienda/${p.slug}/`;
+  const imagen = p.imagen ? new URL(p.imagen, SITIO).toString() : undefined;
+  const rs = await resenasDe(env, ruta);
+  const planes = ['month', 'year'].map(k => [k, precioIntervalo(p, k)]).filter(([, v]) => v);
+  const creador = p.creador_nombre || 'su creador';
+  const ld = [{
+    '@context': 'https://schema.org', '@type': 'Product', name: p.nombre, description: p.descripcion_corta, sku: p.id,
+    // La marca es la del creador (es su app); quien vende y cobra es Vorka México (seller de cada oferta)
+    brand: { '@type': 'Brand', name: creador }, ...(imagen ? { image: [imagen] } : {}), category: 'Software por suscripción',
+    offers: planes.map(([k, v]) => ofertaSuscripcion({ ruta, centavos: v, intervalo: k, moneda: p.moneda, nombre: k === 'month' ? 'Plan mensual' : 'Plan anual' })),
+    ...ldResenas(rs),
+  }, migas(p.nombre, ruta)];
+  const faq = [...(c.faq || []), ...faqSaas(p, a)];
+  const desde = precioSaas(p);
+  return pagina({
+    titulo: `${p.nombre} · por ${creador} · Vorka México`, descripcion: p.descripcion_corta, ruta, imagen,
+    head: ldScript(ld) + CSS_SAAS, headers: cookie ? { 'set-cookie': cookie } : {},
+    script: SCRIPT_SAAS + SCRIPT_PESTANAS, navActual: 'catalogo',
+    cuerpo: `
+<section class="t-sec t-hero"><div class="marco t-hero-g">
+  <div class="t-hero-txt">
+    ${navTienda(seccionDe(p))}
+    <h1 class="t-h1 t-nombre">${esc(c.titular || p.nombre)}</h1>
+    <p class="s-por">${c.titular ? `${esc(p.nombre)} · ` : ''}por ${esc(creador)}</p>
+    <p class="t-lead">${esc(c.subtitulo || p.descripcion_corta)}</p>
+    <div class="t-portada-hero">${portada(p, 'grande')}</div>
+  </div>
+  <aside class="t-hero-compra" id="comprar" aria-label="Suscribirme">
+    ${formSaas(p, { error: url.searchParams.get('error') || '' })}
+  </aside>
+</div></section>
+<section class="t-sec"><div class="marco">
+  <h2 class="t-h2">Quién hace qué</h2>
+  <ul class="s-quien">
+    <li><b>La app y su soporte</b><span>${esc(p.nombre)} la crea y la opera <b>${esc(creador)}</b>.</span>${a.soporte ? `<small>Dudas de uso: <a href="mailto:${esc(a.soporte)}">${esc(a.soporte)}</a></small>` : ''}</li>
+    <li><b>El cobro</b><span>Lo hace <b>Vorka México</b> con Stripe: tu tarjeta, tus recibos y tu factura.</span><small><a href="mailto:hola@vorka.mx">hola@vorka.mx</a></small></li>
+    <li><b>Cambiar tarjeta o cancelar</b><span>Cuando quieras, sin llamadas.</span><small><a href="/tienda/suscripcion">vorka.mx/tienda/suscripcion</a></small></li>
+  </ul>
+</div></section>
+${(c.capturas || []).length ? `<section class="t-sec suave"><div class="marco"><h2 class="t-h2">Así se ve</h2><div class="s-capturas">${c.capturas.map((x, i) => `<img src="${esc(x.src)}" alt="Captura ${i + 1} de ${esc(p.nombre)}" loading="lazy" decoding="async">`).join('')}</div></div></section>` : ''}
+${pestanas([
+  ['descripcion', 'Descripción', [c.para_quien?.length ? `<h2 class="t-h2">Te sirve si…</h2>${lista(c.para_quien)}` : '', c.incluye?.length ? `<h2 class="t-h2">Qué incluye</h2>${lista(c.incluye)}` : ''].filter(Boolean).join('')],
+  ['detalles', 'Paso a paso', (c.pasos || []).length ? `<ol class="t-pasos">${c.pasos.map((s, i) => `<li><span class="t-paso-n num">${String(i + 1).padStart(2, '0')}</span><h3>${esc(s.titulo)}</h3>${s.texto ? `<p>${esc(s.texto)}</p>` : ''}</li>`).join('')}</ol>` : ''],
+  ['preguntas', 'Preguntas', `<h2 class="t-h2 sr">Preguntas frecuentes</h2><div class="t-faq">${faqHtml(faq)}</div>
+    <div class="botones t-faq-cta"><a class="btn acento" href="#comprar">Suscribirme desde ${desde} ${FLECHA}</a></div>`],
+])}
+${seccionResenas(rs)}
+${await masTienda(env, seccionDe(p))}
+<div class="t-barra" id="barra-compra"><div><b class="num">${desde}</b><small>Suscripción · por ${esc(creador)}</small></div><a class="btn acento chico" href="#comprar">Suscribirme</a></div>`,
   });
 }
 

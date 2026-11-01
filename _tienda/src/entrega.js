@@ -70,11 +70,45 @@ Vorka México · Guanajuato, México`;
   return { asunto, html, texto };
 }
 
-// Enlace de entrada de una app: en vorka.mx/<app>/entrar/ o, si la app vive en otro dominio (Brindi en os.vorka.mx), en acceso.url
-export const urlEntrar = (env, acceso, token) => acceso.url && /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(acceso.url) ? `${acceso.url}${token}` : `${env.SITE_URL}/${acceso.app}/entrar/${token}`;
+// Enlace de entrada de una app: en vorka.mx/<app>/entrar/ o, si la app vive en otro dominio (Brindi en os.vorka.mx), en acceso.url.
+// SaaS de un creador (acceso.tipo 'saas'): su propia app, tal cual (sin el token de la tienda: su app revisa el correo con la API)
+export const urlEntrar = (env, acceso, token) => acceso.tipo === 'saas' && /^https:\/\//.test(acceso.url || '') ? acceso.url
+  : acceso.url && /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(acceso.url) ? `${acceso.url}${token}` : `${env.SITE_URL}/${acceso.app}/entrar/${token}`;
+
+// Correo de compra de un SaaS de creador: el botón abre su app; quién da soporte de la app y dónde se administra el cobro
+export function correoSaas(env, orden, items, acceso) {
+  const nombre = orden.nombre.split(' ')[0], app = items[0].nombre, creador = acceso.creador || 'su creador';
+  const asunto = `Tu suscripción: ${app}`;
+  const portal = `${env.SITE_URL}/tienda/suscripcion`;
+  const soporte = acceso.soporte ? `<a href="mailto:${esc(acceso.soporte)}" style="color:#6b2a85;text-decoration:underline">${esc(acceso.soporte)}</a>` : '';
+  const html = marco(asunto, `
+<p style="${P}">Hola, ${esc(nombre)}:</p>
+<p style="${P}">¡Gracias por tu compra! Tu pago quedó confirmado y tu suscripción a <b>${esc(app)}</b>, de ${esc(creador)}, ya está activa.</p>
+${lista([esc(app)])}
+${boton(acceso.url, acceso.boton || `Entrar a ${app}`)}
+<p style="${P}">Entra con este mismo correo (<b>${esc(orden.email)}</b>): así ${esc(app)} reconoce tu suscripción. Se renueva sola y la puedes cancelar cuando quieras.</p>
+<p style="${P}"><b>Soporte de la app:</b> lo da ${esc(creador)}${soporte ? ` en ${soporte}` : ''}.<br><b>Cobro, tarjeta, facturas y cancelación:</b> Vorka México, en <a href="${portal}" style="color:#6b2a85;text-decoration:underline">vorka.mx/tienda/suscripcion</a> con este mismo correo, o escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a>.</p>
+<p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
+  const texto = `Hola, ${nombre}:
+
+¡Gracias por tu compra! Tu pago quedó confirmado y tu suscripción a ${app}, de ${creador}, ya está activa.
+
+${acceso.boton || `Entrar a ${app}`}:
+${acceso.url}
+
+Entra con este mismo correo (${orden.email}): así ${app} reconoce tu suscripción. Se renueva sola y la puedes cancelar cuando quieras.
+
+Soporte de la app: lo da ${creador}${acceso.soporte ? ` en ${acceso.soporte}` : ''}.
+Cobro, tarjeta, facturas y cancelación: Vorka México, en ${portal} con este mismo correo, o escríbenos a ${SOPORTE.correo}.
+
+Orden ${orden.id}
+Vorka México · Guanajuato, México`;
+  return { asunto, html, texto };
+}
 
 // Todo de la misma app (p. ej. un plan de Brindi con complementos): el botón entra directo; si son apps distintas, a la página con un botón por cada una
 function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1, extra = {}) {
+  if (acceso.tipo === 'saas' && /^https:\/\//.test(acceso.url || '')) return correoSaas(env, orden, items, acceso);
   // Ruta de Impacto y Evaluación de liderazgo: el botón lleva el enlace que dio Vorka OS (ruta.vorka.mx: un solo uso, 7 días;
   // liderazgo.vorka.mx: la liga personal con sus 2 aplicaciones)
   const ruta = (acceso.app === 'ruta' || acceso.app === 'liderazgo') && extra.ruta?.enlace ? extra.ruta : null;

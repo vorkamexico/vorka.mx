@@ -12,8 +12,9 @@ import { paginaReenviar, postReenviar } from './reenviar.js';
 import { paginaCatalogo, paginaProducto, sitemapTienda, refDeVisita, catalogoCompartir } from './tienda.js';
 import * as admin from './admin.js';
 import { ESTILOS } from './paginas.js';
-import { procesarTransferencias, refrescarCreador, repartosPendientes } from './marketplace.js';
+import { procesarTransferencias, refrescarCreador, repartosPendientes, facturasPorCalcular } from './marketplace.js';
 import { rutasCreadores } from './creadores.js';
+import { procesarAvisos, rutasPortalComprador } from './creadores-saas.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago, recordatoriosAutomaticos } from './recordatorio.js';
 import { rutasSimulador } from './simulador/index.js';
@@ -326,9 +327,13 @@ export default {
         const pendientes = await all(env, "SELECT id, stripe_account_id FROM creadores WHERE estado = 'aprobado' AND stripe_account_id IS NOT NULL AND stripe_listo = 0 LIMIT 25");
         for (const c of pendientes) await refrescarCreador(env, c).catch(e => console.error('creador', c.id, e.message));
         const programadas = await repartosPendientes(env);
-        console.log('transferencias', JSON.stringify({ programadas, ...(await procesarTransferencias(env)) }));
+        // Suscripciones de creadores: facturas cuya comisión de Stripe aún no se conocía
+        const facturas = await facturasPorCalcular(env);
+        console.log('transferencias', JSON.stringify({ programadas, facturas, ...(await procesarTransferencias(env)) }));
       } catch (e) { console.error('cron', e?.message); }
     })());
+    // Avisos firmados a las apps de los creadores que no se pudieron entregar a la primera
+    ctx.waitUntil(procesarAvisos(env).then(r => { if (r.enviados || r.fallidos) console.log('avisos creadores', JSON.stringify(r)); }).catch(e => console.error('avisos creadores', e?.message)));
   },
 };
 
@@ -367,6 +372,8 @@ async function atender(request, env, ctx, url) {
     const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
     if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
     if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);
+    // El comprador administra sus suscripciones (tarjeta, recibos, cancelar) con un enlace a su correo
+    if (/^\/tienda\/suscripcion(\/|$)/.test(url.pathname)) { const r = await rutasPortalComprador(request, env, ctx, url); if (r) return r; }
     const reg = url.pathname.match(/^\/tienda\/regalo\/([^/]{1,100})\/?$/);
     if (reg && (request.method === 'GET' || request.method === 'HEAD')) return await paginaRegalo(env, reg[1]);
     if (url.pathname === '/api/regalo/canjear' && request.method === 'POST') return await canjearRegalo(request, env);

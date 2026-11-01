@@ -93,10 +93,10 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
         product_data: { name: i.nombre, metadata: { product_id: i.product_id } } },
     })),
     metadata: { order_id: orden.id },
-    subscription_data: { metadata: { order_id: orden.id, app: sus.app || '', email: orden.email, product_id: sus.product_id } },
+    subscription_data: { metadata: { order_id: orden.id, app: sus.app || '', email: orden.email, product_id: sus.product_id, creador_id: sus.creador_id || undefined } },
     // Códigos de promoción de Stripe (p. ej. el de fundador) solo en planes mensuales: en el anual un cupón por meses
-    // se aplicaría sobre todo el año
-    ...(sus.intervalo === 'month' && !cupon ? { allow_promotion_codes: true } : {}),
+    // se aplicaría sobre todo el año. Nunca en suscripciones de creadores (sus productos no llevan descuentos de Vorka).
+    ...(sus.intervalo === 'month' && !cupon && !sus.creador_id ? { allow_promotion_codes: true } : {}),
     success_url: exito,
     cancel_url: cancelar,
   };
@@ -250,14 +250,14 @@ export default {
     if (evento.tipo === 'charge.refunded') {
       // Se consulta el PaymentIntent (no la API de Charges) y su último cargo
       if (!evento.pago) return null;
-      const pi = await llamar(env, 'GET', `/payment_intents/${encodeURIComponent(evento.pago)}?expand[]=latest_charge`);
+      const pi = evento.pi = await llamar(env, 'GET', `/payment_intents/${encodeURIComponent(evento.pago)}?expand[]=latest_charge`);
       const orderId = pi.metadata?.order_id;
       // Reembolso parcial: no se revoca el acceso (se decide a mano en el panel)
       if (!orderId || !pi.latest_charge?.refunded) return null;
       return { orderId, resultado: 'reembolsado', provider_payment_id: pi.id };
     }
     if (evento.tipo === 'charge.dispute.created') {
-      const d = await llamar(env, 'GET', `/disputes/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent`);
+      const d = evento.disputa = await llamar(env, 'GET', `/disputes/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent`);
       const orderId = d.payment_intent?.metadata?.order_id;
       if (!orderId) return null;
       return { orderId, resultado: 'reembolsado', provider_payment_id: d.payment_intent.id };
@@ -270,7 +270,8 @@ export default {
     let id = pago?.suscripcion_id || null;
     if (!id && evento.tipo.startsWith('customer.subscription.')) id = evento.objeto;
     if (!id && evento.tipo.startsWith('invoice.')) {
-      const inv = evento.factura = await llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);
+      // payments: el cobro de la factura (para el reparto a creadores; connect.js › cobroDeFactura)
+      const inv = evento.factura = await llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}?expand[]=payments`);
       // Desde la API 2025-03-31 la suscripción de la factura vive en parent.subscription_details
       id = inv.parent?.subscription_details?.subscription || inv.subscription || null;
       if (typeof id === 'object') id = id?.id;
@@ -282,6 +283,22 @@ export default {
   // Factura de un invoice.paid, leída de la API (la misma consulta de suscripcionDe si ya se hizo). Para los puntos de renovaciones (Puntos Vorka).
   async facturaDe(evento, env) {
     if (evento.tipo !== 'invoice.paid') return null;
-    return evento.factura || llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}`);
+    return evento.factura || llamar(env, 'GET', `/invoices/${encodeURIComponent(evento.objeto)}?expand[]=payments`);
+  },
+
+  // Reembolso o disputa: el PaymentIntent afectado (lo usa el reparto de suscripciones de creadores, que se liga al cobro de
+  // cada factura y no a una orden). Reusa lo que ya consultó interpretar. null si el evento no es de ese tipo.
+  async pagoRevertido(evento, env) {
+    if (evento.tipo === 'charge.refunded') {
+      if (!evento.pago) return null;
+      const pi = evento.pi || await llamar(env, 'GET', `/payment_intents/${encodeURIComponent(evento.pago)}?expand[]=latest_charge`);
+      return { pago_id: pi.id, parcial: !pi.latest_charge?.refunded };
+    }
+    if (evento.tipo === 'charge.dispute.created') {
+      const d = evento.disputa || await llamar(env, 'GET', `/disputes/${encodeURIComponent(evento.objeto)}?expand[]=payment_intent`);
+      const pi = typeof d.payment_intent === 'object' ? d.payment_intent?.id : d.payment_intent;
+      return pi ? { pago_id: pi, parcial: false } : null;
+    }
+    return null;
   },
 };

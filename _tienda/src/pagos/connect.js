@@ -75,14 +75,34 @@ export async function comisionDeCargo(env, cargoId) {
   return c?.balance_transaction?.fee ?? null;
 }
 
+// Cargo y comisión real de un PaymentIntent (el cobro de una factura de suscripción). Sin la API de Charges.
+export async function comisionDePago(env, pagoId) {
+  const pi = await llamar(env, 'GET', `/payment_intents/${encodeURIComponent(pagoId)}?expand[]=latest_charge.balance_transaction`);
+  const cargo = pi?.latest_charge;
+  return { pago_id: pi?.id || pagoId, cargo_id: typeof cargo === 'object' ? cargo?.id || null : cargo || null, fee: typeof cargo === 'object' ? cargo?.balance_transaction?.fee ?? null : null };
+}
+
+// El cobro de una factura pagada: { pago_id, cargo_id, fee }. Desde la API 2025-03-31 el pago vive en invoice.payments
+// (InvoicePayment → payment.payment_intent; la factura se pide con expand[]=payments); antes, en invoice.payment_intent.
+// fee null = Stripe aún no liquida el cargo (el cron lo completa: marketplace.js › facturasPorCalcular).
+export async function cobroDeFactura(env, factura) {
+  const pagos = factura?.payments?.data || [];
+  const pg = pagos.find(p => p.status === 'paid') || pagos[0];
+  let pi = pg?.payment?.payment_intent || factura?.payment_intent || null;
+  if (typeof pi === 'object') pi = pi?.id || null;
+  if (!pi) return { pago_id: null, cargo_id: null, fee: null };
+  return comisionDePago(env, pi);
+}
+
 export const transferir = (env, t, cuentaId, cargoId) =>
   llamar(env, 'POST', '/transfers', {
     amount: t.monto_centavos, currency: String(t.moneda || 'MXN').toLowerCase(), destination: cuentaId,
     // Ligada al cargo: los fondos salen cuando ese pago ya está disponible (OXXO/SPEI incluidos)
     source_transaction: cargoId || undefined,
-    transfer_group: t.order_id,
-    description: `Venta en vorka.mx/tienda · orden ${t.order_id}`,
-    metadata: { order_id: t.order_id, creador_id: t.creador_id, transferencia_id: t.id },
+    // Suscripción de creador: el grupo es la factura (cada renovación es su propio cobro)
+    transfer_group: t.factura_id || t.order_id,
+    description: t.factura_id ? `Suscripción en vorka.mx/tienda · factura ${t.factura_id}` : `Venta en vorka.mx/tienda · orden ${t.order_id}`,
+    metadata: { order_id: t.order_id || undefined, creador_id: t.creador_id, transferencia_id: t.id, factura_id: t.factura_id || undefined, suscripcion_id: t.suscripcion_id || undefined },
   }, { idempotencia: `transferencia-${t.id}` });
 
 export const revertir = (env, transferId, orderId) =>
