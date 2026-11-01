@@ -58,7 +58,7 @@ export async function landingProyecto(env, req, url, { p, code = null, cookie = 
   const rs = p ? await resenasDe(env, RUTA) : null;
   const F = FAQ(precioT);
   const descripcion = `¿Qué proyecto social hacer según tu giro, tu experiencia, tu presupuesto y tu tiempo? Contesta gratis y ve tus 3 ideas al momento. Reporte con 5 a 8 proyectos, indicadores y ODS por ${precioT}.`;
-  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: '¿Qué proyecto social hago? · Reporte completo', description: descripcion, url: `${SITIO}${RUTA}`, brand: { '@type': 'Brand', name: 'Vorka México' },
+  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: '¿Qué proyecto social hago? · Reporte completo', description: descripcion, url: `${SITIO}${RUTA}`, image: [OG_PROYECTO], brand: { '@type': 'Brand', name: 'Vorka México' },
     offers: oferta({ ruta: RUTA, centavos: p?.precio_centavos ?? 14900, disponible: !!p }), ...ldResenas(rs) }, migas('¿Qué proyecto social hago?', RUTA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto | Vorka México', ruta: RUTA, descripcion, imagen: OG_PROYECTO, navActual: 'catalogo', status,

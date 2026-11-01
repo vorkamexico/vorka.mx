@@ -93,7 +93,7 @@ export async function landingVocacional(env, req, url, { p, grupos = [], code = 
   const F = FAQ(precioT);
   const descripcion = `Test vocacional gratis: ${N_PREG} preguntas, resultado al instante con tus 3 tipos de interés (modelo RIASEC de Holland) y tu carrera más afín. Reporte completo con 20 carreras y plan de 30 días por ${precioT}.`;
   const ld = [
-    { '@context': 'https://schema.org', '@type': 'Product', name: 'Test vocacional Vorka · Reporte completo', description: descripcion, url: `${SITIO}${RUTA}`, brand: { '@type': 'Brand', name: 'Vorka México' },
+    { '@context': 'https://schema.org', '@type': 'Product', name: 'Test vocacional Vorka · Reporte completo', description: descripcion, url: `${SITIO}${RUTA}`, image: [OG_VOCACIONAL], brand: { '@type': 'Brand', name: 'Vorka México' },
       offers: grupos.length && p ? ofertas({ ruta: RUTA, centavos: [p.precio_centavos, ...grupos.map(g => g.precio_centavos)] }) : oferta({ ruta: RUTA, centavos: p?.precio_centavos ?? 7900, disponible: !!p }), ...ldResenas(rs) },
     migas('Test vocacional', RUTA),
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },

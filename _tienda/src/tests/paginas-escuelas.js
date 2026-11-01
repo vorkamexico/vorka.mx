@@ -94,7 +94,7 @@ export function paginaEscuelas({ grupos = [], p = null } = {}) {
   const ligaTest = `${SITIO}${RUTA_TEST}`;
   const waFamilias = whatsapp(`Les comparto el test vocacional de Vorka: es gratis, tarda unos 10 minutos y al terminar ven su perfil con sus 3 tipos de interés y su carrera más afín. Si su familia quiere, puede comprar el reporte completo. ${ligaTest}`);
   const ld = [
-    { '@context': 'https://schema.org', '@type': 'Product', name: 'Test vocacional Vorka · Licencias para grupo', description: descripcion, url: `${SITIO}${RUTA_ESCUELAS}`,
+    { '@context': 'https://schema.org', '@type': 'Product', name: 'Test vocacional Vorka · Licencias para grupo', description: descripcion, url: `${SITIO}${RUTA_ESCUELAS}`, image: [OG_VOCACIONAL],
       brand: { '@type': 'Brand', name: 'Vorka México' }, category: 'Educación', audience: { '@type': 'EducationalAudience', educationalRole: 'teacher' },
       offers: grupos.length ? ofertas({ ruta: RUTA_ESCUELAS, centavos: grupos.map(g => g.precio_centavos), detalle: grupos.map(g => ({ centavos: g.precio_centavos, name: `${g.contenido.licencias} licencias` })) })
         : oferta({ ruta: RUTA_ESCUELAS, centavos: 49000, disponible: false }) },

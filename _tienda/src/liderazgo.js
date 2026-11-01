@@ -52,7 +52,7 @@ export async function paginaLiderazgo(env, req, url) {
   const FAQ = faq({ precioN });
   const rs = p ? await resenasDe(env, RUTA_LIDERAZGO) : null;
   const descripcion = `80 preguntas para saber dónde estás como líder: 12 dimensiones, lo que crees de ti contra lo que has hecho y 3 acciones para 30 días. ${precioT}, pago único.`;
-  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Evaluación de liderazgo Vorka', description: descripcion, url: `https://vorka.mx${RUTA_LIDERAZGO}`, brand: { '@type': 'Organization', name: 'Vorka México' },
+  const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Evaluación de liderazgo Vorka', description: descripcion, url: `https://vorka.mx${RUTA_LIDERAZGO}`, image: [OG_LIDERAZGO], brand: { '@type': 'Organization', name: 'Vorka México' },
     offers: oferta({ ruta: RUTA_LIDERAZGO, price: precioN.toFixed(2), disponible: !!p }), ...ldResenas(rs) },
   migas('Evaluación de liderazgo Vorka', RUTA_LIDERAZGO),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
