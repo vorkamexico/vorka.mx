@@ -5,7 +5,8 @@ import { json, fail } from './util.js';
 import { proveedor } from './pagos/index.js';
 import { aplicarPago, registrarEvento, marcarEvento, registrarAnalitica, itemsDeOrden } from './modelo.js';
 import { entregar } from './entrega.js';
-import { programarTransferencias, anularTransferencias } from './marketplace.js';
+import { programarTransferencias, anularTransferencias, anularPorPago } from './marketplace.js';
+import { eventoSuscripcionCreador } from './creadores-saas.js';
 import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
 import { revocarRuta } from './ruta-entrega.js';
@@ -26,9 +27,17 @@ export async function webhook(req, env, nombre) {
     // Suscripciones (Vuelve): la primera compra, renovaciones, fallas de pago y cancelaciones actualizan su renglón
     if (pasarela.suscripcionDe) {
       const sub = await pasarela.suscripcionDe(evento, env, pago);
-      if (sub) await guardarSuscripcion(env, sub);
+      const fila = sub ? await guardarSuscripcion(env, sub) : null;
+      // SaaS de un creador: cada factura pagada programa su transferencia (Vorka ≥ 20 %) y el creador recibe sus avisos.
+      // No dan puntos (los productos de creadores no dan puntos).
+      if (fila?.creador_id) await eventoSuscripcionCreador(env, { evento, sub, fila, factura: evento.tipo.startsWith('invoice.') && pasarela.facturaDe ? evento.factura || await pasarela.facturaDe(evento, env) : null });
       // Renovación pagada de una suscripción que entró con una liga de puntos: puntos hasta la factura 12
-      if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) await puntosFactura(env, await pasarela.facturaDe(evento, env), sub);
+      else if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) await puntosFactura(env, await pasarela.facturaDe(evento, env), sub);
+    }
+    // Reembolso o disputa del cobro de una factura de suscripción de creador: se cancela o revierte su transferencia
+    if (pasarela.pagoRevertido && ['charge.refunded', 'charge.dispute.created'].includes(evento.tipo)) {
+      const rev = await pasarela.pagoRevertido(evento, env);
+      if (rev) await anularPorPago(env, rev.pago_id, { parcial: rev.parcial });
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });

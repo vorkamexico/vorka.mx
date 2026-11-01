@@ -6,7 +6,7 @@ import { json, fail, sha256, correoOculto } from './util.js';
 import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
-import { productoPorSlug } from './modelo.js';
+import { productoPorSlug, precioIntervalo } from './modelo.js';
 import { resolverDescuento, duracionDe, lineaCompra, centavosDe } from './descuentos.js';
 import { alCrearOrden, paqueteCheckout } from './tests/index.js';
 import { cuentaActual, saldoDe } from './puntos.js';
@@ -38,6 +38,8 @@ export const EsquemaCheckout = z.object({
   sucursales: z.coerce.number().int().min(0).max(20, 'Hasta 20 sucursales adicionales; para más, escríbenos.').optional(),
   // Agenda: cuántos profesionales atienden en total (1 viene incluido; los demás se cobran como profesional adicional)
   profesionales: z.coerce.number().int().min(1, 'Elige al menos un profesional.').max(50, 'Hasta 50 profesionales; para más, escríbenos.').optional(),
+  // SaaS de creadores: mensual o anual (el precio de cada uno sale de la base)
+  intervalo: z.enum(['month', 'year']).optional().or(z.literal('').transform(() => undefined)),
   // Tests (src/tests/): el resultado al que se liga la compra y, en el test vocacional, el simulador del paquete
   resultado: z.string().regex(/^[a-f0-9]{32}$/).optional().or(z.literal('')),
   paquete: z.string().trim().regex(/^[a-z0-9-]{1,80}$/).optional().or(z.literal('')),
@@ -93,15 +95,25 @@ export async function checkout(req, env) {
     sus = { intervalo: suscripcionDe(plan).intervalo === 'year' ? 'year' : 'month', app: plan.contenido.acceso?.app || null };
     if (d.regalo) return error('Las suscripciones no se pueden regalar.');
     if (d.usar_puntos) return error('Los puntos no se pueden usar en suscripciones.');
+    // SaaS de un creador: un plan, mensual o anual según los precios que puso (solo se vende si está aprobado y el creador
+    // puede recibir pagos: productoPorSlug ya lo filtra con VENDIBLE)
+    if (plan.creador_id) {
+      const intervalo = d.intervalo || suscripcionDe(plan).intervalo;
+      if (!precioIntervalo(plan, intervalo)) return error(intervalo === 'year' ? 'Este plan no se vende por año.' : 'Este plan no se vende por mes.');
+      if (d.sucursales || (d.profesionales || 1) > 1) return error('Este plan no lleva complementos.');
+      if (await vigente(env, d.email, plan.contenido.acceso?.app)) return error(`Ya tienes una suscripción activa a ${plan.nombre} con este correo. Para cambiar tu tarjeta o cancelar, entra a vorka.mx/tienda/suscripcion.`, 409);
+      sus = { ...sus, intervalo };
+      items = [{ slug: plan.slug, cantidad: 1, intervalo }];
+    }
     // Un paquete (Agenda + Vuelve) choca con la suscripción suelta de cualquiera de sus apps, y al revés
     const acceso = plan.contenido.acceso || {};
-    for (const app of acceso.apps || [acceso.app]) {
+    for (const app of plan.creador_id ? [] : acceso.apps || [acceso.app]) {
       const ya = await vigente(env, d.email, app);
       if (!ya) continue;
       if (ya.app !== acceso.app) return error(`Con este correo ya pagas ${ya.app === 'agenda-vuelve' ? 'el paquete Agenda + Vuelve' : app === 'vuelve' ? 'Vuelve' : 'Agenda'}. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble.`, 409);
       return error('Ya tienes una suscripción activa con este correo. Adminístrala desde la app, en Cuenta.', 409);
     }
-    try { items = await itemsSuscripcion(env, plan, { profesional: Math.max(0, (d.profesionales || 1) - 1), sucursal: d.sucursales || 0 }); }
+    if (!plan.creador_id) try { items = await itemsSuscripcion(env, plan, { profesional: Math.max(0, (d.profesionales || 1) - 1), sucursal: d.sucursales || 0 }); }
     catch (e) {
       const tiene = !!extrasDe(suscripcionDe(plan))[e.message];
       if (e.message === 'profesional') return error(tiene ? 'Los profesionales adicionales no están disponibles por ahora.' : 'Este plan no lleva profesionales adicionales.');

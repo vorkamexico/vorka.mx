@@ -107,6 +107,12 @@ REEMBOLSOS = [
         'Si un archivo llega dañado, incompleto o no abre en los programas indicados en la página del producto, te lo reponemos sin costo.',
         'Escríbenos con tu número de orden y una captura del error. Si no podemos resolverlo, te devolvemos tu dinero.')),
     ('cargos', 'Cobros duplicados o no reconocidos', '<p>Si ves un cobro duplicado o que no reconoces, escríbenos antes de levantar una aclaración con tu banco: lo revisamos y, si procede, lo devolvemos de inmediato. Si se inicia un contracargo, el acceso a la compra se suspende mientras se resuelve.</p>'),
+    # BORRADOR (nov 2026): suscripciones a apps de creadores. Brandon debe revisarlo antes de publicar.
+    ('suscripciones', 'Suscripciones a apps de creadores', li(
+        'Algunas apps de la tienda las crea y las opera un creador y se venden por suscripción mensual o anual. Vorka México cobra la suscripción; el creador da el servicio y su soporte.',
+        'Cancelas cuando quieras en <a href="/tienda/suscripcion">vorka.mx/tienda/suscripcion</a> con el correo de tu compra. Tu acceso sigue hasta el final del periodo que ya pagaste y no se hacen cobros nuevos.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al primer cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.',
+        'No hay reembolsos proporcionales por cancelar a mitad de un periodo, salvo que la app no funcione por causas del creador o de Vorka y no se resuelva en un plazo razonable; en ese caso te devolvemos la parte proporcional.')),
     ('como', 'Cómo se hace el reembolso', '<p>El reembolso se hace al mismo medio de pago. En tarjeta puede tardar de 5 a 10 días hábiles en reflejarse, según tu banco. En OXXO o SPEI te pediremos una cuenta (CLABE) a tu nombre para transferirte.</p>'),
 ]
 
@@ -129,6 +135,16 @@ CREADORES = [
         'Los pagos se transfieren automáticamente a tu cuenta de Stripe 7 días después de cada venta, al terminar el plazo de reembolso, y de ahí a tu cuenta bancaria.',
         'Si un comprador obtiene un reembolso o desconoce el cargo, se cancela o se revierte el pago correspondiente; si ya no tienes saldo, se descuenta de tus siguientes ventas.',
         'Vorka puede cambiar la comisión para ventas futuras avisándote con 30 días de anticipación.')),
+    # BORRADOR (nov 2026): apps y SaaS por suscripción. Brandon debe revisarlo (y de preferencia un abogado) antes de publicar.
+    ('suscripciones', 'Apps y SaaS por suscripción', li(
+        'Puedes vender el acceso a tu propia app o servicio en línea por suscripción mensual o anual. Vorka cobra cada periodo al comprador con Stripe, aparece como vendedor y en su estado de cuenta, y renueva la suscripción hasta que se cancele.',
+        '<b>Comisión mínima.</b> En suscripciones, la comisión de Vorka es de <b>20 % como mínimo sobre cada cobro</b>: el primero y <b>cada renovación</b>. Si tienes un acuerdo con una comisión menor para tus productos descargables, en suscripciones aplica el 20 %. De cada cobro recibes: cobro − comisión de Vorka − comisión de Stripe de ese cobro; en tu portal ves el desglose de cada uno.',
+        '<b>Cuándo te pagamos.</b> Cada cobro pagado se transfiere a tu cuenta de Stripe 7 días después en planes mensuales y 11 días después en planes anuales (al terminar el plazo de reembolso), y de ahí a tu cuenta bancaria. Si tu cuenta de Stripe no está lista, la transferencia espera y sale cuando se active.',
+        '<b>Reembolsos y cancelaciones.</b> El comprador cancela cuando quiere y conserva el acceso hasta el fin del periodo pagado. Aplica la <a href="/legal/reembolsos/#suscripciones">política de reembolsos</a> de la tienda (plan anual: reembolso completo si cancela dentro de 10 días naturales del primer cobro). Si un cobro se reembolsa completo o el comprador lo desconoce con su banco, la transferencia de ese cobro se cancela o se revierte; si ya no tienes saldo, se descuenta de tus siguientes cobros. Los reembolsos parciales se acuerdan contigo caso por caso.',
+        '<b>Tú das el servicio.</b> Eres responsable de que tu app funcione como la describes, de su disponibilidad, de su soporte técnico (el correo de soporte que pones aparece en la tienda y en el correo de compra) y de cumplir las leyes que le apliquen. Si tu app deja de funcionar y no se resuelve en un plazo razonable, Vorka puede pausar la venta, cancelar las suscripciones y reembolsar a los compradores; esos reembolsos se descuentan de tus transferencias.',
+        '<b>Precio.</b> Tú fijas el precio mensual y/o anual (mínimo $20 MXN cada uno). Un cambio de precio aplica a las suscripciones nuevas; para cambiar el de suscripciones vigentes hay que avisar a los compradores con anticipación y Vorka lo coordina contigo.',
+        '<b>Datos entre Vorka y tú.</b> Para que tu app reconozca a quien pagó, Vorka te comparte, por la API y por los avisos firmados, el correo del comprador y el estado de su suscripción (plan, vigencia, renovaciones, pagos fallidos y cancelación). No te compartimos datos de pago. Tú tratas los datos que tu app recaba como responsable, con tu propio aviso de privacidad, y solo usas los que te compartimos para dar el servicio. Debes proteger tu llave de API y el secreto de firma.',
+        'Si dejas de vender tu app o te das de baja, las suscripciones vigentes se cancelan al final de su periodo pagado y ya no se renuevan, salvo que acordemos otra cosa por escrito.')),
     ('impuestos', 'Impuestos', '<p>Eres responsable de tus obligaciones fiscales. Cuando la ley obligue a Vorka a retener impuestos o a reportar información sobre tus ingresos, lo hará y se reflejará en tu desglose.</p>'),
     ('baja', 'Pausa y baja', li(
         'Puedes retirar tus productos o darte de baja cuando quieras; los compradores conservan acceso a lo que ya compraron.',
@@ -560,9 +576,10 @@ def escribir(ruta, html):
 escribir('/legal/terminos/', pagina('/legal/terminos/', 'Términos y condiciones', 'Términos y <span class="metal">condiciones.</span>',
     'Las reglas de compra en la tienda de Vorka México: qué recibes, cómo pagas, cómo se entrega y cómo puedes usar los materiales.', 'Tienda', TERMINOS, actualizado='29 de octubre de 2026'))
 escribir('/legal/reembolsos/', pagina('/legal/reembolsos/', 'Política de reembolsos', 'Política de <span class="metal">reembolsos.</span>',
-    'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS, actualizado='22 de octubre de 2026'))
+    'Qué pasa si tu archivo llega dañado, si cambiaste de opinión o si ves un cobro que no reconoces.', 'Tienda', REEMBOLSOS, actualizado='1 de noviembre de 2026'))
 escribir('/legal/creadores/', pagina('/legal/creadores/', 'Términos para creadores', 'Términos para <span class="metal">creadores.</span>',
-    'Cómo funciona vender tus productos digitales en la tienda de Vorka México: aprobación, contenido, comisiones, pagos e impuestos.', 'Creadores', CREADORES))
+    'Cómo funciona vender tus productos digitales y tu app por suscripción en la tienda de Vorka México: aprobación, contenido, comisiones, pagos e impuestos.', 'Creadores', CREADORES,
+    actualizado='1 de noviembre de 2026'))
 escribir('/legal/brindi/', pagina('/legal/brindi/', 'Condiciones de Brindi', 'Condiciones de <span class="metal">Brindi.</span>',
     'El contrato entre Vorka México y quien usa Brindi: qué incluye cada plan, cómo se entrega, cuánto tiempo está en línea tu invitación y cuándo hay reembolso.', 'Brindi', BRINDI,
     aplica='Aplica a Brindi (invitaciones digitales)', migas=MIGAS_BRINDI, actualizado=ACTUALIZADO_BRINDI))

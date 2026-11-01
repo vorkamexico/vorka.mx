@@ -47,9 +47,16 @@ export async function afiliadoActivo(env, code) {
 export async function crearOrden(env, { items, email, nombre, ref, proveedor = 'stripe', regalo = null, puntos = null, descuento = null, sus = null }) {
   const lineas = [];
   for (const it of items) {
-    const p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
+    let p = (await productoPorSlug(env, it.slug)) || (await productoPorSlugAnterior(env, it.slug));
     if (!p) throw new Error('producto');
-    lineas.push({ p, cantidad: it.cantidad || 1 });
+    // SaaS de creador con precio mensual y anual: el precio es el del intervalo elegido (siempre de la base)
+    const intervalo = p.creador_id && p.contenido?.suscripcion ? (it.intervalo || p.contenido.suscripcion.intervalo) : null;
+    if (intervalo) {
+      const precio = precioIntervalo(p, intervalo);
+      if (!precio) throw new Error('producto');
+      p = { ...p, precio_centavos: precio };
+    }
+    lineas.push({ p, cantidad: it.cantidad || 1, intervalo });
   }
   const monedas = new Set(lineas.map(l => l.p.moneda));
   if (monedas.size !== 1) throw new Error('moneda');
@@ -96,11 +103,20 @@ export async function crearOrden(env, { items, email, nombre, ref, proveedor = '
         orden.descuento_codigo, orden.descuento_pct, orden.descuento_duracion, orden.descuento_meses, orden.descuento_codigo_centavos, orden.descuento_app,
         orden.descuento_monto_centavos, puntosUsados, orden.puntos_email, orden.puntos_email, puntosUsados),
     // Si es de un creador, se copia a quién le toca y su % de ese momento
-    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct) SELECT ?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM orders WHERE id = ?)')
-      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null, orden.id)),
+    ...lineas.map(l => env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad, creador_id, comision_pct, intervalo) SELECT ?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM orders WHERE id = ?)')
+      .bind(orden.id, l.p.id, l.p.nombre, l.p.precio_centavos, l.cantidad, l.p.creador_id || null, l.p.creador_id ? l.p.creador_comision_pct : null, l.intervalo, orden.id)),
   ]);
   if (!ins.meta.changes) throw new Error('puntos');
-  return { ...orden, items: lineas.map(l => ({ product_id: l.p.id, slug: l.p.slug, nombre: l.p.nombre, precio_centavos: l.p.precio_centavos, cantidad: l.cantidad, imagen: l.p.imagen })) };
+  return { ...orden, items: lineas.map(l => ({ product_id: l.p.id, slug: l.p.slug, nombre: l.p.nombre, precio_centavos: l.p.precio_centavos, cantidad: l.cantidad, imagen: l.p.imagen, intervalo: l.intervalo })) };
+}
+
+// Precio en centavos de un SaaS de creador para un intervalo ('month' | 'year'), o null si no se vende así.
+// contenido.suscripcion.precios: { month?: centavos, year?: centavos } (creadores.js › guardar)
+export function precioIntervalo(p, intervalo) {
+  const s = p?.contenido?.suscripcion;
+  if (!s || !['month', 'year'].includes(intervalo)) return null;
+  const v = s.precios ? s.precios[intervalo] : (s.intervalo === intervalo ? p.precio_centavos : null);
+  return Number.isInteger(v) && v > 0 ? v : null;
 }
 
 export const ordenPorId = (env, id) => one(env, 'SELECT * FROM orders WHERE id = ?', id);

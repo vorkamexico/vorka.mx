@@ -152,12 +152,12 @@ export async function retomarPago(env, id, url) {
   const pagada = await one(env, `SELECT o2.id FROM orders o2 JOIN order_items i2 ON i2.order_id = o2.id WHERE o2.email = ? AND o2.estado = 'paid' AND o2.created_at >= ?
     AND i2.product_id IN (SELECT product_id FROM order_items WHERE order_id = ?) LIMIT 1`, o.email, o.created_at, o.id);
   if (pagada) return Response.redirect(`${env.SITE_URL}/tienda/gracias?order=${pagada.id}`, 303);
-  const items = await all(env, 'SELECT i.cantidad, p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id);
+  const items = await all(env, 'SELECT i.cantidad, i.intervalo, p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id);
   let nueva;
   // El descuento del 3.er recordatorio: como un código (el mayor gana; en suscripciones no aplica)
   const sus = pct ? await suscripcionDeOrden(env, { items: await all(env, 'SELECT product_id FROM order_items WHERE order_id = ?', o.id) }) : null;
   const descuento = pct && !sus ? { codigo: AUTO.codigo, pct } : null;
-  try { nueva = await crearOrden(env, { items: items.map(i => ({ slug: i.slug, cantidad: i.cantidad })), email: o.email, nombre: o.nombre, ref: o.ref_code, descuento }); }
+  try { nueva = await crearOrden(env, { items: items.map(i => ({ slug: i.slug, cantidad: i.cantidad, ...(i.intervalo ? { intervalo: i.intervalo } : {}) })), email: o.email, nombre: o.nombre, ref: o.ref_code, descuento }); }
   catch { return vencida('Este producto ya no está disponible', 'Puede que ya no esté a la venta. Escríbenos a hola@vorka.mx y te ayudamos.'); }
   const gracias = new URL('/tienda/gracias', env.SITE_URL); gracias.searchParams.set('order', nueva.id);
   const cancelar = new URL(gracias); cancelar.searchParams.set('cancelado', '1');
