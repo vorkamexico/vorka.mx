@@ -86,6 +86,14 @@ describe('ficha de Clara (activa)', () => {
     expect(h).toMatch(/no es asesoría financiera/i);
     expect(await (await pedir('/tienda/clara/?plan=clara-anual')).text()).toContain('value="clara-anual" checked');
   });
+  it('usa el diseño final de la app: titular «en segundos», blanco y un solo azul (sin el verde anterior)', async () => {
+    const h = await (await pedir('/tienda/clara/')).text();
+    expect(h).toContain('Tu dinero, claro. Anota todo <em>en segundos.</em>');
+    expect(h).toContain('--cl-azul:#1F5FD6');
+    expect(h).toContain('Te alcanzan');
+    expect(h).not.toMatch(/#0d5c4f|#6cc7ab|#08413a|2 toques/i);
+    expect(h).not.toContain('class="nav t-navs oscuro"');
+  });
   it('sin la diagonal final redirige y aparece en el catálogo', async () => {
     expect((await pedir('/tienda/clara')).status).toBe(301);
     expect(await (await pedir('/tienda/')).text()).toContain('/tienda/clara/');
