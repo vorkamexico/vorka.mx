@@ -122,9 +122,14 @@ const SCRIPT_SALDO = `(function(){
     (sub||f.lastChild).before(w);
     function plan(){ var x=f.querySelector('[name=slug]:checked')||f.querySelector('[name=slug]'); return x?x.value:''; }
     function regalo(){ var r=f.querySelector('#es-regalo')||f.querySelector('[name=regalo]'); return !!(r&&r.checked); }
+    // Ya paga esta app con tarjeta y se renueva sola: no se paga con saldo (pagaría doble). Botón para cancelar la renovación.
+    function renueva(app){ if(w.querySelector('[data-renueva]')) return; var p=document.createElement('button'); p.dataset.renueva=app; p.type='button'; p.className='btn blanco'; p.textContent='Cancelar la renovación con tarjeta'; m.after(p);
+      var nota=document.createElement('p'); nota.className='t-saldo-m'; nota.textContent='Si ya la cancelaste, espera un minuto y recarga esta página.'; p.after(nota);
+      p.addEventListener('click',function(){ p.disabled=true; post('/api/toolkit/portal',{app:app,volver:location.pathname}).then(function(x){ if(x.ok&&x.j.url) location.href=x.j.url; else { nota.textContent=x.j.mensaje||x.j.error||'Cancélala desde la app (Cuenta o Ajustes).'; p.disabled=false; } }); });
+      }
     function cotiza(){ var k=++n; if(regalo()){ b.hidden=true; m.innerHTML='Para regalar, saca códigos de regalo desde <a href="/tienda/mi-toolkit/?v=codigos">Mi Toolkit</a>.'; return; }
       post('/api/toolkit/cotizar',{slug:plan()}).then(function(x){ if(k!==n) return; q=x.j; b.hidden=true; m.textContent='';
-        if(!q.ok){ m.textContent=q.error||''; return; }
+        if(!q.ok){ m.textContent=q.error||''; if(q.renueva) renueva(q.renueva.app); return; }
         if(q.alcanza){ b.hidden=false; b.textContent='Pagar con mi saldo ('+pesos(q.total)+')'; m.textContent=(q.tipo==='app'?q.nombre+'. ':'')+'Se entrega a '+q.email+' y te quedan '+pesos(q.saldo_centavos-q.total)+'.'+(q.aviso?' '+q.aviso:''); }
         else m.textContent='Te faltan '+pesos(q.falta)+' de saldo para pagar esto con tu Toolkit ('+pesos(q.total)+'). Puedes pagarlo con tarjeta, OXXO o SPEI.';
       }).catch(function(){}); }
