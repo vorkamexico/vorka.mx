@@ -7,7 +7,7 @@ import { paginaVentaSimulador } from './venta.js';
 import { SECCIONES, SECCIONES_EXAMEN, TEMAS, TEXTOS, REACTIVOS } from './banco.js';
 import { armarCompleto, armarExamen, armarCalentamiento } from './armar.js';
 import { SECCIONES_CALENTAMIENTO, INCLUIDOS } from './niveles.js';
-import { UNIVERSIDADES } from './paa-universidades.js';
+import { UNIVERSIDADES, universidadesCliente } from './paa-universidades.js';
 
 const SITIO = 'https://vorka.mx';
 const IMG = `${SITIO}/tienda/img/portadas`;
@@ -46,7 +46,7 @@ export const PAA = crearSimulador({
   armar: { corto: armarCompleto, examen: armarExamen, calentamiento: armarCalentamiento },
   // Lo que la app necesita saber del examen (textos, escala y meta)
   cliente: { examen: 'PAA', escala: 'paa', examenReactivos: EXAMEN_REACTIVOS, examenHoras: EXAMEN_HORAS, globalSecciones: ['lectura', 'redaccion', 'matematicas'],
-    oficial: 'College Board' },
+    oficial: 'College Board', universidades: universidadesCliente() },
   venta: (env, req, url) => paginaVentaSimulador(PAA, VENTA, env, req, url),
 });
 
