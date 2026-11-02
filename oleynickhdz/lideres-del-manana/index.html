@@ -725,43 +725,65 @@
     .foot-socials a svg { width: 16px; height: 16px; }
     .foot-bottom { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11.5px; }
   }
-  /* Grupo patrocinado por Vorka */
-  .ldm-vorka { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: center; margin-bottom: 14px; padding: clamp(26px, 4vw, 44px); border-radius: 28px; background: #141414; color: #F5F5F0; }
-  .ldm-patro { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); font-size: 12.5px; font-weight: 800; letter-spacing: .02em; }
-  .ldm-patro .v { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.1); flex: none; }
-  .ldm-patro .v img { width: 14px; height: auto; display: block; margin-left: 1px; }
-  .ldm-eco { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
-  .ldm-eco li { padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); font-size: 13px; font-weight: 700; color: #fff; }
-  .ldm-eco li::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--accent); vertical-align: 1px; }
-  .ldm-vorka h3 { margin: 16px 0 10px; font-size: clamp(1.4rem, 2.6vw, 1.9rem); line-height: 1.12; letter-spacing: -.03em; color: #fff; }
-  .ldm-vorka p { margin: 0; font-size: 15.5px; line-height: 1.6; color: rgba(245,245,240,.75); max-width: 52ch; }
-  .ldm-vorka p strong { color: #fff; }
-  .ldm-vorka-pasos { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-  .ldm-vorka-pasos li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 14px 14px 16px; border-radius: 20px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
-  .ldm-vorka-pasos .n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #141414; font-weight: 800; font-size: 16px; }
-  .ldm-vorka-pasos b { display: block; color: #fff; font-size: 15.5px; }
-  .ldm-vorka-pasos div span { font-size: 13.5px; color: rgba(245,245,240,.65); }
-  .ldm-ig, .ldm-wa2 { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 999px; font-weight: 800; font-size: 14px; white-space: nowrap; transition: transform .2s; }
-  .ldm-ig:hover, .ldm-wa2:hover { transform: translateY(-2px); }
-  .ldm-ig svg, .ldm-wa2 svg { width: 16px; height: 16px; }
-  .ldm-ig { background: #fff; color: #141414; }
-  .ldm-wa2 { background: #25D366; color: #08280f; }
-  @media (max-width: 960px) { .ldm-vorka { grid-template-columns: 1fr; } .ldm-recursos { grid-template-columns: 1fr; } }
-  @media (max-width: 600px) { .ldm-vorka-pasos li { grid-template-columns: 40px minmax(0, 1fr); row-gap: 12px; } .ldm-vorka-pasos li > a { grid-column: 1 / -1; justify-content: center; padding: 13px 16px; } }
-  /* IMPACTO: entrenarse y colaborar en proyectos sociales */
-  .ldm-impacto { position: relative; overflow: hidden; isolation: isolate; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: clamp(22px, 4vw, 44px); align-items: center; margin-top: 18px; padding: clamp(26px, 4vw, 44px); border-radius: 28px; background: var(--c-green); color: #fff; }
-  .ldm-impacto::after { content: ""; position: absolute; z-index: -1; right: -8%; bottom: -40%; width: 45%; aspect-ratio: 1; border-radius: 50%; background: rgba(255,255,255,.12); }
-  .ldm-impacto .logo { width: 100%; height: auto; }
-  .ldm-impacto .k { font-size: 12.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.85); }
-  .ldm-impacto h3 { margin: 8px 0 10px; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.1; letter-spacing: -.03em; color: #fff; }
-  .ldm-impacto p { margin: 0 0 20px; font-size: 15.5px; line-height: 1.6; color: rgba(255,255,255,.92); max-width: 62ch; }
-  .ldm-impacto .bots { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
-  .ldm-impacto .b1 { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 999px; background: #fff; color: #1d4d12; font-weight: 800; font-size: 15px; transition: transform .2s; }
-  .ldm-impacto .b1:hover { transform: translateY(-2px); }
-  .ldm-impacto .b1 svg { width: 14px; height: 14px; }
-  .ldm-impacto .b2 { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 5px; text-decoration-color: rgba(255,255,255,.5); }
-  @media (max-width: 700px) { .ldm-impacto { grid-template-columns: 1fr; } .ldm-impacto .logo { width: 110px; } }
+  /* ===== Grupo patrocinado por Vorka (estilo vorka.mx) ===== */
+  .vk-grupo { margin-bottom: 14px; padding: clamp(24px, 4vw, 44px); border-radius: 28px; background: radial-gradient(120% 140% at 100% 0%, #2b1238 0%, #0F0D10 55%); color: #F4F2F5; font-family: 'Inter', -apple-system, sans-serif; border: 1px solid rgba(200,164,92,.25); }
+  .vk-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 22px; margin-bottom: 26px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .vk-marca { display: inline-flex; align-items: center; gap: 14px; }
+  .vk-marca img { width: 40px; height: auto; display: block; }
+  .vk-marca > span { font-weight: 800; font-size: 26px; letter-spacing: -.04em; color: #fff; line-height: 1; }
+  .vk-marca small { display: block; margin-top: 4px; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; background: linear-gradient(100deg, #ffffff 0%, #c9ccd1 40%, #e3c47e 75%, #b8924a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vk-sello { padding: 7px 14px; border-radius: 999px; background: linear-gradient(100deg, #6f5420 0%, #a8853f 35%, #c8a45c 62%, #8a6a2c 100%); color: #0F0D10; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .vk-cuerpo { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
+  .vk-grupo h3 { margin: 0 0 12px; font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.1; letter-spacing: -.035em; color: #fff; font-weight: 800; }
+  .vk-grupo h3 span { background: linear-gradient(100deg, #ffffff 0%, #c9ccd1 40%, #e3c47e 75%, #b8924a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vk-grupo p { margin: 0 0 20px; font-size: 15.5px; line-height: 1.6; color: rgba(244,242,245,.75); max-width: 54ch; }
+  .vk-eco { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .vk-eco div { padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); }
+  .vk-eco b { display: block; font-size: 15px; letter-spacing: -.02em; color: #fff; }
+  .vk-eco span { display: block; margin-top: 3px; font-size: 13px; line-height: 1.4; color: rgba(255,255,255,.75); }
+  .vk-eco .t1 { background: linear-gradient(145deg, #2b1238, #6b2a85); }
+  .vk-eco .t2 { background: linear-gradient(145deg, #6f5420, #c8a45c 60%, #e6cf96); }
+  .vk-eco .t2 b, .vk-eco .t2 span { color: #0F0D10; }
+  .vk-eco .t3 { background: linear-gradient(145deg, #0f0d10, #2a2430); }
+  .vk-eco .t3 b { color: #E6CF96; }
+  .vk-eco .t4 { background: linear-gradient(145deg, #1b5c39, #2B8553); }
+  .vk-pasos { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .vk-pasos li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px 14px; align-items: center; padding: 18px; border-radius: 20px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+  .vk-pasos .n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(100deg, #ffffff 0%, #c9ccd1 40%, #e3c47e 75%, #b8924a 100%); color: #0F0D10; font-weight: 800; font-size: 16px; }
+  .vk-pasos b { display: block; color: #fff; font-size: 15.5px; }
+  .vk-pasos div span { font-size: 13.5px; color: rgba(244,242,245,.65); }
+  .vk-pasos li > a { grid-column: 1 / -1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 18px; border-radius: 999px; font-weight: 800; font-size: 14.5px; transition: transform .2s; }
+  .vk-pasos li > a:hover { transform: translateY(-2px); }
+  .vk-pasos svg { width: 16px; height: 16px; }
+  .vk-ig { background: linear-gradient(180deg, #ffffff, #dfe1e5); color: #0F0D10; }
+  .vk-wa { background: #25D366; color: #08280f; }
+  /* ===== IMPACTO (estilo soyimpacto.org) ===== */
+  .imp-card { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); margin-top: 18px; border-radius: 24px; overflow: hidden; background: #F7F7F5; color: #0E0E0D; font-family: 'DM Sans', sans-serif; box-shadow: 0 24px 60px -30px rgba(14,14,13,.35); border: 1px solid #EDEDE8; transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s; }
+  .imp-card:hover { transform: translateY(-4px); box-shadow: 0 30px 70px -28px rgba(14,14,13,.4); }
+  .imp-foto { position: relative; min-height: 280px; }
+  .imp-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+  .imp-txt { padding: clamp(24px, 4vw, 44px); }
+  .imp-logo { width: min(240px, 70%); height: auto; display: block; margin-bottom: 20px; }
+  .imp-k { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #4A4A47; }
+  .imp-card h3 { margin: 0 0 12px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.05; letter-spacing: -.035em; color: #0E0E0D; }
+  .imp-card h3 span { color: #387ec2; }
+  .imp-txt > p:not(.imp-k) { margin: 0 0 18px; font-size: 16px; line-height: 1.6; color: #4A4A47; max-width: 56ch; }
+  .imp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .imp-chips span { padding: 7px 13px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .imp-chips .c-am { background: #FDEEC2; color: #9A6B1D; } .imp-chips .c-az { background: #D4E4F4; color: #1F4A77; }
+  .imp-chips .c-ve { background: #D1EACA; color: #2D601E; } .imp-chips .c-ro { background: #F9D1CD; color: #8A2822; }
+  .imp-bots { display: flex; flex-wrap: wrap; gap: 10px; }
+  .imp-b1 { display: inline-flex; align-items: center; padding: 14px 24px; border-radius: 999px; background: #0E0E0D; color: #fff; font-weight: 700; font-size: 15px; transition: background .2s, color .2s; }
+  .imp-b1:hover { background: #f7b33e; color: #0E0E0D; }
+  .imp-b2 { display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 999px; border: 2px solid #0E0E0D; color: #0E0E0D; font-weight: 600; font-size: 15px; transition: background .2s, color .2s; }
+  .imp-b2:hover { background: #0E0E0D; color: #fff; }
+  @media (max-width: 960px) { .vk-cuerpo { grid-template-columns: 1fr; } .ldm-recursos { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .imp-card { grid-template-columns: 1fr; } .imp-foto { min-height: 220px; } }
+  @media (max-width: 420px) { .vk-eco { grid-template-columns: 1fr; } }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@400;500;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -889,15 +911,22 @@
       <li><h3>Solicitud de beca</h3><p>Completa la solicitud de apoyos educativos y presenta el estudio socioeconómico del Tec, con el que se acredita que requieres el 100%.</p></li>
       <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#impacto">¿Sin proyecto? Únete a IMPACTO →</a></li>
     </ol>
-    <div class="ldm-impacto" id="impacto">
-      <img class="logo" src="../img/logo-impacto-blanco.png" alt="IMPACTO · Juventudes Impactando México" width="320" height="255" loading="lazy">
-      <div class="txt">
-        <span class="k">¿Aún no tienes proyecto social o quieres hacerlo crecer?</span>
-        <h3>Ponte trucha: súmate a IMPACTO.</h3>
-        <p>En Juventudes Impactando México te capacitas en liderazgo, encuentras a otros jóvenes para colaborar y construyes proyectos sociales reales, con evidencia que se mide y se reporta. Aquí estamos para construir en conjunto.</p>
-        <div class="bots">
-          <a class="b1" href="https://soyimpacto.org/servoluntario?invita=i52b0oe8" target="_blank" rel="noopener">Quiero unirme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-          <a class="b2" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Conocer soyimpacto.org →</a>
+    <div class="imp-card" id="impacto">
+      <div class="imp-foto"><img src="../img/impacto-equipo.webp" alt="Jóvenes voluntarios de IMPACTO" width="720" height="900" loading="lazy"></div>
+      <div class="imp-txt">
+        <img class="imp-logo" src="../img/impacto-marca.png" alt="IMPACTO · Juventudes Impactando México A.C." width="615" height="134" loading="lazy">
+        <p class="imp-k">¿Aún no tienes proyecto social o quieres hacerlo crecer?</p>
+        <h3>Ponte trucha y <span>construyamos en conjunto.</span></h3>
+        <p>En Juventudes Impactando México te capacitas, encuentras con quién colaborar y haces proyectos sociales reales, con evidencia que se mide y se reporta.</p>
+        <div class="imp-chips">
+          <span class="c-am">Capacitaciones y mentorías</span>
+          <span class="c-az">Colaboraciones</span>
+          <span class="c-ve">Proyectos que se miden</span>
+          <span class="c-ro">Presidencias en todo México</span>
+        </div>
+        <div class="imp-bots">
+          <a class="imp-b1" href="https://soyimpacto.org/servoluntario?invita=i52b0oe8" target="_blank" rel="noopener">Sumarme a IMPACTO →</a>
+          <a class="imp-b2" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Conocer soyimpacto.org</a>
         </div>
       </div>
     </div>
@@ -935,22 +964,27 @@
         <div class="section-eyebrow">Recursos</div>
         <h2 class="section-title" id="h-rec">Estudia, <em>pregunta</em> y entérate primero.</h2>
       </div>
-      <div class="ldm-vorka" id="grupo">
-        <div class="ldm-vorka-txt">
-          <span class="ldm-patro"><span class="v"><img src="../img/logo-vorka-blanco.png" alt="" width="15" height="15"></span>Patrocinado por Vorka México</span>
-          <h3>Grupo de aspirantes a Líderes del Mañana</h3>
-          <p>El grupo de WhatsApp lo patrocina <strong>Vorka México</strong>, un ecosistema para jóvenes que quieren crecer e impactar. Antes de solicitar unirte, síguenos en Instagram para entrar a todo lo que hay del otro lado:</p>
-          <ul class="ldm-eco">
-            <li>Comunidad de jóvenes líderes</li>
-            <li>Herramientas para emprendedores</li>
-            <li>Mentoría y consultoría</li>
-            <li>Becas y oportunidades</li>
-          </ul>
+      <div class="vk-grupo" id="grupo">
+        <div class="vk-cab">
+          <span class="vk-marca"><img src="../img/logo-vorka-blanco.png" alt="" width="40" height="39"><span>Vorka<small>México</small></span></span>
+          <span class="vk-sello">Patrocinador del grupo</span>
         </div>
-        <ol class="ldm-vorka-pasos">
-          <li><span class="n">1</span><div><b>Sigue a @vorka.mx</b><span>Conoce el ecosistema y a más líderes.</span></div><a class="ldm-ig" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>Seguir</a></li>
-          <li><span class="n">2</span><div><b>Solicita unirte al grupo</b><span>Te aceptamos lo antes posible.</span></div><a class="ldm-wa2" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.94 11.94 0 0 0 12 0C5.37 0 0 5.37 0 12a11.86 11.86 0 0 0 1.64 6.03L0 24l6.16-1.62A11.9 11.9 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.21-3.48-8.52zM12 21.82a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.66.96.98-3.57-.24-.37A9.8 9.8 0 1 1 12 21.82zm5.39-7.34c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>Unirme</a></li>
-        </ol>
+        <div class="vk-cuerpo">
+          <div>
+            <h3>Grupo de aspirantes a Líderes del Mañana, <span>patrocinado por Vorka.</span></h3>
+            <p>Vorka México es un ecosistema para jóvenes que quieren crecer e impactar. Antes de solicitar unirte, síguenos en Instagram: es la puerta a todo lo que construimos juntos.</p>
+            <div class="vk-eco">
+              <div class="t1"><b>Comunidad</b><span>Jóvenes líderes de todo México</span></div>
+              <div class="t2"><b>Herramientas</b><span>Para emprendedores y proyectos</span></div>
+              <div class="t3"><b>Mentoría y consultoría</b><span>Para llevar tu idea más lejos</span></div>
+              <div class="t4"><b>Oportunidades</b><span>Becas y convocatorias</span></div>
+            </div>
+          </div>
+          <ol class="vk-pasos">
+            <li><span class="n">1</span><div><b>Sigue a @vorka.mx</b><span>Conoce el ecosistema y a más líderes.</span></div><a class="vk-ig" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>Seguir</a></li>
+            <li><span class="n">2</span><div><b>Solicita unirte al grupo</b><span>Te aceptamos lo antes posible.</span></div><a class="vk-wa" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.94 11.94 0 0 0 12 0C5.37 0 0 5.37 0 12a11.86 11.86 0 0 0 1.64 6.03L0 24l6.16-1.62A11.9 11.9 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.21-3.48-8.52zM12 21.82a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.66.96.98-3.57-.24-.37A9.8 9.8 0 1 1 12 21.82zm5.39-7.34c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>Unirme</a></li>
+          </ol>
+        </div>
       </div>
       <div class="ldm-recursos">
         <div class="ldm-rec sim">
