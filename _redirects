@@ -42,6 +42,8 @@
 /oleeynick/servicios*            /oleynickhdz/servicios/        301
 /oleeynick/*                     /oleynickhdz/                  301
 /oleynickhdz/socialproyects*     /oleynickhdz/proyecto-social/  301
+/oleynickhdz/ldm                  /oleynickhdz/lideres-del-manana/  301
+/oleynickhdz/ldm/                 /oleynickhdz/lideres-del-manana/  301
 
 /.claude/* / 302
 
