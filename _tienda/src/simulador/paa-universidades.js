@@ -222,6 +222,34 @@ const CSS = `<style>
 .pu-nota{margin-top:14px;font-size:14px;color:var(--fg-2)}
 </style>`;
 
+// Cómo usa cada universidad el puntaje (para la app del simulador: «¿A qué universidad quieres entrar?»).
+// Solo datos de las fuentes de arriba y de la guía del College Board de 2020 (págs. 10–11: Lectura y Redacción es una
+// parte de 200 a 800, Matemáticas otra, y la mayoría de las universidades toma en cuenta esas dos).
+//   escala 'total': Lectura y Redacción + Matemáticas (400 a 1,600), como se lee el «PAA total» de la UDEM y el ITESO.
+//   escala 'paa':   la estándar del College Board (cada parte de 200 a 800), cuando la universidad no publica otra.
+//   sinMinimo:      no publica un puntaje mínimo de admisión.
+export const PUNTAJE_UNIVERSIDADES = {
+  udem: { escala: 'total', minimos: { total: 1200, verbal: 550, mate: 550 }, metaSeccion: 550,
+    ref: { valor: 1200, texto: 'Mínimo UDEM' },
+    explica: 'La UDEM suma tus dos partes de la PAA: Lectura y Redacción (razonamiento verbal) y Matemáticas, cada una de 200 a 800. Pide al menos 1,200 en total y 550 en cada parte (Enfermería: 1,100 y 500).',
+    cita: 'numeral 5.3.6' },
+  'tec-de-monterrey': { escala: 'paa', sinMinimo: true,
+    explica: 'El Tec no publica un puntaje mínimo: un Comité de Admisión revisa todo tu expediente, y solo cuenta la PAA que aplica un campus del Tec.',
+    cita: 'Arts. 3, 10 y 43' },
+  udeg: { escala: 'paa', sinMinimo: true,
+    explica: 'En la UdeG tu PAA pesa 50 % y tu promedio de bachillerato el otro 50 %, los dos en escala de 0 a 100. La UdeG no publica cómo pasa tu PAA de la escala de 200 a 800 a la de 0 a 100, así que aquí ves la escala del College Board: 800 es el máximo por parte, no tu puntaje de admisión.',
+    cita: 'portal de pregrado' },
+  itam: { escala: 'paa', sinMinimo: true,
+    explica: 'El ITAM aplica la PAA en línea (ePAA) una vez por periodo y su página no publica un puntaje mínimo.',
+    cita: 'Dirección Escolar' },
+  iteso: { escala: 'total', sinMinimo: true, ref: { valor: 1250, texto: 'Beca STEM ITESO' },
+    explica: 'El ITESO valida tu puntaje total de la PAA (Lectura y Redacción + Matemáticas, de 400 a 1,600) si no tiene más de año y medio. No publica un mínimo de admisión; la Beca Descubre STEM pide más de 1,250.',
+    cita: 'preguntas frecuentes y folleto de admisión' },
+};
+// Lo que la app necesita de cada universidad (en el orden de UNIVERSIDADES), con su fuente
+export const universidadesCliente = () => Object.entries(UNIVERSIDADES).map(([id, u]) => ({ id, nombre: u.nombre, completo: u.completo, art: u.art,
+  ...PUNTAJE_UNIVERSIDADES[id], fuente: { nombre: u.fuentes[0].nombre, url: u.fuentes[0].url }, pagina: `${RUTA}/${id}/`, verificado: u.verificado }));
+
 // "con la UDEM" / "con el Tecnológico de Monterrey (Tec)"
 const de = u => `${u.art} ${esc(u.completo)}`;
 

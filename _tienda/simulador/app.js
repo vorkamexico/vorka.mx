@@ -15,12 +15,13 @@
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
   // Llaves de localStorage por cuenta (se completan al saber quién entró): dos personas en el mismo dispositivo no se mezclan
-  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA;
+  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI;
+  var L = window.SIM_LOGICA;   // funciones puras (simulador/logica.js): gráfica, temas y puntaje por universidad
   function llaves(email) {
     var h = 0; String(email || '').split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
     var x = ':' + h.toString(36);
     var p = APP === 'simulador-paa' ? 'vk_paa' : 'vk_' + APP.replace('simulador-', '');
-    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x;
+    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x;
   }
 
   // ---------- utilidades ----------
@@ -47,6 +48,10 @@
   function areas() { return B.areas || null; }
   function areaActual() { var a = areas(); if (!a) return null; var x = leer(K_AREA); return a.some(function (y) { return y.id === x; }) ? x : a[0].id; }
   function infoArea() { var a = areas(), id = areaActual(); if (!a) return null; for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i]; return a[0]; }
+  // Universidad a la que quiere entrar (PAA): cambia la escala en la que ve su puntaje. Se guarda junto a la meta.
+  function unis() { return esPAA() ? CFG.universidades || [] : []; }
+  function uniId() { var x = leer(K_UNI); return x === 'otra' || unis().some(function (u) { return u.id === x; }) ? x : null; }
+  function uniInfo() { var id = uniId(); for (var i = 0; i < unis().length; i++) if (unis()[i].id === id) return unis()[i]; return null; }
   function seccion(id) { for (var i = 0; i < B.secciones.length; i++) if (B.secciones[i].id === id) return B.secciones[i]; return { id: id, nombre: 'Práctica', minutos: 0, reactivos: 0 }; }
   function h(html) { app.innerHTML = html; app.focus({ preventScroll: true }); window.scrollTo(0, 0); }
   function api(ruta, op) {
@@ -217,15 +222,73 @@
         .catch(function (e2) { err.textContent = e2.message; err.hidden = false; btn.disabled = false; btn.innerHTML = 'Ir a pagar ' + FL; });
     };
   }
-  // Práctica: hasta 10 reactivos de los temas pedidos; primero los que fallaste, luego los que no has visto
+  // Práctica: solo reactivos de los temas pedidos (10 o los que elija); primero los que fallaste, luego los que no has visto.
+  // No gasta intentos: se arma aquí, sin pasar por /iniciar.
+  var practicaN = 10;
   function armarPractica(temas) {
-    var ultimo = YO.historial[0] || {}, fallados = {}, visto = vistos();
+    var fallados = {};
     YO.historial.forEach(function (x) { (x.fallados || []).forEach(function (id) { fallados[id] = 1; }); });
-    var cand = barajar(B.reactivos.filter(function (r) { return temas.indexOf(r.tema) >= 0; }));
-    cand.sort(function (a, b) { return (fallados[b.id] || 0) - (fallados[a.id] || 0) || (visto[a.id] || 0) - (visto[b.id] || 0); });
-    var items = porTema(cand.slice(0, Math.max(10, temas.length * 3)), 10);
-    void ultimo;
+    var items = L.elegirPractica(B.reactivos, temas, { n: practicaN, fallados: fallados, vistos: vistos() });
+    practicaN = 10;
     return { id: 'practica', temas: temas, items: items.map(function (r) { return r.id; }), idx: 0, limite: 0, usado: 0, cerrada: false };
+  }
+
+  // ---------- práctica libre por temas (no gasta intentos) ----------
+  // Elige sección (o materia) y uno o varios temas; los temas salen del banco con su etiqueta real, con cuántas preguntas
+  // hay y cuántas ya vio. Sugiere sus temas más débiles con sus aciertos a la primera en todo su historial.
+  var TS = { elegidos: {}, sec: null, n: 10 };
+  function elegirTemas() {
+    detenerReloj(); pintarBarra();
+    var grupos = L.temasPorSeccion(B, vistos());
+    if (!TS.sec || !grupos.some(function (g) { return g.id === TS.sec; })) TS.sec = grupos[0].id;
+    var agg = L.desempenoTemas(YO.historial), debiles = L.temasDebiles(agg, B.temas, 4, 2), quien = esPAA() ? 'sección' : 'materia';
+    var sug = debiles.length
+      ? '<div class="sim-card sim-debiles"><h2 class="sim-h3">Tus temas más débiles</h2><p class="sim-nota">Con tus aciertos a la primera en todo tu historial.</p><div class="sim-debiles-l">' +
+        debiles.map(function (t) { return '<span class="sim-chip c-bajo">' + esc(t.nombre) + ' · ' + t.ok + '/' + t.total + '</span>'; }).join('') + '</div>' +
+        '<button type="button" class="btn tinta chico" id="t-debiles">Practicar estos ' + debiles.length + ' temas ' + FL + '</button></div>'
+      : '<p class="sim-nota sim-debiles-vacio">Cuando termines un simulacro o una práctica, aquí te sugerimos tus temas más débiles.</p>';
+    h('<section class="sim-intro sim-tsel"><span class="sim-paso">Práctica libre · no gasta intentos</span><h1>Elige qué temas practicar</h1>' +
+      '<p class="sim-lead">Escoge una ' + quien + ' y marca uno o varios temas (puedes mezclar ' + (esPAA() ? 'secciones' : 'materias') + '). Te damos preguntas solo de esos temas, sin cronómetro y con tutor.</p>' + sug +
+      '<div class="sim-tabs" role="tablist" aria-label="' + (esPAA() ? 'Secciones' : 'Materias') + '">' + grupos.map(function (g) {
+        return '<button type="button" role="tab" id="tab-' + g.id + '" aria-controls="t-panel" aria-selected="' + (g.id === TS.sec) + '"' + (g.id === TS.sec ? '' : ' tabindex="-1"') + ' class="sim-tab' + (g.id === TS.sec ? ' sel' : '') + '" data-tsec="' + g.id + '">' + esc(g.nombre) + '<small class="num" data-tcuenta="' + g.id + '"></small></button>';
+      }).join('') + '</div>' +
+      '<div class="sim-card sim-tpanel" id="t-panel" role="tabpanel"></div>' +
+      '<div class="sim-tpie"><p id="t-n" aria-live="polite"></p><label class="sim-tcant">Preguntas <select id="t-cant"><option value="10"' + (TS.n === 10 ? ' selected' : '') + '>10</option><option value="20"' + (TS.n === 20 ? ' selected' : '') + '>20</option></select></label>' +
+      '<div class="botones"><button class="btn tinta" id="t-go" type="button">Practicar ' + FL + '</button><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button></div></div></section>');
+    function cuenta() {
+      var ids = Object.keys(TS.elegidos), total = B.reactivos.filter(function (r) { return TS.elegidos[r.tema]; }).length;
+      document.getElementById('t-n').innerHTML = ids.length ? '<b>' + ids.length + (ids.length === 1 ? ' tema elegido' : ' temas elegidos') + '</b> · ' + total + ' preguntas en el banco' : 'Marca al menos un tema.';
+      document.getElementById('t-go').disabled = !ids.length;
+      grupos.forEach(function (g) { var n = g.temas.filter(function (t) { return TS.elegidos[t.id]; }).length; var c = app.querySelector('[data-tcuenta="' + g.id + '"]'); if (c) c.textContent = n ? ' · ' + n : ''; });
+    }
+    function panel() {
+      var g = grupos.filter(function (x) { return x.id === TS.sec; })[0], todos = g.temas.every(function (t) { return TS.elegidos[t.id]; });
+      var pn = document.getElementById('t-panel'); pn.setAttribute('aria-labelledby', 'tab-' + g.id);
+      pn.innerHTML = '<fieldset><legend class="sim-h3">Temas de ' + esc(g.nombre) + '</legend><ul class="sim-tlista">' + g.temas.map(function (t) {
+        var a = agg[t.id];
+        return '<li><label class="sim-top"><input type="checkbox" value="' + t.id + '"' + (TS.elegidos[t.id] ? ' checked' : '') + '><span><b>' + esc(t.nombre) + '</b><small>' + t.total + ' preguntas · has visto ' + t.vistos + (a && a.total ? ' · ' + a.ok + '/' + a.total + ' a la primera' : '') + '</small></span></label></li>';
+      }).join('') + '</ul></fieldset><button type="button" class="sim-link" id="t-todos">' + (todos ? 'Quitar todos' : 'Marcar todos') + ' los de ' + esc(g.nombre) + '</button>';
+      pn.querySelectorAll('input').forEach(function (c) { c.onchange = function () { if (c.checked) TS.elegidos[c.value] = 1; else delete TS.elegidos[c.value]; cuenta(); var tb = document.getElementById('t-todos'); tb.textContent = (g.temas.every(function (t) { return TS.elegidos[t.id]; }) ? 'Quitar todos' : 'Marcar todos') + ' los de ' + g.nombre; }; });
+      document.getElementById('t-todos').onclick = function () { var q = g.temas.every(function (t) { return TS.elegidos[t.id]; }); g.temas.forEach(function (t) { if (q) delete TS.elegidos[t.id]; else TS.elegidos[t.id] = 1; }); panel(); cuenta(); };
+    }
+    var tabs = app.querySelectorAll('[data-tsec]');
+    tabs.forEach(function (b, k) {
+      b.onclick = function () { TS.sec = b.dataset.tsec; tabs.forEach(function (x) { var s = x === b; x.classList.toggle('sel', s); x.setAttribute('aria-selected', s); x.tabIndex = s ? 0 : -1; }); panel(); };
+      b.onkeydown = function (e) { var n = e.key === 'ArrowRight' ? k + 1 : e.key === 'ArrowLeft' ? k - 1 : null; if (n == null) return; e.preventDefault(); var t = tabs[(n + tabs.length) % tabs.length]; t.click(); t.focus(); };
+    });
+    panel(); cuenta();
+    document.getElementById('t-cant').onchange = function () { TS.n = Number(this.value) || 10; };
+    var bd = document.getElementById('t-debiles'); if (bd) bd.onclick = function () { TS.elegidos = {}; debiles.forEach(function (t) { TS.elegidos[t.id] = 1; }); practicarElegidos(); };
+    document.getElementById('t-go').onclick = practicarElegidos;
+    document.getElementById('b-inicio').onclick = inicio;
+  }
+  function practicarElegidos() {
+    var ids = Object.keys(TS.elegidos); if (!ids.length) return;
+    if (run && run.fase !== 'fin') {
+      if (!confirm(esIntento(run.modo) ? 'Tienes un simulacro sin terminar. Si empiezas una práctica lo pierdes y el intento ya cuenta. ¿Continuar?' : 'Tienes una práctica sin terminar. ¿Empezar otra y descartarla?')) return;
+      if (esIntento(run.modo)) { var id = run.intento; run = null; guardar(K_RUN, null); api('abandonar', { method: 'POST', body: JSON.stringify({ id: id }) }).then(function (d) { YO.intentos = d.intentos; YO.examenes = d.examenes; if (d.calentamientos) YO.calentamientos = d.calentamientos; }); }
+    }
+    practicaN = TS.n; empezar('practica', ids);
   }
 
   // ---------- inicio ----------
@@ -236,7 +299,7 @@
     var totalR = medioTotales().reactivos, totalM = medioTotales().minutos;
     var retomar = run && run.fase !== 'fin' ? '<div class="sim-aviso"><div><b>Tienes un simulacro sin terminar.</b><span>' + esc(nombreModo(run)) + ' · ' + contestadas(run) + ' de ' + totalItems(run) + ' respondidas</span></div><div class="botones"><button class="btn tinta chico" id="b-ret">Continuar</button><button class="btn blanco chico" id="b-desc">Descartar</button></div></div>' : '';
     var resumen = u ? tarjetaResumen(u) : '<div class="sim-card sim-primera"><span class="etiqueta">Tu punto de partida</span><h2>Haz tu primer simulacro completo</h2><p>Con él calculamos tu ' + (esPAA() ? 'puntaje estimado por sección' : 'número de aciertos estimado por materia') + ', tu nivel de confianza y los temas exactos que debes reforzar.</p></div>';
-    var debiles = u ? temasDebiles(u.temas, 3) : [];
+    var debiles = L.temasDebiles(L.desempenoTemas(YO.historial), B.temas, 3, 2), conTemas = L.hayTemas(B);
     var it = cuentaDe('completo'), ie = cuentaDe('examen'), ic = cuentaDe('calentamiento');
     // Si el intento de este dispositivo ya se cerró en otro, se descarta aquí
     if (run && esIntento(run.modo) && (!cuentaDe(run.modo).abierto || cuentaDe(run.modo).abierto.id !== run.intento)) { run = null; guardar(K_RUN, null); retomar = ''; }
@@ -269,8 +332,9 @@
           (hayExamen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
           (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + (esPAA() ? ' secciones' : ' materias') + ' cronometradas y con la dificultad del examen') + (ie.tutorSiguiente || (ie.abierto && ie.abierto.tutor) ? ' · <b>el primero, con tutor</b>: si fallas te da una pista, para que veas cómo es el examen sin presión. El segundo, sin pistas como el día del examen' : ' · sin pistas, la revisión va al final') + '</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           (puedePracticar() ? '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
+          (conTemas ? '<button class="sim-op sim-op-temas" id="b-temas"><span class="sim-op-i">' + ICONO.foco + '</span><span class="sim-op-t"><b>Elige qué temas practicar</b><small>' + (esPAA() ? 'Sección' : 'Materia') + ' y temas que tú quieras · ' + Object.keys(B.temas).length + ' temas en el banco · sin cronómetro y con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' : '') +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
-            return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
+            return '<button class="sim-op" data-modo="seccion" data-sec="' + s.id + '"><span class="sim-punto s-' + s.color + '"></span><span class="sim-op-t"><b>' + esc(s.nombre) + '</b><small>' + (conTemas ? 'Todos los temas · ' : '') + s.reactivos + ' reactivos · ' + s.minutos + ' min</small></span><span class="sim-op-f">' + FL + '</span></button>';
           }).join('') + '</div>' : '') +
           (puedePracticar() && debiles.length ? '<button class="sim-op sim-op-practica" data-modo="practica" data-temas="' + debiles.map(function (t) { return t.id; }).join(',') + '"><span class="sim-op-i">' + ICONO.foco + '</span><span class="sim-op-t"><b>Practicar mis temas débiles</b><small>' + esc(debiles.map(function (t) { return t.nombre; }).join(' · ')) + '</small></span><span class="sim-op-f">' + FL + '</span></button>' : '') +
           '</section>' +
@@ -278,9 +342,9 @@
         '</div>' +
         '<aside class="sim-col sim-col-lado">' +
           '<div class="o-1">' + resumen + '</div>' +
-          (esPAA() ? '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800</small></div>' +
+          (esPAA() ? '<div class="o-2 sim-card sim-meta' + (unis().length && !uniId() ? ' sim-meta-pend' : '') + '">' + uniHTML() + '<span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800 por sección</small></div>' +
             '<input type="range" id="meta" min="400" max="800" step="10" value="' + m + '" aria-label="Meta de puntaje por sección (200 a 800)">' +
-            '<p class="sim-nota">La PAA califica cada sección de 200 a 800. Pregunta en tu universidad el puntaje que piden y ajústalo aquí.</p></div>'
+            '<p class="sim-nota" id="meta-nota">' + metaNota(m) + '</p></div>'
           : '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta de aciertos</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de ' + CFG.examenReactivos + '</small></div>' +
             '<input type="range" id="meta" min="' + CFG.meta.min + '" max="' + CFG.meta.max + '" step="' + CFG.meta.paso + '" value="' + m + '" aria-label="Meta de aciertos (de ' + CFG.examenReactivos + ')">' +
             '<p class="sim-nota">' + esc(CFG.metaNota || 'Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.') + '</p></div>') +
@@ -292,8 +356,12 @@
     );
     app.querySelectorAll('[data-area]').forEach(function (b) { b.onclick = function () { guardar(K_AREA, b.dataset.area); inicio(); }; });
     var r = document.getElementById('meta');
-    r.oninput = function () { document.getElementById('meta-v').textContent = r.value; };
-    r.onchange = function () { guardar(K_META, Number(r.value)); };
+    r.oninput = function () { document.getElementById('meta-v').textContent = r.value; var n = document.getElementById('meta-nota'); if (n && esPAA()) n.innerHTML = metaNota(Number(r.value)); };
+    r.onchange = function () { guardar(K_META, Number(r.value)); repintar('meta'); };
+    app.querySelectorAll('[data-uni]').forEach(function (b) { b.onclick = function () { guardar(K_UNI, b.dataset.uni); repintar('[data-uni="' + b.dataset.uni + '"]'); }; });
+    var um = document.getElementById('uni-meta'); if (um) um.onclick = function () { guardar(K_META, uniInfo().metaSeccion); repintar('meta'); };
+    var bt = document.getElementById('b-temas'); if (bt) bt.onclick = function () { elegirTemas(); };
+    conectarGrafica();
     app.querySelectorAll('[data-modo]').forEach(function (b) {
       b.onclick = function () {
         if (run && run.fase !== 'fin') {
@@ -315,6 +383,46 @@
     app.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
     app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
     conectarSparks();
+  }
+  // Vuelve a pintar el inicio sin perder el lugar en la página (al cambiar meta o universidad) y deja el foco donde estaba
+  function repintar(foco) {
+    var y = window.scrollY; inicio(); window.scrollTo(0, y);
+    var x = foco && (document.getElementById(foco) || document.querySelector(foco)); if (x) x.focus({ preventScroll: true });
+  }
+  // «¿A qué universidad quieres entrar?»: cómo califica cada una (datos verificados de paa-universidades.js, con su fuente)
+  function uniHTML() {
+    if (!unis().length) return '';
+    var id = uniId(), u = uniInfo();
+    var ops = unis().map(function (x) { return { id: x.id, nombre: x.nombre }; }).concat([{ id: 'otra', nombre: 'Otra o aún no sé' }]);
+    var det = '';
+    if (u) det = '<div class="sim-uni-det"><p><b>Cómo usa la PAA:</b> ' + esc(u.explica) + '</p>' +
+      (u.sinMinimo ? '<p class="sim-uni-aviso">Esta universidad no publica un puntaje mínimo; revisa su convocatoria.</p>' : '') +
+      '<p class="sim-nota">Fuente: <a href="' + esc(u.fuente.url) + '" target="_blank" rel="noopener">' + esc(u.fuente.nombre) + '</a> (' + esc(u.cita) + '), revisada el ' + esc(u.verificado) + '. <a href="' + esc(u.pagina) + '" target="_blank" rel="noopener">Más sobre la PAA y ' + esc(u.art + ' ' + u.nombre) + '</a>.</p>' +
+      (u.metaSeccion && meta() !== u.metaSeccion ? '<button class="btn blanco chico" id="uni-meta" type="button">Usar ' + u.metaSeccion + ' como mi meta por sección</button>' : '') + '</div>';
+    else if (id === 'otra') det = '<div class="sim-uni-det"><p>Verás tu puntaje en la escala del College Board: cada parte de la PAA va de 200 a 800. Cada universidad lo usa distinto; revisa su convocatoria.</p></div>';
+    return '<div class="sim-uni"><span class="etiqueta" id="uni-t">Tu universidad</span><h3>¿A qué universidad quieres entrar?</h3>' +
+      (id ? '' : '<p class="sim-nota">Así te mostramos tu puntaje como lo usa esa universidad (no todas califican igual).</p>') +
+      '<div class="sim-uni-ops" role="radiogroup" aria-labelledby="uni-t">' + ops.map(function (o) {
+        return '<button type="button" class="sim-chip-uni' + (o.id === id ? ' sel' : '') + '" role="radio" aria-checked="' + (o.id === id) + '" data-uni="' + o.id + '">' + esc(o.nombre) + '</button>';
+      }).join('') + '</div>' + det + '</div>';
+  }
+  function metaNota(m) {
+    var u = uniInfo();
+    if (u && u.escala === 'total') return 'Cada sección va de 200 a 800. Para ' + esc(laUni(u)) + ' cuenta el total (Lectura y Redacción + Matemáticas): con ' + m + ' por sección llegarías a <b>' + L.miles(L.metaEnEscala(m, u)) + '</b> de 1,600' + (u.minimos ? '; el mínimo es ' + L.miles(u.minimos.total) + '.' : '.');
+    return 'La PAA califica cada sección de 200 a 800. ' + (u ? '' : 'Pregunta en tu universidad el puntaje que piden y ajústalo aquí.');
+  }
+  // Puntaje de un resultado como lo ve su universidad: { html corto, detalle } (o null si no aplica)
+  function laUni(u) { return u.art + ' ' + u.nombre; }
+  function puntajeUniHTML(res) {
+    var u = uniInfo(); if (!u || !esPAA()) return null;
+    var p = L.puntajeUni(res, u); if (!p) return null;
+    if (p.escala === 'total') {
+      var c = L.cumpleMinimos(p.partes, u);
+      return { corto: 'Para ' + esc(laUni(u)) + ': <b class="num">' + L.miles(p.valor) + '</b> de 1,600',
+        detalle: 'Lectura y Redacción ' + p.partes.verbal + ' + Matemáticas ' + p.partes.mate + ' = <b>' + L.miles(p.valor) + '</b> de 1,600' +
+          (c ? (c.todo ? ' · <span class="sim-si">cumple los mínimos de ' + esc(laUni(u)) + '</span>' : ' · <span class="sim-no">abajo del mínimo de ' + esc(laUni(u)) + ' (' + L.miles(u.minimos.total) + ' total, ' + u.minimos.verbal + ' por parte)</span>') : u.ref ? ' · referencia: ' + esc(u.ref.texto) + ' ' + L.miles(u.ref.valor) : '') };
+    }
+    return { corto: 'Escala del College Board (200 a 800)', detalle: 'Escala del College Board (200 a 800). Esta universidad no publica un puntaje mínimo; revisa su convocatoria.' };
   }
   // Tamaño del banco y cuánto ha visto el estudiante (los simulacros completos priorizan lo no visto)
   function bancoHTML() {
@@ -383,35 +491,80 @@
     var c = u.confianza || 0, e = estado(c);
     return '<div class="sim-card sim-res-mini"><span class="etiqueta">Tu último ' + (u.modo === 'examen' ? 'examen completo' : u.modo === 'calentamiento' ? 'calentamiento' : 'simulacro Medio') + '</span>' +
       '<div class="sim-res-mini-f">' + medidor(c, 120) + '<div><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' +
-      (u.global != null ? '<p>' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ': <b class="num">' + unidad(u.global) + '</b> · meta ' + (u.meta || meta()) + '</p>' : '') +
+      (u.global != null ? '<p>' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ': <b class="num">' + unidad(u.global) + '</b>' + (esPAA() ? ' por sección' : '') + ' · meta ' + (u.meta || meta()) + '</p>' : '') +
+      (function () { var x = puntajeUniHTML(u); return x ? '<p class="sim-nota">' + x.detalle + '</p>' : ''; })() +
       '<p class="sim-nota">' + fecha(u.fecha) + '</p></div></div></div>';
   }
   function historial() {
     if (!YO.historial.length) return '';
-    var comp = YO.historial.filter(function (x) { return esIntento(x.modo) && x.global != null; }).slice(0, 8).reverse();
-    var graf = comp.length >= 2 ? graficaHistorial(comp) : '';
+    var idx = [];
+    YO.historial.forEach(function (x, i) { if (esIntento(x.modo) && x.global != null && idx.length < 8) idx.push(i); });
+    idx.reverse();
+    var graf = idx.length >= 2 ? graficaHistorial(idx) : '';
     return '<h2 class="sim-h2">Tu avance</h2>' + graf + '<ul class="sim-hist">' + YO.historial.slice(0, 8).map(function (x, i) {
       var t = x.modo === 'examen' ? 'Examen completo' : x.modo === 'calentamiento' ? 'Calentamiento' : x.modo === 'completo' ? 'Nivel Medio' : x.modo === 'seccion' ? seccion((x.secciones[0] || {}).id).nombre : 'Práctica de temas';
       var ok = x.secciones.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = x.secciones.reduce(function (a, s) { return a + s.total; }, 0);
       return '<li><button data-hist="' + i + '"><span><b>' + esc(t) + '</b><small>' + fecha(x.fecha) + '</small></span><span class="num">' + (x.global != null && esIntento(x.modo) ? unidad(x.global) : pct(ok, tot) + ' %') + '</span>' + FL + '</button></li>';
     }).join('') + '</ul>';
   }
-  // Puntaje global de los últimos simulacros (una serie: un solo color, valor y fecha en el tooltip)
-  function graficaHistorial(lista) {
-    var W = 560, H = 150, pad = 28, n = lista.length, bw = Math.min(44, (W - pad * 2) / n - 10);
-    var R0 = rango(), y = function (v) { return H - 22 - (v - R0.min) / (R0.max - R0.min) * (H - 40); };
-    var m = meta();
-    var barras = lista.map(function (x, i) {
-      var cx = pad + (i + .5) * (W - pad * 2) / n, top = y(x.global);
-      return '<g class="sim-gh-b" tabindex="0"><title>' + esc(fecha(x.fecha)) + ': ' + (esPAA() ? x.global + ' puntos' : x.global + ' aciertos') + '</title>' +
-        '<path d="M' + (cx - bw / 2) + ' ' + (H - 22) + 'V' + (top + 4) + 'q0 -4 4 -4h' + (bw - 8) + 'q4 0 4 4V' + (H - 22) + 'z"/>' +
-        (i === n - 1 ? '<text x="' + cx + '" y="' + (top - 6) + '" text-anchor="middle">' + x.global + '</text>' : '') + '</g>';
+  // Gráfica de avance (una serie): cada barra es un botón con su puntaje, tipo y fecha; la elegida va en color de acento
+  // y su detalle completo aparece abajo. El eje no empieza en el mínimo de la escala si eso aplana las barras (y lo dice).
+  var GH = null;   // { barras, idx, sel } de la gráfica pintada
+  function escalaGrafica() {
+    var u = uniInfo();
+    if (!esPAA()) return { lim: { min: 0, max: CFG.examenReactivos }, valor: function (x) { return x.global; }, meta: meta(), unidad: 'aciertos', nombre: 'Aciertos estimados (de ' + CFG.examenReactivos + ')' };
+    if (u && u.escala === 'total') return { lim: { min: 400, max: 1600 }, valor: function (x) { var p = L.puntajeUni(x, u); return p ? p.valor : null; }, meta: L.metaEnEscala(meta(), u), ref: u.ref, unidad: 'puntos', u: u,
+      nombre: 'Total PAA estimado para ' + laUni(u) + ' (Lectura y Redacción + Matemáticas, de 400 a 1,600)' };
+    return { lim: { min: 200, max: 800 }, valor: function (x) { return x.global; }, meta: meta(), unidad: 'puntos', nombre: 'Puntaje estimado por sección (escala de 200 a 800)' };
+  }
+  function graficaHistorial(idx) {
+    var E = escalaGrafica();
+    var d = L.datosGrafica(idx.map(function (i) { return YO.historial[i]; }), { valor: E.valor, lim: E.lim, meta: E.meta, ref: E.ref, unidad: E.unidad });
+    if (d.barras.length < 2) { GH = null; return ''; }
+    GH = { barras: d.barras, idx: idx, sel: d.barras.length - 1, E: E };
+    var recorte = d.eje.min > E.lim.min || d.eje.max < E.lim.max;
+    var lineas = d.ticks.map(function (t) { return '<span class="sim-gh-tick" style="bottom:' + t.pos + '%"><i>' + t.texto + '</i></span>'; }).join('') +
+      (d.meta ? '<span class="sim-gh-linea meta" style="bottom:' + d.meta.pos + '%"></span>' : '') +
+      (d.ref ? '<span class="sim-gh-linea ref" style="bottom:' + d.ref.pos + '%"></span>' : '');
+    var leyenda = (d.meta ? '<span><i class="sim-gh-ley meta"></i>Tu meta: ' + L.miles(d.meta.valor) + (E.u ? ' (' + meta() + ' × 2)' : '') + '</span>' : '') +
+      (d.ref ? '<span><i class="sim-gh-ley ref"></i>' + esc(d.ref.texto) + ': ' + L.miles(d.ref.valor) + '</span>' : '');
+    var barras = d.barras.map(function (b, k) {
+      return '<button type="button" class="sim-gh-b' + (k === GH.sel ? ' sel' : '') + '" data-gh="' + k + '" aria-pressed="' + (k === GH.sel) + '" aria-label="' + esc(b.etiqueta) + '"' + (k === GH.sel ? '' : ' tabindex="-1"') + '>' +
+        '<span class="sim-gh-plot" aria-hidden="true"><span class="sim-gh-barra" style="height:' + b.alto + '%"></span><span class="sim-gh-v num" style="bottom:' + b.alto + '%">' + b.texto + '</span></span>' +
+        '<span class="sim-gh-f" aria-hidden="true">' + esc(b.fechaCorta) + '<small>' + esc(b.hora) + '</small></span></button>';
     }).join('');
-    return '<figure class="sim-card sim-gh"><figcaption>' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados (de ' + CFG.examenReactivos + ')') + ' en tus simulacros completos</figcaption>' +
-      '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Puntajes: ' + lista.map(function (x) { return x.global; }).join(', ') + '">' +
-      '<line class="sim-gh-base" x1="' + pad + '" x2="' + (W - pad) + '" y1="' + (H - 22) + '" y2="' + (H - 22) + '"/>' +
-      '<line class="sim-gh-meta" x1="' + pad + '" x2="' + (W - pad) + '" y1="' + y(m) + '" y2="' + y(m) + '"/><text class="sim-gh-mt" x="' + (W - pad) + '" y="' + (y(m) - 6) + '" text-anchor="end">Meta ' + m + '</text>' +
-      barras + '</svg></figure>';
+    return '<figure class="sim-card sim-gh"><figcaption><b>' + esc(E.nombre) + '</b><small>' + (recorte ? 'El eje va de ' + L.miles(d.eje.min) + ' a ' + L.miles(d.eje.max) + ' (no desde ' + L.miles(E.lim.min) + ') para que se noten las diferencias. ' : '') + 'Toca o pasa sobre una barra para ver su detalle.</small></figcaption>' + (leyenda ? '<div class="sim-gh-leyenda">' + leyenda + '</div>' : '') +
+      '<div class="sim-gh-area"><div class="sim-gh-ejes" aria-hidden="true">' + lineas + '</div>' +
+      '<div class="sim-gh-barras" role="group" aria-label="Tus simulacros completos, del más antiguo al más reciente. Usa las flechas para moverte.">' + barras + '</div></div>' +
+      '<div class="sim-gh-det" id="gh-det" aria-live="polite">' + detalleBarra(GH.sel) + '</div></figure>';
+  }
+  function detalleBarra(k) {
+    var b = GH.barras[k], i = GH.idx[b.indice], x = YO.historial[i], E = GH.E, u = E.u, extra = '';
+    if (u) { var p = L.puntajeUni(x, u); if (p) extra = '<span>Lectura y Redacción ' + p.partes.verbal + ' + Matemáticas ' + p.partes.mate + '</span>'; }
+    var falta = E.meta != null ? E.meta - b.valor : null;
+    return '<div><b class="sim-gh-dv num">' + b.texto + ' <small>' + (E.unidad === 'aciertos' ? 'aciertos' : 'puntos') + '</small></b>' +
+      '<span class="sim-gh-dt">' + esc(b.tipo) + '</span><span>' + esc(b.fechaLarga) + '</span>' + extra +
+      (falta != null ? '<span>' + (falta > 0 ? 'A ' + L.miles(falta) + ' de tu meta (' + L.miles(E.meta) + ')' : 'Alcanza tu meta (' + L.miles(E.meta) + ')') + '</span>' : '') + '</div>' +
+      '<button type="button" class="btn blanco chico" data-hist="' + i + '">Ver reporte ' + FL + '</button>';
+  }
+  function conectarGrafica() {
+    if (!GH) return;
+    var bs = app.querySelectorAll('[data-gh]');
+    function elegir(k, foco) {
+      GH.sel = k;
+      bs.forEach(function (b, j) { var s = j === k; b.classList.toggle('sel', s); b.setAttribute('aria-pressed', s); b.tabIndex = s ? 0 : -1; });
+      var det = document.getElementById('gh-det'); det.innerHTML = detalleBarra(k);
+      det.querySelector('[data-hist]').onclick = function () { reporte(YO.historial[Number(this.dataset.hist)], true); };
+      if (foco) bs[k].focus();
+    }
+    bs.forEach(function (b, k) {
+      b.onclick = function () { elegir(k); };
+      b.onmouseenter = function () { if (window.matchMedia && matchMedia('(hover: hover)').matches) elegir(k); };
+      b.onkeydown = function (e) {
+        var n = e.key === 'ArrowRight' ? k + 1 : e.key === 'ArrowLeft' ? k - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? bs.length - 1 : null;
+        if (n == null) return; e.preventDefault(); elegir(clamp(n, 0, bs.length - 1), true);
+      };
+    });
   }
 
   // ---------- sección: intro, preguntas, cierre ----------
@@ -773,7 +926,8 @@
     h('<section class="sim-rep">' +
       '<span class="etiqueta">' + esc(res.modo === 'examen' ? 'Resultado del examen completo' + (res.tutor ? ' con tutor' : '') : res.modo === 'calentamiento' ? 'Resultado del calentamiento' : res.modo === 'completo' ? 'Resultado del nivel Medio' : res.modo === 'seccion' ? 'Resultado de ' + seccion(res.secciones[0].id).nombre : 'Resultado de la práctica') + (desdeHistorial ? ' · ' + fecha(res.fecha) : '') + '</span>' +
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
-        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + ' · meta ' + m + '</small></p>' : '') + ponderadoHTML(res, secs) +
+        '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + (esPAA() ? ' por sección' : '') + ' · meta ' + m + '</small></p>' : '') + ponderadoHTML(res, secs) +
+        (function () { var x = esIntento(res.modo) && puntajeUniHTML(res); return x ? '<p class="sim-uni-rep">' + x.detalle + '</p>' : ''; })() +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +
       '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado (sin conexión). Se guardará en tu historial la próxima vez que abras el simulador con internet.</p>' +
       '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +
@@ -783,9 +937,10 @@
       '<p class="sim-nota sim-disc">' + (esPAA() ? 'El puntaje es una estimación de Vorka México basada en tus aciertos ponderados por dificultad; no es una calificación oficial del College Board.' : 'Los aciertos estimados se calculan sobre un examen de ' + CFG.examenReactivos + ' reactivos con reactivos originales de Vorka México; no es un resultado oficial de ' + esc(CFG.oficial) + '.') + ' Úsalo para orientar tu estudio y medir tu avance.</p>' +
       regaloHTML() +
       sparks('reporte') +
-      '<div class="botones sim-fin"><button class="btn tinta" id="b-inicio">Volver al inicio</button>' + (esIntento(res.modo) ? '' : '<button class="btn blanco" data-modo-otra="completo">Hacer un simulacro corto</button>') + '</div>' +
+      '<div class="botones sim-fin"><button class="btn tinta" id="b-inicio">Volver al inicio</button>' + (res.modo === 'practica' && L.hayTemas(B) ? '<button class="btn blanco" id="b-otros-temas">Elegir otros temas</button>' : '') + (esIntento(res.modo) ? '' : '<button class="btn blanco" data-modo-otra="completo">Hacer un simulacro corto</button>') + '</div>' +
       '</section>');
     document.getElementById('b-inicio').onclick = inicio;
+    var bot = document.getElementById('b-otros-temas'); if (bot) bot.onclick = function () { elegirTemas(); };
     app.querySelectorAll('[data-practica]').forEach(function (b) { b.onclick = function () { empezar('practica', b.dataset.practica.split(',')); }; });
     app.querySelectorAll('[data-modo-otra]').forEach(function (o) { o.onclick = function () { empezar(o.dataset.modoOtra); }; });
     app.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });

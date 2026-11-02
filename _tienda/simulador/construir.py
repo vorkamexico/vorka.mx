@@ -1,14 +1,17 @@
 # Vorka México · empaqueta el cliente del Simulador PAA dentro del Worker de la tienda.
-# Uso: python3 _tienda/simulador/construir.py   (correr cada vez que cambie simulador/app.js, app.css o diag.js)
+# Uso: python3 _tienda/simulador/construir.py   (correr cada vez que cambie simulador/logica.js, app.js, app.css o diag.js)
+# APP_JS = logica.js (funciones puras: gráfica, temas, puntaje por universidad) + app.js. LOGICA_JS va aparte para las pruebas.
 import os, json
 AQUI = os.path.dirname(os.path.abspath(__file__))
 salida = os.path.join(AQUI, '..', 'src', 'simulador', 'cliente.generado.js')
-js = open(os.path.join(AQUI, 'app.js'), encoding='utf-8').read()
+logica = open(os.path.join(AQUI, 'logica.js'), encoding='utf-8').read()
+js = logica + '\n' + open(os.path.join(AQUI, 'app.js'), encoding='utf-8').read()
 css = open(os.path.join(AQUI, 'app.css'), encoding='utf-8').read()
 diag = open(os.path.join(AQUI, 'diag.js'), encoding='utf-8').read()
 with open(salida, 'w', encoding='utf-8') as f:
-    f.write('// GENERADO por _tienda/simulador/construir.py desde simulador/app.js, app.css y diag.js: no editar a mano\n')
+    f.write('// GENERADO por _tienda/simulador/construir.py desde simulador/logica.js, app.js, app.css y diag.js: no editar a mano\n')
     f.write(f'export const APP_JS = {json.dumps(js, ensure_ascii=False)};\n')
     f.write(f'export const APP_CSS = {json.dumps(css, ensure_ascii=False)};\n')
     f.write(f'export const DIAG_JS = {json.dumps(diag, ensure_ascii=False)};\n')
+    f.write(f'export const LOGICA_JS = {json.dumps(logica, ensure_ascii=False)};\n')
 print('·', os.path.relpath(salida, os.path.join(AQUI, '..', '..')))
