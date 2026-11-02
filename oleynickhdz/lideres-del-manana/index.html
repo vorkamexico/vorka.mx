@@ -102,6 +102,14 @@
     },
     {
      "@type": "Question",
+     "name": "¿Cómo entro al grupo de aspirantes?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "El grupo lo patrocina Vorka México, un ecosistema de jóvenes líderes con herramientas para emprendedores, mentoría y consultoría. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página."
+     }
+    },
+    {
+     "@type": "Question",
      "name": "¿La mentoría me garantiza la beca?",
      "acceptedAnswer": {
       "@type": "Answer",
@@ -656,7 +664,7 @@
   .ldm-precios em { font-style: normal; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.08); color: #fff; font-size: 12.5px; font-weight: 700; }
   .ldm-precios em.r { background: var(--accent); color: #141414; }
   /* Recursos */
-  .ldm-recursos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .ldm-recursos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .ldm-rec { display: flex; flex-direction: column; gap: 10px; padding: 26px 24px; border-radius: 24px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); transition: transform .2s, border-color .2s; }
   .ldm-rec:hover { transform: translateY(-3px); border-color: var(--ink); }
   .ldm-rec .ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; color: #fff; }
@@ -717,7 +725,65 @@
     .foot-socials a svg { width: 16px; height: 16px; }
     .foot-bottom { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11.5px; }
   }
+  /* ===== Grupo patrocinado por Vorka (estilo vorka.mx) ===== */
+  .vk-grupo { margin-bottom: 14px; padding: clamp(24px, 4vw, 44px); border-radius: 28px; background: radial-gradient(120% 140% at 100% 0%, #2b1238 0%, #0F0D10 55%); color: #F4F2F5; font-family: 'Inter', -apple-system, sans-serif; border: 1px solid rgba(200,164,92,.25); }
+  .vk-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 22px; margin-bottom: 26px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .vk-marca { display: inline-flex; align-items: center; gap: 14px; }
+  .vk-marca img { width: 40px; height: auto; display: block; }
+  .vk-marca > span { font-weight: 800; font-size: 26px; letter-spacing: -.04em; color: #fff; line-height: 1; }
+  .vk-marca small { display: block; margin-top: 4px; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; background: linear-gradient(100deg, #ffffff 0%, #c9ccd1 40%, #e3c47e 75%, #b8924a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vk-sello { padding: 7px 14px; border-radius: 999px; background: linear-gradient(100deg, #6f5420 0%, #a8853f 35%, #c8a45c 62%, #8a6a2c 100%); color: #0F0D10; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .vk-cuerpo { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
+  .vk-grupo h3 { margin: 0 0 12px; font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.1; letter-spacing: -.035em; color: #fff; font-weight: 800; }
+  .vk-grupo h3 span { background: linear-gradient(100deg, #ffffff 0%, #c9ccd1 40%, #e3c47e 75%, #b8924a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vk-grupo p { margin: 0 0 20px; font-size: 15.5px; line-height: 1.6; color: rgba(244,242,245,.75); max-width: 54ch; }
+  .vk-eco { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .vk-eco div { padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.1); }
+  .vk-eco b { display: block; font-size: 15px; letter-spacing: -.02em; color: #fff; }
+  .vk-eco span { display: block; margin-top: 3px; font-size: 13px; line-height: 1.4; color: rgba(255,255,255,.75); }
+  .vk-eco .t1 { background: linear-gradient(145deg, #2b1238, #6b2a85); }
+  .vk-eco .t2 { background: linear-gradient(145deg, #6f5420, #c8a45c 60%, #e6cf96); }
+  .vk-eco .t2 b, .vk-eco .t2 span { color: #0F0D10; }
+  .vk-eco .t3 { background: linear-gradient(145deg, #0f0d10, #2a2430); }
+  .vk-eco .t3 b { color: #E6CF96; }
+  .vk-eco .t4 { background: linear-gradient(145deg, #1b5c39, #2B8553); }
+  .vk-pasos { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .vk-pasos li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px 14px; align-items: center; padding: 18px; border-radius: 20px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+  .vk-pasos .n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(100deg, #ffffff 0%, #c9ccd1 40%, #e3c47e 75%, #b8924a 100%); color: #0F0D10; font-weight: 800; font-size: 16px; }
+  .vk-pasos b { display: block; color: #fff; font-size: 15.5px; }
+  .vk-pasos div span { font-size: 13.5px; color: rgba(244,242,245,.65); }
+  .vk-pasos li > a { grid-column: 1 / -1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 18px; border-radius: 999px; font-weight: 800; font-size: 14.5px; transition: transform .2s; }
+  .vk-pasos li > a:hover { transform: translateY(-2px); }
+  .vk-pasos svg { width: 16px; height: 16px; }
+  .vk-ig { background: linear-gradient(180deg, #ffffff, #dfe1e5); color: #0F0D10; }
+  .vk-wa { background: #25D366; color: #08280f; }
+  /* ===== IMPACTO (estilo soyimpacto.org) ===== */
+  .imp-card { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); margin-top: 18px; border-radius: 24px; overflow: hidden; background: #F7F7F5; color: #0E0E0D; font-family: 'DM Sans', sans-serif; box-shadow: 0 24px 60px -30px rgba(14,14,13,.35); border: 1px solid #EDEDE8; transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s; }
+  .imp-card:hover { transform: translateY(-4px); box-shadow: 0 30px 70px -28px rgba(14,14,13,.4); }
+  .imp-foto { position: relative; min-height: 280px; }
+  .imp-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+  .imp-txt { padding: clamp(24px, 4vw, 44px); }
+  .imp-logo { width: min(240px, 70%); height: auto; display: block; margin-bottom: 20px; }
+  .imp-k { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #4A4A47; }
+  .imp-card h3 { margin: 0 0 12px; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.05; letter-spacing: -.035em; color: #0E0E0D; }
+  .imp-card h3 span { color: #387ec2; }
+  .imp-txt > p:not(.imp-k) { margin: 0 0 18px; font-size: 16px; line-height: 1.6; color: #4A4A47; max-width: 56ch; }
+  .imp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .imp-chips span { padding: 7px 13px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .imp-chips .c-am { background: #FDEEC2; color: #9A6B1D; } .imp-chips .c-az { background: #D4E4F4; color: #1F4A77; }
+  .imp-chips .c-ve { background: #D1EACA; color: #2D601E; } .imp-chips .c-ro { background: #F9D1CD; color: #8A2822; }
+  .imp-bots { display: flex; flex-wrap: wrap; gap: 10px; }
+  .imp-b1 { display: inline-flex; align-items: center; padding: 14px 24px; border-radius: 999px; background: #0E0E0D; color: #fff; font-weight: 700; font-size: 15px; transition: background .2s, color .2s; }
+  .imp-b1:hover { background: #f7b33e; color: #0E0E0D; }
+  .imp-b2 { display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 999px; border: 2px solid #0E0E0D; color: #0E0E0D; font-weight: 600; font-size: 15px; transition: background .2s, color .2s; }
+  .imp-b2:hover { background: #0E0E0D; color: #fff; }
+  @media (max-width: 960px) { .vk-cuerpo { grid-template-columns: 1fr; } .ldm-recursos { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .imp-card { grid-template-columns: 1fr; } .imp-foto { min-height: 220px; } }
+  @media (max-width: 420px) { .vk-eco { grid-template-columns: 1fr; } }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@400;500;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -775,7 +841,7 @@
     <p>Todo lo que necesitas para postularte a la beca del 100% del Tec de Monterrey: qué es, requisitos, fechas, pasos, simulador de la PAA y cómo preparar tu proyecto social conmigo.</p>
     <div class="pr-ctas">
       <a class="pr-btn" href="#mentoria">Agenda tu mentoría</a>
-      <a class="pr-btn2" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener">Únete al grupo de aspirantes →</a>
+      <a class="pr-btn2" href="#grupo">Únete al grupo de aspirantes →</a>
     </div>
   </div>
 </section>
@@ -843,8 +909,27 @@
       <li><h3>Registro en línea</h3><p>Crea tu cuenta, captura tus datos y completa las pruebas de preselección.</p><a href="https://preseleccionldm.tec.mx/formulario-pre-registro" target="_blank" rel="noopener">Ir al registro oficial →</a></li>
       <li><h3>Admisión al Tec</h3><p>Presenta la PAA y obtén <strong>al menos 1,360 puntos</strong>. Entrega tu constancia con promedio de 90 o más y sé admitido en tu carrera.</p><a href="#recursos">Practica la PAA →</a></li>
       <li><h3>Solicitud de beca</h3><p>Completa la solicitud de apoyos educativos y presenta el estudio socioeconómico del Tec, con el que se acredita que requieres el 100%.</p></li>
-      <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#mentoria">Prepáralo conmigo →</a></li>
+      <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#impacto">¿Sin proyecto? Únete a IMPACTO →</a></li>
     </ol>
+    <div class="imp-card" id="impacto">
+      <div class="imp-foto"><img src="../img/impacto-equipo.webp" alt="Jóvenes voluntarios de IMPACTO" width="720" height="900" loading="lazy"></div>
+      <div class="imp-txt">
+        <img class="imp-logo" src="../img/impacto-marca.png" alt="IMPACTO · Juventudes Impactando México A.C." width="615" height="134" loading="lazy">
+        <p class="imp-k">¿Aún no tienes proyecto social o quieres hacerlo crecer?</p>
+        <h3>Ponte trucha y <span>construyamos en conjunto.</span></h3>
+        <p>En Juventudes Impactando México te capacitas, encuentras con quién colaborar y haces proyectos sociales reales, con evidencia que se mide y se reporta.</p>
+        <div class="imp-chips">
+          <span class="c-am">Capacitaciones y mentorías</span>
+          <span class="c-az">Colaboraciones</span>
+          <span class="c-ve">Proyectos que se miden</span>
+          <span class="c-ro">Presidencias en todo México</span>
+        </div>
+        <div class="imp-bots">
+          <a class="imp-b1" href="https://soyimpacto.org/servoluntario?invita=i52b0oe8" target="_blank" rel="noopener">Sumarme a IMPACTO →</a>
+          <a class="imp-b2" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Conocer soyimpacto.org</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="mentoria" aria-labelledby="h-ment">
@@ -879,6 +964,28 @@
         <div class="section-eyebrow">Recursos</div>
         <h2 class="section-title" id="h-rec">Estudia, <em>pregunta</em> y entérate primero.</h2>
       </div>
+      <div class="vk-grupo" id="grupo">
+        <div class="vk-cab">
+          <span class="vk-marca"><img src="../img/logo-vorka-blanco.png" alt="" width="40" height="39"><span>Vorka<small>México</small></span></span>
+          <span class="vk-sello">Patrocinador del grupo</span>
+        </div>
+        <div class="vk-cuerpo">
+          <div>
+            <h3>Grupo de aspirantes a Líderes del Mañana, <span>patrocinado por Vorka.</span></h3>
+            <p>Vorka México es un ecosistema para jóvenes que quieren crecer e impactar. Antes de solicitar unirte, síguenos en Instagram: es la puerta a todo lo que construimos juntos.</p>
+            <div class="vk-eco">
+              <div class="t1"><b>Comunidad</b><span>Jóvenes líderes de todo México</span></div>
+              <div class="t2"><b>Herramientas</b><span>Para emprendedores y proyectos</span></div>
+              <div class="t3"><b>Mentoría y consultoría</b><span>Para llevar tu idea más lejos</span></div>
+              <div class="t4"><b>Oportunidades</b><span>Becas y convocatorias</span></div>
+            </div>
+          </div>
+          <ol class="vk-pasos">
+            <li><span class="n">1</span><div><b>Sigue a @vorka.mx</b><span>Conoce el ecosistema y a más líderes.</span></div><a class="vk-ig" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>Seguir</a></li>
+            <li><span class="n">2</span><div><b>Solicita unirte al grupo</b><span>Te aceptamos lo antes posible.</span></div><a class="vk-wa" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.94 11.94 0 0 0 12 0C5.37 0 0 5.37 0 12a11.86 11.86 0 0 0 1.64 6.03L0 24l6.16-1.62A11.9 11.9 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.21-3.48-8.52zM12 21.82a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.66.96.98-3.57-.24-.37A9.8 9.8 0 1 1 12 21.82zm5.39-7.34c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>Unirme</a></li>
+          </ol>
+        </div>
+      </div>
       <div class="ldm-recursos">
         <div class="ldm-rec sim">
           <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
@@ -890,12 +997,6 @@
             <a class="ir" href="https://vorka.mx/simulador-paa/tec-de-monterrey/">PAA para el Tec <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
           </div>
         </div>
-        <a class="ldm-rec grupo" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-          <h3>Grupo de aspirantes LDM</h3>
-          <p>Comunidad de WhatsApp para aspirantes a Líderes del Mañana: dudas, avisos y acompañamiento entre todos.</p>
-          <span class="ir">Unirme al grupo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        </a>
         <a class="ldm-rec canal" href="https://whatsapp.com/channel/0029VbD5YC8It5rygL3EpD46" target="_blank" rel="noopener">
           <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>
           <h3>Canal informativo</h3>
@@ -930,6 +1031,7 @@
       <details><summary>¿Qué puntaje necesito en la PAA?</summary><p>La Convocatoria Nacional 2027 pide al menos 1,360 puntos en la Prueba de Aptitud Académica.</p></details>
       <details><summary>¿Hasta cuándo me puedo registrar?</summary><p>El registro cierra el 12 de febrero de 2027 para Ciencias de la Salud y el 26 de febrero de 2027 para el resto de programas. Los resultados se publican el 28 de mayo de 2027.</p></details>
       <details><summary>¿Qué evidencia de liderazgo social me piden?</summary><p>Fotografías, reportes, testimonios o cifras comprobables de tu participación en proyectos de impacto comunitario.</p></details>
+      <details><summary>¿Cómo entro al grupo de aspirantes?</summary><p>El grupo lo patrocina Vorka México, un ecosistema de jóvenes líderes con herramientas para emprendedores, mentoría y consultoría. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página.</p></details>
       <details><summary>¿La mentoría me garantiza la beca?</summary><p>No. La decisión es del Tec de Monterrey. La mentoría te ayuda a preparar tu proyecto, tus evidencias y tu plan de estudio para llegar lo mejor posible a cada etapa.</p></details>
     <p class="ldm-nota">Esta es una guía independiente de Brandon Oleynick; no es un sitio oficial del Tecnológico de Monterrey. La información viene de la <a href="https://lideresdelmanana.tec.mx/noticia/convocatoria-lideres-del-manana-2027" target="_blank" rel="noopener">Convocatoria Nacional 2027</a> publicada en lideresdelmanana.tec.mx. Confírmala ahí antes de postularte. Si vives en Centroamérica o República Dominicana, revisa la convocatoria LATAM, que tiene sus propias reglas.</p>
   </section>
@@ -1037,7 +1139,8 @@
     var n = 0; cajas.forEach(function (c) { if (c.checked) n++; });
     if (n === 6) v.innerHTML = '<b>¡Cumples los 6!</b> Ahora lo importante es llegar fuerte a la PAA y al liderazgo social. <a href="#mentoria">Prepáralo conmigo</a>.';
     else if (n === 0) v.innerHTML = 'Llevas <b>0 de 6</b>. Marca los que cumples.';
-    else v.innerHTML = 'Llevas <b>' + n + ' de 6</b>. ¿Te falta el proyecto social o tienes dudas de algún requisito? <a href="#dudas">Pregúntame</a>.';
+    else if (!document.getElementById('r6').checked) v.innerHTML = 'Llevas <b>' + n + ' de 6</b>. ¿Te falta el proyecto social? <a href="#impacto">Súmate a IMPACTO</a> y constrúyelo con más jóvenes.';
+    else v.innerHTML = 'Llevas <b>' + n + ' de 6</b>. ¿Tienes dudas de algún requisito? <a href="#dudas">Pregúntame</a>.';
   }
   cajas.forEach(function (c) { c.addEventListener('change', contar); });
 })();
