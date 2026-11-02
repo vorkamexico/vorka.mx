@@ -184,7 +184,7 @@ export async function suscripcionApp(env, email, app) {
   return s ? formaSuscripcion(s, app) : c;
 }
 function formaSuscripcion(s, app) {
-  return { id: s.id, estado: s.estado, vigente: VIGENTES.includes(s.estado), intervalo: s.intervalo, periodo_fin: s.periodo_fin,
+  return { id: s.id, product_id: s.product_id, estado: s.estado, vigente: VIGENTES.includes(s.estado), intervalo: s.intervalo, periodo_fin: s.periodo_fin,
     cancelar_al_final: !!s.cancelar_al_final, sucursales: s.sucursales, profesionales: s.profesionales || 0, monto_centavos: s.monto_centavos,
     paquete: s.app !== app ? s.app : null };
 }

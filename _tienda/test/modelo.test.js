@@ -23,8 +23,9 @@ describe('modelo de datos', () => {
     const activos = await listarProductos(env2);
     expect(activos.every(p => p.contenido?.acceso)).toBe(true);
     // los demás niveles de Cupo se venden en /tienda/cupo/ sin listarse; Cuentas entra activo (decisión 2026-10-22);
-    // los reportes de los tests entran activos por encargo del dueño (migración 0058; las licencias de grupo, ocultas)
-    expect(activos.map(p => p.slug)).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual']);
+    // los reportes de los tests entran activos por encargo del dueño (migración 0058; las licencias de grupo, ocultas);
+    // los portales inmobiliarios entran a la venta por decisión del usuario (2-11-2026; Broker, Inmobiliaria y usuario extra, ocultos)
+    expect(activos.map(p => p.slug)).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual']);
   });
 
   it('crea la orden con el precio de la base y el afiliado activo', async () => {
