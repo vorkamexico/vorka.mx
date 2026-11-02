@@ -29,6 +29,8 @@ import { avisar, rutasPush } from './puntos-push.js';
 import { COBRO_MINIMO, NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO, FACTURAS_SUSCRIPCION, PCT_RECURRENTE, MODOS_SUSCRIPCION, MINIMO_RETIRO, RETENCION_DIAS, nivelDe, pctPara, semestreMx, objetivoMeta, LOGROS, diaMx, inicioDiaMx, sumarDias, nombrePublico } from './puntos-reglas.js';
 import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } from './puntos-app.js';
 import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
+import { alGanarVenta, alGanarRenovacion, redAlReembolsar, fijarPatrocinadorAlta, datosEmbajador, invitadorDe } from './embajadores.js';
+import { paginaUnete, paginaEmbajadores, vistasEmbajador } from './embajadores-app.js';
 
 export { COBRO_MINIMO };
 const COOKIE = 'vorka_cuenta';
@@ -39,6 +41,8 @@ const BIENVENIDA = [
   `<b>Quien compra también gana:</b> por ser parte del ecosistema Vorka, tiene ${PCT_REFERIDO} % de descuento en su primer pago con tu liga o tu código (no aplica en productos de creadores; si usa otro código de descuento, se aplica el mayor y, si llegó con tu liga, tú sigues ganando tus puntos).`,
 ];
 const emailValido = e => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e || '');
+export const COOKIE_UNETE = 'vorka_unete';
+export const leerCookieDe = (req, k) => (req.headers.get('cookie') || '').split(';').map(x => x.trim().split('=')).find(([n]) => n === k)?.[1];
 const leerCookie = req => (req.headers.get('cookie') || '').split(';').map(s => s.trim().split('=')).find(([k]) => k === COOKIE)?.[1];
 const mismoOrigen = (req, env) => { const o = req.headers.get('origin'); return !o || o === new URL(env.SITE_URL).origin; };
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|lighthouse|headless/i;
@@ -154,19 +158,18 @@ export async function puntosAlPagar(env, orderId) {
   const modo = await modoDeVenta(env, o);
   if (modo === 'recurrente') {
     const r = await insertarGanado(env, { email: o.ref_email, order_id: o.id, base, pagada, pctFijo: PCT_RECURRENTE, nota: `Suscripción con tu liga · ${PCT_RECURRENTE} % recurrente${m.producto ? ` · ${m.producto}` : ''}` });
-    if (r.meta.changes) {
-      const g = await one(env, "SELECT puntos, pct FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
-      await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: m.producto, orderId: o.id });
-    }
+    const g = await one(env, "SELECT * FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
+    if (r.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: m.producto, orderId: o.id });
+    // Embajadores Vorka: red (5 % / 2 %), bono de arranque y rangos. Idempotente (también si un reintento llega después)
+    if (g) await alGanarVenta(env, o, g);
     return;
   }
   const nota = m.mult > 1 ? `Puntos extra${m.motivo === 'sugerencia' ? ' por tu sugerencia' : ''} · ${m.producto}` : `Compra con tu liga${m.producto ? ` · ${m.producto}` : ''}`;
   const r = await insertarGanado(env, { email: o.ref_email, order_id: o.id, base, extra: m.mult > 1, pagada, cuenta: true,
     nota, product_id: m.product_id, multiplicador: m.mult, motivo: m.motivo });
-  if (r.meta.changes) {
-    const g = await one(env, "SELECT puntos, pct FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
-    await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: m.mult, motivo: m.motivo, producto: m.producto, orderId: o.id });
-  }
+  const g = await one(env, "SELECT * FROM puntos_movimientos WHERE order_id = ? AND tipo = 'ganado'", o.id);
+  if (r.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: m.mult, motivo: m.motivo, producto: m.producto, orderId: o.id });
+  if (g) await alGanarVenta(env, o, g);
 }
 
 // Modo de puntos de una suscripción, guardado en la orden al pagarse (orders.ref_modo) para que las renovaciones sigan igual
@@ -250,20 +253,19 @@ export async function puntosFactura(env, f, sub) {
     const pagadaR = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
     const rr = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, pagada: pagadaR, pctFijo: PCT_RECURRENTE,
       nota: `${o.producto || 'Suscripción'} · pago ${numero} · ${PCT_RECURRENTE} % recurrente` });
-    if (rr.meta.changes) {
-      const g = await one(env, 'SELECT puntos, pct FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
-      await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
-    }
+    const g = await one(env, 'SELECT * FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
+    if (rr.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
+    // Embajadores: la red también cobra sobre las renovaciones que le dan puntos al vendedor, hasta la factura 12
+    if (g) await alGanarRenovacion(env, { vendedor: o.ref_email, comprador: o.email, clave: `factura:${f.id}`, numero, base: g.base_centavos, pct: g.pct });
     return rr;
   }
   if (numero > FACTURAS_SUSCRIPCION) return null;
   const pagada = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
   const r = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, extra: false, pagada,
     nota: `${o.producto || 'Suscripción'} · pago ${numero} de ${FACTURAS_SUSCRIPCION}` });
-  if (r.meta.changes) {
-    const g = await one(env, 'SELECT puntos, pct FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
-    await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
-  }
+  const g = await one(env, 'SELECT * FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
+  if (r.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
+  if (g) await alGanarRenovacion(env, { vendedor: o.ref_email, comprador: o.email, clave: `factura:${f.id}`, numero, base: g.base_centavos, pct: g.pct });
   return r;
 }
 
@@ -273,6 +275,8 @@ export async function puntosAlReembolsar(env, orderId) {
   for (const m of ms)
     await run(env, 'INSERT OR IGNORE INTO puntos_movimientos (email, tipo, puntos, order_id, nota, product_id, multiplicador) VALUES (?, ?, ?, ?, ?, ?, ?)',
       m.email, m.tipo === 'ganado' ? 'revertido' : 'devuelto', -m.puntos, orderId, m.tipo === 'ganado' ? 'La compra con tu liga se reembolsó' : 'Te regresamos los puntos de una compra reembolsada', m.product_id, m.multiplicador);
+  // Embajadores: se revierten también la red de esa venta y su bono de arranque
+  await redAlReembolsar(env, orderId);
 }
 
 // Avisos al ganar: puntos (app + push + correo corto), subir de nivel y meta alcanzada (app + push). Nunca lanza.
@@ -402,6 +406,10 @@ async function registrar(req, env) {
   await codigoDe(env, b.email, nombre);
   const r = await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email, nombre, clave_hash, clave_salt) VALUES (?, ?, ?, ?)', b.email, nombre, hash, salt);
   if (!r.meta.changes) return json({ error: 'Ese correo ya tiene cuenta. Entra con tu contraseña.', existe: true, con_clave: true }, 409);
+  // Embajadores Vorka: si llegó con una liga de invitación (campo invito o la cookie que deja /tienda/puntos/unete/<código>),
+  // quien invitó queda como su patrocinador. Solo en cuentas NUEVAS: quien ya tenía cuenta nunca cambia de patrocinador.
+  const invito = String(b.invito || leerCookieDe(req, COOKIE_UNETE) || '').slice(0, 40);
+  if (invito) await fijarPatrocinadorAlta(env, b.email, decodeURIComponent(invito)).catch(e => console.error('patrocinador', e?.message));
   // Bienvenida (si no fue esa persona, lo sabrá)
   await enviar(env, { para: b.email, asunto: 'Tu cuenta de Puntos Vorka está lista', idempotencia: `puntos-bienvenida-${await sha256(b.email)}`,
     html: marco('¡Bienvenida a Puntos Vorka!', `<p style="${P}">Hola, ${esc(nombre.split(' ')[0])}: tu cuenta ya está lista. Entra con tu correo y la contraseña que creaste para compartir tu liga y ganar puntos.</p>${BIENVENIDA.map(x => `<p style="${P}">${x}</p>`).join('')}${boton(`${env.SITE_URL}/tienda/cuenta/`, 'Abrir mi app')}<p style="${P}">¿No creaste esta cuenta? Escríbenos a hola@vorka.mx.</p>`, { etiqueta: 'Puntos' }),
@@ -557,7 +565,7 @@ export async function datosApp(env, email) {
   const semana = {
     visitas: await n('SELECT COUNT(*) n FROM puntos_visitas WHERE code = ? AND dia >= ?', code, hace7),
     compras: await n(`SELECT COUNT(*) n FROM puntos_movimientos m WHERE m.email = ? AND ${VIGENTE} AND m.created_at >= ?`, email, desde7),
-    puntos: await n("SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos WHERE email = ? AND tipo IN ('ganado', 'revertido') AND created_at >= ?", email, desde7),
+    puntos: await n("SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos WHERE email = ? AND tipo IN ('ganado', 'revertido', 'red', 'arranque') AND created_at >= ?", email, desde7),
   };
   const todos = await vendibles(env);
   const productos = todos.filter(sirveDeMeta).sort((a, b) => a.precio_centavos - b.precio_centavos);
@@ -591,6 +599,8 @@ export async function datosApp(env, email) {
       EXISTS (SELECT 1 FROM suscripciones WHERE email = ? AND app = 'toolkit') OR EXISTS (SELECT 1 FROM toolkit_movimientos WHERE email = ?) tiene`, email, email, email)
       .then(t => (t?.tiene ? { saldo_centavos: t.saldo } : null)),
     top: top.map(t => ({ ...t, yo: t.email === email, email: undefined })),
+    // Embajadores Vorka (embajadores.js): rango del mes, equipo, ganancias separadas, liga de invitación y Líderes del mes
+    embajadores: await datosEmbajador(env, email, { code: af?.publico || code }),
   };
 }
 
@@ -644,7 +654,9 @@ export async function rutasPuntos(req, env, url) {
   if (p === '/tienda/puntos' && M === 'GET') return paginaPrograma(env, { cuenta: await cuentaActual(req, env) });
   if (p === '/tienda/cuenta' && M === 'GET') {
     const c = await cuentaActual(req, env);
-    return c ? paginaApp(env, await datosApp(env, c.email)) : paginaEntrarApp(env);
+    if (!c) return paginaEntrarApp(env);
+    const d = await datosApp(env, c.email);
+    return paginaApp(env, { ...d, vistasEmbajador: vistasEmbajador(d) });
   }
   if (p === '/tienda/cuenta/sw.js' && M === 'GET')
     return new Response(SW, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache', 'service-worker-allowed': '/tienda/cuenta/' } });
@@ -656,6 +668,13 @@ export async function rutasPuntos(req, env, url) {
     return new Response(png, { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=604800' } });
   }
   if ((m = p.match(/^\/tienda\/puntos\/acceso\/([a-f0-9]{64})$/)) && M === 'GET') return canjear(env, m[1]);
+  // Embajadores Vorka: registro por invitación y la página del programa (privada: con sesión o con una liga de invitación válida)
+  if ((m = p.match(/^\/tienda\/puntos\/unete\/([A-Za-z0-9_-]{1,40})$/)) && M === 'GET') return paginaUnete(env, { codigo: m[1], cuenta: await cuentaActual(req, env) });
+  if (p === '/tienda/puntos/embajadores' && M === 'GET') {
+    const cuenta = await cuentaActual(req, env);
+    const inv = !cuenta && url.searchParams.get('i') ? await invitadorDe(env, url.searchParams.get('i')) : !cuenta && leerCookieDe(req, COOKIE_UNETE) ? await invitadorDe(env, decodeURIComponent(leerCookieDe(req, COOKIE_UNETE))) : null;
+    return paginaEmbajadores(env, { cuenta, invitador: inv });
+  }
   if (p === '/api/puntos/entrar' && M === 'POST') return pedirEnlace(req, env);
   if (p === '/api/puntos/codigo' && M === 'POST') return entrarConCodigo(req, env);
   if (p === '/api/puntos/existe' && M === 'POST') return existeCuenta(req, env);

@@ -20,6 +20,44 @@ export const MODOS_SUSCRIPCION = ['unico', 'recurrente'];
 export const MINIMO_RETIRO = 500;          // puntos
 export const RETENCION_DIAS = 7;           // los puntos de una venta se pueden transferir 7 días después (reembolsos)
 
+// Embajadores Vorka (red de vendedores, migración 0066, src/embajadores.js). Se gana por ventas reales a clientes, nunca por
+// invitar. Sobre cada venta que da puntos a un vendedor (misma base que sus puntos): su patrocinador gana PCT_RED[0] y el
+// patrocinador de su patrocinador PCT_RED[1]. Sin ×1.5 del equipo. Tope por venta: vendedor + red + descuento al cliente
+// ≤ PCT_TOPE_VENTA (si se pasa, se recorta primero el nivel 2 y luego el nivel 1).
+export const PCT_RED = [5, 2];
+export const PCT_TOPE_VENTA = 50;
+// Bono de arranque: puntos al vendedor nuevo si su primera venta válida es dentro de estos días desde su registro (una vez)
+export const BONO_ARRANQUE = 50;
+export const DIAS_ARRANQUE = 30;
+// Rangos del mes (hora del centro de México). Reconocimiento: no dan dinero ni puntos.
+//   Líder: LIDER_ACTIVOS personas de su equipo directo con al menos 1 venta válida en el mes (el líder no necesita vender).
+//   Líder Élite: ser Líder y tener ELITE_LIDERES Líderes en su equipo directo.
+export const LIDER_ACTIVOS = 3;
+export const ELITE_LIDERES = 2;
+export const RANGOS = [
+  { id: 'vendedor', nombre: 'Vendedor(a)', color: '#A8A4A9' },
+  { id: 'lider', nombre: 'Líder', color: '#E3C47E' },
+  { id: 'elite', nombre: 'Líder Élite', color: '#B9E4F2' },
+];
+export const rangoDe = id => RANGOS.find(r => r.id === id) || RANGOS[0];
+// Sin vender hace N días: a partir de aquí se sugiere mandar un mensaje de ánimo
+export const DIAS_SIN_VENDER = 30;
+// La sección «Ganancias reales» de la página del programa se muestra solo con al menos estas cuentas con ganancias
+export const MIN_CUENTAS_GANANCIAS = 20;
+// Reparto de la red para una venta: pctVendedor y pctDescuento en puntos porcentuales → [nivel 1, nivel 2] con el tope
+export function pctRed(pctVendedor, pctDescuento = 0) {
+  let libre = Math.max(0, PCT_TOPE_VENTA - (Number(pctVendedor) || 0) - (Number(pctDescuento) || 0));
+  const n1 = Math.min(PCT_RED[0], libre); libre -= n1;
+  const n2 = Math.min(PCT_RED[1], libre);
+  return [Math.round(n1 * 10) / 10, Math.round(n2 * 10) / 10];
+}
+// Mes del centro de México: { id: 'AAAA-MM', desde, hasta (ISO UTC) }
+export function mesMx(fecha = new Date()) {
+  const id = typeof fecha === 'string' && /^\d{4}-\d{2}$/.test(fecha) ? fecha : diaMx(fecha).slice(0, 7);
+  const [a, m] = id.split('-').map(Number), sig = m === 12 ? `${a + 1}-01` : `${a}-${String(m + 1).padStart(2, '0')}`;
+  return { id, desde: inicioDiaMx(`${id}-01`), hasta: inicioDiaMx(`${sig}-01`) };
+}
+
 // Niveles por compras con tu liga en el SEMESTRE (ene–jun y jul–dic, hora del centro de México; sin contar las
 // reembolsadas). Cada semestre todos empiezan en Inicial. El % de una venta es el del nivel que tenías antes de ella.
 export const NIVELES = [

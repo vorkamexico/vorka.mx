@@ -14,7 +14,7 @@ const TZ = 'America/Mexico_City';
 
 // ---------- íconos (trazo de 24 px) ----------
 const svg = (d, extra = '') => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${extra}>${d}</svg>`;
-const I = {
+export const I = {
   inicio: svg('<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>'),
   compartir: svg('<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.4M8.3 13.2l7.4 4.4"/>'),
   metas: svg('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>'),
@@ -45,8 +45,9 @@ const I = {
   tienda: svg('<path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0"/><path d="M5.5 12v8h13v-8"/>'),
   ayuda: svg('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.8M12 17.2v.1"/>'),
   correo: svg('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 6.5 8.5 6 8.5-6"/>'),
+  equipo: svg('<circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14c2.6.2 4.5 2.2 4.5 5"/>'),
 };
-const LOGRO_ICONO = {
+export const LOGRO_ICONO = {
   estrella: svg('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/>'),
   fuego: svg('<path d="M12 21c4 0 7-2.7 7-6.8 0-4.6-4-6.4-4.6-10.7C11.6 5.8 10 8.4 10 11c-1.2-.7-2-2-2.2-3.3C6.2 9.3 5 11.6 5 14.2 5 18.3 8 21 12 21Z"/>'),
   cohete: svg('<path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9-.8-.8-2.1-.8-2.9-.1Z"/><path d="M12 15 9 12c1.5-4.5 5-8.5 11-9-.5 6-4.5 9.5-9 11Z"/><path d="M9 12H5l2-4h4M12 15v4l4-2v-4"/>'),
@@ -100,7 +101,7 @@ function mensajes(c, liga) {
 }
 
 // ---------- estilos ----------
-const TOKENS = `--bg:#0B090C;--bg2:#121014;--panel:#17141A;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.07);--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+export const TOKENS = `--bg:#0B090C;--bg2:#121014;--panel:#17141A;--card:rgba(255,255,255,.045);--card2:rgba(255,255,255,.07);--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
 --fg:#F4F2F5;--fg2:rgba(244,242,245,.66);--fg3:rgba(244,242,245,.42);--morado:#6B2A85;--morado2:#9A4FBF;--oro:#C8A45C;--oro2:#E6CF96;--verde:#5ED39A;--rojo:#FF8A7A;
 --metal:linear-gradient(100deg,#6f5420 0%,#a8853f 35%,#c8a45c 62%,#8a6a2c 100%);--metal-osc:linear-gradient(100deg,#ffffff 0%,#c9ccd1 40%,#e3c47e 75%,#b8924a 100%);
 --btn-oro:linear-gradient(135deg,#F0DDA8 0%,#D4B26A 45%,#B08A45 100%);--ease:cubic-bezier(.2,.8,.2,1);--r:22px;
@@ -109,13 +110,13 @@ const TOKENS = `--bg:#0B090C;--bg2:#121014;--panel:#17141A;--card:rgba(255,255,2
 --toast-bg:#F4F2F5;--toast-t:#141114;--sombra-g:0 30px 80px -30px rgba(0,0,0,.6);--brillo:1;--pend:#E2C27A;
 --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif`;
 // Claro (Puntos Vorka en modo claro): marfil cálido, tinta y oro más oscuro para que se lea sobre fondo claro.
-const TOKENS_CLARO = `--bg:#F7F5F2;--bg2:#EFECE8;--panel:#FFFFFF;--card:#FFFFFF;--card2:#F4F2EF;--line:rgba(20,17,20,.08);--line2:rgba(20,17,20,.14);
+export const TOKENS_CLARO = `--bg:#F7F5F2;--bg2:#EFECE8;--panel:#FFFFFF;--card:#FFFFFF;--card2:#F4F2EF;--line:rgba(20,17,20,.08);--line2:rgba(20,17,20,.14);
 --fg:#141114;--fg2:#5E5960;--fg3:#8B868C;--oro2:#8A6A2C;--verde:#1F7A4A;--rojo:#C2362C;--morado2:#6B2A85;
 --s1:rgba(20,17,20,.03);--s2:rgba(20,17,20,.055);--s3:rgba(20,17,20,.16);--hundido:rgba(20,17,20,.04);--campo:#FFFFFF;--panel2:#FFFFFF;
 --barra-bg:rgba(247,245,242,.92);--tabs-bg:rgba(255,255,255,.92);--avatar-in:#FFFFFF;--err-t:#B3261E;--err-s:#FDECEA;--err-l:#F2C2BD;
 --toast-bg:#141114;--toast-t:#F4F2F5;--sombra-g:0 24px 60px -30px rgba(20,17,20,.25);--brillo:0;--pend:#8A6D2F`;
 
-const CSS_BASE = `
+export const CSS_BASE = `
 
 .pv-metal{background:var(--metal-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pv-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:999px;border:1px solid transparent;font:inherit;font-size:15.5px;font-weight:650;letter-spacing:-.01em;cursor:pointer;text-decoration:none;transition:transform .18s var(--ease),filter .2s,background .2s,opacity .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
@@ -304,7 +305,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .aviso-f.nueva::after{content:"";position:absolute;right:4px;top:18px;width:9px;height:9px;border-radius:50%;background:var(--oro2);box-shadow:0 0 10px var(--oro2)}
 .vacio{text-align:center;padding:26px 16px;color:var(--fg2);font-size:14.5px}.vacio svg{width:34px;height:34px;margin:0 auto 10px;color:var(--fg3)}
 /* barra de pestañas */
-.tabs{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:520px;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:var(--tabs-bg);-webkit-backdrop-filter:saturate(1.5) blur(22px);backdrop-filter:saturate(1.5) blur(22px);border-top:1px solid var(--line)}
+.tabs{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:520px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));background:var(--tabs-bg);-webkit-backdrop-filter:saturate(1.5) blur(22px);backdrop-filter:saturate(1.5) blur(22px);border-top:1px solid var(--line)}
 .tab{position:relative;display:grid;justify-items:center;gap:3px;padding:6px 0 4px;border:0;background:none;color:var(--fg3);font-size:11px;font-weight:650;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .2s}
 .tab svg{width:24px;height:24px;transition:transform .25s var(--ease)}
 .tab[aria-current="page"]{color:var(--oro2)}.tab[aria-current="page"] svg{transform:translateY(-1px) scale(1.06)}
@@ -357,13 +358,15 @@ button.opcion{width:100%;background:none;border:0;border-bottom:1px solid var(--
 }`;
 
 // ---------- piezas compartidas ----------
-const V = LOGO.replace('<svg ', '<svg width="100%" ');
+export const V = LOGO.replace('<svg ', '<svg width="100%" ');
 
 // Formulario de entrada (página del programa y app sin sesión): primero el correo; la app sabe si ya tienes cuenta.
 // Nueva → nombre + contraseña. Con contraseña → entrar. Sin contraseña (cuentas de antes) u olvido → código al correo para crearla.
 const ojo = id => `<button class="pv-ojo" type="button" data-ojo="${id}" aria-label="Mostrar contraseña">${I.ojo || '👁'}</button>`;
-export const formEntrar = ({ enApp = false } = {}) => `
-<div class="pv-entrada" id="pv-entrada">
+// invito: código de la liga de invitación de Embajadores Vorka (la cuenta nueva queda en el equipo de quien invitó)
+// condiciones: a dónde lleva «condiciones del programa» (por omisión, los términos de Puntos)
+export const formEntrar = ({ enApp = false, invito = null, condiciones = '/legal/terminos/#puntos' } = {}) => `
+<div class="pv-entrada" id="pv-entrada"${invito ? ` data-invito="${esc(invito)}"` : ''}>
   <form class="pv-paso" id="pv-p-correo" novalidate>
     <div style="display:grid;gap:16px">
       <div><h2>${enApp ? 'Entra o crea tu cuenta' : 'Crea tu cuenta o entra'}</h2><p class="pv-sub" style="margin-top:6px">Escribe tu correo: si ya tienes cuenta, te pedimos tu contraseña; si no, la creas en un minuto.</p></div>
@@ -378,7 +381,7 @@ export const formEntrar = ({ enApp = false } = {}) => `
       <div><h2>Crea tu cuenta</h2><p class="pv-sub" style="margin-top:6px"><b class="pv-correo"></b> · <button class="pv-enlace" type="button" data-cambiar>Cambiar</button></p></div>
       <div class="pv-campo"><label for="pv-nombre">Tu nombre</label><input id="pv-nombre" name="nombre" type="text" autocomplete="name" required maxlength="80" placeholder="Ana López"></div>
       <div class="pv-campo"><label for="pv-clave-n">Crea una contraseña</label><div class="pv-clave"><input id="pv-clave-n" name="clave" type="password" autocomplete="new-password" required minlength="8" maxlength="200" placeholder="Mínimo 8 caracteres">${ojo('pv-clave-n')}</div></div>
-      <label class="pv-casilla"><input type="checkbox" name="terminos" required><span>Acepto las <a href="/legal/terminos/#puntos" target="_blank" rel="noopener">condiciones del programa</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>
+      <label class="pv-casilla"><input type="checkbox" name="terminos" required><span>Acepto las <a href="${esc(condiciones)}" target="_blank" rel="noopener">condiciones del programa</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>
       <p class="pv-error" role="alert" hidden></p>
       <button class="pv-btn oro ancho" type="submit"><span>Crear mi cuenta</span>${I.flecha}</button>
     </div>
@@ -444,7 +447,7 @@ export const SCRIPT_ENTRAR = String.raw`(function(){
     if(f.clave.value.length<8){ error(f,'La contraseña debe tener al menos 8 caracteres.'); f.clave.focus(); return; }
     if(!f.terminos.checked){ error(f,'Acepta las condiciones del programa para continuar.'); return; }
     cargando(b,true,'Creando tu cuenta…');
-    llamar('/api/puntos/registro',{email:email,nombre:f.nombre.value.trim(),clave:f.clave.value,terminos:true}).then(function(x){
+    llamar('/api/puntos/registro',{email:email,nombre:f.nombre.value.trim(),clave:f.clave.value,terminos:true,invito:raiz.dataset.invito||undefined}).then(function(x){
       if(x.ok) return adentro(b); cargando(b,false);
       if(x.j.existe){ if(x.j.con_clave) ir('clave'); else pedirCodigo('Ese correo ya tiene cuenta. Para entrar, crea tu contraseña. Te mandamos un código a'); return; }
       error(f,x.j.error||'No se pudo crear la cuenta. Intenta de nuevo.'); });
@@ -531,8 +534,9 @@ if('serviceWorker' in navigator) window.addEventListener('load',function(){ navi
 const TIPOS_MOV = {
   ganado: ['Ganaste', 'mas', I.moneda], revertido: ['Se revirtió', 'menos', I.flecha], canje: ['Usaste en la tienda', 'oro', I.bolsa],
   devuelto: ['Te regresamos', 'mas', I.flecha], ajuste: ['Ajuste', 'oro', I.ajustes], bono: ['Bono', 'oro', I.rayo],
+  red: ['Venta de tu equipo', 'mas', I.equipo], arranque: ['Bono de arranque', 'oro', I.rayo],
 };
-const ICONO_AVISO = { ganado: I.moneda, nivel: I.trofeo, meta: LOGRO_ICONO.bandera, sugerencia: I.foco, promo: I.rayo };
+const ICONO_AVISO = { ganado: I.moneda, nivel: I.trofeo, meta: LOGRO_ICONO.bandera, sugerencia: I.foco, promo: I.rayo, red: I.equipo, arranque: I.rayo, rango: I.trofeo };
 
 // Movimientos agrupados por mes (hora de México), con signo y unidad
 function movimientosPorMes(lista) {
@@ -698,7 +702,8 @@ export function paginaApp(env, d) {
   <div class="grupo">
     <a class="opcion" href="/tienda/">Ir a la tienda y usar mis puntos ${I.tienda}</a>
     <a class="opcion" href="/tienda/puntos/#instalar">Ponla en tu celular (instrucciones) ${I.instalar}</a>
-    <button class="opcion" type="button" data-compartir="${esc(INVITA)}" data-url="https://vorka.mx/tienda/puntos/" data-titulo="Puntos Vorka">Invitar a alguien a Puntos Vorka ${I.compartir}</button>
+    <a class="opcion" href="#invita" data-ir="invita">Invitar a alguien a Embajadores Vorka ${I.compartir}</a>
+    <a class="opcion" href="/tienda/puntos/embajadores/">Cómo funciona Embajadores Vorka ${I.equipo}</a>
     <a class="opcion" href="/tienda/puntos/">Cómo funciona el programa ${I.ayuda}</a>
     <a class="opcion" href="/legal/terminos/#puntos">Condiciones del programa ${I.flecha}</a>
     <a class="opcion" href="mailto:hola@vorka.mx?subject=Puntos%20Vorka">¿Dudas? hola@vorka.mx ${I.correo}</a>
@@ -731,13 +736,13 @@ ${d.retiro ? hojaRetiro(d.retiro) : ''}
   <div id="hs-ok" hidden style="text-align:center;display:grid;justify-items:center;gap:12px;padding:10px 0"><div class="pv-ok-ico">${I.check}</div><h2>¡Gracias por tu idea!</h2><p class="pv-sub">La revisamos y te avisamos aquí. Si la aceptamos, tendrás puntos extra en ese producto.</p><button class="pv-btn vidrio" type="button" data-cerrar>Listo</button></div>
 </div></div>`;
 
-  const tabs = [['inicio', 'Inicio'], ['compartir', 'Compartir'], ['metas', 'Metas'], ['actividad', 'Actividad']];
+  const tabs = [['inicio', 'Inicio'], ['compartir', 'Compartir'], ['equipo', 'Equipo'], ['metas', 'Metas'], ['actividad', 'Actividad']];
   return documento({
     titulo: 'Puntos Vorka',
     cuerpo: `<div class="app">
 <header class="barra" id="barra"><a class="marca" href="#inicio" data-ir="inicio"><span class="marca-v">${V}</span><span>Puntos Vorka<small>Vorka México</small></span></a>
   <button class="avatar" type="button" data-abrir="h-ajustes" aria-label="Ajustes de tu cuenta"><span>${esc(inicial)}</span></button></header>
-<main id="contenido">${inicio}${compartir}${metas}${actividad}</main>
+<main id="contenido">${inicio}${compartir}${d.vistasEmbajador || ''}${metas}${actividad}</main>
 <nav class="tabs" aria-label="Secciones">${tabs.map(([k, t]) => `<button class="tab" type="button" data-ir="${k}" ${k === 'inicio' ? 'aria-current="page"' : ''}>${I[k]}<span>${t}</span>${k === 'actividad' && d.no_leidas ? `<b class="badge" id="badge">${d.no_leidas > 9 ? '9+' : d.no_leidas}</b>` : ''}</button>`).join('')}</nav>
 ${hojas}
 </div>
@@ -778,10 +783,11 @@ const SCRIPT_APP = String.raw`(function(){
       $$('.anillo .valor',vista).forEach(function(c){ c.style.strokeDashoffset=c.dataset.offset; }); }); }
 
   // ----- pestañas -----
-  var VISTAS=['inicio','compartir','metas','actividad'];
+  var VISTAS=['inicio','compartir','equipo','ganancias','invita','metas','actividad'], TAB_DE={ganancias:'equipo',invita:'equipo'};
   function ir(v,sinScroll){ if(VISTAS.indexOf(v)<0) v='inicio';
     $$('.vista').forEach(function(s){ var si=s.dataset.vista===v; if(si&&s.hidden){ s.hidden=false; $$('.vista>*',s).forEach(function(x){ x.style.animation='none'; x.offsetHeight; x.style.animation=''; }); } else if(!si) s.hidden=true; });
-    $$('.tab').forEach(function(t){ if(t.dataset.ir===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    $$('.tab').forEach(function(t){ if(t.dataset.ir===(TAB_DE[v]||v)) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    $$('[data-seg]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.ir===v?'true':'false'); });
     if(location.hash!=='#'+v) history.replaceState(null,'','#'+v);
     if(!sinScroll) window.scrollTo(0,0);
     animar($('#v-'+v));
@@ -962,7 +968,7 @@ export function icono(n) {
 }
 
 // ---------- página del programa (pública, con el menú del sitio) ----------
-const CSS_PROGRAMA = `
+export const CSS_PROGRAMA = `
 .pv-lp{background:#0B090C;color:#F4F2F5;position:relative;overflow:hidden}
 /* la portada oscura sube por debajo del menú (sin esto quedaba una tira clara arriba) */
 .t-main>.pv-lp:first-child{margin-top:-104px;padding-top:104px}
