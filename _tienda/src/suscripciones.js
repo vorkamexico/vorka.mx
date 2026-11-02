@@ -137,6 +137,7 @@ export async function guardarSuscripcion(env, sub) {
     if (c.complemento && c.acceso?.tipo === 'profesional') profesionales += it.quantity || 1;
     else if (c.complemento) sucursales += it.quantity || 1;
     else if (!plan) plan = pid;
+    else if (meta.app === 'toolkit' && r && c.acceso?.app === 'toolkit') plan = pid;   // Toolkit → Pro: manda el precio del renglón (ver toolkit.js › cambiarAPro)
   }
   const orden = meta.order_id ? await one(env, 'SELECT email FROM orders WHERE id = ?', meta.order_id) : null;
   const email = String(meta.email || orden?.email || '').trim().toLowerCase();
@@ -160,6 +161,7 @@ export async function guardarSuscripcion(env, sub) {
       cancelar_al_final = excluded.cancelar_al_final, sucursales = excluded.sucursales, profesionales = excluded.profesionales, monto_centavos = excluded.monto_centavos,
       customer_id = COALESCE(excluded.customer_id, suscripciones.customer_id), order_id = COALESCE(suscripciones.order_id, excluded.order_id),
       creador_id = COALESCE(suscripciones.creador_id, excluded.creador_id),
+      product_id = CASE WHEN excluded.app = 'toolkit' THEN excluded.product_id ELSE suscripciones.product_id END,
       cancelada_at = CASE WHEN excluded.estado = 'canceled' THEN COALESCE(suscripciones.cancelada_at, excluded.cancelada_at) ELSE NULL END,
       updated_at = ?`,
     fila.id, fila.email, fila.app, fila.product_id, fila.order_id, fila.customer_id, fila.estado, fila.intervalo, fila.periodo_fin, fila.cancelar_al_final, fila.sucursales, fila.profesionales, fila.monto_centavos,
@@ -223,11 +225,22 @@ export async function lugaresApp(env, email, app, extras, tipo = 'sucursal') {
   await guardarSuscripcion(env, await llamar(env, 'GET', `/subscriptions/${encodeURIComponent(s.id)}?expand[]=items.data.price.product`));
   return suscripcionApp(env, email, app);
 }
-// El producto de Stripe de un complemento (para agregarlo a una suscripción hace falta uno guardado): se crea una vez
-async function productoStripe(env, p) {
+// El producto de Stripe de un complemento o de un plan (para agregarlo a una suscripción hace falta uno guardado): se crea una vez
+export async function productoStripe(env, p) {
   const clave = `stripe_producto:${p.id}`, ya = await one(env, 'SELECT valor FROM ajustes WHERE clave = ?', clave);
   if (ya?.valor) return ya.valor;
   const r = await llamar(env, 'POST', '/products', { name: p.nombre, metadata: { product_id: p.id } }, { idempotencia: clave });
+  await run(env, 'INSERT INTO ajustes (clave, valor) VALUES (?, ?) ON CONFLICT (clave) DO UPDATE SET valor = excluded.valor', clave, r.id);
+  return r.id;
+}
+
+// Un precio recurrente guardado (Price de Stripe) para un producto y monto: lo exigen las actualizaciones con
+// payment_behavior=pending_if_incomplete, que no aceptan price_data en los renglones. Se crea una vez por producto, monto e
+// intervalo (si el precio cambia en la base, la clave cambia y se crea otro).
+export async function precioStripe(env, p, intervalo = 'month') {
+  const clave = `stripe_precio:${p.id}:${p.precio_centavos}:${intervalo}`, ya = await one(env, 'SELECT valor FROM ajustes WHERE clave = ?', clave);
+  if (ya?.valor) return ya.valor;
+  const r = await llamar(env, 'POST', '/prices', { currency: 'mxn', unit_amount: p.precio_centavos, recurring: { interval: intervalo }, product: await productoStripe(env, p), metadata: { product_id: p.id } }, { idempotencia: clave });
   await run(env, 'INSERT INTO ajustes (clave, valor) VALUES (?, ?) ON CONFLICT (clave) DO UPDATE SET valor = excluded.valor', clave, r.id);
   return r.id;
 }

@@ -78,7 +78,12 @@ beforeEach(() => {
     }
     if (url.includes('/coupons/') && (init.method || 'GET') === 'GET') return new Response('{"error":{"message":"no"}}', { status: 404 });
     if (url.endsWith('/coupons')) return ok({ id: 'vorka_ref5' });
+    if (url.endsWith('/products')) return ok({ id: 'prod_stripe_' + new URLSearchParams(init.body).get('metadata[product_id]') });
+    if (url.endsWith('/prices')) return ok({ id: 'price_' + new URLSearchParams(init.body).get('metadata[product_id]') + '_' + new URLSearchParams(init.body).get('unit_amount') });
+    if (url.endsWith('/invoices/create_preview')) return stripe.preview instanceof Error ? new Response('{"error":{"message":"caído"}}', { status: 500 }) : ok(stripe.preview);
+    if (url.includes('/subscriptions/') && init.method === 'POST') { const r = stripe.actualizar(new URLSearchParams(init.body)); return r.http ? new Response(JSON.stringify(r.body), { status: r.http }) : ok(r); }
     if (url.includes('/subscriptions/')) return ok(stripe.sub);
+    if (/\/invoices\/[^/]+\/void$/.test(url)) return ok({ status: 'void' });
     if (url.includes('/invoices/')) return ok(stripe.factura);
     if (url.includes('/payment_intents/')) return ok(stripe.pi);
     if (url.endsWith('/billing_portal/sessions')) return ok({ url: 'https://billing.stripe.com/p/session/x' });
@@ -264,12 +269,13 @@ describe('meses de apps con saldo (como cortesía)', () => {
     cerca(s.periodo_fin, Date.parse(antes) + 30.5 * DIA);
   });
 
-  it('si ya paga la app en Stripe, el mes empieza al terminar y avisa que cancele la renovación', async () => {
+  it('si ya canceló la renovación con tarjeta, el mes con saldo empieza cuando termina lo pagado', async () => {
     abonar(80000);
-    env.DB.raw.prepare(`INSERT INTO suscripciones (id, email, app, product_id, customer_id, estado, intervalo, periodo_fin, monto_centavos) VALUES ('sub_v', ?, 'vende', 'prod_vende_mensual', 'cus_1', 'active', 'month', '2030-01-01T00:00:00.000Z', 9900)`).run(YO);
+    env.DB.raw.prepare(`INSERT INTO suscripciones (id, email, app, product_id, customer_id, estado, intervalo, periodo_fin, cancelar_al_final, monto_centavos) VALUES ('sub_v', ?, 'vende', 'prod_vende_mensual', 'cus_1', 'active', 'month', '2030-01-01T00:00:00.000Z', 1, 9900)`).run(YO);
     const r = await pagarMesesApp(env, { email: YO, app: 'vende', meses: 1 });
+    expect(r.ok).toBe(true);
     expect(r.desde).toBe('2030-01-01T00:00:00.000Z');
-    expect(r.aviso).toMatch(/se renueva sola/);
+    expect(r.aviso).toMatch(/termina el 31 de diciembre de 2029: el mes pagado con saldo empieza ese día/);
     expect((await cortesiaApp(env, YO, 'vende')).periodo_fin).toBe('2030-02-01T00:00:00.000Z');
   });
 
@@ -519,5 +525,310 @@ describe('páginas y panel', () => {
     const cli = await new Admin({}, env).toolkitCliente(YO);
     expect(cli.saldo_centavos).toBe(52100);
     expect(cli.movimientos).toHaveLength(2);
+  });
+});
+
+// ---------- pago doble de apps (renovación automática con tarjeta) ----------
+const RENUEVA = /^Ya pagas Vende Pro con tarjeta y se renueva sola\. Para usar tu saldo, primero cancela la renovación \(sigues teniendo la app hasta el 31 de diciembre de 2029\); los meses con saldo empezarán ese día\.$/;
+const conApp = (app = 'vende', o = {}) => env.DB.raw.prepare(`INSERT OR REPLACE INTO suscripciones (id, email, app, product_id, customer_id, estado, intervalo, periodo_fin, cancelar_al_final, monto_centavos)
+  VALUES (?, ?, ?, ?, 'cus_v', ?, 'month', ?, ?, 9900)`).run(o.id || `sub_${app}`, o.email || YO, app, o.product_id || `prod_${app}_mensual`, o.estado || 'active', o.periodo_fin || '2030-01-01T00:00:00.000Z', o.cancelar ? 1 : 0);
+const antesDelBatch = fn => { const orig = env.DB.batch.bind(env.DB); env.DB.batch = async st => { fn(); env.DB.batch = orig; return orig(st); }; };
+
+describe('pago doble: una app que ya se paga con tarjeta y se renueva sola', () => {
+  it('no se pagan meses con saldo (servidor), con el mensaje claro y sin tocar el saldo', async () => {
+    abonar(80000); conApp('vende');
+    const r = await pagarMesesApp(env, { email: YO, app: 'vende', meses: 2 });
+    expect(r.status).toBe(409);
+    expect(r.error).toMatch(RENUEVA);
+    expect(r.renueva).toMatchObject({ app: 'vende', periodo_fin: '2030-01-01T00:00:00.000Z' });
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+    expect(fila("SELECT COUNT(*) n FROM orders WHERE proveedor = 'saldo'").n).toBe(0);
+    // Tampoco por la API de Mi Toolkit ni por el botón de la ficha de la app (pagar 1 mes)
+    await entrar();
+    const api = await pedir('/api/toolkit/app', { metodo: 'POST', body: { app: 'vende', meses: 1 } });
+    expect(api.status).toBe(409);
+    expect((await api.json()).error).toMatch(RENUEVA);
+    expect((await pedir('/api/toolkit/pagar', { metodo: 'POST', body: { slug: 'vende-mensual' } })).status).toBe(409);
+    expect(await (await pedir('/api/toolkit/cotizar', { metodo: 'POST', body: { slug: 'vende-mensual' } })).json())
+      .toMatchObject({ ok: false, app: 'vende', renueva: { app: 'vende' }, error: expect.stringMatching(RENUEVA) });
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+  });
+
+  it('past_due también cuenta como vigente; con la renovación ya cancelada sí se puede', async () => {
+    abonar(80000); conApp('vende', { estado: 'past_due' });
+    expect((await pagarMesesApp(env, { email: YO, app: 'vende', meses: 1 })).status).toBe(409);
+    conApp('vende', { cancelar: true });
+    expect(await pagarMesesApp(env, { email: YO, app: 'vende', meses: 1 })).toMatchObject({ ok: true, desde: '2030-01-01T00:00:00.000Z' });
+  });
+
+  it('un paquete que incluye la app (Agenda + Vuelve) también la bloquea', async () => {
+    abonar(80000); conApp('agenda-vuelve', { product_id: 'prod_agenda_vuelve_mensual' });
+    const r = await pagarMesesApp(env, { email: YO, app: 'agenda', meses: 1 });
+    expect(r.status).toBe(409);
+    expect(r.error).toMatch(/^Ya pagas Agenda con tarjeta y se renueva sola/);
+    expect((await pagarMesesApp(env, { email: YO, app: 'clara', meses: 1 })).ok).toBe(true);   // otra app, sin problema
+  });
+
+  it('atómico: si la renovación aparece justo antes del cargo, el batch no cobra nada', async () => {
+    abonar(80000);
+    antesDelBatch(() => conApp('vende'));
+    const r = await pagarMesesApp(env, { email: YO, app: 'vende', meses: 1 });
+    expect(r.status).toBe(409);
+    expect(r.error).toMatch(RENUEVA);
+    expect(fila("SELECT COUNT(*) n FROM toolkit_movimientos WHERE tipo = 'app'").n).toBe(0);
+    expect(fila('SELECT COUNT(*) n FROM orders').n).toBe(0);
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+  });
+
+  it('un código de regalo de esa app para uno mismo: mismo bloqueo y el código queda sin usar', async () => {
+    abonar(80000);
+    const { codigos: [k] } = await sacarCodigos(env, { email: YO, slug: 'vende-mensual', cantidad: 1 });
+    conApp('vende');
+    const r = await pedir('/api/toolkit/canjear', { metodo: 'POST', cookie: '', body: { codigo: k, nombre: 'Ana', email: YO, terminos: true } });
+    expect(r.status).toBe(409);
+    expect((await r.json()).error).toMatch(RENUEVA);
+    expect((await codigosDe(env, YO))[0].estado).toBe('disponible');
+    expect(fila('SELECT COUNT(*) n FROM orders').n).toBe(0);
+    // Otra persona sí lo puede canjear
+    expect((await canjearCodigo(env, { codigo: k, nombre: 'Leo', email: 'leo@x.mx' })).ok).toBe(true);
+  });
+
+  it('canje atómico: si la renovación aparece en el último momento, el código no se gasta', async () => {
+    abonar(80000);
+    const { codigos: [k] } = await sacarCodigos(env, { email: YO, slug: 'vende-mensual', cantidad: 1 });
+    antesDelBatch(() => conApp('vende'));
+    const r = await canjearCodigo(env, { codigo: k, nombre: 'Ana', email: YO });
+    expect(r.status).toBe(409);
+    expect(r.error).toMatch(RENUEVA);
+    expect((await codigosDe(env, YO))[0].estado).toBe('disponible');
+  });
+
+  it('Mi Toolkit › apps muestra el mensaje con el botón al portal de esa app (y no el de pagar)', async () => {
+    abonar(80000); conApp('vende'); await entrar();
+    const html = await (await pedir('/tienda/mi-toolkit/?v=apps')).text();
+    expect(html).toContain('Ya pagas Vende Pro con tarjeta y se renueva sola. Para usar tu saldo, primero cancela la renovación (sigues teniendo la app hasta el 31 de diciembre de 2029); los meses con saldo empezarán ese día.');
+    expect(html).toContain('data-portal-app="vende"');
+    expect(html).not.toContain('data-app="vende" data-precio');
+    expect(html).toContain('data-app="clara" data-precio');
+    const p = await pedir('/api/toolkit/portal', { metodo: 'POST', body: { app: 'vende', volver: '/tienda/vende/' } });
+    expect(await p.json()).toEqual({ url: 'https://billing.stripe.com/p/session/x' });
+    const params = llamada('/billing_portal/sessions')[0].params;
+    expect(params.get('customer')).toBe('cus_v');
+    expect(params.get('return_url')).toBe('https://vorka.mx/tienda/vende/');
+    expect((await pedir('/api/toolkit/portal', { metodo: 'POST', body: { app: 'toolkit-x' } })).status).toBe(400);
+  });
+
+  it('la ficha de la app lleva el botón para cancelar la renovación cuando el saldo no se puede usar', async () => {
+    abonar(80000); conApp('vende'); await entrar();
+    const html = await (await pedir('/tienda/vende/')).text();
+    expect(html).toContain('Cancelar la renovación con tarjeta');
+    expect(html).toContain('q.renueva');
+  });
+});
+
+// ---------- pasarse de Toolkit a Toolkit Pro ----------
+const AHORA = () => Math.floor(Date.now() / 1000);
+const lineaProrrateo = amount => ({ amount, parent: { subscription_item_details: { proration: true } } });
+const itemTk = (pro = false) => ({ id: 'si_1', quantity: 1, current_period_start: AHORA() - 15 * 86400, current_period_end: AHORA() + 15 * 86400,
+  price: { unit_amount: pro ? 119900 : 59900, recurring: { interval: 'month' }, product: { metadata: { product_id: pro ? 'prod_toolkit_pro_mensual' : 'prod_toolkit_mensual' } } } });
+// Suscripción del Toolkit a la mitad de su mes (15 días usados de 30)
+const subMitad = (o = {}) => subStripe({ start_date: AHORA() - 75 * 86400, items: { data: [itemTk()] }, ...o });
+const subPro = (o = {}) => subStripe({ product_id: 'prod_toolkit_pro_mensual', items: { data: [itemTk(true)] }, ...o });
+const facturaCambio = (id = 'in_up', o = {}) => factura(id, { billing_reason: 'subscription_update', total: 30000, amount_paid: 30000, ...o });
+const postsSub = () => llamada('/subscriptions/sub_tk').filter(l => l.init.method === 'POST');
+
+async function conToolkit() {
+  await pagarFactura('in_1', { billing_reason: 'subscription_create' });   // $800 de saldo y la suscripción guardada
+  stripe.sub = subMitad();
+  stripe.preview = { total: 30000, lines: { data: [lineaProrrateo(-29950), lineaProrrateo(59950)] } };
+  stripe.actualizar = () => subPro({ latest_invoice: facturaCambio() });
+  await entrar();
+}
+
+describe('Toolkit → Toolkit Pro', () => {
+  it('rentabilidad con los precios y bonos de la base (no fijos): $1.34 y $1.50; $600 más → $1,000 más', async () => {
+    await conToolkit();
+    const html = await (await pedir('/tienda/mi-toolkit/')).text();
+    expect(html).toContain('Pásate a Toolkit Pro');
+    expect(html).toMatch(/<b>\$1\.34<\/b><span>de saldo por cada \$1<\/span><em>Pagas \$599 y recibes \$800<\/em>/);
+    expect(html).toMatch(/<b>\$1\.50<\/b><span>de saldo por cada \$1<\/span><em>Pagas \$1,199 y recibes \$1,800<\/em>/);
+    expect(html).toContain('Por <b>$600 más al mes</b> recibes <b>$1,000 más de saldo</b>.');
+    expect(html).toContain('Con Pro recibes $1,000 más de saldo al mes');
+    expect(html).toContain('Para bajar de plan escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.');
+    // Sin uso suficiente no se inventa el «te sobrarían»
+    expect(html).not.toContain('Con lo que llevas usando al mes');
+    // Si cambian en la base, cambia la tarjeta (también en la pestaña de códigos y en el aviso de «no alcanza»)
+    env.DB.raw.exec(`UPDATE products SET precio_centavos = 99900, contenido = json_set(contenido, '$.toolkit.bono_centavos', 170000) WHERE id = 'prod_toolkit_pro_mensual'`);
+    const otro = await (await pedir('/tienda/mi-toolkit/?v=codigos')).text();
+    expect(otro).toContain('id="mt-pro"');
+    expect(otro).toContain('Por <b>$400 más al mes</b> recibes <b>$900 más de saldo</b>.');
+    expect(otro).toMatch(/<b>\$1\.70<\/b>/);   // 1,700 / 999
+    expect(otro).toContain('data-pro="¿Te quedas corto seguido? Con Toolkit Pro recibes $900 más de saldo al mes."');
+  });
+
+  it('después de sacar códigos también aparece la tarjeta', async () => {
+    await conToolkit();
+    const html = await (await pedir('/tienda/mi-toolkit/?v=codigos&listo=2')).text();
+    expect(html).toContain('¡Listo! Sacaste 2 códigos');
+    expect(html).toContain('Pásate a Toolkit Pro');
+  });
+
+  it('con datos reales de uso dice cuánto le sobraría con Pro', async () => {
+    await conToolkit();
+    env.DB.raw.prepare("UPDATE toolkit_movimientos SET created_at = ? WHERE tipo = 'abono'").run(new Date(Date.now() - 10 * DIA).toISOString());
+    abonar(100000);
+    for (const slug of ['de-idea-a-proyecto', 'de-idea-a-proyecto']) expect((await pagarConSaldo(env, { email: YO, nombre: 'Ana', slug })).ok).toBe(true);
+    await sacarCodigos(env, { email: YO, slug: 'simulador-paa-practica', cantidad: 1 });
+    // 27,900 × 2 + 19,900 = 75,700 en menos de un mes → $757 al mes; con Pro le sobrarían $1,043
+    const html = await (await pedir('/tienda/mi-toolkit/')).text();
+    expect(html).toContain('Con lo que llevas usando al mes ($757), con Pro te sobrarían $1,043.');
+  });
+
+  it('confirmación con la vista previa de Stripe: cuánto se cobra hoy, cuánto saldo y desde cuándo', async () => {
+    await conToolkit();
+    const r = await pedir('/api/toolkit/pro/vista', { metodo: 'POST' });
+    expect(r.status).toBe(200);
+    const v = await r.json();
+    expect(v).toMatchObject({ ok: true, cobro_centavos: 30000, saldo_centavos: 50000, aproximado: false, precio_pro_centavos: 119900, bono_pro_centavos: 180000 });
+    expect(v.texto).toMatch(/^Hoy te cobramos \$300 \(la diferencia por los días que quedan\) y te sumamos \$500 de saldo\. Desde el \d{1,2} de [a-z]+ de \d{4} pagas \$1,199 y recibes \$1,800 cada mes\.$/);
+    expect(v.fundador).toMatch(/^Tu precio fundador sigue contando desde tu primera suscripción/);
+    const p = llamada('/invoices/create_preview')[0].params;
+    expect(p.get('subscription')).toBe('sub_tk');
+    expect(p.get('subscription_details[items][0][id]')).toBe('si_1');
+    expect(p.get('subscription_details[items][0][price]')).toBe('price_prod_toolkit_pro_mensual_119900');
+    expect(p.get('subscription_details[proration_behavior]')).toBe('always_invoice');
+    // El precio de Pro se crea una vez en Stripe (Product con su product_id) y se reutiliza
+    expect(llamada('/products')[0].params.get('metadata[product_id]')).toBe('prod_toolkit_pro_mensual');
+    await pedir('/api/toolkit/pro/vista', { metodo: 'POST' });
+    expect(llamada('/prices')).toHaveLength(1);
+    // La vista previa no cobra ni abona nada
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+    expect(postsSub()).toHaveLength(0);
+  });
+
+  it('si la vista previa de Stripe falla, calcula igual que Stripe (por segundos) y lo dice como aproximado', async () => {
+    await conToolkit();
+    stripe.preview = new Error('caído');
+    const v = await (await pedir('/api/toolkit/pro/vista', { metodo: 'POST' })).json();
+    expect(v.aproximado).toBe(true);
+    expect(Math.abs(v.cobro_centavos - 30000)).toBeLessThanOrEqual(2);   // mitad del mes: (119,900 − 59,900) / 2
+    expect(Math.abs(v.saldo_centavos - 50000)).toBeLessThanOrEqual(4);
+  });
+
+  it('cambio exitoso: cobra la diferencia ya, abona el saldo prorrateado una vez y el siguiente ciclo abona $1,800', async () => {
+    await conToolkit();
+    const v = await (await pedir('/api/toolkit/pro/vista', { metodo: 'POST' })).json();
+    const r = await pedir('/api/toolkit/pro', { metodo: 'POST', body: { proration_date: v.proration_date } });
+    expect(r.status).toBe(200);
+    expect(await r.json()).toMatchObject({ ok: true, cobro_centavos: 30000, abonado_centavos: 50000, saldo_centavos: 130000 });
+    // Stripe: la misma suscripción, precio de Pro, factura inmediata, sin aplicar si el cobro falla, misma fecha de prorrateo
+    const [post] = postsSub();
+    expect(post.params.get('items[0][id]')).toBe('si_1');
+    expect(post.params.get('items[0][price]')).toBe('price_prod_toolkit_pro_mensual_119900');
+    expect(post.params.get('proration_behavior')).toBe('always_invoice');
+    expect(post.params.get('payment_behavior')).toBe('pending_if_incomplete');
+    expect(post.params.get('proration_date')).toBe(String(v.proration_date));
+    expect(post.params.get('metadata[product_id]')).toBe('prod_toolkit_pro_mensual');
+    expect(post.init.headers['idempotency-key']).toMatch(/^toolkit-pro-/);
+    expect(filas('SELECT tipo, centavos, clave, plan FROM toolkit_movimientos ORDER BY id')).toEqual([
+      { tipo: 'abono', centavos: 80000, clave: 'factura:in_1', plan: 'toolkit' },
+      { tipo: 'abono', centavos: 50000, clave: 'factura:in_up', plan: 'toolkit-pro' },
+    ]);
+    expect(fila('SELECT estado, factura_id, cobro_centavos, saldo_centavos FROM toolkit_cambios')).toEqual({ estado: 'pagado', factura_id: 'in_up', cobro_centavos: 30000, saldo_centavos: 50000 });
+    expect(await estadoToolkit(env, YO)).toMatchObject({ plan: { nombre: 'Toolkit Pro', bono_centavos: 180000 }, proximo_abono: { centavos: 180000 } });
+    // El webhook de la factura de prorrateo (y sus reintentos) NO abona el bono completo ni duplica
+    for (let i = 0; i < 3; i++) await pagarFactura('in_up', { billing_reason: 'subscription_update', total: 30000, amount_paid: 30000, sub: { product_id: 'prod_toolkit_pro_mensual' } });
+    expect(await saldoToolkit(env, YO)).toBe(130000);
+    // Siguiente mes: $1,199 → $1,800
+    await pagarFactura('in_2', { total: 119900, amount_paid: 119900, sub: { product_id: 'prod_toolkit_pro_mensual' } });
+    expect(await saldoToolkit(env, YO)).toBe(310000);
+    // Mi Toolkit confirma el cambio y ya no ofrece Pro
+    const html = await (await pedir('/tienda/mi-toolkit/?pro=listo')).text();
+    expect(html).toContain('¡Listo! Ya tienes Toolkit Pro. Te cobramos $300 y te sumamos $500 de saldo.');
+    expect(html).not.toContain('Pásate a Toolkit Pro');
+    expect((await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} })).status).toBe(409);
+  });
+
+  it('webhook y respuesta en cualquier orden: el saldo prorrateado se abona una sola vez', async () => {
+    await conToolkit();
+    // El webhook llega mientras la petición del cambio sigue abierta (cambio aún 'pendiente', sin factura ligada)
+    const { abonoCambio } = await import('../src/toolkit.js');
+    env.DB.raw.prepare("INSERT INTO toolkit_cambios (id, email, suscripcion_id, de_product_id, a_product_id, proration_date) VALUES ('c1', ?, 'sub_tk', 'prod_toolkit_mensual', 'prod_toolkit_pro_mensual', 1)").run(YO);
+    const fs = fila("SELECT * FROM suscripciones WHERE id = 'sub_tk'");
+    expect(await abonoToolkit(env, facturaCambio(), { id: 'sub_tk' }, fs)).toMatchObject({ centavos: 50000 });   // primero el webhook
+    expect(await abonoCambio(env, facturaCambio(), fila("SELECT * FROM toolkit_cambios WHERE id = 'c1'"))).toBeNull();   // luego la respuesta
+    expect(await abonoToolkit(env, facturaCambio(), { id: 'sub_tk' }, fs)).toBeNull();   // reintento del webhook
+    expect(fila("SELECT COUNT(*) n, SUM(centavos) c FROM toolkit_movimientos WHERE factura_id = 'in_up'")).toEqual({ n: 1, c: 50000 });
+    expect(fila("SELECT estado, factura_id FROM toolkit_cambios WHERE id = 'c1'")).toEqual({ estado: 'pagado', factura_id: 'in_up' });
+  });
+
+  it('una factura de cambio de plan sin un cambio registrado no abona nada (nunca el bono completo)', async () => {
+    await conToolkit();
+    await pagarFactura('in_raro', { billing_reason: 'subscription_update', total: 60000, amount_paid: 60000, sub: { product_id: 'prod_toolkit_pro_mensual' } });
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+  });
+
+  it('cobro rechazado: no cambia el plan, anula la factura, no abona nada y lo dice amable', async () => {
+    await conToolkit();
+    stripe.actualizar = () => subMitad({ pending_update: { expires_at: AHORA() + 3600, subscription_items: [{ id: 'si_1', price: 'price_x' }] },
+      latest_invoice: facturaCambio('in_falla', { status: 'open', amount_paid: 0, payments: { data: [] } }) });
+    const r = await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} });
+    expect(r.status).toBe(402);
+    expect((await r.json()).error).toBe('No pudimos cobrar la diferencia a tu tarjeta, así que no cambiamos tu plan y no te cobramos nada. Revisa tu tarjeta en «Administrar mi suscripción» e intenta de nuevo.');
+    expect(llamada('/invoices/in_falla/void')).toHaveLength(1);
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+    expect(fila('SELECT estado, factura_id FROM toolkit_cambios')).toEqual({ estado: 'fallido', factura_id: 'in_falla' });
+    expect(fila("SELECT product_id FROM suscripciones WHERE id = 'sub_tk'").product_id).toBe('prod_toolkit_mensual');
+    // Puede volver a intentarlo (el fallido no bloquea) y si Stripe responde 402: tampoco se abona
+    stripe.actualizar = () => ({ http: 402, body: { error: { message: 'Your card was declined.', code: 'card_declined' } } });
+    const r2 = await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} });
+    expect(r2.status).toBe(402);
+    expect(await saldoToolkit(env, YO)).toBe(80000);
+    expect(fila("SELECT COUNT(*) n FROM toolkit_cambios WHERE estado = 'fallido'").n).toBe(2);
+  });
+
+  it('dos clics al mismo tiempo: solo uno llega a Stripe', async () => {
+    await conToolkit();
+    env.DB.raw.prepare("INSERT INTO toolkit_cambios (id, email, suscripcion_id, de_product_id, a_product_id, proration_date) VALUES ('c1', ?, 'sub_tk', 'prod_toolkit_mensual', 'prod_toolkit_pro_mensual', 1)").run(YO);
+    const r = await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} });
+    expect(r.status).toBe(409);
+    expect((await r.json()).error).toMatch(/Ya estamos procesando tu cambio/);
+    expect(postsSub()).toHaveLength(0);
+  });
+
+  it('quien no tiene Toolkit (o no tiene sesión) no puede llamar al cambio; quien ya es Pro no ve la tarjeta', async () => {
+    expect((await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} })).status).toBe(401);
+    await entrar('nadie@x.mx');
+    expect((await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} })).status).toBe(403);
+    expect((await pedir('/api/toolkit/pro/vista', { metodo: 'POST' })).status).toBe(403);
+    expect(llamadas.filter(l => l.url.includes('/subscriptions/'))).toHaveLength(0);
+    // Ya es Pro
+    await pagarFactura('in_p', { total: 119900, amount_paid: 119900, sub: { product_id: 'prod_toolkit_pro_mensual' } });
+    await entrar();
+    const html = await (await pedir('/tienda/mi-toolkit/')).text();
+    expect(html).toContain('Toolkit Pro · activo');
+    expect(html).not.toContain('Pásate a Toolkit Pro');
+    expect(await (await pedir('/tienda/mi-toolkit/?v=codigos')).text()).not.toContain('id="mt-pro"');
+    const r = await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} });
+    expect(r.status).toBe(409);
+    expect((await r.json()).error).toBe('Ya tienes Toolkit Pro.');
+  });
+
+  it('con la cancelación programada o un pago pendiente no se ofrece ni se permite', async () => {
+    await conToolkit();
+    env.DB.raw.exec("UPDATE suscripciones SET cancelar_al_final = 1 WHERE id = 'sub_tk'");
+    expect(await (await pedir('/tienda/mi-toolkit/')).text()).not.toContain('Pásate a Toolkit Pro');
+    expect((await (await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} })).json()).error).toMatch(/programado para cancelarse/);
+    env.DB.raw.exec("UPDATE suscripciones SET cancelar_al_final = 0, estado = 'past_due' WHERE id = 'sub_tk'");
+    expect((await (await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} })).json()).error).toMatch(/Actualiza tu tarjeta/);
+    expect(postsSub()).toHaveLength(0);
+  });
+
+  it('un reembolso de la factura de prorrateo resta solo lo que esa factura abonó', async () => {
+    await conToolkit();
+    await pedir('/api/toolkit/pro', { metodo: 'POST', body: {} });
+    expect(await saldoToolkit(env, YO)).toBe(130000);
+    await reembolsoToolkit(env, 'pi_in_up', { monto: 30000, reembolsado: 30000 });
+    expect(await saldoToolkit(env, YO)).toBe(80000);
   });
 });

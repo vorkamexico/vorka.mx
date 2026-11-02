@@ -113,7 +113,7 @@ export async function checkout(req, env) {
     for (const app of plan.creador_id ? [] : acceso.apps || [acceso.app]) {
       const ya = await vigente(env, d.email, app);
       if (!ya) continue;
-      if (acceso.app === 'toolkit') return error('Ya tienes un Toolkit activo con este correo. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble; tu saldo se queda igual.', 409);
+      if (acceso.app === 'toolkit') return error('Ya tienes un Toolkit activo con este correo. Para pasarte a Toolkit Pro entra a Mi Toolkit (vorka.mx/tienda/mi-toolkit) y toca «Cambiar a Pro»; para bajar de plan escríbenos a hola@vorka.mx. Tu saldo se queda igual.', 409);
       if (ya.app !== acceso.app) return error(`Con este correo ya pagas ${ya.app === 'agenda-vuelve' ? 'el paquete Agenda + Vuelve' : app === 'vuelve' ? 'Vuelve' : 'Agenda'}. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble.`, 409);
       return error('Ya tienes una suscripción activa con este correo. Adminístrala desde la app, en Cuenta.', 409);
     }

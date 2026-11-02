@@ -22,7 +22,8 @@
 // la suscripción sí, con las reglas de siempre (puntos.js › puntosAlPagar y puntosFactura).
 import { one, all, run, ahoraISO, pesos, correoOculto } from './util.js';
 import { VENDIBLE, productoPorSlug, registrarAnalitica } from './modelo.js';
-import { vigente, cortesiaApp, finCortesia, VIGENTES, portalApp } from './suscripciones.js';
+import { vigente, cortesiaApp, finCortesia, VIGENTES, portalApp, appsQueCubren, guardarSuscripcion, precioStripe } from './suscripciones.js';
+import { llamar } from './pagos/stripe.js';
 import { entregar } from './entrega.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
 import { NOMBRE_APP } from './descuentos.js';
@@ -86,6 +87,15 @@ const periodoDeFactura = f => { const fin = Math.max(0, ...(f?.lines?.data || []
 export async function abonoToolkit(env, f, sub, fila) {
   if (!f || !fila || fila.app !== APP) return null;
   if (f.status !== 'paid' || !(Number(f.total) > 0)) return null;
+  // Factura de un cambio de plan (Toolkit → Pro): NUNCA abona el bono completo; abona la diferencia prorrateada con la misma
+  // clave que usa cambiarAPro (así el endpoint y el webhook no la duplican). Sin un cambio registrado no abona nada.
+  if (f.billing_reason === 'subscription_update') {
+    const subId = sub?.id || fila.id;
+    const cambio = await one(env, 'SELECT * FROM toolkit_cambios WHERE factura_id = ?', f.id)
+      || await one(env, 'SELECT * FROM toolkit_cambios WHERE suscripcion_id = ? AND factura_id IS NULL AND created_at >= ? ORDER BY created_at DESC LIMIT 1', subId, new Date(Date.now() - 2 * DIA).toISOString());
+    if (!cambio) { console.error('ALERTA toolkit: factura de cambio de plan sin registro; no se abona', f.id); return null; }
+    return abonoCambio(env, f, cambio);
+  }
   const prod = await one(env, 'SELECT nombre, contenido FROM products WHERE id = ?', fila.product_id);
   const tk = jsonDe(prod?.contenido).toolkit;
   if (!tk?.bono_centavos) { console.error('ALERTA toolkit: el plan no tiene bono', fila.product_id, f.id); return null; }
@@ -162,10 +172,28 @@ export async function destinoSaldo(env, p, { email = null, para = 'compra' } = {
   return { tipo: 'producto', p, precio: p.precio_centavos, nombre: p.nombre };
 }
 
+// ---------- pago doble de apps ----------
+// Quien paga una app con tarjeta y su suscripción se renueva sola (vigente en Stripe, suya o de un paquete que la incluye, sin
+// cancelar_al_final) NO puede pagar meses de esa app con saldo ni canjear para sí un código de esa app: el mes con saldo
+// empezaría al terminar el periodo pagado y la tarjeta se volvería a cobrar → pagaría doble. Primero cancela la renovación
+// (sigue teniendo la app hasta el fin del periodo pagado) y los meses con saldo empiezan ese día. La revisión va también
+// DENTRO del batch del cargo (sinRenovar), así una suscripción que se reactiva mientras paga tampoco se cuela.
+const sqlRenueva = app => { const a = appsQueCubren(app); return `SELECT * FROM suscripciones WHERE email = ? AND app IN (${a.map(() => '?').join(',')})
+  AND estado IN (${VIGENTES.map(() => '?').join(',')}) AND cancelar_al_final = 0`; };
+const bindsRenueva = (email, app) => [norm(email), ...appsQueCubren(app), ...VIGENTES];
+export async function renuevaConTarjeta(env, email, app) {
+  const s = await one(env, `${sqlRenueva(app)} ORDER BY periodo_fin DESC LIMIT 1`, ...bindsRenueva(email, app));
+  return s ? { app, periodo_fin: s.periodo_fin, paquete: s.app !== app ? s.app : null } : null;
+}
+export const textoRenueva = (app, fin) => `Ya pagas ${NOMBRE_APP_SALDO[app] || app} con tarjeta y se renueva sola. Para usar tu saldo, primero cancela la renovación (sigues teniendo la app hasta el ${fechaMx(fin)}); los meses con saldo empezarán ese día.`;
+const errorRenueva = rn => ({ error: textoRenueva(rn.app, rn.periodo_fin), status: 409, renueva: { app: rn.app, periodo_fin: rn.periodo_fin, paquete: rn.paquete } });
+const sinRenovar = (email, app) => ({ sql: `NOT EXISTS (${sqlRenueva(app)})`, binds: bindsRenueva(email, app) });
+
 // ---------- cargos ----------
-const stmtCargo = (env, { email, tipo, centavos, clave, order_id = null, product_id = null, cantidad = null, nota }) =>
+// cond (opcional): otra condición SQL que debe cumplirse en el mismo INSERT (p. ej. sinRenovar)
+const stmtCargo = (env, { email, tipo, centavos, clave, order_id = null, product_id = null, cantidad = null, nota }, cond = null) =>
   env.DB.prepare(`INSERT INTO toolkit_movimientos (email, tipo, centavos, clave, order_id, product_id, cantidad, nota)
-    SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE (${SQL_SALDO}) >= ?`).bind(email, tipo, -centavos, clave, order_id, product_id, cantidad, String(nota || '').slice(0, 160), email, centavos);
+    SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE (${SQL_SALDO}) >= ?${cond ? ` AND ${cond.sql}` : ''}`).bind(email, tipo, -centavos, clave, order_id, product_id, cantidad, String(nota || '').slice(0, 160), email, centavos, ...(cond?.binds || []));
 
 // Orden de $0 pagada con saldo (proveedor 'saldo') + su renglón, condicionadas a `cond` (SQL que debe ser verdadero)
 function stmtsOrden(env, { id, email, nombre, p, cantidad = 1, intervalo = null, paid_at, saldo_centavos = 0, codigo = null }, cond, condBinds) {
@@ -199,8 +227,9 @@ export async function inicioMesesApp(env, email, app) {
   const desde = [ahoraISO(), s?.periodo_fin, c?.vigente ? c.periodo_fin : null].filter(Boolean).sort().at(-1);
   return { desde, stripe: s ? { periodo_fin: s.periodo_fin, renueva: !s.cancelar_al_final, paquete: s.app !== app ? s.app : null } : null, cortesia_hasta: c?.vigente ? c.periodo_fin : null };
 }
-const avisoRenueva = (app, ini) => ini.stripe?.renueva
-  ? `Tu suscripción de ${NOMBRE_APP_SALDO[app]} se renueva sola el ${fechaMx(ini.stripe.periodo_fin)}: el mes pagado con saldo empieza cuando termine. Para no pagar doble, cancela la renovación desde la app (Cuenta o Ajustes).`
+// Ya canceló la renovación: el mes con saldo empieza cuando termina lo que pagó con tarjeta
+const avisoInicio = (app, ini) => ini.stripe && !ini.stripe.renueva
+  ? `Tu suscripción con tarjeta de ${NOMBRE_APP_SALDO[app]} termina el ${fechaMx(ini.stripe.periodo_fin)}: el mes pagado con saldo empieza ese día.`
   : null;
 
 /**
@@ -213,7 +242,11 @@ export async function cotizar(env, email, slug) {
   if (d.error) return { ok: false, error: d.error, excluido: d.excluido || null, saldo_centavos: est.saldo_centavos, usable: est.usable };
   const r = { ok: true, tipo: d.tipo, nombre: d.nombre, total: d.precio, saldo_centavos: est.saldo_centavos, usable: est.usable, alcanza: est.usable && est.saldo_centavos >= d.precio,
     falta: Math.max(0, d.precio - est.saldo_centavos), email: est.email };
-  if (d.tipo === 'app') { const ini = await inicioMesesApp(env, est.email, d.app); r.app = d.app; r.desde = ini.desde; r.aviso = avisoRenueva(d.app, ini); }
+  if (d.tipo === 'app') {
+    const rn = await renuevaConTarjeta(env, est.email, d.app);
+    if (rn) return { ok: false, tipo: 'app', app: d.app, error: textoRenueva(d.app, rn.periodo_fin), renueva: errorRenueva(rn).renueva, saldo_centavos: est.saldo_centavos, usable: est.usable };
+    const ini = await inicioMesesApp(env, est.email, d.app); r.app = d.app; r.desde = ini.desde; r.aviso = avisoInicio(d.app, ini);
+  }
   return r;
 }
 
@@ -248,17 +281,22 @@ export async function pagarMesesApp(env, { email, nombre, app, meses = 1 }) {
   const plan = await planMensualApp(env, app);
   if (!plan) return { error: `Por ahora ${NOMBRE_APP_SALDO[app]} no se puede pagar con saldo.`, status: 400 };
   const total = plan.precio_centavos * meses;
+  const rn = await renuevaConTarjeta(env, email, app);
+  if (rn) return errorRenueva(rn);
   if (est.saldo_centavos < total) return { error: faltaTexto(est.saldo_centavos, total), status: 409 };
   const ini = await inicioMesesApp(env, email, app);
   const id = crypto.randomUUID(), clave = `orden:${id}`;
   const [r] = await env.DB.batch([
-    stmtCargo(env, { email, tipo: 'app', centavos: total, clave, order_id: id, product_id: plan.id, cantidad: meses, nota: `${meses === 1 ? '1 mes' : `${meses} meses`} de ${NOMBRE_APP_SALDO[app]}` }),
+    stmtCargo(env, { email, tipo: 'app', centavos: total, clave, order_id: id, product_id: plan.id, cantidad: meses, nota: `${meses === 1 ? '1 mes' : `${meses} meses`} de ${NOMBRE_APP_SALDO[app]}` }, sinRenovar(email, app)),
     ...stmtsOrden(env, { id, email, nombre: nombre || email, p: plan, cantidad: meses, intervalo: 'month', paid_at: ini.desde, saldo_centavos: total }, 'EXISTS (SELECT 1 FROM toolkit_movimientos WHERE clave = ?)', [clave]),
   ]);
-  if (!r.meta.changes) return { error: `Tu saldo cambió mientras pagabas. ${faltaTexto(await saldoToolkit(env, email), total)}`, status: 409 };
+  if (!r.meta.changes) {
+    const otra = await renuevaConTarjeta(env, email, app);
+    return otra ? errorRenueva(otra) : { error: `Tu saldo cambió mientras pagabas. ${faltaTexto(await saldoToolkit(env, email), total)}`, status: 409 };
+  }
   const entregado = await despuesDeOrden(env, id, plan.id);
   const hasta = finCortesia(ini.desde, 'month', meses);
-  return { ok: true, order_id: id, entregado, app, desde: ini.desde, hasta, aviso: avisoRenueva(app, ini), url: `/tienda/mi-toolkit/?v=apps&listo=${encodeURIComponent(app)}`, saldo_centavos: await saldoToolkit(env, email) };
+  return { ok: true, order_id: id, entregado, app, desde: ini.desde, hasta, aviso: avisoInicio(app, ini), url: `/tienda/mi-toolkit/?v=apps&listo=${encodeURIComponent(app)}`, saldo_centavos: await saldoToolkit(env, email) };
 }
 
 // ---------- códigos de regalo ----------
@@ -353,22 +391,219 @@ export async function canjearCodigo(env, { codigo, nombre, email }) {
   const p = await one(env, 'SELECT * FROM products WHERE id = ?', f.product_id);
   const c = f.contenido, app = c.acceso?.app;
   const esApp = !!c.suscripcion && APPS_SALDO.includes(app);
+  // Un código de app para alguien que ya paga esa app con tarjeta y se renueva sola: pagaría doble. El código queda sin usar.
+  const rn = esApp ? await renuevaConTarjeta(env, email, app) : null;
+  if (rn) return errorRenueva(rn);
   const ahora = ahoraISO(), id = crypto.randomUUID();
   const ini = esApp ? await inicioMesesApp(env, email, app) : null;
+  const cond = esApp ? sinRenovar(email, app) : null;
   const [u, o] = await env.DB.batch([
-    env.DB.prepare('UPDATE toolkit_codigos SET usado_at = ?, usado_email = ?, order_id = ? WHERE codigo = ? AND usado_at IS NULL AND devuelto_at IS NULL').bind(ahora, email, id, f.codigo),
+    env.DB.prepare(`UPDATE toolkit_codigos SET usado_at = ?, usado_email = ?, order_id = ? WHERE codigo = ? AND usado_at IS NULL AND devuelto_at IS NULL${cond ? ` AND ${cond.sql}` : ''}`)
+      .bind(ahora, email, id, f.codigo, ...(cond?.binds || [])),
     ...stmtsOrden(env, { id, email, nombre, p, cantidad: 1, intervalo: esApp ? 'month' : null, paid_at: ini?.desde || ahora, codigo: f.codigo },
       'EXISTS (SELECT 1 FROM toolkit_codigos WHERE codigo = ? AND order_id = ?)', [f.codigo, id]),
   ]);
-  if (!u.meta.changes || !o.meta.changes) return { error: 'Este código ya se usó: cada código funciona una sola vez.', status: 410 };
+  if (!u.meta.changes || !o.meta.changes) {
+    const otra = esApp ? await renuevaConTarjeta(env, email, app) : null;
+    return otra ? errorRenueva(otra) : { error: 'Este código ya se usó: cada código funciona una sola vez.', status: 410 };
+  }
   const entregado = await despuesDeOrden(env, id, p.id);
-  return { ok: true, order_id: id, entregado, producto: f.producto, app: esApp ? app : null, hasta: esApp ? finCortesia(ini.desde, 'month', 1) : null, aviso: esApp ? avisoRenueva(app, ini) : null };
+  return { ok: true, order_id: id, entregado, producto: f.producto, app: esApp ? app : null, hasta: esApp ? finCortesia(ini.desde, 'month', 1) : null, aviso: esApp ? avisoInicio(app, ini) : null };
+}
+
+// ---------- pasarse de Toolkit a Toolkit Pro ----------
+// Todo se calcula con los precios y bonos de la base (products), nunca con números fijos en el texto.
+// El cambio actualiza la MISMA suscripción de Stripe (el precio fundador sigue contando desde la primera suscripción):
+//   · al precio de Pro (Price guardado: las actualizaciones con pending_if_incomplete no aceptan price_data),
+//   · proration_behavior=always_invoice: Stripe crea ya una factura con la diferencia por los días que quedan y la cobra,
+//   · payment_behavior=pending_if_incomplete: si el cobro falla, el cambio NO se aplica (queda en pending_update) y anulamos
+//     la factura; no se abona nada,
+//   · proration_date: el mismo de la vista previa, para que se cobre exactamente lo que se mostró.
+// Saldo que se abona en ese momento (una sola vez, clave 'factura:<in_…>' de la factura de prorrateo):
+//   (bono Pro − bono Toolkit) × min(1, cobro / (precio Pro − precio Toolkit)), redondeado a centavos.
+// Como Stripe prorratea por segundos ambos precios, cobro / diferencia de precio = fracción del periodo que queda.
+// Desde la siguiente factura (subscription_cycle) se abona el bono completo de Pro. Bajar de Pro a Toolkit: por correo.
+export const PLAN_BASE = 'toolkit-mensual', PLAN_PRO = 'toolkit-pro-mensual';
+const segISO = s => (s ? new Date(s * 1000).toISOString() : null);
+
+export async function planesToolkit(env) {
+  const [b, p] = await Promise.all([PLAN_BASE, PLAN_PRO].map(s => productoPorSlug(env, s, { inactivos: true })));
+  if (!b || !p) return null;
+  const f = x => ({ id: x.id, slug: x.slug, precio_centavos: x.precio_centavos, bono_centavos: x.contenido?.toolkit?.bono_centavos || 0, producto: x });
+  return { base: f(b), pro: f(p) };
+}
+
+/** Rentabilidad de cada plan: por cada $1 que pagas, cuánto recibes de saldo (2 decimales), y la diferencia entre los dos. */
+export function rentabilidad({ base, pro }) {
+  const porPeso = x => Math.round(x.bono_centavos / x.precio_centavos * 100) / 100;
+  return { por_peso_base: porPeso(base), por_peso_pro: porPeso(pro), mas_precio_centavos: pro.precio_centavos - base.precio_centavos, mas_bono_centavos: pro.bono_centavos - base.bono_centavos };
+}
+
+/** Saldo que se abona por un cobro de prorrateo (centavos). */
+export function saldoPorCobro({ base, pro }, cobro) {
+  const dp = pro.precio_centavos - base.precio_centavos, db = pro.bono_centavos - base.bono_centavos;
+  if (!(cobro > 0) || !(dp > 0) || !(db > 0)) return 0;
+  return Math.round(db * Math.min(1, cobro / dp));
+}
+
+// Cuánto usa al mes de verdad (compras, apps y códigos − devoluciones) desde su primer abono. null si no hay datos.
+export async function consumoMensual(env, email) {
+  email = norm(email);
+  const r = await one(env, `SELECT MIN(created_at) desde, (SELECT COALESCE(SUM(-centavos), 0) FROM toolkit_movimientos WHERE email = ? AND tipo IN ('compra', 'app', 'codigos', 'devolucion')) consumo
+    FROM toolkit_movimientos WHERE email = ? AND tipo = 'abono'`, email, email);
+  if (!r?.desde || !(r.consumo > 0)) return null;
+  return Math.round(r.consumo / Math.max(1, (Date.now() - Date.parse(r.desde)) / (30.44 * DIA)));
+}
+
+/**
+ * La tarjeta «Pásate a Toolkit Pro»: solo para quien tiene el plan Toolkit activo, al corriente y sin cancelar. null si no aplica.
+ * uso_mensual / sobra_pro: solo si usa al mes al menos 3/4 de lo que le da su plan (si usa poco, no le sugerimos gastar más).
+ */
+export async function ofertaPro(env, email, est = null) {
+  est ||= await estadoToolkit(env, email);
+  if (!est.activo || est.plan?.slug !== PLAN_BASE || est.suscripcion?.cancelar_al_final || est.suscripcion?.estado !== 'active') return null;
+  const pl = await planesToolkit(env);
+  if (!pl || !(pl.pro.precio_centavos > pl.base.precio_centavos)) return null;
+  const exacto = await consumoMensual(env, est.email);
+  const uso = exacto == null ? null : Math.round(exacto / 100) * 100;   // en pesos cerrados: es un promedio, no un monto a cobrar
+  const relevante = uso != null && uso >= pl.base.bono_centavos * 0.75 && uso < pl.pro.bono_centavos;
+  return { ...rentabilidad(pl), base: { precio_centavos: pl.base.precio_centavos, bono_centavos: pl.base.bono_centavos }, pro: { precio_centavos: pl.pro.precio_centavos, bono_centavos: pl.pro.bono_centavos },
+    uso_mensual_centavos: relevante ? uso : null, sobra_pro_centavos: relevante ? pl.pro.bono_centavos - uso : null };
+}
+
+// Revisa que se pueda cambiar y lee la suscripción de Stripe → { email, pl, fila, sub, item } o { error, status }
+async function preparaCambio(env, email) {
+  email = norm(email);
+  const est = await estadoToolkit(env, email);
+  if (!est.tiene || !est.suscripcion) return { error: 'Para cambiar de plan necesitas un Toolkit Vorka.', status: 403 };
+  if (!est.activo) return { error: 'Tu suscripción del Toolkit ya terminó. Para volver, suscríbete a Toolkit Pro en vorka.mx/tienda/toolkit; tu saldo se queda igual.', status: 409 };
+  if (est.plan?.slug === PLAN_PRO) return { error: 'Ya tienes Toolkit Pro.', status: 409 };
+  if (est.plan?.slug !== PLAN_BASE) return { error: 'No pudimos reconocer tu plan. Escríbenos a hola@vorka.mx y lo resolvemos.', status: 409 };
+  if (est.suscripcion.cancelar_al_final) return { error: 'Tu Toolkit está programado para cancelarse. Primero reactívalo en «Administrar mi suscripción» y después cámbiate a Pro.', status: 409 };
+  if (est.suscripcion.estado !== 'active') return { error: 'Tu último pago del Toolkit no ha pasado. Actualiza tu tarjeta en «Administrar mi suscripción» y después cámbiate a Pro.', status: 409 };
+  const pl = await planesToolkit(env);
+  if (!pl) return { error: 'Por ahora no se puede cambiar de plan. Escríbenos a hola@vorka.mx.', status: 409 };
+  const fila = await vigente(env, email, APP);
+  const sub = await llamar(env, 'GET', `/subscriptions/${encodeURIComponent(fila.id)}?expand[]=items.data.price.product`);
+  if (sub.status !== 'active' || sub.cancel_at_period_end || sub.cancel_at || sub.pending_update) {
+    await guardarSuscripcion(env, sub).catch(() => {});
+    return { error: sub.pending_update ? 'Ya hay un cambio de plan esperando el cobro. Espera unos minutos y recarga la página.' : 'Tu suscripción cambió hace un momento. Recarga la página.', status: 409 };
+  }
+  const items = sub.items?.data || [];
+  const item = items.find(it => typeof it.price?.product === 'object' && it.price.product.metadata?.product_id === pl.base.id) || items[0];
+  if (!item) return { error: 'No pudimos leer tu suscripción. Escríbenos a hola@vorka.mx.', status: 502 };
+  return { email, pl, fila, sub, item };
+}
+
+// Cálculo propio (igual que Stripe: por segundos) cuando la vista previa de Stripe no responde: se dice como aproximado
+function cobroAproximado(pl, item, ahora) {
+  const ini = Number(item.current_period_start), fin = Number(item.current_period_end);
+  if (!(fin > ini) || !(fin > ahora)) return 0;
+  const f = (fin - ahora) / (fin - ini);
+  return Math.round(pl.pro.precio_centavos * f) - Math.round(pl.base.precio_centavos * f);
+}
+
+/**
+ * Vista previa del cambio (no cobra): { ok, cobro_centavos, saldo_centavos, proration_date, desde, precio_pro_centavos,
+ * bono_pro_centavos, aproximado, fundador_desde }. Usa la vista previa de factura de Stripe (solo las líneas de prorrateo).
+ */
+export async function vistaPro(env, email) {
+  const c = await preparaCambio(env, email);
+  if (c.error) return c;
+  const { pl, sub, item, fila } = c, ahora = Math.floor(Date.now() / 1000);
+  let cobro, aproximado = false;
+  try {
+    const precio = await precioStripe(env, pl.pro.producto);
+    const inv = await llamar(env, 'POST', '/invoices/create_preview', { customer: typeof sub.customer === 'object' ? sub.customer?.id : sub.customer, subscription: sub.id,
+      subscription_details: { items: [{ id: item.id, price: precio }], proration_behavior: 'always_invoice', proration_date: ahora } });
+    const pr = (inv.lines?.data || []).filter(l => l.parent?.subscription_item_details?.proration);
+    cobro = pr.length ? pr.reduce((s, l) => s + (Number(l.amount) || 0), 0) : Number(inv.total) || 0;
+  } catch (e) {
+    console.error('toolkit: vista previa de Stripe falló; cálculo aproximado', e.message);
+    cobro = cobroAproximado(pl, item, ahora); aproximado = true;
+  }
+  if (!(cobro > 0)) return { error: 'No pudimos calcular la diferencia en este momento. Intenta en unos minutos o escríbenos a hola@vorka.mx.', status: 502 };
+  return { ok: true, cobro_centavos: cobro, saldo_centavos: saldoPorCobro(pl, cobro), proration_date: ahora, aproximado,
+    desde: segISO(item.current_period_end) || fila.periodo_fin, precio_pro_centavos: pl.pro.precio_centavos, bono_pro_centavos: pl.pro.bono_centavos,
+    fundador_desde: segISO(sub.start_date || sub.created) };
+}
+
+export const FALLO_COBRO_PRO = 'No pudimos cobrar la diferencia a tu tarjeta, así que no cambiamos tu plan y no te cobramos nada. Revisa tu tarjeta en «Administrar mi suscripción» e intenta de nuevo.';
+const marcarCambio = (env, id, estado, error = null, factura = null) =>
+  run(env, 'UPDATE toolkit_cambios SET estado = ?, error = ?, factura_id = COALESCE(factura_id, ?), updated_at = ? WHERE id = ?', estado, error ? String(error).slice(0, 300) : null, factura, ahoraISO(), id);
+
+/** El cambio, con cobro inmediato de la diferencia → { ok, cobro_centavos, abonado_centavos, saldo_centavos, desde } o { error, status } */
+export async function cambiarAPro(env, email, { proration_date } = {}) {
+  const c = await preparaCambio(env, email);
+  if (c.error) return c;
+  const { pl, sub, item } = c, ahora = Math.floor(Date.now() / 1000);
+  // La fecha de la vista previa vale una hora (y nunca antes de que empezara el periodo); si no, se calcula con este momento
+  let pd = Math.trunc(Number(proration_date));
+  if (!(pd >= ahora - 3600 && pd <= ahora + 60 && pd >= Number(item.current_period_start || 0))) pd = ahora;
+  // Un solo cambio en curso por suscripción (índice único parcial): un cambio que se quedó a medias hace más de 15 min se da
+  // por fallido (si Stripe sí lo cobró, el webhook de esa factura lo reconoce igual y abona)
+  await run(env, "UPDATE toolkit_cambios SET estado = 'fallido', error = 'Sin respuesta de Stripe', updated_at = ? WHERE estado = 'pendiente' AND created_at < ?", ahoraISO(), new Date(Date.now() - 15 * 60e3).toISOString());
+  const id = crypto.randomUUID();
+  try {
+    await run(env, 'INSERT INTO toolkit_cambios (id, email, suscripcion_id, de_product_id, a_product_id, proration_date) VALUES (?, ?, ?, ?, ?, ?)', id, c.email, sub.id, pl.base.id, pl.pro.id, pd);
+  } catch (e) {
+    if (/UNIQUE|constraint/i.test(e.message)) return { error: 'Ya estamos procesando tu cambio a Pro. Espera unos segundos y recarga la página.', status: 409 };
+    throw e;
+  }
+  let nueva;
+  try {
+    const precio = await precioStripe(env, pl.pro.producto);
+    nueva = await llamar(env, 'POST', `/subscriptions/${encodeURIComponent(sub.id)}`, {
+      items: [{ id: item.id, price: precio }], proration_behavior: 'always_invoice', proration_date: pd, payment_behavior: 'pending_if_incomplete',
+      metadata: { product_id: pl.pro.id, plan_anterior: pl.base.id, cambio_toolkit: id }, expand: ['latest_invoice.payments', 'items.data.price.product'],
+    }, { idempotencia: `toolkit-pro-${id}` });
+  } catch (e) {
+    console.error('toolkit: cambio a Pro falló en Stripe', correoOculto(c.email), e.message);
+    await marcarCambio(env, id, 'fallido', e.message);
+    return { error: e.status === 402 ? FALLO_COBRO_PRO : 'No pudimos hacer el cambio en este momento y no te cobramos nada. Intenta en unos minutos o escríbenos a hola@vorka.mx.', status: e.status === 402 ? 402 : 502 };
+  }
+  const inv = typeof nueva.latest_invoice === 'object' ? nueva.latest_invoice : null;
+  const invId = inv?.id || (typeof nueva.latest_invoice === 'string' ? nueva.latest_invoice : null);
+  if (nueva.pending_update || inv?.status !== 'paid' || inv?.billing_reason !== 'subscription_update') {
+    // No se cobró: Stripe no aplicó el cambio. Se anula la factura para que no quede un cobro pendiente ni un cambio a medias.
+    if (invId && inv?.status === 'open' && inv?.billing_reason === 'subscription_update') {
+      try { await llamar(env, 'POST', `/invoices/${encodeURIComponent(invId)}/void`, null, { idempotencia: `toolkit-pro-anular-${id}` }); }
+      catch (e) { console.error('ALERTA toolkit: no se pudo anular la factura del cambio', invId, e.message); }
+    }
+    await marcarCambio(env, id, 'fallido', nueva.pending_update ? 'Cobro rechazado (pending_update)' : `Factura ${inv?.status || 'sin leer'}`, inv?.billing_reason === 'subscription_update' ? invId : null);
+    return { error: FALLO_COBRO_PRO, status: 402 };
+  }
+  await guardarSuscripcion(env, nueva);
+  const ab = await abonoCambio(env, inv, { id, email: c.email, suscripcion_id: sub.id, a_product_id: pl.pro.id });
+  const abonado = (await one(env, 'SELECT saldo_centavos FROM toolkit_cambios WHERE id = ?', id))?.saldo_centavos || 0;
+  return { ok: true, cobro_centavos: Number(inv.total), abonado_centavos: ab?.centavos ?? abonado, saldo_centavos: await saldoToolkit(env, c.email),
+    desde: segISO(nueva.items?.data?.[0]?.current_period_end) || c.fila.periodo_fin };
+}
+
+/**
+ * Abona (una sola vez) la diferencia de saldo de la factura de prorrateo de un cambio a Pro y marca el cambio como pagado.
+ * La usan cambiarAPro (al momento) y el webhook invoice.paid (abonoToolkit): misma clave 'factura:<in_…>', mismo cálculo.
+ */
+export async function abonoCambio(env, f, cambio) {
+  if (!f?.id || f.status !== 'paid') return null;
+  const pl = await planesToolkit(env);
+  const centavos = pl ? saldoPorCobro(pl, Number(f.total)) : 0;
+  await run(env, "UPDATE toolkit_cambios SET estado = 'pagado', error = NULL, factura_id = COALESCE(factura_id, ?), cobro_centavos = ?, saldo_centavos = ?, updated_at = ? WHERE id = ?",
+    f.id, Number(f.total) || 0, centavos, ahoraISO(), cambio.id);
+  if (!(centavos > 0)) return null;
+  const r = await run(env, `INSERT OR IGNORE INTO toolkit_movimientos (email, tipo, centavos, clave, plan, factura_id, pago_id, suscripcion_id, periodo_fin, product_id, nota)
+    VALUES (?, 'abono', ?, ?, 'toolkit-pro', ?, ?, ?, ?, ?, ?)`,
+  norm(cambio.email), centavos, `factura:${f.id}`, f.id, pagoDeFactura(f), cambio.suscripcion_id, periodoDeFactura(f), cambio.a_product_id,
+  `Te pasaste a Toolkit Pro · saldo por los días que quedan (pagaste ${pesos(f.total)})`);
+  return r.meta.changes ? { email: norm(cambio.email), centavos, factura: f.id } : null;
 }
 
 // ---------- historial y portal ----------
 export const movimientosDe = (env, email, limite = 60) =>
   all(env, 'SELECT tipo, centavos, nota, created_at FROM toolkit_movimientos WHERE email = ? ORDER BY id DESC LIMIT ?', norm(email), limite);
 export const portalToolkit = (env, email) => portalApp(env, norm(email), APP, `${env.SITE_URL || 'https://vorka.mx'}/tienda/mi-toolkit/`);
+// Portal de Stripe de una app pagada con tarjeta (para cancelar su renovación antes de pagar meses con saldo)
+export const portalAppSaldo = (env, email, app, volver) => portalApp(env, norm(email), app, volver || `${env.SITE_URL || 'https://vorka.mx'}/tienda/mi-toolkit/?v=apps`);
 
 // ---------- Vorka OS › Tienda (RPC Admin.resumenToolkit) ----------
 // Suscriptores activos por plan, saldo pendiente (pasivo; el saldo nunca vence, solo baja al usarse; los códigos devueltos

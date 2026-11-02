@@ -4,7 +4,8 @@
 //   /tienda/mi-toolkit/              Mi Toolkit (sesión de la cuenta de vorka.mx/tienda/cuenta): saldo, próximo abono,
 //                                    historial, pagar meses de apps (?v=apps) y códigos de regalo (?v=codigos)
 //   /tienda/canjear/[CODIGO]         canjear un código de regalo (cualquiera, con o sin cuenta: pide nombre y correo)
-//   /api/toolkit/saldo · cotizar · pagar · app · codigos · devolver · canjear · portal
+//   /api/toolkit/saldo · cotizar · pagar · app · codigos · devolver · canjear · portal (del Toolkit o, con {app}, de una app)
+//   /api/toolkit/pro/vista · /api/toolkit/pro   pasarse de Toolkit a Toolkit Pro (vista previa con montos y el cambio)
 import { json, fail, one, all, sha256, pesos } from './util.js';
 import { pagina, aviso, esc, WHATSAPP } from './paginas.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
@@ -18,6 +19,7 @@ import {
   APP, APPS_SALDO, NOMBRE_APP_SALDO, FUNDADOR, EXCLUIDO_CREADOR, MAX_CODIGOS, MAX_MESES, fechaMx,
   estadoToolkit, cotizar, pagarConSaldo, pagarMesesApp, sacarCodigos, codigosDe, devolverCodigo, leerCodigo, canjearCodigo,
   movimientosDe, portalToolkit, planMensualApp, destinoSaldo, inicioMesesApp,
+  renuevaConTarjeta, textoRenueva, portalAppSaldo, ofertaPro, vistaPro, cambiarAPro,
 } from './toolkit.js';
 
 const NO_CACHE = { 'cache-control': 'no-store' };
@@ -118,6 +120,36 @@ const CSS = `<style>
 .mt-resumen div{display:flex;justify-content:space-between;gap:10px}.mt-resumen b{font-variant-numeric:tabular-nums}
 .mt-nuevos{display:grid;gap:8px;margin-top:6px}
 .mt-sub{color:var(--fg-2);font-size:15px;max-width:44em}
+/* Pagar meses de una app que ya se paga con tarjeta y se renueva sola */
+.mt-renueva{display:grid;gap:10px;border-radius:14px;padding:12px 14px;background:rgba(200,164,92,.12);border:1px solid rgba(200,164,92,.45)}
+.mt-renueva p{margin:0;font-size:14.5px;line-height:1.45;color:var(--fg)}
+.mt-renueva small{color:var(--fg-2);font-size:13px}
+.mt-app .mt-renueva button{background:var(--card);color:var(--fg);border:1.5px solid var(--fg)}
+/* Tarjeta para cambiar al plan Pro */
+.mt-pro-chip{display:inline-flex;margin-top:12px;font-size:13.5px;font-weight:750;color:var(--oro-claro,#e6c98a);text-decoration:none;border-bottom:1px solid currentColor}
+.mt-pro{margin:4px 0 26px;border-radius:24px;padding:22px 20px;background:var(--card);border:1.5px solid rgba(200,164,92,.6);box-shadow:var(--sombra);display:grid;gap:14px;min-width:0}
+.mt-pro-et{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--oro)}
+.mt-pro h2{margin:0;font-size:24px;letter-spacing:-.03em}
+.mt-pro-comp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mt-pro-comp>div{border-radius:16px;padding:14px;background:var(--bg-2);border:1px solid var(--line);display:grid;gap:2px;min-width:0}
+.mt-pro-comp>div.pro{background:rgba(200,164,92,.16);border:1.5px solid rgba(200,164,92,.6)}
+.mt-pro-comp small{font-size:12.5px;font-weight:700;color:var(--fg-2)}
+.mt-pro-comp b{font-size:30px;letter-spacing:-.04em;line-height:1.1;font-variant-numeric:tabular-nums}
+.mt-pro-comp span{font-size:13.5px;color:var(--fg-2)}
+.mt-pro-comp em{font-style:normal;font-size:13px;color:var(--fg-2);margin-top:6px}
+.mt-pro-dif{margin:0;font-size:17px;line-height:1.4}
+.mt-pro-uso{margin:0;font-size:15px;color:var(--fg-2)}
+.mt-pro button{font:inherit;font-weight:750;font-size:16px;min-height:50px;padding:0 18px;border-radius:14px;border:0;background:var(--fg);color:var(--bg);cursor:pointer}
+.mt-pro button.sec{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.mt-pro button:disabled{opacity:.5;cursor:wait}
+.mt-pro-conf{display:grid;gap:12px;border-radius:16px;padding:14px;background:var(--bg-2);border:1px solid var(--line)}
+.mt-pro-conf p{margin:0;font-size:15.5px;line-height:1.5}
+.mt-pro-conf .mt-pro-nota{font-size:13.5px;color:var(--fg-2)}
+.mt-pro-conf .mt-pro-bot{display:grid;gap:8px}
+@media(min-width:560px){.mt-pro-conf .mt-pro-bot{grid-template-columns:auto auto;justify-content:start}}
+.mt-pro-baja{margin:0;font-size:13.5px;color:var(--fg-2)}
+.mt-err-pro{margin-top:6px}
+.mt-err-pro a{font-weight:700}
 </style>`;
 
 // ---------- ficha de venta /tienda/toolkit/ ----------
@@ -239,6 +271,26 @@ const TIPOS = { abono: 'Abono de tu suscripción', compra: 'Compraste con saldo'
 const fechaCorta = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', day: 'numeric', month: 'short', year: 'numeric' });
 const textoWa = (env, c) => `Te regalo ${c.producto} de Vorka México 🎁 Canjéalo con tu correo aquí: ${env.SITE_URL || 'https://vorka.mx'}/tienda/canjear/${c.codigo} (código ${c.codigo}, un solo uso).`;
 
+// «Pásate a Toolkit Pro»: rentabilidad calculada de los precios y bonos de la base (ofertaPro)
+const porPeso = n => `$${Number(n).toFixed(2)}`;
+function tarjetaPro(o) {
+  if (!o) return '';
+  return `<section class="mt-pro" id="mt-pro" aria-labelledby="mt-pro-t">
+  <span class="mt-pro-et">Rinde más tu saldo</span>
+  <h2 id="mt-pro-t">Pásate a Toolkit Pro</h2>
+  <div class="mt-pro-comp">
+    <div><small>Tu plan · Toolkit</small><b>${porPeso(o.por_peso_base)}</b><span>de saldo por cada $1</span><em>Pagas ${mx(o.base.precio_centavos)} y recibes ${mx(o.base.bono_centavos)}</em></div>
+    <div class="pro"><small>Toolkit Pro</small><b>${porPeso(o.por_peso_pro)}</b><span>de saldo por cada $1</span><em>Pagas ${mx(o.pro.precio_centavos)} y recibes ${mx(o.pro.bono_centavos)}</em></div>
+  </div>
+  <p class="mt-pro-dif">Por <b>${mx(o.mas_precio_centavos)} más al mes</b> recibes <b>${mx(o.mas_bono_centavos)} más de saldo</b>.</p>
+  ${o.uso_mensual_centavos != null ? `<p class="mt-pro-uso">Con lo que llevas usando al mes (${mx(o.uso_mensual_centavos)}), con Pro te sobrarían ${mx(o.sobra_pro_centavos)}.</p>` : ''}
+  <button type="button" id="mt-pro-btn">Cambiar a Pro</button>
+  <div class="mt-pro-conf" id="mt-pro-conf" aria-live="polite" hidden></div>
+  <p class="mt-pro-baja">Para bajar de plan escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>
+</section>`;
+}
+export const textoConfirmaPro = v => `Hoy te cobramos ${mx(v.cobro_centavos)} (la diferencia por los días que quedan) y te sumamos ${mx(v.saldo_centavos)} de saldo. Desde el ${fechaMx(v.desde)} pagas ${mx(v.precio_pro_centavos)} y recibes ${mx(v.bono_pro_centavos)} cada mes.`;
+
 function filaCodigo(env, c) {
   const ligaCanje = `${env.SITE_URL || 'https://vorka.mx'}/tienda/canjear/${c.codigo}`;
   const que = c.estado === 'usado' ? `Se usó el ${fechaCorta(c.usado_at)}` : c.estado === 'devuelto' ? `Lo devolviste a tu saldo el ${fechaCorta(c.devuelto_at)}` : `Vale ${mx(c.precio_centavos)} · no vence`;
@@ -278,6 +330,11 @@ export async function paginaMiToolkit(env, req, url) {
   const v = ['apps', 'codigos'].includes(url.searchParams.get('v')) ? url.searchParams.get('v') : 'inicio';
   const listo = url.searchParams.get('listo');
   const codigos = await codigosDe(env, e.email);
+  const oferta = await ofertaPro(env, e.email, e);
+  const pro = tarjetaPro(oferta);
+  const listoPro = url.searchParams.get('pro') === 'listo'
+    ? await one(env, "SELECT saldo_centavos, cobro_centavos FROM toolkit_cambios WHERE email = ? AND estado = 'pagado' AND updated_at >= ? ORDER BY updated_at DESC LIMIT 1", e.email, new Date(Date.now() - 864e5).toISOString())
+    : null;
   const tabs = `<nav class="mt-tabs" aria-label="Mi Toolkit">${[['inicio', 'Mi saldo'], ['apps', 'Pagar meses de apps'], ['codigos', 'Códigos de regalo']].map(([k, t]) => `<a href="/tienda/mi-toolkit/${k === 'inicio' ? '' : `?v=${k}`}"${k === v ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>`;
   const estadoTxt = e.activo
     ? (e.suscripcion?.cancelar_al_final ? `Cancelado: tu último abono fue este mes. Tu saldo se queda contigo.` : e.proximo_abono ? `Próximo abono: ${mx(e.proximo_abono.centavos)} el ${fechaMx(e.proximo_abono.fecha)}` : 'Suscripción activa')
@@ -285,14 +342,15 @@ export async function paginaMiToolkit(env, req, url) {
   const tarjeta = `<div class="mt-saldo"><span class="v" aria-hidden="true">${LOGO}</span><small>Tu saldo del Toolkit</small>
     <span class="num" id="mt-saldo-num">${mx(e.saldo_centavos)}<em>MXN</em></span>
     <div class="mt-chips"><span${e.activo ? ' class="mt-activo"' : ''}>${esc(e.plan?.nombre || 'Toolkit')} · ${e.activo ? (e.suscripcion?.cancelar_al_final ? 'termina el ' + fechaMx(e.suscripcion.periodo_fin) : 'activo') : 'sin suscripción'}</span><span>Nunca vence</span><span>${esc(cta.email)}</span></div>
-    <p>${esc(estadoTxt)}</p></div>`;
+    <p>${esc(estadoTxt)}</p>${oferta ? `<a class="mt-pro-chip" href="#mt-pro">Con Pro recibes ${mx(oferta.mas_bono_centavos)} más de saldo al mes</a>` : ''}</div>`;
   let cuerpo;
   if (v === 'inicio') {
     const movs = await movimientosDe(env, e.email, 60);
-    cuerpo = `${tarjeta}
+    cuerpo = `${listoPro ? `<p class="mt-ok" role="status">¡Listo! Ya tienes Toolkit Pro. Te cobramos ${mx(listoPro.cobro_centavos)} y te sumamos ${mx(listoPro.saldo_centavos)} de saldo.</p>` : ''}${tarjeta}
   <div class="mt-acc"><a class="pri" href="/tienda/">Usar en la tienda ${FLECHA}</a><a href="/tienda/mi-toolkit/?v=apps">Pagar un mes de una app</a><a href="/tienda/mi-toolkit/?v=codigos">Sacar códigos de regalo</a>${e.suscripcion ? '<button type="button" id="mt-portal">Administrar mi suscripción</button>' : ''}</div>
   <p class="mt-err" id="mt-err" role="alert" hidden></p>
   ${!e.saldo_centavos && e.activo ? '<p class="mt-aviso">Tu primer abono aparece aquí en unos minutos, en cuanto Stripe confirma tu pago.</p>' : ''}
+  ${pro}
   <h2>Mis códigos de regalo</h2>
   <div class="mt-lista">${codigos.length ? codigos.slice(0, 5).map(c => filaCodigo(env, c)).join('') : '<p class="mt-vacio">Aún no sacas códigos. <a href="/tienda/mi-toolkit/?v=codigos">Saca tu primer código</a>.</p>'}</div>
   ${codigos.length > 5 ? `<p class="tk-nota"><a href="/tienda/mi-toolkit/?v=codigos">Ver los ${codigos.length} códigos</a></p>` : ''}
@@ -304,15 +362,24 @@ export async function paginaMiToolkit(env, req, url) {
       const plan = await planMensualApp(env, app);
       const s = plan ? await suscripcionApp(env, e.email, app) : null;
       const ini = plan ? await inicioMesesApp(env, e.email, app) : null;
-      apps.push({ app, plan, s, ini });
+      const rn = plan ? await renuevaConTarjeta(env, e.email, app) : null;
+      apps.push({ app, plan, s, ini, rn });
     }
     cuerpo = `${listo && NOMBRE_APP_SALDO[listo] ? `<p class="mt-ok" role="status">¡Listo! Pagaste ${esc(NOMBRE_APP_SALDO[listo])} con tu saldo. Te mandamos el correo con el botón para entrar.</p>` : ''}
   <p class="mt-sub">Tienes <b>${mx(e.saldo_centavos)}</b> de saldo. Cada mes cuesta el precio mensual de lista de la app. Si ya la tienes, el mes se suma después de lo que ya tenías; la app lo ve como cortesía con su fecha.</p>
-  <div class="mt-apps">${apps.map(({ app, plan, s, ini }) => !plan ? `<div class="mt-app"><h3>${esc(NOMBRE_APP_SALDO[app])}</h3><p class="mt-p">Por ahora no se puede pagar con saldo.</p></div>` : `
+  <div class="mt-apps">${apps.map(({ app, plan, s, ini, rn }) => !plan ? `<div class="mt-app"><h3>${esc(NOMBRE_APP_SALDO[app])}</h3><p class="mt-p">Por ahora no se puede pagar con saldo.</p></div>` : rn ? `
+    <div class="mt-app" data-app="${app}">
+      <h3>${esc(NOMBRE_APP_SALDO[app])}</h3>
+      <p class="mt-p">${mx(plan.precio_centavos)} al mes · la pagas con tarjeta hasta el ${esc(fechaMx(rn.periodo_fin))} (se renueva sola)</p>
+      <div class="mt-renueva" role="note"><p>${esc(textoRenueva(app, rn.periodo_fin))}</p>
+        <button type="button" data-portal-app="${app}">Cancelar la renovación de ${esc(NOMBRE_APP_SALDO[app])}</button>
+        <small>Si ya la cancelaste, espera un minuto y recarga esta página.</small>
+        <p class="mt-err" role="alert" hidden></p></div>
+    </div>` : `
     <form class="mt-app" data-app="${app}" data-precio="${plan.precio_centavos}">
       <h3>${esc(NOMBRE_APP_SALDO[app])}</h3>
-      <p class="mt-p">${mx(plan.precio_centavos)} al mes · ${s?.vigente ? `la tienes hasta el ${esc(fechaMx(s.periodo_fin))}${s.cortesia ? '' : s.cancelar_al_final ? '' : ' (se renueva sola)'}` : 'no la tienes activa'}</p>
-      ${ini.stripe?.renueva ? `<p class="mt-aviso">Tu suscripción se renueva sola el ${esc(fechaMx(ini.stripe.periodo_fin))}: los meses con saldo empiezan cuando termine. Para no pagar doble, cancela la renovación desde la app.</p>` : ''}
+      <p class="mt-p">${mx(plan.precio_centavos)} al mes · ${s?.vigente ? `la tienes hasta el ${esc(fechaMx(s.periodo_fin))}` : 'no la tienes activa'}</p>
+      ${ini.stripe ? `<p class="mt-aviso">Tu suscripción con tarjeta termina el ${esc(fechaMx(ini.stripe.periodo_fin))}: los meses con saldo empiezan ese día.</p>` : ''}
       <div class="mt-fila"><select name="meses" aria-label="Meses">${Array.from({ length: MAX_MESES }, (_, i) => `<option value="${i + 1}">${i + 1} ${i ? 'meses' : 'mes'}</option>`).join('')}</select>
       <button type="submit"${e.saldo_centavos < plan.precio_centavos ? ' disabled' : ''}>Pagar con mi saldo (${mx(plan.precio_centavos)})</button></div>
       <p class="mt-err" role="alert"${e.saldo_centavos < plan.precio_centavos ? '' : ' hidden'}>${e.saldo_centavos < plan.precio_centavos ? `Te faltan ${mx(plan.precio_centavos - e.saldo_centavos)} de saldo.` : ''}</p>
@@ -321,7 +388,7 @@ export async function paginaMiToolkit(env, req, url) {
     const grupos = await opcionesCodigos(env);
     cuerpo = `${listo && /^\d+$/.test(listo) ? `<p class="mt-ok" role="status">¡Listo! Sacaste ${listo === '1' ? '1 código' : `${esc(listo)} códigos`}. Están arriba de la lista: cópialos o mándalos por WhatsApp.</p>` : ''}
   <p class="mt-sub">Elige un producto y cuántos códigos quieres. Se descuenta su precio de lista de tu saldo y cada código vale ese producto completo, una sola vez (en apps, 1 mes). Quien lo recibe lo canjea con su correo en vorka.mx/tienda/canjear, sin cuenta. <b>Los códigos no vencen</b>; si uno no lo usas, lo devuelves a tu saldo.</p>
-  <form class="mt-form" id="mt-codigos">
+  <form class="mt-form" id="mt-codigos"${oferta ? ` data-pro="${esc(`¿Te quedas corto seguido? Con Toolkit Pro recibes ${mx(oferta.mas_bono_centavos)} más de saldo al mes.`)}"` : ''}>
     <label>Producto<select name="slug" required>${grupos.map(([g, ops]) => `<optgroup label="${esc(g)}">${ops.map(o => `<option value="${esc(o.slug)}" data-precio="${o.precio}">${esc(o.nombre)} · ${mx(o.precio)}</option>`).join('')}</optgroup>`).join('')}</select></label>
     <label>¿Cuántos códigos?<input name="cantidad" type="number" inputmode="numeric" min="1" max="${MAX_CODIGOS}" value="1"></label>
     <div class="mt-resumen" data-saldo="${e.saldo_centavos}"><div><span>Se descuenta de tu saldo</span><b id="mt-total">—</b></div><div><span>Tu saldo después</span><b id="mt-despues">—</b></div></div>
@@ -329,6 +396,7 @@ export async function paginaMiToolkit(env, req, url) {
     <button type="submit" id="mt-sacar">Sacar códigos</button>
     <div class="mt-nuevos" id="mt-nuevos" hidden></div>
   </form>
+  <div style="height:22px"></div>${pro}
   <h2>Mis códigos (${codigos.length})</h2>
   <div class="mt-lista" id="mt-lista">${codigos.length ? codigos.map(c => filaCodigo(env, c)).join('') : '<p class="mt-vacio">Aún no sacas códigos.</p>'}</div>`;
   }
@@ -351,10 +419,33 @@ const SCRIPT_MI = `(function(){
       post('/api/toolkit/app',{app:f.dataset.app,meses:+s.value}).then(function(x){ if(x.ok&&x.j.url) location.href=x.j.url; else { er.textContent=x.j.error||'No se pudo pagar.'; er.hidden=false; b.disabled=false; } }); }); });
   var fc=document.getElementById('mt-codigos'); if(fc){ var sel=fc.slug, n=fc.cantidad, rs=fc.querySelector('.mt-resumen'), saldo=+rs.dataset.saldo, er=document.getElementById('mt-err'), b=document.getElementById('mt-sacar');
     function pinta(){ var o=sel.options[sel.selectedIndex], c=Math.min(${MAX_CODIGOS},Math.max(1,parseInt(n.value,10)||1)), t=(o?+o.dataset.precio:0)*c; document.getElementById('mt-total').textContent=pesos(t); document.getElementById('mt-despues').textContent=t>saldo?'No alcanza':pesos(saldo-t);
-      b.disabled=t>saldo; er.hidden=t<=saldo; if(t>saldo) er.textContent='Te faltan '+pesos(t-saldo)+' de saldo para esta tanda.'; b.textContent='Sacar '+c+(c===1?' código':' códigos')+' ('+pesos(t)+')'; }
+      b.disabled=t>saldo; er.hidden=t<=saldo; if(t>saldo){ er.textContent='Te faltan '+pesos(t-saldo)+' de saldo para esta tanda.'; if(fc.dataset.pro&&document.getElementById('mt-pro')){ var a=document.createElement('a'); a.href='#mt-pro'; a.textContent=' '+fc.dataset.pro+' Ver cómo'; er.appendChild(a); er.classList.add('mt-err-pro'); } } b.textContent='Sacar '+c+(c===1?' código':' códigos')+' ('+pesos(t)+')'; }
     sel.addEventListener('change',pinta); n.addEventListener('input',pinta); pinta();
     fc.addEventListener('submit',function(e){ e.preventDefault(); b.disabled=true; er.hidden=true;
       post('/api/toolkit/codigos',{slug:sel.value,cantidad:+n.value}).then(function(x){ if(x.ok){ location.href='/tienda/mi-toolkit/?v=codigos&listo='+x.j.codigos.length; } else { er.textContent=x.j.error||'No se pudieron sacar.'; er.hidden=false; b.disabled=false; } }); }); }
+  // Cancelar la renovación de una app pagada con tarjeta (portal de Stripe de esa app)
+  [].forEach.call(document.querySelectorAll('[data-portal-app]'),function(bt){ bt.addEventListener('click',function(){ var er=bt.parentNode.querySelector('.mt-err'); bt.disabled=true;
+    post('/api/toolkit/portal',{app:bt.dataset.portalApp}).then(function(x){ if(x.ok&&x.j.url) location.href=x.j.url; else { er.textContent=x.j.mensaje||x.j.error||'No pudimos abrir tu suscripción. Escríbenos a hola@vorka.mx.'; er.hidden=false; bt.disabled=false; } }); }); });
+  // Cambio al plan Pro: vista previa con montos (Stripe) → confirmación → cobro
+  var pb=document.getElementById('mt-pro-btn'), pc=document.getElementById('mt-pro-conf');
+  if(pb&&pc){
+    function caja(nodos){ pc.replaceChildren.apply(pc,nodos); pc.hidden=false; }
+    function parrafo(t,c){ var p=document.createElement('p'); p.textContent=t; if(c) p.className=c; return p; }
+    function boton(t,c,f){ var b=document.createElement('button'); b.type='button'; b.textContent=t; if(c) b.className=c; b.addEventListener('click',f); return b; }
+    function error(t){ pb.hidden=false; pb.disabled=false; pb.textContent='Cambiar a Pro'; caja([parrafo(t,'mt-err')]); }
+    pb.addEventListener('click',function(){ pb.disabled=true; pb.textContent='Calculando…';
+      post('/api/toolkit/pro/vista').then(function(x){
+        if(!x.ok) return error(x.j.error||'No pudimos calcular el cambio. Intenta de nuevo.');
+        var v=x.j, nodos=[parrafo(v.texto)];
+        if(v.aproximado) nodos.push(parrafo('Montos aproximados: el cobro exacto lo calcula Stripe al confirmar.','mt-pro-nota'));
+        if(v.fundador) nodos.push(parrafo(v.fundador,'mt-pro-nota'));
+        var si=boton('Sí, cambiar a Pro ('+pesos(v.cobro_centavos)+' hoy)','',function(){ si.disabled=true; no.disabled=true; si.textContent='Cobrando…';
+          post('/api/toolkit/pro',{proration_date:v.proration_date}).then(function(r){ if(r.ok) location.href='/tienda/mi-toolkit/?pro=listo'; else { no.disabled=false; si.remove(); caja([parrafo(r.j.error||'No pudimos hacer el cambio. No te cobramos nada.','mt-err'),no]); pb.hidden=false; pb.disabled=false; pb.textContent='Intentar de nuevo'; } }); });
+        var no=boton('Ahora no','sec',function(){ pc.hidden=true; pb.hidden=false; pb.disabled=false; pb.textContent='Cambiar a Pro'; });
+        var bot=document.createElement('div'); bot.className='mt-pro-bot'; bot.append(si,no); nodos.push(bot);
+        pb.hidden=true; caja(nodos); si.focus();
+      }); });
+  }
 })();`;
 
 // ---------- canjear un código ----------
@@ -456,8 +547,26 @@ export async function rutasToolkit(req, env, url) {
   if (p === '/api/toolkit/app') return responder(await pagarMesesApp(env, { email: c.email, nombre, app: String(b.app || ''), meses: b.meses }));
   if (p === '/api/toolkit/codigos') return responder(await sacarCodigos(env, { email: c.email, slug: String(b.slug || '').trim().toLowerCase(), cantidad: b.cantidad }));
   if (p === '/api/toolkit/devolver') return responder(await devolverCodigo(env, { email: c.email, codigo: b.codigo }));
+  if (p === '/api/toolkit/pro/vista') {
+    try {
+      const v = await vistaPro(env, c.email);
+      if (v.error) return fail(v.error, v.status || 400);
+      return json({ ...v, texto: textoConfirmaPro(v), fundador: v.fundador_desde ? `Tu precio fundador sigue contando desde tu primera suscripción (${fechaMx(v.fundador_desde)}).` : null }, 200, NO_CACHE);
+    } catch (e) { console.error('toolkit pro vista', e?.message); return fail('No pudimos calcular el cambio en este momento. Intenta en unos minutos.', 502); }
+  }
+  if (p === '/api/toolkit/pro') {
+    try { return responder(await cambiarAPro(env, c.email, { proration_date: b.proration_date })); }
+    catch (e) { console.error('toolkit pro', e?.message); return fail('No pudimos hacer el cambio en este momento. Si ves un cobro, escríbenos a hola@vorka.mx.', 502); }
+  }
   if (p === '/api/toolkit/portal') {
     try {
+      // Con {app}: el portal de Stripe de esa app (para cancelar su renovación y poder pagarla con saldo sin pagar doble)
+      if (b.app != null) {
+        if (!APPS_SALDO.includes(String(b.app))) return fail('Elige una app.');
+        const volver = /^\/tienda\/[a-z0-9/_?=&.-]*$/i.test(String(b.volver || '')) ? `${env.SITE_URL || 'https://vorka.mx'}${b.volver}` : undefined;
+        const r = await portalAppSaldo(env, c.email, String(b.app), volver);
+        return r ? json(r, 200, NO_CACHE) : fail(`No encontramos tu suscripción de ${NOMBRE_APP_SALDO[b.app]}. Cancélala desde la app (Cuenta o Ajustes) o escríbenos a hola@vorka.mx.`, 404);
+      }
       const r = await portalToolkit(env, c.email);
       return r ? json(r, 200, NO_CACHE) : fail('No encontramos tu suscripción. Escríbenos a hola@vorka.mx.', 404);
     } catch (e) { console.error('toolkit portal', e?.message); return fail('No pudimos abrir el portal. Intenta en un momento.', 502); }
