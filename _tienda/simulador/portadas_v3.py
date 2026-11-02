@@ -175,6 +175,21 @@ def ui_liderazgo():
   <div style="display:flex;gap:16px;margin-top:20px;font-size:13px;color:#6D696E"><span>{punto('#4A2350')}Lo que crees de ti</span><span>{punto('#C8A45C')}Lo que has hecho</span></div>
   <div class="card" style="background:#F7F1E3;border-color:#EADCB8;margin-top:18px"><b>Tus 3 acciones para 30 días</b><div class="s" style="margin-top:4px">Cada una con la evidencia que te deja</div></div></div>"""
 
+# Toolkit Vorka: la pantalla de Mi Toolkit (saldo, próximo abono y un código de regalo). Cifras de ejemplo con los montos
+# del plan; ningún dato de una persona real.
+def ui_toolkit(bono='800', pago='599'):
+    def fila(t, s, m, mas=False):
+        return f'<div class="fila"><span>{t}<br><small class="s">{s}</small></span><b style="color:{"#0F7A5A" if mas else "#141114"}">{m}</b></div>'
+    return f"""<div class="ui" style="padding:70px 26px 0">
+  <div class="s">Toolkit Vorka</div><div class="h">Mi Toolkit</div>
+  <div style="border-radius:22px;background:#141114;color:#fff;padding:20px;margin-top:14px">
+    <div style="font-size:14px;opacity:.7">Tu saldo</div>
+    <div style="font-size:46px;font-weight:850;letter-spacing:-.04em">${bono}<span style="font-size:18px;opacity:.6"> MXN</span></div>
+    <div style="display:flex;gap:6px;margin-top:8px"><span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:rgba(126,217,87,.25)">Activo</span><span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.12)">Nunca vence</span></div></div>
+  {fila('Abono de tu Toolkit', f'pagaste ${pago}', f'+${bono}', True)}{fila('Simulador PAA', 'pagado con saldo', '−$199')}{fila('1 mes de Agenda', 'pagado con saldo', '−$99')}
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-family:ui-monospace,Menlo,monospace;letter-spacing:1px">TK-7KQ2-XM4P</b><div class="s">Código de regalo · disponible</div></div>
+    <span style="background:#1f8f4e;color:#fff;border-radius:10px;padding:8px 10px;font-weight:750;font-size:13px">WhatsApp</span></div></div>"""
+
 def hojas(color, titulo, partes):
     a = f'<div class="hoja" style="left:930px;top:260px;transform:rotate(8deg);opacity:.9"><div class="k" style="color:{color}">Workbook</div><div class="l" style="width:80%"></div><div class="l"></div><div class="l" style="width:60%"></div></div>'
     b = f'<div class="hoja" style="left:880px;top:220px;transform:rotate(3deg)"><div class="k" style="color:{color}">Vorka México · Kit digital</div><h4>{titulo}</h4>' + ''.join(f'<div style="display:flex;gap:12px;align-items:center;font-size:20px;font-weight:650;margin:14px 0"><span style="width:30px;height:30px;border-radius:9px;background:{color};color:#fff;display:grid;place-items:center;font-size:16px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes)) + '</div>'
@@ -243,6 +258,11 @@ P = {
   # Evaluación de liderazgo: berenjena casi negra con oro, como su página
   'evaluacion-liderazgo': dict(**OSCURO, fondo='linear-gradient(140deg,#0F0811 0%,#24122A 55%,#43204C 100%)', acento='#E6C77E', pre='Evaluación de', nombre='liderazgo', px=172, og_px=110,
     tag='Desde 12 años · 12 dimensiones', beneficio='Lo que crees de ti, contra lo que has hecho.', datos=['80 preguntas · 25 min', '12 dimensiones', '2 aplicaciones'], ui=ui_liderazgo, og=True),
+  # Toolkit Vorka: negro cálido con oro (el saldo, "dinero" de la tienda), distinto de la berenjena de Liderazgo
+  'toolkit': dict(**OSCURO, fondo='linear-gradient(140deg,#14100A 0%,#2E2414 55%,#5A4320 100%)', acento='#F2CF7E', pre='Toolkit', nombre='$800 al mes', px=124, og_px=96,
+    tag='Pagas $599 · recibes $800', beneficio='Saldo cada mes para toda la tienda. Nunca vence.', datos=['Simuladores y reportes', 'Meses de apps', 'Códigos de regalo'], ui=ui_toolkit, og=True),
+  'toolkit-pro': dict(**OSCURO, fondo='linear-gradient(140deg,#0E0E14 0%,#23233A 55%,#3E3A66 100%)', acento='#F2CF7E', pre='Toolkit Pro', nombre='$1,800 al mes', px=106,
+    tag='Pagas $1,199 · recibes $1,800', beneficio='Para quien compra seguido o revende con códigos.', datos=['Simuladores y reportes', 'Meses de apps', 'Códigos de regalo'], ui=lambda: ui_toolkit('1,800', '1,199')),
 }
 
 def marca(tam, p):

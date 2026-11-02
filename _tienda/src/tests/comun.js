@@ -91,7 +91,7 @@ export async function metricas(env, { dias = 30 } = {}) {
   for (const f of filas) if (out[f.producto]) out[f.producto][f.evento] = f.n;
   for (const [k, def] of Object.entries(PRODUCTOS_TEST)) {
     const c = await one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) m FROM orders o
-      WHERE o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND o.paid_at >= ?
+      WHERE o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND o.paid_at >= ?
         AND EXISTS (SELECT 1 FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id AND json_extract(p.contenido, '$.acceso.app') = ?)`, desde, def.app);
     out[k].compras = c?.n || 0; out[k].ingresos_centavos = c?.m || 0;
     // Con el cupón de 24 h, y recuperadas: pagadas después del correo «tu resultado te espera»

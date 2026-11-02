@@ -422,7 +422,8 @@ export const SCRIPT_ENTRAR = String.raw`(function(){
       .then(function(r){ clearTimeout(t); return r.json().catch(function(){ return {}; }).then(function(j){ return {ok:r.ok,status:r.status,j:j}; }); })
       .catch(function(err){ clearTimeout(t); return {ok:false,j:{error:err&&err.name==='AbortError'?'Tardó demasiado. Revisa tu conexión e intenta de nuevo.':'Sin conexión. Revisa tu internet e intenta de nuevo.'}}; });
   }
-  function adentro(b){ b.innerHTML='<span class="pv-giro"></span><span>¡Bienvenido!</span>'; location.href='/tienda/cuenta/'; }
+  // ?volver=/tienda/mi-toolkit/ (Mi Toolkit manda aquí a entrar): solo rutas propias de la cuenta
+  function adentro(b){ b.innerHTML='<span class="pv-giro"></span><span>¡Bienvenido!</span>'; var v=new URLSearchParams(location.search).get('volver'); location.href=/^\/tienda\/mi-toolkit\/(\?[a-z=&]*)?$/.test(v||'')?v:'/tienda/cuenta/'; }
   function cuenta(seg){ clearInterval(timer); re.disabled=true; var s=seg; re.textContent='Reenviar en '+s+' s';
     timer=setInterval(function(){ s--; if(s<=0){ clearInterval(timer); re.disabled=false; re.textContent='Reenviar código'; } else re.textContent='Reenviar en '+s+' s'; },1000); }
   function pedirCodigo(texto){ document.getElementById('pv-cod-txt').innerHTML=(texto||'Te mandamos un código de 6 dígitos a')+' <b class="pv-correo"></b>. Escríbelo aquí junto con tu nueva contraseña.'; ir('codigo');
@@ -605,6 +606,7 @@ export function paginaApp(env, d) {
     <p class="pv-sub" style="font-size:12.5px;margin:8px 0 0">Ganas ${d.pct}% de cada compra con tu liga. El nivel se cuenta por semestre (hasta el ${terminaTexto(d.semestre.fin)}).</p>
   </div>
   <div class="acciones2" style="--i:3"><button class="pv-btn oro" type="button" data-ir="compartir">${I.compartir}Compartir mi liga</button><a class="pv-btn vidrio" href="/tienda/">${I.bolsa}Usar puntos</a></div>
+  ${d.toolkit ? `<a class="card nivel" style="--i:3;display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:inherit" href="/tienda/mi-toolkit/"><span><b>Mi Toolkit</b><span class="pv-sub" style="display:block;font-size:13px">Saldo para la tienda · nunca vence</span></span><b style="font-size:20px">$${fmt(Math.floor(d.toolkit.saldo_centavos / 100))}</b></a>` : ''}
   ${d.retiro ? tarjetaRetiro(d.retiro) : ''}
   <div class="sec-t" style="--i:4"><h2>Últimos 7 días</h2></div>
   <div class="stats" style="--i:5">

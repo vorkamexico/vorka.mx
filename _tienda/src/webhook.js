@@ -10,6 +10,7 @@ import { eventoSuscripcionCreador } from './creadores-saas.js';
 import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
 import { revocarRuta } from './ruta-entrega.js';
+import { abonoToolkit, reembolsoToolkit } from './toolkit.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -31,13 +32,21 @@ export async function webhook(req, env, nombre) {
       // SaaS de un creador: cada factura pagada programa su transferencia (Vorka ≥ 20 %) y el creador recibe sus avisos.
       // No dan puntos (los productos de creadores no dan puntos).
       if (fila?.creador_id) await eventoSuscripcionCreador(env, { evento, sub, fila, factura: evento.tipo.startsWith('invoice.') && pasarela.facturaDe ? evento.factura || await pasarela.facturaDe(evento, env) : null });
-      // Renovación pagada de una suscripción que entró con una liga de puntos: puntos hasta la factura 12
-      else if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) await puntosFactura(env, await pasarela.facturaDe(evento, env), sub);
+      else if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) {
+        const factura = await pasarela.facturaDe(evento, env);
+        // Renovación pagada de una suscripción que entró con una liga de puntos (también la del Toolkit: sus pagos dan puntos
+        // con las reglas de siempre)
+        await puntosFactura(env, factura, sub);
+        // Toolkit: cada factura pagada abona el saldo de su plan (una sola vez por factura)
+        if (fila?.app === 'toolkit') await abonoToolkit(env, factura, sub, fila);
+      }
     }
-    // Reembolso o disputa del cobro de una factura de suscripción de creador: se cancela o revierte su transferencia
+    // Reembolso o disputa del cobro de una factura de suscripción de creador: se cancela o revierte su transferencia.
+    // Si el cobro era de una factura del Toolkit, se resta del saldo lo que ese pago abonó (sin dejarlo negativo).
     if (pasarela.pagoRevertido && ['charge.refunded', 'charge.dispute.created'].includes(evento.tipo)) {
       const rev = await pasarela.pagoRevertido(evento, env);
       if (rev) await anularPorPago(env, rev.pago_id, { parcial: rev.parcial });
+      if (rev) await reembolsoToolkit(env, rev.pago_id, { monto: rev.monto ?? null, reembolsado: rev.reembolsado ?? null });
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });
