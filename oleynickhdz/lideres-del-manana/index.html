@@ -748,6 +748,19 @@
   .ldm-wa2 { background: #25D366; color: #08280f; }
   @media (max-width: 960px) { .ldm-vorka { grid-template-columns: 1fr; } .ldm-recursos { grid-template-columns: 1fr; } }
   @media (max-width: 600px) { .ldm-vorka-pasos li { grid-template-columns: 40px minmax(0, 1fr); row-gap: 12px; } .ldm-vorka-pasos li > a { grid-column: 1 / -1; justify-content: center; padding: 13px 16px; } }
+  /* IMPACTO: entrenarse y colaborar en proyectos sociales */
+  .ldm-impacto { position: relative; overflow: hidden; isolation: isolate; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: clamp(22px, 4vw, 44px); align-items: center; margin-top: 18px; padding: clamp(26px, 4vw, 44px); border-radius: 28px; background: var(--c-green); color: #fff; }
+  .ldm-impacto::after { content: ""; position: absolute; z-index: -1; right: -8%; bottom: -40%; width: 45%; aspect-ratio: 1; border-radius: 50%; background: rgba(255,255,255,.12); }
+  .ldm-impacto .logo { width: 100%; height: auto; }
+  .ldm-impacto .k { font-size: 12.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.85); }
+  .ldm-impacto h3 { margin: 8px 0 10px; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.1; letter-spacing: -.03em; color: #fff; }
+  .ldm-impacto p { margin: 0 0 20px; font-size: 15.5px; line-height: 1.6; color: rgba(255,255,255,.92); max-width: 62ch; }
+  .ldm-impacto .bots { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .ldm-impacto .b1 { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 999px; background: #fff; color: #1d4d12; font-weight: 800; font-size: 15px; transition: transform .2s; }
+  .ldm-impacto .b1:hover { transform: translateY(-2px); }
+  .ldm-impacto .b1 svg { width: 14px; height: 14px; }
+  .ldm-impacto .b2 { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 5px; text-decoration-color: rgba(255,255,255,.5); }
+  @media (max-width: 700px) { .ldm-impacto { grid-template-columns: 1fr; } .ldm-impacto .logo { width: 110px; } }
 </style>
 </head>
 <body>
@@ -874,8 +887,20 @@
       <li><h3>Registro en línea</h3><p>Crea tu cuenta, captura tus datos y completa las pruebas de preselección.</p><a href="https://preseleccionldm.tec.mx/formulario-pre-registro" target="_blank" rel="noopener">Ir al registro oficial →</a></li>
       <li><h3>Admisión al Tec</h3><p>Presenta la PAA y obtén <strong>al menos 1,360 puntos</strong>. Entrega tu constancia con promedio de 90 o más y sé admitido en tu carrera.</p><a href="#recursos">Practica la PAA →</a></li>
       <li><h3>Solicitud de beca</h3><p>Completa la solicitud de apoyos educativos y presenta el estudio socioeconómico del Tec, con el que se acredita que requieres el 100%.</p></li>
-      <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#mentoria">Prepáralo conmigo →</a></li>
+      <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#impacto">¿Sin proyecto? Únete a IMPACTO →</a></li>
     </ol>
+    <div class="ldm-impacto" id="impacto">
+      <img class="logo" src="../img/logo-impacto-blanco.png" alt="IMPACTO · Juventudes Impactando México" width="320" height="255" loading="lazy">
+      <div class="txt">
+        <span class="k">¿Aún no tienes proyecto social o quieres hacerlo crecer?</span>
+        <h3>Ponte trucha: súmate a IMPACTO.</h3>
+        <p>En Juventudes Impactando México te capacitas en liderazgo, encuentras a otros jóvenes para colaborar y construyes proyectos sociales reales, con evidencia que se mide y se reporta. Aquí estamos para construir en conjunto.</p>
+        <div class="bots">
+          <a class="b1" href="https://soyimpacto.org/servoluntario?invita=i52b0oe8" target="_blank" rel="noopener">Quiero unirme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+          <a class="b2" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Conocer soyimpacto.org →</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="mentoria" aria-labelledby="h-ment">
@@ -1080,7 +1105,8 @@
     var n = 0; cajas.forEach(function (c) { if (c.checked) n++; });
     if (n === 6) v.innerHTML = '<b>¡Cumples los 6!</b> Ahora lo importante es llegar fuerte a la PAA y al liderazgo social. <a href="#mentoria">Prepáralo conmigo</a>.';
     else if (n === 0) v.innerHTML = 'Llevas <b>0 de 6</b>. Marca los que cumples.';
-    else v.innerHTML = 'Llevas <b>' + n + ' de 6</b>. ¿Te falta el proyecto social o tienes dudas de algún requisito? <a href="#dudas">Pregúntame</a>.';
+    else if (!document.getElementById('r6').checked) v.innerHTML = 'Llevas <b>' + n + ' de 6</b>. ¿Te falta el proyecto social? <a href="#impacto">Súmate a IMPACTO</a> y constrúyelo con más jóvenes.';
+    else v.innerHTML = 'Llevas <b>' + n + ' de 6</b>. ¿Tienes dudas de algún requisito? <a href="#dudas">Pregúntame</a>.';
   }
   cajas.forEach(function (c) { c.addEventListener('change', contar); });
 })();
