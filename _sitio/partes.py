@@ -133,6 +133,10 @@ def nav(actual='', oscuro=False, publico='general', cta=None, menu=None):
 <div class="menu-movil" id="menu-movil">{movil}<a class="btn tinta" href="{cta}">{cta_t} {FLECHA}</a></div>
 '''
 
+# Ligas institucionales al pie de TODAS las páginas (sitio, tienda, Learn y Sparks): Acerca de, Contacto y Privacidad.
+# Las páginas hechas a mano (privacidad, legal, voluntariado, sparks/…) copian este mismo bloque: si cambia, cámbialas también.
+BASE_PIE = '<a href="/nosotros/">Acerca de</a><a href="/contacto/">Contacto</a><a href="/privacidad/">Aviso de privacidad</a>'
+
 # El pie cambia según para quién es la página:
 #  general  → todo lo de Vorka (inicio, 404)
 #  empresas → servicios y agenda: sin el Simulador PAA (es para estudiantes)
@@ -150,11 +154,11 @@ def pie(publico='general'):
         <li><a href="/sparks/">Revista Sparks</a></li>
         <li><a href="https://os.vorka.mx/historia">Cuenta tu historia</a></li>
         <li><a href="/voluntariado">Tú en Vorka · voluntariado</a></li>
-        <li><a href="/">Quiénes somos</a></li></ul></div>
+        <li><a href="/nosotros/">Quiénes somos</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
         <li><a href="{wa('Hola, quiero información de Vorka FC.')}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li></ul></div>'''
-        lema, base = 'Fútbol, valores y comunidad en Celaya.', '<a href="/privacidad/">Aviso de privacidad</a>'
+        lema, base = 'Fútbol, valores y comunidad en Celaya.', BASE_PIE
     else:
         simulador = '' if publico == 'empresas' else '\n        <li><a href="/simulador-paa/">Simulador PAA</a></li>\n        <li><a href="/simulador-unam/">Simulador UNAM</a></li>\n        <li><a href="/simulador-ecoems/">Simulador ECOEMS</a></li>\n        <li><a href="/simulador-prepa-ug/">Simulador prepa UG</a></li>'
         # cuatro columnas cortas y parejas (antes "Vorka" llevaba 9 ligas y alargaba todo el pie)
@@ -178,7 +182,7 @@ def pie(publico='general'):
         <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li>
         <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>'''
-        lema, base = 'Definimos el juego con quienes lo juegan.', '<a href="/privacidad/">Aviso de privacidad</a><a href="/agenda/">Contacto</a>'
+        lema, base = 'Definimos el juego con quienes lo juegan.', BASE_PIE
     return f'''<footer class="pie">
   <div class="marco">
     <div class="pie-top">
