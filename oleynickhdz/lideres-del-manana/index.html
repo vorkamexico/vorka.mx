@@ -102,6 +102,14 @@
     },
     {
      "@type": "Question",
+     "name": "¿Cómo entro al grupo de aspirantes?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "El grupo es patrocinado por Vorka México. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página."
+     }
+    },
+    {
+     "@type": "Question",
      "name": "¿La mentoría me garantiza la beca?",
      "acceptedAnswer": {
       "@type": "Answer",
@@ -656,7 +664,7 @@
   .ldm-precios em { font-style: normal; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.08); color: #fff; font-size: 12.5px; font-weight: 700; }
   .ldm-precios em.r { background: var(--accent); color: #141414; }
   /* Recursos */
-  .ldm-recursos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .ldm-recursos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .ldm-rec { display: flex; flex-direction: column; gap: 10px; padding: 26px 24px; border-radius: 24px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); transition: transform .2s, border-color .2s; }
   .ldm-rec:hover { transform: translateY(-3px); border-color: var(--ink); }
   .ldm-rec .ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; color: #fff; }
@@ -717,6 +725,25 @@
     .foot-socials a svg { width: 16px; height: 16px; }
     .foot-bottom { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11.5px; }
   }
+  /* Grupo patrocinado por Vorka */
+  .ldm-vorka { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: center; margin-bottom: 14px; padding: clamp(26px, 4vw, 44px); border-radius: 28px; background: #141414; color: #F5F5F0; }
+  .ldm-patro { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); font-size: 12.5px; font-weight: 800; letter-spacing: .02em; }
+  .ldm-patro img { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: rgba(255,255,255,.1); }
+  .ldm-vorka h3 { margin: 16px 0 10px; font-size: clamp(1.4rem, 2.6vw, 1.9rem); line-height: 1.12; letter-spacing: -.03em; color: #fff; }
+  .ldm-vorka p { margin: 0; font-size: 15.5px; line-height: 1.6; color: rgba(245,245,240,.75); max-width: 52ch; }
+  .ldm-vorka p strong { color: #fff; }
+  .ldm-vorka-pasos { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .ldm-vorka-pasos li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 14px 14px 16px; border-radius: 20px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+  .ldm-vorka-pasos .n { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #141414; font-weight: 800; font-size: 16px; }
+  .ldm-vorka-pasos b { display: block; color: #fff; font-size: 15.5px; }
+  .ldm-vorka-pasos div span { font-size: 13.5px; color: rgba(245,245,240,.65); }
+  .ldm-ig, .ldm-wa2 { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 999px; font-weight: 800; font-size: 14px; white-space: nowrap; transition: transform .2s; }
+  .ldm-ig:hover, .ldm-wa2:hover { transform: translateY(-2px); }
+  .ldm-ig svg, .ldm-wa2 svg { width: 16px; height: 16px; }
+  .ldm-ig { background: #fff; color: #141414; }
+  .ldm-wa2 { background: #25D366; color: #08280f; }
+  @media (max-width: 960px) { .ldm-vorka { grid-template-columns: 1fr; } .ldm-recursos { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .ldm-vorka-pasos li { grid-template-columns: 40px minmax(0, 1fr); row-gap: 12px; } .ldm-vorka-pasos li > a { grid-column: 1 / -1; justify-content: center; padding: 13px 16px; } }
 </style>
 </head>
 <body>
@@ -775,7 +802,7 @@
     <p>Todo lo que necesitas para postularte a la beca del 100% del Tec de Monterrey: qué es, requisitos, fechas, pasos, simulador de la PAA y cómo preparar tu proyecto social conmigo.</p>
     <div class="pr-ctas">
       <a class="pr-btn" href="#mentoria">Agenda tu mentoría</a>
-      <a class="pr-btn2" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener">Únete al grupo de aspirantes →</a>
+      <a class="pr-btn2" href="#grupo">Únete al grupo de aspirantes →</a>
     </div>
   </div>
 </section>
@@ -879,6 +906,17 @@
         <div class="section-eyebrow">Recursos</div>
         <h2 class="section-title" id="h-rec">Estudia, <em>pregunta</em> y entérate primero.</h2>
       </div>
+      <div class="ldm-vorka" id="grupo">
+        <div class="ldm-vorka-txt">
+          <span class="ldm-patro"><img src="../img/logo-vorka-blanco.png" alt="" width="22" height="22">Patrocinado por Vorka México</span>
+          <h3>Grupo de aspirantes a Líderes del Mañana</h3>
+          <p>El grupo de WhatsApp es patrocinado por <strong>Vorka México</strong>. Antes de solicitar unirte, síguenos en Instagram: ahí conoces a más jóvenes líderes, sus proyectos y las becas y oportunidades que vamos compartiendo.</p>
+        </div>
+        <ol class="ldm-vorka-pasos">
+          <li><span class="n">1</span><div><b>Sigue a @vorka.mx</b><span>Es el primer paso para entrar.</span></div><a class="ldm-ig" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>Seguir</a></li>
+          <li><span class="n">2</span><div><b>Solicita unirte al grupo</b><span>Te aceptamos lo antes posible.</span></div><a class="ldm-wa2" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.94 11.94 0 0 0 12 0C5.37 0 0 5.37 0 12a11.86 11.86 0 0 0 1.64 6.03L0 24l6.16-1.62A11.9 11.9 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.21-3.48-8.52zM12 21.82a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.66.96.98-3.57-.24-.37A9.8 9.8 0 1 1 12 21.82zm5.39-7.34c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>Unirme</a></li>
+        </ol>
+      </div>
       <div class="ldm-recursos">
         <div class="ldm-rec sim">
           <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
@@ -890,12 +928,6 @@
             <a class="ir" href="https://vorka.mx/simulador-paa/tec-de-monterrey/">PAA para el Tec <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
           </div>
         </div>
-        <a class="ldm-rec grupo" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener">
-          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-          <h3>Grupo de aspirantes LDM</h3>
-          <p>Comunidad de WhatsApp para aspirantes a Líderes del Mañana: dudas, avisos y acompañamiento entre todos.</p>
-          <span class="ir">Unirme al grupo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
-        </a>
         <a class="ldm-rec canal" href="https://whatsapp.com/channel/0029VbD5YC8It5rygL3EpD46" target="_blank" rel="noopener">
           <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg></span>
           <h3>Canal informativo</h3>
@@ -930,6 +962,7 @@
       <details><summary>¿Qué puntaje necesito en la PAA?</summary><p>La Convocatoria Nacional 2027 pide al menos 1,360 puntos en la Prueba de Aptitud Académica.</p></details>
       <details><summary>¿Hasta cuándo me puedo registrar?</summary><p>El registro cierra el 12 de febrero de 2027 para Ciencias de la Salud y el 26 de febrero de 2027 para el resto de programas. Los resultados se publican el 28 de mayo de 2027.</p></details>
       <details><summary>¿Qué evidencia de liderazgo social me piden?</summary><p>Fotografías, reportes, testimonios o cifras comprobables de tu participación en proyectos de impacto comunitario.</p></details>
+      <details><summary>¿Cómo entro al grupo de aspirantes?</summary><p>El grupo es patrocinado por Vorka México. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página.</p></details>
       <details><summary>¿La mentoría me garantiza la beca?</summary><p>No. La decisión es del Tec de Monterrey. La mentoría te ayuda a preparar tu proyecto, tus evidencias y tu plan de estudio para llegar lo mejor posible a cada etapa.</p></details>
     <p class="ldm-nota">Esta es una guía independiente de Brandon Oleynick; no es un sitio oficial del Tecnológico de Monterrey. La información viene de la <a href="https://lideresdelmanana.tec.mx/noticia/convocatoria-lideres-del-manana-2027" target="_blank" rel="noopener">Convocatoria Nacional 2027</a> publicada en lideresdelmanana.tec.mx. Confírmala ahí antes de postularte. Si vives en Centroamérica o República Dominicana, revisa la convocatoria LATAM, que tiene sus propias reglas.</p>
   </section>
