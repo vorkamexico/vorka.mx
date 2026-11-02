@@ -2,7 +2,12 @@
 
 > Vorka México es una consultora de estrategia, liderazgo e influencia con alcance nacional. Acompaña a líderes, empresas, gobiernos y organizaciones en decisiones de dirección, en el desarrollo de quienes deciden y en su comunicación pública. Ofrece un diagnóstico estratégico de 20 minutos sin costo.
 
-Contacto: hola@vorka.mx · +52 81 1780 4869 · https://vorka.mx/agenda/
+Contacto: hola@vorka.mx · +52 81 1780 4869 · https://vorka.mx/contacto/
+
+## Sobre Vorka
+
+- [Acerca de Vorka México](https://vorka.mx/nosotros/): qué es Vorka, qué hace (consultoría, Vorka Learn, tienda de herramientas digitales y Revista Sparks), dónde está y quién la dirige.
+- [Contacto](https://vorka.mx/contacto/): correo, WhatsApp, redes oficiales y ayuda con compras de la tienda.
 
 ## Servicios
 
@@ -24,6 +29,10 @@ Contacto: hola@vorka.mx · +52 81 1780 4869 · https://vorka.mx/agenda/
 - [Idea en orden](https://vorka.mx/tienda/idea-en-orden/) y [kit para validar tu idea de negocio](https://vorka.mx/tienda/idea-negocio-kit-para-validar-tu-idea-y-hacer-tus-numeros/): herramientas para emprender.
 - Apps para negocios: [Cupo](https://vorka.mx/tienda/cupo/) (eventos), [Agenda](https://vorka.mx/tienda/agenda/) (citas en línea para consultorios y negocios de servicios: $99 MXN al mes por profesional, prueba de 7 días; paquete con Vuelve), [Vuelve](https://vorka.mx/tienda/vuelve/) (lealtad), [Vende](https://vorka.mx/tienda/vende/) (catálogo para vendedoras) y [Cuentas](https://vorka.mx/tienda/cuentas/).
 - [hey maya](https://vorka.mx/heymaya/): plataforma para que los colaboradores compartan ideas, quejas y alertas de forma anónima, con IA que las prioriza; ayuda a cumplir la NOM-035.
+
+## Vorka Learn
+
+- [Vorka Learn](https://vorka.mx/learn/): guías con fuentes oficiales sobre exámenes de admisión, becas y cómo elegir carrera, finanzas personales, negocio pequeño y cómo crear y vender tu app.
 
 ## Comunidad
 

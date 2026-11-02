@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contacto · Vorka México</title>
+<meta name="description" content="Contacta a Vorka México: correo hola@vorka.mx, WhatsApp +52 81 1780 4869 y redes oficiales. Ayuda con compras de la tienda y con tus datos personales.">
+<link rel="canonical" href="https://vorka.mx/contacto/">
+<meta name="theme-color" content="#FBFAF8">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vorka México">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="Contacto · Vorka México">
+<meta property="og:description" content="Contacta a Vorka México: correo hola@vorka.mx, WhatsApp +52 81 1780 4869 y redes oficiales. Ayuda con compras de la tienda y con tus datos personales.">
+<meta property="og:url" content="https://vorka.mx/contacto/">
+<meta property="og:image" content="https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/v3/icono.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/vorka-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/v3/vorka.css?v=10">
+<style>
+.ac-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.ac-grid.tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ac-c { padding: 28px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; min-width: 0; overflow-wrap: anywhere; }
+.ac-c .ic { width: 44px; height: 44px; border-radius: 14px; background: var(--bg-2); display: grid; place-items: center; }
+.ac-c .ic svg { width: 22px; height: 22px; }
+.ac-c p, .ac-c li { color: var(--fg-2); font-size: 15.5px; line-height: 1.6; }
+.ac-c p b, .ac-c li b { color: var(--fg); font-weight: 650; }
+.ac-c ul { display: grid; gap: 8px; }
+.ac-c li { display: flex; gap: 12px; }
+.ac-c li::before { content: ""; flex: none; width: 4px; height: 12px; margin-top: 7px; border-radius: 1px; background: var(--oro); transform: skewX(var(--skew)); }
+.ac-c a:not(.btn):not(.flecha) { color: var(--morado); font-weight: 600; }
+.ac-c .ligas { margin-top: auto; padding-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.ac-c .dato { font-size: clamp(20px, 2vw, 24px); font-weight: 720; letter-spacing: -.03em; color: var(--fg); }
+.ac-c .btn { align-self: flex-start; margin-top: auto; }
+.ac-pasos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.ac-pasos div { padding: 22px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); }
+.ac-pasos small { font-size: 13px; font-weight: 700; color: var(--morado); }
+.ac-pasos h3 { font-size: 18px; font-weight: 700; letter-spacing: -.02em; margin: 6px 0; }
+.ac-pasos p { color: var(--fg-2); font-size: 15px; line-height: 1.55; }
+.ac-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.ac-chips span { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 600; padding: 9px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+.ac-chips svg { width: 16px; height: 16px; color: var(--morado); }
+.ac-ligas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ac-ligas a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); text-decoration: none; font-weight: 650; transition: border-color .2s, transform .2s var(--ease); }
+.ac-ligas a small { display: block; font-size: 13.5px; font-weight: 500; color: var(--fg-2); margin-top: 2px; }
+.ac-ligas a svg { width: 18px; height: 18px; flex: none; }
+.ac-ligas a:hover { border-color: var(--line-2); transform: translateY(-2px); }
+.ac-redes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.ac-redes a { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); text-decoration: none; font-weight: 650; min-width: 0; }
+.ac-redes a small { display: block; font-size: 13px; font-weight: 500; color: var(--fg-2); overflow-wrap: anywhere; }
+.ac-redes svg { width: 22px; height: 22px; flex: none; }
+.ac-nota { margin-top: 18px; font-size: 14.5px; color: var(--fg-2); max-width: 760px; }
+.ac-nota a { color: var(--morado); font-weight: 600; }
+@media (max-width: 960px) { .ac-grid.tres, .ac-ligas { grid-template-columns: 1fr 1fr; } .ac-pasos, .ac-redes { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .ac-grid, .ac-grid.tres, .ac-ligas, .ac-pasos, .ac-redes { grid-template-columns: minmax(0, 1fr); } .ac-c { padding: 22px; } }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ContactPage", "@id": "https://vorka.mx/contacto/#pagina", "url": "https://vorka.mx/contacto/", "name": "Contacto · Vorka México", "inLanguage": "es-MX", "isPartOf": {"@type": "WebSite", "name": "Vorka México", "url": "https://vorka.mx/"}, "mainEntity": {"@type": "ProfessionalService", "@id": "https://vorka.mx/#organizacion", "name": "Vorka México", "url": "https://vorka.mx/", "logo": "https://vorka.mx/vorka-logo.png", "description": "Consultora de estrategia, liderazgo e influencia con alcance nacional.", "email": "hola@vorka.mx", "telephone": "+52 81 1780 4869", "areaServed": "MX", "sameAs": ["https://www.instagram.com/vorka.mx/", "https://www.linkedin.com/company/vorkamx/", "https://www.facebook.com/vorka.mx", "https://www.tiktok.com/@vorka.mx"], "founder": {"@type": "Person", "name": "Brandon Oleynick", "url": "https://vorka.mx/oleynickhdz/", "jobTitle": "Fundador y CEO"}, "contactPoint": [{"@type": "ContactPoint", "contactType": "customer support", "email": "hola@vorka.mx", "telephone": "+52 81 1780 4869", "areaServed": "MX", "availableLanguage": "es", "url": "https://vorka.mx/contacto/"}], "subOrganization": [{"@type": "Organization", "name": "Vorka Learn", "url": "https://vorka.mx/learn/"}]}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://vorka.mx/"}, {"@type": "ListItem", "position": 2, "name": "Contacto", "item": "https://vorka.mx/contacto/"}]}</script>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<header class="nav">
+  <div class="nav-in">
+    <a class="marca" href="/" aria-label="Vorka México, inicio"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+    <nav class="nav-links" aria-label="Principal"><a href="/servicios/">Servicios</a><a href="/#proceso">Cómo trabajamos</a><a href="/#momentos">Para quién</a><a href="/#red">Presencia</a><a href="/sparks/">Sparks</a><a href="/tienda/">Tienda</a><a href="/voluntariado">Tú en Vorka</a></nav>
+    <a class="btn tinta escritorio" href="/agenda/">Agenda tu diagnóstico</a>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
+  </div>
+</header>
+<div class="menu-movil" id="menu-movil"><a href="/servicios/">Servicios</a><a href="/#proceso">Cómo trabajamos</a><a href="/#momentos">Para quién</a><a href="/#red">Presencia</a><a href="/sparks/">Sparks</a><a href="/tienda/">Tienda</a><a href="/voluntariado">Tú en Vorka</a><a class="btn tinta" href="/agenda/">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+
+<main id="contenido">
+<section class="cabecera">
+  <svg class="v-fondo" viewBox="69 225 940 909" aria-hidden="true"><defs><linearGradient id="gh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ECEAE6"/><stop offset=".55" stop-color="#D9D6D9"/><stop offset="1" stop-color="#E6CF96"/></linearGradient></defs><g fill="url(#gh)"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></g></svg>
+  <div class="marco">
+    <div class="migas"><a href="/">Inicio</a><span>/</span><span>Contacto</span></div>
+    <span class="etiqueta">Contacto</span>
+    <h1 class="h1" style="margin-top:18px">Escríbenos. <span class="metal">Te respondemos.</span></h1>
+    <p class="lead">Estas son todas las formas de contactar a Vorka México: correo, WhatsApp y nuestras redes oficiales. Si tu duda es sobre una compra de la tienda, abajo está qué hacer.</p>
+  </div>
+</section>
+
+<section class="sec pegada" aria-label="Canales de contacto">
+  <div class="marco"><div class="ac-grid tres"><article class="ac-c rv"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span><h3 class="h3" style="font-size:22px">Correo</h3><p class="dato">hola@vorka.mx</p><p>Para cualquier tema: consultoría, compras de la tienda, Vorka Learn, Revista Sparks o tus datos personales.</p><a class="btn tinta chico" href="mailto:hola@vorka.mx">Escribir un correo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article><article class="ac-c rv" style="--d:.06s"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span><h3 class="h3" style="font-size:22px">WhatsApp</h3><p class="dato">+52 81 1780 4869</p><p>Escríbenos por WhatsApp si prefieres una conversación rápida.</p><a class="btn tinta chico" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20tengo%20una%20pregunta." target="_blank" rel="noopener">Abrir WhatsApp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article><article class="ac-c rv" style="--d:.12s"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><h3 class="h3" style="font-size:22px">Consultoría</h3><p class="dato">Diagnóstico sin costo</p><p>Si buscas a Vorka para tu empresa, gobierno u organización, agenda un diagnóstico estratégico de 20 minutos sin costo ni compromiso.</p><a class="btn tinta chico" href="/agenda/">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article></div></div>
+</section>
+
+<section class="sec pegada" aria-labelledby="t-compras">
+  <div class="marco">
+    <div class="cab rv"><span class="etiqueta">Compras de la tienda</span><h2 class="h2" id="t-compras">Ayuda con <span class="metal">tu compra.</span></h2></div>
+    <div class="ac-grid"><article class="ac-c rv"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><h3 class="h3" style="font-size:22px">¿No te llegó el correo de tu compra?</h3><p>Pide un enlace nuevo en <a href="/descargas/reenviar">Recupera tus archivos</a>: escribe el correo con el que compraste y te mandamos un enlace nuevo, válido por 7 días.</p><p>¿No te llega nada o ya no tienes acceso a ese correo? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o por <a href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20hice%20una%20compra%20en%20la%20tienda%20y%20no%20me%20lleg%C3%B3%20el%20correo." target="_blank" rel="noopener">WhatsApp</a> con tu nombre y la fecha de compra, y lo resolvemos.</p><div class="ligas"><a class="flecha" href="/descargas/reenviar">Recuperar mis archivos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="flecha" href="/descargas/reenviar?para=simulador">Entrar a mi Simulador PAA <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article><article class="ac-c rv"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><h3 class="h3" style="font-size:22px">Reembolsos y condiciones</h3><p>Qué cubre cada compra, cómo pedir un reembolso y en qué plazos.</p><div class="ligas"><a class="flecha" href="/legal/reembolsos/">Política de reembolsos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="flecha" href="/legal/terminos/">Términos y condiciones <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article></div>
+  </div>
+</section>
+
+<section class="sec pegada" aria-labelledby="t-otros">
+  <div class="marco">
+    <div class="cab rv"><span class="etiqueta">Otros temas</span><h2 class="h2" id="t-otros">¿Buscas <span class="metal">otra cosa?</span></h2></div>
+    <div class="ac-grid tres"><article class="ac-c rv"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><h3 class="h3" style="font-size:22px">Tus datos personales</h3><p>Para acceder, rectificar, cancelar u oponerte al uso de tus datos (derechos ARCO), o para revocar tu consentimiento, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. El procedimiento está en el aviso de privacidad.</p><div class="ligas"><a class="flecha" href="/privacidad/#arco">Derechos ARCO <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="flecha" href="/privacidad/">Aviso de privacidad <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article><article class="ac-c rv"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4a1 1 0 0 0 1 1h3l7 4V5L7 9H4a1 1 0 0 0-1 1z"/><path d="M18 8a5 5 0 0 1 0 8"/></svg></span><h3 class="h3" style="font-size:22px">Revista Sparks</h3><p>¿Conoces a alguien que está moviendo su municipio, o quieres escribir para Sparks?</p><div class="ligas"><a class="flecha" href="https://os.vorka.mx/historia">Cuenta tu historia <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="flecha" href="/sparks/sumate/">Súmate a Sparks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article><article class="ac-c rv"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.2A5 5 0 0 1 21 19"/></svg></span><h3 class="h3" style="font-size:22px">Comunidad y conferencias</h3><p>Voluntariado para jóvenes, la academia Vorka FC en Celaya y conferencias de Brandon Oleynick.</p><div class="ligas"><a class="flecha" href="/voluntariado">Tú en Vorka <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="flecha" href="/fc/#inscripcion">Vorka FC <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="flecha" href="/oleynickhdz/conferencias/solicitar/">Conferencias <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article></div>
+  </div>
+</section>
+
+<section class="sec pegada" aria-labelledby="t-redes">
+  <div class="marco">
+    <div class="cab rv"><span class="etiqueta">Redes oficiales</span><h2 class="h2" id="t-redes">Síguenos.</h2></div>
+    <div class="ac-redes rv"><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram<small>@vorka.mx</small></span></a><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4z"/></svg><span>LinkedIn<small>vorkamx</small></span></a><a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.2 10 6.3v2.2H7.5v3.7H10V22h4v-9.8h3l.4-3.7z"/></svg><span>Facebook<small>vorka.mx</small></span></a><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.3 1.9 3.8 4.2 4v3.4c-1.5.1-2.9-.4-4.2-1.2v6.3c0 3.6-2.6 6.5-6.3 6.5S4 19 4 15.6c0-3.7 3.2-6.6 7.1-6.1v3.6c-1.6-.4-3.4.6-3.4 2.4 0 1.4 1 2.6 2.6 2.6 1.6 0 2.6-1.2 2.6-2.8V3z"/></svg><span>TikTok<small>@vorka.mx</small></span></a></div>
+    <p class="ac-nota">Son las cuentas oficiales que enlazamos en todo el sitio. ¿Quieres saber más de nosotros? Lee <a href="/nosotros/">Acerca de Vorka México</a>.</p>
+  </div>
+</section>
+<div style="height:clamp(64px,8vw,110px)"></div>
+</main>
+<footer class="pie">
+  <div class="marco">
+    <div class="pie-top">
+      <div>
+        <a class="marca" href="/"><svg viewBox="69 225 940 909" aria-hidden="true" fill="currentColor"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>Vorka <span>México</span></a>
+        <p class="pie-lema">Definimos el juego con quienes lo juegan.</p>
+        <div class="redes"><a href="https://www.instagram.com/vorka.mx/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.linkedin.com/company/vorkamx/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4z"/></svg></a><a href="https://www.facebook.com/vorka.mx" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.2 10 6.3v2.2H7.5v3.7H10V22h4v-9.8h3l.4-3.7z"/></svg></a><a href="https://www.tiktok.com/@vorka.mx" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.3 1.9 3.8 4.2 4v3.4c-1.5.1-2.9-.4-4.2-1.2v6.3c0 3.6-2.6 6.5-6.3 6.5S4 19 4 15.6c0-3.7 3.2-6.6 7.1-6.1v3.6c-1.6-.4-3.4.6-3.4 2.4 0 1.4 1 2.6 2.6 2.6 1.6 0 2.6-1.2 2.6-2.8V3z"/></svg></a></div>
+      </div>
+      <div><h4>Servicios</h4><ul>
+        <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
+        <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
+        <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
+        <li><a href="/servicios/">Comparar servicios</a></li></ul></div>
+      <div><h4>Vorka</h4><ul>
+        <li><a href="/#proceso">Cómo trabajamos</a></li>
+        <li><a href="/#red">Presencia nacional</a></li>
+        <li><a href="/sparks/">Revista Sparks</a></li>
+        <li><a href="/voluntariado">Tú en Vorka</a></li>
+        <li><a href="/fc/">Vorka FC</a></li></ul></div>
+      <div><h4>Productos</h4><ul>
+        <li><a href="/tienda/">Tienda</a></li>
+        <li><a href="/simulador-paa/">Simulador PAA</a></li>
+        <li><a href="/simulador-unam/">Simulador UNAM</a></li>
+        <li><a href="/simulador-ecoems/">Simulador ECOEMS</a></li>
+        <li><a href="/simulador-prepa-ug/">Simulador prepa UG</a></li>
+        <li><a href="/tienda/brindi/">Invitaciones digitales</a></li>
+        <li><a href="/tienda/cupo/">Eventos con registro</a></li>
+        <li><a href="/tienda/vuelve/">Vuelve · lealtad</a></li></ul></div>
+      <div><h4>Contacto</h4><ul>
+        <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
+        <li><a href="mailto:hola@vorka.mx">hola@vorka.mx</a></li>
+        <li><a href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20ya%20decid%C3%AD%20avanzar.%20Me%20gustar%C3%ADa%20empezar%20formalmente%20el%20proceso." target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>
+    </div>
+    <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México · Monterrey · CDMX · Guadalajara · Querétaro · Celaya</span><nav><a href="/nosotros/">Acerca de</a><a href="/contacto/">Contacto</a><a href="/privacidad/">Aviso de privacidad</a></nav></div>
+  </div>
+</footer>
+<script src="/assets/v3/vorka.js?v=10" defer></script>
+
+</body>
+</html>

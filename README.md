@@ -10,8 +10,9 @@ Cada URL es una carpeta con `index.html` (`/servicios/estrategia/` → `servicio
 
 | Carpeta | URL | Cómo se edita |
 |---|---|---|
-| `index.html`, `servicios/`, `agenda/`, `fc/`, `404.html` | `/`, `/servicios/…`, `/agenda/`, `/fc/` | **Generadas**: edita `_sitio/` y corre `python3 _sitio/build.py` |
-| `voluntariado/`, `sparks/`, `sparks/sumate/`, `privacidad/`, `legal/` | | A mano |
+| `index.html`, `servicios/`, `agenda/`, `fc/`, `nosotros/`, `contacto/`, `404.html` | `/`, `/servicios/…`, `/agenda/`, `/fc/`, `/nosotros/` (Acerca de), `/contacto/` | **Generadas**: edita `_sitio/` y corre `python3 _sitio/build.py` (Acerca de y Contacto: `_sitio/institucional.py`) |
+| `voluntariado/`, `sparks/`, `sparks/sumate/`, `privacidad/` | | A mano (su pie copia el de `_sitio/partes.py`: si cambian las ligas de abajo, `BASE_PIE`, cámbialas también aquí) |
+| `legal/` | | **Generadas**: `python3 _tienda/legales.py` |
 | `sparks/celaya/` | `/sparks/celaya/` | **Automática** (bot cada hora). No editar a mano: ver `_sparks/GUIA-INSTALACION.md` |
 | `oleynickhdz/`, `mentoriaoleynick/` | Sitio de Brandon Oleynick | A mano |
 | `anaoleynick/` | Sitio de Ana Laura Hernández: inicio, `talleres/`, `portafolio/`, `trayectoria/` y `estilo.css` compartido. Sin marca Vorka, sólo "Powered by vorka.mx" al pie | A mano |

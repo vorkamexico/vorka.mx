@@ -1,6 +1,6 @@
 # Vorka México · genera las páginas principales del sitio
 # Uso: python3 _sitio/build.py   (desde la raíz del repo vorka.mx)
-# Páginas: / · /servicios/ · /servicios/<slug>/ · /agenda/ · /fc/ · /404.html
+# Páginas: / · /servicios/ · /servicios/<slug>/ · /agenda/ · /fc/ · /nosotros/ · /contacto/ · /404.html
 import os, sys, json
 sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
@@ -8,6 +8,7 @@ from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS
 from agenda import pagina_agenda
 from fc import actualizar_fc
 from equipo import paginas_equipo
+from institucional import pagina_nosotros, pagina_contacto, ORG_ID
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
@@ -262,7 +263,7 @@ def inicio():
 {cierre()}
 </main>
 {pie()}'''
-    ld = {"@context": "https://schema.org", "@type": "ProfessionalService", "name": "Vorka México", "url": SITIO, "logo": SITIO + "/vorka-logo.png",
+    ld = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": ORG_ID, "name": "Vorka México", "url": SITIO, "logo": SITIO + "/vorka-logo.png",
           "description": "Consultora de estrategia, liderazgo e influencia con presencia nacional.", "email": CORREO, "telephone": "+52 81 1780 4869",
           "areaServed": "MX", "sameAs": [u for _, u, _ in REDES]}
     extra = f'<link rel="preload" as="image" href="/img/ciudades/monterrey-silla-1600.webp" fetchpriority="high">\n<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>\n'
@@ -426,4 +427,6 @@ if __name__ == '__main__':
         escribir('fc/index.html', actualizar_fc(f.read()))
     for ruta, html in paginas_equipo().items():
         escribir(ruta, html)
+    escribir('nosotros/index.html', pagina_nosotros())
+    escribir('contacto/index.html', pagina_contacto())
     escribir('404.html', no_encontrada())
