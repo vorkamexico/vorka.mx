@@ -42,6 +42,8 @@ import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponReg
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
+import { rutasToolkit } from './toolkit-paginas.js';
+import { resumenToolkit, estadoToolkit, movimientosDe, codigosDe } from './toolkit.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -202,6 +204,13 @@ export class Admin extends WorkerEntrypoint {
   // Complementos de la suscripción: lugares de Vuelve (tipo 'sucursal', el de siempre) o profesionales de Agenda ('profesional')
   lugaresApp(email, app, extras, tipo) { return lugaresApp(this.env, email, app, extras, tipo); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
+  // Toolkit Vorka (src/toolkit.js): suscriptores por plan, saldo pendiente (pasivo), abonado y usado en el mes, consumo por
+  // cliente antes / ahora (meta ×1.5) y reembolsos por revisar. toolkitCliente: el estado, historial y códigos de un correo.
+  resumenToolkit(f) { return resumenToolkit(this.env, f || {}); }
+  async toolkitCliente(email) {
+    const e = await estadoToolkit(this.env, email);
+    return { ...e, movimientos: await movimientosDe(this.env, email, 200), codigos: await codigosDe(this.env, email) };
+  }
   // Puntos Vorka (Socios Vorka quedó integrado aquí): cuentas, nivel y %, transferencia a cuenta (privada) y CSV
   cuentasPuntos(f) { return retiros.cuentasPuntos(this.env, f); }
   cuentaPuntos(email) { return retiros.cuentaPuntos(this.env, email); }
@@ -371,6 +380,8 @@ async function atender(request, env, ctx, url) {
     if (sim) return sim;
     const cr = await rutasCreadores(request, env, ctx, url);
     if (cr) return cr;
+    // Toolkit Vorka: ficha, Mi Toolkit, canjear códigos y su API (src/toolkit-paginas.js)
+    if (/^\/(tienda\/(toolkit|mi-toolkit|canjear)|api\/toolkit)(\/|$)/.test(url.pathname)) { const r = await rutasToolkit(request, env, url); if (r) return r; }
     if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
       return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
         ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));

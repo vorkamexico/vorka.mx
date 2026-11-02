@@ -11,6 +11,7 @@ import { resolverDescuento, duracionDe, lineaCompra, centavosDe } from './descue
 import { alCrearOrden, paqueteCheckout } from './tests/index.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
+import { esCodigoToolkit } from './toolkit.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -68,6 +69,8 @@ export async function checkout(req, env) {
   if (!v.success) return error(v.error.issues[0].message);
   const d = v.data;
   if (d.para_quien === 'regalo') d.regalo = true;
+  // Un código de regalo del Toolkit (TK-XXXX-XXXX) no es un descuento: se canjea gratis en su página, sin pagar nada
+  if (esCodigoToolkit(d.codigo)) return error(`Ese es un código de regalo del Toolkit: no tienes que pagar nada. Canjéalo en vorka.mx/tienda/canjear/${String(d.codigo).trim().toUpperCase()}`);
 
   const ip = req.headers.get('cf-connecting-ip') || 'local';
   for (const [tipo, max] of LIMITES) {
@@ -110,6 +113,7 @@ export async function checkout(req, env) {
     for (const app of plan.creador_id ? [] : acceso.apps || [acceso.app]) {
       const ya = await vigente(env, d.email, app);
       if (!ya) continue;
+      if (acceso.app === 'toolkit') return error('Ya tienes un Toolkit activo con este correo. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble; tu saldo se queda igual.', 409);
       if (ya.app !== acceso.app) return error(`Con este correo ya pagas ${ya.app === 'agenda-vuelve' ? 'el paquete Agenda + Vuelve' : app === 'vuelve' ? 'Vuelve' : 'Agenda'}. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble.`, 409);
       return error('Ya tienes una suscripción activa con este correo. Adminístrala desde la app, en Cuenta.', 409);
     }
@@ -153,6 +157,12 @@ export async function checkout(req, env) {
   for (const it of items) { const p = await productoPorSlug(env, it.slug); if (p) lineas.push(lineaCompra(p, it.cantidad || 1)); }
   const desc = await resolverDescuento(env, { escrito: d.codigo, liga: d.ref || cookie(req, 'vorka_ref'), email: d.email, sus, lineas });
   let descuento = desc.descuento ? { ...desc.descuento, duracion: sus ? duracionDe(desc.descuento) : null } : null;
+  // Toolkit: los códigos de descuento y los cupones de regalo no aplican (el bono ya es el beneficio y un cupón grande regalaría
+  // saldo). El 5 % por recomendación en el primer pago sí, como en toda la tienda; quien recomendó gana sus puntos.
+  if (sus?.app === 'toolkit' && descuento && descuento.tipo !== 'referido') {
+    desc.avisos.unshift(`${descuento.regalo ? 'Los cupones' : 'Los códigos de descuento'} no aplican en el Toolkit: tu saldo ya vale más de lo que pagas.`);
+    descuento = null;
+  }
   if (paquete && centavosDe(paquete.descuento, lineas) >= centavosDe(descuento, lineas)) descuento = { ...paquete.descuento, duracion: null };
 
   let orden;

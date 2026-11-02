@@ -42,7 +42,7 @@ export async function portafolio(env, { internos = [], dias = 30 } = {}) {
     all(env, `SELECT o.id, o.email, o.nombre, o.estado, o.monto_centavos, o.created_at, o.paid_at, o.recordatorio_at, o.proveedor,
         i.product_id, i.nombre producto, i.precio_centavos * i.cantidad monto_item
       FROM orders o JOIN order_items i ON i.order_id = o.id
-      WHERE o.estado IN ('paid', 'failed', 'pending') AND o.proveedor NOT IN ('regalo', 'cortesia') AND (o.estado <> 'paid' OR o.monto_centavos > 0)
+      WHERE o.estado IN ('paid', 'failed', 'pending') AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND (o.estado <> 'paid' OR o.monto_centavos > 0)
       ORDER BY o.created_at`),
     all(env, `SELECT product_id id, SUM(tipo = 'view_product') vistas, SUM(tipo = 'begin_checkout') checkouts
       FROM events WHERE created_at >= ? AND product_id IS NOT NULL GROUP BY product_id`, desde),

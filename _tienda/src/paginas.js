@@ -107,6 +107,35 @@ const SCRIPT_SOCIO = `(function(){
 // en la página de compra a la que se llegue después (p. ej. de vorka.mx/tienda/?cupon=… a un producto)
 const SCRIPT_CUPON = `(function(){ try{ var c=new URLSearchParams(location.search).get('cupon'); if(c&&/^[A-Za-z0-9_-]{1,40}$/.test(c)) localStorage.setItem('vorka_cupon',JSON.stringify({c:c.toUpperCase(),t:Date.now()})); }catch(e){} })();`;
 
+// «Pagar con mi saldo» (Toolkit Vorka, src/toolkit.js) en cualquier formulario de compra de la tienda: solo aparece si la
+// persona entró a su cuenta y tiene saldo del Toolkit. Pregunta al servidor cuánto cuesta lo elegido (precio de lista) y si
+// alcanza; si no, dice cuánto falta (no hay pagos mixtos). En las apps de suscripción paga 1 mes (como cortesía).
+const SCRIPT_SALDO = `(function(){
+  var f=document.querySelector('form[id^="form-"][action="/api/checkout"]')||document.getElementById('form-compra'); if(!f||!window.fetch||f.id==='form-toolkit') return;
+  function pesos(c){ return '$'+(c/100).toLocaleString('es-MX',{minimumFractionDigits:c%100?2:0,maximumFractionDigits:2}); }
+  function post(u,d){ return fetch(u,{method:'POST',headers:{'content-type':'application/json'},credentials:'same-origin',body:JSON.stringify(d)}).then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ return {ok:r.ok,j:j}; }); }); }
+  fetch('/api/toolkit/saldo',{credentials:'same-origin'}).then(function(r){ return r.json(); }).then(function(s){
+    if(!s.cuenta||!s.toolkit||!(s.saldo_centavos>0)) return;
+    var st=document.createElement('style'); st.textContent='.t-saldo{display:grid;gap:8px;margin:4px 0 12px;padding:14px 16px;border-radius:16px;background:rgba(200,164,92,.12);border:1px solid rgba(200,164,92,.45)}.t-saldo p{margin:0;font-size:14.5px;line-height:1.45}.t-saldo button{justify-self:stretch}.t-saldo .t-saldo-m{color:var(--fg-2)}'; document.head.appendChild(st);
+    var w=document.createElement('div'); w.className='t-saldo'; w.innerHTML='<p><b>Tienes '+pesos(s.saldo_centavos)+' de saldo en tu Toolkit.</b></p><button type="button" class="btn tinta" hidden></button><p class="t-saldo-m" role="status" aria-live="polite"></p>';
+    var b=w.querySelector('button'), m=w.querySelector('.t-saldo-m'), sub=f.querySelector('button[type=submit]'), q=null, n=0;
+    (sub||f.lastChild).before(w);
+    function plan(){ var x=f.querySelector('[name=slug]:checked')||f.querySelector('[name=slug]'); return x?x.value:''; }
+    function regalo(){ var r=f.querySelector('#es-regalo')||f.querySelector('[name=regalo]'); return !!(r&&r.checked); }
+    function cotiza(){ var k=++n; if(regalo()){ b.hidden=true; m.innerHTML='Para regalar, saca códigos de regalo desde <a href="/tienda/mi-toolkit/?v=codigos">Mi Toolkit</a>.'; return; }
+      post('/api/toolkit/cotizar',{slug:plan()}).then(function(x){ if(k!==n) return; q=x.j; b.hidden=true; m.textContent='';
+        if(!q.ok){ m.textContent=q.error||''; return; }
+        if(q.alcanza){ b.hidden=false; b.textContent='Pagar con mi saldo ('+pesos(q.total)+')'; m.textContent=(q.tipo==='app'?q.nombre+'. ':'')+'Se entrega a '+q.email+' y te quedan '+pesos(q.saldo_centavos-q.total)+'.'+(q.aviso?' '+q.aviso:''); }
+        else m.textContent='Te faltan '+pesos(q.falta)+' de saldo para pagar esto con tu Toolkit ('+pesos(q.total)+'). Puedes pagarlo con tarjeta, OXXO o SPEI.';
+      }).catch(function(){}); }
+    f.addEventListener('change',cotiza); document.addEventListener('click',function(e){ if(e.target.closest('[data-plan]')) setTimeout(cotiza,50); }); cotiza();
+    b.addEventListener('click',function(){ if(!q||!q.alcanza) return; if(!confirm('¿Pagar '+(q.nombre||'esto')+' con '+pesos(q.total)+' de tu saldo del Toolkit?')) return;
+      b.disabled=true; b.textContent='Pagando…';
+      post('/api/toolkit/pagar',{slug:plan(),nombre:f.nombre?f.nombre.value:''}).then(function(x){ if(x.ok&&x.j.url) location.href=x.j.url; else { m.textContent=x.j.error||'No se pudo pagar con tu saldo.'; b.disabled=false; b.textContent='Pagar con mi saldo ('+pesos(q.total)+')'; } })
+        .catch(function(){ m.textContent='Sin conexión. Intenta de nuevo.'; b.disabled=false; }); });
+  }).catch(function(){});
+})();`;
+
 // Formularios de compra: llevan el campo «código» y el ayudante del descuento (window.VD) antes del script de la página
 const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|cuentas|clara)"/;
 
@@ -177,7 +206,7 @@ ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" cl
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
-${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SALDO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

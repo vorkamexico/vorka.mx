@@ -78,7 +78,9 @@ const fechaMx = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'Am
 
 // Órdenes de cortesía pagadas (no quitadas) de planes de suscripción de esas apps; sin correo, las de todos (para el resumen).
 // Cuentan las enviadas directo a un correo y los canjes de ligas de cortesía (las suscripciones no se pueden comprar para regalar,
-// así que un canje de un plan de suscripción siempre viene de una cortesía; igual se revisa).
+// así que un canje de un plan de suscripción siempre viene de una cortesía; igual se revisa). También los meses pagados con
+// saldo del Toolkit y los códigos de regalo del Toolkit canjeados (proveedor 'saldo', ver toolkit.js): la app los ve como
+// cortesía con su fecha; empiezan donde termina la cortesía o la suscripción vigente (paid_at = ese inicio).
 async function filasCortesia(env, apps, email = null) {
   // Las quitadas (estado 'refunded') también vienen, ya vencidas desde que se quitaron: así la app deja de dar acceso aunque
   // haya guardado la fecha de la cortesía (cortesia_hasta)
@@ -88,7 +90,7 @@ async function filasCortesia(env, apps, email = null) {
         WHERE x.order_id = o.id AND COALESCE(json_extract(px.contenido, '$.complemento'), 0) = 1) extras
     FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
     WHERE o.estado IN ('paid', 'refunded') AND o.regalo = 0 AND o.monto_centavos = 0${email ? ' AND lower(o.email) = ?' : ''}
-      AND (o.proveedor = 'cortesia' OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
+      AND (o.proveedor IN ('cortesia', 'saldo') OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
       AND json_extract(p.contenido, '$.acceso.app') IN (${apps.map(() => '?').join(',')})
       AND json_extract(p.contenido, '$.suscripcion') IS NOT NULL AND COALESCE(json_extract(p.contenido, '$.complemento'), 0) = 0`,
     ...(email ? [email] : []), ...apps);

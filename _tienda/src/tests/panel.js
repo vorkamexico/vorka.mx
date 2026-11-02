@@ -40,7 +40,7 @@ function rangoDe(r, ahora = Date.now()) {
 async function ventasDe(env, def, desdeIso) {
   const filas = await all(env, `SELECT o.id, o.monto_centavos, o.regalo, i.product_id, i.cantidad, p.contenido FROM orders o
       JOIN order_items i ON i.order_id = o.id LEFT JOIN products p ON p.id = i.product_id
-    WHERE o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND o.paid_at >= ?
+    WHERE o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND o.paid_at >= ?
       AND EXISTS (SELECT 1 FROM order_items i2 JOIN products p2 ON p2.id = i2.product_id WHERE i2.order_id = o.id AND json_extract(p2.contenido, '$.acceso.app') = ?)`, desdeIso, def.app);
   const ordenes = new Map();
   for (const f of filas) {
@@ -71,7 +71,7 @@ export async function panelTests(env, { rango } = {}, ahora = Date.now()) {
     // Con el cupón de 24 h, y recuperadas: pagadas después del correo «tu resultado te espera» (como metricasTests)
     const t = await one(env, `SELECT SUM(CASE WHEN o.descuento_codigo = r.cupon THEN 1 ELSE 0 END) cupon,
         SUM(CASE WHEN r.recordatorio_at IS NOT NULL AND o.paid_at > r.recordatorio_at THEN 1 ELSE 0 END) rec
-      FROM tests_resultados r JOIN orders o ON o.id = r.order_id WHERE r.producto = ? AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND o.paid_at >= ?`, k, R.desde_iso);
+      FROM tests_resultados r JOIN orders o ON o.id = r.order_id WHERE r.producto = ? AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND o.paid_at >= ?`, k, R.desde_iso);
     const n = { ...c, compras: ventas.reportes.n + ventas.paquetes.n, compras_cupon: t?.cupon || 0, recuperadas: t?.rec || 0 };
     productos[k] = {
       nombre: def.nombre, ruta: def.ruta, recordatorios: c.recordatorio,
