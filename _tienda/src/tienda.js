@@ -169,7 +169,7 @@ const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['ruta', 'Proyectos · Ruta de Impacto', '/tienda/ruta-de-impacto/'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
-  ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['toolkit', 'Toolkit · Saldo', '/tienda/toolkit/'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+  ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['toolkit', 'Toolkit · Saldo', '/tienda/toolkit/'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
 

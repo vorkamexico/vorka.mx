@@ -28,6 +28,7 @@ import { paginaVuelve } from './vuelve.js';
 import { paginaAgenda } from './agenda.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaVende } from './vende.js';
+import { paginaPortales } from './portales.js';
 import { paginaClara } from './clara.js';
 import { paginaRuta } from './ruta.js';
 import { paginaLiderazgo } from './liderazgo.js';
@@ -412,6 +413,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
       if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
+      if (url.pathname === '/tienda/portales' || url.pathname === '/tienda/portales/') return url.pathname.endsWith('/') ? await paginaPortales(env, request, url) : Response.redirect(`${url.origin}/tienda/portales/${url.search}`, 301);
       if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);
       if (url.pathname === '/tienda/clara' || url.pathname === '/tienda/clara/') return url.pathname.endsWith('/') ? await paginaClara(env, request, url) : Response.redirect(`${url.origin}/tienda/clara/${url.search}`, 301);
       // Ruta de Impacto: su ficha propia (el producto es de pago único, pero la página no es la genérica)

@@ -1,0 +1,17 @@
+-- Portales inmobiliarios (sitio, catálogo con mapa, fichas y prospectos para inmobiliarias y brokers; Worker "portales"
+-- en inmuebles.vorka.mx, código en vorkamexico/portales). Se cobra por SUSCRIPCIÓN mensual (Stripe Billing), igual que Agenda.
+-- Precios decididos por el usuario el 2-11-2026 (los mismos de Brokerlit, usuario adicional a $99), IVA incluido:
+--   Básico $199 (1 usuario, en inmuebles.vorka.mx/<nombre>) · Broker $300 (1 usuario, dominio propio) · Inmobiliaria $800 (5 usuarios)
+--   Usuario adicional $99 al mes (complemento; en checkout viaja como "sucursales", ver checkout.js).
+-- Al pagar, el correo de entrega trae el botón "Entrar a mi portal" → inmuebles.vorka.mx/entrar/<token>: la plataforma valida
+-- el token (Admin.validarAcceso), crea la inmobiliaria y su administrador y abre la bienvenida. El estado del cobro lo lee con
+-- Admin.suscripcionApp(correo, 'portales').
+INSERT OR IGNORE INTO products (id, slug, nombre, descripcion_corta, precio_centavos, activo, categoria, orden, r2_keys, imagen, contenido) VALUES
+('prod_portales_basico_mensual', 'portales-basico-mensual', 'Portal inmobiliario · Básico', 'Tu catálogo de propiedades con fichas, mapa y prospectos por WhatsApp en inmuebles.vorka.mx/tu-nombre. 1 usuario.', 19900, 1, 'Inmobiliarias', 60, '[]', 'https://inmuebles.vorka.mx/foto/vorka/marca/portales-portada.webp',
+  json('{"acceso":{"app":"portales","tipo":"suscripcion","ruta":"/tienda/portales/","url":"https://inmuebles.vorka.mx/entrar/","boton":"Entrar a mi portal","detalle":"Suscripción mensual · cancela cuando quieras"},"suscripcion":{"intervalo":"month","extras":{"sucursal":"prod_portales_usuario_mensual"}}}')),
+('prod_portales_broker_mensual', 'portales-broker-mensual', 'Portal inmobiliario · Broker', 'Tu portal con tu dominio y tu marca: inicio, catálogo con mapa, fichas y CRM de prospectos. 1 usuario.', 30000, 1, 'Inmobiliarias', 61, '[]', 'https://inmuebles.vorka.mx/foto/vorka/marca/portales-portada.webp',
+  json('{"oculto":true,"acceso":{"app":"portales","tipo":"suscripcion","ruta":"/tienda/portales/","url":"https://inmuebles.vorka.mx/entrar/","boton":"Entrar a mi portal","detalle":"Suscripción mensual · cancela cuando quieras"},"suscripcion":{"intervalo":"month","extras":{"sucursal":"prod_portales_usuario_mensual"}}}')),
+('prod_portales_inmobiliaria_mensual', 'portales-inmobiliaria-mensual', 'Portal inmobiliario · Inmobiliaria', 'Tu portal con tu dominio y tu marca para todo tu equipo: 5 usuarios, prospectos asignados y seguimiento por etapas.', 80000, 1, 'Inmobiliarias', 62, '[]', 'https://inmuebles.vorka.mx/foto/vorka/marca/portales-portada.webp',
+  json('{"oculto":true,"acceso":{"app":"portales","tipo":"suscripcion","ruta":"/tienda/portales/","url":"https://inmuebles.vorka.mx/entrar/","boton":"Entrar a mi portal","detalle":"Suscripción mensual · cancela cuando quieras"},"suscripcion":{"intervalo":"month","extras":{"sucursal":"prod_portales_usuario_mensual"}}}')),
+('prod_portales_usuario_mensual', 'portales-usuario-mensual', 'Portal inmobiliario · usuario adicional (mensual)', 'Un asesor más con su propio acceso al panel y a los prospectos.', 9900, 1, 'Inmobiliarias', 63, '[]', 'https://inmuebles.vorka.mx/foto/vorka/marca/portales-portada.webp',
+  json('{"oculto":true,"complemento":true,"acceso":{"app":"portales","tipo":"usuario","ruta":"/tienda/portales/","url":"https://inmuebles.vorka.mx/entrar/","boton":"Entrar a mi portal"},"suscripcion":{"intervalo":"month"}}'));
