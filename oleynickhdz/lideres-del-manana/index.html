@@ -105,7 +105,7 @@
      "name": "¿Cómo entro al grupo de aspirantes?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "El grupo es patrocinado por Vorka México. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página."
+      "text": "El grupo lo patrocina Vorka México, un ecosistema de jóvenes líderes con herramientas para emprendedores, mentoría y consultoría. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página."
      }
     },
     {
@@ -728,7 +728,11 @@
   /* Grupo patrocinado por Vorka */
   .ldm-vorka { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: center; margin-bottom: 14px; padding: clamp(26px, 4vw, 44px); border-radius: 28px; background: #141414; color: #F5F5F0; }
   .ldm-patro { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); font-size: 12.5px; font-weight: 800; letter-spacing: .02em; }
-  .ldm-patro img { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: rgba(255,255,255,.1); }
+  .ldm-patro .v { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.1); flex: none; }
+  .ldm-patro .v img { width: 14px; height: auto; display: block; margin-left: 1px; }
+  .ldm-eco { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .ldm-eco li { padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); font-size: 13px; font-weight: 700; color: #fff; }
+  .ldm-eco li::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--accent); vertical-align: 1px; }
   .ldm-vorka h3 { margin: 16px 0 10px; font-size: clamp(1.4rem, 2.6vw, 1.9rem); line-height: 1.12; letter-spacing: -.03em; color: #fff; }
   .ldm-vorka p { margin: 0; font-size: 15.5px; line-height: 1.6; color: rgba(245,245,240,.75); max-width: 52ch; }
   .ldm-vorka p strong { color: #fff; }
@@ -908,12 +912,18 @@
       </div>
       <div class="ldm-vorka" id="grupo">
         <div class="ldm-vorka-txt">
-          <span class="ldm-patro"><img src="../img/logo-vorka-blanco.png" alt="" width="22" height="22">Patrocinado por Vorka México</span>
+          <span class="ldm-patro"><span class="v"><img src="../img/logo-vorka-blanco.png" alt="" width="15" height="15"></span>Patrocinado por Vorka México</span>
           <h3>Grupo de aspirantes a Líderes del Mañana</h3>
-          <p>El grupo de WhatsApp es patrocinado por <strong>Vorka México</strong>. Antes de solicitar unirte, síguenos en Instagram: ahí conoces a más jóvenes líderes, sus proyectos y las becas y oportunidades que vamos compartiendo.</p>
+          <p>El grupo de WhatsApp lo patrocina <strong>Vorka México</strong>, un ecosistema para jóvenes que quieren crecer e impactar. Antes de solicitar unirte, síguenos en Instagram para entrar a todo lo que hay del otro lado:</p>
+          <ul class="ldm-eco">
+            <li>Comunidad de jóvenes líderes</li>
+            <li>Herramientas para emprendedores</li>
+            <li>Mentoría y consultoría</li>
+            <li>Becas y oportunidades</li>
+          </ul>
         </div>
         <ol class="ldm-vorka-pasos">
-          <li><span class="n">1</span><div><b>Sigue a @vorka.mx</b><span>Es el primer paso para entrar.</span></div><a class="ldm-ig" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>Seguir</a></li>
+          <li><span class="n">1</span><div><b>Sigue a @vorka.mx</b><span>Conoce el ecosistema y a más líderes.</span></div><a class="ldm-ig" href="https://instagram.com/vorka.mx" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0m0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324M12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881"/></svg>Seguir</a></li>
           <li><span class="n">2</span><div><b>Solicita unirte al grupo</b><span>Te aceptamos lo antes posible.</span></div><a class="ldm-wa2" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.94 11.94 0 0 0 12 0C5.37 0 0 5.37 0 12a11.86 11.86 0 0 0 1.64 6.03L0 24l6.16-1.62A11.9 11.9 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.25-6.21-3.48-8.52zM12 21.82a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.66.96.98-3.57-.24-.37A9.8 9.8 0 1 1 12 21.82zm5.39-7.34c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>Unirme</a></li>
         </ol>
       </div>
@@ -962,7 +972,7 @@
       <details><summary>¿Qué puntaje necesito en la PAA?</summary><p>La Convocatoria Nacional 2027 pide al menos 1,360 puntos en la Prueba de Aptitud Académica.</p></details>
       <details><summary>¿Hasta cuándo me puedo registrar?</summary><p>El registro cierra el 12 de febrero de 2027 para Ciencias de la Salud y el 26 de febrero de 2027 para el resto de programas. Los resultados se publican el 28 de mayo de 2027.</p></details>
       <details><summary>¿Qué evidencia de liderazgo social me piden?</summary><p>Fotografías, reportes, testimonios o cifras comprobables de tu participación en proyectos de impacto comunitario.</p></details>
-      <details><summary>¿Cómo entro al grupo de aspirantes?</summary><p>El grupo es patrocinado por Vorka México. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página.</p></details>
+      <details><summary>¿Cómo entro al grupo de aspirantes?</summary><p>El grupo lo patrocina Vorka México, un ecosistema de jóvenes líderes con herramientas para emprendedores, mentoría y consultoría. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página.</p></details>
       <details><summary>¿La mentoría me garantiza la beca?</summary><p>No. La decisión es del Tec de Monterrey. La mentoría te ayuda a preparar tu proyecto, tus evidencias y tu plan de estudio para llegar lo mejor posible a cada etapa.</p></details>
     <p class="ldm-nota">Esta es una guía independiente de Brandon Oleynick; no es un sitio oficial del Tecnológico de Monterrey. La información viene de la <a href="https://lideresdelmanana.tec.mx/noticia/convocatoria-lideres-del-manana-2027" target="_blank" rel="noopener">Convocatoria Nacional 2027</a> publicada en lideresdelmanana.tec.mx. Confírmala ahí antes de postularte. Si vives en Centroamérica o República Dominicana, revisa la convocatoria LATAM, que tiene sus propias reglas.</p>
   </section>
