@@ -690,6 +690,14 @@
     .ldm-pasos { grid-template-columns: 1fr 1fr; } .ldm-recursos { grid-template-columns: 1fr; }
   }
   @media (max-width: 600px) { .ldm-check, .ldm-pasos { grid-template-columns: 1fr; } .ldm-fecha { padding: 20px 18px; } }
+  /* La letra de títulos (Anton) solo en portada y títulos de sección; lo demás con la letra de texto */
+  .ldm-dudas h2, .ldm-dudas .tel, .ldm-fecha b, .ldm-pasos li::before, .ldm-agenda li::before, .ldm-incluye i { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: -.03em; font-weight: 800; }
+  .ldm-dudas h2 { font-size: clamp(1.6rem, 3.2vw, 2.1rem); line-height: 1.1; margin-bottom: 8px; }
+  .ldm-dudas .tel { font-size: clamp(1.5rem, 3vw, 1.9rem); margin-top: 14px; }
+  .ldm-fecha b { font-size: clamp(2.2rem, 4vw, 3rem); }
+  .ldm-pasos li::before { font-size: 1.9rem; }
+  .ldm-agenda li::before { font-size: 17px; }
+  .ldm-incluye i { font-size: 16px; }
 </style>
 </head>
 <body>
