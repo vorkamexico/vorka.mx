@@ -2,6 +2,7 @@
 <html lang="es-MX">
 <head>
 <meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="Brandon Oleynick">
@@ -650,6 +651,23 @@
   .menu-close { position: absolute; top: 16px; right: var(--gutter); background: transparent; border: 1px solid var(--rule); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink); padding: 0; }
   @media (max-width: 960px) { .site-header .nav-main, .site-header .cta-mini { display: none !important; } .menu-btn { display: inline-flex; } .site-header .menu-btn { height: 46px; width: 46px; border-radius: 999px; } }
   @media (max-width: 520px) { .site-header .menu-btn { width: 40px; height: 40px; } }
+  /* Pie de página en celular: compacto, en dos columnas y con contacto en botones */
+  @media (max-width: 760px) {
+    .foot { padding: 36px 0 calc(96px + env(safe-area-inset-bottom)); }
+    .foot-top { flex-direction: column; align-items: stretch; gap: 18px; padding-bottom: 22px; }
+    .foot-primary { justify-content: center; padding: 15px 22px; font-size: 15px; }
+    .foot-mid { grid-template-columns: 1fr 1fr !important; gap: 26px 18px; padding: 24px 0 22px; }
+    .foot-mid .foot-col:first-child { grid-column: 1 / -1; }
+    .foot-mid .foot-col:first-child ul { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .foot-mid .foot-col:first-child li a { display: inline-flex; align-items: center; padding: 9px 14px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); font-size: 13px; color: #fff; }
+    .foot-col h5 { margin-bottom: 10px; }
+    .foot-col ul { gap: 9px; }
+    .foot-col ul a { font-size: 13.5px; }
+    .foot-socials-block { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px 0; }
+    .foot-socials a { width: 40px; height: 40px; }
+    .foot-socials a svg { width: 16px; height: 16px; }
+    .foot-bottom { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11.5px; }
+  }
 </style>
 </head>
 <body>
@@ -841,7 +859,7 @@
         <h5>Contacto</h5>
         <ul>
           <li class="mono"><a href="mailto:oleynickhdz@gmail.com">oleynickhdz@gmail.com</a></li>
-          <li class="mono"><a href="tel:+524612242547">+52 461 224 2547</a></li>
+          <li class="mono"><a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener">Instagram @oleynickhdz</a></li>
           <li class="mono"><a href="https://wa.me/524612242547" target="_blank" rel="noopener">WhatsApp directo</a></li>
         </ul>
       </div>

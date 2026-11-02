@@ -8,7 +8,7 @@
 <meta name="author" content="Brandon Oleynick">
 <meta name="publisher" content="Brandon Oleynick">
 <meta name="theme-color" content="#F7B33E">
-<meta name="format-detection" content="telephone=yes">
+<meta name="format-detection" content="telephone=no">
 
 <title>¿Qué es un proyecto social? — Definición, guía y ejemplos | Brandon Oleynick</title>
 <meta name="description" content="Un proyecto social es una iniciativa planificada para atender una necesidad de una comunidad y generar impacto positivo. Definición, checklist, 10 pasos y errores comunes explicados por Brandon Oleynick, Presidente Nacional de Juventudes Impactando México A.C.">
@@ -1758,6 +1758,23 @@
   .lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; min-width: 46px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: .06em; transition: border-color .2s, color .2s; }
   .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 520px) { .lang-btn { height: 40px; min-width: 40px; padding: 0 10px; } }
+  /* Pie de página en celular: compacto, en dos columnas y con contacto en botones */
+  @media (max-width: 760px) {
+    .foot { padding: 36px 0 calc(96px + env(safe-area-inset-bottom)); }
+    .foot-top { flex-direction: column; align-items: stretch; gap: 18px; padding-bottom: 22px; }
+    .foot-primary { justify-content: center; padding: 15px 22px; font-size: 15px; }
+    .foot-mid { grid-template-columns: 1fr 1fr !important; gap: 26px 18px; padding: 24px 0 22px; }
+    .foot-mid .foot-col:first-child { grid-column: 1 / -1; }
+    .foot-mid .foot-col:first-child ul { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .foot-mid .foot-col:first-child li a { display: inline-flex; align-items: center; padding: 9px 14px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); font-size: 13px; color: #fff; }
+    .foot-col h5 { margin-bottom: 10px; }
+    .foot-col ul { gap: 9px; }
+    .foot-col ul a { font-size: 13.5px; }
+    .foot-socials-block { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px 0; }
+    .foot-socials a { width: 40px; height: 40px; }
+    .foot-socials a svg { width: 16px; height: 16px; }
+    .foot-bottom { flex-direction: column; align-items: flex-start; gap: 8px; font-size: 11.5px; }
+  }
 </style>
 </head>
 <body>
@@ -2131,7 +2148,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
           </span>
         </a>
-        <a class="wa-btn" href="https://chat.whatsapp.com/Ew9lRAffpH289lKi3Q3Rwn" target="_blank" rel="noopener" aria-label="Unirme al grupo de WhatsApp de aspirantes de Líderes del Mañana">
+        <a class="wa-btn" href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener" aria-label="Unirme al grupo de WhatsApp de aspirantes de Líderes del Mañana">
           <span class="wa-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-1a6 6 0 0 1 12 0v1M16 3.13a4 4 0 0 1 0 7.75M21 21v-1a6 6 0 0 0-4-5.65"/></svg>
           </span>
@@ -2239,7 +2256,7 @@
         <div class="answer">
           <p>Líderes del Mañana es un programa que permite al <strong>Tecnológico de Monterrey</strong> incorporar a estudiantes con talento académico y liderazgo social, cubriendo el <strong>100% de la colegiatura</strong> durante toda su carrera.</p>
           <p>Requisitos, fechas, los pasos para aplicar, el simulador de la PAA y la mentoría están en la <a href="../lideres-del-manana/">guía completa de Líderes del Mañana</a>.</p>
-          <p>Si eres aspirante puedes sumarte al <a href="https://chat.whatsapp.com/Ew9lRAffpH289lKi3Q3Rwn" target="_blank" rel="noopener">grupo de aspirantes LDM</a>. Y para enterarte primero de convocatorias, becas y oportunidades laborales, suscríbete al <a href="https://whatsapp.com/channel/0029VbD5YC8It5rygL3EpD46" target="_blank" rel="noopener">canal informativo abierto</a>.</p>
+          <p>Si eres aspirante puedes sumarte al <a href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener">grupo de aspirantes LDM</a>. Y para enterarte primero de convocatorias, becas y oportunidades laborales, suscríbete al <a href="https://whatsapp.com/channel/0029VbD5YC8It5rygL3EpD46" target="_blank" rel="noopener">canal informativo abierto</a>.</p>
         </div>
       </details>
       <details class="faq-item">
@@ -2284,7 +2301,7 @@
         <h5>Contacto</h5>
         <ul>
           <li class="mono"><a href="mailto:oleynickhdz@gmail.com">oleynickhdz@gmail.com</a></li>
-          <li class="mono"><a href="tel:+524612242547">+52 461 224 2547</a></li>
+          <li class="mono"><a href="https://instagram.com/oleynickhdz" target="_blank" rel="noopener">Instagram @oleynickhdz</a></li>
           <li class="mono"><a href="https://wa.me/524612242547" target="_blank" rel="noopener">WhatsApp directo</a></li>
         </ul>
       </div>
@@ -2293,7 +2310,7 @@
         <h5>Comunidad</h5>
         <ul>
           <li><a href="https://whatsapp.com/channel/0029VbD5YC8It5rygL3EpD46" target="_blank" rel="noopener">Canal informativo</a></li>
-          <li><a href="https://chat.whatsapp.com/Ew9lRAffpH289lKi3Q3Rwn" target="_blank" rel="noopener">Grupo aspirantes LDM</a></li>
+          <li><a href="https://chat.whatsapp.com/In1m46pCh0q9SH6NsBeyd3" target="_blank" rel="noopener">Grupo aspirantes LDM</a></li>
           <li><a href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">Juventudes Impactando México</a></li>
         </ul>
       </div>
