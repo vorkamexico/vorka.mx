@@ -11,6 +11,7 @@ import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
 import { revocarRuta } from './ruta-entrega.js';
 import { abonoToolkit, reembolsoToolkit } from './toolkit.js';
+import { redAlReembolsoParcial } from './embajadores.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -47,6 +48,8 @@ export async function webhook(req, env, nombre) {
       const rev = await pasarela.pagoRevertido(evento, env);
       if (rev) await anularPorPago(env, rev.pago_id, { parcial: rev.parcial });
       if (rev) await reembolsoToolkit(env, rev.pago_id, { monto: rev.monto ?? null, reembolsado: rev.reembolsado ?? null });
+      // Embajadores Vorka: un reembolso parcial de una orden revierte la parte proporcional de la red (el total va por puntosAlReembolsar)
+      if (rev) await redAlReembolsoParcial(env, rev);
     }
     await marcarEvento(env, pasarela.nombre, evento.id);
     return json({ ok: true });

@@ -13,9 +13,11 @@ import { MINIMO_RETIRO, RETENCION_DIAS, diaMx, inicioDiaMx } from './puntos-regl
 
 const ocultarClabe = c => c ? `•••• ${String(c).slice(-4)}` : '';
 const pesos = n => '$' + Number(n || 0).toLocaleString('es-MX');
-// Puntos 'ganado' de los últimos días de retención que no se han revertido (aún no se pueden transferir)
-const SQL_RETENIDOS = `SELECT COALESCE(SUM(m.puntos), 0) FROM puntos_movimientos m WHERE m.email = ? AND m.tipo = 'ganado' AND m.created_at > ?
-  AND NOT EXISTS (SELECT 1 FROM puntos_movimientos r WHERE r.order_id = m.order_id AND m.order_id IS NOT NULL AND r.tipo = 'revertido')`;
+// Puntos de los últimos días de retención (aún no se pueden transferir): 'ganado' que no se han revertido y, de Embajadores
+// Vorka, la red y el bono de arranque de ventas recientes (neto: con sus reversiones). Parámetros: correo y límite.
+const SQL_RETENIDOS = `SELECT COALESCE(SUM(m.puntos), 0) FROM puntos_movimientos m, (SELECT ? e, ? l) p WHERE m.email = p.e AND (
+  (m.tipo = 'ganado' AND m.created_at > p.l AND NOT EXISTS (SELECT 1 FROM puntos_movimientos r WHERE r.order_id = m.order_id AND m.order_id IS NOT NULL AND r.tipo = 'revertido'))
+  OR (m.tipo IN ('red', 'arranque') AND EXISTS (SELECT 1 FROM puntos_movimientos g WHERE g.email = m.email AND g.tipo = m.tipo AND g.venta = m.venta AND g.puntos > 0 AND g.created_at > p.l)))`;
 const limiteRetencion = (ahora = new Date()) => new Date(new Date(ahora).getTime() - RETENCION_DIAS * 864e5).toISOString();
 
 export async function puedeRetirar(env, email) {

@@ -39,6 +39,7 @@ import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codi
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
+import { resumenEmbajadores, embajador, cambiarPatrocinador } from './embajadores.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
@@ -212,6 +213,12 @@ export class Admin extends WorkerEntrypoint {
     const e = await estadoToolkit(this.env, email);
     return { ...e, movimientos: await movimientosDe(this.env, email, 200), codigos: await codigosDe(this.env, email) };
   }
+  // Embajadores Vorka (src/embajadores.js, migración 0066): resumen del mes (registrados, activos, nuevos, rangos, ventas y
+  // puntos pagados separados en propias / red nivel 1 / red nivel 2 / bono, % que viene de ventas propias con meta ≥ 80 %, top
+  // vendedores y top líderes), detalle de una cuenta y cambio de patrocinador (con validación de ciclos y bitácora).
+  resumenEmbajadores(f) { return resumenEmbajadores(this.env, f || {}); }
+  embajador(email, f) { return embajador(this.env, email, f || {}); }
+  cambiarPatrocinador(email, nuevoEmail, motivo, por) { return cambiarPatrocinador(this.env, email, nuevoEmail ?? null, motivo, por ?? null); }
   // Puntos Vorka (Socios Vorka quedó integrado aquí): cuentas, nivel y %, transferencia a cuenta (privada) y CSV
   cuentasPuntos(f) { return retiros.cuentasPuntos(this.env, f); }
   cuentaPuntos(email) { return retiros.cuentaPuntos(this.env, email); }
