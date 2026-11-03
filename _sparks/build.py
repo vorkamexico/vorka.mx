@@ -22,6 +22,7 @@ import os
 import re
 import shutil
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -118,10 +119,18 @@ def palabras(texto):
 
 # ---------------------------------------------------------------- datos
 
-def http_json(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "sparks-build"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.loads(r.read().decode("utf-8"))
+def http_json(url, intentos=4):
+    # Reintenta fallas de red pasajeras (p. ej. «Connection reset by peer») con espera creciente: 2, 4 y 8 s
+    for i in range(intentos):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "sparks-build"})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return json.loads(r.read().decode("utf-8"))
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if i == intentos - 1:
+                raise
+            print("  ↻  Falla de red (%s); reintento en %d s" % (e, 2 ** (i + 1)))
+            time.sleep(2 ** (i + 1))
 
 
 def cargar_noticias(args):
@@ -148,9 +157,10 @@ def cargar_historias_os(cfg):
     municipio = cfg["ruta"].rstrip("/").split("/")[-1]
     try:
         data = http_json("%s/noticias?%s" % (OS_API, urllib.parse.urlencode({"municipio": municipio})))
-    except Exception as e:  # si Vorka México no responde, se publica lo demás
-        print("  ⚠️  No se pudieron leer las historias de Vorka México (%s)" % e)
-        return []
+    except Exception as e:
+        # Si Vorka México no responde NO se publica nada: publicar sin sus historias las borraría del sitio
+        # (así se borró Sparks Celaya el 3 nov 2026). El sitio se queda como estaba y el bot lo intenta en su siguiente vuelta.
+        sys.exit("⛔ No se pudieron leer las historias de Vorka México (%s). No se publica nada; el sitio queda como estaba." % e)
     ns = [n for n in data.get("noticias", []) if n.get("slug") and n.get("titulo")]
     print("Historias de Vorka México: %d" % len(ns))
     return ns
@@ -829,6 +839,17 @@ def main():
 
     manifest_path = os.path.join(destino, "fotos.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {}
+    # Candado: si de pronto hay muchas menos noticias que las publicadas, algo falló al leerlas; no se borra el sitio.
+    # Para publicar a propósito una baja grande: SPARKS_FORZAR=1.
+    previas_path = os.path.join(destino, "noticias.json")
+    if os.path.exists(previas_path) and not os.environ.get("SPARKS_FORZAR"):
+        try:
+            previas = len(json.load(open(previas_path, encoding="utf-8")).get("n", []))
+        except Exception:
+            previas = 0
+        if previas >= 4 and len(noticias) < previas * 0.5:
+            sys.exit("⛔ Hay %d noticias y antes había %d publicadas: parece una falla al leerlas. No se publica nada "
+                     "(si de verdad se quitaron, corre con SPARKS_FORZAR=1)." % (len(noticias), previas))
     print("Procesando %d noticias…" % len(noticias))
     procesar_fotos(args, noticias, almacen, manifest)
     escribir(manifest_path, json.dumps(manifest, sort_keys=True, indent=0))
