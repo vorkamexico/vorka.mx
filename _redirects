@@ -60,6 +60,16 @@
 /anaoleynicktrayectoria                   /anaoleynick/trayectoria/   301
 /anaoleynicktrayectoria/                  /anaoleynick/trayectoria/   301
 
+# Ana Laura · Makeup: su tienda de maquillaje (antes en la dirección /oleynickana/makeup)
+/oleynickana/makeup                       /anaoleynick/makeup/        301
+/oleynickana/makeup/                      /anaoleynick/makeup/        301
+/oleynickana                              /anaoleynick/               301
+/oleynickana/                             /anaoleynick/               301
+/oleynickana/*                            /anaoleynick/:splat         301
+# Datos y scripts para cargar su tienda en Vende (SQL y fotos): no se publican
+/anaoleynick/makeup/_vende                /anaoleynick/makeup/        301
+/anaoleynick/makeup/_vende/*              /anaoleynick/makeup/        301
+
 # Diagnósticos de talento: el expediente vive en Vorka OS (este repo es público) y se ve en /diagnostico/ver/#<token>.
 # Las ligas viejas por nombre llevan a la página neutral («Esta liga no está activa»); la liga nueva se manda directo a cada persona.
 /diagnostico/dafne      /diagnostico/ver/   302
