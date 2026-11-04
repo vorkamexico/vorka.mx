@@ -9,7 +9,7 @@
   var SLUG = 'ana-laura-hernandez';
   var API = 'https://vende.vorka.mx/api/tienda/' + SLUG;
   var PEDIDO_URL = 'https://vende.vorka.mx/v/' + SLUG + '/pedido/';
-  var WA = '524611796915';
+  var WA = '524613535315';
   var K_BOLSA = 'al-makeup-bolsa-v1';
   var K_PEDIDO = 'al-makeup-pedido-v1';
   var ENVIO_GRATIS_C = 300000; // solo para el modo WhatsApp; en línea lo calcula Vende
