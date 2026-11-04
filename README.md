@@ -15,7 +15,7 @@ Cada URL es una carpeta con `index.html` (`/servicios/estrategia/` → `servicio
 | `legal/` | | **Generadas**: `python3 _tienda/legales.py` |
 | `sparks/celaya/` | `/sparks/celaya/` | **Automática** (bot cada hora). No editar a mano: ver `_sparks/GUIA-INSTALACION.md` |
 | `oleynickhdz/`, `mentoriaoleynick/` | Sitio de Brandon Oleynick | A mano |
-| `anaoleynick/` | Sitio de Ana Laura Hernández: inicio, `talleres/`, `portafolio/`, `trayectoria/` y `estilo.css` compartido. Sin marca Vorka, sólo "Powered by vorka.mx" al pie | A mano |
+| `anaoleynick/` | Sitio de Ana Laura Hernández: inicio, `talleres/`, `portafolio/`, `trayectoria/`, `makeup/` (su tienda de maquillaje, conectada a la API de Vende: `makeup/tienda.js`) y `estilo.css` compartido. Sin marca Vorka, sólo "Powered by vorka.mx" al pie. `makeup/_vende/` = SQL y script de fotos para cargar su tienda en Vende (no se publica, `_redirects`) | A mano |
 | `heymaya/`, `aviso/` | | A mano |
 
 ### Documentos de clientes y material interno (se abren con la URL, Google no los indexa)
