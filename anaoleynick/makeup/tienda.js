@@ -103,6 +103,18 @@
     }
   ];
 
+  // Tono de fondo de cada producto (la foto, con fondo blanco, se integra con mix-blend-mode:multiply)
+  var TONOS = {
+    'base-liquida-mate': '#EADCCD',          // nude
+    'base-en-crema-cobertura-maxima': '#E8DCC8', // champagne
+    'corrector-camouflage': '#E5DFD7',       // piedra
+    'mineral-hd-setting-powder': '#E3E2DE',  // niebla
+    'simply-clean': '#DFE3DC',               // salvia
+    'shampoo-personalizado': '#DCD2C7'       // arena
+  };
+  var TONO_BASE = '#ECE6DF';
+  function tono(p) { return TONOS[p.key] || TONO_BASE; }
+
   // ---------------- Utilidades ----------------
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -197,9 +209,9 @@
     if (m === 'linea') {
       var h = (S.tienda && S.tienda.pago && S.tienda.pago.horas_para_pagar) || 24;
       $('#pasos-compra').innerHTML =
-        '<li><h3>Elige tus productos</h3><p>Agrégalos a tu bolsa desde la colección. En el shampoo nos cuentas cómo es tu cabello.</p></li>' +
-        '<li><h3>Haz tu pedido</h3><p>Escribe tus datos de envío. Tus productos quedan apartados y te llega la confirmación por correo.</p></li>' +
-        '<li><h3>Transfiere en ' + h + ' horas</h3><p>Usa tu número de pedido como concepto y sube tu comprobante. Te avisamos cuando lo confirmemos.</p></li>';
+        '<li><b>Elige tus productos</b> y agrégalos a tu bolsa. En el shampoo nos cuentas cómo es tu cabello.</li>' +
+        '<li><b>Haz tu pedido</b> con tus datos de envío. Tus productos quedan apartados y te llega la confirmación por correo.</li>' +
+        '<li><b>Transfiere en ' + h + ' horas</b> con tu número de pedido como concepto y sube tu comprobante. Te avisamos cuando lo confirmemos.</li>';
     }
     pintarColeccion();
     pintarBolsa();
@@ -215,6 +227,14 @@
     if (!f) return '<span class="vacia" aria-hidden="true">AL</span>';
     return '<img src="' + esc(f.src) + '"' + (f.w ? ' width="' + f.w + '" height="' + f.h + '"' : '') + ' alt="' + esc(f.alt || '') + '" loading="lazy" decoding="async"' + (extra || '') + '>';
   }
+  /** Línea corta bajo el nombre: «Cobertura media · 40 g» (o la primera frase de la descripción de Vende). */
+  function descriptor(p) {
+    var l = p.local;
+    if (l) return [l.etiqueta, p.contenido].filter(Boolean).join(' · ');
+    var d = (String(p.descripcion || '').split(/\n/)[0].match(/^[^.]*\.?/) || [''])[0];
+    return d.length > 60 ? d.slice(0, 58).replace(/\s+\S*$/, '') + '…' : d;
+  }
+  function precioCorto(c, normal) { return '<span class="precio">' + (normal && normal > c ? '<s>' + pesos(normal) + '</s>' : '') + pesos(c) + '</span>'; }
   function pintarColeccion() {
     var cats = categorias();
     if (cats.indexOf(S.filtro) < 0) S.filtro = 'Todo';
@@ -222,17 +242,15 @@
       return '<button type="button" data-filtro="' + esc(c) + '" aria-pressed="' + (S.filtro === c) + '">' + esc(c) + '</button>';
     }).join('') : '';
     $('#rejilla').innerHTML = S.productos.filter(function (p) { return S.filtro === 'Todo' || p.categoria === S.filtro; }).map(function (p) {
-      var l = p.local, sello = !p.disponible ? '<span class="sello oscuro">Agotado</span>' : p.personalizado ? '<span class="sello">Personalizado</span>' : p.precio_normal_c ? '<span class="sello">Precio especial</span>' : '';
-      var resumen = l ? l.resumen : (p.descripcion || '').split(/\n/)[0];
-      var accion = !p.disponible ? '<button class="mini" type="button" disabled>Agotado</button>'
-        : p.variantes.length ? '<button class="mini" type="button" data-ver="' + esc(p.key) + '">Elegir opción</button>'
-        : '<button class="mini" type="button" data-agregar="' + esc(p.key) + '" aria-label="Agregar ' + esc(p.nombre) + ' a la bolsa">Agregar</button>';
+      var sello = !p.disponible ? '<span class="sello">Agotado</span>' : p.personalizado ? '<span class="sello">Personalizado</span>' : p.precio_normal_c ? '<span class="sello">Precio especial</span>' : '';
+      var accion = !p.disponible ? '<button class="agregar" type="button" disabled>Agotado</button>'
+        : p.variantes.length ? '<button class="agregar" type="button" data-ver="' + esc(p.key) + '">Elegir opción</button>'
+        : '<button class="agregar" type="button" data-agregar="' + esc(p.key) + '" aria-label="Agregar ' + esc(p.nombre) + ' a la bolsa">Agregar</button>';
       return '<li class="tarjeta">' +
-        '<button class="foto" type="button" data-ver="' + esc(p.key) + '" aria-label="Ver ' + esc(p.nombre) + '">' + sello + imgHTML(p.fotos[0]) + '</button>' +
-        '<div class="info"><p class="ceja">' + esc(p.categoria || '') + '</p>' +
-        '<h3><button type="button" data-ver="' + esc(p.key) + '">' + esc(p.nombre) + '</button></h3>' +
-        (resumen ? '<p class="resumen">' + esc(resumen) + '</p>' : '') +
-        '<div class="pie-t">' + (p.precio_desde ? '<span class="precio"><small>desde</small> ' + pesos(p.precio_c) + '<small>MXN</small></span>' : precioHTML(p.precio_c, p.precio_normal_c)) + accion + '</div></div></li>';
+        '<button class="foto" type="button" data-ver="' + esc(p.key) + '" aria-label="Ver ' + esc(p.nombre) + '" style="--tono:' + tono(p) + '">' + sello + imgHTML(p.fotos[0]) + '</button>' +
+        '<div class="info"><div class="fila-n"><h3><button type="button" data-ver="' + esc(p.key) + '">' + esc(p.nombre) + '</button></h3>' +
+        (p.precio_desde ? '<span class="precio"><small>desde</small> ' + pesos(p.precio_c) + '</span>' : precioCorto(p.precio_c, p.precio_normal_c)) + '</div>' +
+        '<p class="desc">' + esc(descriptor(p)) + '</p>' + accion + '</div></li>';
     }).join('');
   }
 
@@ -266,14 +284,16 @@
     S.actual = p.key;
     var fotos = p.fotos.length ? p.fotos : [null];
     var parrafos = l ? l.parrafos : String(p.descripcion || '').split(/\n\s*\n|\n/).filter(Boolean);
-    var html = '<div class="hoja-cab"><p class="ceja">' + esc(p.categoria || '') + ' · Ana Laura</p><button class="cerrar" type="button" data-cerrar aria-label="Cerrar">' + ICONO_X + '</button></div>' +
-      '<div class="producto-g"><div class="galeria"><div class="grande">' + imgHTML(fotos[0], ' id="g-img"').replace(' loading="lazy"', '') + '</div>' +
+    var html = '<div class="hoja-cab"><p class="migas-f">Makeup <span aria-hidden="true">/</span> ' + esc(p.categoria || '') + '</p><button class="cerrar" type="button" data-cerrar aria-label="Cerrar">' + ICONO_X + '</button></div>' +
+      '<div class="producto-g"><div class="galeria" style="--tono:' + tono(p) + '"><div class="grande">' + imgHTML(fotos[0], ' id="g-img"').replace(' loading="lazy"', '') + '</div>' +
       (fotos.length > 1 ? '<div class="miniaturas">' + fotos.map(function (f, i) {
         return '<button type="button" data-foto="' + i + '" aria-current="' + (i === 0) + '" aria-label="Ver foto ' + (i + 1) + ' de ' + fotos.length + '">' + imgHTML(f).replace(/ alt="[^"]*"/, ' alt=""') + '</button>';
       }).join('') + '</div>' : '') + '</div>' +
-      '<div class="ficha"><div class="ficha-sup">' + (l && l.etiqueta ? '<p class="ceja">' + esc(l.etiqueta) + '</p>' : '') +
-      '<h3 id="p-titulo">' + esc(p.nombre) + '</h3><div class="meta">' + precioHTML(p.precio_c, p.precio_normal_c) +
-      (p.contenido ? '<span class="neto">Contenido neto: ' + esc(p.contenido) + '</span>' : '') + '</div></div>';
+      '<div class="ficha"><div class="ficha-sup"><h3 id="p-titulo" tabindex="-1" autofocus>' + esc(p.nombre) + '</h3>' +
+      (l && l.etiqueta ? '<p class="sub-n">' + esc(l.etiqueta) + '</p>' : '') +
+      '<div class="meta">' + precioHTML(p.precio_c, p.precio_normal_c) +
+      (p.contenido ? '<span class="neto">Contenido neto: ' + esc(p.contenido) + '</span>' : '') + '</div>' +
+      (l && l.resumen ? '<p class="resumen-f">' + esc(l.resumen) + '</p>' : '') + '</div>';
     if (p.variantes.length) {
       html += '<div class="opciones-v"><label for="p-variante">Elige una opción</label><select id="p-variante">' + p.variantes.map(function (v) {
         return '<option value="' + esc(v.id) + '"' + (v.disponible === false ? ' disabled' : '') + '>' + esc(v.nombre) + ' · ' + pesos(v.precio_c) + (v.disponible === false ? ' (agotado)' : '') + '</option>';
@@ -288,11 +308,19 @@
       ? '<div class="comprar-fila"><div class="cantidad" role="group" aria-label="Cantidad"><button type="button" data-cant="-1" aria-label="Uno menos">−</button><output id="p-cant">1</output><button type="button" data-cant="1" aria-label="Uno más">+</button></div>' +
         '<button class="boton" type="button" id="p-agregar" data-key="' + esc(p.key) + '">Agregar a la bolsa</button></div>'
       : '<p class="nota-pers"><b>Agotado por ahora.</b><span><a class="enlace" href="' + esc(ligaWhatsapp('Hola, ¿cuándo vuelve a estar disponible ' + p.nombre + '?')) + '" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a></span></p>';
-    html += '<div class="texto-largo">' + parrafos.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>';
-    if (l && l.pasos) html += '<div class="bloque-f"><h4>' + esc(l.pasos.titulo) + '</h4><ol class="lista-oro">' + l.pasos.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol></div>';
-    if (l && l.lista) html += '<div class="bloque-f"><h4>' + esc(l.lista.titulo) + '</h4><ul class="lista-oro">' + l.lista.items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div>';
-    if (l && l.tip) html += '<div class="tip"><h4 class="ceja">' + esc(l.tip.titulo) + '</h4><p>' + esc(l.tip.texto) + '</p></div>';
-    html += '</div></div>';
+    var gratis = S.modo === 'linea' && S.tienda && S.tienda.entrega && S.tienda.entrega.envio ? S.tienda.entrega.envio.gratis_desde_c : ENVIO_GRATIS_C;
+    html += '<ul class="confianza"><li>Envío a todo México' + (gratis ? ', gratis desde ' + pesos(gratis) : '') + '</li>' +
+      '<li>' + (S.modo === 'linea' ? 'Pago por transferencia; tus productos quedan apartados' : 'Pedido y pago por WhatsApp, con atención personal') + '</li></ul>';
+    // Textos largos organizados como ficha de marca: Descripción · Beneficios · Cómo usar / Cómo funciona · Contenido
+    var sec = function (titulo, cuerpo, abierta) { return '<details' + (abierta ? ' open' : '') + '><summary>' + esc(titulo) + '</summary><div class="txt">' + cuerpo + '</div></details>'; };
+    var lista = function (items, tag) { return '<' + tag + ' class="lista-f">' + items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</' + tag + '>'; };
+    html += '<div class="acordeon ficha-ac">';
+    if (parrafos.length) html += sec('Descripción', parrafos.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join(''), !l);
+    if (l && l.pasos) html += sec('Cómo funciona', lista(l.pasos.items, 'ol'));
+    if (l && l.lista) html += sec('Beneficios', lista(l.lista.items, 'ul'));
+    if (l && l.tip) html += sec('Cómo usar', '<p><b>' + esc(l.tip.titulo) + '.</b> ' + esc(l.tip.texto) + '</p>');
+    if (p.contenido || p.preparacion) html += sec('Contenido', (p.contenido ? '<p>Contenido neto: ' + esc(p.contenido) + '.</p>' : '') + (p.preparacion ? '<p>Preparación: ' + esc(p.preparacion.charAt(0).toLowerCase() + p.preparacion.slice(1)) + '.</p>' : ''));
+    html += '</div></div></div>';
     d.innerHTML = html;
     d.scrollTop = 0;
     abrirHoja(d);
@@ -352,7 +380,7 @@
     var ult = leer(K_PEDIDO), ultHTML = ult && ult.token && Date.now() - (ult.t || 0) < 8 * 864e5 && S.modo === 'linea'
       ? '<p class="ultimo">¿Ya hiciste un pedido? <button type="button" id="ver-ultimo">Ver mi pedido ' + esc(ult.numero || '') + '</button></p>' : '';
     if (!ls.length) {
-      cuerpo.innerHTML = '<div class="vacio"><p>Tu bolsa está vacía</p><p>Descubre la colección de Ana Laura.</p><button class="mini claro" type="button" data-cerrar data-ir="#coleccion">Ver productos</button></div>';
+      cuerpo.innerHTML = '<div class="vacio"><p>Tu bolsa está vacía</p><button class="boton claro" type="button" data-cerrar data-ir="#coleccion">Ver la colección</button></div>';
       pie.innerHTML = ultHTML;
       pie.hidden = !ultHTML;
       return;
@@ -360,7 +388,7 @@
     pie.hidden = false;
     cuerpo.innerHTML = '<ul class="renglones">' + ls.map(function (l) {
       var k = esc(claveItem(l.item.key, l.item.variante_id));
-      return '<li class="renglon"><span class="mini-foto">' + imgHTML(l.p.fotos[0]).replace(/ alt="[^"]*"/, ' alt=""') + '</span>' +
+      return '<li class="renglon"><span class="mini-foto" style="--tono:' + tono(l.p) + '">' + imgHTML(l.p.fotos[0]).replace(/ alt="[^"]*"/, ' alt=""') + '</span>' +
         '<div><h3>' + esc(l.p.nombre) + '</h3><p class="det">' + (l.v ? esc(l.v.nombre) + ' · ' : '') + pesos(l.precio_c) + (l.p.personalizado ? ' · personalizado' : '') + '</p>' +
         '<div class="cantidad" role="group" aria-label="Cantidad de ' + esc(l.p.nombre) + '"><button type="button" data-mas="-1" data-k="' + k + '" aria-label="Uno menos">−</button><output>' + l.item.cantidad + '</output><button type="button" data-mas="1" data-k="' + k + '" aria-label="Uno más">+</button></div></div>' +
         '<div class="der">' + '<span class="precio">' + pesos(l.importe_c) + '</span><button class="quitar" type="button" data-quitar="' + k + '">Quitar</button></div></li>';
@@ -371,12 +399,14 @@
     if (gratis && sub >= gratis) envioTxt = 'Tu envío es gratis.';
     else if (gratis) envioTxt = 'Te faltan ' + pesos(gratis - sub) + ' para el envío gratis. El envío se calcula con tu estado' + (S.modo === 'linea' ? '.' : ', con un máximo de ' + pesos(ENVIO_MAX_C) + '.');
     else envioTxt = 'El envío se calcula con tu estado en el siguiente paso.';
+    var avance = gratis ? '<div class="avance" role="presentation"><span style="width:' + Math.min(100, Math.round(sub / gratis * 100)) + '%"></span></div>' : '';
     var boton = S.modo === 'linea'
       ? '<button class="boton" type="button" id="ir-pago">Continuar al pago</button>'
       : S.modo === 'cargando'
         ? '<button class="boton" type="button" id="ir-pago">Continuar</button>'
         : '<a class="boton" href="' + esc(ligaWhatsapp()) + '" target="_blank" rel="noopener">' + ICONO_WA + ' Enviar pedido por WhatsApp</a><p class="nota">Te confirmamos existencias, envío y datos de pago por WhatsApp.</p>';
-    pie.innerHTML = '<div class="suma"><span>Subtotal</span>' + '<span class="precio">' + pesos(sub) + '<small>MXN</small></span></div><p class="nota">' + envioTxt + '</p>' + boton + ultHTML;
+    cuerpo.insertAdjacentHTML('afterbegin', '<div class="envio-b"><p>' + envioTxt + '</p>' + avance + '</div>');
+    pie.innerHTML = '<div class="suma"><span>Subtotal</span>' + '<span class="precio">' + pesos(sub) + '<small>MXN</small></span></div>' + boton + ultHTML;
   }
   $('#dlg-bolsa').addEventListener('click', function (e) {
     var m = e.target.closest('[data-mas]'), q = e.target.closest('[data-quitar]');
@@ -482,7 +512,7 @@
       '<button class="boton enviar" type="submit" id="f-enviar">Hacer mi pedido</button>' +
       '<p class="seguro" style="margin-top:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Pago por transferencia: al confirmar recibes los datos de la cuenta y ' + ((S.tienda.pago && S.tienda.pago.horas_para_pagar) || 24) + ' horas para transferir. Tus productos quedan apartados mientras tanto.</span></p>' +
       '</form>' +
-      '<aside class="pago-res" aria-label="Resumen del pedido"><div class="pegajoso"><p class="ceja">Tu pedido</p><ul class="res-items" id="res-items"></ul>' +
+      '<aside class="pago-res" aria-label="Resumen del pedido"><div class="pegajoso"><p class="res-tit">Tu pedido</p><ul class="res-items" id="res-items"></ul>' +
       '<div class="campo"><label for="f-codigo">Código de descuento</label><div class="codigo-fila"><input type="text" id="f-codigo" maxlength="30" autocomplete="off" spellcheck="false"><button class="mini claro" type="button" id="f-aplicar">Aplicar</button></div><p class="msg" id="msg-codigo" aria-live="polite"></p></div>' +
       '<div class="totales" id="totales"></div><p class="estado-cot" id="estado-cot" aria-live="polite"></p></div></aside></div>';
     $('#pg-titulo').textContent = 'Finalizar pedido';
@@ -679,7 +709,7 @@
     var h = '<div class="confirma">' +
       '<div class="confirma-enc"><span class="sello-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>' +
       '<p class="num-pedido">Pedido<b>' + esc(p.numero) + '</b></p>' +
-      '<h2 class="display" id="conf-titulo">' + (esperando ? 'Tus productos están <em>apartados</em>' : esc(p.estado_texto || 'Tu pedido')) + '</h2>' +
+      '<h2 class="display" id="conf-titulo">' + (esperando ? 'Tus productos están apartados' : esc(p.estado_texto || 'Tu pedido')) + '</h2>' +
       '<p>' + (esperando ? 'Te enviamos este resumen y los datos para pagar a tu correo. Para confirmar tu pedido, transfiere el total y sube tu comprobante.' : 'Estado actual de tu pedido: ' + esc(p.estado_texto || '') + '.') + '</p></div>';
     if (esperando) {
       h += '<div class="limite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Transfiere antes del <b>' + esc(p.limite_texto || '') + '</b>. Si no registramos tu pago a tiempo, el pedido se cancela y las piezas vuelven a la tienda.</span></div>' +
