@@ -16,7 +16,6 @@ PROBAR="${1:-}"
 
 FOTOS=(
   "base-liquida-frente.webp ad42ff9c-8a27-444b-b634-6262c8b4261d-al1.webp"
-  "base-liquida-reverso.webp ad42ff9c-8a27-444b-b634-6262c8b4261d-al2.webp"
   "base-crema.webp 1d3c8a4d-4335-4f43-b382-75c9f5232efb-al1.webp"
   "corrector-frente.webp 46bb533d-d272-4604-99d0-420ee3ee224a-al1.webp"
   "corrector-reverso.webp 46bb533d-d272-4604-99d0-420ee3ee224a-al2.webp"

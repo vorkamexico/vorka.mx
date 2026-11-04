@@ -23,7 +23,7 @@
     {
       slug: 'base-liquida-mate', id: 'ad42ff9c-8a27-444b-b634-6262c8b4261d', nombre: 'Base Líquida Mate', categoria: 'Rostro', precio: 900, contenido: '40 g',
       etiqueta: 'Cobertura media', resumen: 'Cobertura media con acabado mate natural y auténtico efecto segunda piel.',
-      fotos: [{ src: 'img/base-liquida-frente.webp', w: 195, h: 605, alt: 'Base Líquida Mate Ana Laura, frente' }, { src: 'img/base-liquida-reverso.webp', w: 195, h: 610, alt: 'Base Líquida Mate Ana Laura, reverso' }],
+      fotos: [{ src: 'img/base-liquida-frente.webp', w: 195, h: 605, alt: 'Base Líquida Mate Ana Laura, frente' }],
       parrafos: [
         'La Base Líquida Mate Ana Laura es maquillaje de nivel profesional, creada para quienes buscan resultados visibles, piel impecable y un acabado que se nota desde la primera aplicación.',
         'Su fórmula no comedogénica y Cruelty Free está diseñada para cuidar la piel mientras la perfecciona, ofreciendo un desempeño superior frente a bases convencionales. No solo cubre: eleva la calidad visual de tu piel.',
@@ -171,7 +171,11 @@
       var t = r[0], p = r[1];
       if (!t.ok || !t.datos.tienda || !p.ok || !Array.isArray(p.datos.productos) || !p.datos.productos.length) { ponerModo('whatsapp'); return; }
       S.tienda = t.datos.tienda;
-      S.productos = p.datos.productos.map(desdeApi).sort(function (a, b) { return a.orden - b.orden; });
+      // Solo maquillaje y cuidado: lo del catálogo, o lo que ella dé de alta en Vende en estas categorías (su cuenta puede tener otros negocios)
+      var CATS = ['rostro', 'ojos', 'labios', 'cuidado', 'cabello', 'maquillaje', 'accesorios'];
+      S.productos = p.datos.productos.filter(function (x) { return porId[x.id] || porNombre[norm(x.nombre)] || CATS.indexOf(norm(x.categoria || '')) >= 0; })
+        .map(desdeApi).sort(function (a, b) { return a.orden - b.orden; });
+      if (!S.productos.length) { ponerModo('whatsapp'); return; }
       // Quita de la bolsa lo que ya no existe en la tienda
       S.bolsa = S.bolsa.filter(function (i) { return !!producto(i.key); });
       guardarBolsa();

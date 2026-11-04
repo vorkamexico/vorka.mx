@@ -103,10 +103,7 @@ ON CONFLICT (id) DO UPDATE SET marca_id = excluded.marca_id, marca = excluded.ma
   WHERE productos.vendedora_id = excluded.vendedora_id;
 
 -- 3. Fotos adicionales (reverso). La principal está en productos.foto
-INSERT INTO producto_fotos (id, vendedora_id, producto_id, clave, orden)
-SELECT 'c9c76a880478b319969bc939cadd0bd3', '88b11614-16ea-4bd8-b8bd-d882d1ddadd5', 'ad42ff9c-8a27-444b-b634-6262c8b4261d', 'productos/88b11614-16ea-4bd8-b8bd-d882d1ddadd5/ad42ff9c-8a27-444b-b634-6262c8b4261d-al2.webp', 1
-WHERE EXISTS (SELECT 1 FROM productos WHERE id = 'ad42ff9c-8a27-444b-b634-6262c8b4261d' AND vendedora_id = '88b11614-16ea-4bd8-b8bd-d882d1ddadd5')
-ON CONFLICT (id) DO UPDATE SET clave = excluded.clave, orden = excluded.orden WHERE producto_fotos.vendedora_id = excluded.vendedora_id;
+-- (Sin reverso de la Base Líquida: la etiqueta muestra nombre y RFC del importador)
 INSERT INTO producto_fotos (id, vendedora_id, producto_id, clave, orden)
 SELECT '47252cfe224211e670d363a539587f4e', '88b11614-16ea-4bd8-b8bd-d882d1ddadd5', '46bb533d-d272-4604-99d0-420ee3ee224a', 'productos/88b11614-16ea-4bd8-b8bd-d882d1ddadd5/46bb533d-d272-4604-99d0-420ee3ee224a-al2.webp', 1
 WHERE EXISTS (SELECT 1 FROM productos WHERE id = '46bb533d-d272-4604-99d0-420ee3ee224a' AND vendedora_id = '88b11614-16ea-4bd8-b8bd-d882d1ddadd5')
