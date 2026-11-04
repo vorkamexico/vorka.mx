@@ -364,3 +364,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--tinta);b
   .aviso-f.ver{transform:none}
 }
 @media (prefers-reduced-motion:reduce){.tarjeta .foto img,.avance span{transition:none}}
+
+/* Titulares con la letra de su nombre (Jost en mayúsculas, ligera y espaciada) */
+.display,.ficha h3,.grupo legend,.pers h3,.comprobante h3,.vacio p{font-weight:400!important;text-transform:uppercase;letter-spacing:.02em!important;line-height:1.08!important}

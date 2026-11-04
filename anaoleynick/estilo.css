@@ -13,7 +13,7 @@
   --linea:#DEDAD8;
   --sans:"Jost","Futura","Avenir Next","Century Gothic",system-ui,sans-serif;
   --serif:"Cormorant Garamond","Garamond",Georgia,serif;
-  --display:var(--serif);
+  --display:var(--sans);   /* la misma letra de su nombre ANA LAURA HERNÁNDEZ (Jost, de la familia de Kiona/Futura) */
   --ancho:1160px;
   color-scheme:light;
 }
@@ -103,3 +103,6 @@ p{margin:0}
   .redes small{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+
+/* Titulares con la letra de su nombre: Jost en mayúsculas, ligera y espaciada, como «HERNÁNDEZ» */
+.titulo-pag h1,.sub,.contacto h2,.i-tit,.taller-main h2{font-weight:400!important;text-transform:uppercase;letter-spacing:.02em!important;line-height:1.08!important}
