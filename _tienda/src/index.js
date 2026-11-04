@@ -36,7 +36,7 @@ import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp, cancelarApp } from './suscripciones.js';
 import { panelSuscripciones, crearTransferencia, prenderTransferencia, pagoTransferencia, editarTransferencia, revisarTransferencias } from './transferencias.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo, modoSuscripcion } from './puntos.js';
-import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codigo-publico.js';
+import { cambiarCodigo, ventasVendedor, ventasEquipo, ventasPorVendedor, DIAS_CAMBIO } from './codigo-publico.js';
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
 import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js';
 import * as retiros from './puntos-retiros.js';
@@ -170,6 +170,10 @@ export class Admin extends WorkerEntrypoint {
   ventasVendedor(email, limite) { return ventasVendedor(this.env, email, limite); }
   // Ventas con código del equipo: avisos al momento y tablero del mes en Vorka OS (sin datos de quien compró)
   ventasEquipo(f) { return ventasEquipo(this.env, f); }
+  // «Ventas del equipo» en Vorka OS: todas las ventas con código del periodo ({ desde, hasta } ISO o { mes }; sin fechas = todo),
+  // cada una con su vendedor (correo, nombre real de su cuenta o null, código), productos, monto, puntos, reembolso y red;
+  // más el resumen por vendedor. Sin datos de quien compró.
+  ventasPorVendedor(f) { return ventasPorVendedor(this.env, f || {}); }
   // Equipo: puntos en suscripciones, % de su nivel una vez o 5 % recurrente (nuevo = 'unico' | 'recurrente' para cambiarla)
   modoSuscripcion(email, nuevo) { return modoSuscripcion(this.env, email, nuevo ?? null); }
   // Página pública vorka.mx/equipo/<código> (opcional, la prende cada persona en Vorka OS › Ventas › Mi tarjeta)

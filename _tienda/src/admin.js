@@ -1,6 +1,7 @@
 // Administración de la tienda. Estas funciones solo se llaman por RPC desde Vorka OS
 // (service binding a la clase Admin de index.js): no tienen ruta pública.
 // Vorka OS se encarga de que solo el rol Ejecutivo llegue aquí.
+import { nombreDeCuenta } from './codigo-publico.js';
 import { z } from 'zod';
 import { revocarRuta, estadoRuta } from './ruta-entrega.js';
 import { all, one, run, ahoraISO } from './util.js';
@@ -130,7 +131,10 @@ export async function orden(env, id) {
   const regalos = o.regalo ? await all(env, 'SELECT id, estado, canjeado_email, canjeado_at, created_at FROM regalos WHERE order_id = ? ORDER BY id', o.id) : [];
   // Ruta de Impacto: qué dio la orden en ruta.vorka.mx y si el regalo ya se abrió (null si no aplica u os no responde)
   const ruta = await estadoRuta(env, o, await all(env, 'SELECT i.cantidad, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', o.id));
-  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, ruta, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at, reembolso: await reembolsoDe(env, o, items, tokens) };
+  // Quién la vendió (si llegó con el código de una cuenta de Puntos): para que Vorka OS muestre su nombre real, no el código
+  const a = o.ref_code ? await one(env, "SELECT a.email, a.tipo, a.nombre an, COALESCE(a.publico, a.code) code, c.nombre cn FROM affiliates a LEFT JOIN puntos_cuentas c ON c.email = a.email WHERE a.code = ?", o.ref_code) : null;
+  const vendedor = a?.tipo === 'puntos' && a.email ? { email: a.email, nombre: nombreDeCuenta(a.email, a.cn, a.an), code: a.code } : null;
+  return { ...o, items, tokens, transferencias: trf, recordatorio, regalos, ruta, vendedor, archivable: ['pending', 'failed'].includes(o.estado) && !o.archivada_at, reembolso: await reembolsoDe(env, o, items, tokens) };
 }
 // ¿Se puede reembolsar? (política en vorka.mx/legal/reembolsos): solo si no se usó nada y dentro de 5 días hábiles.
 // Productos de acceso (Simulador PAA): basta con que haya empezado un simulacro, examen o sección. Lo decide el equipo

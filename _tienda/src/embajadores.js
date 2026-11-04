@@ -20,6 +20,7 @@
 // Idempotente: todo va con clave única ('red:<venta>:<nivel>', 'red-rev:…', 'arranque:<correo>', 'arranque-rev:<correo>').
 // Nunca se guardan ni se muestran datos de quien compró: las notas solo llevan el nombre público del vendedor.
 import { one, all, run } from './util.js';
+import { nombreDeCuenta } from './codigo-publico.js';
 import { afiliado, REFERIDO, PCT_REFERIDO } from './descuentos.js';
 import { avisar } from './puntos-push.js';
 import { PCT_RED, PCT_TOPE_VENTA, BONO_ARRANQUE, DIAS_ARRANQUE, LIDER_ACTIVOS, ELITE_LIDERES, RANGOS, rangoDe, DIAS_SIN_VENDER,
@@ -310,9 +311,11 @@ export async function resumenEmbajadores(env, { mes } = {}) {
       COALESCE(SUM(CASE WHEN tipo = 'arranque' THEN puntos END), 0) arranque FROM puntos_movimientos WHERE created_at >= ? AND created_at < ?`, ...P);
   const total = p.propias + p.red1 + p.red2 + p.arranque;
   const pct_propias = total > 0 ? Math.round(p.propias / total * 1000) / 10 : null;
-  const top_vendedores = (await all(env, `SELECT m.email, COALESCE(c.nombre, m.email) nombre, COUNT(*) ventas, SUM(m.puntos) puntos, SUM(m.base_centavos) cobrado
+  // Nombre: el de la cuenta (o el de su liga) solo si es un nombre de verdad; nunca el correo ni su inicio (nombreDeCuenta)
+  const top_vendedores = (await all(env, `SELECT m.email, c.nombre cn, (SELECT nombre FROM affiliates WHERE email = m.email AND tipo = 'puntos') an,
+      COUNT(*) ventas, SUM(m.puntos) puntos, SUM(m.base_centavos) cobrado
     FROM puntos_movimientos m LEFT JOIN puntos_cuentas c ON c.email = m.email WHERE ${VALIDA} AND m.created_at >= ? AND m.created_at < ?
-    GROUP BY m.email ORDER BY ventas DESC, puntos DESC LIMIT 10`, ...P));
+    GROUP BY m.email ORDER BY ventas DESC, puntos DESC LIMIT 10`, ...P)).map(({ cn, an, ...x }) => ({ ...x, nombre: nombreDeCuenta(x.email, cn, an) }));
   const top_lideres = [];
   for (const l of lideres.slice(0, 10)) {
     const red = await one(env, "SELECT COALESCE(SUM(puntos), 0) n FROM puntos_movimientos WHERE email = ? AND tipo = 'red' AND created_at >= ? AND created_at < ?", l.email, ...P);
