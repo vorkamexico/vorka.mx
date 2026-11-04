@@ -105,6 +105,15 @@ async function filasCortesia(env, apps, email = null) {
   });
 }
 
+// Todas las cortesías vigentes (para el panel de suscripciones de Vorka OS): la que dura más por correo y app
+export async function cortesiasVigentes(env) {
+  const apps = (await all(env, "SELECT DISTINCT json_extract(contenido, '$.acceso.app') app FROM products WHERE json_extract(contenido, '$.suscripcion') IS NOT NULL")).map(r => r.app).filter(Boolean);
+  if (!apps.length) return [];
+  const mejor = new Map();
+  for (const c of (await filasCortesia(env, apps)).filter(c => c.vigente)) { const k = `${c.email}|${c.app}`; if (!mejor.has(k) || mejor.get(k).periodo_fin < c.periodo_fin) mejor.set(k, c); }
+  return [...mejor.values()];
+}
+
 // La cortesía de un correo para una app (o un paquete que la incluye), con la misma forma que suscripcionApp: la vigente que
 // dura más o, si ya no hay vigente, la última que venció (estado 'canceled'). null si nunca tuvo. No se renueva ni se cobra:
 // cancelar_al_final siempre es true y no tiene complementos que se cobren; sillas: las vendedoras incluidas (solo Vende).
@@ -186,7 +195,7 @@ export async function suscripcionApp(env, email, app) {
 function formaSuscripcion(s, app) {
   return { id: s.id, product_id: s.product_id, estado: s.estado, vigente: VIGENTES.includes(s.estado), intervalo: s.intervalo, periodo_fin: s.periodo_fin,
     cancelar_al_final: !!s.cancelar_al_final, sucursales: s.sucursales, profesionales: s.profesionales || 0, monto_centavos: s.monto_centavos,
-    paquete: s.app !== app ? s.app : null };
+    paquete: s.app !== app ? s.app : null, ...(s.metodo === 'transferencia' ? { transferencia: true } : {}) };
 }
 
 // Complementos de la suscripción vigente: lugares adicionales de Vuelve (sucursales o negocios extra de la misma cuenta,
@@ -209,6 +218,11 @@ export async function lugaresApp(env, email, app, extras, tipo = 'sucursal') {
     if (c?.vigente && c.sillas) throw new Error(`Tu cortesía incluye ${c.sillas === 1 ? '1 vendedora' : `${c.sillas} vendedoras`}; para sumar más, contrata Vende Pro.`);
     if (c?.vigente) throw new Error(`Tu acceso es una cortesía de Vorka y no incluye ${QUE[tipo]}. Para agregarlos, contrata la suscripción.`);
     throw new Error('No hay una suscripción vigente con este correo.');
+  }
+  // Por transferencia: no hay nada en Stripe; se anota la cantidad y Vorka ajusta el monto en el panel si cambia el cobro
+  if (s.metodo === 'transferencia') {
+    await run(env, `UPDATE suscripciones SET ${tipo === 'profesional' ? 'profesionales' : 'sucursales'} = ?, updated_at = ? WHERE id = ?`, extras, ahoraISO(), s.id);
+    return suscripcionApp(env, email, app);
   }
   const plan = await one(env, 'SELECT contenido FROM products WHERE id = ?', s.product_id);
   let c; try { c = JSON.parse(plan?.contenido || '{}'); } catch { c = {}; }
@@ -249,8 +263,12 @@ export async function precioStripe(env, p, intervalo = 'month') {
 export async function portalApp(env, email, app, volver) {
   if (!/^https:\/\/([a-z0-9-]+\.)*vorka\.mx\//.test(String(volver || '')) && !/^http:\/\/(localhost|127\.0\.0\.1):\d+\//.test(String(volver || ''))) throw new Error('Liga de regreso inválida');
   email = String(email || '').trim().toLowerCase();
+  // Por transferencia: no hay tarjeta; el pago se arregla directo con Vorka
+  const v0 = await vigente(env, email, app);
+  if (v0?.metodo === 'transferencia') return { url: null, transferencia: true, hasta: v0.periodo_fin,
+    mensaje: 'Tu plan se paga por transferencia directo con Vorka; no hay tarjeta que administrar. Para cambiarlo o cancelarlo, escríbenos a hola@vorka.mx.' };
   // Solo con cortesía (sin suscripción vigente en Stripe): no hay tarjeta ni cobro que administrar
-  if (!(await vigente(env, email, app))) {
+  if (!v0) {
     const c = await cortesiaApp(env, email, app);
     if (c?.vigente) return { url: null, cortesia: true, hasta: c.periodo_fin,
       mensaje: `Tu acceso es una cortesía de Vorka hasta el ${fechaMx(c.periodo_fin)}; no hay nada que cancelar y no se te cobrará.` };
@@ -275,6 +293,8 @@ export async function cancelarApp(env, email, app) {
     return c?.vigente ? { ok: true, cortesia: true, hasta: c.periodo_fin } : { ok: false, motivo: 'sin_suscripcion' };
   }
   if (s.app !== app) return { ok: false, motivo: 'paquete' };
+  // Por transferencia: termina al final de lo pagado (el cron la apaga en su fecha); no hay nada en Stripe
+  if (s.metodo === 'transferencia') { await run(env, 'UPDATE suscripciones SET cancelar_al_final = 1, updated_at = ? WHERE id = ?', ahoraISO(), s.id); return { ok: true, hasta: s.periodo_fin, transferencia: true }; }
   if (!s.cancelar_al_final) await llamar(env, 'POST', `/subscriptions/${s.id}`, { cancel_at_period_end: 'true' }, { idempotencia: `cancelar-${s.id}` });
   await run(env, 'UPDATE suscripciones SET cancelar_al_final = 1 WHERE id = ?', s.id);
   return { ok: true, hasta: s.periodo_fin };
@@ -311,6 +331,14 @@ export async function creditoApp(env, email, app, centavos, motivo, clave = null
     const c = await cortesiaApp(env, email, app);
     if (c?.vigente) return mesDeCortesia(env, email, app, c, motivo, clave);
     return { ok: false, motivo: 'sin_suscripcion' };
+  }
+  // Por transferencia: el premio es tiempo (1 mes más desde donde termina), una sola vez por clave
+  if (s.metodo === 'transferencia') {
+    const k = `credito_transferencia:${s.id}:${String(clave || motivo || 'mes').slice(0, 150)}`;
+    if (await one(env, 'SELECT 1 FROM ajustes WHERE clave = ?', k)) return { ok: true, transferencia: true, ya: true };
+    await run(env, 'INSERT OR IGNORE INTO ajustes (clave, valor) VALUES (?, ?)', k, ahoraISO());
+    if (s.cobrar) await run(env, 'UPDATE suscripciones SET periodo_fin = ?, updated_at = ? WHERE id = ?', finCortesia(s.periodo_fin, 'month', 1), ahoraISO(), s.id);
+    return { ok: true, transferencia: true };
   }
   if (!s.customer_id) return { ok: false, motivo: 'sin_suscripcion' };
   await llamar(env, 'POST', `/customers/${s.customer_id}/balance_transactions`, { amount: -monto, currency: 'mxn', description: String(motivo || 'Crédito').slice(0, 300) },
