@@ -8,6 +8,8 @@ import { REFERIDO, esCuponRegalo, pesosTexto } from '../descuentos.js';
 const API = 'https://api.stripe.com/v1';
 // Copia de toolkit.js › FUNDADOR (aquí sin importar toolkit.js para no crear un ciclo de módulos); una prueba revisa que sean iguales
 export const TEXTO_FUNDADOR = 'Precio fundador garantizado por tus primeros 3 meses. Desde el 4.º mes el precio o el bono pueden cambiar; te avisamos por correo con 30 días de anticipación y puedes cancelar cuando quieras.';
+// Aviso junto al botón de pagar de Stripe en pagos únicos: OXXO no es inmediato, para que quien lo necesita hoy elija otro método
+export const TEXTO_OXXO = 'Si pagas en OXXO, Stripe confirma tu pago hasta 1 día hábil después y entonces te llega tu acceso. ¿Lo necesitas hoy? Paga con tarjeta (al instante) o por transferencia SPEI (normalmente en minutos).';
 export const STRIPE_VERSION = '2026-09-30.endive';
 const TOLERANCIA_S = 300; // firmas con más de 5 min se rechazan (evita repetir un webhook viejo)
 
@@ -69,6 +71,7 @@ export function sesionCheckout(env, orden, { exito, cancelar }, customer, cupon 
       quantity: i.cantidad,
       price_data: { currency: orden.moneda.toLowerCase(), unit_amount: i.precio_centavos, product_data: { name: i.nombre, metadata: { product_id: i.product_id } } },
     })),
+    custom_text: { submit: { message: TEXTO_OXXO } },
     metadata: { order_id: orden.id },
     // También en el PaymentIntent: los reembolsos y contracargos llegan con él, no con la sesión
     payment_intent_data: { metadata: { order_id: orden.id } },
