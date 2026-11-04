@@ -48,7 +48,7 @@ ${lista(items.map(i => esc(i.nombre)))}
 ${desc ? `<p style="${P}">Para que no se te pase, te dejamos un <b>${desc.pct} % de descuento</b>: tu compra queda en <b>${esc(pesos(desc.ahora))}</b> en lugar de ${esc(pesos(desc.antes))}. Se aplica solo con este botón; puedes pagar con tarjeta, OXXO o SPEI:</p>
 ${boton(url, `Terminar mi compra con ${desc.pct} %`)}` : `<p style="${P}">Si todavía te interesa, puedes terminarla aquí. Te abre un pago nuevo con tus mismos datos, por ${esc(pesos(orden.monto_centavos))}, con tarjeta, OXXO o SPEI:</p>
 ${boton(url, 'Terminar mi compra')}`}
-${oxxo ? `<p style="${P}">Si ya pagaste en OXXO, ignora este correo: en cuanto se refleje tu pago te llegan tus archivos.</p>` : ''}
+${oxxo ? `<p style="${P}">Si ya pagaste en OXXO, ignora este correo: OXXO confirma el pago hasta 1 día hábil después y en cuanto se refleje te llegan tus archivos.</p>` : ''}
 <p style="${P}">Si tienes alguna duda sobre el producto o el pago, responde este correo o escríbenos por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a>. Con gusto te ayudamos.</p>
 <p style="${P}">Y si ya no te interesa, no tienes que hacer nada.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)} · la liga funciona ${VIGENCIA_RETOMAR_DIAS} días</p>`);
@@ -60,7 +60,7 @@ ${items.map(i => `- ${i.nombre}`).join('\n')}
 
 ${desc ? `Para que no se te pase, te dejamos un ${desc.pct} % de descuento: tu compra queda en ${pesos(desc.ahora)} en lugar de ${pesos(desc.antes)}. Se aplica solo con esta liga (tarjeta, OXXO o SPEI):` : `Si todavía te interesa, puedes terminarla aquí (pago nuevo con tus mismos datos, por ${pesos(orden.monto_centavos)}, con tarjeta, OXXO o SPEI):`}
 ${url}
-${oxxo ? '\nSi ya pagaste en OXXO, ignora este correo: en cuanto se refleje tu pago te llegan tus archivos.\n' : ''}
+${oxxo ? '\nSi ya pagaste en OXXO, ignora este correo: OXXO confirma el pago hasta 1 día hábil después y en cuanto se refleje te llegan tus archivos.\n' : ''}
 Si tienes alguna duda, responde este correo o escríbenos por WhatsApp: ${SOPORTE.whatsapp}
 
 Y si ya no te interesa, no tienes que hacer nada.

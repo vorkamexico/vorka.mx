@@ -73,7 +73,7 @@ function bloques(o, v) {
   return {
     pagado,
     pendiente_efectivo: { clase: 'espera', icono: ICONOS.reloj, titulo: 'Tu pedido está apartado',
-      texto: 'Tu pago se confirma al realizarlo; te llegará el correo automáticamente. Si pagas en OXXO, tienes 3 días con la referencia que te dio Stripe. Si es por SPEI, usa la CLABE que te mostró.' },
+      texto: 'Tu pago se confirma al realizarlo; te llegará el correo automáticamente. Si pagas en OXXO, tienes 3 días con la referencia que te dio Stripe; OXXO confirma el pago hasta 1 día hábil después de que pagas, así que el correo puede tardar ese tiempo. Si es por SPEI, usa la CLABE que te mostró.' },
     confirmando: { clase: 'espera', icono: ICONOS.carga, titulo: 'Estamos confirmando tu pago',
       texto: 'Esto suele tardar unos segundos. No cierres esta página.' },
     rechazado: { clase: 'alerta', icono: ICONOS.x, titulo: 'No se completó el pago',

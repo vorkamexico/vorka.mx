@@ -51,7 +51,7 @@ const FAQ = [
   ['¿Qué son los paquetes?', 'Cinco eventos Pro para usar en 12 meses, hasta 20 % más baratos que comprarlos sueltos. Los aplicas al publicar cada evento.'],
   ['¿Cómo lo uso después de pagar?', 'Te llega un correo con el botón “Entrar a Cupo”. Al publicar tu evento eliges usar tu evento Pro; si ya está publicado, lo activas desde el evento.'],
   ['¿Cupo o Brindi?', 'Cupo es para lo rápido e informal: fiestas, antros, Halloween, networking y talleres. Para una boda, XV años o bautizo, donde la invitación es parte del recuerdo, te conviene <a href="/tienda/brindi/">Brindi</a>.'],
-  ['¿Cómo pago? ¿Hay reembolsos?', 'Pago único con tarjeta u OXXO, procesado por Stripe. Si no has aplicado tu evento Pro a ningún evento publicado, te devolvemos tu dinero si lo pides dentro de los 10 días naturales siguientes. Detalles en las <a href="/legal/cupo/">condiciones de Cupo</a>.'],
+  ['¿Cómo pago? ¿Hay reembolsos?', 'Pago único con tarjeta u OXXO, procesado por Stripe. Con tarjeta tu acceso llega al instante; en OXXO el pago se confirma hasta 1 día hábil después. Si no has aplicado tu evento Pro a ningún evento publicado, te devolvemos tu dinero si lo pides dentro de los 10 días naturales siguientes. Detalles en las <a href="/legal/cupo/">condiciones de Cupo</a>.'],
 ];
 
 export async function paginaCupo(env, req, url) {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { d1 } from './d1.js';
 import worker from '../src/index.js';
-import { formulario, sesionCheckout } from '../src/pagos/stripe.js';
+import { formulario, sesionCheckout, TEXTO_OXXO } from '../src/pagos/stripe.js';
 
 let env, llamadas;
 const URL_PAGO = 'https://checkout.stripe.com/c/pay/cs_test_1';
@@ -147,6 +147,15 @@ describe('Stripe: parámetros', () => {
     const s = sesionCheckout({}, { id: 'o', email: 'a@b.mx', moneda: 'MXN', items: [] }, { exito: 'e', cancelar: 'c' }, 'cus_x');
     expect(s.payment_method_types).toBeUndefined();
     expect(s.customer).toBe('cus_x');
+  });
+  it('avisa junto al botón de pagar que OXXO tarda hasta 1 día hábil y sugiere tarjeta o SPEI', () => {
+    const s = sesionCheckout({}, { id: 'o', email: 'a@b.mx', moneda: 'MXN', items: [] }, { exito: 'e', cancelar: 'c' }, 'cus_x');
+    expect(s.custom_text.submit.message).toBe(TEXTO_OXXO);
+    expect(TEXTO_OXXO).toMatch(/1 día hábil/);
+    expect(TEXTO_OXXO).toMatch(/tarjeta/);
+    expect(TEXTO_OXXO).toMatch(/SPEI/);
+    expect(TEXTO_OXXO.length).toBeLessThanOrEqual(1200);   // límite de Stripe
+    expect(formulario(s).get('custom_text[submit][message]')).toBe(TEXTO_OXXO);
   });
 });
 

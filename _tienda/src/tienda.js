@@ -30,7 +30,7 @@ const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headl
 const FAQ_TIENDA = [
   { p: '¿Cómo recibo mis archivos?', r: 'En cuanto se confirma tu pago te llega un correo con un enlace de descarga. Funciona 7 días y puedes descargar cada archivo hasta 10 veces. Si se vence, pides uno nuevo en <a href="/descargas/reenviar">vorka.mx/descargas/reenviar</a>.' },
   { p: '¿Cómo puedo pagar?', r: 'Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. El pago es seguro y lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.' },
-  { p: 'Pagué en OXXO o por SPEI, ¿cuándo me llega?', r: 'En cuanto el pago se refleja te llega el correo automáticamente. En OXXO suele tardar unos minutos y tienes 3 días para pagar con tu referencia.' },
+  { p: 'Pagué en OXXO o por SPEI, ¿cuándo me llega?', r: 'En cuanto el pago se refleja te llega el correo automáticamente. En OXXO, Stripe confirma el pago hasta 1 día hábil después de que pagas (tienes 3 días para pagar con tu referencia). Por SPEI normalmente se refleja en minutos y con tarjeta es al instante. Si lo necesitas hoy, mejor tarjeta o SPEI.' },
   { p: '¿Hay reembolsos?', r: 'Por ser un producto digital descargable no hay reembolso una vez descargado. Si un archivo llega dañado o no abre, te lo reponemos. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.' },
   { p: '¿Me pueden facturar?', r: 'Sí. Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales y el número de orden que viene en tu correo, dentro del mismo mes de la compra.' },
 ];
