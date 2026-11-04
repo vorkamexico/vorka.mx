@@ -1,16 +1,19 @@
-/* Ana Laura Hernández · sitio personal
-   Fotografía al centro, tipografía de su marca (ANA LAURA en negrita, HERNÁNDEZ ligera), blanco y negro con un rosa profundo. */
+/* Ana Laura Hernández · sitio personal y tienda (una sola marca)
+   Tipografía: Jost (geométrica, como su logotipo ANA LAURA) para todo lo funcional y Cormorant Garamond recta solo en titulares grandes.
+   Color: blanco, tinta, crema y tonos por producto; el rosa profundo solo como acento (foco, ofertas, errores). */
 :root{
   --blanco:#FFFFFF;
   --gris:#E7E7E7;      /* el fondo de su retrato */
-  --gris-claro:#F8F1EE;
+  --gris-claro:#F6F1EC;
+  --crema:#F6F1EC;
   --tinta:#171515;
   --texto:#3F3B3A;
-  --suave:#77716F;
+  --suave:#6B6461;   /* 5.8:1 sobre blanco, 5.2:1 sobre crema */
   --rosa:#9C3656;
   --linea:#DEDAD8;
   --sans:"Jost","Futura","Avenir Next","Century Gothic",system-ui,sans-serif;
   --serif:"Cormorant Garamond","Garamond",Georgia,serif;
+  --display:var(--sans);   /* la misma letra de su nombre ANA LAURA HERNÁNDEZ (Jost, de la familia de Kiona/Futura) */
   --ancho:1160px;
   color-scheme:light;
 }
@@ -31,27 +34,28 @@ p{margin:0}
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s}
 .nav.scroll{border-bottom-color:var(--linea)}
 .nav-in{display:flex;align-items:center;gap:32px;height:72px}
-.logo{text-decoration:none;color:var(--tinta);font-size:15px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;margin-right:auto}
+.logo{text-decoration:none;color:var(--tinta);font-size:14px;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;margin-right:auto}
+.logo span,.logo{font-weight:300}
 .logo b{font-weight:600}
 .menu{display:flex;gap:28px}
-.menu a{text-decoration:none;font-size:15px;font-weight:400;color:var(--texto);padding:6px 0;border-bottom:1px solid transparent}
+.menu a{text-decoration:none;font-size:12px;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--texto);padding:6px 0;border-bottom:1px solid transparent}
 .menu a:hover{color:var(--tinta)}
 .menu a[aria-current="page"]{color:var(--tinta);border-bottom-color:var(--tinta)}
-.boton{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border:1px solid var(--tinta);background:var(--tinta);color:var(--blanco);font-family:var(--sans);font-size:15px;font-weight:400;text-decoration:none;border-radius:999px;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
+.boton{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 30px;border:1px solid var(--tinta);background:var(--tinta);color:var(--blanco);font-family:var(--sans);font-size:12.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-radius:0;cursor:pointer;transition:background .2s,color .2s,border-color .2s;white-space:nowrap}
 .boton:hover{background:var(--rosa);border-color:var(--rosa)}
 .boton svg{width:18px;height:18px;flex:none}
 .boton.claro{background:transparent;color:var(--tinta)}
 .boton.claro:hover{background:var(--tinta);color:var(--blanco);border-color:var(--tinta)}
-.nav .boton{min-height:40px;padding:0 18px;font-size:14px}
+.nav .boton{min-height:38px;padding:0 18px;font-size:11.5px}
 .abrir{display:none;margin-left:auto;background:none;border:0;padding:10px;cursor:pointer;color:var(--tinta);font:inherit;font-size:15px;gap:8px;align-items:center}
 .abrir span{display:block;width:20px;height:1.5px;background:currentColor;box-shadow:0 -6px 0 currentColor,0 6px 0 currentColor}
 .abrir[aria-expanded="true"] span{box-shadow:none;transform:rotate(45deg)}
 .abrir[aria-expanded="true"] span::after{content:"";display:block;width:20px;height:1.5px;background:currentColor;transform:rotate(-90deg)}
 
 /* Encabezados de página */
-.titulo-pag{background:linear-gradient(180deg,#F8F1EE,var(--blanco))}
+.titulo-pag{background:var(--crema)}
 .titulo-pag .marco{padding-block:64px 56px;display:grid;gap:14px}
-.titulo-pag h1{font-size:clamp(36px,5vw,56px);font-weight:500;letter-spacing:-.01em}
+.titulo-pag h1{font-family:var(--display);font-size:clamp(40px,5.4vw,66px);font-weight:500;line-height:1.02;letter-spacing:-.01em}
 .titulo-pag p{max-width:60ch;font-size:19px;color:var(--suave)}
 .migas{font-size:14px;color:var(--suave)}
 .migas a{text-decoration:none}
@@ -60,16 +64,16 @@ p{margin:0}
 /* Bloques */
 .bloque{padding-block:clamp(64px,8vw,104px)}
 .bloque.gris{background:transparent}
-.sub{font-size:clamp(28px,3.4vw,40px);font-weight:500;letter-spacing:-.005em;margin-bottom:18px}
+.sub{font-family:var(--display);font-size:clamp(32px,3.8vw,46px);font-weight:500;line-height:1.05;letter-spacing:-.01em;margin-bottom:18px}
 .intro{max-width:62ch;color:var(--suave);font-size:18px}
-.cita{font-family:var(--serif);font-style:italic;font-weight:500;color:var(--tinta)}
+.cita{font-weight:400;color:var(--tinta)}
 .enlace{color:var(--tinta);font-weight:400;text-decoration:none;border-bottom:1px solid var(--tinta);padding-bottom:1px}
 .enlace:hover{color:var(--rosa);border-color:var(--rosa)}
 
 /* Contacto (al pie de cada página) */
-.contacto{background:linear-gradient(180deg,var(--blanco),#F8F1EE);color:var(--texto)}
+.contacto{background:var(--crema);color:var(--texto)}
 .contacto .marco{padding-block:clamp(64px,8vw,96px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:center}
-.contacto h2{color:var(--tinta);font-size:clamp(30px,4vw,46px);font-weight:400}
+.contacto h2{font-family:var(--display);color:var(--tinta);font-size:clamp(34px,4.2vw,52px);font-weight:500;letter-spacing:-.01em}
 .contacto p{margin-top:14px;max-width:46ch}
 .contacto .boton{margin-top:28px}
 .redes{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--linea)}
@@ -77,16 +81,16 @@ p{margin:0}
 .redes a:hover{color:var(--rosa)}
 .redes svg{width:20px;height:20px;flex:none}
 .redes small{margin-left:auto;color:var(--suave);font-size:14px;font-weight:300;overflow-wrap:anywhere;text-align:right}
-.pie{background:#F8F1EE;color:var(--suave);font-size:13px}
+.pie{background:var(--crema);border-top:1px solid var(--linea);color:var(--suave);font-size:12px}
 .pie .marco{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
-.pie a{text-decoration:none;letter-spacing:.04em}
+.pie a{text-decoration:none;letter-spacing:.06em}
 .pie a:hover{color:var(--tinta)}
 
 @media (max-width:900px){
   .menu,.nav .boton{display:none}
   .abrir{display:inline-flex}
   .nav.abierto .menu{display:flex;flex-direction:column;gap:0;position:absolute;top:100%;left:0;right:0;background:var(--blanco);border-bottom:1px solid var(--linea);padding:8px max(24px,env(safe-area-inset-right,0px)) 20px max(24px,env(safe-area-inset-left,0px))}
-  .nav.abierto .menu a{padding:14px 0;border-bottom:1px solid var(--linea);font-size:18px}
+  .nav.abierto .menu a{padding:15px 0;border-bottom:1px solid var(--linea);font-size:13px}
   .nav.abierto .menu a[aria-current="page"]{border-bottom-color:var(--linea);font-weight:500}
   .contacto .marco{grid-template-columns:1fr}
 }
@@ -99,3 +103,6 @@ p{margin:0}
   .redes small{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+
+/* Titulares con la letra de su nombre: Jost en mayúsculas, ligera y espaciada, como «HERNÁNDEZ» */
+.titulo-pag h1,.sub,.contacto h2,.i-tit,.taller-main h2{font-weight:400!important;text-transform:uppercase;letter-spacing:.02em!important;line-height:1.08!important}

@@ -28,14 +28,14 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilo.css?v=2">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css?v=3">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "@id": "https://vorka.mx/anaoleynick/#ana-laura", "name": "Ana Laura Hernández", "alternateName": ["Ana Laura Hernández García", "Ana Laura Oleynick"], "url": "https://vorka.mx/anaoleynick/", "image": "https://vorka.mx/anaoleynick/img/og-ana-laura.jpg", "jobTitle": "Asesora de imagen personal, ejecutiva y política", "description": "Empresaria, consultora en imagen y capacitadora en Celaya, Guanajuato, con más de 20 años en la industria de la belleza, el desarrollo humano y el empoderamiento femenino.", "hasOccupation": [{"@type": "Occupation", "name": "Asesora de imagen", "occupationLocation": {"@type": "City", "name": "Celaya, Guanajuato"}}, {"@type": "Occupation", "name": "Consultora en imagen política"}, {"@type": "Occupation", "name": "Capacitadora por competencias"}], "address": {"@type": "PostalAddress", "addressLocality": "Celaya", "addressRegion": "Guanajuato", "addressCountry": "MX"}, "telephone": "+52 461 353 5315", "worksFor": {"@type": "Organization", "name": "Oleynick Center", "address": {"@type": "PostalAddress", "addressLocality": "Celaya", "addressRegion": "Guanajuato", "addressCountry": "MX"}, "sameAs": ["https://www.facebook.com/oleynickbyanalaura"]}, "memberOf": [{"@type": "OrganizationRole", "roleName": "Presidenta Estatal", "startDate": "2020", "endDate": "2022", "memberOf": {"@type": "Organization", "name": "AMMJE Guanajuato"}}, {"@type": "OrganizationRole", "roleName": "Presidenta", "startDate": "2022", "endDate": "2024", "memberOf": {"@type": "Organization", "name": "AMMJE Celaya"}}, {"@type": "OrganizationRole", "roleName": "Consejera Nacional", "startDate": "2021", "memberOf": {"@type": "Organization", "name": "Juventudes Impactando México A.C."}}], "alumniOf": {"@type": "CollegeOrUniversity", "name": "UNIVA Guadalajara"}, "knowsAbout": ["Asesoría de imagen personal", "Imagen ejecutiva", "Imagen política", "Comunicación política", "Colorimetría", "Estudio antropométrico", "Protocolo", "Maquillaje profesional", "Empoderamiento femenino", "Autonomía financiera de la mujer", "Capacitación por competencias"], "sameAs": ["https://www.instagram.com/anaoleynick/", "https://www.facebook.com/oleynickbyanalaura", "https://www.facebook.com/analaura.hernandez.3551", "https://www.linkedin.com/in/anaoleynick/"]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Ana Laura Hernández", "url": "https://vorka.mx/anaoleynick/", "inLanguage": "es-MX"}</script>
 <style>
 
-.portada{position:relative;overflow:hidden;background:radial-gradient(34% 44% at 73% 46%,#F3E3DE 0%,rgba(243,227,222,.5) 50%,rgba(255,255,255,0) 100%),var(--blanco)}
-.portada-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);align-items:end;gap:24px}
+.portada{position:relative;overflow:hidden;background:var(--blanco)}
+.portada-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);align-items:stretch;gap:24px}
 .portada-txt{padding-block:72px 96px;display:grid;gap:26px;align-content:center;align-self:center}
 .nombre{font-size:clamp(46px,7.4vw,92px);line-height:.98;letter-spacing:.04em;text-transform:uppercase;color:var(--tinta)}
 .nombre b{display:block;font-weight:600}
@@ -45,8 +45,8 @@
 .portada-txt > p:not(.oficio){max-width:46ch;font-size:18px;color:var(--texto)}
 .portada-txt strong{font-weight:500;color:var(--tinta)}
 .acciones{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
-.portada-foto{align-self:end;justify-self:center;width:100%;max-width:500px;padding-top:40px}
-.portada-foto img{width:100%;height:auto}
+.portada-foto{align-self:stretch;display:flex;align-items:flex-end;justify-content:center;width:100%;margin-top:40px;padding:48px 24px 0;background:var(--crema)}
+.portada-foto img{width:100%;max-width:440px;height:auto}
 .sobre-g{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(36px,6vw,88px)}
 .sobre-g > p{font-size:clamp(21px,2.2vw,26px);line-height:1.55;color:var(--tinta);font-weight:300}
 .datos{list-style:none;margin:0;padding:0;display:grid;gap:0;align-content:start;border-top:1px solid var(--linea)}
@@ -61,20 +61,28 @@
 .logos .con-nombre{gap:12px}
 .logos .con-nombre img{height:40px}
 .logos .txt small{display:block;font-weight:300;font-size:11.5px;letter-spacing:.04em}
-.puertas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:40px}
-@media (max-width:1100px){.puertas{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.puerta{display:grid;grid-template-rows:auto 1fr auto;gap:12px;padding:30px 28px;background:var(--blanco);border:1px solid var(--linea);text-decoration:none;transition:border-color .2s,transform .2s}
-.puerta:hover{border-color:var(--tinta);transform:translateY(-2px)}
-.puerta h3{font-size:24px;font-weight:500}
-.puerta p{color:var(--suave);font-size:16px}
-.puerta span{font-weight:400;color:var(--tinta);font-size:15px}
-.puerta span::after{content:" →"}
-.puerta .etiqueta{justify-self:start;font-size:12.5px;font-weight:400;padding:3px 10px;border-radius:999px;background:#F6E7EC;color:var(--rosa)}
-.puerta .etiqueta::after{content:none}
+.indice{list-style:none;margin:28px 0 0;padding:0;border-top:1px solid var(--tinta)}
+.indice a{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 13rem;gap:8px 40px;align-items:baseline;padding:28px 0;border-bottom:1px solid var(--linea);text-decoration:none}
+.i-tit{font-family:var(--display);font-size:clamp(28px,3vw,38px);font-weight:500;line-height:1.1;color:var(--tinta)}
+.i-txt{color:var(--texto);font-size:16px;max-width:52ch}
+.i-meta{justify-self:end;padding-right:4px;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta);white-space:nowrap}
+.i-meta::after{content:"";display:inline-block;width:7px;height:7px;margin-left:12px;border-top:1px solid currentColor;border-right:1px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.indice a:hover .i-tit{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+.indice li:first-child .i-meta{color:var(--rosa)}
+.tienda-b{background:#EADCCD}
+.tienda-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:1440px;margin:0 auto}
+.tienda-foto{display:flex;align-items:flex-end;justify-content:center;min-height:clamp(380px,40vw,540px);padding:48px 24px 0;background:linear-gradient(0deg,#E0CEBC 0 84px,transparent 84px)}
+.tienda-foto img{mix-blend-mode:multiply;width:auto;height:auto;margin-bottom:56px}
+.tienda-foto .t-crema{max-height:300px;margin-right:-4px}
+.tienda-foto .t-liquida{max-height:350px;position:relative;z-index:1}
+.tienda-foto .t-polvo{max-height:126px;margin-left:-24px;position:relative;z-index:2}
+.tienda-txt{display:grid;gap:18px;align-content:center;justify-items:start;padding:64px clamp(24px,6vw,96px)}
+.tienda-txt .sub{margin:0}
+.tienda-txt p{max-width:40ch;font-size:17px;color:var(--texto)}
 .frase{text-align:center}
 .frase .marco{padding-block:clamp(70px,9vw,110px);display:grid;gap:14px;justify-items:center}
-.frase blockquote{margin:0;font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(38px,6vw,72px);line-height:1.05;color:var(--tinta)}
-.frase p{font-size:14px;letter-spacing:.24em;text-transform:uppercase;color:var(--suave)}
+.frase blockquote{margin:0;font-family:var(--display);font-weight:500;letter-spacing:-.01em;font-size:clamp(38px,6vw,72px);line-height:1.05;color:var(--tinta)}
+.frase p{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--suave)}
 .resenas-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(36px,6vw,80px);align-items:center}
 .resenas-g .intro{margin-bottom:0}
 .opciones{display:grid;gap:14px}
@@ -87,10 +95,18 @@
 @media (max-width:900px){
   .portada-g{grid-template-columns:1fr;gap:0}
   .portada-txt{padding-block:40px 0}
-  .portada{background:radial-gradient(48% 22% at 50% 72%,#F3E3DE 0%,rgba(243,227,222,.5) 50%,rgba(255,255,255,0) 100%),var(--blanco)}
-  .portada-foto{max-width:380px;padding-top:12px}
+  .portada-foto{margin-top:32px;padding-top:28px}
+  .portada-foto img{max-width:340px}
   .sobre-g,.resenas-g{grid-template-columns:1fr}
-  .puertas{grid-template-columns:1fr}
+  .indice a{grid-template-columns:1fr;gap:8px;padding:24px 0}
+  .i-meta{justify-self:start}
+  .tienda-g{grid-template-columns:1fr}
+  .tienda-foto{min-height:0;height:360px;background:linear-gradient(0deg,#E0CEBC 0 64px,transparent 64px)}
+  .tienda-foto img{margin-bottom:42px}
+  .tienda-foto .t-crema{max-height:220px}
+  .tienda-foto .t-liquida{max-height:256px}
+  .tienda-foto .t-polvo{max-height:92px;margin-left:-18px}
+  .tienda-txt{padding:40px 20px 56px;background:var(--blanco)}
   .logos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 16px}
   .logos li{height:60px}
   .logos img{height:34px;max-width:130px}
@@ -134,7 +150,7 @@
 
   <section class="bloque">
     <div class="marco sobre-g">
-      <p>Directora de Centros de Belleza y Formación, creadora e impulsora de proyectos educativos y de <span class="cita">empoderamiento juvenil y femenino</span>, con experiencia en la asesoría de imagen ejecutiva, política y personal.</p>
+      <p>Directora de Centros de Belleza y Formación, creadora e impulsora de proyectos educativos y de empoderamiento juvenil y femenino, con experiencia en la asesoría de imagen ejecutiva, política y personal.</p>
       <ul class="datos">
         <li><b>20+</b>años en la industria de la belleza</li>
         <li><b>3</b>clínicas de belleza abiertas como propietaria</li>
@@ -167,15 +183,28 @@
     </div>
   </section>
 
-  <section class="bloque gris">
+  <section class="bloque indice-b" aria-labelledby="t-indice">
     <div class="marco">
-      <h2 class="sub">¿En qué te puedo ayudar?</h2>
-      <p class="intro">Formación, consultoría y acompañamiento en imagen, con un enfoque humano y profesional.</p>
-      <div class="puertas">
-        <a class="puerta" href="talleres/"><em class="etiqueta">Inscripciones abiertas</em><div><h3>Talleres</h3><p>Formación en Asesoría de Imagen Personal con certificación SDES 479. 10 sesiones, presencial y virtual.</p></div><span>Ver el taller</span></a>
-        <a class="puerta" href="portafolio/"><div><h3>Portafolio</h3><p>Consultoría en imagen política, ejecutiva y personal, negocios de belleza, capacitación y empoderamiento femenino.</p></div><span>Ver servicios</span></a>
-        <a class="puerta" href="trayectoria/"><div><h3>Trayectoria</h3><p>De distribuidora regional de cosméticos a empresaria, formadora y líder gremial en Guanajuato.</p></div><span>Conocer más</span></a>
-        <a class="puerta" href="makeup/"><div><h3>Makeup</h3><p>Su marca de maquillaje profesional Ana Laura: bases, corrector, polvo HD, desmaquillante y shampoo personalizado.</p></div><span>Ver la tienda</span></a>
+      <h2 class="sub" id="t-indice">Formación y consultoría</h2>
+      <ul class="indice">
+        <li><a href="talleres/"><span class="i-tit">Talleres</span><span class="i-txt">Asesoría de Imagen Personal con certificación SDES 479. Diez sesiones, presencial y virtual.</span><span class="i-meta">Inscripciones abiertas</span></a></li>
+        <li><a href="portafolio/"><span class="i-tit">Portafolio</span><span class="i-txt">Imagen política, ejecutiva y personal; negocios de belleza; capacitación y empoderamiento femenino.</span><span class="i-meta">Servicios</span></a></li>
+        <li><a href="trayectoria/"><span class="i-tit">Trayectoria</span><span class="i-txt">De distribuidora regional de cosméticos a empresaria, formadora y líder gremial en Guanajuato.</span><span class="i-meta">Desde 2004</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="tienda-b" aria-labelledby="t-tienda">
+    <div class="tienda-g">
+      <a class="tienda-foto" href="makeup/" tabindex="-1" aria-hidden="true">
+        <img class="t-crema" src="makeup/img/base-crema.webp" width="250" height="555" alt="" loading="lazy">
+        <img class="t-liquida" src="makeup/img/base-liquida-frente.webp" width="195" height="605" alt="" loading="lazy">
+        <img class="t-polvo" src="makeup/img/polvo.webp" width="465" height="315" alt="" loading="lazy">
+      </a>
+      <div class="tienda-txt">
+        <h2 class="sub" id="t-tienda">Ana Laura Makeup</h2>
+        <p>Su línea de maquillaje profesional: bases, corrector, polvo HD y desmaquillante, más un shampoo que se formula para tu cabello.</p>
+        <a class="boton" href="makeup/">Ir a la tienda</a>
       </div>
     </div>
   </section>
