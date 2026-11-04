@@ -34,6 +34,7 @@ import { paginaRuta } from './ruta.js';
 import { paginaLiderazgo } from './liderazgo.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp, cancelarApp } from './suscripciones.js';
+import { panelSuscripciones, crearTransferencia, prenderTransferencia, pagoTransferencia, editarTransferencia, revisarTransferencias } from './transferencias.js';
 import { rutasPuntos, codigoDe, saldoDe, nivelActual, marcarEquipo, modoSuscripcion } from './puntos.js';
 import { cambiarCodigo, ventasVendedor, ventasEquipo, DIAS_CAMBIO } from './codigo-publico.js';
 import { rutasEquipo, guardarPerfil, borrarPerfil, perfilEquipo } from './equipo-pagina.js';
@@ -206,6 +207,12 @@ export class Admin extends WorkerEntrypoint {
   // Complementos de la suscripción: lugares de Vuelve (tipo 'sucursal', el de siempre) o profesionales de Agenda ('profesional')
   lugaresApp(email, app, extras, tipo) { return lugaresApp(this.env, email, app, extras, tipo); }
   resumenSuscripciones(app) { return resumenSuscripciones(this.env, app); }
+  // Suscripciones por transferencia (sin Stripe): las maneja Vorka OS › Tienda › Suscripciones y Cobranza (src/transferencias.js)
+  panelSuscripciones() { return panelSuscripciones(this.env); }
+  crearSuscripcionTransferencia(d) { return crearTransferencia(this.env, d); }
+  prenderSuscripcion(id, prendida) { return prenderTransferencia(this.env, id, !!prendida); }
+  pagoSuscripcion(id, d) { return pagoTransferencia(this.env, id, d || {}); }
+  editarSuscripcion(id, d) { return editarTransferencia(this.env, id, d || {}); }
   // Toolkit Vorka (src/toolkit.js): suscriptores por plan, saldo pendiente (pasivo), abonado y usado en el mes, consumo por
   // cliente antes / ahora (meta ×1.5) y reembolsos por revisar. toolkitCliente: el estado, historial y códigos de un correo.
   resumenToolkit(f) { return resumenToolkit(this.env, f || {}); }
@@ -329,6 +336,8 @@ export default {
   async scheduled(event, env, ctx) {
     // Pagos que siguen pendientes (OXXO, SPEI): se confirman con Stripe aunque su webhook no haya llegado
     ctx.waitUntil(conciliarPendientes(env).then(c => console.log('conciliar', JSON.stringify(c))).catch(e => console.error('conciliar', e?.message)));
+    // Suscripciones por transferencia: las que vencieron sin pago pasan a "vencida" (con su gracia) y luego se pausan
+    ctx.waitUntil(revisarTransferencias(env).then(c => { if (c.length) console.log('transferencias', JSON.stringify(c)); }).catch(e => console.error('transferencias', e?.message)));
     // Una vez al día (la corrida de las 09:17 UTC, 03:17 en el centro de México): anonimiza los datos de quien recibió un
     // cupón de regalo 12 meses después de que venció, se terminó de usar o se revocó (aviso de privacidad). Va en el mismo
     // cron de cada hora para no gastar otro (el plan gratis de Cloudflare permite 5 en toda la cuenta).
