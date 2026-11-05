@@ -64,7 +64,7 @@ export async function paginaCupo(env, req, url) {
   const elegido = todos.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : rec?.slug;
   const error = url.searchParams.get('error') || '';
   const desde = niveles.length ? Math.min(...niveles.map(n => n.prod.precio_centavos)) : null;
-  const t = temporada(), demos = demosDe(t), og = `${OS}/cupo/og/${demos[0][1]}.png`;
+  const t = temporada(), demos = demosDe(t), og = 'https://vorka.mx/assets/tienda/v3/cupo-og.jpg';
   const rs = niveles.length ? await resenasDe(env, RUTA_CUPO) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Cupo · Eventos con registro, cover y QR', brand: { '@type': 'Brand', name: 'Cupo' },
     description: 'Página de tu evento, registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas; Cupo Pro desde $99 MXN con correos, cover sin comisión y ligas para RPs.',

@@ -62,12 +62,12 @@ export async function paginaVende(env, req, url) {
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   const rs = planes.length ? await resenasDe(env, RUTA_VENDE) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Vende · Para vendedoras por catálogo y por encargo', brand: { '@type': 'Brand', name: 'Vorka México' },
-    description: 'Clientas, pedidos, cobros y ganancia real en un solo lugar, con recordatorios por WhatsApp listos para enviar. Gratis para empezar.', image: ['https://vorka.mx/assets/tienda/vende.webp'],
+    description: 'Clientas, pedidos, cobros y ganancia real en un solo lugar, con recordatorios por WhatsApp listos para enviar. Gratis para empezar.', image: ['https://vorka.mx/assets/tienda/v3/vende-og.jpg'],
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_VENDE, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Vende', RUTA_VENDE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Vende' },
-    titulo: 'Vende: tus clientas, pedidos y cobros en orden | Gratis para empezar', ruta: RUTA_VENDE, imagen: 'https://vorka.mx/assets/tienda/vende-og.png',
+    titulo: 'Vende: tus clientas, pedidos y cobros en orden | Gratis para empezar', ruta: RUTA_VENDE, imagen: 'https://vorka.mx/assets/tienda/v3/vende-og.jpg',
     descripcion: 'Para vendedoras por catálogo y por encargo: pedidos, cobros con estado de cuenta y tu ganancia real. Funciona sin internet. Gratis, sin tarjeta.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

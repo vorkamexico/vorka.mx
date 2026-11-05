@@ -35,7 +35,7 @@ V4 = {
   'evaluacion-liderazgo': ('#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', 'Desde 12 años: 12 dimensiones y 3 acciones para 30 días.', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']),
   'toolkit': ('#8A6A1F', 'Toolkit', 'Pagas $599 y [recibes $800 cada mes.]', 'Saldo para toda la tienda: simuladores, reportes, meses de apps y códigos de regalo. Nunca vence.', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']),
   'toolkit-pro': ('#3E3A66', 'Toolkit Pro', 'Pagas $1,199 y [recibes $1,800 cada mes.]', 'Para quien compra seguido o revende con códigos de regalo.', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']),
-  'portales': ('#0F5A8A', 'Portal inmobiliario', 'Tus propiedades, [en tu propio portal.]', 'Publica tus inmuebles con fotos y recibe a los interesados por WhatsApp.', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']),
+  'portales': ('#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', 'Publica tus inmuebles con fotos y recibe a los interesados por WhatsApp.', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']),
   'clara': ('#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', 'Gastos, ingresos y tarjetas en un solo lugar. Clara te dice cuánto te alcanza al día.', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']),
 }
 
@@ -277,7 +277,7 @@ def lienzo(k, w, h):
   <div class="datos">{''.join(f'<span>{dato(d)}</span>' for d in datos)}</div>
 </div></div>"""
 
-CON_OG = {k for k, p in P.items() if 'sim' in p or p.get('og')} | {'clara', 'portales'}
+CON_OG = set(V4)   # todas llevan su imagen para compartir (JPG, que WhatsApp sí muestra)
 with sync_playwright() as pw:
     nav = pw.chromium.launch(executable_path=os.environ['CHROMIUM']) if os.environ.get('CHROMIUM') else pw.chromium.launch()
     def foto(nombre, html, w, h):
