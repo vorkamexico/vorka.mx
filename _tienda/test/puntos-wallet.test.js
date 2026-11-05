@@ -37,7 +37,7 @@ describe('Wallet de embajadores', () => {
     expect(d.email).toBe('ana@mail.com');
     expect(d.code).toMatch(/^[A-Za-z0-9_-]{2,40}$/);
     expect(d.liga).toBe(`${SITIO}/tienda/?ref=${encodeURIComponent(d.code)}`);
-    expect(d.descuento_pct).toBe(PCT_REFERIDO);
+    expect(d.tema).toBe('noche');
   });
   it('Google: manda a la liga de guardar', async () => {
     const cookie = await entrar('ana@mail.com');
@@ -55,5 +55,32 @@ describe('Wallet de embajadores', () => {
     const html = await (await pedir('/tienda/cuenta/', { cookie })).text();
     expect(html).toContain('/api/puntos/wallet/apple');
     expect(html).toContain('/api/puntos/wallet/google');
+  });
+
+  it('personalizar: tema, QR al catálogo y foto (con su liga para Google); valida lo que llega', async () => {
+    const cookie = await entrar('ana@mail.com');
+    const post = body => worker.fetch(new Request(SITIO + '/api/puntos/wallet/ajustes', { method: 'POST', headers: { 'content-type': 'application/json', cookie, origin: SITIO, 'cf-connecting-ip': '1.1.1.1' }, body: JSON.stringify(body) }), env);
+    expect((await post({ tema: 'rosa' })).status).toBe(400);
+    expect((await post({ qr: 'otro' })).status).toBe(400);
+    expect((await post({ foto: 'data:image/jpeg;base64,AAAA' })).status).toBe(400);
+    expect((await post({ tema: 'marfil', qr: 'catalogo' })).status).toBe(200);
+    const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    expect((await post({ foto: `data:image/png;base64,${png}` })).status).toBe(200);
+    const a = await (await pedir('/api/puntos/wallet/ajustes', { cookie })).json();
+    expect(a).toMatchObject({ tema: 'marfil', qr: 'catalogo', foto: true });
+    await pedir('/api/puntos/wallet/apple', { cookie });
+    const d = pedidos.at(-1)[1];
+    expect(d.tema).toBe('marfil');
+    expect(d.liga).toMatch(/\/tienda\/catalogo\/\?ref=/);
+    expect(d.foto_png).toBe(png);
+    expect(d.foto_url).toMatch(/^https:\/\/vorka\.mx\/api\/puntos\/wallet\/foto\/[a-f0-9]{32}\.png$/);
+    const foto = await pedir(new URL(d.foto_url).pathname);
+    expect(foto.status).toBe(200);
+    expect(foto.headers.get('content-type')).toBe('image/png');
+    expect((await post({ foto: null })).status).toBe(200);
+    expect((await (await pedir('/api/puntos/wallet/ajustes', { cookie })).json()).foto).toBe(false);
+    // otra página no puede cambiarla
+    const ajeno = await worker.fetch(new Request(SITIO + '/api/puntos/wallet/ajustes', { method: 'POST', headers: { 'content-type': 'application/json', cookie, origin: 'https://otro.com' }, body: '{"tema":"oro"}' }), env);
+    expect(ajeno.status).toBe(403);
   });
 });
