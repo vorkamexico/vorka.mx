@@ -1,0 +1,105 @@
+// Marca de producto (la misma de las portadas v4, _tienda/simulador/portadas_v4.py): «V Producto by Vorka México», un titular
+// en tinta con una sola frase en el color del producto, una línea de apoyo, los botones de la página y tres datos; a un lado,
+// los mismos objetos de su portada (assets/tienda/v3/<clave>-objeto.webp). Así la portada y la página se ven iguales.
+// Sigue el tema de la página (claro u oscuro): el blanco y la tinta son las variables de la tienda; el color es del producto.
+import { esc } from './paginas.js';
+
+const V = '<svg viewBox="69 225 940 909" fill="currentColor" aria-hidden="true"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>';
+
+// clave → [color, nombre, titular («[frase]» va en color), apoyo, datos (**negritas**)] · los mismos textos que las portadas
+export const MARCAS = {
+  'simulador-paa': ['#1E5BB8', 'Simulador PAA', 'Practica como el día del examen y [sube tu puntaje.]', ['**642** reactivos', '**Tutor** con pistas', 'Puntaje **200–800**']],
+  'simulador-unam': ['#9A6B00', 'Simulador UNAM', 'Practica [con el peso de tu área.]', ['**476** reactivos', '**4** áreas', '**120** reactivos en 3 h']],
+  'simulador-ecoems': ['#D9480F', 'Simulador ECOEMS', 'Llega a la prepa UNAM o al IPN [bien preparado.]', ['**320** reactivos', '**10** materias', '**128** reactivos en 3 h']],
+  'simulador-prepa-ug': ['#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']],
+  brindi: ['#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']],
+  cupo: ['#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']],
+  agenda: ['#05785A', 'Agenda', 'Tus clientes reservan solos, [a cualquier hora.]', ['Confirmación **al instante**', '**Recordatorios**', 'Prueba **7 días** gratis']],
+  vuelve: ['#B42A44', 'Vuelve', 'Que tus clientes [vuelvan solos.]', ['**Sin** descargar app', 'Avisos **automáticos**', 'Prueba **7 días** gratis']],
+  cuentas: ['#0E6F78', 'Cuentas', 'Lo que prestas, [claro y en orden.]', ['Intereses **claros**', '**PDF** y Excel', 'Prueba **7 días** gratis']],
+  vende: ['#C2256F', 'Vende', 'Clientas, pedidos y cobros, [en orden.]', ['Ganancia **real**', '**WhatsApp** listo', '**Gratis** para empezar']],
+  'ruta-de-impacto': ['#4338CA', 'Ruta de Impacto', 'Tu proyecto social, [de la idea a la comunidad.]', ['**6** niveles + final', '**Tutor** con pistas', 'Pago único · **1 año**']],
+  'test-vocacional': ['#5B1F7A', 'Test vocacional', 'Descubre [qué carreras van contigo.]', ['**48** preguntas', 'Perfil básico **gratis**', '**20** carreras afines']],
+  'que-proyecto-social': ['#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', ['**10** preguntas · 5 min', 'De **5 a 8** proyectos', 'Indicadores y **ODS**']],
+  'evaluacion-liderazgo': ['#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']],
+  toolkit: ['#8A6A1F', 'Toolkit', 'Pagas $599 y [recibes $800 cada mes.]', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']],
+  'toolkit-pro': ['#3E3A66', 'Toolkit Pro', 'Pagas $1,199 y [recibes $1,800 cada mes.]', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']],
+  portales: ['#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']],
+  clara: ['#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']],
+  'idea-en-orden': ['#1F7A44', 'Kit Idea en Orden', 'Ordena tu idea y [planea tus próximos 7 días.]', ['Workbook **PDF** · 32 págs.', '**Word** y Excel', '**6** herramientas']],
+  'idea-negocio': ['#5B2A9E', 'Kit Idea → Negocio', 'Valida tu idea con [clientes reales.]', ['Workbook **PDF** · 32 págs.', '**2** Excel', 'Incluye **Nivel 1**']],
+};
+export const colorDe = k => MARCAS[k]?.[0] || '#141114';
+const negritas = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const titularHtml = t => { const [a, r = ''] = t.split('['), [m, z = ''] = r.split(']'); return `${esc(a)}${m ? `<em>${esc(m)}</em>` : ''}${esc(z)}`; };
+
+// La línea de marca, para usarla también fuera del hero (encabezados de compra, correos…)
+export const lineaMarca = (k, { h = 'p' } = {}) => `<${h} class="pm-marca"><span class="pm-v">${V}</span><b>${esc(MARCAS[k]?.[1] || '')}</b><small>by Vorka México</small></${h}>`;
+
+/**
+ * heroMarca(k, { apoyo, botones, antes, despues, nav, titular, datos, h1 }) → <section> de arriba de la página
+ * apoyo: texto (se escapa) · botones / antes / despues / nav: HTML que trae la página (sus ligas, avisos y pestañas)
+ */
+export function heroMarca(k, { apoyo = '', botones = '', antes = '', despues = '', nav = '', titular, datos, h1 = true } = {}) {
+  const [color, , tit, ds] = MARCAS[k] || ['#141114', '', '', []];
+  return `<section class="pm-hero" style="--pm:${color}"><div class="marco pm-g">
+  <div class="pm-txt">${lineaMarca(k)}${antes}
+    <${h1 ? 'h1' : 'h2'} class="pm-h1">${titularHtml(titular || tit)}</${h1 ? 'h1' : 'h2'}>
+    ${apoyo ? `<p class="pm-lead">${esc(apoyo)}</p>` : ''}
+    ${botones ? `<div class="pm-ctas">${botones}</div>` : ''}${despues}
+    <ul class="pm-datos">${(datos || ds).map(d => `<li>${negritas(d)}</li>`).join('')}</ul>
+  </div>
+  <div class="pm-obj"><img src="/assets/tienda/v3/${esc(k)}-objeto.webp" alt="" width="672" height="1200" fetchpriority="high" decoding="async"></div>
+</div>${nav}</section>`;
+}
+
+export const CSS_MARCA = `
+.pm-hero{background:var(--bg);color:var(--fg);padding:28px 0 8px}
+.pm-g{display:grid;gap:28px;align-items:center}.pm-g>*{min-width:0}
+@media(min-width:960px){.pm-g{grid-template-columns:1.1fr .9fr;gap:56px;padding-top:20px;padding-bottom:34px}}
+.pm-marca{display:flex;flex-wrap:wrap;align-items:baseline;gap:.1em .4em;margin:0;font:750 22px/1.2 var(--font,Inter,sans-serif);letter-spacing:-.02em;color:var(--fg)}
+.pm-marca small{font-size:.66em;font-weight:600;color:var(--fg-2);letter-spacing:0;white-space:nowrap}
+.pm-v{display:inline-block;width:1.05em;height:1em;vertical-align:-.12em;color:var(--fg)}.pm-v svg{width:100%;height:100%;display:block}
+.pm-h1{font:800 clamp(38px,6.4vw,64px)/1.03 var(--font,Inter,sans-serif);letter-spacing:-.045em;margin:22px 0 0;color:var(--fg)}
+.pm-h1 em{font-style:normal;color:var(--pm)}
+:root[data-theme=dark] .pm-h1 em{color:color-mix(in srgb,var(--pm) 55%,#fff)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .pm-h1 em{color:color-mix(in srgb,var(--pm) 55%,#fff)}}
+.pm-lead{font-size:clamp(17px,2vw,19px);line-height:1.55;color:var(--fg-2);margin:18px 0 0;max-width:560px}
+.pm-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.pm-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--pm);color:#fff;font-weight:700;font-size:16px;text-decoration:none;border:0;cursor:pointer;box-shadow:0 12px 28px -14px var(--pm)}
+.pm-btn svg{width:18px;height:18px}.pm-btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.pm-btn.sec{background:transparent;color:var(--fg);border:1.5px solid var(--line);box-shadow:none}
+.pm-hero .t-ya{margin-top:14px}
+.pm-datos{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;padding:0;margin:26px 0 0;font-size:15px;color:var(--fg-2)}.pm-datos b{color:var(--fg);font-weight:750}
+.pm-obj{border-radius:28px;overflow:hidden;background:#F1F0F2;max-width:520px;width:100%;justify-self:center}
+:root[data-theme=dark] .pm-obj img{filter:brightness(.88)}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .pm-obj img{filter:brightness(.88)}}
+.pm-obj img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+@media(max-width:959px){.pm-obj{max-width:440px}}
+.pm-hero .t-nav-tienda{margin-top:18px}
+`;
+
+// «Qué es» (en palabras simples) y «Para quién es» (el problema de cada quien, en su idioma: así también lo encuentra Google)
+export function seccionQueEs(k, { titulo, texto, para = [], id = 'que-es' }) {
+  return `<section class="pm-sec pm-que" id="${id}" style="--pm:${colorDe(k)}"><div class="marco pm-que-g">
+  <div><p class="pm-et">Qué es</p><h2 class="pm-h2">${esc(titulo)}</h2><p class="pm-grande">${texto}</p></div>
+  ${para.length ? `<div><p class="pm-et gris">Para quién es</p><ul class="pm-para">${para.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ul></div>` : ''}
+</div></section>`;
+}
+// Índice fijo bajo el encabezado: brinca a cada parte de la página y deja el botón principal siempre a la mano
+export function indiceProducto(k, partes, boton) {
+  return `<nav class="pm-indice" aria-label="Partes de la página" style="--pm:${colorDe(k)}"><div class="marco">${partes.map(([id, t]) => `<a href="#${esc(id)}">${esc(t)}</a>`).join('')}${boton ? `<span class="pm-indice-btn">${boton}</span>` : ''}</div></nav>`;
+}
+export const CSS_SECCIONES = `
+.pm-indice{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.pm-indice .marco{display:flex;align-items:center;gap:24px;min-height:54px;overflow-x:auto;scrollbar-width:none}.pm-indice .marco::-webkit-scrollbar{display:none}
+.pm-indice a{flex:none;font-size:14.5px;font-weight:600;color:var(--fg-2);text-decoration:none;padding:16px 0}.pm-indice a:hover{color:var(--fg)}
+.pm-indice-btn{margin-left:auto;flex:none}.pm-indice .pm-btn,.pm-hero .pm-btn:not(.sec){color:#fff!important}.pm-indice-btn .pm-btn{min-height:40px;padding:0 18px;font-size:14.5px}
+@media(max-width:720px){.pm-indice-btn{display:none}}
+.pm-sec{padding:76px 0 0;scroll-margin-top:64px}
+.pm-et{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pm);margin:0}.pm-et.gris{color:var(--fg-2)}
+.pm-h2{font:800 clamp(28px,4vw,42px)/1.1 var(--font,Inter,sans-serif);letter-spacing:-.035em;margin:10px 0 0;color:var(--fg)}
+.pm-que-g{display:grid;gap:36px}@media(min-width:900px){.pm-que-g{grid-template-columns:1.1fr .9fr;gap:60px;align-items:start}}
+.pm-grande{font-size:clamp(18px,2.2vw,21px);line-height:1.55;margin:18px 0 0;color:var(--fg)}.pm-grande b{color:var(--pm)}
+.pm-para{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}.pm-para li{border:1px solid var(--line);border-radius:18px;padding:16px 18px;background:var(--card,var(--bg))}
+.pm-para b{display:block;font-size:16.5px;color:var(--fg)}.pm-para span{display:block;font-size:15px;color:var(--fg-2);margin-top:2px;line-height:1.45}
+`;

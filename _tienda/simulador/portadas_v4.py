@@ -288,6 +288,9 @@ with sync_playwright() as pw:
         ext = 'jpg' if nombre.endswith('-og') else 'webp'
         im = Image.open(png).convert('RGB')
         im.save(OUT / f'{nombre}.{ext}', 'JPEG' if ext == 'jpg' else 'WEBP', quality=88, **({} if ext == 'jpg' else {'method': 6}))
+        # Para las páginas de producto: solo el panel de los objetos (la misma composición que la portada), 672×1200
+        if nombre.endswith('-portada'):
+            im.crop((w - int(w * .42), 0, w, h)).save(OUT / f"{nombre.replace('-portada', '-objeto')}.webp", 'WEBP', quality=88, method=6)
         png.unlink(); print('·', OUT / f'{nombre}.{ext}')
     SOLO = [x for x in os.environ.get('SOLO', '').split(',') if x]
     for k in V4:

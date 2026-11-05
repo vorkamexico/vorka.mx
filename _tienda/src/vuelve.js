@@ -2,6 +2,7 @@
 // /tienda/vuelve/ → ficha comercial única: prueba de 7 días, plan mensual o anual, sucursales adicionales, preguntas y compra.
 // Se cobra por suscripción (ver suscripciones.js). La app vive en os.vorka.mx/vuelve/ y el registro de clientes de cada
 // negocio en vorka.mx/vuelve/<negocio> (→ os.vorka.mx/v/<negocio>). Aquí solo se vende.
+import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -80,14 +81,14 @@ function qrSvg(texto) {
 
 // Tarjetas de muestra: las tiras son las reales que pinta Vuelve para el Wallet (assets/tienda/vuelve/tira-*.png)
 const MUESTRAS = [
-  { nombre: 'Café La Paloma', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis', logo: true, pie: 'Tu logo como sello' },
+  { nombre: 'Café El Celayense', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis', logo: true, pie: 'Tu logo como sello' },
   { nombre: 'Bodega Santa Rita', fondo: '#3b111a', tinta: '#f4f1ea', tinta2: '#a98c90', etiqueta: 'SELLOS', valor: '5 de 8', tira: 'tira-bodega', cliente: 'Jorge Ramírez', nivel: 'Plata', premioEt: 'PREMIO', premio: 'Botella de la casa', inicial: 'B', pie: 'Monedas de oro' },
   { nombre: 'Verde Bistró', fondo: '#12291f', tinta: '#f4f1ea', tinta2: '#93a098', etiqueta: 'PUNTOS', valor: '2,160', tira: 'tira-puntos', cliente: 'Ana Torres', nivel: 'Bronce', premioEt: 'TU META', premio: 'Postre gratis', inicial: 'V', pie: 'Puntos por cada peso' },
-  { nombre: 'Café La Paloma', fondo: '#0e1a33', tinta: '#f4f1ea', tinta2: '#8d95a6', etiqueta: 'SELLOS', valor: '4 de 6', tira: 'tira-circulo', cliente: 'Luis Herrera', nivel: 'Plata', premioEt: 'YA CASI', premio: 'Pan dulce gratis', logo: true, pie: 'Tu logo en círculo' },
+  { nombre: 'Café El Celayense', fondo: '#0e1a33', tinta: '#f4f1ea', tinta2: '#8d95a6', etiqueta: 'SELLOS', valor: '4 de 6', tira: 'tira-circulo', cliente: 'Luis Herrera', nivel: 'Plata', premioEt: 'YA CASI', premio: 'Pan dulce gratis', logo: true, pie: 'Tu logo en círculo' },
 ];
 // Réplica fiel de una storeCard de Apple Wallet: logo y nombre, saldo arriba, la tira, cliente · nivel, premio y QR
 const pase = d => `<div class="vu-pase${d.cls ? ` ${d.cls}` : ''}" style="--pf:${d.fondo};--pt:${d.tinta};--pt2:${d.tinta2}">
-  <div class="vu-pase-cab">${d.logo ? '<span class="vu-pase-logo con"><img src="/assets/tienda/vuelve/logo-paloma-pase.png" alt="" height="30"></span>' : ''}<b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
+  <div class="vu-pase-cab">${d.logo ? '<span class="vu-pase-logo con"><img src="/assets/tienda/vuelve/logo-celayense-pase.png" alt="" height="30"></span>' : ''}<b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
   <img class="vu-pase-tira" src="/assets/tienda/vuelve/${d.tira}.png" alt="" width="375" height="123" loading="lazy" decoding="async">
   <div class="vu-pase-campos"><span><small>CLIENTE</small>${esc(d.cliente)}</span><span class="der"><small>NIVEL</small>${d.nivel}</span></div>
   <div class="vu-pase-campos aux"><span><small>${d.premioEt}</small>${esc(d.premio)}</span></div>
@@ -120,30 +121,23 @@ export async function paginaVuelve(env, req, url) {
   migas('Vuelve', RUTA_VUELVE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
-  const res = pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
+  const res = pagina({ navActual: 'catalogo', entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
     descripcion: 'Que tus clientes vuelvan solos: sellos o puntos en su celular, sin app ni cartón, avisos automáticos y referidos. Prueba 7 días gratis, sin tarjeta.',
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="vu">
-<section class="vu-hero"><div class="marco vu-hero-g">
-  <div class="vu-hero-txt">
-    <span class="vu-marca"><span>vuelve</span></span>
-    ${reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : ''}
-    <h1 class="vu-h1">Que tus clientes <em>vuelvan solos.</em></h1>
-    <p class="vu-lead">La tarjeta de lealtad de tu negocio en Apple Wallet y Google Wallet de tus clientes. Sin app, sin cartón. Vuelve les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.</p>
-    <div class="vu-ctas"><a class="vu-btn" href="${esc(nuevo)}">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="vu-btn ghost" href="#ejemplo">Vívelo como tu cliente</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a> · <a href="#planes">Ver precios</a></p>
-    <ul class="vu-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.wallet}Apple y Google Wallet</li><li>${ICONO.reloj}Lista en 5 minutos</li></ul>
-  </div>
-  <div class="vu-escena" aria-hidden="true">
-    <div class="vu-cel"><i class="vu-isla"></i><div class="vu-pantalla"><p class="vu-wallet-t">Wallet</p>${pase(MUESTRAS[0])}${pase({ ...MUESTRAS[1], cls: 'abajo' })}</div></div>
-    <div class="vu-noti"><span class="vu-noti-ic"><img src="/assets/tienda/vuelve/logo-paloma.png" alt="" width="38" height="38"></span><span><b>Café La Paloma <small>ahora</small></b>¡Ya tienes tu bebida gratis! Pídela al pagar ☕</span></div>
-  </div>
-</div>
-${navTienda('lealtad')}
-</section>
+${heroMarca('vuelve', {
+  apoyo: 'La tarjeta de lealtad de tu negocio en el Apple Wallet y Google Wallet de tus clientes. Sin app y sin cartón. Les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.',
+  antes: reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : '',
+  botones: `<a class="pm-btn" href="${esc(nuevo)}">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="pm-btn sec" href="#ejemplo">Vívelo como tu cliente</a>`,
+  despues: `<p class="pm-precio">${mensual ? `<b>${precio(mensual.prod)}</b> al mes · ` : ''}prueba ${dias} días gratis, sin tarjeta</p><p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a></p>`,
+})}
+${indiceProducto('vuelve', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['ejemplo', 'Pruébalo'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébalo gratis</a>`)}
+${seccionQueEs('vuelve', { titulo: 'Una tarjeta de sellos que vive en el celular de tu cliente.',
+  texto: 'Tus clientes la sacan escaneando un QR en tu caja. En cada visita les sumas un sello y, cuando juntan los que pediste, se llevan su premio. <b>Mientras, Vuelve les recuerda que regresen</b> y te enseña cuántos volvieron y cuánto dejaron.',
+  para: [['Cafeterías, restaurantes y panaderías', 'Que el cliente de la mañana regrese mañana, y no se vaya con la competencia.'], ['Barberías, salones y estéticas', 'Que vuelvan contigo cada mes y te recomienden con sus amigos.'], ['Gimnasios, autolavados, tintorerías', 'Cualquier negocio con clientes que pueden regresar.']] })}
 
 <section class="vu-sec"><div class="marco">
   <div class="vu-cab"><span class="vu-et">Así se ve en sus celulares</span><h2>Tu marca, en su Wallet.</h2><p>Estos son ejemplos de lo que puedes armar. Eliges colores, metal y sellos, o usas tu logo como sello. También puedes poner una foto de tu negocio detrás.</p></div>
@@ -157,7 +151,7 @@ ${navTienda('lealtad')}
   <figure class="vu-demo-qr"><div>${qrSvg(DEMO)}</div><figcaption>¿Estás en la computadora? Escanéalo con la cámara de tu celular.</figcaption></figure>
 </div></section>
 
-<section class="vu-sec vu-osc"><div class="marco">
+<section class="vu-sec vu-osc" id="como"><div class="marco">
   <div class="vu-cab"><span class="vu-et">Cómo funciona</span><h2>Listo hoy. Desde tu celular.</h2></div>
   <ol class="vu-pasos">${[['Arma tu tarjeta', 'Tu logo, tus colores, una foto de tu negocio y tus premios. Vuelve te sugiere todo según tu giro.'], ['Pon tu QR en caja', 'Te damos el cartel listo para imprimir. Tus clientes sacan su tarjeta en 30 segundos, sin descargar nada.'],
     ['Sella con un toque', 'Tú o tu equipo escanean su tarjeta. Cada quien con su PIN y todo queda en la bitácora.'], ['Vuelve hace el resto', 'Avisos de cumpleaños y de "te extrañamos", su tarjeta al día en el Wallet y tus números cada mes.']].map(([t, d], k) => `<li><span class="vu-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
@@ -228,8 +222,8 @@ ${await masTienda(env, 'negocios')}
   return res;
 }
 
-const CSS = `
-.vu{--vu-tinta:#0f0d10;--vu-tinta2:#171519;--vu-morado:#6b2a85;--vu-morado-c:#c59bd9;--vu-oro:#c8a45c;--vu-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+.vu{--vu-tinta:#0f0d10;--vu-tinta2:#171519;--vu-morado:#B42A44;--vu-morado-c:#E58A9B;--vu-oro:#c8a45c;--vu-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
 [data-tema="oscuro"] .vu{--vu-morado:#c59bd9}
 .vu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(20,17,20,.5);transition:transform .2s var(--ease),background .2s}
 .vu-btn:hover{transform:translateY(-1px)}.vu-hero .vu-btn:not(.ghost),.vu-osc .vu-btn:not(.ghost){background:var(--vu-crema);color:var(--vu-tinta);box-shadow:0 10px 26px -12px rgba(0,0,0,.6)}.vu-hero .vu-btn:not(.ghost):hover,.vu-osc .vu-btn:not(.ghost):hover{background:#fff}.vu-btn svg{width:17px;height:17px}
@@ -309,7 +303,15 @@ const CSS = `
 .vu-calc-r{padding:26px;border-radius:24px;background:var(--vu-tinta);color:var(--vu-crema)}.vu-calc-r small{color:rgba(244,242,245,.6)}.vu-calc-r b{display:block;font-size:clamp(40px,6vw,58px);letter-spacing:-.04em;margin:4px 0 6px;font-variant-numeric:tabular-nums}
 .vu-calc-r p{margin:0;color:rgba(244,242,245,.8);line-height:1.5}.vu-calc-r .vu-nota{color:rgba(244,242,245,.55);font-size:13.5px;margin-top:12px}
 .vu-listo{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;margin-top:22px;padding:22px 24px;border-radius:24px;border:1.5px dashed var(--line-2);background:var(--card)}.vu-listo b{font-size:18px;letter-spacing:-.02em}.vu-listo p{margin:4px 0 0;color:var(--fg-2);max-width:40em}
-.vu #form-vuelve .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}`;
+.vu #form-vuelve .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}
+/* Estilo de marca (portadas v4): blanco, tinta y el color de Vuelve; las secciones oscuras pasan a gris claro */
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.vu-osc{--vu-tinta:var(--bg-2);--vu-crema:var(--fg);background:var(--bg-2);color:var(--fg)}
+.vu-osc .vu-cab p,.vu-osc p,.vu-osc figcaption{color:var(--fg-2)!important}.vu-osc .vu-et{color:var(--vu-morado)}
+.vu-osc .vu-btn:not(.ghost){background:var(--vu-morado)!important;color:#fff!important}
+.vu-btn:not(.ghost){background:var(--vu-morado);color:#fff}.vu-plan.rec{border-color:var(--vu-morado)}
+.vu-reco{margin:16px 0 0}
+`;
 
 const SCRIPT = `(function(){
   // calculadora: clientes al mes × de cada 10 cuántos regresan una vez más × lo que gastan
