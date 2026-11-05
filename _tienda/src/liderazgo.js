@@ -6,10 +6,11 @@
 // Entrega: la liga personal la da Vorka OS por service binding (ver ruta-entrega.js › APPS_OS). Aquí no hay datos de nadie.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc, WHATSAPP } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, formCompra, SCRIPT_COMPRA } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, formCompra, SCRIPT_COMPRA } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA } from './marco.generado.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 
 export const SLUG_LIDERAZGO = 'evaluacion-liderazgo';
 export const RUTA_LIDERAZGO = '/tienda/evaluacion-liderazgo/';
@@ -57,29 +58,21 @@ export async function paginaLiderazgo(env, req, url) {
   migas('Evaluación de liderazgo Vorka', RUTA_LIDERAZGO),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
-  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'la Evaluación de liderazgo' }, noindex: !p,
+  return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'la Evaluación de liderazgo' }, noindex: !p,
     titulo: 'Evaluación de liderazgo Vorka: dónde estás hoy como líder | 12 dimensiones', ruta: RUTA_LIDERAZGO, descripcion, imagen: OG_LIDERAZGO,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: p ? SCRIPT_COMPRA : '',
-    cuerpo: `<div class="lv">
-<section class="lv-hero"><div class="marco lv-hero-g">
-  <div>
-    <span class="lv-et">Evaluación de liderazgo Vorka</span>
-    <h1 class="lv-h1">¿Dónde estás hoy <em>como líder?</em></h1>
-    <p class="lv-lead">80 preguntas, unos 25 minutos. Comparamos lo que crees de ti con lo que has hecho y te decimos, dimensión por dimensión, qué ya está respaldado con hechos y qué todavía tienes que demostrar.</p>
-    <div class="lv-ctas"><a class="lv-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? '<a class="lv-btn ghost" href="?regalo=1#comprar">🎁 Regalarla</a>' : ''}</div>
-    <ul class="lv-chips"><li>12 dimensiones</li><li>2 aplicaciones: hoy y a los 90 días</li><li>Desde 12 años</li></ul>
-  </div>
-  <figure class="lv-muestra" aria-label="Ejemplo ilustrativo de resultados">
-    <figcaption>Ejemplo ilustrativo</figcaption>
-    <div class="lv-glob"><b>58</b><span>de 100 · En construcción</span></div>
-    ${EJEMPLO.map(([n, nota, per, evi, l]) => `<div class="lv-dim"><div class="lv-dim-h"><span>${n}</span><b>${nota.toFixed(1)}</b></div><div class="lv-pista"><i class="r" style="width:${nota * 10}%"></i><i class="m per" style="left:${per * 10}%"></i><i class="m evi" style="left:${evi * 10}%"></i></div><small class="lv-l ${l === 'Por demostrar' ? 'pd' : l === 'Subestimada' ? 'sub' : ''}">${l}</small></div>`).join('')}
-    <p class="lv-ley"><span><i class="per"></i> Lo que crees de ti</span><span><i class="evi"></i> Lo que has hecho</span></p>
-  </figure>
-</div>
-${navTienda('examenes')}
-</section>
+    cuerpo: `<div class="lv" style="--pm:${colorDe('evaluacion-liderazgo')}">
+${heroMarca('evaluacion-liderazgo', {
+  apoyo: '80 preguntas, unos 25 minutos. Comparamos lo que crees de ti con lo que has hecho y te decimos, dimensión por dimensión, qué ya está respaldado con hechos y qué todavía tienes que demostrar.',
+  botones: `<a class="pm-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? '<a class="pm-btn sec" href="?regalo=1#comprar">🎁 Regalarla</a>' : ''}`,
+  despues: `<p class="pm-precio"><b>${precioT}</b> · pago único · 2 aplicaciones: hoy y a los 90 días</p>`,
+})}
+${indiceProducto('evaluacion-liderazgo', [['que-es', 'Qué es'], ['que-mide', 'Qué mide'], ['como', 'Cómo funciona'], ['recibes', 'Lo que recibes'], ['mentoria', 'Mentoría'], ['comprar', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${comprar}">${p ? 'Empezar' : 'Muy pronto'}</a>`)}
+${seccionQueEs('evaluacion-liderazgo', { titulo: '¿Dónde estás hoy como líder?',
+  texto: '80 preguntas en línea, unos 25 minutos, que te dan una foto de dónde estás hoy como líder en 12 dimensiones. Cruza <b>lo que crees de ti</b> con <b>lo que has hecho</b>: la diferencia entre las dos es justo lo que se puede trabajar.',
+  para: [['Si vas por una beca o un programa como Líderes del Mañana', 'No basta con decir que eres líder: hay que mostrarlo con hechos.'], ['Si empiezas una mentoría', 'Fija tu punto de partida y mide tu avance con hechos, no con impresiones.'], ['Mamá, papá o tutor de alguien de 12 a 17 años', 'Autorizas antes de empezar y recibes una copia de sus resultados.']] })}
 
 <section class="lv-sec" id="que-mide"><div class="marco">
   <div class="lv-cab"><span class="lv-et">Qué mide</span><h2>12 dimensiones, las mismas que trabajamos en cada mentoría.</h2><p>Para becas y programas como Líderes del Mañana no basta con decir que eres líder: hay que mostrarlo con hechos.</p></div>
@@ -96,7 +89,13 @@ ${navTienda('examenes')}
 
 <section class="lv-sec" id="recibes"><div class="marco lv-dos">
   <div class="lv-cab izq"><span class="lv-et">Lo que recibes</span><h2>Un resultado que se convierte en plan.</h2>
-    <p>Al terminar lo ves en pantalla, te llega por correo y lo puedes guardar en PDF.</p></div>
+    <p>Al terminar lo ves en pantalla, te llega por correo y lo puedes guardar en PDF.</p>
+  <figure class="lv-muestra" aria-label="Ejemplo ilustrativo de resultados">
+    <figcaption>Ejemplo ilustrativo</figcaption>
+    <div class="lv-glob"><b>58</b><span>de 100 · En construcción</span></div>
+    ${EJEMPLO.map(([n, nota, per, evi, l]) => `<div class="lv-dim"><div class="lv-dim-h"><span>${n}</span><b>${nota.toFixed(1)}</b></div><div class="lv-pista"><i class="r" style="width:${nota * 10}%"></i><i class="m per" style="left:${per * 10}%"></i><i class="m evi" style="left:${evi * 10}%"></i></div><small class="lv-l ${l === 'Por demostrar' ? 'pd' : l === 'Subestimada' ? 'sub' : ''}">${l}</small></div>`).join('')}
+    <p class="lv-ley"><span><i class="per"></i> Lo que crees de ti</span><span><i class="evi"></i> Lo que has hecho</span></p>
+  </figure></div>
   <ul class="lv-lista">${['Tu global sobre 100 y tu nota de 0 a 10 en cada dimensión', 'Por dimensión: alineada, por demostrar o subestimada', 'Tus 3 fortalezas y tus 3 áreas de mejora', '3 acciones para los próximos 30 días, cada una con la evidencia que te deja', 'Una segunda aplicación a los 90 días para ver cuánto avanzaste', 'Si quieres trabajar tu liderazgo, la liga para agendar tu sesión de mentoría'].map(x => `<li>${x}</li>`).join('')}</ul>
 </div></section>
 
@@ -116,13 +115,14 @@ ${p ? seccionCompra({ titulo: 'Haz tu evaluación', intro: `${precioT}, pago ún
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre la Evaluación de liderazgo Vorka',
   pie: '<p class="t-nota t-legal">Evaluación de liderazgo Vorka · No es una prueba psicométrica ni una probabilidad de admisión · Vorka México</p>' })}
+${p ? `<section class="lv-sec lv-cierre"><div class="marco"><h2>Lo que crees de ti, <span>contra lo que has hecho.</span></h2><div class="lv-ctas"><a class="pm-btn" href="#comprar">Empezar por ${precioT} ${FLECHA}</a><a class="pm-btn sec" href="?regalo=1#comprar">🎁 Regalarla</a></div></div></section>` : ''}
 ${await masTienda(env, 'examenes')}
 ${p ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioT}</b><small>Pago único · 2 aplicaciones</small></div><a class="btn acento chico" href="#comprar">Empezar</a></div>` : ''}
 </div>`,
   });
 }
 
-const CSS = `
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .lv{--lv-noche:#0f0d10;--lv-morado:#6b2a85;--lv-oro:#c8a45c;--lv-oro-c:#e6cf96;--lv-crema:#f4f2f5}
 .lv-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--lv-oro-c);color:#1b1408;font-weight:700;font-size:16px;text-decoration:none;transition:transform .2s var(--ease)}
 .lv-btn:hover{transform:translateY(-1px)}.lv-btn svg{width:17px;height:17px}
@@ -159,4 +159,18 @@ const CSS = `
 .lv-lista{list-style:none;padding:0;margin:0;display:grid;gap:10px}.lv-lista li{padding:14px 18px 14px 46px;border-radius:16px;background:var(--card);border:1px solid var(--line);position:relative;line-height:1.45}
 .lv-lista li::before{content:"";position:absolute;left:18px;top:19px;width:12px;height:12px;border-radius:50%;background:var(--lv-oro)}
 .lv-pronto{text-align:center;font-size:18px;color:var(--fg-2)}
-.lv #form-compra .btn.acento{background:var(--fg);color:var(--bg)}`;
+.lv #form-compra .btn.acento{background:var(--fg);color:var(--bg)}
+/* Estilo de marca (portadas v4): blanco, tinta y el color de la Evaluación; las secciones oscuras pasan a gris claro */
+.lv{--pm-t:var(--pm);--lv-noche:var(--bg-2);--lv-crema:var(--fg);--lv-morado:var(--pm-t);--lv-oro:var(--fg);--lv-oro-c:var(--pm-t);--acento:var(--pm);--acento-2:var(--pm);--sobre-acento:#fff}
+:root[data-tema="oscuro"] .lv{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}
+.lv .pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.lv .pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.lv .pm-grande b,.lv .pm-et:not(.gris){color:var(--pm-t)}
+.lv-osc{background:var(--bg-2);color:var(--fg)}.lv-osc .lv-cab p{color:var(--fg-2)}.lv-osc .lv-et{color:var(--pm-t)}.lv-osc a{color:var(--pm-t)}
+.lv-osc .lv-dos{gap:56px}
+.lv-muestra{margin-top:30px;justify-self:start;background:var(--card);color:var(--fg);border:1px solid var(--line);box-shadow:0 30px 60px -40px rgba(0,0,0,.35);gap:14px}
+.lv-muestra figcaption,.lv-glob span,.lv-ley,.lv-l{color:var(--fg-2)}.lv-pista{background:var(--bg-2)}.lv-pista .r{background:var(--fg)}.lv-pista .m{border-color:var(--card)}
+.lv .per{background:var(--pm-t)}.lv .evi{background:var(--fg)}.lv-l.pd{color:var(--pm-t)}
+.lv-lista li::before{background:var(--pm-t)}
+.lv-dims{gap:10px}
+.lv-cierre{text-align:center}.lv-cierre h2{font-weight:800;font-size:clamp(30px,4.2vw,50px);line-height:1.04;letter-spacing:-.045em;margin:0 auto;max-width:16ch;text-wrap:balance}.lv-cierre h2 span{color:var(--pm-t)}.lv-cierre .lv-ctas{justify-content:center}
+.lv #form-compra .btn.acento{background:var(--pm);color:#fff;box-shadow:0 10px 24px -14px var(--pm)}`;

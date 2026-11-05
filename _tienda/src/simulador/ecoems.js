@@ -106,6 +106,12 @@ const VENTA = {
     sellos: [`Examen completo: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'Habilidades y las 8 materias de secundaria', 'Aciertos estimados por materia', 'En celular o computadora'],
     alt: 'Simulador ECOEMS de Vorka México: pregunta con pista del tutor y reporte de aciertos por materia',
   },
+  // «Qué es / Para quién es» de la página (con lo que ya dice la página)
+  queEs: {
+    apoyo: `Practica con un examen de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, con las 10 materias y cronómetro.`,
+    texto: 'Un examen de práctica en línea para entrar a la prepa de la UNAM y del IPN: habilidades y las 8 materias de secundaria, con cronómetro. <b>Si fallas, un tutor te da una pista</b> para intentarlo otra vez; al final, un reporte te dice cuántos aciertos llevas y qué reforzar.',
+    para: [['Si vas en secundaria y quieres entrar a la prepa UNAM o al IPN', 'No sabes qué materias te faltan para el examen.'], ['Si ya estudiaste con guías en PDF', 'Te falta practicar con cronómetro y ver tus aciertos por materia.'], ['Mamá, papá o quien quiera apoyar', 'Lo compras y le llega una liga a quien va a presentar, con su propia cuenta.']],
+  },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
     { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada', trae: () => [`2 exámenes completos: ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas`, 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Aciertos por materia y temas a reforzar'] },

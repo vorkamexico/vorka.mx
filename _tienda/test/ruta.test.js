@@ -85,7 +85,9 @@ describe('ficha /tienda/ruta-de-impacto/', () => {
     // sin IA y sin cifras inventadas de IMPACTO
     expect(h).not.toMatch(/inteligencia artificial|\bIA\b/i);
     expect(h).not.toContain('121 municipios');
-    expect(h).toContain('aria-current="page">Proyectos · Ruta de Impacto</a>');
+    // Encabezado de marca (sin las pestañas de la tienda) e índice fijo a las secciones de la página
+    expect(h).toContain('class="pm-hero"'); expect(h).not.toContain('class="t-nav-tienda"');
+    for (const id of ['que-es', 'como-funciona', 'niveles', 'calificacion', 'regalar', 'comprar', 'ayuda']) { expect(h).toContain(`href="#${id}"`); expect(h).toContain(`id="${id}"`); }
   });
 
   it('SEO: título, descripción, canónica, OG, Course y FAQPage', async () => {

@@ -1,12 +1,13 @@
 // Test vocacional Vorka · páginas: el test gratis (indexable), el resultado con vista previa con candado, el reporte de
 // pago (imprimible), las licencias para grupo y el panel del orientador.
 import { pagina, esc, WHATSAPP } from '../paginas.js';
-import { precio, masTienda, seccionFaq, navTienda, formCompra, SCRIPT_COMPRA } from '../tienda.js';
+import { precio, masTienda, seccionFaq, formCompra, SCRIPT_COMPRA } from '../tienda.js';
 import { oferta, ofertas, migas, ldScript } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { pesosTexto } from '../descuentos.js';
 import { FLECHA } from '../marco.generado.js';
-import { CSS_TESTS } from './estilos.js';
+import { CSS_TESTS, CSS_MARCA_TEST } from './estilos.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-producto.js';
 import { TIPOS, ORDEN_TIPOS, INTERESES, HABILIDADES, PREFERENCIAS, OPC_INTERES, OPC_HABILIDAD, CARRERAS, AREAS_UNAM, RAMAS_IPN, PLAN_30, PREGUNTAS_FAMILIA, PREGUNTAS_PROFESIONAL } from './vocacional-datos.js';
 import { calcular, SIMULADORES } from './vocacional.js';
 import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, ICONO_CANDADO, PRODUCTOS_TEST, whatsapp, fechaCorta, SIN_REFERER, horaVence } from './comun.js';
@@ -99,32 +100,28 @@ export async function landingVocacional(env, req, url, { p, grupos = [], code = 
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
   ];
   return pagina({ titulo: 'Test vocacional gratis: descubre qué carrera estudiar | Vorka México', ruta: RUTA, descripcion, imagen: OG_VOCACIONAL, navActual: 'catalogo', status,
-    head: head(ldScript(ld)), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('vocacional') + (p ? SCRIPT_COMPRA : ''),
-    cuerpo: `<div class="tv">
-<section class="tv-hero"><div class="marco">
-  ${navTienda('examenes')}
-  <div class="tv-hero-g">
-    <div>
-      <span class="tv-et">Test vocacional gratis</span>
-      <h1 class="tv-h1">Descubre en 10 minutos <em>qué carreras van contigo.</em></h1>
-      <p class="tv-lead">${N_PREG} preguntas cortas sobre lo que te gusta, lo que se te da y lo que buscas. Al terminar ves tu perfil: tus 3 tipos de interés y tu carrera más afín.</p>
-      ${aviso ? `<p class="tv-ok" role="status">${esc(aviso)}</p>` : ''}
-      <div class="tv-ctas"><a class="btn acento" href="#test">Empezar el test ${FLECHA}</a><a class="btn blanco" href="#reporte">Ver qué trae el reporte</a></div>
-      <p class="tv-nota" style="margin:14px 0 0"><b>Contestarlo es gratis · tu perfil básico es gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único).</p>
-      <ul class="tv-chips"><li>${N_PREG} preguntas · 8 a 10 min</li><li>Sin crear cuenta</li><li>Para secundaria, prepa y familias</li></ul>
-    </div>
-    <div class="tv-tarjeta" aria-label="Así se ve tu resultado (ejemplo)">
-      <span class="tv-et" style="color:var(--fg-2)">Ejemplo de resultado</span>
-      <div class="tv-barras" style="margin-top:12px">${[['S', 82], ['A', 74], ['I', 61], ['E', 48], ['C', 35], ['R', 22]].map(([t, v]) => `<div class="tv-b" style="${tipoCss(t)}"><span>${TIPOS[t].nombre}</span><i><span style="width:${v}%"></span></i><b class="num">${v}</b></div>`).join('')}</div>
-      <p class="tv-nota" style="margin:12px 0 0">Tu código: <b>SAI</b> · Psicología, Pedagogía, Ciencias de la Comunicación…</p>
-    </div>
-  </div>
-</div></section>
+    head: head(`${ldScript(ld)}<style>${CSS_MARCA_TEST}</style>`), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('vocacional') + (p ? SCRIPT_COMPRA : ''),
+    cuerpo: `<div class="tv tv-marca" style="--pm:${colorDe('test-vocacional')}">
+${heroMarca('test-vocacional', {
+  apoyo: `${N_PREG} preguntas cortas sobre lo que te gusta, lo que se te da y lo que buscas. Al terminar ves tu perfil: tus 3 tipos de interés y tu carrera más afín.`,
+  antes: aviso ? `<p class="tv-ok" role="status" style="margin-top:16px">${esc(aviso)}</p>` : '',
+  botones: `<a class="pm-btn" href="#test">Empezar el test ${FLECHA}</a><a class="pm-btn sec" href="#reporte">Ver qué trae el reporte</a>`,
+  despues: `<p class="pm-gratis"><b>Contestarlo es gratis · tu perfil básico es gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único). Sin crear cuenta.</p>`,
+})}
+${indiceProducto('test-vocacional', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['test', 'El test'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['escuelas', 'Escuelas'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar el test</a>`)}
+${seccionQueEs('test-vocacional', { titulo: 'Un test vocacional gratis para saber qué carreras van contigo.',
+  texto: `${N_PREG} preguntas cortas, de 8 a 10 minutos, basadas en el modelo de intereses de John L. Holland (RIASEC), con preguntas propias escritas para estudiantes en México. <b>Al terminar ves gratis tu perfil</b>: tus 3 tipos de interés y tu carrera más afín. Es orientativo: no es una prueba psicométrica ni un diagnóstico.`,
+  para: [['Si vas en prepa', 'No sabes qué carrera estudiar ni qué examen te toca.'], ['Si vas en secundaria', 'Quieres elegir una prepa o un bachillerato que vaya con tus intereses.'], ['Mamá, papá u orientador', 'Quieres ayudar a decidir con más información; también hay licencias para grupos.']] })}
 
 <section class="tv-sec suave" id="como"><div class="marco">
   <div class="tv-cab"><span class="tv-et">Cómo funciona</span><h2>Tus intereses, tus habilidades y lo que buscas.</h2>
     <p>Usamos el modelo de seis tipos de intereses de John L. Holland (RIASEC), con preguntas propias escritas para estudiantes en México.</p></div>
   <ol class="tv-tres">${[['Contestas', `${N_PREG} preguntas rápidas: lo que te gustaría hacer, qué tan bien te sale y qué examen vas a presentar.`], ['Ves tu resultado', 'Tu perfil gratis: tus 3 tipos de interés con su puntaje y tu carrera más afín, al momento.'], ['Decides con más información', 'Si quieres, el reporte completo te da 20 carreras, tu examen y un plan de 30 días.']].map(([t, d], i) => `<li><span class="tv-num">0${i + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+  <div class="tv-tarjeta tv-ejemplo" aria-label="Así se ve tu resultado (ejemplo)">
+      <span class="tv-et" style="color:var(--fg-2)">Ejemplo de resultado</span>
+      <div class="tv-barras" style="margin-top:12px">${[['S', 82], ['A', 74], ['I', 61], ['E', 48], ['C', 35], ['R', 22]].map(([t, v]) => `<div class="tv-b" style="${tipoCss(t)}"><span>${TIPOS[t].nombre}</span><i><span style="width:${v}%"></span></i><b class="num">${v}</b></div>`).join('')}</div>
+      <p class="tv-nota" style="margin:12px 0 0">Tu código: <b>SAI</b> · Psicología, Pedagogía, Ciencias de la Comunicación…</p>
+  </div>
   <p class="tv-nota" style="margin-top:16px">Es orientativo: no es una prueba psicométrica ni un diagnóstico.</p>
 </div></section>
 
@@ -148,6 +145,7 @@ ${licencias(grupos)}
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Preguntas sobre el test', items: F.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre el Test vocacional Vorka',
   pie: PIE_ESCUELAS + '<p class="t-nota t-legal">Test vocacional Vorka · Basado en la teoría RIASEC de John L. Holland, con preguntas originales de Vorka México · Orientativo: no es una prueba psicométrica · Vorka México</p>' })}
+<section class="tv-sec tv-cierre"><div class="marco"><h2>Descubre <em>qué carreras van contigo.</em></h2><div class="tv-ctas"><a class="pm-btn" href="#test">Empezar el test gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'examenes')}
 </div>`,
   });
