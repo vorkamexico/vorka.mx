@@ -43,7 +43,8 @@
     // Ruta de Impacto: el acceso de cada compra, las ligas de regalo y los reembolsos se piden a Vorka OS (src/ruta-entrega.js)
     { "binding": "RUTA", "service": "vorka-os", "entrypoint": "Ruta" },
     // Evaluación de liderazgo: la liga personal de cada compra, los regalos y los reembolsos, igual que Ruta (src/ruta-entrega.js › APPS_OS)
-    { "binding": "LIDERAZGO", "service": "vorka-os", "entrypoint": "Liderazgo" }
+    { "binding": "LIDERAZGO", "service": "vorka-os", "entrypoint": "Liderazgo" },
+    { "binding": "WALLET", "service": "vorka-os", "entrypoint": "Wallet" }
   ],
   "vars": {
     "SITE_URL": "https://vorka.mx",
@@ -76,7 +77,8 @@
         { "binding": "CORREO", "service": "vorka-os", "entrypoint": "Correo" },
         { "binding": "OS", "service": "vorka-os" },
         { "binding": "RUTA", "service": "vorka-os", "entrypoint": "Ruta" },
-        { "binding": "LIDERAZGO", "service": "vorka-os", "entrypoint": "Liderazgo" }
+        { "binding": "LIDERAZGO", "service": "vorka-os", "entrypoint": "Liderazgo" },
+        { "binding": "WALLET", "service": "vorka-os", "entrypoint": "Wallet" }
       ],
       "vars": {
         "SITE_URL": "https://vorka-tienda-pruebas.oleynickhdz.workers.dev",
