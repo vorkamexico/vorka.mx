@@ -64,7 +64,7 @@ describe('ficha /tienda/agenda/', () => {
     const r = await pedir('/tienda/agenda/');
     expect(r.status).toBe(200);
     const h = await r.text();
-    expect(h).toContain('Tus clientes <em>agendan solos.</em>');
+    expect(h).toContain('Tus clientes reservan solos, <em>a cualquier hora.</em>');
     for (const g of ['Consultorios médicos', 'Psicología', 'Nutrición', 'Dentistas', 'Fisioterapia', 'Barberías', 'Estéticas', 'Asesorías']) expect(h).toContain(g);
     expect(h).toContain('$99 MXN'); expect(h).toContain('$990 MXN'); expect(h).toContain('$449 MXN'); expect(h).toContain('$4,490 MXN');
     expect(h).toContain('por profesional');

@@ -160,7 +160,10 @@ describe('Vende en el catálogo', () => {
     expect(h).not.toContain('id="form-vende"');
     expect((await comprar()).status).not.toBe(200);
   });
-  it('aparece en la barra de la tienda de las otras apps', async () => {
-    expect(await (await pedir('/tienda/cuentas/')).text()).toContain('/tienda/vende/');
+  // Las páginas de las apps ya no traen la barra de pestañas de la tienda (encabezado de marca): Vende se encuentra en el
+  // catálogo y, desde las otras apps, en «También en la tienda» (línea Negocios)
+  it('aparece en el catálogo y en «También en la tienda» de las otras apps', async () => {
+    expect(await (await pedir('/tienda/')).text()).toContain('/tienda/vende/');
+    expect(await (await pedir('/tienda/cuentas/')).text()).toContain('href="/tienda/#negocios"');
   });
 });

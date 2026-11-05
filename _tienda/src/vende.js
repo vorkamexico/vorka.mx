@@ -2,9 +2,10 @@
 // /tienda/vende/ → ficha comercial: plan gratis con límites y prueba de 7 días (viven en la app), Vende Pro mensual/anual y programas patrocinados.
 // Se cobra por suscripción (ver suscripciones.js): la app pregunta por RPC (Admin.suscripcionApp(correo, 'vende')) si está al corriente.
 // Aquí solo se vende. Vende no mueve dinero, no presta ni cobra a nombre de nadie (ver /legal/vende/).
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
@@ -39,11 +40,8 @@ const ICONO = {
   enlace: ico('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'), campana: ico('<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
   historial: ico('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>'), corazon: ico('<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'),
 };
-const V = '<svg viewBox="69 225 940 909" aria-hidden="true"><path fill="currentColor" d="M69 226H311L652 877L526 1133Z"/><path fill="currentColor" d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></svg>';
 
 
-// Captura real de la pantalla "Hoy" de la app (datos de ejemplo), dentro de un celular
-const pantalla = `<div class="ve-cel"><i class="ve-isla" aria-hidden="true"></i><div class="ve-pant"><img src="/assets/tienda/vende/hoy.webp" width="600" height="1298" alt="Pantalla Hoy de Vende: 6 cosas por hacer, con botones para mandar WhatsApp y anotar el abono" fetchpriority="high"></div></div>`;
 // Galería con capturas reales
 const GALERIA = [['hoy', 'Hoy', 'Lo que te toca: cobros, entregas, recompras y cumpleaños.'], ['cobros', 'Cobros', 'Quién te debe, cuánto y desde cuándo. Recuérdale con un toque.'],
   ['pedido', 'Anotar una venta', 'Clienta, productos y cómo te pagó. Total y ganancia al momento.'], ['clientas', 'Clientas', 'Tu cartera completa, con lo que cada una te debe.'], ['oscuro', 'Modo oscuro', 'Se pone sola según la configuración de tu teléfono.']];
@@ -66,39 +64,35 @@ export async function paginaVende(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_VENDE, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Vende', RUTA_VENDE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Vende' },
+  return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Vende' },
     titulo: 'Vende: tus clientas, pedidos y cobros en orden | Gratis para empezar', ruta: RUTA_VENDE, imagen: 'https://vorka.mx/assets/tienda/v3/vende-og.jpg',
     descripcion: 'Para vendedoras por catálogo y por encargo: pedidos, cobros con estado de cuenta y tu ganancia real. Funciona sin internet. Gratis, sin tarjeta.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="ve">
-<section class="ve-hero"><div class="marco ve-hero-g">
-  <div>
-    <span class="ve-marca"><span class="ve-logo grande">${V}</span>Vende <small>by Vorka</small></span>
-    <h1 class="ve-h1">Vende más, <em>cobra a tiempo.</em></h1>
-    <p class="ve-lead">Para quien vende por catálogo o por encargo: cada mañana te dice a qué clienta escribirle, con el WhatsApp ya redactado. Lleva tus pedidos, tus cobros y tu ganancia real, aunque vendas varias marcas.</p>
-    <div class="ve-ctas"><a class="ve-btn" href="${APP}/#/entrar">Empieza gratis ${FLECHA}</a><a class="ve-btn ghost" href="#planes">Ver precio</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>
-    <ul class="ve-chips"><li>${ICONO.check}Sin tarjeta</li><li>${ICONO.candado}Tus clientas son tuyas</li><li>${ICONO.reloj}Funciona sin internet</li></ul>
-  </div>
-  <div class="ve-escena">${pantalla}</div>
-</div>
-${navTienda('vende')}
-</section>
+${heroMarca('vende', {
+  apoyo: 'Para quien vende por catálogo o por encargo: cada mañana te dice a qué clienta escribirle, con el WhatsApp ya redactado. Lleva tus pedidos, tus cobros y tu ganancia real, aunque vendas varias marcas.',
+  botones: `<a class="pm-btn" href="${APP}/#/entrar">Empieza gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precio</a>`,
+  despues: `<p class="pm-precio"><b>Gratis</b> para empezar, sin tarjeta${mensual ? ` · Vende Pro por ${precio(mensual.prod)} al mes` : ''}</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>`,
+})}
+${indiceProducto('vende', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['asi-se-ve', 'Así se ve'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/#/entrar">Empieza gratis</a>`)}
+${seccionQueEs('vende', { titulo: 'Tus clientas, pedidos y cobros, en un solo lugar.',
+  texto: 'Anotas a tus clientas y cada pedido, y Vende calcula cuándo le toca recomprar, cuánto te debe y cuánto ganaste de verdad. <b>Cada mañana te dice a qué clienta escribirle</b>, con el WhatsApp ya redactado. Tus clientas te pagan directo a ti, como siempre.',
+  para: [['Vendedoras por catálogo', 'Varias marcas a la vez, con su costo y su precio, y el aviso de cuándo le toca recomprar a cada clienta.'], ['Cocina por encargo', 'Costo por porción, menú de la semana y pedidos con fecha de entrega y anticipo.'], ['Marcas, distribuidores y directoras', 'Darle Vende Pro a todo tu equipo con un programa patrocinado.']] })}
 
-<section class="ve-sec ve-gal-s"><div class="marco">
-  <div class="ve-cab"><span class="ve-et">Así se ve</span><h2>Botones grandes, palabras claras.</h2><p>Hecha para quien no se lleva con la tecnología: si usas WhatsApp, puedes usar Vende. Blanca y sencilla, o en modo oscuro si así tienes tu teléfono.</p></div>
-  <ul class="ve-gal">${GALERIA.map(([f, t, d]) => `<li><div class="ve-cel chico"><div class="ve-pant"><img src="/assets/tienda/vende/${f}.webp" width="600" height="1298" alt="Pantalla ${t} de Vende" loading="lazy"></div></div><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
-</div></section>
-
-<section class="ve-sec"><div class="marco">
+<section class="ve-sec" id="como"><div class="marco">
   <div class="ve-cab"><span class="ve-et">Cómo funciona</span><h2>Tu negocio, sin libreta ni hojas sueltas.</h2><p>Registrar a una clienta toma menos de 20 segundos. Lo demás lo calcula Vende: cuándo le toca recomprar, cuánto te debe y cuánto ganaste de verdad.</p></div>
   <ol class="ve-pasos">${[['Registra a tus clientas', 'Nombre, WhatsApp y lo que te sirva: talla, tono de piel, alergias, dirección. O súbelas desde un Excel.'], ['Arma tu catálogo o menú', 'Productos por marca con su costo y su precio, o platillos con receta y costo por porción.'],
     ['Anota cada pedido', 'Con descuento, envío, anticipo y si es de contado o a crédito, en cuotas o pagos libres.'], ['Abre "Hoy" cada mañana', 'Cobros, entregas, recompras y cumpleaños, con el mensaje listo para enviar por WhatsApp.']].map(([t, d], k) => `<li><span class="ve-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
 </div></section>
 
-<section class="ve-sec ve-osc"><div class="marco ve-dos">
+<section class="ve-sec suave ve-gal-s" id="asi-se-ve"><div class="marco">
+  <div class="ve-cab"><span class="ve-et">Así se ve</span><h2>Botones grandes, palabras claras.</h2><p>Hecha para quien no se lleva con la tecnología: si usas WhatsApp, puedes usar Vende. Blanca y sencilla, o en modo oscuro si así tienes tu teléfono.</p></div>
+  <ul class="ve-gal">${GALERIA.map(([f, t, d]) => `<li><div class="ve-cel chico"><div class="ve-pant"><img src="/assets/tienda/vende/${f}.webp" width="600" height="1298" alt="Pantalla ${t} de Vende" loading="lazy"></div></div><b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+</div></section>
+
+<section class="ve-sec"><div class="marco ve-dos">
   <div class="ve-cab izq"><span class="ve-et">Ganancia real</span><h2>Lo que vendiste no es lo que ganaste.</h2><p>Vende resta el costo del producto, los descuentos, el envío que pagas tú, los regalos y el empaque. Y separa lo vendido de lo cobrado, para que sepas cuánto es para reponer y cuánto es para ti.</p></div>
   <div class="ve-calc" role="img" aria-label="Ejemplo de ganancia de un pedido">
     <small>Ejemplo · pedido #18</small>
@@ -110,7 +104,7 @@ ${navTienda('vende')}
   </div>
 </div></section>
 
-<section class="ve-sec"><div class="marco">
+<section class="ve-sec" id="incluye"><div class="marco">
   <div class="ve-cab"><span class="ve-et">Lo que incluye</span><h2>Hecho para vender, cobrar y no perder clientas.</h2></div>
   <ul class="ve-ben">${[[ICONO.campana, 'A quién escribirle hoy', 'Recompras según cuánto le dura cada producto, cobros, entregas, cumpleaños y clientas que no compran hace tiempo. Máximo 7 al día.'],
     [ICONO.calc, 'Cobranza clara', 'Abonos en dos toques, cuotas quincenales o pagos libres. Si te pagan de más, se aplica al siguiente adeudo.'],
@@ -135,12 +129,12 @@ ${navTienda('vende')}
   ${plan ? '' : `<p class="ve-nota" style="text-align:center">Vende Pro abre muy pronto. Mientras, <a href="${APP}/#/entrar">empieza gratis</a>: los primeros 7 días tienes todo sin límites.</p>`}
 </div></section>
 
-<section class="ve-sec ve-osc"><div class="marco ve-pat">
+<section class="ve-sec" id="equipos"><div class="marco"><div class="ve-pat">
   <div class="ve-cab izq"><span class="ve-et">Para marcas, distribuidores y directoras</span><h2>Dale Vende Pro a todo tu equipo.</h2>
     <p>Con un programa patrocinado tus vendedoras lo usan sin pagar, con tu nombre y tus colores. Tú pagas a Vorka solo por las vendedoras activas del mes.</p>
     <ul>${['Tu catálogo o recetario precargado en la cuenta de cada vendedora', 'Registro con tu código o QR, midiendo de dónde llegan', 'Panel con semáforo de actividad, embudo de nuevas y retos', 'Compras comprobadas con foto de ticket y validación manual', 'Nunca ves datos personales de sus clientas: solo indicadores'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul></div>
   <div><a class="ve-btn" href="mailto:hola@vorka.mx?subject=Programa%20patrocinado%20de%20Vende">Quiero un programa ${FLECHA}</a></div>
-</div></section>
+</div></div></section>
 
 ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo pruebas? <a href="${APP}/#/entrar">Empieza gratis</a>, sin tarjeta. Si ya lo usas, suscríbete con el mismo correo y todo sigue tal cual.`,
   pasos: [['Elige mensual o anual', 'Y escribe el mismo correo con el que entras a Vende.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Tu cuenta queda sin límites al instante, con todos tus registros.']],
@@ -159,98 +153,71 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo
 
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vende/">Condiciones de Vende</a> · <a href="/legal/vende/privacidad/">Aviso de privacidad</a> · Vende · by Vorka México</p>' })}
+<section class="pm-sec ve-cierre" style="--pm:${colorDe('vende')}"><div class="marco"><h2 class="pm-h2">Gratis para empezar. Sin límites con Pro.</h2><p>Los primeros 7 días tienes todo sin límites para probar. Entras con tu correo; no pedimos tarjeta.</p><div class="pm-ctas"><a class="pm-btn" href="${APP}/#/entrar">Empieza gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'negocios')}
 </div>`,
   });
 }
 
-const CSS = `
-.ve{--ve-tinta:#0f0d10;--ve-acento:#A8285F;--ve-acento-c:#F2A2C3;--ve-h1:#1f0f28;--ve-h2:#4e1d63;--ve-h3:#A8285F;--ve-crema:#f6f4f7}
-[data-tema="oscuro"] .ve{--ve-acento:#F2A2C3}
-.ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--ve-acento);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -12px rgba(107,42,133,.7);transition:transform .2s var(--ease),background .2s}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+/* Estilo de marca (portadas v4): blanco, tinta y el color de Vende; sin fondos oscuros */
+.ve{--ve-c:#C2256F;--ve-c2:#C2256F;--morado:#C2256F}
+[data-tema="oscuro"] .ve{--ve-c2:color-mix(in srgb,#C2256F 55%,#fff);--morado:var(--ve-c2)}
+/* en oscuro, los acentos de las secciones de marca se aclaran para leerse bien */
+[data-tema="oscuro"] .pm-et:not(.gris),[data-tema="oscuro"] .pm-grande b{color:color-mix(in srgb,var(--pm) 55%,#fff)}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.ve-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--ve-c);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -14px var(--ve-c);transition:transform .2s var(--ease)}
 .ve-btn:hover{transform:translateY(-1px)}.ve-btn svg{width:17px;height:17px}
-.ve-hero .ve-btn:not(.ghost){background:#fff;color:var(--ve-h1)}
-.ve-btn.ghost{background:rgba(255,255,255,.08);color:var(--ve-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}.ve-btn.ghost:hover{background:rgba(255,255,255,.14)}
-.ve-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.ve-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
-/* portada */
-.ve-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;color:var(--ve-crema);
-  background:radial-gradient(60% 80% at 85% 20%,var(--ve-h3) 0%,transparent 60%),linear-gradient(150deg,var(--ve-h1),var(--ve-h2))}
-.ve-hero::after{content:"";position:absolute;right:-6%;bottom:-18%;width:min(60vw,640px);aspect-ratio:1;opacity:.1;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='69 225 940 909'%3E%3Cpath fill='%23fff' d='M69 226H311L652 877L526 1133Z'/%3E%3Cpath fill='%23fff' d='M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z'/%3E%3C/svg%3E") no-repeat center/contain}
-.ve-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.ve-hero-g>*{min-width:0}
-@media(min-width:960px){.ve-hero-g{grid-template-columns:1.1fr .9fr}}
-.ve-marca{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em}.ve-marca small{font-weight:500;font-size:14px;opacity:.7;letter-spacing:0}
-.ve-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ve-acento);color:#fff}.ve-logo svg{width:15px;height:15px}
-.ve-logo.grande{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--ve-h1)}.ve-logo.grande svg{width:21px;height:21px}
-.ve-h1{font-weight:800;font-size:clamp(42px,6.4vw,78px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:12ch;text-wrap:balance}.ve-h1 em{font-style:normal;color:#E6CF96}
-.ve-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(246,244,247,.82);max-width:34em}
-.ve-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.ve-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(246,244,247,.78)}
-.ve-chips li{display:inline-flex;align-items:center;gap:7px}.ve-chips svg{width:18px;height:18px;color:#E6CF96}
-.ve-hero .t-nav-tienda{margin-top:8px}.ve-hero .t-nav-tienda a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:rgba(246,244,247,.86)}.ve-hero .t-nav-tienda a[aria-current]{background:#fff;border-color:#fff;color:var(--ve-h1)}
-.ve-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
-/* el celular con la app */
-.ve-escena{justify-self:center;width:min(100%,340px);padding:10px 0 30px}
+.ve-btn.ghost,.ve-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.ve-btn.ghost:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
+/* capturas de la app en un celular */
 .ve-cel{position:relative;padding:12px;border-radius:52px;background:#16101a;box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(255,255,255,.12)}
-.ve-isla{position:absolute;top:24px;left:50%;width:90px;height:26px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
 .ve-pant{border-radius:41px;overflow:hidden;background:#fff;padding-top:34px}.ve-pant img{display:block;width:100%;height:auto}
-.ve-gal{list-style:none;padding:4px 16px 18px;margin:0 -16px;display:grid;grid-auto-flow:column;grid-auto-columns:min(72vw,250px);gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.ve-gal{list-style:none;padding:4px 16px 18px;margin:0 -16px;display:grid;grid-auto-flow:column;grid-auto-columns:min(72vw,250px);gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
 .ve-gal li{scroll-snap-align:start}.ve-gal b{display:block;margin-top:16px;font-size:18px;letter-spacing:-.015em}.ve-gal p{margin:4px 0 0;color:var(--fg-2);font-size:15px;line-height:1.45}
 .ve-cel.chico{padding:8px;border-radius:36px;box-shadow:0 24px 50px -28px rgba(20,17,20,.45),inset 0 0 0 1.5px rgba(255,255,255,.12)}.ve-cel.chico .ve-pant{border-radius:29px;padding-top:0}
 @media(min-width:1180px){.ve-gal{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;margin:0;padding:4px 0 0}}
-.ve-app-top{display:flex;align-items:center;gap:8px;font-size:15px;margin:0 2px 12px}
-.ve-tarj{position:relative;overflow:hidden;border-radius:22px;padding:16px;background:radial-gradient(120% 140% at 100% 0%,var(--ve-h3),transparent 55%),linear-gradient(135deg,#3d0f2c,#6c2552)}
-.ve-q{display:flex;gap:10px;align-items:center}.ve-q b{display:block;font-size:14.5px}.ve-q small{display:block;font-size:11.5px;opacity:.75}
-.ve-av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);font-size:12px;font-weight:800}
-.ve-rot{display:block;margin-top:16px;font-size:12px;opacity:.82}.ve-saldo{display:block;font-size:31px;letter-spacing:-.045em;font-weight:800;margin-top:2px}
-.ve-av-b{display:flex;gap:3px;margin-top:14px}.ve-av-b i{flex:1;height:6px;border-radius:2px;background:rgba(255,255,255,.2);transform:skewX(-28deg)}.ve-av-b i.on{background:#fff}
-.ve-ley{display:block;font-size:10.5px;opacity:.78;margin-top:7px}
-.ve-rap{display:flex;justify-content:space-around;margin:16px 0 12px;font-size:10.5px;font-weight:600;text-align:center}
-.ve-rap span{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px}.ve-rap i{width:42px;height:42px;border-radius:50%;background:#1e1a21}.ve-rap i.pri{background:#a8457d}
-.ve-movs{border-radius:18px;background:#17141a;padding:2px 12px}.ve-movs div{display:flex;align-items:center;gap:10px;padding:10px 0}.ve-movs div+div{border-top:1px solid #26222a}
-.ve-movs i{width:30px;height:30px;border-radius:50%;background:#17291f;flex:none}.ve-movs span{flex:1;min-width:0}.ve-movs b{display:block;font-size:12.5px}.ve-movs small{display:block;font-size:10.5px;color:#a89fad}.ve-movs em{font-style:normal;font-size:12.5px;font-weight:700;color:#5cc18c}
 /* secciones */
-.ve-sec{padding:clamp(56px,8vw,104px) 0}.ve-sec.suave{background:var(--bg-2)}
-.ve-osc{background:var(--ve-tinta);color:var(--ve-crema)}
-.ve-cab{max-width:700px;margin:0 auto 38px;text-align:center}.ve-cab.izq{text-align:left;margin:0}
-.ve-et{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ve-acento)}.ve-osc .ve-et{color:var(--ve-acento-c)}
-.ve-et::before{content:"";width:4px;height:14px;border-radius:1px;background:currentColor;transform:skewX(-28deg)}
-.ve-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.03;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.ve-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.ve-osc .ve-cab p{color:rgba(246,244,247,.74)}
-.ve-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
-.ve-pasos li{padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line)}
-.ve-num{display:block;font-weight:800;font-size:15px;color:var(--ve-acento);letter-spacing:.04em}.ve-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.ve-pasos p{margin:6px 0 0;color:var(--fg-2);line-height:1.5}
-.ve-dos{display:grid;gap:40px;align-items:center}@media(min-width:980px){.ve-dos{grid-template-columns:1fr 1fr}}
-.ve-calc{padding:24px;border-radius:26px;background:#1a1520;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-variant-numeric:tabular-nums}
-.ve-calc small{color:rgba(246,244,247,.55);font-size:12.5px}
+.ve-sec{padding:clamp(64px,9vw,112px) 0;scroll-margin-top:54px}.ve-sec.suave{background:var(--bg-2)}
+.ve-sec:not(.suave)+.ve-sec:not(.suave){padding-top:0}
+.ve-cab{max-width:700px;margin:0 auto 44px;text-align:center}.ve-cab.izq{text-align:left;margin:0}
+.ve-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ve-c2)}
+.ve-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.04em;margin:10px 0 0;text-wrap:balance}
+.ve-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+.ve-pasos{list-style:none;padding:0;margin:0 auto;max-width:960px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.ve-pasos li{padding:26px;border-radius:24px;background:var(--card);border:1px solid var(--line)}
+.ve-num{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--ve-c) 12%,transparent);font-weight:800;font-size:14px;color:var(--ve-c2)}.ve-pasos b{display:block;font-size:19px;letter-spacing:-.02em;margin-top:18px}.ve-pasos p{margin:6px 0 0;color:var(--fg-2);line-height:1.5}
+.ve-dos{display:grid;gap:44px;align-items:center}.ve-dos>*{min-width:0}@media(min-width:980px){.ve-dos{grid-template-columns:1fr 1fr;gap:64px}}
+.ve-calc{padding:26px;border-radius:26px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.ve-calc small{color:var(--fg-2);font-size:12.5px}
 .ve-linea{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-size:16px}.ve-linea b{font-weight:700}
-.ve-linea.sub{margin-top:6px;font-size:14.5px;color:rgba(246,244,247,.7)}.ve-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-size:19px}.ve-linea.total b{color:#E6CF96;font-weight:800}
-.ve-form{margin:6px 0 0;padding-left:12px;border-left:3px solid var(--ve-h2);font-size:13.5px;color:rgba(246,244,247,.66)}
-.ve-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
-.ve-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
-.ve-ben svg{width:42px;height:42px;padding:10px;border-radius:50%;background:color-mix(in srgb,var(--ve-acento) 12%,transparent);color:var(--ve-acento)}
-.ve-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.ve-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
-.ve-aviso{max-width:720px;margin:28px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
+.ve-linea.sub{margin-top:6px;font-size:14.5px;color:var(--fg-2)}.ve-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:19px}.ve-linea.total b{color:var(--ve-c2);font-weight:800}
+.ve-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.ve-ben li{padding:24px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.ve-ben svg{width:42px;height:42px;padding:10px;border-radius:12px;background:color-mix(in srgb,var(--ve-c) 12%,transparent);color:var(--ve-c2)}
+.ve-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:14px}.ve-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.ve-aviso{max-width:720px;margin:32px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
 /* precio */
-.ve-planes{display:grid;gap:18px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.ve-planes{display:grid;gap:20px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
 .ve-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:28px;display:grid;gap:8px}
-.ve-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.ve-sello{position:absolute;top:-13px;left:24px;background:var(--ve-c);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .ve-elige{border:0;padding:0;margin:0 0 6px}.ve-elige legend{font-weight:650;font-size:14px;margin-bottom:8px;padding:0}
 .ve-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}
-.ve-op input{margin-top:3px;accent-color:var(--ve-acento)}.ve-op b{display:block;font-size:15px}.ve-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
-.ve-op:has(input:checked){border-color:var(--ve-acento);background:color-mix(in srgb,var(--ve-acento) 7%,transparent)}
-.ve-plan.rec{border-color:var(--ve-acento);box-shadow:0 30px 60px -36px rgba(107,42,133,.55)}
+.ve-op input{margin-top:3px;accent-color:var(--ve-c)}.ve-op b{display:block;font-size:15px}.ve-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
+.ve-op:has(input:checked){border-color:var(--ve-c);background:color-mix(in srgb,var(--ve-c) 7%,transparent)}
+.ve-plan.rec{border-color:var(--ve-c);box-shadow:0 30px 60px -40px var(--ve-c)}
 .ve-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.ve-para{color:var(--fg-2);margin:0}
 .ve-precio{margin:6px 0 0}.ve-precio b{font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.ve-precio small{color:var(--fg-2)}
-.ve-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.ve-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.ve-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ve-acento)}
+.ve-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:9px}.ve-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.ve-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ve-c2)}
 .ve-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .ve-total{margin:4px 0 12px;font-size:16px}.ve-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.ve #form-vende .btn.acento{background:var(--ve-acento);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}
-/* en oscuro el morado se aclara: el texto del botón pasa a tinta oscura para seguir en ≥ 4.5:1 */
-[data-tema="oscuro"] .ve #form-vende .btn.acento{color:#141216}.ve-hoy{border-radius:18px;background:#17141a;padding:4px 12px;margin-top:12px}.ve-hoy div{display:flex;gap:10px;align-items:center;padding:10px 0}.ve-hoy div+div{border-top:1px solid #26222a}
-.ve-hoy i{width:6px;align-self:stretch;border-radius:4px;flex:none}.ve-hoy span{flex:1;min-width:0}.ve-hoy b{display:block;font-size:12.5px}.ve-hoy small{display:block;font-size:10.5px;color:#a89fad}
-.ve-hoy em{font-style:normal;font-size:11px;font-weight:700;padding:5px 9px;border-radius:999px;background:#136c3c;color:#fff;white-space:nowrap}
-.ve-pat{display:grid;gap:18px;align-items:center}@media(min-width:900px){.ve-pat{grid-template-columns:1.2fr .8fr}}
-.ve-pat ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}.ve-pat li{display:flex;gap:8px;align-items:flex-start}.ve-pat li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--ve-acento-c)}`;
+.ve #form-vende .btn.acento{background:var(--ve-c);color:#fff;box-shadow:0 12px 28px -14px var(--ve-c)}
+/* programas patrocinados */
+#equipos{padding-top:clamp(64px,9vw,112px)}
+.ve-pat{display:grid;gap:28px;align-items:center;padding:clamp(26px,4vw,44px);border-radius:28px;background:var(--bg-2);border:1px solid var(--line)}@media(min-width:900px){.ve-pat{grid-template-columns:1.3fr .7fr;gap:48px}}
+.ve-pat>*{min-width:0}.ve-pat ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px}.ve-pat li{display:flex;gap:10px;align-items:flex-start}.ve-pat li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--ve-c2)}
+/* cierre */
+.ve-cierre{padding-bottom:88px;text-align:center}.ve-cierre .marco{max-width:760px}.ve-cierre p{margin:14px auto 0;font-size:18px;line-height:1.55;color:var(--fg-2);max-width:560px}.ve-cierre .pm-ctas{justify-content:center}
+`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-vende'); if(!f||!window.fetch) return;
