@@ -12,7 +12,8 @@ import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { productoPorSlug, VENDIBLE, dentroDelLimite, registrarAnalitica } from './modelo.js';
 import { cuentaActual, crearSesion } from './puntos.js';
 import { validarAcceso } from './brindi.js';
-import { refDeVisita, navTienda, seccionFaq } from './tienda.js';
+import { refDeVisita, seccionFaq } from './tienda.js';
+import { heroMarca, seccionQueEs, indiceProducto, lineaMarca, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { suscripcionApp } from './suscripciones.js';
 import { lineaDe, LINEAS } from './lineas.js';
 import {
@@ -32,19 +33,23 @@ const SLUGS = ['toolkit-mensual', 'toolkit-pro-mensual'];
 const EJEMPLOS = ['simulador-paa-practica', 'test-vocacional', 'ruta-de-impacto', 'brindi-celebracion', 'cupo-pro', 'agenda-mensual', 'vuelve-mensual', 'cuentas-mensual', 'vende-mensual', 'clara-mensual', 'evaluacion-liderazgo'];
 
 // ---------- estilos comunes ----------
-const CSS = `<style>
-.tk{padding:clamp(96px,11vw,132px) 0 40px}
+const CSS = `<style>${CSS_MARCA}${CSS_SECCIONES}
+/* Marca de producto: blanco, tinta y el color del Toolkit (Pro con el suyo); en oscuro el color se aclara con la tinta del tema */
+:root{--tk:#8A6A1F;--tk-t:color-mix(in srgb,#8A6A1F 72%,var(--fg));--tkp:#3E3A66;--tkp-t:color-mix(in srgb,#3E3A66 55%,var(--fg))}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.tk-g .tk-cuatro{margin-top:26px}
+.tk #form-toolkit .btn.acento,.tk-cierre .pm-btn{background:var(--tk);color:#fff}
+.tk-plan:has(input[value=toolkit-pro-mensual]:checked){border-color:var(--tkp-t);box-shadow:0 0 0 1px var(--tkp-t)}
+.tk-cierre{--pm:var(--tk);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:28px;border-radius:24px;background:var(--bg-2)}.tk-cierre p{margin:0;font-size:17px;color:var(--fg-2)}.tk-cierre b{color:var(--fg)}
+.mt .pm-marca{margin-bottom:6px}.etiqueta::before{background:var(--tk)}
+.tk{padding-bottom:20px}
 .tk-g{display:grid;gap:34px;align-items:start}
 @media(min-width:980px){.tk-g{grid-template-columns:1.05fr .95fr}}
-.tk-et{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--oro)}
-.tk h1{font-size:clamp(34px,5vw,56px);line-height:1.02;letter-spacing:-.045em;font-weight:800;margin:12px 0 18px}
-.tk h1 span{color:var(--oro)}
 .tk-cuatro{list-style:none;padding:0;margin:0 0 20px;display:grid;gap:12px;counter-reset:n}
 .tk-cuatro li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;font-size:17px;line-height:1.45;counter-increment:n}
 .tk-cuatro li::before{content:counter(n);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--fg);color:var(--bg);font-weight:800;font-size:15px}
-.tk-fundador{border-radius:16px;padding:14px 16px;background:rgba(200,164,92,.13);border:1px solid rgba(200,164,92,.45);font-size:14.5px;line-height:1.5;color:var(--fg)}
-.tk-fundador b{color:var(--oro)}
-.tk-port img{width:100%;height:auto;border-radius:22px;box-shadow:var(--sombra);margin-top:22px;display:block}
+.tk-fundador{border-radius:16px;padding:14px 16px;background:color-mix(in srgb,var(--tk) 10%,transparent);border:1px solid color-mix(in srgb,var(--tk) 40%,transparent);font-size:14.5px;line-height:1.5;color:var(--fg)}
+.tk-fundador b{color:var(--tk-t)}
 .tk-card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:24px;box-shadow:var(--sombra)}
 .tk-planes{display:grid;gap:10px;margin:0 0 16px;border:0;padding:0}
 .tk-plan{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:14px 16px;border-radius:18px;border:1.5px solid var(--line);cursor:pointer;background:var(--bg)}
@@ -52,11 +57,11 @@ const CSS = `<style>
 .tk-plan b{display:block;font-size:17px}.tk-plan small{color:var(--fg-2);font-size:14px}
 .tk-plan .tk-recibe{text-align:right;font-weight:800;font-size:19px;letter-spacing:-.02em}.tk-plan .tk-recibe small{display:block;font-weight:600;font-size:12.5px}
 .tk-extra{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--verde);background:var(--verde-suave);border-radius:999px;padding:2px 9px}
-.tk-sec{padding:34px 0}
+.tk-sec{padding:56px 0 0}
 .tk-sec h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.035em;margin:0 0 8px}
 .tk-sec>.marco>p{color:var(--fg-2);max-width:46em}
-.tk-usos{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
-.tk-usos div{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px}
+.tk-usos{display:grid;gap:16px;margin-top:22px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.tk-usos div{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}
 .tk-usos b{display:block;font-size:17px;margin-bottom:4px}.tk-usos p{color:var(--fg-2);font-size:15px;margin:0}
 .tk-tabla-c{overflow-x:auto;margin-top:16px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
 .tk-tabla{width:100%;border-collapse:collapse;font-size:15px}
@@ -72,7 +77,7 @@ const CSS = `<style>
 .mt-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 20px}
 .mt-tabs a{padding:9px 16px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--fg);font-weight:650;font-size:15px;background:var(--card)}
 .mt-tabs a[aria-current]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.mt-saldo{position:relative;overflow:hidden;border-radius:28px;background:var(--noche);color:var(--claro);padding:28px 26px;box-shadow:var(--sombra-2)}
+.mt-saldo{position:relative;overflow:hidden;border-radius:28px;background:var(--pm,#8A6A1F);color:#fff;--claro-2:rgba(255,255,255,.82);--claro-3:rgba(255,255,255,.7);padding:28px 26px;box-shadow:var(--sombra-2)}
 .mt-saldo .v{position:absolute;right:-50px;bottom:-70px;width:260px;opacity:.06;color:#fff}.mt-saldo .v svg{width:100%;height:auto}
 .mt-saldo small{color:var(--claro-2);font-size:14px;font-weight:600}
 .mt-saldo .num{display:block;font-size:clamp(46px,9vw,68px);font-weight:800;letter-spacing:-.05em;line-height:1;margin:8px 0 6px;color:#fff}
@@ -121,18 +126,18 @@ const CSS = `<style>
 .mt-nuevos{display:grid;gap:8px;margin-top:6px}
 .mt-sub{color:var(--fg-2);font-size:15px;max-width:44em}
 /* Pagar meses de una app que ya se paga con tarjeta y se renueva sola */
-.mt-renueva{display:grid;gap:10px;border-radius:14px;padding:12px 14px;background:rgba(200,164,92,.12);border:1px solid rgba(200,164,92,.45)}
+.mt-renueva{display:grid;gap:10px;border-radius:14px;padding:12px 14px;background:color-mix(in srgb,var(--tk) 10%,transparent);border:1px solid color-mix(in srgb,var(--tk) 40%,transparent)}
 .mt-renueva p{margin:0;font-size:14.5px;line-height:1.45;color:var(--fg)}
 .mt-renueva small{color:var(--fg-2);font-size:13px}
 .mt-app .mt-renueva button{background:var(--card);color:var(--fg);border:1.5px solid var(--fg)}
 /* Tarjeta para cambiar al plan Pro */
-.mt-pro-chip{display:inline-flex;margin-top:12px;font-size:13.5px;font-weight:750;color:var(--oro-claro,#e6c98a);text-decoration:none;border-bottom:1px solid currentColor}
-.mt-pro{margin:4px 0 26px;border-radius:24px;padding:22px 20px;background:var(--card);border:1.5px solid rgba(200,164,92,.6);box-shadow:var(--sombra);display:grid;gap:14px;min-width:0}
-.mt-pro-et{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--oro)}
+.mt-pro-chip{display:inline-flex;margin-top:12px;font-size:13.5px;font-weight:750;color:#fff;text-decoration:none;border-bottom:1px solid currentColor}
+.mt-pro{margin:4px 0 26px;border-radius:24px;padding:22px 20px;background:var(--card);border:1.5px solid var(--tkp-t);box-shadow:var(--sombra);display:grid;gap:14px;min-width:0}
+.mt-pro-et{font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tkp-t)}
 .mt-pro h2{margin:0;font-size:24px;letter-spacing:-.03em}
 .mt-pro-comp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mt-pro-comp>div{border-radius:16px;padding:14px;background:var(--bg-2);border:1px solid var(--line);display:grid;gap:2px;min-width:0}
-.mt-pro-comp>div.pro{background:rgba(200,164,92,.16);border:1.5px solid rgba(200,164,92,.6)}
+.mt-pro-comp>div.pro{background:color-mix(in srgb,var(--tkp) 12%,transparent);border:1.5px solid var(--tkp-t)}
 .mt-pro-comp small{font-size:12.5px;font-weight:700;color:var(--fg-2)}
 .mt-pro-comp b{font-size:30px;letter-spacing:-.04em;line-height:1.1;font-variant-numeric:tabular-nums}
 .mt-pro-comp span{font-size:13.5px;color:var(--fg-2)}
@@ -213,25 +218,33 @@ export async function paginaToolkit(env, req, url) {
     headers: cookie ? { 'set-cookie': cookie } : {},
     head: CSS, script: SCRIPT_FICHA, whatsapp: true,
     cuerpo: `
-<section class="tk"><div class="marco">
-  ${navTienda('toolkit')}
+${heroMarca('toolkit', {
+  titular: `Pagas ${mx(t?.precio_centavos)} y [recibes ${mx(bono(t))} cada mes.]`,
+  apoyo: 'Saldo cada mes para toda la tienda de Vorka México: simuladores, reportes, invitaciones, meses de apps y códigos de regalo. Tu saldo nunca vence.',
+  botones: aLaVenta.length ? `<a class="pm-btn" href="#comprar">Suscribirme ${FLECHA}</a><a class="pm-btn sec" href="#usos">Para qué sirve</a>` : '<a class="pm-btn" href="mailto:hola@vorka.mx?subject=Av%C3%ADsenme%20cuando%20abra%20el%20Toolkit">Avísame cuando abra</a>',
+  despues: `<p class="pm-precio">${aLaVenta.length ? `<b>${mx(t?.precio_centavos)} al mes</b> · o ${mx(pro?.precio_centavos)} con Pro y recibes ${mx(bono(pro))}` : 'Muy pronto a la venta.'}</p>`,
+})}
+${indiceProducto('toolkit', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['usos', 'Para qué sirve'], ...(tabla ? [['ejemplo', 'Ejemplo']] : []), ['ayuda', 'Preguntas']], aLaVenta.length ? '<a class="pm-btn" href="#comprar">Suscribirme</a>' : '')}
+${seccionQueEs('toolkit', { titulo: 'Saldo cada mes para toda la tienda.',
+  texto: 'Pagas una suscripción al mes y <b>recibes más saldo del que pagas</b>, a precio de lista, para usarlo en la tienda, en tus apps y en códigos de regalo. Tu saldo nunca vence y se acumula.',
+  para: [['Quien compra seguido en la tienda', 'Simuladores, reportes e invitaciones sin volver a poner su tarjeta.'], ['Quien usa las apps de Vorka', 'Meses de Clara, Cuentas, Vende, Agenda y Vuelve a su precio mensual.'],
+    ['Quien regala o revende', 'Códigos de un solo uso del 100 % de un producto, que manda por WhatsApp.']] })}
+<section class="pm-sec tk" id="como"><div class="marco">
   <div class="tk-g">
   <div>
-    <span class="tk-et">Nuevo · Toolkit Vorka</span>
-    <h1>Saldo cada mes para <span>toda la tienda</span>.</h1>
+    <p class="pm-et" style="--pm:var(--tk-t)">Cómo funciona</p><h2 class="pm-h2">Cuatro cosas y listo.</h2>
     <ol class="tk-cuatro">
       <li><span><b>Pagas ${mx(t?.precio_centavos)} al mes</b> (o ${mx(pro?.precio_centavos)} con Pro).</span></li>
       <li><span><b>Recibes ${mx(bono(t))} de saldo cada mes</b> (o ${mx(bono(pro))} con Pro), a precio de lista.</span></li>
       <li><span>Úsalo en simuladores, reportes, Brindi, Cupo, meses de Clara, Cuentas, Vende, Agenda y Vuelve, o saca <b>códigos de regalo</b> para regalar o revender.</span></li>
       <li><span><b>Tu saldo nunca vence</b> y se acumula. Si cancelas, te lo quedas.</span></li>
     </ol>
-    <p class="tk-fundador">${fundadorHtml}</p>
-    <div class="tk-port"><img src="/assets/tienda/v3/toolkit-portada.webp" alt="Toolkit Vorka: paga $599 y recibe $800 de saldo al mes" width="1600" height="1200" decoding="async"></div>
+    ${aLaVenta.length ? '' : `<p class="tk-fundador">${fundadorHtml}</p>`}
   </div>
   <aside id="comprar" aria-label="Suscribirme">${form}</aside>
   </div>
 </div></section>
-<section class="tk-sec"><div class="marco">
+<section class="tk-sec" id="usos"><div class="marco">
   <h2>Para qué sirve tu saldo</h2>
   <div class="tk-usos">
     <div><b>Compra para ti</b><p>Cualquier producto de la tienda sin volver a poner tu tarjeta: te llega igual que una compra normal, con sus mismos correos y accesos.</p></div>
@@ -239,11 +252,12 @@ export async function paginaToolkit(env, req, url) {
     <div><b>Regala o revende</b><p>Códigos de un solo uso del 100 % de un producto. Los copias o los mandas por WhatsApp desde tu cuenta y ves cuáles ya se usaron.</p></div>
   </div>
 </div></section>
-${tabla ? `<section class="tk-sec"><div class="marco"><h2>Ejemplo con precios reales</h2><p>Lo que te alcanza con un mes de saldo, con los precios de lista de la tienda hoy.</p>${tabla}</div></section>` : ''}
+${tabla ? `<section class="tk-sec" id="ejemplo"><div class="marco"><h2>Ejemplo con precios reales</h2><p>Lo que te alcanza con un mes de saldo, con los precios de lista de la tienda hoy.</p>${tabla}</div></section>` : ''}
 <section class="tk-sec"><div class="marco"><h2>Lo que todavía no se paga con saldo</h2>
   <ul class="tk-no"><li>Productos de creadores independientes del marketplace: ${esc(EXCLUIDO_CREADOR.split(': ')[1] || '')}</li><li>El propio Toolkit (no se compra ni se regala con saldo).</li><li>Pagos mixtos: si tu saldo no alcanza, te decimos cuánto falta y pagas con tarjeta, OXXO o SPEI.</li></ul>
 </div></section>
-${seccionFaq({ titulo: 'Preguntas del Toolkit', items: FAQ.map(([p, r]) => `<details><summary>${esc(p)}</summary><div>${esc(r)}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre el Toolkit Vorka' })}`,
+${seccionFaq({ titulo: 'Preguntas del Toolkit', items: FAQ.map(([p, r]) => `<details><summary>${esc(p)}</summary><div>${esc(r)}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre el Toolkit Vorka' })}
+${aLaVenta.length ? `<section class="tk-sec"><div class="marco"><div class="tk-cierre"><p><b>Tu saldo nunca vence.</b> Si cancelas, te lo quedas.</p><a class="pm-btn" href="#comprar">Suscribirme ${FLECHA}</a></div></div></section>` : ''}`,
   });
 }
 
@@ -401,7 +415,7 @@ export async function paginaMiToolkit(env, req, url) {
   <div class="mt-lista" id="mt-lista">${codigos.length ? codigos.map(c => filaCodigo(env, c)).join('') : '<p class="mt-vacio">Aún no sacas códigos.</p>'}</div>`;
   }
   return pagina({ titulo: 'Mi Toolkit · Vorka México', ruta: '/tienda/mi-toolkit/', noindex: true, head: CSS, script: SCRIPT_MI,
-    cuerpo: `<section class="mt"><div class="marco" style="max-width:920px"><span class="tk-et">Toolkit Vorka</span><h1 class="t-h1" style="margin:8px 0 18px">Mi Toolkit</h1>${tabs}${cuerpo}</div></section>` });
+    cuerpo: `<section class="mt" style="--pm:${colorDe(e.plan?.slug === 'toolkit-pro-mensual' ? 'toolkit-pro' : 'toolkit')}"><div class="marco" style="max-width:920px">${lineaMarca(e.plan?.slug === 'toolkit-pro-mensual' ? 'toolkit-pro' : 'toolkit')}<h1 class="t-h1" style="margin:8px 0 18px">Mi Toolkit</h1>${tabs}${cuerpo}</div></section>` });
 }
 
 const SCRIPT_MI = `(function(){

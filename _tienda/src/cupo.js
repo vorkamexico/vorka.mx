@@ -4,11 +4,12 @@
 // La app vive en os.vorka.mx/cupo/ y los eventos en vorka.mx/cupo/<liga>. Aquí solo se vende.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
+import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 
 const OS = 'https://os.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -81,23 +82,27 @@ export async function paginaCupo(env, req, url) {
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="cu">
-<section class="cu-hero"><div class="marco cu-hero-g">
-  <div>
-    ${navTienda('eventos')}
-    <span class="cu-logo">cupo<i>.</i></span>
-    <h1 class="cu-h1">Tu evento, listo <i>en un minuto.</i></h1>
-    <p class="cu-lead">Una página bonita para tu fiesta, posada, taller o evento de negocio. La gente aparta su lugar (y el de sus acompañantes) en segundos, sin cuenta, se manda su entrada por WhatsApp y en la puerta escaneas su QR.</p>
-    <div class="botones"><a class="btn tinta" href="${OS}/cupo/#/nuevo">Crear mi evento gratis ${FLECHA}</a><a class="btn blanco" href="#planes">Ver precios</a><a class="btn blanco" href="${OS}/cupo/#/como-funciona/organizador">Cómo funciona</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/cupo/#entrar">Entra aquí</a></p>
-    <p class="cu-nota"><b>Gratis hasta 30 personas.</b> Cupo Pro desde <b>${desde ? precio({ precio_centavos: desde }) : '$99 MXN'}</b> por evento · sin comisión por tu cover · sin mensualidades</p>
-  </div>
-  <div class="cu-demos-h">${demos.map(([s, og, t, d], i) => `<a class="cu-demo${i === 0 ? ' g' : ''}" href="${OS}/e/${s}" target="_blank" rel="noopener"><img src="${OS}/cupo/og/${og}.png" alt="" loading="${i ? 'lazy' : 'eager'}" width="1200" height="630"><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>
-</div></section>
+${heroMarca('cupo', {
+  apoyo: 'Una página bonita para tu fiesta, posada, taller o evento de negocio. La gente aparta su lugar (y el de sus acompañantes) en segundos, sin cuenta, se manda su entrada por WhatsApp y en la puerta escaneas su QR.',
+  botones: `<a class="pm-btn" href="${OS}/cupo/#/nuevo">Crear mi evento gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precios</a>`,
+  despues: `<p class="pm-precio"><b>Gratis hasta 30 personas.</b> Cupo Pro desde ${desde ? precio({ precio_centavos: desde }) : '$99 MXN'} por evento · sin comisión por tu cover · sin mensualidades</p><p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/cupo/#entrar">Entra aquí</a></p>`,
+})}
+${indiceProducto('cupo', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['ejemplos', 'Ejemplos'], ['planes', 'Precios'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${OS}/cupo/#/nuevo">Crear mi evento gratis</a>`)}
+${seccionQueEs('cupo', { titulo: 'La página de tu evento, con registro y entrada con QR.',
+  texto: 'Armas tu evento, compartes tu liga y la gente aparta su lugar (y el de sus acompañantes) en segundos, sin cuenta. <b>En la puerta escaneas su QR</b>, aunque no haya señal, y sabes quién llegó. Gratis hasta 30 personas.',
+  para: [['Fiestas, posadas y Halloween', 'Saber cuántos van y cobrar tu cover sin comisión.'], ['Talleres, comunidades y eventos de negocio', 'Registro con tus propias preguntas (como empresa o puesto) y tu lista en Excel.'],
+    ['Antros, conciertos y festivales', 'Ligas para tus RPs con ranking y check-in con tu equipo en la puerta.']] })}
 
-<section class="t-sec"><div class="marco">
+<section class="t-sec" id="como"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Así de fácil</span><h2 class="h2">De la idea a la puerta, desde tu celular</h2></div>
   <ol class="cu-pasos">${[['Arma tu evento', 'Título, fecha, lugar y portada. Lo ves como quedará, sin cuenta y sin pagar.'], ['Comparte tu liga', 'vorka.mx/cupo/tu-evento, con QR. La gente aparta su lugar con nombre y correo, y el de sus acompañantes.'],
     ['Cobra sin comisión', 'En la puerta, gratis. Con Pro, también por transferencia o tu liga de pago, y confirmas cada pago con un toque.'], ['Recibe a tu gente', 'Escaneas su QR en la puerta, aunque no haya señal: nadie entra dos veces y sabes quién llegó.']].map(([t, d], k) => `<li class="rv" style="--d:${k * .05}s"><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+  <p class="cu-tuto"><a href="${OS}/cupo/#/como-funciona/organizador">Ver el tutorial paso a paso ${FLECHA}</a></p>
+</div></section>
+
+<section class="t-sec" id="ejemplos"><div class="marco">
+  <div class="cab rv"><span class="etiqueta">Ejemplos</span><h2 class="h2">Así se ve la página de tu evento</h2><p class="lead">Ábrelos como si fueras a ir: son eventos de demostración.</p></div>
+  <div class="cu-demos-h">${demos.map(([s, og, t, d], i) => `<a class="cu-demo${i === 0 ? ' g' : ''}" href="${OS}/e/${s}" target="_blank" rel="noopener"><img src="${OS}/cupo/og/${og}.png" alt="" loading="lazy" width="1200" height="630"><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>
 </div></section>
 
 <section class="t-sec suave" id="planes"><div class="marco">
@@ -142,43 +147,43 @@ ${todos.length ? seccionCompra({ titulo: 'Activa Cupo Pro', intro: `¿Tu evento 
 ${ELEGIR('cupo')}
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/cupo/">Condiciones de Cupo</a> · <a href="/legal/cupo/privacidad/">Aviso de privacidad</a> · <a href="/legal/cupo/privacidad-asistentes/">Privacidad para asistentes</a> · Cupo · Powered by vorka.mx</p>' })}
+<section class="t-sec"><div class="marco"><div class="cu-cierre"><p><b>Arma tu evento gratis y ve cómo queda.</b> Sin cuenta y sin pagar; Pro solo si lo necesitas.</p><a class="pm-btn" href="${OS}/cupo/#/nuevo">Crear mi evento gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'eventos')}
 </div>`,
   });
 }
 
-const CSS = `
-.cu{--cu-a:#ff5a36;--cu-t:var(--fg);--cu-f:var(--bg-2)}
-.cu-hero{background:var(--cu-f);padding:clamp(28px,6vw,72px) 0;overflow:hidden}
-.cu-hero-g{display:grid;gap:32px;align-items:center}
-@media(min-width:900px){.cu-hero-g{grid-template-columns:1.05fr .95fr}}
-.cu-logo{display:block;font:800 34px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;color:var(--cu-t);margin:16px 0 10px}.cu-logo i{color:var(--cu-a);font-style:normal}
-.cu-h1{font:800 clamp(36px,6.4vw,62px)/1.02 system-ui,-apple-system,sans-serif;letter-spacing:-.04em;margin:0 0 14px;color:var(--cu-t)}.cu-h1 i{font-style:normal;color:color-mix(in srgb,var(--cu-a) 90%,var(--cu-t))}
-.cu-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:var(--fg-2);margin:0 0 22px;max-width:34em}
-.cu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
-.cu-demos-h{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-.cu-demo{display:grid;background:var(--card);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--line);box-shadow:0 18px 40px -28px rgba(23,22,26,.45)}
-.cu-demo.g{grid-column:1/-1}.cu-demo img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;display:block}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+/* Marca de producto: blanco, tinta y un solo color (el morado de Cupo); en oscuro se aclara con la tinta del tema */
+.cu{--pm:#6D28D9;--cu-a:#6D28D9;--cu-at:color-mix(in srgb,#6D28D9 70%,var(--fg));--cu-t:var(--fg);--cu-f:var(--bg-2)}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{color:var(--fg)}
+.cu .t-sec{padding-top:clamp(64px,8vw,96px)}
+.cu .etiqueta{color:var(--cu-at)}.cu .etiqueta::before{background:var(--cu-a)}
+.cu .btn.tinta,.cu #form-cupo .btn.acento{background:var(--cu-a);color:#fff;box-shadow:0 12px 28px -14px var(--cu-a)}
+.cu-tuto{margin:22px 0 0}.cu-tuto a{color:var(--cu-at);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.cu-tuto svg{width:16px;height:16px}
+.cu-cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:28px;border-radius:24px;background:var(--bg-2)}.cu-cierre p{margin:0;font-size:17px;color:var(--fg-2);max-width:36em}.cu-cierre b{color:var(--fg)}.cu-cierre .pm-btn{color:#fff}
+.cu-demos-h{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.cu-demo{display:grid;background:var(--card);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--line);}
+.cu-demo img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;display:block}
 .cu-demo span{padding:10px 14px 12px}.cu-demo b{display:block;font-size:16px}.cu-demo small{color:var(--fg-2);font-size:13px}
-.cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));counter-reset:p}
-.cu-pasos li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;counter-increment:p}.cu-pasos li::before{content:counter(p);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--cu-t);color:var(--bg);font-weight:800;margin-bottom:10px}
+.cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));counter-reset:p}
+.cu-pasos li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;counter-increment:p}.cu-pasos li::before{content:counter(p);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--cu-a);color:#fff;font-weight:800;margin-bottom:10px}
 .cu-pasos b{font-size:17px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2)}
 .cu-planes{display:grid;gap:18px;align-items:start}
 @media(min-width:900px){.cu-planes{grid-template-columns:.85fr 1.15fr;grid-template-areas:'gratis pro' 'paq pro';column-gap:22px}.cu-planes>.cu-plan:first-child{grid-area:gratis}.cu-planes>.cu-plan.rec{grid-area:pro}.cu-planes>.cu-paq{grid-area:paq}}
 .cu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
-.cu-plan.rec{border-color:var(--cu-t);box-shadow:0 24px 50px -28px rgba(23,22,26,.5)}
+.cu-plan.rec{border-color:var(--cu-a);box-shadow:0 24px 50px -28px rgba(109,40,217,.45)}
 .cu-sello{position:absolute;top:-12px;left:24px;background:var(--cu-a);color:#fff;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px}
 .cu-plan h3{font:800 26px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:4px 0 0}.cu-para{color:var(--fg-2);margin:0}
 .cu-precio{margin:6px 0 0}.cu-precio b{font-size:36px;letter-spacing:-.03em}
-.cu-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.cu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cu-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--cu-a)}
+.cu-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.cu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cu-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--cu-at)}
 .cu-niveles,.cu-paq-l{display:grid;gap:10px;margin:6px 0}
 .cu-nivel{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--cu-f);text-decoration:none;color:var(--cu-t)}
 .cu-nivel.dest{border:2px solid var(--cu-a);background:var(--card)}.cu-nivel small{display:block;color:var(--fg-2);font-size:13px}.cu-nivel .num{font-size:20px;white-space:nowrap}
 .cu-paq{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:16px;align-content:start}
 .cu-paq h3{font:800 22px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;margin:6px 0}.cu-paq p{margin:0;color:var(--fg-2)}
-.cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.cu-ben li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.cu-ben span{font-size:28px}.cu-ben b{display:block;font-size:18px;margin:8px 0 4px}.cu-ben p{margin:0;color:var(--fg-2)}
-[data-tema="oscuro"] .cu{--cu-a:#FF7A5C}`;
+.cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
+.cu-ben li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}.cu-ben span{font-size:28px}.cu-ben b{display:block;font-size:18px;margin:8px 0 4px}.cu-ben p{margin:0;color:var(--fg-2)}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-cupo'); if(!f||!window.fetch) return;

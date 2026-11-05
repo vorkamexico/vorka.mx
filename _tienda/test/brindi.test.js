@@ -128,8 +128,11 @@ describe('Brindi en la tienda', () => {
   it('navegar la tienda: barra de líneas, sin "Sigue explorando" (distrae al que organiza su evento) y complementos para sumar al plan', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1");
     const html = await (await pedir('/tienda/brindi/')).text();
-    expect(html).toContain('class="t-nav-tienda"');
-    expect(html).toMatch(/href="\/tienda\/brindi\/" aria-current="page"/);
+    // Encabezado con la marca (sin las pestañas de la tienda) e índice fijo a las partes de la página
+    expect(html).toContain('class="pm-hero"');
+    expect(html).toContain('Tu invitación digital, <em>lista en minutos.</em>');
+    expect(html).toContain('class="pm-indice"');
+    for (const id of ['que-es', 'como-funciona', 'demos', 'planes', 'ayuda']) expect(html).toContain(`id="${id}"`);
     expect(html).not.toContain('Sigue explorando');
     expect(html).not.toContain('Regla rápida');   // Brindi o Cupo queda en una línea
     expect(html).toContain('href="/tienda/cupo/">Cupo</a> es gratis hasta 30 personas');
@@ -139,7 +142,7 @@ describe('Brindi en la tienda', () => {
     expect(html).not.toMatch(/name="extra" value="brindi-mejora/);   // las mejoras no se suman a un plan nuevo
     const cupo = await (await pedir('/tienda/cupo/')).text();
     expect(cupo).toContain('Sigue explorando');
-    expect(cupo).toMatch(/href="\/tienda\/cupo\/" aria-current="page"/);
+    expect(cupo).toContain('class="pm-hero"');
   });
 
   it('el camino principal es crearla gratis: botón fijo en celular, planes que llevan a la app y el pago para quien ya la creó', async () => {
