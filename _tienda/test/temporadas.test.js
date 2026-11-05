@@ -59,7 +59,7 @@ describe('temas de temporada', () => {
     expect(html).toContain('data-temporada="navidad"');
     expect(html).toContain('--acento:#2FA36B');
     expect(html).toContain('<svg class="t-deco luces"');
-    expect(html).toContain('class="t-hero-chip temporada"');
+    expect(html).toContain('class="v-chip temporada"');
     expect(html).toContain('Invitaciones para tus posadas');
     // las demás páginas toman el color, sin la decoración de la portada
     const ficha = await (await pedir('/tienda/cupo/')).text();
@@ -67,7 +67,7 @@ describe('temas de temporada', () => {
     await guardarTemporada(env, { modo: 'apagado' });
     const sin = await (await pedir('/tienda/')).text();
     expect(sin).not.toContain('data-temporada');
-    expect(sin).not.toContain('t-deco');
+    expect(sin).not.toContain('class="t-deco');   // la decoración (no el «text-decoration» del CSS)
     expect((await temporada(env)).modo).toBe('apagado');
   });
 });

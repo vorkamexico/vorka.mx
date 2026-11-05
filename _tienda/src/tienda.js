@@ -222,6 +222,42 @@ export async function catalogoCompartir(env, code = null) {
 const CSS_CUPON = '<style>.t-cupon{display:grid;gap:8px;margin:0 0 18px;padding:14px 16px;border-radius:18px;background:rgba(200,164,92,.16);border:1px solid rgba(226,194,124,.55);color:#F4F2F5;font-size:15px;line-height:1.45;max-width:560px;backdrop-filter:blur(6px)}.t-cupon b{color:#E6CF96}.t-cupon code{justify-self:start;font:800 17px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;color:#fff;border:1.5px dashed #E2C27C;border-radius:10px;padding:6px 10px;overflow-wrap:anywhere}.t-cupon a{color:#E6CF96;font-weight:700;display:inline-flex;gap:6px;align-items:center}.t-cupon a svg{width:16px;height:16px}.t-cupon.no{background:rgba(179,38,30,.22);border-color:rgba(242,194,189,.5)}</style>';
 const bandaCupon = c => `<div class="t-cupon${c.valido ? '' : ' no'}" role="status" aria-label="Tu cupón">${c.valido ? `<span>${c.regalo ? '🎁 <b>Tienes un cupón de regalo</b>' : '<b>Tu código</b>'}</span><code>${esc(c.codigo)}</code>` : ''}<span>${esc(c.texto)}</span>${c.valido && c.linea ? `<a href="#${esc(c.linea)}" data-f="${esc(c.linea)}">Ver productos ${FLECHA}</a>` : ''}</div>`;
 
+// Vitrina (rediseño nov 2026): blanca y con aire, como las portadas v4. Máximo 3 productos por fila y separación generosa;
+// cada tarjeta solo con lo que decide la compra: portada, nombre, una línea, precio y «Ver detalles».
+const CSS_VITRINA = `
+.v-hero{background:var(--bg);color:var(--fg);margin-top:0;padding:64px 0 10px;text-align:center;min-height:0}
+.v-hero::before,.v-hero::after{display:none}
+.v-hero-in{display:flex;flex-direction:column;align-items:center}
+.v-chip{display:inline-flex;align-items:center;gap:10px;padding:6px 8px 6px 6px;border-radius:999px;border:1px solid var(--line);background:var(--card,var(--bg));color:var(--fg);font-size:14.5px;text-decoration:none}
+.v-chip b{background:var(--fg);color:var(--bg);border-radius:999px;padding:3px 10px;font-size:12.5px}.v-chip svg{width:16px;height:16px;opacity:.6}
+.v-h1{font:800 clamp(36px,6vw,64px)/1.03 var(--font);letter-spacing:-.045em;max-width:900px;margin:22px auto 0;color:var(--fg)}
+.v-h1 em{font-style:normal;color:#8A6A1F}
+:root[data-theme=dark] .v-h1 em{color:#D8B56B}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .v-h1 em{color:#D8B56B}}
+.v-sub{font-size:clamp(17px,2vw,19px);line-height:1.55;color:var(--fg-2);max-width:640px;margin:18px auto 0}
+.v-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+.v-btn{background:var(--fg);color:var(--bg);border:0}.v-btn.sec{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.v-lineas{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+.v-lineas a{height:42px;padding:0 18px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--bg-2);color:var(--fg);font-weight:600;font-size:15px;text-decoration:none}
+.v-lineas a small{color:var(--fg-2);font-weight:600}.v-lineas a:hover,.v-lineas a.dest{background:var(--fg);color:var(--bg)}.v-lineas a:hover small,.v-lineas a.dest small{color:inherit;opacity:.7}
+.t-confia{padding-top:40px}
+.v-catalogo .t-grupos{gap:84px}
+.v-catalogo .t-grupo-cab{margin-bottom:26px}
+.v-catalogo .t-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 32px}
+@media(max-width:980px){.v-catalogo .t-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 22px}}
+@media(max-width:560px){.v-catalogo .t-cards{grid-template-columns:1fr;gap:36px}}
+.v-catalogo .t-card{background:none;border:0;box-shadow:none;padding:0;display:grid;gap:16px}
+.v-catalogo .t-card-img{border-radius:22px;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;display:block}
+.v-catalogo .t-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s var(--ease,ease)}.v-catalogo .t-card:hover .t-card-img img{transform:scale(1.025)}
+.v-catalogo .t-card-ver{display:none}
+.v-catalogo .t-card-t{padding:0;display:grid;gap:6px}
+.v-catalogo .t-card-t .t-cat{display:none}
+.v-catalogo .t-card h3{font-size:19px;letter-spacing:-.015em;margin:0}.v-catalogo .t-card h3 a{color:var(--fg);text-decoration:none}
+.v-catalogo .t-card p{font-size:15px;line-height:1.5;color:var(--fg-2);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.v-catalogo .t-card-pie{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:0;border:0}
+.v-catalogo .t-card-pie b{font-size:16px}
+.t-card-mas{display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--fg);text-decoration:none}.t-card-mas svg{width:15px;height:15px}
+`;
+
 export async function paginaCatalogo(env, req, url) {
   const { cookie } = await refDeVisita(env, req, url);
   const productos = await listarProductos(env);
@@ -245,7 +281,7 @@ export async function paginaCatalogo(env, req, url) {
         <span class="t-cat">${esc(g.linea)}</span>
         <h3><a href="${esc(v.url)}">${esc(v.nombre)}</a></h3>
         <p>${esc(v.texto)}</p>
-        <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="btn blanco chico" href="${esc(v.url)}">Ver ${FLECHA}</a></span></div>
+        <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="t-card-mas" href="${esc(v.url)}">Ver detalles ${FLECHA}</a></span></div>
       </div>
     </article>`;
   // Temporada: su línea va primero (chips y producto destacado) y su aviso reemplaza la pastilla de "Nuevo"
@@ -261,27 +297,21 @@ export async function paginaCatalogo(env, req, url) {
   return pagina({
     titulo: 'Tienda Vorka México · Simulador PAA, invitaciones digitales y kits', ruta: '/tienda/', navActual: 'inicio',
     descripcion: 'Simulador PAA, invitaciones digitales con QR y kits para emprender: productos digitales de Vorka México con entrega inmediata.',
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: SCRIPT_CATALOGO, whatsapp: true, navOscuro: true,
+    script: SCRIPT_CATALOGO, whatsapp: true,
     cuerpo: `
-<section class="t-hero">
+<section class="t-hero v-hero">
   ${decoracion(temporada)}
-  <picture class="t-hero-foto" aria-hidden="true"><source type="image/webp" srcset="/img/ciudades/cdmx-noche-960.webp 960w, /img/ciudades/cdmx-noche-1600.webp 1600w, /img/ciudades/cdmx-noche-2400.webp 2400w" sizes="100vw"><img src="/img/ciudades/cdmx-noche-1600.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async"></picture>
-  <div class="marco t-hero-g">
-    <div class="t-hero-txt">
-      ${cupon ? bandaCupon(cupon) : ''}
-      ${temporada ? `<a class="t-hero-chip temporada" href="${lineaT ? esc(lineaT.vistas.length === 1 ? lineaT.vistas[0].url : `#${lineaT.id}`) : '#productos'}"${lineaT && lineaT.vistas.length > 1 ? ` data-f="${esc(lineaT.id)}"` : ''}><b>${esc(temporada.nombre)}</b><span>${esc(temporada.aviso)}</span>${FLECHA}</a>`
-        : nuevo ? `<a class="t-hero-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
-      <h1 class="t-hero-h1">Todo para avanzar, <span class="metal">en un solo lugar.</span></h1>
-      <p class="t-hero-sub">Exámenes, celebraciones, eventos y herramientas para tu negocio. Digital y al momento.</p>
-      <div class="botones"><a class="btn acento" href="#productos">Explorar catálogo ${FLECHA}</a><a class="btn vidrio" href="/tienda/puntos/">Gana puntos</a></div>
-      <ul class="t-hero-sellos" aria-label="Por qué comprar aquí"><li>${ICONOS.rayo}Entrega inmediata</li><li>${CANDADO_PAGO}Pago protegido</li><li>${ICONOS.tarjeta}Tarjeta, OXXO o SPEI</li></ul>
-    </div>
-    ${destacado ? `<a class="t-hero-pieza" href="${esc(destacado.url)}"><span class="t-hero-img">${portada(destacado.img)}</span><span class="t-hero-prot">${CANDADO_PAGO}Compra protegida</span>
-      <span class="t-hero-cap"><small>Destacado · ${esc(destacado.linea)}</small><b>${esc(destacado.nombre)}</b><em class="num">${destacado.precio}</em></span></a>` : ''}
+  <div class="marco v-hero-in">
+    ${cupon ? bandaCupon(cupon) : ''}
+    ${temporada ? `<a class="v-chip temporada" href="${lineaT ? esc(lineaT.vistas.length === 1 ? lineaT.vistas[0].url : `#${lineaT.id}`) : '#productos'}"${lineaT && lineaT.vistas.length > 1 ? ` data-f="${esc(lineaT.id)}"` : ''}><b>${esc(temporada.nombre)}</b><span>${esc(temporada.aviso)}</span>${FLECHA}</a>`
+      : nuevo ? `<a class="v-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
+    <h1 class="v-h1">Herramientas digitales para estudiar, celebrar y <em>hacer crecer tu negocio.</em></h1>
+    <p class="v-sub">Simuladores de examen, invitaciones, eventos y apps para tu negocio. Entrega inmediata por correo; pagas con tarjeta, OXXO o transferencia.</p>
+    <div class="v-botones"><a class="btn v-btn" href="#productos">Ver el catálogo ${FLECHA}</a><a class="btn v-btn sec" href="/tienda/puntos/">Gana puntos recomendando</a></div>
+    ${secciones.length > 1 ? `<nav class="v-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}>${esc(g.linea)} <small>${g.vistas.length}</small></a>`).join('')}</nav>` : ''}
   </div>
-  ${secciones.length > 1 ? `<nav class="marco t-hero-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}><i aria-hidden="true"></i>${esc(g.linea)}</a>`).join('')}<a class="t-hero-todas" href="#productos" data-f="">Ver todo el catálogo ${FLECHA}</a></nav>` : ''}
 </section>
 <section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
   <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>
@@ -289,7 +319,7 @@ export async function paginaCatalogo(env, req, url) {
   <li>${ICONOS.tarjeta}<b>Paga como quieras</b><span>Tarjeta de crédito o débito, efectivo en OXXO o transferencia SPEI.</span></li>
   <li>${ICONOS.chat}<b>Personas reales</b><span>Te contesta alguien del equipo por correo o WhatsApp, en horario laboral.</span></li>
 </ul></div></section>
-<section class="t-sec t-catalogo" id="productos"><div class="marco">
+<section class="t-sec t-catalogo v-catalogo" id="productos"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
     <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>
     ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por línea"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>

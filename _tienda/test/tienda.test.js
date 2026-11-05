@@ -22,26 +22,26 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/tienda/">');
   });
 
-  it('la portada: foto a todo lo ancho con 2 botones, una sola pieza destacada, líneas, confianza, un solo catálogo con buscador y filtros', async () => {
+  it('la vitrina: blanca y centrada (sin foto), 2 botones, líneas con su número, confianza, un solo catálogo con buscador y filtros, máximo 3 por fila', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toContain('class="t-hero"');
-    expect(html).toMatch(/<picture class="t-hero-foto"[^>]*><source type="image\/webp" srcset="\/img\/ciudades\/cdmx-noche-960\.webp 960w/);
-    expect(html).toContain('fetchpriority="high"');
-    expect(html).toContain('Explorar catálogo');
-    expect(html.match(/class="t-hero-pieza"/g)).toHaveLength(1);       // como mucho una pieza visual, no todo el catálogo
-    expect(html).toContain('Compra protegida');
-    // explora por línea: una línea de un solo producto lleva directo a él; las demás filtran el catálogo
-    // (Exámenes ya tiene dos simuladores, PAA y UNAM: filtra el catálogo)
-    expect(html).toMatch(/class="marco t-hero-lineas"[^>]*>.*<a href="#examenes"[^>]*data-linea="examenes"/s);
+    expect(html).toContain('class="t-hero v-hero"');
+    expect(html).not.toContain('t-hero-foto');                        // sin la foto oscura de la ciudad
+    expect(html).toContain('Ver el catálogo');
+    expect(html).toContain('Gana puntos recomendando');
+    expect(html).toContain('class="v-h1"');
+    // explora por línea: una línea de un solo producto lleva directo a él; las demás filtran el catálogo (con cuántos tiene)
+    expect(html).toMatch(/class="v-lineas"[^>]*>.*<a href="#examenes" data-f="examenes" data-linea="examenes">Educación <small>\d+<\/small><\/a>/s);
     expect(html).toMatch(/class="t-card" data-linea="examenes" data-buscar="simulador unam en linea /);
     expect(html).toContain('class="t-confia-g"');
     for (const t of ['Entrega inmediata', 'Pago protegido', 'Paga como quieras', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
+    expect(html).toContain('grid-template-columns:repeat(3,minmax(0,1fr))');   // máximo 3 productos por fila
+    expect(html).toContain('class="t-card-mas"');
     // buscador del catálogo (oculto sin JavaScript), con el texto de cada tarjeta sin acentos y mensaje si no hay resultados
     expect(html).toContain('<label class="t-buscar" hidden>');
     expect(html).toMatch(/class="t-card" data-linea="examenes" data-buscar="simulador paa en linea [^"]*educacion/);
     expect(html).toContain('id="sin-resultados" hidden');
-    // menú oscuro sobre la foto, con lupa y cuenta; WhatsApp flotante
-    expect(html).toContain('<header class="nav t-navs oscuro">');
+    // menú claro (ya no va sobre una foto), con lupa y cuenta; WhatsApp flotante
+    expect(html).not.toContain('<header class="nav t-navs oscuro">');
     expect(html).toContain('href="/tienda/#buscar" aria-label="Buscar en la tienda"');
     expect(html).toContain('class="t-wa" href="https://wa.me/528117804869?text=');
     // categorías y catálogo eran lo mismo: queda un solo catálogo (las líneas se eligen arriba o en los filtros)
