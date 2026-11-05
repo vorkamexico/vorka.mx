@@ -638,6 +638,7 @@ ${await masTienda(env, seccionDe(p))}
 export async function sitemapTienda(env) {
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
+    `<url><loc>${SITIO}/tienda/catalogo/</loc><priority>0.7</priority></url>`,   // catálogo para compartir (con código no se indexa)
     `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
     ...Object.keys(VARIANTES).filter(Boolean).map(k => `<url><loc>${SITIO}/tienda/brindi/${k}/</loc><priority>0.8</priority></url>`),   // por tipo de evento
     ...Object.keys(UNIVERSIDADES).map(k => `<url><loc>${SITIO}/simulador-paa/${k}/</loc><priority>0.7</priority></url>`),   // PAA por universidad
