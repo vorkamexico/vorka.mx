@@ -71,7 +71,7 @@ export async function paginaCuentas(env, req, url) {
   migas('Cuentas', RUTA_CUENTAS),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Cuentas' },
-    titulo: 'Cuentas: administra tus préstamos personales | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/v3/cuentas-og.jpg',
+    titulo: 'Cuentas: app para llevar tus préstamos personales y sus abonos | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/v3/cuentas-og.jpg',
     descripcion: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estados de cuenta en PDF y Excel. Prueba 7 días gratis.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
