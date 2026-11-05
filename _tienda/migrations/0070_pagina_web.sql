@@ -1,5 +1,5 @@
 -- Tu página web (nov 2026): servicio de Vorka México por SUSCRIPCIÓN mensual (Stripe Billing, como Cuentas o Vuelve).
--- $299 MXN al mes: diseño sin costo con plan de 12 meses, hospedaje con SSL, hasta 3 cambios pequeños al mes, botón de
+-- $299 MXN al mes (subió a $349 en la migración 0071): diseño sin costo con plan de 12 meses, hospedaje con SSL, hasta 3 cambios pequeños al mes, botón de
 -- WhatsApp y formulario, y alta en Google. El dominio NO se cobra aquí: su costo se paga por transferencia a Vorka por
 -- WhatsApp, una vez al año. No hay app que abrir: el correo y la página de gracias llevan a WhatsApp para empezar.
 -- Página de compra: /tienda/pagina-web/ (src/paginaweb.js); página del servicio: /servicios/pagina-web/ (_sitio/paginaweb.py).

@@ -34,6 +34,7 @@ V4 = {
   'que-proyecto-social': ('#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', 'Para negocios, OSC y profesionistas, con indicadores y ODS.', ['**10** preguntas · 5 min', 'De **5 a 8** proyectos', 'Indicadores y **ODS**']),
   'evaluacion-liderazgo': ('#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', 'Desde 12 años: 12 dimensiones y 3 acciones para 30 días.', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']),
   'portales': ('#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', 'Publica tus inmuebles con fotos y recibe a los interesados por WhatsApp.', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']),
+  'pagina-web': ('#9A5220', 'Tu página web', 'Tu negocio en internet, [listo y cuidado.]', 'La diseñamos, la publicamos y la mantenemos por ti. Tú pagas $349 al mes y tu dominio.', ['Diseño **sin costo**', 'Hospedaje y **SSL**', '**3** cambios al mes']),
   'clara': ('#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', 'Gastos, ingresos y tarjetas en un solo lugar. Clara te dice cuánto te alcanza al día.', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']),
 }
 
@@ -174,6 +175,23 @@ def obj_portales():
     tarj = ''.join(f'<div style="position:absolute;left:{60 + i * 90}px;top:{150 + i * 400}px;width:470px;border-radius:24px;background:#fff;transform:rotate({[-5, 4][i]}deg);{SOMBRA};overflow:hidden;color:#141114"><div style="height:230px;background:{bg};position:relative"><svg viewBox="0 0 200 120" style="position:absolute;left:50%;bottom:0;width:260px;transform:translateX(-50%)"><path d="M30 120V62l70-48 70 48v58z" fill="rgba(255,255,255,.85)"/><rect x="88" y="78" width="24" height="42" fill="rgba(20,40,60,.55)"/><rect x="50" y="72" width="26" height="22" fill="rgba(20,40,60,.4)"/><rect x="124" y="72" width="26" height="22" fill="rgba(20,40,60,.4)"/></svg><span style="position:absolute;left:18px;top:18px;background:#fff;border-radius:999px;padding:6px 14px;font:750 15px Inter,sans-serif">En venta</span></div><div style="padding:20px 24px"><b style="font:800 26px Inter,sans-serif">{n}</b><div style="font:500 17px Inter,sans-serif;color:#5F5A63;margin-top:4px">{d}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><b style="font:850 28px Inter,sans-serif;color:#0F5A8A">{p}</b><span style="background:#1f8f4e;color:#fff;border-radius:12px;padding:8px 14px;font:750 15px Inter,sans-serif">WhatsApp</span></div></div></div>' for i, (n, d, p, bg) in enumerate(casas))
     return tarj
 
+def obj_pagina_web():
+    # Una ventana de navegador con la página de un negocio de ejemplo (dominio propio con candado), su resultado en Google y la nota de cambios
+    nav = '<div style="display:flex;gap:8px;align-items:center;padding:16px 18px;background:#EDEBEF;border-bottom:1px solid #DDD9E0"><i style="width:13px;height:13px;border-radius:50%;background:#E5675E"></i><i style="width:13px;height:13px;border-radius:50%;background:#E8B54A"></i><i style="width:13px;height:13px;border-radius:50%;background:#5DBB63"></i><span style="flex:1;margin-left:12px;background:#fff;border-radius:999px;padding:8px 16px;font:600 17px Inter,sans-serif;color:#3A363C;display:flex;align-items:center;gap:8px"><svg width="14" height="16" viewBox="0 0 14 16"><rect x="1" y="7" width="12" height="9" rx="2" fill="#1E8A5A"/><path d="M4 7V5a3 3 0 0 1 6 0v2" stroke="#1E8A5A" stroke-width="2" fill="none"/></svg>panaderialaespiga.mx</span></div>'
+    sitio = """<div style="padding:22px 26px 0;display:flex;justify-content:space-between;align-items:center;font:600 15px Inter,sans-serif;color:#5F5A63"><b style="font:850 22px Georgia,serif;color:#5A2E10">La Espiga</b><span>Pan · Pasteles · Pedidos</span></div>
+<div style="margin:18px 26px 0;height:250px;border-radius:18px;background:linear-gradient(150deg,#F3D9B1,#D9A066 55%,#9A5220);position:relative;overflow:hidden">
+  <svg viewBox="0 0 300 120" style="position:absolute;left:50%;bottom:-6px;width:360px;transform:translateX(-50%)"><ellipse cx="150" cy="96" rx="120" ry="34" fill="#7A3E14" opacity=".35"/><path d="M60 92c0-34 40-56 90-56s90 22 90 56z" fill="#E9B872"/><path d="M95 60l10 26M130 48l8 36M168 48l-6 36M204 60l-10 26" stroke="#B9783A" stroke-width="7" stroke-linecap="round"/></svg>
+  <span style="position:absolute;left:22px;top:22px;font:850 36px/1.05 Inter,sans-serif;letter-spacing:-.03em;color:#fff;text-shadow:0 2px 12px rgba(60,25,5,.35)">Pan recién<br>hecho, diario.</span></div>
+<div style="display:flex;gap:12px;margin:20px 26px 26px"><span style="flex:1;text-align:center;background:#1f8f4e;color:#fff;border-radius:14px;padding:14px;font:750 18px Inter,sans-serif">Pedir por WhatsApp</span><span style="flex:1;text-align:center;border:2px solid #E2DDE4;border-radius:14px;padding:12px;font:750 18px Inter,sans-serif;color:#141114">Cómo llegar</span></div>"""
+    google = """<div style="font:600 15px Inter,sans-serif;color:#5F5A63">panaderialaespiga.mx</div><div style="font:700 23px Inter,sans-serif;color:#1A47B8;margin-top:4px">Panadería La Espiga · Pan y pasteles</div><div style="font:500 16px/1.4 Inter,sans-serif;color:#4D4950;margin-top:6px">Abierto · 7:00 a 21:00 · Pedidos por WhatsApp</div>"""
+    return f"""
+<div style="position:absolute;left:40px;top:150px;width:590px;border-radius:22px;background:#fff;transform:rotate(-4deg);{SOMBRA};overflow:hidden;color:#141114">{nav}{sitio}</div>
+<div style="position:absolute;left:96px;top:780px;width:500px;border-radius:18px;background:#fff;transform:rotate(3deg);{SOMBRA};padding:22px 26px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;font:800 20px Inter,sans-serif"><span style="color:#4285F4">G</span><span style="height:12px;flex:1;border-radius:6px;background:#EFEDF1"></span></div>{google}</div>
+<div style="position:absolute;left:400px;top:960px;width:250px;height:170px;background:#FFF3B8;transform:rotate(7deg);{SOMBRA};padding:22px;color:#141114">
+  <div style="font:700 16px Inter,sans-serif;color:#6D5A1E">Este mes</div><div style="font:850 40px/1.1 Inter,sans-serif;letter-spacing:-.04em;color:#9A5220;white-space:nowrap">3 cambios</div><div style="font:600 16px Inter,sans-serif;color:#6D5A1E">incluidos</div></div>
+<div style="position:absolute;left:52px;top:100px;font:700 14px Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A858D">Ejemplo ilustrativo</div>"""
+
 def obj_kit(k):
     color, titulo, partes = P[k]['hojas']
     lista = ''.join(f'<div style="display:flex;gap:12px;align-items:center;margin-top:16px;font:650 20px Inter,sans-serif"><span style="width:28px;height:28px;border-radius:8px;background:{color};color:#fff;display:grid;place-items:center;font-size:15px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes))
@@ -197,7 +215,7 @@ def obj_clara():
   <div style="font:600 18px Inter,sans-serif;color:#6D5A1E">al día hasta el 15</div></div>"""
 
 OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
-  'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales,
+  'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales, 'pagina-web': obj_pagina_web,
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
   **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug']}}
 

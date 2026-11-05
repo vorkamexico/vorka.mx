@@ -1,4 +1,4 @@
-// Tu página web en la tienda: /tienda/pagina-web/, suscripción mensual de $299 con Stripe Billing, correo y página de gracias
+// Tu página web en la tienda: /tienda/pagina-web/, suscripción mensual de $349 con Stripe Billing, correo y página de gracias
 // que llevan a WhatsApp (no hay app que abrir; el dominio se paga aparte por transferencia) y Puntos para quien recomienda.
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { d1 } from './d1.js';
@@ -26,7 +26,7 @@ const fila = sql => env.DB.raw.prepare(sql).get();
 
 const sub = (o = {}) => ({
   id: 'sub_c1', status: 'active', customer: 'cus_1', cancel_at_period_end: false, metadata: { order_id: stripe.orden, app: 'pagina-web', email: 'laura@correo.mx', product_id: 'prod_pagina_web_mensual' },
-  items: { data: [{ id: 'si_plan', quantity: 1, current_period_end: 1893456000, price: { unit_amount: 29900, recurring: { interval: 'month' }, product: { metadata: { product_id: 'prod_pagina_web_mensual' } } } }] }, ...o,
+  items: { data: [{ id: 'si_plan', quantity: 1, current_period_end: 1893456000, price: { unit_amount: 34900, recurring: { interval: 'month' }, product: { metadata: { product_id: 'prod_pagina_web_mensual' } } } }] }, ...o,
 });
 
 beforeEach(() => {
@@ -40,7 +40,7 @@ beforeEach(() => {
     if (url.endsWith('/customers')) return ok({ id: 'cus_1' });
     if (url.endsWith('/checkout/sessions')) { const id = `cs_${llamada('/checkout/sessions').length}`; return ok({ id, url: `https://checkout.stripe.com/c/pay/${id}` }); }
     if (url.includes('/checkout/sessions/')) return ok({ id: 'cs_1', mode: 'subscription', metadata: { order_id: stripe.orden }, client_reference_id: stripe.orden,
-      amount_total: 29900, currency: 'mxn', status: 'complete', payment_status: 'paid', payment_intent: null, subscription: 'sub_c1' });
+      amount_total: 34900, currency: 'mxn', status: 'complete', payment_status: 'paid', payment_intent: null, subscription: 'sub_c1' });
     if (url.includes('/subscriptions/')) return ok(stripe.sub);
     if (url.includes('/invoices/')) return ok(stripe.factura);
     if (url.endsWith('/billing_portal/sessions')) return ok({ url: 'https://billing.stripe.com/p/session/x' });
@@ -59,19 +59,19 @@ describe('Tu página web', () => {
     const r = await pedir('/tienda/pagina-web/');
     expect(r.status).toBe(200);
     const h = await r.text();
-    expect(h).toContain('$299');
+    expect(h).toContain('$349');
     expect(h).toContain('plan de 12 meses');
     expect(h).toMatch(/dominio se paga aparte/);
     expect((await pedir('/tienda/pagina-web')).status).toBe(301);
     expect(await (await pedir('/tienda/')).text()).toContain('/tienda/pagina-web/');
   });
-  it('abre Stripe en modo suscripción mensual de $299 con la app en la metadata', async () => {
+  it('abre Stripe en modo suscripción mensual de $349 con la app en la metadata', async () => {
     const r = await comprar();
     expect(r.status, await r.clone().text()).toBe(200);
     const p = llamada('/checkout/sessions')[0].params;
     expect(p.get('mode')).toBe('subscription');
     expect([...p.entries()].some(([k, v]) => /recurring\]\[interval\]$/.test(k) && v === 'month')).toBe(true);
-    expect([...p.entries()].some(([k, v]) => /unit_amount\]$/.test(k) && v === '29900')).toBe(true);
+    expect([...p.entries()].some(([k, v]) => /unit_amount\]$/.test(k) && v === '34900')).toBe(true);
     expect([...p.entries()].some(([k, v]) => /metadata\]\[app\]$|^subscription_data\[metadata\]\[app\]$/.test(k) && v === 'pagina-web')).toBe(true);
   });
   it('al pagar: correo con WhatsApp para empezar y pagar el dominio, y la página de gracias igual', async () => {

@@ -1,14 +1,14 @@
 # Vorka México · /servicios/pagina-web/: el plan «Tu página web» para negocios pequeños.
-# Precio y condiciones acordados por Vorka (5 nov 2026): $299 MXN al mes con hospedaje y SSL, hasta 3 cambios pequeños al
+# Precio y condiciones acordados por Vorka (5 nov 2026): $349 MXN al mes con hospedaje (antes $299; el usuario lo subió el mismo día) y SSL, hasta 3 cambios pequeños al
 # mes, botón de WhatsApp y formulario, y alta en Google; el diseño corre por nuestra cuenta con plan de 12 meses (si cancela
-# antes, paga los meses que falten); Vorka registra el dominio y le cobra su costo una vez al año, y si se va se lo
+# antes, paga los meses que falten; si deja de pagar se da de baja el sitio y el dominio se queda con Vorka hasta que liquide el pago anual o los meses que falten); Vorka registra el dominio y le cobra su costo una vez al año, y si se va se lo
 # transfiere. Si cambia algo, cámbialo también en _tienda/src/learn-web.js (PLAN_WEB y el llamado de las guías).
 import json
 from partes import *
 
-PRECIO = '$299'
+PRECIO = '$349'
 TIENDA = '/tienda/pagina-web/'   # suscripción en línea (Stripe), _tienda/src/paginaweb.js
-WA_PLAN = 'Hola Vorka, quiero mi página web de $299 al mes.'
+WA_PLAN = 'Hola Vorka, quiero mi página web de $349 al mes.'
 INCLUYE = [
     ('globo', 'Hospedaje y candado de seguridad', 'Tu página en línea con certificado SSL (HTTPS), sin pagar servidor aparte.'),
     ('doc', 'Hasta 3 cambios pequeños al mes', 'Textos, fotos, precios u horarios: nos escribes y lo cambiamos.'),
@@ -22,14 +22,15 @@ PASOS = [('Te suscribes', 'En línea con tu tarjeta, y nos escribes por WhatsApp
 CONDICIONES = [
     ('Plan de 12 meses', f'El diseño no tiene costo porque el plan es de 12 meses ({PRECIO} al mes). Si cancelas antes, pagas los meses que falten.'),
     ('Tu dominio', 'Lo registramos por ti; su costo exacto se paga una vez al año por transferencia, y te pasamos los datos por WhatsApp. Si un día dejas el plan, te lo transferimos.'),
+    ('Si dejas de pagar', 'Tu página se da de baja y el dominio se queda con nosotros hasta que liquides su pago anual o los meses que falten del plan. Al ponerte al corriente, te lo transferimos o la volvemos a publicar.'),
     ('Cambios más grandes', 'Secciones nuevas, tienda en línea o sistemas a la medida se cotizan aparte.'),
 ]
 PREGUNTAS_WEB = [
     ('¿Cuánto cuesta en total?', f'{PRECIO} MXN al mes, que se cobran en tu tarjeta como suscripción, más el costo de tu dominio, que se paga una vez al año por transferencia. El diseño no tiene costo con el plan de 12 meses.'),
     ('¿Cómo me suscribo?', 'En línea, en vorka.mx/tienda/pagina-web, con tarjeta de crédito o débito. Al terminar el pago te llega un botón para escribirnos por WhatsApp y empezar tu página.'),
     ('¿Cuánto cuesta el dominio?', 'Depende de la terminación (.mx, .com.mx, .com…) y del registrador. Antes de registrarlo te decimos el costo exacto por WhatsApp y lo pagas por transferencia.'),
-    ('¿El dominio queda a mi nombre?', 'Lo registramos nosotros para darte el servicio completo. Si dejas el plan, te lo transferimos para que lo sigas usando.'),
-    ('¿Qué pasa si quiero cancelar?', 'El plan es de 12 meses porque el diseño corre por nuestra cuenta. Si cancelas antes, pagas los meses que falten; después de los 12 meses sigues mes con mes. Tu tarjeta y tu suscripción se administran en vorka.mx/tienda/suscripcion.'),
+    ('¿El dominio queda a mi nombre?', 'Lo registramos nosotros para darte el servicio completo. Si dejas el plan al corriente, te lo transferimos para que lo sigas usando. Si dejas de pagar, la página se da de baja y el dominio se queda con nosotros hasta que se liquide su pago anual o los meses que falten del plan.'),
+    ('¿Qué pasa si quiero cancelar o dejo de pagar?', 'El plan es de 12 meses porque el diseño corre por nuestra cuenta. Si cancelas antes, pagas los meses que falten. Si dejas de pagar, la página se da de baja y el dominio se queda con nosotros hasta que se liquide su pago anual o los meses que falten del plan. Después de los 12 meses sigues mes con mes. Tu tarjeta y tu suscripción se administran en vorka.mx/tienda/suscripcion.'),
     ('¿Qué cuenta como cambio pequeño?', 'Cambiar textos, fotos, precios, horarios o datos de contacto. Incluye hasta 3 al mes; lo que sea más grande, como secciones nuevas o una tienda en línea, se cotiza aparte.'),
     ('¿Puedo vender en línea desde mi página?', 'La página del plan es para presentar tu negocio y que te escriban. Si necesitas tienda en línea con carrito y cobro, la cotizamos aparte en Apps y páginas a la medida.'),
 ]
@@ -147,8 +148,8 @@ def pagina_web():
                 'description': f'Página web para tu negocio por {PRECIO} MXN al mes más el costo del dominio: hospedaje con SSL, hasta 3 cambios pequeños al mes, botón de WhatsApp y formulario, y alta en Google. Diseño sin costo con plan de 12 meses.',
                 'url': SITIO + '/servicios/pagina-web/', 'areaServed': {'@type': 'Country', 'name': 'México'},
                 'provider': {'@type': 'ProfessionalService', 'name': 'Vorka México', 'url': SITIO + '/'},
-                'offers': {'@type': 'Offer', 'price': '299', 'priceCurrency': 'MXN', 'url': SITIO + '/servicios/pagina-web/',
-                           'priceSpecification': {'@type': 'UnitPriceSpecification', 'price': '299', 'priceCurrency': 'MXN', 'unitText': 'MONTH'}}}
+                'offers': {'@type': 'Offer', 'price': '349', 'priceCurrency': 'MXN', 'url': SITIO + '/servicios/pagina-web/',
+                           'priceSpecification': {'@type': 'UnitPriceSpecification', 'price': '349', 'priceCurrency': 'MXN', 'unitText': 'MONTH'}}}
     faq_ld = {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in PREGUNTAS_WEB]}
     migas = {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
         {'@type': 'ListItem', 'position': 1, 'name': 'Inicio', 'item': SITIO + '/'}, {'@type': 'ListItem', 'position': 2, 'name': 'Servicios', 'item': SITIO + '/servicios/'},

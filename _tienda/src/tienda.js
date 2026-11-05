@@ -126,6 +126,7 @@ export const PORTADAS_APP = {
   'test-vocacional': '/assets/tienda/v3/test-vocacional-portada.webp',
   'que-proyecto-social': '/assets/tienda/v3/que-proyecto-social-portada.webp',
   liderazgo: '/assets/tienda/v3/evaluacion-liderazgo-portada.webp',
+  'pagina-web': '/assets/tienda/v3/pagina-web-portada.webp',
 };
 const conPortada = p => (p.imagen || !PORTADAS_APP[p.contenido?.acceso?.app] ? p : { ...p, imagen: PORTADAS_APP[p.contenido.acceso.app] });
 function vista(p, url, desdeBrindi) {
