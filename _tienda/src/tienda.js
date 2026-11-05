@@ -117,8 +117,6 @@ const APPS_TIENDA = {
   vende: { nombre: 'Vende · Pedidos y cobros', precio: () => 'Empieza gratis' },   // corto, en un renglón (el precio de Pro está en su ficha)
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
   clara: { nombre: 'Clara · Tus tarjetas y tu dinero', precio: () => 'Empieza gratis' },   // gratis con 1 tarjeta (el precio de Pro está en su ficha)
-  // Toolkit: una sola tarjeta (el plan Pro va oculto y se elige en /tienda/toolkit/)
-  toolkit: { nombre: 'Toolkit Vorka · Saldo cada mes', precio: p => `${precio(p)} al mes` },
 };
 // Portada v3 por app (simulador/portadas_v3.py) para los productos que todavía no la tienen en D1 (migración 0062):
 // así la tarjeta nunca cae en la portada genérica de la V. La imagen de D1 manda si existe.
@@ -170,7 +168,7 @@ const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['ruta', 'Proyectos · Ruta de Impacto', '/tienda/ruta-de-impacto/'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
-  ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['toolkit', 'Toolkit · Saldo', '/tienda/toolkit/'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+  ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
 
@@ -444,10 +442,6 @@ export async function paginaProducto(env, req, url, slug) {
   if (['agenda', 'agenda-vuelve'].includes(p?.contenido?.acceso?.app)) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `/tienda/agenda/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
-  }
-  // Toolkit: ya no se ofrece; sus fichas viejas mandan a la tienda
-  if (p?.contenido?.acceso?.app === 'toolkit') {
-    return new Response(null, { status: 301, headers: { location: '/tienda/', 'cache-control': 'public, max-age=3600' } });
   }
   if (p?.contenido?.acceso?.app === 'cupo') {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);

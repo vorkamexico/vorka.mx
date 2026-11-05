@@ -32,5 +32,4 @@ export function seccionesCatalogo(productos) {
 // Id de la línea de un producto ('examenes', 'negocios', 'eventos', 'finanzas' o el de su categoría)
 export const lineaDe = p => seccionesCatalogo([p])[0]?.id || null;
 // Las líneas fijas, para elegir el alcance de un cupón de regalo
-// (sin la del Toolkit: los cupones no aplican en él, ver checkout.js)
-export const LINEAS = SECCIONES_TIENDA.filter(s => s.id !== 'toolkit').map(s => ({ id: s.id, linea: s.linea }));
+export const LINEAS = SECCIONES_TIENDA.map(s => ({ id: s.id, linea: s.linea }));

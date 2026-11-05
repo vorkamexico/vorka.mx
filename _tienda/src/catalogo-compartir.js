@@ -41,7 +41,7 @@ const nombreCorto = p => {
   return String(p.nombre).replace(/ · Reporte completo$/, '').replace(/ · plan mensual$/, '').split(': ')[0];
 };
 const precioTxt = x => `${x.varios > 1 ? 'desde ' : ''}${pesos(x.desde)}${x.mensual ? ' al mes' : ''}`;
-const EMOJI = { examenes: '📚', negocios: '💼', eventos: '🎉', finanzas: '💳', toolkit: '🧰' };
+const EMOJI = { examenes: '📚', negocios: '💼', eventos: '🎉', finanzas: '💳' };
 
 export const ligaCatalogo = code => `${SITIO}/tienda/catalogo/${code ? `?ref=${encodeURIComponent(code)}` : ''}`;
 

@@ -4,7 +4,6 @@ import { marco, boton, lista, enviar, esc, P, SOPORTE } from './correo.js';
 import { mandarRegalos } from './regalos.js';
 import { accesoRuta, esItemRuta } from './ruta-entrega.js';
 import { finCortesia } from './suscripciones.js';
-import { TEXTO_FUNDADOR } from './pagos/stripe.js';
 
 export const VIGENCIA_DIAS = 7;
 export const MAX_DESCARGAS = 10; // por archivo
@@ -35,12 +34,9 @@ export function correoEntrega(env, orden, items, token, extra = {}) {
   // Suscripción con sus complementos (profesionales de Agenda, sucursales de Vuelve): el botón es el del plan, aunque el
   // complemento sea de otra app del paquete (la sucursal de Vuelve en Agenda + Vuelve)
   const plan = items.map(contenidoDe).find(c => c.suscripcion && !c.complemento && c.acceso);
-  // Toolkit: bienvenida con el saldo, para qué sirve y el precio fundador (el botón entra directo a Mi Toolkit)
-  if (plan?.acceso?.app === 'toolkit') return correoToolkit(env, orden, items, token, plan);
   if (plan && accesos.every(Boolean)) {
     // Cortesía de un plan de suscripción: no se cobra ni se renueva; dura cantidad × el intervalo del plan (ver cortesiaApp).
-    // Igual los meses pagados con saldo del Toolkit y los códigos del Toolkit canjeados (proveedor 'saldo')
-    const deRegalo = !!orden.regalo_de || orden.proveedor === 'cortesia' || orden.proveedor === 'saldo';
+    const deRegalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
     const it = items.find(i => { const c = contenidoDe(i); return c.suscripcion && !c.complemento; });
     const cortesiaHasta = deRegalo ? finCortesia(orden.paid_at || orden.created_at || Date.now(), plan.suscripcion.intervalo === 'year' ? 'year' : 'month', it?.cantidad) : null;
     // Cortesía de Vende con vendedoras incluidas (renglón de la silla): se dice en el correo
@@ -51,9 +47,8 @@ export function correoEntrega(env, orden, items, token, extra = {}) {
   return correoDescargas(env, orden, items, token);
 }
 
-// De dónde viene una orden de $0: 'cortesia' (la regala Vorka), 'regalo' (la regaló alguien con una liga o un código del
-// Toolkit) o 'saldo' (la pagó con su saldo del Toolkit). null = compra normal.
-const origenDe = o => o.proveedor === 'cortesia' ? 'cortesia' : o.regalo_de || o.toolkit_codigo ? 'regalo' : o.proveedor === 'saldo' ? 'saldo' : null;
+// De dónde viene una orden de $0: 'cortesia' (la regala Vorka) o 'regalo' (la regaló alguien con una liga). null = compra normal.
+const origenDe = o => o.proveedor === 'cortesia' ? 'cortesia' : o.regalo_de ? 'regalo' : null;
 
 function correoDescargas(env, orden, items, token) {
   // Archivos: el botón lleva a la página de descargas
@@ -63,7 +58,6 @@ function correoDescargas(env, orden, items, token) {
   const origen = origenDe(orden), regalo = origen === 'cortesia' || origen === 'regalo';
   const asunto = regalo ? `Te regalaron: ${items[0].nombre}` : items.length === 1 ? `Tu descarga: ${items[0].nombre}` : 'Tus descargas de Vorka México';
   const linea1 = regalo ? `¡Te ${orden.proveedor === 'cortesia' ? 'regalamos' : 'regalaron'} ${items.length === 1 ? 'este material' : 'estos materiales'} de Vorka México! Tus archivos ya están listos y quedan a tu nombre.`
-    : origen === 'saldo' ? '¡Listo! Lo pagaste con tu saldo del Toolkit y tus archivos ya están listos.'
     : '¡Gracias por tu compra! Tu pago quedó confirmado y tus archivos ya están listos.';
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
@@ -129,48 +123,6 @@ Vorka México · Guanajuato, México`;
   return { asunto, html, texto };
 }
 
-// Bienvenida al Toolkit: cuánto recibe cada mes, para qué sirve, que nunca vence y el precio fundador. El botón entra a
-// Mi Toolkit con el token del correo (/tienda/toolkit/entrar/<token> abre la sesión de su cuenta con este correo).
-export function correoToolkit(env, orden, items, token, plan) {
-  const nombre = orden.nombre.split(' ')[0];
-  const bono = plan.toolkit?.bono_centavos || 0, pro = plan.toolkit?.plan === 'toolkit-pro';
-  const url = `${env.SITE_URL}/tienda/toolkit/entrar/${token}`;
-  const bonoTxt = `$${(bono / 100).toLocaleString('es-MX')} MXN`;
-  const asunto = `Tu ${pro ? 'Toolkit Pro' : 'Toolkit'} ya está activo`;
-  const usos = ['Comprar cualquier producto de la tienda para ti: simuladores, reportes, Brindi, Cupo y más.', 'Pagar meses de Clara, Cuentas, Vende, Agenda y Vuelve.',
-    'Sacar códigos de regalo para regalar o revender (se comparten por WhatsApp).'];
-  const html = marco(asunto, `
-<p style="${P}">Hola, ${esc(nombre)}:</p>
-<p style="${P}">¡Bienvenida, bienvenido al Toolkit Vorka! Tu suscripción ya está activa: cada mes que pagas recibes <b>${esc(bonoTxt)} de saldo</b> para usar en toda la tienda a precio de lista. Tu primer abono aparece en Mi Toolkit en unos minutos.</p>
-${lista(usos.map(esc))}
-${boton(url, 'Ver mi Toolkit')}
-<p style="${P}"><b>Tu saldo nunca vence</b> y se acumula mes con mes. Si un día cancelas, lo conservas y lo sigues usando; solo dejas de recibir abonos.</p>
-<p style="${P};padding:12px 16px;border-left:3px solid #C8A45C;background:#faf6ec">${esc(TEXTO_FUNDADOR)}</p>
-<p style="${P}">Para cambiar tu tarjeta, ver tus recibos o cancelar, entra a Mi Toolkit (vorka.mx/tienda/mi-toolkit) con este mismo correo. Los productos de creadores independientes todavía no se pagan con saldo.</p>
-<p style="${P}">¿Dudas? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a>.</p>
-<p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`, { etiqueta: 'Toolkit' });
-  const texto = `Hola, ${nombre}:
-
-¡Bienvenida, bienvenido al Toolkit Vorka! Tu suscripción ya está activa: cada mes que pagas recibes ${bonoTxt} de saldo para usar en toda la tienda a precio de lista.
-
-${usos.map(u => `- ${u}`).join('\n')}
-
-Ver mi Toolkit:
-${url}
-
-Tu saldo nunca vence y se acumula mes con mes. Si un día cancelas, lo conservas y lo sigues usando; solo dejas de recibir abonos.
-
-${TEXTO_FUNDADOR}
-
-Para cambiar tu tarjeta, ver tus recibos o cancelar, entra a vorka.mx/tienda/mi-toolkit con este mismo correo.
-
-¿Dudas? Escríbenos a ${SOPORTE.correo} o por WhatsApp: ${SOPORTE.whatsapp}
-
-Orden ${orden.id}
-Vorka México · Guanajuato, México`;
-  return { asunto, html, texto };
-}
-
 // Todo de la misma app (p. ej. un plan de Brindi con complementos): el botón entra directo; si son apps distintas, a la página con un botón por cada una
 function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1, extra = {}) {
   if (acceso.tipo === 'saas' && /^https:\/\//.test(acceso.url || '')) return correoSaas(env, orden, items, acceso);
@@ -183,11 +135,10 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
   const tambien = (items.length === 1 || mismaApp ? acceso.tambien || [] : []).filter(t => /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(t.url || '')).map(t => ({ url: `${t.url}${token}`, boton: t.boton || 'Entrar' }));
   const nombre = orden.nombre.split(' ')[0];
   const origen = origenDe(orden);
-  const intento = acceso.tipo === 'intento', regalo = origen === 'cortesia' || origen === 'regalo', conSaldo = origen === 'saldo';
-  const asunto = intento ? 'Tus simulacros adicionales ya están listos' : regalo ? `Tu regalo está activo: ${items[0].nombre}` : conSaldo ? `Pagado con tu saldo: ${items[0].nombre}` : `Tu acceso: ${items[0].nombre}`;
-  const linea1 = intento ? (conSaldo ? '¡Listo! Lo pagaste con tu saldo del Toolkit. Tus simulacros completos adicionales ya están disponibles en tu cuenta.' : '¡Gracias por tu compra! Tus simulacros completos adicionales ya están disponibles en tu cuenta.')
+  const intento = acceso.tipo === 'intento', regalo = origen === 'cortesia' || origen === 'regalo';
+  const asunto = intento ? 'Tus simulacros adicionales ya están listos' : regalo ? `Tu regalo está activo: ${items[0].nombre}` : `Tu acceso: ${items[0].nombre}`;
+  const linea1 = intento ? '¡Gracias por tu compra! Tus simulacros completos adicionales ya están disponibles en tu cuenta.'
     : regalo ? `¡Te ${orden.proveedor === 'cortesia' ? 'regalamos' : 'regalaron'} ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.`
-    : conSaldo ? '¡Listo! Lo pagaste con tu saldo del Toolkit y tu acceso ya está activo.'
     : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
   const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.'
     : acceso.app === 'cupo' ? 'Con este botón entras a Cupo. Tus eventos Pro quedan guardados en tu cuenta y se aplican al publicar cada evento. Para volver a entrar después, usa este mismo correo en os.vorka.mx/cupo.'
@@ -206,7 +157,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : acceso.app === 'brindi' ? 'Con este botón entras a Brindi para crear tu invitación. Tu compra queda guardada en tu cuenta; para volver a entrar después, usa este mismo correo en os.vorka.mx/brindi.'
     : 'Tu acceso dura 6 meses a partir de hoy. Usa este botón en cada celular o computadora donde quieras practicar; tu historial se guarda en tu cuenta.';
   const linea2Final = extra.cortesiaHasta && origen !== 'cortesia'
-    ? `${conSaldo ? 'Lo pagaste con tu saldo del Toolkit' : 'Es un regalo'}: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}${Date.parse(orden.paid_at || 0) > Date.now() + 864e5 ? ` (empieza el ${fechaLarga(orden.paid_at)}, cuando termina lo que ya tenías)` : ''}. No se renueva solo y no se te cobra nada. Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
+    ? `Es un regalo: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}${Date.parse(orden.paid_at || 0) > Date.now() + 864e5 ? ` (empieza el ${fechaLarga(orden.paid_at)}, cuando termina lo que ya tenías)` : ''}. No se renueva solo y no se te cobra nada. Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
     : extra.cortesiaHasta
     ? `Es una cortesía de Vorka México: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}. No se renueva y no se te cobra nada.${extra.sillas ? ` Incluye ${extra.sillas === 1 ? '1 vendedora' : `${extra.sillas} vendedoras`} en tu red (Vende › Más › Mi red), también sin costo hasta esa fecha.` : ''} Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
     : linea2;

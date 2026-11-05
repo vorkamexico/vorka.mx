@@ -22,8 +22,6 @@ export const MARCAS = {
   'test-vocacional': ['#5B1F7A', 'Test vocacional', 'Descubre [qué carreras van contigo.]', ['**48** preguntas', 'Perfil básico **gratis**', '**20** carreras afines']],
   'que-proyecto-social': ['#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', ['**10** preguntas · 5 min', 'De **5 a 8** proyectos', 'Indicadores y **ODS**']],
   'evaluacion-liderazgo': ['#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']],
-  toolkit: ['#8A6A1F', 'Toolkit', 'Pagas $599 y [recibes $800 cada mes.]', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']],
-  'toolkit-pro': ['#3E3A66', 'Toolkit Pro', 'Pagas $1,199 y [recibes $1,800 cada mes.]', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']],
   portales: ['#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']],
   clara: ['#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']],
   'idea-en-orden': ['#1F7A44', 'Kit Idea en Orden', 'Ordena tu idea y [planea tus próximos 7 días.]', ['Workbook **PDF** · 32 págs.', '**Word** y Excel', '**6** herramientas']],

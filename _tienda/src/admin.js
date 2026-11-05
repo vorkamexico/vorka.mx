@@ -33,7 +33,7 @@ export async function resumen(env, { mes } = {}) {
   const desde = inicioDia(`${mes}-01`);
   const [a, m] = mes.split('-').map(Number);
   const hasta = inicioDia(`${m === 12 ? a + 1 : a}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01`);
-  const ventas = await one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'paid' AND proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND paid_at >= ? AND paid_at < ?", desde, hasta);
+  const ventas = await one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'paid' AND proveedor NOT IN ('regalo', 'cortesia') AND paid_at >= ? AND paid_at < ?", desde, hasta);
   const pendientes = await one(env, "SELECT COUNT(*) n FROM orders WHERE estado = 'pending' AND metodo_pago IN ('oxxo', 'customer_balance')");
   const embudo = await all(env, `SELECT p.id, p.nombre,
       (SELECT COUNT(*) FROM events e WHERE e.product_id = p.id AND e.tipo = 'view_product' AND e.created_at >= ? AND e.created_at < ?) vistas,
@@ -46,7 +46,7 @@ export async function resumen(env, { mes } = {}) {
 // ---------- tablero (la portada de la Tienda en Vorka OS) ----------
 // Lo que sirve para decidir de un vistazo: el mes contra el anterior, los últimos 30 días, los últimos 6 meses y cuánto
 // deja cada producto (con su conversión). Fechas en hora de CDMX (UTC−6). Sin regalos ni cortesías.
-const PAGADA = "o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo')";
+const PAGADA = "o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia')";
 const mesMas = (mes, k) => { const [a, m] = mes.split('-').map(Number), d = new Date(Date.UTC(a, m - 1 + k, 1)); return d.toISOString().slice(0, 7); };
 const DIA_MX = "substr(datetime(o.paid_at, '-6 hours'), 1, 10)";
 export async function tablero(env, { mes } = {}) {
@@ -140,7 +140,7 @@ export async function orden(env, id) {
 // Productos de acceso (Simulador PAA): basta con que haya empezado un simulacro, examen o sección. Lo decide el equipo
 // en Stripe; esto le dice en el panel si aplica y por qué.
 export async function reembolsoDe(env, o, items, tokens) {
-  if (o.estado !== 'paid' || ['regalo', 'cortesia', 'saldo'].includes(o.proveedor)) return null;
+  if (o.estado !== 'paid' || o.proveedor === 'regalo' || o.proveedor === 'cortesia') return null;
   const simulador = items.some(i => /^simulador-(paa|unam)/.test(String(i.slug || '')));
   if (simulador) {
     const [r, t] = await Promise.all([
@@ -185,7 +185,7 @@ const celda = v => { const s = String(v ?? ''); return /[",\n;]/.test(s) ? `"${s
 export async function exportarCSV(env, { desde, hasta }) {
   if (!FECHA.safeParse(desde).success || !FECHA.safeParse(hasta).success) throw new Error('Elige las fechas.');
   const filas = await all(env, `SELECT o.*, (SELECT GROUP_CONCAT(i.nombre, ' + ') FROM order_items i WHERE i.order_id = o.id) productos
-    FROM orders o WHERE o.estado IN ('paid', 'refunded') AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND o.paid_at >= ? AND o.paid_at < ? ORDER BY o.paid_at`, inicioDia(desde), finDia(hasta));
+    FROM orders o WHERE o.estado IN ('paid', 'refunded') AND o.proveedor NOT IN ('regalo', 'cortesia') AND o.paid_at >= ? AND o.paid_at < ? ORDER BY o.paid_at`, inicioDia(desde), finDia(hasta));
   const enc = ['fecha', 'orden', 'nombre', 'correo', 'producto', 'monto', 'moneda', 'metodo_pago', 'id_pago_stripe', 'estado'];
   const lineas = filas.map(o => [fechaMx(o.paid_at), o.id, o.nombre, o.email, o.productos, (o.monto_centavos / 100).toFixed(2), o.moneda,
     { card: 'tarjeta', oxxo: 'oxxo', customer_balance: 'spei' }[o.metodo_pago] || o.metodo_pago || '', o.provider_payment_id || '', o.estado === 'paid' ? 'pagada' : 'reembolsada'].map(celda).join(','));
@@ -217,7 +217,7 @@ const ESTADO_DIAG = z.enum(['todos', 'pendientes', 'sin_terminar', 'compraron'])
 export async function diagnosticos(env, { estado = 'todos', app = '' } = {}) {
   const e = ESTADO_DIAG.parse(estado);
   const compro = `EXISTS (SELECT 1 FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
-    WHERE lower(o.email) = d.email AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND p.slug LIKE d.app || '%')`;
+    WHERE lower(o.email) = d.email AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND p.slug LIKE d.app || '%')`;
   const filtro = { todos: '', pendientes: ` AND d.terminado_at IS NOT NULL AND d.contactado_at IS NULL AND NOT ${compro}`, sin_terminar: ' AND d.terminado_at IS NULL', compraron: ` AND ${compro}` }[e];
   const filas = await all(env, `SELECT d.id, d.app, d.nombre, d.email, d.whatsapp, d.created_at, d.verificado_at, d.terminado_at, d.contactado_at, d.resultado, d.ref_code,
       ${compro} compro FROM simulador_diagnosticos d WHERE (? = '' OR d.app = ?)${filtro} ORDER BY d.created_at DESC LIMIT 500`, String(app || ''), String(app || ''));

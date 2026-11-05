@@ -6,8 +6,6 @@ import { suscripcionDeOrden } from '../suscripciones.js';
 import { REFERIDO, esCuponRegalo, pesosTexto } from '../descuentos.js';
 
 const API = 'https://api.stripe.com/v1';
-// Copia de toolkit.js › FUNDADOR (aquí sin importar toolkit.js para no crear un ciclo de módulos); una prueba revisa que sean iguales
-export const TEXTO_FUNDADOR = 'Precio fundador garantizado por tus primeros 3 meses. Desde el 4.º mes el precio o el bono pueden cambiar; te avisamos por correo con 30 días de anticipación y puedes cancelar cuando quieras.';
 // Aviso junto al botón de pagar de Stripe en pagos únicos: OXXO no es inmediato, para que quien lo necesita hoy elija otro método
 export const TEXTO_OXXO = 'Si pagas en OXXO, Stripe confirma tu pago hasta 1 día hábil después y entonces te llega tu acceso. ¿Lo necesitas hoy? Paga con tarjeta (al instante) o por transferencia SPEI (normalmente en minutos).';
 export const STRIPE_VERSION = '2026-09-30.endive';
@@ -101,10 +99,7 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
     subscription_data: { metadata: { order_id: orden.id, app: sus.app || '', email: orden.email, product_id: sus.product_id, creador_id: sus.creador_id || undefined } },
     // Códigos de promoción de Stripe (p. ej. el de fundador) solo en planes mensuales: en el anual un cupón por meses
     // se aplicaría sobre todo el año. Nunca en suscripciones de creadores (sus productos no llevan descuentos de Vorka).
-    // El Toolkit nunca: un código del 100 % regalaría saldo (el bono se abona por factura pagada)
-    ...(sus.intervalo === 'month' && !cupon && !sus.creador_id && sus.app !== 'toolkit' ? { allow_promotion_codes: true } : {}),
-    // Toolkit: el aviso del precio fundador, junto al botón de pagar de Stripe
-    ...(sus.app === 'toolkit' ? { custom_text: { submit: { message: TEXTO_FUNDADOR } } } : {}),
+    ...(sus.intervalo === 'month' && !cupon && !sus.creador_id ? { allow_promotion_codes: true } : {}),
     success_url: exito,
     cancel_url: cancelar,
   };
@@ -300,7 +295,7 @@ export default {
     if (evento.tipo === 'charge.refunded') {
       if (!evento.pago) return null;
       const pi = evento.pi || await llamar(env, 'GET', `/payment_intents/${encodeURIComponent(evento.pago)}?expand[]=latest_charge`);
-      // monto / reembolsado: del cargo, para restar del saldo del Toolkit la parte proporcional de un reembolso parcial
+      // monto / reembolsado: del cargo, para revertir la parte proporcional de un reembolso parcial (Embajadores Vorka)
       const ch = typeof pi.latest_charge === 'object' ? pi.latest_charge : null;
       return { pago_id: pi.id, parcial: !ch?.refunded, monto: ch?.amount ?? null, reembolsado: ch?.amount_refunded ?? null };
     }

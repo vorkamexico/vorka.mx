@@ -1,4 +1,4 @@
-// Demos en vivo de eventos y negocio: Cupo, Portal y Toolkit (página propia + sección en su ficha), Vuelve y Brindi (demo externa)
+// Demos en vivo de eventos y negocio: Cupo y Portal (página propia + sección en su ficha), Vuelve y Brindi (demo externa)
 import { describe, it, expect, beforeEach } from 'vitest';
 import { d1 } from './d1.js';
 import worker from '../src/index.js';
@@ -51,6 +51,23 @@ describe('demos de eventos y negocio', () => {
   });
 });
 
-describe('Toolkit retirado', () => {
-  it('ya no tiene demo pública', () => { expect(demoDe('toolkit')).toBeNull(); });
+describe('Toolkit retirado (nunca se vendió)', () => {
+  it('no tiene demo pública', () => { expect(demoDe('toolkit')).toBeNull(); });
+  it('/tienda/toolkit/ manda a la tienda conservando la query', async () => {
+    const r = await ver('/tienda/toolkit/?utm_source=wa&ref=ANA');
+    expect(r.status).toBe(301);
+    expect(r.headers.get('location')).toBe('/tienda/?utm_source=wa&ref=ANA');
+  });
+  it('sus demás direcciones viejas también mandan a la tienda', async () => {
+    for (const ruta of ['/tienda/toolkit', '/tienda/mi-toolkit/', '/tienda/toolkit-mensual/', '/tienda/toolkit-pro-mensual/', '/tienda/canjear/TK-ABCD-EFGH']) {
+      const r = await ver(ruta);
+      expect(r.status, ruta).toBe(301);
+      expect(r.headers.get('location'), ruta).toBe('/tienda/');
+    }
+  });
+  it('ya no hay productos ni API del Toolkit', async () => {
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM products WHERE id LIKE 'prod_toolkit%'").get().n).toBe(0);
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM sqlite_master WHERE name LIKE 'toolkit%'").get().n).toBe(0);
+    expect((await ver('/api/toolkit/saldo')).status).toBe(404);
+  });
 });

@@ -78,9 +78,7 @@ const fechaMx = iso => new Date(iso).toLocaleDateString('es-MX', { timeZone: 'Am
 
 // Órdenes de cortesía pagadas (no quitadas) de planes de suscripción de esas apps; sin correo, las de todos (para el resumen).
 // Cuentan las enviadas directo a un correo y los canjes de ligas de cortesía (las suscripciones no se pueden comprar para regalar,
-// así que un canje de un plan de suscripción siempre viene de una cortesía; igual se revisa). También los meses pagados con
-// saldo del Toolkit y los códigos de regalo del Toolkit canjeados (proveedor 'saldo', ver toolkit.js): la app los ve como
-// cortesía con su fecha; empiezan donde termina la cortesía o la suscripción vigente (paid_at = ese inicio).
+// así que un canje de un plan de suscripción siempre viene de una cortesía; igual se revisa).
 async function filasCortesia(env, apps, email = null) {
   // Las quitadas (estado 'refunded') también vienen, ya vencidas desde que se quitaron: así la app deja de dar acceso aunque
   // haya guardado la fecha de la cortesía (cortesia_hasta)
@@ -90,7 +88,7 @@ async function filasCortesia(env, apps, email = null) {
         WHERE x.order_id = o.id AND COALESCE(json_extract(px.contenido, '$.complemento'), 0) = 1) extras
     FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
     WHERE o.estado IN ('paid', 'refunded') AND o.regalo = 0 AND o.monto_centavos = 0${email ? ' AND lower(o.email) = ?' : ''}
-      AND (o.proveedor IN ('cortesia', 'saldo') OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
+      AND (o.proveedor = 'cortesia' OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM orders c WHERE c.id = o.regalo_de AND c.proveedor = 'cortesia')))
       AND json_extract(p.contenido, '$.acceso.app') IN (${apps.map(() => '?').join(',')})
       AND json_extract(p.contenido, '$.suscripcion') IS NOT NULL AND COALESCE(json_extract(p.contenido, '$.complemento'), 0) = 0`,
     ...(email ? [email] : []), ...apps);
@@ -146,7 +144,6 @@ export async function guardarSuscripcion(env, sub) {
     if (c.complemento && c.acceso?.tipo === 'profesional') profesionales += it.quantity || 1;
     else if (c.complemento) sucursales += it.quantity || 1;
     else if (!plan) plan = pid;
-    else if (meta.app === 'toolkit' && r && c.acceso?.app === 'toolkit') plan = pid;   // Toolkit → Pro: manda el precio del renglón (ver toolkit.js › cambiarAPro)
   }
   const orden = meta.order_id ? await one(env, 'SELECT email FROM orders WHERE id = ?', meta.order_id) : null;
   const email = String(meta.email || orden?.email || '').trim().toLowerCase();
@@ -170,7 +167,6 @@ export async function guardarSuscripcion(env, sub) {
       cancelar_al_final = excluded.cancelar_al_final, sucursales = excluded.sucursales, profesionales = excluded.profesionales, monto_centavos = excluded.monto_centavos,
       customer_id = COALESCE(excluded.customer_id, suscripciones.customer_id), order_id = COALESCE(suscripciones.order_id, excluded.order_id),
       creador_id = COALESCE(suscripciones.creador_id, excluded.creador_id),
-      product_id = CASE WHEN excluded.app = 'toolkit' THEN excluded.product_id ELSE suscripciones.product_id END,
       cancelada_at = CASE WHEN excluded.estado = 'canceled' THEN COALESCE(suscripciones.cancelada_at, excluded.cancelada_at) ELSE NULL END,
       updated_at = ?`,
     fila.id, fila.email, fila.app, fila.product_id, fila.order_id, fila.customer_id, fila.estado, fila.intervalo, fila.periodo_fin, fila.cancelar_al_final, fila.sucursales, fila.profesionales, fila.monto_centavos,

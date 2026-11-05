@@ -10,7 +10,6 @@ import { eventoSuscripcionCreador } from './creadores-saas.js';
 import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
 import { revocarRuta } from './ruta-entrega.js';
-import { abonoToolkit, reembolsoToolkit } from './toolkit.js';
 import { redAlReembolsoParcial } from './embajadores.js';
 
 export async function webhook(req, env, nombre) {
@@ -35,19 +34,14 @@ export async function webhook(req, env, nombre) {
       if (fila?.creador_id) await eventoSuscripcionCreador(env, { evento, sub, fila, factura: evento.tipo.startsWith('invoice.') && pasarela.facturaDe ? evento.factura || await pasarela.facturaDe(evento, env) : null });
       else if (sub && evento.tipo === 'invoice.paid' && pasarela.facturaDe) {
         const factura = await pasarela.facturaDe(evento, env);
-        // Renovación pagada de una suscripción que entró con una liga de puntos (también la del Toolkit: sus pagos dan puntos
-        // con las reglas de siempre)
+        // Renovación pagada de una suscripción que entró con una liga de puntos
         await puntosFactura(env, factura, sub);
-        // Toolkit: cada factura pagada abona el saldo de su plan (una sola vez por factura)
-        if (fila?.app === 'toolkit') await abonoToolkit(env, factura, sub, fila);
       }
     }
     // Reembolso o disputa del cobro de una factura de suscripción de creador: se cancela o revierte su transferencia.
-    // Si el cobro era de una factura del Toolkit, se resta del saldo lo que ese pago abonó (sin dejarlo negativo).
     if (pasarela.pagoRevertido && ['charge.refunded', 'charge.dispute.created'].includes(evento.tipo)) {
       const rev = await pasarela.pagoRevertido(evento, env);
       if (rev) await anularPorPago(env, rev.pago_id, { parcial: rev.parcial });
-      if (rev) await reembolsoToolkit(env, rev.pago_id, { monto: rev.monto ?? null, reembolsado: rev.reembolsado ?? null });
       // Embajadores Vorka: un reembolso parcial de una orden revierte la parte proporcional de la red (el total va por puntosAlReembolsar)
       if (rev) await redAlReembolsoParcial(env, rev);
     }

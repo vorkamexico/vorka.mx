@@ -11,8 +11,7 @@
 //                  2). Sin ×1.5. Tope por venta: % del vendedor + red + 5 % de descuento al cliente (si aplicó) ≤ 50 %; se
 //                  recorta primero el nivel 2. Renovaciones: las que le dan puntos al vendedor, hasta la factura 12.
 //                  No cuentan: compras dentro de la propia red (quien compra es el vendedor, su patrocinador o el de su
-//                  patrocinador, por correo: la venta queda excluida = 1), lo pagado con saldo del Toolkit (orden de $0 sin
-//                  liga) y productos de creadores (fuera de la base). Reembolso total o parcial → se revierte (proporcional).
+//                  patrocinador, por correo: la venta queda excluida = 1) y productos de creadores (fuera de la base). Reembolso total o parcial → se revierte (proporcional).
 //   Bono           +50 al vendedor nuevo (que entró con una liga de invitación) si su primera venta válida es dentro de 30
 //                  días desde su registro. Una vez; se revierte si esa venta se reembolsa. No da red.
 //   Rangos         Del mes (centro de México): Líder = 3 personas de su equipo directo con ≥ 1 venta válida en el mes (el

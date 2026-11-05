@@ -327,7 +327,7 @@ export async function contarVisita(env, req, code) {
 const codigo6 = () => { const b = new Uint32Array(1); do crypto.getRandomValues(b); while (b[0] >= 4294000000); return String(b[0] % 1e6).padStart(6, '0'); };
 const hashCodigo = (env, email, c) => hashToken(env, `codigo:${email}:${c}`);
 
-export async function crearSesion(env, email) {
+async function crearSesion(env, email) {
   const s = aleatorio(32);
   await run(env, "INSERT INTO puntos_accesos (token_hash, email, tipo, expira_at) VALUES (?, ?, 'sesion', ?)", await hashToken(env, s), email, new Date(Date.now() + SESION_DIAS * 864e5).toISOString());
   return `${COOKIE}=${s}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESION_DIAS * 86400}`;
@@ -613,10 +613,6 @@ export async function datosApp(env, email) {
     movimientos, notificaciones, no_leidas: notificaciones.filter(x => !x.leida_at).length, sugerencias, push,
     logros: LOGROS.map(l => ({ ...l, ok: !!logrado[l.id] })),
     retiro: await datosRetiro(env, email),
-    // Toolkit Vorka (toolkit.js): su saldo, si tiene o tuvo uno, para la tarjeta que lleva a Mi Toolkit
-    toolkit: await one(env, `SELECT COALESCE((SELECT SUM(centavos) FROM toolkit_movimientos WHERE email = ?), 0) saldo,
-      EXISTS (SELECT 1 FROM suscripciones WHERE email = ? AND app = 'toolkit') OR EXISTS (SELECT 1 FROM toolkit_movimientos WHERE email = ?) tiene`, email, email, email)
-      .then(t => (t?.tiene ? { saldo_centavos: t.saldo } : null)),
     top: top.map(t => ({ ...t, yo: t.email === email, email: undefined })),
     // Embajadores Vorka (embajadores.js): rango del mes, equipo, ganancias separadas, liga de invitación y Líderes del mes
     embajadores: await datosEmbajador(env, email, { code: af?.publico || code }),

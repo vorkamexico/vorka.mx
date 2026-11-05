@@ -33,8 +33,6 @@ V4 = {
   'test-vocacional': ('#5B1F7A', 'Test vocacional', 'Descubre [qué carreras van contigo.]', 'Tu perfil de intereses y las carreras afines, explicado claro.', ['**48** preguntas', 'Perfil básico **gratis**', '**20** carreras afines']),
   'que-proyecto-social': ('#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', 'Para negocios, OSC y profesionistas, con indicadores y ODS.', ['**10** preguntas · 5 min', 'De **5 a 8** proyectos', 'Indicadores y **ODS**']),
   'evaluacion-liderazgo': ('#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', 'Desde 12 años: 12 dimensiones y 3 acciones para 30 días.', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']),
-  'toolkit': ('#8A6A1F', 'Toolkit', 'Pagas $599 y [recibes $800 cada mes.]', 'Saldo para toda la tienda: simuladores, reportes, meses de apps y códigos de regalo. Nunca vence.', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']),
-  'toolkit-pro': ('#3E3A66', 'Toolkit Pro', 'Pagas $1,199 y [recibes $1,800 cada mes.]', 'Para quien compra seguido o revende con códigos de regalo.', ['Simuladores y **reportes**', 'Meses de **apps**', 'Códigos de **regalo**']),
   'portales': ('#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', 'Publica tus inmuebles con fotos y recibe a los interesados por WhatsApp.', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']),
   'clara': ('#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', 'Gastos, ingresos y tarjetas en un solo lugar. Clara te dice cuánto te alcanza al día.', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']),
 }
@@ -171,19 +169,6 @@ def obj_liderazgo():
 {hoja_papel(70, 160, 520, 820, -3, eti('#5B2A63', 'Ejemplo ilustrativo') + '<div style="font:850 38px Inter,sans-serif;letter-spacing:-.03em;margin-top:10px">Evaluación de liderazgo</div><div style="display:flex;align-items:baseline;gap:12px;margin-top:20px"><b style="font:850 110px/1 Inter,sans-serif;letter-spacing:-.05em;color:#5B2A63">58</b><span style="font:600 20px Inter,sans-serif;color:#5F5A63">de 100 · En construcción</span></div>' + filas)}
 <div style="position:absolute;left:400px;top:820px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F2D79B,#C8A45C 60%,#9A7A30);transform:rotate(-10deg);{SOMBRA};display:grid;place-items:center;text-align:center;color:#3A2810;font:800 20px/1.2 Inter,sans-serif">12<br><span style="font-size:15px;font-weight:700">dimensiones</span></div>"""
 
-def obj_toolkit(monto='$800', pago='$599', nombre='Toolkit', fondo='linear-gradient(140deg,#1C160C,#4A3818)', acento='#F2CF7E'):
-    return f"""
-<div style="position:absolute;left:150px;top:600px;width:440px;height:280px;border-radius:24px;transform:rotate(8deg);{SOMBRA};background:#fff;padding:26px 28px;color:#141114">
-  {eti('#8A6A1F', 'Código de regalo')}<div style="font:800 34px ui-monospace,Menlo,monospace;letter-spacing:2px;margin-top:14px">TK-7KQ2-XM4P</div>
-  <div style="font:500 18px Inter,sans-serif;color:#5F5A63;margin-top:10px">Simulador PAA · para quien tú quieras</div>
-  <div style="position:absolute;right:26px;bottom:24px;background:#1f8f4e;color:#fff;border-radius:12px;padding:10px 16px;font:750 17px Inter,sans-serif">Enviar por WhatsApp</div></div>
-<div style="position:absolute;left:50px;top:230px;width:540px;height:340px;border-radius:28px;transform:rotate(-6deg);{SOMBRA};background:{fondo};color:#fff;padding:34px 36px;overflow:hidden">
-  <div style="position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:{acento};opacity:.16"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font:800 28px Inter,sans-serif">{nombre}</b><span style="width:44px;height:42px;color:{acento}">{V}</span></div>
-  <div style="font:600 17px Inter,sans-serif;opacity:.7;margin-top:46px">Tu saldo cada mes</div>
-  <div style="font:850 96px/1 Inter,sans-serif;letter-spacing:-.05em;color:{acento}">{monto}</div>
-  <div style="font:600 18px Inter,sans-serif;opacity:.75;margin-top:12px">Pagas {pago} · nunca vence</div></div>"""
-
 def obj_portales():
     casas = [('Casa en Los Pinos', '3 rec · 2 baños · 180 m²', '$2,450,000', 'linear-gradient(160deg,#BFD3E6,#7FA2C2)'), ('Depa en el Centro', '2 rec · 1 baño · 85 m²', '$1,180,000', 'linear-gradient(160deg,#E8D8C6,#C2A27F)')]
     tarj = ''.join(f'<div style="position:absolute;left:{60 + i * 90}px;top:{150 + i * 400}px;width:470px;border-radius:24px;background:#fff;transform:rotate({[-5, 4][i]}deg);{SOMBRA};overflow:hidden;color:#141114"><div style="height:230px;background:{bg};position:relative"><svg viewBox="0 0 200 120" style="position:absolute;left:50%;bottom:0;width:260px;transform:translateX(-50%)"><path d="M30 120V62l70-48 70 48v58z" fill="rgba(255,255,255,.85)"/><rect x="88" y="78" width="24" height="42" fill="rgba(20,40,60,.55)"/><rect x="50" y="72" width="26" height="22" fill="rgba(20,40,60,.4)"/><rect x="124" y="72" width="26" height="22" fill="rgba(20,40,60,.4)"/></svg><span style="position:absolute;left:18px;top:18px;background:#fff;border-radius:999px;padding:6px 14px;font:750 15px Inter,sans-serif">En venta</span></div><div style="padding:20px 24px"><b style="font:800 26px Inter,sans-serif">{n}</b><div style="font:500 17px Inter,sans-serif;color:#5F5A63;margin-top:4px">{d}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><b style="font:850 28px Inter,sans-serif;color:#0F5A8A">{p}</b><span style="background:#1f8f4e;color:#fff;border-radius:12px;padding:8px 14px;font:750 15px Inter,sans-serif">WhatsApp</span></div></div></div>' for i, (n, d, p, bg) in enumerate(casas))
@@ -212,8 +197,7 @@ def obj_clara():
   <div style="font:600 18px Inter,sans-serif;color:#6D5A1E">al día hasta el 15</div></div>"""
 
 OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
-  'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'toolkit': obj_toolkit, 'portales': obj_portales,
-  'toolkit-pro': lambda: obj_toolkit('$1,800', '$1,199', 'Toolkit Pro', 'linear-gradient(140deg,#14141F,#3E3A66)', '#F2CF7E'),
+  'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales,
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
   **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug']}}
 

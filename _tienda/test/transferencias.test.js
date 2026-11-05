@@ -95,12 +95,11 @@ describe('suscripción por transferencia', () => {
     expect(llamadas.filter(u => u.includes('stripe'))).toHaveLength(0);
   });
 
-  it('el panel lista planes de suscripción (sin el Toolkit ni complementos)', async () => {
+  it('el panel lista planes de suscripción (sin complementos)', async () => {
     const p = await A.panelSuscripciones();
     const ids = p.planes.map(x => x.id);
     expect(ids).toContain('prod_vuelve_mensual');
     expect(ids).toContain('prod_clara_mensual');
     expect(ids).not.toContain('prod_vuelve_sucursal_mensual');
-    expect(p.planes.some(x => x.app === 'toolkit')).toBe(false);
   });
 });
