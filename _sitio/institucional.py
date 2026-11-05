@@ -3,7 +3,7 @@
 # aviso de privacidad, tienda y Vorka Learn). Si cambia algo aquí, cámbialo también en su fuente.
 import json
 from partes import *
-from datos import SERVICIOS
+from datos import SERVICIOS, FASES
 
 TELEFONO = '+52 81 1780 4869'
 SOBRE = ico('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/>')
@@ -80,7 +80,7 @@ def _tarjeta(icono, titulo, cuerpo, ligas=''):
 def pagina_nosotros():
     servicios = ''.join(f'<li><span><a href="/servicios/{s["slug"]}/">{s["area"]}</a>: {e(s["corta"])}</span></li>' for s in SERVICIOS)
     que_hacemos = ''.join([
-        _tarjeta('brujula', 'Consultoría', f'<p>Tres servicios que se combinan según el momento de cada cliente, bajo una misma dirección estratégica:</p><ul>{servicios}</ul>'
+        _tarjeta('brujula', 'Consultoría', f'<p>Cuatro servicios, piezas de una misma solución integral, bajo una sola dirección estratégica:</p><ul>{servicios}</ul>'
                  '<p>Todo empieza con un <b>diagnóstico estratégico de 20 minutos sin costo</b>.</p>',
                  _ligas(('/servicios/', 'Ver servicios'), ('/agenda/', 'Agenda tu diagnóstico'))),
         _tarjeta('doc', 'Vorka Learn', '<p>La sección de guías de Vorka México: lo que conviene saber antes de presentar un examen de admisión (qué viene, cómo se califica y cómo estudiar), cómo elegir carrera y pedir una beca, finanzas personales, negocio pequeño y cómo crear y vender tu propia app.</p>'
@@ -99,11 +99,8 @@ def pagina_nosotros():
     ])
     comunidad = _tarjeta('personas', 'Comunidad', '<ul><li><span><a href="/voluntariado">Tú en Vorka</a>: voluntariado para jóvenes de 16 a 29 años, presencial en el Bajío y remoto desde todo México.</span></li>'
                          '<li><span><a href="/fc/">Vorka FC</a>: academia de fútbol para niñas y niños de 6 a 10 años en Celaya.</span></li></ul>')
-    pasos = [('Diagnóstico', 'Escuchamos primero: contexto real, objetivos verdaderos y la brecha entre lo que se dice y lo que pasa.'),
-             ('Diseño', 'Construimos la intervención a la medida, combinando solo lo que tu contexto exige.'),
-             ('Activación', 'Operamos dentro de tu organización hasta que el cambio funciona solo.'),
-             ('Medición', 'Indicadores acordados desde el inicio. El impacto, no las horas, es la métrica.')]
-    pasos_html = ''.join(f'<div class="rv" style="--d:{i * .06}s"><small>0{i + 1}</small><h3>{t}</h3><p>{d}</p></div>' for i, (t, d) in enumerate(pasos))
+    # Las mismas cuatro fases del inicio y de /servicios/ (datos.FASES)
+    pasos_html = ''.join(f'<div class="rv" style="--d:{i * .06}s"><small>0{i + 1}</small><h3>{t}</h3><p>{d}</p></div>' for i, (t, d, _) in enumerate(FASES))
     chips = ''.join(f'<span>{ICONOS["pin"]}{c}</span>' for c in CIUDADES)
     ligas = [('/servicios/', 'Servicios', 'Consultoría y diagnóstico'), ('/learn/', 'Vorka Learn', 'Guías de admisión, dinero y negocio'),
              ('/tienda/', 'Tienda', 'Herramientas digitales'), ('/sparks/', 'Revista Sparks', 'Historias de quienes mueven su municipio'),
@@ -133,7 +130,7 @@ def pagina_nosotros():
 
 <section class="sec pegada" aria-labelledby="t-como">
   <div class="marco">
-    <div class="cab rv"><span class="etiqueta">Cómo trabajamos</span><h2 class="h2" id="t-como">Cuatro fases. <span class="metal">Sin atajos.</span></h2>
+    <div class="cab rv"><span class="etiqueta">Cómo trabajamos</span><h2 class="h2" id="t-como">Cuatro <span class="metal">fases.</span></h2>
       <p class="lead">Diagnóstico antes de proponer, diseño antes de ejecutar, medición antes de cerrar.</p></div>
     <div class="ac-pasos">{pasos_html}</div>
   </div>

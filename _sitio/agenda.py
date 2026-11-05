@@ -327,7 +327,7 @@ def pagina_agenda():
     tipos = ''.join(f'<label class="op"><input type="radio" name="tipo_org" value="{e(t)}"><span><b>{e(t)}</b><small>{e(d)}</small></span></label>' for t, d in TIPOS)
     areas = ''.join(f'<label class="op multi"><input type="checkbox" name="areas" value="{e(t)}"><span><b>{e(t)}</b><small>{e(d)}</small></span></label>' for t, _, d in AREAS)
     momentos = ''.join(f'<label class="op"><input type="radio" name="momento" value="{e(t)}"><span><b>{e(t)}</b></span></label>' for t, _ in MOMENTOS)
-    inc = [('Una lectura honesta', 'Qué vemos en tu caso, aunque no sea lo que esperabas oír.'), ('Prioridades claras', 'Por dónde empezar y qué dejar para después.'),
+    inc = [('Una lectura honesta', 'Qué vemos en tu caso, dicho con claridad.'), ('Prioridades claras', 'Por dónde empezar y en qué orden avanzar.'),
            ('Cómo lo haríamos', 'Si podemos ayudarte, el enfoque, el equipo y los tiempos.'), ('Sin costo ni compromiso', '20 minutos, por videollamada o en persona.')]
     inc_html = ''.join(f'<li>{ICONOS["check"]}<span><b>{t}</b>{d}</span></li>' for t, d in inc)
     pasos_n = ['Tú', 'Organización', 'Tu reto', 'Decisión', 'Revisar']
@@ -341,7 +341,7 @@ def pagina_agenda():
       <h1 class="h1">Cuéntanos tu momento. <span class="metal">Te devolvemos un plan.</span></h1>
       <p class="lead">Una sesión de 20 minutos con nuestro equipo para entender tu reto y decirte, con claridad, cómo lo resolveríamos.</p>
       <ul class="ag-incluye">{inc_html}</ul>
-      <p class="ag-nota">Damos un número limitado de diagnósticos al mes. Con estas preguntas llegamos preparados a tu sesión; si no somos el equipo correcto para tu caso, te lo decimos con la misma claridad. Te respondemos en máximo 2 días hábiles.</p>
+      <p class="ag-nota">Damos un número limitado de diagnósticos al mes. Con estas preguntas llegamos preparados a tu sesión; si otro equipo encaja mejor con tu caso, te lo decimos con la misma claridad. Te respondemos en máximo 2 días hábiles.</p>
     </div>
   </aside>
   <section class="ag-form" aria-label="Solicitud de diagnóstico">
@@ -406,7 +406,7 @@ def pagina_agenda():
           {chips('urgencia', URGENCIAS)}
           {pregunta('¿Quién toma la decisión de contratar?')}
           {chips('decisor', DECISORES)}
-          {pregunta('¿Qué inversión tienes contemplada?', 'Un rango aproximado. No es un compromiso; nos ayuda a proponerte algo a tu medida.')}
+          {pregunta('¿Qué inversión tienes contemplada?', 'Un rango aproximado, solo como referencia para proponerte algo a tu medida.')}
           {chips('presupuesto', PRESUPUESTOS)}
           {pregunta('¿Cómo prefieres la sesión?', '', req=False)}
           {chips('modalidad', MODALIDADES)}
