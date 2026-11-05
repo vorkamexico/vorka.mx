@@ -12,6 +12,8 @@ import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA } from './marco.generado.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 export const SLUG_RUTA = 'ruta-de-impacto';
 export const RUTA_RUTA = '/tienda/ruta-de-impacto/';
@@ -100,10 +102,11 @@ ${heroMarca('ruta-de-impacto', {
   botones: `<a class="pm-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? '<a class="pm-btn sec" href="?regalo=1#comprar">🎁 Regálaselo a un joven</a>' : ''}`,
   despues: `<p class="pm-precio"><b>${precioT}</b> · pago único · 1 año · lo recibido va para IMPACTO</p><p class="t-ya">¿Ya lo tienes? <a href="${APP}/">Entra en ruta.vorka.mx</a></p>`,
 })}
-${indiceProducto('ruta-de-impacto', [['que-es', 'Qué es'], ['como-funciona', 'Cómo funciona'], ['niveles', 'Los niveles'], ['calificacion', 'Calificación'], ['regalar', 'Regalar'], ['comprar', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${comprar}">${p ? 'Empezar' : 'Muy pronto'}</a>`)}
+${indiceProducto('ruta-de-impacto', [['que-es', 'Qué es'], ['demo', 'Pruébala'], ['como-funciona', 'Cómo funciona'], ['niveles', 'Los niveles'], ['calificacion', 'Calificación'], ['regalar', 'Regalar'], ['comprar', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${comprar}">${p ? 'Empezar' : 'Muy pronto'}</a>`)}
 ${seccionQueEs('ruta-de-impacto', { titulo: 'Un curso para llevar tu proyecto social de la idea a tu comunidad.',
   texto: 'Lecciones cortas con ejercicios, racha diaria y un tutor que te guía paso a paso. Mientras aprendes, armas <b>tu</b> proyecto real dentro de la plataforma, <b>lo pruebas en tu comunidad</b> con entrevistas y un piloto, y terminas con calificación y constancia.',
   para: [['De 15 a 29 años, con ganas de cambiar algo', 'Te preocupa algo de tu colonia, tu escuela o tu ciudad y quieres hacer algo que funcione.'], ['Si ya tienes un proyecto en marcha', 'Te sirve para ordenarlo y probarlo.'], ['Mamá, papá, maestros o brigadas', 'Se lo regalas a quien tiene un proyecto en la cabeza.']] })}
+${seccionDemo('ruta-de-impacto', demoDe('ruta-de-impacto'))}
 
 <section class="ri-sec" id="como-funciona"><div class="marco">
   <div class="ri-cab"><span class="ri-et">Cómo funciona</span><h2>Aprendes como en una app de idiomas. Avanzas tu proyecto de verdad.</h2><p>Lecciones cortas con ejercicios, una ruta de niveles que se abre conforme avanzas y un tutor que no te deja solo.</p></div>

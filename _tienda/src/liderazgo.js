@@ -11,6 +11,8 @@ import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA } from './marco.generado.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 export const SLUG_LIDERAZGO = 'evaluacion-liderazgo';
 export const RUTA_LIDERAZGO = '/tienda/evaluacion-liderazgo/';
@@ -69,10 +71,11 @@ ${heroMarca('evaluacion-liderazgo', {
   botones: `<a class="pm-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? '<a class="pm-btn sec" href="?regalo=1#comprar">🎁 Regalarla</a>' : ''}`,
   despues: `<p class="pm-precio"><b>${precioT}</b> · pago único · 2 aplicaciones: hoy y a los 90 días</p>`,
 })}
-${indiceProducto('evaluacion-liderazgo', [['que-es', 'Qué es'], ['que-mide', 'Qué mide'], ['como', 'Cómo funciona'], ['recibes', 'Lo que recibes'], ['mentoria', 'Mentoría'], ['comprar', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${comprar}">${p ? 'Empezar' : 'Muy pronto'}</a>`)}
+${indiceProducto('evaluacion-liderazgo', [['que-es', 'Qué es'], ['demo', 'Pruébala'], ['que-mide', 'Qué mide'], ['como', 'Cómo funciona'], ['recibes', 'Lo que recibes'], ['mentoria', 'Mentoría'], ['comprar', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${comprar}">${p ? 'Empezar' : 'Muy pronto'}</a>`)}
 ${seccionQueEs('evaluacion-liderazgo', { titulo: '¿Dónde estás hoy como líder?',
   texto: '80 preguntas en línea, unos 25 minutos, que te dan una foto de dónde estás hoy como líder en 12 dimensiones. Cruza <b>lo que crees de ti</b> con <b>lo que has hecho</b>: la diferencia entre las dos es justo lo que se puede trabajar.',
   para: [['Si vas por una beca o un programa como Líderes del Mañana', 'No basta con decir que eres líder: hay que mostrarlo con hechos.'], ['Si empiezas una mentoría', 'Fija tu punto de partida y mide tu avance con hechos, no con impresiones.'], ['Mamá, papá o tutor de alguien de 12 a 17 años', 'Autorizas antes de empezar y recibes una copia de sus resultados.']] })}
+${seccionDemo('evaluacion-liderazgo', demoDe('evaluacion-liderazgo'))}
 
 <section class="lv-sec" id="que-mide"><div class="marco">
   <div class="lv-cab"><span class="lv-et">Qué mide</span><h2>12 dimensiones, las mismas que trabajamos en cada mentoría.</h2><p>Para becas y programas como Líderes del Mañana no basta con decir que eres líder: hay que mostrarlo con hechos.</p></div>

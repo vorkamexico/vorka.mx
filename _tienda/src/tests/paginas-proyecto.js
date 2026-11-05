@@ -8,6 +8,8 @@ import { FLECHA } from '../marco.generado.js';
 import { pesos } from '../util.js';
 import { CSS_TESTS, CSS_MARCA_TEST } from './estilos.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-producto.js';
+import { seccionDemo } from '../demos/marco.js';
+import { demoDe } from '../demos/index.js';
 import { PREGUNTAS, ESTADOS, ODS, calcular } from './proyecto.js';
 import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, SCRIPT_TOPE, ICONO_CANDADO, PRODUCTOS_TEST, whatsapp, fechaCorta, SIN_REFERER } from './comun.js';
 
@@ -71,10 +73,11 @@ ${heroMarca('que-proyecto-social', {
   botones: `<a class="pm-btn" href="#test">Empezar ${FLECHA}</a><a class="pm-btn sec" href="#reporte">Ver qué trae el reporte</a>`,
   despues: `<p class="pm-gratis"><b>Contestarlo es gratis · tus 3 ideas son gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único). Sin crear cuenta.</p>`,
 })}
-${indiceProducto('que-proyecto-social', [['que-es', 'Qué es'], ['test', 'El cuestionario'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar</a>`)}
+${indiceProducto('que-proyecto-social', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['test', 'El cuestionario'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar</a>`)}
 ${seccionQueEs('que-proyecto-social', { titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto.',
   texto: 'Un cuestionario de unos 5 minutos que cruza tus causas, tus fortalezas, tu giro, tu tamaño, tu presupuesto y tu tiempo con una biblioteca de proyectos escrita por Vorka México. <b>Al terminar ves gratis tus 3 ideas más afines</b>; el reporte completo trae de 5 a 8 proyectos con indicadores y ODS.',
   para: [['Negocios y empresas de cualquier tamaño', 'Quieren hacer algo por su comunidad y no saben por dónde empezar.'], ['Organizaciones de la sociedad civil y colectivos', 'Buscan un proyecto que quepa en su presupuesto y su tiempo, y que se pueda medir.'], ['Profesionistas independientes y escuelas', 'Quieren comunicarlo con cifras reales, sin lavado de imagen.']] })}
+${seccionDemo('que-proyecto-social', demoDe('que-proyecto-social'))}
 <section class="tv-sec" id="test"><div class="marco">
   <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Contesta como organización o como persona. Tarda unos 5 minutos.</p></div>
   ${formProyecto({ datos, error })}

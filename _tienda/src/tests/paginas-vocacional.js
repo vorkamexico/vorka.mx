@@ -8,6 +8,8 @@ import { pesosTexto } from '../descuentos.js';
 import { FLECHA } from '../marco.generado.js';
 import { CSS_TESTS, CSS_MARCA_TEST } from './estilos.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-producto.js';
+import { seccionDemo } from '../demos/marco.js';
+import { demoDe } from '../demos/index.js';
 import { TIPOS, ORDEN_TIPOS, INTERESES, HABILIDADES, PREFERENCIAS, OPC_INTERES, OPC_HABILIDAD, CARRERAS, AREAS_UNAM, RAMAS_IPN, PLAN_30, PREGUNTAS_FAMILIA, PREGUNTAS_PROFESIONAL } from './vocacional-datos.js';
 import { calcular, SIMULADORES } from './vocacional.js';
 import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, ICONO_CANDADO, PRODUCTOS_TEST, whatsapp, fechaCorta, SIN_REFERER, horaVence } from './comun.js';
@@ -108,10 +110,11 @@ ${heroMarca('test-vocacional', {
   botones: `<a class="pm-btn" href="#test">Empezar el test ${FLECHA}</a><a class="pm-btn sec" href="#reporte">Ver qué trae el reporte</a>`,
   despues: `<p class="pm-gratis"><b>Contestarlo es gratis · tu perfil básico es gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único). Sin crear cuenta.</p>`,
 })}
-${indiceProducto('test-vocacional', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['test', 'El test'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['escuelas', 'Escuelas'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar el test</a>`)}
+${indiceProducto('test-vocacional', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['como', 'Cómo funciona'], ['test', 'El test'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['escuelas', 'Escuelas'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar el test</a>`)}
 ${seccionQueEs('test-vocacional', { titulo: 'Un test vocacional gratis para saber qué carreras van contigo.',
   texto: `${N_PREG} preguntas cortas, de 8 a 10 minutos, basadas en el modelo de intereses de John L. Holland (RIASEC), con preguntas propias escritas para estudiantes en México. <b>Al terminar ves gratis tu perfil</b>: tus 3 tipos de interés y tu carrera más afín. Es orientativo: no es una prueba psicométrica ni un diagnóstico.`,
   para: [['Si vas en prepa', 'No sabes qué carrera estudiar ni qué examen te toca.'], ['Si vas en secundaria', 'Quieres elegir una prepa o un bachillerato que vaya con tus intereses.'], ['Mamá, papá u orientador', 'Quieres ayudar a decidir con más información; también hay licencias para grupos.']] })}
+${seccionDemo('test-vocacional', demoDe('test-vocacional'))}
 
 <section class="tv-sec suave" id="como"><div class="marco">
   <div class="tv-cab"><span class="tv-et">Cómo funciona</span><h2>Tus intereses, tus habilidades y lo que buscas.</h2>
