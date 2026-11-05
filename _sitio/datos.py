@@ -33,6 +33,9 @@ SERVICIOS = [
         ],
         'datos': [('150+', 'proyectos entregados con resultados verificables'), ('3 sectores', 'público, privado y sociedad civil, con el mismo criterio'), ('HBS · Tec', 'y Silicon Valley: formación cruzada del equipo directivo')],
         'cta': 'Cuéntanos qué decisión está <span class="metal">sobre la mesa.</span>',
+        # Índice simplificado (/servicios/ y el inicio): una línea de resultado y qué opciones del formulario corto se marcan
+        'linea': 'Un rumbo claro, prioridades acordadas y un equipo que las ejecuta con el mismo criterio.',
+        'interes': ('estrategia',),
     },
     {
         'slug': 'liderazgo', 'num': '02', 'area': 'Liderazgo y Talento',
@@ -66,6 +69,8 @@ SERVICIOS = [
         ],
         'datos': [('1 : 1', 'acompañamiento confidencial con bitácora e indicadores'), ('Cero catálogo', 'cada programa parte de un caso real del cliente'), ('HBS · Tec', 'y Silicon Valley: formación cruzada del equipo de coaches')],
         'cta': 'Cuéntanos qué liderazgo <span class="metal">quieres desarrollar.</span>',
+        'linea': 'Líderes que deciden con más claridad y una segunda línea lista para sostener la operación.',
+        'interes': ('equipos',),
     },
     {
         'slug': 'influencia', 'num': '03', 'area': 'Comunicación e Influencia',
@@ -100,8 +105,10 @@ SERVICIOS = [
             ('senal', 'Campañas y pauta', 'Estrategia, creatividad, inversión y medición.'),
             ('tablero', 'Monitoreo y reporte', 'Escucha de la conversación y resultados claros.'),
         ],
-        'datos': [('3 en 1', 'consultora, estudio creativo y agencia bajo el mismo equipo'), ('100%', 'producción de contenido, diseño y video en casa'), ('24/7', 'monitoreo de conversación y crisis para clientes activos')],
+        'datos': [('3 en 1', 'consultoría, estudio creativo y difusión bajo el mismo equipo'), ('100%', 'producción de contenido, diseño y video en casa'), ('24/7', 'monitoreo de conversación y crisis para clientes activos')],
         'cta': 'Cuéntanos cómo quieres <span class="metal">que te escuchen.</span>',
+        'linea': 'Una narrativa clara y presencia constante en los canales que importan: redes, sitio web, medios y vocería.',
+        'interes': ('redes', 'web'),
     },
 ]
 

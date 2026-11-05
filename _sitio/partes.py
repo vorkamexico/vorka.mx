@@ -5,8 +5,9 @@ from urllib.parse import quote
 SITIO = 'https://vorka.mx'
 CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
-WA_MSG = 'Hola Vorka, ya decidí avanzar. Me gustaría empezar formalmente el proceso.'
-VERSION = '10'
+# Mensaje de WhatsApp para quien todavía no nos conoce: corto y sin compromiso (antes: «ya decidí avanzar…», que espanta al que apenas explora)
+WA_MSG = 'Hola Vorka, me gustaría platicar sobre un proyecto.'
+VERSION = '11'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -110,11 +111,13 @@ def cabeza(titulo, descripcion, ruta, og='cdmx-reforma', extra=''):
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 '''
 
-MENU = [('/servicios/', 'Servicios'), ('/#proceso', 'Cómo trabajamos'), ('/#momentos', 'Para quién'), ('/#red', 'Presencia'), ('/sparks/', 'Sparks'), ('/tienda/', 'Tienda'), ('/voluntariado', 'Tú en Vorka')]
+# Las tres rutas de Vorka (servicios, tienda, Learn) y lo institucional. Las anclas viejas (/#proceso, /#momentos, /#red) siguen existiendo en el inicio.
+MENU = [('/servicios/', 'Servicios'), ('/tienda/', 'Tienda'), ('/learn/', 'Vorka Learn'), ('/sparks/', 'Sparks'), ('/nosotros/', 'Nosotros'), ('/voluntariado', 'Tú en Vorka')]
 
 # Vorka FC es para familias de Celaya: su menú habla de la academia, Sparks y la comunidad, no de consultoría ni de la tienda
 MENU_FC = [('/fc/#programa', 'Programa'), ('/fc/#costo', 'Costo'), ('/fc/#celaya', 'Dónde'), ('/sparks/celaya/', 'Noticias de Celaya'), ('/sparks/', 'Revista Sparks'), ('/voluntariado', 'Tú en Vorka')]
-CTA = {'general': ('/agenda/', 'Agenda tu diagnóstico'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
+# CTA único del sitio: el formulario corto «Platiquemos» (4 datos). El diagnóstico largo de /agenda/ queda como paso opcional después.
+CTA = {'general': ('/servicios/#platiquemos', 'Platiquemos'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
 
 def nav(actual='', oscuro=False, publico='general', cta=None, menu=None):
     cur = ' aria-current="page"'
@@ -166,20 +169,22 @@ def pie(publico='general'):
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
         <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
         <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
-        <li><a href="/servicios/">Comparar servicios</a></li></ul></div>
+        <li><a href="/servicios/">Todos los servicios</a></li></ul></div>
       <div><h4>Vorka</h4><ul>
-        <li><a href="/#proceso">Cómo trabajamos</a></li>
-        <li><a href="/#red">Presencia nacional</a></li>
+        <li><a href="/nosotros/">Quiénes somos</a></li>
+        <li><a href="/servicios/#proceso">Cómo trabajamos</a></li>
         <li><a href="/sparks/">Revista Sparks</a></li>
         <li><a href="/voluntariado">Tú en Vorka</a></li>
         <li><a href="/fc/">Vorka FC</a></li></ul></div>
       <div><h4>Productos</h4><ul>
-        <li><a href="/tienda/">Tienda</a></li>{simulador}
+        <li><a href="/tienda/">Tienda</a></li>
+        <li><a href="/learn/">Vorka Learn · guías gratis</a></li>{simulador}
         <li><a href="/tienda/brindi/">Invitaciones digitales</a></li>
         <li><a href="/tienda/cupo/">Eventos con registro</a></li>
         <li><a href="/tienda/vuelve/">Vuelve · lealtad</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
-        <li><a href="/agenda/">Agenda tu diagnóstico</a></li>
+        <li><a href="/servicios/#platiquemos">Platiquemos</a></li>
+        <li><a href="/agenda/">Diagnóstico completo</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li>
         <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>'''
         lema, base = 'Definimos el juego con quienes lo juegan.', BASE_PIE
@@ -209,6 +214,54 @@ def cierre(titulo='Tu próxima gran decisión empieza con <span class="metal">un
     <p class="lead">{lead}</p>
     <div class="botones"><a class="btn plata" href="{destino}">Agenda tu diagnóstico {FLECHA}</a><a class="btn vidrio" href="{wa()}" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>
     <div class="garantias"><span>20 minutos</span><span>Sin costo ni compromiso</span><span>Respuesta en 2 días hábiles</span></div>
+  </div>
+</section>
+'''
+
+# ---------------------------------------------------------------- formulario corto «Platiquemos»
+# Va a os.vorka.mx › Prospectos por el endpoint corto POST /api/publico/vorka/interes (repo os: src/prospectos.js › interesCorto).
+# Acepta: nombre, correo (obligatorio), whatsapp, organizacion, intereses (claves de abajo), mensaje, refiere, origen, acepta.
+# Las opciones usan las mismas claves y textos que os (INTERESES) para que en la bandeja se lean igual.
+# El envío lo hace /assets/v3/vorka.js (form.platiquemos). El diagnóstico largo (/agenda/) queda como paso opcional después.
+INTERESES = [('estrategia', 'Estrategia y consultoría'), ('equipos', 'Formación y liderazgo de equipos'), ('redes', 'Redes sociales y contenido'),
+             ('web', 'Página web o tienda en línea'), ('sistemas', 'Sistema o app a la medida')]
+
+def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesitas.', fondo='suave'):
+    """Sección con el formulario corto (4 datos). pagina: ruta desde donde se manda (queda en la bandeja);
+    marcar: claves de INTERESES ya elegidas; area: slug del servicio para el diagnóstico completo (/agenda/?area=)."""
+    ops = ''.join(f'<label class="v4-chip"><input type="checkbox" name="intereses" value="{k}"{" checked" if k in marcar else ""}><span>{e(t)}</span></label>' for k, t in INTERESES)
+    largo = f'/agenda/?area={area}' if area else '/agenda/'
+    return f'''<section class="v4-sec v4-plat {fondo}" id="platiquemos" aria-labelledby="t-plat">
+  <div class="marco v4-plat-in">
+    <div class="v4-plat-txt">
+      <span class="etiqueta">Platiquemos</span>
+      <h2 class="t2" id="t-plat">{titulo}</h2>
+      <p class="lead">Déjanos cuatro datos y te escribimos para platicar, sin costo ni compromiso.</p>
+      <ol class="v4-sig">
+        <li><b>1</b><span>Nos cuentas en un minuto qué necesitas.</span></li>
+        <li><b>2</b><span>Te escribimos en máximo 2 días hábiles.</span></li>
+        <li><b>3</b><span>Si encaja, hacemos un diagnóstico de 20 minutos sin costo.</span></li>
+      </ol>
+      <p class="v4-alt">¿Prefieres WhatsApp? <a href="{wa()}" target="_blank" rel="noopener">Escríbenos al +52 81 1780 4869</a></p>
+    </div>
+    <div class="v4-form-caja">
+      <form class="v4-form platiquemos" novalidate data-pagina="{e(pagina)}">
+        <div class="trampa" aria-hidden="true"><label>No llenar <input name="empresa_web" tabindex="-1" autocomplete="off"></label></div>
+        <label class="v4-campo"><span>Nombre</span><input name="nombre" autocomplete="name" required minlength="3" maxlength="100"></label>
+        <label class="v4-campo"><span>Correo</span><input name="correo" type="email" autocomplete="email" inputmode="email" required maxlength="120"></label>
+        <label class="v4-campo"><span>Organización o negocio <small>(opcional)</small></span><input name="organizacion" autocomplete="organization" maxlength="140"></label>
+        <fieldset class="v4-campo"><legend>¿En qué te podemos ayudar?</legend><div class="v4-chips">{ops}</div></fieldset>
+        <label class="casilla v4-casilla"><input type="checkbox" name="acepta" value="1"> <span>Acepto el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a> y que Vorka México me contacte.</span></label>
+        <button class="btn tinta v4-enviar" type="submit">Enviar {FLECHA}</button>
+        <p class="v4-msg" role="status" aria-live="polite"></p>
+      </form>
+      <div class="v4-exito" hidden tabindex="-1">
+        <span class="v4-ok">{ICONOS['check']}</span>
+        <h3 class="t3">Listo, <span data-nombre></span>. Ya tenemos tus datos.</h3>
+        <p>Te escribimos a <b data-correo></b> en máximo 2 días hábiles. Revisa también tu carpeta de spam.</p>
+        <p class="v4-opc"><b>Opcional:</b> si quieres llegar con todo listo a la primera llamada, <a href="{e(largo)}">llena el diagnóstico completo</a> (5 pasos).</p>
+      </div>
+    </div>
   </div>
 </section>
 '''

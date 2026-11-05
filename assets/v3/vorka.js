@@ -113,5 +113,65 @@
       .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo en un momento.'; btn.disabled = false; btn.textContent = 'Suscribirme'; });
   });
 
+  // Boletín (versión clara del inicio): mismo destino que el de arriba
+  d.querySelectorAll('form.v4-boletin').forEach(function (bf) {
+    bf.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = new FormData(bf), nombre = String(f.get('nombre') || '').trim(), correo = String(f.get('correo') || '').trim(), msg = bf.querySelector('.msg'), btn = bf.querySelector('button');
+      if (nombre.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { msg.textContent = 'Escribe tu nombre y un correo válido.'; return; }
+      if (!f.get('acepto')) { msg.textContent = 'Acepta recibir comunicaciones para suscribirte.'; return; }
+      btn.disabled = true; btn.textContent = 'Enviando…';
+      fetch('https://os.vorka.mx/api/publico/boletin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nombre: nombre, correo: correo, acepto: true, origen: 'vorka.mx' }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || ''); return j; }); })
+        .then(function () { bf.innerHTML = '<p style="font-weight:700;color:var(--fg);margin:0">Listo, te sumamos.</p><p style="margin:6px 0 0">Recibirás la próxima edición de Sparks en tu correo.</p>'; })
+        .catch(function (er) { msg.textContent = (er && er.message) || 'No se pudo enviar. Intenta de nuevo en un momento.'; btn.disabled = false; btn.textContent = 'Suscribirme'; });
+    });
+  });
+
+  // Formulario corto «Platiquemos» → os.vorka.mx › Prospectos (POST /api/publico/vorka/interes, mismas reglas que el servidor)
+  // Si os.vorka.mx todavía no abre CORS a esa ruta, el navegador no deja leer la respuesta: se manda entonces como envío
+  // simple (text/plain, sin leer respuesta). El servidor lo procesa igual porque lee el cuerpo como JSON sin ver el tipo.
+  var API_INTERES = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:8787/api/publico/vorka/interes' : 'https://os.vorka.mx/api/publico/vorka/interes';
+  d.querySelectorAll('form.platiquemos').forEach(function (pf) {
+    var msg = pf.querySelector('.v4-msg'), btn = pf.querySelector('button[type=submit]'), caja = pf.parentNode, ok = caja.querySelector('.v4-exito');
+    var WA = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola Vorka, me gustaría platicar sobre un proyecto.');
+    function falla(t, campo) {
+      msg.textContent = t;
+      pf.querySelectorAll('.v4-campo.error').forEach(function (c) { c.classList.remove('error'); });
+      if (campo) { var el = pf.querySelector('[name="' + campo + '"]'); if (el) { var c = el.closest('.v4-campo'); if (c) c.classList.add('error'); el.focus(); } }
+      return false;
+    }
+    pf.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = new FormData(pf);
+      var x = { nombre: String(f.get('nombre') || '').trim().replace(/\s+/g, ' '), correo: String(f.get('correo') || '').trim().toLowerCase(),
+        organizacion: String(f.get('organizacion') || '').trim(), intereses: f.getAll('intereses'), acepta: !!f.get('acepta'), empresa_web: String(f.get('empresa_web') || '') };
+      if (x.nombre.length < 3) return falla('Escribe tu nombre.', 'nombre');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x.correo)) return falla('Revisa tu correo: ahí te escribimos.', 'correo');
+      if (!x.intereses.length) return falla('Elige al menos una opción de lo que te interesa.');
+      if (!x.acepta) return falla('Necesitamos que aceptes el aviso de privacidad.');
+      falla('');
+      // En la bandeja: desde qué página llegó (la ruta corta de os no tiene todavía un origen «sitio web»)
+      x.mensaje = 'Formulario corto del sitio vorka.mx' + (pf.getAttribute('data-pagina') || location.pathname) + ' (no viene de la Revista Sparks).';
+      x.refiere = 'Sitio web vorka.mx';
+      var cuerpo = JSON.stringify(x);
+      btn.disabled = true; btn.firstChild.textContent = 'Enviando… ';
+      fetch(API_INTERES, { method: 'POST', headers: { 'content-type': 'application/json' }, body: cuerpo })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { var er = new Error(j.error || 'No se pudo enviar.'); er.servidor = true; throw er; } return j; }); },
+          function () { return fetch(API_INTERES, { method: 'POST', mode: 'no-cors', headers: { 'content-type': 'text/plain;charset=UTF-8' }, body: cuerpo }).then(function () { return { ok: true }; }); })
+        .then(function () {
+          ok.querySelector('[data-nombre]').textContent = x.nombre.split(' ')[0];
+          ok.querySelector('[data-correo]').textContent = x.correo;
+          pf.hidden = true; ok.hidden = false; ok.focus();
+        })
+        .catch(function (er) {
+          btn.disabled = false; btn.firstChild.textContent = 'Enviar ';
+          msg.innerHTML = '';
+          msg.appendChild(d.createTextNode((er && er.servidor ? er.message : 'No pudimos enviar. Revisa tu conexión e intenta de nuevo') + ' o '));
+          var a = d.createElement('a'); a.href = WA; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'escríbenos por WhatsApp'; msg.appendChild(a); msg.appendChild(d.createTextNode('.'));
+        });
+    });
+  });
+
   var anio = d.getElementById('anio'); if (anio) anio.textContent = new Date().getFullYear();
 })();
