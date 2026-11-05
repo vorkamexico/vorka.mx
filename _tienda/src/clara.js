@@ -4,10 +4,11 @@
 // Aquí solo se vende. Herramienta de organización y educación financiera: no es asesoría, no es banco y no mueve dinero (ver /legal/clara/).
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 
 const APP = 'https://clara.vorka.mx';
 const GUIA_TARJETA = 'https://vorka.mx/learn/finanzas/como-funciona-una-tarjeta-de-credito/';
@@ -91,33 +92,31 @@ export async function paginaClara(env, req, url) {
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="cl">
-<section class="cl-hero"><div class="marco cl-hero-g">
-  <div>
-    <span class="cl-marca"><span class="cl-v grande">${V}</span>Clara <small>by Vorka</small></span>
-    <h1 class="cl-h1">Tu dinero, claro. Anota todo <em>en segundos.</em></h1>
-    <p class="cl-lead">Clara te avisa cuándo es el corte y hasta cuándo pagar tu tarjeta para no pagar intereses, lleva tus gastos e ingresos y te dice si te alcanza antes de comprar. Para quien empieza con su primera tarjeta o nunca le entendió.</p>
-    <div class="cl-ctas"><a class="cl-btn" href="${APP}/entrar">Empieza gratis ${FLECHA}</a><a class="cl-btn ghost" href="#planes">Ver precio</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>
-    <ul class="cl-chips"><li>${ICONO.check}Gratis con 1 tarjeta</li><li>${ICONO.candado}Nunca pide el número de tu tarjeta</li><li>${ICONO.reloj}7 días de Pro sin tarjeta</li></ul>
-  </div>
-  <div class="cl-escena">${pantalla}</div>
-</div>
-${navTienda('clara')}
-</section>
+${heroMarca('clara', {
+  apoyo: 'Clara te avisa cuándo es el corte y hasta cuándo pagar tu tarjeta para no pagar intereses, lleva tus gastos e ingresos y te dice si te alcanza antes de comprar. Para quien empieza con su primera tarjeta o nunca le entendió.',
+  botones: `<a class="pm-btn" href="${APP}/entrar">Empieza gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precio</a>`,
+  despues: `<p class="pm-precio"><b>Gratis con 1 tarjeta.</b>${mensual ? ` Pro desde ${precio(mensual.prod)} al mes ·` : ''} 7 días de Pro sin tarjeta</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>`,
+})}
+${indiceProducto('clara', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['recordatorios', 'Recordatorios'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/entrar">Empieza gratis</a>`)}
+${seccionQueEs('clara', { titulo: 'Una app para llevar tus tarjetas y tu dinero en orden.',
+  texto: 'Clara te avisa cuándo es el corte y hasta cuándo pagar tu tarjeta, lleva tus gastos e ingresos y <b>te dice si te alcanza antes de comprar</b>. No se conecta a tu banco ni pide el número de tu tarjeta: tus movimientos los anotas tú. Gratis con 1 tarjeta.',
+  para: [['Quien estrena su primera tarjeta', 'Saber cuándo es el corte y hasta cuándo pagar para no pagar intereses.'], ['Quien nunca le entendió a su tarjeta', 'Que le recuerden las dos fechas y le expliquen cada número.'],
+    ['Jóvenes desde 15 años', 'Llevar sus gastos e ingresos y saber si le alcanza antes de comprar. De 15 a 17, con autorización de su mamá, papá o tutor.']] })}
 
-<section class="cl-sec"><div class="marco">
-  <div class="cl-cab"><span class="cl-et">Cómo funciona</span><h2>¿Cuándo es el corte? ¿Cuánto tengo que pagar?</h2><p>Una tarjeta de crédito es útil si sabes dos fechas y pagas a tiempo. Clara te las recuerda y te explica cada número. Si quieres entender lo básico primero, lee <a href="${GUIA_TARJETA}">cómo funciona una tarjeta de crédito</a>.</p></div>
+<section class="cl-sec" id="como"><div class="marco cl-como-g">
+  <div><div class="cl-cab izq"><span class="cl-et">Cómo funciona</span><h2>¿Cuándo es el corte? ¿Cuánto tengo que pagar?</h2><p>Una tarjeta de crédito es útil si sabes dos fechas y pagas a tiempo. Clara te las recuerda y te explica cada número. Si quieres entender lo básico primero, lee <a href="${GUIA_TARJETA}">cómo funciona una tarjeta de crédito</a>.</p></div>
   <ol class="cl-pasos">${[['Agrega tu tarjeta', 'Un nombre, el banco, el día de corte y el día de pago. Nada de números completos ni contraseñas.'], ['Anota lo que gastas', 'Gastos e ingresos en segundos, con efectivo, débito o tarjeta.'],
-    ['Recibe tus avisos', 'Antes del corte y antes de la fecha de pago, en tu celular y por correo.'], ['Revisa tu mes', 'Cuánto entró, cuánto salió y en qué se fue, en un resumen claro.']].map(([t, d], k) => `<li><span class="cl-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+    ['Recibe tus avisos', 'Antes del corte y antes de la fecha de pago, en tu celular y por correo.'], ['Revisa tu mes', 'Cuánto entró, cuánto salió y en qué se fue, en un resumen claro.']].map(([t, d], k) => `<li><span class="cl-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol></div>
+  <div class="cl-escena">${pantalla}</div>
 </div></section>
 
-<section class="cl-sec cl-osc"><div class="marco cl-dos">
+<section class="cl-sec cl-osc" id="recordatorios"><div class="marco cl-dos">
   <div class="cl-cab izq"><span class="cl-et">Recordatorios</span><h2>Que no se te pase la fecha.</h2><p>Te avisamos en el celular y te mandamos un correo de respaldo. En iPhone, los avisos llegan si instalas Clara en tu pantalla de inicio (iOS 16.4 o más reciente). También puedes agregar las fechas a tu calendario con un archivo .ics.</p></div>
   <ol class="cl-linea-t" aria-label="Cuándo te avisa Clara">${[['Día del corte', 'Tu tarjeta cerró el periodo: ya sabes cuánto vas a pagar.'], ['5 días antes del pago', 'Tiempo para juntar lo que falta.'], ['1 día antes del pago', 'Último aviso para no pagar intereses.'], ['Día de pago', 'Hoy es el día. Anota tu pago y listo.']]
     .map(([t, d]) => `<li><b>${t}</b><span>${d}</span></li>`).join('')}</ol>
 </div></section>
 
-<section class="cl-sec"><div class="marco">
+<section class="cl-sec" id="incluye"><div class="marco">
   <div class="cl-cab"><span class="cl-et">Lo que incluye</span><h2>Lo básico gratis. Lo demás con Pro.</h2></div>
   <ul class="cl-ben">${[[ICONO.tarjeta, 'Tu tarjeta en orden', 'Fechas de corte y de pago, límite y saldo, con avisos a tiempo. Gratis con 1 tarjeta; ilimitadas con Pro.'],
     [ICONO.balanza, '¿Me alcanza?', 'Lo que tienes, menos los pagos de tus tarjetas que caen antes de tu próximo ingreso. Así sabes si te alcanza antes de comprar.'],
@@ -159,12 +158,13 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Clara Pro', intro: `¿Aún no la
 
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/clara/">Condiciones de Clara</a> · <a href="/legal/clara/privacidad/">Aviso de privacidad</a> · Clara · by Vorka México</p>' })}
+<section class="cl-sec"><div class="marco"><div class="cl-cierre"><p><b>Empieza gratis con tu primera tarjeta.</b> Al entrar tienes 7 días de Pro para probar todo, sin tarjeta.</p><a class="cl-btn" href="${APP}/entrar">Empieza gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'finanzas')}
 </div>`,
   });
 }
 
-const CSS = `
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 /* Clara: blanco primero, tinta para el texto y UN azul para lo que se toca. Verde y coral solo para dinero que entra o sale;
    ámbar solo para lo que pide atención. En oscuro sigue a las superficies de la tienda. */
 .cl{--cl-fondo:#fff;--cl-sup:#F2F4F7;--cl-borde:#E6E9EE;--cl-tinta:#16181D;--cl-suave:#5B616E;--cl-azul:#1F5FD6;--cl-azul-s:#E8EFFD;--cl-azul-t:#1A50B8;--cl-sobre-azul:#fff;
@@ -184,20 +184,11 @@ const CSS = `
 .cl-btn:hover{transform:translateY(-1px);background:color-mix(in srgb,var(--cl-azul) 88%,#000)}.cl-btn svg{width:17px;height:17px}
 [data-tema="oscuro"] .cl-btn:hover{background:color-mix(in srgb,var(--cl-azul) 88%,#fff)}
 .cl-btn.ghost{background:transparent;color:var(--cl-tinta);box-shadow:inset 0 0 0 1.5px var(--cl-borde)}.cl-btn.ghost:hover{background:transparent;box-shadow:inset 0 0 0 1.5px var(--cl-tinta)}
-/* portada: blanca, tipografía en tinta y el celular sobre una superficie gris suave */
-.cl-hero{position:relative;margin-top:-104px;padding:140px 0 26px;background:var(--cl-fondo);color:var(--cl-tinta)}
-.cl-hero-g{display:grid;gap:36px;align-items:center;padding-bottom:30px}.cl-hero-g>*{min-width:0}
-@media(min-width:960px){.cl-hero-g{grid-template-columns:1.08fr .92fr}}
-.cl-marca{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em}.cl-marca small{font-weight:500;font-size:14px;color:var(--cl-suave);letter-spacing:0}
-.cl-v{display:inline-block;width:22px;height:21px;color:var(--cl-tinta);flex:none}.cl-v svg{display:block;width:100%;height:100%}.cl-v.grande{width:32px;height:31px}
-.cl-h1{font-weight:800;font-size:clamp(40px,6vw,74px);line-height:1;letter-spacing:-.05em;margin:24px 0 0;max-width:13ch;text-wrap:balance}.cl-h1 em{font-style:normal;color:var(--cl-azul)}
-.cl-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:var(--cl-suave);max-width:34em}
-.cl-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.cl-hero .t-ya{color:var(--cl-suave);opacity:1}.cl-hero .t-ya a{color:var(--cl-azul-t)}
-.cl-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:var(--cl-suave)}
-.cl-chips li{display:inline-flex;align-items:center;gap:7px}.cl-chips svg{width:18px;height:18px;color:var(--cl-tinta)}
-.cl-hero .t-nav-tienda{margin-top:8px}
-.cl-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{color:var(--fg)}
+.cl .pm-hero .t-ya a{color:var(--cl-azul-t)}.cl .etiqueta::before{background:var(--cl-azul)}
+.cl-como-g{display:grid;gap:40px;align-items:center}.cl-como-g>*{min-width:0}
+@media(min-width:980px){.cl-como-g{grid-template-columns:1.15fr .85fr;gap:56px}.cl-como-g .cl-pasos{grid-template-columns:repeat(2,1fr)}.cl-como-g .cl-cab{margin-bottom:32px}}
+.cl-cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:28px;border-radius:24px;background:var(--cl-sup)}.cl-cierre p{margin:0;font-size:17px;color:var(--cl-suave);max-width:36em}.cl-cierre b{color:var(--cl-tinta)}
 /* el celular con la pantalla «Hoy» */
 .cl-escena{display:grid;place-items:center;padding:34px 16px;border-radius:32px;background:var(--cl-sup)}
 .cl-cel{width:min(100%,318px);padding:9px;border-radius:46px;background:#16181D;box-shadow:0 40px 70px -40px rgba(22,24,29,.45),inset 0 0 0 1.5px rgba(255,255,255,.08)}

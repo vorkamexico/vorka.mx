@@ -6,7 +6,8 @@ import { one, all } from './util.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
@@ -148,31 +149,31 @@ import { GUIAS } from './brindi-guias.js';
 export const VARIANTES = {
   '': { titulo: 'Invitaciones digitales con QR para bodas, XV años y fiestas | Brindi',
     descripcion: 'Invitaciones digitales para bodas, XV años, bautizos y cumpleaños. Créala gratis, compártela por WhatsApp y recibe confirmaciones. Desde $299 MXN.',
-    h1: 'Tu invitación digital, lista en minutos.', lead: 'Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.',
+    h1: 'Tu invitación digital, [lista en minutos.]', lead: 'Para bodas, XV años, bautizos, cumpleaños y graduaciones. La mandas por WhatsApp, tus invitados confirman desde su celular y tú ves quién viene.',
     demo: 'demo-boda', evento: 'mi evento' },
   bodas: { titulo: 'Invitaciones digitales para boda con confirmación por WhatsApp | Brindi',
     descripcion: 'Invitación digital de boda con sobre que se abre, padrinos, itinerario, mesa de regalos y confirmación por invitado. Créala gratis; desde $299 MXN.',
-    h1: 'La invitación de su boda, digital y con estilo.', lead: 'Con padres y padrinos, itinerario, mesa de regalos y hospedaje. La mandan por WhatsApp, cada invitado confirma los lugares que le reservaron y ustedes saben quién viene.',
+    h1: 'La invitación de su boda, [digital y con estilo.]', lead: 'Con padres y padrinos, itinerario, mesa de regalos y hospedaje. La mandan por WhatsApp, cada invitado confirma los lugares que le reservaron y ustedes saben quién viene.',
     demo: 'demo-boda', primero: ['demo-boda', 'demo-boda-editorial'], evento: 'mi boda', corta: 'Bodas' },
   'xv-anos': { titulo: 'Invitaciones digitales para XV años con QR | Brindi',
     descripcion: 'Invitación digital de XV años con vals, padrinos, cuenta regresiva y galería. Se manda por WhatsApp y cada invitado confirma. Desde $299 MXN.',
-    h1: 'Invitaciones digitales para XV años.', lead: 'Con padrinos, cuenta regresiva, itinerario de la noche y galería. La mandas por WhatsApp, cada invitado confirma sus lugares y tú llegas a la fiesta sabiendo quién viene.',
+    h1: 'Invitaciones digitales [para XV años.]', lead: 'Con padrinos, cuenta regresiva, itinerario de la noche y galería. La mandas por WhatsApp, cada invitado confirma sus lugares y tú llegas a la fiesta sabiendo quién viene.',
     demo: 'demo-xv', primero: ['demo-xv'], evento: 'unos XV años', corta: 'XV años' },
   bautizo: { titulo: 'Invitaciones digitales para bautizo | Brindi',
     descripcion: 'Invitación digital de bautizo con papás y padrinos, ceremonia, comida, mapa y confirmación de asistencia. Créala gratis; desde $299 MXN.',
-    h1: 'Invitaciones digitales para bautizo.', lead: 'Con papás y padrinos, la ceremonia, la comida y el mapa para llegar. La mandas por WhatsApp y tus invitados confirman desde su celular.',
+    h1: 'Invitaciones digitales [para bautizo.]', lead: 'Con papás y padrinos, la ceremonia, la comida y el mapa para llegar. La mandas por WhatsApp y tus invitados confirman desde su celular.',
     demo: 'demo-bautizo', primero: ['demo-bautizo'], evento: 'un bautizo', corta: 'Bautizo' },
   graduacion: { titulo: 'Invitaciones digitales para graduación | Brindi',
     descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Compártela por WhatsApp o QR. Desde $299 MXN.',
-    h1: 'Invitaciones digitales para tu graduación.', lead: 'Ceremonia, cena y brindis en una sola invitación. La mandas por WhatsApp, tus invitados confirman y tú sabes cuántos lugares apartar.',
+    h1: 'Invitaciones digitales [para tu graduación.]', lead: 'Ceremonia, cena y brindis en una sola invitación. La mandas por WhatsApp, tus invitados confirman y tú sabes cuántos lugares apartar.',
     demo: 'demo-graduacion', primero: ['demo-graduacion'], evento: 'una graduación', corta: 'Graduación' },
   posadas: { titulo: 'Invitaciones digitales para posadas y eventos de empresa con QR | Brindi',
     descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: cada colaborador confirma y entra con QR. Desde $299 MXN.',
-    h1: 'La posada de tu empresa, con invitación y acceso con QR.', lead: 'Para la posada, la cena de fin de año o un lanzamiento. Cada colaborador confirma desde su celular, sabes cuántos van y, con Premium, tu equipo escanea los pases en la entrada.',
+    h1: 'La posada de tu empresa, [con invitación y acceso con QR.]', lead: 'Para la posada, la cena de fin de año o un lanzamiento. Cada colaborador confirma desde su celular, sabes cuántos van y, con Premium, tu equipo escanea los pases en la entrada.',
     demo: 'demo-graduacion', primero: ['demo-graduacion', 'demo-boda-editorial'], evento: 'un evento de empresa', corta: 'Posadas y empresas', plan: 'brindi-premium' },
   organizadores: { titulo: 'Invitaciones digitales para organizadores, salones y fotógrafos | Brindi',
     descripcion: 'Invitaciones digitales para tus clientes: 5 eventos Celebración en un paquete y puntos por cada cliente que contrate con tu liga. Para wedding planners.',
-    h1: 'Invitaciones digitales para tus clientes.', lead: 'Para wedding planners, salones, fotógrafos y organizadores: armas la invitación de cada evento desde tu cuenta, tus clientes la mandan por WhatsApp y tú ves quién confirma.',
+    h1: 'Invitaciones digitales [para tus clientes.]', lead: 'Para wedding planners, salones, fotógrafos y organizadores: armas la invitación de cada evento desde tu cuenta, tus clientes la mandan por WhatsApp y tú ves quién confirma.',
     demo: 'demo-boda-editorial', primero: ['demo-boda-editorial', 'demo-xv'], evento: 'mis clientes (soy organizador)', corta: 'Organizadores', plan: ORGANIZADOR },
 };
 // Testimonios: SOLO reales, con el permiso por escrito de quien lo dice (nombre como lo autorizó, evento y mes). Vacío = no se muestra la sección.
@@ -220,23 +221,22 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const otras = Object.entries(VARIANTES).filter(([k]) => k && k !== clave);
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/brindi/`, app: 'Brindi' },
     titulo: V.titulo, ruta, imagen: 'https://vorka.mx/assets/tienda/v3/brindi-og.jpg', descripcion: V.descripcion, whatsappTexto: msgWa,
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     frames: [OS],   // demostración interactiva en el celular
     script: SCRIPT,
     cuerpo: `<div class="br">
-<section class="br-hero"><div class="marco br-hero-g">
-  <div class="br-hero-t">
-    ${navTienda('invitaciones')}
-    <span class="br-logo">brindi<i>✦</i></span>
-    <h1 class="br-h1">${esc(V.h1)}</h1>
-    <p class="br-lead">${esc(V.lead)}</p>
-    <div class="botones" id="br-cta"><a class="btn tinta" href="${APP}" rel="noopener">Créala gratis ${FLECHA}</a>${aLaVenta ? '<a class="btn blanco" href="#planes">Ver precios</a>' : ''}</div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/brindi/">Entra aquí</a></p>
-    <p class="br-nota">${aLaVenta ? `Pagas solo cuando la quieras publicar: <b>un pago por evento desde ${precio({ precio_centavos: desde })}</b>, sin mensualidades.` : 'Muy pronto a la venta. Ya puedes crear tu invitación gratis y verla en vista previa.'}</p>
-  </div>
-  <div class="br-tel" aria-label="Ejemplo de invitación en un celular"><iframe src="${OS}/i/${V.demo}" title="Demostración de una invitación" loading="lazy"></iframe><span class="br-tel-cinta">Toca y explora · demostración</span></div>
-</div></section>
+${heroMarca('brindi', {
+  titular: V.h1, apoyo: V.lead,
+  botones: `<a class="pm-btn" id="br-cta" href="${APP}" rel="noopener">Créala gratis ${FLECHA}</a>${aLaVenta ? '<a class="pm-btn sec" href="#planes">Ver precios</a>' : ''}`,
+  despues: `<p class="pm-precio">${aLaVenta ? `<b>Desde ${precio({ precio_centavos: desde })}</b> un pago por evento · pagas solo cuando la quieras publicar, sin mensualidades` : 'Muy pronto a la venta. Ya puedes crear tu invitación gratis y verla en vista previa.'}</p><p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/brindi/">Entra aquí</a></p>`,
+})}
+${indiceProducto('brindi', [['que-es', 'Qué es'], ['como-funciona', 'Cómo funciona'], ...(GUIAS[clave] ? [['guia', V.corta]] : []), ...(clave === 'organizadores' ? [['organizadores', 'Para organizadores']] : []), ['demos', 'Ejemplos'], ['planes', 'Precios'], ['ayuda', 'Preguntas']],
+  `<a class="pm-btn" href="${APP}" rel="noopener">Créala gratis</a>`)}
+${seccionQueEs('brindi', { titulo: 'Una invitación digital que mandas por WhatsApp.',
+  texto: 'Eliges un diseño, cambias textos, fotos y colores, y la compartes con un enlace y un QR. <b>Tus invitados confirman desde su celular</b> y tú ves quién viene y cuántos son, en tiempo real. Sin imprenta y sin que instalen nada.',
+  para: [['Bodas, XV años y graduaciones', 'Cada invitado recibe su enlace y confirma solo los lugares que le reservaste.'], ['Bautizos, cumpleaños y reuniones en familia', 'Una invitación bonita, el mapa para llegar y saber quién viene, sin imprimir nada.'],
+    ['Empresas, salones y organizadores', 'Posadas, lanzamientos o cenas de gala, con pase con QR en la entrada.']] })}
 
 <section class="t-sec" id="como-funciona"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Cuatro pasos y listo</h2></div>
@@ -275,7 +275,10 @@ ${clave === 'organizadores' ? `
 
 <section class="t-sec" id="demos"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Ejemplos</span><h2 class="h2">Ábrelas como si fueras invitado</h2><p class="lead">Son de demostración: puedes tocar todo, las respuestas no se guardan.</p></div>
+  <div class="br-vivo">
+  <div class="br-tel" aria-label="Ejemplo de invitación en un celular"><iframe src="${OS}/i/${V.demo}" title="Demostración de una invitación" loading="lazy"></iframe><span class="br-tel-cinta">Toca y explora · demostración</span></div>
   <div class="br-demos">${ordenDemos.map(([s, t, d, og]) => `<a class="br-demo rv" href="${OS}/i/${s}" target="_blank" rel="noopener"><img src="${OS}/brindi/og/${og}.webp" alt="" loading="lazy" width="1200" height="630"><b>${t}</b><span>${d}</span>${og === 'gala' ? `<span class="br-demo-nota">Diseño Gala · incluido en Premium${gala ? ` o +${precio(gala.prod)} en otro plan` : ''}</span>` : ''}<span class="flecha">Abrir ${FLECHA}</span></a>`).join('')}</div>
+  </div>
 </div></section>
 ${TESTIMONIOS.length ? `
 <section class="t-sec suave" id="testimonios"><div class="marco">
@@ -330,6 +333,7 @@ ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items:
   <nav class="br-tipos" aria-label="Brindi por tipo de evento"><b>Brindi para:</b>${otras.map(([k, v]) => `<a href="/tienda/brindi/${k}/">${esc(v.corta)}</a>`).join('')}${clave ? '<a href="/tienda/brindi/">Todas las celebraciones</a>' : ''}</nav>
   <div class="br-confianza">${[['Pago seguro', 'Stripe procesa el pago; nunca vemos tu tarjeta. Factura disponible escribiendo a hola@vorka.mx.'], ['Tus datos, tuyos', 'Invitaciones fuera de Google por defecto, enlaces con códigos aleatorios y borrado cuando tú quieras.'],
     ['Soporte de personas', 'Escríbenos desde tu panel o a hola@vorka.mx. Respondemos en horario laboral de México.'], ['Respaldo', `Brindi es una marca desarrollada por Vorka México. ${IMPACTO}`]].map(([t, d]) => `<div><b>${t}</b><p>${d}</p></div>`).join('')}</div>
+  <div class="br-cierre"><p><b>Créala gratis y ve cómo queda.</b> Pagas solo cuando la quieras publicar.</p><a class="pm-btn" href="${APP}" rel="noopener">Créala gratis ${FLECHA}</a></div>
   <p class="t-nota t-legal"><a href="/legal/brindi/">Condiciones de Brindi</a> · <a href="/legal/brindi/privacidad/">Aviso de privacidad</a> · <a href="/legal/brindi/privacidad-invitados/">Privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
 </div></section>
 <div class="t-barra br-barra" id="barra-brindi"><div><b>Créala gratis</b><small>Pagas solo al publicar</small></div><a class="btn tinta chico" href="${APP}" rel="noopener">Empezar ${FLECHA}</a></div>
@@ -337,37 +341,38 @@ ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items:
   });
 }
 
-const CSS = `
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+/* Marca de producto: blanco, tinta y un solo color (el vino de Brindi); en oscuro el vino se aclara con la tinta del tema */
+.br{--pm:#8A2E4A;--br-vino:#8A2E4A;--br-vino-t:color-mix(in srgb,#8A2E4A 70%,var(--fg));--br-champan:var(--bg-2);--br-oro:var(--br-vino-t)}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.br .t-sec{padding-top:clamp(64px,8vw,96px)}
+.br .etiqueta{color:var(--br-vino-t)}.br .etiqueta::before{background:var(--br-vino)}
+.br .btn.tinta,.br #form-brindi .btn.acento{background:var(--br-vino);color:#fff;box-shadow:0 12px 28px -14px var(--br-vino)}
 .br-guia-g{display:grid;gap:28px}@media(min-width:900px){.br-guia-g{grid-template-columns:1fr 1fr;gap:48px}}
 .br-incluir,.br-tiempos{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:14px}
-.br-incluir li,.br-tiempos li{border-left:3px solid var(--br-oro);padding:2px 0 2px 14px}.br-incluir p,.br-tiempos p{margin:4px 0 0;color:var(--fg-2)}
+.br-incluir li,.br-tiempos li{border-left:3px solid var(--br-vino);padding:2px 0 2px 14px}.br-incluir p,.br-tiempos p{margin:4px 0 0;color:var(--fg-2)}
 .br-guia-g .h3{margin:0}.br-guia-g .t-faq{margin-top:12px}.br-guia-g .t-nota{margin:10px 0 24px}
-.br{--br-vino:#6e1f3a;--br-vino-t:#6e1f3a;--br-champan:#f7efe3;--br-oro:#b98a2e}
-.br-hero{background:var(--br-champan);padding:clamp(28px,6vw,72px) 0;overflow:hidden}
-.br-hero-g{display:grid;gap:36px;align-items:center}
-@media(min-width:900px){.br-hero-g{grid-template-columns:1.1fr .9fr}}
-.br-logo{display:block;font:italic 500 34px/1 Fraunces,Georgia,serif;color:var(--br-vino-t);margin:16px 0 10px}.br-logo i{color:var(--br-oro);font-style:normal;font-size:.7em}
-.br-h1{font:500 clamp(34px,6vw,58px)/1.05 Fraunces,Georgia,serif;letter-spacing:-.02em;margin:0 0 14px;color:var(--fg)}
-.br-lead{font-size:clamp(17px,2.2vw,20px);line-height:1.55;color:var(--fg-2);margin:0 0 22px;max-width:36em}
-.br-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
-.br-tel{position:relative;justify-self:center;width:min(340px,86vw);aspect-ratio:9/18.5;border:10px solid #1f1a1d;border-radius:44px;overflow:hidden;background:var(--card);box-shadow:0 40px 80px -30px rgba(31,26,29,.55)}
+/* el celular con la demostración, junto a los ejemplos */
+.br-vivo{display:grid;gap:32px;align-items:start}.br-vivo>*{min-width:0}
+@media(min-width:960px){.br-vivo{grid-template-columns:340px 1fr;gap:48px}.br-vivo .br-demos{grid-template-columns:repeat(2,1fr)}}
+.br-tel{position:relative;justify-self:center;width:min(340px,86vw);aspect-ratio:9/18.5;border:10px solid #1f1a1d;border-radius:44px;overflow:hidden;background:var(--card);box-shadow:0 40px 80px -30px rgba(31,26,29,.55)}@media(min-width:960px){.br-tel{position:sticky;top:80px}}
 .br-tel iframe{width:100%;height:100%;border:0;display:block}
 .br-tel-cinta{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(31,26,29,.85);color:#fff;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;white-space:nowrap;pointer-events:none}
-.br-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-.br-ben li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.br-ben span{font-size:28px}.br-ben b{display:block;font-size:18px;margin:8px 0 4px}.br-ben p{margin:0;color:var(--fg-2)}
-.br-demos{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.br-ben{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.br-ben li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}.br-ben span{font-size:28px}.br-ben b{display:block;font-size:18px;margin:8px 0 4px}.br-ben p{margin:0;color:var(--fg-2)}
+.br-demos{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
 .br-demo{display:grid;gap:4px;background:var(--card);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--line);padding-bottom:14px}
 .br-demo img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover}.br-demo b,.br-demo span{padding:0 16px}.br-demo b{font-size:18px;margin-top:8px}.br-demo span{color:var(--fg-2);font-size:14px}.br-demo .flecha{color:var(--br-vino-t);font-weight:700}
 .br-planes{display:grid;gap:16px;align-items:start}
-@media(min-width:700px){.br-planes{grid-template-columns:repeat(2,1fr)}}@media(min-width:1100px){.br-planes{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:700px){.br-planes{grid-template-columns:repeat(2,1fr);gap:22px}}
 .br-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
-.br-plan.rec{border-color:var(--br-vino-t);box-shadow:0 24px 50px -28px rgba(110,31,58,.6)}
+.br-plan.rec{border-color:var(--br-vino-t);box-shadow:0 24px 50px -28px rgba(138,46,74,.6)}
 .br-sello{position:absolute;top:-12px;left:24px;background:var(--br-vino);color:#fff;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;letter-spacing:.04em}
-.br-plan h3{font:500 28px/1.1 Fraunces,Georgia,serif;margin:4px 0 0}.br-para{color:var(--fg-2);margin:0}
+.br-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.br-para{color:var(--fg-2);margin:0}
 .br-precio{margin:6px 0 0;display:flex;align-items:baseline;gap:8px}.br-precio b{font-size:34px;letter-spacing:-.02em}.br-precio small{color:var(--fg-2)}
 .br-inv{margin:0;color:var(--fg)}.br-plan ul{list-style:none;padding:0;margin:8px 0 12px;display:grid;gap:8px}.br-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.br-plan li svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--br-vino-t)}.br-plan li span{min-width:0}
-.br-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
-.br-pasos li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.br-pasos b{display:block;font-size:18px;margin:10px 0 4px}.br-pasos p{margin:0;color:var(--fg-2)}
+.br-pasos{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr))}
+.br-pasos li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}.br-pasos b{display:block;font-size:18px;margin:10px 0 4px}.br-pasos p{margin:0;color:var(--fg-2)}
 .br-num{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--br-vino);color:#fff;font-weight:800;font-size:17px}
 .br-tuto{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:0 20px}
 .br-tuto summary{cursor:pointer;list-style:none;padding:18px 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;font-weight:700;font-size:17px;color:var(--br-vino-t)}
@@ -376,7 +381,7 @@ const CSS = `
 .br-tuto-fin{margin:18px 0 20px}
 .br-guia{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px}.br-guia>b{margin-right:4px}
 .br-guia button{display:grid;text-align:left;gap:1px;padding:8px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--card);font:inherit;cursor:pointer;color:var(--fg)}
-.br-guia button span{font-size:13px;color:var(--fg-2)}.br-guia button em{font-style:normal;font-weight:700}.br-guia button.si{border-color:var(--br-vino-t);box-shadow:0 0 0 3px rgba(110,31,58,.12)}
+.br-guia button span{font-size:13px;color:var(--fg-2)}.br-guia button em{font-style:normal;font-weight:700}.br-guia button.si{border-color:var(--br-vino-t);box-shadow:0 0 0 3px color-mix(in srgb,var(--br-vino) 15%,transparent)}
 .br-plan.si{outline:3px solid var(--br-vino);outline-offset:3px}
 .br-gratis{margin:18px 0 0;color:var(--fg-2)}.br-gratis a{color:var(--br-vino-t);font-weight:700}
 .br-org{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px dashed var(--line-2);border-radius:16px;padding:16px 18px}
@@ -393,16 +398,16 @@ const CSS = `
 .br-ya{justify-self:center;font-size:14px;color:var(--fg-2);text-decoration:underline;text-underline-offset:3px}
 .br-org-a{display:flex;flex-wrap:wrap;gap:8px}
 .br-demo-nota{font-size:13px!important;color:var(--br-vino-t)!important;font-weight:600}
-.br-testi{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}.br-testi li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.br-testi blockquote{margin:0 0 10px;font:italic 500 19px/1.4 Fraunces,Georgia,serif}.br-testi small{display:block;color:var(--fg-2)}
+.br-testi{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}.br-testi li{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}.br-testi blockquote{margin:0 0 10px;font-size:19px;line-height:1.4}.br-testi small{display:block;color:var(--fg-2)}
 .br-papel{margin-top:16px;display:grid;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}.br-papel small{color:var(--fg-2)}
 .br-compl>summary{cursor:pointer;list-style:none;display:grid;gap:6px;padding:4px 0 8px}.br-compl>summary::-webkit-details-marker{display:none}.br-compl>summary b{font-size:clamp(22px,3vw,28px);letter-spacing:-.02em;color:var(--fg)}.br-compl>summary b::after{content:" ↓";color:var(--br-vino-t)}.br-compl[open]>summary b::after{content:" ↑"}.br-compl>summary small{color:var(--fg-2);font-size:15px}.br-compl[open]>summary{margin-bottom:18px}
 .br-cupo{margin:0 0 14px;color:var(--fg-2)}.br-cupo a{color:var(--br-vino-t);font-weight:700}
 .br-tipos{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 22px}.br-tipos a{border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;font-size:14px;color:var(--fg);text-decoration:none}
 .br-barra.oculta{transform:translateY(140%);opacity:0;pointer-events:none}
 .br-mas{margin-top:10px}.br-mas>summary{cursor:pointer;font-weight:700;color:var(--br-vino-t);padding:10px 0}
-.br-confianza{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.br-confianza div{border-top:2px solid var(--br-vino);padding-top:10px}.br-confianza p{margin:4px 0 0;color:var(--fg-2);font-size:15px}
-[data-tema="oscuro"] .br{--br-vino-t:#E796B5;--br-champan:#231B1F;--br-oro:#D8AE58}
-[data-tema="oscuro"] .br-logo{color:#E796B5}[data-tema="oscuro"] .br-plan.rec,[data-tema="oscuro"] .br-guia button.si{border-color:#E796B5}[data-tema="oscuro"] .br-plan.si{outline-color:#E796B5}`;
+.br-confianza{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}.br-confianza div{border-top:2px solid var(--br-vino);padding-top:10px}.br-confianza p{margin:4px 0 0;color:var(--fg-2);font-size:15px}
+.br-cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;margin:40px 0 8px;padding:28px;border-radius:24px;background:var(--bg-2)}.br-cierre p{margin:0;font-size:17px;color:var(--fg-2);max-width:36em}.br-cierre b{color:var(--fg)}
+.br-cierre .pm-btn{color:#fff}`;
 
 const SCRIPT = `(function(){
   // Botón fijo en celular: "Créala gratis" se esconde mientras se ven los botones de arriba o el formulario de pago
