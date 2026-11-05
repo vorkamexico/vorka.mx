@@ -61,12 +61,12 @@ export async function paginaPortales(env, req, url) {
   const error = url.searchParams.get('error') || '';
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Portal inmobiliario · Vorka México', brand: { '@type': 'Brand', name: 'Vorka México' },
-    description: 'Sitio, catálogo con mapa, fichas y CRM de prospectos para inmobiliarias y brokers, con tu dominio y tu marca.', image: ['https://inmuebles.vorka.mx/foto/vorka/marca/portales-portada.webp'],
+    description: 'Sitio, catálogo con mapa, fichas y CRM de prospectos para inmobiliarias y brokers, con tu dominio y tu marca.', image: ['https://vorka.mx/assets/tienda/v3/portales-og.jpg'],
     ...(planes.length ? { offers: planes.map((x) => oferta({ ruta: RUTA_PORTALES, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre}` })) } : {}) },
   migas('Portales inmobiliarios', RUTA_PORTALES),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/panel`, app: 'mi portal' },
-    titulo: 'Portal inmobiliario con tu dominio y tu marca | Desde $199 al mes', ruta: RUTA_PORTALES, imagen: 'https://inmuebles.vorka.mx/foto/vorka/marca/portales-portada.webp',
+    titulo: 'Portal inmobiliario con tu dominio y tu marca | Desde $199 al mes', ruta: RUTA_PORTALES, imagen: 'https://vorka.mx/assets/tienda/v3/portales-og.jpg',
     descripcion: 'Para inmobiliarias y brokers: sitio con tu marca, catálogo con mapa, fichas con galería y prospectos por WhatsApp en un panel. Desde $199 al mes, sin comisión por venta.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

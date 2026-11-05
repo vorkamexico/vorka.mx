@@ -86,7 +86,7 @@ describe('ficha /tienda/agenda/', () => {
     expect(h).toContain('<title>Agenda: citas en línea para consultorios y negocios | Prueba 7 días gratis</title>');
     expect(h).toMatch(/<meta name="description" content="Tu página de citas en línea[^"]+\$99 al mes por profesional/);
     expect(h).toContain('<link rel="canonical" href="https://vorka.mx/tienda/agenda/">');
-    expect(h).toContain('<meta property="og:image" content="https://vorka.mx/assets/tienda/agenda-og.png">');
+    expect(h).toContain('<meta property="og:image" content="https://vorka.mx/assets/tienda/v3/agenda-og.jpg">');
     const ld = JSON.parse(h.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
     const prod = ld.find(x => x['@type'] === 'Product');
     expect(prod.offers).toMatchObject({ '@type': 'AggregateOffer', priceCurrency: 'MXN', lowPrice: '99.00', highPrice: '4490.00', offerCount: 4 });

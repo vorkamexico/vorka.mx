@@ -208,7 +208,7 @@ export async function paginaBrindi(env, req, url, clave = '') {
   // Reseñas: las de todo Brindi (sus planes viven en /tienda/brindi/), en la página general y en cada tipo de evento
   const rs = aLaVenta ? await resenasDe(env, '/tienda/brindi/') : null;
   const ld = [{ '@context': 'https://schema.org', '@type': aLaVenta ? 'Product' : 'Service', name: 'Brindi · Invitaciones digitales', ...(aLaVenta ? {} : { serviceType: 'Invitaciones digitales', areaServed: 'MX', provider: { '@type': 'Organization', name: 'Vorka México', url: 'https://vorka.mx/' } }), description: 'Invitaciones digitales con QR para bodas, XV años, cumpleaños y toda celebración: confirmaciones, control de acompañantes y acceso con QR.',
-    ...(aLaVenta ? { brand: { '@type': 'Brand', name: 'Brindi' } } : {}), image: [`${OS}/brindi/og/aurora.png`],
+    ...(aLaVenta ? { brand: { '@type': 'Brand', name: 'Brindi' } } : {}), image: ['https://vorka.mx/assets/tienda/v3/brindi-og.jpg'],
     ...(aLaVenta ? { offers: ofertas({ ruta, centavos: planes.filter(p => p.prod).map(p => p.prod.precio_centavos) }), ...ldResenas(rs) } : {}) },
   clave ? migas(V.corta || 'Brindi', ruta, [['Brindi', '/tienda/brindi/']]) : migas('Brindi', ruta),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [...(GUIAS[clave]?.preguntas || []), ...FAQ].map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) },
@@ -219,7 +219,7 @@ export async function paginaBrindi(env, req, url, clave = '') {
   const incluido = slug => ['brindi-plantilla-premium', 'brindi-album', 'brindi-musica'].includes(slug) ? ' data-incluido-en="brindi-premium"' : '';
   const otras = Object.entries(VARIANTES).filter(([k]) => k && k !== clave);
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/brindi/`, app: 'Brindi' },
-    titulo: V.titulo, ruta, imagen: `${OS}/brindi/og/aurora.png`, descripcion: V.descripcion, whatsappTexto: msgWa,
+    titulo: V.titulo, ruta, imagen: 'https://vorka.mx/assets/tienda/v3/brindi-og.jpg', descripcion: V.descripcion, whatsappTexto: msgWa,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&display=swap" rel="stylesheet"><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     frames: [OS],   // demostración interactiva en el celular

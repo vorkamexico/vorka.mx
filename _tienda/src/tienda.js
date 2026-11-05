@@ -437,7 +437,8 @@ export async function paginaProducto(env, req, url, slug) {
   const c = p.contenido;
   // Si el producto tiene su propia página (p. ej. vorka.mx/simulador-paa/), esa es la canónica para Google
   const ruta = c.acceso?.ruta || `/tienda/${p.slug}/`;
-  const imagen = p.imagen ? new URL(p.imagen, SITIO).toString() : undefined;
+  // Para compartir: la imagen -og.jpg del producto (JPG, que WhatsApp sí muestra) si su portada es de la tienda (v3); si no, la portada
+  const imagen = p.imagen ? new URL(/^\/assets\/tienda\/v3\/[a-z0-9-]+-portada\.webp$/.test(p.imagen) ? p.imagen.replace(/-portada\.webp$/, '-og.jpg') : p.imagen, SITIO).toString() : undefined;
   const rs = await resenasDe(env, ruta);
   const ld = [{
     '@context': 'https://schema.org', '@type': 'Product', name: p.nombre, description: p.descripcion_corta, sku: p.id,
@@ -551,7 +552,8 @@ const SCRIPT_SAAS = `(function(){
 async function paginaSaas(env, url, p, cookie) {
   const c = p.contenido, a = c.acceso || {};
   const ruta = `/tienda/${p.slug}/`;
-  const imagen = p.imagen ? new URL(p.imagen, SITIO).toString() : undefined;
+  // Para compartir: la imagen -og.jpg del producto (JPG, que WhatsApp sí muestra) si su portada es de la tienda (v3); si no, la portada
+  const imagen = p.imagen ? new URL(/^\/assets\/tienda\/v3\/[a-z0-9-]+-portada\.webp$/.test(p.imagen) ? p.imagen.replace(/-portada\.webp$/, '-og.jpg') : p.imagen, SITIO).toString() : undefined;
   const rs = await resenasDe(env, ruta);
   const planes = ['month', 'year'].map(k => [k, precioIntervalo(p, k)]).filter(([, v]) => v);
   const creador = p.creador_nombre || 'su creador';

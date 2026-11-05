@@ -65,12 +65,12 @@ export async function paginaCuentas(env, req, url) {
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   const rs = planes.length ? await resenasDe(env, RUTA_CUENTAS) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Cuentas · Administrador de préstamos personales', brand: { '@type': 'Brand', name: 'Vorka México' },
-    description: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estado de cuenta. Prueba 7 días gratis.', image: ['https://vorka.mx/assets/tienda/cuentas.webp'],
+    description: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estado de cuenta. Prueba 7 días gratis.', image: ['https://vorka.mx/assets/tienda/v3/cuentas-og.jpg'],
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_CUENTAS, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Cuentas', RUTA_CUENTAS),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Cuentas' },
-    titulo: 'Cuentas: administra tus préstamos personales | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/cuentas-og.png',
+    titulo: 'Cuentas: administra tus préstamos personales | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/v3/cuentas-og.jpg',
     descripcion: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estados de cuenta en PDF y Excel. Prueba 7 días gratis.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

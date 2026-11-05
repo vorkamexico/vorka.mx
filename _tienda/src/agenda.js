@@ -13,7 +13,7 @@ import { FLECHA, CHECK } from './marco.generado.js';
 const APP = 'https://agenda.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 export const RUTA_AGENDA = '/tienda/agenda/';
-export const OG_AGENDA = 'https://vorka.mx/assets/tienda/agenda-og.png';
+export const OG_AGENDA = 'https://vorka.mx/assets/tienda/v3/agenda-og.jpg';
 // Precio por profesional decidido por Dirección (25-10-2026): solo se usa si el plan aún no está a la venta
 const PRECIO_BASE = 99;
 const MAX_PROFESIONALES = 50;
