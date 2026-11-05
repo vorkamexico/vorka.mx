@@ -1,16 +1,21 @@
 # Vorka México · genera las páginas principales del sitio
 # Uso: python3 _sitio/build.py   (desde la raíz del repo vorka.mx)
 # Páginas: / · /servicios/ · /servicios/<slug>/ · /agenda/ · /fc/ · /nosotros/ · /contacto/ · /404.html
-import os, sys, json, re
+# Diseño: sistema visual v3 (portada con la V y tarjetas flotantes, titulares con degradado metálico, etiquetas «/», bento,
+# secciones oscuras redondeadas, aparición al hacer scroll). El contenido es el corto: tres caminos, cuatro servicios,
+# lo que hemos hecho, Vorka Learn, cifras con respaldo y el formulario corto (#platiquemos) como único CTA.
+import os, sys, json
 sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
-from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS, PREGUNTAS_CORTAS, PASOS_CORTOS, EJEMPLOS
+from datos import SERVICIOS, PREGUNTAS_CORTAS, PASOS_CORTOS, EJEMPLOS
 from agenda import pagina_agenda
 from fc import actualizar_fc
 from equipo import paginas_equipo
 from institucional import pagina_nosotros, pagina_contacto, ORG_ID
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
+CTA_FORM = ('#platiquemos', 'Agenda tu diagnóstico')   # en páginas que ya tienen el formulario corto, el botón del menú baja a él
 
 def escribir(ruta, contenido):
     p = os.path.join(RAIZ, ruta)
@@ -19,216 +24,252 @@ def escribir(ruta, contenido):
         f.write(contenido)
     print('·', ruta, f'{len(contenido) // 1024} KB')
 
+def palabras(texto, metal_desde):
+    """Titular que aparece palabra por palabra; las últimas llevan el degradado metálico."""
+    out = []
+    for i, p in enumerate(texto.split()):
+        clase = 'p metal' if i >= metal_desde else 'p'
+        out.append(f'<span class="{clase}" style="--i:{i}">{e(p)}</span>')
+    return ' '.join(out)
+
+VENTANA = [('monterrey-silla', 'Monterrey', '50% 60%'), ('cdmx-reforma', 'Ciudad de México', '30% 50%'), ('guadalajara', 'Guadalajara', '50% 45%'),
+           ('queretaro', 'Querétaro', '40% 50%'), ('celaya', 'Celaya', '50% 40%')]
+SECTORES = ['Sector público federal', 'Gobiernos estatales y municipales', 'Banca y finanzas', 'Grupos industriales', 'Empresas familiares',
+            'Organizaciones civiles', 'Campañas y partidos', 'Startups', 'Medios y comunicación']
+
+def chispa():
+    return '<svg class="chispa" viewBox="0 0 130 40" aria-hidden="true"><defs><linearGradient id="ch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B2A85" stop-opacity=".25"/><stop offset="1" stop-color="#6B2A85" stop-opacity="0"/></linearGradient></defs><path d="M0 32 L16 30 L30 33 L44 24 L58 26 L72 18 L86 20 L100 11 L114 13 L130 4 L130 40 L0 40Z" fill="url(#ch)"/><path d="M0 32 L16 30 L30 33 L44 24 L58 26 L72 18 L86 20 L100 11 L114 13 L130 4" fill="none" stroke="#6B2A85" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>'
+
+def escena():
+    cuadros = ''.join(svg_cuadro(n, f, i == 0, c) for i, (n, c, f) in enumerate(VENTANA))
+    caras = ''.join(f'<i style="background-image:url(/img/ciudades/{n}-960.webp)"></i>' for n in ['monterrey', 'cdmx', 'guadalajara'])
+    return f'''<div class="escena" aria-hidden="true">
+    {v_contorno('contorno-v', 'vc')}
+    {ventana_svg(cuadros, 'vv')}
+    <div class="flota f1" data-z="1.4"><div class="tarjeta"><div class="fila-t"><span class="ok">{ICONOS['check']}</span><div><span class="t">Diagnóstico agendado</span><b>Jueves · 10:00</b><small>20 min · videollamada</small></div></div></div></div>
+    <div class="flota f2" data-z="1"><div class="tarjeta"><span class="t">Prioridades del trimestre</span><div class="barras"><div>Estructura<span><i style="--w:86%"></i></span></div><div>Talento<span><i style="--w:62%"></i></span></div><div>Narrativa<span><i style="--w:40%"></i></span></div></div></div></div>
+    <div class="flota f3" data-z="1.2"><div class="tarjeta"><span class="t">Conversación pública</span><b>Tendencia al alza</b>{chispa()}</div></div>
+    <div class="flota f4" data-z=".8"><div class="tarjeta"><span class="t"><span class="punto"></span>Equipo en campo</span><b id="lugar">Monterrey</b></div></div>
+    <div class="flota f5" data-z="1.8"><div class="icono-app ia-1">{ICONOS['brujula']}</div></div>
+    <div class="flota f6" data-z="1.6"><div class="icono-app ia-2">{ICONOS['megafono']}</div></div>
+    <div class="flota f7" data-z="2"><div class="icono-app ia-3">{ICONOS['personas']}</div></div>
+    <div class="flota f8" data-z="1.1"><div class="tarjeta"><div class="fila-t"><div class="caras">{caras}</div><div><b>40+ consultores</b><small>senior, en red activa</small></div></div></div></div>
+    <div class="escena-pie"></div>
+  </div>'''
+
+def caja_servicio(s, clase, mini='', foto_n=None, foco='70% 50%', corto=False):
+    """Tarjeta v3 de un servicio. corto=True: la línea breve y «Ver más» (inicio); si no, la descripción v3 (otros servicios)."""
+    tags = ''.join(f'<span>{e(t)}</span>' for t in s['tags'][:5])
+    fondo = f'<div class="foto-c" style="--foco:{foco}">{img(foto_n, "(max-width: 1020px) 100vw, 66vw", alt="")}</div>' if foto_n else ''
+    extra = mini or f'<div class="chips-c">{tags}</div>'
+    ver = f'<span class="flecha ver">Ver más {FLECHA}</span>' if corto else ''
+    return f'''<a class="caja {clase} rv" href="/servicios/{s['slug']}/">{fondo}
+      <span class="etq">Servicio {s['num']}<span class="ir">{FLECHA}</span></span>
+      <h3 class="h3">{s['area']}</h3><p>{e(s['breve'] if corto else s['corta'])}</p>
+      {extra}{ver}
+    </a>'''
+
 def faq_html(lista):
     return ''.join(f'<details class="rv"><summary>{e(q)}<i aria-hidden="true"></i></summary><p>{e(a)}</p></details>' for q, a in lista)
 
+def svg_cuadro(nombre, foco, activa=False, lugar=''):
+    # La foto se recorta con la forma de la V (SVG clipPath: más estable que mask-image)
+    x, y = [float(v.strip('%')) / 100 for v in foco.split()]
+    alin = f"xM{'in' if x < .34 else 'id' if x < .67 else 'ax'}YM{'in' if y < .34 else 'id' if y < .67 else 'ax'}"
+    ancho = 1600 if activa else 960
+    return (f'<image class="cuadro{" activa" if activa else ""}" data-lugar="{lugar}" href="/img/ciudades/{nombre}-{ancho}.webp" '
+            f'x="69" y="225" width="940" height="909" preserveAspectRatio="{alin} slice"/>')
+
+def ventana_svg(cuadros, uid, clase='ventana-v'):
+    return (f'<svg class="{clase}" viewBox="69 225 940 909" aria-hidden="true"><defs><clipPath id="{uid}">{V_PATHS}</clipPath></defs>'
+            f'<rect x="69" y="225" width="940" height="909" fill="#0F0D10" clip-path="url(#{uid})"/><g clip-path="url(#{uid})">{cuadros}</g></svg>')
+
+def v_foto(nombre, foco='50% 50%'):
+    return ventana_svg(svg_cuadro(nombre, foco, True), 'vf', 'ventana-v v-cab')
+
+# ---- piezas compartidas por el inicio y el índice de servicios
+def hecho_html(pegada=False):
+    """«Lo que hemos hecho»: trabajo propio que se puede abrir hoy (datos.EJEMPLOS), con las tarjetas de nota de v3.
+    pegada=True: sin el aire de arriba (cuando sigue a otra sección del mismo fondo)."""
+    tarjetas = ''.join(f'''<a class="nota-h rv" href="{h}" style="--d:{(i % 3) * .06}s"><span class="im"><img src="/img/trabajo/{k}-800.webp" width="800" height="600" alt="{e(alt)}" loading="lazy" decoding="async"></span>
+        <span class="tx"><small>{e(et)}</small><b>{e(t)}</b><span>{e(d)}</span></span></a>''' for i, (h, k, et, t, d, alt) in enumerate(EJEMPLOS))
+    return f'''<section class="sec{' pegada' if pegada else ''}" id="hecho" aria-labelledby="t-hecho">
+  <div class="marco">
+    <div class="cab par rv"><div><span class="etiqueta">Lo que hemos hecho</span><h2 class="h2" id="t-hecho">Productos propios, <span class="metal">en línea hoy.</span></h2></div>
+      <p class="lead">Apps, simuladores, un medio y una academia que hacemos y operamos nosotros. Ábrelos y pruébalos.</p></div>
+    <div class="hecho-g">{tarjetas}</div>
+  </div>
+</section>'''
+
+def banda(foto, foco, etq, titulo, chips):
+    """Banda de foto v3: tarjeta oscura ancha con la foto de fondo y el degradado de las cajas del bento."""
+    ch = ''.join(f'<span>{c}</span>' for c in chips)
+    return f'''<div class="caja osc banda rv"><div class="foto-c" style="--foco:{foco}">{img(foto, "(max-width: 1280px) 100vw, 1240px", alt="")}</div>
+      <span class="etq">{etq}</span><h3 class="h2">{titulo}</h3><div class="chips-c">{ch}</div></div>'''
+
+CIFRAS_CHIPS = ['<b>180+</b> municipios', '<b>40+</b> consultores senior', 'Formación <b>HBS · Tec</b>', 'Bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya']
+
 # ---------------------------------------------------------------- inicio
-# Estructura (v4): qué es Vorka en una frase → las tres rutas (servicios · tienda y apps · Vorka Learn) → servicios en una
-# línea y cómo trabajamos → Vorka Learn → presencia y Sparks → formulario corto. Un solo CTA: «Platiquemos».
-# Las anclas viejas siguen vivas (#servicios, #momentos, #proceso, #red, #sparks) porque páginas hechas a mano las usan.
-SECTORES = ['Sector público federal', 'Gobiernos estatales y municipales', 'Banca y finanzas', 'Grupos industriales', 'Empresas familiares',
-            'Organizaciones civiles', 'Campañas y partidos', 'Startups', 'Medios y comunicación']
-CIUDADES = ['Monterrey', 'Ciudad de México', 'Guadalajara', 'Querétaro', 'Celaya']
-# Secciones reales de Vorka Learn (las sirve el Worker de _tienda: src/learn/datos.js › secciones()). Si se agrega una, súmala aquí.
-LEARN_EXAMENES = [('/learn/paa/', 'PAA'), ('/learn/unam/', 'UNAM'), ('/learn/ecoems/', 'ECOEMS'), ('/learn/prepa-ug/', 'Prepa UG')]
-LEARN_TEMAS = [('/learn/camino/', 'Elegir tu camino'), ('/learn/finanzas/', 'Finanzas personales'), ('/learn/negocio/', 'Negocio pequeño'), ('/learn/apps/', 'Crea tu app')]
-TIENDA = [('/simulador-paa/', 'Simuladores de examen (PAA, UNAM, ECOEMS, prepa UG)'), ('/tienda/brindi/', 'Brindi: invitaciones digitales con QR'),
-          ('/tienda/cupo/', 'Cupo: eventos con registro y check-in'), ('/tienda/vuelve/', 'Vuelve: tarjetas de lealtad'), ('/tienda/agenda/', 'Agenda: citas en línea')]
-def ligas(lista, clase='v4-tags'):
-    return f'<div class="{clase}">' + ''.join(f'<a href="{h}">{e(t)}</a>' for h, t in lista) + '</div>'
-
-# ---- piezas cortas de servicios (v5): el índice y el inicio dicen lo mínimo; el detalle vive en /servicios/<slug>/
-def pasos_html():
-    """«Cómo empezamos» en tres pasos de una línea (id="proceso": el pie y páginas viejas enlazan /servicios/#proceso)."""
-    pasos = ''.join(f'<li><b>{i}</b><span>{e(t)}</span></li>' for i, t in enumerate(PASOS_CORTOS, 1))
-    return f'''<div class="v5-proceso" id="proceso">
-      <h2 class="t3">Cómo empezamos</h2>
-      <ol class="v5-pasos">{pasos}</ol>
-    </div>'''
-
-def tarjetas_servicio():
-    return '<div class="v5-servs">' + ''.join(f'''<a class="v5-serv" href="/servicios/{s['slug']}/">
-        <span class="v5-ico">{ICONOS[s['icono']]}</span>
-        <h3>{s['area']}</h3><p>{e(s['breve'])}</p>
-        <span class="v4-liga">Ver más {FLECHA}</span></a>''' for s in SERVICIOS) + '</div>'
-
-def ejemplos_html(titulo_id="t-hecho", fondo=""):
-    """«Lo que hemos hecho»: trabajo propio que se puede abrir hoy (datos.EJEMPLOS)."""
-    tarjetas = ''.join(f'''<a class="v5-ej" href="{h}">
-        <img src="/img/trabajo/{k}-800.webp" width="800" height="600" alt="{e(alt)}" loading="lazy" decoding="async">
-        <span class="v5-ej-txt"><small>{e(et)}</small><b>{e(t)}</b><span>{e(d)}</span></span></a>''' for h, k, et, t, d, alt in EJEMPLOS)
-    return f'''<section class="v4-sec {fondo}" id="hecho" aria-labelledby="{titulo_id}">
-  <div class="marco">
-    <div class="v4-cab"><span class="etiqueta">Ejemplos</span><h2 class="t2" id="{titulo_id}">Lo que hemos hecho</h2>
-      <p class="lead">Productos y proyectos propios, en línea hoy. Ábrelos y pruébalos.</p></div>
-    <div class="v5-ejs">{tarjetas}</div>
-  </div>
-</section>'''
-
-def banda_ciudades(cifras=True):
-    """Banda de descanso: mosaico de tres ciudades base. Con cifras (respaldadas por el dueño) o solo con las ciudades."""
-    texto = ('<p class="v5-cifras"><span><b>150+</b> proyectos</span><span><b>26</b> estados</span><span><b>180+</b> municipios</span>'
-             '<span><b>40+</b> consultores senior</span><span>Formación <b>HBS · Tec</b></span></p>') if cifras else \
-            '<p class="v5-cifras"><span>Bases en <b>Monterrey, CDMX, Guadalajara, Querétaro y Celaya</b></span></p>'
-    return f'''<section class="v5-banda" aria-label="Dónde trabajamos">
-  <div class="marco">
-    <div class="v5-mosaico">
-      <figure class="a">{img('monterrey-skyline', sizes='(max-width: 760px) 100vw, 640px')}</figure>
-      <figure class="b">{img('cdmx-reforma', sizes='(max-width: 760px) 50vw, 320px')}</figure>
-      <figure class="c">{img('guadalajara', sizes='(max-width: 760px) 50vw, 320px')}</figure>
-    </div>
-    {texto}
-  </div>
-</section>'''
-
-def banda_foto(nombre, pie=''):
-    """Banda de descanso: una foto ancha (alt de FOTOS) con una línea corta opcional."""
-    leyenda = f'<figcaption>{e(pie)}</figcaption>' if pie else ''
-    return f'''<div class="v5-banda">
-  <div class="marco"><figure class="v5-ancha">{img(nombre, sizes='(max-width: 1280px) 100vw, 1200px')}{leyenda}</figure></div>
-</div>'''
+# Portada v3 intacta → sectores → tres caminos (servicios · tienda y apps · Vorka Learn) → cuatro servicios en el bento →
+# lo que hemos hecho → presencia y cifras (sección oscura con el mapa) → Vorka Learn → formulario corto.
+# Las anclas viejas siguen vivas (#momentos, #servicios, #proceso, #red, #sparks): páginas hechas a mano las usan.
+CAMINOS = [('S', '/servicios/', 'Servicios para organizaciones', 'Estrategia, liderazgo, comunicación y apps a la medida para tomar decisiones importantes y ejecutarlas.', 'empresas · gobiernos · organizaciones'),
+           ('T', '/tienda/', 'Tienda y apps', 'Herramientas listas para usar: simuladores de examen, invitaciones, eventos con registro, lealtad y citas en línea.', 'negocios · eventos · estudiantes'),
+           ('L', '/learn/', 'Vorka Learn', 'Guías gratis y sin registro para tu examen, tu dinero y tu negocio, con fuentes oficiales citadas.', 'estudiantes · familias · emprendedores')]
+LEARN = [('E', '', '/learn/', 'Exámenes de admisión', 'PAA, UNAM, ECOEMS y prepa UG: qué viene, cómo se califica y cómo prepararte.', 'Ver guías'),
+         ('C', ' tira-paa', '/learn/camino/', 'Tu camino y tu dinero', 'Cómo elegir carrera, pedir una beca y ordenar tus finanzas personales.', 'Leer'),
+         ('N', ' tira-tienda', '/learn/negocio/', 'Negocio pequeño y crea tu app', 'Lo básico para arrancar un negocio y cómo crear y vender tu propia app.', 'Leer')]
 
 def inicio():
-    servicios_li = ''.join(f'<li>{s["area"]}</li>' for s in SERVICIOS)
-    tienda_li = ''.join(f'<li>{e(t)}</li>' for _, t in TIENDA)
-    learn_li = ''.join(f'<li>{e(t)}</li>' for t in ['Exámenes de admisión: PAA, UNAM, ECOEMS y prepa UG', 'Elegir carrera y becas', 'Finanzas personales', 'Negocio pequeño y crea tu app'])
-    check = ICONOS['check']
-    cuerpo = f'''{nav(cta=('#platiquemos', 'Platiquemos'))}
+    est, lid, inf, apps = SERVICIOS
+    mini_lid = '''<div class="mini lista-mini">
+        <div class="hecho"><span class="cuadro-c"></span>Mapa de brechas</div>
+        <div class="hecho"><span class="cuadro-c"></span>Plan de desarrollo</div>
+        <div><span class="cuadro-c"></span>Sesión: decisiones críticas<em>Hoy</em></div>
+        <div><span class="cuadro-c"></span>Simulacro de entrevista<em>Jue</em></div></div>'''
+    barras = ''.join(f'<i style="--h:{h}%"></i>' for h in [28, 34, 30, 42, 46, 58, 70, 88])
+    mini_inf = f'<div class="mini"><div class="dato-g"><span>Alcance por semana</span><b>↑</b></div><div class="grafica">{barras}</div></div>'
+    bento = (caja_servicio(est, 'osc c-a', foto_n='monterrey-torres', foco='50% 30%', corto=True)
+             + caja_servicio(lid, 'c-b', mini_lid, corto=True) + caja_servicio(inf, 'c-c', mini_inf, corto=True)
+             + caja_servicio(apps, 'c-g', corto=True)
+             + f'<a class="caja c-oro c-g rv" href="#platiquemos"><span class="etq">Empieza aquí<span class="ir">{FLECHA}</span></span><h3 class="h3">Diagnóstico sin costo</h3><p>20 minutos para entender tu reto y decirte cómo lo resolveríamos.</p>{LOGO_DECO}</a>')
+    caminos = ''.join(f'''<a class="momento rv" href="{h}" style="--d:{i * .08}s">
+        <span class="letra-v">{l}</span><h3 class="h3" style="font-size:22px">{e(t)}</h3><p>{e(d)}</p>
+        <span class="para"><span>Ideal para: {e(p)}</span>{FLECHA}</span></a>''' for i, (l, h, t, d, p) in enumerate(CAMINOS))
+    tiras = ''.join(f'''<a class="caja tira{c} rv" href="{h}">
+      <span class="letra-v">{l}</span>
+      <span class="tira-t"><b>{e(t)}</b><span>{e(d)}</span></span>
+      <span class="flecha">{f} {FLECHA}</span>
+    </a>''' for l, c, h, t, d, f in LEARN)
+    nodos = [('monterrey-skyline', 'Monterrey', 'Industria · finanzas', 80, 14), ('cdmx-chapultepec', 'CDMX', 'Gobierno · corporativos', 86, 62),
+             ('queretaro', 'Querétaro', 'Industria del Bajío', 58, 86), ('celaya', 'Celaya', 'Casa de Sparks', 28, 84), ('guadalajara', 'Guadalajara', 'Empresa · cultura', 10, 50)]
+    cx, cy = 46, 42
+    lineas = ''
+    for k, (_, _, _, x, y) in enumerate(nodos):
+        d = f'M{cx} {cy} Q{(cx + x) / 2 + (y - cy) * .25:.1f} {(cy + y) / 2 - (x - cx) * .25:.1f} {x} {y}'
+        lineas += f'<path class="linea" d="{d}" vector-effect="non-scaling-stroke"/><path class="flujo" d="{d}" vector-effect="non-scaling-stroke" style="animation-delay:-{k * .5}s"/>'
+    nodos_html = ''.join(f'<div class="nodo" style="left:{x}%;top:{y}%"><span class="f">{img(n, "120px", alt="")}</span><b>{c}</b><small>{s}</small></div>' for n, c, s, x, y in nodos)
+    caras = ''.join(f'<i style="background-image:url(/img/ciudades/{n}-960.webp)"></i>' for n in ['cdmx-reforma', 'monterrey-silla', 'guadalajara', 'queretaro'])
+    cinta = ''.join(f'<span>{s}</span>' for s in SECTORES * 2)
+    cuerpo = f'''{nav(cta=CTA_FORM)}
 <main id="contenido">
-<section class="v4-hero centro" aria-labelledby="t-hero">
+<section class="portada" aria-labelledby="t-hero">
+  <div class="marco portada-c">
+    <a class="aviso entra" href="#platiquemos" style="--d:.05s"><b>Nuevo</b>Diagnóstico estratégico sin costo{FLECHA}</a>
+    <h1 class="h-hero" id="t-hero">{palabras('Definimos el juego con quienes lo juegan.', 5)}</h1>
+    <p class="lead entra" style="--d:.75s">Consultora de estrategia, liderazgo, comunicación y apps a la medida. Acompañamos a líderes, empresas y gobiernos en las decisiones que no admiten segundo intento.</p>
+    <div class="botones entra" style="--d:.85s"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="/servicios/">Explorar servicios</a></div>
+    <div class="prueba entra" style="--d:.95s"><span class="caras">{caras}</span><span><b style="color:var(--fg)" class="num">150+</b> proyectos en <b style="color:var(--fg)">26 estados</b></span></div>
+  </div>
+  <div class="marco">{escena()}</div>
+</section>
+
+<section class="sectores" aria-label="Experiencia">
+  <p>Experiencia operativa en</p>
+  <div class="cinta" aria-hidden="true"><div class="cinta-pista">{cinta}</div></div>
+</section>
+
+<section class="sec" id="momentos" aria-labelledby="t-cam">
   <div class="marco">
-    <span class="etiqueta">Vorka México</span>
-    <h1 class="t1" id="t-hero" style="margin-top:18px">Te ayudamos a decidir, ejecutar y hacerte escuchar.</h1>
-    <p class="lead">Somos una consultora de estrategia, liderazgo y comunicación que además construye apps y páginas a la medida, para empresas, gobiernos y organizaciones. También tenemos una tienda de apps y guías gratuitas en Vorka Learn.</p>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="/servicios/">Ver servicios</a></div>
-    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Respuesta en máximo 2 días hábiles</span></div>
-    <p class="v4-prueba"><b>150+</b> proyectos en <b>26 estados</b> · <b>40+</b> consultores senior en red activa</p>
+    <div class="cab centro rv"><span class="etiqueta">Qué hacemos</span><h2 class="h2" id="t-cam">Tres caminos. <span class="metal">¿Cuál es el tuyo?</span></h2>
+      <p class="lead">Consultoría para organizaciones, herramientas listas para usar y guías gratis.</p></div>
+    <div class="momentos">{caminos}</div>
   </div>
 </section>
 
-<section class="v4-sec" id="rutas" aria-labelledby="t-rutas" style="padding-top:0">
-  <div class="marco">
-    <h2 class="sr" id="t-rutas">Qué hacemos</h2>
-    <div class="v4-rutas">
-      <a class="v4-ruta tinta" href="/servicios/"><small>Para organizaciones</small><h3 class="t3">Servicios</h3>
-        <p>Para empresas, gobiernos y organizaciones que necesitan tomar una decisión importante, fortalecer a su equipo, comunicar mejor o construir su sitio o su app.</p>
-        <ul>{servicios_li}</ul><span class="v4-liga">Ver servicios {FLECHA}</span></a>
-      <a class="v4-ruta" href="/tienda/"><small>Para tu negocio, evento o examen</small><h3 class="t3">Tienda y apps</h3>
-        <p>Herramientas digitales listas para usar, hechas por Vorka.</p>
-        <ul>{tienda_li}</ul><span class="v4-liga">Ir a la tienda {FLECHA}</span></a>
-      <a class="v4-ruta" href="/learn/"><small>Para aprender, gratis</small><h3 class="t3">Vorka Learn</h3>
-        <p>Guías gratis y sin registro, con fuentes oficiales citadas al final de cada una.</p>
-        <ul>{learn_li}</ul><span class="v4-liga">Leer Vorka Learn {FLECHA}</span></a>
-    </div>
-  </div>
-</section>
-
-<section class="v4-sec suave" id="servicios" aria-labelledby="t-serv">
-  <div class="marco" id="momentos">
-    <div class="v4-cab"><span class="etiqueta">Servicios para organizaciones</span><h2 class="t2" id="t-serv">Cuatro servicios, un mismo equipo.</h2>
+<section class="sec pegada" id="servicios" aria-labelledby="t-serv">
+  <div class="marco" id="proceso">
+    <div class="cab centro rv"><span class="etiqueta">Servicios</span><h2 class="h2" id="t-serv">Cuatro servicios. <span class="metal">Un solo equipo.</span></h2>
       <p class="lead">Empiezas con uno y sumas otro solo si hace falta.</p></div>
-    {tarjetas_servicio()}
-    {pasos_html()}
-  </div>
-</section>
-{banda_ciudades(cifras=False)}
-{ejemplos_html(fondo="suave")}
-
-<section class="v4-sec" id="learn" aria-labelledby="t-learn">
-  <div class="marco v4-learn">
-    <div>
-      <span class="etiqueta">Vorka Learn</span>
-      <h2 class="t2" id="t-learn" style="margin-top:16px">Guías para tu examen, tu dinero y tu negocio.</h2>
-      <p class="lead">Lo que conviene saber antes de presentar tu examen, cómo elegir carrera y pedir una beca, finanzas personales, negocio pequeño y cómo crear y vender tu propia app.</p>
-      <ul class="v4-hechos">
-        <li>{check}<span>Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.</span></li>
-        <li>{check}<span>Gratis y sin registro. Si quieres practicar un examen, los simuladores están aparte.</span></li>
-      </ul>
-      <p style="margin-top:22px"><a class="v4-liga" href="/learn/">Ver todas las guías {FLECHA}</a></p>
-    </div>
-    <div>
-      <div class="v4-grupo"><h3>Exámenes de admisión</h3>{ligas(LEARN_EXAMENES)}</div>
-      <div class="v4-grupo"><h3>Temas</h3>{ligas(LEARN_TEMAS)}</div>
-      <div class="v4-grupo"><h3>Para practicar</h3>{ligas([('/simulador-paa/', 'Simulador PAA'), ('/simulador-unam/', 'Simulador UNAM'), ('/simulador-ecoems/', 'Simulador ECOEMS'), ('/simulador-prepa-ug/', 'Simulador prepa UG')])}</div>
-    </div>
+    <div class="bento">{bento}</div>
+    <p class="rv" style="text-align:center;margin-top:28px"><a class="flecha" href="/servicios/">Ver todos los servicios {FLECHA}</a></p>
   </div>
 </section>
 
-<section class="v4-sec suave" id="red" aria-labelledby="t-red">
-  <div class="marco">
-    <div class="v4-cab"><span class="etiqueta">Dónde estamos</span><h2 class="t2" id="t-red">Bases en cinco ciudades, proyectos en todo México.</h2></div>
-    <div class="v4-dos" id="sparks">
-      <div class="v4-caja">
-        <h3 class="t3">Ciudades base</h3>
-        <p>Trabajamos de forma presencial o a distancia en toda la República, con aliados locales.</p>
-        <div class="v4-tags quietos">{''.join(f'<span>{c}</span>' for c in CIUDADES)}</div>
-        <div class="v4-cifras"><div><b>150+</b><span>proyectos</span></div><div><b>26</b><span>estados con proyectos</span></div><div><b>180+</b><span>municipios atendidos</span></div><div><b>40+</b><span>consultores senior en red activa</span></div></div>
-        <h3 class="t3" style="margin-top:26px">Experiencia en</h3>
-        <div class="v4-tags quietos">{''.join(f'<span>{s}</span>' for s in SECTORES)}</div>
-        <p style="margin-top:18px">Formación en Harvard Business School, Tec de Monterrey y ecosistemas de Silicon Valley.</p>
+{hecho_html(pegada=True)}
+
+<section class="sec oscura redondo" id="red" aria-labelledby="t-red">
+  <div class="grano"></div>
+  <div class="marco red">
+    <div class="rv">
+      <span class="etiqueta">Presencia nacional</span>
+      <h2 class="h2" id="t-red" style="margin-top:18px">Una red que cubre <span class="metal">todo México.</span></h2>
+      <p class="lead" style="margin-top:20px">Bases en cinco ciudades y aliados locales en toda la República. Formación en Harvard Business School y Tec de Monterrey.</p>
+      <div class="datos-red">
+        <div><b class="num"><span data-cuenta="150">150</span>+</b><span>proyectos</span></div>
+        <div><b class="num"><span data-cuenta="26">26</span></b><span>estados con proyectos</span></div>
+        <div><b class="num"><span data-cuenta="180">180</span>+</b><span>municipios atendidos</span></div>
+        <div><b class="num"><span data-cuenta="40">40</span>+</b><span>consultores senior en red activa</span></div>
       </div>
-      <div class="v4-caja">
-        <h3 class="t3">Revista Sparks</h3>
-        <p>Nuestro medio propio: historias de quienes mueven su comunidad y lo que vemos en el campo sobre decisiones y liderazgo en México.</p>
-        <a class="v4-liga" href="/sparks/">Leer Sparks {FLECHA}</a>
-        <form class="v4-boletin" novalidate aria-label="Boletín semanal de Sparks">
-          <p style="margin:6px 0 0;font-weight:650;color:var(--fg)">Boletín semanal: una edición, siete minutos de lectura.</p>
-          <input name="nombre" placeholder="Tu nombre" autocomplete="name" aria-label="Nombre">
-          <input name="correo" type="email" placeholder="Tu correo" autocomplete="email" aria-label="Correo">
-          <label class="casilla"><input type="checkbox" name="acepto" value="1"> Acepto recibir comunicaciones de Vorka México.</label>
-          <button class="btn blanco chico" type="submit">Suscribirme</button>
-          <p class="msg" role="status"></p>
-        </form>
-      </div>
+    </div>
+    <div class="mapa rv" aria-hidden="true">
+      <svg class="lineas" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><linearGradient id="oro-l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E6CF96"/><stop offset="1" stop-color="#C8A45C"/></linearGradient></defs>{lineas}</svg>
+      <div class="nodo centro" style="left:{cx}%;top:{cy}%"><span class="f">{v_metal('', 'gn')}</span><b>Vorka</b></div>
+      {nodos_html}
     </div>
   </div>
 </section>
-{platiquemos('/', titulo='¿Tu organización necesita avanzar? Cuéntanos.', fondo='')}
+
+<section class="sec" id="learn" aria-labelledby="t-learn">
+  <div class="marco" id="sparks">
+    <div class="cab par rv"><div><span class="etiqueta">Vorka Learn</span><h2 class="h2" id="t-learn">Guías para tu examen, <span class="metal">tu dinero y tu negocio.</span></h2></div>
+      <p class="lead">Gratis y sin registro. Cada dato sale de la institución que lo publica y la citamos al final de cada guía.</p></div>
+    {tiras}
+    <p class="rv" style="text-align:center;margin-top:28px"><a class="flecha" href="/learn/">Ver todas las guías {FLECHA}</a></p>
+  </div>
+</section>
+{platiquemos('/')}
 </main>
 {pie()}'''
     ld = {"@context": "https://schema.org", "@type": "ProfessionalService", "@id": ORG_ID, "name": "Vorka México", "url": SITIO, "logo": SITIO + "/vorka-logo.png",
-          "description": "Consultora de estrategia, liderazgo y comunicación para empresas, gobiernos y organizaciones en México.", "email": CORREO, "telephone": "+52 81 1780 4869",
+          "description": "Consultora de estrategia, liderazgo, comunicación y apps a la medida para empresas, gobiernos y organizaciones en México.", "email": CORREO, "telephone": "+52 81 1780 4869",
           "areaServed": "MX", "sameAs": [u for _, u, _ in REDES]}
     sitio_ld = {"@context": "https://schema.org", "@type": "WebSite", "name": "Vorka México", "url": SITIO + "/", "publisher": {"@id": ORG_ID}}
-    extra = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (ld, sitio_ld))
+    extra = ('<link rel="preload" as="image" href="/img/ciudades/monterrey-silla-1600.webp" fetchpriority="high">\n'
+             + ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (ld, sitio_ld)))
     return cabeza('Vorka México: consultoría en estrategia, liderazgo y comunicación',
-                  'Consultora mexicana de estrategia, liderazgo, comunicación y apps a la medida para empresas, gobiernos y organizaciones. 150+ proyectos en 26 estados. Platiquemos sin costo.',
+                  'Consultora mexicana de estrategia, liderazgo, comunicación y apps a la medida para empresas, gobiernos y organizaciones. 150+ proyectos en 26 estados. Diagnóstico sin costo.',
                   '/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- servicios (índice)
-# Corto (v5): una frase + una línea → 4 tarjetas (nombre, resultado, «Ver más») y cómo empezamos → banda con cifras →
-# lo que hemos hecho → 4 preguntas → foto → formulario corto. El detalle de cada servicio vive en su subpágina.
+# Cabecera v3 (V translúcida de fondo) → «Si necesitas…» (4) → cómo empezamos (3 pasos, sección oscura) →
+# lo que hemos hecho → banda de foto con cifras → preguntas → formulario corto. El detalle vive en cada subpágina.
 def servicios_hub():
+    elegir = ''.join(f'<a class="rv" href="/servicios/{s["slug"]}/" style="--d:{i * .06}s"><small>Si necesitas…</small><b>{e(s["necesitas"])}</b><span>{s["area"]} {FLECHA}</span></a>' for i, s in enumerate(SERVICIOS))
+    pasos = ''.join(f'<div class="rv" style="--d:{i * .08}s"><small>Paso {i + 1}</small><h3>{e(t)}</h3><p>{e(d)}</p></div>' for i, (t, d) in enumerate(PASOS_CORTOS))
     faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in PREGUNTAS_CORTAS]}
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Servicios", "item": SITIO + "/servicios/"}]}
-    cuerpo = f'''{nav('/servicios/', cta=('#platiquemos', 'Platiquemos'))}
+    cuerpo = f'''{nav('/servicios/', cta=CTA_FORM)}
 <main id="contenido">
-<section class="v4-hero v5-hero" aria-labelledby="t-hero">
+<section class="cabecera">
+  {v_metal('v-fondo', 'gh', oscuro=False)}
   <div class="marco">
     <div class="migas"><a href="/">Inicio</a><span>/</span><span>Servicios</span></div>
-    <h1 class="t1" id="t-hero">Consultoría para decidir, ejecutar y hacerte escuchar.</h1>
-    <p class="lead">Estrategia, liderazgo, comunicación y apps para empresas, gobiernos y organizaciones en México.</p>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#hecho">Ver ejemplos</a></div>
+    <span class="etiqueta">Servicios</span>
+    <h1 class="h1" style="margin-top:18px">Todo para decidir, ejecutar y <span class="metal">hacerte escuchar.</span></h1>
+    <p class="lead">Cuatro servicios que se combinan según tu momento, para empresas, gobiernos y organizaciones en México.</p>
+    <div class="botones"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="#hecho">Ver lo que hemos hecho</a></div>
   </div>
 </section>
-<section class="v4-sec" aria-labelledby="t-serv" style="padding-top:0">
+<section class="sec pegada" aria-label="Servicios"><div class="marco"><div class="elegir">{elegir}</div></div></section>
+<section class="sec oscura redondo" id="proceso" aria-labelledby="t-proc">
+  <div class="grano"></div>
   <div class="marco">
-    <h2 class="sr" id="t-serv">Servicios</h2>
-    {tarjetas_servicio()}
-    {pasos_html()}
+    <div class="cab par rv"><div><span class="etiqueta">Cómo empezamos</span><h2 class="h2" id="t-proc" style="margin-top:18px">Tres pasos. <span class="metal">Sin compromiso.</span></h2></div>
+      <p class="lead">Primero escuchamos; la propuesta llega solo si podemos ayudarte.</p></div>
+    <div class="linea-pasos tres">{pasos}</div>
   </div>
 </section>
-{banda_ciudades()}
-{ejemplos_html(fondo='suave')}
-<section class="v4-sec" aria-labelledby="t-faq">
+{hecho_html()}
+<section class="sec pegada" aria-label="Dónde trabajamos" style="padding-bottom:0"><div class="marco">{banda('monterrey-skyline', '50% 50%', 'Presencia nacional', '150+ proyectos en <span class="metal-osc">26 estados.</span>', CIFRAS_CHIPS)}</div></section>
+<section class="sec" aria-labelledby="t-faq">
   <div class="marco">
-    <div class="v4-cab centro"><h2 class="t2" id="t-faq">Preguntas frecuentes</h2></div>
+    <div class="cab centro rv"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" id="t-faq">Lo que todos <span class="metal">nos preguntan.</span></h2></div>
     <div class="faq">{faq_html(PREGUNTAS_CORTAS)}</div>
   </div>
 </section>
-{banda_foto('monterrey-silla')}
-{platiquemos('/servicios/', sig=False)}
+{platiquemos('/servicios/')}
 </main>
 {pie('empresas')}'''
     extra = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (faq_ld, migas_ld))
@@ -237,7 +278,8 @@ def servicios_hub():
                   '/servicios/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- detalle de servicio
-# Recortado: qué es, para quién, qué incluye, qué te llevas, preguntas y el mismo CTA arriba y abajo (formulario corto).
+# Cabecera v3 con la V recortada sobre la foto y el «En corto» arriba → qué incluye → (apps: lo que ya construimos) →
+# qué te llevas y fases (sección oscura) → preguntas → formulario corto → otros servicios.
 SEO_SERVICIO = {
     'estrategia': ('Consultoría en estrategia y dirección · Vorka México', 'Estrategia corporativa y pública, transformación, cultura, gobernanza y sucesión para empresas, gobiernos y fundaciones en México. Diagnóstico de 20 minutos sin costo.'),
     'liderazgo': ('Coaching ejecutivo y desarrollo de liderazgo · Vorka México', 'Coaching ejecutivo 1 a 1, coaching de equipos directivos, programas a la medida y assessment de talento en México. Diagnóstico de 20 minutos sin costo.'),
@@ -246,67 +288,75 @@ SEO_SERVICIO = {
 }
 
 def servicio(s):
-    caps = ''.join(f'<article><h3>{e(t)}</h3><p>{e(d)}</p></article>' for t, d in s['items'])
-    ents = ''.join(f'<article>{ICONOS[ic]}<h3>{e(t)}</h3><p>{e(d)}</p></article>' for ic, t, d in s['entregables'])
-    otros = ''.join(f'<a class="btn blanco" href="/servicios/{o["slug"]}/">{o["area"]}</a>' for o in SERVICIOS if o is not s)
-    titulo_form = re.sub(r'<[^>]+>', '', s['cta'])
+    caps = ''.join(f'<article class="capacidad rv" style="--d:{(i % 3) * .06}s"><span class="n">{i + 1:02d}</span><h3>{e(t)}</h3><p>{e(d)}</p></article>' for i, (t, d) in enumerate(s['items']))
+    ents = ''.join(f'<article class="entregable rv" style="--d:{i * .06}s">{ICONOS[ic]}<h3>{e(t)}</h3><p>{e(d)}</p></article>' for i, (ic, t, d) in enumerate(s['entregables']))
+    pasos = ''.join(f'<div class="rv" style="--d:{i * .08}s"><small>Fase 0{i + 1}</small><h3>{e(t)}</h3><p>{e(d)}</p></div>' for i, (t, d) in enumerate(s['pasos']))
     datos = ''.join(f'<div><b>{e(b)}</b><span>{e(t)}</span></div>' for b, t in s['datos'])
     datos = f'<div class="datos">{datos}</div>' if datos else ''
-    # Trabajo propio (solo «Apps y páginas»): productos de Vorka que se pueden ver hoy
-    propios = ''.join(f'<a class="v4-propio" href="{h}"><b>{e(n)}</b><span>{e(d)}</span></a>' for h, n, d in s.get('propios', []))
-    propios = f'''<section class="v4-sec" aria-labelledby="t-prop" style="padding-top:0">
+    otros = ''.join(caja_servicio(o, 'osc', foto_n=o['foto'], foco=o['foco']) for o in SERVICIOS if o is not s)
+    # Trabajo propio (solo «Apps y páginas»): productos de Vorka que se pueden abrir hoy
+    propios = ''.join(f'<a class="capacidad rv" href="{h}" style="--d:{(i % 3) * .06}s"><h3>{e(n)}</h3><p>{e(d)}</p></a>' for i, (h, n, d) in enumerate(s.get('propios', [])))
+    propios = f'''<section class="sec pegada" aria-labelledby="t-prop">
   <div class="marco">
-    <div class="v4-cab"><h2 class="t2" id="t-prop">Lo que ya construimos y operamos</h2><p class="lead">Son productos propios de Vorka, en línea hoy. Puedes abrir cada uno y probarlo.</p></div>
-    <div class="v4-propios">{propios}</div>
+    <div class="cab par rv"><div><span class="etiqueta">Trabajo propio</span><h2 class="h2" id="t-prop">Lo que ya construimos <span class="metal">y operamos.</span></h2></div>
+      <p class="lead">Productos de Vorka en línea hoy. Puedes abrir cada uno y probarlo.</p></div>
+    <div class="capacidades">{propios}</div>
   </div>
 </section>''' if propios else ''
-    cuerpo = f'''{nav('/servicios/', cta=('#platiquemos', 'Platiquemos'))}
+    cuerpo = f'''{nav('/servicios/', cta=CTA_FORM)}
 <main id="contenido">
-<section class="v4-hero" aria-labelledby="t-hero">
+<section class="cabecera cab-servicio">
+  {v_foto(s['cabecera'], s['cab_foco'])}
   <div class="marco">
     <div class="migas"><a href="/">Inicio</a><span>/</span><a href="/servicios/">Servicios</a><span>/</span><span>{s['area']}</span></div>
     <span class="etiqueta">Servicio {s['num']}</span>
-    <h1 class="t1" id="t-hero" style="margin-top:18px">{s['area']}</h1>
-    <p class="lead">{e(s['promesa'])}</p>
-    <dl class="v5-corto" aria-label="En corto">
+    <h1 class="h1" style="margin-top:18px;max-width:640px">{s['titulo']}</h1>
+    <p class="lead" style="max-width:520px">{e(s['promesa'])}</p>
+    <dl class="ficha corto" aria-label="En corto">
       <div><dt>Resultado</dt><dd>{e(s['breve'])}</dd></div>
       <div><dt>Para quién</dt><dd>{e(s['quien'])}</dd></div>
       <div><dt>Primer paso</dt><dd>Diagnóstico de 20 minutos, sin costo.</dd></div>
     </dl>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#incluye">Qué incluye</a></div>
+    <div class="botones"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="#incluye">Qué incluye</a></div>
     {datos}
   </div>
 </section>
-{banda_foto(s['cabecera'])}
-<section class="v4-sec" id="incluye" aria-labelledby="t-inc">
+<section class="sec pegada" id="incluye" aria-labelledby="t-inc">
   <div class="marco">
-    <div class="v4-cab"><h2 class="t2" id="t-inc">Qué incluye</h2><p class="lead">Tomamos solo lo que tu caso necesita.</p></div>
-    <div class="v4-lista">{caps}</div>
+    <div class="cab par rv"><div><span class="etiqueta">Qué incluye</span><h2 class="h2" id="t-inc">Capacidades que se combinan <span class="metal">según tu momento.</span></h2></div>
+      <p class="lead"><b style="color:var(--fg)">Para quién:</b> {e(s['para'])}</p></div>
+    <div class="capacidades">{caps}</div>
   </div>
 </section>
 {propios}
-<section class="v4-sec suave" aria-labelledby="t-ent">
+<section class="sec oscura redondo" aria-labelledby="t-ent">
+  <div class="grano"></div>
   <div class="marco">
-    <div class="v4-cab"><h2 class="t2" id="t-ent">Qué te llevas</h2><p class="lead">{e(s['resultado'])}</p></div>
-    <div class="v4-lista" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">{ents}</div>
+    <div class="cab par rv"><div><span class="etiqueta">Qué te llevas</span><h2 class="h2" id="t-ent" style="margin-top:18px">Entregables claros, <span class="metal">no presentaciones.</span></h2></div>
+      <p class="lead">{e(s['resultado'])}</p></div>
+    <div class="entregables">{ents}</div>
+    <div class="linea-pasos">{pasos}</div>
   </div>
 </section>
-<section class="v4-sec" aria-labelledby="t-faq">
+<section class="sec" aria-labelledby="t-faq">
   <div class="marco">
-    <div class="v4-cab centro"><span class="etiqueta">Antes de empezar</span><h2 class="t2" id="t-faq">Preguntas frecuentes</h2></div>
+    <div class="cab centro rv"><span class="etiqueta">Antes de empezar</span><h2 class="h2" id="t-faq">Preguntas frecuentes</h2></div>
     <div class="faq">{faq_html(PREGUNTAS_CORTAS)}</div>
   </div>
 </section>
-{platiquemos(f"/servicios/{s['slug']}/", marcar=s['interes'], area=s['slug'], titulo=titulo_form)}
-<section class="v4-sec" aria-label="Otros servicios" style="padding-top:clamp(40px,5vw,64px);padding-bottom:clamp(40px,5vw,64px)">
-  <div class="marco"><p style="font-weight:650;margin-bottom:14px">También podemos ayudarte con:</p><div class="v4-otros">{otros}<a class="btn blanco" href="/servicios/">Todos los servicios</a></div></div>
+{platiquemos(f"/servicios/{s['slug']}/", marcar=s['interes'], area=s['slug'], titulo=s['cta'])}
+<section class="sec" aria-labelledby="t-otros">
+  <div class="marco">
+    <div class="cab rv"><span class="etiqueta">Ecosistema Vorka</span><h2 class="h2" id="t-otros" style="margin-top:18px">También podemos ayudarte con…</h2></div>
+    <div class="otros">{otros}</div>
+  </div>
 </section>
 </main>
 {pie('empresas')}'''
     ld = {"@context": "https://schema.org", "@type": "Service", "name": s['area'], "serviceType": s['area'], "description": f"{s['promesa']} {s['para']}",
           "url": f"{SITIO}/servicios/{s['slug']}/", "areaServed": {"@type": "Country", "name": "México"},
           "provider": {"@type": "ProfessionalService", "name": "Vorka México", "url": SITIO + "/"},
-          "potentialAction": {"@type": "ReserveAction", "name": "Agenda tu diagnóstico sin costo", "target": f"{SITIO}/agenda/?area={s['slug']}"}}
+          "potentialAction": {"@type": "ReserveAction", "name": "Agenda tu diagnóstico sin costo", "target": f"{SITIO}/servicios/{s['slug']}/#platiquemos"}}
     migas = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Servicios", "item": SITIO + "/servicios/"},
         {"@type": "ListItem", "position": 3, "name": s['area'], "item": f"{SITIO}/servicios/{s['slug']}/"}]}
