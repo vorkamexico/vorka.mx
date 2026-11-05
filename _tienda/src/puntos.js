@@ -31,6 +31,7 @@ import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } fro
 import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
 import { alGanarVenta, alGanarRenovacion, redAlReembolsar, fijarPatrocinadorAlta, datosEmbajador, invitadorDe } from './embajadores.js';
 import { paginaUnete, paginaEmbajadores, vistasEmbajador } from './embajadores-app.js';
+import { paginaCatalogo, itemsCatalogo, mensajeCatalogo, ligaCatalogo } from './catalogo-compartir.js';
 const SITIO = 'https://vorka.mx';   // la liga del QR de Wallet (os solo firma ligas de vorka.mx)
 
 export { COBRO_MINIMO };
@@ -612,6 +613,8 @@ export async function datosApp(env, email) {
     top: top.map(t => ({ ...t, yo: t.email === email, email: undefined })),
     // Embajadores Vorka (embajadores.js): rango del mes, equipo, ganancias separadas, liga de invitación y Líderes del mes
     embajadores: await datosEmbajador(env, email, { code: af?.publico || code }),
+    // Catálogo para compartir en grupos de WhatsApp: la liga con su código (la vista previa trae la portada) y el mensaje listo
+    catalogo: await itemsCatalogo(env).then(s => ({ liga: ligaCatalogo(af?.publico || code), mensaje: mensajeCatalogo(s, { code: af?.publico || code, nombre: nombrePublico(cuenta.nombre || af?.nombre || '') || null }) })).catch(() => null),
   };
 }
 
@@ -663,6 +666,7 @@ async function accion(req, env, url, email) {
 export async function rutasPuntos(req, env, url) {
   const p = url.pathname.replace(/\/+$/, '') || '/', M = req.method;
   if (p === '/tienda/puntos' && M === 'GET') return paginaPrograma(env, { cuenta: await cuentaActual(req, env) });
+  if (p === '/tienda/catalogo' && M === 'GET') return paginaCatalogo(env, url);
   if (p === '/tienda/cuenta' && M === 'GET') {
     const c = await cuentaActual(req, env);
     if (!c) return paginaEntrarApp(env);
