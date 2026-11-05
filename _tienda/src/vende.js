@@ -9,6 +9,8 @@ import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 const APP = 'https://vende.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -76,10 +78,11 @@ ${heroMarca('vende', {
   botones: `<a class="pm-btn" href="${APP}/#/entrar">Empieza gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precio</a>`,
   despues: `<p class="pm-precio"><b>Gratis</b> para empezar, sin tarjeta${mensual ? ` · Vende Pro por ${precio(mensual.prod)} al mes` : ''}</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>`,
 })}
-${indiceProducto('vende', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['asi-se-ve', 'Así se ve'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/#/entrar">Empieza gratis</a>`)}
+${indiceProducto('vende', [['que-es', 'Qué es'], ['demo', 'Pruébala'], ['como', 'Cómo funciona'], ['asi-se-ve', 'Así se ve'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/#/entrar">Empieza gratis</a>`)}
 ${seccionQueEs('vende', { titulo: 'Tus clientas, pedidos y cobros, en un solo lugar.',
   texto: 'Anotas a tus clientas y cada pedido, y Vende calcula cuándo le toca recomprar, cuánto te debe y cuánto ganaste de verdad. <b>Cada mañana te dice a qué clienta escribirle</b>, con el WhatsApp ya redactado. Tus clientas te pagan directo a ti, como siempre.',
   para: [['Vendedoras por catálogo', 'Varias marcas a la vez, con su costo y su precio, y el aviso de cuándo le toca recomprar a cada clienta.'], ['Cocina por encargo', 'Costo por porción, menú de la semana y pedidos con fecha de entrega y anticipo.'], ['Marcas, distribuidores y directoras', 'Darle Vende Pro a todo tu equipo con un programa patrocinado.']] })}
+${seccionDemo('vende', demoDe('vende'))}
 
 <section class="ve-sec" id="como"><div class="marco">
   <div class="ve-cab"><span class="ve-et">Cómo funciona</span><h2>Tu negocio, sin libreta ni hojas sueltas.</h2><p>Registrar a una clienta toma menos de 20 segundos. Lo demás lo calcula Vende: cuándo le toca recomprar, cuánto te debe y cuánto ganaste de verdad.</p></div>
