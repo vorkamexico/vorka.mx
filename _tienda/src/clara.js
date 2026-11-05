@@ -86,7 +86,7 @@ export async function paginaClara(env, req, url) {
   migas('Clara', RUTA_CLARA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Clara' },
-    titulo: 'Clara: tus tarjetas y tu dinero claros | Gratis con 1 tarjeta', ruta: RUTA_CLARA, imagen: OG_CLARA,
+    titulo: 'Clara: app para controlar tus gastos y tu tarjeta de crédito | Gratis con 1 tarjeta', ruta: RUTA_CLARA, imagen: OG_CLARA,
     descripcion: 'Recordatorios del corte y del pago de tu tarjeta, registro de gastos, ¿Me alcanza? y resumen del mes. Gratis con 1 tarjeta, desde 15 años. Pro desde $49 al mes.',
     head: `<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

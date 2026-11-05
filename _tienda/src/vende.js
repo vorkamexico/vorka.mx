@@ -65,7 +65,7 @@ export async function paginaVende(env, req, url) {
   migas('Vende', RUTA_VENDE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Vende' },
-    titulo: 'Vende: tus clientas, pedidos y cobros en orden | Gratis para empezar', ruta: RUTA_VENDE, imagen: 'https://vorka.mx/assets/tienda/v3/vende-og.jpg',
+    titulo: 'Vende: app para vender por catálogo: pedidos, cobros y tu ganancia | Gratis para empezar', ruta: RUTA_VENDE, imagen: 'https://vorka.mx/assets/tienda/v3/vende-og.jpg',
     descripcion: 'Para vendedoras por catálogo y por encargo: pedidos, cobros con estado de cuenta y tu ganancia real. Funciona sin internet. Gratis, sin tarjeta.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
