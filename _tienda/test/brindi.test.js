@@ -37,7 +37,7 @@ describe('Brindi en la tienda', () => {
     env.DB.raw.exec("UPDATE products SET activo = 1 WHERE id LIKE 'prod_brindi_%'");
     const r = await pedir('/tienda/brindi/');
     expect(r.status).toBe(200);
-    expect(r.headers.get('content-security-policy')).toContain('frame-src https://os.vorka.mx');
+    expect(r.headers.get('content-security-policy')).toContain("frame-src 'self' https://os.vorka.mx");
     const html = await r.text();
     for (const t of ['$299 MXN', '$449 MXN', '$699 MXN', '$1,290 MXN', 'Hasta <b>150</b>', 'Hasta <b>600</b>', 'Recomendado', 'id="form-brindi"', 'value="brindi-celebracion" data-precio="69900" selected', '+100 invitados', '/i/demo-xv', 'QR de acceso', 'Powered by vorka.mx', 'FAQPage'])
       expect(html, t).toContain(t);
