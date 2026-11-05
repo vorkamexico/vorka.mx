@@ -14,6 +14,8 @@ import { cuentaActual, crearSesion } from './puntos.js';
 import { validarAcceso } from './brindi.js';
 import { refDeVisita, seccionFaq } from './tienda.js';
 import { heroMarca, seccionQueEs, indiceProducto, lineaMarca, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 import { suscripcionApp } from './suscripciones.js';
 import { lineaDe, LINEAS } from './lineas.js';
 import {
@@ -224,11 +226,12 @@ ${heroMarca('toolkit', {
   botones: aLaVenta.length ? `<a class="pm-btn" href="#comprar">Suscribirme ${FLECHA}</a><a class="pm-btn sec" href="#usos">Para qué sirve</a>` : '<a class="pm-btn" href="mailto:hola@vorka.mx?subject=Av%C3%ADsenme%20cuando%20abra%20el%20Toolkit">Avísame cuando abra</a>',
   despues: `<p class="pm-precio">${aLaVenta.length ? `<b>${mx(t?.precio_centavos)} al mes</b> · o ${mx(pro?.precio_centavos)} con Pro y recibes ${mx(bono(pro))}` : 'Muy pronto a la venta.'}</p>`,
 })}
-${indiceProducto('toolkit', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['usos', 'Para qué sirve'], ...(tabla ? [['ejemplo', 'Ejemplo']] : []), ['ayuda', 'Preguntas']], aLaVenta.length ? '<a class="pm-btn" href="#comprar">Suscribirme</a>' : '')}
+${indiceProducto('toolkit', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['como', 'Cómo funciona'], ['usos', 'Para qué sirve'], ...(tabla ? [['ejemplo', 'Ejemplo']] : []), ['ayuda', 'Preguntas']], aLaVenta.length ? '<a class="pm-btn" href="#comprar">Suscribirme</a>' : '')}
 ${seccionQueEs('toolkit', { titulo: 'Saldo cada mes para toda la tienda.',
   texto: 'Pagas una suscripción al mes y <b>recibes más saldo del que pagas</b>, a precio de lista, para usarlo en la tienda, en tus apps y en códigos de regalo. Tu saldo nunca vence y se acumula.',
   para: [['Quien compra seguido en la tienda', 'Simuladores, reportes e invitaciones sin volver a poner su tarjeta.'], ['Quien usa las apps de Vorka', 'Meses de Clara, Cuentas, Vende, Agenda y Vuelve a su precio mensual.'],
     ['Quien regala o revende', 'Códigos de un solo uso del 100 % de un producto, que manda por WhatsApp.']] })}
+${seccionDemo('toolkit', demoDe('toolkit'))}
 <section class="pm-sec tk" id="como"><div class="marco">
   <div class="tk-g">
   <div>

@@ -218,7 +218,7 @@ describe('páginas y ligas', () => {
     expect(h).not.toContain('tarjetas reales'); expect(h).toContain('Estos son ejemplos');
     expect(h).not.toMatch(/factura de tu suscripci/); expect(h).toContain('comprobante de pago');
     expect(h).not.toContain('href="/vuelve/negocios"');   // con menos de 5 negocios el directorio no se presume
-    expect(h).toContain('href="https://vorka.mx/vuelve/demo"'); expect(h).toContain('aria-label="Código QR de la tarjeta de ejemplo"');
+    expect(h).toContain('href="https://vorka.mx/vuelve/demo"'); expect(h).toContain('<iframe src="/vuelve/demo"'); expect(h).toContain('data-copiar="https://vorka.mx/vuelve/demo"');
     expect(h).toContain('id="vu-calc"'); expect(h).toContain('data-precio="399"');
     expect(h).toContain('Te lo dejamos listo'); expect(h).toContain('https://wa.me/528117804869?text=');
     expect(h).toContain('Pruébalo 7 días gratis');

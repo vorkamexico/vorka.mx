@@ -8,6 +8,8 @@ import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, migas } from './seo.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 const APP = 'https://inmuebles.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -77,10 +79,11 @@ ${heroMarca('portales', {
   botones: `<a class="pm-btn" href="#planes">Ver planes ${FLECHA}</a><a class="pm-btn sec" href="${APP}/panel">Ya tengo cuenta</a>`,
   despues: `<p class="pm-precio">Desde <b>${base ? precio(base) : '$199 MXN'}</b> al mes · sin comisión por venta · cancela cuando quieras</p>`,
 })}
-${indiceProducto('portales', [['que-es', 'Qué es'], ['incluye', 'Qué incluye'], ['como', 'Cómo funciona'], ['planes', 'Planes'], ['ayuda', 'Preguntas']], '<a class="pm-btn" href="#planes">Ver planes</a>')}
+${indiceProducto('portales', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['incluye', 'Qué incluye'], ['como', 'Cómo funciona'], ['planes', 'Planes'], ['ayuda', 'Preguntas']], '<a class="pm-btn" href="#planes">Ver planes</a>')}
 ${seccionQueEs('portales', { titulo: 'Tu sitio inmobiliario, con tu marca y tu dominio.',
   texto: 'Un sitio con portada, catálogo con mapa y una ficha por propiedad que se ve bien en el celular. Tú subes las propiedades desde tu teléfono; <b>los interesados te escriben por WhatsApp</b> y quedan en tu panel con la campaña de donde llegaron.',
   para: [['Brokers independientes', 'Que tus clientes vean a tu inmobiliaria, con tu logo y tu dominio, no a una plataforma.'], ['Inmobiliarias con varios asesores', 'Cada asesor con su acceso y los prospectos asignados a cada uno.'], ['Quien empieza a vender en línea', 'Tener tu portal sin saber de páginas web: nombre, WhatsApp y tu logo, y listo.']] })}
+${seccionDemo('portales', demoDe('portales'))}
 
 <section class="pi-sec" id="incluye"><div class="marco">
   <div class="pi-cab"><span class="pi-et">Lo que incluye</span><h2>Todo lo que una inmobiliaria necesita para vender en línea.</h2></div>

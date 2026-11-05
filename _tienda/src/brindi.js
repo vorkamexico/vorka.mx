@@ -7,7 +7,7 @@ import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
-import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
@@ -15,6 +15,8 @@ import { IMPACTO } from './gracias.js';
 import { PCT_REFERIDO } from './descuentos.js';
 
 export const APP = 'brindi';
+// Ícono de WhatsApp de los botones para compartir la demo (el mismo de demos/marco.js)
+const WA = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>';
 const OS = 'https://os.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const accesoDe = c => { try { return JSON.parse(c || '{}').acceso || null; } catch { return null; } };
@@ -231,7 +233,7 @@ ${heroMarca('brindi', {
   botones: `<a class="pm-btn" id="br-cta" href="${APP}" rel="noopener">Créala gratis ${FLECHA}</a>${aLaVenta ? '<a class="pm-btn sec" href="#planes">Ver precios</a>' : ''}`,
   despues: `<p class="pm-precio">${aLaVenta ? `<b>Desde ${precio({ precio_centavos: desde })}</b> un pago por evento · pagas solo cuando la quieras publicar, sin mensualidades` : 'Muy pronto a la venta. Ya puedes crear tu invitación gratis y verla en vista previa.'}</p><p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/brindi/">Entra aquí</a></p>`,
 })}
-${indiceProducto('brindi', [['que-es', 'Qué es'], ['como-funciona', 'Cómo funciona'], ...(GUIAS[clave] ? [['guia', V.corta]] : []), ...(clave === 'organizadores' ? [['organizadores', 'Para organizadores']] : []), ['demos', 'Ejemplos'], ['planes', 'Precios'], ['ayuda', 'Preguntas']],
+${indiceProducto('brindi', [['que-es', 'Qué es'], ['como-funciona', 'Cómo funciona'], ...(GUIAS[clave] ? [['guia', V.corta]] : []), ...(clave === 'organizadores' ? [['organizadores', 'Para organizadores']] : []), ['demos', 'Pruébala'], ['planes', 'Precios'], ['ayuda', 'Preguntas']],
   `<a class="pm-btn" href="${APP}" rel="noopener">Créala gratis</a>`)}
 ${seccionQueEs('brindi', { titulo: 'Una invitación digital que mandas por WhatsApp.',
   texto: 'Eliges un diseño, cambias textos, fotos y colores, y la compartes con un enlace y un QR. <b>Tus invitados confirman desde su celular</b> y tú ves quién viene y cuántos son, en tiempo real. Sin imprenta y sin que instalen nada.',
@@ -274,7 +276,10 @@ ${clave === 'organizadores' ? `
 </div></section>`}
 
 <section class="t-sec" id="demos"><div class="marco">
-  <div class="cab rv"><span class="etiqueta">Ejemplos</span><h2 class="h2">Ábrelas como si fueras invitado</h2><p class="lead">Son de demostración: puedes tocar todo, las respuestas no se guardan.</p></div>
+  <div class="cab rv"><span class="etiqueta">Pruébala aquí</span><h2 class="h2">Ábrelas como si fueras invitado</h2><p class="lead">Son de demostración: puedes tocar todo, las respuestas no se guardan.</p>
+    <div class="pm-demo-acc br-comp" style="--pm:${colorDe('brindi')}"><a class="pm-btn" href="${OS}/i/${V.demo}" target="_blank" rel="noopener">Abrir en pantalla completa</a>
+      <a class="pm-btn sec" href="https://wa.me/?text=${encodeURIComponent(`Mira esta invitación de ejemplo de Brindi y ábrela como si fueras invitado: ${OS}/i/${V.demo}`)}" target="_blank" rel="noopener">${WA} Mandar por WhatsApp</a>
+      <button class="pm-btn sec" type="button" data-copiar="${OS}/i/${V.demo}">Copiar liga</button></div></div>
   <div class="br-vivo">
   <div class="br-tel" aria-label="Ejemplo de invitación en un celular"><iframe src="${OS}/i/${V.demo}" title="Demostración de una invitación" loading="lazy"></iframe><span class="br-tel-cinta">Toca y explora · demostración</span></div>
   <div class="br-demos">${ordenDemos.map(([s, t, d, og]) => `<a class="br-demo rv" href="${OS}/i/${s}" target="_blank" rel="noopener"><img src="${OS}/brindi/og/${og}.webp" alt="" loading="lazy" width="1200" height="630"><b>${t}</b><span>${d}</span>${og === 'gala' ? `<span class="br-demo-nota">Diseño Gala · incluido en Premium${gala ? ` o +${precio(gala.prod)} en otro plan` : ''}</span>` : ''}<span class="flecha">Abrir ${FLECHA}</span></a>`).join('')}</div>
@@ -353,6 +358,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .br-incluir li,.br-tiempos li{border-left:3px solid var(--br-vino);padding:2px 0 2px 14px}.br-incluir p,.br-tiempos p{margin:4px 0 0;color:var(--fg-2)}
 .br-guia-g .h3{margin:0}.br-guia-g .t-faq{margin-top:12px}.br-guia-g .t-nota{margin:10px 0 24px}
 /* el celular con la demostración, junto a los ejemplos */
+.br-comp{margin-top:20px}
 .br-vivo{display:grid;gap:32px;align-items:start}.br-vivo>*{min-width:0}
 @media(min-width:960px){.br-vivo{grid-template-columns:340px 1fr;gap:48px}.br-vivo .br-demos{grid-template-columns:repeat(2,1fr)}}
 .br-tel{position:relative;justify-self:center;width:min(340px,86vw);aspect-ratio:9/18.5;border:10px solid #1f1a1d;border-radius:44px;overflow:hidden;background:var(--card);box-shadow:0 40px 80px -30px rgba(31,26,29,.55)}@media(min-width:960px){.br-tel{position:sticky;top:80px}}
