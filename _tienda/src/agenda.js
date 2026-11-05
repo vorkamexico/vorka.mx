@@ -4,6 +4,8 @@
 // y la página de reservas de cada negocio en vorka.mx/citas/<negocio> (→ os /con/<negocio>, ver index.js › citasPublico).
 // Aquí solo se vende.
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -144,10 +146,12 @@ ${heroMarca('agenda', {
   botones: `<a class="pm-btn" href="${esc(nuevo)}">Pruébala 7 días gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precios</a>`,
   despues: `<p class="pm-precio"><b>${mensual ? precio(mensual.prod) : `$${precioProf}`}</b> al mes por profesional · prueba 7 días gratis, sin tarjeta</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra en agenda.vorka.mx</a></p>`,
 })}
-${indiceProducto('agenda', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['compara', 'Compara'], ['planes', 'Precios'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébala gratis</a>`)}
+${indiceProducto('agenda', [['que-es', 'Qué es'], ['demo', 'Pruébala'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['compara', 'Compara'], ['planes', 'Precios'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébala gratis</a>`)}
 ${seccionQueEs('agenda', { titulo: 'Tu página de citas, con tu logo y tu liga.',
   texto: 'Compartes tu liga en tu WhatsApp, tu Instagram o en un QR en tu mostrador. Tus clientes eligen el servicio, con quién, el día y la hora, sin descargar nada, y su cita queda confirmada al instante. <b>Los recordatorios salen solos</b> y tú ves tu día en el celular.',
   para: [['Consultorios: medicina, psicología, nutrición, dentistas, fisioterapia', 'Dejar de contestar «¿tienes lugar mañana?» a cada rato, y tener menos faltas.'], ['Barberías, estéticas y salones', 'Que cada barbero tenga su horario y cada servicio su duración real.'], ['Asesorías legales, contables o de negocio', 'Que te agenden en línea la primera asesoría o la revisión de documentos.']] })}
+
+${seccionDemo('agenda', demoDe('agenda'))}
 
 <section class="ag-sec" id="como"><div class="marco ag-como">
   <div><div class="ag-cab izq"><span class="ag-et">Cómo funciona</span><h2>Lista hoy. Desde tu celular.</h2></div>

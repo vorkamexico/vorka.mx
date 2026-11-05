@@ -47,6 +47,8 @@ import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPa
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
 import { rutasToolkit } from './toolkit-paginas.js';
+import { paginaDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 import { resumenToolkit, estadoToolkit, movimientosDe, codigosDe } from './toolkit.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
@@ -443,6 +445,10 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/ruta-de-impacto' || url.pathname === '/tienda/ruta-de-impacto/') return url.pathname.endsWith('/') ? await paginaRuta(env, request, url) : Response.redirect(`${url.origin}/tienda/ruta-de-impacto/${url.search}`, 301);
       // Evaluación de liderazgo Vorka: su ficha propia (la app vive en liderazgo.vorka.mx)
       if (url.pathname === '/tienda/evaluacion-liderazgo' || url.pathname === '/tienda/evaluacion-liderazgo/') return url.pathname.endsWith('/') ? await paginaLiderazgo(env, request, url) : Response.redirect(`${url.origin}/tienda/evaluacion-liderazgo/${url.search}`, 301);
+      // Demos en vivo de cada producto (src/demos): /tienda/demo/<clave>/ · en pantalla completa o dentro del celular de su página
+      { const m = url.pathname.match(/^\/tienda\/demo\/([a-z0-9-]+)\/?$/); const d = m && demoDe(m[1]);
+        if (d && !d.url) return url.pathname.endsWith('/') ? paginaDemo(m[1], d, url) : Response.redirect(`${url.origin}${url.pathname}/${url.search}`, 301);
+        if (d?.url) return Response.redirect(d.url.startsWith('http') ? d.url : `${url.origin}${d.url}`, 302); }
       if (url.pathname === '/tienda/agenda' || url.pathname === '/tienda/agenda/') return url.pathname.endsWith('/') ? await paginaAgenda(env, request, url) : Response.redirect(`${url.origin}/tienda/agenda/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
       if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);

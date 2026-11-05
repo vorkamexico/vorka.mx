@@ -26,7 +26,7 @@ export function seguridad(n, { stripe = false, frames = [], anuncios = false } =
     'content-security-policy': [
       "default-src 'self'",
       `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com${st}${ad('script')}`,
-      ...(fr.length ? [`frame-src ${fr.join(' ')}`] : []),
+      ...(fr.length ? [`frame-src 'self' ${fr.join(' ')}`] : []),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
@@ -175,6 +175,8 @@ export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}
 
 // La pastilla "Entrar" se queda visible en celular (la de "Gana puntos" se esconde en pantallas chicas)
 const ENTRAR_CSS = '<style>.nav.t-navs .t-entrar{gap:7px}.nav.t-navs .t-entrar svg{width:18px;height:18px}@media (max-width:430px){.nav.t-navs .t-pastilla.t-entrar{display:inline-flex;min-height:40px;padding:0 14px}}.t-ya{margin:14px 0 0;font-size:15px;opacity:.85}.t-ya a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}</style>';
+// Botones «Copiar liga» (demos en vivo y otros): copian data-copiar y avisan en el mismo botón
+const SCRIPT_COPIAR = `document.querySelectorAll('[data-copiar]').forEach(b=>b.addEventListener('click',async()=>{const t=b.textContent;try{await navigator.clipboard.writeText(b.dataset.copiar);b.textContent='¡Liga copiada!'}catch(e){prompt('Copia la liga:',b.dataset.copiar)}setTimeout(()=>b.textContent=t,2200)}));`;
 export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null, whatsappTexto = '', ogTipo = 'website' }) {
   const n = nonce(), temporada = temporadaActual();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
@@ -211,7 +213,7 @@ ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" cl
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
-${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SALDO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${cuerpo.includes('data-copiar=') ? `<script nonce="${n}">${SCRIPT_COPIAR}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SALDO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

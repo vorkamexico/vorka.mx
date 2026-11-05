@@ -14,7 +14,7 @@ export const MARCAS = {
   'simulador-prepa-ug': ['#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']],
   brindi: ['#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']],
   cupo: ['#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']],
-  agenda: ['#05785A', 'Agenda', 'Tus clientes reservan solos, [a cualquier hora.]', ['Confirmación **al instante**', '**Recordatorios**', 'Prueba **7 días** gratis']],
+  agenda: ['#05785A', 'Agenda', 'Tus clientes reservan solos, [a cualquier hora.]', ['Confirmación **al instante**', 'Recordatorios **automáticos**', 'Prueba **7 días** gratis']],
   vuelve: ['#B42A44', 'Vuelve', 'Que tus clientes [vuelvan solos.]', ['**Sin** descargar app', 'Avisos **automáticos**', 'Prueba **7 días** gratis']],
   cuentas: ['#0E6F78', 'Cuentas', 'Lo que prestas, [claro y en orden.]', ['Intereses **claros**', '**PDF** y Excel', 'Prueba **7 días** gratis']],
   vende: ['#C2256F', 'Vende', 'Clientas, pedidos y cobros, [en orden.]', ['Ganancia **real**', '**WhatsApp** listo', '**Gratis** para empezar']],
@@ -73,9 +73,15 @@ export const CSS_MARCA = `
 .pm-datos{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;padding:0;margin:26px 0 0;font-size:15px;color:var(--fg-2)}.pm-datos b{color:var(--fg);font-weight:750}
 .pm-obj{border-radius:28px;overflow:hidden;background:#F1F0F2;max-width:520px;width:100%;justify-self:center}
 :root[data-tema=oscuro] .pm-obj img{filter:brightness(.88)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .pm-obj img{filter:brightness(.88)}}
-.pm-obj img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
-@media(max-width:959px){.pm-obj{max-width:440px}}
+.pm-obj img{display:block;width:100%;height:auto;aspect-ratio:672/1000;object-fit:contain;object-position:center}
+@media(max-width:959px){.pm-obj{max-width:400px}}
 .pm-hero .t-nav-tienda{margin-top:18px}
+/* Legibilidad en todas las páginas de producto: títulos con espacio entre palabras (no «Menosllamadas»), renglones
+   parejos y nada de cortes; los campos de compra nunca se salen de la pantalla en celulares chicos */
+:is(h1,h2,h3):not(.sr),.pm-h1,.pm-h2{letter-spacing:-.02em!important;word-spacing:.04em;text-wrap:balance;overflow-wrap:break-word}
+:is(h1,h2,h3) :is(em,span,b,strong,i){letter-spacing:inherit!important}
+p,li,figcaption{text-wrap:pretty}
+.t-campo{min-width:0}.t-campo :is(select,input,textarea){max-width:100%;min-width:0;box-sizing:border-box}
 `;
 
 // «Qué es» (en palabras simples) y «Para quién es» (el problema de cada quien, en su idioma: así también lo encuentra Google)
@@ -102,4 +108,14 @@ export const CSS_SECCIONES = `
 .pm-grande{font-size:clamp(18px,2.2vw,21px);line-height:1.55;margin:18px 0 0;color:var(--fg)}.pm-grande b{color:var(--pm)}
 .pm-para{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}.pm-para li{border:1px solid var(--line);border-radius:18px;padding:16px 18px;background:var(--card,var(--bg))}
 .pm-para b{display:block;font-size:16.5px;color:var(--fg)}.pm-para span{display:block;font-size:15px;color:var(--fg-2);margin-top:2px;line-height:1.45}
+/* «Pruébalo aquí»: demo en vivo dentro de un celular (src/demos) */
+.pm-demo-g{display:grid;gap:40px;align-items:center}@media(min-width:960px){.pm-demo-g{grid-template-columns:1fr auto;gap:72px}}
+.pm-demo-lista{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+.pm-demo-lista li{position:relative;padding-left:30px;font-size:16.5px;line-height:1.45;color:var(--fg)}
+.pm-demo-lista li::before{content:"";position:absolute;left:0;top:.2em;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--pm) 14%,transparent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.6 2.6L14 7.6' fill='none' stroke='%23000' stroke-opacity='.55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.pm-demo-acc{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}.pm-demo-acc .pm-btn{min-height:48px;padding:0 20px;font-size:15px}
+.pm-demo-acc .pm-btn:not(.sec){color:#fff!important}.pm-demo-acc svg{width:18px;height:18px}
+.pm-demo-nota{margin:16px 0 0;font-size:14px;color:var(--fg-2);max-width:520px}
+.pm-tel{justify-self:center;width:min(360px,88vw);height:min(720px,82vh);border:10px solid #1d1a1f;border-radius:46px;overflow:hidden;background:#fff;box-shadow:0 40px 80px -34px rgba(20,17,20,.55)}
+.pm-tel iframe{width:100%;height:100%;border:0;display:block}
 `;
