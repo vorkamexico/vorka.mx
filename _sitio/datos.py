@@ -31,7 +31,7 @@ SERVICIOS = [
             ('tablero', 'Tablero de indicadores', 'Métricas acordadas desde el inicio para medir el avance.'),
             ('ruta', 'Acompañamiento a la ejecución', 'Operamos dentro hasta que el cambio funciona solo.'),
         ],
-        'datos': [('150+', 'proyectos entregados con resultados verificables'), ('3 sectores', 'público, privado y sociedad civil, con el mismo criterio'), ('HBS · Tec', 'y Silicon Valley: formación cruzada del equipo directivo')],
+        'datos': [('150+', 'proyectos entregados con resultados verificables'), ('3 sectores', 'público, privado y sociedad civil, con el mismo criterio'), ('Harvard Business School · Tec de Monterrey', 'y Silicon Valley: formación cruzada del equipo directivo')],
         'cta': 'Cuéntanos qué decisión está <span class="metal">sobre la mesa.</span>',
         # Índice simplificado (/servicios/ y el inicio): una línea de resultado y qué opciones del formulario corto se marcan
         'linea': 'Un rumbo claro, prioridades acordadas y un equipo que las ejecuta con el mismo criterio.',
@@ -69,7 +69,7 @@ SERVICIOS = [
             ('candado', 'Bitácora confidencial', 'Registro de avances y acuerdos de cada sesión.'),
             ('tablero', 'Reporte de cierre', 'Resultados contra objetivos y transferencia al equipo.'),
         ],
-        'datos': [('1 : 1', 'acompañamiento confidencial con bitácora e indicadores'), ('Cero catálogo', 'cada programa parte de un caso real del cliente'), ('HBS · Tec', 'y Silicon Valley: formación cruzada del equipo de coaches')],
+        'datos': [('1 : 1', 'acompañamiento confidencial con bitácora e indicadores'), ('Cero catálogo', 'cada programa parte de un caso real del cliente'), ('Harvard Business School · Tec de Monterrey', 'y Silicon Valley: formación cruzada del equipo de coaches')],
         'cta': 'Cuéntanos qué liderazgo <span class="metal">quieres desarrollar.</span>',
         'linea': 'Líderes que deciden con más claridad y una segunda línea lista para sostener la operación.',
         'interes': ('equipos',),
