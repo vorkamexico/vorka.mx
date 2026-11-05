@@ -10,6 +10,8 @@ import { oferta, ofertas, migas } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { seccionGuias } from './guias.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from '../marca-producto.js';
+import { seccionDemo } from '../demos/marco.js';
+import { demoDe } from '../demos/index.js';
 
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const CSS = `<style>
@@ -229,7 +231,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   const desde = planes.length ? planes.reduce((m, x) => x.prod.precio_centavos < m.prod.precio_centavos ? x : m) : null;
   const precioHero = desde ? `Desde <b>${precio(desde.prod)}</b> · acceso inmediato` : prod ? `<b>${precioTxt}</b> · acceso inmediato` : 'Muy pronto en la tienda';
   const q = v.queEs || {};
-  const partes = [['que-es', 'Qué es'], ['probar', 'Pruébalo gratis'], ['comprar', 'Precios'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['estructura', 'El examen'], ['ayuda', 'Preguntas']];
+  const partes = [['que-es', 'Qué es'], ...(demoDe(clave) ? [['demo', 'Mini simulacro']] : []), ['probar', 'Pruébalo gratis'], ['comprar', 'Precios'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['estructura', 'El examen'], ['ayuda', 'Preguntas']];
   return pagina({ entrar: { url: '/descargas/reenviar?para=simulador', app: sim.titulo },
     titulo: v.tituloSEO, ruta: `${RUTA}/`, descripcion: v.descripcion, imagen: v.og,
     headers: cookie ? { 'set-cookie': cookie } : {},
@@ -245,6 +247,7 @@ ${heroMarca(clave, {
 })}
 ${indiceProducto(clave, partes, prod ? '<a class="pm-btn" href="#comprar">Comprar</a>' : `<a class="pm-btn" href="#probar">Pruébalo gratis</a>`)}
 ${seccionQueEs(clave, { titulo: v.hero.h1, texto: q.texto || esc(v.hero.lead), para: q.para || [] })}
+${seccionDemo(clave, demoDe(clave))}
 
 <section class="pm-sec sv-zona"><div class="marco sv-hero-g">
   <div>
