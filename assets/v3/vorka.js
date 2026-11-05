@@ -82,6 +82,15 @@
   }
 
   // Últimas noticias de Sparks (si cargan; si no, se queda la tarjeta fija)
+  // Cifras de IMPACTO en vivo (casos propios): las mismas que muestra soyimpacto.org
+  if (d.querySelector('[data-vivo]')) {
+    fetch('https://voluntarios.soyimpacto.org/api/publico/presencia').then(function (r) { return r.json(); }).then(function (x) {
+      if (!x || !x.total_municipios) return;
+      var est = typeof x.estados === 'number' ? x.estados : (x.estados || []).length;
+      d.querySelectorAll('[data-vivo="municipios"]').forEach(function (el) { el.textContent = x.total_municipios.toLocaleString('es-MX'); });
+      d.querySelectorAll('[data-vivo="estados"]').forEach(function (el) { el.textContent = est; });
+    }).catch(function () {});
+  }
   var notas = d.getElementById('notas-sparks');
   if (notas) {
     fetch('/sparks/celaya/noticias.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {

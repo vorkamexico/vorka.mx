@@ -121,7 +121,7 @@ SERVICIOS = [
         # Cuarto servicio. Solo lo comprobable: apps y sitios que Vorka ya construyó y opera (en la tienda). Sin clientes, precios ni plazos.
         'slug': 'apps', 'num': '04', 'area': 'Apps y páginas a la medida',
         'titulo': 'Apps y páginas <span class="metal">a la medida.</span>',
-        'promesa': 'Diseñamos y construimos tu sitio web, tu tienda en línea o tu app, con el mismo equipo que hace y opera las apps de Vorka.',
+        'promesa': 'Diseñamos y construimos tu sitio web, tu tienda en línea o tu app, con la experiencia de las apps que hacemos y operamos en Vorka.',
         'corta': 'Sitios web, tiendas en línea, apps y sistemas a la medida, hechos por el equipo que opera las apps de Vorka.',
         'foto': 'cdmx-reforma', 'foco': '50% 50%', 'cabecera': 'cdmx-reforma', 'cab_foco': '50% 50%', 'cab_foco_m': '50% 50%',
         'tags': ['Sitios web', 'Tiendas en línea', 'Apps', 'Sistemas', 'Pagos'],
@@ -204,7 +204,8 @@ FASES = [
 
 # «Lo que hemos hecho»: casos propios (de Vorka y de su fundador, con su autorización). Sin clientes.
 # Solo cifras que se pueden revisar en este repo o en el sitio en vivo (noviembre de 2026):
-#   · IMPACTO: 4 niveles y 5 frentes (soyimpacto.org/llms.txt); 130 municipios y 32 estados (contador en vivo de soyimpacto.org)
+#   · IMPACTO: 4 niveles y 5 frentes (soyimpacto.org/llms.txt); municipios y estados EN VIVO ({municipios}/{estados} → vorka.js los llena
+#     desde voluntarios.soyimpacto.org/api/publico/presencia); 3,000+ líderes, 600,000+ beneficiados y 100+ conferencias: confirmados por el dueño
 #   · Alianzas: comunicado de celaya.gob.mx y nota de El Sol del Bajío, enlazados en oleynickhdz/prensa/
 #   · Brandon Oleynick: 8 páginas (oleynickhdz/sitemap.xml); 9 notas de 6 medios enlazadas en oleynickhdz/prensa/
 #   · Sparks Celaya: 20 historias del 14 de marzo al 1 de noviembre de 2026 (sparks/celaya/noticias.json)
@@ -213,7 +214,7 @@ FASES = [
 # (enlace, imagen, etiqueta, título, alcance y resultado en una o dos líneas, alt)
 CASOS = {
     'impacto-red': ('https://soyimpacto.org/#presencia', 'impacto-mapa', 'Estrategia y Dirección · IMPACTO', 'Una red nacional en cuatro niveles',
-                    'Estructura municipal, estatal, regional y nacional, con cinco frentes de trabajo. Hoy tiene presidencias en 130 municipios de 32 estados.',
+                    'Estructura municipal, estatal, regional y nacional, con cinco frentes de trabajo: más de 3,000 líderes con presidencias en {municipios} municipios de {estados} estados y más de 600,000 personas beneficiadas.',
                     'Mapa de presencia de IMPACTO en soyimpacto.org con los municipios que tienen presidencia'),
     'fc': ('/fc/', 'fc-web', 'Estrategia y Dirección · Vorka FC', 'Una academia con método desde el día uno',
            'Programa, cupo de 25, sesiones de 90 minutos en cinco bloques, becas e inscripción en línea en cuatro pasos.',
@@ -231,7 +232,7 @@ CASOS = {
                  'Sesión mensual, seguimiento semanal con tres preguntas y revisión de documentos, en tres planes.',
                  'Portada de la mentoría para proyectos sociales de Brandon Oleynick'),
     'oleynick-marca': ('/oleynickhdz/prensa/', 'oleynick-prensa', 'Comunicación e Influencia · Brandon Oleynick', 'Marca personal y sala de prensa',
-                       'Manifiesto, semblanza en tres extensiones, fotos para medios y redes propias. Su sala de prensa enlaza 9 notas de 6 medios.',
+                       'Manifiesto, semblanza en tres extensiones, fotos para medios y redes propias. Más de 100 conferencias desde 2021 y 9 notas de 6 medios en su sala de prensa.',
                        'Sala de prensa de Brandon Oleynick con su semblanza y kit para medios'),
     'sparks': ('/sparks/celaya/', 'sparks-celaya', 'Comunicación e Influencia · Revista Sparks', 'Un medio local propio',
                '20 historias publicadas en Sparks Celaya entre marzo y noviembre de 2026, más un boletín semanal.',

@@ -11,7 +11,7 @@
 <meta name="format-detection" content="telephone=no">
 
 <title>Brandon Oleynick · Líder social juvenil y conferencista</title>
-<meta name="description" content="Sitio oficial de Brandon Oleynick, líder social juvenil y fundador de Juventudes Impactando México A.C., red de +3,000 jóvenes en 121 municipios. Premio Municipal de la Juventud de Celaya 2026 y conferencista con +100 conferencias.">
+<meta name="description" content="Sitio oficial de Brandon Oleynick, líder social juvenil y fundador de Juventudes Impactando México A.C., red de +3,000 jóvenes en 130 municipios. Premio Municipal de la Juventud de Celaya 2026 y conferencista con +100 conferencias.">
 <meta name="keywords" content="Brandon Oleynick, Brandon Oleynick Hernández, oleynickhdz, líder social juvenil, activista juvenil, participación de las juventudes, Juventudes Impactando México, Vorka México, Oleynick Group, mentoría liderazgo, consultoría estratégica, conferencias liderazgo México, asesoría joven emprendedor, Celaya Guanajuato, Tec de Monterrey, impacto social México">
 
 <link rel="canonical" href="https://vorka.mx/oleynickhdz/">
@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://vorka.mx/oleynickhdz/img/og-portada.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Brandon Oleynick: 3,000+ jóvenes, 121 municipios, 30 estados y 100+ conferencias">
+<meta property="og:image:alt" content="Brandon Oleynick: 3,000+ jóvenes, 130 municipios, 32 estados y 100+ conferencias">
 <meta property="og:locale" content="es_MX">
 <meta property="profile:first_name" content="Brandon">
 <meta property="profile:last_name" content="Oleynick">
@@ -2744,7 +2744,7 @@
   <div class="hx-luz" aria-hidden="true"></div>
   <h1 class="hx-nombre"><span class="hx-nom">Brandon</span><span class="hx-ape">Oleynick</span></h1>
   <div class="hx-figura">
-    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Impactando en</span> <b data-vivo="municipios">121</b> <span>municipios</span></a>
+    <a class="hx-tag t-rosa atras" href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener"><span>Impactando en</span> <b data-vivo="municipios">130</b> <span>municipios</span></a>
     <a class="hx-tag t-roja atras" href="./conferencias/"><span>Inspirando en</span> <b>+100</b> <span>conferencias</span></a>
     <img class="hx-foto" src="img/brandon-portada.webp?v=2" alt="Brandon Oleynick saludando" width="1000" height="1521" fetchpriority="high">
     <a class="hx-tag t-amarilla" href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener"><span>Liderando</span> <b>+3,000</b> <span>juventudes</span></a>
@@ -2909,7 +2909,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
             Ver sitio web
           </a>
-          <p>Red nacional de juventudes con <strong>más de 3,000 agentes de impacto</strong> en <strong>30 estados</strong> y proyectos alineados a los 17 ODS.</p>
+          <p>Red nacional de juventudes con <strong>más de 3,000 agentes de impacto</strong> en <strong><span data-vivo="estados">32</span> estados</strong> y proyectos alineados a los 17 ODS.</p>
         </div>
       </article>
 
@@ -3572,7 +3572,7 @@ document.querySelectorAll('.reveal-section .principio').forEach(function (c) {
 fetch('https://voluntarios.soyimpacto.org/api/publico/presencia').then(function (r) { return r.json(); }).then(function (d) {
   if (!d || !d.total_municipios) return;
   document.querySelectorAll('[data-vivo="municipios"]').forEach(function (e) { e.textContent = d.total_municipios.toLocaleString('es-MX'); });
-  document.querySelectorAll('[data-vivo="estados"]').forEach(function (e) { e.textContent = (d.estados || []).length; });
+  document.querySelectorAll('[data-vivo="estados"]').forEach(function (e) { e.textContent = (typeof d.estados === 'number' ? d.estados : (d.estados || []).length); });
 }).catch(function () {});
 </script>
 <script>

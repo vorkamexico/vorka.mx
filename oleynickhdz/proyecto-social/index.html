@@ -125,7 +125,7 @@
   "name": "Juventudes Impactando México A.C.",
   "alternateName": "IMPACTO",
   "url": "https://soyimpacto.org/",
-  "description": "Comunidad nacional de juventudes con presencia en 30 estados de México y más de 3,000 líderes de acción impulsando proyectos sociales de alto impacto.",
+  "description": "Comunidad nacional de juventudes con presencia en 32 estados de México y más de 3,000 líderes de acción impulsando proyectos sociales de alto impacto.",
   "areaServed": { "@type": "Country", "name": "México" },
   "founder": {
     "@type": "Person",
@@ -147,7 +147,7 @@
     { "@type": "Question", "name": "¿Cuáles son los errores más comunes al iniciar un proyecto social?", "acceptedAnswer": { "@type": "Answer", "text": "Querer hacerlo todo solo, prometer más de lo que se puede cumplir, no documentar el trabajo y pensar únicamente en el corto plazo." } },
     { "@type": "Question", "name": "¿Necesito dinero para iniciar un proyecto social?", "acceptedAnswer": { "@type": "Answer", "text": "No. El capital más valioso es la creatividad y la credibilidad. Puedes empezar con donaciones locales, apoyos de comercios, convocatorias estudiantiles o gubernamentales, e intercambios en especie." } },
     { "@type": "Question", "name": "¿Qué es Líderes del Mañana?", "acceptedAnswer": { "@type": "Answer", "text": "Es un programa del Tecnológico de Monterrey que incorpora a estudiantes con talento académico y liderazgo social, cubriendo el 100% de la colegiatura durante toda su carrera." } },
-    { "@type": "Question", "name": "¿Cómo puedo unirme a Juventudes Impactando México A.C.?", "acceptedAnswer": { "@type": "Answer", "text": "Puedes conocer la organización y sumarte desde el sitio oficial de IMPACTO en soyimpacto.org. IMPACTO es una comunidad nacional de juventudes con presencia en 30 estados de México y más de 3,000 líderes de acción." } }
+    { "@type": "Question", "name": "¿Cómo puedo unirme a Juventudes Impactando México A.C.?", "acceptedAnswer": { "@type": "Answer", "text": "Puedes conocer la organización y sumarte desde el sitio oficial de IMPACTO en soyimpacto.org. IMPACTO es una comunidad nacional de juventudes con presencia en 32 estados de México y más de 3,000 líderes de acción." } }
   ]
 }
 </script>
@@ -2171,7 +2171,7 @@
     <div class="section-head">
       <div class="section-eyebrow eyebrow-y">Comunidad IMPACTO</div>
       <h2 class="section-title" id="impacto-title">Aprende <span class="a-y">desde la experiencia</span> y a viva voz de otras juventudes.</h2>
-      <p class="section-sub">Si quieres pasar de leer una guía a caminar el proceso con otras personas, IMPACTO es el lugar. Somos <strong>3,000 líderes de acción en 30 estados</strong> de México construyendo proyectos con propósito.</p>
+      <p class="section-sub">Si quieres pasar de leer una guía a caminar el proceso con otras personas, IMPACTO es el lugar. Somos <strong>3,000 líderes de acción en <span data-vivo="estados">32</span> estados</strong> de México construyendo proyectos con propósito.</p>
     </div>
 
     <div class="impacto-card">
@@ -2263,7 +2263,7 @@
         <summary>¿Cómo puedo unirme a Juventudes Impactando México A.C.?</summary>
         <div class="answer">
           <p>Puedes conocer la organización y sumarte a la comunidad desde el <a href="https://soyimpacto.org/i/i52b0oe8" target="_blank" rel="noopener">sitio oficial de IMPACTO</a>.</p>
-          <p>IMPACTO es una comunidad nacional de juventudes con presencia en <strong>30 estados de México</strong> y más de <strong>3,000 líderes de acción</strong> impulsando proyectos sociales de alto impacto.</p>
+          <p>IMPACTO es una comunidad nacional de juventudes con presencia en <strong><span data-vivo="estados">32</span> estados de México</strong> y más de <strong>3,000 líderes de acción</strong> impulsando proyectos sociales de alto impacto.</p>
         </div>
       </details>
       <details class="faq-item">
@@ -2416,5 +2416,13 @@
   })();
 </script>
 
+<script>
+// Municipios y estados en vivo (los mismos que muestra soyimpacto.org)
+fetch('https://voluntarios.soyimpacto.org/api/publico/presencia').then(function (r) { return r.json(); }).then(function (d) {
+  if (!d || !d.total_municipios) return;
+  document.querySelectorAll('[data-vivo="municipios"]').forEach(function (e) { e.textContent = d.total_municipios.toLocaleString('es-MX'); });
+  document.querySelectorAll('[data-vivo="estados"]').forEach(function (e) { e.textContent = (typeof d.estados === 'number' ? d.estados : (d.estados || []).length); });
+}).catch(function () {});
+</script>
 </body>
 </html>

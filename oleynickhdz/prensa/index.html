@@ -745,11 +745,11 @@
       </article>
       <article class="bio">
         <div class="bio-top"><h3>Corta <small>83 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
-        <div class="bio-txt" id="bio-media"><p>Brandon Oleynick es internacionalista, consultor, activista y emprendedor de innovación social originario de Celaya, Guanajuato. Es fundador y presidente nacional de Juventudes Impactando México A.C. (IMPACTO), con presencia en 30 estados y más de 3,000 líderes, y fundador y CEO de Vorka México. Beneficiario del programa Líderes del Mañana del Tecnológico de Monterrey, ha recibido el Premio Estatal de la Juventud de Guanajuato, el Premio Municipal de la Juventud de Celaya 2026 y los premios FRISA y Bright Journey del Tec de Monterrey.</p></div>
+        <div class="bio-txt" id="bio-media"><p>Brandon Oleynick es internacionalista, consultor, activista y emprendedor de innovación social originario de Celaya, Guanajuato. Es fundador y presidente nacional de Juventudes Impactando México A.C. (IMPACTO), con presencia en <span data-vivo="estados">32</span> estados y más de 3,000 líderes, y fundador y CEO de Vorka México. Beneficiario del programa Líderes del Mañana del Tecnológico de Monterrey, ha recibido el Premio Estatal de la Juventud de Guanajuato, el Premio Municipal de la Juventud de Celaya 2026 y los premios FRISA y Bright Journey del Tec de Monterrey.</p></div>
       </article>
       <article class="bio">
         <div class="bio-top"><h3>Para conferencias <small>205 palabras</small></h3><button type="button" class="copiar" data-copiar="bio-larga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button></div>
-        <div class="bio-txt" id="bio-larga"><p>Brandon Oleynick es un internacionalista, consultor, activista y emprendedor de innovación social originario de Celaya, Guanajuato. Beneficiario del programa Líderes del Mañana del Tecnológico de Monterrey, ha enfocado su trayectoria en diseñar soluciones sostenibles, replicables y de bajo costo para transformar comunidades y generar oportunidades a escala.</p><p>Es fundador y presidente nacional de Juventudes Impactando México A.C. (IMPACTO), organización surgida en Celaya con presencia en 30 estados, más de 3,000 líderes y un impacto reportado en más de 600,000 vidas, mediante el trabajo articulado entre sociedad civil, gobierno, empresas e instituciones. Además, es fundador y CEO de Vorka México, desde donde se desempeña como consultor, y creador de contenido, buscando democratizar conocimientos y oportunidades relacionados con el emprendimiento y el impacto social.</p><p>Su trayectoria se distingue por una visión sistémica orientada no solo a resolver problemáticas, sino a desarrollar modelos que puedan escalar, replicarse y generar cambios sostenibles más allá de sus propios creadores. Su liderazgo y visión le han valido reconocimientos como el Premio Estatal de la Juventud de Guanajuato, el Premio Municipal de la Juventud de Celaya 2026, en la categoría de Políticas y Cívicas, así como el Premio FRISA y el Premio Bright Journey del Tecnológico de Monterrey por Trayectoria de Emprendimiento.</p></div>
+        <div class="bio-txt" id="bio-larga"><p>Brandon Oleynick es un internacionalista, consultor, activista y emprendedor de innovación social originario de Celaya, Guanajuato. Beneficiario del programa Líderes del Mañana del Tecnológico de Monterrey, ha enfocado su trayectoria en diseñar soluciones sostenibles, replicables y de bajo costo para transformar comunidades y generar oportunidades a escala.</p><p>Es fundador y presidente nacional de Juventudes Impactando México A.C. (IMPACTO), organización surgida en Celaya con presencia en <span data-vivo="estados">32</span> estados, más de 3,000 líderes y un impacto reportado en más de 600,000 vidas, mediante el trabajo articulado entre sociedad civil, gobierno, empresas e instituciones. Además, es fundador y CEO de Vorka México, desde donde se desempeña como consultor, y creador de contenido, buscando democratizar conocimientos y oportunidades relacionados con el emprendimiento y el impacto social.</p><p>Su trayectoria se distingue por una visión sistémica orientada no solo a resolver problemáticas, sino a desarrollar modelos que puedan escalar, replicarse y generar cambios sostenibles más allá de sus propios creadores. Su liderazgo y visión le han valido reconocimientos como el Premio Estatal de la Juventud de Guanajuato, el Premio Municipal de la Juventud de Celaya 2026, en la categoría de Políticas y Cívicas, así como el Premio FRISA y el Premio Bright Journey del Tecnológico de Monterrey por Trayectoria de Emprendimiento.</p></div>
       </article>
       </div>
     </section>
@@ -766,7 +766,7 @@
       <div class="dato"><b>100<sup>+</sup></b><span>conferencias desde 2021</span></div>
       <div class="dato"><b>6</b><span>estados con conferencias</span></div>
       <div class="dato"><b>3,000<sup>+</sup></b><span>integrantes de Juventudes Impactando México A.C.</span></div>
-      <div class="dato"><b>121</b><span>municipios con presidencia IMPACTO · <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">ver mapa</a></span></div>
+      <div class="dato"><b data-vivo="municipios">130</b><span>municipios con presidencia IMPACTO · <a href="https://soyimpacto.org/#presencia" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">ver mapa</a></span></div>
     </div>
   </section>
 
@@ -966,6 +966,14 @@ document.querySelectorAll('.copiar').forEach(function (b) {
   n.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', cerrar); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrar(); });
 })();
+</script>
+<script>
+// Municipios y estados en vivo (los mismos que muestra soyimpacto.org)
+fetch('https://voluntarios.soyimpacto.org/api/publico/presencia').then(function (r) { return r.json(); }).then(function (d) {
+  if (!d || !d.total_municipios) return;
+  document.querySelectorAll('[data-vivo="municipios"]').forEach(function (e) { e.textContent = d.total_municipios.toLocaleString('es-MX'); });
+  document.querySelectorAll('[data-vivo="estados"]').forEach(function (e) { e.textContent = (typeof d.estados === 'number' ? d.estados : (d.estados || []).length); });
+}).catch(function () {});
 </script>
 </body>
 </html>
