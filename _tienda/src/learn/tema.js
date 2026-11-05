@@ -25,7 +25,8 @@ export function crearTema(o) {
   const rutaDe = x => `${ruta}${x.slug}/`;
   const articulo = slug => articulos.find(x => x.slug === slug) || null;
   const titulo = x => conMarca(x.titulo);
-  const textoDe = x => [x.lead, ...x.secciones.map(y => textoPlano(y.html)), ...(x.faq || []).map(f => f.r)].join(' ');
+  // Sin los bloques de código de ejemplo: no son texto para buscar ni para contar minutos de lectura
+  const textoDe = x => [x.lead, ...x.secciones.map(y => textoPlano(y.html.replace(/<pre class="gu-codigo">[\s\S]*?<\/pre>/g, ' '))), ...(x.faq || []).map(f => f.r)].join(' ');
   const llamadoDe = x => llamados[x.llamado];
   function pagina(slug, anuncios = null) {
     const x = articulo(slug);

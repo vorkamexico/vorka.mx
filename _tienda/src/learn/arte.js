@@ -77,6 +77,16 @@ const MOTIVOS = {
 ${apps}<rect x="200" y="182" width="80" height="10" rx="5" fill="${x.a}" opacity=".35"/><rect x="200" y="200" width="52" height="10" rx="5" fill="${x.a}" opacity=".2"/>
 <g transform="translate(${300 + (s % 3) * 6} 88)"><rect width="98" height="40" rx="14" fill="${ORO}"/><path d="M14 40l-6 12 18-12z" fill="${ORO}"/><circle cx="22" cy="20" r="10" fill="${BLANCO}"/><path d="M17 20l4 4 7-8" fill="none" stroke="${x.a}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="13" width="46" height="6" rx="3" fill="${TINTA}" opacity=".45"/><rect x="40" y="24" width="30" height="5" rx="2.5" fill="${TINTA}" opacity=".25"/></g>`;
   },
+  // Ventana de navegador con una página y una etiqueta de código (Tu página web)
+  navegador: (x, s) => {
+    const sel = s % 3;
+    const bloques = [0, 1, 2].map(i => `<rect x="${170 + i * 50}" y="150" width="40" height="40" rx="8" fill="${i === sel ? ORO_2 : x.a}" opacity="${i === sel ? 1 : .22}"/>`).join('');
+    return `<path d="M0 236c80-24 160-26 240-8s160 12 240-14v56H0z" fill="${BLANCO}" opacity=".12"/>
+<rect x="150" y="56" width="180" height="168" rx="16" fill="${BLANCO}"/><path d="M150 72a16 16 0 0 1 16-16h148a16 16 0 0 1 16 16v14H150z" fill="${TINTA}"/>
+<circle cx="168" cy="71" r="4" fill="${ORO}"/><circle cx="182" cy="71" r="4" fill="${BLANCO}" opacity=".5"/><circle cx="196" cy="71" r="4" fill="${BLANCO}" opacity=".3"/>
+<rect x="170" y="104" width="110" height="12" rx="6" fill="${x.a}" opacity=".55"/><rect x="170" y="124" width="76" height="8" rx="4" fill="${x.a}" opacity=".25"/>${bloques}
+<g transform="translate(${292 + (s % 3) * 6} 120)"><rect width="84" height="44" rx="14" fill="${ORO}"/><path d="M26 14l-10 8 10 8M58 14l10 8-10 8M46 11l-8 22" fill="none" stroke="${TINTA}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+  },
   // Libro abierto con una chispa (Vorka Learn)
   libro: (x, s) => `<path d="M240 92c-26-16-62-20-92-14v128c30-6 66-2 92 14z" fill="${BLANCO}"/><path d="M240 92c26-16 62-20 92-14v128c-30-6-66-2-92 14z" fill="${BLANCO}" opacity=".9"/><path d="M240 92v128" stroke="${x.a}" stroke-opacity=".25" stroke-width="2"/>
 ${[0, 1, 2, 3].map(i => `<path d="M164 ${108 + i * 22}c20-3 40-1 60 6M256 ${114 + i * 22}c20-7 40-9 60-6" fill="none" stroke="${x.a}" stroke-opacity=".25" stroke-width="4" stroke-linecap="round"/>`).join('')}

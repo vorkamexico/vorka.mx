@@ -12,6 +12,7 @@ from agenda import pagina_agenda
 from fc import actualizar_fc
 from equipo import paginas_equipo
 from institucional import pagina_nosotros, pagina_contacto, ORG_ID
+from paginaweb import pagina_web, banda_pagina_web
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
@@ -332,6 +333,7 @@ def servicios_hub():
   </div>
 </section>
 <section class="sec pegada" aria-label="Servicios"><div class="marco"><div class="elegir">{elegir}</div></div></section>
+{banda_pagina_web()}
 <section class="sec oscura redondo" id="proceso" aria-labelledby="t-proc">
   <div class="grano"></div>
   <div class="marco">
@@ -412,6 +414,7 @@ def servicio(s):
   </div>
 </section>
 {casos}
+{banda_pagina_web() if s['slug'] == 'apps' else ''}
 <section class="sec oscura redondo" aria-labelledby="t-ent">
   <div class="grano"></div>
   <div class="marco">
@@ -469,6 +472,7 @@ if __name__ == '__main__':
     escribir('servicios/index.html', servicios_hub())
     for s in SERVICIOS:
         escribir(f"servicios/{s['slug']}/index.html", servicio(s))
+    escribir('servicios/pagina-web/index.html', pagina_web())
     escribir('agenda/index.html', pagina_agenda())
     with open(os.path.join(RAIZ, 'fc/index.html'), encoding='utf-8') as f:
         escribir('fc/index.html', actualizar_fc(f.read()))

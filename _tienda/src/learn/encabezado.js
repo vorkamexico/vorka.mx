@@ -28,6 +28,7 @@ export const ICONO_SECCION = {
   senal: I('<path d="M12 21V3"/><path d="M12 5h6.5l2 2.25-2 2.25H12M12 12H5.5l-2 2.25 2 2.25H12"/>'),
   celular: I('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/><rect x="9" y="6.5" width="2.5" height="2.5" rx=".6"/><rect x="12.5" y="6.5" width="2.5" height="2.5" rx=".6"/><rect x="9" y="10.5" width="2.5" height="2.5" rx=".6"/>'),
   libro: I('<path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"/>'),
+  navegador: I('<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 8.5h18M9.5 12.5l-2 2 2 2M14.5 12.5l2 2-2 2"/>'),
 };
 export const iconoDe = clave => ICONO_SECCION[aspecto(clave).motivo] || ICONO_SECCION.libro;
 const ICONO_PRACTICA = I('<path d="M9 11.5 11.5 14 16 9"/><rect x="3.5" y="3.5" width="17" height="17" rx="4"/>');

@@ -24,6 +24,7 @@ import { FINANZAS, ARTICULOS_FINANZAS, RUTA_FINANZAS, rutaArticuloFinanzas, titu
 import { NEGOCIO, TEMA_NEGOCIO, ARTICULOS_NEGOCIO, AVISO_NEGOCIO } from '../learn-negocio.js';
 import { CAMINO, TEMA_CAMINO, ARTICULOS_CAMINO } from '../learn-camino.js';
 import { APPS, TEMA_APPS, ARTICULOS_APPS, AVISO_APPS } from '../learn-apps.js';
+import { WEB, TEMA_WEB, ARTICULOS_WEB, AVISO_WEB } from '../learn-web.js';
 import { aspecto } from './secciones.js';
 import { minutosDeTexto } from './piezas.js';
 
@@ -40,6 +41,7 @@ const TEMAS = () => [
     aviso: `${AVISO_FINANZAS} No estamos afiliados a CONDUSEF, al Banco de México ni a ninguna institución financiera, y no recomendamos bancos, tarjetas ni productos de terceros.` },
   temaDe(NEGOCIO, TEMA_NEGOCIO, ARTICULOS_NEGOCIO, `${AVISO_NEGOCIO} No estamos afiliados al INEGI, a PROFECO ni al SAT.`),
   temaDe(APPS, TEMA_APPS, ARTICULOS_APPS, `${AVISO_APPS} No estamos afiliados a Apple, Google, Stripe, Mercado Pago, el SAT ni PROFECO.`),
+  temaDe(WEB, TEMA_WEB, ARTICULOS_WEB, `${AVISO_WEB} No estamos afiliados a Mozilla, Google, GitHub, Cloudflare, Let’s Encrypt ni Registry.MX.`),
 ];
 
 // Las secciones con al menos un artículo, exámenes primero:

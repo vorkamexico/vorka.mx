@@ -172,6 +172,7 @@ ${cssSecciones()}
 .lr-art .gu-nota,.gu-nota{font-size:14.5px;color:var(--fg-2)}
 .gu-caja{position:relative;margin:10px 0 20px;padding:16px 18px 16px 54px;border-radius:16px;background:var(--sec-s);border-left:4px solid var(--sec-t)}
 .gu-caja::before{content:"";position:absolute;left:16px;top:17px;width:24px;height:24px;background:var(--sec-t);-webkit-mask:var(--lr-foco) center/contain no-repeat;mask:var(--lr-foco) center/contain no-repeat}
+.gu-codigo{margin:10px 0 20px;padding:16px 18px;border-radius:14px;background:#17131A;color:#F2EEF4;overflow-x:auto;font:13.5px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:2}.gu-codigo code{font:inherit;white-space:pre}
 .gu-caja > b{display:block;margin-bottom:6px;color:var(--sec-t)}.gu-caja p:last-child,.gu-caja ul:last-child{margin-bottom:0}
 :root[data-app="learn"]{--lr-foco:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z'/%3E%3C/svg%3E")}
 .gu-ej{margin:12px 0 22px;padding:18px 20px;border-radius:18px;background:var(--card);border:1.5px dashed var(--line-2)}

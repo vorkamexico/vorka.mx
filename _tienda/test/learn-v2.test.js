@@ -138,8 +138,9 @@ describe('Vorka Learn v2: búsqueda, acerca y RSS', () => {
     expect(html).toMatch(/<mark>puntaje<\/mark>/i);
     expect(html).toContain('value="puntaje paa"');
     // Sin resultados y con texto peligroso: se escapa
-    const raro = await (await pedir(`/learn/buscar/?q=${encodeURIComponent('<script>zzqx</script>')}`)).text();
-    expect(raro).not.toContain('<script>zzqx');
+    // (una etiqueta que no sale en ninguna guía: «script» sí aparece, dentro de «JavaScript», en Tu página web)
+    const raro = await (await pedir(`/learn/buscar/?q=${encodeURIComponent('<marquee>zzqx</marquee>')}`)).text();
+    expect(raro).not.toContain('<marquee>zzqx');
     expect(raro).toContain('No encontramos guías');
     // Sin búsqueda: sugerencias y secciones
     const vacia = await (await pedir('/learn/buscar/')).text();
