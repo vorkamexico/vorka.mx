@@ -60,7 +60,7 @@ def pagina():
   <section class="dx-progreso oscura" id="progreso">
     <div class="marco">
       <div class="cab"><span class="etiqueta">Progreso real</span><h2 class="h2" style="margin-top:18px">Avanza solo con <span class="metal">evidencia.</span></h2>
-      <p class="lead">Cada hito suma cuando hay algo que lo demuestra: una constancia, un documento, un registro. Así el avance no depende de lo que se diga, sino de lo que se puede mostrar.</p></div>
+      <p class="lead">Cada hito suma cuando hay algo que lo demuestra: una constancia, un documento, un registro. Así el avance se ve en lo que se puede mostrar.</p></div>
       <div class="dx-comps" data-x="competencias"></div>
       <h3 class="dx-sub">Plan de hitos</h3>
       <ol class="dx-hitos" data-x="hitos"></ol>

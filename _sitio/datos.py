@@ -21,15 +21,15 @@ SERVICIOS = [
         ],
         'pasos': [
             ('Diagnóstico', 'Escucha profunda a dirección, consejo y equipo.'),
-            ('Diseño', 'Mapa, prioridades e indicadores probados con el cliente.'),
+            ('Diseño', 'Mapa, prioridades e indicadores probados contigo.'),
             ('Activación', 'Acompañamos la ejecución hasta que opera sola.'),
-            ('Medición', 'Indicadores acordados desde el inicio. Cierre honesto.'),
+            ('Medición', 'Indicadores acordados desde el inicio y reporte de cierre.'),
         ],
         'entregables': [
             ('doc', 'Diagnóstico escrito', 'Lectura honesta del contexto, la brecha real y los riesgos.'),
             ('mapa', 'Mapa de prioridades', 'Criterio de decisión y prioridades a 12–36 meses.'),
-            ('tablero', 'Tablero de indicadores', 'Métricas acordadas desde el inicio para medir el avance.'),
             ('ruta', 'Acompañamiento a la ejecución', 'Operamos dentro hasta que el cambio funciona solo.'),
+            ('tablero', 'Tablero de indicadores', 'Métricas acordadas desde el inicio para medir el avance.'),
         ],
         'datos': [('150+', 'proyectos entregados con resultados verificables'), ('3 sectores', 'público, privado y sociedad civil, con el mismo criterio'), ('Harvard Business School · Tec de Monterrey', 'y Silicon Valley: formación cruzada del equipo directivo')],
         'cta': 'Cuéntanos qué decisión está <span class="metal">sobre la mesa.</span>',
@@ -37,7 +37,7 @@ SERVICIOS = [
         'linea': 'Un rumbo claro, prioridades acordadas y un equipo que las ejecuta con el mismo criterio.',
         'interes': ('estrategia',),
         # Versión corta (tarjetas del índice e inicio, y el «En corto» arriba de cada subpágina)
-        'breve': 'Rumbo claro y prioridades que tu equipo sí ejecuta.', 'quien': 'Direcciones generales, consejos, gobiernos y fundaciones.', 'icono': 'brujula',
+        'breve': 'Rumbo claro y prioridades que tu equipo ejecuta.', 'quien': 'Direcciones generales, consejos, gobiernos y fundaciones.', 'icono': 'brujula',
     },
     {
         'slug': 'liderazgo', 'num': '02', 'area': 'Liderazgo y Talento',
@@ -52,24 +52,24 @@ SERVICIOS = [
         'items': [
             ('Coaching ejecutivo 1 a 1', 'Sesiones periódicas para trabajar decisiones críticas y exposición pública.'),
             ('Coaching de equipos directivos', 'Alineación de criterio, gestión de conflictos y decisiones colegiadas.'),
-            ('Programas ejecutivos a la medida', 'Multimódulo, con casos reales del cliente. Cero contenido de librería.'),
+            ('Programas ejecutivos a la medida', 'Multimódulo, construidos con casos reales del cliente.'),
             ('Formación de cuadros de mando', 'Segunda y tercera línea directiva: quienes sostienen la operación.'),
             ('Assessment de talento', 'Evaluación honesta de fortalezas y brechas para decidir promociones o sucesión.'),
             ('Acompañamiento en alta exposición', 'Coaching intensivo para líderes en campaña, crisis o transición pública.'),
         ],
         'pasos': [
-            ('Diagnóstico', 'Entrevistas para detectar la brecha real, no la declarada.'),
+            ('Diagnóstico', 'Entrevistas y evaluación para ubicar la brecha real.'),
             ('Diseño', 'Objetivos, cadencia y contenidos hechos para este caso.'),
-            ('Sesiones', 'Encuentros con bitácora confidencial y ajuste continuo.'),
-            ('Cierre', 'Reporte contra objetivos y transferencia al cliente.'),
+            ('Activación', 'Sesiones con bitácora confidencial y ajuste continuo.'),
+            ('Medición', 'Reporte contra objetivos y transferencia al equipo.'),
         ],
         'entregables': [
-            ('lupa', 'Mapa de brechas', 'Fortalezas y brechas reales del líder o del equipo, no las declaradas.'),
+            ('lupa', 'Mapa de brechas', 'Fortalezas y brechas reales del líder o del equipo, por escrito.'),
             ('ruta', 'Plan de desarrollo', 'Objetivos, cadencia y contenidos hechos para tu caso.'),
             ('candado', 'Bitácora confidencial', 'Registro de avances y acuerdos de cada sesión.'),
             ('tablero', 'Reporte de cierre', 'Resultados contra objetivos y transferencia al equipo.'),
         ],
-        'datos': [('1 : 1', 'acompañamiento confidencial con bitácora e indicadores'), ('Cero catálogo', 'cada programa parte de un caso real del cliente'), ('Harvard Business School · Tec de Monterrey', 'y Silicon Valley: formación cruzada del equipo de coaches')],
+        'datos': [('1 : 1', 'acompañamiento confidencial con bitácora e indicadores'), ('A la medida', 'cada programa parte de un caso real del cliente'), ('Harvard Business School · Tec de Monterrey', 'y Silicon Valley: formación cruzada del equipo de coaches')],
         'cta': 'Cuéntanos qué liderazgo <span class="metal">quieres desarrollar.</span>',
         'linea': 'Líderes que deciden con más claridad y una segunda línea lista para sostener la operación.',
         'interes': ('equipos',),
@@ -98,15 +98,15 @@ SERVICIOS = [
             ('Sitio web y presencia digital', 'Sitios institucionales, landings y campañas, con SEO y analítica.'),
         ],
         'pasos': [
-            ('Escucha', 'Diagnóstico de conversación pública y percepción.'),
-            ('Narrativa', 'Posicionamiento y manual de voz.'),
-            ('Producción', 'Diseño, video, contenido, sitio y campañas.'),
-            ('Difusión', 'Redes, PR, pauta y vocería, con monitoreo continuo.'),
+            ('Diagnóstico', 'Escucha de la conversación pública y de la percepción.'),
+            ('Diseño', 'Posicionamiento, manual de voz y calendario.'),
+            ('Activación', 'Producción y difusión: contenido, redes, PR, pauta y vocería.'),
+            ('Medición', 'Monitoreo continuo y reporte de resultados.'),
         ],
         'entregables': [
-            ('voz', 'Manual de narrativa', 'Posicionamiento, mensajes clave y tono de voz.'),
-            ('doc', 'Calendario y producción', 'Contenido, diseño y video hechos en casa.'),
-            ('senal', 'Campañas y pauta', 'Estrategia, creatividad, inversión y medición.'),
+            ('lupa', 'Lectura de conversación', 'Qué se dice de ti, en qué canales y quién lo dice.'),
+            ('voz', 'Manual de narrativa', 'Posicionamiento, mensajes clave, tono de voz y calendario.'),
+            ('senal', 'Producción y campañas', 'Contenido, diseño, video y pauta hechos en casa.'),
             ('tablero', 'Monitoreo y reporte', 'Escucha de la conversación y resultados claros.'),
         ],
         # Sin fila de cifras: «100 %» (producción en casa) y «24/7» (monitoreo) no están en la lista de cifras con respaldo que dio el dueño
@@ -137,13 +137,13 @@ SERVICIOS = [
             ('Diseño y experiencia', 'Pantallas claras en celular y computadora, con modo claro y oscuro.'),
         ],
         'pasos': [
-            ('Alcance', 'Qué se construye, qué no y cómo se va a medir.'),
+            ('Diagnóstico', 'Alcance, prioridades y forma de medir, por escrito.'),
             ('Diseño', 'Pantallas y flujo probados contigo antes de programar.'),
-            ('Construcción', 'Entregas por partes que puedes revisar.'),
-            ('Lanzamiento', 'En línea, con analítica para ver si se usa.'),
+            ('Activación', 'Construcción por partes que revisas y lanzamiento.'),
+            ('Medición', 'Analítica para ver quién lo usa y qué ajustar.'),
         ],
         'entregables': [
-            ('doc', 'Alcance por escrito', 'Qué se construye, qué no y cómo se va a medir, antes de empezar.'),
+            ('doc', 'Alcance por escrito', 'Qué se construye, en qué orden y cómo se va a medir, antes de empezar.'),
             ('mapa', 'Diseño de pantallas', 'El flujo completo, revisado contigo antes de programar.'),
             ('rayo', 'Producto en línea', 'Tu sitio, tienda o app publicada y funcionando.'),
             ('tablero', 'Analítica', 'Para ver quién lo usa, qué funciona y qué ajustar.'),
@@ -187,25 +187,74 @@ MOMENTOS = [
 PREGUNTAS_CORTAS = [
     ('¿Cuánto cuesta el diagnóstico?', 'Nada. Son 20 minutos, sin costo ni compromiso.'),
     ('¿Cuánto cuesta trabajar con Vorka?', 'Depende del alcance. Después del diagnóstico te mandamos una propuesta con alcance, tiempos e inversión claros.'),
-    ('¿Puedo contratar solo una parte?', 'Sí. Empiezas con un servicio y sumas otro solo si hace falta.'),
+    ('¿Puedo contratar solo una parte?', 'Sí. Empiezas con la pieza que necesitas y sumas otra cuando haga falta.'),
     ('¿Trabajan fuera de sus ciudades base?', 'Sí. Tenemos bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya, y trabajamos en toda la República, presencial o a distancia.'),
 ]
 
-# «Cómo empezamos» (índice de servicios): tres pasos, título corto y una línea
-PASOS_CORTOS = [
-    ('Nos cuentas qué necesitas', 'Cuatro datos en el formulario o por WhatsApp. Te respondemos en máximo 2 días hábiles.'),
-    ('Diagnóstico de 20 minutos', 'Sin costo: entendemos tu reto y te decimos cómo lo resolveríamos.'),
-    ('Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro. Empiezas con un servicio y sumas otro solo si hace falta.'),
+# «Cómo trabajamos»: UN solo proceso para los cuatro servicios (inicio, índice de servicios y Quiénes somos).
+# El primer paso, el diagnóstico de 20 minutos, ya va dentro de la fase 01: no hay un «cómo empezamos» aparte.
+# Cada subpágina usa los mismos cuatro nombres en SERVICIOS[n]['pasos'] y su entregable n sale de la fase n.
+# (nombre, una línea, ruta de la maqueta del inicio)
+FASES = [
+    ('Diagnóstico', 'Empieza con 20 minutos sin costo. Después escuchamos a fondo y te proponemos alcance, tiempos e inversión.', 'proyecto / diagnóstico'),
+    ('Diseño', 'Armamos la solución con las piezas que tu caso pide: estrategia, liderazgo, comunicación o tecnología.', 'proyecto / plan'),
+    ('Activación', 'Operamos dentro de tu organización hasta que el cambio funciona solo.', 'proyecto / tablero'),
+    ('Medición', 'Indicadores acordados desde el inicio y un reporte de cierre contra objetivos.', 'proyecto / resultados'),
 ]
 
-# «Lo que hemos hecho»: solo trabajo propio que se puede abrir hoy en el sitio. Sin clientes, cifras ni testimonios.
-# (enlace, imagen /img/trabajo/<k>-800.webp, etiqueta, título, una línea, alt). Las imágenes (800×600) salen de:
-#   assets/tienda/v3/<k>-portada.webp (portadas de la tienda) · sparks/celaya/assets/celaya-jardin-1200.webp · img/fc/balon-1600.webp
-EJEMPLOS = [
-    ('/tienda/agenda/', 'agenda', 'App propia', 'Agenda', 'Citas en línea con confirmación y recordatorios.', 'Portada de Agenda: tus clientes reservan solos, a cualquier hora'),
-    ('/tienda/vuelve/', 'vuelve', 'App propia', 'Vuelve', 'Tarjetas de lealtad de sellos o puntos en el celular.', 'Portada de Vuelve: tarjeta de sellos de una cafetería en el celular'),
-    ('/tienda/cupo/', 'cupo', 'App propia', 'Cupo', 'Eventos con registro y entrada con QR.', 'Portada de Cupo: boleto de evento con código QR'),
-    ('/simulador-paa/', 'simulador-paa', 'Producto propio', 'Simuladores de examen', 'PAA, UNAM, ECOEMS y prepa UG, con tutor.', 'Portada del Simulador PAA con un reporte de puntaje por área'),
-    ('/sparks/celaya/', 'sparks-celaya', 'Medio propio', 'Revista Sparks', 'Historias de quienes mueven su comunidad.', 'Jardín Principal de Celaya, de la edición Celaya de Revista Sparks'),
-    ('/fc/', 'fc-balon', 'Comunidad', 'Vorka FC', 'Academia de fútbol para niñas y niños en Celaya.', 'Balón de fútbol sobre la cancha, en blanco y negro'),
-]
+# «Lo que hemos hecho»: casos propios (de Vorka y de su fundador, con su autorización). Sin clientes.
+# Solo cifras que se pueden revisar en este repo o en el sitio en vivo (noviembre de 2026):
+#   · IMPACTO: 4 niveles y 5 frentes (soyimpacto.org/llms.txt); 130 municipios y 32 estados (contador en vivo de soyimpacto.org)
+#   · Alianzas: comunicado de celaya.gob.mx y nota de El Sol del Bajío, enlazados en oleynickhdz/prensa/
+#   · Brandon Oleynick: 8 páginas (oleynickhdz/sitemap.xml); 9 notas de 6 medios enlazadas en oleynickhdz/prensa/
+#   · Sparks Celaya: 20 historias del 14 de marzo al 1 de noviembre de 2026 (sparks/celaya/noticias.json)
+#   · Tienda: 10 productos (SERVICIOS[3]['propios']); Vorka FC y Tú en Vorka: lo que dicen sus páginas en este repo
+# Imágenes: capturas reales de cada sitio, 800×600 en /img/trabajo/<k>-800.webp
+# (enlace, imagen, etiqueta, título, alcance y resultado en una o dos líneas, alt)
+CASOS = {
+    'impacto-red': ('https://soyimpacto.org/#presencia', 'impacto-mapa', 'Estrategia y Dirección · IMPACTO', 'Una red nacional en cuatro niveles',
+                    'Estructura municipal, estatal, regional y nacional, con cinco frentes de trabajo. Hoy tiene presidencias en 130 municipios de 32 estados.',
+                    'Mapa de presencia de IMPACTO en soyimpacto.org con los municipios que tienen presidencia'),
+    'fc': ('/fc/', 'fc-web', 'Estrategia y Dirección · Vorka FC', 'Una academia con método desde el día uno',
+           'Programa, cupo de 25, sesiones de 90 minutos en cinco bloques, becas e inscripción en línea en cuatro pasos.',
+           'Portada de Vorka FC: fútbol con método desde los 6 años'),
+    'impacto-alianzas': ('/oleynickhdz/prensa/', 'impacto', 'Estrategia y Dirección · IMPACTO', 'Alianzas con gobierno y empresa',
+                         'Convenio de colaboración con el Instituto Municipal de la Juventud de Celaya y alianza con el Consejo Coordinador Empresarial, ambos publicados en prensa.',
+                         'Jóvenes de IMPACTO en un evento con el Gobierno de Cortazar'),
+    'tuenvorka': ('/voluntariado', 'tuenvorka', 'Liderazgo y Talento · Tú en Vorka', 'Programa de formación para jóvenes',
+                  'Nueve áreas de participación, de 4 a 8 horas por semana, con mentoría cercana, constancia y portafolio.',
+                  'Portada del programa Tú en Vorka para jóvenes de 16 a 29 años'),
+    'impacto-lideres': ('https://soyimpacto.org/directorio/', 'impacto-red', 'Liderazgo y Talento · IMPACTO', 'Estructura de liderazgo juvenil',
+                        'Equipo nacional, vicepresidencias regionales y presidencias por municipio, con admisión, nombramiento y credencial digital.',
+                        'Directorio nacional de IMPACTO con las personas que dirigen cada estado y municipio'),
+    'mentoria': ('/mentoriaoleynick/', 'mentoria', 'Liderazgo y Talento · Mentoría', 'Mentoría uno a uno para líderes',
+                 'Sesión mensual, seguimiento semanal con tres preguntas y revisión de documentos, en tres planes.',
+                 'Portada de la mentoría para proyectos sociales de Brandon Oleynick'),
+    'oleynick-marca': ('/oleynickhdz/prensa/', 'oleynick-prensa', 'Comunicación e Influencia · Brandon Oleynick', 'Marca personal y sala de prensa',
+                       'Manifiesto, semblanza en tres extensiones, fotos para medios y redes propias. Su sala de prensa enlaza 9 notas de 6 medios.',
+                       'Sala de prensa de Brandon Oleynick con su semblanza y kit para medios'),
+    'sparks': ('/sparks/celaya/', 'sparks-celaya', 'Comunicación e Influencia · Revista Sparks', 'Un medio local propio',
+               '20 historias publicadas en Sparks Celaya entre marzo y noviembre de 2026, más un boletín semanal.',
+               'Jardín Principal de Celaya, de la edición Celaya de Revista Sparks'),
+    'impacto-narrativa': ('https://soyimpacto.org/', 'impacto', 'Comunicación e Influencia · IMPACTO', 'La narrativa de una red nacional',
+                          'Mensaje, identidad visual, convocatoria anual y una sola cuenta, @soyimpacto.mx, en Instagram, TikTok y Facebook.',
+                          'Portada de soyimpacto.org: somos la generación que transforma México'),
+    'impacto-web': ('https://soyimpacto.org/', 'impacto', 'Apps y páginas · soyimpacto.org', 'Sitio y sistema de una red nacional',
+                    'Sitio, admisión en línea, donativos desde $20, directorio por estado, mural de donantes y credencial digital.',
+                    'Portada de soyimpacto.org con jóvenes de IMPACTO'),
+    'oleynick-web': ('/oleynickhdz/', 'oleynick', 'Apps y páginas · Brandon Oleynick', 'Página personal con agenda en línea',
+                     'Ocho páginas con versión en inglés, agenda de sesiones en línea y solicitud de conferencias con folio al instante.',
+                     'Portada de la página de Brandon Oleynick'),
+    'apps': ('/tienda/', 'agenda', 'Apps y páginas · Tienda Vorka', 'Diez productos propios en línea',
+             'Agenda, Vuelve, Cupo, Brindi, Vende, simuladores de examen y más: los hacemos y los operamos nosotros.',
+             'Portada de Agenda: tus clientes reservan solos, a cualquier hora'),
+}
+# Inicio e índice: un caso por pieza de la solución (y uno extra de comunicación y de apps)
+EJEMPLOS = [CASOS[k] for k in ('impacto-red', 'tuenvorka', 'oleynick-marca', 'sparks', 'impacto-web', 'apps')]
+# Subpáginas: tres casos de su servicio
+CASOS_SERVICIO = {
+    'estrategia': ('impacto-red', 'impacto-alianzas', 'fc'),
+    'liderazgo': ('tuenvorka', 'impacto-lideres', 'mentoria'),
+    'influencia': ('oleynick-marca', 'impacto-narrativa', 'sparks'),
+    'apps': ('impacto-web', 'oleynick-web', 'apps'),
+}
