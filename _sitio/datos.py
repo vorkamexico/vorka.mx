@@ -36,6 +36,8 @@ SERVICIOS = [
         # Índice simplificado (/servicios/ y el inicio): una línea de resultado y qué opciones del formulario corto se marcan
         'linea': 'Un rumbo claro, prioridades acordadas y un equipo que las ejecuta con el mismo criterio.',
         'interes': ('estrategia',),
+        # Versión corta (tarjetas del índice e inicio, y el «En corto» arriba de cada subpágina)
+        'breve': 'Rumbo claro y prioridades que tu equipo sí ejecuta.', 'quien': 'Direcciones generales, consejos, gobiernos y fundaciones.', 'icono': 'brujula',
     },
     {
         'slug': 'liderazgo', 'num': '02', 'area': 'Liderazgo y Talento',
@@ -71,6 +73,8 @@ SERVICIOS = [
         'cta': 'Cuéntanos qué liderazgo <span class="metal">quieres desarrollar.</span>',
         'linea': 'Líderes que deciden con más claridad y una segunda línea lista para sostener la operación.',
         'interes': ('equipos',),
+        # Versión corta (tarjetas del índice e inicio, y el «En corto» arriba de cada subpágina)
+        'breve': 'Líderes que deciden mejor y una segunda línea lista.', 'quien': 'Directores, equipos directivos y mandos medios.', 'icono': 'personas',
     },
     {
         'slug': 'influencia', 'num': '03', 'area': 'Comunicación e Influencia',
@@ -110,6 +114,8 @@ SERVICIOS = [
         'cta': 'Cuéntanos cómo quieres <span class="metal">que te escuchen.</span>',
         'linea': 'Una narrativa clara y presencia constante en los canales que importan: redes, sitio web, medios y vocería.',
         'interes': ('redes',),
+        # Versión corta (tarjetas del índice e inicio, y el «En corto» arriba de cada subpágina)
+        'breve': 'Que te escuchen: narrativa, redes, medios y vocería.', 'quien': 'Empresas, marcas, instituciones y figuras públicas.', 'icono': 'megafono',
     },
     {
         # Cuarto servicio. Solo lo comprobable: apps y sitios que Vorka ya construyó y opera (en la tienda). Sin clientes, precios ni plazos.
@@ -151,6 +157,8 @@ SERVICIOS = [
         'cta': 'Cuéntanos qué quieres <span class="metal">construir.</span>',
         'linea': 'Tu sitio, tu tienda o tu app en línea, hecha por el equipo que construyó y opera Agenda, Vuelve, Cupo, Brindi y Vorka Learn.',
         'interes': ('sistemas', 'web'),
+        # Versión corta (tarjetas del índice e inicio, y el «En corto» arriba de cada subpágina)
+        'breve': 'Tu sitio, tu tienda en línea o tu app, funcionando.', 'quien': 'Empresas, negocios, instituciones y organizaciones.', 'icono': 'globo',
     },
 ]
 
@@ -173,4 +181,27 @@ MOMENTOS = [
     ('A', 'Estás por tomar una decisión que no admite segundo intento.', 'Sucesión, venta, entrada a un mercado nuevo, candidatura, reorganización. Un movimiento que definirá los próximos cinco años.', 'CEOs · consejos · candidatos · fundadores'),
     ('B', 'Ya arrancó un proceso de cambio y no está aterrizando.', 'La transformación operativa, la nueva narrativa, el rediseño cultural: existe en presentaciones, pero no en la operación real.', 'Direcciones generales · secretarías · fundaciones'),
     ('C', 'Necesitas influir en un ecosistema, no solo comunicar.', 'Reposicionar la organización en el debate público, construir vocería y entrar a la conversación con criterio y método.', 'Empresas reguladas · partidos · incidencia civil'),
+]
+
+# Versión corta para /servicios/ y las subpáginas: cuatro preguntas, respuestas de una o dos líneas
+PREGUNTAS_CORTAS = [
+    ('¿Cuánto cuesta el diagnóstico?', 'Nada. Son 20 minutos, sin costo ni compromiso.'),
+    ('¿Cuánto cuesta trabajar con Vorka?', 'Depende del alcance. Después del diagnóstico te mandamos una propuesta con alcance, tiempos e inversión claros.'),
+    ('¿Puedo contratar solo una parte?', 'Sí. Empiezas con un servicio y sumas otro solo si hace falta.'),
+    ('¿Trabajan fuera de sus ciudades base?', 'Sí. Tenemos bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya, y trabajamos en toda la República, presencial o a distancia.'),
+]
+
+# «Cómo empezamos»: tres pasos de máximo seis palabras
+PASOS_CORTOS = ['Nos cuentas qué necesitas', 'Diagnóstico de 20 minutos, sin costo', 'Propuesta con alcance, tiempos e inversión']
+
+# «Lo que hemos hecho»: solo trabajo propio que se puede abrir hoy en el sitio. Sin clientes, cifras ni testimonios.
+# (enlace, imagen /img/trabajo/<k>-800.webp, etiqueta, título, una línea, alt). Las imágenes (800×600) salen de:
+#   assets/tienda/v3/<k>-portada.webp (portadas de la tienda) · sparks/celaya/assets/celaya-jardin-1200.webp · img/fc/balon-1600.webp
+EJEMPLOS = [
+    ('/tienda/agenda/', 'agenda', 'App propia', 'Agenda', 'Citas en línea con confirmación y recordatorios.', 'Portada de Agenda: tus clientes reservan solos, a cualquier hora'),
+    ('/tienda/vuelve/', 'vuelve', 'App propia', 'Vuelve', 'Tarjetas de lealtad de sellos o puntos en el celular.', 'Portada de Vuelve: tarjeta de sellos de una cafetería en el celular'),
+    ('/tienda/cupo/', 'cupo', 'App propia', 'Cupo', 'Eventos con registro y entrada con QR.', 'Portada de Cupo: boleto de evento con código QR'),
+    ('/simulador-paa/', 'simulador-paa', 'Producto propio', 'Simuladores de examen', 'PAA, UNAM, ECOEMS y prepa UG, con tutor.', 'Portada del Simulador PAA con un reporte de puntaje por área'),
+    ('/sparks/celaya/', 'sparks-celaya', 'Medio propio', 'Revista Sparks', 'Historias de quienes mueven su comunidad.', 'Jardín Principal de Celaya, de la edición Celaya de Revista Sparks'),
+    ('/fc/', 'fc-balon', 'Comunidad', 'Vorka FC', 'Academia de fútbol para niñas y niños en Celaya.', 'Balón de fútbol sobre la cancha, en blanco y negro'),
 ]

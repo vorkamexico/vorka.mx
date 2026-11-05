@@ -32,3 +32,9 @@ Guarda la foto con el mismo nombre en los tres anchos (o agrega una nueva en `FO
 | madero, carmen, bola-agua | Juan Carlos Fonseca Mata (Wikimedia Commons) | CC BY-SA 4.0: el crédito va al pie de `/fc/` |
 | balon | Peter Glaser (Unsplash, vía Wikimedia Commons) | CC0 |
 | lobo.png | Logo de Vorka FC (silueta blanca, se usa como máscara CSS) | Propio |
+
+## Ejemplos de trabajo (`img/trabajo/`, 800×600 WebP)
+Recortes de material que ya está en el repo, para la sección «Lo que hemos hecho» (`_sitio/datos.py` › `EJEMPLOS`):
+- `agenda`, `vuelve`, `cupo`, `simulador-paa` ← `assets/tienda/v3/<k>-portada.webp`
+- `sparks-celaya` ← `sparks/celaya/assets/celaya-jardin-1200.webp`
+- `fc-balon` ← `img/fc/balon-1600.webp`
