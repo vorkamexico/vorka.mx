@@ -62,8 +62,8 @@ export const CSS_MARCA = `
 .pm-v{display:inline-block;width:1.05em;height:1em;vertical-align:-.12em;color:var(--fg)}.pm-v svg{width:100%;height:100%;display:block}
 .pm-h1{font:800 clamp(38px,6.4vw,64px)/1.03 var(--font,Inter,sans-serif);letter-spacing:-.045em;margin:22px 0 0;color:var(--fg)}
 .pm-h1 em{font-style:normal;color:var(--pm)}
-:root[data-theme=dark] .pm-h1 em{color:color-mix(in srgb,var(--pm) 55%,#fff)}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .pm-h1 em{color:color-mix(in srgb,var(--pm) 55%,#fff)}}
+:root[data-tema=oscuro] .pm-h1 em{color:color-mix(in srgb,var(--pm) 55%,#fff)}
+@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .pm-h1 em{color:color-mix(in srgb,var(--pm) 55%,#fff)}}
 .pm-lead{font-size:clamp(17px,2vw,19px);line-height:1.55;color:var(--fg-2);margin:18px 0 0;max-width:560px}
 .pm-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .pm-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--pm);color:#fff;font-weight:700;font-size:16px;text-decoration:none;border:0;cursor:pointer;box-shadow:0 12px 28px -14px var(--pm)}
@@ -72,7 +72,7 @@ export const CSS_MARCA = `
 .pm-hero .t-ya{margin-top:14px}
 .pm-datos{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;padding:0;margin:26px 0 0;font-size:15px;color:var(--fg-2)}.pm-datos b{color:var(--fg);font-weight:750}
 .pm-obj{border-radius:28px;overflow:hidden;background:#F1F0F2;max-width:520px;width:100%;justify-self:center}
-:root[data-theme=dark] .pm-obj img{filter:brightness(.88)}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .pm-obj img{filter:brightness(.88)}}
+:root[data-tema=oscuro] .pm-obj img{filter:brightness(.88)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .pm-obj img{filter:brightness(.88)}}
 .pm-obj img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
 @media(max-width:959px){.pm-obj{max-width:440px}}
 .pm-hero .t-nav-tienda{margin-top:18px}
