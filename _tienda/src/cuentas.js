@@ -9,6 +9,8 @@ import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 const APP = 'https://cuentas.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -82,10 +84,11 @@ ${heroMarca('cuentas', {
   botones: `<a class="pm-btn" href="${APP}/entrar">Pruébala 7 días gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precio</a>`,
   despues: `<p class="pm-precio"><b>Gratis</b> con 1 préstamo activo${mensual ? ` · más préstamos por ${precio(mensual.prod)} al mes` : ''}</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>`,
 })}
-${indiceProducto('cuentas', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/entrar">Pruébala gratis</a>`)}
+${indiceProducto('cuentas', [['que-es', 'Qué es'], ['demo', 'Pruébala'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/entrar">Pruébala gratis</a>`)}
 ${seccionQueEs('cuentas', { titulo: 'El registro de lo que prestas, con cada peso explicado.',
   texto: 'Anotas a quién le prestaste, cuánto y cómo te va a pagar. Cada abono se aplica solo y ves <b>cuánto falta, cuánto fue a intereses y cuánto a capital</b>. Cuentas no presta ni mueve dinero: solo lleva la cuenta, clara para los dos.',
   para: [['Quien presta a familiares y amigos', '«¿Cuánto me debe? ¿Cuánto ya me pagó?», sin transferencias sueltas ni notas en el celular.'], ['Quien presta con interés', 'Interés simple sobre lo que falta, con la operación de cada tramo para revisarla con calculadora.'], ['Quien presta sin interés', 'Pagos cuando se pueda o cuotas fijas, y siempre a la vista cuánto falta.']] })}
+${seccionDemo('cuentas', demoDe('cuentas'))}
 
 <section class="cu-sec" id="como"><div class="marco cu-como">
   <div><div class="cu-cab izq"><span class="cu-et">Cómo funciona</span><h2>¿Cuánto me debe? ¿Cuánto ya me pagó?</h2><p>Prestar a alguien de confianza es fácil. Lo difícil es llevar la cuenta: transferencias sueltas, notas en el celular y una conversación incómoda cuando los números no cuadran. Cuentas lo deja claro para los dos.</p></div>

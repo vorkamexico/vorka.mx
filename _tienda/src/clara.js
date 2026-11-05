@@ -9,6 +9,8 @@ import { oferta, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 const APP = 'https://clara.vorka.mx';
 const GUIA_TARJETA = 'https://vorka.mx/learn/finanzas/como-funciona-una-tarjeta-de-credito/';
@@ -97,11 +99,12 @@ ${heroMarca('clara', {
   botones: `<a class="pm-btn" href="${APP}/entrar">Empieza gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precio</a>`,
   despues: `<p class="pm-precio"><b>Gratis con 1 tarjeta.</b>${mensual ? ` Pro desde ${precio(mensual.prod)} al mes ·` : ''} 7 días de Pro sin tarjeta</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>`,
 })}
-${indiceProducto('clara', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['recordatorios', 'Recordatorios'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/entrar">Empieza gratis</a>`)}
+${indiceProducto('clara', [['que-es', 'Qué es'], ['demo', 'Pruébala'], ['como', 'Cómo funciona'], ['recordatorios', 'Recordatorios'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/entrar">Empieza gratis</a>`)}
 ${seccionQueEs('clara', { titulo: 'Una app para llevar tus tarjetas y tu dinero en orden.',
   texto: 'Clara te avisa cuándo es el corte y hasta cuándo pagar tu tarjeta, lleva tus gastos e ingresos y <b>te dice si te alcanza antes de comprar</b>. No se conecta a tu banco ni pide el número de tu tarjeta: tus movimientos los anotas tú. Gratis con 1 tarjeta.',
   para: [['Quien estrena su primera tarjeta', 'Saber cuándo es el corte y hasta cuándo pagar para no pagar intereses.'], ['Quien nunca le entendió a su tarjeta', 'Que le recuerden las dos fechas y le expliquen cada número.'],
     ['Jóvenes desde 15 años', 'Llevar sus gastos e ingresos y saber si le alcanza antes de comprar. De 15 a 17, con autorización de su mamá, papá o tutor.']] })}
+${seccionDemo('clara', demoDe('clara'))}
 
 <section class="cl-sec" id="como"><div class="marco cl-como-g">
   <div><div class="cl-cab izq"><span class="cl-et">Cómo funciona</span><h2>¿Cuándo es el corte? ¿Cuánto tengo que pagar?</h2><p>Una tarjeta de crédito es útil si sabes dos fechas y pagas a tiempo. Clara te las recuerda y te explica cada número. Si quieres entender lo básico primero, lee <a href="${GUIA_TARJETA}">cómo funciona una tarjeta de crédito</a>.</p></div>
