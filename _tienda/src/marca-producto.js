@@ -115,6 +115,7 @@ export const CSS_SECCIONES = `
 .pm-demo-lista li::before{content:"";position:absolute;left:0;top:.2em;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--pm) 14%,transparent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.6 2.6L14 7.6' fill='none' stroke='%23000' stroke-opacity='.55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
 .pm-demo-acc{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}.pm-demo-acc .pm-btn{min-height:48px;padding:0 20px;font-size:15px}
 .pm-demo-acc .pm-btn:not(.sec){color:#fff!important}.pm-demo-acc svg{width:18px;height:18px}
+.pm-medida{margin:22px 0 0;padding:16px 18px;border:1px solid var(--line);border-radius:16px;font-size:15px;line-height:1.5;color:var(--fg-2);max-width:560px}.pm-medida b{color:var(--fg)}.pm-medida a{color:var(--pm);font-weight:700;white-space:nowrap}
 .pm-demo-nota{margin:16px 0 0;font-size:14px;color:var(--fg-2);max-width:520px}
 .pm-tel{justify-self:center;width:min(360px,88vw);height:min(720px,82vh);border:10px solid #1d1a1f;border-radius:46px;overflow:hidden;background:#fff;box-shadow:0 40px 80px -34px rgba(20,17,20,.55)}
 .pm-tel iframe{width:100%;height:100%;border:0;display:block}
