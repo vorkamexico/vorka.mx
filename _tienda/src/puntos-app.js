@@ -237,6 +237,10 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .ico-in{display:inline-block;width:17px;height:17px;vertical-align:-3px;color:var(--oro2)}.ico-in svg{width:17px;height:17px}
 .promo.doble{background:linear-gradient(135deg,rgba(200,164,92,.16),rgba(107,42,133,.12));border-color:rgba(230,207,150,.25)}
 .cerrar-x{margin-left:auto;align-self:flex-start;background:none;border:0;color:var(--fg3);padding:2px;cursor:pointer}.cerrar-x svg{width:18px;height:18px}
+/* catálogo para compartir */
+.cat-card{display:grid;gap:12px}.cat-card img{width:100%;height:auto;border-radius:14px;display:block}.cat-card b{display:block;font-size:16px}.cat-card small{display:block;color:var(--fg3);font-size:13px;margin-top:2px}
+.cat-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cat-btns .pv-btn{justify-content:center}.cat-btns svg{width:18px;height:18px}
+.cat-ver{font-size:13.5px;font-weight:600;color:var(--oro,#c8a45c);text-decoration:none;justify-self:center}
 /* tarjeta en Wallet */
 .wallet-card{display:grid;gap:12px}.wallet-card b{display:block;font-size:16px}.wallet-card small{display:block;color:var(--fg3);font-size:13px;margin-top:2px}
 .wallet-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -639,6 +643,9 @@ export function paginaApp(env, d) {
   <h1 class="titulo" style="--i:0">Comparte y <span class="pv-metal">gana</span></h1>
   <p class="subt" style="--i:1">Cada compra con tu liga te da ${d.pct}% en puntos (${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% con puntos extra). Por ser parte del ecosistema Vorka, quien compra con tu liga o tu código tiene ${PCT_REFERIDO} % de descuento en su primer pago. La persona tiene 30 días para comprar.</p>
   <div class="card codigo-card" style="--i:2"><div><small>Tu código</small><code>${esc(d.code)}</code></div><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(ligaDe('/tienda/', d.code))}">${I.copiar}Copiar liga</button></div>
+  ${d.catalogo ? `<div class="card cat-card" style="--i:2"><img src="/assets/tienda/og/catalogo.jpg" alt="Portada del catálogo de Vorka México" width="1200" height="630" loading="lazy"><div><b>Comparte el catálogo</b><small>Para tus grupos de WhatsApp: sale la portada, los precios y tu código.</small></div>
+    <div class="cat-btns"><a class="pv-btn oro" href="https://wa.me/?text=${esc(encodeURIComponent(d.catalogo.mensaje))}" target="_blank" rel="noopener">${I.wa}Mandar por WhatsApp</a><button class="pv-btn vidrio" type="button" data-copiar="${esc(d.catalogo.mensaje)}">${I.copiar}Copiar mensaje</button></div>
+    <a class="cat-ver" href="${esc(d.catalogo.liga)}" target="_blank" rel="noopener">Ver cómo se ve el catálogo →</a></div>` : ''}
   <div class="card wallet-card" style="--i:2"><div><b>Tu tarjeta de Embajador(a)</b><small>Tu código y tu QR en el celular, listos para mostrar.</small></div>
     <div class="wallet-btns"><a class="wallet-btn" id="w-apple" href="/api/puntos/wallet/apple" rel="nofollow">${I.wallet}<span>Agregar a Apple Wallet</span></a><a class="wallet-btn" id="w-google" href="/api/puntos/wallet/google" rel="nofollow">${I.wallet}<span>Guardar en Google Wallet</span></a></div></div>
   <div class="sec-t" style="--i:3"><h2>Elige qué compartir</h2></div>

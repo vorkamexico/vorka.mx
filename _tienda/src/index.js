@@ -1,5 +1,6 @@
 // Tienda Vorka México · punto de entrada del Worker
 // Rutas (se irán llenando por bloques): /tienda*, /api/*, /descargas*
+import { itemsCatalogo, mensajeCatalogo, ligaCatalogo, PORTADA_CATALOGO } from './catalogo-compartir.js';
 import { WorkerEntrypoint } from 'cloudflare:workers';
 import { json, fail } from './util.js';
 import { listarProductos } from './modelo.js';
@@ -53,6 +54,8 @@ import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesia
 export class Admin extends WorkerEntrypoint {
   resumen(f) { return admin.resumen(this.env, f); }
   tablero(f) { return admin.tablero(this.env, f); }
+  // Catálogo para compartir (os › Ventas): la liga con su código y el mensaje listo para WhatsApp
+  async catalogoCompartir(code, nombre) { const sec = await itemsCatalogo(this.env); return { liga: ligaCatalogo(code), portada: PORTADA_CATALOGO, mensaje: mensajeCatalogo(sec, { code, nombre }) }; }
   portafolio(f) { return portafolio(this.env, f); }
   ordenes(f) { return admin.ordenes(this.env, f); }
   orden(id) { return admin.orden(this.env, id); }
@@ -388,7 +391,7 @@ async function atender(request, env, ctx, url) {
     // El portal de Socios Vorka ya no existe: todo vive en Puntos Vorka
     if (/^\/tienda\/socios(\/|$)/.test(url.pathname)) return new Response(null, { status: 301, headers: { location: '/tienda/puntos/' } });
     if (url.pathname === '/api/socios/codigo') return fail('Usa /api/puntos/liga', 410);
-    if (/^\/(tienda\/(puntos|cuenta)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
+    if (/^\/(tienda\/(puntos|cuenta|catalogo)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
     // Vorka Learn (/learn/…) y las URL viejas de las guías (/<simulador>/guias/… → 301 a /learn/…)
     const lr = rutasLearnExtra(request, env, url) || rutasLearn(request, env, url);   // búsqueda, acerca, RSS y dibujos; luego guías
     if (lr) return lr;
