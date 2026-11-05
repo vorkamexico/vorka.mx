@@ -12,6 +12,7 @@
 //  - Aviso al final: información general; no es asesoría legal ni fiscal.
 import { p, ul, ol, tabla, nota, caja } from './learn/piezas.js';
 import { crearTema, llamadoFinal } from './learn/tema.js';
+import { puenteServicios } from './learn/puente.js';
 
 export const ACTUALIZADO_NEG = '2026-10-31';
 const ACTUALIZADO_TXT = 'octubre de 2026';
@@ -56,6 +57,10 @@ const LLAMADO = {
     'Cupo, de Vorka México, te arma la página de tu evento con registro sin cuentas, entrada con QR y check-in desde tu celular, también sin señal. Es gratis hasta 30 personas; para más lugares, correos o cobro anticipado está Cupo Pro, que se paga por evento. Cupo no cobra comisión por tus entradas: la gente te paga directo a ti.',
     '/tienda/cupo/', 'Conoce Cupo'),
 };
+// Después del llamado a la app: el puente a servicios («¿Lo hacemos por ti?»), con el formulario corto (origen 'learn')
+const PUENTE = puenteServicios({ marcar: ['web', 'redes'],
+  texto: 'Si prefieres que alguien arme la página web, las redes o un sistema a la medida para tu negocio, el equipo de Vorka México puede hacerlo contigo.' });
+for (const k of Object.keys(LLAMADO)) LLAMADO[k] += PUENTE;
 
 // ---------- los artículos ----------
 export const ARTICULOS_NEGOCIO = [

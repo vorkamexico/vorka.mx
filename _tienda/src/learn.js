@@ -22,7 +22,12 @@ export { paginaArticulo, compartir } from './learn/articulo.js';
 
 const VERSION_CSS = [...ESTILOS].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
 let CSS = null;   // se arma una vez por Worker (tokens de cada sección + estilos)
-const absoluta = u => /^https?:\/\//.test(u) ? u : `https://vorka.mx${u}`;
+// La CSP de la tienda, más os.vorka.mx en connect-src: el formulario corto «¿Lo hacemos por ti?» (src/learn/puente.js) manda ahí
+const seguridadLearn = (n, anuncios) => {
+  const h = seguridad(n, { anuncios });
+  return { ...h, 'content-security-policy': h['content-security-policy'].replace("connect-src 'self'", "connect-src 'self' https://os.vorka.mx") };
+};
+const absoluta = u =>/^https?:\/\//.test(u) ? u : `https://vorka.mx${u}`;
 
 /**
  * paginaLearn({ titulo, descripcion, ruta, cuerpo, head?, imagen?, imagenAlt?, ogTipo?, actual?, seccion?, anuncios?,
@@ -78,6 +83,6 @@ ${PIE.replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIP
 </html>`;
   return new Response(html, {
     status,
-    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridad(n, { anuncios: !!anuncios }) },
+    headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...seguridadLearn(n, !!anuncios) },
   });
 }

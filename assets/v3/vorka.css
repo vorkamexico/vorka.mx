@@ -677,7 +677,7 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .v4-chip { position: relative; }
 .v4-chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 .v4-chip span { display: inline-flex; align-items: center; min-height: 42px; padding: 0 15px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--bg); font-size: 14.5px; font-weight: 550; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
-.v4-chip input:checked + span { background: var(--fg); border-color: var(--fg); color: #fff; }
+.v4-chip input:checked + span { background: var(--fg); border-color: var(--fg); color: var(--card); }
 .v4-chip input:focus-visible + span { outline: 2px solid var(--morado); outline-offset: 2px; }
 .v4-casilla { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--fg-2); }
 .v4-casilla input { width: 19px; height: 19px; margin: 1px 0 0; accent-color: var(--morado); flex: none; }
@@ -691,6 +691,15 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .v4-ok svg { width: 22px; height: 22px; }
 .v4-exito p { color: var(--fg-2); font-size: 15.5px; }
 .v4-exito a { color: var(--morado); font-weight: 650; }
+
+/* El puente dentro de las guías de Vorka Learn (_tienda/src/learn/puente.js): sin la decoración de los h2 del artículo, una columna */
+.lr-puente { margin-top: 48px; padding-top: 36px; border-top: 1px solid var(--line); font-size: 16px; line-height: 1.5; }
+.lr-puente .v4-plat-in { grid-template-columns: 1fr; gap: 24px; }
+.lr-puente h2.t2 { margin: 14px 0 0; padding-top: 0; font-size: clamp(26px, 3vw, 34px); letter-spacing: -.02em; }
+.lr-puente h2.t2::before { display: none; }
+.lr-puente p { margin: 0; }
+.lr-puente .lead { margin-top: 12px; }
+.lr-puente .v4-alt { margin-top: 14px; }
 
 @media (max-width: 960px) {
   .v4-rutas, .v4-servs, .v4-pasos, .v4-lista { grid-template-columns: 1fr; }

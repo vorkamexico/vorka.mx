@@ -34,7 +34,7 @@ LEARN_EXAMENES = [('/learn/paa/', 'PAA'), ('/learn/unam/', 'UNAM'), ('/learn/eco
 LEARN_TEMAS = [('/learn/camino/', 'Elegir tu camino'), ('/learn/finanzas/', 'Finanzas personales'), ('/learn/negocio/', 'Negocio pequeño'), ('/learn/apps/', 'Crea tu app')]
 TIENDA = [('/simulador-paa/', 'Simuladores de examen (PAA, UNAM, ECOEMS, prepa UG)'), ('/tienda/brindi/', 'Brindi: invitaciones digitales con QR'),
           ('/tienda/cupo/', 'Cupo: eventos con registro y check-in'), ('/tienda/vuelve/', 'Vuelve: tarjetas de lealtad'), ('/tienda/agenda/', 'Agenda: citas en línea')]
-PASOS = [('Platiquemos', 'Nos dejas cuatro datos o nos escribes por WhatsApp. Te respondemos en máximo 2 días hábiles.'),
+PASOS = [('Platiquemos', 'Nos dejas cuatro datos o nos escribes por WhatsApp. Te escribimos en menos de un día hábil.'),
          ('Diagnóstico sin costo', '20 minutos para entender tu reto y decirte, con claridad, cómo lo resolveríamos.'),
          ('Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro. Medimos contra los objetivos que acordamos.')]
 
@@ -63,7 +63,7 @@ def inicio():
     <h1 class="t1" id="t-hero" style="margin-top:18px">Te ayudamos a decidir, ejecutar y hacerte escuchar.</h1>
     <p class="lead">Somos una consultora de estrategia, liderazgo y comunicación para empresas, gobiernos y organizaciones. También creamos apps para negocios y guías gratuitas en Vorka Learn.</p>
     <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="/servicios/">Ver servicios</a></div>
-    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Respuesta en máximo 2 días hábiles</span></div>
+    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Te escribimos en menos de un día hábil</span></div>
   </div>
 </section>
 
@@ -170,7 +170,7 @@ def servicios_hub():
     <h1 class="t1" id="t-hero" style="margin-top:18px">Consultoría para decidir, ejecutar y hacerte escuchar.</h1>
     <p class="lead">Para empresas, gobiernos, fundaciones y marcas en México que necesitan tomar una decisión importante, fortalecer a su equipo directivo o comunicar mejor.</p>
     <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#proceso">Cómo trabajamos</a></div>
-    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Respuesta en máximo 2 días hábiles</span></div>
+    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Te escribimos en menos de un día hábil</span></div>
   </div>
 </section>
 <section class="v4-sec" aria-labelledby="t-serv" style="padding-top:0">

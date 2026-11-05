@@ -128,9 +128,9 @@
     });
   });
 
-  // Formulario corto «Platiquemos» → os.vorka.mx › Prospectos (POST /api/publico/vorka/interes, mismas reglas que el servidor)
-  // Si os.vorka.mx todavía no abre CORS a esa ruta, el navegador no deja leer la respuesta: se manda entonces como envío
-  // simple (text/plain, sin leer respuesta). El servidor lo procesa igual porque lee el cuerpo como JSON sin ver el tipo.
+  // Formulario corto «Platiquemos» → os.vorka.mx › Prospectos (POST /api/publico/vorka/interes, mismas reglas que el servidor).
+  // origen: 'sitio' (vorka.mx) o el data-origen del formulario ('learn' en las guías). Se lee la respuesta (errores y folio).
+  // Solo si falla la red (sin respuesta), se reintenta como envío simple text/plain sin leer respuesta: os lee el JSON igual.
   var API_INTERES = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:8787/api/publico/vorka/interes' : 'https://os.vorka.mx/api/publico/vorka/interes';
   d.querySelectorAll('form.platiquemos').forEach(function (pf) {
     var msg = pf.querySelector('.v4-msg'), btn = pf.querySelector('button[type=submit]'), caja = pf.parentNode, ok = caja.querySelector('.v4-exito');
@@ -151,15 +151,16 @@
       if (!x.intereses.length) return falla('Elige al menos una opción de lo que te interesa.');
       if (!x.acepta) return falla('Necesitamos que aceptes el aviso de privacidad.');
       falla('');
-      // En la bandeja: desde qué página llegó (la ruta corta de os no tiene todavía un origen «sitio web»)
-      x.mensaje = 'Formulario corto del sitio vorka.mx' + (pf.getAttribute('data-pagina') || location.pathname) + ' (no viene de la Revista Sparks).';
-      x.refiere = 'Sitio web vorka.mx';
+      x.origen = pf.getAttribute('data-origen') || 'sitio';
+      x.mensaje = 'Enviado desde vorka.mx' + (pf.getAttribute('data-pagina') || location.pathname);   // en la bandeja: desde qué página
       var cuerpo = JSON.stringify(x);
       btn.disabled = true; btn.firstChild.textContent = 'Enviando… ';
       fetch(API_INTERES, { method: 'POST', headers: { 'content-type': 'application/json' }, body: cuerpo })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { var er = new Error(j.error || 'No se pudo enviar.'); er.servidor = true; throw er; } return j; }); },
           function () { return fetch(API_INTERES, { method: 'POST', mode: 'no-cors', headers: { 'content-type': 'text/plain;charset=UTF-8' }, body: cuerpo }).then(function () { return { ok: true }; }); })
-        .then(function () {
+        .then(function (j) {
+          var fol = ok.querySelector('[data-folio]');
+          if (fol && j && j.folio) { fol.textContent = j.folio; fol.parentNode.hidden = false; }
           ok.querySelector('[data-nombre]').textContent = x.nombre.split(' ')[0];
           ok.querySelector('[data-correo]').textContent = x.correo;
           pf.hidden = true; ok.hidden = false; ok.focus();
