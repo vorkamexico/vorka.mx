@@ -241,6 +241,14 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .cat-card{display:grid;gap:12px}.cat-card img{width:100%;height:auto;border-radius:14px;display:block}.cat-card b{display:block;font-size:16px}.cat-card small{display:block;color:var(--fg3);font-size:13px;margin-top:2px}
 .cat-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cat-btns .pv-btn{justify-content:center}.cat-btns svg{width:18px;height:18px}
 .cat-ver{font-size:13.5px;font-weight:600;color:var(--oro,#c8a45c);text-decoration:none;justify-self:center}
+/* tarjeta en Wallet: personalizar (tema, QR, foto) */
+.wallet-perso summary{cursor:pointer;font-weight:650;font-size:14.5px;list-style:none;display:flex;justify-content:space-between}.wallet-perso summary::after{content:'+';color:var(--fg3)}.wallet-perso[open] summary::after{content:'–'}
+#wp-c{display:grid;gap:14px;margin-top:12px}.wp-temas{display:flex;flex-wrap:wrap;gap:10px}
+.wp-temas button{display:grid;justify-items:center;gap:4px;border:0;background:none;color:var(--fg2);font:600 12px inherit;cursor:pointer}
+.wp-temas i{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--f) 60%,var(--a) 60%);box-shadow:0 0 0 1px var(--linea,rgba(127,127,127,.3))}
+.wp-temas button[aria-checked=true] i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--fg)}.wp-temas button[aria-checked=true]{color:var(--fg)}
+.wp-fila{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;font-size:14.5px}.wp-fila select{height:40px;border-radius:12px;padding:0 10px;font:inherit}
+.wp-foto{display:flex;gap:8px;flex-wrap:wrap}.wp-nota{font-size:13px;color:var(--fg3);margin:0}
 /* tarjeta en Wallet */
 .wallet-card{display:grid;gap:12px}.wallet-card b{display:block;font-size:16px}.wallet-card small{display:block;color:var(--fg3);font-size:13px;margin-top:2px}
 .wallet-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -646,8 +654,9 @@ export function paginaApp(env, d) {
   ${d.catalogo ? `<div class="card cat-card" style="--i:2"><img src="/assets/tienda/og/catalogo.jpg" alt="Portada del catálogo de Vorka México" width="1200" height="630" loading="lazy"><div><b>Comparte el catálogo</b><small>Para tus grupos de WhatsApp: sale la portada, los precios y tu código.</small></div>
     <div class="cat-btns"><a class="pv-btn oro" href="https://wa.me/?text=${esc(encodeURIComponent(d.catalogo.mensaje))}" target="_blank" rel="noopener">${I.wa}Mandar por WhatsApp</a><button class="pv-btn vidrio" type="button" data-copiar="${esc(d.catalogo.mensaje)}">${I.copiar}Copiar mensaje</button></div>
     <a class="cat-ver" href="${esc(d.catalogo.liga)}" target="_blank" rel="noopener">Ver cómo se ve el catálogo →</a></div>` : ''}
-  <div class="card wallet-card" style="--i:2"><div><b>Tu tarjeta de Embajador(a)</b><small>Tu código y tu QR en el celular, listos para mostrar.</small></div>
-    <div class="wallet-btns"><a class="wallet-btn" id="w-apple" href="/api/puntos/wallet/apple" rel="nofollow">${I.wallet}<span>Agregar a Apple Wallet</span></a><a class="wallet-btn" id="w-google" href="/api/puntos/wallet/google" rel="nofollow">${I.wallet}<span>Guardar en Google Wallet</span></a></div></div>
+  <div class="card wallet-card" style="--i:2"><div><b>Tu tarjeta de Embajador(a)</b><small>Tu código y tu QR en el celular, listos para mostrar. Elige su color, tu foto y qué abre tu QR.</small></div>
+    <div class="wallet-btns"><a class="wallet-btn" id="w-apple" href="/api/puntos/wallet/apple" rel="nofollow">${I.wallet}<span>Agregar a Apple Wallet</span></a><a class="wallet-btn" id="w-google" href="/api/puntos/wallet/google" rel="nofollow">${I.wallet}<span>Guardar en Google Wallet</span></a></div>
+    <details class="wallet-perso" id="wp"><summary>Personaliza tu tarjeta</summary><div id="wp-c"><p class="wp-nota">Cargando…</p></div></details></div>
   <div class="sec-t" style="--i:3"><h2>Elige qué compartir</h2></div>
   <div class="prods">${tarjetasCompartir.map((c, i) => {
     const liga = ligaDe(c.ruta, c.code || d.code), doble = dobleDe(c), msjs = mensajes(c, liga), principal = msjs[0];
@@ -834,6 +843,27 @@ const SCRIPT_APP = String.raw`(function(){
     $('#hq-svg').innerHTML=src.innerHTML; $('#hq-liga').textContent=src.dataset.qrLiga; $('#hq-t').textContent=src.dataset.qrTitulo; abrir('h-qr'); });
   (function(){ var ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1), and=/Android/.test(ua), a=$('#w-apple'), g=$('#w-google');
     if(a&&g&&ios){ g.remove(); a.classList.add('uno'); } else if(a&&g&&and){ a.remove(); g.classList.add('uno'); } })();
+  (function(){ var wp=$('#wp'); if(!wp) return; var listo=false;
+    function enviar(cuerpo, msg){ return fetch('/api/puntos/wallet/ajustes',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(cuerpo)}).then(function(r){return r.json().then(function(j){ if(!r.ok) throw new Error(j.error||'No se pudo guardar'); return j; });}).then(function(){ aviso(msg); }).catch(function(e){ aviso(e.message||'No se pudo guardar'); }); }
+    function aviso(t){ var n=$('#wp-c .wp-nota.estado'); if(n) n.textContent=t; }
+    wp.addEventListener('toggle',function(){ if(!wp.open||listo) return; listo=true;
+      fetch('/api/puntos/wallet/ajustes').then(function(r){return r.json();}).then(function(a){
+        var c=$('#wp-c'), h='<div class="wp-temas" role="radiogroup" aria-label="Color de tu tarjeta">';
+        Object.keys(a.temas).forEach(function(k){ var t=a.temas[k]; h+='<button type="button" role="radio" data-t="'+k+'" aria-checked="'+(k===a.tema)+'" style="--f:'+t[1]+';--a:'+t[2]+'"><i></i><span>'+t[0]+'</span></button>'; });
+        h+='</div><label class="wp-fila"><span>Tu QR abre</span><select id="wp-qr">'; Object.keys(a.destinos).forEach(function(k){ h+='<option value="'+k+'"'+(k===a.qr?' selected':'')+'>'+a.destinos[k]+'</option>'; });
+        h+='</select></label><div class="wp-foto"><label class="pv-btn vidrio chico" style="cursor:pointer">'+(a.foto?'Cambiar mi foto':'Poner mi foto')+'<input type="file" accept="image/*" id="wp-f" hidden></label>'+(a.foto?'<button type="button" class="pv-btn vidrio chico" id="wp-q">Quitar foto</button>':'')+'</div>';
+        h+='<p class="wp-nota">Sin foto, tu tarjeta lleva tu emblema: un dibujo único tuyo. Después de cambiar algo, vuelve a agregar tu tarjeta a Wallet para verlo.</p><p class="wp-nota estado" role="status"></p>';
+        c.innerHTML=h;
+        c.querySelectorAll('[data-t]').forEach(function(b){ b.onclick=function(){ c.querySelectorAll('[data-t]').forEach(function(x){x.setAttribute('aria-checked',String(x===b));}); enviar({tema:b.dataset.t},'Listo: color guardado.'); }; });
+        $('#wp-qr').onchange=function(e){ enviar({qr:e.target.value},'Listo: tu QR abrirá eso.'); };
+        var q=$('#wp-q'); if(q) q.onclick=function(){ enviar({foto:null},'Listo: quitamos tu foto.'); };
+        $('#wp-f').onchange=function(e){ var f=e.target.files&&e.target.files[0]; if(!f) return; var img=new Image(), u=URL.createObjectURL(f);
+          img.onload=function(){ var n=270, cv=document.createElement('canvas'); cv.width=n; cv.height=n; var x=cv.getContext('2d'), s=Math.min(img.width,img.height);
+            x.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,n,n); URL.revokeObjectURL(u); enviar({foto:cv.toDataURL('image/png')},'Listo: tu foto ya va en tu tarjeta.'); };
+          img.src=u; };
+      }).catch(function(){ $('#wp-c').innerHTML='<p class="wp-nota">No se pudo cargar. Intenta de nuevo.</p>'; });
+    });
+  })();
   $('#hq-guardar').onclick=function(){ var s=$('#hq-svg svg'); if(!s) return; var img=new Image(), n=900;
     img.onload=function(){ var c=document.createElement('canvas'); c.width=n; c.height=n+120; var x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,n,n);
       x.fillStyle='#141114'; x.font='600 34px -apple-system,Segoe UI,Inter,sans-serif'; x.textAlign='center'; x.fillText($('#hq-t').textContent,n/2,n+50); x.fillStyle='#6D696E'; x.font='26px -apple-system,Segoe UI,Inter,sans-serif'; x.fillText('Puntos Vorka · '+$('#hq-liga').textContent.replace(/^.*ref=/,'código '),n/2,n+92);

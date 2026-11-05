@@ -555,13 +555,20 @@ export async function topDelMes(env) {
 }
 
 // Lo que lleva la tarjeta de Wallet: nombre, código público, liga a la tienda con su código, descuento y rango del mes
+// Temas de la tarjeta (los mismos de os › credencial.js › TEMAS): aquí solo sus nombres y colores para elegir
+export const TEMAS_WALLET = { noche: ['Noche', '#1a0e22', '#c9a4e3'], oro: ['Oro', '#16110A', '#D8B56B'], marfil: ['Marfil', '#F4EEE4', '#8A6A1F'],
+  morado: ['Morado', '#2A1440', '#E6C77E'], verde: ['Verde', '#0E2F25', '#9FE0C2'], tinta: ['Tinta', '#141114', '#BDB6C3'] };
+export const DESTINOS_WALLET = { tienda: 'La tienda', catalogo: 'Mi catálogo' };
+const MAX_FOTO = 260_000;   // base64 de un PNG de 270 px
 async function datosWallet(env, email) {
   const code = await codigoDe(env, email);
-  const [cuenta, af, emb] = await Promise.all([one(env, 'SELECT nombre FROM puntos_cuentas WHERE email = ?', email), one(env, 'SELECT nombre, publico FROM affiliates WHERE code = ?', code),
+  const [cuenta, af, emb] = await Promise.all([one(env, 'SELECT nombre, wallet_tema, wallet_qr, wallet_foto, wallet_token FROM puntos_cuentas WHERE email = ?', email), one(env, 'SELECT nombre, publico FROM affiliates WHERE code = ?', code),
     datosEmbajador(env, email, { code }).catch(() => null)]);
   const publico = af?.publico || code;
-  return { email, code: publico, nombre: cuenta?.nombre || af?.nombre || email.split('@')[0], liga: `${SITIO}/tienda/?ref=${encodeURIComponent(publico)}`,
-    descuento_pct: PCT_REFERIDO, rango: emb?.rango?.nombre || null };
+  return { email, code: publico, nombre: cuenta?.nombre || af?.nombre || email.split('@')[0],
+    liga: cuenta?.wallet_qr === 'catalogo' ? ligaCatalogo(publico) : `${SITIO}/tienda/?ref=${encodeURIComponent(publico)}`,
+    rango: emb?.rango?.nombre || null, tema: TEMAS_WALLET[cuenta?.wallet_tema] ? cuenta.wallet_tema : 'noche',
+    foto_png: cuenta?.wallet_foto || null, foto_url: cuenta?.wallet_foto && cuenta?.wallet_token ? `${SITIO}/api/puntos/wallet/foto/${cuenta.wallet_token}.png` : null };
 }
 
 export async function datosApp(env, email) {
@@ -689,6 +696,36 @@ export async function rutasPuntos(req, env, url) {
     const cuenta = await cuentaActual(req, env);
     const inv = !cuenta && url.searchParams.get('i') ? await invitadorDe(env, url.searchParams.get('i')) : !cuenta && leerCookieDe(req, COOKIE_UNETE) ? await invitadorDe(env, decodeURIComponent(leerCookieDe(req, COOKIE_UNETE))) : null;
     return paginaEmbajadores(env, { cuenta, invitador: inv });
+  }
+  // Su foto para Google Wallet (liga secreta por cuenta; sin sesión porque Google la descarga)
+  if ((m = p.match(/^\/api\/puntos\/wallet\/foto\/([a-f0-9]{32})\.png$/)) && M === 'GET') {
+    const r = await one(env, 'SELECT wallet_foto FROM puntos_cuentas WHERE wallet_token = ?', m[1]);
+    if (!r?.wallet_foto) return new Response('No encontrado', { status: 404 });
+    return new Response(Uint8Array.from(atob(r.wallet_foto), c => c.charCodeAt(0)), { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=86400', 'x-robots-tag': 'noindex' } });
+  }
+  // Personalizar la tarjeta: tema, a dónde lleva el QR y su foto (null la quita)
+  if (p === '/api/puntos/wallet/ajustes' && (M === 'GET' || M === 'POST')) {
+    const c = await cuentaActual(req, env);
+    if (!c) return fail('Entra a tu cuenta.', 401);
+    if (M === 'GET') {
+      const r = await one(env, 'SELECT wallet_tema, wallet_qr, wallet_foto IS NOT NULL foto FROM puntos_cuentas WHERE email = ?', c.email);
+      return json({ tema: TEMAS_WALLET[r?.wallet_tema] ? r.wallet_tema : 'noche', qr: DESTINOS_WALLET[r?.wallet_qr] ? r.wallet_qr : 'tienda', foto: !!r?.foto, temas: TEMAS_WALLET, destinos: DESTINOS_WALLET }, 200, NO_CACHE);
+    }
+    if (!mismoOrigen(req, env)) return fail('Solicitud inválida.', 403);
+    const b = await req.json().catch(() => ({}));
+    await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)', c.email);
+    if (b.tema !== undefined) { if (!TEMAS_WALLET[b.tema]) return fail('Ese color no existe.'); await run(env, 'UPDATE puntos_cuentas SET wallet_tema = ? WHERE email = ?', b.tema, c.email); }
+    if (b.qr !== undefined) { if (!DESTINOS_WALLET[b.qr]) return fail('Esa opción no existe.'); await run(env, 'UPDATE puntos_cuentas SET wallet_qr = ? WHERE email = ?', b.qr, c.email); }
+    if (b.foto !== undefined) {
+      if (b.foto === null) await run(env, 'UPDATE puntos_cuentas SET wallet_foto = NULL WHERE email = ?', c.email);
+      else {
+        const f = String(b.foto).match(/^data:image\/png;base64,([A-Za-z0-9+/=]+)$/);
+        if (!f) return fail('La foto no es válida.');
+        if (f[1].length > MAX_FOTO) return fail('La foto es muy pesada.');
+        await run(env, "UPDATE puntos_cuentas SET wallet_foto = ?, wallet_token = COALESCE(wallet_token, lower(hex(randomblob(16)))) WHERE email = ?", f[1], c.email);
+      }
+    }
+    return json({ ok: true }, 200, NO_CACHE);
   }
   // Tarjeta de Embajador(a) en Apple / Google Wallet: su nombre, su código y el QR a la tienda con su código (lo firma os)
   if ((m = p.match(/^\/api\/puntos\/wallet\/(apple|google)$/)) && M === 'GET') {
