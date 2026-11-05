@@ -445,10 +445,9 @@ export async function paginaProducto(env, req, url, slug) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `/tienda/agenda/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
-  // Toolkit: sus dos planes se eligen en su ficha
+  // Toolkit: ya no se ofrece; sus fichas viejas mandan a la tienda
   if (p?.contenido?.acceso?.app === 'toolkit') {
-    const q = new URLSearchParams(url.search); q.set('plan', p.slug);
-    return new Response(null, { status: 301, headers: { location: `/tienda/toolkit/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
+    return new Response(null, { status: 301, headers: { location: '/tienda/', 'cache-control': 'public, max-age=3600' } });
   }
   if (p?.contenido?.acceso?.app === 'cupo') {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);

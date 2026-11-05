@@ -12,7 +12,7 @@ beforeEach(() => {
 const ver = (ruta) => worker.fetch(new Request(`https://vorka.mx${ruta}`, { headers: { 'user-agent': 'Mozilla/5.0' } }), env);
 
 describe('demos de eventos y negocio', () => {
-  for (const [k, ficha] of [['cupo', '/tienda/cupo/'], ['portales', '/tienda/portales/'], ['toolkit', '/tienda/toolkit/']]) {
+  for (const [k, ficha] of [['cupo', '/tienda/cupo/'], ['portales', '/tienda/portales/']]) {
     it(`${k}: la demo responde con su título y la ficha trae la sección`, async () => {
       const d = demoDe(k);
       expect(d && d.html && d.js && d.prueba.length).toBeTruthy();
@@ -35,15 +35,6 @@ describe('demos de eventos y negocio', () => {
     for (const t of ['Cobrar en la puerta', 'Puede pasar', 'Ya había entrado']) expect(js).toContain(t);
   });
 
-  it('toolkit: usa los precios de lista de la tienda', async () => {
-    const { html } = demoDe('toolkit');
-    for (const [slug, texto] of [['test-vocacional', '$79'], ['agenda-mensual', '$99'], ['cupo-pro', '$149'], ['brindi-celebracion', '$699']]) {
-      const p = await env.DB.prepare('SELECT precio_centavos FROM products WHERE slug = ?').bind(slug).first();
-      expect(`$${p.precio_centavos / 100}`).toBe(texto);
-      expect(html).toContain(`<span class="pr">${texto}</span>`);
-    }
-  });
-
   it('vuelve: la sección de la demo sustituye a #ejemplo con la demo de vorka.mx/vuelve/demo', async () => {
     const p = await (await ver('/tienda/vuelve/')).text();
     expect(p).toContain('id="ejemplo"');
@@ -58,4 +49,8 @@ describe('demos de eventos y negocio', () => {
     expect(p.match(/<iframe /g)).toHaveLength(1);
     expect(p).not.toContain('id="demo"');
   });
+});
+
+describe('Toolkit retirado', () => {
+  it('ya no tiene demo pública', () => { expect(demoDe('toolkit')).toBeNull(); });
 });

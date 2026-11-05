@@ -339,11 +339,11 @@ export async function paginaMiToolkit(env, req, url) {
   const cta = await cuentaActual(req, env);
   if (!cta) return pagina({ titulo: 'Mi Toolkit · Vorka México', ruta: '/tienda/mi-toolkit/', noindex: true,
     cuerpo: aviso({ titulo: 'Entra para ver tu Toolkit', texto: 'Usa el mismo correo con el que te suscribiste. Te mandamos un código o entras con tu contraseña.',
-      extra: `<div class="botones t-centro"><a class="btn tinta" href="/tienda/cuenta/?volver=/tienda/mi-toolkit/">Entrar con mi correo ${FLECHA}</a><a class="btn blanco" href="/tienda/toolkit/">¿Qué es el Toolkit?</a></div>` }) });
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="/tienda/cuenta/?volver=/tienda/mi-toolkit/">Entrar con mi correo ${FLECHA}</a><a class="btn blanco" href="/tienda/">Ir a la tienda</a></div>` }) });
   const e = await estadoToolkit(env, cta.email);
   if (!e.tiene) return pagina({ titulo: 'Mi Toolkit · Vorka México', ruta: '/tienda/mi-toolkit/', noindex: true,
     cuerpo: aviso({ titulo: 'Todavía no tienes Toolkit', texto: `Con ${esc(cta.email)} no encontramos una suscripción al Toolkit. Si te suscribiste con otro correo, sal de tu cuenta y entra con ese.`,
-      extra: `<div class="botones t-centro"><a class="btn tinta" href="/tienda/toolkit/">Conocer el Toolkit ${FLECHA}</a></div>` }) });
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="/tienda/">Ir a la tienda ${FLECHA}</a></div>` }) });
   const v = ['apps', 'codigos'].includes(url.searchParams.get('v')) ? url.searchParams.get('v') : 'inicio';
   const listo = url.searchParams.get('listo');
   const codigos = await codigosDe(env, e.email);
@@ -518,7 +518,8 @@ const SCRIPT_CANJE = `(function(){
 // ---------- rutas ----------
 export async function rutasToolkit(req, env, url) {
   const p = url.pathname, M = req.method;
-  if ((p === '/tienda/toolkit' || p === '/tienda/toolkit/') && M === 'GET') return p.endsWith('/') ? paginaToolkit(env, req, url) : Response.redirect(`${url.origin}/tienda/toolkit/${url.search}`, 301);
+  // El Toolkit ya no se ofrece: su ficha manda a la tienda (Mi Toolkit y los códigos ya entregados siguen funcionando)
+  if ((p === '/tienda/toolkit' || p === '/tienda/toolkit/') && M === 'GET') return Response.redirect(`${url.origin}/tienda/${url.search}`, 302);
   let m;
   if ((m = p.match(/^\/tienda\/toolkit\/entrar\/([a-f0-9]{64})\/?$/)) && M === 'GET') {
     const a = await validarAcceso(env, m[1], APP);
