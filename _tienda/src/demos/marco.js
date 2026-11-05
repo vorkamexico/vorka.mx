@@ -58,7 +58,7 @@ export function paginaDemo(k, demo, url) {
 html{-webkit-text-size-adjust:100%}
 body{margin:0;font:16px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#141114;background:#F4F3F5;--pm:${color};--pm-s:color-mix(in srgb,${color} 11%,#fff);-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
-.dm-cinta{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:9px 14px;background:#141114;color:#fff;font-size:13px;font-weight:600}
+.dm-cinta{position:relative;z-index:50;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:9px 14px;background:#141114;color:#fff;font-size:13px;font-weight:600}
 .dm-cinta a{color:#fff;opacity:.85;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .dm-cinta span{display:flex;align-items:center;gap:7px}.dm-cinta span::before{content:"";width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.25)}
 #dm{max-width:480px;margin:0 auto;min-height:calc(100vh - 140px);background:#fff}
