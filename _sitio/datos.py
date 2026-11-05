@@ -163,9 +163,9 @@ SERVICIOS = [
 ]
 
 FORMATOS = [
-    ('Proyecto', 'Un reto, un cierre.', 'Alcance, entregables y fecha de cierre definidos desde el inicio. Ideal para una decisión, una transformación o un lanzamiento.'),
-    ('Acompañamiento mensual', 'Un equipo a tu lado.', 'Equipo dedicado con objetivos trimestrales, reporte continuo y ajustes sobre la marcha. Ideal para comunicación, crecimiento y liderazgo.'),
-    ('Sesiones estratégicas', 'Destrabar lo urgente.', 'Sesiones puntuales de mentoría o consejo para destrabar una decisión concreta, con seguimiento cuando hace falta.'),
+    ('Proyecto', 'Un reto, un cierre.', 'Alcance, entregables y fecha de cierre definidos desde el inicio.'),
+    ('Acompañamiento mensual', 'Un equipo a tu lado.', 'Objetivos trimestrales, reporte continuo y ajustes sobre la marcha.'),
+    ('Sesiones estratégicas', 'Destrabar lo urgente.', 'Sesiones puntuales para una decisión concreta.'),
 ]
 
 PREGUNTAS = [

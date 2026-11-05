@@ -7,7 +7,7 @@
 import os, sys, json
 sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
-from datos import SERVICIOS, PREGUNTAS_CORTAS, PASOS_CORTOS, EJEMPLOS
+from datos import SERVICIOS, PREGUNTAS_CORTAS, PASOS_CORTOS, EJEMPLOS, FORMATOS
 from agenda import pagina_agenda
 from fc import actualizar_fc
 from equipo import paginas_equipo
@@ -111,7 +111,8 @@ CIFRAS_CHIPS = ['<b>180+</b> municipios', '<b>40+</b> consultores senior', 'Form
 
 # ---------------------------------------------------------------- inicio
 # Portada v3 intacta → sectores → tres caminos (servicios · tienda y apps · Vorka Learn) → cuatro servicios en el bento →
-# lo que hemos hecho → presencia y cifras (sección oscura con el mapa) → Vorka Learn → formulario corto.
+# cómo trabajamos (fases con la maqueta de la app) → lo que hemos hecho → por qué podemos responder rápido (pilares) →
+# presencia y cifras (sección oscura con el mapa) → Revista Sparks y boletín → Vorka Learn → formulario corto.
 # Las anclas viejas siguen vivas (#momentos, #servicios, #proceso, #red, #sparks): páginas hechas a mano las usan.
 CAMINOS = [('S', '/servicios/', 'Servicios para organizaciones', 'Estrategia, liderazgo, comunicación y apps a la medida para tomar decisiones importantes y ejecutarlas.', 'empresas · gobiernos · organizaciones'),
            ('T', '/tienda/', 'Tienda y apps', 'Herramientas listas para usar: simuladores de examen, invitaciones, eventos con registro, lealtad y citas en línea.', 'negocios · eventos · estudiantes'),
@@ -149,6 +150,27 @@ def inicio():
         d = f'M{cx} {cy} Q{(cx + x) / 2 + (y - cy) * .25:.1f} {(cy + y) / 2 - (x - cx) * .25:.1f} {x} {y}'
         lineas += f'<path class="linea" d="{d}" vector-effect="non-scaling-stroke"/><path class="flujo" d="{d}" vector-effect="non-scaling-stroke" style="animation-delay:-{k * .5}s"/>'
     nodos_html = ''.join(f'<div class="nodo" style="left:{x}%;top:{y}%"><span class="f">{img(n, "120px", alt="")}</span><b>{c}</b><small>{s}</small></div>' for n, c, s, x, y in nodos)
+    # Cómo trabajamos (v3): cuatro fases que avanzan solas, con la maqueta de la app a la derecha
+    fases = [('Diagnóstico', 'Escuchamos primero: contexto real y la brecha entre lo que se dice y lo que pasa.', 'proyecto / diagnóstico'),
+             ('Diseño', 'La intervención a la medida, solo con lo que tu caso exige.', 'proyecto / plan'),
+             ('Activación', 'Operamos dentro hasta que el cambio funciona solo.', 'proyecto / tablero'),
+             ('Medición', 'Indicadores acordados desde el inicio.', 'proyecto / resultados')]
+    botones_p = ''.join(f'<button class="paso-b" type="button" role="tab" data-ruta="{r}"><span class="n">0{i + 1}</span><b>{t}</b><span>{d}</span><i class="barra"></i></button>' for i, (t, d, r) in enumerate(fases))
+    barras2 = ''.join(f'<i style="--h:{h}%"></i>' for h in [20, 26, 31, 38, 44, 52, 60, 66, 74, 82, 90])
+    pantallas = f'''<div class="pantalla"><h4>Entrevistas <em>6 de 8</em></h4>
+        <div class="nota-p"><b>Dirección general</b>“Sabemos a dónde queremos ir; lo que no tenemos claro es en qué orden.”</div>
+        <div class="nota-p"><b>Consejo</b>“Necesitamos indicadores que todos entendamos igual.”</div>
+        <div class="nota-p"><b>Equipo operativo</b>“Los cambios llegan por correo y nadie los aterriza.”</div></div>
+      <div class="pantalla"><h4>Plan de trabajo <em>12 semanas</em></h4>
+        <div class="gantt"><div>Estructura<span><i style="--a:0%;--w:42%"></i></span></div><div>Talento<span><i style="--a:22%;--w:48%"></i></span></div><div>Narrativa<span><i style="--a:40%;--w:44%"></i></span></div><div>Indicadores<span><i style="--a:6%;--w:90%"></i></span></div></div>
+        <div class="nota-p" style="margin-top:18px"><b>Criterio de decisión</b>Primero lo que destraba la operación; después lo que la hace crecer.</div></div>
+      <div class="pantalla"><h4>Tablero <em>en curso</em></h4>
+        <div class="tablero-p"><div><small>Por hacer</small><p style="--c:#A8A4A9">Taller con segunda línea</p><p style="--c:#A8A4A9">Manual de voz</p></div>
+          <div><small>En curso</small><p style="--c:#6B2A85">Nuevo comité de dirección</p><p style="--c:#C8A45C">Calendario de contenido</p><p style="--c:#6B2A85">Coaching 1:1</p></div>
+          <div><small>Listo</small><p style="--c:#2B8553">Mapa de prioridades</p><p style="--c:#2B8553">Diagnóstico de cultura</p></div></div></div>
+      <div class="pantalla"><h4>Resultados <em>contra objetivos</em></h4>
+        <div class="kpis"><div><small>Prioridades cumplidas</small><b>4 de 5</b></div><div><small>Adopción del modelo</small><b>Alta</b></div></div>
+        <div class="grafica" style="height:150px">{barras2}</div></div>'''
     caras = ''.join(f'<i style="background-image:url(/img/ciudades/{n}-960.webp)"></i>' for n in ['cdmx-reforma', 'monterrey-silla', 'guadalajara', 'queretaro'])
     cinta = ''.join(f'<span>{s}</span>' for s in SECTORES * 2)
     cuerpo = f'''{nav(cta=CTA_FORM)}
@@ -178,7 +200,7 @@ def inicio():
 </section>
 
 <section class="sec pegada" id="servicios" aria-labelledby="t-serv">
-  <div class="marco" id="proceso">
+  <div class="marco">
     <div class="cab centro rv"><span class="etiqueta">Servicios</span><h2 class="h2" id="t-serv">Cuatro servicios. <span class="metal">Un solo equipo.</span></h2>
       <p class="lead">Empiezas con uno y sumas otro solo si hace falta.</p></div>
     <div class="bento">{bento}</div>
@@ -186,7 +208,33 @@ def inicio():
   </div>
 </section>
 
-{hecho_html(pegada=True)}
+<section class="sec suave" id="proceso" aria-labelledby="t-proc">
+  <div class="marco">
+    <div class="cab par rv"><div><span class="etiqueta">Cómo trabajamos</span><h2 class="h2" id="t-proc">Cuatro fases. <span class="metal">Sin atajos.</span></h2></div>
+      <p class="lead">Así se ve un proyecto con nosotros, del primer día al cierre.</p></div>
+    <div class="proceso">
+      <div class="pasos rv" role="tablist" aria-label="Fases">{botones_p}</div>
+      <div class="app-v rv" aria-hidden="true"><div class="barra-v"><i></i><i></i><i></i><span id="ruta-app">proyecto / diagnóstico</span></div><div class="pantallas">{pantallas}</div></div>
+    </div>
+  </div>
+</section>
+
+{hecho_html()}
+
+<section class="sec pegada" aria-labelledby="t-hue">
+  <div class="marco">
+    <div class="cab par rv"><div><span class="etiqueta">Nuestra huella</span><h2 class="h2" id="t-hue">Por qué podemos <span class="metal">responder rápido.</span></h2></div>
+      <p class="lead">Criterio por experiencia, velocidad por tecnología y legitimidad por territorio.</p></div>
+    <div class="pilares">
+      <article class="pilar rv"><span class="ic">{ICONOS['brujula']}</span><h3 class="h3" style="font-size:22px">Trayectoria en decisiones difíciles</h3><p>Sector público federal, banca, industria e incidencia.</p>
+        <dl><div><dt>HBS · Tec</dt><dd>y Silicon Valley: formación del equipo directivo</dd></div><div><dt class="num">3</dt><dd>sectores: público, privado y civil</dd></div></dl></article>
+      <article class="pilar rv" style="--d:.08s"><span class="ic">{ICONOS['rayo']}</span><h3 class="h3" style="font-size:22px">Consultora nativa digital</h3><p>Hacemos y operamos nuestras propias apps, bajo la misma dirección estratégica.</p>
+        <dl><div><dt class="num">10</dt><dd>productos propios en línea</dd></div><div><dt class="num">4</dt><dd>simuladores de examen con tutor</dd></div></dl></article>
+      <article class="pilar rv" style="--d:.16s"><span class="ic">{ICONOS['globo']}</span><h3 class="h3" style="font-size:22px">Presencia nacional, no focus group</h3><p>Equipo de campo y aliados locales, con contexto real de cada territorio.</p>
+        <dl><div><dt class="num">5</dt><dd>ciudades base</dd></div><div><dt>Campo</dt><dd>equipo propio, presencial o a distancia</dd></div></dl></article>
+    </div>
+  </div>
+</section>
 
 <section class="sec oscura redondo" id="red" aria-labelledby="t-red">
   <div class="grano"></div>
@@ -194,7 +242,7 @@ def inicio():
     <div class="rv">
       <span class="etiqueta">Presencia nacional</span>
       <h2 class="h2" id="t-red" style="margin-top:18px">Una red que cubre <span class="metal">todo México.</span></h2>
-      <p class="lead" style="margin-top:20px">Bases en cinco ciudades y aliados locales en toda la República. Formación en Harvard Business School y Tec de Monterrey.</p>
+      <p class="lead" style="margin-top:20px">Entendemos la diferencia entre operar en la CDMX y en Chiapas.</p>
       <div class="datos-red">
         <div><b class="num"><span data-cuenta="150">150</span>+</b><span>proyectos</span></div>
         <div><b class="num"><span data-cuenta="26">26</span></b><span>estados con proyectos</span></div>
@@ -210,8 +258,37 @@ def inicio():
   </div>
 </section>
 
-<section class="sec" id="learn" aria-labelledby="t-learn">
-  <div class="marco" id="sparks">
+<section class="sec" id="sparks" aria-labelledby="t-spk">
+  <div class="marco">
+    <div class="cab par rv"><div><span class="etiqueta">Revista Sparks</span><h2 class="h2" id="t-spk">Lo que vemos en el campo, <span class="metal">contado.</span></h2></div>
+      <p class="lead">Nuestro medio propio: historias de quienes mueven su comunidad.</p></div>
+    <div class="sparks-g">
+      <div class="notas-h rv" id="notas-sparks">
+        <a class="nota-h" href="/sparks/celaya/"><span class="im">{img('celaya', '(max-width: 600px) 100vw, 400px', alt='')}</span><span class="tx"><small>Sparks Celaya</small><b>Las historias de la gente que está moviendo Celaya</b></span></a>
+        <a class="nota-h" href="/sparks/"><span class="im">{img('queretaro', '(max-width: 600px) 100vw, 400px', alt='')}</span><span class="tx"><small>Revista Sparks</small><b>Ediciones por municipio en el Bajío</b></span></a>
+      </div>
+      <div class="boletin rv">{LOGO_DECO}
+        <h3 class="h3">Boletín semanal</h3>
+        <p>Una edición por semana, siete minutos de lectura. Sin spam.</p>
+        <form id="boletin" novalidate>
+          <input name="nombre" placeholder="Tu nombre" autocomplete="name" aria-label="Nombre">
+          <input name="correo" type="email" placeholder="Tu correo" autocomplete="email" aria-label="Correo">
+          <label class="casilla"><input type="checkbox" name="acepto" value="1"> Acepto recibir comunicaciones de Vorka México.</label>
+          <button class="btn plata" type="submit">Suscribirme</button>
+          <p class="msg" role="status"></p>
+        </form>
+      </div>
+    </div>
+    <a class="caja tira rv" href="/voluntariado">
+      <span class="letra-v">TV</span>
+      <span class="tira-t"><b>Programa Tú en Vorka</b><span>Voluntariado estratégico para jóvenes de 16 a 29 años, en el Bajío y a distancia.</span></span>
+      <span class="flecha">Conocer el programa {FLECHA}</span>
+    </a>
+  </div>
+</section>
+
+<section class="sec pegada" id="learn" aria-labelledby="t-learn">
+  <div class="marco">
     <div class="cab par rv"><div><span class="etiqueta">Vorka Learn</span><h2 class="h2" id="t-learn">Guías para tu examen, <span class="metal">tu dinero y tu negocio.</span></h2></div>
       <p class="lead">Gratis y sin registro. Cada dato sale de la institución que lo publica y la citamos al final de cada guía.</p></div>
     {tiras}
@@ -232,11 +309,12 @@ def inicio():
                   '/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- servicios (índice)
-# Cabecera v3 (V translúcida de fondo) → «Si necesitas…» (4) → cómo empezamos (3 pasos, sección oscura) →
+# Cabecera v3 (V translúcida de fondo) → «Si necesitas…» (4) → formas de trabajar y cómo empezamos (sección oscura) →
 # lo que hemos hecho → banda de foto con cifras → preguntas → formulario corto. El detalle vive en cada subpágina.
 def servicios_hub():
     elegir = ''.join(f'<a class="rv" href="/servicios/{s["slug"]}/" style="--d:{i * .06}s"><small>Si necesitas…</small><b>{e(s["necesitas"])}</b><span>{s["area"]} {FLECHA}</span></a>' for i, s in enumerate(SERVICIOS))
     pasos = ''.join(f'<div class="rv" style="--d:{i * .08}s"><small>Paso {i + 1}</small><h3>{e(t)}</h3><p>{e(d)}</p></div>' for i, (t, d) in enumerate(PASOS_CORTOS))
+    formatos = ''.join(f'<article class="formato rv" style="--d:{i * .08}s"><small>{e(k)}</small><h3 class="h3">{e(t)}</h3><p>{e(d)}</p></article>' for i, (k, t, d) in enumerate(FORMATOS))
     faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in PREGUNTAS_CORTAS]}
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Servicios", "item": SITIO + "/servicios/"}]}
@@ -256,8 +334,9 @@ def servicios_hub():
 <section class="sec oscura redondo" id="proceso" aria-labelledby="t-proc">
   <div class="grano"></div>
   <div class="marco">
-    <div class="cab par rv"><div><span class="etiqueta">Cómo empezamos</span><h2 class="h2" id="t-proc" style="margin-top:18px">Tres pasos. <span class="metal">Sin compromiso.</span></h2></div>
-      <p class="lead">Primero escuchamos; la propuesta llega solo si podemos ayudarte.</p></div>
+    <div class="cab par rv"><div><span class="etiqueta">Formas de trabajar</span><h2 class="h2" id="t-proc" style="margin-top:18px">A tu ritmo, <span class="metal">con el mismo rigor.</span></h2></div>
+      <p class="lead">Elegimos el formato juntos, después del diagnóstico. Así empezamos, en tres pasos y sin compromiso.</p></div>
+    <div class="formatos">{formatos}</div>
     <div class="linea-pasos tres">{pasos}</div>
   </div>
 </section>
