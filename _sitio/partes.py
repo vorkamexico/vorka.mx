@@ -7,7 +7,7 @@ CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
 # Mensaje de WhatsApp para quien todavía no nos conoce: corto y sin compromiso (antes: «ya decidí avanzar…», que espanta al que apenas explora)
 WA_MSG = 'Hola Vorka, me gustaría platicar sobre un proyecto.'
-VERSION = '11'
+VERSION = '12'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -70,6 +70,10 @@ FOTOS = {
     'sala-consejo': (3, 'Sala de consejo con vista a la ciudad'),
 }
 ANCHOS_REALES = {'cdmx-noche': {2400: 2000}, 'monterrey-torres': {1600: 1200}}
+# Proporción real (ancho, alto) de la versión -960: width/height en el <img> para que el navegador reserve el espacio
+MEDIDAS = {'cdmx': (960, 640), 'cdmx-chapultepec': (960, 640), 'cdmx-noche': (960, 1200), 'cdmx-reforma': (960, 640), 'celaya': (960, 640),
+           'guadalajara': (960, 768), 'monterrey': (960, 503), 'monterrey-silla': (960, 720), 'monterrey-skyline': (960, 640),
+           'monterrey-torres': (960, 1604), 'queretaro': (960, 669), 'sala-consejo': (960, 640)}
 
 def img(nombre, sizes='100vw', alt=None, carga='lazy', prioridad=False):
     n = FOTOS[nombre][0]
@@ -77,7 +81,8 @@ def img(nombre, sizes='100vw', alt=None, carga='lazy', prioridad=False):
     srcset = ', '.join(f'/img/ciudades/{nombre}-{w}.webp {reales.get(w, w)}w' for w in [960, 1600, 2400][:n])
     a = FOTOS[nombre][1] if alt is None else alt
     extra = ' fetchpriority="high"' if prioridad else ''
-    return f'<img src="/img/ciudades/{nombre}-1600.webp" srcset="{srcset}" sizes="{sizes}" alt="{e(a)}" loading="{carga}" decoding="async"{extra}>'
+    w, h = MEDIDAS.get(nombre, (960, 640))
+    return f'<img src="/img/ciudades/{nombre}-1600.webp" srcset="{srcset}" sizes="{sizes}" width="{w}" height="{h}" alt="{e(a)}" loading="{carga}" decoding="async"{extra}>'
 
 def wa(msg=WA_MSG):
     return f'https://wa.me/{WHATSAPP}?text={quote(msg)}'
@@ -227,9 +232,16 @@ def cierre(titulo='Tu próxima gran decisión empieza con <span class="metal">un
 INTERESES = [('estrategia', 'Estrategia y consultoría'), ('equipos', 'Formación y liderazgo de equipos'), ('redes', 'Redes sociales y contenido'),
              ('web', 'Página web o tienda en línea'), ('sistemas', 'Sistema o app a la medida')]
 
-def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesitas.', fondo='suave'):
+SIG = '''<ol class="v4-sig">
+        <li><b>1</b><span>Nos cuentas en un minuto qué necesitas.</span></li>
+        <li><b>2</b><span>Te escribimos en máximo 2 días hábiles.</span></li>
+        <li><b>3</b><span>Si encaja, hacemos un diagnóstico de 20 minutos sin costo.</span></li>
+      </ol>'''
+
+def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesitas.', fondo='suave', sig=True):
     """Sección con el formulario corto (4 datos). pagina: ruta desde donde se manda (queda en la bandeja);
-    marcar: claves de INTERESES ya elegidas; area: slug del servicio para el diagnóstico completo (/agenda/?area=)."""
+    marcar: claves de INTERESES ya elegidas; area: slug del servicio para el diagnóstico completo (/agenda/?area=);
+    sig=False quita los tres pasos de la izquierda (en páginas que ya muestran «Cómo empezamos»). El formulario no cambia."""
     ops = ''.join(f'<label class="v4-chip"><input type="checkbox" name="intereses" value="{k}"{" checked" if k in marcar else ""}><span>{e(t)}</span></label>' for k, t in INTERESES)
     largo = f'/agenda/?area={area}' if area else '/agenda/'
     return f'''<section class="v4-sec v4-plat {fondo}" id="platiquemos" aria-labelledby="t-plat">
@@ -238,11 +250,7 @@ def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesita
       <span class="etiqueta">Platiquemos</span>
       <h2 class="t2" id="t-plat">{titulo}</h2>
       <p class="lead">Déjanos cuatro datos y te escribimos para platicar, sin costo ni compromiso.</p>
-      <ol class="v4-sig">
-        <li><b>1</b><span>Nos cuentas en un minuto qué necesitas.</span></li>
-        <li><b>2</b><span>Te escribimos en máximo 2 días hábiles.</span></li>
-        <li><b>3</b><span>Si encaja, hacemos un diagnóstico de 20 minutos sin costo.</span></li>
-      </ol>
+      {SIG if sig else ''}
       <p class="v4-alt">¿Prefieres WhatsApp? <a href="{wa()}" target="_blank" rel="noopener">Escríbenos al +52 81 1780 4869</a></p>
     </div>
     <div class="v4-form-caja">

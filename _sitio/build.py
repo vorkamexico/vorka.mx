@@ -4,7 +4,7 @@
 import os, sys, json, re
 sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
-from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS
+from datos import SERVICIOS, FORMATOS, PREGUNTAS, MOMENTOS, PREGUNTAS_CORTAS, PASOS_CORTOS, EJEMPLOS
 from agenda import pagina_agenda
 from fc import actualizar_fc
 from equipo import paginas_equipo
@@ -34,21 +34,59 @@ LEARN_EXAMENES = [('/learn/paa/', 'PAA'), ('/learn/unam/', 'UNAM'), ('/learn/eco
 LEARN_TEMAS = [('/learn/camino/', 'Elegir tu camino'), ('/learn/finanzas/', 'Finanzas personales'), ('/learn/negocio/', 'Negocio pequeño'), ('/learn/apps/', 'Crea tu app')]
 TIENDA = [('/simulador-paa/', 'Simuladores de examen (PAA, UNAM, ECOEMS, prepa UG)'), ('/tienda/brindi/', 'Brindi: invitaciones digitales con QR'),
           ('/tienda/cupo/', 'Cupo: eventos con registro y check-in'), ('/tienda/vuelve/', 'Vuelve: tarjetas de lealtad'), ('/tienda/agenda/', 'Agenda: citas en línea')]
-PASOS = [('Platiquemos', 'Nos dejas cuatro datos o nos escribes por WhatsApp. Te respondemos en máximo 2 días hábiles.'),
-         ('Diagnóstico sin costo', '20 minutos para entender tu reto y decirte, con claridad, cómo lo resolveríamos.'),
-         ('Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro. Medimos contra los objetivos que acordamos.')]
-
 def ligas(lista, clase='v4-tags'):
     return f'<div class="{clase}">' + ''.join(f'<a href="{h}">{e(t)}</a>' for h, t in lista) + '</div>'
 
+# ---- piezas cortas de servicios (v5): el índice y el inicio dicen lo mínimo; el detalle vive en /servicios/<slug>/
 def pasos_html():
-    return '<ol class="v4-pasos">' + ''.join(f'<li><h3>{e(t)}</h3><p>{e(d)}</p></li>' for t, d in PASOS) + '</ol>'
+    """«Cómo empezamos» en tres pasos de una línea (id="proceso": el pie y páginas viejas enlazan /servicios/#proceso)."""
+    pasos = ''.join(f'<li><b>{i}</b><span>{e(t)}</span></li>' for i, t in enumerate(PASOS_CORTOS, 1))
+    return f'''<div class="v5-proceso" id="proceso">
+      <h2 class="t3">Cómo empezamos</h2>
+      <ol class="v5-pasos">{pasos}</ol>
+    </div>'''
 
 def tarjetas_servicio():
-    return '<div class="v4-servs">' + ''.join(f'''<a class="v4-serv" href="/servicios/{s['slug']}/">
-        <small>Si necesitas…</small><span class="necesitas">{e(s['necesitas'])}</span>
-        <h3>{s['area']}</h3><p>{e(s['linea'])}</p>
-        <span class="v4-liga">Ver {s['area'].split(' ')[0].lower()} {FLECHA}</span></a>''' for s in SERVICIOS) + '</div>'
+    return '<div class="v5-servs">' + ''.join(f'''<a class="v5-serv" href="/servicios/{s['slug']}/">
+        <span class="v5-ico">{ICONOS[s['icono']]}</span>
+        <h3>{s['area']}</h3><p>{e(s['breve'])}</p>
+        <span class="v4-liga">Ver más {FLECHA}</span></a>''' for s in SERVICIOS) + '</div>'
+
+def ejemplos_html(titulo_id="t-hecho", fondo=""):
+    """«Lo que hemos hecho»: trabajo propio que se puede abrir hoy (datos.EJEMPLOS)."""
+    tarjetas = ''.join(f'''<a class="v5-ej" href="{h}">
+        <img src="/img/trabajo/{k}-800.webp" width="800" height="600" alt="{e(alt)}" loading="lazy" decoding="async">
+        <span class="v5-ej-txt"><small>{e(et)}</small><b>{e(t)}</b><span>{e(d)}</span></span></a>''' for h, k, et, t, d, alt in EJEMPLOS)
+    return f'''<section class="v4-sec {fondo}" id="hecho" aria-labelledby="{titulo_id}">
+  <div class="marco">
+    <div class="v4-cab"><span class="etiqueta">Ejemplos</span><h2 class="t2" id="{titulo_id}">Lo que hemos hecho</h2>
+      <p class="lead">Productos y proyectos propios, en línea hoy. Ábrelos y pruébalos.</p></div>
+    <div class="v5-ejs">{tarjetas}</div>
+  </div>
+</section>'''
+
+def banda_ciudades(cifras=True):
+    """Banda de descanso: mosaico de tres ciudades base. Con cifras (respaldadas por el dueño) o solo con las ciudades."""
+    texto = ('<p class="v5-cifras"><span><b>150+</b> proyectos</span><span><b>26</b> estados</span><span><b>180+</b> municipios</span>'
+             '<span><b>40+</b> consultores senior</span><span>Formación <b>HBS · Tec</b></span></p>') if cifras else \
+            '<p class="v5-cifras"><span>Bases en <b>Monterrey, CDMX, Guadalajara, Querétaro y Celaya</b></span></p>'
+    return f'''<section class="v5-banda" aria-label="Dónde trabajamos">
+  <div class="marco">
+    <div class="v5-mosaico">
+      <figure class="a">{img('monterrey-skyline', sizes='(max-width: 760px) 100vw, 640px')}</figure>
+      <figure class="b">{img('cdmx-reforma', sizes='(max-width: 760px) 50vw, 320px')}</figure>
+      <figure class="c">{img('guadalajara', sizes='(max-width: 760px) 50vw, 320px')}</figure>
+    </div>
+    {texto}
+  </div>
+</section>'''
+
+def banda_foto(nombre, pie=''):
+    """Banda de descanso: una foto ancha (alt de FOTOS) con una línea corta opcional."""
+    leyenda = f'<figcaption>{e(pie)}</figcaption>' if pie else ''
+    return f'''<div class="v5-banda">
+  <div class="marco"><figure class="v5-ancha">{img(nombre, sizes='(max-width: 1280px) 100vw, 1200px')}{leyenda}</figure></div>
+</div>'''
 
 def inicio():
     servicios_li = ''.join(f'<li>{s["area"]}</li>' for s in SERVICIOS)
@@ -88,14 +126,13 @@ def inicio():
 <section class="v4-sec suave" id="servicios" aria-labelledby="t-serv">
   <div class="marco" id="momentos">
     <div class="v4-cab"><span class="etiqueta">Servicios para organizaciones</span><h2 class="t2" id="t-serv">Cuatro servicios, un mismo equipo.</h2>
-      <p class="lead">Para direcciones generales, consejos, gobiernos, fundaciones, marcas y negocios. Empiezas con uno y sumas otro solo si hace falta.</p></div>
+      <p class="lead">Empiezas con uno y sumas otro solo si hace falta.</p></div>
     {tarjetas_servicio()}
-    <div id="proceso" style="margin-top:clamp(48px,6vw,72px)">
-      <div class="v4-cab"><h2 class="t2" style="font-size:clamp(26px,2.8vw,34px)">Cómo empezamos, en tres pasos.</h2></div>
-      {pasos_html()}
-    </div>
+    {pasos_html()}
   </div>
 </section>
+{banda_ciudades(cifras=False)}
+{ejemplos_html(fondo="suave")}
 
 <section class="v4-sec" id="learn" aria-labelledby="t-learn">
   <div class="marco v4-learn">
@@ -159,43 +196,39 @@ def inicio():
                   '/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- servicios (índice)
-# En 10 segundos: para quién es, qué resuelve (4 servicios con una línea de resultado), cómo se trabaja (3 pasos) y un CTA.
+# Corto (v5): una frase + una línea → 4 tarjetas (nombre, resultado, «Ver más») y cómo empezamos → banda con cifras →
+# lo que hemos hecho → 4 preguntas → foto → formulario corto. El detalle de cada servicio vive en su subpágina.
 def servicios_hub():
-    faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in PREGUNTAS]}
+    faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in PREGUNTAS_CORTAS]}
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Servicios", "item": SITIO + "/servicios/"}]}
     cuerpo = f'''{nav('/servicios/', cta=('#platiquemos', 'Platiquemos'))}
 <main id="contenido">
-<section class="v4-hero" aria-labelledby="t-hero">
+<section class="v4-hero v5-hero" aria-labelledby="t-hero">
   <div class="marco">
     <div class="migas"><a href="/">Inicio</a><span>/</span><span>Servicios</span></div>
-    <span class="etiqueta">Servicios</span>
-    <h1 class="t1" id="t-hero" style="margin-top:18px">Consultoría para decidir, ejecutar y hacerte escuchar.</h1>
-    <p class="lead">Para empresas, gobiernos, fundaciones y marcas en México que necesitan tomar una decisión importante, fortalecer a su equipo directivo, comunicar mejor o construir su sitio, su tienda en línea o su app.</p>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#proceso">Cómo trabajamos</a></div>
-    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Respuesta en máximo 2 días hábiles</span></div>
+    <h1 class="t1" id="t-hero">Consultoría para decidir, ejecutar y hacerte escuchar.</h1>
+    <p class="lead">Estrategia, liderazgo, comunicación y apps para empresas, gobiernos y organizaciones en México.</p>
+    <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#hecho">Ver ejemplos</a></div>
   </div>
 </section>
 <section class="v4-sec" aria-labelledby="t-serv" style="padding-top:0">
   <div class="marco">
-    <h2 class="sr" id="t-serv">Qué resolvemos</h2>
+    <h2 class="sr" id="t-serv">Servicios</h2>
     {tarjetas_servicio()}
-  </div>
-</section>
-<section class="v4-sec suave" id="proceso" aria-labelledby="t-proc">
-  <div class="marco">
-    <div class="v4-cab"><span class="etiqueta">Cómo trabajamos</span><h2 class="t2" id="t-proc">Tres pasos para empezar.</h2>
-      <p class="lead">Puedes contratar un solo servicio o combinarlos bajo un mismo equipo, como proyecto con fecha de cierre, acompañamiento mensual o sesiones puntuales.</p></div>
     {pasos_html()}
   </div>
 </section>
+{banda_ciudades()}
+{ejemplos_html(fondo='suave')}
 <section class="v4-sec" aria-labelledby="t-faq">
   <div class="marco">
-    <div class="v4-cab centro"><span class="etiqueta">Preguntas frecuentes</span><h2 class="t2" id="t-faq">Antes de escribirnos.</h2></div>
-    <div class="faq">{faq_html(PREGUNTAS)}</div>
+    <div class="v4-cab centro"><h2 class="t2" id="t-faq">Preguntas frecuentes</h2></div>
+    <div class="faq">{faq_html(PREGUNTAS_CORTAS)}</div>
   </div>
 </section>
-{platiquemos('/servicios/')}
+{banda_foto('monterrey-silla')}
+{platiquemos('/servicios/', sig=False)}
 </main>
 {pie('empresas')}'''
     extra = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (faq_ld, migas_ld))
@@ -235,12 +268,17 @@ def servicio(s):
     <span class="etiqueta">Servicio {s['num']}</span>
     <h1 class="t1" id="t-hero" style="margin-top:18px">{s['area']}</h1>
     <p class="lead">{e(s['promesa'])}</p>
-    <p class="v4-para"><b>Para quién:</b> {e(s['para'])}</p>
+    <dl class="v5-corto" aria-label="En corto">
+      <div><dt>Resultado</dt><dd>{e(s['breve'])}</dd></div>
+      <div><dt>Para quién</dt><dd>{e(s['quien'])}</dd></div>
+      <div><dt>Primer paso</dt><dd>Diagnóstico de 20 minutos, sin costo.</dd></div>
+    </dl>
     <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#incluye">Qué incluye</a></div>
     {datos}
   </div>
 </section>
-<section class="v4-sec" id="incluye" aria-labelledby="t-inc" style="padding-top:0">
+{banda_foto(s['cabecera'])}
+<section class="v4-sec" id="incluye" aria-labelledby="t-inc">
   <div class="marco">
     <div class="v4-cab"><h2 class="t2" id="t-inc">Qué incluye</h2><p class="lead">Tomamos solo lo que tu caso necesita.</p></div>
     <div class="v4-lista">{caps}</div>
@@ -256,7 +294,7 @@ def servicio(s):
 <section class="v4-sec" aria-labelledby="t-faq">
   <div class="marco">
     <div class="v4-cab centro"><span class="etiqueta">Antes de empezar</span><h2 class="t2" id="t-faq">Preguntas frecuentes</h2></div>
-    <div class="faq">{faq_html(PREGUNTAS[:4])}</div>
+    <div class="faq">{faq_html(PREGUNTAS_CORTAS)}</div>
   </div>
 </section>
 {platiquemos(f"/servicios/{s['slug']}/", marcar=s['interes'], area=s['slug'], titulo=titulo_form)}
