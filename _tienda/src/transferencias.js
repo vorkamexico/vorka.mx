@@ -10,7 +10,6 @@ import { one, all, run, ahoraISO } from './util.js';
 import { finCortesia, VIGENTES, cortesiasVigentes } from './suscripciones.js';
 
 export const SIN_VENCER = '2099-12-31T23:59:59.000Z';
-const APPS_FUERA = ['toolkit'];   // el Toolkit cambia de plan con Stripe (ver toolkit.js): no se da por transferencia
 const correoOk = e => /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e);
 const nuevoId = () => `tra_${crypto.randomUUID().replace(/-/g, '').slice(0, 20)}`;
 const leer = t => { try { return JSON.parse(t || '{}'); } catch { return {}; } };
@@ -20,7 +19,7 @@ export async function planesSuscripcion(env) {
   const l = await all(env, `SELECT id, nombre, precio_centavos, activo, contenido FROM products
     WHERE json_extract(contenido, '$.suscripcion') IS NOT NULL AND COALESCE(json_extract(contenido, '$.complemento'), 0) = 0 AND creador_id IS NULL ORDER BY orden, nombre`);
   return l.map(p => { const c = leer(p.contenido); return { id: p.id, nombre: p.nombre, precio_centavos: p.precio_centavos, activo: !!p.activo, app: c.acceso?.app || null, intervalo: c.suscripcion?.intervalo === 'year' ? 'year' : 'month', url: c.acceso?.url || null }; })
-    .filter(p => p.app && !APPS_FUERA.includes(p.app));
+    .filter(p => p.app);
 }
 
 // Todas las suscripciones para el panel: Stripe, transferencia y cortesías vigentes (estas solo para verlas). Lo más útil

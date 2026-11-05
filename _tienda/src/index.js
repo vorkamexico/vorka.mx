@@ -46,10 +46,8 @@ import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponReg
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
-import { rutasToolkit } from './toolkit-paginas.js';
 import { paginaDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
-import { resumenToolkit, estadoToolkit, movimientosDe, codigosDe } from './toolkit.js';
 import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesias, apagarLiga, prenderLiga, ligasDe, borrarCortesia, revocarRegalos } from './regalos.js';
 
 // Panel de la tienda en Vorka OS (service binding RPC). No tiene ruta pública: solo Workers con el binding pueden llamarlo.
@@ -222,13 +220,6 @@ export class Admin extends WorkerEntrypoint {
   prenderSuscripcion(id, prendida) { return prenderTransferencia(this.env, id, !!prendida); }
   pagoSuscripcion(id, d) { return pagoTransferencia(this.env, id, d || {}); }
   editarSuscripcion(id, d) { return editarTransferencia(this.env, id, d || {}); }
-  // Toolkit Vorka (src/toolkit.js): suscriptores por plan, saldo pendiente (pasivo), abonado y usado en el mes, consumo por
-  // cliente antes / ahora (meta ×1.5) y reembolsos por revisar. toolkitCliente: el estado, historial y códigos de un correo.
-  resumenToolkit(f) { return resumenToolkit(this.env, f || {}); }
-  async toolkitCliente(email) {
-    const e = await estadoToolkit(this.env, email);
-    return { ...e, movimientos: await movimientosDe(this.env, email, 200), codigos: await codigosDe(this.env, email) };
-  }
   // Embajadores Vorka (src/embajadores.js, migración 0066): resumen del mes (registrados, activos, nuevos, rangos, ventas y
   // puntos pagados separados en propias / red nivel 1 / red nivel 2 / bono, % que viene de ventas propias con meta ≥ 80 %, top
   // vendedores y top líderes), detalle de una cuenta y cambio de patrocinador (con validación de ciclos y bitácora).
@@ -406,8 +397,10 @@ async function atender(request, env, ctx, url) {
     if (sim) return sim;
     const cr = await rutasCreadores(request, env, ctx, url);
     if (cr) return cr;
-    // Toolkit Vorka: ficha, Mi Toolkit, canjear códigos y su API (src/toolkit-paginas.js)
-    if (/^\/(tienda\/(toolkit|mi-toolkit|canjear)|api\/toolkit)(\/|$)/.test(url.pathname)) { const r = await rutasToolkit(request, env, url); if (r) return r; }
+    // Toolkit Vorka (retirado sin llegar a venderse): sus direcciones viejas (ficha, fichas de los planes, Mi Toolkit y canje
+    // de códigos) mandan a la tienda conservando la query (utm, ref…)
+    if (/^\/tienda\/(toolkit(-pro)?(-mensual)?|mi-toolkit|canjear)(\/|$)/.test(url.pathname) && (request.method === 'GET' || request.method === 'HEAD'))
+      return new Response(null, { status: 301, headers: { location: `/tienda/${url.search}`, 'cache-control': 'public, max-age=3600' } });
     if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
       return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
         ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));

@@ -165,13 +165,8 @@ describe('Ganancias de red', () => {
     expect((await rangoMes(env, 'sara@mail.com')).activos).toBe(0);
   });
 
-  it('lo pagado con saldo del Toolkit y los productos de creadores no dan red', async () => {
+  it('los productos de creadores no dan red', async () => {
     await redBase();
-    // Orden de saldo: $0 y sin liga (así las crea toolkit.js)
-    const o = await crearOrden(env, { items: [{ slug: 'cupo-pro' }], email: 'cliente@correo.com', nombre: 'Cliente', ref: codigo('tito@mail.com'), proveedor: 'saldo' });
-    env.DB.raw.prepare("UPDATE orders SET monto_centavos = 0, saldo_centavos = 14900 WHERE id = ?").run(o.id);
-    await aplicarPago(env, o.id, { resultado: 'aprobado', monto_centavos: 0, moneda: 'MXN' });
-    await puntosAlPagar(env, o.id);
     env.DB.raw.exec(`INSERT INTO creadores (id, nombre, email, estado, stripe_listo) VALUES ('cre_a', 'Ale', 'ale@mail.com', 'aprobado', 1);
       INSERT INTO products (id, slug, nombre, precio_centavos, r2_keys, creador_id, revision, activo) VALUES ('prod_ale', 'guia-ale', 'Guía de Ale', 9900, '[]', 'cre_a', 'aprobado', 1);`);
     await venta('cliente2@correo.com', 'tito@mail.com', { slug: 'guia-ale', conDescuento: false });

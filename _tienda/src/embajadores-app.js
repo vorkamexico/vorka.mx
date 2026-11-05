@@ -165,7 +165,7 @@ const CSS_EMB = `
 
 async function ejemplos(env) {
   const ps = (await all(env, `SELECT p.nombre, p.precio_centavos, p.contenido FROM products p WHERE ${VENDIBLE} AND p.creador_id IS NULL AND p.precio_centavos >= 5000 ORDER BY p.precio_centavos`))
-    .filter(p => { try { const c = JSON.parse(p.contenido || '{}'); return !c.oculto && !c.complemento && c.acceso?.app !== 'toolkit'; } catch { return false; } });
+    .filter(p => { try { const c = JSON.parse(p.contenido || '{}'); return !c.oculto && !c.complemento; } catch { return false; } });
   if (!ps.length) return [];
   const idx = [...new Set([0, Math.floor(ps.length / 2), ps.length - 1])];
   return idx.map(i => ps[i]).map(p => {
@@ -181,7 +181,7 @@ const CONDICIONES = () => [
   `<b>Patrocinador.</b> Quien crea su cuenta con la liga de invitación de otra persona queda en su equipo (esa persona es su patrocinador). Una cuenta que ya existía no cambia de patrocinador al abrir otra liga. Solo Vorka puede cambiar un patrocinador, a petición de la persona o para corregir un error o un abuso, y deja registro del cambio y su motivo; los puntos ya ganados no cambian.`,
   `<b>Ganancias de equipo, dos niveles.</b> Por cada compra que le da puntos a una persona de tu equipo directo, ganas ${PCT_RED[0]} % de lo que se pagó (la misma base de sus puntos: después de descuentos, con IVA, sin productos de creadores); por las de su equipo, ${PCT_RED[1]} %. No hay más niveles. En suscripciones aplica a los pagos que le den puntos a quien vendió, hasta el pago ${FACTURAS_SUSCRIPCION}.`,
   `<b>Tope.</b> En cada compra, la suma de los puntos de quien vendió, las ganancias de equipo y el descuento al cliente no pasa de ${PCT_TOPE_VENTA} % de lo pagado. Si se pasara, se reduce primero lo del nivel 2 y después lo del nivel 1.`,
-  `<b>Qué no cuenta.</b> Las compras hechas con el correo de quien vendió, de su patrocinador o del patrocinador de su patrocinador; lo pagado con saldo del Toolkit; y los productos de creadores independientes.`,
+  `<b>Qué no cuenta.</b> Las compras hechas con el correo de quien vendió, de su patrocinador o del patrocinador de su patrocinador, y los productos de creadores independientes.`,
   `<b>Bono de arranque.</b> ${BONO_ARRANQUE} puntos, una sola vez, a quien creó su cuenta con una liga de invitación y hace su primera venta dentro de los ${DIAS_ARRANQUE} días siguientes. Se revierte si esa compra se reembolsa.`,
   `<b>Rangos.</b> Vendedor(a), Líder (${LIDER_ACTIVOS} personas de tu equipo directo con al menos una venta en el mes) y Líder Élite (ser Líder y tener ${ELITE_LIDERES} Líderes en tu equipo directo). Se cuentan cada mes en hora del centro de México y son solo un reconocimiento: no dan dinero ni puntos.`,
   `<b>Reembolsos.</b> Si una compra se reembolsa o se desconoce el cargo, se descuentan los puntos que dio, también las ganancias de equipo (en un reembolso parcial, la parte proporcional) y el bono de arranque si fue por esa compra.`,
@@ -231,7 +231,7 @@ export async function paginaEmbajadores(env, { cuenta, invitador }) {
   <span class="etiqueta" style="margin-top:44px;display:inline-block">Rangos del mes</span>
   <div class="em-caja"><ul class="em-lista"><li><b>Vendedor(a)</b>: al registrarte.</li><li><b>Líder</b>: ${LIDER_ACTIVOS} personas de tu equipo directo con al menos una venta en el mes.</li><li><b>Líder Élite</b>: ser Líder y tener ${ELITE_LIDERES} Líderes en tu equipo directo.</li></ul><p style="margin-top:10px">Son un reconocimiento (insignia en tu app y «Líderes del mes»): no dan dinero ni puntos.</p></div>
   <span class="etiqueta" style="margin-top:44px;display:inline-block">Lo que no cuenta</span>
-  <div class="em-caja"><ul class="em-lista"><li>Registrarse o invitar: no da puntos.</li><li>Compras con tu propio correo, o con el de tu patrocinador o el del suyo.</li><li>Lo pagado con saldo del Toolkit y los productos de creadores independientes.</li><li>Compras reembolsadas: se descuentan los puntos de todos (en un reembolso parcial, la parte proporcional).</li></ul></div>
+  <div class="em-caja"><ul class="em-lista"><li>Registrarse o invitar: no da puntos.</li><li>Compras con tu propio correo, o con el de tu patrocinador o el del suyo.</li><li>Los productos de creadores independientes.</li><li>Compras reembolsadas: se descuentan los puntos de todos (en un reembolso parcial, la parte proporcional).</li></ul></div>
   ${reales.visible ? `<span class="etiqueta" style="margin-top:44px;display:inline-block">Ganancias reales</span>
   <div class="em-caja" id="ganancias-reales"><p>De las ${fmt(reales.cuentas)} cuentas que ganaron puntos en los últimos ${reales.meses} meses, en los meses en que ganaron: <b>promedio ${fmt(reales.promedio)} puntos</b> y <b>mediana ${fmt(reales.mediana)} puntos</b> al mes. Muchas cuentas no ganan nada en un mes; estas cifras no son una promesa de ingresos.</p></div>` : `<!-- Ganancias reales: se muestra con al menos ${MIN_CUENTAS_GANANCIAS} cuentas con ganancias -->`}
 </div></section>

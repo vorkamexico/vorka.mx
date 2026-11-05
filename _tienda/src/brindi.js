@@ -61,7 +61,7 @@ export async function resumenApp(env, app, { desde } = {}) {
   for (const p of await productosApp(env, app)) {
     const ev = Object.fromEntries((await all(env, 'SELECT tipo, COUNT(*) n FROM events WHERE product_id = ? AND created_at >= ? GROUP BY tipo', p.id, desde)).map(x => [x.tipo, x.n]));
     const v = await one(env, `SELECT COUNT(DISTINCT o.id) n, COALESCE(SUM(i.precio_centavos * i.cantidad), 0) monto FROM orders o JOIN order_items i ON i.order_id = o.id
-      WHERE i.product_id = ? AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia', 'saldo') AND o.paid_at >= ?`, p.id, desde);
+      WHERE i.product_id = ? AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND o.paid_at >= ?`, p.id, desde);
     const r = await one(env, "SELECT COUNT(DISTINCT o.id) n FROM orders o JOIN order_items i ON i.order_id = o.id WHERE i.product_id = ? AND o.estado = 'refunded' AND o.updated_at >= ?", p.id, desde);
     productos.push({ id: p.id, slug: p.slug, nombre: p.nombre, precio_centavos: p.precio_centavos, activo: p.activo, tipo: p.acceso.tipo,
       vistas: ev.view_product || 0, checkouts: ev.begin_checkout || 0, compras: v.n, monto_centavos: v.monto, reembolsos: r.n });
