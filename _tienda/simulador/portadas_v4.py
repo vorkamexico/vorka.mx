@@ -2,7 +2,7 @@
 # a la izquierda, en blanco, «V Producto by Vorka México», un titular en tinta con una sola frase en el color del producto,
 # una línea de apoyo y tres datos; a la derecha, en gris claro, el celular derecho con la pantalla real del producto.
 # Mismas pantallas y datos que portadas_v3.py (solo lo que ya dicen la descripción oficial o el banco de cada producto).
-# Clara: conserva su celular (diseño final de la app), recortado de su portada actual; solo se rehace la marca y el texto.
+# Clara: también con objetos (su tarjeta con corte y pago, el ticket del día y lo que alcanza), en su azul.
 # Uso: python3 _tienda/simulador/portadas_v4.py → assets/tienda/v3/<producto>-portada.webp y <producto>-og.jpg (mismas rutas)
 #      SOLO=vuelve,cupo para algunas.
 import os, pathlib, base64, io
@@ -194,7 +194,24 @@ def obj_kit(k):
     lista = ''.join(f'<div style="display:flex;gap:12px;align-items:center;margin-top:16px;font:650 20px Inter,sans-serif"><span style="width:28px;height:28px;border-radius:8px;background:{color};color:#fff;display:grid;place-items:center;font-size:15px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes))
     return hoja_papel(150, 230, 440, 600, 7, '<div class="l" style="height:12px;border-radius:6px;background:#ECEAE6;margin:12px 0;width:70%"></div>' * 14, '#F7F5F0') + hoja_papel(60, 280, 480, 640, -4, eti(color, 'Vorka México · Kit digital') + f'<div style="font:850 46px/1.02 Inter,sans-serif;letter-spacing:-.04em;margin:14px 0 10px">{titulo}</div>' + lista, '#FDFCF9')
 
-OBJETOS = {'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
+def obj_clara():
+    # Clara: lo que se anota en ella, como objetos reales: una tarjeta con su corte y su pago, el ticket del día y lo que alcanza
+    gastos = ''.join(f'<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed #D9D6DE;font:600 19px ui-monospace,Menlo,monospace"><span>{n}</span><b style="color:{c}">{m}</b></div>' for n, m, c in [('TACOS', '−$150.00', '#D9534F'), ('LUZ', '−$420.00', '#D9534F'), ('CAMIÓN', '−$22.00', '#D9534F'), ('QUINCENA', '+$6,500.00', '#1E8A5A')])
+    return f"""
+<div style="position:absolute;left:80px;top:500px;width:430px;height:470px;background:#FFFFFE;border-radius:6px 6px 0 0;transform:rotate(-5deg);{SOMBRA};padding:40px 38px 0;color:#141114;clip-path:polygon(0 0,100% 0,100% 96%,95% 100%,90% 96%,85% 100%,80% 96%,75% 100%,70% 96%,65% 100%,60% 96%,55% 100%,50% 96%,45% 100%,40% 96%,35% 100%,30% 96%,25% 100%,20% 96%,15% 100%,10% 96%,5% 100%,0 96%)">
+  <div style="text-align:center;font:800 22px ui-monospace,Menlo,monospace;letter-spacing:.16em">LO DE HOY</div>
+  <div style="text-align:center;font:500 16px ui-monospace,Menlo,monospace;color:#6D696E;margin:6px 0 16px">DOMINGO 1 DE NOVIEMBRE</div>{gastos}
+  <div style="display:flex;justify-content:space-between;margin-top:18px;font:800 22px ui-monospace,Menlo,monospace"><span>EFECTIVO</span><span>$1,240.00</span></div></div>
+<div style="position:absolute;left:60px;top:170px;width:540px;height:340px;border-radius:26px;transform:rotate(-8deg);{SOMBRA};background:linear-gradient(135deg,#2B6FE8,#1F5FD6 45%,#123E99);color:#fff;padding:32px 34px;overflow:hidden">
+  <div style="position:absolute;right:-80px;top:-90px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.10)"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font:800 26px Inter,sans-serif">Mi tarjeta</b><span style="width:62px;height:46px;border-radius:9px;background:linear-gradient(135deg,#F3DFA0,#C8A45C)"></span></div>
+  <div style="font:600 28px ui-monospace,Menlo,monospace;letter-spacing:.18em;margin-top:48px">•••• •••• •••• 4821</div>
+  <div style="display:flex;gap:46px;margin-top:30px;font:600 15px Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;opacity:.8"><span>Corte<br><b style="font-size:24px;letter-spacing:0;opacity:1">día 15</b></span><span>Pagar antes del<br><b style="font-size:24px;letter-spacing:0">día 5</b></span></div></div>
+<div style="position:absolute;left:400px;top:915px;width:230px;height:210px;background:#FFF3B8;transform:rotate(6deg);{SOMBRA};padding:26px 24px;color:#141114">
+  <div style="font:700 17px Inter,sans-serif;color:#6D5A1E">Te alcanzan</div><div style="font:850 62px/1.05 Inter,sans-serif;letter-spacing:-.04em;color:#1F5FD6">$133</div>
+  <div style="font:600 18px Inter,sans-serif;color:#6D5A1E">al día hasta el 15</div></div>"""
+
+OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
   'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'toolkit': obj_toolkit, 'portales': obj_portales,
   'toolkit-pro': lambda: obj_toolkit('$1,800', '$1,199', 'Toolkit Pro', 'linear-gradient(140deg,#14141F,#3E3A66)', '#F2CF7E'),
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
@@ -230,9 +247,7 @@ def lienzo(k, w, h):
     og = h < 1000
     pw = int(w * (.42 if og else .42))   # ancho del panel gris
     ui, extra = visual(k)
-    if k == 'clara':
-        der = f'<img src="{panel_clara()}" style="position:absolute;right:0;top:0;height:{h}px;width:{pw}px;object-fit:cover;object-position:center">'
-    elif isinstance(ui, tuple):
+    if isinstance(ui, tuple):
         esc = h / 1200
         z = esc * .84   # los objetos van más chicos que el panel, centrados, para que nunca se corten
         der = f'<div style="position:absolute;left:{w - pw + (pw - 672 * z) / 2}px;top:{(h - 1200 * z) / 2}px;width:672px;height:1200px;transform:scale({z});transform-origin:top left">{ui[1]}</div>'
@@ -275,7 +290,6 @@ with sync_playwright() as pw:
         im.save(OUT / f'{nombre}.{ext}', 'JPEG' if ext == 'jpg' else 'WEBP', quality=88, **({} if ext == 'jpg' else {'method': 6}))
         png.unlink(); print('·', OUT / f'{nombre}.{ext}')
     SOLO = [x for x in os.environ.get('SOLO', '').split(',') if x]
-    panel_clara()   # se lee antes de reemplazar la portada de Clara
     for k in V4:
         if SOLO and k not in SOLO: continue
         foto(f'{k}-portada', lienzo(k, 1600, 1200), 1600, 1200)
