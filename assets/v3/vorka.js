@@ -151,8 +151,10 @@
       if (!x.intereses.length) return falla('Elige al menos una opción de lo que te interesa.');
       if (!x.acepta) return falla('Necesitamos que aceptes el aviso de privacidad.');
       falla('');
-      x.origen = pf.getAttribute('data-origen') || 'sitio';
-      x.mensaje = 'Enviado desde vorka.mx' + (pf.getAttribute('data-pagina') || location.pathname);   // en la bandeja: desde qué página
+      // ?desde=tienda-<producto>: llegó del puente «¿Lo hacemos por ti?» de una página de la tienda
+      var desde = (new URLSearchParams(location.search).get('desde') || '').replace(/[^a-z0-9-]/g, '').slice(0, 40);
+      x.origen = pf.getAttribute('data-origen') || (desde.indexOf('tienda') === 0 ? 'tienda' : 'sitio');
+      x.mensaje = 'Enviado desde vorka.mx' + (pf.getAttribute('data-pagina') || location.pathname) + (desde ? ' · llegó desde ' + desde : '');   // en la bandeja: desde qué página
       var cuerpo = JSON.stringify(x);
       btn.disabled = true; btn.firstChild.textContent = 'Enviando… ';
       fetch(API_INTERES, { method: 'POST', headers: { 'content-type': 'application/json' }, body: cuerpo })
