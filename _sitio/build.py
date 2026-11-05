@@ -107,7 +107,7 @@ def banda(foto, foco, etq, titulo, chips):
     return f'''<div class="caja osc banda rv"><div class="foto-c" style="--foco:{foco}">{img(foto, "(max-width: 1280px) 100vw, 1240px", alt="")}</div>
       <span class="etq">{etq}</span><h3 class="h2">{titulo}</h3><div class="chips-c">{ch}</div></div>'''
 
-CIFRAS_CHIPS = ['<b>180+</b> municipios', '<b>40+</b> consultores senior', 'Formación <b>HBS · Tec</b>', 'Bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya']
+CIFRAS_CHIPS = ['<b>180+</b> municipios', '<b>40+</b> consultores senior', 'Formación <b>Harvard Business School · Tec de Monterrey</b>', 'Bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya']
 
 # ---------------------------------------------------------------- inicio
 # Portada v3 intacta → sectores → tres caminos (servicios · tienda y apps · Vorka Learn) → cuatro servicios en el bento →
@@ -227,7 +227,7 @@ def inicio():
       <p class="lead">Criterio por experiencia, velocidad por tecnología y legitimidad por territorio.</p></div>
     <div class="pilares">
       <article class="pilar rv"><span class="ic">{ICONOS['brujula']}</span><h3 class="h3" style="font-size:22px">Trayectoria en decisiones difíciles</h3><p>Sector público federal, banca, industria e incidencia.</p>
-        <dl><div><dt>HBS · Tec</dt><dd>y Silicon Valley: formación del equipo directivo</dd></div><div><dt class="num">3</dt><dd>sectores: público, privado y civil</dd></div></dl></article>
+        <dl><div style="grid-column:1/-1"><dt style="font-size:18px;letter-spacing:-.01em;line-height:1.3">Harvard Business School · Tec de Monterrey</dt><dd>y Silicon Valley: formación del equipo directivo</dd></div><div><dt class="num">3</dt><dd>sectores: público, privado y civil</dd></div></dl></article>
       <article class="pilar rv" style="--d:.08s"><span class="ic">{ICONOS['rayo']}</span><h3 class="h3" style="font-size:22px">Consultora nativa digital</h3><p>Hacemos y operamos nuestras propias apps, bajo la misma dirección estratégica.</p>
         <dl><div><dt class="num">10</dt><dd>productos propios en línea</dd></div><div><dt class="num">4</dt><dd>simuladores de examen con tutor</dd></div></dl></article>
       <article class="pilar rv" style="--d:.16s"><span class="ic">{ICONOS['globo']}</span><h3 class="h3" style="font-size:22px">Presencia nacional, no focus group</h3><p>Equipo de campo y aliados locales, con contexto real de cada territorio.</p>
