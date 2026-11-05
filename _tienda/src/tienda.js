@@ -233,7 +233,7 @@ const CSS_VITRINA = `
 .v-chip b{background:var(--fg);color:var(--bg);border-radius:999px;padding:3px 10px;font-size:12.5px}.v-chip svg{width:16px;height:16px;opacity:.6}
 .v-h1{font:800 clamp(36px,6vw,64px)/1.03 var(--font);letter-spacing:-.045em;max-width:900px;margin:22px auto 0;color:var(--fg)}
 .v-h1 em{font-style:normal;color:#8A6A1F}
-:root[data-theme=dark] .v-h1 em{color:#D8B56B}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .v-h1 em{color:#D8B56B}}
+:root[data-tema=oscuro] .v-h1 em{color:#D8B56B}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .v-h1 em{color:#D8B56B}}
 .v-sub{font-size:clamp(17px,2vw,19px);line-height:1.55;color:var(--fg-2);max-width:640px;margin:18px auto 0}
 .v-botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px}
 .v-btn{background:var(--fg);color:var(--bg);border:0}.v-btn.sec{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
