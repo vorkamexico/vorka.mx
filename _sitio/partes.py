@@ -7,7 +7,7 @@ CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
 # Mensaje de WhatsApp para quien todavía no nos conoce: corto y sin compromiso (antes: «ya decidí avanzar…», que espanta al que apenas explora)
 WA_MSG = 'Hola Vorka, me gustaría platicar sobre un proyecto.'
-VERSION = '13'
+VERSION = '14'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -168,13 +168,13 @@ def pie(publico='general'):
         <li><a href="mailto:{CORREO}">{CORREO}</a></li></ul></div>'''
         lema, base = 'Fútbol, valores y comunidad en Celaya.', BASE_PIE
     else:
-        simulador = '' if publico == 'empresas' else '\n        <li><a href="/simulador-paa/">Simulador PAA</a></li>\n        <li><a href="/simulador-unam/">Simulador UNAM</a></li>\n        <li><a href="/simulador-ecoems/">Simulador ECOEMS</a></li>\n        <li><a href="/simulador-prepa-ug/">Simulador prepa UG</a></li>'
+        simulador = '' if publico == 'empresas' else '\n        <li><a href="/tienda/#examenes">Simuladores de examen</a></li>'
         # cuatro columnas cortas y parejas (antes "Vorka" llevaba 9 ligas y alargaba todo el pie)
         columnas = f'''<div><h4>Servicios</h4><ul>
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
         <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
         <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
-        <li><a href="/servicios/apps/">Apps y páginas a la medida</a></li>
+        <li><a href="/servicios/apps/">Apps a la medida</a></li>
         <li><a href="/servicios/">Todos los servicios</a></li></ul></div>
       <div><h4>Vorka</h4><ul>
         <li><a href="/nosotros/">Quiénes somos</a></li>
@@ -184,15 +184,14 @@ def pie(publico='general'):
         <li><a href="/fc/">Vorka FC</a></li></ul></div>
       <div><h4>Productos</h4><ul>
         <li><a href="/tienda/">Tienda</a></li>
-        <li><a href="/learn/">Vorka Learn · guías gratis</a></li>{simulador}
-        <li><a href="/tienda/brindi/">Invitaciones digitales</a></li>
-        <li><a href="/tienda/cupo/">Eventos con registro</a></li>
-        <li><a href="/tienda/vuelve/">Vuelve · lealtad</a></li></ul></div>
+        <li><a href="/learn/">Vorka Learn</a></li>{simulador}
+        <li><a href="/tienda/#negocios">Apps para tu negocio</a></li>
+        <li><a href="/tienda/#eventos">Eventos e invitaciones</a></li>
+        <li><a href="/tienda/#finanzas">Finanzas personales</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
         <li><a href="/servicios/#platiquemos">Agenda tu diagnóstico</a></li>
-        <li><a href="/agenda/">Diagnóstico completo</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li>
-        <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>'''
+        <li><a class="sin-corte" href="{wa()}" target="_blank" rel="noopener">WhatsApp 81 1780 4869</a></li></ul></div>'''
         lema, base = 'Definimos el juego con quienes lo juegan.', BASE_PIE
     return f'''<footer class="pie">
   <div class="marco">

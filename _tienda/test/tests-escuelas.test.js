@@ -60,7 +60,7 @@ describe('/test-vocacional/escuelas/', () => {
     const demo = `https://wa.me/528117804869?text=${encodeURIComponent(TEXTO_DEMO)}`.replace(/&/g, '&amp;');
     expect(h).toContain(`href="${demo}"`);
     expect(h).toContain('Pide una demostración');
-    expect(h).toContain('WhatsApp +52 81 1780 4869');   // el mismo número del pie del sitio
+    expect(h).toContain('WhatsApp 81 1780 4869');   // el mismo número del pie del sitio
     const m = principal(h);
     expect(m).toContain('Que lo pague cada familia');
     expect(m).toContain('no hay panel del grupo');
