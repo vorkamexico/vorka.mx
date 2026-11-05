@@ -7,7 +7,7 @@ CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
 # Mensaje de WhatsApp para quien todavía no nos conoce: corto y sin compromiso (antes: «ya decidí avanzar…», que espanta al que apenas explora)
 WA_MSG = 'Hola Vorka, me gustaría platicar sobre un proyecto.'
-VERSION = '12'
+VERSION = '13'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -121,8 +121,8 @@ MENU = [('/servicios/', 'Servicios'), ('/tienda/', 'Tienda'), ('/learn/', 'Vorka
 
 # Vorka FC es para familias de Celaya: su menú habla de la academia, Sparks y la comunidad, no de consultoría ni de la tienda
 MENU_FC = [('/fc/#programa', 'Programa'), ('/fc/#costo', 'Costo'), ('/fc/#celaya', 'Dónde'), ('/sparks/celaya/', 'Noticias de Celaya'), ('/sparks/', 'Revista Sparks'), ('/voluntariado', 'Tú en Vorka')]
-# CTA único del sitio: el formulario corto «Platiquemos» (4 datos). El diagnóstico largo de /agenda/ queda como paso opcional después.
-CTA = {'general': ('/servicios/#platiquemos', 'Platiquemos'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
+# CTA único del sitio: el texto de siempre (v3) y lleva al formulario corto (4 datos). El diagnóstico largo de /agenda/ queda como paso opcional después.
+CTA = {'general': ('/servicios/#platiquemos', 'Agenda tu diagnóstico'), 'fc': ('/fc/#inscripcion', 'Inscribir a mi hijo o hija')}
 
 def nav(actual='', oscuro=False, publico='general', cta=None, menu=None):
     cur = ' aria-current="page"'
@@ -189,7 +189,7 @@ def pie(publico='general'):
         <li><a href="/tienda/cupo/">Eventos con registro</a></li>
         <li><a href="/tienda/vuelve/">Vuelve · lealtad</a></li></ul></div>
       <div><h4>Contacto</h4><ul>
-        <li><a href="/servicios/#platiquemos">Platiquemos</a></li>
+        <li><a href="/servicios/#platiquemos">Agenda tu diagnóstico</a></li>
         <li><a href="/agenda/">Diagnóstico completo</a></li>
         <li><a href="mailto:{CORREO}">{CORREO}</a></li>
         <li><a href="{wa()}" target="_blank" rel="noopener">WhatsApp +52 81 1780 4869</a></li></ul></div>'''
@@ -232,28 +232,23 @@ def cierre(titulo='Tu próxima gran decisión empieza con <span class="metal">un
 INTERESES = [('estrategia', 'Estrategia y consultoría'), ('equipos', 'Formación y liderazgo de equipos'), ('redes', 'Redes sociales y contenido'),
              ('web', 'Página web o tienda en línea'), ('sistemas', 'Sistema o app a la medida')]
 
-SIG = '''<ol class="v4-sig">
-        <li><b>1</b><span>Nos cuentas en un minuto qué necesitas.</span></li>
-        <li><b>2</b><span>Te escribimos en máximo 2 días hábiles.</span></li>
-        <li><b>3</b><span>Si encaja, hacemos un diagnóstico de 20 minutos sin costo.</span></li>
-      </ol>'''
-
-def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesitas.', fondo='suave', sig=True):
-    """Sección con el formulario corto (4 datos). pagina: ruta desde donde se manda (queda en la bandeja);
-    marcar: claves de INTERESES ya elegidas; area: slug del servicio para el diagnóstico completo (/agenda/?area=);
-    sig=False quita los tres pasos de la izquierda (en páginas que ya muestran «Cómo empezamos»). El formulario no cambia."""
+def platiquemos(pagina='/', marcar=(), area='', titulo='Tu próxima gran decisión empieza con <span class="metal">una conversación.</span>'):
+    """Cierre v3 (sección oscura con la V metálica, el brillo dorado y las garantías) con el formulario corto en una tarjeta.
+    pagina: ruta desde donde se manda (queda en la bandeja); marcar: claves de INTERESES ya elegidas;
+    area: slug del servicio para el diagnóstico completo (/agenda/?area=). Las clases v4-* del formulario las lee vorka.js: no cambiarlas."""
     ops = ''.join(f'<label class="v4-chip"><input type="checkbox" name="intereses" value="{k}"{" checked" if k in marcar else ""}><span>{e(t)}</span></label>' for k, t in INTERESES)
     largo = f'/agenda/?area={area}' if area else '/agenda/'
-    return f'''<section class="v4-sec v4-plat {fondo}" id="platiquemos" aria-labelledby="t-plat">
-  <div class="marco v4-plat-in">
-    <div class="v4-plat-txt">
-      <span class="etiqueta">Platiquemos</span>
-      <h2 class="t2" id="t-plat">{titulo}</h2>
-      <p class="lead">Déjanos cuatro datos y te escribimos para platicar, sin costo ni compromiso.</p>
-      {SIG if sig else ''}
-      <p class="v4-alt">¿Prefieres WhatsApp? <a href="{wa()}" target="_blank" rel="noopener">Escríbenos al +52 81 1780 4869</a></p>
+    return f'''<section class="cierre plat" id="platiquemos" aria-labelledby="t-plat">
+  {v_metal('art', 'gp')}<div class="glow"></div><div class="grano"></div>
+  <div class="marco plat-in">
+    <div class="rv">
+      <span class="etiqueta">Diagnóstico sin costo</span>
+      <h2 class="h2" id="t-plat" style="margin-top:18px">{titulo}</h2>
+      <p class="lead">Déjanos cuatro datos y te escribimos para platicar. Si encaja, hacemos un diagnóstico de 20 minutos y te damos una lectura honesta de tu caso.</p>
+      <div class="garantias"><span>20 minutos</span><span>Sin costo ni compromiso</span><span>Respuesta en máximo 2 días hábiles</span></div>
+      <div class="botones"><a class="btn vidrio" href="{wa()}" target="_blank" rel="noopener">Prefiero WhatsApp</a></div>
     </div>
-    <div class="v4-form-caja">
+    <div class="v4-form-caja rv" style="--d:.1s">
       <form class="v4-form platiquemos" novalidate data-pagina="{e(pagina)}">
         <div class="trampa" aria-hidden="true"><label>No llenar <input name="empresa_web" tabindex="-1" autocomplete="off"></label></div>
         <label class="v4-campo"><span>Nombre</span><input name="nombre" autocomplete="name" required minlength="3" maxlength="100"></label>
@@ -266,7 +261,7 @@ def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesita
       </form>
       <div class="v4-exito" hidden tabindex="-1">
         <span class="v4-ok">{ICONOS['check']}</span>
-        <h3 class="t3">Listo, <span data-nombre></span>. Ya tenemos tus datos.</h3>
+        <h3 class="h3">Listo,<span data-nombre></span>. Ya tenemos tus datos.</h3>
         <p>Te escribimos a <b data-correo></b> en máximo 2 días hábiles. Revisa también tu carpeta de spam.</p>
         <p class="v4-folio" hidden>Tu folio: <b data-folio></b></p>
         <p class="v4-opc"><b>Opcional:</b> si quieres llegar con todo listo a la primera llamada, <a href="{e(largo)}">llena el diagnóstico completo</a> (5 pasos).</p>

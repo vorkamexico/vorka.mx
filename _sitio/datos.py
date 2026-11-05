@@ -191,8 +191,12 @@ PREGUNTAS_CORTAS = [
     ('¿Trabajan fuera de sus ciudades base?', 'Sí. Tenemos bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya, y trabajamos en toda la República, presencial o a distancia.'),
 ]
 
-# «Cómo empezamos»: tres pasos de máximo seis palabras
-PASOS_CORTOS = ['Nos cuentas qué necesitas', 'Diagnóstico de 20 minutos, sin costo', 'Propuesta con alcance, tiempos e inversión']
+# «Cómo empezamos» (índice de servicios): tres pasos, título corto y una línea
+PASOS_CORTOS = [
+    ('Nos cuentas qué necesitas', 'Cuatro datos en el formulario o por WhatsApp. Te respondemos en máximo 2 días hábiles.'),
+    ('Diagnóstico de 20 minutos', 'Sin costo: entendemos tu reto y te decimos cómo lo resolveríamos.'),
+    ('Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro. Empiezas con un servicio y sumas otro solo si hace falta.'),
+]
 
 # «Lo que hemos hecho»: solo trabajo propio que se puede abrir hoy en el sitio. Sin clientes, cifras ni testimonios.
 # (enlace, imagen /img/trabajo/<k>-800.webp, etiqueta, título, una línea, alt). Las imágenes (800×600) salen de:
