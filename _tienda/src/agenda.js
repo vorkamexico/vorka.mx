@@ -3,9 +3,10 @@
 // comparación, preguntas y compra. Se cobra por suscripción (ver suscripciones.js). La app vive en agenda.vorka.mx (Vorka OS)
 // y la página de reservas de cada negocio en vorka.mx/citas/<negocio> (→ os /con/<negocio>, ver index.js › citasPublico).
 // Aquí solo se vende.
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
@@ -60,7 +61,7 @@ const faq = ({ dias = 7, precioProf = PRECIO_BASE } = {}) => [
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Agenda › Cuenta, sin llamadas. Tu agenda sigue activa hasta el final del periodo que pagaste. Después queda en pausa: tu página ya no recibe citas, pero tus citas y tus clientes se quedan guardados por si vuelves.'],
 ];
 
-// ---------- identidad de Agenda (la de la app: la familia de Vorka —tinta, marfil, morado y oro— y la palabra "agenda") ----------
+// ---------- íconos de Agenda (trazos simples; el color es el de la marca: MARCAS.agenda en marca-producto.js) ----------
 const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICONO = {
   check: ico('<path d="M5 12.5l4.5 4.5L19 7.5"/>'), reloj: ico('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'), cel: ico('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>'),
@@ -131,39 +132,36 @@ export async function paginaAgenda(env, req, url) {
       ${m && a ? `<p class="ag-anual">o ${precio(a.prod)} al año${a.paquete ? '' : ' por profesional'}</p>` : ''}
       <ul>${lista.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
       <a class="ag-btn${rec ? '' : ' ghost oscuro'}" href="?plan=${(m || a).slug}#comprar" data-plan="${(m || a).slug}">Suscribirme</a></article>` : '';
-  const res = pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Agenda' },
+  const res = pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Agenda' },
     titulo: 'Agenda: citas en línea para consultorios y negocios | Prueba 7 días gratis', ruta: RUTA_AGENDA, imagen: OG_AGENDA,
     descripcion: `Tu página de citas en línea: tus clientes reservan servicio, día y hora, y los recordatorios salen solos. $${precioProf} al mes por profesional. Prueba 7 días gratis.`,
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="ag">
-<section class="ag-hero"><div class="marco ag-hero-g">
-  <div class="ag-hero-txt">
-    <span class="ag-marca"><span>agenda</span></span>
-    <h1 class="ag-h1">Tus clientes <em>agendan solos.</em></h1>
-    <p class="ag-lead">Tu página de citas en línea. Tus clientes eligen el servicio, con quién, el día y la hora, y su cita queda confirmada al instante. Tú ves tu día en el celular, marcas quién vino y los recordatorios salen solos.</p>
-    <div class="ag-ctas"><a class="ag-btn" href="${esc(nuevo)}">Pruébala 7 días gratis ${FLECHA}</a><a class="ag-btn ghost" href="#planes">Ver precios</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra en agenda.vorka.mx</a></p>
-    <ul class="ag-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.cel}Sin app para tus clientes</li><li>${ICONO.reloj}Lista en minutos</li></ul>
-  </div>
-  <div class="ag-escena" aria-hidden="true">
+${heroMarca('agenda', {
+  apoyo: 'Tu página de citas en línea. Tus clientes eligen el servicio, con quién, el día y la hora, y su cita queda confirmada al instante. Tú ves tu día en el celular, marcas quién vino y los recordatorios salen solos.',
+  botones: `<a class="pm-btn" href="${esc(nuevo)}">Pruébala 7 días gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precios</a>`,
+  despues: `<p class="pm-precio"><b>${mensual ? precio(mensual.prod) : `$${precioProf}`}</b> al mes por profesional · prueba 7 días gratis, sin tarjeta</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra en agenda.vorka.mx</a></p>`,
+})}
+${indiceProducto('agenda', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['compara', 'Compara'], ['planes', 'Precios'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébala gratis</a>`)}
+${seccionQueEs('agenda', { titulo: 'Tu página de citas, con tu logo y tu liga.',
+  texto: 'Compartes tu liga en tu WhatsApp, tu Instagram o en un QR en tu mostrador. Tus clientes eligen el servicio, con quién, el día y la hora, sin descargar nada, y su cita queda confirmada al instante. <b>Los recordatorios salen solos</b> y tú ves tu día en el celular.',
+  para: [['Consultorios: medicina, psicología, nutrición, dentistas, fisioterapia', 'Dejar de contestar «¿tienes lugar mañana?» a cada rato, y tener menos faltas.'], ['Barberías, estéticas y salones', 'Que cada barbero tenga su horario y cada servicio su duración real.'], ['Asesorías legales, contables o de negocio', 'Que te agenden en línea la primera asesoría o la revisión de documentos.']] })}
+
+<section class="ag-sec" id="como"><div class="marco ag-como">
+  <div><div class="ag-cab izq"><span class="ag-et">Cómo funciona</span><h2>Lista hoy. Desde tu celular.</h2></div>
+  <ol class="ag-pasos">${[['Arma tu agenda', 'Tus servicios con su duración, tu horario con la pausa de la comida y, si son varios, cada profesional con el suyo.'], ['Comparte tu liga', 'vorka.mx/citas/tu-negocio en tu WhatsApp, tu Instagram y en un QR impreso en tu mostrador.'],
+    ['Tus clientes agendan solos', 'Eligen servicio, con quién, día y hora. Su cita queda confirmada y les llegan sus recordatorios.'], ['Tú atiendes', 'Ves tu día, marcas quién vino y quién no, y le recuerdas por WhatsApp con un toque a quien haga falta.']].map(([t, d], k) => `<li><span class="ag-num">0${k + 1}</span><div><b>${t}</b><p>${d}</p></div></li>`).join('')}</ol></div>
+  <figure class="ag-escena" aria-hidden="true">
     <div class="ag-cel"><i class="ag-isla"></i><div class="ag-pantalla"><p class="ag-url">vorka.mx/citas/nutricion-ana-ruiz</p>${reserva()}</div></div>
     <div class="ag-noti"><span class="ag-noti-ic">${ICONO.cal}</span><span><b>Cita nueva <small>correo</small></b>Laura Méndez · martes 4, 10:30 · Consulta de seguimiento</span></div>
-  </div>
-</div>
-${navTienda('citas')}
-</section>
-
-<section class="ag-sec" id="para-quien"><div class="marco">
-  <div class="ag-cab"><span class="ag-et">Para quién es</span><h2>Para quien vive de su agenda.</h2><p>Consultorios y negocios de servicios donde cada cita cuenta. Al empezar eliges tu giro y Agenda te sugiere los servicios con su duración; tú pones tus precios.</p></div>
-  <ul class="ag-giros">${GIROS.map(([g, t, d]) => `<li>${ICONO_GIRO[g]}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+  </figure>
 </div></section>
 
-<section class="ag-sec ag-osc"><div class="marco">
-  <div class="ag-cab"><span class="ag-et">Cómo funciona</span><h2>Lista hoy. Desde tu celular.</h2></div>
-  <ol class="ag-pasos">${[['Arma tu agenda', 'Tus servicios con su duración, tu horario con la pausa de la comida y, si son varios, cada profesional con el suyo.'], ['Comparte tu liga', 'vorka.mx/citas/tu-negocio en tu WhatsApp, tu Instagram y en un QR impreso en tu mostrador.'],
-    ['Tus clientes agendan solos', 'Eligen servicio, con quién, día y hora. Su cita queda confirmada y les llegan sus recordatorios.'], ['Tú atiendes', 'Ves tu día, marcas quién vino y quién no, y le recuerdas por WhatsApp con un toque a quien haga falta.']].map(([t, d], k) => `<li><span class="ag-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+<section class="ag-sec suave" id="giros"><div class="marco">
+  <div class="ag-cab"><span class="ag-et">Por giro</span><h2>Para quien vive de su agenda.</h2><p>Consultorios y negocios de servicios donde cada cita cuenta. Al empezar eliges tu giro y Agenda te sugiere los servicios con su duración; tú pones tus precios.</p></div>
+  <ul class="ag-giros">${GIROS.map(([g, t, d]) => `<li>${ICONO_GIRO[g]}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
 </div></section>
 
 <section class="ag-sec"><div class="marco ag-dos">
@@ -191,7 +189,7 @@ ${navTienda('citas')}
   <p class="ag-nota">Precios publicados en la página oficial de cada producto, consultados el 25 de octubre de 2026. Pueden cambiar; revísalos antes de decidir. Las marcas mencionadas son de sus dueños.</p>
 </div></section>
 
-<section class="ag-sec ag-osc" id="paquete"><div class="marco ag-paq">
+<section class="ag-sec" id="paquete"><div class="marco ag-paq">
   <div class="ag-cab izq"><span class="ag-et">Agenda + Vuelve</span><h2>Que lleguen. Y que vuelvan.</h2>
     <p>Con el paquete tienes las dos apps con la misma cuenta y el mismo correo: Agenda para tus citas y Vuelve, la tarjeta de lealtad en el celular de tus clientes.${paqM ? ` Por ${precio(paqM.prod)} al mes${ahorro ? `, ${(ahorro / 100).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 })} menos que por separado` : ''}.` : ''}</p>
     <ul class="ag-paq-l">${['Una sola suscripción y un solo cobro', '1 profesional de Agenda y 1 sucursal de Vuelve incluidos', 'Lo adicional, con el precio de cada app'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
@@ -235,105 +233,102 @@ ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Agenda', intro: `¿Aún
 
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/agenda/">Condiciones de Agenda</a> · <a href="/legal/agenda/privacidad/">Aviso de privacidad</a> · <a href="https://agenda.vorka.mx/citas/privacidad-clientes">Privacidad para clientes de cada negocio</a> · Agenda · Powered by vorka.mx</p>' })}
+<section class="pm-sec ag-cierre" style="--pm:${colorDe('agenda')}"><div class="marco"><h2 class="pm-h2">Pruébala 7 días. Después, pagas por profesional.</h2><p>Sin tarjeta para probar. Si te sirve, te suscribes con el mismo correo y todo sigue igual.</p><div class="pm-ctas"><a class="pm-btn" href="${esc(nuevo)}">Pruébala 7 días gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'negocios')}
 </div>`,
   });
   return res;
 }
 
-const CSS = `
-.ag{--ag-tinta:#0f0d10;--ag-morado:#6b2a85;--ag-morado-c:#c59bd9;--ag-oro:#c8a45c;--ag-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
-[data-tema="oscuro"] .ag{--ag-morado:#c59bd9}
-.ag-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(20,17,20,.5);transition:transform .2s var(--ease),background .2s}
-.ag-btn:hover{transform:translateY(-1px)}.ag-hero .ag-btn:not(.ghost),.ag-osc .ag-btn:not(.ghost){background:var(--ag-crema);color:var(--ag-tinta);box-shadow:0 10px 26px -12px rgba(0,0,0,.6)}.ag-hero .ag-btn:not(.ghost):hover,.ag-osc .ag-btn:not(.ghost):hover{background:#fff}.ag-btn svg{width:17px;height:17px}
-.ag-btn.ghost{background:rgba(255,255,255,.06);color:var(--ag-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}.ag-btn.ghost:hover{background:rgba(255,255,255,.12)}
-.ag-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.ag-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
-/* portada */
-.ag-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;background:var(--ag-tinta);color:var(--ag-crema)}
-.ag-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 80% 30%,rgba(107,42,133,.38),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(200,164,92,.1),transparent 70%)}
-.ag-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.ag-hero-g>*{min-width:0}
-@media(min-width:960px){.ag-hero-g{grid-template-columns:1.05fr .95fr}}
-.ag-marca{display:inline-flex;align-items:center;font-weight:700;font-size:30px;letter-spacing:-.05em;color:var(--ag-crema)}.ag-marca span{margin-top:-3px}
-.ag-h1{font-weight:800;font-size:clamp(42px,6.6vw,80px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:11ch;text-wrap:balance}.ag-h1 em{font-style:normal;color:var(--ag-morado-c)}
-.ag-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(244,242,245,.76);max-width:33em}
-.ag-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.ag-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(244,242,245,.7)}
-.ag-chips li{display:inline-flex;align-items:center;gap:7px}.ag-chips svg{width:18px;height:18px;color:var(--ag-morado-c)}
-.ag-hero .t-nav-tienda{margin-top:8px}.ag-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(244,242,245,.8)}.ag-hero .t-nav-tienda a[aria-current]{background:var(--ag-crema);border-color:var(--ag-crema);color:var(--ag-tinta)}
-.ag-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
-/* el celular con la página de reservas abierta */
-.ag-escena{position:relative;justify-self:center;width:min(100%,360px);padding:10px 0 74px}
-.ag-cel{position:relative;border-radius:54px;padding:12px;background:#0a0a0a;box-shadow:0 0 0 2px #2a2a2a,0 50px 90px -40px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+/* Estilo de marca (portadas v4): blanco, tinta y el verde de Agenda; sin fondos oscuros */
+.ag{--ag-c:#05785A;--ag-c2:#05785A;--morado:#05785A;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
+[data-tema="oscuro"] .ag{--ag-c2:color-mix(in srgb,#05785A 55%,#fff);--morado:var(--ag-c2)}
+/* en oscuro, los acentos de las secciones de marca se aclaran para leerse bien */
+[data-tema="oscuro"] .pm-et:not(.gris),[data-tema="oscuro"] .pm-grande b{color:color-mix(in srgb,var(--pm) 55%,#fff)}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.ag-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--ag-c);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -14px var(--ag-c);transition:transform .2s var(--ease)}
+.ag-btn:hover{transform:translateY(-1px)}.ag-btn svg{width:17px;height:17px}
+.ag-btn.ghost,.ag-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.ag-btn.ghost:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
+.ag-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+/* secciones */
+.ag-sec{padding:clamp(64px,9vw,112px) 0;scroll-margin-top:54px}.ag-sec.suave{background:var(--bg-2)}
+.ag-sec:not(.suave)+.ag-sec:not(.suave){padding-top:0}
+.ag-cab{max-width:680px;margin:0 auto 44px;text-align:center}.ag-cab.izq{text-align:left;margin:0 0 32px}
+.ag-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ag-c2)}
+.ag-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.04em;margin:10px 0 0;text-wrap:balance}
+.ag-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+/* cómo funciona, con la página de reservas en el celular */
+.ag-como{display:grid;gap:48px;align-items:center}.ag-como>*{min-width:0}@media(min-width:960px){.ag-como{grid-template-columns:1.1fr .9fr;gap:64px}}
+.ag-pasos{list-style:none;padding:0;margin:0;display:grid;gap:22px}
+.ag-pasos li{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.ag-num{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--ag-c) 12%,transparent);font-weight:800;font-size:14px;color:var(--ag-c2)}
+.ag-pasos b{display:block;font-size:19px;letter-spacing:-.02em;padding-top:8px}.ag-pasos p{margin:4px 0 0;color:var(--fg-2);line-height:1.5}
+.ag-escena{position:relative;justify-self:center;width:min(100%,340px);margin:0;padding:0 0 74px}
+.ag-cel{position:relative;border-radius:54px;padding:12px;background:#0a0a0a;box-shadow:0 0 0 2px #2a2a2a,0 40px 80px -40px rgba(0,0,0,.6)}
 .ag-isla{position:absolute;top:22px;left:50%;width:96px;height:28px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
-.ag-pantalla{border-radius:43px;overflow:hidden;background:#fbfaf8;padding:58px 14px 18px;height:600px;position:relative;color:#141114}
+.ag-pantalla{border-radius:43px;overflow:hidden;background:#fbfaf8;padding:58px 14px 18px;height:580px;position:relative;color:#141114}
 .ag-url{margin:0 0 12px;padding:7px 12px;border-radius:12px;background:#efece8;color:#5f5b60;font:12.5px/1.2 -apple-system,'Inter',sans-serif;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ag-res{font-family:-apple-system,'Inter',system-ui,sans-serif;font-size:13.5px}
 .ag-res-cab{display:flex;align-items:center;gap:10px;margin:4px 0 14px}.ag-res-cab b{display:block;font-size:17px;letter-spacing:-.02em}.ag-res-cab small{color:#6b676c;font-size:12.5px}
-.ag-res-lg{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#155e63;color:#fff;font:700 19px/1 'Inter Tight',sans-serif}
+.ag-res-lg{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--ag-c);color:#fff;font:700 19px/1 'Inter Tight',sans-serif}
 .ag-res-paso,.ag-res-t{display:flex;align-items:center;gap:8px;margin:0 0 8px;padding:10px 12px;border-radius:14px;background:#fff;border:1px solid #ebe8e3;font-weight:600}
-.ag-res-paso span{margin-left:auto;color:#155e63;font-weight:600;font-size:12px}.ag-res-t{background:none;border:0;padding:8px 2px 4px;font-size:15px}
+.ag-res-paso span{margin-left:auto;color:var(--ag-c);font-weight:600;font-size:12px}.ag-res-t{background:none;border:0;padding:8px 2px 4px;font-size:15px}
 .ag-res i{display:grid;place-items:center;flex:none;width:21px;height:21px;border-radius:50%;background:#141114;color:#fff;font:700 11px/1 sans-serif;font-style:normal}
 .ag-res-dias{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 10px}.ag-res-dias span{display:grid;justify-items:center;padding:7px 0;border-radius:12px;background:#fff;border:1px solid #ebe8e3;font-weight:700;font-size:16px}
-.ag-res-dias small{font-size:10.5px;font-weight:600;color:#6b676c}.ag-res-dias .sel,.ag-res-horas .sel{background:#155e63;border-color:#155e63;color:#fff}.ag-res-dias .sel small{color:rgba(255,255,255,.8)}
+.ag-res-dias small{font-size:10.5px;font-weight:600;color:#6b676c}.ag-res-dias .sel,.ag-res-horas .sel{background:var(--ag-c);border-color:var(--ag-c);color:#fff}.ag-res-dias .sel small{color:rgba(255,255,255,.8)}
 .ag-res-horas{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.ag-res-horas span{padding:9px 0;border-radius:12px;text-align:center;background:#fff;border:1px solid #ebe8e3;font-weight:600}
-.ag-res-btn{display:block;margin-top:14px;padding:13px 0;border-radius:14px;background:#155e63;color:#fff;text-align:center;font-weight:700;font-size:15px}
-.ag-noti{position:absolute;left:-36px;right:24px;bottom:0;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:rgba(244,242,245,.92);color:#111;font:14px/1.35 -apple-system,'Inter Tight',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
-.ag-noti b{display:flex;justify-content:space-between;gap:8px;font-weight:650}.ag-noti b small{font-weight:400;color:#6b6b6b}
-.ag-noti-ic{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:10px;background:var(--ag-tinta);color:var(--ag-crema)}.ag-noti-ic svg{width:21px;height:21px}
-@media(max-width:600px){.ag-noti{left:-6px;right:-6px}.ag-pantalla{height:560px}}
-/* secciones */
-.ag-sec{padding:clamp(56px,8vw,104px) 0}.ag-sec.suave{background:var(--bg-2)}
-.ag-osc{background:var(--ag-tinta);color:var(--ag-crema)}
-.ag-cab{max-width:680px;margin:0 auto 38px;text-align:center}.ag-cab.izq{text-align:left;margin:0}
-.ag-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ag-morado)}.ag-osc .ag-et{color:var(--ag-morado-c)}
-.ag-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.ag-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.ag-osc .ag-cab p{color:rgba(244,242,245,.72)}
-.ag-giros{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
-.ag-giros li{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
-.ag-giros svg,.ag-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--ag-morado) 12%,transparent);color:var(--ag-morado)}
-.ag-giros b,.ag-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.ag-giros p,.ag-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
-.ag-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
-.ag-pasos li{padding:24px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-.ag-num{display:block;font-weight:800;font-size:15px;color:var(--ag-morado-c);letter-spacing:.04em}.ag-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.ag-pasos p{margin:6px 0 0;color:rgba(244,242,245,.7);line-height:1.5}
-.ag-dos{display:grid;gap:40px;align-items:start}@media(min-width:980px){.ag-dos{grid-template-columns:.95fr 1.05fr}}
-.ag-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
-.ag-ben li{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.ag-res-btn{display:block;margin-top:14px;padding:13px 0;border-radius:14px;background:var(--ag-c);color:#fff;text-align:center;font-weight:700;font-size:15px}
+.ag-noti{position:absolute;left:-28px;right:20px;bottom:0;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:var(--card);color:var(--fg);border:1px solid var(--line);font:14px/1.35 -apple-system,'Inter Tight',sans-serif;box-shadow:0 24px 50px -24px rgba(0,0,0,.45)}
+.ag-noti b{display:flex;justify-content:space-between;gap:8px;font-weight:650}.ag-noti b small{font-weight:400;color:var(--fg-2)}
+.ag-noti-ic{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:10px;background:var(--ag-c);color:#fff}.ag-noti-ic svg{width:21px;height:21px}
+@media(max-width:600px){.ag-noti{left:-4px;right:-4px}.ag-pantalla{height:560px}}
+/* giros y beneficios */
+.ag-giros{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.ag-giros li,.ag-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.ag-giros svg,.ag-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--ag-c) 12%,transparent);color:var(--ag-c2)}
+.ag-giros b,.ag-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:14px}.ag-giros p,.ag-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.ag-dos{display:grid;gap:44px;align-items:start}.ag-dos>*{min-width:0}@media(min-width:980px){.ag-dos{grid-template-columns:.95fr 1.05fr;gap:64px}}
+.ag-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
 /* tu día (panel Hoy) */
-.ag-dia{margin-top:28px;padding:18px;border-radius:24px;background:var(--ag-tinta);color:var(--ag-crema);box-shadow:var(--sombra-2);display:grid;gap:8px}
-.ag-dia-cab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}.ag-dia-cab small{color:rgba(244,242,245,.55);font-size:12.5px}.ag-dia-cab b{font-size:15px}
-.ag-dia-f{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
-.ag-dia-f .h{font-weight:700;font-variant-numeric:tabular-nums;width:44px;flex:none}.ag-dia-f .t{min-width:0;flex:1}.ag-dia-f .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ag-dia-f .t small{color:rgba(244,242,245,.6);font-size:12.5px}
-.ag-dia-f .vino{flex:none;font-size:12.5px;font-weight:700;color:#9fd8b8}.ag-dia-f.hecha{opacity:.72}
-.ag-dia-f .acc{display:flex;gap:5px;flex:none}.ag-dia-f .acc i{display:grid;place-items:center;min-width:30px;height:30px;padding:0 8px;border-radius:10px;background:rgba(255,255,255,.1);font-style:normal;font-weight:700;font-size:12.5px}.ag-dia-f .acc .wa{background:rgba(197,155,217,.18);color:var(--ag-morado-c)}
+.ag-dia{margin-top:30px;padding:18px;border-radius:24px;background:var(--card);border:1px solid var(--line);display:grid;gap:8px}
+.ag-dia-cab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}.ag-dia-cab small{color:var(--fg-2);font-size:12.5px}.ag-dia-cab b{font-size:15px}
+.ag-dia-f{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:16px;background:var(--bg-2)}
+.ag-dia-f .h{font-weight:700;font-variant-numeric:tabular-nums;width:44px;flex:none}.ag-dia-f .t{min-width:0;flex:1}.ag-dia-f .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ag-dia-f .t small{color:var(--fg-2);font-size:12.5px}
+.ag-dia-f .vino{flex:none;font-size:12.5px;font-weight:700;color:var(--ag-c2)}.ag-dia-f.hecha{opacity:.72}
+.ag-dia-f .acc{display:flex;gap:5px;flex:none}.ag-dia-f .acc i{display:grid;place-items:center;min-width:30px;height:30px;padding:0 8px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-style:normal;font-weight:700;font-size:12.5px}.ag-dia-f .acc .wa{background:color-mix(in srgb,var(--ag-c) 12%,transparent);border-color:transparent;color:var(--ag-c2)}
 @media(max-width:420px){.ag-dia-f .acc .wa{display:none}}
 /* qué incluye */
-.ag-incluye{list-style:none;padding:0;margin:0;display:grid;gap:10px}.ag-incluye li{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:15.5px;line-height:1.45}
-.ag-incluye svg{flex:none;width:19px;height:19px;margin-top:2px;color:var(--ag-morado)}
+.ag-incluye{list-style:none;padding:0;margin:0;display:grid;gap:10px}.ag-incluye li{display:flex;gap:12px;align-items:flex-start;padding:15px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:15.5px;line-height:1.45}
+.ag-incluye svg{flex:none;width:19px;height:19px;margin-top:2px;color:var(--ag-c2)}
 /* comparación */
 .ag-tabla-c{overflow-x:auto;border-radius:22px;border:1px solid var(--line);background:var(--card)}
-.ag-tabla{width:100%;min-width:560px;border-collapse:collapse;font-size:15.5px}.ag-tabla th,.ag-tabla td{padding:16px 18px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.ag-tabla{width:100%;min-width:560px;border-collapse:collapse;font-size:15.5px}.ag-tabla th,.ag-tabla td{padding:18px 20px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
 .ag-tabla thead th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);font-weight:700}.ag-tabla tbody tr:last-child>*{border-bottom:0}
-.ag-tabla tbody th{font-weight:700;white-space:nowrap}.ag-tabla td{color:var(--fg-2)}.ag-tabla .nos{background:color-mix(in srgb,var(--ag-morado) 8%,transparent)}.ag-tabla .nos td{color:var(--fg)}
-.ag-marca-t{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.05em}
+.ag-tabla tbody th{font-weight:700;white-space:nowrap}.ag-tabla td{color:var(--fg-2)}.ag-tabla .nos{background:color-mix(in srgb,var(--ag-c) 8%,transparent)}.ag-tabla .nos td{color:var(--fg)}
+.ag-marca-t{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.03em;color:var(--ag-c2)}
 .ag-nota{color:var(--fg-2);font-size:14px;margin-top:14px;line-height:1.5}
 /* paquete con Vuelve */
-.ag-paq{display:grid;gap:34px;align-items:center}@media(min-width:960px){.ag-paq{grid-template-columns:1.05fr .95fr}}
-.ag-paq-l{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:9px}.ag-paq-l li{display:flex;gap:9px;align-items:flex-start;color:rgba(244,242,245,.85)}.ag-paq-l svg{flex:none;width:19px;height:19px;margin-top:2px;color:var(--ag-morado-c)}
-.ag-pronto{position:relative;padding:26px;border-radius:26px;border:1.5px solid rgba(244,242,245,.18);background:rgba(255,255,255,.03)}
-.ag-pill{display:inline-block;padding:5px 12px;border-radius:999px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;letter-spacing:.02em}
-.ag-pronto-v{display:flex;align-items:center;gap:12px;margin:20px 0 4px;flex-wrap:wrap}.ag-pronto-a{padding:9px 14px;border-radius:14px;background:rgba(159,216,184,.14);color:#9fd8b8;font-weight:700}
-.ag-pronto-f svg{width:22px;height:22px;color:rgba(244,242,245,.5)}.ag-pronto-s{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:14px;background:rgba(200,164,92,.16);color:#f1dfb8}.ag-pronto-s svg{width:22px;height:22px}
-.ag-pronto h3{font-weight:800;font-size:clamp(22px,2.6vw,28px);letter-spacing:-.03em;line-height:1.15;margin:16px 0 0}.ag-pronto p{margin:10px 0 0;color:rgba(244,242,245,.72);line-height:1.55}.ag-pronto p b{color:var(--ag-crema)}
+.ag-paq{display:grid;gap:40px;align-items:center}.ag-paq>*{min-width:0}@media(min-width:960px){.ag-paq{grid-template-columns:1.05fr .95fr;gap:64px}}
+.ag-paq-l{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}.ag-paq-l li{display:flex;gap:10px;align-items:flex-start;color:var(--fg)}.ag-paq-l svg{flex:none;width:19px;height:19px;margin-top:2px;color:var(--ag-c2)}
+.ag-pronto{position:relative;padding:28px;border-radius:26px;border:1px solid var(--line);background:var(--bg-2)}
+.ag-pill{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--ag-c);color:#fff;font-size:12px;font-weight:800;letter-spacing:.02em}
+.ag-pronto-v{display:flex;align-items:center;gap:12px;margin:20px 0 4px;flex-wrap:wrap}.ag-pronto-a{padding:9px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--ag-c2);font-weight:700}
+.ag-pronto-f svg{width:22px;height:22px;color:var(--fg-2)}.ag-pronto-s{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:14px;background:color-mix(in srgb,var(--ag-c) 12%,transparent);color:var(--ag-c2)}.ag-pronto-s svg{width:22px;height:22px}
+.ag-pronto h3{font-weight:800;font-size:clamp(22px,2.6vw,28px);letter-spacing:-.03em;line-height:1.15;margin:16px 0 0}.ag-pronto p{margin:10px 0 0;color:var(--fg-2);line-height:1.55}.ag-pronto p b{color:var(--fg)}
 /* precios */
-.ag-planes{display:grid;gap:18px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
-.ag-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:26px;display:grid;gap:8px}
-.ag-plan.rec{border-color:var(--ag-morado);box-shadow:0 30px 60px -36px rgba(107,42,133,.5)}
-.ag-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.ag-planes{display:grid;gap:20px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.ag-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:28px;display:grid;gap:8px}
+.ag-plan.rec{border-color:var(--ag-c);box-shadow:0 30px 60px -40px var(--ag-c)}
+.ag-sello{position:absolute;top:-13px;left:24px;background:var(--ag-c);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .ag-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.ag-para{color:var(--fg-2);margin:0}
 .ag-precio{margin:6px 0 0}.ag-precio b{font-size:38px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.ag-precio small{color:var(--fg-2)}.ag-anual{margin:0;color:var(--fg-2);font-size:15px}
-.ag-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.ag-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.ag-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ag-morado)}
+.ag-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:9px}.ag-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.ag-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ag-c2)}
 .ag-total{margin:4px 0 12px;font-size:16px}.ag-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.ag #form-agenda .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}`;
+.ag #form-agenda .btn.acento{background:var(--ag-c);color:#fff;box-shadow:0 12px 28px -14px var(--ag-c)}
+/* cierre */
+.ag-cierre{padding-bottom:88px;text-align:center}.ag-cierre .marco{max-width:760px}.ag-cierre p{margin:14px auto 0;font-size:18px;line-height:1.55;color:var(--fg-2);max-width:560px}.ag-cierre .pm-ctas{justify-content:center}
+`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-agenda'); if(!f||!window.fetch) return;

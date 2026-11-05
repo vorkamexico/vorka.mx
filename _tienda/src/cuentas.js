@@ -2,9 +2,10 @@
 // /tienda/cuentas/ → ficha comercial: prueba de 7 días sin tarjeta (vive en la app), plan mensual, preguntas y compra.
 // Se cobra por suscripción (ver suscripciones.js): la app pregunta por RPC (Admin.suscripcionApp(correo, 'cuentas')) si está al corriente.
 // Aquí solo se vende. No es una entidad financiera: no mueve dinero ni otorga crédito (ver /legal/cuentas/).
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
@@ -69,34 +70,31 @@ export async function paginaCuentas(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_CUENTAS, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Cuentas', RUTA_CUENTAS),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Cuentas' },
+  return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Cuentas' },
     titulo: 'Cuentas: administra tus préstamos personales | Prueba 7 días gratis', ruta: RUTA_CUENTAS, imagen: 'https://vorka.mx/assets/tienda/v3/cuentas-og.jpg',
     descripcion: 'Lleva en orden lo que prestas a familiares y amigos: abonos, intereses claros, saldo al día y estados de cuenta en PDF y Excel. Prueba 7 días gratis.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="cu">
-<section class="cu-hero"><div class="marco cu-hero-g">
-  <div>
-    <span class="cu-marca"><span class="cu-logo grande">${V}</span>Cuentas <small>by Vorka</small></span>
-    <h1 class="cu-h1">Lo que prestas, <em>claro y en orden.</em></h1>
-    <p class="cu-lead">Registra el dinero que prestas a tu familia y amigos, cada abono que te hacen y mira al instante cuánto falta, cuánto fue a intereses y cuánto a capital. Sin hojas de cálculo ni pleitos por números.</p>
-    <div class="cu-ctas"><a class="cu-btn" href="${APP}/entrar">Pruébala 7 días gratis ${FLECHA}</a><a class="cu-btn ghost" href="#planes">Ver precio</a></div>
-    <p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>
-    <ul class="cu-chips"><li>${ICONO.check}Sin tarjeta para probar</li><li>${ICONO.candado}No pedimos datos bancarios</li><li>${ICONO.reloj}Lista en 2 minutos</li></ul>
-  </div>
-  <div class="cu-escena">${pantalla}</div>
-</div>
-${navTienda('finanzas')}
-</section>
+${heroMarca('cuentas', {
+  apoyo: 'Registra el dinero que prestas a tu familia y amigos, cada abono que te hacen y mira al instante cuánto falta, cuánto fue a intereses y cuánto a capital. Sin hojas de cálculo ni pleitos por números.',
+  botones: `<a class="pm-btn" href="${APP}/entrar">Pruébala 7 días gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precio</a>`,
+  despues: `<p class="pm-precio"><b>Gratis</b> con 1 préstamo activo${mensual ? ` · más préstamos por ${precio(mensual.prod)} al mes` : ''}</p><p class="t-ya">¿Ya tienes cuenta? <a href="${APP}/">Entra aquí</a></p>`,
+})}
+${indiceProducto('cuentas', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${APP}/entrar">Pruébala gratis</a>`)}
+${seccionQueEs('cuentas', { titulo: 'El registro de lo que prestas, con cada peso explicado.',
+  texto: 'Anotas a quién le prestaste, cuánto y cómo te va a pagar. Cada abono se aplica solo y ves <b>cuánto falta, cuánto fue a intereses y cuánto a capital</b>. Cuentas no presta ni mueve dinero: solo lleva la cuenta, clara para los dos.',
+  para: [['Quien presta a familiares y amigos', '«¿Cuánto me debe? ¿Cuánto ya me pagó?», sin transferencias sueltas ni notas en el celular.'], ['Quien presta con interés', 'Interés simple sobre lo que falta, con la operación de cada tramo para revisarla con calculadora.'], ['Quien presta sin interés', 'Pagos cuando se pueda o cuotas fijas, y siempre a la vista cuánto falta.']] })}
 
-<section class="cu-sec"><div class="marco">
-  <div class="cu-cab"><span class="cu-et">El problema</span><h2>¿Cuánto me debe? ¿Cuánto ya me pagó?</h2><p>Prestar a alguien de confianza es fácil. Lo difícil es llevar la cuenta: transferencias sueltas, notas en el celular y una conversación incómoda cuando los números no cuadran. Cuentas lo deja claro para los dos.</p></div>
+<section class="cu-sec" id="como"><div class="marco cu-como">
+  <div><div class="cu-cab izq"><span class="cu-et">Cómo funciona</span><h2>¿Cuánto me debe? ¿Cuánto ya me pagó?</h2><p>Prestar a alguien de confianza es fácil. Lo difícil es llevar la cuenta: transferencias sueltas, notas en el celular y una conversación incómoda cuando los números no cuadran. Cuentas lo deja claro para los dos.</p></div>
   <ol class="cu-pasos">${[['Registra a la persona', 'Su nombre y cómo contactarla. Nada de cuentas bancarias.'], ['Crea el préstamo', 'Cuánto, cuándo y cómo se paga: con o sin interés, libre o en cuotas fijas.'],
-    ['Anota cada transferencia', 'Al recibir un abono, lo registras y ves en qué se aplicó antes de guardarlo.'], ['Comparte el estado de cuenta', 'Un PDF, un Excel o un enlace de solo lectura para que los dos vean lo mismo.']].map(([t, d], k) => `<li><span class="cu-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
+    ['Anota cada transferencia', 'Al recibir un abono, lo registras y ves en qué se aplicó antes de guardarlo.'], ['Comparte el estado de cuenta', 'Un PDF, un Excel o un enlace de solo lectura para que los dos vean lo mismo.']].map(([t, d], k) => `<li><span class="cu-num">0${k + 1}</span><div><b>${t}</b><p>${d}</p></div></li>`).join('')}</ol></div>
+  <div class="cu-escena">${pantalla}</div>
 </div></section>
 
-<section class="cu-sec cu-osc"><div class="marco cu-dos">
+<section class="cu-sec suave"><div class="marco cu-dos">
   <div class="cu-cab izq"><span class="cu-et">Números que se explican</span><h2>Cada peso, con su explicación.</h2><p>Nada de cajas negras. Cuentas usa interés simple sobre lo que falta por pagar y te muestra la operación de cada tramo, para que cualquiera la revise con calculadora.</p></div>
   <div class="cu-calc" role="img" aria-label="Ejemplo de cálculo de un abono">
     <small>Ejemplo · abono del 15 de agosto</small>
@@ -109,7 +107,7 @@ ${navTienda('finanzas')}
   </div>
 </div></section>
 
-<section class="cu-sec"><div class="marco">
+<section class="cu-sec" id="incluye"><div class="marco">
   <div class="cu-cab"><span class="cu-et">Lo que incluye</span><h2>Hecho para préstamos entre personas de confianza.</h2></div>
   <ul class="cu-ben">${[[ICONO.calc, 'Pagos flexibles o cuotas', 'Abonos cuando se pueda, o una tabla de pagos con fechas fijas. Si te pagan de más, eliges si termina antes o baja la cuota.'],
     [ICONO.doc, 'Estado de cuenta', 'Historial con cada entrega, abono, interés y saldo. Descárgalo en PDF o Excel a cualquier fecha.'],
@@ -151,90 +149,79 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Cuentas', intro: `¿Aún no la p
 
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/cuentas/">Condiciones de Cuentas</a> · <a href="/legal/cuentas/privacidad/">Aviso de privacidad</a> · Cuentas · by Vorka México</p>' })}
+<section class="pm-sec cu-cierre" style="--pm:${colorDe('cuentas')}"><div class="marco"><h2 class="pm-h2">Gratis con 1 préstamo. Para más, un plan con todo.</h2><p>Los primeros 7 días puedes llevar los que quieras para probar. Entras con tu correo; no pedimos tarjeta.</p><div class="pm-ctas"><a class="pm-btn" href="${APP}/entrar">Pruébala 7 días gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'finanzas')}
 </div>`,
   });
 }
 
-const CSS = `
-.cu{--cu-tinta:#0f0b12;--cu-morado:#6b2a85;--cu-morado-c:#c79be0;--cu-h1:#4a1660;--cu-h2:#7a3497;--cu-h3:#a45bc0;--cu-crema:#f6f4f7}
-[data-tema="oscuro"] .cu{--cu-morado:#c79be0}
-.cu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--cu-morado);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -12px rgba(107,42,133,.7);transition:transform .2s var(--ease),background .2s}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+/* Estilo de marca (portadas v4): blanco, tinta y el color de Cuentas; sin fondos oscuros */
+.cu{--cu-c:#0E6F78;--cu-c2:#0E6F78;--morado:#0E6F78}
+[data-tema="oscuro"] .cu{--cu-c2:color-mix(in srgb,#0E6F78 55%,#fff);--morado:var(--cu-c2)}
+/* en oscuro, los acentos de las secciones de marca se aclaran para leerse bien */
+[data-tema="oscuro"] .pm-et:not(.gris),[data-tema="oscuro"] .pm-grande b{color:color-mix(in srgb,var(--pm) 55%,#fff)}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.cu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--cu-c);color:#fff;font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 12px 28px -14px var(--cu-c);transition:transform .2s var(--ease)}
 .cu-btn:hover{transform:translateY(-1px)}.cu-btn svg{width:17px;height:17px}
-.cu-hero .cu-btn:not(.ghost){background:#fff;color:var(--cu-h1)}
-.cu-btn.ghost{background:rgba(255,255,255,.08);color:var(--cu-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}.cu-btn.ghost:hover{background:rgba(255,255,255,.14)}
-.cu-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.cu-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
-/* portada */
-.cu-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;color:var(--cu-crema);
-  background:radial-gradient(60% 80% at 85% 20%,var(--cu-h3) 0%,transparent 60%),linear-gradient(150deg,var(--cu-h1),var(--cu-h2))}
-.cu-hero::after{content:"";position:absolute;right:-6%;bottom:-18%;width:min(60vw,640px);aspect-ratio:1;opacity:.1;z-index:-1;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='69 225 940 909'%3E%3Cpath fill='%23fff' d='M69 226H311L652 877L526 1133Z'/%3E%3Cpath fill='%23fff' d='M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z'/%3E%3C/svg%3E") no-repeat center/contain}
-.cu-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.cu-hero-g>*{min-width:0}
-@media(min-width:960px){.cu-hero-g{grid-template-columns:1.1fr .9fr}}
-.cu-marca{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em}.cu-marca small{font-weight:500;font-size:14px;opacity:.7;letter-spacing:0}
-.cu-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--cu-morado);color:#fff}.cu-logo svg{width:15px;height:15px}
-.cu-logo.grande{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--cu-h1)}.cu-logo.grande svg{width:21px;height:21px}
-.cu-h1{font-weight:800;font-size:clamp(42px,6.4vw,78px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:12ch;text-wrap:balance}.cu-h1 em{font-style:normal;color:#ecd6f7}
-.cu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:#fff;max-width:34em}
-.cu-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.cu-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(246,244,247,.78)}
-.cu-chips li{display:inline-flex;align-items:center;gap:7px}.cu-chips svg{width:18px;height:18px;color:#ecd6f7}
-.cu-hero .t-nav-tienda{margin-top:8px}.cu-hero .t-nav-tienda a{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#F6F4F7}.cu-hero .t-nav-tienda a[aria-current]{background:#fff;border-color:#fff;color:var(--cu-h1)}
-.cu-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
+.cu-btn.ghost,.cu-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.cu-btn.ghost:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
 /* el celular con la app */
-.cu-escena{justify-self:center;width:min(100%,340px);padding:10px 0 30px}
-.cu-cel{position:relative;padding:12px;border-radius:52px;background:#16101a;box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(255,255,255,.12)}
+.cu-escena{justify-self:center;width:min(100%,330px)}
+.cu-cel{position:relative;padding:12px;border-radius:52px;background:#16101a;box-shadow:0 40px 80px -40px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(255,255,255,.12)}
 .cu-isla{position:absolute;top:24px;left:50%;width:90px;height:26px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
 .cu-pant{border-radius:41px;overflow:hidden;background:#0c0a0d;padding:58px 14px 18px;color:#f4f1f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
 .cu-app-top{display:flex;align-items:center;gap:8px;font-size:15px;margin:0 2px 12px}
-.cu-tarj{position:relative;overflow:hidden;border-radius:22px;padding:16px;background:radial-gradient(120% 140% at 100% 0%,var(--cu-h3),transparent 55%),linear-gradient(135deg,#2e0d3d,#5a2272)}
+.cu-logo{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--cu-c);color:#fff}.cu-logo svg{width:15px;height:15px}
+.cu-tarj{position:relative;overflow:hidden;border-radius:22px;padding:16px;background:linear-gradient(135deg,#0A4E55,#0E6F78)}
 .cu-q{display:flex;gap:10px;align-items:center}.cu-q b{display:block;font-size:14.5px}.cu-q small{display:block;font-size:11.5px;opacity:.75}
 .cu-av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);font-size:12px;font-weight:800}
 .cu-rot{display:block;margin-top:16px;font-size:12px;opacity:.82}.cu-saldo{display:block;font-size:31px;letter-spacing:-.045em;font-weight:800;margin-top:2px}
 .cu-av-b{display:flex;gap:3px;margin-top:14px}.cu-av-b i{flex:1;height:6px;border-radius:2px;background:rgba(255,255,255,.2);transform:skewX(-28deg)}.cu-av-b i.on{background:#fff}
 .cu-ley{display:block;font-size:10.5px;opacity:.78;margin-top:7px}
 .cu-rap{display:flex;justify-content:space-around;margin:16px 0 12px;font-size:10.5px;font-weight:600;text-align:center}
-.cu-rap span{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px}.cu-rap i{width:42px;height:42px;border-radius:50%;background:#1e1a21}.cu-rap i.pri{background:#8e3fb3}
+.cu-rap span{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px}.cu-rap i{width:42px;height:42px;border-radius:50%;background:#1e1a21}.cu-rap i.pri{background:#0E6F78}
 .cu-movs{border-radius:18px;background:#17141a;padding:2px 12px}.cu-movs div{display:flex;align-items:center;gap:10px;padding:10px 0}.cu-movs div+div{border-top:1px solid #26222a}
 .cu-movs i{width:30px;height:30px;border-radius:50%;background:#17291f;flex:none}.cu-movs span{flex:1;min-width:0}.cu-movs b{display:block;font-size:12.5px}.cu-movs small{display:block;font-size:10.5px;color:#a89fad}.cu-movs em{font-style:normal;font-size:12.5px;font-weight:700;color:#5cc18c}
 /* secciones */
-.cu-sec{padding:clamp(56px,8vw,104px) 0}.cu-sec.suave{background:var(--bg-2)}
-.cu-osc{background:var(--cu-tinta);color:var(--cu-crema)}
-.cu-cab{max-width:700px;margin:0 auto 38px;text-align:center}.cu-cab.izq{text-align:left;margin:0}
-.cu-et{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cu-morado)}.cu-osc .cu-et{color:var(--cu-morado-c)}
-.cu-et::before{content:"";width:4px;height:14px;border-radius:1px;background:currentColor;transform:skewX(-28deg)}
-.cu-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.03;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.cu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.cu-osc .cu-cab p{color:rgba(246,244,247,.74)}
-.cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
-.cu-pasos li{padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line)}
-.cu-num{display:block;font-weight:800;font-size:15px;color:var(--cu-morado);letter-spacing:.04em}.cu-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.cu-pasos p{margin:6px 0 0;color:var(--fg-2);line-height:1.5}
-.cu-dos{display:grid;gap:40px;align-items:center}@media(min-width:980px){.cu-dos{grid-template-columns:1fr 1fr}}
-.cu-calc{padding:24px;border-radius:26px;background:#1a1520;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-variant-numeric:tabular-nums}
-.cu-calc small{color:rgba(246,244,247,.55);font-size:12.5px}
+.cu-sec{padding:clamp(64px,9vw,112px) 0;scroll-margin-top:54px}.cu-sec.suave{background:var(--bg-2)}
+.cu-cab{max-width:700px;margin:0 auto 44px;text-align:center}.cu-cab.izq{text-align:left;margin:0 0 32px}
+.cu-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cu-c2)}
+.cu-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.04em;margin:10px 0 0;text-wrap:balance}
+.cu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+.cu-como{display:grid;gap:48px;align-items:center}.cu-como>*{min-width:0}@media(min-width:960px){.cu-como{grid-template-columns:1.15fr .85fr;gap:64px}}
+.cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:22px}
+.cu-pasos li{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.cu-num{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--cu-c) 12%,transparent);font-weight:800;font-size:14px;color:var(--cu-c2)}
+.cu-pasos b{display:block;font-size:19px;letter-spacing:-.02em;padding-top:8px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2);line-height:1.5}
+.cu-dos{display:grid;gap:44px;align-items:center}.cu-dos>*{min-width:0}@media(min-width:980px){.cu-dos{grid-template-columns:1fr 1fr;gap:64px}}
+.cu-calc{padding:26px;border-radius:26px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.cu-calc small{color:var(--fg-2);font-size:12.5px}
 .cu-linea{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-size:16px}.cu-linea b{font-weight:700}
-.cu-linea.sub{margin-top:6px;font-size:14.5px;color:rgba(246,244,247,.7)}.cu-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);font-size:19px}.cu-linea.total b{color:#ecd6f7;font-weight:800}
-.cu-form{margin:6px 0 0;padding-left:12px;border-left:3px solid var(--cu-h2);font-size:13.5px;color:rgba(246,244,247,.66)}
-.cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
-.cu-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
-.cu-ben svg{width:42px;height:42px;padding:10px;border-radius:50%;background:color-mix(in srgb,var(--cu-morado) 12%,transparent);color:var(--cu-morado)}
-.cu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.cu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
-.cu-aviso{max-width:720px;margin:28px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
+.cu-linea.sub{margin-top:6px;font-size:14.5px;color:var(--fg-2)}.cu-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:19px}.cu-linea.total b{color:var(--cu-c2);font-weight:800}
+.cu-form{margin:6px 0 0;padding-left:12px;border-left:3px solid var(--cu-c);font-size:13.5px;color:var(--fg-2)}
+.cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.cu-ben li{padding:24px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
+.cu-ben svg{width:42px;height:42px;padding:10px;border-radius:12px;background:color-mix(in srgb,var(--cu-c) 12%,transparent);color:var(--cu-c2)}
+.cu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:14px}.cu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.cu-aviso{max-width:720px;margin:32px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
 /* precio */
-.cu-planes{display:grid;gap:18px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
+.cu-planes{display:grid;gap:20px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
 .cu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:28px;display:grid;gap:8px}
-.cu-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.cu-sello{position:absolute;top:-13px;left:24px;background:var(--cu-c);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .cu-elige{border:0;padding:0;margin:0 0 6px}.cu-elige legend{font-weight:650;font-size:14px;margin-bottom:8px;padding:0}
 .cu-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}
-.cu-op input{margin-top:3px;accent-color:var(--cu-morado)}.cu-op b{display:block;font-size:15px}.cu-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
-.cu-op:has(input:checked){border-color:var(--cu-morado);background:color-mix(in srgb,var(--cu-morado) 7%,transparent)}
-.cu-plan.rec{border-color:var(--cu-morado);box-shadow:0 30px 60px -36px rgba(107,42,133,.55)}
+.cu-op input{margin-top:3px;accent-color:var(--cu-c)}.cu-op b{display:block;font-size:15px}.cu-op small{display:block;color:var(--fg-2);font-size:13px;margin-top:2px}
+.cu-op:has(input:checked){border-color:var(--cu-c);background:color-mix(in srgb,var(--cu-c) 7%,transparent)}
+.cu-plan.rec{border-color:var(--cu-c);box-shadow:0 30px 60px -40px var(--cu-c)}
 .cu-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.cu-para{color:var(--fg-2);margin:0}
 .cu-precio{margin:6px 0 0}.cu-precio b{font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.cu-precio small{color:var(--fg-2)}
-.cu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.cu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--cu-morado)}
+.cu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:9px}.cu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.cu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--cu-c2)}
 .cu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .cu-total{margin:4px 0 12px;font-size:16px}.cu-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.cu #form-cuentas .btn.acento{background:var(--cu-morado);color:#fff;box-shadow:0 12px 28px -12px rgba(107,42,133,.7)}
-/* en oscuro el morado se aclara: el texto del botón pasa a tinta oscura para seguir en ≥ 4.5:1 */
-[data-tema="oscuro"] .cu #form-cuentas .btn.acento{color:#141216}`;
+.cu #form-cuentas .btn.acento{background:var(--cu-c);color:#fff;box-shadow:0 12px 28px -14px var(--cu-c)}
+/* cierre */
+.cu-cierre{padding-bottom:88px;text-align:center}.cu-cierre .marco{max-width:760px}.cu-cierre p{margin:14px auto 0;font-size:18px;line-height:1.55;color:var(--fg-2);max-width:560px}.cu-cierre .pm-ctas{justify-content:center}
+`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-cuentas'); if(!f||!window.fetch) return;
