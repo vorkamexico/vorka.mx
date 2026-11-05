@@ -5,6 +5,7 @@ import { pagina, aviso, esc } from './paginas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { SOPORTE } from './correo.js';
+import { WA_PAGINA_WEB } from './paginaweb.js';
 
 // Si no llegó nada (p. ej. el correo se escribió mal al pagar), que sepan a dónde escribir
 const SIN_CORREO = ` Si aun así no te llega nada, escríbenos a <a href="mailto:${SOPORTE.correo}">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}?text=${encodeURIComponent('Hola Vorka, hice una compra en la tienda y no me llegó el correo.')}" target="_blank" rel="noopener">WhatsApp</a> y lo resolvemos.`;
@@ -64,6 +65,9 @@ function bloques(o, v) {
     : acc && ['test-vocacional', 'que-proyecto-social'].includes(acc.app) && acc.tipo !== 'grupo' ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Tu reporte está desbloqueado',
       texto: `También te mandamos la liga a <b>${esc(correoOculto(o.email))}</b> (no vence). Si contestaste en este navegador, ábrelo ya:`,
       extra: `<div class="botones t-centro"><a class="btn tinta" href="/${esc(acc.app)}/ver/${esc(o.id)}">Ver mi reporte ${FLECHA}</a></div><p class="t-nota">¿No te llegó el correo? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.${SIN_CORREO}</p>` }
+    : acc?.app === 'pagina-web' ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Empecemos tu página',
+      texto: `Tu suscripción ya está activa. Escríbenos por WhatsApp para empezar: te pedimos tu logo, fotos y textos, y te pasamos el costo de tu dominio para transferirlo. También te lo mandamos a <b>${esc(correoOculto(o.email))}</b>.`,
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="${WA_PAGINA_WEB}" target="_blank" rel="noopener">Escribir por WhatsApp ${FLECHA}</a></div>` }
     : acc ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
       texto: `Enviamos tu acceso a <b>${esc(correoOculto(o.email))}</b>. Ábrelo y toca <b>${esc(acc.boton || 'Entrar')}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
       extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.${SIN_CORREO}</p>` }
@@ -101,7 +105,7 @@ const SONDEO = `(function(){
 
 // Bienvenida al pagar (no en regalos): el nombre de lo que compró, su liga de Puntos (gana al recomendar) y a quién apoya Vorka.
 // Los puntos se ganan recomendando, no comprando: por eso no se llama "cashback".
-const PRODUCTOS_APP = { brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', cuentas: 'Cuentas', vende: 'Vende', clara: 'Clara', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', 'simulador-prepa-ug': 'el Simulador prepa UG', ruta: 'Ruta de Impacto', liderazgo: 'la Evaluación de liderazgo Vorka' };
+const PRODUCTOS_APP = { 'pagina-web': 'Tu página web', brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', cuentas: 'Cuentas', vende: 'Vende', clara: 'Clara', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', 'simulador-prepa-ug': 'el Simulador prepa UG', ruta: 'Ruta de Impacto', liderazgo: 'la Evaluación de liderazgo Vorka' };
 export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO · Juventudes Impactando México A.C.</a>, la red de jóvenes que transforma sus comunidades en 121 municipios del país.';
 const bienvenida = o => {
   const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;

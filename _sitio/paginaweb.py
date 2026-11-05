@@ -7,6 +7,7 @@ import json
 from partes import *
 
 PRECIO = '$299'
+TIENDA = '/tienda/pagina-web/'   # suscripción en línea (Stripe), _tienda/src/paginaweb.js
 WA_PLAN = 'Hola Vorka, quiero mi página web de $299 al mes.'
 INCLUYE = [
     ('globo', 'Hospedaje y candado de seguridad', 'Tu página en línea con certificado SSL (HTTPS), sin pagar servidor aparte.'),
@@ -14,20 +15,21 @@ INCLUYE = [
     ('rayo', 'Botón de WhatsApp y formulario', 'Tus clientes te escriben directo desde la página.'),
     ('pin', 'Que Google te encuentre', 'Alta en Google Search Console y la liga en tu Perfil de Negocio de Google.'),
 ]
-PASOS = [('Platicamos', 'Nos escribes por WhatsApp y nos cuentas de tu negocio.'),
+PASOS = [('Te suscribes', 'En línea con tu tarjeta, y nos escribes por WhatsApp para contarnos de tu negocio.'),
          ('Diseñamos', 'Armamos tu página con tu logo, tus fotos y tus textos. Si no los tienes listos, te ayudamos a definirlos.'),
          ('Revisas', 'Te la mostramos antes de publicarla y la ajustamos contigo.'),
          ('Publicamos', 'En tu dominio, con candado de seguridad y lista para compartir.')]
 CONDICIONES = [
     ('Plan de 12 meses', f'El diseño no tiene costo porque el plan es de 12 meses ({PRECIO} al mes). Si cancelas antes, pagas los meses que falten.'),
-    ('Tu dominio', 'Lo registramos por ti y te cobramos su costo exacto una vez al año. Si un día dejas el plan, te lo transferimos.'),
+    ('Tu dominio', 'Lo registramos por ti; su costo exacto se paga una vez al año por transferencia, y te pasamos los datos por WhatsApp. Si un día dejas el plan, te lo transferimos.'),
     ('Cambios más grandes', 'Secciones nuevas, tienda en línea o sistemas a la medida se cotizan aparte.'),
 ]
 PREGUNTAS_WEB = [
-    ('¿Cuánto cuesta en total?', f'{PRECIO} MXN al mes más el costo de tu dominio, que te cobramos una vez al año. El diseño no tiene costo con el plan de 12 meses.'),
-    ('¿Cuánto cuesta el dominio?', 'Depende de la terminación (.mx, .com.mx, .com…) y del registrador. Antes de registrarlo te decimos el costo exacto.'),
+    ('¿Cuánto cuesta en total?', f'{PRECIO} MXN al mes, que se cobran en tu tarjeta como suscripción, más el costo de tu dominio, que se paga una vez al año por transferencia. El diseño no tiene costo con el plan de 12 meses.'),
+    ('¿Cómo me suscribo?', 'En línea, en vorka.mx/tienda/pagina-web, con tarjeta de crédito o débito. Al terminar el pago te llega un botón para escribirnos por WhatsApp y empezar tu página.'),
+    ('¿Cuánto cuesta el dominio?', 'Depende de la terminación (.mx, .com.mx, .com…) y del registrador. Antes de registrarlo te decimos el costo exacto por WhatsApp y lo pagas por transferencia.'),
     ('¿El dominio queda a mi nombre?', 'Lo registramos nosotros para darte el servicio completo. Si dejas el plan, te lo transferimos para que lo sigas usando.'),
-    ('¿Qué pasa si quiero cancelar?', 'El plan es de 12 meses porque el diseño corre por nuestra cuenta. Si cancelas antes, pagas los meses que falten; después de los 12 meses sigues mes con mes.'),
+    ('¿Qué pasa si quiero cancelar?', 'El plan es de 12 meses porque el diseño corre por nuestra cuenta. Si cancelas antes, pagas los meses que falten; después de los 12 meses sigues mes con mes. Tu tarjeta y tu suscripción se administran en vorka.mx/tienda/suscripcion.'),
     ('¿Qué cuenta como cambio pequeño?', 'Cambiar textos, fotos, precios, horarios o datos de contacto. Incluye hasta 3 al mes; lo que sea más grande, como secciones nuevas o una tienda en línea, se cotiza aparte.'),
     ('¿Puedo vender en línea desde mi página?', 'La página del plan es para presentar tu negocio y que te escriban. Si necesitas tienda en línea con carrito y cobro, la cotizamos aparte en Apps y páginas a la medida.'),
 ]
@@ -89,15 +91,15 @@ def pagina_web():
       <span class="etiqueta">Tu página web</span>
       <h1 class="h1" style="margin-top:18px">Tu página web, <span class="metal">lista y cuidada.</span></h1>
       <p class="lead">La diseñamos, la publicamos y la mantenemos por ti. Tú pagas una renta de {PRECIO} al mes y tu dominio; el diseño corre por nuestra cuenta.</p>
-      <div class="botones"><a class="btn tinta" href="{wa(WA_PLAN)}" target="_blank" rel="noopener">Quiero mi página {FLECHA}</a><a class="btn blanco" href="#incluye">Qué incluye</a></div>
+      <div class="botones"><a class="btn tinta" href="{TIENDA}">Suscribirme en línea {FLECHA}</a><a class="btn blanco" href="{wa(WA_PLAN)}" target="_blank" rel="noopener">Platicar por WhatsApp</a></div>
     </div>
     <aside class="pw-precio rv" aria-label="Precio del plan">
       <span class="etiqueta">Plan Tu página web</span>
       <div class="pw-cifra"><b>{PRECIO}</b><span>MXN al mes</span></div>
-      <p class="pw-mas">+ tu dominio, a su costo, una vez al año. Diseño sin costo con el plan de 12 meses.</p>
+      <p class="pw-mas">Suscripción mensual con tarjeta. + tu dominio, a su costo, una vez al año por transferencia. Diseño sin costo con el plan de 12 meses.</p>
       <ul class="pw-lista">{incluye_lista}</ul>
-      <a class="btn plata" href="{wa(WA_PLAN)}" target="_blank" rel="noopener">Escríbenos por WhatsApp {FLECHA}</a>
-      <p class="pw-nota">O déjanos tus datos abajo y te escribimos.</p>
+      <a class="btn plata" href="{TIENDA}">Suscribirme {FLECHA}</a>
+      <p class="pw-nota">Pago seguro con Stripe. ¿Dudas? <a href="{wa(WA_PLAN)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">WhatsApp</a></p>
     </aside>
   </div>
 </section>

@@ -59,7 +59,7 @@ export const S = { hacer: 'como-hacer-una-pagina-web', programar: 'como-programa
 // Un solo llamado final: el plan «Tu página web» de Vorka México, con sus condiciones, y el puente con el formulario corto
 const LLAMADO = {
   plan: llamadoFinal('Tu página web con Vorka', '¿Prefieres que te la hagamos?',
-    `Vorka México hace y mantiene la página de tu negocio por ${PLAN_WEB.precio}, más el costo del dominio. El diseño corre por nuestra cuenta con el plan de ${PLAN_WEB.plazo}. Incluye hospedaje con certificado de seguridad (HTTPS), hasta 3 cambios pequeños al mes, botón de WhatsApp y formulario de contacto, y el alta para que Google la encuentre. Nosotros registramos tu dominio y te cobramos su costo una vez al año; si un día te vas, te lo transferimos.`,
+    `Vorka México hace y mantiene la página de tu negocio por ${PLAN_WEB.precio}, como suscripción que pagas en línea con tarjeta, más el costo del dominio. El diseño corre por nuestra cuenta con el plan de ${PLAN_WEB.plazo}. Incluye hospedaje con certificado de seguridad (HTTPS), hasta 3 cambios pequeños al mes, botón de WhatsApp y formulario de contacto, y el alta para que Google la encuentre. Nosotros registramos tu dominio; su costo se paga una vez al año por transferencia y, si un día te vas, te lo transferimos.`,
     PLAN_WEB.ruta, 'Quiero mi página') +
     puenteServicios({ marcar: ['web'], texto: 'Cuéntanos de tu negocio y te decimos cómo quedaría tu página. También hacemos tiendas en línea y sistemas a la medida.' }),
 };

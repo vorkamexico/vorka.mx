@@ -116,6 +116,7 @@ const APPS_TIENDA = {
   vuelve: { nombre: 'Vuelve · Tarjetas de lealtad', precio: p => `${precio(p)} al mes` },
   vende: { nombre: 'Vende · Pedidos y cobros', precio: () => 'Empieza gratis' },   // corto, en un renglón (el precio de Pro está en su ficha)
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
+  'pagina-web': { nombre: 'Tu página web · Diseño y mantenimiento', precio: p => `${precio(p)} al mes` },
   clara: { nombre: 'Clara · Tus tarjetas y tu dinero', precio: () => 'Empieza gratis' },   // gratis con 1 tarjeta (el precio de Pro está en su ficha)
 };
 // Portada v3 por app (simulador/portadas_v3.py) para los productos que todavía no la tienen en D1 (migración 0062):

@@ -88,6 +88,13 @@ describe('Puntos por % del nivel del semestre', () => {
     expect(movs('ana@mail.com')[0]).toMatchObject({ pct: 40, puntos: 60, multiplicador: 2 });   // 40% de $149
   });
 
+  it('Tu página web (suscripción de $299) da puntos a quien la recomienda, como las demás', async () => {
+    await entrar('ana@mail.com');
+    const code = await codigoDe(env, 'ana@mail.com');
+    await compraPagada('negocio@mail.com', code, 'pagina-web-mensual');
+    expect(movs('ana@mail.com')[0]).toMatchObject({ pct: 10, puntos: 30 });   // 10% de $299, redondeado
+  });
+
   it('renovaciones de suscripción dan puntos con el % del nivel, hasta la factura 12, sin subir de nivel y sin duplicar', async () => {
     await entrar('ana@mail.com');
     const code = await codigoDe(env, 'ana@mail.com');

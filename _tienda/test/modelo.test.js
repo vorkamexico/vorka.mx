@@ -24,8 +24,9 @@ describe('modelo de datos', () => {
     expect(activos.every(p => p.contenido?.acceso)).toBe(true);
     // los demás niveles de Cupo se venden en /tienda/cupo/ sin listarse; Cuentas entra activo (decisión 2026-10-22);
     // los reportes de los tests entran activos por encargo del dueño (migración 0058; las licencias de grupo, ocultas);
-    // los portales inmobiliarios entran a la venta por decisión del usuario (2-11-2026; Broker, Inmobiliaria y usuario extra, ocultos)
-    expect(activos.map(p => p.slug)).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual']);
+    // los portales inmobiliarios entran a la venta por decisión del usuario (2-11-2026; Broker, Inmobiliaria y usuario extra, ocultos);
+    // Tu página web (suscripción de $299) entra a la venta por decisión del usuario (5-11-2026, migración 0070)
+    expect(activos.map(p => p.slug).sort()).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual'].sort());
   });
 
   it('crea la orden con el precio de la base y el afiliado activo', async () => {
