@@ -10,6 +10,8 @@ import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 const OS = 'https://os.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -87,11 +89,12 @@ ${heroMarca('cupo', {
   botones: `<a class="pm-btn" href="${OS}/cupo/#/nuevo">Crear mi evento gratis ${FLECHA}</a><a class="pm-btn sec" href="#planes">Ver precios</a>`,
   despues: `<p class="pm-precio"><b>Gratis hasta 30 personas.</b> Cupo Pro desde ${desde ? precio({ precio_centavos: desde }) : '$99 MXN'} por evento · sin comisión por tu cover · sin mensualidades</p><p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/cupo/#entrar">Entra aquí</a></p>`,
 })}
-${indiceProducto('cupo', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['ejemplos', 'Ejemplos'], ['planes', 'Precios'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${OS}/cupo/#/nuevo">Crear mi evento gratis</a>`)}
+${indiceProducto('cupo', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['como', 'Cómo funciona'], ['ejemplos', 'Ejemplos'], ['planes', 'Precios'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${OS}/cupo/#/nuevo">Crear mi evento gratis</a>`)}
 ${seccionQueEs('cupo', { titulo: 'La página de tu evento, con registro y entrada con QR.',
   texto: 'Armas tu evento, compartes tu liga y la gente aparta su lugar (y el de sus acompañantes) en segundos, sin cuenta. <b>En la puerta escaneas su QR</b>, aunque no haya señal, y sabes quién llegó. Gratis hasta 30 personas.',
   para: [['Fiestas, posadas y Halloween', 'Saber cuántos van y cobrar tu cover sin comisión.'], ['Talleres, comunidades y eventos de negocio', 'Registro con tus propias preguntas (como empresa o puesto) y tu lista en Excel.'],
     ['Antros, conciertos y festivales', 'Ligas para tus RPs con ranking y check-in con tu equipo en la puerta.']] })}
+${seccionDemo('cupo', demoDe('cupo'))}
 
 <section class="t-sec" id="como"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Así de fácil</span><h2 class="h2">De la idea a la puerta, desde tu celular</h2></div>

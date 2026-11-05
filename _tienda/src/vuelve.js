@@ -9,13 +9,14 @@ import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, C
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
-import qrcode from './vendor/qrcode.js';
+import { seccionDemo } from './demos/marco.js';
+import { demoDe } from './demos/index.js';
 
 const OS = 'https://os.vorka.mx';
-const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
-export const RUTA_VUELVE = '/tienda/vuelve/';
 // El negocio de ejemplo: el dueño saca una tarjeta en su celular y simula visitas (lo arma Vorka OS, se borra solo al día)
 const DEMO = 'https://vorka.mx/vuelve/demo';
+const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
+export const RUTA_VUELVE = '/tienda/vuelve/';
 // "Te lo dejamos listo": videollamada de 15 minutos con el equipo, gratis para los primeros negocios
 const WA_LISTO = `https://wa.me/528117804869?text=${encodeURIComponent('Hola, quiero que me ayuden a dejar listo Vuelve en una videollamada de 15 minutos.')}`;
 const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', nombre: 'Mensual', cada: 'al mes' }, { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
@@ -71,12 +72,6 @@ async function deOS(env, ruta) {
     const p = (env.OS ? env.OS.fetch(new Request(`${OS}${ruta}`)) : fetch(`${OS}${ruta}`)).then(r => r.ok ? r.json() : null);
     return await Promise.race([p, new Promise(res => setTimeout(() => res(null), 1500))]);
   } catch { return null; }
-}
-function qrSvg(texto) {
-  const q = qrcode(0, 'M'); q.addData(texto, 'Byte'); q.make();
-  const n = q.getModuleCount(), m = 2, t = n + m * 2;
-  let d = ''; for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (q.isDark(y, x)) d += `M${x + m} ${y + m}h1v1h-1z`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}" shape-rendering="crispEdges" role="img" aria-label="Código QR de la tarjeta de ejemplo"><rect width="${t}" height="${t}" fill="#fff"/><path d="${d}" fill="#141114"/></svg>`;
 }
 
 // Tarjetas de muestra: las tiras son las reales que pinta Vuelve para el Wallet (assets/tienda/vuelve/tira-*.png)
@@ -144,12 +139,7 @@ ${seccionQueEs('vuelve', { titulo: 'Una tarjeta de sellos que vive en el celular
   <div class="vu-galeria">${MUESTRAS.map(d => `<figure>${pase(d)}<figcaption>${d.pie}</figcaption></figure>`).join('')}</div>
 </div></section>
 
-<section class="vu-sec vu-osc" id="ejemplo"><div class="marco vu-demo">
-  <div class="vu-cab izq"><span class="vu-et">Pruébalo como tu cliente</span><h2>Vive en 20 segundos lo que vivirán tus clientes.</h2>
-    <p>Saca una tarjeta de ejemplo en tu celular, guárdala en tu Wallet y simula visitas: verás cómo se suman los sellos y cómo llega el aviso del premio. Solo te pedimos tu nombre y se borra sola mañana.</p>
-    <div class="vu-ctas"><a class="vu-btn" href="${DEMO}">Sacar mi tarjeta de ejemplo ${FLECHA}</a></div></div>
-  <figure class="vu-demo-qr"><div>${qrSvg(DEMO)}</div><figcaption>¿Estás en la computadora? Escanéalo con la cámara de tu celular.</figcaption></figure>
-</div></section>
+${seccionDemo('vuelve', demoDe('vuelve'), { id: 'ejemplo' })}
 
 <section class="vu-sec vu-osc" id="como"><div class="marco">
   <div class="vu-cab"><span class="vu-et">Cómo funciona</span><h2>Listo hoy. Desde tu celular.</h2></div>
@@ -293,9 +283,6 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .vu-reco{display:inline-block;margin:22px 0 -6px;padding:8px 14px;border-radius:999px;background:rgba(200,164,92,.16);color:#f1dfb8;font-size:15px}.vu-reco b{color:#fff}
-.vu-demo{display:grid;gap:34px;align-items:center}@media(min-width:900px){.vu-demo{grid-template-columns:1.2fr .8fr}}
-.vu-demo-qr{margin:0;justify-self:center;text-align:center;max-width:280px}.vu-demo-qr div{background:#fff;border-radius:22px;padding:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}.vu-demo-qr svg{display:block;width:100%;height:auto}
-.vu-demo-qr figcaption{margin-top:12px;color:rgba(244,242,245,.7);font-size:14.5px}
 .vu-calc-c{display:grid;gap:22px;margin-top:30px}@media(min-width:900px){.vu-calc-c{grid-template-columns:1.1fr .9fr;align-items:start}}
 .vu-calc-f{display:grid;gap:18px;padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line)}.vu-calc-f label{display:grid;gap:8px;font-weight:650;font-size:15.5px}
 .vu-calc-f input[type=number]{font:inherit;font-size:18px;min-height:50px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--fg)}.vu-calc-f input[type=range]{width:100%;accent-color:var(--vu-morado)}
