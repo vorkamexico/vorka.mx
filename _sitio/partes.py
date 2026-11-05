@@ -169,6 +169,7 @@ def pie(publico='general'):
         <li><a href="/servicios/estrategia/">Estrategia y Dirección</a></li>
         <li><a href="/servicios/liderazgo/">Liderazgo y Talento</a></li>
         <li><a href="/servicios/influencia/">Comunicación e Influencia</a></li>
+        <li><a href="/servicios/apps/">Apps y páginas a la medida</a></li>
         <li><a href="/servicios/">Todos los servicios</a></li></ul></div>
       <div><h4>Vorka</h4><ul>
         <li><a href="/nosotros/">Quiénes somos</a></li>
@@ -239,7 +240,7 @@ def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesita
       <p class="lead">Déjanos cuatro datos y te escribimos para platicar, sin costo ni compromiso.</p>
       <ol class="v4-sig">
         <li><b>1</b><span>Nos cuentas en un minuto qué necesitas.</span></li>
-        <li><b>2</b><span>Te escribimos en menos de un día hábil.</span></li>
+        <li><b>2</b><span>Te escribimos en máximo 2 días hábiles.</span></li>
         <li><b>3</b><span>Si encaja, hacemos un diagnóstico de 20 minutos sin costo.</span></li>
       </ol>
       <p class="v4-alt">¿Prefieres WhatsApp? <a href="{wa()}" target="_blank" rel="noopener">Escríbenos al +52 81 1780 4869</a></p>
@@ -258,7 +259,7 @@ def platiquemos(pagina='/', marcar=(), area='', titulo='Cuéntanos qué necesita
       <div class="v4-exito" hidden tabindex="-1">
         <span class="v4-ok">{ICONOS['check']}</span>
         <h3 class="t3">Listo, <span data-nombre></span>. Ya tenemos tus datos.</h3>
-        <p>Te escribimos a <b data-correo></b> en menos de un día hábil. Revisa también tu carpeta de spam.</p>
+        <p>Te escribimos a <b data-correo></b> en máximo 2 días hábiles. Revisa también tu carpeta de spam.</p>
         <p class="v4-folio" hidden>Tu folio: <b data-folio></b></p>
         <p class="v4-opc"><b>Opcional:</b> si quieres llegar con todo listo a la primera llamada, <a href="{e(largo)}">llena el diagnóstico completo</a> (5 pasos).</p>
       </div>

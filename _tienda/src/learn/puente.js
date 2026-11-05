@@ -19,7 +19,7 @@ export function puenteServicios({ pagina = '', texto, marcar = [] }) {
       <span class="etiqueta">Servicios de Vorka México</span>
       <h2 class="t2" id="t-plat">¿Lo hacemos por ti?</h2>
       <p class="lead">${texto}</p>
-      <p class="v4-alt">Déjanos cuatro datos y te escribimos en menos de un día hábil, sin costo ni compromiso. ¿Prefieres WhatsApp? <a href="${WA}" target="_blank" rel="noopener">Escríbenos al +52 81 1780 4869</a></p>
+      <p class="v4-alt">Déjanos cuatro datos y te escribimos en máximo 2 días hábiles, sin costo ni compromiso. ¿Prefieres WhatsApp? <a href="${WA}" target="_blank" rel="noopener">Escríbenos al +52 81 1780 4869</a></p>
     </div>
     <div class="v4-form-caja">
       <form class="v4-form platiquemos" novalidate ${pagina ? `data-pagina="${esc(pagina)}" ` : ''}data-origen="learn">
@@ -35,7 +35,7 @@ export function puenteServicios({ pagina = '', texto, marcar = [] }) {
       <div class="v4-exito" hidden tabindex="-1">
         <span class="v4-ok">${CHECK}</span>
         <h3 class="t3">Listo, <span data-nombre></span>. Ya tenemos tus datos.</h3>
-        <p>Te escribimos a <b data-correo></b> en menos de un día hábil. Revisa también tu carpeta de spam.</p>
+        <p>Te escribimos a <b data-correo></b> en máximo 2 días hábiles. Revisa también tu carpeta de spam.</p>
         <p class="v4-folio" hidden>Tu folio: <b data-folio></b></p>
       </div>
     </div>

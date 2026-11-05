@@ -34,7 +34,7 @@ LEARN_EXAMENES = [('/learn/paa/', 'PAA'), ('/learn/unam/', 'UNAM'), ('/learn/eco
 LEARN_TEMAS = [('/learn/camino/', 'Elegir tu camino'), ('/learn/finanzas/', 'Finanzas personales'), ('/learn/negocio/', 'Negocio pequeño'), ('/learn/apps/', 'Crea tu app')]
 TIENDA = [('/simulador-paa/', 'Simuladores de examen (PAA, UNAM, ECOEMS, prepa UG)'), ('/tienda/brindi/', 'Brindi: invitaciones digitales con QR'),
           ('/tienda/cupo/', 'Cupo: eventos con registro y check-in'), ('/tienda/vuelve/', 'Vuelve: tarjetas de lealtad'), ('/tienda/agenda/', 'Agenda: citas en línea')]
-PASOS = [('Platiquemos', 'Nos dejas cuatro datos o nos escribes por WhatsApp. Te escribimos en menos de un día hábil.'),
+PASOS = [('Platiquemos', 'Nos dejas cuatro datos o nos escribes por WhatsApp. Te respondemos en máximo 2 días hábiles.'),
          ('Diagnóstico sin costo', '20 minutos para entender tu reto y decirte, con claridad, cómo lo resolveríamos.'),
          ('Propuesta a la medida', 'Alcance, equipo, tiempos e inversión, en claro. Medimos contra los objetivos que acordamos.')]
 
@@ -61,9 +61,10 @@ def inicio():
   <div class="marco">
     <span class="etiqueta">Vorka México</span>
     <h1 class="t1" id="t-hero" style="margin-top:18px">Te ayudamos a decidir, ejecutar y hacerte escuchar.</h1>
-    <p class="lead">Somos una consultora de estrategia, liderazgo y comunicación para empresas, gobiernos y organizaciones. También creamos apps para negocios y guías gratuitas en Vorka Learn.</p>
+    <p class="lead">Somos una consultora de estrategia, liderazgo y comunicación que además construye apps y páginas a la medida, para empresas, gobiernos y organizaciones. También tenemos una tienda de apps y guías gratuitas en Vorka Learn.</p>
     <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="/servicios/">Ver servicios</a></div>
-    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Te escribimos en menos de un día hábil</span></div>
+    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Respuesta en máximo 2 días hábiles</span></div>
+    <p class="v4-prueba"><b>150+</b> proyectos en <b>26 estados</b> · <b>40+</b> consultores senior en red activa</p>
   </div>
 </section>
 
@@ -72,7 +73,7 @@ def inicio():
     <h2 class="sr" id="t-rutas">Qué hacemos</h2>
     <div class="v4-rutas">
       <a class="v4-ruta tinta" href="/servicios/"><small>Para organizaciones</small><h3 class="t3">Servicios</h3>
-        <p>Consultoría para empresas, gobiernos y organizaciones que necesitan tomar una decisión importante, fortalecer a su equipo o comunicar mejor.</p>
+        <p>Para empresas, gobiernos y organizaciones que necesitan tomar una decisión importante, fortalecer a su equipo, comunicar mejor o construir su sitio o su app.</p>
         <ul>{servicios_li}</ul><span class="v4-liga">Ver servicios {FLECHA}</span></a>
       <a class="v4-ruta" href="/tienda/"><small>Para tu negocio, evento o examen</small><h3 class="t3">Tienda y apps</h3>
         <p>Herramientas digitales listas para usar, hechas por Vorka.</p>
@@ -86,8 +87,8 @@ def inicio():
 
 <section class="v4-sec suave" id="servicios" aria-labelledby="t-serv">
   <div class="marco" id="momentos">
-    <div class="v4-cab"><span class="etiqueta">Servicios para organizaciones</span><h2 class="t2" id="t-serv">Tres servicios, un mismo equipo.</h2>
-      <p class="lead">Para direcciones generales, consejos, gobiernos, fundaciones y marcas. Empiezas con uno y sumas otro solo si hace falta.</p></div>
+    <div class="v4-cab"><span class="etiqueta">Servicios para organizaciones</span><h2 class="t2" id="t-serv">Cuatro servicios, un mismo equipo.</h2>
+      <p class="lead">Para direcciones generales, consejos, gobiernos, fundaciones, marcas y negocios. Empiezas con uno y sumas otro solo si hace falta.</p></div>
     {tarjetas_servicio()}
     <div id="proceso" style="margin-top:clamp(48px,6vw,72px)">
       <div class="v4-cab"><h2 class="t2" style="font-size:clamp(26px,2.8vw,34px)">Cómo empezamos, en tres pasos.</h2></div>
@@ -124,8 +125,10 @@ def inicio():
         <h3 class="t3">Ciudades base</h3>
         <p>Trabajamos de forma presencial o a distancia en toda la República, con aliados locales.</p>
         <div class="v4-tags quietos">{''.join(f'<span>{c}</span>' for c in CIUDADES)}</div>
+        <div class="v4-cifras"><div><b>150+</b><span>proyectos</span></div><div><b>26</b><span>estados con proyectos</span></div><div><b>180+</b><span>municipios atendidos</span></div><div><b>40+</b><span>consultores senior en red activa</span></div></div>
         <h3 class="t3" style="margin-top:26px">Experiencia en</h3>
         <div class="v4-tags quietos">{''.join(f'<span>{s}</span>' for s in SECTORES)}</div>
+        <p style="margin-top:18px">Formación en Harvard Business School, Tec de Monterrey y ecosistemas de Silicon Valley.</p>
       </div>
       <div class="v4-caja">
         <h3 class="t3">Revista Sparks</h3>
@@ -152,11 +155,11 @@ def inicio():
     sitio_ld = {"@context": "https://schema.org", "@type": "WebSite", "name": "Vorka México", "url": SITIO + "/", "publisher": {"@id": ORG_ID}}
     extra = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (ld, sitio_ld))
     return cabeza('Vorka México: consultoría en estrategia, liderazgo y comunicación',
-                  'Consultora mexicana de estrategia, liderazgo y comunicación para empresas, gobiernos y organizaciones. Además: apps para negocios y guías gratis en Vorka Learn. Platiquemos sin costo.',
+                  'Consultora mexicana de estrategia, liderazgo, comunicación y apps a la medida para empresas, gobiernos y organizaciones. 150+ proyectos en 26 estados. Platiquemos sin costo.',
                   '/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- servicios (índice)
-# En 10 segundos: para quién es, qué resuelve (3 servicios con una línea de resultado), cómo se trabaja (3 pasos) y un CTA.
+# En 10 segundos: para quién es, qué resuelve (4 servicios con una línea de resultado), cómo se trabaja (3 pasos) y un CTA.
 def servicios_hub():
     faq_ld = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in PREGUNTAS]}
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
@@ -168,9 +171,9 @@ def servicios_hub():
     <div class="migas"><a href="/">Inicio</a><span>/</span><span>Servicios</span></div>
     <span class="etiqueta">Servicios</span>
     <h1 class="t1" id="t-hero" style="margin-top:18px">Consultoría para decidir, ejecutar y hacerte escuchar.</h1>
-    <p class="lead">Para empresas, gobiernos, fundaciones y marcas en México que necesitan tomar una decisión importante, fortalecer a su equipo directivo o comunicar mejor.</p>
+    <p class="lead">Para empresas, gobiernos, fundaciones y marcas en México que necesitan tomar una decisión importante, fortalecer a su equipo directivo, comunicar mejor o construir su sitio, su tienda en línea o su app.</p>
     <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#proceso">Cómo trabajamos</a></div>
-    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Te escribimos en menos de un día hábil</span></div>
+    <div class="v4-nota"><span>Diagnóstico de 20 minutos sin costo</span><span>Respuesta en máximo 2 días hábiles</span></div>
   </div>
 </section>
 <section class="v4-sec" aria-labelledby="t-serv" style="padding-top:0">
@@ -197,7 +200,7 @@ def servicios_hub():
 {pie('empresas')}'''
     extra = ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (faq_ld, migas_ld))
     return cabeza('Consultoría en estrategia, liderazgo y comunicación · Vorka México',
-                  'Tres servicios para empresas, gobiernos y organizaciones en México: Estrategia y Dirección, Liderazgo y Talento, Comunicación e Influencia. Diagnóstico de 20 minutos sin costo.',
+                  'Cuatro servicios para empresas, gobiernos y organizaciones en México: Estrategia y Dirección, Liderazgo y Talento, Comunicación e Influencia, y Apps y páginas a la medida. Diagnóstico de 20 minutos sin costo.',
                   '/servicios/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- detalle de servicio
@@ -205,6 +208,7 @@ def servicios_hub():
 SEO_SERVICIO = {
     'estrategia': ('Consultoría en estrategia y dirección · Vorka México', 'Estrategia corporativa y pública, transformación, cultura, gobernanza y sucesión para empresas, gobiernos y fundaciones en México. Diagnóstico de 20 minutos sin costo.'),
     'liderazgo': ('Coaching ejecutivo y desarrollo de liderazgo · Vorka México', 'Coaching ejecutivo 1 a 1, coaching de equipos directivos, programas a la medida y assessment de talento en México. Diagnóstico de 20 minutos sin costo.'),
+    'apps': ('Desarrollo de apps y páginas web a la medida · Vorka México', 'Sitios web, tiendas en línea, apps y sistemas a la medida, hechos por el equipo que construyó y opera Agenda, Vuelve, Cupo, Brindi y Vorka Learn. Diagnóstico de 20 minutos sin costo.'),
     'influencia': ('Comunicación estratégica, redes y manejo de crisis · Vorka México', 'Narrativa, redes sociales, diseño, video, campañas digitales, PR, vocería, manejo de crisis y sitio web bajo una sola dirección. Diagnóstico de 20 minutos sin costo.'),
 }
 
@@ -213,6 +217,16 @@ def servicio(s):
     ents = ''.join(f'<article>{ICONOS[ic]}<h3>{e(t)}</h3><p>{e(d)}</p></article>' for ic, t, d in s['entregables'])
     otros = ''.join(f'<a class="btn blanco" href="/servicios/{o["slug"]}/">{o["area"]}</a>' for o in SERVICIOS if o is not s)
     titulo_form = re.sub(r'<[^>]+>', '', s['cta'])
+    datos = ''.join(f'<div><b>{e(b)}</b><span>{e(t)}</span></div>' for b, t in s['datos'])
+    datos = f'<div class="datos">{datos}</div>' if datos else ''
+    # Trabajo propio (solo «Apps y páginas»): productos de Vorka que se pueden ver hoy
+    propios = ''.join(f'<a class="v4-propio" href="{h}"><b>{e(n)}</b><span>{e(d)}</span></a>' for h, n, d in s.get('propios', []))
+    propios = f'''<section class="v4-sec" aria-labelledby="t-prop" style="padding-top:0">
+  <div class="marco">
+    <div class="v4-cab"><h2 class="t2" id="t-prop">Lo que ya construimos y operamos</h2><p class="lead">Son productos propios de Vorka, en línea hoy. Puedes abrir cada uno y probarlo.</p></div>
+    <div class="v4-propios">{propios}</div>
+  </div>
+</section>''' if propios else ''
     cuerpo = f'''{nav('/servicios/', cta=('#platiquemos', 'Platiquemos'))}
 <main id="contenido">
 <section class="v4-hero" aria-labelledby="t-hero">
@@ -223,6 +237,7 @@ def servicio(s):
     <p class="lead">{e(s['promesa'])}</p>
     <p class="v4-para"><b>Para quién:</b> {e(s['para'])}</p>
     <div class="botones"><a class="btn tinta" href="#platiquemos">Platiquemos {FLECHA}</a><a class="btn blanco" href="#incluye">Qué incluye</a></div>
+    {datos}
   </div>
 </section>
 <section class="v4-sec" id="incluye" aria-labelledby="t-inc" style="padding-top:0">
@@ -231,6 +246,7 @@ def servicio(s):
     <div class="v4-lista">{caps}</div>
   </div>
 </section>
+{propios}
 <section class="v4-sec suave" aria-labelledby="t-ent">
   <div class="marco">
     <div class="v4-cab"><h2 class="t2" id="t-ent">Qué te llevas</h2><p class="lead">{e(s['resultado'])}</p></div>

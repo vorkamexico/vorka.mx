@@ -604,7 +604,7 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .v4-ruta.tinta .v4-liga { color: #fff; }
 
 /* Servicios: qué necesitas → servicio → resultado */
-.v4-servs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.v4-servs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .v4-serv { display: flex; flex-direction: column; gap: 10px; padding: 28px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: box-shadow .3s var(--ease), border-color .3s; }
 .v4-serv:hover { box-shadow: var(--sombra-2); border-color: var(--line-2); }
 .v4-serv small { font-size: 13px; font-weight: 650; color: var(--fg-2); }
@@ -692,6 +692,19 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .v4-exito p { color: var(--fg-2); font-size: 15.5px; }
 .v4-exito a { color: var(--morado); font-weight: 650; }
 
+/* Cifras (inicio), fila de datos de las subpáginas y trabajo propio (Apps y páginas a la medida) */
+.v4-prueba { margin-top: 18px; font-size: 15px; color: var(--fg-2); }
+.v4-prueba b { color: var(--fg); }
+.v4-cifras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+.v4-cifras b { display: block; font-size: 28px; font-weight: 750; letter-spacing: -.02em; line-height: 1.1; }
+.v4-cifras span { font-size: 13.5px; color: var(--fg-2); }
+.v4-hero .datos { margin-top: 30px; }
+.v4-propios { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.v4-propio { display: grid; gap: 4px; padding: 18px 20px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: border-color .2s; }
+.v4-propio:hover { border-color: var(--morado); }
+.v4-propio b { font-size: 16.5px; letter-spacing: -.01em; }
+.v4-propio span { font-size: 14px; color: var(--fg-2); }
+
 /* El puente dentro de las guías de Vorka Learn (_tienda/src/learn/puente.js): sin la decoración de los h2 del artículo, una columna */
 .lr-puente { margin-top: 48px; padding-top: 36px; border-top: 1px solid var(--line); font-size: 16px; line-height: 1.5; }
 .lr-puente .v4-plat-in { grid-template-columns: 1fr; gap: 24px; }
@@ -701,6 +714,7 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .lr-puente .lead { margin-top: 12px; }
 .lr-puente .v4-alt { margin-top: 14px; }
 
+@media (max-width: 1100px) { .v4-servs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 960px) {
   .v4-rutas, .v4-servs, .v4-pasos, .v4-lista { grid-template-columns: 1fr; }
   .v4-learn, .v4-plat-in, .v4-dos { grid-template-columns: 1fr; }
