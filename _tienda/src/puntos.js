@@ -31,6 +31,7 @@ import { paginaApp, paginaEntrarApp, paginaPrograma, SW, manifiesto, icono } fro
 import { pedirRetiro, datosRetiro } from './puntos-retiros.js';
 import { alGanarVenta, alGanarRenovacion, redAlReembolsar, fijarPatrocinadorAlta, datosEmbajador, invitadorDe } from './embajadores.js';
 import { paginaUnete, paginaEmbajadores, vistasEmbajador } from './embajadores-app.js';
+const SITIO = 'https://vorka.mx';   // la liga del QR de Wallet (os solo firma ligas de vorka.mx)
 
 export { COBRO_MINIMO };
 const COOKIE = 'vorka_cuenta';
@@ -552,6 +553,16 @@ export async function topDelMes(env) {
   return filas.map((f, i) => ({ lugar: i + 1, email: f.email, nombre: nombrePublico(f.nombre), ventas: f.ventas }));
 }
 
+// Lo que lleva la tarjeta de Wallet: nombre, código público, liga a la tienda con su código, descuento y rango del mes
+async function datosWallet(env, email) {
+  const code = await codigoDe(env, email);
+  const [cuenta, af, emb] = await Promise.all([one(env, 'SELECT nombre FROM puntos_cuentas WHERE email = ?', email), one(env, 'SELECT nombre, publico FROM affiliates WHERE code = ?', code),
+    datosEmbajador(env, email, { code }).catch(() => null)]);
+  const publico = af?.publico || code;
+  return { email, code: publico, nombre: cuenta?.nombre || af?.nombre || email.split('@')[0], liga: `${SITIO}/tienda/?ref=${encodeURIComponent(publico)}`,
+    descuento_pct: PCT_REFERIDO, rango: emb?.rango?.nombre || null };
+}
+
 export async function datosApp(env, email) {
   const code = await codigoDe(env, email);
   await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)', email);
@@ -674,6 +685,18 @@ export async function rutasPuntos(req, env, url) {
     const cuenta = await cuentaActual(req, env);
     const inv = !cuenta && url.searchParams.get('i') ? await invitadorDe(env, url.searchParams.get('i')) : !cuenta && leerCookieDe(req, COOKIE_UNETE) ? await invitadorDe(env, decodeURIComponent(leerCookieDe(req, COOKIE_UNETE))) : null;
     return paginaEmbajadores(env, { cuenta, invitador: inv });
+  }
+  // Tarjeta de Embajador(a) en Apple / Google Wallet: su nombre, su código y el QR a la tienda con su código (lo firma os)
+  if ((m = p.match(/^\/api\/puntos\/wallet\/(apple|google)$/)) && M === 'GET') {
+    const c = await cuentaActual(req, env);
+    if (!c) return Response.redirect(`${SITIO}/tienda/cuenta/`, 302);
+    if (!env.WALLET) return fail('Wallet no está disponible por ahora.', 503);
+    const datos = await datosWallet(env, c.email);
+    try {
+      if (m[1] === 'google') return Response.redirect(await env.WALLET.embajadorGoogle(datos), 302);
+      const pase = await env.WALLET.embajadorApple(datos);
+      return new Response(pase, { headers: { 'content-type': 'application/vnd.apple.pkpass', 'content-disposition': 'attachment; filename="embajador-vorka.pkpass"', 'cache-control': 'no-store' } });
+    } catch (e) { console.error('wallet embajador', e?.message); return fail('No se pudo preparar tu tarjeta. Intenta en un momento.', 502); }
   }
   if (p === '/api/puntos/entrar' && M === 'POST') return pedirEnlace(req, env);
   if (p === '/api/puntos/codigo' && M === 'POST') return entrarConCodigo(req, env);

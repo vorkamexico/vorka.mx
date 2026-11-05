@@ -26,6 +26,7 @@ export const I = {
   tg: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.3 2.9 11.4c-1.3.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.5ZM9 14.6l9-5.7c.4-.3.8-.1.5.2l-7.7 7-.3 3.2L9 14.6Z"/></svg>',
   x: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.7 8 10.3h-6.2l-4.9-6.3L5.4 21H2.3l7.2-8.3L1.8 3h6.4l4.4 5.8L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"/></svg>',
   check: svg('<path d="m5 12.5 4.5 4.5L19 7.5"/>'),
+  wallet: svg('<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><path d="M16 14.5h2"/><path d="M6 6V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/>'),
   candado: svg('<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>'),
   ajustes: svg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>'),
   instalar: svg('<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M12 7.5v7M9 11.5l3 3 3-3"/>'),
@@ -236,6 +237,12 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .ico-in{display:inline-block;width:17px;height:17px;vertical-align:-3px;color:var(--oro2)}.ico-in svg{width:17px;height:17px}
 .promo.doble{background:linear-gradient(135deg,rgba(200,164,92,.16),rgba(107,42,133,.12));border-color:rgba(230,207,150,.25)}
 .cerrar-x{margin-left:auto;align-self:flex-start;background:none;border:0;color:var(--fg3);padding:2px;cursor:pointer}.cerrar-x svg{width:18px;height:18px}
+/* tarjeta en Wallet */
+.wallet-card{display:grid;gap:12px}.wallet-card b{display:block;font-size:16px}.wallet-card small{display:block;color:var(--fg3);font-size:13px;margin-top:2px}
+.wallet-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wallet-btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:8px 12px;border-radius:14px;background:#000;color:#fff;font-weight:650;font-size:13.5px;text-decoration:none;text-align:center;line-height:1.2;border:1px solid rgba(255,255,255,.14)}
+.wallet-btn svg{width:20px;height:20px;flex:none}
+.wallet-btn.uno{grid-column:1/-1}
 /* compartir */
 .codigo-card{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .codigo-card small{display:block;color:var(--fg3);font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
@@ -632,6 +639,8 @@ export function paginaApp(env, d) {
   <h1 class="titulo" style="--i:0">Comparte y <span class="pv-metal">gana</span></h1>
   <p class="subt" style="--i:1">Cada compra con tu liga te da ${d.pct}% en puntos (${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% con puntos extra). Por ser parte del ecosistema Vorka, quien compra con tu liga o tu código tiene ${PCT_REFERIDO} % de descuento en su primer pago. La persona tiene 30 días para comprar.</p>
   <div class="card codigo-card" style="--i:2"><div><small>Tu código</small><code>${esc(d.code)}</code></div><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(ligaDe('/tienda/', d.code))}">${I.copiar}Copiar liga</button></div>
+  <div class="card wallet-card" style="--i:2"><div><b>Tu tarjeta de Embajador(a)</b><small>Tu código y tu QR en el celular, listos para mostrar.</small></div>
+    <div class="wallet-btns"><a class="wallet-btn" id="w-apple" href="/api/puntos/wallet/apple" rel="nofollow">${I.wallet}<span>Agregar a Apple Wallet</span></a><a class="wallet-btn" id="w-google" href="/api/puntos/wallet/google" rel="nofollow">${I.wallet}<span>Guardar en Google Wallet</span></a></div></div>
   <div class="sec-t" style="--i:3"><h2>Elige qué compartir</h2></div>
   <div class="prods">${tarjetasCompartir.map((c, i) => {
     const liga = ligaDe(c.ruta, c.code || d.code), doble = dobleDe(c), msjs = mensajes(c, liga), principal = msjs[0];
@@ -816,6 +825,8 @@ const SCRIPT_APP = String.raw`(function(){
   // ----- QR -----
   document.addEventListener('click',function(e){ var q=e.target.closest('[data-qr]'); if(!q) return; var src=$('[data-qr-svg="'+q.dataset.qr+'"]');
     $('#hq-svg').innerHTML=src.innerHTML; $('#hq-liga').textContent=src.dataset.qrLiga; $('#hq-t').textContent=src.dataset.qrTitulo; abrir('h-qr'); });
+  (function(){ var ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1), and=/Android/.test(ua), a=$('#w-apple'), g=$('#w-google');
+    if(a&&g&&ios){ g.remove(); a.classList.add('uno'); } else if(a&&g&&and){ a.remove(); g.classList.add('uno'); } })();
   $('#hq-guardar').onclick=function(){ var s=$('#hq-svg svg'); if(!s) return; var img=new Image(), n=900;
     img.onload=function(){ var c=document.createElement('canvas'); c.width=n; c.height=n+120; var x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img,0,0,n,n);
       x.fillStyle='#141114'; x.font='600 34px -apple-system,Segoe UI,Inter,sans-serif'; x.textAlign='center'; x.fillText($('#hq-t').textContent,n/2,n+50); x.fillStyle='#6D696E'; x.font='26px -apple-system,Segoe UI,Inter,sans-serif'; x.fillText('Puntos Vorka · '+$('#hq-liga').textContent.replace(/^.*ref=/,'código '),n/2,n+92);
