@@ -89,10 +89,13 @@ def v_foto(nombre, foco='50% 50%'):
     return ventana_svg(svg_cuadro(nombre, foco, True), 'vf', 'ventana-v v-cab')
 
 # ---- piezas compartidas por el inicio y el índice de servicios
+# Cifras de IMPACTO en vivo: {municipios} y {estados} se vuelven spans que vorka.js actualiza desde soyimpacto.org
+vivo = lambda t: t.replace('{municipios}', '<span data-vivo="municipios">130</span>').replace('{estados}', '<span data-vivo="estados">32</span>')
+
 def tarjetas_casos(casos):
     """Tarjetas de nota v3 para casos propios (datos.CASOS): captura real, servicio, qué se hizo y su resultado."""
     return ''.join(f'''<a class="nota-h rv" href="{h}" style="--d:{(i % 3) * .06}s"><span class="im"><img src="/img/trabajo/{k}-800.webp" width="800" height="600" alt="{e(alt)}" loading="lazy" decoding="async"></span>
-        <span class="tx"><small>{e(et)}</small><b>{e(t)}</b><span>{e(d)}</span></span></a>''' for i, (h, k, et, t, d, alt) in enumerate(casos))
+        <span class="tx"><small>{e(et)}</small><b>{e(t)}</b><span>{vivo(e(d))}</span></span></a>''' for i, (h, k, et, t, d, alt) in enumerate(casos))
 
 def hecho_html(pegada=False):
     """«Lo que hemos hecho»: un caso propio por pieza de la solución (datos.EJEMPLOS), con las tarjetas de nota de v3.
@@ -204,7 +207,7 @@ def inicio():
 <section class="sec pegada" id="servicios" aria-labelledby="t-serv">
   <div class="marco">
     <div class="cab centro rv"><span class="etiqueta">Servicios</span><h2 class="h2" id="t-serv">Una solución <span class="metal">integral.</span></h2>
-      <p class="lead">Estrategia, liderazgo, comunicación y tecnología: cuatro piezas que se combinan con un solo equipo y un solo proceso.</p></div>
+      <p class="lead">Estrategia, liderazgo, comunicación y tecnología: cuatro piezas que se combinan según lo que tu organización necesita.</p></div>
     <div class="bento">{bento}</div>
     <p class="rv" style="text-align:center;margin-top:28px"><a class="flecha" href="/servicios/">Ver todos los servicios {FLECHA}</a></p>
   </div>
