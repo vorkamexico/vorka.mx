@@ -1,3 +1,4 @@
+# ⚠ Reemplazado por portadas_v4.py (estructura de Clara, objetos reales). Este archivo queda solo como fuente de las pantallas y datos que usa la v4.
 # Vorka México · portadas v3 de TODA la tienda: cada producto con su color, nombre grande, beneficio y tres datos
 # legibles en la tarjeta del catálogo (~460 px de ancho). Simuladores: además su imagen para compartir y dos
 # imágenes 16:10 para "Cómo funciona" (antes se recortaba la de compartir). Sin logos ni colores institucionales.
