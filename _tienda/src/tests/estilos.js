@@ -1,3 +1,4 @@
+import { CSS_MARCA, CSS_SECCIONES } from '../marca-producto.js';
 // Estilos de los tests (vocacional y proyecto social). Usan las variables del sitio (claro/oscuro sale solo de vorka.css).
 // Celular primero: una columna, botones de 48 px o más, sin desbordes horizontales.
 export const CSS_TESTS = `
@@ -96,3 +97,19 @@ export const CSS_TESTS = `
   .tv-tarjeta,.tv-tipo,.tv-carreras>li,.tv-idea,.tv-plan div{box-shadow:none}
   a{color:inherit}
 }`;
+
+// Marca del producto (portadas v4) para las páginas de venta de los tests: blanco, tinta y un solo color (--pm). Solo en la
+// página de venta; el resultado y el reporte siguen con CSS_TESTS.
+export const CSS_MARCA_TEST = `${CSS_MARCA}${CSS_SECCIONES}
+.tv-marca{--pm-t:var(--pm);--tv-acento:var(--pm);--morado:var(--pm);--acento:var(--pm);--acento-2:var(--pm);--sobre-acento:#fff}
+:root[data-tema="oscuro"] .tv-marca{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}
+.tv-marca .tv-et,.tv-marca .tv-num,.tv-marca .tv-af,.tv-marca .tv-ods b,.tv-marca .pm-grande b,.tv-marca .pm-et:not(.gris){color:var(--pm-t)}
+.tv-marca .btn.acento{box-shadow:0 10px 24px -14px var(--pm)}
+.tv-marca .tv-op input:focus-visible+span{outline-color:var(--pm-t)}
+.tv-marca .pm-gratis{margin:16px 0 0;font-size:15px;line-height:1.5;color:var(--fg-2);max-width:560px}.tv-marca .pm-gratis b{color:var(--fg)}
+.tv-marca .tv-sec{padding:clamp(56px,8vw,96px) 0}
+.tv-marca .tv-ejemplo{max-width:520px;margin:36px auto 0}
+.tv-marca .pm-que+.tv-sec.suave{margin-top:clamp(56px,8vw,96px)}
+.tv-marca .tv-incluye li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pm);margin-top:7px}
+.tv-cierre{text-align:center}.tv-cierre h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.045em;margin:0 auto;max-width:18ch;text-wrap:balance}.tv-cierre h2 em{font-style:normal;color:var(--pm-t)}.tv-cierre .tv-ctas{justify-content:center}
+`;

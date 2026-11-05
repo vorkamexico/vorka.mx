@@ -75,6 +75,11 @@ describe('acceso al simulador', () => {
     expect(html).not.toMatch(/exámenes oficiales|Examen Oficial/);
     expect(html).not.toMatch(/\d+ min</);
     expect(html).not.toContain('noindex');
+    // encabezado de marca con su índice; la prueba gratis (reactivo con tutor) y la barra de compra siguen
+    expect(html).toContain('class="pm-hero"'); expect(html).toContain('class="pm-indice"');
+    for (const id of ['que-es', 'probar', 'comprar', 'como', 'incluye', 'estructura', 'ayuda']) expect(html).toContain(`id="${id}"`);
+    expect(html).toMatch(/<button type="button" data-o="0">/); expect(html).toContain('id="sv-tutor"');
+    expect(html).toContain('id="barra-compra"'); expect(html).toContain('href="/simulador-paa/diagnostico/">Prueba gratis</a>');
   });
 
   it('el enlace del correo deja una cookie que abre la app y la API', async () => {

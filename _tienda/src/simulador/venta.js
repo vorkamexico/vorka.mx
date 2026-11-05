@@ -9,6 +9,7 @@ import { TOTAL_DIAG } from './diagnostico.js';
 import { oferta, ofertas, migas } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { seccionGuias } from './guias.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from '../marca-producto.js';
 
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const CSS = `<style>
@@ -127,6 +128,33 @@ const CSS = `<style>
 .sv-parcial{font-size:12.5px;font-weight:650;color:var(--fg-2);line-height:1.3}
 .sv-dif tfoot td,.sv-dif tfoot th{border-bottom:0}
 @media(max-width:560px){.sv-dif{font-size:13px}.sv-dif thead th:first-child{width:37%}.sv-dif th,.sv-dif td{padding:11px 3px}.sv-dif tbody th{padding-right:8px}.sv-dif thead b{font-size:13.5px;letter-spacing:-.02em}.sv-dif thead small{display:none}.sv-dif tfoot .btn{padding:8px 4px;font-size:12.5px;width:100%;justify-content:center}}
+/* Marca del producto (portadas v4): blanco, tinta y un solo color, el del simulador (--pm). Los morados y dorados de la
+   tienda toman ese color dentro de la página; en oscuro, el texto en color se aclara para que se lea. */
+.sv{--pm-t:var(--pm);--morado:var(--pm-t);--morado-suave:color-mix(in srgb,var(--pm) 11%,transparent);--acento:var(--pm);--acento-2:var(--pm);--sobre-acento:#fff}
+:root[data-tema="oscuro"] .sv{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff);--morado-suave:color-mix(in srgb,var(--pm) 24%,transparent)}
+.sv .btn.acento{box-shadow:0 10px 24px -14px var(--pm)}
+.sv .pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.sv .pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.sv-em{font-style:normal;color:var(--pm-t)}
+.sv .pm-grande b,.sv .pm-et:not(.gris){color:var(--pm-t)}
+.sv-zona{padding-bottom:clamp(40px,6vw,72px)}
+.sv-compra{top:72px}
+.sv-probar{margin-top:0}.sv-probar>small{display:block;color:var(--fg-2);font-size:15px;margin-top:10px}.sv-probar .sv-ej{margin-top:18px}
+.sv-ej .sv-tema{color:var(--pm-t)}
+.sv-diag{margin-top:18px;background:var(--bg-2);color:var(--fg);border:1px solid var(--line);box-shadow:none}.sv-diag small{color:var(--fg-2);opacity:1}
+.sv-diag em,:root[data-tema="oscuro"] .sv-diag em{color:var(--pm-t)}
+.sv-links{margin-top:18px}
+.sv-tutor.pista{background:color-mix(in srgb,#c8a45c 14%,var(--card));border-color:color-mix(in srgb,#c8a45c 40%,var(--line))}
+.sv-tutor.bien{border-color:color-mix(in srgb,var(--verde) 40%,var(--line))}.sv-tutor.sol{border-color:color-mix(in srgb,var(--pm) 35%,var(--line))}
+.sv-ops button{color:var(--fg)}.sv-ops button.sv-mal{background:color-mix(in srgb,#c0392b 10%,var(--card));border-color:color-mix(in srgb,#c0392b 45%,var(--line))}
+.sv-cifras{background:var(--line);margin-top:8px}.sv-cifras div{background:var(--card);padding:30px 24px}
+.sv-cifras b{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--pm-t)}.sv-cifras span{color:var(--fg-2)}
+.sv-plan.rec{background:color-mix(in srgb,var(--pm) 6%,var(--card))}
+.sv-tag.oro{background:var(--morado-suave);color:var(--pm-t)}
+.sv-dif thead small{color:#fff}
+.sv-tabla-w{overflow-x:auto;margin-top:32px}.sv-tabla-w .sv-tabla{margin-top:0}
+.sv-final{text-align:center;padding-top:clamp(56px,8vw,96px)}.sv-final .botones{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.sv .etiqueta{color:var(--fg-2)}.sv .etiqueta::before{background:var(--pm)}
+@media(max-width:600px){.sv-cifras div{padding:22px 16px}.sv-pasos{gap:22px}}
 </style>`;
 
 // sim: lo que devuelve crearSimulador · v: contenido de la página (ver paa.js)
@@ -155,7 +183,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   <p class="lead"><b>Práctica</b> es para entrenar. <b>Examen</b> es para medirte como el día del examen. <b>Completo</b> trae las dos cosas${ahorro > 0 ? ` y cuesta ${precio({ precio_centavos: ahorro })} menos que comprarlas por separado` : ''}.</p></div>
   <div class="sv-dif-w"><table class="sv-dif"><thead><tr><th scope="col"><span class="sr">Qué incluye</span></th>${cols.map(x => `<th scope="col"${x.k === 'paquete' ? ' class="rec"' : ''}>${x.k === 'paquete' ? '<small>Recomendado</small>' : ''}<b>${x.nombre}</b><span class="num">${precio(x.prod).replace(' MXN', '')}</span></th>`).join('')}</tr></thead>
   <tbody>${v.diferencias.map(([t, ...b]) => `<tr><th scope="row">${esc(t)}</th>${b.map((y, i) => `<td${i === 2 ? ' class="rec"' : ''}>${marca(y)}</td>`).join('')}</tr>`).join('')}</tbody>
-  <tfoot><tr><th scope="row"></th>${cols.map(x => `<td${x.k === 'paquete' ? ' class="rec"' : ''}><a class="btn ${x.k === 'paquete' ? 'tinta' : 'blanco'} chico" href="?plan=${x.k}#comprar">Elegir</a></td>`).join('')}</tr></tfoot></table></div>
+  <tfoot><tr><th scope="row"></th>${cols.map(x => `<td${x.k === 'paquete' ? ' class="rec"' : ''}><a class="btn ${x.k === 'paquete' ? 'acento' : 'blanco'} chico" href="?plan=${x.k}#comprar">Elegir</a></td>`).join('')}</tr></tfoot></table></div>
 </div></section>` : '';
   const { code, cookie } = await refDeVisita(env, req, url);
   // Visita a la página de venta (como en el resto de la tienda)
@@ -196,22 +224,32 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   }); });
 })();`;
   const img = v.imagenes;
+  // Marca del producto (portadas v4): la clave es la ruta sin la diagonal (simulador-paa, simulador-unam…)
+  const clave = RUTA.slice(1), color = colorDe(clave);
+  const desde = planes.length ? planes.reduce((m, x) => x.prod.precio_centavos < m.prod.precio_centavos ? x : m) : null;
+  const precioHero = desde ? `Desde <b>${precio(desde.prod)}</b> · acceso inmediato` : prod ? `<b>${precioTxt}</b> · acceso inmediato` : 'Muy pronto en la tienda';
+  const q = v.queEs || {};
+  const partes = [['que-es', 'Qué es'], ['probar', 'Pruébalo gratis'], ['comprar', 'Precios'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['estructura', 'El examen'], ['ayuda', 'Preguntas']];
   return pagina({ entrar: { url: '/descargas/reenviar?para=simulador', app: sim.titulo },
     titulo: v.tituloSEO, ruta: `${RUTA}/`, descripcion: v.descripcion, imagen: v.og,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: (prod ? SCRIPT_COMPRA : '') + SCRIPT_EJEMPLO,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
-${CSS}${v.css || ''}`,
-    cuerpo: `
-<section class="sv-hero"><div class="marco sv-hero-g">
+<style>${CSS_MARCA}${CSS_SECCIONES}</style>${CSS}${v.css || ''}`,
+    cuerpo: `<div class="sv" style="--pm:${color}">
+${heroMarca(clave, {
+  apoyo: q.apoyo || v.hero.lead,
+  botones: prod ? `<a class="pm-btn" href="#comprar">Comprar ${FLECHA}</a><a class="pm-btn sec" href="#probar">Pruébalo gratis</a>`
+    : `<a class="pm-btn" href="#probar">Pruébalo gratis ${FLECHA}</a><a class="pm-btn sec" href="${RUTA}/diagnostico/">Diagnóstico gratis</a>`,
+  despues: `<p class="pm-precio">${precioHero}</p><p class="t-ya">¿Ya lo compraste? <a href="/descargas/reenviar?para=simulador">Entra aquí</a></p>`,
+})}
+${indiceProducto(clave, partes, prod ? '<a class="pm-btn" href="#comprar">Comprar</a>' : `<a class="pm-btn" href="#probar">Pruébalo gratis</a>`)}
+${seccionQueEs(clave, { titulo: v.hero.h1, texto: q.texto || esc(v.hero.lead), para: q.para || [] })}
+
+<section class="pm-sec sv-zona"><div class="marco sv-hero-g">
   <div>
-    <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / Preparación para exámenes</nav>
-    <div class="sv-chips"><span class="sv-chip">${esc(v.chip)}</span><span class="sv-chip oro"><span aria-hidden="true">🎁</span> También para regalar</span></div>
-    <h1 class="t-h1">${esc(v.hero.h1)}</h1>
-    <p class="t-lead">${esc(v.hero.lead)}</p>
-    <ul class="sv-sellos">${v.hero.sellos.map(t => `<li>${CHECK}${esc(t)}</li>`).join('')}</ul>
     <div class="sv-probar" id="probar">
-      <b>Pruébalo gratis: contesta un reactivo con el tutor</b><small>Si fallas, te da una pista; en el segundo intento, la solución paso a paso.</small>
+      <p class="pm-et">Pruébalo gratis</p><h2 class="pm-h2">Contesta un reactivo con el tutor</h2><small>Si fallas, te da una pista; en el segundo intento, la solución paso a paso.</small>
       <div class="sv-ej" id="sv-ej">
         <span class="sv-tema">${esc(ej.etiqueta)}</span>
         <h3>${esc(ej.enunciado)}</h3>
@@ -222,7 +260,6 @@ ${CSS}${v.css || ''}`,
     </div>
     <a class="sv-diag" href="${RUTA}/diagnostico/"><span><b>¿Cuánto sacarías hoy?</b><small>Diagnóstico gratis: ${TOTAL_DIAG} preguntas con tutor y tu puntaje estimado</small></span><em>Hacerlo gratis ${FLECHA}</em></a>
     ${prod ? `<div class="sv-links"><a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a></div>` : ''}
-    <p class="t-ya">¿Ya lo compraste? <a href="/descargas/reenviar?para=simulador">Entra aquí</a></p>
   </div>
   <aside class="sv-compra" id="comprar" aria-label="Comprar el simulador">
     ${selector}${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del ${esc(sim.titulo)}.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
@@ -230,13 +267,7 @@ ${CSS}${v.css || ''}`,
 </div></section>
 ${diferencias}
 ${v.despuesHero || ''}
-<section class="t-sec oscura"><div class="marco">
-  <div class="cab"><span class="etiqueta">Un banco que no se acaba en el primer intento</span><h2 class="h2">Cada intento es <span class="metal">diferente</span></h2>
-  <p class="lead">Cada simulacro y cada examen prioriza preguntas que todavía no has visto, así que al repetir no te aprendes las respuestas: practicas de verdad.</p></div>
-  <div class="sv-cifras">${v.cifras.map(([n, t]) => `<div><b class="num">${n}</b><span>${esc(t)}</span></div>`).join('')}</div>
-</div></section>
-
-<section class="t-sec"><div class="marco">
+<section class="t-sec" id="como"><div class="marco">
   <div class="cab"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Practica, aprende de cada error y mide tu avance</h2></div>
   <div class="sv-pasos">
     <article class="sv-paso"><figure><img src="${img.paso1 || img.portada}" alt="" loading="lazy" width="1600" height="${img.paso1 ? 1000 : 1200}"></figure><div><small>01 · Con cronómetro</small><h3>${esc(v.pasos[0][0])}</h3><p>${esc(v.pasos[0][1])}</p></div></article>
@@ -245,22 +276,28 @@ ${v.despuesHero || ''}
   </div>
 </div></section>
 
-<section class="t-sec"><div class="marco">
+<section class="t-sec suave"><div class="marco">
+  <div class="cab"><span class="etiqueta">Un banco que no se acaba en el primer intento</span><h2 class="h2">Cada intento es <em class="sv-em">diferente</em></h2>
+  <p class="lead">Cada simulacro y cada examen prioriza preguntas que todavía no has visto, así que al repetir no te aprendes las respuestas: practicas de verdad.</p></div>
+  <div class="sv-cifras">${v.cifras.map(([n, t]) => `<div><b class="num">${n}</b><span>${esc(t)}</span></div>`).join('')}</div>
+</div></section>
+
+<section class="t-sec" id="incluye"><div class="marco">
   <div class="cab"><span class="etiqueta">Qué incluye</span><h2 class="h2">Más que un examen de práctica</h2></div>
   <div class="sv-grid">${v.incluye.map(x => `
     <div class="sv-card"><h3>${esc(x.titulo)}${x.tag ? ` <small class="sv-tag${x.oro ? ' oro' : ''}">${esc(x.tag)}</small>` : ''}</h3><p>${esc(x.texto)}</p></div>`).join('')}
   </div>
-  <table class="sv-tabla sv-comp" style="margin-top:40px"><thead><tr><th scope="col">Lo que necesitas para prepararte</th><th scope="col">Simulador Vorka</th><th scope="col">Guía en PDF</th></tr></thead><tbody>${comparar}</tbody></table>
+  <div class="sv-tabla-w"><table class="sv-tabla sv-comp"><thead><tr><th scope="col">Lo que necesitas para prepararte</th><th scope="col">Simulador Vorka</th><th scope="col">Guía en PDF</th></tr></thead><tbody>${comparar}</tbody></table></div>
 </div></section>
 
-<section class="t-sec suave"><div class="marco">
+<section class="t-sec suave" id="estructura"><div class="marco">
   <div class="cab par"><div><span class="etiqueta">Estructura</span><h2 class="h2" style="margin-top:14px">${esc(v.estructura.titulo)}</h2></div>
   <p class="lead">${v.estructura.lead}</p></div>
-  ${v.estructura.tabla}
+  <div class="sv-tabla-w">${v.estructura.tabla}</div>
 </div></section>
 ${v.antesRegalo || ''}
 ${seccionGuias(RUTA.slice(1))}
-${prod ? `<section class="t-sec"><div class="marco sv-regalo">
+${prod ? `<section class="t-sec" id="regalar"><div class="marco sv-regalo">
   <img src="${img.regalo}" alt="Tarjeta de regalo del ${esc(sim.titulo)} con mensaje personalizado" loading="lazy" width="1200" height="900">
   <div>
     <span class="etiqueta">Para regalar</span><h2 class="h2" style="margin-top:14px">Regálalo a quien va a presentar</h2>
@@ -269,12 +306,12 @@ ${prod ? `<section class="t-sec"><div class="marco sv-regalo">
       <li>${CHECK}<span>Cada liga funciona <b>una sola vez</b>: al abrirla, el acceso queda a nombre de quien la recibe y nadie más puede usarla.</span></li>
       <li>${CHECK}<span>Ideal para hijos, sobrinos, amigos o todo un grupo de estudiantes.</span></li>
     </ul>
-    <a class="btn tinta" href="?regalo=1#comprar">Regalar el simulador ${FLECHA}</a>
+    <a class="pm-btn" href="?regalo=1#comprar">Regalar el simulador ${FLECHA}</a>
   </div>
 </div></section>` : ''}
 
 ${seccionResenas(rs)}
-<section class="t-sec suave"><div class="marco sv-dos">
+<section class="t-sec suave" id="ayuda"><div class="marco sv-dos">
   <div class="sv-dos-t sv-pegado">
     <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" style="margin-top:14px">${esc(v.faqTitulo)}</h2>
     <div class="sv-ya"><p><b>¿Ya lo compraste o te lo regalaron?</b> Entra con el botón de tu correo. Si cambiaste de dispositivo o no encuentras el correo, te mandamos un enlace nuevo.</p><a class="btn blanco chico" href="/descargas/reenviar">Recibir mi enlace ${FLECHA}</a></div>
@@ -282,13 +319,14 @@ ${seccionResenas(rs)}
   <div class="t-faq">${v.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
-${prod ? `<section class="t-sec oscura sv-final"><div class="marco">
+${prod ? `<section class="t-sec sv-final"><div class="marco">
   <span class="etiqueta">Tu próximo paso</span>
-  <h2 class="h2" style="margin-top:14px">Llega al examen sabiendo <span class="metal">qué esperar</span></h2>
+  <h2 class="h2" style="margin-top:14px">Llega al examen sabiendo <em class="sv-em">qué esperar</em></h2>
   <p class="lead">${esc(v.final)}</p>
-  <div class="botones"><a class="btn plata" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="btn vidrio" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>
+  <div class="botones"><a class="pm-btn" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="pm-btn sec" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>
 </div></section>` : ''}
 <section class="sv-disc"><div class="marco"><p class="t-nota">${esc(v.aviso)}</p></div></section>
-${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="${RUTA}/diagnostico/">Prueba gratis</a><a class="btn tinta chico" href="#comprar">Comprar</a></div></div>` : ''}`,
+${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="${RUTA}/diagnostico/">Prueba gratis</a><a class="btn acento chico" href="#comprar">Comprar</a></div></div>` : ''}
+</div>`,
   });
 }

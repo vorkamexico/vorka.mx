@@ -63,6 +63,12 @@ const VENTA = {
     sellos: ['Práctica ilimitada con tutor', `Examen completo como el real: ${EXAMEN_REACTIVOS} reactivos`, 'Puntaje estimado 200–800', 'En celular o computadora'],
     alt: 'Simulador PAA de Vorka México: pregunta de Redacción con pista del tutor y medidor de preparación',
   },
+  // «Qué es / Para quién es» de la página (con lo que ya dice la página)
+  queEs: {
+    apoyo: 'Preguntas tipo PAA de Lectura, Redacción, Matemáticas e Inglés, con cronómetro como en el examen real.',
+    texto: 'Un examen de práctica en línea, en tu celular o computadora. Contestas con cronómetro como en la PAA; <b>si fallas, un tutor te da una pista</b> para intentarlo otra vez, y al final un reporte te dice tu puntaje estimado (200–800) y exactamente qué reforzar.',
+    para: [['Si vas a presentar la PAA', 'No sabes qué tan listo estás ni qué temas te faltan.'], ['Si ya estudiaste con guías en PDF', 'Te falta practicar con cronómetro y saber tu puntaje por sección.'], ['Mamá, papá o quien quiera apoyar', 'Quieres regalarle algo que de verdad le ayude a prepararse.']],
+  },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por sección y por tema', 'Tutor con pistas y explicación paso a paso', 'Puntaje estimado y qué reforzar'] },
     { k: 'completo', nombre: 'Examen', para: `Solo medirte: 2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos`, falta: 'No incluye la práctica ilimitada', trae: () => [`2 exámenes completos de ${EXAMEN_REACTIVOS} reactivos`, 'Con cronómetro y la dificultad de la PAA', 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Reporte de preparación por sección'] },

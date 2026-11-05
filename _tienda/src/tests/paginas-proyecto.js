@@ -1,12 +1,13 @@
 // «¿Qué proyecto social hago?» · páginas: el cuestionario gratis (indexable), el resultado con 3 ideas y el reporte
 // completo con candado, y el reporte de pago (imprimible).
 import { pagina, esc } from '../paginas.js';
-import { precio, masTienda, seccionFaq, navTienda, formCompra, SCRIPT_COMPRA } from '../tienda.js';
+import { precio, masTienda, seccionFaq, formCompra, SCRIPT_COMPRA } from '../tienda.js';
 import { oferta, migas, ldScript } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { FLECHA } from '../marco.generado.js';
 import { pesos } from '../util.js';
-import { CSS_TESTS } from './estilos.js';
+import { CSS_TESTS, CSS_MARCA_TEST } from './estilos.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-producto.js';
 import { PREGUNTAS, ESTADOS, ODS, calcular } from './proyecto.js';
 import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, SCRIPT_TOPE, ICONO_CANDADO, PRODUCTOS_TEST, whatsapp, fechaCorta, SIN_REFERER } from './comun.js';
 
@@ -62,29 +63,18 @@ export async function landingProyecto(env, req, url, { p, code = null, cookie = 
     offers: oferta({ ruta: RUTA, centavos: p?.precio_centavos ?? 14900, disponible: !!p }), ...ldResenas(rs) }, migas('¿Qué proyecto social hago?', RUTA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto | Vorka México', ruta: RUTA, descripcion, imagen: OG_PROYECTO, navActual: 'catalogo', status,
-    head: head(ldScript(ld)), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('proyecto') + SCRIPT_TOPE + (p ? SCRIPT_COMPRA : ''),
-    cuerpo: `<div class="tv">
-<section class="tv-hero"><div class="marco">
-  ${navTienda('examenes')}
-  <div class="tv-hero-g">
-    <div>
-      <span class="tv-et">Para negocios, OSC y profesionistas</span>
-      <h1 class="tv-h1">¿Qué proyecto social hago? <em>Descúbrelo en 5 minutos.</em></h1>
-      <p class="tv-lead">Cuéntanos tu giro, en qué son buenos, cuánto dinero y tiempo tienen y qué causas les importan. Al terminar ves tus 3 ideas de proyecto más afines.</p>
-      ${aviso ? `<p class="tv-ok" role="status">${esc(aviso)}</p>` : ''}
-      <div class="tv-ctas"><a class="btn acento" href="#test">Empezar ${FLECHA}</a><a class="btn blanco" href="#reporte">Ver qué trae el reporte</a></div>
-      <p class="tv-nota" style="margin:14px 0 0"><b>Contestarlo es gratis · tus 3 ideas son gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único).</p>
-      <ul class="tv-chips"><li>10 preguntas · 5 min</li><li>Sin crear cuenta</li><li>Con indicadores y ODS</li></ul>
-    </div>
-    <div class="tv-tarjeta" aria-label="Ejemplo de una idea del reporte">
-      <span class="tv-et" style="color:var(--fg-2)">Ejemplo de una idea del reporte</span>
-      <h3 style="margin:8px 0 4px">Rescate de alimentos</h3>
-      <p class="tv-nota" style="margin:0">Dona tus excedentes de comida a un comedor en lugar de tirarlos.</p>
-      <p class="tv-det"><b>Indicadores:</b> kilos donados al mes · porciones · kilos que dejaste de tirar</p>
-      <p><span class="tv-ods"><b>ODS 2</b> Hambre cero</span><span class="tv-ods"><b>ODS 12</b> Producción y consumo responsables</span></p>
-    </div>
-  </div>
-</div></section>
+    head: head(`${ldScript(ld)}<style>${CSS_MARCA_TEST}</style>`), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('proyecto') + SCRIPT_TOPE + (p ? SCRIPT_COMPRA : ''),
+    cuerpo: `<div class="tv tv-marca" style="--pm:${colorDe('que-proyecto-social')}">
+${heroMarca('que-proyecto-social', {
+  apoyo: 'Cuéntanos tu giro, en qué son buenos, cuánto dinero y tiempo tienen y qué causas les importan. Al terminar ves tus 3 ideas de proyecto más afines.',
+  antes: aviso ? `<p class="tv-ok" role="status" style="margin-top:16px">${esc(aviso)}</p>` : '',
+  botones: `<a class="pm-btn" href="#test">Empezar ${FLECHA}</a><a class="pm-btn sec" href="#reporte">Ver qué trae el reporte</a>`,
+  despues: `<p class="pm-gratis"><b>Contestarlo es gratis · tus 3 ideas son gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único). Sin crear cuenta.</p>`,
+})}
+${indiceProducto('que-proyecto-social', [['que-es', 'Qué es'], ['test', 'El cuestionario'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar</a>`)}
+${seccionQueEs('que-proyecto-social', { titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto.',
+  texto: 'Un cuestionario de unos 5 minutos que cruza tus causas, tus fortalezas, tu giro, tu tamaño, tu presupuesto y tu tiempo con una biblioteca de proyectos escrita por Vorka México. <b>Al terminar ves gratis tus 3 ideas más afines</b>; el reporte completo trae de 5 a 8 proyectos con indicadores y ODS.',
+  para: [['Negocios y empresas de cualquier tamaño', 'Quieren hacer algo por su comunidad y no saben por dónde empezar.'], ['Organizaciones de la sociedad civil y colectivos', 'Buscan un proyecto que quepa en su presupuesto y su tiempo, y que se pueda medir.'], ['Profesionistas independientes y escuelas', 'Quieren comunicarlo con cifras reales, sin lavado de imagen.']] })}
 <section class="tv-sec" id="test"><div class="marco">
   <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Contesta como organización o como persona. Tarda unos 5 minutos.</p></div>
   ${formProyecto({ datos, error })}
@@ -92,7 +82,15 @@ export async function landingProyecto(env, req, url, { p, code = null, cookie = 
 <section class="tv-sec suave" id="reporte"><div class="marco tv-dos">
   <div class="tv-cab"><span class="tv-et">Reporte completo · ${precioT}</span><h2>De la buena intención a un proyecto que se mide.</h2>
     <p>Primero contesta gratis: al final ves tus 3 ideas y una vista previa del reporte, y lo desbloqueas ahí mismo en un paso.</p>
-    <div class="tv-acciones"><a class="btn acento" href="#test">Contestar gratis ${FLECHA}</a></div></div>
+    <div class="tv-acciones"><a class="btn acento" href="#test">Contestar gratis ${FLECHA}</a></div>
+    <div class="tv-tarjeta tv-ejemplo" aria-label="Ejemplo de una idea del reporte">
+      <span class="tv-et" style="color:var(--fg-2)">Ejemplo de una idea del reporte</span>
+      <h3 style="margin:8px 0 4px">Rescate de alimentos</h3>
+      <p class="tv-nota" style="margin:0">Dona tus excedentes de comida a un comedor en lugar de tirarlos.</p>
+      <p class="tv-det"><b>Indicadores:</b> kilos donados al mes · porciones · kilos que dejaste de tirar</p>
+      <p><span class="tv-ods"><b>ODS 2</b> Hambre cero</span><span class="tv-ods"><b>ODS 12</b> Producción y consumo responsables</span></p>
+    </div>
+  </div>
   <ul class="tv-incluye" style="gap:10px">${['De 5 a 8 proyectos a tu medida', 'Objetivo con cifra y fecha, a quién beneficia y primeros pasos', 'Recursos mínimos e indicadores simples para medir', 'Los ODS de la ONU con los que se alinea cada proyecto', 'Riesgos comunes y cómo evitarlos', 'Cómo comunicarlo sin lavado de imagen'].map(x => `<li style="padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)">${x}</li>`).join('')}</ul>
 </div></section>
 ${p ? `<section class="tv-sec" id="regalar"><div class="marco tv-dos">
@@ -102,6 +100,7 @@ ${p ? `<section class="tv-sec" id="regalar"><div class="marco tv-dos">
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Preguntas frecuentes', items: F.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre ¿Qué proyecto social hago?',
   pie: '<p class="t-nota t-legal">¿Qué proyecto social hago? · Biblioteca de proyectos original de Vorka México · Guía para empezar: no es asesoría legal ni fiscal</p>' })}
+<section class="tv-sec tv-cierre"><div class="marco"><h2>Tu proyecto social, <em>a tu medida.</em></h2><div class="tv-ctas"><a class="pm-btn" href="#test">Contestar gratis ${FLECHA}</a></div></div></section>
 ${await masTienda(env, 'examenes')}
 </div>`,
   });

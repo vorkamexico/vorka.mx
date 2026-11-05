@@ -100,6 +100,12 @@ const VENTA = {
     sellos: [`Examen completo: ${EXAMEN_REACTIVOS} reactivos en ${HORAS}`, 'Las 5 áreas, con 3 opciones por pregunta', 'Aciertos por área y con los pesos de la UG', 'En celular o computadora'],
     alt: 'Simulador EXANI-I para la prepa UG de Vorka México: pregunta con pista del tutor y reporte de aciertos por área',
   },
+  // «Qué es / Para quién es» de la página (con lo que ya dice la página)
+  queEs: {
+    apoyo: `Tu hijo o hija practica con un examen de ${EXAMEN_REACTIVOS} reactivos en ${HORAS}, con las 5 áreas del EXANI-I y cronómetro.`,
+    texto: 'Un examen de práctica en línea para el EXANI-I, el examen para entrar a la prepa de la Universidad de Guanajuato: las 5 áreas, con 3 opciones por pregunta. <b>Si falla, un tutor le da una pista</b> para intentarlo otra vez; al final, un reporte dice cuántos aciertos lleva, con los pesos de la UG, y qué reforzar.',
+    para: [['Mamá o papá de quien va a entrar a la prepa UG', 'Quieres saber si tu hijo o hija va bien y qué le falta.'], ['Quien va a presentar el EXANI-I', 'Quieres practicar con cronómetro y ver tus aciertos por área.'], ['Quien quiera regalarlo', 'Lo compras y le llega una liga a quien va a presentar, con su propia cuenta.']],
+  },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por área y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
     { k: 'completo', nombre: 'Examen', para: 'Solo medirse: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada', trae: () => [`2 exámenes completos: ${EXAMEN_REACTIVOS} reactivos en ${HORAS}`, 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Aciertos por área y temas a reforzar'] },

@@ -7,10 +7,11 @@
 // Entrega: el acceso y las ligas de regalo los da Vorka OS por service binding (ver ruta-entrega.js).
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc, WHATSAPP } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, formCompra, SCRIPT_COMPRA } from './tienda.js';
+import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, formCompra, SCRIPT_COMPRA } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA } from './marco.generado.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 
 export const SLUG_RUTA = 'ruta-de-impacto';
 export const RUTA_RUTA = '/tienda/ruta-de-impacto/';
@@ -88,26 +89,21 @@ export async function paginaRuta(env, req, url) {
   migas('Ruta de Impacto', RUTA_RUTA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
-  return pagina({ navActual: 'catalogo', navOscuro: true, entrar: { url: `${APP}/`, app: 'Ruta de Impacto' }, noindex: !p,
+  return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Ruta de Impacto' }, noindex: !p,
     titulo: 'Ruta de Impacto: curso para hacer tu proyecto social | Jóvenes de 15 a 29 años', ruta: RUTA_RUTA, imagen: OG_RUTA, descripcion,
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: p ? SCRIPT_COMPRA : '',
-    cuerpo: `<div class="ri">
-<section class="ri-hero"><div class="marco ri-hero-g">
-  <div class="ri-hero-txt">
-    <span class="ri-marca"><i aria-hidden="true"></i>ruta de impacto</span>
-    <h1 class="ri-h1">Tu proyecto social, <em>de la idea a la comunidad.</em></h1>
-    <p class="ri-lead">Un curso interactivo como los de idiomas, pero para sacar adelante tu proyecto: lecciones de 3 a 5 minutos, racha diaria y un tutor que te guía paso a paso. Lo pruebas en tu comunidad con entrevistas y un piloto, y terminas con calificación y constancia.</p>
-    <div class="ri-ctas"><a class="ri-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? `<a class="ri-btn ghost" href="?regalo=1#comprar">🎁 Regálaselo a un joven</a>` : ''}</div>
-    <p class="t-ya">¿Ya lo tienes? <a href="${APP}/">Entra en ruta.vorka.mx</a></p>
-    <ul class="ri-chips"><li>${ICONO.gente}De 15 a 29 años</li><li>${ICONO.reloj}Pago único · 1 año</li><li>${ICONO.corazon}Lo recibido va para IMPACTO</li></ul>
-  </div>
-  <div class="ri-escena">${cel('mapa', 'El mapa de la ruta en ruta.vorka.mx: racha, XP, meta del día y las lecciones del nivel 1, El problema', 844, 'hero')}
-    <div class="ri-noti" aria-hidden="true"><span class="ri-noti-ic">${ICONO.fuego}</span><span><b>¡Lección terminada!</b>+10 XP · tu racha sigue</span></div></div>
-</div>
-${navTienda('ruta')}
-</section>
+    cuerpo: `<div class="ri" style="--pm:${colorDe('ruta-de-impacto')}">
+${heroMarca('ruta-de-impacto', {
+  apoyo: 'Un curso interactivo como los de idiomas, pero para sacar adelante tu proyecto: lecciones de 3 a 5 minutos, racha diaria y un tutor que te guía paso a paso.',
+  botones: `<a class="pm-btn" href="${comprar}">${p ? `Empezar por ${precioT}` : 'Muy pronto'} ${FLECHA}</a>${p ? '<a class="pm-btn sec" href="?regalo=1#comprar">🎁 Regálaselo a un joven</a>' : ''}`,
+  despues: `<p class="pm-precio"><b>${precioT}</b> · pago único · 1 año · lo recibido va para IMPACTO</p><p class="t-ya">¿Ya lo tienes? <a href="${APP}/">Entra en ruta.vorka.mx</a></p>`,
+})}
+${indiceProducto('ruta-de-impacto', [['que-es', 'Qué es'], ['como-funciona', 'Cómo funciona'], ['niveles', 'Los niveles'], ['calificacion', 'Calificación'], ['regalar', 'Regalar'], ['comprar', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${comprar}">${p ? 'Empezar' : 'Muy pronto'}</a>`)}
+${seccionQueEs('ruta-de-impacto', { titulo: 'Un curso para llevar tu proyecto social de la idea a tu comunidad.',
+  texto: 'Lecciones cortas con ejercicios, racha diaria y un tutor que te guía paso a paso. Mientras aprendes, armas <b>tu</b> proyecto real dentro de la plataforma, <b>lo pruebas en tu comunidad</b> con entrevistas y un piloto, y terminas con calificación y constancia.',
+  para: [['De 15 a 29 años, con ganas de cambiar algo', 'Te preocupa algo de tu colonia, tu escuela o tu ciudad y quieres hacer algo que funcione.'], ['Si ya tienes un proyecto en marcha', 'Te sirve para ordenarlo y probarlo.'], ['Mamá, papá, maestros o brigadas', 'Se lo regalas a quien tiene un proyecto en la cabeza.']] })}
 
 <section class="ri-sec" id="como-funciona"><div class="marco">
   <div class="ri-cab"><span class="ri-et">Cómo funciona</span><h2>Aprendes como en una app de idiomas. Avanzas tu proyecto de verdad.</h2><p>Lecciones cortas con ejercicios, una ruta de niveles que se abre conforme avanzas y un tutor que no te deja solo.</p></div>
@@ -115,7 +111,7 @@ ${navTienda('ruta')}
     [ICONO.fuego, 'Racha, XP e insignias', 'Elige tu meta diaria (5, 10 o 15 minutos), cuida tu racha y gana insignias por nivel, por racha y por evidencias completas.'],
     [ICONO.brujula, 'Un tutor con pistas', 'Al primer error te da una pista, no la respuesta. Al segundo, la explicación paso a paso y la regla. Lo que fallas vuelve a salir para repasarlo.'],
     [ICONO.lapiz, 'Tu proyecto mientras aprendes', 'Lo que escribes de tu proyecto se usa en los siguientes ejercicios y se revisa con reglas: ¿tu objetivo tiene cifra? ¿tiene fecha?']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
-  <div class="ri-capturas">${cel('tutor', 'El tutor da una pista después del primer error en un ejercicio de opción múltiple', 844)}${cel('proyecto', 'Paso «Tu proyecto»: el alumno escribe su problema y queda guardado en su proyecto', 844)}${cel('examen', 'Resultado de un examen de nivel: aciertos, puntos e intento', 540, 'corta')}</div>
+  <div class="ri-capturas">${cel('mapa', 'El mapa de la ruta en ruta.vorka.mx: racha, XP, meta del día y las lecciones del nivel 1, El problema', 844)}${cel('tutor', 'El tutor da una pista después del primer error en un ejercicio de opción múltiple', 844)}${cel('proyecto', 'Paso «Tu proyecto»: el alumno escribe su problema y queda guardado en su proyecto', 844)}${cel('examen', 'Resultado de un examen de nivel: aciertos, puntos e intento', 540, 'corta')}</div>
   <p class="ri-pie">Capturas reales de ruta.vorka.mx con datos de prueba.</p>
 </div></section>
 
@@ -160,7 +156,7 @@ ${navTienda('ruta')}
 <section class="ri-sec ri-osc" id="regalar"><div class="marco ri-dos">
   <div class="ri-cab izq"><span class="ri-et">Regalar</span><h2>Regálaselo a un joven.</h2>
     <p>¿Conoces a alguien con un proyecto en la cabeza? A tu hija, a tu sobrino, a tus alumnos o a la brigada de tu colonia. Compras, te llega una liga por cada regalo y se la mandas por WhatsApp.</p>
-    ${p ? `<div class="ri-ctas"><a class="ri-btn" href="?regalo=1#comprar">🎁 Regalar Ruta de Impacto ${FLECHA}</a></div>` : ''}</div>
+    ${p ? `<div class="ri-ctas"><a class="pm-btn" href="?regalo=1#comprar">🎁 Regalar Ruta de Impacto ${FLECHA}</a></div>` : ''}</div>
   <ol class="ri-pasos">${[['Eliges «Para regalar»', 'Cuántos regalos, para quién y un mensaje.'], ['Te llega una liga por regalo', 'Por correo, lista para mandar por WhatsApp.'], ['Quien la abre confirma su correo', 'El acceso queda a su nombre y su año empieza ese día. Cada liga funciona una sola vez.']].map(([t, d], k) => `<li><span class="ri-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
 </div></section>
 
@@ -173,13 +169,14 @@ ${p ? seccionCompra({ titulo: 'Empieza tu Ruta', intro: `${precioT}, pago único
 ${seccionResenas(rs)}
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una duda sobre Ruta de Impacto',
   pie: `<p class="t-nota t-legal">Ruta de Impacto · Powered by vorka.mx · Lo recibido va para <a href="${IMPACTO_URL}" target="_blank" rel="noopener">IMPACTO</a></p>` })}
+${p ? `<section class="ri-sec ri-cierre"><div class="marco"><h2>Tu proyecto social, <span>de la idea a la comunidad.</span></h2><div class="ri-ctas"><a class="pm-btn" href="#comprar">Empezar por ${precioT} ${FLECHA}</a><a class="pm-btn sec" href="?regalo=1#comprar">🎁 Regalarlo</a></div></div></section>` : ''}
 ${await masTienda(env, 'examenes')}
 ${p ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioT}</b><small>Pago único · 1 año</small></div><a class="btn acento chico" href="#comprar">Empezar</a></div>` : ''}
 </div>`,
   });
 }
 
-const CSS = `
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ri{--ri-tinta:#0f0d10;--ri-indigo:#2a2479;--ri-noche:#120e33;--ri-morado:#6b2a85;--ri-morado-c:#c59bd9;--ri-oro:#c8a45c;--ri-oro-c:#f5d08a;--ri-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
 [data-tema="oscuro"] .ri{--ri-morado:#c59bd9}
 .ri-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(20,17,20,.5);transition:transform .2s var(--ease),background .2s}
@@ -245,4 +242,21 @@ const CSS = `
 .ri-temas{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}.ri-temas li{padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:650;font-size:15px}
 .ri-pasos{list-style:none;padding:0;margin:0;display:grid;gap:12px}.ri-pasos li{padding:20px 22px;border-radius:22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}.ri-pasos b{margin-top:6px}
 .ri-pronto{text-align:center;font-size:18px;color:var(--fg-2)}
-.ri #form-compra .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}`;
+.ri #form-compra .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}
+/* Estilo de marca (portadas v4): blanco, tinta y el índigo de Ruta de Impacto; las secciones oscuras pasan a gris claro */
+.ri{--ri-noche:var(--bg-2);--ri-crema:var(--fg);--ri-morado:var(--pm-t);--ri-oro-c:var(--pm-t);--ri-morado-c:var(--pm-t);--pm-t:var(--pm);--acento:var(--pm);--acento-2:var(--pm);--sobre-acento:#fff}
+:root[data-tema="oscuro"] .ri{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}
+.ri .pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.ri .pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
+.ri .pm-grande b,.ri .pm-et:not(.gris){color:var(--pm-t)}
+.ri-osc{background:var(--bg-2);color:var(--fg)}.ri-osc .ri-cab p,.ri-osc p{color:var(--fg-2)}.ri-osc .ri-et{color:var(--pm-t)}
+.ri-niveles li,.ri-pasos li{background:var(--card);border-color:var(--line)}.ri-niveles p,.ri-pasos p{color:var(--fg-2)}
+.ri-niveles li.final{border-color:color-mix(in srgb,var(--pm) 45%,var(--line));background:color-mix(in srgb,var(--pm) 6%,var(--card))}
+.ri-reto{border-top-color:var(--line)}
+.ri-sparks-t{background:var(--bg-2);border:1px solid var(--line);color:var(--fg)}.ri-sparks-t p{color:var(--fg-2)}.ri-sparks-t p b{color:var(--fg)}
+.ri-pill{background:var(--pm);color:#fff}
+.ri-impacto{background:color-mix(in srgb,var(--pm) 8%,var(--card));border-color:color-mix(in srgb,var(--pm) 30%,var(--line));color:var(--fg)}.ri-impacto svg{background:color-mix(in srgb,var(--pm) 14%,transparent);color:var(--pm-t)}
+.ri-tabla .tot>*{background:color-mix(in srgb,var(--pm) 8%,transparent)}
+.ri-noti-ic{background:var(--pm);color:#fff}
+.ri-cierre{text-align:center}.ri-cierre h2{font-weight:800;font-size:clamp(30px,4.2vw,50px);line-height:1.04;letter-spacing:-.045em;margin:0 auto;max-width:16ch;text-wrap:balance}.ri-cierre h2 span{color:var(--pm-t)}.ri-cierre .ri-ctas{justify-content:center}
+.ri #form-compra .btn.acento{background:var(--pm);color:#fff;box-shadow:0 10px 24px -14px var(--pm)}
+.ri .t-barra .btn.acento{background:var(--pm);color:#fff}`;

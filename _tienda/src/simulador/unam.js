@@ -118,6 +118,12 @@ const VENTA = {
     sellos: ['Las 4 áreas de licenciatura', 'Examen completo: 120 reactivos en 3 horas', 'Aciertos estimados por materia', 'En celular o computadora'],
     alt: 'Simulador UNAM de Vorka México: pregunta con pista del tutor y reporte de aciertos por materia',
   },
+  // «Qué es / Para quién es» de la página (con lo que ya dice la página)
+  queEs: {
+    apoyo: 'Elige tu área y practica con 120 reactivos en 3 horas, con el peso de cada materia de tu área.',
+    texto: 'Un examen de práctica en línea para el examen de la UNAM, armado con las materias y el peso del área de tu carrera. <b>Si fallas, un tutor te da una pista</b> para intentarlo otra vez; al final, un reporte te dice cuántos aciertos llevas y qué reforzar.',
+    para: [['Si vas a presentar el examen de la UNAM', 'No sabes cuántos aciertos sacarías hoy en tu área.'], ['Si ya estudiaste con guías en PDF', 'Te falta practicar con el tiempo real y saber qué materias te faltan.'], ['Mamá, papá o quien quiera apoyar', 'Quieres regalarle algo que de verdad le ayude a prepararse.']],
+  },
   planesVenta: [
     { k: 'practica', nombre: 'Práctica', para: 'Solo entrenar, sin límite y con tutor', falta: 'No incluye los exámenes completos', trae: () => ['Calentamientos y simulacros Medios sin límite', 'Práctica por materia y por tema', 'Tutor con pistas y explicación paso a paso', 'Aciertos estimados y qué reforzar'] },
     { k: 'completo', nombre: 'Examen', para: 'Solo medirte: 2 exámenes completos como el real', falta: 'No incluye la práctica ilimitada', trae: () => ['2 exámenes completos de tu área: 120 reactivos en 3 horas', 'El 1.º con tutor para entrenar; el 2.º sin pistas, como el día del examen', 'Aciertos por materia y temas a reforzar', 'Cambia de área cuando quieras'] },

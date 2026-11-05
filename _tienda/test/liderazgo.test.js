@@ -74,7 +74,8 @@ describe('ficha /tienda/evaluacion-liderazgo/', () => {
     const r = await pedir('/tienda/evaluacion-liderazgo/');
     expect(r.status).toBe(200);
     const h = await r.text();
-    expect(h).toContain('¿Dónde estás hoy <em>como líder?</em>');
+    expect(h).toContain('<h1 class="pm-h1">Lo que crees de ti, <em>contra lo que has hecho.</em></h1>');
+    expect(h).toContain('¿Dónde estás hoy como líder?');
     for (const d of ['Liderazgo', 'Iniciativa', 'Servicio', 'Trabajo en equipo', 'Comunicación', 'Resiliencia', 'Claridad de propósito', 'Visión', 'Capacidad de ejecución', 'Medición de impacto', 'Autoconocimiento', 'Capacidad de movilización']) expect(h).toContain(`<li>${d}</li>`);
     expect(h).toContain('No es una prueba psicométrica');
     expect(h).toContain('no es una probabilidad de admisión');
