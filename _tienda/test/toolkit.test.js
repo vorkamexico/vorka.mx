@@ -476,23 +476,10 @@ describe('productos de creadores fuera del saldo', () => {
 });
 
 describe('páginas y panel', () => {
-  it('ficha /tienda/toolkit/: 4 líneas, precio fundador, tabla con precios reales de la tienda y los dos planes', async () => {
-    const html = await (await pedir('/tienda/toolkit/', { cookie: '' })).text();
-    expect(html).toContain('Pagas $599 al mes');
-    expect(html).toContain('Recibes $800 de saldo cada mes');
-    expect(html).toContain('Tu saldo nunca vence');
-    expect(html).toContain('Precio fundador garantizado por tus primeros 3 meses.</b>');
-    expect(html).toMatch(/Simulador PAA · práctica ilimitada<\/td><td class="n">\$199<\/td><td class="n">4<\/td><td class="n">9<\/td>/);
-    expect(html).toContain('value="toolkit-pro-mensual"');
-    expect(html).not.toContain('noindex');
-  });
-
-  it('mientras está inactivo la ficha no vende y no se indexa', async () => {
-    env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'toolkit-%'");
-    const html = await (await pedir('/tienda/toolkit/', { cookie: '' })).text();
-    expect(html).toContain('Muy pronto');
-    expect(html).toContain('noindex');
-    expect(html).not.toContain('id="form-toolkit"');
+  it('el Toolkit ya no se ofrece: su ficha manda a la tienda y conserva ?ref=', async () => {
+    const r = await pedir('/tienda/toolkit/?ref=EQUIPO1', { cookie: '' });
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('https://vorka.mx/tienda/?ref=EQUIPO1');
   });
 
   it('el catálogo y la API pública muestran una sola tarjeta (el plan mensual) y las fichas viejas redirigen', async () => {
@@ -501,7 +488,7 @@ describe('páginas y panel', () => {
     expect(api[0]).toEqual(expect.objectContaining({ id: expect.any(String), slug: expect.any(String), precio_centavos: expect.any(Number) }));
     const r = await pedir('/tienda/toolkit-pro-mensual/', { cookie: '' });
     expect(r.status).toBe(301);
-    expect(r.headers.get('location')).toBe('/tienda/toolkit/?plan=toolkit-pro-mensual#comprar');
+    expect(r.headers.get('location')).toBe('/tienda/');
   });
 
   it('Mi Toolkit sin sesión pide entrar; con sesión sin Toolkit lo explica', async () => {
