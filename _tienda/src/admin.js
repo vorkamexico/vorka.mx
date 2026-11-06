@@ -12,6 +12,7 @@ import { refrescarCreador, PISO_SUSCRIPCION } from './marketplace.js';
 import { motivoNoRecordar, MAX_SEGUIMIENTOS } from './recordatorio.js';
 import { avisar } from './puntos-push.js';
 import { diaMx } from './puntos-reglas.js';
+import { netoDelMes } from './finanzas.js';
 import { TEMPORADAS, temporadaDe, temporadaVigente, olvidarTemporada } from './temporadas.js';
 
 const TZ = 'America/Mexico_City';
@@ -59,7 +60,7 @@ export async function tablero(env, { mes } = {}) {
   const fin30 = enCurso ? inicioDia(new Date(Date.parse(hoy) + 864e5).toISOString().slice(0, 10)) : hasta;
   const ini30 = new Date(Date.parse(fin30) - 30 * 864e5).toISOString();
   const ini6 = inicioDia(`${mesMas(mes, -5)}-01`);
-  const [act, prev, dias, meses, prods, ev, reemb, pend] = await Promise.all([
+  const [act, prev, dias, meses, prods, ev, reemb, pend, neto] = await Promise.all([
     one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ?`, desde, hasta),
     one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ?`, inicioDia(`${ant}-01`), hastaAnt),
     all(env, `SELECT ${DIA_MX} d, COUNT(*) n, SUM(o.monto_centavos) monto FROM orders o WHERE ${PAGADA} AND o.paid_at >= ? AND o.paid_at < ? GROUP BY d`, ini30, fin30),
@@ -69,6 +70,7 @@ export async function tablero(env, { mes } = {}) {
     all(env, `SELECT product_id id, SUM(tipo = 'view_product') vistas, SUM(tipo = 'begin_checkout') checkouts FROM events WHERE created_at >= ? AND created_at < ? AND product_id IS NOT NULL GROUP BY product_id`, desde, hasta),
     one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto FROM orders o WHERE o.estado = 'refunded' AND o.paid_at >= ? AND o.paid_at < ?`, desde, hasta),
     one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'pending' AND metodo_pago IN ('oxxo', 'customer_balance')"),
+    netoDelMes(env, { desde, hasta, mes }),
   ]);
   // series completas (los días o meses sin ventas en cero)
   const porDia = Object.fromEntries(dias.map(x => [x.d, x])), porMes = Object.fromEntries(meses.map(x => [x.m, x]));
@@ -84,7 +86,7 @@ export async function tablero(env, { mes } = {}) {
     actual: { ventas: act.n, monto_centavos: act.monto }, previo: { ventas: prev.n, monto_centavos: prev.monto },
     visitas: ev.reduce((s, x) => s + (x.vistas || 0), 0), checkouts: ev.reduce((s, x) => s + (x.checkouts || 0), 0),
     reembolsos: { ventas: reemb.n, monto_centavos: reemb.monto }, pendientes_efectivo: { ventas: pend.n, monto_centavos: pend.monto },
-    dias: serieDias, meses: serieMeses, productos };
+    neto, dias: serieDias, meses: serieMeses, productos };
 }
 
 // ---------- órdenes ----------
