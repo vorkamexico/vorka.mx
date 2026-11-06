@@ -54,6 +54,7 @@ export const SIMULADORES = {
   unam: { slug: 'simulador-unam-practica', nombre: 'Simulador UNAM', ruta: '/simulador-unam/', guia: ['/learn/unam/examen-unam-por-area/', 'Qué viene en el examen UNAM según tu área'] },
   paa: { slug: 'simulador-paa-practica', nombre: 'Simulador PAA', ruta: '/simulador-paa/', guia: ['/learn/paa/que-es-la-paa/', 'Qué es la PAA y qué viene'] },
   ecoems: { slug: 'simulador-ecoems-practica', nombre: 'Simulador ECOEMS', ruta: '/simulador-ecoems/', guia: ['/learn/ecoems/como-elegir-tus-opciones-ecoems/', 'Cómo elegir tus opciones de prepa (ECOEMS)'] },
+  ipn: { slug: 'simulador-ipn-practica', nombre: 'Simulador IPN', ruta: '/simulador-ipn/', guia: ['/simulador-ipn/#estructura', 'Las materias del examen del IPN por área'] },
   'prepa-ug': { slug: 'simulador-prepa-ug-practica', nombre: 'Simulador prepa UG', ruta: '/simulador-prepa-ug/', guia: ['/learn/prepa-ug/examen-admision-prepa-ug/', 'Examen de admisión a la prepa UG'] },
 };
 
@@ -72,7 +73,7 @@ export function examenDe(r, carreras) {
   }
   if (r.examen === 'unam') return { sim: 'unam', area, titulo: area ? `Tu examen: UNAM, ${AREA_CORTA[area]}` : 'Tu examen: UNAM', texto: 'El examen de licenciatura de la UNAM cambia según el área de la carrera que eliges. Practica con las preguntas del área de tu primera opción.' };
   if (r.examen === 'privada' || r.examen === 'otra') return { sim: 'paa', area, titulo: 'Tu examen: muy probablemente la PAA', texto: 'Muchas universidades privadas (y algunas públicas) piden la Prueba de Aptitud Académica (PAA) del College Board. Confirma en la convocatoria de cada universidad qué examen pide.' };
-  if (r.examen === 'ipn') return { sim: null, area, titulo: 'Tu examen: IPN', texto: 'El IPN publica su propio proceso de admisión y agrupa su oferta en tres ramas. Revisa en su convocatoria si tus carreras se imparten ahí y en qué escuela. Por ahora no tenemos simulador del examen del IPN.' };
+  if (r.examen === 'ipn') return { sim: 'ipn', area, titulo: 'Tu examen: IPN', texto: 'El IPN tiene su propio examen de admisión: 140 reactivos en 3 horas, con 8 materias que pesan distinto según el área de tu carrera (Ingeniería y Ciencias Físico Matemáticas, Ciencias Médico Biológicas, o Ciencias Sociales y Administrativas). Revisa en su convocatoria si tus carreras se imparten ahí y en qué escuela.' };
   return { sim: null, area, titulo: 'Tu examen: Universidad de Guanajuato', texto: 'La UG publica su propio proceso de admisión en su convocatoria. Revisa qué examen pide para tu carrera y sus fechas.' };
 }
 const AREA_CORTA = { 1: 'Área 1 (Físico-Matemáticas e Ingenierías)', 2: 'Área 2 (Biológicas, Químicas y de la Salud)', 3: 'Área 3 (Ciencias Sociales)', 4: 'Área 4 (Humanidades y Artes)' };

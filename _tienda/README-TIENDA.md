@@ -236,6 +236,15 @@ Publicar: doble clic en `_tienda/publicar-simulador.command` después del merge 
   - Inicio (para todos los planes): tarjeta «Tu simulador» (plan, vigencia, qué incluye con candado en lo que le falta y botón para desbloquearlo, y «Cómo sacarle provecho en 3 pasos», abierta solo la primera vez); «Recomienda y gana» con su liga de Puntos Vorka a la página del simulador (`/api/<app>/puntos`: GET solo lee, POST crea la liga como el portal de Brindi), copiar y compartir por WhatsApp, sus puntos y su nivel; y «Más para tu camino» (Test vocacional, ¿Qué proyecto social hago? y Ruta de Impacto).
   - Pruebas: `test/simulador-estudio.test.js`.
 
+## Simulador IPN (vorka.mx/simulador-ipn)
+
+Examen de admisión a **licenciatura** (nivel superior) del IPN: 3 áreas (Ingeniería y Ciencias Físico Matemáticas, Médico Biológicas, Sociales y Administrativas), 140 reactivos en 3 horas, 8 materias (Matemáticas, Competencia escrita, Competencia lectora, Química, Física, Biología, Historia e Inglés). Para el **bachillerato** del IPN (CECyT/CET) el examen es el del ECOEMS: lo dice la FAQ del Simulador ECOEMS y la del IPN.
+
+- Código: `src/simulador/ipn.js`. El banco (1,012 reactivos, 88 temas) se arma con los reactivos originales de la UNAM (Matemáticas, Física, Química, Biología, Historia de México y Universal → Historia, Español → Competencia escrita o lectora) y del PAA (Lectura → Competencia lectora, Redacción → Competencia escrita, Matemáticas, Inglés). El tema `vocabulario` del Español de la UNAM se renombra a `vocabulario_espanol` (choca con el de Lectura del PAA).
+- Distribución por materia: de referencia (guías de preparación); el IPN no la publica y la página lo dice. Total, tiempo, áreas y asignación por aciertos: convocatoria (Base Sexta).
+- Productos: migración 0076 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), activos desde la publicación. Imágenes: `portadas_v3.py` (SOLO=simulador-ipn) y `portadas_ipn.py`; ícono de la app en `simulador/icono/iconos.mjs` (color en `COLORES_APP.ipn`).
+- Pruebas: `test/simulador-ipn.test.js`.
+
 ## Brindi (vorka.mx/tienda/brindi)
 
 Invitaciones digitales con marca propia (Diversificación). Aquí solo se vende; la app vive en `os.vorka.mx/brindi/` (ver `vorka-os/PLAN-BRINDI.md`).

@@ -103,10 +103,10 @@ describe('reglas (sin IA, deterministas)', () => {
     expect(ra.carreras.slice(0, 5).every(c => /[SA]/.test(c.c.slice(0, 2)))).toBe(true);
     expect(ra.examen.sim).toBe('unam');
   });
-  it('el examen sale de lo que contestó: secundaria + UNAM → ECOEMS; privada → PAA; IPN sin simulador', () => {
+  it('el examen sale de lo que contestó: secundaria + UNAM → ECOEMS; privada → PAA; IPN → Simulador IPN', () => {
     expect(calcularV(leerV(respuestasV({ nivel: 'secundaria' })).r).examen.sim).toBe('ecoems');
     expect(calcularV(leerV(respuestasV({ examen: 'privada' })).r).examen.sim).toBe('paa');
-    expect(calcularV(leerV(respuestasV({ examen: 'ipn' })).r).examen.sim).toBe(null);
+    expect(calcularV(leerV(respuestasV({ examen: 'ipn' })).r).examen.sim).toBe('ipn');
   });
   it('si faltan respuestas, no califica', () => {
     const r = respuestasV(); delete r.i3; delete r.examen;

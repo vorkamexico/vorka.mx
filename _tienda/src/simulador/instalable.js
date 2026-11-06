@@ -6,6 +6,7 @@ export const COLORES_APP = {
   unam: ['#12306B', '#2F6FD6'],
   ecoems: ['#11593A', '#2E9E68'],
   'prepa-ug': ['#9A3412', '#EA7A2E'],
+  ipn: ['#5A1230', '#A3305C'],
 };
 const ICONOS = '/assets/tienda/simulador-app';
 export const idIcono = app => app.replace(/^simulador-/, '');
