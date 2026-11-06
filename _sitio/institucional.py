@@ -88,7 +88,7 @@ def pagina_nosotros():
                  '<p>En Vorka Learn se muestran anuncios de Google AdSense; lo explicamos en nuestro <a href="/privacidad/">aviso de privacidad</a>.</p>',
                  _ligas(('/learn/', 'Ir a Vorka Learn'))),
         _tarjeta('rayo', 'Tienda de herramientas digitales', '<p>Productos digitales con entrega inmediata:</p><ul>'
-                 '<li><span>Simuladores en línea de examen de admisión: <a href="/simulador-paa/">PAA</a>, <a href="/simulador-unam/">UNAM</a>, <a href="/simulador-ecoems/">ECOEMS</a> y <a href="/simulador-prepa-ug/">prepa UG (EXANI-I)</a>.</span></li>'
+                 '<li><span>Simuladores en línea de examen de admisión: <a href="/simulador-paa/">PAA</a>, <a href="/simulador-unam/">UNAM</a>, <a href="/simulador-ipn/">IPN</a>, <a href="/simulador-ecoems/">ECOEMS</a> y <a href="/simulador-prepa-ug/">prepa UG (EXANI-I)</a>.</span></li>'
                  '<li><span>Invitaciones digitales con QR (<a href="/tienda/brindi/">Brindi</a>) y eventos con registro (<a href="/tienda/cupo/">Cupo</a>).</span></li>'
                  '<li><span>Apps para negocios: <a href="/tienda/agenda/">Agenda</a>, <a href="/tienda/vuelve/">Vuelve</a>, <a href="/tienda/vende/">Vende</a> y <a href="/tienda/cuentas/">Cuentas</a>.</span></li>'
                  '<li><span>El curso <a href="/tienda/ruta-de-impacto/">Ruta de Impacto</a> y kits para emprender.</span></li></ul>',

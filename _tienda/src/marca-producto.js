@@ -11,6 +11,7 @@ export const MARCAS = {
   'simulador-paa': ['#1E5BB8', 'Simulador PAA', 'Practica como el día del examen y [sube tu puntaje.]', ['**642** reactivos', '**Tutor** con pistas', 'Puntaje **200–800**']],
   'simulador-unam': ['#9A6B00', 'Simulador UNAM', 'Practica [con el peso de tu área.]', ['**476** reactivos', '**4** áreas', '**120** reactivos en 3 h']],
   'simulador-ecoems': ['#D9480F', 'Simulador ECOEMS', 'Llega a la prepa UNAM o al IPN [bien preparado.]', ['**320** reactivos', '**10** materias', '**128** reactivos en 3 h']],
+  'simulador-ipn': ['#7A1C42', 'Simulador IPN', 'Practica para el IPN [con el peso de tu área.]', ['**1,012** reactivos', '**3** áreas', '**140** reactivos en 3 h']],
   'simulador-prepa-ug': ['#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']],
   brindi: ['#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']],
   cupo: ['#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']],

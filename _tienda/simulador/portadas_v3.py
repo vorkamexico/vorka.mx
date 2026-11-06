@@ -200,6 +200,10 @@ SIMS = {
     enun='Una mochila de $450 tiene 20 % de descuento. ¿Cuánto se paga?', ops=['$360', '$430', '$90'], mal=1,
     pista='El 20 % de 450 no son 20 pesos: ¿cuánto es la quinta parte de 450?',
     rep=('Casi listo · 112/160', [('Lectora', 23, 30), ('Redacción', 21, 30), ('Matemático', 27, 40), ('Científico', 22, 30)], 'ac')),
+  'ipn': dict(nombre='IPN', ui='#A3305C', reloj='2:47:15', seccion='Física', n='6 de 17', tema='Dinámica',
+    enun='Un carrito de 4 kg acelera a 3 m/s². ¿Qué fuerza neta actúa sobre él?', ops=['7 N', '1.33 N', '12 N', '0.75 N'], mal=0,
+    pista='Sumar masa y aceleración no da una fuerza: ¿qué dice la segunda ley de Newton sobre cómo se relacionan?',
+    rep=('Casi listo · 104/140', [('Matemáticas', 27, 37), ('Física', 12, 17), ('Química', 13, 17), ('Comp. lectora', 16, 20)], 'ac')),
 }
 OSCURO = dict(texto='#fff', suave='rgba(255,255,255,.82)', chipf='rgba(255,255,255,.14)', tagf='rgba(0,0,0,.22)')
 CLARO = dict(texto='#1A1405', suave='rgba(26,20,5,.78)', chipf='rgba(26,20,5,.10)', tagf='rgba(26,20,5,.12)')
@@ -214,6 +218,9 @@ P = {
   # Verde hoja claro con texto oscuro: no repite los verdes profundos de Agenda ni del kit Idea en Orden
   'simulador-prepa-ug': dict(**CLARO, fondo='linear-gradient(140deg,#B6E86A 0%,#7ED957 55%,#4CB944 100%)', acento='#0F2E12', pre='Simulador', nombre='Prepa UG', px=200,
     tag='EXANI-I · Prepa de la UG', beneficio='Prepárate desde la secundaria con un tutor que te guía.', datos=['400 reactivos', '5 áreas', '160 reactivos en 4.5 h'], sim='prepa-ug'),
+  # Guinda brillante con acento rosa claro: distinto del vino oscuro de Brindi y del rojo de Vuelve
+  'simulador-ipn': dict(**OSCURO, fondo='linear-gradient(140deg,#5C1031 0%,#9A2050 55%,#D2416F 100%)', acento='#FFE0EA', pre='Simulador', nombre='IPN', px=240,
+    tag='Examen de nivel superior · 3 áreas', beneficio='Practica con el peso de las materias de tu área.', datos=['1,012 reactivos', '3 áreas', '140 reactivos en 3 h'], sim='ipn'),
   'brindi': dict(**OSCURO, fondo='linear-gradient(140deg,#2A0A16 0%,#5A1A2E 55%,#8A2E4A 100%)', acento='#F3D9A4', pre='', nombre='Brindi',
     tag='Invitaciones digitales', beneficio='Tu invitación con confirmación y acceso con QR.', datos=['6 diseños premium', 'Confirmaciones al momento', 'Pase con QR'], ui=ui_brindi),
   'cupo': dict(**OSCURO, fondo='linear-gradient(140deg,#17062F 0%,#3A1C71 55%,#6D28D9 100%)', acento='#C8F560', pre='', nombre='Cupo',

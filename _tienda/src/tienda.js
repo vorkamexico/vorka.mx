@@ -110,6 +110,7 @@ const SIM_TIENDA = {
   'simulador-paa': { nombre: 'Simulador PAA en línea', texto: 'Práctica ilimitada con tutor y exámenes completos como la PAA real: elige uno o llévate el Completo con los dos.' },
   'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
   'simulador-ecoems': { nombre: 'Simulador ECOEMS en línea', texto: 'Para la prepa de la UNAM y del IPN: práctica ilimitada con tutor y exámenes de 128 reactivos en 3 horas.' },
+  'simulador-ipn': { nombre: 'Simulador IPN en línea', texto: 'Para licenciatura del IPN, en sus 3 áreas: práctica ilimitada con tutor y exámenes de 140 reactivos en 3 horas, como el real.' },
   'simulador-prepa-ug': { nombre: 'Simulador prepa UG (EXANI-I) en línea', texto: 'Para la prepa de la Universidad de Guanajuato: práctica ilimitada con tutor y exámenes EXANI-I de 160 reactivos en 4 horas y media.' },
 };
 const APPS_TIENDA = {
@@ -297,7 +298,7 @@ export async function paginaCatalogo(env, req, url) {
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
     titulo: 'Tienda Vorka México · Simuladores de examen, invitaciones digitales y apps para tu negocio', ruta: '/tienda/', navActual: 'inicio', imagen: 'https://vorka.mx/assets/tienda/og/catalogo.jpg',
-    descripcion: 'Simuladores de examen (PAA, UNAM, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta, OXXO o transferencia.',
+    descripcion: 'Simuladores de examen (PAA, UNAM, IPN, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta, OXXO o transferencia.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO, whatsapp: true,

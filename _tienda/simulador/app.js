@@ -326,7 +326,7 @@
     var hayCal = !!(B.calentamiento || infoArea()), hayExamen = !!(B.examen || infoArea());
     // UNAM: el examen se arma con la distribución del área (cambia el peso de cada materia)
     var selArea = areas() ? '<div class="sim-card sim-area"><span class="etiqueta">Tu área</span><p class="sim-nota">El examen y los simulacros se arman con las materias y el peso de tu área.</p><div class="sim-area-ops" role="radiogroup" aria-label="Elige tu área">' +
-      areas().map(function (a) { return '<button type="button" class="sim-chip-area' + (a.id === areaActual() ? ' sel' : '') + '" role="radio" aria-checked="' + (a.id === areaActual()) + '" data-area="' + a.id + '"><b>Área ' + a.id + '</b><small>' + esc(a.corto) + '</small></button>'; }).join('') + '</div></div>' : '';
+      areas().map(function (a) { return '<button type="button" class="sim-chip-area' + (a.id === areaActual() ? ' sel' : '') + '" role="radio" aria-checked="' + (a.id === areaActual()) + '" data-area="' + a.id + '">' + (/^\d+$/.test(a.id) ? '<b>Área ' + a.id + '</b><small>' + esc(a.corto) + '</small>' : '<b>' + esc(a.corto) + '</b>') + '</button>'; }).join('') + '</div></div>' : '';
     // Computadora: dos columnas (practicar a la izquierda; tu estado, meta y banco a la derecha).
     // Celular: una sola columna; el orden lo dan las clases o-* (las columnas se vuelven display: contents).
     h(
