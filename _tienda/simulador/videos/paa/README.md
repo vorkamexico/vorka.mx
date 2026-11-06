@@ -1,5 +1,7 @@
 # Videos explicativos · Simulador PAA (piloto)
 
+**Los 28 guiones están completos** en el documento de revisión «Guiones de videos · Simulador PAA» (claude.ai/artifact/DeL6LfyjYz8rNP5V7jJBet). Mientras el profe revisa, **ese documento es la versión vigente**: ahí se comentan y aprueban. Los archivos de esta carpeta son la primera tanda (6) y se reemplazan por la versión aprobada antes de generar los videos.
+
 Videos cortos tipo pizarrón animado: aparecen junto a la pregunta cuando el estudiante falla y en la práctica de cada tema. Se generan por código (animación con la marca del simulador) con voz en español de México y subtítulos siempre visibles. **Ningún video se publica sin la aprobación del profe.**
 
 ## Formato de cada guion
@@ -32,33 +34,31 @@ Los temas amplios (los 4 de Matemáticas y Grammar de Inglés) se parten en dos 
 
 | # | Sección | Tema del banco | Video | Guion |
 |---|---|---|---|---|
-| 1 | Matemáticas | Aritmética | Porcentajes, descuentos y aumentos | ✅ [01](01-aritmetica-porcentajes.md) |
-| 2 | Matemáticas | Aritmética | Potencias, fracciones y decimales sin calculadora | Pendiente |
-| 3 | Matemáticas | Álgebra | Ecuaciones lineales en 4 pasos | ✅ [03](03-algebra-ecuaciones.md) |
-| 4 | Matemáticas | Álgebra | Factorizar y simplificar; parábolas | Pendiente |
-| 5 | Matemáticas | Geometría | Áreas, perímetros y volúmenes | Pendiente |
-| 6 | Matemáticas | Geometría | Ángulos, triángulos y Pitágoras | Pendiente |
-| 7 | Matemáticas | Análisis de datos y probabilidad | Media, mediana, moda y gráficas | Pendiente |
-| 8 | Matemáticas | Análisis de datos y probabilidad | Probabilidad paso a paso | Pendiente |
-| 9 | Lectura | Vocabulario en contexto | Vocabulario en contexto | Pendiente |
-| 10 | Lectura | Idea central y tema | Idea central y tema | Pendiente |
-| 11 | Lectura | Inferencias | Inferencias: leer lo que el texto no dice | ✅ [11](11-lectura-inferencias.md) |
-| 12 | Lectura | Evidencia textual | Evidencia textual | Pendiente |
-| 13 | Lectura | Análisis literario | Análisis literario | Pendiente |
-| 14 | Lectura | Propósito, tono y estructura | Propósito, tono y estructura | Pendiente |
-| 15 | Redacción | Concordancia | Concordancia: ¿quién hace la acción? | ✅ [15](15-redaccion-concordancia.md) |
-| 16 | Redacción | Puntuación | Puntuación | Pendiente |
-| 17 | Redacción | Ortografía y acentuación | Ortografía y acentuación | Pendiente |
-| 18 | Redacción | Conectores y transiciones | Conectores: la relación entre las ideas | ✅ [18](18-redaccion-conectores.md) |
-| 19 | Redacción | Orden lógico | Orden lógico | Pendiente |
-| 20 | Redacción | Coherencia y unidad | Coherencia y unidad | Pendiente |
-| 21 | Redacción | Combinación de oraciones | Combinación de oraciones | Pendiente |
-| 22 | Redacción | Título y cierre | Título y cierre | Pendiente |
-| 23 | Inglés | Vocabulary & phrasal verbs | Vocabulary & phrasal verbs | Pendiente |
-| 24 | Inglés | Grammar (tenses & conditionals) | Conditionals: los 4 «if» | ✅ [24](24-ingles-conditionals.md) |
-| 24b | Inglés | Grammar (tenses & conditionals) | Tenses: qué tiempo usar (present perfect, for/since, continuous) | Pendiente |
-| 25 | Inglés | Sentence structure | Sentence structure | Pendiente |
-| 26 | Inglés | Reading comprehension | Reading comprehension | Pendiente |
-| 27 | Inglés | Indirect writing | Indirect writing | Pendiente |
-
-**Primera tanda (6 guiones, uno o dos por sección):** sirve para validar el formato, el tono y la duración con el profe antes de escribir los otros 22.
+| 1 | Matemáticas | Aritmética | Porcentajes, descuentos y aumentos | En el documento |
+| 2 | Matemáticas | Aritmética | Potencias, fracciones y decimales sin calculadora | En el documento |
+| 3 | Matemáticas | Álgebra | Ecuaciones lineales en 4 pasos | En el documento |
+| 4 | Matemáticas | Álgebra | Factorizar y simplificar; parábolas | En el documento |
+| 5 | Matemáticas | Geometría | Áreas, perímetros y volúmenes | En el documento |
+| 6 | Matemáticas | Geometría | Ángulos, triángulos y Pitágoras | En el documento |
+| 7 | Matemáticas | Análisis de datos y probabilidad | Media, mediana, moda y gráficas | En el documento |
+| 8 | Matemáticas | Análisis de datos y probabilidad | Probabilidad paso a paso | En el documento |
+| 9 | Lectura | Vocabulario en contexto | Vocabulario en contexto | En el documento |
+| 10 | Lectura | Idea central y tema | Idea central y tema | En el documento |
+| 11 | Lectura | Inferencias | Inferencias: leer lo que el texto no dice | En el documento |
+| 12 | Lectura | Evidencia textual | Evidencia textual | En el documento |
+| 13 | Lectura | Análisis literario | Análisis literario | En el documento |
+| 14 | Lectura | Propósito, tono y estructura | Propósito, tono y estructura | En el documento |
+| 15 | Redacción | Concordancia | Concordancia: ¿quién hace la acción? | En el documento |
+| 16 | Redacción | Puntuación | Puntuación | En el documento |
+| 17 | Redacción | Ortografía y acentuación | Ortografía y acentuación | En el documento |
+| 18 | Redacción | Conectores y transiciones | Conectores: la relación entre las ideas | En el documento |
+| 19 | Redacción | Orden lógico | Orden lógico | En el documento |
+| 20 | Redacción | Coherencia y unidad | Coherencia y unidad | En el documento |
+| 21 | Redacción | Combinación de oraciones | Combinación de oraciones | En el documento |
+| 22 | Redacción | Título y cierre | Título y cierre | En el documento |
+| 23 | Inglés | Vocabulary & phrasal verbs | Vocabulary & phrasal verbs | En el documento |
+| 24 | Inglés | Grammar (tenses & conditionals) | Conditionals: los 4 «if» | En el documento |
+| 24b | Inglés | Grammar (tenses & conditionals) | Tenses: qué tiempo usar (present perfect, for/since, continuous) | En el documento |
+| 25 | Inglés | Sentence structure | Sentence structure | En el documento |
+| 26 | Inglés | Reading comprehension | Reading comprehension | En el documento |
+| 27 | Inglés | Indirect writing | Indirect writing | En el documento |
