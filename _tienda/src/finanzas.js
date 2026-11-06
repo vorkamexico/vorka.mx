@@ -57,7 +57,10 @@ export async function netoDelMes(env, { desde, hasta, mes }) {
 export async function ultimasPagadas(env, { n = 8 } = {}) {
   const lim = Math.max(1, Math.min(50, Number(n) || 8));
   return all(env, `SELECT o.id, o.nombre, o.email, o.monto_centavos, o.moneda, o.metodo_pago, o.created_at, o.paid_at, o.stripe_fee_centavos, o.ref_code,
-      o.puntos_usados, (SELECT GROUP_CONCAT(i.nombre, ' + ') FROM order_items i WHERE i.order_id = o.id) productos
+      o.puntos_usados, (SELECT GROUP_CONCAT(i.nombre, ' + ') FROM order_items i WHERE i.order_id = o.id) productos,
+      -- Suscripción (mensual o anual): en Stripe no trae método en la orden, el panel la marca aparte
+      EXISTS (SELECT 1 FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id
+        AND (i.intervalo IS NOT NULL OR json_extract(p.contenido, '$.suscripcion.intervalo') IS NOT NULL)) suscripcion
     FROM orders o WHERE ${PAGADA} AND o.paid_at IS NOT NULL ORDER BY o.paid_at DESC LIMIT ?`, lim);
 }
 

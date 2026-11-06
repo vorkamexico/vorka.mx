@@ -73,6 +73,13 @@ describe('últimas compras pagadas', () => {
     const l = await ultimasPagadas(env, { n: 5 });
     expect(l.map(x => x.metodo_pago)).toEqual(['oxxo', 'card']);
     expect(l[0]).toMatchObject({ id: oxxo.id, paid_at: '2026-10-07T15:00:00.000Z', created_at: '2026-10-01T18:00:00.000Z' });
+    expect(l.map(x => x.suscripcion)).toEqual([0, 0]);
+    env.DB.raw.prepare("UPDATE order_items SET intervalo = 'month' WHERE order_id = ?").run(oxxo.id);
+    expect((await ultimasPagadas(env))[0].suscripcion).toBe(1);
+    // …o porque el producto es de suscripción (así llegan las compras de Checkout en modo suscripción)
+    env.DB.raw.prepare("UPDATE order_items SET intervalo = NULL WHERE order_id = ?").run(oxxo.id);
+    env.DB.raw.prepare(`UPDATE products SET contenido = json_set(contenido, '$.suscripcion', json('{"intervalo":"month"}')) WHERE id = (SELECT product_id FROM order_items WHERE order_id = ?)`).run(oxxo.id);
+    expect((await ultimasPagadas(env)).map(x => x.suscripcion)).toEqual([1, 1]);
   });
 });
 
