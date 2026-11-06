@@ -1,0 +1,353 @@
+{
+  "id": "paa-22",
+  "tema": "titulo_cierre",
+  "titulo": "Título y cierre",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/22.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Un texto habla de cómo el ruido de la ciudad afecta el sueño, la salud y el humor. ¿Qué título va? A: los coches. B: el ruido nos enferma. C: la vida en el campo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Texto: el ruido afecta sueño, salud, humor",
+          "x": 60,
+          "y": 130,
+          "tam": 50,
+          "en": "el ruido de la ciudad"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) Los coches",
+          "x": 60,
+          "y": 270,
+          "id": "a",
+          "tam": 68,
+          "en": "A: los coches"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) El ruido nos enferma",
+          "x": 60,
+          "y": 380,
+          "id": "b",
+          "tam": 68,
+          "en": "B: el ruido"
+        },
+        {
+          "a": "escribe",
+          "texto": "C) La vida en el campo",
+          "x": 60,
+          "y": 490,
+          "id": "c",
+          "tam": 68,
+          "en": "C: la vida"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "El título es la idea central en pocas palabras: tiene que cubrir todo el texto.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "título  =  idea central",
+          "x": 60,
+          "y": 260,
+          "color": "amarillo",
+          "tam": 76,
+          "en": "El título es"
+        },
+        {
+          "a": "escribe",
+          "texto": "cubre TODO el texto",
+          "x": 60,
+          "y": 420,
+          "id": "u",
+          "color": "verde",
+          "tam": 76,
+          "en": "cubrir todo"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "verde",
+          "en": "todo el texto"
+        }
+      ],
+      "limpia": true,
+      "inicio": 13.87
+    },
+    {
+      "escena": "Descarta",
+      "voz": "La A es solo un detalle. La C habla de otra cosa. La B cubre todo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Texto: el ruido afecta sueño, salud, humor",
+          "x": 60,
+          "y": 130,
+          "tam": 50,
+          "en": "La A"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) Los coches",
+          "x": 60,
+          "y": 270,
+          "id": "a",
+          "tam": 68,
+          "en": "La A"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) El ruido nos enferma",
+          "x": 60,
+          "y": 380,
+          "id": "b",
+          "tam": 68,
+          "en": "La B"
+        },
+        {
+          "a": "escribe",
+          "texto": "C) La vida en el campo",
+          "x": 60,
+          "y": 490,
+          "id": "c",
+          "tam": 68,
+          "en": "La C"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "solo un detalle"
+        },
+        {
+          "a": "escribe",
+          "texto": "detalle",
+          "x": 560,
+          "y": 270,
+          "color": "rojo",
+          "tam": 52,
+          "en": "solo un detalle"
+        },
+        {
+          "a": "tacha",
+          "sobre": "c",
+          "color": "rojo",
+          "en": "otra cosa"
+        },
+        {
+          "a": "escribe",
+          "texto": "otro tema",
+          "x": 700,
+          "y": 490,
+          "color": "rojo",
+          "tam": 52,
+          "en": "otra cosa"
+        },
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "cubre todo"
+        },
+        {
+          "a": "palomita",
+          "x": 800,
+          "y": 360,
+          "en": "cubre todo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 20.04
+    },
+    {
+      "escena": "El cierre",
+      "voz": "Para el cierre, lo mismo: retoma la idea de todo el texto, sin meter algo nuevo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Cierre:",
+          "x": 60,
+          "y": 170,
+          "color": "amarillo",
+          "tam": 76,
+          "en": "Para el cierre"
+        },
+        {
+          "a": "escribe",
+          "texto": "✓ retoma todo el texto",
+          "x": 60,
+          "y": 320,
+          "color": "verde",
+          "tam": 70,
+          "en": "retoma la idea"
+        },
+        {
+          "a": "escribe",
+          "texto": "✗ nada nuevo",
+          "x": 60,
+          "y": 450,
+          "color": "rojo",
+          "tam": 70,
+          "en": "sin meter algo nuevo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 26.86
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con el cierre que abre un tema nuevo, como: y también hay mucha basura. Eso no cierra, abre.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "«…y también hay mucha basura.»",
+          "x": 60,
+          "y": 300,
+          "id": "x",
+          "tam": 62,
+          "en": "y también hay"
+        },
+        {
+          "a": "tacha",
+          "sobre": "x",
+          "color": "rojo",
+          "en": "no cierra"
+        },
+        {
+          "a": "escribe",
+          "texto": "no cierra: abre",
+          "x": 60,
+          "y": 450,
+          "color": "rojo",
+          "tam": 72,
+          "en": "abre"
+        }
+      ],
+      "limpia": true,
+      "inicio": 32.92
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Un texto sobre los beneficios de leer diario. ¿Qué cierre va? A: leer un poco cada día nos hace pensar mejor. B: los libros digitales son baratos.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Texto: beneficios de leer diario",
+          "x": 60,
+          "y": 220,
+          "tam": 56,
+          "en": "beneficios de leer"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) Leer cada día nos hace pensar mejor.",
+          "x": 60,
+          "y": 340,
+          "id": "a",
+          "tam": 52,
+          "en": "A: leer"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) Los libros digitales son baratos.",
+          "x": 60,
+          "y": 450,
+          "id": "b",
+          "tam": 52,
+          "en": "B: los libros"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 40.58
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es la A: retoma todo el texto. La B mete un tema nuevo.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "a",
+          "color": "verde",
+          "en": "Es la A"
+        },
+        {
+          "a": "tacha",
+          "sobre": "b",
+          "color": "rojo",
+          "en": "un tema nuevo"
+        }
+      ],
+      "inicio": 52.71
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: título y cierre cubren todo el texto. Ni un detalle, ni algo nuevo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "cubren todo el texto",
+          "x": 70,
+          "y": 300,
+          "en": "título y cierre"
+        },
+        {
+          "a": "escribe",
+          "texto": "ni detalle, ni algo nuevo",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "Ni un detalle"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "algo nuevo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 58.18
+    }
+  ],
+  "duracion": 63.56
+}

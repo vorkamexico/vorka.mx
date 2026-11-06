@@ -1,0 +1,329 @@
+{
+  "id": "paa-17",
+  "tema": "ortografia",
+  "titulo": "Ortografía y acentuación",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/17.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Lleva acento? Camion, arbol, musica.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "camion",
+          "x": 60,
+          "y": 220,
+          "tam": 80,
+          "en": "Camion"
+        },
+        {
+          "a": "escribe",
+          "texto": "arbol",
+          "x": 380,
+          "y": 220,
+          "tam": 80,
+          "en": "arbol"
+        },
+        {
+          "a": "escribe",
+          "texto": "musica",
+          "x": 650,
+          "y": 220,
+          "tam": 80,
+          "en": "musica"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Lleva acento?",
+          "x": 60,
+          "y": 450,
+          "color": "azul",
+          "tam": 76,
+          "en": "¿Lleva acento"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La fuerte",
+      "voz": "Primero busca la sílaba que suena más fuerte. Ca, mión. Ár, bol. Mú, si, ca.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "ca-MIÓN",
+          "x": 60,
+          "y": 220,
+          "id": "a",
+          "color": "amarillo",
+          "tam": 80,
+          "en": "Ca, mión"
+        },
+        {
+          "a": "escribe",
+          "texto": "ÁR-bol",
+          "x": 380,
+          "y": 220,
+          "id": "b",
+          "color": "amarillo",
+          "tam": 80,
+          "en": "Ár, bol"
+        },
+        {
+          "a": "escribe",
+          "texto": "MÚ-si-ca",
+          "x": 650,
+          "y": 220,
+          "id": "c",
+          "color": "amarillo",
+          "tam": 80,
+          "en": "Mú, si, ca"
+        },
+        {
+          "a": "subraya",
+          "sobre": "a",
+          "color": "amarillo",
+          "en": "Ca, mión"
+        },
+        {
+          "a": "subraya",
+          "sobre": "b",
+          "color": "amarillo",
+          "en": "Ár, bol"
+        },
+        {
+          "a": "subraya",
+          "sobre": "c",
+          "color": "amarillo",
+          "en": "Mú, si, ca"
+        }
+      ],
+      "limpia": true,
+      "inicio": 5.13
+    },
+    {
+      "escena": "Las reglas",
+      "voz": "Si la fuerte es la última, es aguda: lleva acento si termina en n, s o vocal. Si es la penúltima, es grave: lleva si no termina en n, s o vocal. Y si es antes, es esdrújula: siempre lleva.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "aguda:  termina en n, s, vocal → ✓",
+          "x": 60,
+          "y": 150,
+          "tam": 56,
+          "en": "es aguda"
+        },
+        {
+          "a": "escribe",
+          "texto": "camión",
+          "x": 760,
+          "y": 220,
+          "id": "ca",
+          "color": "verde",
+          "tam": 60,
+          "en": "lleva acento si"
+        },
+        {
+          "a": "escribe",
+          "texto": "grave:  NO termina en n, s, vocal → ✓",
+          "x": 60,
+          "y": 320,
+          "tam": 56,
+          "en": "es grave"
+        },
+        {
+          "a": "escribe",
+          "texto": "árbol",
+          "x": 760,
+          "y": 390,
+          "id": "ar",
+          "color": "verde",
+          "tam": 60,
+          "en": "lleva si no"
+        },
+        {
+          "a": "escribe",
+          "texto": "esdrújula:  siempre ✓",
+          "x": 60,
+          "y": 490,
+          "tam": 56,
+          "en": "esdrújula"
+        },
+        {
+          "a": "escribe",
+          "texto": "música",
+          "x": 760,
+          "y": 560,
+          "id": "mu",
+          "color": "verde",
+          "tam": 60,
+          "en": "siempre lleva"
+        }
+      ],
+      "limpia": true,
+      "inicio": 14.12
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con las parejas. Él con acento es persona; el sin acento va antes de una cosa. Tú es persona; tu es de algo. Y hay es de haber, ahí es lugar, ay es queja.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "él = persona   ·   el = el libro",
+          "x": 60,
+          "y": 260,
+          "tam": 60,
+          "en": "Él con acento"
+        },
+        {
+          "a": "escribe",
+          "texto": "tú = persona   ·   tu = tu libro",
+          "x": 60,
+          "y": 370,
+          "tam": 60,
+          "en": "Tú es persona"
+        },
+        {
+          "a": "escribe",
+          "texto": "hay = haber · ahí = lugar · ay = queja",
+          "x": 60,
+          "y": 480,
+          "tam": 56,
+          "en": "hay es de haber"
+        }
+      ],
+      "limpia": true,
+      "inicio": 29.35
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Lleva acento la palabra lapiz?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "lapiz",
+          "x": 60,
+          "y": 320,
+          "id": "l",
+          "tam": 110,
+          "en": "lapiz"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Lleva acento?",
+          "x": 60,
+          "y": 500,
+          "color": "azul",
+          "tam": 72,
+          "en": "¿Lleva acento"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 43.11
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Suena: lá, piz. Es grave, y termina en z, no en n, s o vocal. Sí lleva: lápiz.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "LÁ-piz",
+          "x": 560,
+          "y": 320,
+          "color": "amarillo",
+          "tam": 80,
+          "en": "lá, piz"
+        },
+        {
+          "a": "escribe",
+          "texto": "grave + z → ✓",
+          "x": 560,
+          "y": 420,
+          "tam": 60,
+          "en": "Es grave"
+        },
+        {
+          "a": "escribe",
+          "texto": "lápiz",
+          "x": 600,
+          "y": 530,
+          "id": "ok",
+          "color": "verde",
+          "tam": 80,
+          "en": "Sí lleva"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "Sí lleva"
+        }
+      ],
+      "inicio": 47.43
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: primero encuentra la fuerte, luego aplica la regla.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. ¿Cuál suena fuerte?",
+          "x": 70,
+          "y": 300,
+          "en": "encuentra la fuerte"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Aplica la regla",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "aplica la regla"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "la regla"
+        }
+      ],
+      "limpia": true,
+      "inicio": 56.26
+    }
+  ],
+  "duracion": 60.53
+}

@@ -1,0 +1,349 @@
+{
+  "id": "paa-21",
+  "tema": "combinacion",
+  "titulo": "Combinación de oraciones",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/21.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Une estas dos oraciones en una: Luis perdió el camión. Luis llegó tarde.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Luis perdió el camión.",
+          "x": 60,
+          "y": 200,
+          "tam": 72,
+          "en": "Luis perdió"
+        },
+        {
+          "a": "escribe",
+          "texto": "Luis llegó tarde.",
+          "x": 60,
+          "y": 320,
+          "tam": 72,
+          "en": "Luis llegó"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Cómo las unes?",
+          "x": 60,
+          "y": 490,
+          "color": "azul",
+          "tam": 72,
+          "en": "Une estas"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Tres reglas",
+      "voz": "La mejor unión cumple tres cosas: no pierde información, no repite al sujeto, y usa el nexo correcto.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "La mejor unión:",
+          "x": 60,
+          "y": 130,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "La mejor unión"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. No pierde información",
+          "x": 60,
+          "y": 260,
+          "tam": 66,
+          "en": "no pierde"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. No repite al sujeto",
+          "x": 60,
+          "y": 370,
+          "tam": 66,
+          "en": "no repite"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. Usa el nexo correcto",
+          "x": 60,
+          "y": 480,
+          "id": "u",
+          "tam": 66,
+          "en": "el nexo correcto"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "nexo correcto"
+        }
+      ],
+      "limpia": true,
+      "inicio": 6.33
+    },
+    {
+      "escena": "La relación",
+      "voz": "¿Cómo se relacionan? Perdió el camión, y por eso llegó tarde: es causa. El nexo de causa es porque.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "perdió el camión",
+          "x": 60,
+          "y": 250,
+          "tam": 66,
+          "en": "Perdió el camión"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            520,
+            230
+          ],
+          "hacia": [
+            640,
+            230
+          ],
+          "color": "amarillo",
+          "en": "por eso"
+        },
+        {
+          "a": "escribe",
+          "texto": "llegó tarde",
+          "x": 660,
+          "y": 250,
+          "tam": 66,
+          "en": "llegó tarde"
+        },
+        {
+          "a": "escribe",
+          "texto": "causa  →  porque",
+          "x": 60,
+          "y": 430,
+          "id": "c",
+          "color": "verde",
+          "tam": 76,
+          "en": "es causa"
+        },
+        {
+          "a": "circulo",
+          "sobre": "c",
+          "color": "verde",
+          "en": "es porque"
+        }
+      ],
+      "limpia": true,
+      "inicio": 14.12
+    },
+    {
+      "escena": "La respuesta",
+      "voz": "Queda: Luis llegó tarde porque perdió el camión. Tiene todo, y Luis aparece una sola vez.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Luis llegó tarde",
+          "x": 60,
+          "y": 230,
+          "color": "verde",
+          "tam": 72,
+          "en": "Queda"
+        },
+        {
+          "a": "escribe",
+          "texto": "porque",
+          "x": 560,
+          "y": 230,
+          "id": "p",
+          "color": "amarillo",
+          "tam": 72,
+          "en": "porque perdió"
+        },
+        {
+          "a": "escribe",
+          "texto": "perdió el camión.",
+          "x": 60,
+          "y": 340,
+          "color": "verde",
+          "tam": 72,
+          "en": "perdió el camión"
+        },
+        {
+          "a": "circulo",
+          "sobre": "p",
+          "color": "rosa",
+          "en": "Tiene todo"
+        },
+        {
+          "a": "palomita",
+          "x": 700,
+          "y": 460,
+          "en": "una sola vez"
+        }
+      ],
+      "limpia": true,
+      "inicio": 21.87
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con dos trampas: la que repite, Luis perdió el camión y Luis llegó tarde. Y la que cambia el sentido: llegó tarde aunque perdió el camión.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "Luis perdió… y Luis llegó…",
+          "x": 60,
+          "y": 290,
+          "id": "r",
+          "tam": 62,
+          "en": "la que repite"
+        },
+        {
+          "a": "tacha",
+          "sobre": "r",
+          "color": "rojo",
+          "en": "y Luis llegó tarde"
+        },
+        {
+          "a": "escribe",
+          "texto": "…aunque perdió el camión",
+          "x": 60,
+          "y": 440,
+          "id": "a",
+          "tam": 62,
+          "en": "cambia el sentido"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "aunque perdió"
+        }
+      ],
+      "limpia": true,
+      "inicio": 28.91
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Une: mi tía tiene un gato. El gato es naranja.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Mi tía tiene un gato.",
+          "x": 60,
+          "y": 260,
+          "tam": 72,
+          "en": "mi tía tiene"
+        },
+        {
+          "a": "escribe",
+          "texto": "El gato es naranja.",
+          "x": 60,
+          "y": 380,
+          "tam": 72,
+          "en": "El gato es naranja"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Cómo las unes?",
+          "x": 60,
+          "y": 510,
+          "color": "azul",
+          "tam": 66,
+          "en": "Une"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 38.88
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Queda: mi tía tiene un gato naranja. No repites el gato y no pierdes nada.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Mi tía tiene un gato naranja.",
+          "x": 60,
+          "y": 260,
+          "id": "ok",
+          "color": "verde",
+          "tam": 66,
+          "en": "Queda"
+        },
+        {
+          "a": "palomita",
+          "x": 870,
+          "y": 230,
+          "en": "no pierdes nada"
+        }
+      ],
+      "limpia": true,
+      "inicio": 44.51
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: todo junto, sin repetir, y con el nexo que dice la relación.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "todo junto, sin repetir",
+          "x": 70,
+          "y": 300,
+          "en": "todo junto"
+        },
+        {
+          "a": "escribe",
+          "texto": "+ el nexo correcto",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "con el nexo"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "la relación"
+        }
+      ],
+      "limpia": true,
+      "inicio": 50.32
+    }
+  ],
+  "duracion": 55.17
+}

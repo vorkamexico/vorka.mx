@@ -1,0 +1,353 @@
+{
+  "id": "paa-19",
+  "tema": "orden_logico",
+  "titulo": "Orden lógico",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/19.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Ordena estas oraciones. A: después, sirve el agua en la taza. B: primero, hierve el agua. C: por último, agrega el té.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "A) Después, sirve el agua en la taza.",
+          "x": 60,
+          "y": 160,
+          "id": "a",
+          "tam": 58,
+          "en": "A: después"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) Primero, hierve el agua.",
+          "x": 60,
+          "y": 280,
+          "id": "b",
+          "tam": 58,
+          "en": "B: primero"
+        },
+        {
+          "a": "escribe",
+          "texto": "C) Por último, agrega el té.",
+          "x": 60,
+          "y": 400,
+          "id": "c",
+          "tam": 58,
+          "en": "C: por último"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿En qué orden?",
+          "x": 60,
+          "y": 530,
+          "color": "azul",
+          "tam": 66,
+          "en": "Ordena"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Las marcas",
+      "voz": "Busca las palabras de orden: primero, después, por último. Ellas te dicen dónde va cada una.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "amarillo",
+          "en": "primero,"
+        },
+        {
+          "a": "circulo",
+          "sobre": "a",
+          "color": "amarillo",
+          "en": "después,"
+        },
+        {
+          "a": "circulo",
+          "sobre": "c",
+          "color": "amarillo",
+          "en": "por último"
+        }
+      ],
+      "inicio": 11.79
+    },
+    {
+      "escena": "La respuesta",
+      "voz": "Entonces: primero la B, luego la A y al final la C.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "B",
+          "x": 140,
+          "y": 300,
+          "color": "verde",
+          "tam": 130,
+          "en": "primero la B"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            250,
+            260
+          ],
+          "hacia": [
+            380,
+            260
+          ],
+          "color": "verde",
+          "en": "luego la A"
+        },
+        {
+          "a": "escribe",
+          "texto": "A",
+          "x": 420,
+          "y": 300,
+          "color": "verde",
+          "tam": 130,
+          "en": "luego la A"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            530,
+            260
+          ],
+          "hacia": [
+            660,
+            260
+          ],
+          "color": "verde",
+          "en": "al final"
+        },
+        {
+          "a": "escribe",
+          "texto": "C",
+          "x": 700,
+          "y": 300,
+          "color": "verde",
+          "tam": 130,
+          "en": "la C"
+        }
+      ],
+      "limpia": true,
+      "inicio": 19.33
+    },
+    {
+      "escena": "La primera",
+      "voz": "Si no hay palabras de orden, busca la que presenta el tema. Esa va primero.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Sin marcas:",
+          "x": 60,
+          "y": 180,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "Si no hay"
+        },
+        {
+          "a": "escribe",
+          "texto": "la que presenta el tema",
+          "x": 60,
+          "y": 330,
+          "id": "p",
+          "tam": 72,
+          "en": "presenta el tema"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ va primero",
+          "x": 60,
+          "y": 450,
+          "color": "verde",
+          "tam": 72,
+          "en": "va primero"
+        },
+        {
+          "a": "subraya",
+          "sobre": "p",
+          "color": "amarillo",
+          "en": "presenta"
+        }
+      ],
+      "limpia": true,
+      "inicio": 24.9
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: una oración que empieza con por eso o también nunca va primero, porque necesita algo antes.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "«Por eso…»  «También…»",
+          "x": 60,
+          "y": 300,
+          "id": "x",
+          "color": "amarillo",
+          "tam": 72,
+          "en": "por eso o también"
+        },
+        {
+          "a": "escribe",
+          "texto": "nunca van primero",
+          "x": 60,
+          "y": 440,
+          "color": "rojo",
+          "tam": 72,
+          "en": "nunca va primero"
+        },
+        {
+          "a": "subraya",
+          "sobre": "x",
+          "color": "rojo",
+          "en": "algo antes"
+        }
+      ],
+      "limpia": true,
+      "inicio": 30.12
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. A: por eso, se quedó en casa. B: ayer amaneció con fiebre. C: al día siguiente, ya se sentía mejor.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) Por eso, se quedó en casa.",
+          "x": 60,
+          "y": 240,
+          "id": "a",
+          "tam": 58,
+          "en": "A: por eso"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) Ayer amaneció con fiebre.",
+          "x": 60,
+          "y": 350,
+          "id": "b",
+          "tam": 58,
+          "en": "B: ayer"
+        },
+        {
+          "a": "escribe",
+          "texto": "C) Al día siguiente, ya se sentía mejor.",
+          "x": 60,
+          "y": 460,
+          "id": "c",
+          "tam": 54,
+          "en": "C: al día"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 37.7
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "La B va primero: presenta lo que pasó. Luego la A, por el por eso. Y al final la C, al día siguiente.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "La B va primero"
+        },
+        {
+          "a": "escribe",
+          "texto": "1",
+          "x": 880,
+          "y": 350,
+          "color": "verde",
+          "tam": 70,
+          "en": "La B va"
+        },
+        {
+          "a": "escribe",
+          "texto": "2",
+          "x": 880,
+          "y": 240,
+          "color": "verde",
+          "tam": 70,
+          "en": "Luego la A"
+        },
+        {
+          "a": "escribe",
+          "texto": "3",
+          "x": 900,
+          "y": 460,
+          "color": "verde",
+          "tam": 70,
+          "en": "al final la C"
+        }
+      ],
+      "inicio": 48.17
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: busca la que presenta, y sigue las palabras de orden.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. La que presenta va primero",
+          "x": 70,
+          "y": 300,
+          "tam": 66,
+          "en": "busca la que presenta"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Sigue las marcas de orden",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 66,
+          "en": "palabras de orden"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "de orden"
+        }
+      ],
+      "limpia": true,
+      "inicio": 56.17
+    }
+  ],
+  "duracion": 60.19
+}
