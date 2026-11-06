@@ -318,3 +318,35 @@ describe('plan de estudio (lógica del cliente)', async () => {
     expect(L.sesionesHechas(ses, hist, 'America/Mexico_City')).toEqual({ '2026-11-09': true, '2026-11-13': true });
   });
 });
+
+describe('videos explicativos', async () => {
+  const { VIDEOS } = await import('../src/simulador/videos.generado.js');
+  it('cada video publicado tiene audio, pasos en orden y vistas que la app sabe dibujar', () => {
+    const tipos = ['pregunta', 'barra', 'formula', 'pasos', 'grande', 'tabla', 'tarjeta', 'turno'];
+    for (const [app, vs] of Object.entries(VIDEOS)) for (const v of vs) {
+      const sim = simuladores().find(s => s.APP === app);
+      expect(sim.BANCO.TEMAS[v.tema], `${v.id}: tema`).toBeTruthy();
+      expect(v.audio).toMatch(/^\/assets\/tienda\/simulador-videos\/.+\.mp3$/);
+      expect(v.pasos[0].inicio).toBe(0);
+      v.pasos.forEach((p, i) => {
+        if (i) expect(p.inicio, `${v.id} paso ${i + 1}`).toBeGreaterThan(v.pasos[i - 1].inicio);
+        expect(p.inicio).toBeLessThan(v.duracion);
+        expect(p.voz.length).toBeGreaterThan(10);
+        for (const b of p.vista) expect(tipos, `${v.id} paso ${i + 1}`).toContain(b.t);
+      });
+    }
+    expect((VIDEOS['simulador-paa'] || []).map(v => v.id)).toContain('paa-01');
+  });
+
+  it('con plan Completo llegan completos; sin él, solo el título (para ofrecerlos)', async () => {
+    const completo = await comprar('simulador-paa-paquete');
+    const d = await (await pedir('/api/simulador-paa/videos', { cookie: completo })).json();
+    expect(d.bloqueado).toBeUndefined();
+    expect(d.videos[0].pasos.length).toBeGreaterThan(5);
+    const practica = await comprar('simulador-paa-practica', 'beto@mail.com');
+    const x = await (await pedir('/api/simulador-paa/videos', { cookie: practica })).json();
+    expect(x.bloqueado).toBe(true);
+    expect(x.videos[0]).toEqual({ id: 'paa-01', tema: 'aritmetica', titulo: expect.any(String), duracion: expect.any(Number) });
+    expect((await pedir('/api/simulador-paa/videos')).status).toBe(401);
+  });
+});

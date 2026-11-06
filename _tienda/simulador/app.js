@@ -15,13 +15,13 @@
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
   // Llaves de localStorage por cuenta (se completan al saber quién entró): dos personas en el mismo dispositivo no se mezclan
-  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI, K_INST;
+  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI, K_INST, K_VISTOS_V;
   var L = window.SIM_LOGICA;   // funciones puras (simulador/logica.js): gráfica, temas y puntaje por universidad
   function llaves(email) {
     var h = 0; String(email || '').split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
     var x = ':' + h.toString(36);
     var p = APP === 'simulador-paa' ? 'vk_paa' : 'vk_' + APP.replace('simulador-', '');
-    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x; K_INST = p + '_instalar_no' + x;
+    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x; K_INST = p + '_instalar_no' + x; K_VISTOS_V = p + '_videos_vistos' + x;
   }
 
   // ---------- utilidades ----------
@@ -66,6 +66,9 @@
     no: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
     lapiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
     campana: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+    pausa: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>',
+    candado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>',
     libro: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
   };
   var FL = SIM.flecha || '→';
@@ -85,6 +88,7 @@
       inicio();
       // App instalable (service worker) y, con plan Completo, el plan de estudio. #hoy = vino de un recordatorio
       registrarSW();
+      cargarVideos();
       if (location.hash === '#hoy' || /[?&]app=1/.test(location.search)) try { history.replaceState(null, '', RUTA + '/'); } catch (e2) { }
     }).catch(function (e) {
       if (e.status === 401) { location.reload(); return; }
@@ -587,6 +591,7 @@
     var paso = run.secciones.length > 1 ? '<span class="sim-paso">Sección ' + (run.actual + 1) + ' de ' + run.secciones.length + '</span>' : '';
     h('<section class="sim-intro">' + paso + '<h1>' + (practica ? 'Práctica de tus temas' : esc(info.nombre)) + '</h1>' +
       '<p class="sim-lead">' + (practica ? esc(s.temas.map(function (t) { return B.temas[t].nombre; }).join(' · ')) + '. Sin límite de tiempo: enfócate en entender el método.' : esc(info.descripcion)) + '</p>' +
+      (practica ? '<div class="sim-vintro">' + s.temas.map(function (t) { return cajaVideos(t, false); }).join('') + '</div>' : '') +
       '<ul class="sim-datos"><li><b class="num">' + s.items.length + '</b><span>reactivos</span></li>' + (s.limite ? '<li><b class="num">' + Math.round(s.limite / 60) + '</b><span>minutos</span></li><li><b class="num">' + Math.round(s.limite / s.items.length) + ' s</b><span>por reactivo</span></li>' : '<li><b>Libre</b><span>tiempo</span></li>') + '</ul>' +
       '<div class="sim-reglas"><h2>Cómo funciona</h2><ol>' +
         '<li><b>Primer intento.</b> Elige tu respuesta y confírmala. Este intento es el que cuenta para tu resultado, como en el examen real.</li>' +
@@ -596,6 +601,7 @@
       '</ol></div>' +
       '<div class="botones"><button class="btn tinta" id="b-go">' + (s.idx ? 'Continuar sección' : 'Empezar') + ' ' + FL + '</button><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>');
     document.getElementById('b-go').onclick = function () { run.fase = 'preguntas'; guardar(K_RUN, run); pregunta(); };
+    if (practica) llenarVideos();
     document.getElementById('b-inicio').onclick = inicio;
   }
 
@@ -638,7 +644,7 @@
   function letras(txt, orden) { return rico(txt).replace(/\{([A-D])\}/g, function (_, L) { var i = orden.indexOf(LETRAS.indexOf(L)); return i < 0 ? L : LETRAS[i]; }); }
   function tutor(r, st, orden) {
     if (st.fase === 'r1') return '';
-    if (st.fase === 'r2') return '<div class="sim-tutor pista" role="status"><div class="sim-tutor-i">' + ICONO.foco + '</div><div><b>Todavía no. Pista del tutor</b><p>' + letras(r.pista, orden) + '</p><small>Tienes un intento más. Esta vez te mostraremos la solución completa.</small></div></div>';
+    if (st.fase === 'r2') return '<div class="sim-tutor pista" role="status"><div class="sim-tutor-i">' + ICONO.foco + '</div><div><b>Todavía no. Pista del tutor</b><p>' + letras(r.pista, orden) + '</p><small>Tienes un intento más. Esta vez te mostraremos la solución completa.</small>' + cajaVideos(r.tema, true) + '</div></div>';
     var ok1 = st.ok1, ok2 = st.ok2;
     var titulo = ok1 ? '¡Correcto a la primera!' : ok2 ? 'Bien, lo lograste en el segundo intento' : st.sinTiempo ? 'Se acabó el tiempo en este reactivo' : 'Esta era la respuesta correcta';
     var correcta = r.tipo === 'abierta' ? r.respuestas[0] : LETRAS[orden.indexOf(r.correcta)] + ') ' + r.opciones[r.correcta];
@@ -646,7 +652,7 @@
     return '<div class="sim-tutor ' + (ok1 || ok2 ? 'bien' : 'sol') + '" role="status"><div class="sim-tutor-i">' + (ok1 || ok2 ? ICONO.ok : ICONO.libro) + '</div><div>' +
       '<b>' + titulo + '</b><p class="sim-correcta">Respuesta: <b>' + rico(correcta) + '</b></p>' +
       '<details' + (ok1 ? '' : ' open') + '><summary>Solución paso a paso</summary><ol class="sim-pasos">' + r.pasos.map(function (p) { return '<li>' + letras(p, orden) + '</li>'; }).join('') + '</ol>' +
-      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details>' + apunteHTML(r) + '</div></div>' +
+      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details>' + (ok1 ? '' : cajaVideos(r.tema, true)) + apunteHTML(r) + '</div></div>' +
       '<div class="sim-acc"><button class="btn tinta" id="b-sig">' + (ultimo ? 'Terminar sección' : 'Siguiente') + ' ' + FL + '</button></div>';
   }
   function normal(v) {
@@ -700,11 +706,12 @@
     var sig = document.getElementById('b-sig');
     if (sig) sig.onclick = function () { var s = secActual(); s.idx++; guardar(K_RUN, run); if (s.idx >= s.items.length) finSeccion(); else pregunta(); };
     conectarApunte(r);
+    llenarVideos();
     void orden;
   }
 
   document.addEventListener('keydown', function (e) {
-    if (e.metaKey || e.ctrlKey || e.altKey || !app.querySelector('.sim-q')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || !app.querySelector('.sim-q') || VP) return;
     var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
     var k = e.key.toLowerCase(), i = 'abcd'.indexOf(k); if (i < 0) i = '1234'.indexOf(k);
     var ops = app.querySelectorAll('.sim-opc');
@@ -1030,7 +1037,8 @@
     if (!tieneEstudio()) return estudioBloqueado();
     if (!EST) return '<div class="sim-card sim-est"><span class="etiqueta">Tu plan de estudio</span><p class="sim-nota"><span class="sim-giro chico" aria-hidden="true"></span> Cargando tu plan…</p></div>';
     var e = EST.estudio, nAp = (EST.apuntes || []).length;
-    var links = '<div class="sim-est-links"><button type="button" class="sim-est-link" data-ir="plan">' + ICONO.reloj + '<span>' + (e ? 'Mi plan y recordatorios' : 'Armar mi plan') + '</span></button><button type="button" class="sim-est-link" data-ir="apuntes">' + ICONO.lapiz + '<span>Mis apuntes' + (nAp ? ' <b class="num">' + nAp + '</b>' : '') + '</span></button></div>';
+    var links = '<div class="sim-est-links"><button type="button" class="sim-est-link" data-ir="plan">' + ICONO.reloj + '<span>' + (e ? 'Mi plan y recordatorios' : 'Armar mi plan') + '</span></button><button type="button" class="sim-est-link" data-ir="apuntes">' + ICONO.lapiz + '<span>Mis apuntes' + (nAp ? ' <b class="num">' + nAp + '</b>' : '') + '</span></button>' +
+      (VID && VID.videos && VID.videos.length && !VID.bloqueado ? '<button type="button" class="sim-est-link" data-ir="videos">' + ICONO.play + '<span>Videos de los temas</span></button>' : '') + '</div>';
     if (!e) return '<div class="sim-card sim-est sim-est-nuevo"><span class="etiqueta">Tu plan de estudio</span><h2>¿Cuándo es tu examen?</h2><p>Dinos la fecha y los días que puedes estudiar: te repartimos los temas hasta ese día, empezando por los que más te cuestan, y te recordamos en tu celular cuándo te toca.</p><div class="botones"><button class="btn tinta" type="button" data-ir="plan">Armar mi plan ' + FL + '</button></div>' + links + '</div>';
     var hoy = hoyMx(), faltan = L.diasEntre(hoy, e.fecha_examen);
     if (faltan < 0) return '<div class="sim-card sim-est"><span class="etiqueta">Tu plan de estudio</span><h2>Tu examen ya pasó</h2><p>Esperamos que te haya ido increíble. ¿Vas a presentar otra vez? Pon la nueva fecha y armamos otro plan.</p><div class="botones"><button class="btn tinta" type="button" data-ir="plan">Nueva fecha ' + FL + '</button></div>' + links + '</div>';
@@ -1062,9 +1070,9 @@
     caja.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
     var bi = document.getElementById('b-instalar'); if (bi) bi.onclick = function () { if (!PROMPT_INSTALAR) return ir('instalar'); PROMPT_INSTALAR.prompt(); PROMPT_INSTALAR.userChoice.finally(function () { PROMPT_INSTALAR = null; bi.hidden = true; }); };
     var bn = document.getElementById('b-inst-no'); if (bn) bn.onclick = function () { guardar(K_INST, 1); var c = caja.querySelector('.sim-instalar'); if (c) c.remove(); };
-    if (tieneEstudio() && !EST) cargarEstudio().then(function () { var c = document.getElementById('est-card'); if (c) { c.innerHTML = tarjetaEstudio(); conectarEstudio(); } });
+    if (tieneEstudio() && (!EST || !VID)) Promise.all([cargarEstudio(), cargarVideos()]).then(function () { var c = document.getElementById('est-card'); if (c) { c.innerHTML = tarjetaEstudio(); conectarEstudio(); } });
   }
-  function ir(a) { if (a === 'plan') pantallaPlan(); else if (a === 'apuntes') pantallaApuntes(); else if (a === 'instalar') guiaInstalar(); else inicio(); }
+  function ir(a) { if (a === 'plan') pantallaPlan(); else if (a === 'apuntes') pantallaApuntes(); else if (a === 'instalar') guiaInstalar(); else if (a === 'videos') pantallaVideos(); else inicio(); }
   function estudiarSesion(f) {
     var e = EST && EST.estudio, s = null; if (!e) return;
     for (var i = 0; i < e.sesiones.length; i++) if (e.sesiones[i].f === f) s = e.sesiones[i];
@@ -1293,6 +1301,207 @@
       };
       if (EST) go(); else cargarEstudio().then(go);
     };
+  }
+
+  // ---------- Videos explicativos (plan Completo) ----------
+  // Lecciones animadas con voz: la animación se dibuja aquí (no es un MP4) y sigue al audio. Cada paso trae su voz (que es
+  // también el subtítulo), cuándo empieza y su vista (bloques: pregunta, barra, fórmula, pasos, tabla, tarjeta, turno).
+  // Sin plan Completo, /api/<app>/videos solo lista títulos: el botón ofrece completar el plan.
+  var VID = null, VID_CARGANDO = null, K_VISTOS_V;
+  function cargarVideos() {
+    if (VID) return Promise.resolve(VID);
+    if (VID_CARGANDO) return VID_CARGANDO;
+    VID_CARGANDO = api('videos').then(function (d) { VID = d; return d; }, function () { VID = { videos: [] }; return VID; });
+    return VID_CARGANDO;
+  }
+  function videosDeTema(t) { return ((VID && VID.videos) || []).filter(function (v) { return v.tema === t; }); }
+  function videoPorId(id) { var l = (VID && VID.videos) || []; for (var i = 0; i < l.length; i++) if (l[i].id === id) return l[i]; return null; }
+  function videosVistos() { return leer(K_VISTOS_V) || {}; }
+  function minSeg(s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+  // Botones «Ver video» para un tema (en el tutor y en la práctica). Vacío si el tema aún no tiene video.
+  function botonesVideo(t, chico) { return videosDeTema(t).map(function (v) { return botonVideo(v, chico); }).join(''); }
+  function botonVideo(v, chico) {
+    {
+      var visto = videosVistos()[v.id];
+      return '<button type="button" class="sim-vbtn' + (chico ? ' chico' : '') + (VID.bloqueado ? ' bloq' : '') + '" data-video="' + esc(v.id) + '">' +
+        '<span class="sim-vbtn-i" aria-hidden="true">' + (VID.bloqueado ? ICONO.candado : ICONO.play) + '</span>' +
+        '<span class="sim-vbtn-t"><b>' + (VID.bloqueado ? 'Video del tema · plan Completo' : 'Video: ' + esc(v.titulo)) + '</b><small>' + (VID.bloqueado ? esc(v.titulo) + ' · ' : '') + minSeg(v.duracion) + ' min' + (visto ? ' · ya lo viste' : '') + '</small></span></button>';
+    }
+  }
+  function conectarBotonesVideo(raiz) {
+    (raiz || app).querySelectorAll('[data-video]').forEach(function (b) {
+      b.onclick = function () {
+        if (VID.bloqueado) return comprarPlan(puedePracticar() && !tieneExamen() ? 'completo' : 'practica');
+        abrirVideo(videoPorId(b.dataset.video), b);
+      };
+    });
+  }
+  // Lugar para los botones de video de un tema; llenarVideos() los pinta cuando ya se sabe qué videos hay
+  function cajaVideos(t, chico) { return '<div class="sim-vcaja" data-tema="' + esc(t) + '"' + (chico ? ' data-chico="1"' : '') + '></div>'; }
+  function llenarVideos() {
+    cargarVideos().then(function () {
+      app.querySelectorAll('.sim-vcaja').forEach(function (c) { c.innerHTML = botonesVideo(c.dataset.tema, c.dataset.chico === '1'); conectarBotonesVideo(c); });
+    });
+  }
+
+  // Texto de las vistas: escapado, **resaltado** y ~~tachado~~
+  function vt(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/~~(.+?)~~/g, '<s>$1</s>'); }
+  function bloqueHTML(b, dur, k) {
+    // Retraso de cada elemento: las listas aparecen rápido (paso fijo); las líneas de una fórmula se reparten en lo que dura
+    // la voz del paso, para que cada una salga más o menos cuando se menciona
+    var anim = b.fija ? '' : ' sv-entra', d = function (i, n, paso) {
+      if (b.fija || !i) return '';
+      var cada = paso || Math.min(1.8, Math.max(0.5, dur * 0.6 / Math.max(1, n)));
+      return ' style="animation-delay:' + (cada * i).toFixed(2) + 's"';
+    };
+    var L = ['A', 'B', 'C', 'D'];
+    switch (b.t) {
+      case 'pregunta':
+        return '<div class="sv-b sv-preg' + anim + '">' + (b.etiqueta ? '<span class="sv-etq">' + vt(b.etiqueta) + '</span>' : '') + '<p class="sv-enun">' + vt(b.enunciado) + '</p><ol class="sv-ops">' +
+          b.opciones.map(function (o, i) { var c = i === b.correcta ? ' sv-ok' : i === b.mal ? ' sv-mal' : ''; return '<li class="sv-op' + c + (b.fija ? ' fija' : '') + '"' + d(i + 1, 0, 0.18) + '><span>' + L[i] + '</span>' + vt(o) + '</li>'; }).join('') + '</ol></div>';
+      case 'barra':
+        var paga = b.total - b.quita;
+        return '<div class="sv-b sv-barra' + anim + '"><div class="sv-barra-c"><span class="sv-barra-p" style="--p:' + paga + '%"><i>' + paga + ' %</i></span><span class="sv-barra-q" style="--q:' + b.quita + '%"><i>−' + b.quita + ' %</i></span></div><p>' + vt(b.texto) + '</p></div>';
+      case 'formula':
+        return '<div class="sv-b sv-form">' + b.lineas.map(function (l, i) { return '<p class="' + (b.fija ? '' : 'sv-entra') + '"' + d(i, b.lineas.length) + '>' + vt(l) + '</p>'; }).join('') + '</div>';
+      case 'pasos':
+        return '<ol class="sv-b sv-pasos' + anim + '">' + b.items.map(function (x, i) { return '<li class="' + (i < b.activo ? 'hecho' : i === b.activo ? 'activo' : '') + '"><span>' + (i < b.activo ? '✓' : i + 1) + '</span>' + vt(x) + '</li>'; }).join('') + '</ol>';
+      case 'grande':
+        return '<p class="sv-b sv-grande' + (b.tono ? ' ' + b.tono : '') + anim + '">' + vt(b.texto) + '</p>';
+      case 'tabla':
+        return '<table class="sv-b sv-tabla' + anim + '"><thead><tr>' + b.filas[0].map(function (c) { return '<th>' + vt(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          b.filas.slice(1).map(function (f, i) { return '<tr class="' + (b.fija ? '' : 'sv-entra') + '"' + d(i + 1, 0, 0.45) + '>' + f.map(function (c) { return '<td>' + vt(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+      case 'tarjeta':
+        return '<div class="sv-b sv-tarj ' + (b.tono || '') + anim + '">' + (b.titulo ? '<span class="sv-etq">' + vt(b.titulo) + '</span>' : '') + (b.texto ? '<p>' + vt(b.texto) + '</p>' : '') +
+          (b.lineas ? '<ul>' + b.lineas.map(function (l, i) { return '<li class="sv-entra"' + d(i, b.lineas.length) + '>' + vt(l) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+      case 'turno':
+        return '<div class="sv-b sv-turno' + anim + '"><span class="sv-etq">Tu turno</span><p class="sv-enun">' + vt(b.enunciado) + '</p><div class="sv-reloj" id="sv-reloj" hidden><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19"/><circle class="sv-reloj-a" cx="22" cy="22" r="19"/></svg><b id="sv-reloj-n"></b></div></div>';
+    }
+    return '';
+  }
+
+  var VP = null;   // reproductor abierto: { v, audio, i, raf, pausa, origen }
+  function abrirVideo(v, origen) {
+    if (!v || VP) return;
+    detenerReloj();
+    var escenas = []; v.pasos.forEach(function (p, i) { if (!escenas.length || escenas[escenas.length - 1].nombre !== p.escena) escenas.push({ nombre: p.escena, i: i }); });
+    var caja = document.createElement('div');
+    caja.className = 'sim-video';
+    caja.setAttribute('role', 'dialog'); caja.setAttribute('aria-modal', 'true'); caja.setAttribute('aria-label', 'Video: ' + v.titulo);
+    caja.innerHTML = '<div class="sv-panel" style="--sv:' + esc(SIM.color || '#6B2A85') + '">' +
+      '<header class="sv-cab"><div><span class="sv-cab-e">Video del tema · ' + esc(nombreTema(v.tema)) + '</span><b>' + esc(v.titulo) + '</b></div><button type="button" class="sv-x" id="sv-x" aria-label="Cerrar video">✕</button></header>' +
+      '<div class="sv-escenario"><div class="sv-escena" id="sv-escena" aria-hidden="true"></div><button type="button" class="sv-play-g" id="sv-play-g" aria-label="Reproducir">' + ICONO.play + '</button><button type="button" class="sv-saltar" id="sv-saltar" hidden>Ver la respuesta ' + FL + '</button></div>' +
+      '<p class="sv-sub" id="sv-sub"></p>' +
+      '<div class="sv-ctrl"><button type="button" class="sv-btn" id="sv-play" aria-label="Reproducir">' + ICONO.play + '</button>' +
+        '<button type="button" class="sv-btn" id="sv-atras" aria-label="Regresar 10 segundos">↺10</button>' +
+        '<div class="sv-barra-t"><input type="range" id="sv-pos" min="0" max="' + Math.round(v.duracion * 10) + '" value="0" aria-label="Avance del video"><div class="sv-marcas" aria-hidden="true">' +
+          escenas.map(function (e) { return '<i style="left:' + (100 * v.pasos[e.i].inicio / v.duracion).toFixed(2) + '%"></i>'; }).join('') + '</div></div>' +
+        '<span class="sv-tiempo num" id="sv-tiempo">0:00 / ' + minSeg(v.duracion) + '</span>' +
+        '<button type="button" class="sv-btn sv-vel" id="sv-vel" aria-label="Velocidad">1×</button></div>' +
+      '<nav class="sv-escenas" aria-label="Partes del video">' + escenas.map(function (e) { return '<button type="button" data-ir-paso="' + e.i + '">' + esc(e.nombre) + '</button>'; }).join('') + '</nav>' +
+      '</div>';
+    document.body.appendChild(caja);
+    document.body.classList.add('sv-abierto');
+    var audio = new Audio(v.audio); audio.preload = 'auto';
+    VP = { v: v, audio: audio, i: -1, raf: 0, pausa: null, hechas: {}, origen: origen || document.activeElement, caja: caja };
+    var $ = function (id) { return document.getElementById(id); };
+    // El botón grande solo sale antes de empezar (o si el navegador bloqueó el autoplay); después, el de la barra
+    function pintaPlay() { var p = !audio.paused || VP.pausa; if (p) VP.empezo = true; $('sv-play').innerHTML = p ? ICONO.pausa : ICONO.play; $('sv-play').setAttribute('aria-label', p ? 'Pausar' : 'Reproducir'); $('sv-play-g').hidden = p || VP.empezo; }
+    // Si la vista no cabe (celular chico, letra grande), se reduce hasta que quepa completa
+    function ajustar() {
+      var e = $('sv-escena'), c = e && e.querySelector('.sv-cont'); if (!c) return;
+      c.style.zoom = 1;
+      var cs = getComputedStyle(e), disp = e.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      if (c.scrollHeight > disp) c.style.zoom = Math.max(0.6, disp / c.scrollHeight).toFixed(3);
+    }
+    function pasoEn(t) { var k = 0; for (var i = 0; i < v.pasos.length; i++) if (v.pasos[i].inicio <= t + 0.05) k = i; return k; }
+    function render(k) {
+      VP.i = k;
+      var p = v.pasos[k], fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : v.duracion;
+      $('sv-escena').innerHTML = '<span class="sv-escena-n">' + esc(p.escena) + '</span><div class="sv-cont">' + p.vista.map(function (b, j) { return bloqueHTML(b, fin - p.inicio, j); }).join('') + '</div>';
+      ajustar();
+      $('sv-sub').textContent = p.voz;
+      caja.querySelectorAll('[data-ir-paso]').forEach(function (b) { var desde = Number(b.dataset.irPaso), sig = b.nextElementSibling ? Number(b.nextElementSibling.dataset.irPaso) : 1e9; b.classList.toggle('sel', k >= desde && k < sig); });
+    }
+    function tick() {
+      var t = audio.currentTime;
+      var k = pasoEn(t); if (k !== VP.i) render(k);
+      // «Tu turno»: al terminar su voz, se detiene unos segundos con cuenta regresiva para que lo resuelva
+      var p = v.pasos[k], fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : v.duracion;
+      if (p.pausa && !VP.hechas[k] && !audio.paused && t >= fin - 0.25) { VP.hechas[k] = 1; pausaTurno(p.pausa); }
+      $('sv-pos').value = Math.round(t * 10);
+      $('sv-tiempo').textContent = minSeg(t) + ' / ' + minSeg(v.duracion);
+      if (!audio.paused) VP.raf = requestAnimationFrame(tick);
+    }
+    function pausaTurno(seg) {
+      audio.pause();
+      var r = $('sv-reloj'), n = seg, sal = $('sv-saltar');
+      if (r) { r.hidden = false; r.style.setProperty('--d', seg + 's'); r.classList.add('corre'); }
+      sal.hidden = false;
+      var listo = function () { clearInterval(VP.pausa); VP.pausa = null; sal.hidden = true; if (r) r.hidden = true; audio.play(); pintaPlay(); };
+      if ($('sv-reloj-n')) $('sv-reloj-n').textContent = n;
+      VP.pausa = setInterval(function () { n--; if ($('sv-reloj-n')) $('sv-reloj-n').textContent = Math.max(0, n); if (n <= 0) listo(); }, 1000);
+      sal.onclick = listo;
+      pintaPlay();
+    }
+    function alternar() {
+      if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; if ($('sv-reloj')) $('sv-reloj').hidden = true; pintaPlay(); return; }
+      if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(function () { }); } else audio.pause();
+    }
+    function irA(t) { if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; } audio.currentTime = Math.max(0, Math.min(v.duracion, t)); VP.hechas = {}; tick(); }
+    audio.addEventListener('play', function () { pintaPlay(); cancelAnimationFrame(VP.raf); VP.raf = requestAnimationFrame(tick); });
+    audio.addEventListener('pause', pintaPlay);
+    audio.addEventListener('ended', function () { var x = videosVistos(); x[v.id] = 1; guardar(K_VISTOS_V, x); pintaPlay(); });
+    audio.addEventListener('timeupdate', function () { if (audio.currentTime > v.duracion * 0.9) { var x = videosVistos(); if (!x[v.id]) { x[v.id] = 1; guardar(K_VISTOS_V, x); } } });
+    $('sv-play').onclick = alternar; $('sv-play-g').onclick = alternar;
+    $('sv-atras').onclick = function () { irA(audio.currentTime - 10); };
+    $('sv-pos').oninput = function () { irA(Number(this.value) / 10); };
+    var vels = [1, 1.25, 1.5, 0.85];
+    $('sv-vel').onclick = function () { var i = (vels.indexOf(audio.playbackRate) + 1) % vels.length; audio.playbackRate = vels[i]; this.textContent = String(vels[i]).replace('.', '.') + '×'; };
+    caja.querySelectorAll('[data-ir-paso]').forEach(function (b) { b.onclick = function () { irA(v.pasos[Number(b.dataset.irPaso)].inicio + 0.06); if (audio.paused) audio.play().catch(function () { }); }; });
+    $('sv-x').onclick = cerrarVideo;
+    caja.addEventListener('click', function (e) { if (e.target === caja) cerrarVideo(); });
+    caja.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); cerrarVideo(); }
+      else if (e.key === ' ' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') { e.preventDefault(); alternar(); }
+      else if (e.key === 'Tab') {   // el foco se queda dentro del video
+        var f = caja.querySelectorAll('button:not([hidden]), input'), a = f[0], z = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+      }
+    });
+    render(0); pintaPlay();
+    window.addEventListener('resize', ajustar);
+    VP.ajustar = ajustar;
+    $('sv-play-g').focus();
+    audio.play().catch(function () { });   // si el navegador bloquea el autoplay, queda el botón grande
+  }
+  function cerrarVideo() {
+    if (!VP) return;
+    VP.audio.pause(); cancelAnimationFrame(VP.raf); if (VP.pausa) clearInterval(VP.pausa);
+    window.removeEventListener('resize', VP.ajustar);
+    VP.caja.remove(); document.body.classList.remove('sv-abierto');
+    var o = VP.origen; VP = null;
+    if (o && o.focus) o.focus({ preventScroll: true });
+    // Los botones ahora dicen «ya lo viste»
+    llenarVideos();
+    if (app.querySelector('.sim-videos')) pantallaVideos();
+  }
+
+  // Todos los videos, por sección (desde la tarjeta del plan)
+  function pantallaVideos() {
+    detenerReloj(); pintarBarra();
+    if (!VID) { h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Cargando los videos…</div>'); cargarVideos().then(pantallaVideos); return; }
+    var grupos = L.temasPorSeccion(B, {}), vistos = videosVistos(), total = VID.videos.length, n = VID.videos.filter(function (v) { return vistos[v.id]; }).length;
+    var listas = grupos.map(function (g) {
+      var vs = VID.videos.filter(function (v) { return g.temas.some(function (t) { return t.id === v.tema; }); });
+      return vs.length ? '<section class="sim-vsec"><h2 class="sim-h3">' + esc(g.nombre) + '</h2><div class="sim-vlista">' + vs.map(function (v) { return botonVideo(v); }).join('') + '</div></section>' : '';
+    }).join('');
+    h('<section class="sim-intro sim-videos"><span class="sim-paso">Plan Completo</span><h1>Videos de los temas</h1>' +
+      '<p class="sim-lead">Explicaciones paso a paso, con voz y subtítulos, de 2 a 3 minutos. También te aparecen junto a la pregunta cuando fallas un tema.</p>' +
+      (total ? '<p class="sim-nota">' + n + ' de ' + total + ' vistos.</p>' + listas : '<p class="sim-nota">Muy pronto: estamos terminando los videos de este simulador.</p>') +
+      '<div class="botones"><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button></div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    conectarBotonesVideo();
   }
 
   iniciar();

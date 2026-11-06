@@ -34,6 +34,7 @@ import { APP_JS, APP_CSS } from './cliente.generado.js';
 import { crearDiagnostico } from './diagnostico.js';
 import { manifiesto, serviceWorker, iconoDe, colorDe } from './instalable.js';
 import { crearEstudio, tieneEstudio } from './estudio.js';
+import { VIDEOS } from './videos.generado.js';
 
 // Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
 // por la fecha en que se compró, no en la que se abrió).
@@ -265,6 +266,13 @@ export function crearSimulador(c) {
         return iniciar(env, a, ['examen', 'calentamiento'].includes(b.tipo) ? b.tipo : 'corto', areaValida(b.area));
       }
       if (p === `${API}/abandonar` && M === 'POST') return abandonar(req, env, a);
+      // Videos explicativos (plan Completo). Sin él solo se listan (para ofrecerlos), sin la animación ni el audio.
+      if (p === `${API}/videos` && M === 'GET') {
+        const vs = VIDEOS[APP] || [];
+        const conEstudio = tieneEstudio((await planDe(env, a.orden.email, { sinOfertas: true })).plan);
+        return json(conEstudio ? { videos: vs } : { bloqueado: true, videos: vs.map(v => ({ id: v.id, tema: v.tema, titulo: v.titulo, duracion: v.duracion })) },
+          200, { 'cache-control': 'private, max-age=300' });
+      }
       const e = await estudio.rutas(req, env, p, a, tieneEstudio((await planDe(env, a.orden.email, { sinOfertas: true })).plan));
       if (e) return e;
       return fail('No encontrado', 404);
