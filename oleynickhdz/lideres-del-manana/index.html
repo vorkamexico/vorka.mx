@@ -783,6 +783,52 @@
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  /* ===== Becas del 100% (comparador y fichas) ===== */
+  .bc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .bc-card { display: flex; flex-direction: column; gap: 10px; padding: 24px 22px; border-radius: 24px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); transition: transform .2s, border-color .2s; }
+  .bc-card:hover { transform: translateY(-3px); border-color: var(--ink); }
+  .bc-card .k { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .bc-card h3 { margin: 0; font-size: 1.25rem; letter-spacing: -.02em; line-height: 1.15; }
+  .bc-card p { margin: 0; flex: 1; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+  .bc-card dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 13.5px; }
+  .bc-card dt { color: var(--muted); font-weight: 600; }
+  .bc-card dd { margin: 0; color: var(--ink); font-weight: 700; }
+  .bc-card .ir { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 800; }
+  .bc-card .ir svg { width: 14px; height: 14px; }
+  .bc-card.actual { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--paper)); }
+  .bc-top { position: relative; overflow: hidden; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; margin-bottom: 14px; padding: clamp(28px, 4vw, 52px); border-radius: 32px; background: #141414; color: #F5F5F0; }
+  .bc-top::after { content: ""; position: absolute; z-index: -1; right: -10%; top: -40%; width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(247,179,62,.3), transparent 65%); }
+  .bc-top h3 { margin: 16px 0 12px; font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(2.4rem, 5vw, 4rem); line-height: .92; color: #fff; }
+  .bc-top h3 span { color: var(--accent); }
+  .bc-top p { margin: 0 0 20px; font-size: 1.02rem; line-height: 1.6; color: rgba(245,245,240,.8); max-width: 52ch; }
+  .bc-top p strong { color: #fff; }
+  .bc-top dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .bc-top dl div { padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+  .bc-top dt { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .bc-top dd { margin: 4px 0 0; font-size: 15px; font-weight: 700; color: #fff; line-height: 1.35; }
+  .bc-tabla-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 22px; background: var(--paper); }
+  .bc-tabla { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 14.5px; }
+  .bc-tabla th, .bc-tabla td { padding: 15px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+  .bc-tabla thead th { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); }
+  .bc-tabla tbody th { font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .bc-tabla td { color: var(--ink); font-weight: 600; }
+  .bc-tabla tr:last-child th, .bc-tabla tr:last-child td { border-bottom: 0; }
+  .bc-tabla .ldm { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .ldm-historia { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+  .ldm-ruta { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .ldm-ruta li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; align-items: center; padding: 18px 20px; border-radius: 20px; background: var(--paper-2); border: 1px solid var(--rule); }
+  .ldm-ruta i { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; font-style: normal; font-weight: 800; font-size: 15px; color: #fff; }
+  .ldm-ruta li:nth-child(1) i { background: var(--c-blue); } .ldm-ruta li:nth-child(2) i { background: var(--c-purple); } .ldm-ruta li:nth-child(3) i { background: var(--c-green); }
+  .ldm-ruta b { display: block; font-size: 16px; color: var(--ink); }
+  .ldm-ruta span { font-size: 14.5px; color: var(--muted); }
+  .bc-aviso { margin-top: 18px; padding: 18px 22px; border-radius: 18px; background: var(--paper-2); border: 1px dashed var(--rule); font-size: 15px; line-height: 1.55; color: var(--ink-soft); }
+  .bc-aviso b { color: var(--ink); }
+  .bc-aviso a { color: var(--ink); font-weight: 700; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; text-decoration-thickness: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  @media (max-width: 960px) { .bc-grid { grid-template-columns: 1fr; } .bc-top, .ldm-historia { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .bc-top dl { grid-template-columns: 1fr; } }
+</style>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@400;500;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -823,6 +869,7 @@
     <a href="../conferencias/">Conferencias</a>
     <a href="../prensa/">Sala de prensa</a>
     <a href="../#sesiones">Sesiones 1:1</a>
+    <a href="../becas/" style="font-size: 15px; color: var(--muted);">Becas del 100%</a>
     <a href="../servicios/" style="font-size: 15px; color: var(--muted);">Servicios</a>
     <a href="../proyecto-social/" style="font-size: 15px; color: var(--muted);">Proyecto social</a>
     <a href="../#habla" style="font-size: 15px; color: var(--muted);">Contacto y alianzas</a>
@@ -874,6 +921,21 @@
         <li><i>2</i><div><b>Seguro y apoyo para materiales</b><span>Seguro de gastos médicos mayores y apoyo semestral para libros o materiales, durante toda la carrera.</span></div></li>
         <li><i>3</i><div><b>Comunidad y acompañamiento</b><span>Formación en liderazgo y la red de Líderes del Mañana.</span></div></li>
       </ul>
+    </div>
+  </section>
+  <section class="section" id="mi-historia" aria-labelledby="h-hist">
+    <div class="ldm-historia">
+      <div class="ldm-texto">
+        <div class="section-eyebrow">Mi historia</div>
+        <h2 class="section-title" id="h-hist">Yo también <em>fui aspirante.</em></h2>
+        <p style="margin-top:22px">Soy egresado de la <strong>8ª generación de Líderes del Mañana</strong>. Estudié cuatro años con esta beca y viví el programa en dos campus del Tec de Monterrey.</p>
+        <p>Por eso esta guía no es teoría: es lo que me hubiera gustado saber cuando me postulé.</p>
+      </div>
+      <ol class="ldm-ruta" aria-label="Mi carrera con la beca">
+        <li><i>8ª</i><div><b>Generación de Líderes del Mañana</b><span>Becado al 100% durante toda la carrera.</span></div></li>
+        <li><i>1–4</i><div><b>Campus Querétaro</b><span>Del 1º al 4º semestre.</span></div></li>
+        <li><i>5–8</i><div><b>Campus Monterrey</b><span>Del 5º al 8º semestre.</span></div></li>
+      </ol>
     </div>
   </section>
 </div>
@@ -1009,6 +1071,37 @@
 </div>
 
 <div class="shell">
+  <section class="section" id="otras-becas" aria-labelledby="h-otras">
+    <div class="section-head">
+      <div class="section-eyebrow">Becas del 100%</div>
+      <h2 class="section-title" id="h-otras">Otras becas <em>del 100%.</em></h2>
+        <p class="section-lede">Líderes del Mañana es mi primera recomendación. Si además quieres más opciones, estas también cubren el 100% de la colegiatura.</p>
+    </div>
+    <div class="bc-grid">
+        <a class="bc-card" href="/oleynickhdz/becas/fundacion-zaber/">
+          <span class="k">Tec (Campus Monterrey) o UDEM</span>
+          <h3>Fundación ZABER</h3>
+          <p>100% de colegiatura en el Tec Campus Monterrey o la UDEM, computadora, mentoría y bienestar.</p>
+          <dl><dt>Promedio</dt><dd>90+</dd><dt>Examen</dt><dd>1,360 Tec · 1,300 UDEM</dd><dt>Cierre</dt><dd>28 feb 2027</dd></dl>
+          <span class="ir">Ver guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="bc-card" href="/oleynickhdz/becas/fundacion-gallagher/">
+          <span class="k">Tec (Campus Monterrey)</span>
+          <h3>Fundación Gallagher</h3>
+          <p>Beca completa: colegiatura, hospedaje, comidas, libros, laptop, gastos personales y viajes a casa.</p>
+          <dl><dt>Promedio</dt><dd>95+</dd><dt>Examen</dt><dd>1,400</dd><dt>Cierre</dt><dd>22 feb 2027</dd></dl>
+          <span class="ir">Ver guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="bc-card" href="/oleynickhdz/becas/tecmilenio-becas-con-proposito/">
+          <span class="k">Universidad Tecmilenio</span>
+          <h3>Becas con Propósito</h3>
+          <p>100% de colegiatura, seguros y titulación en Tecmilenio, presencial o en línea/híbrida.</p>
+          <dl><dt>Promedio</dt><dd>87+</dd><dt>Examen</dt><dd>Examen propio de Tecmilenio</dd><dt>Cierre</dt><dd>20 abr 2027</dd></dl>
+          <span class="ir">Ver guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+    </div>
+  </section>
+
   <section class="section" id="dudas" aria-labelledby="h-dudas">
     <div class="ldm-dudas">
       <div>
@@ -1033,7 +1126,7 @@
       <details><summary>¿Qué evidencia de liderazgo social me piden?</summary><p>Fotografías, reportes, testimonios o cifras comprobables de tu participación en proyectos de impacto comunitario.</p></details>
       <details><summary>¿Cómo entro al grupo de aspirantes?</summary><p>El grupo lo patrocina Vorka México, un ecosistema de jóvenes líderes con herramientas para emprendedores, mentoría y consultoría. Primero sigue a @vorka.mx en Instagram y después solicita unirte desde el botón del grupo en esta página.</p></details>
       <details><summary>¿La mentoría me garantiza la beca?</summary><p>No. La decisión es del Tec de Monterrey. La mentoría te ayuda a preparar tu proyecto, tus evidencias y tu plan de estudio para llegar lo mejor posible a cada etapa.</p></details>
-    <p class="ldm-nota">Esta es una guía independiente de Brandon Oleynick; no es un sitio oficial del Tecnológico de Monterrey. La información viene de la <a href="https://lideresdelmanana.tec.mx/noticia/convocatoria-lideres-del-manana-2027" target="_blank" rel="noopener">Convocatoria Nacional 2027</a> publicada en lideresdelmanana.tec.mx. Confírmala ahí antes de postularte. Si vives en Centroamérica o República Dominicana, revisa la convocatoria LATAM, que tiene sus propias reglas.</p>
+    <p class="ldm-nota">Esta es una guía independiente de Brandon Oleynick; no es un sitio oficial del Tecnológico de Monterrey. La información viene de la <a href="https://lideresdelmanana.tec.mx/noticia/convocatoria-lideres-del-manana-2027" target="_blank" rel="noopener">Convocatoria Nacional 2027</a> publicada en lideresdelmanana.tec.mx. Confírmala ahí antes de postularte. ¿Buscas más opciones? Revisa la <a href="../becas/">comparación de becas del 100%</a>. Si vives en Centroamérica o República Dominicana, revisa la convocatoria LATAM, que tiene sus propias reglas.</p>
   </section>
 </div>
 </main>
@@ -1065,6 +1158,7 @@
         <h5>Más del sitio</h5>
         <ul>
           <li><a href="../">Perfil principal</a></li>
+          <li><a href="../becas/">Becas del 100%</a></li>
           <li><a href="../conferencias/">Conferencias</a></li>
           <li><a href="../servicios/">Servicios y mentoría</a></li>
           <li><a href="../proyecto-social/">¿Qué es un proyecto social?</a></li>
@@ -1079,6 +1173,7 @@
           <li><a href="#pasos">Cómo aplicar</a></li>
           <li><a href="#mentoria">Mentoría</a></li>
           <li><a href="#recursos">Simulador y grupos</a></li>
+          <li><a href="#otras-becas">Otras becas del 100%</a></li>
         </ul>
       </div>
     </div>
