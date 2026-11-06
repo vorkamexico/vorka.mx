@@ -1,0 +1,350 @@
+{
+  "id": "paa-10",
+  "tema": "idea_central",
+  "titulo": "La idea central",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/10.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Lee: muchos creen que los videojuegos solo distraen. Sin embargo, algunos mejoran la atención. Por eso, ya se usan en clases de ciencias. ¿Cuál es la idea central?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Muchos creen que los videojuegos",
+          "x": 60,
+          "y": 130,
+          "tam": 54,
+          "en": "muchos creen"
+        },
+        {
+          "a": "escribe",
+          "texto": "solo distraen.",
+          "x": 60,
+          "y": 210,
+          "tam": 54,
+          "en": "solo distraen"
+        },
+        {
+          "a": "escribe",
+          "texto": "Sin embargo,",
+          "x": 330,
+          "y": 210,
+          "id": "se",
+          "tam": 54,
+          "en": "Sin embargo, algunos"
+        },
+        {
+          "a": "escribe",
+          "texto": "algunos",
+          "x": 580,
+          "y": 210,
+          "tam": 54,
+          "en": "algunos mejoran"
+        },
+        {
+          "a": "escribe",
+          "texto": "mejoran la atención.",
+          "x": 60,
+          "y": 290,
+          "id": "mej",
+          "tam": 54,
+          "en": "mejoran la atención"
+        },
+        {
+          "a": "escribe",
+          "texto": "Por eso, ya",
+          "x": 460,
+          "y": 290,
+          "tam": 54,
+          "en": "Por eso, ya"
+        },
+        {
+          "a": "escribe",
+          "texto": "se usan en clases de ciencias.",
+          "x": 60,
+          "y": 370,
+          "id": "det",
+          "tam": 54,
+          "en": "clases de ciencias"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿idea central?",
+          "x": 60,
+          "y": 510,
+          "color": "azul",
+          "tam": 70,
+          "en": "Cuál es la idea central"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "La idea central es como un paraguas: tiene que cubrir todo el texto.",
+      "acciones": [
+        {
+          "a": "trazo",
+          "d": "M 40 95 Q 470 0 920 95",
+          "color": "amarillo",
+          "en": "como un paraguas",
+          "ancho": 6
+        },
+        {
+          "a": "escribe",
+          "texto": "cubre TODO el texto",
+          "x": 470,
+          "y": 510,
+          "color": "amarillo",
+          "tam": 60,
+          "en": "cubrir todo"
+        }
+      ],
+      "inicio": 10.94
+    },
+    {
+      "escena": "La pista",
+      "voz": "En los textos que opinan, la idea del autor llega después de un sin embargo.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "se",
+          "color": "rosa",
+          "en": "después de un sin embargo"
+        },
+        {
+          "a": "subraya",
+          "sobre": "mej",
+          "color": "verde",
+          "en": "la idea del autor"
+        }
+      ],
+      "inicio": 16.67
+    },
+    {
+      "escena": "La respuesta",
+      "voz": "Entonces, la idea central es: algunos videojuegos ayudan a aprender, y las escuelas ya los usan.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Idea central:",
+          "x": 60,
+          "y": 150,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "la idea central es"
+        },
+        {
+          "a": "escribe",
+          "texto": "algunos videojuegos ayudan",
+          "x": 60,
+          "y": 290,
+          "color": "verde",
+          "tam": 64,
+          "en": "algunos videojuegos"
+        },
+        {
+          "a": "escribe",
+          "texto": "a aprender, y ya se usan",
+          "x": 60,
+          "y": 390,
+          "color": "verde",
+          "tam": 64,
+          "en": "las escuelas"
+        },
+        {
+          "a": "palomita",
+          "x": 820,
+          "y": 360,
+          "en": "ya los usan"
+        }
+      ],
+      "limpia": true,
+      "inicio": 22.06
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con dos trampas: un detalle, que se queda chiquito, y una idea tan general que podría ser de otro libro.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "«se usan en ciencias»",
+          "x": 60,
+          "y": 280,
+          "id": "d",
+          "color": "rojo",
+          "tam": 56,
+          "en": "un detalle"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ un detalle",
+          "x": 560,
+          "y": 280,
+          "color": "rojo",
+          "tam": 56,
+          "en": "un detalle"
+        },
+        {
+          "a": "tacha",
+          "sobre": "d",
+          "color": "rojo",
+          "en": "chiquito"
+        },
+        {
+          "a": "escribe",
+          "texto": "«la tecnología cambió todo»",
+          "x": 60,
+          "y": 440,
+          "id": "g",
+          "color": "rojo",
+          "tam": 54,
+          "en": "tan general"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ muy general",
+          "x": 660,
+          "y": 440,
+          "color": "rojo",
+          "tam": 50,
+          "en": "tan general"
+        },
+        {
+          "a": "tacha",
+          "sobre": "g",
+          "color": "rojo",
+          "en": "de otro libro"
+        }
+      ],
+      "limpia": true,
+      "inicio": 29.39
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Cuál es el mejor título? A: historia de los videojuegos. B: videojuegos, de distracción a herramienta. C: cómo ganar en tus juegos.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) Historia de los videojuegos",
+          "x": 60,
+          "y": 240,
+          "id": "a",
+          "tam": 56,
+          "en": "historia de los"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) De distracción a herramienta",
+          "x": 60,
+          "y": 350,
+          "id": "b",
+          "tam": 56,
+          "en": "de distracción"
+        },
+        {
+          "a": "escribe",
+          "texto": "C) Cómo ganar en tus juegos",
+          "x": 60,
+          "y": 460,
+          "id": "c",
+          "tam": 56,
+          "en": "cómo ganar"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 37.26
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es la B: resume todo el texto. La A habla de otra cosa, y la C es un instructivo.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "Es la B"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "La A habla"
+        },
+        {
+          "a": "tacha",
+          "sobre": "c",
+          "color": "rojo",
+          "en": "la C es"
+        }
+      ],
+      "inicio": 48.83
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: la idea central cubre todo el texto. Ni un detalle, ni algo demasiado general.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "cubre todo el texto",
+          "x": 70,
+          "y": 300,
+          "en": "cubre todo"
+        },
+        {
+          "a": "escribe",
+          "texto": "ni detalle, ni muy general",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 66,
+          "en": "Ni un detalle"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "demasiado general"
+        }
+      ],
+      "limpia": true,
+      "inicio": 55.59
+    }
+  ],
+  "duracion": 61.96
+}

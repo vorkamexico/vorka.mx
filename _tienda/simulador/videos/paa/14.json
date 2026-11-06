@@ -1,0 +1,390 @@
+{
+  "id": "paa-14",
+  "tema": "proposito_tono",
+  "titulo": "Propósito, tono y estructura",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/14.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "En el párrafo cuatro: las redes nos acercan. En el cinco: esto no significa que reemplacen una plática en persona. ¿Qué hace el párrafo cinco?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Párrafo 4:",
+          "x": 60,
+          "y": 120,
+          "color": "amarillo",
+          "tam": 56,
+          "en": "párrafo cuatro"
+        },
+        {
+          "a": "escribe",
+          "texto": "Las redes nos acercan.",
+          "x": 60,
+          "y": 200,
+          "tam": 60,
+          "en": "nos acercan"
+        },
+        {
+          "a": "escribe",
+          "texto": "Párrafo 5:",
+          "x": 60,
+          "y": 300,
+          "color": "amarillo",
+          "tam": 56,
+          "en": "En el cinco"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué hace el 5?",
+          "x": 560,
+          "y": 300,
+          "color": "azul",
+          "tam": 60,
+          "en": "Qué hace"
+        },
+        {
+          "a": "escribe",
+          "texto": "«Esto no significa que",
+          "x": 60,
+          "y": 380,
+          "id": "e",
+          "tam": 60,
+          "en": "esto no significa"
+        },
+        {
+          "a": "escribe",
+          "texto": "reemplacen una plática»",
+          "x": 60,
+          "y": 460,
+          "tam": 60,
+          "en": "reemplacen"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Matiza",
+      "voz": "Esto no significa que: pone un límite a lo anterior. A eso se le llama matizar.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "e",
+          "color": "amarillo",
+          "en": "pone un límite"
+        },
+        {
+          "a": "escribe",
+          "texto": "= matiza",
+          "x": 630,
+          "y": 460,
+          "id": "m",
+          "color": "verde",
+          "tam": 80,
+          "en": "matizar"
+        },
+        {
+          "a": "circulo",
+          "sobre": "m",
+          "color": "verde",
+          "en": "se le llama"
+        }
+      ],
+      "inicio": 9.85
+    },
+    {
+      "escena": "El tono",
+      "voz": "Para el tono, mira las palabras con emoción. Extraño, ya no está, aquellas tardes: eso es nostálgico.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tono = palabras con emoción",
+          "x": 60,
+          "y": 150,
+          "tam": 60,
+          "en": "Para el tono"
+        },
+        {
+          "a": "escribe",
+          "texto": "extraño · ya no está ·",
+          "x": 60,
+          "y": 290,
+          "color": "amarillo",
+          "tam": 62,
+          "en": "Extraño"
+        },
+        {
+          "a": "escribe",
+          "texto": "aquellas tardes",
+          "x": 60,
+          "y": 370,
+          "color": "amarillo",
+          "tam": 62,
+          "en": "aquellas tardes"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ nostálgico",
+          "x": 60,
+          "y": 510,
+          "id": "n",
+          "color": "verde",
+          "tam": 76,
+          "en": "es nostálgico"
+        },
+        {
+          "a": "subraya",
+          "sobre": "n",
+          "color": "verde",
+          "en": "nostálgico."
+        }
+      ],
+      "limpia": true,
+      "inicio": 16.58
+    },
+    {
+      "escena": "El propósito",
+      "voz": "Para el propósito, pregunta: ¿para qué lo escribió? Si da datos, informa. Si opina y te pide algo, quiere convencer.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¿Para qué lo escribió?",
+          "x": 60,
+          "y": 150,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "para qué lo escribió"
+        },
+        {
+          "a": "escribe",
+          "texto": "datos → informa",
+          "x": 60,
+          "y": 300,
+          "tam": 72,
+          "en": "Si da datos"
+        },
+        {
+          "a": "escribe",
+          "texto": "opina → convence",
+          "x": 60,
+          "y": 440,
+          "tam": 72,
+          "en": "quiere convencer"
+        }
+      ],
+      "limpia": true,
+      "inicio": 25.11
+    },
+    {
+      "escena": "La estructura",
+      "voz": "Para la estructura, busca marcas. Fechas: orden en el tiempo. Por eso: causa y efecto. Un problema y propuestas: problema y solución.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "fechas → cronológica",
+          "x": 60,
+          "y": 180,
+          "tam": 64,
+          "en": "Fechas"
+        },
+        {
+          "a": "escribe",
+          "texto": "por eso → causa y efecto",
+          "x": 60,
+          "y": 320,
+          "tam": 64,
+          "en": "Por eso:"
+        },
+        {
+          "a": "escribe",
+          "texto": "problema → solución",
+          "x": 60,
+          "y": 460,
+          "tam": 64,
+          "en": "problema y solución"
+        }
+      ],
+      "limpia": true,
+      "inicio": 33.53
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: matizar no es contradecir. El párrafo cinco no dice que las redes sean malas: solo pone un límite.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "matizar ≠ contradecir",
+          "x": 60,
+          "y": 300,
+          "color": "amarillo",
+          "tam": 76,
+          "en": "matizar no es"
+        },
+        {
+          "a": "escribe",
+          "texto": "solo pone un límite",
+          "x": 60,
+          "y": 450,
+          "color": "verde",
+          "tam": 70,
+          "en": "solo pone un límite"
+        }
+      ],
+      "limpia": true,
+      "inicio": 43.66
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Qué maravilla de servicio: tres horas de espera. ¿Cuál es el tono?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "«¡Qué",
+          "x": 60,
+          "y": 240,
+          "tam": 58,
+          "en": "Qué maravilla"
+        },
+        {
+          "a": "escribe",
+          "texto": "maravilla",
+          "x": 200,
+          "y": 240,
+          "id": "mv",
+          "tam": 58,
+          "en": "maravilla de servicio"
+        },
+        {
+          "a": "escribe",
+          "texto": "de servicio:",
+          "x": 405,
+          "y": 240,
+          "tam": 58,
+          "en": "de servicio"
+        },
+        {
+          "a": "escribe",
+          "texto": "tres horas de espera!»",
+          "x": 60,
+          "y": 330,
+          "id": "h",
+          "tam": 58,
+          "en": "tres horas"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Cuál es el tono?",
+          "x": 60,
+          "y": 470,
+          "color": "azul",
+          "tam": 60,
+          "en": "Cuál es el tono"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 51.46
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es irónico: dice maravilla, pero los hechos dicen lo contrario.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "irónico",
+          "x": 520,
+          "y": 470,
+          "id": "i",
+          "color": "verde",
+          "tam": 80,
+          "en": "Es irónico"
+        },
+        {
+          "a": "circulo",
+          "sobre": "mv",
+          "color": "rosa",
+          "en": "dice maravilla"
+        },
+        {
+          "a": "subraya",
+          "sobre": "h",
+          "color": "rojo",
+          "en": "los hechos"
+        },
+        {
+          "a": "circulo",
+          "sobre": "i",
+          "color": "verde",
+          "en": "lo contrario"
+        }
+      ],
+      "inicio": 57.63
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: el tono está en las palabras con emoción. Y la función de un párrafo, en cómo se une con los de al lado.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "tono → palabras con emoción",
+          "x": 70,
+          "y": 300,
+          "tam": 62,
+          "en": "el tono está"
+        },
+        {
+          "a": "escribe",
+          "texto": "función → mira los de al lado",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 62,
+          "en": "la función"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "los de al lado"
+        }
+      ],
+      "limpia": true,
+      "inicio": 62.37
+    }
+  ],
+  "duracion": 69.25
+}

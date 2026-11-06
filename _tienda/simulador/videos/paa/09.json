@@ -1,0 +1,341 @@
+{
+  "id": "paa-09",
+  "tema": "vocabulario",
+  "titulo": "Vocabulario en contexto",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/09.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Lee esta oración: el río arrastró todo, pero el viejo puente resistió estoico. ¿Qué significa estoico?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "El río arrastró todo,",
+          "x": 60,
+          "y": 150,
+          "id": "l1",
+          "tam": 66,
+          "en": "el río arrastró"
+        },
+        {
+          "a": "escribe",
+          "texto": "pero",
+          "x": 60,
+          "y": 250,
+          "id": "pero",
+          "tam": 66,
+          "en": "pero el viejo"
+        },
+        {
+          "a": "escribe",
+          "texto": "el viejo puente",
+          "x": 185,
+          "y": 250,
+          "tam": 66,
+          "en": "viejo puente"
+        },
+        {
+          "a": "escribe",
+          "texto": "resistió",
+          "x": 60,
+          "y": 350,
+          "id": "res",
+          "tam": 66,
+          "en": "resistió"
+        },
+        {
+          "a": "escribe",
+          "texto": "estoico.",
+          "x": 270,
+          "y": 350,
+          "id": "est",
+          "color": "amarillo",
+          "tam": 66,
+          "en": "resistió estoico"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿estoico = ?",
+          "x": 60,
+          "y": 500,
+          "color": "azul",
+          "tam": 70,
+          "en": "¿Qué significa"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Las pistas",
+      "voz": "No necesitas el diccionario: busca pistas. El río arrastró todo, pero el puente no: resistió.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "l1",
+          "color": "amarillo",
+          "en": "El río arrastró todo"
+        },
+        {
+          "a": "circulo",
+          "sobre": "pero",
+          "color": "rosa",
+          "en": "pero el puente no"
+        },
+        {
+          "a": "subraya",
+          "sobre": "res",
+          "color": "verde",
+          "en": "resistió."
+        }
+      ],
+      "inicio": 8.4
+    },
+    {
+      "escena": "Tu palabra",
+      "voz": "Ahora pon tu propia palabra: firme, sin rendirse. Eso significa estoico.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "= firme",
+          "x": 540,
+          "y": 350,
+          "id": "f",
+          "color": "verde",
+          "tam": 76,
+          "en": "firme"
+        },
+        {
+          "a": "circulo",
+          "sobre": "f",
+          "color": "verde",
+          "en": "sin rendirse"
+        },
+        {
+          "a": "palomita",
+          "x": 850,
+          "y": 320,
+          "en": "Eso significa"
+        }
+      ],
+      "inicio": 16.84
+    },
+    {
+      "escena": "El método",
+      "voz": "El truco: tapa la palabra, lee lo de alrededor, pon tu palabra y prueba cada opción.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1. Tapa la palabra",
+          "x": 60,
+          "y": 140,
+          "tam": 66,
+          "en": "tapa la palabra"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Lee lo de alrededor",
+          "x": 60,
+          "y": 250,
+          "tam": 66,
+          "en": "lee lo de alrededor"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. Pon tu palabra",
+          "x": 60,
+          "y": 360,
+          "tam": 66,
+          "en": "pon tu palabra"
+        },
+        {
+          "a": "escribe",
+          "texto": "4. Prueba las opciones",
+          "x": 60,
+          "y": 470,
+          "id": "u",
+          "tam": 66,
+          "en": "prueba cada opción"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "cada opción"
+        }
+      ],
+      "limpia": true,
+      "inicio": 23.58
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con el significado de diccionario. Estoico también es un tipo de filósofo, pero aquí se habla de un puente.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "estoico = filósofo",
+          "x": 60,
+          "y": 300,
+          "id": "fil",
+          "color": "rojo",
+          "tam": 76,
+          "en": "filósofo"
+        },
+        {
+          "a": "tacha",
+          "sobre": "fil",
+          "color": "rojo",
+          "en": "pero aquí"
+        },
+        {
+          "a": "escribe",
+          "texto": "aquí: un puente",
+          "x": 60,
+          "y": 460,
+          "color": "verde",
+          "tam": 76,
+          "en": "se habla de un puente"
+        }
+      ],
+      "limpia": true,
+      "inicio": 30.46
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Su respuesta fue tan escueta que cupo en una sola línea. ¿Qué significa escueta?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Su respuesta fue tan",
+          "x": 60,
+          "y": 240,
+          "tam": 64,
+          "en": "Su respuesta"
+        },
+        {
+          "a": "escribe",
+          "texto": "escueta",
+          "x": 60,
+          "y": 340,
+          "id": "esc",
+          "color": "amarillo",
+          "tam": 64,
+          "en": "tan escueta"
+        },
+        {
+          "a": "escribe",
+          "texto": "que cupo en una sola línea.",
+          "x": 240,
+          "y": 340,
+          "id": "pista",
+          "tam": 64,
+          "en": "que cupo"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿escueta = ?",
+          "x": 60,
+          "y": 480,
+          "color": "azul",
+          "tam": 70,
+          "en": "¿Qué significa"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 38.06
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "La pista es: cupo en una sola línea. Escueta significa breve, con pocas palabras.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "pista",
+          "color": "amarillo",
+          "en": "La pista es"
+        },
+        {
+          "a": "escribe",
+          "texto": "= breve",
+          "x": 470,
+          "y": 480,
+          "id": "br",
+          "color": "verde",
+          "tam": 76,
+          "en": "significa breve"
+        },
+        {
+          "a": "circulo",
+          "sobre": "br",
+          "color": "verde",
+          "en": "pocas palabras"
+        }
+      ],
+      "inicio": 45.55
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: el significado lo decide la oración, no el diccionario.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "lo decide la oración,",
+          "x": 70,
+          "y": 300,
+          "en": "lo decide la oración"
+        },
+        {
+          "a": "escribe",
+          "texto": "no el diccionario",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "no el diccionario"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "diccionario"
+        }
+      ],
+      "limpia": true,
+      "inicio": 52.64
+    }
+  ],
+  "duracion": 57.55
+}

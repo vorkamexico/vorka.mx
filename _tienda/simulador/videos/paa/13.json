@@ -1,0 +1,344 @@
+{
+  "id": "paa-13",
+  "tema": "analisis_literario",
+  "titulo": "Figuras y narradores",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/13.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Tus ojos brillan como luceros. Tus ojos son dos luceros. ¿Cuál es símil y cuál es metáfora?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tus ojos brillan",
+          "x": 60,
+          "y": 170,
+          "tam": 70,
+          "en": "Tus ojos brillan"
+        },
+        {
+          "a": "escribe",
+          "texto": "como",
+          "x": 500,
+          "y": 170,
+          "id": "como",
+          "color": "amarillo",
+          "tam": 70,
+          "en": "como luceros"
+        },
+        {
+          "a": "escribe",
+          "texto": "luceros",
+          "x": 650,
+          "y": 170,
+          "tam": 70,
+          "en": "como luceros"
+        },
+        {
+          "a": "escribe",
+          "texto": "Tus ojos son dos luceros",
+          "x": 60,
+          "y": 350,
+          "tam": 70,
+          "en": "son dos luceros"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿símil o metáfora?",
+          "x": 60,
+          "y": 500,
+          "color": "azul",
+          "tam": 70,
+          "en": "Cuál es símil"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La diferencia",
+      "voz": "La diferencia es una palabra: como. Con como, es símil. Sin como, es metáfora.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "como",
+          "color": "rosa",
+          "en": "una palabra"
+        },
+        {
+          "a": "escribe",
+          "texto": "= símil",
+          "x": 60,
+          "y": 250,
+          "color": "amarillo",
+          "tam": 62,
+          "en": "es símil"
+        },
+        {
+          "a": "escribe",
+          "texto": "= metáfora",
+          "x": 60,
+          "y": 425,
+          "color": "verde",
+          "tam": 62,
+          "en": "es metáfora"
+        }
+      ],
+      "inicio": 8.41
+    },
+    {
+      "escena": "Otras figuras",
+      "voz": "Otras que salen mucho: personificación, cuando una cosa hace algo de persona. E hipérbole, cuando se exagera.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Personificación:",
+          "x": 60,
+          "y": 190,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "personificación"
+        },
+        {
+          "a": "escribe",
+          "texto": "«el viento susurraba»",
+          "x": 60,
+          "y": 285,
+          "tam": 62,
+          "en": "algo de persona"
+        },
+        {
+          "a": "escribe",
+          "texto": "Hipérbole:",
+          "x": 60,
+          "y": 410,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "hipérbole"
+        },
+        {
+          "a": "escribe",
+          "texto": "«te lo dije mil veces»",
+          "x": 60,
+          "y": 505,
+          "tam": 62,
+          "en": "se exagera"
+        }
+      ],
+      "limpia": true,
+      "inicio": 16.5
+    },
+    {
+      "escena": "El narrador",
+      "voz": "Para el narrador, pregunta: ¿habla en primera persona? Si cuenta su propia historia, es protagonista. Si cuenta lo que le pasa a otro, es testigo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¿Habla en «yo»?",
+          "x": 60,
+          "y": 150,
+          "tam": 72,
+          "en": "primera persona"
+        },
+        {
+          "a": "escribe",
+          "texto": "su historia → protagonista",
+          "x": 60,
+          "y": 290,
+          "color": "verde",
+          "tam": 60,
+          "en": "es protagonista"
+        },
+        {
+          "a": "escribe",
+          "texto": "la de otro → testigo",
+          "x": 60,
+          "y": 410,
+          "color": "amarillo",
+          "tam": 60,
+          "en": "es testigo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 25.13
+    },
+    {
+      "escena": "El narrador",
+      "voz": "Y si habla en tercera persona y sabe lo que todos piensan, es omnisciente.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "«él» y sabe todo → omnisciente",
+          "x": 60,
+          "y": 540,
+          "color": "azul",
+          "tam": 54,
+          "en": "tercera persona"
+        }
+      ],
+      "inicio": 34.85
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: en poesía, no leas al pie de la letra. Un árbol que es un reloj sin manecillas no es un reloj: marca el paso del tiempo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "«un reloj sin manecillas»",
+          "x": 60,
+          "y": 270,
+          "tam": 62,
+          "en": "reloj sin manecillas"
+        },
+        {
+          "a": "escribe",
+          "texto": "≠ un reloj de verdad",
+          "x": 60,
+          "y": 380,
+          "color": "rojo",
+          "tam": 62,
+          "en": "no es un reloj"
+        },
+        {
+          "a": "escribe",
+          "texto": "= marca el tiempo",
+          "x": 60,
+          "y": 500,
+          "color": "verde",
+          "tam": 66,
+          "en": "marca el paso"
+        }
+      ],
+      "limpia": true,
+      "inicio": 40.54
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Mi hermano llegó tarde. Yo lo vi esconder las manos. ¿Qué narrador es?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "«Mi hermano llegó tarde.",
+          "x": 60,
+          "y": 260,
+          "tam": 60,
+          "en": "Mi hermano"
+        },
+        {
+          "a": "escribe",
+          "texto": "Yo lo vi esconder las manos.»",
+          "x": 60,
+          "y": 350,
+          "tam": 60,
+          "en": "Yo lo vi"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué narrador es?",
+          "x": 60,
+          "y": 480,
+          "color": "azul",
+          "tam": 60,
+          "en": "Qué narrador"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 50.0
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es testigo: habla en primera persona, pero la historia es de su hermano.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "testigo",
+          "x": 520,
+          "y": 480,
+          "id": "t",
+          "color": "verde",
+          "tam": 80,
+          "en": "Es testigo"
+        },
+        {
+          "a": "circulo",
+          "sobre": "t",
+          "color": "verde",
+          "en": "la historia es de su hermano"
+        }
+      ],
+      "inicio": 56.78
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: con como, símil. Sin como, metáfora. Y en poesía, busca el sentido figurado.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "con «como» → símil",
+          "x": 70,
+          "y": 280,
+          "en": "con como"
+        },
+        {
+          "a": "escribe",
+          "texto": "sin «como» → metáfora",
+          "x": 70,
+          "y": 400,
+          "en": "Sin como"
+        },
+        {
+          "a": "escribe",
+          "texto": "busca el sentido figurado",
+          "x": 70,
+          "y": 520,
+          "id": "u",
+          "tam": 60,
+          "en": "sentido figurado"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "figurado"
+        }
+      ],
+      "limpia": true,
+      "inicio": 62.03
+    }
+  ],
+  "duracion": 68.52
+}
