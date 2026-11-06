@@ -21,6 +21,7 @@ V4 = {
   'simulador-unam': ('#9A6B00', 'Simulador UNAM', 'Practica [con el peso de tu área.]', 'Simulacros con cronómetro y práctica por materia para las 4 áreas.', ['**476** reactivos', '**4** áreas', '**120** reactivos en 3 h']),
   'simulador-ecoems': ('#D9480F', 'Simulador ECOEMS', 'Llega a la prepa UNAM o al IPN [bien preparado.]', 'Un tutor que te guía desde la secundaria, materia por materia.', ['**320** reactivos', '**10** materias', '**128** reactivos en 3 h']),
   'simulador-ipn': ('#9A2050', 'Simulador IPN', 'Practica para el IPN [con el peso de tu área.]', 'Las 8 materias del examen de nivel superior, con un tutor que te da pistas.', ['**1,012** reactivos', '**3** áreas', '**140** reactivos en 3 h']),
+  'simuladores': ('#6B2A85', 'Simuladores de examen', 'Para varias universidades, [un solo paquete.]', 'El plan Completo de 2 o 3 simuladores: PAA, UNAM e IPN, con tutor en cada uno.', ['**2** simuladores desde $499', '**3** por $699', '**6** meses de acceso']),
   'simulador-prepa-ug': ('#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', 'Simulacros completos y práctica por área con tutor.', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']),
   'brindi': ('#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', 'Confirmaciones al momento y acceso con QR para bodas, XV años y toda celebración.', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']),
   'cupo': ('#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', 'Cobra el cover sin comisión por boleto y controla la entrada con QR.', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']),
@@ -88,6 +89,17 @@ def obj_sim(k):
   <div style="font:850 40px/1.05 Inter,sans-serif;letter-spacing:-.03em;margin-top:14px">Simulador {s['nombre']}</div>
   <div style="display:flex;align-items:baseline;gap:12px;margin-top:26px"><b style="font:850 92px Inter,sans-serif;letter-spacing:-.05em;color:{color}">{titulo.split('·')[1].strip()}</b><span style="font:600 18px Inter,sans-serif;color:#5F5A63">{titulo.split('·')[0].strip()}</span></div>
   {filas}</div>"""
+
+def obj_paquete():
+    # Paquete de simuladores: los reportes de PAA, UNAM e IPN encimados, cada uno con su color
+    def hoja(k, x, y, rot):
+        s = SIMS[P[k]['sim']]; color = V4[k][0]; titulo, barras, tipo = s['rep']
+        filas = ''.join(f'<div style="margin-top:16px"><div style="display:flex;justify-content:space-between;font:600 16px Inter,sans-serif"><span>{n}</span><b>{a if tipo == "pts" else f"{a}/{b}"}</b></div><div style="height:8px;border-radius:4px;background:#EFEDF0;margin-top:6px"><i style="display:block;height:100%;width:{(a - 200) / 6 if tipo == "pts" else 100 * a / b:.0f}%;background:{color};border-radius:4px"></i></div></div>' for n, a, b in barras[:3])
+        return f"""<div style="position:absolute;left:{x}px;top:{y}px;width:380px;height:520px;background:#fff;border-radius:8px;transform:rotate({rot}deg);{SOMBRA};padding:36px 34px;color:#141114">
+  <div style="font:700 13px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:{color}">Reporte de preparación</div>
+  <div style="font:850 34px/1.05 Inter,sans-serif;letter-spacing:-.03em;margin-top:12px">Simulador {s['nombre']}</div>
+  <div style="font:850 70px Inter,sans-serif;letter-spacing:-.05em;color:{color};margin-top:18px">{titulo.split('·')[1].strip()}</div>{filas}</div>"""
+    return hoja('simulador-paa', 40, 150, -10) + hoja('simulador-unam', 150, 330, -2) + hoja('simulador-ipn', 260, 520, 6)
 
 def obj_cupo():
     return f"""
@@ -218,7 +230,7 @@ def obj_clara():
 OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
   'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales, 'pagina-web': obj_pagina_web,
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
-  **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn']}}
+  **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn']}, 'simuladores': obj_paquete}
 
 def visual(k):
     if k in OBJETOS: return ('obj', OBJETOS[k]()), None

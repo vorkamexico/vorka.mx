@@ -99,7 +99,7 @@ describe('regalar el simulador', () => {
     expect(ficha).toContain('Para regalar');
     expect(ficha).toMatch(/value="regalo" checked/);
     const tienda = await (await pedir('/tienda/')).text();
-    expect(tienda).toContain('/simulador-paa/?regalo=1#comprar');
+    expect(tienda).toContain('/tienda/simuladores/?regalo=1#comprar');   // los simuladores son una tarjeta: se regalan desde su página
   });
 });
 

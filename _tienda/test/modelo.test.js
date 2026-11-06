@@ -26,7 +26,9 @@ describe('modelo de datos', () => {
     // los reportes de los tests entran activos por encargo del dueño (migración 0058; las licencias de grupo, ocultas);
     // los portales inmobiliarios entran a la venta por decisión del usuario (2-11-2026; Broker, Inmobiliaria y usuario extra, ocultos);
     // Tu página web (suscripción, $349 desde la migración 0071) entra a la venta por decisión del usuario (5-11-2026, migración 0070)
-    expect(activos.map(p => p.slug).sort()).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual'].sort());
+    // el Simulador IPN (migración 0076) y los paquetes de simuladores (0077) entran a la venta por encargo del dueño (6-11-2026)
+    expect(activos.map(p => p.slug).sort()).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual',
+      'simulador-ipn-practica', 'simulador-ipn-completo', 'simulador-ipn-paquete', 'simuladores-unam-ipn', 'simuladores-paa-unam', 'simuladores-paa-ipn', 'simuladores-universidad'].sort());
   });
 
   it('crea la orden con el precio de la base y el afiliado activo', async () => {

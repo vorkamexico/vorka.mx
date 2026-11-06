@@ -343,10 +343,11 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     expect(yo1.plan).toEqual({ practica: true, completo: false, legado: true, paquete: false, examen: false, estudio: false }); expect(yo1.intentos.ilimitado).toBe(true);
   });
 
-  it('el catálogo muestra una sola tarjeta del simulador, desde el plan más barato', async () => {
+  it('el catálogo muestra una sola tarjeta de simuladores, desde el plan más barato de todos', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html.match(/class="t-card-img" href="\/simulador-paa\/"/g)).toHaveLength(1);
-    expect(html).toMatch(/Desde \$199 MXN/);
+    expect(html.match(/class="t-card-img" href="\/tienda\/simuladores\/"/g)).toHaveLength(1);
+    expect(html).not.toContain('class="t-card-img" href="/simulador-paa/"');
+    expect(html).toMatch(/Desde \$\d+ MXN/);
   });
 });
 

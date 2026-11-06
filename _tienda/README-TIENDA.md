@@ -245,6 +245,13 @@ Examen de admisión a **licenciatura** (nivel superior) del IPN: 3 áreas (Ingen
 - Productos: migración 0076 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), activos desde la publicación. Imágenes: `portadas_v3.py` (SOLO=simulador-ipn) y `portadas_ipn.py`; ícono de la app en `simulador/icono/iconos.mjs` (color en `COLORES_APP.ipn`).
 - Pruebas: `test/simulador-ipn.test.js`.
 
+## Simuladores en la tienda y paquetes (vorka.mx/tienda/simuladores)
+
+- En el catálogo los 5 simuladores y sus paquetes son **una sola tarjeta** (tienda.js › vistas, `HUB_SIMULADORES`) que lleva a `/tienda/simuladores/` (`src/simuladores-tienda.js`): «¿Qué examen vas a presentar?» (universidad: PAA, UNAM, IPN; prepa: ECOEMS, prepa UG) y los paquetes. Cada simulador conserva su página (/simulador-paa/, …) para no perder posicionamiento, apps instaladas, ligas de acceso ni de Puntos.
+- **Paquetes** (migración 0077, activos): UNAM + IPN $499, PAA + UNAM $549, PAA + IPN $549 y los 3 $699. `contenido.acceso.app = 'simuladores'` y `acceso.apps`: cada simulador lo cuenta como su plan Completo (motor.js › accesoDeItem). El correo lleva a `/descargas/<token>` con un botón por simulador, y el enlace entra directo una vez a cada uno (`download_tokens.simulador_usado_at` = «fecha|app1,app2»). `/tienda/<slug-del-paquete>/` redirige a la página con ese paquete elegido (`?paquete=`).
+- La página de venta del PAA, la UNAM y el IPN avisa de los paquetes junto a los planes. Portada: `portadas_v4.py` (SOLO=simuladores).
+- Pruebas: `test/simuladores-paquetes.test.js`.
+
 ## Brindi (vorka.mx/tienda/brindi)
 
 Invitaciones digitales con marca propia (Diversificación). Aquí solo se vende; la app vive en `os.vorka.mx/brindi/` (ver `vorka-os/PLAN-BRINDI.md`).

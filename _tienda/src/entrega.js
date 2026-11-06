@@ -89,7 +89,8 @@ Vorka México · Guanajuato, México`;
 
 // Enlace de entrada de una app: en vorka.mx/<app>/entrar/ o, si la app vive en otro dominio (Brindi en os.vorka.mx), en acceso.url.
 // SaaS de un creador (acceso.tipo 'saas'): su propia app, tal cual (sin el token de la tienda: su app revisa el correo con la API)
-export const urlEntrar = (env, acceso, token) => acceso.tipo === 'saas' && /^https:\/\//.test(acceso.url || '') ? acceso.url
+// Paquete de simuladores (acceso.apps): a la página de su compra, con un botón por simulador
+export const urlEntrar = (env, acceso, token) => acceso.app === 'simuladores' ? `${env.SITE_URL}/descargas/${token}` : acceso.tipo === 'saas' && /^https:\/\//.test(acceso.url || '') ? acceso.url
   : acceso.url && /^https:\/\/[a-z0-9.-]+\.vorka\.mx\//.test(acceso.url) ? `${acceso.url}${token}` : `${env.SITE_URL}/${acceso.app}/entrar/${token}`;
 
 // Correo de compra de un SaaS de creador: el botón abre su app; quién da soporte de la app y dónde se administra el cobro
@@ -159,6 +160,7 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : regalo ? `¡Te ${orden.proveedor === 'cortesia' ? 'regalamos' : 'regalaron'} ${items[0].nombre}! Tu acceso ya está activo y queda a tu nombre.`
     : '¡Gracias por tu compra! Tu pago quedó confirmado y tu acceso ya está activo.';
   const linea2 = intento ? 'Entra al simulador con el mismo correo y los verás en el contador de simulacros completos.'
+    : acceso.app === 'simuladores' ? `Con este botón ves tus simuladores (${(acceso.nombres || []).join(', ')}) y entras a cada uno. Tienes el plan Completo de cada uno durante 6 meses. Para volver a entrar después, usa este mismo correo en la página de cada simulador.`
     : acceso.app === 'cupo' ? 'Con este botón entras a Cupo. Tus eventos Pro quedan guardados en tu cuenta y se aplican al publicar cada evento. Para volver a entrar después, usa este mismo correo en os.vorka.mx/cupo.'
     : acceso.app === 'agenda' ? 'Con este botón entras a Agenda. Tu suscripción ya está activa y tu página de citas sigue tal cual: se renueva sola y la puedes cancelar cuando quieras desde Agenda › Cuenta. Para volver a entrar después, usa este mismo correo en agenda.vorka.mx.'
     : acceso.app === 'agenda-vuelve' ? 'Con este botón entras a Agenda. Tu paquete ya está activo y abre Agenda y Vuelve con este mismo correo: se renueva solo y lo puedes cancelar cuando quieras desde la app, en Cuenta. Para volver a entrar después, usa este mismo correo en agenda.vorka.mx y en os.vorka.mx/vuelve.'

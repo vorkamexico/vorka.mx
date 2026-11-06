@@ -94,10 +94,13 @@ const AGENDA = {
 const esAgenda = p => p.contenido?.acceso?.app === 'agenda';
 
 // Cómo se presenta cada producto en el catálogo (una sola tarjeta por página de destino)
+// Los simuladores y sus paquetes son una sola tarjeta que lleva a /tienda/simuladores/ (para no llenar la tienda de simuladores)
+const HUB_SIMULADORES = '/tienda/simuladores/';
+const esSimulador = p => /^simulador(es$|-)/.test(p.contenido?.acceso?.app || '');
 function vistas(productos, desdeBrindi) {
   const vistos = new Map();
   return productos.map(p => {
-    const url = enlace(p);
+    const url = esSimulador(p) ? HUB_SIMULADORES : enlace(p);
     // varios productos con la misma página (los planes del Simulador PAA): una tarjeta "Desde" el más barato
     if (vistos.has(url)) { const v = vistos.get(url); if (v.min != null && p.precio_centavos < v.min) { v.min = p.precio_centavos; v.precio = `Desde ${precio(p)}`; } else if (v.min != null && !v.precio.startsWith('Desde')) v.precio = `Desde ${precio({ precio_centavos: v.min })}`; return null; }
     const v = vista(p, url, desdeBrindi);
@@ -145,6 +148,8 @@ function vista(p, url, desdeBrindi) {
     const app = APPS_TIENDA[p.contenido?.acceso?.app];
     if (app) return { p, url, nombre: app.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x), cat: 'Acceso en línea',
       img: conPortada(p), precio: app.precio(p), regalable: false, min: p.precio_centavos };
+    if (url === HUB_SIMULADORES) return { p, url, nombre: 'Simuladores de examen en línea', texto: 'PAA, UNAM, IPN, ECOEMS y prepa UG: práctica con tutor y exámenes completos como el real. Si presentas en varias universidades, paquetes desde $499.',
+      incluye: [], cat: 'Acceso en línea', img: { ...p, imagen: '/assets/tienda/v3/simuladores-portada.webp' }, precio: `Desde ${precio(p)}`, regalable: true, min: p.precio_centavos };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
     const sim = p.contenido?.plan && SIM_TIENDA[p.contenido?.acceso?.app];
     return { p, url, nombre: sim ? sim.nombre : p.nombre, texto: sim ? sim.texto : p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x),

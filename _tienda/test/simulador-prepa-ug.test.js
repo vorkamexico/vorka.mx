@@ -138,9 +138,9 @@ describe('simulador prepa UG', () => {
     expect(h.area).toBeUndefined();
   });
 
-  it('el catálogo muestra una sola tarjeta del simulador prepa UG y el sitemap su página', async () => {
+  it('el catálogo muestra una sola tarjeta de simuladores y el sitemap la página del prepa UG', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html.match(/data-buscar="simulador ecoems en linea /g)).toHaveLength(1);
+    expect(html.match(/data-buscar="simuladores de examen en linea /g)).toHaveLength(1);
     expect(html).not.toContain('simulador-prepa-ug-intento');
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('<loc>https://vorka.mx/simulador-prepa-ug/</loc>');
   });
