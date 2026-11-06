@@ -35,7 +35,7 @@
 | PANTALLA | VOZ |
 |---|---|
 | En rojo: ~~If it will rain~~ → **If it rains**. Texto: **Nunca will después de if.** | La trampa número uno: poner will en la parte con «if». En inglés no se dice «if it will rain». El futuro va en el resultado, no en la condición. |
-| «If I **were** you, I would study more.» Nota: con «if», *were* sirve para todas las personas; es la forma que esperan los exámenes. | Otra: en el segundo condicional, «if I were» es la forma correcta para todas las personas: If I were you, I would study more. |
+| «If I **were** you, I would study more.» Nota: en el segundo condicional, *were* con todas las personas es la forma que esperan los exámenes. | Otra: en el segundo condicional, los exámenes esperan «were» con todas las personas, aunque en la calle oigas «was»: If I were you, I would study more. |
 
 ### 5. Tu turno · 2:35–3:00
 

@@ -24,10 +24,10 @@
 | PANTALLA | VOZ |
 |---|---|
 | Paso 1 · **Encuentra el verbo:** se resalta el hueco. | Paso uno: ubica el verbo. |
-| Paso 2 · **Pregunta ¿quién?:** «¿Quién está en la puerta?» | Paso dos: pregúntale al verbo quién hace la acción. ¿Qué está en la puerta? |
+| Paso 2 · **Pregúntale al verbo:** «¿Qué está en la puerta?» | Paso dos: pregúntale al verbo quién o qué hace la acción. ¿Qué está en la puerta? |
 | Paso 3 · **Tacha los complementos:** ~~de materiales~~ ~~para el taller~~ → queda **La lista** | Paso tres: tacha los complementos, sobre todo los que empiezan con «de» o «para». Te queda: la lista. |
 | Paso 4 · **Concuerda:** singular → **está**. Se ilumina la **B**. | Paso cuatro: la lista es singular, así que el verbo va en singular. La lista está en la puerta. Es la B. |
-| Sujeto compuesto: «Ana **y** Luis **llegaron**». Dos personitas → plural. | Si el sujeto tiene dos núcleos unidos por «y», el verbo va en plural: Ana y Luis llegaron. |
+| Sujeto compuesto: «Ana **y** Luis **llegaron**». Dos núcleos → plural. | Si el sujeto tiene dos núcleos unidos por «y», el verbo va en plural: Ana y Luis llegaron. |
 
 ### 4. Las dos trampas favoritas · 1:40–2:25
 
@@ -47,7 +47,7 @@
 
 | PANTALLA | VOZ |
 |---|---|
-| Tarjeta: **Tacha los complementos y pregunta ¿quién? · Haber de existir: siempre singular.** Botón «Practicar Concordancia». | Tacha los complementos y pregúntale al verbo quién. Y haber, cuando algo existe, siempre en singular. Ahora practica con preguntas de concordancia. |
+| Tarjeta: **Tacha los complementos y pregúntale al verbo · Haber de existir: siempre singular.** Botón «Practicar Concordancia». | Tacha los complementos y pregúntale al verbo quién hace la acción. Y haber, cuando algo existe, siempre en singular. Ahora practica con preguntas de concordancia. |
 
 ---
 
