@@ -7,6 +7,7 @@ import { listarProductos } from './modelo.js';
 import { checkout } from './checkout.js';
 import { webhook } from './webhook.js';
 import { conciliarPendientes } from './conciliar.js';
+import { ultimasPagadas, dineroStripe, completarComisionesStripe } from './finanzas.js';
 import { paginaDescargas, bajarArchivo } from './descargas.js';
 import { paginaGracias, apiOrden } from './gracias.js';
 import { paginaReenviar, postReenviar } from './reenviar.js';
@@ -56,6 +57,10 @@ import { paginaRegalo, canjearRegalo, cortesias, crearCortesias, revocarCortesia
 export class Admin extends WorkerEntrypoint {
   resumen(f) { return admin.resumen(this.env, f); }
   tablero(f) { return admin.tablero(this.env, f); }
+  // Dinero real: compras por fecha de pago, lo que Stripe ya depositó y lo que tiene, y completar comisiones de Stripe
+  ultimasPagadas(f) { return ultimasPagadas(this.env, f); }
+  dineroStripe() { return dineroStripe(this.env); }
+  completarComisionesStripe(f) { return completarComisionesStripe(this.env, f); }
   // Catálogo para compartir (os › Ventas): la liga con su código y el mensaje listo para WhatsApp
   async catalogoCompartir(code, nombre) { const sec = await itemsCatalogo(this.env); return { liga: ligaCatalogo(code), portada: PORTADA_CATALOGO, mensaje: mensajeCatalogo(sec, { code, nombre }) }; }
   portafolio(f) { return portafolio(this.env, f); }
@@ -338,6 +343,8 @@ export default {
   async scheduled(event, env, ctx) {
     // Pagos que siguen pendientes (OXXO, SPEI): se confirman con Stripe aunque su webhook no haya llegado
     ctx.waitUntil(conciliarPendientes(env).then(c => console.log('conciliar', JSON.stringify(c))).catch(e => console.error('conciliar', e?.message)));
+    // Comisión real de Stripe en las órdenes que aún no la tienen (para el neto del panel)
+    ctx.waitUntil(completarComisionesStripe(env).then(c => { if (c.guardadas) console.log('comisiones stripe', JSON.stringify(c)); }).catch(e => console.error('comisiones stripe', e?.message)));
     // Suscripciones por transferencia: las que vencieron sin pago pasan a "vencida" (con su gracia) y luego se pausan
     ctx.waitUntil(revisarTransferencias(env).then(c => { if (c.length) console.log('transferencias', JSON.stringify(c)); }).catch(e => console.error('transferencias', e?.message)));
     // Una vez al día (la corrida de las 09:17 UTC, 03:17 en el centro de México): anonimiza los datos de quien recibió un

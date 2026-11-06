@@ -1,7 +1,7 @@
 // POST /api/webhooks/<proveedor> · confirma pagos y dispara la entrega.
 // 401 si la firma no es válida (no se guarda ni cambia nada) · 200 si se procesó o no nos importa ·
 // 500 si algo falló: el evento queda con su error y la pasarela reintenta.
-import { json, fail } from './util.js';
+import { json, fail, run } from './util.js';
 import { proveedor } from './pagos/index.js';
 import { aplicarPago, registrarEvento, marcarEvento, registrarAnalitica, itemsDeOrden } from './modelo.js';
 import { entregar } from './entrega.js';
@@ -65,6 +65,9 @@ export async function procesarPago(env, pago) {
   // También en reintentos: si el correo falló la vez pasada, la orden ya está paid pero sin correo
   if (r.orden?.estado === 'paid') await entregar(env, pago.orderId);
   // Reparto a creadores (si hay productos de creadores). Idempotente.
+  // Comisión real de Stripe en la orden (para el neto del panel). Solo la primera vez.
+  if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null)
+    await run(env, 'UPDATE orders SET stripe_fee_centavos = ? WHERE id = ? AND stripe_fee_centavos IS NULL', pago.stripe_fee_centavos, pago.orderId);
   if (r.orden?.estado === 'paid' && pago.stripe_fee_centavos != null) await programarTransferencias(env, pago.orderId, { fee: pago.stripe_fee_centavos });
   if (r.accion === 'revocar') await anularTransferencias(env, pago.orderId);
   // Puntos Vorka: % en puntos al que compartió la liga (según su nivel del semestre) y descuenta los usados;
