@@ -68,7 +68,15 @@ export async function ultimasPagadas(env, { n = 8 } = {}) {
 // que cobran con ella), no solo de la tienda. Los saldos de Stripe ya vienen sin su comisión.
 export async function dineroStripe(env, { ahora = Date.now() } = {}) {
   if (!env.STRIPE_SECRET_KEY) return null;
-  const [bal, pagos] = await Promise.all([llamar(env, 'GET', '/balance'), llamar(env, 'GET', '/payouts?limit=30')]);
+  const ya = Math.floor(ahora / 1000);
+  // Calendario de depósitos (cuenta) y cuándo se libera lo pendiente (movimientos con available_on futuro). Si alguno falla,
+  // el resto se muestra igual.
+  const [bal, pagos, cuenta, porLiberar] = await Promise.all([llamar(env, 'GET', '/balance'), llamar(env, 'GET', '/payouts?limit=30'),
+    llamar(env, 'GET', '/account').catch(() => null), llamar(env, 'GET', `/balance_transactions?limit=100&available_on[gt]=${ya}`).catch(() => null)]);
+  const cal = cuenta?.settings?.payouts?.schedule;
+  const dia = s => new Date(s * 1000).toISOString().slice(0, 10);   // available_on es un día de Stripe (medianoche UTC)
+  const libera = {};
+  for (const t of porLiberar?.data || []) if (t.currency === 'mxn' && t.available_on > ya) libera[dia(t.available_on)] = (libera[dia(t.available_on)] || 0) + (Number(t.net) || 0);
   const mxn = xs => (xs || []).filter(x => x.currency === 'mxn').reduce((s, x) => s + (Number(x.amount) || 0), 0);
   const mesMx = s => new Date(s * 1000 - 6 * 3600e3).toISOString().slice(0, 7), esteMes = new Date(ahora - 6 * 3600e3).toISOString().slice(0, 7);
   const lista = (pagos?.data || []).filter(p => p.currency === 'mxn');
@@ -81,6 +89,10 @@ export async function dineroStripe(env, { ahora = Date.now() } = {}) {
     en_camino_centavos: camino.reduce((s, p) => s + p.amount, 0),
     depositado_mes_centavos: pagadosMes.reduce((s, p) => s + p.amount, 0), depositos_mes: pagadosMes.length,
     depositos: lista.slice(0, 6).map(p => ({ id: p.id, monto_centavos: p.amount, llega: new Date(p.arrival_date * 1000).toISOString(), estado: p.status })),
+    // intervalo: manual | daily | weekly | monthly · dias_espera: días que Stripe retiene cada cobro antes de liberarlo
+    calendario: cal ? { intervalo: cal.interval || null, dias_espera: cal.delay_days ?? null, dia_semana: cal.weekly_anchor || null, dia_mes: cal.monthly_anchor ?? null } : null,
+    // Lo que se libera cada día (neto, ya sin comisión), del más cercano al más lejano
+    liberaciones: Object.entries(libera).filter(([, v]) => v > 0).sort(([a], [b]) => a.localeCompare(b)).slice(0, 8).map(([d, v]) => ({ dia: d, monto_centavos: v })),
   };
 }
 

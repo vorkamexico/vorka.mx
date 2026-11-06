@@ -117,6 +117,10 @@ describe('dinero en Stripe', () => {
     fetch.mockImplementation(async url => {
       const u = String(url);
       if (u.endsWith('/balance')) return Response.json({ livemode: true, available: [{ amount: 50000, currency: 'mxn' }, { amount: 9, currency: 'usd' }], pending: [{ amount: 12000, currency: 'mxn' }] });
+      if (u.endsWith('/account')) return Response.json({ settings: { payouts: { schedule: { interval: 'daily', delay_days: 4 } } } });
+      if (u.includes('/balance_transactions')) return Response.json({ data: [
+        { currency: 'mxn', net: 7000, available_on: s('2026-11-09T12:00:00Z') }, { currency: 'mxn', net: 5000, available_on: s('2026-11-07T12:00:00Z') },
+        { currency: 'mxn', net: 300, available_on: s('2026-11-07T20:00:00Z') }, { currency: 'usd', net: 99, available_on: s('2026-11-07T12:00:00Z') }] });
       if (u.includes('/payouts')) return Response.json({ data: [
         { id: 'po_1', amount: 30000, currency: 'mxn', status: 'in_transit', arrival_date: s('2026-11-06T00:00:00Z') },
         { id: 'po_2', amount: 20000, currency: 'mxn', status: 'paid', arrival_date: s('2026-11-03T00:00:00Z') },
@@ -126,6 +130,20 @@ describe('dinero en Stripe', () => {
     const d = await dineroStripe(env, { ahora: Date.parse('2026-11-05T18:00:00Z') });
     expect(d).toMatchObject({ prueba: false, disponible_centavos: 50000, por_liberar_centavos: 12000, en_camino_centavos: 30000, depositado_mes_centavos: 20000, depositos_mes: 1 });
     expect(d.depositos.map(x => x.estado)).toEqual(['in_transit', 'paid', 'paid']);
+    expect(d.calendario).toEqual({ intervalo: 'daily', dias_espera: 4, dia_semana: null, dia_mes: null });
+    expect(d.liberaciones).toEqual([{ dia: '2026-11-07', monto_centavos: 5300 }, { dia: '2026-11-09', monto_centavos: 7000 }]);
+  });
+
+  it('si Stripe no da el calendario, lo demás sale igual', async () => {
+    env.STRIPE_SECRET_KEY = 'sk_test_x';
+    fetch.mockImplementation(async url => {
+      const u = String(url);
+      if (u.endsWith('/balance')) return Response.json({ livemode: true, available: [], pending: [] });
+      if (u.includes('/payouts')) return Response.json({ data: [] });
+      return Response.json({ error: { message: 'no' } }, { status: 403 });
+    });
+    const d = await dineroStripe(env);
+    expect(d).toMatchObject({ calendario: null, liberaciones: [], disponible_centavos: 0 });
   });
 
   it('sin llave de Stripe no consulta nada', async () => {
