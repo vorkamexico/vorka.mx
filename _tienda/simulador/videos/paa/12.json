@@ -1,0 +1,328 @@
+{
+  "id": "paa-12",
+  "tema": "evidencia",
+  "titulo": "Evidencia: la cita que lo prueba",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/12.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Te dicen: cortar los árboles alejó a los colibríes. ¿Qué cita lo demuestra?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Cortar los árboles →",
+          "x": 60,
+          "y": 150,
+          "tam": 64,
+          "en": "cortar los árboles"
+        },
+        {
+          "a": "escribe",
+          "texto": "se fueron los colibríes",
+          "x": 60,
+          "y": 250,
+          "tam": 64,
+          "en": "alejó a los colibríes"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué cita lo prueba?",
+          "x": 60,
+          "y": 420,
+          "color": "azul",
+          "tam": 70,
+          "en": "Qué cita"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "La cita correcta prueba toda la idea. Pártela en dos: la causa y el efecto.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "causa:",
+          "x": 60,
+          "y": 220,
+          "color": "amarillo",
+          "en": "la causa"
+        },
+        {
+          "a": "escribe",
+          "texto": "cortar los árboles",
+          "x": 270,
+          "y": 220,
+          "tam": 66,
+          "en": "la causa"
+        },
+        {
+          "a": "escribe",
+          "texto": "efecto:",
+          "x": 60,
+          "y": 380,
+          "color": "amarillo",
+          "en": "el efecto"
+        },
+        {
+          "a": "escribe",
+          "texto": "se fueron los colibríes",
+          "x": 280,
+          "y": 380,
+          "tam": 60,
+          "en": "el efecto"
+        }
+      ],
+      "limpia": true,
+      "inicio": 6.47
+    },
+    {
+      "escena": "Revisa",
+      "voz": "Revisa cada cita. El cerro quedó pelón: solo tiene la causa. Sin las flores, los colibríes no volvieron: tiene las dos. ¡Esa es!",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "A) «El cerro quedó pelón»",
+          "x": 60,
+          "y": 200,
+          "id": "a",
+          "tam": 58,
+          "en": "El cerro quedó"
+        },
+        {
+          "a": "escribe",
+          "texto": "solo causa",
+          "x": 700,
+          "y": 200,
+          "color": "rojo",
+          "tam": 50,
+          "en": "solo tiene la causa"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "tiene la causa."
+        },
+        {
+          "a": "escribe",
+          "texto": "B) «Sin las flores, los",
+          "x": 60,
+          "y": 340,
+          "id": "b1",
+          "tam": 58,
+          "en": "Sin las flores"
+        },
+        {
+          "a": "escribe",
+          "texto": "colibríes no volvieron»",
+          "x": 110,
+          "y": 420,
+          "id": "b2",
+          "tam": 58,
+          "en": "no volvieron"
+        },
+        {
+          "a": "subraya",
+          "sobre": "b2",
+          "color": "verde",
+          "en": "tiene las dos"
+        },
+        {
+          "a": "palomita",
+          "x": 720,
+          "y": 390,
+          "en": "Esa es"
+        }
+      ],
+      "limpia": true,
+      "inicio": 12.57
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: la cita trampa está en el mismo párrafo y habla del mismo tema, pero no demuestra lo que te preguntan.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "mismo párrafo ≠ prueba",
+          "x": 60,
+          "y": 300,
+          "color": "rojo",
+          "tam": 72,
+          "en": "mismo párrafo"
+        },
+        {
+          "a": "escribe",
+          "texto": "mismo tema ≠ prueba",
+          "x": 60,
+          "y": 440,
+          "color": "rojo",
+          "tam": 72,
+          "en": "mismo tema"
+        }
+      ],
+      "limpia": true,
+      "inicio": 23.08
+    },
+    {
+      "escena": "El truco",
+      "voz": "Un truco: di en voz alta, se sabe que pasó esto, porque el texto dice esto otro. Si suena lógico, es la buena.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Se sabe que ____",
+          "x": 60,
+          "y": 210,
+          "tam": 72,
+          "en": "se sabe que"
+        },
+        {
+          "a": "escribe",
+          "texto": "porque el texto dice ____",
+          "x": 60,
+          "y": 340,
+          "tam": 66,
+          "en": "porque el texto"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿suena lógico?",
+          "x": 60,
+          "y": 480,
+          "id": "l",
+          "color": "verde",
+          "tam": 72,
+          "en": "Si suena lógico"
+        },
+        {
+          "a": "palomita",
+          "x": 560,
+          "y": 450,
+          "en": "es la buena"
+        }
+      ],
+      "limpia": true,
+      "inicio": 30.73
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Qué cita prueba que el mural le devolvió a la abuela las ganas de salir? A: el mural cubrió la pared. B: desde que lo pintaron, la abuela sale cada mañana a verlo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) «El mural cubrió la pared»",
+          "x": 60,
+          "y": 250,
+          "id": "a",
+          "tam": 56,
+          "en": "el mural cubrió"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) «Desde que lo pintaron, la",
+          "x": 60,
+          "y": 370,
+          "id": "b",
+          "tam": 56,
+          "en": "desde que lo pintaron"
+        },
+        {
+          "a": "escribe",
+          "texto": "abuela sale cada mañana»",
+          "x": 110,
+          "y": 450,
+          "tam": 56,
+          "en": "sale cada mañana"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 39.06
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es la B: tiene el mural y el cambio en la abuela. La A solo describe el mural.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "Es la B"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "La A solo"
+        }
+      ],
+      "inicio": 51.75
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: parte la idea en piezas. La cita correcta las prueba todas.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "parte la idea en piezas",
+          "x": 70,
+          "y": 300,
+          "tam": 70,
+          "en": "parte la idea"
+        },
+        {
+          "a": "escribe",
+          "texto": "la cita las prueba todas",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 70,
+          "en": "las prueba todas"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "todas."
+        }
+      ],
+      "limpia": true,
+      "inicio": 57.86
+    }
+  ],
+  "duracion": 62.67
+}

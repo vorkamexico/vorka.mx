@@ -1,0 +1,341 @@
+{
+  "id": "paa-20",
+  "tema": "coherencia",
+  "titulo": "Coherencia y unidad",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/20.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Qué oración sobra? Las abejas polinizan las flores. Sin ellas, habría menos frutas. Las avispas también pican. Por eso, cuidarlas es cuidar la comida.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1. Las abejas polinizan las flores.",
+          "x": 60,
+          "y": 130,
+          "id": "o1",
+          "tam": 56,
+          "en": "Las abejas polinizan"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Sin ellas, habría menos frutas.",
+          "x": 60,
+          "y": 230,
+          "id": "o2",
+          "tam": 56,
+          "en": "habría menos frutas"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. Las avispas también pican.",
+          "x": 60,
+          "y": 330,
+          "id": "o3",
+          "tam": 56,
+          "en": "avispas también pican"
+        },
+        {
+          "a": "escribe",
+          "texto": "4. Por eso, cuidarlas es cuidar la comida.",
+          "x": 60,
+          "y": 430,
+          "id": "o4",
+          "tam": 52,
+          "en": "cuidar la comida"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué oración sobra?",
+          "x": 60,
+          "y": 540,
+          "color": "azul",
+          "tam": 64,
+          "en": "¿Qué oración sobra"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Una línea",
+      "voz": "Primero di en una línea de qué trata: las abejas son importantes para la comida.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "De qué trata:",
+          "x": 60,
+          "y": 170,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "Primero di"
+        },
+        {
+          "a": "escribe",
+          "texto": "abejas → importantes",
+          "x": 60,
+          "y": 320,
+          "id": "l",
+          "color": "verde",
+          "tam": 76,
+          "en": "las abejas son importantes"
+        },
+        {
+          "a": "escribe",
+          "texto": "para la comida",
+          "x": 60,
+          "y": 440,
+          "color": "verde",
+          "tam": 76,
+          "en": "para la comida"
+        },
+        {
+          "a": "subraya",
+          "sobre": "l",
+          "color": "amarillo",
+          "en": "importantes"
+        }
+      ],
+      "limpia": true,
+      "inicio": 11.57
+    },
+    {
+      "escena": "Compara",
+      "voz": "Compara cada oración con esa línea. La tres habla de avispas y de picar: esa sobra.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1. Las abejas polinizan las flores.",
+          "x": 60,
+          "y": 130,
+          "id": "o1",
+          "tam": 56,
+          "en": "Compara"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Sin ellas, habría menos frutas.",
+          "x": 60,
+          "y": 230,
+          "id": "o2",
+          "tam": 56,
+          "en": "cada oración"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. Las avispas también pican.",
+          "x": 60,
+          "y": 330,
+          "id": "o3",
+          "tam": 56,
+          "en": "cada oración"
+        },
+        {
+          "a": "escribe",
+          "texto": "4. Por eso, cuidarlas es cuidar la comida.",
+          "x": 60,
+          "y": 430,
+          "id": "o4",
+          "tam": 52,
+          "en": "con esa línea"
+        },
+        {
+          "a": "palomita",
+          "x": 900,
+          "y": 110,
+          "en": "con esa línea"
+        },
+        {
+          "a": "palomita",
+          "x": 900,
+          "y": 210,
+          "en": "con esa línea"
+        },
+        {
+          "a": "palomita",
+          "x": 900,
+          "y": 410,
+          "en": "con esa línea"
+        },
+        {
+          "a": "circulo",
+          "sobre": "o3",
+          "color": "rojo",
+          "en": "La tres"
+        },
+        {
+          "a": "tacha",
+          "sobre": "o3",
+          "color": "rojo",
+          "en": "esa sobra"
+        }
+      ],
+      "limpia": true,
+      "inicio": 17.82
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: la que sobra suele ser del mismo tema general, como insectos, pero no de la idea del párrafo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "mismo tema general  (insectos)",
+          "x": 60,
+          "y": 300,
+          "color": "amarillo",
+          "tam": 64,
+          "en": "mismo tema general"
+        },
+        {
+          "a": "escribe",
+          "texto": "≠ la idea del párrafo",
+          "x": 60,
+          "y": 440,
+          "color": "rojo",
+          "tam": 72,
+          "en": "no de la idea"
+        }
+      ],
+      "limpia": true,
+      "inicio": 24.55
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Un párrafo sobre ahorrar agua: cierra la llave al lavarte los dientes. Báñate en cinco minutos. El mar es salado. Así cuidas el agua.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. Cierra la llave al lavarte los dientes.",
+          "x": 60,
+          "y": 220,
+          "id": "o1",
+          "tam": 52,
+          "en": "cierra la llave"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Báñate en cinco minutos.",
+          "x": 60,
+          "y": 320,
+          "id": "o2",
+          "tam": 52,
+          "en": "Báñate"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. El mar es salado.",
+          "x": 60,
+          "y": 420,
+          "id": "o3",
+          "tam": 52,
+          "en": "El mar es salado"
+        },
+        {
+          "a": "escribe",
+          "texto": "4. Así cuidas el agua.",
+          "x": 60,
+          "y": 520,
+          "id": "o4",
+          "tam": 52,
+          "en": "Así cuidas"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 31.55
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Sobra la tres: habla de agua, pero no de cómo ahorrarla.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "o3",
+          "color": "rojo",
+          "en": "Sobra la tres"
+        },
+        {
+          "a": "tacha",
+          "sobre": "o3",
+          "color": "rojo",
+          "en": "habla de agua"
+        },
+        {
+          "a": "escribe",
+          "texto": "no ahorra agua",
+          "x": 560,
+          "y": 420,
+          "color": "rojo",
+          "tam": 56,
+          "en": "no de cómo"
+        }
+      ],
+      "inicio": 42.51
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: di de qué trata en una línea. La que no cabe en esa línea, sobra.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. ¿De qué trata? (una línea)",
+          "x": 70,
+          "y": 300,
+          "tam": 66,
+          "en": "en una línea"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. La que no cabe, sobra",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 66,
+          "en": "no cabe"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "sobra."
+        }
+      ],
+      "limpia": true,
+      "inicio": 46.99
+    }
+  ],
+  "duracion": 52.27
+}

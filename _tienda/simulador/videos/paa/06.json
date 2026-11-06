@@ -1,0 +1,344 @@
+{
+  "id": "paa-06",
+  "tema": "geometria",
+  "titulo": "Pitágoras y los ángulos del triángulo",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/06.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Una escalera de trece metros está recargada en una pared. Su base está a cinco metros. ¿A qué altura llega?",
+      "acciones": [
+        {
+          "a": "trazo",
+          "d": "M 720 70 L 720 520",
+          "color": "blanco",
+          "en": "recargada en una pared"
+        },
+        {
+          "a": "trazo",
+          "d": "M 200 520 L 780 520",
+          "color": "blanco",
+          "en": "recargada en una pared"
+        },
+        {
+          "a": "trazo",
+          "d": "M 480 520 L 720 140",
+          "color": "amarillo",
+          "en": "Una escalera",
+          "ancho": 9
+        },
+        {
+          "a": "escribe",
+          "texto": "13",
+          "x": 520,
+          "y": 320,
+          "id": "t13",
+          "color": "amarillo",
+          "tam": 70,
+          "en": "trece metros"
+        },
+        {
+          "a": "escribe",
+          "texto": "5",
+          "x": 580,
+          "y": 590,
+          "tam": 66,
+          "en": "cinco metros"
+        },
+        {
+          "a": "escribe",
+          "texto": "?",
+          "x": 750,
+          "y": 340,
+          "color": "azul",
+          "tam": 100,
+          "en": "A qué altura"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La regla",
+      "voz": "La pared y el piso forman un ángulo recto. Entonces se cumple: a al cuadrado, más b al cuadrado, es igual a c al cuadrado.",
+      "acciones": [
+        {
+          "a": "trazo",
+          "d": "M 690 520 L 690 490 L 720 490",
+          "color": "verde",
+          "en": "ángulo recto",
+          "ancho": 5
+        },
+        {
+          "a": "escribe",
+          "texto": "a² + b² = c²",
+          "x": 70,
+          "y": 130,
+          "color": "verde",
+          "tam": 86,
+          "en": "Entonces se cumple"
+        }
+      ],
+      "inicio": 7.24
+    },
+    {
+      "escena": "Calcula",
+      "voz": "La escalera es c: el lado más largo. Cinco al cuadrado, más la altura al cuadrado, es trece al cuadrado.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "t13",
+          "color": "rosa",
+          "en": "el lado más largo"
+        },
+        {
+          "a": "escribe",
+          "texto": "25 + h² = 169",
+          "x": 70,
+          "y": 250,
+          "tam": 64,
+          "en": "Cinco al cuadrado"
+        }
+      ],
+      "inicio": 15.96
+    },
+    {
+      "escena": "Calcula",
+      "voz": "Entonces, la altura al cuadrado es ciento cuarenta y cuatro. La altura es doce.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "h² = 144",
+          "x": 70,
+          "y": 345,
+          "tam": 64,
+          "en": "ciento cuarenta"
+        },
+        {
+          "a": "escribe",
+          "texto": "h = 12",
+          "x": 70,
+          "y": 445,
+          "id": "h",
+          "color": "verde",
+          "tam": 80,
+          "en": "La altura es"
+        },
+        {
+          "a": "circulo",
+          "sobre": "h",
+          "color": "verde",
+          "en": "doce."
+        }
+      ],
+      "inicio": 23.21
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: c siempre es el lado más largo, el que está frente al ángulo recto.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "c = el lado más largo",
+          "x": 70,
+          "y": 300,
+          "id": "u",
+          "en": "el lado más largo"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "más largo"
+        },
+        {
+          "a": "escribe",
+          "texto": "frente al ángulo recto",
+          "x": 70,
+          "y": 440,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "frente al"
+        }
+      ],
+      "limpia": true,
+      "inicio": 28.62
+    },
+    {
+      "escena": "Los ángulos",
+      "voz": "Otra regla: los tres ángulos de un triángulo siempre suman ciento ochenta grados.",
+      "acciones": [
+        {
+          "a": "trazo",
+          "d": "M 120 500 L 520 500 L 280 170 Z",
+          "color": "blanco",
+          "en": "los tres ángulos"
+        },
+        {
+          "a": "escribe",
+          "texto": "60°",
+          "x": 165,
+          "y": 485,
+          "color": "amarillo",
+          "tam": 48,
+          "en": "los tres ángulos"
+        },
+        {
+          "a": "escribe",
+          "texto": "70°",
+          "x": 420,
+          "y": 485,
+          "color": "amarillo",
+          "tam": 48,
+          "en": "de un triángulo"
+        },
+        {
+          "a": "escribe",
+          "texto": "50°",
+          "x": 255,
+          "y": 250,
+          "color": "amarillo",
+          "tam": 48,
+          "en": "siempre suman"
+        },
+        {
+          "a": "escribe",
+          "texto": "= 180°",
+          "x": 600,
+          "y": 340,
+          "id": "s",
+          "color": "verde",
+          "tam": 96,
+          "en": "ciento ochenta"
+        },
+        {
+          "a": "circulo",
+          "sobre": "s",
+          "color": "verde",
+          "en": "grados"
+        }
+      ],
+      "limpia": true,
+      "inicio": 34.25
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Un triángulo tiene un ángulo de cuarenta y otro de noventa grados. ¿Cuánto mide el tercero?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "40° + 90° + ? = 180°",
+          "x": 70,
+          "y": 300,
+          "tam": 70,
+          "en": "cuarenta"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 39.96
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Cuarenta más noventa, ciento treinta. Ciento ochenta menos ciento treinta: cincuenta.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "40 + 90 = 130",
+          "x": 70,
+          "y": 450,
+          "tam": 64,
+          "en": "Cuarenta más noventa"
+        },
+        {
+          "a": "escribe",
+          "texto": "180 − 130 =",
+          "x": 500,
+          "y": 450,
+          "tam": 64,
+          "en": "Ciento ochenta menos"
+        },
+        {
+          "a": "escribe",
+          "texto": "50°",
+          "x": 860,
+          "y": 450,
+          "id": "r",
+          "color": "verde",
+          "tam": 76,
+          "en": "cincuenta"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "cincuenta."
+        }
+      ],
+      "inicio": 46.67
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: a al cuadrado más b al cuadrado es c al cuadrado. Y los ángulos del triángulo suman ciento ochenta.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "a² + b² = c²",
+          "x": 70,
+          "y": 300,
+          "en": "a al cuadrado"
+        },
+        {
+          "a": "escribe",
+          "texto": "ángulos = 180°",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "los ángulos"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "ciento ochenta"
+        }
+      ],
+      "limpia": true,
+      "inicio": 52.57
+    }
+  ],
+  "duracion": 59.95
+}

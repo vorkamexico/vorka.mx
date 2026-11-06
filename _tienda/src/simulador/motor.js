@@ -11,6 +11,10 @@
 // /api/<app>/iniciar      → POST abre un simulacro (gasta 1 intento; si hay uno abierto, lo retoma). { tipo, area? }
 // /api/<app>/abandonar    → POST cierra el simulacro abierto (el intento ya se gastó)
 // /api/<app>/salir        → POST borra la cookie
+// /<app>/entrar/           → «Entrar con mi correo»: código de 6 dígitos al correo de la compra (para la app instalada, que en
+//                           iPhone no siempre comparte la sesión de Safari). POST: accion=enviar|codigo
+// /<app>/manifest.webmanifest, /<app>/sw.js → la app instalable (instalable.js)
+// /api/<app>/estudio, apuntes, push → plan de estudio, apuntes y recordatorios del plan Completo (estudio.js)
 //
 // Acceso: cookie HttpOnly firmada con HMAC (DOWNLOAD_TOKEN_SECRET) que lleva el id del dispositivo. En cada petición se
 // revisa en D1 que la orden siga pagada (un reembolso corta el acceso), que esté dentro de su vigencia (venceDe) y que el
@@ -28,6 +32,9 @@ import { enviar, marco, boton, P } from '../correo.js';
 import { FLECHA, CHECK, LOGO, VERSION } from '../marco.generado.js';
 import { APP_JS, APP_CSS } from './cliente.generado.js';
 import { crearDiagnostico } from './diagnostico.js';
+import { manifiesto, serviceWorker, iconoDe, colorDe } from './instalable.js';
+import { crearEstudio, tieneEstudio } from './estudio.js';
+import { VIDEOS } from './videos.generado.js';
 
 // Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
 // por la fecha en que se compró, no en la que se abrió).
@@ -47,6 +54,8 @@ const CODIGO_MIN = 15;          // vigencia del código para entrar desde otro d
 const CODIGO_INTENTOS = 5;
 const codigo6 = () => { const b = new Uint32Array(1); do crypto.getRandomValues(b); while (b[0] >= 4294000000); return String(b[0] % 1e6).padStart(6, '0'); };
 // "iPhone · Safari": solo para que el dueño reconozca el dispositivo en el aviso
+const MOVILES = ['iPhone', 'iPad', 'Android'];
+const soDe = (ua = '') => etiquetaDe(ua).split(' · ')[0];
 function etiquetaDe(ua = '') {
   const so = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /Linux/.test(ua) ? 'Linux' : 'otro dispositivo';
   const nav = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : '';
@@ -106,8 +115,15 @@ export function crearSimulador(c) {
   }
 
   // ---------- dispositivos ----------
-  async function nuevoDispositivo(env, email, ua) {
-    const id = aleatorio(16), ahora = new Date().toISOString(), etiqueta = etiquetaDe(ua);
+  // app: entra desde la app instalada en el celular. Esa app y el navegador del mismo celular son el mismo aparato, así que
+  // la sesión del navegador (Safari, Chrome…) del mismo tipo de celular se cierra sin aviso y la app ocupa su lugar: el límite
+  // de MAX_DISPOSITIVOS sigue contando aparatos, no navegadores.
+  async function nuevoDispositivo(env, email, ua, { app = false } = {}) {
+    const id = aleatorio(16), ahora = new Date().toISOString(), so = soDe(ua);
+    const etiqueta = app ? `${so} · App` : etiquetaDe(ua);
+    if (app && MOVILES.includes(so))
+      await run(env, "UPDATE simulador_dispositivos SET revocado_at = ?, motivo = 'app' WHERE email = ? AND app = ? AND revocado_at IS NULL AND etiqueta <> ? AND (etiqueta = ? OR etiqueta LIKE ?)",
+        ahora, email, APP, `${so} · App`, so, `${so} · %`);
     await run(env, 'INSERT INTO simulador_dispositivos (id, email, app, etiqueta, creado_at, usado_at) VALUES (?,?,?,?,?,?)', id, email, APP, etiqueta, ahora, ahora);
     // Se quedan los MAX_DISPOSITIVOS usados más recientemente (el nuevo es el más reciente)
     const activos = await all(env, 'SELECT id FROM simulador_dispositivos WHERE email = ? AND app = ? AND revocado_at IS NULL ORDER BY usado_at DESC, rowid DESC', email, APP);
@@ -189,15 +205,18 @@ export function crearSimulador(c) {
     const k = await cookieValida(env, req, ahora);
     if (!k) return null;
     const [a, d] = await Promise.all([ordenConAcceso(env, k.orderId, ahora),
-      one(env, 'SELECT email, usado_at, revocado_at FROM simulador_dispositivos WHERE id = ? AND app = ?', k.dev, APP)]);
+      one(env, 'SELECT email, usado_at, revocado_at, motivo FROM simulador_dispositivos WHERE id = ? AND app = ?', k.dev, APP)]);
     if (!a || !d || d.email !== String(a.orden.email).toLowerCase()) return null;
-    if (d.revocado_at) return { cerrada: true };
+    if (d.revocado_at) return { cerrada: true, motivo: d.motivo };
     if (Date.parse(d.usado_at) < ahora - 3600e3) await run(env, 'UPDATE simulador_dispositivos SET usado_at = ? WHERE id = ?', new Date(ahora).toISOString(), k.dev);
     return { ...a, dispositivo: k.dev };
   }
 
   // Diagnóstico gratis (diagnostico.js): sus rutas no piden compra
   const diagnostico = crearDiagnostico({ c, APP, RUTA, API, BANCO, REACTIVO, firma, cssUrl: `${RUTA}/app.css?v=${V_CSS}` });
+  // Plan de estudio, apuntes y recordatorios (plan Completo)
+  const estudio = crearEstudio({ APP, RUTA, BANCO, REACTIVO });
+  const SW_JS = serviceWorker({ ruta: RUTA, app: APP, titulo: c.titulo });
 
   // ---------- rutas ----------
   async function rutas(req, env, url) {
@@ -208,13 +227,24 @@ export function crearSimulador(c) {
     const M = req.method;
     if (p === `${RUTA}/app.js`) return estatico(APP_JS, 'text/javascript; charset=utf-8');
     if (p === `${RUTA}/app.css`) return estatico(APP_CSS, 'text/css; charset=utf-8');
+    if (p === `${RUTA}/manifest.webmanifest`) return new Response(JSON.stringify(manifiesto({ app: APP, ruta: RUTA, nombre: c.nombre, titulo: c.titulo })),
+      { headers: { 'content-type': 'application/manifest+json; charset=utf-8', 'cache-control': 'public, max-age=3600', 'x-content-type-options': 'nosniff' } });
+    // El service worker no se guarda en caché larga: así una versión nueva llega sola
+    if (p === `${RUTA}/sw.js`) return new Response(SW_JS, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache', 'service-worker-allowed': `${RUTA}/`, 'x-content-type-options': 'nosniff' } });
+    if (p === `${RUTA}/entrar` || p === `${RUTA}/entrar/`) {
+      if (p === `${RUTA}/entrar`) return Response.redirect(`${url.origin}${RUTA}/entrar/`, 301);
+      if (M === 'GET' || M === 'HEAD' || M === 'POST') return entrarConCorreo(env, req);
+    }
     const ent = p.match(new RegExp(`^${RUTA}/entrar/([^/]{1,100})/?$`));
     if (ent && (M === 'GET' || M === 'HEAD' || M === 'POST')) return entrar(env, req, ent[1]);
     if ((p === RUTA || p === `${RUTA}/`) && (M === 'GET' || M === 'HEAD')) {
       if (p === RUTA) return Response.redirect(`${url.origin}${RUTA}/`, 301);
       const a = await accesoDe(env, req);
-      if (a?.cerrada) return sesionCerrada();
-      return a ? appShell(a) : c.venta(env, req, url);
+      if (a?.cerrada) return sesionCerrada(a.motivo);
+      if (a) return appShell(a);
+      // La app instalada abre con ?app=1: sin sesión va a «Entrar con mi correo», no a la página de venta
+      if (url.searchParams.get('app') === '1') return new Response(null, { status: 303, headers: { location: `${RUTA}/entrar/?app=1`, 'cache-control': 'no-store' } });
+      return c.venta(env, req, url);
     }
     if (p.startsWith(`${API}/`)) {
       if (p === `${API}/salir` && M === 'POST') {
@@ -224,7 +254,7 @@ export function crearSimulador(c) {
         return json({ ok: true }, 200, { 'set-cookie': cookieBorrar() });
       }
       const a = await accesoDe(env, req);
-      if (a?.cerrada) return fail(`Tu sesión se cerró porque tu cuenta se abrió en otro dispositivo (máximo ${MAX_DISPOSITIVOS}). Entra de nuevo con el enlace de tu correo.`, 401);
+      if (a?.cerrada) return fail(a.motivo === 'app' ? 'Ahora usas la app del simulador en este celular: ábrela desde tu pantalla de inicio.' : `Tu sesión se cerró porque tu cuenta se abrió en otro dispositivo (máximo ${MAX_DISPOSITIVOS}). Entra de nuevo con el enlace de tu correo.`, 401);
       if (!a) return fail('Tu acceso no está activo. Entra con el enlace de tu correo de compra.', 401);
       if (p === `${API}/banco` && M === 'GET')
         return json({ config: c.cliente, secciones: BANCO.SECCIONES, examen: BANCO.SECCIONES_EXAMEN || null, calentamiento: BANCO.SECCIONES_CALENTAMIENTO, areas: AREAS,
@@ -236,6 +266,16 @@ export function crearSimulador(c) {
         return iniciar(env, a, ['examen', 'calentamiento'].includes(b.tipo) ? b.tipo : 'corto', areaValida(b.area));
       }
       if (p === `${API}/abandonar` && M === 'POST') return abandonar(req, env, a);
+      // Videos explicativos (plan Completo). Sin él solo se listan (para ofrecerlos), sin la animación ni el audio.
+      if (p === `${API}/videos` && M === 'GET') {
+        // Los borradores (sin voz o sin aprobar) solo salen en pruebas locales con VIDEOS_BORRADOR=1 y ?borradores=1
+        const vs = (VIDEOS[APP] || []).filter(v => !v.borrador || (env.VIDEOS_BORRADOR === '1' && url.searchParams.get('borradores') === '1'));
+        const conEstudio = tieneEstudio((await planDe(env, a.orden.email, { sinOfertas: true })).plan);
+        return json(conEstudio ? { videos: vs } : { bloqueado: true, videos: vs.map(v => ({ id: v.id, tema: v.tema, titulo: v.titulo, duracion: v.duracion })) },
+          200, { 'cache-control': 'private, max-age=300' });
+      }
+      const e = await estudio.rutas(req, env, p, a, tieneEstudio((await planDe(env, a.orden.email, { sinOfertas: true })).plan));
+      if (e) return e;
       return fail('No encontrado', 404);
     }
     return null;
@@ -326,10 +366,13 @@ export function crearSimulador(c) {
         extra: `${err}${local}${escribir ? form : ''}${pedir}` }) });
   }
 
-  function sesionCerrada() {
+  function sesionCerrada(motivo) {
+    if (motivo === 'app') return pagina({ titulo: `Ya tienes la app · ${c.titulo}`, ruta: `${RUTA}/`, noindex: true, headers: { 'set-cookie': cookieBorrar(), 'cache-control': 'no-store', ...SIN_REFERER },
+      cuerpo: aviso({ titulo: 'Ahora usas la app en este celular', texto: `Instalaste tu ${esc(c.titulo)} en este celular, así que cerramos la sesión del navegador (tu cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos y la app ocupa este lugar). Ábrela desde el ícono del librito en tu pantalla de inicio: ahí siguen tu avance, tu plan y tus apuntes.`,
+        extra: `<div class="botones t-centro"><a class="btn blanco" href="${RUTA}/entrar/">Entrar aquí de nuevo</a></div>` }) });
     return pagina({ titulo: `Tu sesión se cerró · ${c.titulo}`, ruta: `${RUTA}/`, noindex: true, headers: { 'set-cookie': cookieBorrar(), 'cache-control': 'no-store', ...SIN_REFERER },
       cuerpo: aviso({ titulo: 'Tu sesión se cerró en este dispositivo', texto: `Tu ${esc(c.titulo)} se abrió en otro dispositivo. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos a la vez, así que cerramos este. Para volver a entrar aquí, pide un enlace nuevo a tu correo.`,
-        extra: `<div class="botones t-centro"><a class="btn tinta" href="/descargas/reenviar?para=simulador">Recibir mi enlace ${FLECHA}</a></div>` }) });
+        extra: `<div class="botones t-centro"><a class="btn tinta" href="${RUTA}/entrar/">Entrar con mi correo ${FLECHA}</a></div>` }) });
   }
 
   function errorAcceso(motivo) {
@@ -361,12 +404,96 @@ export function crearSimulador(c) {
 
   // Qué tiene esta persona (practica: sin límite · completo: exámenes completos · legado: la compra de antes) y los planes a la
   // venta (para invitarla a llevarse el que le falta)
-  async function planDe(env, email) {
+  // estudio: plan de estudio, recordatorios y apuntes (plan Completo = paquete, o Práctica + Examen, o la compra de antes)
+  async function planDe(env, email, { sinOfertas = false } = {}) {
     const compras = await comprasDe(env, email);
-    const plan = { practica: compras.some(x => x.acceso.ilimitado), completo: compras.some(x => x.acceso.tipo === 'completo' || x.acceso.tipo === 'paquete'), legado: compras.some(x => esBase(x) && !x.acceso.tipo) };
+    const plan = { practica: compras.some(x => x.acceso.ilimitado), completo: compras.some(x => x.acceso.tipo === 'completo' || x.acceso.tipo === 'paquete'), legado: compras.some(x => esBase(x) && !x.acceso.tipo),
+      paquete: compras.some(x => x.acceso.tipo === 'paquete'), examen: compras.some(x => x.acceso.tipo === 'completo') };
+    plan.estudio = tieneEstudio(plan);
+    if (sinOfertas) return { plan };
     const ofertas = {};
     for (const [k, slug] of Object.entries(c.planes)) { const p = await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', slug); if (p) ofertas[k] = { slug, precio_centavos: p.precio_centavos }; }
     return { plan, ofertas };
+  }
+
+  // ¿Sigue teniendo acceso vigente con plan Completo? (para los recordatorios del cron)
+  async function estudioVigente(env, email, ahora = Date.now()) {
+    const compras = await comprasDe(env, email), base = compras.find(esBase);
+    if (!base || venceDe(base.paid_at || base.created_at, base.compra_at) < ahora) return false;
+    return (await planDe(env, email, { sinOfertas: true })).plan.estudio;
+  }
+
+  // «Entrar con mi correo»: para la app instalada (en iPhone la de la pantalla de inicio no siempre comparte la sesión de
+  // Safari) o si perdió el correo. Manda un código de 6 dígitos al correo de la compra; la respuesta es la misma tenga o no
+  // acceso ese correo (no revela quién compró). Entra como un dispositivo más (máximo MAX_DISPOSITIVOS).
+  async function entrarConCorreo(env, req) {
+    const ua = req.headers.get('user-agent') || '';
+    // ?app=1: viene de la app instalada (su start_url); el formulario no tiene action, así que la dirección se conserva
+    const desdeApp = new URL(req.url).searchParams.get('app') === '1';
+    const ya = await accesoDe(env, req);
+    if (ya && !ya.cerrada) return irAlSimulador();
+    if (req.method !== 'POST') return paginaCorreo({});
+    const o = req.headers.get('origin');
+    if (o && o !== new URL(env.SITE_URL).origin && o !== new URL(req.url).origin) return paginaCorreo({ error: 'Solicitud inválida. Vuelve a abrir la app.' });
+    const f = await req.formData().catch(() => null);
+    const email = String(f?.get('email') || '').trim().toLowerCase().slice(0, 200);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return paginaCorreo({ error: 'Escribe el correo con el que compraste.' });
+    const ip = await sha256(req.headers.get('cf-connecting-ip') || 'local');
+    const base = async () => { const b = (await comprasDe(env, email)).find(esBase); return b ? ordenConAcceso(env, b.orden_id) : null; };
+    if (f.get('accion') === 'codigo') {
+      if (!(await dentroDelLimite(env, `sim-cod-ip:${ip}`, 30, 600))) return paginaCorreo({ email, codigo: true, error: 'Demasiados intentos. Espera unos minutos.' });
+      const cod = String(f.get('codigo') || '').replace(/\D/g, '');
+      const fila = await one(env, "SELECT * FROM simulador_codigos WHERE email = ? AND app = ? AND token_hash = 'correo' AND usado_at IS NULL ORDER BY id DESC LIMIT 1", email, APP);
+      if (!fila || Date.parse(fila.expira_at) < Date.now()) return paginaCorreo({ email, error: 'Ese código ya venció. Pide uno nuevo.' });
+      if (fila.intentos >= CODIGO_INTENTOS) return paginaCorreo({ email, error: 'Demasiados intentos con ese código. Pide uno nuevo.' });
+      if (!iguales(fila.codigo_hash, await hashToken(env, `sim:${APP}:${email}:${cod}`))) {
+        await run(env, 'UPDATE simulador_codigos SET intentos = intentos + 1 WHERE id = ?', fila.id);
+        return paginaCorreo({ email, codigo: true, error: 'Ese código no es correcto. Revisa el último correo que te mandamos.' });
+      }
+      const a = await base();
+      if (!a) return errorAcceso('vencido');
+      const usado = await run(env, 'UPDATE simulador_codigos SET usado_at = ? WHERE id = ? AND usado_at IS NULL', new Date().toISOString(), fila.id);
+      if (!usado.meta.changes) return paginaCorreo({ email, error: 'Ese código ya se usó. Pide uno nuevo.' });
+      return irAlSimulador(await cookieDe(env, a.orden.id, a.vence, await nuevoDispositivo(env, email, ua, { app: desdeApp })));
+    }
+    // accion=enviar
+    if (!(await dentroDelLimite(env, `sim-env-ip:${ip}`, 10, 600)) || !(await dentroDelLimite(env, `sim-env:${APP}:${await sha256(email)}`, 3, 600)))
+      return paginaCorreo({ email, codigo: true, error: 'Ya te mandamos varios códigos. Espera unos minutos y revisa tu correo (también spam).' });
+    let codigoLocal = null;
+    if (await base()) {
+      const cod = codigo6(), ahora = new Date().toISOString();
+      await run(env, "UPDATE simulador_codigos SET usado_at = ? WHERE email = ? AND app = ? AND token_hash = 'correo' AND usado_at IS NULL", ahora, email, APP);
+      await run(env, "INSERT INTO simulador_codigos (email, app, token_hash, codigo_hash, expira_at) VALUES (?,?,'correo',?,?)",
+        email, APP, await hashToken(env, `sim:${APP}:${email}:${cod}`), new Date(Date.now() + CODIGO_MIN * 60e3).toISOString());
+      try {
+        await enviar(env, { para: email, asunto: `${cod} es tu código para entrar al ${c.titulo}`, idempotencia: `sim-cod-${aleatorio(8)}`,
+          html: marco(`Tu código para entrar al ${c.titulo}`, `<p style="${P}">Escribe este código en la app para entrar (${esc(etiquetaDe(ua))}):</p><table role="presentation" cellpadding="0" cellspacing="0" style="margin:4px 0 22px;width:100%"><tr><td align="center" style="background:#F4F2EF;border-radius:16px;padding:18px 12px"><div style="font-size:34px;font-weight:800;letter-spacing:10px;color:#141114;font-family:'SF Mono',Menlo,Consolas,monospace">${cod}</div><div style="font-size:12.5px;color:#A8A4A9;margin-top:6px">Vence en ${CODIGO_MIN} minutos · un solo uso</div></td></tr></table><p style="${P}">Si no fuiste tú, ignora este correo: sin el código nadie puede entrar. Tu cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos.</p>`, { etiqueta: 'Simulador' }),
+          texto: `Tu código para entrar al ${c.titulo}: ${cod} (vence en ${CODIGO_MIN} minutos).\n\nSi no fuiste tú, ignora este correo: sin el código nadie puede entrar.` });
+      } catch (e) {
+        console.error('simulador: correo de código (correo)', e?.message);
+        return paginaCorreo({ email, error: 'No pudimos mandar el código. Intenta de nuevo en un momento.' });
+      }
+      if (!env.RESEND_API_KEY && !env.CORREO) codigoLocal = cod;
+    }
+    return paginaCorreo({ email, codigo: true, enviado: true, codigoLocal });
+  }
+
+  function paginaCorreo({ email = '', codigo = false, enviado = false, error = '', codigoLocal = null }) {
+    const campo = 'width:100%;font:inherit;padding:14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--card);color:var(--fg)';
+    const err = error ? `<p class="t-nota" role="alert" style="color:var(--er);margin-top:14px">${esc(error)}</p>` : '';
+    const local = codigoLocal ? `<p class="t-nota">Modo local, sin correo: tu código es <b>${codigoLocal}</b>.</p>` : '';
+    const pedir = `<form method="post" style="margin-top:22px;max-width:340px;margin-left:auto;margin-right:auto"><input type="hidden" name="accion" value="enviar">
+      <label class="vh" for="email">Correo de tu compra</label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" required ${codigo ? '' : 'autofocus'} value="${esc(email)}" placeholder="tu@correo.com" style="${campo}">
+      <button class="btn ${codigo ? 'blanco' : 'tinta'}" type="submit" style="margin-top:12px;width:100%">${codigo ? 'Mandar otro código' : 'Enviarme un código'}</button></form>`;
+    const form = codigo ? `<form method="post" style="margin-top:22px;max-width:340px;margin-left:auto;margin-right:auto"><input type="hidden" name="accion" value="codigo"><input type="hidden" name="email" value="${esc(email)}">
+      <label class="vh" for="codigo">Código de 6 dígitos</label><input id="codigo" name="codigo" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus style="${campo};font-size:28px;letter-spacing:10px;text-align:center" placeholder="000000">
+      <button class="btn tinta" type="submit" style="margin-top:12px;width:100%">Entrar al simulador</button></form>` : '';
+    return pagina({ titulo: `Entrar · ${c.titulo}`, ruta: `${RUTA}/entrar/`, noindex: true, headers: { 'cache-control': 'no-store', 'referrer-policy': 'same-origin' },
+      cuerpo: aviso({ titulo: codigo ? 'Escribe tu código' : `Entra a tu ${esc(c.titulo)}`,
+        texto: codigo
+          ? `Si <b>${esc(correoOculto(email))}</b> tiene acceso al ${esc(c.titulo)}, ${enviado ? 'le mandamos' : 'le mandaremos'} un código de 6 dígitos. Vence en ${CODIGO_MIN} minutos.`
+          : `Escribe el correo con el que compraste y te mandamos un código para entrar. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos.`,
+        extra: `${err}${local}${form}${pedir}<p class="t-nota" style="margin-top:22px">¿No tienes acceso? <a href="${RUTA}/">Conoce el ${esc(c.titulo)}</a></p>` }) });
   }
 
   // Abre un simulacro: retoma el abierto o gasta un intento y arma los reactivos en el servidor
@@ -438,10 +565,16 @@ export function crearSimulador(c) {
 <title>${c.titulo} · Vorka México</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#FBFAF8">
-<link rel="icon" href="/assets/v3/icono.svg" type="image/svg+xml">
+<link rel="manifest" href="${RUTA}/manifest.webmanifest">
+<link rel="icon" href="${iconoDe(APP, 'icono-192')}" type="image/png">
+<link rel="apple-touch-icon" href="${iconoDe(APP, 'apple-180')}">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="${esc(manifiesto({ app: APP, ruta: RUTA, nombre: c.nombre, titulo: c.titulo }).short_name)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
 <link rel="stylesheet" href="${RUTA}/app.css?v=${V_CSS}">
 </head>
@@ -454,7 +587,8 @@ export function crearSimulador(c) {
 <main id="app" class="sim-main" tabindex="-1" aria-live="polite">
   <div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Preparando tu simulador…</div>
 </main>
-<script nonce="${n}">window.SIM = ${JSON.stringify({ nombre: a.orden.nombre.split(' ')[0], app: APP, ruta: RUTA, os: OS, logo: LOGO, check: CHECK, flecha: FLECHA }).replace(/</g, '\\u003c')};</script>
+<footer class="sim-pie"><a href="https://vorka.mx/" target="_blank" rel="noopener">Powered by <b>vorka.mx</b></a></footer>
+<script nonce="${n}">window.SIM = ${JSON.stringify({ nombre: a.orden.nombre.split(' ')[0], app: APP, ruta: RUTA, os: OS, logo: LOGO, check: CHECK, flecha: FLECHA, icono: iconoDe(APP, 'icono-192'), color: colorDe(APP) }).replace(/</g, '\\u003c')};</script>
 <script src="${RUTA}/app.js?v=${V_JS}" defer></script>
 </body>
 </html>`;
@@ -462,5 +596,5 @@ export function crearSimulador(c) {
   }
 
   return { APP, RUTA, COOKIE, BANCO, nombre: c.nombre, titulo: c.titulo, planes: c.planes, slugIntento: c.slugIntento, slugExamen: c.slugExamen,
-    rutas, accesoDe, cookieAcceso, ordenConAcceso, cuentaIntentos, vistosDe, puedeComprarIntento, planDe };
+    rutas, accesoDe, cookieAcceso, ordenConAcceso, cuentaIntentos, vistosDe, puedeComprarIntento, planDe, estudioVigente };
 }

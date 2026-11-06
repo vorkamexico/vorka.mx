@@ -1,0 +1,384 @@
+{
+  "id": "paa-05",
+  "tema": "geometria",
+  "titulo": "Área y perímetro",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/05.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Un rectángulo mide ocho de largo y cinco de ancho. ¿Cuál es su área? ¿Y su perímetro?",
+      "acciones": [
+        {
+          "a": "caja",
+          "id": "r",
+          "x": 120,
+          "y": 160,
+          "w": 440,
+          "h": 280,
+          "en": "Un rectángulo"
+        },
+        {
+          "a": "escribe",
+          "texto": "8",
+          "x": 320,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "ocho de largo"
+        },
+        {
+          "a": "escribe",
+          "texto": "5",
+          "x": 580,
+          "y": 320,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "cinco de ancho"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿área?",
+          "x": 660,
+          "y": 260,
+          "color": "azul",
+          "tam": 70,
+          "en": "su área"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿perímetro?",
+          "x": 660,
+          "y": 380,
+          "color": "azul",
+          "tam": 64,
+          "en": "su perímetro"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "El área",
+      "voz": "El área es lo de adentro, lo que cubre la pintura: largo por ancho. Ocho por cinco, cuarenta.",
+      "acciones": [
+        {
+          "a": "relleno",
+          "sobre": "r",
+          "desde": 0,
+          "hasta": 1,
+          "color": "verde",
+          "en": "lo de adentro"
+        },
+        {
+          "a": "escribe",
+          "texto": "8 × 5 = 40",
+          "x": 190,
+          "y": 330,
+          "color": "tinta",
+          "tam": 80,
+          "en": "Ocho por cinco"
+        }
+      ],
+      "inicio": 6.14
+    },
+    {
+      "escena": "El perímetro",
+      "voz": "El perímetro es el borde, lo que camina una hormiga: ocho, más cinco, más ocho, más cinco. Veintiséis.",
+      "acciones": [
+        {
+          "a": "caja",
+          "x": 120,
+          "y": 160,
+          "w": 440,
+          "h": 280,
+          "color": "amarillo",
+          "en": "el borde"
+        },
+        {
+          "a": "escribe",
+          "texto": "8",
+          "x": 320,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "ocho, más"
+        },
+        {
+          "a": "escribe",
+          "texto": "5",
+          "x": 580,
+          "y": 320,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "más cinco"
+        },
+        {
+          "a": "escribe",
+          "texto": "8",
+          "x": 320,
+          "y": 520,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "más ocho"
+        },
+        {
+          "a": "escribe",
+          "texto": "5",
+          "x": 70,
+          "y": 320,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "más cinco."
+        },
+        {
+          "a": "escribe",
+          "texto": "= 26",
+          "x": 680,
+          "y": 320,
+          "id": "p",
+          "color": "verde",
+          "tam": 96,
+          "en": "Veintiséis"
+        },
+        {
+          "a": "circulo",
+          "sobre": "p",
+          "color": "verde",
+          "en": "Veintiséis"
+        }
+      ],
+      "limpia": true,
+      "inicio": 13.29
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: el área se mide en centímetros cuadrados. El perímetro, en centímetros.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "área →",
+          "x": 70,
+          "y": 290,
+          "en": "el área"
+        },
+        {
+          "a": "escribe",
+          "texto": "cm²",
+          "x": 320,
+          "y": 290,
+          "id": "u1",
+          "color": "amarillo",
+          "en": "cuadrados"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u1",
+          "color": "amarillo",
+          "en": "cuadrados"
+        },
+        {
+          "a": "escribe",
+          "texto": "perímetro →",
+          "x": 70,
+          "y": 430,
+          "en": "El perímetro"
+        },
+        {
+          "a": "escribe",
+          "texto": "cm",
+          "x": 470,
+          "y": 430,
+          "color": "amarillo",
+          "en": "en centímetros."
+        }
+      ],
+      "limpia": true,
+      "inicio": 21.13
+    },
+    {
+      "escena": "El triángulo",
+      "voz": "Un triángulo es la mitad de un rectángulo. Su área es base por altura, entre dos.",
+      "acciones": [
+        {
+          "a": "trazo",
+          "d": "M 140 480 L 540 480 L 340 160 Z",
+          "color": "blanco",
+          "en": "Un triángulo"
+        },
+        {
+          "a": "trazo",
+          "d": "M 340 160 L 340 480",
+          "color": "amarillo",
+          "en": "base por altura",
+          "ancho": 4
+        },
+        {
+          "a": "escribe",
+          "texto": "altura",
+          "x": 225,
+          "y": 360,
+          "color": "amarillo",
+          "tam": 50,
+          "en": "altura"
+        },
+        {
+          "a": "escribe",
+          "texto": "base",
+          "x": 290,
+          "y": 550,
+          "tam": 56,
+          "en": "base por"
+        },
+        {
+          "a": "escribe",
+          "texto": "b × h ÷ 2",
+          "x": 600,
+          "y": 330,
+          "id": "f",
+          "color": "verde",
+          "tam": 84,
+          "en": "entre dos"
+        },
+        {
+          "a": "subraya",
+          "sobre": "f",
+          "color": "verde",
+          "en": "entre dos"
+        }
+      ],
+      "limpia": true,
+      "inicio": 27.28
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Un triángulo tiene base diez y altura seis. ¿Cuál es su área?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "base = 10",
+          "x": 70,
+          "y": 260,
+          "en": "base diez"
+        },
+        {
+          "a": "escribe",
+          "texto": "altura = 6",
+          "x": 70,
+          "y": 380,
+          "en": "altura seis"
+        },
+        {
+          "a": "escribe",
+          "texto": "área = ?",
+          "x": 70,
+          "y": 500,
+          "color": "azul",
+          "en": "su área"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 33.52
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Diez por seis, sesenta. Entre dos, treinta.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "10 × 6 = 60",
+          "x": 520,
+          "y": 260,
+          "en": "Diez por seis"
+        },
+        {
+          "a": "escribe",
+          "texto": "60 ÷ 2 =",
+          "x": 520,
+          "y": 380,
+          "en": "Entre dos"
+        },
+        {
+          "a": "escribe",
+          "texto": "30",
+          "x": 820,
+          "y": 380,
+          "id": "r30",
+          "color": "verde",
+          "tam": 90,
+          "en": "treinta"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r30",
+          "color": "verde",
+          "en": "treinta."
+        }
+      ],
+      "inicio": 39.08
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: el área es lo de adentro. El perímetro es el borde.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "área = adentro",
+          "x": 70,
+          "y": 300,
+          "en": "el área"
+        },
+        {
+          "a": "escribe",
+          "texto": "perímetro = borde",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "El perímetro"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "el borde"
+        }
+      ],
+      "limpia": true,
+      "inicio": 43.09
+    }
+  ],
+  "duracion": 47.8
+}

@@ -15,13 +15,13 @@
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
   // Llaves de localStorage por cuenta (se completan al saber quién entró): dos personas en el mismo dispositivo no se mezclan
-  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI;
+  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI, K_INST, K_VISTOS_V;
   var L = window.SIM_LOGICA;   // funciones puras (simulador/logica.js): gráfica, temas y puntaje por universidad
   function llaves(email) {
     var h = 0; String(email || '').split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
     var x = ':' + h.toString(36);
     var p = APP === 'simulador-paa' ? 'vk_paa' : 'vk_' + APP.replace('simulador-', '');
-    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x;
+    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x; K_INST = p + '_instalar_no' + x; K_VISTOS_V = p + '_videos_vistos' + x;
   }
 
   // ---------- utilidades ----------
@@ -64,6 +64,11 @@
     foco: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>',
     ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     no: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+    lapiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+    campana: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+    pausa: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>',
+    candado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>',
     libro: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
   };
   var FL = SIM.flecha || '→';
@@ -81,6 +86,10 @@
       if (run && (!run.secciones || run.v !== 1)) { run = null; guardar(K_RUN, null); }
       pintarBarra();
       inicio();
+      // App instalable (service worker) y, con plan Completo, el plan de estudio. #hoy = vino de un recordatorio
+      registrarSW();
+      cargarVideos();
+      if (location.hash === '#hoy' || /[?&]app=1/.test(location.search)) try { history.replaceState(null, '', RUTA + '/'); } catch (e2) { }
     }).catch(function (e) {
       if (e.status === 401) { location.reload(); return; }
       h('<section class="sim-vacio"><h1>No pudimos cargar el simulador</h1><p>Revisa tu conexión e inténtalo de nuevo.</p><button class="btn tinta" id="reint">Reintentar</button></section>');
@@ -325,6 +334,7 @@
       retomar +
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
+          '<div class="o-0 sim-est-caja" id="est-card">' + tarjetaEstudio() + '</div>' +
           '<section class="o-4">' + selArea + '<h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el examen completo, que tiene la dificultad y el tiempo del examen real.</p>' +
           (!puedePracticar() ? tarjetaPlan('practica', 'Llega al examen con práctica de sobra') : '') +
           (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
@@ -383,6 +393,7 @@
     app.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
     app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
     conectarSparks();
+    conectarEstudio();
   }
   // Vuelve a pintar el inicio sin perder el lugar en la página (al cambiar meta o universidad) y deja el foco donde estaba
   function repintar(foco) {
@@ -580,6 +591,7 @@
     var paso = run.secciones.length > 1 ? '<span class="sim-paso">Sección ' + (run.actual + 1) + ' de ' + run.secciones.length + '</span>' : '';
     h('<section class="sim-intro">' + paso + '<h1>' + (practica ? 'Práctica de tus temas' : esc(info.nombre)) + '</h1>' +
       '<p class="sim-lead">' + (practica ? esc(s.temas.map(function (t) { return B.temas[t].nombre; }).join(' · ')) + '. Sin límite de tiempo: enfócate en entender el método.' : esc(info.descripcion)) + '</p>' +
+      (practica ? '<div class="sim-vintro">' + s.temas.map(function (t) { return cajaVideos(t, false); }).join('') + '</div>' : '') +
       '<ul class="sim-datos"><li><b class="num">' + s.items.length + '</b><span>reactivos</span></li>' + (s.limite ? '<li><b class="num">' + Math.round(s.limite / 60) + '</b><span>minutos</span></li><li><b class="num">' + Math.round(s.limite / s.items.length) + ' s</b><span>por reactivo</span></li>' : '<li><b>Libre</b><span>tiempo</span></li>') + '</ul>' +
       '<div class="sim-reglas"><h2>Cómo funciona</h2><ol>' +
         '<li><b>Primer intento.</b> Elige tu respuesta y confírmala. Este intento es el que cuenta para tu resultado, como en el examen real.</li>' +
@@ -589,6 +601,7 @@
       '</ol></div>' +
       '<div class="botones"><button class="btn tinta" id="b-go">' + (s.idx ? 'Continuar sección' : 'Empezar') + ' ' + FL + '</button><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>');
     document.getElementById('b-go').onclick = function () { run.fase = 'preguntas'; guardar(K_RUN, run); pregunta(); };
+    if (practica) llenarVideos();
     document.getElementById('b-inicio').onclick = inicio;
   }
 
@@ -631,7 +644,7 @@
   function letras(txt, orden) { return rico(txt).replace(/\{([A-D])\}/g, function (_, L) { var i = orden.indexOf(LETRAS.indexOf(L)); return i < 0 ? L : LETRAS[i]; }); }
   function tutor(r, st, orden) {
     if (st.fase === 'r1') return '';
-    if (st.fase === 'r2') return '<div class="sim-tutor pista" role="status"><div class="sim-tutor-i">' + ICONO.foco + '</div><div><b>Todavía no. Pista del tutor</b><p>' + letras(r.pista, orden) + '</p><small>Tienes un intento más. Esta vez te mostraremos la solución completa.</small></div></div>';
+    if (st.fase === 'r2') return '<div class="sim-tutor pista" role="status"><div class="sim-tutor-i">' + ICONO.foco + '</div><div><b>Todavía no. Pista del tutor</b><p>' + letras(r.pista, orden) + '</p><small>Tienes un intento más. Esta vez te mostraremos la solución completa.</small>' + cajaVideos(r.tema, true) + '</div></div>';
     var ok1 = st.ok1, ok2 = st.ok2;
     var titulo = ok1 ? '¡Correcto a la primera!' : ok2 ? 'Bien, lo lograste en el segundo intento' : st.sinTiempo ? 'Se acabó el tiempo en este reactivo' : 'Esta era la respuesta correcta';
     var correcta = r.tipo === 'abierta' ? r.respuestas[0] : LETRAS[orden.indexOf(r.correcta)] + ') ' + r.opciones[r.correcta];
@@ -639,7 +652,7 @@
     return '<div class="sim-tutor ' + (ok1 || ok2 ? 'bien' : 'sol') + '" role="status"><div class="sim-tutor-i">' + (ok1 || ok2 ? ICONO.ok : ICONO.libro) + '</div><div>' +
       '<b>' + titulo + '</b><p class="sim-correcta">Respuesta: <b>' + rico(correcta) + '</b></p>' +
       '<details' + (ok1 ? '' : ' open') + '><summary>Solución paso a paso</summary><ol class="sim-pasos">' + r.pasos.map(function (p) { return '<li>' + letras(p, orden) + '</li>'; }).join('') + '</ol>' +
-      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details></div></div>' +
+      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details>' + (ok1 ? '' : cajaVideos(r.tema, true)) + apunteHTML(r) + '</div></div>' +
       '<div class="sim-acc"><button class="btn tinta" id="b-sig">' + (ultimo ? 'Terminar sección' : 'Siguiente') + ' ' + FL + '</button></div>';
   }
   function normal(v) {
@@ -692,11 +705,13 @@
     var inp = document.getElementById('resp'); if (inp) inp.oninput = function () { inp.setCustomValidity(''); };
     var sig = document.getElementById('b-sig');
     if (sig) sig.onclick = function () { var s = secActual(); s.idx++; guardar(K_RUN, run); if (s.idx >= s.items.length) finSeccion(); else pregunta(); };
+    conectarApunte(r);
+    llenarVideos();
     void orden;
   }
 
   document.addEventListener('keydown', function (e) {
-    if (e.metaKey || e.ctrlKey || e.altKey || !app.querySelector('.sim-q')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || !app.querySelector('.sim-q') || VP) return;
     var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
     var k = e.key.toLowerCase(), i = 'abcd'.indexOf(k); if (i < 0) i = '1234'.indexOf(k);
     var ops = app.querySelectorAll('.sim-opc');
@@ -966,6 +981,633 @@
       };
     });
     function listo(b) { b.disabled = true; b.innerHTML = (SIM.check || '') + ' ¡Listo! Ya estás suscrito'; b.classList.add('hecho'); }
+  }
+
+  // ---------- La app de estudio: instalarla, plan de estudio, recordatorios y apuntes ----------
+  // Instalar: todos. Plan, recordatorios y apuntes: plan Completo (YO.plan.estudio; api/estudio, src/simulador/estudio.js).
+  var EST = null, EST_CARGANDO = false, PROMPT_INSTALAR = null, K_INST;
+  var TZ_MX = 'America/Mexico_City';
+  var DIAS_C = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'], ORDEN_DIAS = [1, 2, 3, 4, 5, 6, 0];
+  function tieneEstudio() { return !!(YO.plan && YO.plan.estudio); }
+  function hoyMx() { return L.diaDe(new Date(), TZ_MX); }
+  function standalone() { return !!((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true); }
+  function esIOS() { return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+  function pushPosible() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); PROMPT_INSTALAR = e; var b = document.getElementById('b-instalar'); if (b) b.hidden = false; });
+  window.addEventListener('appinstalled', function () { PROMPT_INSTALAR = null; var c = document.querySelector('.sim-instalar'); if (c) c.remove(); });
+  function registrarSW() {
+    if (!('serviceWorker' in navigator)) return Promise.resolve(null);
+    return navigator.serviceWorker.register(RUTA + '/sw.js', { scope: RUTA + '/' }).catch(function () { return null; });
+  }
+  function cargarEstudio() {
+    if (!tieneEstudio()) return Promise.resolve(null);
+    if (EST) return Promise.resolve(EST);
+    if (EST_CARGANDO) return EST_CARGANDO;
+    EST_CARGANDO = api('estudio').then(function (d) { EST = d; return d; }, function () { return null; }).then(function (d) { EST_CARGANDO = false; return d; });
+    return EST_CARGANDO;
+  }
+  function apunteDe(ref) { var a = (EST && EST.apuntes) || []; for (var i = 0; i < a.length; i++) if (a[i].ref === ref) return a[i]; return null; }
+  function nombreTema(id) { return B.temas[id] ? B.temas[id].nombre : 'Tema'; }
+  function listaY(n) { return n.length < 2 ? n.join('') : n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1]; }
+  // "jueves 12 de noviembre"
+  function diaLargo(d) { try { return new Date(d + 'T12:00:00Z').toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); } catch (e) { return d; } }
+  function diaCorto(d) { try { var t = new Date(d + 'T12:00:00Z').toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).replace(/\./g, '').replace(/,/g, ''); return t.charAt(0).toUpperCase() + t.slice(1); } catch (e) { return d; } }
+  function horaTxt(h) { return (h % 12 || 12) + ':00 ' + (h < 12 ? 'a. m.' : 'p. m.'); }
+  // La sesión de hoy o la siguiente
+  function proximaSesion() { var e = EST && EST.estudio, h = hoyMx(); if (!e) return null; for (var i = 0; i < e.sesiones.length; i++) if (e.sesiones[i].f >= h) return e.sesiones[i]; return null; }
+  function queToca(s) {
+    if (s.k === 'simulacro') return 'Simulacro de nivel Medio para medir cuánto has subido';
+    var n = s.t.map(nombreTema);
+    if (s.k === 'repaso') return 'Repaso final' + (n.length ? ': ' + listaY(n) : '') + ' y tus apuntes';
+    return n.length ? listaY(n) : 'Tus temas más débiles';
+  }
+
+  // ---------- tarjeta del inicio ----------
+  function tarjetaEstudio() { return instalarHTML() + estudioHTML(); }
+  function instalarHTML() {
+    // La app instalable con recordatorios es del plan Completo
+    if (!tieneEstudio() || standalone() || leer(K_INST)) return '';
+    var ios = esIOS();
+    return '<div class="sim-card sim-instalar"><img class="sim-instalar-i" src="' + esc(SIM.icono || '') + '" alt="" width="56" height="56"><div class="sim-instalar-t"><b>Instala tu simulador como app</b>' +
+      '<small>Un acceso directo en tu pantalla de inicio: lo abres con un toque y te llegan los recordatorios de tu plan de estudio.</small>' +
+      '<div class="botones">' + (ios ? '' : '<button class="btn tinta chico" id="b-instalar" type="button"' + (PROMPT_INSTALAR ? '' : ' hidden') + '>Instalar</button>') +
+      '<button class="btn ' + (ios ? 'tinta' : 'blanco') + ' chico" type="button" data-ir="instalar">Cómo instalarla</button><button class="sim-link" type="button" id="b-inst-no">Ahora no</button></div></div></div>';
+  }
+  function estudioHTML() {
+    if (!tieneEstudio()) return estudioBloqueado();
+    if (!EST) return '<div class="sim-card sim-est"><span class="etiqueta">Tu plan de estudio</span><p class="sim-nota"><span class="sim-giro chico" aria-hidden="true"></span> Cargando tu plan…</p></div>';
+    var e = EST.estudio, nAp = (EST.apuntes || []).length;
+    var links = '<div class="sim-est-links"><button type="button" class="sim-est-link" data-ir="plan">' + ICONO.reloj + '<span>' + (e ? 'Mi plan y recordatorios' : 'Armar mi plan') + '</span></button><button type="button" class="sim-est-link" data-ir="apuntes">' + ICONO.lapiz + '<span>Mis apuntes' + (nAp ? ' <b class="num">' + nAp + '</b>' : '') + '</span></button>' +
+      (VID && VID.videos && VID.videos.length && !VID.bloqueado ? '<button type="button" class="sim-est-link" data-ir="videos">' + ICONO.play + '<span>Videos de los temas</span></button>' : '') + '</div>';
+    if (!e) return '<div class="sim-card sim-est sim-est-nuevo"><span class="etiqueta">Tu plan de estudio</span><h2>¿Cuándo es tu examen?</h2><p>Dinos la fecha y los días que puedes estudiar: te repartimos los temas hasta ese día, empezando por los que más te cuestan, y te recordamos en tu celular cuándo te toca.</p><div class="botones"><button class="btn tinta" type="button" data-ir="plan">Armar mi plan ' + FL + '</button></div>' + links + '</div>';
+    var hoy = hoyMx(), faltan = L.diasEntre(hoy, e.fecha_examen);
+    if (faltan < 0) return '<div class="sim-card sim-est"><span class="etiqueta">Tu plan de estudio</span><h2>Tu examen ya pasó</h2><p>Esperamos que te haya ido increíble. ¿Vas a presentar otra vez? Pon la nueva fecha y armamos otro plan.</p><div class="botones"><button class="btn tinta" type="button" data-ir="plan">Nueva fecha ' + FL + '</button></div>' + links + '</div>';
+    var hechas = L.sesionesHechas(e.sesiones, YO.historial, TZ_MX), nHechas = e.sesiones.filter(function (x) { return hechas[x.f]; }).length;
+    var s = proximaSesion(), esHoy = s && s.f === hoy, lista = s && esHoy && hechas[hoy];
+    var cuenta = faltan === 0 ? '<b>¡Hoy!</b>' : '<b class="num">' + faltan + '</b><small>' + (faltan === 1 ? 'día' : 'días') + '</small>';
+    var cuerpo;
+    if (faltan === 0) cuerpo = '<h2>¡Hoy es tu examen!</h2><p>Lee con calma cada pregunta y administra tu tiempo. Ya te preparaste: ¡mucho éxito!</p>';
+    else if (!s) cuerpo = '<h2>Ya no hay sesiones antes de tu examen</h2><p>Repasa tus apuntes y descansa bien la noche anterior.</p>';
+    else cuerpo = '<h2>' + (lista ? '¡Sesión de hoy lista! ' + ICONO.ok : esHoy ? 'Hoy toca' : 'Siguiente sesión: ' + esc(diaLargo(s.f))) + '</h2>' +
+      '<p class="sim-est-que">' + esc(queToca(s)) + '</p>' +
+      (esHoy && !lista ? '<div class="botones"><button class="btn tinta" type="button" data-estudiar="' + s.f + '">Estudiar ahora ' + FL + '</button></div>' : esHoy ? '<p class="sim-nota">Si quieres más, practica otro tema o adelanta la siguiente sesión.</p><div class="botones"><button class="btn blanco chico" type="button" data-estudiar="' + s.f + '">Practicar otra vez</button></div>' : '<div class="botones"><button class="btn blanco chico" type="button" data-estudiar="' + s.f + '">Adelantarla hoy</button></div>');
+    var avance = e.sesiones.length ? '<div class="sim-est-av"><div class="sim-banco-p" role="progressbar" aria-valuemin="0" aria-valuemax="' + e.sesiones.length + '" aria-valuenow="' + nHechas + '" aria-label="Sesiones cumplidas"><span style="width:' + pct(nHechas, e.sesiones.length) + '%"></span></div><small>' + nHechas + ' de ' + e.sesiones.length + ' sesiones cumplidas</small></div>' : '';
+    var rec = e.recordatorios ? '' : '<p class="sim-nota sim-est-rec">' + ICONO.campana + '<span><button type="button" class="sim-link" data-ir="plan">Activa tus recordatorios</button> para que no se te pase ningún día.</span></p>';
+    return '<div class="sim-card sim-est"><div class="sim-est-cab"><span class="etiqueta">Tu plan de estudio</span><span class="sim-est-faltan" title="Para tu examen">' + cuenta + '</span></div>' + cuerpo + avance + rec + links + '</div>';
+  }
+  // Sin plan Completo: lo que le falta para tenerlo (Práctica + Examen = Completo)
+  function estudioBloqueado() {
+    var falta = puedePracticar() && !tieneExamen() ? 'completo' : !puedePracticar() ? 'practica' : null;
+    var o = falta && (YO.ofertas || {})[falta];
+    return '<div class="sim-card sim-est sim-est-bloq"><span class="sim-op-tag n3">Plan Completo</span><h2>Tu plan de estudio, recordatorios y apuntes</h2>' +
+      '<ul class="sim-plan-l">' + ['Un plan día por día hasta tu examen, empezando por tus temas débiles', 'Recordatorios en tu celular a la hora que elijas', 'Tus apuntes de cada pregunta y tema, en todos tus dispositivos'].map(function (t) { return '<li>' + ICONO.ok + '<span>' + t + '</span></li>'; }).join('') + '</ul>' +
+      (o ? '<button class="btn tinta" type="button" data-plan="' + falta + '">Completar mi plan · ' + precio(o.precio_centavos) + '</button><p class="sim-nota">Te sumamos ' + (falta === 'completo' ? 'el Examen (2 exámenes completos)' : 'la Práctica sin límite') + ' y tu cuenta queda con el plan Completo.</p>' : '<p class="sim-nota">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para sumarlo a tu cuenta.</p>') + '</div>';
+  }
+  function conectarEstudio() {
+    var caja = document.getElementById('est-card'); if (!caja) return;
+    caja.querySelectorAll('[data-ir]').forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
+    caja.querySelectorAll('[data-estudiar]').forEach(function (b) { b.onclick = function () { estudiarSesion(b.dataset.estudiar); }; });
+    caja.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
+    var bi = document.getElementById('b-instalar'); if (bi) bi.onclick = function () { if (!PROMPT_INSTALAR) return ir('instalar'); PROMPT_INSTALAR.prompt(); PROMPT_INSTALAR.userChoice.finally(function () { PROMPT_INSTALAR = null; bi.hidden = true; }); };
+    var bn = document.getElementById('b-inst-no'); if (bn) bn.onclick = function () { guardar(K_INST, 1); var c = caja.querySelector('.sim-instalar'); if (c) c.remove(); };
+    if (tieneEstudio() && (!EST || !VID)) Promise.all([cargarEstudio(), cargarVideos()]).then(function () { var c = document.getElementById('est-card'); if (c) { c.innerHTML = tarjetaEstudio(); conectarEstudio(); } });
+  }
+  function ir(a) { if (a === 'plan') pantallaPlan(); else if (a === 'apuntes') pantallaApuntes(); else if (a === 'instalar') guiaInstalar(); else if (a === 'videos') pantallaVideos(); else inicio(); }
+  function estudiarSesion(f) {
+    var e = EST && EST.estudio, s = null; if (!e) return;
+    for (var i = 0; i < e.sesiones.length; i++) if (e.sesiones[i].f === f) s = e.sesiones[i];
+    if (!s) return;
+    if (run && run.fase !== 'fin' && !confirm(esIntento(run.modo) ? 'Tienes un simulacro sin terminar. Termínalo primero o descártalo desde el inicio.' : 'Tienes una práctica sin terminar. ¿Empezar la sesión de hoy y descartarla?')) return;
+    if (run && run.fase !== 'fin' && esIntento(run.modo)) return inicio();
+    if (s.k === 'simulacro') return empezar('completo');
+    var temas = s.t.length ? s.t : L.temasDebiles(L.desempenoTemas(YO.historial), B.temas, 3, 1).map(function (t) { return t.id; });
+    if (!temas.length) temas = Object.keys(B.temas).slice(0, 2);
+    practicaN = s.k === 'repaso' ? 20 : 10;
+    empezar('practica', temas);
+  }
+
+  // ---------- guía para instalar ----------
+  function guiaInstalar() {
+    detenerReloj(); pintarBarra();
+    var ios = esIOS(), android = /Android/.test(navigator.userAgent);
+    var compartir = '<svg class="sim-ico-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Compartir"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg>';
+    var pasosIOS = ['Abre esta página en <b>Safari</b> (en otro navegador el iPhone no deja instalarla).', 'Toca el botón <b>Compartir</b> ' + compartir + ' (abajo, o arriba en iPad).', 'Desliza y elige <b>Agregar a inicio</b>. Luego toca <b>Agregar</b>.', 'Abre el simulador desde el ícono del librito en tu pantalla de inicio.'];
+    var pasosAndroid = ['Abre esta página en <b>Chrome</b>.', 'Toca el menú <b>⋮</b> (arriba a la derecha).', 'Elige <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.', 'Abre el simulador desde el ícono del librito.'];
+    var pasosPC = ['En Chrome o Edge, busca el ícono de <b>instalar</b> al final de la barra de direcciones.', 'Haz clic en <b>Instalar</b>.', 'El simulador se abre en su propia ventana y queda en tus aplicaciones.'];
+    var bloque = function (t, p, abierto) { return '<details class="sim-card sim-guia"' + (abierto ? ' open' : '') + '><summary><b>' + t + '</b></summary><ol class="sim-guia-l">' + p.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol></details>'; };
+    h('<section class="sim-intro sim-inst"><img class="sim-instalar-i grande" src="' + esc(SIM.icono || '') + '" alt="" width="88" height="88"><h1>Instala tu simulador</h1>' +
+      '<p class="sim-lead">Es un acceso directo que funciona como app en iPhone, Android y computadora (no se descarga de ninguna tienda): la abres con un toque y te llegan los recordatorios de tu plan de estudio.</p>' +
+      bloque('iPhone o iPad', pasosIOS, ios) + bloque('Android', pasosAndroid, android) + bloque('Computadora', pasosPC, !ios && !android) +
+      '<div class="sim-card sim-guia-nota"><p><b>La primera vez que abras la app</b> puede pedirte tu correo: te mandamos un código de 6 dígitos y listo. Tu cuenta funciona en máximo 2 dispositivos: la app y el navegador del mismo celular cuentan como uno, así que al entrar en la app cerramos la sesión del navegador de ese celular.</p></div>' +
+      '<div class="botones"><button class="btn tinta" id="b-inicio" type="button">Volver al inicio</button></div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+  }
+
+  // ---------- plan de estudio ----------
+  function temasDelBanco() { return L.temasPorSeccion(B, {}).reduce(function (a, g) { return a.concat(g.temas.map(function (t) { return { id: t.id, nombre: t.nombre, seccion: g.id }; })); }, []); }
+  function pantallaPlan() {
+    detenerReloj(); pintarBarra();
+    if (!tieneEstudio()) return inicio();
+    if (!EST) { h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Cargando tu plan…</div>'); cargarEstudio().then(function (d) { if (d) pantallaPlan(); else inicio(); }); return; }
+    var e = EST.estudio, hoy = hoyMx(), manana = L.masDias(hoy, 1);
+    var dias = e ? e.dias : [1, 2, 3, 4, 5], hora = e ? e.hora : 19, rec = e ? e.recordatorios : true;
+    var horas = []; for (var x = 6; x <= 22; x++) horas.push(x);
+    var ios = esIOS() && !standalone();
+    var recHTML = !pushPosible() || ios
+      ? '<div class="sim-pe-rec sim-pe-rec-no">' + ICONO.campana + '<div><b>Recordatorios en tu celular</b><p class="sim-nota">' + (ios ? 'En iPhone, primero instala la app en tu pantalla de inicio y actívalos desde ahí. <button type="button" class="sim-link" data-ir="instalar">Cómo instalarla</button>' : 'Este navegador no permite recordatorios. Ábrelo en Chrome, Edge o Safari, o instala la app.') + '</p></div></div>'
+      : '<label class="sim-pe-rec sim-casilla"><input type="checkbox" id="pe-rec"' + (rec ? ' checked' : '') + '><span><b>Recordarme en este dispositivo</b><small id="pe-rec-estado">Te avisamos los días que elegiste, a esa hora, qué tema te toca.</small></span></label>';
+    var calendario = e && e.sesiones.length ? calendarioHTML(e) : '';
+    h('<section class="sim-intro sim-plan"><span class="sim-paso">Plan Completo</span><h1>Tu plan de estudio</h1>' +
+      '<p class="sim-lead">Repartimos los temas en tus días de estudio hasta el examen: primero los que más te cuestan, un simulacro cada 6 sesiones para medir tu avance y un repaso final. Se ajusta solo cada vez que lo guardas, con tus resultados más recientes.</p>' +
+      '<form class="sim-card sim-pe" id="f-pe" novalidate>' +
+        '<label class="sim-pe-campo"><span>¿Cuándo es tu examen?</span><input type="date" id="pe-fecha" required min="' + manana + '" value="' + esc(e && e.fecha_examen >= manana ? e.fecha_examen : '') + '"></label>' +
+        '<fieldset class="sim-pe-campo"><legend>¿Qué días puedes estudiar?</legend><div class="sim-pe-dias">' + ORDEN_DIAS.map(function (d) {
+          return '<label class="sim-pe-dia"><input type="checkbox" name="pe-dia" value="' + d + '"' + (dias.indexOf(d) >= 0 ? ' checked' : '') + '><span>' + DIAS_C[d] + '</span></label>';
+        }).join('') + '</div></fieldset>' +
+        '<label class="sim-pe-campo"><span>¿A qué hora te recordamos?</span><select id="pe-hora">' + horas.map(function (x) { return '<option value="' + x + '"' + (x === hora ? ' selected' : '') + '>' + horaTxt(x) + '</option>'; }).join('') + '</select><small class="sim-nota">Hora del centro de México.</small></label>' +
+        recHTML +
+        '<p class="sim-error" id="pe-error" role="alert" hidden></p>' +
+        '<button class="btn tinta" id="pe-guardar" type="submit">' + (e ? 'Guardar y reajustar mi plan' : 'Armar mi plan') + ' ' + FL + '</button>' +
+      '</form>' + calendario +
+      '<div class="botones"><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button>' + (e ? '<button class="sim-link" id="pe-borrar" type="button">Borrar mi plan</button>' : '') + '</div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    app.querySelectorAll('[data-ir]').forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
+    app.querySelectorAll('[data-estudiar]').forEach(function (b) { b.onclick = function () { estudiarSesion(b.dataset.estudiar); }; });
+    var pb = document.getElementById('pe-borrar');
+    if (pb) pb.onclick = function () {
+      if (!confirm('¿Borrar tu plan de estudio? Dejarás de recibir recordatorios. Tus apuntes se quedan.')) return;
+      api('estudio/borrar', { method: 'POST', body: '{}' }).then(function () { EST.estudio = null; inicio(); }, function (er) { alert(er.message); });
+    };
+    // ¿Este dispositivo ya recibe los recordatorios?
+    var est = document.getElementById('pe-rec-estado');
+    if (est && 'serviceWorker' in navigator) navigator.serviceWorker.getRegistration(RUTA + '/').then(function (reg) { return reg && reg.pushManager.getSubscription(); }).then(function (sub) {
+      if (sub && e && e.recordatorios) est.innerHTML = '<span class="sim-si">' + ICONO.ok + ' Este dispositivo ya recibe tus recordatorios.</span>';
+    }).catch(function () { });
+    document.getElementById('f-pe').onsubmit = function (ev) {
+      ev.preventDefault();
+      var err = document.getElementById('pe-error'), btn = document.getElementById('pe-guardar');
+      var fecha = document.getElementById('pe-fecha').value;
+      var ds = [].map.call(app.querySelectorAll('input[name="pe-dia"]:checked'), function (c) { return Number(c.value); });
+      var hr = Number(document.getElementById('pe-hora').value);
+      var quiere = document.getElementById('pe-rec') ? document.getElementById('pe-rec').checked : !!(e && e.recordatorios);
+      var falla = function (m) { err.textContent = m; err.hidden = false; btn.disabled = false; btn.innerHTML = (e ? 'Guardar y reajustar mi plan' : 'Armar mi plan') + ' ' + FL; };
+      if (!fecha) return falla('Escribe la fecha de tu examen.');
+      if (fecha < manana) return falla('La fecha de tu examen tiene que ser a partir de mañana.');
+      if (!ds.length) return falla('Elige al menos un día para estudiar.');
+      err.hidden = true; btn.disabled = true; btn.textContent = 'Guardando…';
+      // Lo ya pasado se queda como estaba (para contar lo que cumpliste); de hoy en adelante se vuelve a repartir
+      var previas = e ? e.sesiones.filter(function (x) { return x.f < hoy; }) : [];
+      var nuevas = L.planEstudio({ hoy: hoy, fechaExamen: fecha, dias: ds, temas: temasDelBanco(), desempeno: L.desempenoTemas(YO.historial) });
+      var guardarPlan = function (conRec) {
+        return api('estudio', { method: 'POST', body: JSON.stringify({ fecha_examen: fecha, dias: ds, hora: hr, recordatorios: conRec, sesiones: previas.concat(nuevas).slice(-400) }) })
+          .then(function (d) { EST = d; pantallaPlan(); var c = document.querySelector('.sim-cal'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      };
+      // Sin la casilla (iPhone sin instalar, navegador sin push) se respeta lo que ya tenía; con ella, se activa aquí
+      var conCasilla = !!document.getElementById('pe-rec');
+      var paso = !conCasilla ? Promise.resolve(!!(e && e.recordatorios)) : !quiere ? Promise.resolve(false)
+        : activarPush().then(function () { return true; }, function (m) { alert(m.message || m); return false; });
+      paso.then(guardarPlan).catch(function (er) { falla(er.message || 'No pudimos guardar tu plan. Revisa tu conexión.'); });
+    };
+  }
+  function calendarioHTML(e) {
+    var hoy = hoyMx(), hechas = L.sesionesHechas(e.sesiones, YO.historial, TZ_MX), semanas = [], actual = null;
+    e.sesiones.forEach(function (s) {
+      var lunes = L.masDias(s.f, -((L.semanaDe(s.f) + 6) % 7));
+      if (!actual || actual.lunes !== lunes) { actual = { lunes: lunes, s: [] }; semanas.push(actual); }
+      actual.s.push(s);
+    });
+    var lunesHoy = L.masDias(hoy, -((L.semanaDe(hoy) + 6) % 7));
+    return '<h2 class="sim-h2">Tu calendario</h2><p class="sim-nota" style="margin-top:-6px">Examen: <b>' + esc(diaLargo(e.fecha_examen)) + '</b> · recordatorio a las ' + horaTxt(e.hora) + (e.recordatorios ? '' : ' (apagado)') + '</p><div class="sim-cal">' +
+      semanas.map(function (w) {
+        var pasada = L.masDias(w.lunes, 6) < hoy, n = w.s.filter(function (s) { return hechas[s.f]; }).length;
+        return '<details class="sim-card sim-cal-sem"' + (w.lunes === lunesHoy || (!pasada && w.lunes > lunesHoy && semanas.filter(function (x) { return x.lunes >= lunesHoy; })[0] === w) ? ' open' : '') + '><summary><b>Semana del ' + esc(diaCorto(w.lunes).replace(/^\S+\s/, '')) + '</b><small>' + n + ' de ' + w.s.length + ' cumplidas</small></summary><ul class="sim-cal-l">' +
+          w.s.map(function (s) {
+            var ok = hechas[s.f], esHoy = s.f === hoy, cls = ok ? ' hecha' : esHoy ? ' hoy' : s.f < hoy ? ' pasada' : '';
+            return '<li class="sim-cal-s' + cls + '"><span class="sim-cal-d">' + esc(diaCorto(s.f)) + '</span><span class="sim-cal-q"><span class="sim-op-tag ' + (s.k === 'simulacro' ? 'n2' : s.k === 'repaso' ? 'n3' : 'n1') + '">' + (s.k === 'simulacro' ? 'Simulacro' : s.k === 'repaso' ? 'Repaso' : 'Temas') + '</span>' + esc(queToca(s)) + '</span>' +
+              (ok ? '<span class="sim-cal-ok" aria-label="Cumplida">' + ICONO.ok + '</span>' : s.f >= hoy ? '<button type="button" class="btn ' + (esHoy ? 'tinta' : 'blanco') + ' chico" data-estudiar="' + s.f + '">' + (esHoy ? 'Estudiar' : 'Adelantar') + '</button>' : '<span class="sim-cal-no">Pendiente</span>') + '</li>';
+          }).join('') + '</ul></details>';
+      }).join('') + '</div>';
+  }
+  // Pide permiso, suscribe este dispositivo al servicio de push y lo registra en el servidor
+  function b64aBytes(s) { var p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')), out = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) out[i] = b.charCodeAt(i); return out; }
+  function activarPush() {
+    if (!pushPosible()) return Promise.reject(new Error('Este navegador no permite recordatorios.'));
+    // Algunos navegadores nunca responden al suscribirse (modo incógnito, sin servicio de push): a los 20 s se avisa
+    var limite = new Promise(function (_, no) { setTimeout(function () { no(new Error('No pudimos activar los recordatorios en este dispositivo. Revisa que las notificaciones estén permitidas e inténtalo de nuevo.')); }, 20000); });
+    return Promise.race([limite, activarPush2()]);
+  }
+  function activarPush2() {
+    return Notification.requestPermission().then(function (p) {
+      if (p !== 'granted') throw new Error('Para recibir recordatorios, permite las notificaciones del simulador en la configuración de tu ' + (esIOS() ? 'iPhone' : 'navegador') + '.');
+      return registrarSW().then(function () { return navigator.serviceWorker.ready; });
+    }).then(function (reg) {
+      // Si este dispositivo ya estaba suscrito y el servidor lo tiene, no se vuelve a registrar (ni a mandar el aviso de prueba)
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (sub && EST.push.suscripciones) return null;
+        return (sub ? Promise.resolve(sub) : reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(EST.push.pub) }))
+          .catch(function () { throw new Error('No pudimos activar los recordatorios en este navegador. Si estás en una ventana de incógnito, ábrelo en una normal o instala la app.'); })
+          .then(function (s) { return api('push', { method: 'POST', body: JSON.stringify(s.toJSON()) }); })
+          .then(function () { EST.push.suscripciones = (EST.push.suscripciones || 0) + 1; });
+      });
+    });
+  }
+
+  // ---------- apuntes ----------
+  function tituloApunte(a) {
+    if (a.ref === 'general') return { t: 'Apunte general', s: '' };
+    if (a.ref.indexOf('t:') === 0) return { t: 'Tu apunte del tema', s: nombreTema(a.ref.slice(2)) };
+    var r = R[a.ref.slice(2)]; if (!r) return { t: 'Pregunta', s: '' };
+    var en = String(r.enunciado || '').replace(/\*\*/g, '').replace(/\s+/g, ' ');
+    return { t: en.length > 110 ? en.slice(0, 107) + '…' : en, s: 'Pregunta · ' + nombreTema(r.tema) };
+  }
+  function temaDeApunte(a) { return a.ref.indexOf('t:') === 0 ? a.ref.slice(2) : a.ref.indexOf('r:') === 0 && R[a.ref.slice(2)] ? R[a.ref.slice(2)].tema : 'general'; }
+  function guardarApunte(ref, texto) {
+    return api('apuntes', { method: 'POST', body: JSON.stringify({ ref: ref, texto: texto }) }).then(function (d) {
+      EST.apuntes = (EST.apuntes || []).filter(function (x) { return x.ref !== ref; });
+      if (d.apunte) EST.apuntes.unshift(d.apunte);
+      return d;
+    });
+  }
+  function pantallaApuntes(filtro) {
+    detenerReloj(); pintarBarra();
+    if (!tieneEstudio()) return inicio();
+    if (!EST) { h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Cargando tus apuntes…</div>'); cargarEstudio().then(function (d) { if (d) pantallaApuntes(filtro); else inicio(); }); return; }
+    var grupos = L.temasPorSeccion(B, {}), aps = EST.apuntes || [], q = String(filtro || '').toLowerCase();
+    var visibles = aps.filter(function (a) { return !q || (a.texto + ' ' + tituloApunte(a).t + ' ' + tituloApunte(a).s).toLowerCase().indexOf(q) >= 0; });
+    // Agrupados por tema, en el orden del banco
+    var orden = ['general'].concat(grupos.reduce(function (x, g) { return x.concat(g.temas.map(function (t) { return t.id; })); }, []));
+    var porTema = {}; visibles.forEach(function (a) { var t = temaDeApunte(a); (porTema[t] = porTema[t] || []).push(a); });
+    var listas = orden.filter(function (t) { return porTema[t]; }).map(function (t) {
+      return '<section class="sim-ap-g"><h2 class="sim-h3">' + esc(t === 'general' ? 'Generales' : nombreTema(t)) + '</h2>' + porTema[t].map(function (a) {
+        var ti = tituloApunte(a);
+        return '<article class="sim-card sim-ap" data-ref="' + esc(a.ref) + '"><header><small>' + esc(ti.s || 'Apunte') + ' · ' + esc(fecha(a.actualizado_at)) + '</small><b>' + esc(ti.t) + '</b></header><p class="sim-ap-t">' + esc(a.texto) + '</p>' +
+          '<div class="sim-ap-acc"><button type="button" class="sim-link" data-ap-editar>Editar</button><button type="button" class="sim-link" data-ap-borrar>Borrar</button>' + (t !== 'general' ? '<button type="button" class="sim-link" data-ap-practicar="' + esc(t) + '">Practicar este tema</button>' : '') + '</div></article>';
+      }).join('') + '</section>';
+    }).join('');
+    h('<section class="sim-intro sim-apuntes"><span class="sim-paso">Plan Completo</span><h1>Mis apuntes</h1>' +
+      '<p class="sim-lead">Lo que anotes aquí o al revisar una pregunta se guarda en tu cuenta: lo ves en tu celular y en tu computadora.</p>' +
+      '<form class="sim-card sim-ap-nuevo" id="f-ap"><label class="sim-pe-campo"><span>¿De qué tema?</span><select id="ap-tema"><option value="general">General (fórmulas, trucos, lo que sea)</option>' +
+        grupos.map(function (g) { return '<optgroup label="' + esc(g.nombre) + '">' + g.temas.map(function (t) { return '<option value="t:' + esc(t.id) + '">' + esc(t.nombre) + '</option>'; }).join('') + '</optgroup>'; }).join('') + '</select></label>' +
+        '<label class="vh" for="ap-texto">Tu apunte</label><textarea id="ap-texto" rows="4" maxlength="4000" placeholder="Escribe con tus palabras lo que no quieres olvidar…"></textarea>' +
+        '<p class="sim-error" id="ap-error" role="alert" hidden></p><div class="botones"><button class="btn tinta chico" type="submit">Guardar apunte</button></div></form>' +
+      (aps.length > 4 ? '<label class="sim-ap-buscar"><span class="vh">Buscar en mis apuntes</span><input type="search" id="ap-q" placeholder="Buscar en mis apuntes" value="' + esc(filtro || '') + '"></label>' : '') +
+      (listas || '<p class="sim-nota sim-ap-vacio">' + (q ? 'Ningún apunte coincide con tu búsqueda.' : 'Aún no tienes apuntes. Escribe el primero aquí arriba, o toca <b>Anotar</b> cuando revises una pregunta.') + '</p>') +
+      '<div class="botones"><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button></div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    var sel = document.getElementById('ap-tema'), txt = document.getElementById('ap-texto');
+    // Si el tema ya tiene apunte, se edita ese
+    sel.onchange = function () { var a = apunteDe(sel.value === 'general' ? 'general' : sel.value); txt.value = a ? a.texto : ''; };
+    document.getElementById('f-ap').onsubmit = function (ev) {
+      ev.preventDefault();
+      var err = document.getElementById('ap-error'), ref = sel.value;
+      if (!txt.value.trim()) { err.textContent = 'Escribe tu apunte.'; err.hidden = false; return; }
+      guardarApunte(ref, txt.value).then(function () { pantallaApuntes(); }, function (er) { err.textContent = er.message; err.hidden = false; });
+    };
+    var qq = document.getElementById('ap-q'); if (qq) { qq.oninput = function () { var v = qq.value, pos = qq.selectionStart; pantallaApuntes(v); var n = document.getElementById('ap-q'); if (n) { n.focus({ preventScroll: true }); n.setSelectionRange(pos, pos); } }; }
+    app.querySelectorAll('.sim-ap').forEach(function (art) {
+      var ref = art.dataset.ref;
+      art.querySelector('[data-ap-borrar]').onclick = function () { if (confirm('¿Borrar este apunte?')) guardarApunte(ref, '').then(function () { pantallaApuntes(filtro); }, function (er) { alert(er.message); }); };
+      art.querySelector('[data-ap-editar]').onclick = function () { editorApunte(art.querySelector('.sim-ap-t'), ref, function () { pantallaApuntes(filtro); }); };
+      var bp = art.querySelector('[data-ap-practicar]'); if (bp) bp.onclick = function () { practicaN = 10; empezar('practica', [bp.dataset.apPracticar]); };
+    });
+  }
+  // Cambia un bloque por un editor (textarea + Guardar/Cancelar) del apunte ref
+  function editorApunte(nodo, ref, listo) {
+    var a = apunteDe(ref), caja = document.createElement('div');
+    caja.className = 'sim-ap-ed';
+    caja.innerHTML = '<label class="vh" for="ap-ed">Tu apunte</label><textarea id="ap-ed" rows="4" maxlength="4000" placeholder="¿Qué aprendiste con esta pregunta? El método, el error que no quieres repetir…">' + esc(a ? a.texto : '') + '</textarea><p class="sim-error" role="alert" hidden></p>' +
+      '<div class="botones"><button type="button" class="btn tinta chico" data-g>Guardar</button><button type="button" class="btn blanco chico" data-c>Cancelar</button></div>';
+    nodo.replaceWith(caja);
+    var t = caja.querySelector('textarea'), e = caja.querySelector('.sim-error'); t.focus();
+    caja.querySelector('[data-c]').onclick = function () { listo(caja); };
+    caja.querySelector('[data-g]').onclick = function () {
+      var b = this; b.disabled = true; b.textContent = 'Guardando…';
+      guardarApunte(ref, t.value).then(function () { listo(caja); }, function (er) { e.textContent = er.message; e.hidden = false; b.disabled = false; b.textContent = 'Guardar'; });
+    };
+  }
+  // En la revisión de cada pregunta (con tutor): «Anotar en mis apuntes»
+  function apunteHTML(r) {
+    if (!tieneEstudio()) return '';
+    var a = apunteDe('r:' + r.id);
+    return '<div class="sim-apunte" id="ap-r">' + (a ? '<div class="sim-apunte-v"><small>' + ICONO.lapiz + ' Tu apunte</small><p class="sim-ap-t">' + esc(a.texto) + '</p></div>' : '') +
+      '<button type="button" class="sim-link" id="b-ap">' + (a ? 'Editar mi apunte' : ICONO.lapiz + ' Anotar en mis apuntes') + '</button></div>';
+  }
+  function conectarApunte(r) {
+    var b = document.getElementById('b-ap'); if (!b) return;
+    b.onclick = function () {
+      var go = function () {
+        var caja = document.getElementById('ap-r'); if (!caja) return;
+        editorApunte(caja, 'r:' + r.id, function (ed) { var n = document.createElement('div'); n.innerHTML = apunteHTML(r); ed.replaceWith(n.firstChild); conectarApunte(r); });
+      };
+      if (EST) go(); else cargarEstudio().then(go);
+    };
+  }
+
+  // ---------- Videos explicativos (plan Completo) ----------
+  // Lecciones animadas con voz: la animación se dibuja aquí (no es un MP4) y sigue al audio. Cada paso trae su voz (que es
+  // también el subtítulo), cuándo empieza y su vista (bloques: pregunta, barra, fórmula, pasos, tabla, tarjeta, turno).
+  // Sin plan Completo, /api/<app>/videos solo lista títulos: el botón ofrece completar el plan.
+  var VID = null, VID_CARGANDO = null, K_VISTOS_V;
+  function cargarVideos() {
+    if (VID) return Promise.resolve(VID);
+    if (VID_CARGANDO) return VID_CARGANDO;
+    VID_CARGANDO = api('videos' + (/[?&]borradores=1/.test(location.search) ? '?borradores=1' : '')).then(function (d) { VID = d; return d; }, function () { VID = { videos: [] }; return VID; });
+    return VID_CARGANDO;
+  }
+  function videosDeTema(t) { return ((VID && VID.videos) || []).filter(function (v) { return v.tema === t; }); }
+  function videoPorId(id) { var l = (VID && VID.videos) || []; for (var i = 0; i < l.length; i++) if (l[i].id === id) return l[i]; return null; }
+  function videosVistos() { return leer(K_VISTOS_V) || {}; }
+  function minSeg(s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+  // Botones «Ver video» para un tema (en el tutor y en la práctica). Vacío si el tema aún no tiene video.
+  function botonesVideo(t, chico) { return videosDeTema(t).map(function (v) { return botonVideo(v, chico); }).join(''); }
+  function botonVideo(v, chico) {
+    {
+      var visto = videosVistos()[v.id];
+      return '<button type="button" class="sim-vbtn' + (chico ? ' chico' : '') + (VID.bloqueado ? ' bloq' : '') + '" data-video="' + esc(v.id) + '">' +
+        '<span class="sim-vbtn-i" aria-hidden="true">' + (VID.bloqueado ? ICONO.candado : ICONO.play) + '</span>' +
+        '<span class="sim-vbtn-t"><b>' + (VID.bloqueado ? 'Video del tema · plan Completo' : 'Video: ' + esc(v.titulo)) + '</b><small>' + (VID.bloqueado ? esc(v.titulo) + ' · ' : '') + minSeg(v.duracion) + ' min' + (visto ? ' · ya lo viste' : '') + '</small></span></button>';
+    }
+  }
+  function conectarBotonesVideo(raiz) {
+    (raiz || app).querySelectorAll('[data-video]').forEach(function (b) {
+      b.onclick = function () {
+        if (VID.bloqueado) return comprarPlan(puedePracticar() && !tieneExamen() ? 'completo' : 'practica');
+        abrirVideo(videoPorId(b.dataset.video), b);
+      };
+    });
+  }
+  // Lugar para los botones de video de un tema; llenarVideos() los pinta cuando ya se sabe qué videos hay
+  function cajaVideos(t, chico) { return '<div class="sim-vcaja" data-tema="' + esc(t) + '"' + (chico ? ' data-chico="1"' : '') + '></div>'; }
+  function llenarVideos() {
+    cargarVideos().then(function () {
+      app.querySelectorAll('.sim-vcaja').forEach(function (c) { c.innerHTML = botonesVideo(c.dataset.tema, c.dataset.chico === '1'); conectarBotonesVideo(c); });
+    });
+  }
+
+  // ---------- Pizarrón: lo que se escribe y se dibuja en el video ----------
+  // Cada paso trae acciones (escribe, flecha, circulo, subraya, tacha, caja, relleno, palomita, trazo). Cada acción empieza cuando la
+  // voz dice su frase («en») y dura lo que tarda en trazarse. Todo es función del tiempo: pinta(t) deja el pizarrón exacto en
+  // el segundo t, así que adelantar, regresar o pausar siempre se ve bien. Un plumón sigue la punta de lo que se está trazando.
+  var GIS = { blanco: '#F5F2E8', amarillo: '#FFD45C', azul: '#7CC8FF', verde: '#86E0A0', rojo: '#FF7A70', rosa: '#F7A8D8', tinta: '#14261F' };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function nodo(tag, at, padre) { var e = document.createElementNS(SVGNS, tag); for (var k in at) e.setAttribute(k, at[k]); if (padre) padre.appendChild(e); return e; }
+  function azar(sem) { return function () { sem = (sem * 9301 + 49297) % 233280; return sem / 233280; }; }
+  function crearPizarron(v, contenedor) {
+    var svg = nodo('svg', { viewBox: '0 0 1000 620', class: 'sv-pz', 'aria-hidden': 'true' }, contenedor);
+    var defs = nodo('defs', {}, svg);
+    var pat = nodo('pattern', { id: 'sv-rayas', width: 14, height: 14, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+    nodo('rect', { width: 14, height: 14, fill: 'rgba(255,122,112,.18)' }, pat);
+    nodo('line', { x1: 0, y1: 0, x2: 0, y2: 14, stroke: GIS.rojo, 'stroke-width': 5 }, pat);
+    var capa = nodo('g', {}, svg);
+    var plumon = nodo('g', { class: 'sv-plumon', opacity: 0 }, svg);
+    nodo('path', { d: 'M0 0 L10 -22 L34 -76 Q38 -84 46 -80 L52 -77 Q60 -73 56 -65 L32 -11 Z', fill: '#E9E4D8', stroke: '#14261F', 'stroke-width': 2.5 }, plumon);
+    nodo('path', { d: 'M0 0 L10 -22 L20 -17 Z', fill: '#14261F' }, plumon);
+    var dur = v.duracion, acc = [], porId = {};
+    // Cuándo empieza cada acción: en la frase que la anuncia (proporcional al lugar de la frase en la voz del paso)
+    v.pasos.forEach(function (p, k) {
+      var fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : dur, largo = fin - p.inicio, voz = p.voz.toLowerCase();
+      // Hasta cuándo se ve: hasta que un paso posterior borre el pizarrón
+      var borra = dur + 1; for (var j = k + 1; j < v.pasos.length; j++) if (v.pasos[j].limpia) { borra = v.pasos[j].inicio; break; }
+      var ultimo = p.inicio;
+      (p.acciones || []).forEach(function (a, i, todas) {
+        var pos = a.en ? voz.indexOf(a.en.toLowerCase()) : -1;
+        var ini = pos >= 0 ? p.inicio + largo * 0.92 * pos / voz.length : p.inicio + largo * 0.8 * i / Math.max(1, todas.length);
+        ini = Math.max(ini, ultimo - 0.2); ultimo = ini;
+        var d = a.a === 'escribe' ? Math.min(1.6, Math.max(0.45, a.texto.length * 0.07)) : a.a === 'caja' || a.a === 'trazo' ? 0.9 : a.a === 'relleno' ? 0.7 : a.a === 'flecha' || a.a === 'circulo' ? 0.6 : 0.4;
+        var x = { a: a, ini: ini, dur: d, borra: borra };
+        // «sobre», «de» y «hacia» apuntan al texto más reciente con ese id (un id puede repetirse en otro paso)
+        if (a.sobre) x.refS = porId[a.sobre];
+        if (typeof a.de === 'string') x.refDe = porId[a.de];
+        if (typeof a.hacia === 'string') x.refA = porId[a.hacia];
+        acc.push(x); if (a.id) porId[a.id] = x;
+      });
+    });
+    // 1) Los textos primero: hacen falta sus medidas para dibujar alrededor
+    acc.forEach(function (x, n) {
+      var a = x.a; if (a.a !== 'escribe') return;
+      var g = nodo('g', {}, capa), clip = nodo('clipPath', { id: 'sv-c' + n }, defs);
+      x.rect = nodo('rect', { x: a.x - 10, y: a.y - (a.tam || 76) * 1.1, width: 0, height: (a.tam || 76) * 1.6 }, clip);
+      x.el = nodo('text', { x: a.x, y: a.y, 'font-size': a.tam || 76, fill: GIS[a.color || 'blanco'], 'clip-path': 'url(#sv-c' + n + ')', class: 'sv-letra' }, g);
+      x.el.textContent = a.texto; x.g = g;
+    });
+    function caja(x) { if (!x) return null; if (x.bb) return x.bb; if (x.a.a === 'caja') return { x: x.a.x, y: x.a.y, width: x.a.w, height: x.a.h }; var b = x.el.getBBox(); return (x.bb = { x: b.x, y: b.y + b.height * 0.12, width: b.width, height: b.height * 0.8 }); }
+    function punto(p, ref, otro) {
+      if (typeof p !== 'string') return { x: p[0], y: p[1] };
+      var b = caja(ref), o = otro; if (!b) return { x: 0, y: 0 };
+      if (o && o.x > b.x + b.width) return { x: b.x + b.width + 12, y: b.y + b.height / 2 };
+      if (o && o.y > b.y + b.height) return { x: b.x + b.width / 2, y: b.y + b.height + 10 };
+      return { x: b.x + b.width / 2, y: b.y - 10 };
+    }
+    // 2) Los trazos (en el orden en que aparecen, para que lo nuevo quede encima)
+    function trazo(d, color, ancho) { return nodo('path', { d: d, fill: 'none', stroke: GIS[color || 'blanco'], 'stroke-width': ancho || 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, capa); }
+    acc.forEach(function (x, n) {
+      var a = x.a, r = azar(n * 31 + 7), b, d;
+      if (a.a === 'escribe') { capa.appendChild(x.g); return; }
+      if (a.a === 'circulo') {
+        b = caja(x.refS); var cx = b.x + b.width / 2, cy = b.y + b.height / 2, rx = b.width / 2 + 26, ry = b.height / 2 + 18, pts = [];
+        for (var k = 0; k <= 26; k++) { var ang = -0.5 + (Math.PI * 2 + 0.6) * k / 26, f = 1 + (r() - 0.5) * 0.06; pts.push((cx + Math.cos(ang) * rx * f).toFixed(1) + ' ' + (cy + Math.sin(ang) * ry * f).toFixed(1)); }
+        x.el = trazo('M' + pts.join(' L'), a.color);
+      } else if (a.a === 'subraya') {
+        b = caja(x.refS); var y = b.y + b.height + 14;
+        x.el = trazo('M' + (b.x - 4) + ' ' + y + ' Q' + (b.x + b.width / 2) + ' ' + (y + 8) + ' ' + (b.x + b.width + 6) + ' ' + (y - 3), a.color);
+      } else if (a.a === 'tacha') {
+        b = caja(x.refS);
+        x.el = trazo('M' + (b.x - 10) + ' ' + (b.y + b.height * 0.62) + ' L' + (b.x + b.width + 10) + ' ' + (b.y + b.height * 0.38), a.color || 'rojo', 8);
+      } else if (a.a === 'flecha') {
+        // «hacia» es un punto [x, y] o el id de un texto; «de» también
+        var aa = punto(a.hacia, x.refA), de = punto(a.de, x.refDe, aa);
+        var mx = (de.x + aa.x) / 2, my = (de.y + aa.y) / 2, dx = aa.x - de.x, dy = aa.y - de.y, L = Math.sqrt(dx * dx + dy * dy) || 1;
+        var c = { x: mx - dy / L * L * 0.12, y: my + dx / L * L * 0.12 };
+        x.el = trazo('M' + de.x + ' ' + de.y + ' Q' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + ' ' + aa.x + ' ' + aa.y, a.color);
+        var ux = (aa.x - c.x), uy = (aa.y - c.y), ul = Math.sqrt(ux * ux + uy * uy) || 1; ux /= ul; uy /= ul;
+        x.punta = trazo('M' + (aa.x - ux * 24 - uy * 15).toFixed(1) + ' ' + (aa.y - uy * 24 + ux * 15).toFixed(1) + ' L' + aa.x + ' ' + aa.y + ' L' + (aa.x - ux * 24 + uy * 15).toFixed(1) + ' ' + (aa.y - uy * 24 - ux * 15).toFixed(1), a.color);
+      } else if (a.a === 'caja') {
+        x.el = trazo('M' + a.x + ' ' + a.y + ' L' + (a.x + a.w) + ' ' + (a.y + 2) + ' L' + (a.x + a.w - 1) + ' ' + (a.y + a.h) + ' L' + (a.x + 1) + ' ' + (a.y + a.h - 1) + ' Z', a.color, 5);
+      } else if (a.a === 'relleno') {
+        b = caja(x.refS);
+        x.base = { x: b.x + b.width * a.desde + 4, y: b.y + 4, w: b.width * (a.hasta - a.desde) - 8, h: b.height - 8 };
+        x.el = nodo('rect', { x: x.base.x, y: x.base.y, width: 0, height: x.base.h, rx: 6, fill: a.rayado ? 'url(#sv-rayas)' : GIS[a.color || 'verde'] }, capa);
+      } else if (a.a === 'trazo') {   // figura libre: un camino SVG (triángulos, ejes, parábolas…)
+        x.el = trazo(a.d, a.color, a.ancho);
+      } else if (a.a === 'palomita') {
+        x.el = trazo('M' + a.x + ' ' + a.y + ' l18 22 l40 -54', 'verde', 9);
+      }
+      // Los trazos empiezan ocultos (todo el largo «sin dibujar») y se descubren con el tiempo
+      if (x.el && x.el.getTotalLength) { x.largo = x.el.getTotalLength(); x.el.style.strokeDasharray = x.largo; x.el.style.strokeDashoffset = x.largo; x.el.style.opacity = 0; }
+      if (x.punta) { x.largoP = x.punta.getTotalLength(); x.punta.style.strokeDasharray = x.largoP; x.punta.style.strokeDashoffset = x.largoP; x.punta.style.opacity = 0; }
+    });
+    svg.appendChild(plumon);   // el plumón, siempre encima
+    // 3) El pizarrón en el segundo t
+    function pinta(t) {
+      var punta = null;
+      acc.forEach(function (x) {
+        var a = x.a, p = (t - x.ini) / x.dur, vis = t >= x.ini && t < x.borra;
+        var op = vis ? Math.min(1, (x.borra - t) / 0.35) : 0;   // al borrar el pizarrón, se desvanece
+        var el = a.a === 'escribe' ? x.g : x.el; if (!el) return;
+        el.style.opacity = op;
+        if (x.punta) x.punta.style.opacity = op;
+        if (!vis) return;
+        p = Math.max(0, Math.min(1, p));
+        if (a.a === 'escribe') {
+          var w = x.w || (x.w = x.el.getBBox().width + 20);
+          x.rect.setAttribute('width', (w * p).toFixed(1));
+          if (p < 1) punta = { x: a.x + w * p - 10, y: a.y - (a.tam || 76) * 0.25 };
+        } else if (a.a === 'relleno') {
+          x.el.setAttribute('width', (x.base.w * p).toFixed(1));
+          if (p < 1) punta = { x: x.base.x + x.base.w * p, y: x.base.y + x.base.h / 2 };
+        } else if (x.largo) {
+          var pp = x.punta ? Math.min(1, p / 0.8) : p;
+          x.el.style.strokeDashoffset = (x.largo * (1 - pp)).toFixed(1);
+          if (x.punta) { var q = Math.max(0, (p - 0.8) / 0.2); x.punta.style.opacity = op; x.punta.style.strokeDashoffset = (x.largoP * (1 - q)).toFixed(1); }
+          if (pp < 1) { var pt = x.el.getPointAtLength(x.largo * pp); punta = { x: pt.x, y: pt.y }; }
+        }
+      });
+      plumon.setAttribute('opacity', punta ? 1 : 0);
+      if (punta) plumon.setAttribute('transform', 'translate(' + punta.x.toFixed(1) + ' ' + punta.y.toFixed(1) + ')');
+    }
+    return { pinta: pinta };
+  }
+
+  // Reloj del video: el audio de la voz, o (borradores sin voz) un reloj con los tiempos estimados
+  function relojSinVoz(dur) {
+    var t = 0, base = 0, corre = false, ev = {}, vel = 1;
+    var r = {
+      addEventListener: function (n, f) { (ev[n] = ev[n] || []).push(f); },
+      emitir: function (n) { (ev[n] || []).forEach(function (f) { f(); }); },
+      get currentTime() { var x = corre ? t + (performance.now() - base) / 1000 * vel : t; if (x >= dur && corre) { t = dur; corre = false; setTimeout(function () { r.emitir('pause'); r.emitir('ended'); }); } return Math.min(dur, x); },
+      set currentTime(x) { t = Math.max(0, Math.min(dur, x)); base = performance.now(); },
+      get paused() { return !corre; },
+      get ended() { return !corre && t >= dur; },
+      get playbackRate() { return vel; },
+      set playbackRate(x) { t = r.currentTime; base = performance.now(); vel = x; },
+      play: function () { if (!corre) { base = performance.now(); corre = true; r.emitir('play'); } return Promise.resolve(); },
+      pause: function () { if (corre) { t = r.currentTime; corre = false; r.emitir('pause'); } }
+    };
+    return r;
+  }
+
+  var VP = null;   // reproductor abierto: { v, audio, i, raf, pausa, origen }
+  function abrirVideo(v, origen) {
+    if (!v || VP) return;
+    detenerReloj();
+    var escenas = []; v.pasos.forEach(function (p, i) { if (!escenas.length || escenas[escenas.length - 1].nombre !== p.escena) escenas.push({ nombre: p.escena, i: i }); });
+    var caja = document.createElement('div');
+    caja.className = 'sim-video';
+    caja.setAttribute('role', 'dialog'); caja.setAttribute('aria-modal', 'true'); caja.setAttribute('aria-label', 'Video: ' + v.titulo);
+    caja.innerHTML = '<div class="sv-panel" style="--sv:' + esc(SIM.color || '#6B2A85') + '">' +
+      '<header class="sv-cab"><div><span class="sv-cab-e">Video del tema · ' + esc(nombreTema(v.tema)) + '</span><b>' + esc(v.titulo) + '</b></div><button type="button" class="sv-x" id="sv-x" aria-label="Cerrar video">✕</button></header>' +
+      '<div class="sv-escenario"><div class="sv-pizarra" id="sv-pizarra"></div><span class="sv-escena-n" id="sv-escena-n"></span>' +
+        '<div class="sv-cuenta" id="sv-reloj" hidden><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19"/><circle class="sv-reloj-a" cx="22" cy="22" r="19"/></svg><b id="sv-reloj-n"></b><span>Resuélvelo</span></div>' +
+        '<button type="button" class="sv-play-g" id="sv-play-g" aria-label="Reproducir">' + ICONO.play + '</button><button type="button" class="sv-saltar" id="sv-saltar" hidden>Ver la respuesta</button></div>' +
+      '<p class="sv-sub" id="sv-sub"></p>' +
+      '<div class="sv-ctrl"><button type="button" class="sv-btn" id="sv-play" aria-label="Reproducir">' + ICONO.play + '</button>' +
+        '<button type="button" class="sv-btn" id="sv-atras" aria-label="Regresar 10 segundos">↺10</button>' +
+        '<div class="sv-barra-t"><input type="range" id="sv-pos" min="0" max="' + Math.round(v.duracion * 10) + '" value="0" aria-label="Avance del video"><div class="sv-marcas" aria-hidden="true">' +
+          escenas.map(function (e) { return '<i style="left:' + (100 * v.pasos[e.i].inicio / v.duracion).toFixed(2) + '%"></i>'; }).join('') + '</div></div>' +
+        '<span class="sv-tiempo num" id="sv-tiempo">0:00 / ' + minSeg(v.duracion) + '</span>' +
+        '<button type="button" class="sv-btn sv-vel" id="sv-vel" aria-label="Velocidad">1×</button></div>' +
+      '<nav class="sv-escenas" aria-label="Partes del video">' + escenas.map(function (e) { return '<button type="button" data-ir-paso="' + e.i + '">' + esc(e.nombre) + '</button>'; }).join('') + '</nav>' +
+      '</div>';
+    document.body.appendChild(caja);
+    document.body.classList.add('sv-abierto');
+    var audio = v.audio ? new Audio(v.audio) : relojSinVoz(v.duracion);   // sin voz (borrador): tiempos estimados
+    if (v.audio) audio.preload = 'auto';
+    // El pizarrón mide sus letras para dibujar alrededor: espera a que cargue la letra de plumón (Caveat)
+    var pz = null;
+    (document.fonts && document.fonts.load ? document.fonts.load('700 60px Caveat') : Promise.resolve()).catch(function () { }).then(function () {
+      if (!VP || VP.audio !== audio) return;
+      pz = crearPizarron(v, document.getElementById('sv-pizarra')); pz.pinta(audio.currentTime);
+    });
+    VP = { v: v, audio: audio, i: -1, raf: 0, pausa: null, hechas: {}, origen: origen || document.activeElement, caja: caja };
+    var $ = function (id) { return document.getElementById(id); };
+    // El botón grande solo sale antes de empezar (o si el navegador bloqueó el autoplay); después, el de la barra
+    function pintaPlay() { var p = !audio.paused || VP.pausa; if (p) VP.empezo = true; $('sv-play').innerHTML = p ? ICONO.pausa : ICONO.play; $('sv-play').setAttribute('aria-label', p ? 'Pausar' : 'Reproducir'); $('sv-play-g').hidden = p || VP.empezo; }
+    function pasoEn(t) { var k = 0; for (var i = 0; i < v.pasos.length; i++) if (v.pasos[i].inicio <= t + 0.05) k = i; return k; }
+    function render(k) {
+      VP.i = k;
+      var p = v.pasos[k], fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : v.duracion;
+      $('sv-escena-n').textContent = p.escena;
+      void fin;
+      $('sv-sub').textContent = p.voz;
+      caja.querySelectorAll('[data-ir-paso]').forEach(function (b) { var desde = Number(b.dataset.irPaso), sig = b.nextElementSibling ? Number(b.nextElementSibling.dataset.irPaso) : 1e9; b.classList.toggle('sel', k >= desde && k < sig); });
+    }
+    function tick() {
+      var t = audio.currentTime;
+      var k = pasoEn(t); if (k !== VP.i) render(k);
+      if (pz) pz.pinta(t);
+      // «Tu turno»: al terminar su voz, se detiene unos segundos con cuenta regresiva para que lo resuelva
+      var p = v.pasos[k], fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : v.duracion;
+      if (p.pausa && !VP.hechas[k] && !audio.paused && t >= fin - 0.25) { VP.hechas[k] = 1; pausaTurno(p.pausa); }
+      $('sv-pos').value = Math.round(t * 10);
+      $('sv-tiempo').textContent = minSeg(t) + ' / ' + minSeg(v.duracion);
+      if (!audio.paused) VP.raf = requestAnimationFrame(tick);
+    }
+    function pausaTurno(seg) {
+      audio.pause();
+      var r = $('sv-reloj'), n = seg, sal = $('sv-saltar');
+      if (r) { r.hidden = false; r.style.setProperty('--d', seg + 's'); r.classList.remove('corre'); void r.offsetWidth; r.classList.add('corre'); }
+      sal.hidden = false;
+      var listo = function () { clearInterval(VP.pausa); VP.pausa = null; sal.hidden = true; if (r) r.hidden = true; audio.play(); pintaPlay(); };
+      if ($('sv-reloj-n')) $('sv-reloj-n').textContent = n;
+      VP.pausa = setInterval(function () { n--; if ($('sv-reloj-n')) $('sv-reloj-n').textContent = Math.max(0, n); if (n <= 0) listo(); }, 1000);
+      sal.onclick = listo;
+      pintaPlay();
+    }
+    function alternar() {
+      if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; if ($('sv-reloj')) $('sv-reloj').hidden = true; pintaPlay(); return; }
+      if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(function () { }); } else audio.pause();
+    }
+    function irA(t) { if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; $('sv-reloj').hidden = true; } audio.currentTime = Math.max(0, Math.min(v.duracion, t)); VP.hechas = {}; tick(); }
+    audio.addEventListener('play', function () { pintaPlay(); cancelAnimationFrame(VP.raf); VP.raf = requestAnimationFrame(tick); });
+    audio.addEventListener('pause', pintaPlay);
+    audio.addEventListener('ended', function () { var x = videosVistos(); x[v.id] = 1; guardar(K_VISTOS_V, x); pintaPlay(); });
+    audio.addEventListener('timeupdate', function () { if (audio.currentTime > v.duracion * 0.9) { var x = videosVistos(); if (!x[v.id]) { x[v.id] = 1; guardar(K_VISTOS_V, x); } } });
+    $('sv-play').onclick = alternar; $('sv-play-g').onclick = alternar;
+    $('sv-atras').onclick = function () { irA(audio.currentTime - 10); };
+    $('sv-pos').oninput = function () { irA(Number(this.value) / 10); };
+    var vels = [1, 1.25, 1.5, 0.85];
+    $('sv-vel').onclick = function () { var i = (vels.indexOf(audio.playbackRate) + 1) % vels.length; audio.playbackRate = vels[i]; this.textContent = String(vels[i]).replace('.', '.') + '×'; };
+    caja.querySelectorAll('[data-ir-paso]').forEach(function (b) { b.onclick = function () { irA(v.pasos[Number(b.dataset.irPaso)].inicio + 0.06); if (audio.paused) audio.play().catch(function () { }); }; });
+    $('sv-x').onclick = cerrarVideo;
+    caja.addEventListener('click', function (e) { if (e.target === caja) cerrarVideo(); });
+    caja.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); cerrarVideo(); }
+      else if (e.key === ' ' && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') { e.preventDefault(); alternar(); }
+      else if (e.key === 'Tab') {   // el foco se queda dentro del video
+        var f = caja.querySelectorAll('button:not([hidden]), input'), a = f[0], z = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+      }
+    });
+    render(0); pintaPlay();
+    $('sv-play-g').focus();
+    audio.play().catch(function () { });   // si el navegador bloquea el autoplay, queda el botón grande
+  }
+  function cerrarVideo() {
+    if (!VP) return;
+    VP.audio.pause(); cancelAnimationFrame(VP.raf); if (VP.pausa) clearInterval(VP.pausa);
+    VP.caja.remove(); document.body.classList.remove('sv-abierto');
+    var o = VP.origen; VP = null;
+    if (o && o.focus) o.focus({ preventScroll: true });
+    // Los botones ahora dicen «ya lo viste»
+    llenarVideos();
+    if (app.querySelector('.sim-videos')) pantallaVideos();
+  }
+
+  // Todos los videos, por sección (desde la tarjeta del plan)
+  function pantallaVideos() {
+    detenerReloj(); pintarBarra();
+    if (!VID) { h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Cargando los videos…</div>'); cargarVideos().then(pantallaVideos); return; }
+    var grupos = L.temasPorSeccion(B, {}), vistos = videosVistos(), total = VID.videos.length, n = VID.videos.filter(function (v) { return vistos[v.id]; }).length;
+    var listas = grupos.map(function (g) {
+      var vs = VID.videos.filter(function (v) { return g.temas.some(function (t) { return t.id === v.tema; }); });
+      return vs.length ? '<section class="sim-vsec"><h2 class="sim-h3">' + esc(g.nombre) + '</h2><div class="sim-vlista">' + vs.map(function (v) { return botonVideo(v); }).join('') + '</div></section>' : '';
+    }).join('');
+    h('<section class="sim-intro sim-videos"><span class="sim-paso">Plan Completo</span><h1>Videos de los temas</h1>' +
+      '<p class="sim-lead">Explicaciones paso a paso, con voz y subtítulos, de 2 a 3 minutos. También te aparecen junto a la pregunta cuando fallas un tema.</p>' +
+      (total ? '<p class="sim-nota">' + n + ' de ' + total + ' vistos.</p>' + listas : '<p class="sim-nota">Muy pronto: estamos terminando los videos de este simulador.</p>') +
+      '<div class="botones"><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button></div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    conectarBotonesVideo();
   }
 
   iniciar();

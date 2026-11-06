@@ -1,0 +1,400 @@
+{
+  "id": "paa-08",
+  "tema": "datos",
+  "titulo": "Probabilidad",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/08.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Lanzas un dado. ¿Qué probabilidad hay de que salga un número par?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1  2  3  4  5  6",
+          "x": 70,
+          "y": 230,
+          "tam": 90,
+          "en": "Lanzas un dado"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿par?",
+          "x": 70,
+          "y": 420,
+          "color": "azul",
+          "tam": 90,
+          "en": "número par"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "La probabilidad es: lo que quieres, entre todo lo que puede salir.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "probabilidad =",
+          "x": 70,
+          "y": 330,
+          "tam": 80,
+          "en": "La probabilidad"
+        },
+        {
+          "a": "escribe",
+          "texto": "lo que quieres",
+          "x": 560,
+          "y": 250,
+          "color": "verde",
+          "tam": 64,
+          "en": "lo que quieres"
+        },
+        {
+          "a": "trazo",
+          "d": "M 540 290 L 960 290",
+          "color": "blanco",
+          "en": "entre todo",
+          "ancho": 6
+        },
+        {
+          "a": "escribe",
+          "texto": "todo lo que sale",
+          "x": 560,
+          "y": 380,
+          "tam": 64,
+          "en": "todo lo que puede"
+        }
+      ],
+      "limpia": true,
+      "inicio": 4.38
+    },
+    {
+      "escena": "Calcula",
+      "voz": "Los pares son dos, cuatro y seis: tres casos. En total hay seis. Tres entre seis: un medio.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1",
+          "x": 70,
+          "y": 170,
+          "tam": 80,
+          "en": "Los pares"
+        },
+        {
+          "a": "escribe",
+          "texto": "2",
+          "x": 170,
+          "y": 170,
+          "id": "d2",
+          "tam": 80,
+          "en": "Los pares"
+        },
+        {
+          "a": "escribe",
+          "texto": "3",
+          "x": 270,
+          "y": 170,
+          "tam": 80,
+          "en": "Los pares"
+        },
+        {
+          "a": "escribe",
+          "texto": "4",
+          "x": 370,
+          "y": 170,
+          "id": "d4",
+          "tam": 80,
+          "en": "Los pares"
+        },
+        {
+          "a": "escribe",
+          "texto": "5",
+          "x": 470,
+          "y": 170,
+          "tam": 80,
+          "en": "Los pares"
+        },
+        {
+          "a": "escribe",
+          "texto": "6",
+          "x": 570,
+          "y": 170,
+          "id": "d6",
+          "tam": 80,
+          "en": "Los pares"
+        },
+        {
+          "a": "circulo",
+          "sobre": "d2",
+          "color": "verde",
+          "en": "son dos"
+        },
+        {
+          "a": "circulo",
+          "sobre": "d4",
+          "color": "verde",
+          "en": "cuatro y"
+        },
+        {
+          "a": "circulo",
+          "sobre": "d6",
+          "color": "verde",
+          "en": "seis:"
+        },
+        {
+          "a": "escribe",
+          "texto": "3",
+          "x": 150,
+          "y": 380,
+          "color": "verde",
+          "tam": 90,
+          "en": "tres casos"
+        },
+        {
+          "a": "trazo",
+          "d": "M 110 410 L 240 410",
+          "color": "blanco",
+          "en": "En total",
+          "ancho": 6
+        },
+        {
+          "a": "escribe",
+          "texto": "6",
+          "x": 150,
+          "y": 510,
+          "tam": 90,
+          "en": "hay seis"
+        },
+        {
+          "a": "escribe",
+          "texto": "= ½",
+          "x": 290,
+          "y": 450,
+          "id": "r",
+          "color": "verde",
+          "tam": 110,
+          "en": "un medio"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "un medio."
+        }
+      ],
+      "limpia": true,
+      "inicio": 9.63
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: con dos dados hay treinta y seis resultados, no once. Y el siete es la suma que más sale.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "2 dados → 36 resultados",
+          "x": 70,
+          "y": 290,
+          "tam": 64,
+          "en": "con dos dados"
+        },
+        {
+          "a": "escribe",
+          "texto": "11",
+          "x": 70,
+          "y": 450,
+          "id": "o",
+          "color": "rojo",
+          "tam": 90,
+          "en": "no once"
+        },
+        {
+          "a": "tacha",
+          "sobre": "o",
+          "color": "rojo",
+          "en": "no once"
+        },
+        {
+          "a": "escribe",
+          "texto": "el 7 sale más",
+          "x": 280,
+          "y": 450,
+          "color": "verde",
+          "tam": 70,
+          "en": "el siete"
+        }
+      ],
+      "limpia": true,
+      "inicio": 17.5
+    },
+    {
+      "escena": "Al menos uno",
+      "voz": "Si te piden al menos uno, calcula lo contrario y réstalo de uno.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "al menos uno",
+          "x": 70,
+          "y": 200,
+          "color": "amarillo",
+          "tam": 80,
+          "en": "al menos uno"
+        },
+        {
+          "a": "escribe",
+          "texto": "= 1 − ninguno",
+          "x": 70,
+          "y": 360,
+          "id": "u",
+          "color": "verde",
+          "tam": 86,
+          "en": "réstalo de uno"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "verde",
+          "en": "réstalo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 24.79
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Lanzas una moneda dos veces. ¿Qué probabilidad hay de que salga al menos un sol?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "moneda × 2",
+          "x": 70,
+          "y": 260,
+          "en": "una moneda"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿al menos",
+          "x": 70,
+          "y": 400,
+          "color": "azul",
+          "en": "al menos un sol"
+        },
+        {
+          "a": "escribe",
+          "texto": "un sol?",
+          "x": 70,
+          "y": 510,
+          "color": "azul",
+          "en": "un sol?"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 29.09
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Lo contrario es que no salga ningún sol: águila y águila, un cuarto. Uno menos un cuarto: tres cuartos.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "ningún sol = ¼",
+          "x": 610,
+          "y": 260,
+          "tam": 62,
+          "en": "ningún sol"
+        },
+        {
+          "a": "escribe",
+          "texto": "1 − ¼ =",
+          "x": 640,
+          "y": 420,
+          "tam": 76,
+          "en": "Uno menos"
+        },
+        {
+          "a": "escribe",
+          "texto": "¾",
+          "x": 880,
+          "y": 420,
+          "id": "r",
+          "color": "verde",
+          "tam": 100,
+          "en": "tres cuartos"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "tres cuartos."
+        }
+      ],
+      "inicio": 35.59
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: lo que quieres, entre todo lo que puede salir. Y al menos uno es uno menos ninguno.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "lo que quieres ÷ todo",
+          "x": 70,
+          "y": 300,
+          "tam": 70,
+          "en": "lo que quieres"
+        },
+        {
+          "a": "escribe",
+          "texto": "al menos uno = 1 − ninguno",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 64,
+          "en": "al menos uno es"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "uno menos ninguno"
+        }
+      ],
+      "limpia": true,
+      "inicio": 43.3
+    }
+  ],
+  "duracion": 49.95
+}

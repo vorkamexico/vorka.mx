@@ -1,0 +1,382 @@
+{
+  "id": "paa-15",
+  "tema": "concordancia",
+  "titulo": "Concordancia: ¿quién hace la acción?",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/15.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Está bien esta oración? La caja de los lápices están en la mesa.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "La caja",
+          "x": 60,
+          "y": 180,
+          "id": "caja",
+          "tam": 72,
+          "en": "La caja"
+        },
+        {
+          "a": "escribe",
+          "texto": "de los lápices",
+          "x": 280,
+          "y": 180,
+          "id": "de",
+          "tam": 72,
+          "en": "de los lápices"
+        },
+        {
+          "a": "escribe",
+          "texto": "están",
+          "x": 60,
+          "y": 300,
+          "id": "v",
+          "color": "amarillo",
+          "tam": 72,
+          "en": "están"
+        },
+        {
+          "a": "escribe",
+          "texto": "en la mesa.",
+          "x": 225,
+          "y": 300,
+          "tam": 72,
+          "en": "en la mesa"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Está bien?",
+          "x": 60,
+          "y": 480,
+          "color": "azul",
+          "tam": 76,
+          "en": "¿Está bien"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "El verbo concuerda con quien hace la acción. Y quien hace la acción no es lo que va después del de.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "verbo  =  quien hace la acción",
+          "x": 60,
+          "y": 180,
+          "color": "amarillo",
+          "tam": 62,
+          "en": "El verbo concuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "lo que va después del «de»",
+          "x": 60,
+          "y": 340,
+          "id": "no",
+          "tam": 62,
+          "en": "lo que va después"
+        },
+        {
+          "a": "tacha",
+          "sobre": "no",
+          "color": "rojo",
+          "en": "no es lo que"
+        }
+      ],
+      "limpia": true,
+      "inicio": 5.44
+    },
+    {
+      "escena": "Tapa el de",
+      "voz": "Tapa lo que va después del de. Queda: la caja están. Suena mal. Lo correcto es: la caja está.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "La caja",
+          "x": 60,
+          "y": 180,
+          "id": "caja",
+          "tam": 72,
+          "en": "Tapa lo que"
+        },
+        {
+          "a": "escribe",
+          "texto": "de los lápices",
+          "x": 280,
+          "y": 180,
+          "id": "de",
+          "tam": 72,
+          "en": "después del de"
+        },
+        {
+          "a": "escribe",
+          "texto": "están",
+          "x": 60,
+          "y": 300,
+          "id": "v",
+          "color": "amarillo",
+          "tam": 72,
+          "en": "Queda"
+        },
+        {
+          "a": "escribe",
+          "texto": "en la mesa.",
+          "x": 225,
+          "y": 300,
+          "tam": 72,
+          "en": "Queda"
+        },
+        {
+          "a": "tacha",
+          "sobre": "de",
+          "color": "rojo",
+          "en": "la caja están"
+        },
+        {
+          "a": "circulo",
+          "sobre": "caja",
+          "color": "rosa",
+          "en": "Suena mal"
+        },
+        {
+          "a": "tacha",
+          "sobre": "v",
+          "color": "rojo",
+          "en": "Suena mal"
+        },
+        {
+          "a": "escribe",
+          "texto": "La caja está en la mesa.",
+          "x": 60,
+          "y": 470,
+          "id": "ok",
+          "color": "verde",
+          "tam": 72,
+          "en": "Lo correcto"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "la caja está"
+        }
+      ],
+      "limpia": true,
+      "inicio": 12.13
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con el se. Se venden casas: el verbo va en plural porque concuerda con casas.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "Se vende casas",
+          "x": 60,
+          "y": 290,
+          "id": "mal",
+          "color": "rojo",
+          "tam": 76,
+          "en": "Cuidado con el se"
+        },
+        {
+          "a": "tacha",
+          "sobre": "mal",
+          "color": "rojo",
+          "en": "Se venden"
+        },
+        {
+          "a": "escribe",
+          "texto": "Se venden casas",
+          "x": 60,
+          "y": 440,
+          "id": "bien",
+          "color": "verde",
+          "tam": 76,
+          "en": "Se venden casas"
+        },
+        {
+          "a": "circulo",
+          "sobre": "bien",
+          "color": "verde",
+          "en": "en plural"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            620,
+            420
+          ],
+          "hacia": [
+            700,
+            420
+          ],
+          "color": "verde",
+          "en": "concuerda con casas"
+        },
+        {
+          "a": "escribe",
+          "texto": "casas",
+          "x": 720,
+          "y": 440,
+          "color": "verde",
+          "tam": 60,
+          "en": "concuerda con casas"
+        }
+      ],
+      "limpia": true,
+      "inicio": 20.95
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. El grupo de alumnos llegaron tarde. ¿Qué cambia?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "El grupo",
+          "x": 60,
+          "y": 260,
+          "id": "g",
+          "tam": 72,
+          "en": "El grupo"
+        },
+        {
+          "a": "escribe",
+          "texto": "de alumnos",
+          "x": 290,
+          "y": 260,
+          "id": "de",
+          "tam": 72,
+          "en": "de alumnos"
+        },
+        {
+          "a": "escribe",
+          "texto": "llegaron tarde.",
+          "x": 60,
+          "y": 370,
+          "id": "v",
+          "tam": 72,
+          "en": "llegaron tarde"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué cambia?",
+          "x": 60,
+          "y": 470,
+          "color": "azul",
+          "tam": 72,
+          "en": "¿Qué cambia"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 27.54
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tapa de alumnos. Queda: el grupo llegaron. Debe ser: el grupo llegó.",
+      "acciones": [
+        {
+          "a": "tacha",
+          "sobre": "de",
+          "color": "rojo",
+          "en": "Tapa de alumnos"
+        },
+        {
+          "a": "circulo",
+          "sobre": "g",
+          "color": "rosa",
+          "en": "el grupo llegaron"
+        },
+        {
+          "a": "tacha",
+          "sobre": "v",
+          "color": "rojo",
+          "en": "el grupo llegaron"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ El grupo llegó tarde.",
+          "x": 60,
+          "y": 575,
+          "id": "ok",
+          "color": "verde",
+          "tam": 62,
+          "en": "Debe ser"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "el grupo llegó"
+        }
+      ],
+      "inicio": 32.42
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: tapa lo que va después del de, y pregúntate quién hace la acción.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. Tapa el «de…»",
+          "x": 70,
+          "y": 300,
+          "en": "tapa lo que va"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. ¿Quién hace la acción?",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "quién hace la acción"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "la acción"
+        }
+      ],
+      "limpia": true,
+      "inicio": 38.99
+    }
+  ],
+  "duracion": 43.96
+}

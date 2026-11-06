@@ -1,0 +1,323 @@
+{
+  "id": "paa-16",
+  "tema": "puntuacion",
+  "titulo": "Puntuación",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/16.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Dónde está el error? Los alumnos del grupo tres, ganaron el concurso.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Los alumnos del grupo tres",
+          "x": 60,
+          "y": 180,
+          "id": "suj",
+          "tam": 66,
+          "en": "Los alumnos"
+        },
+        {
+          "a": "escribe",
+          "texto": ",",
+          "x": 672,
+          "y": 180,
+          "id": "coma",
+          "color": "amarillo",
+          "tam": 80,
+          "en": "grupo tres"
+        },
+        {
+          "a": "escribe",
+          "texto": "ganaron el concurso.",
+          "x": 60,
+          "y": 300,
+          "id": "verb",
+          "tam": 66,
+          "en": "ganaron el concurso"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Dónde está el error?",
+          "x": 60,
+          "y": 480,
+          "color": "azul",
+          "tam": 72,
+          "en": "¿Dónde está"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La regla",
+      "voz": "La regla que más sale: nunca pongas coma entre el sujeto y el verbo. ¿Quién ganó? Los alumnos del grupo tres. ¿Qué hicieron? Ganaron. Entre los dos, nada de coma.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "suj",
+          "color": "azul",
+          "en": "¿Quién ganó?"
+        },
+        {
+          "a": "escribe",
+          "texto": "sujeto",
+          "x": 70,
+          "y": 240,
+          "color": "azul",
+          "tam": 46,
+          "en": "¿Quién ganó?"
+        },
+        {
+          "a": "subraya",
+          "sobre": "verb",
+          "color": "verde",
+          "en": "¿Qué hicieron?"
+        },
+        {
+          "a": "escribe",
+          "texto": "verbo",
+          "x": 70,
+          "y": 360,
+          "color": "verde",
+          "tam": 46,
+          "en": "¿Qué hicieron?"
+        },
+        {
+          "a": "circulo",
+          "sobre": "coma",
+          "color": "rojo",
+          "en": "nada de coma"
+        },
+        {
+          "a": "tacha",
+          "sobre": "coma",
+          "color": "rojo",
+          "en": "nada de coma"
+        }
+      ],
+      "inicio": 5.74
+    },
+    {
+      "escena": "Sí va coma",
+      "voz": "Sí va coma cuando le hablas a alguien: Ana, ven. Y para un dato extra en medio: mi hermano, que es doctor, vino.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Sí va coma:",
+          "x": 60,
+          "y": 130,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "Sí va coma"
+        },
+        {
+          "a": "escribe",
+          "texto": "Ana, ven.",
+          "x": 60,
+          "y": 260,
+          "id": "a",
+          "tam": 72,
+          "en": "Ana, ven"
+        },
+        {
+          "a": "escribe",
+          "texto": "← le hablas a alguien",
+          "x": 360,
+          "y": 260,
+          "color": "verde",
+          "tam": 52,
+          "en": "le hablas"
+        },
+        {
+          "a": "escribe",
+          "texto": "Mi hermano, que es doctor, vino.",
+          "x": 60,
+          "y": 420,
+          "id": "h",
+          "tam": 62,
+          "en": "mi hermano"
+        },
+        {
+          "a": "escribe",
+          "texto": "dato extra",
+          "x": 330,
+          "y": 500,
+          "color": "verde",
+          "tam": 52,
+          "en": "dato extra"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            400,
+            470
+          ],
+          "hacia": [
+            400,
+            440
+          ],
+          "color": "verde",
+          "en": "en medio"
+        }
+      ],
+      "limpia": true,
+      "inicio": 18.35
+    },
+    {
+      "escena": "Punto y coma",
+      "voz": "Y antes de sin embargo va punto y coma: estudié mucho; sin embargo, reprobé.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Estudié mucho",
+          "x": 60,
+          "y": 250,
+          "tam": 66,
+          "en": "estudié mucho"
+        },
+        {
+          "a": "escribe",
+          "texto": ";",
+          "x": 440,
+          "y": 250,
+          "id": "pc",
+          "color": "amarillo",
+          "tam": 90,
+          "en": "punto y coma"
+        },
+        {
+          "a": "escribe",
+          "texto": "sin embargo, reprobé.",
+          "x": 60,
+          "y": 370,
+          "tam": 66,
+          "en": "sin embargo, reprobé"
+        },
+        {
+          "a": "circulo",
+          "sobre": "pc",
+          "color": "rosa",
+          "en": "punto y coma:"
+        }
+      ],
+      "limpia": true,
+      "inicio": 27.1
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Cuál está bien? A: Mi perro, ladra mucho. B: Mi perro ladra mucho.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "A)  Mi perro, ladra mucho.",
+          "x": 60,
+          "y": 270,
+          "id": "a",
+          "tam": 70,
+          "en": "A: Mi perro"
+        },
+        {
+          "a": "escribe",
+          "texto": "B)  Mi perro ladra mucho.",
+          "x": 60,
+          "y": 390,
+          "id": "b",
+          "tam": 70,
+          "en": "B: Mi perro"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Cuál está bien?",
+          "x": 60,
+          "y": 520,
+          "color": "azul",
+          "tam": 66,
+          "en": "¿Cuál está"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 33.61
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es la B. Mi perro es el sujeto y ladra es el verbo: no los separes.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "Es la B"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "no los separes"
+        },
+        {
+          "a": "palomita",
+          "x": 880,
+          "y": 360,
+          "en": "Es la B"
+        }
+      ],
+      "inicio": 41.49
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: sujeto y verbo van juntos, sin coma.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "sujeto + verbo",
+          "x": 70,
+          "y": 300,
+          "en": "sujeto y verbo"
+        },
+        {
+          "a": "escribe",
+          "texto": "= juntos, sin coma",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "sin coma"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "sin coma"
+        }
+      ],
+      "limpia": true,
+      "inicio": 47.49
+    }
+  ],
+  "duracion": 51.07
+}

@@ -1,0 +1,346 @@
+{
+  "id": "paa-11",
+  "tema": "inferencia",
+  "titulo": "Inferencias",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/11.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Lee: Mariana miró el reloj por tercera vez. Cuando se abrió la puerta del tren, guardó su libro y se puso de puntillas. ¿Qué se infiere?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Mariana miró el reloj",
+          "x": 60,
+          "y": 120,
+          "tam": 56,
+          "en": "Mariana miró"
+        },
+        {
+          "a": "escribe",
+          "texto": "por tercera vez.",
+          "x": 60,
+          "y": 200,
+          "id": "p1",
+          "tam": 56,
+          "en": "por tercera vez"
+        },
+        {
+          "a": "escribe",
+          "texto": "Cuando se abrió",
+          "x": 375,
+          "y": 200,
+          "tam": 56,
+          "en": "Cuando se abrió"
+        },
+        {
+          "a": "escribe",
+          "texto": "la puerta del tren,",
+          "x": 60,
+          "y": 280,
+          "tam": 56,
+          "en": "la puerta del tren"
+        },
+        {
+          "a": "escribe",
+          "texto": "guardó su",
+          "x": 425,
+          "y": 280,
+          "tam": 56,
+          "en": "guardó su libro"
+        },
+        {
+          "a": "escribe",
+          "texto": "libro",
+          "x": 60,
+          "y": 360,
+          "tam": 56,
+          "en": "su libro"
+        },
+        {
+          "a": "escribe",
+          "texto": "y se puso de puntillas.",
+          "x": 150,
+          "y": 360,
+          "id": "p3",
+          "tam": 56,
+          "en": "de puntillas"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué se infiere?",
+          "x": 60,
+          "y": 480,
+          "color": "azul",
+          "tam": 64,
+          "en": "Qué se infiere"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Las pistas",
+      "voz": "Inferir no es adivinar: es juntar pistas. Miró el reloj tres veces: está esperando. Se puso de puntillas: busca a alguien.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "p1",
+          "color": "amarillo",
+          "en": "tres veces"
+        },
+        {
+          "a": "escribe",
+          "texto": "espera",
+          "x": 790,
+          "y": 200,
+          "color": "amarillo",
+          "tam": 52,
+          "en": "está esperando"
+        },
+        {
+          "a": "subraya",
+          "sobre": "p3",
+          "color": "amarillo",
+          "en": "de puntillas:"
+        },
+        {
+          "a": "escribe",
+          "texto": "busca",
+          "x": 760,
+          "y": 360,
+          "color": "amarillo",
+          "tam": 52,
+          "en": "busca a alguien"
+        }
+      ],
+      "inicio": 8.86
+    },
+    {
+      "escena": "Se infiere",
+      "voz": "Entonces se infiere: Mariana espera con ansias a alguien que llega en ese tren.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "→ espera a alguien del tren",
+          "x": 60,
+          "y": 570,
+          "id": "inf",
+          "color": "verde",
+          "tam": 56,
+          "en": "espera con ansias"
+        },
+        {
+          "a": "subraya",
+          "sobre": "inf",
+          "color": "verde",
+          "en": "en ese tren"
+        }
+      ],
+      "inicio": 19.2
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con tres trampas: palabras absolutas como siempre o nunca, datos que el texto no dice, y frases copiadas tal cual.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. siempre, nunca",
+          "x": 60,
+          "y": 260,
+          "color": "rojo",
+          "tam": 66,
+          "en": "palabras absolutas"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. datos que no están",
+          "x": 60,
+          "y": 370,
+          "color": "rojo",
+          "tam": 66,
+          "en": "datos que el texto"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. frases copiadas",
+          "x": 60,
+          "y": 480,
+          "color": "rojo",
+          "tam": 66,
+          "en": "frases copiadas"
+        }
+      ],
+      "limpia": true,
+      "inicio": 24.84
+    },
+    {
+      "escena": "Un ejemplo",
+      "voz": "Por ejemplo: Mariana odia leer. Falso: guardar un libro no es odiar leer.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "«Mariana odia leer»",
+          "x": 60,
+          "y": 260,
+          "id": "o",
+          "color": "rojo",
+          "tam": 76,
+          "en": "Mariana odia leer"
+        },
+        {
+          "a": "tacha",
+          "sobre": "o",
+          "color": "rojo",
+          "en": "Falso"
+        },
+        {
+          "a": "escribe",
+          "texto": "guardar ≠ odiar",
+          "x": 60,
+          "y": 430,
+          "color": "verde",
+          "tam": 80,
+          "en": "no es odiar"
+        }
+      ],
+      "limpia": true,
+      "inicio": 33.9
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Don Ramiro apagó la luz de su tienda despacio, como quien se despide. ¿Qué se infiere?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Don Ramiro apagó la luz",
+          "x": 60,
+          "y": 240,
+          "tam": 60,
+          "en": "Don Ramiro"
+        },
+        {
+          "a": "escribe",
+          "texto": "despacio,",
+          "x": 60,
+          "y": 340,
+          "id": "d1",
+          "tam": 60,
+          "en": "despacio"
+        },
+        {
+          "a": "escribe",
+          "texto": "como quien se despide.",
+          "x": 290,
+          "y": 340,
+          "id": "d2",
+          "tam": 60,
+          "en": "como quien se despide"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué se infiere?",
+          "x": 60,
+          "y": 470,
+          "color": "azul",
+          "tam": 60,
+          "en": "Qué se infiere"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 40.18
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Las pistas son despacio y como quien se despide. Se infiere que algo está terminando para él.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "d1",
+          "color": "amarillo",
+          "en": "despacio y"
+        },
+        {
+          "a": "subraya",
+          "sobre": "d2",
+          "color": "amarillo",
+          "en": "como quien se despide."
+        },
+        {
+          "a": "escribe",
+          "texto": "→ algo termina",
+          "x": 500,
+          "y": 470,
+          "color": "verde",
+          "tam": 64,
+          "en": "algo está terminando"
+        }
+      ],
+      "inicio": 47.21
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: si no puedes señalar la pista en el texto, no es la respuesta.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "señala la pista",
+          "x": 70,
+          "y": 300,
+          "en": "señalar la pista"
+        },
+        {
+          "a": "escribe",
+          "texto": "en el texto",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "en el texto"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "no es la respuesta"
+        }
+      ],
+      "limpia": true,
+      "inicio": 53.85
+    }
+  ],
+  "duracion": 58.36
+}

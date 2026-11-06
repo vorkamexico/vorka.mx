@@ -1,0 +1,414 @@
+{
+  "id": "paa-26",
+  "tema": "en_reading",
+  "titulo": "Reading comprehension",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/26.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Lee: Maya used to hate mornings. Now, she wakes up early to run before school. What changed? A: she hates running. B: she enjoys mornings now.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Maya used to hate mornings.",
+          "x": 60,
+          "y": 140,
+          "id": "u",
+          "tam": 62,
+          "en": "Maya used to"
+        },
+        {
+          "a": "escribe",
+          "texto": "Now, she wakes up early",
+          "x": 60,
+          "y": 230,
+          "id": "n",
+          "tam": 62,
+          "en": "Now, she wakes"
+        },
+        {
+          "a": "escribe",
+          "texto": "to run before school.",
+          "x": 60,
+          "y": 320,
+          "tam": 62,
+          "en": "to run before"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) She hates running.",
+          "x": 60,
+          "y": 440,
+          "id": "a",
+          "color": "amarillo",
+          "tam": 58,
+          "en": "A: she hates"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) She enjoys mornings now.",
+          "x": 60,
+          "y": 530,
+          "id": "b",
+          "color": "amarillo",
+          "tam": 58,
+          "en": "B: she enjoys"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Primero",
+      "voz": "Primero lee la pregunta, después el texto. Así sabes qué buscar.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1. La pregunta",
+          "x": 60,
+          "y": 220,
+          "color": "amarillo",
+          "tam": 76,
+          "en": "Primero lee"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            150,
+            260
+          ],
+          "hacia": [
+            150,
+            340
+          ],
+          "color": "amarillo",
+          "en": "después el texto"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. El texto",
+          "x": 60,
+          "y": 420,
+          "tam": 76,
+          "en": "después el texto"
+        },
+        {
+          "a": "escribe",
+          "texto": "(sabes qué buscar)",
+          "x": 450,
+          "y": 420,
+          "color": "azul",
+          "tam": 56,
+          "en": "qué buscar"
+        }
+      ],
+      "limpia": true,
+      "inicio": 11.81
+    },
+    {
+      "escena": "Las pistas",
+      "voz": "Busca palabras de cambio: used to es antes, now es ahora. Antes odiaba las mañanas; ahora se levanta temprano.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Maya used to hate mornings.",
+          "x": 60,
+          "y": 140,
+          "id": "u",
+          "tam": 62,
+          "en": "Busca palabras"
+        },
+        {
+          "a": "escribe",
+          "texto": "Now, she wakes up early",
+          "x": 60,
+          "y": 230,
+          "id": "n",
+          "tam": 62,
+          "en": "Busca palabras"
+        },
+        {
+          "a": "escribe",
+          "texto": "to run before school.",
+          "x": 60,
+          "y": 320,
+          "tam": 62,
+          "en": "Busca palabras"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) She hates running.",
+          "x": 60,
+          "y": 440,
+          "id": "a",
+          "color": "amarillo",
+          "tam": 58,
+          "en": "Busca palabras"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) She enjoys mornings now.",
+          "x": 60,
+          "y": 530,
+          "id": "b",
+          "color": "amarillo",
+          "tam": 58,
+          "en": "Busca palabras"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "rojo",
+          "en": "used to es antes"
+        },
+        {
+          "a": "escribe",
+          "texto": "antes",
+          "x": 790,
+          "y": 140,
+          "color": "rojo",
+          "tam": 50,
+          "en": "es antes"
+        },
+        {
+          "a": "subraya",
+          "sobre": "n",
+          "color": "verde",
+          "en": "now es ahora"
+        },
+        {
+          "a": "escribe",
+          "texto": "ahora",
+          "x": 700,
+          "y": 230,
+          "color": "verde",
+          "tam": 50,
+          "en": "es ahora"
+        }
+      ],
+      "limpia": true,
+      "inicio": 16.92
+    },
+    {
+      "escena": "La respuesta",
+      "voz": "Entonces es la B. La A dice algo que el texto no dice.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "es la B"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "La A dice"
+        },
+        {
+          "a": "palomita",
+          "x": 860,
+          "y": 510,
+          "en": "es la B"
+        }
+      ],
+      "inicio": 26.34
+    },
+    {
+      "escena": "La actitud",
+      "voz": "Para la actitud del autor, busca palabras con emoción: amazing, sadly, unfortunately. Ahí está su opinión.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Actitud del autor:",
+          "x": 60,
+          "y": 150,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "la actitud"
+        },
+        {
+          "a": "escribe",
+          "texto": "amazing · sadly · unfortunately",
+          "x": 60,
+          "y": 300,
+          "id": "e",
+          "tam": 62,
+          "en": "amazing, sadly"
+        },
+        {
+          "a": "subraya",
+          "sobre": "e",
+          "color": "amarillo",
+          "en": "con emoción"
+        },
+        {
+          "a": "escribe",
+          "texto": "= su opinión",
+          "x": 60,
+          "y": 450,
+          "color": "verde",
+          "tam": 72,
+          "en": "su opinión"
+        }
+      ],
+      "limpia": true,
+      "inicio": 31.07
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con la opción que copia palabras del texto: tiene las mismas palabras, pero dice otra cosa.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "mismas palabras",
+          "x": 60,
+          "y": 290,
+          "color": "amarillo",
+          "tam": 72,
+          "en": "las mismas palabras"
+        },
+        {
+          "a": "escribe",
+          "texto": "≠ misma idea",
+          "x": 60,
+          "y": 430,
+          "color": "rojo",
+          "tam": 72,
+          "en": "dice otra cosa"
+        }
+      ],
+      "limpia": true,
+      "inicio": 39.28
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Sadly, the old library closed last week. ¿Cómo se siente el autor? Happy, sad, o angry.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Sadly, the old library",
+          "x": 60,
+          "y": 250,
+          "id": "s",
+          "tam": 70,
+          "en": "Sadly, the old"
+        },
+        {
+          "a": "escribe",
+          "texto": "closed last week.",
+          "x": 60,
+          "y": 350,
+          "tam": 70,
+          "en": "closed last week"
+        },
+        {
+          "a": "escribe",
+          "texto": "happy  ·  sad  ·  angry",
+          "x": 60,
+          "y": 500,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "Happy, sad"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 45.27
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es sad: la pista es sadly.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "→ sad",
+          "x": 560,
+          "y": 500,
+          "id": "ok",
+          "color": "verde",
+          "tam": 72,
+          "en": "Es sad"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "Es sad"
+        },
+        {
+          "a": "subraya",
+          "sobre": "s",
+          "color": "amarillo",
+          "en": "la pista es sadly"
+        }
+      ],
+      "inicio": 53.94
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: primero la pregunta, y busca las palabras que dan la pista.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. Primero la pregunta",
+          "x": 70,
+          "y": 300,
+          "tam": 68,
+          "en": "primero la pregunta"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Busca la palabra pista",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 68,
+          "en": "busca las palabras"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "dan la pista"
+        }
+      ],
+      "limpia": true,
+      "inicio": 57.47
+    }
+  ],
+  "duracion": 61.73
+}

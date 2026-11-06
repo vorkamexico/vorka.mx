@@ -1,0 +1,341 @@
+{
+  "id": "paa-18",
+  "tema": "conectores",
+  "titulo": "Conectores: la relación entre las ideas",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/18.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Estudié toda la noche... saqué diez. ¿Qué conector va en medio? Sin embargo, por eso, o además.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Estudié toda la noche, ____",
+          "x": 60,
+          "y": 160,
+          "tam": 64,
+          "en": "Estudié toda"
+        },
+        {
+          "a": "escribe",
+          "texto": "saqué diez.",
+          "x": 60,
+          "y": 260,
+          "tam": 64,
+          "en": "saqué diez"
+        },
+        {
+          "a": "escribe",
+          "texto": "sin embargo  ·  por eso  ·  además",
+          "x": 60,
+          "y": 400,
+          "color": "amarillo",
+          "tam": 58,
+          "en": "Sin embargo, por eso"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué conector va?",
+          "x": 60,
+          "y": 520,
+          "color": "azul",
+          "tam": 66,
+          "en": "¿Qué conector"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La relación",
+      "voz": "Antes de ver las opciones, pregúntate: ¿cómo se relacionan las dos ideas?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "idea 1",
+          "x": 80,
+          "y": 280,
+          "id": "i1",
+          "tam": 76,
+          "en": "las dos ideas"
+        },
+        {
+          "a": "escribe",
+          "texto": "idea 2",
+          "x": 700,
+          "y": 280,
+          "id": "i2",
+          "tam": 76,
+          "en": "las dos ideas"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            320,
+            260
+          ],
+          "hacia": [
+            660,
+            260
+          ],
+          "color": "amarillo",
+          "en": "cómo se relacionan"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿?",
+          "x": 460,
+          "y": 230,
+          "color": "amarillo",
+          "tam": 76,
+          "en": "cómo se relacionan"
+        }
+      ],
+      "limpia": true,
+      "inicio": 8.53
+    },
+    {
+      "escena": "Las familias",
+      "voz": "Si una causa la otra: por eso, así que. Si chocan: sin embargo, pero. Si se suman: además, también.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "causa →  por eso, así que",
+          "x": 60,
+          "y": 170,
+          "color": "verde",
+          "tam": 64,
+          "en": "una causa"
+        },
+        {
+          "a": "escribe",
+          "texto": "chocan →  sin embargo, pero",
+          "x": 60,
+          "y": 320,
+          "color": "rojo",
+          "tam": 64,
+          "en": "Si chocan"
+        },
+        {
+          "a": "escribe",
+          "texto": "se suman →  además, también",
+          "x": 60,
+          "y": 470,
+          "color": "azul",
+          "tam": 64,
+          "en": "se suman"
+        }
+      ],
+      "limpia": true,
+      "inicio": 14.09
+    },
+    {
+      "escena": "La respuesta",
+      "voz": "Estudié y saqué diez: una causa la otra. Va por eso.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Estudié toda la noche,",
+          "x": 60,
+          "y": 220,
+          "tam": 64,
+          "en": "Estudié y"
+        },
+        {
+          "a": "escribe",
+          "texto": "por eso",
+          "x": 640,
+          "y": 220,
+          "id": "ok",
+          "color": "verde",
+          "tam": 64,
+          "en": "Va por eso"
+        },
+        {
+          "a": "escribe",
+          "texto": "saqué diez.",
+          "x": 60,
+          "y": 330,
+          "tam": 64,
+          "en": "saqué diez"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "Va por eso"
+        },
+        {
+          "a": "palomita",
+          "x": 500,
+          "y": 470,
+          "en": "Va por eso"
+        }
+      ],
+      "limpia": true,
+      "inicio": 23.75
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: sin embargo suena elegante, pero es para ideas que chocan. Úsalo solo si de verdad se oponen.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "sin embargo",
+          "x": 60,
+          "y": 300,
+          "id": "se",
+          "color": "amarillo",
+          "tam": 80,
+          "en": "sin embargo suena"
+        },
+        {
+          "a": "escribe",
+          "texto": "= ideas que chocan",
+          "x": 60,
+          "y": 440,
+          "color": "rojo",
+          "tam": 72,
+          "en": "ideas que chocan"
+        },
+        {
+          "a": "circulo",
+          "sobre": "se",
+          "color": "rosa",
+          "en": "elegante"
+        }
+      ],
+      "limpia": true,
+      "inicio": 28.76
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Llovió mucho... el partido siguió. ¿Qué conector va?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Llovió mucho, ____",
+          "x": 60,
+          "y": 250,
+          "tam": 70,
+          "en": "Llovió mucho"
+        },
+        {
+          "a": "escribe",
+          "texto": "el partido siguió.",
+          "x": 60,
+          "y": 360,
+          "tam": 70,
+          "en": "el partido siguió"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué conector va?",
+          "x": 60,
+          "y": 500,
+          "color": "azul",
+          "tam": 70,
+          "en": "¿Qué conector"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 36.57
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Llovía, pero se jugó: chocan. Va sin embargo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "sin embargo",
+          "x": 560,
+          "y": 250,
+          "id": "ok",
+          "color": "verde",
+          "tam": 66,
+          "en": "Va sin embargo"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "Va sin embargo"
+        },
+        {
+          "a": "escribe",
+          "texto": "chocan",
+          "x": 560,
+          "y": 500,
+          "color": "rojo",
+          "tam": 66,
+          "en": "chocan"
+        }
+      ],
+      "inicio": 42.04
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: primero la relación, después el conector.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. ¿Cómo se relacionan?",
+          "x": 70,
+          "y": 300,
+          "en": "primero la relación"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Elige el conector",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "después el conector"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "el conector"
+        }
+      ],
+      "limpia": true,
+      "inicio": 46.54
+    }
+  ],
+  "duracion": 50.05
+}

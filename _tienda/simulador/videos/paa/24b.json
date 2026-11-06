@@ -1,0 +1,409 @@
+{
+  "id": "paa-24b",
+  "tema": "en_grammar",
+  "titulo": "Tenses: qué tiempo usar",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/24b.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "I... here since twenty twenty. ¿Live, lived, o have lived?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "I ____ here",
+          "x": 60,
+          "y": 170,
+          "tam": 76,
+          "en": "I..."
+        },
+        {
+          "a": "escribe",
+          "texto": "since 2020.",
+          "x": 400,
+          "y": 170,
+          "id": "s",
+          "color": "amarillo",
+          "tam": 76,
+          "en": "since twenty"
+        },
+        {
+          "a": "escribe",
+          "texto": "live · lived · have lived",
+          "x": 60,
+          "y": 360,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "Live, lived"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La pista",
+      "voz": "Since y for son pistas: algo que empezó en el pasado y sigue hasta hoy. Eso es present perfect: have más participio.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "since / for",
+          "x": 60,
+          "y": 150,
+          "id": "sf",
+          "color": "amarillo",
+          "tam": 76,
+          "en": "Since y for"
+        },
+        {
+          "a": "circulo",
+          "sobre": "sf",
+          "color": "rosa",
+          "en": "son pistas"
+        },
+        {
+          "a": "escribe",
+          "texto": "pasado",
+          "x": 60,
+          "y": 300,
+          "tam": 66,
+          "en": "empezó en el pasado"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            270,
+            280
+          ],
+          "hacia": [
+            600,
+            280
+          ],
+          "color": "amarillo",
+          "en": "sigue hasta hoy"
+        },
+        {
+          "a": "escribe",
+          "texto": "hoy",
+          "x": 640,
+          "y": 300,
+          "tam": 66,
+          "en": "hasta hoy"
+        },
+        {
+          "a": "escribe",
+          "texto": "= have + participio",
+          "x": 60,
+          "y": 460,
+          "color": "verde",
+          "tam": 72,
+          "en": "have más participio"
+        }
+      ],
+      "limpia": true,
+      "inicio": 6.89
+    },
+    {
+      "escena": "Since o for",
+      "voz": "Since va con un punto de inicio: since twenty twenty, since Monday. For va con una cantidad de tiempo: for three years.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "since + inicio",
+          "x": 60,
+          "y": 170,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "Since va con"
+        },
+        {
+          "a": "escribe",
+          "texto": "since 2020 · since Monday",
+          "x": 60,
+          "y": 270,
+          "tam": 60,
+          "en": "since Monday"
+        },
+        {
+          "a": "escribe",
+          "texto": "for + cantidad",
+          "x": 60,
+          "y": 410,
+          "color": "azul",
+          "tam": 70,
+          "en": "For va con"
+        },
+        {
+          "a": "escribe",
+          "texto": "for three years",
+          "x": 60,
+          "y": 510,
+          "tam": 60,
+          "en": "for three years"
+        }
+      ],
+      "limpia": true,
+      "inicio": 16.33
+    },
+    {
+      "escena": "La respuesta",
+      "voz": "Entonces: I have lived here since twenty twenty.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "I have lived here",
+          "x": 60,
+          "y": 250,
+          "id": "ok",
+          "color": "verde",
+          "tam": 76,
+          "en": "I have lived"
+        },
+        {
+          "a": "escribe",
+          "texto": "since 2020.",
+          "x": 60,
+          "y": 370,
+          "color": "amarillo",
+          "tam": 76,
+          "en": "since twenty"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "have lived"
+        },
+        {
+          "a": "palomita",
+          "x": 700,
+          "y": 230,
+          "en": "since twenty"
+        }
+      ],
+      "limpia": true,
+      "inicio": 26.07
+    },
+    {
+      "escena": "Otras pistas",
+      "voz": "Otras pistas: now pide el continuo, I am studying now. Yesterday pide el pasado simple, I studied yesterday.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "now",
+          "x": 60,
+          "y": 200,
+          "id": "n",
+          "color": "amarillo",
+          "tam": 76,
+          "en": "now pide"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ I am studying now",
+          "x": 300,
+          "y": 200,
+          "color": "verde",
+          "tam": 62,
+          "en": "I am studying"
+        },
+        {
+          "a": "escribe",
+          "texto": "yesterday",
+          "x": 60,
+          "y": 400,
+          "id": "y",
+          "color": "amarillo",
+          "tam": 70,
+          "en": "Yesterday pide"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ I studied",
+          "x": 420,
+          "y": 400,
+          "color": "verde",
+          "tam": 62,
+          "en": "I studied"
+        }
+      ],
+      "limpia": true,
+      "inicio": 30.64
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: con yesterday nunca uses have. No es I have seen him yesterday. Es I saw him yesterday.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "I have seen him yesterday",
+          "x": 60,
+          "y": 300,
+          "id": "mal",
+          "color": "rojo",
+          "tam": 66,
+          "en": "No es"
+        },
+        {
+          "a": "tacha",
+          "sobre": "mal",
+          "color": "rojo",
+          "en": "Es I saw"
+        },
+        {
+          "a": "escribe",
+          "texto": "I saw him yesterday",
+          "x": 60,
+          "y": 450,
+          "id": "bien",
+          "color": "verde",
+          "tam": 66,
+          "en": "I saw him"
+        },
+        {
+          "a": "circulo",
+          "sobre": "bien",
+          "color": "verde",
+          "en": "Es I saw"
+        }
+      ],
+      "limpia": true,
+      "inicio": 39.79
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. She... English for five years. ¿Studies, o has studied?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "She ____ English",
+          "x": 60,
+          "y": 250,
+          "tam": 72,
+          "en": "She..."
+        },
+        {
+          "a": "escribe",
+          "texto": "for five years.",
+          "x": 60,
+          "y": 360,
+          "id": "f",
+          "tam": 72,
+          "en": "for five years"
+        },
+        {
+          "a": "escribe",
+          "texto": "studies  ·  has studied",
+          "x": 60,
+          "y": 500,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "Studies"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 48.58
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "La pista es for five years, y sigue hasta hoy: has studied.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "f",
+          "color": "rosa",
+          "en": "La pista es"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ has studied",
+          "x": 520,
+          "y": 250,
+          "id": "ok",
+          "color": "verde",
+          "tam": 66,
+          "en": "has studied"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "has studied"
+        }
+      ],
+      "inicio": 55.6
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: busca la palabra de tiempo. Since o for, present perfect. Now, continuo. Yesterday, pasado.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "since / for → have + participio",
+          "x": 70,
+          "y": 270,
+          "tam": 60,
+          "en": "Since o for"
+        },
+        {
+          "a": "escribe",
+          "texto": "now → continuo (-ing)",
+          "x": 70,
+          "y": 380,
+          "tam": 60,
+          "en": "Now, continuo"
+        },
+        {
+          "a": "escribe",
+          "texto": "yesterday → pasado",
+          "x": 70,
+          "y": 490,
+          "id": "u",
+          "tam": 60,
+          "en": "Yesterday, pasado"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "pasado."
+        }
+      ],
+      "limpia": true,
+      "inicio": 60.93
+    }
+  ],
+  "duracion": 69.07
+}
