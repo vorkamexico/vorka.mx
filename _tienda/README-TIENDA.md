@@ -242,7 +242,7 @@ Examen de admisión a **licenciatura** (nivel superior) del IPN: 3 áreas (Ingen
 
 - Código: `src/simulador/ipn.js`. El banco (1,012 reactivos, 88 temas) se arma con los reactivos originales de la UNAM (Matemáticas, Física, Química, Biología, Historia de México y Universal → Historia, Español → Competencia escrita o lectora) y del PAA (Lectura → Competencia lectora, Redacción → Competencia escrita, Matemáticas, Inglés). El tema `vocabulario` del Español de la UNAM se renombra a `vocabulario_espanol` (choca con el de Lectura del PAA).
 - Distribución por materia: de referencia (guías de preparación); el IPN no la publica y la página lo dice. Total, tiempo, áreas y asignación por aciertos: convocatoria (Base Sexta).
-- Productos: migración 0076 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), **inactivos** hasta revisar la página en vivo. Imágenes: `portadas_v3.py` (SOLO=simulador-ipn) y `portadas_ipn.py`; ícono de la app en `simulador/icono/iconos.mjs` (color en `COLORES_APP.ipn`).
+- Productos: migración 0076 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), activos desde la publicación. Imágenes: `portadas_v3.py` (SOLO=simulador-ipn) y `portadas_ipn.py`; ícono de la app en `simulador/icono/iconos.mjs` (color en `COLORES_APP.ipn`).
 - Pruebas: `test/simulador-ipn.test.js`.
 
 ## Brindi (vorka.mx/tienda/brindi)
