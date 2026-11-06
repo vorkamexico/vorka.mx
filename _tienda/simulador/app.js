@@ -15,13 +15,13 @@
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
   // Llaves de localStorage por cuenta (se completan al saber quién entró): dos personas en el mismo dispositivo no se mezclan
-  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI, K_INST, K_VISTOS_V;
+  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI, K_INST, K_VISTOS_V, K_GUIA;
   var L = window.SIM_LOGICA;   // funciones puras (simulador/logica.js): gráfica, temas y puntaje por universidad
   function llaves(email) {
     var h = 0; String(email || '').split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
     var x = ':' + h.toString(36);
     var p = APP === 'simulador-paa' ? 'vk_paa' : 'vk_' + APP.replace('simulador-', '');
-    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x; K_INST = p + '_instalar_no' + x; K_VISTOS_V = p + '_videos_vistos' + x;
+    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x; K_INST = p + '_instalar_no' + x; K_VISTOS_V = p + '_videos_vistos' + x; K_GUIA = p + '_guia_vista' + x;
   }
 
   // ---------- utilidades ----------
@@ -334,13 +334,14 @@
       retomar +
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
+          '<div class="o-0" id="tuyo-card">' + tarjetaTuyo() + '</div>' +
           '<div class="o-0 sim-est-caja" id="est-card">' + tarjetaEstudio() + '</div>' +
           '<section class="o-4">' + selArea + '<h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el examen completo, que tiene la dificultad y el tiempo del examen real.</p>' +
           (!puedePracticar() ? tarjetaPlan('practica', 'Llega al examen con práctica de sobra') : '') +
           (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
           (puedePracticar() ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="completo"><span class="sim-op-t"><span class="sim-op-tag n2">Nivel 2 · para ya estar bien</span><b>Medio</b><small>' + totalR + ' reactivos · ' + totalM + ' minutos · la mayoría de dificultad alta, como el examen real · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentos : '') +
           (hayExamen && !tieneExamen() ? tarjetaPlan('completo', 'Cuando estés listo, mídete con el examen real') : '') +
-          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + (esPAA() ? ' secciones' : ' materias') + ' cronometradas y con la dificultad del examen') + (ie.tutorSiguiente || (ie.abierto && ie.abierto.tutor) ? ' · <b>el primero, con tutor</b>: si fallas te da una pista, para que veas cómo es el examen sin presión. El segundo, sin pistas como el día del examen' : ' · sin pistas, la revisión va al final') + '</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
+          (hayExamen && tieneExamen() ? '<button class="sim-op sim-op-grande sim-op-examen" data-modo="examen"><span class="sim-op-t"><span class="sim-op-tag">Nivel 3 · como el examen real</span><b>Examen ' + esc(CFG.examen) + ' completo</b><small>' + exR + ' reactivos · ' + horas(exM) + ' · ' + (infoArea() ? 'las materias de tu área con su peso' : 'las ' + B.examen.length + (esPAA() ? ' secciones' : ' materias') + ' cronometradas y con la dificultad del examen') + (ie.tutorSiguiente || (ie.abierto && ie.abierto.tutor) ? ' · <strong class="sim-op-dest">el primero, con tutor</strong>: si fallas te da una pista, para que veas cómo es el examen sin presión. El segundo, sin pistas como el día del examen' : ' · sin pistas, la revisión va al final') + '</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosEx : '') +
           (puedePracticar() ? '<p class="sim-nota sim-libre">Práctica libre, sin gastar intentos:</p>' +
           (conTemas ? '<button class="sim-op sim-op-temas" id="b-temas"><span class="sim-op-i">' + ICONO.foco + '</span><span class="sim-op-t"><b>Elige qué temas practicar</b><small>' + (esPAA() ? 'Sección' : 'Materia') + ' y temas que tú quieras · ' + Object.keys(B.temas).length + ' temas en el banco · sin cronómetro y con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' : '') +
           '<div class="sim-secs">' + B.secciones.map(function (s) {
@@ -349,6 +350,7 @@
           (puedePracticar() && debiles.length ? '<button class="sim-op sim-op-practica" data-modo="practica" data-temas="' + debiles.map(function (t) { return t.id; }).join(',') + '"><span class="sim-op-i">' + ICONO.foco + '</span><span class="sim-op-t"><b>Practicar mis temas débiles</b><small>' + esc(debiles.map(function (t) { return t.nombre; }).join(' · ')) + '</small></span><span class="sim-op-f">' + FL + '</span></button>' : '') +
           '</section>' +
           '<section class="o-5">' + historial() + '</section>' +
+          '<section class="o-8">' + masVorkaHTML() + '</section>' +
         '</div>' +
         '<aside class="sim-col sim-col-lado">' +
           '<div class="o-1">' + resumen + '</div>' +
@@ -358,8 +360,9 @@
           : '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta de aciertos</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de ' + CFG.examenReactivos + '</small></div>' +
             '<input type="range" id="meta" min="' + CFG.meta.min + '" max="' + CFG.meta.max + '" step="' + CFG.meta.paso + '" value="' + m + '" aria-label="Meta de aciertos (de ' + CFG.examenReactivos + ')">' +
             '<p class="sim-nota">' + esc(CFG.metaNota || 'Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.') + '</p></div>') +
+          '<div class="o-r" id="reco-caja">' + recoHTML(PUNTOS) + '</div>' +
           '<div class="o-3">' + bancoHTML() + '</div>' +
-          '<div class="o-6">' + compartirHTML() + regaloHTML() + '</div>' +
+          '<div class="o-6">' + regaloHTML() + '</div>' +
           '<div class="o-7">' + sparks('inicio') + '</div>' +
         '</aside>' +
       '</div>'
@@ -394,6 +397,8 @@
     app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
     conectarSparks();
     conectarEstudio();
+    conectarTuyo();
+    conectarReco();
   }
   // Vuelve a pintar el inicio sin perder el lugar en la página (al cambiar meta o universidad) y deja el foco donde estaba
   function repintar(foco) {
@@ -442,11 +447,104 @@
       '<div class="sim-banco-p" role="progressbar" aria-valuemin="0" aria-valuemax="' + total + '" aria-valuenow="' + n + '" aria-label="Reactivos vistos"><span style="width:' + pct(n, total) + '%"></span></div>' +
       '<small>' + (n ? 'Has visto ' + n + ' de ' + total + ' (' + pct(n, total) + ' %)' : 'Aún no has visto ninguno: todo es nuevo para ti') + '</small></div>';
   }
-  // Programa de puntos: comparte tu liga y gana del 10 % al 30 % de cada compra en puntos (se canjean en la tienda); tu amigo
-  // tiene 5 % de descuento en su primer pago (src/puntos-reglas.js y src/descuentos.js)
-  function compartirHTML() {
-    return '<a class="sim-regalo sim-compartir" href="/tienda/puntos/"><span class="sim-regalo-i" aria-hidden="true">🤝</span><span><b>Comparte el simulador y gana</b><small>Por cada amigo que lo compre con tu liga ganas del 10 % al 30 % de lo que pagó en puntos para la tienda Vorka, y tu amigo tiene 5 % de descuento en su primer pago.</small></span><span class="sim-op-f">' + FL + '</span></a>';
+  // ---------- «Tu simulador»: qué compró, hasta cuándo, qué incluye y cómo sacarle provecho ----------
+  function nombrePlan() {
+    var p = plan();
+    if (p.paquete || (p.practica && p.examen)) return 'Plan Completo';
+    if (p.practica) return 'Plan Práctica';
+    if (p.examen) return 'Plan Examen';
+    return 'Tu simulador';
   }
+  function venceTxt() { try { return new Date(YO.vence).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } }
+  // El plan que le falta para tener todo (Completo = práctica + examen); null si ya lo tiene o si es la compra de antes
+  function planQueFalta() { var p = plan(); if (p.legado && !p.practica) return null; return !puedePracticar() ? 'practica' : !tieneExamen() ? 'completo' : null; }
+  function tarjetaTuyo() {
+    var ie = cuentaDe('examen'), est = tieneEstudio(), hayVid = !!YO.videos;
+    var f = [
+      { si: puedePracticar(), t: 'Simulacros con tutor', d: plan().practica ? 'Calentamiento y Medio, sin límite' : 'Calentamiento y Medio' },
+      { si: tieneExamen(), t: 'Examen completo', d: tieneExamen() ? (ie.incluidos === 1 ? '1 incluido' : ie.incluidos + ' incluidos') + ', como el día del examen' : 'Como el día del examen' },
+      { si: puedePracticar(), t: 'Práctica por temas', d: 'Sin cronómetro y sin gastar intentos' },
+      hayVid ? { si: est, t: 'Videos de cada tema', d: 'Explicados como en el pizarrón' } : null,
+      { si: est, t: 'Plan de estudio', d: 'Hasta tu examen, con recordatorios' },
+      { si: est, t: 'Apuntes y app', d: 'Tus notas y el simulador en tu celular' },
+    ].filter(Boolean);
+    var falta = planQueFalta(), o = falta && (YO.ofertas || {})[falta], bloqueadas = f.some(function (x) { return !x.si; });
+    var pasos = [
+      ['Mide tu punto de partida', 'Haz un Calentamiento o un Medio: te decimos tu puntaje estimado y los temas que más te cuestan.'],
+      ['Refuerza lo que te cuesta', est ? 'Arma tu plan de estudio y practica tus temas débiles con el tutor y los videos.' : 'Practica tus temas débiles con el tutor, sin cronómetro y sin gastar intentos.'],
+      ['Mídete como el día del examen', 'Cuando estés cerca de tu meta, haz el examen completo con el tiempo y la dificultad reales.'],
+    ];
+    var abierta = !leer(K_GUIA);
+    return '<div class="sim-card sim-tuyo"><div class="sim-tuyo-cab"><div><span class="etiqueta">Tu simulador</span><h2>' + esc(nombrePlan()) + '</h2></div>' +
+      (YO.vence ? '<p class="sim-tuyo-vence">Acceso hasta el <b>' + esc(venceTxt()) + '</b><br>en hasta 2 dispositivos</p>' : '') + '</div>' +
+      '<ul class="sim-tuyo-f">' + f.map(function (x) {
+        return '<li class="' + (x.si ? 'si' : 'no') + '"><span class="sim-tuyo-i" aria-hidden="true">' + (x.si ? ICONO.ok : ICONO.candado) + '</span><span><b>' + x.t + '</b><small>' + (x.si ? x.d : 'Con el plan Completo') + '</small></span></li>';
+      }).join('') + '</ul>' +
+      (bloqueadas && o ? '<div class="sim-tuyo-up"><span>Desbloquea lo que te falta y ten todo el simulador.</span><button class="btn tinta chico" type="button" data-plan="' + falta + '">Desbloquear · ' + precio(o.precio_centavos) + '</button></div>' : '') +
+      '<details class="sim-tuyo-guia"' + (abierta ? ' open' : '') + '><summary>Cómo sacarle provecho en 3 pasos</summary><ol>' + pasos.map(function (p) { return '<li><b>' + p[0] + '</b><span>' + p[1] + '</span></li>'; }).join('') + '</ol></details></div>';
+  }
+  function conectarTuyo() {
+    var c = document.getElementById('tuyo-card'); if (!c) return;
+    c.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
+    var g = c.querySelector('.sim-tuyo-guia'); if (g) g.addEventListener('toggle', function () { if (!g.open) guardar(K_GUIA, 1); });
+    // La primera vez se ve abierta; a partir de la siguiente visita, cerrada
+    if (!leer(K_GUIA)) guardar(K_GUIA, 1);
+  }
+
+  // ---------- Recomienda y gana (Puntos Vorka): su liga para este simulador, sus puntos y su nivel ----------
+  var PUNTOS = null, PUNTOS_CARGANDO = null;
+  function mensajeReco(liga) { return 'Me está sirviendo mucho el ' + (CFG.examen ? 'Simulador ' + CFG.examen : 'simulador') + ' de Vorka para preparar mi examen: simulacros con tiempo real y un tutor que te explica si fallas. Con mi liga tienes ' + ((PUNTOS && PUNTOS.pct_referido) || 5) + ' % de descuento: ' + liga; }
+  function recoHTML(d) {
+    var pr = (d && d.pct_referido) || 5, pmin = (d && d.pct_min) || 10, pmax = (d && d.pct_max) || 30;
+    var cab = '<span class="etiqueta">Recomienda y gana</span><h3>Gana puntos por cada amigo que lo compre</h3>' +
+      '<p>Comparte tu liga: tu amigo tiene <b>' + pr + ' % de descuento</b> y tú ganas <b>del ' + pmin + ' % al ' + pmax + ' %</b> de lo que pague en puntos (1 punto = $1) para comprar en la tienda Vorka.</p>';
+    if (!d) return '<div class="sim-card sim-reco">' + cab + '<p class="sim-nota">Cargando tu liga…</p></div>';
+    if (!d.activa) return '<div class="sim-card sim-reco">' + cab + '<div class="botones"><button class="btn tinta" type="button" id="reco-activar">Obtener mi liga ' + FL + '</button></div>' +
+      '<p class="sim-nota">Es gratis. Se crea tu cuenta de Puntos Vorka con este correo y aceptas las <a href="/legal/terminos/#puntos" target="_blank" rel="noopener">condiciones del programa</a>.</p></div>';
+    var wa = 'https://wa.me/?text=' + encodeURIComponent(mensajeReco(d.liga));
+    return '<div class="sim-card sim-reco">' + cab +
+      '<div class="sim-reco-liga"><code id="reco-liga">' + esc(d.liga) + '</code><button class="btn blanco chico" type="button" id="reco-copiar">Copiar</button></div>' +
+      '<div class="botones"><a class="btn tinta chico" href="' + esc(wa) + '" target="_blank" rel="noopener">Compartir por WhatsApp</a>' +
+      (navigator.share ? '<button class="btn blanco chico" type="button" id="reco-compartir">Más opciones</button>' : '') + '</div>' +
+      '<div class="sim-reco-pts"><div><b class="num">' + (d.disponibles || 0) + '</b><span>puntos para usar en la tienda</span></div><div><b>' + esc(d.nivel) + ' · ' + d.pct + ' %</b><span>' +
+        (d.siguiente ? 'Te ' + (d.siguiente.faltan === 1 ? 'falta 1 venta' : 'faltan ' + d.siguiente.faltan + ' ventas') + ' para ' + esc(d.siguiente.nombre) + ' (' + d.siguiente.pct + ' %)' : 'El nivel más alto') + '</span></div></div>' +
+      '<a class="sim-link" href="/tienda/cuenta/" target="_blank" rel="noopener">Ver mis puntos y en qué usarlos</a></div>';
+  }
+  function cargarPuntos(crear) {
+    if (PUNTOS && !crear) return Promise.resolve(PUNTOS);
+    if (PUNTOS_CARGANDO && !crear) return PUNTOS_CARGANDO;
+    PUNTOS_CARGANDO = api('puntos', crear ? { method: 'POST', body: '{}' } : undefined).then(function (d) { PUNTOS = d; return d; });
+    return PUNTOS_CARGANDO;
+  }
+  function conectarReco() {
+    var caja = document.getElementById('reco-caja'); if (!caja) return;
+    var pinta = function () { var c = document.getElementById('reco-caja'); if (c) { c.innerHTML = recoHTML(PUNTOS); conectarReco(); } };
+    if (!PUNTOS) { cargarPuntos().then(pinta, function () { PUNTOS = { activa: false }; pinta(); }); return; }
+    var ba = document.getElementById('reco-activar');
+    if (ba) ba.onclick = function () { ba.disabled = true; ba.textContent = 'Creando tu liga…'; cargarPuntos(true).then(pinta, function (er) { ba.disabled = false; ba.innerHTML = 'Obtener mi liga ' + FL; alert(er.message || 'No pudimos crear tu liga. Intenta de nuevo.'); }); };
+    var bc = document.getElementById('reco-copiar');
+    if (bc) bc.onclick = function () {
+      var ok = function () { bc.textContent = '¡Copiada!'; setTimeout(function () { bc.textContent = 'Copiar'; }, 1800); };
+      var aMano = function () { var r = document.createRange(); r.selectNodeContents(document.getElementById('reco-liga')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+      try { navigator.clipboard.writeText(PUNTOS.liga).then(ok, aMano); } catch (e) { aMano(); }
+    };
+    var bs = document.getElementById('reco-compartir');
+    if (bs) bs.onclick = function () { navigator.share({ title: 'Simulador ' + (CFG.examen || ''), text: mensajeReco(PUNTOS.liga) }).catch(function () { }); };
+  }
+
+  // ---------- Más de Vorka para su camino (se pueden pagar con sus puntos) ----------
+  function masVorkaHTML() {
+    var items = [
+      ['/test-vocacional/', '🧭', 'Test vocacional', 'Descubre qué carreras van contigo. El test es gratis y el reporte completo, opcional.'],
+      ['/que-proyecto-social/', '🌱', '¿Qué proyecto social hago?', 'Encuentra el proyecto ideal para ti; suma mucho en tu solicitud a la universidad.'],
+      ['/tienda/ruta-de-impacto/', '🚀', 'Ruta de Impacto', 'Curso para sacar adelante tu proyecto social, con un tutor que te guía paso a paso.'],
+    ];
+    return '<h2 class="sim-h2">Más para tu camino</h2><p class="sim-nota" style="margin-top:-4px">De Vorka, para lo que sigue después del examen. Puedes pagarlos con tus puntos.</p>' +
+      '<div class="sim-mas">' + items.map(function (x) {
+        return '<a class="sim-mas-i" href="' + x[0] + '" target="_blank" rel="noopener"><span class="sim-mas-e" aria-hidden="true">' + x[1] + '</span><span><b>' + x[2] + '</b><small>' + x[3] + '</small></span><span class="sim-op-f">' + FL + '</span></a>';
+      }).join('') + '</div>';
+  }
+
   // Regalar: abre la ficha de la tienda (con sesión, /simulador-paa/ muestra la app y no la página de venta)
   function regaloHTML() {
     return '<a class="sim-regalo" href="' + esc(CFG.regalo || '/tienda/simulador-paa/?regalo=1#comprar') + '"><span class="sim-regalo-i" aria-hidden="true">🎁</span><span><b>¿Conoces a alguien que va a presentar?</b><small>Regálale el simulador: le llega una liga de un solo uso con tu mensaje.</small></span><span class="sim-op-f">' + FL + '</span></a>';

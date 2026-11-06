@@ -35,6 +35,9 @@ import { crearDiagnostico } from './diagnostico.js';
 import { manifiesto, serviceWorker, iconoDe, colorDe } from './instalable.js';
 import { crearEstudio, tieneEstudio } from './estudio.js';
 import { VIDEOS } from './videos.generado.js';
+import { codigoDe, saldoDe, nivelActual } from '../puntos.js';
+import { NIVELES } from '../puntos-reglas.js';
+import { PCT_REFERIDO } from '../descuentos.js';
 
 // Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
 // por la fecha en que se compró, no en la que se abrió).
@@ -260,6 +263,7 @@ export function crearSimulador(c) {
         return json({ config: c.cliente, secciones: BANCO.SECCIONES, examen: BANCO.SECCIONES_EXAMEN || null, calentamiento: BANCO.SECCIONES_CALENTAMIENTO, areas: AREAS,
           temas: BANCO.TEMAS, textos: BANCO.TEXTOS, reactivos: BANCO.REACTIVOS }, 200, { 'cache-control': 'private, max-age=300' });
       if (p === `${API}/yo` && M === 'GET') return yo(env, a);
+      if (p === `${API}/puntos` && (M === 'GET' || M === 'POST')) return json(await puntosDe(env, a.orden, M === 'POST'));
       if (p === `${API}/resultados` && M === 'POST') return guardarResultado(req, env, a);
       if (p === `${API}/iniciar` && M === 'POST') {
         const b = await req.json().catch(() => ({}));
@@ -396,10 +400,32 @@ export function crearSimulador(c) {
     const extra = c.slugIntento && await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', c.slugIntento);
     const extraEx = c.slugExamen && await one(env, 'SELECT precio_centavos FROM products WHERE slug = ? AND activo = 1', c.slugExamen);
     return json({ nombre: a.orden.nombre, email: a.orden.email, vence: new Date(a.vence).toISOString(), historial,
+      videos: (VIDEOS[APP] || []).filter(v => !v.borrador).length,
       ...(await planDe(env, a.orden.email)),
       intentos, examenes, calentamientos, vistos: [...await vistosDe(env, a.orden.email)],
       intentoExtra: extra ? { slug: c.slugIntento, precio_centavos: extra.precio_centavos } : null,
       examenExtra: extraEx ? { slug: c.slugExamen, precio_centavos: extraEx.precio_centavos } : null });
+  }
+
+  // «Recomienda y gana» (Puntos Vorka): su liga a la página de este simulador, sus puntos y su nivel. GET solo lee (no crea
+  // nada); POST crea su liga la primera vez (como el portal de Brindi: affiliates + puntos_cuentas). La liga lleva ?ref, que
+  // la página de venta guarda en la cookie de afiliado (venta.js › refDeVisita).
+  async function puntosDe(env, orden, crear) {
+    const email = String(orden.email || '').trim().toLowerCase();
+    const base = { pct_min: NIVELES[0].pct, pct_max: NIVELES.at(-1).pct, pct_referido: PCT_REFERIDO };
+    let a = await one(env, "SELECT code, publico FROM affiliates WHERE email = ? AND tipo = 'puntos'", email);
+    if (!a && !crear) return { activa: false, ...base };
+    if (!a) {
+      const nombre = String(orden.nombre || '').trim().split(/\s+/)[0] || null;
+      await codigoDe(env, email, nombre);
+      await run(env, 'INSERT OR IGNORE INTO puntos_cuentas (email) VALUES (?)', email);
+      a = await one(env, "SELECT code, publico FROM affiliates WHERE email = ? AND tipo = 'puntos'", email);
+    }
+    const code = a.publico || a.code;
+    const [s, n] = await Promise.all([saldoDe(env, email), nivelActual(env, email)]);
+    return { activa: true, ...base, code, liga: `${env.SITE_URL || 'https://vorka.mx'}${RUTA}/?ref=${encodeURIComponent(code)}`,
+      disponibles: s.disponibles, ventas: n.ventas, pct: n.pct, nivel: n.nivel.actual.nombre,
+      siguiente: n.nivel.siguiente ? { nombre: n.nivel.siguiente.nombre, pct: n.nivel.siguiente.pct, faltan: n.nivel.faltan } : null };
   }
 
   // Qué tiene esta persona (practica: sin límite · completo: exámenes completos · legado: la compra de antes) y los planes a la

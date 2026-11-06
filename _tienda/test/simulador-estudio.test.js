@@ -288,6 +288,26 @@ describe('recordatorios del cron', () => {
   });
 });
 
+describe('inicio: recomienda y gana (Puntos Vorka)', () => {
+  it('GET solo lee; POST crea su liga a la página del simulador, y /yo dice cuántos videos hay', async () => {
+    const cookie = await comprar('simulador-paa-practica');
+    const antes = await (await pedir('/api/simulador-paa/puntos', { cookie })).json();
+    expect(antes).toMatchObject({ activa: false, pct_referido: 5, pct_min: 10, pct_max: 30 });
+    const r = await pedir('/api/simulador-paa/puntos', { cookie, metodo: 'POST', body: {} });
+    expect(r.status).toBe(200);
+    const d = await r.json();
+    expect(d).toMatchObject({ activa: true, disponibles: 0, pct: 10, nivel: 'Inicial' });
+    expect(d.liga).toMatch(/\/simulador-paa\/\?ref=[A-Z0-9]+$/);
+    // la segunda vez no crea otra: la misma liga
+    expect((await (await pedir('/api/simulador-paa/puntos', { cookie })).json()).liga).toBe(d.liga);
+    expect((await (await pedir('/api/simulador-paa/puntos', { cookie, metodo: 'POST', body: {} })).json()).liga).toBe(d.liga);
+    expect(typeof (await (await pedir('/api/simulador-paa/yo', { cookie })).json()).videos).toBe('number');
+  });
+  it('sin sesión no responde', async () => {
+    expect((await pedir('/api/simulador-paa/puntos', {})).status).toBe(401);
+  });
+});
+
 describe('plan de estudio (lógica del cliente)', async () => {
   const vm = await import('node:vm');
   const { LOGICA_JS } = await import('../src/simulador/cliente.generado.js');

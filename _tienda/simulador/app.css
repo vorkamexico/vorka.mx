@@ -321,7 +321,7 @@
 .sim-home { display: flex; flex-direction: column; gap: 14px; }
 .sim-col { display: contents; }
 /* Celular: resumen → practicar → banco → avance → meta → regalo → Sparks */
-.o-1 { order: 1; } .o-4 { order: 2; } .o-3 { order: 3; } .o-5 { order: 4; } .o-2 { order: 5; } .o-6 { order: 6; } .o-7 { order: 7; }
+.o-1 { order: 1; } .o-4 { order: 2; } .o-r { order: 3; } .o-3 { order: 3; } .o-5 { order: 4; } .o-2 { order: 5; } .o-6 { order: 6; } .o-8 { order: 6; } .o-7 { order: 7; }
 /* Sin universidad elegida, la pregunta va justo después del resumen (cambia cómo lee su puntaje) */
 .o-2.sim-meta-pend { order: 1; }
 .sim-home .sim-banco, .sim-home .sim-regalo, .sim-home .sim-sparks { margin-top: 0; }
@@ -631,3 +631,48 @@ body.sv-abierto { overflow: hidden; }
 .sv-escenas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .sv-escenas button { border: 1px solid var(--line); background: var(--card); color: var(--fg-2); border-radius: 999px; padding: 8px 12px; font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; min-height: 36px; }
 .sv-escenas button.sel { background: var(--fg); color: #fff; border-color: var(--fg); }
+
+/* Inicio (nov 2026): «Tu simulador», recomienda y gana, y más de Vorka */
+.sim-op-t .sim-op-dest { font-size: inherit; font-weight: 700; color: inherit; letter-spacing: 0; }
+.sim-tuyo { display: grid; gap: 14px; }
+.sim-tuyo-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.sim-tuyo-cab h2 { font-size: 22px; letter-spacing: -.02em; margin: 4px 0 0; }
+.sim-tuyo-vence { margin: 0; font-size: 13.5px; color: var(--fg-2); text-align: right; line-height: 1.4; }
+.sim-tuyo-vence b { color: var(--fg); }
+.sim-tuyo-f { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.sim-tuyo-f li { display: flex; gap: 10px; align-items: flex-start; min-width: 0; }
+.sim-tuyo-f b { display: block; font-size: 14.5px; }
+.sim-tuyo-f small { display: block; font-size: 13px; color: var(--fg-2); line-height: 1.35; }
+.sim-tuyo-i { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex: none; background: var(--verde-suave, #e8f4ed); color: var(--verde, #2B8553); }
+.sim-tuyo-i svg { width: 15px; height: 15px; }
+.sim-tuyo-f li.no .sim-tuyo-i { background: var(--bg-2); color: var(--fg-3, #A8A4A9); }
+.sim-tuyo-f li.no b { color: var(--fg-2); }
+.sim-tuyo-up { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 14px; background: var(--bg-2); font-size: 14px; }
+.sim-tuyo-guia { border-top: 1px solid var(--line); padding-top: 12px; }
+.sim-tuyo-guia summary { cursor: pointer; font-weight: 650; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.sim-tuyo-guia summary::-webkit-details-marker { display: none; }
+.sim-tuyo-guia summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--fg-2); border-bottom: 2px solid var(--fg-2); transform: rotate(45deg); flex: none; transition: transform .15s; }
+.sim-tuyo-guia[open] summary::after { transform: rotate(-135deg); }
+.sim-tuyo-guia ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 10px; counter-reset: g; }
+.sim-tuyo-guia li { counter-increment: g; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 2px 10px; }
+.sim-tuyo-guia li::before { content: counter(g); grid-row: span 2; width: 26px; height: 26px; border-radius: 50%; background: var(--fg); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.sim-tuyo-guia li b { font-size: 14.5px; }
+.sim-tuyo-guia li span { font-size: 13.5px; color: var(--fg-2); }
+@media (max-width: 420px) { .sim-tuyo-f { grid-template-columns: minmax(0, 1fr); } .sim-tuyo-vence { text-align: left; } }
+.sim-reco { display: grid; gap: 10px; background: #fbf6ea; border: 1px solid #eedfb8; }
+.sim-reco h3 { font-size: 19px; letter-spacing: -.02em; margin: 0; }
+.sim-reco p { margin: 0; font-size: 14.5px; color: var(--fg-2); }
+.sim-reco p b { color: var(--fg); }
+.sim-reco .botones { margin: 0; }
+.sim-reco-liga { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-radius: 12px; background: var(--card); border: 1px solid #eedfb8; min-width: 0; }
+.sim-reco-liga code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--fg-2); }
+.sim-reco-pts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding-top: 10px; border-top: 1px solid #eedfb8; }
+.sim-reco-pts b { display: block; font-size: 17px; letter-spacing: -.01em; }
+.sim-reco-pts span { display: block; font-size: 12.5px; color: var(--fg-2); line-height: 1.35; }
+.sim-mas { display: grid; gap: 10px; }
+.sim-mas-i { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: transform .2s, box-shadow .2s; }
+.sim-mas-i:hover { transform: translateY(-1px); box-shadow: var(--sombra); }
+.sim-mas-e { font-size: 26px; line-height: 1; flex: none; }
+.sim-mas-i > span:nth-child(2) { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sim-mas-i b { font-size: 15.5px; }
+.sim-mas-i small { font-size: 13.5px; color: var(--fg-2); }
