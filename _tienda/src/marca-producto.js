@@ -70,7 +70,8 @@ export const CSS_MARCA = `
 .pm-hero .t-ya{margin-top:14px}
 .pm-datos{list-style:none;display:flex;flex-wrap:wrap;gap:8px 22px;padding:0;margin:26px 0 0;font-size:15px;color:var(--fg-2)}.pm-datos b{color:var(--fg);font-weight:750}
 .pm-obj{border-radius:28px;overflow:hidden;background:#F1F0F2;max-width:520px;width:100%;justify-self:center}
-:root[data-tema=oscuro] .pm-obj img{filter:brightness(.88)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .pm-obj img{filter:brightness(.88)}}
+/* oscuro: se atenúa la caja entera (fondo e imagen juntos) para que no queden franjas a los lados */
+:root[data-tema=oscuro] .pm-obj{filter:brightness(.88)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .pm-obj{filter:brightness(.88)}}
 .pm-obj img{display:block;width:100%;height:auto;aspect-ratio:672/1000;object-fit:contain;object-position:center}
 @media(max-width:959px){.pm-obj{max-width:400px}}
 .pm-hero .t-nav-tienda{margin-top:18px}
