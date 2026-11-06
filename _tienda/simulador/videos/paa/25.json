@@ -1,0 +1,346 @@
+{
+  "id": "paa-25",
+  "tema": "en_structure",
+  "titulo": "Sentence structure",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/25.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Cuál está bien? Where you live? O: where do you live?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "A) Where you live?",
+          "x": 60,
+          "y": 200,
+          "id": "a",
+          "tam": 76,
+          "en": "Where you live"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) Where do you live?",
+          "x": 60,
+          "y": 330,
+          "id": "b",
+          "tam": 76,
+          "en": "where do you"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Cuál está bien?",
+          "x": 60,
+          "y": 490,
+          "color": "azul",
+          "tam": 70,
+          "en": "¿Cuál está"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "El orden",
+      "voz": "En las preguntas, el orden es fijo: palabra con wh, auxiliar, sujeto y verbo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Wh-",
+          "x": 60,
+          "y": 200,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "palabra con wh"
+        },
+        {
+          "a": "escribe",
+          "texto": "+ auxiliar",
+          "x": 220,
+          "y": 200,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "auxiliar"
+        },
+        {
+          "a": "escribe",
+          "texto": "+ sujeto",
+          "x": 530,
+          "y": 200,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "sujeto"
+        },
+        {
+          "a": "escribe",
+          "texto": "+ verbo",
+          "x": 780,
+          "y": 200,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "y verbo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 5.48
+    },
+    {
+      "escena": "Aplícalo",
+      "voz": "Where, do, you, live. Por eso es la B.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Where",
+          "x": 60,
+          "y": 380,
+          "tam": 76,
+          "en": "Where, do"
+        },
+        {
+          "a": "escribe",
+          "texto": "do",
+          "x": 280,
+          "y": 380,
+          "tam": 76,
+          "en": "do, you"
+        },
+        {
+          "a": "escribe",
+          "texto": "you",
+          "x": 540,
+          "y": 380,
+          "tam": 76,
+          "en": "you, live"
+        },
+        {
+          "a": "escribe",
+          "texto": "live?",
+          "x": 790,
+          "y": 380,
+          "tam": 76,
+          "en": "live."
+        },
+        {
+          "a": "escribe",
+          "texto": "Es la B",
+          "x": 60,
+          "y": 530,
+          "id": "ok",
+          "color": "verde",
+          "tam": 72,
+          "en": "Por eso"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "es la B"
+        }
+      ],
+      "inicio": 11.97
+    },
+    {
+      "escena": "Listas",
+      "voz": "Otra que sale mucho: en listas, todo con la misma forma. I like swimming, running and reading.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Listas: misma forma",
+          "x": 60,
+          "y": 150,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "en listas"
+        },
+        {
+          "a": "escribe",
+          "texto": "I like swimming, running",
+          "x": 60,
+          "y": 300,
+          "color": "verde",
+          "tam": 66,
+          "en": "I like swimming"
+        },
+        {
+          "a": "escribe",
+          "texto": "and reading.",
+          "x": 60,
+          "y": 400,
+          "color": "verde",
+          "tam": 66,
+          "en": "and reading"
+        },
+        {
+          "a": "escribe",
+          "texto": "-ing  -ing  -ing",
+          "x": 560,
+          "y": 400,
+          "color": "azul",
+          "tam": 60,
+          "en": "misma forma"
+        }
+      ],
+      "limpia": true,
+      "inicio": 17.27
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con la pregunta dentro de una oración: do you know where he lives? Aquí ya no va el auxiliar. No es where does he live.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "Do you know where he lives?",
+          "x": 60,
+          "y": 290,
+          "id": "bien",
+          "color": "verde",
+          "tam": 66,
+          "en": "do you know"
+        },
+        {
+          "a": "escribe",
+          "texto": "…where does he live?",
+          "x": 60,
+          "y": 440,
+          "id": "mal",
+          "color": "rojo",
+          "tam": 66,
+          "en": "No es where"
+        },
+        {
+          "a": "tacha",
+          "sobre": "mal",
+          "color": "rojo",
+          "en": "No es where"
+        },
+        {
+          "a": "subraya",
+          "sobre": "bien",
+          "color": "verde",
+          "en": "ya no va"
+        }
+      ],
+      "limpia": true,
+      "inicio": 24.63
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Cuál está bien? A: what she is doing? B: what is she doing?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "A) What she is doing?",
+          "x": 60,
+          "y": 260,
+          "id": "a",
+          "tam": 72,
+          "en": "A: what"
+        },
+        {
+          "a": "escribe",
+          "texto": "B) What is she doing?",
+          "x": 60,
+          "y": 380,
+          "id": "b",
+          "tam": 72,
+          "en": "B: what"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 33.75
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es la B: what, is, she, doing. Primero el auxiliar, luego el sujeto.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "Es la B"
+        },
+        {
+          "a": "tacha",
+          "sobre": "a",
+          "color": "rojo",
+          "en": "Primero el auxiliar"
+        },
+        {
+          "a": "escribe",
+          "texto": "auxiliar → sujeto",
+          "x": 60,
+          "y": 520,
+          "color": "verde",
+          "tam": 62,
+          "en": "luego el sujeto"
+        }
+      ],
+      "inicio": 40.78
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: wh, auxiliar, sujeto, verbo. Y en listas, la misma forma.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "Wh + auxiliar + sujeto + verbo",
+          "x": 70,
+          "y": 300,
+          "tam": 62,
+          "en": "wh, auxiliar"
+        },
+        {
+          "a": "escribe",
+          "texto": "listas: misma forma",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 66,
+          "en": "en listas"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "la misma forma"
+        }
+      ],
+      "limpia": true,
+      "inicio": 47.18
+    }
+  ],
+  "duracion": 53.24
+}

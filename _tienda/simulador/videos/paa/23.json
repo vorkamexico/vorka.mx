@@ -1,0 +1,395 @@
+{
+  "id": "paa-23",
+  "tema": "en_vocab",
+  "titulo": "Vocabulary & phrasal verbs",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/23.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Completa: They had to... the meeting, because the boss was sick. ¿Qué va? Call off, call on, o call up.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "They had to ____ the meeting",
+          "x": 60,
+          "y": 150,
+          "tam": 62,
+          "en": "They had to"
+        },
+        {
+          "a": "escribe",
+          "texto": "because the boss was sick.",
+          "x": 60,
+          "y": 250,
+          "id": "pista",
+          "tam": 62,
+          "en": "because the boss"
+        },
+        {
+          "a": "escribe",
+          "texto": "call off  ·  call on  ·  call up",
+          "x": 60,
+          "y": 400,
+          "color": "amarillo",
+          "tam": 62,
+          "en": "Call off, call on"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Qué va?",
+          "x": 60,
+          "y": 520,
+          "color": "azul",
+          "tam": 70,
+          "en": "¿Qué va?"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "Un phrasal verb es verbo más partícula, y juntos significan otra cosa. Call off no es llamar: es cancelar.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "verbo + partícula = otra cosa",
+          "x": 60,
+          "y": 160,
+          "color": "amarillo",
+          "tam": 62,
+          "en": "verbo más partícula"
+        },
+        {
+          "a": "escribe",
+          "texto": "call off",
+          "x": 60,
+          "y": 330,
+          "id": "co",
+          "tam": 90,
+          "en": "Call off"
+        },
+        {
+          "a": "escribe",
+          "texto": "= llamar",
+          "x": 420,
+          "y": 330,
+          "id": "ll",
+          "color": "rojo",
+          "tam": 72,
+          "en": "no es llamar"
+        },
+        {
+          "a": "tacha",
+          "sobre": "ll",
+          "color": "rojo",
+          "en": "no es llamar"
+        },
+        {
+          "a": "escribe",
+          "texto": "= cancelar",
+          "x": 420,
+          "y": 470,
+          "id": "ca",
+          "color": "verde",
+          "tam": 76,
+          "en": "es cancelar"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ca",
+          "color": "verde",
+          "en": "es cancelar"
+        }
+      ],
+      "limpia": true,
+      "inicio": 9.54
+    },
+    {
+      "escena": "La pista",
+      "voz": "No traduzcas palabra por palabra. Lee toda la oración: el jefe estaba enfermo. Entonces la reunión se canceló: call off.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "They had to",
+          "x": 60,
+          "y": 160,
+          "tam": 62,
+          "en": "No traduzcas"
+        },
+        {
+          "a": "escribe",
+          "texto": "call off",
+          "x": 360,
+          "y": 160,
+          "id": "r",
+          "color": "verde",
+          "tam": 62,
+          "en": "call off."
+        },
+        {
+          "a": "escribe",
+          "texto": "the meeting",
+          "x": 610,
+          "y": 160,
+          "tam": 62,
+          "en": "No traduzcas"
+        },
+        {
+          "a": "escribe",
+          "texto": "because the boss was sick.",
+          "x": 60,
+          "y": 260,
+          "id": "pista",
+          "tam": 62,
+          "en": "Lee toda"
+        },
+        {
+          "a": "subraya",
+          "sobre": "pista",
+          "color": "amarillo",
+          "en": "el jefe estaba enfermo"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "se canceló"
+        },
+        {
+          "a": "palomita",
+          "x": 860,
+          "y": 240,
+          "en": "call off."
+        }
+      ],
+      "limpia": true,
+      "inicio": 18.92
+    },
+    {
+      "escena": "En pareja",
+      "voz": "También aprende las palabras en pareja: make an appointment, do homework, take a photo.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Aprende en pareja:",
+          "x": 60,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "en pareja"
+        },
+        {
+          "a": "escribe",
+          "texto": "make  an appointment",
+          "x": 60,
+          "y": 270,
+          "id": "m",
+          "tam": 70,
+          "en": "make an appointment"
+        },
+        {
+          "a": "escribe",
+          "texto": "do  homework",
+          "x": 60,
+          "y": 390,
+          "id": "d",
+          "tam": 70,
+          "en": "do homework"
+        },
+        {
+          "a": "escribe",
+          "texto": "take  a photo",
+          "x": 60,
+          "y": 510,
+          "id": "t",
+          "tam": 70,
+          "en": "take a photo"
+        }
+      ],
+      "limpia": true,
+      "inicio": 28.84
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado con make y do. Make es crear algo: make a cake. Do es hacer una tarea: do the dishes.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "make = crear",
+          "x": 60,
+          "y": 280,
+          "color": "amarillo",
+          "tam": 70,
+          "en": "Make es crear"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ make a cake",
+          "x": 500,
+          "y": 280,
+          "tam": 62,
+          "en": "make a cake"
+        },
+        {
+          "a": "escribe",
+          "texto": "do = una tarea",
+          "x": 60,
+          "y": 430,
+          "color": "azul",
+          "tam": 70,
+          "en": "Do es hacer"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ do the dishes",
+          "x": 500,
+          "y": 430,
+          "tam": 62,
+          "en": "do the dishes"
+        }
+      ],
+      "limpia": true,
+      "inicio": 35.39
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. I need to... my little brother at school at three. ¿Pick up, o put off?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "I need to ____ my little brother",
+          "x": 60,
+          "y": 250,
+          "tam": 62,
+          "en": "I need to"
+        },
+        {
+          "a": "escribe",
+          "texto": "at school at three.",
+          "x": 60,
+          "y": 350,
+          "id": "p",
+          "tam": 62,
+          "en": "at school"
+        },
+        {
+          "a": "escribe",
+          "texto": "pick up  ·  put off",
+          "x": 60,
+          "y": 490,
+          "id": "o",
+          "color": "amarillo",
+          "tam": 66,
+          "en": "Pick up"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 44.36
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Es pick up: recoger. Put off es posponer, y no tiene sentido con tu hermano.",
+      "acciones": [
+        {
+          "a": "subraya",
+          "sobre": "p",
+          "color": "amarillo",
+          "en": "Es pick up"
+        },
+        {
+          "a": "escribe",
+          "texto": "pick up = recoger",
+          "x": 560,
+          "y": 490,
+          "id": "ok",
+          "color": "verde",
+          "tam": 56,
+          "en": "recoger"
+        },
+        {
+          "a": "circulo",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "recoger"
+        },
+        {
+          "a": "escribe",
+          "texto": "put off = posponer",
+          "x": 560,
+          "y": 570,
+          "color": "rojo",
+          "tam": 54,
+          "en": "posponer"
+        }
+      ],
+      "inicio": 51.65
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: lee la oración completa, y aprende las palabras en pareja.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. Lee la oración completa",
+          "x": 70,
+          "y": 300,
+          "tam": 68,
+          "en": "lee la oración"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Aprende en pareja",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "tam": 68,
+          "en": "en pareja"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "en pareja."
+        }
+      ],
+      "limpia": true,
+      "inicio": 58.04
+    }
+  ],
+  "duracion": 62.2
+}

@@ -1,0 +1,354 @@
+{
+  "id": "paa-27",
+  "tema": "en_writing",
+  "titulo": "Indirect writing",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/27.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Dónde está el error? Everyone in my class have a phone.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Everyone in my class",
+          "x": 60,
+          "y": 200,
+          "id": "s",
+          "tam": 72,
+          "en": "Everyone in my class"
+        },
+        {
+          "a": "escribe",
+          "texto": "have a phone.",
+          "x": 60,
+          "y": 310,
+          "id": "v",
+          "tam": 72,
+          "en": "have a phone"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Dónde está el error?",
+          "x": 60,
+          "y": 480,
+          "color": "azul",
+          "tam": 70,
+          "en": "¿Dónde está"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "Sujeto y verbo",
+      "voz": "Primero revisa el sujeto y el verbo: everyone, each y nobody van en singular. Entonces: everyone has.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Everyone in my class",
+          "x": 60,
+          "y": 160,
+          "id": "s",
+          "tam": 72,
+          "en": "Primero revisa"
+        },
+        {
+          "a": "escribe",
+          "texto": "have a phone.",
+          "x": 60,
+          "y": 270,
+          "id": "v",
+          "tam": 72,
+          "en": "Primero revisa"
+        },
+        {
+          "a": "circulo",
+          "sobre": "s",
+          "color": "rosa",
+          "en": "el sujeto y"
+        },
+        {
+          "a": "tacha",
+          "sobre": "v",
+          "color": "rojo",
+          "en": "van en singular"
+        },
+        {
+          "a": "escribe",
+          "texto": "everyone · each · nobody = singular",
+          "x": 60,
+          "y": 400,
+          "color": "amarillo",
+          "tam": 56,
+          "en": "everyone, each"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ Everyone… has a phone.",
+          "x": 60,
+          "y": 530,
+          "id": "ok",
+          "color": "verde",
+          "tam": 66,
+          "en": "everyone has"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "everyone has"
+        }
+      ],
+      "limpia": true,
+      "inicio": 4.82
+    },
+    {
+      "escena": "Conectores",
+      "voz": "Luego revisa los conectores: however es contraste, because es causa, although es aunque.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "however  = pero (contraste)",
+          "x": 60,
+          "y": 170,
+          "tam": 62,
+          "en": "however es contraste"
+        },
+        {
+          "a": "escribe",
+          "texto": "because  = porque (causa)",
+          "x": 60,
+          "y": 300,
+          "tam": 62,
+          "en": "because es causa"
+        },
+        {
+          "a": "escribe",
+          "texto": "although  = aunque",
+          "x": 60,
+          "y": 430,
+          "tam": 62,
+          "en": "although es aunque"
+        }
+      ],
+      "limpia": true,
+      "inicio": 13.78
+    },
+    {
+      "escena": "Ejemplo",
+      "voz": "Por ejemplo: I was tired; however, I finished. Estaba cansado, pero terminé: es contraste.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "I was tired;",
+          "x": 60,
+          "y": 250,
+          "tam": 72,
+          "en": "I was tired"
+        },
+        {
+          "a": "escribe",
+          "texto": "however,",
+          "x": 430,
+          "y": 250,
+          "id": "h",
+          "color": "amarillo",
+          "tam": 72,
+          "en": "however, I finished"
+        },
+        {
+          "a": "escribe",
+          "texto": "I finished.",
+          "x": 60,
+          "y": 360,
+          "tam": 72,
+          "en": "I finished"
+        },
+        {
+          "a": "circulo",
+          "sobre": "h",
+          "color": "rosa",
+          "en": "es contraste"
+        },
+        {
+          "a": "escribe",
+          "texto": "contraste ✓",
+          "x": 60,
+          "y": 500,
+          "color": "verde",
+          "tam": 66,
+          "en": "es contraste"
+        }
+      ],
+      "limpia": true,
+      "inicio": 21.39
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: although y but no van juntos. No es although it rained, but we played. Usa solo uno.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "Although it rained, but we played.",
+          "x": 60,
+          "y": 300,
+          "id": "mal",
+          "color": "rojo",
+          "tam": 56,
+          "en": "No es although"
+        },
+        {
+          "a": "tacha",
+          "sobre": "mal",
+          "color": "rojo",
+          "en": "Usa solo uno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Although it rained, we played.",
+          "x": 60,
+          "y": 450,
+          "color": "verde",
+          "tam": 56,
+          "en": "Usa solo uno"
+        }
+      ],
+      "limpia": true,
+      "inicio": 29.41
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Dónde está el error? Each of the students are ready.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Each of the students",
+          "x": 60,
+          "y": 260,
+          "id": "s",
+          "tam": 72,
+          "en": "Each of the"
+        },
+        {
+          "a": "escribe",
+          "texto": "are ready.",
+          "x": 60,
+          "y": 370,
+          "id": "v",
+          "tam": 72,
+          "en": "are ready"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Dónde está el error?",
+          "x": 60,
+          "y": 510,
+          "color": "azul",
+          "tam": 66,
+          "en": "¿Dónde está"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 37.64
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Each va en singular: each of the students is ready.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "s",
+          "color": "rosa",
+          "en": "Each va"
+        },
+        {
+          "a": "tacha",
+          "sobre": "v",
+          "color": "rojo",
+          "en": "en singular"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ is ready",
+          "x": 400,
+          "y": 370,
+          "id": "ok",
+          "color": "verde",
+          "tam": 72,
+          "en": "is ready"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "is ready"
+        }
+      ],
+      "inicio": 42.57
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: primero el sujeto y el verbo, después el conector.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. Sujeto + verbo",
+          "x": 70,
+          "y": 300,
+          "en": "primero el sujeto"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. El conector",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "después el conector"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "el conector."
+        }
+      ],
+      "limpia": true,
+      "inicio": 46.91
+    }
+  ],
+  "duracion": 50.6
+}

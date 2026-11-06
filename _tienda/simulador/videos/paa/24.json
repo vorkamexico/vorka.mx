@@ -1,0 +1,404 @@
+{
+  "id": "paa-24",
+  "tema": "en_grammar",
+  "titulo": "Conditionals: los «if»",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/24.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "If it rains tomorrow, we... the game. ¿Cancel, will cancel, o would cancel?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "If it rains tomorrow,",
+          "x": 60,
+          "y": 160,
+          "id": "if",
+          "tam": 70,
+          "en": "If it rains"
+        },
+        {
+          "a": "escribe",
+          "texto": "we ____ the game.",
+          "x": 60,
+          "y": 270,
+          "tam": 70,
+          "en": "the game"
+        },
+        {
+          "a": "escribe",
+          "texto": "cancel · will cancel · would cancel",
+          "x": 60,
+          "y": 420,
+          "color": "amarillo",
+          "tam": 58,
+          "en": "Cancel, will cancel"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La clave",
+      "voz": "La clave está en el tiempo de la parte con if. Ese tiempo te dice qué va en la otra parte.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "If it rains tomorrow,",
+          "x": 60,
+          "y": 160,
+          "id": "if",
+          "tam": 70,
+          "en": "La clave"
+        },
+        {
+          "a": "escribe",
+          "texto": "we ____ the game.",
+          "x": 60,
+          "y": 270,
+          "tam": 70,
+          "en": "La clave"
+        },
+        {
+          "a": "circulo",
+          "sobre": "if",
+          "color": "rosa",
+          "en": "la parte con if"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            300,
+            190
+          ],
+          "hacia": [
+            300,
+            225
+          ],
+          "color": "amarillo",
+          "en": "la otra parte"
+        }
+      ],
+      "limpia": true,
+      "inicio": 7.57
+    },
+    {
+      "escena": "Presente",
+      "voz": "Si el if está en presente, el resultado lleva will: algo posible. Entonces: we will cancel the game.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "if + presente  →  will",
+          "x": 60,
+          "y": 160,
+          "id": "r1",
+          "color": "amarillo",
+          "tam": 72,
+          "en": "está en presente"
+        },
+        {
+          "a": "escribe",
+          "texto": "If it rains tomorrow,",
+          "x": 60,
+          "y": 300,
+          "tam": 66,
+          "en": "algo posible"
+        },
+        {
+          "a": "escribe",
+          "texto": "we will cancel the game.",
+          "x": 60,
+          "y": 400,
+          "id": "ok",
+          "color": "verde",
+          "tam": 66,
+          "en": "we will cancel"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "the game."
+        },
+        {
+          "a": "palomita",
+          "x": 820,
+          "y": 380,
+          "en": "the game."
+        }
+      ],
+      "limpia": true,
+      "inicio": 14.43
+    },
+    {
+      "escena": "Pasado",
+      "voz": "Si el if está en pasado, el resultado lleva would: algo imaginario. If I had money, I would travel.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "if + pasado  →  would",
+          "x": 60,
+          "y": 160,
+          "color": "amarillo",
+          "tam": 72,
+          "en": "está en pasado"
+        },
+        {
+          "a": "escribe",
+          "texto": "If I had money,",
+          "x": 60,
+          "y": 300,
+          "id": "h",
+          "tam": 66,
+          "en": "If I had money"
+        },
+        {
+          "a": "escribe",
+          "texto": "I would travel.",
+          "x": 60,
+          "y": 400,
+          "color": "verde",
+          "tam": 66,
+          "en": "I would travel"
+        },
+        {
+          "a": "circulo",
+          "sobre": "h",
+          "color": "rosa",
+          "en": "If I had"
+        },
+        {
+          "a": "escribe",
+          "texto": "(imaginario)",
+          "x": 560,
+          "y": 300,
+          "color": "azul",
+          "tam": 56,
+          "en": "algo imaginario"
+        }
+      ],
+      "limpia": true,
+      "inicio": 22.69
+    },
+    {
+      "escena": "Had",
+      "voz": "Y si el if lleva had más participio, el resultado lleva would have: un pasado que ya no cambia. If she had studied, she would have passed.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "if + had + participio  →  would have",
+          "x": 60,
+          "y": 160,
+          "color": "amarillo",
+          "tam": 58,
+          "en": "had más participio"
+        },
+        {
+          "a": "escribe",
+          "texto": "If she had studied,",
+          "x": 60,
+          "y": 300,
+          "tam": 66,
+          "en": "If she had studied"
+        },
+        {
+          "a": "escribe",
+          "texto": "she would have passed.",
+          "x": 60,
+          "y": 400,
+          "color": "verde",
+          "tam": 66,
+          "en": "she would have passed"
+        },
+        {
+          "a": "escribe",
+          "texto": "(ya no cambia)",
+          "x": 560,
+          "y": 300,
+          "color": "azul",
+          "tam": 56,
+          "en": "ya no cambia"
+        }
+      ],
+      "limpia": true,
+      "inicio": 30.54
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: nunca pongas will después de if. No se dice if it will rain. Se dice if it rains.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 60,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "if it will rain",
+          "x": 60,
+          "y": 300,
+          "id": "mal",
+          "color": "rojo",
+          "tam": 80,
+          "en": "No se dice"
+        },
+        {
+          "a": "tacha",
+          "sobre": "mal",
+          "color": "rojo",
+          "en": "Se dice"
+        },
+        {
+          "a": "escribe",
+          "texto": "if it rains",
+          "x": 60,
+          "y": 450,
+          "id": "bien",
+          "color": "verde",
+          "tam": 80,
+          "en": "if it rains."
+        },
+        {
+          "a": "circulo",
+          "sobre": "bien",
+          "color": "verde",
+          "en": "if it rains."
+        }
+      ],
+      "limpia": true,
+      "inicio": 40.59
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. If I had time, I... you. ¿Will help, o would help?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "If I had time,",
+          "x": 60,
+          "y": 250,
+          "id": "h",
+          "tam": 72,
+          "en": "If I had time"
+        },
+        {
+          "a": "escribe",
+          "texto": "I ____ you.",
+          "x": 60,
+          "y": 360,
+          "tam": 72,
+          "en": "I... you"
+        },
+        {
+          "a": "escribe",
+          "texto": "will help  ·  would help",
+          "x": 60,
+          "y": 500,
+          "color": "amarillo",
+          "tam": 66,
+          "en": "Will help"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 48.47
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "El if está en pasado: had. Entonces va would: I would help you.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "h",
+          "color": "rosa",
+          "en": "en pasado"
+        },
+        {
+          "a": "escribe",
+          "texto": "→ would help",
+          "x": 470,
+          "y": 360,
+          "id": "ok",
+          "color": "verde",
+          "tam": 72,
+          "en": "va would"
+        },
+        {
+          "a": "subraya",
+          "sobre": "ok",
+          "color": "verde",
+          "en": "I would help"
+        }
+      ],
+      "inicio": 55.25
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: mira el tiempo del if. Presente, will. Pasado, would. Had, would have.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "presente → will",
+          "x": 70,
+          "y": 270,
+          "tam": 68,
+          "en": "Presente, will"
+        },
+        {
+          "a": "escribe",
+          "texto": "pasado → would",
+          "x": 70,
+          "y": 380,
+          "tam": 68,
+          "en": "Pasado, would"
+        },
+        {
+          "a": "escribe",
+          "texto": "had → would have",
+          "x": 70,
+          "y": 490,
+          "id": "u",
+          "tam": 68,
+          "en": "Had, would have"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "would have."
+        }
+      ],
+      "limpia": true,
+      "inicio": 61.18
+    }
+  ],
+  "duracion": 67.97
+}
