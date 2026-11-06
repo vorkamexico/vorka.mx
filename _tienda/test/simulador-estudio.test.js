@@ -322,7 +322,7 @@ describe('plan de estudio (lógica del cliente)', async () => {
 describe('videos explicativos', async () => {
   const { VIDEOS } = await import('../src/simulador/videos.generado.js');
   it('cada video publicado tiene audio, pasos en orden y vistas que la app sabe dibujar', () => {
-    const tipos = ['escribe', 'flecha', 'circulo', 'subraya', 'tacha', 'caja', 'relleno', 'palomita'];
+    const tipos = ['escribe', 'flecha', 'circulo', 'subraya', 'tacha', 'caja', 'relleno', 'palomita', 'trazo'];
     for (const [app, vs] of Object.entries(VIDEOS)) for (const v of vs) {
       const sim = simuladores().find(s => s.APP === app);
       expect(sim.BANCO.TEMAS[v.tema], `${v.id}: tema`).toBeTruthy();

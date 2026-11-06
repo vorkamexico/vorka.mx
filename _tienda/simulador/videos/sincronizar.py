@@ -42,8 +42,16 @@ def main(json_rel, fuente):
     arranque = sil[0][1] if sil and sil[0][0] < 0.05 else 0.0
     cierre = sil[-1][0] if sil and sil[-1][1] > total - 0.05 else total
     medios = [(a + b) / 2 for a, b in sil if a > arranque + 0.5 and b < cierre - 0.5]
-    # Caso ideal: hay exactamente una pausa larga (las [pause] de la narración) entre cada par de pasos
-    largas = [(a + b) / 2 for a, b in silencios(destino, minimo=0.6) if a > arranque + 0.5 and b < cierre - 0.5]
+    # Caso ideal: hay exactamente una pausa (las [pause] de la narración) entre cada par de pasos. Se prueban varios umbrales
+    # y solo se acepta si cada pausa cae cerca de donde la espera el texto (para no confundirla con una pausa entre frases).
+    estimados, ac = [], 0
+    for x in n[:-1]:
+        ac += x; estimados.append(arranque + (cierre - arranque) * ac / suma)
+    largas = []
+    for ruido, minimo in [('-38dB', 0.6), ('-38dB', 0.5), ('-40dB', 0.45), ('-35dB', 0.45), ('-38dB', 0.4), ('-42dB', 0.35), ('-35dB', 0.35)]:
+        c = [(a + b) / 2 for a, b in silencios(destino, ruido, minimo) if a > arranque + 0.5 and b < cierre - 0.5]
+        if len(c) == len(pasos) - 1 and all(abs(x - e) < 4.5 for x, e in zip(c, estimados)):
+            largas = c; print(f'  pausas con {ruido} y {minimo} s'); break
     if len(largas) == len(pasos) - 1:
         for p, t in zip(pasos, [0.0] + [round(x, 2) for x in largas]):
             p['inicio'] = t

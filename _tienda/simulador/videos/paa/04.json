@@ -1,0 +1,351 @@
+{
+  "id": "paa-04",
+  "tema": "algebra",
+  "titulo": "Factorizar un trinomio",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/04.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Cómo se factoriza equis cuadrada, más cinco equis, más seis?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "x² + 5x + 6",
+          "x": 70,
+          "y": 230,
+          "tam": 100,
+          "en": "equis cuadrada"
+        },
+        {
+          "a": "escribe",
+          "texto": "= ( x + ? )( x + ? )",
+          "x": 70,
+          "y": 420,
+          "color": "azul",
+          "tam": 80,
+          "en": "factoriza"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La idea",
+      "voz": "Busca dos números que multiplicados den seis, y sumados den cinco.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "x² +",
+          "x": 70,
+          "y": 140
+        },
+        {
+          "a": "escribe",
+          "texto": "5x",
+          "x": 230,
+          "y": 140,
+          "id": "b"
+        },
+        {
+          "a": "escribe",
+          "texto": "+",
+          "x": 340,
+          "y": 140
+        },
+        {
+          "a": "escribe",
+          "texto": "6",
+          "x": 400,
+          "y": 140,
+          "id": "c"
+        },
+        {
+          "a": "circulo",
+          "sobre": "c",
+          "color": "rosa",
+          "en": "multiplicados den seis"
+        },
+        {
+          "a": "escribe",
+          "texto": "multiplican → 6",
+          "x": 110,
+          "y": 320,
+          "color": "amarillo",
+          "en": "multiplicados"
+        },
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "rosa",
+          "en": "sumados den cinco"
+        },
+        {
+          "a": "escribe",
+          "texto": "suman → 5",
+          "x": 110,
+          "y": 460,
+          "color": "amarillo",
+          "en": "sumados"
+        }
+      ],
+      "limpia": true,
+      "inicio": 4.3
+    },
+    {
+      "escena": "Prueba",
+      "voz": "Prueba: uno y seis multiplican seis, pero suman siete. Dos y tres multiplican seis y suman cinco. ¡Esos son!",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "1 y 6 → suman 7",
+          "x": 70,
+          "y": 180,
+          "id": "f1",
+          "en": "uno y seis"
+        },
+        {
+          "a": "tacha",
+          "sobre": "f1",
+          "color": "rojo",
+          "en": "pero suman siete"
+        },
+        {
+          "a": "escribe",
+          "texto": "2 y 3 → suman 5",
+          "x": 70,
+          "y": 330,
+          "color": "verde",
+          "en": "Dos y tres"
+        },
+        {
+          "a": "palomita",
+          "x": 620,
+          "y": 300,
+          "en": "Esos son"
+        }
+      ],
+      "limpia": true,
+      "inicio": 9.1
+    },
+    {
+      "escena": "Prueba",
+      "voz": "Entonces queda: equis más dos, por equis más tres.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "(x + 2)(x + 3)",
+          "x": 70,
+          "y": 500,
+          "id": "res",
+          "color": "verde",
+          "tam": 90,
+          "en": "Entonces queda"
+        },
+        {
+          "a": "subraya",
+          "sobre": "res",
+          "color": "verde",
+          "en": "por equis más tres"
+        }
+      ],
+      "inicio": 17.2
+    },
+    {
+      "escena": "La parábola",
+      "voz": "Si es una parábola, cruza el eje en esos números, pero con el signo contrario: en menos dos y en menos tres.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "y = (x + 2)(x + 3)",
+          "x": 580,
+          "y": 150,
+          "color": "azul",
+          "tam": 56,
+          "en": "Si es una parábola"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            60,
+            360
+          ],
+          "hacia": [
+            960,
+            360
+          ],
+          "color": "blanco",
+          "en": "cruza el eje"
+        },
+        {
+          "a": "trazo",
+          "d": "M 200 120 Q 360 900 520 120",
+          "color": "amarillo",
+          "en": "cruza el eje"
+        },
+        {
+          "a": "escribe",
+          "texto": "−3",
+          "x": 215,
+          "y": 440,
+          "color": "rosa",
+          "tam": 60,
+          "en": "menos tres"
+        },
+        {
+          "a": "escribe",
+          "texto": "−2",
+          "x": 440,
+          "y": 440,
+          "color": "rosa",
+          "tam": 60,
+          "en": "menos dos"
+        }
+      ],
+      "limpia": true,
+      "inicio": 21.1
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: si el factor es equis más dos, cruza en menos dos. No en dos.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "x + 2 → x = −2",
+          "x": 70,
+          "y": 300,
+          "id": "ok",
+          "color": "verde",
+          "en": "cruza en menos dos"
+        },
+        {
+          "a": "escribe",
+          "texto": "2",
+          "x": 120,
+          "y": 470,
+          "id": "d2",
+          "color": "rojo",
+          "tam": 110,
+          "en": "No en dos"
+        },
+        {
+          "a": "tacha",
+          "sobre": "d2",
+          "color": "rojo",
+          "en": "No en dos"
+        }
+      ],
+      "limpia": true,
+      "inicio": 28.0
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. Factoriza equis cuadrada, más siete equis, más diez.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "x² + 7x + 10",
+          "x": 70,
+          "y": 300,
+          "tam": 96,
+          "en": "Factoriza"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 33.5
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Multiplican diez y suman siete: dos y cinco. Queda equis más dos, por equis más cinco.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "2 y 5",
+          "x": 70,
+          "y": 470,
+          "color": "amarillo",
+          "en": "dos y cinco"
+        },
+        {
+          "a": "escribe",
+          "texto": "(x + 2)(x + 5)",
+          "x": 330,
+          "y": 470,
+          "id": "r",
+          "color": "verde",
+          "en": "Queda"
+        },
+        {
+          "a": "subraya",
+          "sobre": "r",
+          "color": "verde",
+          "en": "por equis más cinco"
+        }
+      ],
+      "inicio": 38.3
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: dos números que multiplicados den el último, y sumados den el de en medio.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "× → el último",
+          "x": 70,
+          "y": 300,
+          "en": "multiplicados"
+        },
+        {
+          "a": "escribe",
+          "texto": "+ → el de en medio",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "sumados"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "en medio"
+        }
+      ],
+      "limpia": true,
+      "inicio": 44.8
+    }
+  ],
+  "duracion": 50.13
+}

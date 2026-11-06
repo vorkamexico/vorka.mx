@@ -1,0 +1,383 @@
+{
+  "id": "paa-07",
+  "tema": "datos",
+  "titulo": "Media, mediana y moda",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/07.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "Tienes estos datos: nueve, tres, catorce, siete y siete. ¿Cuál es la mediana?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "9, 3, 14, 7, 7",
+          "x": 70,
+          "y": 230,
+          "tam": 96,
+          "en": "nueve"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿mediana?",
+          "x": 70,
+          "y": 420,
+          "color": "azul",
+          "tam": 90,
+          "en": "Cuál es la mediana"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La mediana",
+      "voz": "La mediana es el dato de en medio. Pero primero, ordénalos de menor a mayor.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "mediana = el de en medio",
+          "x": 70,
+          "y": 150,
+          "tam": 64,
+          "en": "La mediana"
+        },
+        {
+          "a": "escribe",
+          "texto": "1° ordena",
+          "x": 70,
+          "y": 300,
+          "id": "o",
+          "color": "amarillo",
+          "en": "primero, ordénalos"
+        },
+        {
+          "a": "subraya",
+          "sobre": "o",
+          "color": "amarillo",
+          "en": "de menor a mayor"
+        }
+      ],
+      "limpia": true,
+      "inicio": 6.43
+    },
+    {
+      "escena": "La mediana",
+      "voz": "Ordenados quedan: tres, siete, siete, nueve, catorce. El de en medio es siete.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "3, 7,",
+          "x": 70,
+          "y": 460,
+          "tam": 90,
+          "en": "Ordenados"
+        },
+        {
+          "a": "escribe",
+          "texto": "7",
+          "x": 285,
+          "y": 460,
+          "id": "m",
+          "color": "verde",
+          "tam": 90,
+          "en": "siete, siete"
+        },
+        {
+          "a": "escribe",
+          "texto": ", 9, 14",
+          "x": 320,
+          "y": 460,
+          "tam": 90,
+          "en": "nueve, catorce"
+        },
+        {
+          "a": "circulo",
+          "sobre": "m",
+          "color": "verde",
+          "en": "El de en medio"
+        }
+      ],
+      "inicio": 11.64
+    },
+    {
+      "escena": "La media",
+      "voz": "La media es el promedio: suma todo y divide entre cuántos son. Cuarenta entre cinco: ocho.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "media = promedio",
+          "x": 70,
+          "y": 140,
+          "en": "La media"
+        },
+        {
+          "a": "escribe",
+          "texto": "3 + 7 + 7 + 9 + 14 = 40",
+          "x": 70,
+          "y": 290,
+          "tam": 64,
+          "en": "suma todo"
+        },
+        {
+          "a": "escribe",
+          "texto": "40 ÷ 5 =",
+          "x": 70,
+          "y": 430,
+          "en": "Cuarenta entre cinco"
+        },
+        {
+          "a": "escribe",
+          "texto": "8",
+          "x": 370,
+          "y": 430,
+          "id": "r",
+          "color": "verde",
+          "tam": 90,
+          "en": "ocho"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "ocho."
+        }
+      ],
+      "limpia": true,
+      "inicio": 18.66
+    },
+    {
+      "escena": "La moda",
+      "voz": "Y la moda es el que más se repite: el siete.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "moda = el que más se repite",
+          "x": 70,
+          "y": 160,
+          "tam": 60,
+          "en": "la moda"
+        },
+        {
+          "a": "escribe",
+          "texto": "3,",
+          "x": 70,
+          "y": 340,
+          "tam": 90,
+          "en": "más se repite"
+        },
+        {
+          "a": "escribe",
+          "texto": "7",
+          "x": 185,
+          "y": 340,
+          "id": "a",
+          "color": "verde",
+          "tam": 90,
+          "en": "se repite"
+        },
+        {
+          "a": "escribe",
+          "texto": ",",
+          "x": 230,
+          "y": 340,
+          "tam": 90
+        },
+        {
+          "a": "escribe",
+          "texto": "7",
+          "x": 285,
+          "y": 340,
+          "id": "b",
+          "color": "verde",
+          "tam": 90,
+          "en": "se repite:"
+        },
+        {
+          "a": "escribe",
+          "texto": ", 9, 14",
+          "x": 335,
+          "y": 340,
+          "tam": 90
+        },
+        {
+          "a": "circulo",
+          "sobre": "a",
+          "color": "verde",
+          "en": "el siete"
+        },
+        {
+          "a": "circulo",
+          "sobre": "b",
+          "color": "verde",
+          "en": "el siete"
+        }
+      ],
+      "limpia": true,
+      "inicio": 25.18
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: si no ordenas, te sale catorce. Y está mal.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "9, 3,",
+          "x": 70,
+          "y": 320,
+          "tam": 90,
+          "en": "si no ordenas"
+        },
+        {
+          "a": "escribe",
+          "texto": "14",
+          "x": 265,
+          "y": 320,
+          "id": "c",
+          "color": "rojo",
+          "tam": 90,
+          "en": "catorce"
+        },
+        {
+          "a": "escribe",
+          "texto": ", 7, 7",
+          "x": 360,
+          "y": 320,
+          "tam": 90
+        },
+        {
+          "a": "circulo",
+          "sobre": "c",
+          "color": "rojo",
+          "en": "te sale catorce"
+        },
+        {
+          "a": "tacha",
+          "sobre": "c",
+          "color": "rojo",
+          "en": "está mal"
+        }
+      ],
+      "limpia": true,
+      "inicio": 28.39
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Cuál es la mediana de dos, nueve, cuatro, siete y cinco?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "2, 9, 4, 7, 5",
+          "x": 70,
+          "y": 300,
+          "tam": 96,
+          "en": "dos, nueve"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 32.4
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Ordénalos: dos, cuatro, cinco, siete, nueve. El de en medio es cinco.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "2, 4,",
+          "x": 70,
+          "y": 470,
+          "tam": 90,
+          "en": "Ordénalos"
+        },
+        {
+          "a": "escribe",
+          "texto": "5",
+          "x": 285,
+          "y": 470,
+          "id": "r",
+          "color": "verde",
+          "tam": 90,
+          "en": "cinco, siete"
+        },
+        {
+          "a": "escribe",
+          "texto": ", 7, 9",
+          "x": 320,
+          "y": 470,
+          "tam": 90,
+          "en": "nueve."
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "El de en medio"
+        }
+      ],
+      "inicio": 37.93
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: para la mediana, primero ordena. Para la media, suma y divide.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "mediana → ordena",
+          "x": 70,
+          "y": 300,
+          "en": "para la mediana"
+        },
+        {
+          "a": "escribe",
+          "texto": "media → suma y divide",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "Para la media"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "suma y divide"
+        }
+      ],
+      "limpia": true,
+      "inicio": 44.11
+    }
+  ],
+  "duracion": 49.16
+}

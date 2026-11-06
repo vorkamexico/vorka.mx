@@ -1,0 +1,370 @@
+{
+  "id": "paa-02",
+  "tema": "aritmetica",
+  "titulo": "El orden de las operaciones",
+  "publicado": true,
+  "voz": {
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
+    "modelo": "eleven_v4"
+  },
+  "audio": "/assets/tienda/simulador-videos/paa/02.mp3",
+  "pasos": [
+    {
+      "escena": "La pregunta",
+      "voz": "¿Cuánto es dos más tres por cuatro? ¿Veinte o catorce?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "2 + 3 × 4 = ?",
+          "x": 70,
+          "y": 230,
+          "tam": 100,
+          "en": "dos más tres"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿20",
+          "x": 70,
+          "y": 420,
+          "color": "rojo",
+          "tam": 90,
+          "en": "Veinte"
+        },
+        {
+          "a": "escribe",
+          "texto": "o",
+          "x": 260,
+          "y": 420,
+          "tam": 70,
+          "en": "o catorce"
+        },
+        {
+          "a": "escribe",
+          "texto": "14?",
+          "x": 340,
+          "y": 420,
+          "color": "verde",
+          "tam": 90,
+          "en": "catorce"
+        }
+      ],
+      "limpia": true,
+      "inicio": 0.0
+    },
+    {
+      "escena": "La regla",
+      "voz": "Las operaciones tienen un orden. Primero los paréntesis, luego las potencias, luego multiplicar y dividir, y al final sumar y restar.",
+      "acciones": [
+        {
+          "a": "flecha",
+          "de": [
+            60,
+            100
+          ],
+          "hacia": [
+            60,
+            500
+          ],
+          "color": "amarillo",
+          "en": "tienen un orden"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. ( )",
+          "x": 110,
+          "y": 140,
+          "en": "paréntesis"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. potencias",
+          "x": 110,
+          "y": 260,
+          "en": "potencias"
+        },
+        {
+          "a": "escribe",
+          "texto": "3. × ÷",
+          "x": 110,
+          "y": 380,
+          "en": "multiplicar"
+        },
+        {
+          "a": "escribe",
+          "texto": "4. + −",
+          "x": 110,
+          "y": 500,
+          "en": "sumar y restar"
+        }
+      ],
+      "limpia": true,
+      "inicio": 4.79
+    },
+    {
+      "escena": "Calcula",
+      "voz": "Entonces, primero la multiplicación: tres por cuatro, doce. Luego la suma: dos más doce, catorce.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "2 +",
+          "x": 70,
+          "y": 180,
+          "tam": 90,
+          "en": "Entonces"
+        },
+        {
+          "a": "escribe",
+          "texto": "3 × 4",
+          "x": 230,
+          "y": 180,
+          "id": "m",
+          "tam": 90,
+          "en": "primero la"
+        },
+        {
+          "a": "circulo",
+          "sobre": "m",
+          "color": "amarillo",
+          "en": "tres por cuatro"
+        },
+        {
+          "a": "flecha",
+          "de": "m",
+          "hacia": [
+            330,
+            300
+          ],
+          "color": "amarillo",
+          "en": "doce"
+        },
+        {
+          "a": "escribe",
+          "texto": "2 + 12",
+          "x": 70,
+          "y": 400,
+          "tam": 90,
+          "en": "Luego"
+        },
+        {
+          "a": "escribe",
+          "texto": "= 14",
+          "x": 360,
+          "y": 400,
+          "id": "r",
+          "color": "verde",
+          "tam": 90,
+          "en": "catorce"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r",
+          "color": "verde",
+          "en": "catorce."
+        }
+      ],
+      "limpia": true,
+      "inicio": 13.76
+    },
+    {
+      "escena": "Cuidado",
+      "voz": "Cuidado: si sumas primero, te da veinte. Y está mal.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "color": "rojo",
+          "tam": 84,
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "texto": "sumar primero →",
+          "x": 70,
+          "y": 320,
+          "color": "rojo",
+          "en": "si sumas"
+        },
+        {
+          "a": "escribe",
+          "texto": "20",
+          "x": 680,
+          "y": 320,
+          "id": "c",
+          "color": "rojo",
+          "tam": 110,
+          "en": "veinte"
+        },
+        {
+          "a": "tacha",
+          "sobre": "c",
+          "color": "rojo",
+          "en": "está mal"
+        }
+      ],
+      "limpia": true,
+      "inicio": 21.13
+    },
+    {
+      "escena": "Potencias",
+      "voz": "Con potencias de la misma base: si multiplicas, sumas los exponentes. Si divides, los restas.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "2³ × 2⁴ = 2⁷",
+          "x": 70,
+          "y": 200,
+          "tam": 90,
+          "en": "si multiplicas"
+        },
+        {
+          "a": "escribe",
+          "texto": "(3 + 4)",
+          "x": 620,
+          "y": 200,
+          "color": "amarillo",
+          "en": "sumas los"
+        },
+        {
+          "a": "escribe",
+          "texto": "5⁶ ÷ 5² = 5⁴",
+          "x": 70,
+          "y": 400,
+          "tam": 90,
+          "en": "Si divides"
+        },
+        {
+          "a": "escribe",
+          "texto": "(6 − 2)",
+          "x": 620,
+          "y": 400,
+          "color": "amarillo",
+          "en": "los restas"
+        }
+      ],
+      "limpia": true,
+      "inicio": 25.22
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Tu turno. ¿Cuánto es diez menos dos por tres?",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "color": "azul",
+          "tam": 66,
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "10 −",
+          "x": 70,
+          "y": 300,
+          "tam": 90,
+          "en": "diez menos"
+        },
+        {
+          "a": "escribe",
+          "texto": "2 × 3",
+          "x": 270,
+          "y": 300,
+          "id": "m2",
+          "tam": 90,
+          "en": "dos por tres"
+        },
+        {
+          "a": "escribe",
+          "texto": "= ?",
+          "x": 510,
+          "y": 300,
+          "tam": 90,
+          "en": "tres?"
+        }
+      ],
+      "limpia": true,
+      "pausa": 5,
+      "inicio": 31.52
+    },
+    {
+      "escena": "Tu turno",
+      "voz": "Primero la multiplicación: dos por tres, seis. Luego, diez menos seis: cuatro.",
+      "acciones": [
+        {
+          "a": "circulo",
+          "sobre": "m2",
+          "color": "amarillo",
+          "en": "dos por tres"
+        },
+        {
+          "a": "escribe",
+          "texto": "10 − 6",
+          "x": 70,
+          "y": 470,
+          "tam": 90,
+          "en": "Luego"
+        },
+        {
+          "a": "escribe",
+          "texto": "= 4",
+          "x": 350,
+          "y": 470,
+          "id": "r4",
+          "color": "verde",
+          "tam": 90,
+          "en": "cuatro"
+        },
+        {
+          "a": "circulo",
+          "sobre": "r4",
+          "color": "verde",
+          "en": "cuatro."
+        }
+      ],
+      "inicio": 35.3
+    },
+    {
+      "escena": "Recuerda",
+      "voz": "Recuerda: primero multiplica y divide. Al final, suma y resta.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "color": "amarillo",
+          "tam": 84,
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. × y ÷",
+          "x": 70,
+          "y": 300,
+          "en": "multiplica"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. + y −",
+          "x": 70,
+          "y": 430,
+          "id": "u",
+          "en": "Al final"
+        },
+        {
+          "a": "subraya",
+          "sobre": "u",
+          "color": "amarillo",
+          "en": "suma y resta"
+        }
+      ],
+      "limpia": true,
+      "inicio": 41.29
+    }
+  ],
+  "duracion": 45.87
+}

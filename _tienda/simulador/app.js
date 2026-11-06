@@ -1345,7 +1345,7 @@
   }
 
   // ---------- Pizarrón: lo que se escribe y se dibuja en el video ----------
-  // Cada paso trae acciones (escribe, flecha, circulo, subraya, tacha, caja, relleno, palomita). Cada acción empieza cuando la
+  // Cada paso trae acciones (escribe, flecha, circulo, subraya, tacha, caja, relleno, palomita, trazo). Cada acción empieza cuando la
   // voz dice su frase («en») y dura lo que tarda en trazarse. Todo es función del tiempo: pinta(t) deja el pizarrón exacto en
   // el segundo t, así que adelantar, regresar o pausar siempre se ve bien. Un plumón sigue la punta de lo que se está trazando.
   var GIS = { blanco: '#F5F2E8', amarillo: '#FFD45C', azul: '#7CC8FF', verde: '#86E0A0', rojo: '#FF7A70', rosa: '#F7A8D8', tinta: '#14261F' };
@@ -1373,8 +1373,12 @@
         var pos = a.en ? voz.indexOf(a.en.toLowerCase()) : -1;
         var ini = pos >= 0 ? p.inicio + largo * 0.92 * pos / voz.length : p.inicio + largo * 0.8 * i / Math.max(1, todas.length);
         ini = Math.max(ini, ultimo - 0.2); ultimo = ini;
-        var d = a.a === 'escribe' ? Math.min(1.6, Math.max(0.45, a.texto.length * 0.07)) : a.a === 'caja' ? 0.8 : a.a === 'relleno' ? 0.7 : a.a === 'flecha' || a.a === 'circulo' ? 0.6 : 0.4;
+        var d = a.a === 'escribe' ? Math.min(1.6, Math.max(0.45, a.texto.length * 0.07)) : a.a === 'caja' || a.a === 'trazo' ? 0.9 : a.a === 'relleno' ? 0.7 : a.a === 'flecha' || a.a === 'circulo' ? 0.6 : 0.4;
         var x = { a: a, ini: ini, dur: d, borra: borra };
+        // «sobre», «de» y «hacia» apuntan al texto más reciente con ese id (un id puede repetirse en otro paso)
+        if (a.sobre) x.refS = porId[a.sobre];
+        if (typeof a.de === 'string') x.refDe = porId[a.de];
+        if (typeof a.hacia === 'string') x.refA = porId[a.hacia];
         acc.push(x); if (a.id) porId[a.id] = x;
       });
     });
@@ -1386,10 +1390,10 @@
       x.el = nodo('text', { x: a.x, y: a.y, 'font-size': a.tam || 76, fill: GIS[a.color || 'blanco'], 'clip-path': 'url(#sv-c' + n + ')', class: 'sv-letra' }, g);
       x.el.textContent = a.texto; x.g = g;
     });
-    function caja(id) { var x = porId[id]; if (!x) return null; if (x.bb) return x.bb; if (x.a.a === 'caja') return { x: x.a.x, y: x.a.y, width: x.a.w, height: x.a.h }; var b = x.el.getBBox(); return (x.bb = { x: b.x, y: b.y + b.height * 0.12, width: b.width, height: b.height * 0.8 }); }
-    function punto(p, otro) {
+    function caja(x) { if (!x) return null; if (x.bb) return x.bb; if (x.a.a === 'caja') return { x: x.a.x, y: x.a.y, width: x.a.w, height: x.a.h }; var b = x.el.getBBox(); return (x.bb = { x: b.x, y: b.y + b.height * 0.12, width: b.width, height: b.height * 0.8 }); }
+    function punto(p, ref, otro) {
       if (typeof p !== 'string') return { x: p[0], y: p[1] };
-      var b = caja(p), o = otro; if (!b) return { x: 0, y: 0 };
+      var b = caja(ref), o = otro; if (!b) return { x: 0, y: 0 };
       if (o && o.x > b.x + b.width) return { x: b.x + b.width + 12, y: b.y + b.height / 2 };
       if (o && o.y > b.y + b.height) return { x: b.x + b.width / 2, y: b.y + b.height + 10 };
       return { x: b.x + b.width / 2, y: b.y - 10 };
@@ -1400,18 +1404,18 @@
       var a = x.a, r = azar(n * 31 + 7), b, d;
       if (a.a === 'escribe') { capa.appendChild(x.g); return; }
       if (a.a === 'circulo') {
-        b = caja(a.sobre); var cx = b.x + b.width / 2, cy = b.y + b.height / 2, rx = b.width / 2 + 26, ry = b.height / 2 + 18, pts = [];
+        b = caja(x.refS); var cx = b.x + b.width / 2, cy = b.y + b.height / 2, rx = b.width / 2 + 26, ry = b.height / 2 + 18, pts = [];
         for (var k = 0; k <= 26; k++) { var ang = -0.5 + (Math.PI * 2 + 0.6) * k / 26, f = 1 + (r() - 0.5) * 0.06; pts.push((cx + Math.cos(ang) * rx * f).toFixed(1) + ' ' + (cy + Math.sin(ang) * ry * f).toFixed(1)); }
         x.el = trazo('M' + pts.join(' L'), a.color);
       } else if (a.a === 'subraya') {
-        b = caja(a.sobre); var y = b.y + b.height + 14;
+        b = caja(x.refS); var y = b.y + b.height + 14;
         x.el = trazo('M' + (b.x - 4) + ' ' + y + ' Q' + (b.x + b.width / 2) + ' ' + (y + 8) + ' ' + (b.x + b.width + 6) + ' ' + (y - 3), a.color);
       } else if (a.a === 'tacha') {
-        b = caja(a.sobre);
+        b = caja(x.refS);
         x.el = trazo('M' + (b.x - 10) + ' ' + (b.y + b.height * 0.62) + ' L' + (b.x + b.width + 10) + ' ' + (b.y + b.height * 0.38), a.color || 'rojo', 8);
       } else if (a.a === 'flecha') {
         // «hacia» es un punto [x, y] o el id de un texto; «de» también
-        var aa = typeof a.hacia === 'string' ? punto(a.hacia) : punto(a.hacia), de = punto(a.de, aa);
+        var aa = punto(a.hacia, x.refA), de = punto(a.de, x.refDe, aa);
         var mx = (de.x + aa.x) / 2, my = (de.y + aa.y) / 2, dx = aa.x - de.x, dy = aa.y - de.y, L = Math.sqrt(dx * dx + dy * dy) || 1;
         var c = { x: mx - dy / L * L * 0.12, y: my + dx / L * L * 0.12 };
         x.el = trazo('M' + de.x + ' ' + de.y + ' Q' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + ' ' + aa.x + ' ' + aa.y, a.color);
@@ -1420,9 +1424,11 @@
       } else if (a.a === 'caja') {
         x.el = trazo('M' + a.x + ' ' + a.y + ' L' + (a.x + a.w) + ' ' + (a.y + 2) + ' L' + (a.x + a.w - 1) + ' ' + (a.y + a.h) + ' L' + (a.x + 1) + ' ' + (a.y + a.h - 1) + ' Z', a.color, 5);
       } else if (a.a === 'relleno') {
-        b = caja(a.sobre);
+        b = caja(x.refS);
         x.base = { x: b.x + b.width * a.desde + 4, y: b.y + 4, w: b.width * (a.hasta - a.desde) - 8, h: b.height - 8 };
         x.el = nodo('rect', { x: x.base.x, y: x.base.y, width: 0, height: x.base.h, rx: 6, fill: a.rayado ? 'url(#sv-rayas)' : GIS[a.color || 'verde'] }, capa);
+      } else if (a.a === 'trazo') {   // figura libre: un camino SVG (triángulos, ejes, parábolas…)
+        x.el = trazo(a.d, a.color, a.ancho);
       } else if (a.a === 'palomita') {
         x.el = trazo('M' + a.x + ' ' + a.y + ' l18 22 l40 -54', 'verde', 9);
       }
