@@ -1,6 +1,6 @@
 // Simuladores como app de estudio (nov 2026), solo para el plan Completo (práctica + examen):
 //   /api/<app>/estudio            GET  → plan de estudio, apuntes y llave de push
-//                                 POST → guarda { fecha_examen, dias, hora, recordatorios, sesiones }
+//                                 POST → guarda { fecha_examen, dias, hora, recordatorios, sesiones, temas, solo }
 //   /api/<app>/estudio/borrar     POST → borra el plan (los apuntes se quedan)
 //   /api/<app>/apuntes            POST → { ref, texto } guarda un apunte ('r:<reactivo>', 't:<tema>' o 'general'); texto vacío lo borra
 //   /api/<app>/push               POST → { endpoint, keys } suscribe este celular a los recordatorios (y manda uno de prueba)
@@ -12,7 +12,7 @@ import { one, all, run, json, fail } from '../util.js';
 import { llavesPush, mandarPush } from '../puntos-push.js';
 
 export const TZ = 'America/Mexico_City';
-const MAX_APUNTES = 400, MAX_TEXTO = 4000, MAX_SESIONES = 400, MAX_PUSH = 5, POR_CORRIDA = 300;
+const MAX_APUNTES = 400, MAX_TEXTO = 4000, MAX_SESIONES = 400, MAX_TEMAS = 60, MAX_PUSH = 5, POR_CORRIDA = 300;
 const HORAS = [6, 22];
 const TIPOS = ['temas', 'simulacro', 'repaso'];
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
@@ -52,11 +52,12 @@ export function crearEstudio({ APP, RUTA, BANCO, REACTIVO }) {
   const API = `/api/${APP}`;
 
   async function leer(env, email) {
-    const e = await one(env, 'SELECT fecha_examen, dias, hora, recordatorios, sesiones, actualizado_at FROM simulador_estudio WHERE email = ? AND app = ?', email, APP);
+    const e = await one(env, 'SELECT fecha_examen, dias, hora, recordatorios, sesiones, temas, solo_temas, actualizado_at FROM simulador_estudio WHERE email = ? AND app = ?', email, APP);
     const apuntes = await all(env, 'SELECT ref, texto, actualizado_at FROM simulador_apuntes WHERE email = ? AND app = ? ORDER BY actualizado_at DESC', email, APP);
     const subs = (await one(env, 'SELECT COUNT(*) n FROM simulador_push WHERE email = ? AND app = ?', email, APP)).n;
     return {
-      estudio: e ? { fecha_examen: e.fecha_examen, dias: e.dias.split(',').filter(Boolean).map(Number), hora: e.hora, recordatorios: !!e.recordatorios, sesiones: JSON.parse(e.sesiones || '[]'), actualizado_at: e.actualizado_at } : null,
+      estudio: e ? { fecha_examen: e.fecha_examen, dias: e.dias.split(',').filter(Boolean).map(Number), hora: e.hora, recordatorios: !!e.recordatorios, sesiones: JSON.parse(e.sesiones || '[]'),
+        temas: (e.temas || '').split(',').filter(t => BANCO.TEMAS[t]), solo: !!e.solo_temas, actualizado_at: e.actualizado_at } : null,
       apuntes, push: { pub: (await llavesPush(env)).pub, suscripciones: subs },
     };
   }
@@ -74,18 +75,20 @@ export function crearEstudio({ APP, RUTA, BANCO, REACTIVO }) {
     const sesiones = (Array.isArray(b.sesiones) ? b.sesiones : []).slice(0, MAX_SESIONES)
       .filter(s => s && esFecha(s.f) && TIPOS.includes(s.k))
       .map(s => ({ f: s.f, k: s.k, t: (Array.isArray(s.t) ? s.t : []).filter(t => typeof t === 'string' && BANCO.TEMAS[t]).slice(0, 4) }));
-    return { fecha_examen: b.fecha_examen, dias, hora, recordatorios: !!b.recordatorios, sesiones };
+    // Temas que el estudiante eligió reforzar (opcional): solo ids del banco, sin repetir
+    const temas = [...new Set((Array.isArray(b.temas) ? b.temas : []).filter(t => typeof t === 'string' && BANCO.TEMAS[t]))].slice(0, MAX_TEMAS);
+    return { fecha_examen: b.fecha_examen, dias, hora, recordatorios: !!b.recordatorios, sesiones, temas, solo: !!b.solo && temas.length > 0 };
   }
 
   async function guardarEstudio(env, email, b) {
     const v = validar(b, enMexico().dia);
     if (v.error) return fail(v.error);
     const ahora = new Date().toISOString();
-    await run(env, `INSERT INTO simulador_estudio (email, app, fecha_examen, dias, hora, recordatorios, sesiones, actualizado_at) VALUES (?,?,?,?,?,?,?,?)
+    await run(env, `INSERT INTO simulador_estudio (email, app, fecha_examen, dias, hora, recordatorios, sesiones, temas, solo_temas, actualizado_at) VALUES (?,?,?,?,?,?,?,?,?,?)
       ON CONFLICT(email, app) DO UPDATE SET fecha_examen = excluded.fecha_examen, dias = excluded.dias, hora = excluded.hora, recordatorios = excluded.recordatorios,
-        sesiones = excluded.sesiones, actualizado_at = excluded.actualizado_at,
+        sesiones = excluded.sesiones, temas = excluded.temas, solo_temas = excluded.solo_temas, actualizado_at = excluded.actualizado_at,
         ultimo_aviso = CASE WHEN simulador_estudio.hora = excluded.hora THEN simulador_estudio.ultimo_aviso ELSE NULL END`,
-      email, APP, v.fecha_examen, v.dias.join(','), v.hora, v.recordatorios ? 1 : 0, JSON.stringify(v.sesiones), ahora);
+      email, APP, v.fecha_examen, v.dias.join(','), v.hora, v.recordatorios ? 1 : 0, JSON.stringify(v.sesiones), v.temas.join(','), v.solo ? 1 : 0, ahora);
     return json({ ok: true, ...(await leer(env, email)) });
   }
 

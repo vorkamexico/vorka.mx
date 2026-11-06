@@ -1117,13 +1117,28 @@
       ? '<div class="sim-pe-rec sim-pe-rec-no">' + ICONO.campana + '<div><b>Recordatorios en tu celular</b><p class="sim-nota">' + (ios ? 'En iPhone, primero instala la app en tu pantalla de inicio y actívalos desde ahí. <button type="button" class="sim-link" data-ir="instalar">Cómo instalarla</button>' : 'Este navegador no permite recordatorios. Ábrelo en Chrome, Edge o Safari, o instala la app.') + '</p></div></div>'
       : '<label class="sim-pe-rec sim-casilla"><input type="checkbox" id="pe-rec"' + (rec ? ' checked' : '') + '><span><b>Recordarme en este dispositivo</b><small id="pe-rec-estado">Te avisamos los días que elegiste, a esa hora, qué tema te toca.</small></span></label>';
     var calendario = e && e.sesiones.length ? calendarioHTML(e) : '';
+    // Temas que quiere reforzar (opcional), agrupados por sección; los que más le cuestan llevan una marca
+    var elegidos = e && e.temas ? e.temas : [], grupos = L.temasPorSeccion(B, {});
+    var cuesta = {}; L.temasDebiles(L.desempenoTemas(YO.historial), B.temas, 6, 2).forEach(function (x) { cuesta[x.id] = true; });
+    var cuentaTxt = function (n) { return n ? n + (n === 1 ? ' elegido' : ' elegidos') : ''; };
+    var temasHTML = !grupos.length ? '' : '<fieldset class="sim-pe-campo"><legend>¿Qué temas quieres reforzar? <small class="sim-nota">(opcional)</small></legend>' +
+      '<p class="sim-nota">Los que elijas van primero y se repiten en los repasos. Si no eliges ninguno, el plan empieza por los que más te cuestan.</p>' +
+      grupos.map(function (g) {
+        var n = g.temas.filter(function (x) { return elegidos.indexOf(x.id) >= 0; }).length;
+        return '<details class="sim-pe-grupo"' + (n || grupos.length === 1 ? ' open' : '') + '><summary><span>' + esc(g.nombre) + '</span><small class="sim-pe-cuenta" data-cuenta="' + esc(g.id) + '">' + cuentaTxt(n) + '</small></summary><div class="sim-pe-temas">' +
+          g.temas.map(function (x) {
+            return '<label class="sim-pe-tema"><input type="checkbox" name="pe-tema" value="' + esc(x.id) + '" data-grupo="' + esc(g.id) + '"' + (elegidos.indexOf(x.id) >= 0 ? ' checked' : '') + '><span>' + esc(x.nombre) + (cuesta[x.id] ? '<em>Te cuesta</em>' : '') + '</span></label>';
+          }).join('') + '</div></details>';
+      }).join('') +
+      '<label class="sim-casilla sim-pe-solo"><input type="checkbox" id="pe-solo"' + (e && e.solo ? ' checked' : '') + '><span><b>Estudiar solo estos temas</b><small>Tu plan no incluirá los demás temas.</small></span></label></fieldset>';
     h('<section class="sim-intro sim-plan"><span class="sim-paso">Plan Completo</span><h1>Tu plan de estudio</h1>' +
-      '<p class="sim-lead">Repartimos los temas en tus días de estudio hasta el examen: primero los que más te cuestan, un simulacro cada 6 sesiones para medir tu avance y un repaso final. Se ajusta solo cada vez que lo guardas, con tus resultados más recientes.</p>' +
+      '<p class="sim-lead">Repartimos los temas en tus días de estudio hasta el examen: primero los que tú elijas reforzar y los que más te cuestan, un simulacro cada 6 sesiones para medir tu avance y un repaso final. Se reajusta cada vez que lo guardas, con tus resultados más recientes.</p>' +
       '<form class="sim-card sim-pe" id="f-pe" novalidate>' +
         '<label class="sim-pe-campo"><span>¿Cuándo es tu examen?</span><input type="date" id="pe-fecha" required min="' + manana + '" value="' + esc(e && e.fecha_examen >= manana ? e.fecha_examen : '') + '"></label>' +
         '<fieldset class="sim-pe-campo"><legend>¿Qué días puedes estudiar?</legend><div class="sim-pe-dias">' + ORDEN_DIAS.map(function (d) {
           return '<label class="sim-pe-dia"><input type="checkbox" name="pe-dia" value="' + d + '"' + (dias.indexOf(d) >= 0 ? ' checked' : '') + '><span>' + DIAS_C[d] + '</span></label>';
         }).join('') + '</div></fieldset>' +
+        temasHTML +
         '<label class="sim-pe-campo"><span>¿A qué hora te recordamos?</span><select id="pe-hora">' + horas.map(function (x) { return '<option value="' + x + '"' + (x === hora ? ' selected' : '') + '>' + horaTxt(x) + '</option>'; }).join('') + '</select><small class="sim-nota">Hora del centro de México.</small></label>' +
         recHTML +
         '<p class="sim-error" id="pe-error" role="alert" hidden></p>' +
@@ -1143,23 +1158,32 @@
     if (est && 'serviceWorker' in navigator) navigator.serviceWorker.getRegistration(RUTA + '/').then(function (reg) { return reg && reg.pushManager.getSubscription(); }).then(function (sub) {
       if (sub && e && e.recordatorios) est.innerHTML = '<span class="sim-si">' + ICONO.ok + ' Este dispositivo ya recibe tus recordatorios.</span>';
     }).catch(function () { });
+    app.querySelectorAll('input[name="pe-tema"]').forEach(function (c) {
+      c.onchange = function () {
+        var g = c.dataset.grupo, n = app.querySelectorAll('input[name="pe-tema"][data-grupo="' + g + '"]:checked').length;
+        app.querySelectorAll('[data-cuenta]').forEach(function (s) { if (s.dataset.cuenta === g) s.textContent = cuentaTxt(n); });
+      };
+    });
     document.getElementById('f-pe').onsubmit = function (ev) {
       ev.preventDefault();
       var err = document.getElementById('pe-error'), btn = document.getElementById('pe-guardar');
       var fecha = document.getElementById('pe-fecha').value;
       var ds = [].map.call(app.querySelectorAll('input[name="pe-dia"]:checked'), function (c) { return Number(c.value); });
       var hr = Number(document.getElementById('pe-hora').value);
+      var temas = [].map.call(app.querySelectorAll('input[name="pe-tema"]:checked'), function (c) { return c.value; });
+      var solo = !!(document.getElementById('pe-solo') && document.getElementById('pe-solo').checked);
       var quiere = document.getElementById('pe-rec') ? document.getElementById('pe-rec').checked : !!(e && e.recordatorios);
       var falla = function (m) { err.textContent = m; err.hidden = false; btn.disabled = false; btn.innerHTML = (e ? 'Guardar y reajustar mi plan' : 'Armar mi plan') + ' ' + FL; };
       if (!fecha) return falla('Escribe la fecha de tu examen.');
       if (fecha < manana) return falla('La fecha de tu examen tiene que ser a partir de mañana.');
       if (!ds.length) return falla('Elige al menos un día para estudiar.');
+      if (solo && !temas.length) return falla('Elige al menos un tema, o quita «Estudiar solo estos temas».');
       err.hidden = true; btn.disabled = true; btn.textContent = 'Guardando…';
       // Lo ya pasado se queda como estaba (para contar lo que cumpliste); de hoy en adelante se vuelve a repartir
       var previas = e ? e.sesiones.filter(function (x) { return x.f < hoy; }) : [];
-      var nuevas = L.planEstudio({ hoy: hoy, fechaExamen: fecha, dias: ds, temas: temasDelBanco(), desempeno: L.desempenoTemas(YO.historial) });
+      var nuevas = L.planEstudio({ hoy: hoy, fechaExamen: fecha, dias: ds, temas: temasDelBanco(), desempeno: L.desempenoTemas(YO.historial), prioridad: temas, solo: solo });
       var guardarPlan = function (conRec) {
-        return api('estudio', { method: 'POST', body: JSON.stringify({ fecha_examen: fecha, dias: ds, hora: hr, recordatorios: conRec, sesiones: previas.concat(nuevas).slice(-400) }) })
+        return api('estudio', { method: 'POST', body: JSON.stringify({ fecha_examen: fecha, dias: ds, hora: hr, recordatorios: conRec, sesiones: previas.concat(nuevas).slice(-400), temas: temas, solo: solo }) })
           .then(function (d) { EST = d; pantallaPlan(); var c = document.querySelector('.sim-cal'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
       };
       // Sin la casilla (iPhone sin instalar, navegador sin push) se respeta lo que ya tenía; con ella, se activa aquí

@@ -146,7 +146,8 @@ var SIM_LOGICA = (function () {
   function semanaDe(dia) { return new Date(dia + 'T12:00:00Z').getUTCDay(); }
   function diasEntre(a, b) { return Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 864e5); }
   // Reparte los temas en los días de estudio que quedan antes del examen, empezando por los más débiles.
-  // o: { hoy, fechaExamen, dias: [0..6], temas: [{ id, nombre, seccion }], desempeno: { id: { ok, total } }, porSesion? }
+  // o: { hoy, fechaExamen, dias: [0..6], temas: [{ id, nombre, seccion }], desempeno: { id: { ok, total } }, porSesion?,
+  //      prioridad?: [ids que el estudiante eligió reforzar], solo?: true = estudiar únicamente esos }
   // Devuelve [{ f, k, t }]: k = 'temas' (practicar t), 'simulacro' (cada 6.ª sesión, para medir el avance) o 'repaso' (la última)
   function planEstudio(o) {
     var hoy = o.hoy, fin = o.fechaExamen, dias = o.dias || [], fechas = [];
@@ -156,8 +157,13 @@ var SIM_LOGICA = (function () {
     var des = o.desempeno || {};
     // Débiles primero (aciertos a la primera); lo que no ha practicado va en medio (0.55); lo que domina, al final
     var nota = function (t) { var a = des[t.id]; return a && a.total ? a.ok / a.total : 0.55; };
-    var ranking = (o.temas || []).map(function (t, i) { return { t: t, n: nota(t), i: i }; })
-      .sort(function (a, b) { return a.n - b.n || a.i - b.i; }).map(function (x) { return x.t; });
+    // Los temas que eligió reforzar van primero (entre ellos, el más débil antes); con «solo», únicamente esos
+    var elegidos = (o.prioridad || []).filter(function (id) { return (o.temas || []).some(function (t) { return t.id === id; }); });
+    var pri = function (t) { return elegidos.indexOf(t.id) >= 0 ? 0 : 1; };
+    var base = o.solo && elegidos.length ? (o.temas || []).filter(function (t) { return pri(t) === 0; }) : (o.temas || []);
+    var ranking = base.map(function (t, i) { return { t: t, n: nota(t), i: i }; })
+      .sort(function (a, b) { return pri(a.t) - pri(b.t) || a.n - b.n || a.i - b.i; }).map(function (x) { return x.t; });
+    var foco = elegidos.length ? ranking.filter(function (t) { return pri(t) === 0; }) : ranking.slice(0, Math.max(1, Math.ceil(ranking.length / 2)));
     if (!ranking.length) return fechas.map(function (f) { return { f: f, k: 'temas', t: [] }; });
     var tipos = fechas.map(function (f, i) {
       if (fechas.length >= 3 && i === fechas.length - 1) return 'repaso';
@@ -166,15 +172,15 @@ var SIM_LOGICA = (function () {
     });
     var huecos = tipos.filter(function (k) { return k === 'temas'; }).length;
     var por = o.porSesion || Math.max(1, Math.min(3, Math.ceil(ranking.length / Math.max(1, huecos))));
-    // Primera vuelta: todos los temas; después se repasa la mitad más débil y luego otra vez todo
+    // Primera vuelta: todos los temas; después se repasan los elegidos (o, si no eligió, la mitad más débil) y luego otra vez todo
     var cola = [], vuelta = 0;
     function siguiente() {
-      if (!cola.length) { cola = vuelta % 2 === 1 ? ranking.slice(0, Math.max(1, Math.ceil(ranking.length / 2))) : ranking.slice(); vuelta++; }
+      if (!cola.length) { cola = vuelta % 2 === 1 ? foco.slice() : ranking.slice(); vuelta++; }
       return cola.shift();
     }
     return fechas.map(function (f, i) {
       var k = tipos[i], t = [];
-      if (k === 'repaso') t = ranking.slice(0, Math.min(3, ranking.length)).map(function (x) { return x.id; });
+      if (k === 'repaso') t = (foco.length >= 3 ? foco : ranking).slice(0, 3).map(function (x) { return x.id; });
       if (k === 'temas') while (t.length < Math.min(por, ranking.length)) { var x = siguiente(); if (t.indexOf(x.id) < 0) t.push(x.id); }
       return { f: f, k: k, t: t };
     });

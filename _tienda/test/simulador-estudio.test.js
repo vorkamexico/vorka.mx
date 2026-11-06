@@ -174,6 +174,12 @@ describe('plan de estudio, apuntes y recordatorios (plan Completo)', () => {
     const { estudio } = await r.json();
     expect(estudio).toMatchObject({ fecha_examen: en30, dias: [1, 3], hora: 19, recordatorios: true });
     expect(estudio.sesiones).toEqual([{ f: hoy, k: 'temas', t: [tema, tema2] }]);
+    expect(estudio).toMatchObject({ temas: [], solo: false });
+    // Temas que quiere reforzar: se guardan sin repetir y sin ids inventados; «solo» sin temas no aplica
+    const conTemas = await (await pedir('/api/simulador-paa/estudio', { cookie, metodo: 'POST', body: { fecha_examen: en30, dias: [1], hora: 19, sesiones: [], temas: [tema2, tema2, 'no-existe', tema], solo: true } })).json();
+    expect(conTemas.estudio).toMatchObject({ temas: [tema2, tema], solo: true });
+    const sinTemas = await (await pedir('/api/simulador-paa/estudio', { cookie, metodo: 'POST', body: { fecha_examen: en30, dias: [1], hora: 19, sesiones: [], temas: ['no-existe'], solo: true } })).json();
+    expect(sinTemas.estudio).toMatchObject({ temas: [], solo: false });
     expect((await pedir('/api/simulador-paa/estudio/borrar', { cookie, metodo: 'POST', body: {} })).status).toBe(200);
     expect((await (await pedir('/api/simulador-paa/estudio', { cookie })).json()).estudio).toBeNull();
   });
@@ -301,6 +307,27 @@ describe('plan de estudio (lógica del cliente)', async () => {
     expect(p[p.length - 1]).toMatchObject({ k: 'repaso', t: ['c', 'b', 'd'] });
     // todos los temas salen al menos una vez
     expect(new Set(p.flatMap(s => s.t))).toEqual(new Set(['a', 'b', 'c', 'd', 'e']));
+  });
+
+  it('los temas que elige reforzar van primero y se repiten en los repasos; los demás también salen', () => {
+    // «e» lo domina, pero lo eligió: va antes que «c», que es el más débil
+    const p = L.planEstudio({ hoy: '2026-11-09', fechaExamen: '2026-12-21', dias: [1, 3, 5], temas, prioridad: ['e', 'b'],
+      desempeno: { c: { ok: 1, total: 5 }, e: { ok: 5, total: 5 }, b: { ok: 3, total: 5 } } });
+    const orden = p.filter(s => s.k === 'temas').flatMap(s => s.t);
+    expect(orden.slice(0, 2)).toEqual(['b', 'e']);                 // los elegidos primero (el más débil de ellos antes)
+    expect(new Set(orden)).toEqual(new Set(['a', 'b', 'c', 'd', 'e']));
+    const veces = id => orden.filter(x => x === id).length;
+    expect(veces('e')).toBeGreaterThan(veces('a'));                // se repasan más que los demás
+    expect(p[p.length - 1].k).toBe('repaso');
+    expect(p[p.length - 1].t.slice(0, 2)).toEqual(['b', 'e']);
+  });
+
+  it('con «solo» usa únicamente los temas elegidos (e ignora ids que no existen)', () => {
+    const p = L.planEstudio({ hoy: '2026-11-09', fechaExamen: '2026-11-30', dias: [1, 3, 5], temas, prioridad: ['d', 'zz'], solo: true });
+    expect(new Set(p.flatMap(s => s.t))).toEqual(new Set(['d']));
+    // «solo» sin temas válidos no deja el plan vacío: decide como siempre
+    const q = L.planEstudio({ hoy: '2026-11-09', fechaExamen: '2026-11-30', dias: [1, 3, 5], temas, prioridad: ['zz'], solo: true });
+    expect(new Set(q.flatMap(s => s.t))).toEqual(new Set(['a', 'b', 'c', 'd', 'e']));
   });
 
   it('sin días posibles o con el examen hoy no arma nada', () => {
