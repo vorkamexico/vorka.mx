@@ -26,8 +26,9 @@ export function enMexico(fecha = new Date()) {
   return { dia: `${p.year}-${p.month}-${p.day}`, hora: Number(p.hour) % 24, semana: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday) };
 }
 
-// Plan Completo: el paquete, o Práctica + Examen comprados por separado, o la compra de antes de los planes (que traía todo)
-export const tieneEstudio = plan => !!(plan && (plan.paquete || (plan.practica && plan.examen) || plan.legado));
+// Plan Completo: el paquete, o Práctica + Examen comprados por separado (es lo mismo, solo que más caro). La compra de antes
+// de los planes no lo incluye.
+export const tieneEstudio = plan => !!(plan && (plan.paquete || (plan.practica && plan.examen)));
 
 // Texto del recordatorio de hoy (o null si ya pasó el examen)
 export function mensajeRecordatorio({ hoy, fecha_examen, sesiones = [], temas = {}, ruta }) {

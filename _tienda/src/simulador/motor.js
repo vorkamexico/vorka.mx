@@ -53,6 +53,8 @@ const CODIGO_MIN = 15;          // vigencia del código para entrar desde otro d
 const CODIGO_INTENTOS = 5;
 const codigo6 = () => { const b = new Uint32Array(1); do crypto.getRandomValues(b); while (b[0] >= 4294000000); return String(b[0] % 1e6).padStart(6, '0'); };
 // "iPhone · Safari": solo para que el dueño reconozca el dispositivo en el aviso
+const MOVILES = ['iPhone', 'iPad', 'Android'];
+const soDe = (ua = '') => etiquetaDe(ua).split(' · ')[0];
 function etiquetaDe(ua = '') {
   const so = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android' : /Macintosh/.test(ua) ? 'Mac' : /Windows/.test(ua) ? 'Windows' : /Linux/.test(ua) ? 'Linux' : 'otro dispositivo';
   const nav = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : '';
@@ -112,8 +114,15 @@ export function crearSimulador(c) {
   }
 
   // ---------- dispositivos ----------
-  async function nuevoDispositivo(env, email, ua) {
-    const id = aleatorio(16), ahora = new Date().toISOString(), etiqueta = etiquetaDe(ua);
+  // app: entra desde la app instalada en el celular. Esa app y el navegador del mismo celular son el mismo aparato, así que
+  // la sesión del navegador (Safari, Chrome…) del mismo tipo de celular se cierra sin aviso y la app ocupa su lugar: el límite
+  // de MAX_DISPOSITIVOS sigue contando aparatos, no navegadores.
+  async function nuevoDispositivo(env, email, ua, { app = false } = {}) {
+    const id = aleatorio(16), ahora = new Date().toISOString(), so = soDe(ua);
+    const etiqueta = app ? `${so} · App` : etiquetaDe(ua);
+    if (app && MOVILES.includes(so))
+      await run(env, "UPDATE simulador_dispositivos SET revocado_at = ?, motivo = 'app' WHERE email = ? AND app = ? AND revocado_at IS NULL AND etiqueta <> ? AND (etiqueta = ? OR etiqueta LIKE ?)",
+        ahora, email, APP, `${so} · App`, so, `${so} · %`);
     await run(env, 'INSERT INTO simulador_dispositivos (id, email, app, etiqueta, creado_at, usado_at) VALUES (?,?,?,?,?,?)', id, email, APP, etiqueta, ahora, ahora);
     // Se quedan los MAX_DISPOSITIVOS usados más recientemente (el nuevo es el más reciente)
     const activos = await all(env, 'SELECT id FROM simulador_dispositivos WHERE email = ? AND app = ? AND revocado_at IS NULL ORDER BY usado_at DESC, rowid DESC', email, APP);
@@ -195,9 +204,9 @@ export function crearSimulador(c) {
     const k = await cookieValida(env, req, ahora);
     if (!k) return null;
     const [a, d] = await Promise.all([ordenConAcceso(env, k.orderId, ahora),
-      one(env, 'SELECT email, usado_at, revocado_at FROM simulador_dispositivos WHERE id = ? AND app = ?', k.dev, APP)]);
+      one(env, 'SELECT email, usado_at, revocado_at, motivo FROM simulador_dispositivos WHERE id = ? AND app = ?', k.dev, APP)]);
     if (!a || !d || d.email !== String(a.orden.email).toLowerCase()) return null;
-    if (d.revocado_at) return { cerrada: true };
+    if (d.revocado_at) return { cerrada: true, motivo: d.motivo };
     if (Date.parse(d.usado_at) < ahora - 3600e3) await run(env, 'UPDATE simulador_dispositivos SET usado_at = ? WHERE id = ?', new Date(ahora).toISOString(), k.dev);
     return { ...a, dispositivo: k.dev };
   }
@@ -230,10 +239,10 @@ export function crearSimulador(c) {
     if ((p === RUTA || p === `${RUTA}/`) && (M === 'GET' || M === 'HEAD')) {
       if (p === RUTA) return Response.redirect(`${url.origin}${RUTA}/`, 301);
       const a = await accesoDe(env, req);
-      if (a?.cerrada) return sesionCerrada();
+      if (a?.cerrada) return sesionCerrada(a.motivo);
       if (a) return appShell(a);
       // La app instalada abre con ?app=1: sin sesión va a «Entrar con mi correo», no a la página de venta
-      if (url.searchParams.get('app') === '1') return new Response(null, { status: 303, headers: { location: `${RUTA}/entrar/`, 'cache-control': 'no-store' } });
+      if (url.searchParams.get('app') === '1') return new Response(null, { status: 303, headers: { location: `${RUTA}/entrar/?app=1`, 'cache-control': 'no-store' } });
       return c.venta(env, req, url);
     }
     if (p.startsWith(`${API}/`)) {
@@ -244,7 +253,7 @@ export function crearSimulador(c) {
         return json({ ok: true }, 200, { 'set-cookie': cookieBorrar() });
       }
       const a = await accesoDe(env, req);
-      if (a?.cerrada) return fail(`Tu sesión se cerró porque tu cuenta se abrió en otro dispositivo (máximo ${MAX_DISPOSITIVOS}). Entra de nuevo con el enlace de tu correo.`, 401);
+      if (a?.cerrada) return fail(a.motivo === 'app' ? 'Ahora usas la app del simulador en este celular: ábrela desde tu pantalla de inicio.' : `Tu sesión se cerró porque tu cuenta se abrió en otro dispositivo (máximo ${MAX_DISPOSITIVOS}). Entra de nuevo con el enlace de tu correo.`, 401);
       if (!a) return fail('Tu acceso no está activo. Entra con el enlace de tu correo de compra.', 401);
       if (p === `${API}/banco` && M === 'GET')
         return json({ config: c.cliente, secciones: BANCO.SECCIONES, examen: BANCO.SECCIONES_EXAMEN || null, calentamiento: BANCO.SECCIONES_CALENTAMIENTO, areas: AREAS,
@@ -348,7 +357,10 @@ export function crearSimulador(c) {
         extra: `${err}${local}${escribir ? form : ''}${pedir}` }) });
   }
 
-  function sesionCerrada() {
+  function sesionCerrada(motivo) {
+    if (motivo === 'app') return pagina({ titulo: `Ya tienes la app · ${c.titulo}`, ruta: `${RUTA}/`, noindex: true, headers: { 'set-cookie': cookieBorrar(), 'cache-control': 'no-store', ...SIN_REFERER },
+      cuerpo: aviso({ titulo: 'Ahora usas la app en este celular', texto: `Instalaste tu ${esc(c.titulo)} en este celular, así que cerramos la sesión del navegador (tu cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos y la app ocupa este lugar). Ábrela desde el ícono del librito en tu pantalla de inicio: ahí siguen tu avance, tu plan y tus apuntes.`,
+        extra: `<div class="botones t-centro"><a class="btn blanco" href="${RUTA}/entrar/">Entrar aquí de nuevo</a></div>` }) });
     return pagina({ titulo: `Tu sesión se cerró · ${c.titulo}`, ruta: `${RUTA}/`, noindex: true, headers: { 'set-cookie': cookieBorrar(), 'cache-control': 'no-store', ...SIN_REFERER },
       cuerpo: aviso({ titulo: 'Tu sesión se cerró en este dispositivo', texto: `Tu ${esc(c.titulo)} se abrió en otro dispositivo. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos a la vez, así que cerramos este. Para volver a entrar aquí, pide un enlace nuevo a tu correo.`,
         extra: `<div class="botones t-centro"><a class="btn tinta" href="${RUTA}/entrar/">Entrar con mi correo ${FLECHA}</a></div>` }) });
@@ -407,6 +419,8 @@ export function crearSimulador(c) {
   // acceso ese correo (no revela quién compró). Entra como un dispositivo más (máximo MAX_DISPOSITIVOS).
   async function entrarConCorreo(env, req) {
     const ua = req.headers.get('user-agent') || '';
+    // ?app=1: viene de la app instalada (su start_url); el formulario no tiene action, así que la dirección se conserva
+    const desdeApp = new URL(req.url).searchParams.get('app') === '1';
     const ya = await accesoDe(env, req);
     if (ya && !ya.cerrada) return irAlSimulador();
     if (req.method !== 'POST') return paginaCorreo({});
@@ -431,7 +445,7 @@ export function crearSimulador(c) {
       if (!a) return errorAcceso('vencido');
       const usado = await run(env, 'UPDATE simulador_codigos SET usado_at = ? WHERE id = ? AND usado_at IS NULL', new Date().toISOString(), fila.id);
       if (!usado.meta.changes) return paginaCorreo({ email, error: 'Ese código ya se usó. Pide uno nuevo.' });
-      return irAlSimulador(await cookieDe(env, a.orden.id, a.vence, await nuevoDispositivo(env, email, ua)));
+      return irAlSimulador(await cookieDe(env, a.orden.id, a.vence, await nuevoDispositivo(env, email, ua, { app: desdeApp })));
     }
     // accion=enviar
     if (!(await dentroDelLimite(env, `sim-env-ip:${ip}`, 10, 600)) || !(await dentroDelLimite(env, `sim-env:${APP}:${await sha256(email)}`, 3, 600)))

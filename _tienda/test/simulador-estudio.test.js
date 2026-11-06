@@ -68,7 +68,7 @@ describe('app instalable', () => {
   it('la app instalada sin sesión va a «Entrar con mi correo»; la página normal sigue mostrando la venta', async () => {
     const r = await pedir('/simulador-paa/?app=1');
     expect(r.status).toBe(303);
-    expect(r.headers.get('location')).toBe('/simulador-paa/entrar/');
+    expect(r.headers.get('location')).toBe('/simulador-paa/entrar/?app=1');
     expect((await pedir('/simulador-paa/')).status).toBe(200);
   });
 });
@@ -96,11 +96,49 @@ describe('entrar con mi correo', () => {
   });
 });
 
+describe('la app y el navegador del mismo celular cuentan como un solo dispositivo', () => {
+  const ANDROID = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36';
+  const conUA = (ruta, ua, op = {}) => worker.fetch(new Request(`https://vorka.mx${ruta}`, { method: op.form ? 'POST' : 'GET', redirect: 'manual',
+    headers: { 'user-agent': ua, ...(op.cookie ? { cookie: op.cookie } : {}), ...(op.form ? { 'content-type': 'application/x-www-form-urlencoded' } : {}) },
+    body: op.form ? new URLSearchParams(op.form).toString() : undefined }), env);
+  async function entrar(ruta, ua) {
+    const cod = (await (await conUA(ruta, ua, { form: { accion: 'enviar', email: 'ana@mail.com' } })).text()).match(/tu código es <b>(\d{6})<\/b>/)[1];
+    return soloCookie((await conUA(ruta, ua, { form: { accion: 'codigo', email: 'ana@mail.com', codigo: cod } })).headers.get('set-cookie'));
+  }
+
+  it('al entrar desde la app se cierra Safari del iPhone (sin correo de aviso) y la computadora sigue', async () => {
+    await comprar('simulador-paa-paquete');
+    const MAC = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15';
+    const safari = await entrar('/simulador-paa/entrar/', IPHONE);
+    const mac = await entrar('/simulador-paa/entrar/', MAC);
+    const appIos = await entrar('/simulador-paa/entrar/?app=1', IPHONE.replace(' Safari/604.1', ''));
+    expect((await pedir('/api/simulador-paa/yo', { cookie: appIos })).status).toBe(200);
+    expect((await pedir('/api/simulador-paa/yo', { cookie: mac })).status).toBe(200);           // la computadora no se cierra
+    const r = await pedir('/simulador-paa/', { cookie: safari });
+    expect(await r.text()).toContain('Ahora usas la app en este celular');
+    // Safari se cerró por la app; la app no sacó a la computadora (lo de «otro dispositivo» es el acceso que crea comprar())
+    const disp = env.DB.raw.prepare("SELECT etiqueta, motivo FROM simulador_dispositivos WHERE revocado_at IS NOT NULL AND etiqueta LIKE 'iPhone%' OR etiqueta LIKE 'Mac%' AND revocado_at IS NOT NULL").all();
+    expect(disp.map(d => [d.etiqueta, d.motivo])).toEqual([['iPhone · Safari', 'app']]);
+    expect(env.DB.raw.prepare("SELECT etiqueta FROM simulador_dispositivos WHERE revocado_at IS NULL ORDER BY etiqueta").all().map(d => d.etiqueta)).toEqual(['Mac · Safari', 'iPhone · App']);
+  });
+
+  it('en Android pasa lo mismo con Chrome; entrar sin ?app=1 no cierra nada', async () => {
+    await comprar('simulador-paa-paquete');
+    const chrome = await entrar('/simulador-paa/entrar/', ANDROID);
+    const otro = await entrar('/simulador-paa/entrar/', ANDROID);          // otro navegador, sin la app: cuenta aparte
+    expect((await pedir('/api/simulador-paa/yo', { cookie: chrome })).status).toBe(200);
+    expect((await pedir('/api/simulador-paa/yo', { cookie: otro })).status).toBe(200);
+    await entrar('/simulador-paa/entrar/?app=1', ANDROID);
+    expect((await pedir('/api/simulador-paa/yo', { cookie: chrome })).status).toBe(401);
+  });
+});
+
 describe('plan de estudio, apuntes y recordatorios (plan Completo)', () => {
-  it('quién lo tiene: Completo, o Práctica + Examen, o la compra de antes', () => {
+  it('quién lo tiene: el Completo (o Práctica + Examen); la compra de antes de los planes no', () => {
     expect(tieneEstudio({ paquete: true })).toBe(true);
     expect(tieneEstudio({ practica: true, examen: true })).toBe(true);
-    expect(tieneEstudio({ legado: true })).toBe(true);
+    expect(tieneEstudio({ legado: true })).toBe(false);
+    expect(tieneEstudio({ legado: true, practica: true })).toBe(false);
     expect(tieneEstudio({ practica: true })).toBe(false);
     expect(tieneEstudio({ examen: true, completo: true })).toBe(false);
   });

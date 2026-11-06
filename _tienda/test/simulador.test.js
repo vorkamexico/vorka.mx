@@ -335,12 +335,12 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     // la compra de siempre (la de beforeEach): 2 Medios, 1 Oficial y 2 Calentamientos, como antes
     const c0 = soloCookie((await pedir(`/simulador-paa/entrar/${token}`)).headers.get('set-cookie'));
     const yo0 = await (await pedir('/api/simulador-paa/yo', { cookie: c0 })).json();
-    expect(yo0.plan).toEqual({ practica: false, completo: false, legado: true, paquete: false, examen: false, estudio: true });
+    expect(yo0.plan).toEqual({ practica: false, completo: false, legado: true, paquete: false, examen: false, estudio: false });
     expect(yo0.intentos).toMatchObject({ incluidos: 2, ilimitado: false }); expect(yo0.examenes.incluidos).toBe(1); expect(yo0.calentamientos.incluidos).toBe(2);
     // si compra la Práctica ilimitada, sus Medios se vuelven ilimitados
     await comprar('simulador-paa-practica', 'ana@mail.com');
     const yo1 = await (await pedir('/api/simulador-paa/yo', { cookie: c0 })).json();
-    expect(yo1.plan).toEqual({ practica: true, completo: false, legado: true, paquete: false, examen: false, estudio: true }); expect(yo1.intentos.ilimitado).toBe(true);
+    expect(yo1.plan).toEqual({ practica: true, completo: false, legado: true, paquete: false, examen: false, estudio: false }); expect(yo1.intentos.ilimitado).toBe(true);
   });
 
   it('el catálogo muestra una sola tarjeta del simulador, desde el plan más barato', async () => {

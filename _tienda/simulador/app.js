@@ -1018,10 +1018,11 @@
   // ---------- tarjeta del inicio ----------
   function tarjetaEstudio() { return instalarHTML() + estudioHTML(); }
   function instalarHTML() {
-    if (standalone() || leer(K_INST)) return '';
+    // La app instalable con recordatorios es del plan Completo
+    if (!tieneEstudio() || standalone() || leer(K_INST)) return '';
     var ios = esIOS();
     return '<div class="sim-card sim-instalar"><img class="sim-instalar-i" src="' + esc(SIM.icono || '') + '" alt="" width="56" height="56"><div class="sim-instalar-t"><b>Instala tu simulador como app</b>' +
-      '<small>' + (tieneEstudio() ? 'Ábrelo desde tu pantalla de inicio y recibe ahí los recordatorios de tu plan de estudio.' : 'Ábrelo desde tu pantalla de inicio, como cualquier app, sin buscar el correo.') + '</small>' +
+      '<small>Un acceso directo en tu pantalla de inicio: lo abres con un toque y te llegan los recordatorios de tu plan de estudio.</small>' +
       '<div class="botones">' + (ios ? '' : '<button class="btn tinta chico" id="b-instalar" type="button"' + (PROMPT_INSTALAR ? '' : ' hidden') + '>Instalar</button>') +
       '<button class="btn ' + (ios ? 'tinta' : 'blanco') + ' chico" type="button" data-ir="instalar">Cómo instalarla</button><button class="sim-link" type="button" id="b-inst-no">Ahora no</button></div></div></div>';
   }
@@ -1087,9 +1088,9 @@
     var pasosPC = ['En Chrome o Edge, busca el ícono de <b>instalar</b> al final de la barra de direcciones.', 'Haz clic en <b>Instalar</b>.', 'El simulador se abre en su propia ventana y queda en tus aplicaciones.'];
     var bloque = function (t, p, abierto) { return '<details class="sim-card sim-guia"' + (abierto ? ' open' : '') + '><summary><b>' + t + '</b></summary><ol class="sim-guia-l">' + p.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol></details>'; };
     h('<section class="sim-intro sim-inst"><img class="sim-instalar-i grande" src="' + esc(SIM.icono || '') + '" alt="" width="88" height="88"><h1>Instala tu simulador</h1>' +
-      '<p class="sim-lead">Queda como una app en tu celular: la abres con un toque' + (tieneEstudio() ? ' y te llegan los recordatorios de tu plan de estudio' : '') + '.</p>' +
+      '<p class="sim-lead">Es un acceso directo que funciona como app en iPhone, Android y computadora (no se descarga de ninguna tienda): la abres con un toque y te llegan los recordatorios de tu plan de estudio.</p>' +
       bloque('iPhone o iPad', pasosIOS, ios) + bloque('Android', pasosAndroid, android) + bloque('Computadora', pasosPC, !ios && !android) +
-      '<div class="sim-card sim-guia-nota"><p><b>La primera vez que abras la app</b> puede pedirte tu correo: te mandamos un código de 6 dígitos y listo. Tu cuenta funciona en máximo 2 dispositivos; la app cuenta como uno.</p></div>' +
+      '<div class="sim-card sim-guia-nota"><p><b>La primera vez que abras la app</b> puede pedirte tu correo: te mandamos un código de 6 dígitos y listo. Tu cuenta funciona en máximo 2 dispositivos: la app y el navegador del mismo celular cuentan como uno, así que al entrar en la app cerramos la sesión del navegador de ese celular.</p></div>' +
       '<div class="botones"><button class="btn tinta" id="b-inicio" type="button">Volver al inicio</button></div></section>');
     document.getElementById('b-inicio').onclick = inicio;
   }
