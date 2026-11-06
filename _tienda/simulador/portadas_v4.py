@@ -20,6 +20,7 @@ V4 = {
   'simulador-paa': ('#1E5BB8', 'Simulador PAA', 'Practica como el día del examen y [sube tu puntaje.]', 'Lectura, redacción, matemáticas e inglés, con un tutor que te da pistas.', ['**642** reactivos', '**Tutor** con pistas', 'Puntaje **200–800**']),
   'simulador-unam': ('#9A6B00', 'Simulador UNAM', 'Practica [con el peso de tu área.]', 'Simulacros con cronómetro y práctica por materia para las 4 áreas.', ['**476** reactivos', '**4** áreas', '**120** reactivos en 3 h']),
   'simulador-ecoems': ('#D9480F', 'Simulador ECOEMS', 'Llega a la prepa UNAM o al IPN [bien preparado.]', 'Un tutor que te guía desde la secundaria, materia por materia.', ['**320** reactivos', '**10** materias', '**128** reactivos en 3 h']),
+  'simulador-ipn': ('#9A2050', 'Simulador IPN', 'Practica para el IPN [con el peso de tu área.]', 'Las 8 materias del examen de nivel superior, con un tutor que te da pistas.', ['**1,012** reactivos', '**3** áreas', '**140** reactivos en 3 h']),
   'simulador-prepa-ug': ('#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', 'Simulacros completos y práctica por área con tutor.', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']),
   'brindi': ('#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', 'Confirmaciones al momento y acceso con QR para bodas, XV años y toda celebración.', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']),
   'cupo': ('#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', 'Cobra el cover sin comisión por boleto y controla la entrada con QR.', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']),
@@ -217,7 +218,7 @@ def obj_clara():
 OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
   'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales, 'pagina-web': obj_pagina_web,
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
-  **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug']}}
+  **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn']}}
 
 def visual(k):
     if k in OBJETOS: return ('obj', OBJETOS[k]()), None
