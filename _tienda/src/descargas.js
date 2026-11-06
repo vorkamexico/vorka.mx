@@ -25,7 +25,13 @@ export async function validarToken(env, token, ahora = Date.now()) {
   if (new Date(t.expires_at).getTime() < ahora) return { ok: false, motivo: 'vencido', orden };
   const items = await all(env, 'SELECT i.nombre producto, p.r2_keys, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ? ORDER BY i.id', orden.id);
   // Productos de acceso (contenido.acceso): en lugar de archivos, un botón que abre la app con este mismo token
-  const accesos = items.map(i => { try { return { producto: i.producto, ...JSON.parse(i.contenido || '{}').acceso }; } catch { return null; } }).filter(a => a?.app);
+  const accesos = items.flatMap(i => {
+    let a; try { a = { producto: i.producto, ...JSON.parse(i.contenido || '{}').acceso }; } catch { return []; }
+    if (!a?.app) return [];
+    // Paquete de simuladores: un botón por cada simulador que incluye
+    if (a.app === 'simuladores' && Array.isArray(a.apps)) return a.apps.map((app, k) => ({ producto: `Simulador ${(a.nombres || [])[k] || app.replace(/^simulador-/, '').toUpperCase()}`, app, ruta: `/${app}/`, boton: 'Entrar', detalle: 'Plan Completo · acceso en línea durante 6 meses desde tu compra' }));
+    return [a];
+  });
   const usadas = JSON.parse(t.descargas || '{}');
   const archivos = items.flatMap(i => JSON.parse(i.r2_keys || '[]').map(a => ({ ...a, producto: i.producto })))
     .map((a, n) => ({ n, key: a.key, nombre: a.nombre, producto: a.producto, usadas: usadas[a.key] || 0, restantes: Math.max(0, MAX_DESCARGAS - (usadas[a.key] || 0)) }));

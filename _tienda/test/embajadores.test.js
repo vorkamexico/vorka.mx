@@ -358,7 +358,7 @@ describe('Página del programa: privada', () => {
     expect(h).toContain('<meta name="robots" content="noindex, nofollow">');
     expect(h).toContain('Te invitó <b>Leo R.</b>');
     expect(h).toContain('BORRADOR');
-    expect(h).toContain(`$${(precio('cupo-pro') / 100).toLocaleString('es-MX')}`);   // ejemplo con precios reales
+    expect(h.match(/<br><small[^>]*>Precio \$/g)).toHaveLength(3);   // ejemplo con 3 productos reales (el más barato, uno de en medio y el más caro)
     expect(h).not.toContain('id="ganancias-reales"');   // menos de 20 cuentas con ganancias
     // con la cookie de la liga de invitación
     r = await pedir('/tienda/puntos/embajadores/', { cookie: `vorka_unete=${codigo('leo@mail.com')}` });

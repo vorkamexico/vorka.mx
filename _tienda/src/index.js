@@ -36,6 +36,7 @@ import { paginaPortales } from './portales.js';
 import { paginaClara } from './clara.js';
 import { paginaRuta } from './ruta.js';
 import { paginaLiderazgo } from './liderazgo.js';
+import { paginaSimuladores, PAQUETES as PAQUETES_SIMULADORES } from './simuladores-tienda.js';
 import { cargarTemporada } from './temporadas.js';
 import { suscripcionApp, portalApp, resumenSuscripciones, lugaresApp, creditoApp, cancelarApp } from './suscripciones.js';
 import { panelSuscripciones, crearTransferencia, prenderTransferencia, pagoTransferencia, editarTransferencia, revisarTransferencias } from './transferencias.js';
@@ -454,6 +455,11 @@ async function atender(request, env, ctx, url) {
       { const m = url.pathname.match(/^\/tienda\/demo\/([a-z0-9-]+)\/?$/); const d = m && demoDe(m[1]);
         if (d && !d.url) return url.pathname.endsWith('/') ? paginaDemo(m[1], d, url) : Response.redirect(`${url.origin}${url.pathname}/${url.search}`, 301);
         if (d?.url) return Response.redirect(d.url.startsWith('http') ? d.url : `${url.origin}${d.url}`, 302); }
+      // Simuladores de examen: una sola página en la tienda con los 5 simuladores y los paquetes. La ficha suelta de un
+      // paquete (/tienda/simuladores-unam-ipn/) lleva ahí, con ese paquete elegido.
+      if (url.pathname === '/tienda/simuladores' || url.pathname === '/tienda/simuladores/') return url.pathname.endsWith('/') ? await paginaSimuladores(env, request, url) : Response.redirect(`${url.origin}/tienda/simuladores/${url.search}`, 301);
+      { const m = url.pathname.match(/^\/tienda\/(simuladores-[a-z-]+)\/?$/);
+        if (m && PAQUETES_SIMULADORES.includes(m[1])) { const q = new URLSearchParams(url.search); q.set('paquete', m[1]); return Response.redirect(`${url.origin}/tienda/simuladores/?${q}#comprar`, 301); } }
       if (url.pathname === '/tienda/agenda' || url.pathname === '/tienda/agenda/') return url.pathname.endsWith('/') ? await paginaAgenda(env, request, url) : Response.redirect(`${url.origin}/tienda/agenda/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);
       if (url.pathname === '/tienda/brindi' || url.pathname === '/tienda/brindi/') return url.pathname.endsWith('/') ? await paginaBrindi(env, request, url) : Response.redirect(`${url.origin}/tienda/brindi/${url.search}`, 301);

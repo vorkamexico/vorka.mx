@@ -159,6 +159,8 @@ const CSS = `<style>
 @media(max-width:600px){.sv-cifras div{padding:22px 16px}.sv-pasos{gap:22px}}
 </style>`;
 
+// Simuladores de universidad que se venden también en paquete (/tienda/simuladores/, migración 0077)
+const PAQUETE_UNI = ['simulador-paa', 'simulador-unam', 'simulador-ipn'];
 // sim: lo que devuelve crearSimulador · v: contenido de la página (ver paa.js)
 export async function paginaVentaSimulador(sim, v, env, req, url) {
   const RUTA = sim.RUTA;
@@ -176,7 +178,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   const selector = planes.length ? `<div class="sv-planes-cab"><b>Elige tu plan</b>${v.diferencias ? '<a href="#diferencias">¿Cuál es la diferencia?</a>' : ''}</div>
     <div class="sv-planes" role="radiogroup" aria-label="Elige tu plan">${orden.map(x => `<a class="sv-plan${x === elegido ? ' sel' : ''}${x.k === 'paquete' ? ' rec' : ''}" role="radio" aria-checked="${x === elegido}" href="?plan=${x.k}#comprar">
       ${x.k === 'paquete' ? `<span class="sv-ahorro">Recomendado${ahorro > 0 ? ` · Ahorras ${precio({ precio_centavos: ahorro })}` : ''}</span>` : ''}<span class="sv-plan-c"><b>${x.nombre}</b><em class="num">${x.k === 'paquete' && ahorro > 0 ? `<s>${precio({ precio_centavos: x.prod.precio_centavos + ahorro }).replace(' MXN', '')}</s> ` : ''}${precio(x.prod)}</em></span><small>${esc(x.para)}</small>${x.falta ? `<small class="sv-falta">${esc(x.falta)}</small>` : ''}
-      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>${empuje}` : '';
+      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>${empuje}${PAQUETE_UNI.includes(sim.APP) ? `<a class="sv-empuje sv-paquetes" href="/tienda/simuladores/#paquetes"><span>¿Presentas en varias universidades? Llévate el plan Completo de 2 simuladores <b>desde $499</b> o los 3 (PAA, UNAM e IPN) por <b>$699</b>.</span> ${FLECHA}</a>` : ''}` : '';
   // Tabla "¿Cuál es la diferencia?" (Práctica · Examen · Completo)
   const cols = ['practica', 'completo', 'paquete'].map(pk);
   const marca = b => typeof b === 'string' ? `<span class="sv-parcial">${esc(b)}</span>` : b ? `<span class="sv-si">${CHECK}<span class="sr">Incluye</span></span>` : '<span class="sv-no" aria-label="No incluye">—</span>';

@@ -126,9 +126,9 @@ describe('simulador ECOEMS', () => {
     expect(h.area).toBeUndefined();
   });
 
-  it('el catálogo muestra una sola tarjeta del simulador ECOEMS y el sitemap su página', async () => {
+  it('el catálogo muestra una sola tarjeta de simuladores y el sitemap la página del ECOEMS', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html.match(/data-buscar="simulador ecoems en linea /g)).toHaveLength(1);
+    expect(html.match(/data-buscar="simuladores de examen en linea /g)).toHaveLength(1);
     expect(html).not.toContain('simulador-ecoems-intento');
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('<loc>https://vorka.mx/simulador-ecoems/</loc>');
   });

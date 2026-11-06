@@ -141,7 +141,8 @@ export function crearSimulador(c) {
       texto: `Alguien entró a tu ${c.titulo} desde ${etiqueta}. Cada cuenta funciona en máximo ${MAX_DISPOSITIVOS} dispositivos a la vez, así que cerramos la sesión en el que tenía más tiempo sin usarse.\n\nSi fuiste tú, no tienes que hacer nada. Si no, no compartas los enlaces de tus correos de Vorka. ¿Dudas? hola@vorka.mx` });
   }
 
-  const accesoDeItem = x => { try { const a = JSON.parse(x || '{}').acceso; return a?.app === APP ? a : null; } catch { return null; } };
+  // Un paquete de simuladores (acceso.apps) cuenta en cada simulador que incluye como su plan Completo
+  const accesoDeItem = x => { try { const a = JSON.parse(x || '{}').acceso; return a?.app === APP ? a : Array.isArray(a?.apps) && a.apps.includes(APP) ? { ...a, app: APP, paqueteDe: a.app } : null; } catch { return null; } };
   // Compras pagadas de este correo con productos de este simulador: [{ orden_id, paid_at, cantidad, acceso }]
   async function comprasDe(env, email) {
     const filas = await all(env, `SELECT o.id orden_id, o.paid_at, o.created_at, COALESCE((SELECT g.paid_at FROM orders g WHERE g.id = o.regalo_de), o.paid_at, o.created_at) compra_at, i.cantidad, p.contenido FROM orders o
@@ -306,8 +307,12 @@ export function crearSimulador(c) {
     const ua = req.headers.get('user-agent') || '';
     if (req.method === 'HEAD') return paginaCodigo({ email });
     if (req.method === 'GET') {
-      if (!t.simulador_usado_at) {
-        const r = await run(env, 'UPDATE download_tokens SET simulador_usado_at = ? WHERE id = ? AND simulador_usado_at IS NULL', new Date().toISOString(), t.id);
+      // El enlace del correo entra directo una vez a cada simulador de la compra (un paquete trae varios): se guarda
+      // «fecha|app1,app2». El formato anterior (solo la fecha) cuenta como ya usado.
+      const usado = t.simulador_usado_at || '';
+      if (!usado || (usado.includes('|') && !usado.split('|')[1].split(',').includes(APP))) {
+        const nuevo = usado ? `${usado},${APP}` : `${new Date().toISOString()}|${APP}`;
+        const r = await run(env, 'UPDATE download_tokens SET simulador_usado_at = ? WHERE id = ? AND COALESCE(simulador_usado_at, \'\') = ?', nuevo, t.id, usado);
         if (r.meta.changes) return irAlSimulador(await cookieDe(env, a.orden.id, a.vence, await nuevoDispositivo(env, email, ua)));
       }
       return paginaCodigo({ email });
