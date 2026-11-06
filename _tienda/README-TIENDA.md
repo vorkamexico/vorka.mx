@@ -225,6 +225,15 @@ Producto de **acceso** (no de descarga): `contenido.acceso.app = "simulador-paa"
 
 Publicar: doble clic en `_tienda/publicar-simulador.command` después del merge (migraciones, deploy y, si dices que sí, lo pone a la venta).
 
+**App de estudio** (nov 2026, migración 0073; aplica a los 4 simuladores):
+- **Instalable** (todos los que compraron): `/<simulador>/manifest.webmanifest` y `/<simulador>/sw.js` (`src/simulador/instalable.js`). El ícono es un librito con un color por simulador, no el logo de Vorka; la marca va dentro de la app («Powered by vorka.mx» al pie). Los PNG viven en `assets/tienda/simulador-app/` (los sirve Pages): para cambiarlos, edita `simulador/icono/iconos.mjs` (y los colores en `COLORES_APP` de `instalable.js`) y corre `NODE_PATH=$(npm root -g) node _tienda/simulador/icono/iconos.mjs` (usa Playwright). En el inicio de la app sale «Instala tu simulador como app» con la guía para iPhone, Android y computadora.
+- **Entrar con mi correo** (`/<simulador>/entrar/`): código de 6 dígitos al correo de la compra. Existe porque la app de la pantalla de inicio de iPhone no siempre comparte la sesión de Safari; la app abre con `?app=1` y, sin sesión, cae aquí en vez de en la página de venta. No revela si un correo compró. Cuenta como un dispositivo más (máximo 2).
+- **Plan de estudio, recordatorios y apuntes** (solo plan Completo: el paquete, o Práctica + Examen, o la compra de antes de los planes; `tieneEstudio` en `src/simulador/estudio.js`). Sin él, la tarjeta del inicio ofrece comprar lo que falta para tener el Completo.
+  - Plan: fecha del examen, días y hora. El cliente reparte los temas (`planEstudio` en `simulador/logica.js`: los más débiles primero, un simulacro cada 6 sesiones y un repaso al final) y lo guarda en `simulador_estudio`; al volver a guardarlo se reajusta con sus resultados y lo ya pasado se queda. Una sesión cuenta como cumplida si ese día terminó una práctica de esos temas o un simulacro (`sesionesHechas`).
+  - Recordatorios: Web Push con la misma llave VAPID de Puntos (`mandarPush` en `src/puntos-push.js`). Salen en el cron de cada hora (`recordatoriosEstudio`, a la hora elegida del centro de México, minuto :17), uno al día, en sus días de estudio más el día anterior y el día del examen, y dicen qué tema toca. Si el acceso vence o ya no tiene plan Completo, se apagan solos. En iPhone solo funcionan con la app instalada (iOS 16.4+).
+  - Apuntes: por pregunta (botón «Anotar en mis apuntes» al revisar con tutor), por tema o generales; máximo 400 por cuenta y 4,000 caracteres cada uno (`simulador_apuntes`). Pantalla «Mis apuntes» con búsqueda.
+  - Pruebas: `test/simulador-estudio.test.js`.
+
 ## Brindi (vorka.mx/tienda/brindi)
 
 Invitaciones digitales con marca propia (Diversificación). Aquí solo se vende; la app vive en `os.vorka.mx/brindi/` (ver `vorka-os/PLAN-BRINDI.md`).

@@ -46,13 +46,19 @@ async function jwtVapid(v, endpoint) {
   return `${cab}.${cuerpo}.${b64u(firma)}`;
 }
 
+// Manda un push cifrado a una suscripción ({ endpoint, p256dh, auth }) y devuelve la respuesta del servicio de push.
+// Lo usan Puntos (abajo) y los recordatorios de estudio de los simuladores (src/simulador/estudio.js), con la misma llave.
+export async function mandarPush(v, sub, datos, { ttl = 86400 } = {}) {
+  return fetch(sub.endpoint, {
+    method: 'POST',
+    headers: { authorization: `vapid t=${await jwtVapid(v, sub.endpoint)}, k=${v.pub}`, ttl: String(ttl), 'content-encoding': 'aes128gcm', 'content-type': 'application/octet-stream', urgency: 'normal' },
+    body: await cifrar(sub, JSON.stringify(datos)),
+  });
+}
+
 async function enviarA(env, v, sub, datos) {
   try {
-    const r = await fetch(sub.endpoint, {
-      method: 'POST',
-      headers: { authorization: `vapid t=${await jwtVapid(v, sub.endpoint)}, k=${v.pub}`, ttl: '86400', 'content-encoding': 'aes128gcm', 'content-type': 'application/octet-stream', urgency: 'normal' },
-      body: await cifrar(sub, JSON.stringify(datos)),
-    });
+    const r = await mandarPush(v, sub, datos);
     const ahora = new Date().toISOString();
     if (r.status === 404 || r.status === 410) await run(env, 'DELETE FROM puntos_push WHERE id = ?', sub.id);   // ya no existe ese celular
     else await run(env, `UPDATE puntos_push SET ${r.ok ? 'ultimo_ok' : 'ultimo_error'} = ? WHERE id = ?`, ahora, sub.id);

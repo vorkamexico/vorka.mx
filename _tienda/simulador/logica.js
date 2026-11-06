@@ -133,7 +133,70 @@ var SIM_LOGICA = (function () {
     return out.sort(function (a, b) { return a.dificultad - b.dificultad; });
   }
 
-  return { fechaCorta: fechaCorta, hora: hora, fechaLarga: fechaLarga, tipoDe: tipoDe, miles: miles, pasoRedondo: pasoRedondo, rangoEje: rangoEje, datosGrafica: datosGrafica,
+  // ---------- plan de estudio (plan Completo) ----------
+  // 'AAAA-MM-DD' de una fecha en la zona dada (o la del dispositivo)
+  function diaDe(fecha, tz) {
+    try {
+      var p = {}; new Intl.DateTimeFormat('en-CA', opcionesTz({ year: 'numeric', month: '2-digit', day: '2-digit' }, tz)).formatToParts(new Date(fecha)).forEach(function (x) { p[x.type] = x.value; });
+      return p.year + '-' + p.month + '-' + p.day;
+    } catch (e) { return ''; }
+  }
+  // Suma días a 'AAAA-MM-DD' (a mediodía UTC para que no brinque de día) y el día de la semana (0 = domingo)
+  function masDias(dia, n) { return new Date(Date.parse(dia + 'T12:00:00Z') + n * 864e5).toISOString().slice(0, 10); }
+  function semanaDe(dia) { return new Date(dia + 'T12:00:00Z').getUTCDay(); }
+  function diasEntre(a, b) { return Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 864e5); }
+  // Reparte los temas en los días de estudio que quedan antes del examen, empezando por los más débiles.
+  // o: { hoy, fechaExamen, dias: [0..6], temas: [{ id, nombre, seccion }], desempeno: { id: { ok, total } }, porSesion? }
+  // Devuelve [{ f, k, t }]: k = 'temas' (practicar t), 'simulacro' (cada 6.ª sesión, para medir el avance) o 'repaso' (la última)
+  function planEstudio(o) {
+    var hoy = o.hoy, fin = o.fechaExamen, dias = o.dias || [], fechas = [];
+    if (!hoy || !fin || diasEntre(hoy, fin) < 1) return [];
+    for (var d = hoy; d < fin && fechas.length < 400; d = masDias(d, 1)) if (dias.indexOf(semanaDe(d)) >= 0) fechas.push(d);
+    if (!fechas.length) return [];
+    var des = o.desempeno || {};
+    // Débiles primero (aciertos a la primera); lo que no ha practicado va en medio (0.55); lo que domina, al final
+    var nota = function (t) { var a = des[t.id]; return a && a.total ? a.ok / a.total : 0.55; };
+    var ranking = (o.temas || []).map(function (t, i) { return { t: t, n: nota(t), i: i }; })
+      .sort(function (a, b) { return a.n - b.n || a.i - b.i; }).map(function (x) { return x.t; });
+    if (!ranking.length) return fechas.map(function (f) { return { f: f, k: 'temas', t: [] }; });
+    var tipos = fechas.map(function (f, i) {
+      if (fechas.length >= 3 && i === fechas.length - 1) return 'repaso';
+      if (fechas.length >= 6 && i % 6 === 5) return 'simulacro';
+      return 'temas';
+    });
+    var huecos = tipos.filter(function (k) { return k === 'temas'; }).length;
+    var por = o.porSesion || Math.max(1, Math.min(3, Math.ceil(ranking.length / Math.max(1, huecos))));
+    // Primera vuelta: todos los temas; después se repasa la mitad más débil y luego otra vez todo
+    var cola = [], vuelta = 0;
+    function siguiente() {
+      if (!cola.length) { cola = vuelta % 2 === 1 ? ranking.slice(0, Math.max(1, Math.ceil(ranking.length / 2))) : ranking.slice(); vuelta++; }
+      return cola.shift();
+    }
+    return fechas.map(function (f, i) {
+      var k = tipos[i], t = [];
+      if (k === 'repaso') t = ranking.slice(0, Math.min(3, ranking.length)).map(function (x) { return x.id; });
+      if (k === 'temas') while (t.length < Math.min(por, ranking.length)) { var x = siguiente(); if (t.indexOf(x.id) < 0) t.push(x.id); }
+      return { f: f, k: k, t: t };
+    });
+  }
+  // Fechas de sesiones ya cumplidas: ese día terminó una práctica o sección de alguno de esos temas (temas/repaso) o un
+  // simulacro (simulacro). historial: los resultados de /yo (con fecha ISO)
+  function sesionesHechas(sesiones, historial, tz) {
+    var porDia = {};
+    (historial || []).forEach(function (x) { var d = diaDe(x.fecha, tz); (porDia[d] = porDia[d] || []).push(x); });
+    var out = {};
+    (sesiones || []).forEach(function (s) {
+      var del = porDia[s.f] || [];
+      var ok = s.k === 'simulacro'
+        ? del.some(function (x) { return x.modo === 'completo' || x.modo === 'examen' || x.modo === 'calentamiento'; })
+        : del.some(function (x) { return !s.t.length || s.t.some(function (t) { return x.temas && x.temas[t]; }); });
+      if (ok) out[s.f] = true;
+    });
+    return out;
+  }
+
+  return { diaDe: diaDe, masDias: masDias, semanaDe: semanaDe, diasEntre: diasEntre, planEstudio: planEstudio, sesionesHechas: sesionesHechas,
+    fechaCorta: fechaCorta, hora: hora, fechaLarga: fechaLarga, tipoDe: tipoDe, miles: miles, pasoRedondo: pasoRedondo, rangoEje: rangoEje, datosGrafica: datosGrafica,
     partesPAA: partesPAA, puntajeUni: puntajeUni, metaEnEscala: metaEnEscala, cumpleMinimos: cumpleMinimos,
     temasPorSeccion: temasPorSeccion, hayTemas: hayTemas, desempenoTemas: desempenoTemas, temasDebiles: temasDebiles, elegirPractica: elegirPractica };
 })();

@@ -19,7 +19,8 @@ import { rutasCreadores } from './creadores.js';
 import { procesarAvisos, rutasPortalComprador } from './creadores-saas.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago, recordatoriosAutomaticos } from './recordatorio.js';
-import { rutasSimulador } from './simulador/index.js';
+import { rutasSimulador, simuladores } from './simulador/index.js';
+import { recordatoriosEstudio } from './simulador/estudio.js';
 import { rutasLearn } from './simulador/guias.js';
 import { rutasLearnExtra } from './learn/extra.js';
 import { adsTxt } from './anuncios.js';
@@ -346,6 +347,8 @@ export default {
     // vez por orden). Cada hora, pocas órdenes por corrida (src/resenas.js)
     // Compras sin terminar: 1.º recordatorio a la hora, 2.º a las 48 h y 3.º con 10 % tres días después (src/recordatorio.js › AUTO)
     ctx.waitUntil(recordatoriosAutomaticos(env, event?.scheduledTime ?? Date.now()).then(r => { if (r.revisadas) console.log('recordatorios', JSON.stringify(r)); }).catch(e => console.error('recordatorios', e?.message)));
+    // Simuladores: recordatorio de estudio al celular a la hora que eligió cada quien (src/simulador/estudio.js)
+    ctx.waitUntil(recordatoriosEstudio(env, new Date(event?.scheduledTime ?? Date.now()), simuladores()).then(r => { if (r.revisados) console.log('simulador: recordatorios', JSON.stringify(r)); }).catch(e => console.error('simulador: recordatorios', e?.message)));
     ctx.waitUntil(pedirResenas(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisadas) console.log('resenas', JSON.stringify(r)); }).catch(e => console.error('resenas', e?.message)));
     // Tests: el único recordatorio «tu resultado te espera» (al día siguiente, con consentimiento) y, una vez al día, borrar
     // respuestas viejas (12 meses sin compra, 24 con compra)

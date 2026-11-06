@@ -15,13 +15,13 @@
   var PESO = { 1: 1, 2: 1.25, 3: 1.5 };
   var LETRAS = ['A', 'B', 'C', 'D'];
   // Llaves de localStorage por cuenta (se completan al saber quién entró): dos personas en el mismo dispositivo no se mezclan
-  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI;
+  var K_RUN, K_META, K_PEND, K_VISTOS, K_SPARKS, K_AREA, K_UNI, K_INST;
   var L = window.SIM_LOGICA;   // funciones puras (simulador/logica.js): gráfica, temas y puntaje por universidad
   function llaves(email) {
     var h = 0; String(email || '').split('').forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
     var x = ':' + h.toString(36);
     var p = APP === 'simulador-paa' ? 'vk_paa' : 'vk_' + APP.replace('simulador-', '');
-    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x;
+    K_RUN = p + '_run' + x; K_META = p + '_meta' + x; K_PEND = p + '_pendiente' + x; K_VISTOS = p + '_vistos' + x; K_SPARKS = p + '_sparks' + x; K_AREA = p + '_area' + x; K_UNI = p + '_universidad' + x; K_INST = p + '_instalar_no' + x;
   }
 
   // ---------- utilidades ----------
@@ -64,6 +64,8 @@
     foco: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>',
     ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     no: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+    lapiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+    campana: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>',
     libro: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>',
   };
   var FL = SIM.flecha || '→';
@@ -81,6 +83,9 @@
       if (run && (!run.secciones || run.v !== 1)) { run = null; guardar(K_RUN, null); }
       pintarBarra();
       inicio();
+      // App instalable (service worker) y, con plan Completo, el plan de estudio. #hoy = vino de un recordatorio
+      registrarSW();
+      if (location.hash === '#hoy' || /[?&]app=1/.test(location.search)) try { history.replaceState(null, '', RUTA + '/'); } catch (e2) { }
     }).catch(function (e) {
       if (e.status === 401) { location.reload(); return; }
       h('<section class="sim-vacio"><h1>No pudimos cargar el simulador</h1><p>Revisa tu conexión e inténtalo de nuevo.</p><button class="btn tinta" id="reint">Reintentar</button></section>');
@@ -325,6 +330,7 @@
       retomar +
       '<div class="sim-home">' +
         '<div class="sim-col sim-col-main">' +
+          '<div class="o-0 sim-est-caja" id="est-card">' + tarjetaEstudio() + '</div>' +
           '<section class="o-4">' + selArea + '<h2 class="sim-h2 sim-h2-top">Sube de nivel</h2><p class="sim-nota" style="margin-top:-4px">Empieza en Calentamiento, entrena en Medio y cierra con el examen completo, que tiene la dificultad y el tiempo del examen real.</p>' +
           (!puedePracticar() ? tarjetaPlan('practica', 'Llega al examen con práctica de sobra') : '') +
           (puedePracticar() && hayCal ? '<button class="sim-op sim-op-grande sim-op-nivel" data-modo="calentamiento"><span class="sim-op-t"><span class="sim-op-tag n1">Nivel 1 · para entrar en ritmo</span><b>Calentamiento</b><small>' + caR + ' reactivos · ' + caM + ' minutos · preguntas de dificultad básica e intermedia · con tutor</small></span><span class="sim-op-f">' + FL + '</span></button>' + intentosCa : '') +
@@ -383,6 +389,7 @@
     app.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
     app.querySelectorAll('[data-hist]').forEach(function (b) { b.onclick = function () { reporte(YO.historial[Number(b.dataset.hist)], true); }; });
     conectarSparks();
+    conectarEstudio();
   }
   // Vuelve a pintar el inicio sin perder el lugar en la página (al cambiar meta o universidad) y deja el foco donde estaba
   function repintar(foco) {
@@ -639,7 +646,7 @@
     return '<div class="sim-tutor ' + (ok1 || ok2 ? 'bien' : 'sol') + '" role="status"><div class="sim-tutor-i">' + (ok1 || ok2 ? ICONO.ok : ICONO.libro) + '</div><div>' +
       '<b>' + titulo + '</b><p class="sim-correcta">Respuesta: <b>' + rico(correcta) + '</b></p>' +
       '<details' + (ok1 ? '' : ' open') + '><summary>Solución paso a paso</summary><ol class="sim-pasos">' + r.pasos.map(function (p) { return '<li>' + letras(p, orden) + '</li>'; }).join('') + '</ol>' +
-      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details></div></div>' +
+      '<div class="sim-regla"><span>La regla</span><p>' + letras(r.regla, orden) + '</p></div></details>' + apunteHTML(r) + '</div></div>' +
       '<div class="sim-acc"><button class="btn tinta" id="b-sig">' + (ultimo ? 'Terminar sección' : 'Siguiente') + ' ' + FL + '</button></div>';
   }
   function normal(v) {
@@ -692,6 +699,7 @@
     var inp = document.getElementById('resp'); if (inp) inp.oninput = function () { inp.setCustomValidity(''); };
     var sig = document.getElementById('b-sig');
     if (sig) sig.onclick = function () { var s = secActual(); s.idx++; guardar(K_RUN, run); if (s.idx >= s.items.length) finSeccion(); else pregunta(); };
+    conectarApunte(r);
     void orden;
   }
 
@@ -966,6 +974,324 @@
       };
     });
     function listo(b) { b.disabled = true; b.innerHTML = (SIM.check || '') + ' ¡Listo! Ya estás suscrito'; b.classList.add('hecho'); }
+  }
+
+  // ---------- La app de estudio: instalarla, plan de estudio, recordatorios y apuntes ----------
+  // Instalar: todos. Plan, recordatorios y apuntes: plan Completo (YO.plan.estudio; api/estudio, src/simulador/estudio.js).
+  var EST = null, EST_CARGANDO = false, PROMPT_INSTALAR = null, K_INST;
+  var TZ_MX = 'America/Mexico_City';
+  var DIAS_C = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'], ORDEN_DIAS = [1, 2, 3, 4, 5, 6, 0];
+  function tieneEstudio() { return !!(YO.plan && YO.plan.estudio); }
+  function hoyMx() { return L.diaDe(new Date(), TZ_MX); }
+  function standalone() { return !!((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true); }
+  function esIOS() { return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+  function pushPosible() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); PROMPT_INSTALAR = e; var b = document.getElementById('b-instalar'); if (b) b.hidden = false; });
+  window.addEventListener('appinstalled', function () { PROMPT_INSTALAR = null; var c = document.querySelector('.sim-instalar'); if (c) c.remove(); });
+  function registrarSW() {
+    if (!('serviceWorker' in navigator)) return Promise.resolve(null);
+    return navigator.serviceWorker.register(RUTA + '/sw.js', { scope: RUTA + '/' }).catch(function () { return null; });
+  }
+  function cargarEstudio() {
+    if (!tieneEstudio()) return Promise.resolve(null);
+    if (EST) return Promise.resolve(EST);
+    if (EST_CARGANDO) return EST_CARGANDO;
+    EST_CARGANDO = api('estudio').then(function (d) { EST = d; return d; }, function () { return null; }).then(function (d) { EST_CARGANDO = false; return d; });
+    return EST_CARGANDO;
+  }
+  function apunteDe(ref) { var a = (EST && EST.apuntes) || []; for (var i = 0; i < a.length; i++) if (a[i].ref === ref) return a[i]; return null; }
+  function nombreTema(id) { return B.temas[id] ? B.temas[id].nombre : 'Tema'; }
+  function listaY(n) { return n.length < 2 ? n.join('') : n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1]; }
+  // "jueves 12 de noviembre"
+  function diaLargo(d) { try { return new Date(d + 'T12:00:00Z').toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); } catch (e) { return d; } }
+  function diaCorto(d) { try { var t = new Date(d + 'T12:00:00Z').toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }).replace(/\./g, '').replace(/,/g, ''); return t.charAt(0).toUpperCase() + t.slice(1); } catch (e) { return d; } }
+  function horaTxt(h) { return (h % 12 || 12) + ':00 ' + (h < 12 ? 'a. m.' : 'p. m.'); }
+  // La sesión de hoy o la siguiente
+  function proximaSesion() { var e = EST && EST.estudio, h = hoyMx(); if (!e) return null; for (var i = 0; i < e.sesiones.length; i++) if (e.sesiones[i].f >= h) return e.sesiones[i]; return null; }
+  function queToca(s) {
+    if (s.k === 'simulacro') return 'Simulacro de nivel Medio para medir cuánto has subido';
+    var n = s.t.map(nombreTema);
+    if (s.k === 'repaso') return 'Repaso final' + (n.length ? ': ' + listaY(n) : '') + ' y tus apuntes';
+    return n.length ? listaY(n) : 'Tus temas más débiles';
+  }
+
+  // ---------- tarjeta del inicio ----------
+  function tarjetaEstudio() { return instalarHTML() + estudioHTML(); }
+  function instalarHTML() {
+    if (standalone() || leer(K_INST)) return '';
+    var ios = esIOS();
+    return '<div class="sim-card sim-instalar"><img class="sim-instalar-i" src="' + esc(SIM.icono || '') + '" alt="" width="56" height="56"><div class="sim-instalar-t"><b>Instala tu simulador como app</b>' +
+      '<small>' + (tieneEstudio() ? 'Ábrelo desde tu pantalla de inicio y recibe ahí los recordatorios de tu plan de estudio.' : 'Ábrelo desde tu pantalla de inicio, como cualquier app, sin buscar el correo.') + '</small>' +
+      '<div class="botones">' + (ios ? '' : '<button class="btn tinta chico" id="b-instalar" type="button"' + (PROMPT_INSTALAR ? '' : ' hidden') + '>Instalar</button>') +
+      '<button class="btn ' + (ios ? 'tinta' : 'blanco') + ' chico" type="button" data-ir="instalar">Cómo instalarla</button><button class="sim-link" type="button" id="b-inst-no">Ahora no</button></div></div></div>';
+  }
+  function estudioHTML() {
+    if (!tieneEstudio()) return estudioBloqueado();
+    if (!EST) return '<div class="sim-card sim-est"><span class="etiqueta">Tu plan de estudio</span><p class="sim-nota"><span class="sim-giro chico" aria-hidden="true"></span> Cargando tu plan…</p></div>';
+    var e = EST.estudio, nAp = (EST.apuntes || []).length;
+    var links = '<div class="sim-est-links"><button type="button" class="sim-est-link" data-ir="plan">' + ICONO.reloj + '<span>' + (e ? 'Mi plan y recordatorios' : 'Armar mi plan') + '</span></button><button type="button" class="sim-est-link" data-ir="apuntes">' + ICONO.lapiz + '<span>Mis apuntes' + (nAp ? ' <b class="num">' + nAp + '</b>' : '') + '</span></button></div>';
+    if (!e) return '<div class="sim-card sim-est sim-est-nuevo"><span class="etiqueta">Tu plan de estudio</span><h2>¿Cuándo es tu examen?</h2><p>Dinos la fecha y los días que puedes estudiar: te repartimos los temas hasta ese día, empezando por los que más te cuestan, y te recordamos en tu celular cuándo te toca.</p><div class="botones"><button class="btn tinta" type="button" data-ir="plan">Armar mi plan ' + FL + '</button></div>' + links + '</div>';
+    var hoy = hoyMx(), faltan = L.diasEntre(hoy, e.fecha_examen);
+    if (faltan < 0) return '<div class="sim-card sim-est"><span class="etiqueta">Tu plan de estudio</span><h2>Tu examen ya pasó</h2><p>Esperamos que te haya ido increíble. ¿Vas a presentar otra vez? Pon la nueva fecha y armamos otro plan.</p><div class="botones"><button class="btn tinta" type="button" data-ir="plan">Nueva fecha ' + FL + '</button></div>' + links + '</div>';
+    var hechas = L.sesionesHechas(e.sesiones, YO.historial, TZ_MX), nHechas = e.sesiones.filter(function (x) { return hechas[x.f]; }).length;
+    var s = proximaSesion(), esHoy = s && s.f === hoy, lista = s && esHoy && hechas[hoy];
+    var cuenta = faltan === 0 ? '<b>¡Hoy!</b>' : '<b class="num">' + faltan + '</b><small>' + (faltan === 1 ? 'día' : 'días') + '</small>';
+    var cuerpo;
+    if (faltan === 0) cuerpo = '<h2>¡Hoy es tu examen!</h2><p>Lee con calma cada pregunta y administra tu tiempo. Ya te preparaste: ¡mucho éxito!</p>';
+    else if (!s) cuerpo = '<h2>Ya no hay sesiones antes de tu examen</h2><p>Repasa tus apuntes y descansa bien la noche anterior.</p>';
+    else cuerpo = '<h2>' + (lista ? '¡Sesión de hoy lista! ' + ICONO.ok : esHoy ? 'Hoy toca' : 'Siguiente sesión: ' + esc(diaLargo(s.f))) + '</h2>' +
+      '<p class="sim-est-que">' + esc(queToca(s)) + '</p>' +
+      (esHoy && !lista ? '<div class="botones"><button class="btn tinta" type="button" data-estudiar="' + s.f + '">Estudiar ahora ' + FL + '</button></div>' : esHoy ? '<p class="sim-nota">Si quieres más, practica otro tema o adelanta la siguiente sesión.</p><div class="botones"><button class="btn blanco chico" type="button" data-estudiar="' + s.f + '">Practicar otra vez</button></div>' : '<div class="botones"><button class="btn blanco chico" type="button" data-estudiar="' + s.f + '">Adelantarla hoy</button></div>');
+    var avance = e.sesiones.length ? '<div class="sim-est-av"><div class="sim-banco-p" role="progressbar" aria-valuemin="0" aria-valuemax="' + e.sesiones.length + '" aria-valuenow="' + nHechas + '" aria-label="Sesiones cumplidas"><span style="width:' + pct(nHechas, e.sesiones.length) + '%"></span></div><small>' + nHechas + ' de ' + e.sesiones.length + ' sesiones cumplidas</small></div>' : '';
+    var rec = e.recordatorios ? '' : '<p class="sim-nota sim-est-rec">' + ICONO.campana + '<span><button type="button" class="sim-link" data-ir="plan">Activa tus recordatorios</button> para que no se te pase ningún día.</span></p>';
+    return '<div class="sim-card sim-est"><div class="sim-est-cab"><span class="etiqueta">Tu plan de estudio</span><span class="sim-est-faltan" title="Para tu examen">' + cuenta + '</span></div>' + cuerpo + avance + rec + links + '</div>';
+  }
+  // Sin plan Completo: lo que le falta para tenerlo (Práctica + Examen = Completo)
+  function estudioBloqueado() {
+    var falta = puedePracticar() && !tieneExamen() ? 'completo' : !puedePracticar() ? 'practica' : null;
+    var o = falta && (YO.ofertas || {})[falta];
+    return '<div class="sim-card sim-est sim-est-bloq"><span class="sim-op-tag n3">Plan Completo</span><h2>Tu plan de estudio, recordatorios y apuntes</h2>' +
+      '<ul class="sim-plan-l">' + ['Un plan día por día hasta tu examen, empezando por tus temas débiles', 'Recordatorios en tu celular a la hora que elijas', 'Tus apuntes de cada pregunta y tema, en todos tus dispositivos'].map(function (t) { return '<li>' + ICONO.ok + '<span>' + t + '</span></li>'; }).join('') + '</ul>' +
+      (o ? '<button class="btn tinta" type="button" data-plan="' + falta + '">Completar mi plan · ' + precio(o.precio_centavos) + '</button><p class="sim-nota">Te sumamos ' + (falta === 'completo' ? 'el Examen (2 exámenes completos)' : 'la Práctica sin límite') + ' y tu cuenta queda con el plan Completo.</p>' : '<p class="sim-nota">Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> para sumarlo a tu cuenta.</p>') + '</div>';
+  }
+  function conectarEstudio() {
+    var caja = document.getElementById('est-card'); if (!caja) return;
+    caja.querySelectorAll('[data-ir]').forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
+    caja.querySelectorAll('[data-estudiar]').forEach(function (b) { b.onclick = function () { estudiarSesion(b.dataset.estudiar); }; });
+    caja.querySelectorAll('[data-plan]').forEach(function (b) { b.onclick = function () { comprarPlan(b.dataset.plan); }; });
+    var bi = document.getElementById('b-instalar'); if (bi) bi.onclick = function () { if (!PROMPT_INSTALAR) return ir('instalar'); PROMPT_INSTALAR.prompt(); PROMPT_INSTALAR.userChoice.finally(function () { PROMPT_INSTALAR = null; bi.hidden = true; }); };
+    var bn = document.getElementById('b-inst-no'); if (bn) bn.onclick = function () { guardar(K_INST, 1); var c = caja.querySelector('.sim-instalar'); if (c) c.remove(); };
+    if (tieneEstudio() && !EST) cargarEstudio().then(function () { var c = document.getElementById('est-card'); if (c) { c.innerHTML = tarjetaEstudio(); conectarEstudio(); } });
+  }
+  function ir(a) { if (a === 'plan') pantallaPlan(); else if (a === 'apuntes') pantallaApuntes(); else if (a === 'instalar') guiaInstalar(); else inicio(); }
+  function estudiarSesion(f) {
+    var e = EST && EST.estudio, s = null; if (!e) return;
+    for (var i = 0; i < e.sesiones.length; i++) if (e.sesiones[i].f === f) s = e.sesiones[i];
+    if (!s) return;
+    if (run && run.fase !== 'fin' && !confirm(esIntento(run.modo) ? 'Tienes un simulacro sin terminar. Termínalo primero o descártalo desde el inicio.' : 'Tienes una práctica sin terminar. ¿Empezar la sesión de hoy y descartarla?')) return;
+    if (run && run.fase !== 'fin' && esIntento(run.modo)) return inicio();
+    if (s.k === 'simulacro') return empezar('completo');
+    var temas = s.t.length ? s.t : L.temasDebiles(L.desempenoTemas(YO.historial), B.temas, 3, 1).map(function (t) { return t.id; });
+    if (!temas.length) temas = Object.keys(B.temas).slice(0, 2);
+    practicaN = s.k === 'repaso' ? 20 : 10;
+    empezar('practica', temas);
+  }
+
+  // ---------- guía para instalar ----------
+  function guiaInstalar() {
+    detenerReloj(); pintarBarra();
+    var ios = esIOS(), android = /Android/.test(navigator.userAgent);
+    var compartir = '<svg class="sim-ico-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Compartir"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg>';
+    var pasosIOS = ['Abre esta página en <b>Safari</b> (en otro navegador el iPhone no deja instalarla).', 'Toca el botón <b>Compartir</b> ' + compartir + ' (abajo, o arriba en iPad).', 'Desliza y elige <b>Agregar a inicio</b>. Luego toca <b>Agregar</b>.', 'Abre el simulador desde el ícono del librito en tu pantalla de inicio.'];
+    var pasosAndroid = ['Abre esta página en <b>Chrome</b>.', 'Toca el menú <b>⋮</b> (arriba a la derecha).', 'Elige <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.', 'Abre el simulador desde el ícono del librito.'];
+    var pasosPC = ['En Chrome o Edge, busca el ícono de <b>instalar</b> al final de la barra de direcciones.', 'Haz clic en <b>Instalar</b>.', 'El simulador se abre en su propia ventana y queda en tus aplicaciones.'];
+    var bloque = function (t, p, abierto) { return '<details class="sim-card sim-guia"' + (abierto ? ' open' : '') + '><summary><b>' + t + '</b></summary><ol class="sim-guia-l">' + p.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol></details>'; };
+    h('<section class="sim-intro sim-inst"><img class="sim-instalar-i grande" src="' + esc(SIM.icono || '') + '" alt="" width="88" height="88"><h1>Instala tu simulador</h1>' +
+      '<p class="sim-lead">Queda como una app en tu celular: la abres con un toque' + (tieneEstudio() ? ' y te llegan los recordatorios de tu plan de estudio' : '') + '.</p>' +
+      bloque('iPhone o iPad', pasosIOS, ios) + bloque('Android', pasosAndroid, android) + bloque('Computadora', pasosPC, !ios && !android) +
+      '<div class="sim-card sim-guia-nota"><p><b>La primera vez que abras la app</b> puede pedirte tu correo: te mandamos un código de 6 dígitos y listo. Tu cuenta funciona en máximo 2 dispositivos; la app cuenta como uno.</p></div>' +
+      '<div class="botones"><button class="btn tinta" id="b-inicio" type="button">Volver al inicio</button></div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+  }
+
+  // ---------- plan de estudio ----------
+  function temasDelBanco() { return L.temasPorSeccion(B, {}).reduce(function (a, g) { return a.concat(g.temas.map(function (t) { return { id: t.id, nombre: t.nombre, seccion: g.id }; })); }, []); }
+  function pantallaPlan() {
+    detenerReloj(); pintarBarra();
+    if (!tieneEstudio()) return inicio();
+    if (!EST) { h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Cargando tu plan…</div>'); cargarEstudio().then(function (d) { if (d) pantallaPlan(); else inicio(); }); return; }
+    var e = EST.estudio, hoy = hoyMx(), manana = L.masDias(hoy, 1);
+    var dias = e ? e.dias : [1, 2, 3, 4, 5], hora = e ? e.hora : 19, rec = e ? e.recordatorios : true;
+    var horas = []; for (var x = 6; x <= 22; x++) horas.push(x);
+    var ios = esIOS() && !standalone();
+    var recHTML = !pushPosible() || ios
+      ? '<div class="sim-pe-rec sim-pe-rec-no">' + ICONO.campana + '<div><b>Recordatorios en tu celular</b><p class="sim-nota">' + (ios ? 'En iPhone, primero instala la app en tu pantalla de inicio y actívalos desde ahí. <button type="button" class="sim-link" data-ir="instalar">Cómo instalarla</button>' : 'Este navegador no permite recordatorios. Ábrelo en Chrome, Edge o Safari, o instala la app.') + '</p></div></div>'
+      : '<label class="sim-pe-rec sim-casilla"><input type="checkbox" id="pe-rec"' + (rec ? ' checked' : '') + '><span><b>Recordarme en este dispositivo</b><small id="pe-rec-estado">Te avisamos los días que elegiste, a esa hora, qué tema te toca.</small></span></label>';
+    var calendario = e && e.sesiones.length ? calendarioHTML(e) : '';
+    h('<section class="sim-intro sim-plan"><span class="sim-paso">Plan Completo</span><h1>Tu plan de estudio</h1>' +
+      '<p class="sim-lead">Repartimos los temas en tus días de estudio hasta el examen: primero los que más te cuestan, un simulacro cada 6 sesiones para medir tu avance y un repaso final. Se ajusta solo cada vez que lo guardas, con tus resultados más recientes.</p>' +
+      '<form class="sim-card sim-pe" id="f-pe" novalidate>' +
+        '<label class="sim-pe-campo"><span>¿Cuándo es tu examen?</span><input type="date" id="pe-fecha" required min="' + manana + '" value="' + esc(e && e.fecha_examen >= manana ? e.fecha_examen : '') + '"></label>' +
+        '<fieldset class="sim-pe-campo"><legend>¿Qué días puedes estudiar?</legend><div class="sim-pe-dias">' + ORDEN_DIAS.map(function (d) {
+          return '<label class="sim-pe-dia"><input type="checkbox" name="pe-dia" value="' + d + '"' + (dias.indexOf(d) >= 0 ? ' checked' : '') + '><span>' + DIAS_C[d] + '</span></label>';
+        }).join('') + '</div></fieldset>' +
+        '<label class="sim-pe-campo"><span>¿A qué hora te recordamos?</span><select id="pe-hora">' + horas.map(function (x) { return '<option value="' + x + '"' + (x === hora ? ' selected' : '') + '>' + horaTxt(x) + '</option>'; }).join('') + '</select><small class="sim-nota">Hora del centro de México.</small></label>' +
+        recHTML +
+        '<p class="sim-error" id="pe-error" role="alert" hidden></p>' +
+        '<button class="btn tinta" id="pe-guardar" type="submit">' + (e ? 'Guardar y reajustar mi plan' : 'Armar mi plan') + ' ' + FL + '</button>' +
+      '</form>' + calendario +
+      '<div class="botones"><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button>' + (e ? '<button class="sim-link" id="pe-borrar" type="button">Borrar mi plan</button>' : '') + '</div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    app.querySelectorAll('[data-ir]').forEach(function (b) { b.onclick = function () { ir(b.dataset.ir); }; });
+    app.querySelectorAll('[data-estudiar]').forEach(function (b) { b.onclick = function () { estudiarSesion(b.dataset.estudiar); }; });
+    var pb = document.getElementById('pe-borrar');
+    if (pb) pb.onclick = function () {
+      if (!confirm('¿Borrar tu plan de estudio? Dejarás de recibir recordatorios. Tus apuntes se quedan.')) return;
+      api('estudio/borrar', { method: 'POST', body: '{}' }).then(function () { EST.estudio = null; inicio(); }, function (er) { alert(er.message); });
+    };
+    // ¿Este dispositivo ya recibe los recordatorios?
+    var est = document.getElementById('pe-rec-estado');
+    if (est && 'serviceWorker' in navigator) navigator.serviceWorker.getRegistration(RUTA + '/').then(function (reg) { return reg && reg.pushManager.getSubscription(); }).then(function (sub) {
+      if (sub && e && e.recordatorios) est.innerHTML = '<span class="sim-si">' + ICONO.ok + ' Este dispositivo ya recibe tus recordatorios.</span>';
+    }).catch(function () { });
+    document.getElementById('f-pe').onsubmit = function (ev) {
+      ev.preventDefault();
+      var err = document.getElementById('pe-error'), btn = document.getElementById('pe-guardar');
+      var fecha = document.getElementById('pe-fecha').value;
+      var ds = [].map.call(app.querySelectorAll('input[name="pe-dia"]:checked'), function (c) { return Number(c.value); });
+      var hr = Number(document.getElementById('pe-hora').value);
+      var quiere = document.getElementById('pe-rec') ? document.getElementById('pe-rec').checked : !!(e && e.recordatorios);
+      var falla = function (m) { err.textContent = m; err.hidden = false; btn.disabled = false; btn.innerHTML = (e ? 'Guardar y reajustar mi plan' : 'Armar mi plan') + ' ' + FL; };
+      if (!fecha) return falla('Escribe la fecha de tu examen.');
+      if (fecha < manana) return falla('La fecha de tu examen tiene que ser a partir de mañana.');
+      if (!ds.length) return falla('Elige al menos un día para estudiar.');
+      err.hidden = true; btn.disabled = true; btn.textContent = 'Guardando…';
+      // Lo ya pasado se queda como estaba (para contar lo que cumpliste); de hoy en adelante se vuelve a repartir
+      var previas = e ? e.sesiones.filter(function (x) { return x.f < hoy; }) : [];
+      var nuevas = L.planEstudio({ hoy: hoy, fechaExamen: fecha, dias: ds, temas: temasDelBanco(), desempeno: L.desempenoTemas(YO.historial) });
+      var guardarPlan = function (conRec) {
+        return api('estudio', { method: 'POST', body: JSON.stringify({ fecha_examen: fecha, dias: ds, hora: hr, recordatorios: conRec, sesiones: previas.concat(nuevas).slice(-400) }) })
+          .then(function (d) { EST = d; pantallaPlan(); var c = document.querySelector('.sim-cal'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      };
+      // Sin la casilla (iPhone sin instalar, navegador sin push) se respeta lo que ya tenía; con ella, se activa aquí
+      var conCasilla = !!document.getElementById('pe-rec');
+      var paso = !conCasilla ? Promise.resolve(!!(e && e.recordatorios)) : !quiere ? Promise.resolve(false)
+        : activarPush().then(function () { return true; }, function (m) { alert(m.message || m); return false; });
+      paso.then(guardarPlan).catch(function (er) { falla(er.message || 'No pudimos guardar tu plan. Revisa tu conexión.'); });
+    };
+  }
+  function calendarioHTML(e) {
+    var hoy = hoyMx(), hechas = L.sesionesHechas(e.sesiones, YO.historial, TZ_MX), semanas = [], actual = null;
+    e.sesiones.forEach(function (s) {
+      var lunes = L.masDias(s.f, -((L.semanaDe(s.f) + 6) % 7));
+      if (!actual || actual.lunes !== lunes) { actual = { lunes: lunes, s: [] }; semanas.push(actual); }
+      actual.s.push(s);
+    });
+    var lunesHoy = L.masDias(hoy, -((L.semanaDe(hoy) + 6) % 7));
+    return '<h2 class="sim-h2">Tu calendario</h2><p class="sim-nota" style="margin-top:-6px">Examen: <b>' + esc(diaLargo(e.fecha_examen)) + '</b> · recordatorio a las ' + horaTxt(e.hora) + (e.recordatorios ? '' : ' (apagado)') + '</p><div class="sim-cal">' +
+      semanas.map(function (w) {
+        var pasada = L.masDias(w.lunes, 6) < hoy, n = w.s.filter(function (s) { return hechas[s.f]; }).length;
+        return '<details class="sim-card sim-cal-sem"' + (w.lunes === lunesHoy || (!pasada && w.lunes > lunesHoy && semanas.filter(function (x) { return x.lunes >= lunesHoy; })[0] === w) ? ' open' : '') + '><summary><b>Semana del ' + esc(diaCorto(w.lunes).replace(/^\S+\s/, '')) + '</b><small>' + n + ' de ' + w.s.length + ' cumplidas</small></summary><ul class="sim-cal-l">' +
+          w.s.map(function (s) {
+            var ok = hechas[s.f], esHoy = s.f === hoy, cls = ok ? ' hecha' : esHoy ? ' hoy' : s.f < hoy ? ' pasada' : '';
+            return '<li class="sim-cal-s' + cls + '"><span class="sim-cal-d">' + esc(diaCorto(s.f)) + '</span><span class="sim-cal-q"><span class="sim-op-tag ' + (s.k === 'simulacro' ? 'n2' : s.k === 'repaso' ? 'n3' : 'n1') + '">' + (s.k === 'simulacro' ? 'Simulacro' : s.k === 'repaso' ? 'Repaso' : 'Temas') + '</span>' + esc(queToca(s)) + '</span>' +
+              (ok ? '<span class="sim-cal-ok" aria-label="Cumplida">' + ICONO.ok + '</span>' : s.f >= hoy ? '<button type="button" class="btn ' + (esHoy ? 'tinta' : 'blanco') + ' chico" data-estudiar="' + s.f + '">' + (esHoy ? 'Estudiar' : 'Adelantar') + '</button>' : '<span class="sim-cal-no">Pendiente</span>') + '</li>';
+          }).join('') + '</ul></details>';
+      }).join('') + '</div>';
+  }
+  // Pide permiso, suscribe este dispositivo al servicio de push y lo registra en el servidor
+  function b64aBytes(s) { var p = '='.repeat((4 - s.length % 4) % 4), b = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')), out = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) out[i] = b.charCodeAt(i); return out; }
+  function activarPush() {
+    if (!pushPosible()) return Promise.reject(new Error('Este navegador no permite recordatorios.'));
+    // Algunos navegadores nunca responden al suscribirse (modo incógnito, sin servicio de push): a los 20 s se avisa
+    var limite = new Promise(function (_, no) { setTimeout(function () { no(new Error('No pudimos activar los recordatorios en este dispositivo. Revisa que las notificaciones estén permitidas e inténtalo de nuevo.')); }, 20000); });
+    return Promise.race([limite, activarPush2()]);
+  }
+  function activarPush2() {
+    return Notification.requestPermission().then(function (p) {
+      if (p !== 'granted') throw new Error('Para recibir recordatorios, permite las notificaciones del simulador en la configuración de tu ' + (esIOS() ? 'iPhone' : 'navegador') + '.');
+      return registrarSW().then(function () { return navigator.serviceWorker.ready; });
+    }).then(function (reg) {
+      // Si este dispositivo ya estaba suscrito y el servidor lo tiene, no se vuelve a registrar (ni a mandar el aviso de prueba)
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (sub && EST.push.suscripciones) return null;
+        return (sub ? Promise.resolve(sub) : reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(EST.push.pub) }))
+          .catch(function () { throw new Error('No pudimos activar los recordatorios en este navegador. Si estás en una ventana de incógnito, ábrelo en una normal o instala la app.'); })
+          .then(function (s) { return api('push', { method: 'POST', body: JSON.stringify(s.toJSON()) }); })
+          .then(function () { EST.push.suscripciones = (EST.push.suscripciones || 0) + 1; });
+      });
+    });
+  }
+
+  // ---------- apuntes ----------
+  function tituloApunte(a) {
+    if (a.ref === 'general') return { t: 'Apunte general', s: '' };
+    if (a.ref.indexOf('t:') === 0) return { t: 'Tu apunte del tema', s: nombreTema(a.ref.slice(2)) };
+    var r = R[a.ref.slice(2)]; if (!r) return { t: 'Pregunta', s: '' };
+    var en = String(r.enunciado || '').replace(/\*\*/g, '').replace(/\s+/g, ' ');
+    return { t: en.length > 110 ? en.slice(0, 107) + '…' : en, s: 'Pregunta · ' + nombreTema(r.tema) };
+  }
+  function temaDeApunte(a) { return a.ref.indexOf('t:') === 0 ? a.ref.slice(2) : a.ref.indexOf('r:') === 0 && R[a.ref.slice(2)] ? R[a.ref.slice(2)].tema : 'general'; }
+  function guardarApunte(ref, texto) {
+    return api('apuntes', { method: 'POST', body: JSON.stringify({ ref: ref, texto: texto }) }).then(function (d) {
+      EST.apuntes = (EST.apuntes || []).filter(function (x) { return x.ref !== ref; });
+      if (d.apunte) EST.apuntes.unshift(d.apunte);
+      return d;
+    });
+  }
+  function pantallaApuntes(filtro) {
+    detenerReloj(); pintarBarra();
+    if (!tieneEstudio()) return inicio();
+    if (!EST) { h('<div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Cargando tus apuntes…</div>'); cargarEstudio().then(function (d) { if (d) pantallaApuntes(filtro); else inicio(); }); return; }
+    var grupos = L.temasPorSeccion(B, {}), aps = EST.apuntes || [], q = String(filtro || '').toLowerCase();
+    var visibles = aps.filter(function (a) { return !q || (a.texto + ' ' + tituloApunte(a).t + ' ' + tituloApunte(a).s).toLowerCase().indexOf(q) >= 0; });
+    // Agrupados por tema, en el orden del banco
+    var orden = ['general'].concat(grupos.reduce(function (x, g) { return x.concat(g.temas.map(function (t) { return t.id; })); }, []));
+    var porTema = {}; visibles.forEach(function (a) { var t = temaDeApunte(a); (porTema[t] = porTema[t] || []).push(a); });
+    var listas = orden.filter(function (t) { return porTema[t]; }).map(function (t) {
+      return '<section class="sim-ap-g"><h2 class="sim-h3">' + esc(t === 'general' ? 'Generales' : nombreTema(t)) + '</h2>' + porTema[t].map(function (a) {
+        var ti = tituloApunte(a);
+        return '<article class="sim-card sim-ap" data-ref="' + esc(a.ref) + '"><header><small>' + esc(ti.s || 'Apunte') + ' · ' + esc(fecha(a.actualizado_at)) + '</small><b>' + esc(ti.t) + '</b></header><p class="sim-ap-t">' + esc(a.texto) + '</p>' +
+          '<div class="sim-ap-acc"><button type="button" class="sim-link" data-ap-editar>Editar</button><button type="button" class="sim-link" data-ap-borrar>Borrar</button>' + (t !== 'general' ? '<button type="button" class="sim-link" data-ap-practicar="' + esc(t) + '">Practicar este tema</button>' : '') + '</div></article>';
+      }).join('') + '</section>';
+    }).join('');
+    h('<section class="sim-intro sim-apuntes"><span class="sim-paso">Plan Completo</span><h1>Mis apuntes</h1>' +
+      '<p class="sim-lead">Lo que anotes aquí o al revisar una pregunta se guarda en tu cuenta: lo ves en tu celular y en tu computadora.</p>' +
+      '<form class="sim-card sim-ap-nuevo" id="f-ap"><label class="sim-pe-campo"><span>¿De qué tema?</span><select id="ap-tema"><option value="general">General (fórmulas, trucos, lo que sea)</option>' +
+        grupos.map(function (g) { return '<optgroup label="' + esc(g.nombre) + '">' + g.temas.map(function (t) { return '<option value="t:' + esc(t.id) + '">' + esc(t.nombre) + '</option>'; }).join('') + '</optgroup>'; }).join('') + '</select></label>' +
+        '<label class="vh" for="ap-texto">Tu apunte</label><textarea id="ap-texto" rows="4" maxlength="4000" placeholder="Escribe con tus palabras lo que no quieres olvidar…"></textarea>' +
+        '<p class="sim-error" id="ap-error" role="alert" hidden></p><div class="botones"><button class="btn tinta chico" type="submit">Guardar apunte</button></div></form>' +
+      (aps.length > 4 ? '<label class="sim-ap-buscar"><span class="vh">Buscar en mis apuntes</span><input type="search" id="ap-q" placeholder="Buscar en mis apuntes" value="' + esc(filtro || '') + '"></label>' : '') +
+      (listas || '<p class="sim-nota sim-ap-vacio">' + (q ? 'Ningún apunte coincide con tu búsqueda.' : 'Aún no tienes apuntes. Escribe el primero aquí arriba, o toca <b>Anotar</b> cuando revises una pregunta.') + '</p>') +
+      '<div class="botones"><button class="btn blanco" id="b-inicio" type="button">Volver al inicio</button></div></section>');
+    document.getElementById('b-inicio').onclick = inicio;
+    var sel = document.getElementById('ap-tema'), txt = document.getElementById('ap-texto');
+    // Si el tema ya tiene apunte, se edita ese
+    sel.onchange = function () { var a = apunteDe(sel.value === 'general' ? 'general' : sel.value); txt.value = a ? a.texto : ''; };
+    document.getElementById('f-ap').onsubmit = function (ev) {
+      ev.preventDefault();
+      var err = document.getElementById('ap-error'), ref = sel.value;
+      if (!txt.value.trim()) { err.textContent = 'Escribe tu apunte.'; err.hidden = false; return; }
+      guardarApunte(ref, txt.value).then(function () { pantallaApuntes(); }, function (er) { err.textContent = er.message; err.hidden = false; });
+    };
+    var qq = document.getElementById('ap-q'); if (qq) { qq.oninput = function () { var v = qq.value, pos = qq.selectionStart; pantallaApuntes(v); var n = document.getElementById('ap-q'); if (n) { n.focus({ preventScroll: true }); n.setSelectionRange(pos, pos); } }; }
+    app.querySelectorAll('.sim-ap').forEach(function (art) {
+      var ref = art.dataset.ref;
+      art.querySelector('[data-ap-borrar]').onclick = function () { if (confirm('¿Borrar este apunte?')) guardarApunte(ref, '').then(function () { pantallaApuntes(filtro); }, function (er) { alert(er.message); }); };
+      art.querySelector('[data-ap-editar]').onclick = function () { editorApunte(art.querySelector('.sim-ap-t'), ref, function () { pantallaApuntes(filtro); }); };
+      var bp = art.querySelector('[data-ap-practicar]'); if (bp) bp.onclick = function () { practicaN = 10; empezar('practica', [bp.dataset.apPracticar]); };
+    });
+  }
+  // Cambia un bloque por un editor (textarea + Guardar/Cancelar) del apunte ref
+  function editorApunte(nodo, ref, listo) {
+    var a = apunteDe(ref), caja = document.createElement('div');
+    caja.className = 'sim-ap-ed';
+    caja.innerHTML = '<label class="vh" for="ap-ed">Tu apunte</label><textarea id="ap-ed" rows="4" maxlength="4000" placeholder="¿Qué aprendiste con esta pregunta? El método, el error que no quieres repetir…">' + esc(a ? a.texto : '') + '</textarea><p class="sim-error" role="alert" hidden></p>' +
+      '<div class="botones"><button type="button" class="btn tinta chico" data-g>Guardar</button><button type="button" class="btn blanco chico" data-c>Cancelar</button></div>';
+    nodo.replaceWith(caja);
+    var t = caja.querySelector('textarea'), e = caja.querySelector('.sim-error'); t.focus();
+    caja.querySelector('[data-c]').onclick = function () { listo(caja); };
+    caja.querySelector('[data-g]').onclick = function () {
+      var b = this; b.disabled = true; b.textContent = 'Guardando…';
+      guardarApunte(ref, t.value).then(function () { listo(caja); }, function (er) { e.textContent = er.message; e.hidden = false; b.disabled = false; b.textContent = 'Guardar'; });
+    };
+  }
+  // En la revisión de cada pregunta (con tutor): «Anotar en mis apuntes»
+  function apunteHTML(r) {
+    if (!tieneEstudio()) return '';
+    var a = apunteDe('r:' + r.id);
+    return '<div class="sim-apunte" id="ap-r">' + (a ? '<div class="sim-apunte-v"><small>' + ICONO.lapiz + ' Tu apunte</small><p class="sim-ap-t">' + esc(a.texto) + '</p></div>' : '') +
+      '<button type="button" class="sim-link" id="b-ap">' + (a ? 'Editar mi apunte' : ICONO.lapiz + ' Anotar en mis apuntes') + '</button></div>';
+  }
+  function conectarApunte(r) {
+    var b = document.getElementById('b-ap'); if (!b) return;
+    b.onclick = function () {
+      var go = function () {
+        var caja = document.getElementById('ap-r'); if (!caja) return;
+        editorApunte(caja, 'r:' + r.id, function (ed) { var n = document.createElement('div'); n.innerHTML = apunteHTML(r); ed.replaceWith(n.firstChild); conectarApunte(r); });
+      };
+      if (EST) go(); else cargarEstudio().then(go);
+    };
   }
 
   iniciar();

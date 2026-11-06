@@ -424,3 +424,120 @@
 @media (min-width: 720px) { .sim-tpie .botones .btn { flex: 0 0 auto; } .sim-tpie { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; } }
 .sim-tcant { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .sim-tcant select { font: inherit; padding: 6px 10px; border-radius: 10px; border: 1.5px solid var(--line-2); background: var(--card); color: inherit; }
+
+/* ---------- App de estudio (nov 2026): instalar, plan de estudio, recordatorios y apuntes ---------- */
+.o-0 { order: 0; }
+.sim-est-caja { display: grid; gap: 14px; }
+.sim-est-caja:empty { display: none; }
+.sim-pie { text-align: center; padding: 0 16px calc(28px + env(safe-area-inset-bottom)); }
+.sim-pie a { font-size: 12.5px; color: var(--fg-3); text-decoration: none; letter-spacing: .01em; }
+.sim-pie a b { color: var(--fg-2); font-weight: 700; }
+.sim-pie a:hover b { color: var(--fg); }
+.sim-giro.chico { display: inline-block; width: 14px; height: 14px; border-width: 2px; vertical-align: -2px; margin-right: 4px; }
+
+/* Instalar */
+.sim-instalar { display: flex; gap: 14px; align-items: flex-start; }
+.sim-instalar-i { width: 56px; height: 56px; border-radius: 14px; flex: none; box-shadow: 0 6px 16px -6px rgba(20, 17, 20, .35); }
+.sim-instalar-i.grande { width: 88px; height: 88px; border-radius: 22px; margin-bottom: 18px; }
+.sim-instalar-t b { display: block; font-size: 16.5px; letter-spacing: -.015em; }
+.sim-instalar-t small { display: block; color: var(--fg-2); font-size: 14px; margin-top: 2px; line-height: 1.45; }
+.sim-instalar .botones { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sim-inst .sim-guia { margin-top: 12px; padding: 0; }
+.sim-guia summary { cursor: pointer; padding: 16px 18px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.sim-guia summary::after { content: '+'; font-size: 20px; color: var(--fg-3); }
+.sim-guia[open] summary::after { content: '−'; }
+.sim-guia summary::-webkit-details-marker { display: none; }
+.sim-guia-l { margin: 0; padding: 0 18px 18px 40px; display: grid; gap: 10px; color: var(--fg-2); font-size: 15.5px; }
+.sim-guia-l b { color: var(--fg); }
+.sim-ico-in { width: 18px; height: 18px; vertical-align: -3px; color: #0a84ff; }
+.sim-guia-nota { margin-top: 12px; background: var(--bg-2); box-shadow: none; }
+.sim-guia-nota p { font-size: 14.5px; }
+
+/* Tarjeta del plan */
+.sim-est { position: relative; overflow: hidden; }
+.sim-est::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--morado), #c084fc); }
+.sim-est-bloq::before, .sim-est-nuevo::before { background: linear-gradient(90deg, #FFC23D, #f59e0b); }
+.sim-est-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.sim-est-faltan { display: inline-flex; align-items: baseline; gap: 4px; padding: 6px 12px; border-radius: 999px; background: var(--morado-suave); color: var(--morado); white-space: nowrap; }
+.sim-est-faltan b { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
+.sim-est-faltan small { font-size: 13px; font-weight: 600; }
+.sim-est h2 svg { width: 22px; height: 22px; vertical-align: -4px; color: var(--verde); }
+.sim-est-que { font-size: 17px !important; color: var(--fg) !important; font-weight: 600; letter-spacing: -.01em; }
+.sim-est .botones { margin-top: 14px; }
+.sim-est-av { margin-top: 16px; }
+.sim-est-av small { color: var(--fg-2); font-size: 13px; }
+.sim-est-rec { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; }
+.sim-est-rec > svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+.sim-est-rec .sim-link { padding: 0; font-size: inherit; }
+.sim-est-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.sim-est-link { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg); font: inherit; font-size: 14px; font-weight: 600; color: var(--fg); cursor: pointer; text-align: left; min-height: 44px; }
+.sim-est-link:hover { border-color: var(--line-2); background: var(--card); }
+.sim-est-link svg { width: 18px; height: 18px; flex: none; color: var(--morado); }
+.sim-est-link b { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 2px; border-radius: 999px; background: var(--morado-suave); color: var(--morado); font-size: 12px; text-align: center; }
+@media (max-width: 380px) { .sim-est-links { grid-template-columns: 1fr; } }
+
+/* Formulario del plan */
+.sim-pe { display: grid; gap: 18px; margin-top: 22px; }
+.sim-pe-campo { display: grid; gap: 8px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.sim-pe-campo > span, .sim-pe-campo legend { font-weight: 700; font-size: 15.5px; padding: 0; margin-bottom: 8px; }
+.sim-pe input[type=date], .sim-pe select, .sim-ap-nuevo select, .sim-ap-nuevo textarea, .sim-ap-ed textarea, .sim-ap-buscar input {
+  font: inherit; font-size: 16px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line-2); background: var(--card); color: var(--fg); width: 100%; max-width: 100%; min-height: 48px; }
+.sim-pe input[type=date] { max-width: 260px; }
+.sim-pe select { max-width: 220px; }
+textarea { resize: vertical; line-height: 1.5; }
+.sim-pe-dias { display: flex; flex-wrap: wrap; gap: 8px; }
+.sim-pe-dia { position: relative; }
+.sim-pe-dia input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.sim-pe-dia span { display: inline-flex; align-items: center; justify-content: center; min-width: 52px; height: 44px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--line-2); font-weight: 650; font-size: 14.5px; background: var(--card); transition: background .15s, color .15s, border-color .15s; }
+.sim-pe-dia input:checked + span { background: var(--fg); color: #fff; border-color: var(--fg); }
+.sim-pe-dia input:focus-visible + span { outline: 2px solid var(--morado); outline-offset: 2px; }
+.sim-pe-rec { padding: 14px 16px; border-radius: 16px; background: var(--bg-2); }
+.sim-pe-rec b { display: block; color: var(--fg); }
+.sim-pe-rec small { display: block; margin-top: 2px; }
+.sim-pe-rec small svg { width: 15px; height: 15px; vertical-align: -3px; }
+.sim-pe-rec-no { display: flex; gap: 10px; align-items: flex-start; }
+.sim-pe-rec-no > svg { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--fg-2); }
+
+/* Calendario */
+.sim-cal { display: grid; gap: 10px; }
+.sim-cal-sem { padding: 0; }
+.sim-cal-sem summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 16px 18px; }
+.sim-cal-sem summary::-webkit-details-marker { display: none; }
+.sim-cal-sem summary small { color: var(--fg-2); font-size: 13px; }
+.sim-cal-l { list-style: none; margin: 0; padding: 0 10px 10px; display: grid; gap: 6px; }
+.sim-cal-s { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px; border-radius: 14px; }
+.sim-cal-s.hoy { background: var(--morado-suave); }
+.sim-cal-s.pasada { opacity: .6; }
+.sim-cal-d { font-size: 13px; font-weight: 700; color: var(--fg-2); }
+.sim-cal-q { font-size: 14.5px; line-height: 1.4; min-width: 0; }
+.sim-cal-q .sim-op-tag { margin: 0 6px 2px 0; padding: 2px 8px; font-size: 11px; }
+.sim-cal-ok { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--verde-suave); color: var(--verde); }
+.sim-cal-ok svg { width: 18px; height: 18px; }
+.sim-cal-no { font-size: 12px; color: var(--fg-3); }
+@media (max-width: 480px) { .sim-cal-s { grid-template-columns: minmax(0, 1fr) auto; } .sim-cal-d { grid-column: 1 / -1; } }
+
+/* Apuntes */
+.sim-ap-nuevo { display: grid; gap: 12px; margin-top: 22px; }
+.sim-ap-nuevo .botones, .sim-ap-ed .botones { margin-top: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.sim-ap-buscar { display: block; margin-top: 18px; }
+.sim-ap-g { margin-top: 26px; }
+.sim-ap-g > h2 { margin-bottom: 10px; }
+.sim-ap { margin-top: 10px; padding: 16px 18px; }
+.sim-ap header small { display: block; color: var(--fg-3); font-size: 12.5px; margin-bottom: 2px; }
+.sim-ap header b { display: block; font-size: 15px; line-height: 1.35; letter-spacing: -.01em; }
+.sim-ap-t { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 8px; color: var(--fg) !important; font-size: 15.5px; line-height: 1.55; }
+.sim-ap-acc { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; }
+.sim-ap-ed { display: grid; gap: 10px; margin-top: 10px; }
+.sim-ap-vacio { margin-top: 24px; text-align: center; }
+.sim-apunte { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line-2); }
+.sim-apunte .sim-link { display: inline-flex; align-items: center; gap: 6px; }
+.sim-apunte .sim-link svg, .sim-apunte-v small svg { width: 16px; height: 16px; }
+.sim-apunte-v { padding: 12px 14px; border-radius: 14px; background: #FFF8E1; margin-bottom: 8px; }
+.sim-apunte-v small { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #8a5a00; font-size: 12.5px; }
+.sim-apunte-v .sim-ap-t { margin-top: 4px; }
+.sim-apunte .sim-ap-ed { margin-top: 0; }
+
+/* App instalada: respeta el notch y la barra de inicio */
+@media (display-mode: standalone) {
+  .sim-barra { padding-top: env(safe-area-inset-top); height: calc(64px + env(safe-area-inset-top)); }
+}
