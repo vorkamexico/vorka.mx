@@ -23,10 +23,20 @@ videos = {}
 for carpeta, app in CARPETA_APP.items():
     for ruta in sorted(glob.glob(os.path.join(AQUI, 'videos', carpeta, '*.json'))):
         v = json.load(open(ruta, encoding='utf-8'))
-        if not v.get('publicado') or 'duracion' not in v or any('inicio' not in p for p in v['pasos']):
-            continue   # sin voz sincronizada o sin aprobar: no sale en la app
-        videos.setdefault(app, []).append({'id': v['id'], 'tema': v['tema'], 'titulo': v['titulo'], 'audio': v['audio'], 'duracion': v['duracion'],
-            'pasos': [{k: p[k] for k in ('escena', 'voz', 'vista', 'inicio', 'pausa') if k in p} for p in v['pasos']]})
+        if not v.get('publicado'):
+            continue
+        con_voz = 'duracion' in v and all('inicio' in p for p in v['pasos']) and os.path.exists(os.path.join(AQUI, '..', '..', v['audio'].lstrip('/')))
+        if not con_voz:
+            # Sin voz todavía: tiempos estimados por la cantidad de letras (14 por segundo y una pausa entre pasos) para revisar
+            # la animación con subtítulos. Sale solo como borrador (ver motor.js › /videos).
+            t = 0.0
+            for p in v['pasos']:
+                p['inicio'] = round(t, 2)
+                t += len(p['voz']) / 14 + 0.9
+            v['duracion'] = round(t, 2)
+            v['borrador'] = True
+        videos.setdefault(app, []).append({'id': v['id'], 'tema': v['tema'], 'titulo': v['titulo'], 'audio': v['audio'] if con_voz else None, 'duracion': v['duracion'],
+            'borrador': bool(v.get('borrador')), 'pasos': [{k: p[k] for k in ('escena', 'voz', 'acciones', 'limpia', 'inicio', 'pausa') if k in p} for p in v['pasos']]})
 salida_v = os.path.join(AQUI, '..', 'src', 'simulador', 'videos.generado.js')
 with open(salida_v, 'w', encoding='utf-8') as f:
     f.write('// GENERADO por _tienda/simulador/construir.py desde simulador/videos/*/*.json: no editar a mano\n')

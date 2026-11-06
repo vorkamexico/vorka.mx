@@ -1311,7 +1311,7 @@
   function cargarVideos() {
     if (VID) return Promise.resolve(VID);
     if (VID_CARGANDO) return VID_CARGANDO;
-    VID_CARGANDO = api('videos').then(function (d) { VID = d; return d; }, function () { VID = { videos: [] }; return VID; });
+    VID_CARGANDO = api('videos' + (/[?&]borradores=1/.test(location.search) ? '?borradores=1' : '')).then(function (d) { VID = d; return d; }, function () { VID = { videos: [] }; return VID; });
     return VID_CARGANDO;
   }
   function videosDeTema(t) { return ((VID && VID.videos) || []).filter(function (v) { return v.tema === t; }); }
@@ -1344,40 +1344,140 @@
     });
   }
 
-  // Texto de las vistas: escapado, **resaltado** y ~~tachado~~
-  function vt(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/~~(.+?)~~/g, '<s>$1</s>'); }
-  function bloqueHTML(b, dur, k) {
-    // Retraso de cada elemento: las listas aparecen rápido (paso fijo); las líneas de una fórmula se reparten en lo que dura
-    // la voz del paso, para que cada una salga más o menos cuando se menciona
-    var anim = b.fija ? '' : ' sv-entra', d = function (i, n, paso) {
-      if (b.fija || !i) return '';
-      var cada = paso || Math.min(1.8, Math.max(0.5, dur * 0.6 / Math.max(1, n)));
-      return ' style="animation-delay:' + (cada * i).toFixed(2) + 's"';
-    };
-    var L = ['A', 'B', 'C', 'D'];
-    switch (b.t) {
-      case 'pregunta':
-        return '<div class="sv-b sv-preg' + anim + '">' + (b.etiqueta ? '<span class="sv-etq">' + vt(b.etiqueta) + '</span>' : '') + '<p class="sv-enun">' + vt(b.enunciado) + '</p><ol class="sv-ops">' +
-          b.opciones.map(function (o, i) { var c = i === b.correcta ? ' sv-ok' : i === b.mal ? ' sv-mal' : ''; return '<li class="sv-op' + c + (b.fija ? ' fija' : '') + '"' + d(i + 1, 0, 0.18) + '><span>' + L[i] + '</span>' + vt(o) + '</li>'; }).join('') + '</ol></div>';
-      case 'barra':
-        var paga = b.total - b.quita;
-        return '<div class="sv-b sv-barra' + anim + '"><div class="sv-barra-c"><span class="sv-barra-p" style="--p:' + paga + '%"><i>' + paga + ' %</i></span><span class="sv-barra-q" style="--q:' + b.quita + '%"><i>−' + b.quita + ' %</i></span></div><p>' + vt(b.texto) + '</p></div>';
-      case 'formula':
-        return '<div class="sv-b sv-form">' + b.lineas.map(function (l, i) { return '<p class="' + (b.fija ? '' : 'sv-entra') + '"' + d(i, b.lineas.length) + '>' + vt(l) + '</p>'; }).join('') + '</div>';
-      case 'pasos':
-        return '<ol class="sv-b sv-pasos' + anim + '">' + b.items.map(function (x, i) { return '<li class="' + (i < b.activo ? 'hecho' : i === b.activo ? 'activo' : '') + '"><span>' + (i < b.activo ? '✓' : i + 1) + '</span>' + vt(x) + '</li>'; }).join('') + '</ol>';
-      case 'grande':
-        return '<p class="sv-b sv-grande' + (b.tono ? ' ' + b.tono : '') + anim + '">' + vt(b.texto) + '</p>';
-      case 'tabla':
-        return '<table class="sv-b sv-tabla' + anim + '"><thead><tr>' + b.filas[0].map(function (c) { return '<th>' + vt(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
-          b.filas.slice(1).map(function (f, i) { return '<tr class="' + (b.fija ? '' : 'sv-entra') + '"' + d(i + 1, 0, 0.45) + '>' + f.map(function (c) { return '<td>' + vt(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
-      case 'tarjeta':
-        return '<div class="sv-b sv-tarj ' + (b.tono || '') + anim + '">' + (b.titulo ? '<span class="sv-etq">' + vt(b.titulo) + '</span>' : '') + (b.texto ? '<p>' + vt(b.texto) + '</p>' : '') +
-          (b.lineas ? '<ul>' + b.lineas.map(function (l, i) { return '<li class="sv-entra"' + d(i, b.lineas.length) + '>' + vt(l) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
-      case 'turno':
-        return '<div class="sv-b sv-turno' + anim + '"><span class="sv-etq">Tu turno</span><p class="sv-enun">' + vt(b.enunciado) + '</p><div class="sv-reloj" id="sv-reloj" hidden><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19"/><circle class="sv-reloj-a" cx="22" cy="22" r="19"/></svg><b id="sv-reloj-n"></b></div></div>';
+  // ---------- Pizarrón: lo que se escribe y se dibuja en el video ----------
+  // Cada paso trae acciones (escribe, flecha, circulo, subraya, tacha, caja, relleno, palomita). Cada acción empieza cuando la
+  // voz dice su frase («en») y dura lo que tarda en trazarse. Todo es función del tiempo: pinta(t) deja el pizarrón exacto en
+  // el segundo t, así que adelantar, regresar o pausar siempre se ve bien. Un plumón sigue la punta de lo que se está trazando.
+  var GIS = { blanco: '#F5F2E8', amarillo: '#FFD45C', azul: '#7CC8FF', verde: '#86E0A0', rojo: '#FF7A70', rosa: '#F7A8D8', tinta: '#14261F' };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function nodo(tag, at, padre) { var e = document.createElementNS(SVGNS, tag); for (var k in at) e.setAttribute(k, at[k]); if (padre) padre.appendChild(e); return e; }
+  function azar(sem) { return function () { sem = (sem * 9301 + 49297) % 233280; return sem / 233280; }; }
+  function crearPizarron(v, contenedor) {
+    var svg = nodo('svg', { viewBox: '0 0 1000 620', class: 'sv-pz', 'aria-hidden': 'true' }, contenedor);
+    var defs = nodo('defs', {}, svg);
+    var pat = nodo('pattern', { id: 'sv-rayas', width: 14, height: 14, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+    nodo('rect', { width: 14, height: 14, fill: 'rgba(255,122,112,.18)' }, pat);
+    nodo('line', { x1: 0, y1: 0, x2: 0, y2: 14, stroke: GIS.rojo, 'stroke-width': 5 }, pat);
+    var capa = nodo('g', {}, svg);
+    var plumon = nodo('g', { class: 'sv-plumon', opacity: 0 }, svg);
+    nodo('path', { d: 'M0 0 L10 -22 L34 -76 Q38 -84 46 -80 L52 -77 Q60 -73 56 -65 L32 -11 Z', fill: '#E9E4D8', stroke: '#14261F', 'stroke-width': 2.5 }, plumon);
+    nodo('path', { d: 'M0 0 L10 -22 L20 -17 Z', fill: '#14261F' }, plumon);
+    var dur = v.duracion, acc = [], porId = {};
+    // Cuándo empieza cada acción: en la frase que la anuncia (proporcional al lugar de la frase en la voz del paso)
+    v.pasos.forEach(function (p, k) {
+      var fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : dur, largo = fin - p.inicio, voz = p.voz.toLowerCase();
+      // Hasta cuándo se ve: hasta que un paso posterior borre el pizarrón
+      var borra = dur + 1; for (var j = k + 1; j < v.pasos.length; j++) if (v.pasos[j].limpia) { borra = v.pasos[j].inicio; break; }
+      var ultimo = p.inicio;
+      (p.acciones || []).forEach(function (a, i, todas) {
+        var pos = a.en ? voz.indexOf(a.en.toLowerCase()) : -1;
+        var ini = pos >= 0 ? p.inicio + largo * 0.92 * pos / voz.length : p.inicio + largo * 0.8 * i / Math.max(1, todas.length);
+        ini = Math.max(ini, ultimo - 0.2); ultimo = ini;
+        var d = a.a === 'escribe' ? Math.min(1.6, Math.max(0.45, a.texto.length * 0.07)) : a.a === 'caja' ? 0.8 : a.a === 'relleno' ? 0.7 : a.a === 'flecha' || a.a === 'circulo' ? 0.6 : 0.4;
+        var x = { a: a, ini: ini, dur: d, borra: borra };
+        acc.push(x); if (a.id) porId[a.id] = x;
+      });
+    });
+    // 1) Los textos primero: hacen falta sus medidas para dibujar alrededor
+    acc.forEach(function (x, n) {
+      var a = x.a; if (a.a !== 'escribe') return;
+      var g = nodo('g', {}, capa), clip = nodo('clipPath', { id: 'sv-c' + n }, defs);
+      x.rect = nodo('rect', { x: a.x - 10, y: a.y - (a.tam || 76) * 1.1, width: 0, height: (a.tam || 76) * 1.6 }, clip);
+      x.el = nodo('text', { x: a.x, y: a.y, 'font-size': a.tam || 76, fill: GIS[a.color || 'blanco'], 'clip-path': 'url(#sv-c' + n + ')', class: 'sv-letra' }, g);
+      x.el.textContent = a.texto; x.g = g;
+    });
+    function caja(id) { var x = porId[id]; if (!x) return null; if (x.bb) return x.bb; if (x.a.a === 'caja') return { x: x.a.x, y: x.a.y, width: x.a.w, height: x.a.h }; var b = x.el.getBBox(); return (x.bb = { x: b.x, y: b.y + b.height * 0.12, width: b.width, height: b.height * 0.8 }); }
+    function punto(p, otro) {
+      if (typeof p !== 'string') return { x: p[0], y: p[1] };
+      var b = caja(p), o = otro; if (!b) return { x: 0, y: 0 };
+      if (o && o.x > b.x + b.width) return { x: b.x + b.width + 12, y: b.y + b.height / 2 };
+      if (o && o.y > b.y + b.height) return { x: b.x + b.width / 2, y: b.y + b.height + 10 };
+      return { x: b.x + b.width / 2, y: b.y - 10 };
     }
-    return '';
+    // 2) Los trazos (en el orden en que aparecen, para que lo nuevo quede encima)
+    function trazo(d, color, ancho) { return nodo('path', { d: d, fill: 'none', stroke: GIS[color || 'blanco'], 'stroke-width': ancho || 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, capa); }
+    acc.forEach(function (x, n) {
+      var a = x.a, r = azar(n * 31 + 7), b, d;
+      if (a.a === 'escribe') { capa.appendChild(x.g); return; }
+      if (a.a === 'circulo') {
+        b = caja(a.sobre); var cx = b.x + b.width / 2, cy = b.y + b.height / 2, rx = b.width / 2 + 26, ry = b.height / 2 + 18, pts = [];
+        for (var k = 0; k <= 26; k++) { var ang = -0.5 + (Math.PI * 2 + 0.6) * k / 26, f = 1 + (r() - 0.5) * 0.06; pts.push((cx + Math.cos(ang) * rx * f).toFixed(1) + ' ' + (cy + Math.sin(ang) * ry * f).toFixed(1)); }
+        x.el = trazo('M' + pts.join(' L'), a.color);
+      } else if (a.a === 'subraya') {
+        b = caja(a.sobre); var y = b.y + b.height + 14;
+        x.el = trazo('M' + (b.x - 4) + ' ' + y + ' Q' + (b.x + b.width / 2) + ' ' + (y + 8) + ' ' + (b.x + b.width + 6) + ' ' + (y - 3), a.color);
+      } else if (a.a === 'tacha') {
+        b = caja(a.sobre);
+        x.el = trazo('M' + (b.x - 10) + ' ' + (b.y + b.height * 0.62) + ' L' + (b.x + b.width + 10) + ' ' + (b.y + b.height * 0.38), a.color || 'rojo', 8);
+      } else if (a.a === 'flecha') {
+        // «hacia» es un punto [x, y] o el id de un texto; «de» también
+        var aa = typeof a.hacia === 'string' ? punto(a.hacia) : punto(a.hacia), de = punto(a.de, aa);
+        var mx = (de.x + aa.x) / 2, my = (de.y + aa.y) / 2, dx = aa.x - de.x, dy = aa.y - de.y, L = Math.sqrt(dx * dx + dy * dy) || 1;
+        var c = { x: mx - dy / L * L * 0.12, y: my + dx / L * L * 0.12 };
+        x.el = trazo('M' + de.x + ' ' + de.y + ' Q' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + ' ' + aa.x + ' ' + aa.y, a.color);
+        var ux = (aa.x - c.x), uy = (aa.y - c.y), ul = Math.sqrt(ux * ux + uy * uy) || 1; ux /= ul; uy /= ul;
+        x.punta = trazo('M' + (aa.x - ux * 24 - uy * 15).toFixed(1) + ' ' + (aa.y - uy * 24 + ux * 15).toFixed(1) + ' L' + aa.x + ' ' + aa.y + ' L' + (aa.x - ux * 24 + uy * 15).toFixed(1) + ' ' + (aa.y - uy * 24 - ux * 15).toFixed(1), a.color);
+      } else if (a.a === 'caja') {
+        x.el = trazo('M' + a.x + ' ' + a.y + ' L' + (a.x + a.w) + ' ' + (a.y + 2) + ' L' + (a.x + a.w - 1) + ' ' + (a.y + a.h) + ' L' + (a.x + 1) + ' ' + (a.y + a.h - 1) + ' Z', a.color, 5);
+      } else if (a.a === 'relleno') {
+        b = caja(a.sobre);
+        x.base = { x: b.x + b.width * a.desde + 4, y: b.y + 4, w: b.width * (a.hasta - a.desde) - 8, h: b.height - 8 };
+        x.el = nodo('rect', { x: x.base.x, y: x.base.y, width: 0, height: x.base.h, rx: 6, fill: a.rayado ? 'url(#sv-rayas)' : GIS[a.color || 'verde'] }, capa);
+      } else if (a.a === 'palomita') {
+        x.el = trazo('M' + a.x + ' ' + a.y + ' l18 22 l40 -54', 'verde', 9);
+      }
+      // Los trazos empiezan ocultos (todo el largo «sin dibujar») y se descubren con el tiempo
+      if (x.el && x.el.getTotalLength) { x.largo = x.el.getTotalLength(); x.el.style.strokeDasharray = x.largo; x.el.style.strokeDashoffset = x.largo; x.el.style.opacity = 0; }
+      if (x.punta) { x.largoP = x.punta.getTotalLength(); x.punta.style.strokeDasharray = x.largoP; x.punta.style.strokeDashoffset = x.largoP; x.punta.style.opacity = 0; }
+    });
+    svg.appendChild(plumon);   // el plumón, siempre encima
+    // 3) El pizarrón en el segundo t
+    function pinta(t) {
+      var punta = null;
+      acc.forEach(function (x) {
+        var a = x.a, p = (t - x.ini) / x.dur, vis = t >= x.ini && t < x.borra;
+        var op = vis ? Math.min(1, (x.borra - t) / 0.35) : 0;   // al borrar el pizarrón, se desvanece
+        var el = a.a === 'escribe' ? x.g : x.el; if (!el) return;
+        el.style.opacity = op;
+        if (x.punta) x.punta.style.opacity = op;
+        if (!vis) return;
+        p = Math.max(0, Math.min(1, p));
+        if (a.a === 'escribe') {
+          var w = x.w || (x.w = x.el.getBBox().width + 20);
+          x.rect.setAttribute('width', (w * p).toFixed(1));
+          if (p < 1) punta = { x: a.x + w * p - 10, y: a.y - (a.tam || 76) * 0.25 };
+        } else if (a.a === 'relleno') {
+          x.el.setAttribute('width', (x.base.w * p).toFixed(1));
+          if (p < 1) punta = { x: x.base.x + x.base.w * p, y: x.base.y + x.base.h / 2 };
+        } else if (x.largo) {
+          var pp = x.punta ? Math.min(1, p / 0.8) : p;
+          x.el.style.strokeDashoffset = (x.largo * (1 - pp)).toFixed(1);
+          if (x.punta) { var q = Math.max(0, (p - 0.8) / 0.2); x.punta.style.opacity = op; x.punta.style.strokeDashoffset = (x.largoP * (1 - q)).toFixed(1); }
+          if (pp < 1) { var pt = x.el.getPointAtLength(x.largo * pp); punta = { x: pt.x, y: pt.y }; }
+        }
+      });
+      plumon.setAttribute('opacity', punta ? 1 : 0);
+      if (punta) plumon.setAttribute('transform', 'translate(' + punta.x.toFixed(1) + ' ' + punta.y.toFixed(1) + ')');
+    }
+    return { pinta: pinta };
+  }
+
+  // Reloj del video: el audio de la voz, o (borradores sin voz) un reloj con los tiempos estimados
+  function relojSinVoz(dur) {
+    var t = 0, base = 0, corre = false, ev = {}, vel = 1;
+    var r = {
+      addEventListener: function (n, f) { (ev[n] = ev[n] || []).push(f); },
+      emitir: function (n) { (ev[n] || []).forEach(function (f) { f(); }); },
+      get currentTime() { var x = corre ? t + (performance.now() - base) / 1000 * vel : t; if (x >= dur && corre) { t = dur; corre = false; setTimeout(function () { r.emitir('pause'); r.emitir('ended'); }); } return Math.min(dur, x); },
+      set currentTime(x) { t = Math.max(0, Math.min(dur, x)); base = performance.now(); },
+      get paused() { return !corre; },
+      get ended() { return !corre && t >= dur; },
+      get playbackRate() { return vel; },
+      set playbackRate(x) { t = r.currentTime; base = performance.now(); vel = x; },
+      play: function () { if (!corre) { base = performance.now(); corre = true; r.emitir('play'); } return Promise.resolve(); },
+      pause: function () { if (corre) { t = r.currentTime; corre = false; r.emitir('pause'); } }
+    };
+    return r;
   }
 
   var VP = null;   // reproductor abierto: { v, audio, i, raf, pausa, origen }
@@ -1390,7 +1490,9 @@
     caja.setAttribute('role', 'dialog'); caja.setAttribute('aria-modal', 'true'); caja.setAttribute('aria-label', 'Video: ' + v.titulo);
     caja.innerHTML = '<div class="sv-panel" style="--sv:' + esc(SIM.color || '#6B2A85') + '">' +
       '<header class="sv-cab"><div><span class="sv-cab-e">Video del tema · ' + esc(nombreTema(v.tema)) + '</span><b>' + esc(v.titulo) + '</b></div><button type="button" class="sv-x" id="sv-x" aria-label="Cerrar video">✕</button></header>' +
-      '<div class="sv-escenario"><div class="sv-escena" id="sv-escena" aria-hidden="true"></div><button type="button" class="sv-play-g" id="sv-play-g" aria-label="Reproducir">' + ICONO.play + '</button><button type="button" class="sv-saltar" id="sv-saltar" hidden>Ver la respuesta ' + FL + '</button></div>' +
+      '<div class="sv-escenario"><div class="sv-pizarra" id="sv-pizarra"></div><span class="sv-escena-n" id="sv-escena-n"></span>' +
+        '<div class="sv-cuenta" id="sv-reloj" hidden><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19"/><circle class="sv-reloj-a" cx="22" cy="22" r="19"/></svg><b id="sv-reloj-n"></b><span>Resuélvelo</span></div>' +
+        '<button type="button" class="sv-play-g" id="sv-play-g" aria-label="Reproducir">' + ICONO.play + '</button><button type="button" class="sv-saltar" id="sv-saltar" hidden>Ver la respuesta</button></div>' +
       '<p class="sv-sub" id="sv-sub"></p>' +
       '<div class="sv-ctrl"><button type="button" class="sv-btn" id="sv-play" aria-label="Reproducir">' + ICONO.play + '</button>' +
         '<button type="button" class="sv-btn" id="sv-atras" aria-label="Regresar 10 segundos">↺10</button>' +
@@ -1402,30 +1504,31 @@
       '</div>';
     document.body.appendChild(caja);
     document.body.classList.add('sv-abierto');
-    var audio = new Audio(v.audio); audio.preload = 'auto';
+    var audio = v.audio ? new Audio(v.audio) : relojSinVoz(v.duracion);   // sin voz (borrador): tiempos estimados
+    if (v.audio) audio.preload = 'auto';
+    // El pizarrón mide sus letras para dibujar alrededor: espera a que cargue la letra de plumón (Caveat)
+    var pz = null;
+    (document.fonts && document.fonts.load ? document.fonts.load('700 60px Caveat') : Promise.resolve()).catch(function () { }).then(function () {
+      if (!VP || VP.audio !== audio) return;
+      pz = crearPizarron(v, document.getElementById('sv-pizarra')); pz.pinta(audio.currentTime);
+    });
     VP = { v: v, audio: audio, i: -1, raf: 0, pausa: null, hechas: {}, origen: origen || document.activeElement, caja: caja };
     var $ = function (id) { return document.getElementById(id); };
     // El botón grande solo sale antes de empezar (o si el navegador bloqueó el autoplay); después, el de la barra
     function pintaPlay() { var p = !audio.paused || VP.pausa; if (p) VP.empezo = true; $('sv-play').innerHTML = p ? ICONO.pausa : ICONO.play; $('sv-play').setAttribute('aria-label', p ? 'Pausar' : 'Reproducir'); $('sv-play-g').hidden = p || VP.empezo; }
-    // Si la vista no cabe (celular chico, letra grande), se reduce hasta que quepa completa
-    function ajustar() {
-      var e = $('sv-escena'), c = e && e.querySelector('.sv-cont'); if (!c) return;
-      c.style.zoom = 1;
-      var cs = getComputedStyle(e), disp = e.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-      if (c.scrollHeight > disp) c.style.zoom = Math.max(0.6, disp / c.scrollHeight).toFixed(3);
-    }
     function pasoEn(t) { var k = 0; for (var i = 0; i < v.pasos.length; i++) if (v.pasos[i].inicio <= t + 0.05) k = i; return k; }
     function render(k) {
       VP.i = k;
       var p = v.pasos[k], fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : v.duracion;
-      $('sv-escena').innerHTML = '<span class="sv-escena-n">' + esc(p.escena) + '</span><div class="sv-cont">' + p.vista.map(function (b, j) { return bloqueHTML(b, fin - p.inicio, j); }).join('') + '</div>';
-      ajustar();
+      $('sv-escena-n').textContent = p.escena;
+      void fin;
       $('sv-sub').textContent = p.voz;
       caja.querySelectorAll('[data-ir-paso]').forEach(function (b) { var desde = Number(b.dataset.irPaso), sig = b.nextElementSibling ? Number(b.nextElementSibling.dataset.irPaso) : 1e9; b.classList.toggle('sel', k >= desde && k < sig); });
     }
     function tick() {
       var t = audio.currentTime;
       var k = pasoEn(t); if (k !== VP.i) render(k);
+      if (pz) pz.pinta(t);
       // «Tu turno»: al terminar su voz, se detiene unos segundos con cuenta regresiva para que lo resuelva
       var p = v.pasos[k], fin = k + 1 < v.pasos.length ? v.pasos[k + 1].inicio : v.duracion;
       if (p.pausa && !VP.hechas[k] && !audio.paused && t >= fin - 0.25) { VP.hechas[k] = 1; pausaTurno(p.pausa); }
@@ -1436,7 +1539,7 @@
     function pausaTurno(seg) {
       audio.pause();
       var r = $('sv-reloj'), n = seg, sal = $('sv-saltar');
-      if (r) { r.hidden = false; r.style.setProperty('--d', seg + 's'); r.classList.add('corre'); }
+      if (r) { r.hidden = false; r.style.setProperty('--d', seg + 's'); r.classList.remove('corre'); void r.offsetWidth; r.classList.add('corre'); }
       sal.hidden = false;
       var listo = function () { clearInterval(VP.pausa); VP.pausa = null; sal.hidden = true; if (r) r.hidden = true; audio.play(); pintaPlay(); };
       if ($('sv-reloj-n')) $('sv-reloj-n').textContent = n;
@@ -1448,7 +1551,7 @@
       if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; if ($('sv-reloj')) $('sv-reloj').hidden = true; pintaPlay(); return; }
       if (audio.paused) { if (audio.ended) audio.currentTime = 0; audio.play().catch(function () { }); } else audio.pause();
     }
-    function irA(t) { if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; } audio.currentTime = Math.max(0, Math.min(v.duracion, t)); VP.hechas = {}; tick(); }
+    function irA(t) { if (VP.pausa) { clearInterval(VP.pausa); VP.pausa = null; $('sv-saltar').hidden = true; $('sv-reloj').hidden = true; } audio.currentTime = Math.max(0, Math.min(v.duracion, t)); VP.hechas = {}; tick(); }
     audio.addEventListener('play', function () { pintaPlay(); cancelAnimationFrame(VP.raf); VP.raf = requestAnimationFrame(tick); });
     audio.addEventListener('pause', pintaPlay);
     audio.addEventListener('ended', function () { var x = videosVistos(); x[v.id] = 1; guardar(K_VISTOS_V, x); pintaPlay(); });
@@ -1470,15 +1573,12 @@
       }
     });
     render(0); pintaPlay();
-    window.addEventListener('resize', ajustar);
-    VP.ajustar = ajustar;
     $('sv-play-g').focus();
     audio.play().catch(function () { });   // si el navegador bloquea el autoplay, queda el botón grande
   }
   function cerrarVideo() {
     if (!VP) return;
     VP.audio.pause(); cancelAnimationFrame(VP.raf); if (VP.pausa) clearInterval(VP.pausa);
-    window.removeEventListener('resize', VP.ajustar);
     VP.caja.remove(); document.body.classList.remove('sv-abierto');
     var o = VP.origen; VP = null;
     if (o && o.focus) o.focus({ preventScroll: true });

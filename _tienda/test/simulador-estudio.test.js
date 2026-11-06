@@ -322,7 +322,7 @@ describe('plan de estudio (lógica del cliente)', async () => {
 describe('videos explicativos', async () => {
   const { VIDEOS } = await import('../src/simulador/videos.generado.js');
   it('cada video publicado tiene audio, pasos en orden y vistas que la app sabe dibujar', () => {
-    const tipos = ['pregunta', 'barra', 'formula', 'pasos', 'grande', 'tabla', 'tarjeta', 'turno'];
+    const tipos = ['escribe', 'flecha', 'circulo', 'subraya', 'tacha', 'caja', 'relleno', 'palomita'];
     for (const [app, vs] of Object.entries(VIDEOS)) for (const v of vs) {
       const sim = simuladores().find(s => s.APP === app);
       expect(sim.BANCO.TEMAS[v.tema], `${v.id}: tema`).toBeTruthy();
@@ -332,7 +332,15 @@ describe('videos explicativos', async () => {
         if (i) expect(p.inicio, `${v.id} paso ${i + 1}`).toBeGreaterThan(v.pasos[i - 1].inicio);
         expect(p.inicio).toBeLessThan(v.duracion);
         expect(p.voz.length).toBeGreaterThan(10);
-        for (const b of p.vista) expect(tipos, `${v.id} paso ${i + 1}`).toContain(b.t);
+        const ids = new Set(v.pasos.flatMap(x => x.acciones.filter(a => a.id).map(a => a.id)));
+        for (const a of p.acciones) {
+          expect(tipos, `${v.id} paso ${i + 1}`).toContain(a.a);
+          // la frase que dispara la acción tiene que estar en la voz de su paso (si no, sale a destiempo)
+          if (a.en) expect(p.voz.toLowerCase(), `${v.id} paso ${i + 1}: «${a.en}»`).toContain(a.en.toLowerCase());
+          if (a.sobre) expect(ids.has(a.sobre), `${v.id}: «${a.sobre}»`).toBe(true);
+          if (a.a === 'flecha') expect(a.hacia, `${v.id}: flecha sin «hacia»`).toBeTruthy();
+          if (a.a === 'escribe') expect(a.x + a.texto.length * 0.4 * (a.tam || 76), `${v.id}: «${a.texto}» se sale del pizarrón`).toBeLessThan(1000);
+        }
       });
     }
     expect((VIDEOS['simulador-paa'] || []).map(v => v.id)).toContain('paa-01');
@@ -343,6 +351,7 @@ describe('videos explicativos', async () => {
     const d = await (await pedir('/api/simulador-paa/videos', { cookie: completo })).json();
     expect(d.bloqueado).toBeUndefined();
     expect(d.videos[0].pasos.length).toBeGreaterThan(5);
+    expect(d.videos[0].audio).toBe('/assets/tienda/simulador-videos/paa/01.mp3');
     const practica = await comprar('simulador-paa-practica', 'beto@mail.com');
     const x = await (await pedir('/api/simulador-paa/videos', { cookie: practica })).json();
     expect(x.bloqueado).toBe(true);

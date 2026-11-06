@@ -268,7 +268,8 @@ export function crearSimulador(c) {
       if (p === `${API}/abandonar` && M === 'POST') return abandonar(req, env, a);
       // Videos explicativos (plan Completo). Sin él solo se listan (para ofrecerlos), sin la animación ni el audio.
       if (p === `${API}/videos` && M === 'GET') {
-        const vs = VIDEOS[APP] || [];
+        // Los borradores (sin voz o sin aprobar) solo salen en pruebas locales con VIDEOS_BORRADOR=1 y ?borradores=1
+        const vs = (VIDEOS[APP] || []).filter(v => !v.borrador || (env.VIDEOS_BORRADOR === '1' && url.searchParams.get('borradores') === '1'));
         const conEstudio = tieneEstudio((await planDe(env, a.orden.email, { sinOfertas: true })).plan);
         return json(conEstudio ? { videos: vs } : { bloqueado: true, videos: vs.map(v => ({ id: v.id, tema: v.tema, titulo: v.titulo, duracion: v.duracion })) },
           200, { 'cache-control': 'private, max-age=300' });
@@ -573,7 +574,7 @@ export function crearSimulador(c) {
 <meta name="apple-mobile-web-app-title" content="${esc(manifiesto({ app: APP, ruta: RUTA, nombre: c.nombre, titulo: c.titulo }).short_name)}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
 <link rel="stylesheet" href="${RUTA}/app.css?v=${V_CSS}">
 </head>

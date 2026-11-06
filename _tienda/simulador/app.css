@@ -579,68 +579,26 @@ body.sv-abierto { overflow: hidden; }
 .sv-cab b { display: block; font-size: 18px; letter-spacing: -.02em; line-height: 1.2; }
 .sv-cab-e { display: block; font-size: 12.5px; color: var(--fg-2); font-weight: 600; margin-bottom: 2px; }
 .sv-x { width: 44px; height: 44px; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--card); font-size: 18px; cursor: pointer; color: var(--fg); }
-.sv-escenario { position: relative; aspect-ratio: 1 / 1; max-height: 52vh; width: 100%; border-radius: 22px; overflow: hidden; background: #fff; border: 1px solid var(--line); box-shadow: var(--sombra); }
-@media (min-width: 560px) { .sv-escenario { aspect-ratio: 16 / 11; max-height: none; } }
-.sv-cont { display: flex; flex-direction: column; gap: 14px; }
-.sv-escena { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 42px 20px 18px; background:
-  radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--sv) 9%, transparent), transparent 60%), #fff; color: #141114; }
-.sv-escena-n { position: absolute; top: 14px; left: 18px; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--sv); }
-.sv-escena b { color: var(--sv); font-weight: 800; }
-.sv-escena s { color: #b42318; text-decoration-thickness: 2px; }
-.sv-entra { animation: sv-in .5s cubic-bezier(.2, .8, .2, 1) both; }
-@keyframes sv-in { from { opacity: 0; transform: translateY(10px); } }
-@media (prefers-reduced-motion: reduce) { .sv-entra, .sv-panel, .sim-video { animation: none !important; } }
-.sv-etq { display: inline-block; font-size: 12px; font-weight: 700; color: var(--sv); background: color-mix(in srgb, var(--sv) 10%, #fff); padding: 3px 10px; border-radius: 999px; margin-bottom: 8px; }
-.sv-enun { font-size: clamp(17px, 4.4vw, 22px); font-weight: 650; letter-spacing: -.02em; line-height: 1.3; }
-.sv-ops { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.sv-op { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px; border: 1.5px solid #E7E5E7; font-weight: 650; font-size: clamp(14px, 3.6vw, 17px); animation: sv-in .4s ease both; }
-.sv-op span { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #F4F2EF; font-size: 12px; font-weight: 800; flex: none; }
-.sv-op.sv-ok { border-color: #2B8553; background: #E7F4EC; }
-.sv-op.sv-ok span { background: #2B8553; color: #fff; }
-.sv-op.sv-mal { border-color: #b42318; background: #FDECEA; }
-.sv-op.sv-mal span { background: #b42318; color: #fff; }
-.sv-barra-c { display: flex; height: 54px; border-radius: 14px; overflow: hidden; border: 1.5px solid #E7E5E7; }
-.sv-barra-p { width: var(--p); background: var(--sv); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; animation: sv-barra-p 1.1s .3s cubic-bezier(.2, .8, .2, 1) both; }
-.sv-barra-q { width: var(--q); background: repeating-linear-gradient(-45deg, #FDECEA 0 8px, #F9D9D5 8px 16px); color: #b42318; display: flex; align-items: center; justify-content: center; font-weight: 800; animation: sv-barra-q 1.1s .3s ease both; }
-.sv-barra-p i, .sv-barra-q i { font-style: normal; font-size: 15px; }
-@keyframes sv-barra-p { from { width: 100%; } }
-@keyframes sv-barra-q { from { width: 0; opacity: 0; } }
-.sv-barra.sv-entra .sv-barra-p, .sv-barra .sv-barra-p { }
-.sv-barra:not(.sv-entra) .sv-barra-p, .sv-barra:not(.sv-entra) .sv-barra-q { animation: none; }
-.sv-barra p { margin-top: 10px; font-size: clamp(15px, 3.8vw, 18px); font-weight: 600; }
-.sv-form { display: grid; gap: 6px; }
-.sv-form p { font-size: clamp(19px, 5vw, 27px); font-weight: 650; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.sv-form p:not(:last-child) { color: #6D696E; }
-.sv-form p:not(:last-child) b { color: inherit; }
-.sv-pasos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.sv-pasos li { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 5px; border-radius: 999px; background: #F4F2EF; font-size: 12.5px; font-weight: 650; color: #6D696E; }
-.sv-pasos li span { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #fff; font-size: 11px; font-weight: 800; }
-.sv-pasos li.activo { background: var(--sv); color: #fff; }
-.sv-pasos li.activo span { color: var(--sv); }
-.sv-pasos li.hecho span { background: #2B8553; color: #fff; }
-.sv-grande { font-size: clamp(22px, 6vw, 34px); font-weight: 750; letter-spacing: -.03em; line-height: 1.15; }
-.sv-grande.alerta b, .sv-tarj.alerta b { color: #b42318; }
-.sv-tabla { border-collapse: collapse; width: 100%; font-size: clamp(15px, 3.8vw, 19px); }
-.sv-tabla th { text-align: left; font-size: 12.5px; color: #6D696E; font-weight: 700; padding: 6px 10px; }
-.sv-tabla td { padding: 10px; border-top: 1px solid #E7E5E7; font-weight: 600; }
-.sv-tarj { border-radius: 16px; padding: 14px 16px; background: #F4F2EF; }
-.sv-tarj p, .sv-tarj li { font-size: clamp(16px, 4vw, 20px); font-weight: 650; letter-spacing: -.01em; }
-.sv-tarj ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
-.sv-tarj.alerta { background: #FDECEA; border: 1.5px solid #F4B9B2; }
-.sv-tarj.regla { background: var(--sv); color: #fff; padding: 18px 20px; }
-.sv-tarj.regla b { color: #FFE59A; }
-.sv-tarj.regla .sv-etq { background: rgba(255, 255, 255, .16); color: #fff; }
-.sv-turno .sv-etq { font-size: 13px; }
-.sv-reloj { position: relative; width: 64px; height: 64px; margin-top: 14px; }
-.sv-reloj svg { width: 64px; height: 64px; transform: rotate(-90deg); }
-.sv-reloj circle { fill: none; stroke: #ECEAE6; stroke-width: 4; }
-.sv-reloj .sv-reloj-a { stroke: var(--sv); stroke-dasharray: 119.4; stroke-dashoffset: 0; stroke-linecap: round; }
-.sv-reloj.corre .sv-reloj-a { animation: sv-reloj var(--d, 5s) linear forwards; }
+.sv-escenario { position: relative; aspect-ratio: 1000 / 620; width: 100%; border-radius: 18px; overflow: hidden; background: #1C3A2F; box-shadow: inset 0 0 0 6px #6B4A2B, inset 0 0 0 9px #4E3520, 0 10px 30px -12px rgba(20, 17, 20, .45); }
+/* Pizarrón verde con un poco de polvo de gis */
+.sv-pizarra { position: absolute; inset: 9px; border-radius: 10px; background:
+  radial-gradient(120% 90% at 30% 20%, rgba(255, 255, 255, .07), transparent 60%),
+  radial-gradient(80% 60% at 80% 90%, rgba(255, 255, 255, .04), transparent 70%), #1F4436; }
+.sv-pz { width: 100%; height: 100%; display: block; }
+.sv-letra { font-family: 'Caveat', 'Comic Sans MS', cursive; font-weight: 700; letter-spacing: .5px; paint-order: stroke; stroke: rgba(0, 0, 0, .12); stroke-width: 1px; }
+.sv-escena-n { position: absolute; top: 16px; right: 18px; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: rgba(245, 242, 232, .7); }
+.sv-cuenta { position: absolute; right: 18px; bottom: 16px; display: flex; align-items: center; gap: 10px; color: #F5F2E8; font-weight: 700; font-size: 14px; }
+.sv-cuenta svg { width: 54px; height: 54px; transform: rotate(-90deg); }
+.sv-cuenta circle { fill: none; stroke: rgba(255, 255, 255, .2); stroke-width: 4; }
+.sv-cuenta .sv-reloj-a { stroke: #FFD45C; stroke-dasharray: 119.4; stroke-dashoffset: 0; stroke-linecap: round; }
+.sv-cuenta.corre .sv-reloj-a { animation: sv-reloj var(--d, 5s) linear forwards; }
 @keyframes sv-reloj { to { stroke-dashoffset: 119.4; } }
-.sv-reloj b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--sv); }
-.sv-play-g { position: absolute; inset: 0; margin: auto; width: 76px; height: 76px; border-radius: 50%; border: 0; background: var(--sv); color: #fff; cursor: pointer; box-shadow: 0 12px 30px -8px rgba(20, 17, 20, .45); }
-.sv-play-g svg { width: 30px; height: 30px; margin-left: 4px; }
-.sv-saltar { position: absolute; right: 14px; bottom: 14px; border: 0; border-radius: 999px; background: #141114; color: #fff; font: inherit; font-weight: 700; font-size: 14px; padding: 10px 16px; cursor: pointer; }
+.sv-cuenta b { position: absolute; left: 0; width: 54px; text-align: center; font-size: 20px; color: #FFD45C; }
+.sv-play-g { position: absolute; inset: 0; margin: auto; width: 76px; height: 76px; border-radius: 50%; border: 0; background: #FFD45C; color: #14261F; cursor: pointer; box-shadow: 0 12px 30px -8px rgba(0, 0, 0, .5); display: flex; align-items: center; justify-content: center; padding: 0; }
+.sv-play-g svg { width: 30px; height: 30px; margin-left: 5px; }
+.sv-saltar { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); border: 0; border-radius: 999px; background: #FFD45C; color: #14261F; font: inherit; font-weight: 800; font-size: 14px; padding: 10px 18px; cursor: pointer; white-space: nowrap; }
+.sv-cuenta:not([hidden]) ~ .sv-saltar { left: auto; right: 150px; transform: none; }
+@media (max-width: 480px) { .sv-cuenta span { display: none; } .sv-cuenta:not([hidden]) ~ .sv-saltar { right: 86px; } }
 .sv-sub { margin-top: 12px; min-height: 4.6em; padding: 12px 14px; border-radius: 14px; background: #141114; color: #fff; font-size: 15.5px; line-height: 1.5; }
 .sv-ctrl { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .sv-btn { flex: none; min-width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 8px; }

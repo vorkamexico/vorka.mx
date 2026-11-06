@@ -1,283 +1,429 @@
 {
   "id": "paa-01",
   "tema": "aritmetica",
-  "titulo": "Porcentajes, descuentos y aumentos",
+  "titulo": "Porcentajes y descuentos",
   "publicado": true,
   "voz": {
-    "voice_id": "qIViwRC6Yj0rDEwrCiEN",
-    "nombre": "Emiliano",
+    "voice_id": "1xS79gv6DdMmXOOsmZFg",
+    "nombre": "Brandon",
     "modelo": "eleven_v4"
   },
   "audio": "/assets/tienda/simulador-videos/paa/01.mp3",
   "pasos": [
     {
-      "escena": "Pregunta",
-      "voz": "Unos tenis cuestan mil seiscientos pesos y tienen veinticinco por ciento de descuento. ¿Cuánto pagas? Antes de contestar, fíjate: una de estas opciones es una trampa muy común.",
-      "vista": [
+      "escena": "La pregunta",
+      "voz": "Unos tenis cuestan mil seiscientos pesos. Tienen veinticinco por ciento de descuento. ¿Cuánto pagas?",
+      "acciones": [
         {
-          "t": "pregunta",
-          "etiqueta": "Pregunta tipo PAA",
-          "enunciado": "Unos tenis cuestan **$1,600** y tienen **25 %** de descuento. ¿Cuánto pagas?",
-          "opciones": [
-            "$400",
-            "$1,200",
-            "$1,575",
-            "$2,000"
-          ]
+          "a": "escribe",
+          "id": "tenis",
+          "texto": "Tenis:",
+          "x": 70,
+          "y": 170,
+          "en": "Unos tenis"
+        },
+        {
+          "a": "escribe",
+          "id": "precio",
+          "texto": "$1,600",
+          "x": 300,
+          "y": 170,
+          "color": "amarillo",
+          "en": "mil seiscientos"
+        },
+        {
+          "a": "escribe",
+          "texto": "Descuento:",
+          "x": 70,
+          "y": 320,
+          "en": "Tienen"
+        },
+        {
+          "a": "escribe",
+          "id": "p25",
+          "texto": "25 %",
+          "x": 420,
+          "y": 320,
+          "color": "amarillo",
+          "en": "veinticinco"
+        },
+        {
+          "a": "circulo",
+          "sobre": "p25",
+          "color": "rosa",
+          "en": "de descuento"
+        },
+        {
+          "a": "escribe",
+          "id": "preg",
+          "texto": "¿Cuánto pagas?",
+          "x": 70,
+          "y": 490,
+          "tam": 92,
+          "color": "azul",
+          "en": "¿Cuánto"
+        },
+        {
+          "a": "subraya",
+          "sobre": "preg",
+          "color": "azul",
+          "en": "pagas?"
         }
       ],
       "inicio": 0.0
     },
     {
-      "escena": "La idea clave",
-      "voz": "Un porcentaje es una parte de cien. Si te descuentan el veinticinco por ciento, no pagas cien partes: pagas setenta y cinco.",
-      "vista": [
+      "escena": "La idea",
+      "limpia": true,
+      "voz": "Piensa en el precio como el cien por ciento. Si te quitan veinticinco, te quedan setenta y cinco. Eso es lo que pagas.",
+      "acciones": [
         {
-          "t": "barra",
-          "total": 100,
-          "quita": 25,
-          "texto": "Te descuentan **25 %**: pagas **75 %**"
-        }
-      ],
-      "inicio": 11.95
-    },
-    {
-      "escena": "La idea clave",
-      "voz": "Por eso, en vez de calcular el descuento y luego restarlo, haz una sola multiplicación: el precio por lo que sí pagas, en decimal. Setenta y cinco por ciento es cero punto setenta y cinco.",
-      "vista": [
-        {
-          "t": "barra",
-          "total": 100,
-          "quita": 25,
-          "texto": "Pagas **75 %** = **0.75**",
-          "fija": true
+          "a": "escribe",
+          "texto": "el precio = 100 %",
+          "x": 120,
+          "y": 120,
+          "en": "Piensa"
         },
         {
-          "t": "formula",
-          "lineas": [
-            "precio × (1 − descuento)",
-            "**1,600 × 0.75**"
-          ]
-        }
-      ],
-      "inicio": 21.28
-    },
-    {
-      "escena": "El método",
-      "voz": "Paso uno: pregúntate si el precio baja o sube. Un descuento baja.",
-      "vista": [
+          "a": "caja",
+          "id": "barra",
+          "x": 120,
+          "y": 160,
+          "w": 760,
+          "h": 120,
+          "en": "cien por ciento"
+        },
         {
-          "t": "pasos",
-          "items": [
-            "¿Baja o sube?",
-            "¿Qué parte queda?",
-            "Multiplica",
-            "¿Tiene sentido?"
+          "a": "relleno",
+          "sobre": "barra",
+          "desde": 0.75,
+          "hasta": 1,
+          "color": "rojo",
+          "rayado": true,
+          "en": "te quitan"
+        },
+        {
+          "a": "escribe",
+          "texto": "−25 %",
+          "x": 705,
+          "y": 345,
+          "tam": 60,
+          "color": "rojo",
+          "en": "veinticinco"
+        },
+        {
+          "a": "relleno",
+          "sobre": "barra",
+          "desde": 0,
+          "hasta": 0.75,
+          "color": "verde",
+          "en": "te quedan"
+        },
+        {
+          "a": "escribe",
+          "texto": "75 %",
+          "x": 320,
+          "y": 248,
+          "tam": 80,
+          "color": "tinta",
+          "en": "setenta y cinco"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            400,
+            300
           ],
-          "activo": 0
-        },
-        {
-          "t": "grande",
-          "texto": "Descuento → **baja** ↓"
-        }
-      ],
-      "inicio": 34.4
-    },
-    {
-      "escena": "El método",
-      "voz": "Paso dos: calcula qué parte queda. Cien menos veinticinco: setenta y cinco por ciento. En decimal, cero punto setenta y cinco.",
-      "vista": [
-        {
-          "t": "pasos",
-          "items": [
-            "¿Baja o sube?",
-            "¿Qué parte queda?",
-            "Multiplica",
-            "¿Tiene sentido?"
+          "hacia": [
+            400,
+            410
           ],
-          "activo": 1,
-          "fija": true
+          "color": "verde",
+          "en": "Eso es"
         },
         {
-          "t": "formula",
-          "lineas": [
-            "100 % − 25 % = **75 %**",
-            "75 % = **0.75**"
-          ]
+          "a": "escribe",
+          "texto": "lo que pagas",
+          "x": 240,
+          "y": 500,
+          "tam": 86,
+          "color": "verde",
+          "en": "lo que pagas"
         }
       ],
-      "inicio": 40.14
+      "inicio": 6.38
     },
     {
-      "escena": "El método",
-      "voz": "Paso tres: multiplica. Truco sin calculadora: setenta y cinco por ciento son tres cuartos. Mil seiscientos entre cuatro es cuatrocientos; por tres, mil doscientos.",
-      "vista": [
+      "escena": "Calcula",
+      "limpia": true,
+      "voz": "Setenta y cinco por ciento es lo mismo que tres cuartos. Entonces, divide mil seiscientos entre cuatro: da cuatrocientos.",
+      "acciones": [
         {
-          "t": "pasos",
-          "items": [
-            "¿Baja o sube?",
-            "¿Qué parte queda?",
-            "Multiplica",
-            "¿Tiene sentido?"
+          "a": "escribe",
+          "id": "t75",
+          "texto": "75 % = ¾",
+          "x": 70,
+          "y": 150,
+          "tam": 92,
+          "color": "amarillo",
+          "en": "Setenta"
+        },
+        {
+          "a": "flecha",
+          "de": [
+            200,
+            185
           ],
-          "activo": 2,
-          "fija": true
-        },
-        {
-          "t": "formula",
-          "lineas": [
-            "1,600 × 0.75",
-            "75 % = ¾",
-            "1,600 ÷ 4 = 400",
-            "400 × 3 = **1,200**"
-          ]
-        }
-      ],
-      "inicio": 49.22
-    },
-    {
-      "escena": "El método",
-      "voz": "Paso cuatro: revisa que tenga sentido. Era descuento, así que el resultado debe ser menor que el precio. Mil doscientos. Es la B.",
-      "vista": [
-        {
-          "t": "pasos",
-          "items": [
-            "¿Baja o sube?",
-            "¿Qué parte queda?",
-            "Multiplica",
-            "¿Tiene sentido?"
+          "hacia": [
+            200,
+            255
           ],
-          "activo": 3,
-          "fija": true
+          "color": "amarillo",
+          "en": "Entonces"
         },
         {
-          "t": "pregunta",
-          "enunciado": "$1,200 < $1,600 ✓",
-          "opciones": [
-            "$400",
-            "$1,200",
-            "$1,575",
-            "$2,000"
+          "a": "escribe",
+          "texto": "1,600 ÷ 4 =",
+          "x": 70,
+          "y": 330,
+          "en": "divide"
+        },
+        {
+          "a": "escribe",
+          "id": "t400",
+          "texto": "400",
+          "x": 430,
+          "y": 330,
+          "color": "amarillo",
+          "en": "cuatrocientos"
+        }
+      ],
+      "inicio": 13.66
+    },
+    {
+      "escena": "Calcula",
+      "voz": "Ahora multiplica por tres: mil doscientos. Pagas mil doscientos pesos.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "400 × 3 =",
+          "x": 70,
+          "y": 500,
+          "en": "multiplica"
+        },
+        {
+          "a": "escribe",
+          "id": "t1200",
+          "texto": "1,200",
+          "x": 375,
+          "y": 500,
+          "color": "verde",
+          "en": "mil doscientos."
+        },
+        {
+          "a": "circulo",
+          "sobre": "t1200",
+          "color": "verde",
+          "en": "Pagas"
+        },
+        {
+          "a": "palomita",
+          "x": 640,
+          "y": 470,
+          "en": "pesos"
+        }
+      ],
+      "inicio": 21.74
+    },
+    {
+      "escena": "Cuidado",
+      "limpia": true,
+      "voz": "Cuidado: cuatrocientos es lo que te descuentan. No es lo que pagas.",
+      "acciones": [
+        {
+          "a": "escribe",
+          "texto": "¡Cuidado!",
+          "x": 70,
+          "y": 130,
+          "tam": 84,
+          "color": "rojo",
+          "en": "Cuidado"
+        },
+        {
+          "a": "escribe",
+          "id": "c400",
+          "texto": "$400",
+          "x": 90,
+          "y": 310,
+          "tam": 104,
+          "en": "cuatrocientos"
+        },
+        {
+          "a": "flecha",
+          "de": "c400",
+          "hacia": [
+            450,
+            290
           ],
-          "correcta": 1,
-          "fija": true
-        }
-      ],
-      "inicio": 60.99
-    },
-    {
-      "escena": "El método",
-      "voz": "Con aumentos funciona igual, pero sumas: un aumento del veinte por ciento es multiplicar por uno punto veinte.",
-      "vista": [
-        {
-          "t": "tabla",
-          "filas": [
-            [
-              "Si el precio…",
-              "Multiplica por"
-            ],
-            [
-              "sube 20 %",
-              "**× 1.20**"
-            ],
-            [
-              "baja 10 %",
-              "**× 0.90**"
-            ],
-            [
-              "sube 5 %",
-              "**× 1.05**"
-            ]
-          ]
-        }
-      ],
-      "inicio": 70.17
-    },
-    {
-      "escena": "La trampa",
-      "voz": "La trampa: cuatrocientos pesos es el descuento, no lo que pagas. Lee otra vez qué te preguntan: ¿el descuento, el precio final o el porcentaje?",
-      "vista": [
-        {
-          "t": "pregunta",
-          "enunciado": "¿Cuánto **pagas**?",
-          "opciones": [
-            "$400",
-            "$1,200",
-            "$1,575",
-            "$2,000"
-          ],
-          "mal": 0
+          "color": "rojo",
+          "en": "lo que te"
         },
         {
-          "t": "tarjeta",
-          "tono": "alerta",
-          "texto": "**$400** es el descuento, no lo que pagas."
-        }
-      ],
-      "inicio": 77.32
-    },
-    {
-      "escena": "La trampa",
-      "voz": "Otra trampa: dos descuentos seguidos no se suman. Veinte por ciento y luego diez por ciento es cero punto ochenta por cero punto noventa: cero punto setenta y dos. Pagas setenta y dos por ciento, o sea, el descuento real es de veintiocho, no de treinta.",
-      "vista": [
-        {
-          "t": "grande",
-          "texto": "20 % y luego 10 % **≠ 30 %**",
-          "tono": "alerta"
+          "a": "escribe",
+          "texto": "es el descuento",
+          "x": 470,
+          "y": 310,
+          "tam": 70,
+          "color": "rojo",
+          "en": "descuentan"
         },
         {
-          "t": "formula",
-          "lineas": [
-            "0.80 × 0.90 = **0.72**",
-            "Pagas 72 % → descuento real **28 %**"
-          ]
+          "a": "tacha",
+          "sobre": "c400",
+          "color": "rojo",
+          "en": "No es"
+        },
+        {
+          "a": "escribe",
+          "texto": "Pagas: $1,200",
+          "x": 90,
+          "y": 490,
+          "tam": 86,
+          "color": "verde",
+          "en": "lo que pagas"
         }
       ],
-      "inicio": 87.59
+      "inicio": 27.14
     },
     {
       "escena": "Tu turno",
-      "voz": "Tu turno. Un sueldo de ocho mil pesos sube quince por ciento. ¿Cuál es el nuevo sueldo? Pausa el video si lo necesitas.",
+      "limpia": true,
+      "voz": "Tu turno. Una gorra cuesta trescientos pesos y tiene diez por ciento de descuento. ¿Cuánto pagas?",
       "pausa": 5,
-      "vista": [
+      "acciones": [
         {
-          "t": "turno",
-          "enunciado": "Un sueldo de **$8,000** sube **15 %**. ¿Cuál es el nuevo sueldo?"
+          "a": "escribe",
+          "texto": "Tu turno",
+          "x": 60,
+          "y": 110,
+          "tam": 66,
+          "color": "azul",
+          "en": "Tu turno"
+        },
+        {
+          "a": "escribe",
+          "texto": "Gorra: $300",
+          "x": 60,
+          "y": 250,
+          "en": "gorra"
+        },
+        {
+          "a": "escribe",
+          "texto": "Descuento: 10 %",
+          "x": 60,
+          "y": 370,
+          "en": "diez por ciento"
+        },
+        {
+          "a": "escribe",
+          "texto": "¿Cuánto pagas?",
+          "x": 60,
+          "y": 490,
+          "color": "azul",
+          "en": "¿Cuánto"
         }
       ],
-      "inicio": 104.68
+      "inicio": 32.31
     },
     {
       "escena": "Tu turno",
-      "voz": "Sube, así que multiplicas por uno punto quince. Ocho mil por uno punto quince: nueve mil doscientos.",
-      "vista": [
+      "voz": "Diez por ciento es dividir entre diez: trescientos entre diez, treinta. Ese es el descuento. Ahora réstalo: trescientos menos treinta, doscientos setenta.",
+      "acciones": [
         {
-          "t": "formula",
-          "lineas": [
-            "Sube → **× 1.15**",
-            "8,000 × 1.15 = **9,200**"
-          ]
+          "a": "escribe",
+          "texto": "10 % → ÷ 10",
+          "x": 565,
+          "y": 250,
+          "color": "amarillo",
+          "en": "Diez por ciento"
+        },
+        {
+          "a": "escribe",
+          "texto": "300 ÷ 10 = 30",
+          "x": 565,
+          "y": 370,
+          "en": "trescientos entre diez"
+        },
+        {
+          "a": "escribe",
+          "texto": "300 − 30 =",
+          "x": 565,
+          "y": 490,
+          "en": "réstalo"
+        },
+        {
+          "a": "escribe",
+          "id": "t270",
+          "texto": "270",
+          "x": 875,
+          "y": 490,
+          "color": "verde",
+          "en": "doscientos setenta"
+        },
+        {
+          "a": "circulo",
+          "sobre": "t270",
+          "color": "verde",
+          "en": "setenta."
         }
       ],
-      "inicio": 112.99
+      "inicio": 38.96
     },
     {
-      "escena": "Regla de oro",
-      "voz": "Recuerda: descuento, multiplicas por uno menos el porcentaje; aumento, por uno más el porcentaje. Y antes de marcar, responde exactamente lo que te preguntan. Ahora practica con preguntas de este tema.",
-      "vista": [
+      "escena": "Recuerda",
+      "limpia": true,
+      "voz": "Recuerda: primero piensa qué parte pagas. Y responde justo lo que te preguntan.",
+      "acciones": [
         {
-          "t": "tarjeta",
-          "tono": "regla",
-          "titulo": "Regla de oro",
-          "lineas": [
-            "Descuento: **× (1 − p)**",
-            "Aumento: **× (1 + p)**",
-            "Responde exactamente lo que te preguntan."
-          ]
+          "a": "escribe",
+          "texto": "Recuerda",
+          "x": 70,
+          "y": 140,
+          "tam": 84,
+          "color": "amarillo",
+          "en": "Recuerda"
+        },
+        {
+          "a": "escribe",
+          "texto": "1. ¿Qué parte pagas?",
+          "x": 70,
+          "y": 300,
+          "en": "primero"
+        },
+        {
+          "a": "escribe",
+          "texto": "2. Responde lo que",
+          "x": 70,
+          "y": 420,
+          "en": "responde"
+        },
+        {
+          "a": "escribe",
+          "id": "r2",
+          "texto": "te preguntan",
+          "x": 120,
+          "y": 520,
+          "en": "preguntan"
+        },
+        {
+          "a": "subraya",
+          "sobre": "r2",
+          "color": "amarillo",
+          "en": "preguntan"
         }
       ],
-      "inicio": 120.17
+      "inicio": 49.38
     }
   ],
-  "duracion": 133.96
+  "duracion": 54.83
 }
