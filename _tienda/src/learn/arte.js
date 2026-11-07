@@ -57,6 +57,13 @@ const MOTIVOS = {
 <rect x="254" y="138" width="44" height="84" rx="5" fill="${x.a}"/><circle cx="290" cy="182" r="3" fill="${ORO}"/><rect x="259" y="146" width="34" height="13" rx="3" fill="${ORO}"/><text x="276" y="156" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="8.5" font-weight="800" fill="${TINTA}">ABIERTO</text>
 <g transform="translate(${336 + (s % 3) * 4} 168)"><path d="M0 12h40l-4 46H4z" fill="${ORO}"/><path d="M12 14v-6a8 8 0 0 1 16 0v6" fill="none" stroke="${BLANCO}" stroke-width="3.5" stroke-linecap="round"/></g>`;
   },
+  // Sobre de invitación abierto con una tarjeta, un corazón y confeti
+  sobre: (x, s) => {
+    const confeti = [[150, 96, ORO], [338, 88, BLANCO], [356, 150, ORO_2], [132, 170, BLANCO], [318, 214, ORO]].map(([cx, cy, c], i) => `<rect x="${cx + (s % 3) * 3}" y="${cy}" width="9" height="9" rx="2" fill="${c}" transform="rotate(${(i * 37 + s) % 90} ${cx} ${cy})"/>`).join('');
+    return `${confeti}<rect x="186" y="78" width="108" height="96" rx="8" fill="${BLANCO}"/><path d="M208 104h64M208 120h48" stroke="${x.a}" stroke-opacity=".35" stroke-width="5" stroke-linecap="round"/>
+<path d="M240 160c-10-9-22-15-22-26a11 11 0 0 1 22-4 11 11 0 0 1 22 4c0 11-12 17-22 26z" fill="${ORO_2}"/>
+<path d="M164 136l76 50 76-50v82a8 8 0 0 1-8 8H172a8 8 0 0 1-8-8z" fill="${x.a}"/><path d="M164 218l60-42M316 218l-60-42" stroke="${BLANCO}" stroke-opacity=".25" stroke-width="3"/><path d="M164 136l76 50 76-50" fill="none" stroke="${TINTA}" stroke-opacity=".25" stroke-width="2"/>`;
+  },
   // Señal de camino con flechas hacia distintos lados y una vereda que sube a una estrella
   senal: (x, s) => {
     const izq = s % 2;

@@ -25,6 +25,7 @@ import { NEGOCIO, TEMA_NEGOCIO, ARTICULOS_NEGOCIO, AVISO_NEGOCIO } from '../lear
 import { CAMINO, TEMA_CAMINO, ARTICULOS_CAMINO } from '../learn-camino.js';
 import { APPS, TEMA_APPS, ARTICULOS_APPS, AVISO_APPS } from '../learn-apps.js';
 import { WEB, TEMA_WEB, ARTICULOS_WEB, AVISO_WEB } from '../learn-web.js';
+import { FIESTAS, TEMA_FIESTAS, ARTICULOS_FIESTAS, AVISO_FIESTAS } from '../learn-fiestas.js';
 import { aspecto } from './secciones.js';
 import { minutosDeTexto } from './piezas.js';
 
@@ -42,6 +43,7 @@ const TEMAS = () => [
   temaDe(NEGOCIO, TEMA_NEGOCIO, ARTICULOS_NEGOCIO, `${AVISO_NEGOCIO} No estamos afiliados al INEGI, a PROFECO ni al SAT.`),
   temaDe(APPS, TEMA_APPS, ARTICULOS_APPS, `${AVISO_APPS} No estamos afiliados a Apple, Google, Stripe, Mercado Pago, el SAT ni PROFECO.`),
   temaDe(WEB, TEMA_WEB, ARTICULOS_WEB, `${AVISO_WEB} No estamos afiliados a Mozilla, Google, GitHub, Cloudflare, Let’s Encrypt ni Registry.MX.`),
+  temaDe(FIESTAS, TEMA_FIESTAS, ARTICULOS_FIESTAS, `${AVISO_FIESTAS} No estamos afiliados a PROFECO.`),
 ];
 
 // Las secciones con al menos un artículo, exámenes primero:

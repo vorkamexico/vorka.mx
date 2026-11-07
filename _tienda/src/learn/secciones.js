@@ -15,6 +15,7 @@ export const SECCIONES = {
   camino:     { grupo: 'tema', lema: 'Becas, carrera y plan B',   corto: 'Camino',    a: '#3B2A86', b: '#6E5BD0', t: '#4A389E', to: '#B9ADF5', s: '#EFEDFB', so: 'rgba(160,145,240,.13)', motivo: 'senal' },
   negocio:    { grupo: 'tema', lema: 'Clientes, citas y ventas',   corto: 'Negocio',   a: '#7A1E46', b: '#C2416F', t: '#9A2858', to: '#F5A3C2', s: '#FBEAF1', so: 'rgba(235,120,165,.13)', motivo: 'tienda' },
   apps:       { grupo: 'tema', lema: 'Crea y vende tu app',   corto: 'Apps',      a: '#0D3F5C', b: '#1C6F96', t: '#155E80', to: '#8CCDEB', s: '#E8F3F9', so: 'rgba(110,190,230,.13)', motivo: 'celular' },
+  fiestas:    { grupo: 'tema',   lema: 'Invitaciones y celebraciones', corto: 'Fiestas', a: '#7A2350', b: '#C04F86', t: '#962C62', to: '#F3A6CB', s: '#FAEBF2', so: 'rgba(235,130,180,.13)', motivo: 'sobre' },
   web:        { grupo: 'tema', lema: 'Tu página, paso a paso',   corto: 'Web',       a: '#4A2A0C', b: '#9A5220', t: '#94501E', to: '#F2B98A', s: '#FBF0E7', so: 'rgba(240,170,110,.13)', motivo: 'navegador' },
 };
 // Vorka Learn (portada, acerca, búsqueda y secciones sin color propio)
