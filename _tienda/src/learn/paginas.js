@@ -2,6 +2,7 @@
 // Todo sale del catálogo (learn/datos.js): una sección nueva aparece sola en la portada y tiene su índice con
 // paginaIndiceSeccion(clave). Los artículos usan la plantilla común paginaArticulo (learn/articulo.js).
 // Los textos viven en los archivos de datos (src/simulador/guias.js, src/learn-finanzas.js); aquí solo cómo se ven.
+import { aspecto } from './secciones.js';
 import { esc } from '../paginas.js';
 import { FLECHA } from '../marco.generado.js';
 import { paginaLearn } from '../learn.js';
@@ -34,8 +35,8 @@ export function paginaGuia(sim, slug, anuncios = null) {
     .map(r => { const y = articuloEn(r).x; return { href: r, h1: y.h1, descripcion: y.descripcion }; });
   return paginaArticulo(x, {
     ruta, titulo: tituloGuia(x), lugares: [['Vorka Learn', RUTA_LEARN], [s.examen, rutaIndice(sim)], [x.h1, ruta]],
-    kicker: `Guía · ${s.examen}`, imagen: s.og, actual: s.clave, anuncios, actualizado: ACTUALIZADO, actualizadoTxt: ACTUALIZADO_TXT,
-    notaFuentes: `<p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; los requisitos y las fechas cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>`,
+    kicker: `Guía · ${s.examen}`, imagen: s.og, actual: s.clave, anuncios, actualizado: x.actualizado || ACTUALIZADO, actualizadoTxt: x.actualizadoTxt || ACTUALIZADO_TXT,
+    notaFuentes: `<p class="gu-nota">Actualizado: ${x.actualizadoTxt || ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; los requisitos y las fechas cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>`,
     llamado: llamadoSim(sim, s), compartirTexto: 'Compártela con quien también va a presentar el examen.',
     rel, relTitulo: 'Guías relacionadas',
     notaPie: `Vorka Learn es la sección de guías de Vorka México. Esta guía es informativa; el ${esc(s.titulo)} es un simulador de práctica con reactivos originales y los puntajes y aciertos que da son estimaciones para orientar el estudio. ${esc(s.aviso)}`,
@@ -81,6 +82,19 @@ const CONFIANZA = () => [
   [ICONOS_LR.fecha, `Revisado en ${ACTUALIZADO_TXT}`, 'Las reglas y las convocatorias cambian; anotamos cuándo revisamos cada guía.'],
   [ICONOS_LR.persona, 'Gratis y sin registro', 'Lees todo sin cuenta. Si quieres practicar un examen, los simuladores están aparte.'],
 ];
+// Índice de la portada: dos bloques (exámenes y temas); cada sección en una tarjeta con su lema y sus primeras guías
+function indicePortada(lista, todos) {
+  const bloque = (t, d, l) => l.length ? `<div class="lr-ind-bloque"><h3 class="lr-ind-t">${t}</h3><p class="lr-ind-d">${d}</p><div class="lr-ind-grid">${l.map(s => {
+    const guias = todos.filter(a => a.clave === s.clave);
+    return `<article class="lr-ind lr-s-${s.clave}"><a class="lr-ind-cab" href="${s.ruta}"><span class="lr-m-ico">${iconoDe(s.clave)}</span><span><b>${esc(s.nombre)}</b><small>${esc(aspecto(s.clave).lema || '')}${aspecto(s.clave).lema ? ' · ' : ''}${s.n} ${s.n === 1 ? 'guía' : 'guías'}</small></span></a>
+      <ul>${guias.slice(0, 3).map(a => `<li><a href="${a.ruta}">${esc((a.x.titulo || a.x.h1).replace(/\s*\|\s*Vorka.*$/, ""))}</a></li>`).join('')}</ul>
+      ${guias.length > 3 ? `<a class="lr-ind-mas" href="${s.ruta}">Ver las ${guias.length} guías ${FLECHA}</a>` : ''}</article>`;
+  }).join('')}</div></div>` : '';
+  return `<section class="lr-indice" id="indice" aria-labelledby="indice-t"><p class="lr-sobre">Índice</p><h2 class="lr-h2" id="indice-t">¿Qué quieres aprender hoy?</h2>
+  ${bloque('Prepárate para tu examen', 'Cómo es cada examen de admisión, cuánto necesitas y cómo estudiar.', lista.filter(s => s.grupo === 'examen'))}
+  ${bloque('Aprende algo útil', 'Becas y carrera, tu dinero, tu negocio, tu app y tu página web.', lista.filter(s => s.grupo !== 'examen'))}
+</section>`;
+}
 export function paginaLearnPortada(anuncios = null) {
   const lista = secciones(), p0 = LEARN_PORTADA, todos = articulos();
   const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: p0.h1, description: p0.descripcion, inLanguage: 'es-MX', url: `${SITIO}${RUTA_LEARN}`, publisher: ORG,
@@ -95,11 +109,12 @@ export function paginaLearnPortada(anuncios = null) {
       <h1 class="lr-h1">${h1}</h1>
       <p class="lr-lead">${esc(p0.lead)}</p>
       <form class="lr-buscador" action="${RUTA_BUSCAR}" method="get" role="search"><label class="vh" for="lr-q">Buscar en Vorka Learn</label><input id="lr-q" name="q" type="search" placeholder="Busca una guía o un tema" enterkeyhint="search" maxlength="80" autocomplete="off"><button type="submit" aria-label="Buscar">${ICONOS_LR.lupa}</button></form>
-      <nav class="lr-chips" aria-label="Secciones">${lista.map(s => `<a class="lr-chip lr-s-${s.clave}" href="${s.ruta}">${iconoDe(s.clave)}${esc(s.nombre)}</a>`).join('')}</nav>
+      <a class="lr-ir-indice" href="#indice">Ver el índice de guías ${FLECHA}</a>
     </div>
     <div class="lr-portada-arte">${arteHero(lista.map(s => s.clave))}</div>
   </section>
   <div class="lr-confianza">${CONFIANZA().map(([i, t, d]) => `<div>${i}<span><b>${t}</b>${d}</span></div>`).join('')}</div>
+  ${indicePortada(lista, todos)}
   ${lista.map((s, i) => `<section class="lr-grupo lr-s-${s.clave}" aria-labelledby="g-${s.clave}">
     <div class="lr-grupo-cab"><span class="lr-m-ico">${iconoDe(s.clave)}</span><h2 class="lr-h2" id="g-${s.clave}">${esc(s.nombre)}</h2><a class="lr-todas" href="${s.ruta}">Todas las guías de ${esc(s.corto)} ${FLECHA}</a></div>
     <p class="lr-grupo-lead">${esc(s.indice.lead)}</p>

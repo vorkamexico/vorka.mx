@@ -1,6 +1,7 @@
 // Vorka Learn · encabezado y menú. Misma pieza que la tienda (píldora .nav.t-navs de vorka.css/tienda.css, que vorka.js
 // ya sabe abrir y cerrar: aria-expanded, Esc, bloqueo del scroll), con lo útil para quien estudia:
-//   logo V + «Vorka Learn» · secciones (en computadora) · lupa → /learn/buscar/ · botón «Practica» · menú
+//   logo V + «Vorka Learn» · «Exámenes ▾» y «Temas ▾» (en computadora, cada uno abre un panel con sus secciones) ·
+//   «Todas las guías» · lupa → /learn/buscar/ · botón «Practica» · menú
 // «Practica» es el botón destacado: quien lee una guía de examen casi siempre quiere ponerse a prueba. En una guía o
 // índice de un examen lleva directo a su simulador; en el resto de Learn, a la sección «Practica» de la portada (los
 // cuatro simuladores). No es un llamado de venta dentro del artículo: el artículo sigue con un solo llamado, al final.
@@ -28,6 +29,7 @@ export const ICONO_SECCION = {
   senal: I('<path d="M12 21V3"/><path d="M12 5h6.5l2 2.25-2 2.25H12M12 12H5.5l-2 2.25 2 2.25H12"/>'),
   celular: I('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/><rect x="9" y="6.5" width="2.5" height="2.5" rx=".6"/><rect x="12.5" y="6.5" width="2.5" height="2.5" rx=".6"/><rect x="9" y="10.5" width="2.5" height="2.5" rx=".6"/>'),
   libro: I('<path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5zM12 6.5v13"/>'),
+  sobre: I('<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/><path d="M12 4.5c-.8-.8-2.2-.6-2.2.6 0 .9 1.2 1.5 2.2 2.3 1-.8 2.2-1.4 2.2-2.3 0-1.2-1.4-1.4-2.2-.6z"/>'),
   navegador: I('<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 8.5h18M9.5 12.5l-2 2 2 2M14.5 12.5l2 2-2 2"/>'),
 };
 export const iconoDe = clave => ICONO_SECCION[aspecto(clave).motivo] || ICONO_SECCION.libro;
@@ -39,6 +41,16 @@ export const practicaDe = (actual = '') => {
   return s?.simulador ? { href: s.simulador.href, etiqueta: `Practica con el simulador de ${s.corto}` } : { href: RUTA_PRACTICA, etiqueta: 'Practica con un simulador de examen' };
 };
 
+// Panel de computadora: tarjetas con ícono, nombre, lema y número de guías; en Exámenes, debajo, el atajo a cada simulador
+const tarjetaPanel = (s, actual) => `<li><a class="lr-d-sec lr-s-${s.clave}" href="${s.ruta}"${s.clave === actual ? ' aria-current="page"' : ''}><span class="lr-m-ico">${iconoDe(s.clave)}</span><span class="lr-d-txt"><b>${esc(s.nombre)}</b><small>${esc(aspecto(s.clave).lema || '')}${aspecto(s.clave).lema ? ' · ' : ''}${s.n} ${s.n === 1 ? 'guía' : 'guías'}</small></span></a></li>`;
+const CHEVRON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>';
+function grupoMenu(id, titulo, lista, actual, pie = '') {
+  if (!lista.length) return '';
+  const dentro = lista.some(s => s.clave === actual);
+  return `<div class="lr-drop"><button type="button" class="lr-drop-btn" aria-expanded="false" aria-controls="lr-d-${id}"${dentro ? ' data-actual' : ''}>${titulo}${CHEVRON}</button>
+    <div class="lr-drop-panel" id="lr-d-${id}" hidden><ul class="lr-d-secs">${lista.map(s => tarjetaPanel(s, actual)).join('')}</ul>${pie}</div></div>`;
+}
+
 const enlaceSeccion = (s, actual) => `<li><a class="lr-m-sec lr-s-${s.clave}" href="${s.ruta}"${s.clave === actual ? ' aria-current="page"' : ''}><span class="lr-m-ico">${iconoDe(s.clave)}</span><span class="lr-m-txt"><b>${esc(s.nombre)}</b><small>${s.n} ${s.n === 1 ? 'guía' : 'guías'}</small></span><span class="lr-m-fl" aria-hidden="true">›</span></a></li>`;
 
 export function encabezadoLearn(actual = '') {
@@ -47,7 +59,11 @@ export function encabezadoLearn(actual = '') {
   return `<header class="nav t-navs lr-navs">
   <div class="nav-in">
     <a class="marca" href="/learn/" aria-label="Vorka Learn, inicio">${LOGO}Vorka <b>Learn</b></a>
-    <nav class="nav-links" aria-label="Secciones de Vorka Learn">${l.map(s => `<a href="${s.ruta}"${s.clave === actual ? ' aria-current="page"' : ''}>${esc(s.corto)}</a>`).join('')}</nav>
+    <nav class="nav-links lr-links" aria-label="Secciones de Vorka Learn">
+      ${grupoMenu('examenes', 'Exámenes', examenes, actual, examenes.some(s => s.simulador) ? `<p class="lr-d-pie"><span>Practica con un simulador:</span>${examenes.filter(s => s.simulador).map(s => `<a href="${s.simulador.href}">${esc(s.corto)}</a>`).join('')}</p>` : '')}
+      ${grupoMenu('temas', 'Temas', temas, actual)}
+      <a href="/learn/#indice"${actual === 'portada' ? ' aria-current="page"' : ''}>Todas las guías</a>
+    </nav>
     <a class="t-nav-ico lr-lupa" href="${RUTA_BUSCAR}"${actual === 'buscar' ? ' aria-current="page"' : ''} aria-label="Buscar en Vorka Learn" title="Buscar">${ICONOS.buscar}</a>
     <a class="btn acento t-pastilla lr-practica" href="${pr.href}" aria-label="${esc(pr.etiqueta)}">${ICONO_PRACTICA}<span>Practica</span></a>
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>

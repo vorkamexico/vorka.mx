@@ -7,6 +7,7 @@ import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { NEGOCIO, ARTICULOS_NEGOCIO, TEMA_NEGOCIO, AVISO_NEGOCIO } from '../src/learn-negocio.js';
 import { CAMINO, ARTICULOS_CAMINO, TEMA_CAMINO } from '../src/learn-camino.js';
+import { FIESTAS, ARTICULOS_FIESTAS, TEMA_FIESTAS, AVISO_FIESTAS } from '../src/learn-fiestas.js';
 import { secciones } from '../src/learn/datos.js';
 import { buscarGuias } from '../src/learn/extra.js';
 import { existsSync } from 'node:fs';
@@ -52,9 +53,16 @@ const TEMAS = [
     llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/test-vocacional/', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/',
       'como-hacer-tu-cv-sin-experiencia': '/voluntariado/' },
     dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/], '/voluntariado/': [/16 a 29 años/, /sin costo/] }, aviso: null, sinPesos: false },
+  { S: FIESTAS, X: ARTICULOS_FIESTAS, T: TEMA_FIESTAS, n: 1,
+    // Fuentes oficiales: comunicados de PROFECO en gob.mx y su Registro Público de Contratos de Adhesión
+    oficiales: /^https:\/\/(www\.gob\.mx\/profeco|rpca\.profeco\.gob\.mx)\//,
+    llamado: { 'como-hacer-invitaciones-digitales': '/tienda/brindi/' },
+    // Lo que el llamado debe decir, leído de la ficha de Brindi (src/brindi.js)
+    dice: { '/tienda/brindi/': [/pagas solo al publicarla/, /sin instalar nada/, /no manda mensajes por ti/] },
+    aviso: AVISO_FIESTAS, sinPesos: true, seccionRevisada: ['2026-11-06', 'noviembre de 2026'] },
 ];
 
-for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
+for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos, seccionRevisada } of TEMAS) {
   const RUTAS = X.map(T.rutaDe), TODAS = [T.ruta, ...RUTAS];
 
   describe(`Vorka Learn › ${S.nombre}`, () => {
@@ -85,7 +93,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
         expect(html).not.toContain('noindex');
         expect(html.match(/<h1[\s>]/g) || []).toHaveLength(1);
         expect(html).toContain(`<body class="lr-s-${S.clave}">`);
-        expect(cabecera(html)).toContain(`href="${T.ruta}" aria-current="page">${S.corto}</a>`);
+        expect(cabecera(html)).toContain(`href="${T.ruta}" aria-current="page"><span class="lr-m-ico">`);
         expect((await pedir(ruta, 'HEAD')).status).toBe(200);
       }
     });
@@ -111,7 +119,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
         expect(html).toContain('id="fuentes">Fuentes</h2>');
         for (const f of x.fuentes) { expect(f.url, f.nombre).toMatch(oficiales); expect(html).toContain(`href="${f.url}"`); }
         // La sección se revisó en octubre; un artículo revisado después trae su propia fecha (actualizado / actualizadoTxt)
-        const [fecha, txt] = x.actualizado ? [x.actualizado, x.actualizadoTxt] : ['2026-10-31', 'octubre de 2026'];
+        const [fecha, txt] = x.actualizado ? [x.actualizado, x.actualizadoTxt] : (seccionRevisada || ['2026-10-31', 'octubre de 2026']);
         expect(html).toContain(`Actualizado: <time datetime="${fecha}">${txt}</time>`);
         expect(html).toContain(`Actualizado: ${txt}.`);
         if (aviso) {
@@ -193,7 +201,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
       const portada = await (await pedir('/learn/')).text();
       expect(portada).toContain(`>${S.nombre}</h2>`);
       for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
-      expect(cabecera(portada)).toContain(`href="${T.ruta}">${S.corto}</a>`);
+      expect(cabecera(portada)).toContain(`href="${T.ruta}"><span class="lr-m-ico">`);
       expect(await (await pedir('/learn/acerca/')).text()).toContain(S.nombre);
       for (const x of X) expect(buscarGuias(x.h1).map(a => a.ruta), x.slug).toContain(T.rutaDe(x));
       const rss = await (await pedir('/learn/feed.xml')).text();

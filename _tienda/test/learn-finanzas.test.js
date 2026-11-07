@@ -31,14 +31,14 @@ const TODAS = [RUTA_FINANZAS, ...RUTAS];
 const DOMINIOS_GOOGLE = /googlesyndication|doubleclick|adtrafficquality|adservice\.google|googletagservices|fundingchoices/;
 const AD_ENV = { ADSENSE_CLIENT: 'ca-pub-1234567890123456', ADSENSE_SLOTS: 'intro:1111111111,mitad:2222222222,final:3333333333,indice:4444444444' };
 // Fuentes oficiales permitidas en esta sección (tema de dinero: solo autoridades y leyes)
-const OFICIALES = /^https:\/\/(comparador\.banxico\.org\.mx|www\.banxico\.org\.mx|www\.diputados\.gob\.mx|revista\.condusef\.gob\.mx|www\.gob\.mx\/condusef|dof\.gob\.mx)\//;
+const OFICIALES = /^https:\/\/(comparador\.banxico\.org\.mx|www\.banxico\.org\.mx|www\.diputados\.gob\.mx|revista\.condusef\.gob\.mx|www\.gob\.mx\/condusef|dof\.gob\.mx|www\.inegi\.org\.mx)\//;
 
 describe('Vorka Learn › Finanzas personales', () => {
-  it('cuatro artículos con URL única en /learn/finanzas/', () => {
-    expect(ARTICULOS_FINANZAS).toHaveLength(4);
-    expect(new Set(RUTAS).size).toBe(4);
+  it('cinco artículos con URL única en /learn/finanzas/', () => {
+    expect(ARTICULOS_FINANZAS).toHaveLength(5);
+    expect(new Set(RUTAS).size).toBe(5);
     for (const r of RUTAS) expect(r).toMatch(/^\/learn\/finanzas\/[a-z0-9-]+\/$/);
-    for (const k of ['titulo', 'descripcion', 'h1', 'lead']) expect(new Set(ARTICULOS_FINANZAS.map(x => x[k])).size).toBe(4);
+    for (const k of ['titulo', 'descripcion', 'h1', 'lead']) expect(new Set(ARTICULOS_FINANZAS.map(x => x[k])).size).toBe(5);
   });
 
   it('cada artículo responde 200 con title ≤ 60, description ≤ 155, canonical, OG de artículo y un solo H1', async () => {
@@ -58,7 +58,7 @@ describe('Vorka Learn › Finanzas personales', () => {
       expect(html).not.toContain('noindex');
       expect(html.match(/<h1[\s>]/g) || []).toHaveLength(1);
       expect(html).toContain(`<h1 class="lr-h1">${x.h1}</h1>`);
-      expect(cabecera(html)).toContain('href="/learn/finanzas/" aria-current="page">Finanzas</a>');
+      expect(cabecera(html)).toContain('href="/learn/finanzas/" aria-current="page"><span class="lr-m-ico">');
       expect((await pedir(ruta, 'HEAD')).status).toBe(200);
     }
   });
@@ -86,8 +86,9 @@ describe('Vorka Learn › Finanzas personales', () => {
       expect(x.fuentes.length).toBeGreaterThanOrEqual(3);
       expect(html).toContain('id="fuentes">Fuentes</h2>');
       for (const f of x.fuentes) { expect(f.url, f.nombre).toMatch(OFICIALES); expect(html).toContain(`href="${f.url}"`); }
-      expect(html).toMatch(/Actualizado: <time datetime="\d{4}-\d{2}-\d{2}">octubre de 2026<\/time>/);
-      expect(html).toContain('Actualizado: octubre de 2026.');
+      const txt = x.actualizadoTxt || 'octubre de 2026';
+      expect(html).toMatch(new RegExp(`Actualizado: <time datetime="\\d{4}-\\d{2}-\\d{2}">${txt}</time>`));
+      expect(html).toContain(`Actualizado: ${txt}.`);
       const art = principal(html).split('<article')[1].split('</article>')[0];
       expect(art).toContain(AVISO_FINANZAS);
       expect(AVISO_FINANZAS).toBe('Información general con fines educativos; no es asesoría financiera personalizada.');
@@ -97,7 +98,8 @@ describe('Vorka Learn › Finanzas personales', () => {
 
   it('un solo llamado final, después de las fuentes; Cuentas solo donde encaja y descrito con lo que hace', async () => {
     const esperado = { 'como-funciona-una-tarjeta-de-credito': '/learn/finanzas/como-salir-de-deudas/', 'como-prestar-dinero-a-un-familiar-o-amigo': '/tienda/cuentas/',
-      'como-organizar-una-tanda': '/learn/finanzas/como-prestar-dinero-a-un-familiar-o-amigo/', 'como-salir-de-deudas': '/tienda/cuentas/' };
+      'como-organizar-una-tanda': '/learn/finanzas/como-prestar-dinero-a-un-familiar-o-amigo/', 'como-salir-de-deudas': '/tienda/cuentas/',
+      'como-ahorrar-si-eres-joven': '/tienda/clara/' };
     for (const x of ARTICULOS_FINANZAS) {
       const main = principal(await (await pedir(rutaArticuloFinanzas(x))).text());
       const finales = main.match(/<aside class="lr-final"[\s\S]*?<\/aside>/g) || [];
@@ -157,13 +159,17 @@ describe('Vorka Learn › Finanzas personales', () => {
     for (const [s, r, txt] of meses) { expect((s * r / 12).toFixed(2)).toBe(txt.slice(1).replace(',', '')); expect(t).toContain(txt); }
     expect(meses.reduce((a, [s, r]) => a + Math.round(s * r / 12 * 100) / 100, 0).toFixed(2)).toBe('1016.67');
     expect(t).toContain('$1,016.67');
+    // Ahorro: 10 % de $4,000 = $400; 6 × $400 = $2,400; $3,000 ÷ 5 = $600; fondo 3 y 6 meses de $3,000
+    expect(4000 * 0.10).toBe(400); expect(6 * 400).toBe(2400); expect(3000 / 5).toBe(600); expect(3 * 3000).toBe(9000); expect(6 * 3000).toBe(18000);
+    for (const txt of ['= <b>$400</b>', '= <b>$2,400</b>', '= <b>$600</b>', '= <b>$9,000</b>', '= <b>$18,000</b>']) expect(t).toContain(txt);
   });
 
-  it('se enlazan entre sí («Sigue leyendo» con los otros tres) y se pueden compartir por WhatsApp y Facebook', async () => {
+  it('se enlazan entre sí («Sigue leyendo» con tres de las otras) y se pueden compartir por WhatsApp y Facebook', async () => {
     for (const x of ARTICULOS_FINANZAS) {
       const ruta = rutaArticuloFinanzas(x), html = await (await pedir(ruta)).text();
       const sigue = html.split('class="lr-sigue"')[1].split('</section>')[0];
-      for (const y of RUTAS.filter(r => r !== ruta)) expect(sigue, `${ruta} → ${y}`).toContain(`href="${y}"`);
+      const enlazadas = RUTAS.filter(r => r !== ruta && sigue.includes(`href="${r}"`));
+      expect(enlazadas.length, ruta).toBe(Math.min(3, RUTAS.length - 1));
       expect(html).toContain(encodeURIComponent(`https://vorka.mx${ruta}?utm_source=whatsapp&utm_medium=compartir&utm_campaign=learn`));
       expect(html).toContain(`facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://vorka.mx${ruta}?utm_source=facebook`)}`);
     }
@@ -203,7 +209,7 @@ describe('Vorka Learn › Finanzas personales', () => {
     expect(lista.length).toBeGreaterThanOrEqual(GUIAS.length + 4);
     for (const x of RUTAS) expect(lista).toContain(`https://vorka.mx${x}`);
     // El menú de Learn liga a Finanzas en todas las páginas de Learn, también en las guías de exámenes
-    expect(cabecera(await (await pedir(rutaGuia(GUIAS[0]))).text())).toContain('href="/learn/finanzas/">Finanzas</a>');
+    expect(cabecera(await (await pedir(rutaGuia(GUIAS[0]))).text())).toContain('href="/learn/finanzas/"><span class="lr-m-ico">');
   });
 
   it('están en el sitemap de Learn (y no en el de la tienda)', async () => {

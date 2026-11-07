@@ -7,7 +7,8 @@
 //   T.pagina(slug, anuncios) → Response | null
 // Cada artículo: { slug, llamado (clave de llamados), titulo, descripcion, h1, lead, secciones: [{ h2, html }], faq,
 // fuentes: [{ nombre, url }], relacionadas: [slug…] }. Opcional: actualizado / actualizadoTxt propios del artículo
-// (si se revisó en otra fecha que el resto de la sección).
+// (si se revisó en otra fecha que el resto de la sección), y relExtra: [{ href, h1, descripcion }] de otras secciones para
+// completar «Sigue leyendo» cuando la sección tiene pocas guías.
 import { esc } from '../paginas.js';
 import { FLECHA } from '../marco.generado.js';
 import { RUTA_LEARN, conMarca, textoPlano } from './piezas.js';
@@ -35,7 +36,9 @@ export function crearTema(o) {
     const r = rutaDe(x);
     // Sigue leyendo: las que pide el artículo y, si faltan, las demás de la sección
     const rel = [...new Set([...(x.relacionadas || []), ...articulos.map(y => y.slug)])].filter(s => s !== x.slug).map(articulo).filter(Boolean).slice(0, 3)
-      .map(y => ({ href: rutaDe(y), h1: y.h1, descripcion: y.descripcion }));
+      .map(y => ({ href: rutaDe(y), h1: y.h1, descripcion: y.descripcion }))
+      // Si la sección tiene pocas guías, completa con las de otras secciones que el artículo pida ({ href, h1, descripcion })
+      .concat(x.relExtra || []).slice(0, 3);
     return paginaArticulo(x, {
       ruta: r, titulo: titulo(x), lugares: [['Vorka Learn', RUTA_LEARN], [seccion.nombre, ruta], [x.h1, r]],
       kicker: `Guía · ${seccion.nombre}`, imagen: o.imagen, actual: seccion.clave, anuncios, actualizado: x.actualizado || o.actualizado, actualizadoTxt: x.actualizadoTxt || o.actualizadoTxt,

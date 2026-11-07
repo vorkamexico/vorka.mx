@@ -35,6 +35,9 @@ export const SUBIR = `<a class="lr-subir" href="#contenido" aria-label="Subir al
 export const SCRIPT_LEARN = `(function(){var d=document,h=d.documentElement,b=d.querySelector('.lr-progreso i'),a=d.querySelector('.lr-art'),q=false;
 function f(){q=false;var y=window.scrollY||0;h.classList.toggle('lr-bajo',y>900);if(b&&a){var r=a.getBoundingClientRect(),t=r.top+y-120,l=Math.max(1,a.offsetHeight-innerHeight*.6);b.style.transform='scaleX('+Math.min(1,Math.max(0,(y-t)/l)).toFixed(3)+')';}}
 addEventListener('scroll',function(){if(!q){q=true;requestAnimationFrame(f);}},{passive:true});addEventListener('resize',f);f();
+var dr=[].slice.call(d.querySelectorAll('.lr-drop-btn'));function cerrar(x){dr.forEach(function(o){if(o!==x){o.setAttribute('aria-expanded','false');var p=d.getElementById(o.getAttribute('aria-controls'));if(p)p.hidden=true;}});}
+dr.forEach(function(o){var p=d.getElementById(o.getAttribute('aria-controls'));o.addEventListener('click',function(){var v=o.getAttribute('aria-expanded')!=='true';cerrar(o);o.setAttribute('aria-expanded',v);if(p)p.hidden=!v;});});
+if(dr.length){d.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('.lr-drop'))cerrar();});d.addEventListener('keydown',function(e){if(e.key!=='Escape')return;var o=dr.filter(function(x){return x.getAttribute('aria-expanded')==='true';})[0];if(o){cerrar();o.focus();}});}
 var m=d.getElementById('menu-movil'),k=d.querySelector('.menu-btn');if(!m||!k)return;
 function abierto(){return d.body.classList.contains('menu-abierto');}
 function sinc(){var o=abierto();k.setAttribute('aria-label',o?'Cerrar menú':'Abrir menú');if(o){m.focus({preventScroll:true});}else if(m.contains(d.activeElement)||d.activeElement===d.body){k.focus({preventScroll:true});}}

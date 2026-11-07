@@ -23,12 +23,12 @@ const DOMINIOS_GOOGLE = /googlesyndication|doubleclick|adtrafficquality|adservic
 const AD_ENV = { ADSENSE_CLIENT: 'ca-pub-1234567890123456', ADSENSE_SLOTS: 'intro:1111111111,mitad:2222222222,final:3333333333,indice:4444444444' };
 
 describe('Vorka Learn: guías de estudio', () => {
-  it('hay entre 8 y 12 guías, con URL única y de todos los simuladores', () => {
+  it('hay entre 8 y 16 guías, con URL única y de todos los simuladores', () => {
     expect(GUIAS.length).toBeGreaterThanOrEqual(8);
-    expect(GUIAS.length).toBeLessThanOrEqual(12);
+    expect(GUIAS.length).toBeLessThanOrEqual(16);
     expect(new Set(GUIAS.map(rutaGuia)).size).toBe(GUIAS.length);
     for (const s of Object.keys(SIMS)) expect(guiasDe(s).length).toBeGreaterThan(0);
-    for (const x of GUIAS) expect(rutaGuia(x)).toMatch(/^\/learn\/(paa|unam|ecoems|prepa-ug)\/[a-z0-9-]+\/$/);
+    for (const x of GUIAS) expect(rutaGuia(x)).toMatch(/^\/learn\/(paa|unam|ecoems|prepa-ug|ipn)\/[a-z0-9-]+\/$/);
   });
 
   it('cada URL vieja /<simulador>/guias/… responde 301 directo a su URL nueva en /learn/ (sin cadenas)', async () => {
