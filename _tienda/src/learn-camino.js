@@ -9,7 +9,9 @@
 //    UAM, UACM e IMCO (Compara Carreras). Revisadas el 31 de octubre de 2026. Montos solo con su fuente y su ciclo.
 //    La guía del CV cita la Ley Federal del Trabajo (texto vigente, reforma DOF 14-05-2026: artículos 22, 22 Bis y 133)
 //    la Constitución (artículo 123, apartado A, fracción III; reforma DOF 07-10-2026) y el Portal del Empleo;
-//    revisadas el 6 de noviembre de 2026. Lo demás de esa guía se dice como consejo nuestro.
+//    revisadas el 6 de noviembre de 2026. La guía de la carta de motivos cita cuatro convocatorias (CIESAS, FCA UNAM,
+//    SECIHTI y COMEXUS) y la de la Beca Rita Cetina (reglas de operación 2026 en el DOF, SEP, Programas para el Bienestar y
+//    CONDUSEF) se revisaron el 7 de noviembre de 2026. Lo demás de esa guía se dice como consejo nuestro.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -44,10 +46,19 @@ const F = {
   lft: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 22, 22 Bis y 133), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
   cpeum: { nombre: 'Constitución Política de los Estados Unidos Mexicanos, texto vigente (última reforma DOF 07-10-2026; artículo 123, apartado A, fracción III), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf' },
   empleo: { nombre: 'Portal del Empleo (gobierno de México)', url: 'https://www.empleo.gob.mx/' },
+  probepi: { nombre: 'CIESAS: Convocatoria PROBEPI 2026, becas de posgrado para personas indígenas (becas apoyadas por la SECIHTI)', url: 'https://ciesas.edu.mx/wp-content/uploads/2026/04/Convocatoria-Probepi-2026.pdf' },
+  fcaMovilidad: { nombre: 'FCA UNAM: Convocatoria de movilidad estudiantil internacional de licenciatura 2027-1', url: 'https://www.fca.unam.mx/docs/avisos/convocatoria_movilidad_intl_2027-1.pdf' },
+  secihtiGuia: { nombre: 'SECIHTI: Guía de postulación, Becas de Posgrado en Ciencia y Humanidades en el Extranjero 2026', url: 'https://secihti.mx/wp-content/uploads/2026/03/Guia_Postulacion_BEXT_CYH_2026-20260324T232028.pdf' },
+  comexus: { nombre: 'COMEXUS: Convocatoria Fulbright-García Robles, posgrado regular', url: 'https://comexus.org.mx/documentos/becas/ConvocatoriaPosgradoRegular_sitioweb_2026-08-06_H_22-32-12.pdf' },
+  ritaReglas: { nombre: 'DOF: Acuerdo 39/12/25, reglas de operación del Programa Beca Universal de Educación Básica Rita Cetina 2026 (31 de diciembre de 2025)', url: 'https://www.dof.gob.mx/nota_detalle.php?codigo=5777733&fecha=31/12/2025' },
+  ritaModif: { nombre: 'DOF: Acuerdo 06/07/26, que modifica las reglas de operación de la Beca Rita Cetina 2026 (13 de julio de 2026)', url: 'https://dof.gob.mx/nota_detalle_popup.php?codigo=5793386' },
+  ritaSep: { nombre: 'SEP: Boletín 353, arranca el registro para la Beca Rita Cetina para primaria y secundaria (25 de octubre de 2026)', url: 'https://www.gob.mx/sep/prensa/boletin-353-este-lunes-arranca-el-registro-para-obtener-la-beca-rita-cetina-para-primaria-y-secundaria-mario-delgado' },
+  ritaBienestar: { nombre: 'Programas para el Bienestar: Beca Rita Cetina (requisitos, cobro y calendarios de pago 2026)', url: 'https://www.programasparaelbienestar.gob.mx/programas/infancias/beca-rita-cetina/' },
+  condusefBeca: { nombre: 'CONDUSEF, revista Proteja su Dinero: ¿Te dieron una beca? (agosto de 2026)', url: 'https://revista.condusef.gob.mx/credito/2026/08/te-dieron-una-beca/' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina' };
 const r = slug => `/learn/camino/${slug}/`;
 // Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
 const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
@@ -72,6 +83,20 @@ const LLAMADO = {
     texto: 'Para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría.',
     puntos: ['Áreas como redacción, diseño y redes, eventos y estrategia.', 'De 4 a 8 horas por semana, según tu área.', 'Es sin costo, con constancia y portafolio.', 'Presencial en el Bajío o a distancia desde cualquier parte de México.'],
     href: '/voluntariado/', boton: 'Conoce Tú en Vorka' }),
+  // Asesoría y mentoría con Brandon Oleynick (vorka.mx/oleynickhdz/servicios/ y /becas/): sin precios aquí; no garantiza la beca
+  brandon: llamadoProducto({ etiqueta: 'Prepara tu beca con Brandon Oleynick', producto: 'Brandon Oleynick', de: 'Mentoría para becas · Vorka México', icono: 'personas', chip: '1:1 por videollamada',
+    titulo: '¿Quieres que alguien revise tu carta antes de mandarla?',
+    texto: 'Agenda una sesión con Brandon Oleynick, fundador de Vorka México, para preparar tu beca o convocatoria.',
+    puntos: ['<b>Asesoría Express</b> (20 minutos): orientación para una beca o convocatoria concreta y retroalimentación directa, con notas de lo acordado.', '<b>Mentoría mensual</b>: plan personalizado, preparación para becas y convocatorias, revisión de tus materiales y WhatsApp directo entre sesiones.', 'Eliges tu horario en línea y te llega el enlace de la videollamada al confirmar.'],
+    nota: 'La mentoría no asegura la beca: cada institución decide. Brandon te acompaña a escribir mejor tu carta; no la escribe ni llena nada por ti.',
+    href: 'https://os.vorka.mx/agendar/oleynickhdz?s=express&amp;o=learn-carta', boton: 'Agendar Asesoría Express', href2: '/oleynickhdz/becas/', boton2: 'Ver becas que acompaña' }),
+  // Test vocacional para familias con hijos en secundaria (paginas-vocacional.js: «¿Sirve si voy en secundaria? Sí…»)
+  testFamilia: llamadoProducto({ etiqueta: 'Test vocacional gratis', producto: 'Test vocacional Vorka', de: 'Orientación vocacional · Vorka México', icono: 'brujula', chip: 'Gratis',
+    titulo: '¿Tu hija o tu hijo ya va en secundaria?',
+    texto: 'El siguiente paso es elegir prepa. El Test vocacional Vorka le ayuda a elegir una prepa o un bachillerato que vaya con sus intereses: 48 preguntas, de 8 a 10 minutos.',
+    puntos: ['Al terminar ve gratis sus 3 tipos de interés y su carrera más afín.', 'Le dice si le toca el examen ECOEMS o el de la prepa de la UG.', 'Si quieren, el reporte completo trae 20 carreras, el examen que le toca y un plan de 30 días.'],
+    nota: 'Es orientativo: no es una prueba psicométrica.',
+    href: '/test-vocacional/', boton: 'Hacer el test gratis' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
     texto: 'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
     href: r(S.carrera), boton: 'Lee: cómo elegir carrera' }),
@@ -93,7 +118,7 @@ export const ARTICULOS_CAMINO = [
           ['Beca Universal de Educación Media Superior «Benito Juárez»', 'Prepa o bachillerato público, en modalidad escolarizada o mixta.'],
           ['Beca «Jóvenes Escribiendo el Futuro»', 'Licenciatura o técnico superior universitario, en escuelas consideradas prioritarias.'],
           ['Beca de Transporte «Gertrudis Bocanegra»', 'Educación superior, en algunos estados.'],
-        ], 'La Coordinación también tiene becas de educación básica («Rita Cetina»), que no tratamos aquí.') },
+        ], `La Coordinación también tiene la beca de educación básica Rita Cetina; la explicamos en ${a(r(S.rita), 'Beca Rita Cetina: monto, registro y pagos')}.`) },
       { h2: 'Para la prepa: Beca Universal «Benito Juárez»', html: p('Según la ficha de la Coordinación, actualizada en septiembre de 2026:')
         + ul([
           '<b>A quién va:</b> estudiantes inscritos en el ciclo 2026-2027 en un bachillerato o prepa <b>pública</b>, en modalidad <b>escolarizada o mixta</b>, de hasta 25 años cumplidos.',
@@ -324,6 +349,126 @@ export const ARTICULOS_CAMINO = [
     ],
     fuentes: [F.lft, F.cpeum, F.empleo],
     relacionadas: [S.carrera, S.becas],
+  },
+
+  // =============== 5. Carta de motivos para una beca ===============
+  // Revisada el 7 de noviembre de 2026 en cuatro convocatorias reales: PROBEPI 2026 (CIESAS, becas apoyadas por SECIHTI),
+  // movilidad internacional de licenciatura 2027-1 (FCA UNAM), becas al extranjero 2026 de SECIHTI (guía de postulación)
+  // y Fulbright-García Robles posgrado (COMEXUS). Lo demás (estructura, ejemplo, errores) es consejo nuestro.
+  {
+    slug: S.carta, llamado: 'brandon', actualizado: '2026-11-07', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Cómo hacer una carta de motivos para una beca',
+    descripcion: 'Cómo escribir tu carta de motivos para una beca o un intercambio: qué piden convocatorias reales, una estructura en cinco partes y los errores comunes.',
+    h1: 'Cómo hacer una carta de exposición de motivos para una beca',
+    lead: 'La carta de motivos es donde dejas de ser un promedio y te vuelves una persona con una historia y un plan. Aquí está qué piden de ella cuatro convocatorias reales, una estructura que funciona, un ejemplo y los errores que más se repiten.',
+    secciones: [
+      { h2: 'Qué es y qué buscan en ella', html: p('Es un texto breve, en primera persona, donde explicas por qué quieres esa beca o ese programa, qué has hecho para llegar ahí y qué vas a hacer con la oportunidad. Cada convocatoria le pone su nombre: «carta de exposición de motivos», «sección de motivos» o «ensayo personal».')
+        + p('Para darte una idea de cómo se evalúa: la convocatoria 2026 del Programa de Becas de Posgrado para Indígenas (PROBEPI) del CIESAS califica, entre otras cosas, la <b>argumentación clara</b> del tema que propones y su relevancia, la <b>coherencia</b> de tu trayectoria con ese tema y tu <b>compromiso social comunitario</b>.')
+        + caja('La regla de oro', p('Esto es consejo nuestro: quien lee tu carta debe terminar sabiendo tres cosas: quién eres, por qué esta beca y no otra, y qué vas a hacer con ella.')) },
+      { h2: 'Primero, lee lo que pide tu convocatoria', html: p('No hay un formato único: cada convocatoria fija sus reglas. Así lo piden cuatro reales:')
+        + tabla(['Convocatoria', 'Qué pide de la carta'], [
+          ['PROBEPI 2026 (CIESAS, becas de posgrado para personas indígenas)', 'Carta de exposición de motivos de <b>máximo dos cuartillas</b>.'],
+          ['Movilidad internacional de licenciatura 2027-1 (FCA UNAM)', 'Carta de exposición de motivos <b>firmada, en español</b>, en formato libre, con un nombre de archivo específico. No acepta documentos incompletos ni fuera de tiempo.'],
+          ['Becas de posgrado en el extranjero 2026 (SECIHTI)', 'Una sección de «Motivos» en la plataforma: tu experiencia vinculada a los estudios, <b>por qué es pertinente para México</b> apoyar tu formación y las ventajas del programa frente a la oferta en México.'],
+          ['Fulbright-García Robles, posgrado (COMEXUS)', 'Un <b>ensayo personal</b> en inglés, de <b>400 a 600 palabras</b>, además de tus objetivos de estudio. Si cambias de disciplina, tienes que justificarlo.'],
+        ], 'Fuentes: las convocatorias citadas al final. Revisa siempre la versión vigente de la tuya.')
+        + p('Esto es consejo nuestro: subraya en tu convocatoria cada palabra que diga qué evalúan. Esas palabras son tu guion.') },
+      { h2: 'Una estructura en cinco partes', html: p('Esto es consejo nuestro; adáptala a la extensión que te pidan:') + ol([
+          ['Un arranque concreto', 'Una escena, un problema o un momento que explique de dónde viene tu interés. Nada de «Por medio de la presente…».'],
+          ['Lo que ya hiciste', 'Tu trayectoria con hechos: materias, proyectos, trabajo, voluntariado. Cada cosa, con un resultado.'],
+          ['Por qué esta beca y este programa', 'Lo que ofrece que no encuentras en otro lado: profesores, enfoque, lugar, materias. Demuestra que lo investigaste.'],
+          ['Tu plan', 'Qué vas a estudiar o hacer y qué quieres lograr al terminar, con metas claras.'],
+          ['Qué vas a devolver', 'Cómo vas a usar lo aprendido en tu comunidad, tu escuela o tu país. Muchas convocatorias lo evalúan.'],
+        ]) },
+      { h2: 'Un ejemplo de arranque', html: `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas (no es una carta real)</span>
+<p class="gu-ej-p">Arranque débil</p><p>«Por medio de la presente me permito solicitar la beca, ya que soy una persona responsable, dedicada y con muchas ganas de superarme.»</p>
+<p class="gu-ej-p">Arranque fuerte</p><p>«En mi comunidad, la clínica más cercana está a dos horas. Cuando a los 15 años acompañé a mi abuela a consulta, entendí que quería estudiar salud pública. Hoy, después de dos años como voluntaria en campañas de vacunación, busco esta beca para especializarme en epidemiología y volver a trabajar en mi región.»</p></div>`
+        + p('El segundo dice quién eres, qué has hecho y qué quieres, en tres frases y sin adjetivos vacíos.') },
+      { h2: 'Errores que más se repiten', html: ul([
+          '<b>Adjetivos sin pruebas</b>: «responsable», «proactivo», «apasionado». Cámbialos por algo que hiciste.',
+          '<b>La misma carta para todas las becas</b>. Se nota: no menciona nada específico del programa.',
+          '<b>Contar tu vida entera</b>. Elige dos o tres momentos que expliquen tu decisión.',
+          '<b>Pasarte de la extensión</b> o ignorar el formato que pide la convocatoria.',
+          '<b>Faltas de ortografía</b>. Léela en voz alta y pídele a alguien más que la revise.',
+          '<b>Que la escriba otra persona o una herramienta por ti</b>. Puedes pedir retroalimentación, pero la carta tiene que ser tuya: en la entrevista te van a preguntar por ella.',
+        ]) + nota('Todo esto es consejo nuestro.') },
+      { h2: 'Formato y envío', html: ul([
+          'Respeta la extensión: cuartillas, palabras o caracteres, según pida tu convocatoria.',
+          'Si te piden firma, fírmala; la convocatoria de movilidad de la FCA UNAM, por ejemplo, la pide firmada.',
+          'Guárdala en PDF y nómbrala como diga la convocatoria. Si no dice nada, como consejo nuestro: «Carta-motivos-Apellido-Nombre.pdf».',
+          'Envíala antes de la fecha límite: las convocatorias suelen no aceptar documentos fuera de tiempo.',
+        ]) },
+      { h2: 'Antes de mandarla, revisa', html: ul([
+          '¿Responde exactamente lo que pide la convocatoria?',
+          '¿Dice por qué esta beca y no otra?',
+          '¿Cada afirmación sobre ti tiene un ejemplo o un resultado?',
+          '¿Tiene un plan claro y qué vas a devolver?',
+          '¿Respeta la extensión y el formato?',
+          '¿La leyó alguien más?',
+        ]) },
+    ],
+    faq: [
+      { p: '¿Cuánto debe medir una carta de exposición de motivos?', r: 'Depende de la convocatoria. Por ejemplo, el PROBEPI 2026 del CIESAS pide máximo dos cuartillas; la convocatoria de movilidad de la FCA UNAM la deja en formato libre, y Fulbright-García Robles pide un ensayo personal de 400 a 600 palabras.' },
+      { p: '¿Qué debe llevar una carta de motivos para una beca?', r: 'Como consejo nuestro: un arranque concreto, lo que ya hiciste, por qué esa beca y ese programa, tu plan y qué vas a devolver. Y, antes que nada, lo que pida tu convocatoria.' },
+      { p: '¿La carta de motivos va firmada?', r: 'Solo si la convocatoria lo pide. La de movilidad internacional de la FCA UNAM, por ejemplo, la pide firmada y en español.' },
+      { p: '¿Alguien puede escribir mi carta por mí?', r: 'Puedes pedir retroalimentación, pero la carta debe ser tuya: es tu historia y en la entrevista te van a preguntar por ella.' },
+    ],
+    fuentes: [F.probepi, F.fcaMovilidad, F.secihtiGuia, F.comexus],
+    relacionadas: [S.becas, S.cv, S.carrera],
+  },
+
+  // =============== 6. Beca Rita Cetina ===============
+  // Revisada el 7 de noviembre de 2026: reglas de operación 2026 (Acuerdo 39/12/25, DOF 31-12-2025, y su modificación,
+  // Acuerdo 06/07/26, DOF 13-07-2026), SEP (boletín 353, 25-10-2026), Programas para el Bienestar (registro y calendarios)
+  // y CONDUSEF (agosto de 2026). No publicado: fechas del pago de noviembre-diciembre 2026 ni prórroga del registro.
+  {
+    slug: S.rita, llamado: 'testFamilia', actualizado: '2026-11-07', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Beca Rita Cetina 2026: monto, registro y pagos',
+    descripcion: 'La Beca Rita Cetina explicada: para quién es (primaria y secundaria públicas), cuánto da en 2026, cómo fue el registro, cómo se cobra y cómo consultarla.',
+    h1: 'Beca Rita Cetina: quién la recibe, cuánto da y cómo registrarte',
+    lead: 'La Beca Rita Cetina es el apoyo del gobierno federal para las familias con hijos en primaria y secundaria públicas. Aquí está cuánto da en 2026, cómo fue el último registro, cómo se cobra y cómo consultar tu estatus, con lo que dicen sus reglas de operación y la SEP.',
+    secciones: [
+      { h2: 'Qué es y quién la recibe', html: p('Es el Programa Beca Universal de Educación Básica Rita Cetina, que opera la Coordinación Nacional de Becas para el Bienestar Benito Juárez, de la SEP. Es para familias con hijas e hijos inscritos en <b>escuelas públicas de educación básica</b>, en modalidad escolarizada.')
+        + ul([
+          'En 2026 cubre <b>primaria y secundaria</b> públicas, y mantiene a las familias de preescolar y primaria que ya la recibían desde antes.',
+          'La beca se pierde cuando el alumno cumple 18 años o termina tercero de secundaria, si deja la escuela pública o si se pide la baja.',
+        ]) + nota('Fuente: reglas de operación 2026 (Acuerdo 39/12/25, DOF 31-12-2025) y su modificación (Acuerdo 06/07/26).') },
+      { h2: 'Cuánto da en 2026', html: tabla(['Nivel', 'Monto según las reglas 2026'], [
+          ['Secundaria', '<b>$1,900 bimestrales por familia</b>, más $700 bimestrales por cada hija o hijo en secundaria a partir del segundo. En 2026 se pagan hasta 5 bimestres.'],
+          ['Primaria', '<b>$2,500 en un pago único al año</b> por cada alumna o alumno.'],
+          ['Familias de preescolar y primaria que ya la recibían', '$1,900 bimestrales.'],
+        ], 'Fuente: reglas de operación 2026, numeral 3.4. El apoyo adicional por cada hijo en secundaria dura como máximo 30 meses.')
+        + caja('No la confundas', p('En secundaria, los $1,900 son <b>por familia</b>, no por alumno. La beca de prepa (Beca Universal Benito Juárez) es otra; la explicamos en nuestra guía de becas para prepa y universidad.')) },
+      { h2: 'Cómo fue el registro 2026-2027', html: p('Según la SEP, el registro para el ciclo 2026-2027 fue del <b>26 de octubre al 6 de noviembre de 2026</b>, en becaritacetina.gob.mx. Lo hace la madre, el padre o el tutor, con:')
+        + ul([
+          'Su cuenta <b>Llave MX</b>.',
+          'Su <b>CURP</b> y la de cada hija o hijo.',
+          'Identificación oficial, comprobante de domicilio, celular y correo.',
+          'La <b>Clave de Centro de Trabajo (CCT)</b> de la escuela de cada alumno.',
+        ])
+        + p('Ese periodo ya cerró. Si no alcanzaste a registrarte, revisa en los canales oficiales si se abre un nuevo periodo: no encontramos un anuncio de prórroga al 7 de noviembre de 2026.') },
+      { h2: 'Cómo se cobra y cuándo pagan', html: ul([
+          'Se cobra con la <b>tarjeta del Banco del Bienestar</b>, que recoge en persona la madre, el padre o el tutor registrado.',
+          'En secundaria, los depósitos del bimestre septiembre-octubre de 2026 fueron del 5 al 16 de octubre, según la letra inicial del primer apellido de quien tiene la tarjeta.',
+          'En primaria, el pago anual de $2,500 se hizo del 3 al 14 de agosto de 2026.',
+          'Si no cobras un apoyo, puedes recogerlo en las dos emisiones siguientes; después se cancela.',
+        ]) + nota('Fuentes: Programas para el Bienestar (calendarios de pago) y Acuerdo 06/07/26. Las fechas del pago de noviembre-diciembre de 2026 no se habían publicado al 7 de noviembre.') },
+      { h2: 'Cómo consultar tu estatus', html: p('Las reglas de operación indican el <b>buscador de folios</b> de la Coordinación (buscador.becasbenitojuarez.gob.mx), donde consultas con la CURP del alumno. También puedes escribir a atencionciudadana@becasbenitojuarez.gob.mx o llamar al 55 1162 0300.') },
+      { h2: 'Cuidado con los fraudes', html: ul([
+          'Los trámites de la beca son <b>gratuitos</b> y, según sus reglas, la atención es sin condicionamientos.',
+          'CONDUSEF advierte que las convocatorias oficiales <b>no piden depósitos</b> para registrarte.',
+          'No compartas tu Llave MX ni tus datos con quien te ofrezca «registrarte» o «acelerar el pago». Para quejas, las reglas dan el 800 11 28 700 de la Secretaría Anticorrupción y Buen Gobierno.',
+        ]) },
+      { h2: 'Y después de la secundaria', html: p(`Al terminar tercero de secundaria termina la Rita Cetina, pero empieza la beca de prepa. Lo explicamos en ${a(r(S.becas), 'becas para prepa y universidad')}. Y si tu hija o tu hijo va en secundaria, este es buen momento para pensar qué prepa le conviene: ${a(r(S.carrera), 'cómo elegir carrera')} te da un método.`) },
+    ],
+    faq: [
+      { p: '¿Cuánto da la Beca Rita Cetina en 2026?', r: 'Según sus reglas de operación 2026: en secundaria, 1,900 pesos bimestrales por familia más 700 pesos por cada hijo adicional en secundaria; en primaria, un pago único anual de 2,500 pesos por alumno.' },
+      { p: '¿Cuándo fue el registro de la Beca Rita Cetina 2026?', r: 'Para el ciclo 2026-2027, del 26 de octubre al 6 de noviembre de 2026, en becaritacetina.gob.mx, con Llave MX y las CURP del tutor y de cada alumno.' },
+      { p: '¿Cómo sé si ya soy beneficiario de la Rita Cetina?', r: 'En el buscador de folios de la Coordinación Nacional de Becas (buscador.becasbenitojuarez.gob.mx), con la CURP del alumno.' },
+      { p: '¿La Beca Rita Cetina es por alumno o por familia?', r: 'Depende del nivel: en secundaria es por familia (con un monto extra por cada hijo adicional en secundaria); en primaria, el pago anual es por alumno.' },
+    ],
+    fuentes: [F.ritaReglas, F.ritaModif, F.ritaSep, F.ritaBienestar, F.condusefBeca],
+    relacionadas: [S.becas, S.carrera, S.carta],
   },
 ];
 
