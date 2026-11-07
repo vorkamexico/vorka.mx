@@ -35,7 +35,7 @@ export { GUIAS, SIMS, rutaGuia, rutaIndice, textoDeGuia, ACTUALIZADO };
 const temaDe = (s, T, articulos, aviso) => ({ clave: s.clave, nombre: s.nombre, corto: s.corto, ruta: T.ruta, indice: s.indice, titulo: T.tituloIndice(),
   articulos, rutaDe: T.rutaDe, textoDe: T.textoDe, aviso });
 const TEMAS = () => [
-  temaDe(CAMINO, TEMA_CAMINO, ARTICULOS_CAMINO, 'Guías informativas: confirma requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a las universidades que mencionamos ni al IMCO.'),
+  temaDe(CAMINO, TEMA_CAMINO, ARTICULOS_CAMINO, 'Guías informativas: confirma requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a las universidades que mencionamos, al IMCO ni a la STPS.'),
   { clave: FINANZAS.clave, nombre: FINANZAS.nombre, corto: FINANZAS.corto, ruta: RUTA_FINANZAS, indice: FINANZAS.indice, titulo: tituloIndiceFinanzas(),
     articulos: ARTICULOS_FINANZAS, rutaDe: rutaArticuloFinanzas, textoDe: textoDeArticulo,
     aviso: `${AVISO_FINANZAS} No estamos afiliados a CONDUSEF, al Banco de México ni a ninguna institución financiera, y no recomendamos bancos, tarjetas ni productos de terceros.` },
