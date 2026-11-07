@@ -16,7 +16,8 @@
 //    Vorka (TIENDA_VORKA, abajo). Desde nov 2026 la tienda también vende suscripciones de creadores (ver creadores.js); si cambian sus reglas, se actualizan TIENDA_VORKA, TIENDA_VORKA_FAQ y LLAMADO.
 //  - Aviso al final: información general; no es asesoría legal, fiscal ni contable.
 import { p, ul, ol, tabla, nota, caja, a } from './learn/piezas.js';
-import { crearTema, llamadoFinal } from './learn/tema.js';
+import { crearTema } from './learn/tema.js';
+import { llamadoProducto } from './learn/cta.js';
 import { puenteServicios } from './learn/puente.js';
 
 export const ACTUALIZADO_APPS = '2026-11-01';
@@ -92,9 +93,12 @@ export const TIENDA_VORKA_FAQ = { p: '¿Puedo vender mi app en la tienda de Vork
 
 // El único llamado final (el mismo en las siete guías): el programa de creadores, descrito con lo que hace hoy (descargables y, desde nov 2026, suscripciones).
 const LLAMADO = {
-  creadores: llamadoFinal('Vende en la tienda de Vorka', '¿Ya tienes algo listo para vender?',
-    'Recuerda que puedes publicarlo en la tienda de Vorka México (vorka.mx/tienda), que ya recibe visitas. Hoy acepta productos digitales que se entregan como archivo (plantillas, guías, kits, calculadoras): tú pones el precio, te quedas con el 80 % menos la comisión del procesador de pagos y Stripe te paga 7 días después de cada venta. Si tu app se cobra cada mes o cada año, también: la tienda cobra la suscripción y Vorka se queda con al menos 20 % de cada cobro. Cada producto se revisa antes de publicarse.',
-    '/creadores', 'Conoce el programa para creadores') +
+  creadores: llamadoProducto({ etiqueta: 'Vende en la tienda de Vorka', producto: 'Programa para creadores', de: 'Tienda de Vorka México', icono: 'subir',
+    titulo: '¿Ya tienes algo listo para vender?',
+    texto: 'Publícalo en la tienda de Vorka México (vorka.mx/tienda), que ya recibe visitas.',
+    puntos: ['Productos digitales que se entregan como archivo: plantillas, guías, kits, calculadoras.', 'Tú pones el precio y te quedas con el 80 % menos la comisión del procesador de pagos; Stripe te paga 7 días después de cada venta.', 'Si tu app se cobra cada mes o cada año, también: la tienda cobra la suscripción y Vorka se queda con al menos 20 % de cada cobro.'],
+    nota: 'Cada producto se revisa antes de publicarse.',
+    href: '/creadores', boton: 'Conoce el programa para creadores' }) +
     // Después del llamado a creadores: el puente a servicios («¿Lo hacemos por ti?»), con el formulario corto (origen 'learn')
     puenteServicios({ marcar: ['sistemas'],
       texto: 'Si prefieres que alguien construya tu app, tu sitio o tu sistema a la medida, el equipo de Vorka México puede hacerlo contigo.' }),

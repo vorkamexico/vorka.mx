@@ -3,6 +3,7 @@
 // paginaIndiceSeccion(clave). Los artículos usan la plantilla común paginaArticulo (learn/articulo.js).
 // Los textos viven en los archivos de datos (src/simulador/guias.js, src/learn-finanzas.js); aquí solo cómo se ven.
 import { aspecto } from './secciones.js';
+import { llamadoProducto } from './cta.js';
 import { esc } from '../paginas.js';
 import { FLECHA } from '../marco.generado.js';
 import { paginaLearn } from '../learn.js';
@@ -22,8 +23,12 @@ export { etiqueta, tarjeta, tarjetaArticulo } from './tarjetas.js';
 
 // ---------- guía de un examen ----------
 // El único llamado al producto: al final del artículo (el simulador de ese examen)
-const llamadoSim = (sim, s) => `<aside class="lr-final" aria-label="Practica con el simulador"><p><b class="lr-final-t">¿Quieres practicar?</b>Haz un examen de práctica en el ${esc(s.titulo)}: reactivos originales y un reporte de qué reforzar.</p>
-  <a class="btn tinta" href="/${sim}/">Ir al ${esc(s.titulo)} ${FLECHA}</a></aside>`;
+const llamadoSim = (sim, s) => llamadoProducto({ etiqueta: 'Practica con el simulador', producto: s.titulo, de: 'Simulador de práctica · Vorka México', icono: 'palomita',
+  titulo: `¿Quieres saber cuántos aciertos llevas en el examen ${esc(s.examen)}?`,
+  texto: 'Haz un examen de práctica con el formato de tu examen y descubre qué te falta antes del día real.',
+  puntos: ['Reactivos originales, con el formato y el tiempo del examen.', 'Un reporte de qué materias y temas reforzar.', 'Aciertos estimados para ponerte una meta.'],
+  nota: 'Es un simulador de práctica de Vorka México: sus puntajes y aciertos son estimaciones para orientar tu estudio.',
+  href: `/${sim}/`, boton: 'Practicar ahora', href2: rutaIndice(sim), boton2: `Más guías de ${esc(s.examen)}` });
 
 export function paginaGuia(sim, slug, anuncios = null) {
   const x = guia(sim, slug), s = SIMS[sim];

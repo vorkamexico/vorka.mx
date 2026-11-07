@@ -3,6 +3,7 @@
 // la clase lr-s-<clave> en <body> o en una tarjeta los define (src/learn/secciones.js), así el diseño funciona igual
 // para los exámenes, Finanzas personales o cualquier sección nueva.
 import { cssSecciones } from './secciones.js';
+import { CSS_CTA } from './cta.js';
 
 export const cssLearn = () => `<style>
 ${cssSecciones()}
@@ -223,10 +224,7 @@ ${cssSecciones()}
 .lr-art .t-faq summary::after{color:var(--sec-t)}
 .gu-fuentes{list-style:decimal;padding-left:22px;display:grid;gap:8px;font-size:15.5px;line-height:1.55}.gu-fuentes a{word-break:break-word}
 .lr-art ol.gu-fuentes li{display:list-item}.gu-fuentes li::marker{color:var(--sec-t);font-weight:700}
-.lr-final{position:relative;overflow:hidden;isolation:isolate;margin:44px 0 0;padding:clamp(22px,4vw,34px);border-radius:24px;background:linear-gradient(135deg,var(--sec-a),var(--sec-b));color:#fff}
-.lr-final::after{content:"";position:absolute;z-index:-1;right:8%;top:-30%;bottom:-30%;width:90px;background:rgba(255,255,255,.08);transform:skewX(-28deg)}
-.lr-art .lr-final p{margin:0 0 18px;font-size:17px;color:rgba(255,255,255,.88)}.lr-final .lr-final-t{display:block;font-size:23px;font-weight:780;letter-spacing:-.02em;color:#fff;margin-bottom:6px}
-:root[data-app] .lr-art .lr-final .btn.tinta{background:#fff;color:#141114;text-decoration:none;white-space:normal;text-align:center;box-shadow:0 10px 24px -12px rgba(0,0,0,.5)}
+${CSS_CTA}
 .gu-compartir{margin:22px 0 8px;padding:18px;border-radius:18px;background:var(--bg-2);display:grid;gap:12px}.lr-art .gu-compartir p{margin:0;font-size:16px}
 .gu-comp-bot{display:flex;flex-wrap:wrap;gap:10px}.lr-art .gu-comp-bot a{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 18px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px}
 .lr-art .gu-comp-bot svg{width:18px;height:18px}

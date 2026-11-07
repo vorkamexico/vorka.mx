@@ -12,7 +12,8 @@
 //  - Un solo llamado final: Brindi (/tienda/brindi/), descrito con lo que hace su ficha (src/brindi.js) y lo que NO hace
 //    (no manda mensajes por ti), sin precios.
 import { p, ul, ol, tabla, nota, caja } from './learn/piezas.js';
-import { crearTema, llamadoFinal } from './learn/tema.js';
+import { crearTema } from './learn/tema.js';
+import { llamadoProducto } from './learn/cta.js';
 import { ARTICULOS_NEGOCIO, TEMA_NEGOCIO } from './learn-negocio.js';
 
 // «Sigue leyendo» mientras la sección tiene una sola guía: la de eventos con cupo y entradas de Negocio pequeño
@@ -42,9 +43,12 @@ const F = {
 const S = { invitacion: 'como-hacer-invitaciones-digitales' };
 
 const LLAMADO = {
-  brindi: llamadoFinal('Conoce Brindi', '¿Quieres tu invitación digital lista hoy?',
-    'Brindi, de Vorka México, hace invitaciones digitales para XV años, bodas, bautizos, graduaciones y posadas. La creas gratis y pagas solo al publicarla, un pago único por evento. Tus invitados la abren en cualquier celular sin instalar nada, ven el mapa, el itinerario y la mesa de regalos, y confirman cuántos van; tú ves en tiempo real quién viene. Según el plan, cada invitado tiene su enlace personal o un pase con QR para la entrada. Brindi no manda mensajes por ti: tú compartes la invitación desde tu propio WhatsApp.',
-    '/tienda/brindi/', 'Conoce Brindi'),
+  brindi: llamadoProducto({ etiqueta: 'Conoce Brindi', producto: 'Brindi', de: 'Invitaciones digitales · Vorka México', icono: 'sobre', chip: 'Créala gratis',
+    titulo: '¿Quieres tu invitación digital lista hoy?',
+    texto: 'Para XV años, bodas, bautizos, graduaciones y posadas. La creas gratis y pagas solo al publicarla, un pago único por evento.',
+    puntos: ['Tus invitados la abren en cualquier celular, <b>sin instalar nada</b>.', 'Mapa, itinerario, vestimenta y mesa de regalos en un solo enlace.', 'Confirman cuántos van y tú ves en tiempo real quién viene.', 'Según el plan, enlace personal por invitado o pase con QR para la entrada.'],
+    nota: 'Brindi no manda mensajes por ti: tú compartes la invitación desde tu propio WhatsApp.',
+    href: '/tienda/brindi/', boton: 'Crear mi invitación', href2: '/tienda/brindi/xv-anos/', boton2: 'Ver la de XV años' }),
 };
 
 // ---------- los artículos ----------
