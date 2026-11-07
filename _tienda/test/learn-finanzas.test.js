@@ -31,14 +31,14 @@ const TODAS = [RUTA_FINANZAS, ...RUTAS];
 const DOMINIOS_GOOGLE = /googlesyndication|doubleclick|adtrafficquality|adservice\.google|googletagservices|fundingchoices/;
 const AD_ENV = { ADSENSE_CLIENT: 'ca-pub-1234567890123456', ADSENSE_SLOTS: 'intro:1111111111,mitad:2222222222,final:3333333333,indice:4444444444' };
 // Fuentes oficiales permitidas en esta sección (tema de dinero: solo autoridades y leyes)
-const OFICIALES = /^https:\/\/(comparador\.banxico\.org\.mx|www\.banxico\.org\.mx|www\.diputados\.gob\.mx|revista\.condusef\.gob\.mx|www\.gob\.mx\/condusef|dof\.gob\.mx|www\.inegi\.org\.mx)\//;
+const OFICIALES = /^https:\/\/(comparador\.banxico\.org\.mx|www\.banxico\.org\.mx|www\.diputados\.gob\.mx|revista\.condusef\.gob\.mx|www\.gob\.mx\/(condusef|profedet|cms)|dof\.gob\.mx|www\.inegi\.org\.mx|gaceta\.diputados\.gob\.mx)\//;
 
 describe('Vorka Learn › Finanzas personales', () => {
-  it('cinco artículos con URL única en /learn/finanzas/', () => {
-    expect(ARTICULOS_FINANZAS).toHaveLength(5);
-    expect(new Set(RUTAS).size).toBe(5);
+  it('seis artículos con URL única en /learn/finanzas/', () => {
+    expect(ARTICULOS_FINANZAS).toHaveLength(6);
+    expect(new Set(RUTAS).size).toBe(6);
     for (const r of RUTAS) expect(r).toMatch(/^\/learn\/finanzas\/[a-z0-9-]+\/$/);
-    for (const k of ['titulo', 'descripcion', 'h1', 'lead']) expect(new Set(ARTICULOS_FINANZAS.map(x => x[k])).size).toBe(5);
+    for (const k of ['titulo', 'descripcion', 'h1', 'lead']) expect(new Set(ARTICULOS_FINANZAS.map(x => x[k])).size).toBe(6);
   });
 
   it('cada artículo responde 200 con title ≤ 60, description ≤ 155, canonical, OG de artículo y un solo H1', async () => {
@@ -99,7 +99,7 @@ describe('Vorka Learn › Finanzas personales', () => {
   it('un solo llamado final, después de las fuentes; Cuentas solo donde encaja y descrito con lo que hace', async () => {
     const esperado = { 'como-funciona-una-tarjeta-de-credito': '/learn/finanzas/como-salir-de-deudas/', 'como-prestar-dinero-a-un-familiar-o-amigo': '/tienda/cuentas/',
       'como-organizar-una-tanda': '/learn/finanzas/como-prestar-dinero-a-un-familiar-o-amigo/', 'como-salir-de-deudas': '/tienda/cuentas/',
-      'como-ahorrar-si-eres-joven': '/tienda/clara/' };
+      'como-ahorrar-si-eres-joven': '/tienda/clara/', 'aguinaldo-cuanto-te-toca': '/tienda/clara/' };
     for (const x of ARTICULOS_FINANZAS) {
       const main = principal(await (await pedir(rutaArticuloFinanzas(x))).text());
       const finales = main.match(/<aside class="lr-final"[\s\S]*?<\/aside>/g) || [];
@@ -161,6 +161,10 @@ describe('Vorka Learn › Finanzas personales', () => {
     expect(t).toContain('$1,016.67');
     // Ahorro: 10 % de $4,000 = $400; 6 × $400 = $2,400; $3,000 ÷ 5 = $600; fondo 3 y 6 meses de $3,000
     expect(4000 * 0.10).toBe(400); expect(6 * 400).toBe(2400); expect(3000 / 5).toBe(600); expect(3 * 3000).toBe(9000); expect(6 * 3000).toBe(18000);
+    // Aguinaldo: 15 × $400 = $6,000; $9,000 ÷ 30 = $300; 15 × $300 = $4,500; $6,000 ÷ 365 × 182 = $2,991.78; 30 × $117.31 = $3,519.30; $6,000 − $3,519.30 = $2,480.70
+    expect(15 * 400).toBe(6000); expect(9000 / 30).toBe(300); expect(15 * 300).toBe(4500);
+    expect((6000 / 365 * 182).toFixed(2)).toBe('2991.78'); expect((30 * 117.31).toFixed(2)).toBe('3519.30'); expect((6000 - 3519.30).toFixed(2)).toBe('2480.70');
+    for (const txt of ['= <b>$6,000</b>', '= <b>$300</b>', '= <b>$4,500</b>', '= <b>$2,991.78</b>', '= <b>$3,519.30</b>', '= <b>$2,480.70</b>']) expect(t).toContain(txt);
     for (const txt of ['= <b>$400</b>', '= <b>$2,400</b>', '= <b>$600</b>', '= <b>$9,000</b>', '= <b>$18,000</b>']) expect(t).toContain(txt);
   });
 

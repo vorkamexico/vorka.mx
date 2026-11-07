@@ -47,12 +47,13 @@ const TEMAS = [
     dice: { '/tienda/vuelve/': [/Apple Wallet/, /No manda WhatsApp/], '/tienda/agenda/': [/todavía no manda WhatsApp automáticos/, /lo mandas tú/],
       '/tienda/vende/': [/no mueve dinero, no presta y no cobra por ti/, /gratis con hasta 10 clientas/i], '/tienda/cupo/': [/no cobra comisión/, /te paga directo a ti/, /gratis hasta 30 personas/i] },
     aviso: AVISO_NEGOCIO, sinPesos: true },
-  { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 4,
-    oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx|www\.diputados\.gob\.mx|www\.empleo\.gob\.mx)\//,
+  { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 6,
+    oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx|www\.diputados\.gob\.mx|www\.empleo\.gob\.mx|ciesas\.edu\.mx|www\.fca\.unam\.mx|secihti\.mx|comexus\.org\.mx|www\.dof\.gob\.mx|dof\.gob\.mx|www\.gob\.mx\/sep|www\.programasparaelbienestar\.gob\.mx|revista\.condusef\.gob\.mx)\//,
     // Sin Test vocacional en main todavía: «elegir carrera» apunta a Practica (TODO en src/learn-camino.js)
     llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/test-vocacional/', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/',
-      'como-hacer-tu-cv-sin-experiencia': '/voluntariado/' },
-    dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/], '/voluntariado/': [/16 a 29 años/, /sin costo/] }, aviso: null, sinPesos: false },
+      'como-hacer-tu-cv-sin-experiencia': '/voluntariado/', 'como-hacer-una-carta-de-motivos-para-una-beca': 'https://os.vorka.mx/agendar/oleynickhdz?s=express&amp;o=learn-carta',
+      'beca-rita-cetina': '/test-vocacional/' },
+    dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/], '/voluntariado/': [/16 a 29 años/, /sin costo/], 'https://os.vorka.mx/agendar/oleynickhdz?s=express&amp;o=learn-carta': [/no asegura la beca/, /Asesoría Express/] }, aviso: null, sinPesos: false },
   { S: FIESTAS, X: ARTICULOS_FIESTAS, T: TEMA_FIESTAS, n: 1,
     // Fuentes oficiales: comunicados de PROFECO en gob.mx y su Registro Público de Contratos de Adhesión
     oficiales: /^https:\/\/(www\.gob\.mx\/profeco|rpca\.profeco\.gob\.mx)\//,
@@ -145,6 +146,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos, seccionRevis
       }
       // /voluntariado/ (Tú en Vorka) es del sitio estático de vorka.mx, no del Worker: basta con que exista su página
       for (const href of new Set(Object.values(llamado))) {
+        if (/^https?:\/\//.test(href)) continue;   // agenda en os.vorka.mx: fuera del Worker de la tienda
         if (ESTATICAS.has(href)) expect(existsSync(new URL(`../..${href}index.html`, import.meta.url)), href).toBe(true);
         else expect((await pedir(href.split('#')[0])).status, href).toBe(200);
       }
@@ -166,7 +168,9 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos, seccionRevis
       for (const x of X) {
         const ruta = T.rutaDe(x), html = await (await pedir(ruta)).text();
         const sigue = html.split('class="lr-sigue"')[1].split('</section>')[0];
-        for (const y of RUTAS.filter(r => r !== ruta)) expect(sigue, `${ruta} → ${y}`).toContain(`href="${y}"`);
+        // «Sigue leyendo» muestra tres: todas las demás si la sección tiene hasta cuatro guías
+        const enlazadas = RUTAS.filter(r => r !== ruta && sigue.includes(`href="${r}"`));
+        expect(enlazadas.length, ruta).toBe(Math.min(3, RUTAS.length - 1));
         expect(html).toContain(encodeURIComponent(`https://vorka.mx${ruta}?utm_source=whatsapp&utm_medium=compartir&utm_campaign=learn`));
         expect(html).toContain(`facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://vorka.mx${ruta}?utm_source=facebook`)}`);
       }

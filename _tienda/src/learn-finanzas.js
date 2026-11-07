@@ -58,6 +58,13 @@ const F = {
   banxicoGat: { nombre: 'Banco de México: Ganancia Anual Total (GAT), nominal y real', url: 'https://www.banxico.org.mx/waGAT/' },
   lpab: { nombre: 'Ley de Protección al Ahorro Bancario (artículo 11, obligaciones garantizadas; última reforma DOF 11-05-2022)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LPAB.pdf' },
   inpc: { nombre: 'INEGI: Comunicado de prensa 619/26, Índice Nacional de Precios al Consumidor, septiembre de 2026 (8 de octubre de 2026)', url: 'https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2026/inpc/inpc_2q2026_10.pdf' },
+  lft: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 87, 291-F, 334 Bis, 516 y 1002)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
+  lisr: { nombre: 'Ley del Impuesto sobre la Renta (artículo 93, fracción XIV, gratificaciones anuales; última reforma DOF 01-04-2024)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
+  cpeum: { nombre: 'Constitución Política de los Estados Unidos Mexicanos (decreto de desindexación del salario mínimo, DOF 27-01-2016, artículo transitorio tercero)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf' },
+  uma: { nombre: 'INEGI: Comunicado de prensa 1/26, Unidad de Medida y Actualización 2026 (8 de enero de 2026)', url: 'https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2026/uma/uma2026.pdf' },
+  conasami: { nombre: 'CONASAMI: Tabla de salarios mínimos generales y profesionales 2026 (vigentes desde el 1 de enero de 2026)', url: 'https://www.gob.mx/cms/uploads/attachment/file/1041076/Tabla_de_Salarios_M_nimos_2026.pdf' },
+  profedet: { nombre: 'PROFEDET: ¿Aún no recibes tu aguinaldo? Acércate a la PROFEDET (22 de enero de 2024)', url: 'https://www.gob.mx/profedet/articulos/aun-no-recibes-tu-aguinaldo-acercate-a-la-profedet?idiom=es' },
+  gacetaAguinaldo: { nombre: 'Gaceta Parlamentaria de la Cámara de Diputados: iniciativa para reformar el artículo 87 de la Ley Federal del Trabajo (25 de marzo de 2026)', url: 'https://gaceta.diputados.gob.mx/PDF/66/2026/mar/20260325-II-6-1.pdf' },
   dofCobranza: { nombre: 'Diario Oficial de la Federación: Disposiciones de carácter general aplicables a las entidades financieras en materia de despachos de cobranza (CONDUSEF, 2014)', url: 'https://dof.gob.mx/nota_detalle_popup.php?codigo=5362845' },
 };
 
@@ -66,7 +73,7 @@ const F = {
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
 <p class="gu-ej-p">${titulo}</p>${html}</div>`;
 const r = slug => `${RUTA_FINANZAS}${slug}/`;
-const S = { tarjeta: 'como-funciona-una-tarjeta-de-credito', prestar: 'como-prestar-dinero-a-un-familiar-o-amigo', tanda: 'como-organizar-una-tanda', deudas: 'como-salir-de-deudas', ahorro: 'como-ahorrar-si-eres-joven' };
+const S = { tarjeta: 'como-funciona-una-tarjeta-de-credito', prestar: 'como-prestar-dinero-a-un-familiar-o-amigo', tanda: 'como-organizar-una-tanda', deudas: 'como-salir-de-deudas', ahorro: 'como-ahorrar-si-eres-joven', aguinaldo: 'aguinaldo-cuanto-te-toca' };
 
 // Llamados finales (uno por artículo). Cuentas se describe con lo que de verdad hace (src/cuentas.js y /legal/cuentas/).
 const final = (etiqueta, t, d, href, boton) => `<aside class="lr-final" aria-label="${esc(etiqueta)}"><p><b class="lr-final-t">${t}</b>${d}</p>
@@ -91,6 +98,13 @@ const LLAMADO = {
     titulo: '¿Quieres llevar tus gastos y tu ahorro en el celular?',
     texto: 'Una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
     puntos: ['El resumen de tu mes, para ver a dónde se va tu dinero.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Clara para planear el aguinaldo (mismos datos de la ficha que el llamado «clara»)
+  claraAguinaldo: llamadoProducto({ etiqueta: 'Planea tu aguinaldo con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Quieres que tu aguinaldo no se te vaya en una semana?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver a dónde se va tu dinero en diciembre.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago para no generar intereses.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
   // Cuentas no tiene que ver con tarjetas: el siguiente paso útil es la guía de deudas
@@ -415,6 +429,72 @@ export const ARTICULOS_FINANZAS = [
     ],
     fuentes: [F.condusefAhorro, F.condusefEmergencia, F.enif, F.banxicoGat, F.lpab, F.inpc],
     relacionadas: [S.tarjeta, S.deudas, S.prestar],
+  },
+
+  // =============== 6. Aguinaldo (Clara) ===============
+  // Revisada el 7 de noviembre de 2026: LFT (texto vigente, reforma DOF 14-05-2026: arts. 87, 334 Bis, 516 y 1002), LISR
+  // (art. 93-XIV) con el transitorio tercero de la desindexación (DOF 27-01-2016, en la CPEUM), UMA 2026 (INEGI), salarios
+  // mínimos 2026 (CONASAMI), PROFEDET y la iniciativa de 30 días (Gaceta Parlamentaria, 25-03-2026; no aprobada).
+  // No afirmamos qué salario exacto (cuota diaria o integrado) se usa: la ley no lo dice; se recomienda revisar el recibo.
+  {
+    slug: S.aguinaldo, llamado: 'claraAguinaldo', actualizado: '2026-11-07', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Aguinaldo 2026: cuánto te toca y cómo calcularlo',
+    descripcion: 'Cuánto aguinaldo te toca en 2026, cómo calcularlo (también si no trabajaste el año completo), cuánto está exento de ISR y qué hacer si no te lo pagan.',
+    h1: 'Aguinaldo 2026: cuánto te toca, cómo calcularlo y qué hacer si no te lo pagan',
+    lead: 'Por ley te toca, como mínimo, el equivalente a 15 días de salario, pagado antes del 20 de diciembre. Aquí está cómo calcular el tuyo, también si entraste a medio año, cuánto queda libre de impuestos y a dónde acudir si no te lo pagan, con lo que dicen la Ley Federal del Trabajo, la Ley del ISR y PROFEDET.',
+    secciones: [
+      { h2: 'Lo que dice la ley', html: p('La Ley Federal del Trabajo (artículo 87) dice que tienes derecho a un aguinaldo anual que debe pagarse <b>antes del 20 de diciembre</b>, equivalente a <b>15 días de salario, por lo menos</b>. Tu contrato o tu empresa pueden darte más, pero no menos.')
+        + ul([
+          'Si no trabajaste el año completo, te toca <b>la parte proporcional</b> al tiempo que trabajaste, sigas o no en ese empleo en diciembre.',
+          'También tienen derecho las <b>trabajadoras y trabajadores del hogar</b> (artículo 334 Bis).',
+          'Si trabajas en plataformas digitales, la ley dice que el pago por cada tarea ya incluye la parte proporcional del aguinaldo (artículo 291-F).',
+          'El aguinaldo es para quien tiene una relación de trabajo subordinada. Si cobras por honorarios o como independiente, la ley laboral no te da aguinaldo.',
+        ])
+        + caja('¿Ya son 30 días?', p('No. En marzo de 2026 se presentó en la Cámara de Diputados una iniciativa para subir el aguinaldo a 30 días, pero no se ha aprobado. Hoy la ley sigue diciendo 15 días como mínimo.')) },
+      { h2: 'Cómo calcular tu aguinaldo', html: p('Si trabajaste todo el año, multiplica tu salario diario por 15 (o por los días que te dé tu empresa, si son más). Si te pagan por mes, una forma común de sacar tu salario diario es dividir tu sueldo mensual entre 30.')
+        + ejemplo('Ganas $400 al día y trabajaste todo 2026. ¿Cuánto es tu aguinaldo mínimo?', ul([
+          '15 días × $400 = <b>$6,000</b>.',
+        ]))
+        + ejemplo('Ganas $9,000 al mes. ¿Cuál es tu aguinaldo mínimo si trabajaste todo el año?', ul([
+          'Salario diario: $9,000 ÷ 30 = <b>$300</b>.',
+          'Aguinaldo: 15 × $300 = <b>$4,500</b>.',
+        ]))
+        + p('La ley no dice si se calcula con tu salario base o con el integrado (que suma otras prestaciones). Revisa tu contrato y tu recibo; si tu empresa te da más de 15 días, también viene ahí.') },
+      { h2: 'Si no trabajaste el año completo', html: p('Te toca la parte proporcional. La forma de calcularla: divide tu aguinaldo de año completo entre 365 y multiplícalo por los días que trabajaste.')
+        + ejemplo('Ganas $400 al día y entraste a trabajar a mediados de año: llevas 182 días. ¿Cuánto te toca?', ul([
+          'Aguinaldo de año completo: 15 × $400 = $6,000.',
+          'Proporcional: $6,000 ÷ 365 × 182 = <b>$2,991.78</b>.',
+        ])) },
+      { h2: 'Cuánto queda libre de impuestos', html: p('La Ley del ISR (artículo 93, fracción XIV) exenta las gratificaciones anuales, como el aguinaldo, hasta el equivalente de <b>30 días de salario mínimo</b>. Por la reforma constitucional de desindexación de 2016, las referencias al salario mínimo como unidad de medida se entienden hechas a la <b>UMA</b>, que en 2026 vale 117.31 pesos diarios (INEGI, vigente desde el 1 de febrero de 2026).')
+        + ejemplo('Tu aguinaldo es de $6,000. ¿Cuánto paga ISR?', ul([
+          'Parte exenta: 30 × $117.31 = <b>$3,519.30</b>.',
+          'Parte que sí paga ISR: $6,000 − $3,519.30 = <b>$2,480.70</b>, que se suma a tu sueldo para calcular la retención.',
+        ]))
+        + nota('Como referencia, el salario mínimo general de 2026 es de 315.04 pesos diarios y el de la Zona Libre de la Frontera Norte, de 440.87 pesos (CONASAMI). Tu retención exacta depende de tu sueldo: revisa tu recibo de nómina.') },
+      { h2: 'Si no te lo pagan', html: ol([
+          ['Pídelo por escrito', 'Un correo o un mensaje a recursos humanos, con fecha. Guarda tus recibos de nómina.'],
+          ['Acude a PROFEDET', 'La Procuraduría Federal de la Defensa del Trabajo da orientación y representación gratuitas. En su nota sobre el aguinaldo publica los teléfonos 800 911 7877 y 800 717 2942 y el correo orientacionprofedet@stps.gob.mx.'],
+          ['No dejes pasar el plazo', 'Según la ley (artículo 516), tienes un año para reclamar, contado a partir del día siguiente a que debió pagarse.'],
+        ])
+        + p('No pagar el aguinaldo puede costarle al patrón una multa de 50 a 5,000 veces la UMA (artículo 1002 de la Ley Federal del Trabajo).') },
+      { h2: 'Qué hacer con tu aguinaldo', html: p('Esto es consejo nuestro: antes de que llegue, decide en qué se va. Una forma sencilla:')
+        + ol([
+          ['Primero, lo que debes', 'Si tienes una tarjeta con saldo, pagarla te ahorra intereses. Lo explicamos en cómo salir de deudas.'],
+          ['Luego, tu colchón', 'Una parte a tu fondo de emergencia.'],
+          ['Después, enero', 'Aparta para los gastos de inicio de año: inscripciones, predial, seguros.'],
+          ['Y el gusto, con monto fijo', 'Date un gusto, pero con un tope decidido desde antes.'],
+        ])
+        + p(`Si quieres empezar a ahorrar con lo que te sobre, revisa ${a(r(S.ahorro), 'cómo ahorrar si eres joven')}.`) },
+    ],
+    faq: [
+      { p: '¿Cuántos días de aguinaldo me tocan en 2026?', r: 'Por lo menos 15 días de salario, según el artículo 87 de la Ley Federal del Trabajo. La iniciativa para subirlo a 30 días no se ha aprobado. Tu empresa puede darte más, pero no menos.' },
+      { p: '¿Cuándo es la fecha límite para pagar el aguinaldo?', r: 'Antes del 20 de diciembre, según la Ley Federal del Trabajo.' },
+      { p: '¿Me toca aguinaldo si no trabajé todo el año?', r: 'Sí, la parte proporcional al tiempo que trabajaste, aunque ya no estés en ese empleo en diciembre. Divide tu aguinaldo de año completo entre 365 y multiplícalo por los días trabajados.' },
+      { p: '¿El aguinaldo paga impuestos?', r: 'Solo la parte que pase de 30 días de salario mínimo, que por la desindexación de 2016 se calcula con la UMA: en 2026, 30 × 117.31 pesos. Lo demás se suma a tu sueldo para calcular la retención.' },
+      { p: '¿Qué hago si no me pagan el aguinaldo?', r: 'Pídelo por escrito y, si no te lo pagan, acude a PROFEDET, que orienta y representa gratis. Tienes un año para reclamar.' },
+    ],
+    fuentes: [F.lft, F.lisr, F.cpeum, F.uma, F.conasami, F.profedet, F.gacetaAguinaldo],
+    relacionadas: [S.ahorro, S.deudas, S.tarjeta],
   },
 ];
 
