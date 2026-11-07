@@ -13,7 +13,8 @@
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
-import { crearTema, llamadoFinal } from './learn/tema.js';
+import { crearTema } from './learn/tema.js';
+import { llamadoProducto, llamadoGuia } from './learn/cta.js';
 
 export const ACTUALIZADO_CAM = '2026-10-31';
 const ACTUALIZADO_TXT = 'octubre de 2026';
@@ -53,19 +54,27 @@ const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;
 
 const LLAMADO = {
   // Test vocacional Vorka (src/tests/): contestar y ver el perfil básico es gratis; el reporte completo es de pago
-  practica: llamadoFinal('Test vocacional gratis', '¿Todavía no sabes qué carrera elegir?',
-    'Haz el Test vocacional Vorka: 48 preguntas, de 8 a 10 minutos, basadas en los seis tipos de intereses de Holland (RIASEC). Al terminar ves gratis tus 3 tipos de interés y tu carrera más afín; si quieres, el reporte completo trae 20 carreras, el examen que te toca y un plan de 30 días. Es orientativo: no es una prueba psicométrica.',
-    '/test-vocacional/', 'Hacer el test gratis'),
-  simUnam: llamadoFinal('Practica con el simulador', '¿Vas por el siguiente concurso?',
-    'Empieza con tiempo: haz un examen de práctica en el Simulador UNAM de Vorka México, con reactivos originales y un reporte de qué reforzar. Es un simulador de práctica; sus aciertos son una estimación para orientar tu estudio.',
-    '/simulador-unam/', 'Ir al Simulador UNAM'),
+  practica: llamadoProducto({ etiqueta: 'Test vocacional gratis', producto: 'Test vocacional Vorka', de: 'Orientación vocacional · Vorka México', icono: 'brujula', chip: 'Gratis',
+    titulo: '¿Todavía no sabes qué carrera elegir?',
+    texto: '48 preguntas, de 8 a 10 minutos, basadas en los seis tipos de intereses de Holland (RIASEC).',
+    puntos: ['Al terminar ves gratis tus 3 tipos de interés y tu carrera más afín.', 'Si quieres, el reporte completo trae 20 carreras, el examen que te toca y un plan de 30 días.', 'Para orientadores: se puede usar con todo el grupo.'],
+    nota: 'Es orientativo: no es una prueba psicométrica.',
+    href: '/test-vocacional/', boton: 'Hacer el test gratis' }),
+  simUnam: llamadoProducto({ etiqueta: 'Practica con el simulador', producto: 'Simulador UNAM', de: 'Simulador de práctica · Vorka México', icono: 'palomita',
+    titulo: '¿Vas por el siguiente concurso?',
+    texto: 'Empieza con tiempo: haz un examen de práctica con el formato del examen de licenciatura.',
+    puntos: ['Reactivos originales de las asignaturas de tu área.', 'Un reporte de qué reforzar.', 'Aciertos estimados para ponerte una meta.'],
+    nota: 'Es un simulador de práctica; sus aciertos son una estimación para orientar tu estudio.',
+    href: '/simulador-unam/', boton: 'Ir al Simulador UNAM' }),
   // Tú en Vorka (/voluntariado/): lo que promete esa página (16 a 29 años, 4 a 8 h por semana, sin costo, constancia y portafolio)
-  tuEnVorka: llamadoFinal('Tú en Vorka', '¿Quieres experiencia real para tu CV?',
-    'Tú en Vorka es el programa de Vorka México para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría: redacción, diseño y redes, eventos, estrategia y más. Son de 4 a 8 horas por semana según tu área, sin costo, con constancia y portafolio, presencial en el Bajío o a distancia desde cualquier parte de México.',
-    '/voluntariado/', 'Conoce Tú en Vorka'),
-  becas: llamadoFinal('Siguiente guía', '¿Ya sabes qué quieres estudiar?',
-    'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
-    r(S.carrera), 'Lee: cómo elegir carrera'),
+  tuEnVorka: llamadoProducto({ etiqueta: 'Tú en Vorka', producto: 'Tú en Vorka', de: 'Programa para jóvenes · Vorka México', icono: 'personas', chip: 'Sin costo',
+    titulo: '¿Quieres experiencia real para tu CV?',
+    texto: 'Para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría.',
+    puntos: ['Áreas como redacción, diseño y redes, eventos y estrategia.', 'De 4 a 8 horas por semana, según tu área.', 'Es sin costo, con constancia y portafolio.', 'Presencial en el Bajío o a distancia desde cualquier parte de México.'],
+    href: '/voluntariado/', boton: 'Conoce Tú en Vorka' }),
+  becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
+    texto: 'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
+    href: r(S.carrera), boton: 'Lee: cómo elegir carrera' }),
 };
 
 // ---------- los artículos ----------

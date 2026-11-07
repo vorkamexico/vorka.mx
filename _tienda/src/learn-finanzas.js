@@ -14,6 +14,7 @@
 //  - Aviso al final de cada artículo: información general con fines educativos; no es asesoría financiera personalizada.
 import { esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
+import { llamadoProducto, llamadoGuia } from './learn/cta.js';
 import { paginaArticulo, SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, conMarca, textoPlano } from './learn.js';
 
 export const ACTUALIZADO_FIN = '2026-10-31';
@@ -72,25 +73,34 @@ const final = (etiqueta, t, d, href, boton) => `<aside class="lr-final" aria-lab
   <a class="btn tinta" href="${href}">${boton} ${FLECHA}</a></aside>`;
 const LLAMADO = {
   // Encaja directo: el artículo es sobre prestar y Cuentas lleva el registro de lo que prestas
-  cuentas: final('Lleva la cuenta de lo que prestas', '¿Ya prestaste? Lleva la cuenta en orden',
-    'Cuentas, de Vorka México, es una app para registrar el dinero que prestas a familiares y amigos: cada abono, cuánto falta y, si pactaron interés, cuánto fue a interés y cuánto a capital. Puedes compartir a la otra persona un enlace de solo lectura con su saldo. Con un préstamo activo es gratis. No presta ni mueve dinero y no sustituye un contrato.',
-    '/tienda/cuentas/', 'Conoce Cuentas'),
+  cuentas: llamadoProducto({ etiqueta: 'Lleva la cuenta de lo que prestas', producto: 'Cuentas', de: 'Préstamos entre conocidos · Vorka México', icono: 'libreta', chip: 'Gratis con un préstamo activo',
+    titulo: '¿Ya prestaste? Lleva la cuenta en orden',
+    texto: 'Una app para registrar el dinero que prestas a familiares y amigos, sin pleitos por «¿cuánto te falta?».',
+    puntos: ['Cada abono y cuánto falta, siempre al día.', 'Si pactaron interés, cuánto fue a interés y cuánto a capital.', 'Un enlace de solo lectura para que la otra persona vea su saldo.'],
+    nota: 'Cuentas no presta ni mueve dinero y no sustituye un contrato.',
+    href: '/tienda/cuentas/', boton: 'Conoce Cuentas' }),
   // Encaja solo en una parte: deudas con familiares o amigos. Se dice qué NO hace.
-  cuentasDeudor: final('Si le debes a alguien cercano', '¿Parte de tu deuda es con alguien de tu familia?',
-    'Cuando la cuenta es clara para los dos, es más fácil cumplir sin pleitos. Con Cuentas, de Vorka México, quien presta registra cada abono y te puede compartir un enlace de solo lectura con tu saldo al día. Cuentas no negocia con bancos, no presta dinero y no borra deudas.',
-    '/tienda/cuentas/', 'Conoce Cuentas'),
+  cuentasDeudor: llamadoProducto({ etiqueta: 'Si le debes a alguien cercano', producto: 'Cuentas', de: 'Préstamos entre conocidos · Vorka México', icono: 'libreta',
+    titulo: '¿Parte de tu deuda es con alguien de tu familia?',
+    texto: 'Cuando la cuenta es clara para los dos, es más fácil cumplir sin pleitos.',
+    puntos: ['Quien te prestó registra cada abono.', 'Te comparte un enlace de solo lectura con tu saldo al día.', 'Los dos ven lo mismo: sin malentendidos.'],
+    nota: 'Cuentas no negocia con bancos, no presta dinero y no borra deudas.',
+    href: '/tienda/cuentas/', boton: 'Conoce Cuentas' }),
   // Clara (/tienda/clara/): lo que dice su ficha (src/clara.js): gratis con 1 tarjeta; metas y presupuesto son de Pro; no es banco
-  clara: final('Conoce Clara', '¿Quieres llevar tus gastos y tu ahorro en el celular?',
-    'Clara, de Vorka México, es una app de finanzas para jóvenes desde 15 años: anotas tus gastos, te dice «¿me alcanza?» antes de comprar y ves el resumen de tu mes; si tienes tarjeta de crédito, te recuerda el corte y el pago. Las metas de ahorro con fecha y el presupuesto por categoría vienen en Clara Pro, que puedes probar 7 días sin poner tarjeta. Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
-    '/tienda/clara/', 'Conoce Clara'),
+  clara: llamadoProducto({ etiqueta: 'Conoce Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Quieres llevar tus gastos y tu ahorro en el celular?',
+    texto: 'Una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver a dónde se va tu dinero.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
   // Cuentas no tiene que ver con tarjetas: el siguiente paso útil es la guía de deudas
-  deudas: final('Siguiente guía', '¿Ya traes un saldo que no alcanzas a liquidar?',
-    'Si tu tarjeta ya se volvió una deuda, te explicamos cómo ordenarla, negociar con tu banco y cuidar tu historial, paso a paso.',
-    r(S.deudas), 'Lee: cómo salir de deudas'),
+  deudas: llamadoGuia({ titulo: '¿Ya traes un saldo que no alcanzas a liquidar?',
+    texto: 'Si tu tarjeta ya se volvió una deuda, te explicamos cómo ordenarla, negociar con tu banco y cuidar tu historial, paso a paso.',
+    href: r(S.deudas), boton: 'Lee: cómo salir de deudas' }),
   // Cuentas no organiza tandas: el siguiente paso útil es la guía de préstamos entre conocidos
-  prestar: final('Siguiente guía', '¿También te piden prestado?',
-    'Una tanda y un préstamo entre conocidos tienen el mismo reto: acuerdos claros y por escrito. Te explicamos cómo prestar sin perder la relación.',
-    r(S.prestar), 'Lee: cómo prestar sin pleitos'),
+  prestar: llamadoGuia({ titulo: '¿También te piden prestado?',
+    texto: 'Una tanda y un préstamo entre conocidos tienen el mismo reto: acuerdos claros y por escrito. Te explicamos cómo prestar sin perder la relación.',
+    href: r(S.prestar), boton: 'Lee: cómo prestar sin pleitos' }),
 };
 
 // ---------- los artículos ----------

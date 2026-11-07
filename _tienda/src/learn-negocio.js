@@ -11,7 +11,8 @@
 //    src/agenda.js, src/vende.js, src/cupo.js), sin precios ni promesas. Lo que NO hace se dice.
 //  - Aviso al final: información general; no es asesoría legal ni fiscal.
 import { p, ul, ol, tabla, nota, caja } from './learn/piezas.js';
-import { crearTema, llamadoFinal } from './learn/tema.js';
+import { crearTema } from './learn/tema.js';
+import { llamadoProducto } from './learn/cta.js';
 import { puenteServicios } from './learn/puente.js';
 
 export const ACTUALIZADO_NEG = '2026-10-31';
@@ -44,18 +45,30 @@ const S = { vuelve: 'como-hacer-que-tus-clientes-regresen', agenda: 'como-dejar-
 
 // Llamados finales: cada app descrita con lo que hace hoy su ficha en la tienda (y lo que no hace)
 const LLAMADO = {
-  vuelve: llamadoFinal('Conoce Vuelve', '¿Quieres tu tarjeta de sellos o puntos sin imprimir nada?',
-    'Vuelve, de Vorka México, es una tarjeta de lealtad digital: tus clientes escanean tu QR, dejan su nombre y su teléfono y guardan su tarjeta en Apple Wallet, Google Wallet o en su navegador, sin descargar una app. Eliges sellos o puntos y tus premios; Vuelve manda solo la felicitación de cumpleaños y el «te extrañamos» a la tarjeta de su celular (y por correo, si te lo dieron) y te muestra cuántos regresaron. No manda WhatsApp. Puedes probarla 7 días sin tarjeta.',
-    '/tienda/vuelve/', 'Conoce Vuelve'),
-  agenda: llamadoFinal('Conoce Agenda', '¿Quieres que tus clientes agenden solos?',
-    'Agenda, de Vorka México, te da tu página de citas: tus clientes eligen servicio, con quién, día y hora, sin crear cuenta. Si dejan su correo, les llegan la confirmación y recordatorios 24 y 2 horas antes; para WhatsApp, cada cita tiene un botón que abre el mensaje ya escrito y lo mandas tú desde tu número. Agenda todavía no manda WhatsApp automáticos. Puedes probarla 7 días sin tarjeta.',
-    '/tienda/agenda/', 'Conoce Agenda'),
-  vende: llamadoFinal('Conoce Vende', '¿Llevas tus pedidos y abonos en una libreta?',
-    'Vende, de Vorka México, es una app para quien vende por catálogo o por encargo: registra a tus clientas, tus pedidos y sus abonos, te calcula la ganancia real de cada venta y cada mañana te dice a quién escribirle, con el WhatsApp ya redactado para que lo mandes tú. Es gratis con hasta 10 clientas y 30 pedidos al mes. Vende solo lleva el registro: no mueve dinero, no presta y no cobra por ti.',
-    '/tienda/vende/', 'Conoce Vende'),
-  cupo: llamadoFinal('Conoce Cupo', '¿Vas a organizar tu próximo evento?',
-    'Cupo, de Vorka México, te arma la página de tu evento con registro sin cuentas, entrada con QR y check-in desde tu celular, también sin señal. Es gratis hasta 30 personas; para más lugares, correos o cobro anticipado está Cupo Pro, que se paga por evento. Cupo no cobra comisión por tus entradas: la gente te paga directo a ti.',
-    '/tienda/cupo/', 'Conoce Cupo'),
+  vuelve: llamadoProducto({ etiqueta: 'Conoce Vuelve', producto: 'Vuelve', de: 'Tarjeta de lealtad digital · Vorka México', icono: 'estrella', chip: 'Prueba 7 días sin tarjeta',
+    titulo: '¿Quieres tu tarjeta de sellos o puntos sin imprimir nada?',
+    texto: 'Tus clientes escanean tu QR, dejan su nombre y su teléfono y guardan su tarjeta en el celular, sin descargar una app.',
+    puntos: ['Se guarda en Apple Wallet, Google Wallet o en su navegador.', 'Tú eliges sellos o puntos y tus premios.', 'Felicitación de cumpleaños y «te extrañamos» en la tarjeta de su celular (y por correo, si te lo dieron).', 'Ves cuántos clientes regresaron.'],
+    nota: 'No manda WhatsApp: los avisos llegan a la tarjeta del celular o por correo.',
+    href: '/tienda/vuelve/', boton: 'Conoce Vuelve' }),
+  agenda: llamadoProducto({ etiqueta: 'Conoce Agenda', producto: 'Agenda', de: 'Citas en línea · Vorka México', icono: 'calendario', chip: 'Prueba 7 días sin tarjeta',
+    titulo: '¿Quieres que tus clientes agenden solos?',
+    texto: 'Tu página de citas: tus clientes eligen servicio, con quién, día y hora, sin crear cuenta.',
+    puntos: ['Confirmación y recordatorios por correo 24 y 2 horas antes.', 'Cada cita tiene un botón que abre el WhatsApp ya escrito y lo mandas tú desde tu número.', 'Ves tu día y tu semana desde el celular.'],
+    nota: 'Agenda todavía no manda WhatsApp automáticos.',
+    href: '/tienda/agenda/', boton: 'Conoce Agenda' }),
+  vende: llamadoProducto({ etiqueta: 'Conoce Vende', producto: 'Vende', de: 'Ventas por catálogo · Vorka México', icono: 'bolsa', chip: 'Gratis con hasta 10 clientas',
+    titulo: '¿Llevas tus pedidos y abonos en una libreta?',
+    texto: 'Para quien vende por catálogo o por encargo: tus clientas, tus pedidos y sus abonos en un solo lugar.',
+    puntos: ['Calcula la ganancia real de cada venta.', 'Cada mañana te dice a quién escribirle, con el WhatsApp ya redactado para que lo mandes tú.', 'Es gratis con hasta 10 clientas y 30 pedidos al mes.'],
+    nota: 'Vende solo lleva el registro: no mueve dinero, no presta y no cobra por ti.',
+    href: '/tienda/vende/', boton: 'Conoce Vende' }),
+  cupo: llamadoProducto({ etiqueta: 'Conoce Cupo', producto: 'Cupo', de: 'Registro y entradas para eventos · Vorka México', icono: 'boleto', chip: 'Gratis hasta 30 personas',
+    titulo: '¿Vas a organizar tu próximo evento?',
+    texto: 'Cupo te arma la página de tu evento con registro sin cuentas y entrada con QR.',
+    puntos: ['Check-in desde tu celular, también sin señal.', 'Es gratis hasta 30 personas.', 'Para más lugares, correos o cobro anticipado está Cupo Pro, que se paga por evento.'],
+    nota: 'Cupo no cobra comisión por tus entradas: la gente te paga directo a ti.',
+    href: '/tienda/cupo/', boton: 'Conoce Cupo' }),
 };
 // Después del llamado a la app: el puente a servicios («¿Lo hacemos por ti?»), con el formulario corto (origen 'learn')
 const PUENTE = puenteServicios({ marcar: ['web', 'redes'],
