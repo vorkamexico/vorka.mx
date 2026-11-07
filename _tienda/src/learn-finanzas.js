@@ -3,11 +3,13 @@
 // src/simulador/guias.js (rutasLearn, paginaLearnPortada, urlsGuias).
 // Reglas (tema de dinero, política de la organización: sin inventar datos):
 //  - Todo dato concreto (definiciones, reglas, plazos, derechos) sale de la fuente oficial que el artículo cita en «Fuentes»
-//    (Banxico, CONDUSEF, leyes en diputados.gob.mx, DOF), revisadas el 31 de octubre de 2026. Lo que es consejo nuestro se
+//    (Banxico, CONDUSEF, INEGI, leyes en diputados.gob.mx, DOF), revisadas el 31 de octubre de 2026 (la guía de ahorro,
+//    el 6 de noviembre de 2026, con su propio actualizado / actualizadoTxt). Lo que es consejo nuestro se
 //    presenta como tal.
 //  - Sin tasas «actuales» ni nombres de bancos, tarjetas o productos de terceros. Los números son ejemplos propios, marcados,
 //    con cifras inventadas y la operación a la vista (la aritmética la revisa test/learn-finanzas.test.js).
-//  - Un solo llamado final por artículo. Cuentas (/tienda/cuentas/) solo donde encaja de verdad: lleva el registro de lo que
+//  - Un solo llamado final por artículo. Clara (/tienda/clara/) en la guía de ahorro, descrita con lo que hace su ficha
+//    (src/clara.js) y lo que no (no es banco, no mueve dinero, no se conecta a cuentas). Cuentas (/tienda/cuentas/) solo donde encaja de verdad: lleva el registro de lo que
 //    PRESTAS a familiares y amigos; no presta, no mueve dinero, no negocia deudas y no organiza tandas (ver src/cuentas.js).
 //  - Aviso al final de cada artículo: información general con fines educativos; no es asesoría financiera personalizada.
 import { esc } from './paginas.js';
@@ -50,6 +52,11 @@ const F = {
   condusefQuitas: { nombre: 'CONDUSEF, revista Proteja su Dinero: Opciones para liquidar tu deuda: consolidaciones, reestructuraciones y quitas (2017)', url: 'https://revista.condusef.gob.mx/wp-content/uploads/2017/05/PDF-s_2017_207_deuda.pdf' },
   condusefBuro: { nombre: 'CONDUSEF: Alerta por páginas que ofrecen borrarte del Buró de Crédito (julio de 2017)', url: 'https://www.gob.mx/condusef/prensa/alerta-condusef-por-paginas-que-ofrecen-borrarte-del-buro-de-credito' },
   lrsic: { nombre: 'Ley para Regular las Sociedades de Información Crediticia (artículos 23, 41 y 42)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LRSIC.pdf' },
+  condusefEmergencia: { nombre: 'CONDUSEF, revista Proteja su Dinero: Fondo de emergencia (septiembre de 2024)', url: 'https://revista.condusef.gob.mx/ahorro-general/2024/09/fondo-de-emergencia/' },
+  enif: { nombre: 'INEGI: Comunicado de prensa 49/25, Encuesta Nacional de Inclusión Financiera (ENIF) 2024 (13 de marzo de 2025)', url: 'https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2025/enif/ENIF2024_CP.pdf' },
+  banxicoGat: { nombre: 'Banco de México: Ganancia Anual Total (GAT), nominal y real', url: 'https://www.banxico.org.mx/waGAT/' },
+  lpab: { nombre: 'Ley de Protección al Ahorro Bancario (artículo 11, obligaciones garantizadas; última reforma DOF 11-05-2022)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LPAB.pdf' },
+  inpc: { nombre: 'INEGI: Comunicado de prensa 619/26, Índice Nacional de Precios al Consumidor, septiembre de 2026 (8 de octubre de 2026)', url: 'https://www.inegi.org.mx/contenidos/saladeprensa/boletines/2026/inpc/inpc_2q2026_10.pdf' },
   dofCobranza: { nombre: 'Diario Oficial de la Federación: Disposiciones de carácter general aplicables a las entidades financieras en materia de despachos de cobranza (CONDUSEF, 2014)', url: 'https://dof.gob.mx/nota_detalle_popup.php?codigo=5362845' },
 };
 
@@ -58,7 +65,7 @@ const F = {
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
 <p class="gu-ej-p">${titulo}</p>${html}</div>`;
 const r = slug => `${RUTA_FINANZAS}${slug}/`;
-const S = { tarjeta: 'como-funciona-una-tarjeta-de-credito', prestar: 'como-prestar-dinero-a-un-familiar-o-amigo', tanda: 'como-organizar-una-tanda', deudas: 'como-salir-de-deudas' };
+const S = { tarjeta: 'como-funciona-una-tarjeta-de-credito', prestar: 'como-prestar-dinero-a-un-familiar-o-amigo', tanda: 'como-organizar-una-tanda', deudas: 'como-salir-de-deudas', ahorro: 'como-ahorrar-si-eres-joven' };
 
 // Llamados finales (uno por artículo). Cuentas se describe con lo que de verdad hace (src/cuentas.js y /legal/cuentas/).
 const final = (etiqueta, t, d, href, boton) => `<aside class="lr-final" aria-label="${esc(etiqueta)}"><p><b class="lr-final-t">${t}</b>${d}</p>
@@ -72,6 +79,10 @@ const LLAMADO = {
   cuentasDeudor: final('Si le debes a alguien cercano', '¿Parte de tu deuda es con alguien de tu familia?',
     'Cuando la cuenta es clara para los dos, es más fácil cumplir sin pleitos. Con Cuentas, de Vorka México, quien presta registra cada abono y te puede compartir un enlace de solo lectura con tu saldo al día. Cuentas no negocia con bancos, no presta dinero y no borra deudas.',
     '/tienda/cuentas/', 'Conoce Cuentas'),
+  // Clara (/tienda/clara/): lo que dice su ficha (src/clara.js): gratis con 1 tarjeta; metas y presupuesto son de Pro; no es banco
+  clara: final('Conoce Clara', '¿Quieres llevar tus gastos y tu ahorro en el celular?',
+    'Clara, de Vorka México, es una app de finanzas para jóvenes desde 15 años: anotas tus gastos, te dice «¿me alcanza?» antes de comprar y ves el resumen de tu mes; si tienes tarjeta de crédito, te recuerda el corte y el pago. Las metas de ahorro con fecha y el presupuesto por categoría vienen en Clara Pro, que puedes probar 7 días sin poner tarjeta. Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    '/tienda/clara/', 'Conoce Clara'),
   // Cuentas no tiene que ver con tarjetas: el siguiente paso útil es la guía de deudas
   deudas: final('Siguiente guía', '¿Ya traes un saldo que no alcanzas a liquidar?',
     'Si tu tarjeta ya se volvió una deuda, te explicamos cómo ordenarla, negociar con tu banco y cuidar tu historial, paso a paso.',
@@ -338,6 +349,63 @@ export const ARTICULOS_FINANZAS = [
     fuentes: [F.condusefLiberate, F.condusefSalirGob, F.condusefSalir, F.condusefUrge, F.condusefQuitas, F.lrsic, F.condusefBuro, F.dofCobranza],
     relacionadas: [S.tarjeta, S.prestar, S.tanda],
   },
+
+  // =============== 5. Ahorrar si eres joven (Clara) ===============
+  // Revisada el 6 de noviembre de 2026. Fuentes: CONDUSEF (ahorro, oct 2025; fondo de emergencia, sep 2024), INEGI (ENIF 2024,
+  // comunicado 49/25; INPC septiembre 2026), Banxico (GAT) y la Ley de Protección al Ahorro Bancario (art. 11). La regla
+  // 50/30/20 no está publicada por CONDUSEF: si se menciona, como método popular, no como regla oficial.
+  {
+    slug: S.ahorro, llamado: 'clara', actualizado: '2026-11-06', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Cómo ahorrar si eres joven (aunque ganes poco)',
+    descripcion: 'Cómo empezar a ahorrar con poco dinero: ahorrar primero, una meta con fecha, tu fondo de emergencia y dónde guardarlo, con datos de CONDUSEF y Banxico.',
+    h1: 'Cómo ahorrar si eres joven, aunque ganes poco',
+    lead: 'Ahorrar no es guardar lo que sobra: casi nunca sobra. Es apartar primero una parte, aunque sea pequeña, con un propósito claro. Aquí está cómo empezar con tu domingo, tu beca o tu primer sueldo, cuánto juntar para emergencias y dónde guardarlo, con lo que dicen CONDUSEF, Banxico y el INEGI.',
+    secciones: [
+      { h2: 'Primero ahorra, luego gasta', html: p('CONDUSEF lo resume así: ahorrar no significa «guardar lo que sobra», y su consejo es <b>primero ahorrar y luego gastar</b>. Es decir: el día que recibes dinero, apartas tu ahorro antes de gastar en lo demás.')
+        + p('No eres el único que batalla. Según la Encuesta Nacional de Inclusión Financiera (ENIF) 2024 del INEGI, el <b>63.0 %</b> de las personas de 18 a 70 años tenía al menos una cuenta de ahorro formal; el resto, no.')
+        + ejemplo('Recibes $4,000 al mes entre beca y trabajo de fin de semana, y decides apartar el 10 % el mismo día que te llega. ¿Cuánto juntas en seis meses?', ul([
+          'Cada mes apartas 10 % de $4,000 = <b>$400</b>.',
+          'En seis meses: 6 × $400 = <b>$2,400</b>, sin contar rendimientos.',
+        ])) },
+      { h2: 'Ponle nombre y fecha a tu ahorro', html: p('Esto es consejo nuestro. «Ahorrar» a secas cansa; «juntar para mi laptop en junio» motiva. Escribe:')
+        + ol([
+          ['Para qué', 'Una cosa concreta: la inscripción, un curso, un viaje, tu fondo de emergencia.'],
+          ['Cuánto', 'El precio real, con impuestos y envío si aplica.'],
+          ['Para cuándo', 'Una fecha. Divide el monto entre los meses que faltan y sabrás cuánto apartar cada mes.'],
+        ])
+        + ejemplo('Quieres juntar $3,000 para un curso que empieza en 5 meses. ¿Cuánto apartas cada mes?', ul([
+          '$3,000 ÷ 5 meses = <b>$600</b> al mes.',
+          'Si no te alcanza, mueve la fecha o busca una versión más barata del curso, pero no dejes de apartar.',
+        ])) },
+      { h2: 'Tu fondo de emergencia', html: p('CONDUSEF recomienda tener un fondo de emergencia equivalente a <b>tres a seis meses de tus gastos mensuales</b>, y aclara que el monto depende de cada persona. Sirve para lo que no se planea: una consulta médica, un celular roto, una semana sin trabajo.')
+        + ejemplo('Tus gastos fijos son de $3,000 al mes. ¿Cuánto sería tu fondo de emergencia?', ul([
+          'Con tres meses: 3 × $3,000 = <b>$9,000</b>.',
+          'Con seis meses: 6 × $3,000 = <b>$18,000</b>.',
+          'Si hoy te parece mucho, empieza con la meta de un mes ($3,000) y súbela poco a poco.',
+        ]))
+        + nota('Consejo nuestro: guarda el fondo de emergencia aparte de tu dinero de todos los días, para que no se te vaya en antojos.') },
+      { h2: 'Que no se te vaya en gastos hormiga', html: p('Esto es consejo nuestro. Durante dos semanas, anota <b>todo</b> lo que gastas, hasta los dulces y las recargas. Al final, separa en tres:')
+        + tabla(['Tipo de gasto', 'Ejemplos', 'Qué hacer'], [
+          ['Necesario', 'Transporte, comida, escuela', 'Mantenlo, pero busca opciones más baratas.'],
+          ['Gusto que sí vale la pena', 'Salir con tus amigos una vez a la semana', 'Déjale un monto fijo al mes.'],
+          ['Gasto hormiga', 'Antojos diarios, suscripciones que no usas, envíos', 'Recórtalo y manda esa diferencia a tu ahorro.'],
+        ])
+        + p('Hay un método popular que reparte el ingreso en 50 % necesidades, 30 % gustos y 20 % ahorro. No es una regla oficial: úsalo como punto de partida y ajústalo a lo que ganas.') },
+      { h2: 'Dónde guardar tu ahorro', html: ul([
+          '<b>En una institución regulada.</b> Según la Ley de Protección al Ahorro Bancario (artículo 11), el IPAB garantiza los depósitos bancarios hasta por el equivalente a <b>400 mil UDIS por persona</b> en cada banco. Las UDIS cambian de valor con la inflación, así que el monto en pesos se actualiza.',
+          '<b>Compara el rendimiento real.</b> Banco de México explica que la <b>GAT Real</b> es el rendimiento total de tu dinero <b>descontando la inflación</b>, y que puede ser negativa: si tu ahorro rinde menos que la inflación, pierde poder de compra. Como referencia, según el INEGI, la inflación anual fue de 3.45 % en septiembre de 2026.',
+          '<b>Cuidado con lo que promete mucho.</b> Consejo nuestro: si alguien te promete rendimientos muy altos y seguros, desconfía y revisa en CONDUSEF que la institución exista y esté autorizada.',
+        ]) },
+    ],
+    faq: [
+      { p: '¿Cuánto debería ahorrar si gano poco?', r: 'No hay una cifra oficial. CONDUSEF recomienda ahorrar primero y luego gastar; como consejo nuestro, empieza con un porcentaje que sí puedas sostener, aunque sea pequeño, y súbelo cuando ganes más.' },
+      { p: '¿De cuánto debe ser mi fondo de emergencia?', r: 'CONDUSEF recomienda que equivalga a tres a seis meses de tus gastos mensuales, y aclara que depende de cada persona. Si es mucho para empezar, ponte la meta de un mes y súbela poco a poco.' },
+      { p: '¿Mi dinero está protegido en el banco?', r: 'Según la Ley de Protección al Ahorro Bancario, el IPAB garantiza los depósitos bancarios hasta por el equivalente a 400 mil UDIS por persona en cada banco.' },
+      { p: '¿Qué es la GAT Real?', r: 'Según Banco de México, es el rendimiento total de tu dinero descontando la inflación. Si es negativa, tu ahorro pierde poder de compra.' },
+    ],
+    fuentes: [F.condusefAhorro, F.condusefEmergencia, F.enif, F.banxicoGat, F.lpab, F.inpc],
+    relacionadas: [S.tarjeta, S.deudas, S.prestar],
+  },
 ];
 
 // ---------- consultas ----------
@@ -359,8 +427,8 @@ export function paginaArticuloFinanzas(slug, anuncios = null) {
   const rel = x.relacionadas.map(articuloFinanzas).filter(Boolean).slice(0, 3).map(y => ({ href: rutaArticuloFinanzas(y), h1: y.h1, descripcion: y.descripcion }));
   return paginaArticulo(x, {
     ruta, titulo: tituloArticuloFinanzas(x), lugares: [['Vorka Learn', RUTA_LEARN], [FINANZAS.nombre, RUTA_FINANZAS], [x.h1, ruta]],
-    kicker: `Guía · ${FINANZAS.nombre}`, imagen: OG_FINANZAS, actual: FINANZAS.clave, anuncios, actualizado: ACTUALIZADO_FIN, actualizadoTxt: ACTUALIZADO_TXT,
-    notaFuentes: `<p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; las reglas y las condiciones de cada institución pueden cambiar, así que confírmalas en tu contrato o con la institución.</p>
+    kicker: `Guía · ${FINANZAS.nombre}`, imagen: OG_FINANZAS, actual: FINANZAS.clave, anuncios, actualizado: x.actualizado || ACTUALIZADO_FIN, actualizadoTxt: x.actualizadoTxt || ACTUALIZADO_TXT,
+    notaFuentes: `<p class="gu-nota">Actualizado: ${x.actualizadoTxt || ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; las reglas y las condiciones de cada institución pueden cambiar, así que confírmalas en tu contrato o con la institución.</p>
     <p class="gu-nota lr-aviso-fin"><b>${AVISO_FINANZAS}</b></p>`,
     llamado: LLAMADO[x.llamado], compartirTexto: 'Compártela con quien le pueda ayudar a cuidar su dinero.',
     rel, relTitulo: 'Más guías de finanzas personales', notaPie: NOTA_PIE,

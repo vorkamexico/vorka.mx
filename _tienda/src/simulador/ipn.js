@@ -1,6 +1,6 @@
 // Simulador IPN (vorka.mx/simulador-ipn): examen de admisión a licenciatura (nivel superior) del Instituto Politécnico
 // Nacional. Para el bachillerato del IPN (CECyT y CET) el examen es el del ECOEMS: ese es el Simulador ECOEMS.
-// Datos de la convocatoria (Base Sexta, ago 2026-ene 2027 y feb-jul 2027): 140 reactivos de opción múltiple en tres horas
+// Datos de la convocatoria (Base Séptima en ago 2026-ene 2027 y Base Cuarta en feb-jul 2027; revisadas el 6 nov 2026): 140 preguntas en tres horas
 // efectivas; tres áreas (Ingeniería y Ciencias Físico Matemáticas, Ciencias Médico Biológicas, Ciencias Sociales y
 // Administrativas); los lugares se asignan por número total de aciertos, de mayor a menor, hasta agotar el cupo de cada
 // carrera. El IPN NO publica cuántos reactivos hay de cada materia: usamos la distribución de referencia que difunden las
@@ -116,7 +116,7 @@ const SITIO = 'https://vorka.mx';
 const IMG = '/assets/tienda';
 const DESCRIPCION = 'Simulador del examen de admisión del IPN (nivel superior) en línea para las 3 áreas: 140 reactivos en 3 horas, tutor con pistas y aciertos estimados por materia.';
 const FAQ = [
-  { p: '¿Cómo es el examen de admisión a licenciatura del IPN?', r: 'Según la convocatoria, son 140 reactivos de opción múltiple que se resuelven en tres horas efectivas. Hay tres áreas: Ingeniería y Ciencias Físico Matemáticas, Ciencias Médico Biológicas, y Ciencias Sociales y Administrativas. Tu área depende de la carrera que elijas, y el simulador arma tu examen según esa área.' },
+  { p: '¿Cómo es el examen de admisión a licenciatura del IPN?', r: 'Según la convocatoria, son 140 preguntas que se contestan en un máximo de tres horas efectivas. Hay tres áreas: Ingeniería y Ciencias Físico Matemáticas, Ciencias Médico Biológicas, y Ciencias Sociales y Administrativas. Tu área depende de la carrera que elijas, y el simulador arma tu examen según esa área.' },
   { p: '¿Qué materias vienen?', r: 'Las mismas ocho en las tres áreas: Matemáticas, Competencia escrita, Competencia lectora, Química, Física, Biología, Historia e Inglés. Lo que cambia es cuántas preguntas hay de cada una: por ejemplo, Ingeniería tiene más Matemáticas y Física, Médico Biológicas más Biología y Sociales más Historia y Competencia escrita.' },
   { p: '¿Cuántos reactivos hay de cada materia?', r: 'El IPN no publica un desglose oficial por materia. El simulador usa la distribución de referencia que difunden las guías de preparación (cada área suma 140), que ves en la tabla de arriba. Úsala para saber qué pesa más en tu área, no como dato oficial.' },
   { p: '¿Cuántos aciertos necesito para entrar?', r: 'No hay un mínimo fijo: según la convocatoria, el IPN asigna los lugares por número total de aciertos, de mayor a menor, hasta agotar el cupo de cada carrera, así que cambia cada año y por carrera. Ponte una meta en el simulador y mide qué tan cerca estás en cada simulacro.' },
