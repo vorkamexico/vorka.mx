@@ -48,6 +48,8 @@ const F = {
 
 const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia' };
 const r = slug => `/learn/camino/${slug}/`;
+// Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
+const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
 
 const LLAMADO = {
   // Test vocacional Vorka (src/tests/): contestar y ver el perfil básico es gratis; el reporte completo es de pago
@@ -298,6 +300,12 @@ export const ARTICULOS_CAMINO = [
           '¿Lo leyó alguien más para buscar faltas?',
           '¿Puedo explicar en una entrevista todo lo que puse?',
         ]) },
+      { h2: 'Si quieres que alguien lo revise contigo', html: p('Puedes agendar una sesión 1:1 por videollamada con <b>Brandon Oleynick</b>, fundador de Vorka México:')
+        + ul([
+          `<b>${ext(AGENDA_BRANDON('express'), 'Asesoría Express')}</b> (20 minutos): para revisar tu CV o resolver una duda concreta antes de mandarlo.`,
+          `<b>${ext(AGENDA_BRANDON('mentoria'), 'Mentoría mensual')}</b> (45 minutos al mes): un plan personalizado y seguimiento mes a mes, con revisión de tu CV y WhatsApp directo entre sesiones.`,
+        ])
+        + nota('Las sesiones tienen costo; lo ves al agendar, eliges tu horario y te llega el enlace de la videollamada al confirmar.') },
     ],
     faq: [
       { p: '¿Qué pongo en mi CV si nunca he trabajado?', r: 'Una sección de «Experiencia y proyectos» con lo que hiciste con responsabilidad aunque no te pagaran: proyectos escolares, voluntariado, ayudar en el negocio familiar, dar asesorías o llevar redes. Escribe cada cosa con un verbo, qué hiciste y un dato concreto.' },
