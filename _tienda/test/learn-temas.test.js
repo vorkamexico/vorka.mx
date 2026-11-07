@@ -85,7 +85,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
         expect(html).not.toContain('noindex');
         expect(html.match(/<h1[\s>]/g) || []).toHaveLength(1);
         expect(html).toContain(`<body class="lr-s-${S.clave}">`);
-        expect(cabecera(html)).toContain(`href="${T.ruta}" aria-current="page">${S.corto}</a>`);
+        expect(cabecera(html)).toContain(`href="${T.ruta}" aria-current="page"><span class="lr-m-ico">`);
         expect((await pedir(ruta, 'HEAD')).status).toBe(200);
       }
     });
@@ -193,7 +193,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
       const portada = await (await pedir('/learn/')).text();
       expect(portada).toContain(`>${S.nombre}</h2>`);
       for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
-      expect(cabecera(portada)).toContain(`href="${T.ruta}">${S.corto}</a>`);
+      expect(cabecera(portada)).toContain(`href="${T.ruta}"><span class="lr-m-ico">`);
       expect(await (await pedir('/learn/acerca/')).text()).toContain(S.nombre);
       for (const x of X) expect(buscarGuias(x.h1).map(a => a.ruta), x.slug).toContain(T.rutaDe(x));
       const rss = await (await pedir('/learn/feed.xml')).text();

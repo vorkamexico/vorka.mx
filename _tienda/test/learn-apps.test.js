@@ -57,7 +57,7 @@ describe('Vorka Learn › Crea tu app', () => {
       expect(html).not.toContain('noindex');
       expect(html.match(/<h1[\s>]/g) || []).toHaveLength(1);
       expect(html).toContain('<body class="lr-s-apps">');
-      expect(cabecera(html)).toContain(`href="${T.ruta}" aria-current="page">${APPS.corto}</a>`);
+      expect(cabecera(html)).toContain(`href="${T.ruta}" aria-current="page"><span class="lr-m-ico">`);
       expect((await pedir(ruta, 'HEAD')).status).toBe(200);
     }
   });
@@ -174,7 +174,7 @@ describe('Vorka Learn › Crea tu app', () => {
     const portada = await (await pedir('/learn/')).text();
     expect(portada).toContain(`>${APPS.nombre}</h2>`);
     for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
-    expect(cabecera(portada)).toContain(`href="${T.ruta}">${APPS.corto}</a>`);
+    expect(cabecera(portada)).toContain(`href="${T.ruta}"><span class="lr-m-ico">`);
     expect(portada).toContain('<a class="lr-m-sec lr-s-apps" href="/learn/apps/">');
     expect(await (await pedir('/learn/acerca/')).text()).toContain(APPS.nombre);
     for (const x of X) expect(buscarGuias(x.h1).map(a => a.ruta), x.slug).toContain(T.rutaDe(x));

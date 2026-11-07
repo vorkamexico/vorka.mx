@@ -22,6 +22,44 @@ ${cssSecciones()}
 @media (max-width:430px){.nav.t-navs.lr-navs .t-pastilla{display:inline-flex;min-height:40px;padding:0 14px;margin-left:2px}.lr-practica svg{display:none}.nav.t-navs.lr-navs .nav-in{gap:4px;padding-left:16px}}
 @media (max-width:359px){.nav.t-navs.lr-navs .marca{font-size:15px;gap:7px}.nav.t-navs.lr-navs .marca svg{width:22px}.nav.t-navs.lr-navs .t-pastilla{padding:0 11px;font-size:13.5px}}
 
+/* menú de computadora: «Exámenes ▾» y «Temas ▾» abren un panel; el resto de la barra se queda igual */
+.lr-links{align-items:center;gap:2px}
+.lr-drop{position:relative}
+.lr-drop-btn{display:inline-flex;align-items:center;gap:5px;padding:9px 12px 9px 14px;border:0;border-radius:999px;background:transparent;color:var(--fg-2);font:inherit;font-size:14.5px;font-weight:550;cursor:pointer;white-space:nowrap;transition:color .2s,background .2s}
+.lr-drop-btn svg{width:16px;height:16px;transition:transform .2s}
+.lr-drop-btn:hover,.lr-drop-btn[aria-expanded="true"],.lr-drop-btn[data-actual]{color:var(--fg);background:var(--bg-2)}
+.lr-drop-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.lr-drop-panel{position:absolute;top:calc(100% + 14px);left:-8px;z-index:60;width:min(560px,calc(100vw - 48px));padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sombra-2)}
+.lr-drop-panel[hidden]{display:none}
+.lr-d-secs{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nav-links a.lr-d-sec,.lr-d-sec{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 12px;border-radius:16px;background:var(--sec-s);border:1.5px solid transparent;color:var(--fg);text-decoration:none;white-space:normal}
+.nav-links a.lr-d-sec:hover,.lr-d-sec[aria-current]{border-color:var(--sec-t);background:var(--sec-s)}
+.lr-d-txt b{display:block;font-size:15.5px;line-height:1.25;font-weight:700;letter-spacing:-.01em}
+.lr-d-txt small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:var(--fg-2);font-weight:500}
+.lr-d-pie{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin:12px 4px 0;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;color:var(--fg-2)}
+.lr-d-pie span{margin-right:4px}
+.nav-links .lr-d-pie a{padding:5px 11px;font-size:13.5px;font-weight:650;color:var(--fg);background:var(--bg-2)}
+.nav-links .lr-d-pie a:hover{background:var(--line)}
+
+/* índice de la portada */
+.lr-ir-indice{display:inline-flex;align-items:center;gap:6px;margin-top:18px;font-weight:650;color:var(--sec-t);text-decoration:none}
+.lr-ir-indice svg{width:16px;height:16px}
+.lr-indice{margin:clamp(40px,6vw,72px) 0 0;scroll-margin-top:100px}
+.lr-ind-bloque{margin-top:26px}
+.lr-ind-t{margin:0;font-size:clamp(19px,2.2vw,22px);font-weight:750;letter-spacing:-.01em}
+.lr-ind-d{margin:4px 0 14px;color:var(--fg-2);font-size:15px}
+.lr-ind-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.lr-ind{display:flex;flex-direction:column;padding:14px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+.lr-ind-cab{display:flex;align-items:center;gap:12px;padding:6px;margin:-6px -6px 6px;border-radius:14px;color:var(--fg);text-decoration:none}
+.lr-ind-cab:hover{background:var(--sec-s)}
+.lr-ind-cab b{display:block;font-size:17px;line-height:1.2;font-weight:750;letter-spacing:-.01em}
+.lr-ind-cab small{display:block;margin-top:2px;font-size:13px;color:var(--fg-2)}
+.lr-ind ul{list-style:none;padding:0;margin:0;display:grid}
+.lr-ind li a{display:block;padding:9px 2px;border-top:1px solid var(--line);font-size:14.5px;line-height:1.35;color:var(--fg);text-decoration:none}
+.lr-ind li a:hover{color:var(--sec-t)}
+.lr-ind-mas{display:inline-flex;align-items:center;gap:6px;margin-top:auto;padding-top:10px;font-size:14px;font-weight:650;color:var(--sec-t);text-decoration:none}
+.lr-ind-mas svg{width:15px;height:15px}
+
 /* ---------- menú ---------- */
 .menu-movil.lr-menu{padding:92px var(--x) calc(28px + env(safe-area-inset-bottom));gap:4px}
 .menu-movil.lr-menu:focus{outline:0}

@@ -4,7 +4,8 @@
 // acerca, RSS) en src/learn/. Índices: /learn/ (todas) y /learn/<examen>/. Las URL viejas /<simulador>/guias/… → 301.
 // La página de venta de cada simulador sigue ligando a sus guías (seccionGuias).
 // Reglas (política de la organización: sin inventar datos):
-//  - Todo dato concreto sale de la fuente que la guía cita en «Fuentes» (revisadas el 31 de octubre de 2026).
+//  - Todo dato concreto sale de la fuente que la guía cita en «Fuentes» (revisadas el 31 de octubre de 2026; las del IPN,
+//    el 6 de noviembre de 2026: cada guía puede traer su propio actualizado / actualizadoTxt).
 //  - Lo que es consejo nuestro se presenta como tal. Ejemplos de preguntas: solo propios y marcados.
 //  - PAA: sin minutos por sección (la única guía del College Board con tiempos es de 2020; ver commit 5501997).
 //  - Nunca «oficial» para el simulador: es un simulador de práctica de Vorka México.
@@ -37,6 +38,11 @@ const F = {
   mdmlBuscador: { nombre: 'Mi derecho, mi lugar: buscador de opciones educativas', url: 'https://www.miderechomilugar.gob.mx/buscador-escuelas' },
   ugConv: { nombre: 'Universidad de Guanajuato: Convocatoria Bachillerato General y Bivalente, primer semestre, agosto-diciembre 2026', url: 'https://www.ugto.mx/admisionug/images/convocatorias/agosto2026/convocatoria_bachillerato_primer_nivel_ago_dic_final_v3.pdf' },
   ugFicha: { nombre: 'Universidad de Guanajuato: Ficha técnica del Bachillerato General, ENMS León, agosto-diciembre 2026', url: 'https://www.ugto.mx/admisionug/images/nms/2026/fichas/Ficha_tecnica_PE_Bachillerato_General_ENMS_Le%C3%B3n_EXANI26.pdf' },
+  ipnA: { nombre: 'IPN: Convocatoria de admisión a nivel superior, modalidad escolarizada, ingreso agosto 2026 - enero 2027', url: 'https://www.admision.ipn.mx/nse/convocatoria/index.html' },
+  ipnB: { nombre: 'IPN: Convocatoria de admisión a nivel superior, modalidad escolarizada, ingreso febrero - julio 2027', url: 'https://www.admision.ipn.mx/nse/convocatoria/index-272.html' },
+  ipnC: { nombre: 'IPN: Convocatoria de admisión a nivel superior, modalidad no escolarizada y mixta, ingreso agosto 2026', url: 'https://www.admision.ipn.mx/nsd/convocatoria/index.html' },
+  ipnTemario: { nombre: 'IPN: Temario de estudio para el ingreso al IPN (nivel superior)', url: 'https://www.ipn.mx/assets/files/des/docs/Temarios/temario-de-estudio-para-el-ingreso-al-ipn.pdf' },
+  ipnOferta: { nombre: 'IPN: Oferta de lugares por programa académico, modalidad escolarizada, agosto 2026 (anexo de la convocatoria)', url: 'https://admision.ipn.dae.support/nse/convocatoria/ANEXO/escolarizado271.html' },
   ugBach: { nombre: 'Universidad de Guanajuato: Admisión a bachillerato', url: 'https://www.ugto.mx/admisionug/bachilleratos' },
   exani: { nombre: 'CENEVAL: Guía para el sustentante del nuevo EXANI-I', url: 'https://ceneval.edu.mx/wp-content/uploads/2021/09/1_Guia-EXANI-I_sm.pdf' },
 };
@@ -83,6 +89,16 @@ export const SIMS = {
       lead: 'El examen de admisión al bachillerato de la Universidad de Guanajuato, explicado con su convocatoria y su ficha técnica.',
     },
     aviso: 'No estamos afiliados a la Universidad de Guanajuato, a CENEVAL ni a la Secretaría de Educación de Guanajuato.',
+  },
+  'simulador-ipn': {
+    clave: 'ipn', examen: 'IPN', nombre: 'IPN', titulo: 'Simulador IPN', og: `${SITIO}/assets/tienda/v3/simulador-ipn-og.jpg`,
+    indice: {
+      titulo: 'Guías del examen IPN de licenciatura',
+      descripcion: 'Guías para el examen de admisión a licenciatura del IPN: qué viene en las 140 preguntas, cómo se asignan los lugares, fechas, costo y cómo prepararte.',
+      h1: 'Guías para el examen del IPN',
+      lead: 'El examen de admisión a nivel superior del Instituto Politécnico Nacional, explicado con su convocatoria y su temario oficial.',
+    },
+    aviso: 'No estamos afiliados al Instituto Politécnico Nacional.',
   },
 };
 
@@ -472,6 +488,126 @@ export const GUIAS = [
     ],
     fuentes: [F.ugConv, F.ugFicha, F.exani, F.ugBach],
     relacionadas: [g('simulador-ecoems', 'que-viene-en-el-examen-ecoems'), g('simulador-ecoems', 'como-prepararte-para-el-examen-ecoems'), g('simulador-ecoems', 'como-elegir-tus-opciones-ecoems')],
+  },
+
+  // ===================== IPN (nivel superior) =====================
+  // Revisadas el 6 de noviembre de 2026 en las convocatorias del IPN (páginas HTML, sin PDF): escolarizada ago 2026 (F.ipnA)
+  // y feb 2027 (F.ipnB), no escolarizada ago 2026 (F.ipnC), el temario oficial (F.ipnTemario) y la oferta de lugares (F.ipnOferta).
+  // No usar las preguntas frecuentes del portal de admisión: están desactualizadas y contradicen la convocatoria.
+  {
+    sim: 'simulador-ipn', slug: 'que-viene-en-el-examen-ipn', busqueda: 'qué viene en el examen del IPN', actualizado: '2026-11-06', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Qué viene en el examen del IPN (licenciatura) | Vorka',
+    descripcion: 'El examen de licenciatura del IPN: 140 preguntas en 3 horas, tres áreas, las materias del temario oficial, si es en línea o presencial y qué llevar.',
+    h1: 'Qué viene en el examen del IPN para licenciatura',
+    lead: 'El examen de admisión a nivel superior del Instituto Politécnico Nacional tiene 140 preguntas y tres horas. Aquí está qué evalúa, cómo se aplica y qué puedes llevar, con lo que dicen la convocatoria y el temario oficial del IPN.',
+    secciones: [
+      { h2: 'El examen en números', html: tabla(['Dato', 'Lo que dice el IPN'], [
+          ['Preguntas', '140, que tienes que contestar en un máximo de tres horas efectivas.'],
+          ['Áreas', 'Tres: Ingeniería y Ciencias Físico Matemáticas, Ciencias Médico Biológicas, y Ciencias Sociales y Administrativas. Las preguntas se relacionan con el área que elegiste.'],
+          ['Opciones de carrera', 'Dos, y las dos tienen que ser de la misma área.'],
+          ['Idioma', 'En español, salvo la sección que evalúa el inglés.'],
+          ['Promedio mínimo de bachillerato', 'No se pide.'],
+        ], 'Fuente: convocatoria de admisión a nivel superior, modalidad escolarizada, para ingresar en agosto de 2026 (bases primera, segunda y séptima).') },
+      { h2: 'Las materias del temario oficial', html: p(`El temario de estudio para el ingreso al IPN enumera siete materias:`)
+        + ul([
+          '<b>Matemáticas</b>',
+          '<b>Comunicación</b>: competencia lectora y competencia escrita.',
+          '<b>Inglés</b>',
+          '<b>Historia y entorno socioeconómico de México</b>',
+          '<b>Biología</b>',
+          '<b>Química</b>',
+          '<b>Física</b>',
+        ])
+        + caja('Lo que el IPN no publica', p('Ni la convocatoria ni el temario dicen cuántas preguntas hay de cada materia, ni qué materias pesan más en cada área. Desconfía de quien te lo asegure como dato oficial.')) },
+      { h2: '¿En línea o presencial?', html: p('Depende del periodo y de dónde está tu primera opción de carrera:')
+        + tabla(['Periodo de ingreso', 'Cómo fue el examen'], [
+          ['Agosto de 2026', 'En línea para todos, en computadora con cámara y micrófono, con el navegador seguro que indica la convocatoria. No se permite presentarlo en celular ni en tableta.'],
+          ['Febrero de 2027', 'Presencial el 26 de septiembre de 2026 si tu primera opción estaba en la Ciudad de México; en línea el 3 de octubre de 2026 si era una unidad foránea (UPIIG, UPIIH, UPIIP, UPIIAP, UPIIT o UPIIZ).'],
+        ], 'Fuentes: convocatorias de nivel superior escolarizado para agosto de 2026 (bases primera y quinta) y febrero de 2027 (base cuarta). Revisa en tu convocatoria cómo será el tuyo.') },
+      { h2: 'Qué puedes llevar', html: tabla(['Si tu examen es…', 'Lo que permite el IPN'], [
+          ['En línea', 'Solo hojas blancas, lápiz, goma y sacapuntas; lentes graduados si los usas. Prohibidos los audífonos, la calculadora, el celular y el reloj inteligente.'],
+          ['Presencial', 'Tu ficha de examen, una identificación oficial con foto, lápiz del número 2½, goma y sacapuntas. No se permite gorra, pulseras ni calculadora.'],
+        ], 'Fuentes: convocatoria para agosto de 2026 (bases séptima y octava) y para febrero de 2027 (base cuarta).') },
+      { h2: 'El simulador del IPN y el nuestro', html: p('La convocatoria menciona un simulador de la plataforma del propio IPN, de 20 a 30 minutos, y aclara que sus preguntas no tienen relación con los temas ni con la cantidad de preguntas del examen. Sirve para conocer la plataforma, no para estudiar.')
+        + p(`Si vas a la prepa del IPN (CECyT o CET), tu examen es otro: el del proceso «Mi derecho, mi lugar». Lo explicamos en ${a(g('simulador-ecoems', 'que-viene-en-el-examen-ecoems'), 'qué viene en el examen ECOEMS')}.`) },
+    ],
+    faq: [
+      { p: '¿Cuántas preguntas tiene el examen del IPN?', r: 'El examen de admisión a nivel superior tiene 140 preguntas y tienes un máximo de tres horas efectivas para contestarlo, según la convocatoria del IPN.' },
+      { p: '¿Qué materias vienen en el examen del IPN?', r: 'El temario oficial enumera Matemáticas, Comunicación (competencia lectora y escrita), Inglés, Historia y entorno socioeconómico de México, Biología, Química y Física. El IPN no publica cuántas preguntas hay de cada una.' },
+      { p: '¿El examen del IPN es en línea?', r: 'Depende del periodo. Para entrar en agosto de 2026 fue en línea para todos; para febrero de 2027 fue presencial si la primera opción estaba en la Ciudad de México y en línea en las unidades foráneas. Revisa tu convocatoria.' },
+    ],
+    fuentes: [F.ipnA, F.ipnB, F.ipnTemario],
+    relacionadas: [g('simulador-ipn', 'cuantos-aciertos-para-entrar-al-ipn'), g('simulador-ipn', 'como-prepararte-para-el-examen-ipn'), g('simulador-unam', 'examen-unam-por-area')],
+  },
+  {
+    sim: 'simulador-ipn', slug: 'cuantos-aciertos-para-entrar-al-ipn', busqueda: 'cuántos aciertos necesito para entrar al IPN', actualizado: '2026-11-06', actualizadoTxt: 'noviembre de 2026',
+    titulo: '¿Cuántos aciertos necesito para entrar al IPN? | Vorka',
+    descripcion: 'No hay un número fijo de aciertos para entrar al IPN: depende de la carrera y del cupo. Cómo asigna los lugares, qué publica y qué pasa si no quedas.',
+    h1: '¿Cuántos aciertos necesitas para entrar al IPN?',
+    lead: 'La respuesta corta: no hay un número fijo y el IPN no publica un mínimo por carrera. Aquí está cómo asigna los lugares, qué sí publica y qué puedes hacer si no quedas, con lo que dice su convocatoria.',
+    secciones: [
+      { h2: 'Cómo asigna los lugares el IPN', html: p('Según la convocatoria, el sistema ordena a los aspirantes por su <b>número total de aciertos</b>, del más alto al más bajo, y asigna los lugares de cada carrera tomando en cuenta el corte de cada una, hasta que se agota su cupo.')
+        + ul([
+          'Eliges <b>dos opciones de carrera</b> de la misma área.',
+          'Cada carrera tiene un número fijo de lugares. El IPN los publica en la oferta de su convocatoria; por ejemplo, para agosto de 2026 la ESCOM ofreció 100 lugares en Ingeniería en Inteligencia Artificial y 350 en Ingeniería en Sistemas Computacionales.',
+          'Como el cupo es fijo, los aciertos que alcanzan dependen de cuántas personas compiten por esa carrera y de cuántos aciertos sacan.',
+        ]) + nota('Fuentes: convocatoria para agosto de 2026 (base novena) y su oferta de lugares por carrera.') },
+      { h2: 'Lo que el IPN no publica', html: p('La convocatoria <b>no publica un puntaje mínimo ni de corte por carrera</b>. Si no te asignan lugar, puedes pedir tus propios aciertos por escrito, dentro de los 5 días hábiles siguientes a los resultados, al correo oficiosdae@ipn.mx con el asunto «solicitud de aciertos». El IPN solo te entrega tu número de aciertos.')
+        + caja('Ojo con las tablas de «aciertos mínimos»', p('Las tablas que circulan en internet no son datos oficiales del IPN. Úsalas, si acaso, como referencia aproximada y nunca como garantía.')) },
+      { h2: 'Si no quedaste', html: ul([
+          'La convocatoria no prevé una segunda vuelta ni la asignación de lugares que sobren. La salida oficial es <b>presentarte en el siguiente periodo</b>; quien ya quedó asignado no puede participar en el otro.',
+          'No hay permutas: para cambiarte de carrera tienes que cursar primero un semestre y usar la convocatoria de cambio de carrera.',
+          'Existe una <b>modalidad no escolarizada y mixta</b>, con su propia convocatoria, solo con carreras de Ciencias Sociales y Administrativas; también son 140 preguntas en tres horas y se asigna igual. Por ejemplo, para agosto de 2026 ofreció 250 lugares en la Licenciatura en Turismo de la EST.',
+        ]) + nota('Fuentes: convocatorias de nivel superior escolarizado (bases primera y décima) y no escolarizado para agosto de 2026.')
+        + p(`Revisa también ${a('/learn/camino/que-hacer-si-no-te-quedaste-en-la-unam/', 'qué hacer si no te quedaste en tu primera opción')}: las ideas sirven igual para el IPN.`) },
+      { h2: 'Cómo ponerte una meta', html: p('Esto es consejo nuestro:') + ol([
+          ['Elige bien tus dos opciones', 'Una carrera con muchos lugares y otra con pocos no compiten igual. Revisa la oferta de lugares de cada escuela.'],
+          ['Mide dónde estás', 'Haz un examen completo de 140 preguntas y cuenta tus aciertos totales: es lo único que cuenta para asignar.'],
+          ['Sube tu total, no una materia', 'Como se ordena por aciertos totales, un acierto vale lo mismo en cualquier materia. Empieza por los temas donde fallas más y te cuesta menos mejorar.'],
+        ]) },
+    ],
+    faq: [
+      { p: '¿Cuál es el mínimo de aciertos para entrar al IPN?', r: 'No hay un mínimo fijo y el IPN no lo publica. Ordena a los aspirantes por aciertos totales y asigna los lugares de cada carrera hasta agotar su cupo, así que el número que alcanza cambia en cada carrera y en cada periodo.' },
+      { p: '¿Puedo saber cuántos aciertos saqué en el IPN?', r: 'Si no te asignaron lugar, sí: pídelos por escrito dentro de los 5 días hábiles siguientes a los resultados, a oficiosdae@ipn.mx con el asunto «solicitud de aciertos».' },
+      { p: '¿El IPN tiene segunda vuelta?', r: 'La convocatoria no prevé una segunda vuelta. Si no quedas, puedes presentarte en el siguiente periodo de admisión.' },
+    ],
+    fuentes: [F.ipnA, F.ipnOferta, F.ipnC],
+    relacionadas: [g('simulador-ipn', 'que-viene-en-el-examen-ipn'), g('simulador-ipn', 'como-prepararte-para-el-examen-ipn'), g('simulador-unam', 'cuantos-aciertos-para-entrar-a-la-unam')],
+  },
+  {
+    sim: 'simulador-ipn', slug: 'como-prepararte-para-el-examen-ipn', busqueda: 'cómo prepararte para el examen del IPN', actualizado: '2026-11-06', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Cómo prepararte para el examen del IPN | Vorka México',
+    descripcion: 'Cómo prepararte para el examen de licenciatura del IPN: el calendario de la convocatoria, el costo, el temario oficial y un plan de 8 semanas.',
+    h1: 'Cómo prepararte para el examen del IPN',
+    lead: 'Son 140 preguntas de siete materias y lo único que cuenta son tus aciertos totales. Aquí están las fechas y el costo que publicó el IPN en su última convocatoria, el temario oficial y un plan para estudiar con orden.',
+    secciones: [
+      { h2: 'Las fechas: cómo fue la última convocatoria', html: p('El IPN abre dos periodos de ingreso a licenciatura. Así fueron los del ciclo 2026-2027:')
+        + tabla(['Etapa', 'Ingreso en agosto de 2026', 'Ingreso en febrero de 2027'], [
+          ['Prerregistro', 'Del 31 de enero al 20 de marzo de 2026, escalonado por la primera letra del apellido', 'Del 15 de julio al 30 de agosto de 2026'],
+          ['Examen', '30 de mayo de 2026 en unidades foráneas; 13 o 14 de junio en la Ciudad de México y zona metropolitana', '26 de septiembre de 2026 (presencial, CDMX); 3 de octubre (en línea, foráneas)'],
+          ['Resultados', '11 de julio de 2026', '24 de octubre de 2026'],
+        ], 'Fuentes: convocatorias de nivel superior escolarizado del IPN. Al 6 de noviembre de 2026 ya pasaron ambos resultados y la convocatoria para agosto de 2027 todavía no se publica: revisa admision.ipn.mx.') },
+      { h2: 'Cuánto cuesta', html: p('Para entrar en agosto de 2026, el IPN pidió una <b>aportación voluntaria</b> de <b>540 pesos</b> para aspirantes nacionales y 1,055 pesos para extranjeros, y la convocatoria aclara que no se devuelve. La convocatoria de febrero de 2027 no publica el monto.')
+        + nota('Fuente: convocatoria de nivel superior escolarizado para agosto de 2026 (base tercera).') },
+      { h2: 'El temario oficial es tu guía', html: p(`El IPN publica el ${ext('https://www.ipn.mx/assets/files/des/docs/Temarios/temario-de-estudio-para-el-ingreso-al-ipn.pdf', 'temario de estudio para el ingreso al IPN')}: la lista de temas de las siete materias (Matemáticas, Comunicación, Inglés, Historia y entorno socioeconómico de México, Biología, Química y Física). No trae preguntas de práctica.`)
+        + p('Esto es consejo nuestro: imprímelo o cópialo en una hoja de cálculo y marca cada tema con verde (lo domino), amarillo (más o menos) o rojo (no lo sé). Esa lista es tu plan.') },
+      { h2: 'Un plan de 8 semanas', html: p('Esto es consejo nuestro; ajústalo a tu tiempo:') + ol([
+          ['Semana 1: diagnóstico', 'Haz un examen completo de 140 preguntas en tres horas y cuenta tus aciertos por materia.'],
+          ['Semanas 2 a 5: tus temas en rojo', 'Empieza por los temas que no sabes de las materias con más relación con tu área (por ejemplo, Física y Matemáticas si vas a Ingeniería). Un tema por día y ejercicios, no solo teoría.'],
+          ['Semana 6: comunicación e inglés', 'Lectura de textos variados, ortografía y redacción, y vocabulario y lectura en inglés: suman aciertos en las tres áreas.'],
+          ['Semana 7: examen completo', 'Otro examen de 140 preguntas de una sentada, sin calculadora, como lo pide el IPN. Revisa cada error y su regla.'],
+          ['Semana 8: solo tus errores', 'Repasa lo que fallaste, duerme bien y, si tu examen es en línea, prueba tu computadora, tu cámara y tu micrófono con anticipación.'],
+        ]) },
+      { h2: 'Cuidado con quien te promete un lugar', html: p('La convocatoria del IPN es clara: si alguien en internet o en redes sociales te promete ayudarte con tu ingreso al IPN, <b>se trata de un fraude</b>, y el IPN rechaza cualquier garantía de ingreso por haber tomado cursos. Sus medios oficiales son ipn.mx, ipn.mx/dae y admision.ipn.mx.')
+        + nota('Fuente: convocatoria para agosto de 2026, apartado «No te dejes sorprender» y base primera.') },
+    ],
+    faq: [
+      { p: '¿Cuándo sale la convocatoria del IPN?', r: 'El IPN abre dos periodos al año. Para entrar en agosto de 2026, el prerregistro fue del 31 de enero al 20 de marzo de 2026; para febrero de 2027, del 15 de julio al 30 de agosto de 2026. La de agosto de 2027 no se había publicado al 6 de noviembre de 2026.' },
+      { p: '¿Cuánto cuesta el examen del IPN?', r: 'Para entrar en agosto de 2026, el IPN pidió una aportación voluntaria de 540 pesos para aspirantes nacionales y 1,055 pesos para extranjeros, que no se devuelve.' },
+      { p: '¿El IPN tiene guía de estudio?', r: 'El IPN publica un temario de estudio con la lista de temas de las siete materias, sin preguntas de práctica. Úsalo como base de tu plan.' },
+    ],
+    fuentes: [F.ipnA, F.ipnB, F.ipnTemario],
+    relacionadas: [g('simulador-ipn', 'que-viene-en-el-examen-ipn'), g('simulador-ipn', 'cuantos-aciertos-para-entrar-al-ipn'), g('simulador-unam', 'como-estudiar-para-el-examen-unam')],
   },
 ];
 

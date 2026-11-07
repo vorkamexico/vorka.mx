@@ -58,7 +58,7 @@ describe('Vorka Learn › Finanzas personales', () => {
       expect(html).not.toContain('noindex');
       expect(html.match(/<h1[\s>]/g) || []).toHaveLength(1);
       expect(html).toContain(`<h1 class="lr-h1">${x.h1}</h1>`);
-      expect(cabecera(html)).toContain('href="/learn/finanzas/" aria-current="page">Finanzas</a>');
+      expect(cabecera(html)).toContain('href="/learn/finanzas/" aria-current="page"><span class="lr-m-ico">');
       expect((await pedir(ruta, 'HEAD')).status).toBe(200);
     }
   });
@@ -203,7 +203,7 @@ describe('Vorka Learn › Finanzas personales', () => {
     expect(lista.length).toBeGreaterThanOrEqual(GUIAS.length + 4);
     for (const x of RUTAS) expect(lista).toContain(`https://vorka.mx${x}`);
     // El menú de Learn liga a Finanzas en todas las páginas de Learn, también en las guías de exámenes
-    expect(cabecera(await (await pedir(rutaGuia(GUIAS[0]))).text())).toContain('href="/learn/finanzas/">Finanzas</a>');
+    expect(cabecera(await (await pedir(rutaGuia(GUIAS[0]))).text())).toContain('href="/learn/finanzas/"><span class="lr-m-ico">');
   });
 
   it('están en el sitemap de Learn (y no en el de la tienda)', async () => {
