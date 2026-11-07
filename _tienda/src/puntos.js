@@ -285,12 +285,16 @@ export async function puntosAlReembolsar(env, orderId) {
 async function despuesDeGanar(env, email, { puntos, pct, mult, motivo, producto, orderId, renovacion = false }) {
   try {
     const s = await saldoDe(env, email);
-    await avisar(env, email, {
-      clave: `ganado:${orderId}`, tipo: 'ganado',
-      titulo: mult > 1 ? `¡Puntos extra! +${puntos} puntos` : `¡Ganaste ${puntos} puntos!`,
-      cuerpo: `${renovacion ? 'Se renovó una suscripción que entró con tu liga' : `Alguien compró${producto ? ` ${producto}` : ''} con tu liga`}${motivo === 'sugerencia' ? ' (el producto que sugeriste)' : ''}: ${pct}% en puntos. Ya tienes ${s.disponibles} puntos ($${s.disponibles} MXN en la tienda).`,
-      url: '/tienda/cuenta/#actividad',
-    }, { correo: { asunto: `Ganaste ${puntos} puntos Vorka`, extra: `<p style="${P}">Sigue compartiendo tu liga: por ser parte del ecosistema Vorka, quien compra con ella tiene ${PCT_REFERIDO} % de descuento en su primer pago, y tú ganas tus puntos.</p>` } });
+    // Qué puede hacer con ellos: usarlos en la tienda y, solo si su cuenta tiene la transferencia habilitada (el equipo la
+    // habilita; ningún texto público la menciona), pedir que se los transfiramos a su cuenta
+    const cta = await one(env, 'SELECT COALESCE(equipo, 0) equipo, COALESCE(puede_retirar, 0) puede_retirar FROM puntos_cuentas WHERE email = ?', email).catch(() => null);
+    const usar = cta?.puede_retirar ? `Úsalos en la tienda (1 punto = $1) o pide que te los transfiramos a tu cuenta desde Puntos Vorka.` : `Úsalos en la tienda: 1 punto = $1.`;
+    const titulo = mult > 1 ? `¡Puntos extra! +${puntos} puntos` : `¡Ganaste ${puntos} puntos!`;
+    const cuerpo = `${renovacion ? 'Se renovó una suscripción que entró con tu liga' : `Alguien compró${producto ? ` ${producto}` : ''} con tu liga`}${motivo === 'sugerencia' ? ' (el producto que sugeriste)' : ''}: ${pct}% en puntos. Ya tienes ${s.disponibles} puntos. ${usar}`;
+    await avisar(env, email, { clave: `ganado:${orderId}`, tipo: 'ganado', titulo, cuerpo, url: '/tienda/cuenta/#actividad' },
+      { correo: { asunto: `Ganaste ${puntos} puntos Vorka`, extra: `<p style="${P}">Sigue compartiendo tu liga: por ser parte del ecosistema Vorka, quien compra con ella tiene ${PCT_REFERIDO} % de descuento en su primer pago, y tú ganas tus puntos.</p>` } });
+    // El equipo trabaja en os.vorka.mx: ahí también le llega (campanita y celular), además del correo y la app de Puntos
+    if (cta?.equipo && env.CORREO?.avisarEquipo) await env.CORREO.avisarEquipo({ email, titulo, cuerpo, url: '/#/puntos', tag: `puntos-${orderId}` }).catch(e => console.error('aviso equipo', e?.message));
     if (renovacion) return revisarMeta(env, email, s);
     const ventas = await ventasSemestre(env, email);
     const n = nivelDe(ventas);

@@ -175,3 +175,28 @@ describe('Suscripciones del equipo: % de su nivel una vez o 5 % recurrente', () 
     } finally { vi.useRealTimers(); }
   });
 });
+
+describe('Aviso al ganar puntos (equipo)', () => {
+  it('si es del equipo también le llega a os.vorka.mx; el efectivo solo se menciona si tiene la transferencia habilitada', async () => {
+    const avisos = [];
+    env.CORREO = { enviar: vi.fn(async () => ({ ok: true })), avisarEquipo: vi.fn(async a => { avisos.push(a); return { ok: true }; }) };
+    const code = await A.codigoPuntos('ana@vorka.mx', 'Ana');
+    await A.equipoPuntos(['ana@vorka.mx']);
+    await compraPagada('comprador1@mail.com', code);
+    expect(avisos).toHaveLength(1);
+    expect(avisos[0]).toMatchObject({ email: 'ana@vorka.mx', url: '/#/puntos' });
+    expect(avisos[0].titulo).toMatch(/Ganaste \d+ puntos/);
+    expect(avisos[0].cuerpo).toMatch(/Úsalos en la tienda/);
+    expect(avisos[0].cuerpo).not.toMatch(/transfiramos/);
+    env.DB.raw.prepare("UPDATE puntos_cuentas SET puede_retirar = 1 WHERE email = 'ana@vorka.mx'").run();
+    await compraPagada('comprador2@mail.com', code);
+    expect(avisos[1].cuerpo).toMatch(/transfiramos a tu cuenta/);
+  });
+
+  it('a quien no es del equipo no se le busca en os.vorka.mx', async () => {
+    env.CORREO = { enviar: vi.fn(async () => ({ ok: true })), avisarEquipo: vi.fn(async () => ({ ok: true })) };
+    const code = await A.codigoPuntos('externa@mail.com', 'Externa');
+    await compraPagada('comprador3@mail.com', code);
+    expect(env.CORREO.avisarEquipo).not.toHaveBeenCalled();
+  });
+});
