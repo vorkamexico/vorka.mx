@@ -6,7 +6,8 @@
 //   T.ruta · T.rutaDe(x) · T.articulo(slug) · T.titulo(x) · T.tituloIndice() · T.urls() · T.textoDe(x) · T.llamadoDe(x)
 //   T.pagina(slug, anuncios) → Response | null
 // Cada artículo: { slug, llamado (clave de llamados), titulo, descripcion, h1, lead, secciones: [{ h2, html }], faq,
-// fuentes: [{ nombre, url }], relacionadas: [slug…] }.
+// fuentes: [{ nombre, url }], relacionadas: [slug…] }. Opcional: actualizado / actualizadoTxt propios del artículo
+// (si se revisó en otra fecha que el resto de la sección).
 import { esc } from '../paginas.js';
 import { FLECHA } from '../marco.generado.js';
 import { RUTA_LEARN, conMarca, textoPlano } from './piezas.js';
@@ -37,8 +38,8 @@ export function crearTema(o) {
       .map(y => ({ href: rutaDe(y), h1: y.h1, descripcion: y.descripcion }));
     return paginaArticulo(x, {
       ruta: r, titulo: titulo(x), lugares: [['Vorka Learn', RUTA_LEARN], [seccion.nombre, ruta], [x.h1, r]],
-      kicker: `Guía · ${seccion.nombre}`, imagen: o.imagen, actual: seccion.clave, anuncios, actualizado: o.actualizado, actualizadoTxt: o.actualizadoTxt,
-      notaFuentes: o.notaFuentes, llamado: llamadoDe(x), compartirTexto: o.compartirTexto, rel, relTitulo: o.relTitulo, notaPie: o.notaPie,
+      kicker: `Guía · ${seccion.nombre}`, imagen: o.imagen, actual: seccion.clave, anuncios, actualizado: x.actualizado || o.actualizado, actualizadoTxt: x.actualizadoTxt || o.actualizadoTxt,
+      notaFuentes: x.actualizadoTxt ? o.notaFuentes.replace(o.actualizadoTxt, x.actualizadoTxt) : o.notaFuentes, llamado: llamadoDe(x), compartirTexto: o.compartirTexto, rel, relTitulo: o.relTitulo, notaPie: o.notaPie,
     });
   }
   return { ruta, rutaDe, articulo, titulo, tituloIndice: () => conMarca(seccion.indice.titulo), urls: () => [ruta, ...articulos.map(rutaDe)], textoDe, llamadoDe, pagina };

@@ -1,11 +1,15 @@
 // Vorka Learn › Elegir tu camino (vorka.mx/learn/camino/…): guías para decidir qué y dónde estudiar después de la
-// secundaria o la prepa: becas federales, cómo elegir carrera y qué hacer si no te quedaste en tu primera opción.
+// secundaria o la prepa: becas federales, cómo elegir carrera, qué hacer si no te quedaste en tu primera opción y cómo
+// hacer tu primer CV sin experiencia.
 // Es un «tema» (no examen): plantilla común de src/learn/tema.js. Catálogo y rutas: src/learn/datos.js (TEMAS) y
 // src/simulador/guias.js (rutasLearn, urlsGuias).
 // Reglas (política de la organización: sin inventar datos):
 //  - Todo dato concreto (nombres de becas, montos, requisitos, fechas, cómo se asignan lugares) sale de la fuente que el
 //    artículo cita en «Fuentes»: Coordinación Nacional de Becas para el Bienestar Benito Juárez y SEP (gob.mx), DGAE UNAM,
 //    UAM, UACM e IMCO (Compara Carreras). Revisadas el 31 de octubre de 2026. Montos solo con su fuente y su ciclo.
+//    La guía del CV cita la Ley Federal del Trabajo (texto vigente, reforma DOF 14-05-2026: artículos 22, 22 Bis y 133)
+//    la Constitución (artículo 123, apartado A, fracción III; reforma DOF 07-10-2026) y el Portal del Empleo;
+//    revisadas el 6 de noviembre de 2026. Lo demás de esa guía se dice como consejo nuestro.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -36,11 +40,16 @@ const F = {
   unamOferta: { nombre: 'UNAM: Oferta académica de licenciatura por área', url: 'https://oferta.unam.mx/' },
   uam: { nombre: 'UAM: Admisión a licenciatura, Tercer Proceso de Selección 2026', url: 'https://admision.uam.mx/' },
   uacm: { nombre: 'UACM: Convocatoria a Sorteo 2026, extensión del periodo de registro', url: 'https://uacm.edu.mx/publicaciones/2026/6/4/Convocatoriaingreso2026.pdf' },
+  lft: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 22, 22 Bis y 133), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
+  cpeum: { nombre: 'Constitución Política de los Estados Unidos Mexicanos, texto vigente (última reforma DOF 07-10-2026; artículo 123, apartado A, fracción III), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf' },
+  empleo: { nombre: 'Portal del Empleo (gobierno de México)', url: 'https://www.empleo.gob.mx/' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia' };
 const r = slug => `/learn/camino/${slug}/`;
+// Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
+const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
 
 const LLAMADO = {
   // Test vocacional Vorka (src/tests/): contestar y ver el perfil básico es gratis; el reporte completo es de pago
@@ -50,6 +59,10 @@ const LLAMADO = {
   simUnam: llamadoFinal('Practica con el simulador', '¿Vas por el siguiente concurso?',
     'Empieza con tiempo: haz un examen de práctica en el Simulador UNAM de Vorka México, con reactivos originales y un reporte de qué reforzar. Es un simulador de práctica; sus aciertos son una estimación para orientar tu estudio.',
     '/simulador-unam/', 'Ir al Simulador UNAM'),
+  // Tú en Vorka (/voluntariado/): lo que promete esa página (16 a 29 años, 4 a 8 h por semana, sin costo, constancia y portafolio)
+  tuEnVorka: llamadoFinal('Tú en Vorka', '¿Quieres experiencia real para tu CV?',
+    'Tú en Vorka es el programa de Vorka México para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría: redacción, diseño y redes, eventos, estrategia y más. Son de 4 a 8 horas por semana según tu área, sin costo, con constancia y portafolio, presencial en el Bajío o a distancia desde cualquier parte de México.',
+    '/voluntariado/', 'Conoce Tú en Vorka'),
   becas: llamadoFinal('Siguiente guía', '¿Ya sabes qué quieres estudiar?',
     'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
     r(S.carrera), 'Lee: cómo elegir carrera'),
@@ -218,13 +231,98 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.unamInstr, F.unamOferta, F.uam, F.uacm, F.sepUbbj],
     relacionadas: [S.carrera, S.becas],
   },
+  // =============== 4. Tu primer CV ===============
+  {
+    slug: S.cv, llamado: 'tuEnVorka', actualizado: '2026-11-06', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Cómo hacer tu CV sin experiencia laboral',
+    descripcion: 'Tu primer currículum sin experiencia: qué poner, cómo contar escuela, proyectos y voluntariado, qué datos omitir y qué dice la ley si tienes 15 a 17.',
+    h1: 'Cómo hacer tu CV sin experiencia laboral, paso a paso',
+    lead: '«Piden experiencia, pero nadie me la da.» Casi siempre sí tienes algo que contar: proyectos de la escuela, voluntariado, el negocio de tu familia o lo que haces por tu cuenta. Esta guía te dice cómo ponerlo en una hoja, qué datos no hace falta incluir y qué dice la Ley Federal del Trabajo si todavía no cumples 18.',
+    secciones: [
+      { h2: 'Qué busca quien lee tu CV', html: p('Esto es consejo nuestro. En un primer empleo nadie espera una carrera larga. Quien lee tu currículum quiere responder tres preguntas rápido:')
+        + ol([
+          ['¿Te puedo contactar?', 'Tus datos de contacto, claros y arriba.'],
+          ['¿Sabes hacer algo útil para este puesto?', 'Habilidades con ejemplos, no solo una lista de palabras.'],
+          ['¿Eres responsable?', 'Cosas que empezaste y terminaste: un proyecto, un voluntariado, un torneo, un negocio familiar.'],
+        ])
+        + p('Por eso un CV sin experiencia no se llena con relleno. Se llena con <b>ejemplos concretos</b> de lo que ya hiciste.') },
+      { h2: 'Paso 1: tus datos de contacto (y los que no hacen falta)', html: p('Consejo nuestro: arriba, en dos o tres renglones:')
+        + ul([
+          '<b>Tu nombre completo</b>, más grande que el resto.',
+          '<b>Tu ciudad</b>, por ejemplo «Celaya, Gto.». No hace falta tu dirección completa.',
+          '<b>Tu celular con WhatsApp</b> y un <b>correo serio</b>, de preferencia tu nombre y apellido. Evita correos como «elmasperron2009».',
+          'Si tienes algo que enseñar, <b>la liga a tu portafolio</b> o a tu perfil de LinkedIn.',
+        ])
+        + p('La Ley Federal del Trabajo, en su artículo 133, fracción I, prohíbe a quien contrata <b>negarse a aceptar trabajadores</b> por su origen étnico o nacional, género, edad, discapacidad, condición social, condiciones de salud, religión, opiniones, preferencias sexuales o estado civil. Como consejo nuestro: esos datos no dicen si sabes hacer el trabajo, así que no hace falta ponerlos. Lo mismo con la foto, tu CURP o tu número de seguridad social: se piden después, si te contratan.')
+        + caja('Ojo', p('La misma ley prohíbe pedir un certificado médico de no embarazo para entrar, quedarte o subir de puesto en un empleo (artículo 133, fracción XIV).')) },
+      { h2: 'Paso 2: un resumen de dos o tres líneas', html: p('Consejo nuestro: justo debajo de tus datos, di quién eres y qué buscas. Sin frases vacías como «soy proactivo y dinámico»: mejor algo que se pueda comprobar.')
+        + caja('Ejemplo', p('«Estudiante de bachillerato (5.º semestre) con experiencia en atención a clientes en el negocio familiar y en redes sociales de un proyecto escolar. Busco empleo de medio tiempo por las tardes en ventas o atención a clientes.»'))
+        + p('Cambia el resumen para cada vacante: si el puesto es de bodega, habla de orden y puntualidad; si es de cafetería, de trato con la gente.') },
+      { h2: 'Paso 3: la experiencia que sí tienes', html: p('Esto es consejo nuestro. Haz una sección que se llame <b>«Experiencia y proyectos»</b> en lugar de «Experiencia laboral». Ahí cabe todo lo que hiciste con responsabilidad, aunque no te hayan pagado:')
+        + tabla(['Lo que hiciste', 'Cómo escribirlo'], [
+          ['Ayudas en la tienda o el negocio de tu familia', '«Atención a clientes y cobro en caja en tienda de abarrotes familiar, fines de semana (2024 a la fecha).»'],
+          ['Un proyecto de la escuela', '«Coordiné a un equipo de 5 para una feria de ciencias; me encargué del presupuesto y de la presentación.»'],
+          ['Voluntariado o servicio social', '«Voluntaria en colecta de víveres: organicé el registro de 120 donaciones en una hoja de cálculo.»'],
+          ['Llevas las redes de alguien', '«Manejo de Instagram de una panadería local: 3 publicaciones por semana durante 6 meses.»'],
+          ['Das clases, cuidas o haces encargos', '«Asesorías de matemáticas a 4 alumnos de secundaria, dos tardes por semana.»'],
+          ['Deporte, música o concursos', '«Capitán del equipo de fútbol de la escuela (2025); segundo lugar en concurso estatal de oratoria.»'],
+        ], 'Los ejemplos son ilustrativos: escribe solo lo que de verdad hiciste y que puedas contar en una entrevista.')
+        + p('La fórmula que funciona: <b>verbo + qué hiciste + un dato</b> (cuánto, cuántos o por cuánto tiempo). «Ayudé en la tienda» dice poco; «Atendí clientes y cuadré la caja los sábados durante un año» dice mucho.') },
+      { h2: 'Paso 4: estudios, cursos y habilidades', html: ul([
+          '<b>Estudios</b>: lo último que estudias o terminaste, con la escuela y los años. Si tu promedio es bueno, puedes ponerlo; si no, no hace falta.',
+          '<b>Cursos</b>: los que terminaste, aunque sean gratuitos y en línea, con el nombre de quien lo dio.',
+          '<b>Habilidades con nivel honesto</b>: en lugar de «Excel», escribe «Excel: tablas, filtros y fórmulas básicas». En lugar de «inglés avanzado» si no lo es, escribe «inglés: leo y entiendo, conversación básica».',
+          '<b>Disponibilidad</b>: si buscas medio tiempo, di qué días y horarios puedes.',
+        ]) + nota('Consejo nuestro: no inventes. Todo lo que pongas te lo pueden preguntar o pedir que lo demuestres en la entrevista.') },
+      { h2: 'Paso 5: el formato', html: p('Consejo nuestro, para que lo lean completo:')
+        + ul([
+          '<b>Una sola hoja.</b> Sin experiencia, una hoja bien hecha se ve mejor que dos con relleno.',
+          '<b>En PDF</b> y con un nombre claro: «CV-Ana-Lopez.pdf», no «documento final final 2.pdf».',
+          '<b>Letra legible</b>, de un solo tipo, y títulos claros para cada sección.',
+          '<b>Sin faltas de ortografía.</b> Pídele a alguien que lo lea antes de mandarlo.',
+          '<b>El orden</b>: datos de contacto, resumen, experiencia y proyectos, estudios, cursos y habilidades.',
+        ])
+        + caja('Si lo mandas por WhatsApp o correo', p('Escribe un mensaje corto con tu nombre, la vacante que te interesa y por qué, y adjunta el PDF. Un archivo solo, sin saludo, se pierde.')) },
+      { h2: 'Si tienes 15, 16 o 17 años', html: p('Esto es lo que dice la Ley Federal del Trabajo (texto vigente con la reforma publicada el 14 de mayo de 2026):')
+        + tabla(['Edad', 'Qué dice la ley'], [
+          ['Menos de 15 años', 'El trabajo está prohibido (artículo 22 Bis).'],
+          ['De 15 a menos de 16', 'Puedes trabajar con las limitaciones de la ley, pero necesitas autorización de tus padres o tutores; a falta de ellos, del sindicato, del Tribunal, del Inspector del Trabajo o de la Autoridad Política (artículo 22). Según la Constitución, tu jornada máxima es de seis horas (artículo 123, apartado A, fracción III).'],
+          ['De 15 a menos de 18', 'No pueden contratarte si no terminaste tu educación básica obligatoria, salvo que la autoridad laboral lo apruebe porque el trabajo es compatible con tus estudios (artículo 22 Bis).'],
+        ], 'Fuentes: Ley Federal del Trabajo, artículos 22 y 22 Bis, y Constitución, artículo 123, apartado A, fracción III. Además, la ley pone otras limitaciones para menores de 18 años; si te ofrecen un trabajo, pregunta en qué horario y en qué condiciones.')
+        + p('Como consejo nuestro: si todavía estudias, busca un horario que no te quite la escuela. Un CV con «estudiante, disponible sábados y domingos» es perfectamente válido.') },
+      { h2: 'Dónde buscar y de qué cuidarte', html: p(`El gobierno federal tiene el ${ext('https://www.empleo.gob.mx/', 'Portal del Empleo')}, donde puedes buscar vacantes. Como consejo nuestro, también sirven las bolsas de trabajo de tu escuela, los anuncios en los negocios de tu colonia y preguntar directamente con tu CV en la mano.`)
+        + p('La Ley Federal del Trabajo prohíbe a quien contrata <b>exigir o aceptar dinero</b> de los trabajadores como gratificación para admitirlos en el trabajo (artículo 133, fracción III). Consejo nuestro: desconfía de cualquier «vacante» que te pida pagar antes de contratarte, por ejemplo por un curso obligatorio o un registro.') },
+      { h2: 'Antes de mandarlo, revisa', html: ul([
+          '¿Mi celular y mi correo están bien escritos?',
+          '¿Cada cosa de «Experiencia y proyectos» tiene un verbo y un dato?',
+          '¿Adapté el resumen a esta vacante?',
+          '¿Cabe en una hoja y está en PDF?',
+          '¿Lo leyó alguien más para buscar faltas?',
+          '¿Puedo explicar en una entrevista todo lo que puse?',
+        ]) },
+      { h2: 'Si quieres que alguien lo revise contigo', html: p('Puedes agendar una sesión 1:1 por videollamada con <b>Brandon Oleynick</b>, fundador de Vorka México:')
+        + ul([
+          `<b>${ext(AGENDA_BRANDON('express'), 'Asesoría Express')}</b> (20 minutos): para revisar tu CV o resolver una duda concreta antes de mandarlo.`,
+          `<b>${ext(AGENDA_BRANDON('mentoria'), 'Mentoría mensual')}</b> (45 minutos al mes): un plan personalizado y seguimiento mes a mes, con revisión de tu CV y WhatsApp directo entre sesiones.`,
+        ])
+        + nota('Las sesiones tienen costo; lo ves al agendar, eliges tu horario y te llega el enlace de la videollamada al confirmar.') },
+    ],
+    faq: [
+      { p: '¿Qué pongo en mi CV si nunca he trabajado?', r: 'Una sección de «Experiencia y proyectos» con lo que hiciste con responsabilidad aunque no te pagaran: proyectos escolares, voluntariado, ayudar en el negocio familiar, dar asesorías o llevar redes. Escribe cada cosa con un verbo, qué hiciste y un dato concreto.' },
+      { p: '¿Tengo que poner foto, edad o estado civil en mi CV?', r: 'No hace falta. La Ley Federal del Trabajo (artículo 133, fracción I) prohíbe negarse a aceptar trabajadores por edad, estado civil, género o religión, entre otros motivos. Como consejo nuestro, pon solo lo que muestra que puedes hacer el trabajo.' },
+      { p: '¿A qué edad puedo trabajar en México?', r: 'Según la Ley Federal del Trabajo, desde los 15 años y con las limitaciones de la ley. De 15 a menos de 16 necesitas autorización de tus padres o tutores y tu jornada máxima es de seis horas, según la Constitución; de 15 a menos de 18 no pueden contratarte si no terminaste tu educación básica obligatoria, salvo que la autoridad laboral lo apruebe. El trabajo de menores de 15 está prohibido.' },
+      { p: '¿Es normal que me pidan dinero para darme un trabajo?', r: 'No. La Ley Federal del Trabajo (artículo 133, fracción III) prohíbe exigir o aceptar dinero de los trabajadores como gratificación para admitirlos en el trabajo. Desconfía de cualquier oferta que te pida pagar antes de contratarte.' },
+    ],
+    fuentes: [F.lft, F.cpeum, F.empleo],
+    relacionadas: [S.carrera, S.becas],
+  },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar ni al IMCO.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO ni a la Secretaría del Trabajo y Previsión Social.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
-  notaFuentes: `<p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; las becas y las convocatorias cambian cada año, así que confírmalos siempre en la convocatoria vigente.</p>`,
+  notaFuentes: `<p class="gu-nota">Actualizado: ${ACTUALIZADO_TXT}. Revisamos cada dato en estas fuentes; las becas, las convocatorias y las leyes cambian, así que confírmalos siempre en la fuente vigente.</p>`,
   notaPie: NOTA_PIE, compartirTexto: 'Compártela con quien está decidiendo qué estudiar.', relTitulo: 'Más guías para elegir tu camino',
 });
 export const RUTA_CAMINO = TEMA_CAMINO.ruta;

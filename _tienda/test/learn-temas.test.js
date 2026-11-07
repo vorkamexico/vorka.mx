@@ -9,6 +9,9 @@ import { NEGOCIO, ARTICULOS_NEGOCIO, TEMA_NEGOCIO, AVISO_NEGOCIO } from '../src/
 import { CAMINO, ARTICULOS_CAMINO, TEMA_CAMINO } from '../src/learn-camino.js';
 import { secciones } from '../src/learn/datos.js';
 import { buscarGuias } from '../src/learn/extra.js';
+import { existsSync } from 'node:fs';
+
+const ESTATICAS = new Set(['/voluntariado/']);
 
 let env;
 const pedir = (ruta, metodo = 'GET', e = env) => worker.fetch(new Request(`https://vorka.mx${ruta}`, { method: metodo, redirect: 'manual' }), e);
@@ -43,11 +46,12 @@ const TEMAS = [
     dice: { '/tienda/vuelve/': [/Apple Wallet/, /No manda WhatsApp/], '/tienda/agenda/': [/todavía no manda WhatsApp automáticos/, /lo mandas tú/],
       '/tienda/vende/': [/no mueve dinero, no presta y no cobra por ti/, /gratis con hasta 10 clientas/i], '/tienda/cupo/': [/no cobra comisión/, /te paga directo a ti/, /gratis hasta 30 personas/i] },
     aviso: AVISO_NEGOCIO, sinPesos: true },
-  { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 3,
-    oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx)\//,
+  { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 4,
+    oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx|www\.diputados\.gob\.mx|www\.empleo\.gob\.mx)\//,
     // Sin Test vocacional en main todavía: «elegir carrera» apunta a Practica (TODO en src/learn-camino.js)
-    llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/test-vocacional/', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/' },
-    dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/] }, aviso: null, sinPesos: false },
+    llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/test-vocacional/', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/',
+      'como-hacer-tu-cv-sin-experiencia': '/voluntariado/' },
+    dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/], '/voluntariado/': [/16 a 29 años/, /sin costo/] }, aviso: null, sinPesos: false },
 ];
 
 for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
@@ -106,8 +110,10 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
         expect(x.fuentes.length, x.slug).toBeGreaterThanOrEqual(3);
         expect(html).toContain('id="fuentes">Fuentes</h2>');
         for (const f of x.fuentes) { expect(f.url, f.nombre).toMatch(oficiales); expect(html).toContain(`href="${f.url}"`); }
-        expect(html).toMatch(/Actualizado: <time datetime="2026-10-31">octubre de 2026<\/time>/);
-        expect(html).toContain('Actualizado: octubre de 2026.');
+        // La sección se revisó en octubre; un artículo revisado después trae su propia fecha (actualizado / actualizadoTxt)
+        const [fecha, txt] = x.actualizado ? [x.actualizado, x.actualizadoTxt] : ['2026-10-31', 'octubre de 2026'];
+        expect(html).toContain(`Actualizado: <time datetime="${fecha}">${txt}</time>`);
+        expect(html).toContain(`Actualizado: ${txt}.`);
         if (aviso) {
           const art = principal(html).split('<article')[1].split('</article>')[0];
           expect(art.indexOf(aviso)).toBeGreaterThan(art.indexOf('id="fuentes"'));
@@ -129,7 +135,11 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos } of TEMAS) {
         for (const re of dice[llamado[x.slug]] || []) expect(finales[0], `${x.slug} ${re}`).toMatch(re);
         expect(finales[0], x.slug).not.toMatch(/\$\s?\d|garantiza|oficial de la UNAM/i);
       }
-      for (const href of new Set(Object.values(llamado))) expect((await pedir(href.split('#')[0])).status, href).toBe(200);
+      // /voluntariado/ (Tú en Vorka) es del sitio estático de vorka.mx, no del Worker: basta con que exista su página
+      for (const href of new Set(Object.values(llamado))) {
+        if (ESTATICAS.has(href)) expect(existsSync(new URL(`../..${href}index.html`, import.meta.url)), href).toBe(true);
+        else expect((await pedir(href.split('#')[0])).status, href).toBe(200);
+      }
     });
 
     it('sin «agencia», ejemplos marcados como propios y, en Negocio, cifras en pesos solo dentro de los ejemplos', () => {
