@@ -20,8 +20,8 @@ export const ICONOS_LR = {
   facebook: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M14 8.5V6.8c0-.8.5-1 1-1h2.3V2.2L14.2 2C10.9 2 10 4.2 10 6.3v2.2H7.5v3.7H10V22h4v-9.8h3l.4-3.7z"/></svg>',
 };
 
-// «Por Vorka Learn · Actualizado: octubre de 2026 · 6 min de lectura»
-export const metaGuia = ({ fecha, fechaTxt, minutos }) => `<p class="lr-meta"><span class="lr-autor"><i>${LOGO}</i>Por Vorka Learn</span><span class="lr-dato">${ICONOS_LR.fecha}<span>Actualizado: <time datetime="${fecha}">${fechaTxt}</time></span></span><span class="lr-dato">${ICONOS_LR.reloj}${minutos} min de lectura</span><span class="lr-dato">${ICONOS_LR.fuentes}Con fuentes oficiales al final</span></p>`;
+// «Por Vorka Learn · Revisado por Brandon Oleynick · Actualizado: octubre de 2026 · 6 min de lectura»
+export const metaGuia = ({ fecha, fechaTxt, minutos }) => `<p class="lr-meta"><span class="lr-autor"><i>${LOGO}</i>Por Vorka Learn</span><span class="lr-dato">${ICONOS_LR.persona}<span>Revisado por <a href="/oleynickhdz/">Brandon Oleynick</a></span></span><span class="lr-dato">${ICONOS_LR.fecha}<span>Actualizado: <time datetime="${fecha}">${fechaTxt}</time></span></span><span class="lr-dato">${ICONOS_LR.reloj}${minutos} min de lectura</span><span class="lr-dato">${ICONOS_LR.fuentes}Con fuentes oficiales al final</span></p>`;
 
 // Índice «En esta guía»: se ve como lo que es (ícono, número de apartados y flecha que gira al abrir)
 export const indiceGuia = items => `<details class="lr-toc"><summary><span class="lr-toc-ico">${ICONOS_LR.indice}</span><span>En esta guía <span class="lr-toc-n">· ${items.length} apartados</span></span><span class="lr-toc-fl">${ICONOS_LR.abajo}</span></summary><ol>${items.map(([id, t]) => `<li><a href="#${id}">${t}</a></li>`).join('')}</ol></details>`;

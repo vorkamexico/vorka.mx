@@ -6,7 +6,7 @@
 import { esc } from '../paginas.js';
 import { espacioAnuncio } from '../anuncios.js';
 import { paginaLearn } from '../learn.js';
-import { SITIO, RUTA_ACERCA, ld, ORG, LEARN, SITIO_LEARN, migas, migasLd, textoPlano, minutosDeTexto } from './piezas.js';
+import { SITIO, RUTA_ACERCA, ld, ORG, LEARN, REVISOR, RUTA_REVISOR, SITIO_LEARN, migas, migasLd, textoPlano, minutosDeTexto } from './piezas.js';
 import { arte } from './arte.js';
 import { iconoDe } from './encabezado.js';
 import { metaGuia, indiceGuia, ICONOS_LR } from './lectura.js';
@@ -39,7 +39,7 @@ export function paginaArticulo(x, o) {
     { '@context': 'https://schema.org', '@type': 'Article', headline: x.h1, description: x.descripcion, inLanguage: 'es-MX', image: [og],
       datePublished: x.publicado || o.actualizado, dateModified: x.actualizado || o.actualizado, author: LEARN, publisher: ORG, isPartOf: SITIO_LEARN,
       timeRequired: `PT${minutos}M`, ...(yo ? { articleSection: yo.s.nombre } : {}),
-      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITIO}${ruta}` }, citation: x.fuentes.map(f => f.url) },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITIO}${ruta}`, reviewedBy: REVISOR, lastReviewed: x.actualizado || o.actualizado }, citation: x.fuentes.map(f => f.url) },
     migasLd(lugares),
     ...(x.faq?.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: x.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) }] : []),
   ];
@@ -67,6 +67,7 @@ export function paginaArticulo(x, o) {
     <ol class="gu-fuentes">${x.fuentes.map(f => `<li><a href="${esc(f.url)}" rel="noopener">${esc(f.nombre)}</a></li>`).join('')}</ol>
     ${o.notaFuentes}
     <p class="gu-nota">¿Viste un dato equivocado o desactualizado? <a href="${RUTA_ACERCA}#errores">Avísanos</a>.</p>
+    <div class="gu-revisor"><p><b>Revisó esta guía: <a href="${RUTA_REVISOR}">Brandon Oleynick</a></b>, fundador de Vorka México y de Juventudes Impactando México. <a href="${RUTA_ACERCA}">Así hacemos las guías</a>.</p></div>
     ${espacioAnuncio(anuncios, 'final')}
     ${o.llamado}
     ${compartir(x.h1, ruta, o.compartirTexto)}
