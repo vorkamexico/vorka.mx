@@ -576,8 +576,8 @@ class Sitio:
     def cabecera_diario(self, actual="", compacta=False):
         """Cabecera de periódico: fecha del día, nombre de la edición y barra de secciones."""
         c = self.cfg
-        nombre = esc(c["nombre"])
-        titular = nombre.replace(" ", ' <span class="metal">', 1) + "</span>" if " " in nombre else nombre
+        # El nombre grande es solo el municipio («Celaya»); «Revista Sparks» va centrado arriba como marca
+        titular = '<span class="metal">%s</span>' % esc(c["ciudad"].split(",")[0])
         hoy = datetime.now(timezone(timedelta(hours=-6)))  # hora del centro de México (sparks.js la pone al día)
         dias = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
         secciones = ['<a href="%s/"%s>Portada</a>' % (self.base, ' aria-current="page"' if not actual else "")]
