@@ -22,10 +22,12 @@
   function relativa(t) {
     var ms = Date.now() - new Date(t).getTime();
     if (isNaN(ms) || ms < 0) return null;
-    var h = Math.floor(ms / 36e5), dias = Math.floor(ms / 864e5);
+    var d = new Date(t), hoy = new Date();
+    var h = Math.floor(ms / 36e5);
+    var dias = Math.round((new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
     if (h < 1) return 'hace unos minutos';
-    if (h < 24) return 'hace ' + h + ' h';
-    if (dias < 2) return 'ayer';
+    if (h < 24 && dias === 0) return 'hace ' + h + ' h';
+    if (dias <= 1) return h < 24 ? 'hace ' + h + ' h' : 'ayer';
     if (dias < 7) return 'hace ' + dias + ' días';
     return null;
   }
@@ -201,8 +203,7 @@
   });
 
   /* ---------------- compartir ---------------- */
-  var share = document.querySelector('[data-share]');
-  if (share) {
+  [].forEach.call(document.querySelectorAll('[data-share]'), function (share) {
     var url = share.getAttribute('data-url'), title = share.getAttribute('data-title');
     var copiar = share.querySelector('[data-copy]');
     if (navigator.share && matchMedia('(pointer:coarse)').matches) {
@@ -216,7 +217,7 @@
         });
       });
     }
-  }
+  });
 })();
 
 // Boletín semanal desde cada historia: la suscripción queda en Vorka México (os.vorka.mx)
