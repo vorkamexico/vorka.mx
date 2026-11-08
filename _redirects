@@ -100,3 +100,7 @@
 /cuentas/                    /tienda/cuentas/                        301
 /clara                       /tienda/clara/                          301
 /clara/                      /tienda/clara/                          301
+
+# Sparks: «Historias de vida» y «Entrevistas» se unieron en «Historias» (nov 2026)
+/sparks/celaya/seccion/historias-de-vida/   /sparks/celaya/seccion/historias/   301
+/sparks/celaya/seccion/entrevistas/         /sparks/celaya/seccion/historias/   301
