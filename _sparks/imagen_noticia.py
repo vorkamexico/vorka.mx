@@ -7,7 +7,9 @@ Las usa la tarea programada que escribe los borradores de noticias (las sube a V
 Si la noticia trae una foto propia y con permiso (--foto), se usa esa en lugar de las de la ciudad.
 
 Uso:
-  python3 _sparks/imagen_noticia.py --titulo "…" --categoria "Gobierno" --semilla "<slug>" --salida /ruta/carpeta [--foto foto.jpg]
+  python3 _sparks/imagen_noticia.py --titulo "**Lo importante** y lo demás" --categoria "Gobierno" --semilla "<slug>" --salida /ruta/carpeta [--foto foto.jpg]
+Regla de títulos: la cabeza (hasta los dos puntos o hasta «|») va sola, grande y en negritas; el resto abajo, un poco más chico,
+con lo importante entre **…** en negritas y lo demás en peso normal (sin asteriscos, todo en negritas).
 Escribe portada.jpg y redes.jpg en la carpeta de salida.
 """
 import argparse
@@ -32,16 +34,47 @@ def fuente(tam, peso='Bold'):
     return f
 
 
-def partir(draw, texto, f, ancho):
-    lineas, actual = [], ''
-    for palabra in texto.split():
-        prueba = f'{actual} {palabra}'.strip()
-        if draw.textlength(prueba, font=f) <= ancho:
-            actual = prueba
-        else:
-            if actual:
-                lineas.append(actual)
-            actual = palabra
+def palabras(titulo):
+    """«**Lo importante** y lo demás» → [(palabra, negrita)]. Sin asteriscos, todo el título va en negritas."""
+    if '**' not in titulo:
+        return [(p, True) for p in titulo.split()]
+    out = []
+    for i, trozo in enumerate(titulo.split('**')):
+        out += [(p, i % 2 == 1) for p in trozo.split()]
+    return out
+
+
+def partes(titulo):
+    """Separa la cabeza del título: hasta «|» si lo hay; si no, hasta los primeros dos puntos. El resto empieza con mayúscula."""
+    t = titulo.strip()
+    if '|' in t:
+        cab, resto = t.split('|', 1)
+    elif ':' in t.replace('**', '')[:70]:
+        i = t.index(':') + 1
+        if t[i:i + 2] == '**' and t[:i].count('**') % 2 == 1:   # «**Saboreando Celaya:** …»: los asteriscos de cierre van con la cabeza
+            i += 2
+        cab, resto = t[:i], t[i:]
+    else:
+        return '', t
+    cab, resto = cab.replace('**', '').strip(), resto.strip()
+    if resto.startswith('**'):
+        resto = '**' + resto[2:3].upper() + resto[3:]
+    elif resto:
+        resto = resto[0].upper() + resto[1:]
+    return cab, resto
+
+
+def partir(draw, pals, fb, fr, ancho):
+    """Reparte las palabras en líneas que quepan, midiendo cada una con su propio peso."""
+    esp = draw.textlength(' ', font=fr)
+    lineas, actual, w = [], [], 0
+    for p, b in pals:
+        wp = draw.textlength(p, font=fb if b else fr)
+        if actual and w + esp + wp > ancho:
+            lineas.append(actual)
+            actual, w = [], 0
+        w += (esp if actual else 0) + wp
+        actual.append((p, b, wp))
     if actual:
         lineas.append(actual)
     return lineas
@@ -67,17 +100,37 @@ def generar(titulo, categoria, semilla, salida, foto=None):
     d = ImageDraw.Draw(lienzo)
     # Título: el tamaño más grande que quepa en 5 líneas dentro del panel
     y0, y_marca = alto_foto + 64, H - 120
-    for tam in range(78, 40, -2):
-        f = fuente(tam)
-        lineas = partir(d, titulo, f, W - 2 * M)
-        alto = len(lineas) * int(tam * 1.12)
-        if len(lineas) <= 5 and y0 + 56 + alto <= y_marca - 30:
+    # Regla de títulos: la cabeza (hasta los dos puntos, o hasta «|») va sola, grande y en negritas; el resto en otra línea,
+    # un poco más chico (78 %), con lo importante en negritas (entre **…**) y lo demás en peso normal.
+    cabeza, resto = partes(titulo)
+    pc = [(p, True) for p, _ in palabras(cabeza)] if cabeza else []
+    pr = palabras(resto)
+    ancho = W - 2 * M
+    for tam in range(84, 36, -2):
+        tr = round(tam * 0.78)
+        fcb = fuente(tam, 'Bold')
+        frb, frr = fuente(tr, 'Bold'), fuente(tr, 'Regular')
+        lc = partir(d, pc, fcb, fcb, ancho) if pc else []
+        lr = partir(d, pr, frb, frr, ancho) if pr else []
+        alto = len(lc) * int(tam * 1.08) + (int(tam * 0.16) if lc and lr else 0) + len(lr) * int(tr * 1.16)
+        if len(lc) <= 2 and len(lc) + len(lr) <= 6 and y0 + 56 + alto <= y_marca - 30:
             break
     d.text((M, y0), categoria, font=fuente(32, 'Semibold'), fill=claro)
     y = y0 + 56
-    for linea in lineas:
-        d.text((M, y), linea, font=f, fill='#FFFFFF')
-        y += int(tam * 1.12)
+
+    def pintar(lineas, fb, fr, salto):
+        nonlocal y
+        esp = d.textlength(' ', font=fr)
+        for linea in lineas:
+            x = M
+            for p, b, wp in linea:
+                d.text((x, y), p, font=fb if b else fr, fill='#FFFFFF')
+                x += wp + esp
+            y += salto
+    pintar(lc, fcb, fcb, int(tam * 1.08))
+    if lc and lr:
+        y += int(tam * 0.16)
+    pintar(lr, frb, frr, int(tr * 1.16))
     # Marca: logo + nombre, y a dónde ir
     d.line([(M, y_marca - 24), (W - M, y_marca - 24)], fill=claro, width=2)
     logo = Image.open(AQUI / 'assets' / 'logo.png').convert('RGBA')
