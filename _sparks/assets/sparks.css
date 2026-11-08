@@ -426,3 +426,16 @@
   .art-wrap .art-cover a { border-radius: 0; }
   .art-wrap .art-cover figcaption { margin: 8px var(--x) 0; }
 }
+
+/* Portada general de la revista: ediciones */
+.ed-c { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.ed-g { display: grid; gap: 12px; }
+.ed, .blq a.ed { display: flex; flex-direction: column; gap: 6px; padding: 22px 24px; border-radius: 18px; background: var(--noche); color: var(--claro); text-decoration: none; transition: transform .3s var(--ease), box-shadow .3s var(--ease); }
+.ed:hover { transform: translateY(-2px); box-shadow: var(--sombra-2); }
+.ed-n { font-size: clamp(26px, 2.6vw, 34px); font-weight: 780; letter-spacing: -.04em; line-height: 1.05; }
+.ed-n b { background: var(--metal-osc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ed-l { font-size: 14px; color: var(--claro-3); font-weight: 600; }
+.ed-u { margin-top: 10px; font-size: 14.5px; color: var(--claro-2); line-height: 1.45; }
+.ed-tx p { font-size: 17px; line-height: 1.6; color: var(--fg-2); }
+.ed-tx .ed-prox { margin-top: 14px; color: var(--fg); font-weight: 600; }
+@media (max-width: 860px) { .ed-c { grid-template-columns: 1fr; gap: 20px; } }

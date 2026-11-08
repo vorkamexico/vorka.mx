@@ -90,5 +90,31 @@
   },
   "hojaIgnorar": [
     "danna-galvan"
-  ]
+  ],
+  "revista": {
+    "lema": "Noticias e historias con sentido de los municipios del Bajío",
+    "descripcion": "La Revista Sparks de Vorka México cuenta lo que está pasando en cada municipio y visibiliza a las personas, proyectos y organizaciones que lo están moviendo. Una edición por municipio; las noticias, siempre con información de fuentes oficiales.",
+    "ediciones": [
+      {
+        "nombre": "Celaya",
+        "ruta": "/sparks/celaya/",
+        "lugar": "Guanajuato"
+      },
+      {
+        "nombre": "León"
+      },
+      {
+        "nombre": "Cortazar"
+      },
+      {
+        "nombre": "Apaseo el Grande"
+      },
+      {
+        "nombre": "Villagrán"
+      },
+      {
+        "nombre": "Guanajuato capital"
+      }
+    ]
+  }
 }
