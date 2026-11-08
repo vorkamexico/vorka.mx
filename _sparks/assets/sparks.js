@@ -8,7 +8,36 @@
   var hoy = document.querySelector('[data-hoy]');
   if (hoy) {
     var d = new Date();
-    hoy.textContent = DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
+    var dia = DIAS[d.getDay()];
+    hoy.textContent = dia.charAt(0).toUpperCase() + dia.slice(1) + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
+  }
+
+  // En celular la barra de secciones se desliza: que se vea la sección en la que estás
+  var secActual = document.querySelector('.dia-sec [aria-current]');
+  if (secActual && secActual.parentNode.scrollWidth > secActual.parentNode.clientWidth) {
+    secActual.parentNode.scrollLeft = secActual.offsetLeft - secActual.parentNode.offsetLeft - 16;
+  }
+
+  /* ---------------- fechas relativas: «hace 3 h», «ayer», «hace 4 días» (solo la última semana) ---------------- */
+  function relativa(t) {
+    var ms = Date.now() - new Date(t).getTime();
+    if (isNaN(ms) || ms < 0) return null;
+    var h = Math.floor(ms / 36e5), dias = Math.floor(ms / 864e5);
+    if (h < 1) return 'hace unos minutos';
+    if (h < 24) return 'hace ' + h + ' h';
+    if (dias < 2) return 'ayer';
+    if (dias < 7) return 'hace ' + dias + ' días';
+    return null;
+  }
+  [].forEach.call(document.querySelectorAll('time[data-rel]'), function (t) {
+    var r = relativa(t.getAttribute('datetime'));
+    if (r) { t.title = t.textContent; t.textContent = r; }
+  });
+  // El cintillo «Lo más nuevo» solo aparece si hay algo de los últimos 3 días
+  var cint = document.querySelector('[data-cint]');
+  if (cint) {
+    var reciente = [].some.call(cint.querySelectorAll('time'), function (t) { return Date.now() - new Date(t.getAttribute('datetime')).getTime() < 3 * 864e5; });
+    if (!reciente) cint.hidden = true;
   }
 
   /* ---------------- portada: buscar / filtrar / cargar más ---------------- */
@@ -26,7 +55,8 @@
     var img = n.i
       ? '<img src="' + IMG + '/' + n.i + '-800.webp" srcset="' + IMG + '/' + n.i + '-800.webp 800w, ' + IMG + '/' + n.i + '-1600.webp 1600w" sizes="(min-width:1024px) 400px, (min-width:640px) 50vw, 120px" width="' + n.w + '" height="' + n.h + '" alt="' + esc(n.p || n.t) + '" loading="lazy" decoding="async">'
       : '<span class="noimg tone-' + n.o + '" aria-hidden="true"><b>' + esc(n.c) + '</b></span>';
-    var meta = n.p ? '<span class="who">' + esc(n.p) + '</span>' : '';
+    var cuando = '<time datetime="' + n.d + '">' + esc(n.f) + '</time>';
+    var meta = (n.p ? '<span class="who">' + esc(n.p) + '</span><span class="dot" aria-hidden="true">·</span>' : '') + cuando;
     return '<article class="card"><a class="card-link" href="' + BASE + '/' + n.s + '/"><div class="card-img">' + img + '</div>' +
       '<div class="card-body"><span class="kicker tone-' + n.o + '">' + esc(n.c) + '</span><h3 class="card-title">' + esc(n.t) + '</h3>' +
       '<p class="card-sum">' + esc(n.r) + '</p><div class="meta">' + meta + '</div></div></a></article>';
@@ -36,7 +66,6 @@
     var q = document.getElementById('q');
     var mas = document.getElementById('mas');
     var vacio = document.getElementById('vacio');
-    var front = document.getElementById('front');
     var titulo = document.getElementById('grid-title');
     var chips = [].slice.call(document.querySelectorAll('.chip'));
     var porPagina = +grid.getAttribute('data-por-pagina') || 12;
@@ -71,8 +100,7 @@
         } else {
           res = lista.filter(function (n) { return !n.x; }); // sin filtro: lo que no está ya en la portada
         }
-        if (front) front.hidden = activo;
-        titulo.textContent = activo ? (res.length + (res.length === 1 ? ' noticia' : ' noticias')) : 'Lo más reciente';
+        titulo.textContent = activo ? (res.length + (res.length === 1 ? ' nota' : ' notas')) : 'Todas las notas';
         grid.innerHTML = res.slice(0, estado.visibles).map(tarjeta).join('');
         vacio.hidden = res.length > 0;
         mas.hidden = res.length <= estado.visibles;
@@ -116,8 +144,7 @@
     function restaurar() {
       estado.filtrando = estado.visibles > porPagina;
       if (estado.filtrando) return pintar();
-      if (front) front.hidden = false;
-      titulo.textContent = 'Lo más reciente';
+      titulo.textContent = 'Todas las notas';
       grid.innerHTML = inicialesHTML;
       vacio.hidden = true;
       datos().then(function (l) { mas.hidden = l.filter(function (n) { return !n.x; }).length <= porPagina; });
