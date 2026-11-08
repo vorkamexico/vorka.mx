@@ -439,3 +439,11 @@
 .ed-tx p { font-size: 17px; line-height: 1.6; color: var(--fg-2); }
 .ed-tx .ed-prox { margin-top: 14px; color: var(--fg); font-weight: 600; }
 @media (max-width: 860px) { .ed-c { grid-template-columns: 1fr; gap: 20px; } }
+
+/* Fotos: siempre llenan su recuadro recortadas al centro, nunca estiradas.
+   (Con height:100% el navegador usaba el alto original de la foto y la mostraba gigante y cortada.) */
+.card-img, .mini-img, .blq-img, .pri-img, .lee-c, .side-img { position: relative; }
+.card-img > img, .mini-img > img, .blq-img > img, .pri-img > img, .lee-c > img, .side-img > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
+.card-img > .noimg, .mini-img > .noimg, .blq-img > .noimg, .pri-img > .noimg { position: absolute; inset: 0; }
+.art-body .af-par a, .art-body .af-trio a, .gal-grid a { position: relative; }
+.art-body .af-par a > img, .art-body .af-trio a > img, .gal-grid a > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
