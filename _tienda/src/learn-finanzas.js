@@ -16,6 +16,7 @@ import { esc } from './paginas.js';
 import { FLECHA } from './marco.generado.js';
 import { llamadoProducto, llamadoGuia } from './learn/cta.js';
 import { paginaArticulo, SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, conMarca, textoPlano } from './learn.js';
+import { ext } from './learn/piezas.js';
 
 export const ACTUALIZADO_FIN = '2026-10-31';
 const ACTUALIZADO_TXT = 'octubre de 2026';
@@ -66,6 +67,17 @@ const F = {
   profedet: { nombre: 'PROFEDET: ¿Aún no recibes tu aguinaldo? Acércate a la PROFEDET (22 de enero de 2024)', url: 'https://www.gob.mx/profedet/articulos/aun-no-recibes-tu-aguinaldo-acercate-a-la-profedet?idiom=es' },
   gacetaAguinaldo: { nombre: 'Gaceta Parlamentaria de la Cámara de Diputados: iniciativa para reformar el artículo 87 de la Ley Federal del Trabajo (25 de marzo de 2026)', url: 'https://gaceta.diputados.gob.mx/PDF/66/2026/mar/20260325-II-6-1.pdf' },
   dofCobranza: { nombre: 'Diario Oficial de la Federación: Disposiciones de carácter general aplicables a las entidades financieras en materia de despachos de cobranza (CONDUSEF, 2014)', url: 'https://dof.gob.mx/nota_detalle_popup.php?codigo=5362845' },
+  // Buen Fin 2026 (revisadas el 8 de noviembre de 2026)
+  profecoAcciones: { nombre: 'PROFECO: Profeco presenta acciones para proteger y defender a las personas consumidoras en El Buen Fin 2026 (29 de octubre de 2026)', url: 'https://www.gob.mx/profeco/prensa/profeco-presenta-acciones-para-proteger-y-defender-a-las-personas-consumidoras-en-el-buen-fin-2026?idiom=es' },
+  profecoPresupuesto: { nombre: 'PROFECO: El presupuesto, una medida contra las compras impulsivas en El Buen Fin (22 de octubre de 2026)', url: 'https://www.gob.mx/profeco/prensa/el-presupuesto-una-medida-contra-las-compras-impulsivas-en-el-buen-fin-profeco?idiom=es' },
+  profecoComparar: { nombre: 'PROFECO: ¿Ofertas simuladas? Previo a El Buen Fin, Profeco llama a comparar precios (15 de octubre de 2026)', url: 'https://www.gob.mx/profeco/prensa/ofertas-simuladas-previo-a-el-buen-fin-profeco-llama-a-comparar-precios?idiom=es' },
+  profecoMicrositio: { nombre: 'PROFECO: Profeco presenta micrositio de apoyo para las personas ante el próximo Buen Fin (26 de octubre de 2026)', url: 'https://www.gob.mx/profeco/prensa/profeco-presenta-micrositio-de-apoyo-para-las-personas-ante-el-proximo-buen-fin?idiom=es' },
+  profecoLinea: { nombre: 'PROFECO: Profeco orienta a las y los internautas que recurrirán al comercio electrónico en El Buen Fin 2026 (7 de noviembre de 2026)', url: 'https://www.gob.mx/profeco/prensa/profeco-orienta-a-las-y-los-internautas-que-recurriran-al-comercio-electronico-en-el-buen-fin-2026?idiom=es' },
+  profecoBuro: { nombre: 'PROFECO: Profeco sugiere consultar el Buró Comercial antes de realizar una compra en El Buen Fin (5 de noviembre de 2026)', url: 'https://www.gob.mx/profeco/prensa/profeco-sugiere-consultar-el-buro-comercial-antes-de-realizar-una-compra-en-el-buen-fin?idiom=es' },
+  profecoGarantia: { nombre: 'PROFECO: La garantía es un derecho, la Profeco explica cómo hacerla válida (8 de noviembre de 2026)', url: 'https://www.gob.mx/profeco/prensa/la-garantia-es-un-derecho-la-profeco-explica-como-hacerla-valida?idiom=es' },
+  lfpc: { nombre: 'Ley Federal de Protección al Consumidor, texto vigente (última reforma DOF 12-12-2025; artículos 7, 7 Bis, 42, 43, 76 Bis, 77, 78, 92, 92 Ter y 93)', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPC.pdf' },
+  condusefMsi: { nombre: 'CONDUSEF, revista Proteja su Dinero: Sácale provecho a los meses sin intereses (julio de 2012)', url: 'https://revista.condusef.gob.mx/credito/tarjeta/2012/07/sacale-provecho-a-los-meses-sin-intereses/' },
+  condusefHiper: { nombre: 'CONDUSEF, revista Proteja su Dinero: ¿Consumes sin pensarlo? (diciembre de 2025)', url: 'https://revista.condusef.gob.mx/presupuesto/2025/12/consumes-sin-pensarlo/' },
 };
 
 // ---------- piezas ----------
@@ -73,7 +85,7 @@ const F = {
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
 <p class="gu-ej-p">${titulo}</p>${html}</div>`;
 const r = slug => `${RUTA_FINANZAS}${slug}/`;
-const S = { tarjeta: 'como-funciona-una-tarjeta-de-credito', prestar: 'como-prestar-dinero-a-un-familiar-o-amigo', tanda: 'como-organizar-una-tanda', deudas: 'como-salir-de-deudas', ahorro: 'como-ahorrar-si-eres-joven', aguinaldo: 'aguinaldo-cuanto-te-toca' };
+const S = { tarjeta: 'como-funciona-una-tarjeta-de-credito', prestar: 'como-prestar-dinero-a-un-familiar-o-amigo', tanda: 'como-organizar-una-tanda', deudas: 'como-salir-de-deudas', ahorro: 'como-ahorrar-si-eres-joven', aguinaldo: 'aguinaldo-cuanto-te-toca', buenfin: 'buen-fin-como-comprar-sin-endeudarte' };
 
 // Llamados finales (uno por artículo). Cuentas se describe con lo que de verdad hace (src/cuentas.js y /legal/cuentas/).
 const final = (etiqueta, t, d, href, boton) => `<aside class="lr-final" aria-label="${esc(etiqueta)}"><p><b class="lr-final-t">${t}</b>${d}</p>
@@ -105,6 +117,13 @@ const LLAMADO = {
     titulo: '¿Quieres que tu aguinaldo no se te vaya en una semana?',
     texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
     puntos: ['El resumen de tu mes, para ver a dónde se va tu dinero en diciembre.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago para no generar intereses.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Clara para el Buen Fin: el «¿me alcanza?» antes de comprar es justo lo que pide la guía (mismos datos de la ficha que «clara»)
+  claraBuenFin: llamadoProducto({ etiqueta: 'Revisa si te alcanza con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Quieres saber si te alcanza antes de comprar?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver cuánto te queda libre después del Buen Fin.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago para no generar intereses.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
   // Cuentas no tiene que ver con tarjetas: el siguiente paso útil es la guía de deudas
@@ -495,6 +514,81 @@ export const ARTICULOS_FINANZAS = [
     ],
     fuentes: [F.lft, F.lisr, F.cpeum, F.uma, F.conasami, F.profedet, F.gacetaAguinaldo],
     relacionadas: [S.ahorro, S.deudas, S.tarjeta],
+  },
+
+  // =============== 7. Buen Fin 2026 (Clara) ===============
+  // Revisada el 8 de noviembre de 2026: comunicados de PROFECO del 15, 22, 26 y 29 de octubre y del 5, 7 y 8 de noviembre
+  // de 2026 (gob.mx/profeco), LFPC (texto vigente, reforma DOF 12-12-2025) y dos artículos de la revista Proteja su Dinero
+  // de CONDUSEF. No hay boletín de CONDUSEF sobre el Buen Fin 2026: la regla «que dure más que el plazo» se da como consejo
+  // nuestro. No se afirma derecho de devolución en compras en línea (el artículo 56 de la LFPC es de ventas a domicilio).
+  {
+    slug: S.buenfin, llamado: 'claraBuenFin', actualizado: '2026-11-08', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Buen Fin 2026: cómo comprar sin endeudarte',
+    descripcion: 'Cómo aprovechar el Buen Fin 2026 sin endeudarte: presupuesto, cómo saber si un descuento es real, meses sin intereses, compras en línea y tus derechos.',
+    h1: 'Buen Fin 2026: cómo comprar sin endeudarte y saber si la oferta es real',
+    lead: 'El Buen Fin 2026 va del 13 al 17 de noviembre. Puede servirte para comprar algo que de verdad necesitas a mejor precio, o para empezar diciembre con mensualidades que no te dejan respirar. Aquí está cómo hacer tu presupuesto, comprobar si un descuento es real, decidir si te conviene pagar a meses y qué hacer si algo sale mal, con lo que publican PROFECO, CONDUSEF y la Ley Federal de Protección al Consumidor.',
+    secciones: [
+      { h2: 'Lo básico del Buen Fin 2026', html: p('Según PROFECO, la edición 16 de El Buen Fin se realiza <b>del 13 al 17 de noviembre de 2026</b>. Durante esos días, la Procuraduría informó que tendrá más de mil servidoras y servidores públicos en 350 brigadas por todo el país y 169 módulos de atención en zonas de mucha afluencia, para orientar, recibir quejas y buscar soluciones en el momento.')
+        + p('Si tienes un problema, el Teléfono del Consumidor es el <b>55 5568 8722</b> y el <b>800 468 8722</b>. También recibe denuncias en denunciasprofeco@profeco.gob.mx y asesoría en asesoria@profeco.gob.mx.') },
+      { h2: 'Antes de comprar: dos listas y un tope', html: p('PROFECO recomienda definir tus necesidades con dos listas: una con lo <b>indispensable</b> y otra con lo que quieres pero no es esencial. Así puedes ver qué alcanzas a comprar sin sobreendeudarte. También sugiere poner un límite a cada compra y un presupuesto general que <b>no rebase tu capacidad de pago mensual</b>.')
+        + p('La misma Procuraduría recuerda que, antes de sumar deudas nuevas, una decisión responsable puede ser adelantar pagos como el predial, liquidar lo que debes o ahorrar. CONDUSEF da un consejo parecido para cualquier compra impulsiva: date 24 horas antes de decidir.')
+        + p('Esto es consejo nuestro: haz la cuenta con lo que te queda libre cada mes, no con tu sueldo completo, y escribe el tope antes del viernes 13. Con la oferta enfrente es más difícil decidir con calma.')
+        + ejemplo('Después de tus gastos fijos te quedan $2,000 libres al mes y ya pagas $700 al mes de otra compra a meses. ¿Cuánto te quedaría si compras algo de $6,000 a 12 meses sin intereses?', ul([
+          'Nueva mensualidad: $6,000 ÷ 12 = <b>$500</b>.',
+          'Total a meses cada mes: $700 + $500 = <b>$1,200</b>.',
+          'Lo que te queda libre: $2,000 − $1,200 = <b>$800</b> al mes, durante un año.',
+        ]) + nota('Si con eso no cubres imprevistos ni ahorro, la compra no cabe, aunque la mensualidad «se vea chiquita».')) },
+      { h2: 'Cómo saber si un descuento es real', html: p(`PROFECO tiene el sitio ${ext('https://elbuenfin.profeco.gob.mx/', 'Quién es Quién en los Precios en El Buen Fin')}. Según la Procuraduría, junto con la Secretaría de Economía monitorea desde el 17 de septiembre más de 490 productos (electrodomésticos, línea blanca, electrónica y otros de los más comprados en la campaña) en 30 ciudades.`)
+        + ol([
+          ['Filtra', 'Elige la ciudad desde donde vas a comprar, la categoría y el producto con su marca y modelo.'],
+          ['Revisa el historial', 'Verás el precio mínimo, máximo y promedio que registró PROFECO en cada cadena, cómo ha cambiado y la dirección de la tienda.'],
+          ['Compara con la oferta', 'Si el precio «rebajado» es igual o más alto que el que ya tenía antes, no es un descuento.'],
+        ])
+        + ejemplo('Una tienda anuncia una pantalla «antes $7,000, ahora $5,500». En el historial de PROFECO ves que en octubre esa misma pantalla, en esa cadena, costaba $5,200. ¿Es buena oferta?', ul([
+          'Diferencia contra el precio de octubre: $5,500 − $5,200 = <b>$300</b> más caro.',
+          'El «antes» del anuncio no coincide con el historial: no hay ahorro real.',
+        ]))
+        + p(`Antes de comprarle a una tienda que no conoces, PROFECO sugiere revisar su ${ext('https://burocomercial.profeco.gob.mx/', 'Buró Comercial')}: ahí aparece si el proveedor tiene quejas, en qué estado van y los motivos principales. Se busca por nombre o razón social, sin acentos ni comas, y por giro.`) },
+      { h2: 'Meses sin intereses: cuándo te conviene', html: p('CONDUSEF lo dice claro: los meses sin intereses <b>no significan gratis</b>. Antes de aceptar una promoción, suma todas tus mensualidades y verifica que puedes pagarlas. Además, conviene no confundir dos cosas:')
+        + tabla(['Esquema', 'Qué pagas'], [
+          ['Meses sin intereses', 'El precio de contado dividido en las mensualidades pactadas. No pagas intereses si cumples cada pago.'],
+          ['Pagos fijos', 'Sí pagas intereses, junto con el precio, en pagos semanales, quincenales o mensuales.'],
+        ])
+        + p('CONDUSEF explica que la mayoría de los contratos permiten al banco cancelar la promoción si dejas de pagar una mensualidad, y que cualquier incumplimiento genera intereses. También dice que la mayoría de los bancos permiten adelantar pagos, pero tienes que pedir que el abono se aplique a esa promoción; si no, se va a tu saldo normal.')
+        + p('PROFECO añade dos cosas: revisa si el precio a meses es realmente una promoción que te beneficie a largo plazo, y usa su simulador de pagos a meses con el Costo Anual Total (CAT) de tu tarjeta para ver cuánto pagarías en total en cada plazo. Por ley, la tienda debe mostrarte de forma visible el monto total a pagar, con impuestos, comisiones, intereses y cualquier otro cargo, sea de contado o a crédito (artículo 7 Bis de la Ley Federal de Protección al Consumidor).')
+        + ejemplo('Una consola cuesta $6,000 a 12 meses sin intereses. La misma tienda la da en $5,400 si pagas de contado, o en 12 pagos fijos de $575. ¿Qué cuesta cada opción?', ul([
+          'Meses sin intereses: 12 × $500 = <b>$6,000</b>.',
+          'De contado: <b>$5,400</b>; te ahorras $6,000 − $5,400 = <b>$600</b> si tienes el dinero sin tocar tu colchón.',
+          'Pagos fijos: 12 × $575 = <b>$6,900</b>, es decir, $6,900 − $6,000 = <b>$900</b> de más.',
+        ]))
+        + p(`Esto es consejo nuestro: compra a meses solo lo que te va a durar más que el plazo de pago, y no lo uses para cosas que se acaban pronto. Si ya traes saldo en tu tarjeta, revisa primero ${a(r(S.deudas), 'cómo salir de deudas')}; y si quieres entender corte, pago mínimo y CAT, está en ${a(r(S.tarjeta), 'cómo funciona una tarjeta de crédito')}.`) },
+      { h2: 'Si compras en línea', html: p('PROFECO recomienda, para comprar por internet en el Buen Fin:')
+        + ul([
+          'Usar una conexión segura y entrar solo a sitios conocidos y con buena reputación.',
+          'Verificar que la página tenga «https», el candado y un certificado vigente, sobre todo donde capturas los datos de tu tarjeta.',
+          'Leer términos y condiciones, costos de envío y cargos adicionales, formas de pago, garantía y políticas de cambio o devolución.',
+          'Revisar que la descripción del producto sea clara y en español, y que te digan la disponibilidad y el tiempo de entrega.',
+          'Guardar el número de pedido, el nombre del vendedor y los correos que intercambien: te sirven si tienes que reclamar.',
+        ])
+        + p('La ley también pone obligaciones a la tienda: antes de la compra debe darte su domicilio físico, teléfonos y otros medios para reclamar, y decirte los términos, costos, cargos adicionales y formas de pago (artículo 76 Bis). PROFECO añade que el domicilio publicado debe estar en México y que el monto total debe aparecer en moneda nacional.') },
+      { h2: 'Tus derechos si algo sale mal', html: ul([
+          '<b>Te tienen que respetar lo anunciado.</b> La tienda está obligada a respetar los precios, garantías, plazos y demás condiciones que ofreció (artículo 7), y a entregarte el producto según lo que prometió su publicidad (artículo 42).',
+          '<b>No te pueden negar lo que anuncian como disponible.</b> Tampoco condicionar la venta a que compres otra cosa (artículo 43).',
+          '<b>La garantía no puede ser menor a 90 días</b> desde que recibes el producto (artículo 77), y la póliza debe dártela por escrito al entregártelo (artículo 78).',
+          '<b>Si el producto no corresponde a lo que te ofrecieron</b>, puedes pedir que te lo cambien o que te devuelvan tu dinero, más una bonificación de al menos el 20 % de lo que pagaste (artículos 92 y 92 Ter). Tienes dos meses desde que lo recibiste para reclamar, y la tienda debe resolver en máximo 15 días (artículo 93).',
+        ])
+        + p('Si tu producto falla, PROFECO recomienda acudir de inmediato con el proveedor y no llevarlo con terceros: si alguien ajeno lo abre o intenta repararlo, la garantía se invalida. Conserva tus comprobantes y, si la tienda se niega, presenta tu queja con PROFECO.')
+        + caja('Guarda todo', p('Ticket o factura, póliza de garantía, capturas de la oferta con su precio y condiciones, y los correos o mensajes con la tienda. Sin pruebas es más difícil reclamar.')) },
+    ],
+    faq: [
+      { p: '¿Cuándo es el Buen Fin 2026?', r: 'Del viernes 13 al martes 17 de noviembre de 2026, según PROFECO.' },
+      { p: '¿Cómo sé si un descuento del Buen Fin es real?', r: 'Busca el producto, con su marca y modelo, en Quién es Quién en los Precios en El Buen Fin de PROFECO (elbuenfin.profeco.gob.mx). Ahí ves el precio mínimo, máximo, promedio y su historial por tienda desde septiembre.' },
+      { p: '¿Me conviene comprar a meses sin intereses en el Buen Fin?', r: 'Solo si sumas todas tus mensualidades y te caben en lo que te queda libre cada mes. CONDUSEF recuerda que no significa gratis y que dejar de pagar una mensualidad genera intereses. Compara también contra el precio de contado.' },
+      { p: '¿Qué hago si una tienda no respeta el precio o la promoción?', r: 'La ley la obliga a respetar lo que anunció. Guarda la captura o el folleto y repórtalo a PROFECO al 55 5568 8722 o al 800 468 8722, o en uno de sus módulos del Buen Fin.' },
+      { p: '¿Cuánto dura la garantía de lo que compre?', r: 'La que diga la póliza, pero nunca menos de 90 días desde que recibes el producto, según el artículo 77 de la Ley Federal de Protección al Consumidor.' },
+    ],
+    fuentes: [F.profecoAcciones, F.profecoPresupuesto, F.profecoComparar, F.profecoMicrositio, F.profecoLinea, F.profecoBuro, F.profecoGarantia, F.lfpc, F.condusefMsi, F.condusefHiper],
+    relacionadas: [S.tarjeta, S.deudas, S.aguinaldo],
   },
 ];
 
