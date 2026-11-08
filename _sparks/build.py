@@ -667,6 +667,71 @@ class Sitio:
         return self.pagina("%s — %s" % (c["nombre"], c["lema"]), c["descripcion"], self.abs + "/",
                            self.og_de(destacada), "".join(partes_html), jsonld=jsonld, extra_head=extra)
 
+    # ---- portada general de la Revista Sparks (/sparks/): lo más reciente y las ediciones por municipio.
+    # Hoy hay una sola edición; cuando haya más, sus notas se suman aquí leyendo el noticias.json de cada una.
+    def revista(self):
+        c, ns = self.cfg, self.noticias
+        r = c.get("revista") or {}
+        ciudad_corta = c["ciudad"].split(",")[0]
+        hoy = datetime.now(timezone(timedelta(hours=-6)))
+        dias = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+        ediciones = r.get("ediciones") or [{"nombre": ciudad_corta, "ruta": self.base + "/"}]
+        activas = [e for e in ediciones if e.get("ruta")]
+        proximas = [e["nombre"] for e in ediciones if not e.get("ruta")]
+        cab = ('<header class="dia"><div class="dia-top"><span class="dia-hoy" data-hoy>%s %d de %s de %d</span>'
+               '<span class="dia-rev">Vorka México</span><span class="dia-lugar">Bajío, México</span></div>'
+               '<div class="dia-marca"><h1 class="dia-nombre"><a href="/sparks/">Revista <span class="metal">Sparks</span></a></h1>'
+               '<p class="dia-lema">%s</p></div><nav class="dia-sec" aria-label="Ediciones"><a href="/sparks/" aria-current="page">Portada</a>%s'
+               '<a href="#ediciones">Ediciones</a><a href="/sparks/sumate/">Súmate al equipo</a></nav></header>') % (
+            dias[hoy.weekday()].capitalize(), hoy.day, MESES[hoy.month - 1], hoy.year, esc(r.get("lema", "Noticias e historias con sentido de los municipios del Bajío")),
+            "".join('<a href="%s">%s</a>' % (esc(e["ruta"]), esc(e["nombre"])) for e in activas))
+        partes_html = ['<div class="marco">', cab]
+        if ns:
+            principal = ns[0]
+            secundarias = ns[1:4]
+            ultimo = ns[4:10]
+            partes_html.append('<div class="cint" data-cint><b class="cint-t"><i aria-hidden="true"></i>Lo más nuevo</b><div class="cint-l">%s</div></div>' % "".join(
+                '<a href="%s">%s<span>%s</span></a>' % (self.url(n), self.tiempo(n, relativo=True), esc(n["titulo"])) for n in ns[:3]))
+            pri = ('<article class="pri"><a href="%s"><div class="pri-img">%s</div><div class="pri-tx">%s<h2 class="pri-t">%s</h2>'
+                   '<p class="pri-d">%s</p><div class="meta"><span class="who">%s</span><span class="dot" aria-hidden="true">·</span>%s</div></div></a></article>') % (
+                self.url(principal), self.media(principal, "(min-width:900px) 520px, 100vw", eager=True), self.kicker(principal),
+                esc(principal["titulo"]), esc(principal["resumen"]), esc(c["nombre"]), self.tiempo(principal))
+            lateral = '<aside class="ult" aria-labelledby="ult-t"><h2 class="sec-t" id="ult-t">Lo último</h2><ul>%s</ul><a class="ult-mas" href="%s/">Ver toda la edición %s</a></aside>' % (
+                "".join('<li><a href="%s"><span class="ult-m">%s · %s</span><b>%s</b></a></li>' % (
+                    self.url(n), self.tiempo(n, relativo=True), esc(ciudad_corta), esc(n["titulo"])) for n in ultimo), self.base, esc(ciudad_corta))
+            partes_html.append('<section class="fr"><div class="fr-main">%s<div class="fr-sec">%s</div></div>%s</section>' % (
+                pri, "".join(self.mini(n) for n in secundarias), lateral))
+
+        # Ediciones: las activas con su última nota; las que vienen, en una frase (sin letreros)
+        cajas = []
+        for e in activas:
+            mismo = e["ruta"].rstrip("/") == self.base
+            ultima = ns[0] if (mismo and ns) else None
+            cajas.append('<a class="ed" href="%s"><span class="ed-n">Sparks <b>%s</b></span><span class="ed-l">%s</span>%s</a>' % (
+                esc(e["ruta"]), esc(e["nombre"]), esc(e.get("lugar", "Guanajuato")),
+                '<span class="ed-u">%d notas · la más reciente: %s</span>' % (len(ns), esc(ultima["titulo"])) if ultima else ""))
+        texto_prox = ""
+        if proximas:
+            lista = ", ".join(proximas[:-1]) + (" y " + proximas[-1] if len(proximas) > 1 else proximas[0])
+            texto_prox = '<p class="ed-prox">Las siguientes ediciones serán %s.</p>' % esc(lista)
+        partes_html.append('<section class="blq" id="ediciones" aria-labelledby="ed-t"><div class="blq-h"><h2 class="sec-t" id="ed-t">Ediciones</h2></div>'
+                           '<div class="ed-c"><div class="ed-g">%s</div><div class="ed-tx"><p>%s</p>%s</div></div></section>' % (
+                               "".join(cajas), esc(r.get("descripcion", c["descripcion"])), texto_prox))
+
+        wa = "https://wa.me/528117804869?text=" + urllib.parse.quote("Hola, tengo una noticia para la Revista Sparks: ")
+        partes_html.append(('<section class="sp-cta">%s<div class="grano"></div><div><span class="etiqueta">¿Tienes una noticia?</span>'
+                            '<h2 class="h2">Si está pasando en tu municipio y <span class="metal">merece contarse,</span> escríbenos.</h2>'
+                            '<p class="lead">Un logro, un evento, un proyecto que está cambiando tu colonia o una persona que vale la pena conocer.</p></div>'
+                            '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos por WhatsApp %s</a>'
+                            '<a class="btn vidrio" href="/sparks/sumate/">Súmate al equipo</a></div></section></div>') % (
+                               partes.v_metal("art", "grv"), esc(wa), partes.FLECHA))
+        jsonld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Revista Sparks",
+                  "description": r.get("descripcion", c["descripcion"]), "url": c["sitio"].rstrip("/") + "/sparks/", "inLanguage": "es-MX",
+                  "publisher": {"@type": "Organization", "name": "Vorka México", "url": c["sitio"]}}
+        return self.pagina("Revista Sparks — Noticias e historias del Bajío · Vorka México",
+                           r.get("descripcion", c["descripcion"]), c["sitio"].rstrip("/") + "/sparks/",
+                           self.og_de(ns[0] if ns else None), "".join(partes_html), jsonld=jsonld)
+
     # ---- secciones: una página por categoría (/seccion/<slug>/), con todas sus notas
     def seccion(self, cat):
         c, ns = self.cfg, [n for n in self.noticias if n["categoria"] == cat]
@@ -1017,6 +1082,8 @@ def main():
     shutil.copytree(os.path.join(AQUI, "assets"), os.path.join(destino, "assets"), dirs_exist_ok=True)
 
     escribir(os.path.join(destino, "index.html"), sitio.portada())
+    if cfg.get("revista"):
+        escribir(os.path.join(args.salida, "sparks", "index.html"), sitio.revista())
     for cat in sitio.categorias():
         escribir(os.path.join(destino, "seccion", slug_cat(cat), "index.html"), sitio.seccion(cat))
     for n in noticias:
