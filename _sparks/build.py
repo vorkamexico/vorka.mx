@@ -502,7 +502,7 @@ class Sitio:
         lb = ('<dialog class="lb" id="lb" aria-label="Galería"><button class="lb-x" data-lb-close aria-label="Cerrar">×</button>'
               '<button class="lb-nav lb-prev" data-lb-prev aria-label="Anterior">‹</button><img alt="">'
               '<button class="lb-nav lb-next" data-lb-next aria-label="Siguiente">›</button><p class="lb-cap"></p></dialog>')
-        return (cabeza + partes.nav("/sparks/", menu=MENU_SPARKS) + '<main id="contenido">\n' + cuerpo + '\n</main>\n' + partes.pie() + lb
+        return (cabeza + partes.nav("/sparks/", menu=MENU_SPARKS, cta=False) + '<main id="contenido">\n' + cuerpo + '\n</main>\n' + partes.pie() + lb
                 + '<script src="%s/assets/sparks.js?v=%s" defer></script>\n</body>\n</html>\n' % (self.base, self.version))
 
     def secciones_footer(self):
