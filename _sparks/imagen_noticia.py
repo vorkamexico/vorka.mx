@@ -88,10 +88,18 @@ def generar(titulo, categoria, semilla, salida, foto=None, ilustrativa=False):
     d.line([(M, y_marca - 24), (W - M, y_marca - 24)], fill=claro, width=2)
     logo = Image.open(AQUI / 'assets' / 'logo.png').convert('RGBA')
     logo.thumbnail((56, 56))
-    blanco = Image.new('RGBA', logo.size, (255, 255, 255, 255))
-    lienzo.paste(blanco, (M, y_marca + 4), logo.getchannel('A'))
-    d.text((M + 72, y_marca + 6), 'Revista Sparks · Celaya', font=fuente(30, 'Semibold'), fill='#FFFFFF')
-    d.text((M + 72, y_marca + 44), 'Lee la nota en vorka.mx/sparks/celaya', font=fuente(26, 'Regular'), fill=claro)
+    # El logo se centra con lo que se ve de las dos líneas (de lo alto de la «R» a lo bajo de la «j»), no con sus cajas
+    f1, f2 = fuente(30, 'Semibold'), fuente(26, 'Regular')
+    t1, t2 = 'Revista Sparks · Celaya', 'Lee la nota en vorka.mx/sparks/celaya'
+    x_txt, y1, y2 = M + 72, y_marca + 6, y_marca + 44
+    arriba, abajo = d.textbbox((x_txt, y1), t1, font=f1)[1], d.textbbox((x_txt, y2), t2, font=f2)[3]
+    alfa = logo.getchannel('A')
+    caja = alfa.getbbox() or (0, 0, logo.width, logo.height)   # lo que se ve del logo, sin su margen transparente
+    alfa = alfa.crop(caja)
+    y_logo = round((arriba + abajo) / 2 - alfa.height / 2)
+    lienzo.paste(Image.new('RGBA', alfa.size, (255, 255, 255, 255)), (M, y_logo), alfa)
+    d.text((x_txt, y1), t1, font=f1, fill='#FFFFFF')
+    d.text((x_txt, y2), t2, font=f2, fill=claro)
     lienzo.save(salida / 'redes.jpg', quality=86, optimize=True, progressive=True)
     return salida / 'portada.jpg', salida / 'redes.jpg'
 
