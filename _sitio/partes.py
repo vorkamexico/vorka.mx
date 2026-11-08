@@ -129,16 +129,20 @@ def nav(actual='', oscuro=False, publico='general', cta=None, menu=None):
     menu = menu or (MENU_FC if publico == 'fc' else MENU)   # menu=[(enlace, texto)] para páginas propias
     links = ''.join(f'<a href="{h}"{cur if h == actual else ""}>{t}</a>' for h, t in menu)
     movil = ''.join(f'<a href="{h}">{t}</a>' for h, t in menu)
-    cta, cta_t = cta or CTA.get(publico, CTA['general'])   # cta=(enlace, texto) para páginas propias (p. ej. el equipo)
+    # cta=False: sin botón (páginas de lectura como Sparks)
+    sin_boton = cta is False
+    cta, cta_t = (None, None) if sin_boton else (cta or CTA.get(publico, CTA['general']))   # cta=(enlace, texto) para páginas propias (p. ej. el equipo)
+    boton = '' if sin_boton else f'<a class="btn tinta escritorio" href="{cta}">{cta_t}</a>'
+    boton_movil = '' if sin_boton else f'<a class="btn tinta" href="{cta}">{cta_t} {FLECHA}</a>'
     return f'''<header class="nav{' oscuro' if oscuro else ''}">
   <div class="nav-in">
     <a class="marca" href="/" aria-label="Vorka México, inicio">{LOGO}Vorka <span>México</span></a>
     <nav class="nav-links" aria-label="Principal">{links}</nav>
-    <a class="btn tinta escritorio" href="{cta}">{cta_t}</a>
+    {boton}
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
   </div>
 </header>
-<div class="menu-movil" id="menu-movil">{movil}<a class="btn tinta" href="{cta}">{cta_t} {FLECHA}</a></div>
+<div class="menu-movil" id="menu-movil">{movil}{boton_movil}</div>
 '''
 
 # Ligas institucionales al pie de TODAS las páginas (sitio, tienda, Learn y Sparks): Acerca de, Contacto y Privacidad.
