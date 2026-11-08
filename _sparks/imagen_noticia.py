@@ -5,7 +5,6 @@ Las usa la tarea programada que escribe los borradores de noticias (las sube a V
 - Portada: una foto de la ciudad, sin texto (el sitio ya pone el título encima).
 - Redes: la foto arriba y un panel de color con el título, la categoría y la marca. Sin letreros en mayúsculas ni adornos.
 Si la noticia trae una foto propia y con permiso (--foto), se usa esa en lugar de las de la ciudad.
-Si esa foto se hizo con IA (Canva), agrega --ilustrativa: la imagen para redes lo dice en una etiqueta.
 
 Uso:
   python3 _sparks/imagen_noticia.py --titulo "…" --categoria "Gobierno" --semilla "<slug>" --salida /ruta/carpeta [--foto foto.jpg]
@@ -52,7 +51,7 @@ def recorte(foto, w, h):
     return ImageOps.fit(foto.convert('RGB'), (w, h), Image.LANCZOS, centering=(0.5, 0.5))
 
 
-def generar(titulo, categoria, semilla, salida, foto=None, ilustrativa=False):
+def generar(titulo, categoria, semilla, salida, foto=None):
     n = int(hashlib.sha1(semilla.encode()).hexdigest(), 16)
     fondo, claro = TONOS[n % len(TONOS)]
     img = Image.open(foto) if foto else Image.open(AQUI / 'assets' / FOTOS[n % len(FOTOS)])
@@ -66,11 +65,6 @@ def generar(titulo, categoria, semilla, salida, foto=None, ilustrativa=False):
     alto_foto = 700
     lienzo.paste(recorte(img, W, alto_foto), (0, 0))
     d = ImageDraw.Draw(lienzo)
-    if ilustrativa:   # una imagen hecha con IA nunca debe pasar por foto real del hecho
-        f_et = fuente(22, 'Semibold'); et = 'Imagen ilustrativa (IA)'
-        w = int(d.textlength(et, font=f_et)) + 28
-        d.rounded_rectangle([W - M - w, alto_foto - 58, W - M, alto_foto - 22], radius=18, fill=(0, 0, 0))
-        d.text((W - M - w + 14, alto_foto - 53), et, font=f_et, fill='#FFFFFF')
     # Título: el tamaño más grande que quepa en 5 líneas dentro del panel
     y0, y_marca = alto_foto + 64, H - 120
     for tam in range(78, 40, -2):
@@ -111,7 +105,6 @@ if __name__ == '__main__':
     a.add_argument('--semilla', default='')
     a.add_argument('--salida', required=True)
     a.add_argument('--foto')
-    a.add_argument('--ilustrativa', action='store_true', help='la foto se hizo con IA: lo dice en la imagen')
     x = a.parse_args()
-    for p in generar(x.titulo, x.categoria, x.semilla or x.titulo, x.salida, x.foto, x.ilustrativa):
+    for p in generar(x.titulo, x.categoria, x.semilla or x.titulo, x.salida, x.foto):
         print(p)
