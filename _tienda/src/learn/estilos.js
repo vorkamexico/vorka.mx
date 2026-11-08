@@ -223,6 +223,8 @@ ${cssSecciones()}
 .lr-art .t-faq{margin-top:6px}.lr-art .t-faq div{font-size:16.5px}
 .lr-art .t-faq summary::after{color:var(--sec-t)}
 .gu-fuentes{list-style:decimal;padding-left:22px;display:grid;gap:8px;font-size:15.5px;line-height:1.55}.gu-fuentes a{word-break:break-word}
+.gu-revisor{margin:18px 0 0;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:14.5px;color:var(--fg-2)}.lr-art .gu-revisor p{margin:0}
+.lr-meta .lr-dato a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .lr-art ol.gu-fuentes li{display:list-item}.gu-fuentes li::marker{color:var(--sec-t);font-weight:700}
 ${CSS_CTA}
 .gu-compartir{margin:22px 0 8px;padding:18px;border-radius:18px;background:var(--bg-2);display:grid;gap:12px}.lr-art .gu-compartir p{margin:0;font-size:16px}

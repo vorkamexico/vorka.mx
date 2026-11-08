@@ -25,6 +25,9 @@ export const ld = x => `<script type="application/ld+json">${JSON.stringify(x).r
 export const ORG = { '@type': 'Organization', name: 'Vorka México', url: `${SITIO}/`, logo: { '@type': 'ImageObject', url: `${SITIO}/vorka-logo.png` } };
 // La marca editorial: Vorka Learn, parte de Vorka México
 export const LEARN = { '@type': 'Organization', name: 'Vorka Learn', url: `${SITIO}/learn/`, parentOrganization: ORG };
+// Quien revisa las guías (decisión 2026-11-07: «Por Vorka Learn · Revisado por Brandon Oleynick»)
+export const RUTA_REVISOR = '/oleynickhdz/';
+export const REVISOR = { '@type': 'Person', name: 'Brandon Oleynick', url: `${SITIO}${RUTA_REVISOR}`, jobTitle: 'Fundador de Vorka México', worksFor: ORG };
 export const SITIO_LEARN = { '@type': 'WebSite', name: 'Vorka Learn', url: `${SITIO}/learn/`, publisher: ORG,
   potentialAction: { '@type': 'SearchAction', target: `${SITIO}${RUTA_BUSCAR}?q={q}`, 'query-input': 'required name=q' } };
 export const migas = l => `<nav class="lr-migas" aria-label="Migas de pan"><ol>${l.map(([t, href], i) => `<li>${i < l.length - 1 ? `<a href="${href}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol></nav>`;
