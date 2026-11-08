@@ -57,8 +57,11 @@
     var img = n.i
       ? '<img src="' + IMG + '/' + n.i + '-800.webp" srcset="' + IMG + '/' + n.i + '-800.webp 800w, ' + IMG + '/' + n.i + '-1600.webp 1600w" sizes="(min-width:1024px) 400px, (min-width:640px) 50vw, 120px" width="' + n.w + '" height="' + n.h + '" alt="' + esc(n.p || n.t) + '" loading="lazy" decoding="async">'
       : '<span class="noimg tone-' + n.o + '" aria-hidden="true"><b>' + esc(n.c) + '</b></span>';
-    var cuando = '<time datetime="' + n.d + '">' + esc(n.f) + '</time>';
-    var meta = (n.p ? '<span class="who">' + esc(n.p) + '</span><span class="dot" aria-hidden="true">·</span>' : '') + cuando;
+    // Las historias van sin fecha (no caducan); las noticias sí la llevan
+    var partes = [];
+    if (n.p) partes.push('<span class="who">' + esc(n.p) + '</span>');
+    if (n.f) partes.push('<time datetime="' + n.d + '">' + esc(n.f) + '</time>');
+    var meta = partes.join('<span class="dot" aria-hidden="true">·</span>');
     return '<article class="card"><a class="card-link" href="' + BASE + '/' + n.s + '/"><div class="card-img">' + img + '</div>' +
       '<div class="card-body"><span class="kicker tone-' + n.o + '">' + esc(n.c) + '</span><h3 class="card-title">' + esc(n.t) + '</h3>' +
       '<p class="card-sum">' + esc(n.r) + '</p><div class="meta">' + meta + '</div></div></a></article>';

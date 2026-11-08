@@ -36,6 +36,8 @@ import partes  # cabecera, pie y piezas del sistema visual v3 (compartidas con t
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
          "septiembre", "octubre", "noviembre", "diciembre"]
 MESES_CORTOS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+# Menú de arriba en las páginas de Sparks: solo lo importante para quien viene a leer
+MENU_SPARKS = [("/sparks/", "Sparks"), ("/nosotros/", "Nosotros"), ("/tienda/", "Tienda")]
 TONOS = ["purple", "pink", "mustard", "terra", "green", "orange"]
 
 # ---------------------------------------------------------------- utilidades
@@ -407,9 +409,15 @@ class Sitio:
             return self.img_tag(n["fotos"][0], n["persona"] or n["titulo"], sizes, eager)
         return '<span class="noimg tone-%s" aria-hidden="true"><b>%s</b></span>' % (tono(n["categoria"]), esc(n["categoria"]))
 
+    def con_fecha(self, n):
+        """Las noticias llevan fecha; las historias de vida no caducan y van sin fecha visible."""
+        return n["categoria"] not in self.cfg.get("sinFecha", ["Historias"])
+
     def tiempo(self, n, relativo=False):
         """Fecha visible de la nota (como en cualquier noticiero). Con relativo, sparks.js la cambia a «hace 3 h» o «ayer»
         mientras sea de esta semana. Las fechas de Vorka México vienen en hora del centro de México."""
+        if not self.con_fecha(n):
+            return ""
         return '<time datetime="%s-06:00"%s>%s</time>' % (
             n["_d"].strftime("%Y-%m-%dT%H:%M:%S"), " data-rel" if relativo else "", fecha_corta(n["_d"]))
 
@@ -418,7 +426,8 @@ class Sitio:
         if persona and n["persona"]:
             partes.append('<span class="who">%s</span>' % esc(n["persona"]))
         partes.append(self.tiempo(n))
-        return '<div class="meta">%s</div>' % '<span class="dot" aria-hidden="true">·</span>'.join(partes)
+        partes = [x for x in partes if x]
+        return '<div class="meta">%s</div>' % '<span class="dot" aria-hidden="true">·</span>'.join(partes) if partes else ""
 
     # Caja de suscripción al boletín semanal (se guarda en os.vorka.mx, desde donde sale el boletín)
     def caja_boletin(self):
@@ -493,7 +502,7 @@ class Sitio:
         lb = ('<dialog class="lb" id="lb" aria-label="Galería"><button class="lb-x" data-lb-close aria-label="Cerrar">×</button>'
               '<button class="lb-nav lb-prev" data-lb-prev aria-label="Anterior">‹</button><img alt="">'
               '<button class="lb-nav lb-next" data-lb-next aria-label="Siguiente">›</button><p class="lb-cap"></p></dialog>')
-        return (cabeza + partes.nav("/sparks/") + '<main id="contenido">\n' + cuerpo + '\n</main>\n' + partes.pie() + lb
+        return (cabeza + partes.nav("/sparks/", menu=MENU_SPARKS) + '<main id="contenido">\n' + cuerpo + '\n</main>\n' + partes.pie() + lb
                 + '<script src="%s/assets/sparks.js?v=%s" defer></script>\n</body>\n</html>\n' % (self.base, self.version))
 
     def secciones_footer(self):
@@ -631,13 +640,14 @@ class Sitio:
         lateral = ""
         if ultimo:
             lateral = '<aside class="ult" aria-labelledby="ult-t"><h2 class="sec-t" id="ult-t">Lo último</h2><ul>%s</ul></aside>' % "".join(
-                '<li><a href="%s"><span class="ult-m">%s · %s</span><b>%s</b></a></li>' % (
-                    self.url(n), self.tiempo(n, relativo=True), esc(n["categoria"]), esc(n["titulo"])) for n in ultimo)
+                '<li><a href="%s"><span class="ult-m">%s</span><b>%s</b></a></li>' % (
+                    self.url(n), " · ".join(x for x in (self.tiempo(n, relativo=True), esc(n["categoria"])) if x), esc(n["titulo"])) for n in ultimo)
         partes_html.append('<section class="fr" id="front"><div class="fr-main">%s<div class="fr-sec">%s</div></div>%s</section>' % (
             principal, "".join(self.mini(n) for n in secundarias), lateral))
         partes_html.append(self.anuncio("slotFeed"))
 
         # Un bloque por sección con lo que no salió arriba: una nota grande y hasta tres más en lista
+        ya_anuncio = False
         for i, cat in enumerate(self.categorias()):
             notas = [n for n in lista if n["categoria"] == cat][:4]
             if not notas:
@@ -650,6 +660,9 @@ class Sitio:
                                '<a href="%s">Ver toda la sección</a></div><div class="blq-c">%s<div class="blq-l">%s</div></div></section>' % (
                                    " solo" if len(notas) == 1 else (" inv" if i % 2 else ""), i, i, esc(cat), esc(self.url_seccion(cat)), g,
                                    "".join(self.mini(n, seccion=False) for n in notas[1:])))
+            if not ya_anuncio:
+                partes_html.append(self.anuncio("slotSeccion"))
+                ya_anuncio = True
 
         partes_html.append(self.intro())
 
@@ -693,14 +706,16 @@ class Sitio:
             partes_html.append('<div class="cint" data-cint><b class="cint-t"><i aria-hidden="true"></i>Lo más nuevo</b><div class="cint-l">%s</div></div>' % "".join(
                 '<a href="%s">%s<span>%s</span></a>' % (self.url(n), self.tiempo(n, relativo=True), esc(n["titulo"])) for n in ns[:3]))
             pri = ('<article class="pri"><a href="%s"><div class="pri-img">%s</div><div class="pri-tx">%s<h2 class="pri-t">%s</h2>'
-                   '<p class="pri-d">%s</p><div class="meta"><span class="who">%s</span><span class="dot" aria-hidden="true">·</span>%s</div></div></a></article>') % (
+                   '<p class="pri-d">%s</p><div class="meta">%s</div></div></a></article>') % (
                 self.url(principal), self.media(principal, "(min-width:900px) 520px, 100vw", eager=True), self.kicker(principal),
-                esc(principal["titulo"]), esc(principal["resumen"]), esc(c["nombre"]), self.tiempo(principal))
+                esc(principal["titulo"]), esc(principal["resumen"]), '<span class="dot" aria-hidden="true">·</span>'.join(
+                    x for x in ('<span class="who">%s</span>' % esc(c["nombre"]), self.tiempo(principal)) if x))
             lateral = '<aside class="ult" aria-labelledby="ult-t"><h2 class="sec-t" id="ult-t">Lo último</h2><ul>%s</ul><a class="ult-mas" href="%s/">Ver toda la edición %s</a></aside>' % (
-                "".join('<li><a href="%s"><span class="ult-m">%s · %s</span><b>%s</b></a></li>' % (
-                    self.url(n), self.tiempo(n, relativo=True), esc(ciudad_corta), esc(n["titulo"])) for n in ultimo), self.base, esc(ciudad_corta))
+                "".join('<li><a href="%s"><span class="ult-m">%s</span><b>%s</b></a></li>' % (
+                    self.url(n), " · ".join(x for x in (self.tiempo(n, relativo=True), esc(ciudad_corta)) if x), esc(n["titulo"])) for n in ultimo), self.base, esc(ciudad_corta))
             partes_html.append('<section class="fr"><div class="fr-main">%s<div class="fr-sec">%s</div></div>%s</section>' % (
                 pri, "".join(self.mini(n) for n in secundarias), lateral))
+            partes_html.append(self.anuncio("slotFeed"))
 
         # Ediciones: las activas con su última nota; las que vienen, en una frase (sin letreros)
         cajas = []
@@ -828,8 +843,9 @@ class Sitio:
         meta = []
         if n["autor"]:
             meta.append('<span class="por">Por <b>%s</b></span>' % esc(n["autor"]))
-        meta.append('<time datetime="%s-06:00">%s %s, %s h</time>' % (
-            d.strftime("%Y-%m-%dT%H:%M:%S"), dias[d.weekday()].capitalize(), fecha_larga(d), d.strftime("%H:%M")))
+        if self.con_fecha(n):
+            meta.append('<time datetime="%s-06:00">%s %s, %s h</time>' % (
+                d.strftime("%Y-%m-%dT%H:%M:%S"), dias[d.weekday()].capitalize(), fecha_larga(d), d.strftime("%H:%M")))
         meta.append("<span>%d min de lectura</span>" % minutos)
 
         portada = ""
@@ -889,9 +905,10 @@ class Sitio:
 
         # Columna lateral (compu): lo último de la edición
         ultimas = [x for x in self.noticias if x is not n][:6]
-        lateral = '<aside class="art-lado"><div class="ult"><h2 class="sec-t">Lo último</h2><ul>%s</ul><a class="ult-mas" href="%s/">Ir a la portada</a></div></aside>' % (
-            "".join('<li><a href="%s"><span class="ult-m">%s · %s</span><b>%s</b></a></li>' % (
-                self.url(x), self.tiempo(x, relativo=True), esc(x["categoria"]), esc(x["titulo"])) for x in ultimas), self.base)
+        lateral = '<aside class="art-lado"><div class="ult"><h2 class="sec-t">Lo último</h2><ul>%s</ul><a class="ult-mas" href="%s/">Ir a la portada</a></div>%s</aside>' % (
+            "".join('<li><a href="%s"><span class="ult-m">%s</span><b>%s</b></a></li>' % (
+                self.url(x), " · ".join(y for y in (self.tiempo(x, relativo=True), esc(x["categoria"])) if y), esc(x["titulo"])) for x in ultimas), self.base,
+            self.anuncio("slotLateral"))
 
         wa = "https://wa.me/528117804869?text=" + urllib.parse.quote("Hola, tengo una historia para %s: " % c["nombre"])
         cierre = ('<section class="sp-cta chica">%s<div class="grano"></div><div><span class="etiqueta">Revista Sparks</span>'
@@ -942,7 +959,7 @@ class Sitio:
         out = []
         for n in self.noticias:
             item = {"s": n["slug"], "t": n["titulo"], "p": n["persona"], "c": n["categoria"], "k": slug_cat(n["categoria"]),
-                    "o": tono(n["categoria"]), "d": n["_d"].strftime("%Y-%m-%d"), "f": fecha_corta(n["_d"]),
+                    "o": tono(n["categoria"]), "d": n["_d"].strftime("%Y-%m-%d"), "f": fecha_corta(n["_d"]) if self.con_fecha(n) else "",
                     "r": n["resumen"], "g": " ".join(n["etiquetas"])}
             if n["slug"] in self.en_portada:
                 item["x"] = 1
@@ -1051,6 +1068,7 @@ def main():
             n[k] = (n.get(k) or "").strip()
         n["resumen"] = re.sub(r"^(bajada|entrada|resumen)\s*:\s*", "", n["resumen"], flags=re.I)  # rótulo que a veces se cuela del borrador
         n.setdefault("categoria", "Noticias")
+        n["categoria"] = cfg.get("unirCategorias", {}).get(n["categoria"], n["categoria"])
         n.setdefault("destacada", False)
     noticias.sort(key=lambda n: (n["_d"], n["_c"]), reverse=True)
 

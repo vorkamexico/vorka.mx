@@ -86,7 +86,9 @@
   "adsense": {
     "cliente": "",
     "slotFeed": "",
-    "slotArticulo": ""
+    "slotSeccion": "",
+    "slotArticulo": "",
+    "slotLateral": ""
   },
   "hojaIgnorar": [
     "danna-galvan"
@@ -116,5 +118,12 @@
         "nombre": "Guanajuato capital"
       }
     ]
-  }
+  },
+  "unirCategorias": {
+    "Historias de vida": "Historias",
+    "Entrevistas": "Historias"
+  },
+  "sinFecha": [
+    "Historias"
+  ]
 }
