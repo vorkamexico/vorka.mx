@@ -124,6 +124,40 @@ def palabras(texto):
     return len(re.findall(r"\w+", texto or ""))
 
 
+RE_FUENTES = re.compile(r"^\s*(?:\*\*)?(fuentes?(?: consultadas| oficiales)?)(?:\*\*)?\s*:\s*(?:\*\*)?\s*(.*)$", re.I)
+
+
+def separar_fuentes(texto):
+    """Separa el bloque «Fuentes:» del final del texto para mostrarlo como recuadro. Devuelve (texto, [(etiqueta, url)])."""
+    lineas = (texto or "").replace("\r", "").split("\n")
+    for i, l in enumerate(lineas):
+        m = RE_FUENTES.match(l)
+        if m and i >= len(lineas) // 3:
+            resto = ([m.group(2)] if m.group(2).strip() else []) + lineas[i + 1:]
+            fuentes = []
+            for x in resto:
+                x = x.strip().lstrip("-•* ").strip()
+                if not x:
+                    continue
+                u = re.search(r"https?://\S+", x)
+                url = u.group(0).rstrip(".,;)") if u else ""
+                etiqueta = (x[:u.start()] if u else x).strip().rstrip(":—–-").strip()
+                fuentes.append((etiqueta, url))
+            return "\n".join(lineas[:i]).rstrip(), fuentes
+    return texto, []
+
+
+def url_corta(url):
+    """celaya.gob.mx/pago-de-predial en vez de la URL completa (sin www, sin parámetros, rutas largas recortadas)."""
+    p = urllib.parse.urlparse(url)
+    host = p.netloc.lower().removeprefix("www.")
+    partes_ruta = [x for x in p.path.split("/") if x]
+    ruta = "/".join(partes_ruta[:2])
+    if len(ruta) > 34:
+        ruta = ruta[:32] + "…"
+    return host + ("/" + ruta if ruta else "") + ("/…" if len(partes_ruta) > 2 else "")
+
+
 # ---------------------------------------------------------------- datos
 
 def http_json(url, intentos=4):
@@ -530,7 +564,7 @@ class Sitio:
                 cats.append(n["categoria"])
         return cats
 
-    def cabecera_diario(self, actual=""):
+    def cabecera_diario(self, actual="", compacta=False):
         """Cabecera de periódico: fecha del día, nombre de la edición y barra de secciones."""
         c = self.cfg
         nombre = esc(c["nombre"])
@@ -542,7 +576,7 @@ class Sitio:
                       for x in self.categorias()]
         lupa = ('<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" '
                 'stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>')
-        return ('<header class="dia"><div class="dia-top"><span class="dia-hoy" data-hoy>%s %d de %s de %d</span>'
+        return ('<header class="dia%s"><div class="dia-top">' % (" compacta" if compacta else "") + '<span class="dia-hoy" data-hoy>%s %d de %s de %d</span>'
                 '<a class="dia-rev" href="/sparks/">Revista Sparks</a><span class="dia-lugar">%s</span></div>'
                 '<div class="dia-marca"><%s class="dia-nombre"><a href="%s/">%s</a></%s><p class="dia-lema">%s</p></div>'
                 '<nav class="dia-sec" aria-label="Secciones">%s<a class="dia-buscar" href="%s/#buscar">%sBuscar</a></nav></header>') % (
@@ -699,7 +733,8 @@ class Sitio:
     def articulo(self, n):
         c = self.cfg
         url_abs = self.abs + "/" + n["slug"] + "/"
-        bloques = texto_a_bloques(n["texto"])
+        texto, fuentes = separar_fuentes(n["texto"])
+        bloques = texto_a_bloques(texto)
         anuncio = self.anuncio("slotArticulo")
         con_anuncio = bool(anuncio and len(bloques) > 3)
         en_texto, sobran = self.fotos_en_texto(n, bloques, 2 if con_anuncio else 1)
@@ -707,13 +742,29 @@ class Sitio:
         if con_anuncio:
             bloques.insert(2, anuncio)
             anuncio = ""
-        minutos = max(1, round(palabras(n["texto"]) / 200))
+        minutos = max(1, round(palabras(texto) / 200))
 
+        # «Lee también» a media nota: otra de la misma sección (o la más reciente), después de un párrafo sin fotos
+        lee = next((x for x in self.noticias if x is not n and x["categoria"] == n["categoria"]), None) or next(
+            (x for x in self.noticias if x is not n), None)
+        if lee and len(bloques) >= 6:
+            for i in range(len(bloques) // 2, len(bloques) - 2):
+                if bloques[i].startswith("<p") and "<figure" not in bloques[i] and bloques[i + 1].startswith("<p"):
+                    bloques.insert(i + 1, ('<aside class="lee"><a href="%s"><span class="lee-t">Lee también</span><span class="lee-c">%s</span>'
+                                           '<b>%s</b></a></aside>') % (self.url(lee), self.media(lee, "120px"), esc(lee["titulo"])))
+                    break
+            else:
+                lee = None
+        else:
+            lee = None
+
+        d = n["_d"]
+        dias = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
         meta = []
-        if n["persona"]:
-            meta.append('<span class="who-chip">%s</span>' % esc(n["persona"]))
         if n["autor"]:
-            meta.append("<span>Por %s</span>" % esc(n["autor"]))
+            meta.append('<span class="por">Por <b>%s</b></span>' % esc(n["autor"]))
+        meta.append('<time datetime="%s-06:00">%s %s, %s h</time>' % (
+            d.strftime("%Y-%m-%dT%H:%M:%S"), dias[d.weekday()].capitalize(), fecha_larga(d), d.strftime("%H:%M")))
         meta.append("<span>%d min de lectura</span>" % minutos)
 
         portada = ""
@@ -747,20 +798,35 @@ class Sitio:
             etiquetas = '<ul class="tags">%s</ul>' % "".join(
                 '<li><a href="%s/?q=%s">#%s</a></li>' % (self.base, urllib.parse.quote(t), esc(t)) for t in n["etiquetas"])
 
-        compartir = ('<div class="share" data-share data-title="%s" data-url="%s"><span>Compartir</span>'
-                     '<a class="sh sh-wa" href="https://wa.me/?text=%s" target="_blank" rel="noopener">WhatsApp</a>'
-                     '<a class="sh" href="https://www.facebook.com/sharer/sharer.php?u=%s" target="_blank" rel="noopener">Facebook</a>'
-                     '<a class="sh" href="https://x.com/intent/post?url=%s&amp;text=%s" target="_blank" rel="noopener">X</a>'
-                     '<button class="sh" data-copy>Copiar link</button></div>') % (
-            esc(n["titulo"]), esc(url_abs), urllib.parse.quote(n["titulo"] + " " + url_abs),
-            urllib.parse.quote(url_abs), urllib.parse.quote(url_abs), urllib.parse.quote(n["titulo"]))
+        def barra(clase=""):
+            return ('<div class="share%s" data-share data-title="%s" data-url="%s"><span>Compartir</span>'
+                    '<a class="sh sh-wa" href="https://wa.me/?text=%s" target="_blank" rel="noopener">WhatsApp</a>'
+                    '<a class="sh" href="https://www.facebook.com/sharer/sharer.php?u=%s" target="_blank" rel="noopener">Facebook</a>'
+                    '<a class="sh" href="https://x.com/intent/post?url=%s&amp;text=%s" target="_blank" rel="noopener">X</a>'
+                    '<button class="sh" data-copy>Copiar link</button></div>') % (
+                clase, esc(n["titulo"]), esc(url_abs), urllib.parse.quote(n["titulo"] + " " + url_abs),
+                urllib.parse.quote(url_abs), urllib.parse.quote(url_abs), urllib.parse.quote(n["titulo"]))
+        compartir = barra()
 
-        relacionadas = [x for x in self.noticias if x is not n and x["categoria"] == n["categoria"]][:3]
-        relacionadas += [x for x in self.noticias if x is not n and x not in relacionadas][:3 - len(relacionadas)]
+        recuadro_fuentes = ""
+        if fuentes:
+            recuadro_fuentes = '<aside class="fuentes" aria-labelledby="fu-t"><h2 id="fu-t">Fuentes consultadas</h2><ul>%s</ul></aside>' % "".join(
+                '<li>%s%s</li>' % ('<span>%s</span>' % inline(et) if et else "",
+                                   '<a href="%s" target="_blank" rel="noopener">%s</a>' % (esc(u), esc(url_corta(u))) if u else "")
+                for et, u in fuentes)
+
+        relacionadas = [x for x in self.noticias if x is not n and x is not lee and x["categoria"] == n["categoria"]][:3]
+        relacionadas += [x for x in self.noticias if x is not n and x is not lee and x not in relacionadas][:3 - len(relacionadas)]
         rel = ""
         if relacionadas:
-            rel = '<section class="related"><div class="sec-head"><span class="etiqueta">Revista Sparks</span><h2 class="h3">Sigue leyendo</h2></div><div class="grid">%s</div></section>' % "".join(
-                self.tarjeta(x) for x in relacionadas)
+            rel = '<section class="related archivo"><div class="blq-h"><h2 class="sec-t">Sigue leyendo</h2><a href="%s">Más de %s</a></div><div class="grid">%s</div></section>' % (
+                esc(self.url_seccion(n["categoria"])), esc(n["categoria"]), "".join(self.tarjeta(x) for x in relacionadas))
+
+        # Columna lateral (compu): lo último de la edición
+        ultimas = [x for x in self.noticias if x is not n][:6]
+        lateral = '<aside class="art-lado"><div class="ult"><h2 class="sec-t">Lo último</h2><ul>%s</ul><a class="ult-mas" href="%s/">Ir a la portada</a></div></aside>' % (
+            "".join('<li><a href="%s"><span class="ult-m">%s · %s</span><b>%s</b></a></li>' % (
+                self.url(x), self.tiempo(x, relativo=True), esc(x["categoria"]), esc(x["titulo"])) for x in ultimas), self.base)
 
         wa = "https://wa.me/528117804869?text=" + urllib.parse.quote("Hola, tengo una historia para %s: " % c["nombre"])
         cierre = ('<section class="sp-cta chica">%s<div class="grano"></div><div><span class="etiqueta">Revista Sparks</span>'
@@ -768,25 +834,29 @@ class Sitio:
                   '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos %s</a><a class="btn vidrio" href="%s/">Más historias</a></div></section>') % (
                       partes.v_metal("art", "gca"), esc(wa), partes.FLECHA, self.base)
         cuerpo = """<div class="marco">
+{cabecera}
+<div class="art-wrap">
 <article class="art">
-<nav class="migas" aria-label="Ruta"><a href="/sparks/">Revista Sparks</a><span aria-hidden="true">/</span><a href="{base}/">{nombre}</a><span aria-hidden="true">/</span><a href="{base}/seccion/{cs}/">{cat}</a></nav>
-<header class="art-head">{kicker}<h1 class="art-title">{titulo}</h1><p class="art-deck">{resumen}</p><div class="art-meta">{meta}</div></header>
+<nav class="migas" aria-label="Ruta"><a href="{base}/">{nombre}</a><span aria-hidden="true">/</span><a href="{base}/seccion/{cs}/">{cat}</a></nav>
+<header class="art-head"><h1 class="art-title">{titulo}</h1><p class="art-deck">{resumen}</p><div class="art-meta">{meta}</div>{arriba}</header>
 {portada}
-<div class="art-body">{texto}{anuncio}{video}{galeria}{etiquetas}{compartir}{boletin}</div>
+<div class="art-body">{texto}{anuncio}{video}{galeria}{fuentes}{etiquetas}{compartir}{boletin}</div>
 </article>
+{lateral}
+</div>
 {rel}
 {cierre}
 </div>""".format(cierre=cierre, base=self.base, nombre=esc(c["nombre"]), cs=esc(slug_cat(n["categoria"])), cat=esc(n["categoria"]),
-                 kicker=self.kicker(n), titulo=esc(n["titulo"]), resumen=esc(n["resumen"]),
-                 meta='<span class="dot" aria-hidden="true">·</span>'.join(meta), portada=portada,
-                 texto="\n".join(bloques), anuncio=anuncio, video=video, galeria=galeria, etiquetas=etiquetas,
-                 compartir=compartir, rel=rel, boletin=self.caja_boletin())
+                 cabecera=self.cabecera_diario(actual=n["categoria"], compacta=True), titulo=esc(n["titulo"]), resumen=esc(n["resumen"]),
+                 meta='<span class="dot" aria-hidden="true">·</span>'.join(meta), arriba=barra(" arriba"), portada=portada,
+                 texto="\n".join(bloques), anuncio=anuncio, video=video, galeria=galeria, fuentes=recuadro_fuentes, etiquetas=etiquetas,
+                 compartir=compartir, rel=rel, lateral=lateral, boletin=self.caja_boletin())
 
         autor = {"@type": "Person", "name": n["autor"]} if n["autor"] else {"@type": "Organization", "name": "Vorka México"}
         jsonld = [{
             "@context": "https://schema.org", "@type": "NewsArticle", "headline": n["titulo"][:110],
-            "description": n["resumen"], "image": self.imagenes_abs(n) or [self.og_de(n)], "datePublished": n["_d"].strftime("%Y-%m-%d"),
-            "dateModified": n["_d"].strftime("%Y-%m-%d"), "author": autor, "inLanguage": "es-MX",
+            "description": n["resumen"], "image": self.imagenes_abs(n) or [self.og_de(n)], "datePublished": n["_d"].strftime("%Y-%m-%dT%H:%M:%S-06:00"),
+            "dateModified": n["_d"].strftime("%Y-%m-%dT%H:%M:%S-06:00"), "author": autor, "inLanguage": "es-MX",
             "mainEntityOfPage": url_abs, "articleSection": n["categoria"], "keywords": ", ".join(n["etiquetas"]),
             "about": [{"@type": "Person", "name": n["persona"]}] if n["persona"] else [],
             "contentLocation": {"@type": "Place", "name": c["ciudad"]},
@@ -794,8 +864,9 @@ class Sitio:
                           "logo": {"@type": "ImageObject", "url": self.abs + "/assets/logo.png"}}},
             {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
                 {"@type": "ListItem", "position": 1, "name": c["nombre"], "item": self.abs + "/"},
-                {"@type": "ListItem", "position": 2, "name": n["titulo"], "item": url_abs}]}]
-        extra = '<meta property="article:published_time" content="%s">' % n["_d"].strftime("%Y-%m-%d")
+                {"@type": "ListItem", "position": 2, "name": n["categoria"], "item": c["sitio"].rstrip("/") + self.url_seccion(n["categoria"])},
+                {"@type": "ListItem", "position": 3, "name": n["titulo"], "item": url_abs}]}]
+        extra = '<meta property="article:published_time" content="%s">' % n["_d"].strftime("%Y-%m-%dT%H:%M:%S-06:00")
         titulo_pag = "%s | %s" % (n["titulo"], c["nombre"])
         return self.pagina(titulo_pag, n["resumen"] or n["titulo"], url_abs, self.og_de(n), cuerpo,
                            tipo="article", jsonld=jsonld, extra_head=extra)
