@@ -459,3 +459,18 @@
   .dia-nombre { font-size: clamp(64px, 21vw, 96px); }
   .dia.compacta .dia-nombre { font-size: clamp(44px, 13vw, 60px); }
 }
+
+/* Nota: título, portada, texto y fotos con el mismo ancho (antes el texto medía 700 px y las fotos 780: se veían chuecas) */
+.art-wrap { grid-template-columns: minmax(0, 700px) 300px; gap: 72px; }
+@media (max-width: 1140px) { .art-wrap { grid-template-columns: minmax(0, 700px); } }
+.art-wrap .art-body > *, .art-wrap .art-body .lee, .art-wrap .art-body .fuentes { max-width: none; }
+.art-wrap .art-body .af-lado.der { margin-right: 0; }
+.art-wrap .art-body .af-lado.izq { margin-left: 0; }
+@media (max-width: 900px) {
+  .art-wrap .art-body .af-lado.der, .art-wrap .art-body .af-lado.izq, .art-wrap .art-body .af-vert { width: 100%; margin: 2em 0; }
+}
+@media (max-width: 760px) {
+  .art-wrap .art-cover { margin: 0 0 30px; }
+  .art-wrap .art-cover a { border-radius: 16px; }
+  .art-wrap .art-cover figcaption { margin: 8px 0 0; }
+}
