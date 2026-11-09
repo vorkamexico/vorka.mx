@@ -14,7 +14,7 @@ const WA = 'https://wa.me/528117804869?text=';
 const WA_DUDA = WA + encodeURIComponent('Hola, tengo una duda sobre Negocio Completo.');
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const INCLUYE = [
-  'Tu página web con botón de WhatsApp, hospedaje seguro y alta en Google',
+  'Tu página web con botón de WhatsApp, hospedaje seguro y alta en Google (el dominio se paga aparte)',
   'Agenda: tus clientes reservan solos y reciben su recordatorio',
   'Vuelve: tarjeta de sellos o puntos en el celular de tus clientes, con tu QR para el mostrador',
   'Hasta 3 cambios pequeños al mes en tu página',
@@ -24,7 +24,8 @@ const FAQ = [
   ['¿Qué incluye la instalación?', 'Es opcional. Personalizamos tu página con tu logo, tus fotos y tus servicios, y te dejamos configuradas tu Agenda (servicios y horarios) y tu tarjeta de Vuelve, con un video corto de cómo usar todo. Si no la tomas, te damos acceso a las apps y armas tu página con una plantilla junto con nosotros por WhatsApp.'],
   ['¿Cuánto tarda?', 'Con la instalación, te lo dejamos funcionando en 7 días a partir de que nos mandas tu logo, fotos, servicios y horarios. Si en ese plazo no está funcionando, te devolvemos la instalación.'],
   ['¿Puedo pagar por transferencia?', 'Sí. Escríbenos por WhatsApp: la instalación se paga por transferencia y te mandamos un código para que tu primer mes vaya de regalo. Con ese código activas aquí tu suscripción con tarjeta y tu primer mes sale en $10.'],
-  ['¿Cómo pago el dominio?', 'Aparte, por transferencia, una vez al año. Te decimos el costo exacto por WhatsApp (depende de la terminación, como .mx o .com).'],
+  ['¿Cómo pago el dominio?', 'El dominio (tunegocio.mx o .com) no está incluido en los $749: corre por tu cuenta y se paga aparte, por transferencia a Vorka, una vez al año. Te decimos el costo exacto por WhatsApp; depende de la terminación.'],
+  ['¿Puedo bajar de plan?', 'Sí. Puedes quedarte solo con Vuelve ($399 al mes), solo con Agenda ($99 al mes) o con las dos ($449 al mes); nos escribes por WhatsApp y lo cambiamos sin cobrarte doble. Al bajar, tu página web se da de baja. Si es antes de los primeros 12 meses, liquidas los meses que falten de la página ($349 cada uno).'],
   ['¿Cómo funciona el plan de 12 meses?', 'La suscripción se cobra cada mes en tu tarjeta y el plan es de 12 meses. Si cancelas antes, pagas los meses que falten. Si dejas de pagar, tu página, tu Agenda y tu tarjeta de Vuelve se dan de baja, y el dominio se queda con Vorka hasta que se liquide lo pendiente. Después de los 12 meses sigues mes con mes y cancelas cuando quieras en vorka.mx/tienda/suscripcion.'],
 ];
 
@@ -45,6 +46,7 @@ export async function paginaNegocioCompleto(env, req, url) {
     ${inst ? `<label class="t-casilla nc-inst"><input type="checkbox" name="instalacion" value="on"${conInst ? ' checked' : ''}><span><b>Agregar instalación y personalización: ${precio(inst)}</b> (pago único). Te dejamos todo funcionando en 7 días con tu logo, fotos y servicios.</span></label>` : ''}
     <div class="t-campo"><label for="codigo">Código de regalo <span class="nc-opc">(si te dimos uno)</span></label><input id="codigo" name="codigo" type="text" autocomplete="off" maxlength="40" value="${esc(cupon)}"${cupon ? '' : ' placeholder="REGALO-XXXX-XXXX"'}>${cupon ? '<small class="t-ayuda">Tu código se aplica en el pago: tu primer mes queda con descuento y después sigue en $749 al mes.</small>' : ''}</div>
     <p class="pw-total">Pagas hoy <b id="nc-hoy">${precio({ precio_centavos: mes + (conInst ? extra : 0) })}</b> <span>y luego ${precio(p)} cada mes · plan de 12 meses</span></p>
+    <p class="pw-dominio">El dominio corre por tu cuenta: se paga aparte, por transferencia, una vez al año. Te pasamos el costo exacto por WhatsApp.</p>
     <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, el plan de 12 meses con cobro mensual automático (si cancelo antes pago los meses que falten; si dejo de pagar, el servicio se da de baja y el dominio se queda con Vorka hasta liquidar lo pendiente) y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn acento" type="submit" id="btn-compra">Contratar ${FLECHA}</button>
@@ -77,6 +79,7 @@ const CSS = `.pw-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 #comprar .t-form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--sombra-2)}
 .nc-inst{padding:12px;border-radius:12px;background:var(--bg-2)}
 .pw-total{font-size:15.5px;margin:10px 0 8px}.pw-total b{font-size:22px;letter-spacing:-.02em}
+.pw-dominio{font-size:14px;color:var(--fg-2);margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--bg-2)}
 .nc-opc{font-weight:400;color:var(--fg-2)}
 .nc-transfer{font-size:14px;color:var(--fg-2);margin-top:12px;text-align:center}`;
 

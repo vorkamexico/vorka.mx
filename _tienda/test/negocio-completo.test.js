@@ -36,6 +36,8 @@ describe('Negocio Completo', () => {
     expect(h).toContain('transferencia');
     expect(h).toContain('plan de 12 meses');
     expect(h).not.toContain('plazo forzoso');
+    expect(h).toContain('El dominio corre por tu cuenta');
+    expect(h).toContain('¿Puedo bajar de plan?');
   });
 
   it('la ficha genérica del producto lleva a su página', async () => {
