@@ -92,7 +92,9 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
     integration_identifier: INTEGRACION,
     line_items: orden.items.map(i => ({
       quantity: i.cantidad,
-      price_data: { currency: orden.moneda.toLowerCase(), unit_amount: i.precio_centavos, recurring: { interval: sus.intervalo },
+      // Un renglón de pago único (instalación) va sin recurring: Stripe lo cobra solo en la primera factura
+      price_data: { currency: orden.moneda.toLowerCase(), unit_amount: i.precio_centavos,
+        ...(sus.unicos?.includes(i.product_id) ? {} : { recurring: { interval: sus.intervalo } }),
         product_data: { name: i.nombre, metadata: { product_id: i.product_id } } },
     })),
     metadata: { order_id: orden.id },
