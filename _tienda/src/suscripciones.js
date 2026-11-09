@@ -45,16 +45,20 @@ export async function itemsSuscripcion(env, plan, cantidades = {}) {
 
 // ¿La orden es de suscripción? Devuelve { intervalo, app, product_id, creador_id } leyendo los productos de la base (nunca
 // del navegador). Producto de creador con precio mensual y anual: el intervalo es el que se eligió (order_items.intervalo).
+// unicos: los renglones que se cobran UNA vez junto con el primer periodo (la instalación de Negocio Completo, contenido.instalacion_de).
 export async function suscripcionDeOrden(env, orden) {
+  let sus = null;
+  const unicos = [];
   for (const it of orden.items || []) {
     const r = await one(env, 'SELECT contenido, creador_id FROM products WHERE id = ?', it.product_id);
     let c; try { c = JSON.parse(r?.contenido || '{}'); } catch { c = {}; }
-    if (c.suscripcion && !c.complemento) {
+    if (c.instalacion_de) unicos.push(it.product_id);
+    else if (!sus && c.suscripcion && !c.complemento) {
       const intervalo = r?.creador_id && ['month', 'year'].includes(it.intervalo) ? it.intervalo : c.suscripcion.intervalo === 'year' ? 'year' : 'month';
-      return { intervalo, app: c.acceso?.app || null, product_id: it.product_id, creador_id: r?.creador_id || null };
+      sus = { intervalo, app: c.acceso?.app || null, product_id: it.product_id, creador_id: r?.creador_id || null };
     }
   }
-  return null;
+  return sus && { ...sus, unicos };
 }
 
 // La suscripción vigente EN STRIPE de un correo para una app: la suya o la de un paquete que la incluye. No cuenta cortesías a

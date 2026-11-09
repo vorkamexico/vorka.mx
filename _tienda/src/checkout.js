@@ -2,7 +2,7 @@
 // Acepta JSON (fetch desde la página del producto → { url }) o formulario normal (→ 303 a la pasarela),
 // para que la compra funcione aunque el JavaScript no cargue.
 import { z } from 'zod';
-import { json, fail, sha256, correoOculto } from './util.js';
+import { json, fail, sha256, correoOculto, one } from './util.js';
 import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
@@ -39,6 +39,8 @@ export const EsquemaCheckout = z.object({
   sucursales: z.coerce.number().int().min(0).max(20, 'Hasta 20 sucursales adicionales; para más, escríbenos.').optional(),
   // Agenda: cuántos profesionales atienden en total (1 viene incluido; los demás se cobran como profesional adicional)
   profesionales: z.coerce.number().int().min(1, 'Elige al menos un profesional.').max(50, 'Hasta 50 profesionales; para más, escríbenos.').optional(),
+  // Negocio Completo: agregar la instalación y personalización (pago único con el primer mes)
+  instalacion: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
   // SaaS de creadores: mensual o anual (el precio de cada uno sale de la base)
   intervalo: z.enum(['month', 'year']).optional().or(z.literal('').transform(() => undefined)),
   // Tests (src/tests/): el resultado al que se liga la compra y, en el test vocacional, el simulador del paquete
@@ -120,6 +122,11 @@ export async function checkout(req, env, ctx) {
       if (e.message === 'profesional') return error(tiene ? 'Los profesionales adicionales no están disponibles por ahora.' : 'Este plan no lleva profesionales adicionales.');
       return error(tiene ? 'Las sucursales adicionales no están disponibles por ahora.' : 'Este plan no lleva sucursales de Vuelve; déjalas en 0.');
     }
+    if (d.instalacion) {
+      const inst = suscripcionDe(plan).instalacion && await one(env, 'SELECT slug FROM products WHERE id = ? AND activo = 1', suscripcionDe(plan).instalacion);
+      if (!inst) return error('Este plan no lleva instalación.');
+      items.push({ slug: inst.slug, cantidad: 1 });
+    }
   }
   for (const it of items) {
     const p = await productoPorSlug(env, it.slug);
@@ -128,6 +135,8 @@ export async function checkout(req, env, ctx) {
     if (['intento', 'examen'].includes(p?.contenido?.acceso?.tipo) && !(await puedeComprarIntento(env, d.email, appSim)))
       return error(`Para comprar simulacros adicionales primero necesitas el ${simuladorDe(appSim)?.titulo || 'simulador'}, con el mismo correo de tu compra.`, 403);
     if (d.regalo && p && !p.contenido?.regalable) return error('Este producto no se puede regalar.');
+    // La instalación solo se contrata junto con su plan (casilla instalacion), nunca sola
+    if (p?.contenido?.instalacion_de && !sus) return error('La instalación se contrata junto con su plan mensual.');
   }
   // Brindi: el plan Premium ya incluye los diseños premium (Gala); no se cobra dos veces
   const slugs = items.map(it => it.slug);

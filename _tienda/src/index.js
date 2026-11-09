@@ -32,6 +32,7 @@ import { paginaVuelve } from './vuelve.js';
 import { paginaAgenda } from './agenda.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaPaginaWeb } from './paginaweb.js';
+import { paginaNegocioCompleto } from './negociocompleto.js';
 import { paginaVende } from './vende.js';
 import { paginaPortales } from './portales.js';
 import { paginaClara } from './clara.js';
@@ -447,6 +448,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/sitemap.xml') return await sitemapTienda(env);
       if (url.pathname === '/tienda/cupo' || url.pathname === '/tienda/cupo/') return url.pathname.endsWith('/') ? await paginaCupo(env, request, url) : Response.redirect(`${url.origin}/tienda/cupo/${url.search}`, 301);
       if (url.pathname === '/tienda/cuentas' || url.pathname === '/tienda/cuentas/') return url.pathname.endsWith('/') ? await paginaCuentas(env, request, url) : Response.redirect(`${url.origin}/tienda/cuentas/${url.search}`, 301);
+      if (url.pathname === '/tienda/negocio-completo' || url.pathname === '/tienda/negocio-completo/') return url.pathname.endsWith('/') ? await paginaNegocioCompleto(env, request, url) : Response.redirect(`${url.origin}/tienda/negocio-completo/${url.search}`, 301);
       if (url.pathname === '/tienda/pagina-web' || url.pathname === '/tienda/pagina-web/') return url.pathname.endsWith('/') ? await paginaPaginaWeb(env, request, url) : Response.redirect(`${url.origin}/tienda/pagina-web/${url.search}`, 301);
       if (url.pathname === '/tienda/portales' || url.pathname === '/tienda/portales/') return url.pathname.endsWith('/') ? await paginaPortales(env, request, url) : Response.redirect(`${url.origin}/tienda/portales/${url.search}`, 301);
       if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);

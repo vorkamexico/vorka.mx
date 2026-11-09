@@ -447,6 +447,8 @@ export async function paginaProducto(env, req, url, slug) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `/tienda/vuelve/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
+  // Negocio Completo (se guarda como paquete Agenda + Vuelve) tiene su propia página
+  if (p?.contenido?.acceso?.pagina) return new Response(null, { status: 301, headers: { location: p.contenido.acceso.ruta || '/tienda/', 'cache-control': 'public, max-age=3600' } });
   // Agenda y su paquete con Vuelve: planes y profesionales en su página única
   if (['agenda', 'agenda-vuelve'].includes(p?.contenido?.acceso?.app)) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
