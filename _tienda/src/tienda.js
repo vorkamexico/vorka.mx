@@ -96,7 +96,7 @@ const esAgenda = p => p.contenido?.acceso?.app === 'agenda';
 // Negocio Completo (página + Agenda + Vuelve): se guarda como paquete Agenda + Vuelve, pero tiene su propia tarjeta y página
 const NEGOCIO = {
   nombre: 'Negocio Completo · Página, agenda y lealtad',
-  texto: 'Tu página web, tu agenda de citas en línea y tu tarjeta de lealtad digital en una sola suscripción. Instalación y personalización opcional.',
+  texto: 'Tu página web, tu agenda de citas en línea y tu tarjeta de lealtad digital en una sola suscripción. Arranque en 7 días opcional: te lo dejamos configurado.',
   incluye: ['Página web con WhatsApp y alta en Google', 'Agenda con recordatorios para tus clientes', 'Tarjeta de sellos en el celular de tus clientes'],
 };
 const esNegocio = p => !!p.contenido?.acceso?.pagina;

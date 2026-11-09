@@ -1,5 +1,6 @@
 // Tienda › Negocio Completo (vorka.mx/tienda/negocio-completo/): página web + Agenda + Vuelve en una suscripción de $749 al mes,
-// con la instalación y personalización como casilla OPCIONAL de pago único ($3,490). Productos: migración 0079.
+// con el «Arranque en 7 días» como casilla OPCIONAL de pago único ($1,490, migración 0081). Productos: migración 0079.
+// El diseño de la página va incluido en la mensualidad; el Arranque cobra la configuración de Agenda y Vuelve por el equipo.
 // Se guarda como el paquete Agenda + Vuelve (abre las dos apps con el mismo correo); la página web se empieza por WhatsApp.
 // Quien llega por la campaña de WhatsApp puede pagar el primer mes por transferencia (en Vorka OS se le da 1 mes de cortesía
 // de este plan) y al mes siguiente se suscribe aquí con tarjeta.
@@ -21,9 +22,9 @@ const INCLUYE = [
   'Soporte por WhatsApp, sin llamadas',
 ];
 const FAQ = [
-  ['¿Qué incluye la instalación?', 'Es opcional. Personalizamos tu página con tu logo, tus fotos y tus servicios, y te dejamos configuradas tu Agenda (servicios y horarios) y tu tarjeta de Vuelve, con un video corto de cómo usar todo. Si no la tomas, te damos acceso a las apps y armas tu página con una plantilla junto con nosotros por WhatsApp.'],
-  ['¿Cuánto tarda?', 'Con la instalación, te lo dejamos funcionando en 7 días a partir de que nos mandas tu logo, fotos, servicios y horarios. Si en ese plazo no está funcionando, te devolvemos la instalación.'],
-  ['¿Puedo pagar por transferencia?', 'Sí. Escríbenos por WhatsApp: la instalación se paga por transferencia y te mandamos un código para que tu primer mes vaya de regalo. Con ese código activas aquí tu suscripción con tarjeta y tu primer mes sale en $10.'],
+  ['¿Qué incluye el Arranque en 7 días?', 'Es opcional. Tu página web ya va incluida en la mensualidad, igual que en cualquier página con nosotros. Con el Arranque, además, nosotros damos de alta y configuramos tu Agenda (servicios, horarios y profesionales) y tu tarjeta de Vuelve (premio, sellos o puntos y tu logo), te mandamos tu QR para el mostrador y un video corto de cómo usar todo. Sin él, configuras Agenda y Vuelve tú mismo con su asistente.'],
+  ['¿Cuánto tarda?', 'Con el Arranque, en 7 días está funcionando a partir de que nos mandas tu logo, tus servicios, tus horarios y tu premio. Si en ese plazo no está funcionando, te devolvemos el Arranque.'],
+  ['¿Puedo pagar por transferencia?', 'Sí. Escríbenos por WhatsApp: el Arranque se paga por transferencia y te mandamos un código para que tu primer mes vaya de regalo. Con ese código activas aquí tu suscripción con tarjeta y tu primer mes sale en $10.'],
   ['¿Cómo pago el dominio?', 'El dominio (tunegocio.mx o .com) no está incluido en los $749: corre por tu cuenta y se paga aparte, por transferencia a Vorka, una vez al año. Te decimos el costo exacto por WhatsApp; depende de la terminación.'],
   ['¿Puedo bajar de plan?', 'Sí. Puedes quedarte solo con Vuelve ($399 al mes), solo con Agenda ($99 al mes) o con las dos ($449 al mes); nos escribes por WhatsApp y lo cambiamos sin cobrarte doble. Al bajar, tu página web se da de baja. Si es antes de los primeros 12 meses, liquidas los meses que falten de la página ($349 cada uno).'],
   ['¿Cómo funciona el plan de 12 meses?', 'La suscripción se cobra cada mes en tu tarjeta y el plan es de 12 meses. Si cancelas antes, pagas los meses que falten. Si dejas de pagar, tu página, tu Agenda y tu tarjeta de Vuelve se dan de baja, y el dominio se queda con Vorka hasta que se liquide lo pendiente. Después de los 12 meses sigues mes con mes y cancelas cuando quieras en vorka.mx/tienda/suscripcion.'],
@@ -43,7 +44,7 @@ export async function paginaNegocioCompleto(env, req, url) {
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Con este correo entras a Agenda y a Vuelve, y aquí te llega tu recibo.</small></div>
-    ${inst ? `<label class="t-casilla nc-inst"><input type="checkbox" name="instalacion" value="on"${conInst ? ' checked' : ''}><span><b>Agregar instalación y personalización: ${precio(inst)}</b> (pago único). Te dejamos todo funcionando en 7 días con tu logo, fotos y servicios.</span></label>` : ''}
+    ${inst ? `<label class="t-casilla nc-inst"><input type="checkbox" name="instalacion" value="on"${conInst ? ' checked' : ''}><span><b>Agregar Arranque en 7 días: ${precio(inst)}</b> (pago único). Nosotros configuramos tu Agenda y tu Vuelve, con tu QR y un video de uso.</span></label>` : ''}
     <div class="t-campo"><label for="codigo">Código de regalo <span class="nc-opc">(si te dimos uno)</span></label><input id="codigo" name="codigo" type="text" autocomplete="off" maxlength="40" value="${esc(cupon)}"${cupon ? '' : ' placeholder="REGALO-XXXX-XXXX"'}>${cupon ? '<small class="t-ayuda">Tu código se aplica en el pago: tu primer mes queda con descuento y después sigue en $749 al mes.</small>' : ''}</div>
     <p class="pw-total">Pagas hoy <b id="nc-hoy">${precio({ precio_centavos: mes + (conInst ? extra : 0) })}</b> <span>y luego ${precio(p)} cada mes · plan de 12 meses</span></p>
     <p class="pw-dominio">El dominio corre por tu cuenta: se paga aparte, por transferencia, una vez al año. Te pasamos el costo exacto por WhatsApp.</p>
@@ -55,7 +56,7 @@ export async function paginaNegocioCompleto(env, req, url) {
   return pagina({ navActual: 'catalogo',
     titulo: 'Negocio Completo: página web, agenda y tarjeta de lealtad por $749 al mes | Vorka México', ruta: RUTA_NEGOCIO_COMPLETO,
     imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
-    descripcion: 'Tu página web, tu agenda de citas en línea y tu tarjeta de lealtad digital en una sola suscripción de $749 al mes. Instalación y personalización opcional.',
+    descripcion: 'Tu página web, tu agenda de citas en línea y tu tarjeta de lealtad digital en una sola suscripción de $749 al mes. Arranque en 7 días opcional.',
     head: `<style>${CSS}</style>`, headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT,
     cuerpo: `<section class="pw-hero"><div class="marco pw-g">
   <div>
