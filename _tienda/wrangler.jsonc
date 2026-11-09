@@ -59,7 +59,7 @@
     "ADSENSE_SLOTS": "",
     // Píxel de Meta + API de conversiones (src/meta.js). Vacío = apagado. Encender: el ID del píxel aquí y el secreto
     // META_CAPI_TOKEN (npx wrangler secret put META_CAPI_TOKEN). META_TEST_CODE opcional: "TEST…" de Probar eventos.
-    "META_PIXEL_ID": "1078075491929279"
+    "META_PIXEL_ID": "1690893212827815"
   },
   // Cada hora: transferencias a creadores (marketplace)
   "triggers": { "crons": ["17 * * * *"] },
