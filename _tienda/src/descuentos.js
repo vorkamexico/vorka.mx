@@ -51,7 +51,7 @@ export const nombreLinea = id => LINEAS.find(l => l.id === id)?.linea || id;
 
 // Renglón de una compra para revisar el alcance y calcular el descuento (crearOrden, el checkout y la vista previa)
 export const lineaCompra = (p, cantidad = 1) => ({ id: p.id, slug: p.slug, nombre: p.nombre, precio_centavos: p.precio_centavos, cantidad,
-  creador_id: p.creador_id || null, linea: lineaDe(p), complemento: !!p.contenido?.complemento });
+  creador_id: p.creador_id || null, linea: lineaDe(p), complemento: !!p.contenido?.complemento, unico: !!p.contenido?.instalacion_de });
 const suma = ls => ls.reduce((s, l) => s + l.precio_centavos * (l.cantidad || 1), 0);
 // ¿Un cupón de regalo aplica a este renglón? Nunca a productos de creadores.
 export const enAlcance = (c, l) => !l.creador_id && (c.alcance === 'tienda' || (c.alcance === 'linea' && l.linea === c.linea) || (c.alcance === 'producto' && l.id === c.product_id));
@@ -63,7 +63,8 @@ export const enAlcance = (c, l) => !l.creador_id && (c.alcance === 'tienda' || (
 export function baseDescuento(d, lineas, sus = null) {
   const propias = lineas.filter(l => !l.creador_id);
   if (!d?.regalo || d.alcance === 'tienda') return suma(propias);
-  if (sus) { const plan = lineas.find(l => !l.complemento) || lineas[0]; return plan && enAlcance(d, plan) ? suma(propias) : 0; }
+  // La instalación (pago único) no entra: el cupón regala el primer periodo del plan, no la instalación
+  if (sus) { const plan = lineas.find(l => !l.complemento && !l.unico) || lineas[0]; return plan && enAlcance(d, plan) ? suma(propias.filter(l => !l.unico)) : 0; }
   return suma(propias.filter(l => enAlcance(d, l)));
 }
 // Centavos de descuento de un código, del 5 % o de un cupón de regalo en esta compra (sin contar puntos). LA cuenta del servidor.
