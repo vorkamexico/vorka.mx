@@ -356,7 +356,7 @@
           '<div class="o-1">' + resumen + '</div>' +
           (esPAA() ? '<div class="o-2 sim-card sim-meta' + (unis().length && !uniId() ? ' sim-meta-pend' : '') + '">' + uniHTML() + '<span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800 por sección</small></div>' +
             '<input type="range" id="meta" min="400" max="800" step="10" value="' + m + '" aria-label="Meta de puntaje por sección (200 a 800)">' +
-            '<p class="sim-nota" id="meta-nota">' + metaNota(m) + '</p></div>'
+            '<p class="sim-nota" id="meta-nota">' + metaNota(m) + '</p>' + tablaConversionHTML() + '</div>'
           : '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta de aciertos</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de ' + CFG.examenReactivos + '</small></div>' +
             '<input type="range" id="meta" min="' + CFG.meta.min + '" max="' + CFG.meta.max + '" step="' + CFG.meta.paso + '" value="' + m + '" aria-label="Meta de aciertos (de ' + CFG.examenReactivos + ')">' +
             '<p class="sim-nota">' + esc(CFG.metaNota || 'Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.') + '</p></div>') +
@@ -414,6 +414,7 @@
     if (u) det = '<div class="sim-uni-det"><p><b>Cómo usa la PAA:</b> ' + esc(u.explica) + '</p>' +
       (u.sinMinimo ? '<p class="sim-uni-aviso">Esta universidad no publica un puntaje mínimo; revisa su convocatoria.</p>' : '') +
       '<p class="sim-nota">Fuente: <a href="' + esc(u.fuente.url) + '" target="_blank" rel="noopener">' + esc(u.fuente.nombre) + '</a> (' + esc(u.cita) + '), revisada el ' + esc(u.verificado) + '. <a href="' + esc(u.pagina) + '" target="_blank" rel="noopener">Más sobre la PAA y ' + esc(u.art + ' ' + u.nombre) + '</a>.</p>' +
+      (u.beca ? '<div class="sim-beca"><span class="etiqueta">' + esc(u.beca.texto) + '</span><p class="sim-beca-t"><span>Meta: <b class="num">' + L.miles(u.beca.valor) + '</b> de 1,600</span></p><p class="sim-nota">' + esc(u.beca.nota) + '</p>' + combinacionesHTML(u.beca.valor) + '</div>' : '') +
       (u.metaSeccion && meta() !== u.metaSeccion ? '<button class="btn blanco chico" id="uni-meta" type="button">Usar ' + u.metaSeccion + ' como mi meta por sección</button>' : '') + '</div>';
     else if (id === 'otra') det = '<div class="sim-uni-det"><p>Verás tu puntaje en la escala del College Board: cada parte de la PAA va de 200 a 800. Cada universidad lo usa distinto; revisa su convocatoria.</p></div>';
     return '<div class="sim-uni"><span class="etiqueta" id="uni-t">Tu universidad</span><h3>¿A qué universidad quieres entrar?</h3>' +
@@ -421,6 +422,40 @@
       '<div class="sim-uni-ops" role="radiogroup" aria-labelledby="uni-t">' + ops.map(function (o) {
         return '<button type="button" class="sim-chip-uni' + (o.id === id ? ' sel' : '') + '" role="radio" aria-checked="' + (o.id === id) + '" data-uni="' + o.id + '">' + esc(o.nombre) + '</button>';
       }).join('') + '</div>' + det + '</div>';
+  }
+  // ---------- tabla de conversión y meta de beca (PAA) ----------
+  // Meta del total (de 1,600): la de la universidad si publica una referencia de beca, o tu meta por sección × 2
+  function metaTotal() { var u = uniInfo(); return u && u.beca ? u.beca.valor : meta() * 2; }
+  function textoMetaTotal() { var u = uniInfo(); return u && u.beca ? esc(u.beca.corto) : 'tu meta'; }
+  function tablaConversionHTML() {
+    var fila = function (a, b) { return '<tr><td class="num">' + a + '</td><td class="num">' + b + '</td></tr>'; };
+    var col = function (titulo, tabla) {
+      var filas = ''; for (var i = tabla.length - 1; i >= 1; i--) filas += fila(i, tabla[i]);
+      return '<div><b>' + titulo + '</b><table class="sim-tabla-c"><thead><tr><th>Aciertos</th><th>Puntaje</th></tr></thead><tbody>' + filas + '</tbody></table></div>';
+    };
+    return '<details class="sim-conv"><summary>Tabla de conversión de aciertos a puntaje PAA</summary>' +
+      '<p class="sim-nota">Así pasan tus aciertos a la escala de 200 a 800 en cada parte: Lectura y Redacción sobre 70 reactivos y Matemáticas sobre 55 (el examen completo del simulador trae esos mismos). Tu total es la suma de las dos, de 400 a 1,600. Es una tabla de referencia que usan los cursos de preparación, no la oficial del College Board.</p>' +
+      '<div class="sim-conv-g">' + col('Lectura y Redacción', L.TABLA_LR) + col('Matemáticas', L.TABLA_M) + '</div></details>';
+  }
+  // Combinaciones mínimas de aciertos para una meta del total
+  function combinacionesHTML(metaT) {
+    var cs = L.combinacionesMeta(metaT); if (!cs.length) return '';
+    return '<details class="sim-conv"><summary>¿Cuántos aciertos necesitas como mínimo para ' + L.miles(metaT) + '?</summary>' +
+      '<p class="sim-nota">Cada fila es una forma de llegar: si sacas esos aciertos en Matemáticas, necesitas al menos esos en Lectura y Redacción.</p>' +
+      '<table class="sim-tabla-c ancha"><thead><tr><th>Matemáticas (de 55)</th><th>Lectura y Redacción (de 70)</th><th>Total</th></tr></thead><tbody>' +
+      cs.map(function (c) { return '<tr><td class="num">' + c.mate + '</td><td class="num">' + c.lr + '</td><td class="num">' + L.miles(c.total) + '</td></tr>'; }).join('') + '</tbody></table></details>';
+  }
+  // En el reporte: tus aciertos en tamaño de examen real, tu total y cuánto te falta para la meta (o la beca)
+  function metaTotalHTML(res) {
+    if (!esPAA()) return '';
+    var p = L.partesPAA(res.secciones); if (!p || p.aciertosLR == null) return '';
+    var mt = metaTotal(), f = L.faltanParaMeta(mt, p.aciertosLR, p.aciertosMate);
+    var msg = !f ? '' : f.alcanza ? '<p class="sim-beca-ok">¡Alcanzas ' + textoMetaTotal() + ' (' + L.miles(mt) + ')!' + (p.total > mt ? ' Vas ' + (p.total - mt) + ' puntos arriba.' : '') + ' Sostenlo en el examen completo.</p>'
+      : '<p class="sim-beca-no">Te ' + (f.faltan === 1 ? 'falta <b>1 acierto</b>' : 'faltan <b>' + f.faltan + ' aciertos</b>') + ' para ' + textoMetaTotal() + ' (' + L.miles(mt) + '). Por ejemplo: ' + f.lr + ' en Lectura y Redacción y ' + f.mate + ' en Matemáticas.</p>';
+    var esc_ = res.secciones.some(function (s) { var x = L.parteDeSeccion(s.id); return x && s.total !== (x === 'mate' ? 55 : s.id === 'lectura' ? 45 : 25); });
+    return '<div class="sim-beca"><span class="etiqueta">Tu total PAA</span>' +
+      '<p class="sim-beca-t"><span>Lectura y Redacción <b class="num">' + p.aciertosLR + '</b>/70 → <b class="num">' + p.verbal + '</b></span><span>Matemáticas <b class="num">' + p.aciertosMate + '</b>/55 → <b class="num">' + p.mate + '</b></span><span>Total <b class="num">' + L.miles(p.total) + '</b> de 1,600</span></p>' +
+      msg + (esc_ ? '<p class="sim-nota">Este simulacro es más corto que el examen: tus aciertos se llevaron al tamaño del examen real (70 y 55).</p>' : '') + '</div>';
   }
   function metaNota(m) {
     var u = uniInfo();
@@ -872,7 +907,9 @@
       if (st.sinTiempo || st.fase !== 'fin') sinR++;
     });
     // PAA: 200–800 ponderado por dificultad · por aciertos: porcentaje de aciertos a la primera
-    var puntaje = esPAA() ? Math.round((200 + 600 * (wt ? w / wt : 0)) / 10) * 10 : pct(ok, s.items.length);
+    // Lectura, Redacción y Matemáticas: tabla de conversión de aciertos (como el examen real); Inglés no está en la tabla
+    var parte = esPAA() ? L.parteDeSeccion(s.id) : null;
+    var puntaje = parte ? L.puntajeTabla(ok, s.items.length, parte) : esPAA() ? Math.round((200 + 600 * (wt ? w / wt : 0)) / 10) * 10 : pct(ok, s.items.length);
     return { id: s.id, puntaje: puntaje, aciertos: ok, segundo: seg, total: s.items.length, tiempo: Math.round(s.usado), limite: s.limite, sinResponder: sinR };
   }
   function terminar() {
@@ -1041,6 +1078,7 @@
       '<div class="sim-card sim-hero-rep"><div class="sim-hero-med">' + medidor(c.total, 220) + '<span>Medidor de preparación</span></div>' +
         '<div class="sim-hero-t"><b class="sim-estado e-' + e.clase + '">' + e.nombre + '</b>' + (res.global != null ? '<p class="sim-global">' + (esPAA() ? 'Puntaje estimado' : 'Aciertos estimados') + ' <b class="num">' + res.global + '</b><small> / ' + rango().max + (esPAA() ? ' por sección' : '') + ' · meta ' + m + '</small></p>' : '') + ponderadoHTML(res, secs) +
         (function () { var x = esIntento(res.modo) && puntajeUniHTML(res); return x ? '<p class="sim-uni-rep">' + x.detalle + '</p>' : ''; })() +
+        (esIntento(res.modo) ? metaTotalHTML(res) : '') +
         '<p>' + mensaje(res, c) + '</p></div></div>' + htmlListo +
       '<p class="sim-aviso-g" id="aviso-guardar" hidden>No pudimos guardar este resultado (sin conexión). Se guardará en tu historial la próxima vez que abras el simulador con internet.</p>' +
       '<div class="sim-grid2' + (htmlSecs ? '' : ' uno') + '">' + htmlSecs + htmlTutor + '</div>' +

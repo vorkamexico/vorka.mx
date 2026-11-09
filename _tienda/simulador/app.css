@@ -676,3 +676,20 @@ body.sv-abierto { overflow: hidden; }
 .sim-mas-i > span:nth-child(2) { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .sim-mas-i b { font-size: 15.5px; }
 .sim-mas-i small { font-size: 13.5px; color: var(--fg-2); }
+
+/* Tabla de conversión de aciertos y meta de beca (PAA) */
+.sim-conv { margin-top: 12px; border-top: 1px solid var(--line, #ece8ee); padding-top: 10px; }
+.sim-conv summary { cursor: pointer; font-weight: 650; font-size: 14px; color: var(--fg, #17141a); }
+.sim-conv[open] summary { margin-bottom: 8px; }
+.sim-conv-g { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-height: 340px; overflow: auto; }
+.sim-conv-g b { display: block; font-size: 13px; margin-bottom: 6px; }
+.sim-tabla-c { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sim-tabla-c th { text-align: left; font-weight: 650; color: var(--fg-2); padding: 4px 6px; border-bottom: 1px solid var(--line, #ece8ee); position: sticky; top: 0; background: var(--bg-1, #fff); }
+.sim-tabla-c td { padding: 3px 6px; border-bottom: 1px solid var(--line, #f2eff3); }
+.sim-tabla-c.ancha { max-width: 460px; }
+.sim-conv > .sim-tabla-c.ancha { display: block; max-height: 300px; overflow: auto; }
+.sim-beca { margin-top: 12px; padding: 14px 16px; border-radius: 14px; background: var(--bg-2, #f6f4f7); display: grid; gap: 6px; }
+.sim-beca-t { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14.5px; margin: 0; }
+.sim-beca-ok { margin: 0; font-weight: 700; color: #1d7a4a; }
+.sim-beca-no { margin: 0; font-weight: 600; color: #8a4b12; }
+@media (prefers-color-scheme: dark) { .sim-beca-ok { color: #5fd39a; } .sim-beca-no { color: #f0b067; } }
