@@ -14,7 +14,8 @@ const L = ctx.SIM_LOGICA;
 const TZ = 'America/Mexico_City';
 const uni = id => universidadesCliente().find(u => u.id === id);
 const bancoCliente = s => ({ secciones: s.BANCO.SECCIONES, temas: s.BANCO.TEMAS, reactivos: s.BANCO.REACTIVOS });
-const sec = (id, puntaje, total) => ({ id, puntaje, total, aciertos: 0, segundo: 0 });
+// Resultados que solo traen el puntaje (sin aciertos): partesPAA combina los puntajes; con aciertos usa la tabla de conversión (ver abajo)
+const sec = (id, puntaje, total) => ({ id, puntaje, total, aciertos: null, segundo: 0 });
 
 describe('gráfica de avance', () => {
   const lista = [
@@ -164,9 +165,9 @@ describe('puntaje según la universidad', () => {
     expect(L.cumpleMinimos({ total: 1280, verbal: 600, mate: 680 }, u)).toBeNull();
   });
 
-  it('UdeG, Tec e ITAM: sin conversión ni mínimo publicados, se queda la escala del College Board con la nota', () => {
+  it('UdeG e ITAM: sin conversión ni mínimo publicados, se queda la escala del College Board con la nota', () => {
     const res = { global: 630, secciones: [sec('lectura', 600, 6), sec('redaccion', 640, 6), sec('matematicas', 650, 6)] };
-    for (const id of ['udeg', 'tec-de-monterrey', 'itam']) {
+    for (const id of ['udeg', 'itam']) {
       const u = uni(id);
       expect(u.sinMinimo, id).toBe(true);
       expect(u.escala, id).toBe('paa');
@@ -180,6 +181,48 @@ describe('puntaje según la universidad', () => {
     // sin universidad elegida: escala estándar
     expect(L.puntajeUni(res, null).valor).toBe(630);
     expect(L.puntajeUni({ global: null, secciones: [] }, uni('udem'))).toBeNull();
+  });
+});
+
+describe('tabla de conversión PAA y meta de beca', () => {
+  const conAciertos = (id, aciertos, total) => ({ id, aciertos, total, puntaje: 0 });
+  it('la tabla convierte aciertos a 200–800: 70 en Lectura y Redacción y 55 en Matemáticas', () => {
+    expect(L.TABLA_LR).toHaveLength(71); expect(L.TABLA_M).toHaveLength(56);
+    expect([L.TABLA_LR[0], L.TABLA_LR[1], L.TABLA_LR[56], L.TABLA_LR[70]]).toEqual([200, 208, 672, 800]);
+    expect([L.TABLA_M[0], L.TABLA_M[1], L.TABLA_M[42], L.TABLA_M[55]]).toEqual([200, 205, 688, 800]);
+    // siempre crece con cada acierto
+    for (const T of [L.TABLA_LR, L.TABLA_M]) for (let i = 1; i < T.length; i++) expect(T[i]).toBeGreaterThan(T[i - 1]);
+  });
+  it('examen completo: 56 de Lectura y Redacción + 42 de Matemáticas = 1,360 (la meta de beca)', () => {
+    const secs = [conAciertos('lectura', 36, 45), conAciertos('redaccion', 20, 25), conAciertos('matematicas', 42, 55), conAciertos('ingles', 30, 50)];
+    expect(L.partesPAA(secs)).toEqual({ verbal: 672, mate: 688, total: 1360, aciertosLR: 56, aciertosMate: 42 });
+    expect(L.faltanParaMeta(1360, 56, 42)).toMatchObject({ alcanza: true, faltan: 0 });
+    expect(L.puntajeTabla(36, 45, 'lr')).toBe(L.TABLA_LR[56]);
+    expect(L.parteDeSeccion('ingles')).toBeNull();
+  });
+  it('simulacros cortos se llevan al tamaño del examen real', () => {
+    expect(L.aciertosEquivalentes(10, 20, 'lr')).toBe(35);
+    expect(L.aciertosEquivalentes(10, 20, 'mate')).toBe(28);
+    expect(L.puntajeTabla(20, 20, 'mate')).toBe(800);
+  });
+  it('cuántos aciertos faltan y las combinaciones mínimas para 1,360', () => {
+    const f = L.faltanParaMeta(1360, 50, 38);
+    expect(f.alcanza).toBe(false);
+    expect(L.TABLA_LR[f.lr] + L.TABLA_M[f.mate]).toBeGreaterThanOrEqual(1360);
+    expect(f.faltan).toBe(f.lr - 50 + f.mate - 38);
+    // nadie llega con menos aciertos
+    for (let i = 50; i <= 70; i++) for (let j = 38; j <= 55; j++) if (L.TABLA_LR[i] + L.TABLA_M[j] >= 1360) expect(i - 50 + j - 38).toBeGreaterThanOrEqual(f.faltan);
+    const cs = L.combinacionesMeta(1360);
+    expect(cs[0]).toMatchObject({ mate: 55, lr: 43 });
+    expect(cs.find(c => c.mate === 42)).toMatchObject({ lr: 56, total: 1360 });
+    for (const c of cs) { expect(c.total).toBeGreaterThanOrEqual(1360); if (c.lr > 0) expect(L.TABLA_LR[c.lr - 1] + L.TABLA_M[c.mate]).toBeLessThan(1360); }
+  });
+  it('el Tec muestra el total y la meta de beca como referencia (no como requisito)', () => {
+    const u = uni('tec-de-monterrey');
+    expect(u).toMatchObject({ escala: 'total', sinMinimo: true, metaSeccion: 680, beca: { valor: 1360 } });
+    expect(u.beca.nota).toMatch(/referencia/);
+    expect(L.metaEnEscala(680, u)).toBe(1360);
+    expect(APP_JS).toContain('Tabla de conversión de aciertos a puntaje PAA');
   });
 });
 

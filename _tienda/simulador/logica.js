@@ -65,6 +65,45 @@ var SIM_LOGICA = (function () {
       ticks: eje.ticks.map(function (t) { return { valor: t, texto: miles(t), pos: pos(t) }; }) };
   }
 
+  // ---------- tabla de conversión de aciertos a la escala PAA (200 a 800) ----------
+  // Tabla de referencia que usan los cursos de preparación: Lectura y Redacción va sobre 70 aciertos y Matemáticas sobre 55
+  // (igual que el examen completo del simulador: 45 + 25 y 55). Índice = aciertos. No es una tabla oficial del College Board.
+  var TABLA_LR = [200,208,217,225,234,242,251,259,268,276,284,293,301,310,318,326,335,343,352,360,363,377,385,394,402,411,419,428,436,445,453,462,470,479,487,495,504,512,521,529,538,546,554,563,571,580,588,596,605,613,621,630,638,647,655,663,672,681,689,698,707,715,724,733,742,752,761,771,780,790,800];
+  var TABLA_M = [200,205,212,222,232,245,258,271,285,300,315,330,342,360,375,390,405,419,434,449,463,477,491,504,518,530,543,555,566,577,588,598,608,617,626,634,642,650,658,665,673,680,688,696,704,712,721,730,740,749,759,769,778,787,795,800];
+  var REACTIVOS_LR = 70, REACTIVOS_M = 55;
+  function tablaDe(parte) { return parte === 'mate' ? TABLA_M : TABLA_LR; }
+  // Aciertos de un simulacro de cualquier tamaño, llevados al tamaño del examen real de esa parte
+  function aciertosEquivalentes(ok, total, parte) {
+    var n = parte === 'mate' ? REACTIVOS_M : REACTIVOS_LR;
+    return total ? Math.max(0, Math.min(n, Math.round(ok / total * n))) : 0;
+  }
+  // Puntaje PAA (200–800) de una parte según sus aciertos: 'lr' (Lectura y Redacción) o 'mate'
+  function puntajeTabla(ok, total, parte) { return tablaDe(parte)[aciertosEquivalentes(ok, total, parte)]; }
+  // Sección del simulador → parte de la tabla (inglés no está en la tabla: null)
+  function parteDeSeccion(id) { return id === 'matematicas' ? 'mate' : id === 'lectura' || id === 'redaccion' ? 'lr' : null; }
+  // Menos aciertos de Lectura y Redacción que necesitas para llegar a «meta» (total de 1,600) con «m» aciertos de Matemáticas (null si no alcanza)
+  function minimoLR(meta, m) { var falta = meta - TABLA_M[m]; for (var i = 0; i <= REACTIVOS_LR; i++) if (TABLA_LR[i] >= falta) return i; return null; }
+  // Combinaciones mínimas para llegar a «meta»: [{ mate, lr, total }], de más aciertos de Matemáticas a menos
+  function combinacionesMeta(meta) {
+    var out = [];
+    for (var m = REACTIVOS_M; m >= 0; m--) { var l = minimoLR(meta, m); if (l == null) break; out.push({ mate: m, lr: l, total: TABLA_M[m] + TABLA_LR[l] }); }
+    return out;
+  }
+  // ¿Cuántos aciertos más te faltan para «meta»? Con tus aciertos actuales (en tamaño de examen real) prueba todas las formas de repartirlos.
+  // { alcanza, faltan, lr, mate }: lr y mate = cómo quedarías con el reparto que pide menos aciertos (si empatan, más parejo)
+  function faltanParaMeta(meta, lr, mate) {
+    if (TABLA_LR[lr] + TABLA_M[mate] >= meta) return { alcanza: true, faltan: 0, lr: lr, mate: mate };
+    var mejor = null;
+    for (var i = lr; i <= REACTIVOS_LR; i++) for (var j = mate; j <= REACTIVOS_M; j++) {
+      if (TABLA_LR[i] + TABLA_M[j] < meta) continue;
+      var k = (i - lr) + (j - mate), dif = Math.abs((i - lr) - (j - mate));
+      if (!mejor || k < mejor.faltan || (k === mejor.faltan && dif < mejor.dif)) mejor = { alcanza: false, faltan: k, lr: i, mate: j, dif: dif };
+      break;
+    }
+    if (mejor) delete mejor.dif;
+    return mejor;
+  }
+
   // ---------- puntaje según la universidad (PAA) ----------
   // Partes de la PAA del College Board: Lectura y Redacción es UNA parte de 200 a 800 (el simulador la mide en dos secciones,
   // así que se combinan pesadas por reactivos) y Matemáticas otra. Total = las dos (400 a 1,600).
@@ -73,8 +112,16 @@ var SIM_LOGICA = (function () {
     var l = s.lectura, r = s.redaccion, m = s.matematicas;
     if (!m || (!l && !r)) return null;
     var nv = (l ? l.total : 0) + (r ? r.total : 0);
-    var verbal = Math.round(((l ? l.puntaje * l.total : 0) + (r ? r.puntaje * r.total : 0)) / nv / 10) * 10;
-    return { verbal: verbal, mate: m.puntaje, total: verbal + m.puntaje };
+    // Sin aciertos (resultados que solo traen el puntaje): se combinan los puntajes pesados por reactivos, como antes
+    if ([l, r, m].some(function (x) { return x && x.aciertos == null; })) {
+      var vb = Math.round(((l ? l.puntaje * l.total : 0) + (r ? r.puntaje * r.total : 0)) / nv / 10) * 10;
+      return { verbal: vb, mate: m.puntaje, total: vb + m.puntaje };
+    }
+    var okv = (l ? l.aciertos : 0) + (r ? r.aciertos : 0);
+    // Con la tabla de conversión: Lectura y Redacción juntas sobre 70 aciertos y Matemáticas sobre 55
+    var aLR = aciertosEquivalentes(okv, nv, 'lr'), aM = aciertosEquivalentes(m.aciertos || 0, m.total, 'mate');
+    var verbal = TABLA_LR[aLR], mate = TABLA_M[aM];
+    return { verbal: verbal, mate: mate, total: verbal + mate, aciertosLR: aLR, aciertosMate: aM };
   }
   // Puntaje de un resultado en la escala de la universidad elegida. u: config de la universidad (o null = escala estándar)
   function puntajeUni(res, u) {
@@ -203,6 +250,7 @@ var SIM_LOGICA = (function () {
 
   return { diaDe: diaDe, masDias: masDias, semanaDe: semanaDe, diasEntre: diasEntre, planEstudio: planEstudio, sesionesHechas: sesionesHechas,
     fechaCorta: fechaCorta, hora: hora, fechaLarga: fechaLarga, tipoDe: tipoDe, miles: miles, pasoRedondo: pasoRedondo, rangoEje: rangoEje, datosGrafica: datosGrafica,
-    partesPAA: partesPAA, puntajeUni: puntajeUni, metaEnEscala: metaEnEscala, cumpleMinimos: cumpleMinimos,
+    partesPAA: partesPAA, puntajeUni: puntajeUni, TABLA_LR: TABLA_LR, TABLA_M: TABLA_M, puntajeTabla: puntajeTabla, parteDeSeccion: parteDeSeccion,
+    aciertosEquivalentes: aciertosEquivalentes, minimoLR: minimoLR, combinacionesMeta: combinacionesMeta, faltanParaMeta: faltanParaMeta, metaEnEscala: metaEnEscala, cumpleMinimos: cumpleMinimos,
     temasPorSeccion: temasPorSeccion, hayTemas: hayTemas, desempenoTemas: desempenoTemas, temasDebiles: temasDebiles, elegirPractica: elegirPractica };
 })();
