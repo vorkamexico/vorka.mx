@@ -10,6 +10,8 @@
 --   NO toca la tienda (sigue como esté: apagada mientras no tenga datos bancarios).
 --
 -- ANTES: fotos subidas a R2 con subir-fotos-ruzz-man.sh (mismas claves que abajo).
+-- ESTADO (9 nov 2026): YA APLICADO en producción. Las 34 fotos quedaron en D1 (tabla archivos, mismas claves) porque el token
+-- de esa sesión no tenía permiso de R2; Vende las lee de ahí (src/archivos.js). Si luego se suben a R2, R2 tiene prioridad.
 -- APLICAR (desde la carpeta del repo vende):
 --   npx wrangler d1 execute vende --remote --file <ruta>/anaoleynick/makeup/_vende/ruzz-man.sql -y
 
