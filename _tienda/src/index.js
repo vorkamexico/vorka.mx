@@ -5,6 +5,7 @@ import { WorkerEntrypoint } from 'cloudflare:workers';
 import { json, fail } from './util.js';
 import { listarProductos } from './modelo.js';
 import { checkout } from './checkout.js';
+import { configMeta, eventoNavegador } from './meta.js';
 import { webhook } from './webhook.js';
 import { conciliarPendientes } from './conciliar.js';
 import { ultimasPagadas, dineroStripe, completarComisionesStripe } from './finanzas.js';
@@ -416,7 +417,10 @@ async function atender(request, env, ctx, url) {
     if (url.pathname === '/api/tienda/productos' && request.method === 'GET')
       return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
         ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));
-    if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env);
+    if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env, ctx);
+    // Píxel de Meta + API de conversiones (src/meta.js): apagados mientras falten META_PIXEL_ID y META_CAPI_TOKEN
+    if (url.pathname === '/api/meta/config' && request.method === 'GET') return configMeta(env);
+    if (url.pathname === '/api/meta/evento' && request.method === 'POST') return await eventoNavegador(request, env, ctx);
     const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
     if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);
     if (url.pathname === '/tienda/gracias' || url.pathname === '/tienda/gracias/') return await paginaGracias(env, url);

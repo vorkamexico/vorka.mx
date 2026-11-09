@@ -175,6 +175,7 @@
           ok.querySelector('[data-nombre]').textContent = x.nombre.split(' ')[0];
           ok.querySelector('[data-correo]').textContent = x.correo;
           pf.hidden = true; ok.hidden = false; ok.focus();
+          if (window.vorkaEvento) window.vorkaEvento('Lead', { content_name: 'Diagnóstico' });
         })
         .catch(function (er) {
           btn.disabled = false; btn.firstChild.textContent = 'Enviar ';
@@ -184,6 +185,48 @@
         });
     });
   });
+
+
+  // Píxel de Meta + API de conversiones. Apagado mientras /api/meta/config no dé un píxel (src/meta.js de la tienda).
+  // Cada evento sale dos veces con el mismo id: por el píxel y por /api/meta/evento (servidor → Meta); Meta deja uno.
+  (function () {
+    var cola = window.vorkaMeta = window.vorkaMeta || [], listo = false, pendientes = [];
+    function nuevoId(ev) { return ev.toLowerCase() + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+    function mandar(ev, datos, id) {
+      id = id || nuevoId(ev); datos = datos || {};
+      window.fbq('track', ev, datos, { eventID: id });
+      // Purchase solo lo manda el servidor (webhook del pago); aquí va únicamente por el píxel
+      if (ev === 'Purchase') return;
+      var cuerpo = JSON.stringify({ evento: ev, id: id, url: location.href, datos: datos });
+      try { if (!(navigator.sendBeacon && navigator.sendBeacon('/api/meta/evento', new Blob([cuerpo], { type: 'text/plain' }))))
+        fetch('/api/meta/evento', { method: 'POST', body: cuerpo, keepalive: true, credentials: 'same-origin' }); } catch (e) {}
+    }
+    window.vorkaEvento = function (ev, datos, id) { if (listo) mandar(ev, datos, id); else pendientes.push([ev, datos, id]); };
+    cola.push = function (a) { window.vorkaEvento(a[0], a[1], a[2]); return 0; };
+    function encender(pixel) {
+      /* Código base del píxel de Meta */
+      !function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+        if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0;
+        t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s); }(window, d, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', pixel);
+      listo = true;
+      mandar('PageView');
+      cola.splice(0).concat(pendientes.splice(0)).forEach(function (a) { mandar(a[0], a[1], a[2]); });
+    }
+    if (!/(^|\.)vorka\.mx$/.test(location.hostname) || !window.fetch) return;
+    // Clic a WhatsApp = Contact (las ligas wa.me del sitio y de la tienda)
+    d.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href*="wa.me/"], a[href*="api.whatsapp.com"]');
+      if (a) window.vorkaEvento('Contact', { content_name: 'WhatsApp' });
+    }, true);
+    var guardado = null;
+    try { guardado = sessionStorage.getItem('vorka_pixel'); } catch (e) {}
+    if (guardado !== null) { if (guardado) encender(guardado); return; }
+    fetch('/api/meta/config').then(function (r) { return r.ok ? r.json() : {}; }).then(function (c) {
+      try { sessionStorage.setItem('vorka_pixel', c.pixel || ''); } catch (e) {}
+      if (c.pixel) encender(c.pixel);
+    }).catch(function () {});
+  })();
 
   var anio = d.getElementById('anio'); if (anio) anio.textContent = new Date().getFullYear();
 })();

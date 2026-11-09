@@ -25,12 +25,12 @@ export function seguridad(n, { stripe = false, frames = [], anuncios = false } =
   return {
     'content-security-policy': [
       "default-src 'self'",
-      `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com${st}${ad('script')}`,
+      `script-src 'self' 'nonce-${n}' https://static.cloudflareinsights.com https://connect.facebook.net${st}${ad('script')}`,
       ...(fr.length ? [`frame-src 'self' ${fr.join(' ')}`] : []),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      `connect-src 'self' https://cloudflareinsights.com${stripe ? ' https://api.stripe.com https://*.stripe.com' : ''}${ad('connect')}`,
+      `connect-src 'self' https://cloudflareinsights.com https://www.facebook.com https://connect.facebook.net${stripe ? ' https://api.stripe.com https://*.stripe.com' : ''}${ad('connect')}`,
       "form-action 'self' https://checkout.stripe.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
