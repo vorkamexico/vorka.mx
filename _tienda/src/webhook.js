@@ -11,6 +11,7 @@ import { puntosAlPagar, puntosAlReembolsar, puntosFactura } from './puntos.js';
 import { guardarSuscripcion } from './suscripciones.js';
 import { revocarRuta } from './ruta-entrega.js';
 import { redAlReembolsoParcial } from './embajadores.js';
+import { compraMeta } from './meta.js';
 
 export async function webhook(req, env, nombre) {
   let pasarela;
@@ -74,6 +75,9 @@ export async function procesarPago(env, pago) {
   // en reembolso, se revierten. Idempotente.
   if (r.orden?.estado === 'paid') await puntosAlPagar(env, pago.orderId);
   if (r.accion === 'revocar') await puntosAlReembolsar(env, pago.orderId);
+  // Meta (API de conversiones): la compra, una sola vez por orden (meta_compra_at). Un fallo de Meta no detiene el webhook;
+  // la orden queda sin marcar y la conciliación de cada hora lo vuelve a intentar.
+  if (r.orden?.estado === 'paid') await compraMeta(env, pago.orderId).catch(e => console.error('meta: compra', pago.orderId, e?.message));
   // Ruta de Impacto: el acceso (o la liga de regalo) vive en Vorka OS y se apaga allá. También en reintentos del mismo
   // reembolso: si os no respondió la vez pasada, la orden ya está refunded pero el acceso sigue (revocar es idempotente).
   if (r.accion === 'revocar' || (pago.resultado === 'reembolsado' && r.orden?.estado === 'refunded' && r.orden?.paid_at)) await revocarRuta(env, pago.orderId);

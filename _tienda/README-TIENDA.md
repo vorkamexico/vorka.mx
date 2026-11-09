@@ -456,3 +456,18 @@ Decisión del dueño (2026-11-02). **Principio: se gana por ventas reales a clie
 - **Orden de despliegue:** esta tienda primero (Workers Builds aplica 0066 y publica los RPC); después el panel en `os`.
 
 > **Antes de abrirlo:** contador (las transferencias a cuenta son pagos a personas físicas: ISR/retenciones y CFDI) y abogado (condiciones en borrador, Profeco y que el esquema de dos niveles no se considere venta piramidal: participación gratuita, sin compra obligatoria, ganancias solo por ventas a clientes reales).
+
+## Píxel de Meta + API de conversiones (migración 0078, `src/meta.js`)
+
+Apagado mientras falten `META_PIXEL_ID` (var en `wrangler.jsonc`) y el secreto `META_CAPI_TOKEN`. Con los dos:
+
+- **Navegador** (`assets/v3/vorka.js`, en todo el sitio generado y en la tienda): pide `/api/meta/config`, carga el píxel y manda `PageView`, `ViewContent` (ficha de producto), `Contact` (clic a cualquier liga de WhatsApp) y `Lead` (formulario de diagnóstico). Cada evento sale también por `/api/meta/evento` → CAPI con el mismo `event_id`, la IP y las cookies `_fbp`/`_fbc`; Meta deja uno.
+- **Servidor**: `InitiateCheckout` al abrir el pago y `Purchase` cuando el webhook confirma el pago (una vez por orden, `orders.meta_compra_at`; OXXO y SPEI con la hora real del pago, máximo 7 días). La página de gracias manda la misma compra por el píxel con `event_id = compra_<orden>`. El navegador **no** puede mandar compras.
+- Correo y nombre van con SHA-256. Las compras de $0 (regalos y cortesías) no se mandan. Un fallo de Meta nunca detiene el pago ni el webhook.
+
+Encender:
+
+1. Administrador de eventos de Meta → Conjunto de datos (píxel) de Vorka → copiar el ID → `META_PIXEL_ID` en `wrangler.jsonc`.
+2. Mismo conjunto → Configuración → API de conversiones → Generar token de acceso → `npx wrangler secret put META_CAPI_TOKEN`.
+3. Opcional para probar: `META_TEST_CODE` con el código de «Probar eventos» (quitarlo después).
+4. `npx wrangler d1 migrations apply vorka-tienda --remote` (0078, solo agrega columnas) y publicar el Worker.

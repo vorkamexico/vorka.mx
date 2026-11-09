@@ -2,6 +2,7 @@
 // GET /api/ordenes/<uuid> · estado mínimo para ese sondeo (sin datos personales).
 import { one, json, fail, correoOculto } from './util.js';
 import { pagina, aviso, esc } from './paginas.js';
+import { eventoPagina } from './meta.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { SOPORTE } from './correo.js';
@@ -15,7 +16,7 @@ const ESPERA_EFECTIVO = ['oxxo', 'customer_balance'];
 
 async function leer(env, id) {
   if (!UUID.test(id || '')) return null;
-  return one(env, `SELECT o.id, o.estado, o.metodo_pago, o.email, o.correo_enviado_at,
+  return one(env, `SELECT o.id, o.estado, o.metodo_pago, o.email, o.correo_enviado_at, o.monto_centavos, o.moneda, o.proveedor,
       (SELECT p.slug FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) slug,
       (SELECT p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = o.id ORDER BY i.id LIMIT 1) contenido,
       o.regalo, (SELECT SUM(i.cantidad) FROM order_items i WHERE i.order_id = o.id) unidades
@@ -128,6 +129,7 @@ export async function paginaGracias(env, url) {
     titulo: `${b.titulo} · Vorka México`, ruta: '/tienda/gracias', noindex: true,
     cuerpo: `<div id="estado" data-order="${esc(o.id)}" data-vista="${v}" role="status" aria-live="polite">${aviso({ ...b, extra: (b.extra || '') + nota + (v === 'pagado' && !o.regalo ? bienvenida(o) : '') })}</div>`,
     head: '<style>.t-bienvenida{margin:22px auto 0;max-width:34em;text-align:center;border-top:1px solid var(--line);padding-top:18px;display:grid;gap:6px}.t-bienvenida>b{font-size:19px}.t-bienvenida>small{color:var(--fg-2);letter-spacing:.04em}.t-bienvenida p{margin:4px 0 0;color:var(--fg-2)}.t-impacto{font-size:14px}</style>',
-    script: SONDEO,
+    // Solo compras pagadas con dinero (los regalos y cortesías de $0 no son ventas para Meta)
+    script: SONDEO + (v === 'pagado' && o.monto_centavos > 0 && !['regalo', 'cortesia'].includes(o.proveedor) ? eventoPagina('Purchase', { value: o.monto_centavos / 100, currency: o.moneda || 'MXN' }, `compra_${o.id}`) : ''),
   });
 }

@@ -56,7 +56,10 @@
     // Anuncios de Google AdSense, SOLO en Vorka Learn (src/anuncios.js). Vacías = apagados (sin script, sin espacios, sin ads.txt).
     // Para encender: ADSENSE_CLIENT "ca-pub-…" y ADSENSE_SLOTS "intro:<id>,mitad:<id>,final:<id>,indice:<id>"
     "ADSENSE_CLIENT": "ca-pub-8783293077359398",
-    "ADSENSE_SLOTS": ""
+    "ADSENSE_SLOTS": "",
+    // Píxel de Meta + API de conversiones (src/meta.js). Vacío = apagado. Encender: el ID del píxel aquí y el secreto
+    // META_CAPI_TOKEN (npx wrangler secret put META_CAPI_TOKEN). META_TEST_CODE opcional: "TEST…" de Probar eventos.
+    "META_PIXEL_ID": ""
   },
   // Cada hora: transferencias a creadores (marketplace)
   "triggers": { "crons": ["17 * * * *"] },

@@ -7,6 +7,7 @@ import { MARCAS, lineaMarca, colorDe, CSS_MARCA } from './marca-producto.js';
 import { pesos } from './util.js';
 import { listarProductos, productoPorSlug, productoPorSlugAnterior, afiliadoActivo, registrarAnalitica } from './modelo.js';
 import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
+import { eventoPagina } from './meta.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
 import { contarVisita } from './puntos.js';
@@ -484,7 +485,7 @@ export async function paginaProducto(env, req, url, slug) {
     titulo: `${p.nombre} · Vorka México`, descripcion: p.descripcion_corta, ruta, imagen,
     head: ldScript(ld) + (MARCAS[p.slug] ? `<style>${CSS_MARCA}.t-hero .pm-marca{margin-bottom:6px}.t-hero{--pm:${colorDe(p.slug)}}.t-hero .btn.acento{background:var(--pm);color:#fff}</style>` : ''),
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: SCRIPT_COMPRA + SCRIPT_PESTANAS, navActual: 'catalogo',
+    script: SCRIPT_COMPRA + SCRIPT_PESTANAS + eventoPagina('ViewContent', { content_ids: [p.id], content_name: p.nombre, content_type: 'product', value: p.precio_centavos / 100, currency: p.moneda || 'MXN' }), navActual: 'catalogo',
     cuerpo: `
 <section class="t-sec t-hero"><div class="marco t-hero-g">
   <div class="t-hero-txt">

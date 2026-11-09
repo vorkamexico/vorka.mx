@@ -11,6 +11,7 @@ import { resolverDescuento, duracionDe, lineaCompra, centavosDe } from './descue
 import { alCrearOrden, paqueteCheckout } from './tests/index.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
+import { guardarNavegador, inicioPagoMeta } from './meta.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -59,7 +60,7 @@ async function leerCuerpo(req) {
   return { datos: Object.fromEntries(f), esJson: false };
 }
 
-export async function checkout(req, env) {
+export async function checkout(req, env, ctx) {
   const { datos, esJson } = await leerCuerpo(req);
   const volver = d => `/tienda/${encodeURIComponent(d?.slug || '')}`;
   const error = (msg, status = 400) => esJson ? fail(msg, status) : Response.redirect(new URL(`${volver(datos)}?error=${encodeURIComponent(msg)}#comprar`, env.SITE_URL).toString(), 303);
@@ -195,6 +196,12 @@ export async function checkout(req, env) {
   }
   await guardarSesion(env, orden.id, cobro.sessionId);
   for (const it of orden.items) await registrarAnalitica(env, 'begin_checkout', { product_id: it.product_id, order_id: orden.id, ref_code: orden.ref_code });
+  // Meta: con qué navegador se compró (para atribuir la compra aunque se pague días después) e InitiateCheckout.
+  // Nunca detiene la compra: si Meta falla, solo queda en el log.
+  const paginaCompra = (req.headers.get('referer') || '').startsWith(env.SITE_URL) ? req.headers.get('referer') : new URL(volver(datos), env.SITE_URL).toString();
+  try { await guardarNavegador(env, orden.id, req, paginaCompra); } catch (e) { console.error('checkout: meta', e.message); }
+  { const aviso = inicioPagoMeta(env, orden, req, paginaCompra)?.catch?.(e => console.error('checkout: meta', e.message));
+    if (aviso) { if (ctx?.waitUntil) ctx.waitUntil(aviso); else await aviso; } }
 
   // descuento: qué se aplicó y por qué; aviso: por qué un código escrito no se aplicó (la compra sigue sin él)
   return esJson ? json({ url: cobro.url, order: orden.id, descuento: orden.descuento_codigo_centavos > 0 ? descuento.texto : null, aviso: desc.avisos[0] || null })
