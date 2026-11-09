@@ -356,7 +356,7 @@
           '<div class="o-1">' + resumen + '</div>' +
           (esPAA() ? '<div class="o-2 sim-card sim-meta' + (unis().length && !uniId() ? ' sim-meta-pend' : '') + '">' + uniHTML() + '<span class="etiqueta">Tu meta por sección</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de 800 por sección</small></div>' +
             '<input type="range" id="meta" min="400" max="800" step="10" value="' + m + '" aria-label="Meta de puntaje por sección (200 a 800)">' +
-            '<p class="sim-nota" id="meta-nota">' + metaNota(m) + '</p>' + tablaConversionHTML() + '</div>'
+            '<p class="sim-nota" id="meta-nota">' + metaNota(m) + '</p>' + becasHTML() + combinacionesHTML(m * 2) + tablaConversionHTML() + '</div>'
           : '<div class="o-2 sim-card sim-meta"><span class="etiqueta">Tu meta de aciertos</span><div class="sim-meta-v"><b class="num" id="meta-v">' + m + '</b><small>de ' + CFG.examenReactivos + '</small></div>' +
             '<input type="range" id="meta" min="' + CFG.meta.min + '" max="' + CFG.meta.max + '" step="' + CFG.meta.paso + '" value="' + m + '" aria-label="Meta de aciertos (de ' + CFG.examenReactivos + ')">' +
             '<p class="sim-nota">' + esc(CFG.metaNota || 'Se entra por número de aciertos hasta llenar el cupo de cada carrera. Revisa los aciertos de concursos anteriores de la tuya y ponlos aquí.') + '</p></div>') +
@@ -373,6 +373,8 @@
     r.onchange = function () { guardar(K_META, Number(r.value)); repintar('meta'); };
     app.querySelectorAll('[data-uni]').forEach(function (b) { b.onclick = function () { guardar(K_UNI, b.dataset.uni); repintar('[data-uni="' + b.dataset.uni + '"]'); }; });
     var um = document.getElementById('uni-meta'); if (um) um.onclick = function () { guardar(K_META, uniInfo().metaSeccion); repintar('meta'); };
+    // «Usar 1,360»: la meta del total se guarda como meta por sección (la mitad)
+    app.querySelectorAll('[data-meta-total]').forEach(function (b) { b.onclick = function () { guardar(K_META, Number(b.dataset.metaTotal) / 2); repintar('meta'); }; });
     var bt = document.getElementById('b-temas'); if (bt) bt.onclick = function () { elegirTemas(); };
     conectarGrafica();
     app.querySelectorAll('[data-modo]').forEach(function (b) {
@@ -414,7 +416,6 @@
     if (u) det = '<div class="sim-uni-det"><p><b>Cómo usa la PAA:</b> ' + esc(u.explica) + '</p>' +
       (u.sinMinimo ? '<p class="sim-uni-aviso">Esta universidad no publica un puntaje mínimo; revisa su convocatoria.</p>' : '') +
       '<p class="sim-nota">Fuente: <a href="' + esc(u.fuente.url) + '" target="_blank" rel="noopener">' + esc(u.fuente.nombre) + '</a> (' + esc(u.cita) + '), revisada el ' + esc(u.verificado) + '. <a href="' + esc(u.pagina) + '" target="_blank" rel="noopener">Más sobre la PAA y ' + esc(u.art + ' ' + u.nombre) + '</a>.</p>' +
-      (u.beca ? '<div class="sim-beca"><span class="etiqueta">' + esc(u.beca.texto) + '</span><p class="sim-beca-t"><span>Meta: <b class="num">' + L.miles(u.beca.valor) + '</b> de 1,600</span></p><p class="sim-nota">' + esc(u.beca.nota) + '</p>' + combinacionesHTML(u.beca.valor) + '</div>' : '') +
       (u.metaSeccion && meta() !== u.metaSeccion ? '<button class="btn blanco chico" id="uni-meta" type="button">Usar ' + u.metaSeccion + ' como mi meta por sección</button>' : '') + '</div>';
     else if (id === 'otra') det = '<div class="sim-uni-det"><p>Verás tu puntaje en la escala del College Board: cada parte de la PAA va de 200 a 800. Cada universidad lo usa distinto; revisa su convocatoria.</p></div>';
     return '<div class="sim-uni"><span class="etiqueta" id="uni-t">Tu universidad</span><h3>¿A qué universidad quieres entrar?</h3>' +
@@ -425,8 +426,22 @@
   }
   // ---------- tabla de conversión y meta de beca (PAA) ----------
   // Meta del total (de 1,600): la de la universidad si publica una referencia de beca, o tu meta por sección × 2
-  function metaTotal() { var u = uniInfo(); return u && u.beca ? u.beca.valor : meta() * 2; }
-  function textoMetaTotal() { var u = uniInfo(); return u && u.beca ? esc(u.beca.corto) : 'tu meta'; }
+  // La meta la pone el estudiante (por sección, de 200 a 800); su total es el doble. Las becas solo son referencias para elegirla.
+  function metaTotal() { return meta() * 2; }
+  function becasCon(total) { return (CFG.becas || []).filter(function (b) { return b.paa === total; }); }
+  // «Líderes del Mañana y Fundación Zaber»
+  function textoBecas(bs) { var n = bs.map(function (b) { return b.nombre; }); return n.length > 1 ? n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1] : n[0]; }
+  function becasHTML() {
+    var bs = CFG.becas || []; if (!bs.length) return '';
+    var mt = metaTotal();
+    return '<div class="sim-becas"><span class="etiqueta">¿Vas por una beca del 100 %?</span>' +
+      '<p class="sim-nota">Estas becas piden un puntaje mínimo de PAA <b>para postularte</b>. Llegar a él no te da la beca: además piden promedio, admisión, ensayos y entrevistas. Elige tu meta:</p>' +
+      '<ul class="sim-becas-l">' + bs.map(function (b) {
+        var sel = b.paa === mt;
+        return '<li><span><b>' + esc(b.nombre) + '</b><small>' + esc(b.donde) + ' · PAA ' + esc(b.paaTexto || L.miles(b.paa)) + ' · promedio ' + b.promedio + '+ · <a href="' + esc(b.pagina) + '" target="_blank" rel="noopener">requisitos</a></small></span>' +
+          (sel ? '<span class="sim-becas-sel">Tu meta</span>' : '<button type="button" class="btn blanco chico" data-meta-total="' + b.paa + '">Usar ' + L.miles(b.paa) + '</button>') + '</li>';
+      }).join('') + '</ul></div>';
+  }
   function tablaConversionHTML() {
     var fila = function (a, b) { return '<tr><td class="num">' + a + '</td><td class="num">' + b + '</td></tr>'; };
     var col = function (titulo, tabla) {
@@ -449,9 +464,11 @@
   function metaTotalHTML(res) {
     if (!esPAA()) return '';
     var p = L.partesPAA(res.secciones); if (!p || p.aciertosLR == null) return '';
-    var mt = metaTotal(), f = L.faltanParaMeta(mt, p.aciertosLR, p.aciertosMate);
-    var msg = !f ? '' : f.alcanza ? '<p class="sim-beca-ok">¡Alcanzas ' + textoMetaTotal() + ' (' + L.miles(mt) + ')!' + (p.total > mt ? ' Vas ' + (p.total - mt) + ' puntos arriba.' : '') + ' Sostenlo en el examen completo.</p>'
-      : '<p class="sim-beca-no">Te ' + (f.faltan === 1 ? 'falta <b>1 acierto</b>' : 'faltan <b>' + f.faltan + ' aciertos</b>') + ' para ' + textoMetaTotal() + ' (' + L.miles(mt) + '). Por ejemplo: ' + f.lr + ' en Lectura y Redacción y ' + f.mate + ' en Matemáticas.</p>';
+    var mt = metaTotal(), f = L.faltanParaMeta(mt, p.aciertosLR, p.aciertosMate), bs = becasCon(mt);
+    var msg = !f ? '' : f.alcanza ? '<p class="sim-beca-ok">¡Alcanzas tu meta de ' + L.miles(mt) + '!' + (p.total > mt ? ' Vas ' + (p.total - mt) + ' puntos arriba.' : '') + ' Sostenlo en el examen completo.</p>'
+      : '<p class="sim-beca-no">Te ' + (f.faltan === 1 ? 'falta <b>1 acierto</b>' : 'faltan <b>' + f.faltan + ' aciertos</b>') + ' para tu meta de ' + L.miles(mt) + '. Por ejemplo: ' + f.lr + ' en Lectura y Redacción y ' + f.mate + ' en Matemáticas.</p>';
+    // Si su meta es el mínimo de una beca, se aclara que es para postularse, no para ganarla
+    if (bs.length) msg += '<p class="sim-nota">' + L.miles(mt) + ' es el mínimo de PAA que pide' + (bs.length > 1 ? 'n ' : ' ') + esc(textoBecas(bs)) + ' para postularte; la beca la decide su comité con todo tu expediente.</p>';
     var esc_ = res.secciones.some(function (s) { var x = L.parteDeSeccion(s.id); return x && s.total !== (x === 'mate' ? 55 : s.id === 'lectura' ? 45 : 25); });
     return '<div class="sim-beca"><span class="etiqueta">Tu total PAA</span>' +
       '<p class="sim-beca-t"><span>Lectura y Redacción <b class="num">' + p.aciertosLR + '</b>/70 → <b class="num">' + p.verbal + '</b></span><span>Matemáticas <b class="num">' + p.aciertosMate + '</b>/55 → <b class="num">' + p.mate + '</b></span><span>Total <b class="num">' + L.miles(p.total) + '</b> de 1,600</span></p>' +

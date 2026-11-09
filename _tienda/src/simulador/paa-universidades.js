@@ -233,9 +233,7 @@ export const PUNTAJE_UNIVERSIDADES = {
     ref: { valor: 1200, texto: 'Mínimo UDEM' },
     explica: 'La UDEM suma tus dos partes de la PAA: Lectura y Redacción (razonamiento verbal) y Matemáticas, cada una de 200 a 800. Pide al menos 1,200 en total y 550 en cada parte (Enfermería: 1,100 y 500).',
     cita: 'numeral 5.3.6' },
-  'tec-de-monterrey': { escala: 'total', sinMinimo: true, metaSeccion: 680,
-    ref: { valor: 1360, texto: 'Meta beca 100 % (referencia)' },
-    beca: { valor: 1360, texto: 'Meta para buscar la beca del 100 %', corto: 'la meta de beca del 100 %', nota: 'Muchos aspirantes buscan 1,360 o más (de 1,600) para competir por la beca del 100 % del Tec. Es una referencia, no un requisito publicado por el Tec: la beca depende también de tu expediente y de la convocatoria de tu campus.' },
+  'tec-de-monterrey': { escala: 'total', sinMinimo: true,
     explica: 'El Tec no publica un puntaje mínimo: un Comité de Admisión revisa todo tu expediente, y solo cuenta la PAA que aplica un campus del Tec. Aquí ves tu total (Lectura y Redacción + Matemáticas, de 400 a 1,600).',
     cita: 'Arts. 3, 10 y 43' },
   udeg: { escala: 'paa', sinMinimo: true,
@@ -249,6 +247,14 @@ export const PUNTAJE_UNIVERSIDADES = {
     cita: 'preguntas frecuentes y folleto de admisión' },
 };
 // Lo que la app necesita de cada universidad (en el orden de UNIVERSIDADES), con su fuente
+// Becas del 100 % que piden un puntaje de PAA para POSTULARSE (no lo dan por llegar a él). Datos de las guías publicadas en
+// vorka.mx/oleynickhdz (cada una cita su convocatoria oficial). El estudiante elige su meta; estas solo son referencias.
+export const BECAS_PAA = [
+  { id: 'lideres', nombre: 'Líderes del Mañana', donde: 'Tec de Monterrey', paa: 1360, promedio: 90, pagina: '/oleynickhdz/lideres-del-manana/' },
+  { id: 'zaber', nombre: 'Fundación Zaber', donde: 'Tec (Campus Monterrey) o UDEM', paa: 1360, paaTexto: '1,360 en el Tec · 1,300 en la UDEM', promedio: 90, pagina: '/oleynickhdz/becas/fundacion-zaber/' },
+  { id: 'gallagher', nombre: 'Fundación Gallagher', donde: 'Tec, Campus Monterrey', paa: 1400, promedio: 95, pagina: '/oleynickhdz/becas/fundacion-gallagher/' },
+];
+
 export const universidadesCliente = () => Object.entries(UNIVERSIDADES).map(([id, u]) => ({ id, nombre: u.nombre, completo: u.completo, art: u.art,
   ...PUNTAJE_UNIVERSIDADES[id], fuente: { nombre: u.fuentes[0].nombre, url: u.fuentes[0].url }, pagina: `${RUTA}/${id}/`, verificado: u.verificado }));
 

@@ -6,7 +6,7 @@ import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { crearOrden, aplicarPago } from '../src/modelo.js';
 import { cookieAcceso, simuladores } from '../src/simulador/index.js';
-import { UNIVERSIDADES, PUNTAJE_UNIVERSIDADES, universidadesCliente } from '../src/simulador/paa-universidades.js';
+import { UNIVERSIDADES, PUNTAJE_UNIVERSIDADES, universidadesCliente, BECAS_PAA } from '../src/simulador/paa-universidades.js';
 import { LOGICA_JS, APP_JS } from '../src/simulador/cliente.generado.js';
 
 const ctx = {}; vm.createContext(ctx); vm.runInContext(LOGICA_JS, ctx);
@@ -217,11 +217,16 @@ describe('tabla de conversión PAA y meta de beca', () => {
     expect(cs.find(c => c.mate === 42)).toMatchObject({ lr: 56, total: 1360 });
     for (const c of cs) { expect(c.total).toBeGreaterThanOrEqual(1360); if (c.lr > 0) expect(L.TABLA_LR[c.lr - 1] + L.TABLA_M[c.mate]).toBeLessThan(1360); }
   });
-  it('el Tec muestra el total y la meta de beca como referencia (no como requisito)', () => {
+  it('el Tec muestra el total sin meta propia; las becas son referencias para postularse que el estudiante elige', () => {
     const u = uni('tec-de-monterrey');
-    expect(u).toMatchObject({ escala: 'total', sinMinimo: true, metaSeccion: 680, beca: { valor: 1360 } });
-    expect(u.beca.nota).toMatch(/referencia/);
+    expect(u).toMatchObject({ escala: 'total', sinMinimo: true });
+    expect(u.beca).toBeUndefined(); expect(u.metaSeccion).toBeUndefined(); expect(u.ref).toBeUndefined();
     expect(L.metaEnEscala(680, u)).toBe(1360);
+    expect(BECAS_PAA.map(b => [b.nombre, b.paa, b.promedio])).toEqual([['Líderes del Mañana', 1360, 90], ['Fundación Zaber', 1360, 90], ['Fundación Gallagher', 1400, 95]]);
+    for (const b of BECAS_PAA) expect(b.paa % 2).toBe(0);   // se guarda como meta por sección (la mitad)
+    expect(APP_JS).toContain('para postularte');
+    expect(APP_JS).toContain('Llegar a él no te da la beca');
+    expect(APP_JS).not.toContain('Alcanzas tu beca');
     expect(APP_JS).toContain('Tabla de conversión de aciertos a puntaje PAA');
   });
 });
