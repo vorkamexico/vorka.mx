@@ -1,6 +1,6 @@
 // Píxel de Meta + API de conversiones (CAPI).
 //
-// Se enciende con dos valores en Cloudflare (sin ellos no se carga nada ni se llama a Meta):
+// Se enciende con estos valores en Cloudflare (sin el ID no se carga nada; sin el token el servidor no llama a Meta):
 //   · META_PIXEL_ID   (var pública): el ID del conjunto de datos/píxel del Administrador de eventos.
 //   · META_CAPI_TOKEN (secreto): el token de acceso de la API de conversiones de ese píxel.
 //   · META_TEST_CODE  (var opcional): código de "Probar eventos"; mientras exista, Meta muestra los eventos como prueba.
@@ -17,6 +17,9 @@ const VERSION_API = 'v24.0';
 export const EVENTOS_NAVEGADOR = new Set(['PageView', 'ViewContent', 'Contact', 'Lead', 'InitiateCheckout', 'CompleteRegistration']);
 const LIMITE_EVENTOS = 120, VENTANA_EVENTOS = 600;   // por IP: de sobra para una persona navegando
 
+// Píxel del navegador: basta el ID. API de conversiones (servidor): necesita además el token, que Meta solo da a píxeles
+// de un portafolio comercial. Sin token, el píxel mide igual desde el navegador y el servidor no llama a Meta.
+export const pixelActivo = env => !!env.META_PIXEL_ID;
 export const metaActivo = env => !!(env.META_PIXEL_ID && env.META_CAPI_TOKEN);
 
 const cookieDe = (req, nombre) => {
@@ -87,7 +90,7 @@ function datosDesdeNavegador(d = {}) {
 const ID_EVENTO = /^[A-Za-z0-9_.:-]{6,100}$/;
 
 // GET /api/meta/config → { pixel } para vorka.js (null = apagado: no se carga el píxel)
-export const configMeta = env => json({ pixel: metaActivo(env) ? String(env.META_PIXEL_ID) : null }, 200, { 'cache-control': 'public, max-age=300' });
+export const configMeta = env => json({ pixel: pixelActivo(env) ? String(env.META_PIXEL_ID) : null }, 200, { 'cache-control': 'public, max-age=300' });
 
 // POST /api/meta/evento { evento, id, url, datos } (sendBeacon desde vorka.js) → 204. Reenvía a CAPI con la IP y cookies.
 export async function eventoNavegador(req, env, ctx) {
