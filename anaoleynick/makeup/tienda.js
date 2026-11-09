@@ -100,6 +100,429 @@
       pasos: { titulo: '¿Cómo funciona?', items: ['Nos cuentas y nos muestras cómo es tu cabello', 'Analizamos tu tipo de pelo y sus necesidades', 'Te enviamos un shampoo personalizado para ti'] },
       lista: { titulo: 'Beneficios', items: ['Shampoo personalizado según tu tipo de cabello', 'Fórmula adaptada a tus necesidades', 'Ideal para todo tipo de pelo', 'Enfoque en cuidado y resultados reales'] },
       pers: { pregunta: 'Cuéntanos cómo es tu cabello: tipo, textura, necesidades y objetivos', fotos: 3, preparacion: 'Hasta 7 días hábiles' }
+    },
+
+    // ---- Ruzz Man · barbería (catálogo oficial en Canva). Fotos pendientes: van en img/ y en «fotos». ----
+    {
+      slug: "shaving-gel-rosa",
+      marca: "Ruzz Man",
+      nombre: "Shaving Gel Rosa",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "shaving-gel-rosa-250ml", "nombre": "250 ml", "precio": 150}, {"id": "shaving-gel-rosa-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia dulce",
+      fotos: [],
+      parrafos: ["Haz de cada afeitado una experiencia diferente con el Shaving Gel Rosa, una fragancia con un toque dulce, suave y moderno que aporta una sensación de frescura y limpieza. Su fórmula hidratante facilita el deslizamiento del rastrillo, ayuda a prevenir la irritación y deja la piel suave, protegida y con un agradable aroma que perdura.", "Ideal para barberías, salones y uso personal. Disfruta de un afeitado profesional con la fragancia de tu color favorito y una piel protegida en cada aplicación."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y protege la piel.", "Ayuda a prevenir la irritación.", "Favorece un afeitado suave y preciso.", "Apto para todo tipo de piel.", "Fragancia dulce y duradera."]}
+    },
+    {
+      slug: "shaving-gel-verde",
+      marca: "Ruzz Man",
+      nombre: "Shaving Gel Verde",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "shaving-gel-verde-250ml", "nombre": "250 ml", "precio": 150}, {"id": "shaving-gel-verde-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia fresca",
+      fotos: [],
+      parrafos: ["Experimenta un afeitado refrescante con el Shaving Gel Verde, una fragancia inspirada en la frescura y vitalidad que brinda una sensación revitalizante durante y después del afeitado. Su fórmula hidratante ayuda a proteger la piel, facilita el deslizamiento del rastrillo y contribuye a reducir la irritación, dejando un acabado suave y confortable.", "Ideal para barberías, salones y uso personal. Disfruta de un afeitado profesional con la fragancia de tu color favorito y una piel protegida en cada aplicación."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y cuida la piel.", "Ayuda a minimizar la irritación.", "Permite un afeitado más cómodo y preciso.", "Apto para todo tipo de piel.", "Fragancia fresca y revitalizante de larga duración."]}
+    },
+    {
+      slug: "shaving-gel-morado",
+      marca: "Ruzz Man",
+      nombre: "Shaving Gel Morado",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "shaving-gel-morado-250ml", "nombre": "250 ml", "precio": 150}, {"id": "shaving-gel-morado-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia intensa",
+      fotos: [],
+      parrafos: ["Eleva tu rutina de afeitado con el Shaving Gel Morado, una fragancia con un carácter intenso, elegante y sofisticado que deja una sensación de frescura y distinción. Su fórmula hidratante permite un deslizamiento suave del rastrillo, ayuda a prevenir la irritación y protege la piel, proporcionando un acabado limpio, cómodo y con un aroma duradero.", "Ideal para barberías, salones y uso personal. Disfruta de un afeitado profesional con la fragancia de tu color favorito y una piel protegida en cada aplicación."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y protege la piel.", "Ayuda a prevenir la irritación.", "Facilita un afeitado suave y preciso.", "Apto para todo tipo de piel.", "Fragancia intensa, elegante y de larga duración."]}
+    },
+    {
+      slug: "after-shave-rosa",
+      marca: "Ruzz Man",
+      nombre: "After Shave Spray Rosa",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "after-shave-rosa-250ml", "nombre": "250 ml", "precio": 150}, {"id": "after-shave-rosa-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia dulce",
+      fotos: [],
+      parrafos: ["Convierte el afeitado en una experiencia única con el After Shave Spray Rosa. Su fragancia dulce y moderna aporta un toque distintivo que permanece en la piel, mientras su fórmula hidrata, calma y ayuda a reducir la irritación posterior al afeitado. Deja una sensación de suavidad y bienestar que hace que cada servicio se sienta más completo y profesional.", "Su aroma envolvente es perfecto para quienes buscan ofrecer un detalle diferente que marque la diferencia en la experiencia del cliente.", "Ideal para Barberías y salones que desean ofrecer un servicio premium con una fragancia moderna, así como para uso personal de quienes prefieren aromas dulces y agradables."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y suaviza la piel.", "Ayuda a disminuir la irritación después del afeitado.", "Refresca y brinda una sensación de confort.", "Fragancia dulce de larga duración.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "after-shave-verde",
+      marca: "Ruzz Man",
+      nombre: "After Shave Spray Verde",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "after-shave-verde-250ml", "nombre": "250 ml", "precio": 150}, {"id": "after-shave-verde-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia fresca",
+      fotos: [],
+      parrafos: ["El After Shave Spray Verde ofrece una sensación revitalizante que devuelve el confort a la piel después del afeitado. Su fórmula ayuda a hidratar, refrescar y aliviar la piel, mientras su fragancia fresca y energizante deja un acabado limpio y agradable durante todo el día.", "Es una excelente opción para complementar cualquier servicio de barbería, proporcionando un toque profesional que mejora la experiencia del cliente desde el primer momento.", "Ideal para Barberías con alto flujo de clientes, salones de belleza, academias de barbería y personas que buscan una sensación de frescura y energía después de cada afeitado."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y revitaliza la piel.", "Ayuda a reducir la irritación posterior al afeitado.", "Refresca y suaviza la piel.", "Fragancia fresca y duradera.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "after-shave-morado",
+      marca: "Ruzz Man",
+      nombre: "After Shave Spray Morado",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "after-shave-morado-250ml", "nombre": "250 ml", "precio": 150}, {"id": "after-shave-morado-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia intensa",
+      fotos: [],
+      parrafos: ["Dale un acabado elegante a cada servicio con el After Shave Spray Morado. Su fragancia intensa y sofisticada se combina con una fórmula que hidrata, calma y protege la piel después del afeitado, ayudando a reducir la irritación y dejando un aroma que transmite presencia y distinción.", "Pensado para quienes entienden que los pequeños detalles hacen la diferencia, este after shave convierte el final del afeitado en una experiencia premium que el cliente recordará.", "Ideal para Barberías premium, salones de belleza, distribuidores de productos profesionales y hombres que buscan un acabado sofisticado con una fragancia elegante y duradera."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y protege la piel.", "Ayuda a calmar la irritación y la sensibilidad.", "Suaviza y refresca el rostro.", "Fragancia intensa y de larga duración.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "after-shave-gris",
+      marca: "Ruzz Man",
+      nombre: "After Shave Spray Gris",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "after-shave-gris-250ml", "nombre": "250 ml", "precio": 150}, {"id": "after-shave-gris-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia elegante",
+      fotos: [],
+      parrafos: ["El After Shave Spray Gris está diseñado para quienes buscan un acabado elegante y una sensación de confort después de cada afeitado. Su fórmula ayuda a hidratar y suavizar la piel, reduciendo la irritación y proporcionando una agradable sensación de frescura. Su fragancia de carácter sobrio y masculino aporta un toque de distinción que complementa cualquier servicio profesional.", "Es el aliado perfecto para ofrecer una experiencia de barbería de alto nivel, dejando al cliente con una piel revitalizada y un aroma sofisticado que perdura durante horas.", "Ideal para Barberías tradicionales, barberías premium, salones de belleza y profesionales que buscan ofrecer un servicio con una imagen clásica, elegante y de alta calidad."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y protege la piel después del afeitado.", "Ayuda a reducir la irritación y el enrojecimiento.", "Suaviza y refresca la piel al instante.", "Fragancia elegante y masculina de larga duración.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "after-shave-rojo",
+      marca: "Ruzz Man",
+      nombre: "After Shave Spray Rojo",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "after-shave-rojo-250ml", "nombre": "250 ml", "precio": 150}, {"id": "after-shave-rojo-500ml", "nombre": "500 ml", "precio": 250}],
+      contenido: "250 ml · 500 ml",
+      etiqueta: "Fragancia intensa",
+      fotos: [],
+      parrafos: ["El After Shave Spray Rojo combina una fragancia intensa y cautivadora con una fórmula que brinda el cuidado que la piel necesita después del afeitado. Ayuda a hidratar, calmar y refrescar la piel, disminuyendo la sensación de irritación y dejando un acabado suave acompañado de un aroma con mucha personalidad.", "Pensado para quienes desean que cada servicio termine con un toque distintivo, este after shave aporta una experiencia que transmite confianza, energía y estilo desde la primera aplicación.", "Ideal para Barberías modernas, salones de belleza, distribuidores de productos profesionales y hombres que buscan un aroma con carácter para complementar su rutina de cuidado personal."],
+      lista: {"titulo": "Beneficios", "items": ["Hidrata y calma la piel después del afeitado.", "Ayuda a disminuir la irritación causada por el rastrillo.", "Refresca y deja una sensación de confort inmediato.", "Fragancia intensa y duradera.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "jabon-minoxidil-bergamota-romero",
+      marca: "Ruzz Man",
+      nombre: "Jabón con Minoxidil, Bergamota y Romero",
+      categoria: "Afeitado",
+      precio: 150,
+      etiqueta: "Piel, barba y cuero cabelludo",
+      fotos: [],
+      parrafos: ["Descubre el equilibrio perfecto entre limpieza y cuidado con el Jabón con Minoxidil, Bergamota y Romero de Ruzz Man. Su fórmula está diseñada para limpiar profundamente la piel, el cuero cabelludo y la barba sin resecar, proporcionando una agradable sensación de frescura y bienestar en cada uso.", "Enriquecido con minoxidil, bergamota y romero, este jabón es el complemento ideal para una rutina de cuidado personal, ayudando a mantener una piel limpia y un cabello o barba con una apariencia saludable. Sus ingredientes ofrecen una experiencia refrescante y revitalizante, ideal para el uso diario.", "Ideal para Barberías, salones de belleza, spas, estéticas, distribuidores de productos profesionales y personas que buscan complementar su rutina de cuidado personal con un jabón de uso diario formulado con ingredientes de alta calidad. Su uso es apto tanto para hombres como para mujeres que desean mantener una piel y un cabello limpios, frescos y con una apariencia saludable."],
+      lista: {"titulo": "Beneficios", "items": ["Limpia profundamente sin resecar la piel.", "Enriquecido con minoxidil, bergamota y romero.", "Ayuda a mantener la piel fresca y con una sensación de hidratación.", "Ideal para el cuidado diario del cabello, la barba y el cuero cabelludo.", "Aporta una agradable sensación de frescura después de cada uso.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "talco-con-aroma",
+      marca: "Ruzz Man",
+      nombre: "Talco con Aroma",
+      categoria: "Afeitado",
+      precio: 150,
+      variantes: [{"id": "talco-con-aroma-150g", "nombre": "150 g", "precio": 150}, {"id": "talco-con-aroma-300g", "nombre": "300 g", "precio": 220}],
+      contenido: "150 g · 300 g",
+      etiqueta: "Ultrafino",
+      fotos: [],
+      parrafos: ["Mantén la piel fresca, seca y cómoda durante todo el día con el Talco Ultrafino. Su fórmula de textura ligera ayuda a absorber el exceso de humedad y a controlar la transpiración, proporcionando una sensación de frescura inmediata sin dejar residuos pesados. Es ideal para el uso diario y para mantener la piel protegida en cualquier momento del día.", "Además de brindar confort y frescura, su versatilidad lo convierte en un gran aliado dentro de la barbería y el salón de belleza. En el peinado, es perfecto para aportar textura y volumen al cabello, especialmente en peinados con efecto mate. También es una excelente opción para mujeres que buscan elevar el volumen desde la raíz, logrando un acabado con mayor cuerpo y movimiento sin apelmazar el cabello.", "Ideal para Barberías, salones de belleza, estilistas profesionales, academias de barbería y estética, distribuidores de productos profesionales y personas que buscan mantener la piel fresca o dar mayor volumen y textura a su peinado. Apto para hombres y mujeres, especialmente para quienes desean un acabado natural, con más cuerpo y fijación ligera en el cabello."],
+      lista: {"titulo": "Beneficios", "items": ["Ayuda a absorber la humedad y el exceso de grasa.", "Contribuye a controlar la transpiración.", "Proporciona una sensación de frescura y confort.", "Textura ultrafina que se distribuye fácilmente.", "Ideal para aportar textura y volumen al cabello.", "Ayuda a elevar el peinado desde la raíz con un acabado natural y mate.", "Apto para uso diario."]}
+    },
+    {
+      slug: "facial-scrub",
+      marca: "Ruzz Man",
+      nombre: "Facial Scrub",
+      categoria: "Afeitado",
+      precio: 230,
+      contenido: "240 ml",
+      etiqueta: "Exfoliante facial",
+      fotos: [],
+      parrafos: ["Renueva la piel con Facial Scrub, un exfoliante facial diseñado para eliminar impurezas, células muertas y el exceso de grasa, dejando el rostro limpio, suave y con una apariencia revitalizada. Su fórmula ayuda a preparar la piel para el afeitado o para cualquier rutina de cuidado facial, proporcionando una sensación de frescura desde la primera aplicación.", "Su textura exfoliante limpia profundamente sin resecar, favoreciendo una piel más uniforme y de aspecto saludable. Es el complemento ideal para quienes buscan mantener una rutina de cuidado facial profesional desde casa o en la barbería.", "Ideal para Barberías, salones de belleza, spas, estéticas, distribuidores de productos profesionales y personas que desean mantener una piel limpia, fresca y saludable como parte de su rutina de cuidado facial. Apto para hombres y mujeres."],
+      lista: {"titulo": "Beneficios", "items": ["Exfolia suavemente la piel.", "Ayuda a eliminar células muertas e impurezas.", "Limpia profundamente los poros.", "Favorece una piel más suave y uniforme.", "Prepara el rostro para el afeitado y otros tratamientos faciales.", "Aporta una agradable sensación de frescura.", "Apto para todo tipo de piel."]}
+    },
+    {
+      slug: "shampoo-minoxidil",
+      marca: "Ruzz Man",
+      nombre: "Shampoo con Minoxidil",
+      categoria: "Cabello",
+      precio: 250,
+      contenido: "500 ml",
+      etiqueta: "Fortalece desde la raíz",
+      fotos: [],
+      parrafos: ["Fortalece tu rutina de cuidado capilar con el Shampoo con Minoxidil, una fórmula diseñada para limpiar profundamente el cuero cabelludo mientras ayuda a fortalecer el cabello desde la raíz. Su uso diario contribuye a mantener el cuero cabelludo limpio, fresco y en óptimas condiciones, favoreciendo una apariencia de mayor densidad y vitalidad.", "Gracias a su fórmula de limpieza suave, elimina impurezas y el exceso de grasa sin resecar, dejando el cabello con una sensación de frescura, suavidad y manejabilidad. Es el complemento ideal para quienes buscan cuidar y fortalecer su cabello como parte de una rutina completa de cuidado capilar."],
+      lista: {"titulo": "Beneficios", "items": ["Limpia profundamente el cuero cabelludo y el cabello.", "Ayuda a fortalecer el cabello desde la raíz.", "Contribuye a reducir la apariencia de la caída por quiebre.", "Favorece una apariencia de mayor volumen y densidad.", "Aporta frescura, suavidad y brillo natural.", "Ideal para uso diario.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "smooth-pre-hair-cut",
+      marca: "Ruzz Man",
+      nombre: "Smooth Pre Hair Cut",
+      categoria: "Cabello",
+      precio: 270,
+      contenido: "500 ml",
+      etiqueta: "Crema pre corte",
+      fotos: [],
+      parrafos: ["Prepara el cabello para un corte más preciso con Smooth Pre Hair Cut, la crema pre corte diseñada para facilitar el trabajo del estilista o barbero desde el primer paso. Su fórmula ayuda a suavizar y acondicionar el cabello, mejorando su manejabilidad para lograr cortes más limpios, uniformes y con mayor control.", "Ideal para Barberías, salones de belleza, academias de barbería y estilismo, distribuidores de productos profesionales y personas que desean preparar el cabello antes del corte para obtener un acabado más limpio, preciso y profesional. Apto para hombres, mujeres y niños, ya que puede utilizarse en cualquier tipo de cabello antes del servicio de corte."],
+      lista: {"titulo": "Beneficios", "items": ["Suaviza y acondiciona el cabello antes del corte.", "Facilita el peinado y el manejo del cabello.", "Ayuda a realizar cortes más precisos y uniformes.", "Aporta hidratación ligera sin dejar residuos grasos.", "Reduce el frizz y mejora el control durante el servicio.", "Apto para todo tipo de cabello.", "Ideal para uso profesional y personal."]}
+    },
+    {
+      slug: "acondicionador-aceite-minoxidil",
+      marca: "Ruzz Man",
+      nombre: "Acondicionador en Aceite + Minoxidil",
+      categoria: "Cabello",
+      precio: 200,
+      contenido: "50 ml",
+      etiqueta: "Bergamota y aminoácidos",
+      fotos: [],
+      parrafos: ["Dale a tu rutina capilar un impulso de nutrición y cuidado con Hair Minoxidil, un aceite enriquecido con bergamota y aminoácidos, formulado para ayudar a mantener un cabello con una apariencia más fuerte, suave y saludable. Su textura ligera facilita la aplicación sin dejar una sensación pesada, permitiendo que el cabello luzca con mayor brillo, hidratación y vitalidad.", "Gracias a su combinación de ingredientes, ayuda a acondicionar el cabello, controlar el frizz y mejorar su manejabilidad, convirtiéndose en el complemento ideal para una rutina de cuidado capilar diaria. Es perfecto para quienes buscan mantener un cabello bien cuidado y con una apariencia saludable desde la raíz hasta las puntas.", "Ideal para Barberías, salones de belleza, estéticas, academias de estilismo, distribuidores de productos profesionales y personas que desean complementar su rutina de cuidado capilar con un aceite de uso diario. Apto para hombres y mujeres que buscan mantener un cabello hidratado, nutrido y con una apariencia más saludable."],
+      lista: {"titulo": "Beneficios", "items": ["Ayuda a fortalecer la apariencia del cabello.", "Nutre e hidrata la fibra capilar.", "Enriquecido con bergamota y aminoácidos.", "Favorece un cabello más suave, brillante y manejable.", "Ayuda a controlar el frizz y el cabello rebelde.", "Textura ligera de rápida absorción.", "Ideal para uso diario.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "acondicionador-aceite",
+      marca: "Ruzz Man",
+      nombre: "Acondicionador en Aceite",
+      categoria: "Cabello",
+      precio: 200,
+      contenido: "50 ml",
+      etiqueta: "Nutre sin engrasar",
+      fotos: [],
+      parrafos: ["Dale a tu cabello el cuidado que merece con el Acondicionador en Aceite, una fórmula diseñada para nutrir, suavizar e hidratar la fibra capilar sin dejar sensación pesada. Su textura ligera ayuda a mejorar la manejabilidad del cabello, aportando brillo natural y una apariencia saludable desde la primera aplicación.", "Ideal para Barberías, salones de belleza, estéticas, academias de estilismo, distribuidores de productos profesionales y personas que desean mantener su cabello hidratado, suave y con un aspecto saludable. Apto para hombres y mujeres, especialmente para cabellos secos, maltratados, con frizz o que requieren un extra de nutrición y brillo."],
+      lista: {"titulo": "Beneficios", "items": ["Nutre e hidrata profundamente el cabello.", "Ayuda a controlar el frizz y el cabello rebelde.", "Facilita el peinado y mejora la manejabilidad.", "Aporta brillo natural y suavidad.", "Textura ligera de rápida absorción.", "No deja sensación grasosa.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "bifasic24",
+      marca: "Ruzz Man",
+      nombre: "Bifasic24 Tratamiento Capilar",
+      categoria: "Cabello",
+      precio: 250,
+      contenido: "250 ml",
+      etiqueta: "Sin enjuague",
+      fotos: [],
+      parrafos: ["Devuélvele vida a tu cabello con Bifasic24, un tratamiento capilar bifásico formulado para hidratar, nutrir y proteger la fibra capilar durante todo el día. Su fórmula ayuda a desenredar el cabello con facilidad, controlar el frizz y aportar un brillo saludable, dejando una sensación de suavidad y ligereza desde la primera aplicación.", "Gracias a su acción hidratante de hasta 24 horas, es el complemento ideal para el cuidado diario, ayudando a mantener el cabello manejable, sedoso y con una apariencia saludable sin necesidad de enjuague.", "Ideal para Salones de belleza, barberías, estéticas, academias de estilismo, distribuidores de productos profesionales y personas que desean mantener su cabello hidratado, suave y fácil de peinar. Apto para hombres, mujeres y niños, especialmente para cabellos secos, maltratados o con tendencia al frizz."],
+      lista: {"titulo": "Beneficios", "items": ["Ayuda a desenredar el cabello fácilmente.", "Proporciona hidratación de larga duración.", "Nutre la fibra capilar.", "Controla el frizz y el cabello rebelde.", "Aporta brillo y suavidad.", "No requiere enjuague.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "minoxidil-7",
+      marca: "Ruzz Man",
+      nombre: "Minoxidil 7% + Bergamota",
+      categoria: "Cabello",
+      precio: 250,
+      contenido: "30 ml",
+      etiqueta: "Concentración 7%",
+      fotos: [],
+      parrafos: ["Para quienes buscan una concentración mayor, el Minoxidil + Bergamota 7% ofrece una fórmula diseñada para complementar el cuidado capilar con una aplicación práctica y cómoda. Su textura ligera permite una distribución uniforme y una rápida absorción, mientras la bergamota proporciona una sensación refrescante.", "Es una excelente alternativa para quienes desean fortalecer su rutina diaria de cuidado personal.", "Ideal para Barberías, estéticas, distribuidores especializados y personas que buscan una concentración superior de minoxidil para complementar su rutina de cuidado capilar."],
+      lista: {"titulo": "Beneficios", "items": ["Solución concentrada al 7%.", "Fácil aplicación.", "Rápida absorción.", "Fórmula enriquecida con bergamota.", "Ideal para uso continuo."]}
+    },
+    {
+      slug: "minoxidil-10",
+      marca: "Ruzz Man",
+      nombre: "Minoxidil 10% + Bergamota",
+      categoria: "Cabello",
+      precio: 270,
+      contenido: "30 ml",
+      etiqueta: "Concentración 10%",
+      fotos: [],
+      parrafos: ["El Minoxidil + Bergamota 10% está desarrollado para quienes prefieren una solución de mayor concentración como parte de su rutina de cuidado capilar. Su fórmula facilita una aplicación uniforme y rápida, proporcionando una experiencia cómoda y práctica para el uso diario.", "Gracias a su presentación compacta, es ideal para llevarlo a cualquier lugar y mantener la constancia en la aplicación.", "Ideal para Barberías, salones de belleza, profesionales del cuidado capilar y personas que buscan una concentración más alta de minoxidil dentro de su rutina diaria."],
+      lista: {"titulo": "Beneficios", "items": ["Solución concentrada al 10%.", "Fácil aplicación.", "Rápida absorción.", "Presentación práctica.", "Complementa la rutina de cuidado capilar."]}
+    },
+    {
+      slug: "gel-natural-extra-fuerte",
+      marca: "Ruzz Man",
+      nombre: "Gel Natural Extra Fuerte",
+      categoria: "Peinado",
+      precio: 160,
+      variantes: [{"id": "gel-natural-extra-fuerte-250g", "nombre": "250 g", "precio": 160}, {"id": "gel-natural-extra-fuerte-500g", "nombre": "500 g", "precio": 230}, {"id": "gel-natural-extra-fuerte-1000g", "nombre": "1000 g", "precio": 350}],
+      contenido: "250 g · 500 g · 1000 g",
+      etiqueta: "Fijación extra fuerte",
+      fotos: [],
+      parrafos: ["Consigue un peinado firme y con acabado natural gracias al Gel Natural Azul. Su fórmula proporciona una fijación extra fuerte que mantiene el cabello en su lugar durante horas sin dejar residuos visibles ni sensación pegajosa. Ideal para crear peinados definidos, clásicos o modernos, ofreciendo control y una apariencia impecable durante todo el día.", "Ideal para Barberías, salones de belleza, estilistas profesionales y personas que buscan una fijación resistente para peinados que requieren máxima duración sin perder un acabado natural."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación extra fuerte de larga duración.", "No deja residuos visibles.", "Ayuda a mantener el peinado por más tiempo.", "Acabado natural y ligero.", "Fácil de aplicar y retirar.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "gel-natural-fuerte",
+      marca: "Ruzz Man",
+      nombre: "Gel Natural Fuerte",
+      categoria: "Peinado",
+      precio: 160,
+      variantes: [{"id": "gel-natural-fuerte-250g", "nombre": "250 g", "precio": 160}, {"id": "gel-natural-fuerte-500g", "nombre": "500 g", "precio": 230}, {"id": "gel-natural-fuerte-1000g", "nombre": "1000 g", "precio": 350}],
+      contenido: "250 g · 500 g · 1000 g",
+      etiqueta: "Fijación fuerte",
+      fotos: [],
+      parrafos: ["El Gel Natural Rosa ofrece el equilibrio perfecto entre control y flexibilidad. Su fijación fuerte permite moldear el cabello con facilidad, manteniendo el peinado definido sin endurecerlo en exceso. Ideal para quienes desean un estilo duradero con movimiento natural.", "Ideal para Barberías, salones de belleza, uso diario y personas que buscan una fijación confiable para peinados con movimiento y un acabado natural."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación fuerte y flexible.", "Mantiene el peinado durante horas.", "No deja residuos.", "Proporciona un acabado natural.", "Fácil aplicación.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "gel-natural-medio",
+      marca: "Ruzz Man",
+      nombre: "Gel Natural Medio",
+      categoria: "Peinado",
+      precio: 160,
+      variantes: [{"id": "gel-natural-medio-250g", "nombre": "250 g", "precio": 160}, {"id": "gel-natural-medio-500g", "nombre": "500 g", "precio": 230}, {"id": "gel-natural-medio-1000g", "nombre": "1000 g", "precio": 350}],
+      contenido: "250 g · 500 g · 1000 g",
+      etiqueta: "Fijación media",
+      fotos: [],
+      parrafos: ["El Gel Natural Verde está pensado para quienes prefieren un peinado con apariencia natural y movimiento. Su fijación media permite controlar el cabello sin rigidez, facilitando retoques durante el día y proporcionando un acabado limpio y ligero.", "Ideal para Barberías, salones de belleza, estilistas y personas que buscan un look natural con control ligero para el día a día."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación media con acabado natural.", "Conserva el movimiento del cabello.", "No deja residuos ni sensación pesada.", "Fácil de peinar y remodelar.", "Ideal para uso diario.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "cera-gel-maxima-fijacion",
+      marca: "Ruzz Man",
+      nombre: "Cera Gel Máxima Fijación",
+      categoria: "Peinado",
+      precio: 160,
+      variantes: [{"id": "cera-gel-maxima-fijacion-250g", "nombre": "250 g", "precio": 160}, {"id": "cera-gel-maxima-fijacion-500g", "nombre": "500 g", "precio": 230}, {"id": "cera-gel-maxima-fijacion-1000g", "nombre": "1000 g", "precio": 350}],
+      contenido: "250 g · 500 g · 1000 g",
+      etiqueta: "Fijación máxima",
+      fotos: [],
+      parrafos: ["La Cera Gel combina la firmeza de un gel con la textura y definición de una cera, ofreciendo una máxima fijación para peinados que necesitan permanecer intactos durante todo el día. Su fórmula proporciona un excelente control sin dejar residuos visibles, permitiendo crear estilos estructurados con un acabado limpio y profesional.", "Es ideal para peinados modernos, cabello corto o de longitud media, y estilos que requieren definición, textura y una fijación superior.", "Ideal para Barberías, salones de belleza, academias de estilismo, distribuidores de productos profesionales y personas que buscan un producto de alto rendimiento para lograr peinados con máxima duración, definición y control, tanto para hombres como para mujeres."],
+      lista: {"titulo": "Beneficios", "items": ["Máxima fijación de larga duración.", "Define y aporta textura al peinado.", "No deja residuos visibles.", "Fácil de aplicar y distribuir.", "Ideal para peinados estructurados.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "pomade-extra-fuerte",
+      marca: "Ruzz Man",
+      nombre: "Pomade #1 Extra Fuerte",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Fijación extra fuerte",
+      fotos: [],
+      parrafos: ["Cuando el estilo no puede fallar, la Pomade #1 ofrece una fijación extra fuerte que mantiene el peinado impecable desde la mañana hasta la noche. Su fórmula proporciona un excelente control para crear estilos estructurados, clásicos o modernos, conservando una apariencia limpia y profesional durante horas.", "Diseñada para quienes buscan un acabado de alto rendimiento, permite moldear el cabello con precisión sin dejar residuos visibles.", "Ideal para Barberías, salones de belleza y personas que necesitan una fijación de alto desempeño para peinados impecables durante todo el día."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación extra fuerte.", "Mantiene el peinado durante horas.", "Excelente control y definición.", "No deja residuos visibles.", "Fácil aplicación y retiro."]}
+    },
+    {
+      slug: "pomade-fuerte",
+      marca: "Ruzz Man",
+      nombre: "Pomade #2 Fuerte",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Fijación fuerte",
+      fotos: [],
+      parrafos: ["La Pomade #2 está pensada para quienes desean un peinado definido sin llegar a una fijación extrema. Su fórmula brinda el equilibrio perfecto entre firmeza y flexibilidad, permitiendo mantener el estilo con una apariencia natural y bien cuidada.", "Es una excelente opción para el uso diario, ofreciendo control, textura y un acabado profesional.", "Ideal para Barberías, estilistas y personas que buscan una fijación confiable para un look limpio, elegante y duradero."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación fuerte.", "Define el peinado sin endurecer en exceso.", "Conserva una apariencia natural.", "Fácil de distribuir.", "No deja sensación pegajosa."]}
+    },
+    {
+      slug: "pomade-media",
+      marca: "Ruzz Man",
+      nombre: "Pomade #3 Media",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Fijación media",
+      fotos: [],
+      parrafos: ["La Pomade #3 fue creada para quienes prefieren un estilo relajado y con movimiento. Su fijación media proporciona el control suficiente para mantener el peinado ordenado sin perder naturalidad, permitiendo retocar el cabello cuando sea necesario.", "Ideal para Salones de belleza, barberías y personas que prefieren un acabado natural con un toque de definición y flexibilidad."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación media.", "Conserva el movimiento natural.", "Aporta textura y definición.", "No endurece el cabello.", "Ideal para uso diario."]}
+    },
+    {
+      slug: "pomade-baja",
+      marca: "Ruzz Man",
+      nombre: "Pomade #4 Baja",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Fijación ligera",
+      fotos: [],
+      parrafos: ["Para quienes buscan un acabado natural, la Pomade #4 ofrece una fijación ligera que ayuda a controlar el cabello sin perder suavidad ni movimiento. Es perfecta para peinados casuales y para quienes desean un look fresco con una apariencia completamente natural.", "Su fórmula permite acomodar el cabello fácilmente durante el día, proporcionando una sensación ligera y confortable.", "Ideal para Hombres y mujeres que buscan un producto ligero para controlar el cabello sin rigidez, así como para barberías y salones que ofrecen estilos naturales."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación ligera.", "Mantiene el movimiento natural.", "No deja residuos.", "Textura suave y fácil de aplicar.", "Ideal para peinados casuales."]}
+    },
+    {
+      slug: "pomade-minoxidil-extra-fuerte",
+      marca: "Ruzz Man",
+      nombre: "Pomade #6 + Minoxidil Extra Fuerte",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Fijación extra fuerte",
+      fotos: [],
+      parrafos: ["La Pomade #6 con Minoxidil fue desarrollada para ofrecer una fijación extra fuerte mientras complementa la rutina de cuidado capilar. Enriquecida con minoxidil, ayuda a mantener el peinado firme durante todo el día sin sacrificar una apariencia limpia y profesional.", "Su textura facilita el moldeado del cabello, proporcionando control, definición y un acabado de calidad profesional desde la primera aplicación.", "Ideal para: Barberías, salones de belleza, distribuidores de productos profesionales y personas que buscan una pomada de máxima fijación como parte de su rutina diaria de estilizado y cuidado capilar."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación extra fuerte.", "Enriquecida con minoxidil.", "Excelente control y definición.", "Mantiene el peinado durante horas.", "Fácil de aplicar y retirar."]}
+    },
+    {
+      slug: "spider-wax",
+      marca: "Ruzz Man",
+      nombre: "Spider Wax Fuerte",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Efecto fibra",
+      fotos: [],
+      parrafos: ["Lleva tu creatividad al siguiente nivel con Spider Wax, una cera para peinar de fijación fuerte que permite crear estilos con textura, definición y un efecto flexible gracias a su característica consistencia tipo \"telaraña\". Su fórmula facilita moldear el cabello con precisión, aportando un acabado natural y permitiendo reajustar el peinado cuando sea necesario.", "Es ideal para crear peinados modernos con volumen, separación de mechones y un look dinámico sin dejar residuos visibles.", "Ideal para Barberías, salones de belleza, estilistas profesionales y personas que buscan crear peinados modernos con textura, volumen y movimiento sin perder el control del cabello."],
+      lista: {"titulo": "Beneficios", "items": ["Fijación fuerte de larga duración.", "Efecto fibra para mayor textura y definición.", "Permite remodelar el peinado.", "No deja residuos visibles.", "Acabado natural con excelente control."]}
+    },
+    {
+      slug: "pomade-matte-clay",
+      marca: "Ruzz Man",
+      nombre: "Pomade Matte Clay",
+      categoria: "Peinado",
+      precio: 200,
+      contenido: "150 g",
+      etiqueta: "Acabado mate",
+      fotos: [],
+      parrafos: ["La Matte Clay está diseñada para quienes prefieren un estilo natural y sofisticado. Su fórmula proporciona una fijación confiable con un acabado completamente mate, ayudando a dar textura y cuerpo al cabello sin aportar brillo.", "Perfecta para crear peinados con efecto despeinado, volumen o estilos contemporáneos, ofreciendo una apariencia limpia y profesional durante todo el día.", "Ideal para Barberías, salones de belleza, academias de estilismo y personas que buscan un look moderno, con textura y un acabado mate de aspecto natural."],
+      lista: {"titulo": "Beneficios", "items": ["Acabado completamente mate.", "Aporta textura y volumen.", "Controla el cabello sin dejar brillo.", "Fácil aplicación y distribución.", "No deja sensación grasosa."]}
+    },
+    {
+      slug: "sea-salt",
+      marca: "Ruzz Man",
+      nombre: "Sea Salt Texturizing Spray",
+      categoria: "Peinado",
+      precio: 150,
+      contenido: "236 ml",
+      etiqueta: "Efecto playero",
+      fotos: [],
+      parrafos: ["Consigue un look con textura, volumen y movimiento natural con el Sea Salt Texturizing Spray. Su fórmula está diseñada para aportar cuerpo al cabello sin dejarlo pesado, logrando un acabado con efecto playero, moderno y desenfadado. Es ideal para crear peinados con mayor definición, textura y un aspecto natural tanto en cabello corto como largo.", "Además de facilitar el peinado, ayuda a dar volumen desde la raíz y mejora la manejabilidad del cabello, convirtiéndose en un aliado para el estilizado diario.", "Ideal para Barberías, salones de belleza, estilistas profesionales, academias de estilismo y personas que desean dar más volumen, textura y movimiento a su cabello. Apto para hombres y mujeres, especialmente para quienes buscan un acabado natural y moderno."],
+      lista: {"titulo": "Beneficios", "items": ["Aporta textura y volumen al cabello.", "Proporciona un acabado natural con efecto mate.", "Ayuda a crear un estilo con apariencia playera.", "Facilita el peinado y la definición de mechones.", "No deja sensación pesada ni residuos visibles.", "Ideal para uso diario.", "Apto para todo tipo de cabello."]}
+    },
+    {
+      slug: "volutex",
+      marca: "Ruzz Man",
+      nombre: "Volutex Polvo de Volumen",
+      categoria: "Peinado",
+      precio: 150,
+      variantes: [{"id": "volutex-10g", "nombre": "10 g", "precio": 150}, {"id": "volutex-20g", "nombre": "20 g", "precio": 250}],
+      contenido: "10 g · 20 g",
+      etiqueta: "Volumen y textura",
+      fotos: [],
+      parrafos: ["Lleva tus peinados al siguiente nivel con Volutex, el polvo de volumen y textura diseñado para transformar cualquier estilo en segundos. Su fórmula ultraligera proporciona un efecto mate con control ligero, aportando cuerpo y volumen desde la raíz sin dejar el cabello pesado o con residuos visibles.", "Ideal para Barberías, salones de belleza, estilistas profesionales, academias de barbería y personas que buscan dar mayor volumen, textura y cuerpo a su peinado. Apto para hombres y mujeres, especialmente para quienes tienen cabello fino o desean un acabado con más elevación, definición y un estilo natural sin brillo."],
+      lista: {"titulo": "Beneficios", "items": ["Aporta volumen inmediato desde la raíz.", "Proporciona textura para un mejor estilizado.", "Acabado mate de apariencia natural.", "Control ligero que conserva el movimiento del cabello.", "No deja residuos visibles ni sensación grasosa.", "Fácil aplicación y distribución.", "Ideal para todo tipo de cabello."]}
+    },
+    {
+      slug: "cool7-plus",
+      marca: "Ruzz Man",
+      nombre: "Cool Plus 7 en 1",
+      categoria: "Barbería",
+      precio: 240,
+      contenido: "449 ml",
+      etiqueta: "Cuidado de cuchillas",
+      fotos: [],
+      parrafos: ["Mantén tus máquinas de corte en óptimas condiciones con Cool Plus 7 en 1, el spray indispensable para el cuidado y mantenimiento de cuchillas profesionales. Su fórmula multifuncional ayuda a enfriar, limpiar, lubricar y proteger las cuchillas durante y después de cada servicio, mejorando el rendimiento del equipo y prolongando su vida útil.", "Su aplicación rápida elimina residuos acumulados entre las cuchillas, reduce la fricción durante el uso continuo y ayuda a prevenir la corrosión, permitiendo cortes más suaves, precisos y eficientes. Además, deja una agradable sensación de frescura y un aroma limpio que complementa el ambiente de trabajo en barberías y salones.", "Ideal para Barberías, salones de belleza, academias de barbería, estilistas profesionales, distribuidores de herramientas de barbería y cualquier persona que desee mantener sus máquinas y cuchillas en excelentes condiciones, prolongando su rendimiento y ofreciendo un servicio más eficiente y profesional."],
+      lista: {"titulo": "Beneficios", "items": ["Enfría las cuchillas de forma inmediata.", "Ayuda a limpiar residuos de cabello y suciedad.", "Lubrica para un funcionamiento más suave.", "Contribuye a prevenir la corrosión y el desgaste.", "Favorece un mejor desempeño de la máquina.", "Deja un aroma fresco y agradable.", "Fácil aplicación en spray."]}
+    },
+    {
+      slug: "towel-essence",
+      marca: "Ruzz Man",
+      nombre: "Towel Essence",
+      categoria: "Barbería",
+      precio: 220,
+      contenido: "500 ml",
+      etiqueta: "Aroma para toallas",
+      fotos: [],
+      parrafos: ["Convierte cada servicio en una experiencia más agradable con Towel Essence Spray, una esencia aromática especialmente formulada para perfumar las toallas utilizadas en barberías, salones de belleza y spas. Su fragancia aporta una agradable sensación de limpieza y frescura, creando un ambiente más profesional y brindando un toque de confort a cada cliente.", "Ideal para Barberías, salones de belleza, spas, estéticas, hoteles, academias de barbería y estilismo, así como profesionales que buscan ofrecer un servicio con mayor calidad, confort y una experiencia sensorial que haga la diferencia para sus clientes."],
+      lista: {"titulo": "Beneficios", "items": ["Aromatiza las toallas con una fragancia agradable.", "Proporciona una sensación de limpieza y frescura.", "Ayuda a mejorar la experiencia del cliente.", "Fácil aplicación en spray.", "Ideal para uso profesional.", "Aroma de larga duración."]}
+    },
+    {
+      slug: "barbicidex",
+      marca: "Ruzz Man",
+      nombre: "Barbicidex",
+      categoria: "Barbería",
+      precio: 260,
+      contenido: "1000 ml",
+      etiqueta: "Desinfectante al 12%",
+      fotos: [],
+      parrafos: ["Mantén un entorno de trabajo limpio y profesional con Barbicidex, una solución desinfectante al 12% especialmente formulada para la limpieza y desinfección de instrumental utilizado en barberías, salones de belleza, estéticas y centros de cuidado personal. Su fórmula ayuda a mantener las herramientas en óptimas condiciones de higiene, contribuyendo a ofrecer un servicio más seguro y confiable.", "Además de su acción desinfectante, cuenta con propiedades anticorrosivas, ayudando a proteger el instrumental metálico del desgaste ocasionado por el uso constante y prolongando su vida útil.", "Ideal para Barberías, salones de belleza, estéticas, spas, academias de barbería y estilismo, distribuidores de productos profesionales y cualquier establecimiento que requiera mantener sus herramientas de trabajo limpias, protegidas y listas para brindar un servicio con altos estándares de higiene."],
+      lista: {"titulo": "Beneficios", "items": ["Solución desinfectante al 12%.", "Ayuda a mantener el instrumental limpio e higienizado.", "Fórmula con acción anticorrosiva.", "Contribuye a prolongar la vida útil de las herramientas metálicas.", "Fácil de utilizar como parte del protocolo de limpieza.", "Ideal para uso profesional."]}
     }
   ];
 
@@ -113,7 +536,9 @@
     'shampoo-personalizado': '#DCD2C7'       // arena
   };
   var TONO_BASE = '#ECE6DF';
-  function tono(p) { return TONOS[p.key] || TONO_BASE; }
+  // Línea Ruzz Man: un tono por categoría
+  var TONOS_CAT = { 'Afeitado': '#DDE2E3', 'Peinado': '#E2DDD6', 'Barbería': '#DCDDE0', 'Cabello': '#DCD2C7' };
+  function tono(p) { return TONOS[p.key] || TONOS_CAT[p.categoria] || TONO_BASE; }
 
   // ---------------- Utilidades ----------------
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -154,13 +579,16 @@
 
   function desdeCatalogo(l) {
     return {
-      key: l.slug, id: l.id, nombre: l.nombre, categoria: l.categoria, precio_c: l.precio * 100, precio_normal_c: null, disponible: true, variantes: [],
+      key: l.slug, id: l.id || null, nombre: l.nombre, categoria: l.categoria, precio_c: l.precio * 100, precio_normal_c: null, disponible: true,
+      // Presentaciones del catálogo (p. ej. 250 ml / 500 ml); en modo WhatsApp se eligen igual que las variantes de Vende
+      variantes: (l.variantes || []).map(function (v) { return { id: v.id, nombre: v.nombre, precio_c: v.precio * 100, disponible: true }; }),
+      precio_desde: !!(l.variantes && l.variantes.length > 1), marca: l.marca || null,
       fotos: l.fotos, local: l, descripcion: null, contenido: l.contenido,
       personalizado: l.pers ? { pregunta: l.pers.pregunta, fotos: l.pers.fotos } : null, preparacion: l.pers ? l.pers.preparacion : null
     };
   }
   var porId = {}, porNombre = {};
-  CATALOGO.forEach(function (l, i) { l.orden = i; porId[l.id] = l; porNombre[norm(l.nombre)] = l; (l.alias || []).forEach(function (a) { porNombre[norm(a)] = l; }); });
+  CATALOGO.forEach(function (l, i) { l.orden = i; if (l.id) porId[l.id] = l; porNombre[norm(l.nombre)] = l; (l.alias || []).forEach(function (a) { porNombre[norm(a)] = l; }); });
 
   function desdeApi(p) {
     var l = porId[p.id] || porNombre[norm(p.nombre)] || null;
@@ -171,7 +599,7 @@
     return {
       key: l ? l.slug : 'v-' + p.id, id: p.id, nombre: p.nombre, categoria: p.categoria || (l && l.categoria) || 'Más', precio_c: p.precio_final_c,
       precio_normal_c: p.en_oferta ? p.precio_c : null, precio_desde: !!p.precio_desde, disponible: p.disponible !== false, existencias: p.existencias,
-      variantes: (p.variantes || []), fotos: fotos, local: l, descripcion: p.descripcion || null, contenido: (l && l.contenido) || p.unidad || null,
+      variantes: (p.variantes || []), fotos: fotos, local: l, marca: p.marca || (l && l.marca) || null, descripcion: p.descripcion || null, contenido: (l && l.contenido) || p.unidad || null,
       personalizado: p.personalizado || null, preparacion: p.preparacion || null, orden: l ? l.orden : 100
     };
   }
@@ -184,7 +612,7 @@
       if (!t.ok || !t.datos.tienda || !p.ok || !Array.isArray(p.datos.productos) || !p.datos.productos.length) { ponerModo('whatsapp'); return; }
       S.tienda = t.datos.tienda;
       // Solo maquillaje y cuidado: lo del catálogo, o lo que ella dé de alta en Vende en estas categorías (su cuenta puede tener otros negocios)
-      var CATS = ['rostro', 'ojos', 'labios', 'cuidado', 'cabello', 'maquillaje', 'accesorios'];
+      var CATS = ['rostro', 'ojos', 'labios', 'cuidado', 'cabello', 'maquillaje', 'accesorios', 'afeitado', 'peinado', 'barberia'];
       S.productos = p.datos.productos.filter(function (x) { return porId[x.id] || porNombre[norm(x.nombre)] || CATS.indexOf(norm(x.categoria || '')) >= 0; })
         .map(desdeApi).sort(function (a, b) { return a.orden - b.orden; });
       if (!S.productos.length) { ponerModo('whatsapp'); return; }
@@ -223,14 +651,14 @@
     S.productos.forEach(function (p) { if (p.categoria && c.indexOf(p.categoria) < 0) c.push(p.categoria); });
     return c;
   }
-  function imgHTML(f, extra) {
-    if (!f) return '<span class="vacia" aria-hidden="true">AL</span>';
+  function imgHTML(f, extra, marca) {
+    if (!f) return '<span class="vacia' + (marca ? ' marca' : '') + '" aria-hidden="true">' + esc(marca || 'AL') + '</span>';
     return '<img src="' + esc(f.src) + '"' + (f.w ? ' width="' + f.w + '" height="' + f.h + '"' : '') + ' alt="' + esc(f.alt || '') + '" loading="lazy" decoding="async"' + (extra || '') + '>';
   }
   /** Línea corta bajo el nombre: «Cobertura media · 40 g» (o la primera frase de la descripción de Vende). */
   function descriptor(p) {
     var l = p.local;
-    if (l) return [l.etiqueta, p.contenido].filter(Boolean).join(' · ');
+    if (l) return [l.marca, l.etiqueta, p.contenido].filter(Boolean).join(' · ');
     var d = (String(p.descripcion || '').split(/\n/)[0].match(/^[^.]*\.?/) || [''])[0];
     return d.length > 60 ? d.slice(0, 58).replace(/\s+\S*$/, '') + '…' : d;
   }
@@ -247,7 +675,7 @@
         : p.variantes.length ? '<button class="agregar" type="button" data-ver="' + esc(p.key) + '">Elegir opción</button>'
         : '<button class="agregar" type="button" data-agregar="' + esc(p.key) + '" aria-label="Agregar ' + esc(p.nombre) + ' a la bolsa">Agregar</button>';
       return '<li class="tarjeta">' +
-        '<button class="foto" type="button" data-ver="' + esc(p.key) + '" aria-label="Ver ' + esc(p.nombre) + '" style="--tono:' + tono(p) + '">' + sello + imgHTML(p.fotos[0]) + '</button>' +
+        '<button class="foto" type="button" data-ver="' + esc(p.key) + '" aria-label="Ver ' + esc(p.nombre) + '" style="--tono:' + tono(p) + '">' + sello + imgHTML(p.fotos[0], '', p.marca) + '</button>' +
         '<div class="info"><div class="fila-n"><h3><button type="button" data-ver="' + esc(p.key) + '">' + esc(p.nombre) + '</button></h3>' +
         (p.precio_desde ? '<span class="precio"><small>desde</small> ' + pesos(p.precio_c) + '</span>' : precioCorto(p.precio_c, p.precio_normal_c)) + '</div>' +
         '<p class="desc">' + esc(descriptor(p)) + '</p>' + accion + '</div></li>';
@@ -284,8 +712,8 @@
     S.actual = p.key;
     var fotos = p.fotos.length ? p.fotos : [null];
     var parrafos = l ? l.parrafos : String(p.descripcion || '').split(/\n\s*\n|\n/).filter(Boolean);
-    var html = '<div class="hoja-cab"><p class="migas-f">Makeup <span aria-hidden="true">/</span> ' + esc(p.categoria || '') + '</p><button class="cerrar" type="button" data-cerrar aria-label="Cerrar">' + ICONO_X + '</button></div>' +
-      '<div class="producto-g"><div class="galeria" style="--tono:' + tono(p) + '"><div class="grande">' + imgHTML(fotos[0], ' id="g-img"').replace(' loading="lazy"', '') + '</div>' +
+    var html = '<div class="hoja-cab"><p class="migas-f">' + esc(p.marca || 'Makeup') + ' <span aria-hidden="true">/</span> ' + esc(p.categoria || '') + '</p><button class="cerrar" type="button" data-cerrar aria-label="Cerrar">' + ICONO_X + '</button></div>' +
+      '<div class="producto-g"><div class="galeria" style="--tono:' + tono(p) + '"><div class="grande">' + imgHTML(fotos[0], ' id="g-img"', p.marca).replace(' loading="lazy"', '') + '</div>' +
       (fotos.length > 1 ? '<div class="miniaturas">' + fotos.map(function (f, i) {
         return '<button type="button" data-foto="' + i + '" aria-current="' + (i === 0) + '" aria-label="Ver foto ' + (i + 1) + ' de ' + fotos.length + '">' + imgHTML(f).replace(/ alt="[^"]*"/, ' alt=""') + '</button>';
       }).join('') + '</div>' : '') + '</div>' +
@@ -326,6 +754,13 @@
     abrirHoja(d);
     try { history.replaceState(null, '', '#p/' + p.key); } catch (e) { /* nada */ }
   }
+  // Al elegir presentación, el precio de la ficha muestra el de esa opción
+  $('#dlg-producto').addEventListener('change', function (e) {
+    if (e.target.id !== 'p-variante') return;
+    var p = producto(S.actual), v = null, pr = $('.ficha .meta .precio', this);
+    if (p) p.variantes.forEach(function (x) { if (x.id === e.target.value) v = x; });
+    if (v && pr) pr.outerHTML = precioHTML(v.precio_c);
+  });
   $('#dlg-producto').addEventListener('click', function (e) {
     var b = e.target.closest('[data-foto]');
     if (b) {
@@ -388,7 +823,7 @@
     pie.hidden = false;
     cuerpo.innerHTML = '<ul class="renglones">' + ls.map(function (l) {
       var k = esc(claveItem(l.item.key, l.item.variante_id));
-      return '<li class="renglon"><span class="mini-foto" style="--tono:' + tono(l.p) + '">' + imgHTML(l.p.fotos[0]).replace(/ alt="[^"]*"/, ' alt=""') + '</span>' +
+      return '<li class="renglon"><span class="mini-foto" style="--tono:' + tono(l.p) + '">' + imgHTML(l.p.fotos[0], '', l.p.marca).replace(/ alt="[^"]*"/, ' alt=""') + '</span>' +
         '<div><h3>' + esc(l.p.nombre) + '</h3><p class="det">' + (l.v ? esc(l.v.nombre) + ' · ' : '') + pesos(l.precio_c) + (l.p.personalizado ? ' · personalizado' : '') + '</p>' +
         '<div class="cantidad" role="group" aria-label="Cantidad de ' + esc(l.p.nombre) + '"><button type="button" data-mas="-1" data-k="' + k + '" aria-label="Uno menos">−</button><output>' + l.item.cantidad + '</output><button type="button" data-mas="1" data-k="' + k + '" aria-label="Uno más">+</button></div></div>' +
         '<div class="der">' + '<span class="precio">' + pesos(l.importe_c) + '</span><button class="quitar" type="button" data-quitar="' + k + '">Quitar</button></div></li>';
@@ -540,7 +975,7 @@
     var ul = $('#res-items');
     if (!ul) return;
     ul.innerHTML = lineas().map(function (l) {
-      return '<li><span class="mini-foto">' + imgHTML(l.p.fotos[0]).replace(/ alt="[^"]*"/, ' alt=""') + '<b>' + l.item.cantidad + '</b></span><span>' + esc(l.p.nombre) + (l.v ? '<br><small>' + esc(l.v.nombre) + '</small>' : '') + '</span><span class="precio">' + pesos(l.importe_c) + '</span></li>';
+      return '<li><span class="mini-foto">' + imgHTML(l.p.fotos[0], '', l.p.marca).replace(/ alt="[^"]*"/, ' alt=""') + '<b>' + l.item.cantidad + '</b></span><span>' + esc(l.p.nombre) + (l.v ? '<br><small>' + esc(l.v.nombre) + '</small>' : '') + '</span><span class="precio">' + pesos(l.importe_c) + '</span></li>';
     }).join('');
     var c = S.cot, sub = c ? c.subtotal_c : subtotal(), est = $('#f-estado') ? $('#f-estado').value : '';
     var envio = !c ? '<span>Por calcular</span>' : c.envio_c === 0 ? '<span>' + (entregaElegida() === 'recoger' ? 'Sin costo' : 'Gratis') + '</span>' : '<span>' + pesos(c.envio_c) + '</span>';
