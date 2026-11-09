@@ -1,5 +1,5 @@
 // Negocio Completo: /tienda/negocio-completo/, suscripción de $749 al mes (paquete Agenda + Vuelve + página web) con la
-// instalación de $3,490 como casilla opcional de pago único (va en la misma sesión de Stripe, sin recurring).
+// «Arranque en 7 días» de $1,490 como casilla opcional de pago único (va en la misma sesión de Stripe, sin recurring).
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { d1 } from './d1.js';
 import worker from '../src/index.js';
@@ -26,13 +26,14 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Negocio Completo', () => {
-  it('la página muestra $749 al mes y la instalación opcional de $3,490', async () => {
+  it('la página muestra $749 al mes y el Arranque opcional de $1,490', async () => {
     const r = await pedir('/tienda/negocio-completo/');
     expect(r.status).toBe(200);
     const h = await r.text();
     expect(h).toContain('$749');
     expect(h).toContain('name="instalacion"');
-    expect(h).toContain('$3,490');
+    expect(h).toContain('$1,490');
+    expect(h).toContain('Arranque en 7 días');
     expect(h).toContain('transferencia');
     expect(h).toContain('plan de 12 meses');
     expect(h).not.toContain('plazo forzoso');
@@ -44,7 +45,7 @@ describe('Negocio Completo', () => {
     const h = await (await pedir('/tienda/')).text();
     expect(h).toContain('Negocio Completo · Página, agenda y lealtad');
     expect(h).toContain('/tienda/negocio-completo/');
-    expect(h).not.toContain('Instalación y personalización de tu página');
+    expect(h).not.toContain('Arranque en 7 días</');
   });
 
   it('la ficha genérica del producto lleva a su página', async () => {
@@ -65,12 +66,12 @@ describe('Negocio Completo', () => {
     expect(p.get('subscription_data[metadata][app]')).toBe('agenda-vuelve');
   });
 
-  it('con instalación: el primer cobro suma $3,490 de pago único (sin recurring)', async () => {
+  it('con instalación: el primer cobro suma $1,490 de pago único (sin recurring)', async () => {
     expect((await comprar({ instalacion: true })).status).toBe(200);
-    expect(env.DB.raw.prepare('SELECT monto_centavos FROM orders').get().monto_centavos).toBe(74900 + 349000);
+    expect(env.DB.raw.prepare('SELECT monto_centavos FROM orders').get().monto_centavos).toBe(74900 + 149000);
     const p = sesiones()[0].params;
     expect(p.get('line_items[0][price_data][recurring][interval]')).toBe('month');
-    expect(p.get('line_items[1][price_data][unit_amount]')).toBe('349000');
+    expect(p.get('line_items[1][price_data][unit_amount]')).toBe('149000');
     expect(p.get('line_items[1][price_data][recurring][interval]')).toBeNull();
     expect(p.get('subscription_data[metadata][product_id]')).toBe('prod_negocio_completo_mensual');
   });
@@ -87,7 +88,7 @@ describe('Negocio Completo', () => {
     expect((await comprar({ codigo: 'REGALO-AAAA-BBBB' })).status).toBe(200);
     expect((await comprar({ email: 'otra@correo.mx', codigo: 'REGALO-CCCC-DDDD', instalacion: true })).status).toBe(200);
     const montos = env.DB.raw.prepare('SELECT email, monto_centavos FROM orders ORDER BY email').all();
-    expect(montos).toEqual([{ email: 'laura@correo.mx', monto_centavos: 1000 }, { email: 'otra@correo.mx', monto_centavos: 349000 }]);
+    expect(montos).toEqual([{ email: 'laura@correo.mx', monto_centavos: 1000 }, { email: 'otra@correo.mx', monto_centavos: 149000 }]);
   });
 
   it('la instalación no se compra sola ni con otro plan', async () => {
