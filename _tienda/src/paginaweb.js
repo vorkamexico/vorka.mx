@@ -1,4 +1,4 @@
-// Tienda › Tu página web (vorka.mx/tienda/pagina-web/): el plan de $349 al mes como SUSCRIPCIÓN (Stripe Billing, como Cuentas).
+// Tienda › Tu página web (vorka.mx/tienda/pagina-web/): el plan de $499 al mes (migración 0082) como SUSCRIPCIÓN (Stripe Billing, como Cuentas).
 // El dominio no se cobra aquí: se paga por transferencia a Vorka por WhatsApp. Producto: migración 0070 (pagina-web-mensual).
 // La página del servicio, con todo el detalle, es /servicios/pagina-web/ (_tienda no la genera: _sitio/paginaweb.py).
 // Las condiciones (12 meses, dominio, cambios) son las mismas que allá y que en Vorka Learn (src/learn-web.js › PLAN_WEB).
@@ -10,7 +10,7 @@ import { FLECHA, CHECK } from './marco.generado.js';
 export const RUTA_PAGINA_WEB = '/tienda/pagina-web/';
 export const SLUG_PAGINA_WEB = 'pagina-web-mensual';
 export const WA_PAGINA_WEB = `https://wa.me/528117804869?text=${encodeURIComponent('Hola Vorka, ya pagué mi suscripción de Tu página web. ¿Qué necesitan para empezar?')}`;
-const WA_DUDA = `https://wa.me/528117804869?text=${encodeURIComponent('Hola Vorka, tengo una duda sobre Tu página web de $349 al mes.')}`;
+const WA_DUDA = `https://wa.me/528117804869?text=${encodeURIComponent('Hola Vorka, tengo una duda sobre Tu página web de $499 al mes.')}`;
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const INCLUYE = ['Diseño de tu página, sin costo con el plan de 12 meses', 'Hospedaje con candado de seguridad (HTTPS)', 'Hasta 3 cambios pequeños al mes', 'Botón de WhatsApp y formulario de contacto', 'Alta en Google Search Console y en tu Perfil de Negocio'];
 const FAQ = [
@@ -41,15 +41,15 @@ export async function paginaPaginaWeb(env, req, url) {
     ...(p ? { offers: { '@type': 'Offer', price: (p.precio_centavos / 100).toFixed(2), priceCurrency: 'MXN', url: `https://vorka.mx${RUTA_PAGINA_WEB}`,
       priceSpecification: { '@type': 'UnitPriceSpecification', price: (p.precio_centavos / 100).toFixed(2), priceCurrency: 'MXN', unitText: 'MONTH' } } } : {}) }];
   return pagina({ navActual: 'catalogo',
-    titulo: 'Tu página web por $349 al mes: suscríbete | Vorka México', ruta: RUTA_PAGINA_WEB, imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
-    descripcion: 'Suscríbete a Tu página web: $349 al mes con diseño sin costo, hospedaje con SSL, cambios cada mes, botón de WhatsApp y alta en Google. El dominio se paga aparte.',
+    titulo: 'Tu página web por $499 al mes: suscríbete | Vorka México', ruta: RUTA_PAGINA_WEB, imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
+    descripcion: 'Suscríbete a Tu página web: $499 al mes con diseño sin costo, hospedaje con SSL, cambios cada mes, botón de WhatsApp y alta en Google. El dominio se paga aparte.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT,
     cuerpo: `<section class="pw-hero"><div class="marco pw-g">
   <div>
     <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / Servicios</nav>
     <span class="pw-chip">Suscripción mensual</span>
-    <h1 class="t-h1">Tu página web por <span class="metal">${p ? precio(p).replace(' MXN', '') : '$349'} al mes.</span></h1>
+    <h1 class="t-h1">Tu página web por <span class="metal">${p ? precio(p).replace(' MXN', '') : '$499'} al mes.</span></h1>
     <p class="t-lead">La diseñamos, la publicamos y la mantenemos por ti. Te suscribes aquí con tarjeta y empezamos por WhatsApp.</p>
     <ul class="pw-inc">${INCLUYE.map(x => `<li>${CHECK}<span>${esc(x)}</span></li>`).join('')}</ul>
     <p class="t-ya"><a href="/servicios/pagina-web/">Ver todo el detalle del servicio</a> · <a href="${WA_DUDA}" target="_blank" rel="noopener">¿Dudas? WhatsApp</a></p>

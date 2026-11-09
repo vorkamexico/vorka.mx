@@ -36,7 +36,7 @@ V4 = {
   'que-proyecto-social': ('#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', 'Para negocios, OSC y profesionistas, con indicadores y ODS.', ['**10** preguntas · 5 min', 'De **5 a 8** proyectos', 'Indicadores y **ODS**']),
   'evaluacion-liderazgo': ('#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', 'Desde 12 años: 12 dimensiones y 3 acciones para 30 días.', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']),
   'portales': ('#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', 'Publica tus inmuebles con fotos y recibe a los interesados por WhatsApp.', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']),
-  'pagina-web': ('#9A5220', 'Tu página web', 'Tu negocio en internet, [listo y cuidado.]', 'La diseñamos, la publicamos y la mantenemos por ti. Tú pagas $349 al mes y tu dominio.', ['Diseño **sin costo**', 'Hospedaje y **SSL**', '**3** cambios al mes']),
+  'pagina-web': ('#9A5220', 'Tu página web', 'Tu negocio en internet, [listo y cuidado.]', 'La diseñamos, la publicamos y la mantenemos por ti. Tú pagas $499 al mes y tu dominio.', ['Diseño **sin costo**', 'Hospedaje y **SSL**', '**3** cambios al mes']),
   'clara': ('#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', 'Gastos, ingresos y tarjetas en un solo lugar. Clara te dice cuánto te alcanza al día.', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']),
 }
 
