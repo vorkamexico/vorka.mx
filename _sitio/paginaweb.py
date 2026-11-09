@@ -1,14 +1,14 @@
 # Vorka México · /servicios/pagina-web/: el plan «Tu página web» para negocios pequeños.
-# Precio y condiciones acordados por Vorka (5 nov 2026): $349 MXN al mes con hospedaje (antes $299; el usuario lo subió el mismo día) y SSL, hasta 3 cambios pequeños al
+# Precio y condiciones acordados por Vorka (5 nov 2026; precio subido a $499 el 9 nov 2026, migración 0082): $499 MXN al mes con hospedaje (antes $349 y $299) y SSL, hasta 3 cambios pequeños al
 # mes, botón de WhatsApp y formulario, y alta en Google; el diseño corre por nuestra cuenta con plan de 12 meses (si cancela
 # antes, paga los meses que falten; si deja de pagar se da de baja el sitio y el dominio se queda con Vorka hasta que liquide el pago anual o los meses que falten); Vorka registra el dominio y le cobra su costo una vez al año, y si se va se lo
 # transfiere. Si cambia algo, cámbialo también en _tienda/src/learn-web.js (PLAN_WEB y el llamado de las guías).
 import json
 from partes import *
 
-PRECIO = '$349'
+PRECIO = '$499'
 TIENDA = '/tienda/pagina-web/'   # suscripción en línea (Stripe), _tienda/src/paginaweb.js
-WA_PLAN = 'Hola Vorka, quiero mi página web de $349 al mes.'
+WA_PLAN = 'Hola Vorka, quiero mi página web de $499 al mes.'
 INCLUYE = [
     ('globo', 'Hospedaje y candado de seguridad', 'Tu página en línea con certificado SSL (HTTPS), sin pagar servidor aparte.'),
     ('doc', 'Hasta 3 cambios pequeños al mes', 'Textos, fotos, precios u horarios: nos escribes y lo cambiamos.'),
@@ -148,8 +148,8 @@ def pagina_web():
                 'description': f'Página web para tu negocio por {PRECIO} MXN al mes más el costo del dominio: hospedaje con SSL, hasta 3 cambios pequeños al mes, botón de WhatsApp y formulario, y alta en Google. Diseño sin costo con plan de 12 meses.',
                 'url': SITIO + '/servicios/pagina-web/', 'areaServed': {'@type': 'Country', 'name': 'México'},
                 'provider': {'@type': 'ProfessionalService', 'name': 'Vorka México', 'url': SITIO + '/'},
-                'offers': {'@type': 'Offer', 'price': '349', 'priceCurrency': 'MXN', 'url': SITIO + '/servicios/pagina-web/',
-                           'priceSpecification': {'@type': 'UnitPriceSpecification', 'price': '349', 'priceCurrency': 'MXN', 'unitText': 'MONTH'}}}
+                'offers': {'@type': 'Offer', 'price': '499', 'priceCurrency': 'MXN', 'url': SITIO + '/servicios/pagina-web/',
+                           'priceSpecification': {'@type': 'UnitPriceSpecification', 'price': '499', 'priceCurrency': 'MXN', 'unitText': 'MONTH'}}}
     faq_ld = {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in PREGUNTAS_WEB]}
     migas = {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
         {'@type': 'ListItem', 'position': 1, 'name': 'Inicio', 'item': SITIO + '/'}, {'@type': 'ListItem', 'position': 2, 'name': 'Servicios', 'item': SITIO + '/servicios/'},

@@ -32,7 +32,7 @@ export const WEB = {
 };
 
 // El plan de Vorka México (lo que se promete en /servicios/pagina-web/; se cambia aquí y en _sitio/paginaweb.py)
-export const PLAN_WEB = { precio: '$349 MXN al mes', plazo: '12 meses', ruta: '/servicios/pagina-web/' };
+export const PLAN_WEB = { precio: '$499 MXN al mes', plazo: '12 meses', ruta: '/servicios/pagina-web/' };
 
 // ---------- fuentes (todas revisadas el 5 de noviembre de 2026) ----------
 const F = {

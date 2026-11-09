@@ -25,7 +25,7 @@ describe('modelo de datos', () => {
     // los demás niveles de Cupo se venden en /tienda/cupo/ sin listarse; Cuentas entra activo (decisión 2026-10-22);
     // los reportes de los tests entran activos por encargo del dueño (migración 0058; las licencias de grupo, ocultas);
     // los portales inmobiliarios entran a la venta por decisión del usuario (2-11-2026; Broker, Inmobiliaria y usuario extra, ocultos);
-    // Tu página web (suscripción, $349 desde la migración 0071) entra a la venta por decisión del usuario (5-11-2026, migración 0070)
+    // Tu página web (suscripción, $499 desde la migración 0082) entra a la venta por decisión del usuario (5-11-2026, migración 0070)
     // el Simulador IPN (migración 0076) y los paquetes de simuladores (0077) entran a la venta por encargo del dueño (6-11-2026)
     // Negocio Completo (0079, en el catálogo desde 0080) entra a la venta por decisión del usuario (9-11-2026); su instalación, oculta
     expect(activos.map(p => p.slug).sort()).toEqual(['negocio-completo-mensual', 'test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual',
