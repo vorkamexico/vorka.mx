@@ -16,6 +16,9 @@
 //    Social (artículos 12 y 15), el Código Fiscal (artículo 27), la Ley del ISR (artículo 99), dos fichas de trámite del SAT,
 //    el SAT sobre la Constancia de Situación Fiscal, dos fichas del IMSS (IMSS-02-008 e IMSS-02-025-A), un comunicado del IMSS y RENAPO (CURP);
 //    revisadas el 9 de noviembre de 2026.
+//    La de Jóvenes Construyendo el Futuro (reglas de operación 2026 en el DOF, boletín 114/26 de la STPS, versión
+//    estenográfica de la conferencia del 5 de octubre de 2026 y preguntas frecuentes de la STPS) se revisó el 9 de
+//    noviembre de 2026. No hay fecha exacta de reapertura en 2027: solo «en enero», dicho por la Presidenta.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -69,10 +72,14 @@ const F = {
   imssSemanas: { nombre: 'IMSS: Homoclave IMSS-02-025-A, constancia de semanas cotizadas', url: 'https://www.gob.mx/imss/articulos/homoclave-imss-02-025-a' },
   imssSemanasPrensa: { nombre: 'IMSS: comunicado, obtén tu constancia de semanas cotizadas en línea (11 de julio de 2025)', url: 'https://www.gob.mx/imss/prensa/el-imss-te-invita-a-obtener-tu-constancia-de-semanas-cotizadas-a-traves-de-sus-servicios-digitales-sin-salir-de-casa' },
   renapo: { nombre: 'RENAPO (Secretaría de Gobernación): consulta e impresión de la CURP', url: 'https://www.gob.mx/curp/' },
+  jcfReglas: { nombre: 'DOF: Reglas de Operación del Programa Jóvenes Construyendo el Futuro para el ejercicio fiscal 2026 (STPS, 31 de diciembre de 2025)', url: 'https://dof.gob.mx/nota_detalle.php?codigo=5777674&fecha=31/12/2025' },
+  jcfAviso: { nombre: 'STPS: Boletín 114/26, Aviso importante sobre el periodo de registro y postulaciones de Jóvenes Construyendo el Futuro (2 de octubre de 2026)', url: 'https://www.gob.mx/stps/prensa/aviso-importante-436951' },
+  jcfPresidencia: { nombre: 'Presidencia de la República: versión estenográfica de la conferencia de prensa del 5 de octubre de 2026', url: 'https://www.gob.mx/presidencia/articulos/version-estenografica-conferencia-de-prensa-de-la-presidenta-claudia-sheinbaum-pardo-del-05-de-octubre-de-2026' },
+  jcfFaq: { nombre: 'STPS: Preguntas frecuentes, Jóvenes Construyendo el Futuro', url: 'https://www.gob.mx/stps/articulos/preguntas-frecuentes-jovenes-construyendo-el-futuro' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro' };
 const r = slug => `/learn/camino/${slug}/`;
 // Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
 const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
@@ -96,6 +103,13 @@ const LLAMADO = {
     titulo: '¿Quieres experiencia real para tu CV?',
     texto: 'Para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría.',
     puntos: ['Áreas como redacción, diseño y redes, eventos y estrategia.', 'De 4 a 8 horas por semana, según tu área.', 'Es sin costo, con constancia y portafolio.', 'Presencial en el Bajío o a distancia desde cualquier parte de México.'],
+    href: '/voluntariado/', boton: 'Conoce Tú en Vorka' }),
+  // Tú en Vorka para quien espera la reapertura de Jóvenes Construyendo el Futuro (mismos datos que el llamado «tuEnVorka»)
+  tuEnVorkaJcf: llamadoProducto({ etiqueta: 'Tú en Vorka', producto: 'Tú en Vorka', de: 'Programa para jóvenes · Vorka México', icono: 'personas', chip: 'Sin costo',
+    titulo: '¿Quieres ir sumando experiencia mientras abre el registro?',
+    texto: 'Para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría.',
+    puntos: ['Áreas como redacción, diseño y redes, eventos y estrategia.', 'De 4 a 8 horas por semana, según tu área.', 'Es sin costo, con constancia y portafolio.', 'Presencial en el Bajío o a distancia desde cualquier parte de México.'],
+    nota: 'Tú en Vorka es un programa de Vorka México: no es parte de Jóvenes Construyendo el Futuro ni da apoyo económico.',
     href: '/voluntariado/', boton: 'Conoce Tú en Vorka' }),
   // Asesoría y mentoría con Brandon Oleynick (vorka.mx/oleynickhdz/servicios/ y /becas/): sin precios aquí; no garantiza la beca
   brandon: llamadoProducto({ etiqueta: 'Prepara tu beca con Brandon Oleynick', producto: 'Brandon Oleynick', de: 'Mentoría para becas · Vorka México', icono: 'personas', chip: '1:1 por videollamada',
@@ -563,6 +577,85 @@ export const ARTICULOS_CAMINO = [
     ],
     fuentes: [F.lft, F.lss, F.cff, F.lisr, F.satRfcCurp, F.satRfcMenores, F.satCsf, F.imssNss, F.imssSemanas, F.imssSemanasPrensa, F.renapo],
     relacionadas: [S.cv, S.carrera, S.becas],
+  },
+
+  // =============== 8. Jóvenes Construyendo el Futuro ===============
+  // Revisada el 9 de noviembre de 2026: reglas de operación 2026 (DOF, firmadas el 31-12-2025), boletín 114/26 de la STPS
+  // (2-10-2026), versión estenográfica de la conferencia del 5-10-2026 y preguntas frecuentes de la STPS.
+  // No hay fecha exacta de reapertura: solo «en enero» (Presidenta). El total anual (12 × $9,582.47) es una cuenta, no un dato nuevo.
+  {
+    slug: S.jcf, llamado: 'tuEnVorkaJcf', actualizado: '2026-11-09', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Jóvenes Construyendo el Futuro: cuándo abre y requisitos',
+    descripcion: 'Jóvenes Construyendo el Futuro en 2026: por qué no hay registro, cuándo vuelve, requisitos, cuánto paga, cuánto dura y qué te puede dar de baja.',
+    h1: 'Jóvenes Construyendo el Futuro: cuándo vuelve el registro y cómo prepararte',
+    lead: 'Si tienes entre 18 y 29 años, no estudias ni trabajas y buscabas entrar a Jóvenes Construyendo el Futuro, ya viste que la plataforma no abrió en octubre. Aquí está qué dijeron la STPS y la Presidencia, cuándo se espera que vuelva, qué piden, cuánto paga en 2026 y qué cuidar para no perder tu lugar, con lo que dicen las reglas de operación del programa.',
+    secciones: [
+      { h2: 'Por qué no hay registro ahora', html: p('El 2 de octubre de 2026, la Secretaría del Trabajo y Previsión Social (STPS) publicó el boletín 114/26: por su <b>estrategia de focalización</b>, el programa no abrió la plataforma en octubre para nuevas vinculaciones, y el siguiente periodo se daría a conocer después.')
+        + p('El 5 de octubre, en su conferencia de prensa, la presidenta Claudia Sheinbaum explicó que el programa no se suspende: se cumplió prácticamente la meta del año, de aquí a diciembre ya no habrá nuevas inscripciones y <b>las inscripciones inician nuevamente en enero</b>.')
+        + caja('Lo que todavía no se sabe', p('Al 9 de noviembre de 2026 no hay una fecha exacta de reapertura ni un número de lugares para 2027. Solo se dijo «en enero». Si ves una fecha precisa en redes, búscala en los canales oficiales de la STPS antes de creerla.')) },
+      { h2: 'Qué es y qué te da', html: p('Es un programa de la STPS que te vincula con un <b>centro de trabajo</b> (una empresa, un negocio, una institución u organización) para que te capacites ahí, con un tutor y un plan de actividades. Según sus reglas de operación 2026:')
+        + ul([
+          '<b>Apoyo económico mensual de $9,582.47</b>, igual en todo el país. La STPS explica que equivale a un salario mínimo mensual.',
+          '<b>Hasta 12 meses</b> de capacitación, con hasta 12 pagos.',
+          '<b>Seguro médico del IMSS</b> (enfermedades, maternidad y riesgos de trabajo) mientras participas. El alta la haces tú en el IMSS, por internet, en la app o en tu Unidad de Medicina Familiar.',
+          'Al terminar, una <b>Constancia de Capacitación</b> que se emite en la plataforma, con código de validación, y que acredita los meses de experiencia.',
+        ])
+        + p('Si completas los 12 meses, la cuenta es 12 × $9,582.47 = <b>$114,989.64</b> en total. Ese monto es el de 2026; las reglas de 2027 todavía no se publican y pueden cambiarlo.')
+        + nota('No es un empleo: las reglas dicen que la relación es de tutor y aprendiz, sin subordinación al centro de trabajo. Tampoco es una beca escolar.') },
+      { h2: 'Quién puede entrar', html: ul([
+          'Tener <b>entre 18 y 29 años</b> al momento de postularte.',
+          '<b>No estar estudiando ni trabajando</b> cuando te postulas.',
+          'Vivir en México. Si eres extranjero, necesitas un documento vigente que acredite tu estancia regular.',
+        ])
+        + p('Las reglas dan prioridad a jóvenes de municipios con alto rezago social o alta incidencia delictiva, y a grupos históricamente discriminados. Eso no quiere decir que los demás no puedan postularse; quiere decir que esos casos van primero cuando hay pocos lugares.') },
+      { h2: 'Qué tener listo para enero', html: p('Según las reglas, el registro es en la plataforma del programa (jovenesconstruyendoelfuturo.stps.gob.mx) o en las oficinas autorizadas, y es <b>gratuito</b>. Para registrarte y postularte te piden:')
+        + ol([
+          ['Identificación oficial vigente', 'Legible y por ambos lados.'],
+          ['Una foto tuya', 'Con el rostro descubierto, sin filtros ni ediciones, sosteniendo tu identificación.'],
+          ['Comprobante de domicilio', 'Con no más de 3 meses de expedido al momento de postularte.'],
+          ['Aceptar la carta compromiso', 'Declaras, bajo protesta de decir verdad, que tus datos son ciertos.'],
+        ])
+        + p('Esto es consejo nuestro: no esperes a que abra la plataforma para juntar papeles. Revisa que tu identificación no esté vencida y escanéala de los dos lados. El comprobante de domicilio sácalo cerca de la fecha, porque si tiene más de tres meses no te sirve. Y entra con un correo y un celular que sí revises, porque por ahí te van a contactar.') },
+      { h2: 'Cómo funciona una vez que abre', html: ol([
+          ['Te registras', 'En la plataforma o en una oficina autorizada.'],
+          ['Eliges un centro de trabajo', 'Entre los espacios que te muestra la plataforma, según donde vives y lo que te interesa. La postulación depende de que haya presupuesto disponible.'],
+          ['Primer encuentro', 'Contactas al centro y te presentas. El centro tiene al menos 4 días naturales para aceptarte o no.'],
+          ['Empiezas', 'El día que indique el programa. La capacitación es de 5 a 8 horas diarias, 5 días a la semana, de preferencia de día.'],
+          ['Evaluación cada mes', 'En la última semana de cada mes, tú evalúas a tu tutor y tu tutor te evalúa a ti en la plataforma. El pago depende de que cumplas tu plan de actividades.'],
+        ])
+        + p('Consejo nuestro para elegir: piensa en qué quieres poder poner en tu CV dentro de un año. Un lugar cerca de tu casa te ahorra pasajes, pero un lugar donde aprendas algo que te sirva para el trabajo que buscas vale más. Pregunta en el primer encuentro qué vas a hacer día a día.') },
+      { h2: 'Lo que te puede sacar del programa', html: p('Las reglas distinguen entre desvincularte (sales de ese centro) y la baja definitiva. Algunas causas de desvinculación:')
+        + ul([
+          'Recibir al mismo tiempo <b>otra beca educativa</b> de otro programa, como la beca federal de prepa o de universidad.',
+          'No cumplir los horarios o las actividades de tu plan.',
+          'No atender los requerimientos o la supervisión del programa.',
+        ])
+        + p('Y algunas causas de <b>baja definitiva</b>:')
+        + ul([
+          'Dar datos o documentos falsos.',
+          'Registrarte cuando ya estudiabas o trabajabas, o que el centro te contrate.',
+          'Que otra persona tome la capacitación por ti, simularla o <b>prestar tu cuenta bancaria</b>.',
+          'Agotar tus dos oportunidades.',
+        ])
+        + p('Tienes derecho a cambiar de centro una sola vez y, si te desvinculan, a una segunda oportunidad si hay presupuesto y espacios. Cuando terminas tu participación, no puedes volver a registrarte, salvo excepciones del programa.')
+        + caja('Si ya tienes beca', p(`Si recibes la beca de prepa o de universidad del gobierno federal, no puedes tener las dos. Antes de decidir, compara: en ${a(r(S.becas), 'becas para prepa y universidad')} explicamos las becas que hay.`)) },
+      { h2: 'Cuidado con los fraudes', html: ul([
+          'El registro es gratuito. La STPS advierte que no le pagues a nadie por inscribirte y que reportes cualquier cobro al <b>079</b>.',
+          'El apoyo se entrega directo, sin intermediarios, en un instrumento bancario a tu nombre. Las reglas prohíben que tu tutor o el centro te pidan tu tarjeta o tu cuenta.',
+          'Consejo nuestro: desconfía de páginas o perfiles que prometan «apartarte un lugar» antes de enero.',
+        ])
+        + p('Para orientación, las reglas dan la línea 079 y la plataforma del programa. Para quejas contra servidores públicos, el Órgano Interno de Control en la STPS (quejas_oic@stps.gob.mx).') },
+      { h2: 'Mientras tanto', html: p(`Esto es consejo nuestro. Usa noviembre y diciembre para tener lista tu historia: qué sabes hacer, qué te gustaría aprender y en qué tipo de lugar. Si todavía no tienes CV, ${a(r(S.cv), 'cómo hacer tu CV sin experiencia')} te lleva paso a paso, y te sirve igual para el programa que para buscar empleo por tu cuenta. Si estás pensando en volver a estudiar, ${a(r(S.carrera), 'cómo elegir carrera')} te ayuda a decidir.`) },
+    ],
+    faq: [
+      { p: '¿Cuándo abre el registro de Jóvenes Construyendo el Futuro?', r: 'La STPS no abrió la plataforma en octubre de 2026 y la presidenta Claudia Sheinbaum dijo el 5 de octubre que las inscripciones inician nuevamente en enero. Al 9 de noviembre de 2026 no hay una fecha exacta publicada.' },
+      { p: '¿Cuánto paga Jóvenes Construyendo el Futuro en 2026?', r: 'Según sus reglas de operación 2026, 9,582.47 pesos mensuales, igual en todo el país, hasta por 12 meses, más seguro médico del IMSS.' },
+      { p: '¿Cuáles son los requisitos?', r: 'Tener entre 18 y 29 años al postularte, no estudiar ni trabajar y vivir en México. Para registrarte necesitas identificación oficial vigente, una foto sosteniéndola, comprobante de domicilio de no más de 3 meses y aceptar la carta compromiso.' },
+      { p: '¿Puedo estar en Jóvenes Construyendo el Futuro y tener una beca?', r: 'No una beca educativa de otro programa: según las reglas de operación 2026, recibirla es causa de desvinculación.' },
+      { p: '¿Se paga por registrarse?', r: 'No. El registro es gratuito. La STPS pide reportar cualquier cobro al 079.' },
+    ],
+    fuentes: [F.jcfReglas, F.jcfAviso, F.jcfPresidencia, F.jcfFaq],
+    relacionadas: [S.cv, S.becas, S.carrera],
   },
 ];
 
