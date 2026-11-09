@@ -47,12 +47,12 @@ const TEMAS = [
     dice: { '/tienda/vuelve/': [/Apple Wallet/, /No manda WhatsApp/], '/tienda/agenda/': [/todavía no manda WhatsApp automáticos/, /lo mandas tú/],
       '/tienda/vende/': [/no mueve dinero, no presta y no cobra por ti/, /gratis con hasta 10 clientas/i], '/tienda/cupo/': [/no cobra comisión/, /te paga directo a ti/, /gratis hasta 30 personas/i] },
     aviso: AVISO_NEGOCIO, sinPesos: true },
-  { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 6,
-    oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx|www\.diputados\.gob\.mx|www\.empleo\.gob\.mx|ciesas\.edu\.mx|www\.fca\.unam\.mx|secihti\.mx|comexus\.org\.mx|www\.dof\.gob\.mx|dof\.gob\.mx|www\.gob\.mx\/sep|www\.programasparaelbienestar\.gob\.mx|revista\.condusef\.gob\.mx)\//,
+  { S: CAMINO, X: ARTICULOS_CAMINO, T: TEMA_CAMINO, n: 7,
+    oficiales: /^https:\/\/(www\.gob\.mx\/(becasbenitojuarez|sep|stps|presidencia)|comparacarreras\.imco\.org\.mx|repositorio\.dgae\.unam\.mx|oferta\.unam\.mx|admision\.uam\.mx|uacm\.edu\.mx|www\.diputados\.gob\.mx|www\.empleo\.gob\.mx|ciesas\.edu\.mx|www\.fca\.unam\.mx|secihti\.mx|comexus\.org\.mx|www\.dof\.gob\.mx|dof\.gob\.mx|www\.gob\.mx\/sep|www\.programasparaelbienestar\.gob\.mx|revista\.condusef\.gob\.mx)\//,
     // Sin Test vocacional en main todavía: «elegir carrera» apunta a Practica (TODO en src/learn-camino.js)
     llamado: { 'becas-para-prepa-y-universidad': '/learn/camino/como-elegir-carrera/', 'como-elegir-carrera': '/test-vocacional/', 'que-hacer-si-no-te-quedaste-en-la-unam': '/simulador-unam/',
       'como-hacer-tu-cv-sin-experiencia': '/voluntariado/', 'como-hacer-una-carta-de-motivos-para-una-beca': 'https://os.vorka.mx/agendar/oleynickhdz?s=express&amp;o=learn-carta',
-      'beca-rita-cetina': '/test-vocacional/' },
+      'beca-rita-cetina': '/test-vocacional/', 'jovenes-construyendo-el-futuro': '/voluntariado/' },
     dice: { '/simulador-unam/': [/simulador de práctica/, /estimación/], '/voluntariado/': [/16 a 29 años/, /sin costo/], 'https://os.vorka.mx/agendar/oleynickhdz?s=express&amp;o=learn-carta': [/no asegura la beca/, /Asesoría Express/] }, aviso: null, sinPesos: false },
   { S: FIESTAS, X: ARTICULOS_FIESTAS, T: TEMA_FIESTAS, n: 1,
     // Fuentes oficiales: comunicados de PROFECO en gob.mx y su Registro Público de Contratos de Adhesión
