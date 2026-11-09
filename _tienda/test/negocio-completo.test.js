@@ -40,6 +40,13 @@ describe('Negocio Completo', () => {
     expect(h).toContain('¿Puedo bajar de plan?');
   });
 
+  it('aparece en el catálogo con su tarjeta y su precio al mes; la instalación no', async () => {
+    const h = await (await pedir('/tienda/')).text();
+    expect(h).toContain('Negocio Completo · Página, agenda y lealtad');
+    expect(h).toContain('/tienda/negocio-completo/');
+    expect(h).not.toContain('Instalación y personalización de tu página');
+  });
+
   it('la ficha genérica del producto lleva a su página', async () => {
     const r = await pedir('/tienda/negocio-completo-mensual/');
     expect(r.status).toBe(301);
