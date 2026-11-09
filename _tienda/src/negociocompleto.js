@@ -23,9 +23,9 @@ const INCLUYE = [
 const FAQ = [
   ['¿Qué incluye la instalación?', 'Es opcional. Personalizamos tu página con tu logo, tus fotos y tus servicios, y te dejamos configuradas tu Agenda (servicios y horarios) y tu tarjeta de Vuelve, con un video corto de cómo usar todo. Si no la tomas, te damos acceso a las apps y armas tu página con una plantilla junto con nosotros por WhatsApp.'],
   ['¿Cuánto tarda?', 'Con la instalación, te lo dejamos funcionando en 7 días a partir de que nos mandas tu logo, fotos, servicios y horarios. Si en ese plazo no está funcionando, te devolvemos la instalación.'],
-  ['¿Puedo pagar por transferencia?', 'Sí. Escríbenos por WhatsApp: el primer pago puede ser por transferencia y al mes siguiente activamos tu suscripción de $749 con tarjeta.'],
+  ['¿Puedo pagar por transferencia?', 'Sí. Escríbenos por WhatsApp: la instalación se paga por transferencia y te mandamos un código para que tu primer mes vaya de regalo. Con ese código activas aquí tu suscripción con tarjeta y tu primer mes sale en $10.'],
   ['¿Cómo pago el dominio?', 'Aparte, por transferencia, una vez al año. Te decimos el costo exacto por WhatsApp (depende de la terminación, como .mx o .com).'],
-  ['¿Hay plazo forzoso?', 'No. La suscripción se renueva cada mes y la cancelas cuando quieras en vorka.mx/tienda/suscripcion; tu acceso sigue hasta el final del mes que ya pagaste.'],
+  ['¿Cómo funciona el plan de 12 meses?', 'La suscripción se cobra cada mes en tu tarjeta y el plan es de 12 meses. Si cancelas antes, pagas los meses que falten. Si dejas de pagar, tu página, tu Agenda y tu tarjeta de Vuelve se dan de baja, y el dominio se queda con Vorka hasta que se liquide lo pendiente. Después de los 12 meses sigues mes con mes y cancelas cuando quieras en vorka.mx/tienda/suscripcion.'],
 ];
 
 export async function paginaNegocioCompleto(env, req, url) {
@@ -44,8 +44,8 @@ export async function paginaNegocioCompleto(env, req, url) {
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Con este correo entras a Agenda y a Vuelve, y aquí te llega tu recibo.</small></div>
     ${inst ? `<label class="t-casilla nc-inst"><input type="checkbox" name="instalacion" value="on"${conInst ? ' checked' : ''}><span><b>Agregar instalación y personalización: ${precio(inst)}</b> (pago único). Te dejamos todo funcionando en 7 días con tu logo, fotos y servicios.</span></label>` : ''}
     <div class="t-campo"><label for="codigo">Código de regalo <span class="nc-opc">(si te dimos uno)</span></label><input id="codigo" name="codigo" type="text" autocomplete="off" maxlength="40" value="${esc(cupon)}"${cupon ? '' : ' placeholder="REGALO-XXXX-XXXX"'}>${cupon ? '<small class="t-ayuda">Tu código se aplica en el pago: tu primer mes queda con descuento y después sigue en $749 al mes.</small>' : ''}</div>
-    <p class="pw-total">Pagas hoy <b id="nc-hoy">${precio({ precio_centavos: mes + (conInst ? extra : 0) })}</b> <span>y luego ${precio(p)} cada mes</span></p>
-    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, la renovación automática mensual y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
+    <p class="pw-total">Pagas hoy <b id="nc-hoy">${precio({ precio_centavos: mes + (conInst ? extra : 0) })}</b> <span>y luego ${precio(p)} cada mes · plan de 12 meses</span></p>
+    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, el plan de 12 meses con cobro mensual automático (si cancelo antes pago los meses que falten; si dejo de pagar, el servicio se da de baja y el dominio se queda con Vorka hasta liquidar lo pendiente) y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn acento" type="submit" id="btn-compra">Contratar ${FLECHA}</button>
     <p class="nc-transfer">¿Prefieres pagar por transferencia? <a href="${WA_DUDA}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.</p>
@@ -92,7 +92,7 @@ const SCRIPT = `(function(){
     var d={ slug:'${SLUG_NEGOCIO_COMPLETO}', nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked, instalacion:!!(f.instalacion&&f.instalacion.checked) }; if(f.ref) d.ref=f.ref.value; if(f.codigo&&f.codigo.value.trim()) d.codigo=f.codigo.value.trim();
     if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Te faltó poner tu nombre.'); }
     if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Revisa tu correo: parece que le falta algo.'); }
-    if(!d.terminos) return mostrar('Para seguir, acepta los términos y el aviso de privacidad.');
+    if(!d.terminos) return mostrar('Para seguir, acepta los términos, el plan de 12 meses y el aviso de privacidad.');
     err.hidden=true; btn.disabled=true; btn.textContent='Abriendo el pago…';
     fetch('/api/checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(d)})
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
