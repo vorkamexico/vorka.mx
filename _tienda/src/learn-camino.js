@@ -12,6 +12,10 @@
 //    revisadas el 6 de noviembre de 2026. La guía de la carta de motivos cita cuatro convocatorias (CIESAS, FCA UNAM,
 //    SECIHTI y COMEXUS) y la de la Beca Rita Cetina (reglas de operación 2026 en el DOF, SEP, Programas para el Bienestar y
 //    CONDUSEF) se revisaron el 7 de noviembre de 2026. Lo demás de esa guía se dice como consejo nuestro.
+//    La guía de los papeles para tu primer empleo cita la LFT (artículos 24, 25, 26, 39-A, 101 y 132), la Ley del Seguro
+//    Social (artículos 12 y 15), el Código Fiscal (artículo 27), la Ley del ISR (artículo 99), dos fichas de trámite del SAT,
+//    el SAT sobre la Constancia de Situación Fiscal, dos fichas del IMSS (IMSS-02-008 e IMSS-02-025-A), un comunicado del IMSS y RENAPO (CURP);
+//    revisadas el 9 de noviembre de 2026.
 //    La de Jóvenes Construyendo el Futuro (reglas de operación 2026 en el DOF, boletín 114/26 de la STPS, versión
 //    estenográfica de la conferencia del 5 de octubre de 2026 y preguntas frecuentes de la STPS) se revisó el 9 de
 //    noviembre de 2026. No hay fecha exacta de reapertura en 2027: solo «en enero», dicho por la Presidenta.
@@ -58,6 +62,16 @@ const F = {
   ritaSep: { nombre: 'SEP: Boletín 353, arranca el registro para la Beca Rita Cetina para primaria y secundaria (25 de octubre de 2026)', url: 'https://www.gob.mx/sep/prensa/boletin-353-este-lunes-arranca-el-registro-para-obtener-la-beca-rita-cetina-para-primaria-y-secundaria-mario-delgado' },
   ritaBienestar: { nombre: 'Programas para el Bienestar: Beca Rita Cetina (requisitos, cobro y calendarios de pago 2026)', url: 'https://www.programasparaelbienestar.gob.mx/programas/infancias/beca-rita-cetina/' },
   condusefBeca: { nombre: 'CONDUSEF, revista Proteja su Dinero: ¿Te dieron una beca? (agosto de 2026)', url: 'https://revista.condusef.gob.mx/credito/2026/08/te-dieron-una-beca/' },
+  cff: { nombre: 'Código Fiscal de la Federación, texto vigente (última reforma DOF 09-04-2026; artículo 27), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf' },
+  lss: { nombre: 'Ley del Seguro Social, texto vigente (última reforma DOF 15-01-2026; artículos 12 y 15), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LSS.pdf' },
+  lisr: { nombre: 'Ley del Impuesto sobre la Renta, texto vigente (última reforma DOF 01-04-2024; artículo 99), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
+  satRfcCurp: { nombre: 'SAT: ficha de trámite 3/CFF, solicitud de inscripción en el RFC de personas físicas con CURP', url: 'https://www.sat.gob.mx/gobmx/Paginas/ficha_3_cff.html' },
+  satRfcMenores: { nombre: 'SAT: ficha de trámite 160/CFF, inscripción en el RFC de personas físicas menores de edad a partir de los 16 años', url: 'https://www.sat.gob.mx/gobmx/Paginas/ficha_160_cff.html' },
+  satCsf: { nombre: 'SAT: Genera tu Constancia de Situación Fiscal (CSF) (gob.mx, 10 de junio de 2025)', url: 'https://www.gob.mx/sat/articulos/genera-tu-constancia-de-situacion-fiscal-csf' },
+  imssNss: { nombre: 'IMSS: Homoclave IMSS-02-008, asignación o localización del Número de Seguridad Social', url: 'https://www.gob.mx/imss/articulos/homoclave-imss-02-008' },
+  imssSemanas: { nombre: 'IMSS: Homoclave IMSS-02-025-A, constancia de semanas cotizadas', url: 'https://www.gob.mx/imss/articulos/homoclave-imss-02-025-a' },
+  imssSemanasPrensa: { nombre: 'IMSS: comunicado, obtén tu constancia de semanas cotizadas en línea (11 de julio de 2025)', url: 'https://www.gob.mx/imss/prensa/el-imss-te-invita-a-obtener-tu-constancia-de-semanas-cotizadas-a-traves-de-sus-servicios-digitales-sin-salir-de-casa' },
+  renapo: { nombre: 'RENAPO (Secretaría de Gobernación): consulta e impresión de la CURP', url: 'https://www.gob.mx/curp/' },
   jcfReglas: { nombre: 'DOF: Reglas de Operación del Programa Jóvenes Construyendo el Futuro para el ejercicio fiscal 2026 (STPS, 31 de diciembre de 2025)', url: 'https://dof.gob.mx/nota_detalle.php?codigo=5777674&fecha=31/12/2025' },
   jcfAviso: { nombre: 'STPS: Boletín 114/26, Aviso importante sobre el periodo de registro y postulaciones de Jóvenes Construyendo el Futuro (2 de octubre de 2026)', url: 'https://www.gob.mx/stps/prensa/aviso-importante-436951' },
   jcfPresidencia: { nombre: 'Presidencia de la República: versión estenográfica de la conferencia de prensa del 5 de octubre de 2026', url: 'https://www.gob.mx/presidencia/articulos/version-estenografica-conferencia-de-prensa-de-la-presidenta-claudia-sheinbaum-pardo-del-05-de-octubre-de-2026' },
@@ -65,7 +79,7 @@ const F = {
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', jcf: 'jovenes-construyendo-el-futuro' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro' };
 const r = slug => `/learn/camino/${slug}/`;
 // Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
 const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
@@ -111,6 +125,13 @@ const LLAMADO = {
     puntos: ['Al terminar ve gratis sus 3 tipos de interés y su carrera más afín.', 'Le dice si le toca el examen ECOEMS o el de la prepa de la UG.', 'Si quieren, el reporte completo trae 20 carreras, el examen que le toca y un plan de 30 días.'],
     nota: 'Es orientativo: no es una prueba psicométrica.',
     href: '/test-vocacional/', boton: 'Hacer el test gratis' }),
+  // Clara (/tienda/clara/) para el primer sueldo: mismos datos de su ficha (src/clara.js) que los llamados de Finanzas
+  claraSueldo: llamadoProducto({ etiqueta: 'Organiza tu primer sueldo con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Ya te llegó tu primer sueldo?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
     texto: 'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
     href: r(S.carrera), boton: 'Lee: cómo elegir carrera' }),
@@ -484,7 +505,81 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.ritaReglas, F.ritaModif, F.ritaSep, F.ritaBienestar, F.condusefBeca],
     relacionadas: [S.becas, S.carrera, S.carta],
   },
-  // =============== 7. Jóvenes Construyendo el Futuro ===============
+  // =============== 7. Papeles para tu primer empleo ===============
+  // Revisada el 9 de noviembre de 2026 en la LFT, la LSS, el CFF y la LISR (textos vigentes en diputados.gob.mx), las fichas
+  // 3/CFF y 160/CFF del SAT, su página de la Constancia de Situación Fiscal, las fichas IMSS-02-008 e IMSS-02-025-A y RENAPO.
+  // Lo demás (orden de los pasos, carpeta, qué preguntar) es consejo nuestro.
+  {
+    slug: S.papeles, llamado: 'claraSueldo', actualizado: '2026-11-09', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Papeles para tu primer empleo: CURP, RFC y NSS',
+    descripcion: 'Qué papeles te piden en tu primer empleo y cómo sacarlos gratis: CURP, RFC, constancia de situación fiscal y número de seguridad social del IMSS.',
+    h1: 'Papeles para tu primer empleo: CURP, RFC, constancia fiscal y NSS',
+    lead: 'Te dijeron «sí» y ahora Recursos Humanos te pide tu CURP, tu RFC, tu constancia de situación fiscal y tu número de seguridad social. Aquí está qué es cada uno, cómo sacarlo gratis, qué cambia si tienes 16 o 17 años y cómo revisar que tu patrón te dio de alta en el IMSS, con lo que dicen las leyes, el SAT y el IMSS.',
+    secciones: [
+      { h2: 'Por qué te los piden', html: p('No es un capricho de la empresa. Según la Ley Federal del Trabajo, cuando no hay contrato colectivo, tus condiciones de trabajo deben constar <b>por escrito</b>, en al menos dos ejemplares, uno para cada parte (artículo 24). Ese escrito lleva tu nombre, tu <b>CURP</b>, tu <b>RFC</b> y tu domicilio, entre otros datos (artículo 25, fracción I).')
+        + p('Además, la ley obliga a quien te paga un salario a:')
+        + ul([
+          '<b>Inscribirte en el IMSS</b> en un plazo no mayor de cinco días hábiles (Ley del Seguro Social, artículo 15, fracción I).',
+          '<b>Pedirte tus datos para inscribirte en el RFC</b>, o tu clave si ya la tienes (Ley del ISR, artículo 99, fracción V), y cerciorarse de que estés inscrito a más tardar dentro del mes siguiente a que empiezas (fracción IV).',
+          '<b>Darte comprobantes fiscales</b> de cada pago, que sirven como recibo de nómina (Ley del ISR, artículo 99, fracción III).',
+        ])
+        + caja('Aunque sea un trabajo de temporada', p('La Ley del Seguro Social incluye en el régimen obligatorio a quien presta un servicio remunerado y subordinado <b>en forma permanente o eventual</b> (artículo 12, fracción I). Un trabajo de diciembre también cuenta.')) },
+      { h2: 'La lista corta', html: tabla(['Papel', 'Qué es', 'Dónde se saca'], [
+          ['CURP', 'Tu Clave Única de Registro de Población.', 'gob.mx/curp, en línea.'],
+          ['RFC', 'Tu clave en el Registro Federal de Contribuyentes del SAT.', 'Portal del SAT con tu CURP, si tienes 18 o más; en oficina del SAT con cita, si tienes 16 o 17.'],
+          ['Constancia de Situación Fiscal', 'El documento del SAT que muestra que estás inscrito en el RFC.', 'Portal del SAT, SAT Móvil, SAT ID, Oficina Virtual u oficina del SAT.'],
+          ['NSS', 'Tu Número de Seguridad Social del IMSS.', 'En línea con tu CURP y un correo, o en tu subdelegación del IMSS.'],
+        ], 'Fuentes: RENAPO, fichas 3/CFF y 160/CFF del SAT, SAT (Constancia de Situación Fiscal) e IMSS (ficha IMSS-02-008). Los trámites del SAT y del IMSS son gratuitos.')
+        + p('Como consejo nuestro, sácalos en ese orden: casi todo lo demás pide la CURP.') },
+      { h2: '1. Tu CURP', html: p(`Es probable que ya la tengas en papeles de la escuela o de algún trámite anterior. Si no la encuentras, RENAPO tiene el trámite de consulta e impresión en ${ext('https://www.gob.mx/curp/', 'gob.mx/curp')}.`)
+        + p('Consejo nuestro: revisa que tu nombre y tu fecha de nacimiento estén bien escritos. Si la CURP trae un error, todo lo que saques con ella lo va a arrastrar.') },
+      { h2: '2. Tu RFC', html: p('Depende de tu edad:')
+        + tabla(['Edad', 'Cómo se saca, según el SAT'], [
+          ['18 años o más', 'En el Portal del SAT, en la opción de inscripción <b>con CURP</b>. No te piden documentos: solo tener CURP y llenar el formulario. Al terminar descargas tu acuse de inscripción con la <b>cédula de identificación fiscal</b> y su código QR.'],
+          ['16 o 17 años', 'Solo si es para un trabajo con salario. Se hace en una <b>oficina del SAT con cita</b>, dentro del mes siguiente a que empiezas a trabajar. Piden CURP, un escrito firmado por ti donde dices que te inscribes solo para trabajar con salario, comprobante de domicilio e identificación oficial vigente, todo en original.'],
+        ], 'Fuentes: fichas de trámite 3/CFF y 160/CFF del SAT. Revisa la ficha vigente antes de ir: los requisitos pueden cambiar.')
+        + p('Si tienes 18 o más y todavía no trabajas, el Código Fiscal (artículo 27) dice que las personas mayores de edad deben inscribirse en el RFC, y que quien no tiene actividad económica se inscribe en un rubro <b>sin actividad económica</b>: no tiene que presentar declaraciones ni pagar contribuciones y no le aplican multas por eso.')
+        + nota('Consejo nuestro: si te inscribiste sin actividad económica y ya te van a contratar, díselo a Recursos Humanos al entregar tu constancia. El Código Fiscal (artículo 27, apartado B, fracción VII) obliga a quien paga salarios a solicitar la inscripción de sus trabajadores; si tu situación en el RFC debe cambiar, que te digan cómo lo van a hacer.') },
+      { h2: '3. Tu Constancia de Situación Fiscal', html: p('Es el documento del SAT con tu información fiscal: tu cédula de identificación fiscal con código QR, tu RFC, tu CURP, tu nombre completo, el domicilio registrado y tu régimen fiscal. Sirve para comprobar que estás inscrito en el RFC. El SAT da cinco formas de generarla, todas gratis:')
+        + ul([
+          '<b>En el Portal del SAT</b>, con tu RFC y tu contraseña o tu e.firma.',
+          '<b>En la app SAT Móvil</b>, con tu RFC y tu contraseña.',
+          '<b>En SAT ID</b> (satid.sat.gob.mx), con tu identificación oficial vigente.',
+          '<b>En la Oficina Virtual</b>, por videollamada, con cita.',
+          '<b>En una oficina del SAT</b>, sin cita, con tu identificación oficial vigente.',
+        ])
+        + caja('Ojo con los «gestores»', p('El SAT recuerda que <b>todos sus trámites son gratuitos</b>. No pagues a nadie por sacarte el RFC o la constancia, y no compartas tu contraseña.')) },
+      { h2: '4. Tu Número de Seguridad Social (NSS)', html: p('Es un número único y permanente que el IMSS asigna para llevar el registro de trabajadores y asegurados. Si ya lo sacaste antes y no lo encuentras, el mismo trámite sirve para <b>sacarlo por primera vez o para localizarlo</b>.')
+        + ul([
+          '<b>En línea</b>, a cualquier hora: solo necesitas tu <b>CURP</b> y un <b>correo electrónico</b>.',
+          '<b>En persona</b>, en la subdelegación del IMSS que te corresponda, de lunes a viernes de 8:00 a 15:30: copia certificada de tu acta de nacimiento, identificación oficial vigente y copia de tu CURP.',
+          'Si tienes menos de 18, el IMSS acepta como identificación tu certificado o constancia de estudios, tu credencial escolar o tu boleta, siempre que tengan foto y el número de incorporación a la SEP.',
+        ])
+        + caja('Tener NSS no es estar dado de alta', p('El IMSS aclara que sacar tu número <b>no te da derechos</b> ni te registra en una clínica. Lo que te da el servicio médico y las demás prestaciones es que tu patrón te inscriba.')) },
+      { h2: 'Ya empezaste: revisa que todo esté en orden', html: ol([
+          ['Tu contrato por escrito', 'Pide tu ejemplar. Debe decir, entre otras cosas, si el trabajo es por tiempo indeterminado, por temporada o por obra, tu jornada, tu salario y el día y lugar de pago (LFT, artículo 25). Si no te lo dan, no pierdes tus derechos: la ley se lo imputa al patrón (artículo 26).'],
+          ['Tu alta en el IMSS', 'Descarga tu constancia de semanas cotizadas en línea con tu CURP, tu NSS y un correo. Según el IMSS, ahí aparecen tus semanas, tu historia laboral y el nombre de tus patrones con su registro patronal. Consejo nuestro: hazlo después de tus primeras dos semanas; la ley le da al patrón hasta cinco días hábiles para inscribirte.'],
+          ['Tus recibos de nómina', 'Tienes derecho a ver el detalle de lo que te pagan y lo que te descuentan. Si te pagan por depósito, debe ser con tu consentimiento y las comisiones las paga el patrón (LFT, artículo 101).'],
+          ['Tus constancias', 'Si lo pides, tu patrón debe darte cada quince días una constancia escrita de los días trabajados y el salario, y al irte, una constancia de tus servicios dentro de tres días (LFT, artículo 132, fracciones VII y VIII). Te sirve para tu próximo CV.'],
+        ])
+        + p('Si te ponen un <b>periodo de prueba</b>, la ley lo permite solo en trabajos por tiempo indeterminado o de más de 180 días, y por regla general hasta treinta días. Durante ese periodo recibes tu salario y tienes seguridad social (LFT, artículo 39-A).') },
+      { h2: 'Tu carpeta de papeles', html: p('Consejo nuestro: guarda todo en una carpeta en tu celular o en la nube, en PDF y con nombres claros. Así lo vuelves a mandar en minutos para el siguiente empleo, una beca o un crédito.')
+        + `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
+<p>Carpeta «Papeles-Ana-Lopez»: CURP.pdf · RFC-acuse.pdf · Constancia-situacion-fiscal-2026-11.pdf · NSS.pdf · Contrato-tienda-diciembre.pdf · Recibo-nomina-2026-12-15.pdf</p></div>`
+        + p('Consejo nuestro: pon la fecha en el nombre de la constancia de situación fiscal, para saber de cuándo es si te piden una reciente.') },
+    ],
+    faq: [
+      { p: '¿Qué papeles me piden en mi primer trabajo?', r: 'Casi siempre tu CURP, tu RFC (o tu Constancia de Situación Fiscal) y tu Número de Seguridad Social. La Ley Federal del Trabajo pide que el escrito con tus condiciones de trabajo incluya tu CURP y tu RFC (artículo 25), y la Ley del Seguro Social obliga al patrón a inscribirte en el IMSS en no más de cinco días hábiles (artículo 15).' },
+      { p: '¿Puedo sacar mi RFC si tengo 16 o 17 años?', r: 'Sí, si es para trabajar con salario. Según la ficha 160/CFF del SAT, se hace en una oficina del SAT con cita, dentro del mes siguiente a que empiezas, con tu CURP, un escrito firmado por ti, comprobante de domicilio e identificación oficial vigente.' },
+      { p: '¿Cómo saco mi número de seguridad social?', r: 'En línea, con tu CURP y un correo electrónico, en el trámite de asignación o localización del NSS del IMSS. También en tu subdelegación del IMSS, de lunes a viernes de 8:00 a 15:30. Es gratuito.' },
+      { p: '¿Cómo sé si mi patrón me dio de alta en el IMSS?', r: 'Descarga tu constancia de semanas cotizadas en línea con tu CURP, tu NSS y un correo. Ahí aparecen tus patrones con su registro. Tener NSS no significa estar dado de alta: eso lo hace tu patrón.' },
+      { p: '¿Cuánto cuesta sacar el RFC o la constancia de situación fiscal?', r: 'Nada. El SAT recuerda que todos sus trámites son gratuitos; no le pagues a nadie por hacerlos.' },
+    ],
+    fuentes: [F.lft, F.lss, F.cff, F.lisr, F.satRfcCurp, F.satRfcMenores, F.satCsf, F.imssNss, F.imssSemanas, F.imssSemanasPrensa, F.renapo],
+    relacionadas: [S.cv, S.carrera, S.becas],
+  },
+
+  // =============== 8. Jóvenes Construyendo el Futuro ===============
   // Revisada el 9 de noviembre de 2026: reglas de operación 2026 (DOF, firmadas el 31-12-2025), boletín 114/26 de la STPS
   // (2-10-2026), versión estenográfica de la conferencia del 5-10-2026 y preguntas frecuentes de la STPS.
   // No hay fecha exacta de reapertura: solo «en enero» (Presidenta). El total anual (12 × $9,582.47) es una cuenta, no un dato nuevo.
@@ -564,7 +659,7 @@ export const ARTICULOS_CAMINO = [
   },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO ni a la Secretaría del Trabajo y Previsión Social.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS ni a RENAPO.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
