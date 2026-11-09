@@ -27,7 +27,8 @@ describe('modelo de datos', () => {
     // los portales inmobiliarios entran a la venta por decisión del usuario (2-11-2026; Broker, Inmobiliaria y usuario extra, ocultos);
     // Tu página web (suscripción, $349 desde la migración 0071) entra a la venta por decisión del usuario (5-11-2026, migración 0070)
     // el Simulador IPN (migración 0076) y los paquetes de simuladores (0077) entran a la venta por encargo del dueño (6-11-2026)
-    expect(activos.map(p => p.slug).sort()).toEqual(['test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual',
+    // Negocio Completo (0079, en el catálogo desde 0080) entra a la venta por decisión del usuario (9-11-2026); su instalación, oculta
+    expect(activos.map(p => p.slug).sort()).toEqual(['negocio-completo-mensual', 'test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual',
       'simulador-ipn-practica', 'simulador-ipn-completo', 'simulador-ipn-paquete', 'simuladores-unam-ipn', 'simuladores-paa-unam', 'simuladores-paa-ipn', 'simuladores-universidad'].sort());
   });
 

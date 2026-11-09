@@ -93,6 +93,13 @@ const AGENDA = {
   incluye: ['Prueba 7 días gratis, sin tarjeta', 'Confirmación al instante y recordatorios', 'Paquete con Vuelve, la tarjeta de lealtad'],
 };
 const esAgenda = p => p.contenido?.acceso?.app === 'agenda';
+// Negocio Completo (página + Agenda + Vuelve): se guarda como paquete Agenda + Vuelve, pero tiene su propia tarjeta y página
+const NEGOCIO = {
+  nombre: 'Negocio Completo · Página, agenda y lealtad',
+  texto: 'Tu página web, tu agenda de citas en línea y tu tarjeta de lealtad digital en una sola suscripción. Instalación y personalización opcional.',
+  incluye: ['Página web con WhatsApp y alta en Google', 'Agenda con recordatorios para tus clientes', 'Tarjeta de sellos en el celular de tus clientes'],
+};
+const esNegocio = p => !!p.contenido?.acceso?.pagina;
 
 // Cómo se presenta cada producto en el catálogo (una sola tarjeta por página de destino)
 // Los simuladores y sus paquetes son una sola tarjeta que lleva a /tienda/simuladores/ (para no llenar la tienda de simuladores)
@@ -143,6 +150,8 @@ function vista(p, url, desdeBrindi) {
       img: { ...p, imagen: p.imagen || PORTADA_BRINDI }, precio: `Desde ${precio({ precio_centavos: desdeBrindi ?? p.precio_centavos })}`, regalable: false };
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/v3/cupo-portada.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
+    if (esNegocio(p)) return { p, url, nombre: NEGOCIO.nombre, texto: NEGOCIO.texto, incluye: NEGOCIO.incluye, cat: 'Servicio',
+      img: { ...p, imagen: p.imagen || '/assets/tienda/v3/pagina-web-portada.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
     if (esAgenda(p)) return { p, url, nombre: AGENDA.nombre, texto: AGENDA.texto, incluye: AGENDA.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/v3/agenda-portada.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
     // Las demás apps por suscripción: nombre de la app (no el del plan) y el precio "al mes", igual que Agenda
