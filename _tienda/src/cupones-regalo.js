@@ -75,7 +75,7 @@ const ESQUEMA = z.object({
 async function productosCupon(env) {
   const filas = await all(env, 'SELECT id, slug, nombre, precio_centavos, categoria, activo, contenido, creador_id FROM products WHERE creador_id IS NULL ORDER BY orden, nombre');
   return filas.map(p => ({ ...p, contenido: (() => { try { return JSON.parse(p.contenido || '{}'); } catch { return {}; } })() }))
-    .filter(p => !p.contenido.complemento && !['intento', 'examen'].includes(p.contenido.acceso?.tipo))
+    .filter(p => !p.contenido.complemento && !p.contenido.instalacion_de && !['intento', 'examen'].includes(p.contenido.acceso?.tipo))
     .map(p => ({ id: p.id, slug: p.slug, nombre: p.nombre, precio_centavos: p.precio_centavos, activo: !!p.activo, linea: lineaDe(p), suscripcion: !!p.contenido.suscripcion,
       url: `${SITIO}${p.contenido.acceso?.ruta || `/tienda/${p.slug}/`}` }));
 }

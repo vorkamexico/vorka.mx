@@ -35,12 +35,15 @@ export async function paginaNegocioCompleto(env, req, url) {
   if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
   const error = url.searchParams.get('error') || '';
   const conInst = url.searchParams.get('instalacion') === '1';
+  // Cupón de regalo (Vorka OS › Tienda › Regalar): la liga trae ?cupon=REGALO-XXXX-XXXX y deja el primer mes en el cobro mínimo
+  const cupon = String(url.searchParams.get('cupon') || url.searchParams.get('codigo') || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40);
   const mes = p?.precio_centavos || 0, extra = inst?.precio_centavos || 0;
   const form = p ? `<form class="t-form t-compra" id="form-nc" method="post" action="/api/checkout" novalidate data-mes="${mes}" data-inst="${extra}">
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Con este correo entras a Agenda y a Vuelve, y aquí te llega tu recibo.</small></div>
     ${inst ? `<label class="t-casilla nc-inst"><input type="checkbox" name="instalacion" value="on"${conInst ? ' checked' : ''}><span><b>Agregar instalación y personalización: ${precio(inst)}</b> (pago único). Te dejamos todo funcionando en 7 días con tu logo, fotos y servicios.</span></label>` : ''}
+    <div class="t-campo"><label for="codigo">Código de regalo <span class="nc-opc">(si te dimos uno)</span></label><input id="codigo" name="codigo" type="text" autocomplete="off" maxlength="40" value="${esc(cupon)}"${cupon ? '' : ' placeholder="REGALO-XXXX-XXXX"'}>${cupon ? '<small class="t-ayuda">Tu código se aplica en el pago: tu primer mes queda con descuento y después sigue en $749 al mes.</small>' : ''}</div>
     <p class="pw-total">Pagas hoy <b id="nc-hoy">${precio({ precio_centavos: mes + (conInst ? extra : 0) })}</b> <span>y luego ${precio(p)} cada mes</span></p>
     <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, la renovación automática mensual y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
@@ -74,6 +77,7 @@ const CSS = `.pw-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 #comprar .t-form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--sombra-2)}
 .nc-inst{padding:12px;border-radius:12px;background:var(--bg-2)}
 .pw-total{font-size:15.5px;margin:10px 0 8px}.pw-total b{font-size:22px;letter-spacing:-.02em}
+.nc-opc{font-weight:400;color:var(--fg-2)}
 .nc-transfer{font-size:14px;color:var(--fg-2);margin-top:12px;text-align:center}`;
 
 const SCRIPT = `(function(){
@@ -85,7 +89,7 @@ const SCRIPT = `(function(){
   function mostrar(m){ err.textContent=m; err.hidden=false; btn.disabled=false; btn.innerHTML=txt; }
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    var d={ slug:'${SLUG_NEGOCIO_COMPLETO}', nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked, instalacion:!!(f.instalacion&&f.instalacion.checked) }; if(f.ref) d.ref=f.ref.value;
+    var d={ slug:'${SLUG_NEGOCIO_COMPLETO}', nombre:f.nombre.value, email:f.email.value.trim(), terminos:!!f.terminos.checked, instalacion:!!(f.instalacion&&f.instalacion.checked) }; if(f.ref) d.ref=f.ref.value; if(f.codigo&&f.codigo.value.trim()) d.codigo=f.codigo.value.trim();
     if(!d.nombre||d.nombre.trim().length<2){ f.nombre.focus(); return mostrar('Te faltó poner tu nombre.'); }
     if(!f.email.checkValidity()||!d.email){ f.email.focus(); return mostrar('Revisa tu correo: parece que le falta algo.'); }
     if(!d.terminos) return mostrar('Para seguir, acepta los términos y el aviso de privacidad.');

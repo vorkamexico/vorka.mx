@@ -17,7 +17,10 @@ beforeEach(() => {
   vi.stubGlobal('fetch', vi.fn(async (url, init = {}) => {
     llamadas.push({ url: String(url), params: new URLSearchParams(init.body) });
     if (String(url).endsWith('/customers')) return new Response(JSON.stringify({ id: 'cus_1' }));
-    return new Response(JSON.stringify({ id: 'cs_1', url: 'https://checkout.stripe.com/c/pay/cs_1' }));
+    if (String(url).includes('/coupons/')) return new Response('{}', { status: 404 });
+    if (String(url).endsWith('/coupons')) return new Response(JSON.stringify({ id: new URLSearchParams(init.body).get('id') || 'cup_1' }));
+    const id = `cs_${llamadas.length}`;
+    return new Response(JSON.stringify({ id, url: `https://checkout.stripe.com/c/pay/${id}` }));
   }));
 });
 afterEach(() => vi.unstubAllGlobals());
@@ -59,6 +62,21 @@ describe('Negocio Completo', () => {
     expect(p.get('line_items[1][price_data][unit_amount]')).toBe('349000');
     expect(p.get('line_items[1][price_data][recurring][interval]')).toBeNull();
     expect(p.get('subscription_data[metadata][product_id]')).toBe('prod_negocio_completo_mensual');
+  });
+
+  it('la liga del cupón de regalo trae el código escrito en la página', async () => {
+    const h = await (await pedir('/tienda/negocio-completo/?cupon=REGALO-AB12-CD34')).text();
+    expect(h).toContain('value="REGALO-AB12-CD34"');
+  });
+
+  it('cupón de regalo del 100 %: el primer mes sale en el cobro mínimo y la instalación se cobra completa', async () => {
+    const cupon = codigo => env.DB.raw.prepare(`INSERT INTO cupones_regalo (codigo, lote, tipo, pct, alcance, product_id, max_usos, usos, hasta)
+      VALUES (?, 'l1', 'pct', 100, 'producto', 'prod_negocio_completo_mensual', 1, 0, '2027-12-31')`).run(codigo);
+    cupon('REGALO-AAAA-BBBB'); cupon('REGALO-CCCC-DDDD');
+    expect((await comprar({ codigo: 'REGALO-AAAA-BBBB' })).status).toBe(200);
+    expect((await comprar({ email: 'otra@correo.mx', codigo: 'REGALO-CCCC-DDDD', instalacion: true })).status).toBe(200);
+    const montos = env.DB.raw.prepare('SELECT email, monto_centavos FROM orders ORDER BY email').all();
+    expect(montos).toEqual([{ email: 'laura@correo.mx', monto_centavos: 1000 }, { email: 'otra@correo.mx', monto_centavos: 349000 }]);
   });
 
   it('la instalación no se compra sola ni con otro plan', async () => {
