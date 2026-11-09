@@ -34,6 +34,8 @@ describe('Negocio Completo', () => {
     expect(h).toContain('name="instalacion"');
     expect(h).toContain('$3,490');
     expect(h).toContain('transferencia');
+    expect(h).toContain('plan de 12 meses');
+    expect(h).not.toContain('plazo forzoso');
   });
 
   it('la ficha genérica del producto lleva a su página', async () => {
