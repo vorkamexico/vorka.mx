@@ -55,6 +55,17 @@ describe('Meta apagado (sin píxel ni token)', () => {
   });
 });
 
+describe('Solo el píxel (ID sin token)', () => {
+  beforeEach(() => Object.assign(env, { META_PIXEL_ID: '123456' }));
+  it('config da el píxel, pero el servidor no llama a Meta', async () => {
+    expect(await (await pedir('/api/meta/config')).json()).toEqual({ pixel: '123456' });
+    expect((await pedir('/api/meta/evento', { method: 'POST', body: JSON.stringify({ evento: 'PageView', id: 'pageview_abc123', url: 'https://vorka.mx/' }) })).status).toBe(204);
+    ordenPagada();
+    expect((await compraMeta(env, '11111111-1111-4111-8111-111111111111')).ok).toBe(false);
+    expect(aMeta()).toHaveLength(0);
+  });
+});
+
 describe('Meta encendido', () => {
   beforeEach(() => Object.assign(env, ENCENDIDO));
 
