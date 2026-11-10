@@ -173,7 +173,7 @@ const CSS = `.nc-hero{padding:clamp(12px,3vw,40px) 0 clamp(36px,5vw,64px);overfl
 .nc-card h3{font-size:20px;margin:0}.nc-card p{margin:8px 0 14px;color:var(--fg-2)}
 .nc-card ul,.nc-plan ul{display:grid;gap:9px;margin:0;padding:0;list-style:none}
 .nc-card li,.nc-plan li{display:flex;gap:10px;align-items:flex-start;font-size:15.5px}
-.nc-card svg,.nc-plan svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--verde)}
+.nc-card li svg,.nc-plan li svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--verde)}
 .nc-planes{display:grid;gap:18px;margin-top:28px;align-items:stretch}@media(min-width:860px){.nc-planes{grid-template-columns:1fr 1fr}}
 .nc-plan{position:relative;display:flex;flex-direction:column;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(22px,3vw,32px);box-shadow:var(--sombra)}
 .nc-plan h3{font-size:21px;margin:0}
