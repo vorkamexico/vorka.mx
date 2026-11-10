@@ -28,7 +28,7 @@ def pagina():
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://os.vorka.mx" crossorigin>
 <link rel="stylesheet" href="/assets/v3/vorka.css?v={VERSION}">
-<link rel="stylesheet" href="/assets/v3/diagnostico.css?v=3">
+<link rel="stylesheet" href="/assets/v3/diagnostico.css?v=4">
 </head>
 <body class="dx">
 <a class="saltar" href="#contenido">Saltar al contenido</a>
@@ -60,9 +60,15 @@ def pagina():
   <section class="dx-progreso oscura" id="progreso">
     <div class="marco">
       <div class="cab"><span class="etiqueta">Progreso real</span><h2 class="h2" style="margin-top:18px">Avanza solo con <span class="metal">evidencia.</span></h2>
-      <p class="lead">Cada hito suma cuando hay algo que lo demuestra: una constancia, un documento, un registro. Así el avance se ve en lo que se puede mostrar.</p></div>
+      <p class="lead">Cada hito suma cuando hay algo que lo demuestra: una constancia, un documento, un registro. Tú lo marcas aquí; tu mentor lo valida.</p></div>
+      <div class="dx-tablero" data-x="tablero" aria-label="Indicadores del plan"></div>
+      <div class="dx-graficas"><figure class="dx-fig" data-x="radar"></figure><figure class="dx-fig" data-x="curva"></figure></div>
+      <h3 class="dx-sub">Competencias</h3>
       <div class="dx-comps" data-x="competencias"></div>
+      <h3 class="dx-sub">Lo que sigue</h3>
+      <div class="dx-proximos" data-x="proximos"></div>
       <h3 class="dx-sub">Plan de hitos</h3>
+      <p class="dx-ayuda">Cuando cumplas un hito, márcalo aquí con lo que lo demuestra. Cuenta en tu avance de inmediato y tu mentor lo revisa.</p>
       <ol class="dx-hitos" data-x="hitos"></ol>
     </div>
   </section>
@@ -77,7 +83,7 @@ def pagina():
 </main>
 <footer class="pie dx-pie"><div class="marco"><a class="marca" href="/" aria-label="Vorka México, inicio">{LOGO}Vorka <span>México</span></a>
   <p data-x="actualizado">Documento privado de trabajo. Solo lo ve quien tiene la liga; no aparece en buscadores.</p></div></footer>
-<script src="/assets/v3/diagnostico.js?v=3" defer></script>
+<script src="/assets/v3/diagnostico.js?v=4" defer></script>
 </body>
 </html>
 '''
