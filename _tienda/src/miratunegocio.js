@@ -1,0 +1,218 @@
+// Tienda › Mira tu negocio (vorka.mx/tienda/mira-tu-negocio/): la persona escribe el nombre de su negocio, el giro y la ciudad
+// (y si quiere sube su logo y elige color) y ve al instante su tarjeta de sellos, su agenda y su página web con su nombre.
+// Todo se dibuja en el navegador: no se guarda nada ni se sube el logo. «Lo quiero» abre WhatsApp con sus datos ya escritos.
+// La liga se puede mandar armada: ?n=Estética%20Lumbre&g=estetica&c=Celaya abre la vista previa directo (sin el logo).
+// Píxel: ViewContent al armar la primera vista previa y Lead al tocar «Lo quiero».
+import { pagina, esc } from './paginas.js';
+import { productoPorSlug, registrarAnalitica } from './modelo.js';
+import { refDeVisita } from './tienda.js';
+import { FLECHA } from './marco.generado.js';
+import { RUTA_NEGOCIO_COMPLETO, SLUG_NEGOCIO_COMPLETO } from './negociocompleto.js';
+
+export const RUTA_MIRA = '/tienda/mira-tu-negocio/';
+const WA_NUM = '528117804869';
+const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
+
+// Por giro: servicios de ejemplo para la agenda (nombre, hora) y para la página (con precio), premio de la tarjeta y frase de portada
+export const GIROS = {
+  estetica: { nombre: 'Estética', frase: 'Corte, color y peinado con cita.', premio: 'tu corte gratis', servicios: [['Corte de cabello', 250], ['Tinte', 650], ['Peinado', 350], ['Tratamiento', 450]] },
+  barberia: { nombre: 'Barbería', frase: 'Cortes y barba sin hacer fila.', premio: 'tu corte gratis', servicios: [['Corte clásico', 180], ['Corte y barba', 260], ['Arreglo de barba', 120], ['Corte niño', 150]] },
+  unas: { nombre: 'Uñas', frase: 'Manicure y pedicure con cita.', premio: 'tu manicure gratis', servicios: [['Manicure', 250], ['Gelish', 300], ['Pedicure', 320], ['Acrílico', 450]] },
+  spa: { nombre: 'Spa y masajes', frase: 'Date un respiro, reserva tu masaje.', premio: 'tu masaje gratis', servicios: [['Masaje relajante', 600], ['Facial', 550], ['Masaje descontracturante', 700], ['Piedras calientes', 750]] },
+  dental: { nombre: 'Consultorio dental', frase: 'Tu sonrisa, con cita y sin esperas.', premio: 'tu limpieza gratis', servicios: [['Limpieza dental', 600], ['Revisión', 350], ['Resina', 800], ['Blanqueamiento', 2500]] },
+  nutricion: { nombre: 'Nutrición', frase: 'Tu plan de alimentación a tu medida.', premio: 'tu consulta gratis', servicios: [['Primera consulta', 500], ['Seguimiento', 400], ['Plan mensual', 1200], ['Medición corporal', 250]] },
+  psicologia: { nombre: 'Psicología', frase: 'Un espacio para ti, con cita.', premio: 'una sesión de cortesía', servicios: [['Sesión individual', 600], ['Terapia de pareja', 800], ['Primera sesión', 500], ['Sesión en línea', 550]] },
+  cafeteria: { nombre: 'Cafetería', frase: 'Tu café de todos los días.', premio: 'tu bebida gratis', servicios: [['Americano', 45], ['Latte', 60], ['Frappé', 75], ['Pan dulce', 35]] },
+  restaurante: { nombre: 'Restaurante', frase: 'Comida casera, reserva tu mesa.', premio: 'tu postre gratis', servicios: [['Comida del día', 120], ['Desayuno', 95], ['Mesa para 4', 0], ['Postre', 55]] },
+  panaderia: { nombre: 'Panadería', frase: 'Pan recién hecho, diario.', premio: 'tu pan gratis', servicios: [['Concha', 14], ['Pastel por pedido', 380], ['Bolillo', 4], ['Galletas', 60]] },
+  gimnasio: { nombre: 'Gimnasio', frase: 'Entrena con nosotros, reserva tu clase.', premio: 'una semana gratis', servicios: [['Clase de spinning', 80], ['Entrenamiento personal', 300], ['Mensualidad', 550], ['Clase de yoga', 90]] },
+  veterinaria: { nombre: 'Veterinaria', frase: 'Cuidamos a tu mascota como tú.', premio: 'tu baño gratis', servicios: [['Consulta', 350], ['Baño y corte', 300], ['Vacuna', 400], ['Desparasitación', 200]] },
+  otro: { nombre: 'Negocio', frase: 'Reserva en línea y junta tus sellos.', premio: 'tu servicio gratis', servicios: [['Servicio', 300], ['Consulta', 400], ['Paquete', 800], ['Visita', 250]] },
+};
+export const COLORES = ['#1f6f54', '#7a3b2e', '#1d3f72', '#8a3d6b', '#b5651d', '#222222'];
+
+export async function paginaMiraTuNegocio(env, req, url) {
+  const { code, cookie } = await refDeVisita(env, req, url);
+  const p = await productoPorSlug(env, SLUG_NEGOCIO_COMPLETO);
+  if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
+  const n = String(url.searchParams.get('n') || '').trim().slice(0, 60);
+  const g = GIROS[url.searchParams.get('g')] ? url.searchParams.get('g') : '';
+  const c = String(url.searchParams.get('c') || '').trim().slice(0, 40);
+  const opciones = Object.entries(GIROS).map(([k, v]) => `<option value="${k}"${k === g ? ' selected' : ''}>${esc(v.nombre)}</option>`).join('');
+  const colores = COLORES.map((col, i) => `<label class="mt-color" style="--c:${col}"><input type="radio" name="color" value="${col}"${i === 0 ? ' checked' : ''}><span aria-label="Color ${i + 1}"></span></label>`).join('');
+  return pagina({ navActual: 'catalogo',
+    titulo: 'Mira cómo quedaría tu negocio: tarjeta de lealtad, agenda y página web | Vorka México', ruta: RUTA_MIRA,
+    imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
+    descripcion: 'Escribe el nombre de tu negocio y mira al instante cómo quedarían tu tarjeta de sellos, tu agenda en línea y tu página web. Gratis y sin registrarte.',
+    head: `<style>${CSS}</style>`, headers: cookie ? { 'set-cookie': cookie } : {},
+    script: `var MT=${JSON.stringify({ giros: GIROS, wa: WA_NUM, ruta: RUTA_MIRA }).replace(/</g, '\\u003c')};${SCRIPT}`,
+    cuerpo: `<section class="mt-hero"><div class="marco">
+  <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / <a href="${RUTA_NEGOCIO_COMPLETO}">Negocio Completo</a></nav>
+  <h1 class="t-h1">Mira cómo quedaría tu negocio.</h1>
+  <p class="t-lead">Escribe el nombre de tu negocio y te mostramos tu tarjeta de sellos, tu agenda y tu página web, con tu nombre. Gratis y sin registrarte.</p>
+  <div class="mt-g">
+    <form class="t-form mt-form" id="form-mira" novalidate>
+      <div class="t-campo"><label for="mt-nombre">Nombre de tu negocio</label><input id="mt-nombre" name="nombre" type="text" required maxlength="60" autocomplete="organization" placeholder="Ej. Estética Lumbre" value="${esc(n)}"></div>
+      <div class="t-campo"><label for="mt-giro">¿De qué es?</label><select id="mt-giro" name="giro" required><option value="">Elige tu giro</option>${opciones}</select></div>
+      <div class="t-campo"><label for="mt-ciudad">Ciudad</label><input id="mt-ciudad" name="ciudad" type="text" maxlength="40" autocomplete="address-level2" placeholder="Ej. Celaya" value="${esc(c)}"></div>
+      <div class="t-campo"><span class="mt-lbl">Color de tu marca</span><div class="mt-colores">${colores}</div></div>
+      <div class="t-campo"><label for="mt-logo">Tu logo <span class="nc-opc">(opcional)</span></label><input id="mt-logo" name="logo" type="file" accept="image/png,image/jpeg,image/webp"><small class="t-ayuda">Solo se ve en tu pantalla: no lo guardamos.</small></div>
+      <p class="t-error" id="mt-error" role="alert" hidden></p>
+      <button class="btn acento" type="submit">Ver mi negocio ${FLECHA}</button>
+    </form>
+    <div class="mt-vacio" id="mt-vacio"><p>Aquí vas a ver tu tarjeta de sellos, tu agenda y tu página web.</p></div>
+  </div>
+</div></section>
+<section class="mt-res" id="mt-res" hidden aria-live="polite"><div class="marco">
+  <h2 class="t-h2">Así se vería <span data-mt="nombre"></span>.</h2>
+  <div class="mt-tres">
+    <figure class="mt-pieza">
+      <div class="mt-tarjeta">
+        <div class="mt-tar-top"><span class="mt-logo" data-mt="logo"></span><b data-mt="nombre"></b></div>
+        <p class="mt-hola">Hola, Ana</p>
+        <p class="mt-cuenta"><b>7</b> / 10 sellos</p>
+        <div class="mt-sellos">${Array.from({ length: 10 }, (_, i) => `<span class="${i < 7 ? 'si' : i === 9 ? 'premio' : ''}"></span>`).join('')}</div>
+        <p class="mt-falta">3 visitas más y te llevas <b data-mt="premio"></b>.</p>
+      </div>
+      <figcaption><b>Tarjeta de sellos</b> en el celular de tus clientes, sin descargar apps. Les llega aviso para que regresen.</figcaption>
+    </figure>
+    <figure class="mt-pieza">
+      <div class="mt-agenda">
+        <p class="mt-ag-dia">Agenda de hoy</p>
+        <b class="mt-ag-neg" data-mt="nombre"></b>
+        <ul class="mt-ag-lista" data-mt="agenda"></ul>
+      </div>
+      <figcaption><b>Agenda en línea</b>: tus clientes eligen día y hora solos y les llega su recordatorio.</figcaption>
+    </figure>
+    <figure class="mt-pieza">
+      <div class="mt-web">
+        <div class="mt-web-barra"><i></i><i></i><i></i><span data-mt="dominio"></span></div>
+        <div class="mt-web-hero"><span class="mt-logo" data-mt="logo"></span><b data-mt="nombre"></b><p data-mt="frase"></p><div class="mt-web-btns"><span>Reservar</span><span>WhatsApp</span></div></div>
+        <ul class="mt-web-serv" data-mt="servicios"></ul>
+        <div class="mt-google"><small data-mt="dominio"></small><b><span data-mt="nombre"></span> · <span data-mt="giro"></span><span data-mt="enciudad"></span></b><small>Abierto · Reserva en línea · WhatsApp</small></div>
+      </div>
+      <figcaption><b>Página web</b> con tus servicios, tu horario y botón a tu WhatsApp, dada de alta en Google.</figcaption>
+    </figure>
+  </div>
+  <div class="mt-cta">
+    <div><p class="mt-precio">Todo esto por <b>$749 al mes</b>.</p><p>Si te lo dejamos configurado, tu primer mes va de regalo. Plan de 12 meses; el dominio se paga aparte.</p></div>
+    <div class="mt-cta-btns">
+      <a class="btn acento" id="mt-quiero" href="https://wa.me/${WA_NUM}" target="_blank" rel="noopener">Lo quiero ${FLECHA}</a>
+      <a class="btn blanco" href="${RUTA_NEGOCIO_COMPLETO}">Contratar en línea</a>
+    </div>
+    <p class="mt-nota">Es un ejemplo con datos de muestra: al contratar lo dejamos con tus servicios, tus horarios y tus precios.</p>
+  </div>
+</div></section>`,
+  });
+}
+
+const CSS = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,40px)}
+.mt-hero h1{margin-top:14px}.mt-hero .t-lead{margin-top:14px;max-width:620px}
+.mt-g{display:grid;gap:24px;margin-top:26px;align-items:start}@media(min-width:900px){.mt-g{grid-template-columns:minmax(320px,440px) 1fr}}
+.mt-g>*{min-width:0}
+.mt-form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--sombra-2)}
+.mt-form select{width:100%}
+.mt-lbl{display:block;font-weight:600;font-size:15px;margin-bottom:8px}
+.mt-colores{display:flex;gap:10px;flex-wrap:wrap}
+.mt-color input{position:absolute;opacity:0;pointer-events:none}
+.mt-color span{display:block;width:34px;height:34px;border-radius:50%;background:var(--c);cursor:pointer;box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--line)}
+.mt-color input:checked+span{box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--c)}
+.mt-color input:focus-visible+span{outline:2px solid var(--fg);outline-offset:4px}
+.nc-opc{font-weight:400;color:var(--fg-2)}
+.mt-vacio{display:none}@media(min-width:900px){.mt-vacio{display:flex;align-items:center;justify-content:center;min-height:320px;border:1.5px dashed var(--line);border-radius:var(--r);color:var(--fg-2);padding:24px;text-align:center}}
+.mt-res{padding:0 0 clamp(40px,5vw,64px);--marca:#1f6f54}
+.mt-res h2{margin-bottom:22px}
+.mt-tres{display:grid;gap:22px}@media(min-width:900px){.mt-tres{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mt-pieza{margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.mt-pieza figcaption{font-size:15px;color:var(--fg-2)}.mt-pieza figcaption b{color:var(--fg)}
+.mt-tarjeta,.mt-agenda,.mt-web{background:#fff;color:#1b1b1b;border-radius:18px;border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(0,0,0,.08);overflow:hidden;flex:1}
+.mt-logo{width:38px;height:38px;border-radius:10px;background:var(--marca);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex:none;overflow:hidden}
+.mt-logo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.mt-tarjeta{padding:18px;background:linear-gradient(180deg,#fff 0,#fff 55%,color-mix(in srgb,var(--marca) 10%,#fff) 100%)}
+.mt-tar-top{display:flex;align-items:center;gap:10px}.mt-tar-top b{font-size:17px;line-height:1.2;overflow-wrap:anywhere}
+.mt-hola{margin:16px 0 0;color:#666;font-size:14px}
+.mt-cuenta{margin:2px 0 12px;font-size:16px;color:#555}.mt-cuenta b{font-size:44px;line-height:1;color:#1b1b1b;margin-right:4px}
+.mt-sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:14px;border-radius:14px;background:var(--marca)}
+.mt-sellos span{aspect-ratio:1;border-radius:50%;border:2px solid rgba(255,255,255,.55)}
+.mt-sellos span.si{background:#fff;border-color:#fff;position:relative}
+.mt-sellos span.si::after{content:"";position:absolute;left:36%;top:22%;width:22%;height:42%;border:solid var(--marca);border-width:0 3px 3px 0;transform:rotate(45deg)}
+.mt-sellos span.premio{border-style:dashed;border-color:#fff}
+.mt-falta{margin:12px 0 0;font-size:14px;color:#444}
+.mt-agenda{padding:18px}
+.mt-ag-dia{margin:0;font-size:13px;color:var(--marca);font-weight:600}
+.mt-ag-neg{display:block;font-size:18px;margin:2px 0 12px;overflow-wrap:anywhere}
+.mt-ag-lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.mt-ag-lista li{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;font-size:14px}
+.mt-ag-lista time{color:#777;font-size:13px}
+.mt-ag-lista div{padding:8px 10px;border-radius:10px;background:#f4f4f2;border-left:3px solid var(--marca)}
+.mt-ag-lista div small{display:block;color:#777;font-size:12px}
+.mt-ag-lista li.libre div{background:#fff;border:1.5px dashed #ccc;color:#888}
+.mt-web-barra{display:flex;align-items:center;gap:5px;padding:9px 12px;background:#f1f1ef;font-size:12px;color:#666}
+.mt-web-barra i{width:8px;height:8px;border-radius:50%;background:#d6d6d3}.mt-web-barra span{margin-left:8px;background:#fff;border-radius:6px;padding:2px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-web-hero{padding:18px;background:var(--marca);color:#fff;display:grid;gap:6px;justify-items:start}
+.mt-web-hero .mt-logo{background:#fff;color:var(--marca)}
+.mt-web-hero b{font-size:20px;line-height:1.15;overflow-wrap:anywhere}.mt-web-hero p{margin:0;font-size:14px;opacity:.9}
+.mt-web-btns{display:flex;gap:8px;margin-top:6px}.mt-web-btns span{font-size:13px;padding:6px 12px;border-radius:999px;background:#fff;color:var(--marca);font-weight:600}.mt-web-btns span+span{background:rgba(255,255,255,.18);color:#fff}
+.mt-web-serv{list-style:none;margin:0;padding:12px 18px;display:grid;gap:6px;font-size:14px}
+.mt-web-serv li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eee;padding-bottom:6px}.mt-web-serv li span:last-child{color:#666}
+.mt-google{margin:4px 12px 14px;padding:10px 12px;border-radius:12px;background:#f7f7f5;display:grid;gap:2px}
+.mt-google small{font-size:12px;color:#666}.mt-google b{font-size:14px;color:#1a0dab;font-weight:600}
+.mt-cta{margin-top:28px;padding:clamp(18px,3vw,28px);border-radius:var(--r);background:var(--card);border:1px solid var(--line);box-shadow:var(--sombra-2);display:grid;gap:16px;align-items:center}
+@media(min-width:900px){.mt-cta{grid-template-columns:1fr auto}}
+.mt-cta p{margin:0;color:var(--fg-2)}.mt-precio{font-size:20px;color:var(--fg)!important;margin-bottom:4px!important}
+.mt-cta-btns{display:flex;gap:10px;flex-wrap:wrap}
+.mt-nota{grid-column:1/-1;font-size:13.5px}`;
+
+const SCRIPT = `(function(){
+  var f=document.getElementById('form-mira'); if(!f) return;
+  var res=document.getElementById('mt-res'), vacio=document.getElementById('mt-vacio'), err=document.getElementById('mt-error'), quiero=document.getElementById('mt-quiero');
+  var logo=null, visto=false, datos=null;
+  var NOMBRES=['Ana','Sofía','Jorge','Mariana','Luis'], HORAS=['9:00','10:30','12:00','13:30','16:00'];
+  function todos(k){ return res.querySelectorAll('[data-mt="'+k+'"]'); }
+  function poner(k,t){ todos(k).forEach(function(e){ e.textContent=t; }); }
+  function vaciar(e){ while(e.firstChild) e.removeChild(e.firstChild); }
+  function el(tag,t){ var x=document.createElement(tag); if(t!=null) x.textContent=t; return x; }
+  function dominio(n){ var s=n.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,''); return (s||'tunegocio').slice(0,28)+'.mx'; }
+  function pesos(v){ return v>0 ? '$'+v.toLocaleString('es-MX') : 'Reserva'; }
+  f.logo.addEventListener('change',function(){
+    var a=f.logo.files&&f.logo.files[0]; logo=null; if(!a) return;
+    if(a.size>3*1024*1024){ f.logo.value=''; err.textContent='Tu logo pesa mucho: usa uno de menos de 3 MB.'; err.hidden=false; return; }
+    var r=new FileReader(); r.onload=function(){ logo=r.result; if(datos) dibujar(); }; r.readAsDataURL(a);
+  });
+  function leer(){
+    var n=f.nombre.value.trim().replace(/\\s+/g,' '), g=f.giro.value, c=f.ciudad.value.trim().replace(/\\s+/g,' ');
+    var col=(f.querySelector('input[name=color]:checked')||{}).value||'#1f6f54';
+    return { n:n, g:g, c:c, col:col };
+  }
+  function dibujar(){
+    var d=datos, G=MT.giros[d.g];
+    res.style.setProperty('--marca', d.col);
+    poner('nombre', d.n); poner('premio', G.premio); poner('frase', G.frase + (d.c ? ' En '+d.c+'.' : ''));
+    poner('dominio', dominio(d.n)); poner('giro', G.nombre); poner('enciudad', d.c ? ' en '+d.c : '');
+    todos('logo').forEach(function(e){ vaciar(e); if(logo){ var i=new Image(); i.alt=''; i.src=logo; e.appendChild(i); } else e.textContent=(d.n.charAt(0)||'V').toUpperCase(); });
+    todos('agenda').forEach(function(ul){ vaciar(ul);
+      HORAS.forEach(function(h,i){ var li=el('li'), t=el('time',h), box=el('div');
+        if(i===2){ li.className='libre'; box.textContent='Disponible · reserva en línea'; }
+        else { var s=G.servicios[i>2?i-1:i]; box.appendChild(el('span',s[0])); box.appendChild(el('small',NOMBRES[i])); }
+        li.appendChild(t); li.appendChild(box); ul.appendChild(li); }); });
+    todos('servicios').forEach(function(ul){ vaciar(ul);
+      G.servicios.slice(0,3).forEach(function(s){ var li=el('li'); li.appendChild(el('span',s[0])); li.appendChild(el('span',pesos(s[1]))); ul.appendChild(li); }); });
+    var msj='Hola, vi cómo quedaría mi negocio y lo quiero. Se llama '+d.n+', es '+G.nombre.toLowerCase()+(d.c?' y está en '+d.c:'')+'.';
+    quiero.href='https://wa.me/'+MT.wa+'?text='+encodeURIComponent(msj);
+    res.hidden=false; if(vacio) vacio.style.display='none';
+  }
+  function mostrar(desplazar){
+    var d=leer();
+    if(d.n.length<2){ err.textContent='Escribe el nombre de tu negocio.'; err.hidden=false; f.nombre.focus(); return; }
+    if(!MT.giros[d.g]){ err.textContent='Elige de qué es tu negocio.'; err.hidden=false; f.giro.focus(); return; }
+    err.hidden=true; datos=d; dibujar();
+    try{ var q=new URLSearchParams({n:d.n,g:d.g}); if(d.c) q.set('c',d.c); history.replaceState(null,'',MT.ruta+'?'+q.toString()); }catch(e){}
+    if(!visto){ visto=true; if(window.vorkaEvento) window.vorkaEvento('ViewContent',{content_name:'Mira tu negocio',content_category:d.g}); }
+    if(desplazar) res.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  f.addEventListener('submit',function(e){ e.preventDefault(); mostrar(true); });
+  f.addEventListener('change',function(e){ if(datos&&e.target.name!=='logo') mostrar(false); });
+  quiero.addEventListener('click',function(){ if(window.vorkaEvento&&datos) window.vorkaEvento('Lead',{content_name:'Mira tu negocio',content_category:datos.g}); });
+  // Liga armada (?n=…&g=…): se dibuja sola y baja a la vista previa, que en el celular queda debajo del formulario
+  if(f.nombre.value.trim().length>=2&&MT.giros[f.giro.value]){ mostrar(false); setTimeout(function(){ res.scrollIntoView({block:'start'}); },400); }
+})();`;
