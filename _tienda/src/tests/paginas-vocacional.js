@@ -11,7 +11,7 @@ import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-produ
 import { seccionDemo } from '../demos/marco.js';
 import { demoDe } from '../demos/index.js';
 import { TIPOS, ORDEN_TIPOS, INTERESES, HABILIDADES, PREFERENCIAS, OPC_INTERES, OPC_HABILIDAD, CARRERAS, AREAS_UNAM, RAMAS_IPN, PLAN_30, PREGUNTAS_FAMILIA, PREGUNTAS_PROFESIONAL } from './vocacional-datos.js';
-import { calcular, SIMULADORES } from './vocacional.js';
+import { calcular, SIMULADORES, BACHILLERATOS } from './vocacional.js';
 import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, ICONO_CANDADO, PRODUCTOS_TEST, whatsapp, fechaCorta, SIN_REFERER, horaVence } from './comun.js';
 
 const DEF = PRODUCTOS_TEST.vocacional;
@@ -50,12 +50,12 @@ export function formTest({ accion = RUTA, datos = {}, error = '', boton = 'Ver m
 }
 
 const FAQ = precioT => [
-  ['¿El test vocacional es gratis?', `Sí. Contestas ${N_PREG} preguntas (8 a 10 minutos) y al momento ves gratis tu perfil: tus 3 tipos de interés con su descripción y tu carrera más afín, sin crear cuenta. El reporte completo (20 carreras, tu examen y un plan de 30 días) cuesta ${precioT}, pago único.`],
+  ['¿El test vocacional es gratis?', `Sí. Contestas ${N_PREG} preguntas (8 a 10 minutos) y al momento ves gratis tu perfil: tus 3 tipos de interés con su descripción, tus 6 tipos en barras y tus 3 carreras más afines, sin crear cuenta. El reporte completo (20 carreras, tu examen y un plan de 30 días) cuesta ${precioT}, pago único.`],
   ['¿En qué se basa?', 'En la teoría de intereses vocacionales de John L. Holland, que agrupa los intereses en seis tipos: Realista, Investigador, Artístico, Social, Emprendedor y Convencional (RIASEC). Todas las preguntas son originales de Vorka México y combinan tres cosas: lo que te gusta, lo que se te da y lo que buscas al estudiar.'],
   ['¿Es una prueba psicométrica?', 'No. Es una herramienta orientativa para conocerte mejor y explorar carreras con más información. No es un instrumento estandarizado ni un diagnóstico, y no sustituye la orientación de una o un profesional. Úsalo para hacerte mejores preguntas, no como sentencia.'],
   ['¿Qué trae el reporte completo?', 'Tu perfil detallado (tus 3 tipos, fortalezas, ambientes de trabajo y lo que conviene cuidar), 20 carreras afines con qué se estudia y en qué se trabaja, en qué área de la UNAM o rama del IPN caen o si te toca la PAA, el simulador y las guías para tu examen, un plan de 30 días para decidir y preguntas para hablar con tu familia o tu orientador. Lo puedes imprimir o guardar en PDF.'],
   ['¿Las carreras son de una universidad en específico?', 'No. Son nombres generales de carreras que se ofrecen en México. Cada universidad las llama un poco distinto: revisa su plan de estudios y su convocatoria antes de decidir.'],
-  ['¿Sirve si voy en secundaria?', 'Sí. Te ayuda a elegir una prepa o un bachillerato que vaya con tus intereses y te dice si te toca el examen ECOEMS o el de la prepa de la UG.'],
+  ['¿Sirve si voy en secundaria?', 'Sí. Te dice qué tipo de prepa te conviene (bachillerato general, tecnológico o profesional técnico) según tus intereses, qué carreras técnicas van contigo y si te toca un examen como el ECOEMS o el de la prepa de la UG.'],
   ['Soy mamá o papá, ¿cómo lo uso?', 'Pásale la liga a tu hija o hijo para que lo conteste. Si compras el reporte, también lo puedes regalar: te llega una liga por correo para que se la mandes. El reporte trae preguntas para que platiquen en familia.'],
   ['Soy orientador, ¿hay precio para grupos?', 'Sí: licencias para 10, 30 o 100 alumnas y alumnos con precio por alumno más bajo. Recibes una sola liga para tu grupo y un panel con los resultados de quienes acepten compartirlos contigo. Todo el detalle está en <a href="/test-vocacional/escuelas/">la página para escuelas</a>.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tu resultado y tu reporte. No se venden ni se comparten. Si no compras ni dejas tu correo, se borran a los 12 meses, y puedes borrarlas tú cuando quieras desde tu resultado. Consulta el <a href="/privacidad/#tests">aviso de privacidad</a>.'],
@@ -137,7 +137,7 @@ ${seccionDemo('test-vocacional', demoDe('test-vocacional'))}
   <div class="tv-cab"><span class="tv-et">Reporte completo · ${precioT}</span><h2>Todo lo que necesitas para decidir.</h2>
     <p>Primero haz el test gratis: al final ves una vista previa de tu reporte y lo desbloqueas ahí mismo, con el mismo correo, en un paso.</p>
     <div class="tv-acciones"><a class="btn acento" href="#test">Hacer el test gratis ${FLECHA}</a>${p?.contenido?.regalable ? `<a class="btn blanco" href="${RUTA}?regalo=1#regalar">🎁 Regalarlo</a>` : ''}</div></div>
-  <ul class="tv-incluye" style="gap:10px">${['Tu perfil detallado: tus 3 tipos, tus fortalezas, dónde te sentirías a gusto y qué cuidar', '20 carreras afines con qué se estudia y en qué se trabaja', 'En qué área de la UNAM o rama del IPN cae cada una, o si te toca la PAA', 'El simulador y las guías para practicar tu examen', 'Un plan de 30 días con actividades concretas para decidir', 'Preguntas para hablar con tus papás, tu orientador y alguien que ya ejerce'].map(x => `<li style="padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)">${x}</li>`).join('')}</ul>
+  <ul class="tv-incluye" style="gap:10px">${['Tu perfil detallado: tus 3 tipos, tus fortalezas, dónde te sentirías a gusto y qué cuidar', '20 carreras afines con qué se estudia y en qué se trabaja', 'En qué área de la UNAM o rama del IPN cae cada una, o si te toca la PAA', 'El simulador y las guías para practicar tu examen', 'Un plan de 30 días con actividades concretas para decidir', 'Si vas en secundaria: qué tipo de prepa te conviene y las carreras técnicas que van contigo', 'Preguntas para hablar con tus papás, tu orientador y alguien que ya ejerce'].map(x => `<li style="padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)">${x}</li>`).join('')}</ul>
 </div></section>
 ${p ? `<section class="tv-sec" id="regalar"><div class="marco tv-dos">
   <div class="tv-cab"><span class="tv-et">Regálalo o cómpralo antes</span><h2>¿Es para tu hija, tu hijo o alguien más?</h2>
@@ -168,6 +168,33 @@ const carreraLi = (c, { detalle = false } = {}) => `<li><span class="tv-af num" 
   ${detalle ? `<p class="tv-det"><b>Qué se estudia:</b> ${esc(c.e)}</p><p class="tv-det"><b>En qué se trabaja:</b> ${esc(c.t)}</p>
   <p class="tv-det"><b>Examen:</b> ${c.a ? `${esc(AREAS_UNAM[c.a])} en la UNAM${RAMAS_IPN[c.a] ? `; rama equivalente en el IPN: ${esc(RAMAS_IPN[c.a])}` : ''}.` : 'Depende de la universidad: confirma en su convocatoria (muchas privadas piden la PAA).'}</p>` : ''}</li>`;
 
+// Las 6 barras del perfil
+const barras = p => `<div class="tv-barras">${ORDEN_TIPOS.map(t => `<div class="tv-b" style="${tipoCss(t)}"><span>${TIPOS[t].nombre}</span><i><span style="width:${p[t]}%"></span></i><b class="num">${p[t]}</b></div>`).join('')}</div>`;
+// Aviso honesto si el perfil sale parejo o con pocos intereses
+const lecturaHTML = l => l ? `<div class="tv-aviso" role="note"><b>${esc(l.titulo)}</b><p>${esc(l.texto)}</p></div>` : '';
+// Si va en secundaria: qué tipo de prepa le conviene. completo = con las otras opciones y las carreras técnicas
+function prepaHTML(pr, { completo = false } = {}) {
+  if (!pr) return '';
+  const [a, b, c] = pr.orden.map(k => BACHILLERATOS[k]);
+  if (!completo) return `<div class="tv-tarjeta tv-prepa"><span class="tv-et">Vas en secundaria · tu prepa</span>
+    <h2 style="margin:6px 0 4px;font-size:22px">Te puede ir mejor en un <em>${esc(a.nombre.toLowerCase())}</em></h2>
+    <p class="tv-nota" style="margin:0 0 6px"><b>${esc(a.corto)}.</b> ${esc(pr.por)}</p>
+    <p class="tv-nota" style="margin:0">🔒 En tu reporte: tus otras dos opciones, cómo es cada una y las carreras técnicas que van contigo.</p></div>`;
+  return `<section aria-labelledby="r-prepa"><h2 id="r-prepa">{n}. Qué tipo de prepa te conviene</h2>
+  <p>${esc(pr.por)} Por eso te sugerimos, en este orden:</p>
+  <ol class="tv-prepas">${[a, b, c].map((x, i) => `<li${i ? '' : ' class="tv-1"'}><b>${esc(x.nombre)}</b> · ${esc(x.corto)}<p class="tv-det">${esc(x.texto)}</p><p class="tv-det">${esc(x.ejemplos)}</p></li>`).join('')}</ol>
+  <h3>Carreras técnicas que van con tus intereses</h3>
+  <ul class="tv-l">${pr.tecnicas.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+  <p class="tv-nota">Si eliges un bachillerato tecnológico o profesional técnico, busca planteles que ofrezcan alguna de estas. Los nombres y la oferta cambian por plantel: confírmalos en su convocatoria y en la visita a planteles. Cualquier tipo de prepa te deja seguir a la universidad.</p>
+</section>`;
+}
+// Si quiere estudiar poco tiempo: opciones cortas (TSU)
+const cortasHTML = cs => cs ? `<section aria-labelledby="r-cortas"><h2 id="r-cortas">{n}. Si quieres trabajar pronto</h2>
+  <p>Nos dijiste que quieres estudiar lo menos posible. Además de las licenciaturas, existe el <b>Técnico Superior Universitario (TSU)</b>: unos 2 años en las universidades tecnológicas, con prácticas en empresas, y después puedes continuar a la licenciatura o ingeniería si quieres. Opciones de TSU que van con tus intereses:</p>
+  <ul class="tv-l">${cs.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+  <p class="tv-nota">Son nombres comunes: cada universidad tecnológica tiene su oferta y sus fechas. Revísalas en la de tu estado.</p>
+</section>` : '';
+
 // «¡Tu perfil está listo!»: antes de mostrarlo pide nombre y correo para guardarlo y mandárselo (se puede saltar)
 export function puertaCorreo({ f, def = PRODUCTOS_TEST.vocacional, titulo = '¡Tu perfil está listo!', texto = 'Escribe tu nombre y tu correo para guardar tu resultado y mandártelo. Así no lo pierdes y lo puedes enseñar a tu familia.', error = '' }) {
   return pagina({ titulo: `${titulo} · ${def.nombre}`, ruta: `${def.ruta}resultado/`, noindex: true, headers: SIN_REFERER, navActual: 'catalogo',
@@ -194,7 +221,8 @@ export function resultadoVocacional({ f, p, paquetes = [], error = '', cupon = n
   const res = calcular(f.respuestas);
   const [t1, t2, t3] = res.tipos;
   const c1 = res.carreras[0];
-  const bloqueadas = res.carreras.slice(1, 20);
+  const [c2, c3] = res.carreras.slice(1, 3);
+  const bloqueadas = res.carreras.slice(3, 20);
   const liga = `${SITIO}${RUTA}${codigoRef ? `?ref=${encodeURIComponent(codigoRef)}` : ''}`;
   const share = whatsapp(`Hice el test vocacional de Vorka y mi código es ${res.codigo} (${TIPOS[t1].nombre}). ¿Cuál es el tuyo? Compáralo conmigo, es gratis y tarda 10 minutos: ${liga}`);
   const pagarUrl = `${SITIO}${RUTA}pagar/${f.id}`;
@@ -210,21 +238,24 @@ export function resultadoVocacional({ f, p, paquetes = [], error = '', cupon = n
   ${enviado ? '<p class="tv-ok" role="status">Guardamos tu resultado y te lo mandamos por correo (revisa también spam).</p>' : ''}
   <p class="tv-lead">${esc(TIPOS[t1].nombre)}, ${esc(TIPOS[t2].nombre)} y ${esc(TIPOS[t3].nombre)}: estos son los intereses que más pesan en ti hoy.</p>
   <div class="tv-codigo">${[t1, t2, t3].map(t => `<div class="tv-tipo" style="${tipoCss(t)}"><span class="tv-pt num">${res.p[t]}</span><b>${TIPOS[t].nombre}</b><small>${TIPOS[t].corto}</small><p>${esc(TIPOS[t].frase)}</p></div>`).join('')}</div>
+  <details class="tv-seis"><summary>Ver tus 6 tipos</summary>${barras(res.p)}</details>
+  ${lecturaHTML(res.lectura)}
 </div></section>
 <section class="tv-sec" style="padding-top:0"><div class="marco tv-dos">
   <div>
-    <h2 class="h2" style="margin:0 0 14px">Tu carrera más afín</h2>
-    <ol class="tv-carreras">${carreraLi(c1, { detalle: true })}</ol>
+    ${prepaHTML(res.prepa)}
+    <h2 class="h2" style="margin:${res.prepa ? '22px' : '0'} 0 14px">Tus 3 carreras más afines</h2>
+    <ol class="tv-carreras">${carreraLi(c1, { detalle: true })}${[c2, c3].map(c => carreraLi(c)).join('')}</ol>
     <p class="tv-nota">Afinidad: qué tanto coincide la carrera con tus tipos (0 a 100). Es orientativo: no es una prueba psicométrica ni un diagnóstico.</p>
     ${ya ? '' : `<div class="tv-candado" style="margin-top:16px" aria-labelledby="vp-t">
       <span class="tv-et">${ICONO_CANDADO} En tu reporte completo</span>
-      <h2 id="vp-t" style="margin:6px 0 10px;font-size:22px">Tus otras 19 carreras afines</h2>
+      <h2 id="vp-t" style="margin:6px 0 10px;font-size:22px">Tus otras ${bloqueadas.length} carreras afines, con todo su detalle</h2>
       ${p ? `<a class="btn acento chico tv-no-imprimir" href="#comprar" style="margin:0 0 12px">Desbloquear por ${cupon ? pesosTexto(Math.max(1000, p.precio_centavos - cupon.monto)) : precio(p)} ${FLECHA}</a>` : ""}
-      <ol class="tv-carreras" start="2" style="opacity:.75;counter-reset:c 1">${bloqueadas.map(c => `<li><span class="tv-af num" aria-label="Bloqueado">🔒</span><b>${esc(c.n)}</b><p class="tv-det" aria-hidden="true" style="filter:blur(4px);user-select:none">Qué se estudia, en qué se trabaja y su examen.</p></li>`).join('')}</ol>
+      <ol class="tv-carreras" start="4" style="opacity:.75;counter-reset:c 3">${bloqueadas.map(c => `<li><span class="tv-af num" aria-label="Bloqueado">🔒</span><b>${esc(c.n)}</b><p class="tv-det" aria-hidden="true" style="filter:blur(4px);user-select:none">Qué se estudia, en qué se trabaja y su examen.</p></li>`).join('')}</ol>
       <h2 style="margin:18px 0 8px;font-size:20px">${ICONO_CANDADO} Tu plan de 30 días para decidir</h2>
       <ul class="tv-incluye">${PLAN_30.map(s => `<li>${esc(s.semana)}</li>`).join('')}</ul>
       <h2 style="margin:18px 0 8px;font-size:20px">${ICONO_CANDADO} También</h2>
-      <ul class="tv-incluye"><li>Tu perfil detallado: fortalezas, ambientes de trabajo y qué cuidar</li><li>${esc(res.examen.titulo)}: el simulador y las guías para practicarlo</li><li>Preguntas para hablar con tu familia, tu orientador y alguien que ya ejerce</li></ul>
+      <ul class="tv-incluye"><li>Tu perfil detallado: fortalezas, ambientes de trabajo y qué cuidar</li><li>${esc(res.examen.titulo)}: el simulador y las guías para practicarlo</li>${res.prepa ? '<li>Qué tipo de prepa te conviene, tus otras dos opciones y las carreras técnicas que van contigo</li>' : ''}${res.cortas ? '<li>Opciones cortas para trabajar pronto: Técnico Superior Universitario (TSU) afines a ti</li>' : ''}<li>Preguntas para hablar con tu familia, tu orientador y alguien que ya ejerce</li></ul>
     </div>`}
   </div>
   <div id="comprar">
@@ -281,6 +312,9 @@ export function reporteVocacional({ f, orden, token, sims = {}, codigoRef = null
   const ex = res.examen, sim = ex.sim ? SIMULADORES[ex.sim] : null, simProd = ex.sim ? sims[ex.sim] : null;
   const liga = `${SITIO}${RUTA}${codigoRef ? `?ref=${encodeURIComponent(codigoRef)}` : ''}`;
   const share = whatsapp(`Hice el test vocacional de Vorka y me ayudó a ver qué carreras van conmigo. Es gratis y tarda 10 minutos: ${liga}`);
+  // Secciones que solo salen si aplican (secundaria → tipo de prepa; quiere estudiar poco → TSU), numeradas después de «2. carreras»
+  const partes = [prepaHTML(res.prepa, { completo: true }), cortasHTML(res.cortas)].filter(Boolean);
+  const nExtras = partes.length, extras = partes.map((h, i) => h.replace('{n}', String(3 + i))).join('');
   return pagina({ titulo: `Tu reporte vocacional: ${res.codigo} · Vorka México`, ruta: `${RUTA}reporte/`, noindex: true, headers: SIN_REFERER, navActual: 'catalogo',
     descripcion: 'Tu reporte completo del Test vocacional Vorka.', head: head(), script: SCRIPT_IMPRIMIR,
     cuerpo: `<div class="tv tv-rep">
@@ -293,7 +327,8 @@ export function reporteVocacional({ f, orden, token, sims = {}, codigoRef = null
 </div></section>
 <div class="marco">
 <section aria-labelledby="r-perfil"><h2 id="r-perfil">1. Tu perfil</h2>
-  <div class="tv-barras">${ORDEN_TIPOS.map(t => `<div class="tv-b" style="${tipoCss(t)}"><span>${TIPOS[t].nombre}</span><i><span style="width:${res.p[t]}%"></span></i><b class="num">${res.p[t]}</b></div>`).join('')}</div>
+  ${barras(res.p)}
+  ${lecturaHTML(res.lectura)}
   <div class="tv-codigo">${[t1, t2, t3].map((t, i) => `<div class="tv-tipo" style="${tipoCss(t)}"><span class="tv-num">${i + 1}.º</span><b>${TIPOS[t].nombre} · ${TIPOS[t].corto}</b>
     <p>${esc(TIPOS[t].perfil)}</p>
     <p><b>Tus fortalezas:</b> ${esc(TIPOS[t].fortalezas.join(' · '))}</p>
@@ -304,17 +339,17 @@ export function reporteVocacional({ f, orden, token, sims = {}, codigoRef = null
   <p class="tv-nota">Ordenadas por afinidad con tu código${f.respuestas.mate === 'evitar' ? ' (bajamos las que llevan muchas matemáticas, porque prefieres evitarlas)' : ''}. Son nombres generales: cada universidad las llama un poco distinto. Confirma el área y el examen en la convocatoria de cada universidad.</p>
   <ol class="tv-carreras">${carreras.map(c => carreraLi(c, { detalle: true })).join('')}</ol>
 </section>
-<section aria-labelledby="r-examen"><h2 id="r-examen">3. ${esc(ex.titulo)}</h2>
+${extras}<section aria-labelledby="r-examen"><h2 id="r-examen">${3 + nExtras}. ${esc(ex.titulo)}</h2>
   <p>${esc(ex.texto)}</p>
   ${ex.area ? `<p class="tv-nota">La mayoría de tus primeras carreras están en el <b>${esc(AREAS_UNAM[ex.area])}</b> de la UNAM${RAMAS_IPN[ex.area] ? ` (en el IPN, la rama equivalente es ${esc(RAMAS_IPN[ex.area])})` : ''}.</p>` : ''}
   ${sim ? `<div class="tv-sig"><b>Tu siguiente paso: practica tu examen</b><p class="tv-nota" style="margin:6px 0 10px">El ${esc(sim.nombre)} de Vorka tiene práctica con tutor y exámenes completos con cronómetro.${simProd ? ` Desde ${esc(precioDe(simProd))}.` : ''}</p>
     <div class="tv-acciones" style="margin:0"><a class="btn acento chico" href="${sim.ruta}">Ver el ${esc(sim.nombre)} ${FLECHA}</a><a class="btn blanco chico" href="${sim.guia[0]}">Leer la guía gratis</a></div></div>`
     : `<p class="tv-nota">Guías gratis en <a href="/learn/">Vorka Learn</a>: <a href="/learn/unam/examen-unam-por-area/">examen UNAM por área</a> · <a href="/learn/paa/que-es-la-paa/">qué es la PAA</a>.</p>`}
 </section>
-<section aria-labelledby="r-plan"><h2 id="r-plan">4. Tu plan de 30 días para decidir</h2>
+<section aria-labelledby="r-plan"><h2 id="r-plan">${4 + nExtras}. Tu plan de 30 días para decidir</h2>
   <div class="tv-plan">${PLAN_30.map(s => `<div><b>${esc(s.semana)}</b><ul>${s.tareas.map(t => `<li>${esc(reemplazar(t, ctx))}</li>`).join('')}</ul></div>`).join('')}</div>
 </section>
-<section aria-labelledby="r-preg"><h2 id="r-preg">5. Preguntas para platicar</h2>
+<section aria-labelledby="r-preg"><h2 id="r-preg">${5 + nExtras}. Preguntas para platicar</h2>
   <div class="tv-dos"><div><h3>Con tu mamá, tu papá o tu orientador</h3><ul class="tv-l">${PREGUNTAS_FAMILIA.map(q => `<li>${esc(reemplazar(q, ctx))}</li>`).join('')}</ul></div>
   <div><h3>Con alguien que ya estudia o ejerce ${esc(carreras[0].n)}</h3><ul class="tv-l">${PREGUNTAS_PROFESIONAL.map(q => `<li>${esc(q)}</li>`).join('')}</ul></div></div>
 </section>

@@ -44,7 +44,7 @@ export const CSS_TESTS = `
 .tv-tipo{flex:1 1 200px;padding:18px;border-radius:20px;background:var(--card);border:1px solid var(--line);border-top:5px solid var(--c)}
 .tv-tipo>b{display:block;font-size:20px;letter-spacing:-.02em}.tv-tipo p b{color:var(--fg)}.tv-tipo small{color:var(--fg-2)}.tv-tipo p{margin:8px 0 0;line-height:1.5;color:var(--fg-2)}
 .tv-pt{font-weight:800;font-size:28px;color:var(--c)}
-.tv-barras{display:grid;gap:10px}.tv-b{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;font-size:14.5px;font-weight:600}
+.tv-aviso{margin-top:16px;padding:14px 16px;border-radius:14px;background:#fbf3e2;color:#5e4517}.tv-aviso p{margin:4px 0 0;font-size:14.5px;line-height:1.5}.tv-seis{margin-top:14px}.tv-seis summary{cursor:pointer;font-weight:650}.tv-seis .tv-barras{margin-top:10px}.tv-prepa em{font-style:normal;color:var(--acento,#6b2a85)}.tv-prepas{display:grid;gap:12px;padding-left:20px}.tv-prepas li.tv-1>b{color:var(--acento,#6b2a85)}.tv-barras{display:grid;gap:10px}.tv-b{display:grid;grid-template-columns:110px 1fr 40px;gap:10px;align-items:center;font-size:14.5px;font-weight:600}
 .tv-b i{display:block;height:10px;border-radius:99px;background:var(--bg-2);overflow:hidden}.tv-b i span{display:block;height:100%;background:var(--c)}
 .tv-carreras{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:c}
 .tv-carreras>li{counter-increment:c;padding:14px 16px 14px 54px;border-radius:16px;background:var(--card);border:1px solid var(--line);position:relative;line-height:1.45}
