@@ -28,7 +28,7 @@ def pagina():
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://os.vorka.mx" crossorigin>
 <link rel="stylesheet" href="/assets/v3/vorka.css?v={VERSION}">
-<link rel="stylesheet" href="/assets/v3/diagnostico.css?v=4">
+<link rel="stylesheet" href="/assets/v3/diagnostico.css?v=5">
 </head>
 <body class="dx">
 <a class="saltar" href="#contenido">Saltar al contenido</a>
@@ -83,7 +83,7 @@ def pagina():
 </main>
 <footer class="pie dx-pie"><div class="marco"><a class="marca" href="/" aria-label="Vorka México, inicio">{LOGO}Vorka <span>México</span></a>
   <p data-x="actualizado">Documento privado de trabajo. Solo lo ve quien tiene la liga; no aparece en buscadores.</p></div></footer>
-<script src="/assets/v3/diagnostico.js?v=4" defer></script>
+<script src="/assets/v3/diagnostico.js?v=5" defer></script>
 </body>
 </html>
 '''

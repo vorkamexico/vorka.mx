@@ -65,16 +65,14 @@
 .dx-ley i { display: inline-block; width: 14px; height: 8px; border-radius: 4px; margin-right: -10px; }
 .dx-ley i.b { background: rgba(244, 242, 245, .28); } .dx-ley i.s { background: #c8a45c; } .dx-ley i.m { width: 2px; height: 12px; background: var(--claro); margin-right: -12px; }
 .dx-sub { margin: clamp(56px, 7vw, 80px) 0 20px; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--claro-2); }
-.dx-hitos { columns: 3 320px; column-gap: 14px; }
-.dx-hitos > .dx-mes { break-inside: avoid; margin-bottom: 14px; }
+.dx-hitos { display: grid; gap: 14px; }
 .dx-mes { padding: 18px; border-radius: 20px; background: var(--noche-2); border: 1px solid var(--linea-o); }
 .dx-mes-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
 .dx-mes-h b { font-size: 17px; letter-spacing: -.02em; }
 .dx-mes-h span { font-size: 12.5px; color: var(--claro-3); font-variant-numeric: tabular-nums; }
-.dx-mes ul { display: grid; }
+.dx-mes ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); column-gap: 28px; }
 .dx-hito { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--linea-o); }
-.dx-hito:first-child { border-top: 0; }
-.dx-hito > div { min-width: 0; display: grid; gap: 3px; }
+.dx-hito > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; flex: 1; }
 .dx-hito b { font-size: 14.5px; font-weight: 600; line-height: 1.35; color: var(--claro); }
 .dx-hito small { font-size: 12.5px; color: var(--claro-3); }
 .dx-hito.cumplido b { color: var(--claro-2); }
@@ -120,7 +118,7 @@ ol.dx-lista li::before { content: counter(n); position: absolute; left: 0; top: 
 .dx-card p { font-size: 14.5px; line-height: 1.5; color: var(--fg-2); }
 .dx-check-l { display: grid; gap: 8px; }
 .dx-check-l li { display: flex; gap: 12px; align-items: flex-start; padding: 13px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); line-height: 1.45; }
-.dx-check-l span { flex: none; width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line-2); margin-top: 1px; }
+.dx-check-l > li > span:not(.dx-ck-t) { flex: none; width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line-2); margin-top: 1px; }
 .dx-pie-b { font-size: 13.5px; color: var(--fg-3); }
 .dx-tabla { overflow-x: auto; border-radius: 18px; border: 1px solid var(--line); background: var(--card); }
 .dx-tabla table { width: 100%; border-collapse: collapse; font-size: 15px; }
@@ -239,9 +237,10 @@ ol.dx-lista li::before { content: counter(n); position: absolute; left: 0; top: 
 .dx-kp b small { font-size: 14px; font-weight: 500; color: var(--claro-3); letter-spacing: 0; }
 .dx-kp > small { font-size: 12px; color: var(--claro-3); line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .dx-kp.mal b { color: #E9937C; }
-.dx-graficas { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 14px; margin-bottom: 8px; align-items: start; }
+.dx-graficas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 8px; }
 .dx-graficas:has(figure:empty + figure:empty) { display: none; }
-.dx-fig { margin: 0; padding: 18px; border-radius: 22px; background: var(--noche-2); border: 1px solid var(--linea-o); display: grid; gap: 10px; align-content: start; }
+.dx-fig { margin: 0; padding: 18px; border-radius: 22px; background: var(--noche-2); border: 1px solid var(--linea-o); display: flex; flex-direction: column; gap: 10px; }
+.dx-fig svg { flex: 1; margin: auto 0; max-height: 460px; }
 .dx-fig:empty { display: none; }
 .dx-fig figcaption { font-size: 13px; font-weight: 700; color: var(--claro-2); }
 .dx-fig svg { width: 100%; height: auto; display: block; }
@@ -277,7 +276,7 @@ ol.dx-lista li::before { content: counter(n); position: absolute; left: 0; top: 
 .dx-px p { grid-column: 1 / -1; margin-top: 8px; font-size: 14.5px; font-weight: 600; line-height: 1.35; color: var(--claro); }
 .dx-px span { grid-column: 1 / -1; font-size: 12.5px; color: var(--claro-3); margin-top: 2px; }
 .dx-ayuda { margin: -8px 0 18px; font-size: 14.5px; color: var(--claro-2); max-width: 640px; }
-.dx-acc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.dx-acc { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: auto; padding-top: 6px; }
 .dx-acc button { font: inherit; font-size: 12.5px; font-weight: 650; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--linea-o); background: transparent; color: var(--claro-2); cursor: pointer; min-height: 32px; }
 .dx-acc button:hover { color: var(--claro); border-color: rgba(255, 255, 255, .25); }
 .dx-acc button.pri { background: var(--oro); border-color: var(--oro); color: var(--noche); }
@@ -296,6 +295,7 @@ ol.dx-lista li::before { content: counter(n); position: absolute; left: 0; top: 
 .dx-ck-h i { height: 6px; border-radius: 99px; background: var(--bg-3); overflow: hidden; }
 .dx-ck-h i b { display: block; height: 100%; background: var(--verde); border-radius: inherit; transition: width .4s var(--ease); }
 .dx-check-l li { align-items: center; }
+.dx-ck-t { flex: 1; min-width: 0; }
 .dx-palomita { flex: none; width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line-2); background: var(--card); display: grid; place-items: center; cursor: pointer; padding: 0; color: #fff; }
 .dx-palomita svg { width: 15px; height: 15px; }
 .dx-palomita[aria-checked="true"] { background: var(--verde); border-color: var(--verde); }
