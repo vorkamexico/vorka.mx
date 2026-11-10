@@ -64,7 +64,7 @@ export async function paginaMiraTuNegocio(env, req, url) {
   const colores = COLORES.map((col, i) => `<label class="mt-color" style="--c:${col}"><input type="radio" name="color" value="${col}"${i === 0 ? ' checked' : ''}><span aria-label="Color ${i + 1}"></span></label>`).join('');
   return pagina({ navActual: 'catalogo',
     titulo: 'Mira cómo quedaría tu negocio: tarjeta de lealtad, agenda y página web | Vorka México', ruta: RUTA_MIRA,
-    imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
+    imagen: 'https://vorka.mx/assets/tienda/v3/negocio-completo-og.jpg',
     descripcion: 'Escribe el nombre de tu negocio y mira al instante cómo quedarían tu tarjeta de sellos, tu agenda en línea y tu página web. Gratis y sin registrarte.',
     head: `<style>${CSS_MIRA}</style>`, headers: cookie ? { 'set-cookie': cookie } : {},
     script: `var MT=${JSON.stringify({ giros: GIROS, wa: WA_NUM, ruta: RUTA_MIRA }).replace(/</g, '\\u003c')};${SCRIPT}`,

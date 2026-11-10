@@ -126,7 +126,11 @@ describe('ficha /tienda/agenda/', () => {
     const cat = await (await pedir('/tienda/')).text();
     olvidarTemporada();
     expect(cat).toContain('Agenda · Citas en línea'); expect(cat).toContain('$99 MXN al mes'); expect(cat).toContain('href="/tienda/agenda/"');
-    expect(cat).toContain('Agenda: citas en línea para tu negocio');
+    // con Negocio Completo a la venta, el aviso de «Nuevo» es suyo y su tarjeta va también primero en Negocios, con su portada
+    expect(cat).toContain('Negocio Completo: página, agenda y lealtad por $749 al mes');
+    expect(cat).toContain('negocio-completo-portada.webp');
+    const neg = cat.slice(cat.indexOf('data-linea="negocios"'));
+    expect(neg.indexOf('Negocio Completo · Página, agenda y lealtad')).toBeLessThan(neg.indexOf('Agenda · Citas en línea'));
     const sm = await (await pedir('/tienda/sitemap.xml')).text();
     expect(sm.match(/\/tienda\/agenda\//g)).toHaveLength(1);
     expect((await pedir('/tienda/agenda-vuelve-anual/')).headers.get('location')).toBe('/tienda/agenda/?plan=agenda-vuelve-anual#comprar');
