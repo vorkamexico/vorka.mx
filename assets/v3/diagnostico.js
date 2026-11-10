@@ -193,7 +193,7 @@
       var dy = Math.sin(a) < -.5 ? (l2 ? -14 : -4) : Math.sin(a) > .5 ? 10 : (l2 ? -3 : 4);
       return '<text x="' + x0.toFixed(1) + '" y="' + (y0 + dy).toFixed(1) + '" text-anchor="' + anc + '">' + esc(l1) + (l2 ? '<tspan x="' + x0.toFixed(1) + '" dy="1.15em">' + esc(l2) + '</tspan>' : '') + '<tspan class="v" x="' + x0.toFixed(1) + '" dy="1.15em">' + esc(it.valor) + (it.meta != null ? ' / ' + esc(it.meta) : '') + '</tspan></text>';
     }).join('');
-    return '<svg class="dx-radar" viewBox="-60 -10 ' + (W + 120) + ' ' + (W + 20) + '" role="img" aria-label="' + esc(items.map(function (it) { return it.nombre + ' ' + it.valor + (it.meta != null ? ' de meta ' + it.meta : ''); }).join(', ')) + '">' +
+    return '<svg class="dx-radar" viewBox="-70 10 ' + (W + 140) + ' ' + (W - 10) + '" role="img" aria-label="' + esc(items.map(function (it) { return it.nombre + ' ' + it.valor + (it.meta != null ? ' de meta ' + it.meta : ''); }).join(', ')) + '">' +
       red + ejes + poli('meta', 'meta') + poli('base', 'base') + poli('valor', 'hoy') + items.map(function (it, i) { var p = pt(i, it.valor).split(','); return '<circle class="pto" cx="' + p[0] + '" cy="' + p[1] + '" r="3.5"/>'; }).join('') + etq + '</svg>';
   }
 
@@ -203,7 +203,7 @@
     var pts = function (h) { return Number(h.puntos) || 1; }, total = hs.reduce(function (a, h) { return a + pts(h); }, 0);
     var fechas = con.map(function (h) { return h.fecha_limite; }).concat(hs.filter(function (h) { return h.cumplido_en; }).map(function (h) { return h.cumplido_en.slice(0, 10); }), [hoy]).sort();
     var t0 = Date.parse(fechas[0]) - 5 * 864e5, t1 = Math.max(Date.parse(fechas[fechas.length - 1]), Date.parse(hoy)) + 3 * 864e5;
-    var chico = innerWidth < 640, W = chico ? 380 : 640, H = chico ? 230 : 250, L = 44, B = 26, T = 14, Rm = 12;
+    var chico = innerWidth < 640, W = chico ? 380 : 560, H = chico ? 230 : 400, L = 44, B = 26, T = 14, Rm = 12;
     var X = function (f) { return L + (Date.parse(f) - t0) / (t1 - t0) * (W - L - Rm); }, Y = function (v) { return H - B - v / total * (H - B - T); };
     var escal = function (lista, campo, hasta) {
       var orden = lista.slice().sort(function (a, b) { return a[campo] < b[campo] ? -1 : 1; }), acc = 0, d = 'M' + L + ',' + Y(0);
