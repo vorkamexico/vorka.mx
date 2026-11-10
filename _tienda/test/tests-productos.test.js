@@ -8,7 +8,7 @@ import { enc, hex } from '../src/util.js';
 import { calcular as calcularV, leerRespuestas as leerV } from '../src/tests/vocacional.js';
 import { calcular as calcularP, leerRespuestas as leerP } from '../src/tests/proyecto.js';
 import { mandarRecordatorios } from '../src/tests/correos.js';
-import { CARRERAS } from '../src/tests/vocacional-datos.js';
+import { CARRERAS, TIPOS as TIPOS_V, INTERESES as INTERESES_V } from '../src/tests/vocacional-datos.js';
 import { ODS, PROYECTOS } from '../src/tests/proyecto-datos.js';
 
 const SECRETO = 'whsec_prueba';
@@ -112,8 +112,33 @@ describe('reglas (sin IA, deterministas)', () => {
     const r = respuestasV(); delete r.i3; delete r.examen;
     expect(leerV(r)).toEqual({ ok: false, faltan: ['i3', 'examen'] });
   });
-  it('catálogo propio: 70+ carreras con código RIASEC válido y área UNAM 0-4', () => {
-    expect(CARRERAS.length).toBeGreaterThanOrEqual(70);
+  it('secundaria: qué tipo de prepa le conviene, con carreras técnicas de sus 2 tipos más altos', () => {
+    const r = calcularV(leerV(respuestasV({ nivel: 'secundaria' })).r);
+    expect(r.prepa.orden.slice().sort()).toEqual(['general', 'tecnico', 'tecnologico']);
+    expect(r.prepa.tecnicas.length).toBeGreaterThanOrEqual(4);
+    expect(r.prepa.por).toContain(TIPOS_V[r.tipos[0]].nombre.toLowerCase());
+    // quien va en prepa no recibe esta sección
+    expect(calcularV(leerV(respuestasV()).r).prepa).toBeNull();
+    // perfil técnico que quiere trabajar pronto → bachillerato tecnológico o profesional técnico primero
+    const tec = respuestasV({ nivel: 'secundaria' }); tec.duracion = 'corta';
+    for (let k = 0; k < 30; k++) tec[`i${k}`] = ['R', 'C'].includes(INTERESES_V[k][0]) ? 2 : ['S', 'A'].includes(INTERESES_V[k][0]) ? 0 : 1;
+    expect(['tecnologico', 'tecnico']).toContain(calcularV(leerV(tec).r).prepa.orden[0]);
+  });
+  it('si quiere estudiar poco tiempo, salen opciones de TSU; si no, no', () => {
+    const con = d => { const r = respuestasV(); r.duracion = d; return calcularV(leerV(r).r); };
+    expect(con('corta').cortas.length).toBeGreaterThanOrEqual(4);
+    expect(con('lic').cortas).toBeNull();
+  });
+  it('avisa con honestidad si el perfil sale parejo o con pocos intereses', () => {
+    const parejo = respuestasV(); for (let k = 0; k < 30; k++) parejo[`i${k}`] = 1; for (let k = 0; k < 12; k++) parejo[`h${k}`] = 2;
+    expect(calcularV(leerV(parejo).r).lectura.tipo).toBe('parejo');
+    const bajo = respuestasV(); for (let k = 0; k < 30; k++) bajo[`i${k}`] = 0; for (let k = 0; k < 12; k++) bajo[`h${k}`] = 1;
+    expect(calcularV(leerV(bajo).r).lectura.tipo).toBe('bajo');
+    expect(calcularV(leerV(respuestasV()).r).lectura).toBeNull();
+  });
+  it('catálogo propio: 90+ carreras con código RIASEC válido y área UNAM 0-4, sin repetir', () => {
+    expect(CARRERAS.length).toBeGreaterThanOrEqual(90);
+    expect(new Set(CARRERAS.map(c => c.n)).size).toBe(CARRERAS.length);
     for (const c of CARRERAS) { expect(c.c).toMatch(/^[RIASEC]{3}$/); expect([0, 1, 2, 3, 4]).toContain(c.a); }
   });
   it('proyecto social: 3 ideas gratis, de 5 a 8 en el reporte, con ODS oficiales', () => {
@@ -180,8 +205,9 @@ describe('flujo gratis del test vocacional', () => {
     expect(correos.at(-1).html).toContain(f.cupon);
     const h = await (await pedir(`/test-vocacional/resultado/${id}?enviado=1`)).text();
     expect(h).toContain('Tu código es <em>SAI</em>');
-    expect(h).toContain('Tu carrera más afín');
-    expect(h).toContain('Tus otras 19 carreras afines');
+    expect(h).toContain('Tus 3 carreras más afines');
+    expect(h).toContain('Tus otras 17 carreras afines');
+    expect(h).toContain('Ver tus 6 tipos');
     expect(h).toContain('Tu plan de 30 días para decidir');
     expect(h).toContain(f.cupon); expect(h).toContain('$59 MXN');
     expect(h).toContain('Pedírselo por WhatsApp'); expect(h).toContain('Compara con tus amigos');

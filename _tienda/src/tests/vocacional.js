@@ -4,7 +4,7 @@
 // trabajando y qué pesa más para ti). Tu código son tus 3 tipos más altos (empates: orden R-I-A-S-E-C).
 // Afinidad con cada carrera = (3 × tu puntaje en la 1.ª letra de su código + 2 × la 2.ª + 1 × la 3.ª) / 6, con un ajuste
 // por matemáticas (si prefieres evitarlas, las carreras con muchas matemáticas bajan; si te gustan, suben un poco).
-import { TIPOS, ORDEN_TIPOS, INTERESES, HABILIDADES, PREFERENCIAS, CARRERAS, OPC_INTERES, OPC_HABILIDAD } from './vocacional-datos.js';
+import { TIPOS, ORDEN_TIPOS, INTERESES, HABILIDADES, PREFERENCIAS, CARRERAS, OPC_INTERES, OPC_HABILIDAD, BACHILLERATOS, TECNICAS, TSU } from './vocacional-datos.js';
 
 export const N_INTERESES = INTERESES.length, N_HABILIDADES = HABILIDADES.length;
 const VAL_INT = new Set(OPC_INTERES.map(([v]) => v)), VAL_HAB = new Set(OPC_HABILIDAD.map(([v]) => v));
@@ -78,15 +78,44 @@ export function examenDe(r, carreras) {
 }
 const AREA_CORTA = { 1: 'Área 1 (Físico-Matemáticas e Ingenierías)', 2: 'Área 2 (Biológicas, Químicas y de la Salud)', 3: 'Área 3 (Ciencias Sociales)', 4: 'Área 4 (Humanidades y Artes)' };
 
+// Qué tipo de prepa le conviene a quien va en secundaria. Cada tipo suma el promedio de los intereses que más pesan en él,
+// más lo que quiere estudiar después (si quiere trabajar pronto, pesa lo técnico; si va por una carrera larga, lo general).
+// Devuelve { orden: ['general' | 'tecnologico' | 'tecnico'], por: texto de por qué, tecnicas: carreras técnicas afines }.
+const prom = (p, ts) => ts.reduce((s, t) => s + p[t], 0) / ts.length;
+export function prepaDe(r, p, tipos) {
+  const dur = r.duracion;
+  const s = {
+    general: prom(p, ['I', 'S', 'A', 'E']) + (dur === 'larga' ? 12 : dur === 'lic' ? 6 : 0),
+    tecnologico: prom(p, ['R', 'I', 'C']) + (dur === 'corta' ? 10 : 0) + (r.mate === 'gustan' ? 4 : 0),
+    tecnico: prom(p, ['R', 'C', 'E']) + (dur === 'corta' ? 16 : dur === 'larga' ? -8 : 0),
+  };
+  const orden = Object.keys(s).sort((a, b) => s[b] - s[a] || Object.keys(BACHILLERATOS).indexOf(a) - Object.keys(BACHILLERATOS).indexOf(b));
+  const quiere = dur === 'corta' ? 'quieres empezar a trabajar pronto' : dur === 'larga' ? 'estás dispuesta o dispuesto a estudiar varios años' : dur === 'lic' ? 'piensas estudiar una licenciatura' : '';
+  const por = `Tus intereses más fuertes son ${TIPOS[tipos[0]].nombre.toLowerCase()} y ${TIPOS[tipos[1]].nombre.toLowerCase()}${quiere ? `, y ${quiere}` : ''}.`;
+  const tecnicas = [...new Set([...TECNICAS[tipos[0]].slice(0, 3), ...TECNICAS[tipos[1]].slice(0, 2)])];
+  return { orden, por, tecnicas };
+}
+// Opciones cortas (TSU) afines, para quien quiere estudiar lo menos posible después de la prepa
+export const cortasDe = tipos => [...new Set([...TSU[tipos[0]].slice(0, 3), ...TSU[tipos[1]].slice(0, 2)])];
+
+// Lectura honesta del perfil: parejo (no hay intereses que destaquen) o con pocos intereses (casi todo «no me gusta»)
+export function lecturaDe(p, tipos) {
+  const alto = p[tipos[0]], bajo = p[tipos[5]];
+  if (alto < 40) return { tipo: 'bajo', titulo: 'Hoy casi nada te llamó la atención', texto: 'Pasa seguido cuando estás cansada o cansado, con mucha presión o cuando todavía no has probado muchas cosas. Tu resultado es una pista, no una conclusión: vuelve a contestarlo otro día con calma y, mientras, prueba actividades nuevas (un taller, un voluntariado, un curso gratis) para descubrir qué te emociona.' };
+  if (alto - bajo < 15) return { tipo: 'parejo', titulo: 'Tus intereses están muy parejos', texto: 'No hay uno que destaque mucho sobre los demás. Puede ser porque te gustan muchas cosas o porque contestaste «me da igual» varias veces. Tus 3 tipos de arriba son una pista: compara las carreras con las preguntas «¿me veo haciendo esto todos los días?» y «¿lo disfrutaría aunque fuera difícil?», y prueba al menos dos áreas antes de decidir.' };
+  return null;
+}
+
 // Todo el resultado de unas respuestas ya validadas
 export function calcular(r) {
   const p = puntajes(r);
   const tipos = ordenTipos(p);
   const carreras = carrerasOrdenadas(p, r.mate);
-  return { p, tipos, codigo: tipos.slice(0, 3).join(''), carreras, examen: examenDe(r, carreras) };
+  return { p, tipos, codigo: tipos.slice(0, 3).join(''), carreras, examen: examenDe(r, carreras), lectura: lecturaDe(p, tipos),
+    prepa: r.nivel === 'secundaria' ? prepaDe(r, p, tipos) : null, cortas: r.duracion === 'corta' && r.nivel !== 'secundaria' ? cortasDe(tipos) : null };
 }
 
 // Lo que se guarda para agregados (panel de grupo, métricas): sin datos personales
 export const resumenDe = res => ({ codigo: res.codigo, p: res.p, top: res.carreras.slice(0, 5).map(c => c.n), area: res.examen.area, sim: res.examen.sim });
 
-export { TIPOS, ORDEN_TIPOS };
+export { TIPOS, ORDEN_TIPOS, BACHILLERATOS };

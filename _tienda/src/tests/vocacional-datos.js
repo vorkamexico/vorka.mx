@@ -206,7 +206,59 @@ export const CARRERAS = [
   C('Educación Primaria', 'SAC', 0, 'baja', 'Didáctica, desarrollo infantil, planeación y evaluación del aprendizaje.', 'Escuelas primarias públicas y privadas, apoyo educativo y diseño de materiales.'),
   C('Gerontología', 'SIC', 0, 'baja', 'Envejecimiento, salud del adulto mayor, cuidados y políticas sociales.', 'Residencias y centros de día, programas de gobierno, atención en casa y organizaciones sociales.'),
   C('Comercio Internacional', 'ECS', 0, 'media', 'Aduanas, tratados comerciales, logística y negociación.', 'Agencias aduanales, empresas exportadoras, logística y gobierno.'),
+  C('Ingeniería en Inteligencia Artificial', 'ICR', 0, 'alta', 'Programación, matemáticas, aprendizaje automático y ciencia de datos.', 'Empresas de tecnología, áreas de datos, investigación y desarrollo de productos con IA.'),
+  C('Ciberseguridad', 'ICR', 0, 'alta', 'Redes, criptografía, hacking ético y protección de sistemas.', 'Áreas de seguridad informática de empresas, bancos y gobierno, y consultoría.'),
+  C('Desarrollo de Videojuegos', 'IAR', 0, 'media', 'Programación, diseño de juegos, arte digital y producción interactiva.', 'Estudios de videojuegos, apps, simulación y trabajo independiente.'),
+  C('Ingeniería en Energías Renovables', 'RIC', 0, 'alta', 'Energía solar y eólica, eficiencia energética, electricidad y termodinámica.', 'Empresas de energía, instalación de sistemas solares, industria y gobierno.'),
+  C('Ingeniería Automotriz', 'RIC', 0, 'alta', 'Diseño, manufactura y sistemas de vehículos.', 'Armadoras y proveedores automotrices, manufactura y talleres especializados.'),
+  C('Ingeniería en Alimentos', 'IRC', 0, 'alta', 'Química y microbiología de alimentos, procesos y control de calidad.', 'Industria alimentaria, control de calidad, desarrollo de productos e inocuidad.'),
+  C('Agronomía', 'RIE', 0, 'media', 'Cultivos, suelos, riego, control de plagas y manejo agrícola.', 'Campo, empresas agrícolas, invernaderos, asesoría técnica y gobierno.'),
+  C('Ciencias Ambientales', 'IRS', 0, 'media', 'Ecología, contaminación, recursos naturales y políticas ambientales.', 'Consultoras ambientales, gobierno, organizaciones y áreas de sustentabilidad de empresas.'),
+  C('Geografía', 'IRC', 0, 'media', 'Territorio, cartografía, sistemas de información geográfica y población.', 'Gobierno, planeación urbana, protección civil, consultoría y docencia.'),
+  C('Periodismo', 'AES', 0, 'baja', 'Investigación periodística, redacción, entrevista y medios digitales.', 'Medios, agencias de noticias, comunicación institucional y contenido digital.'),
+  C('Publicidad', 'AES', 0, 'baja', 'Creatividad publicitaria, estrategia de marca, medios y campañas.', 'Agencias de publicidad, áreas de marketing, medios y trabajo independiente.'),
+  C('Comunicación y Medios Digitales', 'AES', 0, 'baja', 'Redes sociales, producción de contenido y audiovisual, y estrategia digital.', 'Agencias, marcas, medios digitales, creación de contenido y negocio propio.'),
+  C('Administración de Recursos Humanos', 'SEC', 0, 'baja', 'Reclutamiento, capacitación, clima laboral, nómina y derecho laboral.', 'Áreas de recursos humanos de empresas, consultoría y reclutamiento.'),
+  C('Diseño de Interiores', 'AER', 0, 'media', 'Espacios, materiales, iluminación, mobiliario y representación.', 'Despachos de diseño y arquitectura, tiendas, constructoras y proyectos propios.'),
+  C('Fotografía', 'ARE', 0, 'baja', 'Técnica fotográfica, iluminación, edición y proyecto visual.', 'Estudios, medios, publicidad, eventos y trabajo independiente.'),
+  C('Educación Física', 'SRE', 0, 'baja', 'Didáctica del deporte, desarrollo motor, recreación y salud.', 'Escuelas, clubes y programas deportivos y recreativos.'),
+  C('Psicopedagogía', 'SIA', 0, 'baja', 'Aprendizaje, orientación educativa, evaluación y apoyo a estudiantes.', 'Escuelas, centros de apoyo educativo y orientación.'),
 ];
+
+// ---------- si va en secundaria: qué tipo de prepa le conviene ----------
+// Los tres tipos de bachillerato que hay en México. Ejemplos de subsistemas solo como referencia: cada estado tiene los suyos
+// y la oferta de especialidades cambia por plantel (se revisa en la convocatoria y en la visita a planteles).
+export const BACHILLERATOS = {
+  general: { nombre: 'Bachillerato general', corto: 'Prepa para seguir a la universidad',
+    texto: 'Llevas materias de todas las áreas y, en los últimos semestres, eliges un área (por ejemplo, físico-matemáticas, químico-biológicas, sociales o humanidades). Es buena opción si vas por una licenciatura o si todavía no sabes qué estudiar.',
+    ejemplos: 'Por ejemplo, las prepas de las universidades públicas (UNAM, UG y otras), el Colegio de Bachilleres y muchas prepas particulares.' },
+  tecnologico: { nombre: 'Bachillerato tecnológico', corto: 'Prepa + carrera técnica',
+    texto: 'Además del bachillerato, terminas con una carrera técnica (programación, electrónica, contabilidad, laboratorio…). Te sirve para seguir a la universidad y también para trabajar al terminar.',
+    ejemplos: 'Por ejemplo, CBTis, CETis, CBTA, CECyTE (en cada estado) y los CECyT del IPN.' },
+  tecnico: { nombre: 'Profesional técnico bachiller', corto: 'Formación técnica con prácticas',
+    texto: 'Le da más peso a la formación técnica y a las prácticas en empresas, y también te da el certificado de bachillerato para seguir estudiando si quieres.',
+    ejemplos: 'Por ejemplo, el CONALEP.' },
+};
+// Carreras técnicas de bachillerato afines a cada tipo de interés (nombres comunes; cada plantel ofrece distintas)
+export const TECNICAS = {
+  R: ['Electricidad', 'Mantenimiento industrial', 'Mecatrónica', 'Construcción', 'Producción agropecuaria'],
+  I: ['Programación', 'Laboratorista químico', 'Electrónica', 'Soporte y mantenimiento de equipo de cómputo'],
+  A: ['Diseño gráfico digital', 'Producción audiovisual', 'Dibujo arquitectónico'],
+  S: ['Enfermería', 'Puericultura', 'Trabajo social'],
+  E: ['Administración', 'Ventas', 'Turismo y hospitalidad'],
+  C: ['Contabilidad', 'Logística', 'Ofimática', 'Administración de recursos humanos'],
+};
+// ---------- si quiere estudiar poco tiempo: opciones cortas después de la prepa ----------
+// Técnico Superior Universitario (TSU): unos 2 años en las universidades tecnológicas, y se puede continuar a la licenciatura
+// o ingeniería. Nombres comunes; cada universidad tiene su oferta.
+export const TSU = {
+  R: ['Mantenimiento industrial', 'Mecatrónica', 'Energías renovables'],
+  I: ['Desarrollo de software', 'Redes y telecomunicaciones', 'Tecnología ambiental'],
+  A: ['Diseño digital', 'Animación', 'Gastronomía'],
+  S: ['Terapia física', 'Turismo'],
+  E: ['Desarrollo de negocios', 'Mercadotecnia', 'Gastronomía'],
+  C: ['Administración', 'Contaduría', 'Logística'],
+};
 
 export const AREAS_UNAM = {
   1: 'Área 1 · Ciencias Físico-Matemáticas y de las Ingenierías',
