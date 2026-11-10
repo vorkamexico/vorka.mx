@@ -230,7 +230,7 @@ ${CSS_CTA}
 .gu-compartir{margin:22px 0 8px;padding:18px;border-radius:18px;background:var(--bg-2);display:grid;gap:12px}.lr-art .gu-compartir p{margin:0;font-size:16px}
 .gu-comp-bot{display:flex;flex-wrap:wrap;gap:10px}.lr-art .gu-comp-bot a{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 18px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px}
 .lr-art .gu-comp-bot svg{width:18px;height:18px}
-.lr-art .gu-wa{background:#0b7a3b;color:#fff}.lr-art .gu-fb{background:#1b4fb3;color:#fff}
+.lr-art .gu-wa{background:#0b7a3b;color:#fff}.lr-art .gu-fb{background:#1b4fb3;color:#fff}.lr-art .gu-li{background:#0a66c2;color:#fff}
 .lr-sigue{margin-top:clamp(48px,7vw,80px);padding-top:clamp(32px,5vw,56px);border-top:1px solid var(--line)}
 
 /* ---------- búsqueda y acerca ---------- */

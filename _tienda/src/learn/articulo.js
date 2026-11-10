@@ -19,8 +19,9 @@ export function compartir(h1, ruta, texto) {
   const url = c => `${SITIO}${ruta}?utm_source=${c}&utm_medium=compartir&utm_campaign=learn`;
   const wa = `https://wa.me/?text=${encodeURIComponent(`${h1}: ${url('whatsapp')}`)}`;
   const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url('facebook'))}`;
+  const li = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url('linkedin'))}`;
   return `<div class="gu-compartir"><p><b>¿Le sirve a alguien más?</b> ${texto}</p>
-    <div class="gu-comp-bot"><a class="gu-wa" href="${esc(wa)}" target="_blank" rel="noopener">${ICONOS_LR.whatsapp}Compartir por WhatsApp</a><a class="gu-fb" href="${esc(fb)}" target="_blank" rel="noopener">${ICONOS_LR.facebook}Compartir en Facebook</a></div></div>`;
+    <div class="gu-comp-bot"><a class="gu-wa" href="${esc(wa)}" target="_blank" rel="noopener">${ICONOS_LR.whatsapp}Compartir por WhatsApp</a><a class="gu-fb" href="${esc(fb)}" target="_blank" rel="noopener">${ICONOS_LR.facebook}Compartir en Facebook</a><a class="gu-li" href="${esc(li)}" target="_blank" rel="noopener">${ICONOS_LR.linkedin}Compartir en LinkedIn</a></div></div>`;
 }
 
 /**
