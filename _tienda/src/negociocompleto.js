@@ -64,6 +64,7 @@ export async function paginaNegocioCompleto(env, req, url) {
     <h1 class="t-h1">Tu negocio completo por ${p ? precio(p).replace(' MXN', '') : '$749'} al mes.</h1>
     <p class="t-lead">Página web, agenda de citas y tarjeta de lealtad, con la misma cuenta. Para negocios con clientes que regresan: estéticas, barberías, consultorios, cafeterías y más.</p>
     <ul class="pw-inc">${INCLUYE.map(x => `<li>${CHECK}<span>${esc(x)}</span></li>`).join('')}</ul>
+    <a class="btn acento nc-mira" href="/tienda/mira-tu-negocio/">Mira cómo quedaría tu negocio ${FLECHA}</a>
     <p class="t-ya"><a href="/tienda/demo/agenda/">Prueba la agenda</a> · <a href="/tienda/demo/vuelve/">Prueba la tarjeta</a> · <a href="${WA_DUDA}" target="_blank" rel="noopener">¿Dudas? WhatsApp</a></p>
   </div>
   <aside id="comprar" aria-label="Contratar">${form}</aside>
@@ -82,6 +83,7 @@ const CSS = `.pw-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 .pw-total{font-size:15.5px;margin:10px 0 8px}.pw-total b{font-size:22px;letter-spacing:-.02em}
 .pw-dominio{font-size:14px;color:var(--fg-2);margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--bg-2)}
 .nc-opc{font-weight:400;color:var(--fg-2)}
+.nc-mira{margin:22px 0 10px}
 .nc-transfer{font-size:14px;color:var(--fg-2);margin-top:12px;text-align:center}`;
 
 const SCRIPT = `(function(){
