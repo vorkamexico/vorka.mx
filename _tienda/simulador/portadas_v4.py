@@ -37,6 +37,7 @@ V4 = {
   'evaluacion-liderazgo': ('#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', 'Desde 12 años: 12 dimensiones y 3 acciones para 30 días.', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']),
   'portales': ('#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', 'Publica tus inmuebles con fotos y recibe a los interesados por WhatsApp.', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']),
   'pagina-web': ('#9A5220', 'Tu página web', 'Tu negocio en internet, [listo y cuidado.]', 'La diseñamos, la publicamos y la mantenemos por ti. Tú pagas $499 al mes y tu dominio.', ['Diseño **sin costo**', 'Hospedaje y **SSL**', '**3** cambios al mes']),
+  'negocio-completo': ('#1F6F54', 'Negocio Completo', 'Página, agenda y lealtad, [en un solo lugar.]', 'Que te encuentren, te reserven solos y regresen. Tú pagas $749 al mes y tu dominio.', ['Página **web**', '**Agenda** en línea', 'Tarjeta de **sellos**']),
   'clara': ('#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', 'Gastos, ingresos y tarjetas en un solo lugar. Clara te dice cuánto te alcanza al día.', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']),
 }
 
@@ -205,6 +206,30 @@ def obj_pagina_web():
   <div style="font:700 16px Inter,sans-serif;color:#6D5A1E">Este mes</div><div style="font:850 40px/1.1 Inter,sans-serif;letter-spacing:-.04em;color:#9A5220;white-space:nowrap">3 cambios</div><div style="font:600 16px Inter,sans-serif;color:#6D5A1E">incluidos</div></div>
 <div style="position:absolute;left:52px;top:100px;font:700 14px Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A858D">Ejemplo ilustrativo</div>"""
 
+def obj_negocio_completo():
+    # Los tres juntos con un negocio de ejemplo: su página en el navegador, su tarjeta de sellos y su agenda del día (verde de la marca)
+    VERDE = '#1F6F54'
+    nav = '<div style="display:flex;gap:8px;align-items:center;padding:14px 16px;background:#EDEBEF;border-bottom:1px solid #DDD9E0"><i style="width:12px;height:12px;border-radius:50%;background:#E5675E"></i><i style="width:12px;height:12px;border-radius:50%;background:#E8B54A"></i><i style="width:12px;height:12px;border-radius:50%;background:#5DBB63"></i><span style="flex:1;margin-left:10px;background:#fff;border-radius:999px;padding:7px 14px;font:600 16px Inter,sans-serif;color:#3A363C">esteticalumbre.mx</span></div>'
+    web = f"""{nav}<div style="background:{VERDE};color:#fff;padding:26px 28px 28px"><span style="display:inline-grid;place-items:center;width:52px;height:52px;border-radius:14px;background:#fff;color:{VERDE};font:850 26px Inter,sans-serif">E</span>
+  <div style="font:850 38px/1.05 Inter,sans-serif;letter-spacing:-.03em;margin-top:14px">Estética Lumbre</div><div style="font:500 19px Inter,sans-serif;opacity:.9;margin-top:6px">Corte, color y peinado con cita.</div>
+  <div style="display:flex;gap:10px;margin-top:18px"><span style="background:#fff;color:{VERDE};border-radius:999px;padding:9px 18px;font:750 17px Inter,sans-serif">Reservar</span><span style="background:rgba(255,255,255,.18);border-radius:999px;padding:9px 18px;font:750 17px Inter,sans-serif">WhatsApp</span></div></div>
+<div style="padding:14px 28px 20px;font:600 18px Inter,sans-serif">{''.join(f'<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #EEE"><span>{n}</span><span style="color:#6D696E">{p}</span></div>' for n, p in [('Corte de cabello', '$250'), ('Tinte', '$650')])}</div>"""
+    sellos = ''.join(f'<span style="aspect-ratio:1;border-radius:50%;{("background:#fff;border:3px solid #fff" if i < 7 else "border:3px dashed #fff" if i == 9 else "border:3px solid rgba(255,255,255,.55)")};display:grid;place-items:center;color:{VERDE};font:900 26px Inter,sans-serif">{"✓" if i < 7 else ""}</span>' for i in range(10))
+    tarjeta = f"""<div style="display:flex;align-items:center;gap:12px"><span style="display:inline-grid;place-items:center;width:46px;height:46px;border-radius:12px;background:{VERDE};color:#fff;font:850 22px Inter,sans-serif">E</span><b style="font:800 22px Inter,sans-serif">Estética Lumbre</b></div>
+  <div style="font:500 17px Inter,sans-serif;color:#6D696E;margin-top:16px">Hola, Ana</div><div style="font:600 20px Inter,sans-serif;color:#5F5A63"><b style="font:850 64px/1 Inter,sans-serif;color:#141114;letter-spacing:-.04em">7</b> / 10 sellos</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:16px;border-radius:18px;background:{VERDE};margin-top:12px">{sellos}</div>
+  <div style="font:500 17px Inter,sans-serif;color:#4D4950;margin-top:14px">3 visitas más y te llevas <b>tu corte gratis</b>.</div>"""
+    def cita(h, t, q):
+        caja = f'background:#F3F2F0;border-left:4px solid {VERDE}' if q else 'background:#fff;border:2px dashed #CFCBD3;color:#8A858D'
+        quien = f'<small style="display:block;font:500 15px Inter,sans-serif;color:#8A858D">{q}</small>' if q else ''
+        return f'<div style="display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;margin-top:10px"><span style="font:600 17px Inter,sans-serif;color:#8A858D">{h}</span><span style="padding:11px 14px;border-radius:12px;{caja};font:650 18px Inter,sans-serif">{t}{quien}</span></div>'
+    citas = ''.join(cita(*c) for c in [('9:00', 'Corte de cabello', 'Ana'), ('10:30', 'Tinte', 'Sofía'), ('12:00', 'Disponible · reserva en línea', '')])
+    agenda = f'<div style="font:700 16px Inter,sans-serif;color:{VERDE}">Agenda de hoy</div><b style="display:block;font:800 24px Inter,sans-serif;margin:2px 0 6px">Estética Lumbre</b>{citas}'
+    return f"""
+<div style="position:absolute;left:40px;top:120px;width:560px;border-radius:22px;background:#fff;transform:rotate(-3deg);{SOMBRA};overflow:hidden;color:#141114">{web}</div>
+<div style="position:absolute;left:250px;top:470px;width:400px;border-radius:24px;background:#fff;transform:rotate(3deg);{SOMBRA};padding:24px;color:#141114">{tarjeta}</div>
+<div style="position:absolute;left:30px;top:860px;width:390px;border-radius:22px;background:#fff;transform:rotate(-1.5deg);{SOMBRA};padding:22px 24px 26px;color:#141114;z-index:3">{agenda}</div>"""
+
 def obj_kit(k):
     color, titulo, partes = P[k]['hojas']
     lista = ''.join(f'<div style="display:flex;gap:12px;align-items:center;margin-top:16px;font:650 20px Inter,sans-serif"><span style="width:28px;height:28px;border-radius:8px;background:{color};color:#fff;display:grid;place-items:center;font-size:15px">{i + 1}</span>{t}</div>' for i, t in enumerate(partes))
@@ -228,7 +253,7 @@ def obj_clara():
   <div style="font:600 18px Inter,sans-serif;color:#6D5A1E">al día hasta el 15</div></div>"""
 
 OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
-  'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales, 'pagina-web': obj_pagina_web,
+  'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales, 'pagina-web': obj_pagina_web, 'negocio-completo': obj_negocio_completo,
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
   **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn']}, 'simuladores': obj_paquete}
 

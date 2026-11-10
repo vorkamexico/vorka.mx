@@ -151,7 +151,7 @@ function vista(p, url, desdeBrindi) {
     if (esCupo(p)) return { p, url, nombre: CUPO.nombre, texto: CUPO.texto, incluye: CUPO.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/v3/cupo-portada.webp' }, precio: 'Gratis · Pro desde $99 MXN', regalable: false };
     if (esNegocio(p)) return { p, url, nombre: NEGOCIO.nombre, texto: NEGOCIO.texto, incluye: NEGOCIO.incluye, cat: 'Servicio',
-      img: { ...p, imagen: p.imagen || '/assets/tienda/v3/pagina-web-portada.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
+      img: { ...p, imagen: p.imagen || '/assets/tienda/v3/negocio-completo-portada.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
     if (esAgenda(p)) return { p, url, nombre: AGENDA.nombre, texto: AGENDA.texto, incluye: AGENDA.incluye, cat: 'Acceso en línea',
       img: { ...p, imagen: p.imagen || '/assets/tienda/v3/agenda-portada.webp' }, precio: `${precio(p)} al mes`, regalable: false, min: p.precio_centavos };
     // Las demás apps por suscripción: nombre de la app (no el del plan) y el precio "al mes", igual que Agenda
@@ -262,7 +262,7 @@ const CSS_VITRINA = `
 .v-catalogo .t-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 32px}
 @media(max-width:980px){.v-catalogo .t-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 22px}}
 @media(max-width:560px){.v-catalogo .t-cards{grid-template-columns:1fr;gap:36px}}
-.v-catalogo .t-card{background:none;border:0;box-shadow:none;padding:0;display:grid;gap:16px}
+.v-catalogo .t-card{background:none;border:0;box-shadow:none;padding:0;display:grid;gap:16px;overflow:visible}
 .v-catalogo .t-card-img{border-radius:22px;overflow:hidden;background:var(--bg-2);aspect-ratio:4/3;display:block}
 .v-catalogo .t-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s var(--ease,ease)}.v-catalogo .t-card:hover .t-card-img img{transform:scale(1.025)}
 .v-catalogo .t-card-ver{display:none}
@@ -270,9 +270,9 @@ const CSS_VITRINA = `
 .v-catalogo .t-card-t .t-cat{display:none}
 .v-catalogo .t-card h3{font-size:19px;letter-spacing:-.015em;margin:0}.v-catalogo .t-card h3 a{color:var(--fg);text-decoration:none}
 .v-catalogo .t-card p{font-size:15px;line-height:1.5;color:var(--fg-2);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.v-catalogo .t-card-pie{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:0;border:0}
+.v-catalogo .t-card-pie{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;margin-top:8px;padding:0;border:0}
 .v-catalogo .t-card-pie b{font-size:16px}
-.t-card-mas{display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--fg);text-decoration:none}.t-card-mas svg{width:15px;height:15px}
+.t-card-mas{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--fg);text-decoration:none}.t-card-mas svg{width:15px;height:15px}
 `;
 
 export async function paginaCatalogo(env, req, url) {
@@ -286,6 +286,9 @@ export async function paginaCatalogo(env, req, url) {
   const desdeBrindi = planesBrindi.length ? Math.min(...planesBrindi.map(x => x.precio_centavos)) : null;
   const secciones = seccionesCatalogo(productos).map(g => ({ ...g, vistas: vistas(g.productos, desdeBrindi) }));
   const todas = secciones.flatMap(g => g.vistas);
+  // Negocio Completo vive en Servicios, pero también va primero en Negocios: ahí lo busca el dueño de un negocio
+  const ncVista = todas.find(v => esNegocio(v.p)), lineaNeg = secciones.find(g => g.id === 'negocios');
+  if (ncVista && lineaNeg && !lineaNeg.vistas.includes(ncVista)) lineaNeg.vistas.unshift(ncVista);
 
   // Portada de la tienda: menos es más. Arriba la promesa y una vitrina con las líneas; abajo una sola cuadrícula de
   // productos agrupados por línea, cada una con su título, y filtros por línea (sin JavaScript se ven todos).
@@ -308,7 +311,7 @@ export async function paginaCatalogo(env, req, url) {
   // Lo nuevo de la tienda (solo si está a la venta): la pastilla de arriba de la portada
   const negocios = secciones.find(g => g.id === 'negocios')?.vistas || [];
   const agendaV = negocios.find(v => esAgenda(v.p)), vuelveV = negocios.find(v => v.p.contenido?.acceso?.app === 'vuelve');
-  const nuevo = agendaV ? { url: agendaV.url, chip: 'Agenda: citas en línea para tu negocio' } : vuelveV ? { url: vuelveV.url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
+  const nuevo = ncVista ? { url: ncVista.url, chip: 'Negocio Completo: página, agenda y lealtad por $749 al mes' } : agendaV ? { url: agendaV.url, chip: 'Agenda: citas en línea para tu negocio' } : vuelveV ? { url: vuelveV.url, chip: 'Vuelve: tarjetas de lealtad para tu negocio' } : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({

@@ -90,7 +90,7 @@ export async function paginaNegocioCompleto(env, req, url) {
   const mesTxt = p ? precio(p).replace(' MXN', '') : '$749', instTxt = inst ? precio(inst).replace(' MXN', '') : '$1,490';
   return pagina({ navActual: 'catalogo',
     titulo: 'Negocio Completo: página web, agenda y tarjeta de lealtad por $749 al mes | Vorka México', ruta: RUTA_NEGOCIO_COMPLETO,
-    imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
+    imagen: 'https://vorka.mx/assets/tienda/v3/negocio-completo-og.jpg',
     descripcion: 'Tu página web, tu agenda de citas en línea y tu tarjeta de lealtad digital en una sola suscripción de $749 al mes. Arranque en 7 días opcional.',
     head: `<style>${CSS_MIRA}${CSS}</style>`, headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT,
     cuerpo: `<section class="nc-hero"><div class="marco nc-hero-g">
