@@ -2,12 +2,16 @@
 // (y si quiere sube su logo y elige color) y ve al instante su tarjeta de sellos, su agenda y su página web con su nombre.
 // Todo se dibuja en el navegador: no se guarda nada ni se sube el logo. «Lo quiero» abre WhatsApp con sus datos ya escritos.
 // La liga se puede mandar armada: ?n=Estética%20Lumbre&g=estetica&c=Celaya abre la vista previa directo (sin el logo).
-// Píxel: ViewContent al armar la primera vista previa y Lead al tocar «Lo quiero».
+// «Lo quiero» pide nombre y WhatsApp, lo guarda como prospecto en Vorka OS (POST /api/mira-tu-negocio → /api/publico/vorka/mira-negocio)
+// y luego abre WhatsApp. Si Vorka OS no responde, igual abre WhatsApp.
+// Píxel: ViewContent al armar la primera vista previa y Lead al mandar «Lo quiero».
 import { pagina, esc } from './paginas.js';
-import { productoPorSlug, registrarAnalitica } from './modelo.js';
+import { productoPorSlug, registrarAnalitica, dentroDelLimite } from './modelo.js';
+import { json, sha256 } from './util.js';
 import { refDeVisita } from './tienda.js';
 import { FLECHA } from './marco.generado.js';
-import { RUTA_NEGOCIO_COMPLETO, SLUG_NEGOCIO_COMPLETO } from './negociocompleto.js';
+// Sin importar negociocompleto.js (ese importa los giros de aquí): mismas constantes
+const RUTA_NEGOCIO_COMPLETO = '/tienda/negocio-completo/', SLUG_NEGOCIO_COMPLETO = 'negocio-completo-mensual';
 
 export const RUTA_MIRA = '/tienda/mira-tu-negocio/';
 const WA_NUM = '528117804869';
@@ -31,6 +35,24 @@ export const GIROS = {
 };
 export const COLORES = ['#1f6f54', '#7a3b2e', '#1d3f72', '#8a3d6b', '#b5651d', '#222222'];
 
+// POST /api/mira-tu-negocio { nombre, whatsapp, negocio, giro, ciudad } → prospecto en Vorka OS (máx. 5 por IP por hora)
+export async function prospectoMira(req, env) {
+  let b; try { b = await req.json(); } catch { return json({ error: 'Datos inválidos.' }, 400); }
+  const ip = req.headers.get('cf-connecting-ip') || '';
+  if (ip && !(await dentroDelLimite(env, `mira:${await sha256(ip)}`, 5, 3600))) return json({ error: 'Ya recibimos tus datos. Escríbenos por WhatsApp.' }, 429);
+  const d = { nombre: String(b?.nombre || '').trim().slice(0, 100), whatsapp: String(b?.whatsapp || '').trim().slice(0, 30), negocio: String(b?.negocio || '').trim().slice(0, 60),
+    giro: GIROS[b?.giro]?.nombre || '', ciudad: String(b?.ciudad || '').trim().slice(0, 40), empresa_web: b?.empresa_web || '' };
+  if (d.nombre.length < 2) return json({ error: 'Escribe tu nombre.' }, 400);
+  if (d.whatsapp.replace(/\D/g, '').length < 10) return json({ error: 'Escribe tu WhatsApp a 10 dígitos.' }, 400);
+  if (d.negocio.length < 2) return json({ error: 'Falta el nombre de tu negocio.' }, 400);
+  const pedido = new Request('https://os.vorka.mx/api/publico/vorka/mira-negocio', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(d) });
+  try {
+    const r = await (env.OS ? env.OS.fetch(pedido) : fetch(pedido));
+    const j = await r.json().catch(() => ({}));
+    return json(r.ok ? { ok: true } : { error: j.error || 'No pudimos guardar tus datos.' }, r.ok ? 200 : r.status === 400 ? 400 : 502);
+  } catch { return json({ error: 'No pudimos guardar tus datos.' }, 502); }
+}
+
 export async function paginaMiraTuNegocio(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const p = await productoPorSlug(env, SLUG_NEGOCIO_COMPLETO);
@@ -44,7 +66,7 @@ export async function paginaMiraTuNegocio(env, req, url) {
     titulo: 'Mira cómo quedaría tu negocio: tarjeta de lealtad, agenda y página web | Vorka México', ruta: RUTA_MIRA,
     imagen: 'https://vorka.mx/assets/tienda/v3/pagina-web-og.jpg',
     descripcion: 'Escribe el nombre de tu negocio y mira al instante cómo quedarían tu tarjeta de sellos, tu agenda en línea y tu página web. Gratis y sin registrarte.',
-    head: `<style>${CSS}</style>`, headers: cookie ? { 'set-cookie': cookie } : {},
+    head: `<style>${CSS_MIRA}</style>`, headers: cookie ? { 'set-cookie': cookie } : {},
     script: `var MT=${JSON.stringify({ giros: GIROS, wa: WA_NUM, ruta: RUTA_MIRA }).replace(/</g, '\\u003c')};${SCRIPT}`,
     cuerpo: `<section class="mt-hero"><div class="marco">
   <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / <a href="${RUTA_NEGOCIO_COMPLETO}">Negocio Completo</a></nav>
@@ -95,18 +117,29 @@ export async function paginaMiraTuNegocio(env, req, url) {
     </figure>
   </div>
   <div class="mt-cta">
-    <div><p class="mt-precio">Todo esto por <b>$749 al mes</b>.</p><p>Si te lo dejamos configurado, tu primer mes va de regalo. Plan de 12 meses; el dominio se paga aparte.</p></div>
+    <div><p class="mt-precio">Todo esto por <b>$749 al mes</b>.</p><p>Con el Arranque en 7 días diseñamos tu página a la medida de tu marca y tu primer mes va de regalo. Plan de 12 meses; el dominio se paga aparte.</p></div>
     <div class="mt-cta-btns">
-      <a class="btn acento" id="mt-quiero" href="https://wa.me/${WA_NUM}" target="_blank" rel="noopener">Lo quiero ${FLECHA}</a>
+      <button class="btn acento" type="button" id="mt-quiero">Lo quiero ${FLECHA}</button>
       <a class="btn blanco" href="${RUTA_NEGOCIO_COMPLETO}">Contratar en línea</a>
     </div>
+    <form class="mt-datos" id="mt-datos" hidden novalidate>
+      <p class="mt-datos-t">¿A quién le escribimos? Te mandamos tu propuesta por WhatsApp.</p>
+      <div class="mt-datos-g">
+        <div class="t-campo"><label for="mt-tu">Tu nombre</label><input id="mt-tu" name="tu" type="text" autocomplete="name" required maxlength="100"></div>
+        <div class="t-campo"><label for="mt-wa">Tu WhatsApp</label><input id="mt-wa" name="wa" type="tel" autocomplete="tel" inputmode="tel" required maxlength="20" placeholder="10 dígitos"></div>
+      </div>
+      <input class="mt-trampa" type="text" name="empresa_web" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="t-error" id="mt-datos-error" role="alert" hidden></p>
+      <button class="btn acento" type="submit" id="mt-mandar">Mandar y abrir WhatsApp ${FLECHA}</button>
+      <small class="t-ayuda">Al mandar aceptas el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</small>
+    </form>
     <p class="mt-nota">Es un ejemplo con datos de muestra: al contratar lo dejamos con tus servicios, tus horarios y tus precios.</p>
   </div>
 </div></section>`,
   });
 }
 
-const CSS = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,40px)}
+export const CSS_MIRA = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,40px)}
 .mt-hero h1{margin-top:14px}.mt-hero .t-lead{margin-top:14px;max-width:620px}
 .mt-g{display:grid;gap:24px;margin-top:26px;align-items:start}@media(min-width:900px){.mt-g{grid-template-columns:minmax(320px,440px) 1fr}}
 .mt-g>*{min-width:0}
@@ -161,7 +194,13 @@ const CSS = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,40px)}
 @media(min-width:900px){.mt-cta{grid-template-columns:1fr auto}}
 .mt-cta p{margin:0;color:var(--fg-2)}.mt-precio{font-size:20px;color:var(--fg)!important;margin-bottom:4px!important}
 .mt-cta-btns{display:flex;gap:10px;flex-wrap:wrap}
-.mt-nota{grid-column:1/-1;font-size:13.5px}`;
+.mt-nota{grid-column:1/-1;font-size:13.5px}
+.mt-datos{grid-column:1/-1;display:grid;gap:12px;padding-top:16px;border-top:1px solid var(--line)}
+.mt-datos[hidden]{display:none}
+.mt-datos-t{color:var(--fg)!important;font-weight:600}
+.mt-datos-g{display:grid;gap:12px}@media(min-width:640px){.mt-datos-g{grid-template-columns:1fr 1fr}}
+.mt-datos .btn{justify-self:start}
+.mt-trampa{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-mira'); if(!f) return;
@@ -197,8 +236,6 @@ const SCRIPT = `(function(){
         li.appendChild(t); li.appendChild(box); ul.appendChild(li); }); });
     todos('servicios').forEach(function(ul){ vaciar(ul);
       G.servicios.slice(0,3).forEach(function(s){ var li=el('li'); li.appendChild(el('span',s[0])); li.appendChild(el('span',pesos(s[1]))); ul.appendChild(li); }); });
-    var msj='Hola, vi cómo quedaría mi negocio y lo quiero. Se llama '+d.n+', es '+G.nombre.toLowerCase()+(d.c?' y está en '+d.c:'')+'.';
-    quiero.href='https://wa.me/'+MT.wa+'?text='+encodeURIComponent(msj);
     res.hidden=false; if(vacio) vacio.style.display='none';
   }
   function mostrar(desplazar){
@@ -212,7 +249,24 @@ const SCRIPT = `(function(){
   }
   f.addEventListener('submit',function(e){ e.preventDefault(); mostrar(true); });
   f.addEventListener('change',function(e){ if(datos&&e.target.name!=='logo') mostrar(false); });
-  quiero.addEventListener('click',function(){ if(window.vorkaEvento&&datos) window.vorkaEvento('Lead',{content_name:'Mira tu negocio',content_category:datos.g}); });
+  var fd=document.getElementById('mt-datos'), errD=document.getElementById('mt-datos-error'), mandar=document.getElementById('mt-mandar'), txtM=mandar.innerHTML;
+  quiero.addEventListener('click',function(){ fd.hidden=false; quiero.hidden=true; fd.tu.focus(); });
+  function errorD(m){ errD.textContent=m; errD.hidden=false; mandar.disabled=false; mandar.innerHTML=txtM; }
+  fd.addEventListener('submit',function(e){
+    e.preventDefault(); if(!datos) return;
+    var tu=fd.tu.value.trim(), wa=fd.wa.value.trim(), G=MT.giros[datos.g];
+    if(tu.length<2){ fd.tu.focus(); return errorD('Escribe tu nombre.'); }
+    if(wa.replace(/\\D/g,'').length<10){ fd.wa.focus(); return errorD('Escribe tu WhatsApp a 10 dígitos.'); }
+    errD.hidden=true; mandar.disabled=true; mandar.textContent='Abriendo WhatsApp…';
+    var msj='Hola, soy '+tu+'. Vi cómo quedaría mi negocio y lo quiero. Se llama '+datos.n+', es '+G.nombre.toLowerCase()+(datos.c?' y está en '+datos.c:'')+'.';
+    var ir=function(){ location.href='https://wa.me/'+MT.wa+'?text='+encodeURIComponent(msj); };
+    if(window.vorkaEvento) window.vorkaEvento('Lead',{content_name:'Mira tu negocio',content_category:datos.g});
+    var listo=false, t=setTimeout(function(){ if(!listo){ listo=true; ir(); } },4000);
+    fetch('/api/mira-tu-negocio',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({nombre:tu,whatsapp:wa,negocio:datos.n,giro:datos.g,ciudad:datos.c,empresa_web:fd.empresa_web.value})})
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,s:r.status,j:j}; }); })
+      .then(function(x){ if(listo) return; if(!x.ok&&x.s===400){ clearTimeout(t); return errorD(x.j.error||'Revisa tus datos.'); } listo=true; clearTimeout(t); ir(); })
+      .catch(function(){ if(!listo){ listo=true; clearTimeout(t); ir(); } });
+  });
   // Liga armada (?n=…&g=…): se dibuja sola y baja a la vista previa, que en el celular queda debajo del formulario
   if(f.nombre.value.trim().length>=2&&MT.giros[f.giro.value]){ mostrar(false); setTimeout(function(){ res.scrollIntoView({block:'start'}); },400); }
 })();`;

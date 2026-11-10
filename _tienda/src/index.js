@@ -33,7 +33,7 @@ import { paginaAgenda } from './agenda.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaPaginaWeb } from './paginaweb.js';
 import { paginaNegocioCompleto } from './negociocompleto.js';
-import { paginaMiraTuNegocio } from './miratunegocio.js';
+import { paginaMiraTuNegocio, prospectoMira } from './miratunegocio.js';
 import { paginaVende } from './vende.js';
 import { paginaPortales } from './portales.js';
 import { paginaClara } from './clara.js';
@@ -422,6 +422,7 @@ async function atender(request, env, ctx, url) {
     if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env, ctx);
     // Píxel de Meta + API de conversiones (src/meta.js): apagados mientras falten META_PIXEL_ID y META_CAPI_TOKEN
     if (url.pathname === '/api/meta/config' && request.method === 'GET') return configMeta(env);
+    if (url.pathname === '/api/mira-tu-negocio' && request.method === 'POST') return await prospectoMira(request, env);
     if (url.pathname === '/api/meta/evento' && request.method === 'POST') return await eventoNavegador(request, env, ctx);
     const ord = url.pathname.match(/^\/api\/ordenes\/([0-9a-f-]{36})$/);
     if (ord && request.method === 'GET') return await apiOrden(env, ord[1]);

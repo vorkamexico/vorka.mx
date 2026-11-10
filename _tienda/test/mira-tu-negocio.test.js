@@ -16,7 +16,8 @@ describe('Mira tu negocio', () => {
     expect(h).toContain('id="form-mira"');
     expect(h).toContain('value="barberia"');
     expect(h).toContain('$749 al mes');
-    expect(h).toContain('https://wa.me/528117804869');
+    expect(h).toContain('528117804869');
+    expect(h).toContain('id="mt-datos"');
     expect(h).toContain('Lo quiero');
     expect(h).not.toMatch(/href="tel:/);
   });
@@ -42,6 +43,21 @@ describe('Mira tu negocio', () => {
 
   it('cada giro trae 4 servicios y su premio', () => {
     for (const g of Object.values(GIROS)) { expect(g.servicios).toHaveLength(4); expect(g.premio).toBeTruthy(); }
+  });
+
+  it('«Lo quiero» manda el prospecto a Vorka OS con el giro y valida el WhatsApp', async () => {
+    const pedidos = [];
+    env.OS = { fetch: async r => { pedidos.push({ url: r.url, body: await r.json() }); return new Response(JSON.stringify({ ok: true, folio: 'VK-1' })); } };
+    const mandar = body => worker.fetch(new Request('https://vorka.mx/api/mira-tu-negocio', { method: 'POST', headers: { 'content-type': 'application/json', 'cf-connecting-ip': '2.2.2.2' }, body: JSON.stringify(body) }), env);
+    let r = await mandar({ nombre: 'Laura', whatsapp: '461', negocio: 'Estética Lumbre', giro: 'estetica' });
+    expect(r.status).toBe(400);
+    expect(pedidos).toHaveLength(0);
+    r = await mandar({ nombre: 'Laura', whatsapp: '461 123 4567', negocio: 'Estética Lumbre', giro: 'estetica', ciudad: 'Celaya' });
+    expect(r.status).toBe(200);
+    expect(pedidos[0].url).toBe('https://os.vorka.mx/api/publico/vorka/mira-negocio');
+    expect(pedidos[0].body).toMatchObject({ nombre: 'Laura', negocio: 'Estética Lumbre', giro: 'Estética', ciudad: 'Celaya' });
+    for (let i = 0; i < 5; i++) r = await mandar({ nombre: 'Laura', whatsapp: '4611234567', negocio: 'X Y' });
+    expect(r.status).toBe(429);
   });
 
   it('Negocio Completo tiene el botón a Mira tu negocio', async () => {
