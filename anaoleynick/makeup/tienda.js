@@ -979,7 +979,7 @@
       '</fieldset>' +
       '<div class="error-gral" id="error-gral" role="alert" hidden></div>' +
       '<button class="boton enviar" type="submit" id="f-enviar">Hacer mi pedido</button>' +
-      '<p class="seguro" style="margin-top:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Pago por transferencia: al confirmar recibes los datos de la cuenta y ' + ((S.tienda.pago && S.tienda.pago.horas_para_pagar) || 24) + ' horas para transferir. Tus productos quedan apartados mientras tanto.</span></p>' +
+      '<p class="seguro" style="margin-top:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Pago por transferencia: al confirmar recibes los datos para pagar y ' + ((S.tienda.pago && S.tienda.pago.horas_para_pagar) || 24) + ' horas para transferir. Tus productos quedan apartados mientras tanto.</span></p>' +
       '</form>' +
       '<aside class="pago-res" aria-label="Resumen del pedido"><div class="pegajoso"><p class="res-tit">Tu pedido</p><ul class="res-items" id="res-items"></ul>' +
       '<div class="campo"><label for="f-codigo">Código de descuento</label><div class="codigo-fila"><input type="text" id="f-codigo" maxlength="30" autocomplete="off" spellcheck="false"><button class="mini claro" type="button" id="f-aplicar">Aplicar</button></div><p class="msg" id="msg-codigo" aria-live="polite"></p></div>' +
@@ -1171,7 +1171,9 @@
 
   // ---------------- Confirmación ----------------
   function pintarConfirmacion(p, token, fotos) {
-    var esperando = p.estado === 'esperando_pago' && p.transferencia;
+    var esperando = p.estado === 'esperando_pago' && (p.transferencia || p.pago_whatsapp);
+    // Sin CLABE en Vende: los datos para transferir se piden por WhatsApp
+    var porWhatsapp = esperando && !p.transferencia;
     var url = p.url || (token ? PEDIDO_URL + token : null);
     var tr = p.transferencia || {};
     var clabe = String(tr.clabe || '').replace(/(\d{3})(\d{3})(\d{11})(\d)/, '$1 $2 $3 $4');
@@ -1179,16 +1181,20 @@
       '<div class="confirma-enc"><span class="sello-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>' +
       '<p class="num-pedido">Pedido<b>' + esc(p.numero) + '</b></p>' +
       '<h2 class="display" id="conf-titulo">' + (esperando ? 'Tus productos están apartados' : esc(p.estado_texto || 'Tu pedido')) + '</h2>' +
-      '<p>' + (esperando ? 'Te enviamos este resumen y los datos para pagar a tu correo. Para confirmar tu pedido, transfiere el total y sube tu comprobante.' : 'Estado actual de tu pedido: ' + esc(p.estado_texto || '') + '.') + '</p></div>';
+      '<p>' + (porWhatsapp ? 'Te enviamos este resumen a tu correo. Escríbenos por WhatsApp con tu número de pedido y te mandamos los datos para transferir.' : esperando ? 'Te enviamos este resumen y los datos para pagar a tu correo. Para confirmar tu pedido, transfiere el total y sube tu comprobante.' : 'Estado actual de tu pedido: ' + esc(p.estado_texto || '') + '.') + '</p></div>';
     if (esperando) {
       h += '<div class="limite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Transfiere antes del <b>' + esc(p.limite_texto || '') + '</b>. Si no registramos tu pago a tiempo, el pedido se cancela y las piezas vuelven a la tienda.</span></div>' +
-        '<section class="transferencia" aria-labelledby="t-tit"><div class="cab"><h3 id="t-tit">Datos para transferir</h3><p>Monto exacto: ' + pesos(tr.monto_c) + ' MXN</p></div><dl class="datos-t">' +
-        filaDato('Banco', esc(tr.banco || '')) +
-        filaDato('CLABE', esc(clabe), tr.clabe, true) +
-        filaDato('Titular', esc(tr.titular || '')) +
-        filaDato('Concepto', esc(tr.concepto || p.numero), tr.concepto || p.numero) +
-        filaDato('Monto', pesos(tr.monto_c), String((tr.monto_c || 0) / 100)) +
-        '</dl></section>' +
+        (porWhatsapp
+          ? '<section class="transferencia" aria-labelledby="t-tit"><div class="cab"><h3 id="t-tit">Pide los datos para transferir</h3><p>Monto exacto: ' + pesos(p.pago_whatsapp.monto_c) + ' MXN</p></div>' +
+            '<p style="margin:0 0 14px">Escríbenos por WhatsApp con tu número de pedido <b>' + esc(p.numero) + '</b> y te mandamos la cuenta. Usa ese número como concepto.</p>' +
+            '<p style="margin:0"><a class="boton" href="' + esc(ligaWhatsapp('Hola, hice el pedido ' + p.numero + ' en la tienda de Ana Laura Makeup por ' + pesos(p.pago_whatsapp.monto_c) + '. ¿Me pasas los datos para transferir?')) + '" target="_blank" rel="noopener">' + ICONO_WA + ' Pedir datos por WhatsApp</a></p></section>'
+          : '<section class="transferencia" aria-labelledby="t-tit"><div class="cab"><h3 id="t-tit">Datos para transferir</h3><p>Monto exacto: ' + pesos(tr.monto_c) + ' MXN</p></div><dl class="datos-t">' +
+            filaDato('Banco', esc(tr.banco || '')) +
+            filaDato('CLABE', esc(clabe), tr.clabe, true) +
+            filaDato('Titular', esc(tr.titular || '')) +
+            filaDato('Concepto', esc(tr.concepto || p.numero), tr.concepto || p.numero) +
+            filaDato('Monto', pesos(tr.monto_c), String((tr.monto_c || 0) / 100)) +
+            '</dl></section>') +
         '<section class="comprobante" aria-labelledby="c-tit"><h3 id="c-tit">¿Ya transferiste?</h3><p>Sube la captura o el PDF de tu comprobante. Lo revisamos y te avisamos por correo cuando confirmemos tu pago.</p>' +
         (p.comprobante_recibido ? '<p class="msg ok">Ya recibimos tu comprobante. Si necesitas cambiarlo, súbelo de nuevo.</p>' : '') +
         '<div class="fila"><label class="archivo">Subir comprobante<input type="file" id="f-comprobante" accept="image/jpeg,image/png,image/webp,application/pdf"></label>' +
