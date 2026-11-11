@@ -4,16 +4,19 @@
 //   vorka.mx/simulador-ecoems → ecoems.js (bachillerato UNAM e IPN, sin áreas)
 //   vorka.mx/simulador-prepa-ug → prepa-ug.js (EXANI-I para el bachillerato de la UG, sin áreas, 3 opciones)
 //   vorka.mx/simulador-ipn   → ipn.js (nivel superior del IPN, 3 áreas; banco de los de UNAM y PAA)
+//   vorka.mx/simulador-exani-ii → exani-ii.js (licenciatura en las universidades que usan EXANI-II; 2 módulos a elegir, 3 opciones)
 // Para sumar uno nuevo: su configuración, su banco y sus productos en D1 (con contenido.acceso.app = su ruta sin "/").
 import { PAA } from './paa.js';
 import { UNAM } from './unam.js';
 import { ECOEMS } from './ecoems.js';
 import { PREPA_UG } from './prepa-ug.js';
 import { IPN } from './ipn.js';
+import { EXANI_II } from './exani-ii.js';
 import { paginaPaaUniversidad } from './paa-universidades.js';
+import { paginaExaniUniversidad, paginaSelector } from './exani-universidades.js';
 
 // Se arma al usarse (no al cargar el módulo): los simuladores importan la tienda, que a su vez importa este archivo
-export const simuladores = () => [PAA, UNAM, ECOEMS, PREPA_UG, IPN];
+export const simuladores = () => [PAA, UNAM, ECOEMS, PREPA_UG, IPN, EXANI_II];
 export const simuladorDe = app => simuladores().find(s => s.APP === app) || null;
 // Simulador al que da acceso un producto (por su contenido en D1), o null
 export const simuladorDeContenido = contenido => {
@@ -27,6 +30,12 @@ export async function rutasSimulador(req, env, url) {
   if (u && (req.method === 'GET' || req.method === 'HEAD') && !['app.js', 'app.css', 'entrar'].includes(u[1])) {
     const r = paginaPaaUniversidad(u[1]);
     if (r) return u[2] ? r : Response.redirect(`${url.origin}/simulador-paa/${u[1]}/`, 301);
+  }
+  // EXANI-II: «¿Cuál te sirve?» (/simulador-exani-ii/universidades/) y una página por universidad (/simulador-exani-ii/<universidad>/)
+  const x = url.pathname.match(/^\/simulador-exani-ii\/([a-z-]{2,30})(\/?)$/);
+  if (x && (req.method === 'GET' || req.method === 'HEAD')) {
+    const r = x[1] === 'universidades' ? paginaSelector() : paginaExaniUniversidad(x[1]);
+    if (r) return x[2] ? r : Response.redirect(`${url.origin}/simulador-exani-ii/${x[1]}/`, 301);
   }
   for (const s of simuladores()) { const r = await s.rutas(req, env, url); if (r) return r; }
   return null;

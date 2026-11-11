@@ -11,6 +11,7 @@ export const LINEAS = [
   { clave: 'sim_ecoems', nombre: 'Simulador ECOEMS', re: /^prod_ecoems_/, app: 'simulador-ecoems' },
   { clave: 'sim_prepa_ug', nombre: 'Simulador prepa UG', re: /^prod_prepa_ug_/, app: 'simulador-prepa-ug' },
   { clave: 'sim_ipn', nombre: 'Simulador IPN', re: /^prod_ipn_/, app: 'simulador-ipn' },
+  { clave: 'sim_exani_ii', nombre: 'Simulador EXANI-II', re: /^prod_exani2_/, app: 'simulador-exani-ii' },
   { clave: 'vende', nombre: 'Vende', re: /^prod_vende_/ },
   { clave: 'vuelve', nombre: 'Vuelve', re: /^prod_vuelve_/ },
   { clave: 'agenda', nombre: 'Agenda', re: /^prod_agenda_/ },

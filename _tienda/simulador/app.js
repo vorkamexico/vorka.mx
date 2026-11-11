@@ -1033,6 +1033,12 @@
   }
   // Con CFG.ponderacion ({ seccion: peso en % }, p. ej. la ficha técnica de la prepa UG): aciertos de cada área por su peso, sobre 100
   function ponderadoHTML(res, secs) {
+    // Con CFG.globalSin ([secciones], p. ej. el Inglés diagnóstico del EXANI-II): aciertos sin esas secciones, como el puntaje global
+    if (CFG.globalSin && esIntento(res.modo)) {
+      var dentro = secs.filter(function (s) { return CFG.globalSin.indexOf(s.id) < 0 && s.total; });
+      var ac = dentro.reduce(function (a, s) { return a + s.aciertos; }, 0), tot = dentro.reduce(function (a, s) { return a + s.total; }, 0);
+      return tot && dentro.length < secs.length ? '<p class="sim-global">' + esc(CFG.globalSinNombre || 'Sin las secciones diagnósticas') + ' <b class="num">' + ac + '</b><small> / ' + tot + '</small></p>' : '';
+    }
     var P = CFG.ponderacion; if (!P || !esIntento(res.modo)) return '';
     var ids = Object.keys(P); if (!ids.every(function (k) { return secs.some(function (s) { return s.id === k && s.total; }); })) return '';
     var v = secs.reduce(function (a, s) { return a + (P[s.id] || 0) * s.aciertos / s.total; }, 0);

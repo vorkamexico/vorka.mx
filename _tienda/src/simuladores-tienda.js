@@ -10,6 +10,7 @@ import { refDeVisita, precio, seccionFaq, seccionCompra, formCompra, SCRIPT_COMP
 import { ofertas } from './seo.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { simuladorDe } from './simulador/index.js';
+import { RUTA_UNIVERSIDADES } from './simulador/exani-universidades.js';
 
 export const RUTA_SIMULADORES = '/tienda/simuladores/';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -19,6 +20,8 @@ const UNIVERSIDAD = [
   ['simulador-paa', 'Simulador PAA', 'Prueba de Aptitud Académica: Tec, UDEM, ITAM, ITESO, UdeG y más.', 'Lectura, Redacción, Matemáticas e Inglés · puntaje 200–800'],
   ['simulador-unam', 'Simulador UNAM', 'Examen de licenciatura de la UNAM, en sus 4 áreas.', '120 reactivos en 3 horas · el peso de tu área'],
   ['simulador-ipn', 'Simulador IPN', 'Examen de licenciatura del IPN, en sus 3 áreas.', '140 reactivos en 3 horas · 8 materias'],
+  // Sale solo cuando su producto ya está a la venta (entró inactivo: migración 0085)
+  ['simulador-exani-ii', 'Simulador EXANI-II', 'Un solo simulador para la BUAP, la UANL, la UADY y las demás que usan EXANI-II.', '168 reactivos en 4 horas y media · tus 2 módulos', true],
 ];
 const PREPA = [
   ['simulador-ecoems', 'Simulador ECOEMS', 'Para la prepa de la UNAM y las vocacionales del IPN (CECyT y CET).', '128 reactivos en 3 horas · 10 materias'],
@@ -89,7 +92,8 @@ export async function paginaSimuladores(env, req, url) {
 <section class="t-sec" id="examenes"><div class="marco">
   <div class="cab"><span class="etiqueta">¿Qué examen vas a presentar?</span><h2 class="h2">Elige tu simulador</h2></div>
   <h3 class="ts-grupo">Para entrar a la universidad</h3>
-  <div class="ts-sims">${UNIVERSIDAD.map(x => tarjetaSim(sims[x[0]], x)).join('')}</div>
+  <div class="ts-sims">${UNIVERSIDAD.filter(x => !x[4] || sims[x[0]]).map(x => tarjetaSim(sims[x[0]], x)).join('')}</div>
+  ${sims['simulador-exani-ii'] ? `<p class="ts-cual">¿No sabes qué examen pide tu universidad? <a href="${RUTA_UNIVERSIDADES}">Búscala aquí y te decimos qué simulador te sirve ${FLECHA}</a></p>` : ''}
   <h3 class="ts-grupo">Para entrar a la prepa</h3>
   <div class="ts-sims">${PREPA.map(x => tarjetaSim(sims[x[0]], x)).join('')}</div>
 </div></section>
@@ -117,6 +121,7 @@ const CSS = `.ts-hero{padding:clamp(12px,3vw,36px) 0 clamp(20px,3vw,32px)}
 .ts-sim-img{width:84px;height:110px;flex:none;border-radius:14px;overflow:hidden;background:var(--bg-2)}.ts-sim-img img{width:100%;height:100%;object-fit:cover;object-position:center}
 .ts-sim-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.ts-sim-x b{font-size:18px;letter-spacing:-.01em}
 .ts-sim-x span{font-size:14.5px;color:var(--fg-2)}.ts-sim-x small{font-size:13px;color:var(--fg-3,#A8A4A9)}.ts-sim-x em{font-style:normal;font-weight:700;font-size:14.5px;margin-top:4px}
+.ts-cual{margin-top:16px;font-size:15px;color:var(--fg-2)}.ts-cual a{color:var(--fg);font-weight:700;display:inline-flex;align-items:center;gap:6px}.ts-cual svg{width:16px;height:16px}
 .ts-sim-f{flex:none;color:var(--fg-2)}.ts-sim-f svg{width:18px;height:18px}
 .ts-paqs{display:grid;gap:12px;margin-top:22px}@media(min-width:760px){.ts-paqs{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .ts-paq{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:18px;background:var(--card);border:1.5px solid var(--line-2);text-decoration:none;color:inherit;min-width:0}

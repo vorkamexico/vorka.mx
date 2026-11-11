@@ -245,6 +245,16 @@ Examen de admisión a **licenciatura** (nivel superior) del IPN: 3 áreas (Ingen
 - Productos: migración 0076 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), activos desde la publicación. Imágenes: `portadas_v3.py` (SOLO=simulador-ipn) y `portadas_ipn.py`; ícono de la app en `simulador/icono/iconos.mjs` (color en `COLORES_APP.ipn`).
 - Pruebas: `test/simulador-ipn.test.js`.
 
+## Simulador EXANI-II (vorka.mx/simulador-exani-ii)
+
+**Un solo simulador** para todas las universidades que usan el EXANI-II de CENEVAL (BUAP, UANL, UADY, UAA, UAdeC y más), en vez de uno por universidad. Estructura de ceneval.edu.mx/examenes-ingreso-exani_ii/: Comprensión lectora 30, Redacción indirecta 30, Pensamiento matemático 30, 2 módulos de 24 (los elige la universidad según la carrera) e Inglés 30 diagnóstico = 168 reactivos de 3 opciones en 4 h 30 min. El reporte da los aciertos totales y, aparte, sin Inglés (los 138 del puntaje global: `cliente.globalSin` en `simulador/app.js`).
+
+- Código: `src/simulador/exani-ii.js`. Banco 100 % original en `src/simulador/exani-ii/` (reglas en su `INSTRUCCIONES.md`): 4 secciones comunes de 75 y 10 módulos de 50 (los 2 generales y los 8 específicos que más pide la UANL). Las «áreas» del motor son **parejas de módulos** (`PAREJAS`): las que piden de verdad las universidades.
+- Páginas por universidad y «¿Cuál te sirve?»: `src/simulador/exani-universidades.js` → `/simulador-exani-ii/<universidad>/` y `/simulador-exani-ii/universidades/` (el selector también manda a UNAM, IPN, PAA y marca la UAQ y la UG como EXCOBA, su examen propio). Solo datos con fuente oficial (revisión del 10-nov-2026).
+- Productos: migración 0085 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), **inactivos** hasta revisar la página en vivo. La tarjeta en /tienda/simuladores/ y la liga a «¿Cuál te sirve?» salen solas cuando el producto está a la venta. Al activarlo: sumarlo a `_sitio/institucional.py`, `lineas.js`, la descripción de la tienda y el sitemap.
+- Imágenes: `portadas_v3.py` y `portadas_v4.py` (SOLO=simulador-exani-ii) y `portadas_exani_ii.py`; ícono en `simulador/icono/iconos.mjs` (color en `COLORES_APP['exani-ii']`).
+- Pruebas: `test/simulador-exani-ii.test.js`.
+
 ## Simuladores en la tienda y paquetes (vorka.mx/tienda/simuladores)
 
 - En el catálogo los 5 simuladores y sus paquetes son **una sola tarjeta** (tienda.js › vistas, `HUB_SIMULADORES`) que lleva a `/tienda/simuladores/` (`src/simuladores-tienda.js`): «¿Qué examen vas a presentar?» (universidad: PAA, UNAM, IPN; prepa: ECOEMS, prepa UG) y los paquetes. Cada simulador conserva su página (/simulador-paa/, …) para no perder posicionamiento, apps instaladas, ligas de acceso ni de Puntos.

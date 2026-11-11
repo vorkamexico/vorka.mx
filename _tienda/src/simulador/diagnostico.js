@@ -43,14 +43,18 @@ const largoTexto = t => (t?.parrafos || []).join(' ').length;
 
 // Reparte TOTAL_DIAG reactivos entre las secciones, de menor a mayor dificultad. En las secciones de lectura usa un solo
 // texto corto con varias preguntas. Devuelve [{ id: seccion, items: [ids] }].
+// BANCO.SECCIONES_DIAGNOSTICO (opcional): solo esas secciones, cuando son demasiadas para 12 preguntas (EXANI-II: las 4 comunes)
 export function armarDiagnostico(BANCO, azar) {
-  const secs = BANCO.SECCIONES;
+  const secs = BANCO.SECCIONES_DIAGNOSTICO || BANCO.SECCIONES;
   const base = Math.max(1, Math.floor(TOTAL_DIAG / secs.length));
   let extra = Math.max(0, TOTAL_DIAG - base * secs.length);
   const escalera = k => (k === 1 ? [2] : k === 2 ? [2, 3] : Array.from({ length: k }, (_, i) => [1, 2, 3][i % 3]));
   return secs.map(s => {
     const k = base + (extra > 0 ? (extra--, 1) : 0);
-    const cand = BANCO.REACTIVOS.filter(r => r.seccion === s.id && r.tipo !== 'abierta' && Array.isArray(r.opciones) && (!r.texto || largoTexto(BANCO.TEXTOS[r.texto]) <= LARGO_TEXTO));
+    const validos = BANCO.REACTIVOS.filter(r => r.seccion === s.id && r.tipo !== 'abierta' && Array.isArray(r.opciones));
+    let cand = validos.filter(r => !r.texto || largoTexto(BANCO.TEXTOS[r.texto]) <= LARGO_TEXTO);
+    // Si la sección solo tiene lecturas largas (EXANI-II), usa la más corta
+    if (!cand.length && validos.length) { const corto = Math.min(...validos.map(r => largoTexto(BANCO.TEXTOS[r.texto]))); cand = validos.filter(r => largoTexto(BANCO.TEXTOS[r.texto]) === corto); }
     let elegidos = null;
     const conTexto = cand.filter(r => r.texto);
     if (conTexto.length && conTexto.length * 2 >= cand.length) {
@@ -214,9 +218,10 @@ export function crearDiagnostico({ c, APP, RUTA, API, BANCO, REACTIVO, firma, cs
   // ---------- página ----------
   async function paginaDiag(env, req, url) {
     const { code, cookie } = await refDeVisita(env, req, url);
-    const n = BANCO.SECCIONES.length;
-    const secs = BANCO.SECCIONES.map(s => esc(s.nombre));
-    const ultima = BANCO.SECCIONES[n - 1].nombre;
+    const DX = BANCO.SECCIONES_DIAGNOSTICO || BANCO.SECCIONES;
+    const n = DX.length;
+    const secs = DX.map(s => esc(s.nombre));
+    const ultima = DX[n - 1].nombre;
     const listaSecs = n === 1 ? secs[0] : n <= 5 ? `${secs.slice(0, -1).join(', ')} ${/^h?i(?!e)/i.test(ultima.normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ? 'e' : 'y'} ${secs[n - 1]}` : `${n} materias`;
     const cfg = { app: APP, ruta: RUTA, api: API, examen: EXAMEN, total: TOTAL_DIAG, ref: code || '', escala: escalaPAA ? 'paa' : 'aciertos' };
     return pagina({
