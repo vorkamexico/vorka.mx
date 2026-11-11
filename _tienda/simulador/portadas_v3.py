@@ -204,6 +204,10 @@ SIMS = {
     enun='Un carrito de 4 kg acelera a 3 m/s². ¿Qué fuerza neta actúa sobre él?', ops=['7 N', '1.33 N', '12 N', '0.75 N'], mal=0,
     pista='Sumar masa y aceleración no da una fuerza: ¿qué dice la segunda ley de Newton sobre cómo se relacionan?',
     rep=('Casi listo · 104/140', [('Matemáticas', 27, 37), ('Física', 12, 17), ('Química', 13, 17), ('Comp. lectora', 16, 20)], 'ac')),
+  'exani-ii': dict(nombre='EXANI-II', ui='#4A43C4', reloj='3:38:10', seccion='Pensamiento matemático', n='12 de 30', tema='Proporciones',
+    enun='Si 4 llaves llenan un tinaco en 6 h, ¿cuántas horas tardan 3 llaves iguales?', ops=['4.5 h', '8 h', '5 h'], mal=0,
+    pista='Con menos llaves, ¿el tinaco se llena antes o después? Piensa si la relación es directa o inversa.',
+    rep=('Casi listo · 118/168', [('Lectora', 23, 30), ('Redacción', 21, 30), ('Matemático', 20, 30), ('Tus módulos', 33, 48)], 'ac')),
 }
 OSCURO = dict(texto='#fff', suave='rgba(255,255,255,.82)', chipf='rgba(255,255,255,.14)', tagf='rgba(0,0,0,.22)')
 CLARO = dict(texto='#1A1405', suave='rgba(26,20,5,.78)', chipf='rgba(26,20,5,.10)', tagf='rgba(26,20,5,.12)')
@@ -221,6 +225,9 @@ P = {
   # Guinda brillante con acento rosa claro: distinto del vino oscuro de Brindi y del rojo de Vuelve
   'simulador-ipn': dict(**OSCURO, fondo='linear-gradient(140deg,#5C1031 0%,#9A2050 55%,#D2416F 100%)', acento='#FFE0EA', pre='Simulador', nombre='IPN', px=240,
     tag='Examen de nivel superior · 3 áreas', beneficio='Practica con el peso de las materias de tu área.', datos=['1,012 reactivos', '3 áreas', '140 reactivos en 3 h'], sim='ipn'),
+  # Índigo con acento lila claro: distinto del azul del PAA y del morado de los paquetes
+  'simulador-exani-ii': dict(**OSCURO, fondo='linear-gradient(140deg,#1E1A5C 0%,#3F38B5 55%,#6C63E8 100%)', acento='#DCD9FF', pre='Simulador', nombre='EXANI-II', px=200,
+    tag='Licenciatura · BUAP, UANL, UADY y más', beneficio='Un solo simulador: eliges los módulos de tu universidad.', datos=['800 reactivos', '10 módulos', '168 reactivos en 4.5 h'], sim='exani-ii'),
   'brindi': dict(**OSCURO, fondo='linear-gradient(140deg,#2A0A16 0%,#5A1A2E 55%,#8A2E4A 100%)', acento='#F3D9A4', pre='', nombre='Brindi',
     tag='Invitaciones digitales', beneficio='Tu invitación con confirmación y acceso con QR.', datos=['6 diseños premium', 'Confirmaciones al momento', 'Pase con QR'], ui=ui_brindi),
   'cupo': dict(**OSCURO, fondo='linear-gradient(140deg,#17062F 0%,#3A1C71 55%,#6D28D9 100%)', acento='#C8F560', pre='', nombre='Cupo',
