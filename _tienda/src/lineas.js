@@ -5,7 +5,7 @@
 export const SECCIONES_TIENDA = [
   { id: 'examenes', claves: ['examenes', 'educacion', 'proyectos sociales', 'cursos'], linea: 'Educación', titulo: 'Preparación para exámenes', texto: 'Simuladores con tutor y reporte de preparación para llegar seguro a tu examen de admisión: PAA, UNAM, ECOEMS y prepa UG.',
     // Con Ruta de Impacto a la venta, la línea también habla del curso (si no, se queda como estaba)
-    variante: { si: p => p.contenido?.acceso?.app === 'ruta', titulo: 'Exámenes y proyectos', texto: 'Simuladores con tutor para tu examen de admisión (PAA, UNAM, IPN, EXANI-II, ECOEMS y prepa UG) y Ruta de Impacto, el curso para sacar adelante tu proyecto social.' } },
+    variante: { si: p => p.contenido?.acceso?.app === 'ruta', titulo: 'Exámenes y proyectos', texto: 'Simuladores con tutor para tu examen de admisión (PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS y prepa UG) y Ruta de Impacto, el curso para sacar adelante tu proyecto social.' } },
   { id: 'negocios', claves: ['negocios', 'citas', 'agenda', 'lealtad', 'ventas', 'vende', 'inmobiliarias', 'kits', 'emprender'], linea: 'Negocios', titulo: 'Herramientas para tu negocio',
     texto: 'Agenda para que tus clientes reserven solos, Vuelve para que regresen y Vende para tus pedidos y cobros. Pruébalas gratis.' },
   { id: 'eventos', claves: ['eventos', 'invitaciones', 'celebraciones'], linea: 'Eventos', titulo: 'Eventos e invitaciones',

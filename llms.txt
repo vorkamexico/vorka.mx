@@ -27,6 +27,7 @@ Contacto: hola@vorka.mx · +52 81 1780 4869 · https://vorka.mx/contacto/
 - [Simulador UNAM](https://vorka.mx/simulador-unam/): examen de licenciatura de la UNAM para las 4 áreas, 120 reactivos en 3 horas con el peso de las materias de cada área.
 - [Simulador IPN](https://vorka.mx/simulador-ipn/): examen de admisión a licenciatura (nivel superior) del IPN para sus 3 áreas, 140 reactivos en 3 horas con el peso de las materias de cada área.
 - [Simulador EXANI-II](https://vorka.mx/simulador-exani-ii/): un solo simulador para las universidades que usan el EXANI-II de CENEVAL (BUAP, UANL, UADY, UAA y más): 168 reactivos en 4 horas y media con los 2 módulos de tu carrera. En [¿Cuál te sirve?](https://vorka.mx/simulador-exani-ii/universidades/) buscas tu universidad y ves qué examen pide.
+- [Simulador EXCOBA](https://vorka.mx/simulador-excoba/): para el Examen de Competencias Básicas (EXCOBA) que piden la UAQ y la UG para licenciatura: 180 preguntas de primaria, secundaria y las 3 asignaturas de bachillerato de tu carrera, con preguntas de elegir varias, clasificar y escribir la respuesta. Páginas con las asignaturas por carrera: [UAQ](https://vorka.mx/simulador-excoba/uaq/) y [UG](https://vorka.mx/simulador-excoba/ug/).
 - [Simulador ECOEMS](https://vorka.mx/simulador-ecoems/): examen para entrar a las prepas de la UNAM y del IPN, 128 reactivos en 3 horas.
 - [Simulador prepa UG (EXANI-I)](https://vorka.mx/simulador-prepa-ug/): EXANI-I de CENEVAL para el bachillerato de la Universidad de Guanajuato, 160 reactivos.
 
