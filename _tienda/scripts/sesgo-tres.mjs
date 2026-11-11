@@ -1,4 +1,4 @@
-// Sesgo de longitud en bancos de 3 opciones (EXANI-II, prepa UG): que la correcta no se delate por ser la más larga.
+// Sesgo de longitud en bancos de opción única (EXANI-II y prepa UG con 3 opciones, EXCOBA con 4): que la correcta no se delate por ser la más larga.
 // Meta: correcta = la más larga en ≤ 50 % del archivo (al azar sería 33 %) y claramente más larga (> 1.3 × la mayor de
 // las otras) en ≤ 8 %. Uso: node _tienda/scripts/sesgo-tres.mjs [--lista] <archivo.js> [<archivo.js> …]
 // --lista: imprime los ids que hay que revisar (la correcta es la más larga por más de 10 %).
@@ -9,7 +9,7 @@ const lista = args.includes('--lista');
 let mal = 0;
 for (const f of args.filter(a => a !== '--lista')) {
   const m = await import(pathToFileURL(path.resolve(f)).href);
-  const rs = Object.entries(m).filter(([k]) => k.startsWith('REACTIVOS')).flatMap(([, v]) => v).filter(r => Array.isArray(r.opciones));
+  const rs = Object.entries(m).filter(([k]) => k.startsWith('REACTIVOS')).flatMap(([, v]) => v).filter(r => Array.isArray(r.opciones) && (!r.tipo || r.tipo === 'unica'));
   let larga = 0, clara = 0; const revisar = [];
   for (const r of rs) {
     const L = r.opciones.map(o => String(o).length), c = L[r.correcta], otros = Math.max(...L.filter((_, i) => i !== r.correcta));

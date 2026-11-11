@@ -248,7 +248,100 @@ var SIM_LOGICA = (function () {
     return out;
   }
 
-  return { diaDe: diaDe, masDias: masDias, semanaDe: semanaDe, diasEntre: diasEntre, planEstudio: planEstudio, sesionesHechas: sesionesHechas,
+  // ---------- calificación por tipo de reactivo ----------
+  // Tipos: opción única (sin tipo: opciones + correcta), 'abierta' (número, PAA), y los de respuesta semiconstruida del
+  // EXCOBA: 'multiple' (elegir exactamente correctas.length opciones), 'numerica' (número o expresión algebraica escrita)
+  // y 'clasificar' (asignar cada elemento a una categoría). Las de varias respuestas dan crédito parcial por elemento.
+  // Número escrito por el estudiante: «6,050» es separador de miles y «2,5» es decimal; acepta fracciones como 3/4
+  function numero(v) {
+    v = String(v == null ? '' : v).trim().replace(/\s/g, '').replace(/[−–]/g, '-').replace(/°$/, '');
+    v = /^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(v) ? v.replace(/,/g, '') : v.replace(',', '.');
+    var f = v.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/); if (f && Number(f[2])) return Number(f[1]) / Number(f[2]);
+    return v === '' || isNaN(Number(v)) ? NaN : Number(v);
+  }
+  // Expresión algebraica → función de sus variables (una letra cada una). Acepta + − · × * / ÷ ^ ² ³, paréntesis, √,
+  // multiplicación implícita (2x, 3(x+1), (x+1)(x−1)) y π. Devuelve null si no se puede leer.
+  function expresion(s) {
+    s = String(s == null ? '' : s).toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-').replace(/[·×]/g, '*').replace(/÷/g, '/')
+      .replace(/²/g, '^2').replace(/³/g, '^3').replace(/π/g, 'p').replace(/,/g, '.');
+    if (!s || s.length > 80 || /[^0-9a-z.+\-*/^()√]/.test(s)) return null;
+    var i = 0, vars = {};
+    function ver() { return s.charAt(i); }
+    function suma() { var a = prod(); while (ver() === '+' || ver() === '-') { var op = s.charAt(i++), b = prod(); a = op === '+' ? sumar(a, b) : restar(a, b); } return a; }
+    function sumar(a, b) { return function (x) { return a(x) + b(x); }; }
+    function restar(a, b) { return function (x) { return a(x) - b(x); }; }
+    function prod() {
+      var a = signo();
+      for (;;) {
+        var c = ver();
+        if (c === '*' || c === '/') { i++; var b = signo(); a = c === '*' ? mult(a, b) : divi(a, b); }
+        else if (c && /[0-9a-z.(√]/.test(c)) { a = mult(a, pot()); }   // implícita
+        else return a;
+      }
+    }
+    function mult(a, b) { return function (x) { return a(x) * b(x); }; }
+    function divi(a, b) { return function (x) { return a(x) / b(x); }; }
+    function signo() { if (ver() === '-') { i++; var a = signo(); return function (x) { return -a(x); }; } if (ver() === '+') { i++; return signo(); } return pot(); }
+    function pot() { var a = base(); if (ver() === '^') { i++; var b = signo(); return function (x) { return Math.pow(a(x), b(x)); }; } return a; }
+    function base() {
+      var c = ver();
+      if (c === '(') { i++; var a = suma(); if (ver() !== ')') throw 0; i++; return a; }
+      if (c === '√') { i++; var r = pot(); return function (x) { return Math.sqrt(r(x)); }; }
+      var m = s.slice(i).match(/^\d+(\.\d+)?|^\.\d+/);
+      if (m) { i += m[0].length; var n = Number(m[0]); return function () { return n; }; }
+      if (c === 'p') { i++; return function () { return Math.PI; }; }
+      if (/[a-z]/.test(c)) { i++; vars[c] = 1; return function (x) { return x[c]; }; }
+      throw 0;
+    }
+    try { var f = suma(); if (i !== s.length) return null; return { f: f, vars: vars }; } catch (e) { return null; }
+  }
+  function mismaExpresion(a, b) {
+    var ea = expresion(a), eb = expresion(b); if (!ea || !eb) return false;
+    var vs = Object.keys(ea.vars).concat(Object.keys(eb.vars)).filter(function (v, k, l) { return l.indexOf(v) === k; });
+    var puntos = [[1.3, 2.1, -0.7], [2.7, -1.9, 0.6], [-3.1, 0.45, 1.75], [0.35, 3.3, -2.4], [4.2, 1.15, 2.95]];
+    var probados = 0;
+    for (var k = 0; k < puntos.length; k++) {
+      var x = {}; vs.forEach(function (v, j) { x[v] = puntos[k][(j + k) % 3] + j * 0.37; });
+      var u = ea.f(x), w = eb.f(x);
+      if (!isFinite(u) && !isFinite(w)) continue;
+      if (!isFinite(u) || !isFinite(w) || Math.abs(u - w) > 1e-6 * Math.max(1, Math.abs(u), Math.abs(w))) return false;
+      probados++;
+    }
+    return probados >= 3;
+  }
+  function mismoNumero(r, v, a) {
+    var n = numero(v), x = numero(a); if (isNaN(n) || isNaN(x)) return false;
+    return Math.abs(n - x) <= Math.max(1e-6, Number(r.tolerancia) || 0) + 1e-9;
+  }
+  // Puntos (0 a 1) que vale la respuesta v. Opción única: índice · multiple: arreglo de índices · numerica/abierta: texto ·
+  // clasificar: arreglo con la categoría elegida para cada elemento (en el orden del banco)
+  function calificar(r, v) {
+    if (!r) return 0;
+    if (r.tipo === 'abierta' || r.tipo === 'numerica') {
+      if (v == null || String(v).trim() === '') return 0;
+      // sinParentesis: «desarrolla» o «simplifica»; copiar la expresión del enunciado no cuenta
+      if (r.expresion && r.sinParentesis && /[()]/.test(String(v))) return 0;
+      return (r.respuestas || []).some(function (a) { return r.expresion ? mismaExpresion(v, a) : mismoNumero(r, v, a); }) ? 1 : 0;
+    }
+    if (r.tipo === 'multiple') {
+      if (!Array.isArray(v)) return 0;
+      var elegidas = v.filter(function (o, k) { return v.indexOf(o) === k; });
+      if (elegidas.length > r.correctas.length) return 0;
+      var bien = elegidas.filter(function (o) { return r.correctas.indexOf(o) >= 0; }).length;
+      return Math.round(100 * bien / r.correctas.length) / 100;
+    }
+    if (r.tipo === 'clasificar') {
+      if (!Array.isArray(v)) return 0;
+      var ok = r.elementos.filter(function (e, k) { return v[k] === e.categoria; }).length;
+      return Math.round(100 * ok / r.elementos.length) / 100;
+    }
+    return v === r.correcta ? 1 : 0;
+  }
+  // Aciertos con decimales (crédito parcial) para mostrar: 12.5, 7.33
+  function puntos2(n) { return Math.round((Number(n) || 0) * 100) / 100; }
+
+  return { numero: numero, expresion: expresion, mismaExpresion: mismaExpresion, calificar: calificar, puntos2: puntos2,
+    diaDe: diaDe, masDias: masDias, semanaDe: semanaDe, diasEntre: diasEntre, planEstudio: planEstudio, sesionesHechas: sesionesHechas,
     fechaCorta: fechaCorta, hora: hora, fechaLarga: fechaLarga, tipoDe: tipoDe, miles: miles, pasoRedondo: pasoRedondo, rangoEje: rangoEje, datosGrafica: datosGrafica,
     partesPAA: partesPAA, puntajeUni: puntajeUni, TABLA_LR: TABLA_LR, TABLA_M: TABLA_M, puntajeTabla: puntajeTabla, parteDeSeccion: parteDeSeccion,
     aciertosEquivalentes: aciertosEquivalentes, minimoLR: minimoLR, combinacionesMeta: combinacionesMeta, faltanParaMeta: faltanParaMeta, metaEnEscala: metaEnEscala, cumpleMinimos: cumpleMinimos,

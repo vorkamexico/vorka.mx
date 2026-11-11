@@ -122,6 +122,7 @@ const SIM_TIENDA = {
   'simulador-unam': { nombre: 'Simulador UNAM en línea', texto: 'Las 4 áreas de licenciatura: práctica ilimitada con tutor y exámenes de 120 reactivos en 3 horas, como el real.' },
   'simulador-ecoems': { nombre: 'Simulador ECOEMS en línea', texto: 'Para la prepa de la UNAM y del IPN: práctica ilimitada con tutor y exámenes de 128 reactivos en 3 horas.' },
   'simulador-exani-ii': { nombre: 'Simulador EXANI-II en línea', texto: 'Un solo simulador para las universidades que usan EXANI-II (BUAP, UANL, UADY y más): eliges tus módulos, práctica ilimitada con tutor y exámenes de 168 reactivos en 4 horas y media.' },
+  'simulador-excoba': { nombre: 'Simulador EXCOBA en línea', texto: 'Para el EXCOBA de la UAQ y la UG (licenciatura): eliges las 3 asignaturas de tu carrera, preguntas de clasificar, elegir varias y escribir con crédito parcial, práctica ilimitada con tutor y exámenes de 180 preguntas.' },
   'simulador-ipn': { nombre: 'Simulador IPN en línea', texto: 'Para licenciatura del IPN, en sus 3 áreas: práctica ilimitada con tutor y exámenes de 140 reactivos en 3 horas, como el real.' },
   'simulador-prepa-ug': { nombre: 'Simulador prepa UG (EXANI-I) en línea', texto: 'Para la prepa de la Universidad de Guanajuato: práctica ilimitada con tutor y exámenes EXANI-I de 160 reactivos en 4 horas y media.' },
 };

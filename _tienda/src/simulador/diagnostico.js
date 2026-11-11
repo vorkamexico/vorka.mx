@@ -51,7 +51,7 @@ export function armarDiagnostico(BANCO, azar) {
   const escalera = k => (k === 1 ? [2] : k === 2 ? [2, 3] : Array.from({ length: k }, (_, i) => [1, 2, 3][i % 3]));
   return secs.map(s => {
     const k = base + (extra > 0 ? (extra--, 1) : 0);
-    const validos = BANCO.REACTIVOS.filter(r => r.seccion === s.id && r.tipo !== 'abierta' && Array.isArray(r.opciones));
+    const validos = BANCO.REACTIVOS.filter(r => r.seccion === s.id && (!r.tipo || r.tipo === 'unica') && Array.isArray(r.opciones));
     let cand = validos.filter(r => !r.texto || largoTexto(BANCO.TEXTOS[r.texto]) <= LARGO_TEXTO);
     // Si la sección solo tiene lecturas largas (EXANI-II), usa la más corta
     if (!cand.length && validos.length) { const corto = Math.min(...validos.map(r => largoTexto(BANCO.TEXTOS[r.texto]))); cand = validos.filter(r => largoTexto(BANCO.TEXTOS[r.texto]) === corto); }

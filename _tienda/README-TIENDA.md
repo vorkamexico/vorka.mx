@@ -255,6 +255,17 @@ Examen de admisión a **licenciatura** (nivel superior) del IPN: 3 áreas (Ingen
 - Imágenes: `portadas_v3.py` y `portadas_v4.py` (SOLO=simulador-exani-ii) y `portadas_exani_ii.py`; ícono en `simulador/icono/iconos.mjs` (color en `COLORES_APP['exani-ii']`).
 - Pruebas: `test/simulador-exani-ii.test.js`.
 
+## Simulador EXCOBA (vorka.mx/simulador-excoba)
+
+**Un solo simulador** para el EXCOBA (Examen de Competencias Básicas, de Métrica Educativa) de la **UAQ** y la **UG** (licenciatura). Estructura de los instructivos oficiales de ambas (hechos y fuentes en `src/simulador/excoba/FUENTES.md`): primaria (Español y Matemáticas, 20 c/u), secundaria (Español, Matemáticas, Ciencias naturales y Ciencias sociales, 20 c/u) y 3 asignaturas de bachillerato de 20 según la carrera = 180 preguntas, al ritmo de 1 minuto por pregunta (promedio que sugiere el instructivo de la UAQ; no hay tiempo total oficial).
+
+- Código: `src/simulador/excoba.js`. Banco 100 % original en `src/simulador/excoba/` (reglas en su `INSTRUCCIONES.md`): 15 asignaturas de 50. Las «áreas» del motor son **combinaciones de 3 asignaturas** (`COMBOS`): las 15 que piden de verdad la UAQ (Anexo I 2026-1) y la UG (tabla 2).
+- **Tipos de respuesta semiconstruida** (nuevos en el motor, sirven para cualquier simulador): `multiple` (elegir exactamente n; cada correcta vale 1/n), `numerica` (número con `tolerancia`, o expresión algebraica con `expresion: true`, equivalencia por evaluación) y `clasificar` (cada elemento a una categoría; 1/n cada uno). La calificación vive en `simulador/logica.js › calificar` y la usan el cliente y `scripts/validar-banco.mjs`. Los aciertos y temas se guardan con 2 decimales (crédito parcial). El diagnóstico gratis usa solo opción única.
+- Páginas por universidad: `src/simulador/excoba-universidades.js` → `/simulador-excoba/uaq/` y `/simulador-excoba/ug/` (cada carrera y sus 3 asignaturas, con buscador). En «¿Cuál te sirve?» del EXANI-II la UAQ y la UG pasan de «Próximamente» a su página **solas cuando el producto está a la venta**.
+- Productos: migración 0086 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), **inactivos** hasta revisar la página en vivo. La tarjeta en /tienda/simuladores/ sale sola al activarlo. Al activarlo: sumarlo a `_sitio/institucional.py`, `lineas.js`, `llms.txt`, la descripción de la tienda y el sitemap (`/simulador-excoba/uaq/` y `/ug/`).
+- Imágenes: `portadas_v3.py` y `portadas_v4.py` (SOLO=simulador-excoba) y `portadas_excoba.py`; ícono en `simulador/icono/iconos.mjs` (color en `COLORES_APP.excoba`, petróleo).
+- Pruebas: `test/simulador-excoba.test.js`.
+
 ## Simuladores en la tienda y paquetes (vorka.mx/tienda/simuladores)
 
 - En el catálogo los 5 simuladores y sus paquetes son **una sola tarjeta** (tienda.js › vistas, `HUB_SIMULADORES`) que lleva a `/tienda/simuladores/` (`src/simuladores-tienda.js`): «¿Qué examen vas a presentar?» (universidad: PAA, UNAM, IPN; prepa: ECOEMS, prepa UG) y los paquetes. Cada simulador conserva su página (/simulador-paa/, …) para no perder posicionamiento, apps instaladas, ligas de acceso ni de Puntos.

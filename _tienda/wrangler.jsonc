@@ -15,6 +15,7 @@
     { "pattern": "vorka.mx/simulador-prepa-ug*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/simulador-ipn*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/simulador-exani-ii*", "zone_name": "vorka.mx" },
+    { "pattern": "vorka.mx/simulador-excoba*", "zone_name": "vorka.mx" },
     // Test vocacional y ¿Qué proyecto social hago? (src/tests/)
     { "pattern": "vorka.mx/test-vocacional*", "zone_name": "vorka.mx" },
     { "pattern": "vorka.mx/que-proyecto-social*", "zone_name": "vorka.mx" },

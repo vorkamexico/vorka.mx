@@ -208,6 +208,10 @@ SIMS = {
     enun='Si 4 llaves llenan un tinaco en 6 h, ¿cuántas horas tardan 3 llaves iguales?', ops=['4.5 h', '8 h', '5 h'], mal=0,
     pista='Con menos llaves, ¿el tinaco se llena antes o después? Piensa si la relación es directa o inversa.',
     rep=('Casi listo · 118/168', [('Lectora', 23, 30), ('Redacción', 21, 30), ('Matemático', 20, 30), ('Tus módulos', 33, 48)], 'ac')),
+  'excoba': dict(nombre='EXCOBA', ui='#0B7285', reloj='2:21:30', seccion='Matemáticas de secundaria', n='7 de 20', tema='Proporcionalidad',
+    enun='Si 3 cuadernos iguales cuestan $54, ¿cuánto cuestan 7 de esos cuadernos?', ops=['$126', '$378', '$108', '$162'], mal=1,
+    pista='Primero calcula cuánto cuesta un solo cuaderno; luego piensa cuántas veces lo compras.',
+    rep=('Casi listo · 128/180', [('Primaria', 33, 40), ('Secundaria', 58, 80), ('Tus 3 asignaturas', 37, 60)], 'ac')),
 }
 OSCURO = dict(texto='#fff', suave='rgba(255,255,255,.82)', chipf='rgba(255,255,255,.14)', tagf='rgba(0,0,0,.22)')
 CLARO = dict(texto='#1A1405', suave='rgba(26,20,5,.78)', chipf='rgba(26,20,5,.10)', tagf='rgba(26,20,5,.12)')
@@ -228,6 +232,9 @@ P = {
   # Índigo con acento lila claro: distinto del azul del PAA y del morado de los paquetes
   'simulador-exani-ii': dict(**OSCURO, fondo='linear-gradient(140deg,#1E1A5C 0%,#3F38B5 55%,#6C63E8 100%)', acento='#DCD9FF', pre='Simulador', nombre='EXANI-II', px=200,
     tag='Licenciatura · BUAP, UANL, UADY y más', beneficio='Un solo simulador: eliges los módulos de tu universidad.', datos=['800 reactivos', '10 módulos', '168 reactivos en 4.5 h'], sim='exani-ii'),
+  # Petróleo con acento aqua claro: distinto del verde de Agenda y ECOEMS, y del índigo del EXANI-II
+  'simulador-excoba': dict(**OSCURO, fondo='linear-gradient(140deg,#053B45 0%,#0B7285 55%,#1A9BB0 100%)', acento='#C9F2F7', pre='Simulador', nombre='EXCOBA', px=200,
+    tag='Licenciatura · UAQ y UG', beneficio='Las 3 asignaturas de tu carrera y preguntas de clasificar, elegir varias y escribir.', datos=['750 preguntas', '9 asignaturas', '180 preguntas por examen'], sim='excoba'),
   'brindi': dict(**OSCURO, fondo='linear-gradient(140deg,#2A0A16 0%,#5A1A2E 55%,#8A2E4A 100%)', acento='#F3D9A4', pre='', nombre='Brindi',
     tag='Invitaciones digitales', beneficio='Tu invitación con confirmación y acceso con QR.', datos=['6 diseños premium', 'Confirmaciones al momento', 'Pase con QR'], ui=ui_brindi),
   'cupo': dict(**OSCURO, fondo='linear-gradient(140deg,#17062F 0%,#3A1C71 55%,#6D28D9 100%)', acento='#C8F560', pre='', nombre='Cupo',
