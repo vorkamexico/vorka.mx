@@ -42,6 +42,19 @@ TONOS = ["purple", "pink", "mustard", "terra", "green", "orange"]
 
 # ---------------------------------------------------------------- utilidades
 
+# Recuadro de simuladores en notas de examen, prepa o universidad: el primero que coincida con título, bajada o etiquetas.
+# El último es el general (examen de admisión, prepa o bachillerato).
+SIMULADORES = [
+    (r"\becoems\b|\bcomipems\b", "/simulador-ecoems/", "¿Vas a presentar el ECOEMS?", "Practica con el simulador ECOEMS de Vorka antes del examen."),
+    (r"\bipn\b|polit[eé]cnico", "/simulador-ipn/", "¿Quieres entrar al IPN?", "Practica con el simulador de Vorka antes del examen de admisión."),
+    (r"\bunam\b", "/simulador-unam/", "¿Quieres entrar a la UNAM?", "Practica con el simulador de Vorka antes del examen de admisión."),
+    (r"\bpaa\b|college board|\budem\b|tec de monterrey|\biteso\b|\bitam\b", "/simulador-paa/", "¿Vas a presentar la PAA?", "Practica con el simulador PAA de Vorka antes del examen."),
+    (r"exani-?i\b|prepa(ratoria)? de la ug|universidad de guanajuato", "/simulador-prepa-ug/", "¿Vas a entrar a la prepa de la UG?", "Practica con el simulador de Vorka antes del examen de admisión."),
+    (r"examen de admisi[oó]n|\badmisi[oó]n\b|\bprepa\b|preparatoria|bachillerato",
+     "/tienda/simuladores/", "¿Vas a presentar examen de admisión?", "Practica con los simuladores de Vorka para prepa y universidad."),
+]
+
+
 def esc(s):
     return html.escape(str(s or ""), quote=True)
 
@@ -440,7 +453,22 @@ class Sitio:
                 '<button class="btn tinta" type="submit">Suscribirme</button><p class="bol-msg" role="status"></p></form></aside>') % esc(self.cfg["ciudad"].split(",")[0])
 
     def kicker(self, n):
-        return '<span class="kicker tone-%s">%s</span>' % (tono(n["categoria"]), esc(n["categoria"]))
+        pagado = '<span class="pagado-k">Contenido pagado</span>' if n.get("pagado_por") else ""
+        return '<span class="kicker tone-%s">%s</span>%s' % (tono(n["categoria"]), esc(n["categoria"]), pagado)
+
+    def recuadro_simulador(self, n):
+        """Recuadro de la tienda en notas de examen, prepa o universidad (nunca en contenido pagado)."""
+        if n.get("pagado_por"):
+            return ""
+        tema = " ".join([n["titulo"], n["resumen"], " ".join(n["etiquetas"])]).lower()
+        elegido = next((s for s in SIMULADORES if re.search(s[0], tema)), None)
+        if not elegido:
+            return ""
+        _, ruta, nombre, texto = elegido
+        url = "%s%s?%s" % (self.cfg["sitio"].rstrip("/"), ruta, urllib.parse.urlencode(
+            {"utm_source": "sparks", "utm_medium": "revista", "utm_campaign": "simuladores", "utm_content": n["slug"]}))
+        return ('<aside class="sim" aria-label="Simuladores de Vorka"><div><b>%s</b><p>%s</p></div>'
+                '<a class="btn tinta" href="%s">Ver el simulador</a></aside>') % (esc(nombre), esc(texto), esc(url))
 
     def tarjeta(self, n):
         return ('<article class="card"><a class="card-link" href="%s">'
@@ -920,9 +948,9 @@ class Sitio:
 <div class="art-wrap">
 <article class="art">
 <nav class="migas" aria-label="Ruta"><a href="{base}/">{nombre}</a><span aria-hidden="true">/</span><a href="{base}/seccion/{cs}/">{cat}</a></nav>
-<header class="art-head"><h1 class="art-title">{titulo}</h1><p class="art-deck">{resumen}</p><div class="art-meta">{meta}</div>{arriba}</header>
+<header class="art-head">{pagado}<h1 class="art-title">{titulo}</h1><p class="art-deck">{resumen}</p><div class="art-meta">{meta}</div>{arriba}</header>
 {portada}
-<div class="art-body">{texto}{anuncio}{video}{galeria}{fuentes}{etiquetas}{compartir}{boletin}</div>
+<div class="art-body">{texto}{anuncio}{video}{galeria}{fuentes}{simulador}{etiquetas}{compartir}{boletin}</div>
 </article>
 {lateral}
 </div>
@@ -932,7 +960,8 @@ class Sitio:
                  cabecera=self.cabecera_diario(actual=n["categoria"], compacta=True), titulo=esc(n["titulo"]), resumen=esc(n["resumen"]),
                  meta='<span class="dot" aria-hidden="true">·</span>'.join(meta), arriba=barra(" arriba"), portada=portada,
                  texto="\n".join(bloques), anuncio=anuncio, video=video, galeria=galeria, fuentes=recuadro_fuentes, etiquetas=etiquetas,
-                 compartir=compartir, rel=rel, lateral=lateral, boletin=self.caja_boletin())
+                 compartir=compartir, rel=rel, lateral=lateral, boletin=self.caja_boletin(), simulador=self.recuadro_simulador(n),
+                 pagado='<p class="pagado">Contenido pagado por %s</p>' % esc(n["pagado_por"].rstrip(". ")) if n["pagado_por"] else "")
 
         autor = {"@type": "Person", "name": n["autor"]} if n["autor"] else {"@type": "Organization", "name": "Vorka México"}
         jsonld = [{
@@ -1064,7 +1093,7 @@ def main():
         n["_c"] = hora_mexico(n.get("creada"))
         n.setdefault("fotos", [])
         n.setdefault("etiquetas", [])
-        for k in ("persona", "resumen", "texto", "pie", "video", "autor"):
+        for k in ("persona", "resumen", "texto", "pie", "video", "autor", "pagado_por"):
             n[k] = (n.get(k) or "").strip()
         n["resumen"] = re.sub(r"^(bajada|entrada|resumen)\s*:\s*", "", n["resumen"], flags=re.I)  # rótulo que a veces se cuela del borrador
         n.setdefault("categoria", "Noticias")
