@@ -251,7 +251,7 @@ Examen de admisión a **licenciatura** (nivel superior) del IPN: 3 áreas (Ingen
 
 - Código: `src/simulador/exani-ii.js`. Banco 100 % original en `src/simulador/exani-ii/` (reglas en su `INSTRUCCIONES.md`): 4 secciones comunes de 75 y 10 módulos de 50 (los 2 generales y los 8 específicos que más pide la UANL). Las «áreas» del motor son **parejas de módulos** (`PAREJAS`): las que piden de verdad las universidades.
 - Páginas por universidad y «¿Cuál te sirve?»: `src/simulador/exani-universidades.js` → `/simulador-exani-ii/<universidad>/` y `/simulador-exani-ii/universidades/` (el selector también manda a UNAM, IPN, PAA y marca la UAQ y la UG como EXCOBA, su examen propio). Solo datos con fuente oficial (revisión del 10-nov-2026).
-- Productos: migración 0085 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), **inactivos** hasta revisar la página en vivo. La tarjeta en /tienda/simuladores/ y la liga a «¿Cuál te sirve?» salen solas cuando el producto está a la venta. Al activarlo: sumarlo a `_sitio/institucional.py`, `lineas.js`, la descripción de la tienda y el sitemap.
+- Productos: migración 0085 (Práctica $149, Examen $199, Completo $299; adicionales $49 y $79), activos desde el 10-nov-2026 (entraron inactivos y se activaron tras revisar la página en vivo). La tarjeta en /tienda/simuladores/ y la liga a «¿Cuál te sirve?» salen solas cuando el producto está a la venta. Está en Nosotros, `llms.txt`, `lineas.js`, la descripción de la tienda y el sitemap (selector y páginas por universidad).
 - Imágenes: `portadas_v3.py` y `portadas_v4.py` (SOLO=simulador-exani-ii) y `portadas_exani_ii.py`; ícono en `simulador/icono/iconos.mjs` (color en `COLORES_APP['exani-ii']`).
 - Pruebas: `test/simulador-exani-ii.test.js`.
 
