@@ -20,6 +20,7 @@ import { TEMA_CAMINO } from '../learn-camino.js';
 import { TEMA_APPS } from '../learn-apps.js';
 import { TEMA_WEB } from '../learn-web.js';
 import { TEMA_FIESTAS } from '../learn-fiestas.js';
+import { urlsHerramientas } from '../learn/herramientas.js';   // herramientas gratis (/learn/herramientas/…) en el sitemap
 
 export const ACTUALIZADO = '2026-10-31';
 export const ACTUALIZADO_TXT = 'octubre de 2026';
@@ -627,7 +628,7 @@ const examenes = () => Object.keys(SIMS).filter(s => guiasDe(s).length);
 // Secciones de tema hechas con src/learn/tema.js (crearTema): clave → T (rutas, página de cada artículo, URL del sitemap)
 const TEMAS_T = () => ({ camino: TEMA_CAMINO, negocio: TEMA_NEGOCIO, apps: TEMA_APPS, web: TEMA_WEB, fiestas: TEMA_FIESTAS });
 export const urlsGuias = () => [RUTA_LEARN, ...examenes().map(rutaIndice), ...GUIAS.map(rutaGuia), RUTA_FINANZAS, ...ARTICULOS_FINANZAS.map(rutaArticuloFinanzas),
-  ...Object.values(TEMAS_T()).flatMap(T => T.urls()), '/learn/acerca/'];
+  ...Object.values(TEMAS_T()).flatMap(T => T.urls()), '/learn/acerca/', ...urlsHerramientas()];
 export const tituloGuia = x => conMarca(x.titulo.replace(/\s*\|\s*Vorka( México)?$/, ''));
 export const tituloIndice = sim => conMarca(SIMS[sim].indice.titulo);
 
