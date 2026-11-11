@@ -474,3 +474,13 @@
   .art-wrap .art-cover a { border-radius: 16px; }
   .art-wrap .art-cover figcaption { margin: 8px 0 0; }
 }
+
+/* Contenido pagado: se ve antes del título y junto a la sección en las tarjetas */
+.art-head .pagado { display: inline-block; margin: 0 0 12px; padding: 4px 10px; border: 1px solid var(--line-2); border-radius: 6px; font-size: 13px; font-weight: 650; color: var(--fg-2, var(--fg)); background: var(--bg-2); }
+.pagado-k { margin-left: 8px; font-size: 12px; font-weight: 600; color: var(--fg-3, var(--fg)); }
+
+/* Simuladores de Vorka en notas de examen, prepa o universidad */
+.art-body .sim { clear: both; max-width: 700px; margin: 2em 0 0; padding: 18px 22px; display: flex; gap: 16px 22px; align-items: center; justify-content: space-between; flex-wrap: wrap; border: 1px solid var(--line-2); border-radius: 16px; }
+.art-body .sim b { font-size: 17px; letter-spacing: -.015em; }
+.art-body .sim p { margin: 4px 0 0; font-size: 15px; line-height: 1.45; color: var(--fg-2, var(--fg)); }
+.art-wrap .art-body .sim { max-width: none; }
