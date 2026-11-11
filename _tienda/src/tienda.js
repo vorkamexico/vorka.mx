@@ -318,7 +318,7 @@ export async function paginaCatalogo(env, req, url) {
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
     titulo: 'Tienda Vorka México · Simuladores de examen, invitaciones digitales y apps para tu negocio', ruta: '/tienda/', navActual: 'inicio', imagen: 'https://vorka.mx/assets/tienda/og/catalogo.jpg',
-    descripcion: 'Simuladores de examen (PAA, UNAM, IPN, EXANI-II, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta, OXXO o transferencia.',
+    descripcion: 'Simuladores de examen (PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta, OXXO o transferencia.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO, whatsapp: true,
@@ -656,6 +656,7 @@ ${await masTienda(env, seccionDe(p))}
 export async function sitemapTienda(env) {
   // EXANI-II por universidad: import dinámico (exani-universidades → simulador → tienda haría un ciclo al cargar)
   const { UNIVERSIDADES: UNIVERSIDADES_EXANI } = await import('./simulador/exani-universidades.js');
+  const { UNIVERSIDADES_EXCOBA } = await import('./simulador/excoba-universidades.js');
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
     `<url><loc>${SITIO}/tienda/catalogo/</loc><priority>0.7</priority></url>`,   // catálogo para compartir (con código no se indexa)
@@ -664,6 +665,7 @@ export async function sitemapTienda(env) {
     ...Object.keys(UNIVERSIDADES).map(k => `<url><loc>${SITIO}/simulador-paa/${k}/</loc><priority>0.7</priority></url>`),   // PAA por universidad
     `<url><loc>${SITIO}/simulador-exani-ii/universidades/</loc><priority>0.7</priority></url>`,   // ¿Cuál te sirve?
     ...Object.keys(UNIVERSIDADES_EXANI).map(k => `<url><loc>${SITIO}/simulador-exani-ii/${k}/</loc><priority>0.7</priority></url>`),   // EXANI-II por universidad
+    ...Object.keys(UNIVERSIDADES_EXCOBA).map(k => `<url><loc>${SITIO}/simulador-excoba/${k}/</loc><priority>0.7</priority></url>`),   // EXCOBA por universidad
     // Test vocacional para escuelas (licencias para grupo): página propia, aunque las licencias estén ocultas en el catálogo
     ...(ps.some(p => p.slug === 'test-vocacional') ? [`<url><loc>${SITIO}/test-vocacional/escuelas/</loc><priority>0.8</priority></url>`] : []),
     // Las guías viven en Vorka Learn y tienen su propio sitemap: /learn/sitemap.xml (en robots.txt)
