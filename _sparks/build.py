@@ -49,7 +49,7 @@ SIMULADORES = [
     (r"\bipn\b|polit[eé]cnico", "/simulador-ipn/", "¿Quieres entrar al IPN?", "Practica con el simulador de Vorka antes del examen de admisión."),
     (r"\bunam\b", "/simulador-unam/", "¿Quieres entrar a la UNAM?", "Practica con el simulador de Vorka antes del examen de admisión."),
     (r"\bpaa\b|college board|\budem\b|tec de monterrey|\biteso\b|\bitam\b", "/simulador-paa/", "¿Vas a presentar la PAA?", "Practica con el simulador PAA de Vorka antes del examen."),
-    (r"exani-?i\b|prepa(ratoria)? de la ug|universidad de guanajuato", "/simulador-prepa-ug/", "¿Vas a entrar a la prepa de la UG?", "Practica con el simulador de Vorka antes del examen de admisión."),
+    (r"exani-?i\b|prepa(ratoria)? de la ug\b", "/simulador-prepa-ug/", "¿Vas a entrar a la prepa de la UG?", "Practica con el simulador de Vorka antes del examen de admisión."),
     (r"examen de admisi[oó]n|\badmisi[oó]n\b|\bprepa\b|preparatoria|bachillerato",
      "/tienda/simuladores/", "¿Vas a presentar examen de admisión?", "Practica con los simuladores de Vorka para prepa y universidad."),
 ]
@@ -457,8 +457,9 @@ class Sitio:
         return '<span class="kicker tone-%s">%s</span>%s' % (tono(n["categoria"]), esc(n["categoria"]), pagado)
 
     def recuadro_simulador(self, n):
-        """Recuadro de la tienda en notas de examen, prepa o universidad (nunca en contenido pagado)."""
-        if n.get("pagado_por"):
+        """Recuadro de la tienda en notas de examen, prepa o universidad."""
+        # Ni en contenido pagado ni en historias de vida (son de personas, no de exámenes)
+        if n.get("pagado_por") or n["categoria"] == "Historias":
             return ""
         tema = " ".join([n["titulo"], n["resumen"], " ".join(n["etiquetas"])]).lower()
         elegido = next((s for s in SIMULADORES if re.search(s[0], tema)), None)
