@@ -81,7 +81,7 @@ describe('EXANI-II por universidad', () => {
   });
 
   it('«¿Cuál te sirve?» manda la UAQ y la UG a EXCOBA (no EXANI-II) y la BUAP al simulador', async () => {
-    const html = await paginaSelector().text();
+    const html = await (await paginaSelector()).text();
     expect(html).toMatch(/UAQ[\s\S]*?EXCOBA/);
     expect(html).toContain('href="/simulador-exani-ii/buap/"');
     expect(html).toContain('href="/simulador-unam/"');

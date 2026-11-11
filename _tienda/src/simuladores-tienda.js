@@ -22,6 +22,8 @@ const UNIVERSIDAD = [
   ['simulador-ipn', 'Simulador IPN', 'Examen de licenciatura del IPN, en sus 3 áreas.', '140 reactivos en 3 horas · 8 materias'],
   // Sale solo cuando su producto ya está a la venta (entró inactivo: migración 0085)
   ['simulador-exani-ii', 'Simulador EXANI-II', 'Un solo simulador para la BUAP, la UANL, la UADY y las demás que usan EXANI-II.', '168 reactivos en 4 horas y media · tus 2 módulos', true],
+  // Igual: sale cuando su producto está a la venta (migración 0086)
+  ['simulador-excoba', 'Simulador EXCOBA', 'Examen de licenciatura de la UAQ y la UG, con las 3 asignaturas de tu carrera.', '180 preguntas · clasificar, elegir varias y escribir', true],
 ];
 const PREPA = [
   ['simulador-ecoems', 'Simulador ECOEMS', 'Para la prepa de la UNAM y las vocacionales del IPN (CECyT y CET).', '128 reactivos en 3 horas · 10 materias'],

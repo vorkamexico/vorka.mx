@@ -7,6 +7,8 @@
 import { esc, pagina } from '../paginas.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
 import { RUTA, nombrePareja } from './exani-ii.js';
+import { productoPorSlug } from '../modelo.js';
+import { RUTA as RUTA_EXCOBA, PLANES as PLANES_EXCOBA } from './excoba.js';
 
 const SITIO = 'https://vorka.mx';
 const VERIFICADO = '10 de noviembre de 2026';
@@ -233,16 +235,24 @@ const SELECTOR = [
   ['udeg', 'UdeG', 'Jalisco', 'PAA', '/simulador-paa/udeg/', 'Usa la Prueba de Aptitud Académica.', 'otro'],
   ['itam', 'ITAM', 'Ciudad de México', 'PAA', '/simulador-paa/itam/', 'Usa la Prueba de Aptitud Académica.', 'otro'],
   ['iteso', 'ITESO', 'Jalisco', 'PAA', '/simulador-paa/iteso/', 'Usa la Prueba de Aptitud Académica.', 'otro'],
+  // EXCOBA: mientras su simulador no está a la venta (migración 0086, inactivo) salen como «Próximamente»; ver paginaSelector
   ['uaq', 'UAQ', 'Querétaro', 'EXCOBA (examen propio)', null, 'No es el EXANI-II: es el Examen de Competencias Básicas, con preguntas de arrastrar, elegir varias y escribir números. Estamos preparando su simulador.', 'excoba', 'https://dsa.uaq.mx/index.php/licenciatura/admision'],
   ['ug', 'UG', 'Guanajuato', 'EXCOBA (examen propio)', null, 'Para licenciatura no es el EXANI-II: es el EXCOBA. Estamos preparando su simulador. (Para la prepa de la UG sí es EXANI-I: <a href="/simulador-prepa-ug/">Simulador prepa UG</a>.)', 'excoba', 'https://www.ugto.mx/admisionug/'],
   ['uam', 'UAM', 'Ciudad de México', 'Examen de selección propio', null, 'No es el EXANI-II. Por ahora no tenemos simulador de este examen.', 'sin', 'https://www.admision.uam.mx/'],
   ['uaslp', 'UASLP', 'San Luis Potosí', 'Examen propio de conocimientos', null, 'No es el EXANI-II. Por ahora no tenemos simulador de este examen.', 'sin', 'https://wp.uaslp.mx/noticias/servicios/abre-la-uaslp-convocatoria-para-el-proceso-de-admision-2026/'],
 ].sort((a, b) => a[1].localeCompare(b[1], 'es'));
 
-const ETIQUETA = { exani: 'Simulador EXANI-II', probable: 'Simulador EXANI-II · confirma', otro: 'Su propio simulador', excoba: 'Próximamente', sin: 'Sin simulador por ahora' };
+const ETIQUETA = { exani: 'Simulador EXANI-II', probable: 'Simulador EXANI-II · confirma', otro: 'Su propio simulador', excoba: 'Próximamente', 'excoba-si': 'Simulador EXCOBA', sin: 'Sin simulador por ahora' };
+// Con el Simulador EXCOBA a la venta, la UAQ y la UG mandan a su página (asignaturas por carrera)
+const EXCOBA_VIVO = {
+  uaq: 'No es el EXANI-II: es el Examen de Competencias Básicas, con preguntas de arrastrar, elegir varias y escribir números. Busca tu carrera y sus 3 asignaturas.',
+  ug: 'Para licenciatura no es el EXANI-II: es el EXCOBA. Busca tu carrera y sus 3 asignaturas. (Para la prepa de la UG es EXANI-I: <a href="/simulador-prepa-ug/">Simulador prepa UG</a>.)',
+};
 
-export function paginaSelector() {
-  const filas = SELECTOR.map(([k, nombre, estado, examen, ruta, nota, tipo, fuente]) => `<li class="eu-u" data-q="${esc(`${nombre} ${estado} ${examen}`.toLowerCase())}" data-t="${tipo}">
+export async function paginaSelector(env) {
+  const excoba = env ? !!(await productoPorSlug(env, PLANES_EXCOBA.paquete).catch(() => null)) : false;
+  const lista = excoba ? SELECTOR.map(f => (EXCOBA_VIVO[f[0]] ? [f[0], f[1], f[2], f[3], `${RUTA_EXCOBA}/${f[0]}/`, EXCOBA_VIVO[f[0]], 'excoba-si', f[7]] : f)) : SELECTOR;
+  const filas = lista.map(([k, nombre, estado, examen, ruta, nota, tipo, fuente]) => `<li class="eu-u" data-q="${esc(`${nombre} ${estado} ${examen}`.toLowerCase())}" data-t="${tipo}">
     <div class="eu-u-x"><b>${esc(nombre)}</b><span>${esc(estado)}</span></div>
     <div class="eu-u-e"><b>${esc(examen)}</b><p>${nota}${fuente ? ` <a href="${esc(fuente)}" rel="noopener">Fuente</a>.` : ''}</p></div>
     ${ruta ? `<a class="eu-u-ir t-${tipo}" href="${esc(ruta)}">${esc(ETIQUETA[tipo])} ${FLECHA}</a>` : `<span class="eu-u-ir t-${tipo}">${esc(ETIQUETA[tipo])}</span>`}
@@ -250,7 +260,7 @@ export function paginaSelector() {
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Simulador EXANI-II', item: `${SITIO}${RUTA}/` },
     { '@type': 'ListItem', position: 2, name: '¿Cuál te sirve?', item: `${SITIO}${RUTA_UNIVERSIDADES}` }] }];
-  return pagina({ titulo: '¿Qué examen de admisión pide tu universidad? EXANI-II, PAA, UNAM, IPN | Vorka México', ruta: RUTA_UNIVERSIDADES,
+  return pagina({ titulo: `¿Qué examen de admisión pide tu universidad? EXANI-II, PAA, UNAM, IPN${excoba ? ', EXCOBA' : ''} | Vorka México`, ruta: RUTA_UNIVERSIDADES,
     descripcion: 'Busca tu universidad y ve qué examen de admisión pide (EXANI-II, PAA, examen propio) y con qué simulador practicar. Con la fuente oficial de cada una.',
     imagen: `${SITIO}/assets/tienda/v3/simulador-exani-ii-og.jpg`,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}`,

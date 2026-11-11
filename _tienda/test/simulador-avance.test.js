@@ -77,7 +77,7 @@ describe('gráfica de avance', () => {
 
 describe('práctica libre por temas', () => {
   it('los 4 simuladores tienen temas etiquetados en su banco y se pueden elegir', () => {
-    expect(simuladores().map(s => s.APP)).toEqual(['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn', 'simulador-exani-ii']);
+    expect(simuladores().map(s => s.APP)).toEqual(['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn', 'simulador-exani-ii', 'simulador-excoba']);
     for (const s of simuladores()) {
       const B = bancoCliente(s);
       expect(L.hayTemas(B), s.APP).toBe(true);

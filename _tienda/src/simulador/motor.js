@@ -69,6 +69,8 @@ const SIN_REFERER = { 'referrer-policy': 'no-referrer' };
 const versionDe = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
 const V_JS = versionDe(APP_JS), V_CSS = versionDe(APP_CSS);
 const num = (v, min, max) => { const n = Math.round(Number(v) || 0); return Math.min(max, Math.max(min, n)); };
+// Aciertos con crédito parcial (EXCOBA: las preguntas de varias respuestas valen 0.25, 0.5…): dos decimales
+const num2 = (v, min, max) => { const n = Math.round((Number(v) || 0) * 100) / 100; return Math.min(max, Math.max(min, n)); };
 const estatico = (cuerpo, tipo) => new Response(cuerpo, {
   headers: { 'content-type': tipo, 'cache-control': 'public, max-age=31536000, immutable', 'x-content-type-options': 'nosniff' },
 });
@@ -566,10 +568,10 @@ export function crearSimulador(c) {
       ...(r.modo === 'examen' && r.tutor === true ? { tutor: true } : {}),
       ...(AREAS && r.area ? { area: areaValida(r.area) } : {}),
       secciones: Array.isArray(r.secciones) ? r.secciones.slice(0, 12).map(s => ({
-        id: String(s.id || '').slice(0, 24), puntaje: num(s.puntaje, ...R_PUNTAJE), aciertos: num(s.aciertos, 0, 200),
+        id: String(s.id || '').slice(0, 24), puntaje: num(s.puntaje, ...R_PUNTAJE), aciertos: num2(s.aciertos, 0, 200),
         segundo: num(s.segundo, 0, 200), total: num(s.total, 0, 200), tiempo: num(s.tiempo, 0, 36000), limite: num(s.limite, 0, 36000), sinResponder: num(s.sinResponder, 0, 200),
       })) : [],
-      temas: r.temas && typeof r.temas === 'object' ? Object.fromEntries(Object.entries(r.temas).filter(([k]) => BANCO.TEMAS[k]).map(([k, v]) => [k, { ok: num(v?.ok, 0, 200), total: num(v?.total, 0, 200) }])) : {},
+      temas: r.temas && typeof r.temas === 'object' ? Object.fromEntries(Object.entries(r.temas).filter(([k]) => BANCO.TEMAS[k]).map(([k, v]) => [k, { ok: num2(v?.ok, 0, 200), total: num(v?.total, 0, 200) }])) : {},
       fallados: Array.isArray(r.fallados) ? r.fallados.filter(id => typeof id === 'string' && id.length < 40).slice(0, 150) : [],
       global: r.global == null ? null : num(r.global, ...R_GLOBAL),
       meta: num(r.meta, ...R_GLOBAL),

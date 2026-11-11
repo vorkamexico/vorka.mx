@@ -702,3 +702,24 @@ body.sv-abierto { overflow: hidden; }
 .sim-becas-l .btn { flex: none; }
 .sim-becas-sel { flex: none; font-size: 12.5px; font-weight: 700; color: #1d7a4a; }
 @media (prefers-color-scheme: dark) { .sim-becas-sel { color: #5fd39a; } }
+
+/* Respuesta semiconstruida (EXCOBA): seleccionar varios, clasificar y escribir con unidad */
+.sim-cuantas { margin: 0 0 8px; }
+.sim-opc.multi .sim-letra { border-radius: 8px; }
+.sim-unidad { align-self: center; font-weight: 650; color: var(--fg-2); }
+.sim-clas { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.sim-clas-f { border: 1.5px solid var(--line); border-radius: 16px; background: var(--card); padding: 12px 14px; display: grid; gap: 10px; }
+.sim-clas-f.bien { border-color: var(--verde); background: var(--verde-suave); }
+.sim-clas-f.mal { border-color: #e9b4b0; background: #fdf1f0; }
+.sim-clas-t { display: flex; gap: 8px; justify-content: space-between; align-items: flex-start; font-size: 16px; line-height: 1.45; }
+.sim-clas-f.bien .sim-marca { color: var(--verde); }
+.sim-clas-f.mal .sim-marca { color: #b3261e; }
+.sim-clas-ops { display: flex; flex-wrap: wrap; gap: 8px; }
+.sim-cat { min-height: 44px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line-2); background: #fff; font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer; text-align: left; }
+.sim-cat:hover:not(:disabled) { border-color: var(--fg-3); }
+.sim-cat.sel { background: var(--fg); border-color: var(--fg); color: #fff; }
+.sim-cat:disabled { cursor: default; }
+.sim-cat.correcta { border-color: var(--verde); background: var(--verde); color: #fff; }
+.sim-cat.mal { border-color: #e9b4b0; background: #fdf1f0; color: #b3261e; text-decoration: line-through; }
+.sim-cat:focus-visible, .sim-opc:focus-visible { outline: 3px solid rgba(20, 17, 20, .35); outline-offset: 2px; }
+.sim-correcta small { display: block; font-weight: 500; color: var(--fg-2); margin-top: 4px; }
