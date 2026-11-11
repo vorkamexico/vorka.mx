@@ -25,6 +25,7 @@ import { rutasSimulador, simuladores } from './simulador/index.js';
 import { recordatoriosEstudio } from './simulador/estudio.js';
 import { rutasLearn } from './simulador/guias.js';
 import { rutasLearnExtra } from './learn/extra.js';
+import { rutasHerramientas } from './learn/herramientas.js';
 import { adsTxt } from './anuncios.js';
 import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp, VARIANTES } from './brindi.js';
 import { paginaCupo } from './cupo.js';
@@ -401,6 +402,9 @@ async function atender(request, env, ctx, url) {
     if (url.pathname === '/api/socios/codigo') return fail('Usa /api/puntos/liga', 410);
     if (/^\/(tienda\/(puntos|cuenta|catalogo)|api\/puntos)(\/|$)/.test(url.pathname)) { const r = await rutasPuntos(request, env, url); if (r) return r; }
     // Vorka Learn (/learn/…) y las URL viejas de las guías (/<simulador>/guias/… → 301 a /learn/…)
+    // Herramientas gratis de Learn (/learn/herramientas/…): van antes que las guías
+    const her = rutasHerramientas(request, env, url);
+    if (her) return await her;
     const lr = rutasLearnExtra(request, env, url) || rutasLearn(request, env, url);   // búsqueda, acerca, RSS y dibujos; luego guías
     if (lr) return lr;
     // ads.txt de la raíz: solo existe con AdSense encendido (ADSENSE_CLIENT); si no, 404

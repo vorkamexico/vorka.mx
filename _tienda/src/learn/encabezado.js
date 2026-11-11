@@ -63,6 +63,7 @@ export function encabezadoLearn(actual = '') {
       ${grupoMenu('examenes', 'Exámenes', examenes, actual, examenes.some(s => s.simulador) ? `<p class="lr-d-pie"><span>Practica con un simulador:</span>${examenes.filter(s => s.simulador).map(s => `<a href="${s.simulador.href}">${esc(s.corto)}</a>`).join('')}</p>` : '')}
       ${grupoMenu('temas', 'Temas', temas, actual)}
       <a href="/learn/#indice"${actual === 'portada' ? ' aria-current="page"' : ''}>Todas las guías</a>
+      <a href="/learn/herramientas/"${actual === 'herramientas' ? ' aria-current="page"' : ''}>Herramientas</a>
     </nav>
     <a class="t-nav-ico lr-lupa" href="${RUTA_BUSCAR}"${actual === 'buscar' ? ' aria-current="page"' : ''} aria-label="Buscar en Vorka Learn" title="Buscar">${ICONOS.buscar}</a>
     <a class="btn acento t-pastilla lr-practica" href="${pr.href}" aria-label="${esc(pr.etiqueta)}">${ICONO_PRACTICA}<span>Practica</span></a>
@@ -76,6 +77,7 @@ export function encabezadoLearn(actual = '') {
   <a class="btn acento lr-m-practica" href="${pr.href}">${esc(pr.etiqueta)} ${FLECHA}</a>
   <ul class="lr-m-mas">
     <li><a href="/learn/">Todas las guías</a></li>
+    <li><a href="/learn/herramientas/"${actual === 'herramientas' ? ' aria-current="page"' : ''}>Herramientas gratis</a></li>
     <li><a href="${RUTA_ACERCA}"${actual === 'acerca' ? ' aria-current="page"' : ''}>Acerca de Vorka Learn</a></li>
     <li class="lr-m-discreto"><a href="/tienda/">Tienda Vorka</a><a href="/">Vorka México</a></li>
   </ul>
