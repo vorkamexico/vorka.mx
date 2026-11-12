@@ -14,7 +14,7 @@ const IMG = `${SITIO}/tienda/img/portadas`;
 const EXAMEN_REACTIVOS = SECCIONES_EXAMEN.reduce((t, x) => t + x.reactivos, 0), EXAMEN_HORAS = SECCIONES_EXAMEN.reduce((t, x) => t + x.minutos, 0) / 60;
 const CORTO_REACTIVOS = SECCIONES.reduce((t, x) => t + x.reactivos, 0);
 const CAL_REACTIVOS = SECCIONES_CALENTAMIENTO.reduce((t, x) => t + x.reactivos, 0);
-const DESCRIPCION = 'Simulador PAA en línea con preguntas tipo examen de Lectura, Redacción, Matemáticas e Inglés, cronómetro real, tutor con pistas y puntaje estimado.';
+const DESCRIPCION = 'Examen de prueba PAA en línea: Lectura, Redacción, Matemáticas e Inglés con cronómetro, tutor con pistas y puntaje estimado. Haz gratis tu diagnóstico.';
 // Datos de la guía oficial de estudio de la PAA (College Board)
 export const FAQ_PAA = [
   { p: '¿Qué es la PAA?', r: 'La Prueba de Aptitud Académica (PAA) del College Board es un examen de admisión que usan universidades de México, Puerto Rico y América Latina. Evalúa razonamiento verbal y matemático, y aprovechamiento en español, matemáticas e inglés.' },
@@ -52,7 +52,7 @@ export const PAA = crearSimulador({
 
 const VENTA = {
   slugLegado: APP, sku: 'prod_simulador_paa', nombreProducto: 'Simulador PAA en línea', descripcion: DESCRIPCION,
-  tituloSEO: 'Simulador PAA 2026 en línea: examen de práctica | Vorka México',
+  tituloSEO: 'Simulador PAA en línea: examen de prueba con tutor y puntaje | Vorka México',   // Search Console nov 2026: «prueba paa simulador», «examen simulador paa»
   og: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`, imagenesLD: [`${SITIO}/assets/tienda/v3/simulador-paa-portada.webp`, `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`, `${IMG}/simulador-paa-reporte.png`],
   imagenes: { portada: '/assets/tienda/v3/simulador-paa-portada.webp', og: '/assets/tienda/v3/simulador-paa-og.jpg', paso1: '/assets/tienda/v3/simulador-paa-paso-reloj.webp', paso2: '/assets/tienda/v3/simulador-paa-paso-tutor.webp', reporte: '/tienda/img/portadas/simulador-paa-reporte.png', regalo: '/tienda/img/portadas/simulador-paa-regalo.png' },
   banco: REACTIVOS.length,

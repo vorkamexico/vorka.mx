@@ -48,9 +48,10 @@ export const UNIVERSIDADES = {
   },
   'tec-de-monterrey': {
     nombre: 'Tec de Monterrey', completo: 'Tecnológico de Monterrey', art: 'el',
-    titulo: 'PAA Tec de Monterrey: reglas para entrar a profesional | Vorka México',
-    descripcion: 'El Tec pide la PAA para profesional (la prepa usa PIENSE II). Acepta SAT o ACT, pero la PAA solo cuenta si la aplicó el Tec. Vigencia e intentos.',
-    h1: 'PAA para el Tec de Monterrey: reglas de admisión a profesional',
+    // Search Console (nov 2026): «paa tec de monterrey» y «examen paa tec de monterrey» salían sin clics con el título anterior
+    titulo: 'Examen PAA Tec de Monterrey: qué viene, puntaje y simulador | Vorka México',
+    descripcion: 'El examen PAA del Tec para profesional: qué viene, cómo se lee tu puntaje (400 a 1,600), vigencia e intentos según su reglamento. La prepa usa PIENSE II.',
+    h1: 'Examen PAA del Tec de Monterrey: reglas de admisión a profesional',
     lead: 'El Tec usa la Prueba de Aptitud Académica (PAA) para entrar a profesional, dentro de una evaluación integral de tu expediente. Aquí está lo que dice su Reglamento de Admisiones, con el artículo de cada regla, y un plan para prepararte.',
     fuentes: [{ nombre: 'Reglamento de Admisiones para los Niveles de Preparatoria y Profesional del Tecnológico de Monterrey (edición febrero 2025)', url: 'https://tec.mx/sites/default/files/inline-files/reglamento-admisiones-preparatoria-profesional-2025.pdf' }],
     verificado: '25 de octubre de 2026',
@@ -85,8 +86,9 @@ export const UNIVERSIDADES = {
   },
   udeg: {
     nombre: 'UdeG', completo: 'Universidad de Guadalajara (UdeG)', art: 'la',
-    titulo: 'PAA UdeG: cómo se calcula tu puntaje de admisión (50 % y 50 %) | Vorka México',
-    descripcion: 'En la UdeG la PAA pesa 50 % y tu promedio de bachillerato el otro 50 %. Cómo se suma tu puntaje, cuántos aspirantes entraron en 2026-B y cómo prepararte.',
+    // Search Console (nov 2026): salía en «calculadora paa» sin clics → liga a la calculadora y título que la menciona
+    titulo: 'PAA UdeG: calcula tu puntaje de admisión (promedio + PAA) | Vorka México',
+    descripcion: 'En la UdeG la PAA pesa 50 % y tu promedio el otro 50 %. Calcula tu puntaje de admisión, cuánto necesitas en la PAA y cuántos entraron en 2026-B.',
     h1: 'PAA para la UdeG: cómo se calcula tu puntaje de admisión',
     lead: 'Para entrar a una licenciatura de la Universidad de Guadalajara tienes que presentar la PAA, y tu resultado pesa lo mismo que tu promedio de bachillerato. Aquí están los datos oficiales y un plan para subir tu puntaje.',
     fuentes: [
@@ -203,7 +205,7 @@ export const UNIVERSIDADES = {
   },
 };
 
-const CSS = `<style>
+export const CSS = `<style>
 .pu-hero{padding:clamp(12px,3vw,40px) 0 clamp(32px,4vw,56px)}
 .pu-hero h1{margin-top:14px;max-width:820px}.pu-hero .t-lead{margin-top:14px;max-width:720px}
 .pu-fuente{margin-top:16px;font-size:14px;color:var(--fg-2);max-width:720px}.pu-fuente a{color:var(--morado)}
@@ -281,7 +283,7 @@ export function paginaPaaUniversidad(clave) {
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
   <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${esc(u.verificado)}. Confirma siempre los requisitos vigentes con ${de(u)}.</p>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Practicar con el simulador PAA ${FLECHA}</a><a class="btn blanco" href="${RUTA}/#probar">Probar un reactivo gratis</a></div>
+  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Practicar con el simulador PAA ${FLECHA}</a><a class="btn blanco" href="${RUTA}/calculadora/">${clave === 'udeg' ? 'Calcular mi puntaje UdeG' : 'Calcular mi puntaje'}</a><a class="btn blanco" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">

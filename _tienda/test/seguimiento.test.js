@@ -149,3 +149,21 @@ describe('reseña de quien lo recibió de regalo', () => {
     expect(h).toContain('Lo recibió de regalo');
   });
 });
+
+describe('calculadora de puntaje PAA', () => {
+  it('es pública, se indexa, trae sus metas y la ligan las páginas por universidad', async () => {
+    const r = await pedir('/simulador-paa/calculadora/');
+    expect(r.status).toBe(200);
+    const h = await r.text();
+    expect(h).toContain('<title>Calculadora de puntaje PAA');
+    expect(h).not.toContain('noindex');
+    expect(h).toContain('window.PAA_CALC=');
+    expect(h).toContain('"total":1200');
+    expect(h).toContain('"FAQPage"');
+    expect((await pedir('/simulador-paa/calculadora')).status).toBe(301);
+    const udeg = await (await pedir('/simulador-paa/udeg/')).text();
+    expect(udeg).toContain('href="/simulador-paa/calculadora/"');
+    expect(udeg).toContain('Calcular mi puntaje UdeG');
+    expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('/simulador-paa/calculadora/');
+  });
+});
