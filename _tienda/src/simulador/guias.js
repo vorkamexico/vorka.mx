@@ -476,7 +476,7 @@ export const GUIAS = [
       { h2: 'Fechas: lo que sabemos', html: p('En el proceso de agosto-diciembre 2026: registro del 2 de febrero al 11 de abril, examen diagnóstico de la SEG el 20 de marzo, EXANI-I el 22 de mayo y resultados desde el 19 de junio. La cédula de admisión costó $1,645.')
         + p(`Al 31 de octubre de 2026, la UG solo tiene abiertos los procesos para entrar a 2.º y 4.º semestre; <b>la convocatoria de primer semestre 2027 todavía no se publica</b>. Revísala en ${ext('https://www.ugto.mx/admisionug/bachilleratos', 'ugto.mx/admisionug')}.`) },
       { h2: 'Cómo prepararte', html: p('Esto es consejo nuestro:') + ol([
-        ['Mide dónde estás', `Un diagnóstico por área te dice dónde se van los aciertos.`],
+        ['Mide dónde estás', `Un diagnóstico por área te dice dónde se van los aciertos. En el ${a('/simulador-prepa-ug/', 'simulador del examen de admisión de la prepa UG')} lo haces con preguntas tipo EXANI-I y el tiempo real.`],
         ['Prioriza por peso', 'Pensamiento matemático (27 %) y científico (26 %) valen más de la mitad del examen en la ficha de León.'],
         ['Lectura y redacción, diario', 'Un texto corto y unas preguntas al día. Valen 40 % juntas y mejoran con constancia.'],
         ['Entrena la resistencia', 'Cuatro horas y media es mucho para alguien de secundaria. Haz al menos un examen completo con cronómetro.'],
