@@ -119,7 +119,7 @@ export function paginaLearnPortada(anuncios = null) {
     <div class="lr-portada-arte">${arteHero(lista.map(s => s.clave))}</div>
   </section>
   <div class="lr-confianza">${CONFIANZA().map(([i, t, d]) => `<div>${i}<span><b>${t}</b>${d}</span></div>`).join('')}</div>
-  <p class="lr-nota"><b>Herramienta gratis:</b> <a href="/learn/herramientas/dividir-imagen/">dividir una imagen en partes</a> para un carrusel, el mosaico de Instagram o imprimirla en varias hojas.</p>
+  <p class="lr-nota"><b>Herramientas gratis:</b> <a href="/learn/herramientas/reducir-peso/">reducir el peso de un PDF o foto</a>, <a href="/learn/herramientas/dividir-pdf/">dividir un PDF</a>, <a href="/learn/herramientas/codigo-qr/">crear un código QR</a> y <a href="/learn/herramientas/dividir-imagen/">dividir una imagen en partes</a>.</p>
   ${indicePortada(lista, todos)}
   ${lista.map((s, i) => `<section class="lr-grupo lr-s-${s.clave}" aria-labelledby="g-${s.clave}">
     <div class="lr-grupo-cab"><span class="lr-m-ico">${iconoDe(s.clave)}</span><h2 class="lr-h2" id="g-${s.clave}">${esc(s.nombre)}</h2><a class="lr-todas" href="${s.ruta}">Todas las guías de ${esc(s.corto)} ${FLECHA}</a></div>
