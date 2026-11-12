@@ -8,6 +8,7 @@ import { esc, pagina } from '../paginas.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
 import { RUTA, nombrePareja } from './exani-ii.js';
 import { productoPorSlug } from '../modelo.js';
+import { compraSimulador, CSS_COMPRA } from './compra-arriba.js';
 import { RUTA as RUTA_EXCOBA, PLANES as PLANES_EXCOBA } from './excoba.js';
 
 const SITIO = 'https://vorka.mx';
@@ -281,9 +282,10 @@ export async function paginaSelector(env) {
   });
 }
 
-export function paginaExaniUniversidad(clave) {
+export async function paginaExaniUniversidad(env, clave) {
   const u = UNIVERSIDADES[clave];
   if (!u) return null;
+  const { tarjeta, barra } = await compraSimulador(env, { app: 'simulador-exani-ii', nombre: 'Simulador EXANI-II', para: `para ${u.art} ${u.nombre}` });
   const ruta = `${RUTA}/${clave}/`;
   const faq = [
     { p: `¿Qué examen pide ${u.art} ${u.nombre} para licenciatura?`, r: `${u.examen}, de CENEVAL. ${u.pide[0][1]}` },
@@ -308,14 +310,14 @@ export function paginaExaniUniversidad(clave) {
   <p class="lead">Los módulos dependen de tu carrera y vienen en la convocatoria o en la guía de ${u.art} ${esc(u.nombre)}. Cuando los sepas, elígelos en el simulador: trae ${esc('Ciencias experimentales, Ciencias sociales, Biología, Ciencias de la salud, Química, Física, Aritmética, Probabilidad y estadística, Administración e Historia')}.</p></div>
 </div></section>`;
   return pagina({ titulo: u.titulo, ruta, descripcion: u.descripcion, imagen: `${SITIO}/assets/tienda/v3/simulador-exani-ii-og.jpg`,
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}${CSS_COMPRA}`,
     cuerpo: `
 <section class="pu-hero"><div class="marco">
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador EXANI-II</a> / <a href="${RUTA_UNIVERSIDADES}">Universidades</a> / ${esc(u.nombre)}</nav>
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
   <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con ${u.art} ${esc(u.nombre)}.</p>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Practicar con el simulador EXANI-II ${FLECHA}</a><a class="btn blanco" href="${RUTA}/#probar">Probar un reactivo gratis</a></div>
+  ${tarjeta}
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
@@ -332,7 +334,7 @@ ${modulos}
     <li class="pu-card"><h3>Inglés</h3><p>30 reactivos de nivel B1. Es diagnóstico: no entra al puntaje global.</p></li>
   </ul>
   <p class="pu-nota">Estructura general de la <a href="${CENEVAL_EXANI}" rel="noopener">página oficial del EXANI-II de CENEVAL</a>: una sesión de máximo 4 horas y media, con tres opciones por reactivo. Cada universidad puede usar una versión propia, como dice arriba.</p>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Ver planes del simulador ${FLECHA}</a><a class="btn blanco" href="${RUTA_UNIVERSIDADES}">Ver otras universidades</a></div>
+  <div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador EXANI-II ${FLECHA}</a><a class="btn blanco" href="${RUTA_UNIVERSIDADES}">Ver otras universidades</a></div>
 </div></section>
 
 <section class="t-sec"><div class="marco">
@@ -340,7 +342,7 @@ ${modulos}
   <div class="t-faq" style="margin-top:22px">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
-<section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados ${u.art === 'el' ? 'al' : 'a la'} ${esc(u.completo)} ni a CENEVAL; EXANI-II es un examen de CENEVAL. Los datos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>`,
+<section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados ${u.art === 'el' ? 'al' : 'a la'} ${esc(u.completo)} ni a CENEVAL; EXANI-II es un examen de CENEVAL. Los datos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>${barra}`,
   });
 }
 

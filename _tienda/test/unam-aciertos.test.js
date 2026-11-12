@@ -46,3 +46,19 @@ describe('páginas', () => {
     expect(await (await pedir('/simulador-paa/')).text()).toContain('href="/simulador-paa/calculadora/"');
   });
 });
+
+describe('compra arriba en las páginas de investigación', () => {
+  it('cada página trae precio y «Comprar» en la parte de arriba y la barra fija', async () => {
+    env.DB.raw.exec('UPDATE products SET activo = 1');
+    for (const [ruta, app] of [['/simulador-unam/aciertos/medico-cirujano/', 'simulador-unam'], ['/simulador-unam/aciertos/', 'simulador-unam'],
+      ['/simulador-paa/udem/', 'simulador-paa'], ['/simulador-paa/calculadora/', 'simulador-paa'], ['/simulador-exani-ii/buap/', 'simulador-exani-ii'], ['/simulador-excoba/uaq/', 'simulador-excoba']]) {
+      const h = await (await pedir(ruta)).text();
+      const caja = h.indexOf('class="ca-caja"');
+      expect(caja, ruta).toBeGreaterThan(0);
+      expect(caja, ruta).toBeLessThan(h.indexOf('class="t-sec'));   // dentro del inicio, antes de la primera sección
+      expect(h, ruta).toContain(`href="/${app}/?plan=paquete#comprar"`);
+      expect(h, ruta).toMatch(/class="ca-precio">\s*<p><b class="num">\$\d/);
+      expect(h, ruta).toContain('id="barra-compra"');
+    }
+  });
+});

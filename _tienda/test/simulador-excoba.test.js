@@ -1,5 +1,6 @@
 // Simulador EXCOBA (UAQ y UG): 180 preguntas = primaria, secundaria y las 3 asignaturas de bachillerato de la carrera, con
 // respuesta semiconstruida y crédito parcial (multiple, numerica, clasificar); y sus páginas por universidad.
+import { d1 } from './d1.js';
 import { describe, it, expect } from 'vitest';
 import vm from 'node:vm';
 import { simuladorDe } from '../src/simulador/index.js';
@@ -126,7 +127,7 @@ describe('EXCOBA por universidad', () => {
     for (const [k, u] of Object.entries(UNIVERSIDADES_EXCOBA)) {
       for (const f of u.fuentes) expect(f.url, k).toMatch(/^https:\/\//);
       for (const [c] of u.carreras) expect(combos.has(c), `${k}: ${c}`).toBe(true);
-      const html = await paginaExcobaUniversidad(k).text();
+      const html = await (await paginaExcobaUniversidad({ DB: d1() }, k)).text();
       expect(html).toContain(`https://vorka.mx/simulador-excoba/${k}/`);
       expect(html).toContain('No estamos afiliados');
       expect(html).not.toMatch(/href="tel:/);
@@ -136,7 +137,7 @@ describe('EXCOBA por universidad', () => {
     expect(UNIVERSIDADES_EXCOBA.ug.carreras.flatMap(c => c[1])).toHaveLength(52);
     // Solo la UG trae Ciencias económico-administrativas
     expect(UNIVERSIDADES_EXCOBA.uaq.carreras.some(([c]) => c.includes('cea'))).toBe(false);
-    expect(paginaExcobaUniversidad('unam')).toBe(null);
+    expect(await paginaExcobaUniversidad({ DB: d1() }, 'unam')).toBe(null);
   });
 
   it('«¿Cuál te sirve?» deja la UAQ y la UG como «Próximamente» mientras el producto no está a la venta', async () => {
