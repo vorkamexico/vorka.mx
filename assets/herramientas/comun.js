@@ -31,7 +31,8 @@ export function zonaArchivos({ zona, entrada, acepta, alCargar, aviso }) {
   ['dragenter', 'dragover'].forEach(ev => zona.addEventListener(ev, e => { e.preventDefault(); zona.classList.add('di-encima'); }));
   ['dragleave', 'drop'].forEach(ev => zona.addEventListener(ev, e => { e.preventDefault(); zona.classList.remove('di-encima'); }));
   zona.addEventListener('drop', e => recibir(e.dataTransfer?.files));
-  document.addEventListener('paste', e => { const f = e.clipboardData?.files; if (f?.length) { e.preventDefault(); recibir(f); } });
+  // pegar (Ctrl + V) solo le llega a la zona que está a la vista (en «Dividir y unir PDF» hay dos)
+  document.addEventListener('paste', e => { const f = e.clipboardData?.files; if (f?.length && zona.offsetParent) { e.preventDefault(); recibir(f); } });
 }
 
 export function avisador(el) {

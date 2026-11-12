@@ -384,5 +384,8 @@ export function rutasHerramientas(req, env, url) {
   const h = HERRAMIENTAS.find(x => x.ruta === p);
   if (h) return paginaHerramienta(h, env);
   if (p === '/learn/herramientas' || HERRAMIENTAS.some(x => x.ruta === `${p}/`)) return new Response(null, { status: 301, headers: { location: `${url.origin}${p}/${url.search}` } });
+  // Direcciones que se juntaron en otra herramienta (p. ej. «unir PDF» vive en «Dividir y unir PDF», pestaña #unir)
+  const alias = HERRAMIENTAS.find(x => x.alias?.some(r => r === p || r === `${p}/`));
+  if (alias) return new Response(null, { status: 301, headers: { location: `${url.origin}${alias.ruta}${url.search}#unir` } });
   return null;
 }

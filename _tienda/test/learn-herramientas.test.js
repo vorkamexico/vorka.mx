@@ -104,8 +104,9 @@ describe('Herramientas de Vorka Learn', () => {
   it('las herramientas nuevas (reducir peso, dividir PDF, código QR) tienen su página, su script como módulo y su ayuda', async () => {
     const casos = [
       ['/learn/herramientas/reducir-peso/', 'Reducir el peso de una foto o PDF', ['pe-archivo', 'pe-meta', 'pe-reducir', 'pe-bajar'], '/assets/herramientas/peso.js'],
-      ['/learn/herramientas/dividir-pdf/', 'Dividir un PDF por páginas', ['dp-archivo', 'dp-paginas', 'dp-dividir', 'dp-zip'], '/assets/herramientas/dividir-pdf.js'],
+      ['/learn/herramientas/dividir-pdf/', 'Dividir y unir PDF', ['dp-archivo', 'dp-paginas', 'dp-dividir', 'dp-zip', 'pt-unir', 'up-archivo', 'up-lista', 'up-unir', 'up-bajar'], '/assets/herramientas/dividir-pdf.js'],
       ['/learn/herramientas/codigo-qr/', 'Generador de código QR', ['qr-url', 'qr-tel', 'qr-red', 'qr-png', 'qr-svg'], '/assets/herramientas/qr.js'],
+      ['/learn/herramientas/foto-tramites/', 'Foto para trámites', ['ft-archivo', 'ft-marco', 'ft-tam', 'ft-hoja', 'ft-copias', 'ft-pdf', 'ft-jpg', 'ft-foto'], '/assets/herramientas/foto.js'],
     ];
     for (const [ruta, h1, ids, js] of casos) {
       const r = await pedir(ruta);
@@ -121,7 +122,14 @@ describe('Herramientas de Vorka Learn', () => {
       expect((await pedir(ruta.slice(0, -1))).status, ruta).toBe(301);
     }
     const indice = await (await pedir('/learn/herramientas/')).text();
-    expect((indice.match(/class="he-card"/g) || []).length).toBe(4);
+    expect((indice.match(/class="he-card"/g) || []).length).toBe(5);
+    // «Unir PDF» vive dentro de «Dividir y unir PDF»: su dirección lleva a la pestaña #unir
+    const u = await pedir('/learn/herramientas/unir-pdf/');
+    expect(u.status).toBe(301);
+    expect(u.headers.get('location')).toBe('https://vorka.mx/learn/herramientas/dividir-pdf/#unir');
+    // ningún id repetido en las páginas de herramientas
+    for (const [ruta] of casos) { const h = await (await pedir(ruta)).text(), ids = [...h.matchAll(/ id="([^"]+)"/g)].map(m => m[1]);
+      expect(ids.filter((x, i) => ids.indexOf(x) !== i), ruta).toEqual([]); }
     const mapa = await (await pedir('/learn/sitemap.xml')).text();
     for (const [ruta] of casos) expect(mapa).toContain(`<loc>https://vorka.mx${ruta}</loc>`);
   });
@@ -136,7 +144,7 @@ describe('Herramientas de Vorka Learn', () => {
   it('los scripts y librerías del navegador existen en el sitio estático', async () => {
     const { existsSync } = await import('node:fs');
     const raiz = new URL('../../assets/herramientas/', import.meta.url);
-    for (const f of ['comun.js', 'peso.js', 'dividir-pdf.js', 'qr.js', 'lib/pdf-lib.min.js', 'lib/pdf.min.js', 'lib/pdf.worker.min.js', 'lib/qrcode.js', 'lib/standard_fonts', 'lib/cmaps'])
+    for (const f of ['comun.js', 'peso.js', 'dividir-pdf.js', 'unir-pdf.js', 'qr.js', 'foto.js', 'lib/pdf-lib.min.js', 'lib/pdf.min.js', 'lib/pdf.worker.min.js', 'lib/qrcode.js', 'lib/standard_fonts', 'lib/cmaps'])
       expect(existsSync(new URL(f, raiz)), f).toBe(true);
   });
 });
