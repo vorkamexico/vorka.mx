@@ -57,7 +57,6 @@ export const CSS_NUEVAS = `
 .dp-lista li span{display:grid;min-width:0}.dp-lista li b{font-size:14.5px;overflow-wrap:anywhere}.dp-lista li small{font-size:13px;color:var(--fg-2)}
 .dp-lista .di-bajar{background:none;border:0;font:inherit;font-size:14px;cursor:pointer;flex:none}
 .qr-panel{display:grid;gap:26px;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);align-items:start}
-@media (max-width:860px){.qr-panel{grid-template-columns:1fr}.qr-lado{order:-1;position:static}.qr-vista{width:min(100%,280px);margin:0 auto}}
 .qr-tipos{grid-template-columns:repeat(4,1fr)}
 @media (max-width:420px){.qr-tipos{grid-template-columns:repeat(2,1fr)}}
 .di-campo textarea{font:inherit;font-size:16px;color:var(--fg);background:var(--bg,#fff);border:1px solid var(--line-2,var(--line));border-radius:10px;padding:10px 12px;width:100%;min-height:96px;resize:vertical}
@@ -69,6 +68,8 @@ export const CSS_NUEVAS = `
 .qr-vacio{margin:0;text-align:center;color:var(--fg-2);font-size:15px;max-width:240px}
 .qr-info{margin:0;font-size:13.5px;color:var(--fg-2);overflow-wrap:anywhere}
 .qr-botones{display:flex;flex-wrap:wrap;gap:10px}
+/* celular: el QR va arriba del formulario y NO se queda pegado al bajar (va después de .qr-lado para ganarle) */
+@media (max-width:860px){.qr-panel{grid-template-columns:1fr}.qr-lado{order:-1;position:static;top:auto}.qr-vista{width:min(100%,280px);margin:0 auto}.qr-botones{justify-content:center}}
 `;
 
 // ---------- portadas (SVG propios, 480 × 300) ----------

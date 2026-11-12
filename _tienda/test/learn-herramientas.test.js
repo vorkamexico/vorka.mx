@@ -126,6 +126,13 @@ describe('Herramientas de Vorka Learn', () => {
     for (const [ruta] of casos) expect(mapa).toContain(`<loc>https://vorka.mx${ruta}</loc>`);
   });
 
+  it('QR en celular: la regla que quita lo pegajoso va después de la regla general', async () => {
+    const html = await (await pedir('/learn/herramientas/codigo-qr/')).text();
+    const general = html.indexOf('.qr-lado{position:sticky'), celular = html.indexOf('.qr-lado{order:-1;position:static');
+    expect(general).toBeGreaterThan(0);
+    expect(celular).toBeGreaterThan(general);
+  });
+
   it('los scripts y librerías del navegador existen en el sitio estático', async () => {
     const { existsSync } = await import('node:fs');
     const raiz = new URL('../../assets/herramientas/', import.meta.url);
