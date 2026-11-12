@@ -91,21 +91,24 @@ export const GUIAS = {
     ],
   },
   posadas: {
-    titulo: 'Guía rápida para la posada o el evento de tu empresa',
-    intro: 'Para que Recursos Humanos sepa cuántos van, sin hojas de cálculo ni correos de ida y vuelta.',
+    titulo: 'Guía rápida para tu posada',
+    intro: 'Para saber cuántos van sin perseguir a nadie por WhatsApp, ya sea la posada de la familia, de los amigos o de la empresa.',
     incluir: [
       ['Evento, fecha y lugar', 'Con mapa y estacionamiento, si lo hay.'],
+      ['Qué llevar', 'Si cada familia lleva un platillo, la colación o un regalo para el intercambio, dilo en la invitación.'],
       ['Horario y programa', 'Cena, rifa, reconocimientos o lo que tengan planeado.'],
       ['Código de vestimenta', 'Si hay temática, dilo desde el principio.'],
       ['Acompañantes', 'Si cada colaborador puede llevar a alguien, asigna los lugares desde la lista.'],
       ['Acceso con QR', 'Con Premium, cada colaborador recibe su pase y tu equipo lo escanea en la entrada.'],
     ],
     tiempos: [
-      ['4 a 6 semanas antes', 'Manda la invitación con fecha límite para confirmar.'],
+      ['Posada en casa: 2 a 3 semanas antes', 'Diciembre se llena rápido: manda la invitación con fecha límite para confirmar.'],
+      ['Posada de empresa: 4 a 6 semanas antes', 'Para que Recursos Humanos aparte lugar y comida con tiempo.'],
       ['2 semanas antes', 'Recuerda solo a quienes no han respondido y ajusta el número para el lugar y la comida.'],
       ['El día del evento', 'Tu equipo escanea los pases en la entrada (Premium).'],
     ],
     preguntas: [
+      ['¿Sirve para la posada de la familia o los amigos?', 'Sí. Cambias textos, fotos y colores, la mandas por WhatsApp y cada familia confirma cuántos van.'],
       ['¿Sirve para muchas personas?', 'Sí. Eliges el plan según cuántos invitados tienes; con Premium se suman los pases con QR para la entrada.'],
       ['¿Cómo sé cuántos van?', 'En tu panel ves en tiempo real quién confirmó y cuántos son, y quién falta por responder.'],
       ['¿Dan factura?', 'Sí. Escribe a hola@vorka.mx con tus datos fiscales después de pagar.'],

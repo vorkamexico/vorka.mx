@@ -188,7 +188,8 @@ describe('Brindi en la tienda', () => {
     expect(org).toContain('https://os.vorka.mx/brindi/#/organizador');
     expect(org).toContain('Compra tu paquete');
     const pos = await (await pedir('/tienda/brindi/posadas/')).text();
-    expect(pos).toContain('<option value="brindi-premium" data-precio="102900" selected');
+    expect(pos).not.toContain('<option value="brindi-premium" data-precio="102900" selected');   // posadas también de familia: sin Premium preseleccionado
+    expect(pos).toContain('familia, amigos y empresa');
     expect((await pedir('/tienda/brindi/bodas')).status).toBe(301);
     expect((await pedir('/tienda/brindi/xyz/')).status).not.toBe(200);
   });

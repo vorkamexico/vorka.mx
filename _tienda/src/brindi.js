@@ -169,10 +169,12 @@ export const VARIANTES = {
     descripcion: 'Invitación digital de graduación con ceremonia, cena, programa y confirmación de asistencia. Compártela por WhatsApp o QR. Desde $239 MXN.',
     h1: 'Invitaciones digitales [para tu graduación.]', lead: 'Ceremonia, cena y brindis en una sola invitación. La mandas por WhatsApp, tus invitados confirman y tú sabes cuántos lugares apartar.',
     demo: 'demo-graduacion', primero: ['demo-graduacion'], evento: 'una graduación', corta: 'Graduación' },
-  posadas: { titulo: 'Invitaciones digitales para posadas y eventos de empresa con QR | Brindi',
-    descripcion: 'Invitación digital para la posada, la cena de fin de año o un lanzamiento: cada colaborador confirma y entra con QR. Desde $239 MXN.',
-    h1: 'La posada de tu empresa, [con invitación y acceso con QR.]', lead: 'Para la posada, la cena de fin de año o un lanzamiento. Cada colaborador confirma desde su celular, sabes cuántos van y, con Premium, tu equipo escanea los pases en la entrada.',
-    demo: 'demo-graduacion', primero: ['demo-graduacion', 'demo-boda-editorial'], evento: 'un evento de empresa', corta: 'Posadas y empresas', plan: 'brindi-premium' },
+  // Temporada (nov–dic): la posada de la familia o los amigos además de la de la empresa. Sin plan preseleccionado: la familia
+  // elige por número de invitados; la guía sigue explicando el QR de Premium para empresas.
+  posadas: { titulo: 'Invitaciones digitales para posadas: familia, amigos y empresa | Brindi',
+    descripcion: 'Invitación digital para tu posada navideña, con la familia, los amigos o la empresa. Se manda por WhatsApp y cada quien confirma. Créala gratis; desde $239 MXN.',
+    h1: 'Invitaciones para tu posada, [con confirmación por WhatsApp.]', lead: 'Para la posada de la familia, de los amigos o de la empresa. La mandas por WhatsApp, cada invitado confirma desde su celular y sabes cuántos van para la comida, los aguinaldos y la piñata. Para empresas, con Premium tu equipo escanea los pases con QR en la entrada.',
+    demo: 'demo-graduacion', primero: ['demo-graduacion', 'demo-boda-editorial'], evento: 'una posada', corta: 'Posadas' },
   organizadores: { titulo: 'Invitaciones digitales para organizadores, salones y fotógrafos | Brindi',
     descripcion: 'Invitaciones digitales para tus clientes: 5 eventos Celebración en un paquete y puntos por cada cliente que contrate con tu liga. Para wedding planners.',
     h1: 'Invitaciones digitales [para tus clientes.]', lead: 'Para wedding planners, salones, fotógrafos y organizadores: armas la invitación de cada evento desde tu cuenta, tus clientes la mandan por WhatsApp y tú ves quién confirma.',
