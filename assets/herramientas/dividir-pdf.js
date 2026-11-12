@@ -1,5 +1,6 @@
 // Vorka Learn · «Dividir un PDF por páginas». Todo en el navegador: pdf.js dibuja las miniaturas y pdf-lib copia las
 // páginas tal cual (sin volver a comprimir: el texto se sigue pudiendo seleccionar).
+import './unir-pdf.js';   // la pestaña «Unir» vive en la misma página
 import { $, pesoTexto, nombreBase, bajar, zonaArchivos, avisador, abrirPdfjs, pdfLib, dibujarPagina, espera, hacerZip, avisoPdfProtegido } from './comun.js';
 
 const raiz = $('dp');

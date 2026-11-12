@@ -1,21 +1,21 @@
-// Vorka Learn · Herramientas gratis: «Reducir el peso de una foto o PDF», «Dividir un PDF por páginas» y «Generador de
-// código QR». Aquí van sus textos, preguntas frecuentes, portadas y el HTML de cada herramienta; el diseño de la página
+// Vorka Learn · Herramientas gratis: «Reducir el peso de una foto o PDF», «Dividir y unir PDF», «Generador de código QR»
+// y «Foto para trámites». Aquí van sus textos, preguntas frecuentes, portadas y el HTML de cada herramienta; el diseño de la página
 // lo pone src/learn/herramientas.js. El código que corre en el navegador vive en el sitio estático:
-// assets/herramientas/{peso,dividir-pdf,qr,comun}.js y sus librerías en assets/herramientas/lib/ (ver su README).
+// assets/herramientas/{peso,dividir-pdf,unir-pdf,qr,foto,comun}.js y sus librerías en assets/herramientas/lib/ (ver su README).
 import { FLECHA } from '../marco.generado.js';
 import qrcode from '../vendor/qrcode.js';
 
-export const V_HERRAMIENTAS = '1';   // súbelo si cambian los scripts de assets/herramientas/
+export const V_HERRAMIENTAS = '2';   // súbelo si cambian los scripts de assets/herramientas/
 const js = nombre => `/assets/herramientas/${nombre}.js?v=${V_HERRAMIENTAS}`;
 const SUBIR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14.5V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3.5"/></svg>';
 const DOC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>';
 const CANDADO = '<p class="di-privado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-const zona = (id, titulo, texto, boton, accept, noscript) => `<label class="di-zona" id="${id}-zona" for="${id}-archivo">
+const zona = (id, titulo, texto, boton, accept, noscript, multiple = false) => `<label class="di-zona" id="${id}-zona" for="${id}-archivo">
     ${SUBIR}
     <b>${titulo}</b>
     <p>${texto}</p>
     <span class="btn tinta">${boton}</span>
-    <input id="${id}-archivo" class="vh" type="file" accept="${accept}">
+    <input id="${id}-archivo" class="vh" type="file" accept="${accept}"${multiple ? ' multiple' : ''}>
   </label>
   <noscript><p class="di-aviso">${noscript}</p></noscript>
   <p class="di-aviso" id="${id}-aviso" role="alert" hidden></p>`;
@@ -56,6 +56,35 @@ export const CSS_NUEVAS = `
 .dp-lista li{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
 .dp-lista li span{display:grid;min-width:0}.dp-lista li b{font-size:14.5px;overflow-wrap:anywhere}.dp-lista li small{font-size:13px;color:var(--fg-2)}
 .dp-lista .di-bajar{background:none;border:0;font:inherit;font-size:14px;cursor:pointer;flex:none}
+/* dividir y unir PDF: pestañas y lista para unir */
+.pdf-pest{margin-top:28px;max-width:440px}
+.pdf-pest button{font:inherit;font-size:15px;font-weight:650;padding:10px 12px;border:0;border-radius:9px;background:none;color:var(--fg-2);cursor:pointer}
+.pdf-pest button[aria-selected="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.pdf-pest + .di{margin-top:14px}.pdf-pest ~ .di + .di{margin-top:14px}
+.up-panel{display:grid;gap:16px;max-width:720px;margin:0 auto}
+.up-lista{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.up-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.up-n{flex:none;width:26px;height:26px;border-radius:999px;display:grid;place-items:center;font-size:13px;font-weight:800;background:var(--sec-s);color:var(--sec-t)}
+.up-mini{flex:none;width:46px;height:58px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.up-mini canvas{max-width:100%;max-height:100%}
+.up-txt{display:grid;min-width:0;flex:1}.up-txt b{font-size:14.5px;overflow-wrap:anywhere}.up-txt small{font-size:13px;color:var(--fg-2)}
+.up-acc{display:flex;gap:4px;flex:none}
+.up-acc button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line-2,var(--line));background:var(--card);color:var(--fg);font:inherit;font-size:15px;cursor:pointer}
+.up-acc button:disabled{opacity:.35;cursor:default}
+.up-mas{justify-self:start;cursor:pointer}
+@media (max-width:560px){.up-item{flex-wrap:wrap}.up-txt{flex:1 1 calc(100% - 96px)}.up-acc{width:100%;justify-content:flex-end}}
+/* foto para trámites */
+.ft-panel{display:grid;gap:26px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+@media (max-width:760px){.ft-panel{grid-template-columns:1fr}}
+.ft-izq{display:grid;gap:12px}
+.ft-marco{position:relative;width:min(100%,300px);margin:0 auto;border-radius:6px;overflow:hidden;background:#e9e9ee;cursor:grab;touch-action:none;box-shadow:0 6px 20px rgba(0,0,0,.15);outline-offset:3px}
+.ft-marco.ft-moviendo{cursor:grabbing}
+.ft-marco canvas{display:block;width:100%;height:100%}
+.ft-guia{position:absolute;left:22%;right:22%;top:12%;bottom:24%;border:2px dashed rgba(255,255,255,.85);border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
+.ft-medida{text-align:center}
+.ft-botones{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.ft-botones button{font:inherit;font-size:13.5px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--line-2,var(--line));background:var(--card);color:var(--fg);cursor:pointer}
+.ft-mas{display:flex;flex-wrap:wrap;gap:8px}
 .qr-panel{display:grid;gap:26px;grid-template-columns:minmax(0,1fr) minmax(0,.9fr);align-items:start}
 .qr-tipos{grid-template-columns:repeat(4,1fr)}
 @media (max-width:420px){.qr-tipos{grid-template-columns:repeat(2,1fr)}}
@@ -146,7 +175,33 @@ const FAQ_PESO = [
 ];
 
 // ---------- «Dividir un PDF por páginas» ----------
-const panelDividirPdf = llamado => `<div class="di" id="dp">
+const ACEPTA_UNIR = 'application/pdf,.pdf,image/jpeg,image/png,image/webp';
+const panelUnir = llamado => `<div class="di" id="up" role="tabpanel" aria-labelledby="pt-unir" hidden>
+  ${zona('up', 'Elige tus PDF o fotos', 'Puedes elegir varios a la vez, o arrastrarlos aquí. PDF, JPG, PNG o WebP.', 'Elegir archivos', ACEPTA_UNIR, 'Para unir PDF necesitas activar JavaScript en tu navegador.', true)}
+  <div class="up-panel" id="up-panel" hidden>
+    <ol class="up-lista" id="up-lista" aria-label="Archivos en el orden en que se van a unir"></ol>
+    <label class="btn tinta up-mas">Agregar más archivos<input id="up-mas" class="vh" type="file" accept="${ACEPTA_UNIR}" multiple></label>
+    <label class="di-campo">Nombre del PDF<input id="up-nombre" type="text" autocomplete="off"></label>
+    <p class="di-info" id="up-resumen" aria-live="polite"></p>
+    <button class="btn acento" type="button" id="up-unir">Unir en un PDF ${FLECHA}</button>
+    <p class="di-info" id="up-progreso" aria-live="polite"></p>
+  </div>
+  <div class="di-res" id="up-res" hidden>
+    <div class="di-res-cab"><h2>Tu PDF está listo</h2><button class="btn acento" type="button" id="up-bajar">Descargar PDF ${FLECHA}</button></div>
+    <p class="di-info" id="up-info"></p>
+    ${llamado}
+  </div>
+  ${CANDADO}Tus archivos no salen de tu dispositivo: se unen en tu navegador.</p>
+</div>`;
+
+const panelPdf = llamado => `<div class="di-seg pdf-pest" role="tablist" id="pdf-pestanas" aria-label="¿Qué quieres hacer?">
+  <button type="button" role="tab" id="pt-dividir" data-pestana="dividir" aria-controls="dp" aria-selected="true">Dividir PDF</button>
+  <button type="button" role="tab" id="pt-unir" data-pestana="unir" aria-controls="up" aria-selected="false" tabindex="-1">Unir PDF o fotos</button>
+</div>
+${panelDividirPdf(llamado)}
+${panelUnir(llamado)}`;
+
+const panelDividirPdf = llamado => `<div class="di" id="dp" role="tabpanel" aria-labelledby="pt-dividir">
   ${zona('dp', 'Elige un PDF', 'Arrástralo aquí o tócalo para buscarlo.', 'Elegir PDF', 'application/pdf,.pdf', 'Para dividir PDF necesitas activar JavaScript en tu navegador.')}
   <p class="di-info" id="dp-progreso" aria-live="polite"></p>
   <div class="dp-panel" id="dp-panel" hidden>
@@ -180,14 +235,19 @@ const textoDividirPdf = `<h2>Cómo dividir un PDF</h2>
   <p>Elige el PDF y vas a ver todas sus páginas. Después escoge cómo dividirlo: cada página en su propio archivo, solo las páginas que necesitas, por rangos (por ejemplo «1-3, 4-8») o cada cierto número de páginas. Toca «Dividir PDF» y descarga los archivos uno por uno o todos juntos en un .zip.</p>
   <p>Las páginas se copian tal como están en el original: no pierden calidad, conservan su tamaño de hoja y el texto se sigue pudiendo seleccionar.</p>
   <h2>Para qué sirve</h2>
-  <ul><li>Separar un documento escaneado en varios archivos: acta, CURP, comprobante de domicilio y certificado, cada uno por su lado.</li><li>Mandar solo el capítulo o las páginas que te pidieron de un libro o unos apuntes.</li><li>Subir un PDF largo a una plataforma que pide archivos más chicos.</li></ul>`;
+  <ul><li>Separar un documento escaneado en varios archivos: acta, CURP, comprobante de domicilio y certificado, cada uno por su lado.</li><li>Mandar solo el capítulo o las páginas que te pidieron de un libro o unos apuntes.</li><li>Subir un PDF largo a una plataforma que pide archivos más chicos.</li></ul>
+  <h2>Cómo unir PDF y fotos en un solo archivo</h2>
+  <p>En la pestaña <a href="#unir">«Unir PDF o fotos»</a> elige todos los archivos que quieres juntar: pueden ser PDF, fotos o una mezcla. Acomódalos con las flechas en el orden que quieras, ponle nombre al archivo y toca «Unir en un PDF». Las páginas de los PDF se copian tal cual, y cada foto ocupa una hoja tamaño carta.</p>
+  <p>Sirve para mandar todos tus documentos de inscripción en un solo PDF, juntar las fotos de tus apuntes o de una tarea hecha a mano, o armar un expediente con varias partes.</p>`;
 
 const FAQ_DIVIDIR_PDF = [
   ['¿Mi PDF se sube a algún servidor?', 'No. Todo pasa en tu navegador: el archivo no se envía a Vorka ni a nadie más.'],
   ['¿Las páginas pierden calidad?', 'No. Se copian tal cual del original, con su texto, sus imágenes y su tamaño de hoja.'],
   ['¿Cómo saco solo algunas páginas?', 'Elige «Sacar solo algunas páginas» y toca las miniaturas de las que quieres, o escríbelas así: 1, 3, 5-7. Salen juntas en un solo PDF y en el orden del original.'],
   ['¿Funciona con PDF con contraseña?', 'No con los que piden contraseña para abrirse. Ábrelo, guárdalo sin contraseña y vuelve a intentarlo.'],
-  ['Después de dividirlo, ¿cómo hago que pese menos?', 'Usa nuestra herramienta para reducir el peso de un PDF; funciona igual, en tu navegador.'],
+  ['¿Puedo unir fotos con PDF?', 'Sí. En «Unir PDF o fotos» puedes mezclar PDF y fotos JPG, PNG o WebP. Cada foto queda en una hoja tamaño carta, centrada y del tamaño que quepa.'],
+  ['¿Cómo cambio el orden de los archivos al unirlos?', 'Con las flechas ↑ y ↓ de cada archivo. El número de la izquierda es el orden en que van a quedar en el PDF.'],
+  ['Después de dividirlo o unirlo, ¿cómo hago que pese menos?', 'Usa nuestra herramienta para reducir el peso de un PDF; funciona igual, en tu navegador.'],
 ];
 
 // ---------- «Generador de código QR» ----------
@@ -233,6 +293,58 @@ const FAQ_QR = [
   ['¿El QR de Wi‑Fi funciona en todos los celulares?', 'La mayoría de los celulares recientes, iPhone y Android, lo leen con la cámara y se conectan a la red al tocar el aviso.'],
 ];
 
+// ---------- «Foto para trámites» ----------
+function portadaFoto() {
+  const sombra = '<filter id="pf-s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#4A3410" flood-opacity=".22"/></filter>';
+  const persona = (x, y, w, h) => `<g transform="translate(${x} ${y})"><rect width="${w}" height="${h}" fill="#DCE7F4"/><circle cx="${w / 2}" cy="${h * .4}" r="${w * .2}" fill="#7A5A44"/><path d="M${w * .14} ${h} C${w * .18} ${h * .7} ${w * .82} ${h * .7} ${w * .86} ${h}Z" fill="#2E4A7A"/></g>`;
+  const chicas = [0, 1, 2, 3].map(i => `<g transform="translate(${282 + (i % 2) * 64} ${70 + Math.floor(i / 2) * 78})"><rect width="56" height="68" fill="#fff"/>${persona(3, 3, 50, 62)}</g>`).join('');
+  return marco('#F6EDDC', `<defs>${sombra}</defs><circle cx="420" cy="260" r="90" fill="#EEDFC2"/><circle cx="50" cy="40" r="70" fill="#EEDFC2"/>
+  <g transform="translate(262 52)" filter="url(#pf-s)"><rect width="156" height="196" rx="8" fill="#fff"/></g>${chicas}
+  <g filter="url(#pf-s)"><rect x="70" y="40" width="160" height="200" rx="6" fill="#fff"/></g>${persona(80, 50, 140, 180)}
+  <g fill="none" stroke="#B07A1E" stroke-width="2.5" stroke-linecap="round"><path d="M80 258 H220 M80 252 v12 M220 252 v12"/><path d="M48 50 V230 M42 50 h12 M42 230 h12"/></g>
+  <text x="150" y="282" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="800" fill="#8A5E12" text-anchor="middle">2.5 cm</text>
+  <text x="30" y="145" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="800" fill="#8A5E12" text-anchor="middle" transform="rotate(-90 30 145)">3 cm</text>`, 'Una foto tamaño infantil con sus medidas y una hoja con varias copias');
+}
+
+const panelFoto = llamado => `<div class="di" id="ft">
+  ${zona('ft', 'Elige tu foto', 'De frente, con fondo claro y buena luz. Arrástrala aquí o tócala para buscarla. JPG, PNG o WebP.', 'Elegir foto', 'image/jpeg,image/png,image/webp', 'Para preparar tu foto necesitas activar JavaScript en tu navegador.')}
+  <div class="ft-panel" id="ft-panel" hidden>
+    <div class="ft-izq">
+      <div class="ft-marco" id="ft-marco" tabindex="0" role="img" aria-label="Recorte de tu foto. Arrástrala para acomodarla; también se mueve con las flechas del teclado."><canvas id="ft-lienzo" width="1" height="1"></canvas><span class="ft-guia" aria-hidden="true"></span></div>
+      <p class="di-info ft-medida" id="ft-medida" aria-live="polite"></p>
+      <label class="di-campo">Acercar<input id="ft-zoom" type="range" min="100" max="400" value="100"></label>
+      <div class="ft-botones"><button type="button" id="ft-girar">Girar</button><button type="button" id="ft-centrar">Centrar</button><button type="button" id="ft-otra">Usar otra foto</button></div>
+      <p class="di-info">Arrastra la foto para que tu cara quede dentro del óvalo.</p>
+    </div>
+    <div class="di-opc">
+      <label class="di-campo">Medida<select id="ft-tam"><option value="2.5x3" selected>Infantil · 2.5 × 3 cm</option><option value="3.5x4.5">Pasaporte · 3.5 × 4.5 cm</option><option value="5x5">Cuadrada · 5 × 5 cm (2 × 2 pulgadas)</option><option value="6x9">Título · 6 × 9 cm</option><option value="otra">Otra medida</option></select></label>
+      <div class="di-par" id="ft-g-otra" hidden><label class="di-campo">Ancho (cm)<input id="ft-ancho" type="number" inputmode="decimal" min="1" max="20" step="0.1" value="3"></label><label class="di-campo">Alto (cm)<input id="ft-alto" type="number" inputmode="decimal" min="1" max="25" step="0.1" value="4"></label></div>
+      <div class="di-par"><label class="di-campo">Hoja para imprimir<select id="ft-hoja"><option value="carta">Hoja carta</option><option value="foto">Papel foto 10 × 15 cm</option></select></label><label class="di-campo">Copias<input id="ft-copias" type="number" inputmode="numeric" min="1" value="1"></label></div>
+      <p class="di-info" id="ft-caben" aria-live="polite"></p>
+      <button class="btn acento" type="button" id="ft-pdf">Descargar hoja en PDF ${FLECHA}</button>
+      <div class="ft-mas"><button class="btn tinta" type="button" id="ft-jpg">Hoja en JPG</button><button class="btn tinta" type="button" id="ft-foto">Solo la foto (JPG)</button></div>
+      <p class="pe-nota">Al imprimir el PDF elige «Tamaño real» o «100 %», no «Ajustar a la página», para que las fotos midan exacto.</p>
+      ${llamado}
+    </div>
+  </div>
+  ${CANDADO}Tu foto no sale de tu dispositivo: se recorta en tu navegador.</p>
+</div>`;
+
+const textoFoto = `<h2>Cómo hacer tu foto para trámites</h2>
+  <p>Elige una foto tuya de frente, escoge la medida que te piden y arrástrala hasta que tu cara quede dentro del óvalo; si hace falta, acércala con la barra. Después elige la hoja: carta, para imprimir en cualquier impresora, o papel foto de 10 × 15 cm, para mandarla a imprimir a una tienda de fotos. Descarga la hoja en PDF, imprímela a tamaño real y recorta por las líneas.</p>
+  <p>También puedes descargar solo la foto, ya recortada a la medida, para subirla a un registro en línea.</p>
+  <h2>Consejos para que la foto salga bien</h2>
+  <ul><li>Tómala de frente, con la cara completa y los hombros a la vista.</li><li>Ponte frente a una pared lisa y clara, con luz de día y sin sombras en la cara.</li><li>No uses filtros ni retoques, y deja una distancia de un metro o más para que la cara no se deforme.</li><li>Revisa lo que pide tu trámite: el color del fondo, si se permiten lentes y si la foto debe ser reciente.</li></ul>`;
+
+const FAQ_FOTO = [
+  ['¿Cuánto mide la foto tamaño infantil?', '2.5 cm de ancho por 3 cm de alto. Es una de las medidas que más piden escuelas y credenciales. Si tu trámite pide otra, elige «Otra medida» y escríbela en centímetros.'],
+  ['¿Por qué al imprimir no salen del tamaño correcto?', 'Porque la impresora ajustó la hoja. Al imprimir el PDF, elige «Tamaño real» o «100 %» en lugar de «Ajustar a la página». En una tienda de fotos, pide que la impriman sin recortar ni ajustar.'],
+  ['¿Puedo mandarla a imprimir a una tienda de fotos?', 'Sí. Elige «Papel foto 10 × 15 cm», descarga la hoja en JPG y pide que la impriman en ese tamaño (también se le llama 4 × 6 pulgadas).'],
+  ['¿La herramienta quita o cambia el fondo?', 'No. Para que el fondo salga blanco o claro, toma la foto frente a una pared de ese color.'],
+  ['¿Mi foto se sube a algún servidor?', 'No. Se recorta en tu navegador y no se envía a Vorka ni a nadie más.'],
+  ['¿Sirve para cualquier trámite?', 'Te da la medida exacta, pero cada trámite tiene sus propias reglas. Algunos toman la foto en la oficina o piden una foto digital con requisitos propios; revisa siempre las instrucciones oficiales.'],
+];
+
 // Las tres herramientas, en el formato que usa src/learn/herramientas.js
 export const NUEVAS = [
   { ruta: '/learn/herramientas/reducir-peso/', nombre: 'Reducir el peso de una foto o PDF', corto: 'Reducir peso',
@@ -243,14 +355,14 @@ export const NUEVAS = [
     h1: 'Reducir el peso de una foto o PDF',
     lead: 'Comprime un PDF o una foto para que pese menos de lo que te piden: 2 MB, 1 MB, 500 KB o menos. Es gratis, no pide cuenta y tu archivo se queda en tu dispositivo.',
     panel: panelPeso, texto: textoPeso, faq: FAQ_PESO, script: js('peso'), modulo: true, llamado: true, anuncios: ['vuelve', 'brindi'], categoria: 'UtilitiesApplication' },
-  { ruta: '/learn/herramientas/dividir-pdf/', nombre: 'Dividir un PDF por páginas', corto: 'Dividir PDF',
-    descripcion: 'Separa un PDF en varios archivos o saca solo las páginas que necesitas, sin perder calidad. Gratis y en tu navegador.',
-    usos: ['Página por página', 'Por rangos', 'Sacar algunas páginas'], portada: portadaDividirPdf,
-    titulo: 'Dividir un PDF por páginas gratis (separar o extraer páginas) | Vorka Learn',
-    meta: 'Divide un PDF gratis: cada página en un archivo, por rangos o saca solo las páginas que necesitas. Sin perder calidad y sin subir tu archivo.',
-    h1: 'Dividir un PDF por páginas',
-    lead: 'Separa un PDF en varios archivos o saca solo las páginas que necesitas. Las páginas no pierden calidad. Es gratis, no pide cuenta y tu PDF se queda en tu dispositivo.',
-    panel: panelDividirPdf, texto: textoDividirPdf, faq: FAQ_DIVIDIR_PDF, script: js('dividir-pdf'), modulo: true, llamado: true, anuncios: ['vuelve', 'brindi'], categoria: 'UtilitiesApplication' },
+  { ruta: '/learn/herramientas/dividir-pdf/', nombre: 'Dividir y unir PDF', corto: 'Dividir y unir PDF', alias: ['/learn/herramientas/unir-pdf/'],
+    descripcion: 'Separa un PDF en varios archivos, saca solo las páginas que necesitas o junta varios PDF y fotos en uno solo. Gratis y en tu navegador.',
+    usos: ['Separar páginas', 'Unir PDF', 'Fotos a PDF'], portada: portadaDividirPdf,
+    titulo: 'Dividir y unir PDF gratis (separar páginas, juntar PDF y fotos) | Vorka Learn',
+    meta: 'Divide un PDF por páginas o une varios PDF y fotos en un solo archivo, gratis. Sin perder calidad y sin subir tus archivos.',
+    h1: 'Dividir y unir PDF',
+    lead: 'Separa un PDF en varios archivos o saca solo las páginas que necesitas. También puedes juntar varios PDF y fotos en uno solo. Es gratis, no pide cuenta y tus archivos se quedan en tu dispositivo.',
+    panel: panelPdf, texto: textoDividirPdf, faq: FAQ_DIVIDIR_PDF, script: js('dividir-pdf'), modulo: true, llamado: true, anuncios: ['vuelve', 'brindi'], categoria: 'UtilitiesApplication' },
   { ruta: '/learn/herramientas/codigo-qr/', nombre: 'Generador de código QR', corto: 'Código QR',
     descripcion: 'Crea un código QR para un enlace, tu WhatsApp o tu Wi‑Fi y descárgalo en PNG o SVG. No caduca. Gratis y en tu navegador.',
     usos: ['Enlace', 'WhatsApp', 'Wi‑Fi'], portada: portadaQr,
@@ -259,4 +371,12 @@ export const NUEVAS = [
     h1: 'Generador de código QR',
     lead: 'Crea un código QR para un enlace, tu WhatsApp o tu Wi‑Fi y descárgalo en PNG o SVG. Es gratis, no caduca y no pide cuenta.',
     panel: panelQr, texto: textoQr, faq: FAQ_QR, script: js('qr'), modulo: true, llamado: false, anuncios: ['brindi', 'vuelve'], categoria: 'UtilitiesApplication' },
+  { ruta: '/learn/herramientas/foto-tramites/', nombre: 'Foto para trámites', corto: 'Foto para trámites',
+    descripcion: 'Recorta tu foto a tamaño infantil, pasaporte u otra medida y arma la hoja para imprimir varias copias. Gratis y en tu navegador.',
+    usos: ['Infantil 2.5 × 3 cm', 'Pasaporte', 'Hoja carta o 10 × 15'], portada: portadaFoto,
+    titulo: 'Foto tamaño infantil gratis para imprimir (y pasaporte) | Vorka Learn',
+    meta: 'Haz tu foto tamaño infantil (2.5 × 3 cm), pasaporte o la medida que necesites y descarga una hoja lista para imprimir varias copias. Gratis y sin subir tu foto.',
+    h1: 'Foto para trámites',
+    lead: 'Recorta tu foto a tamaño infantil, pasaporte o la medida que te pidan, y descarga una hoja lista para imprimir varias copias en tu casa o en una tienda de fotos. Es gratis, no pide cuenta y tu foto se queda en tu dispositivo.',
+    panel: panelFoto, texto: textoFoto, faq: FAQ_FOTO, script: js('foto'), modulo: true, llamado: true, anuncios: ['brindi', 'vuelve'], categoria: 'PhotographyApplication' },
 ];
