@@ -97,18 +97,18 @@ export function paginaCalculadoraPaa() {
 const CSS_CALC = `<style>
 .pc-g{display:grid;gap:18px;grid-template-columns:1fr}
 @media (min-width:900px){.pc-g{grid-template-columns:1fr 1fr;align-items:start}}
-.pc-caja h2{margin-bottom:4px}.pc-ayuda{color:var(--fg-2);font-size:14.5px;margin:0 0 14px}
-.pc-fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pc-caja h2{margin-bottom:4px}.pu-card .pc-ayuda{color:var(--fg-2);font-size:14.5px;margin:0 0 14px}
+.pc-fila{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
 .pc-caja .t-campo input{width:100%}
 .pc-res{margin-top:6px;border-top:1px solid var(--line);padding-top:14px}
-.pc-vacio{color:var(--fg-2);font-size:14.5px;margin:0}
-.pc-num{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:0}
-.pc-num small{font-size:15px;font-weight:600;color:var(--fg-2);letter-spacing:0;margin-left:6px}
+.pu-card .pc-vacio{color:var(--fg-2);font-size:14.5px;margin:0}
+.pu-card .pc-num{font-size:34px;color:var(--fg);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:0}
+.pu-card .pc-num small{font-size:15px;font-weight:600;color:var(--fg-2);letter-spacing:0;margin-left:6px}
 .pc-lista{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
 .pc-lista li{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;padding:10px 12px;border-radius:12px;background:var(--bg)}
 .pc-lista li b{white-space:nowrap}.pc-lista .si b{color:var(--ok,#1F7A4A)}
 .pc-lista a{color:inherit}
-.pc-error{color:var(--er,#B3261E);font-size:14.5px;margin:0}
+.pu-card .pc-error{color:var(--er,#B3261E);font-size:14.5px;margin:0}
 .pc-diag{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
 .pc-diag p{color:var(--fg-2);margin:6px 0 0;max-width:560px}
 </style>`;
