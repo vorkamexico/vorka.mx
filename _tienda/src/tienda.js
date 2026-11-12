@@ -663,6 +663,7 @@ export async function sitemapTienda(env) {
     `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
     ...Object.keys(VARIANTES).filter(Boolean).map(k => `<url><loc>${SITIO}/tienda/brindi/${k}/</loc><priority>0.8</priority></url>`),   // por tipo de evento
     ...Object.keys(UNIVERSIDADES).map(k => `<url><loc>${SITIO}/simulador-paa/${k}/</loc><priority>0.7</priority></url>`),   // PAA por universidad
+    `<url><loc>${SITIO}/simulador-paa/calculadora/</loc><priority>0.7</priority></url>`,   // calculadora de puntaje PAA
     `<url><loc>${SITIO}/simulador-exani-ii/universidades/</loc><priority>0.7</priority></url>`,   // ¿Cuál te sirve?
     ...Object.keys(UNIVERSIDADES_EXANI).map(k => `<url><loc>${SITIO}/simulador-exani-ii/${k}/</loc><priority>0.7</priority></url>`),   // EXANI-II por universidad
     ...Object.keys(UNIVERSIDADES_EXCOBA).map(k => `<url><loc>${SITIO}/simulador-excoba/${k}/</loc><priority>0.7</priority></url>`),   // EXCOBA por universidad

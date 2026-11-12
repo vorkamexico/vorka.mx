@@ -60,7 +60,7 @@ describe('acceso al simulador', () => {
     const html = await r.text();
     expect(html).not.toContain('/simulador-paa/app.js');
     expect(html).toContain('<link rel="canonical" href="https://vorka.mx/simulador-paa/">');
-    expect(html).toContain('<title>Simulador PAA 2026 en línea');
+    expect(html).toContain('<title>Simulador PAA en línea: examen de prueba');
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain('"@type":"Product"');
     expect(html).toContain('/assets/tienda/v3/simulador-paa-og.jpg');

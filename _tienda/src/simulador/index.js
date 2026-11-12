@@ -14,6 +14,7 @@ import { PREPA_UG } from './prepa-ug.js';
 import { IPN } from './ipn.js';
 import { EXANI_II } from './exani-ii.js';
 import { paginaPaaUniversidad } from './paa-universidades.js';
+import { paginaCalculadoraPaa } from './paa-calculadora.js';
 import { EXCOBA } from './excoba.js';
 import { paginaExaniUniversidad, paginaSelector } from './exani-universidades.js';
 import { paginaExcobaUniversidad } from './excoba-universidades.js';
@@ -31,7 +32,7 @@ export async function rutasSimulador(req, env, url) {
   // Páginas de la PAA por universidad: /simulador-paa/<universidad>/
   const u = url.pathname.match(/^\/simulador-paa\/([a-z-]{2,30})(\/?)$/);
   if (u && (req.method === 'GET' || req.method === 'HEAD') && !['app.js', 'app.css', 'entrar'].includes(u[1])) {
-    const r = paginaPaaUniversidad(u[1]);
+    const r = u[1] === 'calculadora' ? paginaCalculadoraPaa() : paginaPaaUniversidad(u[1]);
     if (r) return u[2] ? r : Response.redirect(`${url.origin}/simulador-paa/${u[1]}/`, 301);
   }
   // EXANI-II: «¿Cuál te sirve?» (/simulador-exani-ii/universidades/) y una página por universidad (/simulador-exani-ii/<universidad>/)
