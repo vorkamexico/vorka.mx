@@ -84,7 +84,10 @@ const CSS = `<style>
 .di-texto ul{padding-left:20px;margin:0 0 12px}
 .di-faq details{border-top:1px solid var(--line);padding:14px 0}
 .di-faq details:last-child{border-bottom:1px solid var(--line)}
-.di-faq summary{font-weight:700;font-size:17px;cursor:pointer;list-style-position:outside}
+.di-faq summary{font-weight:700;font-size:17px;line-height:1.35;cursor:pointer;list-style:none;display:flex;gap:14px;align-items:flex-start;justify-content:space-between}
+.di-faq summary::-webkit-details-marker{display:none}
+.di-faq summary::after{content:"+";flex:none;font-size:24px;line-height:22px;font-weight:400;color:var(--fg-2)}
+.di-faq details[open] summary::after{content:"−"}
 .di-faq details p{margin:10px 0 0}
 .di-promo .gu-grid{margin-top:16px}
 .di-card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:var(--r,20px);overflow:hidden;color:inherit;text-decoration:none;box-shadow:var(--sombra);transition:border-color .15s}
@@ -113,6 +116,19 @@ const CSS = `<style>
 .di-res-promo{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:14px;background:var(--sec-s)}
 .di-res-promo p{margin:0;font-size:15.5px;color:var(--fg);max-width:560px}
 .di-res-promo .btn{flex:none}
+/* anuncios propios de Vorka (Brindi, Vuelve) */
+.di-ad{margin:32px 0;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:stretch;border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#2B1742,#4B2569);color:#F4F2F5;text-decoration:none;box-shadow:0 10px 30px rgba(20,10,30,.18);border:1px solid rgba(255,255,255,.12)}
+.di-ad:hover .btn{transform:translateY(-1px)}
+.di-ad-img{position:relative;min-height:220px;background:#221b2b}
+.di-ad-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.di-ad-c{padding:clamp(20px,3vw,32px);display:grid;gap:12px;align-content:center}
+.di-ad-etq{font-size:12px;font-weight:600;color:rgba(244,242,245,.6)}
+.di-ad-c b{font-size:clamp(22px,2.8vw,30px);line-height:1.12;letter-spacing:-.025em;color:#fff}
+.di-ad-c p{margin:0;font-size:15.5px;line-height:1.5;color:rgba(244,242,245,.78)}
+.di-ad-c .btn{justify-self:start;margin-top:4px;display:inline-flex;align-items:center;gap:8px}
+.di-ad-c .btn svg{width:17px;height:17px}
+.di-ad[data-producto="vuelve"]{background:linear-gradient(135deg,#0E2E27,#17594A)}.di-ad[data-producto="vuelve"] .di-ad-img{background:#183029}
+@media (max-width:700px){.di-ad{grid-template-columns:1fr}.di-ad-img{min-height:0;aspect-ratio:16/9}}
 .di-lista-h{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px}
 </style>`;
 
@@ -137,9 +153,10 @@ async function noticiasSparks() {
 // en la ficha. Los 3 primeros que estén a la venta van arriba de la herramienta; los siguientes, abajo.
 const PRODUCTOS_PROMO = ['test-vocacional', 'simulador-paa-practica', 'simulador-exani-ii-practica', 'simulador-unam-practica',
   'simulador-ipn-practica', 'que-proyecto-social', 'evaluacion-liderazgo', 'simuladores-universidad'];
-async function productosPromo(env) {
+async function catalogo(env) { try { return await listarProductos(env); } catch { return []; } }
+async function productosPromo(env, l) {
   try {
-    const l = await listarProductos(env);
+    l ??= await listarProductos(env);
     return PRODUCTOS_PROMO.map(s => l.find(p => p.slug === s)).filter(Boolean).slice(0, 7);
   } catch { return []; }
 }
@@ -160,6 +177,17 @@ const miniProducto = p => `<a class="di-mini" href="${esc(enlaceProducto(p))}">$
 const tiraArriba = productos => productos.length ? `<aside class="di-arriba" aria-label="Para estudiantes, de Vorka México"><p class="di-arriba-t"><b>¿Estudias? Esto también te sirve</b><a href="/tienda/">Ver la tienda ${FLECHA}</a></p><div class="di-tira">${productos.slice(0, 3).map(miniProducto).join('')}</div></aside>` : '';
 // Llamado que aparece junto con las partes ya cortadas
 const llamadoResultado = p => p ? `<div class="di-res-promo"><p><b>¿Vas a presentar examen de admisión?</b> ${esc(corto(p.descripcion_corta || p.nombre))}</p><a class="btn tinta" href="${esc(enlaceProducto(p))}">${esc(p.nombre)} ${FLECHA}</a></div>` : '';
+
+// Anuncios propios de Vorka con el formato de un anuncio: imagen grande, título, texto y botón. Se marcan como anuncio.
+const ANUNCIOS_CASA = {
+  brindi: { slug: 'brindi-celebracion', titulo: 'Invitaciones digitales para tu fiesta', boton: 'Ver Brindi' },
+  vuelve: { slug: 'vuelve-mensual', titulo: 'Haz que tus clientes regresen', boton: 'Ver Vuelve' },
+};
+const anuncioCasa = (clave, lista) => {
+  const a = ANUNCIOS_CASA[clave], p = lista.find(x => x.slug === a.slug);
+  if (!p) return '';
+  return `<a class="di-ad" data-producto="${clave}" href="${esc(enlaceProducto(p))}" aria-label="Anuncio de Vorka México: ${esc(a.titulo)}">${p.imagen ? `<span class="di-ad-img"><img src="${esc(p.imagen)}" alt="" width="800" height="450" loading="lazy" decoding="async"></span>` : ''}<span class="di-ad-c"><span class="di-ad-etq">Anuncio · ${esc(p.nombre.split(' · ')[0])} de Vorka México</span><b>${esc(a.titulo)}</b>${p.descripcion_corta ? `<p>${esc(p.descripcion_corta)}</p>` : ''}<span class="btn acento">${esc(a.boton)} ${FLECHA}</span></span></a>`;
+};
 
 async function promocion(env, productos) {
   const noticias = await noticiasSparks();
@@ -226,7 +254,7 @@ function herramientaDividir(llamado = '') {
 }
 
 async function paginaDividir(env) {
-  const h = HERRAMIENTAS[0], anuncios = configAnuncios(env), productos = await productosPromo(env);
+  const h = HERRAMIENTAS[0], anuncios = configAnuncios(env), catalogoTienda = await catalogo(env), productos = await productosPromo(env, catalogoTienda);
   const migasH = [...MIGAS, [h.corto, h.ruta]];
   const texto = `<div class="di-texto">
   <h2>Cómo dividir una imagen</h2>
@@ -252,8 +280,10 @@ async function paginaDividir(env) {
   </div>
   ${tiraArriba(productos)}
   ${herramientaDividir(llamadoResultado(productos.find(p => /simulador/.test(p.slug)) || productos[0]))}
+  ${anuncioCasa('brindi', catalogoTienda)}
   ${espacioAnuncio(anuncios, 'mitad')}
   <div class="lr-col" style="margin-left:0">${texto}</div>
+  ${anuncioCasa('vuelve', catalogoTienda)}
   ${await promocion(env, productos)}
   ${espacioAnuncio(anuncios, 'final')}
 </div></div>
