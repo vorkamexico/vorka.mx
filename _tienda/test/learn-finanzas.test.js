@@ -211,7 +211,7 @@ describe('Vorka Learn › Finanzas personales', () => {
     for (const x of RUTAS) expect(ind).toContain(`href="${x}"`);
     expect(principal(ind)).not.toMatch(/\$\s?\d|\/tienda\//);
     const portada = await (await pedir('/learn/')).text();
-    expect(portada).toContain(`>${FINANZAS.nombre}</h2>`);
+    expect(portada).toContain(`class="lr-mos-t"><b>${FINANZAS.nombre}</b>`);
     expect(portada).toContain(`href="${RUTA_FINANZAS}"`);
     for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
     const lista = jsonLd(portada)[0].mainEntity.itemListElement.map(i => i.url);

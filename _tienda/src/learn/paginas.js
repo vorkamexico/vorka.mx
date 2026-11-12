@@ -17,6 +17,8 @@ import { iconoDe } from './encabezado.js';
 import { ICONOS_LR } from './lectura.js';
 import { paginaArticulo } from './articulo.js';
 import { tarjetaArticulo, tarjeta } from './tarjetas.js';
+import { panelAvance, avanceSeccion, insignias, NIVELES } from './avance.js';
+import { HERRAMIENTAS, RUTA_HERRAMIENTAS } from './herramientas.js';
 
 export { SITIO, ld, ORG, LEARN, SITIO_LEARN, migas, migasLd };
 export { etiqueta, tarjeta, tarjetaArticulo } from './tarjetas.js';
@@ -66,7 +68,8 @@ export function paginaIndiceSeccion(clave, anuncios = null) {
   <section class="lr-banner">
     <div><span class="lr-kicker">${iconoDe(clave)}Vorka Learn · ${esc(s.corto)}</span>
     <h1 class="lr-h1">${esc(s.indice.h1)}</h1>
-    <p class="lr-lead">${esc(s.indice.lead)}</p></div>
+    <p class="lr-lead">${esc(s.indice.lead)}</p>
+    <div class="lr-banner-av">${avanceSeccion(s.ruta, s.n)}<span class="lr-banner-av-t">Cada guía que terminas suma a <a href="${RUTA_LEARN}#logros">tu avance</a>.</span></div></div>
     <div class="lr-banner-arte">${arte(clave, { semilla: 'indice', id: 'b' }).replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ')}</div>
   </section>
   <div class="gu-grid">${lista.map(tarjetaArticulo).join('')}</div>
@@ -82,51 +85,73 @@ export function paginaIndiceSeccion(clave, anuncios = null) {
 export const paginaIndiceExamen = (sim, anuncios = null) => SIMS[sim] ? paginaIndiceSeccion(SIMS[sim].clave, anuncios) : null;
 
 // ---------- portada ----------
+// Orden (de lo más útil a lo de apoyo): portada corta con buscador y «Tu avance» · confianza · ¿por dónde empiezas?
+// (mosaico de secciones con su avance) · anuncio · sigue donde te quedaste · todas las guías con filtros (todas van en el
+// HTML para Google; con JavaScript se ven 9 y «Ver más») · herramientas gratis · logros · practica · nota.
 const CONFIANZA = () => [
-  [ICONOS_LR.fuentes, 'Con fuentes oficiales', 'Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.'],
-  [ICONOS_LR.fecha, `Revisado en ${ACTUALIZADO_TXT}`, 'Las reglas y las convocatorias cambian; anotamos cuándo revisamos cada guía.'],
-  [ICONOS_LR.persona, 'Gratis y sin registro', 'Lees todo sin cuenta. Si quieres practicar un examen, los simuladores están aparte.'],
+  [ICONOS_LR.fuentes, 'Fuentes oficiales', 'citadas al final de cada guía'],
+  [ICONOS_LR.fecha, `Revisado en ${ACTUALIZADO_TXT}`, 'las reglas cambian; anotamos cuándo'],
+  [ICONOS_LR.persona, 'Gratis y sin registro', 'tu avance se guarda en tu dispositivo'],
 ];
-// Índice de la portada: dos bloques (exámenes y temas); cada sección en una tarjeta con su lema y sus primeras guías
-function indicePortada(lista, todos) {
-  const bloque = (t, d, l) => l.length ? `<div class="lr-ind-bloque"><h3 class="lr-ind-t">${t}</h3><p class="lr-ind-d">${d}</p><div class="lr-ind-grid">${l.map(s => {
-    const guias = todos.filter(a => a.clave === s.clave);
-    return `<article class="lr-ind lr-s-${s.clave}"><a class="lr-ind-cab" href="${s.ruta}"><span class="lr-m-ico">${iconoDe(s.clave)}</span><span><b>${esc(s.nombre)}</b><small>${esc(aspecto(s.clave).lema || '')}${aspecto(s.clave).lema ? ' · ' : ''}${s.n} ${s.n === 1 ? 'guía' : 'guías'}</small></span></a>
-      <ul>${guias.slice(0, 3).map(a => `<li><a href="${a.ruta}">${esc((a.x.titulo || a.x.h1).replace(/\s*\|\s*Vorka.*$/, ""))}</a></li>`).join('')}</ul>
-      ${guias.length > 3 ? `<a class="lr-ind-mas" href="${s.ruta}">Ver las ${guias.length} guías ${FLECHA}</a>` : ''}</article>`;
-  }).join('')}</div></div>` : '';
-  return `<section class="lr-indice" id="indice" aria-labelledby="indice-t"><p class="lr-sobre">Índice</p><h2 class="lr-h2" id="indice-t">¿Qué quieres aprender hoy?</h2>
-  ${bloque('Prepárate para tu examen', 'Cómo es cada examen de admisión, cuánto necesitas y cómo estudiar.', lista.filter(s => s.grupo === 'examen'))}
-  ${bloque('Aprende algo útil', 'Becas y carrera, tu dinero, tu negocio, tu app y tu página web.', lista.filter(s => s.grupo !== 'examen'))}
-</section>`;
-}
+const ATAJOS = [['paa', 'PAA'], ['unam', 'UNAM'], ['camino', 'Becas'], ['finanzas', 'Tu dinero']];
+const mosaico = l => l.map(s => `<a class="lr-mos lr-s-${s.clave}" href="${s.ruta}"><span class="lr-m-ico">${iconoDe(s.clave)}</span><span class="lr-mos-t"><b>${esc(s.nombre)}</b><small>${esc(aspecto(s.clave).lema || s.indice.descripcion)}</small></span>${avanceSeccion(s.ruta, s.n)}</a>`).join('');
 export function paginaLearnPortada(anuncios = null) {
   const lista = secciones(), p0 = LEARN_PORTADA, todos = articulos();
   const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: p0.h1, description: p0.descripcion, inLanguage: 'es-MX', url: `${SITIO}${RUTA_LEARN}`, publisher: ORG,
     isPartOf: SITIO_LEARN, about: LEARN, mainEntity: { '@type': 'ItemList', itemListElement: todos.map((a, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${a.ruta}`, name: a.x.h1 })) } }];
   const h1 = esc(p0.h1).replace(/^(.*?\bpara\s)(.+)$/, '$1<span>$2</span>');
-  const sims = lista.filter(s => s.simulador);
+  const sims = lista.filter(s => s.simulador), examenes = lista.filter(s => s.grupo === 'examen'), temas = lista.filter(s => s.grupo !== 'examen');
+  // Las más nuevas primero en «Todas las guías» (las últimas de cada archivo de datos son las más recientes)
+  const orden = [...todos].reverse();
   return paginaLearn({ titulo: p0.titulo, ruta: RUTA_LEARN, descripcion: p0.descripcion, imagen: `${SITIO}${OG_LEARN}`, imagenAlt: p0.h1, anuncios, head: ld(datos),
     cuerpo: `<div class="marco"><div class="lr-col lr-ancha">
   <section class="lr-portada">
-    <div>
+    <div class="lr-portada-txt">
       <span class="lr-kicker">${iconoDe('learn')}Vorka Learn</span>
       <h1 class="lr-h1">${h1}</h1>
-      <p class="lr-lead">${esc(p0.lead)}</p>
+      <p class="lr-lead">${esc(p0.corta || p0.lead)}</p>
       <form class="lr-buscador" action="${RUTA_BUSCAR}" method="get" role="search"><label class="vh" for="lr-q">Buscar en Vorka Learn</label><input id="lr-q" name="q" type="search" placeholder="Busca una guía o un tema" enterkeyhint="search" maxlength="80" autocomplete="off"><button type="submit" aria-label="Buscar">${ICONOS_LR.lupa}</button></form>
-      <a class="lr-ir-indice" href="#indice">Ver el índice de guías ${FLECHA}</a>
+      <div class="lr-chips">${ATAJOS.filter(([k]) => seccionDe(k)).map(([k, t]) => `<a class="lr-chip lr-s-${k}" href="${seccionDe(k).ruta}">${iconoDe(k)}${t}</a>`).join('')}<a class="lr-chip" href="${RUTA_HERRAMIENTAS}">${ICONOS_LR.herramienta}Herramientas</a></div>
     </div>
-    <div class="lr-portada-arte">${arteHero(lista.map(s => s.clave))}</div>
+    <div class="lr-portada-arte">${arteHero(lista.map(s => s.clave))}<div class="lr-portada-av">${panelAvance()}</div></div>
   </section>
-  <div class="lr-confianza">${CONFIANZA().map(([i, t, d]) => `<div>${i}<span><b>${t}</b>${d}</span></div>`).join('')}</div>
-  <p class="lr-nota"><b>Herramientas gratis:</b> <a href="/learn/herramientas/reducir-peso/">reducir el peso de un PDF o foto</a>, <a href="/learn/herramientas/dividir-pdf/">dividir y unir PDF</a>, <a href="/learn/herramientas/foto-tramites/">foto tamaño infantil para imprimir</a>, <a href="/learn/herramientas/codigo-qr/">crear un código QR</a> y <a href="/learn/herramientas/dividir-imagen/">dividir una imagen en partes</a>.</p>
-  ${indicePortada(lista, todos)}
-  ${lista.map((s, i) => `<section class="lr-grupo lr-s-${s.clave}" aria-labelledby="g-${s.clave}">
-    <div class="lr-grupo-cab"><span class="lr-m-ico">${iconoDe(s.clave)}</span><h2 class="lr-h2" id="g-${s.clave}">${esc(s.nombre)}</h2><a class="lr-todas" href="${s.ruta}">Todas las guías de ${esc(s.corto)} ${FLECHA}</a></div>
-    <p class="lr-grupo-lead">${esc(s.indice.lead)}</p>
-    <div class="gu-grid">${todos.filter(a => a.clave === s.clave).map(tarjetaArticulo).join('')}</div>
-  </section>${i === 0 ? espacioAnuncio(anuncios, 'indice') : ''}`).join('\n')}
-  ${sims.length ? `<section class="lr-practica-sec" id="practica" aria-labelledby="practica-t"><p class="lr-sobre lr-oro">Practica</p><h2 class="lr-h2" id="practica-t">Ponte a prueba antes del examen</h2>
+  <ul class="lr-confianza">${CONFIANZA().map(([i, t, d]) => `<li>${i}<span><b>${t}</b>${d}</span></li>`).join('')}</ul>
+
+  <section class="lr-bloque" id="secciones" aria-labelledby="sec-t">
+    <div class="lr-cab"><span class="etiqueta">Elige un tema</span><h2 class="lr-h2" id="sec-t">¿Por dónde empiezas?</h2></div>
+    <h3 class="lr-sub">Prepárate para tu examen</h3>
+    <div class="lr-mosaico">${mosaico(examenes)}</div>
+    <h3 class="lr-sub">Aprende algo útil</h3>
+    <div class="lr-mosaico">${mosaico(temas)}</div>
+  </section>
+  ${espacioAnuncio(anuncios, 'indice')}
+
+  <section class="lr-bloque lr-sigue-sec" data-av-sigue hidden aria-labelledby="sigue-t">
+    <div class="lr-sigue-in"><div><span class="etiqueta">Tu siguiente guía</span><h2 class="lr-h2" id="sigue-t">Sigue donde te quedaste</h2><p>Elegimos la que sigue en el tema que estabas leyendo.</p></div><div class="lr-sigue-tarjeta" data-av-sigue-tarjeta></div></div>
+  </section>
+
+  <section class="lr-bloque" id="indice" aria-labelledby="indice-t" data-explora>
+    <div class="lr-cab lr-cab-par"><div><span class="etiqueta">Todas las guías</span><h2 class="lr-h2" id="indice-t">Explora las ${todos.length} guías</h2></div><p>Primero las más nuevas. Filtra por tema.</p></div>
+    <div class="lr-filtros" role="group" aria-label="Filtrar guías por tema"><button type="button" data-filtro="" aria-pressed="true">Todas</button>${lista.map(s => `<button type="button" class="lr-s-${s.clave}" data-filtro="${s.ruta}" aria-pressed="false">${esc(s.corto)}</button>`).join('')}</div>
+    <div class="gu-grid">${orden.map(tarjetaArticulo).join('')}</div>
+    <p class="lr-mas-p"><button type="button" class="btn blanco" data-mas hidden>Ver más guías</button></p>
+  </section>
+
+  <section class="lr-bloque" id="herramientas" aria-labelledby="her-t">
+    <div class="lr-cab lr-cab-par"><div><span class="etiqueta">Herramientas gratis</span><h2 class="lr-h2" id="her-t">Resuélvelo en un minuto</h2></div><p>Funcionan en tu navegador: tus archivos no se suben a ningún lado.</p></div>
+    <div class="lr-herr">${HERRAMIENTAS.map(h => `<a href="${h.ruta}"><span class="lr-herr-ico">${ICONOS_LR.herramienta}</span><span><b>${esc(h.corto)}</b><small>${esc(h.usos ? h.usos.join(' · ') : h.nombre)}</small></span><span class="lr-m-fl" aria-hidden="true">›</span></a>`).join('')}</div>
+  </section>
+
+  <section class="lr-bloque lr-logros-sec" id="logros" aria-labelledby="logros-t">
+    <div class="lr-logros-in">
+      <div><span class="etiqueta">Tu avance</span><h2 class="lr-h2" id="logros-t">Lee, junta puntos y sube de nivel</h2>
+      <p>Cada guía que terminas suma 10 puntos y cuenta para tu racha. Los logros suman 25. No necesitas cuenta: tu avance se guarda solo en este dispositivo.</p>
+      <p class="lr-niveles">${NIVELES.map(([n, t]) => `<span>${t}<small>${n ? `${n} guías` : 'al empezar'}</small></span>`).join('')}</p></div>
+      ${insignias()}
+    </div>
+  </section>
+
+  ${sims.length ? `<section class="lr-practica-sec" id="practica" aria-labelledby="practica-t"><span class="etiqueta">Practica</span><h2 class="lr-h2" id="practica-t">Ponte a prueba antes del examen</h2>
     <p>Cuando ya leíste la guía, lo que más ayuda es practicar con el formato del examen. Estos son los simuladores de práctica de Vorka México, con reactivos originales.</p>
     <div class="lr-sims">${sims.map(s => `<a class="lr-sim lr-s-${s.clave}" href="${s.simulador.href}"><span class="lr-m-ico">${iconoDe(s.clave)}</span><span>${esc(s.simulador.titulo)}<small>Examen de práctica y reporte</small></span><span class="lr-m-fl" aria-hidden="true">›</span></a>`).join('')}<a class="lr-sim" href="/test-vocacional/"><span>Test vocacional Vorka<small>Gratis: tus 3 tipos de interés y tu carrera más afín</small></span><span class="lr-m-fl" aria-hidden="true">›</span></a></div></section>` : ''}
   <p class="lr-nota">Vorka Learn es la sección de guías de Vorka México. Las guías son informativas y no estamos afiliados a las instituciones que aplican estos exámenes ni a ninguna institución financiera; confirma siempre fechas y requisitos en la convocatoria vigente. Las guías de finanzas y de negocio son información general con fines educativos; no son asesoría financiera, legal ni fiscal personalizada. <a href="${RUTA_ACERCA}">Cómo hacemos Vorka Learn</a>.</p>

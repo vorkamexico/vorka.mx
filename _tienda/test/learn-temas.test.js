@@ -205,7 +205,7 @@ for (const { S, X, T, n, oficiales, llamado, dice, aviso, sinPesos, seccionRevis
       for (const x of RUTAS) expect(ind).toContain(`href="${x}"`);
       expect(principal(ind)).not.toMatch(/\/tienda\//);
       const portada = await (await pedir('/learn/')).text();
-      expect(portada).toContain(`>${S.nombre}</h2>`);
+      expect(portada).toContain(`class="lr-mos-t"><b>${S.nombre}</b>`);
       for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
       expect(cabecera(portada)).toContain(`href="${T.ruta}"><span class="lr-m-ico">`);
       expect(await (await pedir('/learn/acerca/')).text()).toContain(S.nombre);

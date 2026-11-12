@@ -17,11 +17,13 @@ export { SITIO, RUTA_LEARN, p, ul, ol, tabla, nota, caja, a, ext, ld, ORG, LEARN
 import { cssLearn } from './learn/estilos.js';
 import { encabezadoLearn } from './learn/encabezado.js';
 import { BARRA, SUBIR, SCRIPT_LEARN } from './learn/lectura.js';
+import { scriptAvance } from './learn/avance.js';
+import { secciones } from './learn/datos.js';
 // La plantilla de artículo de todas las secciones
 export { paginaArticulo, compartir } from './learn/articulo.js';
 
 const VERSION_CSS = [...ESTILOS].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7).toString(36);
-let CSS = null;   // se arma una vez por Worker (tokens de cada sección + estilos)
+let CSS = null, AVANCE = null;   // se arma una vez por Worker (tokens de cada sección + estilos)
 // La CSP de la tienda, más os.vorka.mx en connect-src: el formulario corto «¿Lo hacemos por ti?» (src/learn/puente.js) manda ahí
 const seguridadLearn = (n, anuncios) => {
   const h = seguridad(n, { anuncios });
@@ -39,6 +41,8 @@ const absoluta = u =>/^https?:\/\//.test(u) ? u : `https://vorka.mx${u}`;
 export function paginaLearn({ titulo, descripcion, ruta, cuerpo, head = '', imagen, imagenAlt = '', ogTipo = 'website', actual = '', seccion = actual, anuncios = null, lectura = false, noindex = false, status = 200 }) {
   const n = nonce();
   CSS ??= cssLearn();
+  // Tu avance (src/learn/avance.js): cuántas guías tiene cada sección, para «Sección completa» y las barras
+  AVANCE ??= scriptAvance(Object.fromEntries(secciones().map(s => [s.ruta, s.n])));
   const og = absoluta(imagen || '/assets/learn/og/learn.png');
   const html = `<!doctype html>
 <html lang="es-MX" data-app="learn">
@@ -78,7 +82,7 @@ ${lectura ? BARRA : ''}${encabezadoLearn(actual)}
 ${cuerpo}
 </main>
 ${SUBIR}
-${PIE.replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_LEARN}</script>${scriptAnuncios(anuncios, n, cuerpo)}
+${PIE.replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_LEARN}</script><script nonce="${n}">${AVANCE}</script>${scriptAnuncios(anuncios, n, cuerpo)}
 </body>
 </html>`;
   return new Response(html, {
