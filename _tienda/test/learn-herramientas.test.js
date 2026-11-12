@@ -38,10 +38,16 @@ describe('Herramientas de Vorka Learn', () => {
     expect(html).toContain('href="/sparks/celaya/nota-uno/"');
     expect(html).toContain('https://fotos.vorka.mx/celaya/os_n1-1-800.webp');
     expect(html).toContain('Lo más reciente en Revista Sparks');
-    expect(html).toContain('Guías para tus redes y tu negocio');
-    expect(html).toMatch(/class="gu-card lr-s-(web|apps|negocio)"/);
-    expect(html).toContain('De la tienda Vorka para tu negocio');
-    expect(html).toMatch(/href="\/tienda\/(vende|pagina-web|brindi|vuelve)[a-z-]*\/"/);
+    expect(html).toContain('Guías para tu examen y tu carrera');
+    expect(html).not.toMatch(/class="gu-card lr-s-(web|apps|negocio|finanzas|fiestas)"/);
+    // Productos para estudiantes ARRIBA de la herramienta (a la vista sin bajar)
+    const antes = html.split('id="di"')[0];
+    expect(antes).toContain('class="di-arriba"');
+    expect((antes.match(/class="di-mini"/g) || []).length).toBe(3);
+    expect(antes).toMatch(/class="di-mini" href="\/(test-vocacional|simulador-[a-z-]+)\/"/);
+    expect(html).toContain('class="di-res-promo"');
+    // Las flechas de las ligas tienen tamaño (antes salían gigantes)
+    expect(html).toContain('.di-mas svg,.di-arriba svg,.di-res-promo svg{width:16px;height:16px;flex:none}');
     expect(html.split('<main')[1]).not.toMatch(/\$\s?\d/);
   });
 

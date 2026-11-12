@@ -58,6 +58,7 @@ Contacto: hola@vorka.mx · +52 81 1780 4869 · https://vorka.mx/contacto/
 ## Vorka Learn
 
 - [Vorka Learn](https://vorka.mx/learn/): guías con fuentes oficiales sobre exámenes de admisión, becas y cómo elegir carrera, finanzas personales, negocio pequeño y cómo crear y vender tu app.
+- [Dividir una imagen en partes](https://vorka.mx/learn/herramientas/dividir-imagen/): herramienta gratis que corta una foto en cuadrícula (carrusel, mosaico 3 × 3 de Instagram o póster en varias hojas) dentro del navegador, sin subir la imagen.
 
 ## Comunidad
 

@@ -119,6 +119,7 @@ export function paginaLearnPortada(anuncios = null) {
     <div class="lr-portada-arte">${arteHero(lista.map(s => s.clave))}</div>
   </section>
   <div class="lr-confianza">${CONFIANZA().map(([i, t, d]) => `<div>${i}<span><b>${t}</b>${d}</span></div>`).join('')}</div>
+  <p class="lr-nota"><b>Herramienta gratis:</b> <a href="/learn/herramientas/dividir-imagen/">dividir una imagen en partes</a> para un carrusel, el mosaico de Instagram o imprimirla en varias hojas.</p>
   ${indicePortada(lista, todos)}
   ${lista.map((s, i) => `<section class="lr-grupo lr-s-${s.clave}" aria-labelledby="g-${s.clave}">
     <div class="lr-grupo-cab"><span class="lr-m-ico">${iconoDe(s.clave)}</span><h2 class="lr-h2" id="g-${s.clave}">${esc(s.nombre)}</h2><a class="lr-todas" href="${s.ruta}">Todas las guías de ${esc(s.corto)} ${FLECHA}</a></div>
