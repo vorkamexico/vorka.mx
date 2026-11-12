@@ -38,3 +38,11 @@ Recortes de material que ya está en el repo, para la sección «Lo que hemos he
 - `agenda`, `vuelve`, `cupo`, `simulador-paa` ← `assets/tienda/v3/<k>-portada.webp`
 - `sparks-celaya` ← `sparks/celaya/assets/celaya-jardin-1200.webp`
 - `fc-balon` ← `img/fc/balon-1600.webp`
+
+## Sparks Cortazar (_sparks/assets/cortazar-*)
+Fotos de Wikimedia Commons, CC BY-SA (se acredita en la presentación de vorka.mx/sparks/cortazar):
+- cortazar-parroquia: «ParishCortazarGTO_04.jpg», AlejandroLinaresGarcia, CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:ParishCortazarGTO_04.jpg
+- cortazar-atrio: «ParishCortazarGTO_01.jpg», AlejandroLinaresGarcia, CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:ParishCortazarGTO_01.jpg
+- cortazar-jardin: «MainSquareCortazar01.jpg», AlejandroLinaresGarcia, CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:MainSquareCortazar01.jpg
+- cortazar-guadalupe: «Parroquia de Nuestra Señora de Guadalupe.JPG», Carlos Alonso Caballero Vallejo, CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:Parroquia_de_Nuestra_Señora_de_Guadalupe.JPG
+- cortazar-cerro: «Alberto Juárez - Campanario 9.jpg», Alberto Juárez, CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:Alberto_Juárez_-_Campanario_9.jpg
