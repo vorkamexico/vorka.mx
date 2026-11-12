@@ -41,8 +41,23 @@ describe('Mira tu negocio', () => {
     expect(r.headers.get('location')).toBe('https://vorka.mx/tienda/mira-tu-negocio/?n=A');
   });
 
-  it('cada giro trae 4 servicios y su premio', () => {
-    for (const g of Object.values(GIROS)) { expect(g.servicios).toHaveLength(4); expect(g.premio).toBeTruthy(); }
+  it('cada giro trae 4 servicios, su premio y 3 ideas para su página', () => {
+    for (const g of Object.values(GIROS)) { expect(g.servicios).toHaveLength(4); expect(g.premio).toBeTruthy(); expect(g.ideas).toHaveLength(3); }
+    expect(Object.keys(GIROS).length).toBeGreaterThanOrEqual(25);
+  });
+
+  it('se encuentra buscando «tarjeta de lealtad»: giros como podología, ideas, IMPACTO y preguntas para Google y asistentes', async () => {
+    const h = await (await pedir('/tienda/mira-tu-negocio/')).text();
+    expect(h).toMatch(/<title>Tarjeta de lealtad digital/);
+    expect(h).toContain('value="podologia"');
+    expect(h).toContain('href="/tienda/mira-tu-negocio/?g=podologia#form-mira"');
+    expect(h).toContain('Que encuentren tu consultorio');
+    expect(h).toContain('Juventudes Impactando México');
+    expect(h).toContain('"@type":"FAQPage"');
+    expect(h).toContain('¿Qué es una tarjeta de lealtad digital?');
+    expect(h).toContain('data-mt="ideas"');
+    const mapa = await (await pedir('/tienda/sitemap.xml')).text();
+    expect(mapa).toContain('<loc>https://vorka.mx/tienda/mira-tu-negocio/</loc>');
   });
 
   it('«Lo quiero» manda el prospecto a Vorka OS con el giro y valida el WhatsApp', async () => {

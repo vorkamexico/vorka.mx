@@ -8,7 +8,8 @@
 import { pagina, esc } from './paginas.js';
 import { productoPorSlug, registrarAnalitica, dentroDelLimite } from './modelo.js';
 import { json, sha256 } from './util.js';
-import { refDeVisita } from './tienda.js';
+import { refDeVisita, seccionFaq } from './tienda.js';
+import { ldScript, migas } from './seo.js';
 import { FLECHA } from './marco.generado.js';
 // Sin importar negociocompleto.js (ese importa los giros de aquí): mismas constantes
 const RUTA_NEGOCIO_COMPLETO = '/tienda/negocio-completo/', SLUG_NEGOCIO_COMPLETO = 'negocio-completo-mensual';
@@ -19,20 +20,80 @@ const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headl
 
 // Por giro: servicios de ejemplo para la agenda (nombre, hora) y para la página (con precio), premio de la tarjeta y frase de portada
 export const GIROS = {
-  estetica: { nombre: 'Estética', frase: 'Corte, color y peinado con cita.', premio: 'tu corte gratis', servicios: [['Corte de cabello', 250], ['Tinte', 650], ['Peinado', 350], ['Tratamiento', 450]] },
-  barberia: { nombre: 'Barbería', frase: 'Cortes y barba sin hacer fila.', premio: 'tu corte gratis', servicios: [['Corte clásico', 180], ['Corte y barba', 260], ['Arreglo de barba', 120], ['Corte niño', 150]] },
-  unas: { nombre: 'Uñas', frase: 'Manicure y pedicure con cita.', premio: 'tu manicure gratis', servicios: [['Manicure', 250], ['Gelish', 300], ['Pedicure', 320], ['Acrílico', 450]] },
-  spa: { nombre: 'Spa y masajes', frase: 'Date un respiro, reserva tu masaje.', premio: 'tu masaje gratis', servicios: [['Masaje relajante', 600], ['Facial', 550], ['Masaje descontracturante', 700], ['Piedras calientes', 750]] },
-  dental: { nombre: 'Consultorio dental', frase: 'Tu sonrisa, con cita y sin esperas.', premio: 'tu limpieza gratis', servicios: [['Limpieza dental', 600], ['Revisión', 350], ['Resina', 800], ['Blanqueamiento', 2500]] },
-  nutricion: { nombre: 'Nutrición', frase: 'Tu plan de alimentación a tu medida.', premio: 'tu consulta gratis', servicios: [['Primera consulta', 500], ['Seguimiento', 400], ['Plan mensual', 1200], ['Medición corporal', 250]] },
-  psicologia: { nombre: 'Psicología', frase: 'Un espacio para ti, con cita.', premio: 'una sesión de cortesía', servicios: [['Sesión individual', 600], ['Terapia de pareja', 800], ['Primera sesión', 500], ['Sesión en línea', 550]] },
-  cafeteria: { nombre: 'Cafetería', frase: 'Tu café de todos los días.', premio: 'tu bebida gratis', servicios: [['Americano', 45], ['Latte', 60], ['Frappé', 75], ['Pan dulce', 35]] },
-  restaurante: { nombre: 'Restaurante', frase: 'Comida casera, reserva tu mesa.', premio: 'tu postre gratis', servicios: [['Comida del día', 120], ['Desayuno', 95], ['Mesa para 4', 0], ['Postre', 55]] },
-  panaderia: { nombre: 'Panadería', frase: 'Pan recién hecho, diario.', premio: 'tu pan gratis', servicios: [['Concha', 14], ['Pastel por pedido', 380], ['Bolillo', 4], ['Galletas', 60]] },
-  gimnasio: { nombre: 'Gimnasio', frase: 'Entrena con nosotros, reserva tu clase.', premio: 'una semana gratis', servicios: [['Clase de spinning', 80], ['Entrenamiento personal', 300], ['Mensualidad', 550], ['Clase de yoga', 90]] },
-  veterinaria: { nombre: 'Veterinaria', frase: 'Cuidamos a tu mascota como tú.', premio: 'tu baño gratis', servicios: [['Consulta', 350], ['Baño y corte', 300], ['Vacuna', 400], ['Desparasitación', 200]] },
-  otro: { nombre: 'Negocio', frase: 'Reserva en línea y junta tus sellos.', premio: 'tu servicio gratis', servicios: [['Servicio', 300], ['Consulta', 400], ['Paquete', 800], ['Visita', 250]] },
+  // Belleza y cuidado personal
+  estetica: { nombre: 'Estética', frase: 'Corte, color y peinado con cita.', premio: 'tu corte gratis', servicios: [['Corte de cabello', 250], ['Tinte', 650], ['Peinado', 350], ['Tratamiento', 450]],
+    ideas: ['Galería de antes y después para que vean tu trabajo', 'Agenda por estilista: cada quien con sus horarios', 'Paquete de novia o XV años con apartado en línea'] },
+  barberia: { nombre: 'Barbería', frase: 'Cortes y barba sin hacer fila.', premio: 'tu corte gratis', servicios: [['Corte clásico', 180], ['Corte y barba', 260], ['Arreglo de barba', 120], ['Corte niño', 150]],
+    ideas: ['Que reserven su silla y ya no hagan fila', 'Fotos de cortes para que elijan el suyo antes de llegar', 'Recordatorio a las tres semanas para su siguiente corte'] },
+  unas: { nombre: 'Uñas', frase: 'Manicure y pedicure con cita.', premio: 'tu manicure gratis', servicios: [['Manicure', 250], ['Gelish', 300], ['Pedicure', 320], ['Acrílico', 450]],
+    ideas: ['Catálogo de diseños de temporada', 'Reservas con anticipo para no perder citas', 'Sello extra a quien trae a una amiga'] },
+  pestanas: { nombre: 'Pestañas y cejas', frase: 'Pestañas y cejas listas, con cita.', premio: 'tu retoque gratis', servicios: [['Extensiones clásicas', 600], ['Retoque', 350], ['Lifting de pestañas', 450], ['Diseño de ceja', 200]],
+    ideas: ['Recordatorio de retoque a las tres semanas', 'Fotos de estilos para que elijan antes de la cita', 'Cuidados después del servicio, siempre a la mano'] },
+  spa: { nombre: 'Spa y masajes', frase: 'Date un respiro, reserva tu masaje.', premio: 'tu masaje gratis', servicios: [['Masaje relajante', 600], ['Facial', 550], ['Masaje descontracturante', 700], ['Piedras calientes', 750]],
+    ideas: ['Tarjetas de regalo para cumpleaños y Día de las Madres', 'Paquetes para parejas con reserva en línea', 'Recordatorio mensual para que se den su tiempo'] },
+  tatuajes: { nombre: 'Tatuajes', frase: 'Tu idea, en tu piel, con cita.', premio: 'tu perforación gratis', servicios: [['Tatuaje chico', 900], ['Sesión por hora', 1200], ['Perforación', 350], ['Retoque', 0]],
+    ideas: ['Portafolio por estilo y por artista', 'Cotización con foto de la idea antes de agendar', 'Cuidados del tatuaje para mandar después de cada sesión'] },
+  // Salud con cita
+  podologia: { nombre: 'Podología', frase: 'Cuidamos tus pies, con cita.', premio: 'tu pedicure clínico gratis', servicios: [['Consulta podológica', 450], ['Pedicure clínico', 500], ['Uña enterrada', 650], ['Plantillas', 1200]],
+    ideas: ['Que encuentren tu consultorio cuando busquen «podólogo cerca de mí»', 'Explicar cada tratamiento para que lleguen sin miedo', 'Recordatorio de revisión para pacientes con diabetes'] },
+  dental: { nombre: 'Consultorio dental', frase: 'Tu sonrisa, con cita y sin esperas.', premio: 'tu limpieza gratis', servicios: [['Limpieza dental', 600], ['Revisión', 350], ['Resina', 800], ['Blanqueamiento', 2500]],
+    ideas: ['Recordatorio de limpieza cada seis meses', 'Precios claros de los tratamientos más pedidos', 'Botón de urgencias que abre tu WhatsApp'] },
+  consultorio: { nombre: 'Consultorio médico', frase: 'Consulta con cita, sin esperas largas.', premio: 'tu consulta de seguimiento gratis', servicios: [['Consulta general', 500], ['Seguimiento', 400], ['Certificado médico', 300], ['Consulta a domicilio', 900]],
+    ideas: ['Agenda en línea con tus horarios reales', 'Tu cédula, especialidad y ubicación para que confíen desde antes', 'Recordatorio de seguimiento para pacientes crónicos'] },
+  fisioterapia: { nombre: 'Fisioterapia', frase: 'Recupérate con un plan a tu medida.', premio: 'tu sesión gratis', servicios: [['Valoración', 500], ['Sesión de fisioterapia', 550], ['Paquete de 10 sesiones', 4800], ['Masaje deportivo', 600]],
+    ideas: ['Paquetes de sesiones con su avance a la vista', 'Ejercicios para casa en una liga privada', 'Que te encuentren equipos deportivos de tu ciudad'] },
+  nutricion: { nombre: 'Nutrición', frase: 'Tu plan de alimentación a tu medida.', premio: 'tu consulta gratis', servicios: [['Primera consulta', 500], ['Seguimiento', 400], ['Plan mensual', 1200], ['Medición corporal', 250]],
+    ideas: ['Consulta en línea para pacientes de otras ciudades', 'Recetas y menús de muestra que se comparten solos', 'Recordatorio de seguimiento cada quince días'] },
+  psicologia: { nombre: 'Psicología', frase: 'Un espacio para ti, con cita.', premio: 'una sesión de cortesía', servicios: [['Sesión individual', 600], ['Terapia de pareja', 800], ['Primera sesión', 500], ['Sesión en línea', 550]],
+    ideas: ['Agenda discreta: cada quien ve solo su cita', 'Sesiones en línea con liga de videollamada', 'Explicar tu enfoque para que llegue quien sí te necesita'] },
+  optica: { nombre: 'Óptica', frase: 'Examen de la vista y lentes a tu medida.', premio: 'tu limpieza y ajuste gratis', servicios: [['Examen de la vista', 0], ['Lentes graduados', 1800], ['Lentes de contacto', 900], ['Ajuste y limpieza', 0]],
+    ideas: ['Catálogo de armazones con precio', 'Cita para examen de la vista en línea', 'Recordatorio anual para revisar la graduación'] },
+  // Mascotas
+  veterinaria: { nombre: 'Veterinaria', frase: 'Cuidamos a tu mascota como tú.', premio: 'tu baño gratis', servicios: [['Consulta', 350], ['Baño y corte', 300], ['Vacuna', 400], ['Desparasitación', 200]],
+    ideas: ['Carnet de vacunas con recordatorio de la siguiente', 'Botón de urgencias a tu WhatsApp', 'Fotos de pacientes felices (con permiso de sus dueños)'] },
+  estetica_canina: { nombre: 'Estética canina', frase: 'Baño y corte para tu perro, con cita.', premio: 'tu baño gratis', servicios: [['Baño chico', 250], ['Baño y corte', 350], ['Corte de uñas', 80], ['Servicio a domicilio', 450]],
+    ideas: ['Reserva por tamaño de perro, con precio claro', 'Foto de cómo quedó, lista para compartir', 'Recordatorio cada mes para su siguiente baño'] },
+  // Comida
+  cafeteria: { nombre: 'Cafetería', frase: 'Tu café de todos los días.', premio: 'tu bebida gratis', servicios: [['Americano', 45], ['Latte', 60], ['Frappé', 75], ['Pan dulce', 35]],
+    ideas: ['Menú con fotos que se actualiza desde tu celular', 'Pedidos para recoger sin hacer fila', 'Bebida de temporada con reto de sellos'] },
+  restaurante: { nombre: 'Restaurante', frase: 'Comida casera, reserva tu mesa.', premio: 'tu postre gratis', servicios: [['Comida del día', 120], ['Desayuno', 95], ['Mesa para 4', 0], ['Postre', 55]],
+    ideas: ['Menú del día publicado cada mañana', 'Reservas para grupos y festejos', 'Que te encuentren en Google con fotos y horario'] },
+  taqueria: { nombre: 'Taquería', frase: 'Tacos como los de siempre, pide para llevar.', premio: 'tu orden gratis', servicios: [['Orden de pastor', 90], ['Gringa', 85], ['Quesadilla', 45], ['Refresco', 30]],
+    ideas: ['Menú con precios y botón para pedir por WhatsApp', 'Promoción de los días flojos para llenar el local', 'Mapa y horario para quien te busca de noche'] },
+  pizzeria: { nombre: 'Pizzería', frase: 'Pizza recién hecha, a domicilio o para recoger.', premio: 'tu pizza mediana gratis', servicios: [['Pizza mediana', 180], ['Pizza grande', 240], ['Alitas', 150], ['Refresco 2 L', 45]],
+    ideas: ['Pedidos por WhatsApp con el menú completo', 'Promoción del martes o miércoles con aviso a tus clientes', 'Combos para fiestas con apartado'] },
+  panaderia: { nombre: 'Panadería', frase: 'Pan recién hecho, diario.', premio: 'tu pan gratis', servicios: [['Concha', 14], ['Pastel por pedido', 380], ['Bolillo', 4], ['Galletas', 60]],
+    ideas: ['Pedidos de pastel con fecha y anticipo', 'Avisar a qué hora sale el pan caliente', 'Rosca y pan de muerto con pedido anticipado'] },
+  heladeria: { nombre: 'Nevería', frase: 'Helados y paletas para el calor.', premio: 'tu helado gratis', servicios: [['Helado sencillo', 45], ['Paleta de agua', 25], ['Malteada', 70], ['Litro para llevar', 160]],
+    ideas: ['Sabores del día publicados cada mañana', 'Pedidos para fiestas y eventos', 'Reto de sellos para las tardes de calor'] },
+  // Tiendas y servicios
+  floreria: { nombre: 'Florería', frase: 'Flores para cada ocasión, con entrega.', premio: 'tu ramo chico gratis', servicios: [['Ramo de rosas', 450], ['Arreglo de mesa', 650], ['Entrega a domicilio', 80], ['Corona', 1500]],
+    ideas: ['Catálogo con precio y pedido por WhatsApp', 'Recordatorio antes del 14 de febrero y del 10 de mayo', 'Entregas con hora y foto de cómo quedó'] },
+  boutique: { nombre: 'Boutique', frase: 'Ropa y accesorios que te van.', premio: '$100 en tu siguiente compra', servicios: [['Vestido', 650], ['Blusa', 320], ['Jeans', 550], ['Accesorios', 150]],
+    ideas: ['Catálogo con tallas y apartado por WhatsApp', 'Aviso a tus clientas cuando llega mercancía nueva', 'Que te encuentren en Google por tu colonia'] },
+  gimnasio: { nombre: 'Gimnasio', frase: 'Entrena con nosotros, reserva tu clase.', premio: 'una semana gratis', servicios: [['Clase de spinning', 80], ['Entrenamiento personal', 300], ['Mensualidad', 550], ['Clase de yoga', 90]],
+    ideas: ['Horario de clases con lugares disponibles', 'Clase de prueba gratis para que se animen', 'Reto del mes con premio a quien más viene'] },
+  clases: { nombre: 'Clases y escuela', frase: 'Aprende con nosotros: inscríbete en línea.', premio: 'una clase gratis', servicios: [['Clase muestra', 0], ['Mensualidad', 900], ['Inscripción', 400], ['Clase particular', 300]],
+    ideas: ['Inscripción y pago en línea', 'Horarios por nivel y por edad', 'Fotos y videos de los festivales para presumir a tus alumnos'] },
+  autolavado: { nombre: 'Autolavado', frase: 'Tu auto limpio, sin esperar.', premio: 'tu lavado gratis', servicios: [['Lavado exterior', 120], ['Lavado completo', 180], ['Encerado', 350], ['Lavado de motor', 200]],
+    ideas: ['Paquetes con precio claro por tamaño de auto', 'Cita para no esperar en fila el fin de semana', 'Membresía mensual de lavados'] },
+  taller: { nombre: 'Taller mecánico', frase: 'Servicio para tu auto, con cita.', premio: 'tu revisión gratis', servicios: [['Afinación', 1200], ['Cambio de aceite', 650], ['Frenos', 900], ['Diagnóstico', 300]],
+    ideas: ['Cita para servicio sin dejar el auto todo el día', 'Recordatorio del siguiente cambio de aceite', 'Fotos del trabajo para generar confianza'] },
+  lavanderia: { nombre: 'Lavandería', frase: 'Tu ropa limpia, lista cuando la necesitas.', premio: 'tu carga gratis', servicios: [['Lavado por kilo', 30], ['Planchado por pieza', 15], ['Edredón', 180], ['Recolección a domicilio', 50]],
+    ideas: ['Recolección a domicilio con hora', 'Aviso cuando la ropa está lista', 'Precios por kilo y por prenda a la vista'] },
+  otro: { nombre: 'Negocio', frase: 'Reserva en línea y junta tus sellos.', premio: 'tu servicio gratis', servicios: [['Servicio', 300], ['Consulta', 400], ['Paquete', 800], ['Visita', 250]],
+    ideas: ['Tus servicios y precios claros, con botón a tu WhatsApp', 'Que te encuentren en Google con tu horario y ubicación', 'Tarjeta de sellos para que tus clientes regresen'] },
 };
+// Preguntas de quien busca «tarjeta de lealtad» (en Google, ChatGPT o Gemini): respuestas cortas y ciertas, también como FAQPage
+export const FAQ_MIRA = [
+  ['¿Qué es una tarjeta de lealtad digital?', 'Es la tarjeta de sellos de siempre, pero en el celular de tu cliente: se guarda en Apple Wallet, Google Wallet o en su navegador, sin descargar ninguna app. Cada visita suma un sello o puntos y, al juntar los necesarios, se lleva su premio. Ya no se pierde ni se olvida en casa.'],
+  ['¿Para qué negocios sirve?', 'Para cualquier negocio con clientes que pueden regresar: estéticas, barberías, uñas, spas, podología, consultorios dentales y médicos, fisioterapia, nutrición, ópticas, veterinarias, cafeterías, taquerías, restaurantes, panaderías, florerías, boutiques, gimnasios, escuelas, autolavados y talleres. Si tu giro no aparece, también funciona: tú eliges el premio.'],
+  ['¿Mis clientes tienen que descargar una app?', 'No. Escanean el QR de tu mostrador, escriben su nombre y su celular, y su tarjeta queda en su teléfono en menos de un minuto.'],
+  ['¿Cuánto cuesta?', 'Negocio Completo (tarjeta de lealtad, agenda en línea y página web) cuesta $749 al mes, con plan de 12 meses; el dominio se paga aparte. Si solo quieres la tarjeta de lealtad, <a href="/tienda/vuelve/">Vuelve</a> se prueba 7 días gratis, sin tarjeta.'],
+  ['¿Cómo hago que mis clientes regresen?', 'Con un premio que se sienta cerca (de 5 a 10 visitas), un aviso automático de «te extrañamos» a quien lleva tiempo sin venir, una felicitación de cumpleaños con regalo y un premio para quien te recomiende. Todo eso viene incluido.'],
+  ['¿De quién son los datos de mis clientes?', 'Tuyos. Los descargas cuando quieras, también si cancelas. Vorka no los vende ni los usa para publicidad.'],
+  ['¿Cómo apoyo a IMPACTO con mi negocio?', 'Al crear tu tarjeta puedes dar un descuento a los jóvenes de IMPACTO (Juventudes Impactando México A.C.), que hacen proyectos en sus comunidades. Ellos lo usan con su credencial y tu negocio aparece destacado con el sello «Va por el futuro de México». Es opcional y lo cambias cuando quieras.'],
+];
 export const COLORES = ['#1f6f54', '#7a3b2e', '#1d3f72', '#8a3d6b', '#b5651d', '#222222'];
 
 // POST /api/mira-tu-negocio { nombre, whatsapp, negocio, giro, ciudad } → prospecto en Vorka OS (máx. 5 por IP por hora)
@@ -63,15 +124,16 @@ export async function paginaMiraTuNegocio(env, req, url) {
   const opciones = Object.entries(GIROS).map(([k, v]) => `<option value="${k}"${k === g ? ' selected' : ''}>${esc(v.nombre)}</option>`).join('');
   const colores = COLORES.map((col, i) => `<label class="mt-color" style="--c:${col}"><input type="radio" name="color" value="${col}"${i === 0 ? ' checked' : ''}><span aria-label="Color ${i + 1}"></span></label>`).join('');
   return pagina({ navActual: 'catalogo',
-    titulo: 'Mira cómo quedaría tu negocio: tarjeta de lealtad, agenda y página web | Vorka México', ruta: RUTA_MIRA,
+    titulo: 'Tarjeta de lealtad digital, agenda y página web: mira cómo quedaría tu negocio | Vorka México', ruta: RUTA_MIRA,
     imagen: 'https://vorka.mx/assets/tienda/v3/negocio-completo-og.jpg',
-    descripcion: 'Escribe el nombre de tu negocio y mira al instante cómo quedarían tu tarjeta de sellos, tu agenda en línea y tu página web. Gratis y sin registrarte.',
-    head: `<style>${CSS_MIRA}</style>`, headers: cookie ? { 'set-cookie': cookie } : {},
+    descripcion: 'Tarjeta de lealtad digital (sellos en el celular, sin app), agenda en línea y página web para estéticas, podología, consultorios, cafeterías, taquerías y más. Escribe el nombre de tu negocio y míralo al instante, gratis.',
+    head: `${ldScript([migas('Mira tu negocio', RUTA_MIRA, [['Negocio Completo', RUTA_NEGOCIO_COMPLETO]]),
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_MIRA.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }])}<style>${CSS_MIRA}</style>`, headers: cookie ? { 'set-cookie': cookie } : {},
     script: `var MT=${JSON.stringify({ giros: GIROS, wa: WA_NUM, ruta: RUTA_MIRA }).replace(/</g, '\\u003c')};${SCRIPT}`,
     cuerpo: `<section class="mt-hero"><div class="marco">
   <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / <a href="${RUTA_NEGOCIO_COMPLETO}">Negocio Completo</a></nav>
   <h1 class="t-h1">Mira cómo quedaría tu negocio.</h1>
-  <p class="t-lead">Escribe el nombre de tu negocio y te mostramos tu tarjeta de sellos, tu agenda y tu página web, con tu nombre. Gratis y sin registrarte.</p>
+  <p class="t-lead">Escribe el nombre de tu negocio y te mostramos tu tarjeta de lealtad, tu agenda y tu página web, con tu nombre. Gratis y sin registrarte.</p>
   <div class="mt-g">
     <form class="t-form mt-form" id="form-mira" novalidate>
       <div class="t-campo"><label for="mt-nombre">Nombre de tu negocio</label><input id="mt-nombre" name="nombre" type="text" required maxlength="60" autocomplete="organization" placeholder="Ej. Estética Lumbre" value="${esc(n)}"></div>
@@ -116,6 +178,7 @@ export async function paginaMiraTuNegocio(env, req, url) {
       <figcaption><b>Página web</b> con tus servicios, tu horario y botón a tu WhatsApp, dada de alta en Google.</figcaption>
     </figure>
   </div>
+  <div class="mt-ideas"><h3>Ideas para la página de <span data-mt="nombre"></span></h3><ul data-mt="ideas"></ul></div>
   <div class="mt-cta">
     <div><p class="mt-precio">Todo esto por <b>$749 al mes</b>.</p><p>Con el Arranque en 7 días diseñamos tu página a la medida de tu marca y tu primer mes va de regalo. Plan de 12 meses; el dominio se paga aparte.</p></div>
     <div class="mt-cta-btns">
@@ -135,7 +198,19 @@ export async function paginaMiraTuNegocio(env, req, url) {
     </form>
     <p class="mt-nota">Es un ejemplo con datos de muestra: al contratar lo dejamos con tus servicios, tus horarios y tus precios.</p>
   </div>
-</div></section>`,
+</div></section>
+<section class="t-sec mt-por-giro" id="giros"><div class="marco">
+  <h2 class="t-h2">Tarjeta de lealtad y página web para tu giro</h2>
+  <p class="t-lead">Lo que más le sirve a cada negocio. Toca el tuyo y mira cómo quedaría con tu nombre.</p>
+  <div class="mt-giros">${Object.entries(GIROS).filter(([k]) => k !== 'otro').map(([k, v]) => `<article class="mt-giro"><h3><a href="${RUTA_MIRA}?g=${k}#form-mira">${esc(v.nombre)}</a></h3>
+    <p class="mt-giro-premio">Premio de ejemplo: ${esc(v.premio)}.</p><ul>${v.ideas.map(i => `<li>${esc(i)}</li>`).join('')}</ul></article>`).join('')}</div>
+  <p class="mt-otro">¿No ves tu giro? También funciona: <a href="${RUTA_MIRA}?g=otro#form-mira">pruébalo con tu nombre</a> o escríbenos por <a href="https://wa.me/${WA_NUM}?text=${encodeURIComponent('Hola, quiero ver cómo quedaría la tarjeta de lealtad y la página de mi negocio.')}" target="_blank" rel="noopener">WhatsApp</a>.</p>
+</div></section>
+<section class="t-sec suave mt-impacto"><div class="marco">
+  <h2 class="t-h2">Tu negocio también puede impulsar a jóvenes de tu ciudad</h2>
+  <p>Con tu tarjeta de lealtad puedes dar un descuento a los integrantes de <a href="https://soyimpacto.org" target="_blank" rel="noopener">IMPACTO</a> (Juventudes Impactando México A.C.), jóvenes que hacen proyectos en sus comunidades. Lo usan con su credencial, tu negocio aparece destacado con el sello «Va por el futuro de México» y te llegan clientes que regresan. Es opcional y lo cambias cuando quieras.</p>
+</div></section>
+${seccionFaq({ titulo: 'Tarjeta de lealtad para tu negocio', items: FAQ_MIRA.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), whatsappTexto: 'Hola, tengo una pregunta sobre la tarjeta de lealtad para mi negocio.' })}`,
   });
 }
 
@@ -200,7 +275,18 @@ export const CSS_MIRA = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,
 .mt-datos-t{color:var(--fg)!important;font-weight:600}
 .mt-datos-g{display:grid;gap:12px}@media(min-width:640px){.mt-datos-g{grid-template-columns:1fr 1fr}}
 .mt-datos .btn{justify-self:start}
-.mt-trampa{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}`;
+.mt-trampa{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.mt-ideas{margin-top:22px;padding:clamp(16px,3vw,24px);border-radius:var(--r);border:1px solid var(--line);background:var(--card)}
+.mt-ideas h3{margin:0 0 10px;font-size:18px;line-height:1.3}
+.mt-ideas ul,.mt-giro ul{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--fg-2)}
+.mt-por-giro .t-lead{margin-top:10px;max-width:640px}
+.mt-giros{display:grid;gap:14px;margin-top:22px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
+.mt-giro{padding:18px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);min-width:0}
+.mt-giro h3{margin:0 0 4px;font-size:17px}.mt-giro h3 a{color:inherit}
+.mt-giro-premio{margin:0 0 10px;font-size:14px;color:var(--fg-2)}
+.mt-giro ul{font-size:14.5px}
+.mt-otro{margin-top:18px;color:var(--fg-2)}
+.mt-impacto p{max-width:720px;margin-top:12px;color:var(--fg-2)}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-mira'); if(!f) return;
@@ -234,6 +320,7 @@ const SCRIPT = `(function(){
         if(i===2){ li.className='libre'; box.textContent='Disponible · reserva en línea'; }
         else { var s=G.servicios[i>2?i-1:i]; box.appendChild(el('span',s[0])); box.appendChild(el('small',NOMBRES[i])); }
         li.appendChild(t); li.appendChild(box); ul.appendChild(li); }); });
+    todos('ideas').forEach(function(ul){ vaciar(ul); (G.ideas||[]).forEach(function(t){ ul.appendChild(el('li',t)); }); });
     todos('servicios').forEach(function(ul){ vaciar(ul);
       G.servicios.slice(0,3).forEach(function(s){ var li=el('li'); li.appendChild(el('span',s[0])); li.appendChild(el('span',pesos(s[1]))); ul.appendChild(li); }); });
     res.hidden=false; if(vacio) vacio.style.display='none';
