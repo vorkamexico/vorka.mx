@@ -1,0 +1,30 @@
+{
+  "sitio": "https://vorka.mx",
+  "ruta": "/sparks/cortazar",
+  "nombre": "Sparks Cortazar",
+  "lema": "Las historias de la gente que está moviendo Cortazar",
+  "descripcion": "Noticias, logros e historias de la comunidad de Cortazar, Guanajuato. Un medio de Vorka Sparks.",
+  "ciudad": "Cortazar, Guanajuato",
+  "instagram": "https://www.instagram.com/vorka.mx/",
+  "noticiasPorPagina": 12,
+  "hoja": false,
+  "fotos": {
+    "bucket": "sparks-fotos",
+    "urlPublica": "https://fotos.vorka.mx",
+    "prefijo": "cortazar"
+  },
+  "adsense": {
+    "cliente": "",
+    "slotFeed": "",
+    "slotSeccion": "",
+    "slotArticulo": "",
+    "slotLateral": ""
+  },
+  "unirCategorias": {
+    "Historias de vida": "Historias",
+    "Entrevistas": "Historias"
+  },
+  "sinFecha": [
+    "Historias"
+  ]
+}

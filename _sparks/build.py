@@ -711,8 +711,9 @@ class Sitio:
 
     # ---- portada general de la Revista Sparks (/sparks/): lo más reciente y las ediciones por municipio.
     # Hoy hay una sola edición; cuando haya más, sus notas se suman aquí leyendo el noticias.json de cada una.
-    def revista(self):
+    def revista(self, otras=None):
         c, ns = self.cfg, self.noticias
+        otras = otras or {}
         r = c.get("revista") or {}
         ciudad_corta = c["ciudad"].split(",")[0]
         hoy = datetime.now(timezone(timedelta(hours=-6)))
@@ -750,10 +751,11 @@ class Sitio:
         cajas = []
         for e in activas:
             mismo = e["ruta"].rstrip("/") == self.base
-            ultima = ns[0] if (mismo and ns) else None
+            cuantas, titulo = (len(ns), ns[0]["titulo"]) if (mismo and ns) else otras.get(e["ruta"].rstrip("/"), (0, ""))
             cajas.append('<a class="ed" href="%s"><span class="ed-n">Sparks <b>%s</b></span><span class="ed-l">%s</span>%s</a>' % (
                 esc(e["ruta"]), esc(e["nombre"]), esc(e.get("lugar", "Guanajuato")),
-                '<span class="ed-u">%d notas · la más reciente: %s</span>' % (len(ns), esc(ultima["titulo"])) if ultima else ""))
+                ('<span class="ed-u">%d %s · la más reciente: %s</span>' % (cuantas, "nota" if cuantas == 1 else "notas", esc(titulo))) if cuantas
+                else '<span class="ed-u">Muy pronto, las primeras historias.</span>'))
         texto_prox = ""
         if proximas:
             lista = ", ".join(proximas[:-1]) + (" y " + proximas[-1] if len(proximas) > 1 else proximas[0])
@@ -1038,6 +1040,7 @@ def escribir(ruta, contenido):
 
 
 def main():
+    """Una edición por archivo: config.json (Celaya, con la portada de la revista) y config-<municipio>.json (las demás)."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--datos", help="JSON local con {noticias:[...]} (para pruebas)")
     ap.add_argument("--salida", default=RAIZ_REPO, help="raíz del sitio (por defecto, el repositorio)")
@@ -1046,8 +1049,32 @@ def main():
     if args.datos:
         args.datos = os.path.abspath(args.datos)
 
-    with open(os.path.join(AQUI, "config.json"), encoding="utf-8") as f:
-        cfg = json.load(f)
+    archivos = ["config.json"] + sorted(a for a in os.listdir(AQUI) if re.match(r"^config-[a-z0-9-]+\.json$", a))
+    cfgs = []
+    for a in archivos:
+        with open(os.path.join(AQUI, a), encoding="utf-8") as f:
+            cfgs.append(json.load(f))
+    resumen, con_revista, cambio = {}, None, False
+    for cfg in cfgs:
+        r = construir(cfg, args)
+        if r:
+            resumen[cfg["ruta"].rstrip("/")] = r[1]
+            cambio = cambio or r[0] is not None
+            if cfg.get("revista"):
+                con_revista = r[0]
+    # Cambió otra edición pero no la de la portada: se rehace esa edición (sin cambios reales) para tener su Sitio
+    if cambio and not con_revista:
+        principal = next((c for c in cfgs if c.get("revista")), None)
+        if principal:
+            r = construir(principal, argparse.Namespace(**{**vars(args), "forzar": True}))
+            con_revista = r[0] if r else None
+    # La portada /sparks/ se escribe al final, ya con el número de notas y la más reciente de cada edición
+    if con_revista:
+        escribir(os.path.join(args.salida, "sparks", "index.html"), con_revista.revista(resumen))
+
+
+def construir(cfg, args):
+    """Genera una edición. Regresa (sitio, (número de notas, título de la más reciente)) o None si no cambió nada."""
     destino = os.path.join(args.salida, cfg["ruta"].strip("/"))
     dir_img = os.path.join(destino, "img")
 
@@ -1058,7 +1085,8 @@ def main():
     vistos = {slug_cat(n.get("titulo", "")) for n in del_os} | {n.get("slug") for n in del_os}
     # Notas de la Hoja que ya se pasaron a os.vorka.mx: no se publican desde la Hoja aunque la app las quite
     ignorar = set(cfg.get("hojaIgnorar", []))
-    otras = [n for n in cargar_noticias(args) if n.get("slug") not in ignorar and slug_cat(n.get("titulo", "")) not in ignorar] + (cargar_archivo(cfg) if not args.datos else [])
+    # La Hoja de Google es solo de Celaya: las demás ediciones salen únicamente de os.vorka.mx ("hoja": false)
+    otras = [n for n in (cargar_noticias(args) if cfg.get("hoja", True) else []) if n.get("slug") not in ignorar and slug_cat(n.get("titulo", "")) not in ignorar] + (cargar_archivo(cfg) if not args.datos else [])
     noticias = del_os + [n for n in otras if slug_cat(n.get("titulo", "")) not in vistos and n.get("slug") not in vistos]
     almacen = Almacen(cfg, dir_img, cfg["ruta"].rstrip("/"))
 
@@ -1076,8 +1104,15 @@ def main():
     huella = h.hexdigest()
     archivo_huella = os.path.join(destino, ".huella")
     if not args.forzar and os.path.exists(archivo_huella) and open(archivo_huella).read().strip() == huella:
-        print("Sin cambios. Nada que publicar.")
-        return
+        print("%s: sin cambios. Nada que publicar." % cfg["nombre"])
+        previo = os.path.join(destino, "noticias.json")
+        if cfg.get("revista") or not os.path.exists(previo):
+            return None
+        try:
+            j = json.load(open(previo, encoding="utf-8")).get("n", [])
+            return (None, (len(j), j[0]["t"] if j else ""))
+        except Exception:
+            return None
 
     usados = set()
     for n in noticias:
@@ -1130,8 +1165,6 @@ def main():
     shutil.copytree(os.path.join(AQUI, "assets"), os.path.join(destino, "assets"), dirs_exist_ok=True)
 
     escribir(os.path.join(destino, "index.html"), sitio.portada())
-    if cfg.get("revista"):
-        escribir(os.path.join(args.salida, "sparks", "index.html"), sitio.revista())
     for cat in sitio.categorias():
         escribir(os.path.join(destino, "seccion", slug_cat(cat), "index.html"), sitio.seccion(cat))
     for n in noticias:
@@ -1151,6 +1184,7 @@ def main():
 
     escribir(archivo_huella, huella)
     print("✅ Listo: %d noticias en %s" % (len(noticias), destino))
+    return (sitio, (len(noticias), noticias[0]["titulo"] if noticias else ""))
 
 
 def diagnostico(e):
