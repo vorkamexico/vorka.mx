@@ -42,5 +42,7 @@ describe('páginas', () => {
     expect((await pedir(`/simulador-unam/aciertos/${baja}/`)).status).not.toBe(200);
     expect(conPagina()).toContain('derecho');
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('/simulador-unam/aciertos/derecho/');
+    expect(await (await pedir('/simulador-unam/')).text()).toContain('href="/simulador-unam/aciertos/medico-cirujano/"');
+    expect(await (await pedir('/simulador-paa/')).text()).toContain('href="/simulador-paa/calculadora/"');
   });
 });

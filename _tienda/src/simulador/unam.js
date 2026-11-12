@@ -4,6 +4,7 @@
 // Planes: Práctica, Examen (2 exámenes completos) y Completo (los dos). Adicionales: 1 Medio o 1 examen más.
 import { crearSimulador } from './motor.js';
 import { paginaVentaSimulador } from './venta.js';
+import { CARRERAS, MINIMO_PAGINA } from './unam-aciertos.js';
 import { armarPorMaterias } from './armar-por-area.js';
 import { TEMAS_ESPANOL, TEXTOS_ESPANOL, REACTIVOS_ESPANOL } from './unam/espanol.js';
 import { TEMAS_MATEMATICAS, REACTIVOS_MATEMATICAS } from './unam/matematicas.js';
@@ -161,6 +162,13 @@ const VENTA = {
     lead: 'El <b>examen completo</b> tiene 120 reactivos en 3 horas con el peso de tu área. El <b>simulacro Medio</b> es la mitad (60 reactivos en 90 minutos) con el mismo ritmo. Distribución de referencia: la UNAM no publica un desglose oficial por materia.',
     tabla: tablaAreas,
   },
+  // Ligas a las páginas de aciertos por carrera (lista oficial de la DGAE, unam-aciertos.js)
+  antesRegalo: `<section class="t-sec suave"><div class="marco">
+  <div class="cab"><span class="etiqueta">Aciertos por carrera</span><h2 class="h2" style="margin-top:14px">¿Cuántos aciertos piden para tu carrera?</h2>
+  <p class="lead">El menor número de aciertos con el que alguien entró entre 2021 y 2026, por carrera y plantel, según la DGAE. Escribe tus aciertos y ve a dónde llegas.</p></div>
+  <div class="sv-grid">${['medico-cirujano', 'psicologia', 'derecho', 'arquitectura', 'ingenieria-en-computacion', 'administracion'].filter(s => CARRERAS[s]?.max >= MINIMO_PAGINA).map(s => `<a class="sv-card" style="text-decoration:none;color:inherit" href="/simulador-unam/aciertos/${s}/"><h3>${CARRERAS[s].carrera}</h3><p>Mínimo 2021–2026: de ${CARRERAS[s].min} a ${CARRERAS[s].max} aciertos</p></a>`).join('')}</div>
+  <p style="margin-top:18px"><a class="btn blanco" href="/simulador-unam/aciertos/">Ver las 220 opciones</a></p>
+</div></section>`,
   faqTitulo: 'Sobre el examen UNAM y el simulador',
   faq: FAQ,
   final: 'Haz un simulacro Medio hoy para ver en hora y media qué materias te faltan y, cuando estés listo, el examen completo de tu área con el tiempo real.',
