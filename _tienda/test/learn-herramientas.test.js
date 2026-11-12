@@ -46,6 +46,10 @@ describe('Herramientas de Vorka Learn', () => {
     expect((antes.match(/class="di-mini"/g) || []).length).toBe(3);
     expect(antes).toMatch(/class="di-mini" href="\/(test-vocacional|simulador-[a-z-]+)\/"/);
     expect(html).toContain('class="di-res-promo"');
+    // Anuncios propios: Brindi después de la herramienta y Vuelve antes de la promoción de abajo, marcados como anuncio
+    expect(html).toMatch(/<a class="di-ad" data-producto="brindi" href="\/tienda\/brindi[a-z-]*\/"[^>]*>[\s\S]*?Anuncio · Brindi de Vorka México/);
+    expect(html).toMatch(/<a class="di-ad" data-producto="vuelve" href="\/tienda\/vuelve[a-z-]*\/"/);
+    expect(html.indexOf('data-producto="brindi"')).toBeGreaterThan(html.indexOf('id="di-dividir"'));
     // Las flechas de las ligas tienen tamaño (antes salían gigantes)
     expect(html).toContain('.di-mas svg,.di-arriba svg,.di-res-promo svg{width:16px;height:16px;flex:none}');
     expect(html.split('<main')[1]).not.toMatch(/\$\s?\d/);
