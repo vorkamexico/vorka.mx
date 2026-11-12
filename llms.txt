@@ -59,6 +59,9 @@ Contacto: hola@vorka.mx · +52 81 1780 4869 · https://vorka.mx/contacto/
 
 - [Vorka Learn](https://vorka.mx/learn/): guías con fuentes oficiales sobre exámenes de admisión, becas y cómo elegir carrera, finanzas personales, negocio pequeño y cómo crear y vender tu app.
 - [Dividir una imagen en partes](https://vorka.mx/learn/herramientas/dividir-imagen/): herramienta gratis que corta una foto en cuadrícula (carrusel, mosaico 3 × 3 de Instagram o póster en varias hojas) dentro del navegador, sin subir la imagen.
+- [Reducir el peso de una foto o PDF](https://vorka.mx/learn/herramientas/reducir-peso/): comprime un PDF o foto a menos de 1 MB, 2 MB o 500 KB en el navegador.
+- [Dividir un PDF por páginas](https://vorka.mx/learn/herramientas/dividir-pdf/): separa un PDF en varios archivos o saca solo algunas páginas, sin perder calidad.
+- [Generador de código QR](https://vorka.mx/learn/herramientas/codigo-qr/): crea códigos QR para un enlace, WhatsApp o Wi‑Fi en PNG o SVG; no caducan.
 
 ## Comunidad
 

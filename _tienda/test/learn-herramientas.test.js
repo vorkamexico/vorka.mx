@@ -100,4 +100,36 @@ describe('Herramientas de Vorka Learn', () => {
     expect(mapa).toContain('<loc>https://vorka.mx/learn/herramientas/dividir-imagen/</loc>');
     expect((await pedir('/learn/herramientas/no-existe/')).status).toBe(404);
   });
+
+  it('las herramientas nuevas (reducir peso, dividir PDF, código QR) tienen su página, su script como módulo y su ayuda', async () => {
+    const casos = [
+      ['/learn/herramientas/reducir-peso/', 'Reducir el peso de una foto o PDF', ['pe-archivo', 'pe-meta', 'pe-reducir', 'pe-bajar'], '/assets/herramientas/peso.js'],
+      ['/learn/herramientas/dividir-pdf/', 'Dividir un PDF por páginas', ['dp-archivo', 'dp-paginas', 'dp-dividir', 'dp-zip'], '/assets/herramientas/dividir-pdf.js'],
+      ['/learn/herramientas/codigo-qr/', 'Generador de código QR', ['qr-url', 'qr-tel', 'qr-red', 'qr-png', 'qr-svg'], '/assets/herramientas/qr.js'],
+    ];
+    for (const [ruta, h1, ids, js] of casos) {
+      const r = await pedir(ruta);
+      expect(r.status, ruta).toBe(200);
+      const html = await r.text();
+      expect(html, ruta).toContain(`<h1 class="lr-h1">${h1}</h1>`);
+      for (const id of ids) expect(html, `${ruta} #${id}`).toContain(`id="${id}"`);
+      expect(html, ruta).toMatch(new RegExp(`<script src="${js.replace(/[/.]/g, '\\$&')}\\?v=\\w+" type="module"></script>`));
+      expect(html, ruta).toContain('"@type":"FAQPage"');
+      expect(html, ruta).toContain('class="di-arriba"');
+      expect(html, ruta).toContain('Más herramientas gratis');
+      expect(html, ruta).toMatch(/data-producto="(brindi|vuelve)"/);
+      expect((await pedir(ruta.slice(0, -1))).status, ruta).toBe(301);
+    }
+    const indice = await (await pedir('/learn/herramientas/')).text();
+    expect((indice.match(/class="he-card"/g) || []).length).toBe(4);
+    const mapa = await (await pedir('/learn/sitemap.xml')).text();
+    for (const [ruta] of casos) expect(mapa).toContain(`<loc>https://vorka.mx${ruta}</loc>`);
+  });
+
+  it('los scripts y librerías del navegador existen en el sitio estático', async () => {
+    const { existsSync } = await import('node:fs');
+    const raiz = new URL('../../assets/herramientas/', import.meta.url);
+    for (const f of ['comun.js', 'peso.js', 'dividir-pdf.js', 'qr.js', 'lib/pdf-lib.min.js', 'lib/pdf.min.js', 'lib/pdf.worker.min.js', 'lib/qrcode.js', 'lib/standard_fonts', 'lib/cmaps'])
+      expect(existsSync(new URL(f, raiz)), f).toBe(true);
+  });
 });

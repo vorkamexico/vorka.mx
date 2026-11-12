@@ -1,4 +1,5 @@
-// Vorka Learn · Herramientas gratis (vorka.mx/learn/herramientas/…). Hoy: «Dividir una imagen en partes».
+// Vorka Learn · Herramientas gratis (vorka.mx/learn/herramientas/…): dividir imagen, reducir peso, dividir PDF y código QR.
+// Las tres últimas viven en src/learn/herramientas-nuevas.js (textos) y assets/herramientas/ (código del navegador).
 // Cada herramienta corre completa en el navegador (su script lo sirve el Worker, src/learn/dividir-imagen-cliente.js):
 // nada se sube. Debajo de la herramienta va una explicación con preguntas frecuentes (contenido propio para Google y AdSense)
 // y la promoción de Vorka: lo más reciente de la Revista Sparks, guías de Learn y productos de la tienda.
@@ -14,15 +15,11 @@ import { SITIO, ld, ORG, LEARN, SITIO_LEARN, migas, migasLd } from './piezas.js'
 import { articulos, OG_LEARN } from './datos.js';
 import { tarjetaArticulo } from './tarjetas.js';
 import { CLIENTE_DIVIDIR, V_DIVIDIR } from './dividir-imagen-cliente.js';
+import { NUEVAS, CSS_NUEVAS } from './herramientas-nuevas.js';
 
 export const RUTA_HERRAMIENTAS = '/learn/herramientas/';
 const RUTA_DIVIDIR = '/learn/herramientas/dividir-imagen/';
 const RUTA_JS_DIVIDIR = '/learn/herramientas/dividir-imagen.js';
-export const HERRAMIENTAS = [
-  { ruta: RUTA_DIVIDIR, nombre: 'Dividir una imagen en partes', corto: 'Dividir imagen',
-    descripcion: 'Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil de Instagram o para imprimirla en varias hojas. Gratis y en tu navegador.',
-    usos: ['Carrusel', 'Mosaico 3 × 3', 'Póster en hojas'], portada: () => portadaDividir() },
-];
 
 // Portada de «Dividir imagen» (SVG propio, 16:10): un paisaje cortado en 3 × 3 con una pieza separada
 function portadaDividir() {
@@ -165,7 +162,8 @@ const CSS = `<style>
 .he-pie small{font-size:13px;color:var(--fg-2)}
 .he-pie .btn{display:inline-flex;align-items:center;gap:8px}.he-pie .btn svg{width:17px;height:17px}
 @media (min-width:820px){.he-grid.he-uno{grid-template-columns:1fr}.he-uno .he-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}.he-uno .he-portada{aspect-ratio:auto;min-height:320px}}
-</style>`;
+.he-otras .he-grid{margin-top:18px;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:14px}.he-otras .he-c{padding:16px}.he-otras .he-c h2{font-size:18px}.he-otras .he-c p,.he-otras .he-usos,.he-otras .he-pie small{display:none}
+${CSS_NUEVAS}</style>`;
 
 // ---------- promoción (cada parte falla en silencio: si no carga, no aparece) ----------
 let SPARKS = { t: 0, v: null };
@@ -288,11 +286,7 @@ function herramientaDividir(llamado = '') {
 </div>`;
 }
 
-async function paginaDividir(env) {
-  const h = HERRAMIENTAS[0], anuncios = configAnuncios(env), catalogoTienda = await catalogo(env), productos = await productosPromo(env, catalogoTienda);
-  const migasH = [...MIGAS, [h.corto, h.ruta]];
-  const texto = `<div class="di-texto">
-  <h2>Cómo dividir una imagen</h2>
+const TEXTO_DIVIDIR = `  <h2>Cómo dividir una imagen</h2>
   <p>Elige la imagen (o arrástrala, o pégala con Ctrl + V si la copiaste). Después decide cómo cortarla: por número de filas y columnas, o por el tamaño en píxeles que debe medir cada parte. Las líneas blancas de la vista previa te enseñan dónde va cada corte. Escoge el formato, toca «Dividir imagen» y descarga las partes una por una o todas juntas en un .zip.</p>
   <p>Cada archivo lleva el nombre de tu imagen y un número en orden de lectura: de izquierda a derecha y de arriba hacia abajo. La parte 1 es la de arriba a la izquierda.</p>
   <h2>Para qué sirve</h2>
@@ -303,36 +297,45 @@ async function paginaDividir(env) {
   <h3>Imprimir en grande con una impresora normal</h3>
   <p>Si quieres un póster y solo tienes impresora de casa, divide la imagen en 4 o 9 partes, imprime cada una en una hoja y únelas.</p>
   <h3>Preparar imágenes para una página o una presentación</h3>
-  <p>También sirve para separar una lámina con varias fotos, sacar cuadros de una tira de imágenes o cortar un diseño largo en partes del mismo alto.</p>
-  <h2>Preguntas frecuentes</h2>
-  <div class="di-faq">${FAQ_DIVIDIR.map(([q, r]) => `<details><summary>${q}</summary><p>${r}</p></details>`).join('')}</div>
-</div>`;
+  <p>También sirve para separar una lámina con varias fotos, sacar cuadros de una tira de imágenes o cortar un diseño largo en partes del mismo alto.</p>`;
+
+// Página de cualquier herramienta: encabezado, productos para estudiantes, la herramienta, anuncios de Vorka y AdSense,
+// ayuda y preguntas frecuentes, las demás herramientas y la promoción de abajo.
+async function paginaHerramienta(h, env) {
+  const anuncios = configAnuncios(env), catalogoTienda = await catalogo(env), productos = await productosPromo(env, catalogoTienda);
+  const migasH = [...MIGAS, [h.corto, h.ruta]], [ad1, ad2] = h.anuncios || ['brindi', 'vuelve'];
+  const llamado = h.llamado ? llamadoResultado(productos.find(p => /simulador/.test(p.slug)) || productos[0]) : '';
+  const otras = HERRAMIENTAS.filter(x => x !== h);
   const cuerpo = `<div class="marco"><div class="lr-col lr-ancha">
   <div class="di-cab">
   ${migas(migasH)}
-  <h1 class="lr-h1">Dividir una imagen en partes</h1>
-  <p class="lr-lead">Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil o para imprimirla en varias hojas. Es gratis, no pide cuenta y tu imagen se queda en tu dispositivo.</p>
+  <h1 class="lr-h1">${esc(h.h1)}</h1>
+  <p class="lr-lead">${esc(h.lead)}</p>
   </div>
   ${tiraArriba(productos)}
-  ${herramientaDividir(llamadoResultado(productos.find(p => /simulador/.test(p.slug)) || productos[0]))}
-  ${anuncioCasa('brindi', catalogoTienda)}
+  ${h.panel(llamado)}
+  ${anuncioCasa(ad1, catalogoTienda)}
   ${espacioAnuncio(anuncios, 'mitad')}
-  <div class="lr-col" style="margin-left:0">${texto}</div>
-  ${anuncioCasa('vuelve', catalogoTienda)}
+  <div class="lr-col" style="margin-left:0"><div class="di-texto">
+  ${h.texto}
+  <h2>Preguntas frecuentes</h2>
+  <div class="di-faq">${h.faq.map(([q, r]) => `<details><summary>${q}</summary><p>${r}</p></details>`).join('')}</div>
+  </div></div>
+  ${otras.length ? `<section class="lr-grupo he-otras"><div class="lr-grupo-cab"><h2 class="lr-h2">Más herramientas gratis</h2></div><ul class="he-grid">${otras.map(tarjetaHerramienta).join('')}</ul></section>` : ''}
+  ${anuncioCasa(ad2, catalogoTienda)}
   ${await promocion(env, productos)}
   ${espacioAnuncio(anuncios, 'final')}
 </div></div>
-<script src="${RUTA_JS_DIVIDIR}?v=${V_DIVIDIR}" defer></script>`;
+<script src="${h.script}"${h.modulo ? ' type="module"' : ' defer'}></script>`;
   const datos = [
     { '@context': 'https://schema.org', '@type': 'WebApplication', name: h.nombre, description: h.descripcion, url: `${SITIO}${h.ruta}`, inLanguage: 'es-MX',
-      applicationCategory: 'MultimediaApplication', operatingSystem: 'Cualquiera (en el navegador)', browserRequirements: 'Requiere JavaScript',
+      applicationCategory: h.categoria || 'UtilitiesApplication', operatingSystem: 'Cualquiera (en el navegador)', browserRequirements: 'Requiere JavaScript',
       isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'MXN' }, publisher: ORG, isPartOf: SITIO_LEARN, provider: LEARN },
-    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_DIVIDIR.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: h.faq.map(([q, r]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: r } })) },
     migasLd(migasH),
   ];
-  return paginaLearn({ titulo: 'Dividir una imagen en partes gratis (cuadrícula, carrusel) | Vorka Learn', ruta: h.ruta,
-    descripcion: 'Divide una imagen en cuadrícula gratis: carrusel panorámico, mosaico 3 × 3 para Instagram o póster en varias hojas. Descarga las partes en PNG, JPG o .zip. Tu imagen no se sube.',
-    imagen: `${SITIO}${OG_LEARN}`, imagenAlt: h.nombre, actual: 'herramientas', seccion: 'learn', anuncios, head: CSS + ld(datos), cuerpo });
+  return paginaLearn({ titulo: h.titulo, ruta: h.ruta, descripcion: h.meta, imagen: `${SITIO}${OG_LEARN}`, imagenAlt: h.nombre,
+    actual: 'herramientas', seccion: 'learn', anuncios, head: CSS + ld(datos), cuerpo });
 }
 
 const tarjetaHerramienta = h => `<li><a class="he-card" href="${h.ruta}"><span class="he-portada">${h.portada ? h.portada() : ''}</span><span class="he-c"><h2>${esc(h.nombre)}</h2><p>${esc(h.descripcion)}</p>${h.usos?.length ? `<ul class="he-usos">${h.usos.map(u => `<li>${esc(u)}</li>`).join('')}</ul>` : ''}<span class="he-pie"><small>Gratis · en tu navegador</small><span class="btn acento">Usar gratis ${FLECHA}</span></span></span></a></li>`;
@@ -352,9 +355,23 @@ async function paginaIndice(env) {
 </div></div>`;
   const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Herramientas gratis de Vorka Learn', url: `${SITIO}${RUTA_HERRAMIENTAS}`, inLanguage: 'es-MX', isPartOf: SITIO_LEARN, publisher: ORG,
     hasPart: HERRAMIENTAS.map(h => ({ '@type': 'WebApplication', name: h.nombre, url: `${SITIO}${h.ruta}` })) }, migasLd(MIGAS)];
-  return paginaLearn({ titulo: 'Herramientas gratis | Vorka Learn', ruta: RUTA_HERRAMIENTAS, descripcion: 'Herramientas gratis de Vorka Learn que funcionan en tu navegador: dividir una imagen en partes para carruseles, mosaicos de Instagram o pósters.',
+  return paginaLearn({ titulo: 'Herramientas gratis | Vorka Learn', ruta: RUTA_HERRAMIENTAS, descripcion: 'Herramientas gratis de Vorka Learn que funcionan en tu navegador: reducir el peso de un PDF o foto, dividir un PDF, crear un código QR y dividir una imagen en partes.',
     imagen: `${SITIO}${OG_LEARN}`, imagenAlt: 'Herramientas gratis de Vorka Learn', actual: 'herramientas', seccion: 'learn', anuncios, head: CSS + ld(datos), cuerpo });
 }
+
+// ---------- catálogo de herramientas (el índice, el menú, el sitemap y «Más herramientas» leen de aquí) ----------
+export const HERRAMIENTAS = [
+  { ruta: RUTA_DIVIDIR, nombre: 'Dividir una imagen en partes', corto: 'Dividir imagen',
+    descripcion: 'Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil de Instagram o para imprimirla en varias hojas. Gratis y en tu navegador.',
+    usos: ['Carrusel', 'Mosaico 3 × 3', 'Póster en hojas'], portada: portadaDividir,
+    titulo: 'Dividir una imagen en partes gratis (cuadrícula, carrusel) | Vorka Learn',
+    meta: 'Divide una imagen en cuadrícula gratis: carrusel panorámico, mosaico 3 × 3 para Instagram o póster en varias hojas. Descarga las partes en PNG, JPG o .zip. Tu imagen no se sube.',
+    h1: 'Dividir una imagen en partes',
+    lead: 'Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil o para imprimirla en varias hojas. Es gratis, no pide cuenta y tu imagen se queda en tu dispositivo.',
+    panel: herramientaDividir, texto: TEXTO_DIVIDIR, faq: FAQ_DIVIDIR, script: `${RUTA_JS_DIVIDIR}?v=${V_DIVIDIR}`, modulo: false, llamado: true,
+    anuncios: ['brindi', 'vuelve'], categoria: 'MultimediaApplication' },
+  ...NUEVAS,
+];
 
 // ---------- rutas ----------
 // null si no es una ruta de herramientas; si sí, una Response (o su promesa)
@@ -364,7 +381,8 @@ export function rutasHerramientas(req, env, url) {
   if (!p.startsWith('/learn/herramientas')) return null;
   if (p === RUTA_JS_DIVIDIR) return new Response(CLIENTE_DIVIDIR, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' } });
   if (p === RUTA_HERRAMIENTAS) return paginaIndice(env);
-  if (p === RUTA_DIVIDIR) return paginaDividir(env);
-  if (p === '/learn/herramientas' || p === '/learn/herramientas/dividir-imagen') return new Response(null, { status: 301, headers: { location: `${url.origin}${p}/${url.search}` } });
+  const h = HERRAMIENTAS.find(x => x.ruta === p);
+  if (h) return paginaHerramienta(h, env);
+  if (p === '/learn/herramientas' || HERRAMIENTAS.some(x => x.ruta === `${p}/`)) return new Response(null, { status: 301, headers: { location: `${url.origin}${p}/${url.search}` } });
   return null;
 }
