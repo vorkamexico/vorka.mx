@@ -1,5 +1,6 @@
 // Simulador EXANI-II: un solo simulador con módulos a elegir, 168 reactivos de tres opciones en 4 h 30 min, y sus páginas
 // por universidad y «¿Cuál te sirve?»
+import { d1 } from './d1.js';
 import { describe, it, expect } from 'vitest';
 import { simuladorDe } from '../src/simulador/index.js';
 import { PAREJAS, MODULOS } from '../src/simulador/exani-ii.js';
@@ -73,11 +74,11 @@ describe('EXANI-II por universidad', () => {
       expect(u.fuentes.length, k).toBeGreaterThan(0);
       for (const f of u.fuentes) expect(f.url, k).toMatch(/^https:\/\//);
       for (const [, p] of u.modulos || []) if (p) expect(parejas.has(p), `${k}: ${p}`).toBe(true);
-      const html = await paginaExaniUniversidad(k).text();
+      const html = await (await paginaExaniUniversidad({ DB: d1() }, k)).text();
       expect(html).toContain(`https://vorka.mx/simulador-exani-ii/${k}/`);
       expect(html).toContain('No estamos afiliados');
     }
-    expect(paginaExaniUniversidad('no-existe')).toBe(null);
+    expect(await paginaExaniUniversidad({ DB: d1() }, 'no-existe')).toBe(null);
   });
 
   it('«¿Cuál te sirve?» manda la UAQ y la UG a EXCOBA (no EXANI-II) y la BUAP al simulador', async () => {

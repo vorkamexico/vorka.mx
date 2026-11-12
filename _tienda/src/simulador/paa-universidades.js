@@ -4,6 +4,7 @@
 // No usar logos ni escudos. La estructura de la PAA sale de la guía del College Board de 2020 (sin tiempos: pudieron cambiar).
 import { esc, pagina } from '../paginas.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
+import { compraSimulador, CSS_COMPRA } from './compra-arriba.js';
 
 const SITIO = 'https://vorka.mx';
 const RUTA = '/simulador-paa';
@@ -264,9 +265,10 @@ export const universidadesCliente = () => Object.entries(UNIVERSIDADES).map(([id
 const de = u => `${u.art} ${esc(u.completo)}`;
 
 // Página de una universidad, o null si no existe
-export function paginaPaaUniversidad(clave) {
+export async function paginaPaaUniversidad(env, clave) {
   const u = UNIVERSIDADES[clave];
   if (!u) return null;
+  const { tarjeta, barra } = await compraSimulador(env, { app: 'simulador-paa', nombre: 'Simulador PAA', para: `para ${u.art} ${u.nombre}` });
   const ruta = `${RUTA}/${clave}/`;
   const ld = [
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: u.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) },
@@ -276,14 +278,15 @@ export function paginaPaaUniversidad(clave) {
   ];
   const m = u.minimos;
   return pagina({ titulo: u.titulo, ruta, descripcion: u.descripcion, imagen: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`,
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}${CSS_COMPRA}`,
     cuerpo: `
 <section class="pu-hero"><div class="marco">
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador PAA</a> / PAA ${esc(u.nombre)}</nav>
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
   <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${esc(u.verificado)}. Confirma siempre los requisitos vigentes con ${de(u)}.</p>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Practicar con el simulador PAA ${FLECHA}</a><a class="btn blanco" href="${RUTA}/calculadora/">${clave === 'udeg' ? 'Calcular mi puntaje UdeG' : 'Calcular mi puntaje'}</a><a class="btn blanco" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>
+  ${tarjeta}
+  <div class="pu-botones"><a class="btn blanco" href="${RUTA}/calculadora/">${clave === 'udeg' ? 'Calcular mi puntaje UdeG' : 'Calcular mi puntaje'}</a></div>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
@@ -302,7 +305,7 @@ export function paginaPaaUniversidad(clave) {
   <div class="cab"><span class="etiqueta">Tu plan, con el simulador</span><h2 class="h2" style="margin-top:14px">Cómo llegar a tu puntaje</h2>
   <p class="lead">Esto ya es consejo nuestro, no regla ${u.art === 'el' ? 'del' : 'de la'} ${esc(u.nombre)}.</p></div>
   <div class="pu-pasos">${u.plan.map(([t, p]) => `<div class="pu-paso"><div><b>${esc(t)}</b><span>${esc(p)}</span></div></div>`).join('')}</div>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Ver planes del simulador ${FLECHA}</a></div>
+  <div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador PAA ${FLECHA}</a><a class="btn blanco" href="${RUTA}/">Ver planes</a></div>
 </div></section>
 
 <section class="t-sec"><div class="marco">
@@ -321,6 +324,6 @@ export function paginaPaaUniversidad(clave) {
   <div class="t-faq" style="margin-top:22px">${u.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
-<section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados ${u.art === 'el' ? 'al' : 'a la'} ${esc(u.completo)} ni al College Board; PAA es una prueba del College Board. Los requisitos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>`,
+<section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados ${u.art === 'el' ? 'al' : 'a la'} ${esc(u.completo)} ni al College Board; PAA es una prueba del College Board. Los requisitos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>${barra}`,
   });
 }

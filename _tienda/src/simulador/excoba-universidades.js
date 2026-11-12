@@ -4,6 +4,7 @@
 import { esc, pagina } from '../paginas.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
 import { RUTA, nombreCombo } from './excoba.js';
+import { compraSimulador, CSS_COMPRA } from './compra-arriba.js';
 
 const SITIO = 'https://vorka.mx';
 const VERIFICADO = '11 de noviembre de 2026';
@@ -66,9 +67,10 @@ export const UNIVERSIDADES_EXCOBA = {
   },
 };
 
-export function paginaExcobaUniversidad(clave) {
+export async function paginaExcobaUniversidad(env, clave) {
   const u = UNIVERSIDADES_EXCOBA[clave];
   if (!u) return null;
+  const { tarjeta, barra } = await compraSimulador(env, { app: 'simulador-excoba', nombre: 'Simulador EXCOBA', para: `para ${u.art || 'la'} ${u.nombre}` });
   const ruta = `${RUTA}/${clave}/`;
   const total = u.carreras.reduce((t, [, cs]) => t + cs.length, 0);
   const ejemplo = u.carreras[0];
@@ -87,7 +89,7 @@ export function paginaExcobaUniversidad(clave) {
   const filas = u.carreras.flatMap(([c, cs]) => cs.map(nombre => `<tr class="ex-c" data-q="${esc(nombre.toLowerCase())}"><th scope="row">${esc(nombre)}</th><td data-c="Asignaturas de bachillerato"><b>${esc(nombreCombo(c))}</b></td></tr>`)).join('');
   const otra = clave === 'uaq' ? 'ug' : 'uaq';
   return pagina({ titulo: u.titulo, ruta, descripcion: u.descripcion, imagen: `${SITIO}/assets/tienda/v3/simulador-excoba-og.jpg`,
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}${CSS_COMPRA}`,
     script: SCRIPT_FILTRO,
     cuerpo: `
 <section class="pu-hero"><div class="marco">
@@ -95,7 +97,7 @@ export function paginaExcobaUniversidad(clave) {
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
   <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con la ${esc(u.completo)}.</p>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Practicar con el simulador EXCOBA ${FLECHA}</a><a class="btn blanco" href="${RUTA}/#probar">Probar una pregunta gratis</a></div>
+  ${tarjeta}
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
@@ -111,7 +113,7 @@ export function paginaExcobaUniversidad(clave) {
   <div class="cab"><h2 class="h2">Cómo es el examen en la ${esc(u.nombre)}</h2></div>
   <div class="pu-grid">${u.pide.map(([t, p]) => `<div class="pu-card"><h3>${esc(t)}</h3><p>${esc(p)}</p></div>`).join('')}</div>
   <p class="pu-nota">${CHECK.replace('<svg', '<svg style="width:14px;height:14px;vertical-align:-2px"')} ${esc(u.fechas)}</p>
-  <div class="pu-botones"><a class="btn tinta" href="${RUTA}/">Ver planes del simulador ${FLECHA}</a><a class="btn blanco" href="${RUTA}/${otra}/">EXCOBA ${UNIVERSIDADES_EXCOBA[otra].nombre}</a></div>
+  <div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador EXCOBA ${FLECHA}</a><a class="btn blanco" href="${RUTA}/${otra}/">EXCOBA ${UNIVERSIDADES_EXCOBA[otra].nombre}</a></div>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
@@ -119,7 +121,7 @@ export function paginaExcobaUniversidad(clave) {
   <div class="t-faq" style="margin-top:22px">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
-<section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados a la ${esc(u.completo)} ni a Métrica Educativa, A.C. Los datos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>`,
+<section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados a la ${esc(u.completo)} ni a Métrica Educativa, A.C. Los datos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>${barra}`,
   });
 }
 

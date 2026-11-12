@@ -10,6 +10,7 @@ import { esc, pagina } from '../paginas.js';
 import { FLECHA } from '../marco.generado.js';
 import { SITIO } from '../seo.js';
 import { UNIVERSIDADES, BECAS_PAA, CSS } from './paa-universidades.js';
+import { compraSimulador, CSS_COMPRA } from './compra-arriba.js';
 
 const RUTA = '/simulador-paa';
 export const RUTA_CALCULADORA = `${RUTA}/calculadora/`;
@@ -31,7 +32,8 @@ const FAQ = [
 
 const mil = n => n.toLocaleString('es-MX');
 
-export function paginaCalculadoraPaa() {
+export async function paginaCalculadoraPaa(env) {
+  const { tarjeta, barra } = await compraSimulador(env, { app: 'simulador-paa', nombre: 'Simulador PAA', para: 'para subir tu puntaje' });
   const udem = UNIVERSIDADES.udem.fuentes[0], udeg = UNIVERSIDADES.udeg.fuentes[0];
   const ld = [
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) },
@@ -44,13 +46,14 @@ export function paginaCalculadoraPaa() {
     titulo: 'Calculadora de puntaje PAA: total, UDEM, UdeG y becas | Vorka México', ruta: RUTA_CALCULADORA,
     descripcion: 'Calcula tu puntaje total de la PAA (de 400 a 1,600) y compáralo con lo que piden la UDEM, el ITESO y las becas. Para la UdeG, suma tu promedio y tu PAA.',
     imagen: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`,
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}${CSS_CALC}`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}${CSS_CALC}${CSS_COMPRA}`,
     script: `window.PAA_CALC=${JSON.stringify(datos).replace(/</g, '\\u003c')};${SCRIPT}`,
     cuerpo: `
 <section class="pu-hero"><div class="marco">
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador PAA</a> / Calculadora de puntaje</nav>
   <h1 class="t-h1">Calculadora de puntaje PAA</h1>
   <p class="t-lead">Escribe tus resultados y ve tu puntaje total, cuánto te falta para la UDEM, el ITESO o una beca, y tu puntaje de admisión en la UdeG. Todo se calcula en tu celular: no guardamos nada.</p>
+  ${tarjeta}
 </div></section>
 
 <section class="t-sec suave"><div class="marco pc-g">
@@ -81,7 +84,7 @@ export function paginaCalculadoraPaa() {
 <section class="t-sec"><div class="marco">
   <div class="pc-diag">
     <div><h2 class="h3">¿Todavía no presentas la PAA?</h2><p>Haz el diagnóstico gratis: 12 preguntas con tutor y te da un puntaje estimado por sección. Con ese número ya puedes usar esta calculadora.</p></div>
-    <div class="pu-botones" style="margin-top:0"><a class="btn tinta" href="${RUTA}/diagnostico/">Hacer el diagnóstico gratis ${FLECHA}</a><a class="btn blanco" href="${RUTA}/">Ver el simulador</a></div>
+    <div class="pu-botones" style="margin-top:0"><a class="btn tinta" href="${RUTA}/diagnostico/">Hacer el diagnóstico gratis ${FLECHA}</a><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador</a></div>
   </div>
 </div></section>
 
@@ -90,7 +93,7 @@ export function paginaCalculadoraPaa() {
   <div class="t-faq" style="margin-top:22px">${FAQ.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
   <p class="pu-nota" style="margin-top:22px">Fuentes: <a href="${esc(udem.url)}" rel="noopener">${esc(udem.nombre)}</a>; <a href="${esc(udeg.url)}" rel="noopener">${esc(udeg.nombre)}</a>; las becas, en sus guías de <a href="/oleynickhdz/becas/">vorka.mx/oleynickhdz</a>. Los requisitos cambian: confírmalos con cada universidad. Más por universidad: ${Object.entries(UNIVERSIDADES).map(([k, u]) => `<a href="${RUTA}/${k}/">PAA ${esc(u.nombre)}</a>`).join(', ')}.</p>
   <p class="t-nota" style="margin-top:14px">Página informativa de Vorka México. No estamos afiliados al College Board ni a las universidades mencionadas; PAA es una prueba del College Board.</p>
-</div></section>`,
+</div></section>${barra}`,
   });
 }
 

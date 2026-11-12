@@ -10,6 +10,7 @@ import { FLECHA } from '../marco.generado.js';
 import { SITIO } from '../seo.js';
 import { CSS } from './paa-universidades.js';
 import { MINIMOS_UNAM, FUENTE_MINIMOS } from './datos/unam-minimos.js';
+import { compraSimulador, CSS_COMPRA } from './compra-arriba.js';
 
 const RUTA = '/simulador-unam';
 export const RUTA_ACIERTOS = `${RUTA}/aciertos/`;
@@ -53,7 +54,8 @@ const calculadora = (texto) => `<form class="ua-calc" novalidate onsubmit="retur
   <p class="ua-resumen" id="ua-resumen" aria-live="polite"></p>
 </form>`;
 
-const ctas = `<div class="pu-botones"><a class="btn tinta" href="${RUTA}/diagnostico/">Saber cuántos aciertos sacaría hoy ${FLECHA}</a><a class="btn blanco" href="${RUTA}/">Ver el simulador UNAM</a></div>`;
+const ctas = `<div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador UNAM ${FLECHA}</a><a class="btn blanco" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>`;
+const compra = (env, para) => compraSimulador(env, { app: 'simulador-unam', nombre: 'Simulador UNAM', para, puntos: ['Examen de tu área con las 120 preguntas y el tiempo real', 'Tutor con pistas cuando fallas', 'Tus aciertos estimados para compararlos con esta tabla'] });
 
 const FAQ_GENERAL = [
   { p: '¿Cuántos aciertos necesito para entrar a la UNAM?', r: 'No hay un número fijo: depende de la carrera, el plantel, la modalidad y el año. Como referencia, la DGAE publicó para cada programa el menor número de aciertos con el que alguien entró entre 2021 y 2026; van de 40 a 111.' },
@@ -95,9 +97,10 @@ const CSS_UA = `<style>
 </style>`;
 
 // /simulador-unam/aciertos/<carrera>/
-export function paginaCarreraUnam(slug) {
+export async function paginaCarreraUnam(env, slug) {
   const c = CARRERAS[slug];
   if (!c || c.max < MINIMO_PAGINA) return null;
+  const { tarjeta, barra } = await compra(env, `Área ${c.area}`);
   const ruta = `${RUTA_ACIERTOS}${slug}/`, n = c.programas.length;
   const rango = c.max === c.min ? `${c.max}` : `de ${c.min} a ${c.max}`;
   const faq = [
@@ -110,7 +113,7 @@ export function paginaCarreraUnam(slug) {
     titulo: `Aciertos para ${c.carrera} en la UNAM: mínimo por plantel 2021–2026 | Vorka México`, ruta,
     descripcion: `${c.carrera} en la UNAM: ${n === 1 ? 'su mínimo' : `los mínimos de sus ${n} programas`} 2021–2026 (${rango} aciertos) según la DGAE. Calcula si te alcanza y practica con el simulador del Área ${c.area}.`,
     imagen: `${SITIO}/assets/tienda/v3/simulador-unam-og.jpg`,
-    head: ld(faq, [['Simulador UNAM', `${RUTA}/`], ['Aciertos por carrera', RUTA_ACIERTOS], [c.carrera, ruta]]) + CSS + CSS_UA,
+    head: ld(faq, [['Simulador UNAM', `${RUTA}/`], ['Aciertos por carrera', RUTA_ACIERTOS], [c.carrera, ruta]]) + CSS + CSS_UA + CSS_COMPRA,
     script: SCRIPT,
     cuerpo: `
 <section class="pu-hero"><div class="marco">
@@ -118,6 +121,7 @@ export function paginaCarreraUnam(slug) {
   <h1 class="t-h1">¿Cuántos aciertos piden para ${esc(c.carrera)} en la UNAM?</h1>
   <p class="t-lead">${esc(c.carrera)} se imparte en ${plural(n, 'programa', 'programas')} (plantel y modalidad). El menor número de aciertos con el que alguien entró entre 2021 y 2026 va ${c.max === c.min ? `en ${c.max}` : `de ${c.min} a ${c.max}`}. Es del Área ${c.area}, ${esc(AREAS[c.area])}.</p>
   ${calculadora('Escribe tus aciertos de un simulacro o del diagnóstico y ve, plantel por plantel, si llegas al mínimo 2021–2026.')}
+  ${tarjeta}
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
@@ -147,19 +151,20 @@ ${otras.length ? `<section class="t-sec suave"><div class="marco">
   <div><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" style="margin-top:14px">${esc(c.carrera)} en la UNAM</h2></div>
   <div class="t-faq" style="margin-top:22px">${faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
   <p class="t-nota" style="margin-top:22px">Página informativa de Vorka México con datos públicos de la DGAE. No estamos afiliados a la UNAM. Confirma siempre la convocatoria vigente.</p>
-</div></section>`,
+</div></section>${barra}`,
   });
 }
 
 // /simulador-unam/aciertos/
-export function paginaAciertosUnam() {
+export async function paginaAciertosUnam(env) {
+  const { tarjeta, barra } = await compra(env, 'las 4 áreas');
   const total = MINIMOS_UNAM.length, carreras = Object.keys(CARRERAS).length;
   const porArea = a => Object.entries(CARRERAS).filter(([, c]) => c.area === a).sort((x, y) => x[1].carrera.localeCompare(y[1].carrera, 'es'));
   return pagina({
     titulo: 'Aciertos para entrar a la UNAM por carrera y plantel (2021–2026) | Vorka México', ruta: RUTA_ACIERTOS,
     descripcion: `Los ${total} programas de licenciatura de la UNAM con su mínimo de aciertos 2021–2026 según la DGAE. Escribe tus aciertos y ve a qué carreras y planteles llegas.`,
     imagen: `${SITIO}/assets/tienda/v3/simulador-unam-og.jpg`,
-    head: ld(FAQ_GENERAL, [['Simulador UNAM', `${RUTA}/`], ['Aciertos por carrera', RUTA_ACIERTOS]]) + CSS + CSS_UA,
+    head: ld(FAQ_GENERAL, [['Simulador UNAM', `${RUTA}/`], ['Aciertos por carrera', RUTA_ACIERTOS]]) + CSS + CSS_UA + CSS_COMPRA,
     script: SCRIPT,
     cuerpo: `
 <section class="pu-hero"><div class="marco">
@@ -167,6 +172,7 @@ export function paginaAciertosUnam() {
   <h1 class="t-h1">Aciertos para entrar a la UNAM por carrera y plantel</h1>
   <p class="t-lead">Los ${total} programas de licenciatura (${carreras} carreras en sus planteles y modalidades) con el menor número de aciertos con el que alguien entró entre 2021 y 2026, según la DGAE. Escribe tus aciertos y la tabla te dice a cuáles llegas.</p>
   ${calculadora('De un simulacro o del diagnóstico gratis. El examen tiene 120 preguntas.')}
+  ${tarjeta}
   ${fuente()}
 </div></section>
 
@@ -186,6 +192,6 @@ export function paginaAciertosUnam() {
   <div class="t-faq" style="margin-top:22px">${FAQ_GENERAL.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
   <p class="pu-nota">Más a fondo: <a href="/learn/unam/cuantos-aciertos-para-entrar-a-la-unam/">cómo se asignan los lugares y qué pasó en 2026</a>.</p>
   <p class="t-nota" style="margin-top:14px">Página informativa de Vorka México con datos públicos de la DGAE. No estamos afiliados a la UNAM.</p>
-</div></section>`,
+</div></section>${barra}`,
   });
 }
