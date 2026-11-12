@@ -2,6 +2,8 @@
 //
 // 1. Pedirlas (cron de cada hora, src/index.js): a quien pagó una orden le llega UN correo, una sola vez por orden, con una
 //    liga única por producto (/tienda/resena/<token>). Cuándo:
+//    También a quien canjeó una liga de regalo de un simulador y lo usó (simulador_resultados); su reseña se marca
+//    «Lo recibió de regalo» en la página.
 //      · descargables (guías, plantillas…): 7 días después del pago, ya con tiempo de abrirlos;
 //      · productos de acceso y suscripciones (simuladores, Ruta de Impacto, Evaluación de liderazgo, Brindi, Cupo, Agenda,
 //        Vuelve, Vende, Cuentas): 14 días después del pago. Su uso vive en apps distintas (varias en Vorka OS), así que no
@@ -90,7 +92,9 @@ export async function pedirResenas(env, ahora = new Date()) {
   const masViejo = new Date(t - (DIAS_ACCESO + VENTANA_DIAS) * DIA).toISOString();
   const masNuevo = new Date(t - DIAS_DESCARGA * DIA).toISOString();
   const ordenes = await all(env, `SELECT o.id, o.email, o.nombre, o.paid_at FROM orders o
-    WHERE o.estado = 'paid' AND o.regalo = 0 AND o.monto_centavos > 0 AND o.paid_at BETWEEN ? AND ?
+    WHERE o.estado = 'paid' AND o.regalo = 0 AND o.paid_at BETWEEN ? AND ?
+      -- Con cobro, o una liga de regalo de un simulador que de verdad se usó (su reseña dice «Lo recibió de regalo»)
+      AND (o.monto_centavos > 0 OR (o.proveedor = 'regalo' AND EXISTS (SELECT 1 FROM simulador_resultados sr WHERE sr.order_id = o.id)))
       AND NOT EXISTS (SELECT 1 FROM resenas r WHERE r.order_id = o.id)
       AND NOT EXISTS (SELECT 1 FROM resenas_bajas b WHERE b.email = o.email)
     ORDER BY o.paid_at LIMIT ?`, masViejo, masNuevo, POR_CORRIDA);
@@ -271,7 +275,7 @@ export async function resenasDe(env, ruta, { ultimas = ULTIMAS } = {}) {
   try {
     const res = await one(env, `SELECT COUNT(*) total, AVG(r.estrellas) promedio FROM resenas r JOIN orders o ON o.id = r.order_id WHERE ${de}`, ruta);
     if (!res?.total) return null;
-    const filas = await all(env, `SELECT r.nombre_publico nombre, r.estrellas, r.texto, r.escrita_at fecha FROM resenas r JOIN orders o ON o.id = r.order_id
+    const filas = await all(env, `SELECT r.nombre_publico nombre, r.estrellas, r.texto, r.escrita_at fecha, o.proveedor = 'regalo' regalo FROM resenas r JOIN orders o ON o.id = r.order_id
       WHERE ${de} ORDER BY r.escrita_at DESC, r.id DESC LIMIT ?`, ruta, ultimas);
     return { total: res.total, promedio: Math.round(res.promedio * 10) / 10, ultimas: filas };
   } catch (e) { console.error('resenas', ruta, e?.message); return null; }   // sin reseñas antes que sin página
@@ -301,12 +305,12 @@ export function seccionResenas(rs, { titulo = 'Lo que dicen quienes lo compraron
   return `<section class="t-sec rs-sec" id="resenas" aria-labelledby="rs-titulo"><div class="marco">
   <div class="rs-cab">
     <div><span class="etiqueta">Reseñas de compradores</span><h2 class="h2" id="rs-titulo">${esc(titulo)}</h2></div>
-    <div class="rs-resumen"><b class="num">${decimal(rs.promedio)}</b>${estrellasHtml(rs.promedio, 'grande')}<small>${rs.total === 1 ? '1 reseña' : `${rs.total} reseñas`} de compras verificadas</small></div>
+    <div class="rs-resumen"><b class="num">${decimal(rs.promedio)}</b>${estrellasHtml(rs.promedio, 'grande')}<small>${rs.total === 1 ? '1 reseña' : `${rs.total} reseñas`} verificadas</small></div>
   </div>
   <ul class="rs-lista">${rs.ultimas.map(x => `<li class="rs-item">
     ${estrellasHtml(x.estrellas)}
     ${x.texto ? `<p class="rs-texto">${esc(x.texto).replace(/\n/g, '<br>')}</p>` : ''}
-    <p class="rs-quien"><b>${esc(x.nombre)}</b><span>Compra verificada · <time datetime="${esc(dia(x.fecha))}">${esc(fechaLarga(x.fecha))}</time></span></p>
+    <p class="rs-quien"><b>${esc(x.nombre)}</b><span>${x.regalo ? 'Lo recibió de regalo' : 'Compra verificada'} · <time datetime="${esc(dia(x.fecha))}">${esc(fechaLarga(x.fecha))}</time></span></p>
   </li>`).join('')}</ul>
 </div></section>`;
 }

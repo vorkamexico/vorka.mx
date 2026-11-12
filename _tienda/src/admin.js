@@ -221,7 +221,7 @@ export async function diagnosticos(env, { estado = 'todos', app = '' } = {}) {
   const compro = `EXISTS (SELECT 1 FROM orders o JOIN order_items i ON i.order_id = o.id JOIN products p ON p.id = i.product_id
     WHERE lower(o.email) = d.email AND o.estado = 'paid' AND o.proveedor NOT IN ('regalo', 'cortesia') AND p.slug LIKE d.app || '%')`;
   const filtro = { todos: '', pendientes: ` AND d.terminado_at IS NOT NULL AND d.contactado_at IS NULL AND NOT ${compro}`, sin_terminar: ' AND d.terminado_at IS NULL', compraron: ` AND ${compro}` }[e];
-  const filas = await all(env, `SELECT d.id, d.app, d.nombre, d.email, d.whatsapp, d.created_at, d.verificado_at, d.terminado_at, d.contactado_at, d.resultado, d.ref_code,
+  const filas = await all(env, `SELECT d.id, d.app, d.nombre, d.email, d.whatsapp, d.created_at, d.verificado_at, d.terminado_at, d.contactado_at, d.resultado, d.ref_code, d.seg_retomar_at, d.seg_tema_at, d.seg_oferta_at, d.seg_codigo, d.seg_baja_at,
       ${compro} compro FROM simulador_diagnosticos d WHERE (? = '' OR d.app = ?)${filtro} ORDER BY d.created_at DESC LIMIT 500`, String(app || ''), String(app || ''));
   const total = await one(env, `SELECT COUNT(*) n, SUM(terminado_at IS NOT NULL) terminaron, SUM(${compro}) compraron FROM simulador_diagnosticos d WHERE (? = '' OR d.app = ?)`, String(app || ''), String(app || ''));
   return {
