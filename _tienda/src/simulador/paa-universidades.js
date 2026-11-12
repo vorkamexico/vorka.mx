@@ -284,8 +284,8 @@ export async function paginaPaaUniversidad(env, clave) {
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador PAA</a> / PAA ${esc(u.nombre)}</nav>
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
-  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${esc(u.verificado)}. Confirma siempre los requisitos vigentes con ${de(u)}.</p>
   ${tarjeta}
+  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${esc(u.verificado)}. Confirma siempre los requisitos vigentes con ${de(u)}.</p>
   <div class="pu-botones"><a class="btn blanco" href="${RUTA}/calculadora/">${clave === 'udeg' ? 'Calcular mi puntaje UdeG' : 'Calcular mi puntaje'}</a></div>
 </div></section>
 
