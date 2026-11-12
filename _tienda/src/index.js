@@ -51,6 +51,7 @@ import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js'
 import * as retiros from './puntos-retiros.js';
 import { resumenEmbajadores, embajador, cambiarPatrocinador } from './embajadores.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
+import { seguimientoDiagnosticos, pedirPuntajes, bajaSeguimiento, paginaPuntajeRuta, puntajesPanel } from './simulador/seguimiento.js';
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
@@ -134,6 +135,7 @@ export class Admin extends WorkerEntrypoint {
   resenas(f) { return resenasPanel(this.env, f || {}); }
   decidirResena(id, d) { return decidirResena(this.env, id, d || {}); }
   resenasPorAprobar() { return resenasPorAprobar(this.env); }
+  puntajes() { return puntajesPanel(this.env); }
   // Tests (vocacional y proyecto social): embudo por producto (inició, mitad, terminó, dejó correo, vio candado, abrió el
   // pago, compró, con cupón, recuperadas por el correo) y borrar las respuestas de un correo (ARCO)
   metricasTests(f) { return metricasTests(this.env, f || {}); }
@@ -361,6 +363,9 @@ export default {
     ctx.waitUntil(recordatoriosAutomaticos(env, event?.scheduledTime ?? Date.now()).then(r => { if (r.revisadas) console.log('recordatorios', JSON.stringify(r)); }).catch(e => console.error('recordatorios', e?.message)));
     // Simuladores: recordatorio de estudio al celular a la hora que eligió cada quien (src/simulador/estudio.js)
     ctx.waitUntil(recordatoriosEstudio(env, new Date(event?.scheduledTime ?? Date.now()), simuladores()).then(r => { if (r.revisados) console.log('simulador: recordatorios', JSON.stringify(r)); }).catch(e => console.error('simulador: recordatorios', e?.message)));
+    // Simuladores: seguimiento del diagnóstico gratis (retomar, tema débil, 10 % personal) y, después de la reseña, el puntaje real
+    ctx.waitUntil(seguimientoDiagnosticos(env, new Date(event?.scheduledTime ?? Date.now()), simuladores()).then(r => { if (r.revisados) console.log('simulador: seguimiento', JSON.stringify(r)); }).catch(e => console.error('simulador: seguimiento', e?.message)));
+    ctx.waitUntil(pedirPuntajes(env, new Date(event?.scheduledTime ?? Date.now()), simuladores()).then(r => { if (r.revisadas) console.log('simulador: puntajes', JSON.stringify(r)); }).catch(e => console.error('simulador: puntajes', e?.message)));
     ctx.waitUntil(pedirResenas(env, new Date(event?.scheduledTime ?? Date.now())).then(r => { if (r.revisadas) console.log('resenas', JSON.stringify(r)); }).catch(e => console.error('resenas', e?.message)));
     // Tests: el único recordatorio «tu resultado te espera» (al día siguiente, con consentimiento) y, una vez al día, borrar
     // respuestas viejas (12 meses sin compra, 24 con compra)
@@ -440,6 +445,10 @@ async function atender(request, env, ctx, url) {
     const rsn = url.pathname.match(/^\/tienda\/resena\/([^/]{1,100})(\/baja)?\/?$/);
     if (rsn && ['GET', 'HEAD', 'POST'].includes(request.method))
       return await (rsn[2] ? bajaResenas(request, env, rsn[1]) : request.method === 'POST' ? paginaResenaPost(request, env, rsn[1]) : paginaResenaGet(env, rsn[1], url));
+    // Simuladores: baja de los correos del diagnóstico y «¿cuánto sacaste?» (src/simulador/seguimiento.js)
+    if (url.pathname === '/tienda/simulador-baja' && ['GET', 'HEAD', 'POST'].includes(request.method)) return await bajaSeguimiento(request, env, url);
+    const pjt = url.pathname.match(/^\/tienda\/puntaje\/([^/]{1,100})\/?$/);
+    if (pjt && ['GET', 'HEAD', 'POST'].includes(request.method)) return await paginaPuntajeRuta(request, env, pjt[1], url, simuladores());
     const ret = url.pathname.match(/^\/tienda\/retomar\/([0-9a-f-]{36})\/?$/);
     if (ret && request.method === 'GET') return await retomarPago(env, ret[1], url);
     if (url.pathname === '/descargas/reenviar' || url.pathname === '/descargas/reenviar/') {

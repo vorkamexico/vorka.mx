@@ -227,7 +227,7 @@ describe('página del producto y JSON-LD', () => {
     expect(producto(h).review.map(r => r.author.name).sort()).toEqual(['Luis, León', 'Mariana, Celaya']);
     expect(producto(h).review.find(r => r.author.name === 'Luis, León').reviewBody).toBeUndefined();
     expect(h).toContain('<b class="num">4.5</b>');
-    expect(h).toContain('2 reseñas de compras verificadas');
+    expect(h).toContain('2 reseñas verificadas');
     expect(h).not.toContain('Reembolso');
   });
 

@@ -223,7 +223,9 @@ export function crearDiagnostico({ c, APP, RUTA, API, BANCO, REACTIVO, firma, cs
     const secs = DX.map(s => esc(s.nombre));
     const ultima = DX[n - 1].nombre;
     const listaSecs = n === 1 ? secs[0] : n <= 5 ? `${secs.slice(0, -1).join(', ')} ${/^h?i(?!e)/i.test(ultima.normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ? 'e' : 'y'} ${secs[n - 1]}` : `${n} materias`;
-    const cfg = { app: APP, ruta: RUTA, api: API, examen: EXAMEN, total: TOTAL_DIAG, ref: code || '', escala: escalaPAA ? 'paa' : 'aciertos' };
+    // Quien llegó con la liga de alguien a la página del simulador trae la cookie vorka_ref: el diagnóstico también la guarda
+    const deCookie = (req.headers.get('cookie') || '').match(/(?:^|;\s*)vorka_ref=([A-Za-z0-9_-]{2,40})/)?.[1] || '';
+    const cfg = { app: APP, ruta: RUTA, api: API, examen: EXAMEN, total: TOTAL_DIAG, ref: code || deCookie, escala: escalaPAA ? 'paa' : 'aciertos' };
     return pagina({
       titulo: `Diagnóstico ${EXAMEN} gratis: ¿cuánto sacarías hoy? | Vorka México`, ruta: `${RUTA}/diagnostico/`,
       descripcion: `Haz gratis un simulacro breve de ${TOTAL_DIAG} preguntas tipo ${EXAMEN} con tutor y descubre tu puntaje estimado y qué te conviene reforzar.`,
