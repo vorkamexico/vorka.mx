@@ -653,7 +653,8 @@ class Sitio:
                '<a class="btn vidrio" href="/sparks/sumate/">Súmate al equipo</a></div></section>') % (
                    partes.v_metal("art", "gct"), ciudad_corta, esc(wa), partes.FLECHA)
         if not ns:
-            partes_html.append('<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
+            # Edición nueva sin notas todavía: su presentación (si tiene) y la invitación a escribir
+            partes_html.append(self.intro() + '<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
             return self.pagina(c["nombre"], c["descripcion"], self.abs + "/", self.og_de(None), "".join(partes_html))
 
         # Cintillo: lo más nuevo (sparks.js lo esconde si lo último tiene más de 3 días)

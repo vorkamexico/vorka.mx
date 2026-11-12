@@ -8,6 +8,72 @@
   "instagram": "https://www.instagram.com/vorka.mx/",
   "noticiasPorPagina": 12,
   "hoja": false,
+  "intro": {
+    "etiqueta": "Cortazar, Guanajuato. Juventud que construye futuro.",
+    "titulo": "Cortazar: historias que",
+    "acento": "empiezan en casa.",
+    "parrafos": [
+      "Cortazar se recorre a pie: del Jardín Principal a la Parroquia de San José, de las calles del centro a las comunidades, con el Cerro de Culiacán siempre a la vista. Es un municipio donde la gente se conoce y donde lo que hace una persona se nota en su colonia.",
+      "Aquí hay jóvenes que estudian y trabajan al mismo tiempo, que organizan, que emprenden y que empiezan proyectos con lo que tienen a la mano. Esta edición de la Revista Sparks existe para contar lo que están haciendo."
+    ],
+    "construyeTitulo": "En Cortazar vamos a contar",
+    "construye": [
+      "Historias de jóvenes de preparatorias y universidades.",
+      "Proyectos que mejoran su colonia o su comunidad.",
+      "Lo que pasa en el municipio y le importa a sus familias.",
+      "Personas que vale la pena conocer."
+    ],
+    "mas": [
+      "Cada nota sale de fuentes oficiales y cada historia, de una persona real que decidió contarla. Si sabes de alguien que está moviendo Cortazar, escríbenos."
+    ],
+    "cierre": "Cortazar ya se está moviendo.",
+    "cierreSub": "Aquí lo vamos a contar.",
+    "fotos": {
+      "principal": {
+        "src": "cortazar-parroquia",
+        "anchos": [
+          900,
+          1600
+        ],
+        "alt": "Calle del centro de Cortazar con gente caminando y la torre de la Parroquia de San José al fondo"
+      },
+      "lateral": {
+        "src": "cortazar-atrio",
+        "anchos": [
+          700,
+          900
+        ],
+        "alt": "Atrio y torre de la Parroquia de San José en Cortazar"
+      },
+      "tira": [
+        {
+          "src": "cortazar-jardin",
+          "anchos": [
+            700,
+            1200
+          ],
+          "alt": "Jardín Principal de Cortazar con bancas y árboles"
+        },
+        {
+          "src": "cortazar-guadalupe",
+          "anchos": [
+            700,
+            1200
+          ],
+          "alt": "Fachada de la Parroquia de Guadalupe en Cortazar al atardecer"
+        },
+        {
+          "src": "cortazar-cerro",
+          "anchos": [
+            700,
+            1200
+          ],
+          "alt": "Vista del centro de Cortazar con el Cerro de Culiacán al fondo"
+        }
+      ],
+      "credito": "Fotos de Cortazar: AlejandroLinaresGarcia, Carlos Alonso Caballero Vallejo y Alberto Juárez en Wikimedia Commons (CC BY-SA)."
+    }
+  },
   "fotos": {
     "bucket": "sparks-fotos",
     "urlPublica": "https://fotos.vorka.mx",
