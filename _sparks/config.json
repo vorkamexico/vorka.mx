@@ -103,10 +103,12 @@
         "lugar": "Guanajuato"
       },
       {
-        "nombre": "León"
+        "nombre": "Cortazar",
+        "ruta": "/sparks/cortazar/",
+        "lugar": "Guanajuato"
       },
       {
-        "nombre": "Cortazar"
+        "nombre": "León"
       },
       {
         "nombre": "Apaseo el Grande"
