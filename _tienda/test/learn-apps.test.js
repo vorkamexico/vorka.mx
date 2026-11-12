@@ -172,7 +172,7 @@ describe('Vorka Learn › Crea tu app', () => {
     expect(ind).toContain('<meta property="og:image" content="https://vorka.mx/assets/learn/og/apps.png">');
     for (const x of RUTAS) expect(ind).toContain(`href="${x}"`);
     const portada = await (await pedir('/learn/')).text();
-    expect(portada).toContain(`>${APPS.nombre}</h2>`);
+    expect(portada).toContain(`class="lr-mos-t"><b>${APPS.nombre}</b>`);
     for (const x of RUTAS) expect(portada).toContain(`href="${x}"`);
     expect(cabecera(portada)).toContain(`href="${T.ruta}"><span class="lr-m-ico">`);
     expect(portada).toContain('<a class="lr-m-sec lr-s-apps" href="/learn/apps/">');

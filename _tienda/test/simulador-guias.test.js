@@ -207,7 +207,7 @@ describe('Vorka Learn: guías de estudio', () => {
     expect(LEARN_PORTADA.descripcion.length).toBeLessThanOrEqual(155);
     expect(portada.match(/<h1[\s>]/g) || []).toHaveLength(1);
     for (const x of GUIAS) expect(portada).toContain(`href="${rutaGuia(x)}"`);
-    for (const s of Object.keys(SIMS)) expect(portada).toContain(`>${SIMS[s].examen}</h2>`);
+    for (const s of Object.keys(SIMS)) expect(portada).toContain(`class="lr-mos-t"><b>${SIMS[s].examen}</b>`);
     expect(jsonLd(portada).map(d => d['@type'])).toEqual(['CollectionPage']);
     for (const s of Object.keys(SIMS)) {
       const ri = await pedir(rutaIndice(s));

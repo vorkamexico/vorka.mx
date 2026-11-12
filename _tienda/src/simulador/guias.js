@@ -642,6 +642,7 @@ export const LEARN_PORTADA = {
   titulo: 'Vorka Learn: guías de admisión, dinero y negocio',
   descripcion: 'Guías con fuentes oficiales: exámenes de admisión, becas y cómo elegir carrera, finanzas personales y consejos para tu negocio pequeño.',
   h1: 'Guías para tu examen, tu dinero y tu negocio',
+  corta: 'Guías claras con fuentes oficiales para tu examen de admisión, tu beca, tu dinero, tu negocio y tu app.',
   lead: 'Vorka Learn reúne lo que conviene saber antes de presentar tu examen (qué viene, cómo se califica y cómo estudiar), cómo elegir carrera y pedir una beca, guías claras de finanzas personales y de negocio pequeño, y cómo crear y vender tu propia app. Cada dato sale de la institución que lo publica, y lo citamos al final de cada guía.',
 };
 // Sitemap propio de Learn (vorka.mx/learn/sitemap.xml, declarado en el robots.txt de la raíz)
