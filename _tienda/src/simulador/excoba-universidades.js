@@ -96,8 +96,8 @@ export async function paginaExcobaUniversidad(env, clave) {
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador EXCOBA</a> / ${esc(u.nombre)}</nav>
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
-  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con la ${esc(u.completo)}.</p>
   ${tarjeta}
+  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con la ${esc(u.completo)}.</p>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">

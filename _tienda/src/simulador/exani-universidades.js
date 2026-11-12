@@ -316,8 +316,8 @@ export async function paginaExaniUniversidad(env, clave) {
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador EXANI-II</a> / <a href="${RUTA_UNIVERSIDADES}">Universidades</a> / ${esc(u.nombre)}</nav>
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
-  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con ${u.art} ${esc(u.nombre)}.</p>
   ${tarjeta}
+  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con ${u.art} ${esc(u.nombre)}.</p>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
