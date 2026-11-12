@@ -95,7 +95,24 @@ const CSS = `<style>
 .di-card-c small{font-size:13px;font-weight:650;color:var(--fg-2)}
 .di-card-c h3{font-size:17px;line-height:1.3;letter-spacing:-.015em;margin:0}
 .di-card-c p{margin:0;font-size:14.5px;color:var(--fg-2);line-height:1.5}
-.di-mas{margin:14px 0 0;font-weight:650}.di-mas a{color:var(--sec-t)}
+.di-mas{margin:14px 0 0;font-weight:650}.di-mas a{color:var(--sec-t);display:inline-flex;align-items:center;gap:6px;text-decoration:none}.di-mas a:hover{text-decoration:underline}
+.di-mas svg,.di-arriba svg,.di-res-promo svg{width:16px;height:16px;flex:none}
+/* productos para estudiantes, a la vista desde el inicio */
+.di-arriba{margin-top:22px}
+.di-arriba-t{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;justify-content:space-between;margin:0 0 10px;font-size:15px;color:var(--fg-2)}
+.di-arriba-t b{color:var(--fg);font-size:16px}
+.di-arriba-t a{color:var(--sec-t);font-weight:650;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.di-tira{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.di-tira{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:min(78%,280px);overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:20px;padding:0 20px 6px;margin:0 -20px;scrollbar-width:none}.di-tira>*{scroll-snap-align:start}}
+.di-mini{display:flex;gap:12px;align-items:center;padding:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none;box-shadow:var(--sombra);transition:border-color .15s}
+.di-mini:hover{border-color:var(--sec-t)}
+.di-mini img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex:none;background:var(--bg-2,var(--line))}
+.di-mini span{display:grid;gap:2px;min-width:0}
+.di-mini b{font-size:15px;line-height:1.25;letter-spacing:-.01em}
+.di-mini small{font-size:13px;line-height:1.35;color:var(--fg-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.di-res-promo{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:14px;background:var(--sec-s)}
+.di-res-promo p{margin:0;font-size:15.5px;color:var(--fg);max-width:560px}
+.di-res-promo .btn{flex:none}
 .di-lista-h{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px}
 </style>`;
 
@@ -116,33 +133,42 @@ async function noticiasSparks() {
   } catch { return SPARKS.v || []; }
 }
 
-// Productos de la tienda que le sirven a quien hace contenido o tiene un negocio (sin precios: se ven en la ficha)
-const PRODUCTOS_PROMO = ['vende-mensual', 'pagina-web-mensual', 'brindi-celebracion', 'vuelve-mensual'];
+// Productos de la tienda para estudiantes (quienes más usan esta herramienta), en orden de prioridad. Sin precios: se ven
+// en la ficha. Los 3 primeros que estén a la venta van arriba de la herramienta; los siguientes, abajo.
+const PRODUCTOS_PROMO = ['test-vocacional', 'simulador-paa-practica', 'simulador-exani-ii-practica', 'simulador-unam-practica',
+  'simulador-ipn-practica', 'que-proyecto-social', 'evaluacion-liderazgo', 'simuladores-universidad'];
 async function productosPromo(env) {
   try {
     const l = await listarProductos(env);
-    return PRODUCTOS_PROMO.map(s => l.find(p => p.slug === s)).filter(Boolean).slice(0, 3);
+    return PRODUCTOS_PROMO.map(s => l.find(p => p.slug === s)).filter(Boolean).slice(0, 7);
   } catch { return []; }
 }
 const enlaceProducto = p => p.contenido?.acceso?.ruta || `/tienda/${p.slug}/`;
 
-// Guías de Learn para redes y negocio (las más nuevas primero)
+// Guías de Learn para estudiantes: exámenes de admisión y «Tu camino» (becas, carrera), las más nuevas primero
 function guiasPromo() {
-  const l = articulos().filter(a => ['web', 'apps', 'negocio'].includes(a.clave));
+  const l = articulos().filter(a => a.s.grupo === 'examen' || a.clave === 'camino');
   return l.sort((a, b) => String(b.x.publicado || '').localeCompare(String(a.x.publicado || ''))).slice(0, 3);
 }
 
 const tarjetaNoticia = n => `<a class="di-card" href="${esc(n.href)}">${n.foto ? `<span class="di-card-img"><img src="${esc(n.foto)}" alt="${esc(n.alt)}" width="800" height="450" loading="lazy" decoding="async"></span>` : ''}<span class="di-card-c"><small>${esc(n.categoria)}${n.fecha ? ` · ${esc(n.fecha)}` : ''}</small><h3>${esc(n.titulo)}</h3>${n.resumen ? `<p>${esc(n.resumen)}</p>` : ''}</span></a>`;
 const tarjetaProducto = p => `<a class="di-card" href="${esc(enlaceProducto(p))}">${p.imagen ? `<span class="di-card-img"><img src="${esc(p.imagen)}" alt="" width="800" height="450" loading="lazy" decoding="async"></span>` : ''}<span class="di-card-c"><small>${esc(p.categoria || 'Tienda Vorka')}</small><h3>${esc(p.nombre)}</h3>${p.descripcion_corta ? `<p>${esc(p.descripcion_corta)}</p>` : ''}</span></a>`;
 
-async function promocion(env) {
-  const [noticias, productos] = await Promise.all([noticiasSparks(), productosPromo(env)]);
+const corto = t => { t = String(t || ''); return t.length > 90 ? `${t.slice(0, 88).replace(/\s+\S*$/, '')}…` : t; };
+const miniProducto = p => `<a class="di-mini" href="${esc(enlaceProducto(p))}">${p.imagen ? `<img src="${esc(p.imagen)}" alt="" width="64" height="64" decoding="async">` : ''}<span><b>${esc(p.nombre)}</b>${p.descripcion_corta ? `<small>${esc(corto(p.descripcion_corta))}</small>` : ''}</span></a>`;
+// Tira de productos arriba de la herramienta ('' si no hay)
+const tiraArriba = productos => productos.length ? `<aside class="di-arriba" aria-label="Para estudiantes, de Vorka México"><p class="di-arriba-t"><b>¿Estudias? Esto también te sirve</b><a href="/tienda/">Ver la tienda ${FLECHA}</a></p><div class="di-tira">${productos.slice(0, 3).map(miniProducto).join('')}</div></aside>` : '';
+// Llamado que aparece junto con las partes ya cortadas
+const llamadoResultado = p => p ? `<div class="di-res-promo"><p><b>¿Vas a presentar examen de admisión?</b> ${esc(corto(p.descripcion_corta || p.nombre))}</p><a class="btn tinta" href="${esc(enlaceProducto(p))}">${esc(p.nombre)} ${FLECHA}</a></div>` : '';
+
+async function promocion(env, productos) {
+  const noticias = await noticiasSparks();
   const guias = guiasPromo();
   const bloque = (titulo, lead, tarjetas, mas) => tarjetas ? `<section class="lr-grupo di-promo"><div class="lr-grupo-cab"><h2 class="lr-h2">${titulo}</h2></div><p class="lr-grupo-lead">${lead}</p><div class="gu-grid">${tarjetas}</div><p class="di-mas">${mas}</p></section>` : '';
   return [
-    bloque('Guías para tus redes y tu negocio', 'Guías gratis de Vorka Learn, con fuentes, para vender más y verte mejor en internet.', guias.map(tarjetaArticulo).join(''), `<a href="/learn/">Ver todas las guías ${FLECHA}</a>`),
+    bloque('Simuladores y tests para estudiantes', 'Prepárate para tu examen de admisión y elige carrera con las herramientas de Vorka México.', productos.slice(3, 7).map(tarjetaProducto).join(''), `<a href="/tienda/">Ver la tienda ${FLECHA}</a>`),
+    bloque('Guías para tu examen y tu carrera', 'Guías gratis de Vorka Learn, con fuentes oficiales: qué viene en tu examen, becas y cómo elegir carrera.', guias.map(tarjetaArticulo).join(''), `<a href="/learn/">Ver todas las guías ${FLECHA}</a>`),
     bloque('Lo más reciente en Revista Sparks', 'Noticias e historias del Bajío que publica Vorka México.', noticias.map(tarjetaNoticia).join(''), `<a href="/sparks/">Leer Revista Sparks ${FLECHA}</a>`),
-    bloque('De la tienda Vorka para tu negocio', 'Si vendes por redes, esto te ayuda a cobrar, tener tu página y lograr que tus clientes regresen.', productos.map(tarjetaProducto).join(''), `<a href="/tienda/">Ver la tienda ${FLECHA}</a>`),
   ].join('');
 }
 
@@ -157,7 +183,7 @@ const FAQ_DIVIDIR = [
   ['¿Hay límite de tamaño?', 'Puedes cortar imágenes de hasta 50 megapíxeles y sacar hasta 400 partes. En celulares, las imágenes muy grandes pueden fallar por falta de memoria; si pasa, usa una versión más chica de la foto.'],
 ];
 
-function herramientaDividir() {
+function herramientaDividir(llamado = '') {
   return `<div class="di" id="di">
   <label class="di-zona" id="di-zona" for="di-archivo">
     ${ICONO_SUBIR}
@@ -193,13 +219,14 @@ function herramientaDividir() {
     <div class="di-res-cab"><h2>Tus partes</h2><button class="btn tinta" type="button" id="di-zip">Descargar todas (.zip)</button></div>
     <p class="di-orden" id="di-orden" hidden></p>
     <ul class="di-lista" id="di-lista"></ul>
+    ${llamado}
   </div>
   <p class="di-privado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Tu imagen no sale de tu dispositivo: el corte lo hace tu navegador.</p>
 </div>`;
 }
 
 async function paginaDividir(env) {
-  const h = HERRAMIENTAS[0], anuncios = configAnuncios(env);
+  const h = HERRAMIENTAS[0], anuncios = configAnuncios(env), productos = await productosPromo(env);
   const migasH = [...MIGAS, [h.corto, h.ruta]];
   const texto = `<div class="di-texto">
   <h2>Cómo dividir una imagen</h2>
@@ -223,10 +250,11 @@ async function paginaDividir(env) {
   <h1 class="lr-h1">Dividir una imagen en partes</h1>
   <p class="lr-lead">Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil o para imprimirla en varias hojas. Es gratis, no pide cuenta y tu imagen se queda en tu dispositivo.</p>
   </div>
-  ${herramientaDividir()}
+  ${tiraArriba(productos)}
+  ${herramientaDividir(llamadoResultado(productos.find(p => /simulador/.test(p.slug)) || productos[0]))}
   ${espacioAnuncio(anuncios, 'mitad')}
   <div class="lr-col" style="margin-left:0">${texto}</div>
-  ${await promocion(env)}
+  ${await promocion(env, productos)}
   ${espacioAnuncio(anuncios, 'final')}
 </div></div>
 <script src="${RUTA_JS_DIVIDIR}?v=${V_DIVIDIR}" defer></script>`;
