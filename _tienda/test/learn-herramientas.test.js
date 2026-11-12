@@ -88,7 +88,10 @@ describe('Herramientas de Vorka Learn', () => {
   it('índice, redirecciones y sitemap', async () => {
     const r = await pedir('/learn/herramientas/');
     expect(r.status).toBe(200);
-    expect(await r.text()).toContain('href="/learn/herramientas/dividir-imagen/"');
+    const indice = await r.text();
+    expect(indice).toContain('<a class="he-card" href="/learn/herramientas/dividir-imagen/">');
+    expect(indice).toMatch(/<span class="he-portada"><svg viewBox="0 0 480 300"/);
+    expect(indice).toContain('Usar gratis');
     const s = await pedir('/learn/herramientas/dividir-imagen');
     expect(s.status).toBe(301);
     expect(s.headers.get('location')).toBe('https://vorka.mx/learn/herramientas/dividir-imagen/');
