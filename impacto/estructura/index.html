@@ -509,151 +509,115 @@
   :focus-visible{outline: 2px solid var(--focus); outline-offset: 2px;}
   @media (prefers-reduced-motion: reduce){*{transition: none !important;}}
 
-  /* DIRECTORIO ACOMODADO — por nivel y por estado, con copiar */
+  /* DIRECTORIO — por región y estado, todo a la vista */
   .wrap{max-width: 1040px;}
-  h1, .sec-title, .state-name, .empty-title{font-family: var(--display);}
+  h1, .sec-title, .region-name, .state-name, .contact-region, .empty-title{font-family: var(--display);}
   .brand{letter-spacing: 0; text-transform: none; font-size: 14px; font-weight: 600;}
   .hero-signoff{letter-spacing: 0; text-transform: none; font-size: 14px;}
   .mapwrap-title{letter-spacing: 0; text-transform: none; font-size: 15px; font-weight: 600; color: var(--ink);}
   .mapwrap-legend{letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 500;}
+  .mapwrap-legend .rchip{letter-spacing: 0; text-transform: none; font-size: 13px;}
   .footer-col-heading, .footer-badge, .footer-followus .label{letter-spacing: 0; text-transform: none;}
-  .hero{margin-bottom: 28px;}
-
+  .hero{margin-bottom: 32px;}
   button{font-family: inherit;}
-  .btn{
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    min-height: 40px; padding: 8px 16px; border-radius: 10px;
-    font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
-    border: 1.5px solid var(--rule-strong); background: var(--paper); color: var(--ink);
-    transition: background .12s, border-color .12s, color .12s;
-  }
-  .btn:hover{border-color: var(--ink);}
-  .btn svg{width: 16px; height: 16px; flex-shrink: 0;}
-  .btn-primary{background: var(--ink); border-color: var(--ink); color: var(--paper);}
-  .btn-primary:hover{opacity: .88;}
-  .btn.is-done{background: #4ca037; border-color: #4ca037; color: #fff;}
 
   /* Buscador y filtros */
-  .tools{
-    display: grid; gap: 12px;
-    padding: 16px; margin-bottom: 28px;
-    background: var(--paper-sunk); border-radius: 14px;
-  }
+  .tools{display: grid; gap: 12px; margin-bottom: 48px;}
   .search{display: flex; align-items: center; gap: 10px; min-width: 0;
-    background: var(--paper); border: 1.5px solid var(--rule); border-radius: 10px; padding: 0 12px;}
+    background: var(--paper); border: 1px solid var(--rule-strong); border-radius: 12px; padding: 0 14px;}
   .search:focus-within{border-color: var(--ink);}
   .search svg{color: var(--ink-3); flex-shrink: 0;}
   .search input{flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
-    font: inherit; font-size: 16px; padding: 12px 0; outline: none;}
+    font: inherit; font-size: 16px; padding: 13px 0; outline: none;}
   .search input::placeholder{color: var(--ink-3);}
   .search input::-webkit-search-cancel-button{display: none;}
   .clear-btn{background: transparent; border: 0; color: var(--ink-3); padding: 4px 6px;
     font-size: 22px; line-height: 1; cursor: pointer; display: none;}
   .clear-btn.is-visible{display: block;}
   .clear-btn:hover{color: var(--ink);}
-
   .tools-row{display: flex; flex-wrap: wrap; gap: 10px; align-items: center;}
   .select{
-    flex: 0 1 260px; min-width: 0; min-height: 40px;
-    background: var(--paper); color: var(--ink); font: inherit; font-size: 15px; font-weight: 500;
-    border: 1.5px solid var(--rule); border-radius: 10px; padding: 8px 12px; cursor: pointer;
+    flex: 0 1 240px; min-width: 0; min-height: 40px;
+    background: var(--paper); color: var(--ink); font: inherit; font-size: 15px;
+    border: 1px solid var(--rule-strong); border-radius: 12px; padding: 8px 12px; cursor: pointer;
   }
   .select:focus{border-color: var(--ink); outline: none;}
-  .levels{display: flex; flex-wrap: wrap; gap: 6px;}
+  .levels{display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px;}
   .levels button{
-    min-height: 36px; padding: 6px 14px; border-radius: 999px; cursor: pointer;
-    background: var(--paper); color: var(--ink-2); font-size: 14px; font-weight: 500;
-    border: 1.5px solid var(--rule);
+    min-height: 34px; padding: 5px 14px; border-radius: 999px; cursor: pointer;
+    background: transparent; color: var(--ink-2); font-size: 14px; border: 0;
   }
-  .levels button:hover{color: var(--ink); border-color: var(--ink-3);}
-  .levels button.is-active{background: var(--ink); border-color: var(--ink); color: var(--paper);}
-
-  .tools-foot{display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
-    padding-top: 12px; border-top: 1px solid var(--rule);}
-  .tally{margin: 0; font-size: 14px; color: var(--ink-2);}
-  .tally strong{color: var(--ink); font-weight: 600;}
-  .tools-actions{display: flex; flex-wrap: wrap; gap: 8px;}
-  .link-btn{background: none; border: 0; padding: 0; color: var(--ink-2); font-size: 14px;
+  .levels button:hover{color: var(--ink);}
+  .levels button.is-active{background: var(--ink); color: var(--paper);}
+  .link-btn{background: none; border: 0; padding: 0 4px; color: var(--ink-2); font-size: 14px;
     text-decoration: underline; text-underline-offset: 3px; cursor: pointer;}
   .link-btn:hover{color: var(--ink);}
 
-  /* Secciones */
-  .sec{margin: 0 0 36px;}
-  .sec-head{display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
-    gap: 6px 16px; margin-bottom: 14px;}
-  .sec-title{margin: 0; font-size: clamp(24px, 4vw, 30px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;}
-  .sec-note{margin: 0; font-size: 14px; color: var(--ink-2);}
-  .sub-title{margin: 22px 0 10px; font-size: 15px; font-weight: 600; color: var(--ink-2);}
-  .sub-title:first-child{margin-top: 0;}
-  .sub-title span{font-weight: 500; color: var(--ink-3);}
+  /* Títulos */
+  .sec{margin: 0 0 64px;}
+  .sec-title{margin: 0 0 6px; font-size: clamp(26px, 4.2vw, 36px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.1;}
+  .sec-lead{margin: 0 0 28px; max-width: 58ch; font-size: 16px; color: var(--ink-2);}
+  .level-name{margin: 22px 0 10px; font-size: 14px; font-weight: 500; color: var(--ink-3);
+    display: flex; align-items: center; gap: 12px;}
+  .level-name::after{content: ""; flex: 1; height: 1px; background: var(--rule);}
+  .level-name:first-child{margin-top: 0;}
 
   /* Tarjeta de persona */
-  .cards{display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 8px;}
+  .cards{display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px;}
   .person{
-    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
-    padding: 10px 10px 10px 12px; min-width: 0;
-    background: var(--paper); border: 1px solid var(--rule); border-left: 3px solid var(--tone, var(--ink));
-    border-radius: 10px;
+    display: flex; align-items: center; gap: 14px; min-width: 0;
+    padding: 12px 14px; background: var(--paper);
+    border: 1px solid var(--rule); border-radius: 14px;
   }
   .p-main{min-width: 0;}
-  .p-name{margin: 0; font-size: 15px; font-weight: 600; line-height: 1.25; color: var(--ink); overflow-wrap: anywhere;}
-  .p-role{margin: 2px 0 0; font-size: 13px; color: var(--ink-2); line-height: 1.35;}
-  .p-place{margin: 1px 0 0; font-size: 13px; color: var(--ink-3); line-height: 1.35;}
-  .p-copy{
-    align-self: start; min-height: 32px; padding: 4px 10px; border-radius: 8px; cursor: pointer;
-    background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 500;
-    border: 1px solid var(--rule-strong);
-  }
-  .p-copy:hover{color: var(--ink); border-color: var(--ink);}
-  .p-copy.is-done{background: #4ca037; border-color: #4ca037; color: #fff;}
-  .person .avatar{--av-size: 44px;}
-  .sec-nacional .person .avatar{--av-size: 52px;}
+  .p-name{margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.25; color: var(--ink); overflow-wrap: anywhere;}
+  .p-role{margin: 3px 0 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.35;}
+  .p-place{margin: 1px 0 0; font-size: 13.5px; color: var(--ink-3); line-height: 1.35;}
+  .person .avatar{--av-size: 48px; border: 0; box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--tone, var(--rule));}
+  .sec-nacional .person .avatar{--av-size: 56px;}
 
-  /* Acordeón por estado */
-  .state-list{display: grid; gap: 8px;}
-  .state{
-    background: var(--paper-sunk); border-radius: 12px;
-    border: 1px solid transparent; overflow: hidden;
-  }
-  .state[open]{border-color: var(--rule);}
-  .state > summary{
-    list-style: none; cursor: pointer;
-    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
-    padding: 14px 16px;
-  }
-  .state > summary::-webkit-details-marker{display: none;}
-  .state > summary:hover .state-name{text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px;}
-  .swatch{width: 12px; height: 12px; border-radius: 50%; background: var(--tone, var(--ink));}
-  .state-text{min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px;}
-  .state-name{font-size: 19px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink);}
-  .state-meta{font-size: 14px; color: var(--ink-2);}
-  .chev{width: 18px; height: 18px; color: var(--ink-3); transition: transform .15s;}
-  .state[open] .chev{transform: rotate(180deg);}
-  .state-body{padding: 4px 16px 18px;}
-  .state-actions{display: flex; justify-content: flex-end; margin-bottom: 6px;}
+  /* Contacto por región */
+  .contact{padding: 32px; border-radius: 20px; background: var(--paper-sunk);}
+  .contact .sec-lead{margin-bottom: 24px;}
+  .contact-list{list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 176px), 1fr)); gap: 12px;}
+  .contact-item{position: relative; padding: 18px 16px 16px; border-radius: 14px; background: var(--paper);
+    border: 1px solid var(--rule); overflow: hidden;}
+  .contact-item::before{content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--tone);}
+  .contact-region{display: block; margin: 0 0 4px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink);}
+  .contact-mail{display: inline-block; font-size: 14px; font-weight: 500; color: var(--ink);
+    text-decoration: underline; text-decoration-color: var(--tone); text-decoration-thickness: 2px;
+    text-underline-offset: 4px; overflow-wrap: normal;}
+  .contact-mail:hover{color: var(--tone);}
+  .contact-states{display: block; margin-top: 10px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3);}
+
+  /* Regiones y estados, todo abierto */
+  .regions{display: grid; gap: 56px;}
+  .region{padding-left: 24px; border-left: 3px solid var(--tone);}
+  .region-head{display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-bottom: 24px;}
+  .region-name{margin: 0; font-size: clamp(28px, 4.6vw, 40px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--ink);}
+  .region-mail, .state-mail{display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: 14px;
+    text-decoration: none; border-bottom: 1px solid transparent;}
+  .region-mail:hover, .state-mail:hover{color: var(--ink); border-bottom-color: var(--tone);}
+  .region-mail svg, .state-mail svg{width: 14px; height: 14px; color: var(--tone); flex-shrink: 0;}
+  .state + .state{margin-top: 36px;}
+  .state-head{display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; margin-bottom: 14px;}
+  .state-name{margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.015em; color: var(--ink);}
+  .state-mail{font-size: 13px; color: var(--ink-3);}
 
   .empty{padding: 48px 20px; text-align: center; color: var(--ink-2);
-    border: 1.5px dashed var(--rule-strong); border-radius: 12px;}
-  .empty-title{font-size: 22px; font-weight: 700; margin-bottom: 6px; color: var(--ink);}
-
-  .toast{
-    position: fixed; left: 50%; bottom: 24px; z-index: 30;
-    transform: translate(-50%, 12px); opacity: 0; pointer-events: none;
-    max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 10px;
-    background: var(--ink); color: var(--paper); font-size: 14px; font-weight: 500;
-    box-shadow: 0 6px 24px rgba(0,0,0,.18); transition: opacity .16s, transform .16s;
-  }
-  .toast.is-visible{opacity: 1; transform: translate(-50%, 0);}
+    border: 1px dashed var(--rule-strong); border-radius: 16px;}
+  .empty-title{font-size: 22px; font-weight: 600; margin-bottom: 6px; color: var(--ink);}
 
   @media (max-width: 720px){
-    .tools{padding: 12px; border-radius: 12px;}
     .select{flex: 1 1 100%;}
-    .tools-foot{flex-direction: column; align-items: stretch;}
-    .tools-actions{justify-content: space-between; align-items: center;}
-    .state > summary{padding: 12px;}
-    .state-body{padding: 4px 10px 14px;}
-    .state-name{font-size: 18px;}
-    .state-actions .btn{width: 100%;}
+    .tools{margin-bottom: 40px;}
+    .sec{margin-bottom: 48px;}
+    .contact{padding: 22px 16px; border-radius: 16px;}
+    .regions{gap: 44px;}
+    .region{padding-left: 14px;}
+    .state-name{font-size: 20px;}
+    .person{padding: 11px 12px;}
     .scroll-top{bottom: 16px; right: 16px;}
   }
 </style>
@@ -716,20 +680,23 @@
         <button type="button" data-nivel="distrital" aria-pressed="false">Distrital</button>
         <button type="button" data-nivel="municipal" aria-pressed="false">Municipal</button>
       </div>
-    </div>
-    <div class="tools-foot">
-      <p class="tally" id="tally" aria-live="polite"></p>
-      <div class="tools-actions">
-        <button type="button" class="link-btn" id="resetBtn" hidden>Quitar filtros</button>
-        <button type="button" class="btn btn-primary" id="copyAll">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>
-          <span>Copiar directorio</span>
-        </button>
-      </div>
+      <button type="button" class="link-btn" id="resetBtn" hidden>Quitar filtros</button>
     </div>
   </section>
 
   <section class="sec sec-nacional" id="nacional" aria-labelledby="nacionalTitle"></section>
+
+  <section class="sec contact" id="contacto" aria-labelledby="contactoTitle">
+    <h2 class="sec-title" id="contactoTitle">¿Quieres comunicarte con alguien?</h2>
+    <p class="sec-lead">Escribe al correo de su región. Cada estado del directorio tiene a un lado el correo que le corresponde.</p>
+    <ul class="contact-list">
+      <li class="contact-item" style="--tone:var(--noroeste)"><span class="contact-region">Noroeste</span><a class="contact-mail" href="mailto:noroeste@soyimpacto.org">noroeste@<wbr>soyimpacto.org</a><span class="contact-states">Baja California, Baja California Sur, Chihuahua, Sinaloa y Sonora</span></li>
+      <li class="contact-item" style="--tone:var(--noreste)"><span class="contact-region">Noreste</span><a class="contact-mail" href="mailto:noreste@soyimpacto.org">noreste@<wbr>soyimpacto.org</a><span class="contact-states">Coahuila, Durango, Nuevo León, San Luis Potosí y Tamaulipas</span></li>
+      <li class="contact-item" style="--tone:var(--occidente)"><span class="contact-region">Occidente</span><a class="contact-mail" href="mailto:occidente@soyimpacto.org">occidente@<wbr>soyimpacto.org</a><span class="contact-states">Aguascalientes, Colima, Guanajuato, Jalisco, Michoacán, Nayarit, Querétaro y Zacatecas</span></li>
+      <li class="contact-item" style="--tone:var(--centro)"><span class="contact-region">Centro</span><a class="contact-mail" href="mailto:centro@soyimpacto.org">centro@<wbr>soyimpacto.org</a><span class="contact-states">Ciudad de México, Estado de México, Guerrero, Hidalgo, Morelos, Puebla y Tlaxcala</span></li>
+      <li class="contact-item" style="--tone:var(--sureste)"><span class="contact-region">Sureste</span><a class="contact-mail" href="mailto:sureste@soyimpacto.org">sureste@<wbr>soyimpacto.org</a><span class="contact-states">Campeche, Chiapas, Oaxaca, Quintana Roo, Tabasco, Veracruz y Yucatán</span></li>
+    </ul>
+  </section>
 
   <section class="mapwrap" id="mapwrap" aria-label="Mapa de México por líderes">
     <div class="mapwrap-head">
@@ -823,7 +790,6 @@
 
 </div>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button class="scroll-top" id="scrollTop" aria-label="Volver arriba" title="Volver arriba"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <script>
   const DATA = [
@@ -1058,7 +1024,9 @@
     centro:   ["Ciudad de México","Estado de México","Guerrero","Hidalgo","Morelos","Puebla","Tlaxcala"],
     sureste:  ["Campeche","Chiapas","Oaxaca","Quintana Roo","Tabasco","Veracruz","Yucatán"]
   };
+  const REGION_ORDER = ["noroeste","noreste","occidente","centro","sureste"];
   const REGION_LABELS = {noroeste:"Noroeste",noreste:"Noreste",occidente:"Occidente",centro:"Centro",sureste:"Sureste"};
+  const correoDe = r => r + "@soyimpacto.org";
   const STATE_TO_REGION = {};
   Object.entries(REGION_STATES).forEach(([r, states]) => states.forEach(s => STATE_TO_REGION[s] = r));
 
@@ -1071,6 +1039,7 @@
 
   const sinAcentos = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const SOBRE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="1.5"/><path d="M2.5 4.5L8 8.75l5.5-4.25"/></svg>';
 
   function titleCase(str){
     const particles = new Set(["de","del","la","las","los","y","el","en","al","da","do"]);
@@ -1079,7 +1048,6 @@
       return w.charAt(0).toUpperCase() + w.slice(1);
     }).join(" ");
   }
-
   // Cargo como se lee: "Presidente municipal", "Vicepresidente regional"
   function rolDe(d){
     const base = CARGO_TXT[d.cargo] || (d.cargo.charAt(0).toUpperCase() + d.cargo.slice(1));
@@ -1093,8 +1061,7 @@
     return "";
   }
 
-  DATA.forEach((d, i) => {
-    d.i = i;
+  DATA.forEach(d => {
     d.nombre = titleCase(d.nombre);
     d.region = STATE_TO_REGION[d.estado] || null;
     d.rol = rolDe(d);
@@ -1102,11 +1069,7 @@
     d._search = sinAcentos([d.nombre, d.resultado, d.cargo, d.rol, d.estado].join(" "));
   });
 
-  const TOTAL = DATA.length;
   const state = {estado:"", nivel:"", query:""};
-  const abiertos = new Set();
-  let todosAbiertos = false;
-
   const $ = (s) => document.querySelector(s);
 
   function cargoRank(c){const i=CARGO_ORDER.indexOf(c);return i===-1?99:i;}
@@ -1118,7 +1081,6 @@
       (a.lugar||"").localeCompare(b.lugar||"","es") ||
       a.nombre.localeCompare(b.nombre,"es"));
   }
-
   function pasa(d){
     if (state.nivel && d.estructura !== state.nivel) return false;
     if (state.estado && d.estado !== state.estado) return false;
@@ -1148,7 +1110,7 @@
   }
   function toneOf(d){
     if (d.estructura === "nacional"){
-      const r = Object.keys(REGION_LABELS).find(k => REGION_LABELS[k] === d.resultado);
+      const r = REGION_ORDER.find(k => REGION_LABELS[k] === d.resultado);
       return d.cargo === "vicepresidente regional" && r ? "var(--" + r + ")" : "var(--nacional)";
     }
     return d.region ? "var(--" + d.region + ")" : "var(--nacional)";
@@ -1161,75 +1123,20 @@
     return `<div class="avatar" style="--av-tone:${tone};"><img class="av-img" src="fotos/${slug}.webp" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="av-init" style="display:none;">${init}</span></div>`;
   }
 
-  // ---------- Texto para copiar ----------
-  // Una persona: dos líneas limpias, listas para WhatsApp.
-  function textoPersona(d){
-    const donde = [d.lugar, d.estado].filter((v, i, a) => v && a.indexOf(v) === i).join(", ");
-    return d.nombre + "\n" + d.rol + (donde ? " · " + donde : "");
-  }
-  // Varias personas: tabla separada por tabuladores (se pega en columnas en Excel o Sheets).
-  function textoTabla(lista){
-    const filas = [["Nombre","Cargo","Lugar","Estado"].join("\t")];
-    lista.forEach(d => filas.push([d.nombre, d.rol, d.lugar, d.estado].map(v => String(v||"").replace(/\s+/g," ")).join("\t")));
-    return filas.join("\n");
-  }
-
-  async function copiar(texto){
-    try {
-      if (navigator.clipboard && window.isSecureContext){
-        await navigator.clipboard.writeText(texto);
-        return true;
-      }
-    } catch(e){}
-    try {
-      const ta = document.createElement("textarea");
-      ta.value = texto;
-      ta.setAttribute("readonly", "");
-      ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;";
-      document.body.appendChild(ta);
-      ta.select();
-      ta.setSelectionRange(0, texto.length);
-      const ok = document.execCommand("copy");
-      document.body.removeChild(ta);
-      return ok;
-    } catch(e){ return false; }
-  }
-
-  let toastTimer = null;
-  function aviso(msg){
-    const t = $("#toast");
-    t.textContent = msg;
-    t.classList.add("is-visible");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("is-visible"), 2200);
-  }
-  async function copiarCon(btn, texto, msg){
-    const ok = await copiar(texto);
-    if (!ok){ aviso("No se pudo copiar. Mantén presionado el texto para copiarlo."); return; }
-    aviso(msg);
-    const etiqueta = btn.querySelector("span") || btn;
-    const antes = etiqueta.textContent;
-    btn.classList.add("is-done");
-    etiqueta.textContent = "Copiado";
-    setTimeout(() => { btn.classList.remove("is-done"); etiqueta.textContent = antes; }, 1600);
-  }
-  const personas = n => n + (n === 1 ? " persona" : " personas");
-
   // ---------- Pintar ----------
   function tarjeta(d){
+    const lugar = [d.lugar, d.estructura === "nacional" ? d.estado : ""].filter(Boolean).join(" · ");
     return `<article class="person" style="--tone:${toneOf(d)}">
         ${avatarEl(d)}
         <div class="p-main">
           <p class="p-name">${esc(d.nombre)}</p>
           <p class="p-role">${esc(d.rol)}</p>
-          ${(d.lugar || d.estructura === "nacional") ? `<p class="p-place">${esc([d.lugar, d.estructura === "nacional" ? d.estado : ""].filter(Boolean).join(" · "))}</p>` : ""}
+          ${lugar ? `<p class="p-place">${esc(lugar)}</p>` : ""}
         </div>
-        <button type="button" class="p-copy" data-copy="${d.i}" aria-label="Copiar datos de ${esc(d.nombre)}">Copiar</button>
       </article>`;
   }
   const grid = lista => `<div class="cards">${ordenar(lista).map(tarjeta).join("")}</div>`;
-
-  function visibles(){ return DATA.filter(pasa); }
+  const correoLink = (r, cls, texto) => `<a class="${cls}" href="mailto:${correoDe(r)}">${SOBRE}<span>${texto || correoDe(r)}</span></a>`;
 
   function pintarNacional(lista){
     const sec = $("#nacional");
@@ -1239,65 +1146,45 @@
     const equipo = nac.filter(d => !esDireccion(d.cargo));
     const direccion = nac.filter(d => esDireccion(d.cargo));
     sec.innerHTML = `
-      <div class="sec-head">
-        <h2 class="sec-title" id="nacionalTitle">Equipo nacional</h2>
-        <button type="button" class="btn" data-copy-nacional><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copiar equipo nacional</span></button>
-      </div>
-      ${equipo.length ? `<h3 class="sub-title">Presidencia, vicepresidencias y consejo <span>· ${equipo.length}</span></h3>${grid(equipo)}` : ""}
-      ${direccion.length ? `<h3 class="sub-title">Dirección nacional <span>· ${direccion.length}</span></h3>${grid(direccion)}` : ""}`;
+      <h2 class="sec-title" id="nacionalTitle">Equipo nacional</h2>
+      <p class="sec-lead">Quienes conducen IMPACTO en todo el país.</p>
+      ${equipo.length ? `<h3 class="level-name">Presidencia, vicepresidencias y consejo</h3>${grid(equipo)}` : ""}
+      ${direccion.length ? `<h3 class="level-name">Dirección nacional</h3>${grid(direccion)}` : ""}`;
   }
 
-  function resumenEstado(lista){
-    const munis = new Set(lista.filter(d => d.estructura === "municipal").map(d => sinAcentos(d.resultado))).size;
-    return personas(lista.length) + (munis ? " · " + munis + (munis === 1 ? " municipio" : " municipios") : "");
-  }
-
-  function pintarEstados(lista){
+  function pintarRegiones(lista){
     const dir = $("#directory");
-    const porEstado = {};
-    lista.filter(d => d.estructura !== "nacional").forEach(d => (porEstado[d.estado] = porEstado[d.estado] || []).push(d));
-    const estados = Object.keys(porEstado).sort((a,b) => a.localeCompare(b,"es"));
-    if (!estados.length){
+    const locales = lista.filter(d => d.estructura !== "nacional");
+    const bloques = REGION_ORDER.map(r => {
+      const estados = REGION_STATES[r].filter(e => locales.some(d => d.estado === e));
+      if (!estados.length) return "";
+      const html = estados.map(est => {
+        const gente = locales.filter(d => d.estado === est);
+        const niveles = NIVELES.filter(n => n !== "nacional").map(n => {
+          const g = gente.filter(d => d.estructura === n);
+          return g.length ? `<h5 class="level-name">${NIVEL_LABELS[n]}</h5>${grid(g)}` : "";
+        }).join("");
+        return `<div class="state" id="estado-${slugOf(est)}" data-estado="${esc(est)}">
+            <div class="state-head"><h4 class="state-name">${esc(est)}</h4>${correoLink(r, "state-mail")}</div>
+            ${niveles}
+          </div>`;
+      }).join("");
+      return `<section class="region" style="--tone:var(--${r})" aria-label="Región ${REGION_LABELS[r]}">
+          <div class="region-head"><h3 class="region-name">${REGION_LABELS[r]}</h3>${correoLink(r, "region-mail")}</div>
+          ${html}
+        </section>`;
+    }).join("");
+    if (!bloques){
       dir.innerHTML = lista.length ? "" : '<div class="empty"><div class="empty-title">Sin coincidencias</div><div>Prueba con otro nombre, municipio o estado.</div></div>';
       return;
     }
-    const abrirTodo = todosAbiertos || !!state.query || !!state.estado || estados.length === 1;
-    const items = estados.map(est => {
-      const gente = porEstado[est];
-      const r = STATE_TO_REGION[est];
-      const niveles = NIVELES.filter(n => n !== "nacional").map(n => {
-        const g = gente.filter(d => d.estructura === n);
-        if (!g.length) return "";
-        const extra = n === "municipal" ? new Set(g.map(d => sinAcentos(d.resultado))).size : 0;
-        const nota = n === "municipal" ? ` <span>· ${personas(g.length)} en ${extra} ${extra === 1 ? "municipio" : "municipios"}</span>` : ` <span>· ${g.length}</span>`;
-        return `<h3 class="sub-title">${NIVEL_LABELS[n]}${nota}</h3>${grid(g)}`;
-      }).join("");
-      const abierto = abrirTodo || abiertos.has(est);
-      return `<details class="state" data-estado="${esc(est)}" style="--tone:${r ? "var(--"+r+")" : "var(--nacional)"}"${abierto ? " open" : ""}>
-          <summary>
-            <span class="swatch" aria-hidden="true"></span>
-            <span class="state-text"><span class="state-name">${esc(est)}</span><span class="state-meta">${resumenEstado(gente)}${r ? " · " + REGION_LABELS[r] : ""}</span></span>
-            <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
-          </summary>
-          <div class="state-body">
-            <div class="state-actions"><button type="button" class="btn" data-copy-estado="${esc(est)}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copiar todo el estado</span></button></div>
-            ${niveles}
-          </div>
-        </details>`;
-    }).join("");
-    dir.innerHTML = `
-      <div class="sec-head">
-        <h2 class="sec-title">Por estado</h2>
-        <button type="button" class="link-btn" id="toggleAll">${abrirTodo ? "Cerrar todos" : "Abrir todos"}</button>
-      </div>
-      <div class="state-list">${items}</div>`;
-    dir.querySelectorAll("details.state").forEach(det => det.addEventListener("toggle", () => {
-      det.open ? abiertos.add(det.dataset.estado) : abiertos.delete(det.dataset.estado);
-    }));
+    dir.innerHTML = `<h2 class="sec-title">Por región y estado</h2>
+      <p class="sec-lead">Presidencias, vicepresidencias y equipos de cada estado.</p>
+      <div class="regions">${bloques}</div>`;
   }
 
   function render(){
-    const lista = visibles();
+    const lista = DATA.filter(pasa);
     $("#clearSearch").classList.toggle("is-visible", !!state.query);
     $("#estadoSelect").value = state.estado;
     document.querySelectorAll("#levels button").forEach(b => {
@@ -1305,16 +1192,9 @@
       b.classList.toggle("is-active", on);
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
-    const filtrado = !!(state.query || state.estado || state.nivel);
-    $("#resetBtn").hidden = !filtrado;
-    const nEstados = new Set(lista.filter(d => d.estructura !== "nacional").map(d => d.estado)).size;
-    $("#tally").innerHTML = filtrado
-      ? `<strong>${personas(lista.length)}</strong> de ${TOTAL}${nEstados ? " en " + nEstados + (nEstados === 1 ? " estado" : " estados") : ""}`
-      : `<strong>${personas(TOTAL)}</strong> en ${nEstados} estados`;
-    $("#copyAll").querySelector("span").textContent = filtrado ? "Copiar estos resultados" : "Copiar directorio";
-    $("#copyAll").disabled = !lista.length;
+    $("#resetBtn").hidden = !(state.query || state.estado || state.nivel);
     pintarNacional(lista);
-    pintarEstados(lista);
+    pintarRegiones(lista);
     updateMapHighlight();
     syncURL();
   }
@@ -1326,45 +1206,11 @@
       .sort((a,b)=>a.localeCompare(b,"es"))
       .forEach(e => { const o = document.createElement("option"); o.value = e; o.textContent = e; sel.appendChild(o); });
   }
-
   $("#search").addEventListener("input", (e) => { state.query = sinAcentos(e.target.value.trim()); render(); });
   $("#clearSearch").addEventListener("click", () => { $("#search").value = ""; state.query = ""; render(); $("#search").focus(); });
   $("#estadoSelect").addEventListener("change", (e) => { state.estado = e.target.value; render(); });
   document.querySelectorAll("#levels button").forEach(b => b.addEventListener("click", () => { state.nivel = b.dataset.nivel; render(); }));
   $("#resetBtn").addEventListener("click", () => { state.estado = ""; state.nivel = ""; state.query = ""; $("#search").value = ""; render(); });
-
-  $("#copyAll").addEventListener("click", (e) => {
-    const lista = visibles();
-    const orden = [...ordenar(lista.filter(d => d.estructura === "nacional")),
-      ...ordenar(lista.filter(d => d.estructura !== "nacional")).sort((a,b) => a.estado.localeCompare(b.estado,"es") || NIVELES.indexOf(a.estructura) - NIVELES.indexOf(b.estructura))];
-    copiarCon(e.currentTarget, textoTabla(orden), "Se copiaron " + personas(orden.length) + ". Pégalas en WhatsApp o en Excel.");
-  });
-
-  // Copiar persona, estado y equipo nacional (delegado: las tarjetas se repintan)
-  document.addEventListener("click", (e) => {
-    const p = e.target.closest("[data-copy]");
-    if (p){ const d = DATA[+p.dataset.copy]; if (d) copiarCon(p, textoPersona(d), "Datos de " + d.nombre + " copiados."); return; }
-    const s = e.target.closest("[data-copy-estado]");
-    if (s){
-      const est = s.dataset.copyEstado;
-      const g = ordenar(visibles().filter(d => d.estado === est && d.estructura !== "nacional"));
-      copiarCon(s, textoTabla(g), est + ": se copiaron " + personas(g.length) + ".");
-      return;
-    }
-    const n = e.target.closest("[data-copy-nacional]");
-    if (n){
-      const g = ordenar(visibles().filter(d => d.estructura === "nacional"));
-      copiarCon(n, textoTabla(g), "Equipo nacional: se copiaron " + personas(g.length) + ".");
-      return;
-    }
-    if (e.target.closest("#toggleAll")){
-      const abrir = !document.querySelector("details.state[open]") || e.target.textContent.trim() === "Abrir todos";
-      todosAbiertos = abrir;
-      document.querySelectorAll("details.state").forEach(det => det.open = abrir);
-      if (!abrir) abiertos.clear();
-      e.target.textContent = abrir ? "Cerrar todos" : "Abrir todos";
-    }
-  });
 
   // ---------- Tema (el botón puede no existir si el sitio cambia el header) ----------
   const themeBtn = $("#themeToggle");
@@ -1409,37 +1255,28 @@
     }catch(e){}
   }
 
-  // ---------- Mapa (coloreado por región; al tocar un estado se filtra) ----------
+  // ---------- Mapa (color de su región donde hay presencia; al tocar un estado se filtra) ----------
   let mxTooltip = null;
   function buildMap(){
     const container = $("#mapGrid");
     if (!container) return;
-    const paths = container.querySelectorAll("svg path[data-state]");
-    const counts = {};
-    DATA.filter(d => d.estructura !== "nacional").forEach(d => {counts[d.estado] = (counts[d.estado]||0) + 1;});
-    const maxCount = Math.max(1, ...Object.values(counts));
-    paths.forEach(p => {
+    const presentes = new Set(DATA.filter(d => d.estructura !== "nacional").map(d => d.estado));
+    container.querySelectorAll("svg path[data-state]").forEach(p => {
       const st = p.getAttribute("data-state");
-      const c = counts[st] || 0;
+      const hay = presentes.has(st);
       const r = STATE_TO_REGION[st] || "";
-      p.setAttribute("data-count", c);
+      p.setAttribute("data-count", hay ? 1 : 0);
       if (r) p.setAttribute("data-region", r);
-      if (c > 0 && r){
-        const pct = Math.round(35 + Math.sqrt(c / maxCount) * 65);
-        p.style.fill = `color-mix(in srgb, var(--${r}) ${pct}%, var(--paper))`;
-      } else {
-        p.style.fill = "";
-      }
-      const etiqueta = st + " · " + c + (c===1?" líder":" líderes");
+      p.style.fill = hay && r ? `color-mix(in srgb, var(--${r}) 80%, var(--paper))` : "";
       let title = p.querySelector("title");
       if (!title){ title = document.createElementNS("http://www.w3.org/2000/svg","title"); p.appendChild(title); }
-      title.textContent = etiqueta;
+      title.textContent = st;
       p.addEventListener("click", () => {
-        if (!c) return;
+        if (!hay) return;
         state.estado = state.estado === st ? "" : st;
         render();
-        const det = state.estado && document.querySelector(`details.state[data-estado="${CSS.escape(st)}"]`);
-        (det || $("#directory")).scrollIntoView({behavior:"smooth", block:"start"});
+        const bloque = state.estado && document.getElementById("estado-" + slugOf(st));
+        (bloque || $("#directory")).scrollIntoView({behavior:"smooth", block:"start"});
       });
       p.addEventListener("mousemove", (e) => {
         if (!mxTooltip){
@@ -1447,7 +1284,7 @@
           mxTooltip.className = "mx-tooltip";
           document.body.appendChild(mxTooltip);
         }
-        mxTooltip.textContent = etiqueta;
+        mxTooltip.textContent = st;
         mxTooltip.style.left = e.clientX + "px";
         mxTooltip.style.top = e.clientY + "px";
         mxTooltip.classList.add("is-visible");
@@ -1470,7 +1307,6 @@
     window.addEventListener("scroll", () => scrollBtn.classList.toggle("is-visible", window.scrollY > 400), {passive: true});
     scrollBtn.addEventListener("click", () => window.scrollTo({top: 0, behavior: "smooth"}));
   }
-
   // "/" enfoca el buscador
   document.addEventListener("keydown", (e) => {
     const tag = document.activeElement && document.activeElement.tagName;

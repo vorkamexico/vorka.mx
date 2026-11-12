@@ -78,7 +78,21 @@ def limpiar(lideres):
             malos.append(d)
     for m in malos:
         print("  ⚠️  omitido (cargo o estructura no reconocidos): %s · %s %s" % (m["nombre"] or "(sin nombre)", m["cargo"], m["estructura"]))
-    return buenos
+    return sin_repetidos(buenos)
+
+
+def sin_repetidos(lideres):
+    """Quita filas idénticas (mismo nombre + cargo + nivel + lugar + estado), aunque cambien acentos,
+    mayúsculas o espacios. La misma persona con otro cargo sí se queda."""
+    vistos, unicos = set(), []
+    for l in lideres:
+        clave = tuple(" ".join(slug(l[k]).split("-")) for k in ("nombre", "cargo", "estructura", "resultado", "estado"))
+        if clave in vistos:
+            print("  ♻️  repetido en el Sheet, se publica una vez: %s · %s %s" % (l["nombre"], l["cargo"], l["resultado"]))
+            continue
+        vistos.add(clave)
+        unicos.append(l)
+    return unicos
 
 
 def js(v):
