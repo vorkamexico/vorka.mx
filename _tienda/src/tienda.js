@@ -279,12 +279,13 @@ const CSS_VITRINA = `
 `;
 
 export async function paginaCatalogo(env, req, url) {
-  const { cookie } = await refDeVisita(env, req, url);
-  const productos = await listarProductos(env);
+  // Todo a la vez (antes en fila: cada viaje a la base desde México suma ~70 ms)
   // Llegó con ?cupon= (liga de un cupón de regalo): una banda arriba dice qué da y hasta cuándo; se aplica en la compra
-  const cupon = url.searchParams.has('cupon') ? await avisoCupon(env, url.searchParams.get('cupon')) : null;
   // Precio de entrada de Brindi: el plan más barato a la venta (los planes viven ocultos del catálogo)
-  const planesBrindi = (await env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()).results
+  const [{ cookie }, productos, cupon, activos] = await Promise.all([refDeVisita(env, req, url), listarProductos(env),
+    url.searchParams.has('cupon') ? avisoCupon(env, url.searchParams.get('cupon')) : null,
+    env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()]);
+  const planesBrindi = activos.results
     .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
   const desdeBrindi = planesBrindi.length ? Math.min(...planesBrindi.map(x => x.precio_centavos)) : null;
   const secciones = seccionesCatalogo(productos).map(g => ({ ...g, vistas: vistas(g.productos, desdeBrindi) }));
