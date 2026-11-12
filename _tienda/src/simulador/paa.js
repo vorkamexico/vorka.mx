@@ -111,7 +111,7 @@ const VENTA = {
   // Ligas a las páginas por universidad (requisitos verificados de cada una)
   antesRegalo: `<section class="t-sec suave"><div class="marco">
   <div class="cab"><span class="etiqueta">PAA por universidad</span><h2 class="h2" style="margin-top:14px">Lo que pide cada universidad</h2>
-  <p class="lead">Puntajes, vigencia y reglas de la PAA, con la fuente oficial de cada una.</p></div>
+  <p class="lead">Puntajes, vigencia y reglas de la PAA, con la fuente oficial de cada una. ¿Ya tienes tu puntaje? <a href="/simulador-paa/calculadora/">Calcúlalo contra cada universidad</a>.</p></div>
   <div class="sv-grid">${Object.entries(UNIVERSIDADES).map(([k, u]) => `<a class="sv-card" style="text-decoration:none;color:inherit" href="/simulador-paa/${k}/"><h3>PAA ${u.nombre}</h3><p>${u.completo}</p></a>`).join('')}</div>
 </div></section>`,
   faqTitulo: 'Sobre la PAA y el simulador',
