@@ -20,8 +20,30 @@ const RUTA_DIVIDIR = '/learn/herramientas/dividir-imagen/';
 const RUTA_JS_DIVIDIR = '/learn/herramientas/dividir-imagen.js';
 export const HERRAMIENTAS = [
   { ruta: RUTA_DIVIDIR, nombre: 'Dividir una imagen en partes', corto: 'Dividir imagen',
-    descripcion: 'Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil de Instagram o para imprimirla en varias hojas. Gratis y en tu navegador.' },
+    descripcion: 'Corta una foto en cuadrícula para un carrusel, el mosaico de tu perfil de Instagram o para imprimirla en varias hojas. Gratis y en tu navegador.',
+    usos: ['Carrusel', 'Mosaico 3 × 3', 'Póster en hojas'], portada: () => portadaDividir() },
 ];
+
+// Portada de «Dividir imagen» (SVG propio, 16:10): un paisaje cortado en 3 × 3 con una pieza separada
+function portadaDividir() {
+  const W = 480, H = 300, x0 = 92, y0 = 40, w = 296, h = 220, g = 7;
+  const cw = (w - 2 * g) / 3, ch = (h - 2 * g) / 3;
+  const escena = `<rect width="${w}" height="${h}" fill="url(#hp-cielo)"/><circle cx="${w * .68}" cy="${h * .42}" r="34" fill="#FFE2A8"/>
+    <path d="M0 ${h * .72} L${w * .22} ${h * .5} L${w * .4} ${h * .66} L${w * .62} ${h * .44} L${w} ${h * .7} V${h} H0Z" fill="#7B4FA6"/>
+    <path d="M0 ${h * .86} L${w * .3} ${h * .7} L${w * .55} ${h * .82} L${w * .8} ${h * .68} L${w} ${h * .8} V${h} H0Z" fill="#4A2E6E"/>`;
+  let piezas = '';
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+    const sale = r === 0 && c === 2, dx = sale ? 26 : 0, dy = sale ? -18 : 0, x = c * (cw + g), y = r * (ch + g);
+    piezas += `<g transform="translate(${x0 + x + dx} ${y0 + y + dy})"${sale ? ' filter="url(#hp-sombra)"' : ''}><svg width="${cw}" height="${ch}" viewBox="${x} ${y} ${cw} ${ch}" overflow="hidden">${escena}</svg></g>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Una foto de paisaje cortada en nueve partes" preserveAspectRatio="xMidYMid slice">
+  <defs><linearGradient id="hp-cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7B267"/><stop offset=".55" stop-color="#F28D8D"/><stop offset="1" stop-color="#B56FB8"/></linearGradient>
+  <filter id="hp-sombra" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#2A1740" flood-opacity=".35"/></filter></defs>
+  <rect width="${W}" height="${H}" fill="#EFE7F6"/>
+  <circle cx="60" cy="250" r="90" fill="#E2D3F0"/><circle cx="430" cy="40" r="70" fill="#E2D3F0"/>
+  ${piezas}
+</svg>`;
+}
 export const urlsHerramientas = () => [RUTA_HERRAMIENTAS, ...HERRAMIENTAS.map(h => h.ruta)];
 
 const MIGAS = [['Vorka Learn', '/learn/'], ['Herramientas', RUTA_HERRAMIENTAS]];
@@ -129,7 +151,20 @@ const CSS = `<style>
 .di-ad-c .btn svg{width:17px;height:17px}
 .di-ad[data-producto="vuelve"]{background:linear-gradient(135deg,#0E2E27,#17594A)}.di-ad[data-producto="vuelve"] .di-ad-img{background:#183029}
 @media (max-width:700px){.di-ad{grid-template-columns:1fr}.di-ad-img{min-height:0;aspect-ratio:16/9}}
-.di-lista-h{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:14px}
+.he-grid{list-style:none;padding:0;margin:32px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px}
+.he-card{display:flex;flex-direction:column;height:100%;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;color:inherit;text-decoration:none;box-shadow:var(--sombra);transition:border-color .15s,transform .2s}
+.he-card:hover{border-color:var(--sec-t);transform:translateY(-2px)}
+.he-portada{display:block;aspect-ratio:16/10;background:#EFE7F6;overflow:hidden}
+.he-portada svg{display:block;width:100%;height:100%}
+.he-c{padding:clamp(18px,2.6vw,26px);display:flex;flex-direction:column;gap:10px;flex:1}
+.he-c h2{margin:0;font-size:clamp(21px,2.4vw,26px);line-height:1.15;letter-spacing:-.025em}
+.he-c p{margin:0;font-size:15.5px;line-height:1.55;color:var(--fg-2)}
+.he-usos{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 0;padding:0;list-style:none}
+.he-usos li{font-size:13px;font-weight:600;padding:5px 10px;border-radius:999px;background:var(--sec-s);color:var(--sec-t)}
+.he-pie{margin-top:auto;padding-top:8px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.he-pie small{font-size:13px;color:var(--fg-2)}
+.he-pie .btn{display:inline-flex;align-items:center;gap:8px}.he-pie .btn svg{width:17px;height:17px}
+@media (min-width:820px){.he-grid.he-uno{grid-template-columns:1fr}.he-uno .he-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}.he-uno .he-portada{aspect-ratio:auto;min-height:320px}}
 </style>`;
 
 // ---------- promoción (cada parte falla en silencio: si no carga, no aparece) ----------
@@ -300,13 +335,20 @@ async function paginaDividir(env) {
     imagen: `${SITIO}${OG_LEARN}`, imagenAlt: h.nombre, actual: 'herramientas', seccion: 'learn', anuncios, head: CSS + ld(datos), cuerpo });
 }
 
-function paginaIndice(env) {
-  const anuncios = configAnuncios(env);
-  const cuerpo = `<div class="marco"><div class="lr-col">
+const tarjetaHerramienta = h => `<li><a class="he-card" href="${h.ruta}"><span class="he-portada">${h.portada ? h.portada() : ''}</span><span class="he-c"><h2>${esc(h.nombre)}</h2><p>${esc(h.descripcion)}</p>${h.usos?.length ? `<ul class="he-usos">${h.usos.map(u => `<li>${esc(u)}</li>`).join('')}</ul>` : ''}<span class="he-pie"><small>Gratis · en tu navegador</small><span class="btn acento">Usar gratis ${FLECHA}</span></span></span></a></li>`;
+
+async function paginaIndice(env) {
+  const anuncios = configAnuncios(env), catalogoTienda = await catalogo(env), productos = await productosPromo(env, catalogoTienda);
+  const cuerpo = `<div class="marco"><div class="lr-col lr-ancha">
+  <div class="di-cab">
   ${migas(MIGAS)}
   <h1 class="lr-h1">Herramientas gratis</h1>
-  <p class="lr-lead">Herramientas sencillas para tus redes, tu escuela y tu negocio. Funcionan en tu navegador y no piden cuenta.</p>
-  <ul class="di-lista-h">${HERRAMIENTAS.map(h => `<li><a class="di-card" href="${h.ruta}"><span class="di-card-c"><h3>${esc(h.nombre)}</h3><p>${esc(h.descripcion)}</p></span></a></li>`).join('')}</ul>
+  <p class="lr-lead">Herramientas sencillas para tus tareas, tus redes y tu negocio. Funcionan en tu navegador, no piden cuenta y tus archivos se quedan en tu dispositivo.</p>
+  </div>
+  <ul class="he-grid${HERRAMIENTAS.length === 1 ? ' he-uno' : ''}">${HERRAMIENTAS.map(tarjetaHerramienta).join('')}</ul>
+  ${tiraArriba(productos)}
+  ${anuncioCasa('brindi', catalogoTienda)}
+  ${espacioAnuncio(anuncios, 'final')}
 </div></div>`;
   const datos = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Herramientas gratis de Vorka Learn', url: `${SITIO}${RUTA_HERRAMIENTAS}`, inLanguage: 'es-MX', isPartOf: SITIO_LEARN, publisher: ORG,
     hasPart: HERRAMIENTAS.map(h => ({ '@type': 'WebApplication', name: h.nombre, url: `${SITIO}${h.ruta}` })) }, migasLd(MIGAS)];
