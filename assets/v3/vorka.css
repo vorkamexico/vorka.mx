@@ -413,9 +413,9 @@ a.c-oro:hover .ir { background: var(--noche); color: var(--oro-claro); }
 .redes a { width: 40px; height: 40px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); display: grid; place-items: center; color: var(--fg); }
 .redes a:hover { border-color: var(--line-2); }
 .redes svg { width: 16px; height: 16px; }
-/* Canal de WhatsApp: en la fila de redes, del mismo alto que los íconos */
-.redes { flex-wrap: wrap; }
-.redes a.canal-wa { width: auto; height: 40px; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px 0 4px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--fg); white-space: nowrap; }
+/* Canal de WhatsApp: debajo de las redes, del mismo ancho que la fila de íconos */
+.redes:has(.canal-wa) { display: grid; grid-template-columns: repeat(4, 40px); width: max-content; }
+.redes a.canal-wa { grid-column: 1 / -1; width: 100%; height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 3px; border-radius: 999px; font-size: 13.5px; font-weight: 600; color: var(--fg); white-space: nowrap; }
 .canal-wa-ico { width: 32px; height: 32px; flex: none; border-radius: 50%; background: #1FA855; color: #fff; display: grid; place-items: center; }
 .redes .canal-wa-ico svg { width: 18px; height: 18px; }
 /* barra final delgada: el aviso a la izquierda y las ligas legales a la derecha (sin el logo gigante de antes) */
