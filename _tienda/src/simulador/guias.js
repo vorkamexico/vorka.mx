@@ -304,7 +304,7 @@ export const GUIAS = [
       ]) + nota('Fuente: instructivo del Concurso de Selección 2026 de la DGAE.') },
       { h2: 'Lo que pasó en 2026', html: p('En 2026 el examen se aplicó en línea por primera vez y la UNAM detectó resultados fuera de lo normal. Según su Comisión Técnica:')
         + ul(['Entre 2021 y 2025, el <b>3.5 %</b> de los aspirantes obtuvo 100 aciertos o más; en 2026, el <b>16.3 %</b>.', 'Con 110 o más, la proporción pasó de alrededor de <b>0.9 %</b> a <b>5.5 %</b>.'])
-        + p('Por eso la UNAM aplicó un examen de control presencial a quienes recibieron aviso de selección y a quienes alcanzaron, en su programa, plantel y modalidad, <b>el menor número de aciertos requerido entre 2021 y 2026</b>, alrededor de 58,000 aspirantes. Para eso publicó el mínimo de esos años por programa. Busca esa referencia de tu carrera en la DGAE.')
+        + p(`Por eso la UNAM aplicó un examen de control presencial a quienes recibieron aviso de selección y a quienes alcanzaron, en su programa, plantel y modalidad, <b>el menor número de aciertos requerido entre 2021 y 2026</b>, alrededor de 58,000 aspirantes. Para eso publicó el mínimo de esos años por programa. Búscalo en ${a('/simulador-unam/aciertos/', 'nuestra tabla de aciertos por carrera y plantel')}, con los datos de la DGAE.`)
         + caja('Qué significa para ti', p('Los aciertos de 2026 en línea no son buena referencia para tu meta: estuvieron inflados. Usa la de años anteriores o la que publique la UNAM para tu carrera y plantel.')) },
       { h2: 'Cómo ponerte una meta de aciertos', html: p('Esto es consejo nuestro:') + ol([
         ['Busca la referencia de tu carrera y plantel', 'La de varios años, no solo uno. El mismo programa puede pedir muy distinto en dos planteles.'],
