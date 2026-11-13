@@ -432,19 +432,28 @@
 
   .mapa-tip{
     position: fixed; z-index: 40; left: 0; top: 0; pointer-events: none;
-    min-width: 160px; max-width: min(280px, calc(100vw - 24px));
-    padding: 10px 14px 11px; border-radius: 12px; text-align: left;
+    min-width: 180px; max-width: min(300px, calc(100vw - 24px));
+    padding: 12px 16px 14px; border-radius: 16px; text-align: left;
     background: var(--paper); color: var(--ink); border: 1px solid var(--rule-strong);
     border-top: 3px solid var(--tono, var(--ink));
-    box-shadow: 0 10px 30px rgba(0,0,0,.16);
+    box-shadow: 0 12px 32px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06);
     opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s;
   }
   .mapa-tip.is-visible{opacity: 1; transform: none;}
   .mapa-tip.is-pinned{pointer-events: auto;}
   .mapa-tip .t-mun{display: block; font-family: var(--display); font-size: 17px; font-weight: 600; line-height: 1.2;}
   .mapa-tip .t-est{display: block; font-size: 13px; color: var(--ink-2); margin-top: 1px;}
-  .mapa-tip .t-pres{display: block; font-size: 13.5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--rule);}
-  .mapa-tip .t-pres span{color: var(--ink-2);}
+  .mapa-tip .t-pres{display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule);}
+  .mapa-tip .t-pres + .t-pres{margin-top: 8px; padding-top: 8px;}
+  .mapa-tip .t-foto{width: 60px; height: 60px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: color-mix(in srgb, var(--tono) 16%, var(--paper));
+    box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--tono);}
+  .mapa-tip .t-foto img{width: 100%; height: 100%; object-fit: cover; display: block;}
+  .mapa-tip .t-foto b{font-family: var(--display); font-size: 21px; font-weight: 600; color: var(--tono);}
+  .mapa-tip .t-quien{min-width: 0;}
+  .mapa-tip .t-nombre{display: block; font-size: 15px; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere;}
+  .mapa-tip .t-cargo{display: block; font-size: 13px; color: var(--ink-2); margin-top: 2px;}
   .mapa-tip .t-ir{display: inline-block; margin-top: 8px; padding: 0; border: 0; background: none; color: var(--ink);
     font-size: 13.5px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--tono);
     text-decoration-thickness: 2px; text-underline-offset: 3px; cursor: pointer;}
@@ -1268,7 +1277,7 @@
   const PRESIDENCIAS = {};
   DATA.filter(d => d.estructura === "municipal" && d.cargo === "presidente").forEach(d => {
     const k = claveMun(d.estado, d.resultado);
-    (PRESIDENCIAS[k] = PRESIDENCIAS[k] || []).push(d.nombre);
+    (PRESIDENCIAS[k] = PRESIDENCIAS[k] || []).push(d);
   });
   const MAPA_URLS = ["/assets/mapa-municipios.svg", "https://soyimpacto.org/assets/mapa-municipios.svg"];
 
@@ -1306,22 +1315,42 @@
     const est = p.dataset.e, r = p.dataset.r, mun = p.dataset.mun;
     const pres = PRESIDENCIAS[claveMun(est, mun)];
     const t = tip();
-    t.style.setProperty("--tono", r ? "var(--" + r + ")" : "var(--ink)");
-    t.innerHTML = `<span class="t-mun">${esc(mun)}</span><span class="t-est">${esc(est)}</span>`
-      + (pres ? `<span class="t-pres"><span>Presidencia municipal:</span> ${esc(pres.join(", "))}</span>` : "")
-      + (pres && fijo ? `<button type="button" class="t-ir" data-ir="${esc(est)}">Ver el equipo de ${esc(est)}</button>` : "");
+    const llave = p.id + (fijo ? "|fijo" : "");
+    if (t.dataset.llave !== llave){   // solo se repinta al cambiar de municipio: la foto no parpadea
+      t.dataset.llave = llave;
+      t.style.setProperty("--tono", r ? "var(--" + r + ")" : "var(--ink)");
+      t.innerHTML = `<span class="t-mun">${esc(mun)}</span><span class="t-est">${esc(est)}</span>`
+        + (pres ? pres.map(d => `<span class="t-pres">${fotoTip(d)}<span class="t-quien"><span class="t-nombre">${esc(d.nombre)}</span><span class="t-cargo">Presidencia municipal</span></span></span>`).join("") : "")
+        + (pres && fijo ? `<button type="button" class="t-ir" data-ir="${esc(est)}">Ver el equipo de ${esc(est)}</button>` : "");
+    }
     t.classList.toggle("is-pinned", !!fijo);
     t.classList.add("is-visible");
-    const w = t.offsetWidth, h = t.offsetHeight;
-    let left = x - w / 2, top = y - h - 14;
-    if (top < 8) top = y + 18;
-    left = Math.max(12, Math.min(left, window.innerWidth - w - 12));
+    const w = t.offsetWidth, h = t.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    let left = x - w / 2, top = y - h - 16;
+    if (top < 8) top = y + 20;
+    left = Math.max(12, Math.min(left, vw - w - 12));
+    top = Math.max(8, Math.min(top, vh - h - 8));
     t.style.left = left + "px"; t.style.top = top + "px";
     if (tipPath && tipPath !== p) tipPath.classList.remove("is-hover");
     tipPath = p; p.classList.add("is-hover");
   }
+  // Foto de la persona (la misma de las tarjetas: fotos/<slug>.webp); si no hay, sus iniciales.
+  const precargadas = new Set();
+  function fotoDe(d){ const s = slugOf(d.nombre); return CON_FOTO.has(s) ? "fotos/" + s + ".webp" : ""; }
+  function precargar(p){
+    (PRESIDENCIAS[claveMun(p.dataset.e, p.dataset.mun)] || []).forEach(d => {
+      const src = fotoDe(d);
+      if (src && !precargadas.has(src)){ precargadas.add(src); const im = new Image(); im.decoding = "async"; im.src = src; }
+    });
+  }
+  function fotoTip(d){
+    const src = fotoDe(d), ini = esc(initialsOf(d.nombre));
+    return src
+      ? `<span class="t-foto"><img src="${src}" alt="" decoding="async" onerror="this.parentNode.innerHTML='<b>${ini}</b>'"></span>`
+      : `<span class="t-foto"><b>${ini}</b></span>`;
+  }
   function ocultarTip(){
-    if (mapaTip) mapaTip.classList.remove("is-visible", "is-pinned");
+    if (mapaTip){ mapaTip.classList.remove("is-visible", "is-pinned"); mapaTip.dataset.llave = ""; }
     if (tipPath){ tipPath.classList.remove("is-hover"); tipPath = null; }
   }
   function irAEstado(est){
@@ -1355,9 +1384,11 @@
     svg.addEventListener("pointermove", (e) => {
       if (e.pointerType !== "mouse") return;
       const p = sobre(e);
+      if (p && p !== tipPath) precargar(p);
       p ? mostrarTip(p, e.clientX, e.clientY, false) : ocultarTip();
     });
     svg.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") ocultarTip(); });
+    svg.addEventListener("pointerdown", (e) => { const p = sobre(e); if (p) precargar(p); });
     svg.addEventListener("click", (e) => {
       const p = sobre(e);
       if (!p) return ocultarTip();
