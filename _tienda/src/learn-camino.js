@@ -19,6 +19,8 @@
 //    La de Jóvenes Construyendo el Futuro (reglas de operación 2026 en el DOF, boletín 114/26 de la STPS, versión
 //    estenográfica de la conferencia del 5 de octubre de 2026 y preguntas frecuentes de la STPS) se revisó el 9 de
 //    noviembre de 2026. No hay fecha exacta de reapertura en 2027: solo «en enero», dicho por la Presidenta.
+//    La de la jornada laboral (decretos en el DOF del 3 de marzo y del 1 de mayo de 2026, LFT vigente y PROFEDET) se
+//    revisó el 11 de noviembre de 2026.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -76,10 +78,14 @@ const F = {
   jcfAviso: { nombre: 'STPS: Boletín 114/26, Aviso importante sobre el periodo de registro y postulaciones de Jóvenes Construyendo el Futuro (2 de octubre de 2026)', url: 'https://www.gob.mx/stps/prensa/aviso-importante-436951' },
   jcfPresidencia: { nombre: 'Presidencia de la República: versión estenográfica de la conferencia de prensa del 5 de octubre de 2026', url: 'https://www.gob.mx/presidencia/articulos/version-estenografica-conferencia-de-prensa-de-la-presidenta-claudia-sheinbaum-pardo-del-05-de-octubre-de-2026' },
   jcfFaq: { nombre: 'STPS: Preguntas frecuentes, Jóvenes Construyendo el Futuro', url: 'https://www.gob.mx/stps/articulos/preguntas-frecuentes-jovenes-construyendo-el-futuro' },
+  dofJornadaLft: { nombre: 'DOF: Decreto por el que se reforman, adicionan y derogan diversas disposiciones de la Ley Federal del Trabajo, en materia de reducción de la jornada laboral (1 de mayo de 2026)', url: 'https://dof.gob.mx/nota_detalle.php?codigo=5786537&fecha=01/05/2026' },
+  dofJornadaCpeum: { nombre: 'DOF: Decreto por el que se reforman las fracciones IV y XI del apartado A del artículo 123 de la Constitución, en materia de reducción de la jornada laboral (3 de marzo de 2026)', url: 'https://dof.gob.mx/nota_detalle.php?codigo=5781417&fecha=03/03/2026' },
+  lftJornada: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 5o., 58 a 69, 71, 132, 177, 178 y 994), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
+  profedet: { nombre: 'PROFEDET: ¿Aún no recibes tu aguinaldo? Acércate a la PROFEDET (orientación y representación gratuitas; 22 de enero de 2024)', url: 'https://www.gob.mx/profedet/articulos/aun-no-recibes-tu-aguinaldo-acercate-a-la-profedet?idiom=es' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas' };
 const r = slug => `/learn/camino/${slug}/`;
 // Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
 const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
@@ -130,6 +136,13 @@ const LLAMADO = {
     titulo: '¿Ya te llegó tu primer sueldo?',
     texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
     puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Clara para quien cobra horas extra o prima dominical: lleva gastos e ingresos (src/clara.js); mismos datos de su ficha
+  claraHoras: llamadoProducto({ etiqueta: 'Lleva lo que ganas con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Te pagan horas extra o domingos?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas lo que entra y lo que gastas, y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['Registra cada ingreso, también las horas extra y la prima dominical, para ver cuánto ganaste en el mes.', 'El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
@@ -657,9 +670,91 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.jcfReglas, F.jcfAviso, F.jcfPresidencia, F.jcfFaq],
     relacionadas: [S.cv, S.becas, S.carrera],
   },
+  // =============== 9. Jornada laboral (reducción a 40 horas) ===============
+  // Revisada el 11 de noviembre de 2026 contra el decreto de la LFT (DOF 01-05-2026, transitorios segundo a séptimo), el
+  // decreto constitucional (DOF 03-03-2026, art. 123-A fracciones IV y XI) y el texto vigente de la LFT (reforma DOF 14-05-2026).
+  // No afirmamos cómo debe repartir cada empresa las 46 horas (la ley dice que se acuerda: art. 58) ni el contenido de las
+  // disposiciones de la STPS sobre el registro electrónico (art. 132-XXXIV): la ley solo dice que la STPS las expedirá.
+  // El valor por hora del ejemplo es inventado; la ley no fija una fórmula para sacarlo.
+  {
+    slug: S.jornada, llamado: 'claraHoras', actualizado: '2026-11-11', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Jornada laboral de 40 horas: qué cambia en 2027',
+    descripcion: 'La jornada máxima baja de 48 a 46 horas el 1 de enero de 2027 y llega a 40 en 2030. Qué cambia en horas extra, descanso, sueldo y si eres menor de 18.',
+    h1: 'Jornada laboral de 40 horas: qué cambia en enero de 2027 y qué no',
+    lead: 'La reforma ya es ley, pero no llega de golpe: el 1 de enero de 2027 la jornada máxima baja de 48 a 46 horas a la semana y seguirá bajando hasta 40 en 2030. Aquí está qué cambia en tu horario, en las horas extra y en tu sueldo, qué aplica si tienes 15, 16 o 17 años y a dónde acudir si no te lo respetan, con lo que dicen el Diario Oficial y la Ley Federal del Trabajo.',
+    secciones: [
+      { h2: 'Qué se aprobó y desde cuándo', html: p('Son dos reformas. El 3 de marzo de 2026 se publicó en el Diario Oficial de la Federación (DOF) la reforma al artículo 123 de la Constitución que fija la jornada en <b>cuarenta horas semanales</b>. El 1 de mayo de 2026 se publicó la reforma a la Ley Federal del Trabajo que dice cómo se aplica; entró en vigor ese mismo día.')
+        + p('El artículo 59 de la ley ya dice que la jornada ordinaria máxima es de 40 horas a la semana. Pero un artículo transitorio del decreto marca que se alcanza <b>poco a poco, cada 1 de enero</b>:')
+        + tabla(['Desde el 1 de enero de', 'Jornada máxima a la semana', 'Tope de horas extra a la semana'], [
+          ['2026', '48 horas', '9 horas'],
+          ['2027', '<b>46 horas</b>', '9 horas'],
+          ['2028', '44 horas', '10 horas'],
+          ['2029', '42 horas', '11 horas'],
+          ['2030', '40 horas', '12 horas'],
+        ], 'Transitorios segundo y cuarto del decreto publicado en el DOF el 1 de mayo de 2026. Del 1 de mayo al 31 de diciembre de 2026 es el periodo para que empresas y trabajadores ajusten sus procesos.')
+        + caja('¿Entonces ya trabajo 40 horas?', p('Todavía no. En 2026 el máximo sigue siendo 48 horas. El primer cambio que vas a notar es el de enero de 2027: dos horas menos a la semana.')) },
+      { h2: 'Tu sueldo no puede bajar', html: p('El decreto lo dice sin rodeos (transitorio séptimo): <b>en ningún caso la reducción de la jornada implicará la disminución de sueldos, salarios o prestaciones</b>. La reforma constitucional dice lo mismo.')
+        + p('Si en enero te dicen que como trabajas menos horas te van a pagar menos, eso va contra la ley. Más abajo te decimos qué hacer.') },
+      { h2: 'Qué no cambia', html: ul([
+          '<b>La jornada diaria:</b> ocho horas la diurna (de 6:00 a 20:00), siete la nocturna (de 20:00 a 6:00) y siete y media la mixta (artículos 60 y 61).',
+          '<b>El descanso semanal:</b> por cada seis días de trabajo, por lo menos un día de descanso con salario completo (artículo 69).',
+          '<b>La media hora de descanso</b> durante la jornada continua (artículo 63).',
+          '<b>La prima dominical:</b> si trabajas en domingo, por lo menos 25 % más sobre el salario de un día ordinario (artículo 71).',
+        ])
+        + p('Lo nuevo es que la ley ahora dice que la jornada se puede <b>distribuir de común acuerdo</b> entre la empresa y quien trabaja (artículo 58). La ley no fija un solo horario para llegar a las 46 horas: eso se acuerda en cada lugar de trabajo, dentro de los límites de arriba.')
+        + `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
+<p class="gu-ej-p">Trabajas de lunes a sábado, ocho horas diarias de día. ¿Cuántas horas son y qué pasa en 2027?</p>${ul([
+          '6 días × 8 horas = <b>48 horas</b>: el máximo de 2026.',
+          'En 2027 el máximo es de 46 horas, así que ese horario ya no cabe: sobran <b>2 horas</b> a la semana.',
+          'Cómo se acomodan esas dos horas (por ejemplo, salir antes un día) lo acuerdan tú y tu empresa; la ley no impone una forma.',
+        ])}</div>` },
+      { h2: 'Horas extra: las reglas nuevas', html: p('La reforma cambió los artículos 66 y 68. Esto es lo que dicen hoy:')
+        + ol([
+          ['Se pagan al doble', 'Cada hora extra se paga con un 100 % más que una hora normal.'],
+          ['Tienen tope semanal', 'La ley habla de hasta 12 horas a la semana, en hasta 4 horas diarias y un máximo de 4 días. Pero ese tope también sube poco a poco: <b>9 horas en 2026 y en 2027</b>, 10 en 2028, 11 en 2029 y 12 en 2030 (transitorio cuarto).'],
+          ['Lo que pase del tope se paga al triple', 'Si te piden más horas extra que el tope, la ley permite como máximo 4 horas más a la semana y obliga a pagarlas con un 200 % más.'],
+          ['Nunca más de 12 horas en un día', 'La suma de jornada normal más horas extra no puede pasar de 12 horas diarias (artículo 68).'],
+          ['No estás obligado a trabajar de más', 'La ley dice que no estás obligado a trabajar más tiempo del que permite este capítulo (artículo 68).'],
+        ])
+        + `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
+<p class="gu-ej-p">Tu hora normal vale $50 y en una semana de 2027 trabajas 2 horas extra, dentro del tope. ¿Cuánto te deben por esas horas?</p>${ul([
+          'Hora extra al doble: $50 × 2 = <b>$100</b>.',
+          'Dos horas extra: 2 × $100 = <b>$200</b>.',
+          'Si fuera una hora más allá del tope, se pagaría con 200 % más: $50 × 3 = <b>$150</b>.',
+        ])}</div>`
+        + nota('Cuánto vale tu hora depende de tu salario y tu horario; revisa tu contrato y tu recibo de nómina.') },
+      { h2: 'Si tienes 15, 16 o 17 años', html: p('Para quienes son menores de edad, la ley ya tenía reglas propias que siguen igual:')
+        + ul([
+          'Si tienes menos de 16 años, tu jornada <b>no puede pasar de seis horas diarias</b>, en periodos de máximo tres horas con por lo menos una hora de descanso entre ellos (artículo 177).',
+          'Si tienes menos de 18 años, <b>no puedes trabajar horas extra</b>, ni en domingo ni en días de descanso obligatorio (artículo 178). La reforma constitucional de 2026 lo repite.',
+          'Si aun así te ponen a hacer horas extra, la ley dice que se pagan con 200 % más (artículo 178).',
+        ])
+        + p(`Si vas a empezar a trabajar, antes revisa ${a(r(S.papeles), 'qué papeles te van a pedir en tu primer empleo')}.`) },
+      { h2: 'El registro de tu horario', html: p('La reforma agregó una obligación para las empresas (artículo 132, fracción XXXIV): <b>registrar de manera electrónica la jornada</b> de cada persona trabajadora, con hora de entrada y de salida, y entregarlo a la autoridad cuando lo pida.')
+        + ul([
+          'La Secretaría del Trabajo y Previsión Social (STPS) debe publicar reglas que digan a quién aplica y qué excepciones hay. Según el decreto, esas reglas entran en vigor el <b>1 de enero de 2027</b>.',
+          'No cumplir con el registro puede costarle a la empresa una multa de 250 a 5,000 veces la Unidad de Medida y Actualización, UMA (artículo 994, fracción IV Bis).',
+        ])
+        + p('Esto es consejo nuestro: aunque tu empresa lleve el registro, anota tú también tus horas de entrada y salida, sobre todo los días con horas extra. Si algún día hay un desacuerdo, te sirve tener tu propia cuenta.') },
+      { h2: 'Si no te lo respetan', html: ol([
+          ['Habla y pide por escrito', 'Pregunta a recursos humanos cómo quedará tu horario en 2027 y pide la respuesta por escrito. Guarda tus recibos de nómina.'],
+          ['Acude a PROFEDET', 'La Procuraduría Federal de la Defensa del Trabajo da orientación y representación gratuitas. Publica los teléfonos 800 911 7877 y 800 717 2942 y el correo orientacionprofedet@stps.gob.mx.'],
+          ['No pagues por ayuda', 'PROFEDET aclara que nadie puede cobrarte por su asesoría.'],
+        ]) },
+    ],
+    faq: [
+      { p: '¿Cuándo empieza la jornada laboral de 40 horas?', r: 'La jornada máxima baja poco a poco cada 1 de enero: 46 horas en 2027, 44 en 2028, 42 en 2029 y 40 en 2030. En 2026 sigue siendo de 48 horas.' },
+      { p: '¿Me pueden bajar el sueldo por trabajar menos horas?', r: 'No. El decreto dice que en ningún caso la reducción de la jornada implicará la disminución de sueldos, salarios o prestaciones.' },
+      { p: '¿Cuántas horas extra me pueden pedir en 2027?', r: 'El tope es de 9 horas a la semana en 2027, pagadas al doble, sin pasar de 12 horas en un día sumando la jornada normal. Lo que pase del tope (máximo 4 horas más a la semana) se paga con 200 % más.' },
+      { p: '¿Sigo teniendo un día de descanso a la semana?', r: 'Sí. Por cada seis días de trabajo te toca por lo menos un día de descanso con salario completo (artículo 69 de la Ley Federal del Trabajo).' },
+      { p: '¿Si soy menor de edad puedo hacer horas extra?', r: 'No. Si tienes menos de 18 años, la ley prohíbe que trabajes horas extra, en domingo o en días de descanso obligatorio. Si tienes menos de 16, tu jornada no puede pasar de seis horas al día.' },
+    ],
+    fuentes: [F.dofJornadaLft, F.dofJornadaCpeum, F.lftJornada, F.profedet],
+    relacionadas: [S.papeles, S.cv, S.jcf],
+  },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS ni a RENAPO.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO ni a la PROFEDET.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
