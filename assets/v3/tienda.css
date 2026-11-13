@@ -775,3 +775,19 @@
 .rs-form .btn { justify-self: start; }
 @media (max-width: 520px) { .rs-form .btn { justify-self: stretch; justify-content: center; } .rs-est-fila label svg { width: 30px; height: 30px; } }
 @media (prefers-reduced-motion: reduce) { .rs-est-fila label { transition: none; } .rs-est-fila label:hover { transform: none; } }
+
+/* ---------- Letra fina (2026-11-12) ----------
+   Un escalón más chica y un poco más ligera en todas las páginas del Worker (tienda, productos, simuladores, tests, Puntos),
+   igual que /tienda/vuelve/: títulos de portada hasta ~48 px, de sección hasta ~36 px y textos de entrada hasta ~18 px.
+   Vende (.ve) se queda como estaba. El prefijo :root:not(:has(.ve)) además le gana a los estilos propios de cada página. */
+:root:not(:has(.ve)) :is(.pm-h1, .v-h1, .lv-h1, .ri-h1, .tv-h1, .t-hero-h1, .t-portal-h1, .pv-hero h1) { font-size: clamp(32px, 4.4vw, 48px); font-weight: 750; line-height: 1.08; }
+:root:not(:has(.ve)) .h1 { font-size: clamp(32px, 4.4vw, 52px); }
+:root:not(:has(.ve)) .t-h1 { font-size: clamp(28px, 4vw, 40px); }
+:root:not(:has(.ve)) .t-nombre { font-size: clamp(30px, 4.2vw, 48px); }
+:root:not(:has(.ve)) :is(.pm-h2, .t-h2-sec, .ag-cab h2, .cl-cab h2, .cu-cab h2, .lv-cab h2, .lv-cierre h2, .pi-cab h2, .ri-cab h2, .ri-cierre h2, .tv-cierre h2, .pv-form h2) { font-size: clamp(25px, 3vw, 36px); font-weight: 750; }
+:root:not(:has(.ve)) .h2 { font-size: clamp(26px, 3.2vw, 40px); }
+:root:not(:has(.ve)) .t-grupo-h { font-size: clamp(20px, 2.2vw, 26px); }
+:root:not(:has(.ve)) .t-portada.grande b { font-size: clamp(26px, 3.6vw, 42px); }
+:root:not(:has(.ve)) :is(.pm-lead, .t-lead, .lead, .t-hero-sub, .t-portal-sub) { font-size: clamp(16px, 1.3vw, 17.5px); }
+:root:not(:has(.ve)) .pm-grande { font-size: clamp(16.5px, 1.8vw, 18.5px); }
+:root:not(:has(.ve)) .sv-cifras b { font-size: clamp(28px, 3.4vw, 40px); }
