@@ -27,7 +27,7 @@ const CSS = `<style>
 .sv-sellos li{display:flex;align-items:center;gap:6px}.sv-sellos svg{width:16px;height:16px;color:var(--verde)}
 .sv-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .sv-diag{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:16px;padding:16px 18px;border-radius:18px;background:var(--fg);color:var(--bg);text-decoration:none;box-shadow:var(--sombra-2)}
-.sv-diag span{display:grid;gap:2px}.sv-diag b{font-size:17px;letter-spacing:-.015em}.sv-diag small{font-size:14px;opacity:.78}
+.sv-diag span{display:grid;gap:2px}.sv-diag b{font-size:15.5px;letter-spacing:-.015em}.sv-diag small{font-size:14px;opacity:.78}
 .sv-diag em{font-style:normal;font-weight:750;font-size:14.5px;display:inline-flex;align-items:center;gap:6px;color:var(--acento)}.sv-diag em svg{width:16px;height:16px}
 /* En oscuro la tarjeta del diagnóstico se invierte a clara: el oro no alcanza 4.5:1 ahí, va en la tinta de la tarjeta */
 :root[data-tema="oscuro"] .sv-diag em{color:var(--bg)}
@@ -36,7 +36,7 @@ const CSS = `<style>
 .sv-plan{position:relative;display:block;padding:16px 18px;border-radius:18px;background:var(--card);border:1.5px solid var(--line);color:inherit;text-decoration:none;transition:border-color var(--t-rapido),box-shadow var(--t-rapido)}
 .sv-plan:hover{border-color:var(--line-2)}.sv-plan.sel{border-color:var(--fg);box-shadow:var(--sombra-2)}
 .sv-plan.sel::before{content:"";position:absolute;top:18px;right:18px;width:18px;height:18px;border-radius:50%;background:var(--fg);box-shadow:inset 0 0 0 4px var(--card)}
-.sv-plan-c{display:flex;align-items:baseline;gap:10px;padding-right:28px}.sv-plan-c b{font-size:17px;letter-spacing:-.015em}.sv-plan-c em{font-style:normal;font-weight:750;margin-left:auto}
+.sv-plan-c{display:flex;align-items:baseline;gap:10px;padding-right:28px}.sv-plan-c b{font-size:15.5px;letter-spacing:-.015em}.sv-plan-c em{font-style:normal;font-weight:750;margin-left:auto}
 .sv-plan small{display:block;color:var(--fg-2);font-size:13.5px;margin-top:2px}
 .sv-plan ul{display:none;margin:10px 0 0;gap:6px}.sv-plan.sel ul{display:grid}
 .sv-plan li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--fg-2)}.sv-plan li svg{width:16px;height:16px;flex:none;margin-top:2px;color:var(--verde)}
@@ -57,11 +57,11 @@ const CSS = `<style>
 .sv-paso img{width:100%;height:100%;object-fit:cover;display:block}
 .sv-paso div{padding:20px 22px 24px}
 .sv-paso small{font-size:13px;font-weight:700;color:var(--morado)}
-.sv-paso h3{font-size:19px;letter-spacing:-.02em;margin:6px 0 6px}
+.sv-paso h3{font-size:17px;letter-spacing:-.02em;margin:6px 0 6px}
 .sv-paso p{color:var(--fg-2);font-size:15px}
 .sv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin-top:28px}
 .sv-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--sombra)}
-.sv-card h3{font-size:18px;letter-spacing:-.02em;margin-bottom:8px}.sv-card p{color:var(--fg-2);font-size:15.5px}
+.sv-card h3{font-size:16px;letter-spacing:-.02em;margin-bottom:8px}.sv-card p{color:var(--fg-2);font-size:15.5px}
 .sv-tabla{width:100%;border-collapse:collapse;margin-top:24px;font-size:15px}
 .sv-tabla th,.sv-tabla td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 .sv-tabla thead th{font-size:13px;color:var(--fg-2);font-weight:650}
@@ -75,7 +75,7 @@ const CSS = `<style>
 .sv-no{color:var(--fg-3);font-weight:700}
 .sv-ej{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,3vw,32px);margin-top:24px;box-shadow:var(--sombra)}
 .sv-ej .sv-tema{display:inline-block;font-size:12.5px;font-weight:650;color:var(--morado);background:var(--morado-suave);padding:3px 10px;border-radius:999px}
-.sv-ej h3{font-size:19px;letter-spacing:-.02em;line-height:1.4;margin-top:12px}
+.sv-ej h3{font-size:17px;letter-spacing:-.02em;line-height:1.4;margin-top:12px}
 .sv-ops{display:flex;flex-direction:column;gap:9px;margin:16px 0 0}
 .sv-ops button{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:13px 15px;border:1.5px solid var(--line);border-radius:15px;background:var(--card);font:inherit;font-size:16px;cursor:pointer;transition:border-color .15s,background .15s}
 .sv-ops button:hover:not(:disabled){border-color:var(--fg)}
@@ -113,7 +113,7 @@ const CSS = `<style>
 .sv-disc{padding:28px 0 56px}
 .sv-ya{margin-top:28px;padding:22px;border-radius:var(--r);border:1px dashed var(--line-2);display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
 .sv-ya p{color:var(--fg-2);font-size:15.5px;max-width:520px}
-.sv-planes-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-bottom:20px}.sv-planes-cab b{font-size:17px;letter-spacing:-.015em}.sv-planes-cab a{font-size:14px;font-weight:650;color:var(--morado)}
+.sv-planes-cab{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-bottom:20px}.sv-planes-cab b{font-size:15.5px;letter-spacing:-.015em}.sv-planes-cab a{font-size:14px;font-weight:650;color:var(--morado)}
 .sv-planes{gap:14px}
 .sv-plan-c em{white-space:nowrap}.sv-plan-c em s{color:var(--fg-2);font-weight:500;font-size:14px;margin-right:2px}
 .sv-falta{color:var(--fg-2)!important;font-size:13px!important}.sv-falta::before{content:"✕ ";font-weight:700}
@@ -124,7 +124,7 @@ const CSS = `<style>
 .sv-dif{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;table-layout:fixed}.sv-dif thead th:first-child{width:40%}
 .sv-dif th,.sv-dif td{padding:14px 10px;border-bottom:1px solid var(--line);text-align:center;vertical-align:middle}
 .sv-dif tbody th{text-align:left;font-weight:600}
-.sv-dif thead th{vertical-align:bottom}.sv-dif thead b{display:block;font-size:17px;letter-spacing:-.015em}.sv-dif thead span{display:block;color:var(--fg-2);font-weight:650;margin-top:2px}
+.sv-dif thead th{vertical-align:bottom}.sv-dif thead b{display:block;font-size:15.5px;letter-spacing:-.015em}.sv-dif thead span{display:block;color:var(--fg-2);font-weight:650;margin-top:2px}
 .sv-dif thead small{display:inline-block;margin-bottom:6px;padding:2px 9px;border-radius:999px;background:var(--acento);color:var(--sobre-acento);font-size:11.5px;font-weight:800}
 .sv-dif .rec{background:color-mix(in srgb,var(--acento) 9%,transparent)}.sv-dif thead .rec{border-radius:16px 16px 0 0}.sv-dif tfoot .rec{border-radius:0 0 16px 16px}
 .sv-parcial{font-size:12.5px;font-weight:650;color:var(--fg-2);line-height:1.3}

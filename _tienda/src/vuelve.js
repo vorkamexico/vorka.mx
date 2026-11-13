@@ -239,7 +239,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-quiz-pie{margin:12px 0 0;text-align:center;font-size:14.5px;color:var(--fg-2)}.vu-quiz-pie a{color:var(--pm-t);font-weight:700}
 .vq{scroll-margin-top:96px;position:relative;padding:22px;border-radius:28px;background:var(--card,var(--bg));border:1px solid var(--line);box-shadow:0 40px 80px -50px rgba(20,17,20,.55);min-height:430px}
 .vq-cab{display:flex;align-items:center;gap:10px}
-.vq-atras{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:17px;cursor:pointer}
+.vq-atras{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:15.5px;cursor:pointer}
 .vq-barra{flex:1;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .vq-barra li{font-size:12.5px;font-weight:650;color:var(--fg-2);padding-top:9px;border-top:4px solid var(--line);border-radius:2px}
 .vq-barra li.on{color:var(--fg);border-top-color:var(--pm)}
@@ -249,7 +249,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vq-giro span{font-size:22px;flex:none}.vq-giro:hover,.vq-giro[aria-pressed=true]{border-color:var(--pm);background:color-mix(in srgb,var(--pm) 8%,var(--bg))}
 .vq-mas{display:block;margin:12px auto 0;border:0;background:none;color:var(--pm-t);font:700 15px inherit;text-decoration:underline;cursor:pointer}
 .vq-eco{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--pm) 10%,transparent);font-size:15px;line-height:1.45}
-.vq-in{width:100%;box-sizing:border-box;font:inherit;font-size:17px;min-height:52px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--fg)}
+.vq-in{width:100%;box-sizing:border-box;font:inherit;font-size:15.5px;min-height:52px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--fg)}
 .vq-sig,.vq-crear{width:100%;margin-top:16px}
 .vq-ideas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .vq-ideas button{padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:600 14px inherit;cursor:pointer}.vq-ideas button[aria-pressed=true]{border-color:var(--pm);color:var(--pm-t)}
@@ -276,15 +276,15 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-sec{padding:clamp(56px,8vw,96px) 0;scroll-margin-top:64px}.vu-sec.suave{background:var(--bg-2)}
 .vu-cab{max-width:640px;margin:0 auto 36px;text-align:center}
 .vu-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,46px);line-height:1.05;letter-spacing:-.04em;margin:0;text-wrap:balance}
-.vu-cab p{margin:12px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+.vu-cab p{margin:12px 0 0;font-size:16px;line-height:1.55;color:var(--fg-2)}
 .vu-tres,.vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
 .vu-tres li,.vu-ben li{padding:24px;border-radius:24px;background:var(--card,var(--bg));border:1px solid var(--line)}
 .vu-tres svg,.vu-ben svg{width:44px;height:44px;padding:10px;border-radius:14px;background:color-mix(in srgb,var(--pm) 12%,transparent);color:var(--pm-t)}
-.vu-tres b,.vu-ben b{display:block;font-size:19px;letter-spacing:-.02em;margin-top:14px}.vu-tres p,.vu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15.5px;line-height:1.5}
+.vu-tres b,.vu-ben b{display:block;font-size:17px;letter-spacing:-.02em;margin-top:14px}.vu-tres p,.vu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15.5px;line-height:1.5}
 .vu-mas{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px 22px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
 .vu-mas li,.vu-plan li,.vu-listo li{display:flex;gap:9px;align-items:flex-start;font-size:15.5px;line-height:1.45}.vu-mas svg,.vu-plan li svg,.vu-listo li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--pm-t)}
 .vu-mas a{color:var(--pm-t);font-weight:650}
-.vu-giros{margin-top:40px;padding-top:30px;border-top:1px solid var(--line);text-align:center}.vu-giros p{margin:0;font-weight:650;font-size:16.5px}
+.vu-giros{margin-top:40px;padding-top:30px;border-top:1px solid var(--line);text-align:center}.vu-giros p{margin:0;font-weight:650;font-size:15.5px}
 .vu-giros ul{list-style:none;padding:0;margin:16px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:900px}
 .vu-giros ul a{display:inline-block;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card,var(--bg));color:var(--fg);font-size:14.5px;text-decoration:none}.vu-giros ul a:hover{border-color:var(--pm);color:var(--pm-t)}
 .vu-liga{display:inline-flex;align-items:center;gap:6px;margin-top:18px;color:var(--pm-t);font-weight:700;text-decoration:none}.vu-liga svg{width:16px;height:16px}
@@ -308,11 +308,11 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-vol-pie{grid-column:1/-1;margin:0;font-size:14.5px;color:var(--fg-2)}.vu-vol-pie a{color:var(--pm-t);font-weight:700}
 /* letra un escalón más fina en toda la página */
 .vu .pm-h1{font-size:clamp(32px,4.4vw,48px);font-weight:750;line-height:1.08}
-.vu .pm-lead{font-size:16.5px}.vu .pm-marca{font-size:20px}
-.vu-cab h2,.vu .h2{font-size:clamp(25px,3vw,34px)!important;font-weight:750}.vu-cab p{font-size:16.5px}
+.vu .pm-lead{font-size:15.5px}.vu .pm-marca{font-size:20px}
+.vu-cab h2,.vu .h2{font-size:clamp(25px,3vw,34px)!important;font-weight:750}.vu-cab p{font-size:15.5px}
 .vq-t{font-size:clamp(20px,2.2vw,23px)!important;font-weight:750}
-.vu-tres b,.vu-ben b{font-size:17px}.vu-tres p,.vu-ben p,.vu-mas li,.vu-plan li,.vu-listo li{font-size:15px}
-.vu-precio b{font-size:30px}.vu-plan h3{font-size:21px}.vu-listo>b{font-size:18px}
+.vu-tres b,.vu-ben b{font-size:15.5px}.vu-tres p,.vu-ben p,.vu-mas li,.vu-plan li,.vu-listo li{font-size:15px}
+.vu-precio b{font-size:30px}.vu-plan h3{font-size:21px}.vu-listo>b{font-size:16px}
 .vu .t-faq summary{font-size:16px}
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .vu #form-vuelve .btn.acento{background:var(--pm);color:#fff}

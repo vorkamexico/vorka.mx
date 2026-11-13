@@ -166,7 +166,7 @@ const CSS = `.nc-hero{padding:clamp(12px,3vw,40px) 0 clamp(36px,5vw,64px);overfl
 .nc-pz .mt-ag-lista li:nth-child(3){display:none}
 @media(max-width:560px){.nc-collage{min-height:560px}.nc-pz-web{width:72%;left:3%;top:4%}.nc-pz-tar{width:60%;right:3%;top:24%}.nc-pz-ag{width:64%;left:5%;top:56%}.nc-pz .mt-cuenta b{font-size:32px}.nc-pz .mt-web-serv{display:none}}
 .nc-sec{padding:clamp(36px,5vw,64px) 0}
-.nc-h2{max-width:720px}.nc-sub{margin:10px 0 0;color:var(--fg-2);font-size:17px;max-width:640px}
+.nc-h2{max-width:720px}.nc-sub{margin:10px 0 0;color:var(--fg-2);font-size:15.5px;max-width:640px}
 .nc-tres{display:grid;gap:16px;margin-top:28px}@media(min-width:860px){.nc-tres{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .nc-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,3vw,28px);box-shadow:var(--sombra)}
 .nc-ico{display:inline-flex;width:46px;height:46px;border-radius:14px;align-items:center;justify-content:center;background:var(--verde-suave);color:var(--verde);margin-bottom:14px}.nc-ico svg{width:24px;height:24px}

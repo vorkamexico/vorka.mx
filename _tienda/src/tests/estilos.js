@@ -14,9 +14,9 @@ export const CSS_TESTS = `
 .tv-tarjeta{padding:22px;border-radius:24px;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 60px -40px rgba(0,0,0,.35)}
 .tv-sec{padding:clamp(44px,7vw,88px) 0}.tv-sec.suave{background:var(--bg-2)}
 .tv-cab{max-width:720px;margin:0 0 26px}.tv-cab h2{font-weight:800;font-size:clamp(28px,4vw,44px);line-height:1.06;letter-spacing:-.04em;margin:8px 0 0;text-wrap:balance}
-.tv-cab p{margin:12px 0 0;font-size:17px;line-height:1.55;color:var(--fg-2)}
+.tv-cab p{margin:12px 0 0;font-size:15.5px;line-height:1.55;color:var(--fg-2)}
 .tv-tres{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
-.tv-tres li{padding:20px;border-radius:20px;background:var(--card);border:1px solid var(--line)}.tv-tres b{display:block;font-size:18px;margin-top:6px}.tv-tres p{margin:6px 0 0;color:var(--fg-2);line-height:1.5}
+.tv-tres li{padding:20px;border-radius:20px;background:var(--card);border:1px solid var(--line)}.tv-tres b{display:block;font-size:16px;margin-top:6px}.tv-tres p{margin:6px 0 0;color:var(--fg-2);line-height:1.5}
 .tv-num{font-weight:800;font-size:13px;color:var(--tv-acento)}
 .tv-nota{font-size:14px;color:var(--fg-2);line-height:1.55}.tv-nota a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 /* formulario del test */
@@ -26,7 +26,7 @@ export const CSS_TESTS = `
 .tv-parte{margin:18px 0 0;font-size:22px;font-weight:800;letter-spacing:-.02em}.tv-parte small{display:block;font-size:15px;font-weight:500;color:var(--fg-2);margin-top:4px;letter-spacing:0}
 .tv-q{border:1px solid var(--line);border-radius:18px;padding:16px;margin:0;background:var(--card);min-width:0}
 .tv-q.falta{border-color:#c0392b;box-shadow:0 0 0 3px rgba(192,57,43,.15)}
-.tv-q legend{float:left;width:100%;padding:0;margin:0 0 12px;font-size:16.5px;font-weight:650;line-height:1.4;display:flex;gap:10px}
+.tv-q legend{float:left;width:100%;padding:0;margin:0 0 12px;font-size:15.5px;font-weight:650;line-height:1.4;display:flex;gap:10px}
 .tv-q legend .tv-n{flex:none;min-width:26px;height:26px;border-radius:50%;background:var(--bg-2);display:inline-grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--fg-2)}
 .tv-op{clear:both;display:flex;flex-wrap:wrap;gap:8px}
 .tv-op label{flex:1 1 0;min-width:min(100%,92px);position:relative}.tv-op.lista label{flex:1 1 auto}
@@ -49,7 +49,7 @@ export const CSS_TESTS = `
 .tv-carreras{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:c}
 .tv-carreras>li{counter-increment:c;padding:14px 16px 14px 54px;border-radius:16px;background:var(--card);border:1px solid var(--line);position:relative;line-height:1.45}
 .tv-carreras>li::before{content:counter(c);position:absolute;left:14px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--bg-2);display:grid;place-items:center;font-size:13px;font-weight:800}
-.tv-carreras b{font-size:16.5px}.tv-af{float:right;font-weight:800;color:var(--tv-acento);margin-left:8px}
+.tv-carreras b{font-size:15.5px}.tv-af{float:right;font-weight:800;color:var(--tv-acento);margin-left:8px}
 .tv-chip{display:inline-block;margin:6px 6px 0 0;padding:3px 10px;border-radius:999px;background:var(--bg-2);font-size:12.5px;font-weight:650;color:var(--fg-2)}
 .tv-det{margin:8px 0 0;color:var(--fg-2);font-size:15px}.tv-det b{color:var(--fg);font-size:15px}
 /* vista previa con candado */

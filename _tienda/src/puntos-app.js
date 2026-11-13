@@ -163,7 +163,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .app{position:relative;z-index:1;max-width:520px;overflow-x:clip;margin:0 auto;min-height:100vh;padding:0 16px calc(104px + env(safe-area-inset-bottom))}
 .barra{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -16px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:var(--barra-bg);-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);border-bottom:1px solid transparent;transition:border-color .2s}
 .barra.sombra{border-bottom-color:var(--line)}
-.marca{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.02em;font-size:17px;text-decoration:none}
+.marca{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.02em;font-size:15.5px;text-decoration:none}
 .marca-v{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#2A1633,#141114);border:1px solid rgba(230,207,150,.28);color:var(--oro2)}
 .marca-v svg{width:17px;height:17px}.marca small{display:block;font-size:11.5px;font-weight:600;color:var(--fg3);letter-spacing:0;margin-top:1px}
 .avatar{position:relative;width:40px;height:40px;border-radius:50%;border:0;padding:2px;background:var(--btn-oro);cursor:pointer}
@@ -187,7 +187,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .saldo-cab{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:650;color:rgba(255,255,255,.7);letter-spacing:.02em}
 .saldo-num{display:flex;align-items:baseline;gap:10px;margin-top:16px}
 .saldo-num b{font-size:62px;line-height:1;font-weight:800;letter-spacing:-.05em;font-variant-numeric:tabular-nums;background:var(--metal-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
-.saldo-num span{font-size:17px;font-weight:650;color:rgba(255,255,255,.75)}
+.saldo-num span{font-size:15.5px;font-weight:650;color:rgba(255,255,255,.75)}
 .saldo-mxn{margin-top:6px;font-size:14.5px;color:rgba(255,255,255,.72)}.saldo-mxn b{color:#fff}
 .saldo-pie{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.08em;text-transform:uppercase}
 .saldo-nivel{display:block;margin-top:3px;font-size:16px;font-weight:800;letter-spacing:-.01em;text-transform:none}
@@ -225,8 +225,8 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .meta{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
 .anillo{position:relative;width:84px;height:84px}.anillo svg{width:84px;height:84px;transform:rotate(-90deg)}
 .anillo circle{fill:none;stroke-width:8}.anillo .fondo{stroke:var(--s2)}.anillo .valor{stroke:url(#gOro);stroke-linecap:round;transition:stroke-dashoffset 1.2s var(--ease) .3s}
-.anillo b{position:absolute;inset:0;display:grid;place-items:center;font-size:18px;font-weight:780;letter-spacing:-.02em}
-.meta h3{font-size:16.5px;letter-spacing:-.015em;line-height:1.3}.meta p{font-size:14px;color:var(--fg2);margin-top:4px}
+.anillo b{position:absolute;inset:0;display:grid;place-items:center;font-size:16px;font-weight:780;letter-spacing:-.02em}
+.meta h3{font-size:15.5px;letter-spacing:-.015em;line-height:1.3}.meta p{font-size:14px;color:var(--fg2);margin-top:4px}
 .meta-ok{color:var(--verde)!important;font-weight:650}
 .vacio-meta{display:flex;gap:14px;align-items:center}
 .ico-c{width:46px;height:46px;border-radius:15px;flex:none;display:grid;place-items:center;background:rgba(200,164,92,.12);color:var(--oro2)}.ico-c svg{width:22px;height:22px}
@@ -1057,11 +1057,11 @@ export const CSS_PROGRAMA = `
 .pv-ben{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:34px}
 .pv-ben article{padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sombra)}
 .pv-ben i{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--morado-suave);color:var(--morado);margin-bottom:16px}.pv-ben i svg{width:22px;height:22px}
-.pv-ben h3{font-size:19px;letter-spacing:-.02em;margin-bottom:6px}.pv-ben p{color:var(--fg-2);font-size:15.5px;line-height:1.55}
+.pv-ben h3{font-size:17px;letter-spacing:-.02em;margin-bottom:6px}.pv-ben p{color:var(--fg-2);font-size:15.5px;line-height:1.55}
 .pv-pasos{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:34px;counter-reset:p}
 .pv-pasos li{counter-increment:p;padding:22px 22px 22px 70px;position:relative;border-radius:22px;background:var(--bg-2);font-size:15.5px;line-height:1.5;color:var(--fg-2)}
 .pv-pasos li::before{content:counter(p);position:absolute;left:20px;top:20px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--fg);color:var(--bg);font-weight:800}
-.pv-pasos b{color:var(--fg);display:block;font-size:17px;margin-bottom:2px}
+.pv-pasos b{color:var(--fg);display:block;font-size:15.5px;margin-bottom:2px}
 .pv-niv{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .pv-niv span{display:inline-flex;align-items:center;gap:8px;padding:9px 14px 9px 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:650;font-size:14.5px}
 .pv-niv i{width:12px;height:12px;border-radius:50%;background:var(--c)}.pv-niv small{color:var(--fg-3);font-weight:600}
@@ -1074,7 +1074,7 @@ export const CSS_PROGRAMA = `
 .pv-ya{display:grid;gap:14px;justify-items:start}
 .pv-inst{display:grid;gap:14px;margin-top:26px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
 .pv-inst article{background:var(--card,#fff);border:1px solid var(--line);border-radius:20px;padding:22px}
-.pv-inst h3{font-size:18px;font-weight:750;letter-spacing:-.02em}
+.pv-inst h3{font-size:16px;font-weight:750;letter-spacing:-.02em}
 .pv-inst ol{list-style:decimal;margin:12px 0 0;padding-left:22px;display:grid;gap:8px;color:var(--fg-2);font-size:15px;line-height:1.5}
 .pv-inst ol b{color:var(--fg)}.pv-inst li::marker{font-weight:800;color:var(--fg)}
 .pv-inst p{color:var(--fg-2);font-size:15px;margin-top:8px}
