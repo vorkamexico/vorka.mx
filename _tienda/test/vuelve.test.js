@@ -310,3 +310,18 @@ describe('páginas y ligas', () => {
     await expect(A.lugaresApp('nadie@x.mx', 'vuelve', 1)).rejects.toThrow(/No hay una suscripción vigente/);
   });
 });
+
+describe('quiz en pantalla completa', () => {
+  it('/tienda/vuelve/empezar/: solo el quiz, sin menú ni pie, con «Más información» y la liga a la app con de dónde llegó', async () => {
+    const r = await pedir('/tienda/vuelve/empezar/?utm_source=whatsapp');
+    expect(r.status).toBe(200);
+    const h = await r.text();
+    expect(h).toContain('id="quiz"'); expect(h).toContain('class="vu vu-empezar"');
+    expect(h).toContain('href="https://vorka.mx/tienda/vuelve/">Más información sobre Vuelve');
+    expect(h).toContain('data-app="https://os.vorka.mx/vuelve/?o=whatsapp"');
+    expect(h).toContain('noindex');
+    expect(h).toContain('body:has(.vu-empezar) > header.nav');
+    const sin = await pedir('/tienda/vuelve/empezar');
+    expect(sin.status).toBe(301); expect(sin.headers.get('location')).toContain('/tienda/vuelve/empezar/');
+  });
+});
