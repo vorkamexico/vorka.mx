@@ -219,9 +219,12 @@ describe('páginas y ligas', () => {
     expect(h).not.toContain('tarjetas reales');
     expect(h).not.toMatch(/factura de tu suscripci/); expect(h).toContain('comprobante de pago');
     expect(h).not.toContain('href="/vuelve/negocios"');   // con menos de 5 negocios el directorio no se presume
-    expect(h).toContain('href="https://vorka.mx/vuelve/demo"'); expect(h).toContain('<iframe src="/vuelve/demo"');
-    // la demo vive en la portada, antes de «Cómo funciona», y ya no hay calculadora ni «Sigue explorando»
-    expect(h.indexOf('<iframe src="/vuelve/demo"')).toBeLessThan(h.indexOf('id="como"'));
+    expect(h).toContain('href="https://vorka.mx/vuelve/demo"');
+    // el quiz vive en la portada, antes de «Cómo funciona», y termina en el asistente de la app; los botones de prueba llevan a él
+    expect(h.indexOf('id="quiz"')).toBeLessThan(h.indexOf('id="como"'));
+    expect(h).toContain('data-app="https://os.vorka.mx/vuelve/"'); expect(h).toContain('href="https://os.vorka.mx/vuelve/#/nuevo"');
+    expect(h).toContain('data-g="barberia"'); expect(h).toContain('id="vq-giros"'); expect(h).toContain('Crear mi cuenta gratis');
+    expect(h.match(/href="#quiz"/g).length).toBeGreaterThanOrEqual(3);
     expect(h).not.toContain('id="vu-calc"'); expect(h).not.toContain('Sigue explorando');
     expect(h).toContain('Un solo plan, con todo incluido.'); expect(h).toContain('$3,990 MXN al año, con 2 meses gratis');
     expect(h).toContain('href="/tienda/mira-tu-negocio/?g=barberia"');

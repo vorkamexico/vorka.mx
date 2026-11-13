@@ -10,6 +10,7 @@ import { GIROS, RUTA_MIRA } from './miratunegocio.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { GIROS_VUELVE } from './vuelve-giros.generado.js';
 
 const OS = 'https://os.vorka.mx';
 // El negocio de ejemplo: el dueño saca una tarjeta en su celular y simula visitas (lo arma Vorka OS, se borra solo al día)
@@ -69,16 +70,33 @@ async function deOS(env, ruta) {
 }
 
 
-// Mientras carga la demo (o si no carga), el celular de la portada enseña una tarjeta real de Apple Wallet (storeCard)
-const MUESTRA = { nombre: 'Café El Celayense', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis' };
-const pase = d => `<div class="vu-pase" style="--pf:${d.fondo};--pt:${d.tinta};--pt2:${d.tinta2}">
-  <div class="vu-pase-cab"><span class="vu-pase-logo"><img src="/assets/tienda/vuelve/logo-celayense-pase.png" alt="" height="30"></span><b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
-  <img class="vu-pase-tira" src="/assets/tienda/vuelve/${d.tira}.png" alt="" width="375" height="123" decoding="async">
-  <div class="vu-pase-campos"><span><small>CLIENTE</small>${esc(d.cliente)}</span><span class="der"><small>NIVEL</small>${d.nivel}</span></div>
-  <div class="vu-pase-campos aux"><span><small>${d.premioEt}</small>${esc(d.premio)}</span></div>
-  <div class="vu-pase-qr"><img src="/assets/tienda/vuelve/qr-demo.svg" alt="" width="84" height="84"><small>LP7Q2K</small></div>
-</div>`;
 const WA_ICONO = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>';
+// El quiz de la portada: tres preguntas (giro, nombre y premio) con la tarjeta armándose a la vista y, al final, cómo le llega
+// el aviso a su cliente. «Crear mi cuenta gratis» abre el asistente de la app con todo lleno (?g&n&p&m&t, ver borradorDelQuiz en
+// Vorka OS public/vuelve/app.js): solo falta su correo y empiezan sus días gratis.
+const GIROS_QUIZ = ['cafeteria', 'restaurante', 'taqueria', 'barberia', 'salon', 'unas', 'gimnasio', 'dental'];
+const quiz = ({ dias, app }) => `<div class="vq" id="quiz" data-app="${esc(app)}">
+  <div class="vq-cab"><button class="vq-atras" type="button" hidden aria-label="Atrás">←</button><ol class="vq-barra" aria-label="Tu avance"><li class="on">Tu negocio</li><li>Tu premio</li><li>Tu tarjeta</li></ol></div>
+  <section class="vq-paso" data-p="1"><h2 class="vq-t">Arma tu tarjeta en un minuto. ¿Qué tipo de negocio tienes?</h2>
+    <div class="vq-giros">${Object.entries(GIROS_VUELVE).filter(([k]) => k !== 'otro').sort(([a], [b]) => (GIROS_QUIZ.indexOf(a) + 1 || 99) - (GIROS_QUIZ.indexOf(b) + 1 || 99)).map(([k, g], i) => `<button type="button" class="vq-giro" data-g="${k}"${i >= GIROS_QUIZ.length ? ' data-extra hidden' : ''}><span aria-hidden="true">${g.e}</span>${esc(g.n)}</button>`).join('')}<button type="button" class="vq-giro" data-g="otro" data-extra hidden><span aria-hidden="true">${GIROS_VUELVE.otro.e}</span>Otro negocio</button></div>
+    <button class="vq-mas" type="button">Ver más giros</button>
+    <p class="vq-eco" aria-live="polite" hidden></p></section>
+  <section class="vq-paso" data-p="2" hidden><h2 class="vq-t">¿Cómo se llama tu negocio?</h2>
+    <input class="vq-in" id="vq-nombre" maxlength="60" placeholder="Ej. Café La Paloma" autocomplete="organization" aria-label="Nombre de tu negocio">
+    <div class="vq-prev" aria-hidden="true"></div>
+    <button class="pm-btn vq-sig" type="button" data-ir="3">Siguiente ${FLECHA}</button></section>
+  <section class="vq-paso" data-p="3" hidden><h2 class="vq-t">¿Qué le regalas a tus clientes?</h2>
+    <div class="vq-ideas"></div>
+    <input class="vq-in" id="vq-premio" maxlength="60" aria-label="El premio">
+    <label class="vq-meta"><span id="vq-meta-l">Se lo gana con</span><span class="vq-cont"><button type="button" data-m="-1" aria-label="Menos">−</button><output id="vq-meta">10</output><button type="button" data-m="1" aria-label="Más">+</button></span><span id="vq-meta-u">visitas</span></label>
+    <button class="pm-btn vq-sig" type="button" data-ir="4">Ver mi tarjeta ${FLECHA}</button></section>
+  <section class="vq-paso" data-p="4" hidden><h2 class="vq-t">Así le llega a tu cliente.</h2>
+    <div class="vq-cel" aria-hidden="true"><b class="vq-hora">9:41</b><div class="vq-notis"></div></div>
+    <p class="vq-dice">Le llega a su celular, sin que tú hagas nada y sin costo por mensaje.</p>
+    <a class="pm-btn vq-crear" href="${esc(app)}#/nuevo">Crear mi cuenta gratis ${FLECHA}</a>
+    <p class="vq-nota">${dias} días gratis, sin tarjeta. Solo te pedimos tu correo.</p></section>
+</div>
+<script type="application/json" id="vq-giros">${JSON.stringify(GIROS_VUELVE).replace(/</g, '\\u003c')}</script>`;
 // Giros que se ven en la página: cada uno abre «Mira tu negocio» con su giro ya elegido
 const GIROS_VISTOS = ['cafeteria', 'restaurante', 'taqueria', 'panaderia', 'heladeria', 'barberia', 'estetica', 'unas', 'pestanas', 'spa', 'podologia', 'dental', 'fisioterapia', 'nutricion', 'optica', 'veterinaria', 'floreria', 'boutique', 'gimnasio', 'autolavado', 'lavanderia', 'taller'];
 
@@ -107,7 +125,6 @@ export async function paginaVuelve(env, req, url) {
   migas('Vuelve', RUTA_VUELVE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
-  const msjDemo = `Mira cómo se ve una tarjeta de lealtad de Vuelve en el celular: ${DEMO}`;
   const res = pagina({ navActual: 'catalogo', entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
     descripcion: 'Tu tarjeta de lealtad digital en Apple Wallet y Google Wallet, sin app ni cartón: sellos o puntos, avisos automáticos y el dinero que regresó, medido. Prueba 7 días gratis, sin tarjeta.',
@@ -119,18 +136,15 @@ export async function paginaVuelve(env, req, url) {
   <div class="pm-txt">${lineaMarca('vuelve')}${reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : ''}
     <h1 class="pm-h1">Tu <em>tarjeta de lealtad digital</em>, en el celular de tus clientes.</h1>
     <p class="pm-lead">Sellos o puntos en su Apple Wallet o Google Wallet, sin app y sin cartón. Vuelve les recuerda regresar y tú ves cuánto dinero te dejaron.</p>
-    <div class="pm-ctas"><a class="pm-btn" href="${esc(nuevo)}">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="pm-btn sec" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Te lo dejamos listo</a></div>
+    <div class="pm-ctas"><a class="pm-btn" href="#quiz">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="pm-btn sec" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Te lo dejamos listo</a></div>
     <p class="pm-precio">${mensual ? `<b>${precio(mensual.prod)}</b> al mes con todo incluido · ` : ''}${dias} días gratis, sin tarjeta</p>
     <p class="vu-listo-h">¿Sin tiempo? En una videollamada de 15 minutos lo dejamos funcionando contigo, gratis.</p>
     <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a></p>
   </div>
-  <figure class="vu-demo" id="ejemplo">
-    <div class="vu-tel"><div class="vu-tel-fondo">${pase(MUESTRA)}</div><iframe src="/vuelve/demo" title="Tarjeta de ejemplo de Vuelve" loading="eager"></iframe></div>
-    <figcaption><b>Pruébala como si fueras tu cliente.</b> Saca la tarjeta de ejemplo aquí mismo; se borra sola mañana.
-      <span class="vu-demo-ligas"><a href="${DEMO}" target="_blank" rel="noopener">Abrir en pantalla completa</a><a href="https://wa.me/?text=${encodeURIComponent(msjDemo)}" target="_blank" rel="noopener">Mandármela por WhatsApp</a></span></figcaption>
-  </figure>
+  <div class="vu-quiz" id="ejemplo">${quiz({ dias, app: `${OS}/vuelve/${q ? `?${q}` : ''}` })}
+    <p class="vu-quiz-pie">¿La quieres ver primero como tu cliente? <a href="${DEMO}" target="_blank" rel="noopener">Saca la tarjeta de ejemplo</a></p></div>
 </div></section>
-${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébalo gratis</a>`)}
+${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#quiz">Pruébalo gratis</a>`)}
 
 <section class="vu-sec" id="como"><div class="marco">
   <div class="vu-cab"><h2>Lista hoy, desde tu celular.</h2><p>Sin computadora y sin instalar nada. Si te atoras, te ayuda una persona.</p></div>
@@ -157,7 +171,7 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
       <h3>Vuelve</h3>
       ${mensual ? `<p class="vu-precio"><b>${precio(mensual.prod)}</b> <small>al mes</small></p>${anual ? `<p class="vu-anual">o ${precio(anual.prod)} al año, con 2 meses gratis</p>` : ''}` : `<p class="vu-precio"><b>${dias} días gratis</b></p>`}
       <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${mensual?.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(mensual.sucursal)} al mes</span></li>` : ''}</ul>
-      <a class="pm-btn vu-ancho" href="${esc(nuevo)}">Empieza tus ${dias} días gratis ${FLECHA}</a>
+      <a class="pm-btn vu-ancho" href="#quiz">Empieza tus ${dias} días gratis ${FLECHA}</a>
       <p class="vu-nota">Sin tarjeta. Si decides seguir, tus clientes conservan su tarjeta.</p>
       ${planes.length ? `<p class="vu-sus">¿Ya lo probaste? Suscríbete ${planes.map(x => `<a href="?plan=${x.slug}#comprar" data-plan="${x.slug}">${x.nombre.toLowerCase()}</a>`).join(' o ')}.</p>` : `<p class="vu-nota">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
     </article>
@@ -170,7 +184,7 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
   </div>
 </div></section>
 
-${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="${esc(nuevo)}">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
+${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="#quiz">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
   pasos: [],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
   form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate>
@@ -206,21 +220,44 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:20px;color:var(--fg);letter-spacing:-.02em}
 .vu-listo-h{margin:8px 0 0;font-size:15px;color:var(--fg-2);max-width:34em}
 .vu-reco{display:inline-block;margin:16px 0 0;padding:8px 14px;border-radius:999px;background:color-mix(in srgb,var(--pm) 12%,transparent);color:var(--fg);font-size:15px}
-.vu-demo{margin:0;justify-self:center;width:min(340px,100%);display:grid;gap:14px}
-.vu-tel{position:relative;height:640px;border:10px solid #1d1a1f;border-radius:46px;overflow:hidden;background:#000;box-shadow:0 40px 80px -34px rgba(20,17,20,.55)}
-.vu-tel-fondo{position:absolute;inset:0;padding:70px 14px 0;background:#000}
-.vu-tel iframe{position:relative;width:100%;height:100%;border:0;display:block;background:transparent}
-@media(max-width:600px){.vu-tel{height:580px}}
-.vu-demo figcaption{font-size:14.5px;line-height:1.5;color:var(--fg-2);text-align:center}.vu-demo figcaption b{display:block;color:var(--fg);font-size:15.5px}
-.vu-demo-ligas{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;margin-top:6px}.vu-demo-ligas a{color:var(--pm-t);font-weight:700}
-/* tarjeta de Apple Wallet (storeCard) */
-.vu-pase{background:var(--pf);color:var(--pt);border-radius:14px;overflow:hidden;font-family:-apple-system,'SF Pro Text','Inter Tight',sans-serif;box-shadow:0 1px 0 rgba(255,255,255,.08) inset}
-.vu-pase-cab{display:flex;align-items:center;gap:9px;padding:11px 12px}.vu-pase-logo img{display:block;width:auto;height:30px}
-.vu-pase-cab b{font-size:15px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vu-pase-h{margin-left:auto;text-align:right;font-size:17px;font-weight:500;line-height:1.1;white-space:nowrap}.vu-pase small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--pt2);margin-bottom:2px}
-.vu-pase-tira{display:block;width:100%;height:auto}
-.vu-pase-campos{display:flex;justify-content:space-between;gap:12px;padding:10px 12px 0;font-size:15px}.vu-pase-campos .der{text-align:right}.vu-pase-campos.aux{font-size:13px;padding-top:8px}
-.vu-pase-qr{display:grid;justify-items:center;gap:2px;width:max-content;margin:14px auto;padding:8px 8px 4px;border-radius:9px;background:#fff}.vu-pase-qr img{display:block;width:84px;height:84px}.vu-pase-qr small{color:#333;font-size:10px;margin:0}
+/* quiz de la portada */
+.vu-quiz{justify-self:center;width:min(460px,100%)}
+.vu-quiz-pie{margin:12px 0 0;text-align:center;font-size:14.5px;color:var(--fg-2)}.vu-quiz-pie a{color:var(--pm-t);font-weight:700}
+.vq{scroll-margin-top:96px;position:relative;padding:22px;border-radius:28px;background:var(--card,var(--bg));border:1px solid var(--line);box-shadow:0 40px 80px -50px rgba(20,17,20,.55);min-height:430px}
+.vq-cab{display:flex;align-items:center;gap:10px}
+.vq-atras{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:17px;cursor:pointer}
+.vq-barra{flex:1;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.vq-barra li{font-size:12.5px;font-weight:650;color:var(--fg-2);padding-top:9px;border-top:4px solid var(--line);border-radius:2px}
+.vq-barra li.on{color:var(--fg);border-top-color:var(--pm)}
+.vq-t{font-weight:800;font-size:clamp(22px,2.6vw,27px);line-height:1.15;letter-spacing:-.03em;margin:20px 0 14px;text-wrap:balance}
+.vq-giros{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vq-giro{display:flex;align-items:center;gap:9px;min-height:54px;padding:8px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:600 14.5px/1.25 inherit;text-align:left;cursor:pointer}
+.vq-giro span{font-size:22px;flex:none}.vq-giro:hover,.vq-giro[aria-pressed=true]{border-color:var(--pm);background:color-mix(in srgb,var(--pm) 8%,var(--bg))}
+.vq-mas{display:block;margin:12px auto 0;border:0;background:none;color:var(--pm-t);font:700 15px inherit;text-decoration:underline;cursor:pointer}
+.vq-eco{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--pm) 10%,transparent);font-size:15px;line-height:1.45}
+.vq-in{width:100%;box-sizing:border-box;font:inherit;font-size:17px;min-height:52px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--fg)}
+.vq-sig,.vq-crear{width:100%;margin-top:16px}
+.vq-ideas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.vq-ideas button{padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:600 14px inherit;cursor:pointer}.vq-ideas button[aria-pressed=true]{border-color:var(--pm);color:var(--pm-t)}
+.vq-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;font-weight:650;font-size:15.5px}
+.vq-cont{display:inline-flex;align-items:center;border:1.5px solid var(--line-2);border-radius:999px;overflow:hidden}.vq-cont button{width:42px;height:40px;border:0;background:none;color:var(--fg);font-size:20px;cursor:pointer}.vq-cont output{min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
+/* la tarjeta que se arma (con los colores del giro) */
+.vq-prev{margin-top:14px}
+.vq-tj{border-radius:16px;padding:14px;background:var(--tc);color:#fff;box-shadow:0 20px 40px -26px rgba(0,0,0,.7)}
+.vq-tj-cab{display:flex;align-items:center;gap:9px;font-weight:650;font-size:15.5px}.vq-tj-cab i{font-style:normal;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.14)}
+.vq-tj-cab span{margin-left:auto;font-weight:500;font-size:13px;opacity:.8;white-space:nowrap}
+.vq-sellos{display:grid;grid-template-columns:repeat(var(--col,5),1fr);gap:7px;margin:14px 0 12px}
+.vq-sellos i{aspect-ratio:1;border-radius:50%;border:2px solid color-mix(in srgb,var(--ta) 60%,transparent)}.vq-sellos i.si{background:var(--ta);border-color:var(--ta)}
+.vq-puntos{margin:14px 0 10px;font-size:28px;font-weight:700;letter-spacing:-.02em}.vq-puntos small{font-size:14px;font-weight:500;opacity:.75}
+.vq-tj-pie{font-size:13.5px;opacity:.85}.vq-tj-pie b{opacity:1}
+.vq-cel{border-radius:26px;padding:16px 12px 14px;background:linear-gradient(160deg,#20242c,#0d0f13);color:#fff;min-height:200px}
+.vq-hora{display:block;text-align:center;font-size:36px;font-weight:600;letter-spacing:-.02em;margin-bottom:12px}
+.vq-noti{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:16px;background:rgba(245,245,247,.9);color:#111;font-size:13.5px;line-height:1.35;margin-top:8px;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s}
+.vq-noti.ver{opacity:1;transform:none}.vq-noti i{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;font-style:normal;color:#fff}
+.vq-noti b{display:flex;justify-content:space-between;gap:8px;font-weight:650}.vq-noti b small{font-weight:400;color:#666}
+.vq-dice{margin:12px 0 0;font-size:15px;color:var(--fg-2);line-height:1.45}
+.vq-nota{margin:10px 0 0;text-align:center;font-size:14px;color:var(--fg-2)}
+@media(prefers-reduced-motion:reduce){.vq-noti{transition:none}}
 /* secciones */
 .vu-sec{padding:clamp(56px,8vw,96px) 0;scroll-margin-top:64px}.vu-sec.suave{background:var(--bg-2)}
 .vu-cab{max-width:640px;margin:0 auto 36px;text-align:center}
@@ -254,6 +291,63 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 `;
 
 const SCRIPT = `(function(){
+  // quiz de la portada: giro → nombre → premio → cómo le llega el aviso → «Crear mi cuenta gratis» con todo lleno
+  var Q=document.getElementById('quiz'); if(!Q) return;
+  var G={}; try{ G=JSON.parse(document.getElementById('vq-giros').textContent); }catch(e){}
+  var $=function(s){ return Q.querySelector(s); }, $$=function(s){ return Array.prototype.slice.call(Q.querySelectorAll(s)); };
+  var esc=function(t){ return String(t).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  var d={ g:null, n:'', p:'', m:10, t:'sellos' }, paso=1, timer=null, visto=false;
+  var gi=function(){ return G[d.g]||G.otro||{}; }, pts=function(){ return d.t==='puntos'; };
+  function tarjeta(){
+    var g=gi(), m=Number(d.m)||1, lleva=pts()?Math.round(m*.7/10)*10:Math.max(1,Math.min(m-1,Math.round(m*.6)));
+    var cuerpo=pts()?'<p class="vq-puntos">'+lleva.toLocaleString('es-MX')+' <small>de '+m.toLocaleString('es-MX')+' puntos</small></p>'
+      :'<div class="vq-sellos" style="--col:'+(m>10?6:m>6?5:m)+'">'+Array.apply(null,Array(Math.min(m,30))).map(function(_,i){ return '<i class="'+(i<lleva?'si':'')+'"></i>'; }).join('')+'</div>';
+    return '<div class="vq-tj" style="--tc:'+g.c+';--ta:'+g.a+'"><div class="vq-tj-cab"><i>'+(g.e||'⭐')+'</i>'+esc(d.n||'Tu negocio')+'<span>'+(pts()?'Puntos':lleva+' de '+m)+'</span></div>'+cuerpo+'<p class="vq-tj-pie">Premio: <b>'+esc(d.p||g.p||'')+'</b></p></div>';
+  }
+  function pinta(){ $$('.vq-prev').forEach(function(x){ x.innerHTML=tarjeta(); }); }
+  function ir(p){
+    paso=p; $$('.vq-paso').forEach(function(s){ s.hidden=Number(s.dataset.p)!==p; });
+    var hasta=p<=2?1:p===3?2:3; $$('.vq-barra li').forEach(function(li,i){ li.className=i<hasta?'on':''; });
+    $('.vq-atras').hidden=p===1;
+    if(p===2){ $('#vq-nombre').value=d.n; pinta(); setTimeout(function(){ $('#vq-nombre').focus({preventScroll:true}); },50); }
+    if(p===3) premio();
+    if(p===4) avisos();
+  }
+  function premio(){
+    var g=gi(); $('#vq-premio').value=d.p;
+    $('.vq-ideas').innerHTML=(g.i||[]).map(function(x,k){ return '<button type="button" data-i="'+k+'" aria-pressed="'+(x[0]===d.p)+'">'+esc(x[0])+'</button>'; }).join('');
+    $$('.vq-ideas button').forEach(function(b){ b.onclick=function(){ var x=g.i[b.dataset.i]; d.p=x[0]; d.m=x[1]; premio(); }; });
+    $('#vq-meta').textContent=Number(d.m).toLocaleString('es-MX'); $('#vq-meta-u').textContent=pts()?'puntos (1 por cada peso)':'visitas';
+  }
+  function avisos(){
+    var g=gi(), n=d.n||'Tu negocio', falta=pts()?'Te faltan 50 puntos para tu premio: '+d.p+'.':'Te falta 1 sello para tu premio: '+d.p+'.';
+    var L=[['ahora','¡Ya casi! '+falta],['ayer','¡Feliz cumpleaños! Te espera un regalo en '+n+'.']];
+    $('.vq-notis').innerHTML=L.map(function(x){ return '<div class="vq-noti"><i style="background:'+g.c+'">'+(g.e||'⭐')+'</i><span><b>'+esc(n)+' <small>'+x[0]+'</small></b>'+esc(x[1])+'</span></div>'; }).join('');
+    $$('.vq-noti').forEach(function(el,k){ setTimeout(function(){ el.classList.add('ver'); },250+k*700); });
+    var u=new URL(Q.dataset.app, location.href); u.searchParams.set('g',d.g); u.searchParams.set('n',d.n); u.searchParams.set('p',d.p); u.searchParams.set('m',String(d.m)); u.searchParams.set('t',d.t);
+    if(!u.searchParams.get('o')) u.searchParams.set('o','quiz'); u.hash='#/nuevo'; $('.vq-crear').href=u.toString();
+  }
+  $$('.vq-giro').forEach(function(b){ b.onclick=function(){
+    var g=G[b.dataset.g]; if(!g) return; d.g=b.dataset.g; d.t=g.t; d.m=g.m; d.p=g.p;
+    $$('.vq-giro').forEach(function(x){ x.setAttribute('aria-pressed', x===b); });
+    var eco=$('.vq-eco'); eco.hidden=false; eco.textContent=g.e+' Listo. Si un cliente lleva '+g.d+' días sin venir, Vuelve le manda un «te extrañamos» solo.';
+    if(!visto){ visto=true; if(window.vorkaEvento) window.vorkaEvento('ViewContent',{content_name:'Quiz Vuelve',content_category:d.g}); }
+    clearTimeout(timer); timer=setTimeout(function(){ ir(2); },1300);
+  }; });
+  $('.vq-mas').onclick=function(){ $$('[data-extra]').forEach(function(x){ x.hidden=false; }); this.hidden=true; };
+  $('#vq-nombre').oninput=function(e){ d.n=e.target.value; pinta(); };
+  $('#vq-nombre').onkeydown=function(e){ if(e.key==='Enter'){ e.preventDefault(); $('[data-ir="3"]').click(); } };
+  $('#vq-premio').oninput=function(e){ d.p=e.target.value; $$('.vq-ideas button').forEach(function(b){ b.setAttribute('aria-pressed','false'); }); };
+  $$('[data-m]').forEach(function(b){ b.onclick=function(){ var s=pts()?50:1, max=pts()?100000:30; d.m=Math.min(max,Math.max(s,(Number(d.m)||0)+Number(b.dataset.m)*s)); premio(); }; });
+  $$('[data-ir]').forEach(function(b){ b.onclick=function(){
+    if(b.dataset.ir==='3'&&d.n.trim().length<2){ var i=$('#vq-nombre'); i.focus(); i.setAttribute('aria-invalid','true'); i.placeholder='Escribe el nombre de tu negocio'; return; }
+    if(b.dataset.ir==='4'&&!d.p.trim()){ $('#vq-premio').focus(); return; }
+    ir(Number(b.dataset.ir)); if(Q.getBoundingClientRect().top<0) Q.scrollIntoView({behavior:'smooth',block:'start'});
+  }; });
+  $('.vq-atras').onclick=function(){ clearTimeout(timer); ir(Math.max(1,paso-1)); };
+  $('.vq-crear').addEventListener('click',function(){ if(window.vorkaEvento) window.vorkaEvento('Lead',{content_name:'Quiz Vuelve',content_category:d.g}); });
+})();
+(function(){
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('vu-precios').textContent); }catch(e){}
   var tot=document.getElementById('vu-total'), cada=document.getElementById('vu-cada');
