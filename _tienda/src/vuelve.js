@@ -1,16 +1,15 @@
 // Vuelve (tarjetas de lealtad digitales; tercera app de Diversificación de Vorka México).
-// /tienda/vuelve/ → ficha comercial única: prueba de 7 días, plan mensual o anual, sucursales adicionales, preguntas y compra.
+// /tienda/vuelve/ → ficha comercial corta: portada con la demo en vivo, cómo funciona, qué incluye, un solo plan, compra y preguntas.
 // Se cobra por suscripción (ver suscripciones.js). La app vive en os.vorka.mx/vuelve/ y el registro de clientes de cada
 // negocio en vorka.mx/vuelve/<negocio> (→ os.vorka.mx/v/<negocio>). Aquí solo se vende.
-import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { lineaMarca, colorDe, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
-import { refDeVisita, precio, navTienda, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { refDeVisita, precio, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
+import { GIROS, RUTA_MIRA } from './miratunegocio.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
-import { seccionDemo } from './demos/marco.js';
-import { demoDe } from './demos/index.js';
 
 const OS = 'https://os.vorka.mx';
 // El negocio de ejemplo: el dueño saca una tarjeta en su celular y simula visitas (lo arma Vorka OS, se borra solo al día)
@@ -21,22 +20,17 @@ export const RUTA_VUELVE = '/tienda/vuelve/';
 const WA_LISTO = `https://wa.me/528117804869?text=${encodeURIComponent('Hola, quiero que me ayuden a dejar listo Vuelve en una videollamada de 15 minutos.')}`;
 const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', nombre: 'Mensual', cada: 'al mes' }, { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
 
-const INCLUYE = ['Clientes ilimitados y tu propia página de registro con QR', 'Sellos o puntos, recompensas y niveles (Bronce, Plata, Oro)', 'Tarjeta en Apple Wallet, Google Wallet o en el navegador, con tu logo y una foto de tu negocio detrás de los sellos',
-  'Avisos de cumpleaños, de "te extrañamos" y por cercanía, automáticos', 'Programa de referidos: "trae a un amigo" (ves quién invitó a quién)', 'Tu liga propia (vorka.mx/vuelve/tu-negocio) y lugar en el directorio de negocios Vuelve', 'Reporte de dinero recuperado y retorno de clientes', 'Escáner para tu equipo con PIN y bitácora antifraude', 'Cartel con QR listo para imprimir'];
-const faq = ({ dias = 7, directorio = false } = {}) => [
-  ['¿Puedo probar antes de pagar?', `Sí. Creas tu programa en <a href="${OS}/vuelve/">os.vorka.mx/vuelve</a> y lo usas completo ${dias} días, sin tarjeta. Si te sirve, te suscribes; si no, no pasa nada. Y si quieres verlo antes como lo verán tus clientes, <a href="${DEMO}">saca una tarjeta de ejemplo</a>.`],
+// Todo lo que trae el plan (la lista corta va en la tarjeta de precio; lo demás, en «Qué incluye»)
+const INCLUYE = ['Clientes y avisos ilimitados', 'Sellos o puntos, premios y niveles (Bronce, Plata, Oro)', 'Tu tarjeta en Apple Wallet y Google Wallet, con tu logo y tus colores',
+  'Avisos de cumpleaños, de «te extrañamos» y al pasar cerca, automáticos', 'Reporte de clientes que regresaron y del dinero que dejaron', 'Escáner para tu equipo con PIN y bitácora', 'Cartel con QR listo para imprimir'];
+const faq = ({ dias = 7 } = {}) => [
+  ['¿Puedo probar antes de pagar?', `Sí. Creas tu programa en <a href="${OS}/vuelve/">os.vorka.mx/vuelve</a> y lo usas completo ${dias} días, sin tarjeta. Si te sirve, te suscribes; si no, no pasa nada. Y si quieres verlo como lo verán tus clientes, <a href="${DEMO}">saca una tarjeta de ejemplo</a>.`],
   ['¿Mis clientes tienen que descargar una app?', 'No. Escanean tu QR, escriben su nombre y teléfono, y su tarjeta queda en Apple Wallet, Google Wallet o como tarjeta en su navegador. Tarda menos de 30 segundos.'],
-  ['¿Cómo funcionan los avisos?', 'Vuelve manda solo: felicitación de cumpleaños con un regalo, un "te extrañamos" a quien lleva tiempo sin venir y los avisos que tú escribas para todos o para un grupo (por nivel o por visitas). Llegan a la tarjeta de su celular y, si nos dio su correo, también por correo. Sin costo por mensaje.'],
-  ['¿Y lo de "cuando pasan cerca"?', 'En iPhone, cuando tu cliente pasa cerca de tu sucursal, su tarjeta aparece en la pantalla de bloqueo con tu mensaje (por ejemplo, "¡Estás cerca! Pasa por tu sello"). Es una sugerencia del teléfono, no una notificación con sonido, y depende de los permisos de ubicación de cada persona. Te lo decimos claro para que no te vendan humo.'],
-  ['¿Cómo sé si de verdad funciona?', 'En tu panel ves cuántos clientes regresaron, cada cuánto vienen y cuánto dinero te trajeron de vuelta (con el ticket que registras al sellar o con tu ticket promedio). También ves cuántos regresaron después de cada aviso.'],
-  ['¿Y si mi equipo regala sellos?', 'Cada persona de tu equipo sella con su PIN, hay un tope de sellos por cliente al día y todo queda en una bitácora. Si alguien sella de más, te avisamos.'],
-  ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Los descargas en Excel cuando quieras, también si cancelas. Vorka solo los guarda por tu cuenta para darte el servicio: no los vende ni los usa para publicidad. Cada cliente puede pedir su baja desde su tarjeta.'],
-  ['¿Cuánto cuesta y cómo pago?', 'Mensual o anual (con 2 meses gratis), con tarjeta, procesado por Stripe. La suscripción incluye una sucursal; cada sucursal adicional, o cada negocio distinto que manejes con el mismo correo (por ejemplo, tu cafetería y tu panadería), se suma a tu plan al mismo precio de sucursal. Tu comprobante de pago de cada cobro lo descargas en Vuelve › Cuenta › Administrar suscripción. Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.'],
-  ['¿Puedo cancelar cuando quiera?', 'Sí, desde Vuelve › Cuenta, sin llamadas. Tu programa sigue activo hasta el final del periodo que pagaste y tus clientes conservan su tarjeta.'],
-  ['¿Mi negocio puede aparecer en un directorio?', `Sí, si tú quieres. Con tu suscripción activa, tu negocio puede aparecer en el directorio de negocios Vuelve${directorio ? ' (<a href="/vuelve/negocios">vorka.mx/vuelve/negocios</a>)' : ''} con tu logo, tu ciudad y tu premio, para que te encuentren clientes nuevos. Lo prendes o apagas en Vuelve › Mi liga.`],
-  ['¿Es difícil de usar?', 'No. Está pensado para dueños que no son de computadora: todo desde el celular, con botones grandes, una pregunta a la vez y preguntas frecuentes dentro de la app. Y si te atoras, te ayuda una persona.'],
-  ['¿Me ayudan a dejarlo listo?', `Sí. En una videollamada de 15 minutos lo dejamos funcionando contigo: tu tarjeta con tu logo, tu premio, tu cartel con QR y tu primer cliente registrado. Es gratis para los primeros 10 negocios: <a href="${WA_LISTO}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.`],
-  ['¿Para qué negocios sirve?', `Para cualquier negocio con clientes que pueden regresar: cafeterías, taquerías, restaurantes, pizzerías, panaderías, neverías, barberías, estéticas, uñas, pestañas, spas, podología, consultorios dentales y médicos, fisioterapia, nutrición, psicología, ópticas, veterinarias, estéticas caninas, florerías, boutiques, farmacias, tiendas, gimnasios, escuelas, autolavados, tintorerías y talleres. Al empezar eliges tu giro y Vuelve te sugiere sellos, premios y mensajes; si no está el tuyo, eliges «Otro negocio» y funciona igual. <a href="/tienda/mira-tu-negocio/">Mira cómo quedaría el tuyo</a>.`],
+  ['¿Me ayudan a dejarlo listo?', `Sí, gratis. En una videollamada de 15 minutos lo dejamos funcionando contigo: tu tarjeta con tu logo, tu premio, tu cartel con QR y tu primer cliente registrado. <a href="${WA_LISTO}" target="_blank" rel="noopener">Pídela por WhatsApp</a>.`],
+  ['¿Cómo funcionan los avisos?', 'Vuelve manda solo la felicitación de cumpleaños con un regalo, un «te extrañamos» a quien lleva tiempo sin venir y los avisos que tú escribas para todos o para un grupo. Llegan a la tarjeta de su celular, sin costo por mensaje. En iPhone, cuando tu cliente pasa cerca de tu sucursal, su tarjeta aparece en la pantalla de bloqueo con tu mensaje; depende de los permisos de ubicación de cada persona y te lo decimos claro.'],
+  ['¿Cómo sé si de verdad funciona?', 'En tu panel ves cuántos clientes regresaron, cada cuánto vienen y cuánto dinero te dejaron (con el ticket que registras al sellar o con tu ticket promedio). También ves cuántos regresaron después de cada aviso.'],
+  ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Los descargas en Excel cuando quieras, también si cancelas. Vorka solo los guarda para darte el servicio: no los vende ni los usa para publicidad. Cada cliente puede pedir su baja desde su tarjeta.'],
+  ['¿Cuánto cuesta, cómo pago y cómo cancelo?', 'Un solo plan con todo, mensual o anual (con 2 meses gratis), con tarjeta y procesado por Stripe. Incluye una sucursal; cada sucursal o negocio adicional con el mismo correo se suma al precio de sucursal. Cancelas cuando quieras desde Vuelve › Cuenta, sin llamadas, y tu programa sigue hasta el final del periodo pagado. Tu comprobante de pago de cada cobro lo descargas en Vuelve › Cuenta. Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> dentro del mismo mes del cobro.'],
 ];
 
 // ---------- identidad de Vuelve (la misma de la app: la familia de Vorka —tinta, marfil, morado y oro— y la palabra "vuelve") ----------
@@ -74,21 +68,19 @@ async function deOS(env, ruta) {
   } catch { return null; }
 }
 
-// Tarjetas de muestra: las tiras son las reales que pinta Vuelve para el Wallet (assets/tienda/vuelve/tira-*.png)
-const MUESTRAS = [
-  { nombre: 'Café El Celayense', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis', logo: true, pie: 'Tu logo como sello' },
-  { nombre: 'Bodega Santa Rita', fondo: '#3b111a', tinta: '#f4f1ea', tinta2: '#a98c90', etiqueta: 'SELLOS', valor: '5 de 8', tira: 'tira-bodega', cliente: 'Jorge Ramírez', nivel: 'Plata', premioEt: 'PREMIO', premio: 'Botella de la casa', inicial: 'B', pie: 'Monedas de oro' },
-  { nombre: 'Verde Bistró', fondo: '#12291f', tinta: '#f4f1ea', tinta2: '#93a098', etiqueta: 'PUNTOS', valor: '2,160', tira: 'tira-puntos', cliente: 'Ana Torres', nivel: 'Bronce', premioEt: 'TU META', premio: 'Postre gratis', inicial: 'V', pie: 'Puntos por cada peso' },
-  { nombre: 'Café El Celayense', fondo: '#0e1a33', tinta: '#f4f1ea', tinta2: '#8d95a6', etiqueta: 'SELLOS', valor: '4 de 6', tira: 'tira-circulo', cliente: 'Luis Herrera', nivel: 'Plata', premioEt: 'YA CASI', premio: 'Pan dulce gratis', logo: true, pie: 'Tu logo en círculo' },
-];
-// Réplica fiel de una storeCard de Apple Wallet: logo y nombre, saldo arriba, la tira, cliente · nivel, premio y QR
-const pase = d => `<div class="vu-pase${d.cls ? ` ${d.cls}` : ''}" style="--pf:${d.fondo};--pt:${d.tinta};--pt2:${d.tinta2}">
-  <div class="vu-pase-cab">${d.logo ? '<span class="vu-pase-logo con"><img src="/assets/tienda/vuelve/logo-celayense-pase.png" alt="" height="30"></span>' : ''}<b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
-  <img class="vu-pase-tira" src="/assets/tienda/vuelve/${d.tira}.png" alt="" width="375" height="123" loading="lazy" decoding="async">
+
+// Mientras carga la demo (o si no carga), el celular de la portada enseña una tarjeta real de Apple Wallet (storeCard)
+const MUESTRA = { nombre: 'Café El Celayense', fondo: '#121212', tinta: '#f4f1ea', tinta2: '#8a8781', etiqueta: 'SELLOS', valor: '7 de 10', tira: 'tira-logo', cliente: 'María González', nivel: 'Oro', premioEt: 'PREMIO', premio: 'Bebida gratis' };
+const pase = d => `<div class="vu-pase" style="--pf:${d.fondo};--pt:${d.tinta};--pt2:${d.tinta2}">
+  <div class="vu-pase-cab"><span class="vu-pase-logo"><img src="/assets/tienda/vuelve/logo-celayense-pase.png" alt="" height="30"></span><b>${esc(d.nombre)}</b><span class="vu-pase-h"><small>${d.etiqueta}</small>${d.valor}</span></div>
+  <img class="vu-pase-tira" src="/assets/tienda/vuelve/${d.tira}.png" alt="" width="375" height="123" decoding="async">
   <div class="vu-pase-campos"><span><small>CLIENTE</small>${esc(d.cliente)}</span><span class="der"><small>NIVEL</small>${d.nivel}</span></div>
   <div class="vu-pase-campos aux"><span><small>${d.premioEt}</small>${esc(d.premio)}</span></div>
-  <div class="vu-pase-qr"><img src="/assets/tienda/vuelve/qr-demo.svg" alt="" width="84" height="84" loading="lazy"><small>LP7Q2K</small></div>
+  <div class="vu-pase-qr"><img src="/assets/tienda/vuelve/qr-demo.svg" alt="" width="84" height="84"><small>LP7Q2K</small></div>
 </div>`;
+const WA_ICONO = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>';
+// Giros que se ven en la página: cada uno abre «Mira tu negocio» con su giro ya elegido
+const GIROS_VISTOS = ['cafeteria', 'restaurante', 'taqueria', 'panaderia', 'heladeria', 'barberia', 'estetica', 'unas', 'pestanas', 'spa', 'podologia', 'dental', 'fisioterapia', 'nutricion', 'optica', 'veterinaria', 'floreria', 'boutique', 'gimnasio', 'autolavado', 'lavanderia', 'taller'];
 
 export async function paginaVuelve(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
@@ -100,95 +92,86 @@ export async function paginaVuelve(env, req, url) {
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   // y cuántos lugares adicionales ya usa (sucursales o negocios de más con el mismo correo)
   const lugares = Math.min(20, Math.max(0, parseInt(url.searchParams.get('sucursales') || '0', 10) || 0));
-  const mensual = planes.find(x => x.slug === 'vuelve-mensual');
+  const mensual = planes.find(x => x.slug === 'vuelve-mensual'), anual = planes.find(x => x.slug === 'vuelve-anual');
   // Quién lo recomendó (prueba de 30 días) y si el directorio ya tiene suficientes negocios para presumirlo
   const fuente = fuenteVisita(req, url);
   const [dir, reco] = await Promise.all([deOS(env, '/api/vuelve/publico/directorio'), fuente.invita ? deOS(env, `/api/vuelve/publico/recomienda/${fuente.invita}`) : null]);
-  const dias = reco?.dias || 7, FAQ = faq({ dias, directorio: !!dir?.visible });
+  const dias = reco?.dias || 7, FAQ = faq({ dias });
   const q = new URLSearchParams(Object.entries({ invita: reco ? fuente.invita : null, o: fuente.o }).filter(([, v]) => v)).toString();
   const nuevo = `${OS}/vuelve/${q ? `?${q}` : ''}#/nuevo`;
-  const precioMes = mensual ? mensual.prod.precio_centavos / 100 : 399;
   const rs = planes.length ? await resenasDe(env, RUTA_VUELVE) : null;
   const ld = [{ '@context': 'https://schema.org', '@type': 'Product', name: 'Vuelve · Tarjeta de lealtad digital para tu negocio', brand: { '@type': 'Brand', name: 'Vuelve' },
-    description: 'Sellos o puntos en el celular de tus clientes, avisos automáticos de cumpleaños y de regreso, referidos y el dinero que te traen de vuelta, medido. Prueba 7 días gratis.',
+    description: 'Tarjeta de lealtad digital con sellos o puntos en Apple Wallet y Google Wallet, sin app. Avisos automáticos de cumpleaños y de regreso, y el dinero que te traen de vuelta, medido. Prueba 7 días gratis.',
     image: ['https://vorka.mx/assets/tienda/v3/vuelve-og.jpg'],
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_VUELVE, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Vuelve', RUTA_VUELVE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
+  const msjDemo = `Mira cómo se ve una tarjeta de lealtad de Vuelve en el celular: ${DEMO}`;
   const res = pagina({ navActual: 'catalogo', entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
-    descripcion: 'Que tus clientes vuelvan solos: sellos o puntos en su celular, sin app ni cartón, avisos automáticos y referidos. Prueba 7 días gratis, sin tarjeta.',
+    descripcion: 'Tu tarjeta de lealtad digital en Apple Wallet y Google Wallet, sin app ni cartón: sellos o puntos, avisos automáticos y el dinero que regresó, medido. Prueba 7 días gratis, sin tarjeta.',
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
-    cuerpo: `<div class="vu">
-${heroMarca('vuelve', {
-  apoyo: 'La tarjeta de lealtad de tu negocio en el Apple Wallet y Google Wallet de tus clientes. Sin app y sin cartón. Les avisa en su cumpleaños y cuando llevan tiempo sin venir, y te dice cuánto dinero regresó.',
-  antes: reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : '',
-  botones: `<a class="pm-btn" href="${esc(nuevo)}">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="pm-btn sec" href="#ejemplo">Vívelo como tu cliente</a>`,
-  despues: `<p class="pm-precio">${mensual ? `<b>${precio(mensual.prod)}</b> al mes · ` : ''}prueba ${dias} días gratis, sin tarjeta</p><p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a></p>`,
-})}
-${indiceProducto('vuelve', [['que-es', 'Qué es'], ['como', 'Cómo funciona'], ['ejemplo', 'Pruébalo'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébalo gratis</a>`)}
-${seccionQueEs('vuelve', { titulo: 'Una tarjeta de sellos que vive en el celular de tu cliente.',
-  texto: 'Tus clientes la sacan escaneando un QR en tu caja. En cada visita les sumas un sello y, cuando juntan los que pediste, se llevan su premio. <b>Mientras, Vuelve les recuerda que regresen</b> y te enseña cuántos volvieron y cuánto dejaron.',
-  para: [['Cafeterías, restaurantes y panaderías', 'Que el cliente de la mañana regrese mañana, y no se vaya con la competencia.'], ['Barberías, salones y estéticas', 'Que vuelvan contigo cada mes y te recomienden con sus amigos.'], ['Gimnasios, autolavados, tintorerías', 'Cualquier negocio con clientes que pueden regresar.']] })}
-
-<section class="vu-sec"><div class="marco">
-  <div class="vu-cab"><span class="vu-et">Así se ve en sus celulares</span><h2>Tu marca, en su Wallet.</h2><p>Estos son ejemplos de lo que puedes armar. Eliges colores, metal y sellos, o usas tu logo como sello. También puedes poner una foto de tu negocio detrás.</p></div>
-  <div class="vu-galeria">${MUESTRAS.map(d => `<figure>${pase(d)}<figcaption>${d.pie}</figcaption></figure>`).join('')}</div>
-</div></section>
-
-${seccionDemo('vuelve', demoDe('vuelve'), { id: 'ejemplo' })}
-
-<section class="vu-sec vu-osc" id="como"><div class="marco">
-  <div class="vu-cab"><span class="vu-et">Cómo funciona</span><h2>Listo hoy. Desde tu celular.</h2></div>
-  <ol class="vu-pasos">${[['Arma tu tarjeta', 'Tu logo, tus colores, una foto de tu negocio y tus premios. Vuelve te sugiere todo según tu giro.'], ['Pon tu QR en caja', 'Te damos el cartel listo para imprimir. Tus clientes sacan su tarjeta en 30 segundos, sin descargar nada.'],
-    ['Sella con un toque', 'Tú o tu equipo escanean su tarjeta. Cada quien con su PIN y todo queda en la bitácora.'], ['Vuelve hace el resto', 'Avisos de cumpleaños y de "te extrañamos", su tarjeta al día en el Wallet y tus números cada mes.']].map(([t, d], k) => `<li><span class="vu-num">0${k + 1}</span><b>${t}</b><p>${d}</p></li>`).join('')}</ol>
-</div></section>
-
-<section class="vu-sec"><div class="marco vu-dos">
-  <div class="vu-cab izq"><span class="vu-et">Lo que te hace ganar</span><h2>Clientes que regresan, medidos en pesos.</h2><p>No es solo una tarjeta de sellos: es saber quién volvió, cuándo y cuánto dejó. Y que se lo recuerden solos.</p>
-    <div class="vu-panel" role="img" aria-label="Ejemplo del panel de Vuelve"><small>Ejemplo · panel de este mes</small><div class="vu-kpis"><span><b>148</b>visitas de regreso</span><span><b>$41,300</b>dinero que regresó</span><span><b>23</b>volvieron tras un aviso</span></div><div class="vu-barras">${[38, 52, 47, 61, 58, 73, 80].map(v => `<i style="height:${v}%"></i>`).join('')}</div></div></div>
-  <ul class="vu-ben">${[[ICONO.pesos, 'Dinero recuperado, medido', 'Cuántos regresaron, cada cuánto y cuánto dejaron. Y cuántos volvieron después de cada aviso.'],
-    [ICONO.campana, 'Avisos que trabajan solos', 'Cumpleaños con regalo, "te extrañamos" y tus promociones. Llegan a su Wallet, sin costo por mensaje.'],
-    [ICONO.amigos, 'Trae a un amigo', 'Cada tarjeta trae su invitación. Cuando el amigo viene por primera vez, los dos ganan.'],
-    [ICONO.escudo, 'Sin sellos regalados', 'PIN por persona, tope de sellos al día y bitácora. Te avisamos si algo se ve raro.'],
-    [ICONO.pin, 'Por sucursal', 'Cada sucursal con su ubicación, su equipo y su aviso cuando pasan cerca.'],
-    [ICONO.datos, 'Tus datos son tuyos', 'Descargas a tus clientes en Excel. Aviso de privacidad listo y comprobante de pago de tu suscripción.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
-</div></section>
-
-<section class="vu-sec" id="calcula"><div class="marco vu-calc">
-  <div class="vu-cab izq"><span class="vu-et">¿Cuánto te deja?</span><h2>Haz la cuenta con tus números.</h2><p>Cámbialos y mira cuánto representa que algunos de tus clientes regresen una vez más al mes.</p></div>
-  <div class="vu-calc-c">
-    <form class="vu-calc-f" id="vu-calc" novalidate>
-      <label>Clientes distintos que atiendes al mes<input id="c-cli" type="number" inputmode="numeric" min="1" max="100000" value="300"></label>
-      <label>Lo que gasta un cliente por visita (pesos)<input id="c-tic" type="number" inputmode="numeric" min="1" max="100000" value="80"></label>
-      <label>De cada 10, ¿cuántos regresarían una vez más al mes con su tarjeta? <output id="c-reg-o">1 de cada 10</output><input id="c-reg" type="range" min="0" max="5" step="1" value="1"></label>
-    </form>
-    <div class="vu-calc-r" aria-live="polite" data-precio="${precioMes}"><small>Ventas extra al mes</small><b id="c-extra">$2,400</b><p id="c-paga">Vuelve cuesta $${precioMes.toLocaleString('es-MX')} al mes: se paga con ${Math.ceil(precioMes / 80)} visitas extra.</p>
-      <p class="vu-nota">Es un cálculo con tus números, no una promesa. En tu panel de Vuelve ves el dinero que de verdad regresó.</p></div>
+    cuerpo: `<div class="vu" style="--pm:${colorDe('vuelve')}">
+<section class="pm-hero vu-hero"><div class="marco pm-g vu-hero-g">
+  <div class="pm-txt">${lineaMarca('vuelve')}${reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : ''}
+    <h1 class="pm-h1">Tu <em>tarjeta de lealtad digital</em>, en el celular de tus clientes.</h1>
+    <p class="pm-lead">Sellos o puntos en su Apple Wallet o Google Wallet, sin app y sin cartón. Vuelve les recuerda regresar y tú ves cuánto dinero te dejaron.</p>
+    <div class="pm-ctas"><a class="pm-btn" href="${esc(nuevo)}">Pruébalo ${dias} días gratis ${FLECHA}</a><a class="pm-btn sec" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Te lo dejamos listo</a></div>
+    <p class="pm-precio">${mensual ? `<b>${precio(mensual.prod)}</b> al mes con todo incluido · ` : ''}${dias} días gratis, sin tarjeta</p>
+    <p class="vu-listo-h">¿Sin tiempo? En una videollamada de 15 minutos lo dejamos funcionando contigo, gratis.</p>
+    <p class="t-ya">¿Ya tienes cuenta? <a href="${OS}/vuelve/#entrar">Entra aquí</a></p>
   </div>
+  <figure class="vu-demo" id="ejemplo">
+    <div class="vu-tel"><div class="vu-tel-fondo">${pase(MUESTRA)}</div><iframe src="/vuelve/demo" title="Tarjeta de ejemplo de Vuelve" loading="eager"></iframe></div>
+    <figcaption><b>Pruébala como si fueras tu cliente.</b> Saca la tarjeta de ejemplo aquí mismo; se borra sola mañana.
+      <span class="vu-demo-ligas"><a href="${DEMO}" target="_blank" rel="noopener">Abrir en pantalla completa</a><a href="https://wa.me/?text=${encodeURIComponent(msjDemo)}" target="_blank" rel="noopener">Mandármela por WhatsApp</a></span></figcaption>
+  </figure>
+</div></section>
+${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="${esc(nuevo)}">Pruébalo gratis</a>`)}
+
+<section class="vu-sec" id="como"><div class="marco">
+  <div class="vu-cab"><h2>Lista hoy, desde tu celular.</h2><p>Sin computadora y sin instalar nada. Si te atoras, te ayuda una persona.</p></div>
+  <ul class="vu-tres">${[[ICONO.wallet, 'Armas tu tarjeta', 'Tu logo, tus colores y tu premio. Vuelve te sugiere sellos y mensajes según tu giro.'],
+    [ICONO.check, 'Tus clientes la guardan', 'Escanean el QR de tu caja y la guardan en su celular en 30 segundos, sin descargar nada.'],
+    [ICONO.campana, 'Regresan solos', 'Les avisa en su cumpleaños y cuando llevan tiempo sin venir. Tú ves quién regresó y cuánto dejó.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
 </div></section>
 
-<section class="vu-sec suave" id="planes"><div class="marco">
-  <div class="vu-cab"><span class="vu-et">Precios</span><h2>Pruébalo ${dias} días. Después, un solo plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Clientes y avisos ilimitados. Cancela cuando quieras.</p></div>
-  <div class="vu-planes">
-    <article class="vu-plan"><h3>Prueba</h3><p class="vu-para">Todo Vuelve, ${dias} días</p><p class="vu-precio"><b>$0</b></p>
-      <ul>${['Sin tarjeta', 'Todas las funciones', 'Tus clientes conservan su tarjeta si decides seguir'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
-      <a class="vu-btn ghost oscuro" href="${esc(nuevo)}">Empezar gratis</a></article>
-    ${planes.map(x => `<article class="vu-plan${x.slug === 'vuelve-mensual' ? ' rec' : ''}">${x.nota ? `<span class="vu-sello">${x.nota}</span>` : ''}<h3>${x.nombre}</h3><p class="vu-para">Una sucursal incluida</p>
-      <p class="vu-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
-      <ul>${INCLUYE.slice(0, 5).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${x.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(x.sucursal)} ${x.cada}</span></li>` : ''}</ul>
-      <a class="vu-btn${x.slug === 'vuelve-mensual' ? '' : ' ghost oscuro'}" href="?plan=${x.slug}#comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
+<section class="vu-sec suave" id="incluye"><div class="marco">
+  <div class="vu-cab"><h2>Lo que hace que regresen.</h2><p>Todo viene en el mismo plan desde el primer día.</p></div>
+  <ul class="vu-ben">${[[ICONO.campana, 'Avisos que trabajan solos', 'Cumpleaños con regalo, «te extrañamos» y tus promociones. Llegan a su tarjeta, sin costo por mensaje, y en iPhone aparece cuando pasan cerca de tu sucursal.'],
+    [ICONO.pesos, 'El dinero que regresó, medido', 'Cuántos clientes volvieron, cada cuánto y cuánto dejaron. También cuántos regresaron después de cada aviso.'],
+    [ICONO.escudo, 'Sin sellos regalados', 'Cada persona de tu equipo sella con su PIN, hay tope de sellos al día y todo queda en una bitácora.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
+  <ul class="vu-mas">${['Trae a un amigo: los dos ganan en su primera visita', 'Varias sucursales, cada una con su equipo', 'Tus clientes en Excel cuando quieras', 'Cartel con QR listo para imprimir', `Tu liga propia${dir?.visible ? ' y lugar en el <a href="/vuelve/negocios">directorio de negocios Vuelve</a>' : ''}`, 'Aviso de privacidad listo para tu negocio'].map(t => `<li>${CHECK}<span>${t}</span></li>`).join('')}</ul>
+  <div class="vu-giros"><p>Sirve para cualquier negocio con clientes que pueden regresar:</p>
+    <ul>${GIROS_VISTOS.filter(k => GIROS[k]).map(k => `<li><a href="${RUTA_MIRA}?g=${k}">${esc(GIROS[k].nombre)}</a></li>`).join('')}</ul>
+    <a class="vu-liga" href="${RUTA_MIRA}">Mira cómo quedaría la tarjeta de tu negocio ${FLECHA}</a></div>
+</div></section>
+
+<section class="vu-sec" id="planes"><div class="marco">
+  <div class="vu-cab"><h2>Un solo plan, con todo incluido.</h2><p>Clientes y avisos ilimitados. En pesos mexicanos con IVA incluido. Cancelas cuando quieras.</p></div>
+  <div class="vu-precio-g">
+    <article class="vu-plan">
+      <h3>Vuelve</h3>
+      ${mensual ? `<p class="vu-precio"><b>${precio(mensual.prod)}</b> <small>al mes</small></p>${anual ? `<p class="vu-anual">o ${precio(anual.prod)} al año, con 2 meses gratis</p>` : ''}` : `<p class="vu-precio"><b>${dias} días gratis</b></p>`}
+      <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${mensual?.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(mensual.sucursal)} al mes</span></li>` : ''}</ul>
+      <a class="pm-btn vu-ancho" href="${esc(nuevo)}">Empieza tus ${dias} días gratis ${FLECHA}</a>
+      <p class="vu-nota">Sin tarjeta. Si decides seguir, tus clientes conservan su tarjeta.</p>
+      ${planes.length ? `<p class="vu-sus">¿Ya lo probaste? Suscríbete ${planes.map(x => `<a href="?plan=${x.slug}#comprar" data-plan="${x.slug}">${x.nombre.toLowerCase()}</a>`).join(' o ')}.</p>` : `<p class="vu-nota">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
+    </article>
+    <aside class="vu-listo">
+      <b>Te lo dejamos listo en 15 minutos, gratis.</b>
+      <p>Una videollamada con una persona del equipo y sales con todo funcionando:</p>
+      <ul>${['Tu tarjeta con tu logo y tu premio', 'Tu cartel con QR para la caja', 'Tu primer cliente registrado'].map(t => `<li>${CHECK}<span>${t}</span></li>`).join('')}</ul>
+      <a class="pm-btn sec vu-ancho" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Pedirla por WhatsApp</a>
+    </aside>
   </div>
-  ${planes.length ? '' : `<p class="vu-nota" style="text-align:center">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
-  <div class="vu-listo"><div><b>¿Sin tiempo? Te lo dejamos listo, gratis.</b><p>Una videollamada de 15 minutos: tu tarjeta con tu logo, tu premio, tu cartel con QR y tu primer cliente registrado. Gratis para los primeros 10 negocios.</p></div>
-    <a class="vu-btn ghost oscuro" href="${WA_LISTO}" target="_blank" rel="noopener">Pedirlo por WhatsApp</a></div>
 </div></section>
 
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="${esc(nuevo)}">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
-  pasos: [['Eliges mensual o anual', 'Y cuántas sucursales o negocios adicionales necesitas.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Te llega tu acceso por correo', 'Con el mismo correo de tu prueba, todo sigue igual.']],
+  pasos: [],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
   form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
@@ -204,8 +187,7 @@ ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún
   </form><script type="application/json" id="vu-precios">${JSON.stringify(datos).replace(/</g, '\\u003c')}</script>` }) : ''}
 
 ${seccionResenas(rs)}
-${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vuelve/">Condiciones de Vuelve</a> · <a href="/legal/vuelve/privacidad/">Aviso de privacidad</a> · <a href="/legal/vuelve/privacidad-clientes/">Privacidad para clientes de cada negocio</a> · Vuelve · Powered by vorka.mx</p>' })}
-${await masTienda(env, 'negocios')}
+${seccionFaq({ titulo: 'Antes de empezar', whatsappTexto: 'Hola, tengo una pregunta sobre Vuelve.', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${a}</div></details>`).join(''), pie: '<p class="t-nota t-legal"><a href="/legal/vuelve/">Condiciones de Vuelve</a> · <a href="/legal/vuelve/privacidad/">Aviso de privacidad</a> · <a href="/legal/vuelve/privacidad-clientes/">Privacidad para clientes de cada negocio</a> · Vuelve · Powered by vorka.mx</p>' })}
 </div>`,
   });
   if (fuente.cookie) res.headers.append('set-cookie', fuente.cookie);
@@ -213,103 +195,65 @@ ${await masTienda(env, 'negocios')}
 }
 
 const CSS = `${CSS_MARCA}${CSS_SECCIONES}
-.vu{--vu-tinta:#0f0d10;--vu-tinta2:#171519;--vu-morado:#B42A44;--vu-morado-c:#E58A9B;--vu-oro:#c8a45c;--vu-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
-[data-tema="oscuro"] .vu{--vu-morado:#c59bd9}
-.vu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(20,17,20,.5);transition:transform .2s var(--ease),background .2s}
-.vu-btn:hover{transform:translateY(-1px)}.vu-hero .vu-btn:not(.ghost),.vu-osc .vu-btn:not(.ghost){background:var(--vu-crema);color:var(--vu-tinta);box-shadow:0 10px 26px -12px rgba(0,0,0,.6)}.vu-hero .vu-btn:not(.ghost):hover,.vu-osc .vu-btn:not(.ghost):hover{background:#fff}.vu-btn svg{width:17px;height:17px}
-.vu-btn.ghost{background:rgba(255,255,255,.06);color:var(--vu-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}.vu-btn.ghost:hover{background:rgba(255,255,255,.12)}
-.vu-btn.ghost.oscuro{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line-2)}.vu-btn.ghost.oscuro:hover{box-shadow:inset 0 0 0 1.5px var(--fg)}
-/* portada */
-.vu-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;background:var(--vu-tinta);color:var(--vu-crema)}
-.vu-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 80% 30%,rgba(107,42,133,.38),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(200,164,92,.1),transparent 70%)}
-.vu-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.vu-hero-g>*{min-width:0}
-@media(min-width:960px){.vu-hero-g{grid-template-columns:1.05fr .95fr}}
-.vu-marca{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:30px;letter-spacing:-.05em;color:var(--vu-crema)}.vu-marca span{margin-top:-3px}
-.vu-h1{font-weight:800;font-size:clamp(42px,6.6vw,80px);line-height:.98;letter-spacing:-.05em;margin:26px 0 0;max-width:11ch;text-wrap:balance}.vu-h1 em{font-style:normal;color:var(--vu-morado-c)}
-.vu-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(244,242,245,.76);max-width:33em}
-.vu-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.vu-chips{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(244,242,245,.7)}
-.vu-chips li{display:inline-flex;align-items:center;gap:7px}.vu-chips svg{width:18px;height:18px;color:var(--vu-morado-c)}
-.vu-hero .t-nav-tienda{margin-top:8px}.vu-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(244,242,245,.8)}.vu-hero .t-nav-tienda a[aria-current]{background:var(--vu-crema);border-color:var(--vu-crema);color:var(--vu-tinta)}
-.vu-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
-/* el celular con el Wallet abierto */
-.vu-escena{position:relative;justify-self:center;width:min(100%,360px);padding:10px 0 40px}
-.vu-cel{position:relative;border-radius:54px;padding:12px;background:#0a0a0a;box-shadow:0 0 0 2px #2a2a2a,0 50px 90px -40px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
-.vu-isla{position:absolute;top:22px;left:50%;width:96px;height:28px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
-.vu-pantalla{border-radius:43px;overflow:hidden;background:#000;padding:62px 10px 0;height:600px;position:relative}
-.vu-wallet-t{margin:0 8px 12px;font:700 30px/1 -apple-system,'SF Pro Display','Inter Tight',sans-serif;letter-spacing:-.02em;color:#fff}
-.vu-pantalla .vu-pase.abajo{position:absolute;left:10px;right:10px;top:540px}
-.vu-noti{position:absolute;left:-36px;right:24px;bottom:22px;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:rgba(244,242,245,.88);color:#111;font:14px/1.35 -apple-system,'Inter Tight',sans-serif;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
-.vu-noti b{display:flex;justify-content:space-between;gap:8px;font-weight:650}.vu-noti b small{font-weight:400;color:#6b6b6b}.vu-noti-ic img{display:block;width:38px;height:38px;border-radius:9px}
-@media(max-width:600px){.vu-noti{left:-6px;right:-6px}.vu-pantalla{height:540px}}
+.vu{--pm-t:var(--pm);font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
+/* en oscuro, el color de Vuelve se aclara para que ligas e iconos se lean */
+:root[data-tema=oscuro] .vu{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .vu{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}}
+/* Sin letreritos en mayúsculas ni pasos numerados en esta página */
+.vu .etiqueta,.vu .t-pasos-compra:empty{display:none}
+.vu .pm-btn svg{width:18px;height:18px}
+/* portada: el texto a la izquierda y el celular con la demo a la derecha (abajo en celular) */
+.vu-hero-g{align-items:center}
+.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:20px;color:var(--fg);letter-spacing:-.02em}
+.vu-listo-h{margin:8px 0 0;font-size:15px;color:var(--fg-2);max-width:34em}
+.vu-reco{display:inline-block;margin:16px 0 0;padding:8px 14px;border-radius:999px;background:color-mix(in srgb,var(--pm) 12%,transparent);color:var(--fg);font-size:15px}
+.vu-demo{margin:0;justify-self:center;width:min(340px,100%);display:grid;gap:14px}
+.vu-tel{position:relative;height:640px;border:10px solid #1d1a1f;border-radius:46px;overflow:hidden;background:#000;box-shadow:0 40px 80px -34px rgba(20,17,20,.55)}
+.vu-tel-fondo{position:absolute;inset:0;padding:70px 14px 0;background:#000}
+.vu-tel iframe{position:relative;width:100%;height:100%;border:0;display:block;background:transparent}
+@media(max-width:600px){.vu-tel{height:580px}}
+.vu-demo figcaption{font-size:14.5px;line-height:1.5;color:var(--fg-2);text-align:center}.vu-demo figcaption b{display:block;color:var(--fg);font-size:15.5px}
+.vu-demo-ligas{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;margin-top:6px}.vu-demo-ligas a{color:var(--pm-t);font-weight:700}
 /* tarjeta de Apple Wallet (storeCard) */
-.vu-pase{background:var(--pf);color:var(--pt);border-radius:14px;overflow:hidden;font-family:-apple-system,'SF Pro Text','Inter Tight',sans-serif;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 20px 40px -24px rgba(0,0,0,.7)}
-.vu-pase-cab{display:flex;align-items:center;gap:9px;padding:11px 12px}
-.vu-pase-logo img,.vu-pase-logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:7px;background:#fff;color:#111;font:700 15px/1 Georgia,serif;font-style:normal}.vu-pase-logo.con img{width:auto;height:30px;border-radius:0;background:none}
-.vu-pase-cab b{font-size:15px;font-weight:600;letter-spacing:-.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vu-pase{background:var(--pf);color:var(--pt);border-radius:14px;overflow:hidden;font-family:-apple-system,'SF Pro Text','Inter Tight',sans-serif;box-shadow:0 1px 0 rgba(255,255,255,.08) inset}
+.vu-pase-cab{display:flex;align-items:center;gap:9px;padding:11px 12px}.vu-pase-logo img{display:block;width:auto;height:30px}
+.vu-pase-cab b{font-size:15px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .vu-pase-h{margin-left:auto;text-align:right;font-size:17px;font-weight:500;line-height:1.1;white-space:nowrap}.vu-pase small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:var(--pt2);margin-bottom:2px}
 .vu-pase-tira{display:block;width:100%;height:auto}
 .vu-pase-campos{display:flex;justify-content:space-between;gap:12px;padding:10px 12px 0;font-size:15px}.vu-pase-campos .der{text-align:right}.vu-pase-campos.aux{font-size:13px;padding-top:8px}
-.vu-pase-qr{display:grid;justify-items:center;gap:2px;width:max-content;margin:14px auto 14px;padding:8px 8px 4px;border-radius:9px;background:#fff}.vu-pase-qr img{display:block;width:84px;height:84px}.vu-pase-qr small{color:#333;font-size:10px;letter-spacing:.04em;margin:0}
+.vu-pase-qr{display:grid;justify-items:center;gap:2px;width:max-content;margin:14px auto;padding:8px 8px 4px;border-radius:9px;background:#fff}.vu-pase-qr img{display:block;width:84px;height:84px}.vu-pase-qr small{color:#333;font-size:10px;margin:0}
 /* secciones */
-.vu-sec{padding:clamp(56px,8vw,104px) 0}.vu-sec.suave{background:var(--bg-2)}
-.vu-osc{background:var(--vu-tinta);color:var(--vu-crema)}
-.vu-cab{max-width:680px;margin:0 auto 38px;text-align:center}.vu-cab.izq{text-align:left;margin:0}
-.vu-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vu-morado)}.vu-osc .vu-et{color:var(--vu-morado-c)}
-.vu-cab h2{font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.vu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.vu-osc .vu-cab p{color:rgba(244,242,245,.72)}
-.vu-galeria{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
-.vu-galeria figure{margin:0}.vu-galeria figcaption{margin-top:12px;text-align:center;font-weight:650;color:var(--fg-2);font-size:15px}
-.vu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
-.vu-pasos li{padding:24px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-.vu-num{display:block;font-weight:800;font-size:15px;color:var(--vu-morado-c);letter-spacing:.04em}.vu-pasos b{display:block;font-size:20px;letter-spacing:-.02em;margin-top:18px}.vu-pasos p{margin:6px 0 0;color:rgba(244,242,245,.7);line-height:1.5}
-.vu-dos{display:grid;gap:40px;align-items:start}@media(min-width:980px){.vu-dos{grid-template-columns:.95fr 1.05fr}}
-.vu-panel{margin-top:28px;padding:20px;border-radius:24px;background:var(--vu-tinta);color:var(--vu-crema);box-shadow:var(--sombra-2)}
-.vu-panel small{color:rgba(244,242,245,.55);font-size:12.5px}
-.vu-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.vu-kpis span{font-size:12.5px;color:rgba(244,242,245,.66);line-height:1.3}.vu-kpis b{display:block;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.03em;color:#fff;margin-bottom:4px}
-.vu-barras{display:flex;align-items:flex-end;gap:8px;height:90px;margin-top:18px}.vu-barras i{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--vu-morado-c),rgba(197,155,217,.3))}
-.vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
-.vu-ben li{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
-.vu-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--vu-morado) 12%,transparent);color:var(--vu-morado)}
-.vu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:12px}.vu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
-/* precios */
-.vu-planes{display:grid;gap:18px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
-.vu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:26px;display:grid;gap:8px}
-.vu-plan.rec{border-color:var(--vu-morado);box-shadow:0 30px 60px -36px rgba(107,42,133,.5)}
-.vu-sello{position:absolute;top:-13px;left:24px;background:linear-gradient(100deg,#a8853f,#c8a45c 55%,#e6cf96);color:#1b1408;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
-.vu-plan h3{font-weight:800;font-size:26px;letter-spacing:-.035em;margin:4px 0 0}.vu-para{color:var(--fg-2);margin:0}
-.vu-precio{margin:6px 0 0}.vu-precio b{font-size:38px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.vu-precio small{color:var(--fg-2)}
-.vu-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:8px}.vu-plan li{display:flex;gap:8px;align-items:flex-start;font-size:15px}.vu-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--vu-morado)}
-.vu-nota{color:var(--fg-2);font-size:15px;margin-top:14px}
+.vu-sec{padding:clamp(56px,8vw,96px) 0;scroll-margin-top:64px}.vu-sec.suave{background:var(--bg-2)}
+.vu-cab{max-width:640px;margin:0 auto 36px;text-align:center}
+.vu-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,46px);line-height:1.05;letter-spacing:-.04em;margin:0;text-wrap:balance}
+.vu-cab p{margin:12px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+.vu-tres,.vu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.vu-tres li,.vu-ben li{padding:24px;border-radius:24px;background:var(--card,var(--bg));border:1px solid var(--line)}
+.vu-tres svg,.vu-ben svg{width:44px;height:44px;padding:10px;border-radius:14px;background:color-mix(in srgb,var(--pm) 12%,transparent);color:var(--pm-t)}
+.vu-tres b,.vu-ben b{display:block;font-size:19px;letter-spacing:-.02em;margin-top:14px}.vu-tres p,.vu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15.5px;line-height:1.5}
+.vu-mas{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px 22px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.vu-mas li,.vu-plan li,.vu-listo li{display:flex;gap:9px;align-items:flex-start;font-size:15.5px;line-height:1.45}.vu-mas svg,.vu-plan li svg,.vu-listo li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--pm-t)}
+.vu-mas a{color:var(--pm-t);font-weight:650}
+.vu-giros{margin-top:40px;padding-top:30px;border-top:1px solid var(--line);text-align:center}.vu-giros p{margin:0;font-weight:650;font-size:16.5px}
+.vu-giros ul{list-style:none;padding:0;margin:16px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:900px}
+.vu-giros ul a{display:inline-block;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card,var(--bg));color:var(--fg);font-size:14.5px;text-decoration:none}.vu-giros ul a:hover{border-color:var(--pm);color:var(--pm-t)}
+.vu-liga{display:inline-flex;align-items:center;gap:6px;margin-top:18px;color:var(--pm-t);font-weight:700;text-decoration:none}.vu-liga svg{width:16px;height:16px}
+/* precio */
+.vu-precio-g{display:grid;gap:18px;max-width:900px;margin:0 auto;align-items:start}@media(min-width:860px){.vu-precio-g{grid-template-columns:1.15fr .85fr}}
+.vu-plan{background:var(--card,var(--bg));border:1.5px solid var(--pm);border-radius:26px;padding:28px;box-shadow:0 30px 60px -40px color-mix(in srgb,var(--pm) 70%,transparent)}
+.vu-plan h3{font-weight:800;font-size:24px;letter-spacing:-.03em;margin:0}
+.vu-precio{margin:8px 0 0}.vu-precio b{font-size:34px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.vu-precio small{color:var(--fg-2);font-size:16px}
+.vu-anual{margin:2px 0 0;color:var(--fg-2);font-size:15px}
+.vu-plan ul,.vu-listo ul{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:9px}
+.vu-ancho{width:100%}
+.vu-nota{color:var(--fg-2);font-size:14.5px;margin:12px 0 0;text-align:center}
+.vu-sus{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:15px;color:var(--fg-2);text-align:center}.vu-sus a{color:var(--pm-t);font-weight:700}
+.vu-listo{padding:26px;border-radius:26px;background:var(--bg-2);border:1px solid var(--line)}.vu-sec.suave .vu-listo{background:var(--card,var(--bg))}
+.vu-listo>b{display:block;font-size:20px;letter-spacing:-.02em;line-height:1.25}.vu-listo>p{margin:8px 0 0;color:var(--fg-2);line-height:1.5}
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
-.vu-reco{display:inline-block;margin:22px 0 -6px;padding:8px 14px;border-radius:999px;background:rgba(200,164,92,.16);color:#f1dfb8;font-size:15px}.vu-reco b{color:#fff}
-.vu-calc-c{display:grid;gap:22px;margin-top:30px}@media(min-width:900px){.vu-calc-c{grid-template-columns:1.1fr .9fr;align-items:start}}
-.vu-calc-f{display:grid;gap:18px;padding:24px;border-radius:24px;background:var(--card);border:1px solid var(--line)}.vu-calc-f label{display:grid;gap:8px;font-weight:650;font-size:15.5px}
-.vu-calc-f input[type=number]{font:inherit;font-size:18px;min-height:50px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line-2);background:var(--bg);color:var(--fg)}.vu-calc-f input[type=range]{width:100%;accent-color:var(--vu-morado)}
-.vu-calc-f output{font-weight:800;color:var(--vu-morado)}
-.vu-calc-r{padding:26px;border-radius:24px;background:var(--vu-tinta);color:var(--vu-crema)}.vu-calc-r small{color:rgba(244,242,245,.6)}.vu-calc-r b{display:block;font-size:clamp(40px,6vw,58px);letter-spacing:-.04em;margin:4px 0 6px;font-variant-numeric:tabular-nums}
-.vu-calc-r p{margin:0;color:rgba(244,242,245,.8);line-height:1.5}.vu-calc-r .vu-nota{color:rgba(244,242,245,.55);font-size:13.5px;margin-top:12px}
-.vu-listo{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;margin-top:22px;padding:22px 24px;border-radius:24px;border:1.5px dashed var(--line-2);background:var(--card)}.vu-listo b{font-size:18px;letter-spacing:-.02em}.vu-listo p{margin:4px 0 0;color:var(--fg-2);max-width:40em}
-.vu #form-vuelve .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}
-/* Estilo de marca (portadas v4): blanco, tinta y el color de Vuelve; las secciones oscuras pasan a gris claro */
-.pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
-.vu-osc{--vu-tinta:var(--bg-2);--vu-crema:var(--fg);background:var(--bg-2);color:var(--fg)}
-.vu-osc .vu-cab p,.vu-osc p,.vu-osc figcaption{color:var(--fg-2)!important}.vu-osc .vu-et{color:var(--vu-morado)}
-.vu-osc .vu-btn:not(.ghost){background:var(--vu-morado)!important;color:#fff!important}
-.vu-btn:not(.ghost){background:var(--vu-morado);color:#fff}.vu-plan.rec{border-color:var(--vu-morado)}
-.vu-reco{margin:16px 0 0}
+.vu #form-vuelve .btn.acento{background:var(--pm);color:#fff}
 `;
 
 const SCRIPT = `(function(){
-  // calculadora: clientes al mes × de cada 10 cuántos regresan una vez más × lo que gastan
-  var cf=document.getElementById('vu-calc');
-  if(cf){ var cr=document.querySelector('.vu-calc-r'), precio=Number(cr.dataset.precio)||399;
-    var m=function(n){ return '$'+Math.round(n).toLocaleString('es-MX'); };
-    var calc=function(){ var cli=Math.max(0,Number(cf.querySelector('#c-cli').value)||0), tic=Math.max(0,Number(cf.querySelector('#c-tic').value)||0), reg=Number(cf.querySelector('#c-reg').value)||0;
-      var visitas=Math.round(cli*reg/10); document.getElementById('c-reg-o').textContent=reg+' de cada 10';
-      document.getElementById('c-extra').textContent=m(visitas*tic);
-      document.getElementById('c-paga').textContent=tic>0?'Vuelve cuesta '+m(precio)+' al mes: se paga con '+Math.ceil(precio/tic)+' visitas extra'+(visitas?' (de las '+visitas.toLocaleString('es-MX')+' de tu cálculo).':'.'):''; };
-    cf.addEventListener('input',calc); cf.addEventListener('submit',function(e){e.preventDefault();}); calc(); }
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('vu-precios').textContent); }catch(e){}
   var tot=document.getElementById('vu-total'), cada=document.getElementById('vu-cada');

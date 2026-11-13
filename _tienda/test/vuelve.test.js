@@ -156,7 +156,7 @@ describe('páginas y ligas', () => {
     const r = await pedir('/tienda/vuelve/');
     expect(r.status).toBe(200);
     const h = await r.text();
-    expect(h).toContain('Que tus clientes');
+    expect(h).toContain('Tu <em>tarjeta de lealtad digital</em>, en el celular de tus clientes.');
     expect(h).toContain('$399 MXN');
     expect(h).toContain('$3,990 MXN');
     expect(h).toContain('id="form-vuelve"');
@@ -213,14 +213,19 @@ describe('páginas y ligas', () => {
     const r = await pedir('/vuelve/cafe-la-paloma-x7k2');
     expect(r.status).toBe(503); expect(await r.text()).toContain('Intenta de nuevo');
   });
-  it('la ficha: ejemplos honestos, comprobante de pago, ejemplo en vivo, calculadora y "te lo dejamos listo"', async () => {
+  it('la ficha: corta, comprobante de pago, demo en la portada, un solo plan y "te lo dejamos listo"', async () => {
     conOS({ '/api/vuelve/publico/directorio': { total: 2, visible: false } });
     const h = await (await pedir('/tienda/vuelve/')).text();
-    expect(h).not.toContain('tarjetas reales'); expect(h).toContain('Estos son ejemplos');
+    expect(h).not.toContain('tarjetas reales');
     expect(h).not.toMatch(/factura de tu suscripci/); expect(h).toContain('comprobante de pago');
     expect(h).not.toContain('href="/vuelve/negocios"');   // con menos de 5 negocios el directorio no se presume
-    expect(h).toContain('href="https://vorka.mx/vuelve/demo"'); expect(h).toContain('<iframe src="/vuelve/demo"'); expect(h).toContain('data-copiar="https://vorka.mx/vuelve/demo"');
-    expect(h).toContain('id="vu-calc"'); expect(h).toContain('data-precio="399"');
+    expect(h).toContain('href="https://vorka.mx/vuelve/demo"'); expect(h).toContain('<iframe src="/vuelve/demo"');
+    // la demo vive en la portada, antes de «Cómo funciona», y ya no hay calculadora ni «Sigue explorando»
+    expect(h.indexOf('<iframe src="/vuelve/demo"')).toBeLessThan(h.indexOf('id="como"'));
+    expect(h).not.toContain('id="vu-calc"'); expect(h).not.toContain('Sigue explorando');
+    expect(h).toContain('Un solo plan, con todo incluido.'); expect(h).toContain('$3,990 MXN al año, con 2 meses gratis');
+    expect(h).toContain('href="/tienda/mira-tu-negocio/?g=barberia"');
+    expect(h).not.toMatch(/class="vu-num"|class="vu-et"/);   // sin pasos numerados ni letreritos
     expect(h).toContain('Te lo dejamos listo'); expect(h).toContain('https://wa.me/528117804869?text=');
     expect(h).toContain('Pruébalo 7 días gratis');
     conOS({ '/api/vuelve/publico/directorio': { total: 6, visible: true } });
