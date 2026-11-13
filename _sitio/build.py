@@ -182,12 +182,24 @@ def inicio():
 <main id="contenido">
 <section class="portada" aria-labelledby="t-hero">
   <div class="marco portada-c">
-    <a class="aviso entra" href="#platiquemos" style="--d:.05s"><b>Nuevo</b>Diagnóstico estratégico sin costo{FLECHA}</a>
+    <a class="aviso entra" href="/tienda/vuelve/empezar/?utm_source=inicio" style="--d:.05s"><b>Nuevo</b>Vuelve: tu tarjeta de lealtad digital{FLECHA}</a>
     <h1 class="h-hero" id="t-hero">{palabras('Definimos el juego con quienes lo juegan.', 5)}</h1>
     <p class="lead entra" style="--d:.75s">Consultora de estrategia, liderazgo, comunicación y apps a la medida. Acompañamos a líderes, empresas y gobiernos en las decisiones que no admiten segundo intento.</p>
     <div class="botones entra" style="--d:.85s"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="/servicios/">Explorar servicios</a></div>
     <div class="prueba entra" style="--d:.95s"><span class="caras">{caras}</span><span><b style="color:var(--fg)" class="num">150+</b> proyectos en <b style="color:var(--fg)">26 estados</b></span></div>
   </div>
+<div class="dv entra" style="--d:1.05s" role="region" aria-labelledby="t-vuelve">
+  <div class="marco dv-c">
+    <div class="dv-t">
+      <p class="dv-marca"><b>Vuelve</b> by Vorka México</p>
+      <h2 class="dv-h" id="t-vuelve">Tu tarjeta de lealtad digital, en el celular de tus clientes.</h2>
+      <p class="dv-p">Sellos o puntos en Apple Wallet y Google Wallet, sin app y sin cartón. Les recuerda regresar y tú ves cuánto dinero te dejaron. Arma la tuya en un minuto y pruébala 7 días gratis.</p>
+      <div class="dv-b"><a class="btn tinta dv-btn" href="/tienda/vuelve/empezar/?utm_source=inicio">Arma tu tarjeta gratis {FLECHA}</a><a class="btn blanco" href="/tienda/vuelve/">Más información</a></div>
+      <p class="dv-n">$399 al mes con todo incluido · sin tarjeta para probar</p>
+    </div>
+    <a class="dv-img" href="/tienda/vuelve/empezar/?utm_source=inicio" tabindex="-1" aria-hidden="true"><img src="/assets/tienda/v3/vuelve-objeto.webp" alt="" width="672" height="1200" loading="eager" decoding="async"></a>
+  </div>
+</div>
   <div class="marco">{escena()}</div>
 </section>
 
@@ -307,8 +319,19 @@ def inicio():
           "description": "Consultora de estrategia, liderazgo, comunicación y apps a la medida para empresas, gobiernos y organizaciones en México.", "email": CORREO, "telephone": "+52 81 1780 4869",
           "areaServed": "MX", "sameAs": [u for _, u, _ in REDES]}
     sitio_ld = {"@context": "https://schema.org", "@type": "WebSite", "name": "Vorka México", "url": SITIO + "/", "publisher": {"@id": ORG_ID}}
+    # Vuelve destacado (la campaña de anuncios lleva a vorka.mx): franja justo debajo de la portada con su quiz y su página
+    extra_vuelve = ('<style>.dv{margin-top:34px;position:relative;z-index:2}.dv-c{display:grid;gap:24px;align-items:center;padding:28px;border-radius:28px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sombra)}'
+      '@media(min-width:900px){.dv-c{grid-template-columns:1.2fr .8fr;padding:40px 44px}}'
+      '.dv-marca{margin:0;font-size:15px;color:var(--fg-2)}.dv-marca b{color:#B42A44;font-weight:750}'
+      '.dv-h{margin:8px 0 0;font-size:clamp(26px,3.2vw,38px);font-weight:750;letter-spacing:-.03em;line-height:1.1;text-wrap:balance}'
+      '.dv-p{margin:12px 0 0;color:var(--fg-2);font-size:16px;line-height:1.55;max-width:36em}'
+      '.dv-b{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.dv .btn.dv-btn{background:#B42A44;border-color:#B42A44;color:#fff}.dv .btn.dv-btn:hover{background:#9c2239}'
+      '.dv-n{margin:12px 0 0;font-size:14px;color:var(--fg-2)}'
+      '.dv-img{display:block;border-radius:22px;overflow:hidden;background:#F1F0F2;max-width:360px;width:100%;justify-self:center}'
+      '.dv-img img{display:block;width:100%;height:auto;aspect-ratio:672/860;object-fit:cover;object-position:center 40%}'
+      '@media(max-width:899px){.dv-img{max-width:280px}}</style>\n')
     extra = ('<link rel="preload" as="image" href="/img/ciudades/monterrey-silla-1600.webp" fetchpriority="high">\n'
-             + ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (ld, sitio_ld)))
+             + ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (ld, sitio_ld)) + extra_vuelve)
     return cabeza('Vorka México: consultoría en estrategia, liderazgo y comunicación',
                   'Consultora mexicana de estrategia, liderazgo, comunicación y apps a la medida para empresas, gobiernos y organizaciones. 150+ proyectos en 26 estados. Diagnóstico sin costo.',
                   '/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
