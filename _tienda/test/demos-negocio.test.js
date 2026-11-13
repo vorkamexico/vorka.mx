@@ -35,10 +35,10 @@ describe('demos de eventos y negocio', () => {
     for (const t of ['Cobrar en la puerta', 'Puede pasar', 'Ya había entrado']) expect(js).toContain(t);
   });
 
-  it('vuelve: la sección de la demo sustituye a #ejemplo con la demo de vorka.mx/vuelve/demo', async () => {
+  it('vuelve: #ejemplo es el quiz de la portada y la tarjeta de ejemplo queda a una liga (vorka.mx/vuelve/demo)', async () => {
     const p = await (await ver('/tienda/vuelve/')).text();
     expect(p).toContain('id="ejemplo"');
-    expect(p).toContain('src="/vuelve/demo"');
+    expect(p).toContain('href="https://vorka.mx/vuelve/demo"');
     expect(p.match(/id="ejemplo"/g)).toHaveLength(1);
   });
 
