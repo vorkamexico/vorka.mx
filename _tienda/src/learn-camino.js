@@ -21,6 +21,9 @@
 //    noviembre de 2026. No hay fecha exacta de reapertura en 2027: solo «en enero», dicho por la Presidenta.
 //    La de la jornada laboral (decretos en el DOF del 3 de marzo y del 1 de mayo de 2026, LFT vigente y PROFEDET) se
 //    revisó el 11 de noviembre de 2026.
+//    La de vacaciones y días de descanso de fin de año (LFT vigente: artículos 74, 75, 76 a 81, 178, 179, 291-F, 334 Bis,
+//    336 Bis, 516 y 994; decreto de vacaciones dignas en el DOF del 27 de diciembre de 2022; Ley del ISR, artículo 93-XIV;
+//    y PROFEDET) se revisó el 13 de noviembre de 2026.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -82,11 +85,18 @@ const F = {
   dofJornadaCpeum: { nombre: 'DOF: Decreto por el que se reforman las fracciones IV y XI del apartado A del artículo 123 de la Constitución, en materia de reducción de la jornada laboral (3 de marzo de 2026)', url: 'https://dof.gob.mx/nota_detalle.php?codigo=5781417&fecha=03/03/2026' },
   lftJornada: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 5o., 58 a 69, 71, 132, 177, 178 y 994), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
   profedet: { nombre: 'PROFEDET: ¿Aún no recibes tu aguinaldo? Acércate a la PROFEDET (orientación y representación gratuitas; 22 de enero de 2024)', url: 'https://www.gob.mx/profedet/articulos/aun-no-recibes-tu-aguinaldo-acercate-a-la-profedet?idiom=es' },
+  dofVacaciones: { nombre: 'DOF: Decreto por el que se reforman los artículos 76 y 78 de la Ley Federal del Trabajo, en materia de vacaciones (27 de diciembre de 2022)', url: 'https://dof.gob.mx/nota_detalle.php?codigo=5675889&fecha=27/12/2022' },
+  lftVacaciones: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 74 a 81, 178, 179, 291-F, 334 Bis, 336 Bis, 516 y 994), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
+  lisrPrima: { nombre: 'Ley del Impuesto sobre la Renta, texto vigente (última reforma DOF 01-04-2024; artículo 93, fracción XIV), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
+  profedetVacaciones: { nombre: 'PROFEDET: Persona trabajadora, las vacaciones son tu derecho (23 de julio de 2025)', url: 'https://www.gob.mx/profedet/es/articulos/persona-trabajadora-las-vacaciones-son-tu-derecho?idiom=es' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan' };
 const r = slug => `/learn/camino/${slug}/`;
+// Ejemplo con cifras inventadas (mismo marcado que en Finanzas y en la guía de la jornada)
+const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
+<p class="gu-ej-p">${titulo}</p>${html}</div>`;
 // Agenda de Brandon Oleynick en Vorka OS (servicios express y mentoria, como en vorka.mx/oleynickhdz/; o = de dónde llegó)
 const AGENDA_BRANDON = s => `https://os.vorka.mx/agendar/oleynickhdz?s=${s}&amp;o=learn-cv`;
 
@@ -143,6 +153,13 @@ const LLAMADO = {
     titulo: '¿Te pagan horas extra o domingos?',
     texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas lo que entra y lo que gastas, y antes de comprar te dice «¿me alcanza?».',
     puntos: ['Registra cada ingreso, también las horas extra y la prima dominical, para ver cuánto ganaste en el mes.', 'El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Clara para planear la prima vacacional y los días libres (mismos datos de su ficha, src/clara.js)
+  claraVacaciones: llamadoProducto({ etiqueta: 'Planea tus vacaciones con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Quieres que tus vacaciones no te dejen sin dinero en enero?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha, por ejemplo para tu próximo viaje, y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
@@ -751,6 +768,77 @@ export const ARTICULOS_CAMINO = [
     ],
     fuentes: [F.dofJornadaLft, F.dofJornadaCpeum, F.lftJornada, F.profedet],
     relacionadas: [S.papeles, S.cv, S.jcf],
+  },
+  // =============== 10. Vacaciones y días de descanso de fin de año ===============
+  // Revisada el 13 de noviembre de 2026 contra el texto vigente de la LFT (reforma DOF 14-05-2026). Los artículos 76 y 78
+  // no cambiaron con la reforma de la jornada: su última reforma es la de vacaciones dignas (DOF 27-12-2022).
+  // No afirmamos con qué valor se calcula la exención de ISR de la prima (la ley dice «salario mínimo general»; la guía del
+  // aguinaldo explica la UMA), ni cómo corre exactamente el plazo para reclamar vacaciones: se manda a PROFEDET.
+  // La ley no regula los cierres de fin de año de las empresas: lo que se dice de eso es consejo nuestro.
+  // Los salarios de los ejemplos son inventados.
+  {
+    slug: S.vacaciones, llamado: 'claraVacaciones', actualizado: '2026-11-13', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Vacaciones: cuántos días te tocan por ley',
+    descripcion: 'Cuántos días de vacaciones te tocan según tus años de trabajo, cómo se paga la prima vacacional y qué pasa si trabajas el 25 de diciembre o el 1 de enero.',
+    h1: 'Vacaciones: cuántos días te tocan, la prima vacacional y los días de descanso de fin de año',
+    lead: 'Al cumplir un año en tu trabajo te tocan por lo menos 12 días de vacaciones pagadas, más una prima de 25 %. Aquí está la tabla completa por años de servicio, cómo se paga, qué pasa si eres menor de edad o si dejas el trabajo antes del año, y qué te deben pagar si trabajas el 25 de diciembre o el 1 de enero, con lo que dicen la Ley Federal del Trabajo y la PROFEDET.',
+    secciones: [
+      { h2: 'Cuántos días te tocan', html: p('La Ley Federal del Trabajo (artículo 76) dice que, al tener más de un año de servicios, te toca un periodo anual de vacaciones pagadas de <b>por lo menos 12 días laborables</b>. Sube dos días por cada año, hasta llegar a 20; a partir del sexto año, sube dos días por cada cinco años de servicio. Así lo resume la PROFEDET:')
+        + tabla(['Años de servicio', 'Días de vacaciones, por lo menos'], [
+          ['1', '<b>12</b>'], ['2', '14'], ['3', '16'], ['4', '18'], ['5', '20'],
+          ['6 a 10', '22'], ['11 a 15', '24'], ['16 a 20', '26'], ['21 a 25', '28'], ['26 a 30', '30'],
+        ], 'Artículo 76 de la Ley Federal del Trabajo, reformado por el decreto publicado en el DOF el 27 de diciembre de 2022 (vigente desde el 1 de enero de 2023). Tabla de la PROFEDET.')
+        + p('La ley habla de días <b>laborables</b>, es decir, días en los que te tocaría trabajar. Tu contrato o tu empresa pueden darte más días, pero no menos.')
+        + caja('¿Ya cambió con la jornada de 40 horas?', p(`No. La reforma de la jornada no tocó las vacaciones: la tabla sigue siendo la de 2023. Lo que sí cambia en enero de 2027 lo explicamos en ${a(r(S.jornada), 'la guía de la jornada laboral')}.`)) },
+      { h2: 'Cómo se toman', html: ul([
+          'Del total, disfrutas <b>por lo menos 12 días seguidos</b>; la ley agrega que ese periodo puede distribuirse en la forma y el tiempo que decida la persona trabajadora (artículo 78).',
+          'Tu empresa debe darte las vacaciones <b>dentro de los seis meses</b> siguientes a que cumples cada año de servicios (artículo 81).',
+          'Cada año, tu empresa debe entregarte una <b>constancia</b> con tu antigüedad, los días que te tocan y la fecha en que debes tomarlos (artículo 81).',
+          'Las vacaciones <b>no se pueden cambiar por dinero</b>: se tienen que disfrutar (artículo 79).',
+        ])
+        + p('Esto es consejo nuestro: pide tus vacaciones por escrito, con las fechas exactas, y guarda la respuesta. Si tu empresa cierra unos días en diciembre, pregunta también por escrito si esos días se van a contar como parte de tus vacaciones: la ley no tiene una regla específica para los cierres de fin de año.') },
+      { h2: 'La prima vacacional', html: p('Además de tu salario normal durante esos días, te toca una <b>prima de por lo menos 25 %</b> sobre el salario de tus días de vacaciones (artículo 80).')
+        + ejemplo('Ganas $400 al día y cumpliste tu primer año. ¿Cuánto te pagan por tus vacaciones?', ul([
+          'Salario de tus 12 días: 12 × $400 = <b>$4,800</b>, que cobras como siempre aunque no trabajes.',
+          'Prima vacacional mínima: 25 % de $4,800 = <b>$1,200</b>, aparte.',
+        ]))
+        + p('Sobre impuestos: la Ley del ISR (artículo 93, fracción XIV) exenta la prima vacacional que se da en forma general hasta el equivalente de 15 días de salario mínimo general; lo que pase de ahí sí paga ISR. En la guía del aguinaldo explicamos con qué valor se hace hoy esa cuenta. Tu retención exacta viene en tu recibo de nómina.') },
+      { h2: 'Si tienes 15, 16 o 17 años', html: p('La ley tiene una regla propia: si eres menor de 18 años, te tocan <b>por lo menos 18 días laborables</b> de vacaciones pagadas al año (artículo 179). Y no puedes trabajar en días de descanso obligatorio (artículo 178).')
+        + p(`Si vas a empezar a trabajar, revisa antes ${a(r(S.papeles), 'qué papeles te van a pedir en tu primer empleo')}.`) },
+      { h2: 'Si dejas el trabajo antes del año', html: p('Si la relación de trabajo termina antes de que cumplas el año, te toca un pago <b>proporcional</b> al tiempo que trabajaste (artículo 79). Si trabajas por temporada o de forma discontinua, también te toca un periodo de vacaciones en proporción a los días trabajados (artículo 77).')
+        + ejemplo('Ganas $400 al día y renuncias después de 182 días. ¿Cuánto te toca por vacaciones?', ul([
+          'Días proporcionales: 12 ÷ 365 × 182 = 5.98 días.',
+          'Pago: 12 ÷ 365 × 182 × $400 = <b>$2,393.42</b>.',
+        ]))
+        + nota('La ley no dice cómo se calcula la prima vacacional en este caso. Revisa tu finiquito y, si tienes dudas, pregunta en la PROFEDET.') },
+      { h2: 'Quién más tiene vacaciones', html: ul([
+          '<b>Trabajadoras y trabajadores del hogar:</b> tienen vacaciones, prima vacacional y pago de días de descanso, con las mismas reglas (artículos 334 Bis y 336 Bis).',
+          '<b>Plataformas digitales:</b> la ley dice que el pago por cada tarea ya incluye la parte proporcional de vacaciones y prima vacacional (artículo 291-F).',
+          '<b>Honorarios o independiente:</b> la ley laboral da vacaciones a quien tiene una relación de trabajo subordinada; si cobras por honorarios, no aplica.',
+        ]) },
+      { h2: 'El 25 de diciembre y el 1 de enero', html: p('Los dos son <b>días de descanso obligatorio</b> (artículo 74). En la lista también está el tercer lunes de noviembre, que en 2026 cae el lunes 16. El 12, el 24 y el 31 de diciembre <b>no</b> están en esa lista.')
+        + p('Si te toca trabajar en un día de descanso obligatorio, la ley dice que te pagan el salario de ese día de descanso y, <b>además, un salario doble</b> por el servicio (artículo 75). Quiénes trabajan ese día lo acuerdan la empresa y las personas trabajadoras.')
+        + ejemplo('Ganas $400 al día y trabajas el viernes 25 de diciembre. ¿Cuánto te deben por ese día?', ul([
+          'Salario del día de descanso: <b>$400</b>.',
+          'Salario doble por trabajarlo: 2 × $400 = <b>$800</b>.',
+          'Total: $400 + $800 = <b>$1,200</b>.',
+        ])) },
+      { h2: 'Si no te las dan o no te las pagan', html: ol([
+          ['Pídelas por escrito', 'Un correo o un mensaje a recursos humanos con las fechas que pides y los días que te tocan según la tabla. Guarda tus recibos de nómina y la constancia de vacaciones, si te la dieron.'],
+          ['Acude a la PROFEDET', 'La Procuraduría Federal de la Defensa del Trabajo da orientación y representación gratuitas. Publica los teléfonos 800 911 7877 y 800 717 2942 y el correo orientacionprofedet@stps.gob.mx. Nadie puede cobrarte por su asesoría.'],
+          ['No lo dejes pasar', 'En general, la ley da un año para reclamar, contado desde que la obligación es exigible (artículo 516). Pregunta en la PROFEDET cómo se cuenta en tu caso.'],
+        ])
+        + p('No dar las vacaciones que marca la ley puede costarle al patrón una multa de 50 a 250 veces la Unidad de Medida y Actualización, UMA (artículo 994, fracción I).') },
+    ],
+    faq: [
+      { p: '¿Cuántos días de vacaciones me tocan en mi primer año?', r: 'Por lo menos 12 días laborables al cumplir un año de servicios, según el artículo 76 de la Ley Federal del Trabajo. Si eres menor de 18 años, por lo menos 18.' },
+      { p: '¿Cuánto es la prima vacacional?', r: 'Por lo menos 25 % sobre el salario de tus días de vacaciones (artículo 80). Se paga aparte de tu salario normal.' },
+      { p: '¿Me pueden pagar las vacaciones en lugar de dármelas?', r: 'No mientras sigas en el trabajo: la ley dice que las vacaciones no se pueden compensar con dinero. Si la relación de trabajo termina antes del año, sí te toca un pago proporcional.' },
+      { p: '¿El 24 y el 31 de diciembre son días de descanso obligatorio?', r: 'No. En diciembre, el único día de descanso obligatorio es el 25. El 1 de enero también lo es.' },
+      { p: '¿Cuánto me pagan si trabajo el 25 de diciembre?', r: 'El salario de ese día de descanso más un salario doble por trabajarlo, según el artículo 75 de la Ley Federal del Trabajo. Si eres menor de 18 años, no puedes trabajar ese día.' },
+    ],
+    fuentes: [F.lftVacaciones, F.dofVacaciones, F.profedetVacaciones, F.lisrPrima, F.profedet],
+    relacionadas: [S.jornada, S.papeles, S.cv],
   },
 ];
 
