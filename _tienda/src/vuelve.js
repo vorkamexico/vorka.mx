@@ -19,7 +19,12 @@ const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headl
 export const RUTA_VUELVE = '/tienda/vuelve/';
 // "Te lo dejamos listo": videollamada de 15 minutos con el equipo, gratis para los primeros negocios
 const WA_LISTO = `https://wa.me/528117804869?text=${encodeURIComponent('Hola, quiero que me ayuden a dejar listo Vuelve en una videollamada de 15 minutos.')}`;
-const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', nombre: 'Mensual', cada: 'al mes' }, { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
+// tramos: precio por volumen de las sucursales (la tienda los reparte igual, ver TRAMOS_SUCURSAL en suscripciones.js):
+// [cuántas adicionales caben, slug] → la 2ª y 3ª al precio base, de la 4ª a la 10ª más barata y desde la 11ª más barata aún
+const PLANES = [{ slug: 'vuelve-mensual', extra: 'vuelve-sucursal-mensual', tramos: [[2, 'vuelve-sucursal-mensual'], [7, 'vuelve-sucursal4-mensual'], [Infinity, 'vuelve-sucursal11-mensual']], nombre: 'Mensual', cada: 'al mes' },
+  { slug: 'vuelve-anual', extra: 'vuelve-sucursal-anual', tramos: [[2, 'vuelve-sucursal-anual'], [7, 'vuelve-sucursal4-anual'], [Infinity, 'vuelve-sucursal11-anual']], nombre: 'Anual', cada: 'al año', nota: '2 meses gratis' }];
+// Lo que cuesta un plan con n sucursales adicionales, con sus tramos ([cabe, centavos])
+const totalCon = (plan, tramos, n) => { let t = plan, r = n; for (const [cabe, c] of tramos) { const k = Math.min(r, cabe); t += k * c; r -= k; } return t; };
 
 // Todo lo que trae el plan (la lista corta va en la tarjeta de precio; lo demás, en «Qué incluye»)
 const INCLUYE = ['Clientes y avisos ilimitados', 'Sellos o puntos, premios y niveles (Bronce, Plata, Oro)', 'Tu tarjeta en Apple Wallet y Google Wallet, con tu logo y tus colores',
@@ -31,7 +36,7 @@ const faq = ({ dias = 7 } = {}) => [
   ['¿Cómo funcionan los avisos?', 'Vuelve manda solo la felicitación de cumpleaños con un regalo, un «te extrañamos» a quien lleva tiempo sin venir y los avisos que tú escribas para todos o para un grupo. Llegan a la tarjeta de su celular, sin costo por mensaje. En iPhone, cuando tu cliente pasa cerca de tu sucursal, su tarjeta aparece en la pantalla de bloqueo con tu mensaje; depende de los permisos de ubicación de cada persona y te lo decimos claro.'],
   ['¿Cómo sé si de verdad funciona?', 'En tu panel ves cuántos clientes regresaron, cada cuánto vienen y cuánto dinero te dejaron (con el ticket que registras al sellar o con tu ticket promedio). También ves cuántos regresaron después de cada aviso.'],
   ['¿Qué pasa con los datos de mis clientes?', 'Son tuyos. Los descargas en Excel cuando quieras, también si cancelas. Vorka solo los guarda para darte el servicio: no los vende ni los usa para publicidad. Cada cliente puede pedir su baja desde su tarjeta.'],
-  ['¿Cuánto cuesta, cómo pago y cómo cancelo?', 'Un solo plan con todo, mensual o anual (con 2 meses gratis), con tarjeta y procesado por Stripe. Incluye una sucursal; cada sucursal o negocio adicional con el mismo correo se suma al precio de sucursal. Cancelas cuando quieras desde Vuelve › Cuenta, sin llamadas, y tu programa sigue hasta el final del periodo pagado. Tu comprobante de pago de cada cobro lo descargas en Vuelve › Cuenta. Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> dentro del mismo mes del cobro.'],
+  ['¿Cuánto cuesta, cómo pago y cómo cancelo?', 'Un solo plan con todo, mensual o anual (con 2 meses gratis), con tarjeta y procesado por Stripe. Incluye una sucursal. Cada sucursal o negocio adicional con el mismo correo se suma con precio por volumen: la 2ª y la 3ª a $249 al mes, de la 4ª a la 10ª a $199 y desde la 11ª a $169 (anual: $2,490, $1,990 y $1,690). Cancelas cuando quieras desde Vuelve › Cuenta, sin llamadas, y tu programa sigue hasta el final del periodo pagado. Tu comprobante de pago de cada cobro lo descargas en Vuelve › Cuenta. Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> dentro del mismo mes del cobro.'],
 ];
 
 // ---------- identidad de Vuelve (la misma de la app: la familia de Vorka —tinta, marfil, morado y oro— y la palabra "vuelve") ----------
@@ -102,14 +107,17 @@ const GIROS_VISTOS = ['cafeteria', 'restaurante', 'taqueria', 'panaderia', 'hela
 
 export async function paginaVuelve(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
-  const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug), sucursal: await productoPorSlug(env, x.extra) })))).filter(x => x.prod);
+  const planes = (await Promise.all(PLANES.map(async x => {
+    const tr = await Promise.all(x.tramos.map(async ([cabe, slug]) => [cabe, (await productoPorSlug(env, slug))?.precio_centavos ?? null]));
+    return { ...x, prod: await productoPorSlug(env, x.slug), sucursal: await productoPorSlug(env, x.extra), precios: tr.every(([, c]) => c != null) ? tr : null };
+  }))).filter(x => x.prod);
   if (planes[0] && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: planes[0].prod.id, ref_code: code }, req);
   const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : planes[0]?.slug;
   const error = url.searchParams.get('error') || '';
   // Desde la app (Suscribirme) llega el correo de la cuenta para que la suscripción quede ligada a ella
   const correo = /^[^\s@<>"]{1,64}@[^\s@<>"]{1,190}\.[^\s@<>"]{2,}$/.test(url.searchParams.get('email') || '') ? url.searchParams.get('email') : '';
   // y cuántos lugares adicionales ya usa (sucursales o negocios de más con el mismo correo)
-  const lugares = Math.min(20, Math.max(0, parseInt(url.searchParams.get('sucursales') || '0', 10) || 0));
+  const lugares = Math.min(50, Math.max(0, parseInt(url.searchParams.get('sucursales') || '0', 10) || 0));
   const mensual = planes.find(x => x.slug === 'vuelve-mensual'), anual = planes.find(x => x.slug === 'vuelve-anual');
   // Quién lo recomendó (prueba de 30 días) y si el directorio ya tiene suficientes negocios para presumirlo
   const fuente = fuenteVisita(req, url);
@@ -124,7 +132,7 @@ export async function paginaVuelve(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_VUELVE, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })), ...ldResenas(rs) } : {}) },
   migas('Vuelve', RUTA_VUELVE),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, s: x.sucursal?.precio_centavos ?? null, cada: x.cada }]));
+  const datos = Object.fromEntries(planes.map(x => [x.slug, { p: x.prod.precio_centavos, t: x.precios ? x.precios.map(([cabe, c]) => [cabe === Infinity ? 9999 : cabe, c]) : x.sucursal ? [[9999, x.sucursal.precio_centavos]] : [], cada: x.cada }]));
   const res = pagina({ navActual: 'catalogo', entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital para tu negocio | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
     descripcion: 'Tu tarjeta de lealtad digital en Apple Wallet y Google Wallet, sin app ni cartón: sellos o puntos, avisos automáticos y el dinero que regresó, medido. Prueba 7 días gratis, sin tarjeta.',
@@ -170,7 +178,7 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
     <article class="vu-plan">
       <h3>Vuelve</h3>
       ${mensual ? `<p class="vu-precio"><b>${precio(mensual.prod)}</b> <small>al mes</small></p>${anual ? `<p class="vu-anual">o ${precio(anual.prod)} al año, con 2 meses gratis</p>` : ''}` : `<p class="vu-precio"><b>${dias} días gratis</b></p>`}
-      <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${mensual?.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(mensual.sucursal)} al mes</span></li>` : ''}</ul>
+      <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}${mensual?.precios ? `<li>${CHECK}<span>Sucursales adicionales desde ${precio({ precio_centavos: mensual.precios.at(-1)[1] })} al mes, con precio por volumen</span></li>` : mensual?.sucursal ? `<li>${CHECK}<span>Sucursal o negocio adicional: ${precio(mensual.sucursal)} al mes</span></li>` : ''}</ul>
       <a class="pm-btn vu-ancho" href="#quiz">Empieza tus ${dias} días gratis ${FLECHA}</a>
       <p class="vu-nota">Sin tarjeta. Si decides seguir, tus clientes conservan su tarjeta.</p>
       ${planes.length ? `<p class="vu-sus">¿Ya lo probaste? Suscríbete ${planes.map(x => `<a href="?plan=${x.slug}#comprar" data-plan="${x.slug}">${x.nombre.toLowerCase()}</a>`).join(' o ')}.</p>` : `<p class="vu-nota">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
@@ -182,6 +190,12 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
       <a class="pm-btn sec vu-ancho" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Pedirla por WhatsApp</a>
     </aside>
   </div>
+  ${mensual?.precios ? (() => { const [[, a], [, b], [, c]] = mensual.precios, pm = mensual.prod.precio_centavos, base = mensual.sucursal?.precio_centavos ?? a;
+    const fila = n => { const t = totalCon(pm, mensual.precios, n - 1), sin = pm + (n - 1) * base; return `<tr><th scope="row">${n} sucursales</th><td>${precio({ precio_centavos: t })}${sin > t ? `<small>ahorras ${precio({ precio_centavos: sin - t })}</small>` : ''}</td></tr>`; };
+    return `<div class="vu-vol" id="sucursales-volumen"><div class="vu-vol-t"><h3>¿Tienes varias sucursales o una franquicia?</h3><p>Mientras más creces, menos pagas por cada una. Todas con su equipo, su ubicación y sus avisos, en un mismo panel.</p>
+      <ul><li><b>${precio({ precio_centavos: a })}</b> al mes la 2ª y la 3ª sucursal</li><li><b>${precio({ precio_centavos: b })}</b> al mes de la 4ª a la 10ª</li><li><b>${precio({ precio_centavos: c })}</b> al mes desde la 11ª</li></ul></div>
+      <table class="vu-vol-tabla"><caption>Lo que pagarías al mes</caption><tbody>${[4, 10, 20].map(fila).join('')}</tbody></table>
+      <p class="vu-vol-pie">¿Más de 20 sucursales? <a href="https://wa.me/528117804869?text=${encodeURIComponent('Hola, tengo varias sucursales y quiero Vuelve para todas.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y lo armamos contigo.</p></div>`; })() : ''}
 </div></section>
 
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="#quiz">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
@@ -190,7 +204,7 @@ ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún
   form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">Plan</label><select id="slug" name="slug">${planes.map(x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${x.nombre} · ${precio(x.prod)} ${x.cada}${x.nota ? ` (${x.nota})` : ''}</option>`).join('')}</select></div>
-    <div class="t-campo"><label for="sucursales">Sucursales o negocios adicionales</label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="20" value="${lugares}"><small class="t-ayuda">Tu plan incluye un lugar. Cada sucursal de más, o cada negocio distinto con el mismo correo, se suma aquí al mismo precio.</small></div>
+    <div class="t-campo"><label for="sucursales">Sucursales o negocios adicionales</label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="50" value="${lugares}"><small class="t-ayuda">Tu plan incluye un lugar. Cada sucursal de más, o cada negocio distinto con el mismo correo, se suma aquí con precio por volumen.</small></div>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" value="${esc(correo)}"><small class="t-ayuda">Usa el mismo correo de tu prueba para que tu programa siga igual.</small></div>
     <p class="vu-total">Pagas hoy <b id="vu-total">${planes[0] ? precio(planes.find(x => x.slug === elegido)?.prod || planes[0].prod) : ''}</b> <span id="vu-cada"></span></p>
@@ -286,6 +300,20 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-sus{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:15px;color:var(--fg-2);text-align:center}.vu-sus a{color:var(--pm-t);font-weight:700}
 .vu-listo{padding:26px;border-radius:26px;background:var(--bg-2);border:1px solid var(--line)}.vu-sec.suave .vu-listo{background:var(--card,var(--bg))}
 .vu-listo>b{display:block;font-size:20px;letter-spacing:-.02em;line-height:1.25}.vu-listo>p{margin:8px 0 0;color:var(--fg-2);line-height:1.5}
+.vu-vol{display:grid;gap:22px;max-width:900px;margin:22px auto 0;padding:26px;border-radius:26px;border:1px solid var(--line);background:var(--card,var(--bg))}@media(min-width:860px){.vu-vol{grid-template-columns:1.1fr .9fr;align-items:center}}
+.vu-vol h3{margin:0;font-weight:750;font-size:21px;letter-spacing:-.02em;line-height:1.25}.vu-vol-t>p{margin:8px 0 0;color:var(--fg-2);font-size:15.5px;line-height:1.5}
+.vu-vol ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:7px;font-size:15.5px}.vu-vol ul b{color:var(--pm-t);font-variant-numeric:tabular-nums}
+.vu-vol-tabla{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}.vu-vol-tabla caption{text-align:left;font-weight:650;font-size:14px;color:var(--fg-2);margin-bottom:6px}
+.vu-vol-tabla th,.vu-vol-tabla td{padding:10px 6px;border-top:1px solid var(--line);text-align:left;font-weight:500}.vu-vol-tabla th{font-weight:650;white-space:nowrap}.vu-vol-tabla td{text-align:right;font-weight:650}.vu-vol-tabla td small{display:block;color:var(--pm-t);font-weight:600;font-size:13.5px}
+.vu-vol-pie{grid-column:1/-1;margin:0;font-size:14.5px;color:var(--fg-2)}.vu-vol-pie a{color:var(--pm-t);font-weight:700}
+/* letra un escalón más fina en toda la página */
+.vu .pm-h1{font-size:clamp(32px,4.4vw,48px);font-weight:750;line-height:1.08}
+.vu .pm-lead{font-size:16.5px}.vu .pm-marca{font-size:20px}
+.vu-cab h2,.vu .h2{font-size:clamp(25px,3vw,34px)!important;font-weight:750}.vu-cab p{font-size:16.5px}
+.vq-t{font-size:clamp(20px,2.2vw,23px)!important;font-weight:750}
+.vu-tres b,.vu-ben b{font-size:17px}.vu-tres p,.vu-ben p,.vu-mas li,.vu-plan li,.vu-listo li{font-size:15px}
+.vu-precio b{font-size:30px}.vu-plan h3{font-size:21px}.vu-listo>b{font-size:18px}
+.vu .t-faq summary{font-size:16px}
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .vu #form-vuelve .btn.acento{background:var(--pm);color:#fff}
 `;
@@ -351,7 +379,7 @@ const SCRIPT = `(function(){
   var f=document.getElementById('form-vuelve'); if(!f||!window.fetch) return;
   var P={}; try{ P=JSON.parse(document.getElementById('vu-precios').textContent); }catch(e){}
   var tot=document.getElementById('vu-total'), cada=document.getElementById('vu-cada');
-  function pinta(){ var x=P[f.slug.value]; if(!x) return; var n=Math.min(20,Math.max(0,parseInt(f.sucursales.value,10)||0)); var t=x.p+(x.s||0)*n; var fr=VD.frase(t,x.cada); tot.textContent=fr.hoy; cada.textContent=fr.luego; }
+  function pinta(){ var x=P[f.slug.value]; if(!x) return; var n=Math.min(50,Math.max(0,parseInt(f.sucursales.value,10)||0)), t=x.p, r=n; (x.t||[]).forEach(function(q){ var k=Math.min(r,q[0]); t+=k*q[1]; r-=k; }); var fr=VD.frase(t,x.cada); tot.textContent=fr.hoy; cada.textContent=fr.luego; }
   f.slug.addEventListener('change',pinta); f.sucursales.addEventListener('input',pinta); document.addEventListener('vorka:descuento',pinta); pinta();
   document.querySelectorAll('[data-plan]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); f.slug.value=a.dataset.plan; pinta(); document.getElementById('comprar').scrollIntoView({behavior:'smooth'}); setTimeout(function(){ f.nombre.focus({preventScroll:true}); },500); }); });
   var err=document.getElementById('error-compra'), btn=document.getElementById('btn-compra'), txt=btn.innerHTML;

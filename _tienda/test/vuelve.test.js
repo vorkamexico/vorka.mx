@@ -56,6 +56,15 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('checkout de Vuelve (suscripción)', () => {
+  it('precio por volumen: 12 sucursales adicionales = 2 a $249, 7 a $199 y 3 a $169', async () => {
+    const r = await comprar({ sucursales: 12 });
+    expect(r.status).toBe(200);
+    const o = fila('SELECT * FROM orders');
+    expect(o.monto_centavos).toBe(39900 + 2 * 24900 + 7 * 19900 + 3 * 16900);
+    const p = llamada('/checkout/sessions')[0].params;
+    expect([1, 2, 3].map(k => [p.get(`line_items[${k}][quantity]`), p.get(`line_items[${k}][price_data][unit_amount]`)])).toEqual([['2', '24900'], ['7', '19900'], ['3', '16900']]);
+    expect((await comprar({ sucursales: 51 })).status).toBe(400);
+  });
   it('abre Stripe en modo suscripción con el plan y las sucursales adicionales, sin OXXO', async () => {
     const r = await comprar({ sucursales: 2 });
     expect(r.status).toBe(200);
@@ -228,6 +237,8 @@ describe('páginas y ligas', () => {
     expect(h).not.toContain('id="vu-calc"'); expect(h).not.toContain('Sigue explorando');
     expect(h).toContain('Un solo plan, con todo incluido.'); expect(h).toContain('$3,990 MXN al año, con 2 meses gratis');
     expect(h).toContain('href="/tienda/mira-tu-negocio/?g=barberia"');
+    expect(h).toContain('id="sucursales-volumen"'); expect(h).toContain('<b>$199 MXN</b> al mes de la 4ª a la 10ª'); expect(h).toContain('<b>$169 MXN</b> al mes desde la 11ª');
+    expect(h).toContain('<th scope="row">10 sucursales</th><td>$2,290 MXN</td>');   // 399 + 2×249 + 7×199
     expect(h).not.toMatch(/class="vu-num"|class="vu-et"/);   // sin pasos numerados ni letreritos
     expect(h).toContain('Te lo dejamos listo'); expect(h).toContain('https://wa.me/528117804869?text=');
     expect(h).toContain('Pruébalo 7 días gratis');
@@ -262,17 +273,33 @@ describe('páginas y ligas', () => {
     stripe.orden = order; stripe.sub = sub();
     expect((await evento('checkout.session.completed', 'cs_1')).status).toBe(200);
     const A = new Admin({}, env);
-    await A.lugaresApp('laura@cafe.mx', 'vuelve', 3);
-    let c = llamadas.at(-2);
-    expect(c.url).toBe('https://api.stripe.com/v1/subscription_items/si_suc');
-    expect(c.params.get('quantity')).toBe('3');
-    expect(c.params.get('proration_behavior')).toBe('create_prorations');
+    // de 2 a 3 adicionales: la 4ª sucursal ya va en el tramo de $199 (renglón nuevo); el de $249 se queda en 2
+    llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 3);
+    let altas = llamada('/subscription_items').filter(l => l.url.endsWith('/subscription_items'));
+    expect(altas).toHaveLength(1);
+    expect(Object.fromEntries(altas[0].params)).toMatchObject({ subscription: 'sub_1', quantity: '1', 'price_data[unit_amount]': '19900', 'price_data[recurring][interval]': 'month', proration_behavior: 'create_prorations' });
+    expect(llamada('/subscription_items/si_suc')).toHaveLength(0);
     // sin cambio, no le habla a Stripe para cambiar nada
     llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 2);
     expect(llamada('/subscription_items')).toHaveLength(0);
+    // de 2 a 1: baja la cantidad del renglón de $249
+    await A.lugaresApp('laura@cafe.mx', 'vuelve', 1);
+    expect(llamada('/subscription_items/si_suc')[0].params.get('quantity')).toBe('1');
     // con 0 se quita el renglón
-    await A.lugaresApp('laura@cafe.mx', 'vuelve', 0);
+    llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 0);
     expect(llamada('/subscription_items/si_suc')[0].init.method).toBe('DELETE');
+    // 12 adicionales (13 sucursales) con los tres tramos ya en la suscripción: 2 a $249, 7 a $199 y 3 a $169
+    const renglon = (id, q, c, pid) => ({ id, quantity: q, current_period_end: 1893456000, price: { unit_amount: c, recurring: { interval: 'month' }, product: { metadata: { product_id: pid } } } });
+    stripe.sub = sub({ items: { data: [sub().items.data[0], renglon('si_suc', 2, 24900, 'prod_vuelve_sucursal_mensual'), renglon('si_s4', 1, 19900, 'prod_vuelve_sucursal4_mensual')] } });
+    llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 12);
+    expect(llamada('/subscription_items/si_s4')[0].params.get('quantity')).toBe('7');
+    altas = llamada('/subscription_items').filter(l => l.url.endsWith('/subscription_items'));
+    expect(altas.map(l => [l.params.get('quantity'), l.params.get('price_data[unit_amount]')])).toEqual([['3', '16900']]);
+    // de vuelta a 3: el tramo de $199 baja a 1 y el de $169 se quita
+    stripe.sub = sub({ items: { data: [sub().items.data[0], renglon('si_suc', 2, 24900, 'prod_vuelve_sucursal_mensual'), renglon('si_s4', 7, 19900, 'prod_vuelve_sucursal4_mensual'), renglon('si_s11', 3, 16900, 'prod_vuelve_sucursal11_mensual')] } });
+    llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 3);
+    expect(llamada('/subscription_items/si_s4')[0].params.get('quantity')).toBe('1');
+    expect(llamada('/subscription_items/si_s11')[0].init.method).toBe('DELETE');
     // si la suscripción no lo tiene, se agrega con el producto de Stripe del complemento (creado una sola vez)
     stripe.sub = sub({ items: { data: [sub().items.data[0]] } });
     llamadas = []; await A.lugaresApp('laura@cafe.mx', 'vuelve', 1); await A.lugaresApp('laura@cafe.mx', 'vuelve', 2);

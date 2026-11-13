@@ -36,7 +36,7 @@ export const EsquemaCheckout = z.object({
   // Canjear puntos Vorka (requiere la sesión de la cuenta de puntos y comprar con su mismo correo)
   usar_puntos: z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.boolean()).optional(),
   // Suscripciones (Vuelve): sucursales adicionales a la incluida en el plan
-  sucursales: z.coerce.number().int().min(0).max(20, 'Hasta 20 sucursales adicionales; para más, escríbenos.').optional(),
+  sucursales: z.coerce.number().int().min(0).max(50, 'Hasta 50 sucursales adicionales; para más, escríbenos.').optional(),
   // Agenda: cuántos profesionales atienden en total (1 viene incluido; los demás se cobran como profesional adicional)
   profesionales: z.coerce.number().int().min(1, 'Elige al menos un profesional.').max(50, 'Hasta 50 profesionales; para más, escríbenos.').optional(),
   // Negocio Completo: agregar la instalación y personalización (pago único con el primer mes)
