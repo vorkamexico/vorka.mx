@@ -1366,6 +1366,7 @@
     const svg = await traerMapa();
     if (!svg){ cont.innerHTML = '<p class="mapa-cargando">No se pudo cargar el mapa.</p>'; return; }
     svg.removeAttribute("width"); svg.removeAttribute("height");
+    svg.setAttribute("class", "mapa-mx");   // sin «mx-mun»: el tema oscuro de soyimpacto.org pinta ese mapa en gris
     svg.setAttribute("aria-label", "Mapa de municipios de México por región de IMPACTO");
     cont.innerHTML = "";
     cont.appendChild(svg);
