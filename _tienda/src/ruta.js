@@ -212,11 +212,11 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ri-cab{max-width:700px;margin:0 auto 38px;text-align:center}.ri-cab.izq{text-align:left;margin:0 0 24px}
 .ri-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ri-morado)}.ri-osc .ri-et{color:var(--ri-oro-c)}
 .ri-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,50px);line-height:1.04;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.ri-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.ri-osc .ri-cab p{color:rgba(244,242,245,.74)}
+.ri-cab p{margin:14px 0 0;font-size:16px;line-height:1.55;color:var(--fg-2)}.ri-osc .ri-cab p{color:rgba(244,242,245,.74)}
 .ri-ben{list-style:none;padding:0;margin:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}
 .ri-ben li,.ri-caja{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
 .ri-ben svg,.ri-caja svg,.ri-campo svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--ri-morado) 12%,transparent);color:var(--ri-morado)}
-.ri-ben b{display:block;font-size:18px;letter-spacing:-.015em;margin-top:12px}.ri-ben p,.ri-caja p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.ri-ben b{display:block;font-size:16px;letter-spacing:-.015em;margin-top:12px}.ri-ben p,.ri-caja p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
 .ri-capturas{display:grid;gap:22px;margin-top:40px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));align-items:start;justify-items:center}
 .ri-capturas .ri-cel{width:min(100%,290px)}.ri-capturas.dos{margin-top:0}
 .ri-pie{margin:16px 0 0;text-align:center;color:var(--fg-2);font-size:13.5px}
@@ -228,7 +228,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ri-reto{margin-top:14px!important;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:15px}.ri-reto span{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ri-morado-c);margin-bottom:4px}
 .ri-dos{display:grid;gap:40px;align-items:start}.ri-dos>*{min-width:0}@media(min-width:980px){.ri-dos{grid-template-columns:1fr 1fr}}
 .ri-campo{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:12px}.ri-campo li{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
-.ri-campo svg{flex:none}.ri-campo b{display:block;font-size:17px;margin-bottom:2px}.ri-campo span{color:var(--fg-2);font-size:15px;line-height:1.5}.ri-campo span b{color:var(--fg)}
+.ri-campo svg{flex:none}.ri-campo b{display:block;font-size:15.5px;margin-bottom:2px}.ri-campo span{color:var(--fg-2);font-size:15px;line-height:1.5}.ri-campo span b{color:var(--fg)}
 .ri-tabla-c{border-radius:22px;border:1px solid var(--line);background:var(--card);overflow:hidden}
 .ri-tabla{width:100%;border-collapse:collapse;font-size:15.5px}.ri-tabla th,.ri-tabla td{padding:14px 18px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
 .ri-tabla thead th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);font-weight:700}.ri-tabla td{text-align:right;font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
@@ -244,7 +244,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ri-sub{margin:0 0 12px;color:var(--fg-2)}
 .ri-temas{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}.ri-temas li{padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:650;font-size:15px}
 .ri-pasos{list-style:none;padding:0;margin:0;display:grid;gap:12px}.ri-pasos li{padding:20px 22px;border-radius:22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}.ri-pasos b{margin-top:6px}
-.ri-pronto{text-align:center;font-size:18px;color:var(--fg-2)}
+.ri-pronto{text-align:center;font-size:16px;color:var(--fg-2)}
 .ri #form-compra .btn.acento{background:var(--fg);color:var(--bg);box-shadow:0 10px 26px -12px rgba(20,17,20,.5)}
 /* Estilo de marca (portadas v4): blanco, tinta y el índigo de Ruta de Impacto; las secciones oscuras pasan a gris claro */
 .ri{--ri-noche:var(--bg-2);--ri-crema:var(--fg);--ri-morado:var(--pm-t);--ri-oro-c:var(--pm-t);--ri-morado-c:var(--pm-t);--pm-t:var(--pm);--acento:var(--pm);--acento-2:var(--pm);--sobre-acento:#fff}

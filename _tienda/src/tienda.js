@@ -239,7 +239,7 @@ export async function catalogoCompartir(env, code = null) {
 
 // Banda del cupón de regalo en la portada (?cupon=)
 // (va dentro del encabezado oscuro, arriba del título, para que el menú fijo no la tape)
-const CSS_CUPON = '<style>.t-cupon{display:grid;gap:8px;margin:0 0 18px;padding:14px 16px;border-radius:18px;background:rgba(200,164,92,.16);border:1px solid rgba(226,194,124,.55);color:#F4F2F5;font-size:15px;line-height:1.45;max-width:560px;backdrop-filter:blur(6px)}.t-cupon b{color:#E6CF96}.t-cupon code{justify-self:start;font:800 17px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;color:#fff;border:1.5px dashed #E2C27C;border-radius:10px;padding:6px 10px;overflow-wrap:anywhere}.t-cupon a{color:#E6CF96;font-weight:700;display:inline-flex;gap:6px;align-items:center}.t-cupon a svg{width:16px;height:16px}.t-cupon.no{background:rgba(179,38,30,.22);border-color:rgba(242,194,189,.5)}</style>';
+const CSS_CUPON = '<style>.t-cupon{display:grid;gap:8px;margin:0 0 18px;padding:14px 16px;border-radius:18px;background:rgba(200,164,92,.16);border:1px solid rgba(226,194,124,.55);color:#F4F2F5;font-size:15px;line-height:1.45;max-width:560px;backdrop-filter:blur(6px)}.t-cupon b{color:#E6CF96}.t-cupon code{justify-self:start;font:800 15.5px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1.5px;color:#fff;border:1.5px dashed #E2C27C;border-radius:10px;padding:6px 10px;overflow-wrap:anywhere}.t-cupon a{color:#E6CF96;font-weight:700;display:inline-flex;gap:6px;align-items:center}.t-cupon a svg{width:16px;height:16px}.t-cupon.no{background:rgba(179,38,30,.22);border-color:rgba(242,194,189,.5)}</style>';
 const bandaCupon = c => `<div class="t-cupon${c.valido ? '' : ' no'}" role="status" aria-label="Tu cupón">${c.valido ? `<span>${c.regalo ? '🎁 <b>Tienes un cupón de regalo</b>' : '<b>Tu código</b>'}</span><code>${esc(c.codigo)}</code>` : ''}<span>${esc(c.texto)}</span>${c.valido && c.linea ? `<a href="#${esc(c.linea)}" data-f="${esc(c.linea)}">Ver productos ${FLECHA}</a>` : ''}</div>`;
 
 // Vitrina (rediseño nov 2026): blanca y con aire, como las portadas v4. Máximo 3 productos por fila y separación generosa;
@@ -271,7 +271,7 @@ const CSS_VITRINA = `
 .v-catalogo .t-card-ver{display:none}
 .v-catalogo .t-card-t{padding:0;display:grid;gap:6px}
 .v-catalogo .t-card-t .t-cat{display:none}
-.v-catalogo .t-card h3{font-size:19px;letter-spacing:-.015em;margin:0}.v-catalogo .t-card h3 a{color:var(--fg);text-decoration:none}
+.v-catalogo .t-card h3{font-size:17px;letter-spacing:-.015em;margin:0}.v-catalogo .t-card h3 a{color:var(--fg);text-decoration:none}
 .v-catalogo .t-card p{font-size:15px;line-height:1.5;color:var(--fg-2);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .v-catalogo .t-card-pie{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;margin-top:8px;padding:0;border:0}
 .v-catalogo .t-card-pie b{font-size:16px}

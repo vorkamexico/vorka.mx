@@ -152,7 +152,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .lv-sec{padding:clamp(56px,8vw,100px) 0}.lv-sec.suave{background:var(--bg-2)}.lv-osc{background:var(--lv-noche);color:var(--lv-crema)}
 .lv-cab{max-width:700px;margin:0 auto 34px;text-align:center}.lv-cab.izq{text-align:left;margin:0}
 .lv-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.045em;margin:10px 0 0;text-wrap:balance}
-.lv-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}.lv-osc .lv-cab p{color:rgba(244,242,245,.74)}.lv-osc a{color:var(--lv-oro-c)}
+.lv-cab p{margin:14px 0 0;font-size:16px;line-height:1.55;color:var(--fg-2)}.lv-osc .lv-cab p{color:rgba(244,242,245,.74)}.lv-osc a{color:var(--lv-oro-c)}
 .lv-dims{list-style:none;padding:0;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:900px}.lv-dims li{padding:10px 18px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:650}
 .lv-tres{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
 .lv-tres li{padding:24px;border-radius:22px;background:var(--card);border:1px solid var(--line)}.lv-n{font-weight:800;font-size:14px;color:var(--lv-morado)}
@@ -161,7 +161,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .lv-dos{display:grid;gap:40px;align-items:start}.lv-dos>*{min-width:0}@media(min-width:980px){.lv-dos{grid-template-columns:1fr 1fr}}
 .lv-lista{list-style:none;padding:0;margin:0;display:grid;gap:10px}.lv-lista li{padding:14px 18px 14px 46px;border-radius:16px;background:var(--card);border:1px solid var(--line);position:relative;line-height:1.45}
 .lv-lista li::before{content:"";position:absolute;left:18px;top:19px;width:12px;height:12px;border-radius:50%;background:var(--lv-oro)}
-.lv-pronto{text-align:center;font-size:18px;color:var(--fg-2)}
+.lv-pronto{text-align:center;font-size:16px;color:var(--fg-2)}
 .lv #form-compra .btn.acento{background:var(--fg);color:var(--bg)}
 /* Estilo de marca (portadas v4): blanco, tinta y el color de la Evaluación; las secciones oscuras pasan a gris claro */
 .lv{--pm-t:var(--pm);--lv-noche:var(--bg-2);--lv-crema:var(--fg);--lv-morado:var(--pm-t);--lv-oro:var(--fg);--lv-oro-c:var(--pm-t);--acento:var(--pm);--acento-2:var(--pm);--sobre-acento:#fff}

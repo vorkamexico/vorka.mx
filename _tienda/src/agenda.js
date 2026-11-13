@@ -261,21 +261,21 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ag-cab{max-width:680px;margin:0 auto 44px;text-align:center}.ag-cab.izq{text-align:left;margin:0 0 32px}
 .ag-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ag-c2)}
 .ag-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.04em;margin:10px 0 0;text-wrap:balance}
-.ag-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+.ag-cab p{margin:14px 0 0;font-size:16px;line-height:1.55;color:var(--fg-2)}
 /* cómo funciona, con la página de reservas en el celular */
 .ag-como{display:grid;gap:48px;align-items:center}.ag-como>*{min-width:0}@media(min-width:960px){.ag-como{grid-template-columns:1.1fr .9fr;gap:64px}}
 .ag-pasos{list-style:none;padding:0;margin:0;display:grid;gap:22px}
 .ag-pasos li{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
 .ag-num{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--ag-c) 12%,transparent);font-weight:800;font-size:14px;color:var(--ag-c2)}
-.ag-pasos b{display:block;font-size:19px;letter-spacing:-.02em;padding-top:8px}.ag-pasos p{margin:4px 0 0;color:var(--fg-2);line-height:1.5}
+.ag-pasos b{display:block;font-size:17px;letter-spacing:-.02em;padding-top:8px}.ag-pasos p{margin:4px 0 0;color:var(--fg-2);line-height:1.5}
 .ag-escena{position:relative;justify-self:center;width:min(100%,340px);margin:0;padding:0 0 74px}
 .ag-cel{position:relative;border-radius:54px;padding:12px;background:#0a0a0a;box-shadow:0 0 0 2px #2a2a2a,0 40px 80px -40px rgba(0,0,0,.6)}
 .ag-isla{position:absolute;top:22px;left:50%;width:96px;height:28px;border-radius:20px;background:#000;transform:translateX(-50%);z-index:2}
 .ag-pantalla{border-radius:43px;overflow:hidden;background:#fbfaf8;padding:58px 14px 18px;height:580px;position:relative;color:#141114}
 .ag-url{margin:0 0 12px;padding:7px 12px;border-radius:12px;background:#efece8;color:#5f5b60;font:12.5px/1.2 -apple-system,'Inter',sans-serif;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ag-res{font-family:-apple-system,'Inter',system-ui,sans-serif;font-size:13.5px}
-.ag-res-cab{display:flex;align-items:center;gap:10px;margin:4px 0 14px}.ag-res-cab b{display:block;font-size:17px;letter-spacing:-.02em}.ag-res-cab small{color:#6b676c;font-size:12.5px}
-.ag-res-lg{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--ag-c);color:#fff;font:700 19px/1 'Inter Tight',sans-serif}
+.ag-res-cab{display:flex;align-items:center;gap:10px;margin:4px 0 14px}.ag-res-cab b{display:block;font-size:15.5px;letter-spacing:-.02em}.ag-res-cab small{color:#6b676c;font-size:12.5px}
+.ag-res-lg{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--ag-c);color:#fff;font:700 17px/1 'Inter Tight',sans-serif}
 .ag-res-paso,.ag-res-t{display:flex;align-items:center;gap:8px;margin:0 0 8px;padding:10px 12px;border-radius:14px;background:#fff;border:1px solid #ebe8e3;font-weight:600}
 .ag-res-paso span{margin-left:auto;color:var(--ag-c);font-weight:600;font-size:12px}.ag-res-t{background:none;border:0;padding:8px 2px 4px;font-size:15px}
 .ag-res i{display:grid;place-items:center;flex:none;width:21px;height:21px;border-radius:50%;background:#141114;color:#fff;font:700 11px/1 sans-serif;font-style:normal}
@@ -291,7 +291,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ag-giros{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
 .ag-giros li,.ag-ben li{padding:22px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
 .ag-giros svg,.ag-ben svg{width:40px;height:40px;padding:9px;border-radius:12px;background:color-mix(in srgb,var(--ag-c) 12%,transparent);color:var(--ag-c2)}
-.ag-giros b,.ag-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:14px}.ag-giros p,.ag-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.ag-giros b,.ag-ben b{display:block;font-size:16px;letter-spacing:-.015em;margin-top:14px}.ag-giros p,.ag-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
 .ag-dos{display:grid;gap:44px;align-items:start}.ag-dos>*{min-width:0}@media(min-width:980px){.ag-dos{grid-template-columns:.95fr 1.05fr;gap:64px}}
 .ag-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
 /* tu día (panel Hoy) */
@@ -310,7 +310,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ag-tabla{width:100%;min-width:560px;border-collapse:collapse;font-size:15.5px}.ag-tabla th,.ag-tabla td{padding:18px 20px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
 .ag-tabla thead th{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);font-weight:700}.ag-tabla tbody tr:last-child>*{border-bottom:0}
 .ag-tabla tbody th{font-weight:700;white-space:nowrap}.ag-tabla td{color:var(--fg-2)}.ag-tabla .nos{background:color-mix(in srgb,var(--ag-c) 8%,transparent)}.ag-tabla .nos td{color:var(--fg)}
-.ag-marca-t{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.03em;color:var(--ag-c2)}
+.ag-marca-t{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.03em;color:var(--ag-c2)}
 .ag-nota{color:var(--fg-2);font-size:14px;margin-top:14px;line-height:1.5}
 /* paquete con Vuelve */
 .ag-paq{display:grid;gap:40px;align-items:center}.ag-paq>*{min-width:0}@media(min-width:960px){.ag-paq{grid-template-columns:1.05fr .95fr;gap:64px}}
@@ -331,7 +331,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ag-total{margin:4px 0 12px;font-size:16px}.ag-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .ag #form-agenda .btn.acento{background:var(--ag-c);color:#fff;box-shadow:0 12px 28px -14px var(--ag-c)}
 /* cierre */
-.ag-cierre{padding-bottom:88px;text-align:center}.ag-cierre .marco{max-width:760px}.ag-cierre p{margin:14px auto 0;font-size:18px;line-height:1.55;color:var(--fg-2);max-width:560px}.ag-cierre .pm-ctas{justify-content:center}
+.ag-cierre{padding-bottom:88px;text-align:center}.ag-cierre .marco{max-width:760px}.ag-cierre p{margin:14px auto 0;font-size:16px;line-height:1.55;color:var(--fg-2);max-width:560px}.ag-cierre .pm-ctas{justify-content:center}
 `;
 
 const SCRIPT = `(function(){

@@ -789,5 +789,11 @@
 :root:not(:has(.ve)) .t-grupo-h { font-size: clamp(20px, 2.2vw, 26px); }
 :root:not(:has(.ve)) .t-portada.grande b { font-size: clamp(26px, 3.6vw, 42px); }
 :root:not(:has(.ve)) :is(.pm-lead, .t-lead, .lead, .t-hero-sub, .t-portal-sub) { font-size: clamp(16px, 1.3vw, 17.5px); }
-:root:not(:has(.ve)) .pm-grande { font-size: clamp(16.5px, 1.8vw, 18.5px); }
+:root:not(:has(.ve)) .pm-grande { font-size: clamp(16px, 1.4vw, 17px); }
 :root:not(:has(.ve)) .sv-cifras b { font-size: clamp(28px, 3.4vw, 40px); }
+/* Texto un escalón más fino (2026-11-12): base de 16 px y lo que estaba en 16.5–19 px baja a 15.5–16 px. Los campos de
+   formulario se quedan en 16 px (con menos, el iPhone acerca la pantalla al tocarlos). Vende (.ve) se queda como estaba. */
+:root:not(:has(.ve)) body { font-size: 16px; }
+:root:not(:has(.ve)) :is(.t-vacio, .t-lista li, .t-linea-cab p, .pm-demo-lista li, .pm-para b) { font-size: 15.5px; }
+:root:not(:has(.ve)) :is(.t-prod-pie b, .t-pasos h3, .t-barra b, .t-como-g b, .t-linea-t-x b, .t-vitrina-img .t-portada b, .t-card h3, .t-card-pie b, .t-portal-cap b, .t-hero-cap b, .faq summary, .tabla tbody th, .entregable h3, .capacidad h3, .paso-b b, .nota-h b, .tira-t b) { font-size: 16px; }
+:root:not(:has(.ve)) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea) { font-size: 16px !important; }

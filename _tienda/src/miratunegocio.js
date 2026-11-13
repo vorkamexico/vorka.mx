@@ -234,10 +234,10 @@ export const CSS_MIRA = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,
 .mt-pieza{margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
 .mt-pieza figcaption{font-size:15px;color:var(--fg-2)}.mt-pieza figcaption b{color:var(--fg)}
 .mt-tarjeta,.mt-agenda,.mt-web{background:#fff;color:#1b1b1b;border-radius:18px;border:1px solid rgba(0,0,0,.08);box-shadow:0 10px 30px rgba(0,0,0,.08);overflow:hidden;flex:1}
-.mt-logo{width:38px;height:38px;border-radius:10px;background:var(--marca);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex:none;overflow:hidden}
+.mt-logo{width:38px;height:38px;border-radius:10px;background:var(--marca);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex:none;overflow:hidden}
 .mt-logo img{width:100%;height:100%;object-fit:contain;background:#fff}
 .mt-tarjeta{padding:18px;background:linear-gradient(180deg,#fff 0,#fff 55%,color-mix(in srgb,var(--marca) 10%,#fff) 100%)}
-.mt-tar-top{display:flex;align-items:center;gap:10px}.mt-tar-top b{font-size:17px;line-height:1.2;overflow-wrap:anywhere}
+.mt-tar-top{display:flex;align-items:center;gap:10px}.mt-tar-top b{font-size:15.5px;line-height:1.2;overflow-wrap:anywhere}
 .mt-hola{margin:16px 0 0;color:#666;font-size:14px}
 .mt-cuenta{margin:2px 0 12px;font-size:16px;color:#555}.mt-cuenta b{font-size:44px;line-height:1;color:#1b1b1b;margin-right:4px}
 .mt-sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:14px;border-radius:14px;background:var(--marca)}
@@ -248,7 +248,7 @@ export const CSS_MIRA = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,
 .mt-falta{margin:12px 0 0;font-size:14px;color:#444}
 .mt-agenda{padding:18px}
 .mt-ag-dia{margin:0;font-size:13px;color:var(--marca);font-weight:600}
-.mt-ag-neg{display:block;font-size:18px;margin:2px 0 12px;overflow-wrap:anywhere}
+.mt-ag-neg{display:block;font-size:16px;margin:2px 0 12px;overflow-wrap:anywhere}
 .mt-ag-lista{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .mt-ag-lista li{display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;font-size:14px}
 .mt-ag-lista time{color:#777;font-size:13px}
@@ -277,12 +277,12 @@ export const CSS_MIRA = `.mt-hero{padding:clamp(12px,3vw,40px) 0 clamp(24px,4vw,
 .mt-datos .btn{justify-self:start}
 .mt-trampa{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .mt-ideas{margin-top:22px;padding:clamp(16px,3vw,24px);border-radius:var(--r);border:1px solid var(--line);background:var(--card)}
-.mt-ideas h3{margin:0 0 10px;font-size:18px;line-height:1.3}
+.mt-ideas h3{margin:0 0 10px;font-size:16px;line-height:1.3}
 .mt-ideas ul,.mt-giro ul{margin:0;padding-left:20px;display:grid;gap:6px;color:var(--fg-2)}
 .mt-por-giro .t-lead{margin-top:10px;max-width:640px}
 .mt-giros{display:grid;gap:14px;margin-top:22px;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
 .mt-giro{padding:18px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);min-width:0}
-.mt-giro h3{margin:0 0 4px;font-size:17px}.mt-giro h3 a{color:inherit}
+.mt-giro h3{margin:0 0 4px;font-size:15.5px}.mt-giro h3 a{color:inherit}
 .mt-giro-premio{margin:0 0 10px;font-size:14px;color:var(--fg-2)}
 .mt-giro ul{font-size:14.5px}
 .mt-otro{margin-top:18px;color:var(--fg-2)}

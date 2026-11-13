@@ -164,14 +164,14 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .cu .etiqueta{color:var(--cu-at)}.cu .etiqueta::before{background:var(--cu-a)}
 .cu .btn.tinta,.cu #form-cupo .btn.acento{background:var(--cu-a);color:#fff;box-shadow:0 12px 28px -14px var(--cu-a)}
 .cu-tuto{margin:22px 0 0}.cu-tuto a{color:var(--cu-at);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px}.cu-tuto svg{width:16px;height:16px}
-.cu-cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:28px;border-radius:24px;background:var(--bg-2)}.cu-cierre p{margin:0;font-size:17px;color:var(--fg-2);max-width:36em}.cu-cierre b{color:var(--fg)}.cu-cierre .pm-btn{color:#fff}
+.cu-cierre{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;padding:28px;border-radius:24px;background:var(--bg-2)}.cu-cierre p{margin:0;font-size:15.5px;color:var(--fg-2);max-width:36em}.cu-cierre b{color:var(--fg)}.cu-cierre .pm-btn{color:#fff}
 .cu-demos-h{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
 .cu-demo{display:grid;background:var(--card);border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid var(--line);}
 .cu-demo img{width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;display:block}
 .cu-demo span{padding:10px 14px 12px}.cu-demo b{display:block;font-size:16px}.cu-demo small{color:var(--fg-2);font-size:13px}
 .cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));counter-reset:p}
 .cu-pasos li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;counter-increment:p}.cu-pasos li::before{content:counter(p);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--cu-a);color:#fff;font-weight:800;margin-bottom:10px}
-.cu-pasos b{font-size:17px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2)}
+.cu-pasos b{font-size:15.5px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2)}
 .cu-planes{display:grid;gap:18px;align-items:start}
 @media(min-width:900px){.cu-planes{grid-template-columns:.85fr 1.15fr;grid-template-areas:'gratis pro' 'paq pro';column-gap:22px}.cu-planes>.cu-plan:first-child{grid-area:gratis}.cu-planes>.cu-plan.rec{grid-area:pro}.cu-planes>.cu-paq{grid-area:paq}}
 .cu-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:8px}
@@ -186,7 +186,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .cu-paq{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:24px;display:grid;gap:16px;align-content:start}
 .cu-paq h3{font:800 22px/1.15 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;margin:6px 0}.cu-paq p{margin:0;color:var(--fg-2)}
 .cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))}
-.cu-ben li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}.cu-ben span{font-size:28px}.cu-ben b{display:block;font-size:18px;margin:8px 0 4px}.cu-ben p{margin:0;color:var(--fg-2)}`;
+.cu-ben li{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}.cu-ben span{font-size:28px}.cu-ben b{display:block;font-size:16px;margin:8px 0 4px}.cu-ben p{margin:0;color:var(--fg-2)}`;
 
 const SCRIPT = `(function(){
   var f=document.getElementById('form-cupo'); if(!f||!window.fetch) return;

@@ -190,22 +190,22 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .cu-cab{max-width:700px;margin:0 auto 44px;text-align:center}.cu-cab.izq{text-align:left;margin:0 0 32px}
 .cu-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cu-c2)}
 .cu-cab h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.04em;margin:10px 0 0;text-wrap:balance}
-.cu-cab p{margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--fg-2)}
+.cu-cab p{margin:14px 0 0;font-size:16px;line-height:1.55;color:var(--fg-2)}
 .cu-como{display:grid;gap:48px;align-items:center}.cu-como>*{min-width:0}@media(min-width:960px){.cu-como{grid-template-columns:1.15fr .85fr;gap:64px}}
 .cu-pasos{list-style:none;padding:0;margin:0;display:grid;gap:22px}
 .cu-pasos li{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
 .cu-num{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:color-mix(in srgb,var(--cu-c) 12%,transparent);font-weight:800;font-size:14px;color:var(--cu-c2)}
-.cu-pasos b{display:block;font-size:19px;letter-spacing:-.02em;padding-top:8px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2);line-height:1.5}
+.cu-pasos b{display:block;font-size:17px;letter-spacing:-.02em;padding-top:8px}.cu-pasos p{margin:4px 0 0;color:var(--fg-2);line-height:1.5}
 .cu-dos{display:grid;gap:44px;align-items:center}.cu-dos>*{min-width:0}@media(min-width:980px){.cu-dos{grid-template-columns:1fr 1fr;gap:64px}}
 .cu-calc{padding:26px;border-radius:26px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums}
 .cu-calc small{color:var(--fg-2);font-size:12.5px}
 .cu-linea{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-size:16px}.cu-linea b{font-weight:700}
-.cu-linea.sub{margin-top:6px;font-size:14.5px;color:var(--fg-2)}.cu-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:19px}.cu-linea.total b{color:var(--cu-c2);font-weight:800}
+.cu-linea.sub{margin-top:6px;font-size:14.5px;color:var(--fg-2)}.cu-linea.total{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:17px}.cu-linea.total b{color:var(--cu-c2);font-weight:800}
 .cu-form{margin:6px 0 0;padding-left:12px;border-left:3px solid var(--cu-c);font-size:13.5px;color:var(--fg-2)}
 .cu-ben{list-style:none;padding:0;margin:0;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
 .cu-ben li{padding:24px;border-radius:22px;background:var(--card);border:1px solid var(--line)}
 .cu-ben svg{width:42px;height:42px;padding:10px;border-radius:12px;background:color-mix(in srgb,var(--cu-c) 12%,transparent);color:var(--cu-c2)}
-.cu-ben b{display:block;font-size:17.5px;letter-spacing:-.015em;margin-top:14px}.cu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.cu-ben b{display:block;font-size:16px;letter-spacing:-.015em;margin-top:14px}.cu-ben p{margin:6px 0 0;color:var(--fg-2);font-size:15px;line-height:1.5}
 .cu-aviso{max-width:720px;margin:32px auto 0;text-align:center;color:var(--fg-2);font-size:15px;line-height:1.55}
 /* precio */
 .cu-planes{display:grid;gap:20px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
@@ -223,7 +223,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .cu-total{margin:4px 0 12px;font-size:16px}.cu-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .cu #form-cuentas .btn.acento{background:var(--cu-c);color:#fff;box-shadow:0 12px 28px -14px var(--cu-c)}
 /* cierre */
-.cu-cierre{padding-bottom:88px;text-align:center}.cu-cierre .marco{max-width:760px}.cu-cierre p{margin:14px auto 0;font-size:18px;line-height:1.55;color:var(--fg-2);max-width:560px}.cu-cierre .pm-ctas{justify-content:center}
+.cu-cierre{padding-bottom:88px;text-align:center}.cu-cierre .marco{max-width:760px}.cu-cierre p{margin:14px auto 0;font-size:16px;line-height:1.55;color:var(--fg-2);max-width:560px}.cu-cierre .pm-ctas{justify-content:center}
 `;
 
 const SCRIPT = `(function(){
