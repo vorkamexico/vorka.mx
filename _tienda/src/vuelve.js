@@ -222,6 +222,43 @@ ${seccionFaq({ titulo: 'Antes de empezar', whatsappTexto: 'Hola, tengo una pregu
   return res;
 }
 
+// /tienda/vuelve/empezar/ → solo el quiz, a pantalla completa (para anuncios, WhatsApp o un QR): sin menú ni pie del sitio.
+// Igual que en la portada, «Crear mi cuenta gratis» abre la app con todo lleno y conserva de dónde llegó (?utm_source, ?invita).
+export const RUTA_EMPEZAR = '/tienda/vuelve/empezar/';
+export async function paginaVuelveEmpezar(env, req, url) {
+  const fuente = fuenteVisita(req, url);
+  const reco = fuente.invita ? await deOS(env, `/api/vuelve/publico/recomienda/${fuente.invita}`) : null;
+  const dias = reco?.dias || 7;
+  const q = new URLSearchParams(Object.entries({ invita: reco ? fuente.invita : null, o: fuente.o }).filter(([, v]) => v)).toString();
+  const res = pagina({ titulo: `Arma tu tarjeta de lealtad digital en un minuto | Vuelve · ${dias} días gratis`, ruta: RUTA_EMPEZAR, noindex: true,
+    imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
+    descripcion: `Contesta 3 preguntas, mira tu tarjeta de lealtad digital lista y crea tu cuenta gratis: ${dias} días sin tarjeta.`,
+    head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><style>${CSS}${CSS_EMPEZAR}</style>`,
+    script: SCRIPT,
+    cuerpo: `<div class="vu vu-empezar" style="--pm:${colorDe('vuelve')}">
+  <div class="vu-e-cab">${lineaMarca('vuelve')}${reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : ''}
+    <p class="vu-e-sub">Tu tarjeta de lealtad digital, lista en un minuto. ${dias} días gratis, sin tarjeta.</p></div>
+  ${quiz({ dias, app: `${OS}/vuelve/${q ? `?${q}` : ''}` })}
+  <a class="pm-btn sec vu-e-mas" href="https://vorka.mx${RUTA_VUELVE}">Más información sobre Vuelve ${FLECHA}</a>
+  <p class="vu-e-pie"><a href="${OS}/vuelve/#entrar">Ya tengo cuenta</a><a href="${WA_LISTO}" target="_blank" rel="noopener">Te lo dejamos listo por WhatsApp</a></p>
+</div>`,
+  });
+  if (fuente.cookie) res.headers.append('set-cookie', fuente.cookie);
+  return res;
+}
+// Pantalla completa: sin el menú ni el pie del sitio; el quiz al centro y a lo alto de la pantalla
+const CSS_EMPEZAR = `
+body:has(.vu-empezar) > header.nav, body:has(.vu-empezar) footer.pie, body:has(.vu-empezar) .t-wa{display:none!important}
+body:has(.vu-empezar) .t-main{padding:0;margin:0}
+.vu-empezar{min-height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:16px;width:min(100% - 32px,520px);margin:0 auto;padding:22px 0 26px}
+.vu-e-cab{text-align:center}.vu-e-cab .pm-marca{justify-content:center}
+.vu-e-sub{margin:8px 0 0;color:var(--fg-2);font-size:15.5px}
+.vu-empezar .vq{min-height:0}
+.vu-e-mas{align-self:center;width:min(100%,460px)}.vu-e-mas svg{width:18px;height:18px}
+.vu-e-pie{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:0;font-size:14.5px}.vu-e-pie a{color:var(--fg-2)}.vu-e-pie a:hover{color:var(--pm-t)}
+@media(max-width:600px){.vu-empezar{justify-content:flex-start;padding-top:16px}.vu-empezar .vq{padding:18px}}
+`;
+
 const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu{--pm-t:var(--pm);font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
 /* en oscuro, el color de Vuelve se aclara para que ligas e iconos se lean */
