@@ -30,15 +30,34 @@ const enApps = app => { const a = appsQueCubren(app); return { sql: `app IN (${a
 // Complementos del plan por tipo: { profesional: <id>, sucursal: <id> }. Vuelve los guarda como "extra" (= sucursal).
 export const extrasDe = s => s?.extras || (s?.extra ? { sucursal: s.extra } : {});
 
+// Precio por volumen de las sucursales de Vuelve (escalonado): el complemento base cubre las primeras adicionales y cada tramo
+// tiene su propio producto (más barato). [cuántas adicionales caben en el tramo, id del producto]. Las adicionales se cuentan
+// sin la sucursal incluida: 2 adicionales = la 2ª y la 3ª ($249); de la 3ª a la 9ª adicional = de la 4ª a la 10ª ($199); de la
+// 10ª adicional en adelante = desde la 11ª ($169). Todos son complementos 'sucursal', así que guardarSuscripcion los suma.
+export const TRAMOS_SUCURSAL = {
+  prod_vuelve_sucursal_mensual: [[2, 'prod_vuelve_sucursal_mensual'], [7, 'prod_vuelve_sucursal4_mensual'], [Infinity, 'prod_vuelve_sucursal11_mensual']],
+  prod_vuelve_sucursal_anual: [[2, 'prod_vuelve_sucursal_anual'], [7, 'prod_vuelve_sucursal4_anual'], [Infinity, 'prod_vuelve_sucursal11_anual']],
+};
+// n adicionales del complemento base → [{ id, cantidad }] por tramo (los tramos sin cantidad van con 0). Sin tramos: todo al base.
+export function repartirTramos(baseId, n) {
+  const tramos = TRAMOS_SUCURSAL[baseId];
+  if (!tramos) return [{ id: baseId, cantidad: n }];
+  let resta = n;
+  return tramos.map(([cabe, id]) => { const c = Math.min(resta, cabe); resta -= c; return { id, cantidad: c }; });
+}
+
 // Renglones de la compra: el plan (1) + sus complementos del mismo intervalo (sucursales de Vuelve, profesionales de Agenda)
 export async function itemsSuscripcion(env, plan, cantidades = {}) {
   const extras = extrasDe(suscripcionDe(plan));
   const items = [{ slug: plan.slug, cantidad: 1 }];
   for (const [tipo, n] of Object.entries(cantidades)) {
     if (!(n > 0)) continue;
-    const extra = extras[tipo] && await one(env, 'SELECT slug FROM products WHERE id = ?', extras[tipo]);
-    if (!extra) throw new Error(tipo);
-    items.push({ slug: extra.slug, cantidad: n });
+    if (!extras[tipo]) throw new Error(tipo);
+    for (const t of repartirTramos(extras[tipo], n).filter(t => t.cantidad > 0)) {
+      const extra = await one(env, 'SELECT slug FROM products WHERE id = ?', t.id);
+      if (!extra) throw new Error(tipo);
+      items.push({ slug: extra.slug, cantidad: t.cantidad });
+    }
   }
   return items;
 }
@@ -227,15 +246,20 @@ export async function lugaresApp(env, email, app, extras, tipo = 'sucursal') {
   const plan = await one(env, 'SELECT contenido FROM products WHERE id = ?', s.product_id);
   let c; try { c = JSON.parse(plan?.contenido || '{}'); } catch { c = {}; }
   const id = extrasDe(c.suscripcion)[tipo];
-  const extra = id && await one(env, 'SELECT id, nombre, precio_centavos FROM products WHERE id = ?', id);
-  if (!extra) throw new Error(`Este plan no admite ${QUE[tipo]}.`);
+  const base = id && await one(env, 'SELECT id FROM products WHERE id = ?', id);
+  if (!base) throw new Error(`Este plan no admite ${QUE[tipo]}.`);
   const sub = await llamar(env, 'GET', `/subscriptions/${encodeURIComponent(s.id)}?expand[]=items.data.price.product`);
-  const renglon = (sub.items?.data || []).find(it => typeof it.price?.product === 'object' && it.price.product.metadata?.product_id === extra.id);
   const prorrateo = { proration_behavior: 'create_prorations' };
-  if (renglon && extras === 0) await llamar(env, 'DELETE', `/subscription_items/${encodeURIComponent(renglon.id)}?proration_behavior=create_prorations`);
-  else if (renglon) { if ((renglon.quantity || 0) !== extras) await llamar(env, 'POST', `/subscription_items/${encodeURIComponent(renglon.id)}`, { quantity: extras, ...prorrateo }); }
-  else if (extras > 0) await llamar(env, 'POST', '/subscription_items', { subscription: s.id, quantity: extras, ...prorrateo,
-    price_data: { currency: 'mxn', unit_amount: extra.precio_centavos, recurring: { interval: s.intervalo === 'year' ? 'year' : 'month' }, product: await productoStripe(env, extra) } });
+  // Cada tramo de precio (las sucursales de Vuelve por volumen) es su propio renglón: se ajusta cada uno a lo que le toca
+  for (const t of repartirTramos(base.id, extras)) {
+    const extra = await one(env, 'SELECT id, nombre, precio_centavos FROM products WHERE id = ?', t.id);
+    if (!extra) { if (t.cantidad > 0) throw new Error(`Este plan no admite ${QUE[tipo]}.`); continue; }
+    const renglon = (sub.items?.data || []).find(it => typeof it.price?.product === 'object' && it.price.product.metadata?.product_id === extra.id);
+    if (renglon && t.cantidad === 0) await llamar(env, 'DELETE', `/subscription_items/${encodeURIComponent(renglon.id)}?proration_behavior=create_prorations`);
+    else if (renglon) { if ((renglon.quantity || 0) !== t.cantidad) await llamar(env, 'POST', `/subscription_items/${encodeURIComponent(renglon.id)}`, { quantity: t.cantidad, ...prorrateo }); }
+    else if (t.cantidad > 0) await llamar(env, 'POST', '/subscription_items', { subscription: s.id, quantity: t.cantidad, ...prorrateo,
+      price_data: { currency: 'mxn', unit_amount: extra.precio_centavos, recurring: { interval: s.intervalo === 'year' ? 'year' : 'month' }, product: await productoStripe(env, extra) } });
+  }
   await guardarSuscripcion(env, await llamar(env, 'GET', `/subscriptions/${encodeURIComponent(s.id)}?expand[]=items.data.price.product`));
   return suscripcionApp(env, email, app);
 }

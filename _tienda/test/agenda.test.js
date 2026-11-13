@@ -269,8 +269,9 @@ describe('webhooks y RPC para Vorka OS', () => {
     expect(await A.validarAcceso(token, 'agenda')).not.toBeNull();
     expect(await A.validarAcceso(token, 'vuelve')).not.toBeNull();
     // cada app cambia su propio complemento
-    await A.lugaresApp('ana@consultorio.mx', 'vuelve', 3);
-    expect(llamada('/subscription_items/si_suc').at(-1).params.get('quantity')).toBe('3');
+    await A.lugaresApp('ana@consultorio.mx', 'vuelve', 3);   // precio por volumen: 2 a $249 y la 4ª sucursal a $199 (renglón nuevo)
+    expect(llamada('/subscription_items/si_suc').at(-1).params.get('quantity')).toBe('2');
+    expect(llamada('/subscription_items').filter(l => l.url.endsWith('/subscription_items')).at(-1).params.get('price_data[unit_amount]')).toBe('19900');
     await A.lugaresApp('ana@consultorio.mx', 'agenda', 2, 'profesional');
     expect(llamada('/subscription_items/si_prof').at(-1).params.get('quantity')).toBe('2');
     // el portal también abre desde Vuelve
