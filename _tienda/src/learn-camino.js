@@ -24,6 +24,10 @@
 //    La de vacaciones y días de descanso de fin de año (LFT vigente: artículos 74, 75, 76 a 81, 178, 179, 291-F, 334 Bis,
 //    336 Bis, 516 y 994; decreto de vacaciones dignas en el DOF del 27 de diciembre de 2022; Ley del ISR, artículo 93-XIV;
 //    y PROFEDET) se revisó el 13 de noviembre de 2026.
+//    La de finiquito y liquidación (LFT vigente: artículos 33, 47 a 50, 52, 53, 76, 79, 80, 84, 87, 89, 162, 485, 486, 516 a
+//    518, 530, 684-B y 684-E; Ley del ISR, artículo 93, fracción XIII; decreto de desindexación del salario mínimo;
+//    tabla de salarios mínimos 2026 de la CONASAMI y PROFEDET) se revisó el 15 de noviembre de 2026. La palabra
+//    «finiquito» no aparece en la LFT: la guía lo dice y explica qué pagos lo forman según la ley.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -89,10 +93,15 @@ const F = {
   lftVacaciones: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 74 a 81, 178, 179, 291-F, 334 Bis, 336 Bis, 516 y 994), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
   lisrPrima: { nombre: 'Ley del Impuesto sobre la Renta, texto vigente (última reforma DOF 01-04-2024; artículo 93, fracción XIV), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
   profedetVacaciones: { nombre: 'PROFEDET: Persona trabajadora, las vacaciones son tu derecho (23 de julio de 2025)', url: 'https://www.gob.mx/profedet/es/articulos/persona-trabajadora-las-vacaciones-son-tu-derecho?idiom=es' },
+  lftFiniquito: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 33, 47 a 50, 52, 53, 76, 79, 80, 84, 87, 89, 162, 485, 486, 516 a 518, 530, 684-B y 684-E), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
+  lisrSeparacion: { nombre: 'Ley del Impuesto sobre la Renta, texto vigente (última reforma DOF 01-04-2024; artículo 93, fracción XIII), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
+  cpeumDesindexacion: { nombre: 'Constitución Política de los Estados Unidos Mexicanos (decreto de desindexación del salario mínimo, DOF 27-01-2016, artículo transitorio tercero), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf' },
+  profedetFiniquito: { nombre: 'PROFEDET: ¿Sabes cuáles son tus derechos en caso de renuncia o despido injustificado? (7 de septiembre de 2026)', url: 'https://www.gob.mx/profedet/es/articulos/sabes-cuales-son-tus-derechos-en-caso-de-renuncia-o-despido-injustificado' },
+  conasami: { nombre: 'CONASAMI: Tabla de salarios mínimos generales y profesionales 2026 (vigentes desde el 1 de enero de 2026)', url: 'https://www.gob.mx/cms/uploads/attachment/file/1041076/Tabla_de_Salarios_M_nimos_2026.pdf' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', finiquito: 'finiquito-y-liquidacion' };
 const r = slug => `/learn/camino/${slug}/`;
 // Ejemplo con cifras inventadas (mismo marcado que en Finanzas y en la guía de la jornada)
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
@@ -160,6 +169,13 @@ const LLAMADO = {
     titulo: '¿Quieres que tus vacaciones no te dejen sin dinero en enero?',
     texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
     puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha, por ejemplo para tu próximo viaje, y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Clara para ordenar el dinero del finiquito mientras llega el siguiente trabajo (mismos datos de su ficha, src/clara.js)
+  claraFiniquito: llamadoProducto({ etiqueta: 'Ordena tu finiquito con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Te llegó el finiquito y no sabes cuánto te va a durar?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver a dónde se va el dinero mientras buscas otro trabajo.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
@@ -810,7 +826,7 @@ export const ARTICULOS_CAMINO = [
           'Días proporcionales: 12 ÷ 365 × 182 = 5.98 días.',
           'Pago: 12 ÷ 365 × 182 × $400 = <b>$2,393.42</b>.',
         ]))
-        + nota('La ley no dice cómo se calcula la prima vacacional en este caso. Revisa tu finiquito y, si tienes dudas, pregunta en la PROFEDET.') },
+        + nota(`La ley no dice cómo se calcula la prima vacacional en este caso. Revisa ${a(r(S.finiquito), 'tu finiquito')} y, si tienes dudas, pregunta en la PROFEDET.`) },
       { h2: 'Quién más tiene vacaciones', html: ul([
           '<b>Trabajadoras y trabajadores del hogar:</b> tienen vacaciones, prima vacacional y pago de días de descanso, con las mismas reglas (artículos 334 Bis y 336 Bis).',
           '<b>Plataformas digitales:</b> la ley dice que el pago por cada tarea ya incluye la parte proporcional de vacaciones y prima vacacional (artículo 291-F).',
@@ -838,11 +854,88 @@ export const ARTICULOS_CAMINO = [
       { p: '¿Cuánto me pagan si trabajo el 25 de diciembre?', r: 'El salario de ese día de descanso más un salario doble por trabajarlo, según el artículo 75 de la Ley Federal del Trabajo. Si eres menor de 18 años, no puedes trabajar ese día.' },
     ],
     fuentes: [F.lftVacaciones, F.dofVacaciones, F.profedetVacaciones, F.lisrPrima, F.profedet],
-    relacionadas: [S.jornada, S.papeles, S.cv],
+    relacionadas: [S.finiquito, S.jornada, S.papeles],
+  },
+  {
+    slug: S.finiquito, llamado: 'claraFiniquito', actualizado: '2026-11-15', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Finiquito y liquidación: cuánto te toca',
+    descripcion: 'Qué te deben pagar si renuncias o te despiden: aguinaldo y vacaciones proporcionales, indemnización, prima de antigüedad y plazos para reclamar.',
+    h1: 'Finiquito y liquidación: qué te deben pagar si renuncias o te despiden',
+    lead: 'Si dejas un trabajo, por la razón que sea, te deben pagar lo que ya ganaste. Si te despiden sin causa justificada, además te toca una indemnización. Aquí está qué entra en cada caso, cómo hacer la cuenta con un ejemplo, qué revisar antes de firmar y cuánto tiempo tienes para reclamar, con lo que dicen la Ley Federal del Trabajo, la Ley del ISR y la PROFEDET.',
+    secciones: [
+      { h2: 'Finiquito y liquidación no son lo mismo', html: p('La palabra «finiquito» no aparece en la Ley Federal del Trabajo, pero se usa para hablar de los pagos que te deben <b>siempre</b> que termina tu trabajo: renuncies, te despidan, se acabe tu contrato o lo acuerden las dos partes. Son cosas que ya ganaste con tu trabajo.')
+        + p('«Liquidación» se usa para hablar de eso <b>más una indemnización</b>, que la ley solo da en ciertos casos, sobre todo cuando te despiden sin una causa justificada.')
+        + tabla(['Cómo termina tu trabajo', 'Finiquito', 'Indemnización'], [
+          ['Renuncias', 'Sí', 'No'],
+          ['Se acaba tu contrato por tiempo u obra determinada', 'Sí', 'No'],
+          ['Te despiden con una causa del artículo 47 que la empresa puede probar', 'Sí', 'No'],
+          ['Te despiden sin causa justificada', 'Sí', '<b>Sí</b>'],
+          ['Te vas por una falta grave de la empresa (artículo 51)', 'Sí', '<b>Sí</b>'],
+        ], 'Artículos 47 a 53 de la Ley Federal del Trabajo. La prima de antigüedad tiene reglas propias: abajo te las explicamos.') },
+      { h2: 'Qué entra en el finiquito', html: ol([
+          ['Los días trabajados que no te han pagado', 'Por ejemplo, la última semana o quincena.'],
+          ['El aguinaldo proporcional', 'El aguinaldo es de por lo menos 15 días de salario al año. Si no completaste el año, te toca la parte proporcional al tiempo que trabajaste, aunque ya no estés en la empresa cuando se paga (artículo 87).'],
+          ['Las vacaciones', 'Las que ya ganaste y no tomaste, más la parte proporcional del año en curso: la ley dice que, si la relación termina antes de cumplir el año, te toca una remuneración proporcional al tiempo trabajado (artículos 76 y 79).'],
+          ['La prima vacacional', 'De por lo menos 25 % sobre el salario de tus vacaciones (artículo 80). La ley no dice expresamente cómo se aplica a la parte proporcional; si no aparece en tu finiquito, pregunta por qué.'],
+          ['Lo que diga tu contrato', 'Si tu contrato o tu empresa te dan más que la ley (más días de aguinaldo, por ejemplo), la cuenta se hace con eso.'],
+        ])
+        + p(`Cuántos días de vacaciones te tocan por cada año de trabajo lo explicamos en ${a(r(S.vacaciones), 'la guía de vacaciones')}.`)
+        + ejemplo('Ganas $400 al día. Este año trabajaste 200 días, renuncias y te deben 5 días de tu última semana. Aún no cumples un año. ¿Cuánto debería sumar tu finiquito?', ul([
+          'Días pendientes: 5 × $400 = <b>$2,000</b>.',
+          'Aguinaldo proporcional: 15 ÷ 365 × 200 × $400 = <b>$3,287.67</b>.',
+          'Vacaciones proporcionales: 12 ÷ 365 × 200 × $400 = <b>$2,630.14</b>.',
+          'Subtotal: $2,000 + $3,287.67 + $2,630.14 = <b>$7,917.81</b>.',
+          'Si la prima vacacional se calcula como 25 % de las vacaciones proporcionales: 25 % de $2,630.14 = <b>$657.53</b>, y el total sería <b>$8,575.34</b>.',
+        ]))
+        + nota('Es una cuenta antes de impuestos. Tu salario y tus días reales vienen en tu contrato y en tus recibos de nómina.') },
+      { h2: 'Qué entra en la liquidación', html: p('Si te despiden sin causa justificada, la ley te deja elegir (artículo 48): pedir que te <b>reinstalen</b> en tu trabajo o que te <b>indemnicen con tres meses de salario</b>. Eso se pide primero ante el Centro de Conciliación y, si no hay arreglo, ante el Tribunal laboral. Además del finiquito, puede entrar:')
+        + ul([
+          '<b>Tres meses de salario</b> como indemnización (artículo 48).',
+          '<b>La prima de antigüedad:</b> 12 días de salario por cada año de servicio, para trabajadores de planta. Si te despiden se paga sin importar cuántos años llevas, y la ley dice que se paga haya sido justificado o no el despido (artículo 162).',
+          '<b>Veinte días de salario por cada año</b>, pero solo en ciertos casos: cuando la ley permite a la empresa no reinstalarte (por ejemplo, si tenías menos de un año, si eras de confianza o eventual) o cuando tú te vas por una falta grave de la empresa (artículos 49, 50 y 52). Si tu contrato era por tiempo determinado, el artículo 50 tiene reglas propias.',
+          '<b>Salarios vencidos:</b> si llegas a juicio y la empresa no prueba la causa del despido, te debe además los salarios desde el despido, hasta por 12 meses (artículo 48).',
+        ])
+        + p('Para estas indemnizaciones se usa el salario del día en que nace el derecho, sumando la cuota diaria y la parte proporcional de otras prestaciones que recibas, como primas o comisiones (artículos 84 y 89). Para la prima de antigüedad, si tu salario pasa del doble del salario mínimo, se toma el doble del salario mínimo como tope (artículos 162 y 486). En 2026 el salario mínimo general es de 315.04 pesos diarios y el de la Zona Libre de la Frontera Norte, de 440.87 pesos (CONASAMI).')
+        + ejemplo('Ganas $400 al día, ya con tus prestaciones. Trabajaste dos años, de planta, y te despiden sin causa justificada. Eliges la indemnización. ¿Qué te tocaría además del finiquito?', ul([
+          'Tres meses de salario; para el ejemplo los contamos como 90 días: 90 × $400 = <b>$36,000</b>.',
+          'Prima de antigüedad: 12 × 2 × $400 = <b>$9,600</b>. Tu salario no pasa del tope de dos salarios mínimos (2 × $315.04 = $630.08), así que se usa completo.',
+          'Suma de estas dos partes: $36,000 + $9,600 = <b>$45,600</b>, más tu finiquito.',
+        ]))
+        + nota('Cómo se cuentan los tres meses y qué prestaciones entran en tu salario depende de tu caso. Pide a la PROFEDET que revise tu cuenta antes de aceptar un monto.') },
+      { h2: 'Si renuncias', html: p('Si renuncias, te toca tu finiquito completo, pero no la indemnización. La prima de antigüedad solo se paga a quien se va por su voluntad si ya cumplió <b>por lo menos 15 años</b> de servicio (artículo 162).')
+        + p('Esto es consejo nuestro: avisa por escrito con la fecha de tu último día y pide que te digan cuándo y cómo te van a pagar. Guarda una copia de tu renuncia firmada de recibido.') },
+      { h2: 'Antes de firmar', html: p('La ley dice que <b>es nula la renuncia a los salarios ganados, a las indemnizaciones y a las demás prestaciones</b>, como sea que se llame el papel que firmes (artículo 33). También dice que un convenio o liquidación debe hacerse por escrito, explicar los hechos y los derechos que incluye, y ratificarse ante el Centro de Conciliación o el Tribunal, que lo aprueba si no tiene renuncia de derechos.')
+        + p('Y si te despiden, la empresa debe darte un <b>aviso por escrito</b> con la conducta que motiva el despido y las fechas. Si no te lo da ni lo manda por medio del Tribunal, se presume que el despido fue injustificado, salvo prueba en contrario (artículo 47).')
+        + p('Esto es consejo nuestro:')
+        + ul([
+          'No firmes hojas en blanco ni una renuncia que no escribiste tú.',
+          'Pide el desglose: cuántos días de cada concepto y con qué salario se calculó.',
+          'Compara con tus recibos de nómina y haz tu propia cuenta con el ejemplo de arriba.',
+          'Pide una copia de todo lo que firmes.',
+        ]) },
+      { h2: 'Los impuestos', html: p(`Lo que entra en el finiquito paga impuestos como siempre: el aguinaldo y la prima vacacional tienen su parte exenta, que explicamos en ${a('/learn/finanzas/aguinaldo-cuanto-te-toca/', 'la guía del aguinaldo')} y en ${a(r(S.vacaciones), 'la de vacaciones')}.`)
+        + p('Para la indemnización y la prima de antigüedad, la Ley del ISR (artículo 93, fracción XIII) deja libre de impuestos hasta <b>noventa veces el salario mínimo general por cada año de servicio</b>; lo que pase de ahí paga ISR. Por la reforma constitucional de desindexación de 2016, las referencias al salario mínimo como unidad de medida se entienden hechas a la UMA. Tu retención exacta debe venir en el recibo de tu finiquito.') },
+      { h2: 'Si no te pagan o no estás de acuerdo', html: ol([
+          ['Fíjate en los plazos', 'Si te despidieron, tienes <b>dos meses</b> desde el día siguiente al despido para reclamar (artículo 518). Para cobrar prestaciones como el aguinaldo o las vacaciones, en general tienes un año desde que te las debían pagar (artículo 516). Si te quieres ir por una falta grave de la empresa, tienes 30 días (artículo 52).'],
+          ['Pide asesoría gratis', 'La Procuraduría de la Defensa del Trabajo puede asesorarte y representarte (artículo 530). La federal, PROFEDET, da orientación, asistencia en conciliación y representación jurídica gratuitas; publica el teléfono 55 5998 2000 y también atiende por el 079, la línea del Gobierno de México. Aclara que nadie puede cobrarte por su asesoría.'],
+          ['Ve al Centro de Conciliación', 'Antes de ir a juicio hay que pedir una conciliación en el Centro de Conciliación que corresponda (artículo 684-B). Los Centros deben darte asesoría jurídica gratis sobre tus derechos y tus plazos, y la audiencia debe hacerse dentro de los 15 días siguientes a tu solicitud (artículo 684-E).'],
+        ])
+        + p('Para la primera visita, la PROFEDET recomienda llevar tu identificación oficial, el nombre de tu empleador, el domicilio donde trabajabas y tus recibos de nómina, si los tienes.')
+        + p('Esto es consejo nuestro: no esperes al último día. Junta también tu contrato, mensajes y cualquier papel que te hayan dado al salir.') },
+    ],
+    faq: [
+      { p: '¿Cuál es la diferencia entre finiquito y liquidación?', r: 'El finiquito es lo que ya ganaste y te deben siempre que termina tu trabajo: días pendientes, aguinaldo y vacaciones proporcionales y prima vacacional. La liquidación es eso más una indemnización, que la ley da sobre todo si te despiden sin causa justificada.' },
+      { p: '¿Si renuncio me toca finiquito?', r: 'Sí. Renunciar no te quita lo que ya ganaste. Lo que no te toca es la indemnización, y la prima de antigüedad solo si ya cumpliste por lo menos 15 años de servicio.' },
+      { p: '¿Me toca aguinaldo si dejo el trabajo antes de diciembre?', r: 'Sí. El artículo 87 de la Ley Federal del Trabajo dice que te toca la parte proporcional al tiempo que trabajaste, aunque ya no estés en la empresa cuando se paga el aguinaldo.' },
+      { p: '¿Cuánto tiempo tengo para reclamar si me despidieron?', r: 'Dos meses, contados desde el día siguiente al despido (artículo 518). Antes de ir a juicio hay que pedir la conciliación en el Centro de Conciliación que corresponda.' },
+      { p: '¿Me pueden obligar a firmar mi renuncia para pagarme?', r: 'La ley dice que es nula cualquier renuncia a tus salarios, indemnizaciones o prestaciones, como sea que se llame el papel. Si te presionan para firmar, pide asesoría gratis en la PROFEDET antes de hacerlo.' },
+    ],
+    fuentes: [F.lftFiniquito, F.profedetFiniquito, F.lisrSeparacion, F.cpeumDesindexacion, F.conasami],
+    relacionadas: [S.vacaciones, S.papeles, S.cv],
   },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO ni a la PROFEDET.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, a la CONASAMI ni a los Centros de Conciliación.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
