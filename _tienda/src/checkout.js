@@ -7,10 +7,10 @@ import { crearOrden, aplicarPago, guardarSesion, registrarAnalitica, dentroDelLi
 import { proveedor } from './pagos/index.js';
 import { puedeComprarIntento, simuladorDe } from './simulador/index.js';
 import { productoPorSlug, precioIntervalo } from './modelo.js';
-import { resolverDescuento, duracionDe, lineaCompra, centavosDe } from './descuentos.js';
+import { resolverDescuento, duracionDe, lineaCompra, centavosDe, NOMBRE_APP } from './descuentos.js';
 import { alCrearOrden, paqueteCheckout } from './tests/index.js';
 import { cuentaActual, saldoDe } from './puntos.js';
-import { suscripcionDe, itemsSuscripcion, vigente, extrasDe } from './suscripciones.js';
+import { suscripcionDe, itemsSuscripcion, vigente, extrasDe, PAQUETES } from './suscripciones.js';
 import { guardarNavegador, inicioPagoMeta } from './meta.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
@@ -113,14 +113,14 @@ export async function checkout(req, env, ctx) {
     for (const app of plan.creador_id ? [] : acceso.apps || [acceso.app]) {
       const ya = await vigente(env, d.email, app);
       if (!ya) continue;
-      if (ya.app !== acceso.app) return error(`Con este correo ya pagas ${ya.app === 'agenda-vuelve' ? 'el paquete Agenda + Vuelve' : app === 'vuelve' ? 'Vuelve' : 'Agenda'}. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble.`, 409);
+      if (ya.app !== acceso.app) return error(`Con este correo ya pagas ${PAQUETES[ya.app] ? `el paquete ${NOMBRE_APP[ya.app] || ya.app}` : NOMBRE_APP[ya.app] || ya.app}. Para cambiar de plan escríbenos a hola@vorka.mx y lo hacemos sin cobrarte doble.`, 409);
       return error('Ya tienes una suscripción activa con este correo. Adminístrala desde la app, en Cuenta.', 409);
     }
     if (!plan.creador_id) try { items = await itemsSuscripcion(env, plan, { profesional: Math.max(0, (d.profesionales || 1) - 1), sucursal: d.sucursales || 0 }); }
     catch (e) {
       const tiene = !!extrasDe(suscripcionDe(plan))[e.message];
       if (e.message === 'profesional') return error(tiene ? 'Los profesionales adicionales no están disponibles por ahora.' : 'Este plan no lleva profesionales adicionales.');
-      return error(tiene ? 'Las sucursales adicionales no están disponibles por ahora.' : 'Este plan no lleva sucursales de Vuelve; déjalas en 0.');
+      return error(tiene ? 'Las sucursales adicionales no están disponibles por ahora.' : 'Este plan no lleva sucursales adicionales; déjalas en 0.');
     }
     if (d.instalacion) {
       const inst = suscripcionDe(plan).instalacion && await one(env, 'SELECT slug FROM products WHERE id = ? AND activo = 1', suscripcionDe(plan).instalacion);
