@@ -31,6 +31,7 @@ import { paginaBrindi, validarAcceso, comprasApp, resumenApp, productosApp, VARI
 import { paginaCupo } from './cupo.js';
 import { paginaVuelve, paginaVuelveEmpezar } from './vuelve.js';
 import { paginaAgenda } from './agenda.js';
+import { paginaBrillo } from './brillo.js';
 import { paginaCuentas } from './cuentas.js';
 import { paginaPaginaWeb } from './paginaweb.js';
 import { paginaNegocioCompleto } from './negociocompleto.js';
@@ -483,6 +484,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/simuladores' || url.pathname === '/tienda/simuladores/') return url.pathname.endsWith('/') ? await paginaSimuladores(env, request, url) : Response.redirect(`${url.origin}/tienda/simuladores/${url.search}`, 301);
       { const m = url.pathname.match(/^\/tienda\/(simuladores-[a-z-]+)\/?$/);
         if (m && PAQUETES_SIMULADORES.includes(m[1])) { const q = new URLSearchParams(url.search); q.set('paquete', m[1]); return Response.redirect(`${url.origin}/tienda/simuladores/?${q}#comprar`, 301); } }
+      if (url.pathname === '/tienda/brillo' || url.pathname === '/tienda/brillo/') return url.pathname.endsWith('/') ? await paginaBrillo(env, request, url) : Response.redirect(`${url.origin}/tienda/brillo/${url.search}`, 301);
       if (url.pathname === '/tienda/agenda' || url.pathname === '/tienda/agenda/') return url.pathname.endsWith('/') ? await paginaAgenda(env, request, url) : Response.redirect(`${url.origin}/tienda/agenda/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve/empezar' || url.pathname === '/tienda/vuelve/empezar/') return url.pathname.endsWith('/') ? await paginaVuelveEmpezar(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/empezar/${url.search}`, 301);
       if (url.pathname === '/tienda/vuelve' || url.pathname === '/tienda/vuelve/') return url.pathname.endsWith('/') ? await paginaVuelve(env, request, url) : Response.redirect(`${url.origin}/tienda/vuelve/${url.search}`, 301);

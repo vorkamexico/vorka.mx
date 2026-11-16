@@ -18,6 +18,7 @@ ACTUALIZADO_VUELVE = '20 de octubre de 2026'
 ACTUALIZADO_CUENTAS = '22 de octubre de 2026'
 ACTUALIZADO_VENDE = '24 de octubre de 2026'
 ACTUALIZADO_AGENDA = '26 de octubre de 2026'
+ACTUALIZADO_BRILLO = '16 de noviembre de 2026'
 ACTUALIZADO_CLARA = '1 de noviembre de 2026'
 RESPONSABLE = 'Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial Vorka México'
 DOMICILIO = 'Nuevo León #305, Col. Alameda, C.P. 38050, Celaya, Guanajuato, México'
@@ -415,6 +416,56 @@ AGENDA = [
     ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes de México.</p>'),
 ]
 
+# Brillo (control diario para estéticas y salones por suscripción; la app en brillo.vorka.mx). Mismas bases que Agenda y Vuelve
+# (LFPDPPP 2025, LFPC: renovación automática informada y cancelación por el mismo medio). Aquí además: datos del equipo del salón
+# (sueldos, comisiones, evaluaciones) y la conexión opcional con Google Calendar. Debe revisarlo un abogado.
+MIGAS_BRILLO = '<a href="/tienda/">Tienda</a><span>/</span><a href="/tienda/brillo/">Brillo</a>'
+BRILLO = [
+    ('quien', 'Quién presta el servicio', f'<p>Brillo es una herramienta para administrar el día a día de estéticas, salones, barberías, estudios de uñas y spas (registro de servicios, lista de precios, agenda, corte de caja, incidencias, inventario, gastos y evaluación del equipo), desarrollada y prestada por {RESPONSABLE} (en adelante, “Vorka”), con domicilio en {DOMICILIO}. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p><p>Estas condiciones son el contrato entre Vorka y el negocio que usa Brillo (“tú”). Al crear tu cuenta o suscribirte las aceptas, junto con los <a href="/legal/terminos/">términos de la tienda</a> y el <a href="/legal/brillo/privacidad/">aviso de privacidad de Brillo</a>.</p>'),
+    ('prueba', 'Prueba gratis', li(
+        'Al dar de alta tu salón tienes 7 días naturales con todas las funciones, sin dar una tarjeta. No se te cobra nada al terminar.',
+        'Si al terminar la prueba no te suscribes, Brillo queda en pausa: puedes consultar todo, pero no registrar ni cambiar nada. Tu información se queda guardada y, si te suscribes, todo sigue donde lo dejaste.')),
+    ('suscripcion', 'Planes, precio y renovación automática', li(
+        'Los planes son <b>mensuales o anuales</b>, en pesos mexicanos con IVA incluido: <b>Básico</b> (una sucursal y hasta 3 personas del equipo además de la dueña) y <b>Profesional</b> (hasta 8 personas). Cada sucursal adicional se suma a tu plan con el mismo periodo. El precio vigente se muestra en <a href="/tienda/brillo/">vorka.mx/tienda/brillo</a> antes de pagar.',
+        'El <b>paquete Brillo + Vuelve + Agenda</b> es una sola suscripción que abre las tres apps con el mismo correo. Para Vuelve y Agenda aplican además sus propias <a href="/legal/vuelve/">condiciones de Vuelve</a> y <a href="/legal/agenda/">condiciones de Agenda</a>.',
+        '<b>La suscripción se renueva sola</b> al final de cada periodo y se cobra a la tarjeta que registraste, a través de Stripe. Vorka nunca recibe los datos de tu tarjeta.',
+        'Si agregas o quitas sucursales a mitad de un periodo, Stripe calcula la parte proporcional y la suma o la descuenta en tu siguiente cobro.',
+        'Si un cobro falla, Stripe lo reintenta durante algunos días y te avisamos; mientras tanto Brillo sigue funcionando. Si no se logra cobrar, la suscripción se cancela y Brillo queda en pausa.',
+        'Si cambiamos el precio, te avisamos por correo al menos 30 días antes y el nuevo precio aplica hasta tu siguiente renovación después de ese aviso.',
+        'Si necesitas factura (CFDI), pídela a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales dentro del mismo mes del cobro.')),
+    ('cancelar', 'Cancelación y reembolsos', li(
+        'Cancelas cuando quieras desde Brillo › Cuenta › Administrar mi suscripción, sin llamadas ni trámites. Brillo sigue activo hasta el final del periodo que ya pagaste; no se hacen cobros nuevos.',
+        'Por ser un servicio que se presta de inmediato, no hay reembolsos proporcionales por cancelar a la mitad de un periodo, salvo que una falla atribuible a Brillo te impida usarlo y no la resolvamos en un plazo razonable; en ese caso te devolvemos la parte proporcional.',
+        'Si pagaste un plan anual y cancelas dentro de los 10 días naturales siguientes al primer cobro, te devolvemos tu dinero completo si lo pides a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.')),
+    ('negocio', 'Tu negocio, tu dinero y tus decisiones', li(
+        'Brillo <b>registra y calcula</b>: no cobra a tus clientas, no recibe ni guarda dinero y no paga sueldos. Los cortes, comisiones, utilidad y reportes salen de lo que tu equipo registra; revísalos antes de tomar decisiones o de pagar.',
+        'Tú defines tus precios, comisiones, sueldos, reglas y protocolos. Frente a tus clientas, el servicio lo das tú.',
+        'Las evaluaciones del equipo son una herramienta de gestión. Las decisiones laborales que tomes con ellas son tuyas y deben apegarse a la legislación laboral aplicable.')),
+    ('datos', 'Datos de tus clientas y de tu equipo', f'<p>Tú eres el <b>responsable</b> de los datos de las personas que atiende tu salón (nombre, WhatsApp, sus servicios, anticipos, citas y notas) y de los de tu equipo (nombre, puesto, sueldo, comisiones, asistencia, tareas, registros y evaluaciones). Vorka los trata <b>solo por tu cuenta</b> (como encargado) para prestarte el servicio. Te comprometes a informar a tus clientas y a tu equipo cómo usas sus datos, a usarlos solo para la operación del salón, a no venderlos y a atender sus peticiones de corregir o borrar sus datos.</p><p>Brillo <b>no guarda las fotos de los trabajos</b>: solo recuerda mandarlas al grupo de WhatsApp del salón y anota si la clienta lo autorizó. Las fotos de incidencias y garantías sí se guardan, como evidencia, y solo las ve la administración del salón. Súbelas solo con autorización de la clienta.</p>'),
+    ('google', 'Google Calendar', '<p>Si conectas el Google Calendar del salón, Brillo crea, mueve y cancela ahí las citas que agendes y muestra en tu agenda los eventos de ese calendario. Solo pide permiso para ver y editar eventos y para ver la lista de tus calendarios, y usa esos datos solo para esto, conforme a la Política de Datos del Usuario de los Servicios de las APIs de Google. Puedes desconectarlo cuando quieras desde Brillo o desde tu cuenta de Google.</p>'),
+    ('uso', 'Uso aceptable', li(
+        'Solo para negocios reales y lícitos. No se permite usar Brillo para registrar datos de personas sin su conocimiento ni para fines distintos a la operación del salón.',
+        'Podemos suspender una cuenta que incumpla estas reglas; te avisaremos el motivo. Si la suspensión fue por un error nuestro, te reembolsamos el periodo afectado.')),
+    ('disponibilidad', 'Disponibilidad', '<p>Hacemos lo razonable para que Brillo esté disponible siempre, pero puede haber interrupciones por mantenimiento o fallas de terceros (internet, Google, proveedores de correo).</p>'),
+    ('conservacion', 'Qué pasa con tus datos si te vas', '<p>Si cancelas o tu prueba termina sin suscripción, conservamos la información de tu salón 90 días después del fin de tu último periodo, por si vuelves. Después se borra de forma definitiva, salvo lo que la ley nos obligue a conservar (por ejemplo, tus facturas). Puedes pedir que la borremos antes o descargar tus registros en CSV.</p>'),
+    ('cambios', 'Cambios, quejas y ley aplicable', '<p>Si cambiamos estas condiciones, te avisamos por correo y publicamos la versión nueva aquí con su fecha. Si tienes una queja, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>; te respondemos en un máximo de 5 días hábiles. También puedes acudir a la Procuraduría Federal del Consumidor (Profeco). Estas condiciones se rigen por las leyes de México.</p>'),
+]
+BRILLO_PRIVACIDAD = [
+    ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de los negocios y de las personas que los administran en Brillo (dueña, administración y finanzas). Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. Los datos de las clientas y del equipo de cada salón los trata Vorka por cuenta del salón, que es su responsable.</p>'),
+    ('datos', 'Qué datos tratamos', li(
+        '<b>Cuenta:</b> correo electrónico y, si la creas, tu contraseña (guardada cifrada de forma irreversible). El equipo que entra con PIN: su nombre y su PIN (guardado cifrado).',
+        '<b>Tu salón:</b> nombre, logo, color, sucursales, lista de precios, protocolos, equipo, sueldos y comisiones, registros de servicios, cortes, incidencias, inventario, gastos y evaluaciones.',
+        '<b>Google Calendar (opcional):</b> si lo conectas, el correo de la cuenta de Google y los eventos del calendario que elijas.',
+        '<b>Suscripción:</b> plan, sucursales, monto, fechas y estado de tus pagos. Los datos de tu tarjeta los procesa Stripe; Vorka no los recibe.',
+        '<b>Uso y seguridad:</b> bitácora de acciones y una huella cifrada e irreversible de la dirección IP para limitar intentos repetidos.') + '<p>No pedimos datos personales sensibles. Te pedimos no capturar datos de salud en las notas.</p>'),
+    ('finalidades', 'Para qué los usamos', '<p><b>Finalidades necesarias:</b> crear y mantener tu cuenta; prestar el servicio; cobrar tu suscripción y emitir facturas; enviarte correos de tu cuenta (accesos y avisos de cobro); darte soporte y cumplir obligaciones legales; mantener la seguridad y obtener estadísticas agregadas que no te identifican. <b>Finalidad opcional:</b> enviarte novedades de Vorka México. Puedes negarte escribiendo a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> sin que eso afecte tu servicio.</p>'),
+    ('compartir', 'Con quién los compartimos', '<p>No vendemos ni rentamos tus datos. Usamos proveedores que los tratan solo por nuestra cuenta: <b>Cloudflare</b> (alojamiento, base de datos e imágenes), <b>Stripe</b> (cobro de la suscripción), <b>Google</b> (solo si conectas tu calendario) y <b>Amazon Web Services</b> (Amazon SES), <b>Resend</b> y <b>Brevo</b> (correos), algunos con servidores fuera de México.</p>'),
+    ('arco', 'Tus derechos ARCO', '<p>Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, y revocar tu consentimiento. Mucho lo haces desde tu cuenta. Para lo demás, escribe a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con:</p>' + ARCO + ARCO_PLAZOS),
+    ('conservacion', 'Cuánto tiempo los conservamos', li('Cuenta y salón: mientras uses Brillo y hasta 90 días después del fin de tu último periodo.', 'Suscripción y facturación: durante los plazos fiscales (al menos 5 años).', 'Huellas de IP: se borran a más tardar 2 días después.')),
+    ('cookies', 'Cookies', '<p>La app usa dos cookies necesarias: <code>vbl</code> para la sesión de la dueña, la administración y finanzas, y <code>vble</code> para el turno de cada técnica (12 horas). No usa cookies de rastreo.</p>'),
+    ('cambios', 'Cambios a este aviso', '<p>Publicaremos cualquier cambio en esta página con su fecha y, si es relevante, te avisaremos por correo antes de que aplique.</p>'),
+]
+
 AGENDA_PRIVACIDAD = [
     ('responsable', 'Quién es el responsable', f'<p>{RESPONSABLE} (“Vorka”), con domicilio en {DOMICILIO}, es responsable del tratamiento de los datos de los negocios y de las personas que los administran en Agenda. Contacto: <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>. Si agendaste una cita con un negocio que usa Agenda, consulta el <a href="{PRIVACIDAD_CLIENTES_AGENDA}">aviso para clientes</a>.</p>'),
     ('datos', 'Qué datos tratamos', li(
@@ -699,6 +750,12 @@ escribir('/legal/agenda/', pagina('/legal/agenda/', 'Condiciones de Agenda', 'Co
 escribir('/legal/agenda/privacidad/', pagina('/legal/agenda/privacidad/', 'Aviso de privacidad de Agenda', 'Aviso de privacidad de <span class="metal">Agenda.</span>',
     'Qué datos tratamos de los negocios que usan Agenda, para qué y cómo ejercer tus derechos.', 'Agenda · Negocios', AGENDA_PRIVACIDAD,
     aplica='Aplica a los negocios que usan Agenda', migas=MIGAS_AGENDA, actualizado=ACTUALIZADO_AGENDA))
+escribir('/legal/brillo/', pagina('/legal/brillo/', 'Condiciones de Brillo', 'Condiciones de <span class="metal">Brillo.</span>',
+    'El contrato entre Vorka México y el salón que usa Brillo: prueba gratis, planes con renovación automática, el paquete con Vuelve y Agenda, cancelación, tu dinero y los datos de tus clientas y tu equipo.', 'Brillo', BRILLO,
+    aplica='Aplica a los salones que usan Brillo', migas=MIGAS_BRILLO, actualizado=ACTUALIZADO_BRILLO))
+escribir('/legal/brillo/privacidad/', pagina('/legal/brillo/privacidad/', 'Aviso de privacidad de Brillo', 'Aviso de privacidad de <span class="metal">Brillo.</span>',
+    'Qué datos tratamos de los salones que usan Brillo, para qué y cómo ejercer tus derechos.', 'Brillo · Salones', BRILLO_PRIVACIDAD,
+    aplica='Aplica a los salones que usan Brillo', migas=MIGAS_BRILLO, actualizado=ACTUALIZADO_BRILLO))
 escribir('/legal/clara/', pagina('/legal/clara/', 'Condiciones de Clara', 'Condiciones de <span class="metal">Clara.</span>',
     'El contrato entre Vorka México y quien usa Clara para organizar sus tarjetas y su dinero: qué es y qué no es, edad mínima, plan gratis, Clara Pro con renovación automática, cálculos estimados, cancelación y datos.', 'Clara', CLARA,
     aplica='Aplica a quien usa clara.vorka.mx', migas=MIGAS_CLARA, actualizado=ACTUALIZADO_CLARA))

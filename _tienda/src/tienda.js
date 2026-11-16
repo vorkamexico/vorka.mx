@@ -129,6 +129,7 @@ const SIM_TIENDA = {
 };
 const APPS_TIENDA = {
   vuelve: { nombre: 'Vuelve · Tarjetas de lealtad', precio: p => `${precio(p)} al mes` },
+  brillo: { nombre: 'Brillo · Control para estéticas y salones', precio: p => `Desde ${precio(p)} al mes` },
   vende: { nombre: 'Vende · Pedidos y cobros', precio: () => 'Empieza gratis' },   // corto, en un renglón (el precio de Pro está en su ficha)
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
   'pagina-web': { nombre: 'Tu página web · Diseño y mantenimiento', precio: p => `${precio(p)} al mes` },
@@ -189,7 +190,7 @@ const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['ruta', 'Proyectos · Ruta de Impacto', '/tienda/ruta-de-impacto/'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
-  ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+  ['salones', 'Salones · Brillo', '/tienda/brillo/'], ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
 
@@ -465,6 +466,11 @@ export async function paginaProducto(env, req, url, slug) {
   }
   // Negocio Completo (se guarda como paquete Agenda + Vuelve) tiene su propia página
   if (p?.contenido?.acceso?.pagina) return new Response(null, { status: 301, headers: { location: p.contenido.acceso.ruta || '/tienda/', 'cache-control': 'public, max-age=3600' } });
+  // Brillo y su paquete con Vuelve y Agenda: planes y sucursales en su página única
+  if (['brillo', 'brillo-paquete'].includes(p?.contenido?.acceso?.app)) {
+    const q = new URLSearchParams(url.search); q.set('plan', p.slug);
+    return new Response(null, { status: 301, headers: { location: `/tienda/brillo/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
+  }
   // Agenda y su paquete con Vuelve: planes y profesionales en su página única
   if (['agenda', 'agenda-vuelve'].includes(p?.contenido?.acceso?.app)) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);

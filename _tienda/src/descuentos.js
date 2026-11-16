@@ -15,11 +15,11 @@ import { lineaDe, LINEAS } from './lineas.js';
 
 export const PCT_REFERIDO = 5;
 export const REFERIDO = 'REFERIDO';   // descuento_codigo de la orden cuando el descuento fue el 5 % por recomendación
-export const NOMBRE_APP = { vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', vende: 'Vende Pro', cuentas: 'Cuentas', clara: 'Clara Pro' };
+export const NOMBRE_APP = { vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', brillo: 'Brillo', 'brillo-paquete': 'Brillo + Vuelve + Agenda', vende: 'Vende Pro', cuentas: 'Cuentas', clara: 'Clara Pro' };
 const SIN_APP = 'tienda';             // tope por app en una compra que no es suscripción
 // App en la que cuenta el lugar de un código con tope por app (max_por_app). Decisión del dueño: el paquete Agenda + Vuelve
 // cuenta dentro de los lugares de Agenda (no tiene los suyos y no gasta uno de Vuelve).
-const CUPO_DE = { 'agenda-vuelve': 'agenda' };
+const CUPO_DE = { 'agenda-vuelve': 'agenda', 'brillo-paquete': 'brillo' };
 export const appDelCupo = app => (app ? CUPO_DE[app] || app : SIN_APP);
 
 export const normalizar = c => String(c ?? '').trim().toUpperCase();

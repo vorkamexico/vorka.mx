@@ -17,6 +17,7 @@ export const MARCAS = {
   'simulador-prepa-ug': ['#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']],
   brindi: ['#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']],
   cupo: ['#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']],
+  brillo: ['#A3245E', 'Brillo', 'Tu salón en orden, [aunque no estés.]', ['Registro en **segundos**', 'Corte de caja **diario**', 'Prueba **7 días** gratis']],
   agenda: ['#05785A', 'Agenda', 'Tus clientes reservan solos, [a cualquier hora.]', ['Confirmación **al instante**', 'Recordatorios **automáticos**', 'Prueba **7 días** gratis']],
   vuelve: ['#B42A44', 'Vuelve', 'Que tus clientes [vuelvan solos.]', ['**Sin** descargar app', 'Avisos **automáticos**', 'Prueba **7 días** gratis']],
   cuentas: ['#0E6F78', 'Cuentas', 'Lo que prestas, [claro y en orden.]', ['Intereses **claros**', '**PDF** y Excel', 'Prueba **7 días** gratis']],

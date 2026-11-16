@@ -27,6 +27,7 @@ V4 = {
   'simulador-prepa-ug': ('#2B8A3E', 'Simulador prepa UG', 'Prepárate para el EXANI-I [de la prepa de la UG.]', 'Simulacros completos y práctica por área con tutor.', ['**400** reactivos', '**5** áreas', '**160** reactivos en 4.5 h']),
   'brindi': ('#8A2E4A', 'Brindi', 'Tu invitación digital, [lista en minutos.]', 'Confirmaciones al momento y acceso con QR para bodas, XV años y toda celebración.', ['**6** diseños premium', 'Confirmaciones **al momento**', 'Pase con **QR**']),
   'cupo': ('#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', 'Cobra el cover sin comisión por boleto y controla la entrada con QR.', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']),
+  'brillo': ('#A3245E', 'Brillo', 'Tu salón en orden [aunque no estés.]', 'Cada técnica registra sus servicios en su celular; tú ves ventas, caja, incidencias y a tu equipo.', ['Registro en **segundos**', 'Corte de caja **diario**', 'Prueba **7 días** gratis']),
   'agenda': ('#05785A', 'Agenda', 'Tus clientes reservan solos, [a cualquier hora.]', 'Confirmación al instante y recordatorios para que nadie falte.', ['Confirmación **al instante**', '**Recordatorios**', 'Prueba **7 días** gratis']),
   'vuelve': ('#B42A44', 'Vuelve', 'Que tus clientes [vuelvan solos.]', 'Tarjeta de sellos o puntos en Apple y Google Wallet, con avisos automáticos.', ['**Sin** descargar app', 'Avisos **automáticos**', 'Prueba **7 días** gratis']),
   'cuentas': ('#0E6F78', 'Cuentas', 'Lo que prestas, [claro y en orden.]', 'Cada abono, intereses claros y el saldo al día de tus préstamos personales.', ['Intereses **claros**', '**PDF** y Excel', 'Prueba **7 días** gratis']),
@@ -143,6 +144,17 @@ def obj_agenda():
   <div style="background:#05785A;color:#fff;font:800 24px Inter,sans-serif;letter-spacing:.14em;padding:16px">JUEVES</div><div style="font:850 140px/1.2 Inter,sans-serif;letter-spacing:-.06em;color:#141114">14</div></div>
 {hoja_papel(60, 300, 520, 640, -3, eti('#05785A', 'Agenda de hoy') + '<div style="font:850 38px Inter,sans-serif;letter-spacing:-.03em;margin-top:10px">Estética Lumbre</div>' + filas)}"""
 
+def obj_brillo():
+    R = '#A3245E'
+    tecs = ''.join(f'<div style="display:flex;align-items:center;gap:14px;margin-top:14px"><span style="width:44px;height:44px;border-radius:50%;background:#F7E8EF;color:{R};display:grid;place-items:center;font:700 19px Inter,sans-serif">{n[0]}</span><div style="flex:1"><b style="font:650 20px Inter,sans-serif">{n}</b><div style="height:6px;border-radius:3px;background:#EFE9EC;margin-top:8px"><div style="width:{w}%;height:6px;border-radius:3px;background:{R}"></div></div></div><b style="font:700 20px Inter,sans-serif">{m}</b></div>' for n, w, m in [('Karla', 92, '$3,050'), ('Mónica', 64, '$2,100'), ('Sara', 28, '$900')])
+    return f"""
+{hoja_papel(50, 170, 540, 600, -4, eti(R, 'Corte del día') + '<div style="font:850 38px Inter,sans-serif;letter-spacing:-.03em;margin-top:10px">Estética Lumbre</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px"><div style="border:1px solid #EEE7EB;border-radius:14px;padding:14px 16px"><div style="font:500 16px Inter,sans-serif;color:#6B6570">Vendido hoy</div><b style="font:800 34px Inter,sans-serif;letter-spacing:-.03em">$6,050</b></div><div style="border:1px solid #EEE7EB;border-radius:14px;padding:14px 16px"><div style="font:500 16px Inter,sans-serif;color:#6B6570">Caja</div><b style="font:800 34px Inter,sans-serif;letter-spacing:-.03em;color:#1D6B4A">Cuadró</b></div></div>' + tecs)}
+<div style="position:absolute;left:280px;top:720px;width:330px;border-radius:24px;background:#fff;transform:rotate(5deg);{SOMBRA};padding:22px 24px;color:#141114">
+  {eti(R, 'Servicio registrado')}<div style="font:750 23px Inter,sans-serif;margin-top:8px">Manicure + gel · Lupita</div>
+  <div style="display:flex;justify-content:space-between;margin-top:12px;font:600 18px Inter,sans-serif"><span>Tarjeta</span><b>$450</b></div>
+  <div style="display:flex;justify-content:space-between;margin-top:6px;font:600 18px Inter,sans-serif;color:#6B6570"><span>Técnica</span><b style="color:#141114">Mónica</b></div>
+  <div style="margin-top:14px;background:{R};color:#fff;border-radius:12px;padding:11px;text-align:center;font:750 17px Inter,sans-serif">+1 sello en su tarjeta</div></div>"""
+
 def obj_cuentas():
     abonos = ''.join(f'<div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px dashed #D9D4DD;font:600 19px Inter,sans-serif"><span>Abono · {d}</span><b style="color:#0E6F78">−${m}</b></div>' for d, m in [('1 sep', '1,500.00'), ('15 sep', '1,500.00'), ('1 oct', '1,500.00'), ('15 oct', '1,500.00')])
     return f"""
@@ -254,7 +266,7 @@ def obj_clara():
   <div style="font:700 17px Inter,sans-serif;color:#6D5A1E">Te alcanzan</div><div style="font:850 62px/1.05 Inter,sans-serif;letter-spacing:-.04em;color:#1F5FD6">$133</div>
   <div style="font:600 18px Inter,sans-serif;color:#6D5A1E">al día hasta el 15</div></div>"""
 
-OBJETOS = {'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
+OBJETOS = {'brillo': obj_brillo, 'clara': obj_clara, 'brindi': obj_brindi, 'vuelve': obj_vuelve, 'cupo': obj_cupo, 'agenda': obj_agenda, 'cuentas': obj_cuentas, 'vende': obj_vende, 'ruta-de-impacto': obj_ruta,
   'test-vocacional': obj_vocacional, 'que-proyecto-social': obj_proyecto, 'evaluacion-liderazgo': obj_liderazgo, 'portales': obj_portales, 'pagina-web': obj_pagina_web, 'negocio-completo': obj_negocio_completo,
   'idea-en-orden': lambda: obj_kit('idea-en-orden'), 'idea-negocio': lambda: obj_kit('idea-negocio'),
   **{k: (lambda k=k: obj_sim(k)) for k in ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-ipn', 'simulador-exani-ii', 'simulador-excoba']}, 'simuladores': obj_paquete}
