@@ -89,6 +89,14 @@ export async function evaluarCodigo(env, codigo, { sus = null, ahora = new Date(
   if (f.desde && ahora < inicio(f.desde)) return no(`El código ${c} todavía no está vigente.`);
   if (f.solo_mensual && sus?.intervalo !== 'month')
     return no(`${c} solo aplica en planes mensuales (Vuelve, Agenda, Agenda + Vuelve, Vende Pro y Cuentas)${sus ? ', no en el anual' : ''}.`);
+  // sus_apps (migración 0090): en suscripciones solo en esas apps; los pagos únicos no cambian
+  if (f.sus_apps != null && sus) {
+    const apps = f.sus_apps.split(',').map(a => a.trim()).filter(Boolean);
+    if (!apps.includes(sus.app))
+      return no(apps.length ? `${c} no aplica en ${NOMBRE_APP[sus.app] || 'este plan'}; en planes solo aplica en ${apps.map(a => NOMBRE_APP[a] || a).join(', ')}.`
+        : `${c} no aplica en planes, solo en compras de un solo pago.`);
+    if (f.meses && sus.intervalo !== 'month') return no(`${c} solo aplica en el plan mensual, no en el anual.`);
+  }
   const app = appDelCupo(sus?.app);
   if (f.max_por_app != null) {
     const u = await one(env, 'SELECT usos FROM codigos_descuento_usos WHERE codigo = ? AND app = ?', c, app);

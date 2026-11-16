@@ -114,6 +114,29 @@ describe('FUNDADOR30', () => {
     expect(posts()).toHaveLength(0);
   });
 
+  it('sus_apps: pagos únicos sí; en planes solo en las apps de la lista y, con meses, solo en el mensual', async () => {
+    env.DB.raw.exec("INSERT INTO codigos_descuento (codigo, pct, meses, sus_apps, nombre) VALUES ('TIENDA30', 30, 3, 'vuelve', 'Buen Fin')");
+    const u = await (await comprar({ slug: 'de-idea-a-proyecto', codigo: 'TIENDA30' })).json();
+    expect(u.aviso).toBeNull();
+    const p = precio('de-idea-a-proyecto');
+    expect(ultima()).toMatchObject({ descuento_codigo: 'TIENDA30', descuento_centavos: Math.round(p * 0.3), monto_centavos: p - Math.round(p * 0.3) });
+
+    await comprar({ slug: 'vuelve-mensual', codigo: 'TIENDA30' });
+    expect(ultima()).toMatchObject({ descuento_codigo: 'TIENDA30', descuento_pct: 30 });
+    expect(posts().at(-1).params.get('duration_in_months')).toBe('3');
+
+    const a = await (await comprar({ slug: 'agenda-mensual', codigo: 'TIENDA30' })).json();
+    expect(a.aviso).toBe('TIENDA30 no aplica en Agenda; en planes solo aplica en Vuelve.');
+    expect(ultima()).toMatchObject({ monto_centavos: precio('agenda-mensual'), descuento_codigo: null });
+
+    const y = await (await comprar({ slug: 'vuelve-anual', codigo: 'TIENDA30' })).json();
+    expect(y.aviso).toBe('TIENDA30 solo aplica en el plan mensual, no en el anual.');
+
+    env.DB.raw.exec("UPDATE codigos_descuento SET sus_apps = '' WHERE codigo = 'TIENDA30'");
+    const n = await (await comprar({ slug: 'vuelve-mensual', codigo: 'TIENDA30' })).json();
+    expect(n.aviso).toBe('TIENDA30 no aplica en planes, solo en compras de un solo pago.');
+  });
+
   it('inactivo, vencido, todavía no vigente o con el tope total: no aplica', async () => {
     const prueba = async (sql, aviso) => {
       env.DB.raw.exec("UPDATE codigos_descuento SET activo = 1, desde = NULL, hasta = NULL, max_usos = NULL, usos = 0 WHERE codigo = 'FUNDADOR30'; " + sql);
