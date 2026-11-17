@@ -32,7 +32,7 @@ export const WEB = {
 };
 
 // El plan de Vorka México (lo que se promete en /servicios/pagina-web/; se cambia aquí y en _sitio/paginaweb.py)
-export const PLAN_WEB = { precio: '$499 MXN al mes', plazo: '12 meses', ruta: '/servicios/pagina-web/' };
+export const PLAN_WEB = { precio: '$499 MXN al mes', diseno: '$499', plazo: '12 meses', ruta: '/servicios/pagina-web/' };
 
 // ---------- fuentes (todas revisadas el 5 de noviembre de 2026) ----------
 const F = {
@@ -59,9 +59,9 @@ export const S = { hacer: 'como-hacer-una-pagina-web', programar: 'como-programa
 
 // Un solo llamado final: el plan «Tu página web» de Vorka México, con sus condiciones, y el puente con el formulario corto
 const LLAMADO = {
-  plan: llamadoProducto({ etiqueta: 'Tu página web con Vorka', producto: 'Tu página web', de: 'Plan mensual · Vorka México', icono: 'navegador', chip: 'Diseño incluido',
+  plan: llamadoProducto({ etiqueta: 'Tu página web con Vorka', producto: 'Tu página web', de: 'Plan mensual · Vorka México', icono: 'navegador', chip: 'Diseño a tu medida',
     titulo: '¿Prefieres que te la hagamos?',
-    texto: `Vorka México hace y mantiene la página de tu negocio por ${PLAN_WEB.precio}, como suscripción que pagas en línea con tarjeta, más el costo del dominio. El diseño corre por nuestra cuenta con el plan de ${PLAN_WEB.plazo}.`,
+    texto: `Vorka México hace y mantiene la página de tu negocio por ${PLAN_WEB.precio}, como suscripción que pagas en línea con tarjeta, con plan de ${PLAN_WEB.plazo}. El diseño personalizado se paga una sola vez (${PLAN_WEB.diseno}) y el dominio aparte.`,
     puntos: ['Hospedaje con certificado de seguridad (HTTPS).', 'Hasta 3 cambios pequeños al mes.', 'Botón de WhatsApp y formulario de contacto.', 'El alta para que Google la encuentre.'],
     nota: 'Nosotros registramos tu dominio; su costo se paga una vez al año por transferencia y, si un día te vas al corriente, te lo transferimos. Si dejas de pagar, la página se da de baja y el dominio se queda con nosotros hasta que se liquide su pago anual o los meses que falten.',
     href: PLAN_WEB.ruta, boton: 'Quiero mi página' }) +

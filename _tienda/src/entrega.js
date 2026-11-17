@@ -34,7 +34,9 @@ export function correoEntrega(env, orden, items, token, extra = {}) {
   // Suscripción con sus complementos (profesionales de Agenda, sucursales de Vuelve): el botón es el del plan, aunque el
   // complemento sea de otra app del paquete (la sucursal de Vuelve en Agenda + Vuelve)
   const plan = items.map(contenidoDe).find(c => c.suscripcion && !c.complemento && c.acceso);
-  if (plan && accesos.every(Boolean)) {
+  // El pago único del plan (diseño de Tu página web, Arranque de Negocio Completo: contenido.instalacion_de) no abre app
+  // y no debe mandar la compra al correo de descargas
+  if (plan && items.every((i, n) => accesos[n] || contenidoDe(i).instalacion_de)) {
     // Cortesía de un plan de suscripción: no se cobra ni se renueva; dura cantidad × el intervalo del plan (ver cortesiaApp).
     const deRegalo = !!orden.regalo_de || orden.proveedor === 'cortesia';
     const it = items.find(i => { const c = contenidoDe(i); return c.suscripcion && !c.complemento; });

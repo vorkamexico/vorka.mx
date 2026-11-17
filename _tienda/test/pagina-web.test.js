@@ -40,7 +40,7 @@ beforeEach(() => {
     if (url.endsWith('/customers')) return ok({ id: 'cus_1' });
     if (url.endsWith('/checkout/sessions')) { const id = `cs_${llamada('/checkout/sessions').length}`; return ok({ id, url: `https://checkout.stripe.com/c/pay/${id}` }); }
     if (url.includes('/checkout/sessions/')) return ok({ id: 'cs_1', mode: 'subscription', metadata: { order_id: stripe.orden }, client_reference_id: stripe.orden,
-      amount_total: 49900, currency: 'mxn', status: 'complete', payment_status: 'paid', payment_intent: null, subscription: 'sub_c1' });
+      amount_total: 99800, currency: 'mxn', status: 'complete', payment_status: 'paid', payment_intent: null, subscription: 'sub_c1' });
     if (url.includes('/subscriptions/')) return ok(stripe.sub);
     if (url.includes('/invoices/')) return ok(stripe.factura);
     if (url.endsWith('/billing_portal/sessions')) return ok({ url: 'https://billing.stripe.com/p/session/x' });
@@ -62,6 +62,9 @@ describe('Tu página web', () => {
     expect(h).toContain('$499');
     expect(h).toContain('plan de 12 meses');
     expect(h).toMatch(/dominio se paga aparte/);
+    expect(h).toContain('Diseño personalizado');
+    expect(h).toContain('$998');
+    expect(h).not.toContain('sin costo con el plan');
     expect((await pedir('/tienda/pagina-web')).status).toBe(301);
     expect(await (await pedir('/tienda/')).text()).toContain('/tienda/pagina-web/');
   });
@@ -73,6 +76,20 @@ describe('Tu página web', () => {
     expect([...p.entries()].some(([k, v]) => /recurring\]\[interval\]$/.test(k) && v === 'month')).toBe(true);
     expect([...p.entries()].some(([k, v]) => /unit_amount\]$/.test(k) && v === '49900')).toBe(true);
     expect([...p.entries()].some(([k, v]) => /metadata\]\[app\]$|^subscription_data\[metadata\]\[app\]$/.test(k) && v === 'pagina-web')).toBe(true);
+  });
+  it('el diseño personalizado de $499 se cobra siempre una vez con el primer mes (sin recurring)', async () => {
+    for (const extra of [{}, { instalacion: false }]) {
+      const r = await comprar({ email: `x${Math.random()}@correo.mx`, ...extra });
+      expect(r.status, await r.clone().text()).toBe(200);
+      const p = llamada('/checkout/sessions').at(-1).params;
+      expect(p.get('line_items[0][price_data][unit_amount]')).toBe('49900');
+      expect(p.get('line_items[0][price_data][recurring][interval]')).toBe('month');
+      expect(p.get('line_items[1][price_data][unit_amount]')).toBe('49900');
+      expect(p.get('line_items[1][price_data][recurring][interval]')).toBeNull();
+    }
+    expect(fila('SELECT monto_centavos FROM orders LIMIT 1').monto_centavos).toBe(99800);
+    const sola = await comprar({ slug: 'pagina-web-diseno' });
+    expect(sola.status).toBe(400);
   });
   it('al pagar: correo con WhatsApp para empezar y pagar el dominio, y la página de gracias igual', async () => {
     const { order } = await (await comprar()).json();

@@ -1,12 +1,14 @@
 # Vorka México · /servicios/pagina-web/: el plan «Tu página web» para negocios pequeños.
 # Precio y condiciones acordados por Vorka (5 nov 2026; precio subido a $499 el 9 nov 2026, migración 0082): $499 MXN al mes con hospedaje (antes $349 y $299) y SSL, hasta 3 cambios pequeños al
-# mes, botón de WhatsApp y formulario, y alta en Google; el diseño corre por nuestra cuenta con plan de 12 meses (si cancela
+# mes, botón de WhatsApp y formulario, y alta en Google; desde el 17 nov 2026 el diseño personalizado se cobra UNA vez, $499, con el
+# primer mes (tienda: migración 0091), y el plan sigue siendo de 12 meses (si cancela
 # antes, paga los meses que falten; si deja de pagar se da de baja el sitio y el dominio se queda con Vorka hasta que liquide el pago anual o los meses que falten); Vorka registra el dominio y le cobra su costo una vez al año, y si se va se lo
 # transfiere. Si cambia algo, cámbialo también en _tienda/src/learn-web.js (PLAN_WEB y el llamado de las guías).
 import json
 from partes import *
 
 PRECIO = '$499'
+DISENO = '$499'   # diseño personalizado, pago único con el primer mes
 TIENDA = '/tienda/pagina-web/'   # suscripción en línea (Stripe), _tienda/src/paginaweb.js
 WA_PLAN = 'Hola Vorka, quiero mi página web de $499 al mes.'
 INCLUYE = [
@@ -20,17 +22,18 @@ PASOS = [('Te suscribes', 'En línea con tu tarjeta, y nos escribes por WhatsApp
          ('Revisas', 'Te la mostramos antes de publicarla y la ajustamos contigo.'),
          ('Publicamos', 'En tu dominio, con candado de seguridad y lista para compartir.')]
 CONDICIONES = [
-    ('Plan de 12 meses', f'El diseño no tiene costo porque el plan es de 12 meses ({PRECIO} al mes). Si cancelas antes, pagas los meses que falten.'),
+    ('Diseño personalizado', f'{DISENO} una sola vez, junto con tu primer mes: tu página con tu logo, tus fotos y tus colores.'),
+    ('Plan de 12 meses', f'La renta es de {PRECIO} al mes con plan de 12 meses. Si cancelas antes, pagas los meses que falten.'),
     ('Tu dominio', 'Lo registramos por ti; su costo exacto se paga una vez al año por transferencia, y te pasamos los datos por WhatsApp. Si un día dejas el plan, te lo transferimos.'),
     ('Si dejas de pagar', 'Tu página se da de baja y el dominio se queda con nosotros hasta que liquides su pago anual o los meses que falten del plan. Al ponerte al corriente, te lo transferimos o la volvemos a publicar.'),
     ('Cambios más grandes', 'Secciones nuevas, tienda en línea o sistemas a la medida se cotizan aparte.'),
 ]
 PREGUNTAS_WEB = [
-    ('¿Cuánto cuesta en total?', f'{PRECIO} MXN al mes, que se cobran en tu tarjeta como suscripción, más el costo de tu dominio, que se paga una vez al año por transferencia. El diseño no tiene costo con el plan de 12 meses.'),
+    ('¿Cuánto cuesta en total?', f'{PRECIO} MXN al mes, que se cobran en tu tarjeta como suscripción, más {DISENO} una sola vez por el diseño personalizado, que se cobra con tu primer mes, y el costo de tu dominio, que se paga una vez al año por transferencia.'),
     ('¿Cómo me suscribo?', 'En línea, en vorka.mx/tienda/pagina-web, con tarjeta de crédito o débito. Al terminar el pago te llega un botón para escribirnos por WhatsApp y empezar tu página.'),
     ('¿Cuánto cuesta el dominio?', 'Depende de la terminación (.mx, .com.mx, .com…) y del registrador. Antes de registrarlo te decimos el costo exacto por WhatsApp y lo pagas por transferencia.'),
     ('¿El dominio queda a mi nombre?', 'Lo registramos nosotros para darte el servicio completo. Si dejas el plan al corriente, te lo transferimos para que lo sigas usando. Si dejas de pagar, la página se da de baja y el dominio se queda con nosotros hasta que se liquide su pago anual o los meses que falten del plan.'),
-    ('¿Qué pasa si quiero cancelar o dejo de pagar?', 'El plan es de 12 meses porque el diseño corre por nuestra cuenta. Si cancelas antes, pagas los meses que falten. Si dejas de pagar, la página se da de baja y el dominio se queda con nosotros hasta que se liquide su pago anual o los meses que falten del plan. Después de los 12 meses sigues mes con mes. Tu tarjeta y tu suscripción se administran en vorka.mx/tienda/suscripcion.'),
+    ('¿Qué pasa si quiero cancelar o dejo de pagar?', 'El plan es de 12 meses. Si cancelas antes, pagas los meses que falten. Si dejas de pagar, la página se da de baja y el dominio se queda con nosotros hasta que se liquide su pago anual o los meses que falten del plan. Después de los 12 meses sigues mes con mes. Tu tarjeta y tu suscripción se administran en vorka.mx/tienda/suscripcion.'),
     ('¿Qué cuenta como cambio pequeño?', 'Cambiar textos, fotos, precios, horarios o datos de contacto. Incluye hasta 3 al mes; lo que sea más grande, como secciones nuevas o una tienda en línea, se cotiza aparte.'),
     ('¿Puedo vender en línea desde mi página?', 'La página del plan es para presentar tu negocio y que te escriban. Si necesitas tienda en línea con carrito y cobro, la cotizamos aparte en Apps y páginas a la medida.'),
 ]
@@ -91,13 +94,13 @@ def pagina_web():
       <div class="migas"><a href="/">Inicio</a><span>/</span><a href="/servicios/">Servicios</a><span>/</span><span>Tu página web</span></div>
       <span class="etiqueta">Tu página web</span>
       <h1 class="h1" style="margin-top:18px">Tu página web, <span class="metal">lista y cuidada.</span></h1>
-      <p class="lead">La diseñamos, la publicamos y la mantenemos por ti. Tú pagas una renta de {PRECIO} al mes y tu dominio; el diseño corre por nuestra cuenta.</p>
+      <p class="lead">La diseñamos, la publicamos y la mantenemos por ti. Tú pagas una renta de {PRECIO} al mes, {DISENO} una sola vez por el diseño personalizado y tu dominio.</p>
       <div class="botones"><a class="btn tinta" href="{TIENDA}">Suscribirme en línea {FLECHA}</a><a class="btn blanco" href="{wa(WA_PLAN)}" target="_blank" rel="noopener">Platicar por WhatsApp</a></div>
     </div>
     <aside class="pw-precio rv" aria-label="Precio del plan">
       <span class="etiqueta">Plan Tu página web</span>
       <div class="pw-cifra"><b>{PRECIO}</b><span>MXN al mes</span></div>
-      <p class="pw-mas">Suscripción mensual con tarjeta. + tu dominio, a su costo, una vez al año por transferencia. Diseño sin costo con el plan de 12 meses.</p>
+      <p class="pw-mas">Suscripción mensual con tarjeta, plan de 12 meses. + {DISENO} una sola vez por el diseño personalizado. + tu dominio, a su costo, una vez al año por transferencia.</p>
       <ul class="pw-lista">{incluye_lista}</ul>
       <a class="btn plata" href="{TIENDA}">Suscribirme {FLECHA}</a>
       <p class="pw-nota">Pago seguro con Stripe. ¿Dudas? <a href="{wa(WA_PLAN)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">WhatsApp</a></p>
@@ -145,7 +148,7 @@ def pagina_web():
 </main>
 {pie('empresas')}'''
     servicio = {'@context': 'https://schema.org', '@type': 'Service', 'name': 'Tu página web', 'serviceType': 'Diseño, hospedaje y mantenimiento de páginas web',
-                'description': f'Página web para tu negocio por {PRECIO} MXN al mes más el costo del dominio: hospedaje con SSL, hasta 3 cambios pequeños al mes, botón de WhatsApp y formulario, y alta en Google. Diseño sin costo con plan de 12 meses.',
+                'description': f'Página web para tu negocio por {PRECIO} MXN al mes más el costo del dominio: hospedaje con SSL, hasta 3 cambios pequeños al mes, botón de WhatsApp y formulario, y alta en Google. Diseño personalizado de {DISENO} en un solo pago; plan de 12 meses.',
                 'url': SITIO + '/servicios/pagina-web/', 'areaServed': {'@type': 'Country', 'name': 'México'},
                 'provider': {'@type': 'ProfessionalService', 'name': 'Vorka México', 'url': SITIO + '/'},
                 'offers': {'@type': 'Offer', 'price': '499', 'priceCurrency': 'MXN', 'url': SITIO + '/servicios/pagina-web/',
@@ -156,7 +159,7 @@ def pagina_web():
         {'@type': 'ListItem', 'position': 3, 'name': 'Tu página web', 'item': SITIO + '/servicios/pagina-web/'}]}
     extra = ESTILOS + ''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>\n' for x in (servicio, faq_ld, migas))
     return cabeza(f'Tu página web por {PRECIO} al mes · Vorka México',
-                  f'Página web para tu negocio por {PRECIO} MXN al mes más tu dominio: diseño sin costo, hospedaje con SSL, cambios cada mes, botón de WhatsApp y alta en Google.',
+                  f'Página web para tu negocio por {PRECIO} MXN al mes + {DISENO} de diseño personalizado, una sola vez: hospedaje con SSL, cambios cada mes, botón de WhatsApp y alta en Google.',
                   '/servicios/pagina-web/', og='cdmx-reforma', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # Banda corta que lleva al plan desde /servicios/ y desde Apps y páginas a la medida
@@ -164,7 +167,7 @@ def banda_pagina_web():
     return f'''<section class="sec pegada" aria-label="Plan Tu página web"><div class="marco">
   <a class="pw-banda rv" href="/servicios/pagina-web/">
     <span class="pw-banda-t"><span class="etiqueta">Nuevo · Tu página web</span><b>La página de tu negocio por <span class="metal">{PRECIO} al mes.</span></b>
-      <small>Diseño sin costo, hospedaje con candado de seguridad, cambios cada mes y botón de WhatsApp. Solo pagas la renta y tu dominio.</small></span>
+      <small>Diseño personalizado de {DISENO} en un solo pago, hospedaje con candado de seguridad, cambios cada mes y botón de WhatsApp.</small></span>
     <span class="btn tinta">Ver el plan {FLECHA}</span>
   </a>
 </div></section>

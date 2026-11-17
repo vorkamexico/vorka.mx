@@ -122,9 +122,10 @@ export async function checkout(req, env, ctx) {
       if (e.message === 'profesional') return error(tiene ? 'Los profesionales adicionales no están disponibles por ahora.' : 'Este plan no lleva profesionales adicionales.');
       return error(tiene ? 'Las sucursales adicionales no están disponibles por ahora.' : 'Este plan no lleva sucursales adicionales; déjalas en 0.');
     }
-    if (d.instalacion) {
+    // instalacion_obligatoria (Tu página web: diseño de $499): se cobra siempre con el primer periodo, la marque o no
+    if (d.instalacion || suscripcionDe(plan).instalacion_obligatoria) {
       const inst = suscripcionDe(plan).instalacion && await one(env, 'SELECT slug FROM products WHERE id = ? AND activo = 1', suscripcionDe(plan).instalacion);
-      if (!inst) return error('Este plan no lleva instalación.');
+      if (!inst) return error(suscripcionDe(plan).instalacion_obligatoria ? 'Este plan no está disponible por ahora.' : 'Este plan no lleva instalación.');
       items.push({ slug: inst.slug, cantidad: 1 });
     }
   }
