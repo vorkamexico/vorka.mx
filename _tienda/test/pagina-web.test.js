@@ -91,6 +91,22 @@ describe('Tu página web', () => {
     const sola = await comprar({ slug: 'pagina-web-diseno' });
     expect(sola.status).toBe(400);
   });
+  it('con el código SOCIAL (proyectos sociales) no se cobra el diseño: la página y el checkout', async () => {
+    const h = await (await pedir('/tienda/pagina-web/?cupon=social')).text();
+    expect(h).toContain('name="codigo" value="SOCIAL"');
+    expect(h).toContain('va por cuenta de Vorka');
+    expect(h).toMatch(/Pagas hoy <b id="pw-hoy">\$499/);
+    const r = await comprar({ email: 'ong@correo.mx', codigo: 'social' });
+    expect(r.status, await r.clone().text()).toBe(200);
+    const p = llamada('/checkout/sessions').at(-1).params;
+    expect(p.get('line_items[0][price_data][unit_amount]')).toBe('49900');
+    expect(p.get('line_items[1][price_data][unit_amount]')).toBeNull();
+    expect(fila("SELECT monto_centavos FROM orders WHERE email = 'ong@correo.mx'").monto_centavos).toBe(49900);
+    // Otro código no quita el diseño
+    const h2 = await (await pedir('/tienda/pagina-web/?cupon=OTRO')).text();
+    expect(h2).not.toContain('name="codigo"');
+    expect(h2).toContain('$998');
+  });
   it('al pagar: correo con WhatsApp para empezar y pagar el dominio, y la página de gracias igual', async () => {
     const { order } = await (await comprar()).json();
     stripe.orden = order; stripe.sub = sub();

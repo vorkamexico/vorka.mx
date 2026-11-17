@@ -401,3 +401,10 @@ async function mesDeCortesia(env, email, app, c, motivo, clave) {
   }
   return { ok: true, cortesia: true, hasta: finCortesia(desde, 'month', 1), order_id: id };
 }
+
+// ¿Este código quita el pago único obligatorio del plan? (suscripcion.sin_instalacion_con, p. ej. SOCIAL en Tu página web)
+export function sinInstalacion(plan, codigo) {
+  const lista = suscripcionDe(plan)?.sin_instalacion_con;
+  const c = String(codigo || '').trim().toUpperCase();
+  return !!c && Array.isArray(lista) && lista.includes(c);
+}
