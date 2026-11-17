@@ -94,7 +94,7 @@ describe('Negocio Completo', () => {
   it('la instalación no se compra sola ni con otro plan', async () => {
     const sola = await pedir('/api/checkout', { metodo: 'POST', body: { nombre: 'Laura Pérez', email: 'laura@correo.mx', terminos: true, slug: 'negocio-completo-instalacion' } });
     expect(sola.status).toBe(400);
-    const otro = await comprar({ slug: 'pagina-web-mensual', instalacion: true });
+    const otro = await comprar({ slug: 'cuentas-mensual', instalacion: true });
     expect(otro.status).toBe(400);
     expect(sesiones()).toHaveLength(0);
   });
