@@ -6,6 +6,7 @@
 import { pagina, esc } from './paginas.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { one } from './util.js';
+import { sinInstalacion } from './suscripciones.js';
 import { refDeVisita, precio, seccionFaq } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 
@@ -27,14 +28,19 @@ export async function paginaPaginaWeb(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const p = await productoPorSlug(env, SLUG_PAGINA_WEB);
   // El diseño de pago único (prod_pagina_web_diseno): el checkout lo agrega siempre; aquí solo se muestra en el total
-  const diseno = p?.contenido?.suscripcion?.instalacion ? await one(env, 'SELECT precio_centavos FROM products WHERE id = ? AND activo = 1', p.contenido.suscripcion.instalacion) : null;
+  // ?cupon=SOCIAL (proyectos sociales, migración 0092): el diseño no se cobra; el código viaja oculto al checkout
+  const cupon = String(url.searchParams.get('cupon') || '').trim().toUpperCase().slice(0, 40);
+  const social = p && sinInstalacion(p, cupon) ? cupon : null;
+  const diseno = !social && p?.contenido?.suscripcion?.instalacion ? await one(env, 'SELECT precio_centavos FROM products WHERE id = ? AND activo = 1', p.contenido.suscripcion.instalacion) : null;
   if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
   const error = url.searchParams.get('error') || '';
   const form = p ? `<form class="t-form t-compra" id="form-pagina-web" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
+    ${social ? `<input type="hidden" name="codigo" value="${esc(social)}">` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llegan tu recibo y el botón para empezar por WhatsApp.</small></div>
     <p class="pw-total">Pagas hoy <b id="pw-hoy">${diseno ? precio({ precio_centavos: p.precio_centavos + diseno.precio_centavos }) : precio(p)}</b> <span id="pw-luego">y luego ${precio(p)} cada mes</span></p>
+    ${social ? `<p class="pw-desglose pw-social">Código ${esc(social)}: el diseño personalizado va por cuenta de Vorka ✓</p>` : ''}
     ${diseno ? `<p class="pw-desglose">Tu primer mes (${precio(p)}) + diseño personalizado (${precio(diseno)}, una sola vez).</p>` : ''}
     <p class="pw-dominio">El dominio se paga aparte, por transferencia, una vez al año: te pasamos el costo exacto por WhatsApp.</p>
     <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, el <a href="/servicios/pagina-web/#t-cond" target="_blank">plan de 12 meses</a> con renovación automática mensual (si dejo de pagar, la página se da de baja y el dominio se queda con Vorka hasta liquidar lo pendiente) y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
@@ -72,7 +78,7 @@ const CSS = `.pw-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 .pw-hero h1{margin-top:14px}.pw-hero .t-lead{margin-top:14px;max-width:560px}
 .pw-inc{display:grid;gap:10px;margin:22px 0 0}.pw-inc li{display:flex;gap:10px;align-items:flex-start;font-size:16px;color:var(--fg-2)}.pw-inc svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--verde)}
 #comprar .t-form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--sombra-2)}
-.pw-total{font-size:15.5px;margin:6px 0 4px}.pw-desglose{font-size:14px;color:var(--fg-2);margin:0 0 10px}.pw-total b{font-size:22px;letter-spacing:-.02em}
+.pw-total{font-size:15.5px;margin:6px 0 4px}.pw-desglose{font-size:14px;color:var(--fg-2);margin:0 0 10px}.pw-social{color:var(--verde);font-weight:600}.pw-total b{font-size:22px;letter-spacing:-.02em}
 .pw-dominio{font-size:14px;color:var(--fg-2);margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--bg-2)}`;
 
 const SCRIPT = `(function(){
