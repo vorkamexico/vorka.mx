@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { d1 } from './d1.js';
 import worker, { Admin } from '../src/index.js';
 import { simuladores } from '../src/simulador/index.js';
-import { seguimientoDiagnosticos, pedirPuntajes, validarPuntaje, SEGUIMIENTO_DESDE } from '../src/simulador/seguimiento.js';
+import { seguimientoDiagnosticos, pedirPuntajes, validarPuntaje, SEGUIMIENTO_DESDE, RESCATE } from '../src/simulador/seguimiento.js';
 import { pedirResenas } from '../src/resenas.js';
 
 const H = 36e5, DIA = 24 * H;
@@ -51,12 +51,32 @@ describe('seguimiento del diagnóstico', () => {
 
   it('no escribe antes de tiempo, de noche, a diagnósticos viejos ni a quien ya compró', async () => {
     diag({ email: 'nueva@mail.com', creado: AHORA.getTime() - 5 * H });
-    diag({ email: 'vieja@mail.com', creado: Date.parse(SEGUIMIENTO_DESDE) - DIA, terminado: Date.parse(SEGUIMIENTO_DESDE) - DIA });
+    diag({ email: 'vieja@mail.com', creado: Date.parse(RESCATE.desde) - DIA, terminado: Date.parse(RESCATE.desde) - DIA });
     diag({ email: 'luis@mail.com', creado: AHORA.getTime() - 3 * DIA, terminado: AHORA.getTime() - 3 * DIA });
     orden({ email: 'luis@mail.com', dias: 1 });
     expect(await seguimientoDiagnosticos(env, new Date('2026-11-20T06:00:00.000Z'), sims())).toMatchObject({ revisados: 0 });   // 00:00 en México
     await seguimientoDiagnosticos(env, AHORA, sims());
     expect(correos).toHaveLength(0);
+  });
+
+  it('rescate: los de octubre reciben una sola vez su sección débil (o retomar) y luego su código; internos y compradores no', async () => {
+    const t1 = Date.parse(SEGUIMIENTO_DESDE) - 10 * DIA;
+    diag({ email: 'octubre@mail.com', creado: t1, terminado: t1 + H });
+    diag({ email: 'sinterminar@mail.com', creado: t1 });
+    diag({ email: 'equipo@vorka.mx', creado: t1, terminado: t1 + H });
+    diag({ email: 'luis@mail.com', creado: t1, terminado: t1 + H });
+    orden({ email: 'luis@mail.com', dias: 1 });
+    await seguimientoDiagnosticos(env, AHORA, sims());
+    expect(correos.map(c => c.para).sort()).toEqual(['octubre@mail.com', 'sinterminar@mail.com']);
+    const fila = e => q('SELECT seg_retomar_at, seg_tema_at, seg_oferta_at FROM simulador_diagnosticos WHERE email = ?', e)[0];
+    expect(fila('octubre@mail.com').seg_tema_at).toBeTruthy();
+    expect(fila('sinterminar@mail.com').seg_retomar_at).toBeTruthy();
+    correos = [];
+    await seguimientoDiagnosticos(env, new Date(AHORA.getTime() + H), sims());
+    expect(correos).toHaveLength(0);   // una sola vez
+    await seguimientoDiagnosticos(env, new Date(AHORA.getTime() + 3 * DIA + H), sims());
+    expect(correos.map(c => c.para)).toEqual(['octubre@mail.com']);   // su código 3 días después, como todos
+    expect(fila('octubre@mail.com').seg_oferta_at).toBeTruthy();
   });
 
   it('a los 2 días manda su sección débil con consejos y 3 días después un código personal de 10 %', async () => {

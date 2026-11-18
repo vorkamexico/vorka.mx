@@ -1,7 +1,7 @@
 // Simuladores (nov 2026, migración 0087): lo que pasa después del diagnóstico gratis y después del examen real.
 //
 // 1. Seguimiento del diagnóstico (cron de cada hora, seguimientoDiagnosticos). Solo a quien no compró ese simulador, no se
-//    dio de baja y pidió su diagnóstico desde SEGUIMIENTO_DESDE (los anteriores se siguieron a mano por WhatsApp):
+//    dio de baja y pidió su diagnóstico desde SEGUIMIENTO_DESDE (los de octubre entran una vez por RESCATE, abajo):
 //      · no terminó → un correo para retomarlo, 24 h después de pedir su clave;
 //      · terminó → a los 2 días, su sección más débil con el consejo de los temas que le tocaron;
 //      · 3 días después de ese → un código personal de 10 % que vence en 72 h (codigos_descuento, 1 uso).
@@ -22,6 +22,10 @@ import { enMexico } from './estudio.js';
 
 const H = 36e5, DIA = 24 * H;
 export const SEGUIMIENTO_DESDE = '2026-11-12T00:00:00.000Z';
+// Rescate (pedido del dueño el 17 nov 2026): los diagnósticos de RESCATE.desde a SEGUIMIENTO_DESDE nunca recibieron correos
+// (se siguieron a mano). Una sola vez y por lotes, en el mismo horario: quien terminó recibe ya su sección débil (y 3 días después
+// su código, como todos); quien no terminó, el de retomarlo. Sin internos (@vorka.mx, «prueba»), sin bajas y sin quien ya compró.
+export const RESCATE = { desde: '2026-10-01T00:00:00.000Z', hasta: SEGUIMIENTO_DESDE };
 export const SEG = { retomar: 24 * H, tema: 48 * H, oferta: 72 * H, vigencia: 72 * H, ventana: 10 * DIA, pct: 10, lote: 25 };
 export const PUNTAJE = { tras_examen: 7 * DIA, minimo: 21 * DIA, sin_fecha: 45 * DIA, ventana: 21 * DIA, lote: 25, desde_compra: 200 * DIA };
 export const HORARIO = [9, 20];        // horas del centro de México en que salen estos correos
@@ -124,16 +128,22 @@ export async function seguimientoDiagnosticos(env, ahora = new Date(), sims = []
   if (!enHorario(ahora)) return out;
   const t = ahora.getTime(), iso = x => new Date(x).toISOString();
   const desde = SEGUIMIENTO_DESDE > iso(t - SEG.ventana) ? SEGUIMIENTO_DESDE : iso(t - SEG.ventana);
-  const base = `d.seg_baja_at IS NULL AND d.created_at >= '${SEGUIMIENTO_DESDE}' AND NOT ${COMPRO}`;
-  const [retomar, tema, oferta] = await Promise.all([
+  // Desde RESCATE.desde: las ventanas de cada paso (por fecha de pedido, de término o del correo anterior) ya dejan fuera lo viejo;
+  // lo rescatado entra por las dos listas de abajo y de ahí sigue solo (su código 3 días después de su sección débil)
+  const base = `d.seg_baja_at IS NULL AND d.created_at >= '${RESCATE.desde}' AND NOT ${COMPRO}
+    AND lower(d.email) NOT LIKE '%@vorka.mx' AND lower(d.email) NOT LIKE '%prueba%'`;
+  const viejos = `${base} AND d.created_at < '${RESCATE.hasta}' AND d.seg_retomar_at IS NULL AND d.seg_tema_at IS NULL`;
+  const [retomar, tema, oferta, rescateRetomar, rescateTema] = await Promise.all([
     all(env, `SELECT d.* FROM simulador_diagnosticos d WHERE ${base} AND d.terminado_at IS NULL AND d.seg_retomar_at IS NULL
       AND d.created_at BETWEEN ? AND ? ORDER BY d.created_at LIMIT ?`, desde, iso(t - SEG.retomar), SEG.lote),
     all(env, `SELECT d.* FROM simulador_diagnosticos d WHERE ${base} AND d.resultado IS NOT NULL AND d.seg_tema_at IS NULL
       AND d.terminado_at BETWEEN ? AND ? ORDER BY d.terminado_at LIMIT ?`, desde, iso(t - SEG.tema), SEG.lote),
     all(env, `SELECT d.* FROM simulador_diagnosticos d WHERE ${base} AND d.resultado IS NOT NULL AND d.seg_oferta_at IS NULL
       AND d.seg_tema_at BETWEEN ? AND ? ORDER BY d.seg_tema_at LIMIT ?`, iso(t - SEG.ventana), iso(t - SEG.oferta), SEG.lote),
+    all(env, `SELECT d.* FROM simulador_diagnosticos d WHERE ${viejos} AND d.terminado_at IS NULL ORDER BY d.created_at LIMIT ?`, SEG.lote),
+    all(env, `SELECT d.* FROM simulador_diagnosticos d WHERE ${viejos} AND d.resultado IS NOT NULL ORDER BY d.terminado_at LIMIT ?`, SEG.lote),
   ]);
-  out.revisados = retomar.length + tema.length + oferta.length;
+  out.revisados = retomar.length + tema.length + oferta.length + rescateRetomar.length + rescateTema.length;
   const sim = d => sims.find(s => s.APP === d.app);
 
   // Aparta el paso (si otra corrida ya lo tomó, no entra) y lo regresa si el correo falla
@@ -155,8 +165,8 @@ export async function seguimientoDiagnosticos(env, ahora = new Date(), sims = []
     }
   };
 
-  for (const d of retomar) if (await paso(d, 'seg_retomar_at', (s, baja) => correoRetomar(env, s, d, baja))) out.retomar++;
-  for (const d of tema) if (await paso(d, 'seg_tema_at', (s, baja) => correoTema(env, s, d, JSON.parse(d.resultado), baja))) out.tema++;
+  for (const d of [...retomar, ...rescateRetomar]) if (await paso(d, 'seg_retomar_at', (s, baja) => correoRetomar(env, s, d, baja))) out.retomar++;
+  for (const d of [...tema, ...rescateTema]) if (await paso(d, 'seg_tema_at', (s, baja) => correoTema(env, s, d, JSON.parse(d.resultado), baja))) out.tema++;
   for (const d of oferta) {
     let codigo = null;
     const ok = await paso(d, 'seg_oferta_at',
