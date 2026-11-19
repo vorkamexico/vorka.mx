@@ -37,7 +37,7 @@ function respuestasV({ examen = 'unam', nivel = 'prepa', mate = 'aguanto' } = {}
   for (let k = 0; k < 12; k++) { const t = tipos[k % 6]; r[`h${k}`] = t === 'S' ? '4' : t === 'A' ? '3' : '2'; }
   return { ...r, mate, lugar: 'S', motivo: 'S', duracion: 'lic', nivel, examen };
 }
-const respuestasP = () => ({ tipo: 'negocio', giro: 'alimentos', tamano: 'micro', expertise: ['alimentos', 'logistica'], presupuesto: '1', tiempo: '1', causas: ['alimentacion', 'ambiente'], colaborar: ['osc'], estado: 'Guanajuato', municipio: 'Celaya' });
+const respuestasP = () => ({ tipo: 'negocio', etapa: 'nuevo', giro: 'alimentos', tamano: 'micro', expertise: ['alimentos', 'logistica'], presupuesto: '1', tiempo: '1', causas: ['alimentacion', 'ambiente'], colaborar: ['osc'], estado: 'Guanajuato', municipio: 'Celaya' });
 const formP = r => { const u = new URLSearchParams(); for (const [k, v] of Object.entries(r)) [].concat(v).forEach(x => u.append(k, x)); return u; };
 
 beforeEach(() => {
@@ -152,6 +152,23 @@ describe('reglas (sin IA, deterministas)', () => {
     expect(Object.keys(ODS)).toHaveLength(17);
     expect(ODS[2]).toBe('Hambre cero'); expect(ODS[17]).toBe('Alianzas para lograr los objetivos');
     for (const p of PROYECTOS) for (const n of p.ods) expect(ODS[n]).toBeTruthy();
+  });
+  it('proyecto social: mezcla áreas, cada idea trae versión corta de 2 a 4 semanas y quien ya tiene proyecto ve cómo sumarla', () => {
+    for (const p of PROYECTOS) { expect(p.area).toBeTruthy(); expect(p.c.pasos.length).toBeGreaterThanOrEqual(2); expect(p.c.pasos.length).toBeLessThanOrEqual(4); expect(p.c.meta).toBeTruthy(); }
+    // Una colectiva de educación sin dinero y con 1 a 2 horas al mes (el caso que pidió más variedad)
+    const v = leerP({ tipo: 'colectivo', etapa: 'sumar', giro: 'educacion', tamano: 'solo', expertise: ['ensenar', 'comunicacion', 'ambiente'], presupuesto: '0', tiempo: '0', causas: ['educacion', 'empleo', 'mujeres'], colaborar: ['escuelas', 'osc', 'jovenes'], estado: 'Estado de México', municipio: 'Huixquilucan' });
+    expect(v.ok).toBe(true);
+    const r = calcularP(v.r);
+    expect(r.sumar).toBe(true);
+    const areas = r.reporte.map(x => x.area);
+    expect(new Set(areas).size).toBeGreaterThanOrEqual(6);
+    for (const a of new Set(areas)) expect(areas.filter(x => x === a).length).toBeLessThanOrEqual(2);
+    expect(areas.filter(x => x === 'economia').length).toBeLessThanOrEqual(1);
+    expect(new Set(r.gratis.map(x => x.area)).size).toBe(3);
+    expect(r.reporte.map(x => x.id)).toContain('oficio');
+    // Sin «etapa» (respuestas guardadas antes de esta pregunta) también calcula
+    const viejo = { ...v.r }; delete viejo.etapa;
+    expect(calcularP(viejo).reporte.length).toBeGreaterThanOrEqual(5);
   });
 });
 
@@ -386,6 +403,8 @@ describe('¿Qué proyecto social hago?', () => {
     expect(r).toContain('Rescate de alimentos');
     expect(r).toContain('<b>ODS 2</b> Hambre cero');
     expect(r).toContain('Cómo comunicarlo sin lavado de imagen');
+    expect(r).toContain("Versión corta: 2 semanas"); expect(r).toContain("<b>Semana 1.</b>"); expect(r).toContain("Empieza esta semana");
+    expect(r).not.toContain("Cómo sumar una idea a tu proyecto");   // contestó que empieza uno nuevo
     expect(r).toContain('soyimpacto.org');
     expect(r).toContain(`Orden ${orden}`);
     expect((r.match(/class="tv-idea"/g) || []).length).toBeGreaterThanOrEqual(5);

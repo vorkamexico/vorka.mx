@@ -30,7 +30,7 @@ export function formProyecto({ datos = {}, error = '', accion = RUTA, boton = 'V
     <div class="tv-op lista"${multi ? ` data-max="${d.max}"` : ''}>${ops.map(([v, t]) => `<label><input type="${multi ? 'checkbox' : 'radio'}" name="${k}" value="${esc(v)}"${marcado(k, v) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('')}</div></fieldset>`;
   };
   return `<form class="tv-form" id="form-test" method="post" action="${esc(accion)}" novalidate>
-  <div class="tv-progreso"><span id="tv-cuenta" aria-hidden="true">0 de 8</span><span class="tv-barra" aria-hidden="true"><i id="tv-barra"></i></span></div>
+  <div class="tv-progreso"><span id="tv-cuenta" aria-hidden="true">0 de ${Object.keys(PREGUNTAS).filter(k => k !== 'colaborar').length + 1}</span><span class="tv-barra" aria-hidden="true"><i id="tv-barra"></i></span></div>
   <p class="tv-ok" id="tv-animo" role="status" hidden>¡Vas a la mitad! Tus ideas ya se están armando.</p>
   <p class="tv-nota" id="tv-recuperado" role="status" hidden>Recuperamos las respuestas que dejaste en este navegador: sigue donde te quedaste.</p>
   ${error ? `<p class="tv-error" role="alert">${esc(error)}</p>` : ''}
@@ -46,10 +46,10 @@ export function formProyecto({ datos = {}, error = '', accion = RUTA, boton = 'V
 }
 
 const FAQ = precioT => [
-  ['¿Es gratis?', `Contestar es gratis y al terminar ves gratis tus 3 ideas de proyecto más afines, en una línea cada una. El reporte completo, con 5 a 8 proyectos a detalle, cuesta ${precioT}, pago único.`],
-  ['¿Para quién es?', 'Para negocios y empresas de cualquier tamaño, emprendimientos, organizaciones de la sociedad civil, profesionistas independientes, escuelas y colectivos que quieren hacer algo por su comunidad y no saben por dónde empezar.'],
-  ['¿Qué trae el reporte completo?', 'De 5 a 8 proyectos a tu medida. Cada uno con objetivo, a quién beneficia, primeros pasos, recursos mínimos, indicadores simples para medir, los Objetivos de Desarrollo Sostenible (ODS) de la ONU con los que se alinea, riesgos comunes y cómo comunicarlo sin lavado de imagen. Lo puedes imprimir o guardar en PDF.'],
-  ['¿Cómo eligen mis ideas?', 'Con reglas claras, no al azar: cruzamos tus causas, tus fortalezas, tu giro, tu tamaño, tu presupuesto, tu tiempo y con quién quieres colaborar contra una biblioteca de proyectos escrita por Vorka México. Si un proyecto pide más dinero o tiempo del que tienes, baja en la lista.'],
+  ['¿Es gratis?', `Contestar es gratis y al terminar ves gratis tus 3 ideas de proyecto más afines, en una línea cada una. El reporte completo, con 5 a 8 proyectos a detalle y la versión corta de cada uno, cuesta ${precioT}, pago único.`],
+  ['¿Para quién es?', 'Para personas, estudiantes y jóvenes, colectivos, escuelas, organizaciones de la sociedad civil, profesionistas, negocios y empresas que quieren hacer algo por su comunidad y no saben por dónde empezar. También para quien ya tiene un proyecto y quiere sumarle algo.'],
+  ['¿Qué trae el reporte completo?', 'De 5 a 8 proyectos a tu medida, de causas distintas (educación, salud mental, medio ambiente, cultura, deporte, participación juvenil y más). Cada uno trae una versión corta para arrancar en 2 a 4 semanas con poco dinero y la versión completa: objetivo, a quién beneficia, primeros pasos, recursos mínimos, indicadores simples, los Objetivos de Desarrollo Sostenible (ODS) de la ONU con los que se alinea, riesgos comunes y cómo comunicarlo sin lavado de imagen. Si ya tienes un proyecto, trae una ruta para sumarle la idea. Lo puedes imprimir o guardar en PDF.'],
+  ['¿Cómo eligen mis ideas?', 'Con reglas claras, no al azar: cruzamos tus causas, tus fortalezas, tu giro, tu tamaño, tu presupuesto, tu tiempo y con quién quieres colaborar contra una biblioteca de más de 40 proyectos escrita por Vorka México. Si un proyecto pide más dinero o tiempo del que tienes, baja en la lista, y el reporte mezcla causas distintas para que tengas de dónde escoger.'],
   ['¿Qué es el lavado de imagen?', 'Presumir un impacto social o ambiental que no es real o que es mucho menor de lo que se dice. Cada idea trae consejos para comunicar con cifras reales y dejar que la comunidad sea la protagonista.'],
   ['¿Es asesoría legal o fiscal?', 'No. Es una guía para empezar. Para donativos deducibles, contratos o trámites, consulta con una o un profesional.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tus ideas y tu reporte. No se venden ni se comparten. Si no compras, se borran a los 12 meses, y puedes borrarlas tú cuando quieras. Consulta el <a href="/privacidad/#tests">aviso de privacidad</a>.'],
@@ -68,15 +68,15 @@ export async function landingProyecto(env, req, url, { p, code = null, cookie = 
     head: head(`${ldScript(ld)}<style>${CSS_MARCA_TEST}</style>`), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('proyecto') + SCRIPT_TOPE + (p ? SCRIPT_COMPRA : ''),
     cuerpo: `<div class="tv tv-marca" style="--pm:${colorDe('que-proyecto-social')}">
 ${heroMarca('que-proyecto-social', {
-  apoyo: 'Cuéntanos tu giro, en qué son buenos, cuánto dinero y tiempo tienen y qué causas les importan. Al terminar ves tus 3 ideas de proyecto más afines.',
+  apoyo: 'Cuéntanos quiénes son, en qué son buenos, cuánto dinero y tiempo tienen y qué causas les importan. Al terminar ves tus 3 ideas de proyecto más afines, cada una con una versión corta para arrancar en semanas.',
   antes: aviso ? `<p class="tv-ok" role="status" style="margin-top:16px">${esc(aviso)}</p>` : '',
   botones: `<a class="pm-btn" href="#test">Empezar ${FLECHA}</a><a class="pm-btn sec" href="#reporte">Ver qué trae el reporte</a>`,
   despues: `<p class="pm-gratis"><b>Contestarlo es gratis · tus 3 ideas son gratis · el reporte completo cuesta ${precioT}</b> (opcional, pago único). Sin crear cuenta.</p>`,
 })}
 ${indiceProducto('que-proyecto-social', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['test', 'El cuestionario'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar</a>`)}
 ${seccionQueEs('que-proyecto-social', { titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto.',
-  texto: 'Un cuestionario de unos 5 minutos que cruza tus causas, tus fortalezas, tu giro, tu tamaño, tu presupuesto y tu tiempo con una biblioteca de proyectos escrita por Vorka México. <b>Al terminar ves gratis tus 3 ideas más afines</b>; el reporte completo trae de 5 a 8 proyectos con indicadores y ODS.',
-  para: [['Negocios y empresas de cualquier tamaño', 'Quieren hacer algo por su comunidad y no saben por dónde empezar.'], ['Organizaciones de la sociedad civil y colectivos', 'Buscan un proyecto que quepa en su presupuesto y su tiempo, y que se pueda medir.'], ['Profesionistas independientes y escuelas', 'Quieren comunicarlo con cifras reales, sin lavado de imagen.']] })}
+  texto: 'Un cuestionario de unos 5 minutos que cruza tus causas, tus fortalezas, tu presupuesto y tu tiempo con una biblioteca de proyectos escrita por Vorka México. <b>Al terminar ves gratis tus 3 ideas más afines</b>; el reporte completo trae de 5 a 8 proyectos de causas distintas, cada uno con una versión corta para arrancar en 2 a 4 semanas y su versión completa con indicadores y ODS.',
+  para: [['Jóvenes, estudiantes y colectivos', 'Quieren hacer algo por su comunidad con poco dinero y poco tiempo, y empezar ya.'], ['Organizaciones, escuelas y proyectos que ya existen', 'Buscan sumar una actividad nueva que quepa en lo que ya hacen.'], ['Negocios y profesionistas', 'Quieren un proyecto que se pueda medir y comunicar con cifras reales, sin lavado de imagen.']] })}
 ${seccionDemo('que-proyecto-social', demoDe('que-proyecto-social'))}
 <section class="tv-sec" id="test"><div class="marco">
   <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Contesta como organización o como persona. Tarda unos 5 minutos.</p></div>
@@ -94,7 +94,7 @@ ${seccionDemo('que-proyecto-social', demoDe('que-proyecto-social'))}
       <p><span class="tv-ods"><b>ODS 2</b> Hambre cero</span><span class="tv-ods"><b>ODS 12</b> Producción y consumo responsables</span></p>
     </div>
   </div>
-  <ul class="tv-incluye" style="gap:10px">${['De 5 a 8 proyectos a tu medida', 'Objetivo con cifra y fecha, a quién beneficia y primeros pasos', 'Recursos mínimos e indicadores simples para medir', 'Los ODS de la ONU con los que se alinea cada proyecto', 'Riesgos comunes y cómo evitarlos', 'Cómo comunicarlo sin lavado de imagen'].map(x => `<li style="padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)">${x}</li>`).join('')}</ul>
+  <ul class="tv-incluye" style="gap:10px">${['De 5 a 8 proyectos a tu medida, de causas distintas', 'Versión corta de cada uno para arrancar en 2 a 4 semanas con poco dinero', 'Ruta para sumar la idea a un proyecto que ya tienes', 'Objetivo con cifra y fecha, a quién beneficia y primeros pasos', 'Recursos mínimos e indicadores simples para medir', 'Los ODS de la ONU con los que se alinea cada proyecto', 'Riesgos comunes y cómo evitarlos', 'Cómo comunicarlo sin lavado de imagen'].map(x => `<li style="padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)">${x}</li>`).join('')}</ul>
 </div></section>
 ${p ? `<section class="tv-sec" id="regalar"><div class="marco tv-dos">
   <div class="tv-cab"><span class="tv-et">Para alguien más</span><h2>¿Se lo quieres regalar a otra empresa u organización?</h2><p>Elige «Para regalar» y te llega una liga para mandársela.</p></div>
@@ -115,7 +115,7 @@ export function resultadoProyecto({ f, p, error = '', cupon = null, codigoRef = 
   const res = calcular(f.respuestas);
   const ya = f.order_estado === 'paid';
   const liga = `${SITIO}${RUTA}${codigoRef ? `?ref=${encodeURIComponent(codigoRef)}` : ''}`;
-  const share = whatsapp(`Hice el cuestionario «¿Qué proyecto social hago?» de Vorka y me dio ideas buenas para nuestro negocio. Es gratis: ${liga}`);
+  const share = whatsapp(`Hice el cuestionario «¿Qué proyecto social hago?» de Vorka y me dio ideas buenas para nuestro proyecto. Es gratis: ${liga}`);
   const bloqueadas = res.reporte.slice(3);
   return pagina({ titulo: 'Tus ideas de proyecto social · Vorka México', ruta: `${RUTA}resultado/`, noindex: true, headers: SIN_REFERER, navActual: 'catalogo',
     descripcion: 'Tus ideas de proyecto social.', head: head(), script: p && !ya ? SCRIPT_COMPRA_TEST : '',
@@ -128,12 +128,12 @@ export function resultadoProyecto({ f, p, error = '', cupon = null, codigoRef = 
 </div></section>
 <section class="tv-sec" style="padding-top:0"><div class="marco tv-dos">
   <div>
-    <ol class="tv-carreras">${res.gratis.map(x => `<li><b>${esc(x.n)}</b><p class="tv-det">${esc(x.l)}</p></li>`).join('')}</ol>
+    <ol class="tv-carreras">${res.gratis.map(x => `<li><b>${esc(x.n)}</b><p class="tv-det">${esc(x.l)}</p><p class="tv-nota" style="margin:4px 0 0">${esc(x.areaN)} · versión corta de ${x.c.pasos.length} semanas</p></li>`).join('')}</ol>
     ${ya ? '' : `<div class="tv-candado" style="margin-top:16px" aria-labelledby="vp-t">
       <span class="tv-et">${ICONO_CANDADO} En tu reporte completo</span>
       <h2 id="vp-t" style="margin:6px 0 10px;font-size:22px">${res.reporte.length} proyectos a detalle</h2>
       ${p ? `<a class="btn acento chico tv-no-imprimir" href="#comprar" style="margin:0 0 12px">Desbloquear por ${cupon ? pesos(Math.max(1000, p.precio_centavos - cupon.monto)) : precio(p)} ${FLECHA}</a>` : ""}
-      <ul class="tv-incluye">${res.gratis.map(x => `<li>${esc(x.n)}: objetivo, primeros pasos, recursos, indicadores, ODS y riesgos</li>`).join('')}${bloqueadas.map(x => `<li>${esc(x.n)}</li>`).join('')}</ul>
+      <ul class="tv-incluye">${res.gratis.map(x => `<li>${esc(x.n)}: versión corta semana por semana, objetivo, primeros pasos, recursos, indicadores, ODS y riesgos</li>`).join('')}${bloqueadas.map(x => `<li>${esc(x.n)}</li>`).join('')}</ul>
       <p class="tv-det" aria-hidden="true" style="filter:blur(4px);user-select:none">Objetivo: que 10 personas de tu municipio… Primeros pasos: 1. … 2. … Indicadores: … ODS …</p>
       <h2 style="margin:18px 0 8px;font-size:20px">${ICONO_CANDADO} Cómo comunicarlo sin lavado de imagen</h2>
       <h2 style="margin:8px 0;font-size:20px">${ICONO_CANDADO} Con quién aliarte y tu siguiente paso</h2>
@@ -144,7 +144,7 @@ export function resultadoProyecto({ f, p, error = '', cupon = null, codigoRef = 
       : p ? `<h2 class="h2" style="margin:0 0 6px">Desbloquea tu reporte completo</h2>
     <p class="tv-nota" style="margin:0">${res.reporte.length} proyectos a detalle, listos para presentarlos a tu equipo. Lo puedes imprimir o guardar en PDF.</p>
     ${formCompraTest(p, { resultado: f.id, nombre: f.nombre || '', email: f.email || '', error, cupon, boton: 'Desbloquear mi reporte' })}` : '<p class="tv-nota">El reporte completo abre muy pronto.</p>'}
-    <div class="tv-tarjeta tv-no-imprimir" style="margin-top:14px"><b>Compártelo</b><p class="tv-nota" style="margin:6px 0 10px">¿Conoces otro negocio que quiera hacer algo por su comunidad?</p>
+    <div class="tv-tarjeta tv-no-imprimir" style="margin-top:14px"><b>Compártelo</b><p class="tv-nota" style="margin:6px 0 10px">¿Conoces a alguien que quiera hacer algo por su comunidad?</p>
       <a class="btn blanco chico" href="${esc(share)}" target="_blank" rel="noopener">Compartir por WhatsApp</a></div>
   </div>
 </div></section>
@@ -174,10 +174,20 @@ export function reporteProyecto({ f, orden, rutaActiva = false }) {
   <div class="tv-acciones tv-no-imprimir"><button class="btn acento" type="button" id="tv-imprimir">Imprimir o guardar en PDF</button></div>
 </div></section>
 <div class="marco">
-<section><h2>Cómo usar este reporte</h2><ul class="tv-l"><li>Elige 1 proyecto, no 5: el que más emocione a tu equipo y quepa en tu presupuesto.</li><li>Antes de arrancar, platica con 3 a 5 personas a las que quieres beneficiar: confirma que el problema es real y que tu idea les sirve.</li><li>Empieza en pequeño (un piloto de 4 a 8 semanas), mide y luego crece.</li></ul></section>
+<section><h2>Cómo usar este reporte</h2><ul class="tv-l"><li>Los proyectos son de causas distintas para que tengas de dónde escoger. Elige 1, el que más te emocione y quepa en tu tiempo y tu dinero.</li><li>Arranca con su versión corta: 2 a 4 semanas, con poco dinero. Si funciona, pasa a la versión completa.</li><li>Antes de arrancar, platica con 3 a 5 personas a las que quieres beneficiar: confirma que el problema es real y que tu idea les sirve.</li></ul></section>
+<section><h2>Empieza esta semana</h2>
+  <p>Con tu primer proyecto, <b>${esc(res.reporte[0].n)}</b>, esto es lo que puedes hacer en los próximos 7 días:</p>
+  <ul class="tv-l"><li>${esc(res.reporte[0].c.pasos[0])}</li><li>Escríbele a 3 personas a las que quieres beneficiar y pregúntales si les serviría.</li><li>Pon fecha en tu calendario para la semana 2 y busca a 1 persona que te acompañe.</li></ul>
+</section>
+${res.sumar ? `<section><h2>Cómo sumar una idea a tu proyecto</h2>
+  <p>Ya tienes un proyecto andando. Antes de abrir otro, prueba la idea como una actividad más de lo que ya haces:</p>
+  <ol class="tv-l"><li>Elige la idea que comparta público con tu proyecto: las mismas personas, la misma escuela o la misma colonia.</li><li>Ponla como una actividad dentro de tu proyecto, con tu nombre y tus redes. Así no empiezas de cero con la convocatoria.</li><li>Hazla primero en su versión corta, con 1 o 2 personas de tu equipo como responsables.</li><li>Mide con 1 indicador de la idea y súmalo a lo que ya reportas.</li><li>Al terminar, decide con tu equipo si se queda como actividad fija, si crece o si la dejas.</li></ol>
+</section>` : ''}
 ${res.reporte.map((x, i) => `<section aria-labelledby="pr-${i}"><article class="tv-idea">
-  <span class="tv-num">Proyecto ${i + 1}</span><h3 id="pr-${i}">${esc(x.n)}</h3><p class="tv-nota">${esc(x.l)}</p>
-  <h4>Objetivo</h4><p>${esc(x.obj)}</p>
+  <span class="tv-num">Proyecto ${i + 1}${x.areaN ? ` · ${esc(x.areaN)}` : ''}</span><h3 id="pr-${i}">${esc(x.n)}</h3><p class="tv-nota">${esc(x.l)}</p>
+  <div class="tv-corto"><h4>Versión corta: ${x.c.pasos.length} semanas</h4><p><b>Meta:</b> ${esc(x.c.meta)}<br><b>Costo:</b> ${esc(x.c.costo)}</p>
+    <ol class="tv-l">${x.c.pasos.map((s, k) => `<li><b>Semana ${k + 1}.</b> ${esc(s)}</li>`).join('')}</ol></div>
+  <h4>Versión completa · Objetivo</h4><p>${esc(x.obj)}</p>
   <h4>A quién beneficia</h4><p>${esc(x.benef)}</p>
   <h4>Primeros pasos</h4><ol class="tv-l">${x.pasos.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
   <h4>Recursos mínimos</h4><p>${esc(x.recursos)}</p>
