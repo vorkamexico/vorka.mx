@@ -114,3 +114,50 @@ export const CSS_MARCA_TEST = `${CSS_MARCA}${CSS_SECCIONES}
 .tv-marca .tv-incluye li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pm);margin-top:7px}
 .tv-cierre{text-align:center}.tv-cierre h2{font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.05;letter-spacing:-.045em;margin:0 auto;max-width:18ch;text-wrap:balance}.tv-cierre h2 em{font-style:normal;color:var(--pm-t)}.tv-cierre .tv-ctas{justify-content:center}
 `;
+
+// «¿Qué proyecto social hago?» en modo juego: una pregunta por pantalla, fichas de colores y pase automático.
+// Solo aplica cuando SCRIPT_JUEGO pone .tv-juego en el formulario; sin JavaScript se ve el formulario normal.
+export const CSS_JUEGO = `
+.tj-ayuda{clear:both;margin:-4px 0 12px;font-size:14px;color:var(--fg-2)}
+.tv-juego{position:relative;max-width:760px;padding:22px clamp(18px,4vw,40px) 30px;border-radius:28px;background:var(--bg);border:1px solid var(--line);color:var(--fg);box-shadow:0 1px 2px rgba(40,30,20,.04),0 18px 48px -18px rgba(40,30,20,.16)}
+.tv-juego .tv-progreso,.tv-juego>.tv-nota,.tv-juego #tv-animo,.tv-juego #tv-recuperado{display:none}
+.tv-juego .tv-error#tv-falta[hidden]{display:none}
+.tv-juego .tv-q{display:none;border:0;background:transparent;padding:0}
+.tv-juego .tv-q.tj-ver{display:block;animation:tjEntra .3s ease-out}
+@keyframes tjEntra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tv-juego .tv-q legend{display:block;float:none;width:100%;margin:10px 0 6px;text-align:center;font-size:clamp(21px,3.6vw,27px);font-weight:700;line-height:1.25;letter-spacing:-.02em;color:var(--fg);text-wrap:balance}
+.tv-juego .tv-q legend .tv-n{display:none}
+.tv-juego .tj-ayuda{text-align:center;color:var(--fg-2);margin:0 0 22px;font-size:14.5px}
+.tv-juego .tv-op.lista{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:auto;gap:10px;counter-reset:tj}
+.tv-juego .tv-op.lista[data-max]{grid-template-columns:repeat(3,1fr)}
+.tv-juego .tv-op label{min-width:0;counter-increment:tj}
+.tv-juego .tv-op label:nth-child(6n+1){--tj:#d9653b}.tv-juego .tv-op label:nth-child(6n+2){--tj:#3f6fd1}.tv-juego .tv-op label:nth-child(6n+3){--tj:#c8941a}
+.tv-juego .tv-op label:nth-child(6n+4){--tj:#2e9468}.tv-juego .tv-op label:nth-child(6n+5){--tj:#7a5ac8}.tv-juego .tv-op label:nth-child(6n+6){--tj:#cf4a86}
+.tv-juego .tv-op span{box-sizing:border-box;height:100%;min-height:58px;display:flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left;padding:12px 14px;border:1.5px solid color-mix(in srgb,var(--tj) 22%,var(--line));border-radius:16px;background:color-mix(in srgb,var(--tj) 7%,var(--card));color:var(--fg);font-size:15.5px;font-weight:600;line-height:1.3;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word;min-width:0;transition:background .18s,border-color .18s,color .18s,box-shadow .18s}
+.tv-juego .tv-op span::before{content:counter(tj,upper-alpha);flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--tj);color:#fff;font-size:13px;font-weight:800;transition:background .18s,color .18s}
+.tv-juego .tv-op label:hover span{border-color:var(--tj);box-shadow:0 6px 16px -10px var(--tj)}
+.tv-juego .tv-op input:checked+span{background:var(--tj);border-color:var(--tj);color:#fff}
+.tv-juego .tv-op input:checked+span::before{content:'✓';background:rgba(255,255,255,.95);color:var(--tj)}
+.tv-juego .tv-op input:disabled+span{opacity:.4;box-shadow:none}
+.tv-juego .tv-op input:focus-visible+span{outline:3px solid color-mix(in srgb,var(--tj) 45%,transparent);outline-offset:2px}
+.tv-juego .tv-campo label{color:var(--fg)}.tv-juego .tv-campo small{color:var(--fg-2)}
+.tv-juego .tv-campo select,.tv-juego .tv-campo input[type=text]{min-height:54px;border:1.5px solid var(--line);border-radius:14px;font-size:16px;background:var(--card);color:var(--fg)}
+.tv-juego #q-estado.tj-ver{width:100%;max-width:440px;margin:0 auto}.tv-juego #q-estado .tv-campo{width:100%}
+.tj-cab{display:flex;align-items:center;gap:14px;margin:0 0 6px;font-size:13.5px;font-weight:650;color:var(--fg-2)}
+.tj-atras{min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-weight:650;cursor:pointer}
+.tj-atras[hidden]{display:inline-block;visibility:hidden}
+.tj-num{white-space:nowrap;font-variant-numeric:tabular-nums}
+.tj-barra{flex:1;height:6px;border-radius:99px;background:var(--bg-2);overflow:hidden}.tj-barra i{display:block;height:100%;width:0;border-radius:99px;background:var(--tv-acento);transition:width .35s ease}
+.tj-pie{display:flex;justify-content:center;margin-top:26px}
+.tj-sig,.tv-juego .tv-enviar{min-height:52px;padding:0 32px;border:0;border-radius:999px;background:var(--tv-acento);color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .15s}
+.tj-sig:hover,.tv-juego .tv-enviar:hover{transform:translateY(-1px)}
+.tj-sig:disabled{opacity:.35;cursor:default;transform:none}
+.tv-juego .tv-enviar{display:flex;align-items:center;gap:8px;justify-self:center;margin:26px auto 0}.tv-juego .tv-enviar svg{width:18px;height:18px}
+.tv-juego .tv-error,.tv-juego .tv-ok{text-align:center}
+.tj-aplauso{text-align:center;margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--fg-2);min-height:20px}
+@media (max-width:640px){.tv-juego .tv-op.lista[data-max]{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.tv-juego{border-radius:24px;padding:16px 14px 24px}.tv-juego .tv-op.lista:not([data-max]){grid-template-columns:1fr}
+  .tv-juego .tv-op.lista[data-max]{gap:8px}.tv-juego .tv-op.lista[data-max] span{min-height:56px;padding:10px;gap:9px;font-size:14px}.tv-juego .tv-op.lista[data-max] span::before{width:24px;height:24px;border-radius:8px;font-size:12px}
+  .tv-juego .tv-op span{min-height:54px}.tv-juego .tv-q legend{margin-top:14px}}
+@media (prefers-reduced-motion: reduce){.tv-juego .tv-q.tj-ver{animation:none}.tv-juego .tv-op span{transition:none}}
+`;

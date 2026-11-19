@@ -6,7 +6,7 @@ import { oferta, migas, ldScript } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { FLECHA } from '../marco.generado.js';
 import { pesos } from '../util.js';
-import { CSS_TESTS, CSS_MARCA_TEST } from './estilos.js';
+import { CSS_TESTS, CSS_MARCA_TEST, CSS_JUEGO } from './estilos.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-producto.js';
 import { seccionDemo } from '../demos/marco.js';
 import { demoDe } from '../demos/index.js';
@@ -26,10 +26,12 @@ export function formProyecto({ datos = {}, error = '', accion = RUTA, boton = 'V
   const marcado = (k, v) => [].concat(datos[k] ?? []).map(String).includes(String(v));
   const q = (k, d) => {
     const multi = !!d.multi, ops = d.unica || d.multi, req = k !== 'colaborar';
-    return `<fieldset class="tv-q" id="q-${k}"${req ? ' data-req="1"' : ''}><legend><span class="tv-n">${++n}</span><span>${esc(d.p)}</span></legend>
+    const ayuda = multi ? (req ? `Elige hasta ${d.max}.` : 'Elige las que quieras, o sáltala.') : 'Elige una.';
+    return `<fieldset class="tv-q" id="q-${k}"${req ? ' data-req="1"' : ''}><legend><span class="tv-n">${++n}</span><span>${esc(d.p.replace(/ \((hasta \d+|las que quieras)\)$/, ''))}</span></legend>
+    <p class="tj-ayuda">${ayuda}</p>
     <div class="tv-op lista"${multi ? ` data-max="${d.max}"` : ''}>${ops.map(([v, t]) => `<label><input type="${multi ? 'checkbox' : 'radio'}" name="${k}" value="${esc(v)}"${marcado(k, v) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('')}</div></fieldset>`;
   };
-  return `<form class="tv-form" id="form-test" method="post" action="${esc(accion)}" novalidate>
+  return `<form class="tv-form tv-ps" id="form-test" method="post" action="${esc(accion)}" novalidate>
   <div class="tv-progreso"><span id="tv-cuenta" aria-hidden="true">0 de ${Object.keys(PREGUNTAS).filter(k => k !== 'colaborar').length + 1}</span><span class="tv-barra" aria-hidden="true"><i id="tv-barra"></i></span></div>
   <p class="tv-ok" id="tv-animo" role="status" hidden>¡Vas a la mitad! Tus ideas ya se están armando.</p>
   <p class="tv-nota" id="tv-recuperado" role="status" hidden>Recuperamos las respuestas que dejaste en este navegador: sigue donde te quedaste.</p>
@@ -65,7 +67,7 @@ export async function landingProyecto(env, req, url, { p, code = null, cookie = 
     offers: oferta({ ruta: RUTA, centavos: p?.precio_centavos ?? 14900, disponible: !!p }), ...ldResenas(rs) }, migas('¿Qué proyecto social hago?', RUTA),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: F.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   return pagina({ titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto | Vorka México', ruta: RUTA, descripcion, imagen: OG_PROYECTO, navActual: 'catalogo', status,
-    head: head(`${ldScript(ld)}<style>${CSS_MARCA_TEST}</style>`), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('proyecto') + SCRIPT_TOPE + (p ? SCRIPT_COMPRA : ''),
+    head: head(`${ldScript(ld)}<style>${CSS_MARCA_TEST}${CSS_JUEGO}</style>`), headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT_TEST('proyecto') + SCRIPT_TOPE + SCRIPT_JUEGO + (p ? SCRIPT_COMPRA : ''),
     cuerpo: `<div class="tv tv-marca" style="--pm:${colorDe('que-proyecto-social')}">
 ${heroMarca('que-proyecto-social', {
   apoyo: 'Cuéntanos quiénes son, en qué son buenos, cuánto dinero y tiempo tienen y qué causas les importan. Al terminar ves tus 3 ideas de proyecto más afines, cada una con una versión corta para arrancar en semanas.',
@@ -79,7 +81,7 @@ ${seccionQueEs('que-proyecto-social', { titulo: '¿Qué proyecto social hago? Id
   para: [['Jóvenes, estudiantes y colectivos', 'Quieren hacer algo por su comunidad con poco dinero y poco tiempo, y empezar ya.'], ['Organizaciones, escuelas y proyectos que ya existen', 'Buscan sumar una actividad nueva que quepa en lo que ya hacen.'], ['Negocios y profesionistas', 'Quieren un proyecto que se pueda medir y comunicar con cifras reales, sin lavado de imagen.']] })}
 ${seccionDemo('que-proyecto-social', demoDe('que-proyecto-social'))}
 <section class="tv-sec" id="test"><div class="marco">
-  <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Contesta como organización o como persona. Tarda unos 5 minutos.</p></div>
+  <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Una pregunta a la vez, con un toque. Contesta como persona, grupo u organización: tarda unos 3 minutos.</p></div>
   ${formProyecto({ datos, error })}
 </div></section>
 <section class="tv-sec suave" id="reporte"><div class="marco tv-dos">
@@ -118,6 +120,38 @@ const avisoPocoTiempo = (r, { corto = false } = {}) => `<section${corto ? ' clas
   <div class="tv-acciones tv-no-imprimir" style="margin:10px 0 0"><a class="btn blanco chico" href="${esc(voluntariadoDe(r.estado))}" target="_blank" rel="noopener">Ver voluntariado de IMPACTO${r.estado ? ` en ${esc(r.estado)}` : ''}</a></div>
   <p class="tv-nota">Liga: ${esc(voluntariadoDe(r.estado))}</p>
 </section>`;
+
+// Modo juego: una pregunta por pantalla, pase automático en las de una opción, «Siguiente» en las de varias y en la última
+// el botón de enviar. Se monta encima del formulario normal (SCRIPT_TEST sigue guardando avance y validando).
+const SCRIPT_JUEGO = `(function(){
+  var f=document.getElementById('form-test'); if(!f||!f.classList.contains('tv-ps')) return;
+  var qs=[].slice.call(f.querySelectorAll('.tv-q')), n=qs.length, i=0, env=f.querySelector('.tv-enviar'); if(!n||!env) return;
+  f.classList.add('tv-juego');
+  var cab=document.createElement('div'); cab.className='tj-cab';
+  cab.innerHTML='<button type="button" class="tj-atras">← Atrás</button><span class="tj-num" aria-live="polite"></span><span class="tj-barra" aria-hidden="true"><i></i></span>';
+  f.insertBefore(cab,f.firstChild);
+  var pie=document.createElement('div'); pie.className='tj-pie'; pie.innerHTML='<button type="button" class="tj-sig">Siguiente →</button>';
+  var ap=document.createElement('p'); ap.className='tj-aplauso'; ap.setAttribute('aria-live','polite');
+  f.insertBefore(pie,env); f.insertBefore(ap,env);
+  var atras=cab.querySelector('.tj-atras'), num=cab.querySelector('.tj-num'), barra=cab.querySelector('.tj-barra i'), sig=pie.querySelector('.tj-sig');
+  var frases=['¡Va!','¡Buena elección!','¡Eso!','Ya vas a la mitad','¡Muy bien!','Ya casi','Última pregunta'];
+  function hecha(q){ var s=q.querySelector('select'); return !!q.querySelector('input:checked')||!!(s&&s.value); }
+  function arriba(){ var y=f.getBoundingClientRect().top+window.scrollY-110; if(Math.abs(window.scrollY-y)>30) window.scrollTo({top:y,behavior:'smooth'}); }
+  function ver(k,mover){ i=Math.max(0,Math.min(n-1,k)); var q=qs[i];
+    qs.forEach(function(x,j){ x.classList.toggle('tj-ver',j===i); });
+    num.textContent=(i+1)+' de '+n; barra.style.width=((i+(hecha(q)?1:0))/n*100)+'%'; atras.hidden=i===0;
+    var radio=!!q.querySelector('input[type=radio]'), ultima=i===n-1;
+    pie.hidden=ultima||(radio&&!hecha(q)); env.hidden=!ultima;
+    sig.disabled=!!q.dataset.req&&!hecha(q); sig.textContent=!q.dataset.req&&!hecha(q)?'Saltar →':'Siguiente →';
+    ap.textContent=ultima?frases[6]:i>=n-3?frases[5]:i===Math.floor(n/2)?frases[3]:i>0?frases[i%3]:'';
+    if(mover) arriba(); }
+  f.addEventListener('change',function(e){ var q=e.target.closest('.tv-q'); if(q!==qs[i]) return;
+    if(e.target.type==='radio'){ ver(i); setTimeout(function(){ if(qs[i]===q&&i<n-1) ver(i+1,true); },320); } else ver(i); });
+  sig.addEventListener('click',function(){ ver(i+1,true); });
+  atras.addEventListener('click',function(){ ver(i-1,true); });
+  f.addEventListener('submit',function(e){ if(!e.defaultPrevented) return; var j=qs.findIndex(function(q){ return q.dataset.req&&!hecha(q); }); if(j>-1) ver(j,true); });
+  var primera=qs.findIndex(function(q){ return q.dataset.req&&!hecha(q); }); ver(primera<0?n-1:primera);
+})();`;
 
 const odsHtml = l => l.map(n => `<span class="tv-ods"><b>ODS ${n}</b> ${esc(ODS[n])}</span>`).join('');
 
