@@ -119,7 +119,8 @@ export const CSS_MARCA_TEST = `${CSS_MARCA}${CSS_SECCIONES}
 // Solo aplica cuando SCRIPT_JUEGO pone .tv-juego en el formulario; sin JavaScript se ve el formulario normal.
 export const CSS_JUEGO = `
 .tj-ayuda{clear:both;margin:-4px 0 12px;font-size:14px;color:var(--fg-2)}
-.tv-juego{position:relative;max-width:760px;padding:22px clamp(18px,4vw,40px) 30px;border-radius:28px;background:var(--bg);border:1px solid var(--line);color:var(--fg);box-shadow:0 1px 2px rgba(40,30,20,.04),0 18px 48px -18px rgba(40,30,20,.16)}
+.tv-juego{position:relative;max-width:none;padding:22px clamp(18px,4vw,40px) 30px;border-radius:28px;background:var(--bg);border:1px solid var(--line);color:var(--fg);box-shadow:0 1px 2px rgba(40,30,20,.04),0 18px 48px -18px rgba(40,30,20,.16)}
+.tv-juego>*:not(.tv-enviar){width:100%;max-width:880px;justify-self:center}
 .tv-juego .tv-progreso,.tv-juego>.tv-nota,.tv-juego #tv-animo,.tv-juego #tv-recuperado{display:none}
 .tv-juego .tv-error#tv-falta[hidden]{display:none}
 .tv-juego .tv-q{display:none;border:0;background:transparent;padding:0}
@@ -155,6 +156,7 @@ export const CSS_JUEGO = `
 .tv-juego .tv-enviar{display:flex;align-items:center;gap:8px;justify-self:center;margin:26px auto 0}.tv-juego .tv-enviar svg{width:18px;height:18px}
 .tv-juego .tv-error,.tv-juego .tv-ok{text-align:center}
 .tj-aplauso{text-align:center;margin:12px 0 0;font-size:13.5px;font-weight:600;color:var(--fg-2);min-height:20px}
+@media (min-width:980px){.tv-juego .tv-op.lista[data-max]{grid-template-columns:repeat(4,1fr)}}
 @media (max-width:640px){.tv-juego .tv-op.lista[data-max]{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.tv-juego{border-radius:24px;padding:16px 14px 24px}.tv-juego .tv-op.lista:not([data-max]){grid-template-columns:1fr}
   .tv-juego .tv-op.lista[data-max]{gap:8px}.tv-juego .tv-op.lista[data-max] span{min-height:56px;padding:10px;gap:9px;font-size:14px}.tv-juego .tv-op.lista[data-max] span::before{width:24px;height:24px;border-radius:8px;font-size:12px}
