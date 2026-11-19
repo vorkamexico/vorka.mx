@@ -165,7 +165,12 @@ describe('reglas (sin IA, deterministas)', () => {
     for (const a of new Set(areas)) expect(areas.filter(x => x === a).length).toBeLessThanOrEqual(2);
     expect(areas.filter(x => x === 'economia').length).toBeLessThanOrEqual(1);
     expect(new Set(r.gratis.map(x => x.area)).size).toBe(3);
-    expect(r.reporte.map(x => x.id)).toContain('oficio');
+    expect(r.reporte.every(x => x.pres <= 1)).toBe(true);   // sin dinero: nada de presupuestos medianos o grandes
+    expect(r.poco).toBe(true);
+    expect(PROYECTOS.length).toBeGreaterThanOrEqual(80);
+    expect(new Set(PROYECTOS.map(x => x.id)).size).toBe(PROYECTOS.length);
+    for (const nivel of ['0', '1', '2', '3', '4']) expect(PROYECTOS.some(x => String(x.pres) === nivel)).toBe(true);
+    for (const nivel of ['0', '1', '2', '3']) expect(PROYECTOS.some(x => String(x.tiempo) === nivel)).toBe(true);
     // Sin «etapa» (respuestas guardadas antes de esta pregunta) también calcula
     const viejo = { ...v.r }; delete viejo.etapa;
     expect(calcularP(viejo).reporte.length).toBeGreaterThanOrEqual(5);
@@ -405,6 +410,7 @@ describe('¿Qué proyecto social hago?', () => {
     expect(r).toContain('Cómo comunicarlo sin lavado de imagen');
     expect(r).toContain("Versión corta: 2 semanas"); expect(r).toContain("<b>Semana 1.</b>"); expect(r).toContain("Empieza esta semana");
     expect(r).not.toContain("Cómo sumar una idea a tu proyecto");   // contestó que empieza uno nuevo
+    expect(r).not.toContain("lo que más rinde es sumarte");   // tiene 1 a 2 horas a la semana
     expect(r).toContain('soyimpacto.org');
     expect(r).toContain(`Orden ${orden}`);
     expect((r.match(/class="tv-idea"/g) || []).length).toBeGreaterThanOrEqual(5);

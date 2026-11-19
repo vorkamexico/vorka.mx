@@ -3,6 +3,8 @@
 // oficiales en español (un.org/sustainabledevelopment/es). Es una guía para empezar: no sustituye un diagnóstico de la
 // comunidad ni asesoría legal o fiscal.
 
+import { MAS } from './proyecto-mas.js';
+
 export const ODS = {
   1: 'Fin de la pobreza', 2: 'Hambre cero', 3: 'Salud y bienestar', 4: 'Educación de calidad', 5: 'Igualdad de género',
   6: 'Agua limpia y saneamiento', 7: 'Energía asequible y no contaminante', 8: 'Trabajo decente y crecimiento económico',
@@ -526,4 +528,4 @@ const CORTO = {
   incubadora: C('Ayudar a 3 micronegocios a calcular bien un precio.', '$0.',
     'Invita a 3 micronegocios conocidos.', 'Revisen juntos el costo real de un producto.', 'Ajusten el precio y vean en 2 semanas cómo les fue.'),
 };
-export const PROYECTOS = [...BASE, ...NUEVOS].map(p => ({ ...p, area: p.area || AREA[p.id], para: p.para || PARA[p.id] || [], c: p.c || CORTO[p.id] }));
+export const PROYECTOS = [...BASE, ...NUEVOS, ...MAS].map(p => ({ ...p, area: p.area || AREA[p.id], para: p.para || PARA[p.id] || [], c: p.c || CORTO[p.id] }));

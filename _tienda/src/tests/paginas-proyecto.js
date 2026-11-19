@@ -10,7 +10,7 @@ import { CSS_TESTS, CSS_MARCA_TEST } from './estilos.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe } from '../marca-producto.js';
 import { seccionDemo } from '../demos/marco.js';
 import { demoDe } from '../demos/index.js';
-import { PREGUNTAS, ESTADOS, ODS, calcular } from './proyecto.js';
+import { PREGUNTAS, ESTADOS, ODS, calcular, voluntariadoDe } from './proyecto.js';
 import { formCompraTest, SCRIPT_COMPRA_TEST, SCRIPT_TEST, SCRIPT_IMPRIMIR, SCRIPT_TOPE, ICONO_CANDADO, PRODUCTOS_TEST, whatsapp, fechaCorta, SIN_REFERER } from './comun.js';
 
 const DEF = PRODUCTOS_TEST.proyecto;
@@ -109,6 +109,16 @@ ${await masTienda(env, 'examenes')}
   });
 }
 
+// Si contestó 1 a 2 horas al mes: lo honesto es sumarse a algo que ya existe (IMPACTO, desde los 12 años)
+const avisoPocoTiempo = (r, { corto = false } = {}) => `<section${corto ? ' class="tv-tarjeta" style="margin-top:16px"' : ''}><h2${corto ? ' style="margin:0 0 6px;font-size:20px"' : ''}>Con 1 a 2 horas al mes, lo que más rinde es sumarte a algo que ya existe</h2>
+  <p>Un proyecto propio pide, sobre todo al principio, unas horas cada semana: convocar, coordinar, dar seguimiento. Con 1 a 2 horas al mes es muy difícil sostenerlo, y no pasa nada. Tu tiempo rinde mucho más dentro de un equipo que ya tiene la gente, el espacio y la convocatoria.</p>
+  <ul class="tv-l"><li>Súmate como voluntaria o voluntario a un proyecto que ya esté andando. En IMPACTO, la red de jóvenes que transforma sus comunidades, hay equipos en varios municipios y puedes postularte desde los 12 años.</li>
+  <li>Lleva ahí una de ${corto ? 'tus ideas' : 'las ideas de este reporte'} en su versión corta: la puedes proponer como actividad del equipo.</li>
+  <li>Si más adelante tienes medio día a la semana, vuelve a contestar el cuestionario y te saldrán proyectos para hacer por tu cuenta.</li></ul>
+  <div class="tv-acciones tv-no-imprimir" style="margin:10px 0 0"><a class="btn blanco chico" href="${esc(voluntariadoDe(r.estado))}" target="_blank" rel="noopener">Ver voluntariado de IMPACTO${r.estado ? ` en ${esc(r.estado)}` : ''}</a></div>
+  <p class="tv-nota">Liga: ${esc(voluntariadoDe(r.estado))}</p>
+</section>`;
+
 const odsHtml = l => l.map(n => `<span class="tv-ods"><b>ODS ${n}</b> ${esc(ODS[n])}</span>`).join('');
 
 export function resultadoProyecto({ f, p, error = '', cupon = null, codigoRef = null, enviado = false }) {
@@ -129,6 +139,7 @@ export function resultadoProyecto({ f, p, error = '', cupon = null, codigoRef = 
 <section class="tv-sec" style="padding-top:0"><div class="marco tv-dos">
   <div>
     <ol class="tv-carreras">${res.gratis.map(x => `<li><b>${esc(x.n)}</b><p class="tv-det">${esc(x.l)}</p><p class="tv-nota" style="margin:4px 0 0">${esc(x.areaN)} · versión corta de ${x.c.pasos.length} semanas</p></li>`).join('')}</ol>
+    ${res.poco ? avisoPocoTiempo(f.respuestas, { corto: true }) : ''}
     ${ya ? '' : `<div class="tv-candado" style="margin-top:16px" aria-labelledby="vp-t">
       <span class="tv-et">${ICONO_CANDADO} En tu reporte completo</span>
       <h2 id="vp-t" style="margin:6px 0 10px;font-size:22px">${res.reporte.length} proyectos a detalle</h2>
@@ -179,6 +190,7 @@ export function reporteProyecto({ f, orden, rutaActiva = false }) {
   <p>Con tu primer proyecto, <b>${esc(res.reporte[0].n)}</b>, esto es lo que puedes hacer en los próximos 7 días:</p>
   <ul class="tv-l"><li>${esc(res.reporte[0].c.pasos[0])}</li><li>Escríbele a 3 personas a las que quieres beneficiar y pregúntales si les serviría.</li><li>Pon fecha en tu calendario para la semana 2 y busca a 1 persona que te acompañe.</li></ul>
 </section>
+${res.poco ? avisoPocoTiempo(r) : ''}
 ${res.sumar ? `<section><h2>Cómo sumar una idea a tu proyecto</h2>
   <p>Ya tienes un proyecto andando. Antes de abrir otro, prueba la idea como una actividad más de lo que ya haces:</p>
   <ol class="tv-l"><li>Elige la idea que comparta público con tu proyecto: las mismas personas, la misma escuela o la misma colonia.</li><li>Ponla como una actividad dentro de tu proyecto, con tu nombre y tus redes. Así no empiezas de cero con la convocatoria.</li><li>Hazla primero en su versión corta, con 1 o 2 personas de tu equipo como responsables.</li><li>Mide con 1 indicador de la idea y súmalo a lo que ya reportas.</li><li>Al terminar, decide con tu equipo si se queda como actividad fija, si crece o si la dejas.</li></ol>

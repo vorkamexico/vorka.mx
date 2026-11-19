@@ -63,8 +63,11 @@ export function calcular(r) {
   const idea = ({ pr, s }) => ({ ...pr, s, obj: poner(pr.obj), pasos: pr.pasos.map(poner), areaN: AREAS[pr.area] || '' });
   const positivas = orden.filter(x => x.s > 0).length;
   const reporte = elegir(orden, Math.max(5, Math.min(8, positivas))).map(idea);
-  return { ideas: orden.map(idea), gratis: reporte.slice(0, 3), reporte, lugar, sumar: r.etapa === 'sumar' };
+  return { ideas: orden.map(idea), gratis: reporte.slice(0, 3), reporte, lugar, sumar: r.etapa === 'sumar', poco: r.tiempo === '0' };
 }
+
+/** Liga al voluntariado de IMPACTO en su estado (soyimpacto.org/voluntariado/<estado>/), o a la página general. */
+export const voluntariadoDe = estado => `https://soyimpacto.org/voluntariado/${estado ? `${String(estado).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}/` : ''}`;
 
 export const resumenDe = res => ({ top: res.reporte.slice(0, 3).map(x => x.id), ods: [...new Set(res.reporte.flatMap(x => x.ods))].sort((a, b) => a - b) });
 export { PREGUNTAS, ESTADOS, ODS, AREAS };
