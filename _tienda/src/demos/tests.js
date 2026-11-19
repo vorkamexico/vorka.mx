@@ -2,7 +2,7 @@
 // · Test vocacional: 5 preguntas reales del test (la parte «Lo que te gusta», con sus mismas opciones) y luego el perfil
 //   gratis tal como se ve, pero de EJEMPLO y marcado así: lo calcula el motor real (tests/vocacional.js › calcular) con
 //   las respuestas completas de una persona ficticia. Con 5 de 48 preguntas no se puede dar un perfil de verdad.
-// · ¿Qué proyecto social hago?: 5 de sus 10 preguntas reales (causas, fortalezas, tamaño, presupuesto y tiempo) y tus
+// · ¿Qué proyecto social hago?: 5 de sus preguntas reales (causas, fortalezas, tamaño, presupuesto y tiempo) y tus
 //   3 ideas gratis calculadas con la regla real (la de proyecto.js › afinidad, copiada en AFINIDAD_JS; una prueba revisa que den lo mismo) y la biblioteca real.
 //   Sin giro, aliados ni municipio: el cuestionario completo afina con eso. Nada se guarda ni se manda.
 import { TIPOS, INTERESES, OPC_INTERES, HABILIDADES, AREAS_UNAM } from '../tests/vocacional-datos.js';
@@ -16,7 +16,16 @@ export const AFINIDAD_JS = `function afinidad(pr,r){
   s+=pr.giros.length?(pr.giros.includes(r.giro)?2:0):1;
   s-=3*Math.max(0,pr.pres-Number(r.presupuesto))+3*Math.max(0,pr.tiempo-Number(r.tiempo));
   if(TAMANOS.indexOf(pr.tam)>TAMANOS.indexOf(r.tamano))s-=6;
+  if((pr.para||[]).length&&r.tipo&&!pr.para.includes(r.tipo))s-=4;
   return s;
+}`;
+// La selección de proyecto.js › elegir (mezcla áreas), para el navegador; la misma prueba la compara
+export const ELEGIR_JS = `function elegir(orden,n){
+  const sel=[],cuenta={};
+  const pasar=(max,soloPos,tope)=>{for(const x of orden){if(sel.length>=tope)return;const a=x.pr.area;
+    if(sel.includes(x)||(cuenta[a]||0)>=max||(soloPos&&x.s<=0))continue;sel.push(x);cuenta[a]=(cuenta[a]||0)+1;}};
+  pasar(1,true,Math.max(3,n-1));pasar(2,true,n);pasar(1,false,n);pasar(2,false,n);pasar(99,false,n);
+  return sel;
 }`;
 const json = x => JSON.stringify(x).replace(/</g, '\\u003c');
 const N_VOC = 48;   // INTERESES + HABILIDADES + PREFERENCIAS del test (lo dice su página)
@@ -121,7 +130,8 @@ pregunta();
 
 // ---------- ¿Qué proyecto social hago? ----------
 const PREG_PS = ['causas', 'expertise', 'tamano', 'presupuesto', 'tiempo'].map(k => ({ k, p: PREGUNTAS[k].p, max: PREGUNTAS[k].max || 1, o: PREGUNTAS[k].unica || PREGUNTAS[k].multi }));
-const BIBLIOTECA = PROYECTOS.map(({ n, l, causas, exp, giros, pres, tiempo, tam, col }) => ({ n, l, causas, exp, giros, pres, tiempo, tam, col }));
+const BIBLIOTECA = PROYECTOS.map(({ n, l, causas, exp, giros, pres, tiempo, tam, col, area, para }) => ({ n, l, causas, exp, giros, pres, tiempo, tam, col, area, para }));
+const N_PS = Object.keys(PREGUNTAS).length + 1;   // preguntas del cuestionario completo (más «¿Dónde están?»)
 const proyecto = {
   titulo: 'Contesta 5 preguntas y ve tus 3 ideas de proyecto social.',
   texto: 'Elige tus causas, en qué son buenos, su tamaño, su presupuesto y su tiempo: las ideas salen de la biblioteca real de proyectos, con la misma regla del cuestionario.',
@@ -131,12 +141,13 @@ const proyecto = {
   html: '<section class="dt" id="dt" aria-live="polite"></section>',
   js: `(()=>{const D=${json({ preguntas: PREG_PS, biblioteca: BIBLIOTECA })};const TAMANOS=${json(TAMANOS)};
 ${AFINIDAD_JS}
+${ELEGIR_JS}
 ${JS_COMUN}
 let i=0,espera=0;const r={causas:[],expertise:[],colaborar:[],giro:'',tamano:'',presupuesto:'',tiempo:''};
 const val=q=>q.max>1?r[q.k]:r[q.k]===''?[]:[r[q.k]];
 function pregunta(){
   const q=D.preguntas[i],v=val(q),multi=q.max>1;
-  app.innerHTML=prog(i,D.preguntas.length,'<small>de 10 en el completo</small>')+'<h2 class="dt-q">'+esc(q.p)+'</h2>'+(multi?'':'<p class="dt-ayuda">Elige una.</p>')+
+  app.innerHTML=prog(i,D.preguntas.length,'<small>de ${N_PS} en el completo</small>')+'<h2 class="dt-q">'+esc(q.p)+'</h2>'+(multi?'':'<p class="dt-ayuda">Elige una.</p>')+
    (multi?'<div class="dt-chips" role="group" aria-label="'+esc(q.p)+'">'+q.o.map(([id,t])=>'<button type="button" class="dt-chip" aria-pressed="'+v.includes(id)+'" data-v="'+id+'"'+(!v.includes(id)&&v.length>=q.max?' disabled':'')+'>'+esc(t)+'</button>').join('')+'</div>'
     :'<div class="dt-ops" role="group" aria-label="'+esc(q.p)+'">'+q.o.map(([id,t])=>'<button type="button" class="dt-op" aria-pressed="'+v.includes(id)+'" data-v="'+id+'"><span class="c">'+(v.includes(id)?'✓':'')+'</span>'+esc(t)+'</button>').join('')+'</div>')+
    (multi?'<button type="button" class="dt-btn" id="dt-sig"'+(v.length?'':' disabled')+'>Siguiente</button>':'')+
@@ -144,11 +155,11 @@ function pregunta(){
 }
 function ideas(){
   const orden=D.biblioteca.map((pr,k)=>({pr,k,s:afinidad(pr,r)})).sort((a,b)=>b.s-a.s||a.k-b.k);
-  const pos=orden.filter(x=>x.s>0).length,rep=Math.max(5,Math.min(8,pos)),mas=orden.slice(3,rep);
+  const pos=orden.filter(x=>x.s>0).length,rep=Math.max(5,Math.min(8,pos)),sel=elegir(orden,rep),mas=sel.slice(3);
   app.innerHTML='<span class="dt-et">Tus ideas gratis</span><h2>Tus 3 proyectos más afines</h2>'+
    '<p class="dt-lead">Con tus 5 respuestas y la biblioteca de proyectos de Vorka. El cuestionario completo afina con tu giro, tus aliados y tu municipio.</p>'+
-   '<ol class="dt-ideas">'+orden.slice(0,3).map(x=>'<li><b>'+esc(x.pr.n)+'</b><p>'+esc(x.pr.l)+'</p></li>').join('')+'</ol>'+
-   '<div class="dt-cand"><b>🔒 En el reporte completo: '+rep+' proyectos a detalle</b><ul><li>Objetivo, primeros pasos, recursos, indicadores, ODS y riesgos de cada uno</li>'+mas.map(x=>'<li>'+esc(x.pr.n)+'</li>').join('')+'</ul></div>'+
+   '<ol class="dt-ideas">'+sel.slice(0,3).map(x=>'<li><b>'+esc(x.pr.n)+'</b><p>'+esc(x.pr.l)+'</p></li>').join('')+'</ol>'+
+   '<div class="dt-cand"><b>🔒 En el reporte completo: '+rep+' proyectos a detalle</b><ul><li>Versión corta de 2 a 4 semanas, objetivo, primeros pasos, recursos, indicadores, ODS y riesgos de cada uno</li>'+mas.map(x=>'<li>'+esc(x.pr.n)+'</li>').join('')+'</ul></div>'+
    '<p class="dt-nota">Es una guía para empezar: no sustituye un diagnóstico de la comunidad.</p>'+
    '<button type="button" class="dt-btn sec" id="dt-cambiar">Cambiar presupuesto o tiempo</button><button type="button" class="dt-btn sec" id="dt-otra">Volver a empezar</button>';
 }

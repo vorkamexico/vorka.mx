@@ -7,8 +7,8 @@ import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { demoDe } from '../src/demos/index.js';
 import SIM from '../src/demos/simulador.js';
-import { AFINIDAD_JS } from '../src/demos/tests.js';
-import { afinidad } from '../src/tests/proyecto.js';
+import { AFINIDAD_JS, ELEGIR_JS } from '../src/demos/tests.js';
+import { afinidad, elegir } from '../src/tests/proyecto.js';
 import { PREGUNTAS, PROYECTOS, TAMANOS } from '../src/tests/proyecto-datos.js';
 import { REACTIVOS as REACTIVOS_PAA } from '../src/simulador/banco.js';
 
@@ -64,6 +64,7 @@ describe('demos de educación', () => {
 
   it('¿Qué proyecto social hago?: la regla del navegador da lo mismo que proyecto.js › afinidad', () => {
     const fn = new Function('TAMANOS', `${AFINIDAD_JS}; return afinidad;`)(TAMANOS);
+    const sel = new Function(`${ELEGIR_JS}; return elegir;`)();
     const valores = k => (PREGUNTAS[k].unica || PREGUNTAS[k].multi).map(([v]) => v);
     let azar = 7; const rnd = n => (azar = (azar * 9301 + 49297) % 233280) % n;
     for (let n = 0; n < 60; n++) {
@@ -71,6 +72,10 @@ describe('demos de educación', () => {
       const r = { causas: tomar('causas', 3), expertise: tomar('expertise', 3), colaborar: [], giro: '',
         tamano: valores('tamano')[rnd(5)], presupuesto: valores('presupuesto')[rnd(5)], tiempo: valores('tiempo')[rnd(4)] };
       for (const pr of PROYECTOS) expect(fn(pr, r)).toBe(afinidad(pr, r));
+      r.tipo = valores('tipo')[rnd(valores('tipo').length)];
+      for (const pr of PROYECTOS) expect(fn(pr, r)).toBe(afinidad(pr, r));
+      const orden = PROYECTOS.map((pr, i) => ({ pr, i, s: afinidad(pr, r) })).sort((x, y) => y.s - x.s || x.i - y.i);
+      expect(sel(orden, 8).map(x => x.pr.id)).toEqual(elegir(orden, 8).map(x => x.pr.id));
     }
   });
 });

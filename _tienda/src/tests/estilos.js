@@ -87,6 +87,7 @@ export const CSS_TESTS = `
 .tv-idea{padding:20px;border-radius:22px;background:var(--card);border:1px solid var(--line);break-inside:avoid;margin:0 0 14px}
 .tv-idea h3{margin:0;font-size:21px;letter-spacing:-.02em}.tv-idea h4{margin:14px 0 6px;font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-2)}
 .tv-idea p{margin:6px 0 0;line-height:1.55}
+.tv-corto{margin:14px 0 4px;padding:14px 16px;border-radius:16px;background:color-mix(in srgb,var(--tv-acento) 7%,var(--card));border:1px solid var(--line)}.tv-corto h4{margin-top:0;text-transform:none;letter-spacing:0;font-size:16px;color:var(--fg)}
 .tv-ods{display:inline-flex;gap:6px;align-items:center;margin:4px 6px 0 0;padding:4px 10px;border-radius:999px;background:var(--bg-2);font-size:13px;font-weight:650}
 .tv-ods b{color:var(--tv-acento);white-space:nowrap}
 .tv-tabla{width:100%;border-collapse:collapse;font-size:14.5px}.tv-tabla th,.tv-tabla td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
