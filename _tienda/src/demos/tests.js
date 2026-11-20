@@ -17,6 +17,10 @@ export const AFINIDAD_JS = `function afinidad(pr,r){
   s-=3*Math.max(0,pr.pres-Number(r.presupuesto))+3*Math.max(0,pr.tiempo-Number(r.tiempo));
   if(TAMANOS.indexOf(pr.tam)>TAMANOS.indexOf(r.tamano))s-=6;
   if((pr.para||[]).length&&r.tipo&&!pr.para.includes(r.tipo))s-=4;
+  s+=3*inter(pr.pub||[],r.publico||[])+2*inter(pr.modo||[],r.modo||[]);
+  if((pr.zonas||[]).length&&r.zona)s+=pr.zonas.includes(r.zona)?2:-3;
+  if(r.alcance==='chico')s+=pr.pres<=1&&pr.tiempo<=1?2:pr.pres>=3||pr.tiempo>=3?-3:0;
+  if(r.alcance==='grande')s+=pr.pres>=2||pr.tiempo>=2?2:0;
   return s;
 }`;
 // La selección de proyecto.js › elegir (mezcla áreas), para el navegador; la misma prueba la compara
@@ -130,7 +134,7 @@ pregunta();
 
 // ---------- ¿Qué proyecto social hago? ----------
 const PREG_PS = ['causas', 'expertise', 'tamano', 'presupuesto', 'tiempo'].map(k => ({ k, p: PREGUNTAS[k].p, max: PREGUNTAS[k].max || 1, o: PREGUNTAS[k].unica || PREGUNTAS[k].multi }));
-const BIBLIOTECA = PROYECTOS.map(({ n, l, causas, exp, giros, pres, tiempo, tam, col, area, para }) => ({ n, l, causas, exp, giros, pres, tiempo, tam, col, area, para }));
+const BIBLIOTECA = PROYECTOS.map(({ n, l, causas, exp, giros, pres, tiempo, tam, col, area, para, pub, modo, zonas }) => ({ n, l, causas, exp, giros, pres, tiempo, tam, col, area, para, pub, modo, zonas }));
 const N_PS = Object.keys(PREGUNTAS).length + 1;   // preguntas del cuestionario completo (más «¿Dónde están?»)
 const proyecto = {
   titulo: 'Contesta 5 preguntas y ve tus 3 ideas de proyecto social.',

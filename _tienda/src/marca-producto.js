@@ -24,7 +24,7 @@ export const MARCAS = {
   vende: ['#C2256F', 'Vende', 'Clientas, pedidos y cobros, [en orden.]', ['Ganancia **real**', '**WhatsApp** listo', '**Gratis** para empezar']],
   'ruta-de-impacto': ['#4338CA', 'Ruta de Impacto', 'Tu proyecto social, [de la idea a la comunidad.]', ['**6** niveles + final', '**Tutor** con pistas', 'Pago único · **1 año**']],
   'test-vocacional': ['#5B1F7A', 'Test vocacional', 'Descubre [qué carreras van contigo.]', ['**48** preguntas', 'Perfil básico **gratis**', '**20** carreras afines']],
-  'que-proyecto-social': ['#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', ['**10** preguntas · 3 min', 'De **5 a 8** proyectos', 'Versión **corta**']],
+  'que-proyecto-social': ['#A8501F', '¿Qué proyecto social hago?', 'Tu proyecto social, [a tu medida.]', ['**14** preguntas · 4 min', 'De **5 a 8** proyectos', 'Versión **corta**']],
   'evaluacion-liderazgo': ['#5B2A63', 'Evaluación de liderazgo', 'Lo que crees de ti, [contra lo que has hecho.]', ['**80** preguntas · 25 min', '**12** dimensiones', '**2** aplicaciones']],
   portales: ['#0F5A8A', 'Portal', 'Tus propiedades, [en tu propio portal.]', ['Tu **portal** propio', 'Fotos y **ficha** por inmueble', 'Interesados por **WhatsApp**']],
   clara: ['#1F5FD6', 'Clara', 'Tu dinero, claro. Anota todo [en segundos.]', ['**Efectivo**, débito y crédito', '**Sin** conectar tu banco', 'Desde **15** años']],

@@ -37,7 +37,7 @@ function respuestasV({ examen = 'unam', nivel = 'prepa', mate = 'aguanto' } = {}
   for (let k = 0; k < 12; k++) { const t = tipos[k % 6]; r[`h${k}`] = t === 'S' ? '4' : t === 'A' ? '3' : '2'; }
   return { ...r, mate, lugar: 'S', motivo: 'S', duracion: 'lic', nivel, examen };
 }
-const respuestasP = () => ({ tipo: 'negocio', etapa: 'nuevo', giro: 'alimentos', tamano: 'micro', expertise: ['alimentos', 'logistica'], presupuesto: '1', tiempo: '1', causas: ['alimentacion', 'ambiente'], colaborar: ['osc'], estado: 'Guanajuato', municipio: 'Celaya' });
+const respuestasP = () => ({ tipo: 'negocio', etapa: 'nuevo', giro: 'alimentos', tamano: 'micro', publico: ['familias'], modo: ['juntar'], alcance: 'mediano', zona: 'ciudad', expertise: ['alimentos', 'logistica'], presupuesto: '1', tiempo: '1', causas: ['alimentacion', 'ambiente'], colaborar: ['osc'], estado: 'Guanajuato', municipio: 'Celaya' });
 const formP = r => { const u = new URLSearchParams(); for (const [k, v] of Object.entries(r)) [].concat(v).forEach(x => u.append(k, x)); return u; };
 
 beforeEach(() => {
@@ -156,7 +156,7 @@ describe('reglas (sin IA, deterministas)', () => {
   it('proyecto social: mezcla áreas, cada idea trae versión corta de 2 a 4 semanas y quien ya tiene proyecto ve cómo sumarla', () => {
     for (const p of PROYECTOS) { expect(p.area).toBeTruthy(); expect(p.c.pasos.length).toBeGreaterThanOrEqual(2); expect(p.c.pasos.length).toBeLessThanOrEqual(4); expect(p.c.meta).toBeTruthy(); }
     // Una colectiva de educación sin dinero y con 1 a 2 horas al mes (el caso que pidió más variedad)
-    const v = leerP({ tipo: 'colectivo', etapa: 'sumar', giro: 'educacion', tamano: 'solo', expertise: ['ensenar', 'comunicacion', 'ambiente'], presupuesto: '0', tiempo: '0', causas: ['educacion', 'empleo', 'mujeres'], colaborar: ['escuelas', 'osc', 'jovenes'], estado: 'Estado de México', municipio: 'Huixquilucan' });
+    const v = leerP({ tipo: 'colectivo', etapa: 'sumar', giro: 'educacion', tamano: 'solo', publico: ['adolescentes', 'mujeres'], modo: ['ensenar', 'acompanar'], alcance: 'chico', zona: 'ciudad', expertise: ['ensenar', 'comunicacion', 'ambiente'], presupuesto: '0', tiempo: '0', causas: ['educacion', 'empleo', 'mujeres'], colaborar: ['escuelas', 'osc', 'jovenes'], estado: 'Estado de México', municipio: 'Huixquilucan' });
     expect(v.ok).toBe(true);
     const r = calcularP(v.r);
     expect(r.sumar).toBe(true);
@@ -167,10 +167,23 @@ describe('reglas (sin IA, deterministas)', () => {
     expect(new Set(r.gratis.map(x => x.area)).size).toBe(3);
     expect(r.reporte.every(x => x.pres <= 1)).toBe(true);   // sin dinero: nada de presupuestos medianos o grandes
     expect(r.poco).toBe(true);
-    expect(PROYECTOS.length).toBeGreaterThanOrEqual(80);
+    expect(PROYECTOS.length).toBeGreaterThanOrEqual(115);
+    for (const x of PROYECTOS) { expect(x.pub.length).toBeGreaterThan(0); expect(x.modo.length).toBeGreaterThan(0); }
     expect(new Set(PROYECTOS.map(x => x.id)).size).toBe(PROYECTOS.length);
     for (const nivel of ['0', '1', '2', '3', '4']) expect(PROYECTOS.some(x => String(x.pres) === nivel)).toBe(true);
     for (const nivel of ['0', '1', '2', '3']) expect(PROYECTOS.some(x => String(x.tiempo) === nivel)).toBe(true);
+    for (const x of r.reporte) expect(x.por.length).toBeGreaterThan(0);
+    // Las preguntas nuevas mueven el resultado: misma persona, pero quiere ayudar a personas mayores, acompañándolas de cerca
+    const mayores = calcularP({ ...v.r, publico: ['mayores'], modo: ['acompanar'], causas: ['mayores', 'salud-mental'] });
+    expect(mayores.gratis.some(x => x.pub.includes('mayores'))).toBe(true);
+    expect(mayores.gratis.map(x => x.id)).not.toEqual(r.gratis.map(x => x.id));
+    // En el campo salen proyectos de campo y no los de ciudad
+    const rural = calcularP({ ...v.r, zona: 'rural', causas: ['ambiente', 'alimentacion', 'cultura'] });
+    expect(rural.reporte.some(x => (x.zonas || []).includes('rural'))).toBe(true);
+    expect(rural.reporte.every(x => !(x.zonas || []).length || x.zonas.includes('rural'))).toBe(true);
+    // Sin las preguntas nuevas (respuestas guardadas antes) también calcula
+    const antes = { ...v.r }; for (const k of ['publico', 'modo', 'alcance', 'zona']) delete antes[k];
+    expect(calcularP(antes).reporte.length).toBeGreaterThanOrEqual(5);
     // Sin «etapa» (respuestas guardadas antes de esta pregunta) también calcula
     const viejo = { ...v.r }; delete viejo.etapa;
     expect(calcularP(viejo).reporte.length).toBeGreaterThanOrEqual(5);

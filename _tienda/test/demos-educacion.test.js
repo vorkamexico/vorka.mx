@@ -73,6 +73,7 @@ describe('demos de educación', () => {
         tamano: valores('tamano')[rnd(5)], presupuesto: valores('presupuesto')[rnd(5)], tiempo: valores('tiempo')[rnd(4)] };
       for (const pr of PROYECTOS) expect(fn(pr, r)).toBe(afinidad(pr, r));
       r.tipo = valores('tipo')[rnd(valores('tipo').length)];
+      r.publico = tomar('publico', 2); r.modo = tomar('modo', 2); r.zona = valores('zona')[rnd(3)]; r.alcance = valores('alcance')[rnd(3)];
       for (const pr of PROYECTOS) expect(fn(pr, r)).toBe(afinidad(pr, r));
       const orden = PROYECTOS.map((pr, i) => ({ pr, i, s: afinidad(pr, r) })).sort((x, y) => y.s - x.s || x.i - y.i);
       expect(sel(orden, 8).map(x => x.pr.id)).toEqual(elegir(orden, 8).map(x => x.pr.id));
