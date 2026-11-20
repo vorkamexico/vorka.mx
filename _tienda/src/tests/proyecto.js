@@ -41,7 +41,25 @@ export function afinidad(pr, r) {
   s -= 3 * Math.max(0, pr.pres - Number(r.presupuesto)) + 3 * Math.max(0, pr.tiempo - Number(r.tiempo));
   if (TAMANOS.indexOf(pr.tam) > TAMANOS.indexOf(r.tamano)) s -= 6;
   if ((pr.para || []).length && r.tipo && !pr.para.includes(r.tipo)) s -= 4;
+  s += 3 * inter(pr.pub || [], r.publico || []) + 2 * inter(pr.modo || [], r.modo || []);
+  if ((pr.zonas || []).length && r.zona) s += pr.zonas.includes(r.zona) ? 2 : -3;
+  if (r.alcance === 'chico') s += pr.pres <= 1 && pr.tiempo <= 1 ? 2 : pr.pres >= 3 || pr.tiempo >= 3 ? -3 : 0;
+  if (r.alcance === 'grande') s += pr.pres >= 2 || pr.tiempo >= 2 ? 2 : 0;
   return s;
+}
+
+/** Por qué te salió esta idea: lo que coincide con tus respuestas, en palabras (máximo 3 frases cortas). */
+export function razones(pr, r) {
+  const nombre = (k, v) => (((PREGUNTAS[k].unica || PREGUNTAS[k].multi).find(([x]) => x === v) || [])[1] || '').toLowerCase();
+  const comunes = (a, b, k) => (a || []).filter(x => (b || []).includes(x)).map(x => nombre(k, x)).filter(Boolean);
+  const lista = l => l.length < 2 ? (l[0] || '') : `${l.slice(0, -1).join(', ')}${l.some(x => / [ye] /.test(x)) ? ', y ' : ' y '}${l[l.length - 1]}`;
+  const out = [];
+  const cs = comunes(pr.causas, r.causas, 'causas'); if (cs.length) out.push(`${cs.length > 1 ? 'elegiste las causas' : 'elegiste la causa'} ${lista(cs)}`);
+  const ps = comunes(pr.pub, r.publico, 'publico'); if (ps.length) out.push(`quieres ayudar a ${lista(ps.map((x, i) => (i ? `a ${x}` : x)))}`);
+  const ms = comunes(pr.modo, r.modo, 'modo'); if (ms.length) out.push(`te gusta participar ${lista(ms)}`);
+  const es = comunes(pr.exp, r.expertise, 'expertise'); if (es.length && out.length < 3) out.push(`se te da ${lista(es.slice(0, 2))}`);
+  if (out.length < 3 && Number(r.presupuesto) >= pr.pres && Number(r.tiempo) >= pr.tiempo) out.push('cabe en tu presupuesto y tu tiempo');
+  return out.slice(0, 3);
 }
 
 /** De la lista ordenada por afinidad ({ pr, s }), toma n: primero hasta n − 1 de áreas distintas con afinidad positiva y
@@ -60,7 +78,7 @@ export function calcular(r) {
   const orden = PROYECTOS.map((pr, i) => ({ pr, i, s: afinidad(pr, r) })).sort((a, b) => b.s - a.s || a.i - b.i);
   const lugar = lugarDe(r);
   const poner = t => t.replaceAll('{lugar}', lugar);
-  const idea = ({ pr, s }) => ({ ...pr, s, obj: poner(pr.obj), pasos: pr.pasos.map(poner), areaN: AREAS[pr.area] || '' });
+  const idea = ({ pr, s }) => ({ ...pr, s, obj: poner(pr.obj), pasos: pr.pasos.map(poner), areaN: AREAS[pr.area] || '', por: razones(pr, r) });
   const positivas = orden.filter(x => x.s > 0).length;
   const reporte = elegir(orden, Math.max(5, Math.min(8, positivas))).map(idea);
   return { ideas: orden.map(idea), gratis: reporte.slice(0, 3), reporte, lugar, sumar: r.etapa === 'sumar', poco: r.tiempo === '0' };

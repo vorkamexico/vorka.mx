@@ -51,7 +51,7 @@ const FAQ = precioT => [
   ['¿Es gratis?', `Contestar es gratis y al terminar ves gratis tus 3 ideas de proyecto más afines, en una línea cada una. El reporte completo, con 5 a 8 proyectos a detalle y la versión corta de cada uno, cuesta ${precioT}, pago único.`],
   ['¿Para quién es?', 'Para personas, estudiantes y jóvenes, colectivos, escuelas, organizaciones de la sociedad civil, profesionistas, negocios y empresas que quieren hacer algo por su comunidad y no saben por dónde empezar. También para quien ya tiene un proyecto y quiere sumarle algo.'],
   ['¿Qué trae el reporte completo?', 'De 5 a 8 proyectos a tu medida, de causas distintas (educación, salud mental, medio ambiente, cultura, deporte, participación juvenil y más). Cada uno trae una versión corta para arrancar en 2 a 4 semanas con poco dinero y la versión completa: objetivo, a quién beneficia, primeros pasos, recursos mínimos, indicadores simples, los Objetivos de Desarrollo Sostenible (ODS) de la ONU con los que se alinea, riesgos comunes y cómo comunicarlo sin lavado de imagen. Si ya tienes un proyecto, trae una ruta para sumarle la idea. Lo puedes imprimir o guardar en PDF.'],
-  ['¿Cómo eligen mis ideas?', 'Con reglas claras, no al azar: cruzamos tus causas, tus fortalezas, tu giro, tu tamaño, tu presupuesto, tu tiempo y con quién quieres colaborar contra una biblioteca de más de 40 proyectos escrita por Vorka México. Si un proyecto pide más dinero o tiempo del que tienes, baja en la lista, y el reporte mezcla causas distintas para que tengas de dónde escoger.'],
+  ['¿Cómo eligen mis ideas?', 'Con reglas claras, no al azar: cruzamos tus causas, a quién quieres ayudar, cómo te gusta participar, tus fortalezas, tu presupuesto, tu tiempo, el tipo de lugar y qué tan grande quieres empezar contra una biblioteca de más de 100 proyectos escrita por Vorka México. Cada idea te dice por qué te salió. Si un proyecto pide más dinero o tiempo del que tienes, baja en la lista, y el reporte mezcla causas distintas para que tengas de dónde escoger.'],
   ['¿Qué es el lavado de imagen?', 'Presumir un impacto social o ambiental que no es real o que es mucho menor de lo que se dice. Cada idea trae consejos para comunicar con cifras reales y dejar que la comunidad sea la protagonista.'],
   ['¿Es asesoría legal o fiscal?', 'No. Es una guía para empezar. Para donativos deducibles, contratos o trámites, consulta con una o un profesional.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tus ideas y tu reporte. No se venden ni se comparten. Si no compras, se borran a los 12 meses, y puedes borrarlas tú cuando quieras. Consulta el <a href="/privacidad/#tests">aviso de privacidad</a>.'],
@@ -77,11 +77,11 @@ ${heroMarca('que-proyecto-social', {
 })}
 ${indiceProducto('que-proyecto-social', [['que-es', 'Qué es'], ['demo', 'Pruébalo'], ['test', 'El cuestionario'], ['reporte', 'Reporte completo'], ...(p ? [['regalar', 'Regalar']] : []), ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#test">Empezar</a>`)}
 ${seccionQueEs('que-proyecto-social', { titulo: '¿Qué proyecto social hago? Ideas según tu giro y tu presupuesto.',
-  texto: 'Un cuestionario de unos 5 minutos que cruza tus causas, tus fortalezas, tu presupuesto y tu tiempo con una biblioteca de proyectos escrita por Vorka México. <b>Al terminar ves gratis tus 3 ideas más afines</b>; el reporte completo trae de 5 a 8 proyectos de causas distintas, cada uno con una versión corta para arrancar en 2 a 4 semanas y su versión completa con indicadores y ODS.',
+  texto: 'Un cuestionario de unos 4 minutos que cruza tus causas, a quién quieres ayudar, cómo te gusta participar, tus fortalezas, tu presupuesto y tu tiempo con una biblioteca de proyectos escrita por Vorka México. <b>Al terminar ves gratis tus 3 ideas más afines</b>; el reporte completo trae de 5 a 8 proyectos de causas distintas, cada uno con una versión corta para arrancar en 2 a 4 semanas y su versión completa con indicadores y ODS.',
   para: [['Jóvenes, estudiantes y colectivos', 'Quieren hacer algo por su comunidad con poco dinero y poco tiempo, y empezar ya.'], ['Organizaciones, escuelas y proyectos que ya existen', 'Buscan sumar una actividad nueva que quepa en lo que ya hacen.'], ['Negocios y profesionistas', 'Quieren un proyecto que se pueda medir y comunicar con cifras reales, sin lavado de imagen.']] })}
 ${seccionDemo('que-proyecto-social', demoDe('que-proyecto-social'))}
 <section class="tv-sec" id="test"><div class="marco">
-  <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Una pregunta a la vez, con un toque. Contesta como persona, grupo u organización: tarda unos 3 minutos.</p></div>
+  <div class="tv-cab"><span class="tv-et">El cuestionario</span><h2>Cuéntanos de ustedes.</h2><p>Una pregunta a la vez, con un toque. Contesta como persona, grupo u organización: tarda unos 4 minutos.</p></div>
   ${formProyecto({ datos, error })}
 </div></section>
 <section class="tv-sec suave" id="reporte"><div class="marco tv-dos">
@@ -168,11 +168,11 @@ export function resultadoProyecto({ f, p, error = '', cupon = null, codigoRef = 
   <span class="tv-et">Tus ideas gratis${f.nombre ? ` · ${esc(f.nombre.split(' ')[0])}` : ''}</span>
   <h1 class="tv-h1">Tus 3 proyectos <em>más afines</em></h1>
   ${enviado ? '<p class="tv-ok" role="status">Guardamos tus ideas y te las mandamos por correo (revisa también spam).</p>' : ''}
-  <p class="tv-lead">Para ${esc(res.lugar)}, según tu giro, tus fortalezas, tu presupuesto y tu tiempo.</p>
+  <p class="tv-lead">Para ${esc(res.lugar)}, según lo que contestaste. Cada idea te dice por qué te salió.</p>
 </div></section>
 <section class="tv-sec" style="padding-top:0"><div class="marco tv-dos">
   <div>
-    <ol class="tv-carreras">${res.gratis.map(x => `<li><b>${esc(x.n)}</b><p class="tv-det">${esc(x.l)}</p><p class="tv-nota" style="margin:4px 0 0">${esc(x.areaN)} · versión corta de ${x.c.pasos.length} semanas</p></li>`).join('')}</ol>
+    <ol class="tv-carreras">${res.gratis.map(x => `<li><b>${esc(x.n)}</b><p class="tv-det">${esc(x.l)}</p><p class="tv-nota" style="margin:4px 0 0">${esc(x.areaN)} · versión corta de ${x.c.pasos.length} semanas</p>${x.por.length ? `<p class="tv-nota" style="margin:2px 0 0">Te salió porque ${esc(x.por.join('; '))}.</p>` : ''}</li>`).join('')}</ol>
     ${res.poco ? avisoPocoTiempo(f.respuestas, { corto: true }) : ''}
     ${ya ? '' : `<div class="tv-candado" style="margin-top:16px" aria-labelledby="vp-t">
       <span class="tv-et">${ICONO_CANDADO} En tu reporte completo</span>
@@ -230,7 +230,7 @@ ${res.sumar ? `<section><h2>Cómo sumar una idea a tu proyecto</h2>
   <ol class="tv-l"><li>Elige la idea que comparta público con tu proyecto: las mismas personas, la misma escuela o la misma colonia.</li><li>Ponla como una actividad dentro de tu proyecto, con tu nombre y tus redes. Así no empiezas de cero con la convocatoria.</li><li>Hazla primero en su versión corta, con 1 o 2 personas de tu equipo como responsables.</li><li>Mide con 1 indicador de la idea y súmalo a lo que ya reportas.</li><li>Al terminar, decide con tu equipo si se queda como actividad fija, si crece o si la dejas.</li></ol>
 </section>` : ''}
 ${res.reporte.map((x, i) => `<section aria-labelledby="pr-${i}"><article class="tv-idea">
-  <span class="tv-num">Proyecto ${i + 1}${x.areaN ? ` · ${esc(x.areaN)}` : ''}</span><h3 id="pr-${i}">${esc(x.n)}</h3><p class="tv-nota">${esc(x.l)}</p>
+  <span class="tv-num">Proyecto ${i + 1}${x.areaN ? ` · ${esc(x.areaN)}` : ''}</span><h3 id="pr-${i}">${esc(x.n)}</h3><p class="tv-nota">${esc(x.l)}</p>${x.por.length ? `<p class="tv-nota"><b>Te salió porque</b> ${esc(x.por.join('; '))}.</p>` : ''}
   <div class="tv-corto"><h4>Versión corta: ${x.c.pasos.length} semanas</h4><p><b>Meta:</b> ${esc(x.c.meta)}<br><b>Costo:</b> ${esc(x.c.costo)}</p>
     <ol class="tv-l">${x.c.pasos.map((s, k) => `<li><b>Semana ${k + 1}.</b> ${esc(s)}</li>`).join('')}</ol></div>
   <h4>Versión completa · Objetivo</h4><p>${esc(x.obj)}</p>

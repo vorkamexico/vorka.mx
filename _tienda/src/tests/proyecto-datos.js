@@ -4,6 +4,7 @@
 // comunidad ni asesoría legal o fiscal.
 
 import { MAS } from './proyecto-mas.js';
+import { MAS2 } from './proyecto-mas2.js';
 
 export const ODS = {
   1: 'Fin de la pobreza', 2: 'Hambre cero', 3: 'Salud y bienestar', 4: 'Educación de calidad', 5: 'Igualdad de género',
@@ -23,10 +24,14 @@ export const PREGUNTAS = {
   etapa: { p: '¿Ya tienen un proyecto andando?', unica: [['nuevo', 'No, queremos empezar uno'], ['sumar', 'Sí, y queremos sumarle algo nuevo']] },
   giro: { p: '¿A qué se dedican? (giro o sector)', unica: [['alimentos', 'Alimentos, restaurantes o cafeterías'], ['comercio', 'Comercio o tienda'], ['manufactura', 'Manufactura o industria'], ['construccion', 'Construcción, arquitectura o bienes raíces'], ['tecnologia', 'Tecnología o software'], ['salud', 'Salud, consultorio o veterinaria'], ['educacion', 'Educación o capacitación'], ['servicios', 'Servicios profesionales (legal, contable, consultoría)'], ['creativo', 'Diseño, comunicación o mercadotecnia'], ['turismo', 'Turismo, hotelería o eventos'], ['agro', 'Campo, agricultura o ganadería'], ['transporte', 'Transporte o logística'], ['belleza', 'Belleza, bienestar o deporte'], ['finanzas', 'Finanzas, seguros o banca'], ['otro', 'Otro'], ['ninguno', 'No aplica: somos personas o un grupo sin giro']] },
   tamano: { p: '¿De qué tamaño son?', unica: [['solo', 'Solo yo'], ['micro', '2 a 10 personas'], ['pequena', '11 a 50 personas'], ['mediana', '51 a 250 personas'], ['grande', 'Más de 250 personas']] },
+  publico: { p: '¿A quién les gustaría ayudar? (hasta 2)', max: 2, multi: [['ninos', 'Niñas y niños'], ['adolescentes', 'Adolescentes y jóvenes'], ['mujeres', 'Mujeres'], ['mayores', 'Personas mayores'], ['familias', 'Familias'], ['discapacidad', 'Personas con discapacidad'], ['negocios', 'Negocios locales'], ['naturaleza', 'Animales y naturaleza'], ['todos', 'Toda la colonia o comunidad']] },
   expertise: { p: '¿En qué son buenos? (hasta 3)', max: 3, multi: [['ensenar', 'Enseñar o capacitar'], ['tecnologia', 'Tecnología y lo digital'], ['salud', 'Salud o cuidado'], ['legal', 'Temas legales'], ['finanzas', 'Finanzas y números'], ['comunicacion', 'Diseño y comunicación'], ['oficios', 'Oficios, construcción o reparación'], ['alimentos', 'Cocina y alimentos'], ['logistica', 'Logística y operación'], ['ventas', 'Ventas y atención a clientes'], ['deporte', 'Deporte y actividad física'], ['arte', 'Arte y cultura'], ['ambiente', 'Medio ambiente']] },
+  modo: { p: '¿Cómo les gusta participar? (hasta 2)', max: 2, multi: [['ensenar', 'Dando clases o talleres'], ['eventos', 'Organizando eventos o jornadas'], ['acompanar', 'Acompañando a personas de cerca'], ['crear', 'Creando contenido o campañas'], ['manos', 'Haciendo cosas con las manos'], ['juntar', 'Juntando recursos o donativos'], ['organizar', 'Organizando gente y equipos']] },
   presupuesto: { p: '¿Cuánto podrían destinar al mes?', unica: [['0', 'Nada de dinero: solo tiempo y talento'], ['1', 'Hasta $2,000'], ['2', 'De $2,000 a $10,000'], ['3', 'De $10,000 a $50,000'], ['4', 'Más de $50,000']] },
   tiempo: { p: '¿Cuánto tiempo pueden dedicarle?', unica: [['0', '1 a 2 horas al mes'], ['1', '1 a 2 horas a la semana'], ['2', 'Medio día a la semana'], ['3', 'Más de un día a la semana']] },
+  alcance: { p: '¿Qué tan grande quieren empezar?', unica: [['chico', 'Algo pequeño para arrancar ya'], ['mediano', 'Un proyecto de unos meses'], ['grande', 'Un proyecto grande y de largo plazo']] },
   causas: { p: '¿Qué causas les importan? (hasta 3)', max: 3, multi: [['educacion', 'Educación'], ['ambiente', 'Medio ambiente'], ['salud', 'Salud'], ['alimentacion', 'Alimentación'], ['empleo', 'Empleo para jóvenes'], ['mujeres', 'Mujeres e igualdad'], ['mayores', 'Personas mayores'], ['discapacidad', 'Inclusión y discapacidad'], ['animales', 'Animales'], ['migrantes', 'Personas migrantes'], ['comunidad', 'Comunidad y espacios públicos'], ['emprendimiento', 'Emprendimiento local'], ['salud-mental', 'Salud mental'], ['cultura', 'Arte y cultura'], ['deporte', 'Deporte y vida activa'], ['participacion', 'Participación juvenil']] },
+  zona: { p: '¿Cómo es el lugar donde lo harían?', unica: [['ciudad', 'Una ciudad'], ['semiurbana', 'Una ciudad pequeña o un pueblo'], ['rural', 'Una comunidad rural o ejido']] },
   colaborar: { p: '¿Con quién les gustaría hacerlo? (las que quieras)', max: 7, multi: [['empleados', 'Con mi equipo de trabajo'], ['clientes', 'Con mis clientes'], ['escuelas', 'Con escuelas'], ['osc', 'Con una organización social'], ['gobierno', 'Con el gobierno municipal'], ['empresas', 'Con otras empresas'], ['jovenes', 'Con jóvenes voluntarios']] },
 };
 export const TAMANOS = ['solo', 'micro', 'pequena', 'mediana', 'grande'];
@@ -504,15 +509,15 @@ const CORTO = {
   'ventas-digitales': C('Que 5 micronegocios publiquen su catálogo en WhatsApp.', '$0.',
     'Invita a 5 micronegocios conocidos a una sesión de 2 horas.', 'En la sesión, cada quien toma fotos y publica su catálogo ahí mismo.'),
   compras: C('Hacer un pedido de prueba a una proveedora local y pagarle a tiempo.', 'Parte de tus compras normales.',
-    'Elige un insumo que se pueda comprar local.', 'Busca 2 proveedoras con una cooperativa o el municipio.', 'Haz el pedido de prueba.', 'Págalo a tiempo y evalúa la experiencia.'),
+    'Elige un insumo que se pueda comprar local.', 'Busca 2 proveedoras con una cooperativa o el municipio.', 'Haz un pedido de prueba pequeño a la que te convenza más.', 'Págalo a tiempo y evalúa la experiencia.'),
   'probono-diseno': C('Entregar una pieza que la OSC necesita ya (un cartel, una publicación, un formulario).', 'Tus horas.',
     'Pregunta a una OSC qué pieza les urge.', 'Haz la pieza y revísenla juntos.', 'Entrégala con instrucciones para que la puedan editar.'),
   'espacio-publico': C('Una jornada de limpieza y pintura de una banca o una cancha con vecinos.', 'Unos $1,000 en pintura y bolsas.',
     'Elige el lugar con vecinos y avisa al municipio.', 'Junta material e invita a 10 vecinas y vecinos.', 'Hagan la jornada y acuerden quién lo cuida.'),
   deporte: C('Tres sábados de entrenamiento con 15 adolescentes.', 'Desde $500 en balones y agua.',
-    'Consigue cancha y horario y pide permisos firmados a tutores.', 'Primer entrenamiento.', 'Segundo y tercer entrenamiento; pregunta si quieren seguir.'),
+    'Consigue cancha y horario y pide permisos firmados a tutores.', 'Primer entrenamiento con calentamiento y juego para todos.', 'Segundo y tercer entrenamiento; pregunta si quieren seguir.'),
   animales: C('Una feria de adopción con un refugio.', 'Desde $0: el refugio lleva a los animales.',
-    'Acuerda con un refugio fecha y lugar.', 'Difunde la feria y prepara la entrevista para adoptantes.', 'Hagan la feria.', 'Llama a cada familia a la semana para ver cómo va.'),
+    'Acuerda con un refugio fecha y lugar.', 'Difunde la feria y prepara la entrevista para adoptantes.', 'Hagan la feria con entrevista a cada familia interesada.', 'Llama a cada familia a la semana para ver cómo va.'),
   'mujeres-violencia': C('Un taller de 90 minutos con 15 mujeres y el directorio de ayuda en sus manos.', '$0 con espacio prestado.',
     'Arma el directorio local de ayuda con una OSC o la instancia de las mujeres.', 'Consigue espacio, horario accesible y cuidado para niñas y niños.', 'Da el taller y mide con preguntas antes y después.'),
   migrantes: C('Una guía de una hoja con servicios reales de tu ciudad, entregada a una casa del migrante.', 'Copias.',
@@ -522,10 +527,18 @@ const CORTO = {
   energia: C('Cambiar a focos LED un espacio comunitario y medir el siguiente recibo.', 'Desde $1,500 en focos.',
     'Revisa los recibos de luz del espacio y cuenta los focos.', 'Compra e instala focos LED con alguien que sepa.', 'Anota la fecha para comparar el siguiente recibo.', 'Publica el ahorro cuando llegue.'),
   tutorias: C('5 estudiantes con 3 sesiones de lectura o matemáticas y una evaluación antes y después.', 'Copias.',
-    'Acuerda con una escuela grupo y tema.', 'Evaluación inicial y primera sesión.', 'Segunda sesión.', 'Tercera sesión y evaluación final.'),
+    'Acuerda con una escuela grupo y tema.', 'Evaluación inicial y primera sesión.', 'Segunda sesión con el tema que más les costó.', 'Tercera sesión y evaluación final.'),
   'mayores-acompanar': C('5 personas mayores reciben una llamada por semana.', '$0.',
     'Identifica a 5 personas con una casa de día, la parroquia o el DIF.', 'Prepara la guía de llamada y forma parejas de voluntarios.', 'Hagan las llamadas y anoten cómo se sienten.'),
   incubadora: C('Ayudar a 3 micronegocios a calcular bien un precio.', '$0.',
     'Invita a 3 micronegocios conocidos.', 'Revisen juntos el costo real de un producto.', 'Ajusten el precio y vean en 2 semanas cómo les fue.'),
 };
-export const PROYECTOS = [...BASE, ...NUEVOS, ...MAS].map(p => ({ ...p, area: p.area || AREA[p.id], para: p.para || PARA[p.id] || [], c: p.c || CORTO[p.id] }));
+
+// Perfil de cada proyecto para las preguntas «¿A quién les gustaría ayudar?», «¿Cómo les gusta participar?» y el tipo de
+// lugar (solo los que dependen de él). Formato compacto: id:público|forma[|zonas]. Los proyectos de proyecto-mas2.js traen
+// pub, modo y zonas en su propio objeto.
+const PUB = { n: 'ninos', a: 'adolescentes', m: 'mujeres', y: 'mayores', f: 'familias', d: 'discapacidad', g: 'negocios', z: 'naturaleza', t: 'todos' };
+const MODO = { e: 'ensenar', v: 'eventos', c: 'acompanar', k: 'crear', h: 'manos', j: 'juntar', o: 'organizar' };
+const PERFIL = Object.fromEntries('oficio:a|e,h;finanzas:f,m,g|c,e;legal:m,f,t|c;mayores-digital:y|e,c;programacion:n,a,m|e,k;rescate:f,t,z|j,o;comedor:f,y,t|h,v,j;residuos:t,z|o,h;huertos:n,f,z|h,e;salud-feria:t,y,f|v;salud-mental:a|e;empleo-inclusivo:d|c,o;accesibilidad:d,y|h,o;voluntariado:t|o;becas:a|j;ventas-digitales:g,m|e;compras:g,m|o;probono-diseno:t|k;espacio-publico:t,n,a|h,o;deporte:a|o,e;animales:z,f|v,o;mujeres-violencia:m|e,c;migrantes:t|c,k;agua:n,f|h,j|semiurbana,rural;energia:t|h,j;tutorias:n,a|e,c;mayores-acompanar:y|c;incubadora:g,m|c,e;circulo-escucha:a|c;campana-emocional:a,t|k;limpieza:t,z|v,h;arboles:z,t|h,o;lectura:n,t|o,e;cineclub:a,t|v;mural:a,t|h,k;memoria:y,t|k;activacion:t,y|e,v;torneo:a|v,o;consulta-juvenil:a|k,o;red-voluntaria:a,t|o;asesoria-pares:a|e,c;feria-oficios:a|v,o;gestion-menstrual:m,a|j;alfabetizacion:y,m|e,c;club-ingles:a|e;ciencia-reciclada:n,a|e,h;tareas:n,f|c,e;fondo-becas:a|j,o;cuidadoras:m,f|c;bienestar-trabajo:t|e;composta:f,z|h,o;reparacion:t|h,v;bici:m,t|e|ciudad,semiurbana;vivero:z|h;ecotecnias:f|h,j|semiurbana,rural;teatro:a|k,e;musica:n,a|e;foto-colonia:a|k,e;festival:t|v,o;banco-tiempo:t,y|o;trueque:f|v,j;directorio-colonia:t|k;centro-comunitario:t,n,a|o;ajedrez:n,a|e;escuela-deportiva:n,a|e,j;carrera:t|v,j;medio-juvenil:a|k;liderazgo:a|e,o;primer-empleo:a|e,c;cooperativa:m,g|c;cocina-saludable:f,m|e,h;primeros-auxilios:t|e;donacion-sangre:t|o;despensa:f|j;lengua-senas:d,t|e;intergeneracional:y,a|e,h;derechos-laborales:a|e;noviazgo:a,m|e;animales-comunitarios:z|o,c;tenencia:n,z|e'.split(';').map(x => { const [id, resto] = x.split(':'); const [p, m, z] = resto.split('|');
+  return [id, { pub: p.split(',').map(k => PUB[k]), modo: m.split(',').map(k => MODO[k]), zonas: z ? z.split(',') : [] }]; }));
+export const PROYECTOS = [...BASE, ...NUEVOS, ...MAS, ...MAS2].map(p => ({ ...p, ...(PERFIL[p.id] || {}), ...(p.pub ? { pub: p.pub, modo: p.modo, zonas: p.zonas || [] } : {}), area: p.area || AREA[p.id], para: p.para || PARA[p.id] || [], c: p.c || CORTO[p.id] }));

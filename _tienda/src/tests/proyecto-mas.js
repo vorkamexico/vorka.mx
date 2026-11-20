@@ -211,7 +211,7 @@ export const MAS = [
     ind: ['Personas al mes', 'Actividades fijas', 'Personas que regresan'], ods: [11, 4, 10],
     riesgos: ['Abrir sin preguntar qué quieren.', 'Depender de un solo financiador.', 'Protección infantil.'],
     comunicar: ['Calendario público.', 'La colonia es la protagonista.'],
-    c: c('Un mes piloto con 2 actividades en un espacio prestado.', 'Unos $3,000.', 'Encuesta a vecinos.', 'Consigue espacio prestado.', 'Arranca 2 actividades.', 'Evalúa.') }),
+    c: c('Un mes piloto con 2 actividades en un espacio prestado.', 'Unos $3,000.', 'Pregunta a 20 vecinos qué actividades quieren.', 'Consigue un espacio prestado por las tardes.', 'Arranca las 2 actividades más pedidas.', 'Cuenta asistencia y pregunta qué cambiar.') }),
   // ---------- Deporte ----------
   P({ id: 'ajedrez', area: 'deporte', n: 'Club de ajedrez', l: 'Un club semanal gratuito que enseña a pensar, concentrarse y convivir.',
     causas: ['deporte', 'educacion', 'salud-mental'], exp: ['ensenar', 'deporte'], giros: [], pres: 0, tiempo: 1, tam: 'solo', col: ['escuelas', 'jovenes'],
