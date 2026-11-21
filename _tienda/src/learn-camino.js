@@ -24,6 +24,8 @@
 //    La de vacaciones y días de descanso de fin de año (LFT vigente: artículos 74, 75, 76 a 81, 178, 179, 291-F, 334 Bis,
 //    336 Bis, 516 y 994; decreto de vacaciones dignas en el DOF del 27 de diciembre de 2022; Ley del ISR, artículo 93-XIV;
 //    y PROFEDET) se revisó el 13 de noviembre de 2026.
+//    La de la Afore (LSAR vigente: artículos 18, 37-A, 74 y 76; CONSAR: localiza tu Afore, registro, Catálogo de Trámites
+//    del SAR, comisiones 2026 y máximo 2027; PENSIONISSSTE sobre cuentas asignadas) se revisó el 21 de noviembre de 2026.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -89,10 +91,19 @@ const F = {
   lftVacaciones: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 74 a 81, 178, 179, 291-F, 334 Bis, 336 Bis, 516 y 994), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
   lisrPrima: { nombre: 'Ley del Impuesto sobre la Renta, texto vigente (última reforma DOF 01-04-2024; artículo 93, fracción XIV), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
   profedetVacaciones: { nombre: 'PROFEDET: Persona trabajadora, las vacaciones son tu derecho (23 de julio de 2025)', url: 'https://www.gob.mx/profedet/es/articulos/persona-trabajadora-las-vacaciones-son-tu-derecho?idiom=es' },
+  lsar: { nombre: 'Ley de los Sistemas de Ahorro para el Retiro, texto vigente (última reforma DOF 14-11-2025; artículos 18, 37-A, 74 y 76), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LSAR.pdf' },
+  consarLocaliza: { nombre: 'CONSAR: ¿No sabes en qué Afore estás? (25 de marzo de 2024)', url: 'https://www.gob.mx/consar/acciones-y-programas/en-que-afore-estoy-56776' },
+  consarPrimer: { nombre: 'CONSAR: ¿Es tu primer acercamiento al SAR? (8 de diciembre de 2021)', url: 'https://www.gob.mx/consar/articulos/es-tu-primer-acercamiento-al-sar' },
+  consarRegistro: { nombre: 'CONSAR: ¿Cómo me registro en una AFORE? (6 de octubre de 2020)', url: 'https://www.gob.mx/consar/articulos/como-me-registro-en-una-afore' },
+  consarTramiteRegistro: { nombre: 'CONSAR: Catálogo de Trámites del SAR, registro de la cuenta individual en una Afore', url: 'https://www.consar.gob.mx/gobmx/aplicativo/catsar/Principal/TramiteExt.aspx?idTramite=4' },
+  consarTramiteVoluntario: { nombre: 'CONSAR: Catálogo de Trámites del SAR, depósito de ahorro voluntario', url: 'https://www.consar.gob.mx/gobmx/aplicativo/catsar/Principal/TramiteExt.aspx?idTramite=11' },
+  consarComisiones2026: { nombre: 'CONSAR: La Junta de Gobierno autoriza las comisiones de las Afore para 2026 (21 de noviembre de 2025)', url: 'https://www.gob.mx/consar/articulos/junta-de-gobierno-de-la-consar-autoriza-comisiones-de-las-afore-para-2026-413436' },
+  consarMaximo2027: { nombre: 'CONSAR: Aviso del máximo al que estarán sujetas las comisiones de las Afore para 2027 (23 de octubre de 2026)', url: 'https://www.gob.mx/consar/articulos/aviso-por-el-cual-la-comision-nacional-del-sistema-de-ahorro-para-el-retiro-da-a-conocer-el-maximo-al-que-estaran-sujetas-las-comisiones-que-cobren-las-afore-para-el-ano-2027' },
+  pensionisssteAsignada: { nombre: 'PENSIONISSSTE: ¿Cómo saber en qué Afore estoy si mi cuenta fue asignada por la CONSAR? (24 de marzo de 2026)', url: 'https://www.gob.mx/pensionissste/es/articulos/como-saber-en-que-afore-estoy-si-mi-cuenta-fue-asignada-por-la-consar' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', afore: 'afore-como-saber-en-cual-estas' };
 const r = slug => `/learn/camino/${slug}/`;
 // Ejemplo con cifras inventadas (mismo marcado que en Finanzas y en la guía de la jornada)
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
@@ -161,6 +172,13 @@ const LLAMADO = {
     texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
     puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha, por ejemplo para tu próximo viaje, y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
+    href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Clara para quien acaba de revisar su Afore: lleva su dinero de hoy (src/clara.js); mismos datos de su ficha. Clara no toca la Afore.
+  claraAfore: llamadoProducto({ etiqueta: 'Organiza tu sueldo con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
+    titulo: '¿Ya tienes en orden tu retiro y ahora quieres ordenar tu mes?',
+    texto: 'Clara es una app de finanzas para jóvenes desde 15 años: anotas tus gastos y antes de comprar te dice «¿me alcanza?».',
+    puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
+    nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas ni a tu Afore y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
     texto: 'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
@@ -840,9 +858,89 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.lftVacaciones, F.dofVacaciones, F.profedetVacaciones, F.lisrPrima, F.profedet],
     relacionadas: [S.jornada, S.papeles, S.cv],
   },
+  // =============== 11. Afore ===============
+  // Revisada el 21 de noviembre de 2026: LSAR vigente (reforma DOF 14-11-2025: arts. 18-IV, 37-A, 74 y 76), CONSAR (localiza
+  // tu Afore, primer acercamiento al SAR, registro, Catálogo de Trámites del SAR: registro y ahorro voluntario, comisiones
+  // 2026 y máximo 2027) y PENSIONISSSTE (cuenta asignada). Las páginas de CONSAR de 2020, 2021 y 2024 son las vigentes en gob.mx.
+  // No afirmamos porcentajes de aportación obligatoria (cambian por año con la reforma de 2020) ni cuál Afore conviene.
+  // El saldo del ejemplo es inventado; las comisiones son las de CONSAR para 2026.
+  {
+    slug: S.afore, llamado: 'claraAfore', actualizado: '2026-11-21', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Afore: cómo saber en cuál estás y cómo registrarte',
+    descripcion: 'Cómo saber en qué Afore estás con tu NSS o CURP, qué es una cuenta asignada, cómo registrarte gratis, cómo elegir y cuándo puedes cambiarte.',
+    h1: 'Afore: cómo saber en cuál estás, registrarte y elegir bien desde tu primer empleo',
+    lead: 'Si ya trabajaste con alta en el IMSS, aunque haya sido un trabajo de temporada, tienes una cuenta para tu retiro en alguna Afore, la hayas elegido o no. Aquí está cómo saber en cuál está, qué significa que esté «asignada», cómo registrarte, cómo comparar y cuándo puedes cambiarte, con lo que dicen la Ley de los Sistemas de Ahorro para el Retiro y la CONSAR.',
+    secciones: [
+      { h2: 'Qué es tu cuenta de Afore', html: p('Las Afore son las administradoras de los fondos para el retiro. Según la Ley de los Sistemas de Ahorro para el Retiro (artículo 74), si trabajas con alta en el IMSS tienes derecho a abrir tu <b>cuenta individual</b> en la administradora que tú elijas. Esa cuenta tiene cuatro subcuentas:')
+        + ul([
+          '<b>Retiro, cesantía en edad avanzada y vejez</b>: lo que se junta para tu pensión.',
+          '<b>Vivienda</b>: la que se rige por la ley del Infonavit.',
+          '<b>Aportaciones voluntarias</b>: lo que tú decidas ahorrar de más.',
+          '<b>Aportaciones complementarias de retiro</b>.',
+        ])
+        + p('Tu estado de cuenta muestra las aportaciones de tu patrón, del Estado y tuyas, y los días que cotizaste en cada bimestre (artículo 37-A). La CONSAR, que regula a las Afore, recuerda que <b>solo tu Afore</b> puede darte estados de cuenta, constancias de saldo y el detalle de tus movimientos.')
+        + p(`Para todo lo que sigue vas a necesitar tu Número de Seguridad Social. Si no lo tienes a la mano, en ${a(r(S.papeles), 'la guía de papeles para tu primer empleo')} explicamos cómo sacarlo o localizarlo gratis.`) },
+      { h2: 'Si nunca elegiste: tu cuenta puede estar «asignada»', html: p('Si empezaste a trabajar y nunca elegiste Afore, la ley no deja tu dinero sin dueño. El artículo 76 dice que las cuentas de quienes no eligieron administradora y que recibieron aportaciones durante <b>al menos seis bimestres seguidos</b> se asignan a las Afore con mayor rendimiento neto. Ese proceso se hace <b>una vez al año</b>. Mientras tanto, esos recursos se quedan depositados en el Banco de México.')
+        + p('Estar asignado no es lo mismo que estar registrado. PENSIONISSSTE, la Afore pública, explica que en una cuenta asignada la Afore administra tu dinero, pero puede no tener tu expediente ni tus datos de contacto. Eso puede traer problemas:')
+        + ul([
+          'Que no te lleguen tus estados de cuenta.',
+          'Que se te compliquen trámites como actualizar tus datos o hacer ahorro voluntario.',
+          'Que tus beneficiarios batallen para reclamar el dinero si no los registraste.',
+        ])
+        + caja('Si tu Afore asignada no te registra', p('La ley dice que si después de dos años una Afore no registra las cuentas que le asignaron, la asignación caduca y la cuenta se reasigna (artículo 76). Registrarte tú evita que tu cuenta ande de un lado a otro sin que lo sepas.')) },
+      { h2: 'Cómo saber en qué Afore estás', html: p('La CONSAR da tres formas, todas sin costo:')
+        + ol([
+          ['Por teléfono', 'Llama a SARTEL, al 55 1328 5000, y elige la opción 2, «Localiza tu AFORE».'],
+          ['Por internet', 'En AforeWeb (aforeweb.com.mx), en la sección «Localiza tu AFORE».'],
+          ['Con la app', 'En AforeMóvil, para iPhone y Android.'],
+        ])
+        + p('Te van a pedir tu <b>NSS</b> si cotizas en el IMSS, o tu <b>CURP</b> si cotizas en el ISSSTE. Los dos vienen en tus recibos de nómina. Por seguridad, la CONSAR solo permite <b>una consulta al día</b>.')
+        + nota('Consejo nuestro: si la consulta dice que no tienes Afore, revisa primero que tu patrón te haya dado de alta en el IMSS. Recuerda que la asignación solo llega después de seis bimestres seguidos con aportaciones.') },
+      { h2: 'Cómo registrarte en una Afore', html: p('Registrarte es elegir tú la Afore que va a administrar tu cuenta. Según la CONSAR, puedes hacerlo de dos formas:')
+        + ul([
+          '<b>En línea, con AforeMóvil</b>: necesitas tu CURP, un correo electrónico y una identificación oficial vigente. Si ya cotizaste en el IMSS, captura tu NSS cuando te lo pida.',
+          '<b>En persona</b>: en una sucursal de la Afore o pidiendo la visita de un agente promotor. También puedes hacer una pre-solicitud en AforeWeb; la Afore debe contactarte en un plazo no mayor a seis días hábiles.',
+        ])
+        + p('Para armar tu expediente, el Catálogo de Trámites del SAR pide:')
+        + tabla(['Qué', 'Detalle, según la CONSAR'], [
+          ['Identificación oficial vigente', 'INE, pasaporte o matrícula consular. Si eres menor de edad: tu acta de nacimiento o tu pasaporte, o la identificación de tu mamá, tu papá o tu tutor.'],
+          ['Comprobante de domicilio', 'De no más de tres meses: luz, teléfono, gas, agua, predial, estado de cuenta bancario o de tienda departamental, o tu Constancia de Situación Fiscal.'],
+          ['Tu firma y tu consentimiento', 'Se toman tu fotografía, tus huellas y tu firma digital, y se graba un video en el que das tu consentimiento. Firmas la solicitud, el contrato y el documento de rendimiento neto.'],
+        ], 'Fuente: CONSAR, Catálogo de Trámites del SAR y «¿Cómo me registro en una AFORE?».')
+        + p('La Afore debe avisarte el resultado en <b>hasta cinco días hábiles</b> después de terminar el trámite, o en hasta veinte si tu cuenta estaba asignada a otra Afore. Si te aceptan, te manda una constancia de registro; si te rechazan, un documento con los motivos.')
+        + nota('Consejo nuestro: aprovecha el registro para designar a tus beneficiarios y para dejar un correo y un celular que sí revises.') },
+      { h2: 'Cómo comparar Afores', html: p('La CONSAR pone tres herramientas para comparar: <b>servicios</b>, <b>comisiones</b> y <b>rendimientos</b> (el indicador de rendimiento neto). Su regla para elegir es corta: a mayor rendimiento neto, mayor pensión.')
+        + p('Sobre comisiones, la CONSAR autorizó para 2026 que nueve Afores cobren <b>0.54 %</b> anual sobre el saldo y PENSIONISSSTE <b>0.52 %</b>. Para 2027 fijó un máximo de <b>0.53 %</b>.')
+        + ejemplo('Tienes $20,000 en tu Afore. ¿Cuánto pagas de comisión en un año?', ul([
+          'Con 0.54 %: $20,000 × 0.0054 = <b>$108</b>.',
+          'Con 0.52 %: $20,000 × 0.0052 = <b>$104</b>.',
+        ]))
+        + p('Esto es consejo nuestro: con comisiones tan parecidas, la diferencia grande suele estar en el rendimiento neto y en el servicio. Revisa la tabla comparativa que viene en tu estado de cuenta antes de decidir.') },
+      { h2: 'Cuándo puedes cambiarte', html: p('Cambiarte de Afore se llama <b>traspaso</b>. La ley (artículo 74) dice que puedes hacerlo:')
+        + ul([
+          'Una vez que pasó <b>un año</b> desde que te registraste o desde tu último traspaso.',
+          'Antes del año, si te cambias a una Afore con <b>mayor rendimiento neto</b>. En ese caso tienes que quedarte al menos doce meses en la nueva.',
+          'Si tu Afore cambia su régimen de inversión o de comisiones, entra en disolución o se fusiona con otra.',
+        ])
+        + p('Si tu cuenta fue asignada, también puedes traspasarla en esos mismos términos (artículo 76).') },
+      { h2: 'Revisa tu estado de cuenta', html: p('La ley obliga a tu Afore a mandarte tu estado de cuenta <b>por lo menos tres veces al año, cada cuatro meses</b>, al domicilio que le diste (artículo 18, fracción IV). La CONSAR dice que revisarlo toma unos diez minutos. Ahí vienen tu saldo, tus aportaciones, tus rendimientos, la comisión que te cobraron y una tabla para comparar Afores.')
+        + p('Consejo nuestro: busca los <b>días cotizados de cada bimestre</b>. Si trabajaste y un bimestre aparece vacío, pregúntale a Recursos Humanos y revisa tu constancia de semanas cotizadas del IMSS.') },
+      { h2: 'Si quieres ahorrar de más', html: p('Además de lo que pone tu patrón, puedes hacer <b>ahorro voluntario</b>. Según la CONSAR, puedes depositar desde $50 en tiendas y otros puntos de la red comercial, programar cargos a tu cuenta de débito en AforeWeb o AforeMóvil, o pedirle a tu patrón por escrito que te lo descuente de la nómina. Para eso necesitas estar registrado.')
+        + p(`Esto es consejo nuestro: si todavía no tienes un fondo para emergencias, empieza por ahí. Lo que va a tu cuenta de retiro está pensado para el largo plazo. En ${a('/learn/finanzas/como-ahorrar-si-eres-joven/', 'cómo ahorrar si eres joven')} te explicamos cómo armar tu fondo para emergencias.`) },
+    ],
+    faq: [
+      { p: '¿Cómo sé en qué Afore estoy?', r: 'Llama a SARTEL al 55 1328 5000 (opción 2), entra a AforeWeb en «Localiza tu AFORE» o usa la app AforeMóvil. Necesitas tu NSS si cotizas en el IMSS o tu CURP si cotizas en el ISSSTE. Solo se permite una consulta al día.' },
+      { p: '¿Qué significa que mi cuenta esté asignada?', r: 'Que nunca elegiste Afore y la CONSAR asignó tu cuenta a una con mayor rendimiento neto, después de al menos seis bimestres seguidos con aportaciones (artículo 76 de la Ley de los Sistemas de Ahorro para el Retiro). Conviene registrarte para que la Afore tenga tus datos.' },
+      { p: '¿Cuánto cuesta registrarse en una Afore?', r: 'La CONSAR presenta el registro como tu derecho a elegir Afore y no menciona ningún costo. Necesitas tu CURP, una identificación oficial vigente y, en persona, un comprobante de domicilio de no más de tres meses.' },
+      { p: '¿Puedo tener Afore si soy menor de edad?', r: 'Sí. El Catálogo de Trámites del SAR acepta como identificación, para menores de edad, el acta de nacimiento, el pasaporte o la identificación de quien ejerza la patria potestad o la tutela.' },
+      { p: '¿Cada cuánto me puedo cambiar de Afore?', r: 'Una vez al año, contado desde tu registro o tu último traspaso. Puedes hacerlo antes si te cambias a una Afore con mayor rendimiento neto, pero luego debes quedarte al menos doce meses (artículo 74).' },
+    ],
+    fuentes: [F.lsar, F.consarLocaliza, F.consarPrimer, F.consarRegistro, F.consarTramiteRegistro, F.consarTramiteVoluntario, F.consarComisiones2026, F.consarMaximo2027, F.pensionisssteAsignada],
+    relacionadas: [S.papeles, S.vacaciones, S.jornada],
+  },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO ni a la PROFEDET.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, a la CONSAR ni a ninguna Afore.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
