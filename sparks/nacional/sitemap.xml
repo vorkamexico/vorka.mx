@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-<url><loc>https://vorka.mx/sparks/nacional/</loc><changefreq>hourly</changefreq></url>
+<url><loc>https://vorka.mx/sparks/nacional/</loc><lastmod>2026-11-18</lastmod><changefreq>hourly</changefreq></url>
+<url><loc>https://vorka.mx/sparks/nacional/seccion/comunidad/</loc><changefreq>daily</changefreq></url>
+<url><loc>https://vorka.mx/sparks/nacional/impacto-busca-representantes-en-todo-mexico-convocatoria-abi/</loc><lastmod>2026-11-18</lastmod><image:image><image:loc>https://fotos.vorka.mx/nacional/os_n23-1794373889-og.jpg</image:loc></image:image><image:image><image:loc>https://fotos.vorka.mx/nacional/os_g61-1794373891-1600.webp</image:loc></image:image><image:image><image:loc>https://fotos.vorka.mx/nacional/os_g62-1794373892-1600.webp</image:loc></image:image></url>
 </urlset>
