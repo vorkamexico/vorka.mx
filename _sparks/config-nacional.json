@@ -1,0 +1,30 @@
+{
+  "sitio": "https://vorka.mx",
+  "ruta": "/sparks/nacional",
+  "nombre": "Sparks Nacional",
+  "lema": "Lo que pasa en México y le importa a quienes viven en el Bajío",
+  "descripcion": "Noticias nacionales que afectan a las familias, jóvenes y negocios del Bajío: carreteras, economía, educación, salud y gobierno. Siempre con fuentes oficiales. Un medio de Vorka Sparks.",
+  "ciudad": "México",
+  "instagram": "https://www.instagram.com/vorka.mx/",
+  "noticiasPorPagina": 12,
+  "hoja": false,
+  "fotos": {
+    "bucket": "sparks-fotos",
+    "urlPublica": "https://fotos.vorka.mx",
+    "prefijo": "nacional"
+  },
+  "adsense": {
+    "cliente": "",
+    "slotFeed": "",
+    "slotSeccion": "",
+    "slotArticulo": "",
+    "slotLateral": ""
+  },
+  "unirCategorias": {
+    "Historias de vida": "Historias",
+    "Entrevistas": "Historias"
+  },
+  "sinFecha": [
+    "Historias"
+  ]
+}
