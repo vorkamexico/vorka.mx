@@ -7,7 +7,7 @@ CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
 # Mensaje de WhatsApp para quien todavía no nos conoce: corto y sin compromiso (antes: «ya decidí avanzar…», que espanta al que apenas explora)
 WA_MSG = 'Hola Vorka, me gustaría platicar sobre un proyecto.'
-VERSION = '17'
+VERSION = '18'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -125,7 +125,7 @@ def cabeza(titulo, descripcion, ruta, og='cdmx-reforma', extra=''):
 '''
 
 # Las tres rutas de Vorka (servicios, tienda, Learn) y lo institucional. Las anclas viejas (/#proceso, /#momentos, /#red) siguen existiendo en el inicio.
-MENU = [('/servicios/', 'Servicios'), ('/tienda/', 'Tienda'), ('/learn/', 'Vorka Learn'), ('/sparks/', 'Sparks'), ('/nosotros/', 'Nosotros'), ('/voluntariado', 'Tú en Vorka')]
+MENU = [('/servicios/', 'Servicios'), ('/portafolio/', 'Portafolio'), ('/tienda/', 'Tienda'), ('/learn/', 'Vorka Learn'), ('/sparks/', 'Sparks'), ('/nosotros/', 'Nosotros'), ('/voluntariado', 'Tú en Vorka')]
 
 # Vorka FC es para familias de Celaya: su menú habla de la academia, Sparks y la comunidad, no de consultoría ni de la tienda
 MENU_FC = [('/fc/#programa', 'Programa'), ('/fc/#costo', 'Costo'), ('/fc/#celaya', 'Dónde'), ('/sparks/celaya/', 'Noticias de Celaya'), ('/sparks/', 'Revista Sparks'), ('/voluntariado', 'Tú en Vorka')]

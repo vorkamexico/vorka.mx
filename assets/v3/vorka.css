@@ -657,3 +657,25 @@ a.capacidad { display: block; text-decoration: none; color: inherit; }
 .lr-puente p { margin: 0; }
 .lr-puente .lead { margin-top: 12px; }
 .lr-puente .v4-alt { margin-top: 14px; }
+
+/* ---- Portafolio (/portafolio/): casos de clientes sin nombres, filtrables por necesidad */
+.filtro-casos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.filtro-casos button { font: inherit; font-size: 14.5px; font-weight: 600; min-height: 42px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg-2); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.filtro-casos button:hover { border-color: var(--line-2); color: var(--fg); }
+.filtro-casos button[aria-pressed="true"] { background: var(--fg); border-color: var(--fg); color: #fff; }
+.casos-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.caso { display: flex; flex-direction: column; gap: 14px; padding: 28px; border-radius: var(--r); background: var(--card); border: 1px solid var(--line); box-shadow: var(--sombra); }
+.caso[hidden] { display: none; }
+.caso-s { margin: 0; font-size: 13px; font-weight: 600; color: var(--fg-3); }
+.caso .h3 { margin: 0; }
+.caso-n { margin: 0; font-size: 16px; line-height: 1.55; color: var(--fg-2); }
+.caso-c { padding-top: 14px; border-top: 1px solid var(--line); }
+.caso-t { margin: 0 0 8px; font-size: 13.5px; font-weight: 650; color: var(--fg); }
+.caso-h, .caso-r { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 15px; line-height: 1.5; color: var(--fg-2); }
+.caso-h li { padding-left: 16px; position: relative; }
+.caso-h li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 2px; background: var(--morado); transform: skewX(var(--skew)); }
+.caso-r b { color: var(--fg); font-weight: 700; }
+.caso .btn { align-self: flex-start; margin-top: auto; }
+.casos-vacio { color: var(--fg-2); margin-top: 8px; }
+@media (max-width: 760px) { .casos-g { grid-template-columns: minmax(0, 1fr); } .caso { padding: 22px; } .filtro-casos { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px 18px; padding: 0 16px 4px; scrollbar-width: none; } .filtro-casos button { flex: none; } }
+.lnk-casos { color: var(--fg); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
