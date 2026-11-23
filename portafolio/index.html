@@ -20,8 +20,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/v3/vorka.css?v=18">
+<link rel="stylesheet" href="/assets/v3/vorka.css?v=22">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://vorka.mx/"}, {"@type": "ListItem", "position": 2, "name": "Portafolio", "item": "https://vorka.mx/portafolio/"}]}</script>
+<link rel="preload" as="image" href="/img/portafolio/alimentos.webp">
 </head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
@@ -36,48 +37,66 @@
 <div class="menu-movil" id="menu-movil"><a href="/servicios/">Servicios</a><a href="/portafolio/">Portafolio</a><a href="/tienda/">Tienda</a><a href="/learn/">Vorka Learn</a><a href="/sparks/">Sparks</a><a href="/nosotros/">Nosotros</a><a href="/voluntariado">Tú en Vorka</a><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 
 <main id="contenido">
-<section class="cabecera">
-  <svg class="v-fondo" viewBox="69 225 940 909" aria-hidden="true"><defs><linearGradient id="gpf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ECEAE6"/><stop offset=".55" stop-color="#D9D6D9"/><stop offset="1" stop-color="#E6CF96"/></linearGradient></defs><g fill="url(#gpf)"><path d="M69 226H311L652 877L526 1133Z"/><path d="M605 225H1009C930 290 830 380 800 473C775 360 700 270 605 225Z"/></g></svg>
-  <div class="marco">
-    <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
-    <span class="etiqueta">Portafolio</span>
-    <h1 class="h1" style="margin-top:18px">Lo que logran <span class="metal">nuestros clientes.</span></h1>
-    <p class="lead">Casos reales de empresas, negocios y jóvenes que trabajan con Vorka. No mostramos sus nombres para cuidar su privacidad.</p>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn blanco" href="#hecho">Ver proyectos propios</a></div>
+<section class="cabecera pf-cab">
+  <div class="marco pf-cab-in">
+    <div class="pf-cab-tx">
+      <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
+      <span class="etiqueta">Portafolio</span>
+      <h1 class="h1" style="margin-top:18px">Lo que logran <span class="metal">nuestros clientes.</span></h1>
+      <p class="lead">Contenido que vende, portales propios, clientas que regresan y jóvenes que ganan becas. Casos reales, sin nombres para cuidar su privacidad.</p>
+      <div class="botones"><a class="btn tinta" href="#casos">Ver los casos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn blanco" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20su%20portafolio%20y%20quiero%20platicar%20sobre%20mi%20proyecto." target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
+    </div>
+    <div class="pf-collage" aria-hidden="true">
+      <img class="c1" src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="" decoding="async">
+      <img class="c2" src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="" decoding="async">
+      <img class="c3" src="/img/portafolio/brillo.webp" width="551" height="728" alt="" decoding="async">
+    </div>
   </div>
 </section>
-<section class="sec pegada" aria-labelledby="t-casos-c">
+<section class="sec pegada" id="casos" aria-labelledby="t-casos-c">
   <div class="marco">
     <h2 class="sr" id="t-casos-c">Casos de clientes</h2>
     <div class="filtro-casos" role="group" aria-label="¿Qué necesitas?"><button type="button" aria-pressed="true" data-f="">Todos</button><button type="button" aria-pressed="false" data-f="vender">Vender más</button><button type="button" aria-pressed="false" data-f="encontrar">Que me encuentren en internet</button><button type="button" aria-pressed="false" data-f="ordenar">Ordenar mi negocio</button><button type="button" aria-pressed="false" data-f="convocatoria">Ganar una beca o convocatoria</button></div>
-    <div class="casos-g"><article class="caso rv" id="caso-alimentos" data-nec="vender" style="--d:0.0s">
-      <p class="caso-s">Contenido para redes · Vender más</p>
-      <h3 class="h3">Una empresa de alimentos que vende por pedido</h3>
-      <p class="caso-n">Publicar con constancia y que sus clientes supieran cuándo y cómo pedir, sin tener que pensar en redes cada semana.</p>
-      <div class="caso-c"><p class="caso-t">Qué hicimos</p><ul class="caso-h"><li>Plan de contenido cada mes: posts, carruseles, reels e historias.</li><li>Calendario de temporada con fechas de cierre de pedidos y avisos de los días sin entrega.</li><li>Cada pieza la aprueban desde su portal antes de publicarse.</li></ul></div>
-      <div class="caso-c"><p class="caso-t">Resultados</p><ul class="caso-r"><li><b>Un año</b> acompañándolos mes con mes</li><li><b>33 piezas</b> planeadas solo de octubre a diciembre de 2026</li></ul></div>
-      <a class="btn blanco chico" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20en%20su%20portafolio%20el%20caso%20de%20la%20empresa%20de%20alimentos%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-    </article><article class="caso rv" id="caso-inmobiliaria" data-nec="encontrar vender" style="--d:0.06s">
-      <p class="caso-s">Portal web, contenido y campaña · Que me encuentren en internet · Vender más</p>
-      <h3 class="h3">Una inmobiliaria de Monterrey</h3>
-      <p class="caso-n">Dejar de pagar una plataforma rentada y tener su propio portal, con su dominio, donde los interesados le escriban directo a su equipo.</p>
-      <div class="caso-c"><p class="caso-t">Qué hicimos</p><ul class="caso-h"><li>Revisión de su presencia digital y página nueva.</li><li>Portal propio con catálogo, mapa y una ficha por propiedad, en su dominio.</li><li>Contenido para redes y campaña en Meta que lleva a las propiedades.</li></ul></div>
-      <div class="caso-c"><p class="caso-t">Resultados</p><ul class="caso-r"><li><b>19 propiedades</b> publicadas en su portal</li><li><b>484 visitas</b> a fichas de propiedades en los primeros 18 días medidos</li></ul></div>
-      <a class="btn blanco chico" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20en%20su%20portafolio%20el%20caso%20de%20la%20inmobiliaria%20y%20quiero%20algo%20as%C3%AD." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-    </article><article class="caso rv" id="caso-estetica" data-nec="ordenar vender" style="--d:0.0s">
-      <p class="caso-s">Lealtad y control del negocio · Ordenar mi negocio · Vender más</p>
-      <h3 class="h3">Una estética con equipo de estilistas</h3>
-      <p class="caso-n">Que sus clientas regresaran y llevar servicios, agenda y comisiones sin libreta.</p>
-      <div class="caso-c"><p class="caso-t">Qué hicimos</p><ul class="caso-h"><li>Tarjeta de lealtad digital en el celular de cada clienta, con sellos y premios.</li><li>Control del negocio: agenda, anticipos, corte del día y comisiones confirmadas.</li></ul></div>
-      <div class="caso-c"><p class="caso-t">Resultados</p><ul class="caso-r"><li><b>195 clientas</b> con su tarjeta de lealtad</li><li><b>133</b> ya regresaron dos veces o más</li><li><b>528 visitas</b> registradas</li></ul></div>
-      <a class="btn blanco chico" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20en%20su%20portafolio%20el%20caso%20de%20la%20est%C3%A9tica%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-    </article><article class="caso rv" id="caso-mentoria" data-nec="convocatoria" style="--d:0.06s">
-      <p class="caso-s">Mentoría · Ganar una beca o convocatoria</p>
-      <h3 class="h3">Jóvenes de prepa y universidad rumbo a becas y programas de liderazgo</h3>
-      <p class="caso-n">Saber por dónde empezar, contar su historia con fuerza y llegar a tiempo con todo lo que pide la convocatoria.</p>
-      <div class="caso-c"><p class="caso-t">Qué hicimos</p><ul class="caso-h"><li>Diagnóstico inicial y mapa de ruta con metas claras.</li><li>Revisión de CV, ensayos y respuestas de la convocatoria.</li><li>Sesiones cada mes y un panel donde ven su avance.</li></ul></div>
-      <div class="caso-c"><p class="caso-t">Resultados</p><ul class="caso-r"><li><b>Todos</b> los jóvenes que acompañamos este ciclo quedaron preseleccionados</li><li><b>5</b> ganaron la beca el año pasado</li></ul></div>
-      <a class="btn blanco chico" href="https://wa.me/528117804869?text=Hola%2C%20vi%20en%20el%20portafolio%20de%20Vorka%20los%20resultados%20de%20la%20mentor%C3%ADa%20y%20me%20interesa%20para%20una%20convocatoria." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <div class="casos-l"><article class="caso" id="caso-alimentos" data-nec="vender">
+      <div class="caso-v rv"><div class="vc-feed"><img src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="Nueve publicaciones de temporada hechas por Vorka para una empresa de alimentos, con su marca difuminada" loading="lazy" decoding="async"></div></div>
+      <div class="caso-tx rv" style="--d:.08s">
+        <p class="caso-s">Contenido para redes</p>
+        <h3 class="caso-h3">Una empresa de alimentos que vende por pedido</h3>
+        <p class="caso-n">Publicar con constancia y que sus clientes supieran cuándo y cómo pedir, sin tener que pensar en redes cada semana.</p>
+        <div class="caso-nums"><div><b>Un año</b><span>acompañándolos mes con mes</span></div><div><b>33 piezas</b><span>planeadas solo de octubre a diciembre de 2026</span></div></div>
+        <ul class="caso-hi"><li>Plan de contenido cada mes: posts, carruseles, reels e historias.</li><li>Calendario de temporada con fechas de cierre de pedidos y avisos de los días sin entrega.</li><li>Cada pieza la aprueban desde su portal antes de publicarse.</li></ul>
+        <a class="btn tinta" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20en%20su%20portafolio%20el%20caso%20de%20la%20empresa%20de%20alimentos%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </article><article class="caso inv" id="caso-inmobiliaria" data-nec="encontrar vender">
+      <div class="caso-v rv"><div class="vc-nav"><div class="vc-barra"><i></i><i></i><i></i><span>su-dominio.com.mx/propiedades</span></div><img src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="Portal propio de una inmobiliaria de Monterrey con su catálogo de propiedades, con su marca difuminada" loading="lazy" decoding="async"></div></div>
+      <div class="caso-tx rv" style="--d:.08s">
+        <p class="caso-s">Portal web, contenido y campaña</p>
+        <h3 class="caso-h3">Una inmobiliaria de Monterrey</h3>
+        <p class="caso-n">Dejar de pagar una plataforma rentada y tener su propio portal, con su dominio, donde los interesados le escriban directo a su equipo.</p>
+        <div class="caso-nums"><div><b>19 propiedades</b><span>publicadas en su portal</span></div><div><b>484 visitas</b><span>a fichas de propiedades en los primeros 18 días medidos</span></div></div>
+        <ul class="caso-hi"><li>Revisión de su presencia digital y página nueva.</li><li>Portal propio con catálogo, mapa y una ficha por propiedad, en su dominio.</li><li>Contenido para redes y campaña en Meta que lleva a las propiedades.</li></ul>
+        <a class="btn tinta" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20en%20su%20portafolio%20el%20caso%20de%20la%20inmobiliaria%20y%20quiero%20algo%20as%C3%AD." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </article><article class="caso" id="caso-estetica" data-nec="ordenar vender">
+      <div class="caso-v rv"><div class="vc-obj"><img src="/img/portafolio/brillo.webp" width="551" height="728" alt="Corte del día de una estética con ventas por estilista y el sello que se suma a la tarjeta de la clienta (datos de ejemplo)" loading="lazy" decoding="async"></div></div>
+      <div class="caso-tx rv" style="--d:.08s">
+        <p class="caso-s">Lealtad y control del negocio</p>
+        <h3 class="caso-h3">Una estética con equipo de estilistas</h3>
+        <p class="caso-n">Que sus clientas regresaran y llevar servicios, agenda y comisiones sin libreta.</p>
+        <div class="caso-nums"><div><b>195 clientas</b><span>con su tarjeta de lealtad</span></div><div><b>133</b><span>ya regresaron dos veces o más</span></div><div><b>528 visitas</b><span>registradas</span></div></div>
+        <ul class="caso-hi"><li>Tarjeta de lealtad digital en el celular de cada clienta, con sellos y premios.</li><li>Control del negocio: agenda, anticipos, corte del día y comisiones confirmadas.</li></ul>
+        <a class="btn tinta" href="https://wa.me/528117804869?text=Hola%20Vorka%2C%20vi%20en%20su%20portafolio%20el%20caso%20de%20la%20est%C3%A9tica%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </article><article class="caso inv osc" id="caso-mentoria" data-nec="convocatoria">
+      <div class="caso-v rv"><div class="vc-ruta" aria-hidden="true"><p>Mapa de ruta</p><ul><li class="rm-ok" style="--n:0"><span></span>Diagnóstico inicial</li><li class="rm-ok" style="--n:1"><span></span>Su historia y su CV</li><li class="rm-ok" style="--n:2"><span></span>Ensayos y respuestas</li><li class="rm-ok" style="--n:3"><span></span>Preselección</li><li class="rm-va" style="--n:4"><span></span>Entrevista y resultado</li></ul><div class="vc-avance"><i></i></div></div></div>
+      <div class="caso-tx rv" style="--d:.08s">
+        <p class="caso-s">Mentoría</p>
+        <h3 class="caso-h3">Jóvenes de prepa y universidad rumbo a becas y programas de liderazgo</h3>
+        <p class="caso-n">Saber por dónde empezar, contar su historia con fuerza y llegar a tiempo con todo lo que pide la convocatoria.</p>
+        <div class="caso-nums"><div><b>Todos</b><span>los jóvenes que acompañamos este ciclo quedaron preseleccionados</span></div><div><b>5</b><span>ganaron la beca el año pasado</span></div></div>
+        <ul class="caso-hi"><li>Diagnóstico inicial y mapa de ruta con metas claras.</li><li>Revisión de CV, ensayos y respuestas de la convocatoria.</li><li>Sesiones cada mes y un panel donde ven su avance.</li></ul>
+        <a class="btn plata" href="https://wa.me/528117804869?text=Hola%2C%20vi%20en%20el%20portafolio%20de%20Vorka%20los%20resultados%20de%20la%20mentor%C3%ADa%20y%20me%20interesa%20para%20una%20convocatoria." target="_blank" rel="noopener">Quiero algo así <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
     </article></div>
     <p class="casos-vacio" hidden>No hay casos de este tipo todavía. Cuéntanos qué necesitas y te decimos cómo lo haríamos.</p>
   </div>
@@ -162,7 +181,7 @@
     <div class="pie-base"><span>© <span id="anio">2026</span> Vorka México · Monterrey · CDMX · Guadalajara · Querétaro · Celaya</span><nav><a href="/nosotros/">Acerca de</a><a href="/contacto/">Contacto</a><a href="/privacidad/">Aviso de privacidad</a></nav></div>
   </div>
 </footer>
-<script src="/assets/v3/vorka.js?v=18" defer></script>
+<script src="/assets/v3/vorka.js?v=22" defer></script>
 
 <script>
 (() => {
@@ -170,7 +189,7 @@
   bs.forEach(b => b.addEventListener('click', () => {
     const f = b.dataset.f; let n = 0;
     bs.forEach(x => x.setAttribute('aria-pressed', x === b));
-    cs.forEach(c => { const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) n++; });
+    cs.forEach(c => { const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) { c.classList.toggle('inv', n % 2 === 1); n++; } });
     vacio.hidden = n > 0;
   }));
 })();

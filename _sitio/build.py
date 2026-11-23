@@ -458,19 +458,34 @@ def servicio(s):
 # Casos de clientes sin sus nombres (datos.PORTAFOLIO): quién era, qué necesitaba, qué hicimos y sus cifras, con «Quiero algo así» por
 # WhatsApp. Se filtran por necesidad (sin JS se ven todos). Abajo, los casos propios de siempre y el formulario corto.
 NEC = dict(NECESIDADES)
+# Lo que se ve de cada caso: capturas reales con la marca difuminada (img/portafolio/), el producto tal como lo usa el cliente
+# (assets/tienda/v3/*-objeto, con datos de ejemplo) o, en mentoría, un mapa de ruta dibujado que se va palomeando al aparecer.
+def visual_caso(k):
+    if k == 'alimentos':
+        return '<div class="vc-feed"><img src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="Nueve publicaciones de temporada hechas por Vorka para una empresa de alimentos, con su marca difuminada" loading="lazy" decoding="async"></div>'
+    if k == 'inmobiliaria':
+        return '<div class="vc-nav"><div class="vc-barra"><i></i><i></i><i></i><span>su-dominio.com.mx/propiedades</span></div><img src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="Portal propio de una inmobiliaria de Monterrey con su catálogo de propiedades, con su marca difuminada" loading="lazy" decoding="async"></div>'
+    if k == 'estetica':
+        return '<div class="vc-obj"><img src="/img/portafolio/brillo.webp" width="551" height="728" alt="Corte del día de una estética con ventas por estilista y el sello que se suma a la tarjeta de la clienta (datos de ejemplo)" loading="lazy" decoding="async"></div>'
+    pasos = ['Diagnóstico inicial', 'Su historia y su CV', 'Ensayos y respuestas', 'Preselección', 'Entrevista y resultado']
+    li = ''.join(f'<li class="{"rm-ok" if n < 4 else "rm-va"}" style="--n:{n}"><span></span>{e(t)}</li>' for n, t in enumerate(pasos))
+    return f'<div class="vc-ruta" aria-hidden="true"><p>Mapa de ruta</p><ul>{li}</ul><div class="vc-avance"><i></i></div></div>'
 
 def caso_html(c, i):
     k, necs, serv, quien, necesitaba, hicimos, cifras, _, wa_txt = c
     hechos = ''.join(f'<li>{e(h)}</li>' for h in hicimos)
-    nums = ''.join(f'<li><b>{e(b)}</b> {e(t)}</li>' for b, t in cifras)
-    return f'''<article class="caso rv" id="caso-{k}" data-nec="{' '.join(necs)}" style="--d:{(i % 2) * .06}s">
-      <p class="caso-s">{e(serv)} · {e(' · '.join(NEC[n] for n in necs))}</p>
-      <h3 class="h3">{e(quien)}</h3>
-      <p class="caso-n">{e(necesitaba)}</p>
-      <div class="caso-c"><p class="caso-t">Qué hicimos</p><ul class="caso-h">{hechos}</ul></div>
-      <div class="caso-c"><p class="caso-t">Resultados</p><ul class="caso-r">{nums}</ul></div>
-      <a class="btn blanco chico" href="{wa(wa_txt)}" target="_blank" rel="noopener">Quiero algo así {FLECHA}</a>
-    </article>'''
+    nums = ''.join(f'<div><b>{e(b)}</b><span>{e(t)}</span></div>' for b, t in cifras)
+    return f"""<article class="caso{' inv' if i % 2 else ''}{' osc' if k == 'mentoria' else ''}" id="caso-{k}" data-nec="{' '.join(necs)}">
+      <div class="caso-v rv">{visual_caso(k)}</div>
+      <div class="caso-tx rv" style="--d:.08s">
+        <p class="caso-s">{e(serv)}</p>
+        <h3 class="caso-h3">{e(quien)}</h3>
+        <p class="caso-n">{e(necesitaba)}</p>
+        <div class="caso-nums">{nums}</div>
+        <ul class="caso-hi">{hechos}</ul>
+        <a class="btn {'plata' if k == 'mentoria' else 'tinta'}" href="{wa(wa_txt)}" target="_blank" rel="noopener">Quiero algo así {FLECHA}</a>
+      </div>
+    </article>"""
 
 def portafolio():
     filtros = '<button type="button" aria-pressed="true" data-f="">Todos</button>' + ''.join(f'<button type="button" aria-pressed="false" data-f="{k}">{e(t)}</button>' for k, t in NECESIDADES)
@@ -478,23 +493,29 @@ def portafolio():
     marcar = sorted({x for c in PORTAFOLIO for x in c[7]})
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Portafolio", "item": SITIO + "/portafolio/"}]}
-    cuerpo = f'''{nav('/portafolio/', cta=CTA_FORM)}
+    cuerpo = f"""{nav('/portafolio/', cta=CTA_FORM)}
 <main id="contenido">
-<section class="cabecera">
-  {v_metal('v-fondo', 'gpf', oscuro=False)}
-  <div class="marco">
-    <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
-    <span class="etiqueta">Portafolio</span>
-    <h1 class="h1" style="margin-top:18px">Lo que logran <span class="metal">nuestros clientes.</span></h1>
-    <p class="lead">Casos reales de empresas, negocios y jóvenes que trabajan con Vorka. No mostramos sus nombres para cuidar su privacidad.</p>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="#hecho">Ver proyectos propios</a></div>
+<section class="cabecera pf-cab">
+  <div class="marco pf-cab-in">
+    <div class="pf-cab-tx">
+      <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
+      <span class="etiqueta">Portafolio</span>
+      <h1 class="h1" style="margin-top:18px">Lo que logran <span class="metal">nuestros clientes.</span></h1>
+      <p class="lead">Contenido que vende, portales propios, clientas que regresan y jóvenes que ganan becas. Casos reales, sin nombres para cuidar su privacidad.</p>
+      <div class="botones"><a class="btn tinta" href="#casos">Ver los casos {FLECHA}</a><a class="btn blanco" href="{wa('Hola Vorka, vi su portafolio y quiero platicar sobre mi proyecto.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
+    </div>
+    <div class="pf-collage" aria-hidden="true">
+      <img class="c1" src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="" decoding="async">
+      <img class="c2" src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="" decoding="async">
+      <img class="c3" src="/img/portafolio/brillo.webp" width="551" height="728" alt="" decoding="async">
+    </div>
   </div>
 </section>
-<section class="sec pegada" aria-labelledby="t-casos-c">
+<section class="sec pegada" id="casos" aria-labelledby="t-casos-c">
   <div class="marco">
     <h2 class="sr" id="t-casos-c">Casos de clientes</h2>
     <div class="filtro-casos" role="group" aria-label="¿Qué necesitas?">{filtros}</div>
-    <div class="casos-g">{casos}</div>
+    <div class="casos-l">{casos}</div>
     <p class="casos-vacio" hidden>No hay casos de este tipo todavía. Cuéntanos qué necesitas y te decimos cómo lo haríamos.</p>
   </div>
 </section>
@@ -508,12 +529,12 @@ def portafolio():
   bs.forEach(b => b.addEventListener('click', () => {{
     const f = b.dataset.f; let n = 0;
     bs.forEach(x => x.setAttribute('aria-pressed', x === b));
-    cs.forEach(c => {{ const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) n++; }});
+    cs.forEach(c => {{ const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) {{ c.classList.toggle('inv', n % 2 === 1); n++; }} }});
     vacio.hidden = n > 0;
   }}));
 }})();
-</script>'''
-    extra = f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n'
+</script>"""
+    extra = f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n<link rel="preload" as="image" href="/img/portafolio/alimentos.webp">\n'
     return cabeza('Portafolio: casos de clientes · Vorka México',
                   'Casos reales de Vorka México: contenido para redes, portal inmobiliario, tarjeta de lealtad para una estética y mentoría para becas, con sus resultados.',
                   '/portafolio/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
