@@ -97,14 +97,14 @@ def tarjetas_casos(casos):
     return ''.join(f'''<a class="nota-h rv" href="{h}" style="--d:{(i % 3) * .06}s"><span class="im"><img src="/img/trabajo/{k}-800.webp" width="800" height="600" alt="{e(alt)}" loading="lazy" decoding="async"></span>
         <span class="tx"><small>{e(et)}</small><b>{e(t)}</b><span>{vivo(e(d))}</span></span></a>''' for i, (h, k, et, t, d, alt) in enumerate(casos))
 
-def hecho_html(pegada=False):
+def hecho_html(pegada=False, enlace=True):
     """«Lo que hemos hecho»: un caso propio por pieza de la solución (datos.EJEMPLOS), con las tarjetas de nota de v3.
     pegada=True: sin el aire de arriba (cuando sigue a otra sección del mismo fondo)."""
     tarjetas = tarjetas_casos(EJEMPLOS)
     return f'''<section class="sec{' pegada' if pegada else ''}" id="hecho" aria-labelledby="t-hecho">
   <div class="marco">
     <div class="cab par rv"><div><span class="etiqueta">Lo que hemos hecho</span><h2 class="h2" id="t-hecho">Casos propios, <span class="metal">en línea hoy.</span></h2></div>
-      <p class="lead">Proyectos de Vorka y de nuestro fundador, uno por pieza de la solución. Ábrelos y revisa el resultado.{'' if pegada else ' <a class="lnk-casos" href="/portafolio/">Ver casos de clientes</a>'}</p></div>
+      <p class="lead">Proyectos de Vorka y de nuestro fundador, uno por pieza de la solución. Ábrelos y revisa el resultado.{' <a class="lnk-casos" href="/portafolio/">Ver casos de clientes</a>' if enlace and not pegada else ''}</p></div>
     <div class="hecho-g">{tarjetas}</div>
   </div>
 </section>'''
@@ -464,7 +464,7 @@ def visual_caso(k):
     if k == 'alimentos':
         return '<div class="vc-feed"><img src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="Nueve publicaciones de temporada hechas por Vorka para una empresa de alimentos, con su marca difuminada" loading="lazy" decoding="async"></div>'
     if k == 'inmobiliaria':
-        return '<div class="vc-nav"><div class="vc-barra"><i></i><i></i><i></i><span>su-dominio.com.mx/propiedades</span></div><img src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="Portal propio de una inmobiliaria de Monterrey con su catálogo de propiedades, con su marca difuminada" loading="lazy" decoding="async"></div>'
+        return '<div class="vc-dos"><img class="atras" src="/img/portafolio/inmobiliaria-feed.webp" width="960" height="854" alt="Seis publicaciones de su Instagram hechas por Vorka: reels del asesor y departamentos en renta, con su marca difuminada" loading="lazy" decoding="async"><div class="vc-nav"><div class="vc-barra"><i></i><i></i><i></i><span>su-dominio.com.mx/propiedades</span></div><img src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="Portal propio de una inmobiliaria de Monterrey con su catálogo de propiedades, con su marca difuminada" loading="lazy" decoding="async"></div></div>'
     if k == 'estetica':
         return '<div class="vc-obj"><img src="/img/portafolio/brillo.webp" width="551" height="728" alt="Corte del día de una estética con ventas por estilista y el sello que se suma a la tarjeta de la clienta (datos de ejemplo)" loading="lazy" decoding="async"></div>'
     pasos = ['Diagnóstico inicial', 'Su historia y su CV', 'Ensayos y respuestas', 'Preselección', 'Entrevista y resultado']
@@ -487,6 +487,23 @@ def caso_html(c, i):
       </div>
     </article>"""
 
+FEEDS = [('alimentos-feed', 'Empresa de alimentos', 'Temporada, cierres de pedido y antojo en cada pieza.'),
+         ('mercado', 'Tienda de productos artesanales', 'Historias de quienes hacen cada producto, del panal al alebrije.'),
+         ('inmobiliaria-feed', 'Inmobiliaria en Monterrey', 'Reels con el asesor y propiedades que dan ganas de visitar.')]
+
+def feeds_html():
+    t = ''.join(f"""<figure class="feed-c rv" style="--d:{i * .08}s"><div class="feed-im"><img src="/img/portafolio/{k}.webp" width="960" height="854" alt="Publicaciones de Instagram de una {e(n.lower())} hechas por Vorka, con su marca difuminada" loading="lazy" decoding="async"></div>
+      <figcaption><b>{e(n)}</b><span>{e(d)}</span></figcaption></figure>""" for i, (k, n, d) in enumerate(FEEDS))
+    return f"""<section class="sec oscura redondo feeds" aria-labelledby="t-feeds">
+  <div class="grano"></div>
+  <div class="marco">
+    <div class="cab par rv"><div><span class="etiqueta">Contenido para redes</span><h2 class="h2" id="t-feeds" style="margin-top:18px">Así se ven los feeds <span class="metal">que llevamos.</span></h2></div>
+      <p class="lead">Cada marca con su estilo, publicando cada semana. Las marcas van difuminadas para cuidar la privacidad de nuestros clientes.</p></div>
+    <div class="feeds-g">{t}</div>
+    <div class="botones" style="margin-top:36px"><a class="btn plata" href="{wa('Hola Vorka, vi los feeds de su portafolio y quiero contenido así para mi negocio.')}" target="_blank" rel="noopener">Quiero un feed así {FLECHA}</a></div>
+  </div>
+</section>"""
+
 def portafolio():
     filtros = '<button type="button" aria-pressed="true" data-f="">Todos</button>' + ''.join(f'<button type="button" aria-pressed="false" data-f="{k}">{e(t)}</button>' for k, t in NECESIDADES)
     casos = ''.join(caso_html(c, i) for i, c in enumerate(PORTAFOLIO))
@@ -505,7 +522,7 @@ def portafolio():
       <div class="botones"><a class="btn tinta" href="#casos">Ver los casos {FLECHA}</a><a class="btn blanco" href="{wa('Hola Vorka, vi su portafolio y quiero platicar sobre mi proyecto.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
     </div>
     <div class="pf-collage" aria-hidden="true">
-      <img class="c1" src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="" decoding="async">
+      <img class="c1" src="/img/portafolio/mercado.webp" width="960" height="854" alt="" decoding="async">
       <img class="c2" src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="" decoding="async">
       <img class="c3" src="/img/portafolio/brillo.webp" width="551" height="728" alt="" decoding="async">
     </div>
@@ -519,7 +536,8 @@ def portafolio():
     <p class="casos-vacio" hidden>No hay casos de este tipo todavía. Cuéntanos qué necesitas y te decimos cómo lo haríamos.</p>
   </div>
 </section>
-{hecho_html(pegada=True)}
+{feeds_html()}
+{hecho_html(enlace=False)}
 {platiquemos('/portafolio/', marcar=marcar, titulo='¿Quieres un resultado así? <span class="metal">Platiquemos.</span>')}
 </main>
 {pie('empresas')}
