@@ -685,10 +685,12 @@ a.capacidad { display: block; text-decoration: none; color: inherit; }
 .vc-dos { position: relative; width: 100%; padding: 0 0 30% 0; }
 .vc-dos .atras { position: absolute; width: 64%; right: -3%; bottom: 0; border-radius: 12px; box-shadow: 0 24px 44px -20px rgba(15, 13, 16, .5); transform: rotate(3deg); z-index: 0; }
 .vc-dos .vc-nav { position: relative; z-index: 1; width: 80%; }
-.feeds-g { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 8px; }
+.feeds-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px 32px; margin-top: 8px; }
 .feed-c { margin: 0; }
 .feed-im { border-radius: 18px; overflow: hidden; box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .8); transform: rotate(var(--rot, -1.5deg)); transition: transform .5s var(--ease); }
-.feed-c:nth-child(2) .feed-im { --rot: 1.5deg; }
+.feed-c:nth-child(even) .feed-im { --rot: 1.5deg; }
+.feed-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.feed-chips i { font-style: normal; font-size: 12.5px; font-weight: 600; padding: 5px 10px; border-radius: 99px; background: rgba(255, 255, 255, .08); color: var(--claro); }
 .feed-c:hover .feed-im { transform: rotate(0) translateY(-6px); }
 .feed-im img { display: block; width: 100%; height: auto; }
 .feed-c figcaption { margin-top: 18px; display: grid; gap: 4px; }

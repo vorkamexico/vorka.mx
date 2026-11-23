@@ -487,18 +487,21 @@ def caso_html(c, i):
       </div>
     </article>"""
 
-FEEDS = [('alimentos-feed', 'Empresa de alimentos', 'Temporada, cierres de pedido y antojo en cada pieza.'),
-         ('mercado', 'Tienda de productos artesanales', 'Historias de quienes hacen cada producto, del panal al alebrije.'),
-         ('inmobiliaria-feed', 'Inmobiliaria en Monterrey', 'Reels con el asesor y propiedades que dan ganas de visitar.')]
+FEEDS = [('inmobiliaria-feed', 'Inmobiliaria en Monterrey', 'Reels con el asesor intercalados con propiedades que dan ganas de visitar.', True),
+         ('seguros-feed', 'Agente de seguros y retiro', 'Reels que abren conversaciones sobre ahorro, retiro y protección para la familia.', True),
+         ('mercado', 'Tienda de productos artesanales', 'Historias de quienes hacen cada producto, del panal al alebrije.', True),
+         ('alimentos-feed', 'Empresa de alimentos', 'Temporada, cierres de pedido y antojo en cada pieza.', False)]
+SERV_FEED = ['Posicionamiento', 'Estrategia', 'Edición de contenido']
 
 def feeds_html():
-    t = ''.join(f"""<figure class="feed-c rv" style="--d:{i * .08}s"><div class="feed-im"><img src="/img/portafolio/{k}.webp" width="960" height="854" alt="Publicaciones de Instagram de una {e(n.lower())} hechas por Vorka, con su marca difuminada" loading="lazy" decoding="async"></div>
-      <figcaption><b>{e(n)}</b><span>{e(d)}</span></figcaption></figure>""" for i, (k, n, d) in enumerate(FEEDS))
+    chips = lambda pos: ''.join(f'<i>{e(x)}</i>' for x in (SERV_FEED if pos else ['Plan de contenido mensual']))
+    t = ''.join(f"""<figure class="feed-c rv" style="--d:{(i % 2) * .08}s"><div class="feed-im"><img src="/img/portafolio/{k}.webp" width="960" height="854" alt="Publicaciones de Instagram de {e(n.lower())} hechas por Vorka, con su marca difuminada" loading="lazy" decoding="async"></div>
+      <figcaption><b>{e(n)}</b><span>{e(d)}</span><span class="feed-chips">{chips(pos)}</span></figcaption></figure>""" for i, (k, n, d, pos) in enumerate(FEEDS))
     return f"""<section class="sec oscura redondo feeds" aria-labelledby="t-feeds">
   <div class="grano"></div>
   <div class="marco">
     <div class="cab par rv"><div><span class="etiqueta">Contenido para redes</span><h2 class="h2" id="t-feeds" style="margin-top:18px">Así se ven los feeds <span class="metal">que llevamos.</span></h2></div>
-      <p class="lead">Cada marca con su estilo, publicando cada semana. Las marcas van difuminadas para cuidar la privacidad de nuestros clientes.</p></div>
+      <p class="lead">Posicionamiento, estrategia y edición de contenido para que cada marca se vea como lo que es, cada semana. Las marcas van difuminadas para cuidar la privacidad de nuestros clientes.</p></div>
     <div class="feeds-g">{t}</div>
     <div class="botones" style="margin-top:36px"><a class="btn plata" href="{wa('Hola Vorka, vi los feeds de su portafolio y quiero contenido así para mi negocio.')}" target="_blank" rel="noopener">Quiero un feed así {FLECHA}</a></div>
   </div>
