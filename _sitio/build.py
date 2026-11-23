@@ -487,25 +487,37 @@ def caso_html(c, i):
       </div>
     </article>"""
 
-FEEDS = [('inmobiliaria-feed', 'Inmobiliaria en Monterrey', 'Reels con el asesor intercalados con propiedades que dan ganas de visitar.', True),
-         ('seguros-feed', 'Agente de seguros y retiro', 'Reels que abren conversaciones sobre ahorro, retiro y protección para la familia.', True),
-         ('mercado', 'Tienda de productos artesanales', 'Historias de quienes hacen cada producto, del panal al alebrije.', True),
-         ('alimentos-feed', 'Empresa de alimentos', 'Temporada, cierres de pedido y antojo en cada pieza.', False)]
+FEEDS = [('tel-inmobiliaria', 961, 'Inmobiliaria en Monterrey', 'Reels con el asesor intercalados con propiedades que dan ganas de visitar.', True),
+         ('tel-seguros', 1121, 'Agente de seguros y retiro', 'Series con título propio sobre salud, ahorro y retiro que abren conversaciones.', True),
+         ('tel-mercado', 961, 'Tienda de productos artesanales', 'Historias de quienes hacen cada producto, del panal al alebrije.', True),
+         ('tel-alimentos', 955, 'Empresa de alimentos', 'Temporada, cierres de pedido y antojo en cada pieza.', False)]
 SERV_FEED = ['Posicionamiento', 'Estrategia', 'Edición de contenido']
 
 def feeds_html():
+    """Feeds de clientes dentro de celulares escalonados: la cuadrícula se desliza sola (como alguien viendo el perfil) y cada
+    celular se mueve a su ritmo al hacer scroll. En celular, carrusel que se desliza de lado."""
     chips = lambda pos: ''.join(f'<i>{e(x)}</i>' for x in (SERV_FEED if pos else ['Plan de contenido mensual']))
-    t = ''.join(f"""<figure class="feed-c rv" style="--d:{(i % 2) * .08}s"><div class="feed-im"><img src="/img/portafolio/{k}.webp" width="960" height="854" alt="Publicaciones de Instagram de {e(n.lower())} hechas por Vorka, con su marca difuminada" loading="lazy" decoding="async"></div>
-      <figcaption><b>{e(n)}</b><span>{e(d)}</span><span class="feed-chips">{chips(pos)}</span></figcaption></figure>""" for i, (k, n, d, pos) in enumerate(FEEDS))
+    tels = ''.join(f"""<figure class="tel-c" style="--i:{i}" data-vel="{(.06, -.04, .08, -.05)[i % 4]}">
+      <div class="tel"><div class="tel-pant"><div class="tel-perfil" aria-hidden="true"><i class="av"></i><span><b></b><b></b></span></div><div class="tel-tabs" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="tel-feed"><div class="tel-rollo"><img src="/img/portafolio/{k}.webp" width="720" height="{h}" alt="Publicaciones de Instagram de {e(n.lower())} hechas por Vorka, con su marca difuminada" loading="lazy" decoding="async"><img src="/img/portafolio/{k}.webp" width="720" height="{h}" alt="" aria-hidden="true" loading="lazy" decoding="async"><img src="/img/portafolio/{k}.webp" width="720" height="{h}" alt="" aria-hidden="true" loading="lazy" decoding="async"></div></div></div></div>
+      <figcaption><b>{e(n)}</b><span>{e(d)}</span><span class="feed-chips">{chips(pos)}</span></figcaption></figure>""" for i, (k, h, n, d, pos) in enumerate(FEEDS))
     return f"""<section class="sec oscura redondo feeds" aria-labelledby="t-feeds">
   <div class="grano"></div>
   <div class="marco">
     <div class="cab par rv"><div><span class="etiqueta">Contenido para redes</span><h2 class="h2" id="t-feeds" style="margin-top:18px">Así se ven los feeds <span class="metal">que llevamos.</span></h2></div>
-      <p class="lead">Posicionamiento, estrategia y edición de contenido para que cada marca se vea como lo que es, cada semana. Las marcas van difuminadas para cuidar la privacidad de nuestros clientes.</p></div>
-    <div class="feeds-g">{t}</div>
-    <div class="botones" style="margin-top:36px"><a class="btn plata" href="{wa('Hola Vorka, vi los feeds de su portafolio y quiero contenido así para mi negocio.')}" target="_blank" rel="noopener">Quiero un feed así {FLECHA}</a></div>
+      <p class="lead">Posicionamiento, estrategia y edición de contenido para que cada marca se vea como lo que es. Las marcas van difuminadas para cuidar la privacidad de nuestros clientes.</p></div>
+    <div class="tels">{tels}</div>
+    <div class="botones feeds-cta"><a class="btn plata" href="{wa('Hola Vorka, vi los feeds de su portafolio y quiero contenido así para mi negocio.')}" target="_blank" rel="noopener">Quiero un feed así {FLECHA}</a></div>
   </div>
-</section>"""
+</section>
+<script>
+(() => {{
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(max-width: 960px)').matches) return;
+  const ts = [...document.querySelectorAll('.tel-c')]; let pend = false;
+  const mover = () => {{ pend = false; const mid = innerHeight / 2; ts.forEach(t => {{ const r = t.getBoundingClientRect(); t.style.setProperty('--py', ((r.top + r.height / 2 - mid) * +t.dataset.vel).toFixed(1) + 'px'); }}); }};
+  addEventListener('scroll', () => {{ if (!pend) {{ pend = true; requestAnimationFrame(mover); }} }}, {{ passive: true }}); mover();
+}})();
+</script>"""
 
 def portafolio():
     filtros = '<button type="button" aria-pressed="true" data-f="">Todos</button>' + ''.join(f'<button type="button" aria-pressed="false" data-f="{k}">{e(t)}</button>' for k, t in NECESIDADES)

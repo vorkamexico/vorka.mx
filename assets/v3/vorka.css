@@ -685,18 +685,43 @@ a.capacidad { display: block; text-decoration: none; color: inherit; }
 .vc-dos { position: relative; width: 100%; padding: 0 0 30% 0; }
 .vc-dos .atras { position: absolute; width: 64%; right: -3%; bottom: 0; border-radius: 12px; box-shadow: 0 24px 44px -20px rgba(15, 13, 16, .5); transform: rotate(3deg); z-index: 0; }
 .vc-dos .vc-nav { position: relative; z-index: 1; width: 80%; }
-.feeds-g { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px 32px; margin-top: 8px; }
-.feed-c { margin: 0; }
-.feed-im { border-radius: 18px; overflow: hidden; box-shadow: 0 30px 60px -28px rgba(0, 0, 0, .8); transform: rotate(var(--rot, -1.5deg)); transition: transform .5s var(--ease); }
-.feed-c:nth-child(even) .feed-im { --rot: 1.5deg; }
+/* feeds en celulares escalonados (portafolio) */
+.tels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 10px; margin-top: 30px; align-items: start; }
+.tel-c { margin: 0; position: relative; z-index: 1; transform: translateY(calc(var(--off, 0px) + var(--py, 0px))); transition: transform .25s linear; }
+.tel-c:nth-child(1) { --off: 40px; --rot: -5deg; }
+.tel-c:nth-child(2) { --off: -10px; --rot: 3deg; }
+.tel-c:nth-child(3) { --off: 70px; --rot: -2deg; }
+.tel-c:nth-child(4) { --off: 15px; --rot: 5deg; }
+.tel-c:hover { z-index: 3; }
+.tel { position: relative; margin: 0 auto; width: min(100%, 270px); transform: rotate(var(--rot, 0deg)); aspect-ratio: 9 / 18.5; padding: 9px; border-radius: 42px; background: linear-gradient(160deg, #3a3340, #120f14 55%); box-shadow: 0 0 0 1px rgba(255, 255, 255, .08) inset, 0 40px 70px -30px rgba(0, 0, 0, .9); transition: transform .5s var(--ease); }
+.tel::before { content: ""; position: absolute; top: 18px; left: 50%; width: 30%; height: 20px; border-radius: 99px; background: #0b090c; transform: translateX(-50%); z-index: 3; }
+.tel-c:hover .tel { transform: scale(1.05) rotate(0deg); }
+.tel-pant { position: relative; height: 100%; border-radius: 34px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+.tel-perfil { display: flex; align-items: center; gap: 10px; padding: 44px 14px 10px; }
+.tel-perfil .av { flex: none; width: 38px; height: 38px; border-radius: 50%; background: conic-gradient(#f9a03f, #e1306c, #833ab4, #f9a03f); filter: blur(1.5px); }
+.tel-perfil span { display: grid; gap: 6px; flex: 1; }
+.tel-perfil b { display: block; height: 7px; border-radius: 9px; background: #e8e6ea; width: 70%; }
+.tel-perfil b + b { width: 45%; }
+.tel-tabs { display: flex; justify-content: space-around; padding: 6px 0; border-top: 1px solid #efedf0; }
+.tel-tabs i { width: 14px; height: 14px; border-radius: 3px; background: #dcd9de; }
+.tel-tabs i:first-child { background: #1a171c; }
+.tel-feed { flex: 1; overflow: hidden; }
+.tel-rollo { animation: tel-rollo 20s linear infinite; animation-delay: calc(var(--i) * -6s); }
+.tel-rollo img { display: block; width: 100%; height: auto; }
+.tel-c:hover .tel-rollo { animation-play-state: paused; }
+@keyframes tel-rollo { to { transform: translateY(-33.3333%); } }
+.tel-c figcaption { margin: 30px auto 0; max-width: 270px; display: grid; gap: 4px; text-align: left; }
+.tel-c figcaption b { font-size: 16.5px; font-weight: 700; color: #fff; }
+.tel-c figcaption span { font-size: 14px; line-height: 1.5; color: var(--claro-2); }
+.feeds-cta { margin-top: 110px; justify-content: center; }
 .feed-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.feed-chips i { font-style: normal; font-size: 12.5px; font-weight: 600; padding: 5px 10px; border-radius: 99px; background: rgba(255, 255, 255, .08); color: var(--claro); }
-.feed-c:hover .feed-im { transform: rotate(0) translateY(-6px); }
-.feed-im img { display: block; width: 100%; height: auto; }
-.feed-c figcaption { margin-top: 18px; display: grid; gap: 4px; }
-.feed-c figcaption b { font-size: 17px; font-weight: 700; color: #fff; }
-.feed-c figcaption span { font-size: 14.5px; line-height: 1.5; color: var(--claro-2); }
-@media (max-width: 960px) { .feeds-g { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 82%; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -16px; padding: 10px 16px 20px; scrollbar-width: none; } .feed-c { scroll-snap-align: center; } }
+.feed-chips i { font-style: normal; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 99px; background: rgba(255, 255, 255, .08); color: var(--claro); }
+@media (max-width: 960px) {
+  .tels { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 68%; overflow-x: auto; scroll-snap-type: x mandatory; margin: 18px -16px 0; padding: 20px 16px 30px; scrollbar-width: none; gap: 18px; }
+  .tel-c { scroll-snap-align: center; --off: 0px !important; --rot: 0deg !important; }
+  .feeds-cta { margin-top: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .tel-rollo { animation: none; } }
 .vc-obj img { width: min(360px, 92%); filter: drop-shadow(0 26px 30px rgba(15, 13, 16, .22)); transform: rotate(2deg); }
 .caso-s { margin: 0 0 12px; display: inline-flex; font-size: 13px; font-weight: 650; padding: 6px 12px; border-radius: 99px; background: var(--bg-2); color: var(--fg-2); }
 .caso-h3 { margin: 0; font-size: clamp(26px, 2.8vw, 38px); font-weight: 750; letter-spacing: -.032em; line-height: 1.08; }
