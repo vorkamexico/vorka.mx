@@ -7,7 +7,7 @@
 import os, sys, json
 sys.path.insert(0, os.path.dirname(__file__))
 from partes import *
-from datos import SERVICIOS, PREGUNTAS_CORTAS, FASES, EJEMPLOS, CASOS, CASOS_SERVICIO, FORMATOS
+from datos import SERVICIOS, PREGUNTAS_CORTAS, FASES, EJEMPLOS, CASOS, CASOS_SERVICIO, FORMATOS, PORTAFOLIO, NECESIDADES
 from agenda import pagina_agenda
 from fc import actualizar_fc
 from equipo import paginas_equipo
@@ -97,14 +97,14 @@ def tarjetas_casos(casos):
     return ''.join(f'''<a class="nota-h rv" href="{h}" style="--d:{(i % 3) * .06}s"><span class="im"><img src="/img/trabajo/{k}-800.webp" width="800" height="600" alt="{e(alt)}" loading="lazy" decoding="async"></span>
         <span class="tx"><small>{e(et)}</small><b>{e(t)}</b><span>{vivo(e(d))}</span></span></a>''' for i, (h, k, et, t, d, alt) in enumerate(casos))
 
-def hecho_html(pegada=False):
+def hecho_html(pegada=False, enlace=True):
     """«Lo que hemos hecho»: un caso propio por pieza de la solución (datos.EJEMPLOS), con las tarjetas de nota de v3.
     pegada=True: sin el aire de arriba (cuando sigue a otra sección del mismo fondo)."""
     tarjetas = tarjetas_casos(EJEMPLOS)
     return f'''<section class="sec{' pegada' if pegada else ''}" id="hecho" aria-labelledby="t-hecho">
   <div class="marco">
     <div class="cab par rv"><div><span class="etiqueta">Lo que hemos hecho</span><h2 class="h2" id="t-hecho">Casos propios, <span class="metal">en línea hoy.</span></h2></div>
-      <p class="lead">Proyectos de Vorka y de nuestro fundador, uno por pieza de la solución. Ábrelos y revisa el resultado.</p></div>
+      <p class="lead">Proyectos de Vorka y de nuestro fundador, uno por pieza de la solución. Ábrelos y revisa el resultado.{' <a class="lnk-casos" href="/portafolio/">Ver casos de clientes</a>' if enlace and not pegada else ''}</p></div>
     <div class="hecho-g">{tarjetas}</div>
   </div>
 </section>'''
@@ -332,7 +332,7 @@ def servicios_hub():
     <span class="etiqueta">Servicios</span>
     <h1 class="h1" style="margin-top:18px">Todo para decidir, ejecutar y <span class="metal">hacerte escuchar.</span></h1>
     <p class="lead">Una solución integral en cuatro piezas, para empresas, gobiernos y organizaciones en México.</p>
-    <div class="botones"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="#hecho">Ver lo que hemos hecho</a></div>
+    <div class="botones"><a class="btn tinta" href="#platiquemos">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="/portafolio/">Ver portafolio</a></div>
   </div>
 </section>
 <section class="sec pegada" aria-label="Servicios"><div class="marco"><div class="elegir">{elegir}</div></div></section>
@@ -453,6 +453,125 @@ def servicio(s):
     titulo, desc = SEO_SERVICIO.get(s['slug'], (f"{s['area']} · Vorka México", f"{s['promesa']} {s['para']}"))
     return cabeza(titulo, desc, f"/servicios/{s['slug']}/", og=s['cabecera'], extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
+
+# ---------------------------------------------------------------- portafolio
+# Casos de clientes sin sus nombres (datos.PORTAFOLIO): quién era, qué necesitaba, qué hicimos y sus cifras, con «Quiero algo así» por
+# WhatsApp. Se filtran por necesidad (sin JS se ven todos). Abajo, los casos propios de siempre y el formulario corto.
+NEC = dict(NECESIDADES)
+# Lo que se ve de cada caso: capturas reales con la marca difuminada (img/portafolio/), el producto tal como lo usa el cliente
+# (assets/tienda/v3/*-objeto, con datos de ejemplo) o, en mentoría, un mapa de ruta dibujado que se va palomeando al aparecer.
+def visual_caso(k):
+    if k == 'alimentos':
+        return '<div class="vc-feed"><img src="/img/portafolio/alimentos.webp" width="900" height="1195" alt="Nueve publicaciones de temporada hechas por Vorka para una empresa de alimentos, con su marca difuminada" loading="lazy" decoding="async"></div>'
+    if k == 'inmobiliaria':
+        return '<div class="vc-dos"><img class="atras" src="/img/portafolio/inmobiliaria-feed.webp" width="960" height="854" alt="Seis publicaciones de su Instagram hechas por Vorka: reels del asesor y departamentos en renta, con su marca difuminada" loading="lazy" decoding="async"><div class="vc-nav"><div class="vc-barra"><i></i><i></i><i></i><span>su-dominio.com.mx/propiedades</span></div><img src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="Portal propio de una inmobiliaria de Monterrey con su catálogo de propiedades, con su marca difuminada" loading="lazy" decoding="async"></div></div>'
+    if k == 'estetica':
+        return '<div class="vc-obj"><img src="/img/portafolio/brillo.webp" width="551" height="728" alt="Corte del día de una estética con ventas por estilista y el sello que se suma a la tarjeta de la clienta (datos de ejemplo)" loading="lazy" decoding="async"></div>'
+    pasos = ['Diagnóstico inicial', 'Su historia y su CV', 'Ensayos y respuestas', 'Preselección', 'Entrevista y resultado']
+    li = ''.join(f'<li class="{"rm-ok" if n < 4 else "rm-va"}" style="--n:{n}"><span></span>{e(t)}</li>' for n, t in enumerate(pasos))
+    return f'<div class="vc-ruta" aria-hidden="true"><p>Mapa de ruta</p><ul>{li}</ul><div class="vc-avance"><i></i></div></div>'
+
+def caso_html(c, i):
+    k, necs, serv, quien, necesitaba, hicimos, cifras, _, wa_txt = c
+    hechos = ''.join(f'<li>{e(h)}</li>' for h in hicimos)
+    nums = ''.join(f'<div><b>{e(b)}</b><span>{e(t)}</span></div>' for b, t in cifras)
+    return f"""<article class="caso{' inv' if i % 2 else ''}{' osc' if k == 'mentoria' else ''}" id="caso-{k}" data-nec="{' '.join(necs)}">
+      <div class="caso-v rv">{visual_caso(k)}</div>
+      <div class="caso-tx rv" style="--d:.08s">
+        <p class="caso-s">{e(serv)}</p>
+        <h3 class="caso-h3">{e(quien)}</h3>
+        <p class="caso-n">{e(necesitaba)}</p>
+        <div class="caso-nums">{nums}</div>
+        <ul class="caso-hi">{hechos}</ul>
+        <a class="btn {'plata' if k == 'mentoria' else 'tinta'}" href="{wa(wa_txt)}" target="_blank" rel="noopener">Quiero algo así {FLECHA}</a>
+      </div>
+    </article>"""
+
+FEEDS = [('tel-inmobiliaria', 961, 'Inmobiliaria en Monterrey', 'Reels con el asesor intercalados con propiedades que dan ganas de visitar.', True),
+         ('tel-seguros', 1121, 'Agente de seguros y retiro', 'Series con título propio sobre salud, ahorro y retiro que abren conversaciones.', True),
+         ('tel-mercado', 961, 'Tienda de productos artesanales', 'Historias de quienes hacen cada producto, del panal al alebrije.', True),
+         ('tel-alimentos', 955, 'Empresa de alimentos', 'Temporada, cierres de pedido y antojo en cada pieza.', False)]
+SERV_FEED = ['Posicionamiento', 'Estrategia', 'Edición de contenido']
+
+def feeds_html():
+    """Feeds de clientes dentro de celulares escalonados: la cuadrícula se desliza sola (como alguien viendo el perfil) y cada
+    celular se mueve a su ritmo al hacer scroll. En celular, carrusel que se desliza de lado."""
+    chips = lambda pos: ''.join(f'<i>{e(x)}</i>' for x in (SERV_FEED if pos else ['Plan de contenido mensual']))
+    tels = ''.join(f"""<figure class="tel-c" style="--i:{i}" data-vel="{(.06, -.04, .08, -.05)[i % 4]}">
+      <div class="tel"><div class="tel-pant"><div class="tel-perfil" aria-hidden="true"><i class="av"></i><span><b></b><b></b></span></div><div class="tel-tabs" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="tel-feed"><div class="tel-rollo"><img src="/img/portafolio/{k}.webp" width="720" height="{h}" alt="Publicaciones de Instagram de {e(n.lower())} hechas por Vorka, con su marca difuminada" loading="lazy" decoding="async"><img src="/img/portafolio/{k}.webp" width="720" height="{h}" alt="" aria-hidden="true" loading="lazy" decoding="async"><img src="/img/portafolio/{k}.webp" width="720" height="{h}" alt="" aria-hidden="true" loading="lazy" decoding="async"></div></div></div></div>
+      <figcaption><b>{e(n)}</b><span>{e(d)}</span><span class="feed-chips">{chips(pos)}</span></figcaption></figure>""" for i, (k, h, n, d, pos) in enumerate(FEEDS))
+    return f"""<section class="sec oscura redondo feeds" aria-labelledby="t-feeds">
+  <div class="grano"></div>
+  <div class="marco">
+    <div class="cab par rv"><div><span class="etiqueta">Contenido para redes</span><h2 class="h2" id="t-feeds" style="margin-top:18px">Así se ven los feeds <span class="metal">que llevamos.</span></h2></div>
+      <p class="lead">Posicionamiento, estrategia y edición de contenido para que cada marca se vea como lo que es. Las marcas van difuminadas para cuidar la privacidad de nuestros clientes.</p></div>
+    <div class="tels">{tels}</div>
+    <div class="botones feeds-cta"><a class="btn plata" href="{wa('Hola Vorka, vi los feeds de su portafolio y quiero contenido así para mi negocio.')}" target="_blank" rel="noopener">Quiero un feed así {FLECHA}</a></div>
+  </div>
+</section>
+<script>
+(() => {{
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(max-width: 960px)').matches) return;
+  const ts = [...document.querySelectorAll('.tel-c')]; let pend = false;
+  const mover = () => {{ pend = false; const mid = innerHeight / 2; ts.forEach(t => {{ const r = t.getBoundingClientRect(); t.style.setProperty('--py', ((r.top + r.height / 2 - mid) * +t.dataset.vel).toFixed(1) + 'px'); }}); }};
+  addEventListener('scroll', () => {{ if (!pend) {{ pend = true; requestAnimationFrame(mover); }} }}, {{ passive: true }}); mover();
+}})();
+</script>"""
+
+def portafolio():
+    filtros = '<button type="button" aria-pressed="true" data-f="">Todos</button>' + ''.join(f'<button type="button" aria-pressed="false" data-f="{k}">{e(t)}</button>' for k, t in NECESIDADES)
+    casos = ''.join(caso_html(c, i) for i, c in enumerate(PORTAFOLIO))
+    marcar = sorted({x for c in PORTAFOLIO for x in c[7]})
+    migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Portafolio", "item": SITIO + "/portafolio/"}]}
+    cuerpo = f"""{nav('/portafolio/', cta=CTA_FORM)}
+<main id="contenido">
+<section class="cabecera pf-cab">
+  <div class="marco pf-cab-in">
+    <div class="pf-cab-tx">
+      <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
+      <span class="etiqueta">Portafolio</span>
+      <h1 class="h1" style="margin-top:18px">Lo que logran <span class="metal">nuestros clientes.</span></h1>
+      <p class="lead">Contenido que vende, portales propios, clientas que regresan y jóvenes que ganan becas. Casos reales, sin nombres para cuidar su privacidad.</p>
+      <div class="botones"><a class="btn tinta" href="#casos">Ver los casos {FLECHA}</a><a class="btn blanco" href="{wa('Hola Vorka, vi su portafolio y quiero platicar sobre mi proyecto.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
+    </div>
+    <div class="pf-collage" aria-hidden="true">
+      <img class="c1" src="/img/portafolio/mercado.webp" width="960" height="854" alt="" decoding="async">
+      <img class="c2" src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="" decoding="async">
+      <img class="c3" src="/img/portafolio/brillo.webp" width="551" height="728" alt="" decoding="async">
+    </div>
+  </div>
+</section>
+<section class="sec pegada" id="casos" aria-labelledby="t-casos-c">
+  <div class="marco">
+    <h2 class="sr" id="t-casos-c">Casos de clientes</h2>
+    <div class="filtro-casos" role="group" aria-label="¿Qué necesitas?">{filtros}</div>
+    <div class="casos-l">{casos}</div>
+    <p class="casos-vacio" hidden>No hay casos de este tipo todavía. Cuéntanos qué necesitas y te decimos cómo lo haríamos.</p>
+  </div>
+</section>
+{feeds_html()}
+{hecho_html(enlace=False)}
+{platiquemos('/portafolio/', marcar=marcar, titulo='¿Quieres un resultado así? <span class="metal">Platiquemos.</span>')}
+</main>
+{pie('empresas')}
+<script>
+(() => {{
+  const bs = document.querySelectorAll('.filtro-casos button'), cs = document.querySelectorAll('.caso'), vacio = document.querySelector('.casos-vacio');
+  bs.forEach(b => b.addEventListener('click', () => {{
+    const f = b.dataset.f; let n = 0;
+    bs.forEach(x => x.setAttribute('aria-pressed', x === b));
+    cs.forEach(c => {{ const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) {{ c.classList.toggle('inv', n % 2 === 1); n++; }} }});
+    vacio.hidden = n > 0;
+  }}));
+}})();
+</script>"""
+    extra = f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n<link rel="preload" as="image" href="/img/portafolio/alimentos.webp">\n'
+    return cabeza('Portafolio: casos de clientes · Vorka México',
+                  'Casos reales de Vorka México: contenido para redes, portal inmobiliario, tarjeta de lealtad para una estética y mentoría para becas, con sus resultados.',
+                  '/portafolio/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
+
 # ---------------------------------------------------------------- 404
 def no_encontrada():
     cuerpo = f'''{nav()}
@@ -483,4 +602,5 @@ if __name__ == '__main__':
         escribir(ruta, html)
     escribir('nosotros/index.html', pagina_nosotros())
     escribir('contacto/index.html', pagina_contacto())
+    escribir('portafolio/index.html', portafolio())
     escribir('404.html', no_encontrada())

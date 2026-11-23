@@ -259,3 +259,30 @@ CASOS_SERVICIO = {
     'influencia': ('oleynick-marca', 'impacto-narrativa', 'sparks'),
     'apps': ('impacto-web', 'oleynick-web', 'apps'),
 }
+
+# ---- Portafolio (/portafolio/): casos de clientes, sin sus nombres ni marcas (privacidad). Cifras de Vorka OS y del portal de inmuebles,
+# confirmadas por Brandon el 22-nov-2026. Cada caso: (clave, necesidades, servicio, quién, qué necesitaba, qué hicimos, cifras, intereses del
+# formulario corto, texto de WhatsApp). Si un cliente pide salir, se quita de aquí y se corre build.py.
+NECESIDADES = [('vender', 'Vender más'), ('encontrar', 'Que me encuentren en internet'), ('ordenar', 'Ordenar mi negocio'), ('convocatoria', 'Ganar una beca o convocatoria')]
+PORTAFOLIO = [
+    ('alimentos', ('vender',), 'Contenido para redes', 'Una empresa de alimentos que vende por pedido',
+     'Publicar con constancia y que sus clientes supieran cuándo y cómo pedir, sin tener que pensar en redes cada semana.',
+     ['Plan de contenido cada mes: posts, carruseles, reels e historias.', 'Calendario de temporada con fechas de cierre de pedidos y avisos de los días sin entrega.', 'Cada pieza la aprueban desde su portal antes de publicarse.'],
+     [('Un año', 'acompañándolos mes con mes'), ('33 piezas', 'planeadas solo de octubre a diciembre de 2026')],
+     ('redes',), 'Hola Vorka, vi en su portafolio el caso de la empresa de alimentos y quiero algo así para mi negocio.'),
+    ('inmobiliaria', ('encontrar', 'vender'), 'Portal web, posicionamiento y contenido', 'Una inmobiliaria de Monterrey',
+     'Dejar de pagar una plataforma rentada y tener su propio portal, con su dominio, donde los interesados le escriban directo a su equipo.',
+     ['Posicionamiento y estrategia de contenido, con el asesor como la cara de la marca.', 'Portal propio con catálogo, mapa y una ficha por propiedad, en su dominio.', 'Edición de reels y piezas de propiedades, y campaña en Meta que lleva al portal.'],
+     [('19 propiedades', 'publicadas en su portal'), ('484 visitas', 'a fichas de propiedades en los primeros 18 días medidos')],
+     ('web', 'redes'), 'Hola Vorka, vi en su portafolio el caso de la inmobiliaria y quiero algo así.'),
+    ('estetica', ('ordenar', 'vender'), 'Lealtad y control del negocio', 'Una estética con equipo de estilistas',
+     'Que sus clientas regresaran y llevar servicios, agenda y comisiones sin libreta.',
+     ['Tarjeta de lealtad digital en el celular de cada clienta, con sellos y premios.', 'Control del negocio: agenda, anticipos, corte del día y comisiones confirmadas.'],
+     [('195 clientas', 'con su tarjeta de lealtad'), ('133', 'ya regresaron dos veces o más'), ('528 visitas', 'registradas')],
+     ('sistemas',), 'Hola Vorka, vi en su portafolio el caso de la estética y quiero algo así para mi negocio.'),
+    ('mentoria', ('convocatoria',), 'Mentoría', 'Jóvenes de prepa y universidad rumbo a becas y programas de liderazgo',
+     'Saber por dónde empezar, contar su historia con fuerza y llegar a tiempo con todo lo que pide la convocatoria.',
+     ['Diagnóstico inicial y mapa de ruta con metas claras.', 'Revisión de CV, ensayos y respuestas de la convocatoria.', 'Sesiones cada mes y un panel donde ven su avance.'],
+     [('Todos', 'los jóvenes que acompañamos este ciclo quedaron preseleccionados'), ('5', 'ganaron la beca el año pasado')],
+     ('equipos',), 'Hola, vi en el portafolio de Vorka los resultados de la mentoría y me interesa para una convocatoria.'),
+]

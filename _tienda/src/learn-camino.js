@@ -24,6 +24,8 @@
 //    La de vacaciones y días de descanso de fin de año (LFT vigente: artículos 74, 75, 76 a 81, 178, 179, 291-F, 334 Bis,
 //    336 Bis, 516 y 994; decreto de vacaciones dignas en el DOF del 27 de diciembre de 2022; Ley del ISR, artículo 93-XIV;
 //    y PROFEDET) se revisó el 13 de noviembre de 2026.
+//    La de la primera credencial del INE (acuerdo INE/CG519/2026, LGIPE vigente y páginas del INE) se revisó el 23 de
+//    noviembre de 2026.
 //    La de la Afore (LSAR vigente: artículos 18, 37-A, 74 y 76; CONSAR: localiza tu Afore, registro, Catálogo de Trámites
 //    del SAR, comisiones 2026 y máximo 2027; PENSIONISSSTE sobre cuentas asignadas) se revisó el 21 de noviembre de 2026.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
@@ -91,6 +93,13 @@ const F = {
   lftVacaciones: { nombre: 'Ley Federal del Trabajo, texto vigente (última reforma DOF 14-05-2026; artículos 74 a 81, 178, 179, 291-F, 334 Bis, 336 Bis, 516 y 994), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf' },
   lisrPrima: { nombre: 'Ley del Impuesto sobre la Renta, texto vigente (última reforma DOF 01-04-2024; artículo 93, fracción XIV), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf' },
   profedetVacaciones: { nombre: 'PROFEDET: Persona trabajadora, las vacaciones son tu derecho (23 de julio de 2025)', url: 'https://www.gob.mx/profedet/es/articulos/persona-trabajadora-las-vacaciones-son-tu-derecho?idiom=es' },
+  ineAcuerdo: { nombre: 'INE: Acuerdo INE/CG519/2026 del Consejo General, plazos para la actualización del Padrón Electoral y cortes de la Lista Nominal para los procesos electorales federal y locales 2026-2027 (aprobado por unanimidad el 3 de septiembre de 2026)', url: 'https://repositoriodocumental.ine.mx/xmlui/bitstream/handle/123456789/189759/CGex202609-03-ap-4.pdf' },
+  ineActa: { nombre: 'INE: Acta de la sesión extraordinaria del Consejo General del 3 de septiembre de 2026 (punto 4, acuerdo INE/CG519/2026)', url: 'https://repositoriodocumental.ine.mx/xmlui/bitstream/handle/123456789/190841/CGex202609-03-Acta.pdf' },
+  lgipe: { nombre: 'Ley General de Instituciones y Procedimientos Electorales, texto vigente (última reforma DOF 02-06-2026; artículos 137, 138, 139 y 156), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LGIPE.pdf' },
+  ineDocs: { nombre: 'INE: Documentos para solicitar tu Credencial para Votar', url: 'https://ine.mx/credencial/documentos-necesarios/' },
+  ineTramite: { nombre: 'INE: Trámites de la Credencial y Servicios (requisitos y trámite por primera vez)', url: 'https://ine.mx/credencial/tramite-credencial-tipo/' },
+  ineFaq: { nombre: 'INE: Preguntas frecuentes sobre la Credencial para Votar', url: 'https://ine.mx/preguntas-frecuentes-credencial-para-votar/' },
+  ineSinaloa: { nombre: 'INE, Central Electoral: INE Sinaloa invita a jóvenes a tramitar su primera Credencial para Votar (2 de octubre de 2026)', url: 'https://centralelectoral.ine.mx/2026/10/02/ine-sinaloa-invita-a-jovenes-a-tramitar-su-primera-credencial-para-votar/' },
   lsar: { nombre: 'Ley de los Sistemas de Ahorro para el Retiro, texto vigente (última reforma DOF 14-11-2025; artículos 18, 37-A, 74 y 76), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LSAR.pdf' },
   consarLocaliza: { nombre: 'CONSAR: ¿No sabes en qué Afore estás? (25 de marzo de 2024)', url: 'https://www.gob.mx/consar/acciones-y-programas/en-que-afore-estoy-56776' },
   consarPrimer: { nombre: 'CONSAR: ¿Es tu primer acercamiento al SAR? (8 de diciembre de 2021)', url: 'https://www.gob.mx/consar/articulos/es-tu-primer-acercamiento-al-sar' },
@@ -103,7 +112,7 @@ const F = {
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', afore: 'afore-como-saber-en-cual-estas' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', ine: 'primera-credencial-ine', afore: 'afore-como-saber-en-cual-estas' };
 const r = slug => `/learn/camino/${slug}/`;
 // Ejemplo con cifras inventadas (mismo marcado que en Finanzas y en la guía de la jornada)
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
@@ -173,6 +182,13 @@ const LLAMADO = {
     puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha, por ejemplo para tu próximo viaje, y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Tú en Vorka para quien saca su primera credencial: mismos datos que el llamado «tuEnVorka» (página /voluntariado/)
+  tuEnVorkaIne: llamadoProducto({ etiqueta: 'Tú en Vorka', producto: 'Tú en Vorka', de: 'Programa para jóvenes · Vorka México', icono: 'personas', chip: 'Sin costo',
+    titulo: '¿Quieres participar en tu comunidad más allá del día de la elección?',
+    texto: 'Para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría.',
+    puntos: ['Áreas como redacción, diseño y redes, eventos y estrategia.', 'De 4 a 8 horas por semana, según tu área.', 'Es sin costo, con constancia y portafolio.', 'Presencial en el Bajío o a distancia desde cualquier parte de México.'],
+    nota: 'Tú en Vorka es un programa de Vorka México: no tiene relación con el INE ni con ningún partido político.',
+    href: '/voluntariado/', boton: 'Conoce Tú en Vorka' }),
   // Clara para quien acaba de revisar su Afore: lleva su dinero de hoy (src/clara.js); mismos datos de su ficha. Clara no toca la Afore.
   claraAfore: llamadoProducto({ etiqueta: 'Organiza tu sueldo con Clara', producto: 'Clara', de: 'Finanzas para jóvenes · Vorka México', icono: 'cartera', chip: 'Gratis para empezar',
     titulo: '¿Ya tienes en orden tu retiro y ahora quieres ordenar tu mes?',
@@ -858,7 +874,81 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.lftVacaciones, F.dofVacaciones, F.profedetVacaciones, F.lisrPrima, F.profedet],
     relacionadas: [S.jornada, S.papeles, S.cv],
   },
-  // =============== 11. Afore ===============
+
+  // =============== 11. Tu primera credencial del INE (elecciones 2027) ===============
+  // Revisada el 23 de noviembre de 2026: acuerdo INE/CG519/2026 (puntos SEGUNDO 1, 2, 8, 9, 17 y 24; aprobado por
+  // unanimidad el 3-sep-2026, según el acta de la sesión), LGIPE vigente (arts. 137, 138, 139 y 156), y las páginas del INE
+  // de documentos, trámites y preguntas frecuentes, más el boletín del INE Sinaloa (cualquier módulo, INETEL).
+  // No afirmamos cuándo se reabre la inscripción después del 25 de enero de 2027: el INE no lo ha publicado.
+  // Lo demás (orden, revisar nombres, ir antes de enero) es consejo nuestro.
+  {
+    slug: S.ine, llamado: 'tuEnVorkaIne', actualizado: '2026-11-23', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Tu primera credencial del INE para votar en 2027',
+    descripcion: 'Si cumples 18 antes del 6 de junio de 2027, tienes hasta el 25 de enero para tramitar tu primera credencial del INE. Requisitos, pasos y fechas.',
+    h1: 'Tu primera credencial del INE: requisitos y fechas para votar en 2027',
+    lead: 'Si cumples 18 años antes de la elección del 6 de junio de 2027 o ese mismo día, puedes tramitar tu primera credencial para votar desde ahora, aunque hoy tengas 17. El plazo cierra el 25 de enero de 2027. Aquí están las fechas, los cuatro documentos, el paso a paso y el error que deja a mucha gente sin votar, con lo que dicen el INE y la ley electoral.',
+    secciones: [
+      { h2: '¿Te toca? Las fechas que importan', html: p('El Consejo General del INE aprobó en septiembre de 2026 el acuerdo INE/CG519/2026, con el calendario del padrón para las elecciones federales y locales de 2027. Para quien saca su credencial por primera vez, estas son las fechas:')
+        + tabla(['Qué', 'Fecha'], [
+          ['Quién puede inscribirse', 'Quien cumpla 18 años entre el 1 de septiembre de 2026 y el día de la elección, el 6 de junio de 2027.'],
+          ['Inscripción al padrón y trámite de la credencial', 'Del 1 de septiembre de 2026 al <b>25 de enero de 2027</b>.'],
+          ['Último día para recoger tu credencial', '<b>15 de marzo de 2027</b>.'],
+          ['Día de la elección', 'Domingo 6 de junio de 2027.'],
+        ], 'Fuente: acuerdo INE/CG519/2026, punto segundo (numerales 2 y 17).')
+        + p('La ley electoral (LGIPE, artículo 139) pone como fecha límite el 30 de noviembre del año anterior a la elección para quienes cumplen 18 antes de los comicios. Para este proceso, el INE amplió ese plazo hasta el 25 de enero de 2027 para que más jóvenes alcancen a inscribirse.')
+        + caja('Si cumples 18 después del 6 de junio de 2027', p('No entras en este periodo. En sus preguntas frecuentes, el INE explica que con 17 años no puedes tramitar la credencial, salvo cuando hay elecciones y cumples 18 a más tardar el día de la votación. En ese caso tendrás que esperar a tener 18 cumplidos; pregunta en INETEL cuándo se vuelven a recibir trámites.')) },
+      { h2: 'Los cuatro documentos', html: p('Para inscribirte por primera vez, el INE pide cuatro documentos, todos <b>originales, sin tachaduras ni enmendaduras</b>:')
+        + ol([
+          ['Acta de nacimiento', 'No tiene que ser reciente: según el INE, basta con que sea legible y no esté maltratada. Si no la tienes o está en mal estado, la puedes tramitar en línea o en el Registro Civil.'],
+          ['CURP', 'Actualizada. El INE la pide solo cuando es tu primera vez (o si te dieron de baja del padrón).'],
+          ['Identificación con fotografía', 'Vigente, legible y en buen estado. Si no tiene vigencia, que no tenga más de 10 años de expedida.'],
+          ['Comprobante de domicilio', 'Con no más de 3 meses de antigüedad. Si es un documento que se emite una vez al año, como el predial, debe ser del año en curso o del anterior.'],
+        ])
+        + p('Entre las identificaciones que acepta el INE, varias son fáciles de conseguir si estás estudiando:')
+        + ul([
+          'Credencial de una escuela pública o privada con reconocimiento oficial (secundaria, prepa, técnico o universidad).',
+          'Documentos escolares con foto: certificado, constancia o diploma de estudios.',
+          'Pasaporte, licencia de conducir o cartilla del Servicio Militar.',
+          'Credencial de una institución de salud o de derechohabiente.',
+        ])
+        + p('Como comprobante de domicilio sirven, entre otros, los recibos de luz, agua, predial, teléfono, gas o televisión, y los estados de cuenta bancarios. Si llevas un recibo descargado de internet, el INE pide que puedas entrar a la cuenta de donde lo bajaste.')
+        + caja('¿No tienes identificación o comprobante?', p('Puedes ir con <b>dos testigos</b>. Según el INE, la primera persona debe tener su credencial registrada en el mismo municipio o alcaldía de tu domicilio, y la segunda, en el mismo estado. Cada testigo puede serlo hasta cuatro veces en 120 días naturales.')) },
+      { h2: 'Paso a paso', html: ol([
+          ['Haz tu cita', `En ${ext('https://ine.mx/credencial/', 'ine.mx/credencial')}, en la opción «Haz una cita», o por teléfono en INETEL, al 800 433 2000 (gratis, de lunes a viernes de 9:00 a 18:00).`],
+          ['Ve al módulo con tus cuatro documentos', 'El INE en Sinaloa recuerda que puedes ir al Módulo de Atención Ciudadana que tú elijas. Consejo nuestro: ve al que te quede más cerca, porque ahí mismo vas a tener que regresar por tu credencial.'],
+          ['Revisión y registro', 'En el módulo revisan tus documentos y te toman foto, firma y huellas. También puedes elegir si tu domicilio aparece visible o no en la credencial.'],
+          ['Guarda tu comprobante', 'Al final te entregan un comprobante con el número de tu solicitud. Lo vas a devolver cuando recojas tu credencial. Si lo pierdes, el INE indica que vayas al módulo y te identifican con tus huellas.'],
+          ['Regresa a recogerla', 'En el mismo módulo donde hiciste el trámite, a más tardar el 15 de marzo de 2027.'],
+        ])
+        + caja('Es gratis', p('El INE señala que todos los trámites de la credencial son <b>gratuitos</b>. Nadie te puede cobrar por la cita ni por «apartarte» un lugar.')) },
+      { h2: 'El paso que más se olvida: recogerla', html: p('Hacer el trámite no basta para votar. La ley (LGIPE, artículo 137) dice que la lista nominal, que es la lista de personas que pueden votar en cada casilla, se forma con los nombres de quienes <b>ya recibieron</b> su credencial.')
+        + ul([
+          'Las credenciales de quien hizo su trámite hasta el 25 de enero estarán en los módulos hasta el <b>15 de marzo de 2027</b>.',
+          'Las que no se recojan para esa fecha se guardan en las juntas distritales del INE a partir del 5 de abril de 2027.',
+          'Si pasan dos años y no la recoges, el INE indica que tendrás que pedir tu reincorporación al padrón y volver a hacer el trámite.',
+        ])
+        + p('Consejo nuestro: en cuanto hagas el trámite, pon en tu calendario una alarma para ir por ella y lleva el comprobante en tu cartera o tómale una foto.') },
+      { h2: 'Si la pierdes antes de la elección', html: p('Según el mismo acuerdo del INE, si te roban la credencial o la pierdes, puedes pedir una <b>reposición</b> hasta el 8 de febrero de 2027, siempre que no cambies ningún dato. Del 9 de febrero al 21 de mayo de 2027 se puede pedir una <b>reimpresión</b>, también sin cambiar datos. El INE recomienda reportar el robo o la pérdida a INETEL.') },
+      { h2: 'Antes de ir: revisa estos detalles', html: p('Esto es consejo nuestro, para no perder el viaje:')
+        + ol([
+          ['Que tu nombre coincida', 'Compara tu nombre en el acta, en la CURP y en tu identificación. Si hay una diferencia, pregunta en INETEL antes de ir qué documento te van a pedir.'],
+          ['Que tu comprobante esté al día', 'Revisa la fecha: más de 3 meses y no te lo aceptan.'],
+          ['Que todo sea original', 'Las copias no sirven para este trámite.'],
+          ['No dejes todo para enero', 'El 25 de enero es la fecha límite. Si te falta un documento y tienes que regresar, necesitas margen.'],
+        ])
+        + p(`La credencial tiene una vigencia de 10 años, contados a partir del año en que se emite (LGIPE, artículo 156). Si también estás sacando papeles para trabajar, te explicamos la CURP, el RFC y el NSS en ${a(r(S.papeles), 'papeles para tu primer empleo')}.`) },
+    ],
+    faq: [
+      { p: '¿Puedo sacar mi INE si tengo 17 años?', r: 'Sí, si cumples 18 a más tardar el 6 de junio de 2027, día de la elección. Según el acuerdo INE/CG519/2026, puedes inscribirte y tramitar tu credencial del 1 de septiembre de 2026 al 25 de enero de 2027.' },
+      { p: '¿Cuál es la fecha límite para tramitar mi primera credencial y votar en 2027?', r: 'El 25 de enero de 2027. Después tienes hasta el 15 de marzo de 2027 para recogerla en el módulo donde hiciste el trámite.' },
+      { p: '¿Qué documentos necesito para sacar mi INE por primera vez?', r: 'Cuatro, en original: acta de nacimiento, CURP, identificación con fotografía y comprobante de domicilio de no más de 3 meses. Si no tienes identificación o comprobante, puedes ir con dos testigos que cumplan los requisitos del INE.' },
+      { p: '¿Cuánto cuesta sacar la credencial del INE?', r: 'Nada. El INE señala que todos los trámites de la credencial para votar son gratuitos.' },
+      { p: '¿Puedo votar si hice el trámite pero no recogí mi credencial?', r: 'No. La lista nominal se forma con quienes ya recibieron su credencial (LGIPE, artículo 137). Recógela a más tardar el 15 de marzo de 2027.' },
+    ],
+    fuentes: [F.ineAcuerdo, F.ineActa, F.lgipe, F.ineTramite, F.ineDocs, F.ineFaq, F.ineSinaloa],
+    relacionadas: [S.papeles, S.cv, S.becas],
+  },
+  // =============== 12. Afore ===============
   // Revisada el 21 de noviembre de 2026: LSAR vigente (reforma DOF 14-11-2025: arts. 18-IV, 37-A, 74 y 76), CONSAR (localiza
   // tu Afore, primer acercamiento al SAR, registro, Catálogo de Trámites del SAR: registro y ahorro voluntario, comisiones
   // 2026 y máximo 2027) y PENSIONISSSTE (cuenta asignada). Las páginas de CONSAR de 2020, 2021 y 2024 son las vigentes en gob.mx.
@@ -940,7 +1030,7 @@ export const ARTICULOS_CAMINO = [
   },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, a la CONSAR ni a ninguna Afore.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, al INE, a la CONSAR ni a ninguna Afore.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
