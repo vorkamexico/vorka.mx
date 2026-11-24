@@ -5,6 +5,13 @@
   var IMG = BASE + '/img';
   var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
+  // Cuenta una lectura de la nota en os.vorka.mx (sin cookies ni datos de la persona): con eso el kit de medios muestra las más leídas
+  (function () {
+    var m = location.pathname.match(/^\/sparks\/([a-z0-9-]+)\/([a-z0-9][a-z0-9-]+)\/?$/);
+    if (!m || !document.querySelector('article.art') || m[2] === 'seccion' || !navigator.sendBeacon) return;
+    try { navigator.sendBeacon('https://os.vorka.mx/api/publico/sparks/vista', new Blob([JSON.stringify({ e: m[1], s: m[2] })], { type: 'text/plain;charset=UTF-8' })); } catch (e) {}
+  })();
+
   var hoy = document.querySelector('[data-hoy]');
   if (hoy) {
     var d = new Date();
