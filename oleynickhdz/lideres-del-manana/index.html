@@ -903,6 +903,33 @@
   .ldm-mentor h2 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 700; text-transform: none; letter-spacing: -.035em; font-size: clamp(2rem, 3.8vw, 3rem); line-height: 1.05; }
   .ldm-agenda .t { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
   .foot-col h5 { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; color: rgba(255,255,255,.55) !important; }
+  /* Mentoría acomodada en filas (2026-11-23) */
+  .ldm-mentor.mt-v2 { display: block; }
+  .mt-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: end; }
+  .mt-top .ldm-trabajo { margin: 0; padding: 22px 24px; border-radius: 20px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+  .mt-top > div > p { margin-bottom: 0 !important; }
+  .mt-bloque { margin-top: clamp(30px, 4vw, 44px); padding-top: clamp(24px, 3vw, 32px); border-top: 1px solid rgba(255,255,255,.1); }
+  .mt-cab { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin-bottom: 16px; }
+  .mt-cab h3 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.02em; color: #fff; }
+  .mt-cab span { font-size: 14px; color: rgba(245,245,240,.6); }
+  .mt-ses { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .mt-ses .s { display: flex; flex-direction: column; gap: 6px; padding: 22px; border-radius: 18px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+  .mt-ses .s.r { border-color: rgba(247,179,62,.6); background: rgba(247,179,62,.07); }
+  .mt-ses .et { align-self: flex-start; margin-bottom: 4px; padding: 3px 10px; border-radius: 999px; background: var(--accent); color: #141414; font-size: 12px; font-weight: 700; }
+  .mt-ses b { font-size: 17px; color: #fff; letter-spacing: -.015em; }
+  .mt-ses .pr { font-size: 15px; font-weight: 700; color: var(--accent); }
+  .mt-ses p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: rgba(245,245,240,.7); }
+  .mt-pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; counter-reset: mt; }
+  .mt-pasos li { counter-increment: mt; display: flex; flex-direction: column; gap: 6px; padding: 18px 0 0; border-top: 2px solid rgba(255,255,255,.14); }
+  .mt-pasos li:first-child { border-top-color: var(--accent); }
+  .mt-pasos li::before { content: "Paso " counter(mt); font-size: 13px; font-weight: 600; color: var(--accent); }
+  .mt-pasos b { font-size: 15.5px; color: #fff; letter-spacing: -.01em; }
+  .mt-pasos span { font-size: 14px; line-height: 1.5; color: rgba(245,245,240,.68); }
+  .ldm-mentor.mt-v2 { border: 1px solid rgba(255,255,255,.08); }
+  .mt-cta { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-top: clamp(28px, 4vw, 40px); }
+  .mt-cta span { font-size: 14px; color: rgba(245,245,240,.55); }
+  @media (max-width: 900px) { .mt-top { grid-template-columns: 1fr; align-items: start; } .mt-ses { grid-template-columns: 1fr; } .mt-pasos { grid-template-columns: 1fr 1fr; row-gap: 22px; } }
+  @media (max-width: 520px) { .mt-pasos { grid-template-columns: 1fr; } .mt-cta { flex-direction: column; } .mt-cta .ldm-btn { width: 100%; justify-content: center; } }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@400;500;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -1119,31 +1146,43 @@
   </section>
 
   <section class="section" id="mentoria" aria-labelledby="h-ment">
-    <div class="ldm-mentor">
-      <div>
-        <span class="ldm-sello">Recomendado para aspirantes</span>
-        <h2 id="h-ment">Prepárate <span>conmigo.</span></h2>
-        <p>Tu promedio y tu PAA abren la puerta; tu liderazgo social es lo que te distingue. En la mentoría trabajamos juntos tu postulación para que llegues a cada etapa con todo listo.</p>
+    <div class="ldm-mentor mt-v2">
+      <div class="mt-top">
+        <div>
+          <span class="ldm-sello">Recomendado para aspirantes</span>
+          <h2 id="h-ment">Prepárate <span>conmigo.</span></h2>
+          <p>Tu promedio y tu PAA abren la puerta; tu liderazgo social es lo que te distingue. En la mentoría trabajamos juntos tu postulación para que llegues a cada etapa con todo listo.</p>
+        </div>
         <ul class="ldm-trabajo">
           <li>Revisamos tu proyecto social y cómo contar su impacto con evidencia comprobable.</li>
           <li>Ordenamos tus fotos, reportes, testimonios y cifras para el paso 4.</li>
           <li>Armamos tu plan de estudio rumbo a los 1,360 puntos de la PAA.</li>
           <li>Hacemos un calendario para que no se te pase ninguna fecha.</li>
         </ul>
-        <a class="ldm-btn" href="https://os.vorka.mx/agendar/oleynickhdz" target="_blank" rel="noopener">Agendar mi asesoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
       </div>
-      <ol class="ldm-agenda" aria-label="Pasos para agendar">
-        <li><div><p class="t">Paso a paso</p><b>Entra a mi agenda</b><span>Con el botón «Agendar mi asesoría» o en os.vorka.mx/agendar/oleynickhdz.</span></div></li>
-        <li><div><b>Elige tu sesión</b><span>Todas son en línea por Google Meet.</span>
-          <dl class="ldm-ses">
-            <div class="r"><dt>Mentoría mensual <i>Recomendada</i></dt><dd>$900 al mes · 45 min</dd><dd class="p">Te acompaño toda la convocatoria: proyecto, evidencias, PAA y fechas.</dd></div>
-            <div><dt>Asesoría Express</dt><dd>$300 · 20 min</dd><dd class="p">Para una duda puntual o una revisión rápida de tu proyecto.</dd></div>
-            <div><dt>Consultoría</dt><dd>$600 · 60 min</dd><dd class="p">Una sesión larga para revisar a fondo tu proyecto y tu postulación.</dd></div>
-          </dl></div></li>
-        <li><div><b>Elige día y hora</b><span>De lunes a viernes, con al menos 48 horas de anticipación.</span></div></li>
-        <li><div><b>Paga y sube tu comprobante</b><span>Te apartamos el horario 12 horas mientras haces tu transferencia.</span></div></li>
-        <li><div><b>Contesta el cuestionario</b><span>Al validar tu pago te llega la confirmación con tu enlace de Google Meet.</span></div></li>
-      </ol>
+
+      <div class="mt-bloque">
+        <div class="mt-cab"><h3>Elige tu sesión</h3><span>Todas son en línea por Google Meet.</span></div>
+        <div class="mt-ses">
+          <div class="s r"><span class="et">Recomendada</span><b>Mentoría mensual</b><span class="pr">$900 al mes · 45 min</span><p>Te acompaño toda la convocatoria: proyecto, evidencias, PAA y fechas.</p></div>
+          <div class="s"><b>Asesoría Express</b><span class="pr">$300 · 20 min</span><p>Para una duda puntual o una revisión rápida de tu proyecto.</p></div>
+          <div class="s"><b>Consultoría</b><span class="pr">$600 · 60 min</span><p>Una sesión larga para revisar a fondo tu proyecto y tu postulación.</p></div>
+        </div>
+      </div>
+
+      <div class="mt-bloque">
+        <div class="mt-cab"><h3>Cómo agendar</h3></div>
+        <ol class="mt-pasos">
+          <li><b>Entra a mi agenda</b><span>Con el botón de abajo, elige tu sesión.</span></li>
+          <li><b>Elige día y hora</b><span>De lunes a viernes, con al menos 48 horas de anticipación.</span></li>
+          <li><b>Paga y sube tu comprobante</b><span>Te apartamos el horario 12 horas mientras haces tu transferencia.</span></li>
+          <li><b>Contesta el cuestionario</b><span>Al validar tu pago te llega la confirmación con tu enlace de Google Meet.</span></li>
+        </ol>
+        <div class="mt-cta">
+          <a class="ldm-btn" href="https://os.vorka.mx/agendar/oleynickhdz" target="_blank" rel="noopener">Agendar mi asesoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+          <span>os.vorka.mx/agendar/oleynickhdz</span>
+        </div>
+      </div>
     </div>
   </section>
 </div>
