@@ -660,24 +660,41 @@
   .ldm-agenda b { display: block; color: #fff; font-size: 15.5px; margin-bottom: 2px; }
   .ldm-agenda span { font-size: 14px; line-height: 1.45; color: rgba(245,245,240,.7); }
   .ldm-agenda .t { margin: 0 0 4px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
-  .ldm-proy { margin: 26px 0 14px; padding: clamp(24px, 4vw, 40px); border-radius: 28px; background: #FBF6EC; border: 1px solid var(--rule); }
-  .ldm-proy-cab { max-width: 62ch; margin-bottom: 22px; }
-  .ldm-proy-cab h3 { margin: 0 0 10px; font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 800; color: var(--ink); }
-  .ldm-proy-cab h3 span { color: #C97A0A; }
-  .ldm-proy-cab p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--muted); }
-  .ldm-proy-op { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  .ldm-proy-op .op { display: flex; flex-direction: column; gap: 8px; padding: 22px 20px; border-radius: 20px; background: #fff; border: 1px solid var(--rule); color: var(--ink); transition: transform .2s, border-color .2s; }
-  .ldm-proy-op .op:hover { transform: translateY(-3px); border-color: var(--ink); }
-  .ldm-proy-op .op.guia { background: #141414; border-color: #141414; color: #fff; }
-  .ldm-proy-op .et { align-self: flex-start; padding: 4px 11px; border-radius: 999px; background: #F1EBDD; font-size: 12.5px; font-weight: 700; color: #6b5a33; }
-  .ldm-proy-op .guia .et { background: var(--accent); color: #141414; }
-  .ldm-proy-op b { font-size: 1.12rem; line-height: 1.25; letter-spacing: -.02em; }
-  .ldm-proy-op .op > span:not(.et):not(.ir) { flex: 1; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
-  .ldm-proy-op .guia > span:not(.et):not(.ir) { color: rgba(255,255,255,.75); }
-  .ldm-proy-op .ir { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 800; }
-  .ldm-proy-op .ir svg { width: 14px; height: 14px; }
-  .ldm-proy-op .guia .ir { color: var(--accent); }
-  @media (max-width: 860px) { .ldm-proy-op { grid-template-columns: 1fr; } }
+  .ldm-proy { margin: 28px 0 14px; padding: clamp(26px, 4.5vw, 52px); border-radius: 28px; background: var(--paper-2); border: 1px solid var(--rule); color: var(--ink); }
+  .pj-top { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 5vw, 72px); align-items: start; }
+  .pj-intro h3 { margin: 0 0 12px; font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.08; letter-spacing: -.035em; font-weight: 700; color: var(--ink); }
+  .pj-intro p { margin: 0; max-width: 34ch; font-size: 16px; line-height: 1.6; color: var(--ink-soft); }
+  .pj-lista { margin: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+  .pj-lista > div { padding: 16px 0 18px; border-top: 1px solid var(--rule); }
+  .pj-lista dt { font-size: 15.5px; font-weight: 650; letter-spacing: -.01em; color: var(--ink); }
+  .pj-lista dt::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 10px 2px 0; border-radius: 50%; background: var(--accent); }
+  .pj-lista dd { margin: 6px 0 0 16px; font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+  .pj-cab { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: clamp(30px, 4vw, 44px) 0 16px; padding-top: 26px; border-top: 1px solid var(--rule); }
+  .pj-cab h4 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -.015em; color: var(--ink); }
+  .pj-flechas { display: flex; gap: 8px; }
+  .pj-btn { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border-radius: 50%; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); cursor: pointer; transition: border-color .2s, opacity .2s; }
+  .pj-btn:hover { border-color: var(--ink); }
+  .pj-btn:disabled { opacity: .35; cursor: default; border-color: var(--rule); }
+  .pj-btn svg { width: 17px; height: 17px; }
+  .pj-carril { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 32px) / 2.6); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0; padding: 2px 2px 6px; margin: 0 -2px; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .pj-carril::-webkit-scrollbar { display: none; }
+  .pj-card { scroll-snap-align: start; display: flex; flex-direction: column; min-height: 252px; padding: 24px 24px 20px; border-radius: 20px; background: var(--paper); border: 1px solid var(--rule); color: var(--ink); transition: border-color .25s, transform .25s; }
+  .pj-card:hover { border-color: var(--ink-soft); transform: translateY(-2px); }
+  .pj-card.guia { background: #121212; border-color: rgba(247,179,62,.55); color: #F5F5F0; }
+  .pj-card.guia:hover { border-color: var(--accent); }
+  .pj-para { font-size: 13.5px; color: var(--muted); }
+  .pj-card.guia .pj-para { color: var(--accent); }
+  .pj-card b { margin: 10px 0 8px; font-size: 19px; line-height: 1.25; font-weight: 650; letter-spacing: -.02em; }
+  .pj-txt { flex: 1; font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+  .pj-card.guia .pj-txt { color: rgba(245,245,240,.74); }
+  .pj-pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 14px; font-weight: 600; }
+  .pj-card.guia .pj-pie { border-top-color: rgba(255,255,255,.14); }
+  .pj-ir { display: inline-flex; align-items: center; gap: 8px; }
+  .pj-ir svg { width: 15px; height: 15px; transition: transform .25s; }
+  .pj-card:hover .pj-ir svg { transform: translateX(3px); }
+  .pj-card.guia .pj-ir { color: var(--accent); }
+  @media (max-width: 900px) { .pj-top { grid-template-columns: 1fr; } .pj-intro p { max-width: 52ch; } .pj-carril { grid-auto-columns: 62%; } }
+  @media (max-width: 560px) { .pj-lista { grid-template-columns: 1fr; } .pj-carril { grid-auto-columns: 84%; } .ldm-proy { padding: 24px 18px; } }
   .ldm-ses { display: grid; gap: 8px; margin: 10px 0 0; }
   .ldm-ses > div { padding: 11px 13px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
   .ldm-ses > div.r { border-color: rgba(247,179,62,.55); background: rgba(247,179,62,.08); }
@@ -853,6 +870,39 @@
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   @media (max-width: 960px) { .bc-grid { grid-template-columns: 1fr; } .bc-top, .ldm-historia { grid-template-columns: 1fr; } }
   @media (max-width: 520px) { .bc-top dl { grid-template-columns: 1fr; } }
+
+  /* ===== Estilo fino en toda la página (2026-11-23) ===== */
+  .section-eyebrow { font-size: 14.5px !important; font-weight: 600 !important; letter-spacing: 0 !important; text-transform: none !important; color: var(--accent-ink) !important; }
+  .section-eyebrow::before { display: none !important; }
+  .pr-pill { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .ldm-fecha .k { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .ldm-fecha.urgente { background: color-mix(in srgb, var(--c-red) 12%, var(--paper-2)); color: var(--ink); }
+  .ldm-fecha.urgente .k { color: var(--c-red); }
+  .ldm-fecha.urgente b { color: var(--c-red); }
+  .ldm-fecha.urgente span { color: var(--ink-soft); }
+  .ldm-incluye, .ldm-ruta { gap: 0; border-bottom: 1px solid var(--rule); }
+  .ldm-incluye li, .ldm-ruta li { padding: 20px 0; border-radius: 0; background: none; border: 0; border-top: 1px solid var(--rule); align-items: center; }
+  .ldm-ruta li { grid-template-columns: 52px minmax(0, 1fr); }
+  .ldm-incluye i, .ldm-ruta i, .ldm-incluye li:nth-child(n) i, .ldm-ruta li:nth-child(n) i { width: 44px; height: 44px; background: var(--paper-3) !important; color: var(--accent-ink); font-family: inherit; font-size: 14.5px; font-weight: 700; letter-spacing: -.02em; }
+  .ldm-incluye span, .ldm-ruta span { color: var(--ink-soft); }
+  .ldm-pasos li::before { font-family: inherit !important; font-size: 15px !important; font-weight: 700 !important; letter-spacing: 0 !important; color: var(--accent-ink); content: "Paso " counter(paso) !important; }
+  .ldm-sello { font-size: 13px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+  .vk-grupo { background: #121212; border-color: rgba(255,255,255,.1); }
+  .vk-grupo h3 span { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #E3C47E; }
+  .vk-marca small { background: none; color: rgba(255,255,255,.6); letter-spacing: .04em; text-transform: none; font-size: 13px; }
+  .vk-sello { background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.14); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .vk-eco div, .vk-eco .t1, .vk-eco .t2, .vk-eco .t3, .vk-eco .t4 { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+  .vk-eco .t2 b, .vk-eco .t3 b, .vk-eco b { color: #fff; }
+  .vk-eco .t2 span, .vk-eco span { color: rgba(255,255,255,.68); }
+  .vk-pasos .n { background: rgba(255,255,255,.1); color: #fff; font-size: 15px; }
+  .ldm-rec .ico, .ldm-rec.sim .ico, .ldm-rec.canal .ico, .ldm-rec.grupo .ico { background: var(--paper-3); color: var(--ink); }
+  .ldm-rec .chip { background: var(--paper-3); color: var(--ink-soft); font-weight: 600; }
+  .bc-card .k { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--accent-ink); }
+  .section-title { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; font-weight: 700 !important; text-transform: none !important; letter-spacing: -.035em !important; font-size: clamp(1.9rem, 3.6vw, 2.8rem) !important; line-height: 1.08 !important; }
+  .section-title em, .section-title .a-o, .section-title .accent { color: var(--accent-ink) !important; }
+  .ldm-mentor h2 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-weight: 700; text-transform: none; letter-spacing: -.035em; font-size: clamp(2rem, 3.8vw, 3rem); line-height: 1.05; }
+  .ldm-agenda .t { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .foot-col h5 { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; color: rgba(255,255,255,.55) !important; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@400;500;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -1000,28 +1050,49 @@
       <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#proyecto">Cómo hacer tu proyecto social →</a></li>
     </ol>
     <div class="ldm-proy" id="proyecto">
-      <div class="ldm-proy-cab">
-        <h3>Tu proyecto social, <span>paso a paso.</span></h3>
-        <p>Es lo que más pesa en tu postulación y donde más aspirantes se atoran. Empieza por donde estés: sin idea, con una idea suelta o con un proyecto que ya camina.</p>
+      <div class="pj-top">
+        <div class="pj-intro">
+          <h3>Tu proyecto social</h3>
+          <p>Es lo que más pesa en el paso 4. Antes de entregar, revisa que tu proyecto demuestre estas cuatro cosas.</p>
+        </div>
+        <dl class="pj-lista">
+          <div><dt>Una necesidad real</dt><dd>Qué problema atiendes, en qué lugar y con qué dato lo sabes.</dd></div>
+          <div><dt>Lo que hiciste tú</dt><dd>Tu papel concreto: qué propusiste, organizaste o dirigiste.</dd></div>
+          <div><dt>Resultados que se cuentan</dt><dd>Personas atendidas, horas, kilos, árboles o talleres.</dd></div>
+          <div><dt>Evidencia que se comprueba</dt><dd>Fotos con fecha, reportes, testimonios y constancias.</dd></div>
+        </dl>
       </div>
-      <div class="ldm-proy-op">
-        <a class="op guia" href="../proyecto-social/#guia">
-          <span class="et">Gratis</span>
-          <b>Guía: cómo hacer un proyecto social</b>
-          <span>Qué es, cómo saber si tu proyecto sí es social, los 10 pasos para armarlo y los errores que más se repiten.</span>
-          <span class="ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      <div class="pj-cab">
+        <h4>Por dónde empezar</h4>
+        <div class="pj-flechas">
+          <button type="button" class="pj-btn" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+          <button type="button" class="pj-btn" data-dir="1" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="pj-carril" tabindex="0" aria-label="Opciones para tu proyecto social">
+        <a class="pj-card guia" href="../proyecto-social/#guia">
+          <span class="pj-para">Si quieres armarlo tú</span>
+          <b>Guía para hacer un proyecto social</b>
+          <span class="pj-txt">Los 10 pasos para armarlo, cómo saber si sí es social y los errores que más se repiten.</span>
+          <span class="pj-pie"><span>Gratis</span><span class="pj-ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
         </a>
-        <a class="op test" href="https://vorka.mx/que-proyecto-social/">
-          <span class="et">$149</span>
+        <a class="pj-card" href="https://vorka.mx/que-proyecto-social/">
+          <span class="pj-para">Si todavía no tienes idea</span>
           <b>¿Qué proyecto social hago?</b>
-          <span>Contestas 14 preguntas y te llegan ideas a tu medida, según tu tiempo, tu presupuesto y lo que te mueve.</span>
-          <span class="ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+          <span class="pj-txt">Contestas 14 preguntas y recibes ideas a tu medida, según tu tiempo, tu presupuesto y lo que te importa.</span>
+          <span class="pj-pie"><span>$149</span><span class="pj-ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
         </a>
-        <a class="op revisar" href="#mentoria">
-          <span class="et">Desde $300</span>
+        <a class="pj-card" href="#impacto">
+          <span class="pj-para">Si buscas con quién hacerlo</span>
+          <b>Súmate a IMPACTO</b>
+          <span class="pj-txt">Te capacitas, encuentras equipo y haces proyectos reales con evidencia que se mide y se reporta.</span>
+          <span class="pj-pie"><span>Gratis</span><span class="pj-ir">Conocer IMPACTO <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
+        </a>
+        <a class="pj-card" href="#mentoria">
+          <span class="pj-para">Si ya tienes proyecto</span>
           <b>Revisarlo conmigo</b>
-          <span>Si ya tienes proyecto, lo revisamos juntos y ordenamos tus evidencias para el paso 4.</span>
-          <span class="ir">Ver cómo agendar ↓</span>
+          <span class="pj-txt">Vemos qué le falta, cómo contar su impacto y ordenamos tus evidencias para el paso 4.</span>
+          <span class="pj-pie"><span>Desde $300</span><span class="pj-ir">Ver cómo agendar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
         </a>
       </div>
     </div>
@@ -1050,7 +1121,7 @@
   <section class="section" id="mentoria" aria-labelledby="h-ment">
     <div class="ldm-mentor">
       <div>
-        <span class="ldm-sello">★ Súper recomendado</span>
+        <span class="ldm-sello">Recomendado para aspirantes</span>
         <h2 id="h-ment">Prepárate <span>conmigo.</span></h2>
         <p>Tu promedio y tu PAA abren la puerta; tu liderazgo social es lo que te distingue. En la mentoría trabajamos juntos tu postulación para que llegues a cada etapa con todo listo.</p>
         <ul class="ldm-trabajo">
@@ -1198,7 +1269,7 @@
         <span>Brandon Oleynick<small>Líderes del Mañana</small></span>
       </a>
       <a class="foot-primary" href="https://os.vorka.mx/agendar/oleynickhdz" target="_blank" rel="noopener">
-        Agendar mentoría
+        Agendar asesoría
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
       </a>
     </div>
@@ -1308,6 +1379,16 @@
   if (c) c.addEventListener('click', cerrar);
   n.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', cerrar); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrar(); });
+})();
+</script>
+<script>
+(function(){
+  var c=document.querySelector('.pj-carril'); if(!c) return;
+  var bs=document.querySelectorAll('.pj-btn');
+  function paso(){ var k=c.querySelector('.pj-card'); return k ? k.getBoundingClientRect().width + 16 : 300; }
+  function estado(){ var m=c.scrollWidth-c.clientWidth-2; bs[0].disabled=c.scrollLeft<=2; bs[1].disabled=c.scrollLeft>=m; }
+  bs.forEach(function(b){ b.addEventListener('click', function(){ c.scrollBy({left: paso()*(+b.dataset.dir), behavior:'smooth'}); }); });
+  c.addEventListener('scroll', estado, {passive:true}); window.addEventListener('resize', estado); estado();
 })();
 </script>
 </body>
