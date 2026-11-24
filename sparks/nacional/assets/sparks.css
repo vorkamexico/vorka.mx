@@ -489,4 +489,6 @@
 .sp-marcas .etiqueta { margin-bottom: 10px; }
 .sp-marcas h2 { margin: 0 0 6px; }
 .sp-marcas p { margin: 0; color: var(--fg-2); font-size: 15.5px; max-width: 520px; }
-.dia-anun { font-weight: 700; color: var(--fg) !important; }
+.dia-anun { margin-left: auto; font-weight: 700; color: var(--fg) !important; }
+.dia-buscar + .dia-anun { margin-left: 0; }
+@media (max-width: 760px) { .dia-anun { margin-left: 0; } }
