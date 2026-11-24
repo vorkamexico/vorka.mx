@@ -1,0 +1,103 @@
+/* Vorka México · estilo «estudio» (portafolio y kit de medios de Sparks): títulos grandes que mezclan letra delgada y negrita,
+   una cinta de trabajos que corre sola, cuadrícula de proyectos con imagen grande y poco texto, servicios como lista tipográfica
+   grande con flecha y una barra ancha para la acción. Lo usan /portafolio/ y /sparks/anunciate/ (_sitio/build.py, _sitio/anunciate.py). */
+.est-hero { padding: clamp(120px, 14vw, 170px) 0 clamp(28px, 4vw, 48px); }
+.est-t { margin: 0; font-size: clamp(44px, 7.2vw, 104px); line-height: .98; letter-spacing: -.045em; font-weight: 300; color: var(--fg); max-width: 15ch; }
+.est-t b { font-weight: 800; }
+.est-hero .lead { margin-top: 26px; max-width: 560px; }
+.est-hero .botones { margin-top: 28px; }
+.est-pill { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 20px; border-radius: 999px; background: var(--fg); color: #fff; font-weight: 650; font-size: 15px; text-decoration: none; }
+.est-pill:hover { background: #000; }
+.est-pill { white-space: nowrap; }
+.est-pill svg { width: 17px; height: 17px; flex: none; }
+/* cinta de trabajos */
+.est-cinta { overflow: hidden; padding: 8px 0 clamp(40px, 6vw, 72px); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.est-cinta-in { display: flex; gap: 14px; width: max-content; animation: est-cinta 48s linear infinite; }
+.est-cinta:hover .est-cinta-in { animation-play-state: paused; }
+.est-cinta figure { margin: 0; flex: none; height: clamp(180px, 22vw, 280px); border-radius: 18px; overflow: hidden; background: var(--bg-2); }
+.est-cinta img { display: block; height: 100%; width: auto; }
+@keyframes est-cinta { to { transform: translateX(-50%); } }
+/* encabezado de sección con contador */
+.est-cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 28px; }
+.est-cab h2 { margin: 0; font-size: clamp(34px, 4.6vw, 64px); line-height: 1; letter-spacing: -.04em; font-weight: 300; }
+.est-cab h2 b { font-weight: 800; }
+.est-cab .est-n { font-size: clamp(34px, 4.6vw, 64px); font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+.est-cab p { margin: 0; max-width: 380px; color: var(--fg-2); font-size: 15.5px; line-height: 1.55; }
+/* cuadrícula de trabajos */
+.est-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 16px; }
+.est-tile { all: unset; cursor: pointer; display: block; min-width: 0; }
+.est-tile .im { display: block; position: relative; aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; background: radial-gradient(120% 90% at 30% 20%, #f4ecf7, #ece9ee 60%, #e6e3e8); }
+.est-tile .im img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform .7s var(--ease); }
+.est-tile .im.contener img { object-fit: contain; padding: 18px; box-sizing: border-box; object-position: center; }
+.est-tile .im.texto { background: var(--noche); color: #fff; display: grid; align-content: end; padding: 24px; }
+.est-tile .im.texto b { font-size: clamp(30px, 3.4vw, 46px); font-weight: 800; letter-spacing: -.04em; line-height: 1.02; }
+.est-tile .im.texto span { margin-top: 8px; color: var(--claro-2); font-size: 15px; }
+.est-tile:hover .im img { transform: scale(1.04); }
+.est-tile .ver { position: absolute; right: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 99px; background: rgba(255, 255, 255, .92); color: var(--noche); font-size: 13px; font-weight: 650; opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .3s; }
+.est-tile:hover .ver, .est-tile:focus-visible .ver { opacity: 1; transform: none; }
+.est-tile .est-pie { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: 14.5px; }
+.est-tile .est-pie b { font-weight: 650; color: var(--fg); }
+.est-tile .est-pie span { color: var(--fg-3); text-align: right; }
+.est-tile:focus-visible .im { outline: 2px solid var(--fg); outline-offset: 3px; }
+/* ficha de un trabajo (ventana) */
+.est-dlg { width: min(880px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 0; border-radius: 24px; background: var(--card, #fff); color: var(--fg); box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .5); }
+.est-dlg::backdrop { background: rgba(15, 13, 16, .55); backdrop-filter: blur(4px); }
+.est-dlg-in { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+.est-dlg-im { background: radial-gradient(120% 90% at 30% 20%, #f4ecf7, #ece9ee 60%, #e6e3e8); min-height: 100%; }
+.est-dlg-im img { width: 100%; height: 100%; max-height: 640px; object-fit: cover; object-position: top; display: block; }
+.est-dlg-im.contener img { object-fit: contain; padding: 22px; box-sizing: border-box; }
+.est-dlg-tx { padding: 30px 30px 28px; overflow: auto; max-height: calc(100dvh - 24px); }
+.est-dlg-tx small { color: var(--fg-3); font-weight: 650; font-size: 13px; }
+.est-dlg-tx h3 { margin: 6px 0 10px; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.03em; line-height: 1.08; }
+.est-dlg-tx p { margin: 0 0 14px; color: var(--fg-2); font-size: 15.5px; line-height: 1.55; }
+.est-dlg-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 6px 0 16px; }
+.est-dlg-nums div { padding: 12px 14px; border-radius: 14px; background: var(--bg-2); display: grid; gap: 2px; }
+.est-dlg-nums b { font-size: 21px; letter-spacing: -.02em; }
+.est-dlg-nums span { font-size: 13px; color: var(--fg-2); }
+.est-dlg-tx ul { margin: 0 0 20px; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 14.5px; color: var(--fg-2); }
+.est-dlg-tx li { padding-left: 16px; position: relative; }
+.est-dlg-tx li::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 6px; border-radius: 2px; background: var(--morado); }
+.est-cerrar { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .92); font-size: 22px; cursor: pointer; z-index: 2; line-height: 1; color: var(--noche); }
+/* servicios como lista tipográfica */
+.est-lista { border-top: 1px solid var(--line); }
+.est-fila { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: clamp(16px, 2vw, 24px) 0; border-bottom: 1px solid var(--line); color: var(--fg); text-decoration: none; transition: padding .35s var(--ease); }
+.est-fila b { font-size: clamp(28px, 4.2vw, 60px); font-weight: 300; letter-spacing: -.04em; line-height: 1.05; transition: font-weight .25s; }
+.est-fila span { display: block; margin-top: 6px; font-size: 14.5px; color: var(--fg-2); max-width: 560px; }
+.est-fila svg { width: clamp(22px, 2.6vw, 34px); height: auto; opacity: .35; transition: transform .35s var(--ease), opacity .3s; }
+.est-fila:hover { padding-left: 14px; }
+.est-fila:hover b { font-weight: 750; }
+.est-fila:hover svg { opacity: 1; transform: translateX(6px); }
+/* barra ancha para la acción */
+.est-barra { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 34px; padding: clamp(22px, 3vw, 34px) clamp(22px, 3vw, 40px); border-radius: 22px; border: 1.5px solid var(--fg); color: var(--fg); text-decoration: none; font-size: clamp(24px, 3.4vw, 46px); font-weight: 800; letter-spacing: -.04em; transition: background .3s, color .3s; }
+.est-barra svg { width: clamp(24px, 3vw, 40px); height: auto; }
+.est-barra:hover { background: var(--fg); color: #fff; }
+.oscura .est-barra { border-color: #fff; color: #fff; }
+.oscura .est-barra:hover { background: #fff; color: var(--noche); }
+/* cifras en fila (kit de medios) */
+.est-cifras { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.est-cifras div { padding: 22px 18px 6px 0; display: grid; gap: 6px; }
+.est-cifras b { font-size: clamp(30px, 3.6vw, 50px); font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+.est-cifras span { font-size: 14.5px; color: var(--fg-2); }
+/* chips que corren (para quién es) */
+.est-chips { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+.est-chips-in { display: flex; gap: 10px; width: max-content; animation: est-cinta 36s linear infinite; }
+.est-chips-in span { flex: none; padding: 14px 20px; border-radius: 99px; border: 1px solid var(--line); background: var(--card); font-size: 16px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 900px) {
+  .est-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .est-dlg-in { grid-template-columns: minmax(0, 1fr); }
+  .est-dlg-im img { max-height: 300px; }
+  .est-cifras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .est-cab { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .est-grid { gap: 18px 10px; }
+  .est-tile .est-pie { flex-direction: column; gap: 2px; font-size: 13.5px; }
+  .est-tile .est-pie span { text-align: left; }
+  .est-tile .ver { opacity: 1; transform: none; padding: 6px 10px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .est-cinta-in, .est-chips-in { animation: none; } }
+/* ajustes: el pie del trabajo pegado a su imagen y la flecha de «Ver trabajo» a su tamaño */
+.est-tile .est-pie { align-items: flex-start; height: auto; min-height: 0; line-height: 1.35; }
+.est-tile .est-pie b, .est-tile .est-pie span { display: block; height: auto; min-height: 0; padding: 0; background: none; }
+.est-tile .ver { white-space: nowrap; }
+.est-tile .ver svg { width: 14px; height: 14px; flex: none; }
