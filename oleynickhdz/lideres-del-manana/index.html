@@ -660,6 +660,31 @@
   .ldm-agenda b { display: block; color: #fff; font-size: 15.5px; margin-bottom: 2px; }
   .ldm-agenda span { font-size: 14px; line-height: 1.45; color: rgba(245,245,240,.7); }
   .ldm-agenda .t { margin: 0 0 4px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .ldm-proy { margin: 26px 0 14px; padding: clamp(24px, 4vw, 40px); border-radius: 28px; background: #FBF6EC; border: 1px solid var(--rule); }
+  .ldm-proy-cab { max-width: 62ch; margin-bottom: 22px; }
+  .ldm-proy-cab h3 { margin: 0 0 10px; font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 800; color: var(--ink); }
+  .ldm-proy-cab h3 span { color: #C97A0A; }
+  .ldm-proy-cab p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--muted); }
+  .ldm-proy-op { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .ldm-proy-op .op { display: flex; flex-direction: column; gap: 8px; padding: 22px 20px; border-radius: 20px; background: #fff; border: 1px solid var(--rule); color: var(--ink); transition: transform .2s, border-color .2s; }
+  .ldm-proy-op .op:hover { transform: translateY(-3px); border-color: var(--ink); }
+  .ldm-proy-op .op.guia { background: #141414; border-color: #141414; color: #fff; }
+  .ldm-proy-op .et { align-self: flex-start; padding: 4px 11px; border-radius: 999px; background: #F1EBDD; font-size: 12.5px; font-weight: 700; color: #6b5a33; }
+  .ldm-proy-op .guia .et { background: var(--accent); color: #141414; }
+  .ldm-proy-op b { font-size: 1.12rem; line-height: 1.25; letter-spacing: -.02em; }
+  .ldm-proy-op .op > span:not(.et):not(.ir) { flex: 1; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+  .ldm-proy-op .guia > span:not(.et):not(.ir) { color: rgba(255,255,255,.75); }
+  .ldm-proy-op .ir { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 800; }
+  .ldm-proy-op .ir svg { width: 14px; height: 14px; }
+  .ldm-proy-op .guia .ir { color: var(--accent); }
+  @media (max-width: 860px) { .ldm-proy-op { grid-template-columns: 1fr; } }
+  .ldm-ses { display: grid; gap: 8px; margin: 10px 0 0; }
+  .ldm-ses > div { padding: 11px 13px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+  .ldm-ses > div.r { border-color: rgba(247,179,62,.55); background: rgba(247,179,62,.08); }
+  .ldm-ses dt { color: #fff; font-weight: 700; font-size: 14.5px; }
+  .ldm-ses dt i { font-style: normal; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #141414; font-size: 11.5px; font-weight: 800; }
+  .ldm-ses dd { margin: 2px 0 0; font-size: 13.5px; color: var(--accent); font-weight: 700; }
+  .ldm-ses dd.p { color: rgba(245,245,240,.7); font-weight: 400; line-height: 1.45; }
   .ldm-precios { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
   .ldm-precios em { font-style: normal; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.08); color: #fff; font-size: 12.5px; font-weight: 700; }
   .ldm-precios em.r { background: var(--accent); color: #141414; }
@@ -887,7 +912,8 @@
     <h1 id="ldm-t">Líderes<br><span>del Mañana.</span></h1>
     <p>Todo lo que necesitas para postularte a la beca del 100% del Tec de Monterrey: qué es, requisitos, fechas, pasos, simulador de la PAA y cómo preparar tu proyecto social conmigo.</p>
     <div class="pr-ctas">
-      <a class="pr-btn" href="#mentoria">Agenda tu mentoría</a>
+      <a class="pr-btn" href="#mentoria">Agenda tu asesoría</a>
+      <a class="pr-btn2" href="#proyecto">Guía para tu proyecto social →</a>
       <a class="pr-btn2" href="#grupo">Únete al grupo de aspirantes →</a>
     </div>
   </div>
@@ -971,8 +997,35 @@
       <li><h3>Registro en línea</h3><p>Crea tu cuenta, captura tus datos y completa las pruebas de preselección.</p><a href="https://preseleccionldm.tec.mx/formulario-pre-registro" target="_blank" rel="noopener">Ir al registro oficial →</a></li>
       <li><h3>Admisión al Tec</h3><p>Presenta la PAA y obtén <strong>al menos 1,360 puntos</strong>. Entrega tu constancia con promedio de 90 o más y sé admitido en tu carrera.</p><a href="#recursos">Practica la PAA →</a></li>
       <li><h3>Solicitud de beca</h3><p>Completa la solicitud de apoyos educativos y presenta el estudio socioeconómico del Tec, con el que se acredita que requieres el 100%.</p></li>
-      <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#impacto">¿Sin proyecto? Únete a IMPACTO →</a></li>
+      <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#proyecto">Cómo hacer tu proyecto social →</a></li>
     </ol>
+    <div class="ldm-proy" id="proyecto">
+      <div class="ldm-proy-cab">
+        <h3>Tu proyecto social, <span>paso a paso.</span></h3>
+        <p>Es lo que más pesa en tu postulación y donde más aspirantes se atoran. Empieza por donde estés: sin idea, con una idea suelta o con un proyecto que ya camina.</p>
+      </div>
+      <div class="ldm-proy-op">
+        <a class="op guia" href="../proyecto-social/#guia">
+          <span class="et">Gratis</span>
+          <b>Guía: cómo hacer un proyecto social</b>
+          <span>Qué es, cómo saber si tu proyecto sí es social, los 10 pasos para armarlo y los errores que más se repiten.</span>
+          <span class="ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="op test" href="https://vorka.mx/que-proyecto-social/">
+          <span class="et">$149</span>
+          <b>¿Qué proyecto social hago?</b>
+          <span>Contestas 14 preguntas y te llegan ideas a tu medida, según tu tiempo, tu presupuesto y lo que te mueve.</span>
+          <span class="ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="op revisar" href="#mentoria">
+          <span class="et">Desde $300</span>
+          <b>Revisarlo conmigo</b>
+          <span>Si ya tienes proyecto, lo revisamos juntos y ordenamos tus evidencias para el paso 4.</span>
+          <span class="ir">Ver cómo agendar ↓</span>
+        </a>
+      </div>
+    </div>
+
     <div class="imp-card" id="impacto">
       <div class="imp-foto"><img src="../img/impacto-equipo.webp" alt="Jóvenes voluntarios de IMPACTO" width="720" height="900" loading="lazy"></div>
       <div class="imp-txt">
@@ -1006,11 +1059,16 @@
           <li>Armamos tu plan de estudio rumbo a los 1,360 puntos de la PAA.</li>
           <li>Hacemos un calendario para que no se te pase ninguna fecha.</li>
         </ul>
-        <a class="ldm-btn" href="https://os.vorka.mx/agendar/oleynickhdz" target="_blank" rel="noopener">Agendar mi sesión <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        <a class="ldm-btn" href="https://os.vorka.mx/agendar/oleynickhdz" target="_blank" rel="noopener">Agendar mi asesoría <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
       </div>
       <ol class="ldm-agenda" aria-label="Pasos para agendar">
-        <li><div><p class="t">Paso a paso</p><b>Entra a mi agenda</b><span>Desde el botón de esta sección.</span></div></li>
-        <li><div><b>Elige tu sesión</b><span>Para aspirantes recomiendo la Mentoría Mensual. Si solo tienes una duda, la Asesoría Express.</span><div class="ldm-precios"><em class="r">Mentoría $900/mes · 45 min</em><em>Express $300 · 20 min</em><em>Consultoría $600 · 60 min</em></div></div></li>
+        <li><div><p class="t">Paso a paso</p><b>Entra a mi agenda</b><span>Con el botón «Agendar mi asesoría» o en os.vorka.mx/agendar/oleynickhdz.</span></div></li>
+        <li><div><b>Elige tu sesión</b><span>Todas son en línea por Google Meet.</span>
+          <dl class="ldm-ses">
+            <div class="r"><dt>Mentoría mensual <i>Recomendada</i></dt><dd>$900 al mes · 45 min</dd><dd class="p">Te acompaño toda la convocatoria: proyecto, evidencias, PAA y fechas.</dd></div>
+            <div><dt>Asesoría Express</dt><dd>$300 · 20 min</dd><dd class="p">Para una duda puntual o una revisión rápida de tu proyecto.</dd></div>
+            <div><dt>Consultoría</dt><dd>$600 · 60 min</dd><dd class="p">Una sesión larga para revisar a fondo tu proyecto y tu postulación.</dd></div>
+          </dl></div></li>
         <li><div><b>Elige día y hora</b><span>De lunes a viernes, con al menos 48 horas de anticipación.</span></div></li>
         <li><div><b>Paga y sube tu comprobante</b><span>Te apartamos el horario 12 horas mientras haces tu transferencia.</span></div></li>
         <li><div><b>Contesta el cuestionario</b><span>Al validar tu pago te llega la confirmación con tu enlace de Google Meet.</span></div></li>
