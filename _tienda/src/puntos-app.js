@@ -120,6 +120,7 @@ export const TOKENS_CLARO = `--bg:#F7F5F2;--bg2:#EFECE8;--panel:#FFFFFF;--card:#
 export const CSS_BASE = `
 
 .pv-metal{background:var(--metal-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.titulo .pv-metal,.entrar-hero .pv-metal{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit}
 .pv-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:999px;border:1px solid transparent;font:inherit;font-size:15.5px;font-weight:650;letter-spacing:-.01em;cursor:pointer;text-decoration:none;transition:transform .18s var(--ease),filter .2s,background .2s,opacity .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
 .pv-btn svg{width:18px;height:18px;flex:none}.pv-btn:active{transform:scale(.97)}
 .pv-btn.oro{background:var(--btn-oro);color:#1B1408;box-shadow:0 10px 30px -10px rgba(200,164,92,.55),inset 0 1px 0 rgba(255,255,255,.5)}
@@ -174,7 +175,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .titulo{font-size:28px;font-weight:780;letter-spacing:-.035em;line-height:1.1;margin:6px 2px 4px}
 .subt{color:var(--fg2);font-size:15px;margin:0 2px 18px;line-height:1.5}
 .sec-t{display:flex;justify-content:space-between;align-items:baseline;margin:26px 2px 10px}
-.sec-t h2{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.sec-t h2{font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--fg)}
 .sec-t a,.sec-t button{font-size:14px;color:var(--oro2);background:none;border:0;padding:0;cursor:pointer;font-weight:600;text-decoration:none}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
 .hola{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 14px}
@@ -190,7 +191,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .saldo-num b{font-size:62px;line-height:1;font-weight:800;letter-spacing:-.05em;font-variant-numeric:tabular-nums;background:var(--metal-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .saldo-num span{font-size:15.5px;font-weight:650;color:rgba(255,255,255,.75)}
 .saldo-mxn{margin-top:6px;font-size:14.5px;color:rgba(255,255,255,.72)}.saldo-mxn b{color:#fff}
-.saldo-pie{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.08em;text-transform:uppercase}
+.saldo-pie{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;font-size:12.5px;color:rgba(255,255,255,.55)}
 .saldo-nivel{display:block;margin-top:3px;font-size:16px;font-weight:800;letter-spacing:-.01em;text-transform:none}
 .saldo-pie code{display:block;margin-top:3px;font:700 15px/1 "SF Mono",ui-monospace,Menlo,monospace;letter-spacing:.12em;color:#fff;text-transform:none}
 /* nivel */
@@ -206,7 +207,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .filtros{display:flex;gap:6px;margin:0 2px 10px;overflow-x:auto;scrollbar-width:none}.filtros::-webkit-scrollbar{display:none}
 .filtros button{flex:none;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:none;color:var(--fg2);font:inherit;font-size:13.5px;font-weight:650;cursor:pointer;transition:background .15s,color .15s}
 .filtros button[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
-.mes{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);padding:16px 2px 4px}.mes:first-child{padding-top:8px}
+.mes{font-size:13px;font-weight:700;color:var(--fg3);padding:16px 2px 4px}.mes:first-child{padding-top:8px}
 .mov .n{white-space:nowrap}.mov .n small{display:inline;font-size:12px;font-weight:650;color:var(--fg3);margin-left:3px}
 .mov.pend .n{color:var(--pend)}.n.usado{color:var(--fg)}.mov-i.pend{background:var(--s2);color:var(--pend)}
 .mov .estado{display:inline-block;margin-left:6px;font-size:11px;font-weight:750;padding:2px 7px;border-radius:999px;background:var(--s2);color:var(--pend);vertical-align:1px}
@@ -240,7 +241,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .cerrar-x{margin-left:auto;align-self:flex-start;background:none;border:0;color:var(--fg3);padding:2px;cursor:pointer}.cerrar-x svg{width:18px;height:18px}
 /* catálogo para compartir */
 .cat-card{display:grid;gap:12px}.cat-card img{width:100%;height:auto;border-radius:14px;display:block}.cat-card b{display:block;font-size:16px}.cat-card small{display:block;color:var(--fg3);font-size:13px;margin-top:2px}
-.cat-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cat-btns .pv-btn{justify-content:center}.cat-btns svg{width:18px;height:18px}
+.cat-btns{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.cat-btns .pv-btn{justify-content:center}.cat-btns svg{width:18px;height:18px}
 .cat-ver{font-size:13.5px;font-weight:600;color:var(--oro,#c8a45c);text-decoration:none;justify-self:center}
 /* tarjeta en Wallet: personalizar (tema, QR, foto) */
 .wallet-perso summary{cursor:pointer;font-weight:650;font-size:14.5px;list-style:none;display:flex;justify-content:space-between}.wallet-perso summary::after{content:'+';color:var(--fg3)}.wallet-perso[open] summary::after{content:'–'}
@@ -258,7 +259,7 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .wallet-btn.uno{grid-column:1/-1}
 /* compartir */
 .codigo-card{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.codigo-card small{display:block;color:var(--fg3);font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.codigo-card small{display:block;color:var(--fg3);font-size:13px;font-weight:600}
 .codigo-card>div{min-width:0}.codigo-card .pv-btn{flex:none}.codigo-card code{overflow-wrap:anywhere;display:block;font:800 clamp(17px,5vw,24px)/1.2 "SF Mono",ui-monospace,Menlo,monospace;letter-spacing:.1em;margin-top:2px}
 .prods{display:grid;gap:14px}
 .prod{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.prod>*{min-width:0}
@@ -399,15 +400,11 @@ button.opcion{width:100%;background:none;border:0;border-bottom:1px solid var(--
   #v-inicio:not([hidden]){grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
   #v-compartir:not([hidden]){grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
   #v-compartir .col>.card+.card{margin-top:14px}
-  .codigo-card code{font-size:20px}.cat-btns{grid-template-columns:minmax(0,1fr)}
-  .titulo .pv-metal{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit}
+  .codigo-card code{font-size:20px}
   #v-compartir .prods{grid-template-columns:minmax(0,1fr)}
   .titulo{font-size:34px;margin-top:0}.subt{max-width:640px}
   .hola{margin:0 2px 20px}.hola b{font-size:28px}
   .saldo{min-height:240px;padding:26px 26px 22px}.saldo-num b{font-size:68px}
-  .sec-t h2{font-size:15px;font-weight:700;letter-spacing:-.01em;text-transform:none;color:var(--fg)}
-  .saldo-pie{font-size:12.5px;letter-spacing:0;text-transform:none}
-  .mes,.codigo-card small,.vista .rango-cab small{letter-spacing:0;text-transform:none}
   .stat{padding:18px 16px}.stat b{font-size:28px}
   .logros{grid-template-columns:repeat(3,1fr)}
   .toast{bottom:32px}
