@@ -13,6 +13,7 @@ from fc import actualizar_fc
 from equipo import paginas_equipo
 from institucional import pagina_nosotros, pagina_contacto, ORG_ID
 from paginaweb import pagina_web, banda_pagina_web
+from anunciate import pagina_anunciate
 
 RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 LOGO_DECO = LOGO.replace('<svg ', '<svg class="v-deco" ')
@@ -603,4 +604,5 @@ if __name__ == '__main__':
     escribir('nosotros/index.html', pagina_nosotros())
     escribir('contacto/index.html', pagina_contacto())
     escribir('portafolio/index.html', portafolio())
+    escribir('sparks/anunciate/index.html', pagina_anunciate())
     escribir('404.html', no_encontrada())
