@@ -1,6 +1,6 @@
 # Vorka México · kit de medios de la Revista Sparks (/sparks/anunciate/): para marcas y negocios con público joven que quieren estar en Sparks.
-# Cifras reales de enero a septiembre de 2026 (reporte trimestral de Vorka México sobre el contenido de Celaya; las mismas de la ficha de
-# patrocinios en PROPUESTAS/sparks-patrocinios). SIN precios: las tarifas son privadas (solo Ejecutivo) y van en la propuesta de cada marca.
+# Cifras reales de enero a septiembre de 2026 (reporte trimestral de Vorka México; las mismas de la ficha de
+# patrocinios en PROPUESTAS/sparks-patrocinios). Precios públicos desde 2026-11-24 (pisos del catálogo de Sparks en vorka-os/src/catalogo-sparks.js, antes de IVA).
 # Fotos reales publicadas en Sparks (sparks/anunciate/img/). Reglas editoriales: todo lo pagado va marcado «Contenido pagado»; patrocinar no
 # compra decisiones editoriales; no se acepta contenido de partidos ni candidatos.
 from partes import *
@@ -8,21 +8,39 @@ from partes import *
 CIFRAS = [('313,800', 'de alcance acumulado'), ('7,138', 'de alcance promedio por publicación'), ('1,351', 'estudiantes en activaciones'), ('72', 'proyectos juveniles acompañados')]
 REDES_P = [('Instagram', 64), ('TikTok', 30), ('Facebook', 6)]
 FORMAS = [
-    ('nota', 'Nota de marca', 'Que te conozcan',
-     'Contamos una historia real de tu negocio o tu marca: quién está detrás, qué hace distinto y por qué le importa a los jóvenes de Celaya.',
+    ('nota', 'Nota de marca', 'Que te conozcan', 'Desde $2,500 por nota + IVA',
+     'Contamos una historia real de tu negocio o tu marca: quién está detrás, qué hace distinto y por qué le importa a los jóvenes.',
      ['Entrevista y fotos en tu lugar, hechas por el equipo de Sparks.', 'Se publica en vorka.mx/sparks, Instagram, TikTok y Facebook.', 'A los 7 días te mandamos su alcance e interacciones.'],
      'Hola, vi el kit de Sparks y me interesa una nota de marca para mi negocio.'),
-    ('seccion', 'Patrocinio de sección', 'Estar presente todo el mes',
+    ('seccion', 'Patrocinio de sección', 'Estar presente todo el mes', 'Desde $3,000 al mes + IVA · mínimo 3 meses',
      'Tu marca acompaña una sección de la revista (Historias, Eventos o la que mejor te quede) mes con mes.',
      ['Tu logo en la sección, en el sitio y en sus publicaciones.', 'Mención de tu marca en 2 publicaciones de redes al mes.', 'Reporte mensual con el alcance de la sección. Mínimo 3 meses.'],
      'Hola, vi el kit de Sparks y me interesa patrocinar una sección.'),
-    ('activacion', 'Presencia en activaciones', 'Llegar en persona',
-     'Sparks también está en la calle: talleres, conferencias y eventos con estudiantes de Celaya.',
+    ('activacion', 'Presencia en activaciones', 'Llegar en persona', 'Precio según el evento',
+     'Sparks también está en la calle: talleres, conferencias y eventos con estudiantes.',
      ['Tu marca en el evento y en su cobertura en redes.', 'Un espacio para presentarte o regalar algo a los asistentes.', 'Fotos y reporte del evento para tus redes.'],
      'Hola, vi el kit de Sparks y me interesa estar en una activación con estudiantes.'),
 ]
 PARA = ['Cafeterías y restaurantes', 'Lugares para salir', 'Gimnasios y estudios', 'Deportes', 'Cursos e idiomas', 'Capacitación',
         'Bancos y cajas', 'Apps para jóvenes', 'Ropa y accesorios', 'Tecnología', 'Marcas locales', 'Empresas que buscan talento joven']
+# Proyectos que impulsamos: historias reales publicadas en Sparks (se leen de sparks/celaya/noticias.json; si una ya no está, se omite)
+PROYECTOS = ['andrea', 'sara', 'amay-caballero', 'coria', 'ximena-martinez', 'chimal']
+
+def proyectos_html():
+    import json, os
+    ruta = os.path.join(os.path.dirname(__file__), '..', 'sparks', 'celaya', 'noticias.json')
+    try:
+        d = json.load(open(ruta, encoding='utf-8'))
+    except Exception:
+        return ''
+    por = {n['s']: n for n in d.get('n', [])}
+    tarjetas = []
+    for i, k in enumerate(x for x in PROYECTOS if x in por):
+        n = por[k]
+        tarjetas.append(f'<a class="ak-proy rv" style="--d:{(i % 3) * .07}s" href="/sparks/celaya/{e(n["s"])}/"><span class="im"><img src="{e(d["img"])}/{e(n["i"])}-800.webp" alt="{e(n.get("p") or "")}" loading="lazy" decoding="async"></span>'
+                        f'<b>{e(n["t"])}</b><span>Leer su historia</span></a>')
+    return ''.join(tarjetas)
+
 CINTA_K = ['viaje', 'futbol', 'premio', 'porto', 'grupo', 'reconocimiento', 'evento']
 
 def pagina_anunciate():
@@ -30,9 +48,9 @@ def pagina_anunciate():
     cinta = ''.join(f'<figure><img src="/sparks/anunciate/img/{k}.webp" alt="" loading="eager" decoding="async"></figure>' for k in CINTA_K * 2)
     cif = ''.join(f'<div class="rv" style="--d:{i * .06}s"><b>{e(n)}</b><span>{e(t)}</span></div>' for i, (n, t) in enumerate(CIFRAS))
     redes = ''.join(f'<div class="ak-red"><span>{e(n)}</span><i style="--p:{p}%"></i><b>{p} %</b></div>' for n, p in REDES_P)
-    formas = ''.join(f"""<details class="ak-forma rv" style="--d:{i * .05}s" id="{k}"{' open' if i == 0 else ''}><summary class="est-fila"><span><b>{e(t)}</b><span>{e(sub)}</span></span>{flecha}</summary>
+    formas = ''.join(f"""<details class="ak-forma rv" style="--d:{i * .05}s" id="{k}"{' open' if i == 0 else ''}><summary class="est-fila"><span><b>{e(t)}</b><span>{e(sub)}</span><i class="ak-precio">{e(pr)}</i></span>{flecha}</summary>
       <div class="ak-forma-in"><p>{e(d)}</p><ul>{''.join(f'<li>{e(x)}</li>' for x in l)}</ul><a class="est-pill" href="{wa(msg)}" target="_blank" rel="noopener">Quiero mi propuesta {FLECHA}</a></div></details>"""
-        for i, (k, t, sub, d, l, msg) in enumerate(FORMAS))
+        for i, (k, t, sub, pr, d, l, msg) in enumerate(FORMAS))
     redes_mini = ''.join(f'<span><i style="--p:{p}%"></i>{e(n)} {p} %</span>' for n, p in REDES_P)
     chips = ''.join(f'<span>{e(x)}</span>' for x in PARA * 2)
     pide = wa('Hola, vi el kit de Sparks y quiero mi propuesta.')
@@ -43,8 +61,8 @@ def pagina_anunciate():
     <div class="pf-cab-tx">
       <div class="migas"><a href="/">Inicio</a><span>/</span><a href="/sparks/">Sparks</a><span>/</span><span>Anúnciate</span></div>
       <span class="etiqueta">Revista Sparks · Kit de medios</span>
-      <h1 class="h1" style="margin-top:18px">Llega a los jóvenes de Celaya <span class="metal">con historias,</span> no con anuncios.</h1>
-      <p class="lead">Sparks cuenta historias reales de jóvenes y de su ciudad en el sitio, Instagram, TikTok y Facebook. Tu marca puede estar ahí, de forma clara y bien hecha.</p>
+      <h1 class="h1" style="margin-top:18px">Llega a los jóvenes de México <span class="metal">con historias,</span> no con anuncios.</h1>
+      <p class="lead">Sparks cuenta los proyectos que impulsan jóvenes de México: lo que estudian, crean, compiten y hacen por su comunidad. Tu marca puede impulsarlos con nosotros en el sitio, Instagram, TikTok y Facebook.</p>
       <div class="botones"><a class="btn tinta" href="{pide}" target="_blank" rel="noopener">Quiero mi propuesta {FLECHA}</a><a class="btn blanco" href="#formas">Ver formas de sumarte</a></div>
     </div>
     <div class="ak-collage" aria-hidden="true">
@@ -56,22 +74,28 @@ def pagina_anunciate():
   </div>
 </section>
 <div class="est-cinta" aria-hidden="true"><div class="est-cinta-in">{cinta}</div></div>
+<section class="sec pegada" aria-labelledby="t-proy">
+  <div class="marco">
+    <div class="est-cab rv"><h2 class="h2" id="t-proy">Los proyectos <span class="metal">que impulsamos</span></h2><p>Jóvenes que estudian, emprenden, compiten y sirven a su comunidad. Sparks cuenta su historia y tu marca puede ser parte de lo que viene.</p></div>
+    <div class="ak-proys">{proyectos_html()}</div>
+  </div>
+</section>
 <section class="sec pegada" aria-labelledby="t-llega">
   <div class="marco">
     <div class="est-cab rv"><h2 class="h2" id="t-llega">Una comunidad joven que <span class="metal">sí nos lee</span></h2><p>Estudiantes de prepa y universidad, sus familias y quienes trabajan con ellos. Ofrecemos estar cerca de esa comunidad, no impresiones sueltas.</p></div>
     <div class="est-cifras">{cif}</div>
     <div class="ak-redes rv"><p>De dónde viene el alcance</p>{redes}</div>
-    <p class="ak-fuente">Enero a septiembre de 2026. Fuente: reporte trimestral de Vorka México sobre el contenido de Celaya.</p>
+    <p class="ak-fuente">Enero a septiembre de 2026. Fuente: reportes trimestrales de Vorka México.</p>
   </div>
 </section>
 <section class="sec pegada" id="formas" aria-labelledby="t-formas">
   <div class="marco">
-    <div class="est-cab rv"><h2 class="h2" id="t-formas">Elige cómo <span class="metal">quieres estar</span></h2><p>Te mandamos una propuesta con tarifas para tu marca en menos de 24 horas. Cada formato incluye su reporte de resultados.</p></div>
+    <div class="est-cab rv"><h2 class="h2" id="t-formas">Elige cómo <span class="metal">quieres estar</span></h2><p>Precios antes de IVA. Te mandamos tu propuesta en menos de 24 horas y cada formato incluye su reporte de resultados.</p></div>
     <div class="est-lista">{formas}</div>
   </div>
 </section>
 <section class="sec pegada" aria-labelledby="t-para">
-  <div class="marco"><div class="est-cab rv"><h2 class="h2" id="t-para">Para marcas que quieren <span class="metal">a los jóvenes</span> de Celaya</h2></div></div>
+  <div class="marco"><div class="est-cab rv"><h2 class="h2" id="t-para">Para marcas que quieren <span class="metal">a los jóvenes</span> de México</h2></div></div>
   <div class="est-chips" aria-label="Para quién es"><div class="est-chips-in">{chips}</div></div>
   <div class="marco"><div class="ak-reglas rv"><h3 class="h3">Reglas claras</h3>
     <p>Todo lo pagado se publica con la etiqueta «Contenido pagado». Patrocinar no compra decisiones editoriales: las historias las elige el equipo de Sparks. No aceptamos contenido de partidos políticos ni candidatos. La Revista Sparks es de Vorka México.</p></div></div>
@@ -79,7 +103,7 @@ def pagina_anunciate():
 <section class="sec oscura redondo" aria-labelledby="t-cierre">
   <div class="grano"></div>
   <div class="marco">
-    <div class="est-cab rv"><h2 class="h2" id="t-cierre" style="color:#fff">¿Platicamos <span class="metal">tu propuesta?</span></h2><p style="color:var(--claro-2)">Escríbenos por WhatsApp con el nombre de tu marca y lo que buscas. Te respondemos con una propuesta y sus tarifas.</p></div>
+    <div class="est-cab rv"><h2 class="h2" id="t-cierre" style="color:#fff">¿Platicamos <span class="metal">tu propuesta?</span></h2><p style="color:var(--claro-2)">Escríbenos por WhatsApp con el nombre de tu marca y lo que buscas. Te respondemos con tu propuesta y el precio final.</p></div>
     <a class="est-barra rv" href="{pide}" target="_blank" rel="noopener">Escribir por WhatsApp {flecha}</a>
   </div>
 </section>
@@ -87,5 +111,5 @@ def pagina_anunciate():
 {pie()}'''
     extra = f'<link rel="stylesheet" href="/assets/v3/estudio.css?v={VERSION}">\n<link rel="stylesheet" href="/sparks/anunciate/anunciate.css?v={VERSION}">\n'
     return cabeza('Anúnciate en la Revista Sparks · Vorka México',
-                  'Kit de medios de la Revista Sparks: llega a los jóvenes de Celaya con historias reales. Nota de marca, patrocinio de sección y presencia en activaciones, con reporte de resultados.',
+                  'Kit de medios de la Revista Sparks: llega a los jóvenes de México con historias reales de los proyectos que impulsan. Nota de marca, patrocinio de sección y presencia en activaciones, con reporte de resultados.',
                   '/sparks/anunciate/', extra=extra) + cuerpo + '\n</body>\n</html>\n'

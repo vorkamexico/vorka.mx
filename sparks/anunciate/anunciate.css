@@ -32,3 +32,14 @@
 .ak-tarjeta i { height: 6px; border-radius: 99px; background: linear-gradient(90deg, var(--morado) var(--p), var(--bg-2) var(--p)); }
 @media (max-width: 900px) { .ak-collage { max-width: 520px; width: 100%; margin: 0 auto; } }
 @media (prefers-reduced-motion: reduce) { .ak-collage img, .ak-tarjeta { animation: none; } }
+/* proyectos que impulsamos: historias reales de Sparks */
+.ak-proys { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 16px; }
+.ak-proy { display: grid; gap: 8px; align-content: start; color: var(--fg); text-decoration: none; }
+.ak-proy .im { display: block; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; background: var(--bg-2); }
+.ak-proy img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s var(--ease); }
+.ak-proy:hover img { transform: scale(1.04); }
+.ak-proy b { font-size: 17px; line-height: 1.3; letter-spacing: -.01em; }
+.ak-proy > span:last-child { font-size: 14px; color: var(--fg-3); font-weight: 600; }
+@media (max-width: 900px) { .ak-proys { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ak-proys { grid-template-columns: minmax(0, 1fr); } }
+.ak-precio { display: inline-block; margin-top: 10px; padding: 6px 12px; border-radius: 99px; background: var(--bg-2); font-style: normal; font-size: 14px; font-weight: 650; color: var(--fg); }
