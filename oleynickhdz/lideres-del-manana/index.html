@@ -870,6 +870,35 @@
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   @media (max-width: 960px) { .bc-grid { grid-template-columns: 1fr; } .bc-top, .ldm-historia { grid-template-columns: 1fr; } }
   @media (max-width: 520px) { .bc-top dl { grid-template-columns: 1fr; } }
+
+  /* ===== Estilo fino en toda la página (2026-11-23) ===== */
+  .section-eyebrow { font-size: 14.5px !important; font-weight: 600 !important; letter-spacing: 0 !important; text-transform: none !important; color: var(--accent-ink) !important; }
+  .section-eyebrow::before { display: none !important; }
+  .pr-pill { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .ldm-fecha .k { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .ldm-fecha.urgente { background: color-mix(in srgb, var(--c-red) 12%, var(--paper-2)); color: var(--ink); }
+  .ldm-fecha.urgente .k { color: var(--c-red); }
+  .ldm-fecha.urgente b { color: var(--c-red); }
+  .ldm-fecha.urgente span { color: var(--ink-soft); }
+  .ldm-incluye, .ldm-ruta { gap: 0; border-bottom: 1px solid var(--rule); }
+  .ldm-incluye li, .ldm-ruta li { padding: 20px 0; border-radius: 0; background: none; border: 0; border-top: 1px solid var(--rule); align-items: center; }
+  .ldm-ruta li { grid-template-columns: 52px minmax(0, 1fr); }
+  .ldm-incluye i, .ldm-ruta i, .ldm-incluye li:nth-child(n) i, .ldm-ruta li:nth-child(n) i { width: 44px; height: 44px; background: var(--paper-3) !important; color: var(--accent-ink); font-family: inherit; font-size: 14.5px; font-weight: 700; letter-spacing: -.02em; }
+  .ldm-incluye span, .ldm-ruta span { color: var(--ink-soft); }
+  .ldm-pasos li::before { font-family: inherit !important; font-size: 15px !important; font-weight: 700 !important; letter-spacing: 0 !important; color: var(--accent-ink); content: "Paso " counter(paso) !important; }
+  .ldm-sello { font-size: 13px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+  .imp-chips span, .imp-chips .c-am, .imp-chips .c-az, .imp-chips .c-ve, .imp-chips .c-ro { background: #EEEBE3; color: #3A3833; font-weight: 600; }
+  .vk-grupo { background: #121212; border-color: rgba(255,255,255,.1); }
+  .vk-grupo h3 span { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #E3C47E; }
+  .vk-marca small { background: none; color: rgba(255,255,255,.6); letter-spacing: .04em; text-transform: none; font-size: 13px; }
+  .vk-sello { background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.14); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .vk-eco div, .vk-eco .t1, .vk-eco .t2, .vk-eco .t3, .vk-eco .t4 { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+  .vk-eco .t2 b, .vk-eco .t3 b, .vk-eco b { color: #fff; }
+  .vk-eco .t2 span, .vk-eco span { color: rgba(255,255,255,.68); }
+  .vk-pasos .n { background: rgba(255,255,255,.1); color: #fff; font-size: 15px; }
+  .ldm-rec .ico, .ldm-rec.sim .ico, .ldm-rec.canal .ico, .ldm-rec.grupo .ico { background: var(--paper-3); color: var(--ink); }
+  .ldm-rec .chip { background: var(--paper-3); color: var(--ink-soft); font-weight: 600; }
+  .bc-card .k { font-size: 13.5px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--accent-ink); }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=DM+Sans:wght@400;500;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -1088,7 +1117,7 @@
   <section class="section" id="mentoria" aria-labelledby="h-ment">
     <div class="ldm-mentor">
       <div>
-        <span class="ldm-sello">★ Súper recomendado</span>
+        <span class="ldm-sello">Recomendado para aspirantes</span>
         <h2 id="h-ment">Prepárate <span>conmigo.</span></h2>
         <p>Tu promedio y tu PAA abren la puerta; tu liderazgo social es lo que te distingue. En la mentoría trabajamos juntos tu postulación para que llegues a cada etapa con todo listo.</p>
         <ul class="ldm-trabajo">
