@@ -93,6 +93,7 @@ export function vistasEmbajador(d) {
 <section class="vista" id="v-equipo" data-vista="equipo" aria-label="Mi equipo" hidden>${CSS_EQUIPO}
   <h1 class="titulo" style="--i:0">Mi <span class="pv-metal">equipo</span></h1>
   ${seg('equipo')}
+  <div class="col">
   <div class="card rango" style="--i:2;--c:${r.color}">
     <div class="rango-cab"><div><small>Tu rango de este mes</small><b>${esc(r.nombre)}</b></div><span class="insig" style="--c:${r.color}"><i></i>${esc(r.nombre)}</span></div>
     <div class="rangos3">${RANGOS.map((x, k) => `<span class="${RANGOS.findIndex(y => y.id === r.id) >= k ? 'si' : ''}" style="--c:${x.color}">${esc(x.nombre)}</span>`).join('')}</div>
@@ -101,6 +102,8 @@ export function vistasEmbajador(d) {
     <p class="pv-sub" style="font-size:12.5px">Los rangos son un reconocimiento y se cuentan cada mes: no dan dinero ni puntos extra.</p>
   </div>
   ${E.patrocinador ? `<p class="frase" style="--i:3">Te invitó <b>${esc(E.patrocinador)}</b></p>` : ''}
+  </div>
+  <div class="col">
   <div class="sec-t" style="--i:4"><h2>Tu equipo directo</h2><span style="font-size:13px;color:var(--fg3)">${plural(E.equipo.length, 'persona', 'personas')}</span></div>
   <div class="card lista" style="--i:5;padding:4px 16px">${E.equipo.length ? E.equipo.map(persona).join('')
     : `<div class="vacio">${I.equipo}Aún no tienes equipo. Invita a alguien: quien se registre con tu liga de invitación queda en tu equipo.<br><a class="pv-btn oro chico" href="#invita" data-ir="invita" style="margin-top:12px">Invitar</a></div>`}</div>
@@ -110,6 +113,7 @@ export function vistasEmbajador(d) {
   <div class="card" style="--i:9">${E.lideres.length ? `<div class="top">${E.lideres.map(t => `<div class="top-f${t.yo ? ' yo' : ''}"><span>${t.lugar}</span><b>${esc(t.nombre)}${t.yo ? ' (tú)' : ''}</b><em style="color:${colorRango(t.rango_id)}">${esc(t.rango)}</em></div>`).join('')}</div>`
     : `<div class="vacio" style="padding:12px">${I.trofeo}Todavía no hay Líderes este mes.</div>`}
     <p class="pv-sub" style="font-size:13px;margin-top:10px">Aparecen quienes activaron «Aparecer en el Top del mes», con su nombre y la inicial de su apellido.</p></div>
+  </div>
   <p class="legal"><a href="/tienda/puntos/embajadores/">Cómo funciona Embajadores Vorka</a> · Nunca te mostramos datos de los clientes.</p>
 </section>`;
 
@@ -119,8 +123,8 @@ export function vistasEmbajador(d) {
   <h1 class="titulo" style="--i:0">Mis <span class="pv-metal">ganancias</span></h1>
   ${seg('ganancias')}
   <p class="subt" style="--i:2">En puntos (1 punto = $1 MXN en la tienda), ya con los reembolsos descontados.</p>
-  ${bloqueGanancias(g.mes, 'Este mes')}
-  ${bloqueGanancias(g.semestre, 'Este semestre')}
+  <div class="col">${bloqueGanancias(g.mes, 'Este mes')}</div>
+  <div class="col">${bloqueGanancias(g.semestre, 'Este semestre')}</div>
   <div class="pv-nota" style="--i:4">${I.ayuda}<span>Tus ventas: el % de tu nivel (${NIVELES[0].pct} % a ${NIVELES.at(-1).pct} %). Tu equipo: ${PCT_RED[0]} % de las ventas de quien invitaste y ${PCT_RED[1]} % de las de su equipo, cuando venden a clientes reales. Invitar no da puntos.</span></div>
 </section>`;
 
@@ -128,8 +132,11 @@ export function vistasEmbajador(d) {
 <section class="vista" id="v-invita" data-vista="invita" aria-label="Invita" hidden>
   <h1 class="titulo" style="--i:0"><span class="pv-metal">Invita</span></h1>
   ${seg('invita')}
+  <div class="col">
   <div class="honesto" style="--i:2">${I.check}<span><b>${esc(HONESTO)}</b></span></div>
   <p class="subt" style="--i:3;margin-top:14px">Quien se registre con esta liga queda en tu equipo. Cuando venda, tú ganas ${PCT_RED[0]} % de su venta (y ${PCT_RED[1]} % de las ventas de su equipo). Si ya tenía cuenta, no cambia de equipo. Esta liga es para invitar; para vender usa la de «Compartir».</p>
+  </div>
+  <div class="col">
   ${liga ? `<article class="prod" style="--i:4">
     <div class="liga"><code>${esc(liga.replace(/^https:\/\//, ''))}</code><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(liga)}" aria-label="Copiar liga de invitación">${I.copiar}</button></div>
     <div class="acciones2" style="margin-top:0;grid-template-columns:1fr 1fr">
@@ -141,6 +148,7 @@ export function vistasEmbajador(d) {
     <div class="msj">${esc(msj)}<br><button class="pv-enlace" type="button" data-copiar="${esc(msj)}">${I.copiar}Copiar mensaje</button></div>
     <div hidden data-qr-svg="inv" data-qr-liga="${esc(liga.replace(/^https:\/\//, ''))}" data-qr-titulo="Únete a Embajadores Vorka">${qrSvg(liga)}</div>
   </article>` : ''}
+  </div>
   <p class="legal"><a href="/tienda/puntos/embajadores/">Cómo funciona Embajadores Vorka</a></p>
 </section>`;
   return equipo + ganancias + invita;

@@ -169,7 +169,8 @@ h1,h2,h3,p{margin:0}button{font:inherit;color:inherit}a{color:inherit}img,svg{di
 .avatar{position:relative;width:40px;height:40px;border-radius:50%;border:0;padding:2px;background:var(--btn-oro);cursor:pointer}
 .avatar span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--avatar-in);font-weight:750;font-size:16px;color:var(--oro2)}
 .vista{padding-top:14px}
-.vista>*{animation:pventra .5s var(--ease) both;animation-delay:calc(var(--i,0)*55ms)}
+.vista>*,.vista>.col>*{animation:pventra .5s var(--ease) both;animation-delay:calc(var(--i,0)*55ms)}
+.lado,.col{display:contents}.lado-pie{display:none}
 .titulo{font-size:28px;font-weight:780;letter-spacing:-.035em;line-height:1.1;margin:6px 2px 4px}
 .subt{color:var(--fg2);font-size:15px;margin:0 2px 18px;line-height:1.5}
 .sec-t{display:flex;justify-content:space-between;align-items:baseline;margin:26px 2px 10px}
@@ -374,6 +375,42 @@ button.opcion{width:100%;background:none;border:0;border-bottom:1px solid var(--
   .tab[aria-current="page"]::before{top:-8px}
   .hoja{align-items:center}.hoja-panel{border-radius:28px;border-bottom:1px solid var(--line2);max-height:84vh}
   .toast{bottom:110px}
+}
+/* computadora: menú lateral y vistas a dos columnas (en celular y tableta no cambia nada) */
+@media (min-width:1024px){
+  .app{max-width:1240px;display:grid;grid-template-columns:228px minmax(0,1fr);column-gap:56px;align-items:start;padding:0 40px 56px}
+  .lado{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:26px;padding:30px 0 28px}
+  .lado .barra{position:static;margin:0;padding:0 4px;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;border:0}
+  .tabs{position:static;transform:none;left:auto;bottom:auto;width:auto;max-width:none;display:flex;flex-direction:column;gap:2px;padding:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;border:0;border-radius:0;box-shadow:none}
+  .tab{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-size:15px;font-weight:600;color:var(--fg2);text-align:left;transition:background .15s,color .15s}
+  .tab svg{width:20px;height:20px}.tab:hover{background:var(--s1);color:var(--fg)}
+  .tab[aria-current="page"]{background:var(--s2);color:var(--fg)}.tab[aria-current="page"] svg{transform:none;color:var(--oro2)}
+  .tab[aria-current="page"]::before{top:50%;left:0;width:3px;height:20px;transform:translateY(-50%);border-radius:0 3px 3px 0}
+  .tab .badge{position:static;margin-left:auto;border:0}
+  .lado-pie{display:grid;gap:10px;margin-top:auto;padding:16px;border-radius:20px;background:var(--card);border:1px solid var(--line);font-size:13px;color:var(--fg3)}
+  .lado-pie code{font:700 15px/1.2 "SF Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;color:var(--fg);margin-top:-6px;overflow-wrap:anywhere}
+  .lado-pie a{color:var(--oro2);font-weight:600;text-decoration:none;justify-self:center}
+  #contenido{min-width:0;padding-top:30px}
+  .vista{padding-top:0}
+  .vista:has(>.col):not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;align-items:start}
+  .vista>:not(.col){grid-column:1/-1}
+  .col{display:flex;flex-direction:column;min-width:0}
+  .col>.sec-t:first-child{margin-top:0}
+  #v-inicio:not([hidden]){grid-template-columns:minmax(0,1.08fr) minmax(0,1fr)}
+  #v-compartir:not([hidden]){grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+  #v-compartir .col>.card+.card{margin-top:14px}
+  .codigo-card code{font-size:20px}.cat-btns{grid-template-columns:minmax(0,1fr)}
+  .titulo .pv-metal{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit}
+  #v-compartir .prods{grid-template-columns:minmax(0,1fr)}
+  .titulo{font-size:34px;margin-top:0}.subt{max-width:640px}
+  .hola{margin:0 2px 20px}.hola b{font-size:28px}
+  .saldo{min-height:240px;padding:26px 26px 22px}.saldo-num b{font-size:68px}
+  .sec-t h2{font-size:15px;font-weight:700;letter-spacing:-.01em;text-transform:none;color:var(--fg)}
+  .saldo-pie{font-size:12.5px;letter-spacing:0;text-transform:none}
+  .mes,.codigo-card small,.vista .rango-cab small{letter-spacing:0;text-transform:none}
+  .stat{padding:18px 16px}.stat b{font-size:28px}
+  .logros{grid-template-columns:repeat(3,1fr)}
+  .toast{bottom:32px}
 }`;
 
 // ---------- piezas compartidas ----------
@@ -615,6 +652,7 @@ export function paginaApp(env, d) {
   const inicio = `
 <section class="vista" id="v-inicio" data-vista="inicio" aria-label="Inicio">
   <div class="hola" style="--i:0"><div><span>Hola,</span><b>${esc(String(d.nombre).split(' ')[0])}</b></div><span class="chip" style="--nivel:${n.actual.color}"><i></i>${esc(n.actual.nombre)} · ${d.pct}%</span></div>
+  <div class="col">
   <div class="saldo" style="--i:1">
     <span class="saldo-v">${V}</span>
     <div class="saldo-cab"><span>Tu saldo</span><span class="saldo-cab-d">Puntos Vorka<button class="saldo-ojo" type="button" id="b-ocultar" aria-pressed="false" aria-label="Ocultar saldo"><span class="si">${I.ojo}</span><span class="no">${I.ojoNo}</span></button></span></div>
@@ -629,6 +667,8 @@ export function paginaApp(env, d) {
   </div>
   <div class="acciones2" style="--i:3"><button class="pv-btn oro" type="button" data-ir="compartir">${I.compartir}Compartir mi liga</button><a class="pv-btn vidrio" href="/tienda/">${I.bolsa}Usar puntos</a></div>
   ${d.retiro ? tarjetaRetiro(d.retiro) : ''}
+  </div>
+  <div class="col">
   <div class="sec-t" style="--i:4"><h2>Últimos 7 días</h2></div>
   <div class="stats" style="--i:5">
     <div class="stat">${I.ojo}<b data-contar="${d.semana.visitas}">${fmt(d.semana.visitas)}</b><span>Visitas a tu liga</span></div>
@@ -642,12 +682,14 @@ export function paginaApp(env, d) {
   <div class="card promo" id="c-instalar" hidden style="--i:10"><span class="ico-c">${I.instalar}</span><div><h3>Ponla en tu inicio</h3><p id="c-instalar-t">Tenla a un toque, como una app, para ver tus puntos y tu meta.</p><p id="c-instalar-and" hidden>En Chrome toca el menú <b>⋮</b> (arriba a la derecha) y elige <b>Instalar app</b> o <b>Agregar a pantalla principal</b>.</p><p id="c-instalar-ios" hidden>En Safari toca <b>Compartir</b> <span class="ico-in">${I.ios}</span> y luego <b>Agregar a inicio</b>. Así la tienes como app y recibes avisos.</p><button class="pv-btn oro chico" type="button" id="b-instalar" hidden>Instalar app</button></div><button class="cerrar-x" type="button" data-descartar="instalar" aria-label="Ahora no">${I.cerrar}</button></div>
   <div class="card promo" id="c-avisos" hidden style="--i:11"><span class="ico-c">${I.actividad}</span><div><h3>Entérate al instante</h3><p id="c-avisos-t">Te avisamos cuando alguien compre con tu liga, subas de nivel o alcances tu meta.</p><button class="pv-btn oro chico" type="button" id="b-avisos">Activar avisos</button></div><button class="cerrar-x" type="button" data-descartar="avisos" aria-label="Ahora no">${I.cerrar}</button></div>
   <div class="card promo" style="--i:12"><span class="ico-c">${I.foco}</span><div><h3>Sugiere un producto, gana puntos extra</h3><p>Si lo agregamos a la tienda, ganas ${PCT_EXTRA}% extra en cada compra de ese producto con tu liga.</p><button class="pv-btn vidrio chico" type="button" data-abrir="h-sugerir">Sugerir</button></div></div>
+  </div>
 </section>`;
 
   const compartir = `
 <section class="vista" id="v-compartir" data-vista="compartir" aria-label="Compartir" hidden>
   <h1 class="titulo" style="--i:0">Comparte y <span class="pv-metal">gana</span></h1>
   <p class="subt" style="--i:1">Cada compra con tu liga te da ${d.pct}% en puntos (${Math.min(PCT_TOPE, d.pct + PCT_EXTRA)}% con puntos extra). Por ser parte del ecosistema Vorka, quien compra con tu liga o tu código tiene ${PCT_REFERIDO} % de descuento en su primer pago. La persona tiene 30 días para comprar.</p>
+  <div class="col">
   <div class="card codigo-card" style="--i:2"><div><small>Tu código</small><code>${esc(d.code)}</code></div><button class="pv-btn vidrio chico" type="button" data-copiar="${esc(ligaDe('/tienda/', d.code))}">${I.copiar}Copiar liga</button></div>
   ${d.catalogo ? `<div class="card cat-card" style="--i:2"><img src="/assets/tienda/og/catalogo.jpg" alt="Portada del catálogo de Vorka México" width="1200" height="630" loading="lazy"><div><b>Comparte el catálogo</b><small>Para tus grupos de WhatsApp: sale la portada, los precios y tu código.</small></div>
     <div class="cat-btns"><a class="pv-btn oro" href="https://wa.me/?text=${esc(encodeURIComponent(d.catalogo.mensaje))}" target="_blank" rel="noopener">${I.wa}Mandar por WhatsApp</a><button class="pv-btn vidrio" type="button" data-copiar="${esc(d.catalogo.mensaje)}">${I.copiar}Copiar mensaje</button></div>
@@ -655,6 +697,8 @@ export function paginaApp(env, d) {
   <div class="card wallet-card" style="--i:2"><div><b>Tu tarjeta de Embajador(a)</b><small>Tu código y tu QR en el celular, listos para mostrar. Elige su color, tu foto y qué abre tu QR.</small></div>
     <div class="wallet-btns"><a class="wallet-btn" id="w-apple" href="/api/puntos/wallet/apple" rel="nofollow">${I.wallet}<span>Agregar a Apple Wallet</span></a><a class="wallet-btn" id="w-google" href="/api/puntos/wallet/google" rel="nofollow">${I.wallet}<span>Guardar en Google Wallet</span></a></div>
     <details class="wallet-perso" id="wp"><summary>Personaliza tu tarjeta</summary><div id="wp-c"><p class="wp-nota">Cargando…</p></div></details></div>
+  </div>
+  <div class="col">
   <div class="sec-t" style="--i:3"><h2>Elige qué compartir</h2></div>
   <div class="prods">${tarjetasCompartir.map((c, i) => {
     const liga = ligaDe(c.ruta, c.code || d.code), doble = dobleDe(c), msjs = mensajes(c, liga), principal = msjs[0];
@@ -674,18 +718,22 @@ export function paginaApp(env, d) {
       <div hidden data-qr-svg="${i}" data-qr-liga="${esc(sinProtocolo(liga))}" data-qr-titulo="${esc(c.titulo)}">${qrSvg(liga)}</div>
     </article>`;
   }).join('')}</div>
+  </div>
 </section>`;
 
   const metas = `
 <section class="vista" id="v-metas" data-vista="metas" aria-label="Metas" hidden>
   <h1 class="titulo" style="--i:0">Tus <span class="pv-metal">metas</span></h1>
   <p class="subt" style="--i:1">Sube de nivel con cada compra que entra con tu liga: entre más alto, más % de cada compra en puntos. El nivel se cuenta por semestre.</p>
+  <div class="col">
   <div class="card" style="--i:2">${metaHtml}</div>
   <div class="sec-t" style="--i:3"><h2>Niveles</h2><span style="font-size:13px;color:var(--fg3)">${plural(d.ventas_semestre, 'venta', 'ventas')} este semestre</span></div>
   <div class="card niveles" style="--i:4;padding:8px">${NIVELES.map((x, k) => {
     const ok = d.ventas_semestre >= x.min, actual = k === n.indice;
     return `<div class="nv${ok ? ' ok' : ' bloq'}${actual ? ' actual' : ''}" style="--c:${x.color}"><span class="nv-p">${ok ? I.check.replace('<svg ', '<svg width="20" ') : I.candado}</span><div><b>${esc(x.nombre)}</b><small>${esc(x.texto)}</small></div><em>${actual ? 'Tu nivel' : x.min ? `${x.min}+ ventas` : 'Inicio'}</em></div>`;
   }).join('')}</div>
+  </div>
+  <div class="col">
   <div class="sec-t" style="--i:5"><h2>Logros</h2><span style="font-size:13px;color:var(--fg3)">${d.logros.filter(l => l.ok).length} de ${d.logros.length}</span></div>
   <div class="logros" style="--i:6">${d.logros.map(l => `<div class="logro${l.ok ? '' : ' no'}" title="${esc(l.texto)}"><i>${LOGRO_ICONO[l.icono] || I.check}</i><b>${esc(l.nombre)}</b><small>${esc(l.texto)}</small></div>`).join('')}</div>
   <div class="sec-t" style="--i:7"><h2>Sugiere un producto</h2><button type="button" data-abrir="h-sugerir">Nueva idea</button></div>
@@ -697,19 +745,24 @@ export function paginaApp(env, d) {
   <div class="card" style="--i:10">${d.top.length ? `<div class="top">${d.top.map(t => `<div class="top-f${t.yo ? ' yo' : ''}"><span>${t.lugar}</span><b>${esc(t.nombre)}${t.yo ? ' (tú)' : ''}</b><em>${plural(t.ventas, 'venta', 'ventas')}</em></div>`).join('')}</div>`
     : `<div class="vacio" style="padding:12px">${I.trofeo}${d.ranking ? 'Aún no hay ventas este mes. ¡La primera puede ser tuya!' : 'Nadie aparece todavía.'}</div>`}
     ${d.ranking ? '' : '<p class="pv-sub" style="font-size:13.5px;margin-top:10px">Es opcional: solo aparecen quienes lo activan, con su nombre y la inicial de su apellido.</p>'}</div>
+  </div>
 </section>`;
 
   const actividad = `
 <section class="vista" id="v-actividad" data-vista="actividad" aria-label="Actividad" hidden>
   <h1 class="titulo" style="--i:0">Actividad</h1>
   <p class="subt" style="--i:1">Tus avisos y cada movimiento de tus puntos.</p>
+  <div class="col">
   <div class="sec-t" style="--i:2"><h2>Avisos</h2></div>
   <div class="card lista" style="--i:3;padding:6px 16px">${d.notificaciones.length ? d.notificaciones.map(a => `<a class="aviso-f${a.leida_at ? '' : ' nueva'}" href="${esc(a.url || '#inicio')}"><span class="mov-i oro">${ICONO_AVISO[a.tipo] || I.actividad}</span><div><b>${esc(a.titulo)}</b>${a.cuerpo ? `<p>${esc(a.cuerpo)}</p>` : ''}<small>${hace(a.created_at)}</small></div></a>`).join('')
     : `<div class="vacio">${I.actividad}Aquí verás cuando alguien compre con tu liga, subas de nivel o alcances tu meta.</div>`}</div>
+  </div>
+  <div class="col">
   <div class="sec-t" style="--i:4"><h2>Movimientos</h2></div>
   ${d.movimientos.length || s.apartados ? `<div class="filtros" role="group" aria-label="Filtrar movimientos" style="--i:5"><button type="button" data-filtro="" aria-pressed="true">Todos</button><button type="button" data-filtro="mas" aria-pressed="false">Ganados</button><button type="button" data-filtro="menos" aria-pressed="false">Usados y reembolsos</button></div>` : ''}
   <div class="card lista" id="movs" style="--i:6;padding:6px 16px">${s.apartados ? `<div class="mov pend" data-signo="menos"><span class="mov-i pend">${I.reloj}</span><div><b>Apartados<span class="estado">Pendiente</span></b><small>En una compra por pagar. Si se paga, se usan; si vence, regresan a tu saldo.</small></div><span class="n">−${fmt(s.apartados)}<small>pts</small></span></div>` : ''}${movimientosPorMes(d.movimientos)}
     ${d.movimientos.length || s.apartados ? '<div class="vacio" id="movs-vacio" hidden>No hay movimientos de este tipo.</div>' : `<div class="vacio">${I.moneda}Todavía no tienes movimientos. Comparte tu liga y aquí verás cada compra.</div>`}</div>
+  </div>
   <p class="legal">1 punto = $1 MXN en productos de Vorka México. Siempre se cobran al menos $10 por compra. <a href="/legal/terminos/#puntos">Condiciones del programa</a></p>
 </section>`;
 
@@ -763,10 +816,13 @@ ${d.retiro ? hojaRetiro(d.retiro) : ''}
   return documento({
     titulo: 'Puntos Vorka',
     cuerpo: `<div class="app">
+<div class="lado">
 <header class="barra" id="barra"><a class="marca" href="#inicio" data-ir="inicio"><span class="marca-v">${V}</span><span>Puntos Vorka<small>Vorka México</small></span></a>
   <button class="avatar" type="button" data-abrir="h-ajustes" aria-label="Ajustes de tu cuenta"><span>${esc(inicial)}</span></button></header>
-<main id="contenido">${inicio}${compartir}${d.vistasEmbajador || ''}${metas}${actividad}</main>
 <nav class="tabs" aria-label="Secciones">${tabs.map(([k, t]) => `<button class="tab" type="button" data-ir="${k}" ${k === 'inicio' ? 'aria-current="page"' : ''}>${I[k]}<span>${t}</span>${k === 'actividad' && d.no_leidas ? `<b class="badge" id="badge">${d.no_leidas > 9 ? '9+' : d.no_leidas}</b>` : ''}</button>`).join('')}</nav>
+<div class="lado-pie"><span>Tu código</span><code>${esc(d.code)}</code><button class="pv-btn vidrio chico ancho" type="button" data-copiar="${esc(ligaDe('/tienda/', d.code))}">${I.copiar}Copiar mi liga</button><a href="/tienda/">Ir a la tienda</a></div>
+</div>
+<main id="contenido">${inicio}${compartir}${d.vistasEmbajador || ''}${metas}${actividad}</main>
 ${hojas}
 </div>
 <script type="application/json" id="datos">${datosJson({ total: s.total, no_leidas: d.no_leidas, push: d.push })}</script>`,
