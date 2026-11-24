@@ -520,104 +520,57 @@ def feeds_html():
 }})();
 </script>"""
 
-# Trabajos del portafolio en estilo «estudio» (assets/v3/estudio.css): cada uno abre su ficha en una ventana con lo que hicimos y sus cifras
-TRABAJOS = [  # (clave, imagen, ajuste, caso de datos.PORTAFOLIO o None, título, servicio, texto si no hay caso)
-    ('inmobiliaria', 'inmobiliaria.webp', 'cubrir', 'inmobiliaria', None, None, None),
-    ('alimentos', 'alimentos.webp', 'cubrir', 'alimentos', None, None, None),
-    ('mentoria', None, 'texto', 'mentoria', None, None, None),
-    ('estetica', 'brillo.webp', 'contener', 'estetica', None, None, None),
-    ('seguros', 'tel-seguros.webp', 'cubrir', None, 'Un agente de seguros y retiro', 'Posicionamiento, estrategia y edición de contenido',
-     'Series con título propio sobre salud, ahorro y retiro que abren conversaciones con nuevos clientes. Él es la cara de su marca; nosotros le damos dirección, estrategia y edición.'),
-    ('mercado', 'mercado.webp', 'cubrir', None, 'Una tienda de productos artesanales', 'Posicionamiento, estrategia y edición de contenido',
-     'Historias de quienes hacen cada producto, del panal al alebrije, para que la gente compre sabiendo de dónde viene.'),
-]
-CINTA = ['tel-alimentos.webp', 'inmobiliaria.webp', 'tel-seguros.webp', 'mercado.webp', 'tel-inmobiliaria.webp', 'alimentos.webp', 'tel-mercado.webp', 'inmobiliaria-feed.webp']
-SERVICIOS_EST = [('/servicios/influencia/', 'Contenido y redes', 'Estrategia, posicionamiento y edición para que tu marca se vea como lo que es, cada semana.'),
-                 ('/servicios/apps/', 'Páginas, portales y apps', 'Tu propio sitio, tu catálogo o tu sistema, con tu dominio y sin depender de nadie.'),
-                 ('/tienda/', 'Lealtad y control del negocio', 'Vuelve para que tus clientes regresen y Brillo para llevar tu estética en orden.'),
-                 ('/servicios/estrategia/', 'Estrategia y dirección', 'Decisiones grandes con un plan claro, desde el diagnóstico hasta la ejecución.'),
-                 ('/servicios/liderazgo/', 'Liderazgo y mentoría', 'Equipos que deciden mejor y jóvenes que llegan listos a becas y convocatorias.')]
-
-def ficha_trabajo(t):
-    k, img, ajuste, ref, titulo, serv, texto = t
-    c = next((x for x in PORTAFOLIO if x[0] == ref), None)
-    if c:
-        _, _, serv, titulo, necesitaba, hicimos, cifras, _, wa_txt = c
-        cuerpo = f'<p>{e(necesitaba)}</p>' + (f'<div class="est-dlg-nums">{"".join(f"<div><b>{e(b)}</b><span>{e(x)}</span></div>" for b, x in cifras)}</div>' if cifras else '') + f'<ul>{"".join(f"<li>{e(h)}</li>" for h in hicimos)}</ul>'
-    else:
-        wa_txt = f'Hola Vorka, vi en su portafolio el trabajo de {titulo.lower()} y quiero algo así.'
-        cuerpo = f'<p>{e(texto)}</p>'
-    pos = ' style="object-position:left top"' if k == 'inmobiliaria' else ''
-    im = f'<div class="est-dlg-im{" contener" if ajuste == "contener" else ""}"><img src="/img/portafolio/{img}" alt="" loading="lazy"{pos}></div>' if img else '<div class="est-dlg-im" style="background:var(--noche)"></div>'
-    return f'<template id="ficha-{k}"><div class="est-dlg-in">{im}<div class="est-dlg-tx"><small>{e(serv)}</small><h3>{e(titulo)}</h3>{cuerpo}<a class="btn tinta" href="{wa(wa_txt)}" target="_blank" rel="noopener">Quiero algo así {FLECHA}</a></div></div></template>'
-
-def tile_trabajo(t, i):
-    k, img, ajuste, ref, titulo, serv, texto = t
-    c = next((x for x in PORTAFOLIO if x[0] == ref), None)
-    if c: titulo, serv = c[3], c[2]
-    pos = ' style="object-position:left top"' if k == 'inmobiliaria' else ''
-    if ajuste == 'texto':
-        b, x = (c[6][0] if c and c[6] else ('Vorka', ''))
-        im = f'<span class="im texto"><b>{e(b)}</b><span>{e(x)}</span></span>'
-    else:
-        im = f'<span class="im{" contener" if ajuste == "contener" else ""}"><img src="/img/portafolio/{img}" alt="{e(titulo)}, trabajo de Vorka con la marca difuminada" loading="eager" decoding="async"{pos}><span class="ver">Ver trabajo {FLECHA}</span></span>'
-    return f'<button class="est-tile rv" style="--d:{(i % 3) * .07}s" type="button" data-ficha="{k}">{im}<span class="est-pie"><b>{e(titulo)}</b><span>{e(serv)}</span></span></button>'
-
 def portafolio():
+    filtros = '<button type="button" aria-pressed="true" data-f="">Todos</button>' + ''.join(f'<button type="button" aria-pressed="false" data-f="{k}">{e(t)}</button>' for k, t in NECESIDADES)
+    casos = ''.join(caso_html(c, i) for i, c in enumerate(PORTAFOLIO))
     marcar = sorted({x for c in PORTAFOLIO for x in c[7]})
-    cinta = ''.join(f'<figure><img src="/img/portafolio/{f}" alt="" loading="eager" decoding="async"></figure>' for f in CINTA * 2)
-    tiles = ''.join(tile_trabajo(t, i) for i, t in enumerate(TRABAJOS))
-    fichas = ''.join(ficha_trabajo(t) for t in TRABAJOS)
-    flecha = ico('<path d="M5 12h14M13 6l6 6-6 6"/>', 1.6)
-    servs = ''.join(f'<a class="est-fila rv" style="--d:{i * .05}s" href="{h}"><span><b>{e(n)}</b><span>{e(d)}</span></span>{flecha}</a>' for i, (h, n, d) in enumerate(SERVICIOS_EST))
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Portafolio", "item": SITIO + "/portafolio/"}]}
     cuerpo = f"""{nav('/portafolio/', cta=CTA_FORM)}
-<main id="contenido">
-<section class="est-hero">
-  <div class="marco">
-    <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
-    <h1 class="est-t" style="margin-top:22px">Cada marca empieza con una <b>idea.</b> Nosotros la hacemos <b>crecer.</b></h1>
-    <p class="lead">Casos reales de negocios, marcas y jóvenes que trabajan con Vorka. No mostramos sus nombres para cuidar su privacidad.</p>
-    <div class="botones"><a class="est-pill" href="#trabajos">Ver trabajos {FLECHA}</a><a class="btn blanco" href="{wa('Hola Vorka, vi su portafolio y quiero platicar sobre mi proyecto.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
+<main id="contenido" class="pf-mix">
+<section class="cabecera pf-cab">
+  <div class="marco pf-cab-in">
+    <div class="pf-cab-tx">
+      <div class="migas"><a href="/">Inicio</a><span>/</span><span>Portafolio</span></div>
+      <span class="etiqueta">Portafolio</span>
+      <h1 class="h1" style="margin-top:18px">Lo que logran <span class="metal">nuestros clientes.</span></h1>
+      <p class="lead">Contenido que vende, portales propios, clientas que regresan y jóvenes que ganan becas. Casos reales, sin nombres para cuidar su privacidad.</p>
+      <div class="botones"><a class="btn tinta" href="#casos">Ver los casos {FLECHA}</a><a class="btn blanco" href="{wa('Hola Vorka, vi su portafolio y quiero platicar sobre mi proyecto.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></div>
+    </div>
+    <div class="pf-collage" aria-hidden="true">
+      <img class="c1" src="/img/portafolio/mercado.webp" width="960" height="854" alt="" decoding="async">
+      <img class="c2" src="/img/portafolio/inmobiliaria.webp" width="1280" height="860" alt="" decoding="async">
+      <img class="c3" src="/img/portafolio/brillo.webp" width="551" height="728" alt="" decoding="async">
+    </div>
   </div>
 </section>
-<div class="est-cinta" aria-hidden="true"><div class="est-cinta-in">{cinta}</div></div>
-<section class="sec pegada" id="trabajos" aria-labelledby="t-trab">
+<section class="sec pegada" id="casos" aria-labelledby="t-casos-c">
   <div class="marco">
-    <div class="est-cab rv"><h2 id="t-trab">Marcas que <b>ya crecen</b> con nosotros</h2><p>Toca un trabajo para ver qué necesitaban, qué hicimos y sus resultados.</p></div>
-    <div class="est-grid">{tiles}</div>
+    <h2 class="sr" id="t-casos-c">Casos de clientes</h2>
+    <div class="filtro-casos" role="group" aria-label="¿Qué necesitas?">{filtros}</div>
+    <div class="casos-l">{casos}</div>
+    <p class="casos-vacio" hidden>No hay casos de este tipo todavía. Cuéntanos qué necesitas y te decimos cómo lo haríamos.</p>
   </div>
 </section>
-{fichas}
-<dialog class="est-dlg" id="est-dlg" aria-label="Trabajo"><button class="est-cerrar" type="button" aria-label="Cerrar">×</button><div id="est-dlg-c"></div></dialog>
 {feeds_html()}
-<section class="sec" aria-labelledby="t-serv">
-  <div class="marco">
-    <div class="est-cab rv"><h2 id="t-serv">Lo que <b>hacemos</b> por ti</h2><p>Una sola dirección para tu marca, tu sitio y tu equipo.</p></div>
-    <div class="est-lista">{servs}</div>
-    <a class="est-barra rv" href="/servicios/#proceso">Mira cómo trabajamos {flecha}</a>
-  </div>
-</section>
 {hecho_html(enlace=False)}
 {platiquemos('/portafolio/', marcar=marcar, titulo='¿Quieres un resultado así? <span class="metal">Platiquemos.</span>')}
 </main>
 {pie('empresas')}
 <script>
 (() => {{
-  const d = document.getElementById('est-dlg'), c = document.getElementById('est-dlg-c');
-  document.querySelectorAll('[data-ficha]').forEach(b => b.addEventListener('click', () => {{
-    const t = document.getElementById('ficha-' + b.dataset.ficha); if (!t || !d.showModal) return;
-    c.replaceChildren(t.content.cloneNode(true)); d.showModal();
+  const bs = document.querySelectorAll('.filtro-casos button'), cs = document.querySelectorAll('.caso'), vacio = document.querySelector('.casos-vacio');
+  bs.forEach(b => b.addEventListener('click', () => {{
+    const f = b.dataset.f; let n = 0;
+    bs.forEach(x => x.setAttribute('aria-pressed', x === b));
+    cs.forEach(c => {{ const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) {{ c.classList.toggle('inv', n % 2 === 1); n++; }} }});
+    vacio.hidden = n > 0;
   }}));
-  d.querySelector('.est-cerrar').addEventListener('click', () => d.close());
-  d.addEventListener('click', e => {{ if (e.target === d) d.close(); }});
 }})();
 </script>"""
-    extra = (f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n'
-             f'<link rel="stylesheet" href="/assets/v3/estudio.css?v={VERSION}">\n<link rel="preload" as="image" href="/img/portafolio/inmobiliaria.webp">\n')
+    extra = f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n<link rel="preload" as="image" href="/img/portafolio/alimentos.webp">\n'
     return cabeza('Portafolio: casos de clientes · Vorka México',
-                  'Casos reales de Vorka México: contenido para redes, portal inmobiliario, tarjeta de lealtad para una estética, agente de seguros, tienda artesanal y mentoría para becas, con sus resultados.',
+                  'Casos reales de Vorka México: contenido para redes, portal inmobiliario, tarjeta de lealtad para una estética y mentoría para becas, con sus resultados.',
                   '/portafolio/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- 404
