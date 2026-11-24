@@ -55,6 +55,18 @@ SIMULADORES = [
 ]
 
 
+# REGLA: siempre que en un pie de foto salga Brandon Oleynick, su nombre lleva a su Instagram
+LIGAS_PIE = {"Brandon Oleynick": "https://www.instagram.com/oleynickhdz/"}
+
+
+def pie_html(texto):
+    """Pie de foto escapado, con los nombres de LIGAS_PIE convertidos en liga a su Instagram."""
+    h = esc(texto)
+    for nombre, url in LIGAS_PIE.items():
+        h = h.replace(esc(nombre), '<a href="%s" target="_blank" rel="noopener">%s</a>' % (url, esc(nombre)))
+    return h
+
+
 def esc(s):
     return html.escape(str(s or ""), quote=True)
 
@@ -757,10 +769,17 @@ class Sitio:
         cajas = []
         for e in activas:
             mismo = e["ruta"].rstrip("/") == self.base
-            cuantas, titulo = (len(ns), ns[0]["titulo"]) if (mismo and ns) else otras.get(e["ruta"].rstrip("/"), (0, ""))
-            cajas.append('<a class="ed" href="%s"><span class="ed-n">Sparks <b>%s</b></span><span class="ed-l">%s</span>%s</a>' % (
-                esc(e["ruta"]), esc(e["nombre"]), esc(e.get("lugar", "Guanajuato")),
-                ('<span class="ed-u">%d %s · la más reciente: %s</span>' % (cuantas, "nota" if cuantas == 1 else "notas", esc(titulo))) if cuantas
+            if mismo and ns:
+                con = next((n for n in ns if n["fotos"]), None)
+                cuantas, titulo, img = len(ns), ns[0]["titulo"], self.foto(con["fotos"][0], "800.webp") if con else ""
+            else:
+                cuantas, titulo, img = (tuple(otras.get(e["ruta"].rstrip("/"), ())) + (0, "", ""))[:3]
+            # Portadita: la foto de su nota más reciente, oscurecida para que se lea el nombre
+            cajas.append('<a class="ed%s" href="%s">%s<span class="ed-n">Sparks <b>%s</b></span><span class="ed-l">%s</span>%s</a>' % (
+                " con-foto" if img else "", esc(e["ruta"]),
+                '<img class="ed-f" src="%s" alt="" loading="lazy" decoding="async">' % esc(img) if img else "",
+                esc(e["nombre"]), esc(e.get("lugar", "Guanajuato")),
+                ('<span class="ed-u">Lo más reciente: %s</span>' % esc(titulo)) if cuantas
                 else '<span class="ed-u">Muy pronto, las primeras historias.</span>'))
         texto_prox = ""
         if proximas:
@@ -822,9 +841,15 @@ class Sitio:
         tam = [cupo // grupos + (1 if g < cupo % grupos else 0) for g in range(grupos)]
         elegidos = [huecos[int((g + 0.5) * len(huecos) / grupos)] for g in range(grupos)]
         k, lado, salida = 0, 0, {}
-        alt = lambda i: "%s, foto %d de la historia «%s» · Revista Sparks %s" % (n["persona"] or "Sparks", i + 2, n["titulo"], self.cfg["ciudad"])
+        pies = n.get("_pies", {})
+        alt = lambda i: pies.get(fotos[i]) or "%s, foto %d de la historia «%s» · Revista Sparks %s" % (n["persona"] or "Sparks", i + 2, n["titulo"], self.cfg["ciudad"])
         def a(f, i, sizes, clase=""):
             return '<a href="%s" data-lb="%d"%s>%s</a>' % (self.foto(f, "1600.webp"), i + 1, clase, self.img_tag(f, alt(i), sizes))
+        def pie(grupo, dentro=True):
+            l = [pies[f] for f in grupo if pies.get(f)]
+            if not l:
+                return ""
+            return ('<figcaption>%s</figcaption>' if dentro else '<p class="af-pie">%s</p>') % " · ".join(pie_html(x) for x in l)
         for g, t in enumerate(tam):
             grupo = fotos[k:k + t]
             if t == 1:
@@ -833,16 +858,16 @@ class Sitio:
                     # Vertical junto al texto (el párrafo siguiente la rodea), alternando lados
                     clase = "af-lado " + ("der" if lado % 2 == 0 else "izq")
                     lado += 1
-                    html = '<figure class="af %s">%s</figure>' % (clase, a(f, k, "(min-width:900px) 380px, 80vw"))
+                    html = '<figure class="af %s">%s%s</figure>' % (clase, a(f, k, "(min-width:900px) 380px, 80vw"), pie(grupo))
                 elif self.vertical(f):
-                    html = '<figure class="af af-vert">%s</figure>' % a(f, k, "(min-width:900px) 460px, 80vw")
+                    html = '<figure class="af af-vert">%s%s</figure>' % (a(f, k, "(min-width:900px) 460px, 80vw"), pie(grupo))
                 else:
-                    html = '<figure class="af af-ancha">%s</figure>' % a(f, k, "(min-width:1100px) 900px, 100vw")
+                    html = '<figure class="af af-ancha">%s%s</figure>' % (a(f, k, "(min-width:1100px) 900px, 100vw"), pie(grupo))
             elif t == 2:
-                html = '<figure class="af af-par">%s</figure>' % "".join(a(f, k + j, "(min-width:900px) 450px, 50vw") for j, f in enumerate(grupo))
+                html = '<figure class="af af-par">%s</figure>%s' % ("".join(a(f, k + j, "(min-width:900px) 450px, 50vw") for j, f in enumerate(grupo)), pie(grupo, False))
             else:
                 html = '<figure class="af af-trio">%s</figure>' % "".join(
-                    a(f, k + j, "(min-width:900px) 600px, 100vw" if j == 0 else "(min-width:900px) 300px, 50vw") for j, f in enumerate(grupo))
+                    a(f, k + j, "(min-width:900px) 600px, 100vw" if j == 0 else "(min-width:900px) 300px, 50vw") for j, f in enumerate(grupo)) + pie(grupo, False)
             salida[elegidos[g]] = html
             k += t
         return salida, fotos[cupo:]
@@ -890,7 +915,7 @@ class Sitio:
             portada = '<figure class="art-cover"><a href="%s" data-lb="0">%s</a>%s</figure>' % (
                 self.foto(n["fotos"][0], "1600.webp"),
                 self.img_tag(n["fotos"][0], n["persona"] or n["titulo"], "(min-width:1100px) 1100px, 100vw", eager=True),
-                '<figcaption>%s</figcaption>' % esc(n["pie"]) if n["pie"] else "")
+                '<figcaption>%s</figcaption>' % pie_html(n["pie"]) if n["pie"] else "")
 
         video = ""
         vid = youtube_id(n["video"])
@@ -1115,8 +1140,10 @@ def construir(cfg, args):
         if cfg.get("revista") or not os.path.exists(previo):
             return None
         try:
-            j = json.load(open(previo, encoding="utf-8")).get("n", [])
-            return (None, (len(j), j[0]["t"] if j else ""))
+            d = json.load(open(previo, encoding="utf-8"))
+            j = d.get("n", [])
+            con = next((x for x in j if x.get("i")), None)
+            return (None, (len(j), j[0]["t"] if j else "", "%s/%s-800.webp" % (d.get("img", ""), con["i"]) if con else ""))
         except Exception:
             return None
 
@@ -1134,6 +1161,8 @@ def construir(cfg, args):
         n["_d"] = hora_mexico(n.get("fecha") or n.get("creada"))
         n["_c"] = hora_mexico(n.get("creada"))
         n.setdefault("fotos", [])
+        # Pie de cada foto (viene de Vorka OS en el mismo orden que «fotos»); por id para que no se mueva si una foto falla
+        n["_pies"] = {f: (p or "").strip() for f, p in zip(n["fotos"], n.get("pies") or []) if (p or "").strip()}
         n.setdefault("etiquetas", [])
         for k in ("persona", "resumen", "texto", "pie", "video", "autor", "pagado_por"):
             n[k] = (n.get(k) or "").strip()
@@ -1190,7 +1219,8 @@ def construir(cfg, args):
 
     escribir(archivo_huella, huella)
     print("✅ Listo: %d noticias en %s" % (len(noticias), destino))
-    return (sitio, (len(noticias), noticias[0]["titulo"] if noticias else ""))
+    con = next((n for n in noticias if n["fotos"]), None)
+    return (sitio, (len(noticias), noticias[0]["titulo"] if noticias else "", sitio.foto(con["fotos"][0], "800.webp") if con else ""))
 
 
 def diagnostico(e):
