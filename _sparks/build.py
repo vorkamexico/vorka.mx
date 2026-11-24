@@ -266,6 +266,11 @@ def id_archivo(foto_id):
     return re.sub(r"[^\w-]", "_", foto_id.replace("file:", ""))[:60]
 
 
+SP_MARCAS = ('<section class="sp-marcas"><div><span class="etiqueta">Para marcas y negocios</span>'
+             '<h2 class="h3">Impulsa a los jóvenes de México <span class="metal">con tu marca.</span></h2>'
+             '<p>Conoce los proyectos que impulsamos, nuestro alcance real y las formas de sumarte.</p></div>'
+             '<a class="btn tinta" href="/sparks/anunciate/">Ver el kit de medios %s</a></section>')
+
 class Almacen:
     """Dónde viven las fotos: Cloudflare R2 si hay credenciales; si no, la carpeta img/ del repo.
     Cuando se activa R2, las fotos que estaban en el repo se suben solas y se borran del repo."""
@@ -617,7 +622,7 @@ class Sitio:
         return ('<header class="dia%s"><div class="dia-top">' % (" compacta" if compacta else "") + '<span class="dia-hoy" data-hoy>%s %d de %s de %d</span>'
                 '<a class="dia-rev" href="/sparks/">Revista Sparks</a><span class="dia-lugar">%s</span></div>'
                 '<div class="dia-marca"><%s class="dia-nombre"><a href="%s/">%s</a></%s><p class="dia-lema">%s</p></div>'
-                '<nav class="dia-sec" aria-label="Secciones">%s<a class="dia-buscar" href="%s/#buscar">%sBuscar</a></nav></header>') % (
+                '<nav class="dia-sec" aria-label="Secciones">%s<a class="dia-buscar" href="%s/#buscar">%sBuscar</a><a class="dia-anun" href="/sparks/anunciate/">Anúnciate</a></nav></header>') % (
             dias[hoy.weekday()].capitalize(), hoy.day, MESES[hoy.month - 1], hoy.year, esc(c["ciudad"]),
             "p" if actual else "h1", self.base, titular, "p" if actual else "h1", esc(c["lema"]),
             "".join(secciones), self.base, lupa)
@@ -651,7 +656,7 @@ class Sitio:
                '<p class="lead">Un logro, un evento, un proyecto que está cambiando tu colonia o una persona que vale la pena conocer.</p></div>'
                '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos por WhatsApp %s</a>'
                '<a class="btn vidrio" href="/sparks/sumate/">Súmate al equipo</a></div></section>') % (
-                   partes.v_metal("art", "gct"), ciudad_corta, esc(wa), partes.FLECHA)
+                   partes.v_metal("art", "gct"), ciudad_corta, esc(wa), partes.FLECHA) + SP_MARCAS % partes.FLECHA
         if not ns:
             # Edición nueva sin notas todavía: su presentación (si tiene) y la invitación a escribir
             partes_html.append(self.intro() + '<p class="empty">Muy pronto, las primeras historias.</p>' + cta + '</div>')
@@ -726,7 +731,7 @@ class Sitio:
                '<span class="dia-rev">Vorka México</span><span class="dia-lugar">Bajío, México</span></div>'
                '<div class="dia-marca"><h1 class="dia-nombre"><a href="/sparks/">Revista <span class="metal">Sparks</span></a></h1>'
                '<p class="dia-lema">%s</p></div><nav class="dia-sec" aria-label="Ediciones"><a href="/sparks/" aria-current="page">Portada</a>%s'
-               '<a href="#ediciones">Ediciones</a><a href="/sparks/sumate/">Súmate al equipo</a></nav></header>') % (
+               '<a href="#ediciones">Ediciones</a><a href="/sparks/sumate/">Súmate al equipo</a><a href="/sparks/anunciate/">Anúnciate</a></nav></header>') % (
             dias[hoy.weekday()].capitalize(), hoy.day, MESES[hoy.month - 1], hoy.year, esc(r.get("lema", "Noticias e historias con sentido de los municipios del Bajío")),
             "".join('<a href="%s">%s</a>' % (esc(e["ruta"]), esc(e["nombre"])) for e in activas))
         partes_html = ['<div class="marco">', cab]
@@ -770,8 +775,8 @@ class Sitio:
                             '<h2 class="h2">Si está pasando en tu municipio y <span class="metal">merece contarse,</span> escríbenos.</h2>'
                             '<p class="lead">Un logro, un evento, un proyecto que está cambiando tu colonia o una persona que vale la pena conocer.</p></div>'
                             '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos por WhatsApp %s</a>'
-                            '<a class="btn vidrio" href="/sparks/sumate/">Súmate al equipo</a></div></section></div>') % (
-                               partes.v_metal("art", "grv"), esc(wa), partes.FLECHA))
+                            '<a class="btn vidrio" href="/sparks/sumate/">Súmate al equipo</a></div></section>') % (
+                               partes.v_metal("art", "grv"), esc(wa), partes.FLECHA) + SP_MARCAS % partes.FLECHA + '</div>')
         jsonld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Revista Sparks",
                   "description": r.get("descripcion", c["descripcion"]), "url": c["sitio"].rstrip("/") + "/sparks/", "inLanguage": "es-MX",
                   "publisher": {"@type": "Organization", "name": "Vorka México", "url": c["sitio"]}}
@@ -946,7 +951,7 @@ class Sitio:
         cierre = ('<section class="sp-cta chica">%s<div class="grano"></div><div><span class="etiqueta">Revista Sparks</span>'
                   '<h2 class="h3">¿Conoces una historia así? <span class="metal">Cuéntanosla.</span></h2></div>'
                   '<div class="botones"><a class="btn plata" href="%s" target="_blank" rel="noopener">Escríbenos %s</a><a class="btn vidrio" href="%s/">Más historias</a></div></section>') % (
-                      partes.v_metal("art", "gca"), esc(wa), partes.FLECHA, self.base)
+                      partes.v_metal("art", "gca"), esc(wa), partes.FLECHA, self.base) + SP_MARCAS % partes.FLECHA
         cuerpo = """<div class="marco">
 {cabecera}
 <div class="art-wrap">
