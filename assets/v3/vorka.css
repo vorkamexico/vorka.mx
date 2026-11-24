@@ -770,3 +770,6 @@ a.capacidad { display: block; text-decoration: none; color: inherit; }
 }
 @media (prefers-reduced-motion: reduce) { .pf-collage img, .vc-ruta li.rm-va span { animation: none; } }
 .lnk-casos { color: var(--fg); font-weight: 650; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+/* portafolio: títulos que mezclan letra delgada y negrita (la parte en color va en negrita) */
+.pf-mix .h1, .pf-mix .h2 { font-weight: 300; letter-spacing: -.045em; }
+.pf-mix .h1 .metal, .pf-mix .h2 .metal, .pf-mix .h1 b, .pf-mix .h2 b { font-weight: 800; }

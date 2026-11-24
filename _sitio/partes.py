@@ -7,7 +7,7 @@ CORREO = 'hola@vorka.mx'
 WHATSAPP = '528117804869'
 # Mensaje de WhatsApp para quien todavía no nos conoce: corto y sin compromiso (antes: «ya decidí avanzar…», que espanta al que apenas explora)
 WA_MSG = 'Hola Vorka, me gustaría platicar sobre un proyecto.'
-VERSION = '28'
+VERSION = '34'
 
 def e(s):
     return html.escape(str(s), quote=True)
@@ -117,7 +117,7 @@ def cabeza(titulo, descripcion, ruta, og='cdmx-reforma', extra=''):
 <link rel="apple-touch-icon" href="/vorka-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v={VERSION}">
 {extra}</head>
 <body>
