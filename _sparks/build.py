@@ -268,7 +268,7 @@ def id_archivo(foto_id):
 
 SP_MARCAS = ('<section class="sp-marcas"><div><span class="etiqueta">Para marcas y negocios</span>'
              '<h2 class="h3">Impulsa a los jóvenes de México <span class="metal">con tu marca.</span></h2>'
-             '<p>Conoce los proyectos que impulsamos, nuestro alcance real y las formas de sumarte.</p></div>'
+             '<p>Notas de tu negocio desde $900 y patrocinios desde $400, con reporte de resultados.</p></div>'
              '<a class="btn tinta" href="/sparks/anunciate/">Ver el kit de medios %s</a></section>')
 
 class Almacen:
@@ -731,7 +731,7 @@ class Sitio:
                '<span class="dia-rev">Vorka México</span><span class="dia-lugar">Bajío, México</span></div>'
                '<div class="dia-marca"><h1 class="dia-nombre"><a href="/sparks/">Revista <span class="metal">Sparks</span></a></h1>'
                '<p class="dia-lema">%s</p></div><nav class="dia-sec" aria-label="Ediciones"><a href="/sparks/" aria-current="page">Portada</a>%s'
-               '<a href="#ediciones">Ediciones</a><a href="/sparks/sumate/">Súmate al equipo</a><a href="/sparks/anunciate/">Anúnciate</a></nav></header>') % (
+               '<a href="#ediciones">Ediciones</a><a href="/sparks/sumate/">Súmate al equipo</a><a class="dia-anun" href="/sparks/anunciate/">Anúnciate</a></nav></header>') % (
             dias[hoy.weekday()].capitalize(), hoy.day, MESES[hoy.month - 1], hoy.year, esc(r.get("lema", "Noticias e historias con sentido de los municipios del Bajío")),
             "".join('<a href="%s">%s</a>' % (esc(e["ruta"]), esc(e["nombre"])) for e in activas))
         partes_html = ['<div class="marco">', cab]
