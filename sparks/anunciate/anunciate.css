@@ -43,3 +43,13 @@
 @media (max-width: 900px) { .ak-proys { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .ak-proys { grid-template-columns: minmax(0, 1fr); } }
 .ak-precio { display: inline-block; margin-top: 10px; padding: 6px 12px; border-radius: 99px; background: var(--bg-2); font-style: normal; font-size: 14px; font-weight: 650; color: var(--fg); }
+/* solicitud: formulario que llega a os.vorka.mx › Prospectos */
+.ak-sol .v4-form-caja { color: var(--fg); border-color: transparent; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .6); }
+.ak-sol .v4-form { display: grid; gap: 14px; }
+.ak-sol .v4-campo select, .ak-sol .v4-campo textarea { border-radius: 14px; border: 1px solid var(--line-2); background: var(--bg); padding: 12px 14px; font: inherit; font-size: 16px; color: var(--fg); width: 100%; box-sizing: border-box; }
+.ak-sol .v4-campo select { height: 50px; padding: 0 14px; }
+.ak-sol .v4-campo textarea { resize: vertical; min-height: 84px; }
+.ak-sol .v4-campo select:focus, .ak-sol .v4-campo textarea:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 3px rgba(107, 42, 133, .14); }
+#solicitud, #formas { scroll-margin-top: 90px; }
+.ak-sol .lead { margin-top: 18px; }
+.ak-sol .botones { margin-top: 22px; }
