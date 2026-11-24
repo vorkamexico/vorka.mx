@@ -101,3 +101,14 @@
 .est-tile .est-pie b, .est-tile .est-pie span { display: block; height: auto; min-height: 0; padding: 0; background: none; }
 .est-tile .ver { white-space: nowrap; }
 .est-tile .ver svg { width: 14px; height: 14px; flex: none; }
+/* mezcla con el estilo del sitio: títulos con la parte dorada en negrita, filtros de casos y ficha oscura */
+.est-cab h2.h2 { font-size: clamp(30px, 3.8vw, 50px); line-height: 1.06; }
+.est-tile[hidden] { display: none; }
+.est-tile .im.texto { background: radial-gradient(120% 90% at 80% 0%, #3a2a48, var(--noche) 60%); }
+.est-tile .im.texto b { background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.est-dlg-im.osc { background: var(--noche); display: grid; place-items: center; padding: 28px; color: #fff; }
+.oscura .est-cab h2 .metal { font-weight: 800; }
+.est-tile .im.texto b { font-size: clamp(64px, 7vw, 110px); line-height: .9; }
+.est-tile .im.texto > span:not(.ver) { font-size: 17px; max-width: 16ch; }
+.est-tile[data-ficha="inmobiliaria"] .im img { object-position: left top; }
+@media (max-width: 560px) { .est-tile .im.texto { padding: 18px; } .est-tile .im.texto .ver { display: none; } .est-tile .im.texto > span:not(.ver) { font-size: 14px; } }

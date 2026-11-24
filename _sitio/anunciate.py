@@ -33,22 +33,32 @@ def pagina_anunciate():
     formas = ''.join(f"""<details class="ak-forma rv" style="--d:{i * .05}s" id="{k}"{' open' if i == 0 else ''}><summary class="est-fila"><span><b>{e(t)}</b><span>{e(sub)}</span></span>{flecha}</summary>
       <div class="ak-forma-in"><p>{e(d)}</p><ul>{''.join(f'<li>{e(x)}</li>' for x in l)}</ul><a class="est-pill" href="{wa(msg)}" target="_blank" rel="noopener">Quiero mi propuesta {FLECHA}</a></div></details>"""
         for i, (k, t, sub, d, l, msg) in enumerate(FORMAS))
+    redes_mini = ''.join(f'<span><i style="--p:{p}%"></i>{e(n)} {p} %</span>' for n, p in REDES_P)
     chips = ''.join(f'<span>{e(x)}</span>' for x in PARA * 2)
     pide = wa('Hola, vi el kit de Sparks y quiero mi propuesta.')
     cuerpo = f'''{nav('/sparks/', cta=(pide, 'Quiero mi propuesta'))}
-<main id="contenido">
-<section class="est-hero">
-  <div class="marco">
-    <div class="migas"><a href="/">Inicio</a><span>/</span><a href="/sparks/">Sparks</a><span>/</span><span>Anúnciate</span></div>
-    <h1 class="est-t" style="margin-top:22px">Llega a los jóvenes de Celaya con <b>historias,</b> no con anuncios.</h1>
-    <p class="lead">Sparks cuenta historias reales de jóvenes y de su ciudad en el sitio, Instagram, TikTok y Facebook. Tu marca puede estar ahí, de forma clara y bien hecha.</p>
-    <div class="botones"><a class="est-pill" href="{pide}" target="_blank" rel="noopener">Quiero mi propuesta {FLECHA}</a><a class="btn blanco" href="#formas">Ver formas de sumarte</a></div>
+<main id="contenido" class="pf-mix">
+<section class="cabecera pf-cab">
+  <div class="marco pf-cab-in">
+    <div class="pf-cab-tx">
+      <div class="migas"><a href="/">Inicio</a><span>/</span><a href="/sparks/">Sparks</a><span>/</span><span>Anúnciate</span></div>
+      <span class="etiqueta">Revista Sparks · Kit de medios</span>
+      <h1 class="h1" style="margin-top:18px">Llega a los jóvenes de Celaya <span class="metal">con historias,</span> no con anuncios.</h1>
+      <p class="lead">Sparks cuenta historias reales de jóvenes y de su ciudad en el sitio, Instagram, TikTok y Facebook. Tu marca puede estar ahí, de forma clara y bien hecha.</p>
+      <div class="botones"><a class="btn tinta" href="{pide}" target="_blank" rel="noopener">Quiero mi propuesta {FLECHA}</a><a class="btn blanco" href="#formas">Ver formas de sumarte</a></div>
+    </div>
+    <div class="ak-collage" aria-hidden="true">
+      <img class="c1" src="/sparks/anunciate/img/futbol.webp" width="1000" height="666" alt="" decoding="async">
+      <img class="c2" src="/sparks/anunciate/img/premio.webp" width="1000" height="562" alt="" decoding="async">
+      <img class="c3" src="/sparks/anunciate/img/viaje.webp" width="1000" height="750" alt="" decoding="async">
+      <div class="ak-tarjeta"><small>Alcance enero a septiembre</small><b>313,800</b>{redes_mini}</div>
+    </div>
   </div>
 </section>
 <div class="est-cinta" aria-hidden="true"><div class="est-cinta-in">{cinta}</div></div>
 <section class="sec pegada" aria-labelledby="t-llega">
   <div class="marco">
-    <div class="est-cab rv"><h2 id="t-llega">Una comunidad joven que <b>sí nos lee</b></h2><p>Estudiantes de prepa y universidad, sus familias y quienes trabajan con ellos. Ofrecemos estar cerca de esa comunidad, no impresiones sueltas.</p></div>
+    <div class="est-cab rv"><h2 class="h2" id="t-llega">Una comunidad joven que <span class="metal">sí nos lee</span></h2><p>Estudiantes de prepa y universidad, sus familias y quienes trabajan con ellos. Ofrecemos estar cerca de esa comunidad, no impresiones sueltas.</p></div>
     <div class="est-cifras">{cif}</div>
     <div class="ak-redes rv"><p>De dónde viene el alcance</p>{redes}</div>
     <p class="ak-fuente">Enero a septiembre de 2026. Fuente: reporte trimestral de Vorka México sobre el contenido de Celaya.</p>
@@ -56,12 +66,12 @@ def pagina_anunciate():
 </section>
 <section class="sec pegada" id="formas" aria-labelledby="t-formas">
   <div class="marco">
-    <div class="est-cab rv"><h2 id="t-formas">Elige cómo <b>quieres estar</b></h2><p>Te mandamos una propuesta con tarifas para tu marca en menos de 24 horas. Cada formato incluye su reporte de resultados.</p></div>
+    <div class="est-cab rv"><h2 class="h2" id="t-formas">Elige cómo <span class="metal">quieres estar</span></h2><p>Te mandamos una propuesta con tarifas para tu marca en menos de 24 horas. Cada formato incluye su reporte de resultados.</p></div>
     <div class="est-lista">{formas}</div>
   </div>
 </section>
 <section class="sec pegada" aria-labelledby="t-para">
-  <div class="marco"><div class="est-cab rv"><h2 id="t-para">Para marcas que quieren <b>a los jóvenes</b> de Celaya</h2></div></div>
+  <div class="marco"><div class="est-cab rv"><h2 class="h2" id="t-para">Para marcas que quieren <span class="metal">a los jóvenes</span> de Celaya</h2></div></div>
   <div class="est-chips" aria-label="Para quién es"><div class="est-chips-in">{chips}</div></div>
   <div class="marco"><div class="ak-reglas rv"><h3 class="h3">Reglas claras</h3>
     <p>Todo lo pagado se publica con la etiqueta «Contenido pagado». Patrocinar no compra decisiones editoriales: las historias las elige el equipo de Sparks. No aceptamos contenido de partidos políticos ni candidatos. La Revista Sparks es de Vorka México.</p></div></div>
@@ -69,7 +79,7 @@ def pagina_anunciate():
 <section class="sec oscura redondo" aria-labelledby="t-cierre">
   <div class="grano"></div>
   <div class="marco">
-    <div class="est-cab rv"><h2 id="t-cierre" style="color:#fff">¿Platicamos <b>tu propuesta?</b></h2><p style="color:var(--claro-2)">Escríbenos por WhatsApp con el nombre de tu marca y lo que buscas. Te respondemos con una propuesta y sus tarifas.</p></div>
+    <div class="est-cab rv"><h2 class="h2" id="t-cierre" style="color:#fff">¿Platicamos <span class="metal">tu propuesta?</span></h2><p style="color:var(--claro-2)">Escríbenos por WhatsApp con el nombre de tu marca y lo que buscas. Te respondemos con una propuesta y sus tarifas.</p></div>
     <a class="est-barra rv" href="{pide}" target="_blank" rel="noopener">Escribir por WhatsApp {flecha}</a>
   </div>
 </section>

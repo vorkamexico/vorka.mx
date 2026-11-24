@@ -520,9 +520,61 @@ def feeds_html():
 }})();
 </script>"""
 
+# Portafolio: portada con collage (estilo de siempre) + cinta de trabajos que corre, cuadrícula filtrable donde cada trabajo abre su
+# ficha en una ventana, feeds en celulares, servicios como lista con flecha y barra ancha para la acción (assets/v3/estudio.css)
+TRABAJOS = [  # (clave, imagen, ajuste, caso de datos.PORTAFOLIO o None, necesidades, título, servicio, texto si no hay caso)
+    ('inmobiliaria', 'inmobiliaria.webp', 'cubrir', 'inmobiliaria', None, None, None, None),
+    ('alimentos', 'alimentos.webp', 'cubrir', 'alimentos', None, None, None, None),
+    ('mentoria', None, 'texto', 'mentoria', None, None, None, None),
+    ('estetica', 'brillo.webp', 'contener', 'estetica', None, None, None, None),
+    ('seguros', 'tel-seguros.webp', 'cubrir', None, ('vender', 'encontrar'), 'Un agente de seguros y retiro', 'Posicionamiento, estrategia y edición de contenido',
+     'Series con título propio sobre salud, ahorro y retiro que abren conversaciones con nuevos clientes. Él es la cara de su marca; nosotros le damos dirección, estrategia y edición.'),
+    ('mercado', 'mercado.webp', 'cubrir', None, ('vender',), 'Una tienda de productos artesanales', 'Posicionamiento, estrategia y edición de contenido',
+     'Historias de quienes hacen cada producto, del panal al alebrije, para que la gente compre sabiendo de dónde viene.'),
+]
+CINTA = ['tel-alimentos.webp', 'inmobiliaria.webp', 'tel-seguros.webp', 'mercado.webp', 'tel-inmobiliaria.webp', 'alimentos.webp', 'tel-mercado.webp', 'inmobiliaria-feed.webp']
+SERVICIOS_EST = [('/servicios/influencia/', 'Contenido y redes', 'Estrategia, posicionamiento y edición para que tu marca se vea como lo que es, cada semana.'),
+                 ('/servicios/apps/', 'Páginas, portales y apps', 'Tu propio sitio, tu catálogo o tu sistema, con tu dominio y sin depender de nadie.'),
+                 ('/tienda/', 'Lealtad y control del negocio', 'Vuelve para que tus clientes regresen y Brillo para llevar tu estética en orden.'),
+                 ('/servicios/estrategia/', 'Estrategia y dirección', 'Decisiones grandes con un plan claro, desde el diagnóstico hasta la ejecución.'),
+                 ('/servicios/liderazgo/', 'Liderazgo y mentoría', 'Equipos que deciden mejor y jóvenes que llegan listos a becas y convocatorias.')]
+
+def datos_trabajo(t):
+    k, img, ajuste, ref, necs, titulo, serv, texto = t
+    c = next((x for x in PORTAFOLIO if x[0] == ref), None)
+    if c:
+        return dict(k=k, img=img, ajuste=ajuste, necs=c[1], serv=c[2], titulo=c[3], texto=c[4], hicimos=c[5], cifras=c[6], wa=c[8])
+    return dict(k=k, img=img, ajuste=ajuste, necs=necs, serv=serv, titulo=titulo, texto=texto, hicimos=[], cifras=[],
+                wa=f'Hola Vorka, vi en su portafolio el trabajo de {titulo[0].lower() + titulo[1:]} y quiero algo así.')
+
+def ficha_trabajo(d):
+    nums = f'<div class="est-dlg-nums">{"".join(f"<div><b>{e(b)}</b><span>{e(x)}</span></div>" for b, x in d["cifras"])}</div>' if d['cifras'] else ''
+    hechos = f'<ul>{"".join(f"<li>{e(h)}</li>" for h in d["hicimos"])}</ul>' if d['hicimos'] else ''
+    if d['img']:
+        im = f'<div class="est-dlg-im{" contener" if d["ajuste"] == "contener" else ""}"><img src="/img/portafolio/{d["img"]}" alt="" loading="lazy"></div>'
+    else:
+        im = f'<div class="est-dlg-im osc">{visual_caso(d["k"])}</div>'
+    return (f'<template id="ficha-{d["k"]}"><div class="est-dlg-in">{im}<div class="est-dlg-tx"><small>{e(d["serv"])}</small><h3>{e(d["titulo"])}</h3>'
+            f'<p>{e(d["texto"])}</p>{nums}{hechos}<a class="btn tinta" href="{wa(d["wa"])}" target="_blank" rel="noopener">Quiero algo así {FLECHA}</a></div></div></template>')
+
+def tile_trabajo(d, i):
+    if d['ajuste'] == 'texto':
+        b, x = d['cifras'][-1] if d['cifras'] else ('Vorka', '')
+        im = f'<span class="im texto"><b>{e(b)}</b><span>{e(x)}</span><span class="ver">Ver trabajo {FLECHA}</span></span>'
+    else:
+        im = (f'<span class="im{" contener" if d["ajuste"] == "contener" else ""}"><img src="/img/portafolio/{d["img"]}" alt="{e(d["titulo"])}, trabajo de Vorka con la marca difuminada" '
+              f'loading="{"eager" if i < 3 else "lazy"}" decoding="async"><span class="ver">Ver trabajo {FLECHA}</span></span>')
+    return (f'<button class="est-tile rv" style="--d:{(i % 3) * .07}s" type="button" data-ficha="{d["k"]}" data-nec="{" ".join(d["necs"])}">{im}'
+            f'<span class="est-pie"><b>{e(d["titulo"])}</b><span>{e(d["serv"])}</span></span></button>')
+
 def portafolio():
+    ds = [datos_trabajo(t) for t in TRABAJOS]
     filtros = '<button type="button" aria-pressed="true" data-f="">Todos</button>' + ''.join(f'<button type="button" aria-pressed="false" data-f="{k}">{e(t)}</button>' for k, t in NECESIDADES)
-    casos = ''.join(caso_html(c, i) for i, c in enumerate(PORTAFOLIO))
+    tiles = ''.join(tile_trabajo(d, i) for i, d in enumerate(ds))
+    fichas = ''.join(ficha_trabajo(d) for d in ds)
+    cinta = ''.join(f'<figure><img src="/img/portafolio/{f}" alt="" loading="eager" decoding="async"></figure>' for f in CINTA * 2)
+    flecha = ico('<path d="M5 12h14M13 6l6 6-6 6"/>', 1.6)
+    servs = ''.join(f'<a class="est-fila rv" style="--d:{i * .05}s" href="{h}"><span><b>{e(n)}</b><span>{e(d)}</span></span>{flecha}</a>' for i, (h, n, d) in enumerate(SERVICIOS_EST))
     marcar = sorted({x for c in PORTAFOLIO for x in c[7]})
     migas_ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": 1, "name": "Inicio", "item": SITIO + "/"}, {"@type": "ListItem", "position": 2, "name": "Portafolio", "item": SITIO + "/portafolio/"}]}
@@ -544,33 +596,51 @@ def portafolio():
     </div>
   </div>
 </section>
+<div class="est-cinta" aria-hidden="true"><div class="est-cinta-in">{cinta}</div></div>
 <section class="sec pegada" id="casos" aria-labelledby="t-casos-c">
   <div class="marco">
-    <h2 class="sr" id="t-casos-c">Casos de clientes</h2>
+    <div class="est-cab rv"><h2 class="h2" id="t-casos-c">Marcas que <span class="metal">ya crecen</span> con nosotros</h2><p>Elige lo que necesitas y toca un trabajo para ver qué buscaban, qué hicimos y sus resultados.</p></div>
     <div class="filtro-casos" role="group" aria-label="¿Qué necesitas?">{filtros}</div>
-    <div class="casos-l">{casos}</div>
+    <div class="est-grid">{tiles}</div>
     <p class="casos-vacio" hidden>No hay casos de este tipo todavía. Cuéntanos qué necesitas y te decimos cómo lo haríamos.</p>
   </div>
 </section>
+{fichas}
+<dialog class="est-dlg" id="est-dlg" aria-label="Trabajo"><button class="est-cerrar" type="button" aria-label="Cerrar">×</button><div id="est-dlg-c"></div></dialog>
 {feeds_html()}
+<section class="sec" aria-labelledby="t-serv">
+  <div class="marco">
+    <div class="est-cab rv"><h2 class="h2" id="t-serv">Lo que <span class="metal">hacemos</span> por ti</h2><p>Una sola dirección para tu marca, tu sitio y tu equipo.</p></div>
+    <div class="est-lista">{servs}</div>
+    <a class="est-barra rv" href="/servicios/#proceso">Mira cómo trabajamos {flecha}</a>
+  </div>
+</section>
 {hecho_html(enlace=False)}
 {platiquemos('/portafolio/', marcar=marcar, titulo='¿Quieres un resultado así? <span class="metal">Platiquemos.</span>')}
 </main>
 {pie('empresas')}
 <script>
 (() => {{
-  const bs = document.querySelectorAll('.filtro-casos button'), cs = document.querySelectorAll('.caso'), vacio = document.querySelector('.casos-vacio');
+  const bs = document.querySelectorAll('.filtro-casos button'), ts = document.querySelectorAll('.est-tile'), vacio = document.querySelector('.casos-vacio');
   bs.forEach(b => b.addEventListener('click', () => {{
     const f = b.dataset.f; let n = 0;
     bs.forEach(x => x.setAttribute('aria-pressed', x === b));
-    cs.forEach(c => {{ const ok = !f || c.dataset.nec.split(' ').includes(f); c.hidden = !ok; if (ok) {{ c.classList.toggle('inv', n % 2 === 1); n++; }} }});
+    ts.forEach(t => {{ const ok = !f || t.dataset.nec.split(' ').includes(f); t.hidden = !ok; if (ok) n++; }});
     vacio.hidden = n > 0;
   }}));
+  const d = document.getElementById('est-dlg'), c = document.getElementById('est-dlg-c');
+  ts.forEach(b => b.addEventListener('click', () => {{
+    const t = document.getElementById('ficha-' + b.dataset.ficha); if (!t || !d.showModal) return;
+    c.replaceChildren(t.content.cloneNode(true)); d.showModal(); requestAnimationFrame(() => c.firstElementChild.classList.add('visto'));
+  }}));
+  d.querySelector('.est-cerrar').addEventListener('click', () => d.close());
+  d.addEventListener('click', e => {{ if (e.target === d) d.close(); }});
 }})();
 </script>"""
-    extra = f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n<link rel="preload" as="image" href="/img/portafolio/alimentos.webp">\n'
+    extra = (f'<script type="application/ld+json">{json.dumps(migas_ld, ensure_ascii=False)}</script>\n'
+             f'<link rel="stylesheet" href="/assets/v3/estudio.css?v={VERSION}">\n<link rel="preload" as="image" href="/img/portafolio/mercado.webp">\n')
     return cabeza('Portafolio: casos de clientes · Vorka México',
-                  'Casos reales de Vorka México: contenido para redes, portal inmobiliario, tarjeta de lealtad para una estética y mentoría para becas, con sus resultados.',
+                  'Casos reales de Vorka México: contenido para redes, portal inmobiliario, tarjeta de lealtad para una estética, agente de seguros, tienda artesanal y mentoría para becas, con sus resultados.',
                   '/portafolio/', og='monterrey-skyline', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- 404
