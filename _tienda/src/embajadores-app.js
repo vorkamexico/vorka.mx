@@ -33,7 +33,7 @@ const CSS_EQUIPO = `<style>
 .seg a[aria-pressed="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .rango{display:grid;gap:12px}
 .rango-cab{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.rango-cab b{font-size:20px;letter-spacing:-.02em}.rango-cab small{display:block;color:var(--fg3);font-size:12.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase}
+.rango-cab b{font-size:20px;letter-spacing:-.02em}.rango-cab small{display:block;color:var(--fg3);font-size:12.5px;font-weight:650}
 .insig{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:750;background:var(--s2);border:1px solid var(--line2);white-space:nowrap}
 .insig i{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
 .rangos3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
