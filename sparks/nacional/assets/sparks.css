@@ -484,3 +484,9 @@
 .art-body .sim b { font-size: 17px; letter-spacing: -.015em; }
 .art-body .sim p { margin: 4px 0 0; font-size: 15px; line-height: 1.45; color: var(--fg-2, var(--fg)); }
 .art-wrap .art-body .sim { max-width: none; }
+/* Para marcas: liga visible al kit de medios (/sparks/anunciate/) en portadas, ediciones y cada nota */
+.sp-marcas { display: flex; align-items: center; justify-content: space-between; gap: 20px 32px; flex-wrap: wrap; margin: 20px 0 0; padding: clamp(22px, 3.2vw, 32px) clamp(22px, 3.6vw, 40px); border-radius: 26px; background: var(--card, #fff); border: 1px solid var(--line); }
+.sp-marcas .etiqueta { margin-bottom: 10px; }
+.sp-marcas h2 { margin: 0 0 6px; }
+.sp-marcas p { margin: 0; color: var(--fg-2); font-size: 15.5px; max-width: 520px; }
+.dia-anun { font-weight: 700; color: var(--fg) !important; }
