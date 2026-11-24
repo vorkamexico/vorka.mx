@@ -660,24 +660,34 @@
   .ldm-agenda b { display: block; color: #fff; font-size: 15.5px; margin-bottom: 2px; }
   .ldm-agenda span { font-size: 14px; line-height: 1.45; color: rgba(245,245,240,.7); }
   .ldm-agenda .t { margin: 0 0 4px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
-  .ldm-proy { margin: 26px 0 14px; padding: clamp(24px, 4vw, 40px); border-radius: 28px; background: #FBF6EC; border: 1px solid var(--rule); }
-  .ldm-proy-cab { max-width: 62ch; margin-bottom: 22px; }
-  .ldm-proy-cab h3 { margin: 0 0 10px; font-size: clamp(1.5rem, 2.8vw, 2.1rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 800; color: var(--ink); }
-  .ldm-proy-cab h3 span { color: #C97A0A; }
-  .ldm-proy-cab p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--muted); }
-  .ldm-proy-op { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  .ldm-proy-op .op { display: flex; flex-direction: column; gap: 8px; padding: 22px 20px; border-radius: 20px; background: #fff; border: 1px solid var(--rule); color: var(--ink); transition: transform .2s, border-color .2s; }
-  .ldm-proy-op .op:hover { transform: translateY(-3px); border-color: var(--ink); }
-  .ldm-proy-op .op.guia { background: #141414; border-color: #141414; color: #fff; }
-  .ldm-proy-op .et { align-self: flex-start; padding: 4px 11px; border-radius: 999px; background: #F1EBDD; font-size: 12.5px; font-weight: 700; color: #6b5a33; }
-  .ldm-proy-op .guia .et { background: var(--accent); color: #141414; }
-  .ldm-proy-op b { font-size: 1.12rem; line-height: 1.25; letter-spacing: -.02em; }
-  .ldm-proy-op .op > span:not(.et):not(.ir) { flex: 1; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
-  .ldm-proy-op .guia > span:not(.et):not(.ir) { color: rgba(255,255,255,.75); }
-  .ldm-proy-op .ir { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 800; }
+  .ldm-proy { margin: 26px 0 14px; padding: clamp(24px, 4vw, 44px); border-radius: 28px; background: var(--paper-2); border: 1px solid var(--rule); color: var(--ink); }
+  .ldm-proy-cab { max-width: 60ch; margin: 0 auto 24px; text-align: center; }
+  .ldm-proy-cab h3 { margin: 0 0 10px; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 800; color: var(--ink); }
+  .ldm-proy-cab h3 span { color: var(--accent-ink, #B86E00); }
+  .ldm-proy-cab p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--ink-soft); }
+  .ldm-proy-demo { list-style: none; margin: 0 0 28px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .ldm-proy-demo li { display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 18px; background: var(--paper); border: 1px solid var(--rule); box-shadow: inset 0 4px 0 var(--accent); }
+  .ldm-proy-demo b { font-size: 15.5px; color: var(--ink); letter-spacing: -.01em; }
+  .ldm-proy-demo span { font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+  .ldm-proy-sub { margin: 0 0 14px; text-align: center; font-size: 16px; font-weight: 700; color: var(--ink); }
+  .ldm-proy-op { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .ldm-proy-op .op { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px 20px; border-radius: 22px; background: var(--paper); border: 1.5px solid var(--rule); color: var(--ink); transition: transform .2s, border-color .2s, box-shadow .2s; }
+  .ldm-proy-op .op:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .ldm-proy-op .op.guia { background: #141414; border: 2px solid var(--accent); color: #fff; box-shadow: 0 0 0 5px rgba(247,179,62,.16); }
+  .ldm-proy-op .para { font-size: 13.5px; font-weight: 600; color: var(--muted); }
+  .ldm-proy-op .guia .para { color: var(--accent); }
+  .ldm-proy-op b { font-size: 1.15rem; line-height: 1.25; letter-spacing: -.02em; color: inherit; }
+  .ldm-proy-op .txt { flex: 1; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
+  .ldm-proy-op .guia .txt { color: rgba(255,255,255,.82); }
+  .ldm-proy-op .pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--rule); }
+  .ldm-proy-op .guia .pie { border-top-color: rgba(255,255,255,.16); }
+  .ldm-proy-op .pr { font-size: 14px; font-weight: 800; color: inherit; }
+  .ldm-proy-op .ir { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 800; color: inherit; }
   .ldm-proy-op .ir svg { width: 14px; height: 14px; }
   .ldm-proy-op .guia .ir { color: var(--accent); }
+  @media (max-width: 960px) { .ldm-proy-demo { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 860px) { .ldm-proy-op { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { .ldm-proy-demo { grid-template-columns: 1fr; } }
   .ldm-ses { display: grid; gap: 8px; margin: 10px 0 0; }
   .ldm-ses > div { padding: 11px 13px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
   .ldm-ses > div.r { border-color: rgba(247,179,62,.55); background: rgba(247,179,62,.08); }
@@ -1002,26 +1012,33 @@
     <div class="ldm-proy" id="proyecto">
       <div class="ldm-proy-cab">
         <h3>Tu proyecto social, <span>paso a paso.</span></h3>
-        <p>Es lo que más pesa en tu postulación y donde más aspirantes se atoran. Empieza por donde estés: sin idea, con una idea suelta o con un proyecto que ya camina.</p>
+        <p>Es lo que más pesa en el paso 4 y donde más aspirantes se atoran. Antes de entregar, revisa que tu proyecto demuestre estas cuatro cosas.</p>
       </div>
+      <ul class="ldm-proy-demo">
+        <li><b>Una necesidad real</b><span>Qué problema atiendes, en qué lugar y con qué dato lo sabes.</span></li>
+        <li><b>Lo que hiciste tú</b><span>Tu papel concreto: qué propusiste, organizaste o dirigiste.</span></li>
+        <li><b>Resultados que se cuentan</b><span>Personas atendidas, horas, kilos, árboles, talleres o lo que aplique.</span></li>
+        <li><b>Evidencia que se comprueba</b><span>Fotos con fecha, reportes, testimonios, constancias y publicaciones.</span></li>
+      </ul>
+      <p class="ldm-proy-sub">¿Te falta algo? Empieza por donde estés.</p>
       <div class="ldm-proy-op">
         <a class="op guia" href="../proyecto-social/#guia">
-          <span class="et">Gratis</span>
-          <b>Guía: cómo hacer un proyecto social</b>
-          <span>Qué es, cómo saber si tu proyecto sí es social, los 10 pasos para armarlo y los errores que más se repiten.</span>
-          <span class="ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+          <span class="para">Si quieres armarlo tú</span>
+          <b>Guía para hacer un proyecto social</b>
+          <span class="txt">Los 10 pasos para armarlo, cómo saber si sí es social y los errores que más se repiten.</span>
+          <span class="pie"><span class="pr">Gratis</span><span class="ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></span>
         </a>
-        <a class="op test" href="https://vorka.mx/que-proyecto-social/">
-          <span class="et">$149</span>
+        <a class="op" href="https://vorka.mx/que-proyecto-social/">
+          <span class="para">Si todavía no tienes idea</span>
           <b>¿Qué proyecto social hago?</b>
-          <span>Contestas 14 preguntas y te llegan ideas a tu medida, según tu tiempo, tu presupuesto y lo que te mueve.</span>
-          <span class="ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+          <span class="txt">Contestas 14 preguntas y recibes ideas a tu medida, según tu tiempo, tu presupuesto y lo que te importa.</span>
+          <span class="pie"><span class="pr">$149</span><span class="ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></span>
         </a>
-        <a class="op revisar" href="#mentoria">
-          <span class="et">Desde $300</span>
+        <a class="op" href="#mentoria">
+          <span class="para">Si ya tienes proyecto</span>
           <b>Revisarlo conmigo</b>
-          <span>Si ya tienes proyecto, lo revisamos juntos y ordenamos tus evidencias para el paso 4.</span>
-          <span class="ir">Ver cómo agendar ↓</span>
+          <span class="txt">Vemos qué le falta, cómo contar su impacto y ordenamos tus evidencias para el paso 4.</span>
+          <span class="pie"><span class="pr">Desde $300</span><span class="ir">Ver cómo agendar ↓</span></span>
         </a>
       </div>
     </div>
