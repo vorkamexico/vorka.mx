@@ -1,15 +1,28 @@
 # Vorka México · kit de medios de la Revista Sparks (/sparks/anunciate/): para marcas y negocios con público joven que quieren estar en Sparks.
-# Alcance: suma de TODAS las publicaciones de Sparks medidas en Vorka OS (reporte_piezas de todos los municipios, enero a noviembre de 2026,
-# consulta del 2026-11-24): 458,885 entre Instagram (287,340), TikTok (146,554) y Facebook (24,991) en 69 publicaciones.
+# Alcance: suma de TODAS las publicaciones de Sparks medidas en Vorka OS (reporte_piezas de todos los municipios), en vivo.
 # Precios públicos (decisión de Brandon, 2026-11-24), antes de IVA; los mismos que vorka-os/src/catalogo-sparks.js.
 # Las solicitudes van a os.vorka.mx › Prospectos (POST /api/publico/vorka/interes, origen sparks_kit, WhatsApp obligatorio).
 # Fotos reales publicadas en Sparks (sparks/anunciate/img/).
 from partes import *
 
-ALCANCE_TOTAL = '458,885'
-CIFRAS = [(ALCANCE_TOTAL, 'de alcance acumulado en redes'), ('6,650', 'de alcance promedio por publicación'), ('1,351', 'estudiantes en activaciones'), ('72', 'proyectos juveniles acompañados')]
-REDES_P = [('Instagram', 63), ('TikTok', 32), ('Facebook', 5)]
-FUENTE = 'Enero a noviembre de 2026, todas las ediciones y municipios donde publica Sparks. Fuente: reportes de Vorka México.'
+# El alcance se lee en vivo de os.vorka.mx/api/publico/sparks/alcance (suma de todas las publicaciones medidas): al construir la página
+# y otra vez en el navegador, así nunca hay que actualizarlo a mano. Si os no responde, quedan estas cifras (consulta del 2026-11-24).
+API_ALCANCE = 'https://os.vorka.mx/api/publico/sparks/alcance'
+ALCANCE_RESPALDO = {'total': 458885, 'promedio': 6650, 'anio': 2026,
+                    'redes': [{'red': 'Instagram', 'pct': 63}, {'red': 'TikTok', 'pct': 32}, {'red': 'Facebook', 'pct': 5}]}
+
+def datos_alcance():
+    import json, urllib.request
+    try:
+        with urllib.request.urlopen(urllib.request.Request(API_ALCANCE, headers={'User-Agent': 'vorka-sitio'}), timeout=6) as r:
+            d = json.load(r)
+        return d if d.get('total') else ALCANCE_RESPALDO
+    except Exception:
+        return ALCANCE_RESPALDO
+
+def miles(n):
+    return f'{int(n):,}'
+
 # (clave, nombre, para qué, precio, qué es, qué incluye)
 FORMAS = [
     ('nota', 'Nota de tu negocio', 'La hacemos nosotros de principio a fin', '$1,800 + IVA',
@@ -30,7 +43,8 @@ FORMAS = [
 ]
 PARA = ['Cafeterías y restaurantes', 'Lugares para salir', 'Gimnasios y estudios', 'Deportes', 'Cursos e idiomas', 'Capacitación',
         'Bancos y cajas', 'Apps para jóvenes', 'Ropa y accesorios', 'Tecnología', 'Marcas locales', 'Empresas que buscan talento joven']
-# Proyectos que impulsamos: historias reales publicadas en Sparks (se leen de sparks/celaya/noticias.json; si una ya no está, se omite)
+# Proyectos que impulsamos: las notas de jóvenes MÁS LEÍDAS de los últimos 60 días (os.vorka.mx/api/publico/sparks/populares, en el navegador);
+# mientras no haya lecturas, o si os no responde, salen estas historias (de sparks/celaya/noticias.json; si una ya no está, se omite)
 PROYECTOS = ['andrea', 'sara', 'amay-caballero', 'coria', 'ximena-martinez', 'chimal']
 
 def proyectos_html():
@@ -41,10 +55,12 @@ def proyectos_html():
     except Exception:
         return ''
     por = {n['s']: n for n in d.get('n', [])}
+    # Las fotos viven en fotos.vorka.mx; si la copia local se generó sin R2 trae rutas del repo que no existen en línea
+    base = d.get('img') if str(d.get('img', '')).startswith('https://') else 'https://fotos.vorka.mx/celaya'
     tarjetas = []
     for i, k in enumerate(x for x in PROYECTOS if x in por):
         n = por[k]
-        tarjetas.append(f'<a class="ak-proy rv" style="--d:{(i % 3) * .07}s" href="/sparks/celaya/{e(n["s"])}/"><span class="im"><img src="{e(d["img"])}/{e(n["i"])}-800.webp" alt="{e(n.get("p") or "")}" loading="lazy" decoding="async"></span>'
+        tarjetas.append(f'<a class="ak-proy rv" style="--d:{(i % 3) * .07}s" href="/sparks/celaya/{e(n["s"])}/"><span class="im"><img src="{e(base)}/{e(n["i"])}-800.webp" alt="{e(n.get("p") or "")}" loading="lazy" decoding="async"></span>'
                         f'<b>{e(n["t"])}</b><span>Leer su historia</span></a>')
     return ''.join(tarjetas)
 
@@ -121,14 +137,20 @@ def solicitud_html():
 </script>'''
 
 def pagina_anunciate():
+    al = datos_alcance()
+    REDES_P = [(x['red'], x['pct']) for x in al['redes']]
+    CIFRAS = [(miles(al['total']), 'de alcance acumulado en redes', 'total'), (miles(al['promedio']), 'de alcance promedio por publicación', 'promedio'),
+              ('1,351', 'estudiantes en activaciones', ''), ('72', 'proyectos juveniles acompañados', '')]
+    FUENTE = f'Todas las publicaciones de Sparks medidas desde {al.get("anio") or 2026}, en todas las ediciones y municipios. Se actualiza solo. Fuente: reportes de Vorka México.'
     cinta = ''.join(f'<figure><img src="/sparks/anunciate/img/{k}.webp" alt="" loading="eager" decoding="async"></figure>' for k in CINTA_K * 2)
-    cif = ''.join(f'<div class="rv" style="--d:{i * .06}s"><b>{e(n)}</b><span>{e(t)}</span></div>' for i, (n, t) in enumerate(CIFRAS))
-    redes = ''.join(f'<div class="ak-red"><span>{e(n)}</span><i style="--p:{p}%"></i><b>{p} %</b></div>' for n, p in REDES_P)
+    atr = lambda k: f' data-al="{k}"' if k else ''
+    cif = ''.join(f'<div class="rv" style="--d:{i * .06}s"><b{atr(k)}>{e(n)}</b><span>{e(t)}</span></div>' for i, (n, t, k) in enumerate(CIFRAS))
+    redes = ''.join(f'<div class="ak-red" data-red="{e(n)}"><span>{e(n)}</span><i style="--p:{p}%"></i><b>{p} %</b></div>' for n, p in REDES_P)
     flecha = ico('<path d="M5 12h14M13 6l6 6-6 6"/>', 1.6)
     formas = ''.join(f"""<details class="ak-forma rv" style="--d:{i * .05}s" id="{k}"{' open' if i == 0 else ''}><summary class="est-fila"><span><b>{e(t)}</b><span>{e(sub)}</span><i class="ak-precio">{e(pr)}</i></span>{flecha}</summary>
       <div class="ak-forma-in"><p>{e(d)}</p><ul>{''.join(f'<li>{e(x)}</li>' for x in l)}</ul><a class="est-pill" href="#solicitud" data-formato="{k}">Quiero esta {FLECHA}</a></div></details>"""
         for i, (k, t, sub, pr, d, l) in enumerate(FORMAS))
-    redes_mini = ''.join(f'<span><i style="--p:{p}%"></i>{e(n)} {p} %</span>' for n, p in REDES_P)
+    redes_mini = ''.join(f'<span data-red="{e(n)}"><i style="--p:{p}%"></i>{e(n)} <em>{p}</em> %</span>' for n, p in REDES_P)
     chips = ''.join(f'<span>{e(x)}</span>' for x in PARA * 2)
     cuerpo = f'''{nav('/sparks/', cta=('#solicitud', 'Quiero mi propuesta'))}
 <main id="contenido" class="pf-mix">
@@ -145,7 +167,7 @@ def pagina_anunciate():
       <img class="c1" src="/sparks/anunciate/img/futbol.webp" width="1000" height="666" alt="" decoding="async">
       <img class="c2" src="/sparks/anunciate/img/premio.webp" width="1000" height="562" alt="" decoding="async">
       <img class="c3" src="/sparks/anunciate/img/viaje.webp" width="1000" height="750" alt="" decoding="async">
-      <div class="ak-tarjeta"><small>Alcance en redes en 2026</small><b>{ALCANCE_TOTAL}</b>{redes_mini}</div>
+      <div class="ak-tarjeta"><small>Alcance acumulado en redes</small><b data-al="total">{miles(al["total"])}</b>{redes_mini}</div>
     </div>
   </div>
 </section>
@@ -175,6 +197,37 @@ def pagina_anunciate():
   <div class="est-chips" aria-label="Para quién es"><div class="est-chips-in">{chips}</div></div>
 </section>
 {solicitud_html()}
+<script>
+// Los proyectos que impulsamos: las notas de jóvenes más leídas (se actualiza solo). Si no hay datos, se queda la lista de la página.
+(() => {{
+  const CATS = ['Historias', 'Emprendimiento', 'Deporte', 'Educación', 'Cultura'], ED = ['celaya', 'cortazar', 'nacional'];
+  const caja = document.querySelector('.ak-proys'); if (!caja) return;
+  const esc = t => String(t || '').replace(/[&<>"]/g, c => ({{ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }})[c]);
+  Promise.all([fetch('https://os.vorka.mx/api/publico/sparks/populares').then(r => r.ok ? r.json() : null).catch(() => null),
+    ...ED.map(ed => fetch('/sparks/' + ed + '/noticias.json').then(r => r.ok ? r.json() : null).catch(() => null))]).then(([pop, ...eds]) => {{
+    if (!pop || !pop.notas || !pop.notas.length) return;
+    const por = {{}};
+    eds.forEach((d, i) => d && (d.n || []).forEach(n => {{ por[ED[i] + '/' + n.s] = {{ n, img: d.img, ed: ED[i] }}; }}));
+    const top = pop.notas.map(x => por[x.e + '/' + x.s]).filter(x => x && CATS.includes(x.n.c) && x.n.i).slice(0, 6);
+    if (top.length < 3) return;
+    // Completa con las de la página que no estén ya
+    const ya = new Set(top.map(x => '/sparks/' + x.ed + '/' + x.n.s + '/'));
+    const resto = [...caja.querySelectorAll('.ak-proy')].filter(a => !ya.has(a.getAttribute('href'))).slice(0, 6 - top.length).map(a => a.outerHTML);
+    caja.innerHTML = top.map(x => '<a class="ak-proy rv visto" href="/sparks/' + x.ed + '/' + esc(x.n.s) + '/"><span class="im"><img src="' + esc(x.img) + '/' + esc(x.n.i) + '-800.webp" alt="' + esc(x.n.p) + '" loading="lazy" decoding="async"></span><b>' + esc(x.n.t) + '</b><span>Leer su historia</span></a>').join('') + resto.join('');
+  }});
+}})();
+// Alcance en vivo desde os.vorka.mx (mismo cálculo que al construir la página); si no responde, se quedan las cifras de la página
+fetch('{API_ALCANCE}').then(r => r.ok ? r.json() : null).then(d => {{
+  if (!d || !d.total) return;
+  const m = n => Number(n).toLocaleString('en-US');
+  document.querySelectorAll('[data-al=total]').forEach(x => x.textContent = m(d.total));
+  document.querySelectorAll('[data-al=promedio]').forEach(x => x.textContent = m(d.promedio));
+  (d.redes || []).forEach(r => document.querySelectorAll('[data-red="' + r.red + '"]').forEach(x => {{
+    const i = x.querySelector('i'); if (i) i.style.setProperty('--p', r.pct + '%');
+    const t = x.querySelector('b') || x.querySelector('em'); if (t) t.textContent = x.querySelector('b') ? r.pct + ' %' : r.pct;
+  }}));
+}}).catch(() => {{}});
+</script>
 </main>
 {pie()}'''
     extra = f'<link rel="stylesheet" href="/assets/v3/estudio.css?v={VERSION}">\n<link rel="stylesheet" href="/sparks/anunciate/anunciate.css?v={VERSION}">\n'
