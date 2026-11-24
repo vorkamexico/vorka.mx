@@ -378,7 +378,7 @@ button.opcion{width:100%;background:none;border:0;border-bottom:1px solid var(--
 }
 /* computadora: menú lateral y vistas a dos columnas (en celular y tableta no cambia nada) */
 @media (min-width:1024px){
-  .app{max-width:1240px;display:grid;grid-template-columns:228px minmax(0,1fr);column-gap:56px;align-items:start;padding:0 40px 56px}
+  .app:has(>.lado){max-width:1240px;display:grid;grid-template-columns:228px minmax(0,1fr);column-gap:56px;align-items:start;padding:0 40px 56px}
   .lado{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:26px;padding:30px 0 28px}
   .lado .barra{position:static;margin:0;padding:0 4px;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;border:0}
   .tabs{position:static;transform:none;left:auto;bottom:auto;width:auto;max-width:none;display:flex;flex-direction:column;gap:2px;padding:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;border:0;border-radius:0;box-shadow:none}
