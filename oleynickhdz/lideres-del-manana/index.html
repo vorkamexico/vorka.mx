@@ -660,34 +660,41 @@
   .ldm-agenda b { display: block; color: #fff; font-size: 15.5px; margin-bottom: 2px; }
   .ldm-agenda span { font-size: 14px; line-height: 1.45; color: rgba(245,245,240,.7); }
   .ldm-agenda .t { margin: 0 0 4px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
-  .ldm-proy { margin: 26px 0 14px; padding: clamp(24px, 4vw, 44px); border-radius: 28px; background: var(--paper-2); border: 1px solid var(--rule); color: var(--ink); }
-  .ldm-proy-cab { max-width: 60ch; margin: 0 auto 24px; text-align: center; }
-  .ldm-proy-cab h3 { margin: 0 0 10px; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 800; color: var(--ink); }
-  .ldm-proy-cab h3 span { color: var(--accent-ink, #B86E00); }
-  .ldm-proy-cab p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--ink-soft); }
-  .ldm-proy-demo { list-style: none; margin: 0 0 28px; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-  .ldm-proy-demo li { display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 18px; background: var(--paper); border: 1px solid var(--rule); box-shadow: inset 0 4px 0 var(--accent); }
-  .ldm-proy-demo b { font-size: 15.5px; color: var(--ink); letter-spacing: -.01em; }
-  .ldm-proy-demo span { font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
-  .ldm-proy-sub { margin: 0 0 14px; text-align: center; font-size: 16px; font-weight: 700; color: var(--ink); }
-  .ldm-proy-op { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-  .ldm-proy-op .op { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px 20px; border-radius: 22px; background: var(--paper); border: 1.5px solid var(--rule); color: var(--ink); transition: transform .2s, border-color .2s, box-shadow .2s; }
-  .ldm-proy-op .op:hover { transform: translateY(-3px); border-color: var(--accent); }
-  .ldm-proy-op .op.guia { background: #141414; border: 2px solid var(--accent); color: #fff; box-shadow: 0 0 0 5px rgba(247,179,62,.16); }
-  .ldm-proy-op .para { font-size: 13.5px; font-weight: 600; color: var(--muted); }
-  .ldm-proy-op .guia .para { color: var(--accent); }
-  .ldm-proy-op b { font-size: 1.15rem; line-height: 1.25; letter-spacing: -.02em; color: inherit; }
-  .ldm-proy-op .txt { flex: 1; font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); }
-  .ldm-proy-op .guia .txt { color: rgba(255,255,255,.82); }
-  .ldm-proy-op .pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--rule); }
-  .ldm-proy-op .guia .pie { border-top-color: rgba(255,255,255,.16); }
-  .ldm-proy-op .pr { font-size: 14px; font-weight: 800; color: inherit; }
-  .ldm-proy-op .ir { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 800; color: inherit; }
-  .ldm-proy-op .ir svg { width: 14px; height: 14px; }
-  .ldm-proy-op .guia .ir { color: var(--accent); }
-  @media (max-width: 960px) { .ldm-proy-demo { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 860px) { .ldm-proy-op { grid-template-columns: 1fr; } }
-  @media (max-width: 480px) { .ldm-proy-demo { grid-template-columns: 1fr; } }
+  .ldm-proy { margin: 28px 0 14px; padding: clamp(26px, 4.5vw, 52px); border-radius: 28px; background: var(--paper-2); border: 1px solid var(--rule); color: var(--ink); }
+  .pj-top { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 5vw, 72px); align-items: start; }
+  .pj-intro h3 { margin: 0 0 12px; font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.08; letter-spacing: -.035em; font-weight: 700; color: var(--ink); }
+  .pj-intro p { margin: 0; max-width: 34ch; font-size: 16px; line-height: 1.6; color: var(--ink-soft); }
+  .pj-lista { margin: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+  .pj-lista > div { padding: 16px 0 18px; border-top: 1px solid var(--rule); }
+  .pj-lista dt { font-size: 15.5px; font-weight: 650; letter-spacing: -.01em; color: var(--ink); }
+  .pj-lista dt::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 10px 2px 0; border-radius: 50%; background: var(--accent); }
+  .pj-lista dd { margin: 6px 0 0 16px; font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+  .pj-cab { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: clamp(30px, 4vw, 44px) 0 16px; padding-top: 26px; border-top: 1px solid var(--rule); }
+  .pj-cab h4 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -.015em; color: var(--ink); }
+  .pj-flechas { display: flex; gap: 8px; }
+  .pj-btn { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border-radius: 50%; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); cursor: pointer; transition: border-color .2s, opacity .2s; }
+  .pj-btn:hover { border-color: var(--ink); }
+  .pj-btn:disabled { opacity: .35; cursor: default; border-color: var(--rule); }
+  .pj-btn svg { width: 17px; height: 17px; }
+  .pj-carril { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 32px) / 2.6); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0; padding: 2px 2px 6px; margin: 0 -2px; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .pj-carril::-webkit-scrollbar { display: none; }
+  .pj-card { scroll-snap-align: start; display: flex; flex-direction: column; min-height: 252px; padding: 24px 24px 20px; border-radius: 20px; background: var(--paper); border: 1px solid var(--rule); color: var(--ink); transition: border-color .25s, transform .25s; }
+  .pj-card:hover { border-color: var(--ink-soft); transform: translateY(-2px); }
+  .pj-card.guia { background: #121212; border-color: rgba(247,179,62,.55); color: #F5F5F0; }
+  .pj-card.guia:hover { border-color: var(--accent); }
+  .pj-para { font-size: 13.5px; color: var(--muted); }
+  .pj-card.guia .pj-para { color: var(--accent); }
+  .pj-card b { margin: 10px 0 8px; font-size: 19px; line-height: 1.25; font-weight: 650; letter-spacing: -.02em; }
+  .pj-txt { flex: 1; font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+  .pj-card.guia .pj-txt { color: rgba(245,245,240,.74); }
+  .pj-pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 14px; font-weight: 600; }
+  .pj-card.guia .pj-pie { border-top-color: rgba(255,255,255,.14); }
+  .pj-ir { display: inline-flex; align-items: center; gap: 8px; }
+  .pj-ir svg { width: 15px; height: 15px; transition: transform .25s; }
+  .pj-card:hover .pj-ir svg { transform: translateX(3px); }
+  .pj-card.guia .pj-ir { color: var(--accent); }
+  @media (max-width: 900px) { .pj-top { grid-template-columns: 1fr; } .pj-intro p { max-width: 52ch; } .pj-carril { grid-auto-columns: 62%; } }
+  @media (max-width: 560px) { .pj-lista { grid-template-columns: 1fr; } .pj-carril { grid-auto-columns: 84%; } .ldm-proy { padding: 24px 18px; } }
   .ldm-ses { display: grid; gap: 8px; margin: 10px 0 0; }
   .ldm-ses > div { padding: 11px 13px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
   .ldm-ses > div.r { border-color: rgba(247,179,62,.55); background: rgba(247,179,62,.08); }
@@ -1010,35 +1017,49 @@
       <li><h3>Liderazgo social</h3><p>Entrega evidencias de tu participación en proyectos de impacto comunitario: fotos, reportes, testimonios o cifras comprobables.</p><a href="#proyecto">Cómo hacer tu proyecto social →</a></li>
     </ol>
     <div class="ldm-proy" id="proyecto">
-      <div class="ldm-proy-cab">
-        <h3>Tu proyecto social, <span>paso a paso.</span></h3>
-        <p>Es lo que más pesa en el paso 4 y donde más aspirantes se atoran. Antes de entregar, revisa que tu proyecto demuestre estas cuatro cosas.</p>
+      <div class="pj-top">
+        <div class="pj-intro">
+          <h3>Tu proyecto social</h3>
+          <p>Es lo que más pesa en el paso 4. Antes de entregar, revisa que tu proyecto demuestre estas cuatro cosas.</p>
+        </div>
+        <dl class="pj-lista">
+          <div><dt>Una necesidad real</dt><dd>Qué problema atiendes, en qué lugar y con qué dato lo sabes.</dd></div>
+          <div><dt>Lo que hiciste tú</dt><dd>Tu papel concreto: qué propusiste, organizaste o dirigiste.</dd></div>
+          <div><dt>Resultados que se cuentan</dt><dd>Personas atendidas, horas, kilos, árboles o talleres.</dd></div>
+          <div><dt>Evidencia que se comprueba</dt><dd>Fotos con fecha, reportes, testimonios y constancias.</dd></div>
+        </dl>
       </div>
-      <ul class="ldm-proy-demo">
-        <li><b>Una necesidad real</b><span>Qué problema atiendes, en qué lugar y con qué dato lo sabes.</span></li>
-        <li><b>Lo que hiciste tú</b><span>Tu papel concreto: qué propusiste, organizaste o dirigiste.</span></li>
-        <li><b>Resultados que se cuentan</b><span>Personas atendidas, horas, kilos, árboles, talleres o lo que aplique.</span></li>
-        <li><b>Evidencia que se comprueba</b><span>Fotos con fecha, reportes, testimonios, constancias y publicaciones.</span></li>
-      </ul>
-      <p class="ldm-proy-sub">¿Te falta algo? Empieza por donde estés.</p>
-      <div class="ldm-proy-op">
-        <a class="op guia" href="../proyecto-social/#guia">
-          <span class="para">Si quieres armarlo tú</span>
+      <div class="pj-cab">
+        <h4>Por dónde empezar</h4>
+        <div class="pj-flechas">
+          <button type="button" class="pj-btn" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+          <button type="button" class="pj-btn" data-dir="1" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="pj-carril" tabindex="0" aria-label="Opciones para tu proyecto social">
+        <a class="pj-card guia" href="../proyecto-social/#guia">
+          <span class="pj-para">Si quieres armarlo tú</span>
           <b>Guía para hacer un proyecto social</b>
-          <span class="txt">Los 10 pasos para armarlo, cómo saber si sí es social y los errores que más se repiten.</span>
-          <span class="pie"><span class="pr">Gratis</span><span class="ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></span>
+          <span class="pj-txt">Los 10 pasos para armarlo, cómo saber si sí es social y los errores que más se repiten.</span>
+          <span class="pj-pie"><span>Gratis</span><span class="pj-ir">Leer la guía <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
         </a>
-        <a class="op" href="https://vorka.mx/que-proyecto-social/">
-          <span class="para">Si todavía no tienes idea</span>
+        <a class="pj-card" href="https://vorka.mx/que-proyecto-social/">
+          <span class="pj-para">Si todavía no tienes idea</span>
           <b>¿Qué proyecto social hago?</b>
-          <span class="txt">Contestas 14 preguntas y recibes ideas a tu medida, según tu tiempo, tu presupuesto y lo que te importa.</span>
-          <span class="pie"><span class="pr">$149</span><span class="ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span></span>
+          <span class="pj-txt">Contestas 14 preguntas y recibes ideas a tu medida, según tu tiempo, tu presupuesto y lo que te importa.</span>
+          <span class="pj-pie"><span>$149</span><span class="pj-ir">Encontrar mi idea <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
         </a>
-        <a class="op" href="#mentoria">
-          <span class="para">Si ya tienes proyecto</span>
+        <a class="pj-card" href="#impacto">
+          <span class="pj-para">Si buscas con quién hacerlo</span>
+          <b>Súmate a IMPACTO</b>
+          <span class="pj-txt">Te capacitas, encuentras equipo y haces proyectos reales con evidencia que se mide y se reporta.</span>
+          <span class="pj-pie"><span>Gratis</span><span class="pj-ir">Conocer IMPACTO <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
+        </a>
+        <a class="pj-card" href="#mentoria">
+          <span class="pj-para">Si ya tienes proyecto</span>
           <b>Revisarlo conmigo</b>
-          <span class="txt">Vemos qué le falta, cómo contar su impacto y ordenamos tus evidencias para el paso 4.</span>
-          <span class="pie"><span class="pr">Desde $300</span><span class="ir">Ver cómo agendar ↓</span></span>
+          <span class="pj-txt">Vemos qué le falta, cómo contar su impacto y ordenamos tus evidencias para el paso 4.</span>
+          <span class="pj-pie"><span>Desde $300</span><span class="pj-ir">Ver cómo agendar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
         </a>
       </div>
     </div>
@@ -1325,6 +1346,16 @@
   if (c) c.addEventListener('click', cerrar);
   n.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', cerrar); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrar(); });
+})();
+</script>
+<script>
+(function(){
+  var c=document.querySelector('.pj-carril'); if(!c) return;
+  var bs=document.querySelectorAll('.pj-btn');
+  function paso(){ var k=c.querySelector('.pj-card'); return k ? k.getBoundingClientRect().width + 16 : 300; }
+  function estado(){ var m=c.scrollWidth-c.clientWidth-2; bs[0].disabled=c.scrollLeft<=2; bs[1].disabled=c.scrollLeft>=m; }
+  bs.forEach(function(b){ b.addEventListener('click', function(){ c.scrollBy({left: paso()*(+b.dataset.dir), behavior:'smooth'}); }); });
+  c.addEventListener('scroll', estado, {passive:true}); window.addEventListener('resize', estado); estado();
 })();
 </script>
 </body>
