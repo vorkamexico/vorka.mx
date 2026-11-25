@@ -29,7 +29,8 @@ describe('modelo de datos', () => {
     // el Simulador IPN (migración 0076) y los paquetes de simuladores (0077) entran a la venta por encargo del dueño (6-11-2026)
     // Negocio Completo (0079, en el catálogo desde 0080) entra a la venta por decisión del usuario (9-11-2026); su instalación, oculta
     // Brillo (0089) entra a la venta por petición del usuario (16-11-2026); en el catálogo solo el Básico mensual, el resto en su ficha
-    expect(activos.map(p => p.slug).sort()).toEqual(['brillo-basico-mensual', 'negocio-completo-mensual', 'test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual',
+    // Mostrador y Academias + Vuelve (0098) salen en el catálogo con su plan mensual por petición del usuario (25-11-2026)
+    expect(activos.map(p => p.slug).sort()).toEqual(['brillo-basico-mensual', 'mostrador-mensual', 'academias-vuelve-mensual', 'negocio-completo-mensual', 'test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual',
       'simulador-ipn-practica', 'simulador-ipn-completo', 'simulador-ipn-paquete', 'simuladores-unam-ipn', 'simuladores-paa-unam', 'simuladores-paa-ipn', 'simuladores-universidad'].sort());
   });
 

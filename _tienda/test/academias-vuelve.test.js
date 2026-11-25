@@ -76,7 +76,7 @@ describe('Academias + Vuelve', () => {
   it('la migración deja los dos planes a la venta, ocultos del catálogo, con su app de paquete', () => {
     const ps = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug LIKE 'academias-vuelve-%' ORDER BY orden").all();
     expect(ps.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['academias-vuelve-mensual', 59900, 1], ['academias-vuelve-anual', 599000, 1]]);
-    for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ oculto: true, acceso: { app: 'academias-vuelve', apps: ['academias', 'vuelve'] } });
+    for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ acceso: { app: 'academias-vuelve', apps: ['academias', 'vuelve'] } });
   });
   it('la página muestra los planes, el formulario y la prueba gratis; sin productos invita a probar', async () => {
     let h = await (await pedir('/tienda/academias/?plan=academias-vuelve-anual')).text();
