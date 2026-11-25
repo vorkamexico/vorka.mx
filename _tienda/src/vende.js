@@ -16,10 +16,7 @@ const APP = 'https://vende.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 export const RUTA_VENDE = '/tienda/vende/';
 const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
-const PLANES = [{ slug: 'vende-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'vende-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' },
-  // Paquete con Vuelve (tarjeta de lealtad): misma cuenta y mismo correo; el logo que suben en Vuelve también lo toma su tienda de Vende
-  { slug: 'vende-vuelve-mensual', nombre: 'Vende + Vuelve mensual', cada: 'al mes', renueva: 'cada mes', paquete: true }, { slug: 'vende-vuelve-anual', nombre: 'Vende + Vuelve anual', cada: 'al año', renueva: 'cada año', paquete: true }];
-const VUELVE_INCLUYE = ['Todo Vende Pro, sin límites', 'Tarjeta de lealtad Vuelve en el Wallet de tus clientas', 'Sellos o puntos por compra y premios que tú eliges', 'Avisos de cumpleaños y de «te extrañamos»', 'Tu logo en la app, tu tienda y la tarjeta', 'Una sola cuenta, el mismo correo'];
+const PLANES = [{ slug: 'vende-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'vende-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
 // Límites del plan gratis: deben coincidir con LIMITES_GRATIS del Worker vende (src/config.js)
 const GRATIS = { clientas: 10, pedidos: 30, productos: 50 };
 
@@ -55,7 +52,6 @@ export async function paginaVende(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug) })))).filter(x => x.prod);
   const mensual = planes.find(x => x.slug === 'vende-mensual'), anual = planes.find(x => x.slug === 'vende-anual');
-  const paqM = planes.find(x => x.slug === 'vende-vuelve-mensual'), paqA = planes.find(x => x.slug === 'vende-vuelve-anual');
   const plan = mensual?.prod || planes[0]?.prod || null;
   const ahorro = mensual && anual ? mensual.prod.precio_centavos * 12 - anual.prod.precio_centavos : 0;
   const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : (planes[0]?.slug || '');
@@ -128,14 +124,10 @@ ${seccionDemo('vende', demoDe('vende'))}
     <article class="ve-plan"><h3>Gratis</h3><p class="ve-para">Para empezar a ordenar tu negocio</p><p class="ve-precio"><b>$0</b> <small>para siempre</small></p>
       <ul>${[`Hasta ${GRATIS.clientas} clientas`, `Hasta ${GRATIS.pedidos} pedidos al mes`, '"Hoy", cobranza y estado de cuenta', 'Los primeros 7 días, todo sin límites', 'Sin tarjeta'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
       <a class="ve-btn ghost oscuro" href="${APP}/#/entrar">Empezar gratis</a></article>
-    ${planes.filter(x => !x.paquete).map(x => `<article class="ve-plan${x.slug === 'vende-mensual' ? ' rec' : ''}">${x.slug === 'vende-anual' && ahorro > 0 ? `<span class="ve-sello">Ahorra ${pesosRedondo(ahorro)}</span>` : ''}<h3>Pro · ${x.nombre}</h3><p class="ve-para">Todo sin límites</p><p class="ve-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
+    ${planes.map(x => `<article class="ve-plan${x.slug === 'vende-mensual' ? ' rec' : ''}">${x.slug === 'vende-anual' && ahorro > 0 ? `<span class="ve-sello">Ahorra ${pesosRedondo(ahorro)}</span>` : ''}<h3>Pro · ${x.nombre}</h3><p class="ve-para">Todo sin límites</p><p class="ve-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
       ${x.slug === 'vende-anual' ? `<p class="ve-para" style="margin-top:-4px">Equivale a ${pesosRedondo(Math.round(x.prod.precio_centavos / 12))} al mes, en un solo pago</p>` : ''}
       <ul>${(x.slug === 'vende-anual' ? ['Todo lo del plan mensual', 'Un solo pago al año', 'Si cancelas en los primeros 10 días, te devolvemos todo'] : INCLUYE).map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
       <a class="ve-btn${x.slug === 'vende-mensual' ? '' : ' ghost oscuro'}" href="?plan=${x.slug}#comprar" data-ir="comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}
-    ${paqM ? `<article class="ve-plan ve-paq"><span class="ve-sello">Paquete</span><h3>Vende + Vuelve</h3><p class="ve-para">Que tus clientas compren y regresen</p><p class="ve-precio"><b>${precio(paqM.prod)}</b> <small>al mes</small></p>
-      ${paqA ? `<p class="ve-para" style="margin-top:-4px">o ${precio(paqA.prod)} al año, con 2 meses gratis</p>` : ''}
-      <ul>${VUELVE_INCLUYE.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
-      <a class="ve-btn" href="?plan=vende-vuelve-mensual#comprar" data-ir="comprar" data-plan="vende-vuelve-mensual">Quiero el paquete</a></article>` : ''}
   </div>
   ${plan ? '' : `<p class="ve-nota" style="text-align:center">Vende Pro abre muy pronto. Mientras, <a href="${APP}/#/entrar">empieza gratis</a>: los primeros 7 días tienes todo sin límites.</p>`}
 </div></section>
@@ -152,11 +144,11 @@ ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo'],
   form: `<form class="t-form t-compra" id="form-vende" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
-    <fieldset class="t-campo ve-elige"><legend>Plan</legend>${planes.map(x => `<label class="ve-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b>${x.paquete ? '<small>Incluye Vuelve, tu tarjeta de lealtad</small>' : x.slug === 'vende-anual' && ahorro > 0 ? `<small>Ahorra ${pesosRedondo(ahorro)} contra el mensual</small>` : '<small>Sin plazo forzoso</small>'}</span></label>`).join('')}</fieldset>
+    <fieldset class="t-campo ve-elige"><legend>Plan</legend>${planes.map(x => `<label class="ve-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b>${x.slug === 'vende-anual' && ahorro > 0 ? `<small>Ahorra ${pesosRedondo(ahorro)} contra el mensual</small>` : '<small>Sin plazo forzoso</small>'}</span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" value="${esc(correo)}"><small class="t-ayuda">Usa el mismo correo con el que entras a Vende.</small></div>
     <p class="ve-total">Pagas hoy <b id="ve-hoy-p">${precio(elegidoP.prod)}</b> <span id="ve-luego">y luego ${precio(elegidoP.prod)} ${elegidoP.renueva}</span></p>
-    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/vende/" target="_blank">condiciones de Vende</a> (incluida la renovación automática) y el <a href="/legal/vende/privacidad/" target="_blank">aviso de privacidad de Vende</a>; si eliges el paquete, también las <a href="/legal/vuelve/" target="_blank">condiciones</a> y el <a href="/legal/vuelve/privacidad/" target="_blank">aviso de privacidad de Vuelve</a>.</span></label>
+    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, las <a href="/legal/vende/" target="_blank">condiciones de Vende</a> (incluida la renovación automática) y el <a href="/legal/vende/privacidad/" target="_blank">aviso de privacidad de Vende</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn acento" type="submit" id="btn-compra">Ir a pagar ${FLECHA}</button>
     <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta de crédito o débito con Stripe · Se renueva solo y lo cancelas cuando quieras</span></p>
@@ -210,8 +202,6 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 /* precio */
 .ve-planes{display:grid;gap:20px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
 .ve-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:28px;display:grid;gap:8px}
-.ve-paq{border-color:var(--ve-c);grid-column:1/-1}
-@media(min-width:760px){.ve-paq{grid-template-columns:1fr 1.4fr;column-gap:40px;align-items:center}.ve-paq>h3,.ve-paq>p,.ve-paq>.ve-btn{grid-column:1}.ve-paq>ul{grid-column:2;grid-row:1/span 5;grid-template-columns:1fr 1fr;column-gap:24px;margin:0}.ve-paq>.ve-btn{justify-self:start}}
 .ve-sello{position:absolute;top:-13px;left:24px;background:var(--ve-c);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .ve-elige{border:0;padding:0;margin:0 0 6px}.ve-elige legend{font-weight:650;font-size:14px;margin-bottom:8px;padding:0}
 .ve-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}

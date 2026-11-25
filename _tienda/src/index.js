@@ -38,6 +38,7 @@ import { paginaNegocioCompleto } from './negociocompleto.js';
 import { paginaMiraTuNegocio, prospectoMira } from './miratunegocio.js';
 import { paginaVende } from './vende.js';
 import { paginaAcademias } from './academias.js';
+import { paginaMostrador } from './mostrador.js';
 import { paginaPortales } from './portales.js';
 import { paginaClara } from './clara.js';
 import { paginaRuta } from './ruta.js';
@@ -473,6 +474,7 @@ async function atender(request, env, ctx, url) {
       if (url.pathname === '/tienda/negocio-completo' || url.pathname === '/tienda/negocio-completo/') return url.pathname.endsWith('/') ? await paginaNegocioCompleto(env, request, url) : Response.redirect(`${url.origin}/tienda/negocio-completo/${url.search}`, 301);
       if (url.pathname === '/tienda/pagina-web' || url.pathname === '/tienda/pagina-web/') return url.pathname.endsWith('/') ? await paginaPaginaWeb(env, request, url) : Response.redirect(`${url.origin}/tienda/pagina-web/${url.search}`, 301);
       if (url.pathname === '/tienda/portales' || url.pathname === '/tienda/portales/') return url.pathname.endsWith('/') ? await paginaPortales(env, request, url) : Response.redirect(`${url.origin}/tienda/portales/${url.search}`, 301);
+      if (url.pathname === '/tienda/mostrador' || url.pathname === '/tienda/mostrador/') return url.pathname.endsWith('/') ? await paginaMostrador(env, request, url) : Response.redirect(`${url.origin}/tienda/mostrador/${url.search}`, 301);
       if (url.pathname === '/tienda/academias' || url.pathname === '/tienda/academias/') return url.pathname.endsWith('/') ? await paginaAcademias(env, request, url) : Response.redirect(`${url.origin}/tienda/academias/${url.search}`, 301);
       if (url.pathname === '/tienda/vende' || url.pathname === '/tienda/vende/') return url.pathname.endsWith('/') ? await paginaVende(env, request, url) : Response.redirect(`${url.origin}/tienda/vende/${url.search}`, 301);
       if (url.pathname === '/tienda/clara' || url.pathname === '/tienda/clara/') return url.pathname.endsWith('/') ? await paginaClara(env, request, url) : Response.redirect(`${url.origin}/tienda/clara/${url.search}`, 301);

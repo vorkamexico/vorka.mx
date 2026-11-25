@@ -41,7 +41,7 @@ const subPaquete = (o = {}) => ({
 beforeEach(() => {
   env = { DB: d1(), SITE_URL: 'https://vorka.mx', STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_WEBHOOK_SECRET: SECRETO, DOWNLOAD_TOKEN_SECRET: 'x'.repeat(64),
     CORREO: { async enviar(c) { correos.push(c); return { id: 'em' }; } } };
-  env.DB.raw.exec('UPDATE products SET activo = 1');
+  env.DB.raw.exec("UPDATE products SET activo = 1 WHERE slug NOT LIKE 'vende-vuelve-%'");
   llamadas = []; correos = []; stripe = { orden: null, sub: null, total: 0 };
   vi.stubGlobal('fetch', vi.fn(async (url, init = {}) => {
     llamadas.push({ url, init, params: new URLSearchParams(init.body) });
@@ -72,34 +72,16 @@ async function pagar(slug) {
   return order;
 }
 
-describe('Paquete Vende + Vuelve', () => {
-  it('la migración deja los dos planes a la venta, ocultos del catálogo, con su app de paquete', () => {
-    const ps = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug LIKE 'vende-vuelve-%' ORDER BY orden").all();
-    expect(ps.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['vende-vuelve-mensual', 44900, 1], ['vende-vuelve-anual', 449000, 1]]);
-    for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ oculto: true, acceso: { app: 'vende-vuelve', apps: ['vende', 'vuelve'] } });
+describe('Paquete Vende + Vuelve (retirado: Vende es solo para vendedoras; los negocios van a Mostrador + Vuelve)', () => {
+  it('los dos planes quedan fuera de la venta y la ficha de Vende ya no los ofrece', async () => {
+    const ps = d1().raw.prepare("SELECT slug, activo FROM products WHERE slug LIKE 'vende-vuelve-%' ORDER BY orden").all();
+    expect(ps).toEqual([{ slug: 'vende-vuelve-mensual', activo: 0 }, { slug: 'vende-vuelve-anual', activo: 0 }]);
+    const h = await (await pedir('/tienda/vende/')).text();
+    expect(h).not.toContain('vende-vuelve'); expect(h).not.toContain('Vende + Vuelve');
   });
-  it('la ficha de Vende muestra el paquete y lo deja elegir en el formulario', async () => {
-    const h = await (await pedir('/tienda/vende/?plan=vende-vuelve-mensual')).text();
-    expect(h).toContain('Vende + Vuelve'); expect(h).toContain('data-plan="vende-vuelve-mensual"');
-    expect(h).toMatch(/value="vende-vuelve-mensual" checked/); expect(h).toContain('value="vende-vuelve-anual"');
-    expect(h).toContain('/legal/vuelve/');
-  });
-  it('la página de cada plan lleva a la ficha', async () => {
-    expect((await pedir('/tienda/vende-vuelve-anual/')).headers.get('location')).toBe('/tienda/vende/?plan=vende-vuelve-anual#comprar');
-  });
-  it('al pagar: una suscripción abre Vende y Vuelve, con un botón para cada una', async () => {
-    await pagar('vende-vuelve-mensual');
-    expect(fila('SELECT app FROM suscripciones')).toEqual({ app: 'vende-vuelve' });
+  it('quien ya lo hubiera pagado sigue teniendo Vende y Vuelve (el paquete sigue en PAQUETES)', async () => {
+    env.DB.raw.exec("INSERT INTO suscripciones (id, email, app, product_id, estado) VALUES ('s1', 'ana@consultorio.mx', 'vende-vuelve', 'prod_vende_vuelve_mensual', 'active')");
     const A = new Admin({}, env);
     for (const app of ['vende', 'vuelve']) expect(await A.suscripcionApp('ana@consultorio.mx', app)).toMatchObject({ vigente: true, paquete: 'vende-vuelve' });
-    expect(await A.suscripcionApp('ana@consultorio.mx', 'agenda')).toBeNull();
-    const t = correos[0].texto;
-    expect(t).toMatch(/https:\/\/vende\.vorka\.mx\/entrar\/[a-f0-9]{64}/);
-    expect(t).toMatch(/Entrar a Vuelve:\nhttps:\/\/os\.vorka\.mx\/vuelve\/entrar\/[a-f0-9]{64}/);
-    expect(t).toContain('abre Vende Pro y Vuelve');
-  });
-  it('con el paquete ya no se puede comprar Vende ni Vuelve sueltos con el mismo correo', async () => {
-    await pagar('vende-vuelve-mensual');
-    for (const slug of ['vende-mensual', 'vuelve-mensual']) expect((await comprar({ slug })).status).toBe(409);
   });
 });
