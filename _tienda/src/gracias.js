@@ -1,12 +1,13 @@
 // /tienda/gracias?order=<uuid> · estado de la orden; se actualiza solo cada 5 s durante 2 minutos.
 // GET /api/ordenes/<uuid> · estado mínimo para ese sondeo (sin datos personales).
-import { one, json, fail, correoOculto } from './util.js';
+import { one, all, run, json, fail, correoOculto } from './util.js';
 import { pagina, aviso, esc } from './paginas.js';
 import { eventoPagina } from './meta.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { SOPORTE } from './correo.js';
 import { WA_PAGINA_WEB } from './paginaweb.js';
+import { siguienteDe, bloqueGracias, CSS_GRACIAS } from './siguiente.js';
 
 // Si no llegó nada (p. ej. el correo se escribió mal al pagar), que sepan a dónde escribir
 const SIN_CORREO = ` Si aun así no te llega nada, escríbenos a <a href="mailto:${SOPORTE.correo}">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}?text=${encodeURIComponent('Hola Vorka, hice una compra en la tienda y no me llegó el correo.')}" target="_blank" rel="noopener">WhatsApp</a> y lo resolvemos.`;
@@ -122,13 +123,18 @@ export async function paginaGracias(env, url) {
     cuerpo: aviso({ icono: ICONOS.x, clase: 'alerta', titulo: 'No encontramos esa orden', texto: 'Revisa el enlace o escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.',
       extra: `<div class="botones t-centro"><a class="btn tinta" href="/tienda/">Ir a la tienda ${FLECHA}</a></div>` }),
   });
-  const v = vista(o, { cancelado: url.searchParams.get('cancelado') === '1' });
+  const cancelado = url.searchParams.get('cancelado') === '1';
+  const v = vista(o, { cancelado });
+  // Medición: volvió de la pasarela sin pagar (una vez por orden)
+  if (cancelado && o.estado === 'pending') await run(env, 'INSERT OR IGNORE INTO pago_regresos (order_id) VALUES (?)', o.id).catch(e => console.error('gracias: evento', e.message));
   const b = bloques(o, v);
+  // «Lo que sigue» (solo pagadas con dinero): sugerencias y cupón para el segundo producto
+  const sig = v === 'pagado' && !o.regalo ? await siguienteDe(env, o, await all(env, 'SELECT p.slug, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ? ORDER BY i.id', o.id)) : null;
   const nota = `<p class="t-nota" id="estado-nota" hidden>Seguimos esperando la confirmación. No te preocupes: en cuanto llegue te mandamos el correo automáticamente.</p>`;
   return pagina({
     titulo: `${b.titulo} · Vorka México`, ruta: '/tienda/gracias', noindex: true,
-    cuerpo: `<div id="estado" data-order="${esc(o.id)}" data-vista="${v}" role="status" aria-live="polite">${aviso({ ...b, extra: (b.extra || '') + nota + (v === 'pagado' && !o.regalo ? bienvenida(o) : '') })}</div>`,
-    head: '<style>.t-bienvenida{margin:22px auto 0;max-width:34em;text-align:center;border-top:1px solid var(--line);padding-top:18px;display:grid;gap:6px}.t-bienvenida>b{font-size:19px}.t-bienvenida>small{color:var(--fg-2);letter-spacing:.04em}.t-bienvenida p{margin:4px 0 0;color:var(--fg-2)}.t-impacto{font-size:14px}</style>',
+    cuerpo: `<div id="estado" data-order="${esc(o.id)}" data-vista="${v}" role="status" aria-live="polite">${aviso({ ...b, extra: (b.extra || '') + nota + (v === 'pagado' && !o.regalo ? bloqueGracias(sig) + bienvenida(o) : '') })}</div>`,
+    head: '<style>.t-bienvenida{margin:22px auto 0;max-width:34em;text-align:center;border-top:1px solid var(--line);padding-top:18px;display:grid;gap:6px}.t-bienvenida>b{font-size:19px}.t-bienvenida>small{color:var(--fg-2);letter-spacing:.04em}.t-bienvenida p{margin:4px 0 0;color:var(--fg-2)}.t-impacto{font-size:14px}' + CSS_GRACIAS + '</style>',
     // Solo compras pagadas con dinero (los regalos y cortesías de $0 no son ventas para Meta)
     script: SONDEO + (v === 'pagado' && o.monto_centavos > 0 && !['regalo', 'cortesia'].includes(o.proveedor) ? eventoPagina('Purchase', { value: o.monto_centavos / 100, currency: o.moneda || 'MXN' }, `compra_${o.id}`) : ''),
   });
