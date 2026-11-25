@@ -2,7 +2,8 @@
 // ferreterías, regalos, refaccionarias, naturistas, florerías, tiendas de mascotas…). Vende queda para vendedoras por catálogo.
 // «Mi mostrador» vive dentro de Vuelve (os.vorka.mx/vuelve): vender con ticket, inventario con existencias y mínimos, corte del día
 // con ganancia, y la tarjeta de lealtad para que regresen. Se cobra como paquete 'mostrador-vuelve' (ver PAQUETES en suscripciones.js).
-// Mes gratis sin tarjeta con un código que da Vorka por WhatsApp, a cambio de un descuento para integrantes de IMPACTO. Vuelve no cobra a los clientes ni mueve dinero: solo registra.
+// Las pantallas son capturas reales de la app (assets/tienda/mostrador/). Las invitaciones con mes de prueba son privadas: aquí no se anuncian.
+// Vuelve no cobra a los clientes ni mueve dinero: solo registra.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -10,9 +11,8 @@ import { oferta, migas } from './seo.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 
 export const RUTA_MOSTRADOR = '/tienda/mostrador/';
-const APP = 'https://os.vorka.mx/vuelve/?o=mostrador30';   // entrar (el mes gratis se activa con un código que da Vorka)
-const WA_MES = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, quiero probar Mostrador un mes gratis.');
-const WA = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, tengo una duda sobre Mostrador + Vuelve.');
+const APP = 'https://os.vorka.mx/vuelve/';   // entrar
+const WA = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, tengo una duda sobre Mostrador.');
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 // Dos opciones: solo Mostrador (ventas, inventario y corte) o el paquete con Vuelve (más la tarjeta de lealtad)
 const PLANES = [
@@ -44,10 +44,12 @@ const PARA = [
   ['Florerías y detalles', 'Arreglos con su precio, ventas del día por forma de pago y premios para quien te compra en cada fecha.'],
 ];
 const FAQ = [
-  ['¿Puedo probarlo antes de pagar?', `Sí. Entra a <a href="${APP}">os.vorka.mx/vuelve</a> con tu correo y elige tu tipo de negocio (tienda, boutique, papelería…). Pide tu código por <a href="https://wa.me/528117804869">WhatsApp</a>: te damos 30 días con todo, sin tarjeta, a cambio de un descuento para los integrantes de IMPACTO y aparecer en su catálogo de negocios aliados. Si te sirve, te suscribes aquí con el mismo correo y todo sigue tal cual.`],
+  ['¿Cómo empiezo?', 'Eliges tu plan aquí abajo y pagas con tarjeta. Entras a Mostrador con el mismo correo, subes tu Excel de productos y puedes vender ese mismo día. Si quieres, te ayudamos a cargarlos por WhatsApp.'],
   ['¿Cobra por mí o se conecta a una terminal?', 'No. Tus clientes te pagan como siempre: efectivo, transferencia o tu terminal. Mostrador registra la venta, descuenta el inventario y te arma el corte.'],
   ['¿En qué se diferencia de Vende?', 'Vende es para vendedoras por catálogo que llevan clientas y pedidos. Mostrador es para negocios con mercancía propia y mostrador: inventario, ventas con ticket, corte del día y tarjeta de lealtad.'],
-  ['¿Puedo cargar muchos productos?', 'Sí. Das de alta cada producto con su precio y su foto, y le pones existencias, mínimo, costo y código. Si tienes tu lista en Excel, mándanosla por WhatsApp y te ayudamos a cargarla.'],
+  ['¿Puedo cargar muchos productos?', 'Sí. Subes tu Excel (.xlsx o CSV) con nombre, precio, costo, existencias, mínimo, código y categoría, y quedan todos de una vez. Si un producto ya existe, se actualiza. También hay una plantilla para llenar.'],
+  ['¿Funciona con lector de código de barras?', 'Sí. En Android la cámara del celular lee códigos de barras y QR. En iPhone la cámara lee los QR, y para códigos de barras conectas un lector USB o Bluetooth: escribe el código solo y el producto entra a la cuenta.'],
+  ['¿Mi equipo puede vender?', 'Sí. Cada persona entra con su PIN desde su celular y solo ve la pantalla de vender: no ve tus costos ni tu corte. Cada venta queda a su nombre.'],
   ['¿Quién ve mis ventas?', 'Solo tú, con tu correo. Ni el equipo de Vorka las ve cuando te ayuda a configurar tu tarjeta.'],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Vuelve › Cuenta y pagos, sin llamadas. Sigues con todo hasta el final del periodo pagado; tus productos y ventas se quedan guardados.'],
 ];
@@ -55,14 +57,16 @@ const svg = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 const ICONOS = [svg('<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>'), svg('<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>'),
   svg('<rect x="3" y="6" width="18" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5v.01M17.5 14.5v.01"/>'), svg('<rect x="3" y="5.5" width="18" height="13" rx="3"/><circle cx="8" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="16" cy="12" r="1.6"/>')];
 
-// Cómo se ve: un pase de lista y una tarjeta (ilustración hecha con HTML, no captura)
-const VISTA = `<div class="ac-vista" aria-hidden="true">
-  <div class="ac-pant"><small>Ticket · venta #128</small><b>Boutique Lirio</b>
-    <ul>${[['1 × Blusa de lino', '$450'], ['2 × Aretes de plata', '$380'], ['1 × Bolsa de piel', '$900']].map(([n, v]) => `<li><span class="ac-chk si"></span><span><b>${n}</b><em>${v}</em></span></li>`).join('')}</ul>
-    <span class="ac-btn">Cobrar $1,730</span></div>
-  <div class="ac-tar"><b>Corte de hoy</b><p>18 ventas</p><p class="ac-cuenta"><b>$9,840</b></p>
-    <small>Efectivo $4,210 · Tarjeta $3,950 · Transferencia $1,680</small><p style="margin-top:12px">Por surtir: 3 productos</p></div>
-</div>`;
+// Pantallas reales de la app con una boutique de ejemplo (no es cliente)
+const cel = (f, alt, cls = '') => `<div class="mo-cel${cls}"><img src="/assets/tienda/mostrador/${f}.webp" width="600" height="1298" alt="${alt}"${cls.includes('frente') ? '' : ' loading="lazy"'}></div>`;
+const GALERIA = [
+  ['productos', 'Vender', 'Tocas el producto o escaneas su código. Arriba ves cuánto llevas hoy y qué hay que surtir.'],
+  ['vender', 'La cuenta', 'El 2×1 o el descuento se aplica solo, y te dice qué más ofrecerle según lo que se lleva.'],
+  ['venta-lista', 'Ticket por correo', 'Al cobrar, le mandas su ticket a tu cliente con un toque. La pieza sale del inventario.'],
+  ['inventario', 'Inventario', 'Existencias, costo y código de cada producto. Lo cargas de tu Excel y avisa lo que hay que surtir.'],
+  ['promociones', 'Promociones', '2×1, 3×2 o % de descuento por producto o categoría, con fecha de inicio y fin.'],
+  ['corte', 'Corte del día', 'Vendido, ganancia real, ticket promedio y cuánto fue en efectivo, transferencia y tarjeta.'],
+];
 
 export async function paginaMostrador(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
@@ -90,11 +94,18 @@ export async function paginaMostrador(env, req, url) {
 <section class="ac-hero"><div class="marco ac-hero-g">
   <div>
     <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / Mostrador</nav>
-    <h1 class="t-h1">Tu negocio en orden: lo que vendes, lo que te queda y quién regresa.</h1>
-    <p class="t-lead">Ventas con ticket, inventario y corte del día en tu celular o tu compu, con tu logo. Y una tarjeta de lealtad para que tus clientes vuelvan a comprarte.</p>
-    <div class="ac-btns"><a class="btn acento" href="${WA_MES}" target="_blank" rel="noopener">Pide tu mes gratis ${FLECHA}</a><a class="btn blanco" href="#comprar" data-ir="comprar">Ver precio</a></div>
-    <p class="ac-mini">${desde ? `Desde ${desde} al mes · ` : ''}Primer mes gratis a cambio de un descuento para IMPACTO · Soporte por WhatsApp</p>
-  </div>${VISTA}
+    <h1 class="t-h1">Tu negocio en orden y vendiendo más en cada cobro.</h1>
+    <p class="t-lead">Cobras con ticket, tu inventario se descuenta solo y al cerrar ves cuánto ganaste de verdad. Desde tu celular o tu compu, sin libreta y sin equipo especial.</p>
+    <div class="ac-btns"><a class="btn acento" href="#precio">Ver planes ${FLECHA}</a><a class="btn blanco" href="#asi-se-ve">Ver cómo funciona</a></div>
+    <p class="ac-mini">${desde ? `Desde ${desde} al mes · ` : ''}Sin contratos · Soporte de personas por WhatsApp</p>
+  </div>
+  <div class="mo-duo" aria-hidden="true">${cel('corte', '', ' atras')}${cel('productos', 'Pantalla de vender de Mostrador', ' frente')}</div>
+</div></section>
+
+<section class="ac-sec suave" id="asi-se-ve"><div class="marco">
+  <h2 class="t-h2 ac-h2">Así se ve en tu celular.</h2>
+  <p class="ac-sub">Pantallas reales de Mostrador con una boutique de ejemplo.</p>
+  <ul class="mo-gal">${GALERIA.map(([f, t, d]) => `<li>${cel(f, `Pantalla ${t} de Mostrador`)}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
 </div></section>
 
 <section class="ac-sec"><div class="marco">
@@ -103,14 +114,14 @@ export async function paginaMostrador(env, req, url) {
   <p class="ac-aviso">Mostrador <b>no cobra por ti ni mueve dinero</b>: tus clientes te pagan como siempre. La app registra cada venta y lleva tu inventario.</p>
 </div></section>
 
-<section class="ac-sec suave" id="para-quien"><div class="marco">
+<section class="ac-sec" id="para-quien"><div class="marco">
   <h2 class="t-h2 ac-h2">Para negocios que venden mercancía todos los días.</h2>
   <p class="ac-sub">Si tienes mostrador, existencias y clientes que podrían volver más seguido, es para ti.</p>
   <div class="ac-cuatro">${PARA.map(([t, d]) => `<article class="ac-card"><h3 style="margin-top:0">${esc(t)}</h3><p>${esc(d)}</p></article>`).join('')}</div>
   <p class="ac-aviso">¿Vendes por catálogo (Jafra, Avon, Natura…)? Lo tuyo es <a href="/tienda/vende/">Vende</a>, hecho para vendedoras.</p>
 </div></section>
 
-<section class="ac-sec" id="precio"><div class="marco">
+<section class="ac-sec suave" id="precio"><div class="marco">
   <h2 class="t-h2 ac-h2">Solo Mostrador, o con tu tarjeta de lealtad.</h2>
   <p class="ac-sub">En pesos mexicanos con IVA incluido. Cancela cuando quieras. Puedes empezar con Mostrador y sumar Vuelve después.</p>
   <div class="ac-planes">${OPCIONES.filter(o => de(o.m)).map(o => `<article class="ac-plan${o.rec ? ' rec' : ''}">${o.rec ? '<span class="ac-sello">El más completo</span>' : ''}
@@ -118,11 +129,11 @@ export async function paginaMostrador(env, req, url) {
     ${de(o.a) ? `<p class="ac-para">o ${precio(de(o.a))} al año (ahorras ${pesosRedondo(ahorroDe(o.a))})</p>` : ''}
     <ul>${o.incluye.map(i => `<li>${CHECK}<span>${esc(i)}</span></li>`).join('')}</ul>
     <a class="btn${o.rec ? ' acento' : ' blanco'}" href="?plan=${o.m}#comprar" data-ir="comprar" data-plan="${o.m}">Quiero ${esc(o.titulo)}</a></article>`).join('')}</div>
-  ${planes.length ? '' : `<p class="ac-sub">Muy pronto. Mientras, <a href="${APP}">pruébalo gratis</a> o <a href="${WA}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.</p>`}
+  ${planes.length ? '' : `<p class="ac-sub">Muy pronto. Mientras, <a href="${WA}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.</p>`}
 </div></section>
 
-${planes.length ? seccionCompra({ titulo: 'Suscríbete a Mostrador + Vuelve', intro: `¿Aún no lo pruebas? <a href="${APP}">Empieza gratis</a>, sin tarjeta. Si ya lo usas, suscríbete con el mismo correo y todo sigue tal cual.`,
-  pasos: [['Elige tu plan', 'Solo Mostrador o con Vuelve, mensual o anual, y el correo con el que entras.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Mi mostrador y tu tarjeta quedan activos al instante.']],
+${planes.length ? seccionCompra({ titulo: 'Suscríbete a Mostrador + Vuelve', intro: `Usa el correo con el que vas a entrar. Si ya tienes Vuelve, usa el mismo y todo sigue tal cual. ¿Dudas? <a href="${WA}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.`,
+  pasos: [['Elige tu plan', 'Solo Mostrador o con Vuelve, mensual o anual, y el correo con el que entras.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Entras y vendes', 'Te llega la liga a tu correo, subes tus productos y listo.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por WhatsApp'],
   form: `<form class="t-form t-compra" id="form-mo" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
@@ -144,22 +155,17 @@ ${await masTienda(env, 'negocios')}
 
 const CSS = `
 .ac{--ac:#B42A44}
+.mo-cel{padding:8px;border-radius:38px;background:#16101a;box-shadow:0 30px 60px -30px rgba(20,17,20,.5),inset 0 0 0 1.5px rgba(255,255,255,.12)}
+.mo-cel img{display:block;width:100%;height:auto;border-radius:30px;background:#fff}
+.mo-duo{position:relative;justify-self:center;width:min(100%,460px);aspect-ratio:1/1.12}
+.mo-duo .mo-cel{position:absolute;width:60%}.mo-duo .frente{left:0;top:0;z-index:2;transform:rotate(-2deg)}.mo-duo .atras{right:0;top:9%;transform:rotate(4deg);opacity:.96}
+@media(max-width:560px){.mo-duo{aspect-ratio:1/1.25}.mo-duo .mo-cel{width:64%}}
+.mo-gal{list-style:none;padding:4px 16px 18px;margin:36px -16px 0;display:grid;grid-auto-flow:column;grid-auto-columns:min(70vw,240px);gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.mo-gal li{scroll-snap-align:start}.mo-gal b{display:block;margin-top:16px;font-size:18px;letter-spacing:-.015em}.mo-gal p{margin:4px 0 0;color:var(--fg-2);font-size:15px;line-height:1.45}
+@media(min-width:1100px){.mo-gal{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,250px));justify-content:center;column-gap:48px;row-gap:48px;overflow:visible;margin:40px 0 0;padding:4px 0 0}}
 .ac-hero{padding:clamp(28px,5vw,64px) 0 clamp(40px,6vw,80px)}
 .ac-hero-g{display:grid;gap:40px;align-items:center}.ac-hero-g>*{min-width:0}@media(min-width:980px){.ac-hero-g{grid-template-columns:1.05fr .95fr;gap:56px}}
 .ac-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.ac-mini{margin:14px 0 0;color:var(--fg-2);font-size:14px}
-.ac-vista{position:relative;display:grid;gap:16px;grid-template-columns:1fr;max-width:520px;justify-self:center;width:100%}
-@media(min-width:560px){.ac-vista{grid-template-columns:1.1fr .9fr;align-items:end}}
-.ac-pant,.ac-tar{border-radius:24px;padding:20px;background:var(--card);border:1px solid var(--line);box-shadow:0 30px 60px -36px rgba(0,0,0,.45)}
-.ac-pant small{color:var(--fg-2);font-size:12.5px}.ac-pant>b{display:block;font-size:19px;letter-spacing:-.02em;margin:2px 0 10px}
-.ac-pant ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}.ac-pant li{display:flex;gap:10px;align-items:center;font-size:14.5px}.ac-pant li span:last-child{display:grid}
-.ac-pant em{font-style:normal;font-size:12px;color:var(--fg-2)}.ac-pant em.av{color:#B4532A}
-.ac-chk{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-2);flex:none}.ac-chk.si{background:var(--ac);border-color:var(--ac);box-shadow:inset 0 0 0 3px var(--card)}
-.ac-btn{display:block;margin-top:14px;text-align:center;padding:11px;border-radius:999px;background:var(--ac);color:#fff;font-weight:700;font-size:14px}
-.ac-tar{background:linear-gradient(160deg,#3b111a,#24090f);color:#f4f1ea;border:0}.ac-tar>b{font-size:15px}.ac-tar p{margin:8px 0 0;font-size:13px;opacity:.8}
-.ac-cuenta{font-size:14px!important;opacity:1!important}.ac-cuenta b{font-size:34px;letter-spacing:-.03em}
-.ac-sellos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.ac-sellos i{aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
-.ac-sellos i.si{background:radial-gradient(circle at 35% 30%,#fbebc6,#d9b87c 55%,#9c7a3e);box-shadow:none}.ac-sellos i.premio{box-shadow:inset 0 0 0 1.5px #d9b87c}
-.ac-tar small{font-size:12px;opacity:.85}
 .ac-sec{padding:clamp(56px,8vw,96px) 0}.ac-sec.suave{background:var(--bg-2)}
 .ac-h2{text-align:center;max-width:760px;margin:0 auto}.ac-sub{text-align:center;color:var(--fg-2);margin:12px auto 0;max-width:620px}
 .ac-cuatro{display:grid;gap:14px;margin-top:36px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
