@@ -2,7 +2,7 @@
 // ferreterías, regalos, refaccionarias, naturistas, florerías, tiendas de mascotas…). Vende queda para vendedoras por catálogo.
 // «Mi mostrador» vive dentro de Vuelve (os.vorka.mx/vuelve): vender con ticket, inventario con existencias y mínimos, corte del día
 // con ganancia, y la tarjeta de lealtad para que regresen. Se cobra como paquete 'mostrador-vuelve' (ver PAQUETES en suscripciones.js).
-// Prueba de 30 días sin tarjeta en la app (liga de lanzamiento ?o=mostrador30). Vuelve no cobra a los clientes ni mueve dinero: solo registra.
+// Mes gratis sin tarjeta con un código que da Vorka por WhatsApp, a cambio de un descuento para integrantes de IMPACTO. Vuelve no cobra a los clientes ni mueve dinero: solo registra.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -10,7 +10,8 @@ import { oferta, migas } from './seo.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 
 export const RUTA_MOSTRADOR = '/tienda/mostrador/';
-const APP = 'https://os.vorka.mx/vuelve/?o=mostrador30';   // la liga da 30 días de prueba
+const APP = 'https://os.vorka.mx/vuelve/?o=mostrador30';   // entrar (el mes gratis se activa con un código que da Vorka)
+const WA_MES = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, quiero probar Mostrador un mes gratis.');
 const WA = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, tengo una duda sobre Mostrador + Vuelve.');
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 // Dos opciones: solo Mostrador (ventas, inventario y corte) o el paquete con Vuelve (más la tarjeta de lealtad)
@@ -43,7 +44,7 @@ const PARA = [
   ['Florerías y detalles', 'Arreglos con su precio, ventas del día por forma de pago y premios para quien te compra en cada fecha.'],
 ];
 const FAQ = [
-  ['¿Puedo probarlo antes de pagar?', `Sí. Entra a <a href="${APP}">os.vorka.mx/vuelve</a> con tu correo y elige tu tipo de negocio (tienda, boutique, papelería…). Tienes 30 días con todo, sin tarjeta. Si te sirve, te suscribes aquí con el mismo correo y todo sigue tal cual.`],
+  ['¿Puedo probarlo antes de pagar?', `Sí. Entra a <a href="${APP}">os.vorka.mx/vuelve</a> con tu correo y elige tu tipo de negocio (tienda, boutique, papelería…). Pide tu código por <a href="https://wa.me/528117804869">WhatsApp</a>: te damos 30 días con todo, sin tarjeta, a cambio de un descuento para los integrantes de IMPACTO y aparecer en su catálogo de negocios aliados. Si te sirve, te suscribes aquí con el mismo correo y todo sigue tal cual.`],
   ['¿Cobra por mí o se conecta a una terminal?', 'No. Tus clientes te pagan como siempre: efectivo, transferencia o tu terminal. Mostrador registra la venta, descuenta el inventario y te arma el corte.'],
   ['¿En qué se diferencia de Vende?', 'Vende es para vendedoras por catálogo que llevan clientas y pedidos. Mostrador es para negocios con mercancía propia y mostrador: inventario, ventas con ticket, corte del día y tarjeta de lealtad.'],
   ['¿Puedo cargar muchos productos?', 'Sí. Das de alta cada producto con su precio y su foto, y le pones existencias, mínimo, costo y código. Si tienes tu lista en Excel, mándanosla por WhatsApp y te ayudamos a cargarla.'],
@@ -91,8 +92,8 @@ export async function paginaMostrador(env, req, url) {
     <nav class="t-volver" aria-label="Ruta"><a href="/tienda/">Tienda</a> / Mostrador</nav>
     <h1 class="t-h1">Tu negocio en orden: lo que vendes, lo que te queda y quién regresa.</h1>
     <p class="t-lead">Ventas con ticket, inventario y corte del día en tu celular o tu compu, con tu logo. Y una tarjeta de lealtad para que tus clientes vuelvan a comprarte.</p>
-    <div class="ac-btns"><a class="btn acento" href="${APP}">Pruébalo 30 días gratis ${FLECHA}</a><a class="btn blanco" href="#comprar" data-ir="comprar">Ver precio</a></div>
-    <p class="ac-mini">${desde ? `Desde ${desde} al mes · ` : ''}Sin tarjeta para probar · Soporte por WhatsApp</p>
+    <div class="ac-btns"><a class="btn acento" href="${WA_MES}" target="_blank" rel="noopener">Pide tu mes gratis ${FLECHA}</a><a class="btn blanco" href="#comprar" data-ir="comprar">Ver precio</a></div>
+    <p class="ac-mini">${desde ? `Desde ${desde} al mes · ` : ''}Primer mes gratis a cambio de un descuento para IMPACTO · Soporte por WhatsApp</p>
   </div>${VISTA}
 </div></section>
 
