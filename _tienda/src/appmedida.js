@@ -64,6 +64,7 @@ export async function paginaAppMedida(env, req, url) {
     <span class="am-chip">Hecha solo para tu negocio</span>
     <h1 class="t-h1">Tu negocio con <span class="metal">su propia app.</span></h1>
     <p class="t-lead">Tus clientes la descargan de App Store o Google Play, les llegan tus avisos al celular y te encuentran con un toque. Nosotros la diseñamos, la publicamos y la mantenemos.</p>
+    <figure class="am-portada"><img src="/assets/tienda/v3/app-medida-portada.webp?v=2" width="1600" height="1200" alt="Ejemplo de una app de negocio en el celular, con avisos para sus clientes y disponible en App Store y Google Play"></figure>
     <ul class="am-inc">${INCLUYE.map(x => `<li>${CHECK}<span>${esc(x)}</span></li>`).join('')}</ul>
     <p class="t-ya"><a href="${WA_DUDA}" target="_blank" rel="noopener">¿Dudas? WhatsApp</a></p>
   </div>
@@ -77,6 +78,7 @@ const CSS = `.am-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 .am-g{display:grid;gap:28px 56px;align-items:start}@media(min-width:980px){.am-g{grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr)}}
 .am-g>*{min-width:0}
 .am-chip{display:inline-flex;margin-top:14px;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--morado-suave);color:var(--morado)}
+.am-portada{margin:22px 0 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:var(--sombra-2)}.am-portada img{display:block;width:100%;height:auto}
 .am-hero h1{margin-top:14px}.am-hero .t-lead{margin-top:14px;max-width:560px}
 .am-inc{display:grid;gap:10px;margin:22px 0 0}.am-inc li{display:flex;gap:10px;align-items:flex-start;font-size:16px;color:var(--fg-2)}.am-inc svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--verde)}
 #comprar .t-form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--sombra-2)}

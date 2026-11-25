@@ -66,6 +66,7 @@ describe('App a la medida', () => {
     expect(h).toContain('Google Play');
     expect(h).toMatch(/autorizo a Vorka a publicar la app con mi marca/);
     expect(h).not.toMatch(/tel:|Llamar/);
+    expect(h).toContain('/assets/tienda/v3/app-medida-portada.webp');
     expect((await pedir('/tienda/app-a-la-medida')).status).toBe(301);
     expect(await (await pedir('/tienda/')).text()).toContain('/tienda/app-a-la-medida/');
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('/tienda/app-a-la-medida/');

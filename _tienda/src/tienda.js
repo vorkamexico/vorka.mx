@@ -146,7 +146,7 @@ export const PORTADAS_APP = {
   'que-proyecto-social': '/assets/tienda/v3/que-proyecto-social-portada.webp',
   liderazgo: '/assets/tienda/v3/evaluacion-liderazgo-portada.webp',
   'pagina-web': '/assets/tienda/v3/pagina-web-portada.webp',
-  'app-medida': '/assets/tienda/v3/app-medida-portada.webp',
+  'app-medida': '/assets/tienda/v3/app-medida-portada.webp?v=2',
 };
 const conPortada = p => (p.imagen || !PORTADAS_APP[p.contenido?.acceso?.app] ? p : { ...p, imagen: PORTADAS_APP[p.contenido.acceso.app] });
 function vista(p, url, desdeBrindi) {
