@@ -88,7 +88,7 @@ ESTILOS_NOS = """<style>
 .ns-collage .c3 { width: 46%; left: 16%; bottom: 0; aspect-ratio: 4 / 3; z-index: 3; transform: rotate(3deg); animation-delay: -4.6s; }
 .ns-tarjeta { position: absolute; right: 4%; bottom: 6%; z-index: 4; padding: 14px 16px; border-radius: 16px; background: var(--card, #fff); box-shadow: 0 24px 50px -20px rgba(15, 13, 16, .45); display: grid; gap: 4px; animation: pf-flota 7s ease-in-out infinite; animation-delay: -1.2s; }
 .ns-tarjeta small { font-size: 12px; color: var(--fg-3); font-weight: 650; }
-.ns-tarjeta b { font-size: 15px; letter-spacing: -.01em; }
+.ns-tarjeta b { font-size: 14px; letter-spacing: -.01em; }
 .ns-hace { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .ns-hace div { padding: 22px 0 0; border-top: 1.5px solid var(--fg); }
 .ns-hace h3 { margin: 0 0 8px; font-size: 20px; letter-spacing: -.02em; }
@@ -110,10 +110,27 @@ ESTILOS_NOS = """<style>
 .ns-ciudad b { position: absolute; left: 16px; right: 16px; bottom: 14px; color: #fff; font-size: 18px; letter-spacing: -.02em; text-shadow: 0 2px 14px rgba(0, 0, 0, .5); }
 .ns-ciudad::after { content: ""; position: absolute; inset: 50% 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, .55)); }
 .ns-ciudad b { z-index: 1; }
+.ns-res { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px 16px; }
+.ns-r { display: grid; gap: 6px; align-content: start; color: var(--fg); text-decoration: none; }
+.ns-r .im { display: block; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; background: radial-gradient(120% 90% at 30% 20%, #f4ecf7, #ece9ee 60%, #e6e3e8); margin-bottom: 8px; }
+.ns-r .im img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: transform .7s var(--ease); }
+.ns-r .im.izq img { object-position: left top; }
+.ns-r .im.contener img { object-fit: contain; padding: 14px; box-sizing: border-box; }
+.ns-r .im.texto { background: radial-gradient(120% 90% at 80% 0%, #3a2a48, var(--noche) 60%); }
+.ns-r:hover .im img { transform: scale(1.04); }
+.ns-r b { font-size: clamp(26px, 2.6vw, 34px); font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+.ns-r span:last-child { color: var(--fg-2); font-size: 15px; line-height: 1.5; max-width: 34ch; }
+.ns-equipo { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; padding: 22px 26px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); }
+.ns-equipo h2 { margin: 0 12px 0 0; font-size: 18px; }
+.ns-equipo a { display: flex; align-items: center; gap: 12px; color: var(--fg); text-decoration: none; }
+.ns-equipo img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.ns-equipo b { display: block; font-size: 15.5px; }
+.ns-equipo small { display: block; color: var(--fg-3); font-size: 13px; }
+.ns-equipo a:hover b { color: var(--morado); }
 .ns-legal { margin-top: 22px; font-size: 14.5px; color: var(--fg-2); max-width: 820px; }
 .ns-legal a { color: var(--morado); font-weight: 600; }
-@media (max-width: 960px) { .ns-collage { max-width: 520px; width: 100%; margin: 0 auto; } .ns-hace { grid-template-columns: 1fr 1fr; } .ns-gente { grid-template-columns: minmax(0, 1fr); } .ns-ciudades { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .ns-persona { grid-template-columns: minmax(0, 1fr); } .ns-persona img { min-height: 0; aspect-ratio: 4 / 3; } .ns-ciudades { grid-template-columns: 1fr 1fr; } .ns-hace { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 960px) { .ns-res { grid-template-columns: 1fr 1fr; } .ns-collage { max-width: 520px; width: 100%; margin: 0 auto; } .ns-hace { grid-template-columns: 1fr 1fr; } .ns-gente { grid-template-columns: minmax(0, 1fr); } .ns-ciudades { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ns-res { grid-template-columns: minmax(0, 1fr); } .ns-persona { grid-template-columns: minmax(0, 1fr); } .ns-persona img { min-height: 0; aspect-ratio: 4 / 3; } .ns-ciudades { grid-template-columns: 1fr 1fr; } .ns-hace { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .ns-collage img, .ns-tarjeta { animation: none; } }
 </style>
 """
@@ -124,13 +141,29 @@ HACEMOS = [('/servicios/', 'Consultoría', 'Estrategia y dirección, liderazgo y
            ('/tienda/', 'Tienda de herramientas digitales', 'Simuladores de examen, invitaciones con QR, eventos con registro y apps para negocios como Agenda, Vuelve y Vende.'),
            ('/voluntariado', 'Tú en Vorka', 'Voluntariado para jóvenes de 16 a 29 años, presencial en el Bajío y remoto desde todo México.'),
            ('/fc/', 'Vorka FC', 'Academia de fútbol para niñas y niños de 6 a 10 años en Celaya.')]
-CINTA_NOS = ['/img/portafolio/inmobiliaria.webp', '/sparks/anunciate/img/premio.webp', '/img/portafolio/tel-alimentos.webp', '/img/trabajo/mentoria-800.webp',
+# Resultados (de datos.PORTAFOLIO y del kit de Sparks): (imagen, ajuste, cifra, qué significa)
+def resultados_nos():
+    from anunciate import datos_alcance
+    al = datos_alcance()
+    return [('/img/portafolio/inmobiliaria.webp', 'izq', '484 visitas', 'a las fichas del portal propio de una inmobiliaria en sus primeros 18 días'),
+            ('/img/portafolio/brillo.webp', 'contener', '133 clientas', 'de una estética ya regresaron dos veces o más con su tarjeta de lealtad'),
+            ('/img/portafolio/alimentos.webp', '', 'Un año', 'llevando el contenido de una empresa de alimentos que vende por pedido, mes con mes'),
+            ('/img/trabajo/mentoria-800.webp', 'izq', '5 becas', 'ganaron el año pasado los jóvenes de nuestra mentoría; este ciclo, todos quedaron preseleccionados'),
+            ('/sparks/anunciate/img/premio.webp', '', f"{int(al['total']):,}", 'de alcance en redes con las historias de jóvenes de la Revista Sparks'),
+            ('/sparks/anunciate/img/evento.webp', '', '1,351', 'estudiantes en talleres, conferencias y eventos de Sparks')]
+
+CINTA_NOS = ['/img/portafolio/tel-inmobiliaria.webp', '/sparks/anunciate/img/porto.webp', '/img/portafolio/tel-alimentos.webp', '/sparks/anunciate/img/reconocimiento.webp',
              '/sparks/anunciate/img/grupo.webp', '/img/portafolio/mercado.webp', '/img/trabajo/tuenvorka-800.webp', '/img/portafolio/tel-seguros.webp']
 CIUDADES_FOTO = [('Monterrey', 'monterrey-skyline'), ('Ciudad de México', 'cdmx-reforma'), ('Guadalajara', 'guadalajara'), ('Querétaro', 'queretaro'), ('Celaya', 'celaya')]
 
 def pagina_nosotros():
     flecha = ico('<path d="M5 12h14M13 6l6 6-6 6"/>', 1.6)
     hacemos = ''.join(f'<a class="est-fila rv" style="--d:{i * .05}s" href="{h}"><span><b>{e(n)}</b><span>{e(d)}</span></span>{flecha}</a>' for i, (h, n, d) in enumerate(HACEMOS))
+    def tarjeta_res(i, x):
+        img, aj, c, t = x
+        im = f'<span class="im texto"></span>' if aj == 'texto' else f'<span class="im {aj}"><img src="{img}" alt="" loading="lazy" decoding="async"></span>'
+        return f'<a class="ns-r rv{" osc" if aj == "texto" else ""}" style="--d:{(i % 3) * .06}s" href="/portafolio/">{im}<b>{e(c)}</b><span>{e(t)}</span></a>'
+    resultados = ''.join(tarjeta_res(i, x) for i, x in enumerate(resultados_nos()))
     cinta = ''.join(f'<figure><img src="{f}" alt="" loading="eager" decoding="async"></figure>' for f in CINTA_NOS * 2)
     fases = ''.join(f'<div class="rv" style="--d:{i * .06}s"><h3>{e(t)}</h3><p>{e(d)}</p></div>' for i, (t, d, _) in enumerate(FASES))
     ciudades = ''.join(f'<div class="ns-ciudad rv" style="--d:{i * .05}s"><img src="/img/ciudades/{f}-960.webp" alt="{e(c)}" loading="lazy" decoding="async"><b>{e(c)}</b></div>' for i, (c, f) in enumerate(CIUDADES_FOTO))
@@ -146,14 +179,22 @@ def pagina_nosotros():
       <div class="botones"><a class="btn tinta" href="/agenda/">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="/portafolio/">Ver portafolio</a></div>
     </div>
     <div class="ns-collage" aria-hidden="true">
-      <img class="c1" src="/oleynickhdz/img/brandon-portada.webp" alt="" decoding="async">
-      <img class="c2" src="/sparks/anunciate/img/premio.webp" alt="" decoding="async">
-      <img class="c3" src="/img/equipo/ximena-pastor-charla-960.webp" alt="" decoding="async">
-      <div class="ns-tarjeta"><small>Bases en</small><b>Monterrey · CDMX · Guadalajara</b><b>Querétaro · Celaya</b></div>
+      <img class="c1" src="/img/portafolio/mercado.webp" alt="" decoding="async">
+      <img class="c2" src="/img/portafolio/inmobiliaria.webp" alt="" decoding="async">
+      <img class="c3" src="/sparks/anunciate/img/futbol.webp" alt="" decoding="async">
+      <div class="ns-tarjeta"><small>Resultados de nuestros clientes</small><b>484 visitas en 18 días a su portal</b><b>133 clientas que regresan</b><b>5 jóvenes con beca</b></div>
     </div>
   </div>
 </section>
 <div class="est-cinta" aria-hidden="true"><div class="est-cinta-in">{cinta}</div></div>
+
+<section class="sec pegada" aria-labelledby="t-res">
+  <div class="marco">
+    <div class="est-cab rv"><h2 class="h2" id="t-res">Lo que <span class="metal">logramos</span> con nuestros clientes</h2><p>Casos reales, sin nombres para cuidar su privacidad.</p></div>
+    <div class="ns-res">{resultados}</div>
+    <a class="est-barra rv" href="/portafolio/">Ver todos los casos {flecha}</a>
+  </div>
+</section>
 
 <section class="sec pegada" aria-labelledby="t-que">
   <div class="marco">
@@ -166,18 +207,14 @@ def pagina_nosotros():
   <div class="marco">
     <div class="est-cab rv"><h2 class="h2" id="t-como">Cómo <span class="metal">trabajamos</span></h2><p>Diagnóstico antes de proponer, diseño antes de ejecutar, medición antes de cerrar.</p></div>
     <div class="ns-hace">{fases}</div>
-    <a class="est-barra rv" href="/portafolio/">Mira lo que han logrado nuestros clientes {flecha}</a>
   </div>
 </section>
 
 <section class="sec pegada" aria-labelledby="t-quien">
   <div class="marco">
-    <div class="est-cab rv"><h2 class="h2" id="t-quien">Quién <span class="metal">nos dirige</span></h2></div>
-    <div class="ns-gente">
-      <article class="ns-persona rv"><img src="/oleynickhdz/img/brandon-portada.webp" alt="Brandon Oleynick, fundador y CEO de Vorka México" loading="lazy" decoding="async">
-        <div><small>Fundador y CEO</small><h3>Brandon Oleynick</h3><p>Líder social juvenil, conferencista y fundador de Juventudes Impactando México A.C. (<a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO</a>).</p><p><a href="/oleynickhdz/">Conoce a Brandon {FLECHA}</a></p></div></article>
-      <article class="ns-persona rv" style="--d:.06s"><img src="/img/equipo/ximena-pastor-retrato-960.webp" alt="Ximena Pastor, Directora Estatal de Vorka Sparks" loading="lazy" decoding="async">
-        <div><small>Directora Estatal de Vorka Sparks</small><h3>Ximena Pastor</h3><p>Arquitectura y compromiso social: un enfoque hacia las personas, las ideas y las posibilidades de transformar nuestro entorno.</p><p><a href="/ximepastor/">Conoce a Ximena {FLECHA}</a></p></div></article>
+    <div class="ns-equipo rv"><h2 class="h3" id="t-quien">Quién está detrás</h2>
+      <a href="/oleynickhdz/"><img src="/img/equipo/brandon-oleynick-360.webp" alt="Brandon Oleynick" loading="lazy" decoding="async"><span><b>Brandon Oleynick</b><small>Fundador y CEO</small></span></a>
+      <a href="/ximepastor/"><img src="/img/equipo/ximena-pastor-cara-360.webp" alt="Ximena Pastor" loading="lazy" decoding="async"><span><b>Ximena Pastor</b><small>Directora Estatal de Vorka Sparks</small></span></a>
     </div>
   </div>
 </section>
