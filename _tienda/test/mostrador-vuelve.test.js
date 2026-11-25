@@ -74,15 +74,18 @@ async function pagar(slug) {
 
 describe('Mostrador + Vuelve', () => {
   it('la migración deja los dos planes a la venta, ocultos del catálogo, con su app de paquete', () => {
+    const solo = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug IN ('mostrador-mensual', 'mostrador-anual') ORDER BY orden").all();
+    expect(solo.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['mostrador-mensual', 49900, 1], ['mostrador-anual', 499000, 1]]);
+    for (const p of solo) expect(JSON.parse(p.contenido)).toMatchObject({ oculto: true, acceso: { app: 'mostrador' } });
     const ps = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug LIKE 'mostrador-vuelve-%' ORDER BY orden").all();
     expect(ps.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['mostrador-vuelve-mensual', 79900, 1], ['mostrador-vuelve-anual', 799000, 1]]);
     for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ oculto: true, acceso: { app: 'mostrador-vuelve', apps: ['mostrador', 'vuelve'] } });
   });
   it('la página muestra los planes, el formulario y la prueba gratis; sin productos invita a probar', async () => {
     let h = await (await pedir('/tienda/mostrador/?plan=mostrador-vuelve-anual')).text();
-    expect(h).toContain('id="form-mo"'); expect(h).toMatch(/value="mostrador-vuelve-anual" checked/); expect(h).toContain('$799'); expect(h).toContain('os.vorka.mx/vuelve/');
+    expect(h).toContain('id="form-mo"'); expect(h).toMatch(/value="mostrador-vuelve-anual" checked/); expect(h).toContain('$799'); expect(h).toContain('$499'); expect(h).toContain('value="mostrador-mensual"'); expect(h).toContain('Solo Mostrador'); expect(h).toContain('os.vorka.mx/vuelve/');
     expect(h).not.toMatch(/tel:|Llamar/); expect(h).toContain('Papelerías'); expect(h).toContain('Ferreterías'); expect(h).toContain('href="/tienda/vende/"');
-    env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'mostrador-vuelve-%'");
+    env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'mostrador-%'");
     h = await (await pedir('/tienda/mostrador/')).text();
     expect(h).not.toContain('id="form-mo"'); expect(h).toContain('Muy pronto');
   });
@@ -90,6 +93,13 @@ describe('Mostrador + Vuelve', () => {
     expect((await pedir('/tienda/mostrador')).headers.get('location')).toBe('https://vorka.mx/tienda/mostrador/');
     expect((await pedir('/tienda/mostrador-vuelve-mensual/')).headers.get('location')).toBe('/tienda/mostrador/?plan=mostrador-vuelve-mensual#comprar');
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('/tienda/mostrador/');
+  });
+  it('Solo Mostrador: Vorka OS lo ve como app «mostrador», no le abre Vuelve, y no se compra encima del paquete', async () => {
+    env.DB.raw.exec("INSERT INTO suscripciones (id, email, app, product_id, estado) VALUES ('s9', 'mo@tienda.mx', 'mostrador', 'prod_mostrador_mensual', 'active')");
+    const A = new Admin({}, env);
+    expect(await A.suscripcionApp('mo@tienda.mx', 'mostrador')).toMatchObject({ vigente: true });
+    expect(await A.suscripcionApp('mo@tienda.mx', 'vuelve')).toBeNull();
+    expect((await pedir('/tienda/mostrador-anual/')).headers.get('location')).toBe('/tienda/mostrador/?plan=mostrador-anual#comprar');
   });
   it('al pagar: Vuelve lo ve como suscripción con el paquete y el correo lleva a Mi mostrador', async () => {
     await pagar('mostrador-vuelve-mensual');
