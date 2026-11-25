@@ -1,6 +1,6 @@
 # Vorka México · kit de medios de la Revista Sparks (/sparks/anunciate/): para marcas y negocios con público joven que quieren estar en Sparks.
 # Alcance: suma de TODAS las publicaciones de Sparks medidas en Vorka OS (reporte_piezas de todos los municipios), en vivo.
-# Precios públicos (decisión de Brandon, 2026-11-24), antes de IVA; los mismos que vorka-os/src/catalogo-sparks.js.
+# Sin precios públicos (Brandon, 2026-11-25): «precios accesibles» y se cotiza por mensaje. Los precios viven en vorka-os/src/catalogo-sparks.js.
 # Las solicitudes van a os.vorka.mx › Prospectos (POST /api/publico/vorka/interes, origen sparks_kit, WhatsApp obligatorio).
 # Fotos reales publicadas en Sparks (sparks/anunciate/img/).
 from partes import *
@@ -25,19 +25,19 @@ def miles(n):
 
 # (clave, nombre, para qué, precio, qué es, qué incluye)
 FORMAS = [
-    ('nota', 'Nota de tu negocio', 'La hacemos nosotros de principio a fin', '$1,800 + IVA',
+    ('nota', 'Nota de tu negocio', 'La hacemos nosotros de principio a fin', 'Precio accesible',
      'Publicamos una nota sobre tu negocio o tu marca. Vamos contigo, te entrevistamos, tomamos fotos y video, la escribimos y la publicamos: tú solo nos abres la puerta.',
      ['Entrevista, fotos y video en tu lugar, hechos por el equipo de Sparks.', 'Se publica en vorka.mx/sparks, Instagram, TikTok y Facebook.', 'A los 7 días te mandamos su alcance e interacciones.']),
-    ('contenido', 'Nota con tu contenido', 'Tú nos mandas el material', '$900 + IVA',
+    ('contenido', 'Nota con tu contenido', 'Tú nos mandas el material', 'Precio accesible',
      'Te mandamos el guion y el manual de Sparks. Tú grabas, tomas las fotos y nos mandas todo; nosotros lo editamos, escribimos la nota y la publicamos.',
      ['Guion y manual para que tu material se vea como Sparks.', 'Edición, texto y publicación en el sitio y las tres redes.', 'A los 7 días te mandamos su alcance e interacciones.']),
-    ('patrocinio-nota', 'Patrocina una nota', 'Tu marca junto a una historia', '$400 + IVA',
+    ('patrocinio-nota', 'Patrocina una nota', 'Tu marca junto a una historia', 'Precio accesible',
      'Tu marca acompaña una historia de Sparks sobre un joven o un proyecto, con tu logo y la mención «Esta historia llega gracias a…».',
      ['Tu logo en la nota del sitio y en sus publicaciones.', 'Mención de tu marca en el texto de redes.', 'Nosotros elegimos y contamos la historia; tú ayudas a que llegue más lejos.']),
-    ('seccion', 'Patrocinio de sección', 'Estar presente todo el mes', 'Desde $3,000 al mes + IVA · mínimo 3 meses',
+    ('seccion', 'Patrocinio de sección', 'Estar presente todo el mes', 'Mensual · mínimo 3 meses',
      'Tu marca acompaña una sección de la revista (Historias, Eventos o la que mejor te quede) mes con mes.',
      ['Tu logo en la sección, en el sitio y en sus publicaciones.', 'Mención de tu marca en 2 publicaciones de redes al mes.', 'Reporte mensual con el alcance de la sección.']),
-    ('activacion', 'Presencia en activaciones', 'Llegar en persona', 'Precio según el evento',
+    ('activacion', 'Presencia en activaciones', 'Llegar en persona', 'Según el evento',
      'Sparks también está en la calle: talleres, conferencias y eventos con estudiantes.',
      ['Tu marca en el evento y en su cobertura en redes.', 'Un espacio para presentarte o regalar algo a los asistentes.', 'Fotos y reporte del evento para tus redes.']),
 ]
@@ -68,7 +68,7 @@ CINTA_K = ['viaje', 'futbol', 'premio', 'porto', 'grupo', 'reconocimiento', 'eve
 
 def solicitud_html():
     """Formulario que llega a os.vorka.mx › Prospectos. WhatsApp obligatorio: por ahí se manda la propuesta."""
-    ops = ''.join(f'<option value="{e(k)}">{e(t)} · {e(pr)}</option>' for k, t, _, pr, _, _ in FORMAS)
+    ops = ''.join(f'<option value="{e(k)}">{e(t)}</option>' for k, t, _, pr, _, _ in FORMAS)
     return f'''<section class="sec oscura redondo ak-sol" id="solicitud" aria-labelledby="t-sol">
   <div class="grano"></div>
   <div class="marco plat-in">
@@ -161,7 +161,7 @@ def pagina_anunciate():
       <span class="etiqueta">Revista Sparks · Kit de medios</span>
       <h1 class="h1" style="margin-top:18px">Llega a los jóvenes de México <span class="metal">con historias,</span> no con anuncios.</h1>
       <p class="lead">Sparks cuenta los proyectos que impulsan jóvenes de México: lo que estudian, crean, compiten y hacen por su comunidad. Tu marca puede impulsarlos con nosotros en el sitio, Instagram, TikTok y Facebook.</p>
-      <div class="botones"><a class="btn tinta" href="#solicitud">Quiero mi propuesta {FLECHA}</a><a class="btn blanco" href="#formas">Ver formas y precios</a></div>
+      <div class="botones"><a class="btn tinta" href="#solicitud">Quiero mi propuesta {FLECHA}</a><a class="btn blanco" href="#formas">Ver formas</a></div>
     </div>
     <div class="ak-collage" aria-hidden="true">
       <img class="c1" src="/sparks/anunciate/img/futbol.webp" width="1000" height="666" alt="" decoding="async">
@@ -188,7 +188,7 @@ def pagina_anunciate():
 </section>
 <section class="sec pegada" id="formas" aria-labelledby="t-formas">
   <div class="marco">
-    <div class="est-cab rv"><h2 class="h2" id="t-formas">Elige cómo <span class="metal">quieres estar</span></h2><p>Precios antes de IVA. Cada formato incluye su reporte de resultados.</p></div>
+    <div class="est-cab rv"><h2 class="h2" id="t-formas">Elige cómo <span class="metal">quieres estar</span></h2><p>Precios accesibles para negocios y marcas de todos los tamaños. Escríbenos y te mandamos tu propuesta por WhatsApp; cada formato incluye su reporte de resultados.</p></div>
     <div class="est-lista">{formas}</div>
   </div>
 </section>
@@ -232,5 +232,5 @@ fetch('{API_ALCANCE}').then(r => r.ok ? r.json() : null).then(d => {{
 {pie()}'''
     extra = f'<link rel="stylesheet" href="/assets/v3/estudio.css?v={VERSION}">\n<link rel="stylesheet" href="/sparks/anunciate/anunciate.css?v={VERSION}">\n'
     return cabeza('Anúnciate en la Revista Sparks · Vorka México',
-                  'Kit de medios de la Revista Sparks: llega a los jóvenes de México con historias reales. Nota de tu negocio desde $900, patrocinio de una nota $400 y patrocinio de sección, con reporte de resultados.',
+                  'Kit de medios de la Revista Sparks: llega a los jóvenes de México con historias reales. Notas de tu negocio, patrocinio de historias y de secciones a precios accesibles, con reporte de resultados.',
                   '/sparks/anunciate/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
