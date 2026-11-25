@@ -639,7 +639,7 @@ export function crearSimulador(c) {
   <a class="sim-marca" href="${RUTA}/" aria-label="${c.titulo}, inicio">${LOGO}<span>Simulador <b>${c.nombre}</b></span></a>
   <div class="sim-barra-der" id="barra-der"></div>
 </header>
-${resena ? `<a class="sim-resena" href="${RUTA}/resena"><span>¿Te está sirviendo? <b>Deja tu reseña</b> y te regalamos un simulacro Medio.</span>${FLECHA}</a>` : ''}
+${resena ? `<a class="sim-resena" href="${RUTA}/resena"><span>¿Te está sirviendo? <b>Deja tu reseña</b> y te regalamos 20 % en otro producto.</span>${FLECHA}</a>` : ''}
 <main id="app" class="sim-main" tabindex="-1" aria-live="polite">
   <div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Preparando tu simulador…</div>
 </main>

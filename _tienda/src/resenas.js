@@ -173,20 +173,49 @@ export async function yaReseno(env, email, productIds) {
   return !!(await one(env, `SELECT 1 FROM resenas WHERE lower(email) = ? AND product_id IN (${productIds.map(() => '?').join(',')}) AND estado != 'sin_escribir' LIMIT 1`, String(email).toLowerCase(), ...productIds));
 }
 
-// Simulacro Medio de regalo por la primera reseña de un simulador: una «compra» de $0 (cortesía) del simulacro adicional de esa
-// app, a su correo. Id fijo por reseña: nunca se regala dos veces. El simulador lo cuenta solo (comprasDe suma sus intentos).
+// Regalo por la primera reseña (sin importar las estrellas): un cupón REGALO-XXXX-XXXX de PCT_PREMIO % para otro producto de
+// la tienda, de un uso y DIAS_PREMIO días. Se crea en cupones_regalo (lote fijo «resena-<id>»: nunca dos por reseña), se
+// muestra en la página de gracias y se manda por correo con sugerencias de su interés. Nada se publica sobre el regalo.
+export const PCT_PREMIO = 20, DIAS_PREMIO = 60;
+// Sugerencias según lo que compró: a quien prepara su examen, lo que sigue para un estudiante
+const SUGERENCIAS_ESTUDIANTE = ['test-vocacional', 'evaluacion-liderazgo', 'que-proyecto-social'];
+async function sugerenciasPara(env, r) {
+  const slugs = (appDe(r) ? SUGERENCIAS_ESTUDIANTE : []).filter(x => x !== r.slug);
+  if (!slugs.length) return [];
+  const l = await all(env, `SELECT slug, nombre, contenido FROM products WHERE activo = 1 AND slug IN (${slugs.map(() => '?').join(',')})`, ...slugs);
+  return slugs.map(x => l.find(p => p.slug === x)).filter(Boolean).map(p => ({ nombre: p.nombre, url: rutaProducto(p) }));
+}
+export async function cuponDeResena(env, id) {
+  return (await one(env, 'SELECT codigo, hasta FROM cupones_regalo WHERE lote = ?', `resena-${id}`)) || null;
+}
 async function premiarResena(env, r) {
-  const app = appDe(r);
-  if (!app) return false;
-  const p = await one(env, 'SELECT id, nombre FROM products WHERE slug = ?', `${app}-intento`);
-  if (!p) return false;
-  const id = `premio-resena-${r.id}`, ahora = ahoraISO();
-  const b = await env.DB.batch([
-    env.DB.prepare(`INSERT OR IGNORE INTO orders (id, email, nombre, monto_centavos, moneda, estado, proveedor, regalo, paid_at, correo_enviado_at, metodo_pago)
-      VALUES (?, ?, ?, 0, 'MXN', 'paid', 'cortesia', 0, ?, ?, 'cortesía: premio por reseña')`).bind(id, String(r.email).toLowerCase(), r.orden_nombre || 'Comprador', ahora, ahora),
-    env.DB.prepare('INSERT INTO order_items (order_id, product_id, nombre, precio_centavos, cantidad) SELECT ?, ?, ?, 0, 1 WHERE NOT EXISTS (SELECT 1 FROM order_items WHERE order_id = ?)').bind(id, p.id, p.nombre, id),
-  ]);
-  return !!b[0].meta.changes;
+  if (await cuponDeResena(env, r.id)) return null;
+  const { codigoAzar } = await import('./cupones-regalo.js');
+  const hasta = new Date(Date.now() - 6 * 3600e3 + DIAS_PREMIO * DIA).toISOString().slice(0, 10);
+  let codigo = null;
+  for (let k = 0; k < 8 && !codigo; k++) {
+    const c = codigoAzar();
+    const x = await run(env, `INSERT OR IGNORE INTO cupones_regalo (codigo, lote, tipo, pct, alcance, max_usos, hasta, nota, creado_por)
+      SELECT ?, ?, 'pct', ?, 'tienda', 1, ?, ?, 'reseña' WHERE NOT EXISTS (SELECT 1 FROM codigos_descuento WHERE codigo = ?) AND NOT EXISTS (SELECT 1 FROM cupones_regalo WHERE lote = ?)`,
+      c, `resena-${r.id}`, PCT_PREMIO, hasta, `Regalo por reseña de ${r.producto}`, c, `resena-${r.id}`);
+    if (x.meta.changes) codigo = c;
+    else if (await cuponDeResena(env, r.id)) return null;
+  }
+  if (!codigo) return null;
+  const sug = await sugerenciasPara(env, r);
+  const base = env.SITE_URL || SITIO;
+  const nombre = String(r.orden_nombre || '').trim().split(/\s+/)[0] || '';
+  const asunto = `Tu regalo por tu reseña: ${PCT_PREMIO} % de descuento`;
+  const html = marco(asunto, `
+<p style="${P}">Hola${nombre ? `, ${esc(nombre)}` : ''}:</p>
+<p style="${P}">Gracias por tomarte el tiempo de dejar tu reseña de <b>${esc(r.producto)}</b>. Como agradecimiento, aquí tienes <b>${PCT_PREMIO} % de descuento</b> en tu próxima compra en la tienda de Vorka México:</p>
+<p style="${P};text-align:center;font-size:22px;font-weight:800;letter-spacing:.04em">${codigo}</p>
+<p style="${P};text-align:center;color:#6b6670">Un uso, válido hasta el ${esc(hasta.split('-').reverse().join('/'))}.</p>
+${sug.length ? `<p style="${P}">Te puede servir:</p>${sug.map(x => boton(`${base}${x.url}${x.url.includes('?') ? '&' : '?'}cupon=${codigo}`, x.nombre)).join('')}` : boton(`${base}/tienda/?cupon=${codigo}`, 'Ver la tienda')}
+<p style="${P}">Con cariño,<br>el equipo de Vorka México</p>`, { etiqueta: 'Tu regalo' });
+  const texto = `Hola${nombre ? `, ${nombre}` : ''}:\n\nGracias por dejar tu reseña de ${r.producto}. Como agradecimiento, aquí tienes ${PCT_PREMIO} % de descuento en tu próxima compra en la tienda de Vorka México:\n\n${codigo}\n\nUn uso, válido hasta el ${hasta.split('-').reverse().join('/')}.\n\n${sug.length ? `Te puede servir:\n${sug.map(x => `${x.nombre}: ${base}${x.url}?cupon=${codigo}`).join('\n')}` : `${base}/tienda/?cupon=${codigo}`}\n\nCon cariño,\nel equipo de Vorka México`;
+  await enviar(env, { para: r.email, asunto, html, texto, idempotencia: `resena-premio-${r.id}` }).catch(e => console.error('resenas: correo del regalo', r.id, e?.message));
+  return codigo;
 }
 
 const LIGA_PUBLICA = '/tienda/resena/';
@@ -194,7 +223,7 @@ const pedirForm = (msg = '', correo = '') => `<section class="t-sec"><div class=
   <p class="rs-et">Tu opinión</p>
   <h1 class="t-h1 rs-h1">Deja tu reseña</h1>
   <p class="t-lead">Escribe el correo con el que compraste y te mandamos al instante la liga para calificar tus productos de Vorka México.</p>
-  <p class="rs-premio">Si compraste un simulador de examen, al dejar tu reseña te regalamos un simulacro Medio, sin importar cuántas estrellas le des.</p>
+  <p class="rs-premio">Como agradecimiento, al dejar tu reseña te regalamos ${PCT_PREMIO} % de descuento en otro producto de la tienda.</p>
   <form class="rs-form" method="post" action="${LIGA_PUBLICA}" novalidate>
     ${msg ? `<p class="t-error" role="alert">${msg}</p>` : ''}
     <div class="t-campo"><label for="rs-correo">Tu correo de compra</label><input id="rs-correo" name="correo" type="email" required maxlength="254" autocomplete="email" inputmode="email" value="${esc(correo)}"></div>
@@ -257,7 +286,7 @@ function formulario(r, token, { valores = {}, error = '' } = {}) {
     <p class="rs-et">Tu opinión</p>
     <h1 class="t-h1 rs-h1">¿Qué te pareció ${esc(r.producto)}?</h1>
     <p class="t-lead">${r.estado === 'pendiente' ? 'Ya recibimos tu reseña y la estamos revisando. Puedes cambiarla mientras tanto.' : 'Toma un minuto. Tu reseña le ayuda a quien está por decidir y a nosotros a mejorar.'}</p>
-    ${r.estado === 'sin_escribir' && appDe(r) ? '<p class="rs-premio">Al enviarla te regalamos un simulacro Medio en tu simulador, sin importar cuántas estrellas le des.</p>' : ''}
+    ${r.estado === 'sin_escribir' ? `<p class="rs-premio">Al enviarla te regalamos ${PCT_PREMIO} % de descuento en otro producto de la tienda.</p>` : ''}
     <form class="rs-form" method="post" action="/tienda/resena/${token}" novalidate>
       ${error ? `<p class="t-error" role="alert" id="rs-error">${esc(error.texto)}</p>` : ''}
       <fieldset class="rs-estrellas"${err('estrellas') ? ' aria-invalid="true" aria-describedby="rs-error"' : ''}>
@@ -290,7 +319,7 @@ function gracias(r, { recien = false } = {}) {
   const texto = r.estado === 'aprobada' ? 'Ya se ve en la página del producto. Si quieres cambiarla o que la borremos, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.'
     : r.estado === 'oculta' ? 'La leímos con atención. Si quieres cambiarla o que la borremos, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.'
     : 'La revisamos y, en cuanto la aprobemos, se publica en la página del producto. Mientras tanto puedes cambiarla con esta misma liga.';
-  const premio = appDe(r) ? `<p class="rs-premio">${recien ? 'Te regalamos un simulacro Medio por tomarte el tiempo: ya está en tu simulador.' : 'Tu simulacro Medio de regalo ya está en tu simulador.'}</p>` : '';
+  const premio = r._cupon ? `<p class="rs-premio">Tu regalo: ${PCT_PREMIO} % de descuento en otro producto con el código <b>${esc(r._cupon.codigo)}</b> (un uso, hasta el ${esc(r._cupon.hasta.split('-').reverse().join('/'))}). También te lo mandamos por correo.</p>` : '';
   return aviso({ icono: CHECK, clase: 'exito', titulo, texto: texto + premio,
     extra: `<div class="botones t-centro">${editable(r) ? `<a class="btn blanco" href="/tienda/resena/${esc(r._token)}?editar=1">Cambiar mi reseña</a>` : ''}<a class="btn tinta" href="${esc(ruta)}">${appDe(r) ? 'Volver al simulador' : 'Ver el producto'} ${FLECHA}</a></div>` });
 }
@@ -300,6 +329,7 @@ export async function paginaResenaGet(env, token, url) {
   const r = await porToken(env, token);
   if (!r) return noValida();
   r._token = token;
+  r._cupon = await cuponDeResena(env, r.id);
   if (!editable(r) || (r.estado === 'pendiente' && !url.searchParams.has('editar'))) return paginaResena(r, gracias(r, { recien: url.searchParams.has('gracias') }));
   return paginaResena(r, formulario(r, token));
 }
