@@ -7,6 +7,7 @@ import { FLECHA, CHECK } from './marco.generado.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { SOPORTE } from './correo.js';
 import { WA_PAGINA_WEB } from './paginaweb.js';
+import { WA_APP_MEDIDA } from './appmedida.js';
 import { siguienteDe, bloqueGracias, CSS_GRACIAS } from './siguiente.js';
 
 // Si no llegó nada (p. ej. el correo se escribió mal al pagar), que sepan a dónde escribir
@@ -70,6 +71,9 @@ function bloques(o, v) {
     : acc?.app === 'pagina-web' ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Empecemos tu página',
       texto: `Tu suscripción ya está activa. Escríbenos por WhatsApp para empezar: te pedimos tu logo, fotos y textos, y te pasamos el costo de tu dominio para transferirlo. También te lo mandamos a <b>${esc(correoOculto(o.email))}</b>.`,
       extra: `<div class="botones t-centro"><a class="btn tinta" href="${WA_PAGINA_WEB}" target="_blank" rel="noopener">Escribir por WhatsApp ${FLECHA}</a></div>` }
+    : acc?.app === 'app-medida' ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Empecemos tu app',
+      texto: `Tu mes de preparación ya está pagado. Escríbenos por WhatsApp para platicar qué quieres que haga tu app y pedirte tu logo y tus colores. También te lo mandamos a <b>${esc(correoOculto(o.email))}</b>.`,
+      extra: `<div class="botones t-centro"><a class="btn tinta" href="${WA_APP_MEDIDA}" target="_blank" rel="noopener">Escribir por WhatsApp ${FLECHA}</a></div>` }
     : acc ? { clase: 'exito', icono: ICONOS.ok, titulo: '¡Listo! Revisa tu correo',
       texto: `Enviamos tu acceso a <b>${esc(correoOculto(o.email))}</b>. Ábrelo y toca <b>${esc(acc.boton || 'Entrar')}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam o promociones.`,
       extra: `<p class="t-nota">¿No te llegó? <a href="/descargas/reenviar">Pide que te lo reenviemos</a>.${SIN_CORREO}</p>` }
@@ -107,7 +111,7 @@ const SONDEO = `(function(){
 
 // Bienvenida al pagar (no en regalos): el nombre de lo que compró, su liga de Puntos (gana al recomendar) y a quién apoya Vorka.
 // Los puntos se ganan recomendando, no comprando: por eso no se llama "cashback".
-const PRODUCTOS_APP = { 'pagina-web': 'Tu página web', brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', brillo: 'Brillo', 'brillo-paquete': 'Brillo, Vuelve y Agenda', 'vende-vuelve': 'Vende y Vuelve', 'academias-vuelve': 'Mi academia y Vuelve', 'mostrador-vuelve': 'Mi mostrador y Vuelve', mostrador: 'Mi mostrador', cuentas: 'Cuentas', vende: 'Vende', clara: 'Clara', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', 'simulador-prepa-ug': 'el Simulador prepa UG', 'simulador-ipn': 'el Simulador IPN', 'simulador-exani-ii': 'el Simulador EXANI-II', 'simulador-excoba': 'el Simulador EXCOBA', simuladores: 'tus simuladores', ruta: 'Ruta de Impacto', liderazgo: 'la Evaluación de liderazgo Vorka' };
+const PRODUCTOS_APP = { 'pagina-web': 'Tu página web', 'app-medida': 'tu App a la medida', brindi: 'Brindi', cupo: 'Cupo', vuelve: 'Vuelve', agenda: 'Agenda', 'agenda-vuelve': 'Agenda + Vuelve', brillo: 'Brillo', 'brillo-paquete': 'Brillo, Vuelve y Agenda', 'vende-vuelve': 'Vende y Vuelve', 'academias-vuelve': 'Mi academia y Vuelve', 'mostrador-vuelve': 'Mi mostrador y Vuelve', mostrador: 'Mi mostrador', cuentas: 'Cuentas', vende: 'Vende', clara: 'Clara', 'simulador-paa': 'el Simulador PAA', 'simulador-unam': 'el Simulador UNAM', 'simulador-ecoems': 'el Simulador ECOEMS', 'simulador-prepa-ug': 'el Simulador prepa UG', 'simulador-ipn': 'el Simulador IPN', 'simulador-exani-ii': 'el Simulador EXANI-II', 'simulador-excoba': 'el Simulador EXCOBA', simuladores: 'tus simuladores', ruta: 'Ruta de Impacto', liderazgo: 'la Evaluación de liderazgo Vorka' };
 export const IMPACTO = 'Vorka México apoya a <a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO · Juventudes Impactando México A.C.</a>, la red de jóvenes que transforma sus comunidades en 121 municipios del país.';
 const bienvenida = o => {
   const acc = accesoDe(o), nombre = PRODUCTOS_APP[acc?.app] || null;

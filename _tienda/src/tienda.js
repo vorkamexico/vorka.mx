@@ -133,6 +133,7 @@ const APPS_TIENDA = {
   vende: { nombre: 'Vende · Pedidos y cobros', precio: () => 'Empieza gratis' },   // corto, en un renglón (el precio de Pro está en su ficha)
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
   'pagina-web': { nombre: 'Tu página web · Diseño y mantenimiento', precio: p => `${precio(p)} al mes` },
+  'app-medida': { nombre: 'App a la medida · App Store y Google Play', precio: p => `${precio(p)} al mes` },
   clara: { nombre: 'Clara · Tus tarjetas y tu dinero', precio: () => 'Empieza gratis' },   // gratis con 1 tarjeta (el precio de Pro está en su ficha)
   mostrador: { nombre: 'Mostrador · Ventas, inventario y corte', precio: p => `Desde ${precio(p)} al mes` },
   'academias-vuelve': { nombre: 'Academias · Alumnos, asistencia y pagos', precio: p => `${precio(p)} al mes` },
@@ -682,7 +683,8 @@ export async function sitemapTienda(env) {
     `<url><loc>${SITIO}/tienda/catalogo/</loc><priority>0.7</priority></url>`,   // catálogo para compartir (con código no se indexa)
     `<url><loc>${SITIO}/tienda/mira-tu-negocio/</loc><priority>0.8</priority></url>`,
     `<url><loc>${SITIO}/tienda/academias/</loc><priority>0.8</priority></url>`,   // Academias + Vuelve (página propia)
-    `<url><loc>${SITIO}/tienda/mostrador/</loc><priority>0.8</priority></url>`,   // Mostrador + Vuelve (página propia)   // tarjeta de lealtad, agenda y página con su nombre (por giro)
+    `<url><loc>${SITIO}/tienda/mostrador/</loc><priority>0.8</priority></url>`,
+    `<url><loc>${SITIO}/tienda/app-a-la-medida/</loc><priority>0.8</priority></url>`,   // App a la medida (página propia)   // Mostrador + Vuelve (página propia)   // tarjeta de lealtad, agenda y página con su nombre (por giro)
     `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
     ...Object.keys(VARIANTES).filter(Boolean).map(k => `<url><loc>${SITIO}/tienda/brindi/${k}/</loc><priority>0.8</priority></url>`),   // por tipo de evento
     ...Object.keys(UNIVERSIDADES).map(k => `<url><loc>${SITIO}/simulador-paa/${k}/</loc><priority>0.7</priority></url>`),   // PAA por universidad
