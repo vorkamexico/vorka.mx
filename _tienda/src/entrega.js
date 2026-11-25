@@ -144,9 +144,27 @@ ${boton(wa, 'Escribir por WhatsApp')}
   return { asunto, html, texto };
 }
 
+// App a la medida (migración 0099): no hay app que abrir todavía; se empieza por WhatsApp, como Tu página web
+function correoAppMedida(env, orden) {
+  const nombre = orden.nombre.split(' ')[0];
+  const wa = `${SOPORTE.whatsapp}?text=${encodeURIComponent(`Hola Vorka, soy ${orden.nombre}. Ya pagué mi App a la medida (orden ${orden.id}). ¿Cuándo empezamos?`)}`;
+  const asunto = 'Tu app: ¡empezamos!';
+  const pasos = ['Escríbenos por WhatsApp con el botón de abajo.', 'Platicamos qué quieres que haga tu app y te pedimos tu logo, tus colores y tus fotos.', 'Durante tu mes de preparación la diseñamos y desarrollamos, y te la mostramos antes de publicarla.', 'La mandamos a revisión de App Store y Google Play; en cuanto la aprueban, tus clientes ya la pueden descargar.'];
+  const html = marco(asunto, `
+<p style="${P}">Hola, ${esc(nombre)}:</p>
+<p style="${P}">¡Gracias! Tu pago quedó confirmado y tu <b>mes de preparación</b> ya empezó. Después se cobran $999 cada mes en tu tarjeta, con el plan de 12 meses.</p>
+${lista(pasos.map(esc))}
+${boton(wa, 'Escribir por WhatsApp')}
+<p style="${P}">Para cambiar tu tarjeta o ver tu suscripción, entra a <a href="${env.SITE_URL}/tienda/suscripcion" style="color:#6b2a85;text-decoration:underline">vorka.mx/tienda/suscripcion</a> con este mismo correo.</p>
+<p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`, { etiqueta: 'App a la medida' });
+  const texto = `Hola, ${nombre}:\n\n¡Gracias! Tu pago quedó confirmado y tu mes de preparación ya empezó. Después se cobran $999 cada mes (plan de 12 meses).\n\n${pasos.map((x, i) => `${i + 1}. ${x}`).join('\n')}\n\nEscríbenos por WhatsApp: ${wa}\n\nOrden ${orden.id}\nVorka México`;
+  return { asunto, html, texto };
+}
+
 // Todo de la misma app (p. ej. un plan de Brindi con complementos): el botón entra directo; si son apps distintas, a la página con un botón por cada una
 function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length === 1, extra = {}) {
   if (acceso.app === 'pagina-web') return correoPaginaWeb(env, orden, items);
+  if (acceso.app === 'app-medida') return correoAppMedida(env, orden);
   if (acceso.tipo === 'saas' && /^https:\/\//.test(acceso.url || '')) return correoSaas(env, orden, items, acceso);
   // Ruta de Impacto y Evaluación de liderazgo: el botón lleva el enlace que dio Vorka OS (ruta.vorka.mx: un solo uso, 7 días;
   // liderazgo.vorka.mx: la liga personal con sus 2 aplicaciones)
