@@ -73,13 +73,17 @@ async function pagar(slug) {
 }
 
 describe('Mostrador + Vuelve', () => {
-  it('la migración deja los dos planes a la venta, ocultos del catálogo, con su app de paquete', () => {
+  it('la migración deja los dos planes a la venta, ocultos del catálogo, con su app de paquete', async () => {
     const solo = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug IN ('mostrador-mensual', 'mostrador-anual') ORDER BY orden").all();
     expect(solo.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['mostrador-mensual', 49900, 1], ['mostrador-anual', 499000, 1]]);
-    for (const p of solo) expect(JSON.parse(p.contenido)).toMatchObject({ oculto: true, acceso: { app: 'mostrador' } });
+    for (const p of solo) expect(JSON.parse(p.contenido)).toMatchObject({ acceso: { app: 'mostrador' } });
+    // en el catálogo: el mensual de Mostrador (0098), con su portada; el anual y los paquetes, solo en su ficha
+    expect(JSON.parse(solo[0].contenido).oculto).toBeUndefined(); expect(JSON.parse(solo[1].contenido).oculto).toBe(true);
+    const cat = await (await pedir('/tienda/')).text();
+    expect(cat).toContain('Mostrador · Ventas, inventario y corte'); expect(cat).toContain('mostrador-portada.webp'); expect(cat).toContain('Academias · Alumnos, asistencia y pagos');
     const ps = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug LIKE 'mostrador-vuelve-%' ORDER BY orden").all();
     expect(ps.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['mostrador-vuelve-mensual', 79900, 1], ['mostrador-vuelve-anual', 799000, 1]]);
-    for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ oculto: true, acceso: { app: 'mostrador-vuelve', apps: ['mostrador', 'vuelve'] } });
+    for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ acceso: { app: 'mostrador-vuelve', apps: ['mostrador', 'vuelve'] } });
   });
   it('la página muestra los planes, el formulario y la prueba gratis; sin productos invita a probar', async () => {
     let h = await (await pedir('/tienda/mostrador/?plan=mostrador-vuelve-anual')).text();

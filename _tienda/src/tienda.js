@@ -134,6 +134,8 @@ const APPS_TIENDA = {
   cuentas: { nombre: 'Cuentas · Préstamos personales', precio: p => `${precio(p)} al mes` },
   'pagina-web': { nombre: 'Tu página web · Diseño y mantenimiento', precio: p => `${precio(p)} al mes` },
   clara: { nombre: 'Clara · Tus tarjetas y tu dinero', precio: () => 'Empieza gratis' },   // gratis con 1 tarjeta (el precio de Pro está en su ficha)
+  mostrador: { nombre: 'Mostrador · Ventas, inventario y corte', precio: p => `Desde ${precio(p)} al mes` },
+  'academias-vuelve': { nombre: 'Academias · Alumnos, asistencia y pagos', precio: p => `${precio(p)} al mes` },
 };
 // Portada v3 por app (simulador/portadas_v3.py) para los productos que todavía no la tienen en D1 (migración 0062):
 // así la tarjeta nunca cae en la portada genérica de la V. La imagen de D1 manda si existe.
