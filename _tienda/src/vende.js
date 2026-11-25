@@ -210,7 +210,8 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 /* precio */
 .ve-planes{display:grid;gap:20px;align-items:start;max-width:1120px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
 .ve-plan{position:relative;background:var(--card);border:1.5px solid var(--line);border-radius:28px;padding:28px;display:grid;gap:8px}
-.ve-paq{border-color:var(--ve-c)}
+.ve-paq{border-color:var(--ve-c);grid-column:1/-1}
+@media(min-width:760px){.ve-paq{grid-template-columns:1fr 1.4fr;column-gap:40px;align-items:center}.ve-paq>h3,.ve-paq>p,.ve-paq>.ve-btn{grid-column:1}.ve-paq>ul{grid-column:2;grid-row:1/span 5;grid-template-columns:1fr 1fr;column-gap:24px;margin:0}.ve-paq>.ve-btn{justify-self:start}}
 .ve-sello{position:absolute;top:-13px;left:24px;background:var(--ve-c);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .ve-elige{border:0;padding:0;margin:0 0 6px}.ve-elige legend{font-weight:650;font-size:14px;margin-bottom:8px;padding:0}
 .ve-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);margin-bottom:8px;cursor:pointer}
