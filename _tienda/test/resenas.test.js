@@ -295,3 +295,63 @@ describe('Vorka OS: moderación y ARCO', () => {
     expect(correos.filter(c => c.para === 'mariana@correo.mx')).toHaveLength(1);
   });
 });
+
+describe('pedirla al momento: liga pública, botón del simulador y simulacro de regalo', () => {
+  const basePaa = () => env.DB.raw.prepare(`SELECT slug FROM products WHERE json_extract(contenido, '$.acceso.app') = 'simulador-paa'
+    AND COALESCE(json_extract(contenido, '$.acceso.tipo'), '') NOT IN ('intento', 'examen') ORDER BY precio_centavos LIMIT 1`).get().slug;
+
+  it('/tienda/resena/ manda al instante la liga a quien compró y responde igual a quien no', async () => {
+    orden({ dias: 1 });
+    const g = await pedir('/tienda/resena/');
+    expect(g.status).toBe(200);
+    expect(await g.text()).toContain('Tu correo de compra');
+    const r = await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'Mariana@Correo.mx' }) });
+    expect(await r.text()).toContain('Revisa tu correo');
+    expect(correos).toHaveLength(1);
+    const t = ligas(correos[0])[0];
+    expect((await pedir(`/tienda/resena/${t}`)).status).toBe(200);
+    // Sin compras: misma respuesta, sin correo
+    const n = await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'nadie@correo.mx' }) });
+    expect(await n.text()).toContain('Revisa tu correo');
+    expect(correos).toHaveLength(1);
+    // El cron ya no la vuelve a pedir para esa orden
+    await pedirResenas(env, new Date(AHORA.getTime() + 10 * DIA));
+    expect(correos).toHaveLength(1);
+  });
+
+  it('una liga nueva reemplaza a la anterior y no se pide lo que ya se aprobó', async () => {
+    orden({ dias: 1 });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const vieja = ligas(correos[0])[0];
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const nueva = ligas(correos[1])[0];
+    expect((await pedir(`/tienda/resena/${vieja}`)).status).toBe(404);
+    expect((await mandar(nueva, { estrellas: '4', nombre: 'Mariana, Celaya' })).status).toBe(303);
+    const id = q('SELECT id FROM resenas')[0].id;
+    await A.decidirResena(id, { estado: 'aprobada', por: 'ana@vorka.mx' });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    expect(correos).toHaveLength(2);
+  });
+
+  it('simulador: al escribirla (aunque sea de 1 estrella) recibe un simulacro Medio de regalo, una sola vez', async () => {
+    orden({ dias: 1, slugs: [basePaa()], monto: 29900 });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const t = ligas(correos[0])[0];
+    expect(await (await pedir(`/tienda/resena/${t}`)).text()).toContain('te regalamos un simulacro Medio');
+    expect((await mandar(t, { estrellas: '1', nombre: 'Mariana, Celaya' })).status).toBe(303);
+    expect(await (await pedir(`/tienda/resena/${t}?gracias=1`)).text()).toContain('ya está en tu simulador');
+    await mandar(t, { estrellas: '2', nombre: 'Mariana, Celaya' });
+    const premio = q("SELECT o.*, i.product_id FROM orders o JOIN order_items i ON i.order_id = o.id WHERE o.id LIKE 'premio-resena-%'");
+    expect(premio).toHaveLength(1);
+    expect(premio[0]).toMatchObject({ email: 'mariana@correo.mx', monto_centavos: 0, estado: 'paid', proveedor: 'cortesia', regalo: 0, product_id: prod('simulador-paa-intento') });
+  });
+
+  it('descargables: sin regalo', async () => {
+    orden({ dias: 1 });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const t = ligas(correos[0])[0];
+    expect(await (await pedir(`/tienda/resena/${t}`)).text()).not.toContain('simulacro Medio');
+    await mandar(t, { estrellas: '5', nombre: 'Mariana, Celaya' });
+    expect(q("SELECT id FROM orders WHERE id LIKE 'premio-resena-%'")).toHaveLength(0);
+  });
+});

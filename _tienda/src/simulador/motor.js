@@ -38,6 +38,7 @@ import { VIDEOS } from './videos.generado.js';
 import { codigoDe, saldoDe, nivelActual } from '../puntos.js';
 import { NIVELES } from '../puntos-reglas.js';
 import { PCT_REFERIDO } from '../descuentos.js';
+import { ligaResena, yaReseno } from '../resenas.js';
 
 // Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
 // por la fecha en que se compró, no en la que se abrió).
@@ -243,11 +244,18 @@ export function crearSimulador(c) {
     }
     const ent = p.match(new RegExp(`^${RUTA}/entrar/([^/]{1,100})/?$`));
     if (ent && (M === 'GET' || M === 'HEAD' || M === 'POST')) return entrar(env, req, ent[1]);
+    // Botón «Deja tu reseña» de la app: lo manda directo a su formulario (sin esperar el correo)
+    if (p === `${RUTA}/resena` && M === 'GET') {
+      const a = await accesoDe(env, req);
+      const pid = a && !a.cerrada ? await productoParaResena(env, a) : null;
+      const token = pid ? await ligaResena(env, { order_id: a.orden.id, product_id: pid, email: a.orden.email }) : null;
+      return new Response(null, { status: 303, headers: { location: token ? `/tienda/resena/${token}` : '/tienda/resena/', 'cache-control': 'no-store' } });
+    }
     if ((p === RUTA || p === `${RUTA}/`) && (M === 'GET' || M === 'HEAD')) {
       if (p === RUTA) return Response.redirect(`${url.origin}${RUTA}/`, 301);
       const a = await accesoDe(env, req);
       if (a?.cerrada) return sesionCerrada(a.motivo);
-      if (a) return appShell(a);
+      if (a) return appShell(a, await mostrarResena(env, a));
       // La app instalada abre con ?app=1: sin sesión va a «Entrar con mi correo», no a la página de venta
       if (url.searchParams.get('app') === '1') return new Response(null, { status: 303, headers: { location: `${RUTA}/entrar/?app=1`, 'cache-control': 'no-store' } });
       return c.venta(env, req, url);
@@ -584,8 +592,22 @@ export function crearSimulador(c) {
     return json({ ok: true });
   }
 
+  // ---------- reseña desde el simulador ----------
+  // El producto del simulador en su compra base (no un simulacro adicional). null si fue cortesía o no se puede calificar.
+  async function productoParaResena(env, a) {
+    if (!a?.orden || a.orden.proveedor === 'cortesia' || (a.orden.monto_centavos <= 0 && a.orden.proveedor !== 'regalo')) return null;
+    const it = await all(env, 'SELECT i.product_id, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', a.orden.id);
+    const x = it.find(i => { const ac = accesoDeItem(i.contenido); return ac && ac.tipo !== 'intento' && ac.tipo !== 'examen'; });
+    return x ? x.product_id : null;
+  }
+  // ¿Mostrar el botón? Solo si puede calificarlo y todavía no la escribe
+  async function mostrarResena(env, a) {
+    const pid = await productoParaResena(env, a).catch(() => null);
+    return pid ? !(await yaReseno(env, a.orden.email, [pid]).catch(() => true)) : false;
+  }
+
   // ---------- la app (con acceso) ----------
-  function appShell(a) {
+  function appShell(a, resena = false) {
     const n = nonce();
     const cab = seguridad(n);
     // El botón del boletín de la Revista Sparks se suscribe directo en os.vorka.mx (CORS para vorka.mx)
@@ -617,6 +639,7 @@ export function crearSimulador(c) {
   <a class="sim-marca" href="${RUTA}/" aria-label="${c.titulo}, inicio">${LOGO}<span>Simulador <b>${c.nombre}</b></span></a>
   <div class="sim-barra-der" id="barra-der"></div>
 </header>
+${resena ? `<a class="sim-resena" href="${RUTA}/resena"><span>¿Te está sirviendo? <b>Deja tu reseña</b> y te regalamos un simulacro Medio.</span>${FLECHA}</a>` : ''}
 <main id="app" class="sim-main" tabindex="-1" aria-live="polite">
   <div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Preparando tu simulador…</div>
 </main>
