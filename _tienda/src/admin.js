@@ -72,6 +72,7 @@ export async function tablero(env, { mes } = {}) {
     one(env, "SELECT COUNT(*) n, COALESCE(SUM(monto_centavos), 0) monto FROM orders WHERE estado = 'pending' AND metodo_pago IN ('oxxo', 'customer_balance')"),
     netoDelMes(env, { desde, hasta, mes }),
   ]);
+  const ticket = await ticketDelMes(env, desde, hasta);
   // series completas (los días o meses sin ventas en cero)
   const porDia = Object.fromEntries(dias.map(x => [x.d, x])), porMes = Object.fromEntries(meses.map(x => [x.m, x]));
   const serieDias = Array.from({ length: 30 }, (_, i) => { const d = new Date(Date.parse(fin30) - (30 - i) * 864e5).toISOString().slice(0, 10); return { d, ventas: porDia[d]?.n || 0, monto_centavos: porDia[d]?.monto || 0 }; });
@@ -86,7 +87,25 @@ export async function tablero(env, { mes } = {}) {
     actual: { ventas: act.n, monto_centavos: act.monto }, previo: { ventas: prev.n, monto_centavos: prev.monto },
     visitas: ev.reduce((s, x) => s + (x.vistas || 0), 0), checkouts: ev.reduce((s, x) => s + (x.checkouts || 0), 0),
     reembolsos: { ventas: reemb.n, monto_centavos: reemb.monto }, pendientes_efectivo: { ventas: pend.n, monto_centavos: pend.monto },
-    neto, dias: serieDias, meses: serieMeses, productos };
+    neto, ticket, dias: serieDias, meses: serieMeses, productos };
+}
+
+// Ticket y conversión del pago (línea base 2026-11-24: ticket $288, 1 de 17 con más de un producto, 17 de 59 pagadas).
+// Solo órdenes con cobro (sin regalos ni cortesías). «Se quedaron en el pago» = expiraron sin elegir método en la pasarela;
+// «Volvieron sin pagar» = tocaron Regresar en Stripe (tabla pago_regresos, de /tienda/gracias?cancelado=1).
+async function ticketDelMes(env, desde, hasta) {
+  const COBRO = "o.proveedor NOT IN ('regalo', 'cortesia')";
+  const [pag, creadas, sinMetodo, volvieron, cup] = await Promise.all([
+    one(env, `SELECT COUNT(*) n, COALESCE(SUM(o.monto_centavos), 0) monto,
+        SUM((SELECT COUNT(DISTINCT i.product_id) FROM order_items i WHERE i.order_id = o.id) > 1) varios
+      FROM orders o WHERE o.estado = 'paid' AND o.monto_centavos > 0 AND ${COBRO} AND o.paid_at >= ? AND o.paid_at < ?`, desde, hasta),
+    one(env, `SELECT COUNT(*) n FROM orders o WHERE ${COBRO} AND o.created_at >= ? AND o.created_at < ?`, desde, hasta),
+    one(env, `SELECT COUNT(*) n FROM orders o WHERE ${COBRO} AND o.estado = 'failed' AND o.metodo_pago IS NULL AND o.created_at >= ? AND o.created_at < ?`, desde, hasta),
+    one(env, 'SELECT COUNT(*) n FROM pago_regresos WHERE created_at >= ? AND created_at < ?', desde, hasta),
+    one(env, "SELECT COUNT(*) creados, COALESCE(SUM(usos > 0), 0) usados FROM cupones_regalo WHERE lote LIKE 'siguiente-%' AND creado >= ? AND creado < ?", desde, hasta),
+  ]);
+  return { ventas: pag.n, promedio_centavos: pag.n ? Math.round(pag.monto / pag.n) : 0, varios: pag.varios || 0,
+    creadas: creadas.n, se_quedaron: sinMetodo.n, volvieron: volvieron.n, cupones_siguiente: { creados: cup.creados, usados: cup.usados } };
 }
 
 // ---------- órdenes ----------

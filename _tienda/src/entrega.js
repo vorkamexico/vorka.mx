@@ -1,4 +1,5 @@
 // Entrega: token de descarga + correo. Se llama desde el webhook (y luego desde "reenviar" y el panel).
+import { siguienteDe, bloqueCorreo } from './siguiente.js';
 import { one, all, run, aleatorio, hex, enc, ahoraISO, correoOculto } from './util.js';
 import { marco, boton, lista, enviar, esc, P, SOPORTE } from './correo.js';
 import { mandarRegalos } from './regalos.js';
@@ -185,12 +186,14 @@ function correoAcceso(env, orden, items, token, acceso, mismaApp = items.length 
     : extra.cortesiaHasta
     ? `Es una cortesía de Vorka México: tu acceso está activo hasta el ${fechaLarga(extra.cortesiaHasta)}. No se renueva y no se te cobra nada.${extra.sillas ? ` Incluye ${extra.sillas === 1 ? '1 vendedora' : `${extra.sillas} vendedoras`} en tu red (Vende › Más › Mi red), también sin costo hasta esa fecha.` : ''} Entra siempre con este mismo correo (${orden.email}) para que la app lo reconozca.`
     : linea2;
+  const sig = intento ? { html: '', texto: '' } : bloqueCorreo(extra.siguiente, env.SITE_URL, { P, boton });
   const html = marco(asunto, `
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">${linea1}</p>
 ${lista(items.map(i => esc(i.nombre) + (i.cantidad > 1 ? ` × ${i.cantidad}` : '')))}
 ${boton(url, boton_)}
 <p style="${P}">${extra.cortesiaHasta ? esc(linea2Final) : linea2}</p>${tambien.map(t => `\n${boton(t.url, t.boton)}`).join('')}
+${sig.html}
 <p style="${P}">Si el botón deja de funcionar o cambias de dispositivo, pide un enlace nuevo en <a href="${env.SITE_URL}/descargas/reenviar" style="color:#6b2a85;text-decoration:underline">vorka.mx/descargas/reenviar</a> con este mismo correo.</p>
 <p style="${P}">¿Algún problema? Escríbenos a <a href="mailto:${SOPORTE.correo}" style="color:#6b2a85;text-decoration:underline">${SOPORTE.correo}</a> o por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a> y lo resolvemos.</p>
 <p style="${P};color:#8b8790;font-size:13px">Orden ${esc(orden.id)}</p>`);
@@ -203,7 +206,7 @@ ${items.map(i => `- ${i.nombre}${i.cantidad > 1 ? ` × ${i.cantidad}` : ''}`).jo
 ${boton_}:
 ${url}
 
-${linea2Final}${tambien.map(t => `\n\n${t.boton}:\n${t.url}`).join('')}
+${linea2Final}${tambien.map(t => `\n\n${t.boton}:\n${t.url}`).join('')}${sig.texto ? `\n\n${sig.texto}\n` : ''}
 Si deja de funcionar, pide uno nuevo en ${env.SITE_URL}/descargas/reenviar con este mismo correo.
 
 ¿Algún problema? Escríbenos a ${SOPORTE.correo} o por WhatsApp: ${SOPORTE.whatsapp}
@@ -223,10 +226,12 @@ export async function mandarEnlace(env, orderId, ahora = Date.now(), { publico =
   // Las cortesías enviadas directo a un correo (regalo = 0) se entregan como cualquier compra.
   if (orden.proveedor === 'cortesia' && orden.regalo) return;
   if (orden.regalo) return mandarRegalos(env, orden, { publico });
-  const items = await all(env, 'SELECT i.product_id, i.nombre, i.cantidad, p.contenido FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
+  const items = await all(env, 'SELECT i.product_id, i.nombre, i.cantidad, p.contenido, p.slug FROM order_items i LEFT JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', orderId);
   // Ruta de Impacto: primero el acceso en Vorka OS (idempotente por orden). Si os falla, no se crea token ni se manda
   // correo: el error sube, la orden queda marcada para revisar y el webhook reintenta.
   const extra = items.some(esItemRuta) ? { ruta: await accesoRuta(env, orden, items) } : {};
+  // «Lo que sigue»: sugerencias y cupón para el segundo producto (nunca rompe la entrega)
+  extra.siguiente = await siguienteDe(env, orden, items);
   const { token, hash } = await crearToken(env, orderId, ahora);
   try {
     await enviar(env, { para: orden.email, ...correoEntrega(env, orden, items, token, extra), idempotencia: `entrega-${hash.slice(0, 32)}` });

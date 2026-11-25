@@ -39,6 +39,7 @@ import { codigoDe, saldoDe, nivelActual } from '../puntos.js';
 import { NIVELES } from '../puntos-reglas.js';
 import { PCT_REFERIDO } from '../descuentos.js';
 import { ligaResena, yaReseno } from '../resenas.js';
+import { siguienteDe } from '../siguiente.js';
 
 // Vigencia: 6 meses desde la compra. Lo comprado antes del corte conserva el año que se le prometió (un regalo cuenta
 // por la fecha en que se compró, no en la que se abrió).
@@ -255,7 +256,7 @@ export function crearSimulador(c) {
       if (p === RUTA) return Response.redirect(`${url.origin}${RUTA}/`, 301);
       const a = await accesoDe(env, req);
       if (a?.cerrada) return sesionCerrada(a.motivo);
-      if (a) return appShell(a, await mostrarResena(env, a));
+      if (a) { const resena = await mostrarResena(env, a); return appShell(a, resena, resena ? null : await franjaSiguiente(env, a)); }
       // La app instalada abre con ?app=1: sin sesión va a «Entrar con mi correo», no a la página de venta
       if (url.searchParams.get('app') === '1') return new Response(null, { status: 303, headers: { location: `${RUTA}/entrar/?app=1`, 'cache-control': 'no-store' } });
       return c.venta(env, req, url);
@@ -606,8 +607,20 @@ export function crearSimulador(c) {
     return pid ? !(await yaReseno(env, a.orden.email, [pid]).catch(() => true)) : false;
   }
 
+  // «Lo que sigue» dentro del simulador (cuando ya dejó su reseña o no aplica): la primera sugerencia de siguiente.js,
+  // con su cupón del segundo producto si lo tiene. Nunca rompe la app.
+  async function franjaSiguiente(env, a) {
+    try {
+      if (!a?.orden?.id) return null;
+      const o = await one(env, 'SELECT id, estado, regalo, monto_centavos, proveedor FROM orders WHERE id = ?', a.orden.id);
+      const items = await all(env, 'SELECT p.slug, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ?', a.orden.id);
+      const s = await siguienteDe(env, o, items);
+      return s?.sugerencias[0] || null;
+    } catch { return null; }
+  }
+
   // ---------- la app (con acceso) ----------
-  function appShell(a, resena = false) {
+  function appShell(a, resena = false, siguiente = null) {
     const n = nonce();
     const cab = seguridad(n);
     // El botón del boletín de la Revista Sparks se suscribe directo en os.vorka.mx (CORS para vorka.mx)
@@ -639,7 +652,7 @@ export function crearSimulador(c) {
   <a class="sim-marca" href="${RUTA}/" aria-label="${c.titulo}, inicio">${LOGO}<span>Simulador <b>${c.nombre}</b></span></a>
   <div class="sim-barra-der" id="barra-der"></div>
 </header>
-${resena ? `<a class="sim-resena" href="${RUTA}/resena"><span>¿Te está sirviendo? <b>Deja tu reseña</b> y te regalamos 20 % en otro producto.</span>${FLECHA}</a>` : ''}
+${resena ? `<a class="sim-resena" href="${RUTA}/resena"><span>¿Te está sirviendo? <b>Deja tu reseña</b> y te regalamos 20 % en otro producto.</span>${FLECHA}</a>` : siguiente ? `<a class="sim-resena" href="${esc(siguiente.href)}"${/^https:/.test(siguiente.href) ? ' target="_blank" rel="noopener"' : ''}><span>${esc(siguiente.titulo)} <b>${esc(siguiente.boton)}</b></span>${FLECHA}</a>` : ''}
 <main id="app" class="sim-main" tabindex="-1" aria-live="polite">
   <div class="sim-cargando"><span class="sim-giro" aria-hidden="true"></span>Preparando tu simulador…</div>
 </main>
