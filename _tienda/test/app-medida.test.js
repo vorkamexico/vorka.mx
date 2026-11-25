@@ -67,6 +67,10 @@ describe('App a la medida', () => {
     expect(h).toMatch(/autorizo a Vorka a publicar la app con mi marca/);
     expect(h).not.toMatch(/tel:|Llamar/);
     expect(h).toContain('/assets/tienda/v3/app-medida-portada.webp');
+    expect(h).toContain('Lo que incluye tu mensualidad');
+    expect(h).toContain('Hasta 1,000 personas');
+    expect(h).toMatch(/startups y los proyectos grandes se cotizan aparte/);
+    expect(h).toMatch(/límites de uso de la mensualidad/);
     expect((await pedir('/tienda/app-a-la-medida')).status).toBe(301);
     expect(await (await pedir('/tienda/')).text()).toContain('/tienda/app-a-la-medida/');
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('/tienda/app-a-la-medida/');
