@@ -472,7 +472,7 @@ export async function paginaProducto(env, req, url, slug) {
     return new Response(null, { status: 301, headers: { location: `/tienda/brillo/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
   // Academias + Vuelve y Mostrador + Vuelve: su página
-  if (['academias-vuelve', 'mostrador-vuelve'].includes(p?.contenido?.acceso?.app)) {
+  if (['academias-vuelve', 'mostrador-vuelve', 'mostrador'].includes(p?.contenido?.acceso?.app)) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `${p.contenido.acceso.ruta}?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }

@@ -13,7 +13,16 @@ export const RUTA_MOSTRADOR = '/tienda/mostrador/';
 const APP = 'https://os.vorka.mx/vuelve/';
 const WA = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, tengo una duda sobre Mostrador + Vuelve.');
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
-const PLANES = [{ slug: 'mostrador-vuelve-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'mostrador-vuelve-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
+// Dos opciones: solo Mostrador (ventas, inventario y corte) o el paquete con Vuelve (más la tarjeta de lealtad)
+const PLANES = [
+  { slug: 'mostrador-vuelve-mensual', nombre: 'Mostrador + Vuelve · Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'mostrador-vuelve-anual', nombre: 'Mostrador + Vuelve · Anual', cada: 'al año', renueva: 'cada año' },
+  { slug: 'mostrador-mensual', nombre: 'Solo Mostrador · Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'mostrador-anual', nombre: 'Solo Mostrador · Anual', cada: 'al año', renueva: 'cada año' }];
+const OPCIONES = [
+  { k: 'mostrador', titulo: 'Mostrador', para: 'Ventas, inventario y corte del día', m: 'mostrador-mensual', a: 'mostrador-anual',
+    incluye: ['Ventas con ticket y folio', 'Inventario con existencias, mínimos, costo y código', 'Entradas de mercancía y ajustes por conteo', 'Corte del día por forma de pago y ganancia', 'Tu logo en la app', 'Soporte por WhatsApp, sin llamadas'] },
+  { k: 'mostrador-vuelve', titulo: 'Mostrador + Vuelve', para: 'Todo Mostrador, y que tus clientes regresen', m: 'mostrador-vuelve-mensual', a: 'mostrador-vuelve-anual', rec: true,
+    incluye: ['Todo lo de Mostrador', 'Tarjeta de lealtad Vuelve con tu logo (Apple y Google Wallet)', 'Puntos o sellos por compra y premios que tú eliges', 'Avisos de cumpleaños y de «te extrañamos»', 'Equipo con PIN para sumar compras', 'Aparece en el catálogo de negocios de tu ciudad'] },
+];
 const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 
 const QUE = [
@@ -33,7 +42,6 @@ const PARA = [
   ['Tiendas de mascotas', 'Alimento y accesorios con su mínimo para surtir, y sellos por compra para que la familia vuelva contigo.'],
   ['Florerías y detalles', 'Arreglos con su precio, ventas del día por forma de pago y premios para quien te compra en cada fecha.'],
 ];
-const INCLUYE = ['Ventas con ticket y folio', 'Inventario con existencias, mínimos, costo y código', 'Entradas de mercancía y ajustes por conteo', 'Corte del día por forma de pago y ganancia', 'Tarjeta de lealtad Vuelve con tu logo (Apple y Google Wallet)', 'Equipo con PIN para sumar compras', 'Soporte por WhatsApp, sin llamadas'];
 const FAQ = [
   ['¿Puedo probarlo antes de pagar?', `Sí. Entra a <a href="${APP}">os.vorka.mx/vuelve</a> con tu correo y elige tu tipo de negocio (tienda, boutique, papelería…). Tienes 7 días con todo, sin tarjeta. Si te sirve, te suscribes aquí con el mismo correo y todo sigue tal cual.`],
   ['¿Cobra por mí o se conecta a una terminal?', 'No. Tus clientes te pagan como siempre: efectivo, transferencia o tu terminal. Mostrador registra la venta, descuenta el inventario y te arma el corte.'],
@@ -58,9 +66,10 @@ const VISTA = `<div class="ac-vista" aria-hidden="true">
 export async function paginaMostrador(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug) })))).filter(x => x.prod);
-  const mensual = planes.find(x => x.slug === 'mostrador-vuelve-mensual'), anual = planes.find(x => x.slug === 'mostrador-vuelve-anual');
-  const ahorro = mensual && anual ? mensual.prod.precio_centavos * 12 - anual.prod.precio_centavos : 0;
-  const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : (planes[0]?.slug || '');
+  const de = slug => planes.find(x => x.slug === slug)?.prod;
+  const mensual = planes.find(x => x.slug === 'mostrador-mensual') || planes[0];
+  const ahorroDe = slug => { const x = planes.find(y => y.slug === slug), m = x && de(slug.replace('-anual', '-mensual')); return x && m && slug.endsWith('-anual') ? m.precio_centavos * 12 - x.prod.precio_centavos : 0; };
+  const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : (planes.find(x => x.slug === 'mostrador-vuelve-mensual') || planes[0])?.slug || '';
   const elegidoP = planes.find(x => x.slug === elegido);
   if (mensual && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: mensual.prod.id, ref_code: code }, req);
   const error = url.searchParams.get('error') || '';
@@ -70,7 +79,7 @@ export async function paginaMostrador(env, req, url) {
     ...(planes.length ? { offers: planes.map(x => oferta({ ruta: RUTA_MOSTRADOR, centavos: x.prod.precio_centavos, name: `Plan ${x.nombre.toLowerCase()}` })) } : {}) },
   migas('Mostrador', RUTA_MOSTRADOR),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
-  const desde = mensual ? precio(mensual.prod) : null;
+  const desde = mensual ? precio(mensual.prod) : null;   // el de entrada: solo Mostrador
   return pagina({ navActual: 'catalogo', entrar: { url: APP, app: 'Vuelve' },
     titulo: 'Mostrador + Vuelve: inventario, ventas y corte de caja para tu negocio | Vorka México', ruta: RUTA_MOSTRADOR,
     descripcion: 'Para boutiques, papelerías, ferreterías, tiendas de regalos y más: vende con ticket, lleva tu inventario, haz el corte del día y haz que tus clientes regresen.',
@@ -83,7 +92,7 @@ export async function paginaMostrador(env, req, url) {
     <h1 class="t-h1">Tu negocio en orden: lo que vendes, lo que te queda y quién regresa.</h1>
     <p class="t-lead">Ventas con ticket, inventario y corte del día en tu celular o tu compu, con tu logo. Y una tarjeta de lealtad para que tus clientes vuelvan a comprarte.</p>
     <div class="ac-btns"><a class="btn acento" href="${APP}">Pruébalo 7 días gratis ${FLECHA}</a><a class="btn blanco" href="#comprar" data-ir="comprar">Ver precio</a></div>
-    <p class="ac-mini">${desde ? `${desde} al mes · ` : ''}Sin tarjeta para probar · Soporte por WhatsApp</p>
+    <p class="ac-mini">${desde ? `Desde ${desde} al mes · ` : ''}Sin tarjeta para probar · Soporte por WhatsApp</p>
   </div>${VISTA}
 </div></section>
 
@@ -101,21 +110,22 @@ export async function paginaMostrador(env, req, url) {
 </div></section>
 
 <section class="ac-sec" id="precio"><div class="marco">
-  <h2 class="t-h2 ac-h2">Un precio, todo incluido.</h2>
-  <p class="ac-sub">En pesos mexicanos con IVA incluido. Cancela cuando quieras.</p>
-  <div class="ac-planes">${planes.map(x => `<article class="ac-plan${x.slug.endsWith('mensual') ? ' rec' : ''}">${x.slug.endsWith('anual') && ahorro > 0 ? `<span class="ac-sello">Ahorra ${pesosRedondo(ahorro)}</span>` : ''}
-    <h3>${x.nombre}</h3><p class="ac-precio"><b>${precio(x.prod)}</b> <small>${x.cada}</small></p>
-    <ul>${(x.slug.endsWith('anual') ? ['Todo lo del plan mensual', 'Un solo pago al año', '2 meses gratis'] : INCLUYE).map(i => `<li>${CHECK}<span>${esc(i)}</span></li>`).join('')}</ul>
-    <a class="btn${x.slug.endsWith('mensual') ? ' acento' : ' blanco'}" href="?plan=${x.slug}#comprar" data-ir="comprar" data-plan="${x.slug}">Suscribirme</a></article>`).join('')}</div>
+  <h2 class="t-h2 ac-h2">Solo Mostrador, o con tu tarjeta de lealtad.</h2>
+  <p class="ac-sub">En pesos mexicanos con IVA incluido. Cancela cuando quieras. Puedes empezar con Mostrador y sumar Vuelve después.</p>
+  <div class="ac-planes">${OPCIONES.filter(o => de(o.m)).map(o => `<article class="ac-plan${o.rec ? ' rec' : ''}">${o.rec ? '<span class="ac-sello">El más completo</span>' : ''}
+    <h3>${o.titulo}</h3><p class="ac-para">${esc(o.para)}</p><p class="ac-precio"><b>${precio(de(o.m))}</b> <small>al mes</small></p>
+    ${de(o.a) ? `<p class="ac-para">o ${precio(de(o.a))} al año (ahorras ${pesosRedondo(ahorroDe(o.a))})</p>` : ''}
+    <ul>${o.incluye.map(i => `<li>${CHECK}<span>${esc(i)}</span></li>`).join('')}</ul>
+    <a class="btn${o.rec ? ' acento' : ' blanco'}" href="?plan=${o.m}#comprar" data-ir="comprar" data-plan="${o.m}">Quiero ${esc(o.titulo)}</a></article>`).join('')}</div>
   ${planes.length ? '' : `<p class="ac-sub">Muy pronto. Mientras, <a href="${APP}">pruébalo gratis</a> o <a href="${WA}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.</p>`}
 </div></section>
 
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Mostrador + Vuelve', intro: `¿Aún no lo pruebas? <a href="${APP}">Empieza gratis</a>, sin tarjeta. Si ya lo usas, suscríbete con el mismo correo y todo sigue tal cual.`,
-  pasos: [['Elige mensual o anual', 'Y escribe el correo con el que entras a Vuelve.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Mi mostrador y tu tarjeta quedan activos al instante.']],
+  pasos: [['Elige tu plan', 'Solo Mostrador o con Vuelve, mensual o anual, y el correo con el que entras.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Mi mostrador y tu tarjeta quedan activos al instante.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por WhatsApp'],
   form: `<form class="t-form t-compra" id="form-mo" method="post" action="/api/checkout" novalidate>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
-    <fieldset class="t-campo ac-elige"><legend>Plan</legend>${planes.map(x => `<label class="ac-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b><small>${x.slug.endsWith('anual') && ahorro > 0 ? `Ahorra ${pesosRedondo(ahorro)} contra el mensual` : 'Sin plazo forzoso'}</small></span></label>`).join('')}</fieldset>
+    <fieldset class="t-campo ac-elige"><legend>Plan</legend>${planes.map(x => `<label class="ac-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b><small>${ahorroDe(x.slug) > 0 ? `Ahorra ${pesosRedondo(ahorroDe(x.slug))} contra el mensual` : 'Sin plazo forzoso'}</small></span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" value="${esc(correo)}"><small class="t-ayuda">Usa el mismo correo con el que entras a Vuelve.</small></div>
     <p class="ac-total">Pagas hoy <b id="ac-hoy-p">${precio(elegidoP.prod)}</b> <span id="ac-luego">y luego ${precio(elegidoP.prod)} ${elegidoP.renueva}</span></p>
@@ -158,7 +168,7 @@ const CSS = `
 .ac-aviso{margin:24px auto 0;max-width:680px;text-align:center;color:var(--fg-2);font-size:14.5px}
 .ac-planes{display:grid;gap:20px;margin:36px auto 0;max-width:820px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start}
 .ac-plan{position:relative;padding:28px;border-radius:28px;background:var(--card);border:1.5px solid var(--line);display:grid;gap:8px}.ac-plan.rec{border-color:var(--ac)}
-.ac-plan h3{margin:0;font-size:20px}.ac-precio{margin:0}.ac-precio b{font-size:34px;letter-spacing:-.03em}.ac-precio small{color:var(--fg-2)}
+.ac-plan h3{margin:0;font-size:20px}.ac-para{margin:0;color:var(--fg-2);font-size:14.5px}.ac-precio{margin:0}.ac-precio b{font-size:34px;letter-spacing:-.03em}.ac-precio small{color:var(--fg-2)}
 .ac-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:9px}.ac-plan li{display:flex;gap:8px;font-size:15px}.ac-plan li svg{flex:none;width:18px;height:18px;margin-top:2px}
 .ac-sello{position:absolute;top:-13px;left:24px;background:var(--ac);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
 .ac-elige{display:grid;gap:8px;border:0;padding:0;margin:0}.ac-op{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer}
