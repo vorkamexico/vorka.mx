@@ -190,7 +190,7 @@ const faqHtml = l => l.map(f => `<details><summary>${esc(f.p)}</summary><div>${f
 
 // Barra de la tienda en cada página de producto: brincar a otra línea sin regresar al inicio
 const NAV_TIENDA = [['examenes', 'Exámenes', '/tienda/#examenes'], ['ruta', 'Proyectos · Ruta de Impacto', '/tienda/ruta-de-impacto/'], ['invitaciones', 'Invitaciones · Brindi', '/tienda/brindi/'], ['eventos', 'Eventos · Cupo', '/tienda/cupo/'],
-  ['salones', 'Salones · Brillo', '/tienda/brillo/'], ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
+  ['salones', 'Salones · Brillo', '/tienda/brillo/'], ['citas', 'Citas · Agenda', '/tienda/agenda/'], ['lealtad', 'Lealtad · Vuelve', '/tienda/vuelve/'], ['vende', 'Ventas · Vende', '/tienda/vende/'], ['academias', 'Academias', '/tienda/academias/'], ['inmobiliarias', 'Inmobiliarias · Portales', '/tienda/portales/'], ['finanzas', 'Préstamos · Cuentas', '/tienda/cuentas/'], ['emprender', 'Kits para emprender', '/tienda/#emprender'], ['puntos', 'Puntos Vorka', '/tienda/puntos/']];
 export const navTienda = actual => `<nav class="t-nav-tienda" aria-label="Tienda"><a class="t-nav-inicio" href="/tienda/">← Toda la tienda</a>${NAV_TIENDA.map(([id, n, u]) => `<a href="${u}"${id === actual ? ' aria-current="page"' : ''}>${n}</a>`).join('')}</nav>`;
 const seccionDe = p => seccionesCatalogo([p])[0]?.id;
 
@@ -471,6 +471,11 @@ export async function paginaProducto(env, req, url, slug) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `/tienda/brillo/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
+  // Academias + Vuelve: su página
+  if (p?.contenido?.acceso?.app === 'academias-vuelve') {
+    const q = new URLSearchParams(url.search); q.set('plan', p.slug);
+    return new Response(null, { status: 301, headers: { location: `/tienda/academias/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
+  }
   // Vende y su paquete con Vuelve: planes en su página única
   if (['vende', 'vende-vuelve'].includes(p?.contenido?.acceso?.app)) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
@@ -673,7 +678,8 @@ export async function sitemapTienda(env) {
   const ps = await listarProductos(env);
   const urls = [`<url><loc>${SITIO}/tienda/</loc><priority>0.8</priority></url>`,
     `<url><loc>${SITIO}/tienda/catalogo/</loc><priority>0.7</priority></url>`,   // catálogo para compartir (con código no se indexa)
-    `<url><loc>${SITIO}/tienda/mira-tu-negocio/</loc><priority>0.8</priority></url>`,   // tarjeta de lealtad, agenda y página con su nombre (por giro)
+    `<url><loc>${SITIO}/tienda/mira-tu-negocio/</loc><priority>0.8</priority></url>`,
+    `<url><loc>${SITIO}/tienda/academias/</loc><priority>0.8</priority></url>`,   // Academias + Vuelve (página propia)   // tarjeta de lealtad, agenda y página con su nombre (por giro)
     `<url><loc>${SITIO}/tienda/brindi/</loc><priority>0.9</priority></url>`,   // Brindi tiene página aunque sus planes aún estén ocultos
     ...Object.keys(VARIANTES).filter(Boolean).map(k => `<url><loc>${SITIO}/tienda/brindi/${k}/</loc><priority>0.8</priority></url>`),   // por tipo de evento
     ...Object.keys(UNIVERSIDADES).map(k => `<url><loc>${SITIO}/simulador-paa/${k}/</loc><priority>0.7</priority></url>`),   // PAA por universidad
