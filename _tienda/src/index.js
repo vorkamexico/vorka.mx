@@ -53,7 +53,7 @@ import * as retiros from './puntos-retiros.js';
 import { resumenEmbajadores, embajador, cambiarPatrocinador } from './embajadores.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
 import { seguimientoDiagnosticos, pedirPuntajes, bajaSeguimiento, paginaPuntajeRuta, puntajesPanel } from './simulador/seguimiento.js';
-import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar } from './resenas.js';
+import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar, pedirResenaPublica } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
 import { paginaDemo } from './demos/marco.js';
@@ -443,6 +443,9 @@ async function atender(request, env, ctx, url) {
     const reg = url.pathname.match(/^\/tienda\/regalo\/([^/]{1,100})\/?$/);
     if (reg && (request.method === 'GET' || request.method === 'HEAD')) return await paginaRegalo(env, reg[1]);
     if (url.pathname === '/api/regalo/canjear' && request.method === 'POST') return await canjearRegalo(request, env);
+    // Liga pública para pedir tu reseña al momento (escribe su correo de compra y le llega su liga)
+    if ((url.pathname === '/tienda/resena' || url.pathname === '/tienda/resena/') && ['GET', 'HEAD', 'POST'].includes(request.method))
+      return url.pathname === '/tienda/resena' ? Response.redirect(`${url.origin}/tienda/resena/`, 301) : await pedirResenaPublica(request, env);
     // Reseña de un comprador (liga única del correo): ver / mandar el formulario y darse de baja de estos correos
     const rsn = url.pathname.match(/^\/tienda\/resena\/([^/]{1,100})(\/baja)?\/?$/);
     if (rsn && ['GET', 'HEAD', 'POST'].includes(request.method))

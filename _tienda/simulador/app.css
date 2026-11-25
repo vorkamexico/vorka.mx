@@ -723,3 +723,8 @@ body.sv-abierto { overflow: hidden; }
 .sim-cat.mal { border-color: #e9b4b0; background: #fdf1f0; color: #b3261e; text-decoration: line-through; }
 .sim-cat:focus-visible, .sim-opc:focus-visible { outline: 3px solid rgba(20, 17, 20, .35); outline-offset: 2px; }
 .sim-correcta small { display: block; font-weight: 500; color: var(--fg-2); margin-top: 4px; }
+/* Botón «Deja tu reseña» (motor.js › appShell): solo si compró y aún no la escribe; lleva directo a su formulario */
+.sim-resena { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 16px; background: var(--bg-2); border-bottom: 1px solid var(--line); color: var(--fg); font-size: 14.5px; text-decoration: none; text-align: center; }
+.sim-resena b { color: var(--morado); }
+.sim-resena svg { width: 16px; height: 16px; flex: none; }
+.sim-resena:hover { background: var(--bg-3, var(--bg-2)); }

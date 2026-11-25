@@ -292,6 +292,65 @@ describe('Vorka OS: moderación y ARCO', () => {
     expect((await A.buscarDatosCuponCorreo('mariana@correo.mx')).resenas).toHaveLength(0);
     // y esa orden no se vuelve a pedir
     await pedirResenas(env, AHORA);
-    expect(correos.filter(c => c.para === 'mariana@correo.mx')).toHaveLength(1);
+    expect(correos.filter(c => c.para === 'mariana@correo.mx' && !c.idempotencia?.startsWith('resena-premio-'))).toHaveLength(1);
   });
+});
+
+describe('pedirla al momento: liga pública, botón del simulador y simulacro de regalo', () => {
+  const basePaa = () => env.DB.raw.prepare(`SELECT slug FROM products WHERE json_extract(contenido, '$.acceso.app') = 'simulador-paa'
+    AND COALESCE(json_extract(contenido, '$.acceso.tipo'), '') NOT IN ('intento', 'examen') ORDER BY precio_centavos LIMIT 1`).get().slug;
+
+  it('/tienda/resena/ manda al instante la liga a quien compró y responde igual a quien no', async () => {
+    orden({ dias: 1 });
+    const g = await pedir('/tienda/resena/');
+    expect(g.status).toBe(200);
+    expect(await g.text()).toContain('Tu correo de compra');
+    const r = await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'Mariana@Correo.mx' }) });
+    expect(await r.text()).toContain('Revisa tu correo');
+    expect(correos).toHaveLength(1);
+    const t = ligas(correos[0])[0];
+    expect((await pedir(`/tienda/resena/${t}`)).status).toBe(200);
+    // Sin compras: misma respuesta, sin correo
+    const n = await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'nadie@correo.mx' }) });
+    expect(await n.text()).toContain('Revisa tu correo');
+    expect(correos).toHaveLength(1);
+    // El cron ya no la vuelve a pedir para esa orden
+    await pedirResenas(env, new Date(AHORA.getTime() + 10 * DIA));
+    expect(correos).toHaveLength(1);
+  });
+
+  it('una liga nueva reemplaza a la anterior y no se pide lo que ya se aprobó', async () => {
+    orden({ dias: 1 });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const vieja = ligas(correos[0])[0];
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const nueva = ligas(correos[1])[0];
+    expect((await pedir(`/tienda/resena/${vieja}`)).status).toBe(404);
+    expect((await mandar(nueva, { estrellas: '4', nombre: 'Mariana, Celaya' })).status).toBe(303);
+    const id = q('SELECT id FROM resenas')[0].id;
+    await A.decidirResena(id, { estado: 'aprobada', por: 'ana@vorka.mx' });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    expect(correos.filter(c => !c.idempotencia?.startsWith('resena-premio-'))).toHaveLength(2);
+  });
+
+  it('al escribirla (aunque sea de 1 estrella) recibe un cupón de 20 % de un uso, una sola vez, en la página y por correo', async () => {
+    orden({ dias: 1, slugs: [basePaa()], monto: 29900 });
+    await pedir('/tienda/resena/', { method: 'POST', body: new URLSearchParams({ correo: 'mariana@correo.mx' }) });
+    const t = ligas(correos[0])[0];
+    expect(await (await pedir(`/tienda/resena/${t}`)).text()).toContain('20 % de descuento en otro producto');
+    expect((await mandar(t, { estrellas: '1', nombre: 'Mariana, Celaya' })).status).toBe(303);
+    const cupon = q("SELECT * FROM cupones_regalo WHERE lote LIKE 'resena-%'");
+    expect(cupon).toHaveLength(1);
+    expect(cupon[0]).toMatchObject({ tipo: 'pct', pct: 20, alcance: 'tienda', max_usos: 1 });
+    expect(await (await pedir(`/tienda/resena/${t}?gracias=1`)).text()).toContain(cupon[0].codigo);
+    const c = correos.find(x => x.idempotencia?.startsWith('resena-premio-'));
+    expect(c.para).toBe('mariana@correo.mx');
+    expect(c.texto).toContain(cupon[0].codigo);
+    expect(c.texto).toContain('Test vocacional');
+    await mandar(t, { estrellas: '2', nombre: 'Mariana, Celaya' });
+    expect(q("SELECT * FROM cupones_regalo WHERE lote LIKE 'resena-%'")).toHaveLength(1);
+    // Ni simulacros de regalo ni notas públicas sobre el regalo
+    expect(q("SELECT id FROM orders WHERE id LIKE 'premio-resena-%'")).toHaveLength(0);
+  });
+
 });
