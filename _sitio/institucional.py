@@ -77,93 +77,125 @@ def _tarjeta(icono, titulo, cuerpo, ligas=''):
     return f'<article class="ac-c rv"><span class="ic">{ICONOS[icono]}</span><h3 class="h3" style="font-size:22px">{titulo}</h3>{cuerpo}{ligas}</article>'
 
 # ---------------------------------------------------------------- /nosotros/
+# Estilo del portafolio y del kit de Sparks: portada con collage de fotos reales, títulos en letra delgada con la parte dorada en negrita
+# (.pf-mix), cinta de trabajos que corre, lo que hacemos como lista grande con flecha (assets/v3/estudio.css), personas con su foto
+# y ciudades con foto. Sin pasos numerados ni cifras inventadas: todo sale de lo que ya está publicado en el sitio.
+ESTILOS_NOS = """<style>
+.ns-collage { position: relative; aspect-ratio: 1 / .92; }
+.ns-collage img { position: absolute; height: auto; object-fit: cover; border-radius: 18px; box-shadow: 0 30px 60px -24px rgba(15, 13, 16, .45), 0 2px 6px rgba(15, 13, 16, .08); animation: pf-flota 7s ease-in-out infinite; }
+.ns-collage .c1 { width: 44%; left: 4%; top: 0; aspect-ratio: 3 / 4; transform: rotate(-4deg); }
+.ns-collage .c2 { width: 58%; right: 0; top: 16%; aspect-ratio: 4 / 3; z-index: 2; animation-delay: -2.4s; }
+.ns-collage .c3 { width: 46%; left: 16%; bottom: 0; aspect-ratio: 4 / 3; z-index: 3; transform: rotate(3deg); animation-delay: -4.6s; }
+.ns-tarjeta { position: absolute; right: 4%; bottom: 6%; z-index: 4; padding: 14px 16px; border-radius: 16px; background: var(--card, #fff); box-shadow: 0 24px 50px -20px rgba(15, 13, 16, .45); display: grid; gap: 4px; animation: pf-flota 7s ease-in-out infinite; animation-delay: -1.2s; }
+.ns-tarjeta small { font-size: 12px; color: var(--fg-3); font-weight: 650; }
+.ns-tarjeta b { font-size: 15px; letter-spacing: -.01em; }
+.ns-hace { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ns-hace div { padding: 22px 0 0; border-top: 1.5px solid var(--fg); }
+.ns-hace h3 { margin: 0 0 8px; font-size: 20px; letter-spacing: -.02em; }
+.ns-hace p { margin: 0; color: var(--fg-2); font-size: 15px; line-height: 1.55; }
+.ns-gente { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ns-persona { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); border-radius: 24px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
+.ns-persona img { width: 100%; height: 100%; min-height: 320px; object-fit: cover; object-position: top; display: block; }
+.ns-persona div { padding: 26px; display: grid; align-content: start; gap: 10px; }
+.ns-persona small { color: var(--fg-3); font-weight: 650; font-size: 13px; }
+.ns-persona h3 { margin: 0; font-size: 24px; letter-spacing: -.03em; }
+.ns-persona p { margin: 0; color: var(--fg-2); font-size: 15.5px; line-height: 1.55; }
+.ns-persona a { color: var(--morado); font-weight: 600; }
+.ns-persona a svg { width: 15px; height: 15px; vertical-align: -2px; }
+.ns-persona p a:only-child { white-space: nowrap; }
+.ns-ciudades { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.ns-ciudad { position: relative; aspect-ratio: 3 / 4; border-radius: 20px; overflow: hidden; background: var(--noche); }
+.ns-ciudad img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s var(--ease); }
+.ns-ciudad:hover img { transform: scale(1.05); }
+.ns-ciudad b { position: absolute; left: 16px; right: 16px; bottom: 14px; color: #fff; font-size: 18px; letter-spacing: -.02em; text-shadow: 0 2px 14px rgba(0, 0, 0, .5); }
+.ns-ciudad::after { content: ""; position: absolute; inset: 50% 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, .55)); }
+.ns-ciudad b { z-index: 1; }
+.ns-legal { margin-top: 22px; font-size: 14.5px; color: var(--fg-2); max-width: 820px; }
+.ns-legal a { color: var(--morado); font-weight: 600; }
+@media (max-width: 960px) { .ns-collage { max-width: 520px; width: 100%; margin: 0 auto; } .ns-hace { grid-template-columns: 1fr 1fr; } .ns-gente { grid-template-columns: minmax(0, 1fr); } .ns-ciudades { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ns-persona { grid-template-columns: minmax(0, 1fr); } .ns-persona img { min-height: 0; aspect-ratio: 4 / 3; } .ns-ciudades { grid-template-columns: 1fr 1fr; } .ns-hace { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .ns-collage img, .ns-tarjeta { animation: none; } }
+</style>
+"""
+# Lo que hacemos: (liga, nombre, qué es)
+HACEMOS = [('/servicios/', 'Consultoría', 'Estrategia y dirección, liderazgo y talento, comunicación e influencia, y apps y páginas a la medida, bajo una sola dirección. Empieza con un diagnóstico de 20 minutos sin costo.'),
+           ('/sparks/', 'Revista Sparks', 'Nuestro medio propio: las historias de jóvenes, proyectos y organizaciones que están moviendo su municipio.'),
+           ('/learn/', 'Vorka Learn', 'Guías para tu examen de admisión, tu carrera, tus becas, tu dinero y tu negocio, con la fuente de cada dato.'),
+           ('/tienda/', 'Tienda de herramientas digitales', 'Simuladores de examen, invitaciones con QR, eventos con registro y apps para negocios como Agenda, Vuelve y Vende.'),
+           ('/voluntariado', 'Tú en Vorka', 'Voluntariado para jóvenes de 16 a 29 años, presencial en el Bajío y remoto desde todo México.'),
+           ('/fc/', 'Vorka FC', 'Academia de fútbol para niñas y niños de 6 a 10 años en Celaya.')]
+CINTA_NOS = ['/img/portafolio/inmobiliaria.webp', '/sparks/anunciate/img/premio.webp', '/img/portafolio/tel-alimentos.webp', '/img/trabajo/mentoria-800.webp',
+             '/sparks/anunciate/img/grupo.webp', '/img/portafolio/mercado.webp', '/img/trabajo/tuenvorka-800.webp', '/img/portafolio/tel-seguros.webp']
+CIUDADES_FOTO = [('Monterrey', 'monterrey-skyline'), ('Ciudad de México', 'cdmx-reforma'), ('Guadalajara', 'guadalajara'), ('Querétaro', 'queretaro'), ('Celaya', 'celaya')]
+
 def pagina_nosotros():
-    servicios = ''.join(f'<li><span><a href="/servicios/{s["slug"]}/">{s["area"]}</a>: {e(s["corta"])}</span></li>' for s in SERVICIOS)
-    que_hacemos = ''.join([
-        _tarjeta('brujula', 'Consultoría', f'<p>Cuatro servicios, piezas de una misma solución integral, bajo una sola dirección estratégica:</p><ul>{servicios}</ul>'
-                 '<p>Todo empieza con un <b>diagnóstico estratégico de 20 minutos sin costo</b>.</p>',
-                 _ligas(('/servicios/', 'Ver servicios'), ('/agenda/', 'Agenda tu diagnóstico'))),
-        _tarjeta('doc', 'Vorka Learn', '<p>La sección de guías de Vorka México: lo que conviene saber antes de presentar un examen de admisión (qué viene, cómo se califica y cómo estudiar), cómo elegir carrera y pedir una beca, finanzas personales, negocio pequeño y cómo crear y vender tu propia app.</p>'
-                 '<p>Cada dato sale de la institución que lo publica y lo citamos al final de cada guía. Las guías son informativas: no estamos afiliados a las instituciones que aplican esos exámenes.</p>'
-                 '<p>En Vorka Learn se muestran anuncios de Google AdSense; lo explicamos en nuestro <a href="/privacidad/">aviso de privacidad</a>.</p>',
-                 _ligas(('/learn/', 'Ir a Vorka Learn'))),
-        _tarjeta('rayo', 'Tienda de herramientas digitales', '<p>Productos digitales con entrega inmediata:</p><ul>'
-                 '<li><span>Simuladores en línea de examen de admisión: <a href="/simulador-paa/">PAA</a>, <a href="/simulador-unam/">UNAM</a>, <a href="/simulador-ipn/">IPN</a>, <a href="/simulador-exani-ii/">EXANI-II</a>, <a href="/simulador-excoba/">EXCOBA (UAQ y UG)</a>, <a href="/simulador-ecoems/">ECOEMS</a> y <a href="/simulador-prepa-ug/">prepa UG (EXANI-I)</a>.</span></li>'
-                 '<li><span>Invitaciones digitales con QR (<a href="/tienda/brindi/">Brindi</a>) y eventos con registro (<a href="/tienda/cupo/">Cupo</a>).</span></li>'
-                 '<li><span>Apps para negocios: <a href="/tienda/agenda/">Agenda</a>, <a href="/tienda/vuelve/">Vuelve</a>, <a href="/tienda/vende/">Vende</a> y <a href="/tienda/cuentas/">Cuentas</a>.</span></li>'
-                 '<li><span>El curso <a href="/tienda/ruta-de-impacto/">Ruta de Impacto</a> y kits para emprender.</span></li></ul>',
-                 _ligas(('/tienda/', 'Ver la tienda'))),
-        _tarjeta('megafono', 'Revista Sparks', '<p>Nuestro medio propio: historias de las personas, proyectos y organizaciones que están moviendo su municipio, y lo que pensamos sobre decisiones, poder y liderazgo en México.</p>'
-                 '<p>La primera edición local es <a href="/sparks/celaya/">Sparks Celaya</a>, con historias y noticias de Celaya, Guanajuato.</p>',
-                 _ligas(('/sparks/', 'Leer Sparks'), ('/sparks/sumate/', 'Súmate'))),
-    ])
-    comunidad = _tarjeta('personas', 'Comunidad', '<ul><li><span><a href="/voluntariado">Tú en Vorka</a>: voluntariado para jóvenes de 16 a 29 años, presencial en el Bajío y remoto desde todo México.</span></li>'
-                         '<li><span><a href="/fc/">Vorka FC</a>: academia de fútbol para niñas y niños de 6 a 10 años en Celaya.</span></li></ul>')
-    # Las mismas cuatro fases del inicio y de /servicios/ (datos.FASES)
-    pasos_html = ''.join(f'<div class="rv" style="--d:{i * .06}s"><small>0{i + 1}</small><h3>{t}</h3><p>{d}</p></div>' for i, (t, d, _) in enumerate(FASES))
-    chips = ''.join(f'<span>{ICONOS["pin"]}{c}</span>' for c in CIUDADES)
-    ligas = [('/servicios/', 'Servicios', 'Consultoría y diagnóstico'), ('/learn/', 'Vorka Learn', 'Guías de admisión, dinero y negocio'),
-             ('/tienda/', 'Tienda', 'Herramientas digitales'), ('/sparks/', 'Revista Sparks', 'Historias de quienes mueven su municipio'),
-             ('/privacidad/', 'Aviso de privacidad', 'Tus datos y tus derechos'), ('/contacto/', 'Contacto', 'Correo, WhatsApp y redes')]
-    ligas_html = ''.join(f'<a href="{h}"><span>{t}<small>{d}</small></span>{FLECHA}</a>' for h, t, d in ligas)
-    cuerpo = f'''{nav()}
-<main id="contenido">
-<section class="cabecera">
-  {v_metal('v-fondo', 'gh', oscuro=False)}
-  <div class="marco">
-    <div class="migas"><a href="/">Inicio</a><span>/</span><span>Acerca de</span></div>
-    <span class="etiqueta">Acerca de Vorka México</span>
-    <h1 class="h1" style="margin-top:18px">Quiénes somos y <span class="metal">qué hacemos.</span></h1>
-    <p class="lead">Vorka México es una consultora de estrategia, liderazgo e influencia con alcance nacional. Acompañamos a líderes, empresas, gobiernos y organizaciones en decisiones de dirección, en el desarrollo de quienes deciden y en su comunicación pública.</p>
-    <div class="botones"><a class="btn tinta" href="/servicios/">Ver servicios {FLECHA}</a><a class="btn blanco" href="/contacto/">Contacto</a></div>
+    flecha = ico('<path d="M5 12h14M13 6l6 6-6 6"/>', 1.6)
+    hacemos = ''.join(f'<a class="est-fila rv" style="--d:{i * .05}s" href="{h}"><span><b>{e(n)}</b><span>{e(d)}</span></span>{flecha}</a>' for i, (h, n, d) in enumerate(HACEMOS))
+    cinta = ''.join(f'<figure><img src="{f}" alt="" loading="eager" decoding="async"></figure>' for f in CINTA_NOS * 2)
+    fases = ''.join(f'<div class="rv" style="--d:{i * .06}s"><h3>{e(t)}</h3><p>{e(d)}</p></div>' for i, (t, d, _) in enumerate(FASES))
+    ciudades = ''.join(f'<div class="ns-ciudad rv" style="--d:{i * .05}s"><img src="/img/ciudades/{f}-960.webp" alt="{e(c)}" loading="lazy" decoding="async"><b>{e(c)}</b></div>' for i, (c, f) in enumerate(CIUDADES_FOTO))
+    cuerpo = f"""{nav()}
+<main id="contenido" class="pf-mix">
+<section class="cabecera pf-cab">
+  <div class="marco pf-cab-in">
+    <div class="pf-cab-tx">
+      <div class="migas"><a href="/">Inicio</a><span>/</span><span>Acerca de</span></div>
+      <span class="etiqueta">Acerca de Vorka México</span>
+      <h1 class="h1" style="margin-top:18px">Definimos el juego <span class="metal">con quienes lo juegan.</span></h1>
+      <p class="lead">Vorka México es una consultora de estrategia, liderazgo e influencia con alcance nacional. Acompañamos a líderes, empresas, gobiernos y organizaciones en sus decisiones, en el desarrollo de quienes deciden y en su comunicación, y contamos las historias de los jóvenes que están cambiando su ciudad.</p>
+      <div class="botones"><a class="btn tinta" href="/agenda/">Agenda tu diagnóstico {FLECHA}</a><a class="btn blanco" href="/portafolio/">Ver portafolio</a></div>
+    </div>
+    <div class="ns-collage" aria-hidden="true">
+      <img class="c1" src="/oleynickhdz/img/brandon-portada.webp" alt="" decoding="async">
+      <img class="c2" src="/sparks/anunciate/img/premio.webp" alt="" decoding="async">
+      <img class="c3" src="/img/equipo/ximena-pastor-charla-960.webp" alt="" decoding="async">
+      <div class="ns-tarjeta"><small>Bases en</small><b>Monterrey · CDMX · Guadalajara</b><b>Querétaro · Celaya</b></div>
+    </div>
   </div>
 </section>
+<div class="est-cinta" aria-hidden="true"><div class="est-cinta-in">{cinta}</div></div>
 
 <section class="sec pegada" aria-labelledby="t-que">
   <div class="marco">
-    <div class="cab par rv"><div><span class="etiqueta">Qué hacemos</span><h2 class="h2" id="t-que">Consultoría, guías, herramientas <span class="metal">y un medio propio.</span></h2></div>
-      <p class="lead">Además de la consultoría, Vorka México publica guías en Vorka Learn, vende herramientas digitales en su tienda y cuenta historias en la Revista Sparks.</p></div>
-    <div class="ac-grid">{que_hacemos}</div>
-    <div class="ac-grid" style="grid-template-columns:minmax(0,1fr);margin-top:14px">{comunidad}</div>
+    <div class="est-cab rv"><h2 class="h2" id="t-que">Lo que <span class="metal">hacemos</span></h2><p>Consultoría, un medio propio, guías, herramientas digitales y comunidad. Toca cualquiera para conocerla.</p></div>
+    <div class="est-lista">{hacemos}</div>
   </div>
 </section>
 
 <section class="sec pegada" aria-labelledby="t-como">
   <div class="marco">
-    <div class="cab rv"><span class="etiqueta">Cómo trabajamos</span><h2 class="h2" id="t-como">Cuatro <span class="metal">fases.</span></h2>
-      <p class="lead">Diagnóstico antes de proponer, diseño antes de ejecutar, medición antes de cerrar.</p></div>
-    <div class="ac-pasos">{pasos_html}</div>
+    <div class="est-cab rv"><h2 class="h2" id="t-como">Cómo <span class="metal">trabajamos</span></h2><p>Diagnóstico antes de proponer, diseño antes de ejecutar, medición antes de cerrar.</p></div>
+    <div class="ns-hace">{fases}</div>
+    <a class="est-barra rv" href="/portafolio/">Mira lo que han logrado nuestros clientes {flecha}</a>
   </div>
 </section>
 
 <section class="sec pegada" aria-labelledby="t-quien">
   <div class="marco">
-    <div class="cab rv"><span class="etiqueta">Dónde estamos y quién nos dirige</span><h2 class="h2" id="t-quien">Bases en cinco ciudades, <span class="metal">alcance nacional.</span></h2></div>
-    <div class="ac-grid">
-      <article class="ac-c rv"><span class="ic">{ICONOS['globo']}</span><h3 class="h3" style="font-size:22px">Dónde estamos</h3>
-        <p>Tenemos bases en Monterrey, Ciudad de México, Guadalajara, Querétaro y Celaya, y con aliados locales trabajamos en toda la República, de forma presencial o a distancia.</p>
-        <div class="ac-chips" style="margin-top:4px">{chips}</div></article>
-      <article class="ac-c rv"><span class="ic">{ICONOS['personas']}</span><h3 class="h3" style="font-size:22px">Quién nos dirige</h3>
-        <p><a href="/oleynickhdz/">Brandon Oleynick</a> es fundador y CEO de Vorka México. También es líder social juvenil, conferencista y fundador de Juventudes Impactando México A.C. (<a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO</a>).</p>
-        <p><a href="/ximepastor/">Ximena Pastor</a> es Directora Estatal de Vorka Sparks.</p>
-        <p>Responsable del sitio y del tratamiento de datos: Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial VORKA México. Los detalles están en el <a href="/privacidad/">aviso de privacidad</a>.</p></article>
+    <div class="est-cab rv"><h2 class="h2" id="t-quien">Quién <span class="metal">nos dirige</span></h2></div>
+    <div class="ns-gente">
+      <article class="ns-persona rv"><img src="/oleynickhdz/img/brandon-portada.webp" alt="Brandon Oleynick, fundador y CEO de Vorka México" loading="lazy" decoding="async">
+        <div><small>Fundador y CEO</small><h3>Brandon Oleynick</h3><p>Líder social juvenil, conferencista y fundador de Juventudes Impactando México A.C. (<a href="https://soyimpacto.org/" target="_blank" rel="noopener">IMPACTO</a>).</p><p><a href="/oleynickhdz/">Conoce a Brandon {FLECHA}</a></p></div></article>
+      <article class="ns-persona rv" style="--d:.06s"><img src="/img/equipo/ximena-pastor-retrato-960.webp" alt="Ximena Pastor, Directora Estatal de Vorka Sparks" loading="lazy" decoding="async">
+        <div><small>Directora Estatal de Vorka Sparks</small><h3>Ximena Pastor</h3><p>Arquitectura y compromiso social: un enfoque hacia las personas, las ideas y las posibilidades de transformar nuestro entorno.</p><p><a href="/ximepastor/">Conoce a Ximena {FLECHA}</a></p></div></article>
     </div>
   </div>
 </section>
 
-<section class="sec pegada" aria-labelledby="t-mas">
+<section class="sec pegada" aria-labelledby="t-donde">
   <div class="marco">
-    <div class="cab rv"><span class="etiqueta">Conoce más</span><h2 class="h2" id="t-mas">Todo Vorka, <span class="metal">a un clic.</span></h2></div>
-    <div class="ac-ligas rv">{ligas_html}</div>
+    <div class="est-cab rv"><h2 class="h2" id="t-donde">Cinco ciudades, <span class="metal">alcance nacional</span></h2><p>Con aliados locales trabajamos en toda la República, de forma presencial o a distancia.</p></div>
+    <div class="ns-ciudades">{ciudades}</div>
+    <p class="ns-legal">Responsable del sitio y del tratamiento de datos: Brandon Oleynick Hernández, persona física que opera bajo el nombre comercial VORKA México. Los detalles están en el <a href="/privacidad/">aviso de privacidad</a>. ¿Dudas? <a href="/contacto/">Escríbenos</a>.</p>
   </div>
 </section>
 {cierre()}
 </main>
-{pie()}'''
+{pie()}"""
     pagina = {'@context': 'https://schema.org', '@type': 'AboutPage', '@id': SITIO + '/nosotros/#pagina', 'url': SITIO + '/nosotros/', 'name': 'Acerca de Vorka México',
               'inLanguage': 'es-MX', 'isPartOf': {'@type': 'WebSite', 'name': 'Vorka México', 'url': SITIO + '/'}, 'mainEntity': organizacion(), 'about': {'@id': ORG_ID}}
-    extra = ESTILOS + _ld(pagina, _migas('Acerca de', '/nosotros/'))
-    return cabeza('Acerca de Vorka México · Quiénes somos', 'Qué es Vorka México: consultora de estrategia, liderazgo e influencia con bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya. También publica Vorka Learn, la tienda de herramientas digitales y la Revista Sparks.', '/nosotros/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
+    extra = f'<link rel="stylesheet" href="/assets/v3/estudio.css?v={VERSION}">\n' + ESTILOS_NOS + _ld(pagina, _migas('Acerca de', '/nosotros/'))
+    return cabeza('Acerca de Vorka México · Quiénes somos', 'Qué es Vorka México: consultora de estrategia, liderazgo e influencia con bases en Monterrey, CDMX, Guadalajara, Querétaro y Celaya. También publica la Revista Sparks, Vorka Learn y la tienda de herramientas digitales.', '/nosotros/', extra=extra) + cuerpo + '\n</body>\n</html>\n'
 
 # ---------------------------------------------------------------- /contacto/
 def pagina_contacto():
