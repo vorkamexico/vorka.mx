@@ -23,7 +23,7 @@ export const suscripcionDe = p => p?.contenido?.suscripcion || null;
 
 // Paquetes: la app con la que se guarda la suscripción → las apps que abre. Así Vuelve y Agenda ven como suya la
 // suscripción del paquete (y no se puede comprar una app suelta encima de un paquete con el mismo correo).
-export const PAQUETES = { 'agenda-vuelve': ['agenda', 'vuelve'], 'brillo-paquete': ['brillo', 'vuelve', 'agenda'] };
+export const PAQUETES = { 'agenda-vuelve': ['agenda', 'vuelve'], 'brillo-paquete': ['brillo', 'vuelve', 'agenda'], 'vende-vuelve': ['vende', 'vuelve'] };
 export const appsQueCubren = app => [app, ...Object.keys(PAQUETES).filter(k => k !== app && PAQUETES[k].includes(app))];
 const enApps = app => { const a = appsQueCubren(app); return { sql: `app IN (${a.map(() => '?').join(',')})`, a }; };
 

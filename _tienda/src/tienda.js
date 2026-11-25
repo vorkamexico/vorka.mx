@@ -471,6 +471,11 @@ export async function paginaProducto(env, req, url, slug) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
     return new Response(null, { status: 301, headers: { location: `/tienda/brillo/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
   }
+  // Vende y su paquete con Vuelve: planes en su página única
+  if (['vende', 'vende-vuelve'].includes(p?.contenido?.acceso?.app)) {
+    const q = new URLSearchParams(url.search); q.set('plan', p.slug);
+    return new Response(null, { status: 301, headers: { location: `/tienda/vende/?${q}#comprar`, 'cache-control': 'public, max-age=3600' } });
+  }
   // Agenda y su paquete con Vuelve: planes y profesionales en su página única
   if (['agenda', 'agenda-vuelve'].includes(p?.contenido?.acceso?.app)) {
     const q = new URLSearchParams(url.search); q.set('plan', p.slug);
