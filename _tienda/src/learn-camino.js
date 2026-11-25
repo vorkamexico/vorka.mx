@@ -28,6 +28,9 @@
 //    noviembre de 2026.
 //    La de la Afore (LSAR vigente: artículos 18, 37-A, 74 y 76; CONSAR: localiza tu Afore, registro, Catálogo de Trámites
 //    del SAR, comisiones 2026 y máximo 2027; PENSIONISSSTE sobre cuentas asignadas) se revisó el 21 de noviembre de 2026.
+//    La de Llave MX (lineamientos en el DOF del 6 de febrero de 2025, Ley Nacional para Eliminar Trámites Burocráticos,
+//    manual del CFCRL y notas de Programas para el Bienestar sobre los registros de becas de 2026) se revisó el 25 de
+//    noviembre de 2026.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -109,10 +112,17 @@ const F = {
   consarComisiones2026: { nombre: 'CONSAR: La Junta de Gobierno autoriza las comisiones de las Afore para 2026 (21 de noviembre de 2025)', url: 'https://www.gob.mx/consar/articulos/junta-de-gobierno-de-la-consar-autoriza-comisiones-de-las-afore-para-2026-413436' },
   consarMaximo2027: { nombre: 'CONSAR: Aviso del máximo al que estarán sujetas las comisiones de las Afore para 2027 (23 de octubre de 2026)', url: 'https://www.gob.mx/consar/articulos/aviso-por-el-cual-la-comision-nacional-del-sistema-de-ahorro-para-el-retiro-da-a-conocer-el-maximo-al-que-estaran-sujetas-las-comisiones-que-cobren-las-afore-para-el-ano-2027' },
   pensionisssteAsignada: { nombre: 'PENSIONISSSTE: ¿Cómo saber en qué Afore estoy si mi cuenta fue asignada por la CONSAR? (24 de marzo de 2026)', url: 'https://www.gob.mx/pensionissste/es/articulos/como-saber-en-que-afore-estoy-si-mi-cuenta-fue-asignada-por-la-consar' },
+  // Llave MX (revisadas el 25 de noviembre de 2026)
+  llaveLineamientos: { nombre: 'DOF: Lineamientos para la implementación y operación de Llave MX, emitidos por la ATDT (6 de febrero de 2025)', url: 'https://www.dof.gob.mx/nota_detalle.php?codigo=5748515&fecha=06/02/2025' },
+  lnetb: { nombre: 'Ley Nacional para Eliminar Trámites Burocráticos, texto vigente (DOF 16-07-2025; artículos 64 a 75), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LNETB.pdf' },
+  llaveManual: { nombre: 'Centro Federal de Conciliación y Registro Laboral: Manual de usuario de SICOLECTIVA, inicio de sesión y creación de cuenta con Llave MX (enero de 2026)', url: 'https://cilab.centrolaboral.gob.mx/wp-content/uploads/2026/01/Manual-LlaveMX-SICOLECTIVA.pdf' },
+  bienestarBbj: { nombre: 'Programas para el Bienestar: Así puedes solicitar la Beca Benito Juárez de bachillerato, paso a paso (18 de septiembre de 2026)', url: 'https://www.programasparaelbienestar.gob.mx/noticias-y-comunicados/noticia/asi-puedes-solicitar-la-beca-benito-juarez-de-bachillerato-paso-a-paso/' },
+  bienestarJef: { nombre: 'Programas para el Bienestar: Beca Jóvenes Escribiendo el Futuro abre solicitudes, qué necesitas y cómo hacer el trámite (18 de septiembre de 2026)', url: 'https://www.programasparaelbienestar.gob.mx/noticias-y-comunicados/noticia/beca-jovenes-escribiendo-el-futuro-abre-solicitudes-que-necesitas-y-como-hacer-el-tramite/' },
+  bienestarRita: { nombre: 'Programas para el Bienestar: Ya inició el registro a la Beca Rita Cetina para primaria y secundaria (26 de octubre de 2026)', url: 'https://www.programasparaelbienestar.gob.mx/noticias-y-comunicados/noticia/ya-inicio-el-registro-a-la-beca-rita-cetina-para-primaria-y-secundaria/' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', ine: 'primera-credencial-ine', afore: 'afore-como-saber-en-cual-estas' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', ine: 'primera-credencial-ine', afore: 'afore-como-saber-en-cual-estas', llave: 'llave-mx-como-crearla' };
 const r = slug => `/learn/camino/${slug}/`;
 // Ejemplo con cifras inventadas (mismo marcado que en Finanzas y en la guía de la jornada)
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
@@ -196,6 +206,13 @@ const LLAMADO = {
     puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas ni a tu Afore y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Herramienta gratis «Reducir peso» (src/learn/herramientas-nuevas.js): las becas piden archivos de máximo 5 MB
+  pesoBeca: llamadoProducto({ etiqueta: 'Reduce el peso de tus documentos', producto: 'Reducir peso', de: 'Herramienta gratis · Vorka Learn', icono: 'subir', chip: 'Gratis',
+    titulo: '¿Tu comprobante de domicilio pesa más de lo que te piden?',
+    texto: 'Ya con tu Llave MX, el siguiente tropiezo suele ser el archivo: los registros de becas de 2026 pidieron PDF, JPG o PNG de máximo 5 MB.',
+    puntos: ['Comprime una foto o un PDF para que pese menos de lo que te piden: 2 MB, 1 MB o menos.', 'Funciona en tu navegador y no pide cuenta.', 'Tu archivo se queda en tu dispositivo: no se sube a Vorka.'],
+    nota: 'Es una herramienta de Vorka México: no está ligada a Llave MX ni a la Coordinación Nacional de Becas y no hace el registro por ti.',
+    href: '/learn/herramientas/reducir-peso/', boton: 'Reducir el peso de un archivo' }),
   becas: llamadoGuia({ titulo: '¿Ya sabes qué quieres estudiar?',
     texto: 'La beca te ayuda a sostener la carrera; elegir bien te ayuda a terminarla. Te damos un método en cinco pasos, con datos de empleo y salario por carrera.',
     href: r(S.carrera), boton: 'Lee: cómo elegir carrera' }),
@@ -1028,9 +1045,104 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.lsar, F.consarLocaliza, F.consarPrimer, F.consarRegistro, F.consarTramiteRegistro, F.consarTramiteVoluntario, F.consarComisiones2026, F.consarMaximo2027, F.pensionisssteAsignada],
     relacionadas: [S.papeles, S.vacaciones, S.jornada],
   },
+  // =============== 13. Llave MX ===============
+  // Revisada el 25 de noviembre de 2026: Lineamientos de Llave MX (DOF 06-02-2025: arts. 1 a 9, 11, 14 a 17, 20, 23 a 26,
+  // 28, 29 y 31, y transitorios), Ley Nacional para Eliminar Trámites Burocráticos (DOF 16-07-2025: arts. 64, 65, 72 y 74),
+  // manual del CFCRL (pantallas de «Crear cuenta», el CABI 079 y el sitio de actualización de medios de contacto) y tres
+  // notas de Programas para el Bienestar sobre los registros de becas de 2026. llave.gob.mx bloquea las consultas
+  // automáticas, así que no citamos sus preguntas frecuentes. No afirmamos fechas de registro de 2027 (no se habían
+  // publicado), ni que la Llave MX Verificada ya esté disponible para todos, ni una edad mínima: no la encontramos.
+  {
+    slug: S.llave, llamado: 'pesoBeca', actualizado: '2026-11-25', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Llave MX: cómo crearla, verificarla y recuperarla',
+    descripcion: 'Qué es Llave MX, qué datos te piden, cómo crear tu cuenta paso a paso, la diferencia entre Básica y Verificada y qué hacer si pierdes el acceso.',
+    h1: 'Llave MX: cómo crear tu cuenta, verificarla y recuperarla si pierdes el acceso',
+    lead: 'Llave MX es la cuenta con la que entras a los trámites digitales del gobierno federal, y en 2026 fue requisito para pedir las becas Benito Juárez, Jóvenes Escribiendo el Futuro y Rita Cetina. Aquí está qué es, qué datos te piden, cómo crearla, qué cambia si la verificas y qué hacer si olvidas tu contraseña o cambias de celular, con lo que dicen sus lineamientos en el Diario Oficial y la ley que la regula.',
+    secciones: [
+      { h2: 'Qué es Llave MX', html: p('La Ley Nacional para Eliminar Trámites Burocráticos, publicada en julio de 2025, define Llave MX como el <b>mecanismo de autenticación e identificación de las personas en medios digitales</b> (artículo 64). Dicho más fácil: es tu usuario y contraseña para los trámites del gobierno en internet. La administra la ATDT, la dependencia federal de transformación digital y telecomunicaciones, en llave.gob.mx.')
+        + p('Lo que dicen sus lineamientos, publicados en el Diario Oficial el 6 de febrero de 2025:')
+        + ul([
+          'Toda cuenta va <b>asociada a tu CURP</b> (artículo 65 de la ley).',
+          'Es <b>única, personal e intransferible</b>: solo la puede usar su titular o su representante (artículo 3).',
+          'Lo que tramites con ella tiene la <b>misma validez</b> que si lo hicieras en persona con papeles (artículo 4).',
+          'Al usarla para un trámite <b>aceptas recibir notificaciones por medios electrónicos</b> (artículo 4). Por eso importa que tu correo y tu celular estén al día.',
+        ])
+        + p('La ley también dice que toda plataforma digital de trámites que habiliten las autoridades debe integrar el inicio de sesión de Llave MX (artículo 74), y la ATDT debe publicar en gob.mx los trámites que ya se pueden hacer con ella (artículo 28 de los lineamientos).') },
+      { h2: 'Para qué la vas a necesitar', html: p('Si estudias, el uso más claro está en las becas federales. Según las notas de Programas para el Bienestar sobre los registros de 2026:')
+        + tabla(['Beca', 'Quién entra con su Llave MX', 'Registro en 2026'], [
+          ['Benito Juárez (prepa)', 'La o el estudiante, en becabenitojuarez.gob.mx.', 'Del 17 al 30 de septiembre.'],
+          ['Jóvenes Escribiendo el Futuro (universidad)', 'La o el estudiante, en becajovenesescribiendoelfuturo.gob.mx.', 'Del 18 al 30 de septiembre.'],
+          ['Rita Cetina (primaria y secundaria)', 'La madre, el padre, la tutora o el tutor, en becaritacetina.gob.mx.', 'Del 26 de octubre al 6 de noviembre.'],
+        ], 'Fuente: Programas para el Bienestar (18 de septiembre y 26 de octubre de 2026). Al 25 de noviembre de 2026 no encontramos fechas oficiales para 2027.')
+        + p('En las becas de prepa y de universidad, esas notas describen el registro también para quien es menor de edad: entras con tu Llave MX y luego agregas la CURP, el celular, el correo y la identificación de tu mamá, papá o tutor.')
+        + p(`Esto es consejo nuestro: los registros de 2026 duraron de dos a tres semanas. Crear tu cuenta con calma, antes de que abra la convocatoria, te ahorra el estrés de hacerlo el último día con la página saturada. Las becas las explicamos en ${a(r(S.becas), 'becas para prepa y universidad')} y en ${a(r(S.rita), 'Beca Rita Cetina')}.`) },
+      { h2: 'Qué datos te piden', html: p('Para una persona mexicana, el artículo 9 de los lineamientos pide:')
+        + ul([
+          'Tu <b>CURP</b>, y con ella tu nombre, apellidos, sexo, fecha y lugar de nacimiento.',
+          'Tu <b>domicilio</b>.',
+          'Un <b>número de celular</b> y un <b>correo electrónico</b>.',
+          'Una <b>contraseña</b> que tú eliges.',
+        ])
+        + p('En la práctica no capturas todo a mano: al validar tu CURP, tus datos personales se llenan solos y tú agregas el código postal, la colonia, el celular y el correo. Las personas extranjeras se registran con sus datos y un documento de identificación, como pasaporte o tarjeta de residente (artículo 10).')
+        + nota('Consejo nuestro: usa un correo y un número que sean tuyos y que vayas a conservar. Si te registras con el celular de alguien más, cada código de verificación le va a llegar a esa persona.') },
+      { h2: 'Cómo crear tu cuenta, paso a paso', html: p('Así describe la creación de la cuenta el manual del Centro Federal de Conciliación y Registro Laboral, una de las dependencias que ya usan Llave MX (enero de 2026):')
+        + ol([
+          ['Entra a «Crear cuenta»', 'En la pantalla para iniciar sesión con Llave MX, da clic en «Crear cuenta».'],
+          ['Elige «Soy mexicano» y escribe tu CURP', 'Marca la casilla «No soy un robot» y da clic en «Validar CURP».'],
+          ['Completa tu domicilio', 'Si tu CURP es correcta, tus datos aparecen solos. Escribe tu código postal y elige tu colonia.'],
+          ['Captura tu celular y tu correo', 'El manual pide que sean reales y personales, porque con ellos se valida tu identidad.'],
+          ['Crea tu contraseña', 'Lee y acepta el aviso de privacidad y los términos y condiciones, y da clic en «Finalizar».'],
+          ['Verifica tu celular y tu correo', 'Te llegan un SMS y un correo con un enlace. El manual dice que este paso es <b>indispensable</b> para terminar de crear tu Llave MX.'],
+        ])
+        + p('Después, para entrar a cualquier plataforma que use Llave MX, escribes tu celular o tu correo y tu contraseña (artículo 11 de los lineamientos).')
+        + caja('Si tu CURP no pasa', p(`Llave MX se apoya en tu CURP. Si al validarla sale un error, revisa primero que tus datos estén bien en la consulta de RENAPO; en ${a(r(S.papeles), 'papeles para tu primer empleo')} explicamos cómo consultarla e imprimirla gratis. La ley dice que si no tienes CURP, la dependencia debe ayudarte a obtenerla y no puede negarte el trámite por eso (artículo 66).`)) },
+      { h2: 'Básica y Verificada: qué cambia', html: p('Los lineamientos definen dos niveles (artículos 6 a 8):')
+        + tabla(['Nivel', 'Qué es'], [
+          ['Llave MX Básica', 'La que obtienes al crear tu cuenta. Tu identidad se valida con tu CURP.'],
+          ['Llave MX Verificada', 'La Básica más un factor que confirma que eres tú. Puede incluir una firma electrónica.'],
+        ], 'Fuente: Lineamientos de Llave MX, DOF 6 de febrero de 2025.')
+        + p('Para pasar a Verificada, el artículo 14 da tres opciones, y la ATDT puede sumar otras:')
+        + ul([
+          '<b>Credencial para votar</b>: capturas el CIC o el OCR, que se validan con el INE (artículo 15).',
+          '<b>e.firma</b>: capturas tu RFC, que se valida con el SAT (artículo 16).',
+          '<b>Pasaporte</b>: capturas el número de registro del Padrón de Pasaportes, que se valida con la SRE (artículo 17).',
+        ])
+        + p('Cada dependencia decide qué nivel pide para cada trámite, y si pide la Verificada, el mismo sitio debe darte cómo verificarla (artículo 8). Los lineamientos dijeron que la ATDT avisaría en llave.gob.mx cuando la Verificada estuviera disponible; no pudimos confirmar en una fuente oficial si ya está abierta para todas las personas.')
+        + p(`Si todavía no tienes INE, en ${a(r(S.ine), 'tu primera credencial del INE')} explicamos cómo sacarla.`) },
+      { h2: 'Si olvidas tu contraseña o cambias de celular', html: p('Primero intenta restablecer tu contraseña. Si aun así no puedes entrar, los lineamientos prevén una <b>actualización</b> de tu Llave MX en dos casos (artículo 25):')
+        + ul([
+          'Necesitas cambiar tu celular o tu correo y ya no tienes acceso a tu cuenta.',
+          'Perdiste tus datos de acceso y no puedes entrar ni restableciendo la contraseña.',
+        ])
+        + p('En esos casos das aviso a la ATDT por los medios que tiene la plataforma. Las solicitudes las atiende el Centro de Atención para el Bienestar, CABI (artículo 26). El manual del Centro Federal de Conciliación da dos vías:')
+        + ul([
+          'Llamar al CABI al <b>079</b>, para dudas sobre la creación de la cuenta y la recuperación de tus claves.',
+          'Actualizar tus medios de contacto en actualizacionmedios.atdt.gob.mx.',
+        ])
+        + p('No crees una segunda cuenta para salir del paso: los lineamientos dicen que la Llave MX es única para cada persona (artículo 3).') },
+      { h2: 'Cuida tu Llave MX', html: p('Con tu Llave MX alguien podría pedir trámites a tu nombre, así que los lineamientos te ponen obligaciones (artículo 23): dar datos verdaderos, mantener tus claves confidenciales y al día, y <b>avisar a la ATDT</b> si las pierdes o si alguien las roba o se hace pasar por ti. Si se comprueba la suplantación o el robo, tu cuenta se cancela y puedes generar una nueva desde la plataforma (artículo 24). También puedes pedir tú la cancelación.')
+        + p('Sobre tus datos, la ATDT es la responsable de tratarlos y puede usarlos para llenar de antemano los formatos de otros trámites (artículo 31). La ley dice que solo si tú lo pides, y con tu consentimiento, se pueden asociar a tu Llave MX tu fotografía y tus huellas (artículo 72).')
+        + p('Esto es consejo nuestro:')
+        + ul([
+          'Escribe tu contraseña solo en páginas cuya dirección termine en <b>.gob.mx</b>.',
+          'No le des tu contraseña ni los códigos que te llegan a nadie que te ofrezca «registrarte», «acelerar» una beca o «arreglar» tu cuenta. Las notas oficiales describen el trámite para hacerlo tú, desde tu propia cuenta.',
+          'Si un café internet o una papelería te ayuda con el registro, cierra sesión al terminar y cambia tu contraseña en cuanto puedas.',
+          'Guarda el comprobante de cada solicitud que hagas: en las becas, el folio que viene ahí es con el que le das seguimiento.',
+        ]) },
+    ],
+    faq: [
+      { p: '¿Qué necesito para crear mi Llave MX?', r: 'Tu CURP, tu código postal y colonia, un número de celular, un correo electrónico y una contraseña. Al final tienes que verificar tu celular y tu correo con el enlace que te llega por SMS y por correo.' },
+      { p: '¿Necesito Llave MX para pedir una beca?', r: 'En 2026, sí: las notas de Programas para el Bienestar indican que el registro de la Beca Benito Juárez, de Jóvenes Escribiendo el Futuro y de la Beca Rita Cetina se hizo en línea con Llave MX. En la Rita Cetina la usa la madre, el padre o el tutor.' },
+      { p: '¿Puedo tener dos cuentas de Llave MX?', r: 'No. Según el artículo 3 de sus lineamientos, la Llave MX es única para cada persona, intransferible y solo la puede usar su titular o su representante.' },
+      { p: '¿Qué hago si cambié de número y no puedo entrar?', r: 'Puedes pedir la actualización de tus medios de contacto (artículo 25 de los lineamientos). El manual del Centro Federal de Conciliación indica el sitio actualizacionmedios.atdt.gob.mx y el teléfono 079 del Centro de Atención para el Bienestar.' },
+      { p: '¿Qué diferencia hay entre Llave MX Básica y Verificada?', r: 'La Básica se valida con tu CURP. La Verificada agrega un factor más: tu credencial para votar, tu e.firma o tu pasaporte, que se validan con el INE, el SAT o la SRE. Cada dependencia decide cuál pide para cada trámite.' },
+    ],
+    fuentes: [F.lnetb, F.llaveLineamientos, F.llaveManual, F.bienestarBbj, F.bienestarJef, F.bienestarRita, F.renapo],
+    relacionadas: [S.becas, S.rita, S.ine],
+  },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, al INE, a la CONSAR ni a ninguna Afore.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, al INE, a la CONSAR, a ninguna Afore ni a la ATDT.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
