@@ -19,8 +19,20 @@ const INCLUYE = [
   'Avisos directos al celular de tus clientes: citas, promociones y novedades',
   'Un mes de preparación: la diseñamos contigo y te la mostramos antes de publicarla',
   'Mantenimiento cada mes: ajustes, actualizaciones de iOS y Android y revisiones de las tiendas',
+  'Somos tu equipo de tecnología: te asesoramos y hacemos crecer tu app junto con tu negocio',
+];
+// Lo que cubre la mensualidad de $999 (decidido 2026-11-25: límites para que una app con mucho uso o un proyecto de startup
+// no quede dentro del plan básico). Si se pasa, el plan sube según el uso, siempre avisando antes.
+const LIMITES = [
+  ['Usuarios', 'Hasta 1,000 personas usando tu app cada mes'],
+  ['Almacenamiento', 'Hasta 5 GB para fotos, archivos y datos de tu app, con respaldo diario'],
+  ['Avisos', 'Hasta 10,000 avisos al celular de tus clientes cada mes'],
+  ['Cambios y mejoras', 'Hasta 4 horas al mes de cambios, funciones nuevas y asesoría'],
 ];
 const FAQ = [
+  ['¿Qué pasa si mi app crece?', 'Tu plan crece con ella. Si un mes pasas de lo que incluye la mensualidad (usuarios, almacenamiento, avisos u horas de cambios), te avisamos antes y te proponemos el siguiente nivel según tu uso real. Nunca te cobramos un extra sin avisarte.'],
+  ['¿Sirve para una startup o un proyecto grande?', 'El plan de $999 es para negocios. Si tu app es el negocio en sí (una startup, un marketplace, pagos entre usuarios, miles de usuarios desde el inicio o conexiones con otros sistemas), la cotizamos aparte, con un plan a la medida de lo que necesita.'],
+  ['¿Mis datos son míos?', 'Sí. Lo que se guarda en tu app es tuyo: lo respaldamos todos los días y, si un día te vas, te entregamos una copia.'],
   ['¿Cómo funciona el pago?', 'Hoy pagas $1,500 por tu mes de preparación: en ese mes diseñamos, desarrollamos y publicamos tu app. Después se cobran $999 cada mes en tu tarjeta. El plan es de 12 meses: si cancelas antes, pagas los meses que falten. Después de los 12 meses sigues mes con mes.'],
   ['¿Qué tipo de app me pueden hacer?', 'La que tu negocio necesite: citas, catálogo y pedidos, tarjeta de puntos, avisos a tus clientes, reservaciones, menú, cursos y más. Antes de empezar platicamos por WhatsApp qué quieres que haga y te decimos con claridad qué entra en tu plan.'],
   ['¿Con qué cuenta se publica?', 'La publicamos con la cuenta de desarrollador de Vorka en App Store y Google Play, con tu autorización para usar tu marca. No tienes que abrir cuentas ni pagar licencias de Apple o Google. Si un día prefieres tenerla en tu propia cuenta, te la transferimos.'],
@@ -44,7 +56,7 @@ export async function paginaAppMedida(env, req, url) {
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llegan tu recibo y el botón para empezar por WhatsApp.</small></div>
     <p class="am-total">Pagas hoy <b>${precio(hoy)}</b> <span>por tu mes de preparación y luego ${precio(p)} cada mes</span></p>
     <p class="am-desglose">Tu primer mes (${precio(p)}) + preparación de tu app (${precio(prep)}, una sola vez).</p>
-    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, el plan de 12 meses con renovación automática mensual (si cancelo antes, pago los meses que falten; si dejo de pagar, la app se retira de las tiendas), autorizo a Vorka a publicar la app con mi marca y acepto el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
+    <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a>, el plan de 12 meses con renovación automática mensual (si cancelo antes, pago los meses que falten; si dejo de pagar, la app se retira de las tiendas), los límites de uso de la mensualidad (si los paso, el plan sube según el uso, con aviso previo), autorizo a Vorka a publicar la app con mi marca y acepto el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
     <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
     <button class="btn acento" type="submit" id="btn-compra">Empezar mi app ${FLECHA}</button>
     <p class="am-wa"><a href="${WA_DUDA}" target="_blank" rel="noopener">¿Primero quieres platicar tu idea? Escríbenos por WhatsApp</a></p>
@@ -70,6 +82,12 @@ export async function paginaAppMedida(env, req, url) {
   </div>
   <aside id="comprar" aria-label="Empezar mi app">${form}</aside>
 </div></section>
+<section class="am-lim"><div class="marco">
+  <h2 class="t-h2">Lo que incluye tu mensualidad</h2>
+  <p class="am-lim-intro">Somos el equipo de tecnología de tu negocio: guardamos tu información, cuidamos que la app funcione y la hacemos crecer contigo. Tu plan de $999 al mes incluye:</p>
+  <dl class="am-lim-g">${LIMITES.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+  <p class="am-lim-nota">Si tu app pasa de esto, tu plan crece según su uso y siempre te avisamos antes. Las startups y los proyectos grandes se cotizan aparte.</p>
+</div></section>
 ${seccionFaq({ titulo: 'Antes de empezar', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${esc(a)}</div></details>`).join('') })}`,
   });
 }
@@ -83,6 +101,10 @@ const CSS = `.am-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
 .am-inc{display:grid;gap:10px;margin:22px 0 0}.am-inc li{display:flex;gap:10px;align-items:flex-start;font-size:16px;color:var(--fg-2)}.am-inc svg{width:18px;height:18px;flex:none;margin-top:3px;color:var(--verde)}
 #comprar .t-form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--sombra-2)}
 .am-total{font-size:15.5px;margin:6px 0 4px}.am-total b{font-size:22px;letter-spacing:-.02em}.am-desglose{font-size:14px;color:var(--fg-2);margin:0 0 12px}
+.am-lim{padding:clamp(28px,4vw,56px) 0}.am-lim-intro{margin-top:12px;max-width:720px;font-size:17px;color:var(--fg-2)}
+.am-lim-g{display:grid;gap:14px;margin:22px 0 0}@media(min-width:760px){.am-lim-g{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.am-lim-g>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}.am-lim-g dt{font-weight:750;font-size:16px}.am-lim-g dd{margin:4px 0 0;color:var(--fg-2);font-size:15.5px}
+.am-lim-nota{margin-top:16px;font-size:15px;color:var(--fg-2)}
 .am-wa{font-size:14px;margin:12px 0 0;text-align:center}`;
 
 const SCRIPT = `(function(){
