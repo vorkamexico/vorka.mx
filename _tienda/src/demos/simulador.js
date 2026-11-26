@@ -53,7 +53,7 @@ function tomar({ R, T }, ids, nombres, seg) {
 
 // ---------- el motor compartido (un solo css/html/js, parametrizado por examen) ----------
 const CSS = `
-.sd{padding:18px 16px 22px}
+.sd{padding:18px 16px 22px;scroll-margin-top:96px}
 .sd-et{margin:0;font-size:14px;font-weight:650;color:var(--pm)}
 .sd h2{margin:8px 0 6px;font-size:24px;line-height:1.2;letter-spacing:-.02em}
 .sd-lead{margin:0 0 18px;color:#5d5860;font-size:15.5px}
@@ -124,7 +124,8 @@ const ICO={reloj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
  libro:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>'};
 const N=D.r.length,TOTAL=D.r.reduce((a,r)=>a+r.seg,0);
 let i=0,st=[],reloj=null,sel=null;
-const top=()=>{try{app.scrollIntoView({block:'start'})}catch(e){}scrollTo(0,0)};
+// Al pasar de pregunta: si el inicio de la tarjeta quedó arriba de la pantalla, sube solo hasta ella (nunca al inicio de la página)
+const top=()=>{const r=app.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.6){try{app.scrollIntoView({block:'start',behavior:'smooth'})}catch(e){app.scrollIntoView()}}};
 function intro(){
   detener();i=0;st=D.r.map(()=>({fase:'r1',s1:null,s2:null,t:0}));
   app.innerHTML='<p class="sd-et sd-i">Prueba gratis · '+esc(D.examen)+'</p><h2 class="sd-i">3 preguntas reales del simulador</h2>'+

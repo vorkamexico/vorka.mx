@@ -12,6 +12,7 @@ import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { barraCompra } from './barra-compra.js';
 
 const APP = 'https://agenda.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -204,6 +205,7 @@ ${seccionDemo('agenda', demoDe('agenda'))}
     <p>Marcas «vino» en Agenda y la visita se suma sola en la tarjeta de Vuelve de tu cliente, sin escanear nada. Al reservar, tu cliente puede pedir su tarjeta; a quien ya la tiene se le suma solo. <b>¿Te equivocaste?</b> Deshacer también quita el sello.</p></div>
 </div></section>
 
+${barraCompra({ titulo: 'Agenda', detalle: `${mensual ? precio(mensual.prod) : `$${precioProf}`} al mes por profesional · prueba 7 días gratis`, href: '#planes', boton: 'Ver planes' })}
 <section class="ag-sec suave" id="planes"><div class="marco">
   <div class="ag-cab"><span class="ag-et">Precios</span><h2>Pruébala 7 días. Después, pagas por profesional.</h2><p>En pesos mexicanos con IVA incluido. Sin comisiones por cita ni costo por mensaje. Cancela cuando quieras.</p></div>
   <div class="ag-planes">

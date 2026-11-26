@@ -12,6 +12,7 @@ import { ELEGIR } from './elegir.js';
 import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
+import { barraCompra } from './barra-compra.js';
 
 const OS = 'https://os.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -108,6 +109,7 @@ ${seccionDemo('cupo', demoDe('cupo'))}
   <div class="cu-demos-h">${demos.map(([s, og, t, d], i) => `<a class="cu-demo${i === 0 ? ' g' : ''}" href="${OS}/e/${s}" target="_blank" rel="noopener"><img src="${OS}/cupo/og/${og}.png" alt="" loading="lazy" width="1200" height="630"><span><b>${t}</b><small>${d}</small></span></a>`).join('')}</div>
 </div></section>
 
+${barraCompra({ titulo: 'Cupo', detalle: `Gratis hasta 30 personas · Pro desde ${desde ? precio({ precio_centavos: desde }) : '$99 MXN'} por evento`, href: '#planes', boton: 'Ver planes' })}
 <section class="t-sec suave" id="planes"><div class="marco">
   <div class="cab rv"><span class="etiqueta">Precios</span><h2 class="h2">Gratis para empezar. Pro según tu aforo.</h2><p class="lead">Pago único por evento, en pesos mexicanos con IVA incluido. Sin mensualidades ni comisión por boleto.</p></div>
   <div class="cu-planes">

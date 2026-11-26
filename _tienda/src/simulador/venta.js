@@ -26,14 +26,6 @@ const CSS_PRUEBA = `
   .sv-izq:has(.sd-op,.sd-res){position:static}.sv-izq .sv-probar{margin-top:36px}}
 @media(max-width:979px){.sv-hero-g{display:flex;flex-direction:column;gap:32px}.sv-izq{display:contents}.sv-valor{order:1}.sv-hero-g>.sv-compra{order:2;position:static}.sv-izq .sv-probar{order:3}}
 `;
-// Barra de compra fija (como en la tienda de Apple): aparece al bajar del inicio y se esconde mientras los planes o el
-// formulario están a la vista. En celular va abajo a lo ancho; en compu, una pastilla centrada. El scroll se escucha en el
-// documento con captura: en compu quien se desplaza es el <body>, no la ventana.
-const SCRIPT_BARRA = `(function(){var b=document.getElementById('sv-barra'),h=document.querySelector('.pm-hero .pm-ctas'),f=document.getElementById('comprar');
-if(!b||!h||!f){if(b)b.classList.remove('oculta');return;}
-var pend=false;function p(){pend=false;var vh=innerHeight,rh=h.getBoundingClientRect(),rf=f.getBoundingClientRect();
-b.classList.toggle('oculta',rh.bottom>0||(rf.top<vh*.75&&rf.bottom>vh*.25));}
-document.addEventListener('scroll',function(){if(!pend){pend=true;requestAnimationFrame(p);}},{passive:true,capture:true});addEventListener('resize',p);p();})();`;
 // Solo para la página de los simuladores: en celular la portada (el objeto) no empuja la compra hacia abajo; sin letreros en mayúsculas
 const CSS_ORDEN = `<style>
 .sv .t-sec{padding:clamp(48px,7vw,88px) 0}.sv .pm-sec{padding-top:clamp(48px,7vw,80px)}
@@ -44,10 +36,6 @@ const CSS_ORDEN = `<style>
 .sv-o-prueba{margin:10px 0 0;font-size:15px;color:var(--fg-2)}.sv-o-prueba a{color:var(--pm-t);font-weight:700}
 .sv-valor{padding:0}
 .sv-barra small{white-space:normal!important}.sv-barra b{font-size:15.5px!important}
-.sv .t-barra.sv-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:80;padding:10px 10px 10px 18px;border-radius:999px;background:var(--vidrio);border:1px solid var(--line);box-shadow:var(--sombra-2);-webkit-backdrop-filter:saturate(180%) blur(16px);backdrop-filter:saturate(180%) blur(16px);transition:transform .3s var(--ease),opacity .3s}
-.sv .t-barra.sv-barra.oculta{transform:translateY(140%);opacity:0;pointer-events:none}
-.sv-barra>div{min-width:0}.sv-barra b,.sv-barra small{display:block}.sv-barra small{font-size:12.5px;color:var(--fg-2)}.sv-barra .btn{flex:none}
-@media(min-width:760px){.sv .t-barra.sv-barra{left:50%;right:auto;width:min(620px,calc(100% - 32px));transform:translateX(-50%)}.sv .t-barra.sv-barra.oculta{transform:translate(-50%,140%)}}
 .sv-valor-l{display:grid;gap:14px;margin-top:18px}
 .sv-valor-l li{display:flex;gap:12px;align-items:flex-start;font-size:16.5px;line-height:1.5;color:var(--fg-2)}.sv-valor-l b{color:var(--fg)}
 .sv-valor-l svg{width:20px;height:20px;color:var(--pm-t);flex:none;margin-top:3px}
@@ -276,7 +264,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   return pagina({ entrar: { url: '/descargas/reenviar?para=simulador', app: sim.titulo },
     titulo: v.tituloSEO, ruta: `${RUTA}/`, descripcion: v.descripcion, imagen: v.og,
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: (prod ? SCRIPT_COMPRA + SCRIPT_BARRA : '') + (prueba ? prueba.js : ''),
+    script: (prod ? SCRIPT_COMPRA : '') + (prueba ? prueba.js : ''),
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
 <style>${CSS_MARCA}${CSS_SECCIONES}</style>${CSS}${CSS_ORDEN}${prueba ? `<style>${prueba.css}${CSS_PRUEBA}</style>` : ''}${v.css || ''}`,
     cuerpo: `<div class="sv" style="--pm:${color};--pm-s:color-mix(in srgb,${color} 11%,#fff)">
@@ -354,7 +342,7 @@ ${prod ? `<section class="t-sec sv-final"><div class="marco">
   <div class="botones"><a class="pm-btn" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a></div>
 </div></section>` : ''}
 <section class="sv-disc"><div class="marco"><p class="t-nota">${esc(v.aviso)}</p></div></section>
-${prod ? `<div class="t-barra sv-barra oculta" id="sv-barra"><div><b>${esc(sim.titulo)}</b><small>${elegido ? `${esc(elegido.nombre)} · ` : ''}<span class="num">${precioTxt}</span> · acceso inmediato</small></div><a class="btn acento chico" href="#comprar">Comprar</a></div>` : ''}
+${prod ? `<div class="t-barra sv-barra" id="sv-barra" data-ocultar="#comprar form"><div><b>${esc(sim.titulo)}</b><small>${elegido ? `${esc(elegido.nombre)} · ` : ''}<span class="num">${precioTxt}</span> · acceso inmediato</small></div><a class="btn acento chico" href="#comprar">Comprar</a></div>` : ''}
 </div>`,
   });
 }

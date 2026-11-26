@@ -10,6 +10,7 @@ import { oferta, migas } from './seo.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
+import { barraCompra } from './barra-compra.js';
 
 const APP = 'https://inmuebles.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -96,6 +97,7 @@ ${seccionDemo('portales', demoDe('portales'))}
   <div class="pi-escena">${maqueta}</div>
 </div></section>
 
+${barraCompra({ titulo: 'Portal', detalle: `Desde ${base ? precio(base) : '$199 MXN'} al mes · sin comisión por venta`, href: '#planes', boton: 'Ver planes' })}
 <section class="pi-sec" id="planes"><div class="marco">
   <div class="pi-cab"><span class="pi-et">Planes</span><h2>Un precio claro, sin comisiones.</h2><p>Mensual, en pesos mexicanos con IVA incluido. Usuario adicional: ${extra ? precio(extra) : '$99 MXN'} al mes.</p></div>
   <div class="pi-planes">${planes.map((x) => `<article class="pi-plan${x.rec ? ' rec' : ''}">${x.rec ? '<span class="pi-sello">El más elegido</span>' : ''}<h3>${x.nombre}</h3><p class="pi-para">${x.para}</p>

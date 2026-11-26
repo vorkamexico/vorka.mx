@@ -10,6 +10,7 @@ import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { refDeVisita, precio, seccionFaq } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { CSS_MIRA, GIROS } from './miratunegocio.js';
+import { barraCompra } from './barra-compra.js';
 
 export const RUTA_NEGOCIO_COMPLETO = '/tienda/negocio-completo/';
 export const SLUG_NEGOCIO_COMPLETO = 'negocio-completo-mensual';
@@ -138,6 +139,7 @@ export async function paginaNegocioCompleto(env, req, url) {
   <div class="nc-giros">${Object.entries(GIROS).filter(([k]) => k !== 'otro').map(([k, v]) => `<a class="nc-giro" href="${RUTA_MIRA}?g=${k}">${esc(v.nombre)}</a>`).join('')}</div>
 </div></section>
 
+${barraCompra({ titulo: 'Negocio Completo', detalle: `${mesTxt} MXN al mes · instalación ${instTxt} MXN`, href: '#comprar', boton: 'Contratar' })}
 <section class="nc-sec nc-compra-sec" id="comprar"><div class="marco nc-compra-g">
   <div>
     <h2 class="t-h2 nc-h2">Contrata en línea.</h2>

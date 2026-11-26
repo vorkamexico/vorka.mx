@@ -6,6 +6,7 @@ import { TEMA_HEAD } from './tema.js';
 import { temporadaActual, estiloTemporada } from './temporadas.js';
 import { CLIENTE_DESCUENTO } from './descuentos.js';
 import { DOMINIOS_ADSENSE } from './anuncios.js';
+import { CSS_BARRA, SCRIPT_BARRA } from './barra-compra.js';
 
 // Versión del CSS de la tienda según su contenido (cambia sola cuando se edita)
 export const ESTILOS = CSS_TIENDA;
@@ -172,14 +173,14 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="can
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
 <link rel="stylesheet" href="/tienda/estilos.css?v=${VERSION_CSS}">
-${estiloTemporada(temporada)}${entrar ? ENTRAR_CSS : ''}${head}</head>
+${estiloTemporada(temporada)}${entrar ? ENTRAR_CSS : ''}${head}${cuerpo.includes('class="t-barra') ? CSS_BARRA : ''}</head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" class="t-main">
 ${cuerpo}
 </main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
-${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${cuerpo.includes('data-copiar=') ? `<script nonce="${n}">${SCRIPT_COPIAR}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
+${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${cuerpo.includes('class="t-barra') ? `<script nonce="${n}">${SCRIPT_BARRA}</script>` : ''}${cuerpo.includes('data-copiar=') ? `<script nonce="${n}">${SCRIPT_COPIAR}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}
 </body>
 </html>`;
   return new Response(html, {

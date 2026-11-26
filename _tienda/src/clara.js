@@ -11,6 +11,7 @@ import { FLECHA, CHECK } from './marco.generado.js';
 import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
+import { barraCompra } from './barra-compra.js';
 
 const APP = 'https://clara.vorka.mx';
 const GUIA_TARJETA = 'https://vorka.mx/learn/finanzas/como-funciona-una-tarjeta-de-credito/';
@@ -130,6 +131,7 @@ ${seccionDemo('clara', demoDe('clara'))}
   <p class="cl-aviso">Clara <b>nunca pide</b> el número completo de tu tarjeta, el CVV, la fecha de vencimiento ni las contraseñas de tu banco, y <b>no se conecta</b> a tus cuentas: tus movimientos los anotas tú. Es una herramienta de organización y educación financiera: <b>no es asesoría financiera, no es un banco y no mueve dinero</b>. Los cálculos son estimados; revisa siempre tu estado de cuenta.</p>
 </div></section>
 
+${barraCompra({ titulo: 'Clara', detalle: `Gratis con 1 tarjeta${mensual ? ` · Pro desde ${precio(mensual.prod)} al mes` : ''}`, href: '#planes', boton: 'Ver planes' })}
 <section class="cl-sec suave" id="planes"><div class="marco">
   <div class="cl-cab"><span class="cl-et">Precio</span><h2>Gratis con 1 tarjeta. Pro si quieres más.</h2><p>En pesos mexicanos con IVA incluido. Desde 15 años; de 15 a 17, con autorización de tu mamá, papá o tutor.</p></div>
   <div class="cl-planes">

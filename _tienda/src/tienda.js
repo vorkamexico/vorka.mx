@@ -443,9 +443,7 @@ export const SCRIPT_COMPRA = `(function(){
       .then(function(x){ if(x.ok&&x.j.url){ location.href=x.j.url; } else mostrar(x.j.error||'No pudimos abrir el pago. Intenta de nuevo.'); })
       .catch(function(){ mostrar('Sin conexión. Revisa tu internet e intenta de nuevo.'); });
   });
-  // Barra fija en celular: se oculta cuando el formulario está a la vista
-  var barra=document.getElementById('barra-compra');
-  if(barra&&'IntersectionObserver' in window) new IntersectionObserver(function(es){ barra.classList.toggle('oculta',es[0].isIntersecting); }).observe(f);
+  // La barra fija la maneja barra-compra.js (pagina() la agrega cuando hay class="t-barra")
 })();`;
 
 // Pestañas de la ficha (Descripción · Detalles · Preguntas): solo las que tienen contenido. Sin JavaScript se ven todas, una tras otra.
@@ -616,8 +614,6 @@ const SCRIPT_SAAS = `(function(){
       .then(function(x){ if(x.ok&&x.j.url){ location.href=x.j.url; } else mostrar(x.j.error||'No pudimos abrir el pago. Intenta de nuevo.'); })
       .catch(function(){ mostrar('Sin conexión. Revisa tu internet e intenta de nuevo.'); });
   });
-  var barra=document.getElementById('barra-compra');
-  if(barra&&'IntersectionObserver' in window) new IntersectionObserver(function(es){ barra.classList.toggle('oculta',es[0].isIntersecting); }).observe(f);
 })();`;
 
 async function paginaSaas(env, url, p, cookie) {

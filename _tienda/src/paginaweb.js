@@ -9,6 +9,7 @@ import { one } from './util.js';
 import { sinInstalacion } from './suscripciones.js';
 import { refDeVisita, precio, seccionFaq } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { barraCompra } from './barra-compra.js';
 
 export const RUTA_PAGINA_WEB = '/tienda/pagina-web/';
 export const SLUG_PAGINA_WEB = 'pagina-web-mensual';
@@ -65,6 +66,7 @@ export async function paginaPaginaWeb(env, req, url) {
     <ul class="pw-inc">${INCLUYE.map(x => `<li>${CHECK}<span>${esc(x)}</span></li>`).join('')}</ul>
     <p class="t-ya"><a href="/servicios/pagina-web/">Ver todo el detalle del servicio</a> · <a href="${WA_DUDA}" target="_blank" rel="noopener">¿Dudas? WhatsApp</a></p>
   </div>
+${barraCompra({ titulo: 'Tu página web', detalle: p ? `${precio(p)} al mes` : '', href: '#comprar', boton: 'Suscribirme' })}
   <aside id="comprar" aria-label="Suscribirme">${form}</aside>
 </div></section>
 ${seccionFaq({ titulo: 'Antes de suscribirte', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${esc(a)}</div></details>`).join('') })}`,

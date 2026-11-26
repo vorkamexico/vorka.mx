@@ -7,6 +7,7 @@ import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { one } from './util.js';
 import { refDeVisita, precio, seccionFaq } from './tienda.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { barraCompra } from './barra-compra.js';
 
 export const RUTA_APP_MEDIDA = '/tienda/app-a-la-medida/';
 export const SLUG_APP_MEDIDA = 'app-medida-mensual';
@@ -80,6 +81,7 @@ export async function paginaAppMedida(env, req, url) {
     <ul class="am-inc">${INCLUYE.map(x => `<li>${CHECK}<span>${esc(x)}</span></li>`).join('')}</ul>
     <p class="t-ya"><a href="${WA_DUDA}" target="_blank" rel="noopener">¿Dudas? WhatsApp</a></p>
   </div>
+${barraCompra({ titulo: 'App a la medida', detalle: p ? `${precio(p)} al mes · 12 meses` : '', href: '#comprar', boton: 'Empezar' })}
   <aside id="comprar" aria-label="Empezar mi app">${form}</aside>
 </div></section>
 <section class="am-lim"><div class="marco">
