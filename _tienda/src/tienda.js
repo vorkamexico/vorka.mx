@@ -14,6 +14,7 @@ import { contarVisita } from './puntos.js';
 import { VARIANTES } from './brindi.js';
 import { UNIVERSIDADES } from './simulador/paa-universidades.js';
 import { conPagina as UNAM_CARRERAS } from './simulador/unam-aciertos.js';
+import { CARRERAS_IPN } from './simulador/ipn-aciertos.js';
 import { temporadaActual, decoracion } from './temporadas.js';
 import { PCT_REFERIDO } from './descuentos.js';
 import { seccionesCatalogo, sinAcentos } from './lineas.js';
@@ -688,6 +689,8 @@ export async function sitemapTienda(env) {
     `<url><loc>${SITIO}/simulador-paa/calculadora/</loc><priority>0.7</priority></url>`,   // calculadora de puntaje PAA
     `<url><loc>${SITIO}/simulador-unam/aciertos/</loc><priority>0.7</priority></url>`,   // UNAM: aciertos por carrera
     ...UNAM_CARRERAS().map(s => `<url><loc>${SITIO}/simulador-unam/aciertos/${s}/</loc><priority>0.6</priority></url>`),
+    `<url><loc>${SITIO}/simulador-ipn/aciertos/</loc><priority>0.7</priority></url>`,   // IPN: aciertos y lugares por carrera
+    ...Object.keys(CARRERAS_IPN).map(s => `<url><loc>${SITIO}/simulador-ipn/aciertos/${s}/</loc><priority>0.6</priority></url>`),
     `<url><loc>${SITIO}/simulador-exani-ii/universidades/</loc><priority>0.7</priority></url>`,   // ¿Cuál te sirve?
     ...Object.keys(UNIVERSIDADES_EXANI).map(k => `<url><loc>${SITIO}/simulador-exani-ii/${k}/</loc><priority>0.7</priority></url>`),   // EXANI-II por universidad
     ...Object.keys(UNIVERSIDADES_EXCOBA).map(k => `<url><loc>${SITIO}/simulador-excoba/${k}/</loc><priority>0.7</priority></url>`),   // EXCOBA por universidad
