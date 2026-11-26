@@ -348,6 +348,19 @@ export default {
       const { cookie } = await refDeVisita(env, request, u).catch(e => { console.error('liga anterior', e?.message); return {}; });
       if (cookie) { const r = new Response(res.body, res); r.headers.append('set-cookie', cookie); return r; }
     }
+    // Liga de embajador (?ref=CÓDIGO) en cualquier página que no deja la cookie por su cuenta (la demo /tienda/demo/<clave>/,
+    // las páginas por universidad, la calculadora PAA, aciertos UNAM…): la deja aquí y cuenta la visita, para que el código
+    // llegue a la compra aunque la persona siga por cualquier botón.
+    if (request.method === 'GET' && !url.pathname.startsWith('/api/') && url.searchParams.has('ref') && res.status === 200
+      && /text\/html/.test(res.headers.get('content-type') || '') && !/vorka_ref=/.test(res.headers.get('set-cookie') || '')) {
+      const { cookie } = await refDeVisita(env, request, url).catch(e => { console.error('ref', e?.message); return {}; });
+      if (cookie) {
+        const r = new Response(res.body, res);
+        r.headers.append('set-cookie', cookie);
+        r.headers.set('cache-control', 'private, no-store');
+        return r;
+      }
+    }
     return res;
   },
 
