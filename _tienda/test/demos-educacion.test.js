@@ -38,7 +38,7 @@ describe('demos de educación', () => {
       const ph = await p.text();
       expect(ph).toContain('id="probar"'); expect(ph).toContain('<section class="sd" id="sd"');
       expect(ph).not.toContain('?dentro=1'); expect(ph).not.toContain('/diagnostico/');
-      expect(ph.indexOf('id="comprar"')).toBeLessThan(ph.indexOf('id="probar"'));
+      expect(ph).toContain('class="sv-izq"');   // en celular el CSS pone la compra antes que la prueba
     });
   }
   for (const [k, pagina] of DEMOS) {
@@ -65,7 +65,7 @@ describe('demos de educación', () => {
     for (const k of ['paa', 'unam', 'ecoems', 'prepa-ug', 'exani-ii', 'excoba', 'ipn']) {
       const D = datosDe(SIM[k].js);
       expect(D.r).toHaveLength(3);
-      expect(D.mas).toMatch(/^En el simulador tienes [\d,]+ (reactivos|preguntas) con este mismo tutor/);
+      expect(D.mas).toContain('preguntas distintas en cada intento'); expect(D.mas).not.toMatch(/\d/);
       for (const r of D.r) {
         expect(r.o.length).toBeGreaterThanOrEqual(3);
         expect(r.k).toBeLessThan(r.o.length);

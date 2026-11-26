@@ -71,17 +71,17 @@ describe('acceso al simulador', () => {
     expect(html).toContain('"@type":"AggregateOffer"');
     expect(await (await pedir('/simulador-paa/?plan=paquete')).text()).toContain('name="slug" value="simulador-paa-paquete"');
     // la compra va antes que la prueba (en celular es lo primero después del inicio), y la página ya no dice "oficiales" ni minutos de la PAA
-    expect(html.indexOf('id="comprar"')).toBeLessThan(html.indexOf('id="probar"'));
+    expect(html).toMatch(/\.sv-hero-g>\.sv-compra\{order:2/);
     expect(html).not.toMatch(/exámenes oficiales|Examen Oficial/);
     expect(html).not.toMatch(/\d+ min</);
     expect(html).not.toContain('noindex');
     // encabezado de marca con su índice; una sola cosa gratis (la prueba de 3 preguntas) y la barra solo con «Comprar»
-    expect(html).toContain('class="pm-hero"'); expect(html).toContain('class="pm-indice"');
-    for (const id of ['que-es', 'probar', 'comprar', 'como', 'incluye', 'estructura', 'ayuda']) expect(html).toContain(`id="${id}"`);
+    expect(html).toContain('class="pm-hero"'); expect(html).not.toContain('class="pm-indice"');
+    for (const id of ['que-es', 'valor', 'probar', 'comprar', 'como', 'incluye', 'estructura', 'ayuda']) expect(html).toContain(`id="${id}"`);
     expect(html).toContain('<section class="sd" id="sd"'); expect(html).toContain('window.SD=');
     expect(html).not.toContain('/diagnostico/'); expect(html).not.toContain('?dentro=1');
     expect(html).toContain('medidor de preparación'); expect(html).toContain('plan de estudio');
-    expect(html).toContain('id="barra-compra"'); expect(html).not.toContain('Prueba gratis</a></div>');
+    expect(html).toContain('id="sv-barra"'); expect(html).not.toMatch(/\d{3} reactivos originales|>642</); expect(html).not.toContain('Prueba gratis</a></div>');
   });
 
   it('el enlace del correo deja una cookie que abre la app y la API', async () => {

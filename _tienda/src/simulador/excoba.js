@@ -164,7 +164,7 @@ const VENTA = {
   og: `${SITIO}${IMG}/v3/simulador-excoba-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-excoba-portada.webp`, `${SITIO}${IMG}/v3/simulador-excoba-og.jpg`],
   imagenes: { portada: `${IMG}/v3/simulador-excoba-portada.webp`, og: `${IMG}/v3/simulador-excoba-og.jpg`, paso1: `${IMG}/v3/simulador-excoba-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-excoba-paso-tutor.webp`, reporte: `${IMG}/simulador-excoba-reporte.png`, regalo: `${IMG}/simulador-excoba-regalo.png` },
   banco: REACTIVOS.length,
-  chip: `Nuevo · ${REACTIVOS.length} preguntas originales · ${ASIGNATURAS.length} asignaturas de bachillerato`,
+  chip: `Nuevo · preguntas distintas en cada intento · ${ASIGNATURAS.length} asignaturas de bachillerato`,
   hero: {
     h1: 'Simulador EXCOBA para la UAQ y la UG',
     lead: `Practica las ${EXAMEN_REACTIVOS} preguntas del Examen de Competencias Básicas con las 3 asignaturas de tu carrera: preguntas de clasificar, elegir varias y escribir tu respuesta, calificadas por partes como en el examen. Si fallas, un tutor te da una pista; al final, un reporte te dice qué reforzar.`,

@@ -7,7 +7,6 @@
 // Los reactivos se toman del banco por id (si alguno cambia de id, falla al cargar y lo dicen las pruebas). Elegidos
 // cortos, sin lectura, figura ni tabla, para que quepan en el celular. Las opciones van en el orden del banco, así que
 // {A}…{D} de pistas y pasos se cambian por su letra tal cual.
-import { MARCAS } from '../marca-producto.js';
 import { SECCIONES as SECCIONES_PAA, TEMAS as TEMAS_PAA, REACTIVOS as REACTIVOS_PAA } from '../simulador/banco.js';
 import * as U_MAT from '../simulador/unam/matematicas.js';
 import * as U_FIS from '../simulador/unam/fisica.js';
@@ -192,8 +191,8 @@ function demo({ examen, nombre, titulo, texto, data }) {
     js: `window.SD=${JSON.stringify({ examen, ...data }).replace(/</g, '\\u003c')};${JS}`,
   };
 }
-// Lo que trae el simulador completo; el tamaño del banco sale de la marca de cada uno (los mismos datos que su portada)
-const mas = k => { const b = (MARCAS[k]?.[3]?.[0] || '').replace(/\*\*/g, ''); return `En el simulador tienes ${b ? `${b} con` : ''} este mismo tutor, exámenes como el real, el medidor de preparación y tu reporte por tema.`.replace('tienes  este', 'tienes este'); };
+// Lo que trae el simulador completo (sin el tamaño del banco: decisión de Brandon, nov 2026)
+const mas = () => 'En el simulador tienes este mismo tutor en cada pregunta, preguntas distintas en cada intento, exámenes como el real, el medidor de preparación y tu reporte por tema.';
 
 // PAA: el ritmo de cada sección es el de su simulacro (banco.js › SECCIONES: minutos ÷ reactivos)
 const NOM_PAA = Object.fromEntries(SECCIONES_PAA.map(s => [s.id, s.nombre]));

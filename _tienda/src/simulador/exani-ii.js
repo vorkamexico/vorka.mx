@@ -166,7 +166,7 @@ const VENTA = {
   og: `${SITIO}${IMG}/v3/simulador-exani-ii-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-exani-ii-portada.webp`, `${SITIO}${IMG}/v3/simulador-exani-ii-og.jpg`],
   imagenes: { portada: `${IMG}/v3/simulador-exani-ii-portada.webp`, og: `${IMG}/v3/simulador-exani-ii-og.jpg`, paso1: `${IMG}/v3/simulador-exani-ii-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-exani-ii-paso-tutor.webp`, reporte: `${IMG}/simulador-exani-ii-reporte.png`, regalo: `${IMG}/simulador-exani-ii-regalo.png` },
   banco: REACTIVOS.length,
-  chip: `Nuevo · ${REACTIVOS.length} reactivos originales · ${MODULOS.length} módulos`,
+  chip: `Nuevo · preguntas distintas en cada intento · ${MODULOS.length} módulos`,
   hero: {
     h1: 'Simulador EXANI-II: un solo simulador para tu universidad',
     lead: `Elige los módulos que pide tu universidad y practica con ${EXAMEN_REACTIVOS} reactivos de tres opciones en ${HORAS}, como el examen real. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice cuántos aciertos llevas y qué reforzar.`,
