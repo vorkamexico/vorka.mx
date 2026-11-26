@@ -115,6 +115,8 @@ const HTML = `<section class="sd" id="sd" aria-live="polite"></section>`;
 const JS = `
 (()=>{
 const D=window.SD,app=document.getElementById('sd'),L='ABCD';
+// Liga de embajador: el botón de compra conserva ?ref= (además de la cookie que deja la página)
+const REF=(()=>{const r=new URLSearchParams(location.search).get('ref')||'';return /^[A-Za-z0-9_-]{2,40}$/.test(r)?'&ref='+encodeURIComponent(r):''})();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const rico=s=>esc(s).replace(/\\*\\*(.+?)\\*\\*/g,'<b>$1</b>').replace(/\\n/g,'<br>');
 const mmss=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+('0'+s%60).slice(-2)};
@@ -177,7 +179,7 @@ function reporte(){
    '<ul class="sd-res">'+D.r.map((r,k)=>{const s=st[k],c=s.s1===r.k?'si':s.s2===r.k?'dos':'no';return '<li><span class="m '+c+'" aria-label="'+(c==='si'?'A la primera':c==='dos'?'En el segundo intento':'Fallada')+'">'+(c==='si'?'✓':c==='dos'?'2':'✕')+'</span><span><b>'+esc(r.s)+'</b><small>'+esc(r.t)+'</small></span><time>'+mmss(s.t)+'</time></li>'}).join('')+'</ul>'+
    (fallas.length?'<h3 class="sd-h3">Qué reforzar</h3><div class="sd-ref">'+fallas.map(r=>'<div><b>'+esc(r.t)+'</b>'+esc(r.c)+'</div>').join('')+'</div>':'')+
    '<p class="sd-nota">'+esc(D.mas)+'</p>'+
-   '<a class="sd-btn pm" href="'+D.ruta+'?plan=paquete#comprar" target="_top">Quiero el simulador completo</a><button class="sd-btn sd-sec" type="button" id="sd-otra">Volver a empezar</button>';
+   '<a class="sd-btn pm" href="'+D.ruta+'?plan=paquete'+REF+'#comprar" target="_top">Quiero el simulador completo</a><button class="sd-btn sd-sec" type="button" id="sd-otra">Volver a empezar</button>';
 }
 intro();
 })();`;
