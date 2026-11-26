@@ -15,6 +15,7 @@ import liderazgo from './liderazgo.js';
 export const DEMOS = {
   agenda, vuelve, brindi, cupo, cuentas, vende, clara, portales,
   'simulador-paa': simulador?.paa, 'simulador-unam': simulador?.unam, 'simulador-ecoems': simulador?.ecoems, 'simulador-prepa-ug': simulador?.['prepa-ug'],
+  'simulador-exani-ii': simulador?.['exani-ii'], 'simulador-excoba': simulador?.excoba, 'simulador-ipn': simulador?.ipn,
   'test-vocacional': tests?.vocacional, 'que-proyecto-social': tests?.proyecto, 'ruta-de-impacto': ruta, 'evaluacion-liderazgo': liderazgo,
 };
 export const demoDe = k => DEMOS[k] || null;

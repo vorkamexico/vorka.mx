@@ -27,7 +27,7 @@ const FAQ = [
   { p: '¿Cuánto pide la UDEM en la PAA?', r: 'Según su lineamiento de admisión (numeral 5.3.6): 1,200 en total, 550 en razonamiento verbal, 550 en razonamiento matemático y promedio de 80. En Enfermería: 1,100, 500, 500 y 70.' },
   { p: '¿Cómo se calcula el puntaje de admisión de la UdeG?', r: 'Tu promedio de bachillerato (de 0 a 100) y tu resultado de la PAA (de 0 a 100) pesan 50 % cada uno; la suma de los dos, hasta 200, es la puntuación con la que se decide tu admisión. El mínimo cambia por carrera, centro y ciclo.' },
   { p: '¿Puedo pasar mi puntaje de 200 a 800 a la escala de la UdeG?', r: 'No con exactitud: la UdeG no publica esa conversión. Usa el resultado en escala de 0 a 100 que aparece en tu dictamen, o el de un ciclo anterior como referencia.' },
-  { p: '¿Cuánto sacaría hoy en la PAA?', r: 'Si todavía no la presentas, haz el diagnóstico gratis del Simulador PAA: 12 preguntas con tutor y te da un puntaje estimado por sección. Es una estimación para orientar tu estudio, no un resultado oficial.' },
+  { p: '¿Cuánto sacaría hoy en la PAA?', r: 'Si todavía no la presentas, haz un examen completo en el Simulador PAA: te da un puntaje estimado por sección. Es una estimación para orientar tu estudio, no un resultado oficial.' },
 ];
 
 const mil = n => n.toLocaleString('es-MX');
@@ -83,8 +83,8 @@ export async function paginaCalculadoraPaa(env) {
 
 <section class="t-sec"><div class="marco">
   <div class="pc-diag">
-    <div><h2 class="h3">¿Todavía no presentas la PAA?</h2><p>Haz el diagnóstico gratis: 12 preguntas con tutor y te da un puntaje estimado por sección. Con ese número ya puedes usar esta calculadora.</p></div>
-    <div class="pu-botones" style="margin-top:0"><a class="btn tinta" href="${RUTA}/diagnostico/">Hacer el diagnóstico gratis ${FLECHA}</a><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador</a></div>
+    <div><h2 class="h3">¿Todavía no presentas la PAA?</h2><p>Con el simulador haces exámenes completos con cronómetro y te da un puntaje estimado por sección. Con ese número ya puedes usar esta calculadora.</p></div>
+    <div class="pu-botones" style="margin-top:0"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador ${FLECHA}</a><a class="btn blanco" href="${RUTA}/#probar">Prueba 3 preguntas</a></div>
   </div>
 </div></section>
 

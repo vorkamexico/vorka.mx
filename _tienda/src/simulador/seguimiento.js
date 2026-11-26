@@ -55,7 +55,7 @@ const pie = baja => `<p style="${P};color:#8b8790;font-size:13px;text-align:cent
 const pieTexto = baja => `Te escribimos porque hiciste el diagnóstico gratis. Si ya no quieres estos correos: ${baja}`;
 
 export function correoRetomar(env, sim, d, baja) {
-  const n = primerNombre(d.nombre), url = `${env.SITE_URL}${sim.RUTA}/diagnostico/`;
+  const n = primerNombre(d.nombre), url = `${env.SITE_URL}${sim.RUTA}/diagnostico/?ya=1`;
   const asunto = `Tu diagnóstico ${sim.nombre} gratis te espera`;
   const html = marco(asunto, `<p style="${P}">Hola${n ? `, ${esc(n)}` : ''}:</p>
 <p style="${P}">Empezaste tu diagnóstico gratis para ${esc(examenDe(sim))} y quedó sin terminar. Son 12 preguntas con tutor, y al final ves tu puntaje estimado y dónde puedes ganar más puntos.</p>

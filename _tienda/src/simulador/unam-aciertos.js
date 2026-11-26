@@ -54,7 +54,7 @@ const calculadora = (texto) => `<form class="ua-calc" novalidate onsubmit="retur
   <p class="ua-resumen" id="ua-resumen" aria-live="polite"></p>
 </form>`;
 
-const ctas = `<div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador UNAM ${FLECHA}</a><a class="btn blanco" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>`;
+const ctas = `<div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador UNAM ${FLECHA}</a><a class="btn blanco" href="${RUTA}/#probar">Prueba 3 preguntas</a></div>`;
 const compra = (env, para) => compraSimulador(env, { app: 'simulador-unam', nombre: 'Simulador UNAM', para, puntos: ['Examen de tu área con las 120 preguntas y el tiempo real', 'Tutor con pistas cuando fallas', 'Tus aciertos estimados para compararlos con esta tabla'] });
 
 const FAQ_GENERAL = [
@@ -171,7 +171,7 @@ export async function paginaAciertosUnam(env) {
   <nav class="t-volver" aria-label="Ruta"><a href="${RUTA}/">Simulador UNAM</a> / Aciertos por carrera</nav>
   <h1 class="t-h1">Aciertos para entrar a la UNAM por carrera y plantel</h1>
   <p class="t-lead">Los ${total} programas de licenciatura (${carreras} carreras en sus planteles y modalidades) con el menor número de aciertos con el que alguien entró entre 2021 y 2026, según la DGAE. Escribe tus aciertos y la tabla te dice a cuáles llegas.</p>
-  ${calculadora('De un simulacro o del diagnóstico gratis. El examen tiene 120 preguntas.')}
+  ${calculadora('De un simulacro o un examen de práctica. El examen tiene 120 preguntas.')}
   ${tarjeta}
   ${fuente()}
 </div></section>
@@ -186,7 +186,7 @@ export async function paginaAciertosUnam(env) {
 
 <section class="t-sec"><div class="marco">
   <h2 class="h2">¿Todavía no sabes cuántos aciertos sacarías?</h2>
-  <p class="lead">Haz el diagnóstico gratis: preguntas tipo examen UNAM con tutor y tu número estimado de aciertos.</p>
+  <p class="lead">En el simulador haces exámenes completos tipo UNAM con tutor y ves tu número estimado de aciertos contra la meta de tu carrera.</p>
   ${ctas}
   <div style="margin-top:34px"><span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" style="margin-top:14px">Aciertos y admisión a la UNAM</h2></div>
   <div class="t-faq" style="margin-top:22px">${FAQ_GENERAL.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>

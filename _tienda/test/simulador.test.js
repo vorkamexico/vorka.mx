@@ -70,16 +70,18 @@ describe('acceso al simulador', () => {
     expect(html).toContain('Ahorras $69 MXN');
     expect(html).toContain('"@type":"AggregateOffer"');
     expect(await (await pedir('/simulador-paa/?plan=paquete')).text()).toContain('name="slug" value="simulador-paa-paquete"');
-    // el reactivo de prueba va antes del formulario de compra, y la página ya no dice "oficiales" ni minutos de la PAA
-    expect(html.indexOf('id="sv-ej"')).toBeLessThan(html.indexOf('id="comprar"'));
+    // la compra va antes que la prueba (en celular es lo primero después del inicio), y la página ya no dice "oficiales" ni minutos de la PAA
+    expect(html.indexOf('id="comprar"')).toBeLessThan(html.indexOf('id="probar"'));
     expect(html).not.toMatch(/exámenes oficiales|Examen Oficial/);
     expect(html).not.toMatch(/\d+ min</);
     expect(html).not.toContain('noindex');
-    // encabezado de marca con su índice; la prueba gratis (reactivo con tutor) y la barra de compra siguen
+    // encabezado de marca con su índice; una sola cosa gratis (la prueba de 3 preguntas) y la barra solo con «Comprar»
     expect(html).toContain('class="pm-hero"'); expect(html).toContain('class="pm-indice"');
     for (const id of ['que-es', 'probar', 'comprar', 'como', 'incluye', 'estructura', 'ayuda']) expect(html).toContain(`id="${id}"`);
-    expect(html).toMatch(/<button type="button" data-o="0">/); expect(html).toContain('id="sv-tutor"');
-    expect(html).toContain('id="barra-compra"'); expect(html).toContain('href="/simulador-paa/diagnostico/">Prueba gratis</a>');
+    expect(html).toContain('<section class="sd" id="sd"'); expect(html).toContain('window.SD=');
+    expect(html).not.toContain('/diagnostico/'); expect(html).not.toContain('?dentro=1');
+    expect(html).toContain('medidor de preparación'); expect(html).toContain('plan de estudio');
+    expect(html).toContain('id="barra-compra"'); expect(html).not.toContain('Prueba gratis</a></div>');
   });
 
   it('el enlace del correo deja una cookie que abre la app y la API', async () => {

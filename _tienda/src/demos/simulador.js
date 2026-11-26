@@ -1,12 +1,13 @@
-// Demos de los simuladores (PAA, UNAM, ECOEMS y prepa UG): un mini simulacro de 5 reactivos REALES del banco de cada
-// examen, con el mismo flujo que la app (simulador/app.js): cronómetro al ritmo del examen que solo corre en el primer
-// intento, tutor de dos intentos (pista de método → solución paso a paso y la regla) y, al final, un mini reporte con
-// aciertos, tiempo y qué reforzar (el «consejo» de cada tema del banco). Sin puntaje estimado: con 5 reactivos no se
-// promete ninguno; el diagnóstico gratis de cada simulador sí lo da.
+// Prueba gratis de los simuladores (nov 2026: reemplaza al diagnóstico gratis y al mini simulacro de 5): 3 reactivos REALES
+// del banco de cada examen, sin registro, con el mismo flujo que la app (simulador/app.js): cronómetro al ritmo del examen
+// que solo corre en el primer intento, tutor de dos intentos (pista de método → solución paso a paso y la regla) y, al final,
+// cómo le fue, qué reforzar y la compra. Sin puntaje estimado: con 3 reactivos no se promete ninguno.
+// Va dentro de la página de venta (venta.js › #probar) y en /tienda/demo/<simulador>/ para mandarla por WhatsApp.
 //
 // Los reactivos se toman del banco por id (si alguno cambia de id, falla al cargar y lo dicen las pruebas). Elegidos
 // cortos, sin lectura, figura ni tabla, para que quepan en el celular. Las opciones van en el orden del banco, así que
 // {A}…{D} de pistas y pasos se cambian por su letra tal cual.
+import { MARCAS } from '../marca-producto.js';
 import { SECCIONES as SECCIONES_PAA, TEMAS as TEMAS_PAA, REACTIVOS as REACTIVOS_PAA } from '../simulador/banco.js';
 import * as U_MAT from '../simulador/unam/matematicas.js';
 import * as U_FIS from '../simulador/unam/fisica.js';
@@ -23,6 +24,13 @@ import * as G_MAT from '../simulador/prepa-ug/pensamiento_matematico.js';
 import * as G_USO from '../simulador/prepa-ug/pensamiento_matematico_usos.js';
 import * as G_CIE from '../simulador/prepa-ug/pensamiento_cientifico.js';
 import * as G_ING from '../simulador/prepa-ug/ingles.js';
+import * as X_MAT from '../simulador/exani-ii/pensamiento_matematico.js';
+import * as X_RED from '../simulador/exani-ii/redaccion_indirecta.js';
+import * as X_BIO from '../simulador/exani-ii/biologia.js';
+import * as C_PM from '../simulador/excoba/pri_matematicas.js';
+import * as C_SE from '../simulador/excoba/sec_espanol.js';
+import * as C_SN from '../simulador/excoba/sec_ciencias_naturales.js';
+import * as U_QUI from '../simulador/unam/quimica.js';
 
 // Junta los REACTIVOS_* y TEMAS_* de varios módulos del banco
 const juntar = mods => ({
@@ -47,9 +55,9 @@ function tomar({ R, T }, ids, nombres, seg) {
 // ---------- el motor compartido (un solo css/html/js, parametrizado por examen) ----------
 const CSS = `
 .sd{padding:18px 16px 22px}
-.sd-et{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pm)}
+.sd-et{margin:0;font-size:14px;font-weight:650;color:var(--pm)}
 .sd h2{margin:8px 0 6px;font-size:24px;line-height:1.2;letter-spacing:-.02em}
-.sd-lead{margin:0;color:#5d5860;font-size:15.5px}
+.sd-lead{margin:0 0 18px;color:#5d5860;font-size:15.5px}
 .sd-datos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0;padding:0;list-style:none}
 .sd-datos li{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:14px;background:#F4F3F5}
 .sd-datos b{font-size:22px;font-weight:750;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
@@ -59,7 +67,7 @@ const CSS = `
 .sd-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border:0;border-radius:999px;background:#141114;color:#fff;font-weight:700;font-size:16px;text-decoration:none}
 .sd-btn.pm{background:var(--pm)}
 .sd-btn:disabled{opacity:.35;cursor:not-allowed}
-.sd-btn.sec{background:#fff;color:#141114;border:1.5px solid #E2E0E4;margin-top:10px}
+.sd-btn.sd-sec{background:#fff;color:#141114;border:1.5px solid #E2E0E4;margin-top:10px}
 .sd-prog{height:4px;border-radius:4px;background:#ECEAEE;overflow:hidden;margin-bottom:12px}
 .sd-prog i{display:block;height:100%;background:var(--pm);border-radius:4px;transition:width .4s}
 .sd-cab{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:13.5px;color:#5d5860;margin-bottom:14px}
@@ -120,11 +128,9 @@ let i=0,st=[],reloj=null,sel=null;
 const top=()=>{try{app.scrollIntoView({block:'start'})}catch(e){}scrollTo(0,0)};
 function intro(){
   detener();i=0;st=D.r.map(()=>({fase:'r1',s1:null,s2:null,t:0}));
-  app.innerHTML='<span class="sd-et">Mini simulacro · '+esc(D.examen)+'</span><h2>5 reactivos reales del simulador</h2>'+
-   '<p class="sd-lead">'+esc(D.secciones)+'. Contesta como el día del examen.</p>'+
-   '<ul class="sd-datos"><li><b>'+N+'</b><span>reactivos</span></li><li><b>'+mmss(TOTAL)+'</b><span>de tiempo en total</span></li><li><b>~'+Math.round(TOTAL/N)+' s</b><span>por reactivo, como el real</span></li></ul>'+
-   '<div class="sd-reglas"><b>Cómo funciona</b><ol><li><b>El cronómetro</b> corre solo en tu primer intento; leer pistas no te quita tiempo.</li><li>Si fallas, <b>el tutor te da una pista</b> y tienes otro intento.</li><li>Al final ves tu mini reporte y <b>qué reforzar</b>.</li></ol></div>'+
-   '<button class="sd-btn pm" type="button" id="sd-ir">Empezar</button>';
+  app.innerHTML='<p class="sd-et sd-i">Prueba gratis · '+esc(D.examen)+'</p><h2 class="sd-i">3 preguntas reales del simulador</h2>'+
+   '<p class="sd-lead">'+esc(D.secciones)+'. El reloj corre al ritmo del examen y solo en tu primer intento. Si fallas, el tutor te da una pista y otra oportunidad.</p>'+
+   '<button class="sd-btn pm" type="button" id="sd-ir">Empezar la prueba</button>';
   document.getElementById('sd-ir').onclick=()=>{pregunta();top()};
 }
 function relojHTML(pausa){const r=D.r[i],resta=r.seg-st[i].t;return '<span class="sd-reloj'+(resta<=15?' poco':'')+(pausa?' pausa':'')+'" role="timer" aria-label="Tiempo restante '+mmss(resta)+(pausa?', en pausa':'')+'">'+ICO.reloj+'<span>'+mmss(resta)+'</span>'+(pausa?'<small>pausa</small>':'')+'</span>'}
@@ -165,63 +171,87 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dis
 });
 function reporte(){
   detener();
-  const a1=st.filter((s,k)=>s.s1===D.r[k].k).length,a2=st.filter((s,k)=>s.s1!==D.r[k].k&&s.s2===D.r[k].k).length,usado=st.reduce((a,s)=>a+s.t,0);
+  const a1=st.filter((s,k)=>s.s1===D.r[k].k).length,a2=st.filter((s,k)=>s.s1!==D.r[k].k&&s.s2===D.r[k].k).length;
   const fallas=[];D.r.forEach((r,k)=>{if(st[k].s1!==r.k&&!fallas.some(f=>f.t===r.t))fallas.push(r)});
-  app.innerHTML='<span class="sd-et">Tu mini reporte</span><h2>'+(a1===N?'¡Perfecto: '+N+' de '+N+' a la primera!':a1+' de '+N+' a la primera')+'</h2>'+
-   '<ul class="sd-datos"><li><b>'+a1+'/'+N+'</b><span>a la primera</span></li><li><b>'+a2+'</b><span>con la pista del tutor</span></li><li><b>'+mmss(usado)+'</b><span>de '+mmss(TOTAL)+'</span></li></ul>'+
+  app.innerHTML='<p class="sd-et">Así te fue</p><h2>'+(a1===N?'Las '+N+' a la primera':a1+' de '+N+' a la primera'+(a2?', '+a2+' con la pista':''))+'</h2>'+
    '<ul class="sd-res">'+D.r.map((r,k)=>{const s=st[k],c=s.s1===r.k?'si':s.s2===r.k?'dos':'no';return '<li><span class="m '+c+'" aria-label="'+(c==='si'?'A la primera':c==='dos'?'En el segundo intento':'Fallada')+'">'+(c==='si'?'✓':c==='dos'?'2':'✕')+'</span><span><b>'+esc(r.s)+'</b><small>'+esc(r.t)+'</small></span><time>'+mmss(s.t)+'</time></li>'}).join('')+'</ul>'+
-   '<h3 class="sd-h3">Qué reforzar</h3>'+(fallas.length?'<div class="sd-ref">'+fallas.map(r=>'<div><b>'+esc(r.t)+'</b>'+esc(r.c)+'</div>').join('')+'</div>':'<p class="sd-nota">En estos 5 no fallaste ningún tema. En el simulador completo el reporte mide todos los temas y te dice cuáles te restan más.</p>')+
-   '<p class="sd-nota">Con 5 reactivos no hay puntaje: el diagnóstico gratis ('+D.diag+' preguntas con tutor) te da tu puntaje estimado.</p>'+
-   '<a class="sd-btn pm" href="'+D.ruta+'diagnostico/" target="_top">Hacer el diagnóstico gratis</a><button class="sd-btn sec" type="button" id="sd-otra">Volver a empezar</button>';
+   (fallas.length?'<h3 class="sd-h3">Qué reforzar</h3><div class="sd-ref">'+fallas.map(r=>'<div><b>'+esc(r.t)+'</b>'+esc(r.c)+'</div>').join('')+'</div>':'')+
+   '<p class="sd-nota">'+esc(D.mas)+'</p>'+
+   '<a class="sd-btn pm" href="'+D.ruta+'?plan=paquete#comprar" target="_top">Quiero el simulador completo</a><button class="sd-btn sd-sec" type="button" id="sd-otra">Volver a empezar</button>';
 }
 intro();
 })();`;
 
-// data: { examen, secciones (texto), r: [reactivos], ruta, diag }
+// data: { examen, secciones (texto), r: [reactivos], ruta, mas (qué trae el simulador completo) }
 function demo({ examen, nombre, titulo, texto, data }) {
   return {
     titulo, texto,
-    prueba: ['El cronómetro al ritmo del examen real, que se pausa mientras lees la pista', 'Fallar a propósito: el tutor te da una pista y otro intento, luego la solución paso a paso', 'Tu mini reporte: aciertos, tiempo y qué temas reforzar'],
+    prueba: ['El cronómetro al ritmo del examen real, que se pausa mientras lees la pista', 'Si fallas, el tutor te da una pista y otro intento; luego, la solución paso a paso', 'Al final, cómo te fue y qué tema reforzar'],
     cta: `Quiero el ${nombre}`,
     css: CSS, html: HTML,
     js: `window.SD=${JSON.stringify({ examen, ...data }).replace(/</g, '\\u003c')};${JS}`,
   };
 }
-const DIAG = 12;   // TOTAL_DIAG de simulador/diagnostico.js (no se importa: ese módulo arrastra la tienda)
+// Lo que trae el simulador completo; el tamaño del banco sale de la marca de cada uno (los mismos datos que su portada)
+const mas = k => { const b = (MARCAS[k]?.[3]?.[0] || '').replace(/\*\*/g, ''); return `En el simulador tienes ${b ? `${b} con` : ''} este mismo tutor, exámenes como el real, el medidor de preparación y tu reporte por tema.`.replace('tienes  este', 'tienes este'); };
 
 // PAA: el ritmo de cada sección es el de su simulacro (banco.js › SECCIONES: minutos ÷ reactivos)
 const NOM_PAA = Object.fromEntries(SECCIONES_PAA.map(s => [s.id, s.nombre]));
 const SEG_PAA = Object.fromEntries(SECCIONES_PAA.map(s => [s.id, s.minutos * 60 / s.reactivos]));
 const paa = demo({ examen: 'PAA', nombre: 'Simulador PAA',
-  titulo: 'Contesta 5 reactivos tipo PAA con cronómetro y tutor.',
-  texto: 'Un mini simulacro con preguntas reales del banco: Lectura, Redacción, Matemáticas e Inglés. Si fallas, el tutor te da una pista; al final ves qué reforzar.',
-  data: { secciones: 'Lectura, Redacción, Matemáticas e Inglés', ruta: '/simulador-paa/', diag: DIAG,
-    r: tomar({ R: REACTIVOS_PAA, T: TEMAS_PAA }, ['L4-voc-7', 'R2-con-3', 'M2-ari-3', 'M2-alg-4', 'E2-str-5'], NOM_PAA, s => SEG_PAA[s]) } });
+  titulo: 'Contesta 3 preguntas tipo PAA con cronómetro y tutor.',
+  texto: 'Preguntas reales del banco del simulador: Lectura, Matemáticas e Inglés. Si fallas, el tutor te da una pista; al final ves qué reforzar.',
+  data: { secciones: 'Lectura, Matemáticas e Inglés', ruta: '/simulador-paa/', mas: mas('simulador-paa'),
+    r: tomar({ R: REACTIVOS_PAA, T: TEMAS_PAA }, ['L4-voc-7', 'M2-ari-3', 'E2-str-5'], NOM_PAA, s => SEG_PAA[s]) } });
 
 // UNAM: 1.5 min por reactivo (unam.js › MIN_POR_REACTIVO: 120 reactivos en 3 horas)
 const unam = demo({ examen: 'UNAM', nombre: 'Simulador UNAM',
-  titulo: 'Contesta 5 reactivos del examen UNAM con cronómetro.',
-  texto: 'Un mini simulacro con preguntas reales del banco de cinco materias, al ritmo del examen: 1.5 minutos por reactivo. Si fallas, el tutor te da una pista.',
-  data: { secciones: 'Matemáticas, Física, Español, Historia Universal y Biología', ruta: '/simulador-unam/', diag: DIAG,
-    r: tomar(juntar([U_MAT, U_FIS, U_ESP, U_HU, U_BIO]), ['U-mat-3', 'U-fis-1', 'U-esp-42', 'U-hu-14', 'U-bio-8'],
-      { matematicas: 'Matemáticas', fisica: 'Física', espanol: 'Español', historia_universal: 'Historia Universal', biologia: 'Biología' }, () => 90) } });
+  titulo: 'Contesta 3 preguntas del examen UNAM con cronómetro.',
+  texto: 'Preguntas reales del banco del simulador, al ritmo del examen: 1.5 minutos por reactivo. Si fallas, el tutor te da una pista.',
+  data: { secciones: 'Matemáticas, Física y Español', ruta: '/simulador-unam/', mas: mas('simulador-unam'),
+    r: tomar(juntar([U_MAT, U_FIS, U_ESP]), ['U-mat-3', 'U-fis-1', 'U-esp-42'],
+      { matematicas: 'Matemáticas', fisica: 'Física', espanol: 'Español' }, () => 90) } });
 
 // ECOEMS: minutos ÷ reactivos de cada materia en el examen (ecoems.js › MATERIA: 22 min para 16 en las habilidades, 17 para 12)
-const SEG_ECOEMS = { habilidad_verbal: 22 * 60 / 16, habilidad_matematica: 22 * 60 / 16, matematicas: 17 * 60 / 12, biologia: 17 * 60 / 12, quimica: 17 * 60 / 12 };
+const SEG_ECOEMS = { habilidad_verbal: 22 * 60 / 16, habilidad_matematica: 22 * 60 / 16, biologia: 17 * 60 / 12 };
 const ecoems = demo({ examen: 'ECOEMS', nombre: 'Simulador ECOEMS',
-  titulo: 'Contesta 5 reactivos tipo ECOEMS con cronómetro.',
-  texto: 'Un mini simulacro con preguntas reales del banco: habilidad verbal, habilidad matemática, Matemáticas, Biología y Química. Si fallas, el tutor te da una pista.',
-  data: { secciones: 'Habilidad verbal, habilidad matemática, Matemáticas, Biología y Química', ruta: '/simulador-ecoems/', diag: DIAG,
-    r: tomar(juntar([E_HV, E_HM, E_MAT, E_BIO, E_QUI]), ['E-hv-23', 'E-hm-7', 'E-mat-1', 'E-bio-7', 'E-qui-15'],
-      { habilidad_verbal: 'Habilidad verbal', habilidad_matematica: 'Habilidad matemática', matematicas: 'Matemáticas', biologia: 'Biología', quimica: 'Química' }, s => SEG_ECOEMS[s]) } });
+  titulo: 'Contesta 3 preguntas tipo ECOEMS con cronómetro.',
+  texto: 'Preguntas reales del banco del simulador: habilidad verbal, habilidad matemática y Biología. Si fallas, el tutor te da una pista.',
+  data: { secciones: 'Habilidad verbal, habilidad matemática y Biología', ruta: '/simulador-ecoems/', mas: mas('simulador-ecoems'),
+    r: tomar(juntar([E_HV, E_HM, E_BIO]), ['E-hv-23', 'E-hm-7', 'E-bio-7'],
+      { habilidad_verbal: 'Habilidad verbal', habilidad_matematica: 'Habilidad matemática', biologia: 'Biología' }, s => SEG_ECOEMS[s]) } });
 
 // Prepa UG (EXANI-I, 3 opciones): minutos ÷ reactivos de cada área (prepa-ug.js › AREA)
-const SEG_UG = { redaccion_indirecta: 51 * 60 / 30, pensamiento_matematico: 67 * 60 / 40, pensamiento_cientifico: 51 * 60 / 30, ingles: 50 * 60 / 30 };
+const SEG_UG = { redaccion_indirecta: 51 * 60 / 30, pensamiento_matematico: 67 * 60 / 40, pensamiento_cientifico: 51 * 60 / 30 };
 const prepaUg = demo({ examen: 'prepa UG (EXANI-I)', nombre: 'Simulador prepa UG',
-  titulo: 'Contesta 5 reactivos tipo EXANI-I con cronómetro.',
-  texto: 'Un mini simulacro con preguntas reales del banco para la prepa de la UG: Redacción indirecta, Pensamiento matemático, Pensamiento científico e Inglés.',
-  data: { secciones: 'Redacción indirecta, Pensamiento matemático, Pensamiento científico e Inglés', ruta: '/simulador-prepa-ug/', diag: DIAG,
-    r: tomar(juntar([G_RED, G_MAT, G_USO, G_CIE, G_ING]), ['UG-red-47', 'UG-mat-38', 'UG-mat-100', 'UG-cie-14', 'UG-ing-54'],
-      { redaccion_indirecta: 'Redacción indirecta', pensamiento_matematico: 'Pensamiento matemático', pensamiento_cientifico: 'Pensamiento científico', ingles: 'Inglés' }, s => SEG_UG[s]) } });
+  titulo: 'Contesta 3 preguntas tipo EXANI-I con cronómetro.',
+  texto: 'Preguntas reales del banco del simulador para la prepa de la UG: Redacción indirecta, Pensamiento matemático y Pensamiento científico.',
+  data: { secciones: 'Redacción indirecta, Pensamiento matemático y Pensamiento científico', ruta: '/simulador-prepa-ug/', mas: mas('simulador-prepa-ug'),
+    r: tomar(juntar([G_RED, G_MAT, G_USO, G_CIE]), ['UG-red-47', 'UG-mat-38', 'UG-cie-14'],
+      { redaccion_indirecta: 'Redacción indirecta', pensamiento_matematico: 'Pensamiento matemático', pensamiento_cientifico: 'Pensamiento científico' }, s => SEG_UG[s]) } });
 
-export default { paa, unam, ecoems, 'prepa-ug': prepaUg };
+// EXANI-II: 168 reactivos en 4.5 h (exani-ii.js › MIN_POR_REACTIVO), parejo en todas las secciones
+const exani = demo({ examen: 'EXANI-II', nombre: 'Simulador EXANI-II',
+  titulo: 'Contesta 3 preguntas tipo EXANI-II con cronómetro.',
+  texto: 'Preguntas reales del banco del simulador: Redacción indirecta, Pensamiento matemático y un módulo de Biología. Si fallas, el tutor te da una pista.',
+  data: { secciones: 'Redacción indirecta, Pensamiento matemático y Biología', ruta: '/simulador-exani-ii/', mas: mas('simulador-exani-ii'),
+    r: tomar(juntar([X_RED, X_MAT, X_BIO]), ['EX2-red-26', 'EX2-mat-5', 'EX2-bio-3'],
+      { redaccion_indirecta: 'Redacción indirecta', pensamiento_matematico: 'Pensamiento matemático', biologia: 'Biología' }, () => 270 * 60 / 168) } });
+
+// EXCOBA: «en promedio, tienes un minuto para contestar cada pregunta» (excoba.js › MIN_POR_REACTIVO)
+const excoba = demo({ examen: 'EXCOBA', nombre: 'Simulador EXCOBA',
+  titulo: 'Contesta 3 preguntas tipo EXCOBA con cronómetro.',
+  texto: 'Preguntas reales del banco del simulador: Matemáticas de primaria, Español y Ciencias naturales de secundaria. Si fallas, el tutor te da una pista.',
+  data: { secciones: 'Matemáticas de primaria, Español y Ciencias naturales de secundaria', ruta: '/simulador-excoba/', mas: mas('simulador-excoba'),
+    r: tomar(juntar([C_PM, C_SE, C_SN]), ['EXC-pm-4', 'EXC-se-15', 'EXC-sn-3'],
+      { pri_matematicas: 'Matemáticas (primaria)', sec_espanol: 'Español (secundaria)', sec_ciencias_naturales: 'Ciencias naturales (secundaria)' }, () => 60) } });
+
+// IPN: 140 reactivos en 3 horas (ipn.js); su banco usa los reactivos de la UNAM en las materias del IPN
+const ipn = demo({ examen: 'IPN', nombre: 'Simulador IPN',
+  titulo: 'Contesta 3 preguntas tipo IPN con cronómetro.',
+  texto: 'Preguntas reales del banco del simulador: Matemáticas, Física y Química, al ritmo del examen. Si fallas, el tutor te da una pista.',
+  data: { secciones: 'Matemáticas, Física y Química', ruta: '/simulador-ipn/', mas: mas('simulador-ipn'),
+    r: tomar(juntar([U_MAT, U_FIS, U_QUI]), ['U-mat-3', 'U-fis-1', 'U-qui-4'],
+      { matematicas: 'Matemáticas', fisica: 'Física', quimica: 'Química' }, () => 180 * 60 / 140) } });
+
+export default { paa, unam, ecoems, 'prepa-ug': prepaUg, 'exani-ii': exani, excoba, ipn };
