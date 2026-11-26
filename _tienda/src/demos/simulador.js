@@ -57,7 +57,7 @@ const CSS = `
 .sd{padding:18px 16px 22px}
 .sd-et{margin:0;font-size:14px;font-weight:650;color:var(--pm)}
 .sd h2{margin:8px 0 6px;font-size:24px;line-height:1.2;letter-spacing:-.02em}
-.sd-lead{margin:0;color:#5d5860;font-size:15.5px}
+.sd-lead{margin:0 0 18px;color:#5d5860;font-size:15.5px}
 .sd-datos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0;padding:0;list-style:none}
 .sd-datos li{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:14px;background:#F4F3F5}
 .sd-datos b{font-size:22px;font-weight:750;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
@@ -128,7 +128,7 @@ let i=0,st=[],reloj=null,sel=null;
 const top=()=>{try{app.scrollIntoView({block:'start'})}catch(e){}scrollTo(0,0)};
 function intro(){
   detener();i=0;st=D.r.map(()=>({fase:'r1',s1:null,s2:null,t:0}));
-  app.innerHTML='<p class="sd-et">Prueba gratis · '+esc(D.examen)+'</p><h2>3 preguntas reales del simulador</h2>'+
+  app.innerHTML='<p class="sd-et sd-i">Prueba gratis · '+esc(D.examen)+'</p><h2 class="sd-i">3 preguntas reales del simulador</h2>'+
    '<p class="sd-lead">'+esc(D.secciones)+'. El reloj corre al ritmo del examen y solo en tu primer intento. Si fallas, el tutor te da una pista y otra oportunidad.</p>'+
    '<button class="sd-btn pm" type="button" id="sd-ir">Empezar la prueba</button>';
   document.getElementById('sd-ir').onclick=()=>{pregunta();top()};

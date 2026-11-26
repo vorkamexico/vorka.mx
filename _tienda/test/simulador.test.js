@@ -80,7 +80,7 @@ describe('acceso al simulador', () => {
     for (const id of ['que-es', 'probar', 'comprar', 'como', 'incluye', 'estructura', 'ayuda']) expect(html).toContain(`id="${id}"`);
     expect(html).toContain('<section class="sd" id="sd"'); expect(html).toContain('window.SD=');
     expect(html).not.toContain('/diagnostico/'); expect(html).not.toContain('?dentro=1');
-    expect(html).toContain('medidor de preparación'); expect(html).toContain('Plan de estudio');
+    expect(html).toContain('medidor de preparación'); expect(html).toContain('plan de estudio');
     expect(html).toContain('id="barra-compra"'); expect(html).not.toContain('Prueba gratis</a></div>');
   });
 
