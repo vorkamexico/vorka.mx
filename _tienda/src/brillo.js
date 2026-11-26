@@ -9,6 +9,7 @@ import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO
 import { ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
+import { barraCompra } from './barra-compra.js';
 
 const APP = 'https://brillo.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -123,6 +124,7 @@ ${seccionQueEs('brillo', { titulo: 'Tu salón en orden, aunque no estés.',
   <ul class="bl-paq">${['Brillo Profesional, hasta 8 personas', 'Vuelve con 1 sucursal: cada servicio registrado le suma el sello a la clienta', 'Agenda con 1 profesional y tu página de citas', 'Una sola suscripción y un solo cobro'].map(x => `<li>${CHECK}<span>${x}</span></li>`).join('')}</ul>
 </div></section>
 
+${barraCompra({ titulo: 'Brillo', detalle: `Desde ${bM ? precio(bM.prod) : '$349 MXN'} al mes · prueba 7 días gratis`, href: '#planes', boton: 'Ver planes' })}
 <section class="bl-sec" id="planes"><div class="marco">
   <div class="bl-cab"><span class="bl-et">Precios</span><h2>Pruébalo 7 días. Después, elige tu plan.</h2><p>En pesos mexicanos con IVA incluido. Sin comisiones por servicio. Cancela cuando quieras.</p></div>
   <div class="bl-planes">

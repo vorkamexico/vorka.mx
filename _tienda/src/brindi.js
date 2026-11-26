@@ -343,7 +343,7 @@ ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items:
   <div class="br-cierre"><p><b>Créala gratis y ve cómo queda.</b> Pagas solo cuando la quieras publicar.</p><a class="pm-btn" href="${APP}" rel="noopener">Créala gratis ${FLECHA}</a></div>
   <p class="t-nota t-legal"><a href="/legal/brindi/">Condiciones de Brindi</a> · <a href="/legal/brindi/privacidad/">Aviso de privacidad</a> · <a href="/legal/brindi/privacidad-invitados/">Privacidad para invitados</a> · <a href="/legal/reembolsos/">Reembolsos</a> · Hecha con Brindi · Powered by vorka.mx</p>
 </div></section>
-<div class="t-barra br-barra" id="barra-brindi"><div><b>Créala gratis</b><small>Pagas solo al publicar</small></div><a class="btn tinta chico" href="${APP}" rel="noopener">Empezar ${FLECHA}</a></div>
+<div class="t-barra br-barra" id="barra-brindi" data-ocultar="#form-brindi"><div><b>Créala gratis</b><small>Pagas solo al publicar</small></div><a class="btn tinta chico" href="${APP}" rel="noopener">Empezar ${FLECHA}</a></div>
 </div>`,
   });
 }
@@ -418,10 +418,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .br-cierre .pm-btn{color:#fff}`;
 
 const SCRIPT = `(function(){
-  // Botón fijo en celular: "Créala gratis" se esconde mientras se ven los botones de arriba o el formulario de pago
-  var barra=document.getElementById('barra-brindi');
-  if(barra&&'IntersectionObserver' in window){ var vistos=new Set(); var io=new IntersectionObserver(function(es){ es.forEach(function(e){ e.isIntersecting?vistos.add(e.target):vistos.delete(e.target); }); barra.classList.toggle('oculta',vistos.size>0); });
-    ['br-cta','form-brindi'].forEach(function(id){ var el=document.getElementById(id); if(el) io.observe(el); }); }
+  // La barra fija la maneja barra-compra.js (se esconde con el formulario de pago: data-ocultar)
   document.querySelectorAll('[data-ver]').forEach(function(b){ b.addEventListener('click',function(){
     document.querySelectorAll('[data-ver]').forEach(function(x){ x.classList.toggle('si', x===b); });
     document.querySelectorAll('.br-plan').forEach(function(p){ p.classList.toggle('si', p.id==='plan-'+b.dataset.ver); });

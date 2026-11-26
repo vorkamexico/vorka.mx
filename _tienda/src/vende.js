@@ -11,6 +11,7 @@ import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
+import { barraCompra } from './barra-compra.js';
 
 const APP = 'https://vende.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -118,6 +119,7 @@ ${seccionDemo('vende', demoDe('vende'))}
   <p class="ve-aviso">Vende es una herramienta de registro: <b>no mueve dinero, no presta y no cobra por ti</b>. Tus clientas te pagan directo, en efectivo o por transferencia.</p>
 </div></section>
 
+${barraCompra({ titulo: 'Vende', detalle: `Gratis para empezar${mensual ? ` · Vende Pro ${precio(mensual.prod)} al mes` : ''}`, href: '#planes', boton: 'Ver planes' })}
 <section class="ve-sec suave" id="planes"><div class="marco">
   <div class="ve-cab"><span class="ve-et">Precio</span><h2>Gratis para empezar. Sin límites con Pro.</h2><p>En pesos mexicanos con IVA incluido. Cancela cuando quieras.</p></div>
   <div class="ve-planes">

@@ -11,6 +11,7 @@ import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
+import { barraCompra } from './barra-compra.js';
 
 const APP = 'https://cuentas.vorka.mx';
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
@@ -121,6 +122,7 @@ ${seccionDemo('cuentas', demoDe('cuentas'))}
   <p class="cu-aviso">Cuentas es una herramienta de registro: <b>no es un banco ni una financiera</b>, no mueve dinero, no otorga préstamos y no sustituye un contrato ni asesoría legal o fiscal.</p>
 </div></section>
 
+${barraCompra({ titulo: 'Cuentas', detalle: `Gratis con 1 préstamo activo${mensual ? ` · más por ${precio(mensual.prod)} al mes` : ''}`, href: '#planes', boton: 'Ver planes' })}
 <section class="cu-sec suave" id="planes"><div class="marco">
   <div class="cu-cab"><span class="cu-et">Precio</span><h2>Gratis con 1 préstamo. Para más, un plan con todo.</h2><p>En pesos mexicanos con IVA incluido. Cancela cuando quieras.</p></div>
   <div class="cu-planes">
