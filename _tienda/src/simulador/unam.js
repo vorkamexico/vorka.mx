@@ -112,7 +112,7 @@ const VENTA = {
   og: `${SITIO}${IMG}/v3/simulador-unam-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-unam-portada.webp`, `${SITIO}${IMG}/v3/simulador-unam-og.jpg`],
   imagenes: { portada: `${IMG}/v3/simulador-unam-portada.webp`, og: `${IMG}/v3/simulador-unam-og.jpg`, paso1: `${IMG}/v3/simulador-unam-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-unam-paso-tutor.webp`, reporte: `${IMG}/simulador-unam-reporte.png`, regalo: `${IMG}/simulador-unam-regalo.png` },
   banco: REACTIVOS.length,
-  chip: `Nuevo · ${REACTIVOS.length} reactivos originales · 4 áreas`,
+  chip: `Nuevo · preguntas distintas en cada intento · 4 áreas`,
   hero: {
     h1: 'Simulador del examen UNAM: practica para tu área como el día del examen',
     lead: 'Elige tu área y practica con 120 reactivos en 3 horas, con el peso de cada materia de tu área. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice cuántos aciertos llevas y qué reforzar.',

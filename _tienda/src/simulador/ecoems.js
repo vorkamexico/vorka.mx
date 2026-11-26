@@ -100,7 +100,7 @@ const VENTA = {
   og: `${SITIO}${IMG}/v3/simulador-ecoems-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-ecoems-portada.webp`, `${SITIO}${IMG}/v3/simulador-ecoems-og.jpg`],
   imagenes: { portada: `${IMG}/v3/simulador-ecoems-portada.webp`, og: `${IMG}/v3/simulador-ecoems-og.jpg`, paso1: `${IMG}/v3/simulador-ecoems-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-ecoems-paso-tutor.webp`, reporte: `${IMG}/simulador-ecoems-reporte.png`, regalo: `${IMG}/simulador-ecoems-regalo.png` },
   banco: REACTIVOS.length,
-  chip: `Nuevo · ${REACTIVOS.length} reactivos originales`,
+  chip: `Nuevo · preguntas distintas en cada intento`,
   hero: {
     h1: 'Simulador ECOEMS: practica para la prepa de la UNAM y del IPN',
     lead: `Practica con un examen de ${EXAMEN_REACTIVOS} reactivos en ${EXAMEN_HORAS} horas, con las 10 materias y cronómetro. Si fallas, un tutor te da una pista para intentarlo otra vez; al final, un reporte te dice cuántos aciertos llevas y qué reforzar.`,

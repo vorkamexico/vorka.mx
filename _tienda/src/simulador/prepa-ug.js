@@ -93,7 +93,7 @@ const VENTA = {
   og: `${SITIO}${IMG}/v3/simulador-prepa-ug-og.jpg`, imagenesLD: [`${SITIO}${IMG}/v3/simulador-prepa-ug-portada.webp`, `${SITIO}${IMG}/v3/simulador-prepa-ug-og.jpg`],
   imagenes: { portada: `${IMG}/v3/simulador-prepa-ug-portada.webp`, og: `${IMG}/v3/simulador-prepa-ug-og.jpg`, paso1: `${IMG}/v3/simulador-prepa-ug-paso-reloj.webp`, paso2: `${IMG}/v3/simulador-prepa-ug-paso-tutor.webp`, reporte: `${IMG}/simulador-prepa-ug-reporte.png`, regalo: `${IMG}/simulador-prepa-ug-regalo.png` },
   banco: REACTIVOS.length,
-  chip: `Nuevo · ${REACTIVOS.length} reactivos originales`,
+  chip: `Nuevo · preguntas distintas en cada intento`,
   hero: {
     h1: 'Simulador EXANI-I: prepárate para entrar a la prepa de la UG',
     lead: `Tu hijo o hija practica con un examen de ${EXAMEN_REACTIVOS} reactivos en ${HORAS}, con las 5 áreas del EXANI-I y cronómetro. Si falla, un tutor le da una pista para intentarlo otra vez; al final, un reporte dice cuántos aciertos lleva y qué reforzar.`,
