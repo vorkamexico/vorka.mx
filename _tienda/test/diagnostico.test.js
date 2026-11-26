@@ -20,6 +20,8 @@ beforeEach(() => {
   correos = [];
   env = { DB: d1(), SITE_URL: 'https://vorka.mx', DOWNLOAD_TOKEN_SECRET: 's'.repeat(64), CORREO: { async enviar(c) { correos.push(c); return { id: 'em' }; } } };
   env.DB.raw.exec('UPDATE products SET activo = 1');
+  // Cerrado a nuevos (nov 2026): estas pruebas son de quien ya tenía su diagnóstico y vuelve con su clave
+  env.DB.raw.prepare(`INSERT INTO simulador_diagnosticos (app, email, nombre, whatsapp, acepto_at) VALUES ('simulador-paa', 'ana@mail.com', 'Ana', '5500000000', '2026-11-01T00:00:00.000Z')`).run();
 });
 
 async function entrar(datos = DATOS) {
@@ -30,8 +32,24 @@ async function entrar(datos = DATOS) {
 }
 
 describe('diagnóstico gratis', () => {
-  it('la página se puede indexar y trae el flujo', async () => {
+  it('cerrado a nuevos: sin su diagnóstico manda a la prueba de 3 preguntas y no da clave', async () => {
     const r = await pedir('/simulador-paa/diagnostico/');
+    expect(r.status).toBe(302);
+    expect(r.headers.get('location')).toBe('/simulador-paa/#probar');
+    const n = await pedir(`${API}/pedir`, { metodo: 'POST', body: { ...DATOS, email: 'nuevo@mail.com' } });
+    expect(n.status).toBe(410);
+    expect((await n.json()).error).toContain('3 preguntas');
+    expect(correos).toHaveLength(0);
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM simulador_diagnosticos WHERE email = 'nuevo@mail.com'").get().n).toBe(0);
+  });
+
+  it('quien ya lo hizo sigue entrando: con su cookie o con ?ya=1', async () => {
+    const { cookie } = await entrar();
+    expect((await pedir('/simulador-paa/diagnostico/', { cookie })).status).toBe(200);
+  });
+
+  it('la página (con ?ya=1) trae el flujo', async () => {
+    const r = await pedir('/simulador-paa/diagnostico/?ya=1');
     expect(r.status).toBe(200);
     const h = await r.text();
     expect(h).toContain('Diagnóstico PAA gratis');
@@ -72,7 +90,7 @@ describe('diagnóstico gratis', () => {
     expect((await pedir(`${API}/codigo`, { metodo: 'POST', body: { email: 'ana@mail.com', codigo: cod } })).status).toBe(410);
     // se guardan sus datos para el seguimiento
     const fila = env.DB.raw.prepare('SELECT * FROM simulador_diagnosticos').get();
-    expect(fila).toMatchObject({ app: 'simulador-paa', email: 'ana@mail.com', nombre: 'Ana López', whatsapp: '5512345678' });
+    expect(fila).toMatchObject({ app: 'simulador-paa', email: 'ana@mail.com', nombre: 'Ana López', whatsapp: '5512345678' });   // actualiza sus datos
     expect(fila.verificado_at).toBeTruthy();
   });
 

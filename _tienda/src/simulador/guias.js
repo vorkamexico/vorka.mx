@@ -194,7 +194,7 @@ export const GUIAS = [
       { h2: 'Antes de empezar', html: p('La PAA mide lectura, redacción y matemáticas (más Inglés), no la memoria de un temario. Por eso cuatro semanas bien usadas sirven: no vas a aprender todo de cero, pero sí puedes subir tu velocidad, cerrar huecos y llegar sin sorpresas.')
         + caja('Lo que necesitas', ul(['Menos de una hora al día, cinco días a la semana (es nuestra sugerencia, ajústala a tu tiempo).', 'Un lugar sin celular a la mano.', 'Lápiz y hojas: en Matemáticas no hay calculadora, según la guía del College Board.'])) },
       { h2: 'Semana 1: mide y entiende el formato', html: ol([
-        ['Haz un diagnóstico', `Contesta un examen corto para ver tu puntaje estimado por parte; puede ser ${a('/simulador-paa/diagnostico/', 'el diagnóstico del simulador')}.`],
+        ['Mide tu punto de partida', `Contesta preguntas con tiempo y anota en qué parte fallas más; no necesitas que sea largo.`],
         ['Haz una lista de tus 3 temas más débiles', 'No «Matemáticas» en general: «porcentajes», «conectores», «inferencias».'],
         ['Lee cómo es cada parte', `Repasa ${a(g('simulador-paa', 'que-es-la-paa'), 'qué viene en la PAA')} para que nada del formato te tome por sorpresa.`],
       ]) },
@@ -309,7 +309,7 @@ export const GUIAS = [
       { h2: 'Cómo ponerte una meta de aciertos', html: p('Esto es consejo nuestro:') + ol([
         ['Busca la referencia de tu carrera y plantel', 'La de varios años, no solo uno. El mismo programa puede pedir muy distinto en dos planteles.'],
         ['Súmale margen', 'El mínimo de un año fue el último que entró, no el que entró tranquilo.'],
-        ['Mide cuánto te falta', `Haz ${a('/simulador-unam/diagnostico/', 'un diagnóstico')} y compara tus aciertos estimados con tu meta.`],
+        ['Mide cuánto te falta', `Haz un examen de práctica completo, con tiempo, y compara tus aciertos con tu meta.`],
         ['Elige con estrategia', 'Si tu carrera es de muy alta demanda en un plantel, revisa si se imparte en otro o en otra modalidad.'],
       ]) },
     ],
@@ -409,7 +409,7 @@ export const GUIAS = [
         ['Piensa en el trayecto', 'Revisa la dirección de cada plantel en el catálogo y calcula cuánto tardarías en llegar diario.'],
         ['Revisa los requisitos de cada institución', 'Están en el documento «Requisitos e información de las instituciones».'],
         ['Decide en familia', 'La convocatoria pide ordenar las opciones según la preferencia de la persona aspirante, su mamá, papá o persona tutora.'],
-      ]) + p(`Para saber dónde están tus aciertos hoy, haz ${a('/simulador-ecoems/diagnostico/', 'un diagnóstico')}.`) },
+      ]) + p(`Para saber dónde están tus aciertos hoy, haz un examen de práctica con tiempo, como el día del examen.`) },
     ],
     faq: [
       { p: '¿Cuántas opciones puedo elegir en «Mi derecho, mi lugar»?', r: 'Según la convocatoria 2026: entre 5 y 10 sin examen, hasta 5 del IPN y hasta 5 de la UNAM. En la modalidad combinada, hasta 20 en total.' },

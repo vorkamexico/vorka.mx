@@ -43,7 +43,7 @@ describe('seguimiento del diagnóstico', () => {
     diag({ creado: AHORA.getTime() - 25 * H });
     expect(await seguimientoDiagnosticos(env, AHORA, sims())).toMatchObject({ retomar: 1 });
     expect(correos[0].asunto).toBe('Tu diagnóstico PAA gratis te espera');
-    expect(correos[0].texto).toContain('https://vorka.mx/simulador-paa/diagnostico/');
+    expect(correos[0].texto).toContain('https://vorka.mx/simulador-paa/diagnostico/?ya=1');
     expect(correos[0].texto).toMatch(/\/tienda\/simulador-baja\?i=\d+&s=[0-9a-f]{32}/);
     await seguimientoDiagnosticos(env, new Date(AHORA.getTime() + H), sims());
     expect(correos).toHaveLength(1);

@@ -56,10 +56,9 @@ describe('simulador prepa UG', () => {
     for (const d of ['70 %', '22 de mayo', '19 de junio', '27 %', '26 %']) expect(html).toContain(d);
     expect(html).not.toMatch(/College Board|exámenes oficiales|examen oficial de la UG|Índice CENEVAL de/);
     expect(html).not.toMatch(/<img[^>]+(ugto|escudo|ceneval)/i);   // sin logos ni escudos de la UG o de CENEVAL
-    expect(html.indexOf('id="sv-ej"')).toBeLessThan(html.indexOf('id="comprar"'));
-    // el reactivo de muestra trae 3 opciones, como el EXANI-I
-    const ej = html.slice(html.indexOf('id="sv-ej"'), html.indexOf('id="comprar"'));
-    expect((ej.match(/<button type="button" data-o=/g) || []).length).toBe(3);
+    // la prueba de 3 preguntas trae reactivos de 3 opciones, como el EXANI-I
+    const sd = JSON.parse(html.slice(html.indexOf('window.SD=') + 10, html.indexOf(';\n(()=>', html.indexOf('window.SD='))));
+    for (const r of sd.r) expect(r.o).toHaveLength(3);
     expect(html).not.toContain('/simulador-ecoems/app.js');
   });
 

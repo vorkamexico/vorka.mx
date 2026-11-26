@@ -18,12 +18,29 @@ const pedir = ruta => worker.fetch(new Request(`https://vorka.mx${ruta}`, { head
 const datosDe = js => JSON.parse(js.slice(js.indexOf('=') + 1, js.indexOf(';\n(()=>')));
 
 const DEMOS = [
-  ['simulador-paa', '/simulador-paa/'], ['simulador-unam', '/simulador-unam/'], ['simulador-ecoems', '/simulador-ecoems/'], ['simulador-prepa-ug', '/simulador-prepa-ug/'],
   ['test-vocacional', '/test-vocacional/'], ['que-proyecto-social', '/que-proyecto-social/'],
   ['ruta-de-impacto', '/tienda/ruta-de-impacto/'], ['evaluacion-liderazgo', '/tienda/evaluacion-liderazgo/'],
 ];
 
+// Simuladores: la prueba de 3 preguntas va DENTRO de su página (#probar, sin iframe) y también en /tienda/demo/<clave>/
+const SIMULADORES = ['simulador-paa', 'simulador-unam', 'simulador-ecoems', 'simulador-prepa-ug', 'simulador-exani-ii', 'simulador-excoba', 'simulador-ipn'];
+
 describe('demos de educación', () => {
+  for (const k of SIMULADORES) {
+    it(`${k}: prueba de 3 preguntas en /tienda/demo/${k}/ y dentro de su página, que ya no ofrece el diagnóstico`, async () => {
+      const d = demoDe(k);
+      expect(d.prueba).toHaveLength(3);
+      expect(() => new Function(d.js)).not.toThrow();
+      const r = await pedir(`/tienda/demo/${k}/`);
+      expect(r.status).toBe(200);
+      const p = await pedir(`/${k}/`);
+      expect(p.status).toBe(200);
+      const ph = await p.text();
+      expect(ph).toContain('id="probar"'); expect(ph).toContain('<section class="sd" id="sd"');
+      expect(ph).not.toContain('?dentro=1'); expect(ph).not.toContain('/diagnostico/');
+      expect(ph.indexOf('id="comprar"')).toBeLessThan(ph.indexOf('id="probar"'));
+    });
+  }
   for (const [k, pagina] of DEMOS) {
     it(`${k}: /tienda/demo/${k}/ responde con su título y su página trae la demo`, async () => {
       const d = demoDe(k);
@@ -44,10 +61,11 @@ describe('demos de educación', () => {
     });
   }
 
-  it('simuladores: 5 reactivos reales de su banco, con pista, pasos y regla, y un ritmo por reactivo', () => {
-    for (const k of ['paa', 'unam', 'ecoems', 'prepa-ug']) {
+  it('simuladores: 3 reactivos reales de su banco, con pista, pasos y regla, y un ritmo por reactivo', () => {
+    for (const k of ['paa', 'unam', 'ecoems', 'prepa-ug', 'exani-ii', 'excoba', 'ipn']) {
       const D = datosDe(SIM[k].js);
-      expect(D.r).toHaveLength(5);
+      expect(D.r).toHaveLength(3);
+      expect(D.mas).toMatch(/^En el simulador tienes [\d,]+ (reactivos|preguntas) con este mismo tutor/);
       for (const r of D.r) {
         expect(r.o.length).toBeGreaterThanOrEqual(3);
         expect(r.k).toBeLessThan(r.o.length);

@@ -1,7 +1,7 @@
 // Compra visible en las páginas de investigación de los simuladores (nov 2026): universidades del PAA, EXANI-II y EXCOBA,
 // calculadora PAA y aciertos UNAM. Antes solo había «Practicar con el simulador» al final y nadie llegaba.
 //   tarjeta: va arriba, justo después de la herramienta o del texto de inicio: qué es, precio real de D1 y «Comprar».
-//   barra:   la misma barra fija del celular que tiene la página de venta (t-barra), con «Prueba gratis» y «Comprar».
+//   barra:   la misma barra fija del celular que tiene la página de venta (t-barra), con «Comprar».
 // Los dos botones llevan directo al formulario de compra del simulador con el plan Completo elegido (?plan=paquete#comprar).
 import { esc } from '../paginas.js';
 import { productoPorSlug } from '../modelo.js';
@@ -25,10 +25,10 @@ export async function compraSimulador(env, { app, nombre, para = '', puntos = []
   <div class="ca-precio">
     <p><b class="num">${pesos(paquete.precio_centavos)}</b> <small>MXN · plan Completo${desde ? `, o desde ${pesos(desde)}` : ''}</small></p>
     <a class="btn acento" href="${comprar}">Comprar el simulador ${FLECHA}</a>
-    <a class="ca-gratis" href="${ruta}/diagnostico/">Antes, haz el diagnóstico gratis</a>
+    <a class="ca-gratis" href="${ruta}/#probar">Antes, prueba 3 preguntas</a>
   </div>
 </aside>`;
-  const barra = `<div class="t-barra" id="barra-compra"><div><b class="num">${pesos(paquete.precio_centavos)}</b><small>${esc(nombre)}</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="${ruta}/diagnostico/">Prueba gratis</a><a class="btn acento chico" href="${comprar}">Comprar</a></div></div>`;
+  const barra = `<div class="t-barra" id="barra-compra"><div><b class="num">${pesos(paquete.precio_centavos)}</b><small>${esc(nombre)}</small></div><div class="sv-barra-b"><a class="btn acento chico" href="${comprar}">Comprar</a></div></div>`;
   return { tarjeta, barra };
 }
 

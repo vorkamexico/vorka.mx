@@ -1,3 +1,5 @@
+// CERRADO A NUEVOS desde nov 2026 (lo reemplaza la prueba de 3 preguntas, src/demos/simulador.js): solo sigue abriendo para
+// quien ya lo hizo, con su cookie o con ?ya=1 y su clave.
 // Diagnóstico gratis de un simulador (vorka.mx/<simulador>/diagnostico/): un simulacro breve con tutor para que la
 // persona vea cómo funciona el simulador y sepa en qué punto está. Pide nombre, correo y WhatsApp; la clave para entrar
 // llega al correo (así se valida). Al terminar ve su puntaje estimado, le llega por correo y la invitamos al Completo.
@@ -152,7 +154,12 @@ export function crearDiagnostico({ c, APP, RUTA, API, BANCO, REACTIVO, firma, cs
   async function rutas(req, env, url) {
     const p = url.pathname, M = req.method;
     if (p === `${RUTA}/diagnostico`) return Response.redirect(`${url.origin}${RUTA}/diagnostico/`, 301);
-    if (p === `${RUTA}/diagnostico/` && (M === 'GET' || M === 'HEAD')) return paginaDiag(env, req, url);
+    // Cerrado a nuevos (nov 2026): quien llega sin su diagnóstico va a la prueba de 3 preguntas de la página del simulador.
+    // Quien ya lo hizo entra con su cookie o con ?ya=1 (la liga de sus correos) y recupera el suyo con su clave.
+    if (p === `${RUTA}/diagnostico/` && (M === 'GET' || M === 'HEAD')) {
+      if (!url.searchParams.has('ya') && !(await diagDe(env, req))) return new Response(null, { status: 302, headers: { location: `${RUTA}/#probar`, 'cache-control': 'no-store' } });
+      return paginaDiag(env, req, url);
+    }
     if (!p.startsWith(`${API}/diagnostico/`)) return null;
     if (M === 'POST' && !mismoOrigen(req, env)) return fail('Solicitud inválida.', 403);
     const ip = await sha256(req.headers.get('cf-connecting-ip') || 'local');
@@ -168,6 +175,9 @@ export function crearDiagnostico({ c, APP, RUTA, API, BANCO, REACTIVO, firma, cs
       if (b.acepto !== true) return fail('Para seguir, acepta el aviso de privacidad.');
       if (!(await dentroDelLimite(env, `dx-ip:${ip}`, 8, 600)) || !(await dentroDelLimite(env, `dx-mail:${APP}:${await sha256(email)}`, 3, 600)))
         return fail('Ya te mandamos varias claves. Espera unos minutos y revisa tu correo (también en spam o promociones).', 429);
+      // Ya no se abren diagnósticos nuevos: solo recibe clave quien ya tenía el suyo
+      if (!(await one(env, 'SELECT id FROM simulador_diagnosticos WHERE app = ? AND email = ?', APP, email)))
+        return fail(`El diagnóstico gratis ya no está disponible. Prueba 3 preguntas con el tutor en vorka.mx${RUTA}/`, 410);
       const cod = codigo6(), ahora = new Date().toISOString();
       const ref = /^[a-z0-9_-]{2,40}$/i.test(b.ref || '') ? b.ref : null;
       await run(env, `INSERT INTO simulador_diagnosticos (app, email, nombre, whatsapp, acepto_at, ref_code, codigo_hash, codigo_expira_at, codigo_intentos)

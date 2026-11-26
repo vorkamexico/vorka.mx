@@ -5,14 +5,36 @@ import { pagina } from '../paginas.js';
 import { productoPorSlug, registrarAnalitica } from '../modelo.js';
 import { formCompra, SCRIPT_COMPRA, precio, refDeVisita } from '../tienda.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
-import { TOTAL_DIAG } from './diagnostico.js';
 import { oferta, ofertas, migas } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
 import { seccionGuias } from './guias.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from '../marca-producto.js';
-import { seccionDemo } from '../demos/marco.js';
 import { demoDe } from '../demos/index.js';
+import { VIDEOS } from './videos.generado.js';
 
+// La prueba va en una tarjeta clara (su motor usa colores fijos de fondo blanco, también en tema oscuro). En celular la compra
+// queda primero, justo debajo del inicio; en compu, la prueba a la izquierda y la compra fija a la derecha.
+const CSS_PRUEBA = `
+.sd-caja{margin-top:18px;background:#fff;color:#141114;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;scroll-margin-top:70px}
+.sd-caja .sd{padding:clamp(18px,3vw,28px)}
+.sd-caja .sd-regla span{text-transform:none;letter-spacing:0;font-size:13px}
+.sv-probar-t{margin:10px 0 0;color:var(--fg-2);font-size:16px}
+@media(min-width:980px){.sv-hero-g>.sv-compra{order:2}.sv-hero-g>.sv-probar{order:1}}
+@media(max-width:979px){.sv-hero-g>.sv-compra{position:static}}
+`;
+// Solo para la página de los simuladores: en celular la portada (el objeto) no empuja la compra hacia abajo; sin letreros en mayúsculas
+const CSS_ORDEN = `<style>
+@media(max-width:959px){.sv .pm-obj{display:none}.sv .pm-hero{padding-bottom:0}}
+.sv .pm-et{text-transform:none;letter-spacing:0;font-size:15px;font-weight:650}
+.sv-zona{padding-top:clamp(28px,5vw,56px)}
+.sv-regalar{margin:14px 0 0;text-align:center;font-size:15px}.sv-regalar a{color:var(--pm-t);font-weight:650}
+.sv-app{margin-top:36px;padding:clamp(20px,3vw,30px);border-radius:var(--r);border:1px solid var(--line);background:var(--card)}
+.sv-app h3{font-size:19px;letter-spacing:-.02em}
+.sv-app ul{display:grid;gap:10px;margin-top:14px}@media(min-width:760px){.sv-app ul{grid-template-columns:1fr 1fr;gap:12px 28px}}
+.sv-app li{display:flex;gap:10px;align-items:flex-start;color:var(--fg-2);font-size:16px}.sv-app li b{color:var(--fg)}
+.sv-app svg{width:18px;height:18px;color:var(--verde);flex:none;margin-top:3px}
+.sv .cab .h2{margin-top:0}
+</style>`;
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
 const CSS = `<style>
 .sv-hero{padding:clamp(12px,3vw,40px) 0 clamp(40px,5vw,64px)}
@@ -159,6 +181,16 @@ const CSS = `<style>
 @media(max-width:600px){.sv-cifras div{padding:22px 16px}.sv-pasos{gap:22px}}
 </style>`;
 
+// Titular de la página: primero lo que gana la persona (quedarse), después el producto. Las portadas siguen con el suyo (MARCAS).
+const TITULAR = {
+  'simulador-paa': 'Sube tu puntaje PAA y [entra a la universidad que quieres.]',
+  'simulador-unam': 'Junta los aciertos [que pide tu carrera en la UNAM.]',
+  'simulador-ipn': 'Junta los aciertos [que pide tu carrera en el IPN.]',
+  'simulador-ecoems': 'Quédate en la prepa [que elegiste.]',
+  'simulador-exani-ii': 'Llega al EXANI-II listo para [quedarte en tu carrera.]',
+  'simulador-excoba': 'Llega al EXCOBA listo para [quedarte en la UAQ o la UG.]',
+  'simulador-prepa-ug': 'Llega al EXANI-I listo para [quedarte en la prepa de la UG.]',
+};
 // Simuladores de universidad que se venden también en paquete (/tienda/simuladores/, migración 0077)
 const PAQUETE_UNI = ['simulador-paa', 'simulador-unam', 'simulador-ipn'];
 // sim: lo que devuelve crearSimulador · v: contenido de la página (ver paa.js)
@@ -194,7 +226,6 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   if (prod && req.method === 'GET' && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: prod.id, ref_code: code });
   const precioTxt = prod ? precio(prod) : null;
   const rs = await resenasDe(env, `${RUTA}/`);
-  const ej = v.ejemplo;
   const ld = [
     { '@context': 'https://schema.org', '@type': 'Product', name: v.nombreProducto, description: v.descripcion, image: v.imagenesLD,
       brand: { '@type': 'Brand', name: 'Vorka México' }, category: 'Preparación para exámenes de admisión', sku: v.sku,
@@ -203,100 +234,78 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: v.faq.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r } })) },
     migas(sim.titulo, `${RUTA}/`),
   ];
-  const sinLetras = t => esc(String(t).replace(/\{([A-D])\}/g, '$1'));
-  const ejemplo = { correcta: ej.correcta, pista: ej.pista, pasos: ej.pasos.map(x => x.replace(/\{([A-D])\}/g, '$1')), regla: ej.regla };
   const comparar = v.comparar.map(([t, a, b]) => `<tr><th scope="row">${esc(t)}</th><td>${a === true ? `<span class="sv-si">${CHECK}<span class="sr">Sí</span></span>` : esc(a)}</td><td>${b === true ? `<span class="sv-si">${CHECK}</span>` : b ? esc(b) : '<span class="sv-no" aria-label="No">—</span>'}</td></tr>`).join('');
-  const SCRIPT_EJEMPLO = `(function(){
-  var box=document.getElementById('sv-ej'); if(!box) return;
-  var D=${JSON.stringify(ejemplo).replace(/</g, '\\u003c')}, intentos=0, fin=false;
-  var tutor=document.getElementById('sv-tutor');
-  function li(t){var e=document.createElement('li');e.textContent=t;return e;}
-  box.querySelectorAll('[data-o]').forEach(function(b){ b.addEventListener('click',function(){
-    if(fin||b.disabled) return; var o=+b.dataset.o; intentos++;
-    if(o===D.correcta||intentos>=2){ fin=true;
-      box.querySelectorAll('[data-o]').forEach(function(x){ x.disabled=true; if(+x.dataset.o===D.correcta) x.classList.add('sv-ok'); });
-      if(o!==D.correcta) b.classList.add('sv-mal');
-      tutor.className='sv-tutor '+(o===D.correcta?'bien':'sol'); tutor.innerHTML='';
-      var h=document.createElement('b'); h.textContent=o===D.correcta?(intentos===1?'¡Correcto a la primera!':'¡Bien! Lo lograste en el segundo intento'):'Esta era la respuesta correcta'; tutor.appendChild(h);
-      var ol=document.createElement('ol'); D.pasos.forEach(function(p){ol.appendChild(li(p));}); tutor.appendChild(ol);
-      var r=document.createElement('p'); r.innerHTML='<b>La regla:</b> '; r.appendChild(document.createTextNode(D.regla)); tutor.appendChild(r);
-      var c=document.createElement('p'); c.className='sv-ej-cta'; c.innerHTML='Así funciona en cada uno de los ${v.banco} reactivos. <a href="${RUTA}/diagnostico/">Haz tu diagnóstico gratis →</a>'; tutor.appendChild(c);
-    } else { b.disabled=true; b.classList.add('sv-x');
-      tutor.className='sv-tutor pista'; tutor.innerHTML='<b>Todavía no. Pista del tutor</b>'; var p=document.createElement('p'); p.textContent=D.pista; tutor.appendChild(p);
-      var s=document.createElement('small'); s.textContent='Tienes un intento más.'; tutor.appendChild(s); }
-    tutor.hidden=false;
-  }); });
-})();`;
   const img = v.imagenes;
   // Marca del producto (portadas v4): la clave es la ruta sin la diagonal (simulador-paa, simulador-unam…)
   const clave = RUTA.slice(1), color = colorDe(clave);
   const desde = planes.length ? planes.reduce((m, x) => x.prod.precio_centavos < m.prod.precio_centavos ? x : m) : null;
   const precioHero = desde ? `Desde <b>${precio(desde.prod)}</b> · acceso inmediato` : prod ? `<b>${precioTxt}</b> · acceso inmediato` : 'Muy pronto en la tienda';
   const q = v.queEs || {};
-  const partes = [['que-es', 'Qué es'], ...(demoDe(clave) ? [['demo', 'Mini simulacro']] : []), ['probar', 'Pruébalo gratis'], ['comprar', 'Precios'], ['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['estructura', 'El examen'], ['ayuda', 'Preguntas']];
+  // Lo único gratis: la prueba de 3 preguntas (src/demos/simulador.js), dentro de la página
+  const prueba = demoDe(clave);
+  const conVideos = (VIDEOS[sim.APP] || []).some(x => !x.borrador);
+  const partes = [...(prueba ? [['probar', 'Prueba gratis']] : []), ['comprar', 'Precios'], ['como', 'Cómo te ayuda'], ['incluye', 'Qué incluye'], ['estructura', 'El examen'], ['ayuda', 'Preguntas']];
+  const comprarBtn = `<a class="pm-btn" href="#comprar">Comprar ${FLECHA}</a>`;
   return pagina({ entrar: { url: '/descargas/reenviar?para=simulador', app: sim.titulo },
     titulo: v.tituloSEO, ruta: `${RUTA}/`, descripcion: v.descripcion, imagen: v.og,
     headers: cookie ? { 'set-cookie': cookie } : {},
-    script: (prod ? SCRIPT_COMPRA : '') + SCRIPT_EJEMPLO,
+    script: (prod ? SCRIPT_COMPRA : '') + (prueba ? prueba.js : ''),
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
-<style>${CSS_MARCA}${CSS_SECCIONES}</style>${CSS}${v.css || ''}`,
-    cuerpo: `<div class="sv" style="--pm:${color}">
+<style>${CSS_MARCA}${CSS_SECCIONES}</style>${CSS}${CSS_ORDEN}${prueba ? `<style>${prueba.css}${CSS_PRUEBA}</style>` : ''}${v.css || ''}`,
+    cuerpo: `<div class="sv" style="--pm:${color};--pm-s:color-mix(in srgb,${color} 11%,#fff)">
 ${heroMarca(clave, {
+  titular: TITULAR[clave],
   apoyo: q.apoyo || v.hero.lead,
-  botones: prod ? `<a class="pm-btn" href="#comprar">Comprar ${FLECHA}</a><a class="pm-btn sec" href="#probar">Pruébalo gratis</a>`
-    : `<a class="pm-btn" href="#probar">Pruébalo gratis ${FLECHA}</a><a class="pm-btn sec" href="${RUTA}/diagnostico/">Diagnóstico gratis</a>`,
+  botones: prod ? `${comprarBtn}${prueba ? '<a class="pm-btn sec" href="#probar">Prueba 3 preguntas</a>' : ''}` : (prueba ? `<a class="pm-btn" href="#probar">Prueba 3 preguntas ${FLECHA}</a>` : ''),
   despues: `<p class="pm-precio">${precioHero}</p><p class="t-ya">¿Ya lo compraste? <a href="/descargas/reenviar?para=simulador">Entra aquí</a></p>`,
 })}
-${indiceProducto(clave, partes, prod ? '<a class="pm-btn" href="#comprar">Comprar</a>' : `<a class="pm-btn" href="#probar">Pruébalo gratis</a>`)}
-${seccionQueEs(clave, { titulo: v.hero.h1, texto: q.texto || esc(v.hero.lead), para: q.para || [] })}
-${seccionDemo(clave, demoDe(clave))}
+${indiceProducto(clave, partes, prod ? '<a class="pm-btn" href="#comprar">Comprar</a>' : '')}
 
 <section class="pm-sec sv-zona"><div class="marco sv-hero-g">
-  <div>
-    <div class="sv-probar" id="probar">
-      <p class="pm-et">Pruébalo gratis</p><h2 class="pm-h2">Contesta un reactivo con el tutor</h2><small>Si fallas, te da una pista; en el segundo intento, la solución paso a paso.</small>
-      <div class="sv-ej" id="sv-ej">
-        <span class="sv-tema">${esc(ej.etiqueta)}</span>
-        <h3>${esc(ej.enunciado)}</h3>
-        <div class="sv-ops">${ej.opciones.map((o, i) => `<button type="button" data-o="${i}"><span>${'ABCD'[i]}</span>${esc(o)}</button>`).join('')}</div>
-        <div class="sv-tutor" id="sv-tutor" role="status" aria-live="polite" hidden></div>
-        <noscript><p class="t-nota" style="margin-top:14px">Respuesta: ${'ABCD'[ej.correcta]}) ${esc(ej.opciones[ej.correcta])}. ${sinLetras(ej.regla)}</p></noscript>
-      </div>
-    </div>
-    <a class="sv-diag" href="${RUTA}/diagnostico/"><span><b>¿Cuánto sacarías hoy?</b><small>Diagnóstico gratis: ${TOTAL_DIAG} preguntas con tutor y tu puntaje estimado</small></span><em>Hacerlo gratis ${FLECHA}</em></a>
-    ${prod ? `<div class="sv-links"><a class="btn blanco chico" href="?regalo=1#comprar">🎁 Regalarlo</a></div>` : ''}
-  </div>
   <aside class="sv-compra" id="comprar" aria-label="Comprar el simulador">
     ${selector}${prod ? formCompra(prod, { error: url.searchParams.get('error') || '', ref: code || '', regalo: url.searchParams.get('regalo') === '1' }) : `<div class="sv-pronto"><b class="h3">Muy pronto en la tienda</b><p>Estamos por abrir las ventas del ${esc(sim.titulo)}.</p><a class="btn tinta" href="/tienda/">Ver la tienda ${FLECHA}</a></div>`}
+    ${prod ? `<p class="sv-regalar"><a href="?regalo=1#comprar">¿Es para alguien más? Regálalo</a></p>` : ''}
   </aside>
+  ${prueba ? `<div class="sv-probar" id="probar">
+    <h2 class="pm-h2">Pruébalo antes de comprar</h2>
+    <p class="sv-probar-t">Tres preguntas del banco real, con el reloj y el tutor del simulador. Sin registrarte.</p>
+    <div class="sd-caja">${prueba.html}</div>
+  </div>` : ''}
+</div></section>
+
+<section class="t-sec" id="como"><div class="marco">
+  <div class="cab"><h2 class="h2">Así te ayuda a quedar</h2>
+  <p class="lead">No es solo contestar exámenes: cada error te enseña algo y siempre sabes cuánto te falta.</p></div>
+  <div class="sv-pasos">
+    <article class="sv-paso"><figure><img src="${img.paso2 || img.og}" alt="Pista del tutor después del primer error" loading="lazy" width="${img.paso2 ? 1600 : 1200}" height="${img.paso2 ? 1000 : 630}"></figure><div><h3>Si fallas, el tutor no te da la respuesta</h3><p>Primero te da una pista de método y otro intento. Si vuelves a fallar, ves la solución paso a paso y la regla que hay detrás, para que la siguiente la saques tú.</p></div></article>
+    <article class="sv-paso"><figure><img src="${img.reporte}" alt="Reporte del simulador con medidor de preparación, resultado por sección y aciertos por tema" loading="lazy" width="1600" height="900"></figure><div><h3>El medidor te dice qué tan listo estás</h3><p>Después de cada examen ves tu medidor de preparación de 0 a 100. ${esc(v.pasos[2][1])}</p></div></article>
+    <article class="sv-paso"><figure><img src="${img.paso1 || img.portada}" alt="" loading="lazy" width="1600" height="${img.paso1 ? 1000 : 1200}"></figure><div><h3>${esc(v.pasos[0][0])}</h3><p>${esc(v.pasos[0][1])} Cada intento prioriza preguntas que todavía no has visto, así que al repetir practicas de verdad.</p></div></article>
+  </div>
+  <div class="sv-app">
+    <h3>Con el plan Completo, el simulador es tu app de estudio</h3>
+    <ul>
+      <li>${CHECK}<span><b>Plan de estudio</b> con tu fecha de examen y los temas que más te cuestan.</span></li>
+      <li>${CHECK}<span><b>Recordatorios en tu celular</b> el día y la hora que elijas.</span></li>
+      <li>${CHECK}<span><b>Apuntes</b> en cada pregunta y en cada tema, para repasar antes del examen.</span></li>
+      <li>${CHECK}<span><b>Se instala como app</b> en tu celular, sin tienda de apps.</span></li>
+      ${conVideos ? `<li>${CHECK}<span><b>Videos cortos</b> que explican paso a paso los temas que más se preguntan.</span></li>` : ''}
+    </ul>
+  </div>
 </div></section>
 ${diferencias}
 ${v.despuesHero || ''}
-<section class="t-sec" id="como"><div class="marco">
-  <div class="cab"><span class="etiqueta">Cómo funciona</span><h2 class="h2">Practica, aprende de cada error y mide tu avance</h2></div>
-  <div class="sv-pasos">
-    <article class="sv-paso"><figure><img src="${img.paso1 || img.portada}" alt="" loading="lazy" width="1600" height="${img.paso1 ? 1000 : 1200}"></figure><div><small>01 · Con cronómetro</small><h3>${esc(v.pasos[0][0])}</h3><p>${esc(v.pasos[0][1])}</p></div></article>
-    <article class="sv-paso"><figure><img src="${img.paso2 || img.og}" alt="Pista del tutor después del primer error" loading="lazy" width="${img.paso2 ? 1600 : 1200}" height="${img.paso2 ? 1000 : 630}"></figure><div><small>02 · Tutor de dos intentos</small><h3>Si fallas, no te da la respuesta</h3><p>Te da una pista de método para que lo intentes otra vez. En el segundo intento ves la solución paso a paso y la regla detrás.</p></div></article>
-    <article class="sv-paso"><figure><img src="${img.reporte}" alt="Reporte del simulador con medidor de preparación, resultado por sección y aciertos por tema" loading="lazy" width="1600" height="900"></figure><div><small>03 · Reporte</small><h3>Sabes exactamente qué reforzar</h3><p>${esc(v.pasos[2][1])}</p></div></article>
-  </div>
-</div></section>
 
-<section class="t-sec suave"><div class="marco">
-  <div class="cab"><span class="etiqueta">Un banco que no se acaba en el primer intento</span><h2 class="h2">Cada intento es <em class="sv-em">diferente</em></h2>
-  <p class="lead">Cada simulacro y cada examen prioriza preguntas que todavía no has visto, así que al repetir no te aprendes las respuestas: practicas de verdad.</p></div>
-  <div class="sv-cifras">${v.cifras.map(([n, t]) => `<div><b class="num">${n}</b><span>${esc(t)}</span></div>`).join('')}</div>
-</div></section>
-
-<section class="t-sec" id="incluye"><div class="marco">
-  <div class="cab"><span class="etiqueta">Qué incluye</span><h2 class="h2">Más que un examen de práctica</h2></div>
+<section class="t-sec suave" id="incluye"><div class="marco">
+  <div class="cab"><h2 class="h2">Más que un examen de práctica</h2></div>
   <div class="sv-grid">${v.incluye.map(x => `
     <div class="sv-card"><h3>${esc(x.titulo)}${x.tag ? ` <small class="sv-tag${x.oro ? ' oro' : ''}">${esc(x.tag)}</small>` : ''}</h3><p>${esc(x.texto)}</p></div>`).join('')}
   </div>
   <div class="sv-tabla-w"><table class="sv-tabla sv-comp"><thead><tr><th scope="col">Lo que necesitas para prepararte</th><th scope="col">Simulador Vorka</th><th scope="col">Guía en PDF</th></tr></thead><tbody>${comparar}</tbody></table></div>
 </div></section>
+${seccionQueEs(clave, { titulo: v.hero.h1, texto: q.texto || esc(v.hero.lead), para: q.para || [] })}
 
-<section class="t-sec suave" id="estructura"><div class="marco">
-  <div class="cab par"><div><span class="etiqueta">Estructura</span><h2 class="h2" style="margin-top:14px">${esc(v.estructura.titulo)}</h2></div>
+<section class="t-sec" id="estructura"><div class="marco">
+  <div class="cab par"><div><h2 class="h2">${esc(v.estructura.titulo)}</h2></div>
   <p class="lead">${v.estructura.lead}</p></div>
   <div class="sv-tabla-w">${v.estructura.tabla}</div>
 </div></section>
@@ -305,7 +314,7 @@ ${seccionGuias(RUTA.slice(1))}
 ${prod ? `<section class="t-sec" id="regalar"><div class="marco sv-regalo">
   <img src="${img.regalo}" alt="Tarjeta de regalo del ${esc(sim.titulo)} con mensaje personalizado" loading="lazy" width="1200" height="900">
   <div>
-    <span class="etiqueta">Para regalar</span><h2 class="h2" style="margin-top:14px">Regálalo a quien va a presentar</h2>
+    <h2 class="h2">Regálalo a quien va a presentar</h2>
     <ul>
       <li>${CHECK}<span>Elige <b>Para regalar</b> y cuántos: te llega una liga por cada persona, con tu mensaje.</span></li>
       <li>${CHECK}<span>Cada liga funciona <b>una sola vez</b>: al abrirla, el acceso queda a nombre de quien la recibe y nadie más puede usarla.</span></li>
@@ -318,20 +327,19 @@ ${prod ? `<section class="t-sec" id="regalar"><div class="marco sv-regalo">
 ${seccionResenas(rs)}
 <section class="t-sec suave" id="ayuda"><div class="marco sv-dos">
   <div class="sv-dos-t sv-pegado">
-    <span class="etiqueta">Preguntas frecuentes</span><h2 class="h2" style="margin-top:14px">${esc(v.faqTitulo)}</h2>
+    <h2 class="h2">${esc(v.faqTitulo)}</h2>
     <div class="sv-ya"><p><b>¿Ya lo compraste o te lo regalaron?</b> Entra con el botón de tu correo. Si cambiaste de dispositivo o no encuentras el correo, te mandamos un enlace nuevo.</p><a class="btn blanco chico" href="/descargas/reenviar">Recibir mi enlace ${FLECHA}</a></div>
   </div>
   <div class="t-faq">${v.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
 ${prod ? `<section class="t-sec sv-final"><div class="marco">
-  <span class="etiqueta">Tu próximo paso</span>
-  <h2 class="h2" style="margin-top:14px">Llega al examen sabiendo <em class="sv-em">qué esperar</em></h2>
+  <h2 class="h2">Llega al examen sabiendo <em class="sv-em">qué esperar</em></h2>
   <p class="lead">${esc(v.final)}</p>
-  <div class="botones"><a class="pm-btn" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a><a class="pm-btn sec" href="${RUTA}/diagnostico/">Diagnóstico gratis</a></div>
+  <div class="botones"><a class="pm-btn" href="#comprar">Comprar por ${precioTxt} ${FLECHA}</a></div>
 </div></section>` : ''}
 <section class="sv-disc"><div class="marco"><p class="t-nota">${esc(v.aviso)}</p></div></section>
-${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn blanco chico" href="${RUTA}/diagnostico/">Prueba gratis</a><a class="btn acento chico" href="#comprar">Comprar</a></div></div>` : ''}
+${prod ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioTxt}</b><small>Acceso inmediato</small></div><div class="sv-barra-b"><a class="btn acento chico" href="#comprar">Comprar</a></div></div>` : ''}
 </div>`,
   });
 }
