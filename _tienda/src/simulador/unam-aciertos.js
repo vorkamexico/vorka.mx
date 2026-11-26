@@ -78,7 +78,7 @@ const SCRIPT = `(function(){
     filas.forEach(function(f){ f.hidden=q&&f.textContent.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().indexOf(q)<0; }); }); }
 })();`;
 
-const CSS_UA = `<style>
+export const CSS_UA = `<style>
 .ua-calc{display:grid;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sombra);margin-top:22px;max-width:620px}
 .ua-calc label b{display:block;font-size:17.5px}.ua-calc label span{color:var(--fg-2);font-size:14.5px}
 .ua-calc input,.ua-buscar{font:inherit;font-size:18px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg);width:100%;max-width:240px}

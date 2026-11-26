@@ -9,6 +9,7 @@
 // Historia y Español) y el Simulador PAA (Lectura, Redacción, Matemáticas e Inglés), acomodados en las 8 materias del IPN.
 // Planes: Práctica, Examen (2 exámenes completos) y Completo (los dos). Adicionales: 1 Medio o 1 examen más.
 import { crearSimulador } from './motor.js';
+import { CARRERAS_IPN, RUTA_ACIERTOS_IPN } from './ipn-aciertos.js';
 import { paginaVentaSimulador } from './venta.js';
 import { armarPorMaterias } from './armar-por-area.js';
 import * as PAA_BANCO from './banco.js';
@@ -188,6 +189,13 @@ const VENTA = {
     lead: 'El <b>examen completo</b> tiene 140 reactivos en 3 horas con el peso de tu área. El <b>simulacro Medio</b> es la mitad (unos 70 reactivos en hora y media) con el mismo ritmo. Distribución de referencia de las guías de preparación: el IPN no publica un desglose oficial por materia.',
     tabla: tablaAreas,
   },
+  // Ligas a las páginas de aciertos y lugares por carrera (anexo oficial de oferta, ipn-aciertos.js)
+  antesRegalo: `<section class="t-sec suave"><div class="marco">
+  <div class="cab"><span class="etiqueta">Aciertos y lugares</span><h2 class="h2" style="margin-top:14px">¿Cuántos aciertos pide el IPN para tu carrera?</h2>
+  <p class="lead">El IPN no publica un mínimo: asigna por aciertos hasta llenar los lugares de cada carrera. Mira cuántos lugares abre tu carrera en cada escuela.</p></div>
+  <div class="sv-grid">${Object.entries(CARRERAS_IPN).map(([s, c]) => `<a class="sv-card" style="text-decoration:none;color:inherit" href="${RUTA_ACIERTOS_IPN}${s}/"><h3>${c.corto || c.nombre}</h3><p>Escuelas y lugares de agosto y febrero</p></a>`).join('')}</div>
+  <p style="margin-top:18px"><a class="btn blanco" href="${RUTA_ACIERTOS_IPN}">Ver todas las carreras</a></p>
+</div></section>`,
   faqTitulo: 'Sobre el examen del IPN y el simulador',
   faq: FAQ,
   final: 'Haz un simulacro Medio hoy para ver en hora y media qué materias te faltan y, cuando estés listo, el examen completo de tu área con el tiempo real.',

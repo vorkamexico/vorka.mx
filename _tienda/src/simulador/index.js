@@ -16,6 +16,7 @@ import { EXANI_II } from './exani-ii.js';
 import { paginaPaaUniversidad } from './paa-universidades.js';
 import { paginaCalculadoraPaa } from './paa-calculadora.js';
 import { paginaAciertosUnam, paginaCarreraUnam } from './unam-aciertos.js';
+import { paginaAciertosIpn, paginaCarreraIpn } from './ipn-aciertos.js';
 import { EXCOBA } from './excoba.js';
 import { paginaExaniUniversidad, paginaSelector } from './exani-universidades.js';
 import { paginaExcobaUniversidad } from './excoba-universidades.js';
@@ -41,6 +42,12 @@ export async function rutasSimulador(req, env, url) {
   if (ua && (req.method === 'GET' || req.method === 'HEAD')) {
     const r = ua[1] ? await paginaCarreraUnam(env, ua[1]) : await paginaAciertosUnam(env);
     if (r) return ua[2] ? r : Response.redirect(`${url.origin}/simulador-unam/aciertos/${ua[1] ? `${ua[1]}/` : ''}`, 301);
+  }
+  // IPN: aciertos y lugares por carrera (/simulador-ipn/aciertos/ y /simulador-ipn/aciertos/<carrera>/)
+  const ia = url.pathname.match(/^\/simulador-ipn\/aciertos(?:\/([a-z0-9-]{2,60}))?(\/?)$/);
+  if (ia && (req.method === 'GET' || req.method === 'HEAD')) {
+    const r = ia[1] ? await paginaCarreraIpn(env, ia[1]) : await paginaAciertosIpn(env);
+    if (r) return ia[2] ? r : Response.redirect(`${url.origin}/simulador-ipn/aciertos/${ia[1] ? `${ia[1]}/` : ''}`, 301);
   }
   // EXANI-II: «¿Cuál te sirve?» (/simulador-exani-ii/universidades/) y una página por universidad (/simulador-exani-ii/<universidad>/)
   const x = url.pathname.match(/^\/simulador-exani-ii\/([a-z-]{2,30})(\/?)$/);

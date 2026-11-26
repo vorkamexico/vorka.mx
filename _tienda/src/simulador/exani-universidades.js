@@ -216,6 +216,65 @@ export const UNIVERSIDADES = {
     pide: [['Presencial o desde casa', 'Presencial para aspirantes de Colima y desde casa para foráneos.'], ['Carreras específicas', 'Algunas carreras tienen convocatoria propia y fechas aparte.']],
     fechas: 'Proceso 2026 (referencia): examen el 26 y 27 de mayo; resultados el 10 de agosto.',
   },
+  // Agregadas el 26-nov-2026 por búsquedas de Google («exani ii uaem», «exani ii umsnh medicina», «exani ii uaz medicina»)
+  'uaem-morelos': {
+    nombre: 'UAEM', completo: 'Universidad Autónoma del Estado de Morelos (UAEM)', art: 'la', estado: 'Morelos', examen: 'EXANI-II',
+    verificado: '26 de noviembre de 2026',
+    titulo: 'EXANI-II UAEM Morelos: cómo es el examen de admisión | Vorka México',
+    descripcion: 'La UAEM (Morelos) aplica un examen que elabora y califica CENEVAL y publica la guía del EXANI-II en su convocatoria. Lugares 2026 y cómo practicarlo.',
+    h1: 'EXANI-II para la UAEM de Morelos',
+    lead: 'Para nivel superior, la Universidad Autónoma del Estado de Morelos aplica un examen que elabora y califica CENEVAL, y en su convocatoria 2026 publica la guía del sustentante del EXANI-II. No la confundas con la UAEMéx, del Estado de México. Esto dicen sus fuentes oficiales.',
+    fuentes: [
+      { nombre: 'UAEM: Convocatoria de admisión nivel superior 2026', url: 'https://www.uaem.mx/universidad' },
+      { nombre: 'UAEM: Guía para el sustentante del EXANI-II (2026)', url: 'https://www.uaem.mx/sites/default/files/guias-2026/ns/EXANI-II_Gu%C3%ADa%20para%20el%20sustentante.pdf' },
+    ],
+    pide: [
+      ['Examen de CENEVAL', 'La convocatoria dice que el examen de admisión es una prueba escrita que elabora y califica CENEVAL, y en su sección de guías publica la del EXANI-II.'],
+      ['Sin mínimo fijo', 'La calificación mínima la determina la Secretaría General con base en las calificaciones y la capacidad de cada unidad académica. Después hay un curso propedéutico o de inducción que hay que aprobar.'],
+      ['Un solo registro', 'Solo se permite una pre-ficha y una ficha definitiva por aspirante. El pago de 2026 fue de $850.'],
+    ],
+    fechas: 'Proceso 2026 (referencia): pre-ficha del 28 de enero al 13 de abril, examen el 6 de junio y resultados el 28 de junio de 2026. Para 2027, confirma las fechas en la convocatoria nueva.',
+    lugares: {
+      titulo: 'Lugares 2026 de las carreras más pedidas',
+      nota: 'Oferta definitiva 2026 de la convocatoria, campus de la zona norte. La convocatoria trae todas las carreras y sedes.',
+      filas: [['Médico Cirujano', 120], ['Lic. en Psicología', 240], ['Lic. en Derecho', 360], ['Lic. en Arquitectura', 384], ['Lic. en Enfermería', 200], ['Lic. en Nutrición', 320]],
+    },
+  },
+  umsnh: {
+    nombre: 'UMSNH', completo: 'Universidad Michoacana de San Nicolás de Hidalgo (UMSNH)', art: 'la', estado: 'Michoacán', examen: 'EXANI-II (área de la Salud)',
+    verificado: '26 de noviembre de 2026',
+    titulo: 'EXANI-II UMSNH: examen para Medicina, Nutrición y Fisioterapia | Vorka México',
+    descripcion: 'La Universidad Michoacana aplica el EXANI-II de CENEVAL a Médico Cirujano, Nutrición y Fisioterapia. Cómo fue el examen de 2026 y cómo practicarlo.',
+    h1: 'EXANI-II para la UMSNH: Medicina, Nutrición y Fisioterapia',
+    lead: 'La Universidad Michoacana aplica el EXANI-II de CENEVAL a los programas del área de la Salud: Médico Cirujano, Nutrición, y Fisioterapia y Rehabilitación. Para las demás carreras, revisa su convocatoria. Esto dice su comunicado oficial.',
+    fuentes: [{ nombre: 'UMSNH: comunicado 2059/2026 sobre el examen de Medicina, Nutrición y Fisioterapia', url: 'https://umich.mx/aspirantes-a-ingresar-a-medicina-nutricion-y-fisioterapia-de-la-umsnh-este-martes-realizaran-examen/' }],
+    pide: [
+      ['EXANI-II en el área de la Salud', 'Para Médico Cirujano, Nutrición, y Fisioterapia y Rehabilitación se aplica el EXANI-II de CENEVAL, con varias versiones del mismo nivel de dificultad.'],
+      ['Hasta cuatro horas', 'La duración máxima del examen es de cuatro horas. Se presenta en papel, con ficha, lápiz, goma, sacapuntas, calculadora básica y reloj de pulsera; sin celular ni reloj inteligente.'],
+      ['Medicina en Tangancícuaro', 'Quien aspira a Médico Cirujano en la extensión de Tangancícuaro presenta el examen en la Unidad Profesional de Zamora.'],
+    ],
+    fechas: 'Proceso 2026 (referencia): el examen del área de la Salud fue el martes 30 de junio de 2026, en turno matutino o vespertino según la ficha. Para 2027, confirma las fechas en la convocatoria nueva.',
+  },
+  uaz: {
+    nombre: 'UAZ', completo: 'Universidad Autónoma de Zacatecas (UAZ)', art: 'la', estado: 'Zacatecas', examen: 'EXANI-II (área de Ciencias de la Salud)',
+    verificado: '26 de noviembre de 2026',
+    titulo: 'EXANI-II UAZ: examen para Medicina y Ciencias de la Salud | Vorka México',
+    descripcion: 'La UAZ admite a sus licenciaturas de Ciencias de la Salud por el puntaje del EXANI-II. Lugares 2026 por carrera, requisitos y cómo practicarlo.',
+    h1: 'EXANI-II para la UAZ: Medicina y Ciencias de la Salud',
+    lead: 'En la Universidad Autónoma de Zacatecas, el ingreso a las licenciaturas del Área de Ciencias de la Salud se decide por el puntaje del EXANI-II de CENEVAL, de mayor a menor, hasta llenar los lugares de cada carrera. Esto dicen sus lineamientos de ingreso 2026.',
+    fuentes: [{ nombre: 'UAZ: Lineamientos generales para ingreso 2026, Área de Ciencias de la Salud', url: 'https://escolar.uaz.edu.mx/wp-content/uploads/2026/02/LINEAMIENTOS-GENERALES-PARA-INGRESO-2026.docx.pdf' }],
+    pide: [
+      ['Gana el puntaje del EXANI-II', 'La admisión se decide por el puntaje máximo alcanzado, según la capacidad y los lugares de cada licenciatura. Los resultados se dan a conocer ante notario público.'],
+      ['Bachillerato en Zacatecas', 'Para Médico General, Médico Cirujano Dentista, Nutrición, Enfermería y Fisioterapia solo se considera a quien egresó de un bachillerato de Zacatecas; lo demás va como caso especial. QFB, Salud Pública, Biotecnología, Ingeniería Bioquímica y Ciencias Forenses aceptan aspirantes de cualquier lugar, con preferencia a Zacatecas.'],
+      ['Un resultado por carrera', 'Los resultados del EXANI-II no se pueden transferir entre programas. En Enfermería te inscriben en el campus más cercano a tu lugar de origen.'],
+    ],
+    fechas: 'Proceso 2026 (referencia): el EXANI-II se aplicó el sábado 13 de junio de 2026 y los resultados salieron unos veinte días después. Para 2027, confirma las fechas en los lineamientos nuevos.',
+    lugares: {
+      titulo: 'Lugares 2026 por licenciatura',
+      nota: 'Lugares de los lineamientos de ingreso 2026 del Área de Ciencias de la Salud.',
+      filas: [['Médico General (Zacatecas, ingreso agosto 2026)', 210], ['Médico General (Fresnillo, ingreso enero 2027)', 80], ['Médico Cirujano Dentista', 180], ['Enfermería (Zacatecas)', 250], ['Enfermería (Nochistlán, Juan Aldama y Jalpa)', 115], ['Nutrición', 200], ['Químico Farmacéutico Biólogo', 250], ['Fisioterapia', 90], ['Salud Pública', 90], ['Biotecnología', 90], ['Ingeniería Bioquímica', 90], ['Ciencias Forenses', 60]],
+    },
+  },
 };
 
 // ---------- selector: todas las universidades y su examen ----------
@@ -223,14 +282,11 @@ export const UNIVERSIDADES = {
 const SIM = { exani: RUTA + '/', unam: '/simulador-unam/', ipn: '/simulador-ipn/', paa: '/simulador-paa/' };
 const SELECTOR = [
   ...Object.entries(UNIVERSIDADES).map(([k, u]) => [k, u.nombre, u.estado, u.examen, `${RUTA}/${k}/`, u.sinModulos ? 'Sin módulos específicos: practica las áreas comunes y el Inglés.' : 'Elige en el simulador los módulos de tu carrera.', 'exani']),
-  ['uaz', 'UAZ', 'Zacatecas', 'EXANI-II (confirmado para Ciencias de la Salud)', SIM.exani, 'Para otras áreas, confirma en su convocatoria.', 'exani', 'https://escolar.uaz.edu.mx/wp-content/uploads/2026/02/LINEAMIENTOS-GENERALES-PARA-INGRESO-2026.docx.pdf'],
-  ['uaem', 'UAEM', 'Morelos', 'Examen de CENEVAL', SIM.exani, 'Su boletín dice que lo elabora y califica CENEVAL, sin nombrar el examen: confirma en su convocatoria.', 'probable', 'https://uaem.mx/difusion-y-medios/publicaciones/boletines/aplicara-uaem-el-examen-de-admision-al-nivel-superior'],
   ['ujed', 'UJED', 'Durango', 'Examen de CENEVAL', SIM.exani, 'Su comunicado dice «examen CENEVAL» sin nombrar el examen: confirma en su convocatoria.', 'probable', 'https://www.ujed.mx/noticias/2026/04/ujed-abre-proceso-de-admision-2026-y-aplicara-examen-ceneval-el-5-de-junio'],
   ['uat', 'UAT', 'Tamaulipas', 'EXANI-II (por facultad)', SIM.exani, 'Cada facultad pone sus criterios y fechas.', 'exani', 'https://escolares.uat.edu.mx/forms/FrmPDF.aspx?id_pdf=1&tipo=1'],
-  ['umsnh', 'UMSNH', 'Michoacán', 'EXANI-II en Medicina, Nutrición y Fisioterapia', SIM.exani, 'Para otras carreras, confirma en su convocatoria.', 'probable', 'https://umich.mx/aspirantes-a-ingresar-a-medicina-nutricion-y-fisioterapia-de-la-umsnh-este-martes-realizaran-examen/'],
   ['uagro', 'UAGro', 'Guerrero', 'CENEVAL o EXADIES, según el programa', SIM.exani, 'Algunos programas aplican CENEVAL y otros su examen propio en línea: revisa tu programa.', 'probable', 'https://dae2.uagro.mx/wp-content/uploads/2026/03/CONVOCATORIA_FINAL_LICENCIATURA_PSU_compressed.pdf'],
   ['unam', 'UNAM', 'Ciudad de México', 'Examen propio de la UNAM', SIM.unam, 'Tiene su propio simulador, por área.', 'otro'],
-  ['ipn', 'IPN', 'Ciudad de México', 'Examen propio del IPN', SIM.ipn, 'Tiene su propio simulador, por área.', 'otro'],
+  ['ipn', 'IPN', 'Ciudad de México', 'Examen propio del IPN', SIM.ipn, 'Tiene su propio simulador, por área. Mira los <a href="/simulador-ipn/aciertos/">lugares por carrera</a>.', 'otro'],
   ['udem', 'UDEM', 'Nuevo León', 'PAA', '/simulador-paa/udem/', 'Usa la Prueba de Aptitud Académica.', 'otro'],
   ['tec-de-monterrey', 'Tec de Monterrey', 'Varios estados', 'PAA', '/simulador-paa/tec-de-monterrey/', 'Usa la Prueba de Aptitud Académica.', 'otro'],
   ['udeg', 'UdeG', 'Jalisco', 'PAA', '/simulador-paa/udeg/', 'Usa la Prueba de Aptitud Académica.', 'otro'],
@@ -317,7 +373,7 @@ export async function paginaExaniUniversidad(env, clave) {
   <h1 class="t-h1">${esc(u.h1)}</h1>
   <p class="t-lead">${esc(u.lead)}</p>
   ${tarjeta}
-  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${VERIFICADO}. Confirma siempre los requisitos vigentes con ${u.art} ${esc(u.nombre)}.</p>
+  <p class="pu-fuente">${u.fuentes.length > 1 ? 'Fuentes' : 'Fuente'}: ${u.fuentes.map(x => `<a href="${esc(x.url)}" rel="noopener">${esc(x.nombre)}</a>`).join('; ')}. Revisado el ${u.verificado || VERIFICADO}. Confirma siempre los requisitos vigentes con ${u.art} ${esc(u.nombre)}.</p>
 </div></section>
 
 <section class="t-sec suave"><div class="marco">
@@ -325,6 +381,12 @@ export async function paginaExaniUniversidad(env, clave) {
   <div class="pu-grid">${u.pide.map(([t, p]) => `<div class="pu-card"><h3>${esc(t)}</h3><p>${esc(p)}</p></div>`).join('')}</div>
   <p class="pu-nota">${CHECK.replace('<svg', '<svg style="width:14px;height:14px;vertical-align:-2px"')} ${esc(u.fechas)}</p>
 </div></section>
+${u.lugares ? `<section class="t-sec"><div class="marco">
+  <div class="cab"><span class="etiqueta">Lugares</span><h2 class="h2" style="margin-top:14px">${esc(u.lugares.titulo)}</h2></div>
+  <table class="pu-tabla"><thead><tr><th scope="col">Carrera</th><th scope="col">Lugares</th></tr></thead>
+  <tbody>${u.lugares.filas.map(([c, n]) => `<tr><th scope="row">${esc(c)}</th><td data-c="Lugares"><b>${n}</b></td></tr>`).join('')}</tbody></table>
+  <p class="pu-nota">${esc(u.lugares.nota)}</p>
+</div></section>` : ''}
 ${modulos}
 <section class="t-sec suave"><div class="marco">
   <div class="cab"><span class="etiqueta">El EXANI-II en general</span><h2 class="h2" style="margin-top:14px">Lo que trae el examen</h2></div>
@@ -334,7 +396,8 @@ ${modulos}
     <li class="pu-card"><h3>Inglés</h3><p>30 reactivos de nivel B1. Es diagnóstico: no entra al puntaje global.</p></li>
   </ul>
   <p class="pu-nota">Estructura general de la <a href="${CENEVAL_EXANI}" rel="noopener">página oficial del EXANI-II de CENEVAL</a>: una sesión de máximo 4 horas y media, con tres opciones por reactivo. Cada universidad puede usar una versión propia, como dice arriba.</p>
-  <div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador EXANI-II ${FLECHA}</a><a class="btn blanco" href="${RUTA_UNIVERSIDADES}">Ver otras universidades</a></div>
+  <div class="pu-botones"><a class="btn acento" href="${RUTA}/?plan=paquete#comprar">Comprar el simulador EXANI-II ${FLECHA}</a><a class="btn blanco" href="${RUTA}/#probar">Prueba 3 preguntas</a></div>
+  <p class="pu-nota"><a href="${RUTA_UNIVERSIDADES}">Ver otras universidades</a></p>
 </div></section>
 
 <section class="t-sec"><div class="marco">
