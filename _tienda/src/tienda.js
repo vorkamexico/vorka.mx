@@ -349,9 +349,18 @@ export async function paginaCatalogo(env, req, url) {
   // Precio de entrada de Brindi: el plan más barato a la venta (los planes viven ocultos del catálogo)
   const [{ cookie }, productos, cupon, activos, combos] = await Promise.all([refDeVisita(env, req, url), listarProductos(env),
     url.searchParams.has('cupon') ? avisoCupon(env, url.searchParams.get('cupon')) : null,
-    env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all(), combosNegocio(env).catch(() => [])]);
+    env.DB.prepare('SELECT slug, nombre, descripcion_corta, precio_centavos, contenido, categoria, creador_id, orden FROM products WHERE activo = 1 ORDER BY orden, precio_centavos').all(), combosNegocio(env).catch(() => [])]);
   // «Agregar al carrito» en la tarjeta: pago único con precio fijo (no «Desde») y los planes mensuales de las apps
   const agregable = v => !/^simulador/.test(grupoCarrito(v.p)) && ((enCarrito(v.p) && !String(v.precio).startsWith('Desde')) || (enSuscripcion(v.p) && v.p.contenido.suscripcion.intervalo === 'month'));
+  // Tarjetas «Desde» (Brindi, Cupo, simuladores): el botón abre «Elige tu plan» en el carrito lateral con cada opción y su precio
+  const todosActivos = activos.results.map(r => { let c; try { c = JSON.parse(r.contenido || '{}'); } catch { c = {}; } return { ...r, contenido: c }; });
+  const opcionesDe = v => {
+    if (agregable(v)) return null;
+    const ops = v.url === HUB_SIMULADORES ? todosActivos.filter(p => /^simulador-/.test(p.contenido.acceso?.app || '') && p.contenido.acceso?.tipo === 'paquete' && enCarrito(p))
+      : String(v.precio).startsWith('Desde') && enCarrito(v.p) ? todosActivos.filter(p => p.contenido.acceso?.app === grupoCarrito(v.p) && enCarrito(p)).sort((a, b) => a.precio_centavos - b.precio_centavos) : [];
+    return ops.length ? ops.map(p => ({ s: p.slug, a: grupoCarrito(p), n: nombreCorto(p), p: p.precio_centavos, d: String(p.descripcion_corta || '').slice(0, 110) })) : null;
+  };
+  const attrElige = v => { const o = opcionesDe(v); return o ? ` data-carrito-elige='${JSON.stringify(o).replace(/'/g, '&#39;').replace(/</g, '\\u003c')}' data-carrito-nombre="${esc(v.nombre)}"` : ''; };
   // Combos de «Para tu negocio»: un toque agrega las apps y el carrito cobra el precio del paquete
   const bloqueCombos = combos.length ? `<div class="t-combos"><p class="t-combos-t">Junta apps y pagas menos cada mes</p><div class="t-combos-l">${combos.map(c => `<button type="button" class="t-combo" data-carrito-combo='${JSON.stringify(c.items).replace(/'/g, '&#39;')}' data-carrito-nombre="${esc(c.nombre)}"><b>${esc(c.nombre)}</b><span><span class="num">${esc(precio({ precio_centavos: c.precio }).replace(' MXN', ''))}</span> al mes · ahorras ${esc(precio({ precio_centavos: c.ahorro }).replace(' MXN', ''))}</span><em>Agregar</em></button>`).join('')}</div></div>` : '';
   const planesBrindi = activos.results
@@ -374,6 +383,7 @@ export async function paginaCatalogo(env, req, url) {
         <h3><a href="${esc(v.url)}">${esc(v.nombre)}</a></h3>
         <p>${esc(v.texto)}</p>
         <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="t-card-mas" href="${esc(v.url)}">Ver detalles ${FLECHA}</a></span></div>
+        ${!agregable(v) && opcionesDe(v) ? `<button type="button" class="btn blanco chico t-card-agregar"${attrElige(v)}>Agregar al carrito</button>` : ''}
         ${agregable(v) ? `<button type="button" class="btn blanco chico t-card-agregar" data-carrito-slug="${esc(v.p.slug)}" data-carrito-app="${esc(grupoCarrito(v.p))}" data-carrito-nombre="${esc(v.nombre)}"${enSuscripcion(v.p) ? ' data-carrito-m' : ''}>Agregar al carrito</button>` : ''}
       </div>
     </article>`;

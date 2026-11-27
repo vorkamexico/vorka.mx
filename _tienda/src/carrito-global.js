@@ -30,6 +30,9 @@ export const CSS_CARRITO = `<style>
 .t-cp-paq{margin-top:10px;padding:12px 14px;border-radius:14px;background:var(--bg-2,rgba(0,0,0,.04));font-size:14px;line-height:1.45;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.t-cp-paq p{margin:0}
 .t-cp-paq button{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13.5px;background:var(--fg,#111);color:var(--bg,#fff);cursor:pointer}
 .t-cp-mas{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line-2,rgba(0,0,0,.15));background:none;color:var(--fg,#111);font:inherit;font-size:20px;font-weight:600;line-height:1;cursor:pointer;display:grid;place-items:center}.t-cp-mas:hover{background:var(--fg,#111);color:var(--bg,#fff)}
+.t-cp-ops{gap:10px}.t-cp-op{width:100%;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line,rgba(0,0,0,.1));background:var(--card,#fff);color:var(--fg,#111);font:inherit;cursor:pointer;transition:border-color .2s}
+.t-cp-op:hover{border-color:var(--fg,#111)}.t-cp-op span{display:grid;gap:3px;min-width:0}.t-cp-op b{font-size:15.5px}.t-cp-op small{font-size:13px;color:var(--fg-2,#666);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.t-cp-op em{font-style:normal;font-weight:750;font-size:15px;white-space:nowrap}
 .t-cp-pie{padding:14px 22px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--line,rgba(0,0,0,.08));display:grid;gap:10px;background:var(--bg,#fff)}
 .t-cp-tot{display:flex;justify-content:space-between;align-items:baseline;font-size:15px}.t-cp-tot b{font-size:22px;letter-spacing:-.02em}
 .t-cp-pie a,.t-cp-pie button{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:999px;font:inherit;font-weight:700;font-size:16px;text-decoration:none;cursor:pointer}
@@ -67,7 +70,7 @@ function panel(){if(cp)return cp;cp=document.createElement('div');cp.className='
   var m=e.target.closest('[data-cp-suma]');if(m){try{var v=lee();JSON.parse(m.getAttribute('data-cp-suma')).forEach(function(x){v=v.filter(function(y){return y.a!==x.a;});v.push(x);});guarda(v);}catch(x){}ultimo='';carga();}});
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.documentElement.classList.contains('t-cp-abierto'))cierra();});
  return cp;}
-function abre(){panel();document.documentElement.classList.add('t-cp-bloq');requestAnimationFrame(function(){document.documentElement.classList.add('t-cp-abierto');});setTimeout(function(){var x=cp.querySelector('.t-cp-x');if(x)x.focus();},50);carga();}
+function abre(solo){panel();document.documentElement.classList.add('t-cp-bloq');requestAnimationFrame(function(){document.documentElement.classList.add('t-cp-abierto');});setTimeout(function(){var x=cp.querySelector('.t-cp-x');if(x)x.focus();},50);if(!solo)carga();}
 function cierra(){document.documentElement.classList.remove('t-cp-abierto');setTimeout(function(){document.documentElement.classList.remove('t-cp-bloq');},300);}
 function fila(x,precio,nota){return '<li class="t-cp-it"><a class="t-cp-img" href="'+ex(x.ruta)+'">'+(x.imagen?'<img src="'+ex(x.imagen)+'" alt="" loading="lazy">':'')+'</a><div class="t-cp-tx"><b>'+ex(x.nombre)+'</b><span>'+precio+'</span>'+(nota?'<small>'+nota+'</small>':'')+'</div><button type="button" class="t-cp-quita" data-cp-quita="'+ex(x.slug)+'" aria-label="Quitar '+ex(x.nombre)+'">'+X+'</button></li>';}
 function carga(){var c=document.getElementById('t-cp-c'),p=document.getElementById('t-cp-p'),ok=document.getElementById('t-cp-ok'),v=lee();
@@ -99,6 +102,12 @@ document.querySelectorAll('form[data-carrito],form[data-carrito-planes]').forEac
  function ve(){var r=f.querySelector('[name=para_quien]:checked');b.hidden=!!(r&&r.value==='regalo')||!!(pl&&!pl[slug()]);}f.addEventListener('change',ve);f.addEventListener('input',ve);ve();
  b.addEventListener('click',function(){var s=slug();if(!s)return;var ns={};try{ns=JSON.parse(f.getAttribute('data-carrito-nombres')||'{}');}catch(e){}var nom=ns[s]||f.getAttribute('data-carrito-nombre')||'';
   agrega(s,pl?pl[s]:f.getAttribute('data-carrito'),f.getAttribute('data-carrito-tipo')==='sus'||/-(mensual|anual)$/.test(s),nom.slice(0,60));b.textContent='Agregado ✓';setTimeout(function(){b.textContent='Agregar al carrito';},2000);});});
+// «Elige tu plan»: tarjetas con varias opciones (Brindi, Cupo, simuladores) abren el panel con cada opción y su precio
+function elige(t,ops){abre(true);var c=document.getElementById('t-cp-c'),p=document.getElementById('t-cp-p');document.getElementById('t-cp-ok').innerHTML='';
+ c.innerHTML='<div class="t-cp-sec"><h3>Elige tu opción de '+ex(t)+'</h3><ul class="t-cp-l t-cp-ops">'+ops.map(function(o){return '<li><button type="button" class="t-cp-op" data-cp-op="'+ex(JSON.stringify(o))+'"><span><b>'+ex(o.n)+'</b>'+(o.d?'<small>'+ex(o.d)+'</small>':'')+'</span><em>'+pz(o.p)+'</em></button></li>';}).join('')+'</ul></div>';
+ p.innerHTML='<button type="button" class="t-cp-sigue" data-cp-cierra>Cancelar</button>';}
+document.addEventListener('click',function(e){var o=e.target.closest('[data-cp-op]');if(o){try{var x=JSON.parse(o.getAttribute('data-cp-op'));agrega(x.s,x.a,false,x.n);}catch(y){}return;}
+ var el=e.target.closest('[data-carrito-elige]');if(el){e.preventDefault();try{elige(el.getAttribute('data-carrito-nombre')||'',JSON.parse(el.getAttribute('data-carrito-elige')));}catch(y){}return;}});
 document.addEventListener('click',function(e){var c=e.target.closest('[data-carrito-combo]');if(c){e.preventDefault();try{var v=lee();JSON.parse(c.getAttribute('data-carrito-combo')).forEach(function(x){v=v.filter(function(y){return y.a!==x.a;});v.push(x);});guarda(v);}catch(x){}var ic=pinta();if(ic){ic.classList.remove('brinca');void ic.offsetWidth;ic.classList.add('brinca');}ultimo=c.getAttribute('data-carrito-nombre')||'';abre();return;}
  var b=e.target.closest('[data-carrito-slug]');if(!b)return;e.preventDefault();agrega(b.getAttribute('data-carrito-slug'),b.getAttribute('data-carrito-app'),b.hasAttribute('data-carrito-m'),b.getAttribute('data-carrito-nombre')||'');});
 })();`;
