@@ -2,6 +2,7 @@
 // /tienda/vende/ → ficha comercial: plan gratis con límites y prueba de 7 días (viven en la app), Vende Pro mensual/anual y programas patrocinados.
 // Se cobra por suscripción (ver suscripciones.js): la app pregunta por RPC (Admin.suscripcionApp(correo, 'vende')) si está al corriente.
 // Aquí solo se vende. Vende no mueve dinero, no presta ni cobra a nombre de nadie (ver /legal/vende/).
+import { attrPlanesCarrito } from './carrito.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
@@ -144,7 +145,7 @@ ${barraCompra({ titulo: 'Vende', detalle: `Gratis para empezar${mensual ? ` · V
 ${plan ? seccionCompra({ titulo: 'Suscríbete a Vende Pro', intro: `¿Aún no lo pruebas? <a href="${APP}/#/entrar">Empieza gratis</a>, sin tarjeta. Si ya lo usas, suscríbete con el mismo correo y todo sigue tal cual.`,
   pasos: [['Elige mensual o anual', 'Y escribe el mismo correo con el que entras a Vende.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Tu cuenta queda sin límites al instante, con todos tus registros.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo'],
-  form: `<form class="t-form t-compra" id="form-vende" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-vende" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <fieldset class="t-campo ve-elige"><legend>Plan</legend>${planes.map(x => `<label class="ve-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b>${x.slug === 'vende-anual' && ahorro > 0 ? `<small>Ahorra ${pesosRedondo(ahorro)} contra el mensual</small>` : '<small>Sin plazo forzoso</small>'}</span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>

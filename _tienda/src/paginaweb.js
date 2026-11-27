@@ -3,6 +3,7 @@
 // El dominio no se cobra aquí: se paga por transferencia a Vorka por WhatsApp. Producto: migración 0070 (pagina-web-mensual).
 // La página del servicio, con todo el detalle, es /servicios/pagina-web/ (_tienda no la genera: _sitio/paginaweb.py).
 // Las condiciones (12 meses, dominio, cambios) son las mismas que allá y que en Vorka Learn (src/learn-web.js › PLAN_WEB).
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { one } from './util.js';
@@ -35,7 +36,7 @@ export async function paginaPaginaWeb(env, req, url) {
   const diseno = !social && p?.contenido?.suscripcion?.instalacion ? await one(env, 'SELECT precio_centavos FROM products WHERE id = ? AND activo = 1', p.contenido.suscripcion.instalacion) : null;
   if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
   const error = url.searchParams.get('error') || '';
-  const form = p ? `<form class="t-form t-compra" id="form-pagina-web" method="post" action="/api/checkout" novalidate>
+  const form = p ? `<form class="t-form t-compra" id="form-pagina-web" method="post" action="/api/checkout" novalidate${attrPlanesCarrito([p])}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     ${social ? `<input type="hidden" name="codigo" value="${esc(social)}">` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>

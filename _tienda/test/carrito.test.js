@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { d1 } from './d1.js';
 import worker from '../src/index.js';
 import { productoPorSlug } from '../src/modelo.js';
-import { enCarrito, descuentoCarrito, pctCarrito, enMensual } from '../src/carrito.js';
+import { enCarrito, descuentoCarrito, pctCarrito, enSuscripcion } from '../src/carrito.js';
 
 let env, llamadas;
 function stripeFalso() {
@@ -29,10 +29,10 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('qué entra al carrito', () => {
-  it('simuladores, tests, liderazgo y Ruta sí; paquetes, adicionales, licencias y suscripciones no', async () => {
-    for (const s of ['simulador-paa-paquete', 'simulador-unam-practica', 'test-vocacional', 'evaluacion-liderazgo', 'que-proyecto-social', 'ruta-de-impacto'])
+  it('pago único: todo lo de Vorka (también Brindi y Cupo) menos adicionales, licencias, accesorios de Brindi y suscripciones', async () => {
+    for (const s of ['simulador-paa-paquete', 'simulador-unam-practica', 'test-vocacional', 'evaluacion-liderazgo', 'que-proyecto-social', 'ruta-de-impacto', 'brindi-celebracion', 'brindi-premium', 'cupo-pro'])
       expect(enCarrito(await p(s)), s).toBe(true);
-    for (const s of ['simuladores-universidad', 'simulador-paa-intento', 'test-vocacional-grupo-10', 'vuelve-mensual', 'agenda-mensual', 'brindi-celebracion'])
+    for (const s of ['simuladores-universidad', 'simulador-paa-intento', 'test-vocacional-grupo-10', 'vuelve-mensual', 'agenda-mensual', 'brindi-musica', 'brindi-mejora-esencial', 'pagina-web-diseno'])
       expect(enCarrito(await p(s)), s).toBe(false);
     expect([pctCarrito(1), pctCarrito(2), pctCarrito(3), pctCarrito(5)]).toEqual([0, 15, 25, 25]);
     // Dos planes del mismo simulador cuentan como uno
@@ -42,10 +42,11 @@ describe('qué entra al carrito', () => {
 
 describe('GET /api/carrito', () => {
   it('suma, aplica el % y deja el último plan elegido de cada simulador', async () => {
-    const d = await (await get('/api/carrito?s=simulador-paa-practica,simulador-unam-paquete,simulador-paa-paquete,brindi-celebracion')).json();
+    const d = await (await get('/api/carrito?s=simulador-paa-practica,simulador-unam-paquete,simulador-paa-paquete,brindi-musica')).json();
     expect(d.items.map(x => x.slug)).toEqual(['simulador-unam-paquete', 'simulador-paa-paquete']);
-    expect(d.fuera).toEqual(['brindi-celebracion']);
-    expect(d.mensual).toBeNull();
+    expect(d.fuera).toEqual(['brindi-musica']);
+    expect(d.quitados).toEqual(['simulador-paa-practica']);
+    expect(d.suscripciones).toBeNull();
     expect(d.pct).toBe(15);
     expect(d.total).toBe(d.subtotal - Math.round(d.subtotal * 0.15));
     expect(d.siguiente).toEqual({ faltan: 1, pct: 25 });
@@ -98,59 +99,69 @@ describe('páginas', () => {
   });
 });
 
-// Fase 3: apps de negocio en el carrito, con precio de paquete cuando juntas las de uno
-describe('mensualidad en el carrito', () => {
-  it('entran los planes mensuales de Agenda, Vuelve, Brillo y Mostrador; no paquetes, anuales, complementos ni servicios', async () => {
-    for (const s of ['agenda-mensual', 'vuelve-mensual', 'mostrador-mensual', 'brillo-basico-mensual']) expect(enMensual(await p(s)), s).toBe(true);
-    for (const s of ['agenda-vuelve-mensual', 'agenda-anual', 'negocio-completo-mensual', 'pagina-web-mensual', 'vende-mensual', 'agenda-profesional-mensual', 'test-vocacional'])
-      expect(enMensual(await p(s)), s).toBe(false);
+// Suscripciones en el carrito: todas (mensuales y anuales); precio de paquete automático cuando conviene
+describe('suscripciones en el carrito', () => {
+  it('entran todos los planes (mensual, anual, paquetes, página web, Negocio Completo); no complementos ni instalaciones', async () => {
+    for (const s of ['agenda-mensual', 'vuelve-anual', 'agenda-vuelve-mensual', 'negocio-completo-mensual', 'pagina-web-mensual', 'vende-mensual', 'clara-mensual'])
+      expect(enSuscripcion(await p(s)), s).toBe(true);
+    for (const s of ['agenda-profesional-mensual', 'vuelve-sucursal-mensual', 'pagina-web-diseno', 'test-vocacional']) expect(enSuscripcion(await p(s)), s).toBe(false);
   });
 
-  it('Agenda + Vuelve se contratan como su paquete y dice cuánto ahorras', async () => {
+  it('Agenda + Vuelve se cobran como su paquete; lo de pago único va aparte y sin contar las apps para el %', async () => {
     const d = await (await get('/api/carrito?s=test-vocacional,vuelve-mensual,agenda-mensual')).json();
-    expect(d.items.map(x => x.slug)).toEqual(['test-vocacional']);              // lo único va aparte
-    expect(d.pct).toBe(0);                                                        // las apps no cuentan para el 15 %
-    expect(d.mensual.items.map(x => x.slug)).toEqual(['vuelve-mensual', 'agenda-mensual']);
-    const paq = await p('agenda-vuelve-mensual'), suma = (await p('vuelve-mensual')).precio_centavos + (await p('agenda-mensual')).precio_centavos;
-    expect(d.mensual.plan).toMatchObject({ slug: 'agenda-vuelve-mensual', paquete: true, precio: paq.precio_centavos, separado: suma, ahorro: suma - paq.precio_centavos });
-    expect(d.mensual.legales.map(l => l.url)).toEqual(['/legal/vuelve/', '/legal/agenda/']);
+    expect(d.items.map(x => x.slug)).toEqual(['test-vocacional']);
+    expect(d.pct).toBe(0);
+    const S = d.suscripciones, suma = (await p('vuelve-mensual')).precio_centavos + (await p('agenda-mensual')).precio_centavos;
+    expect(S.items.map(x => x.slug)).toEqual(['vuelve-mensual', 'agenda-mensual']);
+    expect(S.cobros).toHaveLength(1);
+    expect(S.cobros[0]).toMatchObject({ slug: 'agenda-vuelve-mensual', paga: ['vuelve-mensual', 'agenda-mensual'], ahorro: suma - (await p('agenda-vuelve-mensual')).precio_centavos });
+    expect(d.legales.map(l => l.url)).toEqual(['/legal/vuelve/', '/legal/agenda/']);
   });
 
-  it('una sola app se contrata sola y sugiere la que le falta para un paquete más barato', async () => {
+  it('una app sola sugiere la que le falta para un paquete más barato', async () => {
     const d = await (await get('/api/carrito?s=vuelve-mensual')).json();
-    expect(d.mensual.plan).toMatchObject({ slug: 'vuelve-mensual', paquete: false });
-    const s = d.mensual.sugerencias.find(x => x.faltan.map(f => f.slug).join() === 'agenda-mensual');
-    expect(s).toBeTruthy();
-    expect(s.precio).toBe((await p('agenda-vuelve-mensual')).precio_centavos);
-    expect(s.precio).toBeLessThan(s.separado);
+    expect(d.suscripciones.cobros.map(c => c.slug)).toEqual(['vuelve-mensual']);
+    expect(d.suscripciones.sugerencia.ahorro).toBeGreaterThan(0);
   });
 
-  it('si el paquete no sale más barato, cada app se contrata por separado', async () => {
-    const d = await (await get('/api/carrito?s=brillo-basico-mensual,vuelve-mensual,agenda-mensual')).json();
-    const suma = d.mensual.items.reduce((t, x) => t + x.precio, 0);
-    if ((await p('brillo-paquete-mensual')).precio_centavos >= suma) { expect(d.mensual.plan).toBeNull(); expect(d.mensual.separadas).toBe(true); }
+  it('página + Agenda + Vuelve = Negocio Completo', async () => {
+    const d = await (await get('/api/carrito?s=pagina-web-mensual,agenda-mensual,vuelve-mensual')).json();
+    expect(d.suscripciones.cobros.map(c => c.slug)).toEqual(['negocio-completo-mensual']);
   });
 
-  it('un plan nuevo de la misma app reemplaza al anterior', async () => {
-    const d = await (await get('/api/carrito?s=brillo-basico-mensual,brillo-profesional-mensual')).json();
-    expect(d.mensual.items.map(x => x.slug)).toEqual(['brillo-profesional-mensual']);
+  it('anuales y apps sin paquete: un cobro por cada una; la página web avisa su diseño de una vez', async () => {
+    const d = await (await get('/api/carrito?s=vuelve-anual,clara-mensual,pagina-web-mensual')).json();
+    expect(d.suscripciones.cobros.map(c => c.slug)).toEqual(['vuelve-anual', 'clara-mensual', 'pagina-web-mensual']);
+    expect(d.suscripciones.items.find(x => x.slug === 'vuelve-anual').cada).toBe('al año');
+    expect(d.suscripciones.items.find(x => x.slug === 'pagina-web-mensual').instalacion).toBeGreaterThan(0);
   });
 
-  it('la página de Agenda ofrece agregar solo su plan mensual', async () => {
+  it('un plan que cubre una app ya elegida la reemplaza', async () => {
+    const d = await (await get('/api/carrito?s=agenda-mensual,agenda-vuelve-anual')).json();
+    expect(d.suscripciones.items.map(x => x.slug)).toEqual(['agenda-vuelve-anual']);
+    expect(d.quitados).toEqual(['agenda-mensual']);
+  });
+
+  it('cada página ofrece agregar sus planes con su nombre', async () => {
     const h = await (await get('/tienda/agenda/')).text();
-    expect(h).toContain(`data-carrito-planes='{"agenda-mensual":"agenda"}'`);
+    expect(h).toMatch(/data-carrito-planes='\{"agenda-mensual":"agenda","agenda-anual":"agenda"/);
+    expect(h).toContain('"agenda-vuelve-mensual":"Agenda + Vuelve"');
+    for (const r of ['/tienda/vende/', '/tienda/clara/', '/tienda/brindi/', '/tienda/cupo/', '/tienda/pagina-web/', '/tienda/negocio-completo/'])
+      expect(await (await get(r)).text(), r).toContain("data-carrito-planes='");
   });
 
-  it('el paquete se paga con el checkout de siempre (suscripción)', async () => {
+  it('el paquete se paga con el checkout de siempre (suscripción) y Brindi entra al carrito de pago único', async () => {
     const r = await comprar({ slug: 'agenda-vuelve-mensual', nombre: 'Ana López', email: 'ana@mail.com', terminos: true });
     expect(r.status).toBe(200);
     expect(llamadas.find(l => String(l.url).includes('checkout/sessions')).params.get('mode')).toBe('subscription');
+    const r2 = await comprar({ ...base, items: [{ slug: 'brindi-celebracion' }, { slug: 'test-vocacional' }] });
+    expect(r2.status).toBe(200);
   });
 
-  it('la página del carrito tiene su sección de mensualidad y el carrito quita solo lo pagado', async () => {
+  it('la página del carrito: cajas de pago único y suscripciones, y quita solo lo pagado', async () => {
     const h = await (await get('/tienda/carrito/')).text();
-    expect(h).toContain('id="car-mes"');
+    expect(h).toContain('id="car-sus"');
     expect(h).toContain("sessionStorage.setItem('vorka_carrito_pago',JSON.stringify(pagados))");
-    expect(h).toContain('cancelado=');
+    expect(h).toContain('t-car-sigue');
   });
 });

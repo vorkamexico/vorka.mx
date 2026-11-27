@@ -2,6 +2,7 @@
 // /tienda/portales/ → ficha comercial: tres planes mensuales (Básico, Broker, Inmobiliaria) + usuarios adicionales, preguntas y compra.
 // Se cobra por suscripción (ver suscripciones.js). La plataforma vive en inmuebles.vorka.mx (Worker "portales") y pregunta por RPC
 // (Admin.suscripcionApp(correo, 'portales')) si la cuenta está al corriente. Aquí solo se vende.
+import { attrPlanesCarrito } from './carrito.js';
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
@@ -110,7 +111,7 @@ ${barraCompra({ titulo: 'Portal', detalle: `Desde ${base ? precio(base) : '$199 
 ${planes.length ? seccionCompra({ titulo: 'Contrata tu portal', intro: 'Pagas aquí con tu tarjeta y te llega un correo con el botón para entrar a tu panel.',
   pasos: [['Elige tu plan', 'Y cuántos asesores adicionales necesitas.'], ['Pagas con tarjeta', 'Se renueva cada mes; lo cancelas cuando quieras.'], ['Entras a tu panel', 'Con el botón de tu correo, sin contraseñas.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-portales" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-portales" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <fieldset class="t-campo pi-elige"><legend>Plan</legend>${planes.map((x) => `<label class="pi-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} al mes</b><small>${x.usuarios === 1 ? '1 usuario' : `${x.usuarios} usuarios`} incluido${x.usuarios === 1 ? '' : 's'}</small></span></label>`).join('')}</fieldset>
     ${extra ? `<div class="t-campo"><label for="sucursales">Usuarios adicionales <small>(${precio(extra)} c/u al mes)</small></label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="${MAX_EXTRA}" value="0"></div>` : ''}

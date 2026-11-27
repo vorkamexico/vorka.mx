@@ -10,7 +10,7 @@ import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
 import { eventoPagina } from './meta.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
-import { enCarrito, grupoCarrito } from './carrito.js';
+import { enCarrito, grupoCarrito, nombreCorto } from './carrito.js';
 import { contarVisita } from './puntos.js';
 import { VARIANTES } from './brindi.js';
 import { UNIVERSIDADES } from './simulador/paa-universidades.js';
@@ -365,7 +365,7 @@ export async function paginaCatalogo(env, req, url) {
         <h3><a href="${esc(v.url)}">${esc(v.nombre)}</a></h3>
         <p>${esc(v.texto)}</p>
         <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="t-card-mas" href="${esc(v.url)}">Ver detalles ${FLECHA}</a></span></div>
-        ${enCarrito(v.p) && !/^simulador/.test(grupoCarrito(v.p)) ? `<button type="button" class="btn blanco chico t-card-agregar" data-carrito-slug="${esc(v.p.slug)}" data-carrito-app="${esc(grupoCarrito(v.p))}">Agregar al carrito</button>` : ''}
+        ${enCarrito(v.p) && !/^simulador/.test(grupoCarrito(v.p)) && !String(v.precio).startsWith('Desde') ? `<button type="button" class="btn blanco chico t-card-agregar" data-carrito-slug="${esc(v.p.slug)}" data-carrito-app="${esc(grupoCarrito(v.p))}" data-carrito-nombre="${esc(v.nombre)}">Agregar al carrito</button>` : ''}
       </div>
     </article>`;
   // Temporada: su línea va primero (chips y producto destacado) y su aviso reemplaza la pastilla de "Nuevo"
@@ -443,7 +443,7 @@ const SCRIPT_CATALOGO = `(function(){
 export const formCompra = (p, { error = '', ref = '', regalo = false, mensajeEjemplo = '¡Mucho éxito en tu examen!' } = {}) => {
   const regalable = !!p.contenido?.regalable;
   return `
-<form class="t-form t-compra${regalable ? ' t-regalable' : ''}" id="form-compra" method="post" action="/api/checkout" novalidate data-unidad="${p.precio_centavos}"${enCarrito(p) ? ` data-carrito="${esc(grupoCarrito(p))}"` : ''}>
+<form class="t-form t-compra${regalable ? ' t-regalable' : ''}" id="form-compra" method="post" action="/api/checkout" novalidate data-unidad="${p.precio_centavos}"${enCarrito(p) ? ` data-carrito="${esc(grupoCarrito(p))}" data-carrito-nombre="${esc(nombreCorto(p))}"` : ''}>
   <input type="hidden" name="slug" value="${esc(p.slug)}">
   ${ref ? `<input type="hidden" name="ref" value="${esc(ref)}">` : ''}
   ${regalable ? `<div class="t-modo" role="radiogroup" aria-label="¿Para quién es?">
