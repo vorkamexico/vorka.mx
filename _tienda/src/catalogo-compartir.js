@@ -47,7 +47,7 @@ export const ligaCatalogo = code => `${SITIO}/tienda/catalogo/${code ? `?ref=${e
 
 // Texto para WhatsApp (grupos de venta): breve, con precios reales, el código y la liga (la vista previa trae la portada)
 export function mensajeCatalogo(secciones, { code, nombre } = {}) {
-  const lineas = ['✨ *Catálogo Vorka México* ✨', 'Productos digitales con entrega inmediata, se pagan con tarjeta, OXXO o transferencia.', ''];
+  const lineas = ['✨ *Catálogo Vorka México* ✨', 'Productos digitales con entrega inmediata, se pagan con tarjeta u OXXO.', ''];
   for (const s of secciones) {
     lineas.push(`${EMOJI[s.id] || '•'} *${s.titulo}*`);
     for (const x of s.items.slice(0, 6)) lineas.push(`• ${x.nombre}: ${precioTxt(x)}`);
@@ -74,7 +74,7 @@ export async function paginaCatalogo(env, url) {
   const descripcion = `Simuladores de examen, invitaciones digitales y herramientas para tu negocio. Entrega inmediata.${quien ? ` Con el código ${quien.code}: ${PCT_REFERIDO} % de descuento en tu primera compra.` : ''}`;
   const cuerpo = `<main class="cat-c"><div class="marco">
     <header class="cat-h"><p class="cat-ojo">Catálogo · Vorka México</p><h1>Todo lo que tenemos para ti</h1>
-      ${quien ? `<div class="cat-quien"><span>Te lo recomienda${quien.nombre ? ` <b>${esc(quien.nombre)}</b>` : ''}</span><span class="cat-cod">Código <b>${esc(quien.code)}</b> · ${PCT_REFERIDO} % de descuento en tu primera compra</span></div>` : '<p class="cat-sub">Productos digitales con entrega inmediata. Paga con tarjeta, OXXO o transferencia.</p>'}
+      ${quien ? `<div class="cat-quien"><span>Te lo recomienda${quien.nombre ? ` <b>${esc(quien.nombre)}</b>` : ''}</span><span class="cat-cod">Código <b>${esc(quien.code)}</b> · ${PCT_REFERIDO} % de descuento en tu primera compra</span></div>` : '<p class="cat-sub">Productos digitales con entrega inmediata. Paga con tarjeta u OXXO.</p>'}
     </header>
     <div class="cat-f" role="search"><label class="cat-busca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cat-q" type="search" placeholder="Buscar: simulador, invitación, negocio…" autocomplete="off" aria-label="Buscar en el catálogo"></label>
       <div class="cat-chips" role="group" aria-label="Filtrar por tipo"><button type="button" class="cat-chip" data-s="" aria-pressed="true">Todo</button>${secciones.map(s => `<button type="button" class="cat-chip" data-s="${esc(s.id)}" aria-pressed="false">${esc(s.linea)}</button>`).join('')}</div></div>

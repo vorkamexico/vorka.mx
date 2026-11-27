@@ -326,7 +326,7 @@ export async function paginaCatalogo(env, req, url) {
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
     titulo: 'Tienda Vorka México · Simuladores de examen, invitaciones digitales y apps para tu negocio', ruta: '/tienda/', navActual: 'inicio', imagen: 'https://vorka.mx/assets/tienda/og/catalogo.jpg',
-    descripcion: 'Simuladores de examen (PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta, OXXO o transferencia.',
+    descripcion: 'Simuladores de examen (PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta u OXXO.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO, whatsapp: true,
@@ -338,7 +338,7 @@ export async function paginaCatalogo(env, req, url) {
     ${temporada ? `<a class="v-chip temporada" href="${lineaT ? esc(lineaT.vistas.length === 1 ? lineaT.vistas[0].url : `#${lineaT.id}`) : '#productos'}"${lineaT && lineaT.vistas.length > 1 ? ` data-f="${esc(lineaT.id)}"` : ''}><b>${esc(temporada.nombre)}</b><span>${esc(temporada.aviso)}</span>${FLECHA}</a>`
       : nuevo ? `<a class="v-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
     <h1 class="v-h1">Herramientas digitales para estudiar, celebrar y <em>hacer crecer tu negocio.</em></h1>
-    <p class="v-sub">Simuladores de examen, invitaciones, eventos y apps para tu negocio. Entrega inmediata por correo; pagas con tarjeta, OXXO o transferencia.</p>
+    <p class="v-sub">Simuladores de examen, invitaciones, eventos y apps para tu negocio. Entrega inmediata por correo; pagas con tarjeta u OXXO.</p>
     <div class="v-botones"><a class="btn v-btn" href="#productos">Ver el catálogo ${FLECHA}</a><a class="btn v-btn sec" href="/tienda/puntos/">Gana puntos recomendando</a></div>
     ${secciones.length > 1 ? `<nav class="v-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}>${esc(g.linea)} <small>${g.vistas.length}</small></a>`).join('')}</nav>` : ''}
   </div>
