@@ -29,6 +29,7 @@ export const CSS_CARRITO = `<style>
 .t-cp-tip{margin:8px 0 0;font-size:13.5px;color:var(--fg-2,#666)}
 .t-cp-paq{margin-top:10px;padding:12px 14px;border-radius:14px;background:var(--bg-2,rgba(0,0,0,.04));font-size:14px;line-height:1.45;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.t-cp-paq p{margin:0}
 .t-cp-paq button{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13.5px;background:var(--fg,#111);color:var(--bg,#fff);cursor:pointer}
+.t-cp-mas{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line-2,rgba(0,0,0,.15));background:none;color:var(--fg,#111);font:inherit;font-size:20px;font-weight:600;line-height:1;cursor:pointer;display:grid;place-items:center}.t-cp-mas:hover{background:var(--fg,#111);color:var(--bg,#fff)}
 .t-cp-pie{padding:14px 22px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--line,rgba(0,0,0,.08));display:grid;gap:10px;background:var(--bg,#fff)}
 .t-cp-tot{display:flex;justify-content:space-between;align-items:baseline;font-size:15px}.t-cp-tot b{font-size:22px;letter-spacing:-.02em}
 .t-cp-pie a,.t-cp-pie button{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:999px;font:inherit;font-weight:700;font-size:16px;text-decoration:none;cursor:pointer}
@@ -82,6 +83,7 @@ function carga(){var c=document.getElementById('t-cp-c'),p=document.getElementBy
    var k=S.cobros.length===1&&S.cobros[0].ahorro?S.cobros[0]:null;
    if(k)h+='<div class="t-cp-res"><div class="t-cp-fila t-cp-verde"><span>Juntas como '+ex(k.nombre)+'</span><span>'+pz(k.precio)+' al mes</span></div><p class="t-cp-tip">Ahorras '+pz(k.ahorro)+' cada mes.</p></div>';
    if(S.sugerencia){var g=S.sugerencia;h+='<div class="t-cp-paq"><p>Suma <b>'+g.faltan.map(function(x){return ex(x.nombre);}).join(' y ')+'</b>: '+ex(g.paquete)+' por '+pz(g.precio)+' al mes, '+pz(g.ahorro)+' menos.</p><button type="button" data-cp-suma="'+ex(JSON.stringify(g.faltan.map(function(x){return {s:x.s,a:x.a,m:1};})))+'">Sumar</button></div>';}
+   if(S.combina&&S.combina.length)h+='<div class="t-cp-sec"><h3>Combina bien con lo tuyo</h3><ul class="t-cp-l">'+S.combina.map(function(x){return '<li class="t-cp-it"><span class="t-cp-img">'+(x.imagen?'<img src="'+ex(x.imagen)+'" alt="" loading="lazy">':'')+'</span><div class="t-cp-tx"><b>'+ex(x.nombre)+' · '+pz(x.precio)+' '+ex(x.cada)+'</b><small>'+ex(x.porque)+'</small></div><button type="button" class="t-cp-mas" data-cp-suma="'+ex(JSON.stringify([{s:x.s,a:x.a,m:1}]))+'" aria-label="Agregar '+ex(x.nombre)+'">+</button></li>';}).join('')+'</ul></div>';
    h+='</div>';}
   c.innerHTML=h;
   var hoy=d.total+(S?S.cobros.reduce(function(t,x){return t+x.precio+(x.instalacion||0);},0):0);
@@ -97,5 +99,6 @@ document.querySelectorAll('form[data-carrito],form[data-carrito-planes]').forEac
  function ve(){var r=f.querySelector('[name=para_quien]:checked');b.hidden=!!(r&&r.value==='regalo')||!!(pl&&!pl[slug()]);}f.addEventListener('change',ve);f.addEventListener('input',ve);ve();
  b.addEventListener('click',function(){var s=slug();if(!s)return;var ns={};try{ns=JSON.parse(f.getAttribute('data-carrito-nombres')||'{}');}catch(e){}var nom=ns[s]||f.getAttribute('data-carrito-nombre')||'';
   agrega(s,pl?pl[s]:f.getAttribute('data-carrito'),f.getAttribute('data-carrito-tipo')==='sus'||/-(mensual|anual)$/.test(s),nom.slice(0,60));b.textContent='Agregado ✓';setTimeout(function(){b.textContent='Agregar al carrito';},2000);});});
-document.addEventListener('click',function(e){var b=e.target.closest('[data-carrito-slug]');if(!b)return;e.preventDefault();agrega(b.getAttribute('data-carrito-slug'),b.getAttribute('data-carrito-app'),false,b.getAttribute('data-carrito-nombre')||'');});
+document.addEventListener('click',function(e){var c=e.target.closest('[data-carrito-combo]');if(c){e.preventDefault();try{var v=lee();JSON.parse(c.getAttribute('data-carrito-combo')).forEach(function(x){v=v.filter(function(y){return y.a!==x.a;});v.push(x);});guarda(v);}catch(x){}var ic=pinta();if(ic){ic.classList.remove('brinca');void ic.offsetWidth;ic.classList.add('brinca');}ultimo=c.getAttribute('data-carrito-nombre')||'';abre();return;}
+ var b=e.target.closest('[data-carrito-slug]');if(!b)return;e.preventDefault();agrega(b.getAttribute('data-carrito-slug'),b.getAttribute('data-carrito-app'),b.hasAttribute('data-carrito-m'),b.getAttribute('data-carrito-nombre')||'');});
 })();`;

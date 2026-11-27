@@ -53,6 +53,14 @@ const cubre = c => [...(c.acceso.apps || [c.acceso.app]), ...(c.acceso.pagina ? 
 const LEGAL = { agenda: ['Agenda', '/legal/agenda/'], vuelve: ['Vuelve', '/legal/vuelve/'], mostrador: ['Vuelve', '/legal/vuelve/'], academias: ['Vuelve', '/legal/vuelve/'],
   brillo: ['Brillo', '/legal/brillo/'], vende: ['Vende', '/legal/vende/'], clara: ['Clara', '/legal/clara/'], cuentas: ['Cuentas', '/legal/cuentas/'],
   'pagina-web': ['tu página web (plan de 12 meses)', '/servicios/pagina-web/#t-cond'], brindi: ['Brindi', '/legal/brindi/'], cupo: ['Cupo', '/legal/cupo/'] };
+// Apps que combinan bien (aunque no haya paquete): [app, por qué en una línea]
+const COMBINA = {
+  agenda: [['vuelve', 'Que tus clientes regresen: tarjeta de sellos en su celular.']],
+  vuelve: [['agenda', 'Que reserven solos su cita, con recordatorios.']],
+  brillo: [['vuelve', 'Que tus clientas regresen: tarjeta de sellos en su celular.'], ['agenda', 'Que reserven solas su cita, con recordatorios.']],
+  mostrador: [['vuelve', 'Que tus clientes regresen: sellos o puntos por cada compra.']],
+  'pagina-web': [['agenda', 'Que desde tu página reserven su cita.'], ['vuelve', 'Que tus clientes regresen: tarjeta de sellos.']],
+};
 // El plan mensual más barato de cada app, para sugerirla cuando completa un paquete
 const BASE_MENSUAL = { agenda: 'agenda-mensual', vuelve: 'vuelve-mensual', brillo: 'brillo-basico-mensual', mostrador: 'mostrador-mensual', 'pagina-web': 'pagina-web-mensual' };
 // Atributo para el formulario de compra de un producto: {slug: grupo} de sus opciones que entran al carrito
@@ -96,7 +104,26 @@ export async function resolverSuscripciones(env, items) {
     const separado = suma + faltan.reduce((t, x) => t + x.precio, 0), ahorro = separado - k.precio;
     if (ahorro > 0 && (!sugerencia || ahorro > sugerencia.ahorro)) sugerencia = { paquete: k.nombre, precio: k.precio, ahorro, faltan: faltan.map(x => ({ s: x.slug, a: x.app, nombre: x.nombre })) };
   }
-  return { items, cobros, sugerencia };
+  // «Combina bien»: apps que suelen ir juntas aunque no haya paquete (Brillo + Vuelve), con el porqué en una línea
+  const combina = [];
+  if (!sugerencia) for (const a of [...new Set(apps.flatMap(x => COMBINA[x] || []))]) {
+    const [app, porque] = a; if (apps.includes(app) || combina.length >= 2 || combina.some(c => c.a === app)) continue;
+    const p = BASE_MENSUAL[app] && await productoPorSlug(env, BASE_MENSUAL[app]);
+    if (p && enSuscripcion(p)) { const i = await itemSus(env, p); combina.push({ s: i.slug, a: i.app, nombre: i.nombre, precio: i.precio, cada: i.cada, porque, imagen: i.imagen }); }
+  }
+  return { items, cobros, sugerencia, combina };
+}
+
+// Paquetes que salen más baratos que cada app por separado, para mostrarlos en «Para tu negocio» (un toque los agrega)
+export async function combosNegocio(env) {
+  const out = [];
+  for (const k of await paquetesMensuales(env)) {
+    const ps = await Promise.all(k.cubre.map(a => BASE_MENSUAL[a] ? productoPorSlug(env, BASE_MENSUAL[a]) : null));
+    if (ps.some(p => !p || !enSuscripcion(p))) continue;
+    const separado = ps.reduce((t, p) => t + p.precio_centavos, 0);
+    if (k.precio < separado) out.push({ nombre: k.nombre, precio: k.precio, separado, ahorro: separado - k.precio, items: ps.map(p => ({ s: p.slug, a: p.contenido.acceso.app, m: 1 })) });
+  }
+  return out.sort((a, b) => a.precio - b.precio);
 }
 
 export const nombreCorto = p => corto(p);
