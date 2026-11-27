@@ -107,7 +107,7 @@ export function correoOferta(env, sim, d, r, codigo, hasta, baja) {
   const html = marco(asunto, `<p style="${P}">Hola${n ? `, ${esc(n)}` : ''}:</p>
 <p style="${P}">Hace unos días hiciste tu diagnóstico de ${esc(examenDe(sim))} y sacaste ${esc(textoResultado(r))}. Si quieres prepararte en serio, te dejamos un código personal con <b>${SEG.pct} % de descuento</b> en el ${esc(sim.titulo)}:</p>
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:4px 0 22px;width:100%"><tr><td align="center" style="background:#F4F2EF;border-radius:16px;padding:18px 12px"><div style="font-size:26px;font-weight:800;letter-spacing:4px;color:#141114;font-family:'SF Mono',Menlo,Consolas,monospace">${esc(codigo)}</div><div style="font-size:12.5px;color:#8b8790;margin-top:6px">Vence el ${esc(fechaHora(hasta))} · un solo uso</div></td></tr></table>
-<p style="${P}">El botón ya lo lleva escrito. Puedes pagar con tarjeta, OXXO o SPEI, y entras en cuanto se confirma el pago.</p>
+<p style="${P}">El botón ya lo lleva escrito. Puedes pagar con tarjeta u OXXO, y entras en cuanto se confirma el pago.</p>
 ${boton(url, `Usar mi ${SEG.pct} %`)}
 <p style="${P}">Si no es para ti, no pasa nada: este es el último correo de tu diagnóstico.</p>
 ${pie(baja)}`, { etiqueta: 'Diagnóstico gratis' });

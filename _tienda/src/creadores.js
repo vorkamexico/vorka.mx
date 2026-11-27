@@ -54,7 +54,7 @@ function paginaSolicitud({ error = '', datos = {} } = {}) {
     <ul class="t-lista">
       <li>${CHECK}<span><b>Te quedas con el 80 %</b> de cada venta, menos la comisión de la pasarela de pago.</span></li>
       <li>${CHECK}<span><b>Pagos automáticos</b> a tu cuenta bancaria ${DIAS_PARA_TRANSFERIR} días después de cada venta.</span></li>
-      <li>${CHECK}<span><b>Tarjeta, OXXO y SPEI</b> para tus compradores, con entrega inmediata por correo.</span></li>
+      <li>${CHECK}<span><b>Tarjeta y OXXO</b> para tus compradores, con entrega inmediata por correo.</span></li>
       <li>${CHECK}<span><b>Revisamos cada producto</b> para cuidar la calidad de la tienda.</span></li>
       <li>${CHECK}<span><b>¿Tienes una app o un SaaS?</b> Véndelo por suscripción mensual o anual: cobramos cada renovación y te transferimos tu parte. <a href="/creadores/docs">Así se conecta tu app</a>.</span></li>
     </ul>

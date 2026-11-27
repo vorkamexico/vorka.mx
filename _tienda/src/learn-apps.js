@@ -80,7 +80,7 @@ ${ul([
   '<b>Qué se vende:</b> productos digitales que se entregan como archivos: plantillas, guías, cuadernos de trabajo, calculadoras, kits. Si lo que hiciste es una plantilla (de hoja de cálculo, de Notion, un kit de código), entra así.',
   '<b>Precio:</b> lo pones tú, con un mínimo de $20 MXN.',
   '<b>Comisión:</b> te quedas con el 80 % de cada venta, menos la comisión del procesador de pagos (Vorka cobra 20 %, salvo acuerdo distinto).',
-  '<b>Pagos:</b> con Stripe, 7 días después de cada venta (al terminar el plazo de reembolso), a tu cuenta bancaria. Tus compradores pagan con tarjeta, OXXO o SPEI.',
+  '<b>Pagos:</b> con Stripe, 7 días después de cada venta (al terminar el plazo de reembolso), a tu cuenta bancaria. Tus compradores pagan con tarjeta u OXXO.',
   '<b>Revisión:</b> Vorka aprueba tu solicitud y revisa cada producto antes de publicarlo. Tú conservas la propiedad de lo que vendes.',
   '<b>Apps y SaaS por suscripción:</b> también puedes vender tu app con cobro mensual o anual. Tú la alojas y das el soporte; la tienda cobra cada mes o cada año, tu app consulta con una llave quién está al corriente y recibe un aviso firmado en cada alta, renovación, pago fallido o cancelación. Vorka se queda con al menos 20 % de cada cobro, también en las renovaciones, y Stripe te paga tu parte 7 días después de cada cobro mensual (11 en los anuales).',
   '<b>Lo que no hace:</b> no aloja tu app ni la programa por ti.',

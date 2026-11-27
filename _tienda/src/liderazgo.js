@@ -40,7 +40,7 @@ const faq = ({ precioN = PRECIO_BASE } = {}) => [
   ['¿Qué tiene que ver con la Mentoría?', `Es el primer paso de toda <a href="${MENTORIA}">mentoría con Brandon Oleynick</a>: con tus resultados fijamos tu punto de partida y medimos tu avance con hechos. Si ya eres cliente de Mentoría, te la mandamos sin costo. Al terminar, si quieres trabajar tu liderazgo, puedes agendar tu sesión de mentoría.`],
   ['¿Cómo la regalo?', 'En la compra elige «Para regalar». Te llega por correo una liga por cada regalo para que se la mandes a quien quieras, por ejemplo por WhatsApp. La liga es personal: la primera persona que la abre y escribe sus datos es quien la contesta.'],
   ['¿Cómo recibo mi acceso?', 'En cuanto se confirma tu pago te llega un correo con el botón «Empezar mi evaluación». Funciona en el navegador del celular o de la computadora; no tienes que descargar nada. Si una mamá o un papá la compra para su hija o hijo, la reenvía tal cual: quien contesta escribe sus propios datos.'],
-  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. Es un pago único de $${precioN} MXN: no se renueva solo. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
+  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO. Es un pago único de $${precioN} MXN: no se renueva solo. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
   ['¿Hay reembolsos?', 'Por ser un producto digital de acceso inmediato, no hay reembolso una vez que empiezas a contestar. Si algo no funciona, escríbenos y lo resolvemos. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.'],
 ];
 
@@ -110,7 +110,7 @@ ${seccionDemo('evaluacion-liderazgo', demoDe('evaluacion-liderazgo'))}
 </div></section>
 
 ${p ? seccionCompra({ titulo: 'Haz tu evaluación', intro: `${precioT}, pago único con 2 aplicaciones.`,
-  pasos: [['Pagas una sola vez', 'Con tarjeta, en OXXO o por SPEI. No se renueva solo.'], ['Te llega tu liga por correo', 'Con el botón «Empezar mi evaluación». Si es regalo, te llega una liga por cada uno.'], ['Contestas en 25 minutos', 'En el celular o la computadora, sin descargar nada.']],
+  pasos: [['Pagas una sola vez', 'Con tarjeta o en OXXO. No se renueva solo.'], ['Te llega tu liga por correo', 'Con el botón «Empezar mi evaluación». Si es regalo, te llega una liga por cada uno.'], ['Contestas en 25 minutos', 'En el celular o la computadora, sin descargar nada.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Tus respuestas no se venden ni se comparten', 'Soporte de personas por correo y WhatsApp'],
   form: formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '', regalo, mensajeEjemplo: '¡Para que sepas todo lo que ya has logrado!' }) })
   : `<section class="lv-sec suave" id="comprar"><div class="marco"><p class="lv-pronto">La venta abre muy pronto. ¿Dudas? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o por <a href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a>.</p></div></section>`}

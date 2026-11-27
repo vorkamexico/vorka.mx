@@ -45,8 +45,8 @@ export function correoRecordatorio(env, orden, items, url, vez = 1, desc = null)
 <p style="${P}">Hola, ${esc(nombre)}:</p>
 <p style="${P}">Vimos que empezaste una compra en la tienda de Vorka México y el pago no se completó. A veces pasa: se cierra la ventana, la tarjeta pide una verificación o la ficha de OXXO se vence.</p>
 ${lista(items.map(i => esc(i.nombre)))}
-${desc ? `<p style="${P}">Para que no se te pase, te dejamos un <b>${desc.pct} % de descuento</b>: tu compra queda en <b>${esc(pesos(desc.ahora))}</b> en lugar de ${esc(pesos(desc.antes))}. Se aplica solo con este botón; puedes pagar con tarjeta, OXXO o SPEI:</p>
-${boton(url, `Terminar mi compra con ${desc.pct} %`)}` : `<p style="${P}">Si todavía te interesa, puedes terminarla aquí. Te abre un pago nuevo con tus mismos datos, por ${esc(pesos(orden.monto_centavos))}, con tarjeta, OXXO o SPEI:</p>
+${desc ? `<p style="${P}">Para que no se te pase, te dejamos un <b>${desc.pct} % de descuento</b>: tu compra queda en <b>${esc(pesos(desc.ahora))}</b> en lugar de ${esc(pesos(desc.antes))}. Se aplica solo con este botón; puedes pagar con tarjeta u OXXO:</p>
+${boton(url, `Terminar mi compra con ${desc.pct} %`)}` : `<p style="${P}">Si todavía te interesa, puedes terminarla aquí. Te abre un pago nuevo con tus mismos datos, por ${esc(pesos(orden.monto_centavos))}, con tarjeta u OXXO:</p>
 ${boton(url, 'Terminar mi compra')}`}
 ${oxxo ? `<p style="${P}">Si ya pagaste en OXXO, ignora este correo: OXXO confirma el pago hasta 1 día hábil después y en cuanto se refleje te llegan tus archivos.</p>` : ''}
 <p style="${P}">Si tienes alguna duda sobre el producto o el pago, responde este correo o escríbenos por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a>. Con gusto te ayudamos.</p>
@@ -58,7 +58,7 @@ Vimos que empezaste una compra en la tienda de Vorka México y el pago no se com
 
 ${items.map(i => `- ${i.nombre}`).join('\n')}
 
-${desc ? `Para que no se te pase, te dejamos un ${desc.pct} % de descuento: tu compra queda en ${pesos(desc.ahora)} en lugar de ${pesos(desc.antes)}. Se aplica solo con esta liga (tarjeta, OXXO o SPEI):` : `Si todavía te interesa, puedes terminarla aquí (pago nuevo con tus mismos datos, por ${pesos(orden.monto_centavos)}, con tarjeta, OXXO o SPEI):`}
+${desc ? `Para que no se te pase, te dejamos un ${desc.pct} % de descuento: tu compra queda en ${pesos(desc.ahora)} en lugar de ${pesos(desc.antes)}. Se aplica solo con esta liga (tarjeta u OXXO):` : `Si todavía te interesa, puedes terminarla aquí (pago nuevo con tus mismos datos, por ${pesos(orden.monto_centavos)}, con tarjeta u OXXO):`}
 ${url}
 ${oxxo ? '\nSi ya pagaste en OXXO, ignora este correo: OXXO confirma el pago hasta 1 día hábil después y en cuanto se refleje te llegan tus archivos.\n' : ''}
 Si tienes alguna duda, responde este correo o escríbenos por WhatsApp: ${SOPORTE.whatsapp}

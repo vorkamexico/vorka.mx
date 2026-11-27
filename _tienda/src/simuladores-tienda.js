@@ -103,10 +103,10 @@ ${paquetes.length ? `<section class="t-sec suave" id="paquetes"><div class="marc
   <div class="cab"><span class="etiqueta">Paquetes</span><h2 class="h2">¿Presentas en varias universidades?</h2>
   <p class="lead">Llévate el plan Completo de 2 o 3 simuladores por menos. Cada uno trae todo: práctica sin límite con tutor, 2 exámenes completos, plan de estudio, apuntes y la app.</p></div>
   <div class="ts-paqs" role="radiogroup" aria-label="Elige tu paquete">${opciones}</div>
-  <ul class="ts-trae">${['El plan Completo de cada simulador', '6 meses de acceso a todo', 'Un solo pago con tarjeta, OXXO o SPEI', 'Se puede regalar'].map(t => `<li>${CHECK}<span>${t}</span></li>`).join('')}</ul>
+  <ul class="ts-trae">${['El plan Completo de cada simulador', '6 meses de acceso a todo', 'Un solo pago con tarjeta u OXXO', 'Se puede regalar'].map(t => `<li>${CHECK}<span>${t}</span></li>`).join('')}</ul>
 </div></section>
 ${seccionCompra({ titulo: `Paquete ${esc(elegido.nombres.join(' + '))}`, intro: `${esc(precio(elegido.p))}, pago único.${elegido.ahorro ? ` Ahorras ${esc(precio({ precio_centavos: elegido.ahorro }))} contra comprarlos por separado.` : ''}`,
-  pasos: [['Pagas una sola vez', 'Con tarjeta, en OXXO o por SPEI. No se renueva solo.'], ['Te llega un correo', 'Con el botón para ver tus simuladores y entrar a cada uno.'], ['Practicas en cada uno', 'Con su plan Completo durante 6 meses.']],
+  pasos: [['Pagas una sola vez', 'Con tarjeta o en OXXO. No se renueva solo.'], ['Te llega un correo', 'Con el botón para ver tus simuladores y entrar a cada uno.'], ['Practicas en cada uno', 'Con su plan Completo durante 6 meses.']],
   garantias: ['Pago 100% protegido con Stripe', 'Si algo falla, lo resolvemos o te devolvemos tu dinero', 'Acceso inmediato al confirmarse tu pago'],
   form: formCompra(elegido.p, { error: url.searchParams.get('error') || '', ref: code || '', regalo, mensajeEjemplo: '¡Mucho éxito en tus exámenes!' }) })}` : ''}
 ${seccionFaq({ titulo: 'Sobre los simuladores y los paquetes', items: FAQ.map(([q, a]) => `<details><summary>${esc(q)}</summary><div>${esc(a)}</div></details>`).join(''), whatsappTexto: 'Hola Vorka, tengo una duda sobre los simuladores.' })}`,

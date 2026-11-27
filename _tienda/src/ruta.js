@@ -63,7 +63,7 @@ const faq = ({ precioN = PRECIO_BASE } = {}) => [
   ['¿A dónde va lo que pago?', `Lo recibido va para <a href="${IMPACTO_URL}" target="_blank" rel="noopener">IMPACTO</a>.`],
   ['¿Cómo lo regalo?', 'En la compra elige «Para regalar». Te llega por correo una liga por cada regalo para que se la mandes a quien quieras, por ejemplo por WhatsApp. Quien la abre confirma su correo y el acceso queda a su nombre: su año empieza ese día. Cada liga funciona una sola vez.'],
   ['¿Cómo recibo mi acceso?', `En cuanto se confirma tu pago te llega un correo con el botón «Empezar mi Ruta». Funciona una sola vez durante 7 días. Después entras en <a href="${APP}/">ruta.vorka.mx</a> con tu correo y creas tu contraseña. Funciona en el navegador del celular o de la computadora; no tienes que descargar nada.`],
-  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. Es un pago único de $${precioN} MXN: no se renueva solo. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
+  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO. Es un pago único de $${precioN} MXN: no se renueva solo. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
   ['¿Hay reembolsos?', 'Por ser un producto digital de acceso inmediato no hay reembolso una vez que entras. Si algo no funciona, escríbenos y lo resolvemos. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.'],
   ['¿Me pueden facturar?', 'Sí. Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales y el número de orden que viene en tu correo, dentro del mismo mes de la compra.'],
 ];
@@ -164,7 +164,7 @@ ${seccionDemo('ruta-de-impacto', demoDe('ruta-de-impacto'))}
 </div></section>
 
 ${p ? seccionCompra({ titulo: 'Empieza tu Ruta', intro: `${precioT}, pago único con acceso por un año. Lo recibido va para <a href="${IMPACTO_URL}" target="_blank" rel="noopener">IMPACTO</a>.`,
-  pasos: [['Pagas una sola vez', 'Con tarjeta, en OXXO o por SPEI. No se renueva solo.'], ['Te llega tu acceso por correo', 'Con el botón «Empezar mi Ruta». Si es regalo, te llega una liga por cada uno.'], ['Empiezas tu primer nivel', 'En el celular o la computadora, sin descargar nada.']],
+  pasos: [['Pagas una sola vez', 'Con tarjeta o en OXXO. No se renueva solo.'], ['Te llega tu acceso por correo', 'Con el botón «Empezar mi Ruta». Si es regalo, te llega una liga por cada uno.'], ['Empiezas tu primer nivel', 'En el celular o la computadora, sin descargar nada.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Acceso por un año desde que entras', 'Soporte de personas por correo y WhatsApp'],
   form: formCompra(p, { error: url.searchParams.get('error') || '', ref: code || '', regalo, mensajeEjemplo: '¡Tu proyecto puede cambiar tu colonia!' }) })
   : `<section class="ri-sec suave" id="comprar"><div class="marco"><p class="ri-pronto">La venta abre muy pronto. ¿Dudas? Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> o por <a href="${WHATSAPP}" target="_blank" rel="noopener">WhatsApp</a>.</p></div></section>`}

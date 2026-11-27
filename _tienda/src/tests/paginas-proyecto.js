@@ -55,7 +55,7 @@ const FAQ = precioT => [
   ['¿Qué es el lavado de imagen?', 'Presumir un impacto social o ambiental que no es real o que es mucho menor de lo que se dice. Cada idea trae consejos para comunicar con cifras reales y dejar que la comunidad sea la protagonista.'],
   ['¿Es asesoría legal o fiscal?', 'No. Es una guía para empezar. Para donativos deducibles, contratos o trámites, consulta con una o un profesional.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tus ideas y tu reporte. No se venden ni se comparten. Si no compras, se borran a los 12 meses, y puedes borrarlas tú cuando quieras. Consulta el <a href="/privacidad/#tests">aviso de privacidad</a>.'],
-  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. ${precioT}, pago único. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
+  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO. ${precioT}, pago único. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
 ];
 
 export async function landingProyecto(env, req, url, { p, code = null, cookie = null, error = '', datos = {}, status = 200, aviso = '' } = {}) {

@@ -83,11 +83,11 @@ function bloques(o, v) {
   return {
     pagado,
     pendiente_efectivo: { clase: 'espera', icono: ICONOS.reloj, titulo: 'Tu pedido está apartado',
-      texto: 'Tu pago se confirma al realizarlo; te llegará el correo automáticamente. Si pagas en OXXO, tienes 3 días con la referencia que te dio Stripe; OXXO confirma el pago hasta 1 día hábil después de que pagas, así que el correo puede tardar ese tiempo. Si es por SPEI, usa la CLABE que te mostró.' },
+      texto: 'Tu pago se confirma al realizarlo; te llegará el correo automáticamente. Si pagas en OXXO, tienes 3 días con la referencia que te dio Stripe; OXXO confirma el pago hasta 1 día hábil después de que pagas, así que el correo puede tardar ese tiempo. Si elegiste transferencia, usa la CLABE que te mostró.' },
     confirmando: { clase: 'espera', icono: ICONOS.carga, titulo: 'Estamos confirmando tu pago',
       texto: 'Esto suele tardar unos segundos. No cierres esta página.' },
     rechazado: { clase: 'alerta', icono: ICONOS.x, titulo: 'No se completó el pago',
-      texto: 'No se hizo ningún cargo. Puedes intentarlo otra vez con otra tarjeta, en OXXO o por SPEI.', extra: reintentar },
+      texto: 'No se hizo ningún cargo. Puedes intentarlo otra vez con otra tarjeta o en OXXO.', extra: reintentar },
     reembolsado: { clase: 'alerta', icono: ICONOS.x, titulo: 'Esta compra fue reembolsada',
       texto: 'Si tienes dudas, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.' },
   }[v];

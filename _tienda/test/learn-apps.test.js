@@ -118,7 +118,7 @@ describe('Vorka Learn › Crea tu app', () => {
       else expect(art).not.toContain('id="tienda-vorka"');
     }
     // Lo que dice el bloque sale de los términos para creadores (legal/creadores/) y de src/creadores.js
-    for (const re of [/quien publica esta guía/, /mínimo de \$20 MXN/, /80 %/, /20 %, salvo acuerdo distinto/, /7 días después de cada venta/, /tarjeta, OXXO o SPEI/,
+    for (const re of [/quien publica esta guía/, /mínimo de \$20 MXN/, /80 %/, /20 %, salvo acuerdo distinto/, /7 días después de cada venta/, /tarjeta u OXXO/,
       /revisa cada producto/, /por suscripción/, /al menos 20 % de cada cobro/, /creadores\/docs/]) expect(TIENDA_VORKA).toMatch(re);
     expect(TIENDA_VORKA).not.toMatch(/\d[\d,.]*\s*(visitas|visitantes|usuarios)/i);
   });

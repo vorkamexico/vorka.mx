@@ -213,7 +213,7 @@
         '<div class="sim-cant"><span>¿Cuántos quieres?</span><div class="sim-cant-c"><button type="button" id="c-menos" aria-label="Uno menos">−</button><b class="num" id="c-n" aria-live="polite">1</b><button type="button" id="c-mas" aria-label="Uno más">+</button></div></div>' +
         '<div class="sim-total"><span>Total</span><b class="num" id="c-total">' + precio(x.precio_centavos) + '</b></div>' +
         '<label class="sim-casilla"><input type="checkbox" id="c-term" required><span>Acepto los <a href="/legal/terminos/" target="_blank" rel="noopener">términos y condiciones</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>' +
-        '<p class="sim-nota">Se carga a la cuenta de ' + esc(YO.email) + '. Pagas con tarjeta, OXXO o SPEI.</p>' +
+        '<p class="sim-nota">Se carga a la cuenta de ' + esc(YO.email) + '. Pagas con tarjeta u OXXO.</p>' +
         '<p class="sim-error" id="c-error" role="alert" hidden></p>' +
         '<button class="btn tinta" id="c-pagar">Ir a pagar ' + FL + '</button>' +
       '</form>' +
@@ -633,7 +633,7 @@
       '<form class="sim-card sim-compra" id="f-plan"><ul class="sim-plan-l">' + i.trae.map(function (t) { return '<li>' + ICONO.ok + '<span>' + esc(t) + '</span></li>'; }).join('') + '</ul>' +
         '<div class="sim-total"><span>Total</span><b class="num">' + precio(o.precio_centavos) + '</b></div>' +
         '<label class="sim-casilla"><input type="checkbox" id="p-term" required><span>Acepto los <a href="/legal/terminos/" target="_blank" rel="noopener">términos y condiciones</a> y el <a href="/privacidad/" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>' +
-        '<p class="sim-nota">Se suma a la cuenta de ' + esc(YO.email) + ' y queda disponible en cuanto se confirma tu pago. Pagas con tarjeta, OXXO o SPEI.</p>' +
+        '<p class="sim-nota">Se suma a la cuenta de ' + esc(YO.email) + ' y queda disponible en cuanto se confirma tu pago. Pagas con tarjeta u OXXO.</p>' +
         '<p class="sim-error" id="p-error" role="alert" hidden></p><button class="btn tinta" id="p-pagar">Ir a pagar ' + FL + '</button></form>' +
       '<div class="botones"><button class="btn blanco" id="b-inicio">Volver al inicio</button></div></section>');
     document.getElementById('b-inicio').onclick = inicio;
