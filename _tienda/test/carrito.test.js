@@ -194,3 +194,11 @@ describe('tarjetas con varias opciones', () => {
     expect(JSON.parse(sims[1]).every(o => /-paquete$/.test(o.s))).toBe(true);
   });
 });
+
+describe('Cupo en el catálogo', () => {
+  it('su tarjeta («Pro desde») abre «Elige tu opción» con sus niveles', async () => {
+    const h = await (await get('/tienda/')).text();
+    expect(h).toMatch(/data-carrito-elige='[^']*cupo-pro[^']*' data-carrito-nombre="Cupo/);
+    expect(h).not.toMatch(/data-carrito-slug="cupo-pro"/);
+  });
+});

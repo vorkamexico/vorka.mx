@@ -351,13 +351,13 @@ export async function paginaCatalogo(env, req, url) {
     url.searchParams.has('cupon') ? avisoCupon(env, url.searchParams.get('cupon')) : null,
     env.DB.prepare('SELECT slug, nombre, descripcion_corta, precio_centavos, contenido, categoria, creador_id, orden FROM products WHERE activo = 1 ORDER BY orden, precio_centavos').all(), combosNegocio(env).catch(() => [])]);
   // «Agregar al carrito» en la tarjeta: pago único con precio fijo (no «Desde») y los planes mensuales de las apps
-  const agregable = v => !/^simulador/.test(grupoCarrito(v.p)) && ((enCarrito(v.p) && !String(v.precio).startsWith('Desde')) || (enSuscripcion(v.p) && v.p.contenido.suscripcion.intervalo === 'month'));
+  const agregable = v => !/^simulador/.test(grupoCarrito(v.p)) && ((enCarrito(v.p) && !/desde/i.test(String(v.precio))) || (enSuscripcion(v.p) && v.p.contenido.suscripcion.intervalo === 'month'));
   // Tarjetas «Desde» (Brindi, Cupo, simuladores): el botón abre «Elige tu plan» en el carrito lateral con cada opción y su precio
   const todosActivos = activos.results.map(r => { let c; try { c = JSON.parse(r.contenido || '{}'); } catch { c = {}; } return { ...r, contenido: c }; });
   const opcionesDe = v => {
     if (agregable(v)) return null;
     const ops = v.url === HUB_SIMULADORES ? todosActivos.filter(p => /^simulador-/.test(p.contenido.acceso?.app || '') && p.contenido.acceso?.tipo === 'paquete' && enCarrito(p))
-      : String(v.precio).startsWith('Desde') && enCarrito(v.p) ? todosActivos.filter(p => p.contenido.acceso?.app === grupoCarrito(v.p) && enCarrito(p)).sort((a, b) => a.precio_centavos - b.precio_centavos) : [];
+      : /desde/i.test(String(v.precio)) && enCarrito(v.p) ? todosActivos.filter(p => p.contenido.acceso?.app === grupoCarrito(v.p) && enCarrito(p)).sort((a, b) => a.precio_centavos - b.precio_centavos) : [];
     return ops.length ? ops.map(p => ({ s: p.slug, a: grupoCarrito(p), n: nombreCorto(p), p: p.precio_centavos, d: String(p.descripcion_corta || '').slice(0, 110) })) : null;
   };
   const attrElige = v => { const o = opcionesDe(v); return o ? ` data-carrito-elige='${JSON.stringify(o).replace(/'/g, '&#39;').replace(/</g, '\\u003c')}' data-carrito-nombre="${esc(v.nombre)}"` : ''; };
