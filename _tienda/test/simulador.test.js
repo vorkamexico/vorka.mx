@@ -260,9 +260,9 @@ describe('examen PAA completo (estructura real)', () => {
 describe('tienda por secciones y SEO', () => {
   it('el catálogo agrupa por secciones y no lista el simulacro adicional', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toMatch(/data-linea="examenes"[^>]*>Educación <small>\d+<\/small><\/a>/);
-    // Cuatro secciones: Educación, Negocios (Agenda, Vuelve, Vende y kits), Eventos (Brindi y Cupo) y Finanzas personales
-    expect(html).toMatch(/data-linea="negocios"[^>]*>Negocios <small>\d+<\/small><\/a>/);
+    expect(html).toMatch(/data-linea="examenes"[^>]*>Exámenes <small>\d+<\/small><\/a>/);
+    // Por necesidad: Exámenes, Conócete, Tu negocio (Agenda, Vuelve, Vende y kits), Eventos, Tu dinero y Lo hacemos por ti
+    expect(html).toMatch(/data-linea="negocios"[^>]*>Tu negocio <small>\d+<\/small><\/a>/);
     expect(html).not.toMatch(/data-linea="(emprender|invitaciones|lealtad|citas|vende)"/);
     expect(html).toContain('href="#examenes"');
     expect(html).not.toContain('simulador-paa-intento');

@@ -1,3 +1,4 @@
+import { tituloSeo } from '../src/paginas.js';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { d1 } from './d1.js';
 import worker from '../src/index.js';
@@ -14,7 +15,7 @@ describe('páginas de la PAA por universidad', () => {
       expect(r.status).toBe(200);
       const html = await r.text();
       expect(html).toContain(`<link rel="canonical" href="https://vorka.mx/simulador-paa/${k}/">`);
-      expect(html).toContain(`<title>${u.titulo.replace(/&/g, '&amp;')}</title>`);
+      expect(html).toContain(`<title>${tituloSeo(u.titulo).replace(/&/g, '&amp;')}</title>`);
       for (const f of u.fuentes) expect(html).toContain(f.url.replace(/&/g, '&amp;'));
       expect(html).toContain('href="/simulador-paa/"');
       expect(html).toContain('No estamos afiliados');

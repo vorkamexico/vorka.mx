@@ -92,7 +92,7 @@ export async function paginaRuta(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
   return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Ruta de Impacto' }, noindex: !p,
-    titulo: 'Ruta de Impacto: curso para hacer tu proyecto social | Jóvenes de 15 a 29 años', ruta: RUTA_RUTA, imagen: OG_RUTA, descripcion,
+    titulo: 'Ruta de Impacto: curso para tu proyecto social (15 a 29 años)', ruta: RUTA_RUTA, imagen: OG_RUTA, descripcion,
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: p ? SCRIPT_COMPRA : '',

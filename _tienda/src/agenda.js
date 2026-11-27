@@ -136,7 +136,7 @@ export async function paginaAgenda(env, req, url) {
       <ul>${lista.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
       <a class="ag-btn${rec ? '' : ' ghost oscuro'}" href="?plan=${(m || a).slug}#comprar" data-plan="${(m || a).slug}">Suscribirme</a></article>` : '';
   const res = pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Agenda' },
-    titulo: 'Agenda: citas en línea para consultorios y negocios | Prueba 7 días gratis', ruta: RUTA_AGENDA, imagen: OG_AGENDA,
+    titulo: 'Agenda: citas en línea para tu negocio | Prueba 7 días gratis', ruta: RUTA_AGENDA, imagen: OG_AGENDA,
     descripcion: `Tu página de citas en línea: tus clientes reservan servicio, día y hora, y los recordatorios salen solos. $${precioProf} al mes por profesional. Prueba 7 días gratis.`,
     head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

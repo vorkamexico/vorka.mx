@@ -92,7 +92,7 @@ describe('ficha /tienda/ruta-de-impacto/', () => {
 
   it('SEO: título, descripción, canónica, OG, Course y FAQPage', async () => {
     const h = await (await pedir('/tienda/ruta-de-impacto/')).text();
-    expect(h).toMatch(/<title>Ruta de Impacto: curso para hacer tu proyecto social \| Jóvenes de 15 a 29 años<\/title>/);
+    expect(h).toMatch(/<title>Ruta de Impacto: curso para tu proyecto social \(15 a 29 años\)<\/title>/);
     expect(h).toMatch(/<meta name="description" content="Curso para jóvenes de 15 a 29 años[^"]+Lo recibido va para IMPACTO\.">/);
     expect(h).toContain('<link rel="canonical" href="https://vorka.mx/tienda/ruta-de-impacto/">');
     expect(h).toContain('<meta property="og:image" content="https://vorka.mx/assets/tienda/v3/ruta-de-impacto-og.jpg">');
@@ -125,13 +125,13 @@ describe('ficha /tienda/ruta-de-impacto/', () => {
 });
 
 describe('catálogo, sitemap y ligas', () => {
-  it('sale en Educación con su portada, se puede regalar desde la tarjeta y va en el sitemap', async () => {
+  it('sale en «Para conocerte» con su portada, se puede regalar desde la tarjeta y va en el sitemap', async () => {
     const h = await (await pedir('/tienda/')).text();
-    const grupo = h.match(/<section class="t-grupo" data-linea="examenes"[\s\S]*?<\/section>/)[0];
+    const grupo = h.match(/<section class="t-grupo" data-linea="conocerte"[\s\S]*?<\/section>/)[0];
     expect(grupo).toContain('href="/tienda/ruta-de-impacto/"');
     expect(grupo).toContain('/assets/tienda/v3/ruta-de-impacto-portada.webp');
     expect(grupo).toContain('/tienda/ruta-de-impacto/?regalo=1#comprar');
-    expect(grupo).toContain('Exámenes y proyectos');
+    expect(grupo).toContain('Para conocerte y decidir');
     const sm = await (await pedir('/tienda/sitemap.xml')).text();
     expect(sm.match(/ruta-de-impacto/g)).toHaveLength(1);
     // el slug genérico de producto no abre otra ficha: es la misma página

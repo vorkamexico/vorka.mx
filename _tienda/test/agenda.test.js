@@ -83,7 +83,7 @@ describe('ficha /tienda/agenda/', () => {
   });
   it('SEO: título, descripción, canónico, OG propia y JSON-LD de Product con AggregateOffer y FAQPage', async () => {
     const h = await (await pedir('/tienda/agenda/')).text();
-    expect(h).toContain('<title>Agenda: citas en línea para consultorios y negocios | Prueba 7 días gratis</title>');
+    expect(h).toContain('<title>Agenda: citas en línea para tu negocio | Prueba 7 días gratis</title>');
     expect(h).toMatch(/<meta name="description" content="Tu página de citas en línea[^"]+\$99 al mes por profesional/);
     expect(h).toContain('<link rel="canonical" href="https://vorka.mx/tienda/agenda/">');
     expect(h).toContain('<meta property="og:image" content="https://vorka.mx/assets/tienda/v3/agenda-og.jpg">');

@@ -168,7 +168,7 @@ function vista(p, url, desdeBrindi) {
     const app = APPS_TIENDA[p.contenido?.acceso?.app];
     if (app) return { p, url, nombre: app.nombre, texto: p.descripcion_corta, incluye: (p.contenido?.incluye || []).slice(0, 3).map(x => x.titulo || x), cat: 'Acceso en línea',
       img: conPortada(p), precio: app.precio(p), regalable: false, min: p.precio_centavos };
-    if (url === HUB_SIMULADORES) return { p, url, nombre: 'Simuladores de examen en línea', texto: 'PAA, UNAM, IPN, ECOEMS y prepa UG: práctica con tutor y exámenes completos como el real. Si presentas en varias universidades, paquetes desde $499.',
+    if (url === HUB_SIMULADORES) return { p, url, nombre: 'Simuladores de examen en línea', texto: 'PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS y prepa UG: práctica con tutor y exámenes completos como el real. Si presentas en varias, llévate 2 o más y se descuenta solo.',
       incluye: [], cat: 'Acceso en línea', img: { ...p, imagen: '/assets/tienda/v3/simuladores-portada.webp' }, precio: `Desde ${precio(p)}`, regalable: true, min: p.precio_centavos };
     // los planes del simulador se presentan con el nombre del simulador (no el del plan)
     const sim = p.contenido?.plan && SIM_TIENDA[p.contenido?.acceso?.app];
@@ -284,7 +284,59 @@ const CSS_VITRINA = `
 .v-catalogo .t-card-pie b{font-size:16px}
 .t-card-agregar{margin-top:10px;width:100%;justify-content:center}
 .t-card-mas{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--fg);text-decoration:none}.t-card-mas svg{width:15px;height:15px}
+/* Catálogo compacto (por necesidad): 4 por fila en compu y, en celular, foto chica a la izquierda y el texto a la derecha */
+.v-que{margin:30px 0 0;font-weight:700;font-size:15px;color:var(--fg-2)}.v-que+.v-lineas{margin-top:12px}
+.v-catalogo .t-grupos{gap:64px}
+.v-catalogo .t-card p{max-height:3em}
+@media(min-width:1100px){.v-catalogo .t-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:40px 24px}.v-catalogo .t-card h3{font-size:16px}.v-catalogo .t-card p{font-size:14.5px}}
+@media(max-width:560px){
+  .v-catalogo .t-grupos{gap:48px}.v-catalogo .t-grupo-cab{margin-bottom:18px}.v-catalogo .t-grupo-cab p{font-size:15px}
+  .v-catalogo .t-cards{gap:14px}
+  .v-catalogo .t-card{grid-template-columns:116px minmax(0,1fr);gap:14px;align-items:start;padding-bottom:14px;border-bottom:1px solid var(--line);border-radius:0}
+  .v-catalogo .t-card:last-child{border-bottom:0;padding-bottom:0}
+  .v-catalogo .t-card-img{border-radius:14px}
+  .v-catalogo .t-card-t{gap:4px}
+  .v-catalogo .t-card h3{font-size:16px;line-height:1.25}
+  .v-catalogo .t-card p{font-size:14px;line-height:1.45}
+  .v-catalogo .t-card-pie{margin-top:4px;gap:4px 12px}.v-catalogo .t-card-pie b{font-size:15px}
+  .v-catalogo .t-card p{max-height:2.9em}
+  .v-catalogo .t-card-acc{display:none}   /* la foto y el nombre ya llevan a la ficha; ahí también se regala */
+  .t-card-agregar{margin-top:6px;width:auto;justify-self:start;min-height:38px;padding:0 16px;font-size:14px}
+}
 `;
+
+// Catálogo por necesidad (nov 2026): la gente no busca «líneas», busca qué resolver. Cada producto cae en la primera
+// necesidad que le toca; una categoría nueva desde el panel sale como su propio grupo, como antes.
+// Los ids de grupo siguen siendo los de las líneas (#examenes, #negocios…) para no romper ligas ni cupones por línea;
+// cada tarjeta guarda además su línea (data-l) para que el filtro de un cupón de Educación muestre también «Conócete».
+const PARA_TI = ['test-vocacional', 'que-proyecto-social', 'liderazgo', 'ruta'];
+const NECESIDADES = [
+  { id: 'examenes', linea: 'Exámenes', titulo: 'Para tu examen de admisión', si: v => esSimulador(v.p),
+    texto: 'Simuladores con tutor para PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS y prepa UG. Practicas sin límite y llegas sabiendo qué esperar.' },
+  { id: 'conocerte', linea: 'Conócete', titulo: 'Para conocerte y decidir', si: (v, g) => PARA_TI.includes(v.p.contenido?.acceso?.app) || g.id === 'examenes',
+    texto: 'Qué carrera estudiar, qué proyecto social hacer y cómo lideras hoy: reportes completos que no vencen. Llévate dos o más y el descuento se aplica solo.' },
+  { id: 'negocios', linea: 'Tu negocio', titulo: 'Para tu negocio', si: (v, g) => g.id === 'negocios',
+    texto: 'Que tus clientes reserven solos, regresen y te paguen fácil. Cada app se prueba gratis; si quieres todo junto, Negocio Completo.' },
+  { id: 'eventos', linea: 'Eventos', titulo: 'Para tus eventos', si: (v, g) => g.id === 'eventos',
+    texto: 'Brindi: invitaciones digitales para bodas, XV años y toda celebración. Cupo: registro, cover y check-in con QR, gratis hasta 30 personas.' },
+  { id: 'finanzas', linea: 'Tu dinero', titulo: 'Para tu dinero', si: (v, g) => g.id === 'finanzas',
+    texto: 'Clara: tus tarjetas, fechas de pago y gastos claros, gratis con 1 tarjeta. Cuentas: lo que prestas a familiares y amigos, al día.' },
+  { id: 'servicios', linea: 'Lo hacemos por ti', titulo: 'Que lo hagamos por ti', si: (v, g) => g.id === 'servicios',
+    texto: 'Tu página web o tu propia app en las tiendas: la diseñamos, la publicamos y la mantenemos.' },
+];
+export function porNecesidad(lineas) {
+  const grupos = new Map(NECESIDADES.map(n => [n.id, { id: n.id, linea: n.linea, titulo: n.titulo, texto: n.texto, vistas: [] }]));
+  for (const g of lineas) for (const v of g.vistas) {
+    const n = NECESIDADES.find(x => x.si(v, g));
+    if (n) { grupos.get(n.id).vistas.push({ ...v, l: g.id, ln: g.linea }); continue; }
+    if (!grupos.has(g.id)) grupos.set(g.id, { id: g.id, linea: g.linea, titulo: g.titulo, texto: g.texto, vistas: [] });
+    grupos.get(g.id).vistas.push({ ...v, l: g.id, ln: g.linea });
+  }
+  // Negocio Completo se vende como servicio, pero el dueño lo busca en «Tu negocio»: va ahí primero (y solo ahí)
+  const neg = grupos.get('negocios'), serv = grupos.get('servicios'), nc = serv?.vistas.find(v => esNegocio(v.p));
+  if (nc && neg.vistas.length) { serv.vistas = serv.vistas.filter(v => v !== nc); neg.vistas.unshift(nc); }
+  return [...grupos.values()].filter(g => g.vistas.length);
+}
 
 export async function paginaCatalogo(env, req, url) {
   // Todo a la vez (antes en fila: cada viaje a la base desde México suma ~70 ms)
@@ -296,18 +348,17 @@ export async function paginaCatalogo(env, req, url) {
   const planesBrindi = activos.results
     .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
   const desdeBrindi = planesBrindi.length ? Math.min(...planesBrindi.map(x => x.precio_centavos)) : null;
-  const secciones = seccionesCatalogo(productos).map(g => ({ ...g, vistas: vistas(g.productos, desdeBrindi) }));
+  const lineas = seccionesCatalogo(productos).map(g => ({ ...g, vistas: vistas(g.productos, desdeBrindi) }));
+  const secciones = porNecesidad(lineas);
   const todas = secciones.flatMap(g => g.vistas);
-  // Negocio Completo vive en Servicios, pero también va primero en Negocios: ahí lo busca el dueño de un negocio
-  const ncVista = todas.find(v => esNegocio(v.p)), lineaNeg = secciones.find(g => g.id === 'negocios');
-  if (ncVista && lineaNeg && !lineaNeg.vistas.includes(ncVista)) lineaNeg.vistas.unshift(ncVista);
+  const ncVista = todas.find(v => esNegocio(v.p));
 
   // Portada de la tienda: menos es más. Arriba la promesa y una vitrina con las líneas; abajo una sola cuadrícula de
   // productos agrupados por línea, cada una con su título, y filtros por línea (sin JavaScript se ven todos).
   const desde = g => { const b = g.vistas.find(v => esBrindi(v.p)); if (g.vistas.some(v => esCupo(v.p))) return 'Gratis para empezar'; return `Desde ${b ? b.precio.replace('Desde ', '') : precio({ precio_centavos: Math.min(...g.vistas.map(v => v.p.precio_centavos)) })}`; };
   // Tarjeta de producto: la portada completa (4:3, sin recortar) sobre fondo neutro, nombre, precio y un solo botón
   const tarjeta = (v, g, primera) => `
-    <article class="t-card" data-linea="${esc(g.id)}" data-buscar="${esc(sinAcentos(`${v.nombre} ${v.texto || ''} ${g.linea} ${g.titulo}`))}">
+    <article class="t-card" data-linea="${esc(g.id)}" data-l="${esc(v.l)}" data-buscar="${esc(sinAcentos(`${v.nombre} ${v.texto || ''} ${g.linea} ${g.titulo} ${v.ln || ''}`))}">
       <a class="t-card-img" href="${esc(v.url)}" tabindex="-1" aria-hidden="true">${portada(v.img)}<span class="t-card-ver">Ver detalles</span></a>
       <div class="t-card-t">
         <span class="t-cat">${esc(g.linea)}</span>
@@ -328,7 +379,7 @@ export async function paginaCatalogo(env, req, url) {
   const ld = [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: todas.map((v, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITIO}${v.url}`, name: v.nombre })) },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ_TIENDA.map(f => ({ '@type': 'Question', name: f.p, acceptedAnswer: { '@type': 'Answer', text: f.r.replace(/<[^>]+>/g, '') } })) }];
   return pagina({
-    titulo: 'Tienda Vorka México · Simuladores de examen, invitaciones digitales y apps para tu negocio', ruta: '/tienda/', navActual: 'inicio', imagen: 'https://vorka.mx/assets/tienda/og/catalogo.jpg',
+    titulo: 'Tienda Vorka · Simuladores de examen, invitaciones y apps', ruta: '/tienda/', navActual: 'inicio', imagen: 'https://vorka.mx/assets/tienda/og/catalogo.jpg',
     descripcion: 'Simuladores de examen (PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta u OXXO.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
@@ -343,7 +394,7 @@ export async function paginaCatalogo(env, req, url) {
     <h1 class="v-h1">Herramientas digitales para estudiar, celebrar y <em>hacer crecer tu negocio.</em></h1>
     <p class="v-sub">Simuladores de examen, invitaciones, eventos y apps para tu negocio. Entrega inmediata por correo; pagas con tarjeta u OXXO.</p>
     <div class="v-botones"><a class="btn v-btn" href="#productos">Ver el catálogo ${FLECHA}</a><a class="btn v-btn sec" href="/tienda/puntos/">Gana puntos recomendando</a></div>
-    ${secciones.length > 1 ? `<nav class="v-lineas" aria-label="Explora por línea">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}>${esc(g.linea)} <small>${g.vistas.length}</small></a>`).join('')}</nav>` : ''}
+    ${secciones.length > 1 ? `<p class="v-que">¿Qué necesitas?</p><nav class="v-lineas" aria-label="¿Qué necesitas?">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}>${esc(g.linea)} <small>${g.vistas.length}</small></a>`).join('')}</nav>` : ''}
   </div>
 </section>
 <section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
@@ -355,7 +406,7 @@ export async function paginaCatalogo(env, req, url) {
 <section class="t-sec t-catalogo v-catalogo" id="productos"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
     <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>
-    ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por línea"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>
+    ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por necesidad"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>
   ${secciones.length ? `<div class="t-grupos">${secciones.map(g => `
   <section class="t-grupo" data-linea="${esc(g.id)}" id="${esc(g.id)}" aria-labelledby="g-${esc(g.id)}">
     <div class="t-grupo-cab"><div><span class="t-cat">${esc(g.linea)}</span><h3 class="t-grupo-h" id="g-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div></div>
@@ -375,14 +426,14 @@ const SCRIPT_CATALOGO = `(function(){
   var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-cards .t-card'));
   var caja=document.querySelector('.t-buscar'), q=document.getElementById('buscar'), sin=document.getElementById('sin-resultados'), linea='';
   var norm=function(t){ return String(t||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim(); };
-  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); [].forEach.call(document.querySelectorAll('.t-grupo'),function(g){ g.hidden=!g.querySelector('.t-card:not([hidden])'); }); if(sin) sin.hidden=n>0; }
+  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea||c.dataset.l===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); [].forEach.call(document.querySelectorAll('.t-grupo'),function(g){ g.hidden=!g.querySelector('.t-card:not([hidden])'); }); if(sin) sin.hidden=n>0; }
   function filtra(k){ linea=k; fs.forEach(function(a){ if(a.dataset.f===k) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); }); pinta(); }
   document.addEventListener('click',function(e){ var a=e.target.closest('[data-f]'); if(!a||!fs.length) return; e.preventDefault(); filtra(a.dataset.f); document.getElementById('productos').scrollIntoView({behavior:'smooth'}); history.replaceState(null,'',a.dataset.f?'#'+a.dataset.f:'#productos'); });
   if(caja&&q){ caja.hidden=false; q.addEventListener('input',pinta); }
   // la lupa del menú lleva aquí y abre el buscador
   function enfocar(){ if(location.hash==='#buscar'&&q){ document.getElementById('productos').scrollIntoView(); q.focus(); } }
   window.addEventListener('hashchange',enfocar);
-  var h=location.hash.slice(1); if(h&&fs.some(function(a){ return a.dataset.f===h; })) filtra(h); else enfocar();
+  var h=location.hash.slice(1); if(h&&(fs.some(function(a){ return a.dataset.f===h; })||cards.some(function(c){ return c.dataset.l===h; }))) filtra(h); else enfocar();
 })();`;
 
 // Formulario de compra: funciona sin JavaScript (POST normal → 303 a Stripe) y con JavaScript (fetch + errores en línea)

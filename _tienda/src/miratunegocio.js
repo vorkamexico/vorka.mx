@@ -124,7 +124,7 @@ export async function paginaMiraTuNegocio(env, req, url) {
   const opciones = Object.entries(GIROS).map(([k, v]) => `<option value="${k}"${k === g ? ' selected' : ''}>${esc(v.nombre)}</option>`).join('');
   const colores = COLORES.map((col, i) => `<label class="mt-color" style="--c:${col}"><input type="radio" name="color" value="${col}"${i === 0 ? ' checked' : ''}><span aria-label="Color ${i + 1}"></span></label>`).join('');
   return pagina({ navActual: 'catalogo',
-    titulo: 'Tarjeta de lealtad digital, agenda y página web: mira cómo quedaría tu negocio | Vorka México', ruta: RUTA_MIRA,
+    titulo: 'Tarjeta de lealtad digital, agenda y página web para tu negocio | Vorka México', ruta: RUTA_MIRA,
     imagen: 'https://vorka.mx/assets/tienda/v3/negocio-completo-og.jpg',
     descripcion: 'Tarjeta de lealtad digital (sellos en el celular, sin app), agenda en línea y página web para estéticas, podología, consultorios, cafeterías, taquerías y más. Escribe el nombre de tu negocio y míralo al instante, gratis.',
     head: `${ldScript([migas('Mira tu negocio', RUTA_MIRA, [['Negocio Completo', RUTA_NEGOCIO_COMPLETO]]),

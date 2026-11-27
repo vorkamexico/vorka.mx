@@ -29,16 +29,19 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('Ver el catálogo');
     expect(html).toContain('Gana puntos recomendando');
     expect(html).toContain('class="v-h1"');
-    // explora por línea: una línea de un solo producto lleva directo a él; las demás filtran el catálogo (con cuántos tiene)
-    expect(html).toMatch(/class="v-lineas"[^>]*>.*<a href="#examenes" data-f="examenes" data-linea="examenes">Educación <small>\d+<\/small><\/a>/s);
-    expect(html).toMatch(/class="t-card" data-linea="examenes" data-buscar="simuladores de examen en linea /);
+    // ¿Qué necesitas?: una necesidad de un solo producto lleva directo a él; las demás filtran el catálogo (con cuántos tiene)
+    expect(html).toContain('<p class="v-que">¿Qué necesitas?</p>');
+    expect(html).toMatch(/class="v-lineas"[^>]*>.*<a href="\/tienda\/simuladores\/" data-linea="examenes">Exámenes <small>1<\/small><\/a>/s);
+    expect(html).toMatch(/<a href="#conocerte" data-f="conocerte" data-linea="conocerte">Conócete <small>\d+<\/small><\/a>/);
+    expect(html).toMatch(/class="t-card" data-linea="examenes" data-l="examenes" data-buscar="simuladores de examen en linea /);
     expect(html).toContain('class="t-confia-g"');
     for (const t of ['Entrega inmediata', 'Pago protegido', 'Paga como quieras', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
-    expect(html).toContain('grid-template-columns:repeat(3,minmax(0,1fr))');   // máximo 3 productos por fila
+    expect(html).toContain('grid-template-columns:repeat(4,minmax(0,1fr))');   // compacto: 4 por fila en compu
+    expect(html).toContain('grid-template-columns:116px minmax(0,1fr)');        // y en celular, foto chica al lado del texto
     expect(html).toContain('class="t-card-mas"');
     // buscador del catálogo (oculto sin JavaScript), con el texto de cada tarjeta sin acentos y mensaje si no hay resultados
     expect(html).toContain('<label class="t-buscar" hidden>');
-    expect(html).toMatch(/class="t-card" data-linea="examenes" data-buscar="simuladores de examen en linea [^"]*educacion/);
+    expect(html).toMatch(/class="t-card" data-linea="examenes" data-l="examenes" data-buscar="simuladores de examen en linea [^"]*educacion/);
     expect(html).toContain('id="sin-resultados" hidden');
     // menú claro (ya no va sobre una foto), con lupa y cuenta; WhatsApp flotante
     expect(html).not.toContain('<header class="nav t-navs oscuro">');
@@ -66,8 +69,16 @@ describe('/tienda (catálogo)', () => {
     const grupos = [...html.matchAll(/<section class="t-grupo" data-linea="([^"]+)" id="([^"]+)"/g)];
     expect(grupos.length).toBeGreaterThan(1);
     for (const [, linea, id] of grupos) expect(linea).toBe(id);
-    // Con Ruta de Impacto a la venta (aquí todo está activo), la línea de Educación habla de exámenes y proyectos
-    expect(html).toContain('<h3 class="t-grupo-h" id="g-examenes">Exámenes y proyectos</h3>');
+    // Por necesidad: los simuladores para tu examen; tests, liderazgo y Ruta de Impacto para conocerte (con su línea en data-l)
+    expect(html).toContain('<h3 class="t-grupo-h" id="g-examenes">Para tu examen de admisión</h3>');
+    expect(html).toContain('<h3 class="t-grupo-h" id="g-conocerte">Para conocerte y decidir</h3>');
+    expect(html).toMatch(/class="t-card" data-linea="conocerte" data-l="examenes"[^>]*>\s*<a class="t-card-img" href="\/tienda\/ruta-de-impacto\/"/);
+    // Negocio Completo sale una sola vez, primero en «Para tu negocio»
+    const neg = html.match(/<section class="t-grupo" data-linea="negocios"[\s\S]*?<\/section>/)[0];
+    expect(neg.match(/class="t-card-img" href="([^"]+)"/)[1]).toBe('/tienda/negocio-completo/');
+    expect(html.match(/class="t-card-img" href="\/tienda\/negocio-completo\/"/g)).toHaveLength(1);
+    // un cupón por línea (#examenes) filtra también por la línea original de cada tarjeta
+    expect(html).toContain('c.dataset.l===linea');
     // cada tarjeta queda dentro del grupo de su línea, y el filtro oculta los grupos vacíos
     for (const [bloque, linea] of html.matchAll(/<section class="t-grupo" data-linea="([^"]+)"[\s\S]*?<\/section>/g))
       for (const [, l] of bloque.matchAll(/class="t-card" data-linea="([^"]+)"/g)) expect(l).toBe(linea);

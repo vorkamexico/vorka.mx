@@ -79,7 +79,7 @@ export async function paginaCupo(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const opcion = x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${esc(x.etiqueta)} · ${precio(x.prod)}</option>`;
   return pagina({ navActual: 'catalogo', entrar: { url: `${OS}/cupo/#entrar`, app: 'Cupo' },
-    titulo: 'Cupo: página de tu evento con registro, cover y QR | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: og,
+    titulo: 'Cupo: registro y QR para tu evento | Gratis hasta 30 personas', ruta: RUTA_CUPO, imagen: og,
     descripcion: 'La página de tu evento en un minuto: registro sin cuentas, entrada con QR y check-in. Gratis hasta 30 personas; Cupo Pro desde $99, cover sin comisión.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

@@ -61,7 +61,7 @@ export async function paginaLiderazgo(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const comprar = p ? '#comprar' : '#ayuda';
   return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'la Evaluación de liderazgo' }, noindex: !p,
-    titulo: 'Evaluación de liderazgo Vorka: dónde estás hoy como líder | 12 dimensiones', ruta: RUTA_LIDERAZGO, descripcion, imagen: OG_LIDERAZGO,
+    titulo: 'Evaluación de liderazgo Vorka: dónde estás hoy como líder', ruta: RUTA_LIDERAZGO, descripcion, imagen: OG_LIDERAZGO,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: p ? SCRIPT_COMPRA : '',

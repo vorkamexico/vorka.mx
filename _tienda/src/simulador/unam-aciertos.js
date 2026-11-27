@@ -110,7 +110,7 @@ export async function paginaCarreraUnam(env, slug) {
   ];
   const otras = Object.entries(CARRERAS).filter(([s, x]) => s !== slug && x.area === c.area && x.max >= MINIMO_PAGINA).sort((a, b) => b[1].max - a[1].max);
   return pagina({
-    titulo: `Aciertos para ${c.carrera} en la UNAM: mínimo por plantel 2021–2026 | Vorka México`, ruta,
+    titulo: `${[`Aciertos para ${c.carrera} en la UNAM: mínimo por plantel 2021–2026`, `Aciertos para ${c.carrera} en la UNAM por plantel (2021–2026)`, `Aciertos ${c.carrera} UNAM: mínimo por plantel`, `Aciertos ${c.carrera} UNAM`].find(t => t.length <= 65) || `Aciertos ${c.carrera} UNAM`} | Vorka México`,   // el primero que quepa en Google (~65) ruta,
     descripcion: `${c.carrera} en la UNAM: ${n === 1 ? 'su mínimo' : `los mínimos de sus ${n} programas`} 2021–2026 (${rango} aciertos) según la DGAE. Calcula si te alcanza y practica con el simulador del Área ${c.area}.`,
     imagen: `${SITIO}/assets/tienda/v3/simulador-unam-og.jpg`,
     head: ld(faq, [['Simulador UNAM', `${RUTA}/`], ['Aciertos por carrera', RUTA_ACIERTOS], [c.carrera, ruta]]) + CSS + CSS_UA + CSS_COMPRA,
