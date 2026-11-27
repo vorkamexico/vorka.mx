@@ -65,13 +65,17 @@ describe('paquetes de simuladores', () => {
 });
 
 describe('vorka.mx/tienda/simuladores', () => {
-  it('muestra los 5 simuladores y los 4 paquetes; ?paquete= elige cuál se compra', async () => {
+  it('muestra los 5 simuladores con «Agregar al carrito»; los paquetes solo con una liga vieja (?paquete=)', async () => {
+    env.DB.raw.exec('UPDATE products SET activo = 1');
     const r = await pedir('/tienda/simuladores/');
     expect(r.status).toBe(200);
     const html = await r.text();
     for (const app of ['simulador-paa', 'simulador-unam', 'simulador-ipn', 'simulador-ecoems', 'simulador-prepa-ug']) expect(html).toContain(`href="/${app}/"`);
-    for (const slug of ['simuladores-universidad', 'simuladores-unam-ipn', 'simuladores-paa-unam', 'simuladores-paa-ipn']) expect(html).toContain(`?paquete=${slug}`);
-    expect(html).toContain('name="slug" value="simuladores-universidad"');
+    for (const app of ['simulador-paa', 'simulador-unam', 'simulador-ipn']) expect(html).toContain(`data-carrito-app="${app}"`);
+    expect(html).not.toContain('name="slug" value="simuladores-universidad"');
+    const viejo = await (await pedir('/tienda/simuladores/?paquete=simuladores-universidad')).text();
+    for (const slug of ['simuladores-universidad', 'simuladores-unam-ipn', 'simuladores-paa-unam', 'simuladores-paa-ipn']) expect(viejo).toContain(`?paquete=${slug}`);
+    expect(viejo).toContain('name="slug" value="simuladores-universidad"');
     const otro = await (await pedir('/tienda/simuladores/?paquete=simuladores-unam-ipn')).text();
     expect(otro).toContain('name="slug" value="simuladores-unam-ipn"');
   });

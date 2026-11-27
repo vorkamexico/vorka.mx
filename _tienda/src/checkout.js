@@ -12,6 +12,7 @@ import { alCrearOrden, paqueteCheckout } from './tests/index.js';
 import { cuentaActual, saldoDe } from './puntos.js';
 import { suscripcionDe, itemsSuscripcion, vigente, extrasDe, PAQUETES, sinInstalacion } from './suscripciones.js';
 import { guardarNavegador, inicioPagoMeta } from './meta.js';
+import { enCarrito, grupoCarrito, descuentoCarrito } from './carrito.js';
 
 const casilla = z.preprocess(v => v === true || v === 'on' || v === 'true' || v === '1', z.literal(true, { error: 'Debes aceptar los términos y el aviso de privacidad.' }));
 const slug = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{1,80}$/);
@@ -46,6 +47,8 @@ export const EsquemaCheckout = z.object({
   // Tests (src/tests/): el resultado al que se liga la compra y, en el test vocacional, el simulador del paquete
   resultado: z.string().regex(/^[a-f0-9]{32}$/).optional().or(z.literal('')),
   paquete: z.string().trim().regex(/^[a-z0-9-]{1,80}$/).optional().or(z.literal('')),
+  // Compra desde el carrito (/tienda/carrito/): solo productos de enCarrito, uno por producto, con el descuento automático
+  carrito: z.preprocess(v => v === true || v === 'true' || v === '1', z.boolean()).optional(),
 }).refine(d => d.slug || d.items, { message: 'Falta el producto.', path: ['slug'] });
 
 // Límites: por IP 10 intentos / 10 min, por correo 5 / 10 min
@@ -87,6 +90,21 @@ export async function checkout(req, env, ctx) {
     if (d.regalo || d.items) return error('El paquete no se puede regalar; compra el reporte solo para regalar.');
     try { paquete = await paqueteCheckout(env, d.slug, d.paquete); } catch { return error('Ese paquete no está disponible.'); }
     items = paquete.items;
+  }
+  // Carrito: 2 productos → 15 %, 3 o más → 25 % (carrito.js); sin regalos (cada regalo se compra desde su página)
+  let carrito = null;
+  if (d.carrito) {
+    if (!d.items || d.paquete) return error('Tu carrito está vacío.');
+    if (d.regalo) return error('El carrito es para comprar para ti. Para regalar, compra desde la página de cada producto.');
+    const prods = [];
+    for (const it of items) {
+      const p = await productoPorSlug(env, it.slug);
+      if (!enCarrito(p)) return error(`${p?.nombre || 'Un producto de tu carrito'} ya no se puede comprar en el carrito. Quítalo e intenta de nuevo.`);
+      prods.push(p);
+    }
+    if (new Set(prods.map(grupoCarrito)).size !== prods.length) return error('Tienes dos planes del mismo producto en el carrito. Deja solo uno.');
+    items = prods.map(p => ({ slug: p.slug, cantidad: 1 }));
+    carrito = descuentoCarrito(prods);
   }
   // Suscripción: un solo plan por compra (+ sus complementos del mismo intervalo: sucursales o profesionales); sin regalos ni puntos
   const subs = [];
@@ -167,6 +185,8 @@ export async function checkout(req, env, ctx) {
   const desc = await resolverDescuento(env, { escrito: d.codigo, liga: d.ref || cookie(req, 'vorka_ref'), email: d.email, sus, lineas });
   let descuento = desc.descuento ? { ...desc.descuento, duracion: sus ? duracionDe(desc.descuento) : null } : null;
   if (paquete && centavosDe(paquete.descuento, lineas) >= centavosDe(descuento, lineas)) descuento = { ...paquete.descuento, duracion: null };
+  // El descuento del carrito tampoco se suma con un código: gana el mayor en pesos
+  if (carrito && centavosDe(carrito, lineas) >= centavosDe(descuento, lineas)) descuento = { ...carrito, duracion: null };
 
   let orden;
   try {

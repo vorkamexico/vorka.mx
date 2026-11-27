@@ -111,7 +111,7 @@ export function sesionSuscripcion(env, orden, { exito, cancelar }, customer, sus
 // Nombre del cupón por monto de un pago único (Stripe lo muestra; máximo 40 caracteres)
 export function nombreCupon(o) {
   const partes = [];
-  if (o.descuento_codigo_centavos > 0) partes.push(o.descuento_codigo === REFERIDO ? `Recomendación ${o.descuento_pct} %`
+  if (o.descuento_codigo_centavos > 0) partes.push(o.descuento_codigo === REFERIDO ? `Recomendación ${o.descuento_pct} %` : o.descuento_codigo === 'CARRITO' ? `Por llevar varios ${o.descuento_pct} %`
     : o.descuento_pct == null ? `${o.descuento_codigo} ${pesosTexto(o.descuento_codigo_centavos).replace(' MXN', '')}` : `${o.descuento_codigo} ${o.descuento_pct} %`);
   if (o.puntos_usados > 0) partes.push('Puntos Vorka');
   return (partes.join(' + ') || 'Descuento').slice(0, 40);

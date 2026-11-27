@@ -22,6 +22,7 @@ import { procesarAvisos, rutasPortalComprador } from './creadores-saas.js';
 import { all } from './util.js';
 import { recordarOrden, retomarPago, recordatoriosAutomaticos } from './recordatorio.js';
 import { recordatoriosOxxo } from './recordatorio-oxxo.js';
+import { apiCarrito, paginaCarrito } from './carrito.js';
 import { rutasSimulador, simuladores } from './simulador/index.js';
 import { recordatoriosEstudio } from './simulador/estudio.js';
 import { rutasLearn } from './simulador/guias.js';
@@ -450,6 +451,10 @@ async function atender(request, env, ctx, url) {
       return json((await listarProductos(env)).map(({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria }) =>
         ({ id, slug, nombre, descripcion_corta, precio_centavos, moneda, imagen, categoria })));
     if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env, ctx);
+    // Carrito (carrito.js): sus productos con el descuento automático, y su página
+    if (url.pathname === '/api/carrito' && request.method === 'GET') return await apiCarrito(env, url);
+    if (url.pathname === '/tienda/carrito/' && (request.method === 'GET' || request.method === 'HEAD')) return await paginaCarrito(env);
+    if (url.pathname === '/tienda/carrito') return Response.redirect(`${url.origin}/tienda/carrito/`, 301);
     // Píxel de Meta + API de conversiones (src/meta.js): apagados mientras falten META_PIXEL_ID y META_CAPI_TOKEN
     if (url.pathname === '/api/meta/config' && request.method === 'GET') return configMeta(env);
     if (url.pathname === '/api/mira-tu-negocio' && request.method === 'POST') return await prospectoMira(request, env);
