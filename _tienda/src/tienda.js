@@ -10,7 +10,7 @@ import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
 import { eventoPagina } from './meta.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
-import { enCarrito, grupoCarrito, nombreCorto } from './carrito.js';
+import { enCarrito, enSuscripcion, grupoCarrito, nombreCorto, combosNegocio } from './carrito.js';
 import { contarVisita } from './puntos.js';
 import { VARIANTES } from './brindi.js';
 import { UNIVERSIDADES } from './simulador/paa-universidades.js';
@@ -283,6 +283,11 @@ const CSS_VITRINA = `
 .v-catalogo .t-card-pie{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;margin-top:8px;padding:0;border:0}
 .v-catalogo .t-card-pie b{font-size:16px}
 .t-card-agregar{margin-top:10px;width:100%;justify-content:center}
+.t-combos{margin:-6px 0 30px}.t-combos-t{margin:0 0 10px;font-weight:700;font-size:15px}
+.t-combos-l{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.t-combo{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card,var(--bg));color:var(--fg);font:inherit;cursor:pointer;transition:border-color .2s,transform .2s}
+.t-combo:hover{border-color:var(--fg);transform:translateY(-1px)}.t-combo b{font-size:15.5px}.t-combo>span{grid-column:1;font-size:14px;color:var(--fg-2)}
+.t-combo em{grid-row:1/span 2;grid-column:2;font-style:normal;font-weight:700;font-size:14px;background:var(--fg);color:var(--bg);border-radius:999px;padding:8px 14px}
 .t-card-mas{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--fg);text-decoration:none}.t-card-mas svg{width:15px;height:15px}
 /* Catálogo compacto (por necesidad): 4 por fila en compu y, en celular, foto chica a la izquierda y el texto a la derecha */
 .v-que{margin:30px 0 0;font-weight:700;font-size:15px;color:var(--fg-2)}.v-que+.v-lineas{margin-top:12px}
@@ -342,9 +347,13 @@ export async function paginaCatalogo(env, req, url) {
   // Todo a la vez (antes en fila: cada viaje a la base desde México suma ~70 ms)
   // Llegó con ?cupon= (liga de un cupón de regalo): una banda arriba dice qué da y hasta cuándo; se aplica en la compra
   // Precio de entrada de Brindi: el plan más barato a la venta (los planes viven ocultos del catálogo)
-  const [{ cookie }, productos, cupon, activos] = await Promise.all([refDeVisita(env, req, url), listarProductos(env),
+  const [{ cookie }, productos, cupon, activos, combos] = await Promise.all([refDeVisita(env, req, url), listarProductos(env),
     url.searchParams.has('cupon') ? avisoCupon(env, url.searchParams.get('cupon')) : null,
-    env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all()]);
+    env.DB.prepare('SELECT precio_centavos, contenido FROM products WHERE activo = 1').all(), combosNegocio(env).catch(() => [])]);
+  // «Agregar al carrito» en la tarjeta: pago único con precio fijo (no «Desde») y los planes mensuales de las apps
+  const agregable = v => !/^simulador/.test(grupoCarrito(v.p)) && ((enCarrito(v.p) && !String(v.precio).startsWith('Desde')) || (enSuscripcion(v.p) && v.p.contenido.suscripcion.intervalo === 'month'));
+  // Combos de «Para tu negocio»: un toque agrega las apps y el carrito cobra el precio del paquete
+  const bloqueCombos = combos.length ? `<div class="t-combos"><p class="t-combos-t">Junta apps y pagas menos cada mes</p><div class="t-combos-l">${combos.map(c => `<button type="button" class="t-combo" data-carrito-combo='${JSON.stringify(c.items).replace(/'/g, '&#39;')}' data-carrito-nombre="${esc(c.nombre)}"><b>${esc(c.nombre)}</b><span><span class="num">${esc(precio({ precio_centavos: c.precio }).replace(' MXN', ''))}</span> al mes · ahorras ${esc(precio({ precio_centavos: c.ahorro }).replace(' MXN', ''))}</span><em>Agregar</em></button>`).join('')}</div></div>` : '';
   const planesBrindi = activos.results
     .filter(x => { try { const a = JSON.parse(x.contenido || '{}').acceso; return a?.app === 'brindi' && a?.tipo === 'plan'; } catch { return false; } });
   const desdeBrindi = planesBrindi.length ? Math.min(...planesBrindi.map(x => x.precio_centavos)) : null;
@@ -365,7 +374,7 @@ export async function paginaCatalogo(env, req, url) {
         <h3><a href="${esc(v.url)}">${esc(v.nombre)}</a></h3>
         <p>${esc(v.texto)}</p>
         <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="t-card-mas" href="${esc(v.url)}">Ver detalles ${FLECHA}</a></span></div>
-        ${enCarrito(v.p) && !/^simulador/.test(grupoCarrito(v.p)) && !String(v.precio).startsWith('Desde') ? `<button type="button" class="btn blanco chico t-card-agregar" data-carrito-slug="${esc(v.p.slug)}" data-carrito-app="${esc(grupoCarrito(v.p))}" data-carrito-nombre="${esc(v.nombre)}">Agregar al carrito</button>` : ''}
+        ${agregable(v) ? `<button type="button" class="btn blanco chico t-card-agregar" data-carrito-slug="${esc(v.p.slug)}" data-carrito-app="${esc(grupoCarrito(v.p))}" data-carrito-nombre="${esc(v.nombre)}"${enSuscripcion(v.p) ? ' data-carrito-m' : ''}>Agregar al carrito</button>` : ''}
       </div>
     </article>`;
   // Temporada: su línea va primero (chips y producto destacado) y su aviso reemplaza la pastilla de "Nuevo"
@@ -410,6 +419,7 @@ export async function paginaCatalogo(env, req, url) {
   ${secciones.length ? `<div class="t-grupos">${secciones.map(g => `
   <section class="t-grupo" data-linea="${esc(g.id)}" id="${esc(g.id)}" aria-labelledby="g-${esc(g.id)}">
     <div class="t-grupo-cab"><div><span class="t-cat">${esc(g.linea)}</span><h3 class="t-grupo-h" id="g-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div></div>
+    ${g.id === 'negocios' ? bloqueCombos : ''}
     <div class="t-cards">${g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')}</div>
   </section>`).join('')}</div>
   <p class="t-sin" id="sin-resultados" hidden role="status">No encontramos nada con esa búsqueda. Prueba con otra palabra o <a href="${WHATSAPP}" target="_blank" rel="noopener">pregúntanos por WhatsApp</a>.</p>`

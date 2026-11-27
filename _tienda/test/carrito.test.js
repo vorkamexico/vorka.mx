@@ -165,3 +165,19 @@ describe('suscripciones en el carrito', () => {
     expect(h).toContain('t-car-sigue');
   });
 });
+
+describe('combos y recomendaciones de apps', () => {
+  it('el catálogo muestra los combos que salen más baratos y las apps tienen «Agregar al carrito»', async () => {
+    const h = await (await get('/tienda/')).text();
+    expect(h).toContain('class="t-combos"');
+    expect(h).toMatch(/data-carrito-combo='\[\{"s":"agenda-mensual","a":"agenda","m":1\},\{"s":"vuelve-mensual","a":"vuelve","m":1\}\]' data-carrito-nombre="Agenda \+ Vuelve"/);
+    expect(h).toMatch(/data-carrito-slug="vuelve-mensual"[^>]*data-carrito-m/);
+  });
+
+  it('con Brillo en el carrito recomienda Vuelve y Agenda con su porqué', async () => {
+    const d = await (await get('/api/carrito?s=brillo-basico-mensual')).json();
+    const recs = [...(d.suscripciones.combina || []).map(x => x.a), ...(d.suscripciones.sugerencia ? d.suscripciones.sugerencia.faltan.map(x => x.a) : [])];
+    expect(recs).toContain('vuelve');
+    if (d.suscripciones.combina.length) expect(d.suscripciones.combina[0].porque).toBeTruthy();
+  });
+});
