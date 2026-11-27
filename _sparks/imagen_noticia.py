@@ -46,9 +46,15 @@ def palabras(titulo):
     """«**Lo importante** y lo demás» → [(palabra, negrita)]. Sin asteriscos, todo el título va en negritas."""
     if '**' not in titulo:
         return [(p, True) for p in titulo.split()]
-    out = []
+    out, antes = [], ' '
     for i, trozo in enumerate(titulo.split('**')):
-        out += [(p, i % 2 == 1) for p in trozo.split()]
+        pals = trozo.split()
+        pegado = out and trozo[:1].strip() and antes[-1:].strip()   # «**enero**,»: la coma va pegada, sin espacio
+        if trozo:
+            antes = trozo
+        if pals and pegado:
+            out[-1] = (out[-1][0] + pals.pop(0), out[-1][1])
+        out += [(p, i % 2 == 1) for p in pals]
     return out
 
 
