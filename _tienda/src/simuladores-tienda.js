@@ -42,11 +42,12 @@ const FAQ = [
   ['¿Y si ya tengo uno de los simuladores?', 'Escríbenos a hola@vorka.mx antes de comprar y vemos la mejor opción para ti.'],
 ];
 
-const tarjetaSim = (p, [app, nombre, para, datos], completo) => `<div class="ts-sim-c"><a class="ts-sim" href="/${app}/">
+// Tarjeta: todo es liga a la ficha, y abajo, dentro de la misma tarjeta, «Agregar» el plan Completo al carrito
+const tarjetaSim = (p, [app, nombre, para, datos], completo) => `<div class="ts-sim"><a class="ts-sim-a" href="/${app}/">
   <span class="ts-sim-img"><img src="/assets/tienda/v3/${app}-objeto.webp" alt="" width="672" height="1200" loading="lazy" decoding="async"></span>
   <span class="ts-sim-x"><b>${esc(nombre)}</b><span>${esc(para)}</span><small>${esc(datos)}</small>${p ? `<em>Desde ${esc(precio(p))}</em>` : ''}</span>
   <span class="ts-sim-f" aria-hidden="true">${FLECHA}</span></a>
-  ${completo ? `<button type="button" class="btn blanco chico ts-agregar" data-carrito-slug="${esc(completo.slug)}" data-carrito-app="${esc(app)}">Agregar al carrito · Completo ${esc(precio(completo))}</button>` : ''}</div>`;
+  ${completo ? `<div class="ts-sim-pie"><span>Completo · <b>${esc(precio(completo))}</b></span><button type="button" class="btn acento chico ts-agregar" data-carrito-slug="${esc(completo.slug)}" data-carrito-app="${esc(app)}" data-carrito-nombre="${esc(nombre)} · Completo">Agregar al carrito</button></div>` : ''}</div>`;
 
 export async function paginaSimuladores(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
@@ -122,8 +123,11 @@ const CSS = `.ts-hero{padding:clamp(12px,3vw,36px) 0 clamp(20px,3vw,32px)}
 .ts-hero .t-h1{margin-top:12px;max-width:860px}.ts-hero .t-lead{margin-top:14px;max-width:680px}
 .ts-atajo{margin-top:20px}
 .ts-grupo{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);margin:28px 0 12px}
-.ts-sims{display:grid;gap:14px}.ts-sim-c{display:grid;gap:8px;min-width:0}.ts-agregar{justify-self:start}@media(min-width:760px){.ts-sims{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
-.ts-sim{display:flex;align-items:center;gap:16px;padding:14px 18px 14px 14px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s;min-width:0}
+.ts-sims{display:grid;gap:14px}@media(min-width:760px){.ts-sims{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
+.ts-sim{display:flex;flex-direction:column;padding:14px 18px 14px 14px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);transition:transform .2s,box-shadow .2s;min-width:0}
+.ts-sim-a{display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;min-width:0;flex:1}
+.ts-sim-pie{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.ts-sim-pie>span{font-size:14px;color:var(--fg-2)}.ts-sim-pie b{color:var(--fg)}.ts-agregar{white-space:nowrap}
 .ts-sim:hover{transform:translateY(-2px);box-shadow:var(--sombra)}
 .ts-sim-img{width:84px;height:110px;flex:none;border-radius:14px;overflow:hidden;background:var(--bg-2)}.ts-sim-img img{width:100%;height:100%;object-fit:cover;object-position:center}
 .ts-sim-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.ts-sim-x b{font-size:18px;letter-spacing:-.01em}

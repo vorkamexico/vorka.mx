@@ -168,7 +168,7 @@ function pinta(){var v=lee();if(!v.length){raiz.className='car vacio';f.hidden=t
   $('car-sus').hidden=!S;var m='';
   if(S){$('car-sus-lista').innerHTML=S.items.map(function(x){return fila(x,pesos(x.precio)+' '+x.cada,x.instalacion?'+ '+pesos(x.instalacion)+' una sola vez':'');}).join('');
    var p=S.cobros.length===1&&S.cobros[0].ahorro?S.cobros[0]:null;
-   if(p)m+='<p class="car-paq ok"><b>Juntas como '+e(p.nombre)+':</b> '+pesos(p.precio)+' al mes. Ahorras '+pesos(p.ahorro)+' cada mes.</p>';
+   if(p)m+='<p class="car-paq car-verde"><b>Juntas como '+e(p.nombre)+':</b> '+pesos(p.precio)+' al mes. Ahorras '+pesos(p.ahorro)+' cada mes.</p>';
    if(S.sugerencia){var g=S.sugerencia;m+='<div class="car-paq"><p>Suma <b>'+g.faltan.map(function(x){return e(x.nombre);}).join(' y ')+'</b> y llévate '+e(g.paquete)+' por '+pesos(g.precio)+' al mes: '+pesos(g.ahorro)+' menos que por separado.</p><button type="button" class="btn blanco chico" data-agrega-m="'+e(JSON.stringify(g.faltan.map(function(x){return {s:x.s,a:x.a,m:1};})))+'">Sumar</button></div>';}
    m+='<p class="car-tip">Se renueva sola y la cancelas cuando quieras.</p>';}
   $('car-sus-res').innerHTML=m;
@@ -219,7 +219,7 @@ const CSS_PAGINA = `<style>
 .car-ok{color:var(--ok,#1F7A4A);font-weight:650}.car-total{font-size:16px;padding-top:8px}.car-total b{font-size:22px;letter-spacing:-.01em}.car-total small{font-size:13px;font-weight:600;color:var(--fg-2)}
 .car-tip{margin:8px 0 0;font-size:14px;color:var(--fg-2)}
 .car-paq{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:10px 0 0;padding:12px 14px;border-radius:14px;background:var(--bg-2,rgba(0,0,0,.04));font-size:14.5px;line-height:1.45}.car-paq p{margin:0}
-.car-paq.ok{display:block;background:color-mix(in srgb,var(--ok,#1F7A4A) 10%,transparent);color:var(--fg)}
+.car-paq.car-verde{display:block;background:color-mix(in srgb,var(--ok,#1F7A4A) 10%,transparent);color:var(--fg)}
 .car-vacio{display:none;text-align:center;padding:28px 8px}.car.vacio .car-vacio{display:block}.car.vacio .car-cols{display:none}
 .car-sug{margin-top:34px}.car-sug ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
 .car-sug li{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
