@@ -1,5 +1,6 @@
 // Stripe Checkout (página de pago hospedada por Stripe). Sin SDK: la API REST con fetch basta en Workers.
-// Métodos dinámicos (Dashboard): tarjeta, OXXO y SPEI (customer_balance → mx_bank_transfer, requiere Customer).
+// Métodos dinámicos (Dashboard): tarjeta y OXXO. SPEI (customer_balance) se excluye en la sesión desde el 27-nov-2026:
+// 5 de 6 compradores que lo eligieron nunca transfirieron (decisión del dueño).
 
 import { enc, hex, iguales } from '../util.js';
 import { suscripcionDeOrden } from '../suscripciones.js';
@@ -7,7 +8,7 @@ import { REFERIDO, esCuponRegalo, pesosTexto } from '../descuentos.js';
 
 const API = 'https://api.stripe.com/v1';
 // Aviso junto al botón de pagar de Stripe en pagos únicos: OXXO no es inmediato, para que quien lo necesita hoy elija otro método
-export const TEXTO_OXXO = 'Si pagas en OXXO, Stripe confirma tu pago hasta 1 día hábil después y entonces te llega tu acceso. ¿Lo necesitas hoy? Paga con tarjeta (al instante) o por transferencia SPEI (normalmente en minutos).';
+export const TEXTO_OXXO = 'Si pagas en OXXO, Stripe confirma tu pago hasta 1 día hábil después y entonces te llega tu acceso. ¿Lo necesitas hoy? Paga con tarjeta: es al instante.';
 export const STRIPE_VERSION = '2026-09-30.endive';
 const TOLERANCIA_S = 300; // firmas con más de 5 min se rechazan (evita repetir un webhook viejo)
 
@@ -61,10 +62,10 @@ export function sesionCheckout(env, orden, { exito, cancelar }, customer, cupon 
     client_reference_id: orden.id,
     customer,
     integration_identifier: INTEGRACION,
-    payment_method_options: {
-      oxxo: { expires_after_days: 3 },
-      customer_balance: { funding_type: 'bank_transfer', bank_transfer: { type: 'mx_bank_transfer' } },
-    },
+    // Solo tarjeta (y sus billeteras) y OXXO: la configuración Default del Dashboard también la usan las facturas, así que
+    // SPEI se quita aquí y no allá
+    excluded_payment_method_types: ['customer_balance'],
+    payment_method_options: { oxxo: { expires_after_days: 3 } },
     line_items: orden.items.map(i => ({
       quantity: i.cantidad,
       price_data: { currency: orden.moneda.toLowerCase(), unit_amount: i.precio_centavos, product_data: { name: i.nombre, metadata: { product_id: i.product_id } } },

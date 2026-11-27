@@ -59,7 +59,7 @@ const FAQ = precioT => [
   ['Soy mamá o papá, ¿cómo lo uso?', 'Pásale la liga a tu hija o hijo para que lo conteste. Si compras el reporte, también lo puedes regalar: te llega una liga por correo para que se la mandes. El reporte trae preguntas para que platiquen en familia.'],
   ['Soy orientador, ¿hay precio para grupos?', 'Sí: licencias para 10, 30 o 100 alumnas y alumnos con precio por alumno más bajo. Recibes una sola liga para tu grupo y un panel con los resultados de quienes acepten compartirlos contigo. Todo el detalle está en <a href="/test-vocacional/escuelas/">la página para escuelas</a>.'],
   ['¿Qué hacen con mis respuestas?', 'Solo las usamos para darte tu resultado y tu reporte. No se venden ni se comparten. Si no compras ni dejas tu correo, se borran a los 12 meses, y puedes borrarlas tú cuando quieras desde tu resultado. Consulta el <a href="/privacidad/#tests">aviso de privacidad</a>.'],
-  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. ${precioT}, pago único. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
+  ['¿Cómo puedo pagar?', `Con tarjeta de crédito o débito, en efectivo en OXXO. ${precioT}, pago único. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.`],
 ];
 
 // Licencias para grupo: un formulario por paquete (sin JavaScript también funciona). También los usa /test-vocacional/escuelas/.

@@ -59,8 +59,8 @@ TERMINOS = [
     ('productos', 'Qué vendemos', '<p>Productos digitales descargables (guías, cuadernos de trabajo, plantillas, calculadoras y materiales similares). En la página de cada producto se describe qué incluye, en qué formato viene cada archivo y qué programas necesitas para abrirlo.</p><p>No se envía nada físico.</p>'),
     ('precios', 'Precios y pago', li(
         'Los precios están en pesos mexicanos (MXN) e incluyen los impuestos aplicables. El precio que pagas es el que aparece al momento de comprar.',
-        'Puedes pagar con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. Los pagos los procesa Stripe; Vorka no recibe ni guarda los datos de tu tarjeta.',
-        'Si pagas en OXXO o por SPEI, tu compra se confirma cuando el pago se refleja. La referencia de OXXO vence a los 3 días; si no se paga, la orden se cancela sin cargo.',
+        'Puedes pagar con tarjeta de crédito o débito, o en efectivo en OXXO. Los pagos los procesa Stripe; Vorka no recibe ni guarda los datos de tu tarjeta.',
+        'Si pagas en OXXO, tu compra se confirma cuando el pago se refleja. La referencia de OXXO vence a los 3 días; si no se paga, la orden se cancela sin cargo.',
         'Podemos corregir errores evidentes de precio. Si ya pagaste un precio equivocado a tu favor, respetamos tu compra.')),
     ('entrega', 'Entrega', li(
         'Al confirmarse el pago te enviamos un correo con un enlace para descargar tus archivos. Revisa también spam o promociones.',

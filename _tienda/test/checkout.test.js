@@ -65,11 +65,12 @@ describe('POST /api/checkout', () => {
     expect(p.get('line_items[0][price_data][currency]')).toBe('mxn');
     expect(p.get('client_reference_id')).toBe(order);
     expect(p.get('payment_intent_data[metadata][order_id]')).toBe(order);
-    // Métodos dinámicos: nunca payment_method_types; SPEI con Customer y opciones de transferencia MX
+    // Métodos dinámicos: nunca payment_method_types; SPEI (customer_balance) excluido desde nov 2026
     expect([...p.keys()].some(k => k.startsWith('payment_method_types'))).toBe(false);
     expect(p.get('customer')).toBe('cus_1');
     expect(p.has('customer_email')).toBe(false);
-    expect(p.get('payment_method_options[customer_balance][bank_transfer][type]')).toBe('mx_bank_transfer');
+    expect(p.get('excluded_payment_method_types[0]')).toBe('customer_balance');
+    expect([...p.keys()].some(k => k.startsWith('payment_method_options[customer_balance]'))).toBe(false);
     expect(p.get('payment_method_options[oxxo][expires_after_days]')).toBe('3');
     expect(p.get('integration_identifier')).toMatch(/^vorka-tienda-checkout-[a-z]{8}$/);
     const [cli] = llamada('/customers');
@@ -148,12 +149,12 @@ describe('Stripe: parámetros', () => {
     expect(s.payment_method_types).toBeUndefined();
     expect(s.customer).toBe('cus_x');
   });
-  it('avisa junto al botón de pagar que OXXO tarda hasta 1 día hábil y sugiere tarjeta o SPEI', () => {
+  it('avisa junto al botón de pagar que OXXO tarda hasta 1 día hábil y sugiere tarjeta', () => {
     const s = sesionCheckout({}, { id: 'o', email: 'a@b.mx', moneda: 'MXN', items: [] }, { exito: 'e', cancelar: 'c' }, 'cus_x');
     expect(s.custom_text.submit.message).toBe(TEXTO_OXXO);
     expect(TEXTO_OXXO).toMatch(/1 día hábil/);
     expect(TEXTO_OXXO).toMatch(/tarjeta/);
-    expect(TEXTO_OXXO).toMatch(/SPEI/);
+    expect(TEXTO_OXXO).not.toMatch(/SPEI/);
     expect(TEXTO_OXXO.length).toBeLessThanOrEqual(1200);   // límite de Stripe
     expect(formulario(s).get('custom_text[submit][message]')).toBe(TEXTO_OXXO);
   });

@@ -161,7 +161,7 @@ export function formCompraTest(p, { resultado = '', nombre = '', email = '', paq
   <label class="tv-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos</a> y el <a href="/privacidad/#tests" target="_blank">aviso de privacidad</a>.</span></label>
   <p class="tv-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
   <button class="btn acento" type="submit" id="btn-compra">${esc(boton)} ${FLECHA}</button>
-  <p class="tv-nota" style="display:flex;gap:8px;align-items:center;margin:0"><span style="width:18px;height:18px;display:inline-flex">${CANDADO_PAGO}</span><span>Pago protegido con Stripe · tarjeta, OXXO o SPEI</span></p>
+  <p class="tv-nota" style="display:flex;gap:8px;align-items:center;margin:0"><span style="width:18px;height:18px;display:inline-flex">${CANDADO_PAGO}</span><span>Pago protegido con Stripe · tarjeta u OXXO</span></p>
 </form>`;
 }
 export const SCRIPT_COMPRA_TEST = `(function(){

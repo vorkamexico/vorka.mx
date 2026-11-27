@@ -33,8 +33,8 @@ const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headl
 // Preguntas que aplican a todos los productos digitales (se suman a las del producto)
 const FAQ_TIENDA = [
   { p: '¿Cómo recibo mis archivos?', r: 'En cuanto se confirma tu pago te llega un correo con un enlace de descarga. Funciona 7 días y puedes descargar cada archivo hasta 10 veces. Si se vence, pides uno nuevo en <a href="/descargas/reenviar">vorka.mx/descargas/reenviar</a>.' },
-  { p: '¿Cómo puedo pagar?', r: 'Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI. El pago es seguro y lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.' },
-  { p: 'Pagué en OXXO o por SPEI, ¿cuándo me llega?', r: 'En cuanto el pago se refleja te llega el correo automáticamente. En OXXO, Stripe confirma el pago hasta 1 día hábil después de que pagas (tienes 3 días para pagar con tu referencia). Por SPEI normalmente se refleja en minutos y con tarjeta es al instante. Si lo necesitas hoy, mejor tarjeta o SPEI.' },
+  { p: '¿Cómo puedo pagar?', r: 'Con tarjeta de crédito o débito, en efectivo en OXXO. El pago es seguro y lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.' },
+  { p: 'Pagué en OXXO, ¿cuándo me llega?', r: 'En cuanto el pago se refleja te llega el correo automáticamente. En OXXO, Stripe confirma el pago hasta 1 día hábil después de que pagas (tienes 3 días para pagar con tu referencia). Con tarjeta es al instante: si lo necesitas hoy, mejor paga con tarjeta.' },
   { p: '¿Hay reembolsos?', r: 'Por ser un producto digital descargable no hay reembolso una vez descargado. Si un archivo llega dañado o no abre, te lo reponemos. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.' },
   { p: '¿Me pueden facturar?', r: 'Sí. Escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a> con tus datos fiscales y el número de orden que viene en tu correo, dentro del mismo mes de la compra.' },
 ];
@@ -346,7 +346,7 @@ export async function paginaCatalogo(env, req, url) {
 <section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
   <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>
   <li>${CANDADO_PAGO}<b>Pago protegido</b><span>Lo procesa Stripe. Nosotros nunca vemos los datos de tu tarjeta.</span></li>
-  <li>${ICONOS.tarjeta}<b>Paga como quieras</b><span>Tarjeta de crédito o débito, efectivo en OXXO o transferencia SPEI.</span></li>
+  <li>${ICONOS.tarjeta}<b>Paga como quieras</b><span>Tarjeta de crédito o débito o efectivo en OXXO.</span></li>
   <li>${ICONOS.chat}<b>Personas reales</b><span>Te contesta alguien del equipo por correo o WhatsApp, en horario laboral.</span></li>
 </ul></div></section>
 <section class="t-sec t-catalogo v-catalogo" id="productos"><div class="marco">
@@ -410,7 +410,7 @@ export const formCompra = (p, { error = '', ref = '', regalo = false, mensajeEje
   <label class="t-casilla"><input type="checkbox" name="terminos" value="on" required><span>Acepto los <a href="/legal/terminos/" target="_blank">términos y condiciones</a> y el <a href="/privacidad/" target="_blank">aviso de privacidad</a>.</span></label>
   <p class="t-error" id="error-compra" role="alert"${error ? '' : ' hidden'}>${esc(error)}</p>
   <button class="btn acento" type="submit" id="btn-compra"><span class="t-btn-yo">Comprar ahora</span>${regalable ? '<span class="t-btn-regalo">Comprar regalo</span>' : ''} ${FLECHA}</button>
-  <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta, OXXO o SPEI con Stripe</span></p>
+  <p class="t-pago">${CANDADO_PAGO}<span><b>Pago 100% protegido</b> · Tarjeta u OXXO con Stripe</span></p>
 </form>`;
 };
 
@@ -558,7 +558,7 @@ export const precioSaas = p => { const m = precioIntervalo(p, 'month'); return m
 
 const faqSaas = (p, a) => [
   { p: '¿Cómo entro a la app?', r: `En cuanto se confirma tu pago te llega un correo con el botón para entrar a ${esc(p.nombre)}. Entra con el <b>mismo correo con el que pagas</b>: así la app reconoce tu suscripción.` },
-  { p: '¿Cómo pago y cuándo se cobra?', r: 'Con tarjeta de crédito o débito; el pago lo procesa Stripe y nosotros nunca vemos los datos de tu tarjeta. La suscripción se renueva sola cada periodo hasta que la canceles. En suscripciones no hay pago en OXXO ni SPEI.' },
+  { p: '¿Cómo pago y cuándo se cobra?', r: 'Con tarjeta de crédito o débito; el pago lo procesa Stripe y nosotros nunca vemos los datos de tu tarjeta. La suscripción se renueva sola cada periodo hasta que la canceles. En suscripciones no hay pago en OXXO.' },
   { p: '¿Cómo cambio mi tarjeta o cancelo?', r: 'Cuando quieras, en <a href="/tienda/suscripcion">vorka.mx/tienda/suscripcion</a> con el correo de tu compra (o desde la app, si lo ofrece). Al cancelar, tu acceso sigue hasta el final del periodo que ya pagaste.' },
   { p: '¿Quién da el soporte?', r: `La app la crea y la opera ${esc(p.creador_nombre || 'su creador')}: dudas de uso${a.soporte ? ` a <a href="mailto:${esc(a.soporte)}">${esc(a.soporte)}</a>` : ''}. Cobros, recibos, facturas y cancelaciones los atiende Vorka México en <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.` },
   { p: '¿Hay reembolsos?', r: 'En planes anuales, si cancelas dentro de los 10 días naturales siguientes al primer cobro te devolvemos tu dinero completo. Fuera de eso no hay reembolsos proporcionales por cancelar a mitad de un periodo, salvo que la app no funcione y no se resuelva en un plazo razonable. Consulta la <a href="/legal/reembolsos/">política de reembolsos</a>.' },

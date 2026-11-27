@@ -82,7 +82,7 @@ const faqEscuelas = ({ precioInd }) => [
   ['¿Qué pasa si se acaban los lugares?', 'La liga avisa que ya no hay lugares. Puedes comprar otro paquete: llega con su propia liga y su propio panel.'],
   ['¿Vencen las licencias?', 'La liga de tu panel no vence y los lugares no tienen fecha de caducidad. Los resultados ligados a una licencia se borran 24 meses después de su última actualización.'],
   ['¿Puedo probarlo antes de comprar?', `Sí: contesta tú el <a href="${RUTA_TEST}">test gratis</a> y verás el perfil básico. Si quieres ver un reporte completo o el panel, pídenos una demostración por WhatsApp.`],
-  ['¿Cómo se paga? ¿Dan factura?', 'Con tarjeta de crédito o débito, en efectivo en OXXO o por transferencia SPEI; el pago lo procesa Stripe. ¿Necesitas factura o más de 100 licencias? Escríbenos a hola@vorka.mx antes de pagar.'],
+  ['¿Cómo se paga? ¿Dan factura?', 'Con tarjeta de crédito o débito, en efectivo en OXXO; el pago lo procesa Stripe. ¿Necesitas factura o más de 100 licencias? Escríbenos a hola@vorka.mx antes de pagar.'],
 ];
 
 // ---------- la página para escuelas ----------
@@ -150,7 +150,7 @@ export function paginaEscuelas({ grupos = [], p = null } = {}) {
     <div class="tv-acciones"><a class="btn acento" href="#precios">Comprar licencias ${FLECHA}</a><a class="btn blanco" href="${esc(WA_DEMO)}" target="_blank" rel="noopener">Pide una demostración</a></div></div>
   <ol class="te-pasos">
     <li><b>Elige tu paquete</b> y escribe tu nombre y tu correo: ahí llega tu panel.</li>
-    <li><b>Paga</b> con tarjeta, en efectivo en OXXO o por transferencia SPEI. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.</li>
+    <li><b>Paga</b> con tarjeta, en efectivo en OXXO. El pago lo procesa Stripe; nosotros nunca vemos los datos de tu tarjeta.</li>
     <li><b>Abre tu panel</b> con el botón «Abrir mi panel de grupo» del correo. Guárdalo: la liga no vence.</li>
     <li><b>Comparte la liga del grupo</b> por WhatsApp o en el pizarrón, y sigue el avance desde tu panel.</li>
   </ol>
@@ -229,7 +229,7 @@ export function volanteEscuelas({ grupos = [], p = null } = {}) {
   <div class="vo-medio">
     <div>
       ${filas ? `<table class="vo-tabla"><thead><tr><th scope="col">Paquete</th><th scope="col">Precio</th><th scope="col">Por alumno</th></tr></thead><tbody>${filas}</tbody></table>
-      <p class="vo-clase" style="margin-top:8px">Pago único con tarjeta, OXXO o SPEI. Precios en pesos mexicanos.</p>` : '<p class="vo-clase">Pregunta por los paquetes para tu grupo o tu escuela.</p>'}
+      <p class="vo-clase" style="margin-top:8px">Pago único con tarjeta u OXXO. Precios en pesos mexicanos.</p>` : '<p class="vo-clase">Pregunta por los paquetes para tu grupo o tu escuela.</p>'}
       <div class="vo-gratis"><b>¿Sin presupuesto? Gratis para la escuela:</b> compartan el test gratis; cada estudiante ve su perfil básico y cada familia decide si compra el reporte completo (${precioInd}).</div>
     </div>
     <div class="vo-qr">${qrSvg(url, 'Código QR a la página para escuelas del Test vocacional Vorka')}<small>Escanea para ver cómo funciona, la privacidad y comprar<br><b>vorka.mx/test-vocacional/escuelas</b></small></div>
