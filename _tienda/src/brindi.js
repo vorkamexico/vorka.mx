@@ -2,6 +2,7 @@
 // - /tienda/brindi/ → ficha comercial: demostraciones, comparador de planes, complementos, preguntas y compra (usa /api/checkout de siempre)
 // - RPC para Vorka OS (clase Admin): validarAcceso, comprasApp, resumenApp, productosApp
 // La app vive en os.vorka.mx/brindi/ y las invitaciones en os.vorka.mx/i/<evento>. Aquí solo se vende.
+import { attrPlanesCarrito } from './carrito.js';
 import { one, all } from './util.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
@@ -316,7 +317,7 @@ ${grupos.length ? `<section class="t-sec" id="complementos"><div class="marco">
 ${aLaVenta ? seccionCompra({ titulo: clave === 'organizadores' ? 'Compra tu paquete' : '¿Ya la creaste? Paga aquí', intro: 'Usa el mismo correo de tu cuenta de Brindi y el plan se activa solo. ¿Todavía no la haces? <a href="' + APP + '">Créala gratis primero</a>: pagas al publicar.',
   pasos: [['Eliges tu plan', 'Y si quieres, le sumas complementos en la misma compra.'], ['Pagas con tarjeta u OXXO', 'Un solo pago, sin mensualidades.'], ['Te llega tu acceso por correo', 'Entras con un toque, sin contraseña.'], ['Terminas y publicas tu invitación', 'Y la compartes por WhatsApp.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Si no has publicado, te devolvemos tu dinero en los primeros 10 días', 'Soporte de personas por correo y WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-brindi" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-brindi" method="post" action="/api/checkout" novalidate${attrPlanesCarrito([...planes.map(x => x.prod), org])}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">¿Qué vas a comprar?</label><select id="slug" name="slug">
       <optgroup label="Planes (para un evento)">${planes.filter(p => p.prod).map(p => opcion(p.prod, `Plan ${p.nombre} · hasta ${p.invitados} invitados`)).join('')}${org ? opcion(org, 'Paquete Organizador · 5 eventos') : ''}</optgroup>

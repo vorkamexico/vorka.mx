@@ -2,6 +2,7 @@
 // /tienda/cupo/ → ficha comercial única: plan gratis, Cupo Pro por aforo, paquetes, preguntas y compra (usa /api/checkout de siempre).
 // Los productos de Cupo (cupo-pro-*, cupo-paquete-*) no tienen página propia: redirigen aquí con ?plan=<slug>.
 // La app vive en os.vorka.mx/cupo/ y los eventos en vorka.mx/cupo/<liga>. Aquí solo se vende.
+import { attrPlanesCarrito } from './carrito.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -135,7 +136,7 @@ ${barraCompra({ titulo: 'Cupo', detalle: `Gratis hasta 30 personas · Pro desde 
 ${todos.length ? seccionCompra({ titulo: 'Activa Cupo Pro', intro: `¿Tu evento es de hasta 30 personas? No necesitas comprar nada: <a href="${OS}/cupo/#/nuevo">créalo gratis</a>.`,
   pasos: [['Eliges según tu aforo', 'O un paquete de 5 eventos si haces varios.'], ['Pagas con tarjeta u OXXO', 'Un pago por evento, sin comisión por boleto.'], ['Te llega tu acceso por correo', 'Pro se aplica al publicar tu evento.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'El cover de tus asistentes llega directo a ti', 'Soporte de personas por correo y WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-cupo" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-cupo" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(todos.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">¿Qué quieres comprar?</label><select id="slug" name="slug">
       <optgroup label="Cupo Pro (un evento)">${niveles.map(n => opcion({ ...n, etiqueta: `Hasta ${n.personas} personas` })).join('')}</optgroup>

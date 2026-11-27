@@ -2,6 +2,7 @@
 // /tienda/clara/ → ficha comercial: plan gratis con 1 tarjeta, prueba de 7 días de Pro sin tarjeta (vive en la app), planes y compra.
 // Se cobra por suscripción (ver suscripciones.js): la app pregunta por RPC (Admin.suscripcionApp(correo, 'clara')) si está al corriente.
 // Aquí solo se vende. Herramienta de organización y educación financiera: no es asesoría, no es banco y no mueve dinero (ver /legal/clara/).
+import { attrPlanesCarrito } from './carrito.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -149,7 +150,7 @@ ${barraCompra({ titulo: 'Clara', detalle: `Gratis con 1 tarjeta${mensual ? ` · 
 ${plan ? seccionCompra({ titulo: 'Suscríbete a Clara Pro', intro: `¿Aún no la pruebas? <a href="${APP}/entrar">Empieza gratis</a> y ten 7 días de Pro, sin tarjeta. Si ya la usas, suscríbete con el mismo correo y todo sigue tal cual. <b>Si pagas por alguien más (por ejemplo, tu hijo), usa en la compra el mismo correo con el que esa persona entra a Clara.</b>`,
   pasos: [['Elige mensual o anual', 'Y escribe el correo con el que se entra a Clara.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Pro queda activo al instante, con todos tus registros.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo'],
-  form: `<form class="t-form t-compra" id="form-clara" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-clara" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <fieldset class="t-campo cl-elige"><legend>Plan</legend>${planes.map(x => `<label class="cl-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>Pro ${x.nombre.toLowerCase()} · ${precio(x.prod)} ${x.cada}</b>${x.slug === 'clara-anual' && ahorro > 0 ? `<small>2 meses gratis: ahorras ${pesosRedondo(ahorro)}</small>` : '<small>Sin plazo forzoso</small>'}</span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>

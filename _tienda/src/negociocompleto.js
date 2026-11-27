@@ -5,6 +5,7 @@
 // Se guarda como el paquete Agenda + Vuelve (abre las dos apps con el mismo correo); la página web se empieza por WhatsApp.
 // Quien llega por la campaña de WhatsApp puede pagar el primer mes por transferencia (en Vorka OS se le da 1 mes de cortesía
 // de este plan) y al mes siguiente se suscribe aquí con tarjeta.
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { refDeVisita, precio, seccionFaq } from './tienda.js';
@@ -75,7 +76,7 @@ export async function paginaNegocioCompleto(env, req, url) {
   // Cupón de regalo (Vorka OS › Tienda › Regalar): la liga trae ?cupon=REGALO-XXXX-XXXX y deja el primer mes en el cobro mínimo
   const cupon = String(url.searchParams.get('cupon') || url.searchParams.get('codigo') || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40);
   const mes = p?.precio_centavos || 0, extra = inst?.precio_centavos || 0;
-  const form = p ? `<form class="t-form t-compra" id="form-nc" method="post" action="/api/checkout" novalidate data-mes="${mes}" data-inst="${extra}">
+  const form = p ? `<form class="t-form t-compra" id="form-nc" method="post" action="/api/checkout" novalidate data-mes="${mes}" data-inst="${extra}"${attrPlanesCarrito([p])}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Con este correo entras a Agenda y a Vuelve, y aquí te llega tu recibo.</small></div>

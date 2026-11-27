@@ -2,6 +2,7 @@
 // publica en App Store y Google Play con su cuenta de desarrollador (migración 0099). Se cobra como Tu página web:
 // suscripción de $999 al mes + pago único de $501 con el primer mes = $1,500 el mes de preparación. Plan mínimo de 12 meses.
 // Apple rechaza las apps hechas en serie desde una plantilla (regla 4.2.6): cada app se hace de verdad para su negocio.
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { one } from './util.js';
@@ -51,7 +52,7 @@ export async function paginaAppMedida(env, req, url) {
   if (p && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: p.id, ref_code: code }, req);
   const error = url.searchParams.get('error') || '';
   const hoy = p ? { precio_centavos: p.precio_centavos + (prep?.precio_centavos || 0) } : null;
-  const form = p && prep ? `<form class="t-form t-compra" id="form-app-medida" method="post" action="/api/checkout" novalidate>
+  const form = p && prep ? `<form class="t-form t-compra" id="form-app-medida" method="post" action="/api/checkout" novalidate${attrPlanesCarrito([p])}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"><small class="t-ayuda">Aquí te llegan tu recibo y el botón para empezar por WhatsApp.</small></div>

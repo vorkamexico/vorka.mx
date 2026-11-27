@@ -3,6 +3,7 @@
 // más la tarjeta de lealtad para premiar la constancia y las recomendaciones. Se cobra como paquete 'academias-vuelve'
 // (ver PAQUETES en suscripciones.js): Vuelve lo ve como su suscripción y abre Mi academia. Prueba de 7 días sin tarjeta en la app.
 // Vuelve no cobra a los alumnos ni mueve dinero: solo lleva el registro.
+import { attrPlanesCarrito } from './carrito.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -95,7 +96,7 @@ export async function paginaAcademias(env, req, url) {
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Academias + Vuelve', intro: `¿Aún no lo pruebas? <a href="${APP}">Empieza gratis</a>, sin tarjeta. Si ya lo usas, suscríbete con el mismo correo y todo sigue tal cual.`,
   pasos: [['Elige mensual o anual', 'Y escribe el correo con el que entras a Vuelve.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Mi academia y tu tarjeta quedan activas al instante.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-ac" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-ac" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <fieldset class="t-campo ac-elige"><legend>Plan</legend>${planes.map(x => `<label class="ac-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b><small>${x.slug.endsWith('anual') && ahorro > 0 ? `Ahorra ${pesosRedondo(ahorro)} contra el mensual` : 'Sin plazo forzoso'}</small></span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
