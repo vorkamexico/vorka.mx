@@ -31,6 +31,10 @@
 //    La de Llave MX (lineamientos en el DOF del 6 de febrero de 2025, Ley Nacional para Eliminar Trámites Burocráticos,
 //    manual del CFCRL y notas de Programas para el Bienestar sobre los registros de becas de 2026) se revisó el 25 de
 //    noviembre de 2026.
+//    La de la cartilla del Servicio Militar Nacional (Ley del Servicio Militar vigente: artículos 5, 11, 15, 26, 42, 43, 49
+//    y 51; páginas de Defensa en gob.mx sobre alistamiento, remisos y reposición; Formato universal para trámites del
+//    S.M.N. 2026; comunicado de Defensa del 7 de noviembre de 2025 sobre el sorteo, y notas de los ayuntamientos de San
+//    Cristóbal de Las Casas y Playa del Carmen sobre el sorteo de la Clase 2008) se revisó el 27 de noviembre de 2026.
 //  - Lo que no pudimos verificar en una fuente oficial no se afirma (p. ej. fechas 2027, otras universidades).
 //  - Un solo llamado final por artículo.
 import { p, ul, ol, tabla, nota, caja, a, ext } from './learn/piezas.js';
@@ -119,10 +123,19 @@ const F = {
   bienestarBbj: { nombre: 'Programas para el Bienestar: Así puedes solicitar la Beca Benito Juárez de bachillerato, paso a paso (18 de septiembre de 2026)', url: 'https://www.programasparaelbienestar.gob.mx/noticias-y-comunicados/noticia/asi-puedes-solicitar-la-beca-benito-juarez-de-bachillerato-paso-a-paso/' },
   bienestarJef: { nombre: 'Programas para el Bienestar: Beca Jóvenes Escribiendo el Futuro abre solicitudes, qué necesitas y cómo hacer el trámite (18 de septiembre de 2026)', url: 'https://www.programasparaelbienestar.gob.mx/noticias-y-comunicados/noticia/beca-jovenes-escribiendo-el-futuro-abre-solicitudes-que-necesitas-y-como-hacer-el-tramite/' },
   bienestarRita: { nombre: 'Programas para el Bienestar: Ya inició el registro a la Beca Rita Cetina para primaria y secundaria (26 de octubre de 2026)', url: 'https://www.programasparaelbienestar.gob.mx/noticias-y-comunicados/noticia/ya-inicio-el-registro-a-la-beca-rita-cetina-para-primaria-y-secundaria/' },
+  // Cartilla del Servicio Militar Nacional (revisadas el 27 de noviembre de 2026)
+  lsm: { nombre: 'Ley del Servicio Militar, texto vigente (última reforma DOF 18-05-2022), Cámara de Diputados', url: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LSM.pdf' },
+  defensaAlistamiento: { nombre: 'Defensa: Alistamiento para obtener la Cartilla de Identidad del Servicio Militar Nacional', url: 'https://www.gob.mx/defensa/documentos/tramita-tu-cartilla-del-s-m-n-alistamiento' },
+  defensaRemiso: { nombre: 'Defensa: Si no realizo el trámite de la cartilla en el año que me corresponde, ¿qué tengo que hacer? (28 de noviembre de 2025)', url: 'https://www.gob.mx/defensa/acciones-y-programas/si-no-realizo-el-tramite-de-la-cartilla-en-el-ano-que-me-corresponde-que-tengo-que-hacer' },
+  defensaReposicion: { nombre: 'Defensa: Reposición de la Cartilla de Identidad del Servicio Militar Nacional (31 de diciembre de 2025)', url: 'https://www.gob.mx/defensa/documentos/renueva-tu-cartilla-del-s-m-n' },
+  defensaFormato: { nombre: 'Defensa: Formato universal para trámites del Servicio Militar Nacional 2026 (requisitos de aplazamiento, reposición y otros trámites)', url: 'https://www.gob.mx/cms/uploads/attachment/file/1047249/Formato_universal_para_tramites_del_SMN_2026.pdf' },
+  defensaSorteo: { nombre: 'Defensa: La Secretaría de la Defensa Nacional invita a los jóvenes a participar en el sorteo del Servicio Militar Nacional (7 de noviembre de 2025)', url: 'https://www.gob.mx/defensa/prensa/la-secretaria-de-la-defensa-nacional-invita-a-los-jovenes-a-participar-en-el-sorteo-del-servicio-militar-nacional' },
+  sorteoSanCristobal: { nombre: 'Ayuntamiento de San Cristóbal de Las Casas: Realizan sorteo del Servicio Militar Nacional Clase 2008 y remisos (23 de noviembre de 2026)', url: 'https://www.sancristobal.gob.mx/2026/11/23/realizan-sorteo-del-servicio-militar-nacional-clase-2008-y-remisos-en-san-cristobal' },
+  sorteoPlaya: { nombre: 'Ayuntamiento de Playa del Carmen: Más de 500 jóvenes participan en el Sorteo del Servicio Militar Nacional, clase 2008 y remisos (22 de noviembre de 2026)', url: 'https://playadelcarmen.gob.mx/mas-de-500-jovenes-de-playa-del-carmen-participan-en-el-sorteo-del-servicio-militar-nacional-clase-2008-y-remisos' },
   sepUbbj: { nombre: 'SEP: Boletín 393, Universidades para el Bienestar Benito Juárez (28 de noviembre de 2025)', url: 'https://www.gob.mx/sep/prensa/boletin-393-universidades-para-el-bienestar-benito-juarez-proyecto-que-transforma-la-vida-comunitaria-20-nuevas-sedes-en-2026-secretario' },
 };
 
-const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', ine: 'primera-credencial-ine', afore: 'afore-como-saber-en-cual-estas', llave: 'llave-mx-como-crearla' };
+const S = { becas: 'becas-para-prepa-y-universidad', carrera: 'como-elegir-carrera', unam: 'que-hacer-si-no-te-quedaste-en-la-unam', cv: 'como-hacer-tu-cv-sin-experiencia', carta: 'como-hacer-una-carta-de-motivos-para-una-beca', rita: 'beca-rita-cetina', papeles: 'papeles-para-tu-primer-empleo', jcf: 'jovenes-construyendo-el-futuro', jornada: 'jornada-laboral-40-horas', vacaciones: 'vacaciones-cuantos-dias-te-tocan', ine: 'primera-credencial-ine', afore: 'afore-como-saber-en-cual-estas', llave: 'llave-mx-como-crearla', cartilla: 'cartilla-servicio-militar' };
 const r = slug => `/learn/camino/${slug}/`;
 // Ejemplo con cifras inventadas (mismo marcado que en Finanzas y en la guía de la jornada)
 const ejemplo = (titulo, html) => `<div class="gu-ej"><span class="gu-ej-t">Ejemplo propio de Vorka Learn, con cifras inventadas</span>
@@ -206,6 +219,13 @@ const LLAMADO = {
     puntos: ['El resumen de tu mes, para ver a dónde se va lo que ganas.', 'Si tienes tarjeta de crédito, te recuerda el corte y el pago.', 'Con Clara Pro: metas de ahorro con fecha y presupuesto por categoría; pruébalo 7 días sin poner tarjeta.'],
     nota: 'Clara no es un banco, no mueve dinero, no se conecta a tus cuentas ni a tu Afore y no da asesoría financiera.',
     href: '/tienda/clara/', boton: 'Conoce Clara' }),
+  // Tú en Vorka para quien tramita su cartilla: mismos datos que el llamado «tuEnVorka» (página /voluntariado/)
+  tuEnVorkaCartilla: llamadoProducto({ etiqueta: 'Tú en Vorka', producto: 'Tú en Vorka', de: 'Programa para jóvenes · Vorka México', icono: 'personas', chip: 'Sin costo',
+    titulo: '¿Cumples 18 y quieres sumar experiencia en 2027?',
+    texto: 'Para jóvenes de 16 a 29 años que quieren aprender construyendo proyectos sociales reales, con mentoría.',
+    puntos: ['Áreas como redacción, diseño y redes, eventos y estrategia.', 'De 4 a 8 horas por semana, según tu área.', 'Es sin costo, con constancia y portafolio.', 'Presencial en el Bajío o a distancia desde cualquier parte de México.'],
+    nota: 'Tú en Vorka es un programa de Vorka México: no tiene relación con la Secretaría de la Defensa Nacional y no cuenta como Servicio Militar.',
+    href: '/voluntariado/', boton: 'Conoce Tú en Vorka' }),
   // Herramienta gratis «Reducir peso» (src/learn/herramientas-nuevas.js): las becas piden archivos de máximo 5 MB
   pesoBeca: llamadoProducto({ etiqueta: 'Reduce el peso de tus documentos', producto: 'Reducir peso', de: 'Herramienta gratis · Vorka Learn', icono: 'subir', chip: 'Gratis',
     titulo: '¿Tu comprobante de domicilio pesa más de lo que te piden?',
@@ -1140,9 +1160,90 @@ export const ARTICULOS_CAMINO = [
     fuentes: [F.lnetb, F.llaveLineamientos, F.llaveManual, F.bienestarBbj, F.bienestarJef, F.bienestarRita, F.renapo],
     relacionadas: [S.becas, S.rita, S.ine],
   },
+  // =============== 14. Cartilla del Servicio Militar Nacional ===============
+  // Revisada el 27 de noviembre de 2026: Ley del Servicio Militar (DOF 18-05-2022: arts. 5, 11, 15, 26, 42, 43, 49 y 51),
+  // páginas de Defensa en gob.mx (alistamiento, remisos y reposición), Formato universal para trámites del S.M.N. 2026,
+  // comunicado de Defensa del 7 de noviembre de 2025 sobre el sorteo de la Clase 2007, y boletines de dos ayuntamientos
+  // sobre el sorteo de la Clase 2008 (22 y 23 de noviembre de 2026). transparencia.sedena.gob.mx no respondió desde
+  // nuestro entorno, así que no la citamos. No afirmamos: la convocatoria de la Clase 2009 ni la fecha de su sorteo (no
+  // encontramos un comunicado federal de 2027), el registro de mujeres voluntarias en 2027, ni que el adiestramiento
+  // en dos escalones de tres meses aplique en todo el país (solo lo dijo el representante de la 31 Zona Militar).
+  {
+    slug: S.cartilla, llamado: 'tuEnVorkaCartilla', actualizado: '2026-11-27', actualizadoTxt: 'noviembre de 2026',
+    titulo: 'Cartilla militar: requisitos y cómo tramitarla',
+    descripcion: 'Quién tramita la cartilla del Servicio Militar en 2027, qué documentos y fotos llevar, cómo funciona el sorteo y qué hacer si eres remiso.',
+    h1: 'Cartilla del Servicio Militar: requisitos, fotos y qué pasa después del sorteo',
+    lead: 'Si cumples 18 años en 2027, te toca tramitar tu Cartilla de Identidad del Servicio Militar Nacional, y la ventanilla abre el 2 de enero. Aquí está quién la tramita, qué documentos y fotos piden, cómo es el trámite, qué significa cada bola del sorteo y qué hacer si ya pasó tu año, si estudias o si la perdiste, con lo que dicen la Ley del Servicio Militar y las páginas de la Secretaría de la Defensa Nacional.',
+    secciones: [
+      { h2: 'Quién la tramita y cuándo', html: p('La Ley del Servicio Militar dice que el servicio de las armas se presta <b>por un año en el activo a los 18 años</b>, y después en la reserva: la primera hasta los 30 años y la segunda hasta los 40 (artículo 5). Todos los mexicanos en edad militar tienen la obligación de inscribirse en su Junta Municipal de Reclutamiento o en un consulado, en las fechas que fije la Defensa (artículo 11).')
+        + p('A cada generación se le llama «clase» por su año de nacimiento. En su comunicado de noviembre de 2025, la Defensa llamó al sorteo a la Clase 2007 y a los remisos: quienes tramitaron su cartilla en 2025, el año en que cumplieron 18. Siguiendo esa lógica, en 2027 le toca a la Clase 2009.')
+        + tabla(['Dato', 'Lo que dice la Defensa'], [
+          ['Cuándo', 'Del <b>2 de enero al 15 de octubre</b> de cada año.'],
+          ['Dónde', 'En la Junta Municipal o Alcaldía de Reclutamiento más cercana a tu domicilio, o en el consulado de México si vives en el extranjero.'],
+          ['Costo', 'Gratis.'],
+          ['Cita', 'No hace falta.'],
+          ['Quién va', 'Tú en persona: te toman una huella dactilar, así que nadie puede hacerlo en tu lugar.'],
+        ], 'Fuente: Defensa, página de alistamiento en gob.mx. Al 27 de noviembre de 2026 no encontramos un comunicado federal específico para la Clase 2009.')
+        + p('Las mujeres pueden participar de forma voluntaria. En el comunicado de 2025, la Defensa invitó a quienes quisieran hacerlo a registrarse en la instalación militar más cercana durante los primeros días de enero de 2026; para 2027 no encontramos todavía el aviso equivalente.') },
+      { h2: 'Qué documentos llevar', html: p('La página de alistamiento de la Defensa pide:')
+        + ul([
+          '<b>Acta de nacimiento certificada</b> por el Registro Civil, legible, sin tachaduras ni enmendaduras, y una copia.',
+          '<b>Comprobante de domicilio vigente</b> (agua, luz, teléfono), original y copia.',
+          '<b>Comprobante de tu último grado de estudios</b> (certificado de primaria, secundaria o prepa), original y copia.',
+          '<b>CURP</b>, original y copia.',
+          '<b>Cuatro fotografías</b> recientes, no digitalizadas, de 35 × 45 mm.',
+        ])
+        + p('Las fotos son lo que más regresan, porque las reglas son estrictas. Según la misma página:')
+        + tabla(['Para todas las personas', 'Detalle'], [
+          ['Fondo y ropa', 'Fondo blanco y ropa clara; a color o en blanco y negro.'],
+          ['Rostro', 'De frente, sin retoque, sin lentes, sin gorra ni sombrero, con las orejas descubiertas.'],
+          ['Perforaciones', 'Sin aretes ni otros objetos en el rostro.'],
+          ['Cabello', 'Color natural, sin tintes llamativos.'],
+          ['Medida', 'Del nacimiento del cabello al borde de la barbilla, 21 mm.'],
+          ['Hombres', 'Corte «casquete corto», sin barba, patillas recortadas y bigote recortado hasta la comisura de los labios.'],
+          ['Mujeres', 'Cabello recogido, sin fleco y sin maquillaje.'],
+        ], 'Fuente: Defensa, página de alistamiento en gob.mx.')
+        + nota(`Consejo nuestro: pide las fotos en un estudio diciendo que son «para cartilla militar», y córtate el cabello antes, no después. Si tu CURP tiene un error, corrígela primero: en ${a(r(S.papeles), 'papeles para tu primer empleo')} explicamos cómo consultarla gratis.`) },
+      { h2: 'Cómo es el trámite, paso a paso', html: ol([
+          ['Reúne todo', 'Documentos originales, copias y las cuatro fotos. Revisa que el nombre sea idéntico en el acta y en la CURP.'],
+          ['Ve a tu junta', 'Es la Junta Municipal de Reclutamiento de tu municipio; en la Ciudad de México, la de tu alcaldía. Por ley la forman el presidente municipal, un regidor y tres vecinos (artículo 38).'],
+          ['Te registran', 'La junta te empadrona y te toma la huella (artículo 42). La cartilla lleva tus datos generales, tus huellas y tu clase (artículo 49). Anota tu número de matrícula: lo vas a necesitar si algún día la pierdes.'],
+          ['Guarda el dato del sorteo', 'La misma junta publica las listas y hace el sorteo (artículo 42); en 2025 y en 2026 fue en noviembre. Pregunta cómo avisará la fecha.'],
+        ])
+        + p('Si tienes dudas, la página de la Defensa da el teléfono <b>55 55 57 88 20</b>, de lunes a viernes de 8:00 a 13:00.')
+        + nota('Consejo nuestro: como el trámite es gratis y solo lo puedes hacer tú en persona, desconfía de quien te ofrezca «sacarte la cartilla» por dinero o por mensaje.') },
+      { h2: 'El sorteo: qué significa cada bola', html: p('Cuando hay más jóvenes de los que la Defensa necesita en el activo, el contingente se elige por sorteo, y quienes no pasan al activo quedan sujetos a periodos de instrucción (artículo 15 de la ley). El sorteo es público y se hace en la junta donde tramitaste (artículo 46).')
+        + p('En el comunicado de noviembre de 2025, la Defensa explicó que con bolas de color <b>blanco, azul o negro</b> se define si cumples tu servicio <b>encuadrado</b> o <b>a disponibilidad</b>. Así lo describieron dos ayuntamientos en el sorteo de la Clase 2008, el 22 y 23 de noviembre de 2026:')
+        + ul([
+          '<b>Bola negra, a disponibilidad</b>: en Playa del Carmen, los 547 jóvenes que la sacaron no tendrán que ir los sábados al adiestramiento, pero deben tramitar la liberación de su cartilla en enero de 2027.',
+          '<b>Encuadrados</b>: en San Cristóbal de Las Casas, el representante de la 31 Zona Militar dijo que el servicio se hará en dos escalones de tres meses.',
+        ])
+        + p('La fecha, el horario y el lugar del adiestramiento te los da tu junta o la zona militar de tu región. No encontramos un comunicado federal de 2026 con estas reglas para todo el país, así que confírmalas ahí. Si el sorteo te toca y no puedes ir ese día, la ley permite que te represente alguien con causa justificada (artículo 46).') },
+      { h2: 'Si estudias o vives fuera: el aplazamiento', html: p('El artículo 26 de la ley permite aplazar la incorporación al activo:')
+        + ul([
+          'A <b>estudiantes</b>, por el tiempo que pida su plan de estudios.',
+          'A quienes <b>viven en el extranjero</b>, hasta por 5 años.',
+          'A quien es <b>sostén de familia</b>, durante los cinco años siguientes a la edad de enrolamiento.',
+        ])
+        + p('Según el Formato universal para trámites del Servicio Militar 2026, para pedirlo llevas acta de nacimiento, identificación con foto, CURP, tu cartilla y documentos que justifiquen la solicitud por estudios o por trabajo. Si vives en otro país, el consulado mexicano tiene las funciones de la junta (artículo 43).') },
+      { h2: 'Si ya pasó tu año o perdiste la cartilla', html: p('Si no la tramitaste a los 18, eres <b>remiso</b>. La Defensa dice que si tienes de 18 a 39 años debes acudir a tu junta, del 2 de enero al 15 de octubre, para tramitarla. Además de los documentos de siempre, llevas una <b>constancia de no registro</b> de la junta del lugar donde naciste, que diga que no se te ha expedido cartilla.')
+        + ejemplo('Si te pasó un año', p('Diego (nombre inventado) nació en 2008 y en 2026 no fue a su junta. En 2027 ya es remiso: primero pide la constancia de no registro en el municipio donde nació y, con ella y los demás documentos, tramita su cartilla en la junta de donde vive, entre enero y octubre. Lo normal es que entre al sorteo de ese año: en 2026, los remisos sortearon junto con la Clase 2008.'))
+        + p('¿Qué pasa si no la tramitas? La página de la Defensa dice que estarías incumpliendo una obligación prevista en la Constitución, y el artículo 51 de la ley señala de un mes a un año de prisión para quien, sin causa justificada, no comparezca ante su junta.')
+        + p('Si la perdiste o se dañó, la <b>reposición</b> se hace en la oficina de reclutamiento de la zona militar más cercana o en la Oficina Central de Reclutamiento, en la Ciudad de México. La Defensa pide acta de nacimiento, identificación, CURP, tu número de matrícula (si no lo sabes, lo pides en la junta donde la tramitaste), dos fotos y un pago de derechos de <b>$301</b> con el formato e5cinco, en cualquier banco.') },
+    ],
+    faq: [
+      { p: '¿Cuándo se tramita la cartilla militar en 2027?', r: 'La Defensa indica que el alistamiento es del 2 de enero al 15 de octubre de cada año, en la Junta Municipal o Alcaldía de Reclutamiento de tu domicilio o en un consulado si vives fuera. Al 27 de noviembre de 2026 no encontramos un comunicado específico para la Clase 2009.' },
+      { p: '¿Qué documentos piden para la cartilla militar?', r: 'Acta de nacimiento certificada, comprobante de domicilio vigente, comprobante de tu último grado de estudios y CURP, cada uno con copia, y cuatro fotografías de 35 × 45 mm con fondo blanco y las reglas que publica la Defensa.' },
+      { p: '¿Cuánto cuesta tramitar la cartilla?', r: 'Sacarla por primera vez es gratis, según la Defensa. La reposición por pérdida sí tiene costo: un pago de derechos de 301 pesos con el formato e5cinco.' },
+      { p: '¿Qué significa sacar bola negra en el sorteo?', r: 'Que cumples tu servicio a disponibilidad. En el sorteo de noviembre de 2026, el ayuntamiento de Playa del Carmen explicó que quienes la sacaron no van los sábados al adiestramiento, pero deben tramitar la liberación de su cartilla en enero de 2027.' },
+      { p: '¿Las mujeres tienen que tramitar la cartilla?', r: 'No es obligatorio: pueden participar de forma voluntaria. La Defensa pide los mismos documentos y, si participaron en el adiestramiento sabatino en años anteriores, el reconocimiento de haber asistido.' },
+    ],
+    fuentes: [F.lsm, F.defensaAlistamiento, F.defensaRemiso, F.defensaSorteo, F.defensaFormato, F.defensaReposicion, F.sorteoSanCristobal, F.sorteoPlaya],
+    relacionadas: [S.ine, S.papeles, S.llave],
+  },
 ];
 
-const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, al INE, a la CONSAR, a ninguna Afore ni a la ATDT.';
+const NOTA_PIE = 'Vorka Learn es la sección de guías de Vorka México. Estas guías son informativas: confirma siempre requisitos, montos y fechas en la convocatoria vigente. No estamos afiliados a la Coordinación Nacional de Becas, a la SEP, a la UNAM, a la UAM, a la UACM, a las Universidades para el Bienestar, al IMCO, a la Secretaría del Trabajo y Previsión Social, al SAT, al IMSS, a RENAPO, a la PROFEDET, al INE, a la CONSAR, a ninguna Afore a la ATDT ni a la Secretaría de la Defensa Nacional.';
 
 export const TEMA_CAMINO = crearTema({
   seccion: CAMINO, articulos: ARTICULOS_CAMINO, llamados: LLAMADO, actualizado: ACTUALIZADO_CAM, actualizadoTxt: ACTUALIZADO_TXT,
