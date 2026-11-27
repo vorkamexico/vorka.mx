@@ -5,6 +5,7 @@ import { esc } from '../paginas.js';
 import { validarToken } from '../descargas.js';
 import { precio, CANDADO_PAGO } from '../tienda.js';
 import { FLECHA } from '../marco.generado.js';
+import { enCarrito, grupoCarrito } from '../carrito.js';
 
 export const PRODUCTOS_TEST = {
   vocacional: { clave: 'vocacional', app: 'test-vocacional', slug: 'test-vocacional', ruta: '/test-vocacional/', nombre: 'Test vocacional Vorka', cookie: 'vorka_tv' },
@@ -149,7 +150,7 @@ export const cookieResultado = (def, id) => `${def.cookie}=${id}; Max-Age=${COOK
 export function formCompraTest(p, { resultado = '', nombre = '', email = '', paquetes = [], error = '', boton = 'Desbloquear mi reporte', cupon = null, ayudaEmail = 'Aquí te llega la liga de tu reporte (no vence).' } = {}) {
   const conCupon = cupon ? Math.max(1000, p.precio_centavos - cupon.monto) : null;
   const precioSolo = cupon ? `<s>${precio(p)}</s> ${pesos(conCupon)}` : precio(p);
-  return `<form class="tv-compra" id="form-compra" method="post" action="/api/checkout" novalidate data-unidad="${p.precio_centavos}"${cupon ? ` data-cupon="${esc(cupon.codigo)}"` : ''}>
+  return `<form class="tv-compra" id="form-compra" method="post" action="/api/checkout" novalidate data-unidad="${p.precio_centavos}"${cupon ? ` data-cupon="${esc(cupon.codigo)}"` : ''}${!cupon && !resultado && enCarrito(p) ? ` data-carrito="${esc(grupoCarrito(p))}"` : ''}>
   <input type="hidden" name="slug" value="${esc(p.slug)}">${resultado ? `<input type="hidden" name="resultado" value="${esc(resultado)}">` : ''}${cupon ? `<input type="hidden" name="codigo" value="${esc(cupon.codigo)}">` : ''}
   ${cupon ? `<p class="tv-ok" style="margin:0">Tu descuento por terminar el test: <b>${pesos(cupon.monto)} menos</b> con el cupón <b>${esc(cupon.codigo)}</b> (ya aplicado). Vence el ${esc(horaVence(cupon.hasta))}.</p>` : ''}
   ${paquetes.length ? `<fieldset style="border:0;padding:0;margin:0;display:grid;gap:8px"><legend class="vh">Elige tu opción</legend>

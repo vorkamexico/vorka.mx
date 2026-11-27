@@ -156,7 +156,9 @@ export async function retomarPago(env, id, url) {
   let nueva;
   // El descuento del 3.er recordatorio: como un código (el mayor gana; en suscripciones no aplica)
   const sus = pct ? await suscripcionDeOrden(env, { items: await all(env, 'SELECT product_id FROM order_items WHERE order_id = ?', o.id) }) : null;
-  const descuento = pct && !sus ? { codigo: AUTO.codigo, pct } : null;
+  let descuento = pct && !sus ? { codigo: AUTO.codigo, pct } : null;
+  // Compra del carrito: la liga respeta su descuento por llevar varios (si es mayor que el del 3.er recordatorio)
+  if (o.descuento_codigo === 'CARRITO' && o.descuento_pct > (descuento?.pct || 0)) descuento = { codigo: 'CARRITO', pct: o.descuento_pct };
   try { nueva = await crearOrden(env, { items: items.map(i => ({ slug: i.slug, cantidad: i.cantidad, ...(i.intervalo ? { intervalo: i.intervalo } : {}) })), email: o.email, nombre: o.nombre, ref: o.ref_code, descuento }); }
   catch { return vencida('Este producto ya no está disponible', 'Puede que ya no esté a la venta. Escríbenos a hola@vorka.mx y te ayudamos.'); }
   const gracias = new URL('/tienda/gracias', env.SITE_URL); gracias.searchParams.set('order', nueva.id);
