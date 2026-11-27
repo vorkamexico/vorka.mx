@@ -13,7 +13,7 @@ de la nota (la ilustración va SIN letras; las letras las pone este script para 
   {"texto": "¡Mejor llamo al **800 TECUIDO**!", "x": 0.06, "y": 0.06, "ancho": 0.36, "cola": [0.22, 0.42], "tipo": "globo"}
   x, y = esquina de arriba a la izquierda; ancho = ancho máximo; cola = a dónde apunta (quien habla). Todo en fracciones de la imagen.
   tipo: «globo» (blanco, lo que dice alguien), «voz» (negro, la voz del teléfono o de alguien que no sale), «dato» (etiqueta de color
-  con una cifra o fecha de la nota, sin cola). Mantén x entre 0.08 y 0.92: en la imagen para redes se recortan un poco los lados.
+  con una cifra o fecha de la nota, sin cola). Si un globo se sale de la zona segura (lo que se ve en redes menos el margen de 84 px del título), el script lo mete solo.
 Regla de títulos: la cabeza (hasta los dos puntos o hasta «|») va sola, grande y en negritas; el resto abajo, un poco más chico,
 con lo importante entre **…** en negritas y lo demás en peso normal (sin asteriscos, todo en negritas).
 Escribe portada.jpg y redes.jpg en la carpeta de salida.
@@ -104,6 +104,12 @@ def globos(img, lista, acento):
     base = base.resize((1920, round(1920 * base.height / base.width)), Image.LANCZOS)
     W, H = base.size
     S = 2   # se dibuja al doble y se baja, para que las orillas salgan suaves
+    # Zona segura: lo que se ve en la imagen para redes (1080 × 700, se recortan los lados) menos el margen del texto (84 px).
+    # Así los globos quedan alineados con el título y no se cortan ni en redes ni en la portada.
+    cw = min(W, H * 1080 / 700)
+    esc = cw / 1080
+    zx0, zx1 = (W - cw) / 2 + 84 * esc, (W + cw) / 2 - 84 * esc
+    zy0, zy1 = 56 * esc, H - 48 * esc
     for g in lista:
         tipo = g.get('tipo', 'globo')
         tam = int(g.get('tam', 50 if tipo != 'dato' else 44))
@@ -114,12 +120,15 @@ def globos(img, lista, acento):
         if tipo == 'dato':
             pals = [(p, True) for p, _ in pals]
         relleno = int(tam * (0.62 if tipo != 'dato' else 0.5)) * S
-        lineas = partir(d, pals, fb, fr, g.get('ancho', 0.36) * W * S - 2 * relleno)
+        lineas = partir(d, pals, fb, fr, min(g.get('ancho', 0.36) * W, zx1 - zx0) * S - 2 * relleno)
         salto = int(tam * 1.2) * S
         esp = d.textlength(' ', font=fr)
         ancho_txt = max(sum(wp for _, _, wp in l) + esp * (len(l) - 1) for l in lineas)
         x0, y0 = g['x'] * W * S, g['y'] * H * S
         x1, y1 = x0 + ancho_txt + 2 * relleno, y0 + len(lineas) * salto + 2 * relleno - int(tam * 0.2) * S
+        dx = max(0, zx0 * S - x0) - max(0, x1 - zx1 * S)   # si se sale de la zona segura, se mete
+        dy = max(0, zy0 * S - y0) - max(0, y1 - zy1 * S)
+        x0, x1, y0, y1 = x0 + dx, x1 + dx, y0 + dy, y1 + dy
         radio = min((y1 - y0) / 2, 46 * S) if tipo != 'dato' else (y1 - y0) / 2
         forma = Image.new('L', capa.size, 0)
         fd = ImageDraw.Draw(forma)
@@ -196,7 +205,7 @@ def generar(titulo, categoria, semilla, salida, foto=None, lista_globos=None, mu
         lc = partir(d, pc, fcb, fcb, ancho) if pc else []
         lr = partir(d, pr, frb, frr, ancho) if pr else []
         alto = len(lc) * int(tam * 1.08) + (int(tam * 0.16) if lc and lr else 0) + len(lr) * int(tr * 1.16)
-        if len(lc) <= 2 and len(lc) + len(lr) <= 6 and y0 + 56 + alto <= y_marca - 30:
+        if len(lc) <= 2 and len(lc) + len(lr) <= 6 and y0 + 56 + alto <= y_marca - 64:
             break
     d.text((M, y0), categoria, font=fuente(32, 'Semibold'), fill=claro)
     y = y0 + 56
