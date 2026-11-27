@@ -7,7 +7,13 @@ Las usa la tarea programada que escribe los borradores de noticias (las sube a V
 Si la noticia trae una foto propia y con permiso (--foto), se usa esa en lugar de las de la ciudad.
 
 Uso:
-  python3 _sparks/imagen_noticia.py --titulo "**Lo importante** y lo demás" --categoria "Gobierno" --semilla "<slug>" --salida /ruta/carpeta [--foto foto.jpg]
+  python3 _sparks/imagen_noticia.py --titulo "**Lo importante** y lo demás" --categoria "Gobierno" --semilla "<slug>" --salida /ruta/carpeta [--foto foto.jpg] [--globos globos.json] [--municipio Cortazar]
+--globos (portadas llamativas, regla de Brandon del 27 nov 2026): globos de diálogo y datos encima de la imagen, con el texto exacto
+de la nota (la ilustración va SIN letras; las letras las pone este script para que salgan bien escritas). globos.json es una lista:
+  {"texto": "¡Mejor llamo al **800 TECUIDO**!", "x": 0.06, "y": 0.06, "ancho": 0.36, "cola": [0.22, 0.42], "tipo": "globo"}
+  x, y = esquina de arriba a la izquierda; ancho = ancho máximo; cola = a dónde apunta (quien habla). Todo en fracciones de la imagen.
+  tipo: «globo» (blanco, lo que dice alguien), «voz» (negro, la voz del teléfono o de alguien que no sale), «dato» (etiqueta de color
+  con una cifra o fecha de la nota, sin cola). Mantén x entre 0.08 y 0.92: en la imagen para redes se recortan un poco los lados.
 Regla de títulos: la cabeza (hasta los dos puntos o hasta «|») va sola, grande y en negritas; el resto abajo, un poco más chico,
 con lo importante entre **…** en negritas y lo demás en peso normal (sin asteriscos, todo en negritas).
 Escribe portada.jpg y redes.jpg en la carpeta de salida.
@@ -16,7 +22,9 @@ import argparse
 import hashlib
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+import json
+
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 AQUI = Path(__file__).resolve().parent
 FOTOS = ['celaya-arcos-900.webp', 'celaya-guitarra-1200.webp', 'celaya-jardin-1200.webp', 'celaya-templo-1200.webp', 'celaya-torre-1600.webp']
@@ -84,10 +92,79 @@ def recorte(foto, w, h):
     return ImageOps.fit(foto.convert('RGB'), (w, h), Image.LANCZOS, centering=(0.5, 0.5))
 
 
-def generar(titulo, categoria, semilla, salida, foto=None):
+def globos(img, lista, acento):
+    """Pinta globos de diálogo y etiquetas de datos sobre la imagen (en una copia de 1920 de ancho)."""
+    base = img.convert('RGB')
+    base = base.resize((1920, round(1920 * base.height / base.width)), Image.LANCZOS)
+    W, H = base.size
+    S = 2   # se dibuja al doble y se baja, para que las orillas salgan suaves
+    for g in lista:
+        tipo = g.get('tipo', 'globo')
+        tam = int(g.get('tam', 50 if tipo != 'dato' else 44))
+        fb, fr = fuente(tam * S, 'Heavy' if tipo == 'dato' else 'Bold'), fuente(tam * S, 'Medium')
+        capa = Image.new('RGBA', (W * S, H * S), (0, 0, 0, 0))
+        d = ImageDraw.Draw(capa)
+        pals = palabras(g['texto'])
+        if tipo == 'dato':
+            pals = [(p, True) for p, _ in pals]
+        relleno = int(tam * (0.62 if tipo != 'dato' else 0.5)) * S
+        lineas = partir(d, pals, fb, fr, g.get('ancho', 0.36) * W * S - 2 * relleno)
+        salto = int(tam * 1.2) * S
+        esp = d.textlength(' ', font=fr)
+        ancho_txt = max(sum(wp for _, _, wp in l) + esp * (len(l) - 1) for l in lineas)
+        x0, y0 = g['x'] * W * S, g['y'] * H * S
+        x1, y1 = x0 + ancho_txt + 2 * relleno, y0 + len(lineas) * salto + 2 * relleno - int(tam * 0.2) * S
+        radio = min((y1 - y0) / 2, 46 * S) if tipo != 'dato' else (y1 - y0) / 2
+        forma = Image.new('L', capa.size, 0)
+        fd = ImageDraw.Draw(forma)
+        fd.rounded_rectangle([x0, y0, x1, y1], radius=radio, fill=255)
+        if g.get('cola') and tipo != 'dato':
+            cx, cy = g['cola'][0] * W * S, g['cola'][1] * H * S
+            mx = min(max(cx, x0 + radio + 30 * S), x1 - radio - 30 * S)   # la cola sale del lado más cercano a quien habla
+            if cy > y1:
+                fd.polygon([(mx - 34 * S, y1 - 10 * S), (mx + 34 * S, y1 - 10 * S), (cx, cy)], fill=255)
+            elif cy < y0:
+                fd.polygon([(mx - 34 * S, y0 + 10 * S), (mx + 34 * S, y0 + 10 * S), (cx, cy)], fill=255)
+            else:
+                my = (y0 + y1) / 2
+                lx = x1 - 10 * S if cx > x1 else x0 + 10 * S
+                fd.polygon([(lx, my - 30 * S), (lx, my + 30 * S), (cx, cy)], fill=255)
+        if tipo == 'dato':
+            tinta, papel, borde = (255, 255, 255), acento, None
+        elif tipo == 'voz':
+            tinta, papel, borde = (255, 255, 255), (20, 20, 22), (255, 255, 255)
+        else:
+            tinta, papel, borde = (17, 17, 17), (255, 255, 255), (17, 17, 17)
+        sombra = forma.filter(ImageFilter.GaussianBlur(14 * S)).point(lambda v: int(v * 0.45))
+        capa.paste((0, 0, 0, 255), (6 * S, 12 * S), sombra)
+        if borde:
+            grueso = forma.filter(ImageFilter.MaxFilter(9 * S + 1))
+            capa.paste(borde + (255,), (0, 0), grueso)
+        capa.paste(papel + (255,) if isinstance(papel, tuple) else papel, (0, 0), forma)
+        y = y0 + relleno - int(tam * 0.12) * S
+        for linea in lineas:
+            w_l = sum(wp for _, _, wp in linea) + esp * (len(linea) - 1)
+            x = x0 + relleno + (ancho_txt - w_l) / 2
+            for p, b, wp in linea:
+                d.text((x, y), p, font=fb if b else fr, fill=tinta)
+                x += wp + esp
+            y += salto
+        capa = capa.resize((W, H), Image.LANCZOS)
+        base.paste(capa, (0, 0), capa)
+    return base
+
+
+def hex_rgb(h):
+    h = h.lstrip('#')
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def generar(titulo, categoria, semilla, salida, foto=None, lista_globos=None, municipio='Celaya'):
     n = int(hashlib.sha1(semilla.encode()).hexdigest(), 16)
     fondo, claro = TONOS[n % len(TONOS)]
     img = Image.open(foto) if foto else Image.open(AQUI / 'assets' / FOTOS[n % len(FOTOS)])
+    if lista_globos:
+        img = globos(img, lista_globos, hex_rgb(fondo))
     salida = Path(salida)
     salida.mkdir(parents=True, exist_ok=True)
 
@@ -137,7 +214,8 @@ def generar(titulo, categoria, semilla, salida, foto=None):
     logo.thumbnail((56, 56))
     # El logo se centra con lo que se ve de las dos líneas (de lo alto de la «R» a lo bajo de la «j»), no con sus cajas
     f1, f2 = fuente(30, 'Semibold'), fuente(26, 'Regular')
-    t1, t2 = 'Revista Sparks · Celaya', 'Lee la nota en vorka.mx/sparks/celaya'
+    slug = municipio.lower().replace(' ', '-')
+    t1, t2 = f'Revista Sparks · {municipio}', f'Lee la nota en vorka.mx/sparks/{slug}'
     x_txt, y1, y2 = M + 72, y_marca + 6, y_marca + 44
     arriba, abajo = d.textbbox((x_txt, y1), t1, font=f1)[1], d.textbbox((x_txt, y2), t2, font=f2)[3]
     alfa = logo.getchannel('A')
@@ -158,6 +236,9 @@ if __name__ == '__main__':
     a.add_argument('--semilla', default='')
     a.add_argument('--salida', required=True)
     a.add_argument('--foto')
+    a.add_argument('--globos', help='JSON con globos de diálogo y datos (ver arriba)')
+    a.add_argument('--municipio', default='Celaya')
     x = a.parse_args()
-    for p in generar(x.titulo, x.categoria, x.semilla or x.titulo, x.salida, x.foto):
+    lista = json.loads(Path(x.globos).read_text()) if x.globos else None
+    for p in generar(x.titulo, x.categoria, x.semilla or x.titulo, x.salida, x.foto, lista, x.municipio):
         print(p)
