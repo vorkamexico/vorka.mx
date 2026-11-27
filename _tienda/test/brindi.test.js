@@ -54,7 +54,7 @@ describe('Brindi en la tienda', () => {
     expect(html).toContain('Brindi · Invitaciones digitales');
     expect(html).toContain('/assets/tienda/v3/brindi-portada.webp');
     expect(html).toContain('Desde $239 MXN');
-    expect(html).not.toContain('Brindi · Plan Premium');
+    expect(html).not.toMatch(/<h3><a [^>]*>Brindi · Plan Premium/);      // sin tarjeta propia (solo como opción de «Elige tu opción»)
     expect(html.match(/class="t-card-img" href="\/tienda\/brindi\/"/g)).toHaveLength(1);
     const mapa = await (await pedir('/tienda/sitemap.xml')).text();
     expect(mapa.match(/\/tienda\/brindi\/<\/loc>/g)).toHaveLength(1);
