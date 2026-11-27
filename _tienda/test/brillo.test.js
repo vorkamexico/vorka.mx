@@ -85,7 +85,7 @@ describe('ficha de Brillo', () => {
   });
   it('SEO: título, canónico, OG propia y JSON-LD con las 6 ofertas y FAQPage', async () => {
     const h = await (await pedir('/tienda/brillo/')).text();
-    expect(h).toContain('<title>Brillo: control diario para estéticas y salones | Prueba 7 días gratis</title>');
+    expect(h).toContain('<title>Brillo: control para estéticas y salones | Prueba 7 días gratis</title>');
     expect(h).toContain('<link rel="canonical" href="https://vorka.mx/tienda/brillo/">');
     expect(h).toContain('<meta property="og:image" content="https://vorka.mx/assets/tienda/v3/brillo-og.jpg">');
     const ld = JSON.parse(h.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);

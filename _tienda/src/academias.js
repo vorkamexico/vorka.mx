@@ -61,7 +61,7 @@ export async function paginaAcademias(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const desde = mensual ? precio(mensual.prod) : null;
   return pagina({ navActual: 'catalogo', entrar: { url: APP, app: 'Vuelve' },
-    titulo: 'Academias + Vuelve: alumnos, asistencia y mensualidades en tu celular | Vorka México', ruta: RUTA_ACADEMIAS,
+    titulo: 'Academias + Vuelve: alumnos, asistencia y mensualidades | Vorka México', ruta: RUTA_ACADEMIAS,
     descripcion: 'Para academias de baile, idiomas, música y deporte: grupos con horario, pase de lista, quién pagó el mes y recordatorios por WhatsApp, con tarjeta de lealtad para las familias.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT,

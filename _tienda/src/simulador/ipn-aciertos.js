@@ -77,7 +77,7 @@ export async function paginaCarreraIpn(env, slug) {
   ];
   const otras = Object.entries(CARRERAS_IPN).filter(([s]) => s !== slug);
   return pagina({
-    titulo: `¿Cuántos aciertos pide el IPN para ${corto}? Lugares por escuela | Vorka México`, ruta,
+    titulo: `${[`¿Cuántos aciertos pide el IPN para ${corto}? Lugares por escuela`, `Aciertos IPN para ${corto}: lugares por escuela`].find(t => t.length <= 65) || `Aciertos IPN ${corto}`} | Vorka México`,   // el primero que quepa en Google (~65) ruta,
     descripcion: `${c.nombre} en el IPN: no hay mínimo oficial de aciertos. Las escuelas, los lugares de agosto y febrero que publica el IPN y cómo se asigna. Practica con el simulador del área.`,
     imagen: `${SITIO}/assets/tienda/v3/simulador-ipn-og.jpg`,
     head: ld(faq, [['Simulador IPN', `${RUTA}/`], ['Aciertos y lugares', RUTA_ACIERTOS_IPN], [c.nombre, ruta]]) + CSS + CSS_UA + CSS_COMPRA,

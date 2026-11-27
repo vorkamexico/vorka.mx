@@ -86,7 +86,7 @@ export async function paginaMostrador(env, req, url) {
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const desde = mensual ? precio(mensual.prod) : null;   // el de entrada: solo Mostrador
   return pagina({ navActual: 'catalogo', entrar: { url: APP, app: 'Vuelve' },
-    titulo: 'Mostrador + Vuelve: inventario, ventas y corte de caja para tu negocio | Vorka México', ruta: RUTA_MOSTRADOR,
+    titulo: 'Mostrador + Vuelve: inventario, ventas y corte de caja | Vorka México', ruta: RUTA_MOSTRADOR,
     descripcion: 'Para boutiques, papelerías, ferreterías, tiendas de regalos y más: vende con ticket, lleva tu inventario, haz el corte del día y haz que tus clientes regresen.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {}, script: SCRIPT,

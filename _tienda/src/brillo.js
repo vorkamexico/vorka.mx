@@ -88,7 +88,7 @@ export async function paginaBrillo(env, req, url) {
       <ul>${lista.map(i => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
       <a class="bl-btn${rec ? '' : ' ghost'}" href="?plan=${(m || a).slug}#comprar" data-plan="${(m || a).slug}">Suscribirme</a></article>` : '';
   return pagina({ navActual: 'catalogo', entrar: { url: `${APP}/`, app: 'Brillo' },
-    titulo: 'Brillo: control diario para estéticas y salones | Prueba 7 días gratis', ruta: RUTA_BRILLO, imagen: OG_BRILLO,
+    titulo: 'Brillo: control para estéticas y salones | Prueba 7 días gratis', ruta: RUTA_BRILLO, imagen: OG_BRILLO,
     descripcion: 'Cada técnica registra sus servicios desde su celular y tú ves ventas, corte de caja, incidencias, agenda y a tu equipo, aunque no estés en el salón. Desde $349 al mes. Prueba 7 días gratis.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},

@@ -145,6 +145,10 @@ export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}
 const ENTRAR_CSS = '<style>.nav.t-navs .t-entrar{gap:7px}.nav.t-navs .t-entrar svg{width:18px;height:18px}@media (max-width:430px){.nav.t-navs .t-pastilla.t-entrar{display:inline-flex;min-height:40px;padding:0 14px}}.t-ya{margin:14px 0 0;font-size:15px;opacity:.85}.t-ya a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}</style>';
 // Botones «Copiar liga» (demos en vivo y otros): copian data-copiar y avisan en el mismo botón
 const SCRIPT_COPIAR = `document.querySelectorAll('[data-copiar]').forEach(b=>b.addEventListener('click',async()=>{const t=b.textContent;try{await navigator.clipboard.writeText(b.dataset.copiar);b.textContent='¡Liga copiada!'}catch(e){prompt('Copia la liga:',b.dataset.copiar)}setTimeout(()=>b.textContent=t,2200)}));`;
+// Título para Google: corta a ~60 caracteres. Si ya es largo, la marca del final (« | Vorka México», « | Brindi») se quita;
+// la tarjeta al compartir (og:title) conserva el título completo.
+export const tituloSeo = t => { t = String(t || ''); if (t.length <= 65) return t; const m = t.match(/^(.+) [|·] (Vorka México|Vorka|Brindi)$/);
+  return m ? m[1] : t; };
 export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null, whatsappTexto = '', ogTipo = 'website' }) {
   const n = nonce(), temporada = temporadaActual();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
@@ -154,7 +158,7 @@ export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo,
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script nonce="${n}">${TEMA_HEAD}</script>
-<title>${esc(titulo)}</title>
+<title>${esc(tituloSeo(titulo))}</title>
 <meta name="description" content="${esc(descripcion)}">
 ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="canonical" href="https://vorka.mx${esc(ruta)}">`}
 <meta name="color-scheme" content="light dark">

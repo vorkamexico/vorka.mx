@@ -317,7 +317,7 @@ export async function paginaSelector(env) {
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Simulador EXANI-II', item: `${SITIO}${RUTA}/` },
     { '@type': 'ListItem', position: 2, name: '¿Cuál te sirve?', item: `${SITIO}${RUTA_UNIVERSIDADES}` }] }];
-  return pagina({ titulo: `¿Qué examen de admisión pide tu universidad? EXANI-II, PAA, UNAM, IPN${excoba ? ', EXCOBA' : ''} | Vorka México`, ruta: RUTA_UNIVERSIDADES,
+  return pagina({ titulo: `¿Qué examen pide tu universidad? EXANI-II, PAA, UNAM, IPN${excoba ? ', EXCOBA' : ''} | Vorka México`, ruta: RUTA_UNIVERSIDADES,
     descripcion: 'Busca tu universidad y ve qué examen de admisión pide (EXANI-II, PAA, examen propio) y con qué simulador practicar. Con la fuente oficial de cada una.',
     imagen: `${SITIO}/assets/tienda/v3/simulador-exani-ii-og.jpg`,
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${CSS}`,

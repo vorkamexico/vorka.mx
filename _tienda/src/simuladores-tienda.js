@@ -83,7 +83,7 @@ export async function paginaSimuladores(env, req, url) {
     category: 'Preparación para exámenes de admisión', offers: ofertas({ ruta: RUTA_SIMULADORES, centavos: paquetes.map(x => x.p.precio_centavos), moneda: paquetes[0].p.moneda }) }] : [];
 
   return pagina({ navActual: 'catalogo',
-    titulo: 'Simuladores de examen de admisión en línea: PAA, UNAM, IPN, ECOEMS y prepa UG | Vorka México', ruta: RUTA_SIMULADORES,
+    titulo: 'Simuladores de examen de admisión: PAA, UNAM, IPN, EXANI-II y más | Vorka México', ruta: RUTA_SIMULADORES,
     descripcion: 'Elige el simulador de tu examen de admisión (PAA, UNAM, IPN, ECOEMS o prepa UG) o arma tu paquete en el carrito: 2 llevan 15 % menos y 3 o más, 25 %.',
     imagen: 'https://vorka.mx/assets/tienda/v3/simuladores-og.jpg',
     head: `${ld.length ? `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>` : ''}<style>${CSS}</style>`,
