@@ -4,6 +4,7 @@
 // negocio en vorka.mx/vuelve/<negocio> (→ os.vorka.mx/v/<negocio>). Aquí solo se vende.
 import { lineaMarca, colorDe, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { GIROS, RUTA_MIRA } from './miratunegocio.js';
@@ -201,7 +202,7 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="#quiz">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
   pasos: [],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-vuelve" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">Plan</label><select id="slug" name="slug">${planes.map(x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${x.nombre} · ${precio(x.prod)} ${x.cada}${x.nota ? ` (${x.nota})` : ''}</option>`).join('')}</select></div>
     <div class="t-campo"><label for="sucursales">Sucursales o negocios adicionales</label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="50" value="${lugares}"><small class="t-ayuda">Tu plan incluye un lugar. Cada sucursal de más, o cada negocio distinto con el mismo correo, se suma aquí con precio por volumen.</small></div>

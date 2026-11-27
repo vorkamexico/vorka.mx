@@ -13,20 +13,23 @@ export const SCRIPT_CARRITO = `(function(){
 var K='vorka_carrito';
 function lee(){try{var v=JSON.parse(localStorage.getItem(K)||'[]');return Array.isArray(v)?v:[];}catch(e){return [];}}
 function guarda(v){try{localStorage.setItem(K,JSON.stringify(v));}catch(e){}pinta();}
-if(/^\\/tienda\\/gracias/.test(location.pathname)){try{if(sessionStorage.getItem('vorka_carrito_pago')){localStorage.removeItem(K);sessionStorage.removeItem('vorka_carrito_pago');}}catch(e){}}
+// Al volver de pagar, se quita del carrito solo lo que se pagó (si cancelaron en Stripe, se queda todo)
+if(/^\\/tienda\\/gracias/.test(location.pathname)&&!/[?&]cancelado=/.test(location.search)){try{var pg=sessionStorage.getItem('vorka_carrito_pago');if(pg){var ps=null;try{ps=JSON.parse(pg);}catch(e){}if(Array.isArray(ps))localStorage.setItem(K,JSON.stringify(lee().filter(function(x){return ps.indexOf(x.s)<0;})));else localStorage.removeItem(K);sessionStorage.removeItem('vorka_carrito_pago');}}catch(e){}}
 var ico='<svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.2 10.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6.2M10 20.5h.01M17 20.5h.01"/></svg>';
 function pinta(){var n=lee().length,nav=document.querySelector('.t-navs .nav-in');if(!nav)return;var a=nav.querySelector('.t-nav-carrito');
  if(!n&&!/^\\/tienda\\/carrito/.test(location.pathname)){if(a)a.remove();return;}
  if(!a){a=document.createElement('a');a.className='t-nav-ico t-nav-carrito';a.href='/tienda/carrito/';a.title='Carrito';var m=nav.querySelector('.t-pastilla')||nav.querySelector('.menu-btn');nav.insertBefore(a,m||null);}
  a.setAttribute('aria-label','Carrito: '+n+(n===1?' producto':' productos'));a.innerHTML=ico+(n?'<span class="t-cnt">'+n+'</span>':'');}
 document.addEventListener('vorka:carrito',pinta);addEventListener('storage',function(e){if(e.key===K)pinta();});pinta();
-var av=null,t=null;function aviso(n){if(!av){av=document.createElement('div');av.className='t-car-aviso';av.setAttribute('role','status');document.body.appendChild(av);}
- var txt=n>=3?'Llevas '+n+': 25 % menos en todo.':n===2?'Llevas 2: 15 % menos en todo.':'Agregado. Lleva 2 y te descontamos 15 %.';
+var av=null,t=null;function aviso(n,m){if(!av){av=document.createElement('div');av.className='t-car-aviso';av.setAttribute('role','status');document.body.appendChild(av);}
+ var txt=m?'Agregado a tu mensualidad. Si juntas apps que forman paquete, pagas el precio del paquete.':n>=3?'Llevas '+n+': 25 % menos en todo.':n===2?'Llevas 2: 15 % menos en todo.':'Agregado. Lleva 2 y te descontamos 15 %.';
  av.innerHTML='<span>'+txt+'</span><a href="/tienda/carrito/">Ver carrito →</a>';av.hidden=false;clearTimeout(t);t=setTimeout(function(){av.hidden=true;},6000);}
-function agrega(s,a){var v=lee().filter(function(x){return x.a!==a&&x.s!==s;});v.push({s:s,a:a});guarda(v);aviso(v.length);}
-document.querySelectorAll('form[data-carrito]').forEach(function(f){var b=document.createElement('button');b.type='button';b.className='btn blanco t-agregar';b.textContent='Agregar al carrito';
+function agrega(s,a,m){var v=lee().filter(function(x){return x.a!==a&&x.s!==s;});v.push(m?{s:s,a:a,m:1}:{s:s,a:a});guarda(v);aviso(v.filter(function(x){return !x.m;}).length,m);}
+// Formularios de apps (data-carrito-planes = {slug del plan mensual: app}): el botón sale solo con un plan mensual elegido
+document.querySelectorAll('form[data-carrito],form[data-carrito-planes]').forEach(function(f){var b=document.createElement('button');b.type='button';b.className='btn blanco t-agregar';b.textContent='Agregar al carrito';
+ var pl=null;try{pl=JSON.parse(f.getAttribute('data-carrito-planes')||'null');}catch(e){}
  var c=f.querySelector('[type=submit]');if(c&&c.parentNode)c.parentNode.insertBefore(b,c.nextSibling);else f.appendChild(b);
- function ve(){var r=f.querySelector('[name=para_quien]:checked');b.hidden=!!(r&&r.value==='regalo');}f.addEventListener('change',ve);ve();
- b.addEventListener('click',function(){var s=new FormData(f).get('slug');if(s){agrega(s,f.getAttribute('data-carrito'));b.textContent='Agregado ✓';setTimeout(function(){b.textContent='Agregar al carrito';},2000);}});});
+ function ve(){var r=f.querySelector('[name=para_quien]:checked');b.hidden=!!(r&&r.value==='regalo')||!!(pl&&!pl[new FormData(f).get('slug')]);}f.addEventListener('change',ve);ve();
+ b.addEventListener('click',function(){var s=new FormData(f).get('slug');if(s){agrega(s,pl?pl[s]:f.getAttribute('data-carrito'),!!pl);b.textContent='Agregado ✓';setTimeout(function(){b.textContent='Agregar al carrito';},2000);}});});
 document.addEventListener('click',function(e){var b=e.target.closest('[data-carrito-slug]');if(!b)return;e.preventDefault();agrega(b.getAttribute('data-carrito-slug'),b.getAttribute('data-carrito-app'));});
 })();`;
