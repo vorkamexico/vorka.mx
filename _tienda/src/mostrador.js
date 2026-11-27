@@ -5,6 +5,7 @@
 // Las pantallas son capturas reales de la app (assets/tienda/mostrador/). Las invitaciones con mes de prueba son privadas: aquí no se anuncian.
 // Vuelve no cobra a los clientes ni mueve dinero: solo registra.
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, migas } from './seo.js';
@@ -135,7 +136,7 @@ export async function paginaMostrador(env, req, url) {
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Mostrador + Vuelve', intro: `Usa el correo con el que vas a entrar. Si ya tienes Vuelve, usa el mismo y todo sigue tal cual. ¿Dudas? <a href="${WA}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>.`,
   pasos: [['Elige tu plan', 'Solo Mostrador o con Vuelve, mensual o anual, y el correo con el que entras.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Entras y vendes', 'Te llega la liga a tu correo, subes tus productos y listo.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-mo" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-mo" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <fieldset class="t-campo ac-elige"><legend>Plan</legend>${planes.map(x => `<label class="ac-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b><small>${ahorroDe(x.slug) > 0 ? `Ahorra ${pesosRedondo(ahorroDe(x.slug))} contra el mensual` : 'Sin plazo forzoso'}</small></span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>

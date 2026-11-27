@@ -4,6 +4,7 @@
 // suscripciones.js). La app vive en brillo.vorka.mx (Vorka OS). Aquí solo se vende. Precios: migrations/0089_brillo.sql.
 import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { ofertas, migas } from './seo.js';
@@ -138,7 +139,7 @@ ${barraCompra({ titulo: 'Brillo', detalle: `Desde ${bM ? precio(bM.prod) : '$349
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Brillo', intro: `¿Aún no lo pruebas? <a href="${esc(nuevo)}">Empieza gratis 7 días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu salón sigue tal cual.`,
   pasos: [['Eliges tu plan', 'Básico, Profesional o el paquete, mensual o anual, y tus sucursales.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Te llega tu acceso por correo', 'Con el mismo correo de tu prueba, todo sigue igual.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-brillo" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-brillo" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">Plan</label><select id="slug" name="slug">${planes.map(x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${x.nombre} · ${x.periodo} · ${precio(x.prod)} ${x.cada}${x.nota ? ` (${x.nota})` : ''}</option>`).join('')}</select></div>
     <div class="t-campo" id="campo-sucursales"><label for="sucursales">Sucursales adicionales</label><input id="sucursales" name="sucursales" type="number" inputmode="numeric" min="0" max="${MAX_SUCURSALES}" value="${sucursales}"><small class="t-ayuda">Tu plan incluye 1 sucursal. Cada una de más se suma a tu plan; puedes cambiarlo después desde Brillo › Cuenta.</small></div>

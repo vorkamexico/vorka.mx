@@ -7,6 +7,7 @@ import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIO
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
+import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
 import { oferta, ofertas, migas } from './seo.js';
@@ -223,7 +224,7 @@ ${barraCompra({ titulo: 'Agenda', detalle: `${mensual ? precio(mensual.prod) : `
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Agenda', intro: `¿Aún no la pruebas? <a href="${esc(nuevo)}">Empieza gratis 7 días</a>, sin tarjeta. Si ya la estás probando, suscríbete con el mismo correo y tu agenda sigue tal cual.`,
   pasos: [['Eliges tu plan', 'Agenda o el paquete con Vuelve, mensual o anual, y cuántos profesionales atienden.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Te llega tu acceso por correo', 'Con el mismo correo de tu prueba, todo sigue igual.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por correo y WhatsApp'],
-  form: `<form class="t-form t-compra" id="form-agenda" method="post" action="/api/checkout" novalidate>
+  form: `<form class="t-form t-compra" id="form-agenda" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
     <div class="t-campo"><label for="slug">Plan</label><select id="slug" name="slug">${planes.map(x => `<option value="${esc(x.slug)}"${elegido === x.slug ? ' selected' : ''}>${x.nombre} · ${x.periodo} · ${precio(x.prod)} ${x.cada}${x.nota ? ` (${x.nota})` : ''}</option>`).join('')}</select></div>
     <div class="t-campo"><label for="profesionales">Profesionales que reciben citas</label><input id="profesionales" name="profesionales" type="number" inputmode="numeric" min="1" max="${MAX_PROFESIONALES}" value="${profesionales}"><small class="t-ayuda">Tu plan incluye 1. Cada profesional de más se suma al mismo precio; puedes cambiarlo después desde Agenda › Cuenta.</small></div>
