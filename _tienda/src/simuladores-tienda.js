@@ -142,7 +142,6 @@ export const CSS_TARJETAS_SIM = `.ts-sims{display:grid;gap:14px}@media(min-width
 .ts-sim-f{flex:none;color:var(--fg-2)}.ts-sim-f svg{width:18px;height:18px}`;
 const CSS = `.ts-hero{padding:clamp(12px,3vw,36px) 0 clamp(20px,3vw,32px)}
 .ts-hero .t-h1{margin-top:12px;max-width:860px}.ts-hero .t-lead{margin-top:14px;max-width:680px}
-.ts-atajo{margin-top:20px}
 .ts-grupo{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);margin:28px 0 12px}
 ${CSS_TARJETAS_SIM}
 .ts-cual{margin-top:16px;font-size:15px;color:var(--fg-2)}.ts-cual a{color:var(--fg);font-weight:700;display:inline-flex;align-items:center;gap:6px}.ts-cual svg{width:16px;height:16px}

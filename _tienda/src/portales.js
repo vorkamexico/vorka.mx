@@ -3,7 +3,7 @@
 // Se cobra por suscripción (ver suscripciones.js). La plataforma vive en inmuebles.vorka.mx (Worker "portales") y pregunta por RPC
 // (Admin.suscripcionApp(correo, 'portales')) si la cuenta está al corriente. Aquí solo se vende.
 import { attrPlanesCarrito } from './carrito.js';
-import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -131,7 +131,7 @@ ${await masTienda(env, 'negocios')}
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('pi')}
 /* Estilo de marca (portadas v4): blanco, tinta y el azul de Portal; sin fondos oscuros */
 .pi{--pi-c:#0F5A8A;--pi-c2:#0F5A8A;--morado:#0F5A8A}
 [data-tema="oscuro"] .pi{--pi-c2:color-mix(in srgb,#0F5A8A 55%,#fff);--morado:var(--pi-c2)}
@@ -148,7 +148,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .pi-portada small{font-size:10px;font-weight:700;letter-spacing:.1em;color:#CFE3F1}.pi-portada b{display:block;font-size:24px;line-height:1.05;letter-spacing:-.03em;margin-top:6px;max-width:12ch}.pi-portada em{font-style:normal;color:#BFDDF2}
 .pi-busca{display:flex;gap:4px;margin-top:14px;padding:4px;border-radius:10px;background:rgba(255,255,255,.18);width:max-content;max-width:100%}.pi-busca span{font-size:11px;padding:5px 10px;border-radius:7px}.pi-busca span:first-child{background:#fff;color:#1c1815;font-weight:700}
 .pi-tarjetas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}
-.pi-t{border:1px solid #E4E8EC;border-radius:10px;overflow:hidden;display:grid;gap:4px;padding-bottom:8px}.pi-t i{height:62px;background:linear-gradient(135deg,#D6E3EC,#B3C9D9)}.pi-t i.pi-f1{background:linear-gradient(135deg,#E8E2DA,#CDC2B4)}.pi-t i.pi-f2{background:linear-gradient(135deg,#DCE4E0,#B9C9C2)}
+.pi-t{border:1px solid #E4E8EC;border-radius:10px;overflow:hidden;display:grid;gap:4px;padding-bottom:8px}.pi-t i{height:62px;background:linear-gradient(135deg,#D6E3EC,#B3C9D9)}
 .pi-t b{font-size:12px;padding:0 8px}.pi-t span{height:6px;margin:0 8px;border-radius:3px;background:#E9EDF0}.pi-t span.c{width:50%}
 .pi-mapa{position:relative;height:120px;margin:0 12px 12px;border-radius:10px;background:#EEF0F2;background-image:linear-gradient(90deg,rgba(255,255,255,.7) 2px,transparent 2px),linear-gradient(rgba(255,255,255,.7) 2px,transparent 2px);background-size:34px 34px}
 .pi-mapa .g{position:absolute;left:30%;top:40%;width:30px;height:30px;border-radius:50%;background:var(--pi-c);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center;border:3px solid #fff}.pi-mapa .g2{left:62%;top:58%}

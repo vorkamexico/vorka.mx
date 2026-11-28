@@ -9,7 +9,7 @@ import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO
 import { oferta, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
-import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
 import { barraCompra } from './barra-compra.js';
@@ -170,7 +170,7 @@ ${await masTienda(env, 'finanzas')}
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('cl')}
 /* Clara: blanco primero, tinta para el texto y UN azul para lo que se toca. Verde y coral solo para dinero que entra o sale;
    ámbar solo para lo que pide atención. En oscuro sigue a las superficies de la tienda. */
 .cl{--cl-fondo:#fff;--cl-sup:#F2F4F7;--cl-borde:#E6E9EE;--cl-tinta:#16181D;--cl-suave:#5B616E;--cl-azul:#1F5FD6;--cl-azul-s:#E8EFFD;--cl-azul-t:#1A50B8;--cl-sobre-azul:#fff;

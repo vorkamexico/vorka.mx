@@ -73,7 +73,7 @@ const SCRIPT_PUNTOS = `(function(){
 // prellena el campo y se revisa al momento. Si el guardado ya no sirve, se olvida sin avisar y queda lo de siempre.
 // #codigo-sobra: con un cupón por monto que no se usa completo, dice cuánto se pierde antes de pagar (lo escribe VD.hoy).
 const SCRIPT_SOCIO = `(function(){
-  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve')||document.getElementById('form-agenda')||document.getElementById('form-vende')||document.getElementById('form-portales')||document.getElementById('form-cuentas')||document.getElementById('form-clara'); if(!f||!window.fetch) return;
+  var f=document.getElementById('form-compra')||document.getElementById('form-brindi')||document.getElementById('form-cupo')||document.getElementById('form-vuelve')||document.getElementById('form-agenda')||document.getElementById('form-vende')||document.getElementById('form-portales')||document.getElementById('form-cuentas')||document.getElementById('form-clara')||document.getElementById('form-ac')||document.getElementById('form-mo'); if(!f||!window.fetch) return;
   var w=document.createElement('div'); w.className='t-campo t-socio';
   w.innerHTML='<button type="button" class="t-socio-abrir" aria-expanded="false">¿Tienes un código de descuento o de quien te recomendó?</button><div class="t-socio-c" hidden><label for="codigo">Código de descuento o de quien te recomendó <small>(opcional)</small></label><input id="codigo" name="codigo" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ej. FUNDADOR30"><p class="t-desc" id="codigo-msj" role="status" aria-live="polite"></p><p class="t-desc t-desc-aviso" id="codigo-sobra" role="status" aria-live="polite" hidden></p></div>';
   var t=f.querySelector('input[name=terminos]'); (t?t.closest('label'):f.lastChild).before(w);
@@ -110,7 +110,7 @@ const SCRIPT_SOCIO = `(function(){
 const SCRIPT_CUPON = `(function(){ try{ var c=new URLSearchParams(location.search).get('cupon'); if(c&&/^[A-Za-z0-9_-]{1,40}$/.test(c)) localStorage.setItem('vorka_cupon',JSON.stringify({c:c.toUpperCase(),t:Date.now()})); }catch(e){} })();`;
 
 // Formularios de compra: llevan el campo «código» y el ayudante del descuento (window.VD) antes del script de la página
-const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|portales|cuentas|clara)"/;
+const COMPRA = /id="form-(compra|brindi|cupo|vuelve|agenda|vende|portales|cuentas|clara|ac|mo)"/;
 
 // Íconos de trazo de la tienda (heredan el color del texto)
 const ico = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -145,8 +145,9 @@ export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}
 <div class="menu-movil" id="menu-movil">${entrar ? `<a class="btn acento" href="${esc(entrar.url)}">Entrar a ${esc(entrar.app)} ${FLECHA}</a>` : ''}${MENU_TIENDA.map(([, t, u]) => `<a href="${u}">${t}</a>`).join('')}<a href="/">Vorka México</a><a class="btn acento" href="/tienda/puntos/">Gana puntos ${FLECHA}</a></div>
 `;
 
-// La pastilla "Entrar" se queda visible en celular (la de "Gana puntos" se esconde en pantallas chicas)
-const ENTRAR_CSS = '<style>.nav.t-navs .t-entrar{gap:7px}.nav.t-navs .t-entrar svg{width:18px;height:18px}@media (max-width:430px){.nav.t-navs .t-pastilla.t-entrar{display:inline-flex;min-height:40px;padding:0 14px}}.t-ya{margin:14px 0 0;font-size:15px;opacity:.85}.t-ya a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}</style>';
+// La pastilla "Entrar" se queda visible en celular (la de "Gana puntos" se esconde en pantallas chicas). Para que «Entrar a Evaluación»
+// quepa en 360 px, en celular se esconden la lupa, la palabra «Tienda» y el ícono del botón (la búsqueda sigue en Catálogo).
+const ENTRAR_CSS = '<style>.nav.t-navs .t-entrar{gap:7px}.nav.t-navs .t-entrar svg{width:18px;height:18px}@media (max-width:430px){.nav.t-navs .t-pastilla.t-entrar{display:inline-flex;min-height:40px;padding:0 14px}}@media (max-width:480px){.nav.t-navs .t-nav-ico,.nav.t-navs .marca>span,.nav.t-navs .t-entrar svg{display:none}.nav.t-navs .t-pastilla.t-entrar{font-size:14px}}.t-ya{margin:14px 0 0;font-size:15px;opacity:.85}.t-ya a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}</style>';
 // Botones «Copiar liga» (demos en vivo y otros): copian data-copiar y avisan en el mismo botón
 const SCRIPT_COPIAR = `document.querySelectorAll('[data-copiar]').forEach(b=>b.addEventListener('click',async()=>{const t=b.textContent;try{await navigator.clipboard.writeText(b.dataset.copiar);b.textContent='¡Liga copiada!'}catch(e){prompt('Copia la liga:',b.dataset.copiar)}setTimeout(()=>b.textContent=t,2200)}));`;
 // Título para Google: corta a ~60 caracteres. Si ya es largo, la marca del final (« | Vorka México», « | Brindi») se quita;

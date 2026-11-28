@@ -3,7 +3,7 @@
 // Se cobra por suscripción (ver suscripciones.js): la app pregunta por RPC (Admin.suscripcionApp(correo, 'vende')) si está al corriente.
 // Aquí solo se vende. Vende no mueve dinero, no presta ni cobra a nombre de nadie (ver /legal/vende/).
 import { attrPlanesCarrito } from './carrito.js';
-import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -165,7 +165,7 @@ ${await masTienda(env, 'negocios')}
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('ve')}
 /* Estilo de marca (portadas v4): blanco, tinta y el color de Vende; sin fondos oscuros */
 .ve{--ve-c:#C2256F;--ve-c2:#C2256F;--morado:#C2256F}
 [data-tema="oscuro"] .ve{--ve-c2:color-mix(in srgb,#C2256F 55%,#fff);--morado:var(--ve-c2)}

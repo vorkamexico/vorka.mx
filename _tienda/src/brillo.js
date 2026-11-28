@@ -2,7 +2,7 @@
 // /tienda/brillo/ → ficha comercial única: prueba de 7 días, planes Básico y Profesional (mensual o anual), sucursales
 // adicionales (Business), el paquete con Vuelve y Agenda, comparación, preguntas y compra. Se cobra por suscripción (ver
 // suscripciones.js). La app vive en brillo.vorka.mx (Vorka OS). Aquí solo se vende. Precios: migrations/0089_brillo.sql.
-import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { attrPlanesCarrito } from './carrito.js';
 import { pagina, esc } from './paginas.js';
@@ -160,7 +160,7 @@ ${await masTienda(env, 'negocios')}
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('bl')}
 .bl{--bl-c:#A3245E;--bl-c2:#A3245E}
 [data-tema="oscuro"] .bl{--bl-c2:color-mix(in srgb,#A3245E 55%,#fff)}
 [data-tema="oscuro"] .pm-et:not(.gris),[data-tema="oscuro"] .pm-grande b{color:color-mix(in srgb,var(--pm) 55%,#fff)}

@@ -82,6 +82,11 @@ describe('Academias + Vuelve', () => {
     let h = await (await pedir('/tienda/academias/?plan=academias-vuelve-anual')).text();
     expect(h).toContain('id="form-ac"'); expect(h).toMatch(/value="academias-vuelve-anual" checked/); expect(h).toContain('$599'); expect(h).toContain('os.vorka.mx/vuelve/');
     expect(h).not.toMatch(/tel:|Llamar/);
+    // el encabezado lleva a la app con su nombre, y el formulario tiene el campo de código y el precio que se actualiza (VD)
+    expect(h).toContain('Entrar a Academia'); expect(h).not.toContain('Entrar a Vuelve');
+    expect(h).toContain("getElementById('form-ac')"); expect(h).toContain('if(window.VD) return;');
+    // se vende como control de la academia: la tarjeta de lealtad va en segundo plano y no se promete credencial con QR
+    expect(h).not.toMatch(/sellos/); expect(h).not.toMatch(/credencial/i);
     env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'academias-vuelve-%'");
     h = await (await pedir('/tienda/academias/')).text();
     expect(h).not.toContain('id="form-ac"'); expect(h).toContain('Muy pronto');

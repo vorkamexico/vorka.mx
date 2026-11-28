@@ -8,7 +8,7 @@ import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { hashToken } from './entrega.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
-import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
@@ -349,7 +349,7 @@ ${seccionFaq({ titulo: 'Lo que más nos preguntan', whatsappTexto: msgWa, items:
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('br')}
 /* Marca de producto: blanco, tinta y un solo color (el vino de Brindi); en oscuro el vino se aclara con la tinta del tema */
 .br{--pm:#8A2E4A;--br-vino:#8A2E4A;--br-vino-t:color-mix(in srgb,#8A2E4A 70%,var(--fg));--br-champan:var(--bg-2);--br-oro:var(--br-vino-t)}
 .pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{font-size:22px;color:var(--fg);letter-spacing:-.02em}
@@ -402,7 +402,6 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .br-grupo h3{font-size:15.5px;margin:0 0 10px}
 .br-extra{background:var(--card);border-radius:16px;padding:16px;display:grid;gap:10px;border:1px solid var(--line);margin-bottom:10px}.br-extra b{display:block;font-size:16px}.br-extra span{color:var(--fg-2);font-size:14px}
 .br-extra-p{display:flex;align-items:center;justify-content:space-between;gap:10px}.br-extra-p b{color:var(--fg);font-size:16px}
-.br-despues{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;color:var(--fg-2);font-size:13.5px}.br-despues li{display:flex;align-items:center;gap:6px}.br-despues i{font-style:normal;font-weight:800;font-size:11px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--br-champan);color:var(--br-vino-t)}
 .br-suma{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:0;display:grid;gap:8px}.br-suma legend{font-weight:700;padding:0 4px}.br-suma legend small{font-weight:500;color:var(--fg-2)}.br-suma .t-casilla{margin:0}.br-total{margin:4px 0 0;font-size:15px}.br-total b{font-size:16px}
 .br-ya{justify-self:center;font-size:14px;color:var(--fg-2);text-decoration:underline;text-underline-offset:3px}
 .br-org-a{display:flex;flex-wrap:wrap;gap:8px}

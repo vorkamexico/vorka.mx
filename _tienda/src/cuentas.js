@@ -3,7 +3,7 @@
 // Se cobra por suscripción (ver suscripciones.js): la app pregunta por RPC (Admin.suscripcionApp(correo, 'cuentas')) si está al corriente.
 // Aquí solo se vende. No es una entidad financiera: no mueve dinero ni otorga crédito (ver /legal/cuentas/).
 import { attrPlanesCarrito } from './carrito.js';
-import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { pagina, esc } from './paginas.js';
 import { refDeVisita, precio, masTienda, seccionFaq, seccionCompra, CANDADO_PAGO } from './tienda.js';
@@ -161,7 +161,7 @@ ${await masTienda(env, 'finanzas')}
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('cu')}
 /* Estilo de marca (portadas v4): blanco, tinta y el color de Cuentas; sin fondos oscuros */
 .cu{--cu-c:#0E6F78;--cu-c2:#0E6F78;--morado:#0E6F78}
 [data-tema="oscuro"] .cu{--cu-c2:color-mix(in srgb,#0E6F78 55%,#fff);--morado:var(--cu-c2)}
