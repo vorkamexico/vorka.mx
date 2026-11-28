@@ -29,19 +29,20 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('Ver el catálogo');
     expect(html).toContain('Gana puntos recomendando');
     expect(html).toContain('class="v-h1"');
-    // ¿Qué necesitas?: una necesidad de un solo producto lleva directo a él; las demás filtran el catálogo (con cuántos tiene)
-    expect(html).toContain('<p class="v-que">¿Qué necesitas?</p>');
-    expect(html).toMatch(/class="v-lineas"[^>]*>.*<a href="\/tienda\/simuladores\/" data-linea="examenes">Exámenes <small>1<\/small><\/a>/s);
-    expect(html).toMatch(/<a href="#conocerte" data-f="conocerte" data-linea="conocerte">Conócete <small>\d+<\/small><\/a>/);
-    expect(html).toMatch(/class="t-card" data-linea="examenes" data-l="examenes" data-buscar="simuladores de examen en linea /);
+    // ¿Qué necesitas? es el título del catálogo, con sus filtros (ya no se repiten arriba en la portada)
+    expect(html).not.toContain('class="v-lineas"');
+    expect(html).toContain('<h2 class="h2">¿Qué necesitas?</h2>');
+    expect(html).toContain('<a href="#conocerte" data-f="conocerte">Conócete</a>');
+    // «Para tu examen»: cada simulador con su tarjeta, que el filtro y el buscador también encuentran
+    expect(html).toMatch(/class="ts-sim" data-linea="examenes" data-l="examenes" data-buscar="simulador paa /);
     expect(html).toContain('class="t-confia-g"');
-    for (const t of ['Entrega inmediata', 'Pago protegido', 'Paga como quieras', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
+    for (const t of ['Entrega inmediata', 'Pago protegido', 'Tarjeta u OXXO', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
     expect(html).toContain('grid-template-columns:repeat(4,minmax(0,1fr))');   // compacto: 4 por fila en compu
     expect(html).toContain('grid-template-columns:116px minmax(0,1fr)');        // y en celular, foto chica al lado del texto
-    expect(html).toContain('class="t-card-mas"');
+    expect(html).not.toContain('class="t-card-mas"');   // tarjeta limpia: precio y «Agregar al carrito»
     // buscador del catálogo (oculto sin JavaScript), con el texto de cada tarjeta sin acentos y mensaje si no hay resultados
     expect(html).toContain('<label class="t-buscar" hidden>');
-    expect(html).toMatch(/class="t-card" data-linea="examenes" data-l="examenes" data-buscar="simuladores de examen en linea [^"]*educacion/);
+    expect(html).toMatch(/class="t-card" data-linea="conocerte" data-l="examenes" data-buscar="[^"]*educacion/);
     expect(html).toContain('id="sin-resultados" hidden');
     // menú claro (ya no va sobre una foto), con lupa y cuenta; WhatsApp flotante
     expect(html).not.toContain('<header class="nav t-navs oscuro">');
@@ -56,11 +57,11 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('class="btn acento t-pastilla" href="/tienda/puntos/"');
     // las portadas se declaran con su proporción real (4:3)
     expect(html).toContain('width="1600" height="1200"');
-    expect(html).toMatch(/class="t-card-img" href="\/tienda\/simuladores\/"/);
+    expect(html).toContain('<a class="ts-sim-a" href="/simulador-paa/">');
     expect(html).toContain('class="t-filtros"');
     expect(html).toContain('"@type":"FAQPage"');
     // Cada producto aparece una sola vez como tarjeta
-    expect(html.match(/class="t-card-img" href="\/tienda\/simuladores\/"/g)).toHaveLength(1);
+    expect(html.match(/<a class="ts-sim-a" href="\/simulador-paa\/">/g)).toHaveLength(1);
     expect(html).toContain('id="productos"');
   });
 

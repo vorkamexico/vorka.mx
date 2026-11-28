@@ -43,11 +43,22 @@ const FAQ = [
 ];
 
 // Tarjeta: todo es liga a la ficha, y abajo, dentro de la misma tarjeta, «Agregar» el plan Completo al carrito
-const tarjetaSim = (p, [app, nombre, para, datos], completo) => `<div class="ts-sim"><a class="ts-sim-a" href="/${app}/">
+const tarjetaSim = (p, [app, nombre, para, datos], completo, attrs = '') => `<div class="ts-sim"${attrs}><a class="ts-sim-a" href="/${app}/">
   <span class="ts-sim-img"><img src="/assets/tienda/v3/${app}-objeto.webp" alt="" width="672" height="1200" loading="lazy" decoding="async"></span>
   <span class="ts-sim-x"><b>${esc(nombre)}</b><span>${esc(para)}</span><small>${esc(datos)}</small>${p ? `<em>Desde ${esc(precio(p))}</em>` : ''}</span>
   <span class="ts-sim-f" aria-hidden="true">${FLECHA}</span></a>
   ${completo ? `<div class="ts-sim-pie"><span>Completo · <b>${esc(precio(completo))}</b></span><button type="button" class="btn acento chico ts-agregar" data-carrito-slug="${esc(completo.slug)}" data-carrito-app="${esc(app)}" data-carrito-nombre="${esc(nombre)} · Completo">Agregar al carrito</button></div>` : ''}</div>`;
+
+// Las tarjetas de todos los simuladores a la venta (las usa también la portada de la tienda)
+export async function tarjetasSimuladores(env, attrsDe = () => '') {
+  const todos = [...UNIVERSIDAD, ...PREPA];
+  const desde = async app => { const s = simuladorDe(app); if (!s) return null;
+    const ps = (await Promise.all(Object.values(s.planes).map(slug => productoPorSlug(env, slug)))).filter(Boolean);
+    return ps.sort((a, b) => a.precio_centavos - b.precio_centavos)[0] || null; };
+  const completo = async app => { const s = simuladorDe(app); return s ? productoPorSlug(env, s.planes.paquete) : null; };
+  const filas = await Promise.all(todos.map(async x => [x, await desde(x[0]), await completo(x[0])]));
+  return filas.filter(([x, d]) => d).map(([x, d, c]) => tarjetaSim(d, x, c, attrsDe(x))).join('');
+}
 
 export async function paginaSimuladores(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
@@ -119,11 +130,7 @@ ${seccionFaq({ titulo: 'Sobre los simuladores y el carrito', items: FAQ.map(([q,
   });
 }
 
-const CSS = `.ts-hero{padding:clamp(12px,3vw,36px) 0 clamp(20px,3vw,32px)}
-.ts-hero .t-h1{margin-top:12px;max-width:860px}.ts-hero .t-lead{margin-top:14px;max-width:680px}
-.ts-atajo{margin-top:20px}
-.ts-grupo{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);margin:28px 0 12px}
-.ts-sims{display:grid;gap:14px}@media(min-width:760px){.ts-sims{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
+export const CSS_TARJETAS_SIM = `.ts-sims{display:grid;gap:14px}@media(min-width:760px){.ts-sims{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}}
 .ts-sim{display:flex;flex-direction:column;padding:14px 18px 14px 14px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);transition:transform .2s,box-shadow .2s;min-width:0}
 .ts-sim-a{display:flex;align-items:center;gap:16px;text-decoration:none;color:inherit;min-width:0;flex:1}
 .ts-sim-pie{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
@@ -132,8 +139,13 @@ const CSS = `.ts-hero{padding:clamp(12px,3vw,36px) 0 clamp(20px,3vw,32px)}
 .ts-sim-img{width:84px;height:110px;flex:none;border-radius:14px;overflow:hidden;background:var(--bg-2)}.ts-sim-img img{width:100%;height:100%;object-fit:cover;object-position:center}
 .ts-sim-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.ts-sim-x b{font-size:18px;letter-spacing:-.01em}
 .ts-sim-x span{font-size:14.5px;color:var(--fg-2)}.ts-sim-x small{font-size:13px;color:var(--fg-3,#A8A4A9)}.ts-sim-x em{font-style:normal;font-weight:700;font-size:14.5px;margin-top:4px}
+.ts-sim-f{flex:none;color:var(--fg-2)}.ts-sim-f svg{width:18px;height:18px}`;
+const CSS = `.ts-hero{padding:clamp(12px,3vw,36px) 0 clamp(20px,3vw,32px)}
+.ts-hero .t-h1{margin-top:12px;max-width:860px}.ts-hero .t-lead{margin-top:14px;max-width:680px}
+.ts-atajo{margin-top:20px}
+.ts-grupo{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);margin:28px 0 12px}
+${CSS_TARJETAS_SIM}
 .ts-cual{margin-top:16px;font-size:15px;color:var(--fg-2)}.ts-cual a{color:var(--fg);font-weight:700;display:inline-flex;align-items:center;gap:6px}.ts-cual svg{width:16px;height:16px}
-.ts-sim-f{flex:none;color:var(--fg-2)}.ts-sim-f svg{width:18px;height:18px}
 .ts-paqs{display:grid;gap:12px;margin-top:22px}@media(min-width:760px){.ts-paqs{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .ts-paq{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:18px;background:var(--card);border:1.5px solid var(--line-2);text-decoration:none;color:inherit;min-width:0}
 .ts-paq.sel{border-color:var(--fg);box-shadow:0 0 0 2px var(--fg) inset}

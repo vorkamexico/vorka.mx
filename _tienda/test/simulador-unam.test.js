@@ -117,9 +117,9 @@ describe('simulador UNAM', () => {
     expect(h.secciones[0].puntaje).toBe(100);
   });
 
-  it('el catálogo muestra una sola tarjeta de simuladores y el sitemap la página de la UNAM', async () => {
+  it('el catálogo muestra la tarjeta de este simulador y el sitemap la página de la UNAM', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html.match(/data-buscar="simuladores de examen en linea /g)).toHaveLength(1);
+    expect(html.match(/<a class="ts-sim-a" href="\/simulador-unam\/">/g)).toHaveLength(1);   // una tarjeta por simulador en «Para tu examen»
     expect(html).not.toContain('simulador-unam-intento');
   });
 });

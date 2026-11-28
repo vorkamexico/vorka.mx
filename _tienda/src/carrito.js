@@ -55,11 +55,12 @@ const LEGAL = { agenda: ['Agenda', '/legal/agenda/'], vuelve: ['Vuelve', '/legal
   'pagina-web': ['tu página web (plan de 12 meses)', '/servicios/pagina-web/#t-cond'], brindi: ['Brindi', '/legal/brindi/'], cupo: ['Cupo', '/legal/cupo/'] };
 // Apps que combinan bien (aunque no haya paquete): [app, por qué en una línea]
 const COMBINA = {
-  agenda: [['vuelve', 'Que tus clientes regresen: tarjeta de sellos en su celular.']],
-  vuelve: [['agenda', 'Que reserven solos su cita, con recordatorios.']],
-  brillo: [['vuelve', 'Que tus clientas regresen: tarjeta de sellos en su celular.'], ['agenda', 'Que reserven solas su cita, con recordatorios.']],
-  mostrador: [['vuelve', 'Que tus clientes regresen: sellos o puntos por cada compra.']],
-  'pagina-web': [['agenda', 'Que desde tu página reserven su cita.'], ['vuelve', 'Que tus clientes regresen: tarjeta de sellos.']],
+  agenda: [['vuelve', 'Quien ya reservó contigo regresa más seguido si junta sellos en su celular.']],
+  vuelve: [['agenda', 'Tus clientes reservan solos a cualquier hora y les llega recordatorio: menos faltas.']],
+  brillo: [['vuelve', 'Tus clientas juntan sellos en su celular y vuelven más seguido; tú les mandas promociones sin imprimir nada.'], ['agenda', 'Tus clientas reservan solas a cualquier hora y les llega recordatorio: menos huecos en tu día.']],
+  mostrador: [['vuelve', 'Cada compra suma sellos o puntos y tus clientes regresan por su premio.']],
+  academias: [['agenda', 'Los papás agendan la clase muestra solos y les llega recordatorio; tú solo confirmas.']],
+  'pagina-web': [['agenda', 'Desde tu página reservan su cita sin escribirte.'], ['vuelve', 'Quien te encuentra en Google regresa si junta sellos.']],
 };
 // El plan mensual más barato de cada app, para sugerirla cuando completa un paquete
 const BASE_MENSUAL = { agenda: 'agenda-mensual', vuelve: 'vuelve-mensual', brillo: 'brillo-basico-mensual', mostrador: 'mostrador-mensual', 'pagina-web': 'pagina-web-mensual' };
