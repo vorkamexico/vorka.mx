@@ -11,6 +11,7 @@ export const TESTIMONIOS = {
     { quien: 'Edwin', detalle: 'Compró el Simulador PAA', estrellas: 5, resena: true,
       texto: 'Sí me ha servido mucho; he aprendido demasiado.' },
     { quien: 'Estudiante que presenta la PAA', detalle: 'Usa el Simulador PAA', estrellas: 5,
+      corto: 'He tenido avances muy notorios en el dominio de los temas, y lo mejor son los precios súper accesibles.',
       texto: 'Me ha parecido sumamente eficiente: he tenido avances muy notorios en el dominio de los temas desde que lo adquirí. Cada herramienta suma a que estemos más seguros con nuestra preparación, y lo mejor son los precios súper accesibles.' },
   ],
 };
@@ -31,3 +32,16 @@ export function seccionTestimonios(app, { titulo = 'Lo que nos cuentan quienes l
   if (!l?.length) return '';
   return `<section class="t-sec" aria-labelledby="ts-tes-t"><div class="marco"><h2 class="h2" id="ts-tes-t">${esc(titulo)}</h2>${listaTestimonios(l)}</div></section>`;
 }
+
+// Franja compacta para la portada de la tienda: una línea con las estrellas y dos citas cortas (en celular, se desliza de lado).
+const CSS_FRANJA = `<style>.ts-fr{margin-top:22px;display:grid;gap:12px;grid-template-columns:auto 1fr;align-items:center;padding:14px 16px;border-radius:20px;background:var(--card,var(--bg));border:1px solid var(--line)}
+.ts-fr-cab{display:grid;gap:2px;padding-right:14px;border-right:1px solid var(--line)}.ts-fr-cab b{font-size:14px}.ts-fr-cab small{font-size:12.5px;color:var(--fg-2)}
+.ts-fr .ts-est{display:flex;gap:1px;color:#E2A72E}.ts-fr .ts-est svg{width:14px;height:14px}
+.ts-fr ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ts-fr li{display:grid;gap:3px;min-width:0}.ts-fr p{margin:0;font-size:14px;line-height:1.45;color:var(--fg);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ts-fr li small{font-size:12.5px;color:var(--fg-2)}
+@media(max-width:700px){.ts-fr{grid-template-columns:1fr;gap:10px}.ts-fr-cab{border:0;padding:0;grid-template-columns:auto 1fr;align-items:center;column-gap:8px}.ts-fr-cab small{grid-column:1/-1}
+  .ts-fr ul{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin:0 -4px;padding:0 4px 2px;scrollbar-width:none}.ts-fr ul::-webkit-scrollbar{display:none}
+  .ts-fr li{flex:0 0 86%;scroll-snap-align:start;padding:10px 12px;border-radius:14px;background:var(--bg-2,rgba(0,0,0,.04))}}</style>`;
+export const franjaTestimonios = l => l.length ? `${CSS_FRANJA}<div class="ts-fr" aria-label="Lo que dicen quienes ya lo usan"><div class="ts-fr-cab">${estrellas(5)}<b>Lo que dicen quienes ya lo usan</b><small>Calificaciones dadas por clientes del Simulador PAA</small></div>
+  <ul>${l.map(t => `<li><p>«${esc(t.corto || t.texto)}»</p><small><b>${esc(t.quien)}</b> · ${esc(t.detalle)}</small></li>`).join('')}</ul></div>` : '';

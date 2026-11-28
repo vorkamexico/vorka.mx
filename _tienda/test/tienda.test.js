@@ -219,7 +219,8 @@ describe('Comunidad Vorka', () => {
 describe('testimonios', () => {
   it('salen en la tienda y en el simulador PAA con las estrellas que dieron, sin meterlos al JSON-LD', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1");
-    for (const r of ['/tienda/', '/simulador-paa/tec-de-monterrey/']) {
+    expect(await (await pedir('/tienda/')).text()).toContain('class="ts-fr"');   // en la portada, franja compacta
+    for (const r of ['/simulador-paa/tec-de-monterrey/']) {
       const h = await (await pedir(r)).text();
       expect(h, r).toContain('class="ts-tes"');
       expect(h, r).toContain('<b>Edwin</b>Compró el Simulador PAA');
