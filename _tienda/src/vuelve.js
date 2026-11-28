@@ -2,6 +2,7 @@
 // /tienda/vuelve/ → ficha comercial corta: portada con la demo en vivo, cómo funciona, qué incluye, un solo plan, compra y preguntas.
 // Se cobra por suscripción (ver suscripciones.js). La app vive en os.vorka.mx/vuelve/ y el registro de clientes de cada
 // negocio en vorka.mx/vuelve/<negocio> (→ os.vorka.mx/v/<negocio>). Aquí solo se vende.
+import qrcode from './vendor/qrcode.js';
 import { lineaMarca, colorDe, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
 import { attrPlanesCarrito } from './carrito.js';
@@ -80,9 +81,21 @@ const WA_ICONO = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor
 // El quiz de la portada: tres preguntas (giro, nombre y premio) con la tarjeta armándose a la vista y, al final, cómo le llega
 // el aviso a su cliente. «Crear mi cuenta gratis» abre el asistente de la app con todo lleno (?g&n&p&m&t, ver borradorDelQuiz en
 // Vorka OS public/vuelve/app.js): solo falta su correo y empiezan sus días gratis.
+// La paleta de la tarjeta (copia de Vorka OS public/vuelve/marca.js › DISENO): si allá cambia, cambiar aquí. La tira con los sellos
+// es la misma imagen PNG que reciben Apple y Google Wallet (os.vorka.mx/vuelve/tira/<fondo.metal.sello.acabado>/s<meta>-<saldo>.png).
+const DISENO_QUIZ = {
+  fondos: [['obsidiana', 'Obsidiana', '#121212'], ['grafito', 'Grafito', '#25282d'], ['vino', 'Vino', '#3b111a'], ['bosque', 'Bosque', '#12291f'], ['marino', 'Marino', '#0e1a33'], ['chocolate', 'Chocolate', '#2c1b12'],
+    ['ciruela', 'Ciruela', '#28142f'], ['petroleo', 'Petróleo', '#0c2a2e'], ['terracota', 'Terracota', '#5a2a1c'], ['arena', 'Arena', '#efe8dc', 1], ['rosapalo', 'Rosa palo', '#f3dfe1', 1], ['menta', 'Menta', '#dcefe6', 1]],
+  metales: [['oro', 'Oro', '#d9b87c'], ['plata', 'Plata', '#c8ccd2'], ['cobre', 'Cobre', '#c98a64'], ['rosa', 'Oro rosa', '#dba79a'], ['marfil', 'Marfil', '#f4f1ea']],
+  sellos: [['relieve', 'Relieve'], ['metal', 'Metal'], ['moneda', 'Moneda'], ['plano', 'Plano']],
+};
+// Un QR de verdad (lleva a la tarjeta de ejemplo) para que el pase no se vea de mentira
+const QR_PASE = (() => { const q = qrcode(0, 'M'); q.addData('https://vorka.mx/vuelve/demo'); q.make(); const n = q.getModuleCount(); let d = '';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (q.isDark(y, x)) d += `M${x} ${y}h1v1h-1z`;
+  return `<svg viewBox="-1 -1 ${n + 2} ${n + 2}" aria-hidden="true" shape-rendering="crispEdges"><path d="${d}"/></svg>`; })();
 const GIROS_QUIZ = ['cafeteria', 'restaurante', 'taqueria', 'barberia', 'salon', 'unas', 'gimnasio', 'dental'];
 const quiz = ({ dias, app }) => `<div class="vq" id="quiz" data-app="${esc(app)}">
-  <div class="vq-cab"><button class="vq-atras" type="button" hidden aria-label="Atrás">←</button><ol class="vq-barra" aria-label="Tu avance"><li class="on">Tu negocio</li><li>Tu premio</li><li>Tu tarjeta</li></ol></div>
+  <div class="vq-cab"><button class="vq-atras" type="button" hidden aria-label="Atrás">←</button><ol class="vq-barra" aria-label="Tu avance"><li class="on">Tu negocio</li><li>Tu premio</li><li>Tu tarjeta</li><li>Tu cliente</li></ol></div>
   <section class="vq-paso" data-p="1"><h2 class="vq-t">Arma tu tarjeta en un minuto. ¿Qué tipo de negocio tienes?</h2>
     <div class="vq-giros">${Object.entries(GIROS_VUELVE).filter(([k]) => k !== 'otro').sort(([a], [b]) => (GIROS_QUIZ.indexOf(a) + 1 || 99) - (GIROS_QUIZ.indexOf(b) + 1 || 99)).map(([k, g], i) => `<button type="button" class="vq-giro" data-g="${k}"${i >= GIROS_QUIZ.length ? ' data-extra hidden' : ''}><span aria-hidden="true">${g.e}</span>${esc(g.n)}</button>`).join('')}<button type="button" class="vq-giro" data-g="otro" data-extra hidden><span aria-hidden="true">${GIROS_VUELVE.otro.e}</span>Otro negocio</button></div>
     <button class="vq-mas" type="button">Ver más giros</button>
@@ -96,13 +109,22 @@ const quiz = ({ dias, app }) => `<div class="vq" id="quiz" data-app="${esc(app)}
     <input class="vq-in" id="vq-premio" maxlength="60" aria-label="El premio">
     <label class="vq-meta"><span id="vq-meta-l">Se lo gana con</span><span class="vq-cont"><button type="button" data-m="-1" aria-label="Menos">−</button><output id="vq-meta">10</output><button type="button" data-m="1" aria-label="Más">+</button></span><span id="vq-meta-u">visitas</span></label>
     <button class="pm-btn vq-sig" type="button" data-ir="4">Ver mi tarjeta ${FLECHA}</button></section>
-  <section class="vq-paso" data-p="4" hidden><h2 class="vq-t">Así le llega a tu cliente.</h2>
+  <section class="vq-paso" data-p="4" hidden><h2 class="vq-t">Así se ve <b>en su celular</b>. Hazla tuya.</h2>
+    <div class="vq-prev vq-prev-g" aria-live="polite"></div>
+    <div class="vq-dz"><span class="vq-dz-t">Color de la tarjeta</span><div class="vq-sw" data-k="fondo">${DISENO_QUIZ.fondos.map(([id, n, c]) => `<button type="button" data-v="${id}" style="--c:${c}" aria-label="${esc(n)}" title="${esc(n)}"></button>`).join('')}</div></div>
+    <div class="vq-dz"><span class="vq-dz-t">Metal de los sellos</span><div class="vq-sw" data-k="metal">${DISENO_QUIZ.metales.map(([id, n, c]) => `<button type="button" data-v="${id}" style="--c:${c}" aria-label="${esc(n)}" title="${esc(n)}"></button>`).join('')}</div></div>
+    <div class="vq-dz"><span class="vq-dz-t">Forma del sello</span><div class="vq-op" data-k="sello">${DISENO_QUIZ.sellos.map(([id, n]) => `<button type="button" data-v="${id}">${esc(n)}</button>`).join('')}</div></div>
+    <div class="vq-dz"><span class="vq-dz-t">Tu logo <small>(opcional, solo para verlo)</small></span><label class="vq-logo"><input type="file" accept="image/*" id="vq-logo" hidden><span>Subir mi logo</span></label></div>
+    <button class="pm-btn vq-sig" type="button" data-ir="5">Así queda ${FLECHA}</button></section>
+  <section class="vq-paso" data-p="5" hidden><h2 class="vq-t">Así le llega a tu cliente.</h2>
     <div class="vq-cel" aria-hidden="true"><b class="vq-hora">9:41</b><div class="vq-notis"></div></div>
     <p class="vq-dice">Le llega a su celular, sin que tú hagas nada y sin costo por mensaje.</p>
     <a class="pm-btn vq-crear" href="${esc(app)}#/nuevo">Crear mi cuenta gratis ${FLECHA}</a>
     <p class="vq-nota">${dias} días gratis, sin tarjeta. Solo te pedimos tu correo.</p></section>
 </div>
-<script type="application/json" id="vq-giros">${JSON.stringify(GIROS_VUELVE).replace(/</g, '\\u003c')}</script>`;
+<script type="application/json" id="vq-giros">${JSON.stringify(GIROS_VUELVE).replace(/</g, '\\u003c')}</script>
+<script type="application/json" id="vq-diseno">${JSON.stringify(DISENO_QUIZ)}</script>
+<template id="vq-qr">${QR_PASE}</template>`;
 // Giros que se ven en la página: cada uno abre «Mira tu negocio» con su giro ya elegido
 const GIROS_VISTOS = ['cafeteria', 'restaurante', 'taqueria', 'panaderia', 'heladeria', 'barberia', 'estetica', 'unas', 'pestanas', 'spa', 'podologia', 'dental', 'fisioterapia', 'nutricion', 'optica', 'veterinaria', 'floreria', 'boutique', 'gimnasio', 'autolavado', 'lavanderia', 'taller'];
 
@@ -278,7 +300,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vq{scroll-margin-top:96px;position:relative;padding:22px;border-radius:28px;background:var(--card,var(--bg));border:1px solid var(--line);box-shadow:0 40px 80px -50px rgba(20,17,20,.55);min-height:430px}
 .vq-cab{display:flex;align-items:center;gap:10px}
 .vq-atras{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:15.5px;cursor:pointer}
-.vq-barra{flex:1;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.vq-barra{flex:1;list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .vq-barra li{font-size:12.5px;font-weight:650;color:var(--fg-2);padding-top:9px;border-top:4px solid var(--line);border-radius:2px}
 .vq-barra li.on{color:var(--fg);border-top-color:var(--pm)}
 .vq-t{font-weight:800;font-size:clamp(22px,2.6vw,27px);line-height:1.15;letter-spacing:-.03em;margin:20px 0 14px;text-wrap:balance}
@@ -293,7 +315,43 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vq-ideas button{padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:600 14px inherit;cursor:pointer}.vq-ideas button[aria-pressed=true]{border-color:var(--pm);color:var(--pm-t)}
 .vq-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;font-weight:650;font-size:15.5px}
 .vq-cont{display:inline-flex;align-items:center;border:1.5px solid var(--line-2);border-radius:999px;overflow:hidden}.vq-cont button{width:42px;height:40px;border:0;background:none;color:var(--fg);font-size:20px;cursor:pointer}.vq-cont output{min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
-/* la tarjeta que se arma (con los colores del giro) */
+/* la tarjeta que se arma: igual al pase de Apple / Google Wallet (fondo, logo, tira real de sellos, campos y QR) */
+.vq-pase{--pf:#121212;--pt:#fff;--pt2:rgba(255,255,255,.62);border-radius:18px;background:var(--pf);color:var(--pt);overflow:hidden;box-shadow:0 24px 50px -24px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.06);max-width:360px;margin:0 auto;font-family:-apple-system,'SF Pro Text','Inter',system-ui,sans-serif}
+.vq-pase.claro{--pt:#1a1714;--pt2:rgba(26,23,20,.58)}
+.vq-pase-cab{display:flex;align-items:center;gap:10px;padding:14px 16px 12px}
+.vq-pase-lg{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;overflow:hidden;background:var(--pm2,rgba(255,255,255,.14));font-size:18px}
+.vq-pase-lg img{width:100%;height:100%;object-fit:contain}
+.vq-pase-lg.img{background:#fff;padding:2px}
+.vq-pase-n{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vq-pase-c{text-align:right;line-height:1.1}.vq-pase-c small,.vq-pase-f small{display:block;font-size:10.5px;font-weight:600;color:var(--pt2);letter-spacing:.02em}.vq-pase-c b{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.vq-pase-tira{display:block;width:100%;aspect-ratio:1032/338;background:var(--pf)}
+.vq-pase-tira img{display:block;width:100%;height:100%;object-fit:cover;transition:opacity .25s}
+.vq-pase-fs{display:flex;justify-content:space-between;gap:12px;padding:12px 16px 4px}
+.vq-pase-f b{display:block;font-size:15px;font-weight:500;margin-top:2px}.vq-pase-f:last-child{text-align:right}
+.vq-pase-qr{margin:16px auto 18px;width:max-content;padding:9px 9px 6px;border-radius:9px;background:#fff;color:#111;text-align:center;font-size:11px;letter-spacing:.01em}
+.vq-pase-qr svg{display:block;width:92px;height:92px;fill:#000}.vq-pase-qr span{display:block;margin-top:4px}
+.vq-pase-c small,.vq-pase-f small{text-transform:uppercase;letter-spacing:.06em;font-size:9.5px}
+.vq-pase-lg{border-radius:50%;font:700 16px/1 -apple-system,'SF Pro Display','Inter',sans-serif}
+.vq-iph{width:min(100%,288px);margin:0 auto;padding:9px;border-radius:52px;background:#1b1b1d;box-shadow:0 0 0 1.5px #3a3a3e,0 40px 70px -40px rgba(0,0,0,.65)}
+.vq-iph-p{position:relative;border-radius:44px;overflow:hidden;background:#f2f2f7;padding:0 10px 14px;min-height:0}
+.vq-iph-bar{display:flex;align-items:center;justify-content:space-between;height:48px;padding:6px 18px 0;color:#000;font:600 15px -apple-system,'SF Pro Text','Inter',sans-serif}
+.vq-isla{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:96px;height:28px;border-radius:20px;background:#000}
+.vq-iph-ic{display:flex;align-items:flex-end;gap:1.5px}.vq-iph-ic i{display:block;width:3px;border-radius:1px;background:#000}.vq-iph-ic i:nth-child(1){height:4px}.vq-iph-ic i:nth-child(2){height:6px}.vq-iph-ic i:nth-child(3){height:8px}.vq-iph-ic i:nth-child(4){height:10px}
+.vq-iph-ic u{display:block;width:22px;height:11px;margin-left:6px;border-radius:3px;border:1.5px solid rgba(0,0,0,.45);background:linear-gradient(90deg,#000 78%,transparent 78%);background-clip:content-box;padding:1px}
+.vq-iph-nav{display:flex;justify-content:space-between;align-items:center;padding:4px 6px 12px;color:#007aff;font:400 16px -apple-system,'SF Pro Text','Inter',sans-serif}
+.vq-iph-nav i{font-style:normal;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(0,122,255,.12);font-size:11px;letter-spacing:1px}
+.vq-iph .vq-pase{max-width:none;border-radius:12px;box-shadow:0 6px 20px -10px rgba(0,0,0,.35)}
+.vq-iph-mas{position:relative;height:22px;margin-top:8px;overflow:hidden}.vq-iph-mas span{position:absolute;left:4px;right:4px;height:40px;border-radius:12px;top:0}.vq-iph-mas span+span{top:9px;left:0;right:0}
+.vq-pase.mini .vq-pase-qr,.vq-pase.mini .vq-pase-fs{display:none}
+.vq-dz{margin-top:14px}.vq-dz-t{display:block;font-size:14px;font-weight:650;margin-bottom:8px}.vq-dz-t small{font-weight:500;color:var(--fg-2)}
+.vq-sw{display:flex;flex-wrap:wrap;gap:9px}
+.vq-sw button{width:34px;height:34px;border-radius:50%;border:0;background:var(--c);cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);outline:2px solid transparent;outline-offset:2px}
+.vq-sw button[aria-pressed=true]{outline-color:var(--pm)}
+.vq-op{display:flex;flex-wrap:wrap;gap:8px}
+.vq-op button{padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:600 14px inherit;cursor:pointer}.vq-op button[aria-pressed=true]{border-color:var(--pm);color:var(--pm-t)}
+.vq-logo{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1.5px dashed var(--line-2);font-weight:600;font-size:14px;cursor:pointer}
+.vq-prev-g{margin:4px 0 6px}
+
 .vq-prev{margin-top:14px}
 .vq-tj{border-radius:16px;padding:14px;background:var(--tc);color:#fff;box-shadow:0 20px 40px -26px rgba(0,0,0,.7)}
 .vq-tj-cab{display:flex;align-items:center;gap:9px;font-weight:650;font-size:15.5px}.vq-tj-cab i{font-style:normal;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.14)}
@@ -362,22 +420,36 @@ const SCRIPT = `(function(){
   var G={}; try{ G=JSON.parse(document.getElementById('vq-giros').textContent); }catch(e){}
   var $=function(s){ return Q.querySelector(s); }, $$=function(s){ return Array.prototype.slice.call(Q.querySelectorAll(s)); };
   var esc=function(t){ return String(t).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
-  var d={ g:null, n:'', p:'', m:10, t:'sellos' }, paso=1, timer=null, visto=false;
+  var d={ g:null, n:'', p:'', m:10, t:'sellos', fondo:'obsidiana', metal:'oro', sello:'relieve', logo:null }, paso=1, timer=null, visto=false;
+  var DZ={}; try{ DZ=JSON.parse(document.getElementById('vq-diseno').textContent); }catch(e){}
+  var clave=function(){ return d.fondo+'.'+d.metal+'.'+d.sello+'.'+'cepillada'; };
+  var fondoDe=function(){ return (DZ.fondos||[]).filter(function(f){ return f[0]===d.fondo; })[0]||['obsidiana','','#121212']; };
   var gi=function(){ return G[d.g]||G.otro||{}; }, pts=function(){ return d.t==='puntos'; };
-  function tarjeta(){
-    var g=gi(), m=Number(d.m)||1, lleva=pts()?Math.round(m*.7/10)*10:Math.max(1,Math.min(m-1,Math.round(m*.6)));
-    var cuerpo=pts()?'<p class="vq-puntos">'+lleva.toLocaleString('es-MX')+' <small>de '+m.toLocaleString('es-MX')+' puntos</small></p>'
-      :'<div class="vq-sellos" style="--col:'+(m>10?6:m>6?5:m)+'">'+Array.apply(null,Array(Math.min(m,30))).map(function(_,i){ return '<i class="'+(i<lleva?'si':'')+'"></i>'; }).join('')+'</div>';
-    return '<div class="vq-tj" style="--tc:'+g.c+';--ta:'+g.a+'"><div class="vq-tj-cab"><i>'+(g.e||'⭐')+'</i>'+esc(d.n||'Tu negocio')+'<span>'+(pts()?'Puntos':lleva+' de '+m)+'</span></div>'+cuerpo+'<p class="vq-tj-pie">Premio: <b>'+esc(d.p||g.p||'')+'</b></p></div>';
+  var QR=(document.getElementById('vq-qr')||{}).innerHTML||'';
+  var metalDe=function(){ return ((DZ.metales||[]).filter(function(x){ return x[0]===d.metal; })[0]||['','','#d9b87c'])[2]; };
+  function tarjeta(mini){
+    var g=gi(), m=Number(d.m)||1, lleva=pts()?Math.round(m*.7/10)*10:Math.max(1,Math.min(m-1,Math.round(m*.6))), f=fondoDe();
+    var tira=pts()?'p70':'s'+Math.min(40,Math.max(1,m))+'-'+Math.min(lleva,40), src='https://os.vorka.mx/vuelve/tira/'+clave()+'/'+tira+'.png?d=2';
+    var ini=(String(d.n||'V').trim().match(/[A-Za-zÁÉÍÓÚÑáéíóúñ0-9]/)||['V'])[0].toUpperCase();
+    var lg=d.logo?'<span class="vq-pase-lg img"><img src="'+d.logo+'" alt=""></span>':'<span class="vq-pase-lg" style="background:'+metalDe()+';color:'+f[2]+'">'+esc(ini)+'</span>';
+    var pase='<div class="vq-pase'+(f[3]?' claro':'')+(mini?' mini':'')+'" style="--pf:'+f[2]+'"><div class="vq-pase-cab">'+lg+'<span class="vq-pase-n">'+esc(d.n||'Tu negocio')+'</span><span class="vq-pase-c"><small>'+(pts()?'Puntos':'Sellos')+'</small><b>'+(pts()?lleva.toLocaleString('es-MX'):lleva+'/'+m)+'</b></span></div>'
+      +'<span class="vq-pase-tira"><img src="'+src+'" alt=""></span>'
+      +'<div class="vq-pase-fs"><span class="vq-pase-f"><small>Cliente</small><b>Ana López</b></span><span class="vq-pase-f"><small>Premio</small><b>'+esc(d.p||g.p||'')+'</b></span></div>'
+      +'<div class="vq-pase-qr">'+QR+'<span>Socio #0042</span></div></div>';
+    if(mini) return pase;
+    return '<div class="vq-iph"><div class="vq-iph-p"><div class="vq-iph-bar"><b>9:41</b><i class="vq-isla"></i><span class="vq-iph-ic"><i></i><i></i><i></i><i></i><u></u></span></div>'
+      +'<div class="vq-iph-nav"><span>Listo</span><i>•••</i></div>'+pase+'<div class="vq-iph-mas"><span style="background:#2c6fd6"></span><span style="background:#1f1f1f"></span></div></div></div>';
   }
-  function pinta(){ $$('.vq-prev').forEach(function(x){ x.innerHTML=tarjeta(); }); }
+  function pinta(){ $$('.vq-prev').forEach(function(x){ x.innerHTML=tarjeta(!x.classList.contains('vq-prev-g')); }); marca(); }
+  function marca(){ $$('.vq-sw button,.vq-op button').forEach(function(b){ b.setAttribute('aria-pressed', String(d[b.parentNode.dataset.k]===b.dataset.v)); }); }
   function ir(p){
     paso=p; $$('.vq-paso').forEach(function(s){ s.hidden=Number(s.dataset.p)!==p; });
-    var hasta=p<=2?1:p===3?2:3; $$('.vq-barra li').forEach(function(li,i){ li.className=i<hasta?'on':''; });
+    var hasta=p<=2?1:p===3?2:p===4?3:4; $$('.vq-barra li').forEach(function(li,i){ li.className=i<hasta?'on':''; });
     $('.vq-atras').hidden=p===1;
     if(p===2){ $('#vq-nombre').value=d.n; pinta(); setTimeout(function(){ $('#vq-nombre').focus({preventScroll:true}); },50); }
     if(p===3) premio();
-    if(p===4) avisos();
+    if(p===4) pinta();
+    if(p===5) avisos();
   }
   function premio(){
     var g=gi(); $('#vq-premio').value=d.p;
@@ -390,7 +462,7 @@ const SCRIPT = `(function(){
     var L=[['ahora','¡Ya casi! '+falta],['ayer','¡Feliz cumpleaños! Te espera un regalo en '+n+'.']];
     $('.vq-notis').innerHTML=L.map(function(x){ return '<div class="vq-noti"><i style="background:'+g.c+'">'+(g.e||'⭐')+'</i><span><b>'+esc(n)+' <small>'+x[0]+'</small></b>'+esc(x[1])+'</span></div>'; }).join('');
     $$('.vq-noti').forEach(function(el,k){ setTimeout(function(){ el.classList.add('ver'); },250+k*700); });
-    var u=new URL(Q.dataset.app, location.href); u.searchParams.set('g',d.g); u.searchParams.set('n',d.n); u.searchParams.set('p',d.p); u.searchParams.set('m',String(d.m)); u.searchParams.set('t',d.t);
+    var u=new URL(Q.dataset.app, location.href); u.searchParams.set('g',d.g); u.searchParams.set('n',d.n); u.searchParams.set('p',d.p); u.searchParams.set('m',String(d.m)); u.searchParams.set('t',d.t); u.searchParams.set('d',clave());
     if(!u.searchParams.get('o')) u.searchParams.set('o','quiz'); u.hash='#/nuevo'; $('.vq-crear').href=u.toString();
   }
   $$('.vq-giro').forEach(function(b){ b.onclick=function(){
@@ -410,6 +482,8 @@ const SCRIPT = `(function(){
     if(b.dataset.ir==='4'&&!d.p.trim()){ $('#vq-premio').focus(); return; }
     ir(Number(b.dataset.ir)); if(Q.getBoundingClientRect().top<0) Q.scrollIntoView({behavior:'smooth',block:'start'});
   }; });
+  $$('.vq-sw button,.vq-op button').forEach(function(b){ b.onclick=function(){ d[b.parentNode.dataset.k]=b.dataset.v; pinta(); }; });
+  var fl=$('#vq-logo'); if(fl) fl.onchange=function(){ var a=fl.files&&fl.files[0]; if(!a||String(a.type).indexOf('image/')!==0||a.size>5e6) return; var r=new FileReader(); r.onload=function(){ d.logo=r.result; pinta(); }; r.readAsDataURL(a); };
   $('.vq-atras').onclick=function(){ clearTimeout(timer); ir(Math.max(1,paso-1)); };
   $('.vq-crear').addEventListener('click',function(){ if(window.vorkaEvento) window.vorkaEvento('Lead',{content_name:'Quiz Vuelve',content_category:d.g}); });
 })();
