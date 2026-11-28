@@ -7,6 +7,7 @@ import { formCompra, SCRIPT_COMPRA, precio, refDeVisita } from '../tienda.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
 import { oferta, ofertas, migas } from '../seo.js';
 import { resenasDe, ldResenas, seccionResenas } from '../resenas.js';
+import { seccionTestimonios } from '../testimonios.js';
 import { seccionGuias } from './guias.js';
 import { heroMarca, seccionQueEs, colorDe, MARCAS, CSS_MARCA, CSS_SECCIONES } from '../marca-producto.js';
 import { demoDe } from '../demos/index.js';
@@ -313,6 +314,7 @@ ${v.despuesHero || ''}
 
 
 ${seccionResenas(rs)}
+${seccionTestimonios(sim.APP)}
 <section class="t-sec suave" id="ayuda"><div class="marco sv-dos">
   <div class="sv-dos-t sv-pegado">
     <h2 class="h2">${esc(v.faqTitulo)}</h2>
