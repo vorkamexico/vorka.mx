@@ -215,3 +215,16 @@ describe('Comunidad Vorka', () => {
     expect(await (await pedir('/tienda/carrito/')).text()).not.toContain('class="t-comunidad"');
   });
 });
+
+describe('testimonios', () => {
+  it('salen en la tienda y en el simulador PAA, sin estrellas ni calificación en el JSON-LD', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1");
+    for (const r of ['/tienda/', '/simulador-paa/', '/simulador-paa/tec-de-monterrey/']) {
+      const h = await (await pedir(r)).text();
+      expect(h, r).toContain('class="ts-tes"');
+      expect(h, r).toContain('<b>Edwin</b>Compró el Simulador PAA');
+    }
+    const paa = await (await pedir('/simulador-paa/')).text();
+    expect(paa).not.toContain('"aggregateRating"');   // los testimonios no cuentan como reseñas con estrellas
+  });
+});

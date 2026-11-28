@@ -10,6 +10,7 @@ import { pagina, aviso, esc, ICONOS, WHATSAPP } from './paginas.js';
 import { eventoPagina } from './meta.js';
 import { FLECHA, CHECK, LOGO } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
+import { todosLosTestimonios, listaTestimonios } from './testimonios.js';
 import { enCarrito, enSuscripcion, grupoCarrito, nombreCorto, combosNegocio } from './carrito.js';
 import { contarVisita } from './puntos.js';
 import { VARIANTES } from './brindi.js';
@@ -290,6 +291,7 @@ const CSS_VITRINA = `
 .v-conf-i svg{width:20px;height:20px}.v-conf-g b{font-size:15.5px;letter-spacing:-.01em}.v-conf-g p{margin:0;font-size:14px;line-height:1.45;color:var(--fg-2)}
 @media(max-width:560px){.v-conf-g{gap:8px}.v-conf-g li{padding:14px}.v-conf-g p{font-size:13px}}
 .v-conf-pie{margin:14px 0 0;text-align:center;font-size:14px;color:var(--fg-2)}
+.v-tes{margin-top:34px}.v-tes-t{margin:0;font-size:clamp(20px,2.4vw,24px);letter-spacing:-.02em}
 .v-catalogo .ts-sims{gap:14px}
 @media(max-width:560px){.v-catalogo .ts-sims{gap:10px}.v-catalogo .ts-sim{padding:12px 14px}.v-catalogo .ts-sim-x small,.v-catalogo .ts-sim-f{display:none}.v-catalogo .ts-sim-img{width:64px;height:84px}.v-catalogo .ts-sim-x b{font-size:17px}.v-catalogo .ts-sim-pie{margin-top:10px;padding-top:10px}}.v-catalogo .t-cat-cab .h2{letter-spacing:-.03em}
 .v-catalogo .t-grupos{gap:84px}
@@ -383,6 +385,7 @@ export async function paginaCatalogo(env, req, url) {
   // «Agregar al carrito» en la tarjeta: pago único con precio fijo (no «Desde») y los planes mensuales de las apps
   const agregable = v => !/^simulador/.test(grupoCarrito(v.p)) && ((enCarrito(v.p) && !/desde/i.test(String(v.precio))) || (enSuscripcion(v.p) && v.p.contenido.suscripcion.intervalo === 'month'));
   // Tarjetas «Desde» (Brindi, Cupo, simuladores): el botón abre «Elige tu plan» en el carrito lateral con cada opción y su precio
+  const testimonios = todosLosTestimonios();
   const todosActivos = activos.results.map(r => { let c; try { c = JSON.parse(r.contenido || '{}'); } catch { c = {}; } return { ...r, contenido: c }; });
   const opcionesDe = v => {
     if (agregable(v)) return null;
@@ -458,6 +461,7 @@ export async function paginaCatalogo(env, req, url) {
     <li><span class="v-conf-i">${ICONOS.chat}</span><b>Personas reales</b><p>Te contesta alguien del equipo por WhatsApp o correo.</p></li>
   </ul>
   <p class="v-conf-pie">¿Necesitas factura? Te la hacemos. Las apps se prueban gratis y las cancelas cuando quieras.</p>
+  ${testimonios.length ? `<div class="v-tes"><h2 class="v-tes-t">Lo que nos cuentan quienes ya los usan</h2>${listaTestimonios(testimonios)}</div>` : ''}
 </div></section>
 <section class="t-sec t-catalogo v-catalogo" id="productos"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">¿Qué necesitas?</h2>

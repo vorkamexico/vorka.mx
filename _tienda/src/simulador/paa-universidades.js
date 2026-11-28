@@ -2,6 +2,7 @@
 // Cada una tiene contenido propio (sus reglas, con el numeral del documento oficial), su canonical y liga al simulador.
 // Regla: solo datos verificados en la fuente oficial que se cita; lo que es consejo nuestro se presenta como tal.
 // No usar logos ni escudos. La estructura de la PAA sale de la guía del College Board de 2020 (sin tiempos: pudieron cambiar).
+import { seccionTestimonios } from '../testimonios.js';
 import { esc, pagina } from '../paginas.js';
 import { FLECHA, CHECK } from '../marco.generado.js';
 import { compraSimulador, CSS_COMPRA } from './compra-arriba.js';
@@ -326,6 +327,7 @@ export async function paginaPaaUniversidad(env, clave) {
   <div class="t-faq" style="margin-top:22px">${u.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
+${seccionTestimonios('simulador-paa', { titulo: 'Lo que nos cuentan quienes ya practican' })}
 <section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados ${u.art === 'el' ? 'al' : 'a la'} ${esc(u.completo)} ni al College Board; PAA es una prueba del College Board. Los requisitos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>${barra}`,
   });
 }
