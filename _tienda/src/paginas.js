@@ -128,8 +128,10 @@ export const WHATSAPP = 'https://wa.me/528117804869';
 const MENU_TIENDA = [['inicio', 'Inicio', '/tienda/'], ['catalogo', 'Catálogo', '/tienda/#productos'], ['puntos', 'Puntos', '/tienda/puntos/'], ['contacto', 'Contacto', '/tienda/#ayuda']];
 // entrar: { url, app } en las páginas de un producto con cuenta (Vuelve, Brindi, Cupo, Cuentas, Simulador): la pastilla de la
 // derecha pasa a ser "Entrar" y lleva directo a iniciar sesión en esa app (o a su panel si ya tiene sesión). Se ve también en celular.
-// El botón del encabezado dice a qué app entra («Entrar a Vuelve»); con nombres largos queda solo «Entrar» para que no se amontone
-const textoEntrar = app => { const a = String(app || '').trim(); return a && a.length <= 10 ? `Entrar a ${a}` : 'Entrar'; };
+// El botón del encabezado dice a qué app entra («Entrar a Vuelve»); los nombres largos van cortos («Entrar a Ruta»)
+const CORTOS_ENTRAR = { 'Ruta de Impacto': 'Ruta', 'Simulador PAA': 'Simulador', 'la Evaluación de liderazgo': 'Evaluación' };
+// Nombre largo sin atajo: la primera palabra que no sea artículo («la Evaluación de…» → «Evaluación»)
+const textoEntrar = app => { const a = String(app || '').trim(); if (!a) return 'Entrar'; const c = CORTOS_ENTRAR[a] || (a.length <= 10 ? a : a.split(/\s+/).find(w => !/^(la|el|los|las|mi|tu)$/i.test(w)) || a); return `Entrar a ${c}`; };
 export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}) => `<header class="nav t-navs${oscuro ? ' oscuro' : ''}">
   <div class="nav-in">
     <a class="marca" href="/tienda/" aria-label="Tienda Vorka México, inicio">${LOGO}Vorka <span>Tienda</span></a>
