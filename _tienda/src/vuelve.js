@@ -159,7 +159,7 @@ export async function paginaVuelve(env, req, url) {
   const res = pagina({ navActual: 'catalogo', entrar: { url: `${OS}/vuelve/#entrar`, app: 'Vuelve' },
     titulo: 'Vuelve: tarjeta de lealtad digital | Prueba 7 días gratis', ruta: RUTA_VUELVE, imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
     descripcion: 'Tu tarjeta de lealtad digital en Apple Wallet y Google Wallet, sin app ni cartón: sellos o puntos, avisos automáticos y el dinero que regresó, medido. Prueba 7 días gratis, sin tarjeta.',
-    head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
+    head: `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT,
     cuerpo: `<div class="vu" style="--pm:${colorDe('vuelve')}">
@@ -178,14 +178,14 @@ export async function paginaVuelve(env, req, url) {
 ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluye'], ['planes', 'Precio'], ['ayuda', 'Preguntas']], `<a class="pm-btn" href="#quiz">Pruébalo gratis</a>`)}
 
 <section class="vu-sec" id="como"><div class="marco">
-  <div class="vu-cab"><h2>Lista hoy, desde tu celular.</h2><p>Sin computadora y sin instalar nada. Si te atoras, te ayuda una persona.</p></div>
+  <div class="vu-cab"><h2>Lista hoy, <b>desde tu celular.</b></h2><p>Sin computadora y sin instalar nada. Si te atoras, te ayuda una persona.</p></div>
   <ul class="vu-tres">${[[ICONO.wallet, 'Armas tu tarjeta', 'Tu logo, tus colores y tu premio. Vuelve te sugiere sellos y mensajes según tu giro.'],
     [ICONO.check, 'Tus clientes la guardan', 'Escanean el QR de tu caja y la guardan en su celular en 30 segundos, sin descargar nada.'],
     [ICONO.campana, 'Regresan solos', 'Les avisa en su cumpleaños y cuando llevan tiempo sin venir. Tú ves quién regresó y cuánto dejó.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
 </div></section>
 
 <section class="vu-sec suave" id="incluye"><div class="marco">
-  <div class="vu-cab"><h2>Lo que hace que regresen.</h2><p>Todo viene en el mismo plan desde el primer día.</p></div>
+  <div class="vu-cab"><h2>Lo que hace <b>que regresen.</b></h2><p>Todo viene en el mismo plan desde el primer día.</p></div>
   <ul class="vu-ben">${[[ICONO.campana, 'Avisos que trabajan solos', 'Cumpleaños con regalo, «te extrañamos» y tus promociones. Llegan a su tarjeta, sin costo por mensaje, y en iPhone aparece cuando pasan cerca de tu sucursal.'],
     [ICONO.pesos, 'El dinero que regresó, medido', 'Cuántos clientes volvieron, cada cuánto y cuánto dejaron. También cuántos regresaron después de cada aviso.'],
     [ICONO.escudo, 'Sin sellos regalados', 'Cada persona de tu equipo sella con su PIN, hay tope de sellos al día y todo queda en una bitácora.']].map(([ic, t, d]) => `<li>${ic}<b>${t}</b><p>${d}</p></li>`).join('')}</ul>
@@ -196,7 +196,7 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
 </div></section>
 
 <section class="vu-sec" id="planes"><div class="marco">
-  <div class="vu-cab"><h2>Un solo plan, con todo incluido.</h2><p>Clientes y avisos ilimitados. En pesos mexicanos con IVA incluido. Cancelas cuando quieras.</p></div>
+  <div class="vu-cab"><h2>Un solo plan, <b>con todo incluido.</b></h2><p>Clientes y avisos ilimitados. En pesos mexicanos con IVA incluido. Cancelas cuando quieras.</p></div>
   <div class="vu-precio-g">
     <article class="vu-plan">
       <h3>Vuelve</h3>
@@ -206,19 +206,21 @@ ${indiceProducto('vuelve', [['como', 'Cómo funciona'], ['incluye', 'Qué incluy
       <p class="vu-nota">Sin tarjeta. Si decides seguir, tus clientes conservan su tarjeta.</p>
       ${planes.length ? `<p class="vu-sus">¿Ya lo probaste? Suscríbete ${planes.map(x => `<a href="?plan=${x.slug}#comprar" data-plan="${x.slug}">${x.nombre.toLowerCase()}</a>`).join(' o ')}.</p>` : `<p class="vu-nota">La suscripción abre muy pronto. Mientras, <a href="${esc(nuevo)}">empieza tu prueba gratis</a>.</p>`}
     </article>
+    <div class="vu-lado">
     <aside class="vu-listo">
-      <b>Te lo dejamos listo en 15 minutos, gratis.</b>
-      <p>Una videollamada con una persona del equipo y sales con todo funcionando:</p>
-      <ul>${['Tu tarjeta con tu logo y tu premio', 'Tu cartel con QR para la caja', 'Tu primer cliente registrado'].map(t => `<li>${CHECK}<span>${t}</span></li>`).join('')}</ul>
-      <a class="pm-btn sec vu-ancho" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Pedirla por WhatsApp</a>
-    </aside>
-  </div>
+        <b>Te lo dejamos listo en 15 minutos, gratis.</b>
+        <p>Una videollamada con una persona del equipo y sales con todo funcionando:</p>
+        <ul>${['Tu tarjeta con tu logo y tu premio', 'Tu cartel con QR para la caja', 'Tu primer cliente registrado'].map(t => `<li>${CHECK}<span>${t}</span></li>`).join('')}</ul>
+        <a class="pm-btn sec vu-ancho" href="${WA_LISTO}" target="_blank" rel="noopener">${WA_ICONO} Pedirla por WhatsApp</a>
+      </aside>
   ${mensual?.precios ? (() => { const [[, a], [, b], [, c]] = mensual.precios, pm = mensual.prod.precio_centavos, base = mensual.sucursal?.precio_centavos ?? a;
     const fila = n => { const t = totalCon(pm, mensual.precios, n - 1), sin = pm + (n - 1) * base; return `<tr><th scope="row">${n} sucursales</th><td>${precio({ precio_centavos: t })}${sin > t ? `<small>ahorras ${precio({ precio_centavos: sin - t })}</small>` : ''}</td></tr>`; };
     return `<div class="vu-vol" id="sucursales-volumen"><div class="vu-vol-t"><h3>¿Tienes varias sucursales o una franquicia?</h3><p>Mientras más creces, menos pagas por cada una. Todas con su equipo, su ubicación y sus avisos, en un mismo panel.</p>
       <ul><li><b>${precio({ precio_centavos: a })}</b> al mes la 2ª y la 3ª sucursal</li><li><b>${precio({ precio_centavos: b })}</b> al mes de la 4ª a la 10ª</li><li><b>${precio({ precio_centavos: c })}</b> al mes desde la 11ª</li></ul></div>
       <table class="vu-vol-tabla"><caption>Lo que pagarías al mes</caption><tbody>${[4, 10, 20].map(fila).join('')}</tbody></table>
       <p class="vu-vol-pie">¿Más de 20 sucursales? <a href="https://wa.me/528117804869?text=${encodeURIComponent('Hola, tengo varias sucursales y quiero Vuelve para todas.')}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> y lo armamos contigo.</p></div>`; })() : ''}
+    </div>
+  </div>
 </div></section>
 
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Vuelve', intro: `¿Aún no lo pruebas? <a href="#quiz">Empieza gratis ${dias} días</a>, sin tarjeta. Si ya lo estás probando, suscríbete con el mismo correo y tu programa sigue tal cual.`,
@@ -256,7 +258,7 @@ export async function paginaVuelveEmpezar(env, req, url) {
   const res = pagina({ titulo: `Arma tu tarjeta de lealtad digital en un minuto | Vuelve · ${dias} días gratis`, ruta: RUTA_EMPEZAR, noindex: true,
     imagen: 'https://vorka.mx/assets/tienda/v3/vuelve-og.jpg',
     descripcion: `Contesta 3 preguntas, mira tu tarjeta de lealtad digital lista y crea tu cuenta gratis: ${dias} días sin tarjeta.`,
-    head: `<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&display=swap" rel="stylesheet"><style>${CSS}${CSS_EMPEZAR}</style>`,
+    head: `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><style>${CSS}${CSS_EMPEZAR}</style>`,
     script: SCRIPT,
     cuerpo: `<div class="vu vu-empezar" style="--pm:${colorDe('vuelve')}">
   <div class="vu-e-cab">${lineaMarca('vuelve')}${reco ? `<p class="vu-reco">🎁 Te recomendó <b>${esc(reco.nombre)}</b>: pruébalo ${dias} días gratis</p>` : ''}
@@ -283,7 +285,7 @@ body:has(.vu-empezar) .t-main{padding:0;margin:0}
 `;
 
 const CSS = `${CSS_MARCA}${CSS_SECCIONES}
-.vu{--pm-t:var(--pm);font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
+.vu{--pm-t:var(--pm);font-family:'Inter',system-ui,-apple-system,sans-serif}
 /* en oscuro, el color de Vuelve se aclara para que ligas e iconos se lean */
 :root[data-tema=oscuro] .vu{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .vu{--pm-t:color-mix(in srgb,var(--pm) 55%,#fff)}}
 /* Sin letreritos en mayúsculas ni pasos numerados en esta página */
@@ -410,6 +412,21 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-tres b,.vu-ben b{font-size:15.5px}.vu-tres p,.vu-ben p,.vu-mas li,.vu-plan li,.vu-listo li{font-size:15px}
 .vu-precio b{font-size:30px}.vu-plan h3{font-size:21px}.vu-listo>b{font-size:16px}
 .vu .t-faq summary{font-size:16px}
+/* fino como los flyers de Vuelve (nov-2026): Inter delgada para decir, negrita morada para lo importante, columnas parejas */
+.vu .pm-h1{font-family:'Inter',system-ui,sans-serif!important;font-weight:300!important;letter-spacing:-.045em;line-height:1.06}.vu .pm-h1 em{font-style:normal;font-weight:700!important;color:var(--pm-t)}
+.vu,.vu h2,.vu h3,.vu .vq-t{font-family:'Inter',system-ui,-apple-system,sans-serif!important}
+.vu-cab h2,.vu .h2{font-weight:300!important;letter-spacing:-.04em}.vu-cab h2 b{font-weight:700}
+.vq-t{font-weight:650!important;letter-spacing:-.025em}
+.vu-precio-g{max-width:1040px;align-items:start}@media(min-width:860px){.vu-plan{position:sticky;top:150px}}
+.vu-plan{display:flex;flex-direction:column;border-width:1.5px;box-shadow:0 30px 70px -48px color-mix(in srgb,var(--pm) 80%,transparent)}
+.vu-plan .pm-btn{margin-top:6px}
+.vu-plan h3{font-weight:650;font-size:18px;color:var(--fg-2)}.vu-precio b{font-weight:650;font-size:40px;letter-spacing:-.04em}
+.vu-lado{display:grid;gap:18px;align-content:start}
+.vu-lado .vu-vol{margin:0;max-width:none;grid-template-columns:1fr!important;gap:14px;padding:24px}
+.vu-lado .vu-vol h3{font-size:18px;font-weight:650}
+.vu-listo{padding:24px}.vu-listo>b{font-size:18px;font-weight:650;letter-spacing:-.02em}
+.vu .pm-btn{border-radius:999px}
+
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .vu #form-vuelve .btn.acento{background:var(--pm);color:#fff}
 `;

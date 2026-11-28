@@ -134,7 +134,7 @@ export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}
     <nav class="nav-links" aria-label="Tienda">${MENU_TIENDA.map(([k, t, u]) => `<a href="${u}"${k === actual ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
     <a class="t-nav-ico" href="/tienda/#buscar" aria-label="Buscar en la tienda" title="Buscar">${ICONOS.buscar}</a>
     ${entrar ? '' : `<a class="t-nav-ico t-nav-cuenta" href="/tienda/puntos/" aria-label="Mi cuenta de puntos" title="Mi cuenta">${ICONOS.cuenta}</a>`}
-    ${entrar ? `<a class="btn acento t-pastilla t-entrar" href="${esc(entrar.url)}" aria-label="Entrar a ${esc(entrar.app)}">${ICONOS.cuenta}<span>Entrar</span></a>` : '<a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>'}
+    ${entrar ? `<a class="btn acento t-pastilla t-entrar" href="${esc(entrar.url)}" aria-label="Entrar a ${esc(entrar.app)}">${ICONOS.cuenta}<span>Entrar a ${esc(entrar.app)}</span></a>` : '<a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>'}
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
   </div>
 </header>

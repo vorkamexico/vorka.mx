@@ -19,7 +19,7 @@ export const MARCAS = {
   cupo: ['#6D28D9', 'Cupo', 'Tu evento, con registro [y entrada con QR.]', ['**Gratis** hasta 30 personas', 'Cover **sin comisión**', 'Check-in con **QR**']],
   brillo: ['#A3245E', 'Brillo', 'Tu salón en orden, [aunque no estés.]', ['Registro en **segundos**', 'Corte de caja **diario**', 'Prueba **7 días** gratis']],
   agenda: ['#05785A', 'Agenda', 'Tus clientes reservan solos, [a cualquier hora.]', ['Confirmación **al instante**', 'Recordatorios **automáticos**', 'Prueba **7 días** gratis']],
-  vuelve: ['#B42A44', 'Vuelve', 'Que tus clientes [vuelvan solos.]', ['**Sin** descargar app', 'Avisos **automáticos**', 'Prueba **7 días** gratis']],
+  vuelve: ['#6B2A85', 'Vuelve', 'Que tus clientes [vuelvan solos.]', ['**Sin** descargar app', 'Avisos **automáticos**', 'Prueba **7 días** gratis']],
   cuentas: ['#0E6F78', 'Cuentas', 'Lo que prestas, [claro y en orden.]', ['Intereses **claros**', '**PDF** y Excel', 'Prueba **7 días** gratis']],
   vende: ['#C2256F', 'Vende', 'Clientas, pedidos y cobros, [en orden.]', ['Ganancia **real**', '**WhatsApp** listo', '**Gratis** para empezar']],
   'ruta-de-impacto': ['#4338CA', 'Ruta de Impacto', 'Tu proyecto social, [de la idea a la comunidad.]', ['**6** niveles + final', '**Tutor** con pistas', 'Pago único · **1 año**']],
@@ -99,7 +99,7 @@ export function indiceProducto(k, partes, boton) {
   return `<nav class="pm-indice" aria-label="Partes de la página" style="--pm:${colorDe(k)}"><div class="marco">${partes.map(([id, t]) => `<a href="#${esc(id)}">${esc(t)}</a>`).join('')}${boton ? `<span class="pm-indice-btn">${boton}</span>` : ''}</div></nav>`;
 }
 export const CSS_SECCIONES = `
-.pm-indice{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.pm-indice{position:relative;z-index:2;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .pm-indice .marco{display:flex;align-items:center;gap:24px;min-height:54px;overflow-x:auto;scrollbar-width:none}.pm-indice .marco::-webkit-scrollbar{display:none}
 .pm-indice a{flex:none;font-size:14.5px;font-weight:600;color:var(--fg-2);text-decoration:none;padding:16px 0}.pm-indice a:hover{color:var(--fg)}
 .pm-indice-btn{margin-left:auto;flex:none}.pm-indice .pm-btn,.pm-hero .pm-btn:not(.sec){color:#fff!important}.pm-indice-btn .pm-btn{min-height:40px;padding:0 18px;font-size:14.5px}
