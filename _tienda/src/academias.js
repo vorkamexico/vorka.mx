@@ -16,7 +16,13 @@ export const RUTA_ACADEMIAS = '/tienda/academias/';
 const APP = 'https://os.vorka.mx/vuelve/';
 const WA = 'https://wa.me/528117804869?text=' + encodeURIComponent('Hola, tengo una duda sobre Academias + Vuelve.');
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|lighthouse|headless/i;
-const PLANES = [{ slug: 'academias-vuelve-mensual', nombre: 'Mensual', cada: 'al mes', renueva: 'cada mes' }, { slug: 'academias-vuelve-anual', nombre: 'Anual', cada: 'al año', renueva: 'cada año' }];
+// Dos tamaños (decisión del dueño, 27-11-2026): hasta 25 alumnos al precio de Vuelve ($399, paquete 'academias-chica', migración 0100;
+// Vorka OS pone el tope de 25) y hasta 800 alumnos ($599, paquete 'academias-vuelve'). Cada uno mensual o anual con 2 meses gratis.
+const TAMANOS = [
+  { titulo: 'Hasta 25 alumnos', para: 'Para academias que empiezan o trabajan con pocos grupos.', m: 'academias-chica-mensual', a: 'academias-chica-anual' },
+  { titulo: 'Hasta 800 alumnos', para: 'Para academias con varios grupos y niveles.', m: 'academias-vuelve-mensual', a: 'academias-vuelve-anual' },
+];
+const PLANES = TAMANOS.flatMap(t => [{ slug: t.m, nombre: `${t.titulo} · Mensual`, cada: 'al mes', renueva: 'cada mes' }, { slug: t.a, nombre: `${t.titulo} · Anual`, cada: 'al año', renueva: 'cada año' }]);
 const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 
 const QUE = [
@@ -33,13 +39,14 @@ const PARA = [
   ['Música y artes', 'Clases grupales o casi individuales, cada una con su precio.'],
   ['Escuelas chicas y regularización', 'Grupos, tutores y colegiaturas al día sin hojas de Excel.'],
 ];
-const INCLUYE = ['Grupos, alumnos y tutores sin límite práctico (hasta 800 alumnos)', 'Pase de lista y asistencia de los últimos 60 días', 'Mensualidad por grupo y precios especiales o becas', 'Recordatorio de pago por WhatsApp listo para enviar', 'Tu logo en la app', 'Si quieres, tarjeta de lealtad para las familias en Apple y Google Wallet', 'Soporte por WhatsApp, sin llamadas'];
+const INCLUYE = ['Grupos con horario, cupo y mensualidad; alumnos con su tutor', 'Pase de lista y asistencia de los últimos 60 días', 'Mensualidad por grupo y precios especiales o becas', 'Recordatorio de pago por WhatsApp listo para enviar', 'Tu logo en la app', 'Si quieres, tarjeta de lealtad para las familias en Apple y Google Wallet', 'Soporte por WhatsApp, sin llamadas'];
 const FAQ = [
   ['¿Puedo probarlo antes de pagar?', `Sí. Entra a <a href="${APP}">os.vorka.mx/vuelve</a> con tu correo, elige «Clases o escuela» como tipo de negocio y tienes 7 días con todo, sin tarjeta. Si te sirve, te suscribes aquí con el mismo correo y todo sigue tal cual.`],
   ['¿Vuelve cobra las mensualidades por mí?', 'No. Tus alumnos te pagan directo a ti, en efectivo, por transferencia o con tarjeta, como siempre. La app solo lleva el registro de quién pagó y te ayuda a recordarle a quien falta, desde tu WhatsApp.'],
   ['¿Sirve para cualquier academia?', 'Para las que trabajan por grupos con horario y mensualidad: baile, idiomas, música, artes, deportes, regularización o natación. Si cobras por clase suelta, también puedes registrar cada pago con su monto.'],
   ['¿Quién ve los datos de mis alumnos?', 'Solo tú, con tu correo. Ni siquiera el equipo de Vorka los ve cuando te ayuda a configurar tu tarjeta. Los descargas o los das de baja cuando quieras.'],
   ['¿Qué pasa si dejo de pagar?', 'Tu tarjeta de lealtad y Mi academia se pausan, pero tus alumnos, pagos y asistencias se quedan guardados. Al renovar, todo sigue donde lo dejaste.'],
+  ['¿Y si mi academia pasa de 25 alumnos?', `Escríbenos <a href="${WA}" target="_blank" rel="noopener">por WhatsApp</a> y te pasamos al plan de hasta 800 alumnos. Tus grupos, alumnos, pagos y asistencias se quedan como están.`],
   ['¿Puedo cancelar cuando quiera?', 'Sí, desde Vuelve › Cuenta y pagos, sin llamadas. Sigues con todo hasta el final del periodo pagado.'],
 ];
 const svg = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -59,8 +66,10 @@ const VISTA = `<div class="ac-vista" aria-hidden="true">
 export async function paginaAcademias(env, req, url) {
   const { code, cookie } = await refDeVisita(env, req, url);
   const planes = (await Promise.all(PLANES.map(async x => ({ ...x, prod: await productoPorSlug(env, x.slug) })))).filter(x => x.prod);
-  const mensual = planes.find(x => x.slug === 'academias-vuelve-mensual'), anual = planes.find(x => x.slug === 'academias-vuelve-anual');
-  const ahorro = mensual && anual ? mensual.prod.precio_centavos * 12 - anual.prod.precio_centavos : 0;
+  const de = slug => planes.find(x => x.slug === slug)?.prod;
+  const ahorroDe = a => { const t = TAMANOS.find(x => x.a === a), m = t && de(t.m), y = de(a); return m && y ? m.precio_centavos * 12 - y.precio_centavos : 0; };
+  const tamanos = TAMANOS.filter(t => de(t.m));
+  const mensual = planes.find(x => x.slug === TAMANOS[0].m) || planes.find(x => x.slug.endsWith('mensual'));   // el de entrada: hasta 25 alumnos
   const elegido = planes.some(x => x.slug === url.searchParams.get('plan')) ? url.searchParams.get('plan') : (planes[0]?.slug || '');
   const elegidoP = planes.find(x => x.slug === elegido);
   if (mensual && !BOT.test(req.headers.get('user-agent') || '')) await registrarAnalitica(env, 'view_product', { product_id: mensual.prod.id, ref_code: code }, req);
@@ -84,7 +93,7 @@ export async function paginaAcademias(env, req, url) {
     <h1 class="ac-h1">Tu academia en orden: <b>quién vino, quién pagó y quién sigue.</b></h1>
     <p class="t-lead">Para academias de danza, idiomas, deportes, música y escuelas chicas. Grupos con horario, pase de lista en un toque y mensualidades al día, en tu celular y con tu logo.</p>
     <div class="ac-btns"><a class="btn acento" href="${APP}">Pruébalo 7 días gratis ${FLECHA}</a><a class="btn blanco" href="#precio">Ver precio</a></div>
-    <p class="ac-mini">${desde ? `${desde} al mes · ` : ''}Sin tarjeta para probar · Soporte por WhatsApp</p>
+    <p class="ac-mini">${desde ? `Desde ${desde} al mes · ` : ''}Sin tarjeta para probar · Soporte por WhatsApp</p>
   </div>${VISTA}
 </div></section>
 
@@ -101,16 +110,21 @@ export async function paginaAcademias(env, req, url) {
 </div></section>
 
 <section class="ac-sec" id="precio"><div class="marco">
-  <div class="ac-cab"><h2 class="ac-h2">Un solo plan, <b>con todo incluido.</b></h2><p class="ac-sub">En pesos mexicanos con IVA incluido. Cancelas cuando quieras.</p></div>
+  <div class="ac-cab"><h2 class="ac-h2">Paga según el tamaño <b>de tu academia.</b></h2><p class="ac-sub">Los dos planes traen todo. En pesos mexicanos con IVA incluido. Cancelas cuando quieras.</p></div>
   <div class="ac-precio-g">
-    <article class="ac-plan">
-      <h3>Academias</h3>
-      ${mensual ? `<p class="ac-precio"><b>${precio(mensual.prod)}</b> <small>al mes</small></p>${anual ? `<p class="ac-anual">o ${precio(anual.prod)} al año, con 2 meses gratis${ahorro > 0 ? ` (ahorras ${pesosRedondo(ahorro)})` : ''}</p>` : ''}` : '<p class="ac-precio"><b>7 días gratis</b></p>'}
-      <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${esc(i)}</span></li>`).join('')}</ul>
-      <a class="btn acento ac-ancho" href="${APP}">Empieza tus 7 días gratis ${FLECHA}</a>
-      <p class="ac-nota">Sin tarjeta. Si decides seguir, todo lo que capturaste se queda.</p>
-      ${planes.length ? `<p class="ac-sus">¿Ya lo probaste? Suscríbete ${planes.map(x => `<a href="?plan=${x.slug}#comprar" data-ir="comprar" data-plan="${x.slug}">${x.nombre.toLowerCase()}</a>`).join(' o ')}.</p>` : `<p class="ac-nota">Muy pronto. Mientras, <a href="${APP}">pruébalo gratis</a> o <a href="${WA}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.</p>`}
-    </article>
+    <div class="ac-izq">
+      ${tamanos.length ? `<div class="ac-tam">${tamanos.map(t => `<article class="ac-t">
+        <h3>${t.titulo}</h3><p class="ac-para-t">${esc(t.para)}</p>
+        <p class="ac-precio"><b>${precio(de(t.m))}</b> <small>al mes</small></p>
+        ${de(t.a) ? `<p class="ac-anual">o ${precio(de(t.a))} al año, con 2 meses gratis${ahorroDe(t.a) > 0 ? ` (ahorras ${pesosRedondo(ahorroDe(t.a))})` : ''}</p>` : ''}
+        <a class="btn blanco ac-ancho" href="?plan=${t.m}#comprar" data-ir="comprar" data-plan="${t.m}">Suscribirme</a></article>`).join('')}</div>` : ''}
+      <article class="ac-plan">
+        <h3>Los dos planes incluyen</h3>
+        <ul>${INCLUYE.map(i => `<li>${CHECK}<span>${esc(i)}</span></li>`).join('')}</ul>
+        <a class="btn acento ac-ancho" href="${APP}">Empieza tus 7 días gratis ${FLECHA}</a>
+        <p class="ac-nota">${planes.length ? 'Sin tarjeta. Si decides seguir, todo lo que capturaste se queda.' : `Muy pronto. Mientras, <a href="${APP}">pruébalo gratis</a> o <a href="${WA}" target="_blank" rel="noopener">escríbenos por WhatsApp</a>.`}</p>
+      </article>
+    </div>
     <div class="ac-lado">
       <aside class="ac-caja"><b>Tus alumnos te pagan a ti.</b><p>En efectivo, por transferencia o con tarjeta, como siempre. La app solo registra quién pagó y te deja el recordatorio listo para mandarlo desde tu WhatsApp.</p></aside>
       <aside class="ac-caja"><b>Los datos de tus alumnos son tuyos.</b><p>Solo tú los ves con tu correo; ni el equipo de Vorka entra a esta parte cuando te ayuda. Muchos alumnos son menores, por eso se cuida así.</p></aside>
@@ -120,11 +134,11 @@ export async function paginaAcademias(env, req, url) {
 </div></section>
 
 ${planes.length ? seccionCompra({ titulo: 'Suscríbete a Academias', intro: `¿Aún no lo pruebas? <a href="${APP}">Empieza gratis</a>, sin tarjeta. Si ya lo usas, suscríbete con el mismo correo y todo sigue tal cual.`,
-  pasos: [['Elige mensual o anual', 'Y escribe el correo con el que entras a Vuelve.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Mi academia queda activa al instante.']],
+  pasos: [['Elige tu plan', 'Según cuántos alumnos tienes, mensual o anual. Y escribe el correo con el que entras a Vuelve.'], ['Pagas con tarjeta', 'Se renueva solo; lo cancelas cuando quieras.'], ['Sigues donde estabas', 'Mi academia queda activa al instante.']],
   garantias: ['Pago seguro con Stripe: nunca vemos tu tarjeta', 'Sin contratos ni permanencia', 'Soporte de personas por WhatsApp'],
   form: `<form class="t-form t-compra" id="form-ac" method="post" action="/api/checkout" novalidate${attrPlanesCarrito(planes.map(x => x.prod))}>
     ${code ? `<input type="hidden" name="ref" value="${esc(code)}">` : ''}
-    <fieldset class="t-campo ac-elige"><legend>Plan</legend>${planes.map(x => `<label class="ac-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b><small>${x.slug.endsWith('anual') && ahorro > 0 ? `Ahorra ${pesosRedondo(ahorro)} contra el mensual` : 'Sin plazo forzoso'}</small></span></label>`).join('')}</fieldset>
+    <fieldset class="t-campo ac-elige"><legend>Plan</legend>${planes.map(x => `<label class="ac-op"><input type="radio" name="slug" value="${x.slug}"${x.slug === elegido ? ' checked' : ''}><span><b>${x.nombre} · ${precio(x.prod)} ${x.cada}</b><small>${x.slug.endsWith('anual') && ahorroDe(x.slug) > 0 ? `Ahorra ${pesosRedondo(ahorroDe(x.slug))} contra el mensual` : 'Sin plazo forzoso'}</small></span></label>`).join('')}</fieldset>
     <div class="t-campo"><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="120"></div>
     <div class="t-campo"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" value="${esc(correo)}"><small class="t-ayuda">Usa el mismo correo con el que entras a Vuelve.</small></div>
     <p class="ac-total">Pagas hoy <b id="ac-hoy-p">${precio(elegidoP.prod)}</b> <span id="ac-luego">y luego ${precio(elegidoP.prod)} ${elegidoP.renueva}</span></p>
@@ -142,25 +156,25 @@ ${await masTienda(env, 'negocios')}
 
 // Fino como Vuelve (nov-2026): Inter delgada para decir y negrita en el color para lo importante; precio con el plan a la izquierda
 const CSS = `
-.ac{--ac:#B42A44;--ac-t:var(--ac);font-family:'Inter',system-ui,-apple-system,sans-serif}
-:root[data-tema=oscuro] .ac{--ac-t:color-mix(in srgb,var(--ac) 55%,#fff)}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .ac{--ac-t:color-mix(in srgb,var(--ac) 55%,#fff)}}
+.ac{--ac:#F2B705;--ac-tx:#1F1800;--ac-t:#8A6200;font-family:'Inter',system-ui,-apple-system,sans-serif}
+:root[data-tema=oscuro] .ac{--ac-t:#F5C842}@media(prefers-color-scheme:dark){:root:not([data-tema=claro]) .ac{--ac-t:#F5C842}}
 .ac-hero{padding:clamp(28px,5vw,64px) 0 clamp(40px,6vw,80px)}
 .ac-hero-g{display:grid;gap:40px;align-items:center}.ac-hero-g>*{min-width:0}@media(min-width:980px){.ac-hero-g{grid-template-columns:1.05fr .95fr;gap:56px}}
 .ac-h1{font:300 clamp(34px,4.6vw,52px)/1.06 'Inter',system-ui,sans-serif;letter-spacing:-.045em!important;margin:14px 0 0;color:var(--fg)}
 .ac-h1 b,.ac-h2 b{font-weight:700;color:var(--ac-t)}
 .ac-h2{font:300 clamp(26px,3.2vw,36px)/1.15 'Inter',system-ui,sans-serif;letter-spacing:-.04em!important;text-align:center;max-width:760px;margin:0 auto;color:var(--fg)}
 .ac-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.ac-mini{margin:14px 0 0;color:var(--fg-2);font-size:14px}
-.ac .btn{border-radius:999px}.ac .btn.acento{background:var(--ac);color:#fff}
+.ac .btn{border-radius:999px}.ac .btn.acento{background:var(--ac);color:var(--ac-tx)}
 .ac-vista{display:grid;gap:16px;grid-template-columns:1fr;max-width:540px;justify-self:center;width:100%}
 @media(min-width:560px){.ac-vista{grid-template-columns:1.05fr .95fr;align-items:end}}
 .ac-pant,.ac-ficha{border-radius:24px;padding:20px;background:var(--card,var(--bg));border:1px solid var(--line);box-shadow:0 30px 60px -36px rgba(0,0,0,.45)}
 .ac-pant small{color:var(--fg-2);font-size:12.5px}.ac-pant>b{display:block;font-size:19px;font-weight:650;letter-spacing:-.02em;margin:2px 0 10px}
 .ac-pant ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}.ac-pant li{display:flex;gap:10px;align-items:center;font-size:14.5px}.ac-pant li span:last-child{display:grid}
 .ac-pant li b{font-weight:600}.ac-pant em{font-style:normal;font-size:12px;color:var(--fg-2)}.ac-pant em.av{color:#B4532A}
-.ac-chk{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-2,var(--line));flex:none}.ac-chk.si{background:var(--ac);border-color:var(--ac);box-shadow:inset 0 0 0 3px var(--card,var(--bg))}
-.ac-btn{display:block;margin-top:14px;text-align:center;padding:11px;border-radius:999px;background:var(--ac);color:#fff;font-weight:700;font-size:14px}
+.ac-chk{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-2,var(--line));flex:none}.ac-chk.si{background:var(--ac);border-color:color-mix(in srgb,var(--ac) 80%,#000);box-shadow:inset 0 0 0 3px var(--card,var(--bg))}
+.ac-btn{display:block;margin-top:14px;text-align:center;padding:11px;border-radius:999px;background:var(--ac);color:var(--ac-tx);font-weight:700;font-size:14px}
 .ac-ficha-cab{display:flex;gap:10px;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.ac-logo{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--ac);color:#fff;font-weight:700;font-size:13px;letter-spacing:.02em;flex:none}
+.ac-logo{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--ac);color:var(--ac-tx);font-weight:700;font-size:13px;letter-spacing:.02em;flex:none}
 .ac-ficha-cab span:last-child{display:grid}.ac-ficha-cab b{font-size:14.5px;font-weight:650}.ac-ficha-cab small{font-size:12px;color:var(--fg-2)}
 .ac-nom{margin:14px 0 0;font-size:20px;font-weight:650;letter-spacing:-.02em}.ac-gr{margin:2px 0 0;font-size:13px;color:var(--fg-2)}
 .ac-ficha dl{margin:14px 0 0;display:grid;gap:0}.ac-ficha dl div{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
@@ -175,9 +189,15 @@ const CSS = `
 .ac-para{list-style:none;padding:0;margin:32px auto 0;max-width:1000px;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
 .ac-para li{padding:18px;border-radius:18px;background:var(--card,var(--bg));border:1px solid var(--line)}.ac-para b{display:block;font-size:15.5px;font-weight:650}.ac-para span{display:block;margin-top:4px;color:var(--fg-2);font-size:14.5px;line-height:1.45}
 .ac-cab{margin-bottom:32px}
-.ac-precio-g{display:grid;gap:18px;max-width:1040px;margin:0 auto;align-items:start}@media(min-width:860px){.ac-precio-g{grid-template-columns:1.15fr .85fr}}
+.ac-precio-g{display:grid;gap:18px;max-width:1040px;margin:0 auto;align-items:start}@media(min-width:900px){.ac-precio-g{grid-template-columns:1.3fr .7fr}}
+.ac-izq{display:grid;gap:18px}
+.ac-tam{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.ac-t{display:flex;flex-direction:column;padding:24px;border-radius:26px;background:var(--card,var(--bg));border:1.5px solid var(--line)}.ac-t:hover{border-color:var(--ac)}
+.ac-t h3{margin:0;font-weight:650;font-size:18px;letter-spacing:-.02em}.ac-para-t{margin:6px 0 0;color:var(--fg-2);font-size:14.5px;line-height:1.45;flex:1 0 auto}
+.ac-t .ac-precio{margin-top:14px}.ac-t .ac-anual{margin-bottom:16px}
 .ac-plan{display:flex;flex-direction:column;background:var(--card,var(--bg));border:1.5px solid var(--ac);border-radius:26px;padding:28px;box-shadow:0 30px 70px -48px color-mix(in srgb,var(--ac) 80%,transparent)}
-.ac-plan h3{margin:0;font-weight:650;font-size:18px;color:var(--fg-2)}
+.ac-plan h3{margin:0;font-weight:650;font-size:18px;color:var(--fg)}
+.ac-plan ul{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
 .ac-precio{margin:8px 0 0}.ac-precio b{font-weight:650;font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.ac-precio small{color:var(--fg-2);font-size:16px}
 .ac-anual{margin:2px 0 0;color:var(--fg-2);font-size:15px}
 .ac-plan ul{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:9px}.ac-plan li{display:flex;gap:9px;align-items:flex-start;font-size:15px;line-height:1.45}.ac-plan li svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--ac-t)}

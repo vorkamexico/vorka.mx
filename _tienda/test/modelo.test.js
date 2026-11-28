@@ -30,8 +30,9 @@ describe('modelo de datos', () => {
     // Negocio Completo (0079, en el catálogo desde 0080) entra a la venta por decisión del usuario (9-11-2026); su instalación, oculta
     // Brillo (0089) entra a la venta por petición del usuario (16-11-2026); en el catálogo solo el Básico mensual, el resto en su ficha
     // Mostrador y Academias + Vuelve (0098) salen en el catálogo con su plan mensual por petición del usuario (25-11-2026)
+    // Academias hasta 25 alumnos (0100, $399) toma el lugar de Academias en el catálogo; el de $599 se ve en su página (27-11-2026)
     // App a la medida (0099) entra a la venta por decisión del usuario (25-11-2026); su mes de preparación, oculto
-    expect(activos.map(p => p.slug).sort()).toEqual(['brillo-basico-mensual', 'mostrador-mensual', 'academias-vuelve-mensual', 'negocio-completo-mensual', 'test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual', 'app-medida-mensual',
+    expect(activos.map(p => p.slug).sort()).toEqual(['brillo-basico-mensual', 'mostrador-mensual', 'academias-chica-mensual', 'negocio-completo-mensual', 'test-vocacional', 'que-proyecto-social', 'cupo-pro', 'cuentas-mensual', 'portales-basico-mensual', 'pagina-web-mensual', 'app-medida-mensual',
       'simulador-ipn-practica', 'simulador-ipn-completo', 'simulador-ipn-paquete', 'simuladores-unam-ipn', 'simuladores-paa-unam', 'simuladores-paa-ipn', 'simuladores-universidad'].sort());
   });
 

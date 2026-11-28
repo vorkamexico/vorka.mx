@@ -59,21 +59,21 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllGlobals());
 
-const subAC = (o = {}) => ({
-  id: 'sub_ac', status: 'active', customer: 'cus_1', cancel_at_period_end: false, metadata: { order_id: stripe.orden, app: 'academias-vuelve', email: 'ana@consultorio.mx', product_id: 'prod_academias_vuelve_mensual' },
-  items: { data: [renglon('si_ac', 'prod_academias_vuelve_mensual', 59900)] }, ...o,
+const subAC = (o = {}, app = 'academias-vuelve', prod = 'prod_academias_vuelve_mensual', c = 59900) => ({
+  id: 'sub_ac', status: 'active', customer: 'cus_1', cancel_at_period_end: false, metadata: { order_id: stripe.orden, app, email: 'ana@consultorio.mx', product_id: prod },
+  items: { data: [renglon('si_ac', prod, c)] }, ...o,
 });
-async function pagar(slug) {
+async function pagar(slug, sub = () => subAC()) {
   const r = await comprar({ slug });
   expect(r.status).toBe(200);
   const { order } = await r.json();
-  stripe.orden = order; stripe.sub = subAC(); stripe.total = fila(`SELECT monto_centavos FROM orders WHERE id = '${order}'`).monto_centavos;
+  stripe.orden = order; stripe.sub = sub(); stripe.total = fila(`SELECT monto_centavos FROM orders WHERE id = '${order}'`).monto_centavos;
   expect((await evento('checkout.session.completed', 'cs_1')).status).toBe(200);
   return order;
 }
 
 describe('Academias + Vuelve', () => {
-  it('la migración deja los dos planes a la venta, ocultos del catálogo, con su app de paquete', () => {
+  it('la migración deja los dos planes a la venta, ocultos del catálogo (desde 0100 sale el chico), con su app de paquete', () => {
     const ps = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug LIKE 'academias-vuelve-%' ORDER BY orden").all();
     expect(ps.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['academias-vuelve-mensual', 59900, 1], ['academias-vuelve-anual', 599000, 1]]);
     for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ acceso: { app: 'academias-vuelve', apps: ['academias', 'vuelve'] } });
@@ -87,7 +87,9 @@ describe('Academias + Vuelve', () => {
     expect(h).toContain("getElementById('form-ac')"); expect(h).toContain('if(window.VD) return;');
     // se vende como control de la academia: la tarjeta de lealtad va en segundo plano y no se promete credencial con QR
     expect(h).not.toMatch(/sellos/); expect(h).not.toMatch(/credencial/i);
-    env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'academias-vuelve-%'");
+    // dos tamaños: hasta 25 alumnos ($399, paquete academias-chica) y hasta 800 ($599)
+    expect(h).toContain('Hasta 25 alumnos'); expect(h).toContain('$399'); expect(h).toContain('$3,990'); expect(h).toContain('value="academias-chica-mensual"'); expect(h).toContain('Desde $399');
+    env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'academias-vuelve-%' OR slug LIKE 'academias-chica-%'");
     h = await (await pedir('/tienda/academias/')).text();
     expect(h).not.toContain('id="form-ac"'); expect(h).toContain('Muy pronto');
   });
@@ -103,5 +105,14 @@ describe('Academias + Vuelve', () => {
     expect(correos[0].texto).toMatch(/https:\/\/os\.vorka\.mx\/vuelve\/entrar\/[a-f0-9]{64}/);
     expect(correos[0].texto).toContain('Mi academia');
     expect((await comprar({ slug: 'vuelve-mensual' })).status).toBe(409);
+  });
+  it('plan chico (hasta 25 alumnos, $399): a la venta, en el catálogo y Vuelve lo recibe como paquete academias-chica', async () => {
+    const ps = d1().raw.prepare("SELECT slug, precio_centavos, activo, contenido FROM products WHERE slug LIKE 'academias-chica-%' ORDER BY orden").all();
+    expect(ps.map(p => [p.slug, p.precio_centavos, p.activo])).toEqual([['academias-chica-mensual', 39900, 1], ['academias-chica-anual', 399000, 1]]);
+    for (const p of ps) expect(JSON.parse(p.contenido)).toMatchObject({ acceso: { app: 'academias-chica', apps: ['academias', 'vuelve'] } });
+    expect(JSON.parse(ps[0].contenido).oculto).toBeUndefined();
+    await pagar('academias-chica-mensual', () => subAC({}, 'academias-chica', 'prod_academias_chica_mensual', 39900));
+    expect(await new Admin({}, env).suscripcionApp('ana@consultorio.mx', 'vuelve')).toMatchObject({ vigente: true, paquete: 'academias-chica' });
+    expect(correos[0].texto).toContain('hasta 25 alumnos');
   });
 });
