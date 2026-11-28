@@ -1,5 +1,6 @@
 // Tienda › Academias (vorka.mx/tienda/academias/): para academias de danza, idiomas, deportes, música y escuelas chicas.
-// «Mi academia» vive dentro de Vuelve (os.vorka.mx/vuelve): grupos con horario, alumnos con su tutor, pase de lista y mensualidades.
+// «Mi academia» vive dentro de Vuelve (os.vorka.mx/vuelve): grupos con horario, alumnos (adultos o con tutor), pase de lista y mensualidades.
+// No dar por hecho que hay papás: hay academias solo de adultos (p. ej. inglés en línea para profesionistas).
 // La tarjeta de lealtad de Vuelve viene incluida pero va en segundo plano: la página vende el control de la academia.
 // Solo se anuncia lo que la app ya hace (src/vuelve/academia.js en Vorka OS). Aún NO hay credencial del alumno con QR ni pase
 // de lista escaneando: la ficha de la maqueta es la del alumno en la app (grupo, asistencia de 60 días y mensualidad). Se cobra como paquete 'academias-vuelve'
@@ -28,18 +29,18 @@ const pesosRedondo = c => '$' + (c / 100).toLocaleString('es-MX', { minimumFract
 const QUE = [
   ['Grupos y horarios', 'Cada grupo con sus días, su hora de entrada y salida, su cupo y su mensualidad. Si se llena, la app te avisa antes de inscribir a alguien más.'],
   ['Pase de lista', 'Abres «Hoy» y ves las clases del día con sus alumnos. Palomeas quién vino y queda el porcentaje de asistencia de cada uno.'],
-  ['La ficha de cada alumno', 'Su grupo, su tutor con WhatsApp, su día de pago, si tiene beca o precio especial y cómo va su asistencia de los últimos 60 días.'],
+  ['La ficha de cada alumno', 'Su grupo, su WhatsApp (o el de su tutor si es menor), su día de pago, si tiene beca o precio especial y cómo va su asistencia de los últimos 60 días.'],
   ['Mensualidades', 'Quién ya pagó el mes, quién está por pagar y quién va atrasado. Registras el pago en dos toques y mandas el recordatorio por WhatsApp ya escrito.'],
 ];
 // Para quién es: giros con ejemplos de cómo lo usan (sin nombres de academias reales)
 const PARA = [
   ['Danza y ballet', 'Grupos por edad y nivel, con su horario y su mensualidad.'],
-  ['Idiomas', 'Niveles con cupo, alumnos adultos o con tutor, y becas.'],
+  ['Idiomas', 'Niveles con cupo, presenciales o en línea, para adultos o niños.'],
   ['Deportes y natación', 'Entrenamientos varios días a la semana y quién sí está viniendo.'],
   ['Música y artes', 'Clases grupales o casi individuales, cada una con su precio.'],
   ['Escuelas chicas y regularización', 'Grupos, tutores y colegiaturas al día sin hojas de Excel.'],
 ];
-const INCLUYE = ['Grupos con horario, cupo y mensualidad; alumnos con su tutor', 'Pase de lista y asistencia de los últimos 60 días', 'Mensualidad por grupo y precios especiales o becas', 'Recordatorio de pago por WhatsApp listo para enviar', 'Tu logo en la app', 'Si quieres, tarjeta de lealtad para las familias en Apple y Google Wallet', 'Soporte por WhatsApp, sin llamadas'];
+const INCLUYE = ['Grupos con horario, cupo y mensualidad; alumnos adultos o con su tutor', 'Pase de lista y asistencia de los últimos 60 días', 'Mensualidad por grupo y precios especiales o becas', 'Recordatorio de pago por WhatsApp listo para enviar', 'Tu logo en la app', 'Si quieres, tarjeta de lealtad para tus alumnos en Apple y Google Wallet', 'Soporte por WhatsApp, sin llamadas'];
 const FAQ = [
   ['¿Puedo probarlo antes de pagar?', `Sí. Entra a <a href="${APP}">os.vorka.mx/vuelve</a> con tu correo, elige «Clases o escuela» como tipo de negocio y tienes 7 días con todo, sin tarjeta. Si te sirve, te suscribes aquí con el mismo correo y todo sigue tal cual.`],
   ['¿Vuelve cobra las mensualidades por mí?', 'No. Tus alumnos te pagan directo a ti, en efectivo, por transferencia o con tarjeta, como siempre. La app solo lleva el registro de quién pagó y te ayuda a recordarle a quien falta, desde tu WhatsApp.'],
@@ -106,7 +107,7 @@ export async function paginaAcademias(env, req, url) {
 <section class="ac-sec suave" id="para-quien"><div class="marco">
   <h2 class="ac-h2">Para academias que trabajan <b>por grupos y mensualidad.</b></h2>
   <ul class="ac-para">${PARA.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')}</ul>
-  <p class="ac-aviso">Incluye la tarjeta de lealtad de Vuelve por si quieres premiar la constancia y las recomendaciones de las familias. Es opcional.</p>
+  <p class="ac-aviso">Incluye la tarjeta de lealtad de Vuelve por si quieres premiar la constancia y las recomendaciones de tus alumnos. Es opcional.</p>
 </div></section>
 
 <section class="ac-sec" id="precio"><div class="marco">
@@ -127,7 +128,7 @@ export async function paginaAcademias(env, req, url) {
     </div>
     <div class="ac-lado">
       <aside class="ac-caja"><b>Tus alumnos te pagan a ti.</b><p>En efectivo, por transferencia o con tarjeta, como siempre. La app solo registra quién pagó y te deja el recordatorio listo para mandarlo desde tu WhatsApp.</p></aside>
-      <aside class="ac-caja"><b>Los datos de tus alumnos son tuyos.</b><p>Solo tú los ves con tu correo; ni el equipo de Vorka entra a esta parte cuando te ayuda. Muchos alumnos son menores, por eso se cuida así.</p></aside>
+      <aside class="ac-caja"><b>Los datos de tus alumnos son tuyos.</b><p>Solo tú los ves con tu correo; ni el equipo de Vorka entra a esta parte cuando te ayuda. Y si das clases a menores, sus datos quedan igual de cuidados.</p></aside>
       <aside class="ac-caja"><b>¿Dudas antes de empezar?</b><p>Te contestamos personas, por WhatsApp.</p><a class="btn blanco ac-ancho" href="${WA}" target="_blank" rel="noopener">Escríbenos por WhatsApp</a></aside>
     </div>
   </div>
