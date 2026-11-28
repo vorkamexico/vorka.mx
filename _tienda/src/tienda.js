@@ -266,7 +266,13 @@ const CSS_VITRINA = `
 .v-lineas{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:30px}
 .v-lineas a{height:42px;padding:0 18px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--bg-2);color:var(--fg);font-weight:600;font-size:15px;text-decoration:none}
 .v-lineas a small{color:var(--fg-2);font-weight:600}.v-lineas a:hover,.v-lineas a.dest{background:var(--fg);color:var(--bg)}.v-lineas a:hover small,.v-lineas a.dest small{color:inherit;opacity:.7}
-.t-confia{padding-top:40px}
+.t-confia{padding:28px 0 0}
+.v-hero~.t-confia .t-confia-g{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;padding:0;margin:0;list-style:none}
+.v-hero~.t-confia .t-confia-g li{display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;box-shadow:none;min-height:0}
+.v-hero~.t-confia .t-confia-g li svg{width:18px;height:18px;padding:0;background:none;color:var(--fg-2)}.v-hero~.t-confia .t-confia-g li b{font-size:14.5px;font-weight:650;margin:0}
+.v-hero~.t-confia .t-confia-g li span{display:none}
+.v-catalogo .ts-sims{gap:14px}
+@media(max-width:560px){.v-catalogo .ts-sims{gap:10px}.v-catalogo .ts-sim{padding:12px 14px}.v-catalogo .ts-sim-x small,.v-catalogo .ts-sim-f{display:none}.v-catalogo .ts-sim-img{width:64px;height:84px}.v-catalogo .ts-sim-x b{font-size:17px}.v-catalogo .ts-sim-pie{margin-top:10px;padding-top:10px}}.v-catalogo .t-cat-cab .h2{letter-spacing:-.03em}
 .v-catalogo .t-grupos{gap:84px}
 .v-catalogo .t-grupo-cab{margin-bottom:26px}
 .v-catalogo .t-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 32px}
@@ -350,6 +356,11 @@ export async function paginaCatalogo(env, req, url) {
   const [{ cookie }, productos, cupon, activos, combos] = await Promise.all([refDeVisita(env, req, url), listarProductos(env),
     url.searchParams.has('cupon') ? avisoCupon(env, url.searchParams.get('cupon')) : null,
     env.DB.prepare('SELECT slug, nombre, descripcion_corta, precio_centavos, contenido, categoria, creador_id, orden FROM products WHERE activo = 1 ORDER BY orden, precio_centavos').all(), combosNegocio(env).catch(() => [])]);
+  // «Para tu examen»: cada simulador con su tarjeta (como en /tienda/simuladores/), en vez de una sola tarjeta general.
+  // Llevan data-linea/data-buscar para que el filtro y el buscador del catálogo las encuentren.
+  // (se importa aquí: simuladores-tienda.js importa de este archivo)
+  const { tarjetasSimuladores, CSS_TARJETAS_SIM } = await import('./simuladores-tienda.js');
+  const simsHtml = await tarjetasSimuladores(env, x => ` data-linea="examenes" data-l="examenes" data-buscar="${esc(sinAcentos(`${x[1]} ${x[2]} ${x[3]} examen admision simulador`))}"`).catch(() => '');
   // «Agregar al carrito» en la tarjeta: pago único con precio fijo (no «Desde») y los planes mensuales de las apps
   const agregable = v => !/^simulador/.test(grupoCarrito(v.p)) && ((enCarrito(v.p) && !/desde/i.test(String(v.precio))) || (enSuscripcion(v.p) && v.p.contenido.suscripcion.intervalo === 'month'));
   // Tarjetas «Desde» (Brindi, Cupo, simuladores): el botón abre «Elige tu plan» en el carrito lateral con cada opción y su precio
@@ -382,7 +393,7 @@ export async function paginaCatalogo(env, req, url) {
         <span class="t-cat">${esc(g.linea)}</span>
         <h3><a href="${esc(v.url)}">${esc(v.nombre)}</a></h3>
         <p>${esc(v.texto)}</p>
-        <div class="t-card-pie"><b class="num">${v.precio}</b><span class="t-card-acc">${v.regalable ? `<a class="t-card-regalo" href="${esc(v.url)}?regalo=1#comprar" aria-label="Regalar ${esc(v.nombre)}">🎁</a>` : ''}<a class="t-card-mas" href="${esc(v.url)}">Ver detalles ${FLECHA}</a></span></div>
+        <div class="t-card-pie"><b class="num">${v.precio}</b></div>
         ${!agregable(v) && opcionesDe(v) ? `<button type="button" class="btn blanco chico t-card-agregar"${attrElige(v)}>Agregar al carrito</button>` : ''}
         ${agregable(v) ? `<button type="button" class="btn blanco chico t-card-agregar" data-carrito-slug="${esc(v.p.slug)}" data-carrito-app="${esc(grupoCarrito(v.p))}" data-carrito-nombre="${esc(v.nombre)}"${enSuscripcion(v.p) ? ' data-carrito-m' : ''}>Agregar al carrito</button>` : ''}
       </div>
@@ -400,7 +411,7 @@ export async function paginaCatalogo(env, req, url) {
   return pagina({
     titulo: 'Tienda Vorka · Simuladores de examen, invitaciones y apps', ruta: '/tienda/', navActual: 'inicio', imagen: 'https://vorka.mx/assets/tienda/og/catalogo.jpg',
     descripcion: 'Simuladores de examen (PAA, UNAM, IPN, EXANI-II, EXCOBA, ECOEMS), invitaciones digitales con QR, eventos y apps para tu negocio. Entrega inmediata; paga con tarjeta u OXXO.',
-    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}</style>`,
+    head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>${cupon ? CSS_CUPON : ''}<style>${CSS_VITRINA}${CSS_TARJETAS_SIM}</style>`,
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: SCRIPT_CATALOGO, whatsapp: true,
     cuerpo: `
@@ -413,24 +424,23 @@ export async function paginaCatalogo(env, req, url) {
     <h1 class="v-h1">Herramientas digitales para estudiar, celebrar y <em>hacer crecer tu negocio.</em></h1>
     <p class="v-sub">Simuladores de examen, invitaciones, eventos y apps para tu negocio. Entrega inmediata por correo; pagas con tarjeta u OXXO.</p>
     <div class="v-botones"><a class="btn v-btn" href="#productos">Ver el catálogo ${FLECHA}</a><a class="btn v-btn sec" href="/tienda/puntos/">Gana puntos recomendando</a></div>
-    ${secciones.length > 1 ? `<p class="v-que">¿Qué necesitas?</p><nav class="v-lineas" aria-label="¿Qué necesitas?">${secciones.map(g => `<a href="${esc(g.vistas.length === 1 ? g.vistas[0].url : `#${g.id}`)}"${g.vistas.length === 1 ? '' : ` data-f="${esc(g.id)}"`} data-linea="${esc(g.id)}"${g === lineaT ? ' class="dest"' : ''}>${esc(g.linea)} <small>${g.vistas.length}</small></a>`).join('')}</nav>` : ''}
   </div>
 </section>
 <section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
   <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>
   <li>${CANDADO_PAGO}<b>Pago protegido</b><span>Lo procesa Stripe. Nosotros nunca vemos los datos de tu tarjeta.</span></li>
-  <li>${ICONOS.tarjeta}<b>Paga como quieras</b><span>Tarjeta de crédito o débito o efectivo en OXXO.</span></li>
+  <li>${ICONOS.tarjeta}<b>Tarjeta u OXXO</b><span>Tarjeta de crédito o débito o efectivo en OXXO.</span></li>
   <li>${ICONOS.chat}<b>Personas reales</b><span>Te contesta alguien del equipo por correo o WhatsApp, en horario laboral.</span></li>
 </ul></div></section>
 <section class="t-sec t-catalogo v-catalogo" id="productos"><div class="marco">
-  <div class="t-cat-cab"><h2 class="h2">Catálogo</h2>
+  <div class="t-cat-cab"><h2 class="h2">¿Qué necesitas?</h2>
     <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>
     ${secciones.length > 1 ? `<div class="t-filtros" role="group" aria-label="Filtrar por necesidad"><a href="#productos" data-f="" aria-current="true">Todo</a>${secciones.map(g => `<a href="#${esc(g.id)}" data-f="${esc(g.id)}">${esc(g.linea)}</a>`).join('')}</div>` : ''}</div>
   ${secciones.length ? `<div class="t-grupos">${secciones.map(g => `
   <section class="t-grupo" data-linea="${esc(g.id)}" id="${esc(g.id)}" aria-labelledby="g-${esc(g.id)}">
-    <div class="t-grupo-cab"><div><span class="t-cat">${esc(g.linea)}</span><h3 class="t-grupo-h" id="g-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div></div>
+    <div class="t-grupo-cab"><div><h3 class="t-grupo-h" id="g-${esc(g.id)}">${esc(g.titulo)}</h3>${g.texto ? `<p>${esc(g.texto)}</p>` : ''}</div></div>
     ${g.id === 'negocios' ? bloqueCombos : ''}
-    <div class="t-cards">${g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')}</div>
+    ${g.id === 'examenes' && simsHtml ? `<div class="ts-sims">${simsHtml}</div>` : `<div class="t-cards">${g.vistas.map((v, i) => tarjeta(v, g, i === 0)).join('')}</div>`}
   </section>`).join('')}</div>
   <p class="t-sin" id="sin-resultados" hidden role="status">No encontramos nada con esa búsqueda. Prueba con otra palabra o <a href="${WHATSAPP}" target="_blank" rel="noopener">pregúntanos por WhatsApp</a>.</p>`
     : `<p class="t-vacio">Muy pronto tendremos productos aquí. Mientras tanto, escríbenos a <a href="mailto:hola@vorka.mx">hola@vorka.mx</a>.</p>`}
@@ -443,10 +453,10 @@ ${seccionFaq({ items: faqHtml(FAQ_TIENDA), pie: env.MARKETPLACE === '1' ? '<p cl
 // Filtros del catálogo: muestran solo una línea sin recargar (sin JavaScript, los enlaces bajan a esa línea)
 // y el buscador (sin JavaScript no aparece): filtra por nombre, descripción y línea, sin importar acentos
 const SCRIPT_CATALOGO = `(function(){
-  var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-cards .t-card'));
+  var fs=[].slice.call(document.querySelectorAll('.t-filtros [data-f]')), cards=[].slice.call(document.querySelectorAll('.t-cards .t-card, .ts-sims .ts-sim'));
   var caja=document.querySelector('.t-buscar'), q=document.getElementById('buscar'), sin=document.getElementById('sin-resultados'), linea='';
   var norm=function(t){ return String(t||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim(); };
-  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea||c.dataset.l===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); [].forEach.call(document.querySelectorAll('.t-grupo'),function(g){ g.hidden=!g.querySelector('.t-card:not([hidden])'); }); if(sin) sin.hidden=n>0; }
+  function pinta(){ var t=norm(q&&q.value), n=0; cards.forEach(function(c){ var ver=(!linea||c.dataset.linea===linea||c.dataset.l===linea)&&(!t||t.split(/\\s+/).every(function(p){ return c.dataset.buscar.indexOf(p)>-1; })); c.hidden=!ver; if(ver) n++; }); [].forEach.call(document.querySelectorAll('.t-grupo'),function(g){ g.hidden=!g.querySelector('.t-card:not([hidden]),.ts-sim:not([hidden])'); }); if(sin) sin.hidden=n>0; }
   function filtra(k){ linea=k; fs.forEach(function(a){ if(a.dataset.f===k) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); }); pinta(); }
   document.addEventListener('click',function(e){ var a=e.target.closest('[data-f]'); if(!a||!fs.length) return; e.preventDefault(); filtra(a.dataset.f); document.getElementById('productos').scrollIntoView({behavior:'smooth'}); history.replaceState(null,'',a.dataset.f?'#'+a.dataset.f:'#productos'); });
   if(caja&&q){ caja.hidden=false; q.addEventListener('input',pinta); }

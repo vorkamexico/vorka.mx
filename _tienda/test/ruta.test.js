@@ -125,12 +125,11 @@ describe('ficha /tienda/ruta-de-impacto/', () => {
 });
 
 describe('catálogo, sitemap y ligas', () => {
-  it('sale en «Para conocerte» con su portada, se puede regalar desde la tarjeta y va en el sitemap', async () => {
+  it('sale en «Para conocerte» con su portada y va en el sitemap', async () => {
     const h = await (await pedir('/tienda/')).text();
     const grupo = h.match(/<section class="t-grupo" data-linea="conocerte"[\s\S]*?<\/section>/)[0];
     expect(grupo).toContain('href="/tienda/ruta-de-impacto/"');
     expect(grupo).toContain('/assets/tienda/v3/ruta-de-impacto-portada.webp');
-    expect(grupo).toContain('/tienda/ruta-de-impacto/?regalo=1#comprar');
     expect(grupo).toContain('Para conocerte y decidir');
     const sm = await (await pedir('/tienda/sitemap.xml')).text();
     expect(sm.match(/ruta-de-impacto/g)).toHaveLength(1);

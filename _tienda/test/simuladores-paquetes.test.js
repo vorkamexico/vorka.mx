@@ -86,10 +86,10 @@ describe('vorka.mx/tienda/simuladores', () => {
     expect(r.headers.get('location')).toBe('https://vorka.mx/tienda/simuladores/?paquete=simuladores-paa-unam#comprar');
   });
 
-  it('en el catálogo de la tienda los simuladores y paquetes son una sola tarjeta', async () => {
+  it('en el catálogo de la tienda cada simulador tiene su tarjeta (sin los paquetes viejos)', async () => {
+    env.DB.raw.exec("UPDATE products SET activo = 1 WHERE slug LIKE 'simulador-%'");
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toContain('href="/tienda/simuladores/"');
-    expect(html).not.toContain('href="/simulador-paa/"');
-    expect(html).not.toContain('href="/simulador-ipn/"');
+    expect(html).toContain('<a class="ts-sim-a" href="/simulador-paa/">');
+    expect(html).not.toContain('simuladores-universidad');
   });
 });

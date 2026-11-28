@@ -183,15 +183,15 @@ describe('combos y recomendaciones de apps', () => {
 });
 
 describe('tarjetas con varias opciones', () => {
-  it('Brindi y los simuladores abren «Elige tu opción» con cada plan y su precio', async () => {
+  it('Brindi abre «Elige tu opción» con cada plan y su precio', async () => {
     const h = await (await get('/tienda/')).text();
     const brindi = h.match(/data-carrito-elige='([^']+)' data-carrito-nombre="Brindi[^"]*"/);
     expect(brindi).toBeTruthy();
     const ops = JSON.parse(brindi[1].replace(/&#39;/g, "'"));
     expect(ops.map(o => o.s)).toEqual(expect.arrayContaining(['brindi-intimo', 'brindi-celebracion']));
     expect(ops[0].p).toBeLessThanOrEqual(ops[ops.length - 1].p);
-    const sims = h.match(/data-carrito-elige='([^']+)' data-carrito-nombre="Simuladores[^"]*"/);
-    expect(JSON.parse(sims[1]).every(o => /-paquete$/.test(o.s))).toBe(true);
+    // los simuladores ya tienen tarjeta propia con su botón del Completo
+    expect(h).toMatch(/data-carrito-slug="simulador-unam-paquete"/);
   });
 });
 

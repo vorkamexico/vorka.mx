@@ -260,9 +260,9 @@ describe('examen PAA completo (estructura real)', () => {
 describe('tienda por secciones y SEO', () => {
   it('el catálogo agrupa por secciones y no lista el simulacro adicional', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html).toMatch(/data-linea="examenes"[^>]*>Exámenes <small>\d+<\/small><\/a>/);
     // Por necesidad: Exámenes, Conócete, Tu negocio (Agenda, Vuelve, Vende y kits), Eventos, Tu dinero y Lo hacemos por ti
-    expect(html).toMatch(/data-linea="negocios"[^>]*>Tu negocio <small>\d+<\/small><\/a>/);
+    expect(html).toContain('<a href="#examenes" data-f="examenes">Exámenes</a>');
+    expect(html).toContain('<a href="#negocios" data-f="negocios">Tu negocio</a>');
     expect(html).not.toMatch(/data-linea="(emprender|invitaciones|lealtad|citas|vende)"/);
     expect(html).toContain('href="#examenes"');
     expect(html).not.toContain('simulador-paa-intento');
@@ -345,10 +345,10 @@ describe('planes: Práctica ilimitada, Simulador completo y paquete', () => {
     expect(yo1.plan).toEqual({ practica: true, completo: false, legado: true, paquete: false, examen: false, estudio: false }); expect(yo1.intentos.ilimitado).toBe(true);
   });
 
-  it('el catálogo muestra una sola tarjeta de simuladores, desde el plan más barato de todos', async () => {
+  it('el catálogo muestra cada simulador con su tarjeta, «Desde» su plan más barato y el Completo para el carrito', async () => {
     const html = await (await pedir('/tienda/')).text();
-    expect(html.match(/class="t-card-img" href="\/tienda\/simuladores\/"/g)).toHaveLength(1);
-    expect(html).not.toContain('class="t-card-img" href="/simulador-paa/"');
+    expect(html.match(/<a class="ts-sim-a" href="\/simulador-paa\/">/g)).toHaveLength(1);
+    expect(html).toMatch(/data-carrito-slug="simulador-paa-paquete"/);
     expect(html).toMatch(/Desde \$\d+ MXN/);
   });
 });
