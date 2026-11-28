@@ -430,7 +430,7 @@ export function seccionResenas(rs, { titulo = 'Lo que dicen quienes lo compraron
   return `<section class="t-sec rs-sec" id="resenas" aria-labelledby="rs-titulo"><div class="marco">
   <div class="rs-cab">
     <div><span class="etiqueta">Reseñas de compradores</span><h2 class="h2" id="rs-titulo">${esc(titulo)}</h2></div>
-    <div class="rs-resumen"><b class="num">${decimal(rs.promedio)}</b>${estrellasHtml(rs.promedio, 'grande')}<small>${rs.total === 1 ? '1 reseña' : `${rs.total} reseñas`} verificadas</small></div>
+    <div class="rs-resumen"><b class="num">${decimal(rs.promedio)}</b>${estrellasHtml(rs.promedio, 'grande')}<small>${rs.total === 1 ? '1 reseña verificada' : `${rs.total} reseñas verificadas`}</small></div>
   </div>
   <ul class="rs-lista">${rs.ultimas.map(x => `<li class="rs-item">
     ${estrellasHtml(x.estrellas)}
