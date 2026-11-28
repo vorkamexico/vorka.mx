@@ -235,7 +235,7 @@ describe('páginas y ligas', () => {
     expect(h).toContain('data-g="barberia"'); expect(h).toContain('id="vq-giros"'); expect(h).toContain('Crear mi cuenta gratis');
     expect(h.match(/href="#quiz"/g).length).toBeGreaterThanOrEqual(3);
     expect(h).not.toContain('id="vu-calc"'); expect(h).not.toContain('Sigue explorando');
-    expect(h).toContain('Un solo plan, con todo incluido.'); expect(h).toContain('$3,990 MXN al año, con 2 meses gratis');
+    expect(h).toContain('Un solo plan, <b>con todo incluido.</b>'); expect(h).toContain('$3,990 MXN al año, con 2 meses gratis');
     expect(h).toContain('href="/tienda/mira-tu-negocio/?g=barberia"');
     expect(h).toContain('id="sucursales-volumen"'); expect(h).toContain('<b>$199 MXN</b> al mes de la 4ª a la 10ª'); expect(h).toContain('<b>$169 MXN</b> al mes desde la 11ª');
     expect(h).toContain('<th scope="row">10 sucursales</th><td>$2,290 MXN<small>ahorras $350 MXN</small></td>');   // 399 + 2×249 + 7×199
