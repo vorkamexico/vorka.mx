@@ -200,3 +200,30 @@ describe('Aviso al ganar puntos (equipo)', () => {
     expect(env.CORREO.avisarEquipo).not.toHaveBeenCalled();
   });
 });
+
+describe('% de renovación por cuenta (puntos_cuentas.pct_renovacion)', () => {
+  const factura = (id, monto = 39900) => ({ id, status: 'paid', amount_paid: monto, billing_reason: 'subscription_cycle', status_transitions: { paid_at: Math.floor(Date.now() / 1000) } });
+  const renovar = (o, id) => puntosFactura(env, factura(id), { id: `sub_${o.id}`, metadata: { order_id: o.id } });
+  const mov = clave => env.DB.raw.prepare('SELECT puntos, pct, factor FROM puntos_movimientos WHERE clave = ?').get(clave);
+  const vuelve = (ref, email = 'negocio@mail.com') => compraPagada(email, ref, 'vuelve-mensual');   // $399 al mes
+  beforeEach(() => env.DB.raw.exec("UPDATE products SET activo = 1 WHERE slug = 'vuelve-mensual'"));
+
+  it('la cuenta con acuerdo gana ese % en cada renovación (en cualquier modo y sin límite); las demás siguen con 5 %', async () => {
+    const especial = await A.codigoPuntos('esp@vorka.mx', 'Esp'), normal = await A.codigoPuntos('nor@vorka.mx', 'Nor');
+    await A.equipoPuntos(['esp@vorka.mx', 'nor@vorka.mx']);
+    env.DB.raw.prepare("UPDATE puntos_cuentas SET pct_renovacion = 15 WHERE email = 'esp@vorka.mx'").run();
+    const oe = await vuelve(especial, 'n1@mail.com'), on = await vuelve(normal, 'n2@mail.com');
+    for (let i = 2; i <= 14; i++) { await renovar(oe, `in_e${i}`); await renovar(on, `in_n${i}`); }
+    expect(mov('factura:in_e2')).toEqual({ puntos: 60, pct: 15, factor: 1 });    // 15 % de $399
+    expect(mov('factura:in_e14')).toEqual({ puntos: 60, pct: 15, factor: 1 });   // pasó la factura 12 y sigue
+    expect(mov('factura:in_n2')).toEqual({ puntos: 20, pct: 5, factor: 1 });     // 5 % de $399
+    // también si eligió pago único o la venta es de antes de la regla
+    await A.modoSuscripcion('esp@vorka.mx', 'unico');
+    const ou = await vuelve(especial, 'n3@mail.com');
+    await renovar(ou, 'in_u2');
+    expect(mov('factura:in_u2')).toEqual({ puntos: 60, pct: 15, factor: 1 });
+    env.DB.raw.prepare('UPDATE orders SET ref_modo = NULL WHERE id = ?').run(oe.id);
+    await renovar(oe, 'in_e15');
+    expect(mov('factura:in_e15')).toEqual({ puntos: 60, pct: 15, factor: 1 });
+  });
+});

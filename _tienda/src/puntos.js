@@ -247,23 +247,27 @@ export async function puntosFactura(env, f, sub) {
   if (!o || o.ref_tipo !== 'puntos' || !o.ref_email || o.ref_email === o.email) return null;
   const previas = (await one(env, "SELECT COUNT(*) n FROM puntos_movimientos WHERE suscripcion_id = ? AND tipo = 'ganado' AND clave != ?", sub.id, `factura:${f.id}`)).n;
   const numero = 2 + previas;
-  // 'unico' (fuera del equipo, o equipo que lo eligió) ya cobró todo en el primer pago; 'recurrente' = 5 % de cada pago,
-  // sin límite, mientras siga en el equipo; null = venta anterior a esta regla (hasta la factura 12)
-  if (o.ref_modo === 'unico') return null;
-  if (o.ref_modo === 'recurrente') {
-    if ((await one(env, 'SELECT equipo FROM puntos_cuentas WHERE email = ?', o.ref_email))?.equipo !== 1) return null;
-    const pagadaR = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
-    const rr = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, pagada: pagadaR, pctFijo: PCT_RECURRENTE,
-      nota: `${o.producto || 'Suscripción'} · pago ${numero} · ${PCT_RECURRENTE} % recurrente` });
+  const pagadaF = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
+  // % fijo en cada renovación: el acuerdo particular de la cuenta (puntos_cuentas.pct_renovacion, sin límite de facturas)
+  // o el 5 % recurrente del equipo
+  const fija = async (pctFijo, sufijo) => {
+    const rr = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, pagada: pagadaF, pctFijo,
+      nota: `${o.producto || 'Suscripción'} · pago ${numero} · ${pctFijo} % ${sufijo}` });
     const g = await one(env, 'SELECT * FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
     if (rr.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
     // Embajadores: la red también cobra sobre las renovaciones que le dan puntos al vendedor, hasta la factura 12
     if (g) await alGanarRenovacion(env, { vendedor: o.ref_email, comprador: o.email, clave: `factura:${f.id}`, numero, base: g.base_centavos, pct: g.pct });
     return rr;
-  }
+  };
+  const cta = await one(env, 'SELECT equipo, pct_renovacion FROM puntos_cuentas WHERE email = ?', o.ref_email);
+  const propio = Number(cta?.pct_renovacion);
+  if (cta?.pct_renovacion != null && propio > 0) return fija(Math.min(PCT_TOPE, propio), 'en renovaciones');
+  // 'unico' (fuera del equipo, o equipo que lo eligió) ya cobró todo en el primer pago; 'recurrente' = 5 % de cada pago,
+  // sin límite, mientras siga en el equipo; null = venta anterior a esta regla (hasta la factura 12)
+  if (o.ref_modo === 'unico') return null;
+  if (o.ref_modo === 'recurrente') return cta?.equipo === 1 ? fija(PCT_RECURRENTE, 'recurrente') : null;
   if (numero > FACTURAS_SUSCRIPCION) return null;
-  const pagada = f.status_transitions?.paid_at ? new Date(f.status_transitions.paid_at * 1000).toISOString() : new Date().toISOString();
-  const r = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, extra: false, pagada,
+  const r = await insertarGanado(env, { email: o.ref_email, clave: `factura:${f.id}`, suscripcion_id: sub.id, base: f.amount_paid, extra: false, pagada: pagadaF,
     nota: `${o.producto || 'Suscripción'} · pago ${numero} de ${FACTURAS_SUSCRIPCION}` });
   const g = await one(env, 'SELECT * FROM puntos_movimientos WHERE clave = ?', `factura:${f.id}`);
   if (r.meta.changes) await despuesDeGanar(env, o.ref_email, { puntos: g.puntos, pct: g.pct, mult: 1, producto: o.producto, orderId: `factura:${f.id}`, renovacion: true });
