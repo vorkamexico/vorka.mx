@@ -88,6 +88,7 @@ describe('Mostrador + Vuelve', () => {
   it('la página muestra los planes, el formulario y la prueba gratis; sin productos invita a probar', async () => {
     let h = await (await pedir('/tienda/mostrador/?plan=mostrador-vuelve-anual')).text();
     expect(h).toContain('id="form-mo"'); expect(h).toMatch(/value="mostrador-vuelve-anual" checked/); expect(h).toContain('$799'); expect(h).toContain('$499'); expect(h).toContain('value="mostrador-mensual"'); expect(h).toContain('Solo Mostrador'); expect(h).toContain('os.vorka.mx/vuelve/');
+    expect(h).toContain('Entrar a Mostrador'); expect(h).toContain("getElementById('form-mo')"); expect(h).toContain('if(window.VD) return;');
     expect(h).not.toMatch(/tel:|Llamar/); expect(h).toContain('Papelerías'); expect(h).toContain('Ferreterías'); expect(h).toContain('href="/tienda/vende/"');
     env.DB.raw.exec("UPDATE products SET activo = 0 WHERE slug LIKE 'mostrador-%'");
     h = await (await pedir('/tienda/mostrador/')).text();

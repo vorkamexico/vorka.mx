@@ -86,7 +86,7 @@ export async function paginaMostrador(env, req, url) {
   migas('Mostrador', RUTA_MOSTRADOR),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) }];
   const desde = mensual ? precio(mensual.prod) : null;   // el de entrada: solo Mostrador
-  return pagina({ navActual: 'catalogo', entrar: { url: APP, app: 'Vuelve' },
+  return pagina({ navActual: 'catalogo', entrar: { url: APP, app: 'Mostrador' },
     titulo: 'Mostrador + Vuelve: inventario, ventas y corte de caja | Vorka México', ruta: RUTA_MOSTRADOR,
     descripcion: 'Para boutiques, papelerías, ferreterías, tiendas de regalos y más: vende con ticket, lleva tu inventario, haz el corte del día y haz que tus clientes regresen.',
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script><style>${CSS}</style>`,
@@ -174,8 +174,8 @@ const CSS = `
 .ac-ico{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--ac) 12%,transparent);color:var(--ac)}.ac-ico svg{width:22px;height:22px}
 [data-tema="oscuro"] .ac-ico{color:color-mix(in srgb,var(--ac) 55%,#fff)}
 .ac-aviso{margin:24px auto 0;max-width:680px;text-align:center;color:var(--fg-2);font-size:14.5px}
-.ac-planes{display:grid;gap:20px;margin:36px auto 0;max-width:820px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start}
-.ac-plan{position:relative;padding:28px;border-radius:28px;background:var(--card);border:1.5px solid var(--line);display:grid;gap:8px}.ac-plan.rec{border-color:var(--ac)}
+.ac-planes{display:grid;gap:20px;margin:36px auto 0;max-width:820px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:stretch}
+.ac-plan{position:relative;padding:28px;border-radius:28px;background:var(--card);border:1.5px solid var(--line);display:flex;flex-direction:column;gap:8px}.ac-plan>ul{flex:1 0 auto;align-content:start}.ac-plan.rec{border-color:var(--ac)}
 .ac-plan h3{margin:0;font-size:20px}.ac-para{margin:0;color:var(--fg-2);font-size:14.5px}.ac-precio{margin:0}.ac-precio b{font-size:34px;letter-spacing:-.03em}.ac-precio small{color:var(--fg-2)}
 .ac-plan ul{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:9px}.ac-plan li{display:flex;gap:8px;font-size:15px}.ac-plan li svg{flex:none;width:18px;height:18px;margin-top:2px}
 .ac-sello{position:absolute;top:-13px;left:24px;background:var(--ac);color:#fff;font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}

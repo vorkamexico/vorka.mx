@@ -127,19 +127,8 @@ ${p ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioT}</b>
 
 const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .lv{--lv-noche:#0f0d10;--lv-morado:#6b2a85;--lv-oro:#c8a45c;--lv-oro-c:#e6cf96;--lv-crema:#f4f2f5}
-.lv-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--lv-oro-c);color:#1b1408;font-weight:700;font-size:16px;text-decoration:none;transition:transform .2s var(--ease)}
-.lv-btn:hover{transform:translateY(-1px)}.lv-btn svg{width:17px;height:17px}
-.lv-btn.ghost{background:rgba(255,255,255,.06);color:var(--lv-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
-.lv-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;background:var(--lv-noche);color:var(--lv-crema)}
-.lv-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 85% 25%,rgba(107,42,133,.5),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(200,164,92,.16),transparent 70%)}
-.lv-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.lv-hero-g>*{min-width:0}@media(min-width:960px){.lv-hero-g{grid-template-columns:1.1fr .9fr}}
 .lv-et{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lv-morado)}.lv-hero .lv-et,.lv-osc .lv-et{color:var(--lv-oro-c)}
-.lv-h1{font-weight:800;font-size:clamp(40px,6.2vw,72px);line-height:1;letter-spacing:-.05em;margin:18px 0 0;max-width:13ch;text-wrap:balance}.lv-h1 em{font-style:normal;color:var(--lv-oro-c)}
-.lv-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(244,242,245,.78);max-width:34em}
 .lv-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-.lv-chips{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-wrap:wrap;gap:8px}.lv-chips li{padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.16);font-size:14px;color:rgba(244,242,245,.8)}
-.lv-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(244,242,245,.8)}.lv-hero .t-nav-tienda a[aria-current]{background:var(--lv-crema);border-color:var(--lv-crema);color:var(--lv-noche)}
-.lv-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
 .lv-muestra{margin:0;padding:22px;border-radius:26px;background:#fff;color:#141114;box-shadow:0 50px 90px -40px rgba(0,0,0,.6);display:grid;gap:12px;max-width:440px;justify-self:center;width:100%}
 .lv-muestra figcaption{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#a8a4a9}
 .lv-glob{display:flex;align-items:baseline;gap:10px}.lv-glob b{font-size:44px;letter-spacing:-.04em;line-height:1}.lv-glob span{color:#6d696e;font-size:14px}

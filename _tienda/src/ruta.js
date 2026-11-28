@@ -182,30 +182,10 @@ ${p ? `<div class="t-barra" id="barra-compra"><div><b class="num">${precioT}</b>
 const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ri{--ri-tinta:#0f0d10;--ri-indigo:#2a2479;--ri-noche:#120e33;--ri-morado:#6b2a85;--ri-morado-c:#c59bd9;--ri-oro:#c8a45c;--ri-oro-c:#f5d08a;--ri-crema:#f4f2f5;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
 [data-tema="oscuro"] .ri{--ri-morado:#c59bd9}
-.ri-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;font-size:16px;text-decoration:none;box-shadow:0 10px 26px -12px rgba(20,17,20,.5);transition:transform .2s var(--ease),background .2s}
-.ri-btn:hover{transform:translateY(-1px)}.ri-hero .ri-btn:not(.ghost),.ri-osc .ri-btn:not(.ghost){background:var(--ri-oro-c);color:#1b1408;box-shadow:0 10px 26px -12px rgba(0,0,0,.6)}.ri-hero .ri-btn:not(.ghost):hover,.ri-osc .ri-btn:not(.ghost):hover{background:#fbe2ad}.ri-btn svg{width:17px;height:17px}
-.ri-btn.ghost{background:rgba(255,255,255,.06);color:var(--ri-crema);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}.ri-btn.ghost:hover{background:rgba(255,255,255,.12)}
-/* portada */
-.ri-hero{position:relative;isolation:isolate;overflow:hidden;margin-top:-104px;padding:140px 0 26px;background:var(--ri-noche);color:var(--ri-crema)}
-.ri-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(55% 70% at 85% 25%,rgba(67,56,202,.55),transparent 70%),radial-gradient(40% 50% at 0% 100%,rgba(200,164,92,.16),transparent 70%)}
-.ri-hero-g{display:grid;gap:40px;align-items:center;padding-bottom:30px}.ri-hero-g>*{min-width:0}
-@media(min-width:960px){.ri-hero-g{grid-template-columns:1.1fr .9fr}}
-.ri-marca{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:26px;letter-spacing:-.05em}.ri-marca i{width:30px;height:14px;border-bottom:3px solid var(--ri-crema);border-radius:0 0 50% 50%;position:relative}.ri-marca i::after{content:"";position:absolute;right:-4px;top:-2px;width:8px;height:8px;border-radius:50%;background:var(--ri-oro)}
-.ri-h1{font-weight:800;font-size:clamp(40px,6.2vw,76px);line-height:1;letter-spacing:-.05em;margin:24px 0 0;max-width:13ch;text-wrap:balance}.ri-h1 em{font-style:normal;color:var(--ri-oro-c)}
-.ri-lead{margin-top:20px;font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:rgba(244,242,245,.78);max-width:34em}
 .ri-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.ri-hero .t-ya{color:rgba(244,242,245,.7)}.ri-hero .t-ya a{color:var(--ri-oro-c)}
-.ri-chips{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14.5px;color:rgba(244,242,245,.75)}
-.ri-chips li{display:inline-flex;align-items:center;gap:7px}.ri-chips svg{width:18px;height:18px;color:var(--ri-oro-c)}
-.ri-hero .t-nav-tienda{margin-top:8px}.ri-hero .t-nav-tienda a{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(244,242,245,.8)}.ri-hero .t-nav-tienda a[aria-current]{background:var(--ri-crema);border-color:var(--ri-crema);color:var(--ri-tinta)}
-.ri-hero>.t-nav-tienda{width:min(100% - 32px,1180px);margin:0 auto}
-.ri-escena{position:relative;justify-self:center;width:min(100%,340px);padding:10px 0 60px}
 .ri-cel{margin:0;border-radius:44px;padding:10px;background:#0a0a0a;box-shadow:0 0 0 2px #2a2a2a,0 50px 90px -40px rgba(0,0,0,.6)}
 .ri-cel img{display:block;width:100%;height:auto;border-radius:35px;background:#faf9f7}
 .ri-cel.corta{border-radius:30px}.ri-cel.corta img{border-radius:22px}
-.ri-noti{position:absolute;left:-30px;right:20px;bottom:0;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:22px;background:rgba(244,242,245,.94);color:#111;font:14px/1.35 -apple-system,'Inter Tight',sans-serif;box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
-.ri-noti b{display:block;font-weight:700}.ri-noti-ic{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:10px;background:var(--ri-oro);color:#1b1408}.ri-noti-ic svg{width:21px;height:21px}
-@media(max-width:600px){.ri-noti{left:-6px;right:-6px}}
 /* secciones */
 .ri-sec{padding:clamp(56px,8vw,104px) 0}.ri-sec.suave{background:var(--bg-2)}
 .ri-osc{background:var(--ri-noche);color:var(--ri-crema)}
@@ -259,7 +239,6 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .ri-pill{background:var(--pm);color:#fff}
 .ri-impacto{background:color-mix(in srgb,var(--pm) 8%,var(--card));border-color:color-mix(in srgb,var(--pm) 30%,var(--line));color:var(--fg)}.ri-impacto svg{background:color-mix(in srgb,var(--pm) 14%,transparent);color:var(--pm-t)}
 .ri-tabla .tot>*{background:color-mix(in srgb,var(--pm) 8%,transparent)}
-.ri-noti-ic{background:var(--pm);color:#fff}
 .ri-cierre{text-align:center}.ri-cierre h2{font-weight:800;font-size:clamp(30px,4.2vw,50px);line-height:1.04;letter-spacing:-.045em;margin:0 auto;max-width:16ch;text-wrap:balance}.ri-cierre h2 span{color:var(--pm-t)}.ri-cierre .ri-ctas{justify-content:center}
 .ri #form-compra .btn.acento{background:var(--pm);color:#fff;box-shadow:0 10px 24px -14px var(--pm)}
 .ri .t-barra .btn.acento{background:var(--pm);color:#fff}`;

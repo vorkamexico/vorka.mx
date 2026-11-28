@@ -3,7 +3,7 @@
 // comparación, preguntas y compra. Se cobra por suscripción (ver suscripciones.js). La app vive en agenda.vorka.mx (Vorka OS)
 // y la página de reservas de cada negocio en vorka.mx/citas/<negocio> (→ os /con/<negocio>, ver index.js › citasPublico).
 // Aquí solo se vende.
-import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, colorDe, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
 import { productoPorSlug, registrarAnalitica } from './modelo.js';
@@ -247,7 +247,7 @@ ${await masTienda(env, 'negocios')}
   return res;
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('ag')}
 /* Estilo de marca (portadas v4): blanco, tinta y el verde de Agenda; sin fondos oscuros */
 .ag{--ag-c:#05785A;--ag-c2:#05785A;--morado:#05785A;font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif}
 [data-tema="oscuro"] .ag{--ag-c2:color-mix(in srgb,#05785A 55%,#fff);--morado:var(--ag-c2)}

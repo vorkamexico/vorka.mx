@@ -353,15 +353,7 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vq-op button{padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:600 14px inherit;cursor:pointer}.vq-op button[aria-pressed=true]{border-color:var(--pm);color:var(--pm-t)}
 .vq-logo{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1.5px dashed var(--line-2);font-weight:600;font-size:14px;cursor:pointer}
 .vq-prev-g{margin:4px 0 6px}
-
 .vq-prev{margin-top:14px}
-.vq-tj{border-radius:16px;padding:14px;background:var(--tc);color:#fff;box-shadow:0 20px 40px -26px rgba(0,0,0,.7)}
-.vq-tj-cab{display:flex;align-items:center;gap:9px;font-weight:650;font-size:15.5px}.vq-tj-cab i{font-style:normal;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.14)}
-.vq-tj-cab span{margin-left:auto;font-weight:500;font-size:13px;opacity:.8;white-space:nowrap}
-.vq-sellos{display:grid;grid-template-columns:repeat(var(--col,5),1fr);gap:7px;margin:14px 0 12px}
-.vq-sellos i{aspect-ratio:1;border-radius:50%;border:2px solid color-mix(in srgb,var(--ta) 60%,transparent)}.vq-sellos i.si{background:var(--ta);border-color:var(--ta)}
-.vq-puntos{margin:14px 0 10px;font-size:28px;font-weight:700;letter-spacing:-.02em}.vq-puntos small{font-size:14px;font-weight:500;opacity:.75}
-.vq-tj-pie{font-size:13.5px;opacity:.85}.vq-tj-pie b{opacity:1}
 .vq-cel{border-radius:26px;padding:16px 12px 14px;background:linear-gradient(160deg,#20242c,#0d0f13);color:#fff;min-height:200px}
 .vq-hora{display:block;text-align:center;font-size:36px;font-weight:600;letter-spacing:-.02em;margin-bottom:12px}
 .vq-noti{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:16px;background:rgba(245,245,247,.9);color:#111;font-size:13.5px;line-height:1.35;margin-top:8px;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s}
@@ -426,7 +418,6 @@ const CSS = `${CSS_MARCA}${CSS_SECCIONES}
 .vu-lado .vu-vol h3{font-size:18px;font-weight:650}
 .vu-listo{padding:24px}.vu-listo>b{font-size:18px;font-weight:650;letter-spacing:-.02em}
 .vu .pm-btn{border-radius:999px}
-
 .vu-total{margin:4px 0 12px;font-size:16px}.vu-total b{font-size:20px;font-variant-numeric:tabular-nums}
 .vu #form-vuelve .btn.acento{background:var(--pm);color:#fff}
 `;

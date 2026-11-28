@@ -10,7 +10,7 @@ import { oferta, ofertas, migas } from './seo.js';
 import { resenasDe, ldResenas, seccionResenas } from './resenas.js';
 import { FLECHA, CHECK } from './marco.generado.js';
 import { ELEGIR } from './elegir.js';
-import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES } from './marca-producto.js';
+import { heroMarca, seccionQueEs, indiceProducto, CSS_MARCA, CSS_SECCIONES, planesParejos } from './marca-producto.js';
 import { seccionDemo } from './demos/marco.js';
 import { demoDe } from './demos/index.js';
 import { barraCompra } from './barra-compra.js';
@@ -159,7 +159,7 @@ ${await masTienda(env, 'eventos')}
   });
 }
 
-const CSS = `${CSS_MARCA}${CSS_SECCIONES}
+const CSS = `${CSS_MARCA}${CSS_SECCIONES}${planesParejos('cu')}
 /* Marca de producto: blanco, tinta y un solo color (el morado de Cupo); en oscuro se aclara con la tinta del tema */
 .cu{--pm:#6D28D9;--cu-a:#6D28D9;--cu-at:color-mix(in srgb,#6D28D9 70%,var(--fg));--cu-t:var(--fg);--cu-f:var(--bg-2)}
 .pm-precio{margin:16px 0 0;font-size:15px;color:var(--fg-2)}.pm-precio b{color:var(--fg)}

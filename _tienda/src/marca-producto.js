@@ -98,6 +98,11 @@ export function seccionQueEs(k, { titulo, texto, para = [], id = 'que-es' }) {
 export function indiceProducto(k, partes, boton) {
   return `<nav class="pm-indice" aria-label="Partes de la página" style="--pm:${colorDe(k)}"><div class="marco">${partes.map(([id, t]) => `<a href="#${esc(id)}">${esc(t)}</a>`).join('')}${boton ? `<span class="pm-indice-btn">${boton}</span>` : ''}</div></nav>`;
 }
+// Precios parejos (nov-2026): tarjetas del mismo alto, con la lista arriba y el botón alineado abajo en todas.
+export const planesParejos = c => `
+.${c}-planes{align-items:stretch!important}
+.${c}-plan{display:flex!important;flex-direction:column}
+.${c}-plan>ul{flex:1 0 auto;align-content:start}`;
 export const CSS_SECCIONES = `
 .pm-indice{position:relative;z-index:2;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .pm-indice .marco{display:flex;align-items:center;gap:24px;min-height:54px;overflow-x:auto;scrollbar-width:none}.pm-indice .marco::-webkit-scrollbar{display:none}
