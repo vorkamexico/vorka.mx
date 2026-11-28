@@ -187,3 +187,47 @@ describe('calculadora de puntaje PAA', () => {
     expect(await (await pedir('/tienda/sitemap.xml')).text()).toContain('/simulador-paa/calculadora/');
   });
 });
+
+describe('prueba gratis de 3 preguntas → seguimiento', () => {
+  const enviar = body => worker.fetch(new Request('https://vorka.mx/api/simulador/prueba', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env);
+  const base = { app: 'simulador-paa', nombre: 'Lucía Pérez', email: 'lucia@mail.com', acepto: true,
+    resultados: [{ s: 'Lectura', t: 'Vocabulario en contexto', c: 'Lee la oración completa antes de elegir.', ok: 1 }, { s: 'Matemáticas', t: 'Aritmética', c: 'Revisa el orden de operaciones.', ok: 0 }, { s: 'Inglés', t: 'Estructura', c: 'Ubica el verbo principal.', ok: 2 }] };
+  it('guarda el resultado como diagnóstico terminado y manda el correo con el plan de 7 días (una sola vez)', async () => {
+    const r = await enviar(base);
+    expect(r.status).toBe(200);
+    const d = env.DB.raw.prepare("SELECT * FROM simulador_diagnosticos WHERE email = 'lucia@mail.com'").get();
+    expect(d.app).toBe('simulador-paa');
+    expect(d.terminado_at).toBeTruthy();
+    const res = JSON.parse(d.resultado);
+    expect(res).toMatchObject({ prueba: true, global: 1, de: 3 });
+    expect(res.temas.map(t => t.nombre)).toEqual(['Aritmética', 'Estructura']);
+    expect((await (await enviar(base)).json()).ya).toBe(true);   // la segunda vez no se duplica ni se reenvía
+  });
+  it('el correo inmediato trae el resultado y el plan; a las 48 h sigue el tema débil y luego el 10 %', async () => {
+    await enviar(base);
+    expect(correos).toHaveLength(1);
+    expect(correos[0].asunto).toBe('Tu resultado y tu plan de 7 días para la PAA');
+    expect(correos[0].html).toContain('1 de 3 a la primera');
+    expect(correos[0].html).toContain('Aritmética');
+    env.DB.raw.prepare("UPDATE simulador_diagnosticos SET terminado_at = ?, created_at = ? WHERE email = 'lucia@mail.com'").run(iso(AHORA.getTime() - 49 * 3600e3), iso(AHORA.getTime() - 49 * 3600e3));
+    const r1 = await seguimientoDiagnosticos(env, AHORA, sims());   // 12:00 en México (dentro del horario de correos)
+    expect(r1.tema).toBe(1);
+    expect(correos.at(-1).html).toContain('En tu prueba gratis sacaste');
+    expect(correos.at(-1).asunto).toBe('Cómo subir en Matemáticas para la PAA');
+    expect(correos.at(-1).html).toContain('Aritmética');
+  });
+  it('pide nombre, correo válido y aceptar el aviso; ignora bots', async () => {
+    expect((await enviar({ ...base, nombre: '' })).status).toBe(400);
+    expect((await enviar({ ...base, email: 'no-es-correo' })).status).toBe(400);
+    expect((await enviar({ ...base, acepto: false })).status).toBe(400);
+    expect((await enviar({ ...base, email: 'bot@mail.com', sitio: 'x' })).status).toBe(200);
+    expect(env.DB.raw.prepare("SELECT COUNT(*) n FROM simulador_diagnosticos WHERE email = 'bot@mail.com'").get().n).toBe(0);
+  });
+  it('la página del simulador trae el formulario al final de la prueba y la sección para papás', async () => {
+    env.DB.raw.exec('UPDATE products SET activo = 1');
+    const h = await (await worker.fetch(new Request('https://vorka.mx/simulador-paa/'), env)).text();
+    expect(h).toContain('sd-lead');
+    expect(h).toContain('¿Eres mamá o papá?');
+    expect(h).toContain('href="?regalo=1#comprar">Regalárselo');
+  });
+});

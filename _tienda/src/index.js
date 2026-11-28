@@ -57,7 +57,7 @@ import { NIVELES, PCT_EXTRA, PCT_TOPE, FACTOR_EQUIPO } from './puntos-reglas.js'
 import * as retiros from './puntos-retiros.js';
 import { resumenEmbajadores, embajador, cambiarPatrocinador } from './embajadores.js';
 import { cuponesRegalo, crearCuponesRegalo, revocarCuponesRegalo, enviarCuponRegalo, anonimizarCuponesViejos, borrarDatosCupon, buscarDatosCuponCorreo, borrarDatosCuponCorreo } from './cupones-regalo.js';
-import { seguimientoDiagnosticos, pedirPuntajes, bajaSeguimiento, paginaPuntajeRuta, puntajesPanel } from './simulador/seguimiento.js';
+import { seguimientoDiagnosticos, pedirPuntajes, bajaSeguimiento, paginaPuntajeRuta, puntajesPanel, registrarPrueba } from './simulador/seguimiento.js';
 import { pedirResenas, paginaResenaGet, paginaResenaPost, bajaResenas, resenasPanel, decidirResena, resenasPorAprobar, pedirResenaPublica } from './resenas.js';
 import { rutasTests, metricasTests, mandarRecordatorios, borrarDatosTests, limpiarTests } from './tests/index.js';
 import { panelTests, gruposTests, ligaPanelTests, reenviarPanelTests, buscarDatosTestsCorreo, borrarDatosTestsCorreo, bitacoraTests } from './tests/panel.js';
@@ -453,6 +453,7 @@ async function atender(request, env, ctx, url) {
     if (url.pathname === '/api/checkout' && request.method === 'POST') return await checkout(request, env, ctx);
     // Carrito (carrito.js): sus productos con el descuento automático, y su página
     if (url.pathname === '/api/carrito' && request.method === 'GET') return await apiCarrito(env, url);
+    if (url.pathname === '/api/simulador/prueba' && request.method === 'POST') return await registrarPrueba(request, env, simuladores());
     if (url.pathname === '/tienda/carrito/' && (request.method === 'GET' || request.method === 'HEAD')) return await paginaCarrito(env);
     if (url.pathname === '/tienda/carrito') return Response.redirect(`${url.origin}/tienda/carrito/`, 301);
     // Píxel de Meta + API de conversiones (src/meta.js): apagados mientras falten META_PIXEL_ID y META_CAPI_TOKEN

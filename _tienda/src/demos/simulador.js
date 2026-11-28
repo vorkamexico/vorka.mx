@@ -99,6 +99,11 @@ const CSS = `
 .sd-regla{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.75);border-left:3px solid var(--pm)}
 .sd-regla span{display:block;font-size:11.5px;font-weight:750;text-transform:uppercase;letter-spacing:.06em;color:var(--pm);margin-bottom:2px}
 .sd-res{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
+.sd-lead{display:grid;gap:8px;margin:0 0 16px;padding:16px;border-radius:16px;background:#F6F5F7;text-align:left}.sd-lead b{font-size:15.5px}.sd-lead>span{font-size:13.5px;color:#5d5860;margin-bottom:4px}
+.sd-lead input:not([type=checkbox]){width:100%;min-height:46px;padding:0 14px;border-radius:12px;border:1px solid #DDD8DE;background:#fff;font:inherit;font-size:15px;color:#1a171c}
+.sd-lead .sd-trampa{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sd-acepto{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#5d5860}.sd-acepto input{margin-top:2px}.sd-acepto a{color:inherit}
+.sd-msg{margin:0;font-size:13.5px;color:#B3261E;min-height:0}.sd-msg:empty{display:none}
 .sd-res li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:11px 12px;border-radius:14px;background:#F6F5F7;font-size:14.5px}
 .sd-res li b{display:block;font-size:14.5px}.sd-res li small{color:#5d5860;font-size:12.5px}
 .sd-res .m{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff}
@@ -171,6 +176,16 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.dis
   else if(b.id==='sd-sig'){i++;if(i<N){pregunta();top()}else{reporte();top()}}
   else if(b.id==='sd-otra'){intro();top()}
 });
+// Al terminar: el formulario manda el resultado al seguimiento (POST /api/simulador/prueba, src/simulador/seguimiento.js)
+app.addEventListener('submit',function(e){var f=e.target.closest('#sd-lead');if(!f)return;e.preventDefault();var m=f.querySelector('.sd-msg'),b=f.querySelector('button');
+  function msg(t,ok){m.textContent=t;m.className='sd-msg'+(ok?' ok':'')}
+  if(!f.nombre.value.trim())return msg('Escribe tu nombre.');if(!f.email.checkValidity()||!f.email.value)return msg('Escribe un correo válido.');if(!f.acepto.checked)return msg('Acepta el aviso de privacidad para mandártelo.');
+  b.disabled=true;b.textContent='Enviando…';
+  var res=D.r.map(function(r,k){var s=st[k];return {s:r.s,t:r.t,c:r.c,ok:s.s1===r.k?1:s.s2===r.k?2:0}});
+  fetch('/api/simulador/prueba',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({app:String(D.ruta).split('/')[1],nombre:f.nombre.value,email:f.email.value,whatsapp:f.whatsapp.value,sitio:f.sitio.value,acepto:true,resultados:res})})
+  .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})}).then(function(x){if(x.ok){f.innerHTML='<b>¡Listo! Revisa tu correo.</b><span>Si no lo ves en unos minutos, busca en spam o promociones.</span>'}else{msg((x.j&&x.j.error)||'No pudimos mandarlo. Intenta de nuevo.');b.disabled=false;b.textContent='Mándamelo'}})
+  .catch(function(){msg('Sin conexión. Intenta de nuevo.');b.disabled=false;b.textContent='Mándamelo'});
+});
 function reporte(){
   detener();
   const a1=st.filter((s,k)=>s.s1===D.r[k].k).length,a2=st.filter((s,k)=>s.s1!==D.r[k].k&&s.s2===D.r[k].k).length;
@@ -179,6 +194,11 @@ function reporte(){
    '<ul class="sd-res">'+D.r.map((r,k)=>{const s=st[k],c=s.s1===r.k?'si':s.s2===r.k?'dos':'no';return '<li><span class="m '+c+'" aria-label="'+(c==='si'?'A la primera':c==='dos'?'En el segundo intento':'Fallada')+'">'+(c==='si'?'✓':c==='dos'?'2':'✕')+'</span><span><b>'+esc(r.s)+'</b><small>'+esc(r.t)+'</small></span><time>'+mmss(s.t)+'</time></li>'}).join('')+'</ul>'+
    (fallas.length?'<h3 class="sd-h3">Qué reforzar</h3><div class="sd-ref">'+fallas.map(r=>'<div><b>'+esc(r.t)+'</b>'+esc(r.c)+'</div>').join('')+'</div>':'')+
    '<p class="sd-nota">'+esc(D.mas)+'</p>'+
+   '<form class="sd-lead" id="sd-lead" novalidate><b>¿Te mandamos tu resultado y un plan de 7 días?</b><span>Gratis, a tu correo, con un consejo para lo que más te conviene reforzar.</span>'+
+   '<input name="nombre" placeholder="Tu nombre" autocomplete="name" maxlength="80"><input name="email" type="email" inputmode="email" placeholder="Tu correo" autocomplete="email" maxlength="254"><input name="whatsapp" type="tel" inputmode="tel" placeholder="WhatsApp (opcional)" maxlength="20">'+
+   '<input name="sitio" class="sd-trampa" tabindex="-1" autocomplete="off" aria-hidden="true">'+
+   '<label class="sd-acepto"><input type="checkbox" name="acepto"><span>Acepto el <a href="/privacidad/" target="_blank">aviso de privacidad</a> y que me escriban por correo.</span></label>'+
+   '<button class="sd-btn" type="submit">Mándamelo</button><p class="sd-msg" role="status"></p></form>'+
    '<a class="sd-btn pm" href="'+D.ruta+'?plan=paquete'+REF+'#comprar" target="_top">Quiero el simulador completo</a><button class="sd-btn sd-sec" type="button" id="sd-otra">Volver a empezar</button>';
 }
 intro();

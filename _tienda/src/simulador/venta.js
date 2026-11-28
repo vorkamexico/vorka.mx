@@ -212,6 +212,12 @@ const TITULAR = {
 // Simuladores de universidad que se venden también en paquete (/tienda/simuladores/, migración 0077)
 const PAQUETE_UNI = ['simulador-paa', 'simulador-unam', 'simulador-ipn'];
 // sim: lo que devuelve crearSimulador · v: contenido de la página (ver paa.js)
+// Sección para mamás y papás (nov 2026): quien muchas veces paga el simulador
+const WHATSAPP_PAPAS = `https://wa.me/528117804869?text=${encodeURIComponent('Hola, soy mamá/papá y tengo una duda sobre el simulador.')}`;
+const CSS_PAPAS = `<style>.sv-papas-g{display:grid;gap:18px}@media(min-width:900px){.sv-papas-g{grid-template-columns:1fr 1.4fr;column-gap:48px}.sv-papas-b{grid-column:2}}
+.sv-papas-p{margin:10px 0 0;color:var(--fg-2);font-size:16px;line-height:1.55}
+.sv-papas-l{list-style:none;margin:0;padding:0;display:grid;gap:14px}.sv-papas-l li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:15.5px;line-height:1.5}.sv-papas-l svg{width:20px;height:20px;color:var(--ok,#1F7A4A);margin-top:2px}
+.sv-papas-b{display:flex;flex-wrap:wrap;gap:10px}</style>`;
 export async function paginaVentaSimulador(sim, v, env, req, url) {
   const RUTA = sim.RUTA;
   // Planes a la venta; si todavía no están, la compra de siempre (PAA) o "muy pronto"
@@ -228,7 +234,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
   const selector = planes.length ? `<div class="sv-planes-cab"><b>Elige tu plan</b>${v.diferencias ? '<a href="#diferencias">¿Cuál es la diferencia?</a>' : ''}</div>
     <div class="sv-planes" role="radiogroup" aria-label="Elige tu plan">${orden.map(x => `<a class="sv-plan${x === elegido ? ' sel' : ''}${x.k === 'paquete' ? ' rec' : ''}" role="radio" aria-checked="${x === elegido}" href="?plan=${x.k}#comprar">
       ${x.k === 'paquete' ? `<span class="sv-ahorro">Recomendado${ahorro > 0 ? ` · Ahorras ${precio({ precio_centavos: ahorro })}` : ''}</span>` : ''}<span class="sv-plan-c"><b>${x.nombre}</b><em class="num">${x.k === 'paquete' && ahorro > 0 ? `<s>${precio({ precio_centavos: x.prod.precio_centavos + ahorro }).replace(' MXN', '')}</s> ` : ''}${precio(x.prod)}</em></span><small>${esc(x.para)}</small>${x.falta ? `<small class="sv-falta">${esc(x.falta)}</small>` : ''}
-      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>${empuje}${PAQUETE_UNI.includes(sim.APP) ? `<a class="sv-empuje sv-paquetes" href="/tienda/simuladores/#paquetes"><span>¿Presentas en varias universidades? Llévate el plan Completo de 2 simuladores <b>desde $499</b> o los 3 (PAA, UNAM e IPN) por <b>$699</b>.</span> ${FLECHA}</a>` : ''}` : '';
+      <ul>${x.trae().map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join('')}</ul></a>`).join('')}</div>${empuje}${PAQUETE_UNI.includes(sim.APP) ? `<a class="sv-empuje sv-paquetes" href="/tienda/simuladores/"><span>¿Presentas en varias universidades? Agrega otro simulador al carrito: con 2 te descontamos <b>15 %</b> y con 3, <b>25 %</b>.</span> ${FLECHA}</a>` : ''}` : '';
   // Tabla "¿Cuál es la diferencia?" (Práctica · Examen · Completo)
   const cols = ['practica', 'completo', 'paquete'].map(pk);
   const marca = b => typeof b === 'string' ? `<span class="sv-parcial">${esc(b)}</span>` : b ? `<span class="sv-si">${CHECK}<span class="sr">Incluye</span></span>` : '<span class="sv-no" aria-label="No incluye">—</span>';
@@ -267,7 +273,7 @@ export async function paginaVentaSimulador(sim, v, env, req, url) {
     headers: cookie ? { 'set-cookie': cookie } : {},
     script: (prod ? SCRIPT_COMPRA : '') + (prueba ? prueba.js : ''),
     head: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
-<style>${CSS_MARCA}${CSS_SECCIONES}</style>${CSS}${CSS_ORDEN}${prueba ? `<style>${prueba.css}${CSS_PRUEBA}</style>` : ''}${v.css || ''}`,
+<style>${CSS_MARCA}${CSS_SECCIONES}</style>${CSS}${CSS_ORDEN}${prueba ? `<style>${prueba.css}${CSS_PRUEBA}</style>` : ''}${v.css || ''}${prod ? CSS_PAPAS : ''}`,
     cuerpo: `<div class="sv" style="--pm:${color};--pm-s:color-mix(in srgb,${color} 11%,#fff)">
 ${heroMarca(clave, {
   titular: TITULAR[clave],
@@ -309,6 +315,16 @@ ${heroMarca(clave, {
   </div>
 </div></section>
 ${diferencias}
+${prod ? `<section class="t-sec suave sv-papas" aria-labelledby="sv-papas-t"><div class="marco"><div class="sv-papas-g">
+  <div><h2 class="h2" id="sv-papas-t">¿Eres mamá o papá?</h2><p class="sv-papas-p">Muchas veces el simulador lo compra la familia. Esto es lo que te conviene saber.</p></div>
+  <ul class="sv-papas-l">
+    <li>${CHECK}<span><b>Sabes si de verdad está practicando.</b> Pídele que te enseñe su medidor de preparación: dice de 0 a 100 qué tan listo está y qué temas le faltan.</span></li>
+    <li>${CHECK}<span><b>Practica con un plan, no al azar.</b> Con el plan Completo arma su plan de estudio con la fecha de su examen y le llegan recordatorios a su celular.</span></li>
+    <li>${CHECK}<span><b>Se lo puedes regalar.</b> Pagas tú, eliges «Para regalar» y le llega su propia liga para entrar con su correo.</span></li>
+    <li>${CHECK}<span><b>Pago seguro y con factura.</b> Tarjeta u OXXO con Stripe; si necesitas factura, te la hacemos.</span></li>
+  </ul>
+  <div class="sv-papas-b"><a class="btn acento" href="?regalo=1#comprar">Regalárselo ${FLECHA}</a><a class="btn blanco" href="${esc(WHATSAPP_PAPAS)}" target="_blank" rel="noopener">Tengo una duda</a></div>
+</div></div></section>` : ''}
 ${v.despuesHero || ''}
 
 
