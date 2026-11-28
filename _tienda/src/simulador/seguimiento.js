@@ -33,7 +33,9 @@ export const HORARIO = [9, 20];        // horas del centro de México en que sal
 const enHorario = fecha => { const { hora } = enMexico(fecha); return hora >= HORARIO[0] && hora <= HORARIO[1]; };
 const primerNombre = n => String(n || '').trim().split(/\s+/)[0] || '';
 const examenDe = sim => (sim.nombre === 'PAA' ? 'la PAA' : `el examen ${sim.nombre}`);
-const textoResultado = r => (r.escala === 'paa' ? `alrededor de ${r.global} puntos (de 200 a 800)` : `alrededor de ${r.global} de ${r.de} aciertos`);
+const textoResultado = r => (r.prueba ? `${r.global} de ${r.de} a la primera` : r.escala === 'paa' ? `alrededor de ${r.global} puntos (de 200 a 800)` : `alrededor de ${r.global} de ${r.de} aciertos`);
+// La prueba gratis de 3 preguntas (página de cada simulador) entra al mismo seguimiento que el diagnóstico (nov 2026)
+const queHiciste = r => (r?.prueba ? 'tu prueba gratis' : 'tu diagnóstico');
 
 async function firmar(env, txt) {
   if (!env.DOWNLOAD_TOKEN_SECRET) throw new Error('Falta DOWNLOAD_TOKEN_SECRET');
@@ -51,8 +53,8 @@ const COMPRO = `EXISTS (SELECT 1 FROM orders o JOIN order_items i ON i.order_id 
 // Correos del seguimiento
 // ---------------------------------------------------------------------------------------------------------------------
 
-const pie = baja => `<p style="${P};color:#8b8790;font-size:13px;text-align:center">Te escribimos porque hiciste el diagnóstico gratis. Si ya no quieres estos correos, <a href="${esc(baja)}" style="color:#8b8790;text-decoration:underline">avísanos aquí</a>.</p>`;
-const pieTexto = baja => `Te escribimos porque hiciste el diagnóstico gratis. Si ya no quieres estos correos: ${baja}`;
+const pie = baja => `<p style="${P};color:#8b8790;font-size:13px;text-align:center">Te escribimos porque hiciste la prueba gratis del simulador. Si ya no quieres estos correos, <a href="${esc(baja)}" style="color:#8b8790;text-decoration:underline">avísanos aquí</a>.</p>`;
+const pieTexto = baja => `Te escribimos porque hiciste la prueba gratis del simulador. Si ya no quieres estos correos: ${baja}`;
 
 export function correoRetomar(env, sim, d, baja) {
   const n = primerNombre(d.nombre), url = `${env.SITE_URL}${sim.RUTA}/diagnostico/?ya=1`;
@@ -69,6 +71,8 @@ ${pie(baja)}`, { etiqueta: 'Diagnóstico gratis' });
 
 // Sección más débil del diagnóstico y los temas que le tocaron de ella, con su consejo del banco
 export function temaDebil(sim, d, r) {
+  // la prueba gratis guarda directo los temas que falló, con su consejo
+  if (r.prueba) return r.temas?.length ? { id: r.reforzar, nombre: r.temas[0].seccion || r.temas[0].nombre, aciertos: null, total: null, temas: r.temas.slice(0, 3) } : null;
   const sec = r.reforzar || r.secciones?.slice().sort((a, b) => a.aciertos / (a.total || 1) - b.aciertos / (b.total || 1))[0]?.id;
   if (!sec) return null;
   const s = (r.secciones || []).find(x => x.id === sec);
@@ -89,13 +93,13 @@ export function correoTema(env, sim, d, r, baja) {
   const asunto = t ? `Cómo subir en ${t.nombre} para ${examenDe(sim)}` : `Tu siguiente paso para ${examenDe(sim)}`;
   const temasHtml = t?.temas.length ? t.temas.map(x => `<p style="${P};margin-bottom:6px"><b>${esc(x.nombre)}</b></p><p style="${P}">${esc(x.consejo)}</p>`).join('') : '';
   const html = marco(asunto, `<p style="${P}">Hola${n ? `, ${esc(n)}` : ''}:</p>
-<p style="${P}">En tu diagnóstico sacaste <b>${esc(textoResultado(r))}</b>.${t ? ` Donde más puntos puedes ganar es <b>${esc(t.nombre)}</b>${t.total ? ` (acertaste ${t.aciertos} de ${t.total})` : ''}.` : ''}</p>
+<p style="${P}">En ${queHiciste(r)} sacaste <b>${esc(textoResultado(r))}</b>.${t ? ` Donde más puntos puedes ganar es <b>${esc(t.nombre)}</b>${t.total ? ` (acertaste ${t.aciertos} de ${t.total})` : ''}.` : ''}</p>
 ${temasHtml ? `<p style="${P}">Estos son los temas de ${esc(t.nombre)} que te tocaron, con un consejo para cada uno:</p>${temasHtml}` : ''}
 <p style="${P}">Un consejo solo sirve si lo practicas. En el plan Completo del ${esc(sim.titulo)} entrenas ${t ? esc(t.nombre) : 'cada sección'} por tema, todas las veces que quieras, con un tutor que te da una pista cuando fallas. Además haces 2 exámenes completos como el real y armas tu plan de estudio hasta la fecha de tu examen.</p>
 ${boton(url, 'Ver el plan Completo')}
 <p style="${P}">¿Dudas? Responde este correo o escríbenos por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a>.</p>
 ${pie(baja)}`, { etiqueta: 'Diagnóstico gratis' });
-  const texto = `Hola${n ? `, ${n}` : ''}:\n\nEn tu diagnóstico sacaste ${textoResultado(r)}.${t ? ` Donde más puntos puedes ganar es ${t.nombre}.` : ''}\n\n${t?.temas.length ? `${t.temas.map(x => `${x.nombre}: ${x.consejo}`).join('\n\n')}\n\n` : ''}En el plan Completo entrenas ${t ? t.nombre : 'cada sección'} por tema con tutor, haces 2 exámenes completos como el real y armas tu plan de estudio: ${url}\n\n${pieTexto(baja)}`;
+  const texto = `Hola${n ? `, ${n}` : ''}:\n\nEn ${queHiciste(r)} sacaste ${textoResultado(r)}.${t ? ` Donde más puntos puedes ganar es ${t.nombre}.` : ''}\n\n${t?.temas.length ? `${t.temas.map(x => `${x.nombre}: ${x.consejo}`).join('\n\n')}\n\n` : ''}En el plan Completo entrenas ${t ? t.nombre : 'cada sección'} por tema con tutor, haces 2 exámenes completos como el real y armas tu plan de estudio: ${url}\n\n${pieTexto(baja)}`;
   return { asunto, html, texto };
 }
 
@@ -105,13 +109,13 @@ export function correoOferta(env, sim, d, r, codigo, hasta, baja) {
   const n = primerNombre(d.nombre), url = `${env.SITE_URL}${sim.RUTA}/?plan=paquete&cupon=${encodeURIComponent(codigo)}#comprar`;
   const asunto = `Tu ${SEG.pct} % para el ${sim.titulo} vence en 3 días`;
   const html = marco(asunto, `<p style="${P}">Hola${n ? `, ${esc(n)}` : ''}:</p>
-<p style="${P}">Hace unos días hiciste tu diagnóstico de ${esc(examenDe(sim))} y sacaste ${esc(textoResultado(r))}. Si quieres prepararte en serio, te dejamos un código personal con <b>${SEG.pct} % de descuento</b> en el ${esc(sim.titulo)}:</p>
+<p style="${P}">Hace unos días hiciste ${queHiciste(r)} de ${esc(examenDe(sim))} y sacaste ${esc(textoResultado(r))}. Si quieres prepararte en serio, te dejamos un código personal con <b>${SEG.pct} % de descuento</b> en el ${esc(sim.titulo)}:</p>
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:4px 0 22px;width:100%"><tr><td align="center" style="background:#F4F2EF;border-radius:16px;padding:18px 12px"><div style="font-size:26px;font-weight:800;letter-spacing:4px;color:#141114;font-family:'SF Mono',Menlo,Consolas,monospace">${esc(codigo)}</div><div style="font-size:12.5px;color:#8b8790;margin-top:6px">Vence el ${esc(fechaHora(hasta))} · un solo uso</div></td></tr></table>
 <p style="${P}">El botón ya lo lleva escrito. Puedes pagar con tarjeta u OXXO, y entras en cuanto se confirma el pago.</p>
 ${boton(url, `Usar mi ${SEG.pct} %`)}
 <p style="${P}">Si no es para ti, no pasa nada: este es el último correo de tu diagnóstico.</p>
 ${pie(baja)}`, { etiqueta: 'Diagnóstico gratis' });
-  const texto = `Hola${n ? `, ${n}` : ''}:\n\nHace unos días hiciste tu diagnóstico de ${examenDe(sim)} y sacaste ${textoResultado(r)}. Te dejamos un código personal con ${SEG.pct} % de descuento en el ${sim.titulo}: ${codigo}\n\nVence el ${fechaHora(hasta)} y es de un solo uso. Úsalo aquí: ${url}\n\nSi no es para ti, no pasa nada: este es el último correo de tu diagnóstico.\n\n${pieTexto(baja)}`;
+  const texto = `Hola${n ? `, ${n}` : ''}:\n\nHace unos días hiciste ${queHiciste(r)} de ${examenDe(sim)} y sacaste ${textoResultado(r)}. Te dejamos un código personal con ${SEG.pct} % de descuento en el ${sim.titulo}: ${codigo}\n\nVence el ${fechaHora(hasta)} y es de un solo uso. Úsalo aquí: ${url}\n\nSi no es para ti, no pasa nada: este es el último correo de tu diagnóstico.\n\n${pieTexto(baja)}`;
   return { asunto, html, texto };
 }
 
@@ -359,4 +363,67 @@ export async function puntajesPanel(env) {
     one(env, 'SELECT COUNT(*) pedidos, SUM(respondida_at IS NOT NULL) respondidos FROM simulador_puntajes'),
   ]);
   return { pedidos: conteo?.pedidos || 0, respondidos: conteo?.respondidos || 0, puntajes: filas };
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Prueba gratis de 3 preguntas → seguimiento (nov 2026)
+// Al terminar la prueba de la página del simulador, quien deja su nombre y correo (y acepta el aviso de privacidad) recibe en
+// ese momento su resultado y un plan de 7 días. Queda como un diagnóstico terminado, así que el seguimiento de siempre sigue
+// solo: a las 48 h un correo con su tema débil y, 3 días después, su código personal de 10 % (si no compró ni se dio de baja).
+// También aparece en Vorka OS › Tienda › Diagnósticos para que el equipo le escriba.
+// ---------------------------------------------------------------------------------------------------------------------
+const PLAN_7 = (tema) => [
+  ['Día 1', `30 minutos de ${tema || 'tu tema más débil'}: lee la regla y resuelve 10 ejercicios sin prisa.`],
+  ['Día 2', `Otra vez ${tema || 'ese tema'}, ahora con reloj. Anota en qué te equivocas.`],
+  ['Día 3', 'Cambia de sección: practica la que mejor te salió para no perderle el ritmo.'],
+  ['Día 4', 'Haz un bloque con cronómetro, como en el examen real, sin pausas.'],
+  ['Día 5', 'Repasa tus errores del día 4: entiende por qué fallaste cada uno.'],
+  ['Día 6', 'Practica tu segundo tema más débil.'],
+  ['Día 7', 'Un simulacro completo con tiempo real. Compara contra tu prueba de hoy.'],
+];
+export function correoPrueba(env, sim, d, r, baja) {
+  const n = primerNombre(d.nombre), t = r.temas?.[0];
+  const url = `${env.SITE_URL}${sim.RUTA}/?plan=paquete#comprar`;
+  const asunto = `Tu resultado y tu plan de 7 días para ${examenDe(sim)}`;
+  const plan = PLAN_7(t?.nombre);
+  const html = marco(asunto, `<p style="${P}">Hola${n ? `, ${esc(n)}` : ''}:</p>
+<p style="${P}">En tu prueba gratis de ${esc(examenDe(sim))} sacaste <b>${esc(textoResultado(r))}</b>.${t ? ` Lo que más te conviene reforzar es <b>${esc(t.nombre)}</b>.` : ' ¡Muy bien!'}</p>
+${t?.consejo ? `<p style="${P}"><b>Un consejo para ${esc(t.nombre)}:</b> ${esc(t.consejo)}</p>` : ''}
+<p style="${P};margin-bottom:8px"><b>Tu plan de 7 días</b></p>
+${plan.map(([dia, x]) => `<p style="${P};margin-bottom:6px"><b>${dia}.</b> ${esc(x)}</p>`).join('')}
+<p style="${P};margin-top:14px">En el ${esc(sim.titulo)} haces todo esto con un tutor que te da una pista cuando fallas, preguntas distintas en cada intento y exámenes completos como el real.</p>
+${boton(url, `Ver el ${sim.titulo}`)}
+<p style="${P}">¿Dudas? Responde este correo o escríbenos por <a href="${SOPORTE.whatsapp}" style="color:#6b2a85;text-decoration:underline">WhatsApp</a>.</p>
+${pie(baja)}`, { etiqueta: 'Prueba gratis' });
+  const texto = `Hola${n ? `, ${n}` : ''}:\n\nEn tu prueba gratis de ${examenDe(sim)} sacaste ${textoResultado(r)}.${t ? ` Lo que más te conviene reforzar es ${t.nombre}.` : ''}\n\n${t?.consejo ? `Un consejo para ${t.nombre}: ${t.consejo}\n\n` : ''}Tu plan de 7 días:\n${plan.map(([dia, x]) => `${dia}. ${x}`).join('\n')}\n\nEl ${sim.titulo}: ${url}\n\n${pieTexto(baja)}`;
+  return { asunto, html, texto };
+}
+
+const corto = (v, max) => String(v ?? '').trim().slice(0, max);
+// POST /api/simulador/prueba { app, nombre, email, whatsapp?, acepto, resultados: [{ s: sección, t: tema, c: consejo, ok: 1|2|0 }] }
+export async function registrarPrueba(request, env, sims = []) {
+  let d; try { d = await request.json(); } catch { return Response.json({ error: 'Datos inválidos.' }, { status: 400 }); }
+  if (d.sitio) return Response.json({ ok: true });                                        // campo trampa para bots
+  const sim = sims.find(s => s.APP === d.app);
+  if (!sim) return Response.json({ error: 'Simulador no encontrado.' }, { status: 404 });
+  const nombre = corto(d.nombre, 80), email = corto(d.email, 254).toLowerCase(), whatsapp = corto(d.whatsapp, 20).replace(/[^\d+]/g, '');
+  if (nombre.length < 2) return Response.json({ error: 'Escribe tu nombre.' }, { status: 400 });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return Response.json({ error: 'Escribe un correo válido.' }, { status: 400 });
+  if (!d.acepto) return Response.json({ error: 'Acepta el aviso de privacidad para mandarte tu resultado.' }, { status: 400 });
+  const res = (Array.isArray(d.resultados) ? d.resultados : []).slice(0, 5).map(x => ({ s: corto(x.s, 60), t: corto(x.t, 80), c: corto(x.c, 400), ok: [0, 1, 2].includes(x.ok) ? x.ok : 0 }));
+  if (!res.length) return Response.json({ error: 'Termina la prueba primero.' }, { status: 400 });
+  const vistos = new Set(), temas = [];
+  for (const x of res) if (x.ok !== 1 && x.t && !vistos.has(x.t)) { vistos.add(x.t); temas.push({ nombre: x.t, consejo: x.c, seccion: x.s }); }
+  const r = { prueba: true, global: res.filter(x => x.ok === 1).length, de: res.length, temas, reforzar: temas[0]?.seccion || null };
+  const ahora = ahoraISO();
+  const ins = await run(env, `INSERT OR IGNORE INTO simulador_diagnosticos (app, email, nombre, whatsapp, acepto_at, verificado_at, resultado, terminado_at, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, sim.APP, email, nombre, whatsapp, ahora, ahora, JSON.stringify(r), ahora, ahora, ahora);
+  if (!ins.meta.changes) return Response.json({ ok: true, ya: true });                   // ya estaba: no le volvemos a escribir
+  const fila = await one(env, 'SELECT * FROM simulador_diagnosticos WHERE app = ? AND email = ?', sim.APP, email);
+  try {
+    const c = correoPrueba(env, sim, fila, r, await ligaBaja(env, fila.id));
+    await enviar(env, { para: email, asunto: c.asunto, html: c.html, texto: c.texto, idempotencia: `prueba-${fila.id}` });
+  } catch (e) { console.error('prueba gratis: correo', fila.id, correoOculto(email), e?.message); }
+  return Response.json({ ok: true });
 }
