@@ -128,13 +128,15 @@ export const WHATSAPP = 'https://wa.me/528117804869';
 const MENU_TIENDA = [['inicio', 'Inicio', '/tienda/'], ['catalogo', 'Catálogo', '/tienda/#productos'], ['puntos', 'Puntos', '/tienda/puntos/'], ['contacto', 'Contacto', '/tienda/#ayuda']];
 // entrar: { url, app } en las páginas de un producto con cuenta (Vuelve, Brindi, Cupo, Cuentas, Simulador): la pastilla de la
 // derecha pasa a ser "Entrar" y lleva directo a iniciar sesión en esa app (o a su panel si ya tiene sesión). Se ve también en celular.
+// El botón del encabezado dice a qué app entra («Entrar a Vuelve»); con nombres largos queda solo «Entrar» para que no se amontone
+const textoEntrar = app => { const a = String(app || '').trim(); return a && a.length <= 10 ? `Entrar a ${a}` : 'Entrar'; };
 export const navTiendaSup = (actual = '', { oscuro = false, entrar = null } = {}) => `<header class="nav t-navs${oscuro ? ' oscuro' : ''}">
   <div class="nav-in">
     <a class="marca" href="/tienda/" aria-label="Tienda Vorka México, inicio">${LOGO}Vorka <span>Tienda</span></a>
     <nav class="nav-links" aria-label="Tienda">${MENU_TIENDA.map(([k, t, u]) => `<a href="${u}"${k === actual ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
     <a class="t-nav-ico" href="/tienda/#buscar" aria-label="Buscar en la tienda" title="Buscar">${ICONOS.buscar}</a>
     ${entrar ? '' : `<a class="t-nav-ico t-nav-cuenta" href="/tienda/puntos/" aria-label="Mi cuenta de puntos" title="Mi cuenta">${ICONOS.cuenta}</a>`}
-    ${entrar ? `<a class="btn acento t-pastilla t-entrar" href="${esc(entrar.url)}" aria-label="Entrar a ${esc(entrar.app)}">${ICONOS.cuenta}<span>Entrar a ${esc(entrar.app)}</span></a>` : '<a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>'}
+    ${entrar ? `<a class="btn acento t-pastilla t-entrar" href="${esc(entrar.url)}" aria-label="Entrar a ${esc(entrar.app)}">${ICONOS.cuenta}<span>${esc(textoEntrar(entrar.app))}</span></a>` : '<a class="btn acento t-pastilla" href="/tienda/puntos/">Gana puntos</a>'}
     <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil"><i></i></button>
   </div>
 </header>
