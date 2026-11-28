@@ -52,7 +52,7 @@ export const PAA = crearSimulador({
 
 const VENTA = {
   slugLegado: APP, sku: 'prod_simulador_paa', nombreProducto: 'Simulador PAA en línea', descripcion: DESCRIPCION,
-  tituloSEO: 'Simulador PAA en línea: examen de prueba con tutor y puntaje | Vorka México',   // Search Console nov 2026: «prueba paa simulador», «examen simulador paa»
+  tituloSEO: 'Simulador PAA 2027 en línea: examen de prueba con puntaje | Vorka México',   // Search Console nov 2026: «prueba paa simulador», «examen simulador paa»
   og: `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`, imagenesLD: [`${SITIO}/assets/tienda/v3/simulador-paa-portada.webp`, `${SITIO}/assets/tienda/v3/simulador-paa-og.jpg`, `${IMG}/simulador-paa-reporte.png`],
   imagenes: { portada: '/assets/tienda/v3/simulador-paa-portada.webp', og: '/assets/tienda/v3/simulador-paa-og.jpg', paso1: '/assets/tienda/v3/simulador-paa-paso-reloj.webp', paso2: '/assets/tienda/v3/simulador-paa-paso-tutor.webp', reporte: '/tienda/img/portadas/simulador-paa-reporte.png', regalo: '/tienda/img/portadas/simulador-paa-regalo.png' },
   banco: REACTIVOS.length,

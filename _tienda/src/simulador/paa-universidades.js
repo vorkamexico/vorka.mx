@@ -50,8 +50,9 @@ export const UNIVERSIDADES = {
   'tec-de-monterrey': {
     nombre: 'Tec de Monterrey', completo: 'Tecnológico de Monterrey', art: 'el',
     // Search Console (nov 2026): «paa tec de monterrey» y «examen paa tec de monterrey» salían sin clics con el título anterior
-    titulo: 'Examen PAA Tec de Monterrey: qué viene, puntaje y simulador | Vorka México',
-    descripcion: 'El examen PAA del Tec para profesional: qué viene, cómo se lee tu puntaje (400 a 1,600), vigencia e intentos según su reglamento. La prepa usa PIENSE II.',
+    // Search Console nov 2026: «simulador paa tec de monterrey», «paa tec de monterrey», «examen paa tec» (CTR 1.2 % con el título anterior)
+    titulo: 'Simulador PAA Tec de Monterrey 2027: examen y puntaje | Vorka México',
+    descripcion: 'Practica la PAA del Tec (profesional) como la real: cronómetro, tutor y tu puntaje de 400 a 1,600. Qué viene, cómo se califica y 3 preguntas gratis. La prepa usa PIENSE II.',
     h1: 'Examen PAA del Tec de Monterrey: reglas de admisión a profesional',
     lead: 'El Tec usa la Prueba de Aptitud Académica (PAA) para entrar a profesional, dentro de una evaluación integral de tu expediente. Aquí está lo que dice su Reglamento de Admisiones, con el artículo de cada regla, y un plan para prepararte.',
     fuentes: [{ nombre: 'Reglamento de Admisiones para los Niveles de Preparatoria y Profesional del Tecnológico de Monterrey (edición febrero 2025)', url: 'https://tec.mx/sites/default/files/inline-files/reglamento-admisiones-preparatoria-profesional-2025.pdf' }],
@@ -88,8 +89,9 @@ export const UNIVERSIDADES = {
   udeg: {
     nombre: 'UdeG', completo: 'Universidad de Guadalajara (UdeG)', art: 'la',
     // Search Console (nov 2026): salía en «calculadora paa» sin clics → liga a la calculadora y título que la menciona
-    titulo: 'PAA UdeG: calcula tu puntaje de admisión (promedio + PAA) | Vorka México',
-    descripcion: 'En la UdeG la PAA pesa 50 % y tu promedio el otro 50 %. Calcula tu puntaje de admisión, cuánto necesitas en la PAA y cuántos entraron en 2026-B.',
+    // Search Console nov 2026: «calculadora paa», «puntaje paa», «calculadora de puntaje paa» (CTR 0.3 % con el título anterior)
+    titulo: 'Calculadora PAA UdeG 2027: tu puntaje de admisión | Vorka México',
+    descripcion: 'Calcula gratis tu puntaje UdeG: la PAA pesa 50 % y tu promedio el otro 50 %. Cuánto necesitas en la PAA y cuántos entraron en 2026-B.',
     h1: 'PAA para la UdeG: cómo se calcula tu puntaje de admisión',
     lead: 'Para entrar a una licenciatura de la Universidad de Guadalajara tienes que presentar la PAA, y tu resultado pesa lo mismo que tu promedio de bachillerato. Aquí están los datos oficiales y un plan para subir tu puntaje.',
     fuentes: [
