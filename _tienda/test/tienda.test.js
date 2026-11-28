@@ -27,7 +27,7 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('class="t-hero v-hero"');
     expect(html).not.toContain('t-hero-foto');                        // sin la foto oscura de la ciudad
     expect(html).toContain('Ver el catálogo');
-    expect(html).toContain('Gana puntos recomendando');
+    expect(html).toContain('Pregúntanos por WhatsApp');
     expect(html).toContain('class="v-h1"');
     // ¿Qué necesitas? es el título del catálogo, con sus filtros (ya no se repiten arriba en la portada)
     expect(html).not.toContain('class="v-lineas"');
@@ -35,7 +35,9 @@ describe('/tienda (catálogo)', () => {
     expect(html).toContain('<a href="#conocerte" data-f="conocerte">Conócete</a>');
     // «Para tu examen»: cada simulador con su tarjeta, que el filtro y el buscador también encuentran
     expect(html).toMatch(/class="ts-sim" data-linea="examenes" data-l="examenes" data-buscar="simulador paa /);
-    expect(html).toContain('class="t-confia-g"');
+    expect(html).toContain('class="v-conf-g"');
+    expect(html).toContain('class="v-pagos"');                         // formas de pago a la vista en el hero
+    expect(html).toMatch(/class="v-arte"><a href="#examenes"/);           // productos reales en el hero
     for (const t of ['Entrega inmediata', 'Pago protegido', 'Tarjeta u OXXO', 'Personas reales']) expect(html).toContain(`<b>${t}</b>`);
     expect(html).toContain('grid-template-columns:repeat(4,minmax(0,1fr))');   // compacto: 4 por fila en compu
     expect(html).toContain('grid-template-columns:116px minmax(0,1fr)');        // y en celular, foto chica al lado del texto
