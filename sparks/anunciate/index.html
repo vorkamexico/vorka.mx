@@ -50,7 +50,7 @@
       <img class="c1" src="/sparks/anunciate/img/futbol.webp" width="1000" height="666" alt="" decoding="async">
       <img class="c2" src="/sparks/anunciate/img/premio.webp" width="1000" height="562" alt="" decoding="async">
       <img class="c3" src="/sparks/anunciate/img/viaje.webp" width="1000" height="750" alt="" decoding="async">
-      <div class="ak-tarjeta"><small>Alcance acumulado en redes</small><b data-al="total">459,976</b><span data-red="Instagram"><i style="--p:63%"></i>Instagram <em>63</em> %</span><span data-red="TikTok"><i style="--p:32%"></i>TikTok <em>32</em> %</span><span data-red="Facebook"><i style="--p:5%"></i>Facebook <em>5</em> %</span></div>
+      <div class="ak-tarjeta"><small>Alcance acumulado en redes</small><b data-al="total">461,588</b><span data-red="Instagram"><i style="--p:62%"></i>Instagram <em>62</em> %</span><span data-red="TikTok"><i style="--p:32%"></i>TikTok <em>32</em> %</span><span data-red="Facebook"><i style="--p:5%"></i>Facebook <em>5</em> %</span></div>
     </div>
   </div>
 </section>
@@ -64,8 +64,8 @@
 <section class="sec pegada" aria-labelledby="t-llega">
   <div class="marco">
     <div class="est-cab rv"><h2 class="h2" id="t-llega">Una comunidad joven que <span class="metal">sí nos lee</span></h2><p>Estudiantes de prepa y universidad, sus familias y quienes trabajan con ellos, en varios municipios. Ofrecemos estar cerca de esa comunidad, no impresiones sueltas.</p></div>
-    <div class="est-cifras"><div class="rv" style="--d:0.0s"><b data-al="total">459,976</b><span>de alcance acumulado en redes</span></div><div class="rv" style="--d:0.06s"><b data-al="promedio">6,666</b><span>de alcance promedio por publicación</span></div><div class="rv" style="--d:0.12s"><b>1,351</b><span>estudiantes en activaciones</span></div><div class="rv" style="--d:0.18s"><b>72</b><span>proyectos juveniles acompañados</span></div></div>
-    <div class="ak-redes rv"><p>De dónde viene el alcance</p><div class="ak-red" data-red="Instagram"><span>Instagram</span><i style="--p:63%"></i><b>63 %</b></div><div class="ak-red" data-red="TikTok"><span>TikTok</span><i style="--p:32%"></i><b>32 %</b></div><div class="ak-red" data-red="Facebook"><span>Facebook</span><i style="--p:5%"></i><b>5 %</b></div></div>
+    <div class="est-cifras"><div class="rv" style="--d:0.0s"><b data-al="total">461,588</b><span>de alcance acumulado en redes</span></div><div class="rv" style="--d:0.06s"><b data-al="promedio">6,594</b><span>de alcance promedio por publicación</span></div><div class="rv" style="--d:0.12s"><b>1,351</b><span>estudiantes en activaciones</span></div><div class="rv" style="--d:0.18s"><b>72</b><span>proyectos juveniles acompañados</span></div></div>
+    <div class="ak-redes rv"><p>De dónde viene el alcance</p><div class="ak-red" data-red="Instagram"><span>Instagram</span><i style="--p:62%"></i><b>62 %</b></div><div class="ak-red" data-red="TikTok"><span>TikTok</span><i style="--p:32%"></i><b>32 %</b></div><div class="ak-red" data-red="Facebook"><span>Facebook</span><i style="--p:5%"></i><b>5 %</b></div></div>
     <p class="ak-fuente">Todas las publicaciones de Sparks medidas desde 2026, en todas las ediciones y municipios. Se actualiza solo. Fuente: reportes de Vorka México.</p>
   </div>
 </section>
@@ -161,7 +161,7 @@
     if (!pop || !pop.notas || !pop.notas.length) return;
     const por = {};
     eds.forEach((d, i) => d && (d.n || []).forEach(n => { por[ED[i] + '/' + n.s] = { n, img: d.img, ed: ED[i] }; }));
-    const top = pop.notas.map(x => por[x.e + '/' + x.s]).filter(x => x && CATS.includes(x.n.c) && x.n.i).slice(0, 6);
+    const top = pop.notas.map(x => por[x.e + '/' + x.s]).filter(x => x && CATS.includes(x.n.c) && x.n.p && x.n.i).slice(0, 6);   // solo historias de una persona (con nombre), nunca noticias
     if (top.length < 3) return;
     // Completa con las de la página que no estén ya
     const ya = new Set(top.map(x => '/sparks/' + x.ed + '/' + x.n.s + '/'));

@@ -208,7 +208,7 @@ def pagina_anunciate():
     if (!pop || !pop.notas || !pop.notas.length) return;
     const por = {{}};
     eds.forEach((d, i) => d && (d.n || []).forEach(n => {{ por[ED[i] + '/' + n.s] = {{ n, img: d.img, ed: ED[i] }}; }}));
-    const top = pop.notas.map(x => por[x.e + '/' + x.s]).filter(x => x && CATS.includes(x.n.c) && x.n.i).slice(0, 6);
+    const top = pop.notas.map(x => por[x.e + '/' + x.s]).filter(x => x && CATS.includes(x.n.c) && x.n.p && x.n.i).slice(0, 6);   // solo historias de una persona (con nombre), nunca noticias
     if (top.length < 3) return;
     // Completa con las de la página que no estén ya
     const ya = new Set(top.map(x => '/sparks/' + x.ed + '/' + x.n.s + '/'));
