@@ -217,14 +217,17 @@ describe('Comunidad Vorka', () => {
 });
 
 describe('testimonios', () => {
-  it('salen en la tienda y en el simulador PAA, sin estrellas ni calificación en el JSON-LD', async () => {
+  it('salen en la tienda y en el simulador PAA con las estrellas que dieron, sin meterlos al JSON-LD', async () => {
     env.DB.raw.exec("UPDATE products SET activo = 1");
-    for (const r of ['/tienda/', '/simulador-paa/', '/simulador-paa/tec-de-monterrey/']) {
+    for (const r of ['/tienda/', '/simulador-paa/tec-de-monterrey/']) {
       const h = await (await pedir(r)).text();
       expect(h, r).toContain('class="ts-tes"');
       expect(h, r).toContain('<b>Edwin</b>Compró el Simulador PAA');
+      expect(h, r).toContain('aria-label="5 de 5 estrellas"');
     }
+    // en la página del simulador, Edwin sale en «Reseñas» (compra verificada) y no se repite como testimonio
+    expect(await (await pedir('/simulador-paa/')).text()).not.toContain('<b>Edwin</b>Compró el Simulador PAA');
     const paa = await (await pedir('/simulador-paa/')).text();
-    expect(paa).not.toContain('"aggregateRating"');   // los testimonios no cuentan como reseñas con estrellas
+    expect(paa).not.toContain('"aggregateRating"');   // los testimonios solos no generan calificación (en pruebas no hay reseñas aprobadas)
   });
 });

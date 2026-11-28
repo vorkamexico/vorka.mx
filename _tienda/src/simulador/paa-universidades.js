@@ -327,7 +327,7 @@ export async function paginaPaaUniversidad(env, clave) {
   <div class="t-faq" style="margin-top:22px">${u.faq.map(f => `<details><summary>${esc(f.p)}</summary><div>${esc(f.r)}</div></details>`).join('')}</div>
 </div></section>
 
-${seccionTestimonios('simulador-paa', { titulo: 'Lo que nos cuentan quienes ya practican' })}
+${seccionTestimonios('simulador-paa', { titulo: 'Lo que nos cuentan quienes ya practican', todas: true })}
 <section class="t-sec"><div class="marco"><p class="t-nota">Página informativa de Vorka México. No estamos afiliados ${u.art === 'el' ? 'al' : 'a la'} ${esc(u.completo)} ni al College Board; PAA es una prueba del College Board. Los requisitos salen de las fuentes oficiales citadas arriba y pueden cambiar.</p></div></section>${barra}`,
   });
 }
