@@ -203,3 +203,15 @@ describe('estilos de la tienda', () => {
     expect(await (await pedir('/tienda/')).text()).toMatch(/href="\/tienda\/estilos\.css\?v=[a-z0-9]+"/);
   });
 });
+
+describe('Comunidad Vorka', () => {
+  it('las páginas públicas invitan al canal de WhatsApp y a Instagram; el carrito no', async () => {
+    for (const r of ['/tienda/', '/simulador-paa/tec-de-monterrey/', '/simulador-unam/aciertos/medico-cirujano/']) {
+      const h = await (await pedir(r)).text();
+      expect(h, r).toContain('class="t-comunidad"');
+      expect(h, r).toContain('https://whatsapp.com/channel/0029VbCGm5h3gvWWoDrohp1p');
+      expect(h, r).toContain('https://www.instagram.com/vorka.mx/');
+    }
+    expect(await (await pedir('/tienda/carrito/')).text()).not.toContain('class="t-comunidad"');
+  });
+});

@@ -149,7 +149,27 @@ const SCRIPT_COPIAR = `document.querySelectorAll('[data-copiar]').forEach(b=>b.a
 // la tarjeta al compartir (og:title) conserva el título completo.
 export const tituloSeo = t => { t = String(t || ''); if (t.length <= 65) return t; const m = t.match(/^(.+) [|·] (Vorka México|Vorka|Brindi)$/);
   return m ? m[1] : t; };
-export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null, whatsappTexto = '', ogTipo = 'website' }) {
+// Comunidad Vorka: antes del pie de cada página pública de la tienda (y en «gracias»), la invitación al canal de WhatsApp
+// y a Instagram, contada como lo que es: un ecosistema de herramientas y una comunidad que se ayuda a crecer.
+export const CANAL_WA = 'https://whatsapp.com/channel/0029VbCGm5h3gvWWoDrohp1p';
+export const INSTAGRAM = 'https://www.instagram.com/vorka.mx/';
+const IG_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>';
+export const bloqueComunidad = () => `<section class="t-comunidad" aria-labelledby="t-com-t"><div class="marco"><div class="t-com">
+  <div class="t-com-tx"><h2 id="t-com-t">Únete a la comunidad Vorka</h2>
+    <p>Vorka es un ecosistema: simuladores para tu examen, herramientas para tus eventos, apps para tu negocio y una comunidad de estudiantes, emprendedores y negocios de todo México que se ayudan a crecer. En el canal y en Instagram compartimos tips, herramientas nuevas y avisos de la comunidad.</p></div>
+  <div class="t-com-b"><a class="t-com-wa" href="${CANAL_WA}" target="_blank" rel="noopener">${ICONOS.whatsapp}<span>Únete al canal de WhatsApp</span></a><a class="t-com-ig" href="${INSTAGRAM}" target="_blank" rel="noopener">${IG_SVG}<span>Síguenos en Instagram</span></a></div>
+</div></div></section>`;
+const CSS_COMUNIDAD = `<style>.t-comunidad{padding:clamp(40px,6vw,72px) 0 clamp(12px,3vw,28px)}
+.t-com{display:grid;gap:22px;align-items:center;padding:clamp(22px,4vw,40px);border-radius:28px;background:var(--card,var(--bg));border:1px solid var(--line)}
+@media(min-width:900px){.t-com{grid-template-columns:1.4fr 1fr;gap:40px}}
+.t-com-e{font-size:13.5px;font-weight:700;color:var(--morado,#6B2FA0)}.t-com h2{margin:6px 0 10px;font-size:clamp(24px,3vw,32px);letter-spacing:-.025em;line-height:1.15}
+.t-com p{margin:0;font-size:15.5px;line-height:1.55;color:var(--fg-2)}
+.t-com-b{display:grid;gap:10px}
+.t-com-b a{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;border-radius:999px;font-weight:700;font-size:15.5px;text-decoration:none}
+.t-com-b svg{width:20px;height:20px;flex:none}
+.t-com-wa{background:#1FA855;color:#fff}.t-com-wa:hover{background:#178f47}
+.t-com-ig{border:1.5px solid var(--line-2,var(--line));color:var(--fg)}.t-com-ig:hover{border-color:var(--fg)}</style>`;
+export function pagina({ titulo, navActual = '', descripcion = '', ruta, cuerpo, head = '', script = '', modulo = '', noindex = false, comunidad = null, status = 200, headers = {}, imagen, stripe = false, frames = [], whatsapp = false, navOscuro = false, entrar = null, whatsappTexto = '', ogTipo = 'website' }) {
   const n = nonce(), temporada = temporadaActual();
   const og = imagen || 'https://vorka.mx/img/ciudades/cdmx-reforma-1600.webp';
   const html = `<!doctype html>
@@ -178,12 +198,12 @@ ${noindex ? '<meta name="robots" content="noindex, nofollow">' : `<link rel="can
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/v3/vorka.css?v=${VERSION}">
 <link rel="stylesheet" href="/tienda/estilos.css?v=${VERSION_CSS}">
-${estiloTemporada(temporada)}${entrar ? ENTRAR_CSS : ''}${head}${cuerpo.includes('class="t-barra') ? CSS_BARRA : ''}${CSS_CARRITO}</head>
+${estiloTemporada(temporada)}${entrar ? ENTRAR_CSS : ''}${head}${(comunidad ?? !noindex) ? CSS_COMUNIDAD : ''}${cuerpo.includes('class="t-barra') ? CSS_BARRA : ''}${CSS_CARRITO}</head>
 <body>
 <a class="saltar" href="#contenido">Saltar al contenido</a>
 ${navTiendaSup(navActual, { oscuro: navOscuro, entrar })}<main id="contenido" class="t-main">
 ${cuerpo}
-</main>
+${(comunidad ?? !noindex) ? bloqueComunidad() : ''}</main>
 ${whatsapp ? `<a class="t-wa" href="${WHATSAPP}?text=${encodeURIComponent('Hola, tengo una duda sobre la tienda de Vorka')}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">${ICONOS.whatsapp}<span>¿Dudas?</span></a>` : ''}
 ${pieCon(whatsappTexto).replace(/<script /g, `<script nonce="${n}" `)}<script nonce="${n}">${SCRIPT_CUPON}</script>${COMPRA.test(cuerpo) ? `<script nonce="${n}">${CLIENTE_DESCUENTO}</script>` : ''}${script ? `<script nonce="${n}">${script}</script>` : ''}${cuerpo.includes('class="t-barra') ? `<script nonce="${n}">${SCRIPT_BARRA}</script>` : ''}${cuerpo.includes('data-copiar=') ? `<script nonce="${n}">${SCRIPT_COPIAR}</script>` : ''}${/id="form-(compra|brindi|cupo)"/.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_PUNTOS}</script>` : ''}${COMPRA.test(cuerpo) ? `<script nonce="${n}">${SCRIPT_SOCIO}</script>` : ''}${modulo ? `<script type="module" nonce="${n}">${modulo}</script>` : ''}<script nonce="${n}">${SCRIPT_CARRITO}</script>
 </body>

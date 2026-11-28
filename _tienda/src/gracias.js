@@ -136,7 +136,7 @@ export async function paginaGracias(env, url) {
   const sig = v === 'pagado' && !o.regalo ? await siguienteDe(env, o, await all(env, 'SELECT p.slug, p.contenido FROM order_items i JOIN products p ON p.id = i.product_id WHERE i.order_id = ? ORDER BY i.id', o.id)) : null;
   const nota = `<p class="t-nota" id="estado-nota" hidden>Seguimos esperando la confirmación. No te preocupes: en cuanto llegue te mandamos el correo automáticamente.</p>`;
   return pagina({
-    titulo: `${b.titulo} · Vorka México`, ruta: '/tienda/gracias', noindex: true,
+    titulo: `${b.titulo} · Vorka México`, ruta: '/tienda/gracias', noindex: true, comunidad: true,
     cuerpo: `<div id="estado" data-order="${esc(o.id)}" data-vista="${v}" role="status" aria-live="polite">${aviso({ ...b, extra: (b.extra || '') + nota + (v === 'pagado' && !o.regalo ? bloqueGracias(sig) + bienvenida(o) : '') })}</div>`,
     head: '<style>.t-bienvenida{margin:22px auto 0;max-width:34em;text-align:center;border-top:1px solid var(--line);padding-top:18px;display:grid;gap:6px}.t-bienvenida>b{font-size:19px}.t-bienvenida>small{color:var(--fg-2);letter-spacing:.04em}.t-bienvenida p{margin:4px 0 0;color:var(--fg-2)}.t-impacto{font-size:14px}' + CSS_GRACIAS + '</style>',
     // Solo compras pagadas con dinero (los regalos y cortesías de $0 no son ventas para Meta)
