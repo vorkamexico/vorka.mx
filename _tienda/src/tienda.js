@@ -266,11 +266,30 @@ const CSS_VITRINA = `
 .v-lineas{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:30px}
 .v-lineas a{height:42px;padding:0 18px;display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:var(--bg-2);color:var(--fg);font-weight:600;font-size:15px;text-decoration:none}
 .v-lineas a small{color:var(--fg-2);font-weight:600}.v-lineas a:hover,.v-lineas a.dest{background:var(--fg);color:var(--bg)}.v-lineas a:hover small,.v-lineas a.dest small{color:inherit;opacity:.7}
-.t-confia{padding:28px 0 0}
-.v-hero~.t-confia .t-confia-g{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;padding:0;margin:0;list-style:none}
-.v-hero~.t-confia .t-confia-g li{display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;box-shadow:none;min-height:0}
-.v-hero~.t-confia .t-confia-g li svg{width:18px;height:18px;padding:0;background:none;color:var(--fg-2)}.v-hero~.t-confia .t-confia-g li b{font-size:14.5px;font-weight:650;margin:0}
-.v-hero~.t-confia .t-confia-g li span{display:none}
+/* Hero con confianza (nov 2026): texto a la izquierda, productos reales a la derecha; formas de pago a la vista */
+.v-hero{padding:56px 0 8px}
+.v-hero-in{display:grid;gap:30px;align-items:center}.v-hero-in>.v-chip,.v-hero-in>.t-cupon,.v-hero-in>.etiqueta{justify-self:center}
+.v-hero-tx{display:flex;flex-direction:column;align-items:center;text-align:center}
+@media(min-width:980px){.v-hero-in{grid-template-columns:1.08fr .92fr;gap:48px}.v-hero-in>.v-chip,.v-hero-in>.t-cupon,.v-hero-in>.etiqueta{grid-column:1/-1;justify-self:start}
+  .v-hero-tx{align-items:flex-start;text-align:left}.v-hero-tx .v-h1{margin:0;max-width:640px;font-size:clamp(40px,4.6vw,60px)}.v-hero-tx .v-sub{margin-left:0;max-width:520px}.v-hero-tx .v-botones{justify-content:flex-start}}
+.v-pagos{display:flex;flex-wrap:wrap;align-items:center;justify-content:inherit;gap:6px;margin-top:22px;font-size:13px;color:var(--fg-2)}
+.v-pagos span{margin-right:4px}.v-pagos b{font-weight:650;font-size:12.5px;padding:4px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card,var(--bg));color:var(--fg)}
+@media(min-width:980px){.v-pagos{justify-content:flex-start}}@media(max-width:979px){.v-pagos{justify-content:center}}
+.v-arte{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;max-width:560px;justify-self:center}
+.v-arte a{display:grid;gap:10px;text-decoration:none;color:var(--fg);text-align:center}
+.v-arte a:nth-child(2){transform:translateY(-18px)}
+.v-arte-img{display:block;aspect-ratio:3/4.2;border-radius:22px;overflow:hidden;background:#EFEFF2;box-shadow:0 18px 40px -24px rgba(0,0,0,.35);transition:transform .3s}
+.v-arte a:hover .v-arte-img{transform:translateY(-4px)}.v-arte-img img{width:100%;height:100%;object-fit:cover;object-position:center 45%}
+.v-arte b{font-size:14px;font-weight:650;line-height:1.25}
+@media(max-width:560px){.v-arte{gap:8px}.v-arte-img{border-radius:16px}.v-arte b{font-size:12.5px}.v-arte a:nth-child(2){transform:translateY(-10px)}}
+.v-conf{padding:34px 0 0}
+.v-conf-g{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.v-conf-g{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.v-conf-g li{padding:18px;border-radius:20px;background:var(--card,var(--bg));border:1px solid var(--line);display:grid;gap:4px;align-content:start}
+.v-conf-i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--ok,#1F7A4A) 11%,transparent);color:var(--ok,#1F7A4A);margin-bottom:8px}
+.v-conf-i svg{width:20px;height:20px}.v-conf-g b{font-size:15.5px;letter-spacing:-.01em}.v-conf-g p{margin:0;font-size:14px;line-height:1.45;color:var(--fg-2)}
+@media(max-width:560px){.v-conf-g{gap:8px}.v-conf-g li{padding:14px}.v-conf-g p{font-size:13px}}
+.v-conf-pie{margin:14px 0 0;text-align:center;font-size:14px;color:var(--fg-2)}
 .v-catalogo .ts-sims{gap:14px}
 @media(max-width:560px){.v-catalogo .ts-sims{gap:10px}.v-catalogo .ts-sim{padding:12px 14px}.v-catalogo .ts-sim-x small,.v-catalogo .ts-sim-f{display:none}.v-catalogo .ts-sim-img{width:64px;height:84px}.v-catalogo .ts-sim-x b{font-size:17px}.v-catalogo .ts-sim-pie{margin-top:10px;padding-top:10px}}.v-catalogo .t-cat-cab .h2{letter-spacing:-.03em}
 .v-catalogo .t-grupos{gap:84px}
@@ -421,17 +440,25 @@ export async function paginaCatalogo(env, req, url) {
     ${cupon ? bandaCupon(cupon) : ''}
     ${temporada ? `<a class="v-chip temporada" href="${lineaT ? esc(lineaT.vistas.length === 1 ? lineaT.vistas[0].url : `#${lineaT.id}`) : '#productos'}"${lineaT && lineaT.vistas.length > 1 ? ` data-f="${esc(lineaT.id)}"` : ''}><b>${esc(temporada.nombre)}</b><span>${esc(temporada.aviso)}</span>${FLECHA}</a>`
       : nuevo ? `<a class="v-chip" href="${esc(nuevo.url)}"><b>Nuevo</b><span>${esc(nuevo.chip)}</span>${FLECHA}</a>` : '<span class="etiqueta">Tienda Vorka México</span>'}
-    <h1 class="v-h1">Herramientas digitales para estudiar, celebrar y <em>hacer crecer tu negocio.</em></h1>
-    <p class="v-sub">Simuladores de examen, invitaciones, eventos y apps para tu negocio. Entrega inmediata por correo; pagas con tarjeta u OXXO.</p>
-    <div class="v-botones"><a class="btn v-btn" href="#productos">Ver el catálogo ${FLECHA}</a><a class="btn v-btn sec" href="/tienda/puntos/">Gana puntos recomendando</a></div>
+    <div class="v-hero-tx">
+      <h1 class="v-h1">Herramientas digitales para estudiar, celebrar y <em>hacer crecer tu negocio.</em></h1>
+      <p class="v-sub">Simuladores de examen, invitaciones y apps para tu negocio, hechos en México. Pagas seguro y te llega al instante a tu correo.</p>
+      <div class="v-botones"><a class="btn v-btn" href="#productos">Ver el catálogo ${FLECHA}</a><a class="btn v-btn sec" href="${WHATSAPP}" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a></div>
+      <div class="v-pagos" aria-label="Formas de pago"><span>Paga con</span><b>Visa</b><b>Mastercard</b><b>American Express</b><b>Apple Pay</b><b>OXXO</b></div>
+    </div>
+    <div class="v-arte">${[['examenes', 'simulador-paa', 'Simuladores de examen'], ['eventos', 'brindi', 'Invitaciones digitales'], ['negocios', 'vuelve', 'Apps para tu negocio']]
+      .filter(([id]) => secciones.some(g => g.id === id)).map(([id, img, t]) => `<a href="#${id}" data-f="${id}"><span class="v-arte-img"><img src="/assets/tienda/v3/${img}-objeto.webp" alt="" width="672" height="1200" decoding="async"></span><b>${t}</b></a>`).join('')}</div>
   </div>
 </section>
-<section class="t-sec t-confia" aria-label="Compra con confianza"><div class="marco"><ul class="t-confia-g">
-  <li>${ICONOS.rayo}<b>Entrega inmediata</b><span>Tu archivo o tu acceso llega a tu correo en cuanto se confirma el pago.</span></li>
-  <li>${CANDADO_PAGO}<b>Pago protegido</b><span>Lo procesa Stripe. Nosotros nunca vemos los datos de tu tarjeta.</span></li>
-  <li>${ICONOS.tarjeta}<b>Tarjeta u OXXO</b><span>Tarjeta de crédito o débito o efectivo en OXXO.</span></li>
-  <li>${ICONOS.chat}<b>Personas reales</b><span>Te contesta alguien del equipo por correo o WhatsApp, en horario laboral.</span></li>
-</ul></div></section>
+<section class="t-sec v-conf" aria-label="Compra con confianza"><div class="marco">
+  <ul class="v-conf-g">
+    <li><span class="v-conf-i">${CANDADO_PAGO}</span><b>Pago protegido</b><p>Lo procesa Stripe. Nunca vemos los datos de tu tarjeta.</p></li>
+    <li><span class="v-conf-i">${ICONOS.rayo}</span><b>Entrega inmediata</b><p>Tu acceso o tu archivo llega a tu correo en cuanto pagas.</p></li>
+    <li><span class="v-conf-i">${ICONOS.tarjeta}</span><b>Tarjeta u OXXO</b><p>Crédito, débito, Apple Pay o efectivo en cualquier OXXO.</p></li>
+    <li><span class="v-conf-i">${ICONOS.chat}</span><b>Personas reales</b><p>Te contesta alguien del equipo por WhatsApp o correo.</p></li>
+  </ul>
+  <p class="v-conf-pie">¿Necesitas factura? Te la hacemos. Las apps se prueban gratis y las cancelas cuando quieras.</p>
+</div></section>
 <section class="t-sec t-catalogo v-catalogo" id="productos"><div class="marco">
   <div class="t-cat-cab"><h2 class="h2">¿Qué necesitas?</h2>
     <label class="t-buscar" hidden><span class="vh">Buscar en la tienda</span>${ICONOS.buscar}<input type="search" id="buscar" placeholder="Buscar: simulador, boda, evento…" autocomplete="off" enterkeyhint="search"></label>
